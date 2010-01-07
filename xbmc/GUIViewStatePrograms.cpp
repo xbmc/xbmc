@@ -44,16 +44,16 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
   AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%K", "%I", "%K", "%I"));  // Filename, Size | Foldername, Size
   AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
 
-  SetSortMethod(g_stSettings.m_viewStatePrograms.m_sortMethod);
-  SetViewAsControl(g_stSettings.m_viewStatePrograms.m_viewMode);
-  SetSortOrder(g_stSettings.m_viewStatePrograms.m_sortOrder);
+  SetSortMethod(g_settings.m_viewStatePrograms.m_sortMethod);
+  SetViewAsControl(g_settings.m_viewStatePrograms.m_viewMode);
+  SetSortOrder(g_settings.m_viewStatePrograms.m_sortOrder);
 
   LoadViewState(items.m_strPath, WINDOW_PROGRAMS);
 }
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS, &g_stSettings.m_viewStatePrograms);
+  SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS, &g_settings.m_viewStatePrograms);
 }
 
 CStdString CGUIViewStateWindowPrograms::GetLockType()

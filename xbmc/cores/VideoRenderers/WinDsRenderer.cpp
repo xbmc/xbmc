@@ -54,7 +54,7 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
   return true;

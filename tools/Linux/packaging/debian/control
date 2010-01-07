@@ -64,7 +64,7 @@ Depends: xbmc-standalone (= ${binary:Version}),
          python-apt,
          adduser,
          sudo,
-         ${misc:Depends}
+         ${misc:Depends},
 Conflicts: kdm, gdm, xdm, wdm
 Description: XBMC Media Center (XBMC Live package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and

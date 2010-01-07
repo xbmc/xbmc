@@ -93,6 +93,7 @@ class CXRandR
 {
 public:
   CXRandR(bool query=false);
+  bool Query(bool force=false);
   std::vector<XOutput> GetModes(void);
   XOutput GetCurrentOutput();
   XMode   GetCurrentMode(CStdString outputName);
@@ -108,7 +109,6 @@ public:
 private:
   bool m_bInit;
   std::vector<XOutput> m_current;
-  void Query(bool force=false);
   std::vector<XOutput> m_outputs;
   CStdString m_currentOutput;
   CStdString m_currentMode;

@@ -802,11 +802,11 @@ namespace PYXBMC
 
     CStdString result;
     if (strcmpi(media, "video") == 0)
-      result = g_stSettings.m_videoExtensions;
+      result = g_settings.m_videoExtensions;
     else if (strcmpi(media, "music") == 0)
-      result = g_stSettings.m_musicExtensions;
+      result = g_settings.m_musicExtensions;
     else if (strcmpi(media, "picture") == 0)
-      result = g_stSettings.m_pictureExtensions;
+      result = g_settings.m_pictureExtensions;
     else
     {
       PyErr_SetString(PyExc_ValueError, "media = (video, music, picture)");

@@ -105,18 +105,22 @@ void CWinRenderer::ManageTextures()
 
 bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
+  if(m_sourceWidth  != width
+  || m_sourceHeight != height)
+  {
   m_sourceWidth = width;
   m_sourceHeight = height;
-  m_flags = flags;
-
   // need to recreate textures
   m_NumYV12Buffers = 0;
   m_iYV12RenderBuffer = 0;
+  }
+
+  m_flags = flags;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
-  SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+  SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
   return true;
@@ -202,10 +206,13 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CWinRenderer::FlipPage(int source)
 {  
+  if(source == AUTOSOURCE)
+    source = NextYV12Texture();
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
-    m_iYV12RenderBuffer = NextYV12Texture();
+    m_iYV12RenderBuffer = 0;
 
 #ifdef MP_DIRECTRENDERING
   __asm wbinvd
@@ -426,8 +433,8 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     verts[i].y -= 0.5;
   }
 
-  float contrast   = g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f;
-  float blacklevel = g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
+  float contrast   = g_settings.m_currentVideoSettings.m_Contrast * 0.02f;
+  float blacklevel = g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
 
   D3DXMATRIX temp, mat;
   D3DXMatrixIdentity(&mat);
@@ -478,11 +485,18 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
   UINT cPasses, iPass;
   if (!m_YUV2RGBEffect.Begin( &cPasses, 0 ))
+  {
+    CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect");
     return;
+  }
 
   for( iPass = 0; iPass < cPasses; iPass++ )
   {
-    m_YUV2RGBEffect.BeginPass( iPass );
+    if (!m_YUV2RGBEffect.BeginPass( iPass ))
+    {
+      CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect pass");
+      break;
+    }
 
     pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
     pD3DDevice->SetTexture(0, NULL);

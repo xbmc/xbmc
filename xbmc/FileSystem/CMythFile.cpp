@@ -23,6 +23,7 @@
 #include "Util.h"
 #include "DllLibCMyth.h"
 #include "URL.h"
+#include "DirectoryCache.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -419,7 +420,22 @@ bool CCMythFile::Delete(const CURL& url)
       return false;
 
     if(m_dll->proginfo_delete_recording(m_control, m_program))
+    {
+      CLog::Log(LOGDEBUG, "%s - Error deleting recording: %s", __FUNCTION__, url.GetFileName().c_str());
       return false;
+    }
+
+    if (path.Left(8) == "tvshows/")
+    {
+      /*
+       * Clear the directory cache for the TV Shows folder so the listing is accurate if this was
+       * the last TV Show in the current directory that was deleted.
+       */
+      CURL tvshows(url);
+      tvshows.SetFileName("tvshows/");
+      g_directoryCache.ClearDirectory(tvshows.Get());
+    }
+
     return true;
   }
   return false;

@@ -111,8 +111,8 @@ void CAutorun::RunMedia(bool bypassSettings)
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
 #ifdef _WIN32
-  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4 ));
-  bool bPlaying = RunDisc(pDir.get(), MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4, nAddedToPlaylist, true, bypassSettings);
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( g_mediaManager.TranslateDevicePath("") ));
+  bool bPlaying = RunDisc(pDir.get(), g_mediaManager.TranslateDevicePath(""), nAddedToPlaylist, true, bypassSettings);
 #else
   CCdInfo* pInfo = g_mediaManager.GetCdInfo();
 
@@ -243,7 +243,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
     // stack video files
     CFileItemList tempItems;
     tempItems.Append(vecItems);
-    if (g_stSettings.m_iMyVideoStack != STACK_NONE)
+    if (g_settings.m_iMyVideoStack != STACK_NONE)
       tempItems.Stack();
     CFileItemList itemlist;
 

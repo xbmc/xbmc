@@ -146,6 +146,8 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
         m_TimeFront = packet->dts;
       else if(packet->pts != DVD_NOPTS_VALUE)
         m_TimeFront = packet->pts;
+      if(m_TimeBack == DVD_NOPTS_VALUE)
+        m_TimeBack = m_TimeFront;
     }
   }
 

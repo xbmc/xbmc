@@ -364,9 +364,9 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strExtension += "|";
 
     CStdString strFileMask;
-    strFileMask = g_stSettings.m_pictureExtensions;
-    strFileMask += "|" + g_stSettings.m_musicExtensions;
-    strFileMask += "|" + g_stSettings.m_videoExtensions;
+    strFileMask = g_settings.m_pictureExtensions;
+    strFileMask += "|" + g_settings.m_musicExtensions;
+    strFileMask += "|" + g_settings.m_videoExtensions;
 #if defined(__APPLE__)
     strFileMask += "|.py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
 #else
@@ -840,6 +840,10 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   if(host.length() == 0)
     return false;
 
+  // assume a hostname without dot's
+  // is local (smb netbios hostnames)
+  if(host.find('.') == string::npos)
+    return true;
 
   unsigned long address = ntohl(inet_addr(host.c_str()));
   if(address == INADDR_NONE)
@@ -849,21 +853,16 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
       address = ntohl(inet_addr(ip.c_str()));
   }
 
-  if(address == INADDR_NONE)
-  {
-    // assume a hostname without dot's
-    // is local (smb netbios hostnames)
-    if(host.find('.') == string::npos)
-      return true;
-  }
-  else
+  if(address != INADDR_NONE)
   {
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
+    
     if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
+  
   return false;
 }
 
@@ -1363,20 +1362,20 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   ReplaceExtension(strFileName, "", strFileNameNoExt);
   strLookInPaths.push_back(strPath);
 
-  if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
+  if (!g_settings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
   {
     if (!g_application.getNetwork().IsAvailable() && !IsHD(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonaccessible");
-      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
     else if (!CDirectory::Exists(g_guiSettings.GetString("subtitles.custompath")))
     {
       CLog::Log(LOGINFO,"CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistant");
-      g_stSettings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
+      g_settings.iAdditionalSubtitleDirectoryChecked = -1; // disabled
     }
 
-    g_stSettings.iAdditionalSubtitleDirectoryChecked = 1;
+    g_settings.iAdditionalSubtitleDirectoryChecked = 1;
   }
 
   if (strMovie.substr(0,6) == "rar://") // <--- if this is found in main path then ignore it!
@@ -1428,7 +1427,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // .. done checking for cd-dirs
 
   // this is last because we dont want to check any common subdirs or cd-dirs in the alternate <subtitles> dir.
-  if (g_stSettings.iAdditionalSubtitleDirectoryChecked == 1)
+  if (g_settings.iAdditionalSubtitleDirectoryChecked == 1)
   {
     strPath = g_guiSettings.GetString("subtitles.custompath");
     if (!HasSlashAtEnd(strPath))
@@ -1924,12 +1923,8 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   for (int y = 0; y < height; y++)
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
 
-  //set alpha byte to 0xFF
-  unsigned char* alphaptr = outpixels - 1;
-  for (int i = 0; i < width * height; i++)
-    *(alphaptr += 4) = 0xFF;
+  delete [] pixels; 
 
-  delete pixels; 
 
 #else
   //nothing to take a screenshot from
@@ -1950,7 +1945,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     if (!CPicture::CreateThumbnailFromSurface(outpixels, width, height, stride, filename))
       CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
 
-    delete outpixels;
+    delete [] outpixels;
   }
   else
   {

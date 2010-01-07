@@ -82,13 +82,13 @@ char *safe_sprintf(const char *format, ...)
     int len;
 
     va_start(valist, format);
-
     len = vsnprintf(NULL, 0, format, valist);
+    va_end(valist);
 
     str = malloc(len + 1);
 
+    va_start(valist, format);
     vsnprintf(str, len + 1, format, valist);
-
     va_end(valist);
 
     return str;

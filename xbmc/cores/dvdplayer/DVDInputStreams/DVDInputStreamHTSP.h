@@ -65,4 +65,23 @@ private:
   int                m_tag;
   HTSP::SChannels    m_channels;
   HTSP::SEvent       m_event;
+
+  struct SRead
+  {
+    SRead() { buf = NULL; Clear(); }
+   ~SRead() { Clear(); }
+
+    int  Size() { return end - cur; }
+    void Clear()
+    {
+      free(buf);
+      buf = NULL;
+      cur = NULL;
+      end = NULL;
+    }
+
+    uint8_t* buf;
+    uint8_t* cur;
+    uint8_t* end;
+  } m_read;
 };

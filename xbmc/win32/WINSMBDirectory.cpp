@@ -382,7 +382,11 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     LPCTSTR pUser = urlIn.GetUserNameA().empty() ? NULL : (LPCTSTR)urlIn.GetUserNameA().c_str();
     LPCTSTR pPass = urlIn.GetPassWord().empty() ? NULL : (LPCTSTR)urlIn.GetPassWord().c_str();
     dwRet = WNetAddConnection2(&nr, pPass, pUser, CONNECT_TEMPORARY);
+#ifdef _DEBUG
     CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), urlIn.GetPassWord().c_str());
+#else
+    CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), "XXXX");
+#endif
     if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD || dwRet == ERROR_LOGON_FAILURE)
     {
       CLog::Log(LOGERROR,"Couldn't connect to %s, access denied", strUNC.c_str());

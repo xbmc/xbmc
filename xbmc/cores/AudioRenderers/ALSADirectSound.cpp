@@ -70,7 +70,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_bPassthrough = bPassthrough;
   m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
 
-  m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
+  m_nCurrentVolume = g_settings.m_nVolumeLevel;
   if (!m_bPassthrough)
      m_amp.SetVolume(m_nCurrentVolume);
 
@@ -405,7 +405,7 @@ void CALSADirectSound::Mute(bool bMute)
 //***********************************************************************************************
 bool CALSADirectSound::SetCurrentVolume(long nVolume)
 {
-  if (!m_bIsAllocated || m_bPassthrough) return -1;
+  if (!m_bIsAllocated) return -1;
   m_nCurrentVolume = nVolume;
   m_amp.SetVolume(nVolume);
   return true;
@@ -453,6 +453,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   framesToWrite  = std::min(GetSpace(), len);
   framesToWrite /= m_dwPacketSize;
   framesToWrite *= m_dwPacketSize;
+  int bytesToWrite = framesToWrite;
   framesToWrite  = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
 
   if(framesToWrite == 0)
@@ -462,7 +463,15 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   if (!m_bPassthrough)
     m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
 
-  int writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
+  int writeResult;
+  if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
+  {
+    char dummy[bytesToWrite];
+    memset(dummy,0,sizeof(dummy));
+    writeResult = snd_pcm_writei(m_pPlayHandle, dummy, framesToWrite);
+  }
+  else
+    writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
   if (  writeResult == -EPIPE  ) {
     CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
             framesToWrite);

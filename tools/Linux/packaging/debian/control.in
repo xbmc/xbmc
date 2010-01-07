@@ -41,14 +41,7 @@ Description: XBMC Media Center (full metapackage)
 
 Package: xbmc-live
 Architecture: all
-Depends: xbmc-standalone (= ${binary:Version}),
-         policykit,
-         openssh-server,
-         ${python:Depends},
-         python-apt,
-         adduser,
-         sudo,
-         ${misc:Depends}
+Depends: #XBMC_LIVE_DEPENDS#
 Conflicts: kdm, gdm, xdm, wdm
 Description: XBMC Media Center (XBMC Live package)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and

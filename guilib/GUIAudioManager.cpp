@@ -43,7 +43,6 @@ CGUIAudioManager::CGUIAudioManager()
 {
   m_bInitialized = false;
   m_actionSound=NULL;
-  m_bEnabled=true;
 }
 
 CGUIAudioManager::~CGUIAudioManager()
@@ -53,7 +52,7 @@ CGUIAudioManager::~CGUIAudioManager()
 
 void CGUIAudioManager::Initialize(int iDevice)
 {
-  if (m_bInitialized || !m_bEnabled)
+  if (m_bInitialized)
     return;
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
@@ -170,7 +169,7 @@ void CGUIAudioManager::FreeUnused()
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || !m_bEnabled || g_audioContext.IsPassthroughActive())
+  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -201,7 +200,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || !m_bEnabled || g_audioContext.IsPassthroughActive())
+  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -251,7 +250,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || !m_bEnabled || g_audioContext.IsPassthroughActive())
+  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -289,10 +288,10 @@ bool CGUIAudioManager::Load()
   m_actionSoundMap.clear();
   m_windowSoundMap.clear();
 
-  Enable(m_bEnabled); // make sure we initialize or deinitialize
-
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return true;
+  else
+    Enable(true);
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
   {
@@ -409,12 +408,10 @@ void CGUIAudioManager::Enable(bool bEnable)
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     bEnable = false;
 
-  if (bEnable && !m_bInitialized)
+  if (bEnable)
     Initialize(CAudioContext::DEFAULT_DEVICE);
-  else if (!bEnable && m_bInitialized)
+  else
     DeInitialize(CAudioContext::DEFAULT_DEVICE);
-
-  m_bEnabled=bEnable;
 }
 
 // \brief Sets the volume of all playing sounds

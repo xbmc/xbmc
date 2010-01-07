@@ -324,20 +324,20 @@ int CXbmcWeb::xbmcNavigate( int eid, webs_t wp, char_t *parameter)
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
           strDirectory = g_settings.m_defaultVideoSource;
           shares = &g_settings.m_videoSources;
-          directory->SetMask(g_stSettings.m_videoExtensions);
+          directory->SetMask(g_settings.m_videoExtensions);
         }
         else if (!strcmp(parameter, WEB_MUSIC))
         {
           g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
           strDirectory = g_settings.m_defaultMusicSource;
           shares = &g_settings.m_musicSources;
-          directory->SetMask(g_stSettings.m_musicExtensions);
+          directory->SetMask(g_settings.m_musicExtensions);
         }
         else if (!strcmp(parameter, WEB_PICTURES))
         {
           strDirectory = g_settings.m_defaultPictureSource;
           shares = &g_settings.m_pictureSources;
-          directory->SetMask(g_stSettings.m_pictureExtensions);
+          directory->SetMask(g_settings.m_pictureExtensions);
         }
         else if (!strcmp(parameter, WEB_PROGRAMS))
         {

@@ -108,8 +108,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if(pCodec && !hints.software)
   {
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
-    g_VDPAU = new CVDPAU(hints.width, hints.height);
-    if(!g_VDPAU->GetVdpDevice())
+    g_VDPAU = new CVDPAU(hints.width, hints.height, hints.codec);
+    if(!g_VDPAU->HasDevice())
     {
       CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");
       delete g_VDPAU;
@@ -301,6 +301,17 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext)
     return VC_ERROR;
 
+#ifdef HAVE_LIBVDPAU
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
+  {
+    if(g_VDPAU->CheckRecover(false))
+    {
+      m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+      return VC_FLUSHED;
+    }
+  }
+#endif
+
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {
@@ -368,6 +379,12 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
                                          m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height,
                                          PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
+    if(context == NULL)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::Decode - unable to obtain sws context for w:%i, h:%i, pixfmt: %i", m_pCodecContext->width, m_pCodecContext->height, m_pCodecContext->pix_fmt);
+      return VC_ERROR;
+    }
+
     m_dllSwScale.sws_scale(context
                           , m_pFrame->data
                           , m_pFrame->linesize
@@ -392,12 +409,15 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   result = VC_PICTURE | VC_BUFFER;
 
 #ifdef HAVE_LIBVDPAU
-  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
   {
+    if(g_VDPAU->CheckRecover(false))
+    {
+      m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+      return VC_FLUSHED;
+    }
+
     g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
-    if(g_VDPAU->VDPAURecovered)
-      result |= VC_FLUSHED;
-    g_VDPAU->VDPAURecovered = false;
   }
 #endif
   return result;

@@ -132,7 +132,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
   int size = hFile->Read(startBuffer, 1, BYTES_TO_LOOK);
   while (size > 3)
   {
-    if (*pos == 0xFF && *(pos+1) == 0xD8)
+    if (*pos == 0xFF && *(pos+1) == 0xD8 && *(pos+2) == 0xFF)
     { // found SOI
       hFile->Seek(pos - startBuffer, SEEK_SET);
       failed = false;

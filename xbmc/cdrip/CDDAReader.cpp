@@ -24,7 +24,7 @@
 #ifdef HAS_CDDA_RIPPER
 
 #include "CDDAReader.h"
-#include "lib/libcdio/cdio.h"
+#include <cdio/cdio.h>
 #include "utils/log.h"
 
 #define SECTOR_COUNT 52

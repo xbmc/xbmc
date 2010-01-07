@@ -175,7 +175,7 @@ bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
   }
 
   //  Make effects as loud as possible
-  m_soundBuffer->SetVolume(g_stSettings.m_nVolumeLevel);
+  m_soundBuffer->SetVolume(g_settings.m_nVolumeLevel);
 
   return true;
 }

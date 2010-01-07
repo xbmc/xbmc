@@ -4,6 +4,8 @@ SRCS=	DVDVideoCodecFFmpeg.cpp \
 	DVDVideoCodecLibMpeg2.cpp \
 	DVDVideoPPFFmpeg.cpp \
 	VDPAU.cpp \
+	CrystalHD.cpp \
+	DVDVideoCodecCrystalHD.cpp \
 
 LIB=Video.a
 

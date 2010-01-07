@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<repo>
+    <url>http://queeup.googlecode.com/svn</url>
+    <root>/branches</root>
+    <structure name="plugins" noffset="-2" install="" ioffset="2" voffset="0" />
+</repo>

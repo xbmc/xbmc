@@ -105,7 +105,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   CLog::Log(LOGDEBUG,"%s Timestamp after loading video info with mediainfo.dll  %I64d",__FUNCTION__,tmestamp);
   
 
-  SetVolume(g_stSettings.m_nVolumeLevel);
+  SetVolume(g_settings.m_nVolumeLevel);
   UpdateState();
 
   //bool ok;

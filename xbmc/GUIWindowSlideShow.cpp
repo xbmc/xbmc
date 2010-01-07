@@ -825,7 +825,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
 
   // fetch directory and sort accordingly
   CFileItemList items;
-  if (!CDirectory::GetDirectory(strPath, items, g_stSettings.m_pictureExtensions))
+  if (!CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions))
     return;
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 

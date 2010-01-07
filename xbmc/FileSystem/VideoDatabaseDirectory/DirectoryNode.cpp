@@ -282,7 +282,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   {
     case NODE_TYPE_SEASONS:
       {
-        pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));  // "All Seasons"
+        CStdString strLabel = g_localizeStrings.Get(20366);
+        pItem.reset(new CFileItem(strLabel));  // "All Seasons"
         pItem->m_strPath = BuildPath() + "-1/";
         // set the number of watched and unwatched items accordingly
         int watched = 0;
@@ -300,6 +301,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
           *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
           pItem->GetVideoInfoTag()->m_iSeason = -1;
         }
+        pItem->GetVideoInfoTag()->m_strTitle = strLabel;
         pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
         pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
         if (XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))

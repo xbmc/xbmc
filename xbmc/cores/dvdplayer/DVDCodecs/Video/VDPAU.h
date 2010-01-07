@@ -61,10 +61,12 @@ public:
   };
 
 
-  CVDPAU(int width, int height);
+  CVDPAU(int width, int height, CodecID codec);
   virtual ~CVDPAU();
 
   bool MakePixmap(int width, int height);
+  bool MakePixmapGL();
+
   void ReleasePixmap();
   void BindPixmap();
 
@@ -85,49 +87,40 @@ public:
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
-  void Create(int width, int height);
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
-  int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
+  bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   void InitCSCMatrix(int Height);
-  void CheckStatus(VdpStatus vdp_st, int line);
+  bool CheckStatus(VdpStatus vdp_st, int line);
 
-  void CheckRecover(bool force = false);
+  bool CheckRecover(bool force = false);
   void CheckFeatures();
-  void SetColor(int Height);
+  void SetColor();
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
   void SetHWUpscaling();
-  bool VDPAURecovered, VDPAUSwitching;
 
-  VdpTime    lastSwapTime, frameLagTime, frameLagTimeRunning, frameLagAverage;
-  VdpTime    previousTime;
-
-  INT64      frameCounter;
   pictureAge picAge;
   bool       recover;
   VdpVideoSurface past[2], current, future;
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       interlaced,m_bPixmapCreated;
+  bool       interlaced;
   int        OutWidth, OutHeight;
-  int        lastDisplayedSurface;
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;
-  VdpDevice     GetVdpDevice() { return vdp_device; };
+  VdpDevice     HasDevice() { return vdp_device != VDP_INVALID_HANDLE; };
   VdpChromaType vdp_chroma_type;
-  VdpVideoMixerPictureStructure structure;
 
 
   //  protected:
   void      InitVDPAUProcs();
-  VdpStatus FiniVDPAUProcs();
-  void      InitVDPAUOutput();
-  VdpStatus FiniVDPAUOutput();
+  void      FiniVDPAUProcs();
+  void      FiniVDPAUOutput();
 
   VdpDevice                            vdp_device;
   VdpGetProcAddress *                  vdp_get_proc_address;
@@ -185,6 +178,8 @@ public:
   VdpRect       outRect;
   VdpRect       outRectVid;
 
+  VdpBool upscalingAvailable;
+
   void*    dl_handle;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
   VdpStatus (*dl_vdp_get_proc_address)(VdpDevice device, VdpFuncId function_id, void** function_pointer);
@@ -197,7 +192,6 @@ public:
   uint32_t max_references;
   Display* m_Display;
   bool     vdpauConfigured;
-  bool     vdpauInited;
 
   static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt

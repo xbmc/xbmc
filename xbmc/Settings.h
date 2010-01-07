@@ -88,13 +88,6 @@ public:
   bool value;
 };
 
-struct VOICE_MASK {
-  float energy;
-  float pitch;
-  float robotic;
-  float whisper;
-};
-
 class CGUISettings;
 class TiXmlElement;
 class TiXmlNode;
@@ -138,9 +131,6 @@ public:
   void ResetSkinSetting(const CStdString &setting);
   void ResetSkinSettings();
 
-  struct stSettings
-  {
-public:
     CStdString m_pictureExtensions;
     CStdString m_musicExtensions;
     CStdString m_videoExtensions;
@@ -202,11 +192,6 @@ public:
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
     bool m_bMute;
     int m_iSystemTimeTotalUp;    // Uptime in minutes!
-
-    VOICE_MASK m_karaokeVoiceMask[4];
-  };
-
-  stSettings m_stSettings;
 
   struct RssSet
   {
@@ -314,4 +299,3 @@ protected:
 };
 
 extern class CSettings g_settings;
-extern struct CSettings::stSettings& g_stSettings;

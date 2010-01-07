@@ -26,16 +26,12 @@
 #include "cdioSupport.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
-#ifndef _LINUX
-#include "lib/libcdio/logging.h"
-#include "lib/libcdio/util.h"
-#include "lib/libcdio/mmc.h"
-#else
 #include <cdio/logging.h>
 #include <cdio/util.h>
+#ifdef _LINUX
 #include <cdio/mmc.h>
-#include <cdio/cd_types.h>
 #endif
+#include <cdio/cd_types.h>
 
 using namespace MEDIA_DETECT;
 

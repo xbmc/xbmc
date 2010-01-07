@@ -503,7 +503,7 @@ static const StreamType ISO_types[] = {
     { 0x04, CODEC_TYPE_AUDIO,        CODEC_ID_MP3 },
     { 0x0f, CODEC_TYPE_AUDIO,        CODEC_ID_AAC },
     { 0x10, CODEC_TYPE_VIDEO,      CODEC_ID_MPEG4 },
-    { 0x11, CODEC_TYPE_AUDIO,        CODEC_ID_AAC }, /* LATM syntax */
+    { 0x11, CODEC_TYPE_AUDIO,   CODEC_ID_AAC_LATM }, /* LATM syntax */
     { 0x1b, CODEC_TYPE_VIDEO,       CODEC_ID_H264 },
     { 0xd1, CODEC_TYPE_VIDEO,      CODEC_ID_DIRAC },
     { 0xea, CODEC_TYPE_VIDEO,        CODEC_ID_VC1 },
@@ -549,7 +549,6 @@ static const StreamType DESC_types[] = {
     { 0x59, CODEC_TYPE_SUBTITLE, CODEC_ID_DVB_SUBTITLE }, /* subtitling descriptor */
     { 0x45, CODEC_TYPE_DATA,         CODEC_ID_VBI_DATA }, /* VBI Data descriptor */
     { 0x46, CODEC_TYPE_DATA,     CODEC_ID_VBI_TELETEXT }, /* VBI Teletext descriptor */
-    { 0x56, CODEC_TYPE_DATA,     CODEC_ID_EBU_TELETEXT }, /* EBU Teletext descriptor */
     { 0 },
 };
 
@@ -1612,7 +1611,7 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
                 return AV_NOPTS_VALUE;
         if (buf[0] != 0x47) {
             url_fseek(s->pb, -TS_PACKET_SIZE, SEEK_CUR);
-            if (mpegts_resync(s->pb) < 0)
+            if (mpegts_resync(s) < 0)
                 return AV_NOPTS_VALUE;
             pos = url_ftell(s->pb);
             continue;
@@ -1741,7 +1740,7 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t target_ts, in
         pos += ts->raw_packet_size;
     }
 
-    return AV_NOPTS_VALUE;
+    return 0;
 }
 
 #endif

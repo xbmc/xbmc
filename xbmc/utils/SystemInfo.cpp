@@ -133,7 +133,7 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
+    iInputMinutes = g_settings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
   }
   else
   {

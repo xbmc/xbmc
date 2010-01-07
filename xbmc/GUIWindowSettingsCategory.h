@@ -50,8 +50,6 @@ protected:
   void FillInSkins(CSetting *pSetting);
   void FillInSoundSkins(CSetting *pSetting);
   void FillInLanguages(CSetting *pSetting);
-  void FillInVoiceMasks(DWORD dwPort, CSetting *pSetting);   // Karaoke patch (114097)
-  void FillInVoiceMaskValues(DWORD dwPort, CSetting *pSetting); // Karaoke patch (114097)
   void FillInResolutions(CSetting *pSetting, bool playbackSetting);
   void FillInVSyncs(CSetting *pSetting);
   void FillInScreenSavers(CSetting *pSetting);

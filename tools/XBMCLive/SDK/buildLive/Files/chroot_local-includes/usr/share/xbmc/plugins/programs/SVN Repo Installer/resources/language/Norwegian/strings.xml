@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- Update messages -->
+    <string id="30000">Vil du installere dette tillegget?</string>
+    <string id="30001">Henter fil...</string>
+    <string id="30002">Henter filliste...</string>
+    <string id="30003">Vennligst vent...</string>
+    <string id="30004">Sikkerhetskopi generert</string>
+    <string id="30005">Henter:</string>
+    <string id="30006">Sti:</string>
+    <string id="30007">Fil:</string>
+    <string id="30008">Ditt nye tillegg ble installert i:</string>
+    <string id="30009">Leter etter installerte tillegg...</string>
+    <string id="30010">Sjekker SVN...</string>
+    <string id="30011">OK</string>
+    <string id="30012">Ikke i SVN</string>
+    <string id="30013">Ukjent versjon</string>
+    <string id="30014">Ny</string>
+    <string id="30015">Ukompatibel</string>
+    <string id="30016">Oppdatering</string>
+    <string id="30017">Endringslogg</string>
+    <string id="30018">Ikke installert</string>
+    <string id="30019">Oppdater alle</string>
+    <string id="30020">Hopp over</string>
+    <string id="30021">Installér</string>
+    <string id="30022">Avinstallér</string>
+    <string id="30023">Utgiver:</string>
+    <string id="30024">Dato:</string>
+    <string id="30025">Versjon:</string>
+    <string id="30026">Kategori:</string>
+    <string id="30027">Lukk</string>
+
+    <!-- settings -->
+    <string id="30500">Sjekk for oppdateringer</string>
+    <string id="30510">Oppdateringer: Vis tillegg som ikke er i SVN?</string>
+    <string id="30520">Oppdateringer: Vis tillegg uten versjon?</string>
+    <string id="30530">Vis Readme</string>
+    <string id="30540">Vis endringslogg</string>
+
+    <!-- context menu -->
+    <string id="30600">Vis endringslogg</string>
+    <string id="30610">Vis Readme</string>
+
+    <!-- compatible messages -->
+    <string id="30700">Versjon</string>
+    <string id="30701">Denne versjonen av %s krever</string>
+    <string id="30702">versjon %s av XBMC for å kjøre.</string>
+    <string id="30703">Vennligst oppdater XBMC.</string>
+    <string id="30704">Kompatibel</string>
+    <string id="30705">Ikke kompatibel</string>
+    <string id="30706">Ukjent</string>
+
+    <!-- Update error messages -->
+    <string id="30030">En feil oppstod under installering av tillegg.</string>
+</strings>

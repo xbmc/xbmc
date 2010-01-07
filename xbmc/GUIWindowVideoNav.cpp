@@ -287,9 +287,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWMODE)
       {
-        g_stSettings.m_iMyVideoWatchMode++;
-        if (g_stSettings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
-          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+        g_settings.m_iMyVideoWatchMode++;
+        if (g_settings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
+          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
         g_settings.Save();
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
@@ -299,7 +299,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNFLATTEN)
       {
-        g_stSettings.m_bMyVideoNavFlatten = !g_stSettings.m_bMyVideoNavFlatten;
+        g_settings.m_bMyVideoNavFlatten = !g_settings.m_bMyVideoNavFlatten;
         g_settings.Save();
         CUtil::DeleteVideoDatabaseDirectoryCache();
         SetupShares();
@@ -308,10 +308,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWALL)
       {
-        if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
-          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_UNWATCHED;
+        if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
+          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_UNWATCHED;
         else
-          g_stSettings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
         g_settings.Save();
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
@@ -590,16 +590,16 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
-  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_stSettings.m_iMyVideoWatchMode));
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_settings.m_iMyVideoWatchMode));
 
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
   SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, m_filter);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_stSettings.m_bMyVideoNavFlatten);
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_settings.m_bMyVideoNavFlatten);
 }
 
 /// \brief Search for genres, artists, directors, names, and plots with search string \e strSearch in the
@@ -1057,16 +1057,16 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
     CFileItemPtr item = items.Get(i);
     if(item->HasVideoInfoTag() && node == NODE_TYPE_TITLE_TVSHOWS)
     {
-      if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
+      if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
         item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("unwatchedepisodes");
-      if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED)
+      if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED)
         item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("watchedepisodes");
     }
 
     if(filterWatched)
     {
-      if((g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
-      || (g_stSettings.m_iMyVideoWatchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
+      if((g_settings.m_iMyVideoWatchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
+      || (g_settings.m_iMyVideoWatchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
       {
         items.Remove(i);
         i--;

@@ -27,7 +27,7 @@
 #define SCSI_IOCTL_DATA_IN              1 //Get data from SCSI device (e.g. for reading)
 #define SCSI_IOCTL_DATA_UNSPECIFIED     2 //No data (e.g. for ejecting)
 
-const UCHAR MAX_SENSE_LEN=18; //Sense data max length
+#define MAX_SENSE_LEN 18 //Sense data max length
 
 #define IOCTL_SCSI_PASS_THROUGH         0x4D004
 typedef struct _SCSI_PASS_THROUGH {

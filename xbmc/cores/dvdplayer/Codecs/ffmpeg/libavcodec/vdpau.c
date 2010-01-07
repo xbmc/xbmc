@@ -305,6 +305,7 @@ void ff_vdpau_vc1_decode_picture(MpegEncContext *s, const uint8_t *buf,
     render->bitstream_buffers_used        = 0;
 }
 
+#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_SP
 void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
                                    int buf_size)
 {
@@ -354,5 +355,6 @@ void ff_vdpau_mpeg4_decode_picture(MpegEncContext *s, const uint8_t *buf,
     ff_draw_horiz_band(s, 0, s->avctx->height);
     render->bitstream_buffers_used = 0;
 }
+#endif
 
 /* @}*/

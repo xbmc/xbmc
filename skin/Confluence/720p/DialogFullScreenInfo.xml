@@ -27,6 +27,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>31040</label>
 					<visible>Player.Playing + !Player.Seeking</visible>
 				</control>
@@ -40,6 +41,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>31043</label>
 					<visible>[Player.Paused + !Player.Caching] + !Player.Seeking</visible>
 				</control>
@@ -53,6 +55,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
 					<visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
 				</control>
@@ -66,6 +69,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</label>
 					<visible>Player.Seeking</visible>
 				</control>
@@ -79,6 +83,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31044] x2</label>
 					<visible>Player.Forwarding2x</visible>
 				</control>
@@ -92,6 +97,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31044] x4</label>
 					<visible>Player.Forwarding4x</visible>
 				</control>
@@ -105,6 +111,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31044] x8</label>
 					<visible>Player.Forwarding8x</visible>
 				</control>
@@ -118,6 +125,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31044] x16</label>
 					<visible>Player.Forwarding16x</visible>
 				</control>
@@ -131,6 +139,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31044] x32</label>
 					<visible>Player.Forwarding32x</visible>
 				</control>
@@ -144,6 +153,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31045] x2</label>
 					<visible>Player.Rewinding2x</visible>
 				</control>
@@ -157,6 +167,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31045] x4</label>
 					<visible>Player.Rewinding4x</visible>
 				</control>
@@ -170,6 +181,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31045] x8</label>
 					<visible>Player.Rewinding8x</visible>
 				</control>
@@ -183,6 +195,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31045] x16</label>
 					<visible>Player.Rewinding16x</visible>
 				</control>
@@ -196,6 +209,7 @@
 					<aligny>center</aligny>
 					<font>font13_title</font>
 					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
 					<label>$LOCALIZE[31045] x32</label>
 					<visible>Player.Rewinding32x</visible>
 				</control>

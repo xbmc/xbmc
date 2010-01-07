@@ -76,18 +76,18 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // clear out any old settings
   m_settings.clear();
   // create our settings
-  m_volume = g_stSettings.m_nVolumeLevel * 0.01f;
+  m_volume = g_settings.m_nVolumeLevel * 0.01f;
   AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, FormatDecibel, false);
 #if 0
-  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_stSettings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 0.0005f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
+  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_settings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 0.0005f, VOLUME_DRC_MAXIMUM * 0.01f, FormatDecibel, false);
 #endif
-  AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
+  AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_settings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
   // only show stuff available in digital mode if we have digital output
   if(g_audioConfig.HasDigitalOutput())
   {
-    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
 
     int settings[2] = { 338, 339 }; //ANALOG, DIGITAL
     m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
@@ -97,7 +97,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
-  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, FormatDelay);
+  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_settings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, FormatDelay);
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
   AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
   AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
@@ -130,14 +130,14 @@ void CGUIDialogAudioSubtitleSettings::AddAudioStreams(unsigned int id)
     bool bAC3 = strstr(strAudioCodec.c_str(), "AC3") != 0;
     if (iNumChannels == 2 && !(bDTS || bAC3))
     { // ok, enable these options
-/*      if (g_stSettings.m_currentVideoSettings.m_AudioStream == -1)
+/*      if (g_settings.m_currentVideoSettings.m_AudioStream == -1)
       { // default to stereo stream
-        g_stSettings.m_currentVideoSettings.m_AudioStream = 0;
+        g_settings.m_currentVideoSettings.m_AudioStream = 0;
       }*/
       setting.max = 2;
       for (int i = 0; i <= setting.max; i++)
         setting.entry.push_back(make_pair(setting.entry.size(), g_localizeStrings.Get(13320 + i)));
-      m_audioStream = -g_stSettings.m_currentVideoSettings.m_AudioStream - 1;
+      m_audioStream = -g_settings.m_currentVideoSettings.m_AudioStream - 1;
       m_settings.push_back(setting);
       return;
     }
@@ -209,18 +209,18 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   // check and update anything that needs it
   if (setting.id == AUDIO_SETTINGS_VOLUME)
   {
-    g_stSettings.m_nVolumeLevel = (long)(m_volume * 100.0f);
-    g_application.SetVolume(int(((float)(g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f));
+    g_settings.m_nVolumeLevel = (long)(m_volume * 100.0f);
+    g_application.SetVolume(int(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f));
   }
   else if (setting.id == AUDIO_SETTINGS_VOLUME_AMPLIFICATION)
   {
     if (g_application.m_pPlayer)
-      g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_stSettings.m_currentVideoSettings.m_VolumeAmplification * 100));
+      g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
   }
   else if (setting.id == AUDIO_SETTINGS_DELAY)
   {
     if (g_application.m_pPlayer)
-      g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+      g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   }
   else if (setting.id == AUDIO_SETTINGS_STREAM)
   {
@@ -230,16 +230,16 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
       if (setting.max == 2)
       { // we're in the case we want - call the code to switch channels etc.
         // update the screen setting...
-        g_stSettings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
+        g_settings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
         // call monkeyh1's code here...
-        //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers;
+        //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && g_settings.m_currentVideoSettings.m_OutputToAllSpeakers;
         return;
       }
     }
     // only change the audio stream if a different one has been asked for
     if (g_application.m_pPlayer->GetAudioStream() != m_audioStream)
     {
-      g_stSettings.m_currentVideoSettings.m_AudioStream = m_audioStream;
+      g_settings.m_currentVideoSettings.m_AudioStream = m_audioStream;
       g_application.m_pPlayer->SetAudioStream(m_audioStream);    // Set the audio stream to the one selected
     }
   }
@@ -259,16 +259,16 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)
   {
-    g_stSettings.m_currentVideoSettings.m_SubtitleOn = m_subtitleVisible;
-    g_application.m_pPlayer->SetSubtitleVisible(g_stSettings.m_currentVideoSettings.m_SubtitleOn);
+    g_settings.m_currentVideoSettings.m_SubtitleOn = m_subtitleVisible;
+    g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
   }
   else if (setting.id == SUBTITLE_SETTINGS_DELAY)
   {
-    g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+    g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   }
   else if (setting.id == SUBTITLE_SETTINGS_STREAM && setting.max > 0)
   {
-    g_stSettings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
+    g_settings.m_currentVideoSettings.m_SubtitleStream = m_subtitleStream;
     g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
   }
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
@@ -286,7 +286,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
     VECSOURCES shares(g_settings.m_videoSources);
-    if (g_stSettings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
+    if (g_settings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {
       CMediaSource share;
       std::vector<CStdString> paths;
@@ -346,7 +346,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
               for (int i=0;i<items.Size();++i)
                 CUtil::CacheRarSubtitles(vecExts,items[i]->m_strPath,strFileNameNoExtNoCase,"");
             }
-            g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
+            g_settings.m_currentVideoSettings.m_SubtitleOn = true;
 
             if(g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.idx"))
             {
@@ -366,7 +366,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
         CUtil::GetExtension(strPath,strExt);
         if (CFile::Cache(strPath,"special://temp/subtitle.browsed"+strExt))
         {
-          g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
+          g_settings.m_currentVideoSettings.m_SubtitleOn = true;
           g_application.m_pPlayer->SetSubtitleVisible(true);
           g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.browsed"+strExt);
           g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
@@ -374,7 +374,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
 
         Close();
       }
-      g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
+      g_settings.m_currentVideoSettings.m_SubtitleCached = true;
     }
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
@@ -391,7 +391,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
       db.Open();
       db.EraseVideoSettings();
       db.Close();
-      g_stSettings.m_defaultVideoSettings = g_stSettings.m_currentVideoSettings;
+      g_settings.m_defaultVideoSettings = g_settings.m_currentVideoSettings;
       g_settings.Save();
     }
   }
@@ -399,7 +399,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
 
 void CGUIDialogAudioSubtitleSettings::Render()
 {
-  m_volume = g_stSettings.m_nVolumeLevel * 0.01f;
+  m_volume = g_settings.m_nVolumeLevel * 0.01f;
   UpdateSetting(AUDIO_SETTINGS_VOLUME);
   if (g_application.m_pPlayer)
   {

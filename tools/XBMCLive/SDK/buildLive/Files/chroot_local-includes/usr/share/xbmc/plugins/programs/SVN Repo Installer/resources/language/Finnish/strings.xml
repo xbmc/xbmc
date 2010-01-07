@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>  <!-- Finnish 8.7.2009 -->
+    <!-- Update messages -->
+    <string id="30000">Haluatko asentaa valitun kohteen?</string>
+    <string id="30001">Noudetaan tiedostoa ...</string>
+    <string id="30002">Noudetaan tiedostoluetteloa...</string>
+    <string id="30003">Odota hetki...</string>
+    <string id="30004">Varmuuskopio luotu</string>
+    <string id="30005">Noudetaan:</string>
+    <string id="30006">Polku:</string>
+    <string id="30007">Tiedosto:</string>
+    <string id="30008">Kohde asennettiin kansioon:</string>
+    <string id="30009">Etsitään asennetut lisäosat...</string>
+    <string id="30010">Tarkistetaan SVN:aa...</string>
+    <string id="30011">OK</string>
+    <string id="30012">Ei löydy SVN:sta</string>
+    <string id="30013">Tuntematon versio</string>
+    <string id="30014">Uusi</string>
+    <string id="30015">Sopimaton</string>
+    <string id="30016">Päivitä</string>
+    <string id="30017">Muutokset</string>
+    <string id="30018">Poistettu</string>
+    <string id="30019">Päivitä kaikki</string>
+
+    <string id="30020">Poistu</string>
+    <string id="30021">Asenna</string>
+    <string id="30022">Poista</string>
+    <string id="30023">Tekijä:</string>
+    <string id="30024">Päiväys:</string>
+    <string id="30025">Versio:</string>
+    <string id="30026">Kategoria:</string>
+    <string id="30027">Sulje</string>
+
+    <!-- settings -->
+    <string id="30500">Tarkista päivitykset</string>
+    <string id="30510">Päivitykset: Näytä lisäosat, joita ei ole SVN:ssä</string>
+    <string id="30520">Päivitykset: Näytä lisäosat ilman versionumeroa</string>
+    <string id="30530">Näytä ohje</string>
+    <string id="30540">Näytä muutokset</string>
+
+    <!-- context menu -->
+    <string id="30600">Näytä muutokset</string>
+    <string id="30610">Näytä ohje</string>
+
+    <!-- compatible messages -->
+    <string id="30700">Versio</string>
+    <string id="30701">Tämä %s:n versio vaatii toimiakseen</string>
+    <string id="30702">XBMC revision %s tai uudemman.</string>
+    <string id="30703">Päivitä XBMC uudempaan versioon.</string>
+    <string id="30704">Yhteensopiva</string>
+    <string id="30705">Yhteensopimaton</string>
+    <string id="30706">Tuntematon</string>
+
+    <!-- Update error messages -->
+    <string id="30030">Kohteen asennuksessa tapahtui virhe!</string>
+</strings>

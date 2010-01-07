@@ -115,7 +115,7 @@ bool CJpegParse::GetSection (FILE *infile, const unsigned short sectionLength)
   if (bytesRead != sectionLength-sizeof(sectionLength))
   {
     printf("JpgParse: premature end of file?");
-    delete[] m_SectionBuffer;
+    ReleaseSection();
     return false;
   }
   return true;

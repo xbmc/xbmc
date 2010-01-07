@@ -306,7 +306,7 @@ case TMSG_POWERDOWN:
           else
             CUtil::CreateArchivePath(strPath, "rar", pMsg->strParam.c_str(), "");
 
-          CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
+          CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
           if (items.Size() > 0)
           {
             for (int i=0;i<items.Size();++i)
@@ -344,7 +344,7 @@ case TMSG_POWERDOWN:
           CUtil::GetRecursiveListing(g_settings.GetMusicFanartFolder(), items, ".tbn");
         }
         else
-          CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
+          CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
 
         if (items.Size() > 0)
         {
@@ -516,6 +516,14 @@ case TMSG_POWERDOWN:
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
           pDialog->Show_Internal();
+      }
+      break;
+
+    case TMSG_GUI_DIALOG_CLOSE:
+      {
+        CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
+        if (dialog)
+          dialog->Close_Internal(pMsg->dwParam1 > 0);
       }
       break;
 
@@ -816,6 +824,13 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
 {
   ThreadMessage tMsg = {TMSG_GUI_SHOW};
   tMsg.lpVoid = pDialog;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DIALOG_CLOSE, forceClose ? 1 : 0};
+  tMsg.lpVoid = dialog;
   SendMessage(tMsg, true);
 }
 

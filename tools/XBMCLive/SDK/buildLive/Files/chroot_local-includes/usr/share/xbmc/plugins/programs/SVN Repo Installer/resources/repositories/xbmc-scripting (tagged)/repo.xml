@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<repo>
+    <url>http://xbmc-scripting.googlecode.com/svn</url>
+    <root>/tags</root>
+    <structure name="tags" noffset="-2" install="scripts" ioffset="2" voffset="3" />
+</repo>

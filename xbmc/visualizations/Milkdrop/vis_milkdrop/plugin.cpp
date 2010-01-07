@@ -1166,13 +1166,22 @@ int CPlugin::AllocateMyDX8Stuff()
 		    SafeRelease(m_lpVS[0]);
 		    SafeRelease(m_lpVS[1]);
 
-			LPDIRECT3DSURFACE9 pBackBuffer, pZBuffer;
+        LPDIRECT3DSURFACE9 pBackBuffer, pZBuffer, tmpSurface;
+        D3DSURFACE_DESC tmpDesc;
+        D3DVIEWPORT9 pVP;
 			GetDevice()->GetRenderTarget(0, &pBackBuffer );
-			//GetDevice()->GetDepthStencilSurface( &pZBuffer );
-      D3DVIEWPORT9 pVP;
+        GetDevice()->GetDepthStencilSurface(&tmpSurface);
+        tmpSurface->GetDesc(&tmpDesc);
       GetDevice()->GetViewport(&pVP);
-      bSuccess = (GetDevice()->CreateDepthStencilSurface((pVP.Width>m_nTexSize) ? pVP.Width:m_nTexSize, (pVP.Height>m_nTexSize) ? pVP.Height:m_nTexSize, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, FALSE, &pZBuffer, NULL) == D3D_OK);
-      bSuccess = (GetDevice()->SetDepthStencilSurface(pZBuffer) == D3D_OK);
+        UINT uiwidth=(pVP.Width>m_nTexSize) ? pVP.Width:m_nTexSize;
+        UINT uiheight=(pVP.Height>m_nTexSize) ? pVP.Height:m_nTexSize;
+        
+        printf("CreateDepthStencilSurface with %u x %u", uiwidth, uiheight);
+        if(GetDevice()->CreateDepthStencilSurface(uiwidth, uiheight, tmpDesc.Format, D3DMULTISAMPLE_NONE, 0, TRUE, &pZBuffer, NULL) != D3D_OK)
+          printf("Can't create DepthStencilSurface");
+
+        if(GetDevice()->SetDepthStencilSurface(pZBuffer) != D3D_OK)
+          printf("failed to set DepthStencilSurface");
 		  // create VS1 and VS2
       bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
       if (bSuccess)
@@ -1195,12 +1204,16 @@ int CPlugin::AllocateMyDX8Stuff()
 						pNewTarget->Release();
 					}
 				}
+          else
+            printf("failed to create texture %d x %d", m_nTexSize, m_nTexSize);
 			}
+        else
+          printf("failed to create texture %d x %d", m_nTexSize, m_nTexSize);
 
-			//WISO: GetDevice()->SetRenderTarget( pBackBuffer, pZBuffer );
       GetDevice()->SetRenderTarget(0, pBackBuffer);
 			SafeRelease(pBackBuffer);
 			SafeRelease(pZBuffer);
+        SafeRelease(tmpSurface);
 
 
 		    if (!bSuccess && m_bTexSizeWasAuto)
@@ -1219,6 +1232,7 @@ int CPlugin::AllocateMyDX8Stuff()
 //		    MessageBox(GetPluginWindow(), buf, "MILKDROP ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST );
 		    return false;
 	    }
+      printf("Textures created!");
 
 	    if (m_nTexSize != nOrigTexSize)
 	    {

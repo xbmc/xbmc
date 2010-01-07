@@ -1,0 +1,13 @@
+<skin>
+  <defaultresolution>pal</defaultresolution>
+  <defaultresolutionwide>pal</defaultresolutionwide>
+  <version>2.1</version>
+ 
+  <!-- amount to zoom skin to remove overscan compensation -->
+  <zoom>0</zoom>
+ 
+  <credits>
+    <skinname>Default</skinname>
+    <name>BigBellyBilly</name>
+  </credits>
+</skin>

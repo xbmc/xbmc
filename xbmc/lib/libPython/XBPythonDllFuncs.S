@@ -4,34 +4,34 @@
 
 #ifndef __APPLE__
 #if defined(__PPC__)
-#define FUNCTION(name)				\
-	.globl name;				\
-	.type name, @function;			\
-	name:					\
-		lis 11,(p_##name)@ha;		\
-		lwz 12,(p_##name)@l(11);	\
-		mtctr 12;			\
-		bctr 
+#define FUNCTION(name)        \
+  .globl name;                \
+  .type name, @function;      \
+  name:                       \
+    lis 11,(p_##name)@ha;     \
+    lwz 12,(p_##name)@l(11);  \
+    mtctr 12;                 \
+    bctr
 #else
-#define FUNCTION(name)			\
-	.globl name;			\
-	.type name, @function;		\
-	name:				\
-		jmp *(p_##name)
+#define FUNCTION(name)        \
+  .globl name;                \
+  .type name, @function;      \
+  name:                       \
+    jmp *(p_##name)
 #endif
 #elif defined(__POWERPC__)
-#define FUNCTION(name)				\
-	.globl _##name				@\
-	_##name:				@\
-		addis r11,0,ha16(_p_##name)	@\
-		lwz r12,lo16(_p_##name)(r11)	@\
-		mtctr r12			@\
-		bctr 
+#define FUNCTION(name)             \
+  .globl _##name                  @\
+  _##name:                        @\
+    addis r11,0,ha16(_p_##name)   @\
+    lwz r12,lo16(_p_##name)(r11)  @\
+    mtctr r12                     @\
+    bctr
 #else
-#define FUNCTION(name)			\
-	.globl _##name;			\
-	_##name:				\
-		jmp *(_p_##name)
+#define FUNCTION(name)        \
+  .globl _##name;             \
+  _##name:                    \
+    jmp *(_p_##name)
 #endif
 
 .text
@@ -53,8 +53,14 @@
   FUNCTION(PyThreadState_New)
   FUNCTION(PyErr_Print)
   FUNCTION(PyErr_Occurred)
+  FUNCTION(PyRun_String)
+  FUNCTION(PyRun_File)
+  FUNCTION(PyImport_AddModule)
+  FUNCTION(PyObject_Str)
   FUNCTION(PyRun_SimpleFile)
   FUNCTION(PySys_SetPath)
+  FUNCTION(PyErr_Fetch)
+  FUNCTION(PyImport_ImportModule)
 #ifdef _LINUX
   FUNCTION(Py_GetPath)
 #endif
@@ -73,7 +79,7 @@
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
-#if !defined(_LINUX) 
+#if !defined(_LINUX)
   FUNCTION(PyUnicodeUCS2_AsUnicode)
 #else
   FUNCTION(PyUnicodeUCS4_AsUnicode)
@@ -87,7 +93,7 @@
 #if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
   /* Upstream Python rename Py_InitModule4 for 64-bit systems, for Python
    versions higher than 2.4 */
-  #if SIZEOF_SIZE_T != SIZEOF_INT 
+  #if SIZEOF_SIZE_T != SIZEOF_INT
   FUNCTION(Py_InitModule4_64)
   #else
   FUNCTION(Py_InitModule4)
@@ -114,6 +120,8 @@
   FUNCTION(PySys_SetArgv)
   FUNCTION(PyObject_RichCompare)
   FUNCTION(PyFloat_FromDouble)
+  FUNCTION(PyRun_FileExFlags)
+  FUNCTION(PyRun_StringFlags)
 
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits

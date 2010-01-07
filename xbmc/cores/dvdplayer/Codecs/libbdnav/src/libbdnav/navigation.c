@@ -111,7 +111,7 @@ char* nav_find_main_title(char *root)
         if (pl != NULL) {
             if (_filter_dup(pl_list, ii, pl)) {
                 pl_list[ii] = pl;
-                if (_pl_duration(pl_list[ii]) > _pl_duration(pl_list[jj])) {
+                if (_pl_duration(pl_list[ii]) >= _pl_duration(pl_list[jj])) {
                     strncpy(longest, ent.d_name, 11);
                     longest[10] = '\0';
                     jj = ii;

@@ -80,7 +80,6 @@
       <speedunit>kmh</speedunit>
       <timezone>GMT</timezone>
     </region>
-    
   </regions>
 
   <sorttokens>
@@ -91,7 +90,7 @@
     <token>Un</token>
     <token>Une</token>
     <token>Des</token>
-    <token>L'</token>
+    <token separators="'">L</token>
   </sorttokens>
 </language>
 

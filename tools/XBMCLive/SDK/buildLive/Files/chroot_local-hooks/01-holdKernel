@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# make kernel not upgradable via apt-get
+
+echo ""
+echo "Make kernel not upgradable via apt-get..."
+echo ""
+
+echo linux-image-$(uname -r) hold | dpkg --set-selections
+echo linux-image hold | dpkg --set-selections
+echo linux-image-generic hold | dpkg --set-selections
+

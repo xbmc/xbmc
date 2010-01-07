@@ -1,0 +1,67 @@
+This is free software; see the source for copying conditions.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+__________________________________
+
+Disc mode is listed as: CD DATA (Mode 2)
+CD-ROM Track List (1 - 5)
+  #: MSF       LSN    Type   Green? Copy?
+  1: 00:02:00  000000 XA     true   no   
+  2: 00:13:01  000826 XA     true   no   
+  3: 00:16:01  001051 XA     true   no   
+  4: 00:19:01  001276 XA     true   no   
+  5: 00:22:01  001501 XA     true   no   
+170: 00:25:01  001726 leadout (3 MB raw, 3 MB formatted)
+Media Catalog Number (MCN): not available
+__________________________________
+CD Analysis Report
+CD-ROM with CD-RTOS and ISO 9660 filesystem
+ISO 9660: 676 blocks, label `SVIDEOCD                        '
+Application: SVIDEOCD.APP;1
+Preparer   : GNU VCDIMAGER CHECK MODE
+Publisher  : PUBL_ID
+System     : CD-RTOS CD-BRIDGE
+Volume     : SVIDEOCD
+Volume Set : 
+ISO9660 filesystem
+/:
+  d d---1xrxrxr 0 0 [fn 00] [LSN     18]      2048 Jul 14 1978 00:00  .
+  d d---1xrxrxr 0 0 [fn 00] [LSN     18]      2048 Jul 14 1978 00:00  ..
+  d d---1xrxrxr 0 0 [fn 00] [LSN     19]      2048 Jul 14 1978 00:00  ext
+  d d---1xrxrxr 0 0 [fn 00] [LSN     20]      2048 Jul 14 1978 00:00  mpeg2
+  d d---1xrxrxr 0 0 [fn 00] [LSN     21]      2048 Jul 14 1978 00:00  segment
+  d d---1xrxrxr 0 0 [fn 00] [LSN     22]      2048 Jul 14 1978 00:00  svcd
+
+/EXT/:
+  d d---1xrxrxr 0 0 [fn 00] [LSN     19]      2048 Jul 14 1978 00:00  .
+  d d---1xrxrxr 0 0 [fn 00] [LSN     18]      2048 Jul 14 1978 00:00  ..
+  - ----1xrxrxr 0 0 [fn 00] [LSN    675]        78 Jul 14 1978 00:00  scandata.dat
+
+/MPEG2/:
+  d d---1xrxrxr 0 0 [fn 00] [LSN     20]      2048 Jul 14 1978 00:00  .
+  d d---1xrxrxr 0 0 [fn 00] [LSN     18]      2048 Jul 14 1978 00:00  ..
+  - ---2-xrxrxr 0 0 [fn 00] [LSN    826]    174300 (   153600) Jul 14 1978 00:00  avseq01.mpg
+  - ---2-xrxrxr 0 0 [fn 00] [LSN   1051]    174300 (   153600) Jul 14 1978 00:00  avseq02.mpg
+  - ---2-xrxrxr 0 0 [fn 00] [LSN   1276]    174300 (   153600) Jul 14 1978 00:00  avseq03.mpg
+  - ---2-xrxrxr 0 0 [fn 00] [LSN   1501]    174300 (   153600) Jul 14 1978 00:00  avseq04.mpg
+
+/SEGMENT/:
+  d d---1xrxrxr 0 0 [fn 00] [LSN     21]      2048 Jul 14 1978 00:00  .
+  d d---1xrxrxr 0 0 [fn 00] [LSN     18]      2048 Jul 14 1978 00:00  ..
+  - ---2-xrxrxr 0 0 [fn 00] [LSN    225]     65072 (    57344) Jul 14 1978 00:00  item0001.mpg
+  - ---2-xrxrxr 0 0 [fn 00] [LSN    375]     65072 (    57344) Jul 14 1978 00:00  item0002.mpg
+  - ---2-xrxrxr 0 0 [fn 00] [LSN    525]     65072 (    57344) Jul 14 1978 00:00  item0003.mpg
+
+/SVCD/:
+  d d---1xrxrxr 0 0 [fn 00] [LSN     22]      2048 Jul 14 1978 00:00  .
+  d d---1xrxrxr 0 0 [fn 00] [LSN     18]      2048 Jul 14 1978 00:00  ..
+  - ----1xrxrxr 0 0 [fn 00] [LSN    151]      2048 Jul 14 1978 00:00  entries.svd
+  - ----1xrxrxr 0 0 [fn 00] [LSN    150]      2048 Jul 14 1978 00:00  info.svd
+  - ----1xrxrxr 0 0 [fn 00] [LSN    152]     65536 Jul 14 1978 00:00  lot.svd
+  - ----1xrxrxr 0 0 [fn 00] [LSN    184]       112 Jul 14 1978 00:00  psd.svd
+  - ----1xrxrxr 0 0 [fn 00] [LSN    186]        40 Jul 14 1978 00:00  search.dat
+  - ----1xrxrxr 0 0 [fn 00] [LSN    185]      2048 Jul 14 1978 00:00  tracks.svd
+
+XA sectors   Super Video CD (SVCD) or Chaoji Video CD (CVD)
+session #2 starts at track  2, LSN: 826, ISO 9660 blocks:    676
+ISO 9660: 676 blocks, label `SVIDEOCD                        '

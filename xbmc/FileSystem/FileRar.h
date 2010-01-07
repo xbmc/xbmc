@@ -20,20 +20,14 @@
  */
 
 // FileRar.h: interface for the CFileRar class.
-//
-//////////////////////////////////////////////////////////////////////
-#if !defined(AFX_FILERAR_H__C6E9401A_3715_11D9_8185_0050FC718317__INCLUDED_)
-#define AFX_FILERAR_H__C6E9401A_3715_11D9_8185_0050FC718317__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+#ifndef FILERAR_H_
+#define FILERAR_H_
 
 #include "IFile.h"
 #include "lib/UnrarXLib/rar.hpp"
 #include "utils/Thread.h"
-#ifdef HAS_RAR
-#endif
 
 namespace XFILE
 {
@@ -53,6 +47,7 @@ namespace XFILE
      HANDLE hRunning;
      HANDLE hRestart;
      HANDLE hQuit;
+
   protected:
     Archive* m_pArc;
     CommandData* m_pCmd;
@@ -86,7 +81,6 @@ namespace XFILE
     CStdString  m_strRarPath;
     CStdString m_strPassword;
     CStdString m_strPathInRar;
-    BYTE m_bRarOptions;
     BYTE m_bFileOptions;
     void Init();
     void InitFromUrl(const CURL& url);
@@ -106,7 +100,6 @@ namespace XFILE
     CmdExtract* m_pExtract;
     CFileRarExtractThread* m_pExtractThread;
 #endif
-    int m_iSize; // header size
     byte* m_szBuffer;
     byte* m_szStartOfBuffer;
     int64_t m_iDataInBuffer;
@@ -114,4 +107,6 @@ namespace XFILE
   };
 
 }
-#endif // !defined(AFX_FILERAR_H__C6E9401A_3715_11D9_8185_0050FC718317__INCLUDED_)
+
+#endif  // FILERAR_H_
+

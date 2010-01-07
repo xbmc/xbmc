@@ -1,0 +1,74 @@
+If you check out the source from CVS run
+  ./autogen.sh then follow as below, except you don't need to run 
+  ./configure.
+
+To compile the source:
+
+  ./configure MAKE=gmake 
+  make
+  make check
+  make install  # may have to do this as root 
+
+
+If you have problems linking libcdio or libiso9660, see the BSD
+section.  You might also try the option --without-versioned-libs. However
+this option does help with the situtation described below so it is
+preferred all other things being equal.
+
+
+VCD dependency:
+---------------
+One thing that confuses people is the "dependency" on libvcdinfo from
+vcdimager, while vcdimager has a dependency on libcdio.  This libcdio
+dependency on vcdimager is an optional (i.e. not mandatory) dependency,
+while the vcdimager dependency right now is mandatory. libvcdinfo is
+used only by the utility program cd-info. If you want cd-info to use
+the VCD reporting portion and you don't already have vcdimager
+installed, build and install libcdio, then vcdimager, then configure
+libcdio again and it should find libvcdinfo. 
+
+People who make packages might consider making two packages, a libcdio
+package with just the libraries (and no dependency on libvcdinfo) and
+a libcdio-utils which contains cd-info and iso-info, cd-read,
+iso-read. Should you want cd-info with VCD support then you'd add a
+dependency in that package to libvcdinfo.
+
+Another thing one can do is "make install" inside the library, or run
+"configure --without-vcd-info --without-cddb" (since libcddb also has
+an optional dependency on libcdio).
+
+BSD
+---
+
+Unless you use --without-versioned-libs (not recommended), you need to
+use GNU make which usually can be found under the name "gmake".
+
+If you use another make you are likely to get problems linking libcdio
+and libiso9660.
+
+
+Solaris
+-------
+
+You may need to use --without-versioned-libs if you get a problem
+building libcdio or libiso9660.
+
+OS Support
+---------------
+
+Support for Operating Systems's other than GNU/Linux is really based
+on the desire, ability and willingness of others to help out. To date
+it's been almost zip. I use GNU/Linux so that probably works
+best. Occasionally, I'll test on an old Solaris box I have. Steve
+Shultz has done a great job making BSDI CD support look like GNU/Linux
+and usually let's me know where I've blown things on BSDI. Derk-Jan
+Hartman started Mac OSX, but that's not complete yet. Calls for help
+in FreeBSD (NetBSD whatever) and Solaris have gone out but no one yet
+seems all that interested. Maybe it's just as well. Microsoft support
+is also meager. It works on my Windows 98 laptop sort of. Personally I
+find it a drag to develop on Microsoft Operating Systems and have
+spent far more time on this platform than I care for. If someone is
+interested in fixing the Microsoft OS support great.
+
+
+$Id: README.libcdio,v 1.9 2005/01/30 09:48:59 rocky Exp $

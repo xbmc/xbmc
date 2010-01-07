@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# add xbmc user to PolicyKit.conf
+
+user_name=xbmc
+
+sed -i -e 's%<config version="0.1">%&\n\n<match user="'${user_name}'">\n    <return result="yes"/>\n</match>%' /etc/PolicyKit/PolicyKit.conf

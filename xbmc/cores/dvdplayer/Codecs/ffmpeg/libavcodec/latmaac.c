@@ -354,6 +354,7 @@ static int latm_decode_init(AVCodecContext *avctx)
     NeAACDecConfigurationPtr faac_cfg;
 
     avctx->bit_rate = 0;
+    avctx->sample_fmt = SAMPLE_FMT_S16;
     decoder->aac_decoder = NeAACDecOpen();
     if (!decoder->aac_decoder) {
         return -1;

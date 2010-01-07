@@ -94,8 +94,8 @@ void CLinuxRendererATI::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   static GLfloat brightness = 0.0f;
   static GLfloat contrast   = 0.0f;
 
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
+  brightness =  ((GLfloat)g_settings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
+  contrast =  ((GLfloat)g_settings.m_currentVideoSettings.m_Contrast)/50.0f;
 
 
   ManageDisplay();

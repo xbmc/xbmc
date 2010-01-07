@@ -67,7 +67,12 @@ if [ "$1" = "purge" ]; then
 		org.freedesktop.hal.power-management.keyboard-backlight
 		org.freedesktop.devicekit.power.suspend
 		org.freedesktop.devicekit.power.Hibernate
-		org.freedesktop.consolekit.system.stop"
+		org.freedesktop.consolekit.system.stop
+		org.freedesktop.devicekit.disks.filesystem-mount
+		org.freedesktop.devicekit.disks.filesystem-mount-system-internal
+		org.freedesktop.devicekit.disks.filesystem-unmount-others
+		org.freedesktop.devicekit.disks.drive-eject
+		org.freedesktop.devicekit.disks.drive-detach"
 
 	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
