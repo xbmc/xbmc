@@ -4,6 +4,7 @@
 #include <memory.h>
 #include "JSONRPC.h"
 #include "../libjsoncpp/json.h"
+#include "BroadcastManager.h"
 
 using namespace JSONRPC;
 using namespace BROADCAST;
@@ -161,6 +162,8 @@ bool CTCPServer::Initialize()
     return false;
   }
 
+  CBroadcastManager::AddListener(this);
+
   return true;
 }
 
@@ -177,6 +180,8 @@ void CTCPServer::Deinitialize()
     close(m_ServerSocket);
     m_ServerSocket = -1;
   }
+
+  CBroadcastManager::RemoveListener(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()
