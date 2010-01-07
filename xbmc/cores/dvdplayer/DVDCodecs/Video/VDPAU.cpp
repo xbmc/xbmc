@@ -88,6 +88,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   tmpContrast    = 0;
   interlaced     = false;
   max_references = 0;
+  upscalingAvailable=false;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -116,7 +117,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
 #endif
     if(profile)
     {
-      /* attempt to create a decoder with this width/height, some sizes are note supported by hw */
+      /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       VdpStatus vdp_st;
       vdp_st = vdp_decoder_create(vdp_device, profile, width, height, 5, &decoder);
 
@@ -353,7 +354,7 @@ void CVDPAU::CheckFeatures()
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    if (upscalingAvailable)
     {
       CLog::Log(LOGNOTICE,"(VDPAU) enabling VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1");
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
@@ -377,7 +378,7 @@ void CVDPAU::CheckFeatures()
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    if (upscalingAvailable)
     {
       SetHWUpscaling();
     }
@@ -484,24 +485,11 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-/* Disabled for 9.11
-  CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
   VdpStatus vdp_st;
-  VdpBool available;
-  
-  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &available);
-  
-  if ( (vdp_st != VDP_STATUS_OK) || !available )
-  {
-    CLog::Log(LOGNOTICE,"VDPAU HQ upscaling not available");
-    return;
-  }
-  
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-*/
 #endif
 }
 
@@ -991,7 +979,12 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
-  vdpauConfigured = true;
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &upscalingAvailable);
+  CLog::Log(LOGNOTICE,"VDPAU HQ upscaling: %i",upscalingAvailable);
+#endif
+
+vdpauConfigured = true;
   return true;
 }
 

@@ -177,6 +177,8 @@ public:
   VdpVideoMixer videoMixer;
   VdpRect       outRect;
   VdpRect       outRectVid;
+  
+  VdpBool upscalingAvailable;
 
   void*    dl_handle;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
