@@ -59,14 +59,12 @@ void CTCPServer::Process()
     }
 
     int res = select(max_fd+1, &rfds, NULL, NULL, &to);
-    if (res < -1)
+    if (res < 0)
     {
         perror("select: ");
         m_bStop = false;
     }
-    else if (res == 0)
-      printf("select timeout\n");
-    else
+    else if (res > 0)
     {
       for (int i = m_connections.size() - 1; i >= 0; i--)
       {
@@ -80,8 +78,6 @@ void CTCPServer::Process()
           {
             printf("recieved %d bytes from client %d (%*s)\n", nread, socket, nread, buffer);
             m_connections[i].PushBuffer(this, buffer, nread);
-
-
           }
           if (nread <= 0)
           {
