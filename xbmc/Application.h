@@ -101,7 +101,7 @@ public:
   void StartWebServer();
   void StopWebServer(bool bWait);
   void StartJSONRPCServer();
-  void StopJSONRPCServer();
+  void StopJSONRPCServer(bool bWait);
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();

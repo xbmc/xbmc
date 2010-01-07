@@ -1403,10 +1403,10 @@ void CApplication::StartJSONRPCServer()
 #endif
 }
 
-void CApplication::StopJSONRPCServer()
+void CApplication::StopJSONRPCServer(bool bWait)
 {
 #ifdef HAS_JSONRPC
-  CTCPServer::StopServer();
+  CTCPServer::StopServer(bWait);
   CZeroconf::GetInstance()->RemoveService("servers.jsonrpc");
 #endif
 }

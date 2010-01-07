@@ -16,17 +16,17 @@ CTCPServer *CTCPServer::ServerInstance;
 
 void CTCPServer::StartServer(int port)
 {
-  StopServer();
+  StopServer(true);
 
   ServerInstance = new CTCPServer(port);
   ServerInstance->Create();
 }
 
-void CTCPServer::StopServer()
+void CTCPServer::StopServer(bool bWait)
 {
   if (ServerInstance)
   {
-    ServerInstance->StopThread(true);
+    ServerInstance->StopThread(bWait);
   }
 }
 
