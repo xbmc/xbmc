@@ -144,20 +144,10 @@ void CWebServer::ContentReaderFreeCallback(void *cls)
   delete file;
 }
 
-bool CWebServer::Initialize()
-{
-#ifdef HAS_JSONRPC
-  CJSONRPC::Initialize();
-#endif
-  return true;
-}
-
 bool CWebServer::Start(const char *ip, int port)
 {
   if (!m_running)
   {
-    Initialize();
-
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
     m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, port, NULL, NULL, &CWebServer::answer_to_connection, this, MHD_OPTION_END);
     m_running = m_daemon != NULL;
@@ -182,13 +172,19 @@ bool CWebServer::CanBroadcast()
   return false;
 }
 
-bool CWebServer::SetBroadcastFlags(IClient *client, int flags)
-{
-  // Does not support broadcast
-  return false;
-}
-
 int CWebServer::CHTTPClient::GetPermissionFlags()
 {
   return OPERATION_PERMISSION_ALL;
+}
+
+int  CWebServer::CHTTPClient::GetBroadcastFlags()
+{
+  // Does not support broadcast
+  return 0;
+}
+
+bool CWebServer::CHTTPClient::SetBroadcastFlags(int flags)
+{
+  // Does not support broadcast
+  return false;
 }

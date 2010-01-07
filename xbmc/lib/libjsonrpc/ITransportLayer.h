@@ -30,6 +30,5 @@ namespace JSONRPC
   public:
     virtual ~ITransportLayer() { };
     virtual bool CanBroadcast() = 0;
-    virtual bool SetBroadcastFlags(IClient *client, int flags) = 0;
   };
 }

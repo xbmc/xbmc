@@ -100,6 +100,8 @@ public:
   void StopServices();
   void StartWebServer();
   void StopWebServer(bool bWait);
+  void StartJSONRPCServer();
+  void StopJSONRPCServer();
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();

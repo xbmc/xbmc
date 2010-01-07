@@ -38,7 +38,6 @@ public:
   bool Start(const char *ip, int port);
   bool Stop();
   virtual bool CanBroadcast();
-  virtual bool SetBroadcastFlags(JSONRPC::IClient *client, int flags);
 private:
   static int answer_to_connection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
@@ -47,7 +46,6 @@ private:
 
   static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
   static void ContentReaderFreeCallback (void *cls);
-  static bool Initialize();
 
   struct MHD_Daemon *m_daemon;
   bool m_running;
@@ -55,7 +53,9 @@ private:
   class CHTTPClient : public JSONRPC::IClient
   {
   public:
-    virtual int GetPermissionFlags();
+    virtual int  GetPermissionFlags();
+    virtual int  GetBroadcastFlags();
+    virtual bool SetBroadcastFlags(int flags);
   };
 };
 

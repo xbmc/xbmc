@@ -125,6 +125,10 @@
 #ifdef HAS_HTTPAPI
 #include "lib/libhttpapi/XBMChttp.h"
 #endif
+#ifdef HAS_JSONRPC
+#include "lib/libjsonrpc/JSONRPC.h"
+#include "lib/libjsonrpc/TCPServer.h"
+#endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
@@ -274,6 +278,9 @@ using namespace EVENTSERVER;
 #endif
 #ifdef HAS_DBUS_SERVER
 using namespace DBUSSERVER;
+#endif
+#ifdef HAS_JSONRPC
+using namespace JSONRPC;
 #endif
 using namespace BROADCAST;
 
@@ -1073,6 +1080,10 @@ CProfile* CApplication::InitDirectoriesWin32()
 
 bool CApplication::Initialize()
 {
+#ifdef HAS_JSONRPC
+  CJSONRPC::Initialize();
+#endif
+
 #ifdef HAS_DVD_DRIVE
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
@@ -1377,9 +1388,26 @@ void CApplication::StopWebServer(bool bWait)
       CSectionLoader::Unload("LIBHTTP");
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
       CZeroconf::GetInstance()->RemoveService("services.webserver");
+      CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
       CZeroconf::GetInstance()->RemoveService("services.webapi");
     }
   }
+#endif
+}
+
+void CApplication::StartJSONRPCServer()
+{
+#ifdef HAS_JSONRPC
+  CTCPServer::StartServer(9090);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+#endif
+}
+
+void CApplication::StopJSONRPCServer()
+{
+#ifdef HAS_JSONRPC
+  CTCPServer::StopServer();
+  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc");
 #endif
 }
 
