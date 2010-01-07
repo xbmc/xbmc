@@ -460,12 +460,12 @@ DWORD CASyncDirectSound::AddPackets(unsigned char *data, DWORD len)
 FLOAT CASyncDirectSound::GetCacheTime()
 {
   // calculate delay in buffer
-  return (FLOAT)buffered_bytes / (m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample>>3));
+  return (FLOAT)buffered_bytes / (FLOAT)(m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample>>3));
 }
 
 FLOAT CASyncDirectSound::GetCacheTotal()
 {
-  return (FLOAT)( (float)(m_dwPacketSize * m_dwNumPackets) / (float)(m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample>>3)) );
+  return (FLOAT)(m_dwPacketSize * m_dwNumPackets) / (FLOAT)(m_uiChannels * m_uiSamplesPerSec * (m_uiBitsPerSample>>3));
 }
 
 //***********************************************************************************************

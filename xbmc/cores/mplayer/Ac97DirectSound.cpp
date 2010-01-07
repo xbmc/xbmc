@@ -317,12 +317,12 @@ FLOAT CAc97DirectSound::GetCacheTime()
   }
 
   // buffer delay
-  return (FLOAT)(m_dwTotalBytesAdded - m_dwPos) / (2 * 48000 * (16>>3));
+  return (FLOAT)(m_dwTotalBytesAdded - m_dwPos) / (FLOAT)(2 * 48000 * (16>>3));
 }
 
 FLOAT CAc97DirectSound::GetCacheTotal()
 {
-  return (FLOAT) ( (float)(m_dwPacketSize * m_dwNumPackets) / (float)(2 * 48000 * (16>>3)) );
+  return (FLOAT)(m_dwPacketSize * m_dwNumPackets) / (FLOAT)(2 * 48000 * (16>>3));
 }
 
 //***********************************************************************************************
