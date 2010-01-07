@@ -5,6 +5,7 @@
 #include "JSONRPC.h"
 #include "../libjsoncpp/json.h"
 #include "AnnouncementManager.h"
+#include "log.h"
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
@@ -66,8 +67,8 @@ void CTCPServer::Process()
     int res = select(max_fd+1, &rfds, NULL, NULL, &to);
     if (res < 0)
     {
-        perror("select: ");
-        m_bStop = false;
+      CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
+      m_bStop = false;
     }
     else if (res > 0)
     {
@@ -86,7 +87,7 @@ void CTCPServer::Process()
           }
           if (nread <= 0)
           {
-            printf("client %d disconnected (%d)\n", socket, nread);
+            CLog::Log(LOGINFO, "JSONRPC Server: Disconnection detected");
             m_connections[i].Disconnect();
             m_connections.erase(m_connections.begin() + i);
           }
@@ -95,14 +96,15 @@ void CTCPServer::Process()
 
       if (FD_ISSET(m_ServerSocket, &rfds))
       {
+        CLog::Log(LOGDEBUG, "JSONRPC Server: New connection detected");
         CTCPClient newconnection;
         newconnection.m_socket = accept(m_ServerSocket, &newconnection.m_cliaddr, &newconnection.m_addrlen);
 
         if (newconnection.m_socket < 0)
-          perror("error accept failed");
+          CLog::Log(LOGERROR, "JSONRPC Server: Accept of new connection failed");
         else
         {
-          printf("new connection\n");
+          CLog::Log(LOGINFO, "JSONRPC Server: New connection added");
           m_connections.push_back(newconnection);
         }
       }
@@ -151,10 +153,9 @@ bool CTCPServer::Initialize()
 
   if (m_ServerSocket < 0)
   {
-    perror("can not create socket");
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to create serversocket");
     return false;
   }
-  printf("Server is at %d\n", m_ServerSocket);
 
   memset(&addr, 0, sizeof(struct sockaddr_in));
 
@@ -164,20 +165,21 @@ bool CTCPServer::Initialize()
 
   if (bind(m_ServerSocket, (const struct sockaddr *)&addr, sizeof(struct sockaddr_in)) < 0)
   {
-    perror("error bind failed");
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to bind serversocket");
     close(m_ServerSocket);
     return false;
   }
 
   if (listen(m_ServerSocket, 10) < 0)
   {
-    perror("error listen failed");
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to set listen");
     close(m_ServerSocket);
     return false;
   }
 
   CAnnouncementManager::AddAnnouncer(this);
 
+  CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
   return true;
 }
 
@@ -236,7 +238,6 @@ void CTCPServer::CTCPClient::PushBuffer(CTCPServer *host, const char *buffer, in
       m_endBrackets++;
     if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
     {
-      printf("found something parseable %s\n", m_buffer.c_str());
       string line = CJSONRPC::MethodCall(m_buffer, host, this);
       send(m_socket, line.c_str(), line.size(), 0);
       m_beginBrackets = m_endBrackets = 0;
