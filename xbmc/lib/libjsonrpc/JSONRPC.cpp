@@ -27,6 +27,8 @@
 #include <string.h>
 
 using namespace JSONRPC;
+using namespace Json;
+using namespace std;
 
 const JSON_ACTION commands[] = {
 // JSON-RPC
@@ -92,11 +94,6 @@ System.Suspend and such
 
 
 };
-
-using namespace Json;
-using namespace std;
-
-#define ALLOWEDPERMISSION RW
 
 ActionMap CJSONRPC::m_actionMap;
 
