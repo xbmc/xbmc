@@ -38,10 +38,6 @@
 #include "util.h"
 #include "dsconfig.h"
 
-
-
-#include <atlcoll.h>
-
 #ifdef HAS_VIDEO_PLAYBACK
   #include "cores/VideoRenderers/RenderManager.h"
 #endif

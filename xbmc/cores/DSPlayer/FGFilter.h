@@ -20,7 +20,7 @@
  */
 
 #pragma once
-#include <atlcomcli.h>
+
 #include <atlcoll.h>
 #include "streams.h"
 #include <list>

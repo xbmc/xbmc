@@ -6,7 +6,7 @@
 
 #include <evr.h>
 #include <dxva2api.h>
-#include <atlcomcli.h>
+
 #include <streams.h>
 #include <d3d9.h>
 
