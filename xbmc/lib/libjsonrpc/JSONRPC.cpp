@@ -100,7 +100,7 @@ using namespace std;
 
 ActionMap CJSONRPC::m_actionMap;
 
-JSON_STATUS CJSONRPC::Introspect(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   bool getCommands = parameterObject.get("getcommands", true).asBool();
   bool getDescriptions = parameterObject.get("getdescriptions", true).asBool();
@@ -124,21 +124,21 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, const Value& paramete
   return OK;
 }
 
-JSON_STATUS CJSONRPC::Version(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   result["version"] = 1;
 
   return OK;
 }
 
-JSON_STATUS CJSONRPC::Permission(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   result["permission"] = (ALLOWEDPERMISSION == RW ? "RW" : "RO");
 
   return OK;
 }
 
-JSON_STATUS CJSONRPC::Ping(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   Value temp = "pong";
   result.swap(temp);
@@ -155,7 +155,7 @@ void CJSONRPC::Initialize()
   }
 }
 
-CStdString CJSONRPC::MethodCall(const CStdString &inputString)
+CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client)
 {
   Value inputroot, outputroot, result;
 
@@ -166,7 +166,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString)
   {
     CStdString method = inputroot.get("method", "").asString();
     method = method.ToLower();
-    errorCode = InternalMethodCall(method, inputroot, result);
+    errorCode = InternalMethodCall(method, inputroot, result, transport, client);
   }
   else
     errorCode = ParseError;
@@ -206,13 +206,13 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString)
   return str;
 }
 
-JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Value &result)
+JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Value &result, ITransportLayer *transport, IClient *client)
 {
   ActionMap::iterator iter = m_actionMap.find(method);
   if( iter != m_actionMap.end() )
   {
     if (iter->second.permission == RO || iter->second.permission == ALLOWEDPERMISSION)
-      return iter->second.method(method, o["params"], result);
+      return iter->second.method(method, transport, o["params"], result);
     else
       return BadPermission;
   }

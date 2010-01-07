@@ -67,7 +67,8 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
     else
       CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall);
     printf("%s\n", jsoncall);
-    CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall);
+    CHTTPClient client;
+    CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall, (ITransportLayer *)cls, &client);
 
     struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
     int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
@@ -158,7 +159,7 @@ bool CWebServer::Start(const char *ip, int port)
     Initialize();
 
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
-    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, port, NULL, NULL, &CWebServer::answer_to_connection, NULL, MHD_OPTION_END);
+    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, port, NULL, NULL, &CWebServer::answer_to_connection, this, MHD_OPTION_END);
     m_running = m_daemon != NULL;
   }
   return m_running;
@@ -185,4 +186,9 @@ bool CWebServer::SetBroadcastFlags(IClient *client, int flags)
 {
   // Does not support broadcast
   return false;
+}
+
+int CWebServer::CHTTPClient::GetPermissionFlags()
+{
+  return RW;
 }

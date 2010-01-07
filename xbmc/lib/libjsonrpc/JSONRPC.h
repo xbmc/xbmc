@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+#include "ITransportLayer.h"
 #include "../libjsoncpp/json.h"
 
 namespace JSONRPC
@@ -45,7 +46,7 @@ namespace JSONRPC
   /* The method call needs to be perfectly threadsafe
      The method will only be called if parameterObject contains data as specified. So if method doesn't support parameters it won't be called with parameters and vice versa.
   */
-  typedef JSON_STATUS (*MethodCall) (const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
+  typedef JSON_STATUS (*MethodCall) (const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
 
   enum OperationPermission
   {
@@ -67,14 +68,14 @@ namespace JSONRPC
   {
   public:
     static void Initialize();
-    static CStdString MethodCall(const CStdString &inputString);
+    static CStdString MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client);
 
-    static JSON_STATUS Introspect(const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Version(const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Permission(const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS Ping(const CStdString &method, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS Introspect(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS Version(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS Permission(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS Ping(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result);
   private:
-    static JSON_STATUS InternalMethodCall(const CStdString& method, Json::Value& o, Json::Value &result);
+    static JSON_STATUS InternalMethodCall(const CStdString& method, Json::Value& o, Json::Value &result, ITransportLayer *transport, IClient *client);
     static ActionMap m_actionMap;
   };
 }

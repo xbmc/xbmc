@@ -27,7 +27,7 @@
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CPlayerActions::GetActivePlayers(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::GetActivePlayers(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   PLAYERCOREID playerCore = g_application.GetCurrentPlayer();
 
@@ -37,7 +37,7 @@ JSON_STATUS CPlayerActions::GetActivePlayers(const CStdString &method, const Val
   return OK;
 }
 
-JSON_STATUS CPlayerActions::GetAvailablePlayers(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::GetAvailablePlayers(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
 /*  static void GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores);   //Players supporting the specified file
   static void GetPlayers( VECPLAYERCORES &vecCores, bool audio, bool video ); //All audio players and/or video players
@@ -61,7 +61,7 @@ JSON_STATUS CPlayerActions::GetAvailablePlayers(const CStdString &method, const 
   return OK;
 }
 
-JSON_STATUS CPlayerActions::PlayPause(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::PlayPause(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(play)");
   result["playing"] = g_application.IsPlaying();
@@ -69,61 +69,61 @@ JSON_STATUS CPlayerActions::PlayPause(const CStdString &method, const Value& par
   return OK;
 }
 
-JSON_STATUS CPlayerActions::Stop(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::Stop(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(stop)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::SkipPrevious(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::SkipPrevious(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(previous)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::SkipNext(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::SkipNext(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(next)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::BigSkipBackward(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::BigSkipBackward(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(bigskipbackward)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::BigSkipForward(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::BigSkipForward(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(bigskipforward)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::SmallSkipBackward(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::SmallSkipBackward(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(smallskipbackward)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::SmallSkipForward(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::SmallSkipForward(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(smallskipforward)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::Rewind(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::Rewind(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(rewind)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::Forward(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::Forward(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(forward)");
   return OK;
 }
 
-JSON_STATUS CPlayerActions::Record(const CStdString &method, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerActions::Record(const CStdString &method, ITransportLayer *transport, const Json::Value& parameterObject, Json::Value &result)
 {
   CBuiltins::Execute("playercontrol(record)");
   return OK;

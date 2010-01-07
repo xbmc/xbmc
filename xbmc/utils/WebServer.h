@@ -51,6 +51,12 @@ private:
 
   struct MHD_Daemon *m_daemon;
   bool m_running;
+
+  class CHTTPClient : public JSONRPC::IClient
+  {
+  public:
+    virtual int GetPermissionFlags();
+  };
 };
 
 
