@@ -75,7 +75,7 @@ private:
 	IUnknown* m_pUnkInner;
   DWORD m_dwRegister;
   CStreamPath m_streampath;
-  CAutoPtrArray<CStreamDeadEnd> m_deadends;
+  std::vector<CStreamDeadEnd> m_deadends;
 
 protected:
   IFilterMapper2* m_pFM;

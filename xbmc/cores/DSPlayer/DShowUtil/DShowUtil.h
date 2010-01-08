@@ -6,13 +6,13 @@
 #include <strsafe.h>
 #include <assert.h>
 #include "ObjBase.h"
-#include "HdmvClipInfo.h"
+//#include "HdmvClipInfo.h"
 #include "H264Nalu.h"
 
 #include "MediaTypeEx.h"
 #include "moreuuids.h"
 #include "vd.h"
-#include "text.h"
+//#include "text.h" Removed until i changed the catllist
 #include <vector>
 #include <list>
 

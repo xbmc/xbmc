@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <atlcoll.h>
 #include "streams.h"
 #include <list>
 #define MERIT64(merit) (((UINT64)(merit))<<16)
@@ -129,8 +128,8 @@ class CFGFilterList
 {
 	struct filter_t {int index; CFGFilter* pFGF; int group; bool exactmatch, autodelete;};
 	static int filter_cmp(const void* a, const void* b);
-	CAtlList<filter_t> m_filters;
-	CAtlList<CFGFilter*> m_sortedfilters;
+  std::list<filter_t> m_filters;
+	std::list<CFGFilter*> m_sortedfilters;
 
 public:
 	CFGFilterList();
@@ -138,7 +137,6 @@ public:
 
 	void RemoveAll();
 	void Insert(CFGFilter* pFGF, int group, bool exactmatch = false, bool autodelete = true);
-
-	POSITION GetHeadPosition();
-	CFGFilter* GetNext(POSITION& pos);
+  
+  std::list<CFGFilter*> GetSortedList();
 };

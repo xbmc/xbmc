@@ -144,7 +144,7 @@ typedef struct {
 
 #include <cache.h>      // Simple cache container class
 
-#include <atlcoll.h>    //Added to get make the compiler shut up about __POSITION redefinition
+//#include <atlcoll.h>    //Added to get make the compiler shut up about __POSITION redefinition
 #include <wxlist.h>     // Non MFC generic list class
 #include <msgthrd.h>	// CMsgThread
 #include <mtype.h>      // Helper class for managing media types

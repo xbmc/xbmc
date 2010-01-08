@@ -27,7 +27,7 @@
 #include "Filters/EVRAllocatorPresenter.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
-
+#include "charsetconverter.h"
 //
 // CFGFilter
 //
@@ -137,20 +137,20 @@ CFGFilterRegistry::CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit)
   IPropertyBag* pPB;
   if(SUCCEEDED(m_pMoniker->BindToStorage(0, 0, IID_IPropertyBag, (void**)&pPB)))
   {
-    CComVariant var;
-    if(SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    tagVARIANT var;
+    if(SUCCEEDED(pPB->Read(LPCOLESTR(L"FriendlyName"), &var, NULL)))
     {
       m_name = var.bstrVal;
-      var.Clear();
+      VariantClear(&var);
     }
 
-    if(SUCCEEDED(pPB->Read(CComBSTR(_T("CLSID")), &var, NULL)))
+    if(SUCCEEDED(pPB->Read(LPCOLESTR(L"CLSID"), &var, NULL)))
     {
       CLSIDFromString(var.bstrVal, &m_clsid);
-      var.Clear();
+      VariantClear(&var);
     }
 
-    if(SUCCEEDED(pPB->Read(CComBSTR(_T("FilterData")), &var, NULL)))
+    if(SUCCEEDED(pPB->Read(LPCOLESTR(L"FilterData"), &var, NULL)))
     {      
       BSTR* pstr;
       if(SUCCEEDED(SafeArrayAccessData(var.parray, (void**)&pstr)))
@@ -159,7 +159,7 @@ CFGFilterRegistry::CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit)
         SafeArrayUnaccessData(var.parray);
       }
 
-      var.Clear();
+      VariantClear(&var);
     }
   }
 
@@ -176,26 +176,28 @@ CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName, UINT64 merit)
   CreateBindCtx(0, &pBC);
 
   ULONG chEaten;
-  if(S_OK != MkParseDisplayName(pBC, CComBSTR(m_DisplayName), &chEaten, &m_pMoniker))
+  CStdStringW m_DisplayNameW;
+  g_charsetConverter.subtitleCharsetToW(m_DisplayName,m_DisplayNameW);
+  if(S_OK != MkParseDisplayName(pBC, LPCOLESTR(m_DisplayNameW.c_str()), &chEaten, &m_pMoniker))
     return;
 
   IPropertyBag* pPB;
   if(SUCCEEDED(m_pMoniker->BindToStorage(0, 0, IID_IPropertyBag, (void**)&pPB)))
   {
-    CComVariant var;
-    if(SUCCEEDED(pPB->Read(CComBSTR(_T("FriendlyName")), &var, NULL)))
+    tagVARIANT var;
+    if(SUCCEEDED(pPB->Read(LPCOLESTR(L"FriendlyName"), &var, NULL)))
     {
       m_name = var.bstrVal;
-      var.Clear();
+      VariantClear(&var);
     }
 
-    if(SUCCEEDED(pPB->Read(CComBSTR(_T("CLSID")), &var, NULL)))
+    if(SUCCEEDED(pPB->Read(LPCOLESTR(L"CLSID"), &var, NULL)))
     {
       CLSIDFromString(var.bstrVal, &m_clsid);
-      var.Clear();
+      VariantClear(&var);
     }
 
-    if(SUCCEEDED(pPB->Read(CComBSTR(_T("FilterData")), &var, NULL)))
+    if(SUCCEEDED(pPB->Read(LPCOLESTR(L"FilterData"), &var, NULL)))
     {      
       BSTR* pstr;
       if(SUCCEEDED(SafeArrayAccessData(var.parray, (void**)&pstr)))
@@ -204,7 +206,7 @@ CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName, UINT64 merit)
         SafeArrayUnaccessData(var.parray);
       }
 
-      var.Clear();
+      VariantClear(&var);
     }
   }
 
@@ -218,10 +220,11 @@ CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid, UINT64 merit)
   if(m_clsid == GUID_NULL) return;
 
   CStdString guid = DShowUtil::CStringFromGUID(m_clsid);
-
-  CRegKey key;
-
-  if(ERROR_SUCCESS == key.Open(HKEY_CLASSES_ROOT, _T("CLSID\\") + guid, KEY_READ))
+  
+  //CRegKey key;
+  
+  
+  /*if(ERROR_SUCCESS == key.Open(HKEY_CLASSES_ROOT, _T("CLSID\\") + guid, KEY_READ))
   {
     ULONG nChars = 0;
     if(ERROR_SUCCESS == key.QueryStringValue(NULL, NULL, &nChars))
@@ -263,7 +266,7 @@ CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid, UINT64 merit)
     key.Close();
   }
 
-  if(merit != MERIT64_DO_USE) m_merit.val = merit;
+  if(merit != MERIT64_DO_USE) m_merit.val = merit;*/
 }
 
 HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF)
@@ -500,27 +503,28 @@ CFGFilterList::~CFGFilterList()
 
 void CFGFilterList::RemoveAll()
 {
-  while(!m_filters.IsEmpty())
+  for(std::list<filter_t>::iterator it = m_filters.begin() ;it != m_filters.end() ; it++)
   {
-    const filter_t& f = m_filters.RemoveHead();
-    if(f.autodelete) delete f.pFGF;
+    if ((*it).autodelete)
+      delete (*it).pFGF;
   }
-
-  m_sortedfilters.RemoveAll();
+  while (!m_filters.empty())
+    m_filters.pop_back();
+  while (!m_sortedfilters.empty())
+    m_sortedfilters.pop_back();
 }
 
 void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool autodelete)
 {
   if(CFGFilterRegistry* f1r = dynamic_cast<CFGFilterRegistry*>(pFGF))
   {
-    POSITION pos = m_filters.GetHeadPosition();
-    while(pos)
+    for(std::list<filter_t>::iterator it = m_filters.begin() ;it != m_filters.end() ; it++)
     {
-      filter_t& f2 = m_filters.GetNext(pos);
+      
 
-      if(group != f2.group) continue;
+      if(group != (*it).group) continue;
 
-      if(CFGFilterRegistry* f2r = dynamic_cast<CFGFilterRegistry*>(f2.pFGF))
+      if(CFGFilterRegistry* f2r = dynamic_cast<CFGFilterRegistry*>((*it).pFGF))
       {
         if(f1r->GetMoniker() && f2r->GetMoniker() && S_OK == f1r->GetMoniker()->IsEqual(f2r->GetMoniker())
         || f1r->GetCLSID() != GUID_NULL && f1r->GetCLSID() == f2r->GetCLSID())
@@ -533,52 +537,42 @@ void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool aut
       }
     }
   }
-
-  POSITION pos = m_filters.GetHeadPosition();
-  while(pos)
+  for(std::list<filter_t>::iterator it = m_filters.begin() ;it != m_filters.end() ; it++)
   {
-    if(m_filters.GetNext(pos).pFGF == pFGF)
+    if((*it).pFGF == pFGF)
     {
       if(autodelete) delete pFGF;
       return;
     }
   }
 
-  filter_t f = {m_filters.GetCount(), pFGF, group, exactmatch, autodelete};
-  m_filters.AddTail(f);
+  filter_t f = {m_filters.size(), pFGF, group, exactmatch, autodelete};
+  m_filters.push_back(f);
 
-  m_sortedfilters.RemoveAll();
+  while (!m_sortedfilters.empty())
+    m_sortedfilters.pop_back();
 }
 
-POSITION CFGFilterList::GetHeadPosition()
+std::list<CFGFilter*> CFGFilterList::GetSortedList()
 {
-  if(m_sortedfilters.IsEmpty())
+  if(m_sortedfilters.empty())
   {
-    CAtlArray<filter_t> sort;
-    sort.SetCount(m_filters.GetCount());
-    POSITION pos = m_filters.GetHeadPosition();
-    for(int i = 0; pos; i++) sort[i] = m_filters.GetNext(pos);
-    qsort(&sort[0], sort.GetCount(), sizeof(sort[0]), filter_cmp);
-    for(size_t i = 0; i < sort.GetCount(); i++) 
-      if(sort[i].pFGF->GetMerit() >= MERIT64_DO_USE) 
-        m_sortedfilters.AddTail(sort[i].pFGF);
+    vector<filter_t> sort;
+    
+    for (list<filter_t>::iterator it = m_filters.begin() ; it != m_filters.end() ; it++)
+      sort.push_back(*it);
+    
+    qsort(&sort.at(0), sort.size(), sizeof(sort.at(0)), filter_cmp);
+    
+    for (vector<filter_t>::iterator it = sort.begin() ; it != sort.end() ; it++)
+    {
+      filter_t ft = *it;
+      
+      if ( ft.pFGF->GetMerit() >= MERIT64_DO_USE)
+        m_sortedfilters.push_back(ft.pFGF);
+    }
   }
-
-  /*TRACE(_T("FGM: Sorting filters\n"));*/
-
-  POSITION pos = m_sortedfilters.GetHeadPosition();
-  while(pos)
-  {
-    CFGFilter* pFGF = m_sortedfilters.GetNext(pos);
-    /*TRACE(_T("FGM: - %016I64x '%s'\n"), pFGF->GetMerit(), pFGF->GetName().IsEmpty() ? CStdStringFromGUID(pFGF->GetCLSID()) : CStdString(pFGF->GetName()));*/
-  }
-
-  return m_sortedfilters.GetHeadPosition();
-}
-
-CFGFilter* CFGFilterList::GetNext(POSITION& pos)
-{
-  return m_sortedfilters.GetNext(pos);
+  return m_sortedfilters;
 }
 
 int CFGFilterList::filter_cmp(const void* a, const void* b)

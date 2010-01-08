@@ -145,7 +145,8 @@ CStdString CMediaTypeEx::ToString(IPin* pPin)
 		type = _T("Unknown");
 	}
 
-	if(CComQIPtr<IMediaSeeking> pMS = pPin)
+  IMediaSeeking* pMS;
+	if (SUCCEEDED(pPin->QueryInterface(__uuidof(IMediaSeeking),(void**)&pMS)))
 	{
 		REFERENCE_TIME rtDur = 0;
 		if(SUCCEEDED(pMS->GetDuration(&rtDur)) && rtDur)
@@ -179,10 +180,11 @@ CStdString CMediaTypeEx::ToString(IPin* pPin)
 CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompression)
 {
 	CStdString str;
+  
+  static std::map<DWORD, CStdString> names;
+	//static CAtlMap<DWORD, CStdString> names;
 
-	static CAtlMap<DWORD, CStdString> names;
-
-	if(names.IsEmpty())
+	if(names.empty())
 	{
 		names['WMV1'] = _T("Windows Media Video 7");
 		names['WMV2'] = _T("Windows Media Video 8");
@@ -218,14 +220,27 @@ CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompress
 		for(int i = 0; i < 4; i++)
 			if(b[i] >= 'a' && b[i] <= 'z') 
 				b[i] = toupper(b[i]);
-
-		if(!names.Lookup(MAKEFOURCC(b[3], b[2], b[1], b[0]), str))
-		{
+    DWORD fourccToFind = MAKEFOURCC(b[3], b[2], b[1], b[0]);
+    for (std::map<DWORD, CStdString>::iterator it = names.begin() ; it != names.end() ; it++)
+    {
+      if ((*it).first == fourccToFind)
+      {  
+        if((*it).second.Equals(str.c_str(),false))
+      
+      //if(!names.find(MAKEFOURCC(b[3], b[2], b[1], b[0]), str))
+		  
 			if(subtype == MEDIASUBTYPE_DiracVideo) str = _T("Dirac Video");
-			// else if(subtype == ) str = _T("");
 			else if(biCompression < 256) str.Format(_T("%d"), biCompression);
 			else str.Format(_T("%4.4hs"), &biCompression);
-		}
+		  }
+    }
+
+		/*if(!names.find(MAKEFOURCC(b[3], b[2], b[1], b[0]), str))
+		{
+			if(subtype == MEDIASUBTYPE_DiracVideo) str = _T("Dirac Video");
+			else if(biCompression < 256) str.Format(_T("%d"), biCompression);
+			else str.Format(_T("%4.4hs"), &biCompression);
+		}*/
 	}
 
 	return str;
@@ -234,7 +249,7 @@ CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompress
 CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
 {
 	CStdString str;
-
+/*
 	static CAtlMap<WORD, CStdString> names;
 
 	if(names.IsEmpty())
@@ -303,7 +318,6 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
 		names[0x0161] = _T("Windows Media Audio");
 		names[0x0162] = _T("Windows Media Audio");
 		names[0x0163] = _T("Windows Media Audio");
-		// names[] = _T("");
 	}
 
 	if(!names.Lookup(wFormatTag, str))
@@ -314,7 +328,6 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
 		else if(subtype == MEDIASUBTYPE_FLAC_FRAMED) str = _T("FLAC (framed)");
 		else if(subtype == MEDIASUBTYPE_DOLBY_AC3) str += _T("Dolby AC3");
 		else if(subtype == MEDIASUBTYPE_DTS) str += _T("DTS");
-		// else if(subtype == ) str = _T("");
 		else str.Format(_T("0x%04x"), wFormatTag);
 	}
 
@@ -323,7 +336,7 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
 		if(subtype == MEDIASUBTYPE_DOLBY_AC3) str += _T(" (AC3)");
 		else if(subtype == MEDIASUBTYPE_DTS) str += _T(" (DTS)");
 	}
-
+*/
 	return str;
 }
 
@@ -331,7 +344,7 @@ CStdString CMediaTypeEx::GetSubtitleCodecName(const GUID& subtype)
 {
 	CStdString str;
 
-	static CAtlMap<GUID, CStdString> names;
+/*	static CAtlMap<GUID, CStdString> names;
 
 	if(names.IsEmpty())
 	{
@@ -349,11 +362,11 @@ CStdString CMediaTypeEx::GetSubtitleCodecName(const GUID& subtype)
 	{
 
 	}
-
+*/
 	return str;
 }
 
-void CMediaTypeEx::Dump(CAtlList<CStdString>& sl)
+/*void CMediaTypeEx::Dump(CAtlList<CStdString>& sl)
 {
 	CStdString str;
 
@@ -650,3 +663,4 @@ void CMediaTypeEx::Dump(CAtlList<CStdString>& sl)
 		sl.AddTail(_T(""));
 	}
 }
+*/

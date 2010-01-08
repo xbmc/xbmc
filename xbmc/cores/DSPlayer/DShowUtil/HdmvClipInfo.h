@@ -24,7 +24,8 @@
 
 #include "Mpeg2Def.h"
 #include "dxva.h"
-#include <atlcoll.h>
+//#include <atlcoll.h>
+#include <list>
 enum BDVM_VideoFormat
 {
     BDVM_VideoFormat_Unknown = 0,
@@ -138,8 +139,8 @@ public:
 	int			GetStreamNumber()			{ return int(m_Streams.GetCount()); };
 	Stream*		GetStreamByIndex(int nIndex){ return (unsigned(nIndex) < m_Streams.GetCount()) ? &m_Streams[nIndex] : NULL; };
 
-	HRESULT		FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, CAtlList<PlaylistItem>& MainPlaylist);
-	HRESULT		ReadPlaylist(CStdString strPlaylistFile, REFERENCE_TIME& rtDuration, CAtlList<PlaylistItem>& Playlist);
+  HRESULT		FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, std::list<PlaylistItem>& MainPlaylist);
+  HRESULT		ReadPlaylist(CStdString strPlaylistFile, REFERENCE_TIME& rtDuration, std::list<PlaylistItem>& Playlist);
 
 private :
 	DWORD		SequenceInfo_start_address;

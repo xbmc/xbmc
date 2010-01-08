@@ -140,7 +140,11 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
   CAutoLock cAutoLock(this);
 
   HRESULT hr;
-  hr = CComQIPtr<IFilterGraph2>(m_pUnkInner)->AddFilter(pFilter, pName);
+  IFilterGraph2* pIFG;
+  hr = m_pUnkInner->QueryInterface(__uuidof(pIFG),(void**)&pIFG);
+  if(FAILED(hr))
+    return hr;
+  hr = pIFG->AddFilter(pFilter, pName);
   if(FAILED(hr))
     return hr;
 
@@ -148,7 +152,7 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
   hr = pFilter->JoinFilterGraph(NULL, NULL);
   hr = pFilter->JoinFilterGraph(this, pName);
   
-
+  SAFE_RELEASE(pIFG);
   return hr;
 }
 
@@ -157,8 +161,11 @@ STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
   if(!m_pUnkInner) 
     return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->RemoveFilter(pFilter);
+  IFilterGraph2* pIFG;
+  if (SUCCEEDED(m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG)))
+    return pIFG->RemoveFilter(pFilter);
+  return E_FAIL;
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->RemoveFilter(pFilter);
 }
 
 STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
@@ -168,8 +175,10 @@ STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
   //Locking make crash reclock
   //solution comming from mpc-hc
   //CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->EnumFilters(ppEnum);
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->EnumFilters(ppEnum);
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->EnumFilters(ppEnum);
 }
 
 STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
@@ -177,8 +186,10 @@ STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
   if(!m_pUnkInner) 
     return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->FindFilterByName(pName, ppFilter);
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->FindFilterByName(pName, ppFilter);
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->FindFilterByName(pName, ppFilter);
 }
 
 STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt)
@@ -199,8 +210,10 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
     if(DShowUtil::GetCLSID(pBFUS) == clsid) 
       return VFW_E_CANNOT_CONNECT;
 	}
-
-	return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ConnectDirect(pPinOut, pPinIn, pmt);
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->ConnectDirect(pPinOut, pPinIn, pmt);
+	//return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ConnectDirect(pPinOut, pPinIn, pmt);
 }
 
 STDMETHODIMP CFGManager::Reconnect(IPin* ppin)
@@ -209,7 +222,10 @@ STDMETHODIMP CFGManager::Reconnect(IPin* ppin)
     return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
 
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Reconnect(ppin);
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->Reconnect(ppin);
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Reconnect(ppin);
 }
 
 STDMETHODIMP CFGManager::Disconnect(IPin* ppin)
@@ -218,14 +234,20 @@ STDMETHODIMP CFGManager::Disconnect(IPin* ppin)
     return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
 
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Disconnect(ppin);
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->Disconnect(ppin);
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Disconnect(ppin);
 }
 
 STDMETHODIMP CFGManager::SetDefaultSyncSource()
 {
   CAutoLock cAutoLock(this);
 
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->SetDefaultSyncSource();
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->SetDefaultSyncSource();
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->SetDefaultSyncSource();
 }
 
 // IGraphBuilder
@@ -266,8 +288,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   else
   {
     // 1. Use IStreamBuilder
-
-    if(CComQIPtr<IStreamBuilder> pSB = pPinOut)
+    IStreamBuilder* pSB;
+    if (SUCCEEDED(pPinOut->QueryInterface(__uuidof(pSB),(void**)&pSB)))
     {
       if(SUCCEEDED(hr = pSB->Render(pPinOut, this)))
         return hr;
@@ -277,8 +299,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   }
 
   // 2. Try cached filters
-
-  if(CComQIPtr<IGraphConfig> pGC = (IGraphBuilder2*)this)
+  IGraphConfig* pGC;
+  if (SUCCEEDED((IGraphBuilder2*)this->QueryInterface(__uuidof(pGC),(void**)&pGC)))
   {
     BeginEnumCachedFilters(pGC, pEF, pBF)
     {
@@ -338,7 +360,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   // 4. Look up filters in the registry
   
   {
-    CFGFilterList fl;
+    CFGFilterList* fl = new CFGFilterList();
 
     std::vector<GUID> types;
     DShowUtil::ExtractMediaTypes(pPinOut, types);
@@ -349,7 +371,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     {
       pFGF = *it;
       if(pFGF->GetMerit() < MERIT64_DO_USE || pFGF->CheckTypes(types, false)) 
-        fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
+        fl->Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
     }
 
     
@@ -357,7 +379,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     {
       pFGF = *it;
       if(pFGF->GetMerit() < MERIT64_DO_USE || pFGF->CheckTypes(types, false)) 
-        fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
+        fl->Insert(pFGF, 0, pFGF->CheckTypes(types, true), false);
     }
 
     IEnumMoniker* pEM;
@@ -372,23 +394,24 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
       for(IMoniker* pMoniker; S_OK == pEM->Next(1, &pMoniker, NULL); pMoniker = NULL)
       {
         CFGFilterRegistry* pFGF = new CFGFilterRegistry(pMoniker);
-        fl.Insert(pFGF, 0, pFGF->CheckTypes(types, true));
+        fl->Insert(pFGF, 0, pFGF->CheckTypes(types, true));
       }
     }
 //crashing right there on mkv
-//The subtitle might be the reason  
-    POSITION pos = fl.GetHeadPosition();
-    while(pos)
+//The subtitle might be the reason
+    std::list<CFGFilter*> theList;
+    theList = fl->GetSortedList();
+    for (list<CFGFilter*>::iterator it = theList.begin() ; it != theList.end() ; it++)
     {
-      CFGFilter* pFGF = fl.GetNext(pos);
+      //CFGFilter* pFGF = fl.GetNext(pos);
 
       IBaseFilter* pBF;
-      if(FAILED(CreateFilter(pFGF, &pBF)))
+      if(FAILED(CreateFilter(*it, &pBF)))
         continue;
 
       if(pPinIn &&  DShowUtil::IsStreamEnd(pBF))
         continue;
-      if(FAILED(hr = AddFilter(pBF, (LPCWSTR)pFGF->GetName().c_str())))
+      if(FAILED(hr = AddFilter(pBF, (LPCWSTR)(*it)->GetName().c_str())))
         continue;
 
       hr = E_FAIL;
@@ -445,11 +468,13 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   }
   
   
-  if(fDeadEnd)
+  /*if(fDeadEnd)
   {
-    CAutoPtr<CStreamDeadEnd> psde(new CStreamDeadEnd());
+    CStreamDeadEnd* psde;
+    psde = new CStreamDeadEnd();
+    //CAutoPtr<CStreamDeadEnd> psde(new CStreamDeadEnd());
+    //The one under wasnt used already commented
     //psde->AddTailList(&m_streampath);
-    
 
     path_t pth;
     for (PathListIter it = m_streampath.begin();it != m_streampath.end(); it++)
@@ -459,8 +484,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     BeginEnumMediaTypes(pPinOut, pEM, pmt)
       psde->mts.push_back(CMediaType(*pmt));
     EndEnumMediaTypes(pmt)
-    m_deadends.Add(psde);
-  }
+    m_deadends.push_back(psde);
+  }*/
 
   return pPinIn ? VFW_E_CANNOT_CONNECT : VFW_E_CANNOT_RENDER;
 }
@@ -497,15 +522,20 @@ STDMETHODIMP CFGManager::GetFileInfo(CStdString* sourceInfo,CStdString* splitter
 STDMETHODIMP CFGManager::Abort()
 {
   CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Abort();
+  
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->Abort();
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->Abort();
 }
 
 STDMETHODIMP CFGManager::ShouldOperationContinue()
 {
   CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ShouldOperationContinue();
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->ShouldOperationContinue();
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ShouldOperationContinue();
 }
 
 // IFilterGraph2
@@ -513,15 +543,19 @@ STDMETHODIMP CFGManager::ShouldOperationContinue()
 STDMETHODIMP CFGManager::AddSourceFilterForMoniker(IMoniker* pMoniker, IBindCtx* pCtx, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter)
 {
   CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->AddSourceFilterForMoniker(pMoniker, pCtx, lpcwstrFilterName, ppFilter);
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->AddSourceFilterForMoniker(pMoniker, pCtx, lpcwstrFilterName, ppFilter);
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->AddSourceFilterForMoniker(pMoniker, pCtx, lpcwstrFilterName, ppFilter);
 }
 
 STDMETHODIMP CFGManager::ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt)
 {
   CAutoLock cAutoLock(this);
-
-  return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ReconnectEx(ppin, pmt);
+  IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
+  return pIFG->ReconnectEx(ppin, pmt);
+  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ReconnectEx(ppin, pmt);
 }
 
 // IGraphBuilder2
@@ -572,9 +606,14 @@ STDMETHODIMP CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
       if(SUCCEEDED(hr))
       {
-        for(int i = m_deadends.GetCount()-1; i >= 0; i--)
-          if(m_deadends[i]->Compare(m_streampath))
-            m_deadends.RemoveAt(i);
+        for (vector<CStreamDeadEnd>::iterator it = m_deadends.end() ; it != m_deadends.begin() ;it-- )
+        {
+          if((*it).Compare(m_streampath))
+            m_deadends.erase(it);
+        }
+        //for(int i = m_deadends.size()-1; i >= 0; i--)
+        //  if(m_deadends[i]->Compare(m_streampath))
+        //    m_deadends.RemoveAt(i);
 
         nRendered++;
       }
@@ -643,7 +682,9 @@ STDMETHODIMP CFGManager::NukeDownstream(IUnknown* pUnk)
 {
   CAutoLock cAutoLock(this);
 
-  if(CComQIPtr<IBaseFilter> pBF = pUnk)
+  IBaseFilter* pBF;
+  IPin* pPin;
+  if (SUCCEEDED(pUnk->QueryInterface(__uuidof(pBF),(void**)&pBF)))
   {
     BeginEnumPins(pBF, pEP, pPin)
     {
@@ -651,7 +692,7 @@ STDMETHODIMP CFGManager::NukeDownstream(IUnknown* pUnk)
     }
     EndEnumPins
   }
-  else if(CComQIPtr<IPin> pPin = pUnk)
+  else if (SUCCEEDED(pUnk->QueryInterface(__uuidof(pPin),(void**)&pPin)))
   {
     IPin* pPinTo;
     if(S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
@@ -713,14 +754,14 @@ STDMETHODIMP CFGManager::RemoveFromROT()
 
 STDMETHODIMP_(size_t) CFGManager::GetCount()
 {
-  return m_deadends.GetCount();
+  return m_deadends.size();
 }
 
 STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts)
 {
   CAutoLock cAutoLock(this);
 
-  if(iIndex < 0 || iIndex >= m_deadends.GetCount()) 
+  if(iIndex < 0 || iIndex >= m_deadends.size()) 
     return E_FAIL;
 
   while (!path.empty())
@@ -729,7 +770,8 @@ STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, std::list<CStdStringW>& path, st
     mts.pop_back();
 
   path_t p;
-  for (PathListIter it = m_deadends[iIndex]->begin(); it != m_deadends[iIndex]->end(); it++)
+  
+  for (list<path_t>::iterator it = m_deadends.at(iIndex).begin(); it != m_deadends.at(iIndex).end(); it++)
   {
     p = *it;
     CStdStringW str;
@@ -737,7 +779,7 @@ STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, std::list<CStdStringW>& path, st
     path.push_back(str);
   }
 
-  for (MediaTypeListIter it = m_deadends[iIndex]->mts.begin(); it != m_deadends[iIndex]->mts.begin(); it++)
+  for (list<CMediaType>::iterator it = m_deadends.at(iIndex).mts.begin(); it != m_deadends.at(iIndex).mts.begin(); it++)
     mts.push_back(*it);
 
   return S_OK;
@@ -802,13 +844,18 @@ STDMETHODIMP CFGManagerCustom::AddFilter(IBaseFilter* pBF, LPCWSTR pName)
 
   if(DShowUtil::GetCLSID(pBF) == CLSID_DMOWrapperFilter)
   {
-    if(CComQIPtr<IPropertyBag> pPB = pBF)
+    IPropertyBag* pPB;
+    if (SUCCEEDED(pBF->QueryInterface(__uuidof(IPropertyBag),(void**) &pPB)))
     {
-      CComVariant var(true);
-      pPB->Write(CComBSTR(L"_HIRESOUTPUT"), &var);
+      tagVARIANT var;
+      var.boolVal = true;
+      pPB->Write(LPCOLESTR(L"_HIRESOUTPUT"), &var);
     }
+    SAFE_RELEASE(pPB);
   }
-  if(CComQIPtr<IMpaDecFilter> m_pMDF = pBF)
+
+  IMpaDecFilter* m_pMDF;
+  if (SUCCEEDED(pBF->QueryInterface(__uuidof(IMpaDecFilter),(void**) &m_pMDF)))
   {
     //m_pMDF->SetSampleFormat((SampleFormat)s.mpasf);
     m_pMDF->SetNormalize(1);
@@ -819,7 +866,7 @@ STDMETHODIMP CFGManagerCustom::AddFilter(IBaseFilter* pBF, LPCWSTR pName)
     //m_pMDF->SetSpeakerConfig(IMpaDecFilter::aac, s.aacsc);
     m_pMDF->SetBoost(1);
   }
-
+  SAFE_RELEASE(m_pMDF);
   return hr;
 }
 
@@ -922,10 +969,12 @@ STDMETHODIMP CFGManagerPlayer::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const 
 
   if(DShowUtil::GetCLSID(pPinOut) == CLSID_MPEG2Demultiplexer)
   {
-    CComQIPtr<IMediaSeeking> pMS = pPinOut;
+    IMediaSeeking* pMS = NULL;
+    pPinOut->QueryInterface(__uuidof(IMediaSeeking),(void**)&pMS);
     REFERENCE_TIME rtDur = 0;
     if(!pMS || FAILED(pMS->GetDuration(&rtDur)) || rtDur <= 0)
        return E_FAIL;
+    SAFE_RELEASE(pMS);
   }
 
   return __super::ConnectDirect(pPinOut, pPinIn, pmt);
