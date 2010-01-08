@@ -24,7 +24,7 @@ FULLDEBUILDOPTS="-S -sa"
 DEBUILDOPTS="-S -sd"
 MINOR=1
 XBMCPPA=xbmc-svn
-HVERSION=9.11~beta1
+HVERSION=9.11
 
 # Packagers should have these two vars in their environment
 # export DEBFULLNAME="Ouattara Oumar Aziz (alias wattazoum)"
@@ -106,8 +106,10 @@ preparesrc()
   rm -rf autom4te.cache
   rm -rf xbmc/lib/libass/autom4te.cache
   cd $OLDPWD
-  echo "Copying to .orig folder"
-  cp -a $DESTSRC $DESTSRC.orig
+  if [ -z $UPDPPA ]; then
+    echo "Copying to .orig folder"
+    cp -a $DESTSRC $DESTSRC.orig
+  fi
 }
 
 builddeb()
@@ -124,7 +126,12 @@ builddeb()
   if [[ -z $urgency ]]; then
     urgency=low
   fi
-  dch -b -v 1:${VERSION}-$1${MINOR} -D $1 -u $urgency "$CHNLG" 2>&1 
+  if [ $UPDPPA ]; then
+    PKG_VERSION=1:${HVERSION}-$1$REVISION
+  else
+    PKG_VERSION=1:${VERSION}-$1${MINOR}
+  fi
+  dch -b -v $PKG_VERSION -D $1 -u $urgency "$CHNLG" 2>&1 
   echo "$REVISION" > debian/svnrevision
   echo "Building the $1 debian package" 
   
@@ -183,7 +190,9 @@ preparevars()
     if [[ -z $VERSION ]] && [[ $version ]]; then
       VERSION=$version
     fi
-    MINOR=$minor
+    if [ $minor ]; then
+      MINOR=$minor
+    fi
     BUILT_ONCE=1
   fi
   if [[ $NO_SRC_GEN ]]; then
@@ -246,7 +255,7 @@ preparevars
 # We are in the source tree. Go out
 cd $BUILD_DIR
 
-if [[ -z $UPDPPA ]] && [[ -z $NO_SRC_GEN ]] ; then
+if [[ -z $NO_SRC_GEN ]] ; then
   preparesrc
 fi
 
