@@ -397,21 +397,18 @@ bool CGUIWindow::OnMouseAction()
     CGUIControl *pControl = *i;
     pControl->UnfocusFromPoint(mousePoint);
   }
-  // and find which one is under the pointer
-  // go through in reverse order to make sure we start with the ones on top
+  // and find which ones are under the pointer
+  vector< pair<CGUIControl *, CPoint> > controls;
+  GetControlsFromPoint(mousePoint, controls);
+
   bool controlUnderPointer(false);
-  for (vector<CGUIControl *>::reverse_iterator i = m_children.rbegin(); i != m_children.rend(); ++i)
+  for (vector< pair<CGUIControl *, CPoint> >::iterator i = controls.begin(); i != controls.end(); ++i)
   {
-    CGUIControl *pControl = *i;
-    CGUIControl *focusableControl = NULL;
-    CPoint controlPoint;
-    if (pControl->CanFocusFromPoint(mousePoint, &focusableControl, controlPoint))
-    {
-      controlUnderPointer = focusableControl->OnMouseOver(controlPoint);
-      bHandled = HandleMouse(focusableControl, controlPoint);
-      if (bHandled || controlUnderPointer)
-        break;
-    }
+    CGUIControl *child = i->first;
+    controlUnderPointer = child->OnMouseOver(i->second);
+    bHandled = HandleMouse(child, i->second);
+    if (bHandled || controlUnderPointer)
+      break;
   }
   if (!bHandled)
   { // haven't handled this action - call the window message handlers

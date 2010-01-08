@@ -812,18 +812,12 @@ int CGUIControl::GetNextControl(int direction) const
   }
 }
 
-// input the point with respect to this control to hit, and return
-// the control and the point with respect to his control if we have a hit
-bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
+bool CGUIControl::CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const
 {
   controlPoint = point;
   m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
   if (CanFocus() && HitTest(controlPoint))
-  {
-    *control = (CGUIControl *)this;
     return true;
-  }
-  *control = NULL;
   return false;
 }
 

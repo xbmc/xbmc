@@ -367,19 +367,22 @@ bool CGUIControlGroup::HitTest(const CPoint &point) const
   return false;
 }
 
-bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
+void CGUIControlGroup::GetControlsFromPoint(const CPoint &point, vector< std::pair<CGUIControl *, CPoint> > &controls) const
 {
-  if (!CGUIControl::CanFocus()) return false;
+  if (!CGUIControl::CanFocus())
+    return;
   CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
+  controlCoords -= CPoint(m_posX, m_posY);
   for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->CanFocusFromPoint(controlCoords - CPoint(m_posX, m_posY), control, controlPoint))
-      return true;
+    CPoint childCoords;
+    if (child->IsGroup())
+      ((CGUIControlGroup *)child)->GetControlsFromPoint(controlCoords, controls);
+    else if (child->CanFocusFromPoint(controlCoords, childCoords))
+      controls.push_back(make_pair(child, childCoords));
   }
-  *control = NULL;
-  return false;
 }
 
 void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)

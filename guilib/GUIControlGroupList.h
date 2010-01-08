@@ -41,7 +41,7 @@ public:
 
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  virtual void GetControlsFromPoint(const CPoint &point, std::vector< std::pair<CGUIControl *, CPoint> > &controls) const;
   virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual void AddControl(CGUIControl *control, int position = -1);

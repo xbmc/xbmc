@@ -47,6 +47,6 @@ public:
   virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMouseOver(const CPoint &point);
   virtual bool CanFocus() const;
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  virtual bool CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const;
 };
 #endif
