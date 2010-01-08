@@ -1,0 +1,13 @@
+<skin>
+  <defaultresolution>720p</defaultresolution>
+  <defaultresolutionwide>720p</defaultresolutionwide>
+  <version>2.1</version>
+  
+  <!-- amount to zoom skin to remove overscan compensation -->
+  <zoom>0</zoom>
+  
+  <credits>
+    <skinname>default</skinname>
+    <name>amet</name>
+  </credits>
+</skin>

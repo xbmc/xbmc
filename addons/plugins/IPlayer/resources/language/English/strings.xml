@@ -1,0 +1,13 @@
+<strings>
+	<string id="30000">Video stream to use</string>
+	<string id="30001">Radio stream to use</string>
+	<string id="30002">Only use preferred streams (no fallback)</string>
+	<string id="30005">Collapse programmes into series</string>
+	<string id="30006">Include programme count in Series and Category listings</string>	
+	<string id="30007">Thumbnail size (smaller = faster to load)</string>
+	<string id="30010">Use old stream (ignores stream settings)</string>
+	<string id="30020">Download thumbnails</string>
+	<string id="30021">Delete thumbnails older than X days [0=disabled]</string>
+	<string id="30025">Subtitles</string>
+	<string id="30050">Socket timeout value (seconds) [0=disabled]</string>
+</strings>

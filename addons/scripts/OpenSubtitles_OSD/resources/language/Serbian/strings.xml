@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30300">OpenSubtitles_OSD</string>
+    <string id="30301"></string>
+    <string id="30302">Amet</string>
+
+
+    
+    <!-- Labels -->
+    <string id="500">Нисте изабрали језик</string>
+    <string id="501">Изабрати посебну датотеку за преводе?</string>
+    <string id="502">Избор Језика</string>
+    <string id="503">Изаберите језик</string>
+    <string id="504">Изаберите локацију</string>
+    <string id="505">Изаберите сервис</string>
+    <string id="506">Поништити сва подешавања?</string>
+    
+    
+    
+    <string id="601">Преводи обележени</string>
+    <string id="602">раде боље</string>
+    <string id="610">Претражи </string>
+    <string id="611">Претражи Sublight.si</string>
+    <string id="612">Ручно унети име филма</string>
+    <string id="630">Subtitle file downloaded and extracted as %s</string>
+    <string id="631">Extracting %s to %s</string>
+    <string id="632">Downloading %s from %s</string>
+    <string id="633">Преузимање превода</string>
+    <string id="634">Error! %s</string>
+    <string id="635">Конектовано</string>
+    <string id="636">Connecting anonymously...</string>
+    <string id="637">Connecting as %s...</string>
+    <string id="638">What do you want to run this for?</string>
+    <string id="639">No music is playing fool!</string>
+    <string id="640">Select a video file</string>
+    <string id="641">%s Settings</string>
+    <string id="642">Претрага превода %s</string>
+    <string id="644">Extracted to %s</string>
+    <string id="645">Download cancelled</string>
+    <string id="646">Конектује се...</string>
+    <string id="647">by hash...</string>
+    <string id="648">by name...</string>
+    <string id="649">Преузимање превода...</string>
+    <string id="650">Extracting subtitles...</string>
+    <string id="651">Превод отпакован</string>
+    <string id="652">Превод отпакован</string>
+    <string id="653">Конекција није успела.</string>
+    <string id="654">Грешка при отпакивању</string>
+    <!-- OSDB Messages -->
+    <string id="730">OSDB server name missing</string>
+    <string id="731">XMLRPC %s: %s</string>
+    <string id="732">LogIn</string>
+    <string id="733">LogOut</string>
+    <string id="734">GetSubLanguages</string>
+    <string id="735">CheckMovieHash</string>
+    <string id="736">SearchSubtitles</string>
+    <string id="737">Not connected to osdb server</string>
+    <string id="738">Hashing %s not found</string>
+    <string id="739">Hashing %s %s</string>
+    <string id="740">File found on share, remote files not supported</string>
+    <string id="741">Превод није пронађен</string>
+    <string id="742"> превода</string>
+    <string id="743">HTTP %s: %s</string>
+    <string id="744"> превода за </string>
+    
+      <!-- 
+   * Languages
+   -->
+  <string id="30201">Albanian</string>
+  <string id="30202">Arabic</string>
+  <string id="30203">Belarusian</string>
+  <string id="30204">Bosnian (Latin)</string>
+  <string id="30205">Bulgarian</string>
+  <string id="30206">Catalan</string>
+  <string id="30207">Chinese</string>
+  <string id="30208">Croatian</string>
+  <string id="30209">Czech</string>
+  <string id="30210">Danish</string>
+  <string id="30211">Dutch</string>
+  <string id="30212">English</string>
+  <string id="30213">Estonian</string>
+  <string id="30214">Finnish</string>
+  <string id="30215">French</string>
+  <string id="30216">German</string>
+  <string id="30217">Greek</string>
+  <string id="30218">Hebrew</string>
+  <string id="30219">Hindi</string>
+  <string id="30220">Hungarian</string>
+  <string id="30221">Icelandic</string>
+  <string id="30222">Indonesian</string>
+  <string id="30224">Italian</string>
+  <string id="30225">Japanese</string>
+  <string id="30226">Korean</string>
+  <string id="30227">Latvian</string>
+  <string id="30228">Lithuanian</string>
+  <string id="30229">Macedonian</string>
+  <string id="30230">Norwegian</string>
+  <string id="30232">Polish</string>
+  <string id="30233">Portuguese</string>
+  <string id="30234">Portuguese (Brazil)</string>
+  <string id="30235">Romanian</string>
+  <string id="30236">Russian</string>
+  <string id="30237">SerbianLatin</string>
+  <string id="30238">Slovak</string>
+  <string id="30239">Slovenian</string>
+  <string id="30240">Spanish</string>
+  <string id="30242">Swedish</string>
+  <string id="30243">Thai</string>
+  <string id="30244">Turkish</string>
+  <string id="30245">Ukrainian</string>
+  <string id="30246">Vietnamese</string>
+      
+
+</strings>

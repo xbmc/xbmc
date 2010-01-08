@@ -1,0 +1,8 @@
+<settings>
+<setting id="video_stream" label="30000" type="enum" values="Auto|Flash (512kb)|H.264 (800kb)|H.264 (1500kb)|H.264 (3200kb)" default="Auto"/>
+<setting id="audio_stream" label="30001" type="enum" values="Auto|MP3|Real|AAC" default="Auto"/>
+<setting id="progcount" label="30006" type="bool" default="true" />
+<setting id="thumbnail_size" label="30007" type="enum" values="Biggest|Large|Small|Smallest|None" default="Large"/>
+<setting id="subtitles_control" label="30025"  type="enum" values="None|Download and Play|Download to File" default="None" />
+<setting id="socket_timeout" label="30050" type="integer" default="5" />
+</settings>

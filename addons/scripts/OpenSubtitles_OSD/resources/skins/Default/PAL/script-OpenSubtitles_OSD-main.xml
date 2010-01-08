@@ -1,0 +1,277 @@
+<window>
+  <defaultcontrol>101</defaultcontrol>
+  <coordinates>
+    <system>1</system>
+    <posx>0</posx>
+    <posy>0</posy>
+  </coordinates>
+  <animation effect="fade" time="250">WindowOpen</animation>
+  <animation effect="fade" time="250">WindowClose</animation>
+  <controls>
+    <control type="group">
+      <posx>220</posx>
+      <posy>30</posy>
+      <control type="image">
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>480</width>
+        <height>520</height>
+        <texture border="40">default-panel1.png</texture>
+      </control>
+      <!-- ** Required ** Do not change <id> or <type> -->
+       <control type="group" id="110">
+        <control type="image" >
+            <description>page header tab icon</description>
+            <posx>20</posx>
+            <posy>2</posy>
+            <width>250</width>
+            <height>50</height>
+            <texture>logo_opensubtitles.png</texture>
+            
+        </control>
+      </control>
+      <control type="group" id="111">
+      <control type="image" >
+            <description>page header tab icon</description>
+            <posx>20</posx>
+            <posy>2</posy>
+            <width>250</width>
+            <height>50</height>
+            <texture>Sublight_logo.png</texture>
+            
+      </control>
+    </control>
+    
+    <control type="group" id="112">
+      <control type="image" >
+            <description>page header tab icon</description>
+            <posx>20</posx>
+            <posy>2</posy>
+            <width>250</width>
+            <height>40</height>
+            <texture>podnapisi.png</texture>
+            <visible>!Control.IsVisible(111) + !Control.IsVisible(110)</visible>
+      </control>
+    </control>
+      <control type="label" id="300">
+        <description>textarea</description>
+        <posx>345</posx>
+        <posy>15</posy>
+        <width>270</width>
+        <height>15</height>
+        <font>font12</font>
+        <textcolor>white</textcolor>
+        <align>right</align>
+        
+      </control>
+                  <control type="label" id="301">
+        <description>textarea</description>
+        <posx>383</posx>
+        <posy>15</posy>
+        <width>140</width>
+        <height>22</height>
+        <font>font12</font>
+        <textcolor>white</textcolor>
+        
+        
+      </control>              
+      <control type="image">
+            <posx>351</posx>
+            <posy>22</posy>
+            <width>27</width>
+            <height>7</height>
+            <texture>icon_sync.png</texture>
+            <visible>True</visible>
+                    
+        </control>
+
+      <control type="image">
+        <posx>15</posx>
+        <posy>50</posy>
+        <width>465</width>
+        <height>2</height>
+        <texture>default-separatorOSD.png</texture>
+      </control>
+      <control type="label" id="100">
+        <description>textarea</description>
+        <posx>30</posx>
+        <posy>60</posy>
+        <width>480</width>
+        <height>40</height>
+        <font>font12</font>
+        <textcolor>white</textcolor>
+        <aligny>center</aligny>
+        <wrapmultiline>true</wrapmultiline>
+      </control>
+      <control type="image">
+        <posx>15</posx>
+        <posy>110</posy>
+        <width>465</width>
+        <height>2</height>
+        <texture>default-separatorOSD.png</texture>
+      </control>
+
+      <!-- ** Required ** Do not change <id> or <type> -->
+      <control type="list" id="120">
+        <posx>20</posx>
+        <posy>126</posy>
+        <width>480</width>
+        <height>354</height>
+        <onleft>120</onleft>
+        <onright>120</onright>
+        <onup>110</onup>
+        <ondown>110</ondown>
+        <viewtype label="535">list</viewtype>
+        <pagecontrol>121</pagecontrol>
+        <scrolltime>200</scrolltime>
+        <itemlayout height="38">
+          <control type="image">
+            <posx>0</posx>
+            <posy>36</posy>
+            <width>430</width>
+            <height>2</height>
+            <texture border="10">default-list-nofocus.png</texture>
+          </control>
+          <control type="image">
+            <posx>5</posx>
+            <posy>13</posy>
+            <width>20</width>
+            <height>13</height>
+            <info>Listitem.Thumb</info>
+          </control>
+          <control type="label">
+            <posx>27</posx>
+            <posy>0</posy>
+            <width>70</width>
+            <height>38</height>
+            <font>font12</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+          
+          <control type="image">
+            <posx>100</posx>
+            <posy>16</posy>
+            <width>27</width>
+            <height>7</height>
+            <texture>icon_sync.png</texture>
+            <visible>ListItem.property(sync)</visible>
+                    
+           </control>   
+          
+
+          
+          <control type="label">
+            <posx>130</posx>
+            <posy>0</posy>
+            <width>240</width>
+            <height>38</height>
+            <font>font12</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label2</info>
+          </control>
+          
+          <control type="image">
+            <posx>377</posx>
+            <posy>13</posy>
+            <width>45</width>
+            <height>9</height>
+            <texture>info_window_icon_rating_star_$INFO[ListItem.ActualIcon].png</texture>
+            
+          </control>
+        </itemlayout>
+        <focusedlayout height="38">
+          <control type="image">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>430</width>
+            <height>38</height>
+            <texture border="10">default-list-focus.png</texture>
+            <visible>Control.HasFocus(120)</visible>
+          </control>
+          <control type="image">
+            <posx>5</posx>
+            <posy>13</posy>
+            <width>20</width>
+            <height>13</height>
+            <info>Listitem.Thumb</info>
+          </control>
+          <control type="label">
+            <posx>27</posx>
+            <posy>0</posy>
+            <width>70</width>
+            <height>38</height>
+            <font>font12</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+          
+          
+          <control type="image">
+            <posx>100</posx>
+            <posy>16</posy>
+            <width>27</width>
+            <height>7</height>
+            <texture>icon_sync.png</texture>
+            <visible>ListItem.property(sync)</visible>
+            <colordiffuse>white</colordiffuse>
+           </control>   
+          
+          
+          <control type="label">
+            <posx>130</posx>
+            <posy>0</posy>
+            <width>240</width>
+            <height>38</height>
+            <font>font12</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label2</info>
+          </control>
+
+          <control type="image">
+            <posx>377</posx>
+            <posy>13</posy>
+            <width>45</width>
+            <height>9</height>
+            <texture>info_window_icon_rating_star_$INFO[ListItem.ActualIcon].png</texture>
+
+           </control>
+        </focusedlayout>
+      </control>
+      <control type="group">
+        <posx>453</posx>
+        <posy>126</posy>
+        <control type="scrollbar" id="121">
+          <description>scroll bar indicator for lists</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>12</width>
+          <height>360</height>
+          <texturesliderbackground border="6">default-scroll_back.png</texturesliderbackground>
+          <texturesliderbar border="6">default-scroll_mid.png</texturesliderbar>
+          <texturesliderbarfocus border="6">default-scroll_mid.png</texturesliderbarfocus>
+          <textureslidernib>-</textureslidernib>
+          <textureslidernibfocus>-</textureslidernibfocus>
+          <orientation>vertical</orientation>
+          <showonepage>false</showonepage>
+          <visible>Control.IsVisible(120)</visible>
+        </control>
+      </control>
+      <control type="group" id="110">
+       
+      </control>
+    </control>
+  </controls>
+</window>

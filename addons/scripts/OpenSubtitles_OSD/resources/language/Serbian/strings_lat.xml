@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30300">OpenSubtitles_OSD</string>
+    <string id="30301"></string>
+    <string id="30302">Amet</string>
+
+
+    
+    <!-- Labels -->
+    <string id="500">Niste izabrali jezik</string>
+    <string id="501">Izabrati posebnu datoteku za prevode?</string>
+    <string id="502">Izbor jezika</string>
+    <string id="503">Izaberite Jezik</string>
+    <string id="504">Izaberite lokaciju</string>
+    <string id="505">Izaberite servis</string>
+    <string id="506">Poništiti sva podešavanja?</string>
+    
+    
+    
+    <string id="601">Prevodi obeleženi</string>
+    <string id="602">rade bolje</string>
+    <string id="610">Pretraži </string>
+    <string id="611">Pretraži Sublight.si</string>
+    <string id="612">Ručno uneti ime filma</string>
+    <string id="630">Subtitle file downloaded and extracted as %s</string>
+    <string id="631">Extracting %s to %s</string>
+    <string id="632">Downloading %s from %s</string>
+    <string id="633">Preuzimanje Prevoda</string>
+    <string id="634">Error! %s</string>
+    <string id="635">Konektovano</string>
+    <string id="636">Connecting anonymously...</string>
+    <string id="637">Connecting as %s...</string>
+    <string id="638">What do you want to run this for?</string>
+    <string id="639">No music is playing fool!</string>
+    <string id="640">Select a video file</string>
+    <string id="641">%s Settings</string>
+    <string id="642">Pretraga Prevoda %s</string>
+    <string id="644">Extracted to %s</string>
+    <string id="645">Download cancelled</string>
+    <string id="646">Konektovanje...</string>
+    <string id="647">by hash...</string>
+    <string id="648">by name...</string>
+    <string id="649">Preuzimanje prevoda...</string>
+    <string id="650">Extracting subtitles...</string>
+    <string id="651">Prevod otpakovan</string>
+    <string id="652">Prevod otpakovan</string>
+    <string id="653">Konekcija nije uspela.</string>
+    <string id="654">Greška pri otpakivanju</string>
+    <!-- OSDB Messages -->
+    <string id="730">OSDB server name missing</string>
+    <string id="731">XMLRPC %s: %s</string>
+    <string id="732">LogIn</string>
+    <string id="733">LogOut</string>
+    <string id="734">GetSubLanguages</string>
+    <string id="735">CheckMovieHash</string>
+    <string id="736">SearchSubtitles</string>
+    <string id="737">Not connected to osdb server</string>
+    <string id="738">Hashing %s not found</string>
+    <string id="739">Hashing %s %s</string>
+    <string id="740">File found on share, remote files not supported</string>
+    <string id="741">Prevod nije pronađen</string>
+    <string id="742"> prevoda</string>
+    <string id="743">HTTP %s: %s</string>
+    <string id="744"> prevoda za </string>
+
+</strings>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>322427e2-327f-4b0c-a0c1-447465c0405c</uuid>
+  <type>plugin</type>
+  <title>IPlayer</title>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <supportedcontent>
+    <content>movies</content>
+	  <content>albums</content>
+  </supportedcontent>
+  <minversion>
+    <xbmc>25000</xbmc>
+  </minversion>
+  <summary>Streams TV and Radio from the BBC</summary>
+  <description>A description</description>
+  <disclaimer></disclaimer>
+  <author>Dink</author>
+</addoninfo>

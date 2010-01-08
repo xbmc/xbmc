@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>   <!--  21.5.2009 Finnish   -->
+
+	<string id="30000">Käytettävä videolähetys</string>
+	<string id="30001">Käytettävä radiolähetys</string>
+	<string id="30002">Käytä vain suositeltuja lähetyksiä</string>
+	<string id="30005">Kokoa ohjelmat sarjoiksi</string>
+	<string id="30006">Lisää juokseva numerointi sarjojen ja kategorian listauksiin</string>	
+	<string id="30007">Pienoiskuvakkeen koko (pienempi = nopeampi lataus)</string>
+	<string id="30010">Käytä vanhoja katseluja (ohittaa asetukset)</string>
+	<string id="30020">Lataa pienoiskuvakkeet</string>
+	<string id="30021">Poista X-päivää vanhemmat pienoiskuvakkeet [0=ei käytössä]</string>
+	<string id="30025">Tekstitykset</string>
+	<string id="30050">Yhteyden odotusaika (sekuntia) [0=ei käytössä]</string>
+</strings>
