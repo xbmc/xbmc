@@ -881,7 +881,10 @@ void CDVDPlayer::Process()
     if(!m_pInputStream)
     {
       if (OpenInputStream() == false)
+      {
+        m_bAbortRequest = true;
         break;
+      }
     }
 
     // should we open a new demuxer?
@@ -894,7 +897,10 @@ void CDVDPlayer::Process()
         break;
 
       if (OpenDemuxStream() == false)
+      {
+        m_bAbortRequest = true;
         break;
+      }
 
       OpenDefaultStreams();
       UpdateApplication(0);
