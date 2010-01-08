@@ -39,8 +39,6 @@
   #include "cores/VideoRenderers/RenderManager.h"
 #endif
 
-
-
 #include "cores/IPlayer.h"
 #include "File.h"
 
