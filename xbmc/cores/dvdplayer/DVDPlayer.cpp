@@ -697,6 +697,10 @@ bool CDVDPlayer::IsValidStream(CCurrentStream& stream)
 
 bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 {
+  // Do not reopen non-video streams if we're in video-only mode
+  if(m_PlayerOptions.video_only && current.type != STREAM_VIDEO)
+    return false;
+
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     int source_type;
@@ -1038,16 +1042,10 @@ void CDVDPlayer::Process()
       if (!IsValidStream(m_CurrentSubtitle) && m_dvdPlayerSubtitle.IsStalled()) CloseSubtitleStream(true);
       if (!IsValidStream(m_CurrentTeletext))                                    CloseTeletextStream(true);
 
-      // check if there is any better stream to use (normally for dvd's)
-      if ( !m_PlayerOptions.video_only )
-      {
-        // Do not reopen non-video streams if we're in video-only mode
-        if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream(pStream->iId, pStream->source);
-        if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
-        if (IsBetterStream(m_CurrentTeletext, pStream)) OpenTeletextStream(pStream->iId, pStream->source);
-      }
-
-      if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream(pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentAudio,    pStream)) OpenAudioStream   (pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentVideo,    pStream)) OpenVideoStream   (pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentSubtitle, pStream)) OpenSubtitleStream(pStream->iId, pStream->source);
+      if (IsBetterStream(m_CurrentTeletext, pStream)) OpenTeletextStream(pStream->iId, pStream->source);
     }
     catch (...)
     {
