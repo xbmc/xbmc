@@ -313,19 +313,8 @@ void CGUIWindow::Render()
   if (!m_bAllocated) return;
 
   // find our origin point
-  float posX = m_posX;
-  float posY = m_posY;
-  for (unsigned int i = 0; i < m_origins.size(); i++)
-  {
-    // no condition implies true
-    if (!m_origins[i].condition || g_infoManager.GetBool(m_origins[i].condition, GetID()))
-    { // found origin
-      posX = m_origins[i].x;
-      posY = m_origins[i].y;
-      break;
-    }
-  }
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  CPoint pos = GetOrigin();
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, pos.x, pos.y, m_needsScaling);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
@@ -370,23 +359,26 @@ bool CGUIWindow::OnAction(const CAction &action)
   return false;
 }
 
-// OnMouseAction - called by OnAction()
-bool CGUIWindow::OnMouseAction()
+CPoint CGUIWindow::GetOrigin()
 {
-  // we need to convert the mouse coordinates to window coordinates
-  float posX = m_posX;
-  float posY = m_posY;
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
     // no condition implies true
     if (!m_origins[i].condition || g_infoManager.GetBool(m_origins[i].condition, GetID()))
     { // found origin
-      posX = m_origins[i].x;
-      posY = m_origins[i].y;
-      break;
+      return CPoint(m_origins[i].x, m_origins[i].y);
     }
   }
-  g_graphicsContext.SetScalingResolution(m_coordsRes, posX, posY, m_needsScaling);
+  return CPoint(m_posX, m_posY);
+}
+
+// OnMouseAction - called by OnAction()
+bool CGUIWindow::OnMouseAction()
+{
+  // we need to convert the mouse coordinates to window coordinates
+  CPoint pos = GetOrigin();
+
+  g_graphicsContext.SetScalingResolution(m_coordsRes, pos.x, pos.y, m_needsScaling);
   CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
   m_transform.InverseTransformPosition(mousePoint.x, mousePoint.y);

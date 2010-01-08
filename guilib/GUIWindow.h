@@ -216,6 +216,12 @@ protected:
 
   int m_renderOrder;      // for render order of dialogs
 
+  /*! \brief Grabs the window's origin in skin coordinates
+   The windows origin may change based on <origin> tag conditions in the skin
+
+   \return the window's origin in skin coordinates
+   */
+  CPoint GetOrigin();
   std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states
