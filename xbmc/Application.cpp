@@ -1398,8 +1398,11 @@ void CApplication::StopWebServer(bool bWait)
 void CApplication::StartJSONRPCServer()
 {
 #ifdef HAS_JSONRPC
-  CTCPServer::StartServer(9090, false);
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+  if (g_guiSettings.GetBool("services.esenabled"))
+  {
+    CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces"));
+    CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+  }
 #endif
 }
 
