@@ -116,8 +116,8 @@ CDVDTeletextData::~CDVDTeletextData()
 
 bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints)
 {
-#if (! defined USE_EXTERNAL_FFMPEG)
-  if (hints.codec == CODEC_ID_EBU_TELETEXT)
+#if (! defined USE_EXTERNAL_FFMPEG) || (defined LIBAVFORMAT_VERSION_INT >= (52<<44))
+  if (hints.codec == CODEC_ID_DVB_TELETEXT)
     return true;
 #endif
 
@@ -128,8 +128,8 @@ bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints)
 {
   m_messageQueue.Init();
 
-#if (! defined USE_EXTERNAL_FFMPEG)
-  if (hints.codec == CODEC_ID_EBU_TELETEXT)
+#if (! defined USE_EXTERNAL_FFMPEG) || (defined LIBAVFORMAT_VERSION_INT >= (52<<44))
+  if (hints.codec == CODEC_ID_DVB_TELETEXT)
   {
     CLog::Log(LOGNOTICE, "Creating teletext data thread");
     Create();

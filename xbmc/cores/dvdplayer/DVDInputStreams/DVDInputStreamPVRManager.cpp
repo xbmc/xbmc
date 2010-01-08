@@ -189,17 +189,17 @@ int CDVDInputStreamPVRManager::GetStartTime()
   return 0;
 }
 
-bool CDVDInputStreamPVRManager::NextChannel()
+bool CDVDInputStreamPVRManager::NextChannel(bool preview/* = false*/)
 {
   if (m_pLiveTV)
-    return m_pLiveTV->NextChannel();
+    return m_pLiveTV->NextChannel(preview);
   return false;
 }
 
-bool CDVDInputStreamPVRManager::PrevChannel()
+bool CDVDInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
 {
   if (m_pLiveTV)
-    return m_pLiveTV->PrevChannel();
+    return m_pLiveTV->PrevChannel(preview);
   return false;
 }
 
@@ -208,6 +208,14 @@ bool CDVDInputStreamPVRManager::SelectChannel(unsigned int channel)
   if (m_pLiveTV)
     return m_pLiveTV->SelectChannel(channel);
   return false;
+}
+
+int CDVDInputStreamPVRManager::GetSelectedChannel()
+{
+  int number = -1;
+  bool radio = false;
+  g_PVRManager.GetCurrentChannel(&number, &radio);
+  return number;
 }
 
 bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)

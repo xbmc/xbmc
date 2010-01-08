@@ -651,14 +651,7 @@ bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
       {
         CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
         StopThread();
-        if (m_clients[(*itr).first]->ReCreate())
-        {
-          /* Get TV Channels from Backends */
-          PVRChannelsTV.Update();
-
-          /* Get Radio Channels from Backends */
-          PVRChannelsRadio.Update();
-        }
+        m_clients[(*itr).first]->ReCreate();
         Create();
       }
     }
@@ -691,15 +684,8 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
         m_clients[(*itr).first]->Destroy();
         m_clients.erase((*itr).first);
         if (!m_clients.empty())
-        {
-          /* Get TV Channels from Backends */
-          PVRChannelsTV.Update();
-
-          /* Get Radio Channels from Backends */
-          PVRChannelsRadio.Update();
-
           Create();
-        }
+
         return true;
       }
     }
@@ -752,9 +738,12 @@ bool CPVRManager::CreateInternalTimeshift()
 
 void CPVRManager::Process()
 {
-  m_LastTVChannelCheck     = 0;
-  m_LastRadioChannelCheck  = 250;
-  m_LastRecordingsCheck    = 0;
+  int Now = CTimeUtils::GetTimeMS()/1000;
+  m_LastTVChannelCheck     = Now;
+  m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
+  m_LastRecordingsCheck    = Now;
+  m_LastEPGScan            = Now;
+  m_LastEPGUpdate          = Now;
 
   /* Get Timers from Backends */
   PVRTimers.Load();
@@ -767,10 +756,7 @@ void CPVRManager::Process()
 
   while (!m_bStop)
   {
-    int Now = CTimeUtils::GetTimeMS()/1000;
-
-    /* Cleanup EPG Data */
-    cPVREpgs::Cleanup();
+    Now = CTimeUtils::GetTimeMS()/1000;
 
     /* Check for new or updated TV Channels */
     if (Now - m_LastTVChannelCheck > CHANNELCHECKDELTA) // don't do this too often
@@ -779,6 +765,7 @@ void CPVRManager::Process()
       PVRChannelsTV.Update();
       m_LastTVChannelCheck = Now;
     }
+
     /* Check for new or updated Radio Channels */
     if (Now - m_LastRadioChannelCheck > CHANNELCHECKDELTA) // don't do this too often
     {
@@ -793,6 +780,24 @@ void CPVRManager::Process()
       CLog::Log(LOGDEBUG,"PVR: Updating Recordings list");
       PVRRecordings.Update(true);
       m_LastRecordingsCheck = Now;
+    }
+
+    /* Check for new or updated EPG entries */
+    if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too ofteng_guiSettings.GetInt("pvrepg.epgscan")*60*60) // don't do this too often
+    {
+      cPVREpgs::Update(true);
+      m_LastEPGScan = Now;
+      m_LastEPGUpdate = Now;  // Data is also updated during scan
+    }
+//    else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
+//    {
+//      cPVREpgs::Update(false);
+//      m_LastEPGUpdate = Now;
+//    }
+    else
+    {
+      /* Cleanup EPG Data */
+      cPVREpgs::Cleanup();
     }
 
     /* Check if we are 10 seconds before the end of the timeshift buffer
@@ -823,6 +828,9 @@ void CPVRManager::Process()
 
     Sleep(1000);
   }
+
+  /* Remove Epg's from Memory */
+  cPVREpgs::Unload();
 }
 
 
@@ -2226,11 +2234,13 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
  * CPVRManager ChannelUp
  *
  * It switch to the next channel and return the new channel to
- * the pointer passed by this function
+ * the pointer passed by this function, if preview is true no client
+ * channel switch is performed, only the data of the new channel is
+ * loaded.
  *
  * Returns true if switch was succesfull
  ********************************************************************/
-bool CPVRManager::ChannelUp(unsigned int *newchannel)
+bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
 {
    if (m_currentPlayingChannel)
    {
@@ -2273,7 +2283,16 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
         continue;
 
       /* Perform Channelswitch */
-      if (m_clients[tag->ClientID()]->SwitchChannel(*tag))
+      if (preview)
+      {
+        /* Update the Playing channel data and the current epg data */
+        delete m_currentPlayingChannel;
+        m_currentPlayingChannel = new CFileItem(*tag);
+        *newchannel = currentTVChannel;
+        LeaveCriticalSection(&m_critSection);
+        return true;
+      }
+      else if (m_clients[tag->ClientID()]->SwitchChannel(*tag))
       {
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;
@@ -2319,11 +2338,13 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
  * CPVRManager ChannelDown
  *
  * It switch to the previous channel and return the new channel to
- * the pointer passed by this function
+ * the pointer passed by this function, if preview is true no client
+ * channel switch is performed, only the data of the new channel is
+ * loaded.
  *
  * Returns true if switch was succesfull
  ********************************************************************/
-bool CPVRManager::ChannelDown(unsigned int *newchannel)
+bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/)
 {
   if (m_currentPlayingChannel)
   {
@@ -2366,7 +2387,16 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
         continue;
 
       /* Perform Channelswitch */
-      if (m_clients[tag->ClientID()]->SwitchChannel(*tag))
+      if (preview)
+      {
+        /* Update the Playing channel data and the current epg data */
+        delete m_currentPlayingChannel;
+        m_currentPlayingChannel = new CFileItem(*tag);
+        *newchannel = currentTVChannel;
+        LeaveCriticalSection(&m_critSection);
+        return true;
+      }
+      else if (m_clients[tag->ClientID()]->SwitchChannel(*tag))
       {
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;

@@ -26,7 +26,7 @@
 #ifndef __PVRCLIENT_TYPES_H__
 #define __PVRCLIENT_TYPES_H__
 
-#define MIN_XBMC_PVRDLL_API 1
+#define XBMC_PVRDLL_API 1
 
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
@@ -62,12 +62,36 @@
 #define PRAGMA_PACK 1
 #endif
 
+#define EVCONTENTMASK_MOVIEDRAMA               0x10
+#define EVCONTENTMASK_NEWSCURRENTAFFAIRS       0x20
+#define EVCONTENTMASK_SHOW                     0x30
+#define EVCONTENTMASK_SPORTS                   0x40
+#define EVCONTENTMASK_CHILDRENYOUTH            0x50
+#define EVCONTENTMASK_MUSICBALLETDANCE         0x60
+#define EVCONTENTMASK_ARTSCULTURE              0x70
+#define EVCONTENTMASK_SOCIALPOLITICALECONOMICS 0x80
+#define EVCONTENTMASK_EDUCATIONALSCIENCE       0x90
+#define EVCONTENTMASK_LEISUREHOBBIES           0xA0
+#define EVCONTENTMASK_SPECIAL                  0xB0
+#define EVCONTENTMASK_USERDEFINED              0xF0
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-  typedef void*         PVRHANDLE;
+  /**
+  * PVR Client Return Data handle
+  */
+  struct PVRHANDLE_STRUCT
+  {
+    void* DATA_ADDRESS;
+    int   DATA_IDENTIFIER;
+  };
+  typedef PVRHANDLE_STRUCT* PVRHANDLE;
 
+  /**
+  * PVR Client startup properties
+  */
   struct PVR_PROPS
   {
     int clientID;

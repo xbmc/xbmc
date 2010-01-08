@@ -59,9 +59,10 @@ public:
   const std::string GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
   PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
+  int GetTimeCorrection() { return m_iTimeCorrection; }
 
   /* TV Guide */
-  PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end);
+  PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end, bool toDB = false);
 
   /* Channels */
   int GetNumChannels();
@@ -108,6 +109,7 @@ protected:
   AddonCB              *m_callbacks;
   CStdString            m_hostName;
   CCriticalSection      m_critSection;
+  int                   m_iTimeCorrection;
 
 private:
   void WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag);

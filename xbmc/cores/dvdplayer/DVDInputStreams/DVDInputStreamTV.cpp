@@ -130,13 +130,13 @@ int CDVDInputStreamTV::GetStartTime()
   return m_pLiveTV->GetStartTime();
 }
 
-bool CDVDInputStreamTV::NextChannel()
+bool CDVDInputStreamTV::NextChannel(bool preview/* = false*/)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->NextChannel();
 }
 
-bool CDVDInputStreamTV::PrevChannel()
+bool CDVDInputStreamTV::PrevChannel(bool preview/* = false*/)
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->PrevChannel();

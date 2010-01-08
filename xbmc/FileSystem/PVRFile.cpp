@@ -156,7 +156,7 @@ int CPVRFile::GetStartTime()
   return g_PVRManager.GetStartTime();
 }
 
-bool CPVRFile::NextChannel()
+bool CPVRFile::NextChannel(bool preview/* = false*/)
 {
   unsigned int newchannel;
 
@@ -170,7 +170,7 @@ bool CPVRFile::NextChannel()
    * increased by one in a case if next channel is encrypted or we
    * on the beginning or end of the channel list!
    */
-  if (g_PVRManager.ChannelUp(&newchannel))
+  if (g_PVRManager.ChannelUp(&newchannel, preview))
   {
     m_playingItem = newchannel;
     return true;
@@ -181,7 +181,7 @@ bool CPVRFile::NextChannel()
   }
 }
 
-bool CPVRFile::PrevChannel()
+bool CPVRFile::PrevChannel(bool preview/* = false*/)
 {
   unsigned int newchannel;
 
@@ -195,7 +195,7 @@ bool CPVRFile::PrevChannel()
    * increased by one in a case if next channel is encrypted or we
    * on the beginning or end of the channel list!
    */
-  if (g_PVRManager.ChannelDown(&newchannel))
+  if (g_PVRManager.ChannelDown(&newchannel, preview))
   {
     m_playingItem = newchannel;
     return true;

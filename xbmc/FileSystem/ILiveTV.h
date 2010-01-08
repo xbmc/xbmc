@@ -28,8 +28,8 @@ class ILiveTVInterface
 {
 public:
   virtual ~ILiveTVInterface() {}
-  virtual bool           NextChannel() = 0;
-  virtual bool           PrevChannel() = 0;
+  virtual bool           NextChannel(bool preview = false) = 0;
+  virtual bool           PrevChannel(bool preview = false) = 0;
   virtual bool           SelectChannel(unsigned int channel) = 0;
 
   virtual int            GetTotalTime() = 0;

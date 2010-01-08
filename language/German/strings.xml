@@ -1622,9 +1622,6 @@
   <string id="18009">Anzeigedauer für Kanalinfo</string>
   <string id="18010">Info beim Kanalwechsel</string>
   <string id="18011">Angeforderte Kanalinfo schließen</string>
-  <string id="18013">EPG</string>
-  <string id="18014">Zeit bis zur EPG-Suche</string>
-  <string id="18015">Zeit bis zur EPG-Aktualisierung</string>
   <string id="18016">Tage für alte EPG Daten in Datenbank</string>
   <string id="18017">Aufnahmen</string>
   <string id="18018">Dauer der Direktaufzeichnung</string>
@@ -1894,6 +1891,13 @@
   <string id="19064">Gehe zum Ende</string>
   <string id="19065">Standart Programmanzeige</string>
   <string id="19066">Lade Aufnahmeinformationen von den PVR-Klienten</string>
+  <string id="19067">Suche neue EPG Daten</string>
+  <string id="19068">Aktualisiere vorhandene EPG Daten</string>
+  <string id="19069">EPG</string>
+  <string id="19070">Zeit bis zur EPG-Suche</string>
+  <string id="19071">Zeit bis zur EPG-Aktualisierung</string>
+  <string id="19072">Ignoriere Datanbank für PVR-Server EPG</string>
+  <string id="19073">Zeitlimit für Kanaleingabe</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>

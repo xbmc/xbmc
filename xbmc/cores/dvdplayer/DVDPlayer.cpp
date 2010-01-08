@@ -462,6 +462,7 @@ bool CDVDPlayer::OpenInputStream()
   m_clock.Discontinuity(CLOCK_DISC_FULL);
   m_dvd.Clear();
   m_errorCount = 0;
+  m_ChannelEntryTimeOut = 0;
 
   return true;
 }
@@ -885,6 +886,27 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+    if (m_ChannelEntryTimeOut > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    {
+      if (CTimeUtils::GetTimeMS() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
+      {
+        m_ChannelEntryTimeOut = 0;
+        CPlayerSeek m_pause(this);
+        CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
+        int channel = pStream->GetSelectedChannel();
+        if(channel > 0 && pStream->SelectChannel(channel))
+        {
+          FlushBuffers(false);
+          SAFE_DELETE(m_pDemuxer);
+          continue;
+        }
+        else
+        {
+          break;
+        }
+      }
+    }
 
     // present the cache dialog until playback actually started
     if (m_pDlgCache)
@@ -1947,9 +1969,18 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) ||
-               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
-               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
+      {
+        CPlayerSeek m_pause(this);
+
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value))
+        {
+          FlushBuffers(false);
+          SAFE_DELETE(m_pDemuxer);
+        }
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
       {
         CPlayerSeek m_pause(this);
 
@@ -1957,19 +1988,30 @@ void CDVDPlayer::HandleMessages()
         if(input)
         {
           bool result;
-          if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
-            result = input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value);
-          else if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
-            result = input->NextChannel();
+          bool fastSwitch = g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0;
+          if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
+            result = input->NextChannel(fastSwitch);
           else
-            result = input->PrevChannel();
+            result = input->PrevChannel(fastSwitch);
 
           if(result)
           {
-            FlushBuffers(false);
-//            CloseAudioStream(false);
-//            CloseSubtitleStream(false);
-            SAFE_DELETE(m_pDemuxer);
+            if (fastSwitch)
+            {
+              CFileItem item(g_application.CurrentFileItem());
+              if(input->UpdateItem(item))
+              {
+                g_application.CurrentFileItem() = item;
+                g_infoManager.SetCurrentItem(item);
+              }
+              m_ChannelEntryTimeOut = CTimeUtils::GetTimeMS();
+            }
+            else
+            {
+              m_ChannelEntryTimeOut = 0;
+              FlushBuffers(false);
+              SAFE_DELETE(m_pDemuxer);
+            }
           }
         }
       }
@@ -3109,7 +3151,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
             {
               pDialog->SetAutoClose(g_guiSettings.GetInt("pvrmenu.infotime")*1000);
             }
-            pDialog->DoModal();
+            if (m_ChannelEntryTimeOut == 0)
+              pDialog->DoModal();
           }
         }
         return true;
@@ -3129,7 +3172,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
             {
               pDialog->SetAutoClose(g_guiSettings.GetInt("pvrmenu.infotime")*1000);
             }
-            pDialog->DoModal();
+            if (m_ChannelEntryTimeOut == 0)
+              pDialog->DoModal();
           }
         }
         return true;

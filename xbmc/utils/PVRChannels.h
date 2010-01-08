@@ -52,8 +52,17 @@ private:
   bool                m_radio;                ///> Radio channel
   bool                m_hide;                 ///> Channel is hide inside filelists
   bool                m_isRecording;          ///> True if channel is currently recording
+  bool                m_grabEpg;              ///> Load EPG if set to true
+  CStdString          m_grabber;              ///> The EPG grabber name (client for backend reading)
   CStdString          m_IconPath;             ///> Path to the logo image
   CStdString          m_strChannel;           ///> Channel name
+  int                 m_countWatched;         ///> The count how much this channel was selected
+  long                m_secondsWatched;       ///> How many seconds this channel was watched
+  CDateTime           m_lastTimeWatched;      ///> The Date where this channel was selected last time
+  bool                m_bIsVirtual;           ///> Is a user defined virtual channel if true
+
+  long                m_iPortalMasterChannel; ///> If it is a Portal Slave channel here is the master channel id or 0 for master, -1 for no portal
+  std::vector<long>   m_PortalChannels;       ///> Stores the slave portal channels if this is a master
 
   /* Client related channel data */
   long                m_iIdUnique;            ///> Unique Id for this channel
@@ -63,6 +72,8 @@ private:
 
   CStdString          m_strStreamURL;         ///> URL of the stream, if empty use Client to read stream
   CStdString          m_strFileNameAndPath;   ///> Filename for PVRManager to open and read stream
+
+  std::vector<long>   m_linkedChannels;       ///> Channels linked to this channel
 
 public:
   cPVRChannelInfoTag() { Reset(); };
@@ -146,6 +157,28 @@ public:
        ///< If this channel is hidden from view it is true.
   void SetHidden(bool hide) { m_hide = hide; }
        ///< Mask this channel hidden.
+  bool GrabEpg() { return m_grabEpg; }
+       ///< If false ignore EPG for this channel.
+  void SetGrabEpg(bool grabEpg) { m_grabEpg = grabEpg; }
+       ///< Change the EPG grabbing flag
+  CStdString Grabber(void) const { return m_grabber; }
+       ///< Get the EPG scraper name
+  void SetGrabber(CStdString Grabber) { m_grabber = Grabber; }
+       ///< Set the EPG scraper name, use "client" for loading  the EPG from Backend
+  bool IsPortalMaster() { return m_iPortalMasterChannel == 0; }
+       ///< Return true if this is a Portal Master channel
+  bool IsPortalSlave() { return m_iPortalMasterChannel > 0; }
+       ///< Return true if this is a Portal Slave channel
+  void SetPortalChannel(long channelID) { m_iPortalMasterChannel = channelID; }
+       ///< Set the portal channel ID, use -1 for no portal channel, NULL if this is a
+       ///< master channel or if it is a slave the master client ID
+  void ClearPortalChannels() { m_PortalChannels.erase(m_PortalChannels.begin(), m_PortalChannels.end()); }
+       ///< Remove all Portal channels
+  void AddPortalChannel(long channelID) { m_PortalChannels.push_back(channelID); }
+       ///< Add a channel ID to the Portal list
+  int GetPortalChannels(CFileItemList* results);
+       ///< Returns a File Item list with all portal channels
+
 
   /* EPG information for now playing event */
   CStdString NowTitle() const;
@@ -165,6 +198,9 @@ public:
   CDateTime  NextEndTime(void) const;
   int        NextDuration() const;
   CStdString NextGenre(void) const;
+
+  void ClearChannelLinkage() { m_linkedChannels.erase(m_linkedChannels.begin(), m_linkedChannels.end()); }
+  void AddChannelLinkage(long LinkedChannel) { m_linkedChannels.push_back(LinkedChannel); }
 };
 
 class cPVRChannels : public std::vector<cPVRChannelInfoTag>
@@ -208,6 +244,7 @@ class cPVRChannelGroup
 private:
   unsigned long m_iGroupID;
   CStdString    m_GroupName;
+  int           m_iSortOrder;
 
 public:
   cPVRChannelGroup(void);
@@ -216,6 +253,8 @@ public:
   void SetGroupID(long group) { m_iGroupID = group; }
   CStdString GroupName(void) const { return m_GroupName; }
   void SetGroupName(CStdString name) { m_GroupName = name; }
+  long SortOrder(void) const { return m_iSortOrder; }
+  void SetSortOrder(long sortorder) { m_iSortOrder = sortorder; }
 };
 
 class cPVRChannelGroups : public std::vector<cPVRChannelGroup>

@@ -337,11 +337,6 @@ enum CodecID {
     CODEC_ID_HDMV_PGS_SUBTITLE,
     CODEC_ID_DVB_TELETEXT,
 
-    /* data codecs */
-    CODEC_ID_VBI_DATA= 0x17500,
-    CODEC_ID_VBI_TELETEXT,
-    CODEC_ID_EBU_TELETEXT,
-
     /* other specific kind of codecs (generally used for attachments) */
     CODEC_ID_TTF= 0x18000,
 

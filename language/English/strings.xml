@@ -1513,9 +1513,6 @@
   <string id="18009">Channel info time</string>
   <string id="18010">Info on channel switch</string>
   <string id="18011">Timeout requested channel info</string>
-  <string id="18013">EPG</string>
-  <string id="18014">EPG scan timeout</string>
-  <string id="18015">EPG update timeout</string>
   <string id="18016">Days to save EPG inside Database</string>
   <string id="18017">Recording</string>
   <string id="18018">Instant record time</string>
@@ -1785,6 +1782,13 @@
   <string id="19064">Go to end</string>
   <string id="19065">Default Programm Guide</string>
   <string id="19066">Loading Recording Information from clients</string>
+  <string id="19067">Searching new EPG data</string>
+  <string id="19068">Refreshing existing EPG data</string>
+  <string id="19069">EPG</string>
+  <string id="19070">EPG scan timeout</string>
+  <string id="19071">EPG update timeout</string>
+  <string id="19072">Ignore Database for PVR-Server EPG</string>
+  <string id="19073">Channel entry timeout</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

@@ -111,6 +111,7 @@ public:
   bool IsPlayingRecording();
   bool IsTimeshifting();
   PVR_SERVERPROPS *GetCurrentClientProps();
+  PVR_SERVERPROPS *GetClientProps(int clientID) { return &m_clientsProps[clientID]; }
   CFileItem *GetCurrentPlayingItem();
   bool GetCurrentChannel(int *number, bool *radio);
   bool HaveActiveClients();
@@ -136,8 +137,8 @@ public:
   __int64 LengthStream(void);
   bool UpdateItem(CFileItem& item);
   bool ChannelSwitch(unsigned int channel);
-  bool ChannelUp(unsigned int *newchannel);
-  bool ChannelDown(unsigned int *newchannel);
+  bool ChannelUp(unsigned int *newchannel, bool preview = false);
+  bool ChannelDown(unsigned int *newchannel, bool preview = false);
   int GetTotalTime();
   int GetStartTime();
 
@@ -190,6 +191,8 @@ private:
   int                 m_LastTVChannelCheck;
   int                 m_LastRadioChannelCheck;
   int                 m_LastRecordingsCheck;
+  int                 m_LastEPGUpdate;
+  int                 m_LastEPGScan;
 
   /*--- Previous Channel data ---*/
   int                 m_PreviousChannel[2];

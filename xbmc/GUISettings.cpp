@@ -664,15 +664,16 @@ void CGUISettings::Initialize()
   AddSeparator(11, "pvrmenu.sep2");
   AddInt(12, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_CHANNEL, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
 
-  AddCategory(8,"pvrepg", 18013);
-  AddInt(1, "pvrepg.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
-  AddInt(2, "pvrepg.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddCategory(8,"pvrepg", 19069);
+  AddInt(1, "pvrepg.epgscan", 19070, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
+  AddInt(2, "pvrepg.epgupdate", 19071, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(3, "pvrepg.ignoredbforclient", 19072, false);
 
   AddCategory(8,"pvrplayback", 18023);
   AddBool(1, "pvrplayback.switchautoclose", 18034, true);
   AddBool(2, "pvrplayback.playminimized", 18026, true);
   AddInt(3, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddBool(4, "pvrplayback.sddeinterlace", 18027, false);
+  AddInt(4, "pvrplayback.channelentrytimeout", 19073, 1000, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
   AddSeparator(6, "pvrplayback.sep1");
   AddBool(7, "pvrplayback.timeshift", 18107, false);
   AddInt(8, "pvrplayback.timeshiftcache", 18108, 1024, 128, 128, 16384, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);

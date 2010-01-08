@@ -165,7 +165,7 @@ bool CDVDInputStreamHTSP::GetChannels(SChannelV &channels, SChannelV::iterator &
   return false;
 }
 
-bool CDVDInputStreamHTSP::NextChannel()
+bool CDVDInputStreamHTSP::NextChannel(bool preview/* = false*/)
 {
   SChannelV channels;
   SChannelV::iterator it;
@@ -179,7 +179,7 @@ bool CDVDInputStreamHTSP::NextChannel()
     return SetChannel(circ->id);
 }
 
-bool CDVDInputStreamHTSP::PrevChannel()
+bool CDVDInputStreamHTSP::PrevChannel(bool preview/* = false*/)
 {
   SChannelV channels;
   SChannelV::iterator it;

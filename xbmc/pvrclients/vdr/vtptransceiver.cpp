@@ -32,6 +32,7 @@
 #include "epg.h"
 #include "client.h"
 
+//#define DEBUG_VTP
 #define MINLOGREPEAT 10 //don't log connect failures too often (seconds)
 
 using namespace std;
@@ -431,6 +432,9 @@ bool CVTPTransceiver::SendCommand(const string &command, int &code, vector<strin
 
   if(code < 200 || code > 299)
   {
+    if (code == 550 && lines[lines.size()-1] == "No schedule found") // Ignore error for missing EPG
+      return true;
+
     XBMC_log(LOG_ERROR, "CVTPTransceiver::SendCommand - Failed with code: %d (%s)", code, lines[lines.size()-1].c_str());
     return false;
   }
@@ -446,7 +450,9 @@ bool CVTPTransceiver::CheckConnection()
   {
     cTBSelect select;
 
+#ifdef DEBUG_VTP
     XBMC_log(LOG_DEBUG, "connection open");
+#endif
 
     // XXX+ check if connection is still alive (is there a better way?)
     // There REALLY shouldn't be anything readable according to PROTOCOL here
@@ -455,7 +461,9 @@ bool CVTPTransceiver::CheckConnection()
     int res;
     if ((res = select.Select(0)) == 0)
     {
+#ifdef DEBUG_VTP
       XBMC_log(LOG_DEBUG, "select said nothing happened");
+#endif
       return true;
     }
     XBMC_log(LOG_DEBUG, "closing connection (res was %d)", res);
@@ -744,7 +752,9 @@ PVR_ERROR CVTPTransceiver::RequestEPGForChannel(const PVR_CHANNEL &channel, PVRH
     command.Format("LSTE %d", channel.number);
   while (!SendCommand(command, code, lines) || code != 215)
   {
-    if (code != 451)
+    if (code == 550)
+      return PVR_ERROR_NO_ERROR;
+    else if (code != 451)
       return PVR_ERROR_SERVER_ERROR;
     Sleep(100);
   }

@@ -52,8 +52,9 @@ public:
   virtual bool    NextStream();
 
   bool            SelectChannel(unsigned int iChannel);
-  bool            NextChannel();
-  bool            PrevChannel();
+  bool            NextChannel(bool preview = false);
+  bool            PrevChannel(bool preview = false);
+  int             GetSelectedChannel();
 
   int             GetTotalTime();
   int             GetStartTime();

@@ -584,12 +584,12 @@ bool CCMythFile::ChangeChannel(int direction, const CStdString &channel)
   return true;
 }
 
-bool CCMythFile::NextChannel()
+bool CCMythFile::NextChannel(bool preview/* = false*/)
 {
   return ChangeChannel(CHANNEL_DIRECTION_UP, "");
 }
 
-bool CCMythFile::PrevChannel()
+bool CCMythFile::PrevChannel(bool preview/* = false*/)
 {
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }

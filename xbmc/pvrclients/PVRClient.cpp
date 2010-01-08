@@ -43,6 +43,7 @@
 #include "PVRClient.h"
 #include "PVRManager.h"
 #include "URL.h"
+#include "AdvancedSettings.h"
 #include "../utils/log.h"
 #include "../utils/AddonHelpers.h"
 
@@ -52,6 +53,7 @@ using namespace ADDON;
 CPVRClient::CPVRClient(const ADDON::AddonProps& props) : ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(props)
                               , m_ReadyToUse(false)
                               , m_hostName("unknown")
+                              , m_iTimeCorrection(0)
 {
 }
 
@@ -99,6 +101,38 @@ bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
   {
     m_ReadyToUse = true;
     m_hostName   = m_pStruct->GetConnectionString();
+    if (!g_advancedSettings.m_bDisableEPGTimeCorrection)
+    {
+      time_t localTime;
+      time_t backendTime = 0;
+      int    gmtOffset   = 0;
+      CDateTime::GetCurrentDateTime().GetAsTime(localTime);
+      PVR_ERROR err = GetBackendTime(&backendTime, &gmtOffset);
+      if (err == PVR_ERROR_NO_ERROR && gmtOffset != 0)
+      {
+        /* Is really a big time difference between PVR Backend and XBMC or only a bad GMT Offset? */
+        if (backendTime-localTime >= 30 || backendTime-localTime <= -30)
+        {
+          m_iTimeCorrection = gmtOffset;
+          CLog::Log(LOGDEBUG, "PVR: %s/%s - Using a timezone difference of '%i' minutes to correct EPG times", Name().c_str(), m_hostName.c_str(), m_iTimeCorrection/60);
+        }
+        else
+        {
+          m_iTimeCorrection = 0;
+          CLog::Log(LOGDEBUG, "PVR: %s/%s - Ignoring the timezone difference of '%i' minutes (No difference betweem XBMC and Backend Clock found)", Name().c_str(), m_hostName.c_str(), m_iTimeCorrection/60);
+        }
+      }
+    }
+    else if (g_advancedSettings.m_iUserDefinedEPGTimeCorrection > 0)
+    {
+      m_iTimeCorrection = g_advancedSettings.m_iUserDefinedEPGTimeCorrection*60;
+      CLog::Log(LOGDEBUG, "PVR: %s/%s - Using a userdefined timezone difference of '%i' minutes (taken from advancedsettings.xml)", Name().c_str(), m_hostName.c_str(), g_advancedSettings.m_iUserDefinedEPGTimeCorrection);
+    }
+    else
+    {
+      m_iTimeCorrection = 0;
+      CLog::Log(LOGDEBUG, "PVR: %s/%s - Timezone difference correction is disabled in advancedsettings.xml", Name().c_str(), m_hostName.c_str());
+    }
   }
 
   return m_ReadyToUse;
@@ -269,7 +303,7 @@ PVR_ERROR CPVRClient::GetBackendTime(time_t *localTime, int *gmtOffset)
  * EPG PVR Functions
  */
 
-PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end)
+PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end, bool toDB/* = false*/)
 {
   CSingleLock lock(m_critSection);
 
@@ -280,9 +314,14 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cP
     try
     {
       PVR_CHANNEL tag;
-      const PVRHANDLE handle = (cPVREpg*) epg;
+      PVRHANDLE_STRUCT handle;
+      handle.DATA_ADDRESS = (cPVREpg*) epg;
+      if (toDB)
+        handle.DATA_IDENTIFIER = 1;
+      else
+        handle.DATA_IDENTIFIER = 0;
       WriteClientChannelInfo(channelinfo, tag);
-      ret = m_pStruct->RequestEPGForChannel(handle, tag, start, end);
+      ret = m_pStruct->RequestEPGForChannel(&handle, tag, start, end);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -309,8 +348,12 @@ void CPVRClient::PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, con
     return;
   }
 
-  cPVREpg *xbmcEpg = (cPVREpg*) handle;
-  cPVREpg::Add(epgentry, xbmcEpg);
+  cPVREpg *xbmcEpg = (cPVREpg*) handle->DATA_ADDRESS;
+  if (handle->DATA_IDENTIFIER == 1)
+    cPVREpg::AddDB(epgentry, xbmcEpg);
+  else
+    cPVREpg::Add(epgentry, xbmcEpg);
+
   return;
 }
 
@@ -346,8 +389,9 @@ PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
   {
     try
     {
-      const PVRHANDLE handle = (cPVRChannels*) &channels;
-      ret = m_pStruct->RequestChannelList(handle, radio);
+      PVRHANDLE_STRUCT handle;
+      handle.DATA_ADDRESS = (cPVRChannels*) &channels;
+      ret = m_pStruct->RequestChannelList(&handle, radio);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -374,7 +418,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
     return;
   }
 
-  cPVRChannels *xbmcChannels = (cPVRChannels*) handle;
+  cPVRChannels *xbmcChannels = (cPVRChannels*) handle->DATA_ADDRESS;
   cPVRChannelInfoTag tag;
 
   tag.SetChannelID(-1);
@@ -597,8 +641,9 @@ PVR_ERROR CPVRClient::GetAllRecordings(cPVRRecordings *results)
   {
     try
     {
-      const PVRHANDLE handle = (cPVRRecordings*) results;
-      ret = m_pStruct->RequestRecordingsList(handle);
+      PVRHANDLE_STRUCT handle;
+      handle.DATA_ADDRESS = (cPVRRecordings*) results;
+      ret = m_pStruct->RequestRecordingsList(&handle);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -625,7 +670,7 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
     return;
   }
 
-  cPVRRecordings *xbmcRecordings = (cPVRRecordings*) handle;
+  cPVRRecordings *xbmcRecordings = (cPVRRecordings*) handle->DATA_ADDRESS;
 
   cPVRRecordingInfoTag tag;
 
@@ -759,8 +804,9 @@ PVR_ERROR CPVRClient::GetAllTimers(cPVRTimers *results)
   {
     try
     {
-      const PVRHANDLE handle = (cPVRTimers*) results;
-      ret = m_pStruct->RequestTimerList(handle);
+      PVRHANDLE_STRUCT handle;
+      handle.DATA_ADDRESS = (cPVRTimers*) results;
+      ret = m_pStruct->RequestTimerList(&handle);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -787,7 +833,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
     return;
   }
 
-  cPVRTimers *xbmcTimers     = (cPVRTimers*) handle;
+  cPVRTimers *xbmcTimers     = (cPVRTimers*) handle->DATA_ADDRESS;
   cPVRChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_pInfo->clientID);
 
   if (channel == NULL)

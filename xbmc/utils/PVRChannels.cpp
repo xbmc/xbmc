@@ -96,6 +96,10 @@ void cPVRChannelInfoTag::Reset()
   m_radio                 = false;
   m_hide                  = false;
   m_isRecording           = false;
+  m_grabEpg               = true;
+  m_grabber               = "client";
+  m_bIsVirtual            = false;
+  m_iPortalMasterChannel  = -1;
 
   m_clientID              = -1;
   m_iClientNum            = -1;
@@ -361,6 +365,22 @@ bool cPVRChannelInfoTag::IsEmpty() const
           m_strStreamURL.IsEmpty());
 }
 
+int cPVRChannelInfoTag::GetPortalChannels(CFileItemList* results)
+{
+  if (m_iPortalMasterChannel != 0)
+    return -1;
+
+  for (unsigned int i = 0; i < m_PortalChannels.size(); i++)
+  {
+    CFileItemPtr channel(new CFileItem(cPVRChannels::GetByChannelIDFromAll(m_PortalChannels[i])));
+    CStdString path;
+    path.Format("pvr://channels/tv/portal-%04i/%i.pvr", ChannelID(),i+1);
+    channel->m_strPath = path;
+    results->Add(channel);
+  }
+  return results->Size();
+}
+
 // --- cPVRChannels ---------------------------------------------------------------
 
 cPVRChannels PVRChannelsTV;
@@ -387,6 +407,7 @@ bool cPVRChannels::Load(bool radio)
     database->GetDBChannelList(*this, m_bRadio);
     database->Close();
     Update();
+    ReNumberAndCheck();
   }
   else
   {
@@ -1129,7 +1150,7 @@ bool cPVRChannelGroups::Load()
   database->Open();
 
   Clear();
-  database->GetGroupList(*this);
+  database->GetChannelGroupList(*this);
 
   database->Close();
   return true;
@@ -1218,8 +1239,8 @@ void cPVRChannelGroups::AddGroup(const CStdString &name)
   database->Open();
 
   Clear();
-  database->AddGroup(name);
-  database->GetGroupList(*this);
+  database->AddChannelGroup(name, -1);
+  database->GetChannelGroupList(*this);
 
   database->Close();
 }
@@ -1230,8 +1251,8 @@ bool cPVRChannelGroups::RenameGroup(unsigned int GroupId, const CStdString &newn
   database->Open();
 
   Clear();
-  database->RenameGroup(GroupId, newname);
-  database->GetGroupList(*this);
+  database->SetChannelGroupName(GroupId, newname);
+  database->GetChannelGroupList(*this);
 
   database->Close();
   return true;
@@ -1243,7 +1264,7 @@ bool cPVRChannelGroups::DeleteGroup(unsigned int GroupId)
   database->Open();
 
   /* Delete the group inside Database */
-  database->DeleteGroup(GroupId);
+  database->DeleteChannelGroup(GroupId);
 
   /* Set all channels with this group to undefined */
   for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
@@ -1265,7 +1286,7 @@ bool cPVRChannelGroups::DeleteGroup(unsigned int GroupId)
 
   /* Reload the group list */
   Clear();
-  database->GetGroupList(*this);
+  database->GetChannelGroupList(*this);
 
   database->Close();
   return true;
@@ -1295,6 +1316,7 @@ int cPVRChannelGroups::GetGroupId(CStdString GroupName)
     if (GroupName == at(i).GroupName())
       return at(i).GroupID();
   }
+  return -1;
 }
 
 bool cPVRChannelGroups::ChannelToGroup(const cPVRChannelInfoTag &channel, unsigned int GroupId)

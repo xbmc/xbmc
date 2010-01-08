@@ -207,7 +207,7 @@ public:
 
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
-  
+
   virtual CStdString GetPlayingTitle();
 
   enum ECacheState
@@ -287,6 +287,7 @@ protected:
   std::string m_content;  // hold a hint to what content file contains (mime type)
   ECacheState m_caching;
   CFileItem   m_item;
+  long        m_ChannelEntryTimeOut;
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;

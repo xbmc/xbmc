@@ -203,7 +203,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
   /* Set timer based on EPG entry */
   m_clientIndex   = -1;
   m_Active        = true;
-  m_strTitle      = tag->m_strTitle;
+  m_strTitle      = tag->Title();
   m_channelNum    = channel->Number();
   m_clientNum     = channel->ClientNumber();
   m_clientID      = channel->ClientID();
