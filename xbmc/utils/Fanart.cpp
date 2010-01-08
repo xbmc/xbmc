@@ -25,10 +25,7 @@
 #include "Util.h"
 #include "Picture.h"
 #include "FileSystem/FileCurl.h"
-
-#ifdef RESAMPLE_CACHED_IMAGES
 #include "FileSystem/File.h"
-#endif
 
 const unsigned int CFanart::max_fanart_colors=3;
 
@@ -158,19 +155,16 @@ bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination
   // Ideally we'd just call CPicture::CacheImage() directly, but for some
   // reason curl doesn't seem to like downloading these for us
   XFILE::CFileCurl http;
-#ifdef RESAMPLE_CACHED_IMAGES
+
   CStdString tempFile = "special://temp/fanart_download.jpg";
   if (http.Download(url, tempFile))
   { 
     CPicture pic;
-    pic.CacheImage(tempFile, destination);
+    pic.CacheFanart(tempFile, destination);
     XFILE::CFile::Delete(tempFile);
     return true;
   }
   return false;
-#else
-  return http.Download(url, destination);
-#endif
 }
 
 bool CFanart::DownloadImage(const CStdString &strDestination) const

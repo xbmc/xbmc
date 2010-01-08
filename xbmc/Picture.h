@@ -46,7 +46,9 @@ public:
 
   void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
-  bool CacheImage(const CStdString& sourceFileName, const CStdString& destFileName);
+  bool CacheImage(const CStdString& sourceFileName, const CStdString& destFileName, int width, int height);
+  bool CacheThumb(const CStdString& sourceFileName, const CStdString& destFileName);
+  bool CacheFanart(const CStdString& sourceFileName, const CStdString& destFileName);
 
   // caches a skin image as a thumbnail image
   bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);

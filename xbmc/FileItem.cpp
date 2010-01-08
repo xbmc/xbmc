@@ -2700,7 +2700,7 @@ bool CFileItem::CacheLocalFanart() const
   if (!localFanart.IsEmpty())
   {
     CPicture pic;
-    return pic.CacheImage(localFanart, cachedFanart);
+    return pic.CacheFanart(localFanart, cachedFanart);
   }
   return false;
 }

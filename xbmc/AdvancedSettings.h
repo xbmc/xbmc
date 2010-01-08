@@ -141,6 +141,7 @@ class CAdvancedSettings
     bool m_detectAsUdf;
 
     int m_thumbSize;
+    int m_fanartHeight;
 
     int m_sambaclienttimeout;
     CStdString m_sambadoscodepage;

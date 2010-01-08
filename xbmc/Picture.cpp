@@ -112,21 +112,46 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   return true;
 }
 
-bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
+bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName, int width, int height)
 {
-  CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str());
-
 #ifdef RESAMPLE_CACHED_IMAGES
-  if (!m_dll.Load()) return false;
-  if (!m_dll.CreateThumbnail(sourceFileName.c_str(), destFileName.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
-  {
-    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFileName.c_str(), sourceFileName.c_str());
-    return false;
-  }
-  return true;
-#else
-  return CFile::Cache(sourceFileName, destFileName);
+  if (width == 0)
+    width = 1280;
+  
+  if (height == 0)
+    height = 720;
 #endif
+  
+  if (width > 0 && height > 0)
+  {
+    CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceFileName.c_str(), destFileName.c_str(), width, height);
+    if (!m_dll.Load()) return false;
+    if (!m_dll.CreateThumbnail(sourceFileName.c_str(), destFileName.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+    {
+      CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFileName.c_str(), sourceFileName.c_str());
+      return false;
+    }
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str() );
+    return CFile::Cache(sourceFileName, destFileName);
+  }
+}
+
+bool CPicture::CacheThumb(const CStdString& sourceFileName, const CStdString& destFileName)
+{
+  return CacheImage(sourceFileName, destFileName, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
+}
+
+bool CPicture::CacheFanart(const CStdString& sourceFileName, const CStdString& destFileName)
+{
+  int height = g_advancedSettings.m_fanartHeight;
+  // Assume 16:9 size
+  int width = height * 16 / 9;
+
+  return CacheImage(sourceFileName, destFileName, width, height);
 }
 
 bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)

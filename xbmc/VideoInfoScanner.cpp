@@ -1043,7 +1043,7 @@ namespace VIDEO
     else
     {
       CPicture picture;
-      picture.CacheImage(strUserThumb, strThumb);
+      picture.CacheThumb(strUserThumb, strThumb);
     }
 
     CStdString strCheck=pItem->m_strPath;
