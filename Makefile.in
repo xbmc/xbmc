@@ -90,10 +90,13 @@ endif
 
 LIB_DIRS=\
 	xbmc/lib/cximage-6.0 \
+	xbmc/lib/libaddon \
 	xbmc/lib/libexif \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
-	xbmc/lib/libPython/linux
+	xbmc/lib/libPython/linux \
+	xbmc/lib/librefmem \
+	xbmc/lib/libvisualisation
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -261,6 +264,10 @@ exports:
 	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
+addons: exports
+	$(MAKE) -C xbmc/lib/librefmem
+	$(MAKE) -C xbmc/lib/libaddon
+	$(MAKE) -C xbmc/lib/libvisualisation
 visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
@@ -327,10 +334,10 @@ imagelib: dllloader
 
 codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python 
-externals: codecs libs python visualizations screensavers
+externals: codecs libs python addons visualizations screensavers
 
 xcode_depends: \
-	codecs libs python visualizations screensavers eventclients \
+	codecs libs python addons visualizations screensavers eventclients \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \

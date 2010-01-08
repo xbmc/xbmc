@@ -77,7 +77,7 @@ extern "C"
   * \param index position in list
   * \return preset handle
   */
-  XBMC_API viz_preset_t viz_preset_list_get_item(viz_preset_list_t list, int index);
+  XBMC_API viz_preset_t viz_preset_list_get_item(viz_preset_list_t list, unsigned index);
 
   /**
   * Add a preset structure to a preset list
