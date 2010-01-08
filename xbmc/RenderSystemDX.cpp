@@ -32,7 +32,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "SystemInfo.h"
-#include <Dxerr.h>
+
 using namespace std;
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
@@ -258,7 +258,7 @@ void CRenderSystemDX::OnDeviceReset()
     m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
     if (FAILED(m_nDeviceStatus))
     {
-      CLog::Log(LOGDEBUG,"%s ErrorString:%s ErrorDescription:%s",__FUNCTION__,DXGetErrorStringA(m_nDeviceStatus),DXGetErrorDescriptionA(m_nDeviceStatus));
+      CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
     }
     for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
       (*i)->OnResetDevice();

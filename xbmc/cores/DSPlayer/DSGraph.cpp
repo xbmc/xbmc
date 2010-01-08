@@ -294,8 +294,10 @@ void CDSGraph::OnPlayStop()
     m_pMediaControl->Stop();
   BeginEnumFilters(m_pGraphBuilder, pEF, pBF)
   {
-    CComQIPtr<IAMNetworkStatus, &IID_IAMNetworkStatus> pAMNS = pBF;
-    CComQIPtr<IFileSourceFilter> pFSF = pBF;
+    IAMNetworkStatus* pAMNS = NULL;
+    IFileSourceFilter* pFSF = NULL;
+    pBF->QueryInterface(IID_IAMNetworkStatus ,(void**)&pAMNS);
+    pBF->QueryInterface(__uuidof(IFileSourceFilter) ,(void**)&pFSF);
     if(pAMNS && pFSF)
     {
       WCHAR* pFN = NULL;

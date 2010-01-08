@@ -98,22 +98,24 @@ public:
 
     STDMETHODIMP GetVideoPosition(LPRECT lpSRCRect, LPRECT lpDSTRect)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    IVMRWindowlessControl9* pWC9 = NULL;
+    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       return pWC9->GetVideoPosition(lpSRCRect, lpDSTRect);
     }
-
+    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 
   STDMETHODIMP GetAspectRatioMode(DWORD* lpAspectRatioMode)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    IVMRWindowlessControl9* pWC9 = NULL;
+    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       *lpAspectRatioMode = VMR_ARMODE_NONE;
       return S_OK;
     }
-
+    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 
@@ -151,7 +153,8 @@ public:
   STDMETHODIMP put_Width(long Width) {return E_NOTIMPL;}
   STDMETHODIMP get_Width(long* pWidth)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    IVMRWindowlessControl9* pWC9 = NULL;
+    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
@@ -159,7 +162,7 @@ public:
       //*pWidth = d.Width();
       return hr;
     }
-
+    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
   STDMETHODIMP put_Top(long Top) {return E_NOTIMPL;}
@@ -167,14 +170,15 @@ public:
   STDMETHODIMP put_Height(long Height) {return E_NOTIMPL;}
   STDMETHODIMP get_Height(long* pHeight)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    IVMRWindowlessControl9* pWC9 = NULL;
+    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
       *pHeight = g_geometryHelper.GetHeight(d);
       return hr;
     }
-
+    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
   STDMETHODIMP put_Owner(OAHWND Owner) {return E_NOTIMPL;}
@@ -243,7 +247,8 @@ public:
     STDMETHODIMP SetDestinationPosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
     STDMETHODIMP GetDestinationPosition(long* pLeft, long* pTop, long* pWidth, long* pHeight)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    IVMRWindowlessControl9* pWC9 = NULL;
+    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
@@ -253,20 +258,21 @@ public:
       *pHeight = g_geometryHelper.GetHeight(d);
       return hr;
     }
-
+    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
     STDMETHODIMP SetDefaultDestinationPosition() {return E_NOTIMPL;}
     STDMETHODIMP GetVideoSize(long* pWidth, long* pHeight)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    IVMRWindowlessControl9* pWC9 = NULL;
+    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       LONG aw, ah;
       HRESULT hr = pWC9->GetNativeVideoSize(pWidth, pHeight, &aw, &ah);
       *pWidth = *pHeight * aw / ah;
       return hr;
     }
-
+    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 
@@ -277,12 +283,13 @@ public:
 
   STDMETHODIMP GetPreferredAspectRatio(long* plAspectX, long* plAspectY)
   {
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    IVMRWindowlessControl9* pWC9 = NULL;
+    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       LONG w, h;
       return pWC9->GetNativeVideoSize(&w, &h, plAspectX, plAspectY);
     }
-
+    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 };
@@ -567,22 +574,28 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   do
   {
     CMacrovisionKicker* pMK = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
-    CComPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
+    IUnknown* pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
 
     COuterVMR9 *pOuter = new COuterVMR9(NAME("COuterVMR9"), pUnk, this);
 
 
     pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuter);
-    CComQIPtr<IBaseFilter> pBF = pUnk;
+    IBaseFilter* pBF = NULL;
+    pUnk->QueryInterface(__uuidof(IBaseFilter), (void**)&pBF);
 
-    CComPtr<IPin> pPin = DShowUtil::GetFirstPin(pBF);
-    CComQIPtr<IMemInputPin> pMemInputPin = pPin;
+    IPin* pPin = DShowUtil::GetFirstPin(pBF);
+
+    IMemInputPin* pMemInputPin;
+    pPin->QueryInterface(__uuidof(IMemInputPin), (void**)&pMemInputPin);
+
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
 
-    if(CComQIPtr<IAMVideoAccelerator> pAMVA = pPin)
+    IAMVideoAccelerator* pAMVA;
+    if (SUCCEEDED(pPin->QueryInterface(__uuidof(IAMVideoAccelerator), (void**)&pAMVA)))
       HookAMVideoAccelerator((IAMVideoAcceleratorC*)(IAMVideoAccelerator*)pAMVA);
-
-    CComQIPtr<IVMRFilterConfig9> pConfig = pBF;
+    
+    IVMRFilterConfig9* pConfig = NULL;
+    pBF->QueryInterface(__uuidof(IVMRFilterConfig9), (void**)&pConfig);
     if(!pConfig)
       break;
 
@@ -591,7 +604,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
       if(FAILED(hr = pConfig->SetNumberOfStreams(1)))
         break;
 
-      if(CComQIPtr<IVMRMixerControl9> pMC = pBF)
+      IVMRMixerControl9* pMC;
+      if (SUCCEEDED(pBF->QueryInterface(__uuidof(IVMRMixerControl9), (void**)&pMC)))
       {
         DWORD dwPrefs;
         pMC->GetMixingPrefs(&dwPrefs);  
@@ -609,15 +623,16 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     if(FAILED(hr = pConfig->SetRenderingMode(VMR9Mode_Renderless)))
       break;
 
-    CComQIPtr<IVMRSurfaceAllocatorNotify9> pSAN = pBF;
-    if(!pSAN)
+    IVMRSurfaceAllocatorNotify9* pSAN;
+    if (FAILED(pBF->QueryInterface(__uuidof(IVMRSurfaceAllocatorNotify9), (void**)&pSAN)))
       break;
     DWORD_PTR MY_USER_ID = 0xACDCACDC;
     if(FAILED(hr = pSAN->AdviseSurfaceAllocator(MY_USER_ID, static_cast<IVMRSurfaceAllocator9*>(this)))
     || FAILED(hr = AdviseNotify(pSAN)))
       break;
 
-    *ppRenderer = (IUnknown*)pBF.Detach();
+    *ppRenderer = (IUnknown*)pBF;
+    pBF = NULL;
 
     return S_OK;
   }
