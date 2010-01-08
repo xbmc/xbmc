@@ -1950,6 +1950,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+    if (g_guiSettings.GetBool("services.esenabled"))
+      g_application.StartJSONRPCServer();
+    else
+      g_application.StopJSONRPCServer(false);
   }
   else if (strSetting.Equals("services.esport"))
   {
@@ -1979,6 +1983,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+    if (g_guiSettings.GetBool("services.esenabled"))
+      g_application.StartJSONRPCServer();
+    else
+      g_application.StopJSONRPCServer(false);
   }
   else if (strSetting.Equals("services.esinitialdelay") ||
            strSetting.Equals("services.escontinuousdelay"))
