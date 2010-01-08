@@ -192,7 +192,6 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderASAP.cpp \
      GUIWindowTestPattern.cpp \
      GUIViewStateScripts.cpp \
-     GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
      PowerManager.cpp \

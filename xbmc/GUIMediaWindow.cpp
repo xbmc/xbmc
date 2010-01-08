@@ -787,7 +787,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
   }
   else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
   {
-    return true; /*DIRECTORY::CAddonDirectory::RunScriptWithParams(pItem->m_strPath);*/
+    // don't support running addons like this for now
+    return false;
   }
   else
   {
@@ -1254,17 +1255,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   if (item->IsPlugin() && item->IsFileFolder())
   {
-    ADDON::AddonPtr plugin;
-    if (ADDON::CAddonMgr::Get()->GetAddonFromPath(item->m_strPath, plugin))
-    if (plugin->HasSettings())
-      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
-    if (m_vecItems->m_strPath.Equals("plugin://music/")    ||
-        m_vecItems->m_strPath.Equals("plugin://video/")    ||
-        m_vecItems->m_strPath.Equals("plugin://pictures/") ||
-        m_vecItems->m_strPath.Equals("plugin://programs/")   )
-    {
-      buttons.Add(CONTEXT_BUTTON_DELETE_PLUGIN, 117);
-    }
   }
 
   if (item->GetPropertyBOOL("pluginreplacecontextitems"))
@@ -1292,10 +1282,10 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
-      CStdString path(m_vecItems->Get(itemNumber)->m_strPath);
+      CURL plugin(m_vecItems->Get(itemNumber)->m_strPath);
       ADDON::AddonPtr addon;
-      CAddonMgr::Get()->GetAddonFromPath(path, addon);
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      if (CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, plugin.GetHostName(), addon))
+        CGUIDialogAddonSettings::ShowAndGetInput(addon);
       return true;
     }
   case CONTEXT_BUTTON_DELETE_PLUGIN:

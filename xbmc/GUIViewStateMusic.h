@@ -27,7 +27,7 @@
 class CGUIViewStateWindowMusic : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items) {}
+  CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items, CONTENT_ALBUMS) {}
 protected:
   virtual int GetPlaylist();
   virtual bool AutoPlayNextItem();

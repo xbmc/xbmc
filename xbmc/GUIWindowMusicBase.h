@@ -33,8 +33,6 @@
 #include "PlayListPlayer.h"
 #include "MusicInfoLoader.h"
 
-class ADDON::CScraper;
-
 /*!
  \ingroup windows
  \brief The base class for music windows

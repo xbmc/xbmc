@@ -224,8 +224,6 @@ void CGUISettings::Initialize()
   AddBool(4, "pictures.showvideos", 22022, false);
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   AddInt(0, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
-  AddSeparator(11,"pictures.sep3");
-  AddString(12, "pictures.manageplugin", 23074, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 5, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -237,7 +235,6 @@ void CGUISettings::Initialize()
 
   AddCategory(1,"programfiles",744);
   AddBool(4, "programfiles.savefolderviews", 583, true);
-  AddString(5, "programfiles.manageplugin", 23073, "", BUTTON_CONTROL_STANDARD);
   AddString(5, "programfiles.defaultscraper", 20194, "", SPIN_CONTROL_TEXT);
   AddString(6, "programfiles.managescraper", 23068, "", BUTTON_CONTROL_STANDARD);
 
@@ -249,6 +246,7 @@ void CGUISettings::Initialize()
   AddString(3, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.plugin", 23027, "", SPIN_CONTROL_TEXT, true);
+  //FIXME keep this here until we figure out what to do with weather 'plugins'
   AddString(6, "weather.manageplugins", 23075, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
@@ -442,7 +440,6 @@ void CGUISettings::Initialize()
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "videolibrary", 14022);
-  AddString(1, "videolibrary.manageplugins", 23061, "", BUTTON_CONTROL_STANDARD);
   AddBool(0, "videolibrary.enabled", 418, true);
   AddBool(3, "videolibrary.showunwatchedplots", 20369, true);
   AddBool(0, "videolibrary.seasonthumbs", 20382, true);

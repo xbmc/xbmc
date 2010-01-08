@@ -23,7 +23,6 @@
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePictures.h"
-#include "GUIViewStatePrograms.h"
 #include "GUIViewStateScripts.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
@@ -33,6 +32,7 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "GUIWindowManager.h"
+#include "utils/AddonManager.h"
 #include "ViewState.h"
 #include "GUISettings.h"
 #include "Settings.h"
@@ -46,6 +46,9 @@ VECSOURCES CGUIViewState::m_sources;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
+  // don't expect derived classes to clear the sources
+  m_sources.clear();
+
   if (windowId == 0)
     return GetViewState(g_windowManager.GetActiveWindow(),items);
 
@@ -113,18 +116,16 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
 
-  if (windowId==WINDOW_PROGRAMS)
-    return new CGUIViewStateWindowPrograms(items);
-
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
 }
 
-CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
+CGUIViewState::CGUIViewState(const CFileItemList& items, const CONTENT_TYPE& content/*=CONTENT_NONE*/) : m_items(items)
 {
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
   m_sortOrder=SORT_ORDER_ASC;
+  m_content = content;
 }
 
 CGUIViewState::~CGUIViewState()
@@ -332,6 +333,32 @@ CStdString CGUIViewState::GetExtensions()
 
 VECSOURCES& CGUIViewState::GetSources()
 {
+  // more consolidation could happen here for all content types
+  // - playlists, autoconfig network shares, whatnot
+
+  if (m_content == CONTENT_NONE)
+    return m_sources;
+
+  // reload addons.xml
+  ADDON::CAddonMgr::Get()->LoadAddonsXML(ADDON::ADDON_PLUGIN);
+
+  ADDON::VECADDONS addons;
+  ADDON::CAddonMgr::Get()->GetAddons(ADDON::ADDON_PLUGIN, addons, m_content);
+
+  for (unsigned i=0; i<addons.size(); i++)
+  {
+    // format for sources's path is
+    // eg. pictures://UUID
+    CMediaSource plugin;
+    CURL path;
+    path.SetProtocol(ADDON::TranslateContent(m_content));
+    path.SetHostName(addons[i]->UUID());
+    plugin.strPath = path.Get();
+    plugin.strName = addons[i]->Name();
+    plugin.m_strThumbnailImage = addons[i]->Icon(); //FIXME cache by UUID
+    plugin.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    m_sources.push_back(plugin);
+  }
   return m_sources;
 }
 

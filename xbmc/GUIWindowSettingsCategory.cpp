@@ -1387,19 +1387,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
-  //TODO remove duplication
-  else if (strSetting.Equals("videolibrary.manageplugins"))
-  {
-    CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_MOVIES))
-    {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
-    }
-  }
   else if (strSetting.Equals("musiclibrary.scraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -2029,11 +2016,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       pSettingString->SetData(path);
     }
   }
-  else if (strSetting.Equals("pictures.manageplugin"))
-  {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_PICTURES))
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
-  }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
     g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
@@ -2161,20 +2143,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // We asked for the master password and saved the new one!
       // Nothing todo here
     }
-  }
-  else if (strSetting.Equals("myvideos.manageplugin"))
-  {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_MOVIES))
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
-    else
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
-  }
-  else if (strSetting.Equals("programfiles.manageplugin"))
-  {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_PROGRAMS))
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
-    else
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
   }
   else if (strSetting.Equals("network.interface"))
   {

@@ -172,7 +172,6 @@ CAddon::CAddon(const AddonProps &props)
   m_disclaimer  = props.disclaimer;
   if (props.libname.empty()) BuildLibName();
   else m_strLibName = props.libname;
-  m_strLibName  = props.libname;
   m_userSettingsPath = GetUserSettingsPath();
 }
 

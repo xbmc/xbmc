@@ -28,7 +28,7 @@ class TiXmlElement;
 
 typedef enum
 {
-  CONTENT_PLUGIN          = -2,
+  CONTENT_PLUGIN          = -2, //TODO ditch this, used in scraping code
   //TODO -1 is used as default in QueryParams.h
   CONTENT_NONE            = 0,
   CONTENT_MOVIES          = 1,

@@ -36,11 +36,13 @@
 #include "MediaManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
+#include "utils/AddonManager.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "Picture.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -289,11 +291,23 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
   {
     if (share)
     {
-      if (!share->m_ignore)
+      // Note. from now on, remove source & disable plugin should mean the same thing
+      //TODO might be smart to also combine editing source & plugin settings into one concept/dialog
+
+      CURL url(share->strPath);
+      bool isUUID = StringUtils::ValidateUUID(url.GetHostName());
+      if (!share->m_ignore && !isUUID)
         buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
+      else
+      {
+        ADDON::AddonPtr plugin;
+        if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_PLUGIN, url.GetHostName(), plugin))
+        if (plugin->HasSettings())
+          buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
+      }
       buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
       if (!share->m_ignore)
-        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
+        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source / disable plugin
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
     }
