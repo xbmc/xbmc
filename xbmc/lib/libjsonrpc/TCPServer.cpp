@@ -16,11 +16,11 @@ using namespace Json;
 
 CTCPServer *CTCPServer::ServerInstance = NULL;
 
-void CTCPServer::StartServer(int port)
+void CTCPServer::StartServer(int port, bool nonlocal)
 {
   StopServer(true);
 
-  ServerInstance = new CTCPServer(port);
+  ServerInstance = new CTCPServer(port, nonlocal);
   ServerInstance->Create();
 }
 
@@ -37,9 +37,10 @@ void CTCPServer::StopServer(bool bWait)
   }
 }
 
-CTCPServer::CTCPServer(int port)
+CTCPServer::CTCPServer(int port, bool nonlocal)
 {
   m_port = port;
+  m_nonlocal = nonlocal;
   m_ServerSocket = -1;
 }
 
@@ -148,8 +149,18 @@ bool CTCPServer::Initialize()
 {
   Deinitialize();
 
-  struct sockaddr_in addr;
-  m_ServerSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+  struct sockaddr_in myaddr;
+
+  myaddr.sin_family = AF_INET;
+  myaddr.sin_port = htons(m_port);
+  bool m_bindlocally = true;
+
+  if (m_nonlocal)
+    myaddr.sin_addr.s_addr = INADDR_ANY;
+  else
+    inet_pton(AF_INET, "127.0.0.1", &myaddr.sin_addr.s_addr);
+
+  m_ServerSocket = socket(PF_INET, SOCK_STREAM, 0);
 
   if (m_ServerSocket < 0)
   {
@@ -157,19 +168,13 @@ bool CTCPServer::Initialize()
     return false;
   }
 
-  memset(&addr, 0, sizeof(struct sockaddr_in));
-
-  addr.sin_family = PF_INET;
-  addr.sin_port = htons(m_port);
-  addr.sin_addr.s_addr = INADDR_ANY;
-
-  if (bind(m_ServerSocket, (const struct sockaddr *)&addr, sizeof(struct sockaddr_in)) < 0)
+  if (bind(m_ServerSocket, (struct sockaddr*)&myaddr, sizeof myaddr) < 0)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to bind serversocket");
     close(m_ServerSocket);
     return false;
   }
-
+  
   if (listen(m_ServerSocket, 10) < 0)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to set listen");

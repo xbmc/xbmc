@@ -1398,7 +1398,7 @@ void CApplication::StopWebServer(bool bWait)
 void CApplication::StartJSONRPCServer()
 {
 #ifdef HAS_JSONRPC
-  CTCPServer::StartServer(9090);
+  CTCPServer::StartServer(9090, false);
   CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
 #endif
 }

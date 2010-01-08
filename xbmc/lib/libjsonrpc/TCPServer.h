@@ -14,7 +14,7 @@ namespace JSONRPC
   class CTCPServer : public ITransportLayer, public ANNOUNCEMENT::IAnnouncer, public CThread
   {
   public:
-    static void StartServer(int port);
+    static void StartServer(int port, bool nonlocal);
     static void StopServer(bool bWait);
 
     virtual bool CanAnnounce();
@@ -22,7 +22,7 @@ namespace JSONRPC
   protected:
     void Process();
   private:
-    CTCPServer(int port);
+    CTCPServer(int port, bool nonlocal);
     bool Initialize();
     void Deinitialize();
 
@@ -49,6 +49,7 @@ namespace JSONRPC
     std::vector<CTCPClient> m_connections;
     int m_ServerSocket;
     int m_port;
+    bool m_nonlocal;
 
     static CTCPServer *ServerInstance;
   };
