@@ -52,6 +52,7 @@ public:
   bool OpenStream(CDVDStreamInfo &hints, std::string& filename);
   void CloseStream(bool flush);
 
+  bool IsStalled() { return m_pOverlayContainer->GetSize() == 0; }
 private:
   CDVDOverlayContainer* m_pOverlayContainer;
 

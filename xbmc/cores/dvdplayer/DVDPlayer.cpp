@@ -1032,21 +1032,11 @@ void CDVDPlayer::Process()
 
     try
     {
-      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-      {
-        // check so dvdnavigator didn't want us to close stream,
-        // we allow lingering invalid audio/subtitle streams here to let player pass vts/cell borders more cleanly
-        if (m_dvd.iSelectedAudioStream < 0 && m_CurrentAudio.id >= 0) CloseAudioStream( true );
-        if (m_dvd.iSelectedSPUStream < 0 && m_CurrentVideo.id >= 0)   CloseSubtitleStream( true );
-      }
-      else
-      {
-        // check so that none of our streams has become invalid
-        if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(true);
-        if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(true);
-        if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(true);
-        if (!IsValidStream(m_CurrentTeletext)) CloseTeletextStream(true);
-      }
+      // check so that none of our streams has become invalid
+      if (!IsValidStream(m_CurrentAudio)    && m_dvdPlayerAudio.IsStalled())    CloseAudioStream(true);
+      if (!IsValidStream(m_CurrentVideo)    && m_dvdPlayerVideo.IsStalled())    CloseVideoStream(true);
+      if (!IsValidStream(m_CurrentSubtitle) && m_dvdPlayerSubtitle.IsStalled()) CloseSubtitleStream(true);
+      if (!IsValidStream(m_CurrentTeletext))                                    CloseTeletextStream(true);
 
       // check if there is any better stream to use (normally for dvd's)
       if ( !m_PlayerOptions.video_only )
