@@ -279,7 +279,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
     // add the plugins dir as needed
-    if (CPluginDirectory::HasPlugins("music"))
+    if (ADDON::CAddonMgr::Get()->HasAddons(ADDON::ADDON_PLUGIN, CONTENT_ALBUMS))
     {
       share1.strPath = "plugin://music/";
       share1.strName = g_localizeStrings.Get(1038); // Music Plugins
@@ -319,7 +319,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share1);
 
     // add the plugins dir as needed
-    if (CPluginDirectory::HasPlugins("video"))
+    if (ADDON::CAddonMgr::Get()->HasAddons(ADDON::ADDON_PLUGIN, CONTENT_MOVIES))
     {
       share1.strPath = "plugin://video/";
       share1.strName = g_localizeStrings.Get(1037); // Video Plugins
@@ -350,7 +350,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share1);
 
     // add the plugins dir as needed
-    if (CPluginDirectory::HasPlugins("pictures"))
+    if (ADDON::CAddonMgr::Get()->HasAddons(ADDON::ADDON_PLUGIN, CONTENT_PICTURES))
     {
       share1.strPath = "plugin://pictures/";
       share1.strName = g_localizeStrings.Get(1039); // Picture Plugins
@@ -359,7 +359,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   }
   else if (m_type == "programs")
   {
-    if (CPluginDirectory::HasPlugins("programs"))
+    if (ADDON::CAddonMgr::Get()->HasAddons(ADDON::ADDON_PLUGIN, CONTENT_PROGRAMS))
     {
       CMediaSource share2;
       share2.strPath = "plugin://programs/";

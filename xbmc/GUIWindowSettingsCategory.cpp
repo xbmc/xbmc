@@ -1388,6 +1388,18 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
   //TODO remove duplication
+  else if (strSetting.Equals("videolibrary.manageplugins"))
+  {
+    CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_MOVIES))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
+    }
+  }
   else if (strSetting.Equals("musiclibrary.scraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());

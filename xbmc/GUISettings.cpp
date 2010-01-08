@@ -442,6 +442,7 @@ void CGUISettings::Initialize()
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "videolibrary", 14022);
+  AddString(1, "videolibrary.manageplugins", 23061, "", BUTTON_CONTROL_STANDARD);
   AddBool(0, "videolibrary.enabled", 418, true);
   AddBool(3, "videolibrary.showunwatchedplots", 20369, true);
   AddBool(0, "videolibrary.seasonthumbs", 20382, true);

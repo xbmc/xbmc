@@ -568,7 +568,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   }
 
   // plugins share
-  if (CPluginDirectory::HasPlugins("music") && g_advancedSettings.m_bVirtualShares)
+  if (CPluginDirectory::HasPlugins(CONTENT_ALBUMS) && g_advancedSettings.m_bVirtualShares)
   {
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
@@ -624,7 +624,7 @@ void CGUIViewStateWindowMusicSongs::SaveViewState()
 VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
 {
   // plugins share
-  if (CPluginDirectory::HasPlugins("music") && g_advancedSettings.m_bVirtualShares)
+  if (CPluginDirectory::HasPlugins(CONTENT_ALBUMS) && g_advancedSettings.m_bVirtualShares)
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1038);

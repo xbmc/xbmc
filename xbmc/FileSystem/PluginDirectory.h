@@ -47,8 +47,8 @@ public:
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual bool Exists(const char* strPath) { return true; }
   static bool RunScriptWithParams(const CStdString& strPath);
-  static bool HasPlugins(const CStdString &type);
-  bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
+  static bool HasPlugins(const CONTENT_TYPE &type);
+  bool GetPluginsDirectory(const CONTENT_TYPE &type, CFileItemList &items);
   bool StartScript(const CStdString& strPath);
   static bool GetPluginResult(const CStdString& strPath, CFileItem &resultItem);
 

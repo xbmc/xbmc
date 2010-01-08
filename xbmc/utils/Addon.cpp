@@ -20,6 +20,7 @@
  */
 
 #include "Addon.h"
+#include "AddonManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "StringUtils.h"
@@ -161,13 +162,16 @@ CAddon::CAddon(const AddonProps &props)
   m_strPath     = props.path;
   m_strProfile  = GetProfilePath();
   m_disabled    = true;
-  m_icon        = props.icon;
+  if (props.icon.empty()) BuildIconPath();
+  else m_icon   = props.icon;
   m_stars       = props.stars;
   m_strVersion  = props.version;
   m_strName     = props.name;
   m_summary     = props.summary;
   m_strDesc     = props.description;
   m_disclaimer  = props.disclaimer;
+  if (props.libname.empty()) BuildLibName();
+  else m_strLibName = props.libname;
   m_strLibName  = props.libname;
   m_userSettingsPath = GetUserSettingsPath();
 }
@@ -196,6 +200,46 @@ CAddon::CAddon(const CAddon &rhs)
 AddonPtr CAddon::Clone() const
 {
   return AddonPtr(new CAddon(*this));
+}
+
+//TODO should cache thumbs/gfx by UUID rather than rely on these paths
+void CAddon::BuildIconPath()
+{
+  m_icon.append(Path());
+  m_icon.append("/default.tbn");
+}
+
+//TODO platform/path crap should be negotiated between the addon and 
+// the handler for it's type
+void CAddon::BuildLibName()
+{
+  m_strLibName = "default";
+  CStdString ext;
+	switch (m_type)
+	{
+	case ADDON_PVRDLL:
+    ext = ADDON_PVRDLL_EXT;
+    break;
+	case ADDON_SCRAPER:
+    ext = ADDON_SCRAPER_EXT;
+    break;
+	case ADDON_SCREENSAVER:
+    ext = ADDON_SCREENSAVER_EXT;
+    break;
+	case ADDON_VIZ:
+    ext = ADDON_VIZ_EXT;
+    break;
+	case ADDON_PLUGIN:
+    ext = ADDON_PYTHON_EXT;
+    break;
+	default:
+    m_strLibName.clear();
+    return;
+	}
+  // extensions are returned as *.ext
+  // so remove the asterisk
+  ext.erase(0,1);
+  m_strLibName.append(ext);
 }
 
 /*

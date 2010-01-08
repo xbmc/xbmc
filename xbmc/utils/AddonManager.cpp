@@ -321,6 +321,12 @@ void CAddonMgr::UnregisterAddonCallback(ADDON::TYPE type)
 }
 
 /*****************************************************************************/
+bool CAddonMgr::HasAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
+{
+  VECADDONS addons;
+  return GetAddons(type, addons, content, true);
+}
+
 bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabled/*= true*/, bool refresh/*= false*/)
 {
   // recheck addon folders if necessary
@@ -615,10 +621,18 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
       CDirectory::GetDirectory("special://xbmc/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
       break;
     }
-  /* Plugin directories only located in Home */ //TODO why?
+  case ADDON_SCRIPTS:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/scripts", items, ADDON_PYTHON_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/scripts", items, ADDON_PYTHON_EXT, false);
+      break;
+    }
   case ADDON_PLUGIN:
     {
-      CDirectory::GetDirectory("special://home/addons/plugins", items, ADDON_PLUGIN_MUSIC_EXT, false);
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/plugins", items, ADDON_PYTHON_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/plugins", items, ADDON_PYTHON_EXT, false);
       break;
     }
   default:
@@ -635,7 +649,7 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
     AddonPtr addon;
     if (!AddonFromInfoXML(type, item->m_strPath, addon))
     {
-      CLog::Log(LOGDEBUG, "ADDON: Error reading %sdescription.xml, bypassing package", item->m_strPath.c_str()); //TODO why slash at end of path?
+      CLog::Log(LOGDEBUG, "ADDON: Error reading %sdescription.xml, bypassing package", item->m_strPath.c_str());
       continue;
     }
 
@@ -658,26 +672,17 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
 
     // check for/cache icon thumbnail 
     //TODO cache one thumb per addon uuid instead
-    item->SetThumbnailImage("");
-    item->SetCachedProgramThumb();
-    if (!item->HasThumbnail())
-      item->SetUserProgramThumb();
-    if (!item->HasThumbnail())
+    CFileItem item2(addon->Path());
+    CUtil::AddFileToFolder(addon->Path(), addon->LibName(), item2.m_strPath);
+    item2.m_bIsFolder = false;
+    item2.SetCachedProgramThumb();
+    if (!item2.HasThumbnail())
+      item2.SetUserProgramThumb();
+    if (!item2.HasThumbnail())
+      item2.SetThumbnailImage(addon->Icon());
+    if (item2.HasThumbnail())
     {
-      CFileItem item2(addon->Path());
-      CStdString defaulticon;
-      CUtil::AddFileToFolder(addon->Path(), addon->LibName(), item2.m_strPath);
-      item2.m_bIsFolder = false;
-      item2.SetCachedProgramThumb();
-      if (!item2.HasThumbnail())
-        item2.SetUserProgramThumb();
-      if (!item2.HasThumbnail())
-        item2.SetThumbnailImage(addon->Icon());
-      if (item2.HasThumbnail())
-      {
-        XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
-        item->SetThumbnailImage(item->GetCachedProgramThumb());
-      }
+      XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
     }
 
     // sanity check
@@ -906,12 +911,14 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
     addonProps.disclaimer = element->GetText();
 
   /* Retrieve library file name */
-  //TODO why are these 2 in optional fields??
+  // will be replaced with default library name if unspecified
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("library");
   if (element)
     addonProps.libname = element->GetText();
 
+  //TODO mvis extension handling
+  //TODO move this to addon specific class, if it's needed at all..
 #ifdef _WIN32
   /* Retrieve WIN32 library file name in case it is present
   * This is required for no overwrite to the fixed WIN32 add-on's
@@ -923,20 +930,24 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
     addonProps.libname = element->GetText();
 #endif
 
-  //TODO mvis extension handling
-
   /*** end of optional fields ***/
 
   /* Create an addon object and store in a shared_ptr */
   addon.reset();
   switch (type)
   {
-    //case ADDON_PLUGIN:
-    //{
-    //  AddonPtr temp(new CAddon(addonProps));
-    //  addon = temp;
-    //  break;
-    //}
+    case ADDON_PLUGIN:
+    {
+      AddonPtr temp(new CAddon(addonProps));
+      addon = temp;
+      break;
+    }
+    case ADDON_SCRIPT:
+    {
+      AddonPtr temp(new CAddon(addonProps));
+      addon = temp;
+      break;
+    }
     case ADDON_SCRAPER:
     {
       AddonPtr temp(new CScraper(addonProps));

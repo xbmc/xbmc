@@ -88,7 +88,7 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
   // plugins share
-  if (CPluginDirectory::HasPlugins("video") && g_advancedSettings.m_bVirtualShares)
+  if (CPluginDirectory::HasPlugins(CONTENT_MOVIES) && g_advancedSettings.m_bVirtualShares)
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1037);
@@ -396,7 +396,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   m_sources.push_back(share);
 
   // plugins share
-  if (CPluginDirectory::HasPlugins("video") && g_advancedSettings.m_bVirtualShares)
+  if (CPluginDirectory::HasPlugins(CONTENT_MOVIES) && g_advancedSettings.m_bVirtualShares)
   {
     share.strName = g_localizeStrings.Get(1037);
     share.strPath = "plugin://video/";

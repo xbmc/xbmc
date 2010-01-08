@@ -41,21 +41,13 @@ namespace ADDON
   typedef std::vector<AddonPtr>::iterator IVECADDONS;
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
 
-  const int        ADDON_DIRSCAN_FREQ         = 60;
+  const int        ADDON_DIRSCAN_FREQ         = 300;
   const CStdString ADDON_METAFILE             = "description.xml";
-  const CStdString ADDON_MULTITYPE_EXT        = "*.add";
   const CStdString ADDON_VIZ_EXT              = "*.vis";
-  const CStdString ADDON_SKIN_EXT             = "*.skin";
   const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
-  const CStdString ADDON_SCRIPT_EXT           = "*.py";
-  const CStdString ADDON_SCRAPER_EXT          = "*.xml|*.idl";
+  const CStdString ADDON_PYTHON_EXT           = "*.py";
+  const CStdString ADDON_SCRAPER_EXT          = "*.xml";
   const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
-  const CStdString ADDON_PLUGIN_PVR_EXT       = "*.py|*.plpvr";
-  const CStdString ADDON_PLUGIN_MUSIC_EXT     = "*.py|*.plmus";
-  const CStdString ADDON_PLUGIN_VIDEO_EXT     = "*.py|*.plvid";
-  const CStdString ADDON_PLUGIN_PROGRAM_EXT   = "*.py|*.plpro";
-  const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.py|*.plpic";
-  const CStdString ADDON_PLUGIN_WEATHER_EXT   = "*.py|*.plwea";
   const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
   const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
@@ -127,7 +119,7 @@ namespace ADDON
     bool GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content);
     bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
     bool GetAddonFromPath(const CStdString &path, AddonPtr &addon);
-    bool HasAddons(const TYPE &type);
+    bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
     bool GetAddons(const TYPE &type, VECADDONPROPS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
     CStdString GetString(const CStdString &uuid, const int number);

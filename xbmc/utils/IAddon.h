@@ -54,8 +54,9 @@ namespace ADDON
     ADDON_SCRIPT            = 4,
     ADDON_SCRAPER           = 5,
     ADDON_SCREENSAVER       = 6,
-    ADDON_PLUGIN            = 7,
-    ADDON_DSP_AUDIO         = 8
+    ADDON_SCRIPTS           = 7,
+    ADDON_PLUGIN            = 8,
+    ADDON_DSP_AUDIO         = 9
   } TYPE;
 
   class IAddon;

@@ -90,6 +90,8 @@ private:
   void Disable() { m_disabled = true; ClearStrings();}
   virtual bool LoadStrings();
   virtual void ClearStrings();
+  void BuildIconPath();
+  void BuildLibName();
   const TYPE m_type; 
   const std::set<CONTENT_TYPE> m_content;     ///< CONTENT_TYPE type identifier(s) this Add-on supports
   const CStdString  m_guid;        ///< Unique identifier for this addon, chosen by developer

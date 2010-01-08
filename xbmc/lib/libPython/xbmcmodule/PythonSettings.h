@@ -42,12 +42,16 @@
 extern "C" {
 #endif
 
+namespace ADDON {
+  class IAddon;
+}
+
 namespace PYXBMC
 {
- /* typedef struct {
+  typedef struct {
     PyObject_HEAD
-    CScriptSettings* pSettings;
-  } Settings;*/
+    ADDON::IAddon* pAddon;
+  } Settings;
 
   extern PyTypeObject Settings_Type;
   void initSettings_Type();

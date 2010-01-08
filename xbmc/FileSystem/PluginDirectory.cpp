@@ -37,7 +37,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-
+#include "StringUtils.h"
 using namespace DIRECTORY;
 using namespace std;
 using namespace ADDON;
@@ -76,31 +76,19 @@ void CPluginDirectory::removeHandle(int handle)
 
 bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
-  ADDON::AddonPtr addon;
-  CAddonMgr::Get()->GetAddonFromPath(strPath, addon);
   CURL url(strPath);
 
-  CStdString fileName;
+  ADDON::AddonPtr addon;
+  if (!CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, url.GetHostName(), addon))
+  {
+    CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
+    return false;
+  }
 
-  // path is special://home/addons/plugins/<path from here>
-  CStdString pathToScript = "special://home/addons/plugins/";
-  CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
-  CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
-  CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
-
-  // base path
-  CStdString basePath = "plugin://";
-  CUtil::AddFileToFolder(basePath, url.GetHostName(), basePath);
-  CUtil::AddFileToFolder(basePath, url.GetFileName(), basePath);
-
-  // options
+  // get options
   CStdString options = url.GetOptions();
   CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
                                     // is needed for all others, as XBMC adds slashes to "folders"
-
-  // Load the plugin settings
-  CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
-  //TODO g_currentPluginSettings.Load(url);
 
   // reset our wait event, and grab a new handle
   ResetEvent(m_fetchComplete);
@@ -117,21 +105,22 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", handle);
-  const char *plugin_argv[] = {basePath.c_str(), strHandle.c_str(), options.c_str(), NULL };
+  const char *plugin_argv[] = {addon->Path().c_str(), strHandle.c_str(), options.c_str(), NULL };
 
   // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Path().c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
   bool success = false;
 #ifdef HAS_PYTHON
-  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)plugin_argv) >= 0)
+  CStdString file = addon->Path() + addon->LibName();
+  if (g_pythonParser.evalFile(file.c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
     CUtil::RemoveSlashAtEnd(scriptName);
-    success = WaitOnScriptResult(pathToScript, scriptName);
+    success = WaitOnScriptResult(file, scriptName);
   }
   else
 #endif
-    CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
+    CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());
 
   // free our handle
   removeHandle(handle);
@@ -378,9 +367,11 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
   CURL url(strPath);
-  if (url.GetFileName().IsEmpty())
-  { // called with no script - should never happen
-    return GetPluginsDirectory(url.GetHostName(), items);
+  //TODO using hostname for both content type and UUID. How to deal with informing plugin which contenttype to retrieve?
+  // for multi content plugins - eg IPlayer
+  if (!StringUtils::ValidateUUID(url.GetHostName()))
+  { // called with no script - we must be browsing root of plugins dir
+    return GetPluginsDirectory(ADDON::TranslateContent(url.GetHostName()), items);
   }
 
   bool success = this->StartScript(strPath);
@@ -398,10 +389,10 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   // Load the settings incase they changed while in the plugins directory
-  //g_currentPluginSettings.Load(url);
+  //TODO g_currentPluginSettings.Load(url);
 
   // Load language strings
-  //CAddon::LoadAddonStrings(url);
+  // TODO CAddon::LoadAddonStrings(url);
 
   // path is special://home/addons/plugins/<path from here>
   CStdString pathToScript = "special://home/addons/plugins/";
@@ -438,53 +429,25 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   return false;
 }
 
-bool CPluginDirectory::HasPlugins(const CStdString &type)
+bool CPluginDirectory::HasPlugins(const CONTENT_TYPE &type)
 {
-  //TODO get rid
-  VECADDONS addons;
-
-  if (type == "pvr")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons);
-  else if (type == "video")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MOVIES);
-  else if (type == "music")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_ALBUMS);
-  else if (type == "pictures")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PICTURES);
-  else if (type == "programs")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PROGRAMS);
-  else if (type == "weather")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
-
-  return !addons.empty();
+  return CAddonMgr::Get()->HasAddons(ADDON_PLUGIN, type);
 }
 
-bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
+bool CPluginDirectory::GetPluginsDirectory(const CONTENT_TYPE &type, CFileItemList &items)
 {
   VECADDONS addons;
 
-  if (type == "pvr")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PVR);
-  else if (type == "video")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MOVIES);
-  else if (type == "music")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_ALBUMS);
-  else if (type == "pictures")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PICTURES);
-  else if (type == "programs")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PROGRAMS);
-  else if (type == "weather")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
-
-  if (addons.empty())
+  if(!CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, type))
     return false;
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
-    CStdString path = (*it)->Path();
-    path.Replace("special://home/addons/plugins/", "plugin://");
-    path.Replace("\\", "/");
+    CStdString path("plugin://");
+    path.append((*it)->UUID());
+
     CFileItemPtr newItem(new CFileItem(path,true));
+    newItem->SetLabel((*it)->Name());
 
     newItem->SetThumbnailImage("");
     newItem->SetCachedProgramThumb();

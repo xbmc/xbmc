@@ -69,7 +69,7 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
   // plugins share
-  if (CPluginDirectory::HasPlugins("programs"))
+  if (CPluginDirectory::HasPlugins(CONTENT_PROGRAMS))
   {
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1043); // Program Plugins
