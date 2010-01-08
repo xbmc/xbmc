@@ -24,16 +24,16 @@
  * SUCH DAMAGE.
  */
 
-#ifdef _XBOX
-#include <xtl.h>
-#include <winsockx.h>
-#else
+#ifdef _WIN32
 #include <windows.h>
+typedef unsigned long in_addr_t;
 #endif
 #include <stdlib.h>
 #include <ctype.h>
 #include <limits.h>
+#ifndef _WIN32
 #include <netinet/in.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

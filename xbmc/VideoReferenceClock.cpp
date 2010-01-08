@@ -175,7 +175,6 @@ void CVideoReferenceClock::Process()
     m_UseVblank = false;                       //we're back to using the systemclock
     Now = CurrentHostCounter();                //set the clockoffset between the vblank clock and systemclock
     m_ClockOffset = m_CurrTime - Now;
-    m_Started.Reset();
     SingleLock.Leave();
 
     //clean up the vblank clock

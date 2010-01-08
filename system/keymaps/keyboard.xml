@@ -95,6 +95,16 @@
       <end>LastPage</end>
       <key id='65446'>ParentDir</key>
       <key id='65459'>Play</key>
+      <!-- ****************************************************** -->
+      <!-- MS Media Center keyboard shortcuts sent by MCE remotes -->
+      <!-- See http://msdn.microsoft.com/en-us/library/bb189249.aspx -->
+      <p mod="ctrl,shift">Play</p>        <!-- Play -->
+      <s mod="ctrl,shift">Stop</s>        <!-- Stop -->
+      <p mod="ctrl">Pause</p>             <!-- Pause -->
+      <f mod="ctrl,shift">FastForward</f> <!-- Fwd -->
+      <b mod="ctrl,shift">Rewind</b>      <!-- Rew -->
+      <f mod="ctrl">SkipNext</f>          <!-- Skip -->
+      <b mod="ctrl">SkipPrevious</b>      <!-- Replay -->
     </keyboard>
   </global>
   <Home>

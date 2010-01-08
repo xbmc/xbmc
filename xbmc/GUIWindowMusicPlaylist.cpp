@@ -502,7 +502,7 @@ bool CGUIWindowMusicPlayList::Update(const CStdString& strDirectory)
 
   if (!CGUIWindowMusicBase::Update(strDirectory))
     return false;
-  
+
   if (m_vecItems->GetContent().IsEmpty())
     m_vecItems->SetContent("songs");
 

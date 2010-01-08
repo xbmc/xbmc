@@ -370,7 +370,7 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->Close();
   }
 
-  if (album.idAlbum == -1 && foundAlbum == false) 
+  if (album.idAlbum == -1 && foundAlbum == false)
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
   else
     ShowAlbumInfo(album, strPath, false, bShowInfo);
@@ -406,7 +406,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
   if (pDlgAlbumInfo)
   {
     pDlgAlbumInfo->SetArtist(artistInfo, path);
-    
+
     if (bShowInfo)
       pDlgAlbumInfo->DoModal();
     else
@@ -798,10 +798,12 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   bool bCanceled(false);
   bool needsRefresh(true);
-  do 
-  { 
+  do
+  {
     if (!scanner.DownloadAlbumInfo(strPath,strTempArtist,strTempAlbum,bCanceled,album,m_dlgProgress))
     {
+      if (bCanceled)
+        return false;
       if (m_dlgProgress && allowSelection != SELECTION_AUTO)
       {
         if (!CGUIDialogKeyboard::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
@@ -846,10 +848,12 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
 
   bool bCanceled(false);
   bool needsRefresh(true);
-  do 
-  { 
+  do
+  {
     if (!scanner.DownloadArtistInfo(strPath,strTempArtist,bCanceled,m_dlgProgress))
     {
+      if (bCanceled)
+        return false;
       if (m_dlgProgress && allowSelection != SELECTION_AUTO)
       {
         if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
@@ -1363,7 +1367,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist.reset(new CFileItem("newplaylist://", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
-    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);    
+    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);
     newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
 

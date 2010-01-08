@@ -15,13 +15,11 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef _XBOX
-#include <xtl.h>
-#include <winsockx.h>
-#else
+#ifdef _WIN32
 #include <windows.h>
-#endif
+#else
 #include <rpc/types.h>
+#endif
 #include <string.h>
 
 #ifdef __cplusplus
@@ -58,7 +56,7 @@ static int  inet_pton6(const char *src, u_char *dst);
  *  Paul Vixie, 1996.
  */
 int
-__rpc_inet_pton(int af, const char * __restrict src, void * __restrict dst)
+inet_pton(int af, const char * __restrict src, void * __restrict dst)
 {
     switch (af) {
     case AF_INET:
@@ -227,8 +225,10 @@ inet_pton6(const char *src, u_char *dst)
  * Weak aliases for applications that use certain private entry points,
  * and fail to include <arpa/inet.h>.
  */
+#ifndef _WIN32
 #undef inet_pton
 __weak_reference(__inet_pton, inet_pton);
+#endif
 
 #ifdef __cplusplus
 }

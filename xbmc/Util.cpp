@@ -257,14 +257,11 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
   const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
   CStdString strFileNameTemp = strFileName;
-  CStdString strFileNameLower = strFileName;
-  strFileNameLower.MakeLower();
 
   CStdString strVolume;
   CStdString strTestString;
-  CRegExp reg;
+  CRegExp reg(true);
 
-//  CLog::Log(LOGDEBUG, "GetVolumeFromFileName:[%s]", strFileNameLower.c_str());
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     CStdString strRegExp = regexps[i];
@@ -275,7 +272,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
     }
 //    CLog::Log(LOGDEBUG, "Regexp:[%s]", regexps[i].c_str());
 
-    int iFoundToken = reg.RegFind(strFileNameLower.c_str());
+    int iFoundToken = reg.RegFind(strFileName.c_str());
     if (iFoundToken >= 0)
     {
       int iRegLength = reg.GetFindLen();
@@ -389,7 +386,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
 
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
-  CRegExp reTags, reYear;
+  CRegExp reTags(true);
+  CRegExp reYear;
   CStdString strExtension;
   GetExtension(strFileName, strExtension);
 
@@ -416,7 +414,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) > 0)
+    if ((j=reTags.RegFind(strFileName.c_str())) > 0)
       strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
@@ -1111,10 +1109,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   if (strFileOrFolder.IsEmpty())
     return false;
 
-  CStdString strExclude = strFileOrFolder;
-  strExclude.MakeLower();
-
-  CRegExp regExExcludes;
+  CRegExp regExExcludes(true);  // case insensitive regex
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -1123,9 +1118,9 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
       CLog::Log(LOGERROR, "%s: Invalid exclude RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
       continue;
     }
-    if (regExExcludes.RegFind(strExclude) > -1)
+    if (regExExcludes.RegFind(strFileOrFolder) > -1)
     {
-      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strExclude.c_str(), regexps[i].c_str());
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileOrFolder.c_str(), regexps[i].c_str());
       return true;
     }
   }

@@ -301,6 +301,17 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext)
     return VC_ERROR;
 
+#ifdef HAVE_LIBVDPAU
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
+  {
+    if(g_VDPAU->CheckRecover(false))
+    {
+      m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+      return VC_FLUSHED;
+    }
+  }
+#endif
+
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {
@@ -398,12 +409,15 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   result = VC_PICTURE | VC_BUFFER;
 
 #ifdef HAVE_LIBVDPAU
-  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
   {
+    if(g_VDPAU->CheckRecover(false))
+    {
+      m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
+      return VC_FLUSHED;
+    }
+
     g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
-    if(g_VDPAU->VDPAURecovered)
-      result |= VC_FLUSHED;
-    g_VDPAU->VDPAURecovered = false;
   }
 #endif
   return result;

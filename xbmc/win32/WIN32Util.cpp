@@ -1287,3 +1287,46 @@ extern "C" {
     return NULL;
   }
 }
+
+
+bool CWIN32Util::Is64Bit()
+{
+  bool bRet= false;
+  typedef VOID (WINAPI *LPFN_GETNATIVESYSTEMINFO) (LPSYSTEM_INFO);
+  LPFN_GETNATIVESYSTEMINFO fnGetNativeSystemInfo= ( LPFN_GETNATIVESYSTEMINFO ) GetProcAddress( GetModuleHandle( TEXT( "kernel32" ) ), "GetNativeSystemInfo" );
+  SYSTEM_INFO sSysInfo;
+  memset( &sSysInfo, 0, sizeof( sSysInfo ) );
+  if (fnGetNativeSystemInfo != NULL)
+  {
+    fnGetNativeSystemInfo(&sSysInfo);
+    if (sSysInfo.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) bRet= true;
+  }
+  return bRet;
+}
+
+LONG CWIN32Util::UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd )
+{
+  DWORD dwSize;
+  LONG lRet= RegQueryValueEx(hKey, pcKey, NULL, pdwType, NULL, &dwSize );
+  if (lRet == ERROR_SUCCESS)
+  {
+    if (ppcBuffer)
+    {
+      char *pcValue=*ppcBuffer;
+      if (!pcValue || !pdwSizeBuff || dwSize +dwSizeAdd > *pdwSizeBuff) pcValue= (char*)realloc(pcValue, dwSize +dwSizeAdd);
+      lRet= RegQueryValueEx(hKey,pcKey,NULL,NULL,(LPBYTE)pcValue,&dwSize);
+
+      if ( lRet == ERROR_SUCCESS || *ppcBuffer ) *ppcBuffer= pcValue;
+      else free( pcValue );
+    }
+    if (pdwSizeBuff) *pdwSizeBuff= dwSize +dwSizeAdd;
+  }
+  return lRet;
+}
+
+bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64 )
+{
+  const REGSAM rsAccessRightsTmp= ( Is64Bit() ? rsAccessRights | ( bReadX64 ? KEY_WOW64_64KEY : KEY_WOW64_32KEY ) : rsAccessRights );
+  bool bRet= ( ERROR_SUCCESS == RegOpenKeyEx(hKeyParent, pcKey, 0, rsAccessRightsTmp, hKey));
+  return bRet;
+}

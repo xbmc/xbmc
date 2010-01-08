@@ -839,7 +839,7 @@ void CGUIWindowMusicNav::SetPluginThumb(int iItem, const VECSOURCES &sources)
     nItem->SetIconImage("DefaultFolder.png");
     items.Add(nItem);
   }
-  
+
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, sources,
                                              g_localizeStrings.Get(20019), picturePath))
   {

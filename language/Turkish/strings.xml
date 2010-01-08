@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 27/12/2009-->
-<!--Based on English strings revision 26080-->
+<!--Date of translation: 05/01/2010-->
+<!--Based on English strings revision 26731-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -1208,6 +1208,7 @@
   <string id="13422">Slayt gösterisine buradan başla</string>
   <string id="13423">Bu yolu hatırla</string>
   <string id="13424">Piksel tampon nesnelerini kullan</string>
+  <string id="13425">Broadcom Crystal HD</string>
 
   <string id="13500">Ses/Video senkron biçimi</string>
   <string id="13501">Ses saati</string>
@@ -1702,6 +1703,8 @@
   <string id="20250">Partiye devam! (videolar)</string>
   <string id="20251">İçecekler karıştırılıyor (videolar)</string>
   <string id="20252">Bardaklar dolduruluyor (videolar)</string>
+  <string id="20253">WebDAV sunucu (HTTP)</string>
+  <string id="20254">WebDAV sunucu (HTTPS)</string>
 
   <string id="20300">Web sunucu dizini (HTTP)</string>
   <string id="20301">Web sunucu dizini (HTTPS)</string>
@@ -1849,6 +1852,8 @@
   <string id="20443">Bu yolun içindeki tüm öğelerin bilgilerini</string>
   <string id="20444">yenilemek istiyor musunuz?</string>
   <string id="20445">Fanart</string>
+  <string id="20446">NFO-dosyası bulundu.</string>
+  <string id="20447">İnternet'ten yenilensin mi?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>

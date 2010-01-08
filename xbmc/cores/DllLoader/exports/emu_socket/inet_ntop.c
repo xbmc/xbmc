@@ -15,13 +15,13 @@
  * OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifdef _XBOX
-#include <xtl.h>
-#include <winsockx.h>
-#else
+#ifdef _WIN32
 #include <windows.h>
-#endif
+typedef int socklen_t;
+#define snprintf _snprintf
+#else
 #include <rpc/types.h>
+#endif
 #include <string.h>
 #include <stdio.h>
 

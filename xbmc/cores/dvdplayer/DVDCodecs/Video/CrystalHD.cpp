@@ -23,6 +23,14 @@
   #include "config.h"
 #elif defined(_WIN32)
   #include "system.h"
+  #include "WIN32Util.h"
+  #include "util.h"
+
+  // default Broadcom registy bits (setup when installing a CrystalHD card)
+  #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
+  #define BC_REG_PRODUCT    "CrystalHD" // 70010 ?
+  #define BC_BCM_DLL        "bcmDIL.dll"
+  #define BC_REG_INST_PATH  "InstallPath"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -38,18 +46,15 @@ namespace BCM
 {
 #if defined(WIN32)
   typedef void		*HANDLE;
-  #include <bc_dts_types.h>
-  #include <bc_dts_defs.h>
-  #include "lib/libcrystalhd/linux_lib/libcrystalhd/libcrystalhd_if.h"
 #else
   #ifndef __LINUX_USER__
     #define __LINUX_USER__
   #endif
-
-  #include "libcrystalhd/bc_dts_types.h"
-  #include "libcrystalhd/bc_dts_defs.h"
-  #include "libcrystalhd/libcrystalhd_if.h"
 #endif
+
+  #include <libcrystalhd/bc_dts_types.h>
+  #include <libcrystalhd/bc_dts_defs.h>
+  #include <libcrystalhd/libcrystalhd_if.h>
 };
 
 #define __MODULE_NAME__ "CrystalHD"
@@ -117,6 +122,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
 };
 
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib);
+void BcmDebugLog( BCM::BC_STATUS lResult, CStdString strFuncName="");
 
 const char* g_DtsStatusText[] = {
 	"BC_STS_SUCCESS",
@@ -642,7 +648,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_width = m_width;
           pBuffer->m_height = m_height;
           pBuffer->m_field = CRYSTALHD_FIELD_FULL;
-          pBuffer->m_interlace = m_interlace;
+          pBuffer->m_interlace = m_interlace > 0 ? true : false;
           pBuffer->m_framerate = m_framerate;
           pBuffer->m_timestamp = m_timestamp;
           pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
@@ -781,7 +787,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
     default:
       if (ret > 26)
         CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %d.", __MODULE_NAME__, ret);
-      else
+          else
         CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
     break;
   }
@@ -833,18 +839,24 @@ CCrystalHD::CCrystalHD() :
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
-  m_dll = new DllLibCrystalHD;
-  m_dll->Load();
-  if (m_dll->IsLoaded())
-  {
-    BCM::BC_STATUS res;
-    uint32_t mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
 
-    res = m_dll->DtsDeviceOpen(&m_Device, mode);
+  m_dll = new DllLibCrystalHD;
+  CheckCrystalHDLibraryPath();
+  if (m_dll->Load() && m_dll->IsLoaded() )
+  {
+    uint32_t mode = BCM::DTS_PLAYBACK_MODE          | 
+                    BCM::DTS_LOAD_FILE_PLAY_FW      | 
+                    BCM::DTS_PLAYBACK_DROP_RPT_MODE | 
+                    DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+    
+    BCM::BC_STATUS res= m_dll->DtsDeviceOpen(&m_Device, mode);
     if (res != BCM::BC_STS_SUCCESS)
     {
       m_Device = NULL;
-      CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
+      if( res == BCM::BC_STS_DEC_EXIST_OPEN )
+        CLog::Log(LOGERROR, "%s: device owned by another application", __MODULE_NAME__);
+      else
+        CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
     }
     else
     {
@@ -865,7 +877,7 @@ CCrystalHD::CCrystalHD() :
 CCrystalHD::~CCrystalHD()
 {
   if (m_IsConfigured)
-    Close();
+    CloseDecoder();
 
   if (m_Device)
   {
@@ -877,6 +889,7 @@ CCrystalHD::~CCrystalHD()
   if (m_dll)
     delete m_dll;
 }
+
 
 bool CCrystalHD::DevicePresent(void)
 {
@@ -901,7 +914,39 @@ CCrystalHD* CCrystalHD::GetInstance(void)
   return m_pInstance;
 }
 
-bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type)
+void CCrystalHD::CheckCrystalHDLibraryPath(void)
+{
+  // support finding library by windows registry
+#if defined _WIN32  
+  HKEY hKey;
+  CStdString strRegKey;
+  
+  CLog::Log(LOGDEBUG, "%s: detecting CrystalHD installation path", __MODULE_NAME__);
+  strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
+  
+  if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
+  {
+    DWORD dwType;
+    char *pcPath= NULL;
+    if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
+    {
+      CStdString strDll = CUtil::AddFileToFolder(pcPath, BC_BCM_DLL);
+      CLog::Log(LOGDEBUG, "%s: got CrystalHD installation path (%s)", __MODULE_NAME__, strDll.c_str());
+      m_dll->SetFile(strDll);
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s: getting CrystalHD installation path faild", __MODULE_NAME__);
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s: CrystalHD software seems to be not installed.", __MODULE_NAME__);
+  }
+#endif
+}
+
+bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type)
 {
   BCM::BC_STATUS res;
 
@@ -909,7 +954,7 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
     return false;
 
   if (m_IsConfigured)
-    Close();
+    CloseDecoder();
 
   uint32_t videoAlg = 0;
   switch (codec_type)
@@ -939,19 +984,19 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
     res = m_dll->DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: set video params failed", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: set video params failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartDecoder(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: start decoder failed", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: start decoder failed", __MODULE_NAME__);
       break;
     }
     res = m_dll->DtsStartCapture(m_Device);
     if (res != BCM::BC_STS_SUCCESS)
     {
-      CLog::Log(LOGERROR, "%s: start capture failed", __MODULE_NAME__);
+      CLog::Log(LOGDEBUG, "%s: start capture failed", __MODULE_NAME__);
       break;
     }
  
@@ -970,7 +1015,7 @@ bool CCrystalHD::Open(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE co
   return m_IsConfigured;
 }
 
-void CCrystalHD::Close(void)
+void CCrystalHD::CloseDecoder(void)
 {
   if (m_pInputThread)
   {
