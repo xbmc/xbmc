@@ -137,7 +137,8 @@ protected:
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
 
-  virtual void ScrollToOffset(int offset);
+  void ScrollToOffset(int offset);
+  void SetContainerMoving(int direction);
   void UpdateScrollOffset();
 
   unsigned int m_scrollLastTime;

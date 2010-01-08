@@ -819,13 +819,19 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
   if (!m_wasReset)
   {
-    g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
+    SetContainerMoving(offset - m_offset);
     if (m_scrollSpeed)
       m_scrollTimer.Start();
     else
       m_scrollTimer.Stop();
   }
   m_offset = offset;
+}
+
+void CGUIBaseContainer::SetContainerMoving(int direction)
+{
+  if (direction)
+    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollTimer.IsRunning());
 }
 
 void CGUIBaseContainer::UpdateScrollOffset()

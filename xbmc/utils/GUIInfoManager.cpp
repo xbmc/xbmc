@@ -617,8 +617,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
     else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
-    else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
-    else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Equals("onnext")) ret = CONTAINER_MOVE_NEXT;
+    else if (info.Equals("onprevious")) ret = CONTAINER_MOVE_PREVIOUS;
+    else if (info.Equals("onscrollnext")) ret = CONTAINER_SCROLL_NEXT;
+    else if (info.Equals("onscrollprevious")) ret = CONTAINER_SCROLL_PREVIOUS;
     else if (info.Equals("totaltime")) ret = CONTAINER_TOTALTIME;
     else if (info.Equals("scrolling"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
@@ -670,7 +672,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(CONTAINER_PROPERTY, id, compareString));
     }
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
-    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS || ret == CONTAINER_NUM_PAGES ||
+    if (id && ((ret >= CONTAINER_SCROLL_PREVIOUS && ret <= CONTAINER_SCROLL_NEXT) || ret == CONTAINER_NUM_PAGES ||
                ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
@@ -1789,7 +1791,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty());
-  else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
+  else if (condition >= CONTAINER_SCROLL_PREVIOUS && condition <= CONTAINER_SCROLL_NEXT)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
     // can only happen if the list has focus.
@@ -1798,7 +1800,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     {
       map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
       if (it != m_containerMoves.end())
-        bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      {
+        if (condition > CONTAINER_STATIC) // are we moving up?
+          bReturn = it->second > 0 && condition - CONTAINER_STATIC >= it->second;
+        else
+          bReturn = it->second < 0 && condition - CONTAINER_STATIC <= it->second;
+      }
     }
   }
   else if (g_application.IsPlaying())
@@ -2188,12 +2195,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
           bReturn = g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
-      case CONTAINER_ON_NEXT:
-      case CONTAINER_ON_PREVIOUS:
+      case CONTAINER_SCROLL_PREVIOUS:
+      case CONTAINER_MOVE_PREVIOUS:
+      case CONTAINER_MOVE_NEXT:
+      case CONTAINER_SCROLL_NEXT:
         {
           map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
           if (it != m_containerMoves.end())
-            bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+          {
+            if (condition > CONTAINER_STATIC) // moving up
+              bReturn = it->second > 0 && condition - CONTAINER_STATIC >= it->second;
+            else
+              bReturn = it->second < 0 && condition - CONTAINER_STATIC <= it->second;
+          }
         }
         break;
       case CONTAINER_CONTENT:

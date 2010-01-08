@@ -256,6 +256,12 @@ class CDateTime;
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
+#define CONTAINER_SCROLL_PREVIOUS   345 // NOTE: These 5 must be kept in this consecutive order
+#define CONTAINER_MOVE_PREVIOUS     346
+#define CONTAINER_STATIC            347
+#define CONTAINER_MOVE_NEXT         348
+#define CONTAINER_SCROLL_NEXT       349
+
 #define CONTAINER_HASFILES          351
 #define CONTAINER_HASFOLDERS        352
 #define CONTAINER_STACKED           353
@@ -270,8 +276,7 @@ class CDateTime;
 #define CONTAINER_CONTENT           362
 #define CONTAINER_HAS_THUMB         363
 #define CONTAINER_SORT_METHOD       364
-#define CONTAINER_ON_NEXT           365
-#define CONTAINER_ON_PREVIOUS       366
+
 #define CONTAINER_HAS_FOCUS         367
 #define CONTAINER_ROW               368
 #define CONTAINER_COLUMN            369
@@ -611,7 +616,16 @@ public:
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
 
-  void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
+  /*! \brief containers call here to specify that the focus is changing
+   \param id control id
+   \param next true if we're moving to the next item, false if previous
+   \param scrolling true if the container is scrolling, false if the movement requires no scroll
+   */
+  void SetContainerMoving(int id, bool next, bool scrolling)
+  {
+    // magnitude 2 indicates a scroll, sign indicates direction
+    m_containerMoves[id] = (next ? 1 : -1) * (scrolling ? 2 : 1);
+  }
 
   void SetLibraryBool(int condition, bool value);
   bool GetLibraryBool(int condition);
