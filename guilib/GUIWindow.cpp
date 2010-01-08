@@ -141,10 +141,10 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   // now load in the skin file
   SetDefaults();
 
-  
+
   CGUIControlFactory::GetMultipleString(pRootElement, "onload", m_loadActions);
   CGUIControlFactory::GetMultipleString(pRootElement, "onunload", m_unloadActions);
-    
+
   TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
@@ -490,7 +490,7 @@ void CGUIWindow::OnInitWindow()
   SetInitialVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
   g_windowManager.ShowOverlay(m_overlayState);
-  
+
   if (!m_manualRunActions)
   {
     RunLoadActions();
@@ -507,7 +507,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
   {
     RunUnloadActions();
   }
-  
+
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
   {
     // Dialog animations are handled in Close() rather than here
@@ -1000,10 +1000,10 @@ void CGUIWindow::SetRunActionsManually()
 
 void CGUIWindow::RunLoadActions()
 {
-  RunActions(m_loadActions);  
+  RunActions(m_loadActions);
 }
- 
+
 void CGUIWindow::RunUnloadActions()
 {
-  RunActions(m_unloadActions);    
+  RunActions(m_unloadActions);
 }

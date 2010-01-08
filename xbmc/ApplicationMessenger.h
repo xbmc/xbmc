@@ -74,8 +74,8 @@ class CGUIDialog;
 #define TMSG_GUI_PYTHON_DIALOG        605
 #define TMSG_GUI_DIALOG_CLOSE         606
 
-#define TMSG_OPTICAL_MOUNT        700 
-#define TMSG_OPTICAL_UNMOUNT      701 
+#define TMSG_OPTICAL_MOUNT        700
+#define TMSG_OPTICAL_UNMOUNT      701
 
 typedef struct
 {
@@ -126,7 +126,7 @@ public:
   void Reset();
   void SwitchToFullscreen(); //
   void Minimize(bool wait = false);
-  void ExecOS(const CStdString command, bool waitExit = false);  
+  void ExecOS(const CStdString command, bool waitExit = false);
   void UserEvent(int code);
 
   CStdString GetResponse();
@@ -143,7 +143,7 @@ public:
   void Render(); // will call g_windowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
 
-  void OpticalMount(CStdString device, bool bautorun=false); 
+  void OpticalMount(CStdString device, bool bautorun=false);
   void OpticalUnMount(CStdString device);
 
 private:

@@ -29,7 +29,7 @@ enum StreamType;
 enum CodecID;
 #else
 #include "DVDDemuxers/DVDDemux.h"
-extern "C" { 
+extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>

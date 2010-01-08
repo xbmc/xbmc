@@ -182,7 +182,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
       else
         iWaitTimer = iWaitTimer+10;
-       
+
       result = false;
       http.Close(); // Close old connections
     }

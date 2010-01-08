@@ -1,5 +1,5 @@
 #ifndef __DLL_H_
-#define __DLL_H_ 
+#define __DLL_H_
 
 #include "system.h"
 

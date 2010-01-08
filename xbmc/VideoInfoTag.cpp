@@ -114,7 +114,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   if (!m_strPictureURL.m_xml.empty())
   {
     TiXmlDocument doc;
-    doc.Parse(m_strPictureURL.m_xml); 
+    doc.Parse(m_strPictureURL.m_xml);
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {
@@ -255,7 +255,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar << m_cast[i].strRole;
       ar << m_cast[i].thumbUrl.m_xml;
     }
-    
+
     ar << m_strSet;
     ar << m_strRuntime;
     ar << m_strFile;
@@ -317,7 +317,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       info.thumbUrl.ParseString(strXml);
       m_cast.push_back(info);
     }
-    
+
     ar >> m_strSet;
     ar >> m_strRuntime;
     ar >> m_strFile;
@@ -375,7 +375,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   int max_value = 10;
   const TiXmlElement* rElement = movie->FirstChildElement("rating");
   if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value>=1)
-  {    
+  {
     m_fRating = m_fRating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
   }
   XMLUtils::GetInt(movie, "year", m_iYear);
@@ -474,7 +474,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   node = movie->FirstChildElement("fileinfo");
   if (node)
   {
-    // Try to pull from fileinfo/streamdetails/[video|audio|subtitle] 
+    // Try to pull from fileinfo/streamdetails/[video|audio|subtitle]
     const TiXmlNode *nodeStreamDetails = node->FirstChild("streamdetails");
     if (nodeStreamDetails)
     {

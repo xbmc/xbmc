@@ -248,7 +248,7 @@ bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
     return false;
-  
+
   int row = 0;
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   while (row < m_itemsPerPage + 1)  // 1 more to ensure we get the (possible) half item at the end.
@@ -258,7 +258,7 @@ bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
     { // found correct "row" -> check horizontal
       if (!InsideLayout(layout, point))
         return false;
-      
+
       SetContainerMoving(row - m_cursor);
       m_cursor = row;
       CGUIListItemLayout *focusedLayout = GetFocusedLayout();

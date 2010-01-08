@@ -129,10 +129,10 @@ public:
   void Flush(void);
   unsigned int GetInputCount(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
-  
+
   int  GetReadyCount(void);
   void BusyListPop(void);
-  
+
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
 
@@ -140,7 +140,7 @@ protected:
   void CheckCrystalHDLibraryPath(void);
   void SetFrameRate(uint32_t resolution);
   void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
-  
+
   DllLibCrystalHD *m_dll;
   void          *m_Device;
 
@@ -155,7 +155,7 @@ protected:
   CMPCInputThread *m_pInputThread;
   CMPCOutputThread *m_pOutputThread;
   CSyncPtrQueue<CPictureBuffer> m_BusyList;
-  
+
 private:
   CCrystalHD();
   static CCrystalHD *m_pInstance;

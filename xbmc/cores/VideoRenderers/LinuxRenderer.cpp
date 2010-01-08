@@ -49,13 +49,13 @@ YUVCOEF yuv_coef_bt709 = {
 YUVCOEF yuv_coef_ebu = {
     0.0f,  1.140f,
  -0.396f, -0.581f,
-  2.029f,    0.0f, 
+  2.029f,    0.0f,
 };
 
 YUVCOEF yuv_coef_smtp240m = {
      0.0f,  1.5756f,
  -0.2253f, -0.5000f, /* page above have the 0.5000f as positive */
-  1.8270f,     0.0f,  
+  1.8270f,     0.0f,
 };
 
 
@@ -83,7 +83,7 @@ CLinuxRenderer::CLinuxRenderer()
 #endif
 
   m_image.flags = 0;
- 
+
 }
 
 CLinuxRenderer::~CLinuxRenderer()
@@ -174,7 +174,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
 
   if(true /*isvobsub*/) // xbox_video.cpp is fixed to 720x576 osd, so this should be fine
   { // vobsubs are given to us unscaled
-    // scale them up to the full output, assuming vobsubs have same 
+    // scale them up to the full output, assuming vobsubs have same
     // pixel aspect ratio as the movie, and are 720 pixels wide
 
     float pixelaspect = m_fSourceFrameRatio * m_sourceHeight / m_sourceWidth;
@@ -189,7 +189,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
     xscale = 1.0f;
     yscale = 1.0f;
   }
-  
+
   // horizontal centering, and align to bottom of subtitles line
   osdRect.left = rv.x1 + (rv.Width() - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
@@ -207,13 +207,13 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
     DeleteOSDTextures(iOSDBuffer);
     m_iOSDTextureHeight[iOSDBuffer] = h;
     // Create osd textures for this buffer with new size
-    m_pOSDYTexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 
+    m_pOSDYTexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer],
 		32, RMASK, GMASK, BMASK, AMASK);
 
-    m_pOSDATexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 
+    m_pOSDATexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer],
 		32, RMASK, GMASK, BMASK, AMASK);
 
-    if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL) 
+    if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL)
     {
       CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
       DeleteOSDTextures(iOSDBuffer);
@@ -228,7 +228,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
   //reset these so the gpu doesn't try to block on these
   if (SDL_LockSurface(m_pOSDYTexture[iOSDBuffer]) == 0 &&
-      SDL_LockSurface(m_pOSDATexture[iOSDBuffer]) == 0) 
+      SDL_LockSurface(m_pOSDATexture[iOSDBuffer]) == 0)
   {
     //clear the textures
     memset(m_pOSDYTexture[iOSDBuffer]->pixels, 0, m_pOSDYTexture[iOSDBuffer]->pitch*m_iOSDTextureHeight[iOSDBuffer]);
@@ -275,7 +275,7 @@ void CLinuxRenderer::RenderOSD()
   rect.x = osdRect.left;
   rect.y = osdRect.top;
   rect.w = osdRect.right - osdRect.left;
-  rect.h = osdRect.bottom - osdRect.top; 
+  rect.h = osdRect.bottom - osdRect.top;
   g_graphicsContext.BlitToScreen(m_pOSDYTexture[iRenderBuffer],NULL,&rect);
 
 }
@@ -326,7 +326,7 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
 #ifdef USE_SDL_OVERLAY
 
-  m_screen = g_graphicsContext.getScreenSurface()->SDL(); 
+  m_screen = g_graphicsContext.getScreenSurface()->SDL();
 
   if (m_overlay && (m_overlay->w != width || m_overlay->h != height)) {
      SDL_FreeYUVOverlay(m_overlay);
@@ -368,17 +368,17 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
      m_screenbuffer=NULL;
   }
 
-  if (m_backbuffer == NULL)  
+  if (m_backbuffer == NULL)
      m_backbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);;
 
-  if (m_screenbuffer == NULL)  
+  if (m_screenbuffer == NULL)
      m_screenbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);;
 
   if (m_image.plane[0] == NULL) {
      m_image.stride[0] = m_sourceWidth;
      m_image.stride[1] = m_sourceWidth>>1;
      m_image.stride[2] = m_sourceWidth>>1;
-   
+
      m_image.plane[0] = new BYTE[m_image.stride[0] * height];
      if (m_image.plane[1])
         delete [] m_image.plane[1];
@@ -389,7 +389,7 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
   }
 
 #endif
- 
+
   m_image.width = width;
   m_image.height = height;
   m_image.cshift_x = 1;
@@ -453,7 +453,7 @@ void CLinuxRenderer::ReleaseImage(int source, bool preserve)
 
   if (!m_backbuffer) {
      return;
-  } 
+  }
 
   // copy image to backbuffer
 
@@ -465,7 +465,7 @@ void CLinuxRenderer::ReleaseImage(int source, bool preserve)
   int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2], 0 };
   uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0, 0 };
   int     dstStride[] = { m_backbuffer->pitch, 0, 0, 0 };
-  
+
   m_dllSwScale.sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
 
 for (int n=0; n<720*90;n++) {
@@ -509,8 +509,8 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 }
 
 void CLinuxRenderer::FlipPage(int source)
-{  
-// TODO: if image buffer changed (due to DrawSlice) than re-copy its content (convert from YUV). 
+{
+// TODO: if image buffer changed (due to DrawSlice) than re-copy its content (convert from YUV).
 
   // copy back buffer to screen buffer
 #ifndef USE_SDL_OVERLAY
@@ -528,7 +528,7 @@ unsigned int CLinuxRenderer::DrawSlice(unsigned char *src[], int stride[], int w
   BYTE *s;
   BYTE *d;
   int i, p;
-  
+
   YV12Image &im = m_image;
   // copy Y
   p = 0;
@@ -607,7 +607,7 @@ void CLinuxRenderer::UnInit()
   for (int i=0; i< NUM_BUFFERS; i++) {
     DeleteOSDTextures(i);
   }
-  
+
 #ifdef USE_SDL_OVERLAY
   if (m_overlay)
      SDL_FreeYUVOverlay(m_overlay);
@@ -670,7 +670,7 @@ void CLinuxRenderer::RenderLowMem(DWORD flags)
   rect.x = (int)m_sourceRect.x1;
   rect.y = (int)m_sourceRect.y1;
   rect.w = (int)m_sourceRect.Width();
-  rect.h = (int)m_sourceRect.Height(); 
+  rect.h = (int)m_sourceRect.Height();
   g_graphicsContext.BlitToScreen(m_screenbuffer,NULL,&rect);
 
 #endif

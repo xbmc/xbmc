@@ -170,6 +170,7 @@ void CFileCache::Process()
       m_seekEnded.Set();
     }
 
+printf("reading %i\n",chunksize);
     int iRead = m_source.Read(buffer.get(), chunksize);
     if(iRead == 0)
     {

@@ -28,7 +28,7 @@ class COggCallback
 {
 public:
   COggCallback(XFILE::CFile& file);
-  
+
   ov_callbacks Get(const CStdString& strFile);
 
   static size_t ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource);

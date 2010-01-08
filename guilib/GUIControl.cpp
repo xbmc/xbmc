@@ -185,13 +185,13 @@ bool CGUIControl::OnAction(const CAction &action)
     OnRight();
     return true;
     break;
-    
+
   case ACTION_NEXT_CONTROL:
       if (!HasFocus()) return false;
       OnNextControl();
       return true;
       break;
-      
+
   case ACTION_PREV_CONTROL:
       if (!HasFocus()) return false;
       OnPrevControl();

@@ -1799,7 +1799,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
         AddSetToMovie(idMovie, idSet);
       }
     }
-    
+
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, idFile);
 
@@ -5357,7 +5357,7 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     else
       where.Format(" %s %s%s",where.Mid(0).c_str(),"and",str2.c_str());
   }
-  
+
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 

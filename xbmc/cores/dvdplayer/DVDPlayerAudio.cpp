@@ -550,7 +550,7 @@ void CDVDPlayerAudio::Process()
       m_droptime = 0.0;
 
       SetSyncType(audioframe.passthrough);
-      
+
       // add any packets play
       packetadded = OutputPacket(audioframe);
 
@@ -784,7 +784,7 @@ int CDVDPlayerAudio::GetAudioBitrate()
 {
   return (int)m_audioStats.GetBitrate();
 }
-  
+
 bool CDVDPlayerAudio::IsPassthrough() const
 {
   return m_pAudioCodec && m_pAudioCodec->NeedPassthrough();

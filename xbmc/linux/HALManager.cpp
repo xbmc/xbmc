@@ -495,7 +495,7 @@ void CHALManager::AddDevice(const char *udi)
   {
     DBusError dbusError;
     dbus_error_init(&dbusError);
-    
+
     char **capability;
     capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", &dbusError);
     for(char **ptr = capability; *ptr != NULL;ptr++)
@@ -507,7 +507,7 @@ void CHALManager::AddDevice(const char *udi)
         CHALDevice dev = CHALDevice(udi);
         dev.FriendlyName = libhal_device_get_property_string(m_Context, udi, "info.product", &m_Error);
         m_Joysticks.push_back(dev);
-        
+
         if(m_Joysticks.size() < 2 || m_bMultipleJoysticksSupport)
         {
           // Restart SDL joystick subsystem
@@ -522,7 +522,7 @@ void CHALManager::AddDevice(const char *udi)
             CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
             break;
           }
-          
+
           g_Joystick.Initialize(NULL);
           if (m_Notifications)
             g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13024), dev.FriendlyName.c_str());
@@ -587,7 +587,7 @@ bool CHALManager::RemoveDevice(const char *udi)
           CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
           return false;
         }
-      
+
         g_Joystick.Initialize(NULL);
         g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str());
       }

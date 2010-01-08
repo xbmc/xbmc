@@ -80,7 +80,7 @@ bool WINAPI SetEvent(HANDLE hEvent)
     SDL_CondSignal(hEvent->m_hCond);
 
   CloseHandle(hEvent);
-  
+
   return true;
 }
 

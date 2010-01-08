@@ -91,8 +91,8 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
       return 0;
   }
   else
-    scrURL = *pUrl;  
-  
+    scrURL = *pUrl;
+
   vector<CStdString> strHTML;
   for (unsigned int i=0;i<scrURL.m_url.size();++i)
   {
@@ -141,7 +141,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
     return -1;
   }
- 
+
   TiXmlHandle docHandle( &doc );
 
   TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
@@ -461,7 +461,7 @@ void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, con
   // convert to the encoding requested by the parser
   g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
   CUtil::URLEncode(m_parser.m_param[0]);
- 
+
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
 }
 
@@ -539,7 +539,7 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
     CloseThread();
     return found;
   }
-  
+
   // unthreaded
   bool sortList = true;
   int success = InternalFindMovie(strMovie, movieList, sortList);

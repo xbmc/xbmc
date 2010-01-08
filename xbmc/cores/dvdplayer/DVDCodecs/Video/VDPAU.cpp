@@ -46,7 +46,7 @@ CVDPAU::Desc decoder_profiles[] = {
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Desc);
 
-static float studioCSC[3][4] = 
+static float studioCSC[3][4] =
 {
     { 1.0f,        0.0f, 1.57480000f,-0.78740000f},
     { 1.0f,-0.18737736f,-0.46813736f, 0.32775736f},
@@ -96,7 +96,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   videoMixer = VDP_INVALID_HANDLE;
 
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
-  if (!dl_handle) 
+  if (!dl_handle)
   {
     CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
     return;
@@ -329,7 +329,7 @@ bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 void CVDPAU::CheckFeatures()
 {
   if (videoMixer == VDP_INVALID_HANDLE)
-  { 
+  {
     CLog::Log(LOGNOTICE, " (VDPAU) Creating the video mixer");
     // Creation of VideoMixer.
     VdpVideoMixerParameter parameters[] = {
@@ -444,7 +444,7 @@ void CVDPAU::SetNoiseReduction()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_NoiseReduction) 
+  if (!g_settings.m_currentVideoSettings.m_NoiseReduction)
   {
     VdpBool enabled[]= {0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -466,7 +466,7 @@ void CVDPAU::SetSharpness()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_Sharpness) 
+  if (!g_settings.m_currentVideoSettings.m_Sharpness)
   {
     VdpBool enabled[]={0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -501,25 +501,25 @@ void CVDPAU::SetDeinterlacing()
 
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_InterlaceMethod) 
+  if (!g_settings.m_currentVideoSettings.m_InterlaceMethod)
   {
     VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO) 
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO)
   {
     VdpBool enabled[]={1,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND) 
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND)
   {
     VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE) 
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE)
   {
     VdpBool enabled[]={0,0,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -562,8 +562,8 @@ void CVDPAU::InitVDPAUProcs()
     vdp_device = VDP_INVALID_HANDLE;
     return;
   }
-  
-  if (vdp_st != VDP_STATUS_OK) 
+
+  if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
     vdp_device = VDP_INVALID_HANDLE;
@@ -695,7 +695,7 @@ void CVDPAU::InitVDPAUProcs()
                                 VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
                                 (void **)&vdp_video_mixer_query_feature_support
                                 );
-  CheckStatus(vdp_st, __LINE__);  
+  CheckStatus(vdp_st, __LINE__);
 
   vdp_st = vdp_get_proc_address(
                                 vdp_device,
@@ -853,7 +853,7 @@ void CVDPAU::FiniVDPAUOutput()
   CheckStatus(vdp_st, __LINE__);
   vdp_flip_target = VDP_INVALID_HANDLE;
 
-  for (int i = 0; i < totalAvailableOutputSurfaces; i++) 
+  for (int i = 0; i < totalAvailableOutputSurfaces; i++)
   {
     vdp_st = vdp_output_surface_destroy(outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
@@ -879,7 +879,7 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
                          , VdpDecoderProfile &vdp_decoder_profile
                          , VdpChromaType     &vdp_chroma_type)
 {
-  switch (fmt) 
+  switch (fmt)
   {
     case PIX_FMT_VDPAU_MPEG1:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
@@ -958,10 +958,10 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   int tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES;
   if (vid_width == FULLHD_WIDTH)
-    tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES_FOR_FULLHD; 
+    tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES_FOR_FULLHD;
 
   // Creation of outputSurfaces
-  for (int i = 0; i < NUM_OUTPUT_SURFACES && i < tmpMaxOutputSurfaces; i++) 
+  for (int i = 0; i < NUM_OUTPUT_SURFACES && i < tmpMaxOutputSurfaces; i++)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
@@ -971,7 +971,7 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
     CHECK_VDPAU_RETURN(vdp_st, false);
     totalAvailableOutputSurfaces++;
   }
-  CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)", 
+  CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)",
                        totalAvailableOutputSurfaces,
                        tmpMaxOutputSurfaces,
                        NUM_OUTPUT_SURFACES);
@@ -1033,7 +1033,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - returning due to awaiting recovery");
     return -1;
   }
-  
+
   vdpau_render_state * render = NULL;
 
   // find unused surface
@@ -1117,7 +1117,7 @@ void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
   for(i=0; i<4; i++)
-    pic->data[i]= NULL;  
+    pic->data[i]= NULL;
 }
 
 
@@ -1153,7 +1153,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(s->pix_fmt == PIX_FMT_VDPAU_H264)
     max_refs = render->info.h264.num_ref_frames;
 
-  if(vdp->decoder == VDP_INVALID_HANDLE 
+  if(vdp->decoder == VDP_INVALID_HANDLE
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
   {
@@ -1187,7 +1187,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   if (interlaced && tmpDeint)
     structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
                                           VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
-  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME; 
+  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
 
   past[0] = past[1];
   past[1] = current;
@@ -1201,10 +1201,10 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.x1 = OutWidth;
     outRectVid.y1 = OutHeight;
   }
-  
+
   if (current == VDP_INVALID_HANDLE)
     current = render->surface;
-  
+
   vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   vdp_st = vdp_video_mixer_render(videoMixer,
@@ -1223,7 +1223,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   0,
                                   NULL);
   CheckStatus(vdp_st, __LINE__);
-  
+
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
 }

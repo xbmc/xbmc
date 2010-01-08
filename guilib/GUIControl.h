@@ -290,7 +290,7 @@ protected:
   int m_controlDown;
   int m_controlNext;
   int m_controlPrev;
-  
+
   std::vector<CGUIActionDescriptor> m_leftActions;
   std::vector<CGUIActionDescriptor> m_rightActions;
   std::vector<CGUIActionDescriptor> m_upActions;

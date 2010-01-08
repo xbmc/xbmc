@@ -527,7 +527,7 @@ void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString 
     return;
   }
   GetInteger(pNode, "viewmode", viewState.m_viewMode, defaultView, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-  
+
   int sortMethod;
   GetInteger(pNode, "sortmethod", sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
   viewState.m_sortMethod = (SORT_METHOD)sortMethod;
@@ -568,7 +568,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
     {
       if (res == RES_WINDOW)
         continue;
-      
+
       if (m_ResInfo[res].strMode == mode)
       { // found, read in the rest of the information for this item
         const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
@@ -988,7 +988,7 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
-    
+
     CPasswordManager::GetInstance().Clear();
 
     // to set labels - shares are reloaded

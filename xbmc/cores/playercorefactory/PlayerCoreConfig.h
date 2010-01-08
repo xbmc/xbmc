@@ -74,7 +74,7 @@ public:
       case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
-      default: return NULL; 
+      default: return NULL;
     }
 
     if (pPlayer->Initialize(m_config))

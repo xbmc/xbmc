@@ -506,7 +506,7 @@ CStdString CURL::Get() const
 
   if (m_strProtocol == "")
     return m_strFileName;
-  
+
   CStdString strURL;
   strURL.reserve(sizeneed);
 
@@ -661,21 +661,21 @@ bool CURL::IsFullPath(const CStdString &url)
 CStdString CURL::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
-  
+
   // Don't do any stuff on URLs containing %-characters as we may screw up
   // URL-encoded (embedded) filenames (like with zip:// & rar://)
   if (path.Find("://") >= 0 && path.Find('%') >= 0)
     return result;
-   
+
   // check the path for incorrect slashes
 #ifdef _WIN32
   if (CUtil::IsDOSPath(path))
   {
     result.Replace('/', '\\');
-    // Fixup for double back slashes (but ignore the \\ of unc-paths) 
-    for (int x=1; x<result.GetLength()-1; x++) 
+    // Fixup for double back slashes (but ignore the \\ of unc-paths)
+    for (int x=1; x<result.GetLength()-1; x++)
     {
-      if (result[x] == '\\' && result[x+1] == '\\') 
+      if (result[x] == '\\' && result[x+1] == '\\')
         result.Delete(x);
     }
   }
@@ -683,20 +683,20 @@ CStdString CURL::ValidatePath(const CStdString &path)
   {
     result.Replace('\\', '/');
     // Fixup for double forward slashes(/) but don't touch the :// of URLs
-    for (int x=1; x<result.GetLength()-1; x++) 
+    for (int x=1; x<result.GetLength()-1; x++)
     {
-      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
-        result.Delete(x); 
+      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
+        result.Delete(x);
     }
   }
 #else
   result.Replace('\\', '/');
-  // Fixup for double forward slashes(/) but don't touch the :// of URLs 
-  for (int x=1; x<result.GetLength()-1; x++) 
-  { 
-    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
-      result.Delete(x); 
-  }        
+  // Fixup for double forward slashes(/) but don't touch the :// of URLs
+  for (int x=1; x<result.GetLength()-1; x++)
+  {
+    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
+      result.Delete(x);
+  }
 #endif
   return result;
 }

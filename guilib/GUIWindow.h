@@ -141,7 +141,7 @@ public:
   void       SetRunActionsManually();
   void       RunLoadActions();
   void       RunUnloadActions();
-  
+
   bool HasProperty(const CStdString &strKey) const;
   void SetProperty(const CStdString &strKey, const char *strValue);
   void SetProperty(const CStdString &strKey, const CStdString &strValue);
@@ -202,7 +202,7 @@ protected:
 //#endif
 
   void RunActions(std::vector<CGUIActionDescriptor>& actions);
-  
+
   int m_idRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;
@@ -242,7 +242,7 @@ protected:
 
   std::vector<CGUIActionDescriptor> m_loadActions;
   std::vector<CGUIActionDescriptor> m_unloadActions;
-  
+
   bool m_manualRunActions;
 };
 

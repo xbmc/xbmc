@@ -175,7 +175,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 #ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
         return MEDIA_DETECT::CAutorun::PlayDisc();
-#endif      
+#endif
     }
   }
   if (action.id == ACTION_PREVIOUS_MENU)
@@ -467,7 +467,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
-  
+
   if (strDirectory.IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));

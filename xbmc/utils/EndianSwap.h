@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
  /* Functions taken from SDL (SDL_endian.h) */
 
 #ifndef __ENDIAN_SWAP_H__
@@ -96,4 +96,4 @@ static __inline__ uint64_t Endian_Swap64(uint64_t x) {
 }
 #endif
 
-#endif  /* __ENDIAN_SWAP_H__ */ 
+#endif  /* __ENDIAN_SWAP_H__ */

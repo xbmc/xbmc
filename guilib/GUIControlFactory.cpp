@@ -157,7 +157,7 @@ bool CGUIControlFactory::GetAction(const TiXmlElement* pElement, CGUIActionDescr
     action.m_lang = CGUIActionDescriptor::LANG_PYTHON;
   else
     action.m_lang = CGUIActionDescriptor::LANG_XBMC;
-  
+
   if (pElement->FirstChild())
   {
     action.m_action = pElement->FirstChild()->Value();
@@ -1058,7 +1058,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
     if (bPassword)
       ((CGUIEditControl *) control)->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, 0);
-    ((CGUIEditControl *) control)->SetTextChangeActions(textChangeActions);          
+    ((CGUIEditControl *) control)->SetTextChangeActions(textChangeActions);
   }
   else if (strType == "videowindow")
   {

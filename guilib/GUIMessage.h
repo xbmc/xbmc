@@ -301,7 +301,7 @@ private:
   int m_param1;
   int m_param2;
   CGUIListItemPtr m_item;
-  
+
   static CStdString empty_string;
 };
 #endif

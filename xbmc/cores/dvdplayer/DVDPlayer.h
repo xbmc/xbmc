@@ -207,7 +207,7 @@ public:
 
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
-  
+
   virtual CStdString GetPlayingTitle();
 
   enum ECacheState

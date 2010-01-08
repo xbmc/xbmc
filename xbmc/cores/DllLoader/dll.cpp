@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "dll.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
@@ -43,7 +43,7 @@ char* getpath(char *buf, const char *full)
     buf[pos - full + 1] = 0;
     return buf;
   }
-  else 
+  else
   {
     buf[0] = 0;
     return buf;
@@ -51,24 +51,24 @@ char* getpath(char *buf, const char *full)
 }
 
 extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sourcedll)
-{    
+{
   char libname[MAX_PATH + 1] = {};
   char libpath[MAX_PATH + 1] = {};
-  LibraryLoader* dll = NULL; 
+  LibraryLoader* dll = NULL;
 
-  /* extract name */  
+  /* extract name */
   const char* p = strrchr(lib_file, PATH_SEPARATOR_CHAR);
-  if (p) 
+  if (p)
     strcpy(libname, p+1);
-  else 
-    strcpy(libname, lib_file);  
+  else
+    strcpy(libname, lib_file);
 
   if( libname[0] == '\0' )
     return NULL;
 
   /* extract path */
   getpath(libpath, lib_file);
-  
+
   CLog::Log(LOGDEBUG, "LoadLibraryA('%s')", libname);
   if (sourcedll)
   {
@@ -87,7 +87,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   /* if we still don't have a path, use default path */
   if( libpath[0] == '\0' )
     strcpy(libpath, DEFAULT_DLLPATH);
-  
+
   /* msdn docs state */
   /* "If no file name extension is specified in the lpFileName parameter, the default library extension .dll is appended.  */
   /* However, the file name string can include a trailing point character (.) to indicate that the module name has no extension." */
@@ -97,7 +97,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
     libname[strlen(libname)-1] = '\0';
 
   dll = DllLoaderContainer::LoadModule(libname, libpath);
-    
+
   if (dll)
   {
     CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: %p", libname, (void*)dll);
@@ -129,7 +129,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExExtended(LPCSTR lpLibFileName, HAND
   if (dwFlags & LOAD_WITH_ALTERED_SEARCH_PATH) strcat(strFlags, "\n - LOAD_WITH_ALTERED_SEARCH_PATH");
 
   CLog::Log(LOGDEBUG, "LoadLibraryExA called with flags: %s", strFlags);
-  
+
   return dllLoadLibraryExtended(lpLibFileName, sourcedll);
 }
 
@@ -141,7 +141,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExA(LPCSTR lpLibFileName, HANDLE hFil
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
   LibraryLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
-  
+
   if( !dllhandle )
   {
     CLog::Log(LOGERROR, "%s - Invalid hModule specified",__FUNCTION__);
@@ -150,7 +150,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
-  
+
   CLog::Log(LOGDEBUG, "FreeLibrary(%s) -> %p", dllhandle->GetName(), (void*)dllhandle);
 
   DllLoaderContainer::ReleaseModule(dllhandle);
@@ -161,7 +161,7 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
-  
+
   void* address = NULL;
   LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
 
@@ -209,7 +209,7 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
       DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
       /* some dll's require us to always return a function or it will fail, other's  */
       /* decide functionallity depending on if the functions exist and may fail      */
-      if( dll->IsSystemDll() && track 
+      if( dll->IsSystemDll() && track
        && stricmp(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0 )
       {
         address = (void*)create_dummy_function(dll->GetName(), function);
@@ -217,13 +217,13 @@ extern "C" FARPROC __stdcall dllGetProcAddress(HMODULE hModule, LPCSTR function)
         CLog::Log(LOGDEBUG, "%s - created dummy function %s!%s", __FUNCTION__, dll->GetName(), function);
       }
       else
-      {      
+      {
         address = NULL;
         CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p", __FUNCTION__, hModule, dll->GetName(), function, address);
       }
     }
   }
-  
+
   return (FARPROC)address;
 }
 
@@ -237,7 +237,7 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
   If this parameter is NULL, GetModuleHandle returns a handle to the file used to create the calling process (.exe file).
   */
 
-  if( lpModuleName == NULL ) 
+  if( lpModuleName == NULL )
     return NULL;
 
   char* strModuleName = new char[strlen(lpModuleName) + 5];
@@ -255,7 +255,7 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(LPCSTR lpModuleName)
     //CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') => 0x%x", lpModuleName, h);
     return (HMODULE)p->GetHModule();
   }
-   
+
   CLog::Log(LOGDEBUG, "GetModuleHandleA('%s') failed", lpModuleName);
   return NULL;
 }
@@ -271,7 +271,7 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
     return 0;
 #endif
   }
-  
+
   LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
   if( !dll )
   {
@@ -285,6 +285,6 @@ extern "C" DWORD WINAPI dllGetModuleFileNameA(HMODULE hModule, LPSTR lpFilename,
     strncpy(lpFilename, sName, nSize);
     return strlen(lpFilename);
   }
-  
+
   return 0;
 }

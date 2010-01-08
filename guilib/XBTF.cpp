@@ -161,7 +161,7 @@ std::vector<CXBTFFrame>& CXBTFFile::GetFrames()
 
 uint64_t CXBTFFile::GetHeaderSize() const
 {
-  uint64_t result = 
+  uint64_t result =
     sizeof(m_path) +
     sizeof(m_loop) +
     sizeof(uint32_t); /* Number of frames */

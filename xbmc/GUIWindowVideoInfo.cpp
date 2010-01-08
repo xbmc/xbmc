@@ -692,7 +692,7 @@ void CGUIWindowVideoInfo::Play(bool resume)
     strPath.Format("videodb://2/2/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
     Close();
     g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
-    return; 
+    return;
   }
 
   CFileItem movie(*m_movieItem->GetVideoInfoTag());
@@ -831,10 +831,10 @@ void CGUIWindowVideoInfo::OnGetThumb()
 void CGUIWindowVideoInfo::OnGetFanart()
 {
   CFileItemList items;
-  
+
   CFileItem item(*m_movieItem->GetVideoInfoTag());
   CStdString cachedThumb(item.GetCachedFanart());
-  
+
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));

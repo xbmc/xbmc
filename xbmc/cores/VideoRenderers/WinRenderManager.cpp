@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "WinRenderManager.h"
 
@@ -51,14 +51,14 @@ CWinRenderManager::~CWinRenderManager()
 bool CWinRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
-  CExclusiveLock lock(m_sharedSection);      
+  CExclusiveLock lock(m_sharedSection);
 
-  if(!m_pRenderer) 
+  if(!m_pRenderer)
   {
     RestoreCriticalSection(g_graphicsContext, locks);
     return false;
   }
- 
+
   bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
   if(result)
   {
@@ -71,7 +71,7 @@ bool CWinRenderManager::Configure(unsigned int width, unsigned int height, unsig
     m_pRenderer->Update(false);
     m_bIsStarted = true;
   }
-  
+
   RestoreCriticalSection(g_graphicsContext, locks);
   return result;
 }
@@ -90,7 +90,7 @@ void CWinRenderManager::Update(bool bPauseDrawing)
 void CWinRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
-  CSharedLock lock(m_sharedSection); 
+  CSharedLock lock(m_sharedSection);
   RestoreCriticalSection(g_graphicsContext, locks);
 
   if (m_pRenderer)

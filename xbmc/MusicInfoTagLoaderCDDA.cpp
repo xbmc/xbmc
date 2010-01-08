@@ -149,6 +149,6 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
 #endif
 
   tag.SetLoaded(false);
-  
+
   return false;
 }

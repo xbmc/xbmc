@@ -198,11 +198,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
         {
-#ifdef HAS_DVD_DRIVE          
+#ifdef HAS_DVD_DRIVE
           if (pItem->IsDVD())
             return MEDIA_DETECT::CAutorun::PlayDisc();
 #endif
-          
+
           if (pItem->m_bIsShareOrDrive)
             return false;
           // if playback is paused or playback speed != 1, return
@@ -322,11 +322,11 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();
 #endif
-  
+
   if (pItem->m_bIsShareOrDrive)
     return false;
 
@@ -411,9 +411,9 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     {
       OnUnAssignContent(iItem,20375,20340,20341);
     }
-    if (!info.strContent.IsEmpty()      && 
+    if (!info.strContent.IsEmpty()      &&
         !info2.strContent.IsEmpty()     &&
-        !info.strContent.Equals("None") && 
+        !info.strContent.Equals("None") &&
        (info2.strContent != info.strContent ||
         !info.strPath.Equals(info2.strPath)))
     {

@@ -995,8 +995,8 @@ void CDVDPlayer::Process()
             }
           }
         }
-        
-        // if playing a main title DVD/ISO rip, there is no menu structure so 
+
+        // if playing a main title DVD/ISO rip, there is no menu structure so
         // dvdnav will tell us it's done by setting EOF on the stream.
         if (pStream->IsEOF())
           break;
@@ -2066,7 +2066,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 #endif
 
-  if( bPlus && GetChapter() < GetChapterCount() 
+  if( bPlus && GetChapter() < GetChapterCount()
   || !bPlus && GetChapter() > 1)
   {
     if(bPlus && GetChapter() < GetChapterCount())
@@ -2164,7 +2164,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
     /*
      * Seeking is flushed and inaccurate, just like Seek()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false)); 
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false));
     SyncronizeDemuxer(100);
     return true;
   }
@@ -2204,7 +2204,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
                          , dDelay
                          , dDiff
-                         , strEDL.c_str()                         
+                         , strEDL.c_str()
                          , (int)(CThread::GetRelativeUsage()*100)
                          , (int)(m_dvdPlayerAudio.GetRelativeUsage()*100)
                          , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));

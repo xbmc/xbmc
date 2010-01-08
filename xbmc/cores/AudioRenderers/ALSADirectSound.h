@@ -93,5 +93,5 @@ private:
   bool m_bPassthrough;
 };
 
-#endif 
+#endif
 

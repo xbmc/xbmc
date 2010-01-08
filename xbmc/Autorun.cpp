@@ -197,7 +197,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           bPlaying = true;
           return true;
         }
-      
+
         // Video CDs can have multiple file formats. First we need to determine which one is used on the CD
         CStdString strExt;
         if (pItem->m_strPath.Find("MPEGAV") != -1)

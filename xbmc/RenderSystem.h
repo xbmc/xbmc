@@ -57,7 +57,7 @@ public:
   CRenderSystemBase();
   virtual ~CRenderSystemBase();
 
-  // Retrieve 
+  // Retrieve
   RenderingSystemType GetRenderingSystemType() { return m_enumRenderingSystem; }
 
   virtual bool InitRenderSystem() = 0;

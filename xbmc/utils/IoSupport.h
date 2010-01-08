@@ -126,7 +126,7 @@ public:
   static INT ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   static INT ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer);
   static VOID CloseCDROM(HANDLE hDevice);
-  
+
   static BOOL IsDebug();
   static HRESULT Shutdown();
 private:

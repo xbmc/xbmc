@@ -172,7 +172,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
     UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
   }
-  else 
+  else
 #endif
   if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {

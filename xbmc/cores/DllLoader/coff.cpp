@@ -18,10 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include <stdlib.h>
 #include <string.h>
-#include "coff.h" 
+#include "coff.h"
 #include "coffldr.h"
 
 //#define DUMPING_DATA 1
@@ -102,7 +102,7 @@ CoffLoader::~CoffLoader()
 }
 
 // Has nothing to do with the coff loader itself
-// it can be used to parse the headers of a dll 
+// it can be used to parse the headers of a dll
 // already loaded into memory
 int CoffLoader::ParseHeaders(void* hModule)
 {
@@ -427,7 +427,7 @@ void* CoffLoader::RVA2Data(unsigned long RVA)
 {
   int Sctn = RVA2Section(RVA);
 
-  if( RVA < SectionHeader[Sctn].VirtualAddress 
+  if( RVA < SectionHeader[Sctn].VirtualAddress
    || RVA >= SectionHeader[Sctn].VirtualAddress + SectionHeader[Sctn].VirtualSize)
   {
     // RVA2Section is lying, let's use base address of dll instead, only works if
@@ -809,7 +809,7 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
   /*
   #if 0
   if (ScnHdr->NumRelocations > 0)
-  {                       
+  {
   // Print Section Relocations
   ObjReloc_t ObjReloc;
 
@@ -819,7 +819,7 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
   printf(" Offset    Type      Index     Name\n");
   printf(" --------  --------  --------  ------\n");
   for (int i = 0; i < ScnHdr->NumRelocations; i++)
-  {          
+  {
   fread(&ObjReloc, 1, sizeof(ObjReloc_t), fp);
   printf(" %08X  ", ObjReloc.VirtualAddress);
 
@@ -862,7 +862,7 @@ void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
 
   fread(&LineNumber, 1, sizeof(LineNumbers_t), fp);
   if (LineNumber.LineNum == 0)
-  {                                    
+  {
   SymbolTable_t *Sym;
   int SymIndex;
 

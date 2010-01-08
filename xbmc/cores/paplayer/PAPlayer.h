@@ -167,10 +167,10 @@ private:
   unsigned int     m_SampleRate;
   unsigned int     m_Channels;
   unsigned int     m_BitsPerSample;
-  
+
   unsigned int     m_SampleRateOutput;
   unsigned int     m_BitsPerSampleOutput;
- 
+
   AudioPacket      m_packet[2][PACKET_COUNT];
 
   IAudioCallback*  m_pCallback;

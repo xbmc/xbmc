@@ -83,7 +83,7 @@ bool CDVDSubtitleStream::Open(const string& strFile)
 
       if (!isUTF8)
         isUTF8 = g_charsetConverter.isValidUtf8(m_stringstream.str());
- 
+
       if (!isUTF8)
       {
         CStdStringW strUTF16;

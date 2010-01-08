@@ -92,7 +92,7 @@ public:
 
   static CStdString VideoWidthToResolutionDescription(int iWidth);
   static CStdString VideoAspectToAspectDescription(float fAspect);
-  
+
   bool HasItems(void) const { return m_vecItems.size() > 0; };
   int GetStreamCount(CStreamDetail::StreamType type) const;
   int GetVideoStreamCount(void) const;
@@ -118,7 +118,7 @@ public:
   virtual void Serialize(CArchive& ar);
 
   // Language to use for "best" subtitle stream
-  CStdString m_strLanguage; 
+  CStdString m_strLanguage;
 
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
