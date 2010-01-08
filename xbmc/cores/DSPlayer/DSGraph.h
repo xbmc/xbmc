@@ -26,9 +26,6 @@
 #define NO_DSHOW_STRSAFE
 #include <dshow.h> //needed for CLSID_VideoRenderer
 
-#include <atlbase.h>
-#include <atlstr.h>
-
 #include <initguid.h>
 #include <dvdmedia.h>
 #include <strmif.h>

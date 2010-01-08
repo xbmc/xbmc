@@ -27,7 +27,6 @@
 
 
 #include "WinBaseRenderer.h"
-#include <atlbase.h>
 //#define MP_DIRECTRENDERING
 
 class CBaseTexture;
