@@ -132,9 +132,19 @@ public:
   virtual bool OnMouseWheel(char wheel, const CPoint &point) { return false; };
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
   virtual bool HitTest(const CPoint &point) const;
-  /// \brief Focus a control from a screen location.  Returns the coordinates of the screen location relative to the control and a pointer to the control.
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
-  /// \brief Unfocus a control if it's not in a screen location.
+
+  /*! \brief Test whether we can focus a control from a point on screen
+   \param point the location in skin coordinates from the upper left corner of the parent control.
+   \param controlPoint [OUT] the location in skin coordinates that will yield the given point on screen under this controls transformation
+   \return true if the control can be focused from this location
+   \sa UnfocusFromPoint
+   */
+  virtual bool CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const;
+
+  /*! \brief Unfocus the control if the given point on screen is not within it's boundary
+   \param point the location in skin coordinates from the upper left corner of the parent control.
+   \sa CanFocusFromPoint
+   */
   virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual bool OnMessage(CGUIMessage& message);

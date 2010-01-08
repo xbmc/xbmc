@@ -311,30 +311,31 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scrollSpeed = (m_scrollOffset - m_offset) / m_scrollTime;
 }
 
-bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
+void CGUIControlGroupList::GetControlsFromPoint(const CPoint &point, std::vector< std::pair<CGUIControl *, CPoint> > &controls) const
 {
-  if (!CGUIControl::CanFocus()) return false;
+  if (!CGUIControl::CanFocus()) return;
   float pos = 0;
   CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
   float alignOffset = GetAlignOffset();
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
-    const CGUIControl *child = *it;
+    CGUIControl *child = *it;
     if (child->IsVisible())
     {
       if (pos + Size(child) > m_offset && pos < m_offset + Size())
       { // we're on screen
         float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_offset;
         float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_offset : m_posY;
-        if (child->CanFocusFromPoint(controlCoords - CPoint(offsetX, offsetY), control, controlPoint))
-          return true;
+        CPoint childCoords;
+        if (child->IsGroup())
+          ((CGUIControlGroup *)child)->GetControlsFromPoint(controlCoords - CPoint(offsetX, offsetY), controls);
+        else if (child->CanFocusFromPoint(controlCoords - CPoint(offsetX, offsetY), childCoords))
+          controls.push_back(std::make_pair(child, childCoords));
       }
       pos += Size(child) + m_itemGap;
     }
   }
-  *control = NULL;
-  return false;
 }
 
 void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
