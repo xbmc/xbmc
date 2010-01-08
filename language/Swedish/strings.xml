@@ -2,8 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 11/20/2009-->
-<!--$Revision$-->
+<!--Date of translation: 01/04/2010-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1123,6 +1122,7 @@
   <string id="13422">Starta bildspel här</string>
   <string id="13423">Kom ihåg för denna sökväg</string>
   <string id="13424">Använd pixelbufferobjekt</string>
+  <string id="13425">Broadcom Crystal HD</string>
   <string id="13500">A/V synkmetod</string>
   <string id="13501">Ljudklocka</string>
   <string id="13502">Videoklocka (tappat/dubblett ljud)</string>

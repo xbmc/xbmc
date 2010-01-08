@@ -20,14 +20,10 @@
  */
 
 // FileRar.h: interface for the CFileRar class.
-//
-//////////////////////////////////////////////////////////////////////
-#if !defined(AFX_FILERAR_H__C6E9401A_3715_11D9_8185_0050FC718317__INCLUDED_)
-#define AFX_FILERAR_H__C6E9401A_3715_11D9_8185_0050FC718317__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+#ifndef FILERAR_H_
+#define FILERAR_H_
 
 #include "IFile.h"
 #include "lib/UnrarXLib/rar.hpp"
@@ -44,12 +40,13 @@ namespace XFILE
     void Start(Archive* pArc, CommandData* pCmd, CmdExtract* pExtract, int iSize); 
     
     virtual void OnStartup();
-     virtual void OnExit();
-     virtual void Process();
+    virtual void OnExit();
+    virtual void Process();
 
-     HANDLE hRunning;
-     HANDLE hRestart;
-     HANDLE hQuit;
+    HANDLE hRunning;
+    HANDLE hRestart;
+    HANDLE hQuit;
+
   protected:
     Archive* m_pArc;
     CommandData* m_pCmd;
@@ -63,14 +60,14 @@ namespace XFILE
 		CFileRar();
     CFileRar(bool bSeekable); // used for caching files
     virtual ~CFileRar();
-    virtual __int64        GetPosition();
-    virtual __int64        GetLength();
+    virtual int64_t       GetPosition();
+    virtual int64_t       GetLength();
     virtual bool          Open(const CURL& url);
     virtual bool          Exists(const CURL& url);
-    virtual int            Stat(const CURL& url, struct __stat64* buffer);
-    virtual unsigned int  Read(void* lpBuf, __int64 uiBufSize);
-    virtual int            Write(const void* lpBuf, __int64 uiBufSize);
-    virtual __int64        Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
+    virtual int           Stat(const CURL& url, struct __stat64* buffer);
+    virtual unsigned int  Read(void* lpBuf, int64_t uiBufSize);
+    virtual int           Write(const void* lpBuf, int64_t uiBufSize);
+    virtual int64_t       Seek(int64_t iFilePosition, int iWhence=SEEK_SET);
     virtual void          Close();
     virtual void          Flush();
 
@@ -78,14 +75,13 @@ namespace XFILE
     unsigned int          Write(void *lpBuf, __int64 uiBufSize);
 
   protected:
-    CStdString  m_strCacheDir;
-    CStdString  m_strRarPath;
+    CStdString m_strCacheDir;
+    CStdString m_strRarPath;
     CStdString m_strPassword;
     CStdString m_strPathInRar;
-		BYTE m_bRarOptions;
-		BYTE m_bFileOptions;
+    BYTE m_bFileOptions;
     void Init();
-		void InitFromUrl(const CURL& url);
+    void InitFromUrl(const CURL& url);
     bool OpenInArchive();
     void CleanUp();
     
@@ -99,7 +95,6 @@ namespace XFILE
     Archive* m_pArc;
     CommandData* m_pCmd;
     CmdExtract* m_pExtract;
-    int m_iSize; // header size
     CFileRarExtractThread* m_pExtractThread;
     byte* m_szBuffer;
     byte* m_szStartOfBuffer;
@@ -108,4 +103,6 @@ namespace XFILE
 	};
 
 }
-#endif // !defined(AFX_FILERAR_H__C6E9401A_3715_11D9_8185_0050FC718317__INCLUDED_)
+
+#endif  // FILERAR_H_
+

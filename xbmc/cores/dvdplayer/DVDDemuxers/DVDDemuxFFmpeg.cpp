@@ -29,6 +29,7 @@
 #include "utils/Win32Exception.h"
 #include "AdvancedSettings.h"
 #include "FileSystem/File.h"
+#include "FileSystem/Directory.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -981,10 +982,11 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       { //mkv attachments. Only bothering with fonts for now.
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
-          XFILE::CFile file;
-          std::string fileName = "special://temp/";
+          std::string fileName = "special://temp/fonts/";
+          DIRECTORY::CDirectory::Create(fileName);
           fileName += pStream->filename;
-          if(file.OpenForWrite(fileName) && pStream->codec->extradata)
+          XFILE::CFile file;
+          if(pStream->codec->extradata && file.OpenForWrite(fileName))
           {
             file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
             file.Close();

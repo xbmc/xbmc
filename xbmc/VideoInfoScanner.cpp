@@ -993,8 +993,17 @@ namespace VIDEO
         CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
     }
 
-    pItem->SetUserVideoThumb();
-    // get & save thumbnail
+    CStdString strUserThumb = pItem->GetUserVideoThumb();
+    if (bApplyToDir && strUserThumb.IsEmpty())
+    {
+      CStdString strParent;
+      CUtil::GetParentPath(pItem->m_strPath,strParent);
+      CFileItem item(*pItem);
+      item.m_strPath = strParent;
+      item.m_bIsFolder = true;
+      strUserThumb = item.GetUserVideoThumb();
+    }
+
     CStdString strThumb = pItem->GetCachedVideoThumb();
     if (content.Equals("tvshows") && !pItem->m_bIsFolder && CFile::Exists(strThumb))
     {
@@ -1002,8 +1011,9 @@ namespace VIDEO
       CFileItem item(movieDetails);
       strThumb = item.GetCachedEpisodeThumb();
     }
+
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0 && pItem->GetUserVideoThumb().IsEmpty())
+    if (strImage.size() > 0 && strUserThumb.IsEmpty())
     {
       if (pDialog)
       {
@@ -1029,6 +1039,11 @@ namespace VIDEO
         CLog::Log(LOGERROR,"Could not make imdb thumb from %s", strImage.c_str());
         CFile::Delete(strThumb);
       }
+    }
+    else
+    {
+      CPicture picture;
+      picture.CacheImage(strUserThumb, strThumb);
     }
 
     CStdString strCheck=pItem->m_strPath;

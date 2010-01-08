@@ -4223,9 +4223,45 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("playlist.playoffset"))
   {
-    // get current playlist
-    int pos = atol(parameter.c_str());
-    g_playlistPlayer.PlayNext(pos);
+    // playlist.playoffset(offset) 
+    // playlist.playoffset(music|video,offset) 
+    CStdString strPos = parameter; 
+    CStdString strPlaylist; 
+    if (params.size() > 1) 
+    { 
+      // ignore any other parameters if present 
+      strPlaylist = params[0]; 
+      strPos = params[1]; 
+ 
+      int iPlaylist = PLAYLIST_NONE; 
+      if (strPlaylist.Equals("music")) 
+        iPlaylist = PLAYLIST_MUSIC; 
+      else if (strPlaylist.Equals("video")) 
+        iPlaylist = PLAYLIST_VIDEO; 
+ 
+      // unknown playlist 
+      if (iPlaylist == PLAYLIST_NONE) 
+      { 
+        CLog::Log(LOGERROR,"Playlist.PlayOffset called with unknown playlist: %s", strPlaylist.c_str()); 
+        return false; 
+      } 
+ 
+      // user wants to play the 'other' playlist 
+      if (iPlaylist != g_playlistPlayer.GetCurrentPlaylist()) 
+      { 
+        g_application.StopPlaying(); 
+        g_playlistPlayer.Reset(); 
+        g_playlistPlayer.SetCurrentPlaylist(iPlaylist); 
+      } 
+    } 
+    // play the desired offset 
+    int pos = atol(strPos.c_str()); 
+    // playlist is already playing 
+    if (g_application.IsPlaying()) 
+      g_playlistPlayer.PlayNext(pos); 
+    // we start playing the 'other' playlist so we need to use play to initialize the player state 
+    else 
+      g_playlistPlayer.Play(pos);   
   }
   else if (execute.Equals("playlist.clear"))
   {
@@ -4255,6 +4291,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CStdString strTime;
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
         seconds = static_cast<float>(atoi(strTime.c_str())*60);
+      else
+        return false;
     }
     if (params.size() > 3 && params[3].CompareNoCase("true") == 0)
       silent = true;

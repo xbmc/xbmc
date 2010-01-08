@@ -32,6 +32,8 @@ public:
                       NET_PROTOCOL_FTP,
                       NET_PROTOCOL_HTTP,
                       NET_PROTOCOL_HTTPS,
+                      NET_PROTOCOL_DAV,
+                      NET_PROTOCOL_DAVS,
                       NET_PROTOCOL_DAAP,
                       NET_PROTOCOL_UPNP,
                       NET_PROTOCOL_RSS,

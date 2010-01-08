@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/18/2009-->
+<!--Date of translation: 12/30/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -40,6 +40,18 @@
   <string id="45">금</string>
   <string id="46">토</string>
   <string id="47">일</string>
+  <string id="51">1월</string>
+  <string id="52">2월</string>
+  <string id="53">3월</string>
+  <string id="54">4월</string>
+  <string id="55">5월</string>
+  <string id="56">6월</string>
+  <string id="57">7월</string>
+  <string id="58">8월</string>
+  <string id="59">9월</string>
+  <string id="60">10월</string>
+  <string id="61">11월</string>
+  <string id="62">12월</string>
   <string id="98">보기: 자동</string>
   <string id="99">보기: 자동(큰)</string>
   <string id="100">보기: 아이콘</string>
@@ -1116,6 +1128,7 @@
   <string id="13422">여기에서 슬라이드쇼 시작</string>
   <string id="13423">이 경로 기억</string>
   <string id="13424">픽셀 버퍼 객체 사용</string>
+  <string id="13425">브로드컴 크리스탈 HD</string>
   <string id="13500">A/V 동기 방식</string>
   <string id="13501">오디오 클럭</string>
   <string id="13502">비디오 클럭 (오디오 버림/반복)</string>

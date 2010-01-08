@@ -43,7 +43,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   CStdString strPath = "special://xbmc/media/Fonts/";
 #else
   //Setting the font directory to the temp dir(where mkv fonts are extracted to)
-  CStdString strPath = "special://temp/";
+  CStdString strPath = "special://temp/fonts/";
 #endif
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating ASS library structure");
   m_library  = m_dll.ass_library_init();
