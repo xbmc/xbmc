@@ -52,7 +52,7 @@ void CTCPServer::Process()
   {
     int             max_fd = 0;
     fd_set          rfds;
-    struct timeval  to     = {5, 0};
+    struct timeval  to     = {1, 0};
     FD_ZERO(&rfds);
 
     FD_SET(m_ServerSocket, &rfds);
@@ -153,7 +153,6 @@ bool CTCPServer::Initialize()
 
   myaddr.sin_family = AF_INET;
   myaddr.sin_port = htons(m_port);
-  bool m_bindlocally = true;
 
   if (m_nonlocal)
     myaddr.sin_addr.s_addr = INADDR_ANY;
