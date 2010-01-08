@@ -27,7 +27,6 @@
 #include "SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "dxerr.h"
 #include "CharsetConverter.h"
 
 #pragma comment(lib, "dxguid.lib")
@@ -362,7 +361,6 @@ void CWin32DirectSound::UpdateCacheStatus()
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
   if (DS_OK != res)
   {
-    CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x Error description:%s", res,DXGetErrorDescriptionA(res));
     return;
   }
 

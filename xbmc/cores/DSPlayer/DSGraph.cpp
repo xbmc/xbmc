@@ -79,6 +79,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_pGraphBuilder)
 	  CloseFile();
   m_VideoInfo.Clear();
+  m_pGraphBuilder = new CFGManager("CFGManager",NULL);
+  hr = m_pGraphBuilder->AddToROT();
+  CLog::Log(LOGDEBUG,"%s CFGManager",__FUNCTION__);
+
   m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd);
   hr = m_pGraphBuilder->AddToROT();
   //Adding every filters required for this file into the igraphbuilder

@@ -56,11 +56,10 @@ using namespace std;
 CFGManager::CFGManager(LPCTSTR pName, LPUNKNOWN pUnk)
   : CUnknown(pName, pUnk)
   , m_dwRegister(0)
-  , m_pUnkInner(NULL)
-  , m_pFM(NULL)
 {
-  CoCreateInstance(CLSID_FilterGraph,GetOwner(),CLSCTX_ALL,__uuidof(IUnknown),(void**) &m_pUnkInner);
-  CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_ALL,__uuidof(m_pFM),(void**) &m_pFM);
+  HRESULT hr;
+  hr = CoCreateInstance(CLSID_FilterGraph,GetOwner(),CLSCTX_INPROC_SERVER,__uuidof(IUnknown),(void**) &m_pUnkInner);
+  hr = CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_INPROC_SERVER,__uuidof(m_pFM),(void**) &m_pFM);
   //m_pFM.CoCreateInstance(CLSID_FilterMapper2);
 }
 
