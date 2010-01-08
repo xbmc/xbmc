@@ -610,7 +610,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   {
     m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
     if(m_speed == DVD_PLAYSPEED_NORMAL)
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+error, error);
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
 
     m_errorbuff = 0;
     m_errorcount = 0;
@@ -651,7 +651,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+m_error, 0);
       if(m_speed == DVD_PLAYSPEED_NORMAL)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
     }
     else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
     {
