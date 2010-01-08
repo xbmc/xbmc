@@ -1097,13 +1097,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
     /* if they have, reopen stream */
 
     if (m_CurrentAudio.hint != CDVDStreamInfo(*pStream, true))
-    {
-      // we don't actually have to close audiostream here first, as
-      // we could send it as a stream message. only problem
-      // is how to notify player if a stream change failed.
-      CloseAudioStream( true );
       OpenAudioStream( pPacket->iStreamId, pStream->source );
-    }
 
     m_CurrentAudio.stream = (void*)pStream;
   }
@@ -1135,10 +1129,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
     /* if they have reopen stream */
 
     if (m_CurrentVideo.hint != CDVDStreamInfo(*pStream, true))
-    {
-      CloseVideoStream(true);
       OpenVideoStream(pPacket->iStreamId, pStream->source);
-    }
 
     m_CurrentVideo.stream = (void*)pStream;
   }
@@ -1173,10 +1164,7 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
     /* if they have reopen stream */
 
     if (m_CurrentSubtitle.hint != CDVDStreamInfo(*pStream, true))
-    {
-        CloseSubtitleStream(true);
-        OpenSubtitleStream(pPacket->iStreamId, pStream->source);
-    }
+      OpenSubtitleStream(pPacket->iStreamId, pStream->source);
 
     m_CurrentSubtitle.stream = (void*)pStream;
   }
@@ -1204,15 +1192,8 @@ void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket
   {
     /* check so that dmuxer hints or extra data hasn't changed */
     /* if they have, reopen stream */
-
     if (m_CurrentTeletext.hint != CDVDStreamInfo(*pStream, true))
-    {
-      // we don't actually have to close audiostream here first, as
-      // we could send it as a stream message. only problem
-      // is how to notify player if a stream change failed.
-      CloseTeletextStream( true );
       OpenTeletextStream( pPacket->iStreamId, pStream->source );
-    }
 
     m_CurrentTeletext.stream = (void*)pStream;
   }
