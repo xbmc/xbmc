@@ -24,8 +24,10 @@
 #include "FileActions.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
+#include "AnnouncementManager.h"
 #include <string.h>
 
+using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
 using namespace Json;
 using namespace std;
@@ -36,6 +38,7 @@ const JSON_ACTION commands[] = {
   { "JSONRPC.Version",                  CJSONRPC::Version,                      Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
   { "JSONRPC.Permission",               CJSONRPC::Permission,                   Response,     ReadData,        "Retrieve the clients permissions" },
   { "JSONRPC.Ping",                     CJSONRPC::Ping,                         Response,     ReadData,        "Ping responder" },
+  { "JSONRPC.SetAnnouncementFlags",     CJSONRPC::SetAnnouncementFlags,         Announcing,   ControlAnnounce, "Change the announcement flags" },
 
 // Player
 // Static methods
@@ -113,7 +116,7 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
     Value val;
 
     val["command"] = commands[i].command;
-    val["executable"] = (clientflags & commands[i].permission > 0 ? true : false);
+    val["executable"] = (clientflags & commands[i].permission) > 0 ? true : false;
     if (getDescriptions)
       val["description"] = commands[i].description;
     if (getPermissions)
@@ -148,6 +151,22 @@ JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport,
   Value temp = "pong";
   result.swap(temp);
   return OK;
+}
+
+JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+{
+  int flags = 0;
+
+  if (parameterObject.get("playback", false).asBool())
+    flags |= Playback;
+  else if (parameterObject.get("gui", false).asBool())
+    flags |= GUI;
+  else if (parameterObject.get("system", false).asBool())
+    flags |= System;
+  else if (parameterObject.get("other", false).asBool())
+    flags |= Other;
+
+  return client->SetAnnouncementFlags(flags) ? OK : BadPermission;
 }
 
 void CJSONRPC::Initialize()
