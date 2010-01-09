@@ -367,7 +367,7 @@ bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &ev
   if (CGUIControl::CanFocus())
   {
     // run through our controls in reverse order (so that last rendered is checked first)
-    for (crControls i = m_children.rbegin(); i != m_children.rend(); ++i)
+    for (rControls i = m_children.rbegin(); i != m_children.rend(); ++i)
     {
       CGUIControl *child = *i;
       if (child->SendMouseEvent(childPoint, event))

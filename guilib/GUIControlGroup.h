@@ -107,6 +107,7 @@ protected:
   std::vector<CGUIControl *> m_children;
   typedef std::vector<CGUIControl *>::iterator iControls;
   typedef std::vector<CGUIControl *>::const_iterator ciControls;
+  typedef std::vector<CGUIControl *>::reverse_iterator rControls;
   typedef std::vector<CGUIControl *>::const_reverse_iterator crControls;
 
   // fast lookup by id
