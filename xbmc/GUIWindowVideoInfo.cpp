@@ -51,28 +51,10 @@
 using namespace std;
 using namespace XFILE;
 
-#define CONTROL_TITLE               20
-#define CONTROL_DIRECTOR            21
-#define CONTROL_CREDITS             22
-#define CONTROL_GENRE               23
-#define CONTROL_YEAR                24
-#define CONTROL_TAGLINE             25
-#define CONTROL_PLOTOUTLINE         26
-#define CONTROL_CAST                29
-#define CONTROL_RATING_AND_VOTES    30
-#define CONTROL_RUNTIME             31
-#define CONTROL_MPAARATING          32
-#define CONTROL_TITLE_AND_YEAR      33
-#define CONTROL_STUDIO              36
-#define CONTROL_TOP250              37
-#define CONTROL_TRAILER             38
-
-
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
 #define CONTROL_BTN_TRACKS           5
 #define CONTROL_BTN_REFRESH          6
-#define CONTROL_DISC                 7
 #define CONTROL_BTN_PLAY             8
 #define CONTROL_BTN_RESUME           9
 #define CONTROL_BTN_GET_THUMB       10
@@ -116,18 +98,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
       CGUIDialog::OnMessage(message);
       m_bViewReview = true;
-      CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_DISC);
-      OnMessage(msg);
-      for (int i = 0; i < 1000; ++i)
-      {
-        CStdString strItem;
-        strItem.Format("DVD#%03i", i);
-        CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_DISC);
-        msg2.SetLabel(strItem);
-        OnMessage(msg2);
-      }
-
-      SET_CONTROL_HIDDEN(CONTROL_DISC);
       Refresh();
 
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
@@ -337,56 +307,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
 
 void CGUIWindowVideoInfo::Update()
 {
-  CStdString strTmp;
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strTitle; strTmp.Trim();
-  SetLabel(CONTROL_TITLE, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strDirector; strTmp.Trim();
-  SetLabel(CONTROL_DIRECTOR, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strStudio; strTmp.Trim();
-  SetLabel(CONTROL_STUDIO, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strWritingCredits; strTmp.Trim();
-  SetLabel(CONTROL_CREDITS, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strGenre; strTmp.Trim();
-  SetLabel(CONTROL_GENRE, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strTagLine; strTmp.Trim();
-  SetLabel(CONTROL_TAGLINE, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strPlotOutline; strTmp.Trim();
-  SetLabel(CONTROL_PLOTOUTLINE, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strTrailer; strTmp.Trim();
-  SetLabel(CONTROL_TRAILER, strTmp);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strMPAARating; strTmp.Trim();
-  SetLabel(CONTROL_MPAARATING, strTmp);
-
-  CStdString strTop250;
-  if (m_movieItem->GetVideoInfoTag()->m_iTop250)
-    strTop250.Format("%i", m_movieItem->GetVideoInfoTag()->m_iTop250);
-  SetLabel(CONTROL_TOP250, strTop250);
-
-  CStdString strYear;
-  if (m_movieItem->GetVideoInfoTag()->m_iYear)
-    strYear.Format("%i", m_movieItem->GetVideoInfoTag()->m_iYear);
-  else
-    strYear = g_infoManager.GetItemLabel(m_movieItem.get(),LISTITEM_PREMIERED);
-  SetLabel(CONTROL_YEAR, strYear);
-
-  CStdString strRating_And_Votes;
-  if (m_movieItem->GetVideoInfoTag()->m_fRating != 0.0f)  // only non-zero ratings are of interest
-    strRating_And_Votes.Format("%03.1f (%s %s)", m_movieItem->GetVideoInfoTag()->m_fRating, m_movieItem->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
-  SetLabel(CONTROL_RATING_AND_VOTES, strRating_And_Votes);
-
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strRuntime; strTmp.Trim();
-  SetLabel(CONTROL_RUNTIME, strTmp);
-
   // setup plot text area
-  strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
+  CStdString strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
   if (!(!m_movieItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && m_movieItem->GetVideoInfoTag()->m_iSeason == 0)) // dont apply to tvshows
     if (m_movieItem->GetVideoInfoTag()->m_playCount == 0 && !g_guiSettings.GetBool("videolibrary.showunwatchedplots"))
       strTmp = g_localizeStrings.Get(20370);
