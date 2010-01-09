@@ -33,8 +33,7 @@
 #include "WINDirectShowEnumerator.h"
 #include "GuiSettings.h"
 using namespace std;
-CFGLoader::CFGLoader(IGraphBuilder2* gb)
-:m_pGraphBuilder(gb)
+CFGLoader::CFGLoader()
 {
   m_SourceF = NULL;
 }
@@ -316,18 +315,20 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   }
   if ( m_SplitterF )
   {
-  hr = m_pGraphBuilder->ConnectFilter(m_SplitterF,NULL);
-  if (FAILED(hr))
-    CLog::Log(LOGERROR,"DSPlayer %s Failed to connect every filters together",__FUNCTION__);
-  else
-    CLog::Log(LOGDEBUG,"DSPlayer %s Successfuly connected every filters",__FUNCTION__);
+    //hr = m_pGraphBuilder->ConnectFilter(m_SplitterF,NULL);
+    if (FAILED(hr))
+      CLog::Log(LOGERROR,"DSPlayer %s Failed to connect every filters together",__FUNCTION__);
+    else
+      CLog::Log(LOGDEBUG,"DSPlayer %s Successfuly connected every filters",__FUNCTION__);
   }
   
   return hr;
 }
 
-HRESULT CFGLoader::LoadConfig(CStdString configFile)
+HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg,CStdString configFile)
 {
+  m_pGraphBuilder = fg;
+  fg = NULL;
   HRESULT hr = S_OK;
   m_xbmcConfigFilePath = configFile;
   if (!CFile::Exists(configFile))

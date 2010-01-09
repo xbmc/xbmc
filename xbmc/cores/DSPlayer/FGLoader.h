@@ -21,20 +21,20 @@
 
 #pragma once
 #include "streams.h"
-#include "IGraphBuilder2.h"
 #include "FgFilter.h"
 #include "File.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
 #include <list>
+
 class CFGLoader : public CCritSec
 {
 public:
-  CFGLoader(IGraphBuilder2* gb);
+  CFGLoader();
   virtual ~CFGLoader();
 
 
-  HRESULT    LoadConfig(CStdString configFile);
+  HRESULT    LoadConfig(IFilterGraph2* fg,CStdString configFile);
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
   HRESULT    InsertSourceFilter(const CFileItem& pFileItem,TiXmlElement *pRule);
   HRESULT    InsertSplitter(TiXmlElement *pRule);
@@ -42,7 +42,8 @@ public:
   HRESULT    InsertVideoDecoder(TiXmlElement *pRule);
   HRESULT    InsertAudioRenderer();
   HRESULT    InsertAutoLoad();
-
+  
+  IBaseFilter* GetSplitter() { return m_SplitterF; };
 
   CStdString GetVideoDecInfo(){return  m_pStrVideodec;};
   CStdString GetAudioDecInfo(){return  m_pStrAudiodec;};
@@ -50,16 +51,16 @@ public:
   CStdString GetSplitterFilterInfo(){return  m_pStrSplitter;};
   CStdString GetAudioRenderer(){return  m_pStrAudioRenderer;};
 protected:
-  IGraphBuilder2*          m_pGraphBuilder;
-  CStdString               m_xbmcConfigFilePath;
-  CStdString               m_pStrVideodec;
-  CStdString               m_pStrAudiodec;
-  CStdString               m_pStrAudioRenderer;
-  CStdString               m_pStrSource;
-  CStdString               m_pStrSplitter;
+  IFilterGraph2*            m_pGraphBuilder;
+  CStdString                m_xbmcConfigFilePath;
+  CStdString                m_pStrVideodec;
+  CStdString                m_pStrAudiodec;
+  CStdString                m_pStrAudioRenderer;
+  CStdString                m_pStrSource;
+  CStdString                m_pStrSplitter;
   std::list<CFGFilterFile*> m_configFilter;
-  CFile                    m_File;
-  IBaseFilter*             m_SourceF;
+  XFILE::CFile              m_File;
+  IBaseFilter*              m_SourceF;
   IBaseFilter*              m_SplitterF;
 
 };

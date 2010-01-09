@@ -50,11 +50,12 @@ enum DIRECTSHOW_RENDERER
     DIRECTSHOW_RENDERER_VMR9 = 1,
     DIRECTSHOW_RENDERER_EVR = 2,
 };
-class CFGManager
-	: public CUnknown
-	, public IGraphBuilder2
-	, public IGraphBuilderDeadEnd
-	, public CCritSec
+class CFGLoader;
+class CFGManager:
+/*	: public CUnknown
+	, public IFilterGraph2
+	, public IGraphBuilderDeadEnd*/
+	public CCritSec
 {
 public:
 	
@@ -72,20 +73,19 @@ public:
 	};
 
 private:
-	IUnknown* m_pUnkInner;
   DWORD m_dwRegister;
   CStreamPath m_streampath;
   std::vector<CStreamDeadEnd> m_deadends;
 
 protected:
   IFilterMapper2* m_pFM;
+  IFilterGraph2*  m_pFG;
+  IUnknown* m_pUnkInner;
+
   std::list<CFGFilter*> m_source, m_transform, m_override;
 
   virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF);
 
-  STDMETHODIMP GetXbmcVideoDecFilter(IMPCVideoDecFilter** pBF);
-  STDMETHODIMP GetFfdshowVideoDecFilter(IffdshowDecVideoA** pBF);
-  STDMETHODIMP RenderFileXbmc(const CFileItem& pFileItem);
   CFile                m_File;
   CFGLoader*           m_CfgLoader;
   DIRECTSHOW_RENDERER  m_CurrentRenderer;
@@ -116,53 +116,35 @@ protected:
 	STDMETHODIMP ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt);
   STDMETHODIMP RenderEx(IPin* pPinOut, DWORD dwFlags, DWORD* pvContext) { return E_NOTIMPL; };
 
-	// IGraphBuilder2
-	STDMETHODIMP IsPinDirection(IPin* pPin, PIN_DIRECTION dir);
-	STDMETHODIMP IsPinConnected(IPin* pPin);
-	STDMETHODIMP ConnectFilter(IBaseFilter* pBF, IPin* pPinIn);
-	STDMETHODIMP ConnectFilter(IPin* pPinOut, IBaseFilter* pBF);
-	STDMETHODIMP ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt);
-	STDMETHODIMP NukeDownstream(IUnknown* pUnk);
-	STDMETHODIMP AddToROT();
-	STDMETHODIMP RemoveFromROT();
-  STDMETHODIMP GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer);
+	
 
 	// IGraphBuilderDeadEnd
 
 	STDMETHODIMP_(size_t) GetCount();
 	STDMETHODIMP GetDeadEnd(int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts);
+  //CfgManagerCustom
+	UINT64 m_vrmerit, m_armerit;
+	// IFilterGraph
 public:
-	CFGManager(LPCTSTR pName, LPUNKNOWN pUnk);
+	CFGManager();
 	virtual ~CFGManager();
+  void InitManager();
+  
+  // IGraphBuilder2
+	HRESULT IsPinDirection(IPin* pPin, PIN_DIRECTION dir);
+	HRESULT IsPinConnected(IPin* pPin);
+	HRESULT ConnectFilter(IBaseFilter* pBF, IPin* pPinIn);
+	HRESULT ConnectFilter(IPin* pPinOut, IBaseFilter* pBF);
+	HRESULT ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt);
+	HRESULT NukeDownstream(IUnknown* pUnk);
+	HRESULT AddToROT();
+	HRESULT RemoveFromROT();
+  HRESULT RenderFileXbmc(const CFileItem& pFileItem);
+  HRESULT GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer);
 
+  IFilterGraph2* GetGraphBuilder2(){return m_pFG;};
+  HRESULT QueryInterface(REFIID iid , void** ppv);
   //CUnknown interface
-  DECLARE_IUNKNOWN;
-  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
-};
-
-class CFGManagerCustom : public CFGManager
-{
-protected:
-	CStdString m_pXbmcPath;
-	UINT64 m_vrmerit, m_armerit;
-public:
-	// IFilterGraph
-	
-	STDMETHODIMP AddFilter(IBaseFilter* pFilter, LPCWSTR pName);
-	CFGManagerCustom(LPCTSTR pName, LPUNKNOWN pUnk);
-};
-
-class CFGManagerPlayer : public CFGManagerCustom
-{
-protected:
-	HWND m_hWnd;
-	UINT64 m_vrmerit, m_armerit;
-
-	HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF);
-	// IFilterGraph
-	STDMETHODIMP ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt);
-
-public:
-	CFGManagerPlayer(LPCTSTR pName, LPUNKNOWN pUnk, HWND hWnd);
-
+  //DECLARE_IUNKNOWN;
+  //STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 };

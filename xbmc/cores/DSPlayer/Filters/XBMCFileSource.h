@@ -4,7 +4,7 @@
 #ifndef __XBMCFILESOURCE_H__
 #include "filters/asyncio.h"
 #include "filters/asyncrdr.h"
-
+using namespace XFILE;
 class CXBMCFileReader;
 class CXBMCFileStream : public CAsyncStream
 {

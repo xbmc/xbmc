@@ -109,7 +109,7 @@ void CWinDsRenderer::UnInit()
   CSingleLock lock(g_graphicsContext);
   //Need to fix this
   //m_D3DVideoTexture->Release();
-  SAFE_RELEASE(m_D3DMemorySurface);
+  //SAFE_RELEASE(m_D3DMemorySurface);
   m_bConfigured = false;
 }
 

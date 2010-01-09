@@ -63,7 +63,6 @@ m_pDsConfig(NULL)
   m_State.Clear();
   m_VideoInfo.Clear();
   HRESULT hr;
-  hr = CoInitialize(0);
 }
 
 CDSGraph::~CDSGraph()
@@ -79,13 +78,13 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_pGraphBuilder)
 	  CloseFile();
   m_VideoInfo.Clear();
-  m_pGraphBuilder = new CFGManager("CFGManager",NULL);
-  hr = m_pGraphBuilder->AddToROT();
-  CLog::Log(LOGDEBUG,"%s CFGManager",__FUNCTION__);
 
-  m_pGraphBuilder = new CFGManagerPlayer(_T("CFGManagerPlayer"), NULL, g_hWnd);
+  m_pGraphBuilder = new CFGManager();
+  m_pGraphBuilder->InitManager();
   hr = m_pGraphBuilder->AddToROT();
   //Adding every filters required for this file into the igraphbuilder
+
+
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   if (FAILED(hr))
     return hr;
@@ -97,7 +96,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicVideo),(void **)&m_pBasicVideo);
   m_pDsConfig = new CDSConfig();
   //Get all custom interface
-  m_pDsConfig->LoadGraph(m_pGraphBuilder);
+  //m_pDsConfig->LoadGraph(m_pGraphBuilder);
 
   LONGLONG tmestamp;
   tmestamp = CTimeUtils::GetTimeMS();
@@ -133,13 +132,11 @@ void CDSGraph::CloseFile()
   HRESULT hr;
   if (m_pGraphBuilder)
     hr = m_pGraphBuilder->RemoveFromROT();
-  BeginEnumFilters(m_pGraphBuilder,pEF,pBF)
+  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(),pEF,pBF)
   {
-    m_pGraphBuilder->RemoveFilter(pBF);
+    m_pGraphBuilder->GetGraphBuilder2()->RemoveFilter(pBF);
   }
   EndEnumFilters
-  
-  SAFE_RELEASE(m_pGraphBuilder);
   
 }
 
@@ -296,7 +293,7 @@ void CDSGraph::OnPlayStop()
     m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
   if (m_pMediaControl)
     m_pMediaControl->Stop();
-  BeginEnumFilters(m_pGraphBuilder, pEF, pBF)
+  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(), pEF, pBF)
   {
     IAMNetworkStatus* pAMNS = NULL;
     IFileSourceFilter* pFSF = NULL;
