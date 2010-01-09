@@ -13,6 +13,7 @@ SRCS=ASAPFileDirectory.cpp \
      CMythFile.cpp \
      CMythSession.cpp \
      DAAPDirectory.cpp \
+     DAVDirectory.cpp \
      DirectoryCache.cpp \
      Directory.cpp \
      DirectoryHistory.cpp \

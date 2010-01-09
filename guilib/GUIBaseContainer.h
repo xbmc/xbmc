@@ -91,13 +91,11 @@ public:
 #endif
 protected:
   bool OnClick(int actionID);
-  virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
   virtual bool MoveUp(bool wrapAround);
-  virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout(bool refreshAllItems = false);
@@ -105,6 +103,7 @@ protected:
   virtual void UpdatePageControl(int offset);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
+  virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;

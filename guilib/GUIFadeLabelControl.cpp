@@ -127,7 +127,12 @@ void CGUIFadeLabelControl::Render()
     posY += m_height * 0.5f;
   if (m_infoLabels.size() == 1 && m_shortText)
   { // single label set and no scrolling required - just display
-    m_textLayout.Render(m_posX + m_label.offsetX, posY, 0, m_label.textColor, m_label.shadowColor, (m_label.align & ~3), m_width - m_label.offsetX);
+    float posX = m_posX + m_label.offsetX;
+    if (m_label.align & XBFONT_CENTER_X)
+      posX = m_posX + m_width * 0.5f;
+    else if (m_label.align & XBFONT_RIGHT)
+      posX = m_posX + m_width;
+    m_textLayout.Render(posX, posY, 0, m_label.textColor, m_label.shadowColor, m_label.align, m_width - m_label.offsetX);
     CGUIControl::Render();
     return;
   }

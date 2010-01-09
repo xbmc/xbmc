@@ -90,7 +90,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
     
-    if (m_Device && !m_Device->Open(stream_type, codec_type))
+    if (m_Device && !m_Device->OpenDecoder(stream_type, codec_type))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
@@ -109,7 +109,7 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 {
   if (m_Device)
   {
-    m_Device->Close();
+    m_Device->CloseDecoder();
     m_Device = NULL;
   }
 }

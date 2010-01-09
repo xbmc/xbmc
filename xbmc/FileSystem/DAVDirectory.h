@@ -19,23 +19,23 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "system.h"
-#ifdef HAS_DBUS
-#include "DBusMessage.h"
-#include <map>
 
-typedef std::map<CStdString,  CStdString> PropertyMap;
-typedef std::pair<CStdString, CStdString> Property;
-class CDBusUtil
+#include "IDirectory.h"
+#include "tinyXML/tinyxml.h"
+#include "FileItem.h"
+
+namespace DIRECTORY
 {
-public:
-  static bool GetBoolean(const char *destination, const char *object, const char *interface, const char *property);
-  static int  GetInt32(const char *destination, const char *object, const char *interface, const char *property);
-  static void GetAll(PropertyMap& properties, const char *destination, const char *object, const char *interface);
-
-  static CStdString GetVariant(const char *destination, const char *object, const char *interface, const char *property, const char *fallback = "");
-private:
-  static CStdString ParseType(DBusMessageIter *itr);
-  static CStdString ParseVariant(DBusMessageIter *itr);
-};
-#endif
+  class CDAVDirectory : public IDirectory
+  {
+    public:
+      CDAVDirectory(void);
+      virtual ~CDAVDirectory(void);
+      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+    private:      
+      bool ValueWithoutNamespace(const TiXmlNode *pNode, CStdString value);
+      CStdString GetStatusTag(const TiXmlElement *pElement);
+      bool ParseResponse(const TiXmlElement *pElement, CFileItem &item);
+  };
+}

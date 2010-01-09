@@ -72,6 +72,10 @@ public:
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES);
   static bool IsAudioCD(const CStdString& strPath);
   static CStdString GetDiskLabel(const CStdString& strPath);
+
+  static bool Is64Bit();
+  static LONG UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd );
+  static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
   
 private:
 #if _MSC_VER > 1400

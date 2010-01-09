@@ -3540,7 +3540,10 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
       return (int)i + MULTI_INFO_START;
   // return the new offset
   m_multiInfo.push_back(info);
-  return (int)m_multiInfo.size() + MULTI_INFO_START - 1;
+  int id = (int)m_multiInfo.size() + MULTI_INFO_START - 1;
+  if (id > MULTI_INFO_END)
+    CLog::Log(LOGERROR, "%s - too many multiinfo bool/labels in this skin", __FUNCTION__);
+  return id;
 }
 
 int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
