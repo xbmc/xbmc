@@ -314,33 +314,17 @@ void CGUIWindow::Render()
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  unsigned int currentTime = CTimeUtils::GetFrameTime();
+  m_renderTime = CTimeUtils::GetFrameTime();
   // render our window animation - returns false if it needs to stop rendering
-  if (!RenderAnimation(currentTime))
+  if (!RenderAnimation(m_renderTime))
     return;
 
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
-  // find our origin point
-  CPoint pos(GetPosition());
-  g_graphicsContext.SetOrigin(pos.x, pos.y);
+  CGUIControlGroup::Render();
 
-  for (iControls i = m_children.begin(); i != m_children.end(); ++i)
-  {
-    CGUIControl *pControl = *i;
-    if (pControl)
-    {
-      GUIPROFILER_VISIBILITY_BEGIN(pControl);
-      pControl->UpdateVisibility();
-      GUIPROFILER_VISIBILITY_END(pControl);
-      pControl->DoRender(currentTime);
-    }
-  }
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
-
-  g_graphicsContext.RestoreOrigin();
-  m_hasRendered = true;
 }
 
 void CGUIWindow::Close(bool forceClose)
@@ -393,12 +377,8 @@ bool CGUIWindow::OnMouseAction()
   }
 
   // run through the controls, and unfocus all those that aren't under the pointer,
-  for (iControls i = m_children.begin(); i != m_children.end(); ++i)
-  {
-    CGUIControl *pControl = *i;
-    pControl->UnfocusFromPoint(mousePoint);
-  }
   // and find which ones are under the pointer
+  UnfocusFromPoint(mousePoint);
   vector< pair<CGUIControl *, CPoint> > controls;
   GetControlsFromPoint(mousePoint, controls);
 

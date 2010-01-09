@@ -357,17 +357,6 @@ bool CGUIControlGroup::HasAnimation(ANIMATION_TYPE animType)
   return false;
 }
 
-bool CGUIControlGroup::HitTest(const CPoint &point) const
-{
-  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
-  {
-    CGUIControl *child = *it;
-    if (child->HitTest(point - CPoint(m_posX, m_posX)))
-      return true;
-  }
-  return false;
-}
-
 void CGUIControlGroup::GetControlsFromPoint(const CPoint &point, vector< std::pair<CGUIControl *, CPoint> > &controls) const
 {
   if (!CGUIControl::CanFocus())
