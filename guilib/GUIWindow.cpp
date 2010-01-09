@@ -946,3 +946,9 @@ void CGUIWindow::RunUnloadActions()
 {
   RunActions(m_unloadActions);
 }
+
+bool CGUIWindow::HitTest(const CPoint &point) const
+{
+  CRect rect(0, 0, m_width, m_height);
+  return rect.PtInRect(point - GetPosition());
+}
