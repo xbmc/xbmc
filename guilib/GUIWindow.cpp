@@ -390,13 +390,15 @@ bool CGUIWindow::OnMouseAction()
   if (SendMouseEvent(mousePoint, *event))
     return true;
 
-  // unhandled
-  return OnMouse(mousePoint);
+  // no control wanted it - see if we can handle it ourselves
+  bool handled = OnMouseEvent(mousePoint, *event);
+  delete event;
+  return handled;
 }
 
-bool CGUIWindow::OnMouse(const CPoint &point)
+bool CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go to previous menu
     CAction action;
     action.id = ACTION_PREVIOUS_MENU;

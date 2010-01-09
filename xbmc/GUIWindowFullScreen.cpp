@@ -540,16 +540,16 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
+bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
     CAction action;
     action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // no control found to absorb this click - pause video
     CAction action;
     action.id = ACTION_PAUSE;
@@ -564,12 +564,12 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
       pOSD->DoModal();
     }
   }
-  if (g_Mouse.GetWheel())
+  if (event.m_id == ACTION_MOUSE_WHEEL)
   { // Mouse wheel
-    int wheel = abs(g_Mouse.GetWheel());
+    int wheel = abs(event.m_wheel);
     CAction action;
     action.amount1 = 0.5f * (float)wheel;
-    action.id = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    action.id = event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
     return g_application.OnAction(action);
   }
   return true;

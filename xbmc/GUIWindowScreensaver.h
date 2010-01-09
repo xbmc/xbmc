@@ -40,8 +40,10 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse(const CPoint &point);
   virtual void Render();
+
+protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
 private:
 #ifdef HAS_SCREENSAVER
