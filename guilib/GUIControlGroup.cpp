@@ -375,8 +375,10 @@ bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &ev
         return true;
       }
     }
+    // none of our children want the event, but we may want it.
+    if (HitTest(childPoint) && OnMouseEvent(childPoint, event))
+      return true;
   }
-  // if we get here we haven't handled the event and thus do not have focus
   m_focusedControl = 0;
   return false;
 }

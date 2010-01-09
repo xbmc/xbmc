@@ -387,11 +387,7 @@ bool CGUIWindow::OnMouseAction()
   else
     event = new CMouseEvent(0); // mouse move only
 
-  if (SendMouseEvent(mousePoint, *event))
-    return true;
-
-  // no control wanted it - see if we can handle it ourselves
-  bool handled = OnMouseEvent(mousePoint, *event);
+  bool handled = SendMouseEvent(mousePoint, *event);
   delete event;
   return handled;
 }

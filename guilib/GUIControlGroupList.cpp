@@ -338,10 +338,10 @@ bool CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent
         pos += Size(child) + m_itemGap;
       }
     }
+    // none of our children want the event, but we may want it.
+    if (HitTest(childPoint) && OnMouseEvent(childPoint, event))
+      return true;
   }
-  // if we get here we none of our children want the event, but we may want it.
-  if (HitTest(point) && OnMouseEvent(point, event))
-    return true;
   m_focusedControl = 0;
   return false;
 }

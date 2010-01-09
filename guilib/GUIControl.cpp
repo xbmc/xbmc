@@ -520,7 +520,7 @@ bool CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
   bool handled = OnMouseOver(childPoint);
   if (OnMouseEvent(childPoint, event))
     return true;
-  return handled;
+  return handled && !event.m_id;
 }
 
 bool CGUIControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
