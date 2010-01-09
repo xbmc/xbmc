@@ -137,23 +137,15 @@ public:
    Mouse events are sent from the window to all controls, and each control can react based on the event
    and location of the event.
 
-   \param point the location in skin coordinates from the upper left corner of the parent control.
+   \param point the location in transformed skin coordinates from the upper left corner of the parent control.
    \param event the mouse event to perform
    \return true if the control has handled this event, false otherwise
    \sa HitTest, CanFocusFromPoint, CMouseEvent
    */
   virtual bool SendMouseEvent(const CPoint &point, const CMouseEvent &event);
 
-  /*! \brief Test whether we can focus a control from a point on screen
-   \param point the location in skin coordinates from the upper left corner of the parent control.
-   \param controlPoint [OUT] the location in skin coordinates that will yield the given point on screen under this controls transformation
-   \return true if the control can be focused from this location
-   \sa UnfocusFromPoint
-   */
-  virtual bool CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const;
-
   /*! \brief Unfocus the control if the given point on screen is not within it's boundary
-   \param point the location in skin coordinates from the upper left corner of the parent control.
+   \param point the location in transformed skin coordinates from the upper left corner of the parent control.
    \sa CanFocusFromPoint
    */
   virtual void UnfocusFromPoint(const CPoint &point);
@@ -300,12 +292,19 @@ protected:
    Mouse actions are sent from the window to all controls, and each control can react based on the event
    and location of the actions.
 
-   \param point the location in skin coordinates from the upper left corner of the parent control.
+   \param point the location in transformed skin coordinates from the upper left corner of the parent control.
    \param event the mouse event to perform
    \return true if the control has handled this event, false otherwise
    \sa SendMouseEvent, HitTest, CanFocusFromPoint, CMouseEvent
    */
   virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+
+  /*! \brief Test whether we can focus a control from a point on screen
+   \param point the location in vanilla skin coordinates from the upper left corner of the parent control.
+   \return true if the control can be focused from this location
+   \sa UnfocusFromPoint, HitRect
+   */
+  virtual bool CanFocusFromPoint(const CPoint &point) const;
 
   virtual void UpdateColors();
   virtual void Animate(unsigned int currentTime);

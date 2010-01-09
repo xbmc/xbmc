@@ -512,8 +512,9 @@ bool CGUIControl::HitTest(const CPoint &point) const
 
 bool CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  childPoint = point;
-  if (!CanFocusFromPoint(point, childPoint))
+  CPoint childPoint(point);
+  m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
+  if (!CanFocusFromPoint(childPoint))
     return false;
 
   bool handled = OnMouseOver(childPoint);
@@ -844,13 +845,9 @@ int CGUIControl::GetNextControl(int direction) const
   }
 }
 
-bool CGUIControl::CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const
+bool CGUIControl::CanFocusFromPoint(const CPoint &point) const
 {
-  controlPoint = point;
-  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
-  if (CanFocus() && HitTest(controlPoint))
-    return true;
-  return false;
+  return CanFocus() && HitTest(point);
 }
 
 void CGUIControl::UnfocusFromPoint(const CPoint &point)
