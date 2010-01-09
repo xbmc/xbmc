@@ -99,7 +99,8 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIControlGroup::Render()
 {
-  g_graphicsContext.SetOrigin(m_posX, m_posY);
+  CPoint pos(GetPosition());
+  g_graphicsContext.SetOrigin(pos.x, pos.y);
   CGUIControl *focusedControl = NULL;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
@@ -373,7 +374,7 @@ void CGUIControlGroup::GetControlsFromPoint(const CPoint &point, vector< std::pa
     return;
   CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
-  controlCoords -= CPoint(m_posX, m_posY);
+  controlCoords -= GetPosition();
   for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
   {
     CGUIControl *child = *it;
@@ -392,7 +393,7 @@ void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    child->UnfocusFromPoint(controlCoords - CPoint(m_posX, m_posY));
+    child->UnfocusFromPoint(controlCoords - GetPosition());
   }
   CGUIControl::UnfocusFromPoint(point);
 }

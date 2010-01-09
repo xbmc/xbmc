@@ -323,7 +323,7 @@ void CGUIWindow::Render()
     g_graphicsContext.SetCameraPosition(m_camera);
 
   // find our origin point
-  CPoint pos = GetOrigin();
+  CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(pos.x, pos.y);
 
   for (iControls i = m_children.begin(); i != m_children.end(); ++i)
@@ -364,7 +364,7 @@ bool CGUIWindow::OnAction(const CAction &action)
   return false;
 }
 
-CPoint CGUIWindow::GetOrigin()
+CPoint CGUIWindow::GetPosition() const
 {
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
@@ -374,7 +374,7 @@ CPoint CGUIWindow::GetOrigin()
       return CPoint(m_origins[i].x, m_origins[i].y);
     }
   }
-  return CPoint(m_posX, m_posY);
+  return CGUIControlGroup::GetPosition();
 }
 
 // OnMouseAction - called by OnAction()
@@ -859,7 +859,8 @@ CRect CGUIWindow::GetScaledBounds() const
 {
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
-  CRect rect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+  CPoint pos(GetPosition());
+  CRect rect(pos.x, pos.y, pos.x + m_width, pos.y + m_height);
   float z = 0;
   g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
   g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);
