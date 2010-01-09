@@ -471,7 +471,7 @@ DWORD CDetectDVDMedia::GetTrayState()
       m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
       break;
     case 1: // tray open
-      m_dwTrayState = TRAY_OPEN;      
+      m_dwTrayState = TRAY_OPEN;
       break;
     case 2: // media accessible
       m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;

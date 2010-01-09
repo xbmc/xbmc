@@ -98,7 +98,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -191,7 +191,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -291,7 +291,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -385,7 +385,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

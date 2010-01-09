@@ -85,5 +85,5 @@ private:
   // false on failure and log a (platform-specific) ERROR message.
   bool PlatformSpecificDisablePowerSaving();
 };
-  
+
 #endif  // DPMSSUPPORT_H

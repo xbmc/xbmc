@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "emu_dummy.h"
 #include "utils/log.h"
 

@@ -37,7 +37,7 @@
 #include "CrystalHD.h"
 #include "DVDClock.h"
 #include "DynamicDll.h"
-#include "utils/Atomics.h" 
+#include "utils/Atomics.h"
 #include "utils/Thread.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
@@ -178,11 +178,11 @@ class CMPCInputThread : public CThread
 public:
   CMPCInputThread(void *device, DllLibCrystalHD *dll);
   virtual ~CMPCInputThread();
-  
+
   bool                AddInput(unsigned char* pData, size_t size, uint64_t pts);
   void                Flush(void);
   unsigned int        GetInputCount(void);
-  
+
 protected:
   CMPCDecodeBuffer*   AllocBuffer(size_t size);
   void                FreeBuffer(CMPCDecodeBuffer* pBuffer);
@@ -190,7 +190,7 @@ protected:
   void                Process(void);
 
   CSyncPtrQueue<CMPCDecodeBuffer> m_InputList;
-  
+
   DllLibCrystalHD     *m_dll;
   void                *m_Device;
   int                 m_SleepTime;
@@ -202,7 +202,7 @@ class CMPCOutputThread : public CThread
 public:
   CMPCOutputThread(void *device, DllLibCrystalHD *dll);
   virtual ~CMPCOutputThread();
-  
+
   unsigned int        GetReadyCount(void);
   CPictureBuffer*     ReadyListPop(void);
   void                FreeListPush(CPictureBuffer* pBuffer);
@@ -213,7 +213,7 @@ protected:
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
-  
+
   CSyncPtrQueue<CPictureBuffer> m_FreeList;
   CSyncPtrQueue<CPictureBuffer> m_ReadyList;
 
@@ -276,7 +276,7 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll) :
   m_SleepTime(10)
 {
 }
-  
+
 CMPCInputThread::~CMPCInputThread()
 {
   while (m_InputList.Count())
@@ -422,8 +422,8 @@ void CMPCOutputThread::Flush(void)
 void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 {
   m_interlace = FALSE;
-  
-  switch (resolution) 
+
+  switch (resolution)
   {
     case BCM::vdecRESOLUTION_480p0:
       m_framerate = 60.0;
@@ -491,7 +491,7 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
       m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480i:
-      m_framerate = 60.0 * 1000.0 / 1001.0;    
+      m_framerate = 60.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_NTSC:
@@ -513,12 +513,12 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     break;
     case BCM::vdecRESOLUTION_576p25:
       m_framerate = 25.0;
-    break;          
+    break;
     default:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
   }
-  
+
   if(m_interlace)
   {
     m_framerate /= 2;
@@ -599,7 +599,7 @@ void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
       m_aspectratio_x = 0;
       m_aspectratio_y = 0;
     break;
-    
+
     case BCM::vdecAspectRatioOther:
       m_aspectratio_x = pic_info->custom_aspect_ratio_width_height & 0x0000ffff;
       m_aspectratio_y = pic_info->custom_aspect_ratio_width_height >> 16;
@@ -620,7 +620,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
   BCM::BC_DTS_PROC_OUT procOut;
   CPictureBuffer *pBuffer = NULL;
   bool got_picture = false;
-  
+
   // Setup output struct
   memset(&procOut, 0, sizeof(BCM::BC_DTS_PROC_OUT));
 
@@ -635,16 +635,16 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_timestamp))
         {
           m_timestamp = procOut.PicInfo.timeStamp;
-          
+
           // Get next output buffer from the free list
           pBuffer = m_FreeList.Pop();
           if (!pBuffer)
           {
             // No free pre-allocated buffers so make one
-            pBuffer = new CPictureBuffer(m_width, m_height); 
-            CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());    
+            pBuffer = new CPictureBuffer(m_width, m_height);
+            CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
-          
+
           pBuffer->m_width = m_width;
           pBuffer->m_height = m_height;
           pBuffer->m_field = CRYSTALHD_FIELD_FULL;
@@ -673,7 +673,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
                   pBuffer->m_field = CRYSTALHD_FIELD_ODD;
                 else
                   pBuffer->m_field = CRYSTALHD_FIELD_EVEN;
-                
+
                 // copy y
                 s = procOut.Ybuff;
                 d = pBuffer->m_y_buffer_ptr;
@@ -702,13 +702,13 @@ bool CMPCOutputThread::GetDecoderOutput(void)
               }
             }
             break;
-            
+
             // frame that are not equal in width to 720, 1280 or 1920
             // need to be copied by a quantized stride (possible lib/driver bug).
             default:
             {
               unsigned char *s, *d;
-              
+
               if (w < 720)
               {
                 // copy y
@@ -757,22 +757,22 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         else
         {
-          //CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp); 
+          //CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp);
         }
       }
 
       m_dll->DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
     break;
-      
+
     case BCM::BC_STS_NO_DATA:
     break;
 
     case BCM::BC_STS_FMT_CHANGE:
-      CLog::Log(LOGDEBUG, "%s: Format Change Detected. Flags: 0x%08x", __MODULE_NAME__, procOut.PoutFlags); 
+      CLog::Log(LOGDEBUG, "%s: Format Change Detected. Flags: 0x%08x", __MODULE_NAME__, procOut.PoutFlags);
       if ((procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID) && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_FMT_CHANGE))
       {
         PrintFormat(procOut.PicInfo);
-        
+
         if (procOut.PicInfo.height == 1088) {
           procOut.PicInfo.height = 1080;
         }
@@ -783,7 +783,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         m_OutputTimeout = 2000;
       }
     break;
-    
+
     default:
       if (ret > 26)
         CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %d.", __MODULE_NAME__, ret);
@@ -791,7 +791,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
     break;
   }
-  
+
   return got_picture;
 }
 
@@ -844,11 +844,11 @@ CCrystalHD::CCrystalHD() :
   CheckCrystalHDLibraryPath();
   if (m_dll->Load() && m_dll->IsLoaded() )
   {
-    uint32_t mode = BCM::DTS_PLAYBACK_MODE          | 
-                    BCM::DTS_LOAD_FILE_PLAY_FW      | 
-                    BCM::DTS_PLAYBACK_DROP_RPT_MODE | 
+    uint32_t mode = BCM::DTS_PLAYBACK_MODE          |
+                    BCM::DTS_LOAD_FILE_PLAY_FW      |
+                    BCM::DTS_PLAYBACK_DROP_RPT_MODE |
                     DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-    
+
     BCM::BC_STATUS res= m_dll->DtsDeviceOpen(&m_Device, mode);
     if (res != BCM::BC_STS_SUCCESS)
     {
@@ -917,13 +917,13 @@ CCrystalHD* CCrystalHD::GetInstance(void)
 void CCrystalHD::CheckCrystalHDLibraryPath(void)
 {
   // support finding library by windows registry
-#if defined _WIN32  
+#if defined _WIN32
   HKEY hKey;
   CStdString strRegKey;
-  
+
   CLog::Log(LOGDEBUG, "%s: detecting CrystalHD installation path", __MODULE_NAME__);
   strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
-  
+
   if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
   {
     DWORD dwType;
@@ -973,7 +973,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
     break;
   }
 
-  do 
+  do
   {
     res = m_dll->DtsOpenDecoder(m_Device, stream_type);
     if (res != BCM::BC_STS_SUCCESS)
@@ -999,7 +999,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
       CLog::Log(LOGDEBUG, "%s: start capture failed", __MODULE_NAME__);
       break;
     }
- 
+
     m_pInputThread = new CMPCInputThread(m_Device, m_dll);
     m_pInputThread->Create();
     m_pOutputThread = new CMPCOutputThread(m_Device, m_dll);
@@ -1008,7 +1008,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
     m_drop_state = false;
     m_ignore_drop_count = 10;
     m_IsConfigured = true;
-    
+
     CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
 
@@ -1027,7 +1027,7 @@ void CCrystalHD::CloseDecoder(void)
   {
     while(m_BusyList.Count())
       m_pOutputThread->FreeListPush( m_BusyList.Pop() );
-      
+
     m_pOutputThread->StopThread();
     delete m_pOutputThread;
     m_pOutputThread = NULL;
@@ -1065,7 +1065,7 @@ unsigned int CCrystalHD::GetInputCount(void)
   if (m_pInputThread)
     return m_pInputThread->GetInputCount();
   else
-    return 0;  
+    return 0;
 }
 
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
@@ -1103,7 +1103,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->iHeight = pBuffer->m_height;
   pDvdVideoPicture->iDisplayWidth = pBuffer->m_width;
   pDvdVideoPicture->iDisplayHeight = pBuffer->m_height;
-  
+
   // Y plane
   pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
   pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
@@ -1118,7 +1118,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   //pDvdVideoPicture->iDuration = 0;
   pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
   pDvdVideoPicture->color_range = 1;
-  // todo 
+  // todo
   //pDvdVideoPicture->color_matrix = 1;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= pBuffer->m_interlace ? DVP_FLAG_INTERLACED : 0;
@@ -1150,7 +1150,7 @@ void CCrystalHD::SetDropState(bool bDrop)
     {
       m_dll->DtsSetFFRate(m_Device, 1);
     }
-    
+
     if (m_drop_state)
     {
       // pop all picture off the ready list and push back into the free list
@@ -1173,10 +1173,10 @@ void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib)
   CLog::Log(LOGDEBUG, "\tWidth: %d\n", pib.width);
   CLog::Log(LOGDEBUG, "\tHeight: %d\n", pib.height);
   CLog::Log(LOGDEBUG, "\tChroma: 0x%03x\n", pib.chroma_format);
-  CLog::Log(LOGDEBUG, "\tPulldown: %d\n", pib.pulldown);         
-  CLog::Log(LOGDEBUG, "\tFlags: 0x%08x\n", pib.flags);        
-  CLog::Log(LOGDEBUG, "\tFrame Rate/Res: %d\n", pib.frame_rate);       
-  CLog::Log(LOGDEBUG, "\tAspect Ratio: %d\n", pib.aspect_ratio);     
+  CLog::Log(LOGDEBUG, "\tPulldown: %d\n", pib.pulldown);
+  CLog::Log(LOGDEBUG, "\tFlags: 0x%08x\n", pib.flags);
+  CLog::Log(LOGDEBUG, "\tFrame Rate/Res: %d\n", pib.frame_rate);
+  CLog::Log(LOGDEBUG, "\tAspect Ratio: %d\n", pib.aspect_ratio);
   CLog::Log(LOGDEBUG, "\tColor Primaries: %d\n", pib.colour_primaries);
   CLog::Log(LOGDEBUG, "\tMetaData: %d\n", pib.picture_meta_payload);
   CLog::Log(LOGDEBUG, "\tSession Number: %d\n", pib.sess_num);

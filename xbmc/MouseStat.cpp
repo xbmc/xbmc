@@ -40,7 +40,7 @@ bool CMouseStat::CButtonState::InClickRange(int x, int y) const
 {
   int dx = x - m_x;
   int dy = y - m_y;
-  return dx*dx + dy*dy <= click_confines*click_confines;
+  return (unsigned int)(dx*dx + dy*dy) <= click_confines*click_confines;
 }
 
 CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigned int time, int x, int y, bool down)
@@ -201,6 +201,8 @@ void CMouseStat::UpdateInternal()
     case CButtonState::MB_DRAG:
       bHold[i] = true;
       bNothingDown = false;
+      break;
+    default:
       break;
     }
   }

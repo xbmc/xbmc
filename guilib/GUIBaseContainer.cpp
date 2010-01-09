@@ -735,7 +735,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
         if (item.get() == lastItem)
           m_lastItem = lastItem;
       }
-      if (updateItems && item->HasProperties()) 
+      if (updateItems && item->HasProperties())
       { // has info, so update it
         CStdString info = item->GetProperty("label");
         if (!info.IsEmpty()) item->SetLabel(CGUIInfoLabel::GetLabel(info));
@@ -932,7 +932,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
           {
             newItem->m_strPath   += " , ";
           }
-          newItem->m_strPath += (*it).m_action;          
+          newItem->m_strPath += (*it).m_action;
         }
         newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
         newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));

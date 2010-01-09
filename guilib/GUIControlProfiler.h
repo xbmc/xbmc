@@ -44,12 +44,12 @@ public:
   int64_t m_i64RenderStart;
 
   CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl);
-  ~CGUIControlProfilerItem(void); 
+  ~CGUIControlProfilerItem(void);
 
   void Reset(CGUIControlProfiler *pProfiler);
   void BeginVisibility(void);
   void EndVisibility(void);
-  void BeginRender(void); 
+  void BeginRender(void);
   void EndRender(void);
   void SaveToXML(TiXmlElement *parent);
   unsigned int GetTotalTime(void) const { return m_visTime + m_renderTime; };

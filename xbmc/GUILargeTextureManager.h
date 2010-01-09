@@ -43,7 +43,7 @@ public:
    \brief Work function that loads in a particular image.
    */
   virtual bool DoWork();
-  
+
   CStdString    m_path; ///< path of image to load
   CBaseTexture *m_texture; ///< Texture object to load the image into \sa CBaseTexture.
 };
@@ -51,10 +51,10 @@ public:
 /*!
  \ingroup textures
  \brief Background texture loading manager
- 
+
  Used to load textures for the user interface asynchronously, allowing fluid framerates
  while background loading textures.
- 
+
  \sa IJobCallback, CGUITexture
  */
 class CGUILargeTextureManager : public IJobCallback
@@ -65,20 +65,20 @@ public:
 
   /*!
    \brief Callback from CImageLoader on completion of a loaded image
-   
+
    Transfers texture information from the loading job to our allocated texture list.
-   
+
    \sa CImageLoader, IJobCallback
    */
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
   /*!
    \brief Request a texture to be loaded in the background.
-   
+
    Loaded textures are reference counted, hence this call may immediately return with the texture
    object filled if the texture has been previously loaded, else will return with an empty texture
    object if it is being loaded.
-   
+
    \param path path of the image to load.
    \param texture texture object to hold the resulting texture
    \param orientation orientation of resulting texture
@@ -87,23 +87,23 @@ public:
    \sa CGUITextureArray and CGUITexture
    */
   bool GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest);
-  
+
   /*!
    \brief Request a texture to be unloaded.
-   
+
    When textures are finished with, this function should be called.  This decrements the texture's
    reference count, and schedules it to be unloaded once the reference count reaches zero.  If the
    texture is still queued for loading, or is in the process of loading, the image load is cancelled.
-   
+
    \param path path of the image to release.
    \param immediately if set true the image is immediately unloaded once its reference count reaches zero
                       rather than being unloaded after a delay.
-   */  
+   */
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   /*!
    \brief Cleanup images that are no longer in use.
-   
+
    Loaded textures are reference counted, and upon reaching reference count 0 through ReleaseImage()
    they are flagged as unused with the current time.  After a delay they may be unloaded, hence
    CleanupUnusedImages() should be called periodically to ensure this occurs.
@@ -123,7 +123,7 @@ private:
     bool DecrRef(bool deleteImmediately);
     bool DeleteIfRequired(bool deleteImmediately = false);
     void SetTexture(CBaseTexture* texture);
-    
+
     const CStdString &GetPath() const { return m_path; };
     const CTextureArray &GetTexture() const { return m_texture; };
 

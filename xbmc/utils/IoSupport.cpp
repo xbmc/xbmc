@@ -282,7 +282,7 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
       c_cdio->cdio_eject_media(&cdio);
       c_cdio->cdio_destroy(cdio);
     }
-    else 
+    else
       break;
   }
 #endif
@@ -409,15 +409,15 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
 #ifdef __APPLE__
   dk_cd_read_t cd_read;
   memset( &cd_read, 0, sizeof(cd_read) );
-  
+
   cd_read.sectorArea  = kCDSectorAreaUser;
   cd_read.buffer      = lpczBuffer;
-  
+
   cd_read.sectorType  = kCDSectorTypeMode1;
   cd_read.offset      = dwSector * kCDSectorSizeMode1;
-  
+
   cd_read.bufferLength = 2048;
-  
+
   if( ioctl(hDevice->fd, DKIOCCDREAD, &cd_read ) == -1 )
   {
     return -1;
@@ -425,7 +425,7 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   return 2048;
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
-  {    
+  {
     int fd = hDevice->fd;
 
     // seek to requested sector
@@ -480,12 +480,12 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
 #ifdef HAS_DVD_DRIVE
 #ifdef __APPLE__
   dk_cd_read_t cd_read;
-  
+
   memset( &cd_read, 0, sizeof(cd_read) );
-  
+
   cd_read.sectorArea = kCDSectorAreaUser;
   cd_read.buffer = lpczBuffer;
-  
+
   cd_read.offset       = dwSector * kCDSectorSizeMode2Form2;
   cd_read.sectorType   = kCDSectorTypeMode2Form2;
   cd_read.bufferLength = kCDSectorSizeMode2Form2;
@@ -497,11 +497,11 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
   return MODE2_DATA_SIZE;
 #elif defined(_LINUX)
   if (hDevice->m_bCDROM)
-  {    
+  {
     int fd = hDevice->fd;
     int lba = (dwSector + CD_MSF_OFFSET) ;
     int m,s,f;
-    union 
+    union
     {
       struct cdrom_msf msf;
       char buffer[2356];
@@ -518,7 +518,7 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     arg.msf.cdmsf_min0 = m;
     arg.msf.cdmsf_sec0 = s;
     arg.msf.cdmsf_frame0 = f;
-    
+
     int ret = ioctl(fd, CDROMREADMODE2, &arg);
     if (ret==0)
     {
@@ -529,7 +529,7 @@ INT CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 error: %s\n", strerror(errno));
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 minute %d, second %d, frame %d\n", m, s, f);
     OutputDebugString("CD Read error\n");
-    return -1;    
+    return -1;
   }
 #else
   DWORD dwBytesReturned;

@@ -339,7 +339,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       /*
        * Set the label as preformated for MOVIES so any scraper lookup will use
        * the label rather than the filename. Don't set as preformated for other
-       * filter types as this prevents the display of the title changing 
+       * filter types as this prevents the display of the title changing
        * depending on what the list is being sorted by.
        */
       if (type == MOVIES)

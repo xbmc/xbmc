@@ -118,7 +118,7 @@ bool CScraperParser::LoadFromXML()
 {
   if (!m_document)
     return false;
-  
+
   CStdString strPath;
   CUtil::GetDirectory(m_strFile,strPath);
 
@@ -134,7 +134,7 @@ bool CScraperParser::LoadFromXML()
     m_date = m_pRootElement->Attribute("date");
     if (m_pRootElement->Attribute("cachePersistence"))
       m_persistence.SetFromTimeString(m_pRootElement->Attribute("cachePersistence"));
-   
+
     const char* requiressettings;
     m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
@@ -226,7 +226,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     if (sensitive)
       if (stricmp(sensitive,"yes") == 0)
         bInsensitive=false; // match case sensitive
-    
+
     CRegExp reg(bInsensitive);
     CStdString strExpression;
     if (pExpression->FirstChild())

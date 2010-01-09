@@ -134,17 +134,17 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 
   // set the scaling resolution so that any control creation or initialisation can
   // be done with respect to the correct aspect ratio
-  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, m_needsScaling);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
 
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
   // now load in the skin file
   SetDefaults();
 
-  
+
   CGUIControlFactory::GetMultipleString(pRootElement, "onload", m_loadActions);
   CGUIControlFactory::GetMultipleString(pRootElement, "onunload", m_unloadActions);
-    
+
   TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
@@ -312,30 +312,19 @@ void CGUIWindow::Render()
   // to occur.
   if (!m_bAllocated) return;
 
-  // find our origin point
-  CPoint pos = GetOrigin();
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, pos.x, pos.y, m_needsScaling);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+
+  m_renderTime = CTimeUtils::GetFrameTime();
+  // render our window animation - returns false if it needs to stop rendering
+  if (!RenderAnimation(m_renderTime))
+    return;
+
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
-  unsigned int currentTime = CTimeUtils::GetFrameTime();
-  // render our window animation - returns false if it needs to stop rendering
-  if (!RenderAnimation(currentTime))
-    return;
+  CGUIControlGroup::Render();
 
-  for (iControls i = m_children.begin(); i != m_children.end(); ++i)
-  {
-    CGUIControl *pControl = *i;
-    if (pControl)
-    {
-      GUIPROFILER_VISIBILITY_BEGIN(pControl);
-      pControl->UpdateVisibility();
-      GUIPROFILER_VISIBILITY_END(pControl);
-      pControl->DoRender(currentTime);
-    }
-  }
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
-  m_hasRendered = true;
 }
 
 void CGUIWindow::Close(bool forceClose)
@@ -359,7 +348,7 @@ bool CGUIWindow::OnAction(const CAction &action)
   return false;
 }
 
-CPoint CGUIWindow::GetOrigin()
+CPoint CGUIWindow::GetPosition() const
 {
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
@@ -369,99 +358,48 @@ CPoint CGUIWindow::GetOrigin()
       return CPoint(m_origins[i].x, m_origins[i].y);
     }
   }
-  return CPoint(m_posX, m_posY);
+  return CGUIControlGroup::GetPosition();
 }
 
 // OnMouseAction - called by OnAction()
 bool CGUIWindow::OnMouseAction()
 {
-  // we need to convert the mouse coordinates to window coordinates
-  CPoint pos = GetOrigin();
-
-  g_graphicsContext.SetScalingResolution(m_coordsRes, pos.x, pos.y, m_needsScaling);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
   CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
-  m_transform.InverseTransformPosition(mousePoint.x, mousePoint.y);
 
-  bool bHandled = false;
-  // check if we have exclusive access
-  if (g_Mouse.GetExclusiveWindowID() == GetID() && IsValidControl(g_Mouse.GetExclusiveControl()))
-  { // we have exclusive access to the mouse...
-    HandleMouse((CGUIControl *)g_Mouse.GetExclusiveControl(), mousePoint + g_Mouse.GetExclusiveOffset());
-    return true;
-  }
+  UnfocusFromPoint(mousePoint);
 
-  // run through the controls, and unfocus all those that aren't under the pointer,
-  for (iControls i = m_children.begin(); i != m_children.end(); ++i)
-  {
-    CGUIControl *pControl = *i;
-    pControl->UnfocusFromPoint(mousePoint);
-  }
-  // and find which ones are under the pointer
-  vector< pair<CGUIControl *, CPoint> > controls;
-  GetControlsFromPoint(mousePoint, controls);
+  // create the mouse event
+  CMouseEvent *event = NULL;
+  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_LEFT_CLICK);
+  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_RIGHT_CLICK);
+  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_MIDDLE_CLICK);
+  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_DOUBLE_CLICK);
+  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && g_Mouse.HasMoved(true))
+    event = new CMouseEvent(ACTION_MOUSE_DRAG, 0, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y);
+  else if (g_Mouse.GetWheel())
+    event = new CMouseEvent(ACTION_MOUSE_WHEEL, g_Mouse.GetWheel());
+  else
+    event = new CMouseEvent(0); // mouse move only
 
-  bool controlUnderPointer(false);
-  for (vector< pair<CGUIControl *, CPoint> >::iterator i = controls.begin(); i != controls.end(); ++i)
-  {
-    CGUIControl *child = i->first;
-    controlUnderPointer = child->OnMouseOver(i->second);
-    bHandled = HandleMouse(child, i->second);
-    if (bHandled || controlUnderPointer)
-      break;
-  }
-  if (!bHandled)
-  { // haven't handled this action - call the window message handlers
-    bHandled = OnMouse(mousePoint);
-  }
-  // and unfocus everything otherwise
-  if (!controlUnderPointer)
-    m_focusedControl = 0;
-
-  return bHandled;
+  bool handled = SendMouseEvent(mousePoint, *event);
+  delete event;
+  return handled;
 }
 
-// Handles any mouse actions that are not handled by a control
-// default is to go back a window on a right click.
-// This function should be overridden for other windows
-bool CGUIWindow::OnMouse(const CPoint &point)
+bool CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go to previous menu
     CAction action;
     action.id = ACTION_PREVIOUS_MENU;
     return OnAction(action);
   }
-  return false;
-}
-
-bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
-{
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
-  { // Left click
-    return pControl->OnMouseClick(MOUSE_LEFT_BUTTON, point);
-  }
-  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
-  { // Right click
-    return pControl->OnMouseClick(MOUSE_RIGHT_BUTTON, point);
-  }
-  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
-  { // Middle click
-    return pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON, point);
-  }
-  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
-  { // Left double click
-    return pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON, point);
-  }
-  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && g_Mouse.HasMoved(true))
-  { // Mouse Drag
-    return pControl->OnMouseDrag(g_Mouse.GetLastMove(), point);
-  }
-  else if (g_Mouse.GetWheel())
-  { // Mouse wheel
-    return pControl->OnMouseWheel(g_Mouse.GetWheel(), point);
-  }
-  // no mouse stuff done other than movement
   return false;
 }
 
@@ -490,7 +428,7 @@ void CGUIWindow::OnInitWindow()
   SetInitialVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
   g_windowManager.ShowOverlay(m_overlayState);
-  
+
   if (!m_manualRunActions)
   {
     RunLoadActions();
@@ -507,7 +445,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
   {
     RunUnloadActions();
   }
-  
+
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
   {
     // Dialog animations are handled in Close() rather than here
@@ -857,8 +795,9 @@ void CGUIWindow::SetDefaults()
 CRect CGUIWindow::GetScaledBounds() const
 {
   CSingleLock lock(g_graphicsContext);
-  g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
-  CRect rect(0, 0, m_width, m_height);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
+  CPoint pos(GetPosition());
+  CRect rect(pos.x, pos.y, pos.x + m_width, pos.y + m_height);
   float z = 0;
   g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
   g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);
@@ -1000,10 +939,10 @@ void CGUIWindow::SetRunActionsManually()
 
 void CGUIWindow::RunLoadActions()
 {
-  RunActions(m_loadActions);  
+  RunActions(m_loadActions);
 }
- 
+
 void CGUIWindow::RunUnloadActions()
 {
-  RunActions(m_unloadActions);    
+  RunActions(m_unloadActions);
 }

@@ -57,9 +57,9 @@ struct SSession
 
 struct STimedOut
 {
-  STimedOut(DWORD idle) : m_idle(idle) 
-  { 
-    m_time = CTimeUtils::GetTimeMS(); 
+  STimedOut(DWORD idle) : m_idle(idle)
+  {
+    m_time = CTimeUtils::GetTimeMS();
   }
   bool operator()(SSession& data)
   {

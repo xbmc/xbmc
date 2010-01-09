@@ -126,7 +126,7 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
     return false;
   }
-  
+
   bool ret = Parse(doc.RootElement(),bChained);
   TiXmlElement* pRoot = doc.RootElement();
   TiXmlElement* xurl = pRoot->FirstChildElement("url");

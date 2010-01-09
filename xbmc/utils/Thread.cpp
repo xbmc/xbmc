@@ -248,7 +248,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     pThread = NULL;
   }
   else
-    CLog::Log(LOGDEBUG,"Thread %"PRIu64" terminating", (uint64_t)CThread::GetCurrentThreadId());  
+    CLog::Log(LOGDEBUG,"Thread %"PRIu64" terminating", (uint64_t)CThread::GetCurrentThreadId());
 
 // DXMERGE - this looks like it might have used to have been useful for something...
 //  g_graphicsContext.DeleteThreadContext();
@@ -326,12 +326,12 @@ bool CThread::SetPriority(const int iPriority)
 // Return true for success
 {
   bool rtn = false;
-  
+
   if (m_ThreadHandle)
   {
     rtn = SetThreadPriority( m_ThreadHandle, iPriority ) == TRUE;
   }
-  
+
   return(rtn);
 }
 
@@ -340,7 +340,7 @@ int CThread::GetMinPriority(void)
 #if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
-  
+
   rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
   int min = sched_get_priority_min(policy);
 
@@ -355,7 +355,7 @@ int CThread::GetMaxPriority(void)
 #if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
-  
+
   rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
   int max = sched_get_priority_max(policy);
 
@@ -370,7 +370,7 @@ int CThread::GetNormalPriority(void)
 #if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
-  
+
   rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
   int min = sched_get_priority_min(policy);
   int max = sched_get_priority_max(policy);
@@ -458,7 +458,7 @@ float CThread::GetRelativeUsage()
 
     if(m_iLastUsage > 0 && m_iLastTime > 0)
       m_fLastUsage = (float)( iUsage - m_iLastUsage ) / (float)( iTime - m_iLastTime );
-      
+
     m_iLastUsage = iUsage;
     m_iLastTime = iTime;
 

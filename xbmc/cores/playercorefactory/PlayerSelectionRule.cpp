@@ -52,7 +52,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_playerCoreId = 0;
 
   TiXmlElement* pSubRule = pRule->FirstChildElement("rule");
-  while (pSubRule) 
+  while (pSubRule)
   {
     vecSubRules.push_back(new CPlayerSelectionRule(pSubRule));
     pSubRule = pSubRule->NextSiblingElement("rule");
@@ -118,9 +118,9 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   CURL url(item.m_strPath);
 
   if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return;
-  
+
   if (CompileRegExp(m_protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return;
-  
+
   if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetContentType(), regExp)) return;
 
   if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.m_strPath, regExp)) return;
@@ -129,7 +129,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
 
   for (unsigned int i = 0; i < vecSubRules.size(); i++)
     vecSubRules[i]->GetPlayers(item, vecCores);
-  
+
   PLAYERCOREID playerCoreId = GetPlayerCore();
   if (playerCoreId != EPC_NONE)
   {

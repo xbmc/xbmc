@@ -92,7 +92,7 @@ protected:
   HWND m_hWnd;
   HWND m_hBlankWindow;
   HDC m_hDC;
-  HINSTANCE m_hInstance; 
+  HINSTANCE m_hInstance;
   HICON m_hIcon;
   MONITOR_DETAILS m_MonitorsInfo[MAX_MONITORS_NUM];
   int m_nMonitorsCount;

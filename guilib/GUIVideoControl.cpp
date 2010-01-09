@@ -90,21 +90,12 @@ bool CGUIVideoControl::OnMouseClick(int button, const CPoint &point)
   return false;
 }
 
-bool CGUIVideoControl::OnMouseOver(const CPoint &point)
-{
-  // unfocusable, so return false
-  CGUIControl::OnMouseOver(point);
-  return false;
-}
-
 bool CGUIVideoControl::CanFocus() const
 { // unfocusable
   return false;
 }
 
-bool CGUIVideoControl::CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const
+bool CGUIVideoControl::CanFocusFromPoint(const CPoint &point) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
-  controlPoint = point;
-  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
-  return HitTest(controlPoint);
+  return HitTest(point);
 }

@@ -206,19 +206,19 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  if( !drive.IsEmpty() && !drive.Equals("*") ) 
-  { 
+  if( !drive.IsEmpty() && !drive.Equals("*") )
+  {
 #ifdef _WIN32
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
 #endif
       bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ), NULL, &ULTotal, &ULTotalFree) );
   }
-  else 
+  else
   {
     ULARGE_INTEGER ULTotalTmp= { { 0 } };
     ULARGE_INTEGER ULTotalFreeTmp= { { 0 } };
-#ifdef _WIN32 
+#ifdef _WIN32
     char* pcBuffer= NULL;
     DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
     if( dwStrLength != 0 )
@@ -341,7 +341,7 @@ CStdString CSysInfo::GetKernelVersion()
             if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
              strKernel.append(", 64-bit (WoW)");
           }
-          else 
+          else
           {
             strKernel.append(", 32-bit");
           }
@@ -362,7 +362,7 @@ CStdString CSysInfo::GetKernelVersion()
       strKernel.append("XP ");
       if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
         strKernel.append("Home Edition" );
-      else 
+      else
         strKernel.append("Professional" );
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
@@ -578,7 +578,7 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 CStdString CSysInfo::GetLinuxDistro()
 {
   CStdString result = "";
-  
+
   FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; /usr/bin/lsb_release -d | cut -f2", "r");
   if (pipe)
   {
@@ -589,7 +589,7 @@ CStdString CSysInfo::GetLinuxDistro()
       CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
     pclose(pipe);
   }
-  
+
   return result.Trim();
 }
 #endif
@@ -598,7 +598,7 @@ CStdString CSysInfo::GetLinuxDistro()
 CStdString CSysInfo::GetUnameVersion()
 {
   CStdString result = "";
-  
+
   FILE* pipe = popen("uname -rs", "r");
   if (pipe)
   {
@@ -609,7 +609,7 @@ CStdString CSysInfo::GetUnameVersion()
       CLog::Log(LOGWARNING, "Unable to determine Uname version");
     pclose(pipe);
   }
-  
+
   return result.Trim();
 }
 #endif
@@ -635,12 +635,12 @@ CStdString CSysInfo::GetUserAgent()
   result += GetUnameVersion();
 #endif
 #ifdef SVN_REV
-  CStdString strRevision; 
+  CStdString strRevision;
   strRevision.Format("; SVN r%s", SVN_REV);
   result += strRevision;
 #endif
   result += "; http://www.xbmc.org)";
-  
+
   return result;
 }
 
@@ -651,10 +651,10 @@ bool CSysInfo::IsAppleTV()
   char        buffer[512];
   size_t      len = 512;
   std::string hw_model = "unknown";
-  
+
   if (sysctlbyname("hw.model", &buffer, &len, NULL, 0) == 0)
     hw_model = buffer;
-  
+
   if (hw_model.find("AppleTV") != std::string::npos)
     result = true;
 #endif

@@ -185,13 +185,13 @@ bool CGUIControl::OnAction(const CAction &action)
     OnRight();
     return true;
     break;
-    
+
   case ACTION_NEXT_CONTROL:
       if (!HasFocus()) return false;
       OnNextControl();
       return true;
       break;
-      
+
   case ACTION_PREV_CONTROL:
       if (!HasFocus()) return false;
       OnPrevControl();
@@ -510,6 +510,39 @@ bool CGUIControl::HitTest(const CPoint &point) const
   return m_hitRect.PtInRect(point);
 }
 
+bool CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  CPoint childPoint(point);
+  m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
+  if (!CanFocusFromPoint(childPoint))
+    return false;
+
+  bool handled = OnMouseOver(childPoint);
+  if (OnMouseEvent(childPoint, event))
+    return true;
+  return handled && !event.m_id;
+}
+
+bool CGUIControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  switch (event.m_id)
+  {
+  case ACTION_MOUSE_LEFT_CLICK:
+    return OnMouseClick(MOUSE_LEFT_BUTTON, point);
+  case ACTION_MOUSE_DOUBLE_CLICK:
+    return OnMouseDoubleClick(MOUSE_LEFT_BUTTON, point);
+  case ACTION_MOUSE_RIGHT_CLICK:
+    return OnMouseClick(MOUSE_RIGHT_BUTTON, point);
+  case ACTION_MOUSE_MIDDLE_CLICK:
+    return OnMouseClick(MOUSE_MIDDLE_BUTTON, point);
+  case ACTION_MOUSE_DRAG:
+    return OnMouseDrag(CPoint(event.m_offsetX, event.m_offsetY), point);
+  case ACTION_MOUSE_WHEEL:
+    return OnMouseWheel(event.m_wheel, point);
+  }
+  return false;
+}
+
 // override this function to implement custom mouse behaviour
 bool CGUIControl::OnMouseOver(const CPoint &point)
 {
@@ -812,13 +845,9 @@ int CGUIControl::GetNextControl(int direction) const
   }
 }
 
-bool CGUIControl::CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const
+bool CGUIControl::CanFocusFromPoint(const CPoint &point) const
 {
-  controlPoint = point;
-  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
-  if (CanFocus() && HitTest(controlPoint))
-    return true;
-  return false;
+  return CanFocus() && HitTest(point);
 }
 
 void CGUIControl::UnfocusFromPoint(const CPoint &point)

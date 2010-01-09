@@ -335,7 +335,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
             }
             else
               nLoops = 0;
-            
+
             if (nLoops) nLoops++;
             getbyte(fd);
           }
@@ -415,7 +415,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
       bool isPalRead = false;
       if (LocalColorMap && fread((char*)NextImage->Palette, 1, palSize, fd) == palSize)
         isPalRead = true;
-          
+
       // Copy global, if no palette
       if (!isPalRead)
         memcpy(NextImage->Palette, GlobalColorMap, palSize);
@@ -576,7 +576,7 @@ int LZWDecoder (char * bufIn, char * bufOut,
     // - Table Suffices contain the raw codes to be output
     while (OutCode >= FirstEntry)
     {
-      if (OutIndex > 4096 || OutCode >= 4096) 
+      if (OutIndex > 4096 || OutCode >= 4096)
         return 0;
       OutStack[OutIndex++] = Suffix[OutCode]; // Add suffix to Output Stack
       OutCode = Prefix[OutCode];       // Loop with preffix

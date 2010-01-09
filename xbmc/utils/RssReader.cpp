@@ -66,7 +66,7 @@ CRssReader::~CRssReader()
 void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds, bool rtl)
 {
   CSingleLock lock(*this);
-  
+
   m_pObserver = aObserver;
   m_spacesBetweenFeeds = spacesBetweenFeeds;
   m_vecUrls = aUrls;
@@ -113,7 +113,7 @@ void CRssReader::OnExit()
 int CRssReader::GetQueueSize()
 {
   CSingleLock lock(*this);
-  return m_vecQueue.size(); 
+  return m_vecQueue.size();
 }
 
 void CRssReader::Process()
@@ -121,7 +121,7 @@ void CRssReader::Process()
   while (GetQueueSize())
   {
     EnterCriticalSection(*this);
-    
+
     int iFeed = m_vecQueue.front();
     m_vecQueue.erase(m_vecQueue.begin());
 
@@ -135,7 +135,7 @@ void CRssReader::Process()
     CStdString strUrl = m_vecUrls[iFeed];
 
     LeaveCriticalSection(*this);
-    
+
     int nRetries = 3;
     CURL url(strUrl);
 
@@ -153,7 +153,7 @@ void CRssReader::Process()
           CLog::Log(LOGERROR,"Timeout whilst retrieving %s", strUrl.c_str());
           http.Cancel();
           break;
-        } 
+        }
         nRetries--;
 
         if (url.GetProtocol() != "http" && url.GetProtocol() != "https")
@@ -459,7 +459,7 @@ CRssManager::~CRssManager()
 }
 
 void CRssManager::Start()
- { 
+ {
    m_bActive = true;
 }
 

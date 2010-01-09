@@ -178,7 +178,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     CLog::Log(LOGWARNING, "PulseAudio: Does not support passthrough");
     return false;
   }
- 
+
   std::vector<CStdString> hostdevice;
   CUtil::Tokenize(device, hostdevice, "@");
 
@@ -196,9 +196,9 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   m_SampleSpec.channels = iChannels;
   m_SampleSpec.rate = uiSamplesPerSec;
-  m_SampleSpec.format = PA_SAMPLE_S16NE;  
+  m_SampleSpec.format = PA_SAMPLE_S16NE;
 
-  if (!pa_sample_spec_valid(&m_SampleSpec)) 
+  if (!pa_sample_spec_valid(&m_SampleSpec))
   {
     CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
     Deinitialize();
@@ -275,7 +275,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
       CLog::Log(LOGDEBUG, "PulseAudio: Choosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     }
   }
-  
+
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   m_bIsAllocated = true;
@@ -374,7 +374,7 @@ bool CPulseAudioDirectSound::Pause()
   if (!m_bIsAllocated)
     return -1;
 
-  if (m_bPause) 
+  if (m_bPause)
     return true;
 
   m_bPause = Cork(true);
@@ -417,7 +417,7 @@ long CPulseAudioDirectSound::GetCurrentVolume() const
 
 void CPulseAudioDirectSound::Mute(bool bMute)
 {
-  if (!m_bIsAllocated) 
+  if (!m_bIsAllocated)
     return;
 
   if (bMute)
@@ -476,7 +476,7 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
 
   pa_threaded_mainloop_unlock(m_MainLoop);
 
-  if (m_bAutoResume)   
+  if (m_bAutoResume)
     m_bAutoResume = !Resume();
 
   return length - rtn;
@@ -620,7 +620,7 @@ bool CPulseAudioDirectSound::SetupContext(const char *host, pa_context **context
 
   /* Wait until the context is ready */
   do
-  {  
+  {
     pa_threaded_mainloop_wait(*mainloop);
     CLog::Log(LOGDEBUG, "PulseAudio: Context %s", ContextStateToString(pa_context_get_state(*context)));
   }

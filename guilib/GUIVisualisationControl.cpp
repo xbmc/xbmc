@@ -464,21 +464,12 @@ CVisualisation *CGUIVisualisationControl::GetVisualisation()
   return m_pVisualisation;
 }
 
-bool CGUIVisualisationControl::OnMouseOver(const CPoint &point)
-{
-  // unfocusable, so return false
-  CGUIControl::OnMouseOver(point);
-  return false;
-}
-
 bool CGUIVisualisationControl::CanFocus() const
 { // unfocusable
   return false;
 }
 
-bool CGUIVisualisationControl::CanFocusFromPoint(const CPoint &point, CPoint &controlPoint) const
+bool CGUIVisualisationControl::CanFocusFromPoint(const CPoint &point) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
-  controlPoint = point;
-  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
-  return HitTest(controlPoint);
+  return HitTest(point);
 }

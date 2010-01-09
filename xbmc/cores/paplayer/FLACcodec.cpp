@@ -278,7 +278,7 @@ FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__Strea
           break;
         default:
           outptr32[current_sample*frame->header.channels + channel] = buffer[channel][current_sample];
-          break;        
+          break;
       }
     }
   }

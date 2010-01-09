@@ -181,7 +181,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 #ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
         return MEDIA_DETECT::CAutorun::PlayDisc();
-#endif      
+#endif
     }
   }
   if (action.id == ACTION_PREVIOUS_MENU)
@@ -282,7 +282,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
             g_windowManager.SendMessage(msg);
           }
         }
-        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_DOUBLE_CLICK)
+        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_DOUBLE_CLICK)
         {
           OnClick(list, iItem);
         }
@@ -473,7 +473,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
-  
+
   if (strDirectory.IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
@@ -1165,18 +1165,7 @@ bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirecto
     m_strParentPath[iList] = "";
   }
 
-  bool bResult = m_rootDir.GetDirectory(strDirectory,items,false);
-  if (strDirectory.IsEmpty() && items.Size() == 0)
-  {
-    CStdString strLabel = g_localizeStrings.Get(1026);
-    CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->m_strPath = "add";
-    pItem->SetThumbnailImage("settings-network-focus.png");
-    pItem->SetLabel(strLabel);
-    pItem->SetLabelPreformated(true);
-    items.Add(pItem);
-  }
-  return bResult;
+  return m_rootDir.GetDirectory(strDirectory,items,false);
 }
 
 bool CGUIWindowFileManager::CanRename(int iList)

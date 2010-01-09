@@ -48,7 +48,7 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
 
 void CGUITextureGLES::DrawQuad(const CRect &rect, DWORD color)
 {
-  // TODO: OpenGLES 
+  // TODO: OpenGLES
 }
 
 #endif

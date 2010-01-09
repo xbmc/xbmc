@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "RGBRenderer.h"
 
@@ -113,7 +113,7 @@ bool CRGBRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 {
   if(!CXBoxRenderer::Configure(width, height, d_width, d_height, fps, flags))
     return false;
-  
+
   // create our lookup textures for yv12->rgb translation,
   if(!CreateLookupTextures(m_yuvcoef, m_yuvrange) )
     return false;
@@ -130,7 +130,7 @@ void CRGBRenderer::Render(DWORD flags)
     RenderLowMem(flags);
   }
   else
-  {    
+  {
     int index = m_iYV12RenderBuffer;
 
     if( !(flags & RENDER_FLAG_NOLOCK) )
@@ -175,8 +175,8 @@ void CRGBRenderer::Render(DWORD flags)
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
     m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );    
-    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );    
+    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
 
     DWORD alphaenabled;
     m_pD3DDevice->GetRenderState( D3DRS_ALPHABLENDENABLE, &alphaenabled );
@@ -199,7 +199,7 @@ void CRGBRenderer::Render(DWORD flags)
         rs_new.top >>=1;
         rs_new.bottom >>=1;
       }
-      
+
       /* we will need extra texture, make sure it exists */
       if (!m_444PTexture[FIELD_FULL])
         Create444PTexture();
@@ -212,7 +212,7 @@ void CRGBRenderer::Render(DWORD flags)
       // we can render directly to backbuffer
       m_pD3DDevice->GetBackBuffer(0, 0, &p444PSource[FIELD_FULL]);
 
-#if 0 
+#if 0
       // currently doesn't work properly, not sure why yet
       // no error is thrown, but rendering to these genrerated surfaces
       // doesn't result in any data on screen, not supported
@@ -222,7 +222,7 @@ void CRGBRenderer::Render(DWORD flags)
         rs_new.top >>=1;
         rs_new.bottom >>=1;
 
-        
+
         const DWORD pitch = (((p444PSource[FIELD_FULL]->Size&D3DSIZE_PITCH_MASK)>>D3DSIZE_PITCH_SHIFT)+1)*64;
         const DWORD height = ((p444PSource[FIELD_FULL]->Size&D3DSIZE_HEIGHT_MASK)>>D3DSIZE_HEIGHT_SHIFT)+1;
         const DWORD width = ((p444PSource[FIELD_FULL]->Size&D3DSIZE_WIDTH_MASK))+1;
@@ -249,7 +249,7 @@ void CRGBRenderer::Render(DWORD flags)
     }
 
     if( (flags & RENDER_FLAG_FIELDMASK) == 0 )
-    {      
+    {
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_FULL],
           p444PSource[FIELD_FULL],
@@ -269,10 +269,10 @@ void CRGBRenderer::Render(DWORD flags)
       float offsety;
       if( (flags & RENDER_FLAG_FIELDMASK) == RENDER_FLAG_BOTH )
         // keep field offsets, only compensate for scaling
-        offsety = 0.25f * ((float(rs_half.bottom - rs_half.top) / float(rs_new.bottom - rs_new.top)) -  1.0f); 
+        offsety = 0.25f * ((float(rs_half.bottom - rs_half.top) / float(rs_new.bottom - rs_new.top)) -  1.0f);
       else
         // spatially align source, needs be done here if we are using same target surface here as in next step
-        offsety = 0.25; 
+        offsety = 0.25;
 
       if( flags & RENDER_FLAG_ODD )
       {
@@ -284,7 +284,7 @@ void CRGBRenderer::Render(DWORD flags)
             0.0f, +offsety,
             CHROMAOFFSET_HORIZ, +CHROMAOFFSET_VERT);
       }
-      
+
       if( flags & RENDER_FLAG_EVEN )
       {
         InterleaveYUVto444P(
@@ -704,7 +704,7 @@ bool CRGBRenderer::CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &ran
         // convert to -0.5 .. 0.5 ( -127.5 .. 127.5 )
         float fV = (v - range.v_min) * 255.f / (range.v_max - range.v_min) - 127.5f;
         float fU = (u - range.u_min) * 255.f / (range.u_max - range.u_min) - 127.5f;
-        
+
         fU = CLAMP(fU, -127.5f, 127.5f);
         fV = CLAMP(fV, -127.5f, 127.5f);
 
@@ -745,7 +745,7 @@ bool CRGBRenderer::CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &ran
     m_UVLookup->UnlockRect(0);
     m_UVErrorLookup->LockRect(0, &lr, NULL, 0);
     XGSwizzleRect(pErrorBuff, 0, NULL, lr.pBits, 256, 256, NULL, 4);
-    m_UVErrorLookup->UnlockRect(0);    
+    m_UVErrorLookup->UnlockRect(0);
 
     m_yuvcoef_last = coef;
     m_yuvrange_last = range;

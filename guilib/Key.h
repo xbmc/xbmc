@@ -185,15 +185,9 @@
 #define ACTION_MOUSE_LEFT_CLICK       100
 #define ACTION_MOUSE_RIGHT_CLICK      101
 #define ACTION_MOUSE_MIDDLE_CLICK     102
-#define ACTION_MOUSE_XBUTTON1_CLICK   103
-#define ACTION_MOUSE_XBUTTON2_CLICK   104
-
-#define ACTION_MOUSE_DOUBLE_CLICK           105
-#define ACTION_MOUSE_LEFT_DOUBLE_CLICK      105
-#define ACTION_MOUSE_RIGHT_DOUBLE_CLICK     106
-#define ACTION_MOUSE_MIDDLE_DOUBLE_CLICK    107
-#define ACTION_MOUSE_XBUTTON1_DOUBLE_CLICK  108
-#define ACTION_MOUSE_XBUTTON2_DOUBLE_CLICK  109
+#define ACTION_MOUSE_DOUBLE_CLICK     103
+#define ACTION_MOUSE_WHEEL            104
+#define ACTION_MOUSE_DRAG             105
 
 #define ACTION_BACKSPACE          110
 #define ACTION_SCROLL_UP          111
@@ -419,6 +413,27 @@ public:
   CStdString   strAction;
   wchar_t      unicode; // new feature, does not fit into id like ASCII, wouldn't be good design either!? Will be set whenever ASCII is set into id (for backwards compatibility)
   unsigned int holdTime; ///< Time the key has been held down (in ms)
+};
+
+/*!
+  \ingroup actionkeys, mouse
+  \brief Simple class for mouse events
+  */
+class CMouseEvent
+{
+public:
+  CMouseEvent(int actionID, char wheel = 0, float offsetX = 0, float offsetY = 0)
+  {
+    m_id = actionID;
+    m_wheel = wheel;
+    m_offsetX = offsetX;
+    m_offsetY = offsetY;
+  };
+
+  int    m_id;
+  char   m_wheel;
+  float  m_offsetX;
+  float  m_offsetY;
 };
 
 /*!

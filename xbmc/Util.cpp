@@ -857,11 +857,11 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
-    
+
     if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
-  
+
   return false;
 }
 
@@ -924,10 +924,10 @@ bool CUtil::IsRAR(const CStdString& strFile)
 
   if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
     return true;
-  
+
   if (strExtension.CompareNoCase(".cbr") == 0)
     return true;
-  
+
   if (strExtension.CompareNoCase(".rar") == 0)
     return true;
 
@@ -1241,21 +1241,21 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
       strIcon = "DefaultXboxDVD.png";
       return ;
     }
-#endif    
+#endif
     strIcon = "DefaultDVDRom.png";
     return ;
   }
 
   if ( IsISO9660(strPath) )
   {
-#ifdef HAS_DVD_DRIVE    
+#ifdef HAS_DVD_DRIVE
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
       return ;
     }
-#endif    
+#endif
     strIcon = "DefaultDVDRom.png";
     return ;
   }
@@ -1392,7 +1392,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     CStdString strPath2;
     GetParentPath(strPath,strPath2);
     strLookInPaths.push_back(strPath2);
-  } 
+  }
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -1923,7 +1923,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   for (int y = 0; y < height; y++)
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
 
-  delete [] pixels; 
+  delete [] pixels;
 
 #else
   //nothing to take a screenshot from
@@ -2130,22 +2130,22 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
-  
+
   // we currently only allow HD and smb paths
   if (!CUtil::IsHD(strPath) && !CUtil::IsSmb(strPath))
   {
     CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
   }
-  
+
   CURL url(strPath);
   // silly CStdString can't take a char in the constructor
   CStdString sep(1, url.GetDirectorySeparator());
-  
+
   // split the filename portion of the URL up into separate dirs
   CStdStringArray dirs;
   StringUtils::SplitString(url.GetFileName(), sep, dirs);
-  
+
   // we start with the root path
   CStdString dir = url.GetWithoutFilename();
   unsigned int i = 0;
@@ -2161,7 +2161,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
     dir = CUtil::AddFileToFolder(dir, dirs[i]);
     CDirectory::Create(dir);
   }
-  
+
   // was the final destination directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
   return true;
@@ -2209,7 +2209,7 @@ bool CUtil::IsUsingTTFSubtitles()
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<CStdString> &parameters)
 {
   CStdString paramString;
- 
+
   int iPos = execString.Find("(");
   int iPos2 = execString.ReverseFind(")");
   if (iPos > 0 && iPos2 > 0)
@@ -2943,9 +2943,9 @@ void CUtil::ClearFileItemCache()
 
 void CUtil::InitRandomSeed()
 {
-  // Init random seed 
-  int64_t now; 
-  now = CurrentHostCounter(); 
+  // Init random seed
+  int64_t now;
+  now = CurrentHostCounter();
   unsigned int seed = (unsigned int)now;
 //  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
   srand(seed);

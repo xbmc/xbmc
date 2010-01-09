@@ -1,0 +1,21 @@
+/*! \file   mainpage.dox
+    \brief  Introduction page
+
+  \mainpage Introduction
+            Welcome to the documentation of XBMC. This starting page is meant to help people find their
+            way around the code.
+            
+            This documentation is a work in progress - only some of the code has thus far been documented
+            and we welcome any and all input to documenting it further. Documentation serves both to help
+            newcomers get to grips with the source quickly, and to highlight possible deficiencies in the
+            code or interfaces.
+            
+            Currently the doxygen configuration file is set to only document the "xbmc\utils" directory,
+            though the ultimate goal is to document the public interface of everything.
+
+            Any help/suggestions are more than welcome.
+              
+  \section  doxy_whatisxbmc What is XBMC?
+            XBMC is a free, open source (GPL) multimedia player that runs on Linux, Mac OS X (10.4 and later),
+            AppleTV and Windows.  See http://xbmc.org for more details.
+*/

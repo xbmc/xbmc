@@ -72,7 +72,7 @@ class CVideoReferenceClock : public CThread
 #if defined(__APPLE__)
     void VblankHandler(int64_t nowtime, double fps);
 #endif
-    
+
   private:
     void    Process();
     bool    UpdateRefreshrate(bool Forced = false);
@@ -132,7 +132,7 @@ class CVideoReferenceClock : public CThread
     bool SetupCocoa();
     void RunCocoa();
     void CleanupCocoa();
-    
+
     int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
                                //not the same as m_VblankTime
 #endif

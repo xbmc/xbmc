@@ -88,7 +88,7 @@ void CGUIPanelContainer::Render()
         if (m_orientation == VERTICAL)
           RenderItem(m_posX + col * m_layout->Size(HORIZONTAL), pos, item.get(), false);
         else
-          RenderItem(pos, m_posY + col * m_layout->Size(VERTICAL), item.get(), false);          
+          RenderItem(pos, m_posY + col * m_layout->Size(VERTICAL), item.get(), false);
       }
     }
     // increment our position

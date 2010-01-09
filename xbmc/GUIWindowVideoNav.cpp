@@ -1053,6 +1053,8 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   if (items.IsPlugin())
     filterWatched = true;
 
+  int itemsBefore = items.Size();
+
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items.Get(i);
@@ -1074,6 +1076,8 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
       }
     }
   }
+  if (g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL && itemsBefore != items.Size() && items.GetObjectCount() == 0)
+    GoParentFolder();
 }
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)

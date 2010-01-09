@@ -263,7 +263,7 @@ int CDVDInputStreamHTSP::GetTotalTime()
 int CDVDInputStreamHTSP::GetTime()
 {
   CDateTimeSpan time;
-  time  = CDateTime::GetUTCDateTime() 
+  time  = CDateTime::GetUTCDateTime()
         - CDateTime((time_t)m_event.start);
 
   return time.GetDays()    * 1000 * 60 * 60 * 24

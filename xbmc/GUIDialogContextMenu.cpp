@@ -344,13 +344,13 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   // buttons that are available on both sources and autosourced items
   if (!item) return false;
-  
+
   switch (button)
   {
   case CONTEXT_BUTTON_EJECT_DRIVE:
     return g_mediaManager.Eject(item->m_strPath);
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   case CONTEXT_BUTTON_PLAY_DISC:
     return MEDIA_DETECT::CAutorun::PlayDisc();
 
@@ -360,7 +360,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 #else
     CIoSupport::ToggleTray();
 #endif
-#endif  
+#endif
     return true;
   default:
     break;

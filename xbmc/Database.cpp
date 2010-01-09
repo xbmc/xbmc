@@ -112,7 +112,7 @@ bool CDatabase::Open()
     CLog::Log(LOGERROR, "Unable to open %s (old version?)", strDatabase.c_str());
     return false;
   }
-  
+
   // test if db already exists, if not we need to create the tables
   if (!m_pDB->exists())
   {

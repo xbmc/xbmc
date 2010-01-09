@@ -337,7 +337,7 @@ DBusHandlerResult CDbusServer::root_Identity( DBusConnection *connection, DBusMe
   {
     ADD_STRING( &psz_identity );
     free( psz_identity );
-  } 
+  }
   else
     return DBUS_HANDLER_RESULT_NEED_MEMORY;
   REPLY_SEND;

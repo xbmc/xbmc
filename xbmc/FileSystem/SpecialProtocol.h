@@ -34,7 +34,7 @@
                              Win32: FIXME: Currently the same as special://home/
  special://userhome/      - a writable version of the user home directory
                              Linux, OS X: ~/.xbmc
-                             Win32: home directory of user                             
+                             Win32: home directory of user
  special://masterprofile/ - the master users userdata folder - usually special://home/userdata
                              Linux: ~/.xbmc/userdata/
                              OS X:  ~/Library/Application Support/XBMC/UserData/

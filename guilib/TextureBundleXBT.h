@@ -44,10 +44,10 @@ public:
 
   int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
                 int &width, int &height, int& nLoops, int** ppDelays);
-  
-private:  
+
+private:
   bool OpenBundle();
-  bool ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture);  
+  bool ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, CBaseTexture** ppTexture);
 
   time_t m_TimeStamp;
 

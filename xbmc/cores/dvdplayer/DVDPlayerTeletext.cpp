@@ -652,7 +652,8 @@ void CDVDTeletextData::Process()
     {
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
     }
-    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDTeletextData::Flush())
+    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)
+          || pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
       ResetTeletextCache();
     }

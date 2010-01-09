@@ -87,11 +87,11 @@ bool CWinSystemWin32::IsSystemScreenSaverEnabled()
        result = true;
   }
   RegCloseKey(hKeyScreenSaver);
-  
+
   return result;
 }
 
-void CWinSystemWin32::EnableSystemScreenSaver(bool bEnable) 
+void CWinSystemWin32::EnableSystemScreenSaver(bool bEnable)
 {
   SystemParametersInfo(SPI_SETSCREENSAVEACTIVE,bEnable,0,0);
   if(!bEnable)
@@ -157,7 +157,7 @@ bool CWinSystemWin32::CreateBlankWindow()
 {
   WNDCLASSEX wcex;
 
-  wcex.cbSize = sizeof(WNDCLASSEX); 
+  wcex.cbSize = sizeof(WNDCLASSEX);
   wcex.style= CS_HREDRAW | CS_VREDRAW;
   wcex.lpfnWndProc= DefWindowProc;
   wcex.cbClsExtra= 0;
@@ -173,7 +173,7 @@ bool CWinSystemWin32::CreateBlankWindow()
   // Now we can go ahead and register our new window class
   int reg = RegisterClassEx(&wcex);
 
-  m_hBlankWindow = CreateWindowEx(WS_EX_TOPMOST, "BlankWindowClass", "", WS_POPUP | WS_DISABLED, 
+  m_hBlankWindow = CreateWindowEx(WS_EX_TOPMOST, "BlankWindowClass", "", WS_POPUP | WS_DISABLED,
     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, NULL, NULL);
 
   if(m_hBlankWindow == NULL)
@@ -267,7 +267,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   ResizeInternal(forceResize);
 
   BlankNonActiveMonitor(m_bBlankOtherDisplay);
- 
+
   return true;
 }
 
@@ -324,7 +324,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
                                                                                                          rc.left, rc.top, rc.right, rc.bottom, (dwStyle & WS_CAPTION) ? "" : " fullscreen");
     SetWindowRgn(m_hWnd, 0, false);
     SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-    
+
     // The SWP_DRAWFRAME is here because, perversely, without it win7 draws a
     // white frame plus titlebar around the xbmc splash
     SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW|SWP_DRAWFRAME);
@@ -372,9 +372,9 @@ void CWinSystemWin32::UpdateResolutions()
     refreshRate = (float)(m_MonitorsInfo[m_nPrimary].RefreshRate + 1) / 1.001f;
   else
     refreshRate = (float)m_MonitorsInfo[m_nPrimary].RefreshRate;
-   
+
   UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, refreshRate);
-   
+
 
   // Secondary
   if(m_nMonitorsCount >= 2)
