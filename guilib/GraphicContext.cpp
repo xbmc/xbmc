@@ -525,7 +525,7 @@ void CGraphicContext::ApplyStateBlock()
   g_Windowing.ApplyStateBlock();
 }
 
-void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
 {
   Lock();
   m_windowResolution = res;
@@ -569,21 +569,20 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
 
     m_guiScaleX = fFromWidth / fToWidth;
     m_guiScaleY = fFromHeight / fToHeight;
-    TransformMatrix windowOffset = TransformMatrix::CreateTranslation(posX, posY);
     TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
-    m_guiTransform = guiOffset * guiScaler * windowOffset;
+    m_guiTransform = guiOffset * guiScaler;
   }
   else
   {
-    m_guiTransform = TransformMatrix::CreateTranslation(posX, posY);
+    m_guiTransform.Reset();
     m_guiScaleX = 1.0f;
     m_guiScaleY = 1.0f;
   }
   // reset our origin and camera
   while (m_origins.size())
     m_origins.pop();
-  m_origins.push(CPoint(posX, posY));
+  m_origins.push(CPoint(0, 0));
   while (m_cameras.size())
     m_cameras.pop();
   m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
@@ -593,10 +592,10 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   Unlock();
 }
 
-void CGraphicContext::SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetRenderingResolution(RESOLUTION res, bool needsScaling)
 {
   Lock();
-  SetScalingResolution(res, posX, posY, needsScaling);
+  SetScalingResolution(res, needsScaling);
   UpdateCameraPosition(m_cameras.top());
   Unlock();
 }

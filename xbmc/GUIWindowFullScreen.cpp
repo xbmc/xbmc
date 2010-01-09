@@ -484,7 +484,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
         // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
         // it doesn't preserve aspect, however, so make sure we choose aspect as 1/scalingpixelratio
-        g_graphicsContext.SetScalingResolution(RES_PAL_4x3, 0, 0, true);
+        g_graphicsContext.SetScalingResolution(RES_PAL_4x3, true);
         float aspect = 1.0f / g_graphicsContext.GetScalingPixelRatio();
         CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect, RES_PAL_4x3);
         if (!subFont)
@@ -813,7 +813,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       subtitleText.Replace("</u", "");
 
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
-      g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
+      g_graphicsContext.SetRenderingResolution(res, false);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
       m_subsLayout->Update(subtitleText, maxWidth * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)

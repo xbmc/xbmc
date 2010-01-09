@@ -134,7 +134,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 
   // set the scaling resolution so that any control creation or initialisation can
   // be done with respect to the correct aspect ratio
-  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, m_needsScaling);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
 
   // Resolve any includes that may be present
   g_SkinInfo.ResolveIncludes(pRootElement);
@@ -312,7 +312,7 @@ void CGUIWindow::Render()
   // to occur.
   if (!m_bAllocated) return;
 
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, 0, 0, m_needsScaling);
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
   unsigned int currentTime = CTimeUtils::GetFrameTime();
   // render our window animation - returns false if it needs to stop rendering
@@ -380,7 +380,7 @@ CPoint CGUIWindow::GetOrigin()
 // OnMouseAction - called by OnAction()
 bool CGUIWindow::OnMouseAction()
 {
-  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, m_needsScaling);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
   CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
@@ -858,7 +858,7 @@ void CGUIWindow::SetDefaults()
 CRect CGUIWindow::GetScaledBounds() const
 {
   CSingleLock lock(g_graphicsContext);
-  g_graphicsContext.SetScalingResolution(m_coordsRes, 0, 0, m_needsScaling);
+  g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
   CRect rect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
   float z = 0;
   g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);

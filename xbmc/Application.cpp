@@ -2038,7 +2038,7 @@ void CApplication::DoRender()
 
   {
     // reset image scaling and effect states
-    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
 
     // If we have the remote codes enabled, then show them
     if (g_advancedSettings.m_displayRemoteCodes)
@@ -2247,7 +2247,7 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
+    g_graphicsContext.SetRenderingResolution(res, false);
 
     CStdString info;
     MEMORYSTATUS stat;
