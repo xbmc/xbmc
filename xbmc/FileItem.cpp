@@ -2715,7 +2715,7 @@ bool CFileItem::CacheLocalFanart() const
   // we don't have a cached image, so let's see if the user has a local image, and cache it if so
   CStdString localFanart(GetLocalFanart());
   if (!localFanart.IsEmpty())
-    return CPicture::CacheImage(localFanart, cachedFanart);
+    return CPicture::CacheFanart(localFanart, cachedFanart);
   return false;
 }
 

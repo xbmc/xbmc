@@ -57,22 +57,39 @@ bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFi
   return true;
 }
 
-bool CPicture::CacheImage(const CStdString& sourceFile, const CStdString& destFile)
+bool CPicture::CacheImage(const CStdString& sourceFile, const CStdString& destFile, int width, int height)
 {
-  CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFile.c_str(), destFile.c_str());
-
-#ifdef RESAMPLE_CACHED_IMAGES
-  DllImageLib dll;
-  if (!dll.Load()) return false;
-  if (!dll.CreateThumbnail(sourceFile.c_str(), destFile.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
+  if (width > 0 && height > 0)
   {
-    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceFile.c_str());
-    return false;
+    CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceFile.c_str(), destFile.c_str(), width, height);
+    DllImageLib dll;
+    if (!dll.Load()) return false;
+    if (!dll.CreateThumbnail(sourceFile.c_str(), destFile.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
+    {
+      CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceFile.c_str());
+      return false;
+    }
+    return true;
   }
-  return true;
-#else
-  return CFile::Cache(sourceFile, destFile);
-#endif
+  else
+  {
+    CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFile.c_str(), destFile.c_str());
+    return CFile::Cache(sourceFile, destFile);
+  }
+}
+
+bool CPicture::CacheThumb(const CStdString& sourceFile, const CStdString& destFile)
+{
+  return CacheImage(sourceFile, destFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
+}
+
+bool CPicture::CacheFanart(const CStdString& sourceFile, const CStdString& destFile)
+{
+  int height = g_advancedSettings.m_fanartHeight;
+  // Assume 16:9 size
+  int width = height * 16 / 9;
+
+  return CacheImage(sourceFile, destFile, width, height);
 }
 
 bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSize, const CStdString& extension, const CStdString& thumbFile)

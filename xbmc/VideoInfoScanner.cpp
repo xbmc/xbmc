@@ -1041,7 +1041,7 @@ namespace VIDEO
       }
     }
     else
-      CPicture::CacheImage(strUserThumb, strThumb);
+      CPicture::CacheThumb(strUserThumb, strThumb);
 
     CStdString strCheck=pItem->m_strPath;
     CStdString strDirectory;

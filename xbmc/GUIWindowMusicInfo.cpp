@@ -629,7 +629,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
     if (flip)
       CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
-      CPicture::CacheImage(result, cachedThumb);
+      CPicture::CacheFanart(result, cachedThumb);
 
     m_albumItem->SetProperty("fanart_image",cachedThumb);
     m_hasUpdatedThumb = true;
