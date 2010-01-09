@@ -21,6 +21,7 @@
  */
 
 #include "IAnnouncer.h"
+#include "CriticalSection.h"
 #include <vector>
 
 namespace ANNOUNCEMENT
@@ -33,5 +34,6 @@ namespace ANNOUNCEMENT
     static void Announce(EAnnouncementFlag flag, const char *sender, const char *message, const char *data = NULL);
   private:
     static std::vector<IAnnouncer *> m_announcers;
+    static CCriticalSection m_critSection;
   };
 }

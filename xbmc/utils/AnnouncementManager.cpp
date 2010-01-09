@@ -20,21 +20,25 @@
  */
 
 #include "AnnouncementManager.h"
+#include "SingleLock.h"
 #include <stdio.h>
 #include "log.h"
 
 using namespace std;
 using namespace ANNOUNCEMENT;
 
+CCriticalSection CAnnouncementManager::m_critSection;
 vector<IAnnouncer *> CAnnouncementManager::m_announcers;
 
 void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
 {
+  CSingleLock lock (m_critSection);
   m_announcers.push_back(listener);
 }
 
 void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 {
+  CSingleLock lock (m_critSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
   {
     if (m_announcers[i] == listener)
@@ -49,6 +53,7 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcment: %s from %s", message, sender);
   printf("CAnnouncementManager - Announcment: %s from %s\n", message, sender);
+  CSingleLock lock (m_critSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
     m_announcers[i]->Announce(flag, sender, message, data);
 }
