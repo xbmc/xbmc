@@ -357,22 +357,28 @@ bool CGUIControlGroup::HasAnimation(ANIMATION_TYPE animType)
   return false;
 }
 
-void CGUIControlGroup::GetControlsFromPoint(const CPoint &point, vector< std::pair<CGUIControl *, CPoint> > &controls) const
+bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (!CGUIControl::CanFocus())
-    return;
-  CPoint controlCoords(point);
-  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
-  controlCoords -= GetPosition();
-  for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
+  // transform our position into child coordinates
+  CPoint childPoint(point);
+  m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
+  childPoint -= GetPosition();
+
+  if (CanFocus())
   {
-    CGUIControl *child = *it;
-    CPoint childCoords;
-    if (child->IsGroup())
-      ((CGUIControlGroup *)child)->GetControlsFromPoint(controlCoords, controls);
-    else if (child->CanFocusFromPoint(controlCoords, childCoords))
-      controls.push_back(make_pair(child, childCoords));
+    // run through our controls in reverse order (so that last rendered is checked first)
+    for (crControls i = m_children.rbegin(); i != m_children.rend(); ++i)
+    {
+      CGUIControl *child = *i;
+      if (child->SendMouseEvent(childPoint, event))
+      { // we've handled the action, and/or have focused an item
+        return true;
+      }
+    }
   }
+  // if we get here we haven't handled the event and thus do not have focus
+  m_focusedControl = 0;
+  return false;
 }
 
 void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)

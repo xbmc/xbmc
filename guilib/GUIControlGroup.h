@@ -51,7 +51,7 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
 
-  virtual void GetControlsFromPoint(const CPoint &point, std::vector< std::pair<CGUIControl *, CPoint> > &controls) const;
+  virtual bool SendMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual void SetInitialVisibility();

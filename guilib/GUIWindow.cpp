@@ -368,43 +368,32 @@ bool CGUIWindow::OnMouseAction()
   CPoint mousePoint(g_Mouse.GetLocation());
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
-  bool bHandled = false;
-  // check if we have exclusive access
-  if (g_Mouse.GetExclusiveWindowID() == GetID() && IsValidControl(g_Mouse.GetExclusiveControl()))
-  { // we have exclusive access to the mouse...
-    HandleMouse((CGUIControl *)g_Mouse.GetExclusiveControl(), mousePoint + g_Mouse.GetExclusiveOffset());
-    return true;
-  }
-
-  // run through the controls, and unfocus all those that aren't under the pointer,
-  // and find which ones are under the pointer
   UnfocusFromPoint(mousePoint);
-  vector< pair<CGUIControl *, CPoint> > controls;
-  GetControlsFromPoint(mousePoint, controls);
 
-  bool controlUnderPointer(false);
-  for (vector< pair<CGUIControl *, CPoint> >::iterator i = controls.begin(); i != controls.end(); ++i)
-  {
-    CGUIControl *child = i->first;
-    controlUnderPointer = child->OnMouseOver(i->second);
-    bHandled = HandleMouse(child, i->second);
-    if (bHandled || controlUnderPointer)
-      break;
-  }
-  if (!bHandled)
-  { // haven't handled this action - call the window message handlers
-    bHandled = OnMouse(mousePoint);
-  }
-  // and unfocus everything otherwise
-  if (!controlUnderPointer)
-    m_focusedControl = 0;
+  // create the mouse event
+  CMouseEvent *event = NULL;
+  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_LEFT_CLICK);
+  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_RIGHT_CLICK);
+  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_MIDDLE_CLICK);
+  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
+    event = new CMouseEvent(ACTION_MOUSE_DOUBLE_CLICK);
+  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && g_Mouse.HasMoved(true))
+    event = new CMouseEvent(ACTION_MOUSE_DRAG, 0, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y);
+  else if (g_Mouse.GetWheel())
+    event = new CMouseEvent(ACTION_MOUSE_WHEEL, g_Mouse.GetWheel());
+  else
+    event = new CMouseEvent(0); // mouse move only
 
-  return bHandled;
+  if (SendMouseEvent(mousePoint, *event))
+    return true;
+
+  // unhandled
+  return OnMouse(mousePoint);
 }
 
-// Handles any mouse actions that are not handled by a control
-// default is to go back a window on a right click.
-// This function should be overridden for other windows
 bool CGUIWindow::OnMouse(const CPoint &point)
 {
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
@@ -413,36 +402,6 @@ bool CGUIWindow::OnMouse(const CPoint &point)
     action.id = ACTION_PREVIOUS_MENU;
     return OnAction(action);
   }
-  return false;
-}
-
-bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
-{
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
-  { // Left click
-    return pControl->OnMouseClick(MOUSE_LEFT_BUTTON, point);
-  }
-  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
-  { // Right click
-    return pControl->OnMouseClick(MOUSE_RIGHT_BUTTON, point);
-  }
-  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
-  { // Middle click
-    return pControl->OnMouseClick(MOUSE_MIDDLE_BUTTON, point);
-  }
-  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
-  { // Left double click
-    return pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON, point);
-  }
-  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && g_Mouse.HasMoved(true))
-  { // Mouse Drag
-    return pControl->OnMouseDrag(g_Mouse.GetLastMove(), point);
-  }
-  else if (g_Mouse.GetWheel())
-  { // Mouse wheel
-    return pControl->OnMouseWheel(g_Mouse.GetWheel(), point);
-  }
-  // no mouse stuff done other than movement
   return false;
 }
 

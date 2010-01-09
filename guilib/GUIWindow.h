@@ -98,7 +98,6 @@ public:
   virtual bool OnAction(const CAction &action);
 
   virtual bool OnMouse(const CPoint &point);
-  bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
 

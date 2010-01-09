@@ -510,6 +510,38 @@ bool CGUIControl::HitTest(const CPoint &point) const
   return m_hitRect.PtInRect(point);
 }
 
+bool CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  childPoint = point;
+  if (!CanFocusFromPoint(point, childPoint))
+    return false;
+
+  bool handled = OnMouseOver(childPoint);
+  if (OnMouseEvent(childPoint, event))
+    return true;
+  return handled;
+}
+
+bool CGUIControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  switch (event.m_id)
+  {
+  case ACTION_MOUSE_LEFT_CLICK:
+    return OnMouseClick(MOUSE_LEFT_BUTTON, point);
+  case ACTION_MOUSE_DOUBLE_CLICK:
+    return OnMouseDoubleClick(MOUSE_LEFT_BUTTON, point);
+  case ACTION_MOUSE_RIGHT_CLICK:
+    return OnMouseClick(MOUSE_RIGHT_BUTTON, point);
+  case ACTION_MOUSE_MIDDLE_CLICK:
+    return OnMouseClick(MOUSE_MIDDLE_BUTTON, point);
+  case ACTION_MOUSE_DRAG:
+    return OnMouseDrag(CPoint(event.m_offsetX, event.m_offsetY), point);
+  case ACTION_MOUSE_WHEEL:
+    return OnMouseWheel(event.m_wheel, point);
+  }
+  return false;
+}
+
 // override this function to implement custom mouse behaviour
 bool CGUIControl::OnMouseOver(const CPoint &point)
 {
