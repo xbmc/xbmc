@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>XBMC - Albums</title> 
+<link type="text/css" rel="stylesheet" href="basic.css">
+<script type="text/javascript" src="json.js"> // FOR browsers which doesn't have it included
+</script>
+</head>
+<body>
+<h1>Albums</h1>
+
+<script type="text/javascript">
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"MusicLibrary.GetAlbums\", \"id\": 1}");
+
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+var array = result["albums"];
+for (var property in array) {
+  var item = array[property];
+  if (item["thumbnail"])
+    document.write("<img src=thumb/" + item["thumbnail"] + ".jpg width=100 alt=\"" + item["album"] + "\"></img>");
+  else
+    document.write("<img src=images/DefaultAlbumCover.png width=100 alt=\"" + item["album"] + "\"></img>");
+}
+
+</script>
+</body>
+</html>
