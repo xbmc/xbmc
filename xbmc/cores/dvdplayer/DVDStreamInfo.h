@@ -48,8 +48,8 @@ class CDVDStreamInfo
 {
 public:
   CDVDStreamInfo();
-  CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata );
-  CDVDStreamInfo(const CDemuxStream &right, bool withextradata );
+  CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata = true);
+  CDVDStreamInfo(const CDemuxStream &right, bool withextradata = true);
 
   ~CDVDStreamInfo();
 
