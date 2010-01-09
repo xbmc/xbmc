@@ -434,6 +434,13 @@ void CDVDPlayerVideo::Process()
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
       m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
     }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
+    {
+      EnterCriticalSection(&m_critCodecSection);
+      if(m_pVideoCodec)
+        m_pVideoCodec->Reset();
+      LeaveCriticalSection(&m_critCodecSection);
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
       EnterCriticalSection(&m_critCodecSection);

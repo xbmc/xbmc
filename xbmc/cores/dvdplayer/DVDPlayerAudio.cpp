@@ -414,6 +414,12 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       else
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
     }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
+    {
+      if (m_pAudioCodec)
+        m_pAudioCodec->Reset();
+      m_decode.Release();
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
       m_dvdAudio.Flush();
