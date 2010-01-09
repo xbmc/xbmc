@@ -3296,7 +3296,6 @@ void CGUIWindowSettingsCategory::FillInDirectShowAudioRenderers(CSetting* pSetti
 {
   //in case dsplayer didnt do it yet
   HRESULT hr;
-  hr = CoInitialize(NULL);
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   CDirectShowEnumerator p_dsound;
