@@ -64,7 +64,7 @@ bool CPicture::CacheImage(const CStdString& sourceFile, const CStdString& destFi
     CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceFile.c_str(), destFile.c_str(), width, height);
     DllImageLib dll;
     if (!dll.Load()) return false;
-    if (!dll.CreateThumbnail(sourceFile.c_str(), destFile.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
+    if (!dll.CreateThumbnail(sourceFile.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceFile.c_str());
       return false;
