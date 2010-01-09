@@ -858,22 +858,11 @@ bool CGUISpinControl::HitTest(const CPoint &point) const
 
 bool CGUISpinControl::OnMouseOver(const CPoint &point)
 {
-  if (m_imgspinUpFocus.HitTest(point))
-  {
-    CGUIControl::OnMouseOver(point);
-    m_iSelect = SPIN_BUTTON_UP;
-  }
-  else if (m_imgspinDownFocus.HitTest(point))
-  {
-    CGUIControl::OnMouseOver(point);
+  if (m_imgspinDownFocus.HitTest(point))
     m_iSelect = SPIN_BUTTON_DOWN;
-  }
   else
-  {
-    CGUIControl::OnMouseOver(point);
     m_iSelect = SPIN_BUTTON_UP;
-  }
-  return true;
+  return CGUIControl::OnMouseOver(point);
 }
 
 bool CGUISpinControl::OnMouseClick(int button, const CPoint &point)
