@@ -140,7 +140,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
 
   m_freq = CurrentHostFrequency();
 
-  InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
@@ -153,7 +152,6 @@ CDVDPlayerAudio::~CDVDPlayerAudio()
 
   // close the stream, and don't wait for the audio to be finished
   // CloseStream(true);
-  DeleteCriticalSection(&m_critCodecSection);
 }
 
 bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
@@ -237,8 +235,6 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
 bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*/, unsigned int size /* = 0*/)
 {
-  EnterCriticalSection(&m_critCodecSection);
-
   /* close current audio codec */
   if( m_pAudioCodec )
   {
@@ -257,15 +253,12 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
     CLog::Log(LOGERROR, "Unsupported audio codec");
 
     m_streaminfo.Clear();
-    LeaveCriticalSection(&m_critCodecSection);
     return false;
   }
 
   /* update codec information from what codec gave ut */
   m_streaminfo.channels = m_pAudioCodec->GetChannels();
   m_streaminfo.samplerate = m_pAudioCodec->GetSampleRate();
-
-  LeaveCriticalSection(&m_critCodecSection);
 
   return true;
 }
@@ -367,9 +360,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       timeout = 1000;
 
     // read next packet and return -1 on error
-    LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
-    EnterCriticalSection(&m_critCodecSection);
 
     if (ret == MSGQ_TIMEOUT)
       return DECODE_FLAG_TIMEOUT;
@@ -504,9 +495,7 @@ void CDVDPlayerAudio::Process()
   while (!m_bStop)
   {
     //Don't let anybody mess with our global variables
-    EnterCriticalSection(&m_critCodecSection);
     result = DecodeFrame(audioframe, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0); // blocks if no audio is available, but leaves critical section before doing so
-    LeaveCriticalSection(&m_critCodecSection);
 
     if( result & DECODE_FLAG_ERROR )
     {

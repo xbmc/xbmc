@@ -122,7 +122,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iSubtitleDelay = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
-  InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
@@ -138,7 +137,6 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
 {
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
-  DeleteCriticalSection(&m_critCodecSection);
   g_VideoReferenceClock.StopThread();
 }
 
@@ -436,17 +434,13 @@ void CDVDPlayerVideo::Process()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
-      EnterCriticalSection(&m_critCodecSection);
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
-      LeaveCriticalSection(&m_critCodecSection);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
-      EnterCriticalSection(&m_critCodecSection);
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
-      LeaveCriticalSection(&m_critCodecSection);
 
       m_pullupCorrection.Flush();
       //we need to recalculate the framerate
@@ -503,8 +497,6 @@ void CDVDPlayerVideo::Process()
       if(bPacketDrop)
         bRequestDrop = true;
 
-
-      EnterCriticalSection(&m_critCodecSection);
       // tell codec if next frame should be dropped
       // problem here, if one packet contains more than one frame
       // both frames will be dropped in that case instead of just the first
@@ -661,9 +653,6 @@ void CDVDPlayerVideo::Process()
         // the decoder didn't need more data, flush the remaning buffer
         iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
       }
-
-
-      LeaveCriticalSection(&m_critCodecSection);
     }
 
     // all data is used by the decoder, we can safely free it now
@@ -1305,21 +1294,6 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
     crop.top = crop.bottom = max;
   else
     crop.top = crop.bottom = min;
-}
-
-void CDVDPlayerVideo::UpdateMenuPicture()
-{
-  if (m_pVideoCodec)
-  {
-    DVDVideoPicture picture;
-    EnterCriticalSection(&m_critCodecSection);
-    if (m_pVideoCodec->GetPicture(&picture))
-    {
-      picture.iFlags |= DVP_FLAG_NOSKIP;
-      OutputPicture(&picture, 0);
-    }
-    LeaveCriticalSection(&m_critCodecSection);
-  }
 }
 
 std::string CDVDPlayerVideo::GetPlayerInfo()
