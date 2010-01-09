@@ -20,6 +20,7 @@
  */
 
 #include "GUIControlGroupList.h"
+#include "Key.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIControlProfiler.h"
 
@@ -417,4 +418,31 @@ float CGUIControlGroupList::GetAlignOffset() const
       return (Size() - m_totalSize)*0.5f;
   }
   return 0.0f;
+}
+
+bool CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  if (event.m_id == ACTION_MOUSE_WHEEL)
+  {
+    // find the current control and move to the next or previous
+    float offset = 0;
+    for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+    {
+      CGUIControl *control = *it;
+      if (!control->IsVisible()) continue;
+      float nextOffset = offset + Size(control) + m_itemGap;
+      if (event.m_wheel < 0 && nextOffset > m_offset) // past our current offset
+      {
+        ScrollTo(nextOffset);
+        return true;
+      }
+      else if (event.m_wheel > 0 && nextOffset >= m_offset) // at least at our current offset
+      {
+        ScrollTo(offset);
+        return true;
+      }
+      offset = nextOffset;
+    }
+  }
+  return false;
 }

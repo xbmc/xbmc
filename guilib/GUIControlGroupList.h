@@ -50,6 +50,7 @@ public:
 
   virtual bool GetCondition(int condition, int data) const;
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool IsFirstFocusableControl(const CGUIControl *control) const;
   bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
