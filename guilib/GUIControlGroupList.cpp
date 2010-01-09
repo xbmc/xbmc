@@ -317,7 +317,7 @@ bool CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent
   // transform our position into child coordinates
   CPoint childPoint(point);
   m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
-  if (CanFocus())
+  if (CGUIControl::CanFocus())
   {
     // run through our controls in reverse order (so that last rendered is checked first)
     float pos = 0;

@@ -364,7 +364,7 @@ bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &ev
   m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
   childPoint -= GetPosition();
 
-  if (CanFocus())
+  if (CGUIControl::CanFocus())
   {
     // run through our controls in reverse order (so that last rendered is checked first)
     for (crControls i = m_children.rbegin(); i != m_children.rend(); ++i)
