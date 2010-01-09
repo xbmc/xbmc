@@ -1430,19 +1430,14 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   if( mindts == DVD_NOPTS_VALUE || maxdts == DVD_NOPTS_VALUE )
     return;
 
-  /* warn if dts is moving backwords */
-  if(current.dts != DVD_NOPTS_VALUE && pPacket->dts < current.dts)
-    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - wrapback of stream:%d, prev:%f, curr:%f, diff:%f"
-                        , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
-
-  /* if video player is rendering a stillframe, we need to make sure */
-  /* audio has finished processing it's data otherwise it will be */
-  /* displayed too early */
-
   if( pPacket->dts < mindts - DVD_MSEC_TO_TIME(100) && current.inited)
   {
-    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resyncing due to stream wrapback (%d)"
-                        , current.type);
+    /* if video player is rendering a stillframe, we need to make sure */
+    /* audio has finished processing it's data otherwise it will be */
+    /* displayed too early */
+
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resync backword :%d, prev:%f, curr:%f, diff:%f"
+                            , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
     if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
       SyncronizePlayers(SYNCSOURCE_VIDEO);
     else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
@@ -1457,8 +1452,8 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   /* stream jump forward */
   if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000) && current.inited)
   {
-    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)"
-                        , current.type);
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resync forward :%d, prev:%f, curr:%f, diff:%f"
+                            , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
     /* normally don't need to sync players since video player will keep playing at normal fps */
     /* after a discontinuity */
     //SyncronizePlayers(dts, pts, MSGWAIT_ALL);
@@ -1466,6 +1461,13 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
     m_CurrentVideo.inited = false;
     m_CurrentSubtitle.inited = false;
     m_CurrentTeletext.inited = false;
+  }
+
+  if(current.dts != DVD_NOPTS_VALUE && pPacket->dts < current.dts && current.inited)
+  {
+    /* warn if dts is moving backwords */
+    CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - wrapback of stream:%d, prev:%f, curr:%f, diff:%f"
+                        , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
   }
 
 }
