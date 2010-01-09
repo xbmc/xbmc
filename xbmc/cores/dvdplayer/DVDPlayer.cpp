@@ -1220,8 +1220,8 @@ void CDVDPlayer::HandlePlaySpeed()
   if(m_caching == CACHESTATE_INIT)
   {
     // if all enabled streams have been inited we are done
-    if((m_CurrentVideo.id < 0 || m_CurrentVideo.inited && m_CurrentVideo.started)
-    && (m_CurrentAudio.id < 0 || m_CurrentAudio.inited && m_CurrentAudio.started))
+    if((m_CurrentVideo.id < 0 || (m_CurrentVideo.inited && m_CurrentVideo.started))
+    && (m_CurrentAudio.id < 0 || (m_CurrentAudio.inited && m_CurrentAudio.started)))
       SetCaching(CACHESTATE_PLAY);
   }
   if(m_caching == CACHESTATE_PLAY)
@@ -2077,8 +2077,8 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 #endif
 
-  if( bPlus && GetChapter() < GetChapterCount()
-  || !bPlus && GetChapter() > 1)
+  if((bPlus && GetChapter() < GetChapterCount())
+  || (!bPlus && GetChapter() > 1))
   {
     if(bPlus && GetChapter() < GetChapterCount())
       SeekChapter(GetChapter() + 1);
