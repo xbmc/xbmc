@@ -89,7 +89,7 @@ public:
 class CDVDPlayerAudio : public CThread
 {
 public:
-  CDVDPlayerAudio(CDVDClock* pClock);
+  CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent);
   virtual ~CDVDPlayerAudio();
 
   void RegisterAudioCallback(IAudioCallback* pCallback) { m_dvdAudio.RegisterAudioCallback(pCallback); }
@@ -116,6 +116,7 @@ public:
   CDVDStreamInfo m_streaminfo;
 
   CDVDMessageQueue m_messageQueue;
+  CDVDMessageQueue& m_messageParent;
   CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
@@ -172,6 +173,7 @@ protected:
   int     m_speed;
   double  m_droptime;
   bool    m_stalled;
+  bool    m_started;
   double  m_duration; // last packets duration
 
   CDVDPlayerResampler m_resampler;

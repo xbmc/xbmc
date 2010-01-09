@@ -263,7 +263,7 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_CurrentTeletext(STREAM_TELETEXT),
       m_messenger("player"),
       m_dvdPlayerVideo(&m_clock, &m_overlayContainer, m_messenger),
-      m_dvdPlayerAudio(&m_clock),
+      m_dvdPlayerAudio(&m_clock, m_messenger),
       m_dvdPlayerSubtitle(&m_overlayContainer),
       m_dvdPlayerTeletext()
 {
@@ -1220,8 +1220,8 @@ void CDVDPlayer::HandlePlaySpeed()
   if(m_caching == CACHESTATE_INIT)
   {
     // if all enabled streams have been inited we are done
-    if((m_CurrentVideo.id < 0 || m_CurrentVideo.inited)
-    && (m_CurrentAudio.id < 0 || m_CurrentAudio.inited))
+    if((m_CurrentVideo.id < 0 || m_CurrentVideo.inited && m_CurrentVideo.started)
+    && (m_CurrentAudio.id < 0 || m_CurrentAudio.inited && m_CurrentAudio.started))
       SetCaching(CACHESTATE_PLAY);
   }
   if(m_caching == CACHESTATE_PLAY)
@@ -1961,6 +1961,15 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
         OnAction(((CDVDMsgType<CAction>*)pMsg)->m_value);
+      else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
+      {
+        int player = ((CDVDMsgInt*)pMsg)->m_value;
+        if(player == DVDPLAYER_AUDIO)
+          m_CurrentAudio.started = true;
+        if(player == DVDPLAYER_VIDEO)
+          m_CurrentVideo.started = true;
+        CLog::Log(LOGDEBUG, "CDVDPlayer::HandleMessages - player started %d", player);
+      }
     }
     catch (...)
     {
@@ -2449,6 +2458,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source)
   m_CurrentAudio.source = source;
   m_CurrentAudio.hint = hint;
   m_CurrentAudio.stream = (void*)pStream;
+  m_CurrentAudio.started = false;
 
   /* audio normally won't consume full cpu, so let it have prio */
   m_dvdPlayerAudio.SetPriority(GetThreadPriority(*this)+1);
@@ -2504,6 +2514,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
   m_CurrentVideo.source = source;
   m_CurrentVideo.hint = hint;
   m_CurrentVideo.stream = (void*)pStream;
+  m_CurrentAudio.started = false;
 
   /* use same priority for video thread as demuxing thread, as */
   /* otherwise demuxer will starve if video consumes the full cpu */
@@ -2601,6 +2612,7 @@ bool CDVDPlayer::OpenSubtitleStream(int iStream, int source)
   m_CurrentSubtitle.source = source;
   m_CurrentSubtitle.hint   = hint;
   m_CurrentSubtitle.stream = (void*)pStream;
+  m_CurrentSubtitle.started = false;
 
   return true;
 }
@@ -2647,6 +2659,7 @@ bool CDVDPlayer::OpenTeletextStream(int iStream, int source)
   m_CurrentTeletext.source  = source;
   m_CurrentTeletext.hint    = hint;
   m_CurrentTeletext.stream  = (void*)pStream;
+  m_CurrentTeletext.started = false;
 
   return true;
 }

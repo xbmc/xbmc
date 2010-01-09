@@ -70,6 +70,7 @@ public:
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
     PLAYER_CHANNEL_SELECT,          // switches to given playback channel
+    PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
 
     // demuxer related messages
 

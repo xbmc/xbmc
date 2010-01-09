@@ -340,7 +340,7 @@ void CDVDPlayerVideo::Process()
   while (!m_bStop)
   {
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
-    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0) ? 1 : 0;
+    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0 && m_started) ? 1 : 0;
 
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
@@ -436,6 +436,7 @@ void CDVDPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
@@ -449,6 +450,7 @@ void CDVDPlayerVideo::Process()
       m_bAllowDrop = !m_bCalcFrameRate;
       m_iFrameRateErr = 0;
       m_stalled = true;
+      m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -470,7 +472,6 @@ void CDVDPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
-      m_started = true;
       if (m_stalled)
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
@@ -601,6 +602,12 @@ void CDVDPlayerVideo::Process()
               picture.iDuration *= picture.iRepeatPicture + 1;
 
             int iResult = OutputPicture(&picture, pts);
+
+            if(m_started == false)
+            {
+              m_started = true;
+              m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+            }
 
             // guess next frame pts. iDuration is always valid
             pts += picture.iDuration * m_speed / abs(m_speed);

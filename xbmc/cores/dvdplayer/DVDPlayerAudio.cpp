@@ -21,6 +21,7 @@
 
 #include "utils/SingleLock.h"
 #include "DVDPlayerAudio.h"
+#include "DVDPlayer.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -125,9 +126,10 @@ double CPTSInputQueue::Get(__int64 bytes, bool consume)
   return DVD_NOPTS_VALUE;
 }
 
-CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
+CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
 : CThread()
 , m_messageQueue("audio")
+, m_messageParent(parent)
 , m_dvdAudio((bool&)m_bStop)
 {
   m_pClock = pClock;
@@ -136,6 +138,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_droptime = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
+  m_started = false;
   m_duration = 0.0;
 
   m_freq = CurrentHostFrequency();
@@ -171,6 +174,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_droptime = 0;
   m_audioClock = 0;
   m_stalled = true;
+  m_started = false;
 
   m_synctype = SYNC_DISCON;
   m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
@@ -351,7 +355,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (m_messageQueue.ReceivedAbortRequest()) return DECODE_FLAG_ABORT;
 
     CDVDMsg* pMsg;
-    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
+    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) && m_started ? 1 : 0;
 
     int timeout;
     if(m_duration > 0)
@@ -418,6 +422,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
       m_decode.Release();
+      m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
@@ -427,6 +432,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_resampler.Flush();
       m_syncclock = true;
       m_stalled   = true;
+      m_started   = false;
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
@@ -565,6 +571,13 @@ void CDVDPlayerAudio::Process()
     // store the delay for this pts value so we can calculate the current playing
     if(m_speed != DVD_PLAYSPEED_PAUSE && packetadded)
       m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+
+    // signal to our parent that we have initialized
+    if(m_started == false)
+    {
+      m_started = true;
+      m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
+    }
 
     if( m_ptsOutput.Current() == DVD_NOPTS_VALUE )
       continue;
