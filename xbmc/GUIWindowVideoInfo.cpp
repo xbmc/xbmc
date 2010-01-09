@@ -197,32 +197,6 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       {
         OnGetFanart();
       }
-/*      else if (iControl == CONTROL_DISC)
-      {
-        int iItem = 0;
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl, 0, 0, NULL);
-        OnMessage(msg);
-        CStdString strItem = msg.GetLabel();
-        if (strItem != "HD" && strItem != "share")
-        {
-          long lMovieId;
-          sscanf(m_Movie.m_strSearchString.c_str(), "%i", &lMovieId);
-          if (lMovieId > 0)
-          {
-            CStdString label;
-            //m_database.GetDVDLabel(lMovieId, label);
-            int iPos = label.Find("DVD#");
-            if (iPos >= 0)
-            {
-              label.Delete(iPos, label.GetLength());
-            }
-            label = label.TrimRight(" ");
-            label += " ";
-            label += strItem;
-            //m_database.SetDVDLabel( lMovieId, label);
-          }
-        }
-      }*/
       else if (iControl == CONTROL_LIST)
       {
         int iAction = message.GetParam1();
@@ -508,8 +482,6 @@ void CGUIWindowVideoInfo::Refresh()
     }
 
     Update();
-    //OutputDebugString("update\n");
-    //OutputDebugString("updated\n");
   }
   catch (...)
   {}
