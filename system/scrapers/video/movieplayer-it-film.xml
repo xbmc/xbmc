@@ -1,27 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Movieplayer.it scraper by KoTiX -->
 <!-- A great Thanks Sipontino for the original version of this scraper and his help teaching me the RegExp -->
-<!-- to Cimi and Giuseppe Del Duca for their help on decripting and hosting the site search -->
 <!-- to the XBMC team for the Greatest Mediacenter app in the world and for their hard work. -->
 
-<?xml version="1.0" encoding="utf-8"?>
-<scraper name="movieplayer.it" date="2009-05-12" content="movies" framework="1.0" thumb="movieplayer-it.jpg" language="it">
+<scraper name="movieplayer.it" date="2010-04-01" content="movies" framework="1.0" thumb="movieplayer-it.jpg" language="it">
 	<include>common/tmdb.xml</include>
 
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-
-			<RegExp input="$$1" output="&lt;setting label=&quot;Cerca usando Google (veloce ma inaccurato)&quot; type=&quot;bool&quot; id=&quot;Google&quot; default=&quot;false&quot; enable=&quot;!eq(1,true)&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$2" output="&lt;setting label=&quot;Numero di pagine in cui cercare su movieplayer.it&quot; type=&quot;labelenum&quot; id=&quot;numpag&quot; values=&quot;$$8&quot; sort=&quot;yes&quot; default=&quot;1&quot; enable=&quot;!eq(-1,true)&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<RegExp input="$$1" output="1|2|3|4" dest="8+">
-					<expression/>
-				</RegExp>
-				<expression noclean="1"></expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
 
 			<RegExp input="$$1" output="&lt;setting label=&quot;Scarica le info di tutto il cast (lento)&quot; type=&quot;bool&quot; id=&quot;FullCast&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
@@ -53,36 +39,25 @@
 	</NfoUrl>
 
 	<CreateSearchUrl dest="3">
-		<RegExp conditional="!Google" input="$$1" output="http://www.cimitan.com/xbmc/mpit_url_grabber.php?t=film&p=$INFO[numpag]&q=\1" dest="3">
-			<expression noclean="1"></expression>
-		</RegExp>
-		<RegExp conditional="Google" input="$$1" output="http://www.google.com/cse?cx=010988534213966941752%3Agzbql2poc0a&amp;ie=UTF-8&amp;q=\1&amp;sa=Cerca&amp;hl=it" dest="3">
-			<expression noclean="1"></expression>
+		<RegExp input="$$1" output="http://www.google.com/cse?cx=010988534213966941752%3Agzbql2poc0a&amp;ie=UTF-8&amp;q=\1$$4&amp;sa=Cerca&amp;hl=it" dest="3">
+			<RegExp input="$$2" output="%20(\1)" dest="4">
+				<expression clear="yes">(.+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="8">
 		<!-- Get Results for TMDB Fanarts -->
-		<RegExp conditional="!Fan" input="$$7" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<!-- Using Google -->
-			<RegExp conditional="Google" input="$$1" output="&lt;entity&gt;&lt;title&gt;\3\4&lt;/title&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="7">
+		<RegExp conditional="!Fan" input="$$7" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results sorted=&quot;yes&quot;&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3\4&lt;/title&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="7">
 				<expression repeat="yes">&lt;a href=&quot;http://www\.movieplayer\.it/film/([0-9]+)/([^/]*)/[^&gt;]*&gt;([^\(]*)([^-]*)[^=]*&lt;/a&gt;</expression>
-			</RegExp>
-			<!-- Using Movieplayer search -->
-			<RegExp conditional="!Google" input="$$1" output="&lt;entity&gt;&lt;title&gt;\3)&lt;/title&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="7">
-				<expression repeat="yes">http://www\.movieplayer\.it/film/([0-9]+)/([^/]*)/[^\[]*\[title\] =&gt;([^\)]*)</expression>
 			</RegExp>
 			<expression clear="yes" noclean="1" trim="1"/>
 		</RegExp>
 		<!-- Get Results for Movieplayer Fanarts -->
-		<RegExp conditional="Fan" input="$$7" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<!-- Using Google -->
-			<RegExp conditional="Google" input="$$1" output="&lt;entity&gt;&lt;title&gt;\3\4&lt;/title&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/wallpaper/1/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/promozionali/1/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/foto-di-scena/1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="7">
+		<RegExp conditional="Fan" input="$$7" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results sorted=&quot;yes&quot;&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3\4&lt;/title&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/wallpaper/1/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/promozionali/1/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/foto-di-scena/1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="7">
 				<expression repeat="yes">&lt;a href=&quot;http://www\.movieplayer\.it/film/([0-9]+)/([^/]*)/[^&gt;]*&gt;([^\(]*)([^-]*)[^=]*&lt;/a&gt;</expression>
-			</RegExp>
-			<!-- Using Movieplayer search -->
-			<RegExp conditional="!Google" input="$$1" output="&lt;entity&gt;&lt;title&gt;\3)&lt;/title&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/wallpaper/1/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/promozionali/1/&lt;/url&gt;&lt;url&gt;http://www.movieplayer.it/film/\1/\2/gallery-e-trailer/foto-di-scena/1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="7">
-				<expression repeat="yes">http://www\.movieplayer\.it/film/([0-9]+)/([^/]*)/[^\[]*\[title\] =&gt;([^\)]*)</expression>
 			</RegExp>
 			<expression clear="yes" noclean="1" trim="1"/>
 		</RegExp>
