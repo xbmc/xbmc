@@ -276,7 +276,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
             g_windowManager.SendMessage(msg);
           }
         }
-        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_DOUBLE_CLICK)
+        else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_DOUBLE_CLICK)
         {
           OnClick(list, iItem);
         }
