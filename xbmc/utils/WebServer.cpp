@@ -166,6 +166,28 @@ bool CWebServer::Stop()
   return !m_running;
 }
 
+bool CWebServer::Download(const char *path, Json::Value &result)
+{
+  bool exists = false;
+  CFile *file = new CFile();
+  if (file->Open(path))
+  {
+    exists = true;
+    file->Close();
+  }
+
+  delete file;
+
+  if (exists)
+  {
+    string str = "vfs/";
+    str += path;
+    result["path"] = str;
+  }
+
+  return exists;
+}
+
 int CWebServer::GetCapabilities()
 {
   return Response | FileDownload;
@@ -176,7 +198,7 @@ int CWebServer::CHTTPClient::GetPermissionFlags()
   return OPERATION_PERMISSION_ALL;
 }
 
-int  CWebServer::CHTTPClient::GetAnnouncementFlags()
+int CWebServer::CHTTPClient::GetAnnouncementFlags()
 {
   // Does not support broadcast
   return 0;

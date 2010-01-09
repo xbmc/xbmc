@@ -113,7 +113,5 @@ JSON_STATUS CFileActions::Download(const CStdString &method, ITransportLayer *tr
   if (!parameterObject.isMember("file"))
     return InvalidParams;
 
-  CStdString str = "vfs/" + parameterObject["file"].asString();
-  result["url"] = str.c_str();
-  return OK;
+  return transport->Download(parameterObject["file"].asString().c_str(), result) ? OK : BadPermission;
 }

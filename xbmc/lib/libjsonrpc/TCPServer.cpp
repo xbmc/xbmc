@@ -115,6 +115,11 @@ void CTCPServer::Process()
   Deinitialize();
 }
 
+bool CTCPServer::Download(const char *path, Json::Value &result)
+{
+  return false;
+}
+
 int CTCPServer::GetCapabilities()
 {
   return Response | Announcing;

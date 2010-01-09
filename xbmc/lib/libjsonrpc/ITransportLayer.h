@@ -21,6 +21,7 @@
  */
 
 #include <string>
+#include "../libjsoncpp/json.h"
 #include "IClient.h"
 
 namespace JSONRPC
@@ -38,6 +39,7 @@ namespace JSONRPC
   {
   public:
     virtual ~ITransportLayer() { };
+    virtual bool Download(const char *path, Json::Value &result) = 0;
     virtual int GetCapabilities() = 0;
   };
 }
