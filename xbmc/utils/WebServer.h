@@ -37,7 +37,7 @@ public:
 
   bool Start(const char *ip, int port);
   bool Stop();
-  virtual bool CanAnnounce();
+  virtual int GetCapabilities();
 private:
   static int answer_to_connection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,

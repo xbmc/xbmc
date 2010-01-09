@@ -115,9 +115,9 @@ void CTCPServer::Process()
   Deinitialize();
 }
 
-bool CTCPServer::CanAnnounce()
+int CTCPServer::GetCapabilities()
 {
-  return true;
+  return Response | Announcing;
 }
 
 void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const char *data)

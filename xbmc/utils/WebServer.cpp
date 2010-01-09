@@ -166,9 +166,9 @@ bool CWebServer::Stop()
   return !m_running;
 }
 
-bool CWebServer::CanAnnounce()
+int CWebServer::GetCapabilities()
 {
-  return false;
+  return Response | FileDownload;
 }
 
 int CWebServer::CHTTPClient::GetPermissionFlags()

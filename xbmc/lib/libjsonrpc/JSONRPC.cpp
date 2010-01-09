@@ -32,60 +32,60 @@ using namespace std;
 
 const JSON_ACTION commands[] = {
 // JSON-RPC
-  { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   ReadData,        "Enumerates all actions and descriptions" },
-  { "JSONRPC.Version",                  CJSONRPC::Version,                      ReadData,        "Retrieve the jsonrpc protocol version" },
-  { "JSONRPC.Permission",               CJSONRPC::Permission,                   ReadData,        "Retrieve the clients permissions" },
-  { "JSONRPC.Ping",                     CJSONRPC::Ping,                         ReadData,        "Ping responder" },
+  { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   Response,     ReadData,        "Enumerates all actions and descriptions" },
+  { "JSONRPC.Version",                  CJSONRPC::Version,                      Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
+  { "JSONRPC.Permission",               CJSONRPC::Permission,                   Response,     ReadData,        "Retrieve the clients permissions" },
+  { "JSONRPC.Ping",                     CJSONRPC::Ping,                         Response,     ReadData,        "Ping responder" },
 
 // Player
 // Static methods
-  { "Player.GetActivePlayers",          CPlayerActions::GetActivePlayers,       ReadData,        "Returns all active players IDs"},
-  { "Player.GetAvailablePlayers",       CPlayerActions::GetAvailablePlayers,    ReadData,        "Returns all active players IDs"},
+  { "Player.GetActivePlayers",          CPlayerActions::GetActivePlayers,       Response,     ReadData,        "Returns all active players IDs"},
+  { "Player.GetAvailablePlayers",       CPlayerActions::GetAvailablePlayers,    Response,     ReadData,        "Returns all active players IDs"},
 // Object methods
-  { "Player.PlayPause",                 CPlayerActions::PlayPause,              ControlPlayback, "Pauses or unpause playback" },
-  { "Player.Stop",                      CPlayerActions::Stop,                   ControlPlayback, "Stops playback" },
-  { "Player.SkipPrevious",              CPlayerActions::SkipPrevious,           ControlPlayback, "Skips to previous item on the playlist" },
-  { "Player.SkipNext",                  CPlayerActions::SkipNext,               ControlPlayback, "Skips to next item on the playlist" },
+  { "Player.PlayPause",                 CPlayerActions::PlayPause,              Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "Player.Stop",                      CPlayerActions::Stop,                   Response,     ControlPlayback, "Stops playback" },
+  { "Player.SkipPrevious",              CPlayerActions::SkipPrevious,           Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "Player.SkipNext",                  CPlayerActions::SkipNext,               Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "Player.BigSkipBackward",           CPlayerActions::BigSkipBackward,        ControlPlayback, "" },
-  { "Player.BigSkipForward",            CPlayerActions::BigSkipForward,         ControlPlayback, "" },
-  { "Player.SmallSkipBackward",         CPlayerActions::SmallSkipBackward,      ControlPlayback, "" },
-  { "Player.SmallSkipForward",          CPlayerActions::SmallSkipForward,       ControlPlayback, "" },
+  { "Player.BigSkipBackward",           CPlayerActions::BigSkipBackward,        Response,     ControlPlayback, "" },
+  { "Player.BigSkipForward",            CPlayerActions::BigSkipForward,         Response,     ControlPlayback, "" },
+  { "Player.SmallSkipBackward",         CPlayerActions::SmallSkipBackward,      Response,     ControlPlayback, "" },
+  { "Player.SmallSkipForward",          CPlayerActions::SmallSkipForward,       Response,     ControlPlayback, "" },
 
-  { "Player.Rewind",                    CPlayerActions::Rewind,                 ControlPlayback, "Rewind current playback" },
-  { "Player.Forward",                   CPlayerActions::Forward,                ControlPlayback, "Forward current playback" },
+  { "Player.Rewind",                    CPlayerActions::Rewind,                 Response,     ControlPlayback, "Rewind current playback" },
+  { "Player.Forward",                   CPlayerActions::Forward,                Response,     ControlPlayback, "Forward current playback" },
 
-  { "Player.Record",                    CPlayerActions::Record,                 ControlPlayback, "" },
+  { "Player.Record",                    CPlayerActions::Record,                 Response,     ControlPlayback, "" },
 
 // File
 // Static methods
-  { "Files.GetShares",                  CFileActions::GetRootDirectory,         ReadData,        "Get the root directory of the media windows" },
-  { "Files.Download",                   CFileActions::Download,                 ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
+  { "Files.GetShares",                  CFileActions::GetRootDirectory,         Response,     ReadData,        "Get the root directory of the media windows" },
+  { "Files.Download",                   CFileActions::Download,                 FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
 // Object methods
-  { "Files.GetDirectory",               CFileActions::GetDirectory,             ReadData,        "Retrieve the specified directory" },
+  { "Files.GetDirectory",               CFileActions::GetDirectory,             Response,     ReadData,        "Retrieve the specified directory" },
 
 // Music library
 // Static/Object methods
-  { "MusicLibrary.GetArtists",          CMusicLibrary::GetArtists,              ReadData,        "Retrieve all artists" },
-  { "MusicLibrary.GetAlbums",           CMusicLibrary::GetAlbums,               ReadData,        "Retrieve all albums from specified artist or genre" },
-  { "MusicLibrary.GetSongs",            CMusicLibrary::GetSongs,                ReadData,        "Retrieve all songs from specified album, artist or genre" },
+  { "MusicLibrary.GetArtists",          CMusicLibrary::GetArtists,              Response,     ReadData,        "Retrieve all artists" },
+  { "MusicLibrary.GetAlbums",           CMusicLibrary::GetAlbums,               Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
+  { "MusicLibrary.GetSongs",            CMusicLibrary::GetSongs,                Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
 // Object methods
-  { "MusicLibrary.GetSongInfo",         CMusicLibrary::GetSongInfo,             ReadData,        "Retrieve the wanted info from the specified song" },
+  { "MusicLibrary.GetSongInfo",         CMusicLibrary::GetSongInfo,             Response,     ReadData,        "Retrieve the wanted info from the specified song" },
 
 // Video library
-  { "VideoLibrary.GetMovies",           CVideoLibrary::GetMovies,               ReadData,        "Retrieve all movies" },
+  { "VideoLibrary.GetMovies",           CVideoLibrary::GetMovies,               Response,     ReadData,        "Retrieve all movies" },
 
-  { "VideoLibrary.GetTVShows",          CVideoLibrary::GetTVShows,              ReadData,        "" },
-  { "VideoLibrary.GetSeasons",          CVideoLibrary::GetSeasons,              ReadData,        "" },
-  { "VideoLibrary.GetEpisodes",         CVideoLibrary::GetEpisodes,             ReadData,        "" },
+  { "VideoLibrary.GetTVShows",          CVideoLibrary::GetTVShows,              Response,     ReadData,        "" },
+  { "VideoLibrary.GetSeasons",          CVideoLibrary::GetSeasons,              Response,     ReadData,        "" },
+  { "VideoLibrary.GetEpisodes",         CVideoLibrary::GetEpisodes,             Response,     ReadData,        "" },
 
-  { "VideoLibrary.GetMusicVideoAlbums", CVideoLibrary::GetMusicVideoAlbums,     ReadData,        "" },
-  { "VideoLibrary.GetMusicVideos",      CVideoLibrary::GetMusicVideos,          ReadData,        "" },
+  { "VideoLibrary.GetMusicVideoAlbums", CVideoLibrary::GetMusicVideoAlbums,     Response,     ReadData,        "" },
+  { "VideoLibrary.GetMusicVideos",      CVideoLibrary::GetMusicVideos,          Response,     ReadData,        "" },
 // Object methods
-  { "VideoLibrary.GetMovieInfo",        CVideoLibrary::GetMovieInfo,            ReadData,        "" },
-  { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           ReadData,        "" },
-  { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          ReadData,        "" },
-  { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       ReadData,        "" }
+  { "VideoLibrary.GetMovieInfo",        CVideoLibrary::GetMovieInfo,            Response,     ReadData,        "" },
+  { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "" },
+  { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "" },
+  { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "" }
 
 /* Planned features
 "XBMC.PlayMedia" - Should take movieid, tvshowid and so on. also filepath
@@ -101,11 +101,15 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
 {
   bool getDescriptions = parameterObject.get("getdescriptions", true).asBool();
   bool getPermissions = parameterObject.get("getpermissions", true).asBool();
+  bool filterByTransport = parameterObject.get("filterbytransport", true).asBool();
 
   int length = sizeof(commands)/sizeof(JSON_ACTION);
   int clientflags = client->GetPermissionFlags();
   for (int i = 0; i < length; i++)
   {
+    if ((transport->GetCapabilities() & commands[i].transportneed) == 0 && filterByTransport)
+      continue;
+
     Value val;
 
     val["command"] = commands[i].command;

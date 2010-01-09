@@ -25,10 +25,19 @@
 
 namespace JSONRPC
 {
+  enum TransportLayerCapability
+  {
+    Response = 0x1,
+    Announcing = 0x2,
+    FileDownload = 0x4,
+  };
+
+  #define TRANSPORT_LAYER_CAPABILITY_ALL (Response | Announcing | FileDownload)
+
   class ITransportLayer
   {
   public:
     virtual ~ITransportLayer() { };
-    virtual bool CanAnnounce() = 0;
+    virtual int GetCapabilities() = 0;
   };
 }

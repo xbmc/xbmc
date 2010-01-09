@@ -60,6 +60,7 @@ namespace JSONRPC
   {
     const char* command;
     MethodCall method;
+    TransportLayerCapability transportneed;
     OperationPermission permission;
     const char* description;
   } JSON_ACTION;

@@ -17,7 +17,7 @@ namespace JSONRPC
     static void StartServer(int port, bool nonlocal);
     static void StopServer(bool bWait);
 
-    virtual bool CanAnnounce();
+    virtual int GetCapabilities();
     virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const char *data);
   protected:
     void Process();
