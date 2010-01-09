@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../lib/libPython/Python
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
