@@ -1,0 +1,45 @@
+body
+{
+  background-color:black;
+  color:grey;
+}
+
+A:link {
+  color: red;
+}
+
+h1
+{
+  color:white;
+}
+
+
+
+table {
+  border:0px;
+  width:500px;
+}
+
+table.Movies th {
+  text-align:left;
+  background-color:rgb(50,50,50);
+}
+
+table.Movies td.Cover {
+  text-align:center;
+  background:black;
+}
+
+table.Movies tr.Odd {
+  background:rgb(0,0,0);
+}
+
+table.Movies tr.Even {
+  background:rgb(30,30,30);
+}
+
+table.Info td.Title {
+  background-color:yellow;
+  text-align:right;
+  color:white;
+}

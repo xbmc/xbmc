@@ -495,7 +495,7 @@ install-livedatas:
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
-	@cp -r web/Project_Mayhem_III/* $(prefix)/share/xbmc/web
+	@cp -r web/POC\ JSONRPC/* $(prefix)/share/xbmc/web
 	@find $(prefix)/share/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:

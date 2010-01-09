@@ -1,0 +1,53 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="basic.css">
+<script type="text/javascript" src="json.js"> // FOR browsers which doesn't have it included
+</script>
+<script type="text/javascript">
+function PrintSeasons(tvshowid)
+{
+  document.close();
+  document.open();
+  document.write("<html><head><title>XBMC - Test</title><link type=\"text/css\" rel=\"stylesheet\" href=\"basic.css\"></head><body>");
+
+  var http_request = new XMLHttpRequest();
+  http_request.open( "POST", "jsonrpc", false );
+  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetSeasons\", \"params\": { \"tvshowid\": " + tvshowid + ", \"fields\": [\"title\"] }, \"id\": 1}");
+
+  var the_object = JSON.parse(http_request.responseText);
+  var result = the_object["result"];
+  var array = result["seasons"];
+  for (var property in array) {
+    var item = array[property];
+    document.write("<h1>" + item["title"] + "</h1>");
+    document.write("<img src=thumb/" + (item["thumbnail"] ? item["thumbnail"] : "images/nocover.jpg") + ".jpg width=100></img>");
+    document.write("<br>");
+  }
+
+  document.write("</body></html>");
+}
+function PrintTVShows()
+{
+  document.write("<html><head><title>XBMC - TV Shows</title><link type=\"text/css\" rel=\"stylesheet\" href=\"basic.css\"></head><body><h1>TV Shows</h1>");
+
+  var http_request = new XMLHttpRequest();
+  http_request.open( "POST", "jsonrpc", false );
+  var send = { "jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "id": 1 }
+  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetTVShows\", \"params\": { \"fields\": [\"title\"] }, \"id\": 1}");
+
+  var the_object = JSON.parse(http_request.responseText);
+  var result = the_object["result"];
+  var array = result["tvshows"];
+  for (var property in array) {
+    var item = array[property];
+    document.write("<img src=thumb/" + (item["thumbnail"] ? item["thumbnail"] : "images/nocover.jpg") + ".jpg onclick=\"PrintSeasons(" + item["tvshowid"] + ")\"></img>");
+    document.write("<br>");
+  }
+}
+</script>
+</head>
+<body onload="PrintTVShows()">
+
+
+</body>
+</html>
