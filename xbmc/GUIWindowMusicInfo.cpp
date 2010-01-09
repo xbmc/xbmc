@@ -44,14 +44,6 @@
 
 using namespace XFILE;
 
-#define CONTROL_ALBUM           20
-#define CONTROL_ARTIST          21
-#define CONTROL_DATE            22
-#define CONTROL_RATING          23
-#define CONTROL_GENRE           24
-#define CONTROL_MOODS           25
-#define CONTROL_STYLES          26
-
 #define CONTROL_IMAGE            3
 #define CONTROL_TEXTAREA         4
 
@@ -239,10 +231,6 @@ void CGUIWindowMusicInfo::Update()
   if (m_bArtistInfo)
   {
     CONTROL_ENABLE(CONTROL_BTN_GET_FANART);
-    SetLabel(CONTROL_ARTIST, m_artist.strArtist );
-    SetLabel(CONTROL_GENRE, m_artist.strGenre);
-    SetLabel(CONTROL_MOODS, m_artist.strMoods);
-    SetLabel(CONTROL_STYLES, m_artist.strStyles );
     if (m_bViewReview)
     {
       SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
@@ -267,19 +255,6 @@ void CGUIWindowMusicInfo::Update()
   else
   {
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
-    SetLabel(CONTROL_ALBUM, m_album.strAlbum );
-    SetLabel(CONTROL_ARTIST, m_album.strArtist );
-    CStdString date; date.Format("%d", m_album.iYear);
-    SetLabel(CONTROL_DATE, date );
-
-    CStdString strRating;
-    if (m_album.iRating > 0)
-      strRating.Format("%i/9", m_album.iRating);
-    SetLabel(CONTROL_RATING, strRating );
-
-    SetLabel(CONTROL_GENRE, m_album.strGenre);
-    SetLabel(CONTROL_MOODS, m_album.strMoods);
-    SetLabel(CONTROL_STYLES, m_album.strStyles );
 
     if (m_bViewReview)
     {
