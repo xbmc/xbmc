@@ -781,11 +781,9 @@ void CDVDPlayerAudio::WaitForBuffers()
 
   // make sure almost all has been rendered
   // leave 500ms to avound buffer underruns
-
-  while( m_dvdAudio.GetDelay() > DVD_TIME_BASE/2 )
-  {
-    Sleep(5);
-  }
+  double delay = m_dvdAudio.GetCacheTime();
+  if(delay > 0.5)
+    Sleep((int)(1000 * (delay - 0.5)));
 }
 
 string CDVDPlayerAudio::GetPlayerInfo()
