@@ -274,7 +274,7 @@
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib strmbase.lib mfuuid.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
+				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;;..\..\xbmc\cores\DSPlayer\Libs"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
 				DelayLoadDLLs="dwmapi.dll"
 				GenerateDebugInformation="true"
