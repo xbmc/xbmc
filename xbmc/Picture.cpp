@@ -114,14 +114,6 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
 
 bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName, int width, int height)
 {
-#ifdef RESAMPLE_CACHED_IMAGES
-  if (width == 0)
-    width = 1280;
-  
-  if (height == 0)
-    height = 720;
-#endif
-  
   if (width > 0 && height > 0)
   {
     CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceFileName.c_str(), destFileName.c_str(), width, height);
