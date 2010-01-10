@@ -40,7 +40,8 @@ namespace JSONRPC
     InternalError = -32603,
     ParseError = -32700,
   //-32099..-32000 Reserved for implementation-defined server-errors.
-    BadPermission = -32099 
+    BadPermission = -32099,
+    FailedToExecute = -32100
   };
 
   /* The method call needs to be perfectly threadsafe
@@ -53,9 +54,10 @@ namespace JSONRPC
     ReadData = 0x1,
     ControlPlayback = 0x2,
     ControlAnnounce = 0x4,
+    ControlPower = 0x8,
   };
 
-  #define OPERATION_PERMISSION_ALL (ReadData | ControlPlayback)
+  #define OPERATION_PERMISSION_ALL (ReadData | ControlPlayback | ControlAnnounce | ControlPower)
 
   typedef struct
   {

@@ -24,6 +24,8 @@
 #include "FileActions.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
+#include "SystemOperations.h"
+#include "XBMCOperations.h"
 #include "AnnouncementManager.h"
 #include <string.h>
 
@@ -89,14 +91,19 @@ const JSON_ACTION commands[] = {
   { "VideoLibrary.GetMovieInfo",        CVideoLibrary::GetMovieInfo,            Response,     ReadData,        "" },
   { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "" },
   { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "" },
-  { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "" }
+  { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "" },
 
+// System operations
+  { "System.Shutdown",                  CSystemOperations::Shutdown,            Response,     ControlPower,    "" },
+  { "System.Suspend",                   CSystemOperations::Suspend,             Response,     ControlPower,    "" },
+  { "System.Hibernate",                 CSystemOperations::Hibernate,           Response,     ControlPower,    "" },
+  { "System.Reboot",                    CSystemOperations::Reboot,              Response,     ControlPower,    "" },
+
+// XBMC Operations
+  { "XBMC.Quit",                        CXBMCOperations::Quit,                  Response,     ControlPower,    "" }
 /* Planned features
 "XBMC.PlayMedia" - Should take movieid, tvshowid and so on. also filepath
-System.Suspend and such
 */
-
-
 };
 
 ActionMap CJSONRPC::m_actionMap;
@@ -230,7 +237,11 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
       break;
     case BadPermission:
       outputroot["error"]["code"] = BadPermission;
-      outputroot["error"]["message"] = "Server error.";
+      outputroot["error"]["message"] = "Bad client permission.";
+      break;
+    case FailedToExecute:
+      outputroot["error"]["code"] = FailedToExecute;
+      outputroot["error"]["message"] = "Failed to execute method.";
       break;
     default:
       outputroot["error"]["code"] = InternalError;
