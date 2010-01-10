@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 01/05/2010-->
+<!--Date of translation: 01/08/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -125,7 +125,7 @@
   <string id="170">비디오에 맞게 화면 새로고침 비율 조정</string>
   <string id="172">개봉일</string>
   <string id="175">분위기</string>
-  <string id="176">형식</string>
+  <string id="176">스타일</string>
   <string id="179">노래</string>
   <string id="180">재생시간</string>
   <string id="181">앨범 선택</string>
@@ -578,7 +578,7 @@
   <string id="733">- 비밀번호</string>
   <string id="734">암호 없음</string>
   <string id="735">- 문자 집합</string>
-  <string id="736">- 형식</string>
+  <string id="736">- 스타일</string>
   <string id="737">- 색깔</string>
   <string id="738">보통</string>
   <string id="739">굵게</string>
@@ -1563,7 +1563,7 @@
   <string id="20182">사이띄개</string>
   <string id="20183">스킨 새로고침</string>
   <string id="20184">EXIF 정보를 이용해 사진 회전</string>
-  <string id="20185">TV 쇼에서 포스터 보기 형식 사용</string>
+  <string id="20185">TV 쇼에서 포스터 보기 스타일 사용</string>
   <string id="20186">기다려 주세요</string>
   <string id="20187">EEPROM 백업</string>
   <string id="20188">BIOS 백업</string>
@@ -1723,8 +1723,6 @@
   <string id="20443">이 경로의 모든 항목 정보를</string>
   <string id="20444">새로고치겠습니까?</string>
   <string id="20445">팬아트</string>
-  <string id="20446">NFO-파일 찾음.</string>
-  <string id="20447">인터넷에서 새로고치겠습니까?</string>
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-모드 입니다!</string>
