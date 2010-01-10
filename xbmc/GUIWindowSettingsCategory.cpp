@@ -1370,15 +1370,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }*/
   else if (strSetting.Equals("musicplayer.managevisual"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_VIZ, true))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_VIZ))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_VIZ);
       CSetting *pSetting = g_guiSettings.GetSetting("musicplayer.visualisation");
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_VIZ);
     }
   }
   else if (strSetting.Equals("musiclibrary.cleanup"))
@@ -1394,16 +1389,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("musiclibrary.managescraper"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_ALBUMS))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCRAPER, CONTENT_ALBUMS))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
       CSetting *pSetting = g_guiSettings.GetSetting("musiclibrary.defaultscraper");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_ALBUMS);
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
     }
   }
   else if (strSetting.Equals("pvr.defaultscraper"))
@@ -1413,16 +1403,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("pvr.managescraper"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_PVR))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCRAPER, CONTENT_PVR))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
       CSetting *pSetting = g_guiSettings.GetSetting("pvr.defaultscraper");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_PVR);
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
     }
   }
   else if (strSetting.Equals("scrapers.moviedefault"))
@@ -1432,16 +1417,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("scrapers.managemoviescraper"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_MOVIES))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCRAPER, CONTENT_MOVIES))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
       CSetting *pSetting = g_guiSettings.GetSetting("scrapers.moviedefault");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MOVIES);
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
     }
   }
   else if (strSetting.Equals("scrapers.tvshowdefault"))
@@ -1451,16 +1431,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("scrapers.managetvshowscraper"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_TVSHOWS))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCRAPER, CONTENT_TVSHOWS))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
       CSetting *pSetting = g_guiSettings.GetSetting("scrapers.tvshowdefault");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_TVSHOWS);
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
     }
   }
   else if (strSetting.Equals("scrapers.musicvideodefault"))
@@ -1470,16 +1445,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("scrapers.managemusicvideoscraper"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_MUSICVIDEOS))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCRAPER, CONTENT_MUSICVIDEOS))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
       CSetting *pSetting = g_guiSettings.GetSetting("scrapers.musicvideodefault");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSICVIDEOS);
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
     }
   }
   else if (strSetting.Equals("programfiles.defaultscraper"))
@@ -1489,16 +1459,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("programfiles.managescraper"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_PROGRAMS))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCRAPER, CONTENT_PROGRAMS))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
       CSetting *pSetting = g_guiSettings.GetSetting("programfiles.defaultscraper");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_PROGRAMS);
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_VIZ);
     }
   }
   else if (strSetting.Equals("videolibrary.cleanup"))
@@ -1587,16 +1552,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("weather.manageplugins"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_WEATHER))
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_PLUGIN, CONTENT_WEATHER))
     {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
       CSetting *pSetting = g_guiSettings.GetSetting("weather.plugin");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInWeatherPlugins(pControl, pControl->GetCurrentLabel());      
-    }
-    else
-    {
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
     }
   }
   else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
@@ -1983,15 +1943,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("screensaver.manage"))
   {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCREENSAVER, true))
-    {
-      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCREENSAVER);
+    if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCREENSAVER))
       FillInScreenSavers(g_guiSettings.GetSetting("screensaver.mode"));
-    }
-    else
-    { // reload the existing list
-      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCREENSAVER);
-    }
   }
   else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath"))
   {
@@ -2723,8 +2676,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   vector<CStdString> vecVis;
   VECADDONS addons;
 
-  CAddonMgr::Get()->LoadAddonsXML(ADDON_VIZ);
-
   CAddonMgr::Get()->GetAddons(ADDON_VIZ, addons);
   if (!addons.empty())
   {
@@ -2855,8 +2806,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
   VECADDONS addons;
-
-  CAddonMgr::Get()->LoadAddonsXML(ADDON_SCREENSAVER);
 
   CAddonMgr::Get()->GetAddons(ADDON_SCREENSAVER, addons);
   if (!addons.empty())
@@ -3191,9 +3140,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   VECADDONS addons;
   pControl->Clear();
 
-  //TODO rewrite this whole function
-  CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
-
   if (content == CONTENT_ALBUMS || content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
     CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_ALBUMS);
   else if (content == CONTENT_MOVIES)
@@ -3374,7 +3320,6 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
   pControl->AddLabel(g_localizeStrings.Get(13611), j++);
 
   //find weather plugins....
-  CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
   CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
   if (!addons.empty())
   {

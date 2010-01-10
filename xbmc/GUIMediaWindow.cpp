@@ -42,6 +42,7 @@
 
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogAddonSettings.h"
+#include "GUIDialogYesNo.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
@@ -1253,10 +1254,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
 
-  if (item->IsPlugin() && item->IsFileFolder())
-  {
-  }
-
   if (item->GetPropertyBOOL("pluginreplacecontextitems"))
     return;
 
@@ -1286,17 +1283,6 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       ADDON::AddonPtr addon;
       if (CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, plugin.GetHostName(), addon))
         CGUIDialogAddonSettings::ShowAndGetInput(addon);
-      return true;
-    }
-  case CONTEXT_BUTTON_DELETE_PLUGIN:
-    {
-      CStdString path;
-      CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
-      path.Replace("plugin://","special://home/plugins/");
-      CFileItem item2(path,true);
-      if (CGUIWindowFileManager::DeleteItem(&item2))
-        Update(m_vecItems->m_strPath);
-
       return true;
     }
   case CONTEXT_BUTTON_USER1:
@@ -1357,6 +1343,4 @@ bool CGUIMediaWindow::WaitForNetwork() const
   progress->Close();
   return true;
 }
-
-
 

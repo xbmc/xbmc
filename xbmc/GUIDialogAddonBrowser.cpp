@@ -162,6 +162,7 @@ void CGUIDialogAddonBrowser::Update()
   CAddonMgr::Get()->GetAddons(m_type, addons, m_content, !m_getAddons);
 
   for (unsigned i=0; i < addons.size(); i++)
+
   {
     AddonPtr addon = addons[i];
     CFileItemPtr pItem(new CFileItem(addon->Path(), false));
@@ -256,7 +257,7 @@ void CGUIDialogAddonBrowser::SetHeading(const CStdString &heading)
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, heading);
 }
 
-bool CGUIDialogAddonBrowser::ShowAndGetAddons(const ADDON::TYPE &type, const bool viewActive, const CONTENT_TYPE &content)
+bool CGUIDialogAddonBrowser::ManageAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content, const bool viewActive/*=true*/)
 {
   // Create a new addonbrowser window
   CGUIDialogAddonBrowser *browser = new CGUIDialogAddonBrowser();
@@ -302,7 +303,7 @@ void CGUIDialogAddonBrowser::SetContent(const CONTENT_TYPE &content)
 void CGUIDialogAddonBrowser::OnGetAddons(const ADDON::TYPE &type)
 {
   // present dialog with available addons
-  if (ShowAndGetAddons(type, false, m_content))
+  if (ManageAddons(type, m_content, false))
   {
     // need to update the list of installed addons
     Update();
@@ -363,6 +364,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
     if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon_parent))
     {
       AddonPtr addon_child;
+      //TODO
       //if (CAddon::CreateChild(addon_parent, addon_child))
       //{
       //  // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed

@@ -3,7 +3,8 @@ INCLUDES+=-I../lib/libcdio/libcdio/include
 
 CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
-SRCS=ASAPFileDirectory.cpp \
+SRCS=AddonsDirectory.cpp \
+     ASAPFileDirectory.cpp \
      CacheMemBuffer.cpp \
      CacheStrategy.cpp \
      CDDADirectory.cpp \

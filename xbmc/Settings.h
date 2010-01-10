@@ -36,7 +36,6 @@
 #endif // MID
 
 #include "settings/VideoSettings.h"
-#include "utils/IAddon.h"
 #include "Profile.h"
 #include "ViewState.h"
 #include "Resolution.h"
@@ -253,11 +252,9 @@ public:
   CStdString GetGameSaveThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
-  CStdString GetAddonsFile() const;
   CStdString GetSkinFolder() const;
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
-  CStdString GetAddonsFolder() const;
   CStdString GetVideoFanartFolder() const;
   CStdString GetMusicFanartFolder() const;
 
@@ -271,8 +268,6 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
-  bool LoadAddonsXML(const ADDON::TYPE& type, ADDON::VECADDONPROPS& addons);
-  bool SaveAddonsXML(const ADDON::TYPE& type, const ADDON::VECADDONPROPS &addons);
   bool SaveSources();
 
   void LoadRSSFeeds();
@@ -285,9 +280,6 @@ public:
 protected:
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  bool SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const ADDON::VECADDONPROPS &addons);
-  void GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, ADDON::VECADDONPROPS &addons);
-  bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, ADDON::VECADDONPROPS &addons);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
   // functions for writing xml files

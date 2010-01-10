@@ -41,7 +41,7 @@ public:
   bool IsConfirmed() { return m_confirmed; };
   void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetAddons(const ADDON::TYPE &type, const bool activeOnly, const CONTENT_TYPE &content = CONTENT_NONE);
+  static bool ManageAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, const bool viewActive = true);
 
   void SetType(const ADDON::TYPE &type);
   void SetContent(const CONTENT_TYPE &content);

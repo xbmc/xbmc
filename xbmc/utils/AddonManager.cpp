@@ -320,17 +320,19 @@ void CAddonMgr::UnregisterAddonCallback(ADDON::TYPE type)
   m_managers.erase(type);
 }
 
-/*****************************************************************************/
 bool CAddonMgr::HasAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
 {
+  if (content == CONTENT_NONE)
+    return (m_addons.find(type) != m_addons.end());
+
   VECADDONS addons;
   return GetAddons(type, addons, content, true);
 }
 
-bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabled/*= true*/, bool refresh/*= false*/)
+bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabled/*= true*/)
 {
   // recheck addon folders if necessary
-  FindAddons(type, refresh);
+  LoadAddonsXML(type);
 
   addons.clear();
   if (m_addons.find(type) != m_addons.end())
@@ -352,11 +354,11 @@ bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONT
   return !addons.empty(); 
 }
 
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONPROPS &props, const CONTENT_TYPE &content, bool enabled, bool refresh)
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONPROPS &props, const CONTENT_TYPE &content, bool enabled)
 {
   props.clear();
   VECADDONS addons;
-  bool found = GetAddons(type, addons, content, enabled, refresh);
+  bool found = GetAddons(type, addons, content, enabled);
   if (found)
   {  // copy each addon's properties    
     IVECADDONS itr = addons.begin();
@@ -370,12 +372,8 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONPROPS &props, const CONTENT_
   return found; 
 }
 
-//TODO next two methods duplicate behaviour
 bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPtr &addon)
 {
-  // recheck addon folders if necessary
-  FindAddons(type);
-
   if (m_addons.find(type) == m_addons.end())
     return false;
 
@@ -399,34 +397,7 @@ bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPt
   return false;
 }
 
-//TODO remove support
-bool CAddonMgr::GetAddonFromPath(const CStdString &path, AddonPtr &addon)
-{
-  // first remove any filenames from path
-  CStdString dir;
-  CUtil::GetDirectory(path, dir);
-  CUtil::RemoveSlashAtEnd(dir);
-  /* iterate through alladdons vec and return matched Addon */
-  MAPADDONS::iterator typeItr = m_addons.begin();
-  while (typeItr !=  m_addons.end())
-  {
-    VECADDONS addons = m_addons[typeItr->first];
-    IVECADDONS adnItr = addons.begin();
-    while (adnItr != addons.end())
-    {
-      if ((*adnItr).get()->Path() == dir)
-      {
-        addon = (*adnItr);
-        return true;
-      }
-      adnItr++;
-    }
-    typeItr++;
-  }
-
-  return false;
-}
-
+//TODO handle all 'default' cases here, not just scrapers?
 bool CAddonMgr::GetDefaultScraper(CScraperPtr &scraper, const CONTENT_TYPE & content)
 { 
   AddonPtr addon;
@@ -478,6 +449,14 @@ CStdString CAddonMgr::GetString(const CStdString &uuid, const int number)
   return "";
 }
 
+bool CAddonMgr::EnableAddon(const CStdString &uuid)
+{
+  AddonPtr addon = m_uuidMap[uuid];
+  if (!addon)
+    return false;
+  
+  return EnableAddon(addon);
+}
 bool CAddonMgr::EnableAddon(AddonPtr &addon)
 {
   const ADDON::TYPE type = addon->Type();
@@ -499,6 +478,14 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
   return false;
 }
 
+bool CAddonMgr::DisableAddon(const CStdString &uuid)
+{
+  AddonPtr addon = m_uuidMap[uuid];
+  if (!addon)
+    return false;
+  
+  return DisableAddon(addon);
+}
 bool CAddonMgr::DisableAddon(AddonPtr &addon)
 {
   const ADDON::TYPE type = addon->Type();
@@ -518,8 +505,7 @@ bool CAddonMgr::DisableAddon(AddonPtr &addon)
       }
 
       CLog::Log(LOGINFO,"ADDON: Disabled Add-on: %s", addon->Name().c_str());
-      //TODO BUG, if addon disabled from outwith addonbrowser, addons.xml not updated
-      // add locks to LoadAddonsXML
+      SaveAddonsXML(type);
       return true;
     }
   }
@@ -527,21 +513,14 @@ bool CAddonMgr::DisableAddon(AddonPtr &addon)
   return false;
 }
 
-bool CAddonMgr::SaveAddonsXML(const ADDON::TYPE &type)
+bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type, const bool refreshDirs/*=false*/)
 {
   VECADDONPROPS props;
-  GetAddons(type, props);
-  return g_settings.SaveAddonsXML(type, props);
-}
-
-bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type)
-{
-  VECADDONPROPS props;
-  if (!g_settings.LoadAddonsXML(type, props))
+  if (!LoadAddonsXML(type, props))
     return false;
 
-  // recheck addon folders if necessary
-  FindAddons(type);
+  // refresh addon dirs if neccesary/forced
+  FindAddons(type, refreshDirs);
 
   // now enable accordingly
   VECADDONPROPS::const_iterator itr = props.begin();
@@ -570,9 +549,9 @@ bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type)
   return true;
 }
 
-void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
+void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool force)
 {
-  if (!refresh)
+  if (!force)
   {
     // recheck each addontype's directories no more than once every ADDON_DIRSCAN_FREQ seconds
     CDateTimeSpan span;
@@ -621,7 +600,7 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
       CDirectory::GetDirectory("special://xbmc/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
       break;
     }
-  case ADDON_SCRIPTS:
+  case ADDON_SCRIPT:
     {
       if (!isHome)
         CDirectory::GetDirectory("special://home/addons/scripts", items, ADDON_PYTHON_EXT, false);
@@ -697,7 +676,7 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
   }
 
   m_lastScan[type] = CDateTime::GetCurrentDateTime();
-  CLog::Log(LOGINFO, "ADDON: Found %u addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
+  CLog::Log(LOGINFO, "ADDON: Found %zu addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
 }
 
 bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &path, AddonPtr &addon)
@@ -1049,4 +1028,197 @@ bool CAddonMgr::RequestRemoval(const IAddon* addon)
   return false;
 }
 
+CStdString CAddonMgr::GetAddonsXMLFile() const
+{
+  CStdString folder;
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasAddons())
+    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),"addons.xml",folder);
+  else
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"addons.xml",folder);
+
+  return folder;
+}
+
+bool CAddonMgr::SaveAddonsXML(const ADDON::TYPE &type)
+{
+  VECADDONPROPS props;
+  GetAddons(type, props);
+
+  // TODO: Should we be specifying utf8 here??
+  TiXmlDocument doc;
+
+  if (!doc.LoadFile(GetAddonsXMLFile()))
+    doc.ClearError();
+
+  // either point to existing addons node, or create one
+  TiXmlNode *pRoot = NULL;
+  pRoot = doc.FirstChildElement("addons");
+  if (!pRoot)
+  {
+    TiXmlElement xmlRootElement("addons");
+    pRoot = doc.InsertEndChild(xmlRootElement);
+    if (!pRoot)
+      return false;
+  }
+
+  // ok, now run through and save the modified addons section
+  SetAddons(pRoot, type, props);
+
+  return doc.SaveFile(GetAddonsXMLFile());
+}
+
+bool CAddonMgr::SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const VECADDONPROPS &addons)
+{
+  CStdString strType;
+  strType = ADDON::TranslateType(type);
+
+  if (strType.IsEmpty())
+    return false;
+
+  TiXmlElement sectionElement(strType);
+  TiXmlNode *sectionNode = root->FirstChild(strType);
+
+  if (sectionNode)
+  { // must delete the original section before regenerating
+    root->RemoveChild(sectionNode);
+  }
+
+  if (!addons.empty())
+  { // only recreate the sectionNode if there's addons of this type enabled
+    sectionNode = root->InsertEndChild(sectionElement);
+
+    VECADDONPROPS::const_iterator itr = addons.begin();
+    while (itr != addons.end())
+    {
+      TiXmlElement element("addon");
+
+      XMLUtils::SetString(&element, "name", itr->name);
+      XMLUtils::SetString(&element, "uuid", itr->uuid);
+      if (!itr->parent.IsEmpty())
+        XMLUtils::SetString(&element, "parentuuid", itr->parent);
+
+      if (!itr->icon.IsEmpty())
+        XMLUtils::SetPath(&element, "thumbnail", itr->icon);
+
+      sectionNode->InsertEndChild(element);
+      ++itr;
+    }
+  }
+
+  return true;
+}
+
+bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type, VECADDONPROPS &addons)
+{
+  CStdString strXMLFile;
+  TiXmlDocument xmlDoc;
+  TiXmlElement *pRootElement = NULL;
+  strXMLFile = GetAddonsXMLFile();
+  CLog::Log(LOGNOTICE, "ADDONS: Attempting to parse %s", strXMLFile.c_str());
+  if ( xmlDoc.LoadFile( strXMLFile ) )
+  {
+    pRootElement = xmlDoc.RootElement();
+    CStdString strValue;
+    if (pRootElement)
+      strValue = pRootElement->Value();
+    if ( strValue != "addons")
+    {
+      CLog::Log(LOGERROR, "ADDONS: %s does not contain <addons> element", strXMLFile.c_str());
+      return false;
+    }
+  }
+  else if (CFile::Exists(strXMLFile))
+  {
+    CLog::Log(LOGERROR, "ADDONS: Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
+  }
+  else 
+  {
+    CLog::Log(LOGINFO, "ADDONS: No addons.xml found");
+    return true; // no addons enabled for this profile yet
+  }
+
+  if (pRootElement)
+  { // parse addons...
+    GetAddons(pRootElement, type, addons);
+    return true;
+  }
+
+  return false;
+}
+
+void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, VECADDONPROPS &addons)
+{
+  CStdString strTagName;
+  strTagName = ADDON::TranslateType(type);
+
+  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
+  if (pChild)
+  {
+    pChild = pChild->FirstChild();
+    while (pChild > 0)
+    {
+      CStdString strValue = pChild->Value();
+      if (strValue == "addon")
+      {
+        GetAddon(type, pChild, addons);
+      }
+      pChild = pChild->NextSibling();
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "ADDONS: <%s> tag is missing or addons.xml is malformed", strTagName.c_str());
+  }
+}
+
+bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
+{
+  // uuid
+  const TiXmlNode *pNodePath = node->FirstChild("uuid");
+  CStdString uuid;
+  if (pNodePath && pNodePath->FirstChild())
+  {
+    uuid = pNodePath->FirstChild()->Value();
+  }
+  else
+    return false;
+
+  AddonProps props(uuid, type);
+
+  // name
+  const TiXmlNode *pNodeName = node->FirstChild("name");
+  CStdString strName;
+  if (pNodeName && pNodeName->FirstChild())
+  {
+    props.name = pNodeName->FirstChild()->Value();
+  }
+  else
+    return false;
+
+  // parent uuid if present
+  const TiXmlNode *pNodeChildGUID = node->FirstChild("parentuuid");
+  if (pNodeChildGUID && pNodeChildGUID->FirstChild())
+  {
+    props.parent = pNodeChildGUID->FirstChild()->Value();
+  }
+
+  // get custom thumbnail
+  const TiXmlNode *pThumbnailNode = node->FirstChild("thumbnail");
+  if (pThumbnailNode && pThumbnailNode->FirstChild())
+  {
+    props.icon = pThumbnailNode->FirstChild()->Value();
+  }
+
+  // finished
+  if (/*props.Valid()*/true)
+  {
+    addons.insert(addons.end(), props);
+    return true;
+  }
+
+  return false;
+}
+
 } /* namespace ADDON */
+

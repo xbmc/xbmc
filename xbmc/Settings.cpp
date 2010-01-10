@@ -51,7 +51,6 @@
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
-#include "utils/Addon.h"
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
@@ -62,7 +61,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace ADDON;
 using namespace DIRECTORY;
 
 class CSettings g_settings;
@@ -305,120 +303,6 @@ CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
   else if (type == "pictures")
     defaultShare = m_defaultPictureSource;
   return defaultShare;
-}
-
-bool CSettings::LoadAddonsXML(const ADDON::TYPE &type, VECADDONPROPS &addons)
-{
-  CStdString strXMLFile;
-  TiXmlDocument xmlDoc;
-  TiXmlElement *pRootElement = NULL;
-  strXMLFile = GetAddonsFile();
-  CLog::Log(LOGNOTICE, "ADDONS: Attempting to parse %s", strXMLFile.c_str());
-  if ( xmlDoc.LoadFile( strXMLFile ) )
-  {
-    pRootElement = xmlDoc.RootElement();
-    CStdString strValue;
-    if (pRootElement)
-      strValue = pRootElement->Value();
-    if ( strValue != "addons")
-    {
-      CLog::Log(LOGERROR, "ADDONS: %s does not contain <addons> element", strXMLFile.c_str());
-      return false;
-    }
-  }
-  else if (CFile::Exists(strXMLFile))
-  {
-    CLog::Log(LOGERROR, "ADDONS: Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false;
-  }
-  else 
-  {
-    CLog::Log(LOGINFO, "ADDONS: No addons.xml found");
-    return true; // no addons enabled for this profile yet
-  }
-
-  if (pRootElement)
-  { // parse addons...
-    GetAddons(pRootElement, type, addons);
-    return true;
-  }
-
-  return false;
-}
-
-void CSettings::GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, VECADDONPROPS &addons)
-{
-  CStdString strTagName;
-  strTagName = ADDON::TranslateType(type);
-
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
-  {
-    pChild = pChild->FirstChild();
-    while (pChild > 0)
-    {
-      CStdString strValue = pChild->Value();
-      if (strValue == "addon")
-      {
-        GetAddon(type, pChild, addons);
-      }
-      pChild = pChild->NextSibling();
-    }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "ADDONS: <%s> tag is missing or addons.xml is malformed", strTagName.c_str());
-  }
-}
-
-bool CSettings::GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
-{
-  // uuid
-  const TiXmlNode *pNodePath = node->FirstChild("uuid");
-  CStdString uuid;
-  if (pNodePath && pNodePath->FirstChild())
-  {
-    uuid = pNodePath->FirstChild()->Value();
-  }
-  else
-    return false;
-
-  AddonProps props(uuid, type);
-  /*props.uuid = uuid;
-  props.type = type;*/
-
-  // name
-  const TiXmlNode *pNodeName = node->FirstChild("name");
-  CStdString strName;
-  if (pNodeName && pNodeName->FirstChild())
-  {
-    props.name = pNodeName->FirstChild()->Value();
-  }
-  else
-    return false;
-
-  // parent uuid if present
-  const TiXmlNode *pNodeChildGUID = node->FirstChild("parentuuid");
-  if (pNodeChildGUID && pNodeChildGUID->FirstChild())
-  {
-    props.parent = pNodeChildGUID->FirstChild()->Value();
-  }
-
-  // get custom thumbnail
-  const TiXmlNode *pThumbnailNode = node->FirstChild("thumbnail");
-  if (pThumbnailNode && pThumbnailNode->FirstChild())
-  {
-    props.icon = pThumbnailNode->FirstChild()->Value();
-  }
-
-  // finished
-  if (/*props.Valid()*/true)
-  {
-    addons.insert(addons.end(), props);
-    return true;
-  }
-
-  return false;
 }
 
 void CSettings::GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault)
@@ -1564,72 +1448,6 @@ bool CSettings::SaveSources()
   return doc.SaveFile(GetSourcesFile());
 }
 
-bool CSettings::SaveAddonsXML(const ADDON::TYPE &type, const VECADDONPROPS &addons)
-{
-  // TODO: Should we be specifying utf8 here??
-  TiXmlDocument doc;
-
-  if (!doc.LoadFile(GetAddonsFile()))
-    doc.ClearError();
-
-  // either point to existing addons node, or create one
-  TiXmlNode *pRoot = NULL;
-  pRoot = doc.FirstChildElement("addons");
-  if (!pRoot)
-  {
-    TiXmlElement xmlRootElement("addons");
-    pRoot = doc.InsertEndChild(xmlRootElement);
-    if (!pRoot)
-      return false;
-  }
-
-  // ok, now run through and save the modified addons section
-  SetAddons(pRoot, type, addons);
-
-  return doc.SaveFile(g_settings.GetAddonsFile());
-}
-
-bool CSettings::SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const VECADDONPROPS &addons)
-{
-  CStdString strType;
-  strType = ADDON::TranslateType(type);
-
-  if (strType.IsEmpty())
-    return false;
-
-  TiXmlElement sectionElement(strType);
-  TiXmlNode *sectionNode = root->FirstChild(strType);
-
-  if (sectionNode)
-  { // must delete the original section before regenerating
-    root->RemoveChild(sectionNode);
-  }
-
-  if (!addons.empty())
-  { // only recreate the sectionNode if there's addons of this type enabled
-    sectionNode = root->InsertEndChild(sectionElement);
-
-    VECADDONPROPS::const_iterator itr = addons.begin();
-    while (itr != addons.end())
-    {
-      TiXmlElement element("addon");
-
-      XMLUtils::SetString(&element, "name", itr->name);
-      XMLUtils::SetString(&element, "uuid", itr->uuid);
-      if (!itr->parent.IsEmpty())
-        XMLUtils::SetString(&element, "parentuuid", itr->parent);
-
-      if (!itr->icon.IsEmpty())
-        XMLUtils::SetPath(&element, "thumbnail", itr->icon);
-
-      sectionNode->InsertEndChild(element);
-      ++itr;
-    }
-  }
-
-  return true;
-}
-
 bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath)
 {
   TiXmlElement sectionElement(section);
@@ -2071,17 +1889,6 @@ CStdString CSettings::GetSourcesFile() const
   return folder;
 }
 
-CStdString CSettings::GetAddonsFile() const
-{
-  CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasAddons())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(),"addons.xml",folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(),"addons.xml",folder);
-
-  return folder;
-}
-
 CStdString CSettings::GetSkinFolder() const
 {
   CStdString folder;
@@ -2098,17 +1905,6 @@ CStdString CSettings::GetScriptsFolder() const
     return folder;
 
   folder = "special://xbmc/scripts";
-  return folder;
-}
-
-CStdString CSettings::GetAddonsFolder() const
-{
-  CStdString folder = "special://home/addons";
-
-  if ( CDirectory::Exists(folder) )
-    return folder;
-
-  folder = "special://xbmc/addons";
   return folder;
 }
 

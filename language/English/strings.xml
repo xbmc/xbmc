@@ -1908,6 +1908,7 @@
   <string id="21407">less than</string>
   <string id="21408">after</string>
   <string id="21409">before</string>
+  <string id="21416">Scraper</string>
   <string id="21417">No scrapers present</string>
   <string id="21410">in the last</string>
   <string id="21411">not in the last</string>
@@ -2083,12 +2084,12 @@
   <string id="23008">Configure Add-on</string>
   <string id="23009">Disable Add-on</string>
   <string id="23010">Are you sure you want to disable this add-on?</string>
-  <string id="23011">Unknown Add-on</string>
-  <string id="23012">Multitype Add-on</string>
-  <string id="23013">Visualisation</string>
-  <string id="23014">Skin Add-on</string>
+  <string id="23011">You may re-enable this from the 'Add Source' dialog</string>
+  <string id="23012"></string>
+  <string id="23013">Visualization</string>
+  <string id="23014"></string>
   <string id="23015">PVR-Client</string>
-  <string id="23016">Python Script</string>
+  <string id="23016">Script</string>
   <string id="23017">PVR Scraper</string>
   <string id="23018">Video Scraper</string>
   <string id="23019">Music Scraper</string>
@@ -2101,6 +2102,7 @@
   <string id="23026">Pictures Add-on</string>
   <string id="23027">Weather Add-on</string>
   <string id="23028">Audio DSP Add-on</string>
+  <string id="23029">Plugin Source</string>
   
   <string id="23040">Add-on can not connect</string>
   <string id="23041">Please check your Settings or the Backend</string>

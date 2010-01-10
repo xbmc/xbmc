@@ -339,9 +339,6 @@ VECSOURCES& CGUIViewState::GetSources()
   if (m_content == CONTENT_NONE)
     return m_sources;
 
-  // reload addons.xml
-  ADDON::CAddonMgr::Get()->LoadAddonsXML(ADDON::ADDON_PLUGIN);
-
   ADDON::VECADDONS addons;
   ADDON::CAddonMgr::Get()->GetAddons(ADDON::ADDON_PLUGIN, addons, m_content);
 

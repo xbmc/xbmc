@@ -397,6 +397,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     return CGUIDialogMediaSource::ShowAndEditMediaSource(type, *share);
 
   case CONTEXT_BUTTON_REMOVE_SOURCE:
+  {
     if (g_settings.m_iLastLoadedProfileIndex == 0)
     {
       if (!g_passwordManager.IsMasterLockUnlocked(true))
@@ -409,8 +410,14 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
         return false;
     }
-    // prompt user if they want to really delete the source
-    if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
+    // prompt user if they want to really delete the source/disable the plugin
+    bool yes(false);
+    bool plugin = item->IsPlugin();
+    if (plugin)
+      yes = CGUIDialogYesNo::ShowAndGetInput(23009, 23010, 23011, 0);
+    else
+      yes = CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0);
+    if (yes)
     { // check default before we delete, as deletion will kill the share object
       CStdString defaultSource(GetDefaultShareNameByType(type));
       if (!defaultSource.IsEmpty())
@@ -418,13 +425,16 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         if (share->strName.Equals(defaultSource))
           ClearDefault(type);
       }
-
-      // delete this share
-      g_settings.DeleteSource(type, share->strName, share->strPath);
-      return true;
+      if (plugin)
+      {
+        CURL path(share->strPath);
+        ADDON::CAddonMgr::Get()->DisableAddon(path.GetHostName());
+      }
+      else
+        g_settings.DeleteSource(type, share->strName, share->strPath);
     }
-    break;
-
+    return true;
+  }
   case CONTEXT_BUTTON_SET_DEFAULT:
     if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;

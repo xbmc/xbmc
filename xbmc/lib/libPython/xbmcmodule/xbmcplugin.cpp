@@ -568,21 +568,21 @@ namespace PYXBMC
       return NULL;
 
     //TODO avoid relying on plugin supplying a URL
-    ADDON::AddonPtr addon;
+    /*ADDON::AddonPtr addon;
     ADDON::CAddonMgr::Get()->GetAddonFromPath(url, addon);
     if (!addon->HasSettings())
     {
       PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
       return NULL;
-    }
+    }*/
 
-    CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    //CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
     // reload plugin settings & strings
-    if (bReload)
+/*    if (bReload)
     {
       addon->LoadSettings();
-    }
+    }*/
 
     Py_INCREF(Py_None);
     return Py_None;

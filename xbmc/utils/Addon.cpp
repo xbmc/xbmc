@@ -84,49 +84,56 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
 
 const CONTENT_TYPE TranslateContent(const CStdString &string)
 {
-  if (string == "albums")
-    return CONTENT_ALBUMS;
-  else if (string == "artists")
-    return CONTENT_ARTISTS;
-  else if (string == "movies")
-    return CONTENT_MOVIES;
-  else if (string == "tvshows")
-    return CONTENT_TVSHOWS;
-  else if (string == "episoes")
-    return CONTENT_EPISODES;
-  else if (string == "musicvideos")
-    return CONTENT_MUSICVIDEOS;
-  else if (string == "plugin")
-    return CONTENT_PLUGIN;
-  else if (string == "weather")
-    return CONTENT_WEATHER;
-  else
-    return CONTENT_NONE;
+  if (string.Equals("albums")) return CONTENT_ALBUMS;
+  else if (string.Equals("artists")) return CONTENT_ARTISTS;
+  else if (string.Equals("movies")) return CONTENT_MOVIES;
+  else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
+  else if (string.Equals("episoes")) return CONTENT_EPISODES;
+  else if (string.Equals("musicvideos")) return CONTENT_MUSICVIDEOS;
+  else if (string.Equals("plugin")) return CONTENT_PLUGIN;
+  else if (string.Equals("weather")) return CONTENT_WEATHER;
+  else return CONTENT_NONE;
 }
 
-const CStdString TranslateType(const ADDON::TYPE &type)
+const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
 	switch (type)
 	{
 	case ADDON::ADDON_PVRDLL:
 		{
+      if (pretty)
+        return g_localizeStrings.Get(23015);
 			return "pvrclient";
 		}
 	case ADDON::ADDON_SCRAPER:
 		{
+      if (pretty)
+        return g_localizeStrings.Get(21416);
 			return "scraper";
 		}
 	case ADDON::ADDON_SCREENSAVER:
 		{
+      if (pretty)
+        return g_localizeStrings.Get(23021);
 			return "screensaver";
 		}
 	case ADDON::ADDON_VIZ:
 		{
-			return "visualisation";
+      if (pretty)
+        return g_localizeStrings.Get(23013);
+			return "visualization";
 		}
 	case ADDON::ADDON_PLUGIN:
 		{
+      if (pretty)
+        return g_localizeStrings.Get(23029);
 			return "plugin";
+		}
+	case ADDON::ADDON_SCRIPT:
+		{
+      if (pretty)
+        return g_localizeStrings.Get(23016);
+			return "script";
 		}
 	default:
 		{
@@ -137,20 +144,13 @@ const CStdString TranslateType(const ADDON::TYPE &type)
 
 const ADDON::TYPE TranslateType(const CStdString &string)
 {
-	if (string == "pvrclient")
-		return ADDON_PVRDLL;
-	else if (string == "scraper")
-		return ADDON_SCRAPER;
-	else if (string == "screensaver")
-		return ADDON_SCREENSAVER;
-	else if (string == "visualisation")
-		return ADDON_VIZ;
-	else if (string == "plugin")
-		return ADDON_PLUGIN;
-	else if (string == "script")
-		return ADDON_SCRIPT;
-	else
-		return ADDON_MULTITYPE;
+	if (string.Equals("pvrclient")) return ADDON_PVRDLL;
+	else if (string.Equals("scraper")) return ADDON_SCRAPER;
+	else if (string.Equals("screensaver")) return ADDON_SCREENSAVER;
+	else if (string.Equals("visualization")) return ADDON_VIZ;
+	else if (string.Equals("plugin")) return ADDON_PLUGIN;
+	else if (string.Equals("script")) return ADDON_SCRIPT;
+	else return ADDON_MULTITYPE;
 }
 
 CAddon::CAddon(const AddonProps &props)

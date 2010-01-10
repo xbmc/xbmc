@@ -212,7 +212,6 @@ void CGUIDialogContentSettings::FillContentTypes()
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_CONTENT_TYPE);
   g_windowManager.SendMessage(msg);
 
-  CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
   if (m_content == CONTENT_ALBUMS || m_content == CONTENT_ARTISTS)
   {
     FillContentTypes(CONTENT_ALBUMS);

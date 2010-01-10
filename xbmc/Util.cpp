@@ -983,7 +983,7 @@ bool CUtil::IsSpecial(const CStdString& strFile)
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
+  return !url.GetProtocol().IsEmpty() && StringUtils::ValidateUUID(url.GetHostName());
 }
 
 bool CUtil::IsPluginRoot(const CStdString& strFile)

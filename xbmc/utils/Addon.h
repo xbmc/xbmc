@@ -38,7 +38,7 @@ namespace ADDON
 // utils  
 const CStdString    TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 const CONTENT_TYPE  TranslateContent(const CStdString &string);
-const CStdString    TranslateType(const TYPE &type);
+const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const TYPE          TranslateType(const CStdString &string);
 
 class CAddon : public IAddon

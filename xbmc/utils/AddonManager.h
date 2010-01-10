@@ -118,34 +118,34 @@ namespace ADDON
     bool GetDefaultScraper(CScraperPtr &scaper, const CONTENT_TYPE &content);
     bool GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content);
     bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
-    bool GetAddonFromPath(const CStdString &path, AddonPtr &addon);
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
-    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
-    bool GetAddons(const TYPE &type, VECADDONPROPS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
+    bool GetAddons(const TYPE &type, VECADDONPROPS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     CStdString GetString(const CStdString &uuid, const int number);
 
     /* Addon operations */
     bool EnableAddon(AddonPtr &addon);
+    bool EnableAddon(const CStdString &uuid);
     bool DisableAddon(AddonPtr &addon);
+    bool DisableAddon(const CStdString &uuid);
     bool Clone(const AddonPtr& parent, AddonPtr& child);
 
-    bool SaveAddonsXML(const TYPE &type);
-    bool LoadAddonsXML(const TYPE &type);
-
-  protected:
-    void FindAddons(const TYPE &type, const bool refresh = false);
-    bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
-    CStdString GetAddonsFile() const;
-    CStdString GetAddonsFolder() const;
-
-    bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &addons);
-    void GetAddons(const TiXmlElement* pRootElement, const TYPE &type);
-    bool GetAddon(const TYPE &type, const TiXmlNode *node, AddonPtr &addon);
-
   private:
+    void FindAddons(const TYPE &type, const bool force = false);
+    bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
+
+    /* addons.xml */
+    CStdString GetAddonsXMLFile() const;
+    bool SaveAddonsXML(const TYPE &type);
+    bool LoadAddonsXML(const TYPE &type, const bool refreshDirs = false);
+    bool LoadAddonsXML(const TYPE& type, ADDON::VECADDONPROPS& addons);
+    bool SaveAddonsXML(const TYPE& type, const VECADDONPROPS &addons);
+    bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS &addons);
+    void GetAddons(const TiXmlElement* pRootElement, const TYPE &type, VECADDONPROPS &addons);
+    bool GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addon);
+
     CAddonMgr();
     static CAddonMgr* m_pInstance;
-
     static std::map<TYPE, IAddonCallback*> m_managers;
     MAPADDONS m_addons;
     std::map<TYPE, CDateTime> m_lastScan;

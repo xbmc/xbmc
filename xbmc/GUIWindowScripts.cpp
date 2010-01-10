@@ -246,13 +246,13 @@ void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &butto
     CStdString path, filename;
     CUtil::Split(item->m_strPath, path, filename);
     ADDON::AddonPtr script;
-    if (ADDON::CAddonMgr::Get()->GetAddonFromPath(item->m_strPath, script))
+/*    if (ADDON::CAddonMgr::Get()->GetAddonFromPath(item->m_strPath, script))
     {
       if (script->HasSettings())
       {
         buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
       }
-    }
+    }*/
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
@@ -271,10 +271,10 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
     ADDON::AddonPtr script;
-    if (ADDON::CAddonMgr::Get()->GetAddonFromPath(m_vecItems->Get(itemNumber)->m_strPath, script))
+    /*if (ADDON::CAddonMgr::Get()->GetAddonFromPath(m_vecItems->Get(itemNumber)->m_strPath, script))
     {
       CGUIDialogAddonSettings::ShowAndGetInput(script);
-    }
+    }*/
     return true;
   }
   else if (button == CONTEXT_BUTTON_DELETE)
