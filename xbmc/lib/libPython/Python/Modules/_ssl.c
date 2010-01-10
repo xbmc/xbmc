@@ -1550,8 +1550,8 @@ static int _setup_ssl_threads(void) {
 				return 0;
 			}
 		}
-		CRYPTO_set_locking_callback(_ssl_thread_locking_function);
-		CRYPTO_set_id_callback(_ssl_thread_id_function);
+		//CRYPTO_set_locking_callback(_ssl_thread_locking_function);
+		//CRYPTO_set_id_callback(_ssl_thread_id_function);
 	}
 	return 1;
 }
