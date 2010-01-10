@@ -163,7 +163,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   }
 
   // Create and run the app
-  g_application.Create(NULL);
+  g_application.Create();
 
 #ifndef _DEBUG
   // we don't want to see the "no disc in drive" windows message box

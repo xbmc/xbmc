@@ -40,7 +40,7 @@ public:
 
 public:
   // Functions to create, run, and clean up the application
-  virtual bool Create(HWND hWnd);
+  virtual bool Create();
   INT Run();
   VOID Destroy();
 

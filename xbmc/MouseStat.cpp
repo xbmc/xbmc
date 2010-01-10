@@ -124,15 +124,11 @@ CMouseStat::~CMouseStat()
 {
 }
 
-void CMouseStat::Initialize(void *appData)
+void CMouseStat::Initialize()
 {
   // Set the default resolution (PAL)
   SetResolution(720, 576, 1, 1);
   
-}
-
-void CMouseStat::Cleanup()
-{
 }
 
 void CMouseStat::HandleEvent(XBMC_Event& newEvent)

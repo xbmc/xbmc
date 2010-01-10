@@ -453,7 +453,7 @@ void CApplication::Preflight()
 #endif
 }
 
-bool CApplication::Create(HWND hWnd)
+bool CApplication::Create()
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
@@ -603,13 +603,13 @@ bool CApplication::Create(HWND hWnd)
   }
 
   // Create the Mouse and Keyboard devices
-  g_Mouse.Initialize(&hWnd);
+  g_Mouse.Initialize();
   g_Keyboard.Initialize();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize(hWnd);
+  g_Joystick.Initialize();
 #endif
 
   CLog::Log(LOGINFO, "Drives are mapped");
@@ -3344,7 +3344,6 @@ bool CApplication::Cleanup()
     g_settings.Clear();
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
-    g_Mouse.Cleanup();
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();

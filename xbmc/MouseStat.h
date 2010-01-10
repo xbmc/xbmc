@@ -67,8 +67,7 @@ public:
   CMouseStat();
   virtual ~CMouseStat();
 
-  void Initialize(void *appData = NULL);
-  void Cleanup();
+  void Initialize();
   void HandleEvent(XBMC_Event& newEvent);
   void Acquire();
   void SetResolution(int maxX, int maxY, float speedX, float speedY);

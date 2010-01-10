@@ -28,7 +28,7 @@ CJoystick::CJoystick()
   SetSafeRange(2000);
 }
 
-void CJoystick::Initialize(HWND hWnd)
+void CJoystick::Initialize()
 {
   // clear old joystick names
   m_JoystickNames.clear();
