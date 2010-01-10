@@ -318,11 +318,16 @@ void CDVDPlayerVideo::Process()
     else
       flags |= CONF_FLAGS_YUVCOEF_BT601;
 
+    // assume yv12 format
+    flags |= CONF_FLAGS_FORMAT_YV12;
+
     m_output.width     = m_hints.width;
     m_output.dwidth    = m_hints.width;
     m_output.height    = m_hints.height;
     m_output.dheight   = m_hints.height;
     m_output.framerate = (float)m_hints.fpsrate / m_hints.fpsscale;
+    // default to vdpau to avoid any changes under it.
+    m_output.color_format = DVDVideoPicture::FMT_VDPAU;
     m_output.inited    = true;
 
     if( g_renderManager.Configure(m_output.width
@@ -884,6 +889,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
    || m_output.framerate != m_fFrameRate
+   || m_output.color_format != pPicture->format
    || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
    || m_output.color_range != pPicture->color_range)
   {
@@ -951,6 +957,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     m_output.dwidth = pPicture->iDisplayWidth;
     m_output.dheight = pPicture->iDisplayHeight;
     m_output.framerate = m_fFrameRate;
+    m_output.color_format = pPicture->format;
     m_output.color_matrix = pPicture->color_matrix;
     m_output.color_range = pPicture->color_range;
   }
