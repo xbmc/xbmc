@@ -123,8 +123,8 @@ public:
 
   bool DevicePresent(void);
 
-  bool Open(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type);
-  void Close(void);
+  bool OpenDecoder(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type);
+  void CloseDecoder(void);
   bool IsOpenforDecode(void);
   void Flush(void);
   unsigned int GetInputCount(void);
@@ -137,6 +137,7 @@ public:
   void SetDropState(bool bDrop);
 
 protected:
+  void CheckCrystalHDLibraryPath(void);
   void SetFrameRate(uint32_t resolution);
   void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
   

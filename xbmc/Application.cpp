@@ -4733,10 +4733,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.ResetCurrentItem();
       m_currentStack->Clear();
 
-      // stop lastfm
-      if (CLastFmManager::GetInstance()->IsRadioEnabled())
-        CLastFmManager::GetInstance()->StopRadio();
-
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         // sending true to PlayNext() effectively passes bRestart to PlayFile()
@@ -4746,6 +4742,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       else
       {
+        // stop lastfm
+        if (CLastFmManager::GetInstance()->IsRadioEnabled())
+          CLastFmManager::GetInstance()->StopRadio();
+
         delete m_pPlayer;
         m_pPlayer = 0;
       }

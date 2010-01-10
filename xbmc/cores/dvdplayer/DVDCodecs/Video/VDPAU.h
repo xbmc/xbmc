@@ -89,19 +89,18 @@ public:
 
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
-  int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
+  bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   void InitCSCMatrix(int Height);
-  void CheckStatus(VdpStatus vdp_st, int line);
+  bool CheckStatus(VdpStatus vdp_st, int line);
 
-  void CheckRecover(bool force = false);
+  bool CheckRecover(bool force = false);
   void CheckFeatures();
-  void SetColor(int Height);
+  void SetColor();
   void SetNoiseReduction();
   void SetSharpness();
   void SetDeinterlacing();
   void SetHWUpscaling();
-  bool VDPAURecovered, VDPAUSwitching;
 
   pictureAge picAge;
   bool       recover;
@@ -178,6 +177,8 @@ public:
   VdpVideoMixer videoMixer;
   VdpRect       outRect;
   VdpRect       outRectVid;
+  
+  VdpBool upscalingAvailable;
 
   void*    dl_handle;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);

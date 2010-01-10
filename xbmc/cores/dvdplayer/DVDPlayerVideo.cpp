@@ -124,7 +124,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(40 * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(4.0);
+  m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
   m_iCurrentPts = DVD_NOPTS_VALUE;

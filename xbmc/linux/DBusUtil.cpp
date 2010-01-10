@@ -23,7 +23,7 @@
 
 bool CDBusUtil::GetBoolean(const char *destination, const char *object, const char *interface, const char *property)
 {
-  return GetVariant(destination, object, interface, property).Equals("true");
+  return GetVariant(destination, object, interface, property, "false").Equals("true");
 }
 
 int CDBusUtil::GetInt32(const char *destination, const char *object, const char *interface, const char *property)
@@ -31,26 +31,31 @@ int CDBusUtil::GetInt32(const char *destination, const char *object, const char 
   return atoi(GetVariant(destination, object, interface, property).c_str());
 }
 
-CStdString CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property)
+CStdString CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property, const char *fallback)
 {
 //dbus-send --system --print-reply --dest=destination object org.freedesktop.DBus.Properties.Get string:interface string:property
   CDBusMessage message(destination, object, "org.freedesktop.DBus.Properties", "Get");
-  message.AppendArgument(interface);
-  message.AppendArgument(property);
-  DBusMessage *reply = message.SendSystem();
-  CStdString result;
-  if (reply)
-  {
-    DBusMessageIter iter;
+  CStdString result = fallback;
 
-    if (dbus_message_iter_init(reply, &iter))
+  if (message.AppendArgument(interface) && message.AppendArgument(property))
+  {
+    DBusMessage *reply = message.SendSystem();
+
+    if (reply)
     {
-      if (!dbus_message_has_signature(reply, "v"))
-        CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
-      else
-        result = ParseVariant(&iter);
+      DBusMessageIter iter;
+
+      if (dbus_message_iter_init(reply, &iter))
+      {
+        if (!dbus_message_has_signature(reply, "v"))
+          CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
+        else
+          result = ParseVariant(&iter);
+      }
     }
   }
+  else
+    CLog::Log(LOGERROR, "DBus: append arguments failed");
 
   return result;
 }

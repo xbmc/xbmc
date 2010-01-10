@@ -121,9 +121,9 @@ AC_ARG_ENABLE([vdpau],
 
 AC_ARG_ENABLE([crystalhd],
             [AS_HELP_STRING([--enable-crystalhd],
-               [enable CrystalHD decoding (default is no)])],
+               [enable CrystalHD decoding (default is yes)])],
             [use_crystalhd=$enableval],
-            [use_crystalhd=no])
+            [use_crystalhd=yes])
 
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],

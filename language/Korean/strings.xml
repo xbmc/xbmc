@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/30/2009-->
+<!--Date of translation: 01/05/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1580,6 +1580,8 @@
   <string id="20250">파티모드 시작! (비디오)</string>
   <string id="20251">폭탄주 (비디오)</string>
   <string id="20252">컵 채우기 (비디오)</string>
+  <string id="20253">WebDAV 서버 (HTTP)</string>
+  <string id="20254">WebDAV 서버 (HTTPS)</string>
   <string id="20300">웹 서버 디렉토리 (HTTP)</string>
   <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
   <string id="20302">폴더에 쓸수 없음:</string>
@@ -1721,6 +1723,8 @@
   <string id="20443">이 경로의 모든 항목 정보를</string>
   <string id="20444">새로고치겠습니까?</string>
   <string id="20445">팬아트</string>
+  <string id="20446">NFO-파일 찾음.</string>
+  <string id="20447">인터넷에서 새로고치겠습니까?</string>
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-모드 입니다!</string>

@@ -33,7 +33,7 @@ public:
   static int  GetInt32(const char *destination, const char *object, const char *interface, const char *property);
   static void GetAll(PropertyMap& properties, const char *destination, const char *object, const char *interface);
 
-  static CStdString GetVariant(const char *destination, const char *object, const char *interface, const char *property);
+  static CStdString GetVariant(const char *destination, const char *object, const char *interface, const char *property, const char *fallback = "");
 private:
   static CStdString ParseType(DBusMessageIter *itr);
   static CStdString ParseVariant(DBusMessageIter *itr);
