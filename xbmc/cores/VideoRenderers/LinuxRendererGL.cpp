@@ -43,11 +43,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
-#if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
-#endif
-
-#ifdef HAS_GLX
+ #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
 
@@ -368,6 +364,70 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   m_bImageReady = true;
 }
 
+void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
+{
+  YUVBUFFER& buf    =  m_buffers[source];
+  YV12Image* im     = &buf.image;
+  YUVFIELDS& fields =  buf.fields;
+
+  // calculate the source rectangle
+  for(int field = 0; field < 3; field++)
+  {
+    for(int plane = 0; plane < num_planes; plane++)
+    {
+      YUVPLANE& p = fields[field][plane];
+
+      /* software upscaling is precropped */
+      if(IsSoftwareUpscaling())
+        p.rect.SetRect(0, 0, im->width, im->height);
+      else      
+        p.rect = m_sourceRect;
+
+      p.width  = im->width;
+      p.height = im->height;
+
+      if(field != FIELD_FULL)
+      {
+        /* correct for field offsets and chroma offsets */
+        float offset_y = 0.5;
+        if(plane != 0)
+          offset_y += 0.5;
+        if(field == FIELD_EVEN)
+          offset_y *= -1;
+
+        p.rect.y1 += offset_y;
+        p.rect.y2 += offset_y;
+
+        /* half the height if this is a field */
+        p.height  *= 0.5f;
+        p.rect.y1 *= 0.5f; 
+        p.rect.y2 *= 0.5f;
+      }
+
+      if(plane != 0)
+      {
+        p.width   /= 1 << im->cshift_x;
+        p.height  /= 1 << im->cshift_y;
+
+        p.rect.x1 /= 1 << im->cshift_x;
+        p.rect.x2 /= 1 << im->cshift_x;
+        p.rect.y1 /= 1 << im->cshift_y;
+        p.rect.y2 /= 1 << im->cshift_y;
+      }
+
+      if (m_textureTarget == GL_TEXTURE_2D)
+      {
+        p.height  /= p.texheight;
+        p.rect.y1 /= p.texheight;
+        p.rect.y2 /= p.texheight;
+        p.width   /= p.texwidth;
+        p.rect.x1 /= p.texwidth;
+        p.rect.x2 /= p.texwidth;
+      }
+    }
+  }
+}
+
 void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                                 , unsigned width, unsigned height
                                 , int stride, void* data )
@@ -626,62 +686,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   }
   SetEvent(m_eventTexturesDone[source]);
 
-  // calculate the source rectangle
-  for(int field = 0; field < 3; field++)
-  {
-    for(int plane = 0; plane < 3; plane++)
-    {
-      YUVPLANE& p = fields[field][plane];
-
-      /* software upscaling is precropped */
-      if(IsSoftwareUpscaling())
-        p.rect.SetRect(0, 0, im->width, im->height);
-      else      
-        p.rect = m_sourceRect;
-
-      p.width  = im->width;
-      p.height = im->height;
-
-      if(field != FIELD_FULL)
-      {
-        /* correct for field offsets and chroma offsets */
-        float offset_y = 0.5;
-        if(plane != 0)
-          offset_y += 0.5;
-        if(field == FIELD_EVEN)
-          offset_y *= -1;
-
-        p.rect.y1 += offset_y;
-        p.rect.y2 += offset_y;
-
-        /* half the height if this is a field */
-        p.height  *= 0.5f;
-        p.rect.y1 *= 0.5f; 
-        p.rect.y2 *= 0.5f;
-      }
-
-      if(plane != 0)
-      {
-        p.width   /= 1 << im->cshift_x;
-        p.height  /= 1 << im->cshift_y;
-
-        p.rect.x1 /= 1 << im->cshift_x;
-        p.rect.x2 /= 1 << im->cshift_x;
-        p.rect.y1 /= 1 << im->cshift_y;
-        p.rect.y2 /= 1 << im->cshift_y;
-      }
-
-      if (m_textureTarget == GL_TEXTURE_2D)
-      {
-        p.height  /= p.texheight;
-        p.rect.y1 /= p.texheight;
-        p.rect.y2 /= p.texheight;
-        p.width   /= p.texwidth;
-        p.rect.x1 /= p.texwidth;
-        p.rect.x2 /= p.texwidth;
-      }
-    }
-  }
+  CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
 }
@@ -999,12 +1004,11 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else 
 #endif //HAVE_LIBVDPAU
-#ifdef HAVE_LIBCRYSTALHD
-  if (requestedMethod == RENDER_METHOD_CRYSTALHD && CCrystalHD::GetInstance()->IsOpenforDecode() )
+  if (m_iFlags & CONF_FLAGS_FORMAT_NV12)
   {
     err = false;
-    CLog::Log(LOGNOTICE, "GL: Using Crystal HD render method");
-    m_renderMethod = RENDER_CRYSTALHD;
+    CLog::Log(LOGNOTICE, "GL: Using NV12 render method");
+    m_renderMethod = RENDER_NV12;
     if (m_pYUVShader)
     {
       m_pYUVShader->Free();
@@ -1030,7 +1034,6 @@ void CLinuxRendererGL::LoadShaders(int field)
     }
   }
   else 
-#endif //HAVE_LIBCRYSTALHD
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1137,15 +1140,13 @@ void CLinuxRendererGL::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
   // Now that we now the render method, setup texture function handlers
-#ifdef HAVE_LIBCRYSTALHD
-  if (m_renderMethod & RENDER_CRYSTALHD)
+  if (m_renderMethod & RENDER_NV12)
   {
     LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadNV12Textures;
     CreateTextureFuncPtr = &CLinuxRendererGL::CreateNV12Texture;
     DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteNV12Texture;
   }
   else
-#endif
   {
     // setup default YV12 texture handlers
     LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
@@ -1242,12 +1243,10 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderVDPAU(renderBuffer, m_currentField);
   }
 #endif
-#ifdef HAVE_LIBCRYSTALHD
-  else if (m_renderMethod & RENDER_CRYSTALHD)
+  else if (m_renderMethod & RENDER_NV12)
   {
-    RenderCrystalHD(renderBuffer, m_currentField);
+    RenderNV12(renderBuffer, m_currentField);
   }
-#endif
   else
   {
     RenderSoftware(renderBuffer, m_currentField);
@@ -1593,15 +1592,8 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 #endif
 }
 
-void CLinuxRendererGL::RenderCrystalHD(int index, int field)
+void CLinuxRendererGL::RenderNV12(int index, int field)
 {
-#ifdef HAVE_LIBCRYSTALHD
-  if (!CCrystalHD::GetInstance()->IsOpenforDecode()) 
-  { 
-    CLog::Log(LOGERROR,"(CrystalHD) m_Surface is NULL"); 
-    return; 
-  }
-  
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
@@ -1675,7 +1667,6 @@ void CLinuxRendererGL::RenderCrystalHD(int index, int field)
   glMatrixMode(GL_MODELVIEW);
 
   VerifyGLState();
-#endif
 }
 
 void CLinuxRendererGL::RenderSoftware(int index, int field)
@@ -2039,61 +2030,9 @@ void CLinuxRendererGL::LoadNV12Textures(int source)
              , im->width >> im->cshift_x, im->height >> im->cshift_y
              , im->stride[1]/2, im->plane[1] );
   }
-
   SetEvent(m_eventTexturesDone[source]);
 
-  // calculate the source rectangle
-  for(int field = 0; field < MAX_FIELDS; field++)
-  {
-    for(int plane = 0; plane < 2; plane++)
-    {
-      YUVPLANE& p = fields[field][plane];
-
-      p.rect = m_sourceRect;
-
-      p.width  = im->width;
-      p.height = im->height;
-
-      if(field != FIELD_FULL)
-      {
-        /* correct for field offsets and chroma offsets */
-        float offset_y = 0.5;
-        if(plane != 0)
-          offset_y += 0.5;
-        if(field == FIELD_EVEN)
-          offset_y *= -1;
-
-        p.rect.y1 += offset_y;
-        p.rect.y2 += offset_y;
-
-        /* half the height if this is a field */
-        p.height  *= 0.5f;
-        p.rect.y1 *= 0.5f; 
-        p.rect.y2 *= 0.5f;
-      }
-
-      if(plane != 0)
-      {
-        p.width   /= 1 << im->cshift_x;
-        p.height  /= 1 << im->cshift_y;
-
-        p.rect.x1 /= 1 << im->cshift_x;
-        p.rect.x2 /= 1 << im->cshift_x;
-        p.rect.y1 /= 1 << im->cshift_y;
-        p.rect.y2 /= 1 << im->cshift_y;
-      }
-
-      if (m_textureTarget == GL_TEXTURE_2D)
-      {
-        p.height  /= p.texheight;
-        p.rect.y1 /= p.texheight;
-        p.rect.y2 /= p.texheight;
-        p.width   /= p.texwidth;
-        p.rect.x1 /= p.texwidth;
-        p.rect.x2 /= p.texwidth;
-      }
-    }
-  }
+  CalculateTextureSourceRects(source, 2);
 
   glDisable(m_textureTarget);
 }

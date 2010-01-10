@@ -26,6 +26,7 @@
 #include <io.h>
 #include "log.h"
 #include "CharsetConverter.h"
+#include "WINSMBDirectory.h"
 
 using namespace XFILE;
 
@@ -74,8 +75,14 @@ bool CWINFileSMB::Open(const CURL& url)
 
   if (!m_hFile.isValid())
   {
-    CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
-    return false;
+    DIRECTORY::CWINSMBDirectory smb;
+    smb.ConnectToShare(url);
+    m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
+    if (!m_hFile.isValid())
+    {
+      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
+      return false;
+    }
   }
 
   m_i64FilePos = 0;
@@ -92,7 +99,14 @@ bool CWINFileSMB::Exists(const CURL& url)
   CStdString strFile = GetLocal(url);
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
-  return (_wstat64(strWFile.c_str(), &buffer)==0);
+  if(_wstat64(strWFile.c_str(), &buffer) == 0)
+    return true;
+
+  DIRECTORY::CWINSMBDirectory smb;
+  if(smb.ConnectToShare(url) == false)
+    return false;
+
+  return (_wstat64(strWFile.c_str(), &buffer) == 0);
 }
 
 int CWINFileSMB::Stat(struct __stat64* buffer)
@@ -112,6 +126,13 @@ int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
+  if(_wstat64(strWFile.c_str(), buffer) == 0)
+    return 0;
+
+  DIRECTORY::CWINSMBDirectory smb;
+  if(smb.ConnectToShare(url) == false)
+    return -1;
+
   return _wstat64(strWFile.c_str(), buffer);
 }
 
@@ -127,8 +148,14 @@ bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 
   if (!m_hFile.isValid())
   {
-    CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strWPath.c_str(), GetLastError());
-    return false;
+    DIRECTORY::CWINSMBDirectory smb;
+    smb.ConnectToShare(url);
+    m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
+    if (!m_hFile.isValid())
+    {
+      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strWPath.c_str(), GetLastError());
+      return false;
+    }
   }
 
   m_i64FilePos = 0;

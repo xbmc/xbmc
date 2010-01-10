@@ -118,6 +118,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   m_bPassthrough = bAudioPassthrough;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
+  m_fVolAdjustFactor = 1.0f - ((float)m_nCurrentVolume / -6000.0f);
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 

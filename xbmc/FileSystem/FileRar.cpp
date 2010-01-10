@@ -23,6 +23,7 @@
 #include "FileRar.h"
 #include <sys/stat.h>
 #include "Util.h"
+#include "utils/CharsetConverter.h"
 #include "URL.h"
 #include "GUIDialogOK.h"
 #include "FileSystem/Directory.h"
@@ -111,7 +112,6 @@ CFileRar::CFileRar()
   m_strRarPath.Empty();
   m_strPassword.Empty();
   m_strPathInRar.Empty();
-  m_bRarOptions = 0;
   m_bFileOptions = 0;
 #ifdef HAS_RAR
   m_pArc = NULL;
@@ -517,7 +517,6 @@ void CFileRar::InitFromUrl(const CURL& url)
   CUtil::Tokenize(url.GetOptions().Mid(1), options, "&");
 
   m_bFileOptions = 0;
-  m_bRarOptions = 0;
 
   for( vector<CStdString>::iterator it = options.begin();it != options.end(); it++)
   {
@@ -581,8 +580,10 @@ void CFileRar::CleanUp()
 bool CFileRar::OpenInArchive()
 {
 #ifdef HAS_RAR
+  int iHeaderSize;
+
   InitCRC();
-  // Set the arguments for the extract command
+
   m_pCmd = new CommandData;
   if (!m_pCmd)
   {
@@ -590,23 +591,23 @@ bool CFileRar::OpenInArchive()
     return false;
   }
 
+  // Set the arguments for the extract command
   strcpy(m_pCmd->Command, "X");
-  m_pCmd->AddArcName(const_cast<char*>(m_strRarPath.c_str()),NULL);
-  strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof(m_pCmd->Command) - 2);
-  m_pCmd->ExtrPath[sizeof(m_pCmd->Command) - 2] = '\0';
-  AddEndSlash(m_pCmd->ExtrPath);
-  m_pCmd->ParseArg((char *)"-va",NULL);
-  CStdString strPath = m_strPathInRar;
-  strPath.Replace('/', '\\');
 
-  m_pCmd->FileArgs->AddString(strPath.c_str());
+  m_pCmd->AddArcName(const_cast<char*>(m_strRarPath.c_str()),NULL);
+
+  strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof (m_pCmd->ExtrPath) - 2);
+  m_pCmd->ExtrPath[sizeof (m_pCmd->ExtrPath) - 2] = 0;
+  AddEndSlash(m_pCmd->ExtrPath);
 
   // Set password for encrypted archives
-  if ((m_strPassword.size() > 0) && (m_strPassword.size() < 128))
+  if ((m_strPassword.size() > 0) &&
+      (m_strPassword.size() < sizeof (m_pCmd->Password)))
   {
-    strncpy(m_pCmd->Password, m_strPassword.c_str(),m_strPassword.size());
-    m_pCmd->Password[m_strPassword.size()] = '\0';
+    strcpy(m_pCmd->Password, m_strPassword.c_str());
   }
+
+  m_pCmd->ParseDone();
 
   // Open the archive
   m_pArc = new Archive(m_pCmd);
@@ -638,34 +639,39 @@ bool CFileRar::OpenInArchive()
   if (FindFile::FastFind(m_strRarPath.c_str(),NULL,&FD))
     m_pExtract->GetDataIO().TotalArcSize+=FD.Size;
   m_pExtract->ExtractArchiveInit(m_pCmd,*m_pArc);
-  bool bRes = false;
-  bool Repeat=false;
 
-  while(1)
+  while (true)
   {
-   m_iSize=m_pArc->ReadHeader();
-    if (stricmp(m_pArc->NewLhd.FileName,strPath.c_str()) == 0)
+    if ((iHeaderSize = m_pArc->ReadHeader()) <= 0)
     {
-      while (m_pArc->GetHeaderType() != FILE_HEAD)
+      CleanUp();
+      return false;
+    }
+
+    if (m_pArc->GetHeaderType() == FILE_HEAD)
+    {
+      CStdString strFileName;
+
+      if (m_pArc->NewLhd.FileNameW && wcslen(m_pArc->NewLhd.FileNameW) > 0)
       {
-        m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
-        m_iSize = m_pArc->ReadHeader();
+        g_charsetConverter.wToUTF8(m_pArc->NewLhd.FileNameW, strFileName);
       }
-      bRes = true;
-      break;
+      else
+      {
+        g_charsetConverter.unknownToUTF8(m_pArc->NewLhd.FileName, strFileName);
+      }
+
+      /* replace back slashes into forward slashes */
+      /* this could get us into troubles, file could two different files, one with / and one with \ */
+      strFileName.Replace('\\', '/');
+
+      if (strFileName == m_strPathInRar)
+      {
+        break;
+      }
     }
 
-    // this does NO extraction, only skips and handles solid volumes
-    if (!m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat))
-    {
-      bRes = FALSE;
-      break;
-    }
-  }
-  if (!bRes)
-  {
-    CleanUp();
-    return false;
+    m_pArc->SeekToNext();
   }
 
   m_szBuffer = new byte[MAXWINMEMSIZE];
@@ -677,7 +683,7 @@ bool CFileRar::OpenInArchive()
 
   delete m_pExtractThread;
   m_pExtractThread = new CFileRarExtractThread();
-  m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,m_iSize);
+  m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,iHeaderSize);
 
   return true;
 #else

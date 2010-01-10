@@ -39,6 +39,7 @@
 #define DLL_PATH_LIBMAD        "special://xbmc/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_LIBMPEG2      "special://xbmc/system/players/dvdplayer/libmpeg2.dll"
 #define DLL_PATH_LIBDVDNAV     "special://xbmc/system/players/dvdplayer/libdvdnav.dll"
+#define DLL_PATH_LIBCRYSTALHD  "special://xbmc/system/players/dvdplayer/bcmDIL.dll"
 
 /* ffmpeg */
 #define DLL_PATH_LIBAVCODEC    "special://xbmc/system/players/dvdplayer/avcodec-52.dll"

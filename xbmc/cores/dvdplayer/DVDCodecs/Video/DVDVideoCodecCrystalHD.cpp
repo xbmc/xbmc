@@ -21,6 +21,9 @@
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
+#elif defined(_WIN32)
+#include "system.h"
+#include "libavcodec/avcodec.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -48,19 +51,37 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  
-  if ((requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
+
+  if ((requestedMethod == RENDER_METHOD_AUTO || 
+       requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
-    BCM_CODEC_TYPE codec_type;
-    BCM_STREAM_TYPE stream_type;
+    CRYSTALHD_CODEC_TYPE codec_type;
+    CRYSTALHD_STREAM_TYPE stream_type;
     
-    codec_type = hints.codec;
-    stream_type = BC_STREAM_TYPE_ES;
-    
-    if (hints.codec == CODEC_ID_H264)
-      m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
-    else
-      m_annexbfiltering = false;
+    switch (hints.codec)
+    {
+      case CODEC_ID_MPEG2VIDEO:
+        codec_type = CRYSTALHD_CODEC_ID_MPEG2;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = false;
+        m_pFormatName = "bcm-mpeg2";
+      break;
+      case CODEC_ID_H264:
+        codec_type = CRYSTALHD_CODEC_ID_H264;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
+        m_pFormatName = "bcm-h264";
+      break;
+      case CODEC_ID_VC1:
+        codec_type = CRYSTALHD_CODEC_ID_VC1;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = false;
+        m_pFormatName = "bcm-vc1";
+      break;
+      default:
+        return false;
+      break;
+    }
 
     m_Device = CCrystalHD::GetInstance();
     if (!m_Device)
@@ -96,13 +117,9 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
-
-  int maxWait;
-  unsigned int lastTime;
-  unsigned int maxTime;
   bool annexbfiltered = false;
 
-  m_Device->ClearBusyList();
+  m_Device->BusyListPop();
   
   // in NULL is passed, DVDPlayer wants us to flush any internal picture frame.
   // we don't have internal picture frames so just return.
@@ -123,56 +140,31 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
     }
   }
   
-  // we have to throttle input demux packets by waiting for a returned picture frame
-  // or we can suck vqueue dry and DVDPlayer starts thrashing about. If we are dropping
-  // frames, then drop the timeout so we can catch up quickly.
-  if (m_DropPictures)
-    maxWait = 1;
-  else
-    maxWait = 40;
-
-  lastTime = CTimeUtils::GetTimeMS();
-  maxTime = lastTime + maxWait;
-  do
+  if (pData)
   {
-    // Handle Input
-    if (pData)
+    if ( m_Device->AddInput(pData, iSize, pts) )
     {
-      if ( m_Device->AddInput(pData, iSize, pts) )
-      {
-        if (annexbfiltered)
-          free(pData);
-        pData = NULL;
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
-        Sleep(10);
-      }
+      if (annexbfiltered)
+        free(pData);
+      pData = NULL;
     }
-    
-    if (m_Device->GetInputCount() < 25)
-      ret |= VC_BUFFER;
-
-    if (!m_DropPictures)
-      Sleep(5);
-      
-    // Handle Output
-    // wait for both consumed demux packet and a returned picture frame
-    // this help throttle consuming demux packets and we don't drain vqueue.
-    if (m_Device->GetReadyCount())
+    else
     {
-      ret |= VC_PICTURE;
-      if (!pData)
-        break;
+      CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
+      Sleep(10);
     }
-  } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
-
-  if (lastTime >= maxTime)
-  {
-    CLog::Log(LOGDEBUG, "%s: Timeout in Decode. maxWait: %d, ret: 0x%08x pData: %p", __MODULE_NAME__, maxWait, ret, pData);
   }
-  
+    
+  if (m_Device->GetInputCount() < 10)
+    ret |= VC_BUFFER;
+
+  if (!m_DropPictures)
+    Sleep(20);
+      
+  // Handle Output
+  if (m_Device->GetReadyCount())
+    ret |= VC_PICTURE;
+    
   if (!ret)
     ret = VC_ERROR;
 

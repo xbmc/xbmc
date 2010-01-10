@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 25792 -->
+<!--Based on english strings version 26168 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -41,6 +41,19 @@
   <string id="45">星期五</string>
   <string id="46">星期六</string>
   <string id="47">星期日</string>
+
+  <string id="51">一月</string>
+  <string id="52">二月</string>
+  <string id="53">三月</string>
+  <string id="54">四月</string>
+  <string id="55">五月</string>
+  <string id="56">六月</string>
+  <string id="57">七月</string>
+  <string id="58">八月</string>
+  <string id="59">九月</string>
+  <string id="60">十月</string>
+  <string id="61">十一月</string>
+  <string id="62">十二月</string>
 
   <string id="98">显示：自动</string>
   <string id="99">显示：自动大图标</string>
@@ -1189,6 +1202,7 @@
   <string id="13422">开始幻灯片播放</string>
   <string id="13423">记住此目录</string>
   <string id="13424">使用象素缓冲对象</string>
+  <string id="13425">Crystal HD 硬解码</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>

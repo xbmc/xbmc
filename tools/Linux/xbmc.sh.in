@@ -69,7 +69,7 @@ fi
 
 python @prefix@/share/xbmc/FEH.py "$@"
 if [ $? -ne 0 ]; then
-  exit
+  exit 0
 fi
 LOOP=1
 ulimit -c unlimited
@@ -79,11 +79,13 @@ do
   @prefix@/share/xbmc/xbmc.bin "$@"
   RET=$?
   if (( $RET == 65 ))
-  then
+  then # User requested to restart app
     LOOP=1
   elif (( ($RET >= 131 && $RET <= 136) || $RET == 139 ))
-  then
+  then # Crashed with core dump
     print_crash_report
   fi
 done
+
+exit $RET
 
