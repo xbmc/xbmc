@@ -39,6 +39,7 @@ const JSON_ACTION commands[] = {
   { "JSONRPC.Permission",               CJSONRPC::Permission,                   Response,     ReadData,        "Retrieve the clients permissions" },
   { "JSONRPC.Ping",                     CJSONRPC::Ping,                         Response,     ReadData,        "Ping responder" },
   { "JSONRPC.SetAnnouncementFlags",     CJSONRPC::SetAnnouncementFlags,         Announcing,   ControlAnnounce, "Change the announcement flags" },
+  { "JSONRPC.Announce",                 CJSONRPC::Announce,                     Response,     ReadData,        "Announce to other connected clients" },
 
 // Player
 // Static methods
@@ -167,6 +168,18 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
     flags |= Other;
 
   return client->SetAnnouncementFlags(flags) ? OK : BadPermission;
+}
+
+JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+{
+  if (!parameterObject.isMember("sender") || !parameterObject.isMember("message"))
+    return InvalidParams;
+
+  CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), parameterObject.isMember("data") ? parameterObject["sender"].asString().c_str() : NULL);
+
+  Value temp = "OK";
+  result.swap(temp);
+  return OK;
 }
 
 void CJSONRPC::Initialize()
