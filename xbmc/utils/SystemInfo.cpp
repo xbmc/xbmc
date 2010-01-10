@@ -578,7 +578,7 @@ CStdString CSysInfo::GetLinuxDistro()
 {
   CStdString result = "";
 
-  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; /usr/bin/lsb_release -d | cut -f2", "r");
+  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d | cut -f2", "r");
   if (pipe)
   {
     char buffer[256] = {'\0'};
