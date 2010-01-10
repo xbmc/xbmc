@@ -326,8 +326,7 @@ void CDVDPlayerVideo::Process()
     m_output.height    = m_hints.height;
     m_output.dheight   = m_hints.height;
     m_output.framerate = (float)m_hints.fpsrate / m_hints.fpsscale;
-    // default to vdpau to avoid any changes under it.
-    m_output.color_format = DVDVideoPicture::FMT_VDPAU;
+    m_output.color_format = DVDVideoPicture::FMT_YUV420P;
     m_output.inited    = true;
 
     if( g_renderManager.Configure(m_output.width
