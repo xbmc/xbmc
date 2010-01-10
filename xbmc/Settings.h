@@ -194,6 +194,8 @@ public:
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
 
+  CStdString m_userAgent;
+
   struct RssSet
   {
     bool rtl;
