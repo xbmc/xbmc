@@ -121,17 +121,6 @@ public:
   virtual void OnFocus() {};
   virtual void OnUnFocus() {};
 
-  /// \brief Called when the mouse is over the control.  Default implementation selects the control.
-  virtual bool OnMouseOver(const CPoint &point);
-  /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
-  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point) { return false; };
-  /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseClick(int button, const CPoint &point) { return false; };
-  /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseDoubleClick(int button, const CPoint &point) { return false; };
-  /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
-  virtual bool OnMouseWheel(char wheel, const CPoint &point) { return false; };
-
   /*! \brief React to a mouse event
 
    Mouse events are sent from the window to all controls, and each control can react based on the event
@@ -154,7 +143,7 @@ public:
    \return true if the control has handled this event, false otherwise
    \sa SendMouseEvent, HitTest, CanFocusFromPoint, CMouseEvent
    */
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event) { return false; };
 
   /*! \brief Unfocus the control if the given point on screen is not within it's boundary
    \param point the location in transformed skin coordinates from the upper left corner of the parent control.
@@ -299,6 +288,13 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
+  /*! \brief Called when the mouse is over the control.
+   Default implementation selects the control.
+   \param point location of the mouse in transformed skin coordinates
+   \return true if handled, false otherwise.
+   */
+  virtual bool OnMouseOver(const CPoint &point);
+
   /*! \brief Test whether we can focus a control from a point on screen
    \param point the location in vanilla skin coordinates from the upper left corner of the parent control.
    \return true if the control can be focused from this location

@@ -22,7 +22,6 @@
 #include "system.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
-#include "MouseStat.h"
 #include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -67,24 +66,21 @@ void CGUIVideoControl::Render()
   CGUIControl::Render();
 }
 
-bool CGUIVideoControl::OnMouseClick(int button, const CPoint &point)
-{ // mouse has clicked in the video control
-  // switch to fullscreen video
+bool CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
   if (!g_application.IsPlayingVideo()) return false;
-  if (button == MOUSE_LEFT_BUTTON)
-  {
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
+  { // switch to fullscreen
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
     g_windowManager.SendMessage(message);
     return true;
   }
-  if (button == MOUSE_RIGHT_BUTTON)
+  else if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // toggle the playlist window
     if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
       g_windowManager.PreviousWindow();
     else
       g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    // reset the mouse button.
-    g_Mouse.bClick[MOUSE_RIGHT_BUTTON] = false;
     return true;
   }
   return false;

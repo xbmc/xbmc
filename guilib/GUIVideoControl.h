@@ -44,7 +44,7 @@ public:
   virtual CGUIVideoControl *Clone() const { return new CGUIVideoControl(*this); };
 
   virtual void Render();
-  virtual bool OnMouseClick(int button, const CPoint &point);
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool CanFocus() const;
   virtual bool CanFocusFromPoint(const CPoint &point) const;
 };
