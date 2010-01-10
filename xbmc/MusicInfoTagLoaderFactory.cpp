@@ -100,13 +100,13 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CStdString& 
     CMusicInfoTagLoaderMP4 *pTagLoader = new CMusicInfoTagLoaderMP4();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   else if (strExtension == "cdda")
   {
     CMusicInfoTagLoaderCDDA *pTagLoader = new CMusicInfoTagLoaderCDDA();
     return (IMusicInfoTagLoader*)pTagLoader;
   }
-#endif  
+#endif
   else if (strExtension == "ape" || strExtension == "mac")
   {
     CMusicInfoTagLoaderApe *pTagLoader = new CMusicInfoTagLoaderApe();

@@ -169,6 +169,13 @@ void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
   FromULargeInt(time);
 }
 
+void CDateTimeSpan::SetFromTimeString(const CStdString& time) // hh:mm
+{
+  int hour    = atoi(time.Mid(0,2).c_str());
+  int minutes = atoi(time.Mid(3,2).c_str());
+  SetDateTimeSpan(0,hour,minutes,0);
+}
+
 int CDateTimeSpan::GetDays() const
 {
   ULARGE_INTEGER time;

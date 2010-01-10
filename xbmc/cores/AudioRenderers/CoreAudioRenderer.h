@@ -90,7 +90,7 @@ protected:
   UInt32 m_ActualBytesPerSec;
   UInt32 m_Flags;
   bool m_WatchdogEnable;
-  UInt32 m_WatchdogInterval;  
+  UInt32 m_WatchdogInterval;
   UInt32 m_LastWatchdogCheck;
   UInt32 m_LastWatchdogBytesIn;
   UInt32 m_LastWatchdogBytesOut;
@@ -114,7 +114,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual bool Pause();
     virtual bool Stop();
     virtual bool Resume();
-    
+
     virtual long GetCurrentVolume() const;
     virtual void Mute(bool bMute);
     virtual bool SetCurrentVolume(long nVolume);
@@ -137,25 +137,25 @@ class CCoreAudioRenderer : public IAudioRenderer
 
     bool m_Pause;
     bool m_Initialized; // Prevent multiple init/deinit
-   
+
     long m_CurrentVolume; // Courtesy of the jerk that made GetCurrentVolume a const...
     unsigned int m_ChunkLen; // Minimum amount of data accepted by AddPackets
     CSliceQueue* m_pCache;
     size_t m_MaxCacheLen; // Maximum number of bytes to be cached by the renderer.
-        
+
     CCoreAudioUnit m_AudioUnit;
     CCoreAudioDevice m_AudioDevice;
     CCoreAudioStream m_OutputStream;
     UInt32 m_OutputBufferIndex;
-    
+
     bool m_Passthrough;
     bool m_EnableVolumeControl;
-    
+
     // Stream format
     size_t m_AvgBytesPerSec;
     size_t m_BytesPerFrame; // Input frame size
     UInt32 m_NumLatencyFrames;
-    
+
 #ifdef _DEBUG
     // Performace Monitoring
     CCoreAudioPerformance m_PerfMon;
@@ -165,4 +165,4 @@ class CCoreAudioRenderer : public IAudioRenderer
     long m_DoRunout;
   };
 
-#endif 
+#endif

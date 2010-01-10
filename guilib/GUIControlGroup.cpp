@@ -99,7 +99,8 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
 
 void CGUIControlGroup::Render()
 {
-  g_graphicsContext.SetOrigin(m_posX, m_posY);
+  CPoint pos(GetPosition());
+  g_graphicsContext.SetOrigin(pos.x, pos.y);
   CGUIControl *focusedControl = NULL;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
@@ -356,29 +357,29 @@ bool CGUIControlGroup::HasAnimation(ANIMATION_TYPE animType)
   return false;
 }
 
-bool CGUIControlGroup::HitTest(const CPoint &point) const
+bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
-  {
-    CGUIControl *child = *it;
-    if (child->HitTest(point - CPoint(m_posX, m_posX)))
-      return true;
-  }
-  return false;
-}
+  // transform our position into child coordinates
+  CPoint childPoint(point);
+  m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
+  childPoint -= GetPosition();
 
-bool CGUIControlGroup::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
-{
-  if (!CGUIControl::CanFocus()) return false;
-  CPoint controlCoords(point);
-  m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
-  for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
+  if (CanFocus())
   {
-    CGUIControl *child = *it;
-    if (child->CanFocusFromPoint(controlCoords - CPoint(m_posX, m_posY), control, controlPoint))
+    // run through our controls in reverse order (so that last rendered is checked first)
+    for (crControls i = m_children.rbegin(); i != m_children.rend(); ++i)
+    {
+      CGUIControl *child = *i;
+      if (child->SendMouseEvent(childPoint, event))
+      { // we've handled the action, and/or have focused an item
+        return true;
+      }
+    }
+    // none of our children want the event, but we may want it.
+    if (HitTest(childPoint) && OnMouseEvent(childPoint, event))
       return true;
   }
-  *control = NULL;
+  m_focusedControl = 0;
   return false;
 }
 
@@ -386,10 +387,11 @@ void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
 {
   CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
+  controlCoords -= GetPosition();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    child->UnfocusFromPoint(controlCoords - CPoint(m_posX, m_posY));
+    child->UnfocusFromPoint(controlCoords);
   }
   CGUIControl::UnfocusFromPoint(point);
 }

@@ -1419,9 +1419,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
   }
   else if (strSetting.Equals("videolibrary.export"))
-    CBuiltins::Execute("exportlibrary(video)");  
+    CBuiltins::Execute("exportlibrary(video)");
   else if (strSetting.Equals("musiclibrary.export"))
-    CBuiltins::Execute("exportlibrary(music)");  
+    CBuiltins::Execute("exportlibrary(music)");
   else if (strSetting.Equals("karaoke.export") )
   {
     vector<CStdString> choices;

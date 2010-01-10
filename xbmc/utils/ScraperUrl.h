@@ -61,7 +61,8 @@ public:
   const SUrlEntry GetFirstThumb() const;
   const SUrlEntry GetSeasonThumb(int) const;
   void Clear();
-  static bool Get(const SUrlEntry&, std::string&, XFILE::CFileCurl& http);
+  static bool Get(const SUrlEntry&, std::string&, XFILE::CFileCurl& http,
+                 const CStdString& cacheContext);
   static bool DownloadThumbnail(const CStdString &thumb, const SUrlEntry& entry);
   static void ClearCache();
 

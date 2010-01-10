@@ -29,15 +29,15 @@
 bool IsAliasShortcut(CStdString &path)
 {
   bool  rtn = false;
-  
+
 #if defined(__APPLE__)
-  // Note: regular files that have an .alias extension can be 
+  // Note: regular files that have an .alias extension can be
   //   reported as an alias when clearly, they are not. Trap them out.
   if (CUtil::GetExtension(path) != ".alias")
   {
     FSRef fileRef;
     Boolean targetIsFolder, wasAliased;
-    
+
     // It is better to call FSPathMakeRefWithOptions and pass kFSPathMakeRefDefaultOptions
     //   since it will succeed for paths such as "/Volumes" unlike FSPathMakeRef.
     if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
@@ -69,7 +69,7 @@ void TranslateAliasShortcut(CStdString &path)
 #if defined(__APPLE__)
   FSRef fileRef;
   Boolean targetIsFolder, wasAliased;
-  
+
   if (noErr == FSPathMakeRefWithOptions((UInt8*)path.c_str(), kFSPathMakeRefDefaultOptions, &fileRef, NULL))
   {
     if (noErr == FSResolveAliasFileWithMountFlags(&fileRef, TRUE, &targetIsFolder, &wasAliased, kResolveAliasFileNoUI))
@@ -92,9 +92,9 @@ void TranslateAliasShortcut(CStdString &path)
   CComPtr<IShellLink> ipShellLink;
 
   // Get a pointer to the IShellLink interface
-  if (NOERROR == CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&ipShellLink)) 
+  if (NOERROR == CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (void**)&ipShellLink))
     WCHAR wszTemp[MAX_PATH];
-    
+
     // Get a pointer to the IPersistFile interface
     CComQIPtr<IPersistFile> ipPersistFile(ipShellLink);
 
@@ -106,10 +106,10 @@ void TranslateAliasShortcut(CStdString &path)
 #endif
 
     // Open the shortcut file and initialize it from its contents
-    if (NOERROR == ipPersistFile->Load(wszTemp, STGM_READ)) 
+    if (NOERROR == ipPersistFile->Load(wszTemp, STGM_READ))
     {
       // Try to find the target of a shortcut even if it has been moved or renamed
-      if (NOERROR == ipShellLink->Resolve(NULL, SLR_UPDATE)) 
+      if (NOERROR == ipShellLink->Resolve(NULL, SLR_UPDATE))
       {
         WIN32_FIND_DATA wfd;
         TCHAR real_path[PATH_MAX];

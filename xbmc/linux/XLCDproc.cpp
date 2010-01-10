@@ -90,14 +90,14 @@ void XLCDproc::Initialize()
     else
     {
       m_initRetryInterval *= 2;
-      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host. Retry in %d seconds.", __FUNCTION__, 
+      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host. Retry in %d seconds.", __FUNCTION__,
                 m_initRetryInterval/1000);
     }
 
     return;
   }
- 
-  // reset the retry interval after a successful connect 
+
+  // reset the retry interval after a successful connect
   m_initRetryInterval = INIT_RETRY_INTERVAL;
 
   // Start a new session
@@ -164,14 +164,14 @@ bool XLCDproc::IsConnected()
 
 void XLCDproc::SetBackLight(int iLight)
 {
-  if (sockfd > 0) 
-  { 
-    //Build command 
-    CStdString cmd; 
+  if (sockfd > 0)
+  {
+    //Build command
+    CStdString cmd;
 
     if (iLight == 0) {
       m_bStop = true;
-      cmd = "screen_set xbmc -backlight off\n"; 
+      cmd = "screen_set xbmc -backlight off\n";
       cmd.append("widget_del xbmc line1\n");
       cmd.append("widget_del xbmc line2\n");
       cmd.append("widget_del xbmc line3\n");
@@ -195,11 +195,11 @@ void XLCDproc::SetBackLight(int iLight)
         cmd.append("widget_add xbmc line4 string\n");
       }
     }
- 
-    //Send to server 
-    if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
-      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__); 
-  } 
+
+    //Send to server
+    if (write(sockfd,cmd.c_str(),cmd.size()) < 0)
+      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
+  }
 }
 void XLCDproc::SetContrast(int iContrast)
 {
@@ -214,39 +214,39 @@ void XLCDproc::Stop()
   m_bStop = true;
 }
 
-void XLCDproc::Suspend() 
-{ 
-  if (!m_bStop) 
-  { 
-    if (sockfd > 0) 
-    { 
-      //Build command to suspend screen 
-      CStdString cmd; 
-      cmd = "screen_set xbmc -priority hidden\n"; 
- 
-      //Send to server 
-      if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
-        CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__); 
-    } 
-  } 
-} 
- 
-void XLCDproc::Resume() 
-{ 
-  if (!m_bStop) 
-  { 
-    if (sockfd > 0) 
-    { 
-      //Build command to resume screen 
-      CStdString cmd; 
-      cmd = "screen_set xbmc -priority info\n"; 
- 
-      //Send to server 
-      if (write(sockfd,cmd.c_str(),cmd.size()) < 0) 
-        CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__); 
-    } 
-  } 
-} 
+void XLCDproc::Suspend()
+{
+  if (!m_bStop)
+  {
+    if (sockfd > 0)
+    {
+      //Build command to suspend screen
+      CStdString cmd;
+      cmd = "screen_set xbmc -priority hidden\n";
+
+      //Send to server
+      if (write(sockfd,cmd.c_str(),cmd.size()) < 0)
+        CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
+    }
+  }
+}
+
+void XLCDproc::Resume()
+{
+  if (!m_bStop)
+  {
+    if (sockfd > 0)
+    {
+      //Build command to resume screen
+      CStdString cmd;
+      cmd = "screen_set xbmc -priority info\n";
+
+      //Send to server
+      if (write(sockfd,cmd.c_str(),cmd.size()) < 0)
+        CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
+    }
+  }
+}
 
 void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 {
@@ -267,7 +267,7 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   //else if the string doesn't fit the display, lcdproc will scroll it, so we need a space
   else if (strLineLong.size() > m_iColumns)
     strLineLong += " ";
-  
+
   if (strLineLong != m_strLine[iLine])
   {
     int ln = iLine + 1;

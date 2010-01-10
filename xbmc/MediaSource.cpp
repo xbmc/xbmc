@@ -96,7 +96,7 @@ void AddOrReplace(VECSOURCES& sources, const CMediaSource& source)
   unsigned int i;
   for( i=0;i<sources.size();++i )
   {
-    if (sources[i].strPath.Equals(source.strPath)) 
+    if (sources[i].strPath.Equals(source.strPath))
     {
       sources[i] = source;
       break;

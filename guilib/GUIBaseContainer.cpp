@@ -735,7 +735,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
         if (item.get() == lastItem)
           m_lastItem = lastItem;
       }
-      if (updateItems && item->HasProperties()) 
+      if (updateItems && item->HasProperties())
       { // has info, so update it
         CStdString info = item->GetProperty("label");
         if (!info.IsEmpty()) item->SetLabel(CGUIInfoLabel::GetLabel(info));
@@ -819,13 +819,19 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
   if (!m_wasReset)
   {
-    g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
+    SetContainerMoving(offset - m_offset);
     if (m_scrollSpeed)
       m_scrollTimer.Start();
     else
       m_scrollTimer.Stop();
   }
   m_offset = offset;
+}
+
+void CGUIBaseContainer::SetContainerMoving(int direction)
+{
+  if (direction)
+    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollTimer.IsRunning());
 }
 
 void CGUIBaseContainer::UpdateScrollOffset()
@@ -926,7 +932,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
           {
             newItem->m_strPath   += " , ";
           }
-          newItem->m_strPath += (*it).m_action;          
+          newItem->m_strPath += (*it).m_action;
         }
         newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
         newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));

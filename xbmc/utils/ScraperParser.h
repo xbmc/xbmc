@@ -24,6 +24,7 @@
 
 #include <vector>
 #include "StdString.h"
+#include "DateTime.h"
 
 #define MAX_SCRAPER_BUFFERS 20
 
@@ -48,13 +49,14 @@ public:
   const CStdString GetLanguage() { return m_language; }
   const CStdString GetFramework() { return m_framework; }
   const CStdString GetDate() { return m_date; }
+  const CStdString GetFilename() { return m_strFile; }
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag, const CScraperSettings* pSettings=NULL);
   bool HasFunction(const CStdString& strTag);
   bool RequiresSettings() { return m_requiressettings; }
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
-  static void ClearCache();
+  void ClearCache();
 
 private:
   bool LoadFromXML();
@@ -77,6 +79,7 @@ private:
   const char* m_framework;
   const char* m_date;
   const char* m_SearchStringEncoding;
+  CDateTimeSpan m_persistence;
   bool m_requiressettings;
 
   CStdString m_strFile;

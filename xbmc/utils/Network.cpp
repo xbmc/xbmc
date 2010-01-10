@@ -185,11 +185,11 @@ void CNetwork::StopServices(bool bWait)
 #endif
 #ifdef HAS_ZEROCONF
     g_application.StopZeroconf();
-#endif      
+#endif
     CLastfmScrobbler::GetInstance()->Term();
     CLibrefmScrobbler::GetInstance()->Term();
     // smb.Deinit(); if any file is open over samba this will break.
-  
+
     g_rssManager.Stop();
   }
 

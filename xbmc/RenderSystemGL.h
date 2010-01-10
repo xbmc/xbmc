@@ -57,12 +57,12 @@ public:
   virtual void RestoreHardwareTransform();
 
   virtual bool TestRender();
-  
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl() = 0;
   void CalculateMaxTexturesize();
-  
+
   int        m_iVSyncMode;
   int        m_iVSyncErrors;
   int64_t    m_iSwapStamp;

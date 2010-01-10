@@ -57,7 +57,7 @@ void CGUIAudioManager::Initialize(int iDevice)
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return;
-  
+
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
     CSingleLock lock(m_cs);

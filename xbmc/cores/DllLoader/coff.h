@@ -1,6 +1,6 @@
 #ifndef __COFF_H_
 #define __COFF_H_
-#pragma once 
+#pragma once
 
 #include "system.h"
 
@@ -64,7 +64,7 @@ typedef struct
 COFF_FileHeader_t;
 
 /*
- *      Machine Types          
+ *      Machine Types
  *          Spec section 3.3.1
  *              (only i386 relevant for us)
  */
@@ -73,7 +73,7 @@ COFF_FileHeader_t;
 
 #ifndef IMAGE_FILE_MACHINE_I386
 #define IMAGE_FILE_MACHINE_I386     0x14c
-#endif 
+#endif
 
 
 
@@ -186,7 +186,7 @@ typedef struct
 }
 WindowsHeaderPlus_t;
 
-#if !defined (_XBOX) 
+#if !defined (_XBOX)
 /*
 #define IMAGE_SUBSYSTEM_UNKNOWN                     0
 #define IMAGE_SUBSYSTEM_NATIVE                      1
@@ -197,7 +197,7 @@ WindowsHeaderPlus_t;
 #define IMAGE_SUBSYSTEM_EFI_APPLICATION             10
 #define IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER     11
 #define IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER          12
- 
+
 #define IMAGE_DLLCHARACTERISTICS_NO_BIND            0x0800
 #define IMAGE_DLLCHARACTERISTICS_WDM_DRIVER         0x2000
 #define IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE  0X8000
@@ -358,8 +358,8 @@ SymbolTable_t;
 #define IMAGE_SYM_UNDEFINED     0
 #define IMAGE_SYM_ABSOLUTE      0xFFFF
 #define IMAGE_SYM_DEBUG         0xFFFE
- 
- 
+
+
 #define IMAGE_SYM_TYPE_NULL         0
 #define IMAGE_SYM_TYPE_VOID         1
 #define IMAGE_SYM_TYPE_CHAR         2
@@ -376,13 +376,13 @@ SymbolTable_t;
 #define IMAGE_SYM_TYPE_WORD         13
 #define IMAGE_SYM_TYPE_UINT         14
 #define IMAGE_SYM_TYPE_DWORD        15
- 
+
 #define IMAGE_SYM_DWORD_NULL        0
 #define IMAGE_SYM_DWORD_POINTER     1
 #define IMAGE_SYM_DWORD_FUNCTION    2
 #define IMAGE_SYM_DWORD_ARRAY       3
- 
- 
+
+
 #define IMAGE_SYM_CLASS_END_OF_FUNCTION         0xFF
 #define IMAGE_SYM_CLASS_NULL                    0
 #define IMAGE_SYM_CLASS_AUTOMATIC               1

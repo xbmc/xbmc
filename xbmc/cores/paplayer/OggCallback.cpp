@@ -20,7 +20,7 @@
  */
 
 #include "OggCallback.h"
-  
+
 COggCallback::COggCallback(XFILE::CFile& file) : m_file(file)
 {
 }

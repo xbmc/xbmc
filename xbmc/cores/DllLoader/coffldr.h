@@ -1,5 +1,5 @@
 #ifndef __COFFLDR_H_
-#define __COFFLDR_H_ 
+#define __COFFLDR_H_
 
 /*
  *      Copyright (C) 2005-2008 Team XBMC

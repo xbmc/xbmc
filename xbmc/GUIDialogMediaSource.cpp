@@ -481,7 +481,7 @@ void CGUIDialogMediaSource::UpdateButtons()
 {
   if (!m_paths->Size()) // sanity
     return;
-  
+
   CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->m_strPath.IsEmpty() && !m_name.IsEmpty());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_REMOVE, m_paths->Size() > 1);
   // name

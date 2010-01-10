@@ -405,7 +405,7 @@ case TMSG_POWERDOWN:
       g_graphicsContext.ToggleFullScreenRoot();
       g_graphicsContext.Unlock();
       break;
-      
+
     case TMSG_MINIMIZE:
       g_application.Minimize();
       break;
@@ -518,7 +518,7 @@ case TMSG_POWERDOWN:
           pDialog->Show_Internal();
       }
       break;
-      
+
     case TMSG_GUI_DIALOG_CLOSE:
       {
         CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
@@ -568,7 +568,7 @@ case TMSG_POWERDOWN:
         share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
         g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
       }
-      break; 
+      break;
 
     case TMSG_OPTICAL_UNMOUNT:
       {
@@ -577,7 +577,7 @@ case TMSG_POWERDOWN:
         share.strName = share.strPath;
         g_mediaManager.RemoveAutoSource(share);
       }
-      break; 
+      break;
 #endif
   }
 }
@@ -854,17 +854,17 @@ void CApplicationMessenger::Render()
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun) 
-{ 
+void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)
+{
   ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT};
   tMsg.strParam = device;
   tMsg.dwParam1 = (DWORD)bautorun;
   SendMessage(tMsg, false);
-} 
- 
-void CApplicationMessenger::OpticalUnMount(CStdString device) 
-{ 
+}
+
+void CApplicationMessenger::OpticalUnMount(CStdString device)
+{
   ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
   tMsg.strParam = device;
   SendMessage(tMsg, false);
-} 
+}

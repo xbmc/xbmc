@@ -66,10 +66,10 @@ bool COggTag::Read(const CStdString& strFile1)
   CFile file;
   if (!file.Open(strFile))
     return false;
-  
+
   COggCallback callback(file);
   ov_callbacks oggIOCallbacks = callback.Get(strFile);
-  
+
   OggVorbis_File vf;
   //  open ogg file with decoder
   if (m_dll.ov_open_callbacks(&callback, &vf, NULL, 0, oggIOCallbacks)!=0)
@@ -108,7 +108,7 @@ int COggTag::GetStreamCount(const CStdString& strFile)
   CFile file;
   if (!file.Open(strFile))
     return false;
-  
+
   COggCallback callback(file);
   ov_callbacks oggIOCallbacks = callback.Get(strFile);
   OggVorbis_File vf;

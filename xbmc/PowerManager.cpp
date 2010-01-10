@@ -126,7 +126,7 @@ void CPowerManager::Initialize()
 
   g_guiSettings.SetInt("powermanagement.shutdownstate", defaultShutdown);
 }
-  
+
 bool CPowerManager::Powerdown()
 {
   return CanPowerdown() ? m_instance->Powerdown() : false;
@@ -142,7 +142,7 @@ bool CPowerManager::Suspend()
     g_Keyboard.ResetState();
     return m_instance->Suspend();
   }
-  
+
   return false;
 }
 bool CPowerManager::Hibernate()

@@ -62,7 +62,7 @@ namespace OVERLAY {
     struct VERTEX
     {
        GLfloat u, v;
-       GLubyte r, g, b, a;    
+       GLubyte r, g, b, a;
        GLfloat x, y, z;
     };
 
@@ -72,7 +72,7 @@ namespace OVERLAY {
    GLuint m_texture;
    float  m_u;
    float  m_v;
-  }; 
+  };
 
 }
 

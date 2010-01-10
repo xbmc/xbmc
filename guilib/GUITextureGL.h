@@ -1,6 +1,6 @@
 /*!
 \file GUITextureGL.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUITEXTUREGL_H

@@ -211,9 +211,9 @@ void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth, bool force
   // remove any trailing blank lines
   while (!m_lines.empty() && m_lines.back().m_text.empty())
     m_lines.pop_back();
-  
+
   BidiTransform(m_lines, forceLTRReadingOrder);
-  
+
   // and cache the width and height for later reading
   CalcTextExtent();
 }
@@ -226,18 +226,18 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
     CGUIString &line = lines[i];
 
     // reserve enough space in the flipped text
-    vecText flippedText; 
+    vecText flippedText;
     flippedText.reserve(line.m_text.size());
 
     character_t sectionStyle = 0xffff0000; // impossible to achieve
     CStdStringW sectionText;
     for (vecText::iterator it = line.m_text.begin(); it != line.m_text.end(); ++it)
-    { 
+    {
       character_t style = *it & 0xffff0000;
-      if (style != sectionStyle) 
+      if (style != sectionStyle)
       {
         if (!sectionText.IsEmpty())
-        { // style has changed, bidi flip text 
+        { // style has changed, bidi flip text
           CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
           for (unsigned int j = 0; j < sectionFlipped.size(); j++)
             flippedText.push_back(sectionStyle | sectionFlipped[j]);

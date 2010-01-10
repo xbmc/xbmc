@@ -401,7 +401,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
     g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
-    
+
   // setup any requested authentication
   if( m_ftpauth.length() > 0 )
   {
@@ -783,7 +783,7 @@ bool CFileCurl::Open(const CURL& url)
 {
 
   m_opened = true;
-  
+
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
@@ -863,7 +863,7 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
   {
     if (m_fileSize != 0)
       CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
-      
+
     return false;
   }
 
@@ -1053,8 +1053,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   {
     char content[255];
     if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
-    { 
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL); 
+    {
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
       return -1;
     }
@@ -1187,7 +1187,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         }
 
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
-        
+
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);

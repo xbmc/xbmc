@@ -196,7 +196,7 @@ public:
   bool ExecuteAction(CGUIActionDescriptor action);
 
   static bool OnEvent(XBMC_Event& newEvent);
-  
+
 
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
@@ -216,10 +216,10 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;
 #endif
-  
+
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif

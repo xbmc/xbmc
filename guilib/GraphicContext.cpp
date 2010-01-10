@@ -64,7 +64,7 @@ void CGraphicContext::SetOrigin(float x, float y)
     m_origins.push(CPoint(x,y) + m_origins.top());
   else
     m_origins.push(CPoint(x,y));
-  
+
   AddTransform(TransformMatrix::CreateTranslation(x, y));
 }
 
@@ -81,19 +81,19 @@ bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
   CPoint origin;
   if (m_origins.size())
     origin = m_origins.top();
-  
+
   // ok, now intersect with our old clip region
   CRect rect(x, y, x + w, y + h);
   rect += origin;
   if (m_clipRegions.size())
-  { 
+  {
     // intersect with original clip region
     rect.Intersect(m_clipRegions.top());
   }
-  
+
   if (rect.IsEmpty())
     return false;
-  
+
   m_clipRegions.push(rect);
 
   // here we could set the hardware clipping, if applicable
@@ -268,7 +268,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
     else if(g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
     else
-      g_graphicsContext.SetVideoResolution(RES_DESKTOP);    
+      g_graphicsContext.SetVideoResolution(RES_DESKTOP);
   }
   else
     g_graphicsContext.SetVideoResolution(RES_WINDOW);
@@ -299,14 +299,14 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
   {
     return true;
   }
-  
+
   return false;
 }
 
 void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 {
   RESOLUTION lastRes = m_Resolution;
-  
+
   // If the user asked us to guess, go with desktop
   if (res == RES_AUTORES || !IsValidResolution(res))
   {
@@ -318,7 +318,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   {
     return;
   }
-  
+
   if (res >= RES_DESKTOP)
   {
     g_advancedSettings.m_fullScreen = true;
@@ -331,12 +331,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   }
 
   Lock();
-  
+
   m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
   m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   m_iScreenId     = g_settings.m_ResInfo[res].iScreen;
   m_Resolution    = res;
-  
+
   if (g_advancedSettings.m_fullScreen)
   {
 #if defined (__APPLE__) || defined (_WIN32)
@@ -525,7 +525,7 @@ void CGraphicContext::ApplyStateBlock()
   g_Windowing.ApplyStateBlock();
 }
 
-void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
 {
   Lock();
   m_windowResolution = res;
@@ -569,21 +569,20 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
 
     m_guiScaleX = fFromWidth / fToWidth;
     m_guiScaleY = fFromHeight / fToHeight;
-    TransformMatrix windowOffset = TransformMatrix::CreateTranslation(posX, posY);
     TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
-    m_guiTransform = guiOffset * guiScaler * windowOffset;
+    m_guiTransform = guiOffset * guiScaler;
   }
   else
   {
-    m_guiTransform = TransformMatrix::CreateTranslation(posX, posY);
+    m_guiTransform.Reset();
     m_guiScaleX = 1.0f;
     m_guiScaleY = 1.0f;
   }
   // reset our origin and camera
   while (m_origins.size())
     m_origins.pop();
-  m_origins.push(CPoint(posX, posY));
+  m_origins.push(CPoint(0, 0));
   while (m_cameras.size())
     m_cameras.pop();
   m_cameras.push(CPoint(0.5f*m_iScreenWidth, 0.5f*m_iScreenHeight));
@@ -593,10 +592,10 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float pos
   Unlock();
 }
 
-void CGraphicContext::SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
+void CGraphicContext::SetRenderingResolution(RESOLUTION res, bool needsScaling)
 {
   Lock();
-  SetScalingResolution(res, posX, posY, needsScaling);
+  SetScalingResolution(res, needsScaling);
   UpdateCameraPosition(m_cameras.top());
   Unlock();
 }
@@ -766,7 +765,7 @@ void CGraphicContext::ClipToViewWindow()
 
 void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
 {
-  res.clear();  
+  res.clear();
 
   res.push_back(RES_WINDOW);
   res.push_back(RES_DESKTOP);

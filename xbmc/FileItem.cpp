@@ -770,7 +770,7 @@ bool CFileItem::IsKaraoke() const
 {
   if ( !IsAudio() || IsLastFM() || IsShoutCast())
     return false;
- 
+
   return CKaraokeLyricsFactory::HasLyrics( m_strPath );
 }
 
@@ -2315,7 +2315,7 @@ void CFileItemList::Stack()
 
     // set property
     item1->SetProperty("isstacked", "1");
-    
+
     // skip folders, nfo files, playlists
     if (item1->m_bIsFolder
       || item1->IsParentFolder()
@@ -2347,7 +2347,7 @@ void CFileItemList::Stack()
     VECCREGEXP::iterator  expr        = stackRegExps.begin();
 
     CUtil::Split(item1->m_strPath, filePath, file1);
-    int j; 
+    int j;
     while (expr != stackRegExps.end())
     {
       if (expr->RegFind(file1, offset) != -1)
@@ -2960,7 +2960,7 @@ bool CFileItem::CacheLocalFanart() const
   // we don't have a cached image, so let's see if the user has a local image, and cache it if so
   CStdString localFanart(GetLocalFanart());
   if (!localFanart.IsEmpty())
-    return CPicture::CacheImage(localFanart, cachedFanart);
+    return CPicture::CacheFanart(localFanart, cachedFanart);
   return false;
 }
 

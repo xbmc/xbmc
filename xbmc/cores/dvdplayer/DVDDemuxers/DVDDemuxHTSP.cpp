@@ -70,7 +70,7 @@ public:
   CDemuxStreamAudioHTSP(CDVDDemuxHTSP *parent, const string& codec)
     : m_parent(parent)
     , m_codec(codec)
-    
+
   {}
   void GetStreamInfo(string& strInfo)
   {

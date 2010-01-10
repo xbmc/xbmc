@@ -206,16 +206,16 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-bool CGUIWindowVisualisation::OnMouse(const CPoint &point)
+bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
     CAction action;
     action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // no control found to absorb this click - toggle the track INFO
     CAction action;
     action.id = ACTION_PAUSE;

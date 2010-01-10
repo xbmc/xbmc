@@ -185,27 +185,27 @@ public:
     }
 
     // PLT_MediaServer methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
-                                        const char*                   object_id, 
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action,
+                                        const char*                   object_id,
                                         const char*                   filter,
                                         NPT_UInt32                    starting_index,
                                         NPT_UInt32                    requested_count,
                                         const NPT_List<NPT_String>&   sort_criteria,
                                         const PLT_HttpRequestContext& context);
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
-                                              const char*                   object_id, 
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action,
+                                              const char*                   object_id,
                                               const char*                   filter,
                                               NPT_UInt32                    starting_index,
                                               NPT_UInt32                    requested_count,
-                                              const NPT_List<NPT_String>&   sort_criteria, 
+                                              const NPT_List<NPT_String>&   sort_criteria,
                                               const PLT_HttpRequestContext& context);
-    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
-                                         const char*                   container_id, 
+    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action,
+                                         const char*                   container_id,
                                          const char*                   search_criteria,
                                          const char*                   filter,
                                          NPT_UInt32                    starting_index,
                                          NPT_UInt32                    requested_count,
-                                         const NPT_List<NPT_String>&   sort_criteria, 
+                                         const NPT_List<NPT_String>&   sort_criteria,
                                          const PLT_HttpRequestContext& context);
 
     // PLT_FileMediaServer methods
@@ -254,8 +254,8 @@ private:
 
         return file_path.Left(index);
     }
-    static NPT_String GetProtocolInfo(const CFileItem& item, 
-                                      const char* protocol, 
+    static NPT_String GetProtocolInfo(const CFileItem& item,
+                                      const char* protocol,
                                       const PLT_HttpRequestContext* context = NULL);
 
 public:
@@ -269,7 +269,7 @@ NPT_UInt32 CUPnPServer::m_MaxReturnedItems = 0;
 |   CUPnPServer::GetContentType
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetContentType(const char* filename, 
+CUPnPServer::GetContentType(const char* filename,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String ext = CUtil::GetExtension(filename).c_str();
@@ -283,7 +283,7 @@ CUPnPServer::GetContentType(const char* filename,
 |   CUPnPServer::GetContentType
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetContentType(const CFileItem& item, 
+CUPnPServer::GetContentType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String ext = CUtil::GetExtension(item.m_strPath).c_str();
@@ -333,7 +333,7 @@ CUPnPServer::GetContentType(const CFileItem& item,
 |   CUPnPServer::GetProtocolInfo
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetProtocolInfo(const CFileItem&              item, 
+CUPnPServer::GetProtocolInfo(const CFileItem&              item,
                              const char*                   protocol,
                              const PLT_HttpRequestContext* context /* = NULL */)
 {
@@ -538,7 +538,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         resource.m_Size = item.m_dwSize;
         if (resource.m_Size == 0) {
             struct __stat64 info;
-            if(CFile::Stat((const char*)file_path, &info) >= 0 && info.st_size >= 0) 
+            if(CFile::Stat((const char*)file_path, &info) >= 0 && info.st_size >= 0)
               resource.m_Size = info.st_size;
         }
 
@@ -850,8 +850,8 @@ static NPT_String TranslateWMPObjectId(NPT_String id)
 |   CUPnPServer::OnBrowseMetadata
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action, 
-                              const char*                   object_id, 
+CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
+                              const char*                   object_id,
                               const char*                   filter,
                               NPT_UInt32                    starting_index,
                               NPT_UInt32                    requested_count,
@@ -929,8 +929,8 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
 |   CUPnPServer::OnBrowseDirectChildren
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action, 
-                                    const char*                   object_id, 
+CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
+                                    const char*                   object_id,
                                     const char*                   filter,
                                     NPT_UInt32                    starting_index,
                                     NPT_UInt32                    requested_count,
@@ -961,7 +961,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             item->SetLabel("Video Library");
             item->SetLabelPreformated(true);
             items.Add(item);
-          
+
         } else {
             CDirectory::GetDirectory((const char*)parent_id, items);
         }
@@ -976,8 +976,8 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     // passed
     NPT_String action_name = action->GetActionDesc().GetName();
     return BuildResponse(
-        action, 
-        items, 
+        action,
+        items,
         filter,
         starting_index,
         requested_count,
@@ -1048,7 +1048,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
 |   FindSubCriteria
 +---------------------------------------------------------------------*/
 static
-NPT_String 
+NPT_String
 FindSubCriteria(NPT_String criteria, const char* name)
 {
     NPT_String result;
@@ -1071,8 +1071,8 @@ FindSubCriteria(NPT_String criteria, const char* name)
 |   CUPnPServer::OnSearchContainer
 +---------------------------------------------------------------------*/
 NPT_Result
-CUPnPServer::OnSearchContainer(PLT_ActionReference&          action, 
-                               const char*                   object_id, 
+CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
+                               const char*                   object_id,
                                const char*                   search_criteria,
                                const char*                   filter,
                                NPT_UInt32                    starting_index,
@@ -1080,7 +1080,7 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                                const NPT_List<NPT_String>&   sort_criteria,
                                const PLT_HttpRequestContext& context)
 {
-    CLog::Log(LOGDEBUG, "Received Search request for object '%s' with search '%s'", 
+    CLog::Log(LOGDEBUG, "Received Search request for object '%s' with search '%s'",
         (const char*)object_id,
         (const char*)search_criteria);
 
@@ -1263,7 +1263,7 @@ CUPnPServer::ServeFile(NPT_HttpRequest&              request,
         NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
         for (;url;url++) {
             output += PLT_FileMediaServer::BuildSafeResourceUri(
-                          m_FileBaseUri, 
+                          m_FileBaseUri,
                           context.GetLocalAddress().GetIpAddress().ToString(),
                           *url);
             output += "\n\r";
@@ -1715,7 +1715,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
 
         PLT_MediaItemResource* res = object->m_Resources.GetFirstItem();
         for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
-            if(object->m_Resources[i].m_Uri == uri) { 
+            if(object->m_Resources[i].m_Uri == uri) {
                 res = &object->m_Resources[i];
                 break;
             }
@@ -1738,7 +1738,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         item.SetLabel((const char*)object->m_Title);
         item.SetLabelPreformated(true);
         item.SetThumbnailImage((const char*)object->m_ExtraInfo.album_art_uri);
-        if (object->m_ObjectClass.type.StartsWith("object.item.audioItem")) {            
+        if (object->m_ObjectClass.type.StartsWith("object.item.audioItem")) {
             if(NPT_SUCCEEDED(CUPnP::PopulateTagFromObject(*item.GetMusicInfoTag(), *object, res)))
                 item.SetLabelPreformated(false);
         } else if (object->m_ObjectClass.type.StartsWith("object.item.videoItem")) {

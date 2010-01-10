@@ -52,12 +52,12 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
 {
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
 
-  if ((requestedMethod == RENDER_METHOD_AUTO || 
+  if ((requestedMethod == RENDER_METHOD_AUTO ||
        requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
     CRYSTALHD_CODEC_TYPE codec_type;
     CRYSTALHD_STREAM_TYPE stream_type;
-    
+
     switch (hints.codec)
     {
       case CODEC_ID_MPEG2VIDEO:
@@ -89,7 +89,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
     }
-    
+
     if (m_Device && !m_Device->OpenDecoder(stream_type, codec_type))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
@@ -97,11 +97,11 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     }
 
     m_DropPictures = false;
-    
+
     CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
     return true;
   }
-  
+
   return false;
 }
 
@@ -120,7 +120,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   bool annexbfiltered = false;
 
   m_Device->BusyListPop();
-  
+
   // in NULL is passed, DVDPlayer wants us to flush any internal picture frame.
   // we don't have internal picture frames so just return.
   if (!pData)
@@ -130,7 +130,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   {
     int outbuf_size = 0;
     uint8_t *outbuf = NULL;
-    
+
     h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
     if (outbuf)
     {
@@ -139,7 +139,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
       iSize = outbuf_size;
     }
   }
-  
+
   if (pData)
   {
     if ( m_Device->AddInput(pData, iSize, pts) )
@@ -154,17 +154,17 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
       Sleep(10);
     }
   }
-    
+
   if (m_Device->GetInputCount() < 10)
     ret |= VC_BUFFER;
 
   if (!m_DropPictures)
     Sleep(20);
-      
+
   // Handle Output
   if (m_Device->GetReadyCount())
     ret |= VC_PICTURE;
-    
+
   if (!ret)
     ret = VC_ERROR;
 
@@ -173,7 +173,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
-  CLog::Log(LOGDEBUG, "%s: Reset, flushing decoder.", __MODULE_NAME__);   
+  CLog::Log(LOGDEBUG, "%s: Reset, flushing decoder.", __MODULE_NAME__);
   m_Device->Flush();
 }
 
@@ -194,7 +194,7 @@ bool CDVDVideoCodecCrystalHD::init_h264_mp4toannexb_filter(CDVDStreamInfo &hints
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
-  
+
   m_sps_pps_data = NULL;
   m_sps_pps_size = 0;
 
@@ -255,7 +255,7 @@ void CDVDVideoCodecCrystalHD::alloc_and_copy(uint8_t **poutbuf,     int *poutbuf
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
-  
+
   #define CHD_WB32(p, d) { \
     ((uint8_t*)(p))[3] = (d); \
     ((uint8_t*)(p))[2] = (d) >> 8; \
@@ -289,7 +289,7 @@ bool CDVDVideoCodecCrystalHD::h264_mp4toannexb_filter(BYTE* pData, int iSize, ui
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
-  
+
   uint8_t   *buf = pData;
   int       buf_size = iSize;
   uint8_t   unit_type;
@@ -310,7 +310,7 @@ bool CDVDVideoCodecCrystalHD::h264_mp4toannexb_filter(BYTE* pData, int iSize, ui
     // prepend only to the first type 5 NAL unit of an IDR picture
     if (m_sps_pps_context.first_idr && unit_type == 5)
     {
-      alloc_and_copy(poutbuf, poutbuf_size, 
+      alloc_and_copy(poutbuf, poutbuf_size,
         m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
       m_sps_pps_context.first_idr = 0;
     }

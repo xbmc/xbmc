@@ -68,7 +68,7 @@ void CDBusUtil::GetAll(PropertyMap& properties, const char *destination, const c
   CStdString result;
   if (reply)
   {
-    DBusMessageIter iter;        
+    DBusMessageIter iter;
     if (dbus_message_iter_init(reply, &iter))
     {
       if (!dbus_message_has_signature(reply, "a{sv}"))

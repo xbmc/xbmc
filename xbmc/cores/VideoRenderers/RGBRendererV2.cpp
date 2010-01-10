@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "RGBRendererV2.h"
 
@@ -127,7 +127,7 @@ bool CRGBRendererV2::Configure(unsigned int width, unsigned int height, unsigned
 {
   if(!CXBoxRenderer::Configure(width, height, d_width, d_height, fps, flags))
     return false;
-  
+
   // create our lookup textures for yv12->rgb translation,
   if(!CreateLookupTextures(m_yuvcoef, m_yuvrange) )
     return false;
@@ -144,7 +144,7 @@ void CRGBRendererV2::Render(DWORD flags)
     RenderLowMem(flags);
   }
   else
-  {    
+  {
     int index = m_iYV12RenderBuffer;
 
     if( !(flags & RENDER_FLAG_NOLOCK) )
@@ -216,8 +216,8 @@ void CRGBRendererV2::Render(DWORD flags)
     m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );    
-    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );    
+    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+    m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
 
     DWORD alphaenabled;
     m_pD3DDevice->GetRenderState( D3DRS_ALPHABLENDENABLE, &alphaenabled );
@@ -246,7 +246,7 @@ void CRGBRendererV2::Render(DWORD flags)
     {
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_ODD],
-          m_444PTextureFull, // use a downscaled motion value from the full frame, 
+          m_444PTextureFull, // use a downscaled motion value from the full frame,
           p444PSourceField,
           rsf, rs, rsf,
           1, 1,
@@ -257,7 +257,7 @@ void CRGBRendererV2::Render(DWORD flags)
     {
       InterleaveYUVto444P(
           m_YUVTexture[index][FIELD_EVEN],
-          m_444PTextureFull, // use a downscaled motion value from the full frame, 
+          m_444PTextureFull, // use a downscaled motion value from the full frame,
           p444PSourceField,
           rsf, rs, rsf,
           1, 1,
@@ -271,7 +271,7 @@ void CRGBRendererV2::Render(DWORD flags)
 
     //Okey, when the gpu is done with the textures here, they are free to be modified again
     if( !(flags & RENDER_FLAG_NOUNLOCK) )
-      m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);    
+      m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);
 
     // Now perform the YUV->RGB conversion in a single pass, and render directly to the screen
     m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f );
@@ -280,7 +280,7 @@ void CRGBRendererV2::Render(DWORD flags)
     {
       // NOTICE, field motion can have been replaced by downscaled frame motion
       // this method uses the difference between fields to estimate motion
-      // it work sorta, but it can't for example handle horizontal 
+      // it work sorta, but it can't for example handle horizontal
       // hairlines wich only exist in one field, they will flicker
       // as they get considered motion
 
@@ -295,7 +295,7 @@ void CRGBRendererV2::Render(DWORD flags)
         m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
         m_pD3DDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
         m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, m_motionpass);
-        
+
         if(flags & RENDER_FLAG_ODD)
           RenderYUVtoRGB(m_444PTextureField, rsf, rd, 0.0f, 0.25);
         else
@@ -326,7 +326,7 @@ void CRGBRendererV2::Render(DWORD flags)
       m_pD3DDevice->SetRenderState(D3DRS_ALPHAREF, m_motionpass);
       RenderYUVtoRGB(m_444PTextureFull, rs, rd, 0.0f, 0.0f);
     }
-     
+
     m_pD3DDevice->SetScreenSpaceOffset(0.0f, 0.0f);
     m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, alphaenabled );
     m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE );
@@ -366,7 +366,7 @@ unsigned int CRGBRendererV2::PreInit()
       // interleave our data
       "xmma discard,discard,r0, t0,c0, t1,c1\n"
       "mad r0, t2,c2,r0\n"
-      
+
       "sub_x4 r1, r0,t3\n"      // calculate the differens in this pixel values
       "dp3    r1.rgba, r1,r1\n" // take the absolute of the "yuv" difference vector
 //      "add_d2 r1.a, r1, t3\n"   // average with previouse value to avoid minor changes
@@ -512,7 +512,7 @@ bool CRGBRendererV2::CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &r
         // convert to -0.5 .. 0.5 ( -127.5 .. 127.5 )
         float fV = (v - range.v_min) * 255.f / (range.v_max - range.v_min) - 127.5f;
         float fU = (u - range.u_min) * 255.f / (range.u_max - range.u_min) - 127.5f;
-        
+
         fU = CLAMP(fU, -127.5f, 127.5f);
         fV = CLAMP(fV, -127.5f, 127.5f);
 
@@ -574,7 +574,7 @@ void CRGBRendererV2::InterleaveYUVto444P(
       YUVPLANES          pSources,
       LPDIRECT3DTEXTURE8 pAlpha,
       LPDIRECT3DSURFACE8 pTarget,
-      RECT &source, RECT &sourcealpha, RECT &target,      
+      RECT &source, RECT &sourcealpha, RECT &target,
       unsigned cshift_x,  unsigned cshift_y,
       float    offset_x,  float    offset_y,
       float    coffset_x, float    coffset_y)
@@ -662,7 +662,7 @@ void CRGBRendererV2::InterleaveYUVto444P(
 
 void CRGBRendererV2::RenderYUVtoRGB(
       D3DBaseTexture* pSource,
-      RECT &source, RECT &target, 
+      RECT &source, RECT &target,
       float offset_x, float offset_y)
 {
     m_pD3DDevice->SetTexture( 0, pSource);

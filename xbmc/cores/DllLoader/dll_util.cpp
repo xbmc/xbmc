@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "utils/log.h"
 #include "dll_util.h"
 
@@ -56,7 +56,7 @@ unsigned char dummy_func[] = {
 
 /* Create a new callable function
  * This allocates a few bytes with the next content
- * 
+ *
  * 1 function in assembly code (dummy_func)
  * 2 datapointer               (pointer to dll string)
  * 3 datapointer               (pointer to function string)

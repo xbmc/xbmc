@@ -29,14 +29,18 @@
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "ScraperSettings.h"
+#include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
 #include "AdvancedSettings.h"
+#include "FileItem.h"
 
 #include <sstream>
 #include <cstring>
 
 using namespace std;
+using namespace XFILE;
+using namespace DIRECTORY;
 
 CScraperParser::CScraperParser()
 {
@@ -114,7 +118,7 @@ bool CScraperParser::LoadFromXML()
 {
   if (!m_document)
     return false;
-  
+
   CStdString strPath;
   CUtil::GetDirectory(m_strFile,strPath);
 
@@ -128,7 +132,9 @@ bool CScraperParser::LoadFromXML()
     m_language = m_pRootElement->Attribute("language");
     m_framework = m_pRootElement->Attribute("framework");
     m_date = m_pRootElement->Attribute("date");
-   
+    if (m_pRootElement->Attribute("cachePersistence"))
+      m_persistence.SetFromTimeString(m_pRootElement->Attribute("cachePersistence"));
+
     const char* requiressettings;
     m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
@@ -220,7 +226,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     if (sensitive)
       if (stricmp(sensitive,"yes") == 0)
         bInsensitive=false; // match case sensitive
-    
+
     CRegExp reg(bInsensitive);
     CStdString strExpression;
     if (pExpression->FirstChild())
@@ -507,8 +513,15 @@ void CScraperParser::ClearCache()
   // wipe cache
   CStdString strCachePath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers",strCachePath);
-  CUtil::WipeDir(strCachePath);
-  DIRECTORY::CDirectory::Create(strCachePath);
+  strCachePath = CUtil::AddFileToFolder(strCachePath,CUtil::GetFileName(m_strFile));
+  CFileItemList items;
+  CDirectory::GetDirectory(strCachePath,items);
+  for (int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_dateTime+m_persistence <= CDateTime::GetUTCDateTime())
+      CFile::Delete(items[i]->m_strPath);
+  }
+  CDirectory::Create(strCachePath);
 }
 
 void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)

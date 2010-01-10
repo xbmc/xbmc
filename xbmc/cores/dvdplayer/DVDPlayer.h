@@ -62,6 +62,7 @@ public:
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
   bool             inited;
+  bool             started; // has the player started
   const StreamType type;
   // stuff to handle starting after seek
   double   startpts;
@@ -82,6 +83,7 @@ public:
     hint.Clear();
     stream = NULL;
     inited = false;
+    started = false;
     if(startsync)
       startsync->Release();
     startsync = NULL;

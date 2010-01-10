@@ -145,9 +145,9 @@ CTextureMap::~CTextureMap()
 
 bool CTextureMap::Release()
 {
-  if (!m_texture.m_textures.size()) 
+  if (!m_texture.m_textures.size())
     return true;
-  if (!m_referenceCount) 
+  if (!m_referenceCount)
     return true;
 
   m_referenceCount--;
@@ -206,7 +206,7 @@ void CTextureMap::Add(CBaseTexture* texture, int delay)
   m_texture.Add(texture, delay);
 
   if (texture)
-    m_memUsage += sizeof(CTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4); 
+    m_memUsage += sizeof(CTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4);
 }
 
 /************************************************************************/
@@ -392,7 +392,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   int width = 0, height = 0;
   if (bundle >= 0)
   {
-    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, width, height)))  
+    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, width, height)))
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
       return 0;
@@ -413,7 +413,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   }
 
   if (!pTexture) return 0;
-  
+
   CTextureMap* pMap = new CTextureMap(strTextureName, width, height, 0);
   pMap->Add(pTexture, 100);
   m_vecTextures.push_back(pMap);
