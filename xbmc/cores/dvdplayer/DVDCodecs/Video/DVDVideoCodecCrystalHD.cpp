@@ -174,7 +174,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
   CLog::Log(LOGDEBUG, "%s: Reset, flushing decoder.", __MODULE_NAME__);
-  m_Device->Flush();
+  m_Device->Reset();
 }
 
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
