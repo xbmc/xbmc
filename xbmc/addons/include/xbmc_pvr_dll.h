@@ -9,6 +9,7 @@ extern "C"
   // Functions that your PVR client must implement, also you must implement the functions from
   // xbmc_addon_dll.h
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
+  PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* pProps);
   const char* GetBackendName();
   const char* GetBackendVersion();
   const char* GetConnectionString();
@@ -57,6 +58,7 @@ extern "C"
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
     pClient->GetProperties          = GetProperties;
+    pClient->GetStreamProperties    = GetStreamProperties;
     pClient->GetConnectionString    = GetConnectionString;
     pClient->GetBackendName         = GetBackendName;
     pClient->GetBackendVersion      = GetBackendVersion;

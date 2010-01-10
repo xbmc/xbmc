@@ -198,6 +198,23 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
   return PVR_ERROR_UNKOWN;
 }
 
+PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAMPROPS *props)
+{
+  CSingleLock lock(m_critSection);
+
+  try
+  {
+    return m_pStruct->GetStreamProperties(props);
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetStreamProperties occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+
+    /* Set all properties in a case of exception to not supported */
+  }
+  return PVR_ERROR_UNKOWN;
+}
+
 /**********************************************************
  * General PVR Functions
  */

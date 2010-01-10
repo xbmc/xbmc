@@ -30,6 +30,8 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDDemuxHTSP.h"
 #endif
+#include "DVDDemuxPVRClient.h"
+#include "PVRManager.h"
 
 using namespace std;
 
@@ -61,6 +63,19 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
       return NULL;
   }
 #endif
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
+    PVR_SERVERPROPS *pProps = g_PVRManager.GetCurrentClientProps();
+    if (pProps && pProps->HandleDemuxing)
+    {
+      auto_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
+      if(demuxer->Open(pInputStream))
+        return demuxer.release();
+      else
+        return NULL;
+    }
+  }
 
   auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
   if(demuxer->Open(pInputStream))

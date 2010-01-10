@@ -156,6 +156,21 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_SERVERPROPS;
 
   /**
+  * PVR Stream Properties
+  * Returned on request
+  */
+  typedef struct PVR_STREAMPROPS {
+#define PVR_STREAM_MAX_STREAMS 16
+    int nstreams;
+    struct PVR_STREAM {
+      int id;
+      int physid;
+      unsigned int codec_type;
+      unsigned int codec_id;
+    } stream[PVR_STREAM_MAX_STREAMS];
+  } ATTRIBUTE_PACKED PVR_STREAMPROPS; 
+
+  /**
   * EPG Channel Definition
   * Is used by the TransferChannelEntry function to inform XBMC that this
   * channel is present.
@@ -281,6 +296,7 @@ extern "C" {
   {
     /** PVR General Functions **/
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
+    PVR_ERROR (__cdecl* GetStreamProperties)(PVR_STREAMPROPS *props);
     const char* (__cdecl* GetBackendName)();
     const char* (__cdecl* GetBackendVersion)();
     const char* (__cdecl* GetConnectionString)();

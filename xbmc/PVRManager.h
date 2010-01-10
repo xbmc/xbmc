@@ -36,6 +36,7 @@
 typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
 typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
+typedef std::map< long, PVR_STREAMPROPS >       STREAMPROPS;
 
 class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonCallback
@@ -72,6 +73,7 @@ public:
   bool IsPlayingRadio();
   bool IsPlayingRecording();
   PVR_SERVERPROPS *GetCurrentClientProps();
+  PVR_STREAMPROPS *GetCurrentStreamProps();
   PVR_SERVERPROPS *GetClientProps(int clientID) { return &m_clientsProps[clientID]; }
   CFileItem *GetCurrentPlayingItem();
   bool GetCurrentChannel(int *number, bool *radio);
@@ -118,6 +120,7 @@ private:
   /*--- General PVRManager data ---*/
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */
   CLIENTPROPS         m_clientsProps;           /* store the properties of each client locally */
+  STREAMPROPS         m_streamProps;
   CTVDatabase         m_database;
   CRITICAL_SECTION    m_critSection;
 

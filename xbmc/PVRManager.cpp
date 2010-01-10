@@ -893,6 +893,25 @@ PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
 }
 
 /********************************************************************
+ * CPVRManager GetCurrentStreamProps
+ *
+ * Returns the properties of the current playing stream or NULL if
+ * if no stream is playing
+ ********************************************************************/
+PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProps()
+{
+  if (m_currentPlayingChannel)
+  {
+    int cid = m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID();
+    m_clients[cid]->GetStreamProperties(&m_streamProps[cid]);
+
+    return &m_streamProps[cid];
+  }
+  else
+    return NULL;
+}
+
+/********************************************************************
  * CPVRManager GetCurrentPlayingItem
  *
  * Returns the current playing file item

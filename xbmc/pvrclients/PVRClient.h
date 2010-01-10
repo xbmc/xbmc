@@ -52,6 +52,7 @@ public:
   /* Server */
   long GetID();
   PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
+  PVR_ERROR GetStreamProperties(PVR_STREAMPROPS *props);
 
   /* General */
   const std::string GetBackendName();
