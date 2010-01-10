@@ -230,7 +230,7 @@
 			<posy>162</posy>
 			<defaultcontrol always="true">700</defaultcontrol>
 			<visible>VideoPlayer.Content(LiveTV)</visible>
-			<control type="button" id="701">
+<!--			<control type="button" id="701">
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>40</width>
@@ -246,7 +246,7 @@
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<enable>system.getbool(pvrplayback.timeshift)</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="!system.getbool(pvrplayback.timeshift)">Conditional</animation>
-			</control>
+			</control>-->
 			<control type="button" id="702">
 				<posx>40</posx>
 				<posy>0</posy>
@@ -263,7 +263,7 @@
 				<onclick>XBMC.PlayerControl(Stop)</onclick>
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
-			<control type="togglebutton" id="703">
+<!--			<control type="togglebutton" id="703">
 				<posx>80</posx>
 				<posy>0</posy>
 				<width>40</width>
@@ -299,7 +299,7 @@
 				<visible>VideoPlayer.Content(LiveTV)</visible>
 				<enable>system.getbool(pvrplayback.timeshift)</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="!system.getbool(pvrplayback.timeshift)">Conditional</animation>
-			</control>
+			</control>-->
 			<control type="button" id="700">
 				<posx>200</posx>
 				<posy>0</posy>

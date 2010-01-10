@@ -131,9 +131,7 @@ void CGUIDialogSeekBar::Render()
   }
 
   CFileItem item(g_application.CurrentFileItem());
-  if (item.HasPVRChannelInfoTag() &&
-      !g_guiSettings.GetBool("pvrplayback.timeshift") &&
-      g_guiSettings.GetBool("pvrmenu.hidevideolength"))
+  if (item.HasPVRChannelInfoTag() && g_guiSettings.GetBool("pvrmenu.hidevideolength"))
   {
     Close(true);
     return;

@@ -37,44 +37,6 @@ typedef std::map< long, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
 typedef std::map< long, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 
-class CPVRTimeshiftRcvr : private CThread
-{
-public:
-  CPVRTimeshiftRcvr();
-  ~CPVRTimeshiftRcvr();
-
-  /* Thread handling */
-  void Process();
-  bool StartReceiver(CPVRClient *client);
-  void StopReceiver();
-  int WriteBuffer(BYTE* buf, int buf_size);
-  __int64 GetMaxSize();
-  __int64 GetWritten();
-  __int64 TimeToPos(DWORD time, DWORD *timeRet, bool *wrapback);
-  DWORD GetDuration();
-  DWORD GetTimeTotal();
-  const char* GetDurationString();
-
-private:
-  typedef struct STimestamp
-  {
-    __int64 pos;
-    DWORD time;
-  } STimestamp;
-
-  std::deque<STimestamp>  m_Timestamps;
-  CRITICAL_SECTION        m_critSection;
-  CPVRClient             *m_client;         // pointer to a enabled client interface
-  XFILE::CFile           *m_pFile;          // Stream cache file
-  __int64                 m_position;       // Current cache file write position
-  __int64                 m_written;        // Total Bytes written to cache file
-  __int64                 m_MaxSize;        // Maximum size after cache wraparound
-  __int64                 m_MaxSizeStatic;  // The maximum size for cache from settings
-  DWORD                   m_Started;
-  CStdString              m_DurationStr;
-  uint8_t                 buf[32768];       // temporary buffer for client read
-};
-
 class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonCallback
                   , private CThread
@@ -109,7 +71,6 @@ public:
   bool IsPlayingTV();
   bool IsPlayingRadio();
   bool IsPlayingRecording();
-  bool IsTimeshifting();
   PVR_SERVERPROPS *GetCurrentClientProps();
   PVR_SERVERPROPS *GetClientProps(int clientID) { return &m_clientsProps[clientID]; }
   CFileItem *GetCurrentPlayingItem();
@@ -181,7 +142,6 @@ private:
   CStdString          m_nextTimer;
   CStdString          m_playingDuration;
   CStdString          m_playingTime;
-  CStdString          m_timeshiftTime;
   CStdString          m_playingClientName;
   bool                m_isRecording;
   bool                m_hasRecordings;
@@ -204,16 +164,6 @@ private:
   int                 m_CurrentGroupID;           /* The current selected Channel group list */
   DWORD               m_scanStart;                /* Scan start time to check for non present streams */
   PVR_SIGNALQUALITY   m_qualityInfo;              /* Stream quality information */
-
-  /*--- Timeshift data ---*/
-  bool                CreateInternalTimeshift();
-  bool                m_timeshiftExt;             /* True if external Timeshift is possible and active */
-  bool                m_timeshiftInt;             /* True if internal Timeshift is possible and active */
-  DWORD               m_playbackStarted;          /* Time where the playback was started */
-  XFILE::CFile       *m_pTimeshiftFile;           /* File class to read buffer file */
-  CPVRTimeshiftRcvr  *m_TimeshiftReceiver;        /* The Thread based Receiver to fill buffer file */
-  __int64             m_timeshiftCurrWrapAround;  /* Bytes readed during current wrap around */
-  __int64             m_timeshiftLastWrapAround;  /* Bytes readed during last wrap around */
 };
 
 extern CPVRManager g_PVRManager;

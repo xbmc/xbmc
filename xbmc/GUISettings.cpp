@@ -672,11 +672,8 @@ void CGUISettings::Initialize()
   AddBool(2, "pvrplayback.playminimized", 18026, true);
   AddInt(3, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(4, "pvrplayback.channelentrytimeout", 19073, 1000, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
-  AddSeparator(6, "pvrplayback.sep1");
-  AddBool(7, "pvrplayback.timeshift", 18107, false);
-  AddInt(8, "pvrplayback.timeshiftcache", 18108, 1024, 128, 128, 16384, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);
-  AddSeparator(9, "pvrplayback.sep1");
-  AddBool(9, "pvrplayback.signalquality", 19037, false);
+  AddSeparator(5, "pvrplayback.sep1");
+  AddBool(6, "pvrplayback.signalquality", 19037, false);
 
   AddCategory(8,"pvrrecord", 18017);
   AddInt(1, "pvrrecord.instantrecordtime", 18018, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);

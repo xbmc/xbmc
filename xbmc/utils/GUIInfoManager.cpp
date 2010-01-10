@@ -263,7 +263,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.isplayingtv")) ret = PVR_IS_PLAYING_TV;
     else if (strTest.Equals("pvr.isplayingradio")) ret = PVR_IS_PLAYING_RADIO;
     else if (strTest.Equals("pvr.isplayingrecording")) ret = PVR_IS_PLAYING_RECORDING;
-    else if (strTest.Equals("pvr.istimeshifting")) ret = PVR_IS_TIMESHIFTING;
     else if (strTest.Equals("pvr.duration")) ret = PVR_PLAYING_DURATION;
     else if (strTest.Equals("pvr.time")) ret = PVR_PLAYING_TIME;
     else if (strTest.Equals("pvr.progress")) ret = PVR_PLAYING_PROGRESS;
@@ -281,9 +280,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.actstreamprogrsnr")) ret = PVR_ACTUAL_STREAM_SNR_PROGR;
     else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
     else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
-    else if (strTest.Equals("pvr.timeshiftduration")) ret = PVR_TIMESHIFT_DURATION;
-    else if (strTest.Equals("pvr.timeshifttime")) ret = PVR_TIMESHIFT_TIME;
-    else if (strTest.Equals("pvr.timeshiftprogress")) ret = PVR_TIMESHIFT_PROGRESS;
   }
   else if (strCategory.Equals("addon"))
   {
@@ -1088,8 +1084,6 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case PVR_NEXT_TIMER:
   case PVR_PLAYING_TIME:
   case PVR_PLAYING_DURATION:
-  case PVR_TIMESHIFT_DURATION:
-  case PVR_TIMESHIFT_TIME:
   case PVR_ACTUAL_STREAM_CLIENT:
   case PVR_ACTUAL_STREAM_DEVICE:
   case PVR_ACTUAL_STREAM_STATUS:
@@ -1755,7 +1749,6 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
       }
     case SYSTEM_CPU_USAGE:
       return g_cpuInfo.getUsedPercentage();
-    case PVR_TIMESHIFT_PROGRESS:
     case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:

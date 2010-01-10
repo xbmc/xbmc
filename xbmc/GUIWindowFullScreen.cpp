@@ -623,7 +623,7 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
   { // no control found to absorb this click - pause video
     CFileItem item(g_application.CurrentFileItem());
     // Do not allow Pause on LiveTV channel
-    if (!item.HasPVRChannelInfoTag() || g_guiSettings.GetBool("pvrplayback.timeshift"))
+    if (!item.HasPVRChannelInfoTag())
     {
       CAction action;
       action.id = ACTION_PAUSE;
@@ -952,7 +952,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
 {
   if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
   {
-    if(bLargeStep && !g_guiSettings.GetBool("pvrplayback.timeshift"))
+    if(bLargeStep)
     {
       CAction action;
       if(bPlus)

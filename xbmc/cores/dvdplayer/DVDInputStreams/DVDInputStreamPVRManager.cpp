@@ -225,21 +225,6 @@ bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::SeekTime(int iTimeInMsec, int *iRetTimeInMsec)
-{
-  return g_PVRManager.SeekTime(iTimeInMsec, iRetTimeInMsec);
-}
-
-bool CDVDInputStreamPVRManager::SeekTimeRequired()
-{
-  return g_PVRManager.SeekTimeRequired();
-}
-
-int CDVDInputStreamPVRManager::SeekTimeStep(bool bPlus, bool bLargeStep, __int64 curTime)
-{
-  return g_PVRManager.SeekTimeStep(bPlus, bLargeStep, curTime);
-}
-
 bool CDVDInputStreamPVRManager::NextStream()
 {
   if(!m_pFile) return -1;

@@ -1874,7 +1874,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath") || strSetting.Equals("pvrmenu.iconpath") || strSetting.Equals("pvrplayback.timeshiftpath"))
+  else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath") || strSetting.Equals("pvrmenu.iconpath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);

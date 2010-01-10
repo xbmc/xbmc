@@ -50,276 +50,6 @@ using namespace MUSIC_INFO;
 using namespace ADDON;
 
 /**********************************************************************
- * BEGIN OF CLASS **___ CPVRTimeshiftRcvr ____________________________*
- **                                                                  **/
-
-/********************************************************************
- * CPVRTimeshiftRcvr constructor
- *
- * It creates a thread based PVR stream receiver which fill a buffer
- * file from where we can read the stream later.
- ********************************************************************/
-CPVRTimeshiftRcvr::CPVRTimeshiftRcvr()
-{
-  /* Set initial data */
-  m_pFile         = NULL;
-  m_MaxSizeStatic = g_guiSettings.GetInt("pvrplayback.timeshiftcache") * 1024 * 1024;
-
-  /* Create the file class for writing */
-  m_pFile = new CFile();
-  if (!m_pFile)
-  {
-    return;
-  }
-
-  /* Open the buffer file for writing with the overwrite flag is set. */
-  CStdString filename = g_guiSettings.GetString("pvrplayback.timeshiftpath")+"/.timeshift_cache.ts";
-  if (!m_pFile->OpenForWrite(filename, true))
-  {
-    CLog::Log(LOGERROR,"PVR: Can't open timeshift receiver file %s for writing", filename.c_str());
-    delete m_pFile;
-    m_pFile = NULL;
-    return;
-  }
-
-  InitializeCriticalSection(&m_critSection);
-  CLog::Log(LOGDEBUG,"PVR: created timeshift receiver");
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr destructor
- *
- * It stopping the thread, delete the buffer file and destroy this.
- * class
- ********************************************************************/
-CPVRTimeshiftRcvr::~CPVRTimeshiftRcvr()
-{
-  /* Stop the receiving thread */
-  StopThread();
-
-  /* Close and delete the buffer file */
-  if (m_pFile)
-  {
-    m_pFile->Close();
-    m_pFile->Delete(g_guiSettings.GetString("pvrplayback.timeshiftpath")+"/.timeshift_cache.ts");
-    CLog::Log(LOGDEBUG,"PVR: deleted Timeshift receiver buffer file");
-    delete m_pFile;
-    m_pFile = NULL;
-  }
-
-  DeleteCriticalSection(&m_critSection);
-  CLog::Log(LOGDEBUG,"PVR: destroyed Timeshift receiver");
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr StartReceiver
- *
- * It start the the receiving thread and return true if everything is
- * ok. PVRClient must be passed to this function.
- ********************************************************************/
-bool CPVRTimeshiftRcvr::StartReceiver(CPVRClient *client)
-{
-  if (!m_pFile)
-  {
-    CLog::Log(LOGERROR,"PVR: Can't start timeshift receiver without file");
-    return false;
-  }
-
-  /* Reset all counters and flags */
-  m_client    = client;
-  m_MaxSize   = m_MaxSizeStatic;
-  m_written   = 0;
-  m_position  = 0;
-  m_Started   = CTimeUtils::GetTimeMS();
-  m_pFile->Seek(0);
-
-  /* Clear the timestamp table */
-  m_Timestamps.clear();
-
-  /* Create the reading thread */
-  Create();
-  SetName("PVR Timeshift receiver");
-  SetPriority(5);
-
-  CLog::Log(LOGDEBUG,"PVR: Timeshift receiver started");
-  return true;
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr StopReceiver
- *
- * It stop the the receiving thread
- ********************************************************************/
-void CPVRTimeshiftRcvr::StopReceiver()
-{
-  StopThread();
-
-  CLog::Log(LOGDEBUG,"PVR: Timeshift receiver stopped");
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr GetMaxSize
- *
- * Return the maximum size for the buffer file, is required for wrap
- * around during buffer read.
- ********************************************************************/
-__int64 CPVRTimeshiftRcvr::GetMaxSize()
-{
-  return m_MaxSize;
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr GetWritten
- *
- * Return how many bytes are totally readed from the client and writed
- * to the buffer file.
- ********************************************************************/
-__int64 CPVRTimeshiftRcvr::GetWritten()
-{
-  return m_written;
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr GetDuration
- *
- * Return how many time in milliseconds (ms) is stored in the buffer
- * file, required for seeking and progress bar.
- ********************************************************************/
-DWORD CPVRTimeshiftRcvr::GetDuration()
-{
-  if (m_Timestamps.size() > 1)
-    return m_Timestamps[m_Timestamps.size()-1].time - m_Timestamps[0].time;
-  else
-    return 0;
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr GetDurationString
- *
- * Same as GetDuration but return a string which is used by the
- * GUIInfoManager label "pvrmanager.timeshiftduration".
- ********************************************************************/
-const char* CPVRTimeshiftRcvr::GetDurationString()
-{
-  StringUtils::SecondsToTimeString(GetDuration()/1000, m_DurationStr, TIME_FORMAT_GUESS);
-  return m_DurationStr.c_str();
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr GetTimeTotal
- *
- * Return how long in milliseconds (ms) the thread is running.
- * Also required for seeking.
- ********************************************************************/
-DWORD CPVRTimeshiftRcvr::GetTimeTotal()
-{
-  if (m_Timestamps.size() > 0)
-    return m_Timestamps[m_Timestamps.size()-1].time;
-  else
-    return 0;
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr TimeToPos
- *
- * Convert a timestamp in milliseconds (ms) to a byte position.
- * It is based upon a std::deque list which stores reference data
- * to a time for each performed read.
- * It also write the new time to "timeRet" which is passed as pointer
- * and set the wrapback label which indicates that the data is in the
- * upper part behind the current write position.
- ********************************************************************/
-__int64 CPVRTimeshiftRcvr::TimeToPos(DWORD time, DWORD *timeRet, bool *wrapback)
-{
-  __int64 pos = 0;
-
-  EnterCriticalSection(&m_critSection);
-
-  if (m_Timestamps.size() > 0)
-  {
-    /* Ignore the last 1,5 seconds */
-    if (time < m_Timestamps[m_Timestamps.size()-1].time - 1500)
-    {
-      std::deque<STimestamp>::iterator Timestamp = m_Timestamps.begin();
-      for(;Timestamp != m_Timestamps.end();Timestamp++)
-      {
-        if (Timestamp->time > time)
-        {
-          pos       = Timestamp->pos;
-          *timeRet  = Timestamp->time;
-          if (pos > m_position)
-            *wrapback = true;
-          break;
-        }
-      }
-    }
-  }
-
-  LeaveCriticalSection(&m_critSection);
-  return pos;
-}
-
-/********************************************************************
- * CPVRTimeshiftRcvr Process
- *
- * The Main thread. It read the data from the client and write it to
- * the buffer file. If the Maximum size of the file is arrived, it
- * swaps around and write for beginning of the file.
- * For this reason, we can only seek back to the maximum size of the
- * file.
- ********************************************************************/
-void CPVRTimeshiftRcvr::Process()
-{
-  CLog::Log(LOGDEBUG,"PVR: Timeshift receiver thread started");
-
-  bool wraparound = false;
-
-  while (!m_bStop)
-  {
-    /* Create the timestamp for this read */
-    STimestamp timestamp;
-    timestamp.pos   = m_position;
-    timestamp.time  = CTimeUtils::GetTimeMS() - m_Started;
-
-    /* Read the data from the stream */
-    int ret = m_client->ReadLiveStream(buf, sizeof(buf));
-    if (ret > 0)
-    {
-      EnterCriticalSection(&m_critSection);
-
-      /* If read was ok, store the timestamp inside the list */
-      m_Timestamps.push_back(timestamp);
-      /* If we have reached the first wrap around, we delete the oldest
-        timestamp in the list. The data is no more present in the buffer */
-      if (wraparound)
-        m_Timestamps.pop_front();
-
-      /* Save current position and increase totally written bytes */
-      m_position += m_pFile->Write(buf, ret);
-      m_written  += ret;
-
-      LeaveCriticalSection(&m_critSection);
-    }
-
-    /* Check if we reached the maximum size of the buffer file */
-    if (m_position >= m_MaxSizeStatic)
-    {
-      /* If yes we wrap around and the file position is set to null */
-      wraparound = true;
-      m_MaxSize  = m_position;
-      m_position = 0;
-      m_pFile->Seek(0);
-    }
-
-    Sleep(10);
-  }
-
-  CLog::Log(LOGDEBUG,"PVR: Timeshift receiver thread ended");
-}
-
-
-
-/**********************************************************************
  * BEGIN OF CLASS **___ CPVRManager __________________________________*
  **                                                                  **/
 
@@ -376,9 +106,6 @@ void CPVRManager::Start()
   m_PreviousChannelIndex    = 0;
   m_infoToggleStart         = NULL;
   m_infoToggleCurrent       = 0;
-  m_TimeshiftReceiver       = NULL;
-  m_pTimeshiftFile          = NULL;
-  m_timeshiftInt            = false;
 
   /* Discover, load and create chosen Client add-on's. */
   CAddonMgr::Get()->RegisterAddonCallback(ADDON_PVRDLL, this);
@@ -422,11 +149,6 @@ void CPVRManager::Stop()
 //  }
   m_clients.clear();
   m_clientsProps.clear();
-
-  delete m_pTimeshiftFile;
-  m_pTimeshiftFile = NULL;
-  delete m_TimeshiftReceiver;
-  m_TimeshiftReceiver = NULL;
 
   return;
 }
@@ -700,38 +422,6 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
 /** INTERNAL FUNCTIONS                                      **/
 /*************************************************************/
 
-/********************************************************************
- * CPVRManager CreateInternalTimeshift
- *
- * Create the internal timeshift receiver and the file class for
- * reading.
- ********************************************************************/
-bool CPVRManager::CreateInternalTimeshift()
-{
-  /* Delete the timeshift receiving class if present */
-  if (m_TimeshiftReceiver)
-    delete m_TimeshiftReceiver;
-  if (m_pTimeshiftFile)
-    delete m_pTimeshiftFile;
-
-  /* Create the receiving class to perform independent stream reading and.
-     Open the stream buffer file*/
-  unsigned int flags  = READ_NO_CACHE;
-  m_TimeshiftReceiver = new CPVRTimeshiftRcvr();
-  m_pTimeshiftFile    = new CFile();
-  if (!m_pTimeshiftFile->Open(g_guiSettings.GetString("pvrplayback.timeshiftpath")+"/.timeshift_cache.ts", flags))
-  {
-    /* If open fails return with timeshift disabled */
-    delete m_TimeshiftReceiver;
-    delete m_pTimeshiftFile;
-    m_TimeshiftReceiver = NULL;
-    m_pTimeshiftFile    = NULL;
-    return false;
-  }
-  return true;
-}
-
-
 /*************************************************************/
 /** PVRManager Update and control thread                    **/
 /*************************************************************/
@@ -800,24 +490,7 @@ void CPVRManager::Process()
       cPVREpgs::Cleanup();
     }
 
-    /* Check if we are 10 seconds before the end of the timeshift buffer
-       and using timeshift and playback is paused, if yes start playback
-       again */
     EnterCriticalSection(&m_critSection);
-    if (m_timeshiftInt && g_application.IsPaused())
-    {
-      int time = (__int64)(g_application.GetTime()*1000) -
-                 m_TimeshiftReceiver->GetTimeTotal() +
-                 m_TimeshiftReceiver->GetDuration();
-
-      if (time < 10000)
-      {
-        CLog::Log(LOGINFO,"PVR: Playback is resumed after reaching end of timeshift buffer");
-        CAction action;
-        action.id = ACTION_PAUSE;
-        g_application.OnAction(action);
-      }
-    }
 
     /* Get Signal information of the current playing channel */
     if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality"))
@@ -1026,23 +699,6 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
       return m_nextTimer;
     }
   }
-  else if (dwInfo == PVR_TIMESHIFT_DURATION)
-  {
-    if (m_TimeshiftReceiver)
-      return m_TimeshiftReceiver->GetDurationString();
-  }
-  else if (dwInfo == PVR_TIMESHIFT_TIME)
-  {
-    if (m_TimeshiftReceiver)
-    {
-      int time = (__int64)(g_application.GetTime()*1000) -
-                 m_TimeshiftReceiver->GetTimeTotal() +
-                 m_TimeshiftReceiver->GetDuration();
-
-      StringUtils::SecondsToTimeString(time/1000, m_timeshiftTime, TIME_FORMAT_GUESS);
-      return m_timeshiftTime.c_str();
-    }
-  }
   else if (dwInfo == PVR_PLAYING_DURATION)
   {
     StringUtils::SecondsToTimeString(GetTotalTime()/1000, m_playingDuration, TIME_FORMAT_GUESS);
@@ -1135,18 +791,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
  ********************************************************************/
 int CPVRManager::TranslateIntInfo(DWORD dwInfo)
 {
-  if      (dwInfo == PVR_TIMESHIFT_PROGRESS)
-  {
-    if (!m_currentPlayingChannel || !m_timeshiftInt)
-      return 0.0f;
-
-    int time = (__int64)(g_application.GetTime()*1000) -
-               m_TimeshiftReceiver->GetTimeTotal() +
-               m_TimeshiftReceiver->GetDuration();
-
-    return (float)(((float)time / m_TimeshiftReceiver->GetDuration()) * 100);
-  }
-  else if (dwInfo == PVR_PLAYING_PROGRESS)
+  if (dwInfo == PVR_PLAYING_PROGRESS)
   {
     return (float)(((float)GetStartTime() / GetTotalTime()) * 100);
   }
@@ -1178,8 +823,6 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
     return IsPlayingRadio();
   else if (dwInfo == PVR_IS_PLAYING_RECORDING)
     return IsPlayingRecording();
-  else if (dwInfo == PVR_IS_TIMESHIFTING)
-    return m_timeshiftInt;
   else if (dwInfo == PVR_ACTUAL_STREAM_ENCRYPTED)
   {
     if (m_currentPlayingChannel)
@@ -1231,19 +874,6 @@ bool CPVRManager::IsPlayingRecording()
     return false;
   else
     return true;
-}
-
-/********************************************************************
- * CPVRManager IsTimeshifting
- *
- * Returns true if timeshift is active
- ********************************************************************/
-bool CPVRManager::IsTimeshifting()
-{
-  if (m_timeshiftInt || m_timeshiftExt)
-    return true;
-  else
-    return false;
 }
 
 /********************************************************************
@@ -1701,30 +1331,8 @@ bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
     }
   }
 
-  /* Clear the timeshift flags */
-  m_timeshiftExt            = false;
-  m_timeshiftInt            = false;
-  m_timeshiftLastWrapAround = 0;
-  m_timeshiftCurrWrapAround = 0;
-  m_playbackStarted         = tag->NowPlayTime()*1000;
-
   /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();
-
-  /* Timeshift related code */
-  /* Check if Client handles timeshift itself */
-  if (tag->StreamURL().IsEmpty() && m_clientsProps[tag->ClientID()].SupportTimeShift)
-  {
-    m_timeshiftExt = true;
-  }
-  /* Check if XBMC is allowed to do the timeshift */
-  else if (g_guiSettings.GetBool("pvrplayback.timeshift") && g_guiSettings.GetString("pvrplayback.timeshiftpath") != "")
-  {
-    /* Create the receiving class to perform independent stream reading and
-       Open the stream buffer file*/
-    if (CreateInternalTimeshift() && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
-      m_timeshiftInt = true;
-  }
 
   LeaveCriticalSection(&m_critSection);
   return true;
@@ -1774,8 +1382,7 @@ bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
 /********************************************************************
  * CPVRManager CloseStream
  *
- * Close the stream on the PVR Client and if internal timeshift is
- * used delete the Timeshift receiver.
+ * Close the stream on the PVR Client.
  ********************************************************************/
 void CPVRManager::CloseStream()
 {
@@ -1783,18 +1390,6 @@ void CPVRManager::CloseStream()
 
   if (m_currentPlayingChannel)
   {
-    /* Stop the Timeshift if internal receiving is active */
-    if (m_timeshiftInt)
-    {
-      m_pTimeshiftFile->Close();
-      delete m_pTimeshiftFile;
-      delete m_TimeshiftReceiver;
-      m_TimeshiftReceiver = NULL;
-      m_pTimeshiftFile    = NULL;
-    }
-    m_timeshiftInt      = false;
-    m_timeshiftExt      = false;
-    m_playbackStarted   = -1;
     m_playingClientName = "";
 
     /* Save channel number in database */
@@ -1856,66 +1451,7 @@ int CPVRManager::ReadStream(BYTE* buf, int buf_size)
   /* Process LiveTV Reading */
   if (m_currentPlayingChannel)
   {
-    /* If internal Timeshift is used read from the Buffer file */
-    if (m_timeshiftInt)
-    {
-      if (!m_pTimeshiftFile)
-      {
-        CLog::Log(LOGERROR,"PVR: internal Timeshift stream reading called without timeshift file");
-        LeaveCriticalSection(&m_critSection);
-        return -1;
-      }
-
-      DWORD now = CTimeUtils::GetTimeMS();
-
-      /* Never read behind current write position inside cache */
-      while (m_timeshiftCurrWrapAround+m_pTimeshiftFile->GetPosition()+buf_size+131072 > m_TimeshiftReceiver->GetWritten())
-      {
-        if (CTimeUtils::GetTimeMS() - now > 5*1000)
-        {
-          CLog::Log(LOGERROR,"PVR: internal Timeshift Cache Position timeout");
-          LeaveCriticalSection(&m_critSection);
-          return 0;
-        }
-        Sleep(5);
-      }
-
-      /* Reduce buffer size to prevent partly read behind range */
-      int tmp = m_TimeshiftReceiver->GetMaxSize() - m_pTimeshiftFile->GetPosition();
-      if (tmp > 0 && tmp < buf_size)
-        buf_size = tmp;
-
-REPEAT_READ:
-      bytesReaded = m_pTimeshiftFile->Read(buf, buf_size);
-      if (bytesReaded <= 0)
-      {
-        if (CTimeUtils::GetTimeMS() - now > 5*1000)
-        {
-          CLog::Log(LOGERROR,"PVR: internal Timeshift Cache Read timeout");
-          LeaveCriticalSection(&m_critSection);
-          return 0;
-        }
-
-        Sleep(5);
-        goto REPEAT_READ;
-      }
-
-      /* Check if we are at end of buffer file, if yes wrap around and
-         start at beginning */
-      if (m_pTimeshiftFile->GetPosition() >= m_TimeshiftReceiver->GetMaxSize())
-      {
-        CLog::Log(LOGDEBUG,"PVR: internal Timeshift Cache wrap around");
-        m_timeshiftLastWrapAround  = m_timeshiftCurrWrapAround;
-        m_timeshiftCurrWrapAround += m_TimeshiftReceiver->GetMaxSize();
-        m_pTimeshiftFile->Seek(0);
-      }
-
-    }
-    /* Read stream directly if timeshift is handled by client or not supported */
-    else
-    {
-      bytesReaded = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadLiveStream(buf, buf_size);
-    }
+    bytesReaded = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadLiveStream(buf, buf_size);
   }
   /* Process Recording Reading */
   else if (m_currentPlayingRecording)
@@ -1941,16 +1477,7 @@ __int64 CPVRManager::LengthStream(void)
 
   if (m_currentPlayingChannel)
   {
-    if (m_timeshiftInt)
-    {
-      // TODO: handle for internal timeshift
-      streamLength = 0;
-    }
-    else if (m_timeshiftExt)
-    {
-      // TODO: check with external timeshift
-      streamLength = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->LengthLiveStream();
-    }
+    streamLength = 0;
   }
   else if (m_currentPlayingRecording)
   {
@@ -1959,102 +1486,6 @@ __int64 CPVRManager::LengthStream(void)
 
   LeaveCriticalSection(&m_critSection);
   return streamLength;
-}
-
-/********************************************************************
- * CPVRManager SeekTimeRequired
- *
- * Return true if internal timeshift is used.
- ********************************************************************/
-bool CPVRManager::SeekTimeRequired()
-{
-  if (m_currentPlayingChannel && m_timeshiftInt)
-    return true;
-
-  return false;
-}
-
-/********************************************************************
- * CPVRManager SeekTimeStep
- *
- * Return the seek time step in milliseconds
- ********************************************************************/
-int CPVRManager::SeekTimeStep(bool bPlus, bool bLargeStep, __int64 curTime)
-{
-  if (!m_currentPlayingChannel || !m_timeshiftInt)
-    return 0;
-
-  int timeMax = m_TimeshiftReceiver->GetTimeTotal() - 3000;
-  int timeMin = m_TimeshiftReceiver->GetTimeTotal() - m_TimeshiftReceiver->GetDuration() + 3000;
-  int step = m_TimeshiftReceiver->GetDuration()/100 * (bLargeStep ? 10 : 1);
-
-  if (bPlus)
-  {
-    if (curTime > timeMax)
-      return 0;
-
-    if (curTime + step > timeMax)
-      step = curTime + step - timeMax;
-
-    if (step < 0)
-      step = 0;
-
-    return step;
-  }
-  else
-  {
-    if (curTime <= timeMin)
-      return 0;
-
-    if (curTime - step < timeMin)
-      step = curTime - timeMin;
-
-    if (step < 0)
-      step = 0;
-
-    return step;
-  }
-}
-
-/********************************************************************
- * CPVRManager SeekTime
- *
- * Perform a seek by time passed as time position from the begin of
- * the playback in milliseconds.
- * It is only used when internal timeshift is used.
- *
- * Returns true if switch was succesfull
- ********************************************************************/
-bool CPVRManager::SeekTime(int iTimeInMsec, int *iRetTimeInMsec)
-{
-  DWORD newTimePos;
-  bool  wrapback  = false;
-  bool  ret       = false;
-
-  if (!m_currentPlayingChannel || !m_timeshiftInt)
-    return false;
-
-   EnterCriticalSection(&m_critSection);
-
-  __int64 streamNewPos = m_TimeshiftReceiver->TimeToPos(iTimeInMsec, &newTimePos, &wrapback);
-  if (streamNewPos > 0 && newTimePos > 0)
-  {
-    /* Check if the position is before the wrap around position,
-       if yes subract the file length that was previuously added
-       by ReadStream. */
-    if (wrapback && m_timeshiftCurrWrapAround > 0)
-      m_timeshiftCurrWrapAround = m_timeshiftLastWrapAround;
-
-    /* Seek to new file position for the next read */
-    if (m_pTimeshiftFile->Seek(streamNewPos) >= 0)
-    {
-      *iRetTimeInMsec = newTimePos;
-      ret = true;
-    }
-  }
-
-  LeaveCriticalSection(&m_critSection);
-  return ret;
 }
 
 /********************************************************************
@@ -2074,16 +1505,7 @@ __int64 CPVRManager::SeekStream(__int64 pos, int whence)
 
   if (m_currentPlayingChannel)
   {
-    if (m_timeshiftInt)
-    {
-      // TODO: handle for internal timeshift
-      streamNewPos = 0;
-    }
-    else if (m_timeshiftExt)
-    {
-      // TODO: check with external timeshift
-      streamNewPos = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SeekLiveStream(pos, whence);
-    }
+    streamNewPos = 0;
   }
   else if (m_currentPlayingRecording)
   {
@@ -2172,18 +1594,6 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 
   EnterCriticalSection(&m_critSection);
 
-  /* If Timeshift is active reset all relevant data and stop the receiver */
-  if (m_timeshiftInt)
-  {
-    m_TimeshiftReceiver->StopReceiver();
-    m_pTimeshiftFile->Seek(0);
-  }
-
-  /* Clear the timeshift flags */
-  m_timeshiftExt                = false;
-  m_timeshiftInt                = false;
-  m_timeshiftLastWrapAround     = 0;
-  m_timeshiftCurrWrapAround     = 0;
   const cPVRChannelInfoTag* tag = &channels->at(iChannel-1);
 
   /* Store current settings inside Database */
@@ -2197,28 +1607,10 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
     return false;
   }
 
-  /* Timeshift related code */
-  /* Check if Client handles timeshift itself */
-  if (m_clientsProps[tag->ClientID()].SupportTimeShift)
-  {
-    m_timeshiftExt = true;
-  }
-  /* Start the Timeshift receiver again if active */
-  else if (g_guiSettings.GetBool("pvrplayback.timeshift") && g_guiSettings.GetString("pvrplayback.timeshiftpath") != "")
-  {
-    if (!m_TimeshiftReceiver)
-      CreateInternalTimeshift();
-
-    /* Start the Timeshift receiver */
-    if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
-      m_timeshiftInt = true;
-  }
-
   /* Update the Playing channel data and the current epg data */
   delete m_currentPlayingChannel;
   m_currentPlayingChannel = new CFileItem(*tag);
   m_scanStart             = CTimeUtils::GetTimeMS();
-  m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowPlayTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
   /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();
@@ -2251,19 +1643,6 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
       channels = &PVRChannelsRadio;
 
     EnterCriticalSection(&m_critSection);
-
-    /* If Timeshift is active reset all relevant data and stop the receiver */
-    if (m_timeshiftInt)
-    {
-     m_TimeshiftReceiver->StopReceiver();
-     m_pTimeshiftFile->Seek(0);
-    }
-
-    /* Clear the timeshift flags */
-    m_timeshiftExt            = false;
-    m_timeshiftInt            = false;
-    m_timeshiftLastWrapAround = 0;
-    m_timeshiftCurrWrapAround = 0;
 
     /* Store current settings inside Database */
     SaveCurrentChannelSettings();
@@ -2298,30 +1677,12 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
         m_scanStart             = CTimeUtils::GetTimeMS();
-        m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowPlayTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
         /* Load now the new channel settings from Database */
         LoadCurrentChannelSettings();
 
         /* Set quality data to undefined defaults */
         ResetQualityData();
-
-        /* Timeshift related code */
-        /* Check if Client handles timeshift itself */
-        if (m_clientsProps[tag->ClientID()].SupportTimeShift)
-        {
-          m_timeshiftExt = true;
-        }
-        /* Start the Timeshift receiver again if active */
-        else if (g_guiSettings.GetBool("pvrplayback.timeshift") && g_guiSettings.GetString("pvrplayback.timeshiftpath") != "")
-        {
-          if (!m_TimeshiftReceiver)
-            CreateInternalTimeshift();
-
-          /* Start the Timeshift receiver */
-          if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
-            m_timeshiftInt = true;
-        }
 
         *newchannel = currentTVChannel;
         LeaveCriticalSection(&m_critSection);
@@ -2356,19 +1717,6 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
 
     EnterCriticalSection(&m_critSection);
 
-    /* If Timeshift is active reset all relevant data and stop the receiver */
-    if (m_timeshiftInt)
-    {
-      m_TimeshiftReceiver->StopReceiver();
-      m_pTimeshiftFile->Seek(0);
-    }
-
-    /* Clear the timeshift flags */
-    m_timeshiftExt            = false;
-    m_timeshiftInt            = false;
-    m_timeshiftLastWrapAround = 0;
-    m_timeshiftCurrWrapAround = 0;
-
     /* Store current settings inside Database */
     SaveCurrentChannelSettings();
 
@@ -2402,30 +1750,12 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(*tag);
         m_scanStart             = CTimeUtils::GetTimeMS();
-        m_playbackStarted       = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowPlayTime()*1000 - (__int64)(g_application.GetTime()*1000);
 
         /* Load now the new channel settings from Database */
         LoadCurrentChannelSettings();
 
         /* Set quality data to undefined defaults */
         ResetQualityData();
-
-        /* Timeshift related code */
-        /* Check if Client handles timeshift itself */
-        if (m_clientsProps[tag->ClientID()].SupportTimeShift)
-        {
-          m_timeshiftExt = true;
-        }
-        /* Start the Timeshift receiver again if active */
-        else if (g_guiSettings.GetBool("pvrplayback.timeshift") && g_guiSettings.GetString("pvrplayback.timeshiftpath") != "")
-        {
-          if (!m_TimeshiftReceiver)
-            CreateInternalTimeshift();
-
-          /* Start the Timeshift receiver */
-          if (m_TimeshiftReceiver && m_TimeshiftReceiver->StartReceiver(&*m_clients[tag->ClientID()]))
-            m_timeshiftInt = true;
-        }
 
         *newchannel = currentTVChannel;
         LeaveCriticalSection(&m_critSection);
@@ -2474,14 +1804,6 @@ int CPVRManager::GetStartTime()
   {
     EnterCriticalSection(&m_critSection);
 
-    int oldchannel  = tag->Number();
-    int oldduration = tag->NowDuration();
-
-    /* Correct the playback started time */
-    if (m_timeshiftInt && oldchannel == tag->Number())
-      m_playbackStarted -= oldduration * 1000;
-
-
     if (UpdateItem(*m_currentPlayingChannel))
     {
       g_application.CurrentFileItem() = *m_currentPlayingChannel;
@@ -2491,18 +1813,11 @@ int CPVRManager::GetStartTime()
     LeaveCriticalSection(&m_critSection);
   }
 
-  if (m_timeshiftInt)
-  {
-    return m_playbackStarted + (__int64)(g_application.GetTime()*1000);
-  }
-  else
-  {
-    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->NowStartTime();
-    return time.GetDays()    * 1000 * 60 * 60 * 24
-         + time.GetHours()   * 1000 * 60 * 60
-         + time.GetMinutes() * 1000 * 60
-         + time.GetSeconds() * 1000;
-  }
+  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->NowStartTime();
+  return time.GetDays()    * 1000 * 60 * 60 * 24
+       + time.GetHours()   * 1000 * 60 * 60
+       + time.GetMinutes() * 1000 * 60
+       + time.GetSeconds() * 1000;
 }
 
 CPVRManager g_PVRManager;
