@@ -113,8 +113,6 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
 
 CMouseStat::CMouseStat()
 {
-  m_exclusiveWindowID = WINDOW_INVALID;
-  m_exclusiveControl = NULL;
   m_pointerState = MOUSE_STATE_NORMAL;
   SetEnabled();
   m_speedX = m_speedY = 0;
@@ -289,23 +287,6 @@ void CMouseStat::UpdateMouseWheel(char dir)
 {
   m_mouseState.dz = dir;
   SetActive();
-}
-
-void CMouseStat::SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point)
-{
-  m_exclusiveControl = control;
-  m_exclusiveWindowID = windowID;
-  // convert posX, posY to screen coords...
-  // NOTE: This relies on the window resolution having been set correctly beforehand in CGUIWindow::OnMouseAction()
-  CPoint mouseCoords(GetLocation());
-  g_graphicsContext.InvertFinalCoords(mouseCoords.x, mouseCoords.y);
-  m_exclusiveOffset = point - mouseCoords;
-}
-
-void CMouseStat::EndExclusiveAccess(const CGUIControl *control, int windowID)
-{
-  if (m_exclusiveControl == control && m_exclusiveWindowID == windowID)
-    SetExclusiveAccess(NULL, WINDOW_INVALID, CPoint(0, 0));
 }
 
 void CMouseStat::Acquire()

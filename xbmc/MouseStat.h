@@ -76,11 +76,6 @@ public:
   bool IsEnabled() const;
   bool HasMoved(bool allMoves = false) const;
   void SetActive(bool active = true);
-  void SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point);
-  void EndExclusiveAccess(const CGUIControl *control, int windowID);
-  int GetExclusiveWindowID() const { return m_exclusiveWindowID; };
-  const CGUIControl *GetExclusiveControl() const { return m_exclusiveControl; };
-  const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
@@ -151,11 +146,6 @@ private:
 
   void UpdateInternal();
  
-  // exclusive access to mouse from a control
-  int m_exclusiveWindowID;
-  const CGUIControl *m_exclusiveControl;
-  CPoint m_exclusiveOffset;
-
   // state of the mouse
   MOUSE_STATE m_pointerState;
   MouseState m_mouseState;
