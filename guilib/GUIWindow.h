@@ -244,6 +244,8 @@ protected:
   std::vector<CGUIActionDescriptor> m_unloadActions;
 
   bool m_manualRunActions;
+
+  int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 };
 
 #endif

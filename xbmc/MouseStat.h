@@ -115,7 +115,9 @@ private:
                          MB_SHORT_CLICK,   ///< a short click has occurred (a double click may be in process)
                          MB_LONG_CLICK,    ///< a long click has occurred
                          MB_DOUBLE_CLICK,  ///< a double click has occurred
-                         MB_DRAG };        ///< a drag action has occurred
+                         MB_DRAG_START,    ///< a drag action has started
+                         MB_DRAG,          ///< a drag action is in progress
+                         MB_DRAG_END };    ///< a drag action has finished
 
     CButtonState();
 
@@ -177,7 +179,7 @@ public:
   // public access variables to button clicks etc.
   bool bClick[5];
   bool bDoubleClick[5];
-  bool bHold[5];
+  int  bHold[5];
 };
 
 extern CMouseStat g_Mouse;
