@@ -863,19 +863,20 @@ void cPVREpgs::Update(bool Scan)
           {
             time_t DataLastTime;
             unsigned int cntEntries = p->InfoTags()->size();
+            int timeCorrection = g_PVRManager.Clients()->find(PVRChannelsTV[i].ClientID())->second->GetTimeCorrection();
 
             if (PVRChannelsTV[i].Grabber() == "client" && g_PVRManager.GetClientProps(PVRChannelsTV[i].ClientID())->SupportEPG && clients->find(PVRChannelsTV[i].ClientID())->second->ReadyToUse())
             {
               if (ignoreDB)
               {
                 p->GetLastEPGDate().GetAsTime(DataLastTime);
-                clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime, endLoad);
+                clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime-timeCorrection, endLoad);
                 ret = false;  // This prevent the save of the loaded data inside the Database
               }
               else
               {
                 database->GetEPGDataEnd(PVRChannelsTV[i].ChannelID()).GetAsTime(DataLastTime);
-                ret = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
+                ret = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime-timeCorrection, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
               }
             }
             else
@@ -968,19 +969,20 @@ void cPVREpgs::Update(bool Scan)
           {
             time_t DataLastTime;
             unsigned int cntEntries = p->InfoTags()->size();
+            int timeCorrection = g_PVRManager.Clients()->find(PVRChannelsTV[i].ClientID())->second->GetTimeCorrection();
 
             if (PVRChannelsRadio[i].Grabber() == "client" && g_PVRManager.GetClientProps(PVRChannelsRadio[i].ClientID())->SupportEPG && clients->find(PVRChannelsRadio[i].ClientID())->second->ReadyToUse())
             {
               if (ignoreDB)
               {
                 p->GetLastEPGDate().GetAsTime(DataLastTime);
-                clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime, endLoad);
+                clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime-timeCorrection, endLoad);
                 ret = false;  // This prevent the save of the loaded data inside the Database
               }
               else
               {
                 database->GetEPGDataEnd(PVRChannelsRadio[i].ChannelID()).GetAsTime(DataLastTime);
-                ret = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
+                ret = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime-timeCorrection, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
               }
             }
             else

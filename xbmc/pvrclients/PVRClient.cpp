@@ -757,7 +757,7 @@ void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordingi
 {
   time_t recTime;
   recordinginfo.RecordingTime().GetAsTime(recTime);
-  tag.recording_time= recTime;
+  tag.recording_time= recTime+m_iTimeCorrection;
   tag.index         = recordinginfo.ClientIndex();
   tag.title         = recordinginfo.Title();
   tag.subtitle      = recordinginfo.PlotOutline();
@@ -848,9 +848,9 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   tag.SetActive(timer->active);
   tag.SetTitle(timer->title);
   tag.SetClientNumber(timer->channelNum);
-  tag.SetStart((time_t) timer->starttime);
-  tag.SetStop((time_t) timer->endtime);
-  tag.SetFirstDay((time_t) timer->firstday);
+  tag.SetStart((time_t) (timer->starttime+client->m_iTimeCorrection));
+  tag.SetStop((time_t) (timer->endtime+client->m_iTimeCorrection));
+  tag.SetFirstDay((time_t) (timer->firstday+client->m_iTimeCorrection));
   tag.SetPriority(timer->priority);
   tag.SetLifetime(timer->lifetime);
   tag.SetRecording(timer->recording);
@@ -1045,8 +1045,11 @@ void CPVRClient::WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIM
   tag.repeat        = timerinfo.IsRepeating();
   tag.repeatflags   = timerinfo.Weekdays();
   tag.starttime     = timerinfo.StartTime();
+  tag.starttime    -= m_iTimeCorrection;
   tag.endtime       = timerinfo.StopTime();
+  tag.endtime      -= m_iTimeCorrection;
   tag.firstday      = timerinfo.FirstDayTime();
+  tag.firstday     -= m_iTimeCorrection;
   return;
 }
 
