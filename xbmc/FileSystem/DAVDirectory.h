@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,40 +20,22 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "lib/libPython/Python/Include/Python.h"
-#endif
+#include "IDirectory.h"
+#include "tinyXML/tinyxml.h"
+#include "FileItem.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-class CLocalizeStrings;
-
-namespace PYXBMC
+namespace DIRECTORY
 {
-  typedef struct {
-    PyObject_HEAD
-    CLocalizeStrings* pLanguage;
-  } Language;
-
-  extern PyTypeObject Language_Type;
-  void initLanguage_Type();
+  class CDAVDirectory : public IDirectory
+  {
+    public:
+      CDAVDirectory(void);
+      virtual ~CDAVDirectory(void);
+      virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+      virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
+    private:      
+      bool ValueWithoutNamespace(const TiXmlNode *pNode, CStdString value);
+      CStdString GetStatusTag(const TiXmlElement *pElement);
+      bool ParseResponse(const TiXmlElement *pElement, CFileItem &item);
+  };
 }
-
-#ifdef __cplusplus
-}
-#endif

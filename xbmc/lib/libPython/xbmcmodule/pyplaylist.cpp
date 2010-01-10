@@ -118,7 +118,7 @@ namespace PYXBMC
   {
     int iNr;
     PlayList *self;
-    if (!PyArg_ParseTuple(args, (char*)"i", &iNr))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"i", &iNr)) return NULL;
 
     self = (PlayList*)type->tp_alloc(type, 0);
     if (!self) return NULL;
@@ -230,7 +230,7 @@ namespace PYXBMC
   {
     char* cFileName = NULL;
 
-    if (!PyArg_ParseTuple(args, (char*)"s", &cFileName))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cFileName)) return NULL;
 
     CFileItem item(cFileName);
     item.m_strPath=cFileName;
@@ -282,7 +282,7 @@ namespace PYXBMC
   PyObject* PlayList_Remove(PlayList *self, PyObject *args)
   {
     char *cFileName = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"s", &cFileName))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cFileName)) return NULL;
 
     self->pPlayList->Remove(cFileName);
 
@@ -392,7 +392,7 @@ namespace PYXBMC
 
   PyMappingMethods Playlist_as_mapping = {
     PlayList_Length,    /* inquiry mp_length;                  __len__ */
-    PlayList_GetItem,   /* binaryfunc mp_subscript             __getitem__ */ 
+    PlayList_GetItem,   /* binaryfunc mp_subscript             __getitem__ */
     0,                  /* objargproc mp_ass_subscript;     __setitem__ */
   };
 

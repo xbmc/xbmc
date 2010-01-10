@@ -175,7 +175,6 @@ void CVideoReferenceClock::Process()
     m_UseVblank = false;                       //we're back to using the systemclock
     Now = CurrentHostCounter();                //set the clockoffset between the vblank clock and systemclock
     m_ClockOffset = m_CurrTime - Now;
-    m_Started.Reset();
     SingleLock.Leave();
 
     //clean up the vblank clock
@@ -321,9 +320,24 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   char   Buff[255];
   int    ReturnV;
   struct lconv *Locale = localeconv();
+  FILE*  NvSettings;
 
-  FILE* NvSettings = popen(NVSETTINGSCMD, "r");
+  const char* VendorPtr = (const char*)glGetString(GL_VENDOR);
+  if (!VendorPtr)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glGetString(GL_VENDOR) returned NULL, not using nvidia-settings");
+    return false;
+  }
 
+  CStdString Vendor = VendorPtr;
+  Vendor.ToLower();
+  if (Vendor.find("nvidia") == std::string::npos)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GL_VENDOR:%s, not using nvidia-settings", Vendor.c_str());
+    return false;
+  }
+
+  NvSettings = popen(NVSETTINGSCMD, "r");
   if (!NvSettings)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s", NVSETTINGSCMD, strerror(errno));
@@ -1068,13 +1082,13 @@ void CVideoReferenceClock::SendVblankSignal()
   m_VblankEvent.Set();
 }
 
-#define MAXVBLANKDELAY 1200
+#define MAXVBLANKDELAY 13LL
 //guess when the next vblank should happen,
 //based on the refreshrate and when the previous one happened
-//increase that by 20% to allow for errors
+//increase that by 30% to allow for errors
 int64_t CVideoReferenceClock::TimeOfNextVblank()
 {
-  return m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXVBLANKDELAY / 1000);
+  return m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXVBLANKDELAY / 10LL);
 }
 
 //for the codec information screen

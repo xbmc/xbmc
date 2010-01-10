@@ -152,7 +152,7 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
 
   m_threadState = Py_NewInterpreter();
-  
+
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
@@ -167,7 +167,7 @@ void XBPyThread::Process()
   PyThreadState_Swap(m_threadState);
 
   m_pExecuter->InitializeInterpreter();
-  
+
   CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
 
   // get path from script file name and add python path's
@@ -195,11 +195,11 @@ void XBPyThread::Process()
   PySys_SetPath(path);
   // Remove the PY_PATH_SEP at the end
   sourcedir[strlen(sourcedir)-1] = 0;
-  
+
   CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
-  
+
   xbp_chdir(sourcedir);
-  
+
   if (m_type == 'F')
   {
     // run script from file
@@ -361,7 +361,7 @@ bool XBPyThread::isStopping() {
 void XBPyThread::stop()
 {
   m_stopping = true;
-  
+
   if (m_threadState)
   {
     PyEval_AcquireLock();

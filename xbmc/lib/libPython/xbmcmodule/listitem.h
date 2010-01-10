@@ -20,7 +20,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif

@@ -145,7 +145,7 @@ namespace PYXBMC
       PyErr_SetString(PyExc_ValueError, "Invalid id or value!");
       return NULL;
     }
-    
+
     self->pSettings->Set(id, value);
     self->pSettings->Save();
 

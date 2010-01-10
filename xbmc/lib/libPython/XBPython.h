@@ -49,30 +49,30 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem() {};
-  void	RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
-  void	UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
-  void	Initialize();
-  void	Finalize();
-  void	FreeResources();
-  void	Process();
+  void RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
+  void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
+  void Initialize();
+  void Finalize();
+  void FreeResources();
+  void Process();
 
   void PulseGlobalEvent();
   void WaitForEvent(HANDLE hEvent, unsigned int timeout);
 
-  int	ScriptsSize();
-  int	GetPythonScriptId(int scriptPosition);
-  int   evalFile(const char *);
-  int   evalFile(const char *, const unsigned int, const char **);
-  int   evalString(const char *, const unsigned int argc = 0, const char ** argv = NULL);
+  int ScriptsSize();
+  int GetPythonScriptId(int scriptPosition);
+  int evalFile(const char *);
+  int evalFile(const char *, const unsigned int, const char **);
+  int evalString(const char *, const unsigned int argc = 0, const char ** argv = NULL);
 
-  bool	isRunning(int scriptId);
-  bool  isStopping(int scriptId);
-  void	setDone(int id);
+  bool isRunning(int scriptId);
+  bool isStopping(int scriptId);
+  void setDone(int id);
 
   // inject xbmc stuff into the interpreter.
   // should be called for every new interpreter
   void InitializeInterpreter();
-  
+
   // remove modules and references when interpreter done
   void DeInitializeInterpreter();
 
@@ -84,7 +84,7 @@ public:
   void  stopScript(int scriptId);
 
   // returns NULL if script doesn't exist or if script doesn't have a filename
-  const char*	getFileName(int scriptId);
+  const char* getFileName(int scriptId);
 
   // returns -1 if no scripts exist with specified filename
   int getScriptId(const char* strFile);
