@@ -632,10 +632,10 @@
   <string id="763">Bright green</string>
   <string id="764">Yellow green</string>
   <string id="765">Cyan</string>
-  <string id="766">Reserved</string>
-  <string id="767">Reserved</string>
-  <string id="768">Reserved</string>
-  <string id="769">Reserved</string>
+  <string id="766">Light grey</string>
+  <string id="767">grey</string>
+  <!-- strings 768 and 769 reserved for more subtitle colors -->
+
   <string id="770">Error %i: share not available</string>
   <string id="771">- Auto FATX limiter</string>
   <string id="772">Audio output</string>
