@@ -473,17 +473,17 @@ void CPVRManager::Process()
     }
 
     /* Check for new or updated EPG entries */
-    if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too ofteng_guiSettings.GetInt("pvrepg.epgscan")*60*60) // don't do this too often
+    if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgscan")*60*60) // don't do this too often
     {
       cPVREpgs::Update(true);
       m_LastEPGScan = Now;
       m_LastEPGUpdate = Now;  // Data is also updated during scan
     }
-//    else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
-//    {
-//      cPVREpgs::Update(false);
-//      m_LastEPGUpdate = Now;
-//    }
+    else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
+    {
+      cPVREpgs::Update(false);
+      m_LastEPGUpdate = Now;
+    }
     else
     {
       /* Cleanup EPG Data */

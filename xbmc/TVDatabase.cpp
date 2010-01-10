@@ -362,22 +362,23 @@ bool CTVDatabase::UpdateEPGEntry(const cPVREPGInfoTag &info)
 
     CStdString SQL;
 
-    SQL=FormatSQL("select * from GuideData WHERE GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str());
+    SQL=FormatSQL("select * from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelID());
     m_pDS->query(SQL.c_str());
 
     if (m_pDS->num_rows() > 0)
     {
+      int id = m_pDS->fv("idDatabaseBroadcast").get_asInt();
       m_pDS->close();
       // update the item
       SQL = FormatSQL("update GuideData set idChannel=%i, StartTime='%s', EndTime='%s', strTitle='%s', strPlotOutline='%s', "
                       "strPlot='%s', GenreType=%i, GenreSubType=%i, firstAired='%s', parentalRating=%i, starRating=%i, "
                       "notify=%i, seriesNum='%s', episodeNum='%s', episodePart='%s', episodeName='%s', "
-                      "idUniqueBroadcast=%i WHERE idUniqueBroadcast=%i",
+                      "idUniqueBroadcast=%i WHERE idDatabaseBroadcast=%i",
                       info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
                       info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
                       info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
                       info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
-                      info.GetUniqueBroadcastID(), info.GetUniqueBroadcastID());
+                      info.GetUniqueBroadcastID(), id);
 
       m_pDS->exec(SQL.c_str());
       return true;
