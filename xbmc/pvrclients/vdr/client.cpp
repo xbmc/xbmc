@@ -671,6 +671,11 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   return PVR_ERROR_NO_ERROR;
 }
 
+PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* props)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
 const char * GetBackendName()
 {
   static CStdString BackendName = VTPTransceiver.GetBackendName();
