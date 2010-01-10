@@ -279,5 +279,86 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
   return true;
 }
 
+//////////////////////////////////////////////////////////////////////
+// NV122RGBProgressiveShaderARB - NV122RGB with no deinterlacing
+//////////////////////////////////////////////////////////////////////
+
+NV12ToRGBProgressiveShaderARB::NV12ToRGBProgressiveShaderARB(bool rect, unsigned flags)
+  : BaseYUV2RGBARBShader(flags)
+{
+  m_black      = 0.0f;
+  m_contrast   = 1.0f;
+/*
+  if(rect)
+    PixelShader()->LoadSource("nv12rgb_basic_rect.arb");
+  else
+    PixelShader()->LoadSource("nv12rgb_basic_2d.arb");
+*/
+  string source = "";
+  string target = "2D";
+  if (rect)
+  {
+    target = "RECT";
+  }
+  
+  // N.B. If you're changing this code, bear in mind that the GMA X3100 
+  // (at least with OS X drivers in 10.5.2), doesn't allow for negation 
+  // of constants, like "-c[0].y".
+  //
+  // Thanks to Aras Pranckevicius for bringing this bug to light.
+  // Quoting him, in case the link dies:
+  // "In my experience, the X3100 drivers seem to ignore negate modifiers on
+  // constant registers in fragment (and possibly vertex) programs. It just
+  // seems someone forgot to implement that. (radar: 5632811)"
+  // - http://lists.apple.com/archives/mac-opengl/2008/Feb/msg00191.html
+
+  source = 
+    "!!ARBfp1.0\n"
+    "PARAM c[4] = \n"
+    "{{1.0,   -0.0625, 1.1643835, 1.1383928},\n"
+    "{-0.5,    0.0,   -0.187,     1.8556},\n"
+    "{1.5701, -0.4664, 0.0,       0.0},\n"
+    "{ -0.5,   0.0,    0.187,    -1.8556}\n"
+    "};\n"
+    "TEMP T0;\n"
+    "TEMP T1;\n"
+    "TEMP yuv;\n"
+    "TEX T0.x, fragment.texcoord[0], texture[0], "+target+";\n"
+    "ADD yuv.x, T0.x, c[0].y;\n" // Y (yuv.x = tex0.x -0.0625)
+    "MUL yuv.x, yuv.x, c[0].z;\n" //  (yuv.x *= 1.1643835)
+    "TEX T0.xw, fragment.texcoord[1], texture[1], "+target+";\n"
+    "ADD yuv.z, T0.x, c[0].y;\n" // V (yuv.z = tex1.x - 0.0625)
+    "MUL yuv.z, yuv.z, c[0].w;\n" //  (yuv.z *= 1.1383928)
+    "ADD yuv.z, yuv.z, c[1].x;\n" //  (yuv.z -= 0.5)
+    "ADD yuv.y, T0.w, c[0].y;\n" // U (yuv.y = tex1.w - 0.0625)
+    "MUL yuv.y, yuv.y, c[0].w;\n" //  (yuv.y *= 1.1383928)
+    "ADD yuv.y, yuv.y, c[3].x;\n" //  (yuv.y -= 0.5)
+    "MAD T1.xyz, yuv.z, c[1].yzww, yuv.x;\n"
+    "MAD result.color.xyz, yuv.y, c[2], T1;\n"
+    "MOV result.color.w, fragment.color.w;\n"
+    "END\n";
+
+  PixelShader()->SetSource(source);
+}
+
+
+void NV12ToRGBProgressiveShaderARB::OnCompiledAndLinked()
+{
+
+}
+
+bool NV12ToRGBProgressiveShaderARB::OnEnabled()
+{
+  GLfloat matrix[4][4];
+  CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
+
+  for(int i=0;i<4;i++)
+    glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, i
+                               , matrix[0][i]
+                               , matrix[1][i]
+                               , matrix[2][i]
+                               , matrix[3][i]);
+  return true;
+}
 
 #endif // HAS_GL

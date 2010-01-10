@@ -121,6 +121,8 @@ extern "C"
   FUNCTION(PySys_SetArgv)
   FUNCTION(PyObject_RichCompare)
   FUNCTION(PyFloat_FromDouble)
+  FUNCTION(PyRun_FileExFlags)
+  FUNCTION(PyRun_StringFlags)
 
   DATA_OBJECT(PyExc_SystemError)
   DATA_OBJECT(PyExc_ValueError)
@@ -233,6 +235,8 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyArg_ParseTuple)) &&
       dll.ResolveExport(DLL_FUNCTION(PySys_SetArgv)) &&
       dll.ResolveExport(DLL_FUNCTION(PyObject_RichCompare)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_FileExFlags)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyRun_StringFlags)) &&
 
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_SystemError)) &&
       dll.ResolveExport(DLL_OBJECT_DATA(PyExc_ValueError)) &&

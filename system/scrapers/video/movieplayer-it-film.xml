@@ -4,7 +4,7 @@
 <!-- to the XBMC team for the Greatest Mediacenter app in the world and for their hard work. -->
 
 <?xml version="1.0" encoding="utf-8"?>
-<scraper name="movieplayer.it-Film" date="2009-05-12" content="movies" framework="1.0" thumb="movieplayer-it-film.jpg" language="it">
+<scraper name="movieplayer.it" date="2009-05-12" content="movies" framework="1.0" thumb="movieplayer-it.jpg" language="it">
 	<include>common/tmdb.xml</include>
 
 	<GetSettings dest="3">

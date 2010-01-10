@@ -21,7 +21,6 @@
  *
  */
 
-#include "IAudioDeviceChangedCallback.h"
 #include "utils/CriticalSection.h"
 #include "utils/log.h"
 #include "StdString.h"
@@ -35,7 +34,7 @@ class TiXmlNode;
 
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };
 
-class CGUIAudioManager : public IAudioDeviceChangedCallback
+class CGUIAudioManager
 {
   class CWindowSounds
   {
@@ -46,10 +45,10 @@ class CGUIAudioManager : public IAudioDeviceChangedCallback
 
 public:
   CGUIAudioManager();
-  virtual ~CGUIAudioManager();
+          ~CGUIAudioManager();
 
-  virtual void        Initialize(int iDevice);
-  virtual void        DeInitialize(int iDevice);
+          void        Initialize(int iDevice);
+          void        DeInitialize(int iDevice);
 
           bool        Load();
 

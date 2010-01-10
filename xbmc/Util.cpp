@@ -1930,7 +1930,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   for (int y = 0; y < height; y++)
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
 
-  delete pixels; 
+  delete [] pixels; 
 
 #else
   //nothing to take a screenshot from
@@ -1959,7 +1959,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     if (!CPicture::CreateThumbnailFromSurface(outpixels, width, height, stride, filename))
       CLog::Log(LOGERROR, "Unable to write screenshot %s", filename.c_str());
 
-    delete outpixels;
+    delete [] outpixels;
   }
   else
   {

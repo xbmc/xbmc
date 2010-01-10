@@ -67,7 +67,8 @@ enum RenderMethod
   RENDER_ARB=0x02,
   RENDER_SW=0x04,
   RENDER_VDPAU=0x08,
-  RENDER_POT=0x10
+  RENDER_POT=0x10,
+  RENDER_CRYSTALHD=0x20
 };
 
 enum RenderQuality
@@ -133,22 +134,36 @@ protected:
   void InitializeSoftwareUpscaling();
 
   virtual void ManageTextures();
-  void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  virtual bool CreateYV12Texture(int index, bool clear=true);
-  void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
-  void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
+
+  // textures
+  typedef void (CLinuxRendererGL::*TextureFuncLoadPtr)(int index);
+  typedef void (CLinuxRendererGL::*TextureFuncDeletePtr)(int index);
+  typedef bool (CLinuxRendererGL::*TextureFuncCreatePtr)(int index, bool clear);
+
+  TextureFuncLoadPtr LoadTexturesFuncPtr;
+  TextureFuncDeletePtr DeleteTextureFuncPtr;
+  TextureFuncCreatePtr CreateTextureFuncPtr;
+
+  void LoadYV12Textures(int source);
+  void DeleteYV12Texture(int index);
+  void ClearYV12Texture(int index);
+  bool CreateYV12Texture(int index, bool clear = true);
+
+  void LoadNV12Textures(int source);
+  void DeleteNV12Texture(int index);
+  bool CreateNV12Texture(int index, bool clear = true);
 
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
+  void RenderCrystalHD(int renderBuffer, int field);  // render using crystal HD hardware
 
   CFrameBufferObject m_fbo;
 

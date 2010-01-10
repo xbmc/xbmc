@@ -47,6 +47,18 @@ static int doubleVisAttributes[] =
   None
 };
 
+static int doubleVisAttributesOld[] =
+{
+  GLX_RGBA,
+  GLX_RED_SIZE, 8,
+  GLX_GREEN_SIZE, 8,
+  GLX_BLUE_SIZE, 8,
+  GLX_ALPHA_SIZE, 8,
+  GLX_DEPTH_SIZE, 8,
+  GLX_DOUBLEBUFFER,
+  None
+};
+
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
@@ -187,6 +199,7 @@ void CWinSystemX11::UpdateResolutions()
 
 
 #if defined(HAS_XRANDR)
+  if(g_xrandr.Query())
   {
     XOutput out  = g_xrandr.GetCurrentOutput();
     XMode   mode = g_xrandr.GetCurrentMode(out.name);
@@ -278,28 +291,37 @@ bool CWinSystemX11::RefreshGlxContext()
   m_glWindow = info.info.x11.window;
   m_wmWindow = info.info.x11.wmwindow;
 
-  // query compatible framebuffers based on double buffered attributes
-  if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
-  {
-    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+  int major, minor;
+  if(!glXQueryVersion(m_dpy, &major, &minor))
     return false;
-  }
 
-  for (int i = 0; i < availableFBs; i++)
+  if(major > 1 || (major == 1 && minor >= 3))
   {
-    // obtain the xvisual from the first compatible framebuffer
-    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-    if (vInfo)
+    // query compatible framebuffers based on double buffered attributes
+    if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
     {
-      if (vInfo->depth == 24)
+      CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+      return false;
+    }
+
+    for (int i = 0; i < availableFBs; i++)
+    {
+      // obtain the xvisual from the first compatible framebuffer
+      vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+      if (vInfo)
       {
-        CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-        break;
+        if (vInfo->depth == 24)
+        {
+          CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+          break;
+        }
+        XFree(vInfo);
+        vInfo = NULL;
       }
-      XFree(vInfo);
-      vInfo = NULL;
     }
   }
+  else
+    vInfo = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), doubleVisAttributesOld);
 
   if (vInfo) 
   {
