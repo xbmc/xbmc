@@ -40,7 +40,7 @@ CXBApplicationEx::~CXBApplicationEx()
 }
 
 /* Create the app */
-bool CXBApplicationEx::Create(HWND hWnd)
+bool CXBApplicationEx::Create()
 {
   // Initialize the app's device-dependent objects
   if (!Initialize())

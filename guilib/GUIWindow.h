@@ -163,6 +163,7 @@ public:
 
 protected:
   virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual bool HitTest(const CPoint &point) const;
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
@@ -243,6 +244,8 @@ protected:
   std::vector<CGUIActionDescriptor> m_unloadActions;
 
   bool m_manualRunActions;
+
+  int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 };
 
 #endif

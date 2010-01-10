@@ -58,12 +58,12 @@ bool CDVDSubtitleStream::Open(const string& strFile)
     if (isUTF16)
     {
       std::wstringstream wstringstream;
-      memset(buffer,0,sizeof(buffer));
       while( (size_read = pInputStream->Read(buffer, sizeof(buffer)-2) ) > 0 )
       {
-        CStdStringW temp;
-        g_charsetConverter.utf16LEtoW(CStdString16((uint16_t*)buffer),temp);
-        wstringstream << temp;
+        buffer[size_read] = buffer[size_read + 1] = '\0';
+        CStdStringW temp; 
+        g_charsetConverter.utf16LEtoW(CStdString16((uint16_t*)buffer),temp); 
+        wstringstream << temp; 
       }
       delete pInputStream;
 

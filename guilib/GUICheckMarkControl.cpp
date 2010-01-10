@@ -22,7 +22,6 @@
 #include "GUICheckMarkControl.h"
 #include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
-#include "MouseStat.h"
 #include "Key.h"
 
 using namespace std;
@@ -144,14 +143,16 @@ bool CGUICheckMarkControl::GetSelected() const
   return m_bSelected;
 }
 
-bool CGUICheckMarkControl::OnMouseClick(int button, const CPoint &point)
+bool CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (button != MOUSE_LEFT_BUTTON) return false;
-  g_Mouse.SetState(MOUSE_STATE_CLICK);
-  CAction action;
-  action.id = ACTION_SELECT_ITEM;
-  OnAction(action);
-  return true;
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
+  {
+    CAction action;
+    action.id = ACTION_SELECT_ITEM;
+    OnAction(action);
+    return true;
+  }
+  return false;
 }
 
 void CGUICheckMarkControl::SetLabel(const string &label)

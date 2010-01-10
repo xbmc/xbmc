@@ -20,7 +20,6 @@
  */
 
 #include "GUIScrollBarControl.h"
-#include "MouseStat.h"
 #include "Key.h"
 
 #define MIN_NIB_SIZE 4.0f
@@ -265,33 +264,34 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
   SetInvalid();
 }
 
-bool CGUIScrollBar::OnMouseClick(int button, const CPoint &point)
+bool CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  g_Mouse.SetState(MOUSE_STATE_CLICK);
-  // turn off any exclusive access, if it's on...
-  g_Mouse.EndExclusiveAccess(this, GetParentID());
-  if (m_guiBackground.HitTest(point))
-  { // set the position
+  if (event.m_id == ACTION_MOUSE_DRAG)
+  {
+    if (event.m_state == 1)
+    { // we want exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+      SendWindowMessage(msg);
+    }
+    else if (event.m_state == 3)
+    { // we're done with exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+      SendWindowMessage(msg);
+    }
     SetFromPosition(point);
     return true;
   }
+  else if (event.m_id == ACTION_MOUSE_CLICK && m_guiBackground.HitTest(point))
+  {
+    SetFromPosition(point);
+    return true;
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  {
+    Move(-event.m_wheel);
+    return true;
+  }
   return false;
-}
-
-bool CGUIScrollBar::OnMouseDrag(const CPoint &offset, const CPoint &point)
-{
-  g_Mouse.SetState(MOUSE_STATE_DRAG);
-  // get exclusive access to the mouse
-  g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
-  // get the position of the mouse
-  SetFromPosition(point);
-  return true;
-}
-
-bool CGUIScrollBar::OnMouseWheel(char wheel, const CPoint &point)
-{
-  Move(-wheel);
-  return true;
 }
 
 CStdString CGUIScrollBar::GetDescription() const

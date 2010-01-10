@@ -21,7 +21,6 @@
 
 #include "GUIResizeControl.h"
 #include "GUIWindowManager.h"
-#include "MouseStat.h"
 #include "Key.h"
 #include "utils/TimeUtils.h"
 
@@ -124,19 +123,24 @@ void CGUIResizeControl::OnRight()
   Resize(m_fSpeed, 0);
 }
 
-bool CGUIResizeControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
+bool CGUIResizeControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  g_Mouse.SetState(MOUSE_STATE_DRAG);
-  g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
-  Resize(offset.x, offset.y);
-  return true;
-}
-
-bool CGUIResizeControl::OnMouseClick(int button, const CPoint &point)
-{
-  if (button != MOUSE_LEFT_BUTTON) return false;
-  g_Mouse.EndExclusiveAccess(this, GetParentID());
-  return true;
+  if (event.m_id == ACTION_MOUSE_DRAG)
+  {
+    if (event.m_state == 1)
+    { // grab exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+      SendWindowMessage(msg);
+    }
+    else if (event.m_state == 3)
+    { // release exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+      SendWindowMessage(msg);
+    }
+    Resize(event.m_offsetX, event.m_offsetY);
+    return true;
+  }
+  return false;
 }
 
 void CGUIResizeControl::UpdateSpeed(int nDirection)

@@ -50,9 +50,6 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(int button, const CPoint &point);
-  virtual bool OnMouseDoubleClick(int button, const CPoint &point);
-  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
@@ -90,6 +87,7 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);

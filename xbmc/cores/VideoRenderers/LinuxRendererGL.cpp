@@ -2114,11 +2114,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
 
       glBindTexture(m_textureTarget, plane.id);
 
-      if(m_renderMethod & RENDER_POT)
-        CLog::Log(LOGNOTICE, "GL: Creating NV12 POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-      else
-        CLog::Log(LOGDEBUG,  "GL: Creating NV12 NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
-
       if (p == 1)
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
       else
@@ -2144,8 +2139,6 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
-  CLog::Log(LOGDEBUG, "Deleted NV12 texture %i", index);
-
   // finish up all textures, and delete them
   g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -2157,7 +2150,6 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
         if (glIsTexture(fields[f][p].id))
         {
           glDeleteTextures(1, &fields[f][p].id);
-          CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
         }
         fields[f][p].id = 0;
       }

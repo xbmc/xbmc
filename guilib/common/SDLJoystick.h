@@ -25,7 +25,7 @@ class CJoystick
 public:
   CJoystick();
 
-  void Initialize(HWND hwnd);
+  void Initialize();
   void Reset(bool axis=false);
   void CalibrateAxis(SDL_Joystick *joy);
   void ResetAxis(int axisId) { m_Amount[axisId] = 0; }

@@ -51,7 +51,7 @@ class TiXmlElement;
 // Subtitle colours
 
 #define SUBTITLE_COLOR_START  0
-#define SUBTITLE_COLOR_END    5
+#define SUBTITLE_COLOR_END    7
 
 // Karaoke colours
 
