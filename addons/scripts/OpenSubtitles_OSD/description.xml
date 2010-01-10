@@ -2,7 +2,7 @@
 <addoninfo>
     <!-- (required) uuid: unique identifier of this addon
     uuids can be generated online at sites such as http://www.famkruithof.net/uuid/uuidgen -->
-    <uuid>e99d9660-cfdb-11de-8a39-0800200c9a66</uid>
+    <uuid>e99d9660-cfdb-11de-8a39-0800200c9a66</uuid>
 
     <!-- (required) type:
       visualization
