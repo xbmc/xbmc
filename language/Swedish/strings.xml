@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 01/04/2010-->
+<!--Date of translation: 01/10/2010-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -603,10 +603,8 @@
   <string id="763">Ljusgrön</string>
   <string id="764">Gulgrön</string>
   <string id="765">Cyan</string>
-  <string id="766">Reserverad</string>
-  <string id="767">Reserverad</string>
-  <string id="768">Reserverad</string>
-  <string id="769">Reserverad</string>
+  <string id="766">Ljusgrå</string>
+  <string id="767">Grå</string>
   <string id="770">Fel %i: utdelningen inte tillgänglig</string>
   <string id="771">- Automatisk FATX-begränsare</string>
   <string id="772">Ljudutgång</string>
@@ -1715,8 +1713,6 @@
   <string id="20443">Vill du uppdatera info för alla</string>
   <string id="20444">objekt i denna sökväg?</string>
   <string id="20445">Fanart</string>
-  <string id="20446">NFO-fil hittad.</string>
-  <string id="20447">Uppdatera från internet?</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>
