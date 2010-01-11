@@ -34,7 +34,8 @@ using namespace JSONRPC;
 using namespace Json;
 using namespace std;
 
-const JSON_ACTION commands[] = {
+
+Command CJSONRPC::m_commands[] = {
 // JSON-RPC
   { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   Response,     ReadData,        "Enumerates all actions and descriptions" },
   { "JSONRPC.Version",                  CJSONRPC::Version,                      Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
@@ -101,12 +102,9 @@ const JSON_ACTION commands[] = {
 
 // XBMC Operations
   { "XBMC.Quit",                        CXBMCOperations::Quit,                  Response,     ControlPower,    "" }
-/* Planned features
-"XBMC.PlayMedia" - Should take movieid, tvshowid and so on. also filepath
-*/
 };
 
-ActionMap CJSONRPC::m_actionMap;
+CJSONRPC::CActionMap CJSONRPC::m_actionMap(m_commands, sizeof(m_commands) / sizeof(m_commands[0]) );
 
 JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
@@ -114,21 +112,21 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
   bool getPermissions = parameterObject.get("getpermissions", true).asBool();
   bool filterByTransport = parameterObject.get("filterbytransport", true).asBool();
 
-  int length = sizeof(commands)/sizeof(JSON_ACTION);
+  int length = sizeof(m_commands) / sizeof(Command);
   int clientflags = client->GetPermissionFlags();
   for (int i = 0; i < length; i++)
   {
-    if ((transport->GetCapabilities() & commands[i].transportneed) == 0 && filterByTransport)
+    if ((transport->GetCapabilities() & m_commands[i].transportneed) == 0 && filterByTransport)
       continue;
 
     Value val;
 
-    val["command"] = commands[i].command;
-    val["executable"] = (clientflags & commands[i].permission) > 0 ? true : false;
+    val["command"] = m_commands[i].command;
+    val["executable"] = (clientflags & m_commands[i].permission) > 0 ? true : false;
     if (getDescriptions)
-      val["description"] = commands[i].description;
+      val["description"] = m_commands[i].description;
     if (getPermissions)
-      val["permission"] = commands[i].permission == ReadData ? "ReadData" : "ControlPlayback";
+      val["permission"] = m_commands[i].permission == ReadData ? "ReadData" : "ControlPlayback";
 
     result["commands"].append(val);
   }
@@ -189,16 +187,6 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
   return OK;
 }
 
-void CJSONRPC::Initialize()
-{
-  int length = sizeof(commands)/sizeof(JSON_ACTION);
-  for (int i = 0; i < length; i++)
-  {
-    CStdString command = commands[i].command;
-    m_actionMap[command.ToLower()] = commands[i];
-  }
-}
-
 CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client)
 {
   Value inputroot, outputroot, result;
@@ -256,14 +244,34 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
 
 JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Value &result, ITransportLayer *transport, IClient *client)
 {
-  ActionMap::iterator iter = m_actionMap.find(method);
+  CActionMap::const_iterator iter = m_actionMap.find(method);
   if( iter != m_actionMap.end() )
   {
-    if (iter->second.permission & client->GetPermissionFlags())
+    if (client->GetPermissionFlags() & iter->second.permission)
       return iter->second.method(method, transport, client, o["params"], result);
     else
       return BadPermission;
   }
   else
     return MethodNotFound;
+}
+
+CJSONRPC::CActionMap::CActionMap(const Command commands[], int length)
+{
+  for (int i = 0; i < length; i++)
+  {
+    CStdString command = commands[i].command;
+    command = command.ToLower();
+    m_actionmap[command] = commands[i];
+  }
+}
+
+CJSONRPC::CActionMap::const_iterator CJSONRPC::CActionMap::find(const CStdString& key) const
+{
+  return m_actionmap.find(key);
+}
+
+CJSONRPC::CActionMap::const_iterator CJSONRPC::CActionMap::end() const
+{
+  return m_actionmap.end();
 }

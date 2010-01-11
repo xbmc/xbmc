@@ -1080,10 +1080,6 @@ CProfile* CApplication::InitDirectoriesWin32()
 
 bool CApplication::Initialize()
 {
-#ifdef HAS_JSONRPC
-  CJSONRPC::Initialize();
-#endif
-
 #ifdef HAS_DVD_DRIVE
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;

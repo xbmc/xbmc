@@ -66,14 +66,11 @@ namespace JSONRPC
     TransportLayerCapability transportneed;
     OperationPermission permission;
     const char* description;
-  } JSON_ACTION;
-
-  typedef std::map<CStdString, JSON_ACTION> ActionMap;
+  } Command;
 
   class CJSONRPC
   {
   public:
-    static void Initialize();
     static CStdString MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client);
 
     static JSON_STATUS Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
@@ -84,6 +81,20 @@ namespace JSONRPC
     static JSON_STATUS Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
   private:
     static JSON_STATUS InternalMethodCall(const CStdString& method, Json::Value& o, Json::Value &result, ITransportLayer *transport, IClient *client);
-    static ActionMap m_actionMap;
+
+    class CActionMap
+    {
+    public:
+      CActionMap(const Command commands[], int length);
+
+      typedef std::map<CStdString, Command>::const_iterator const_iterator;
+      const_iterator find(const CStdString& key) const;
+      const_iterator end() const;
+    private:
+      std::map<CStdString, Command> m_actionmap;
+    };
+
+    static const Command    m_commands[];
+    static const CActionMap m_actionMap;
   };
 }
