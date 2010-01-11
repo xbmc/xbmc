@@ -1340,8 +1340,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
   else
   {
     output = openTag + "Filename:" + fileItem.m_strPath;  // currently playing item filename
-    if (g_application.IsPlaying())
-      if (!g_application.m_pPlayer->IsPaused()) 
+    if (g_application.IsPlaying() && g_application.m_pPlayer)
+      if (!g_application.m_pPlayer->IsPaused())
         output+=closeTag+openTag+"PlayStatus:Playing";
       else
         output+=closeTag+openTag+"PlayStatus:Paused";
