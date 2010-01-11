@@ -102,7 +102,7 @@ struct _env
 };
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 50
-char *dll__environ[EMU_MAX_ENVIRONMENT_ITEMS + 1]; 
+char *dll__environ[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 CRITICAL_SECTION dll_cs_environ;
 
 #define dll_environ    (*dll___p__environ())   /* pointer to environment table */
@@ -111,17 +111,17 @@ extern "C" void __stdcall init_emu_environ()
 {
   InitializeCriticalSection(&dll_cs_environ);
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
-  
+
   // libdvdnav
   dll_putenv("DVDREAD_NOKEYS=1");
   //dll_putenv("DVDREAD_VERBOSE=1");
   //dll_putenv("DVDREAD_USE_DIRECT=1");
-  
+
   // libdvdcss
   dll_putenv("DVDCSS_METHOD=key");
   dll_putenv("DVDCSS_VERBOSE=3");
   dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
-  
+
   // python
 #ifdef _XBOX
   dll_putenv("OS=xbox");
@@ -289,7 +289,7 @@ extern "C"
       CLog::Log(LOGDEBUG,"  msg: %s", szLine);
     else
       CLog::Log(LOGDEBUG,"  msg: %s\n", szLine);
-    
+
     // return a non negative value
     return 0;
   }
@@ -303,7 +303,7 @@ extern "C"
     va_end(va);
     tmp[2048 - 1] = 0;
     CLog::Log(LOGDEBUG, "  msg: %s", tmp);
-    
+
     return strlen(tmp);
   }
 
@@ -370,7 +370,7 @@ extern "C"
       // let the operating system handle it
       return _fdopen(fd, mode);
     }
-    
+
     not_implement("msvcrt.dll incomplete function _fdopen(...) called\n");
     return NULL;
   }
@@ -414,7 +414,7 @@ extern "C"
       bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
     else
       bResult = pFile->Open(CURL::ValidatePath(str));
-    
+
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -443,7 +443,7 @@ extern "C"
       // Translate the path
       return freopen(_P(path).c_str(), mode, stream);
     }
-    
+
     // error
     // close stream and return NULL
     dll_fclose(stream);
@@ -508,7 +508,7 @@ extern "C"
     if (pFile != NULL)
     {
       g_emuFileWrapper.UnRegisterFileObjectByDescriptor(fd);
-      
+
       pFile->Close();
       delete pFile;
       return 0;
@@ -582,7 +582,7 @@ extern "C"
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
-    { 
+    {
       g_emuFileWrapper.LockFileObjectByDescriptor(fd);
       return;
     }
@@ -826,6 +826,7 @@ extern "C"
     //NOTE: __security_error_handler has been removed in VS2005 and up
     CLog::Log(LOGERROR, "security_error, code %i", code);
   }
+
 #endif
 
   DIR *dll_opendir(const char *file)
@@ -908,7 +909,7 @@ extern "C"
     {
       if (dirp == (DIR*)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
       {
-        emulated = true; 
+        emulated = true;
         break;
       }
     }
@@ -983,7 +984,7 @@ extern "C"
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
       return fgets(pszString, num, stream);
-    } 
+    }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return NULL;
   }
@@ -1034,7 +1035,7 @@ extern "C"
     {
       // it is a emulated file
       char szString[10];
-      
+
       if (dll_feof(stream))
       {
         return EOF;
@@ -1044,7 +1045,7 @@ extern "C"
       {
         return -1;
       }
-      
+
       byte byKar = (byte)szString[0];
       int iKar = byKar;
       return iKar;
@@ -1075,7 +1076,7 @@ extern "C"
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
-  
+
   FILE* dll_fopen(const char* filename, const char* mode)
   {
     FILE* file = NULL;
@@ -1096,13 +1097,13 @@ extern "C"
       iMode |= O_RDWR | _O_TRUNC;
     else if (strchr(mode, 'w'))
       iMode |= _O_WRONLY  | O_CREAT;
-      
+
     int fd = dll_open(filename, iMode);
     if (fd >= 0)
     {
       file = g_emuFileWrapper.GetStreamByDescriptor(fd);;
     }
-    
+
     return file;
   }
 
@@ -1123,7 +1124,7 @@ extern "C"
   {
     return dll_putc(c, stdout);
   }
-  
+
   int dll_fputc(int character, FILE* stream)
   {
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
@@ -1175,7 +1176,7 @@ extern "C"
         return fputs(szLine, stream);
       }
     }
-    
+
     OutputDebugString(szLine);
     OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
@@ -1327,9 +1328,9 @@ extern "C"
       {
         memcpy(buf, buffer, size * count);
         buf[size * count] = 0; // string termination
-        
+
         CLog::Log(LOGDEBUG, "%s", buf);
-        
+
         free(buf);
         return count;
       }
@@ -1371,7 +1372,7 @@ extern "C"
       // let the operating system handle it
       return fflush(stream);
     }
-    
+
     // std stream, no need to flush
     return 0;
   }
@@ -1410,7 +1411,7 @@ extern "C"
       CLog::Log(LOGWARNING, "dll_vfprintf: Data lost due to undersized buffer");
     }
     tmp[2048 - 1] = 0;
-    
+
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
       CLog::Log(LOGINFO, "  msg: %s", tmp);
@@ -1456,7 +1457,7 @@ extern "C"
         return vfprintf(stream, format, va);
       }
     }
-    
+
     OutputDebugString(tmp);
     OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
@@ -1472,7 +1473,7 @@ extern "C"
     va_end(va);
     return res;
   }
-  
+
   int dll_fgetpos(FILE* stream, fpos_t* pos)
   {
     fpos64_t tmpPos;
@@ -1595,10 +1596,10 @@ extern "C"
     return 0;
   }
 
-  uintptr_t dll_beginthread( 
+  uintptr_t dll_beginthread(
     void( *start_address )( void * ),
     unsigned stack_size,
-    void *arglist 
+    void *arglist
   )
   {
     return _beginthread(start_address, stack_size, arglist);
@@ -1621,7 +1622,7 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
-      
+
 #ifdef _LINUX
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
     {
@@ -1699,7 +1700,7 @@ extern "C"
     {
       return fstat(fd, buffer);
     }
-    
+
     // fstat on stdin, stdout or stderr should fail
     // this is what python expects
     return -1;
@@ -1711,7 +1712,7 @@ extern "C"
     if (pFile != NULL)
     {
       CLog::Log(LOGINFO, "Stating open file");
-      
+
       buffer->st_size = pFile->GetLength();
       buffer->st_mode = _S_IFREG;
       return 0;
@@ -1728,7 +1729,7 @@ extern "C"
       }
       return res;
     }
-    
+
     // fstat on stdin, stdout or stderr should fail
     // this is what python expects
     return -1;
@@ -1779,31 +1780,31 @@ extern "C"
   int dll_putenv(const char* envstring)
   {
     bool added = false;
-    
+
     if (envstring != NULL)
     {
       const char *value_start = strchr(envstring, '=');
-      
+
       if (value_start != NULL)
       {
         char var[64];
         int size = strlen(envstring) + 1;
         char *value = (char*)malloc(size);
-        
+
         if (!value)
           return -1;
         value[0] = 0;
-        
+
         memcpy(var, envstring, value_start - envstring);
         var[value_start - envstring] = 0;
         strupr(var);
-        
+
         strncpy(value, value_start + 1, size);
         if (size)
           value[size - 1] = '\0';
 
         EnterCriticalSection(&dll_cs_environ);
-        
+
         char** free_position = NULL;
         for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
         {
@@ -1823,7 +1824,7 @@ extern "C"
             free_position = &dll__environ[i];
           }
         }
-        
+
         if (free_position != NULL)
         {
           // free position, copy value
@@ -1838,13 +1839,13 @@ extern "C"
             added = true;
           }
         }
-        
+
         LeaveCriticalSection(&dll_cs_environ);
 
         free(value);
       }
     }
-    
+
     return added ? 0 : -1;
   }
 
@@ -1853,7 +1854,7 @@ extern "C"
   char *getenv(const char *s)
   {
     // some libs in the solution linked to getenv which was exported in python.lib
-    // now python is in a dll this needs the be fixed, or not 
+    // now python is in a dll this needs the be fixed, or not
     CLog::Log(LOGWARNING, "old getenv from python.lib called, library check needed");
     return NULL;
   }
@@ -1887,17 +1888,17 @@ extern "C"
         value = ctemp;
     }
 #endif
-    
+
     LeaveCriticalSection(&dll_cs_environ);
-    
+
     if (value != NULL)
     {
       return value;
     }
-    
+
     return NULL;
   }
-  
+
   int dll_ctype(int i)
   {
     not_implement("msvcrt.dll fake function dll_ctype() called\n");
@@ -1913,7 +1914,7 @@ extern "C"
   void (__cdecl * dll_signal(int sig, void (__cdecl *func)(int)))(int)
   {
 #ifdef _XBOX
-    // the xbox has a NSIG of 23 (+1), problem is when calling signal with 
+    // the xbox has a NSIG of 23 (+1), problem is when calling signal with
     // one of the signals below the xbox wil crash. Just return SIG_ERR
     if (sig == SIGILL || sig == SIGFPE || sig == SIGSEGV) return SIG_ERR;
 #elif defined(_WIN32)
@@ -1928,7 +1929,7 @@ extern "C"
   {
     return 1;
   }
-  
+
   int dll__commit(int fd)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
@@ -1947,11 +1948,11 @@ extern "C"
       return fsync(fd);
 #endif
     }
-    
+
     // std stream, no need to flush
     return 0;
   }
-  
+
   char*** dll___p__environ()
   {
     static char*** t = (char***)&dll__environ;

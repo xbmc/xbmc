@@ -138,33 +138,33 @@ static void scandir_free_dir_entries(struct dirent*** namelist, int entries) {
 
 // returns the number of directory entries select or -1 if an error occurs
 int scandir(
-	const char* dir, 
-	struct dirent*** namelist, 
+	const char* dir,
+	struct dirent*** namelist,
 	int(*filter)(const struct dirent*),
 	int(*compar)(const void*, const void*)
 ) {
 	int entries = 0;
 	int max_entries = 1024; // assume 2*512 = 1024 entries (used for allocation)
 	DIR* d;
-	
+
 	*namelist = 0;
-	
+
 	// open directory
 	d = opendir(dir);
 	if (!d) return -1;
-	
+
 	// iterate
 	while (1) {
 		struct dirent* ent = readdir(d);
 		if (!ent) break;
-		
+
 		// add if no filter or filter returns non-zero
 		if (filter && (0 == filter(ent))) continue;
-		
+
 		// resize our buffer if there is not enough room
 		if (!*namelist || entries >= max_entries) {
 			struct dirent** new_entries;
-			
+
 			max_entries *= 2;
 			new_entries = (struct dirent **)realloc(*namelist, max_entries);
 			if (!new_entries) {
@@ -173,7 +173,7 @@ int scandir(
 				errno = ENOMEM;
 				return -1;
 			}
-			
+
 			*namelist = new_entries;
 		}
 
@@ -183,12 +183,12 @@ int scandir(
 			scandir_free_dir_entries(namelist, entries);
 			closedir(d);
 			errno = ENOMEM;
-			return -1;	
+			return -1;
 		}
-		
+
 		// copy entry info
 		*(*namelist)[entries] = *ent;
-		
+
 		// and then we tack the string onto the end
 		{
 			char* dest = (char*)((*namelist)[entries]) + sizeof(struct dirent);
@@ -198,10 +198,10 @@ int scandir(
 
 		++entries;
 	}
-	
+
 	// sort
 	if (*namelist && compar) qsort(*namelist, entries, sizeof((*namelist)[0]), compar);
-	
+
 	return entries;
 }
 
@@ -223,7 +223,7 @@ int alphasort(const void* lhs, const void* rhs) {
     documentation for any purpose is hereby granted without fee, provided
     that this copyright and permissions notice appear in all copies and
     derivatives.
-    
+
     This software is supplied "as is" without express or implied warranty.
 
     But that said, if there are any problems please get in touch.

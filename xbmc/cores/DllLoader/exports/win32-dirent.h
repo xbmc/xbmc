@@ -9,7 +9,7 @@
     Author:  Kevlin Henney (kevlin@acm.org, kevlin@curbralan.com)
     History: Created March 1997. Updated June 2003.
     Rights:  See end of file.
-    
+
 */
 
 #ifdef __cplusplus
@@ -33,8 +33,8 @@ int           closedir(DIR *);
 struct dirent *readdir(DIR *);
 void          rewinddir(DIR *);
 int scandir(
-	const char* dir, 
-	struct dirent*** namelist, 
+	const char* dir,
+	struct dirent*** namelist,
 	int(*filter)(const struct dirent*),
 	int(*compar)(const void*, const void*) );
 int alphasort(const void* lhs, const void* rhs);
@@ -47,7 +47,7 @@ int alphasort(const void* lhs, const void* rhs);
     documentation for any purpose is hereby granted without fee, provided
     that this copyright and permissions notice appear in all copies and
     derivatives.
-    
+
     This software is supplied "as is" without express or implied warranty.
 
     But that said, if there are any problems please get in touch.
