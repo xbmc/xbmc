@@ -37,6 +37,7 @@ private:
   friend class CGUIDialogPVRTimerSettings;
 
   CStdString      m_strTitle;             /// Name of this timer
+  CStdString      m_strDir;               /// Directory where the recording must be stored
   CStdString      m_Summary;              /// Summary string with the time to show inside a GUI list
   bool            m_Active;               /// Active flag, if it is false backend ignore the timer
   int             m_channelNum;           /// Integer value of the channel number
@@ -78,6 +79,8 @@ public:
   void SetStop(CDateTime Stop) { m_StopTime = Stop; }
   CStdString Title(void) const { return m_strTitle; }
   void SetTitle(CStdString name) { m_strTitle = name; }
+  CStdString Dir(void) const { return m_strDir; }
+  void SetDir(CStdString dir) { m_strDir = dir; }
   int Number(void) const { return m_channelNum; }
   void SetNumber(int Number) { m_channelNum = Number; }
   bool Active(void) const { return m_Active; }

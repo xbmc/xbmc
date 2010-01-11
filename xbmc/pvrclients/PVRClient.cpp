@@ -864,6 +864,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   tag.SetClientIndex(timer->index);
   tag.SetActive(timer->active);
   tag.SetTitle(timer->title);
+  tag.SetDir(timer->directory);
   tag.SetClientNumber(timer->channelNum);
   tag.SetStart((time_t) (timer->starttime+client->m_iTimeCorrection));
   tag.SetStop((time_t) (timer->endtime+client->m_iTimeCorrection));
@@ -1057,6 +1058,7 @@ void CPVRClient::WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIM
   tag.channelNum    = timerinfo.ClientNumber();
   tag.recording     = timerinfo.IsRecording();
   tag.title         = timerinfo.Title();
+  tag.directory     = timerinfo.Dir();
   tag.priority      = timerinfo.Priority();
   tag.lifetime      = timerinfo.Lifetime();
   tag.repeat        = timerinfo.IsRepeating();

@@ -643,7 +643,7 @@ void cPVRChannels::ReNumberAndCheck(void)
     {
       CStdString name;
       CLog::Log(LOGERROR, "cPVRChannels: Client channel '%i' from client '%i' have no channel name", at(i).ClientNumber(), at(i).ClientID());
-      name.Format(g_localizeStrings.Get(18029), at(i).ClientNumber());
+      name.Format(g_localizeStrings.Get(19085), at(i).ClientNumber());
       at(i).SetName(name);
     }
 
@@ -762,10 +762,10 @@ void cPVRChannels::HideChannel(unsigned int number)
       if (!pDialog)
         return;
 
-      pDialog->SetHeading(18090);
-      pDialog->SetLine(0, 18095);
+      pDialog->SetHeading(19098);
+      pDialog->SetLine(0, 19099);
       pDialog->SetLine(1, "");
-      pDialog->SetLine(2, 18096);
+      pDialog->SetLine(2, 19100);
       pDialog->DoModal();
 
       if (!pDialog->IsConfirmed())
@@ -777,7 +777,7 @@ void cPVRChannels::HideChannel(unsigned int number)
 
   if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) && (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag()->Number() == number))
   {
-    CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
+    CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
     return;
   }
 
@@ -902,7 +902,7 @@ void cPVRChannels::SearchMissingChannelIcons()
   PVRChannelsTV.SearchAndSetChannelIcons(true);
   PVRChannelsRadio.SearchAndSetChannelIcons(true);
   /// TODO: Add Process dialog here
-  CGUIDialogOK::ShowAndGetInput(18033,0,20177,0);
+  CGUIDialogOK::ShowAndGetInput(19103,0,20177,0);
 }
 
 cPVRChannelInfoTag *cPVRChannels::GetByClientFromAll(int Number, int ClientID)

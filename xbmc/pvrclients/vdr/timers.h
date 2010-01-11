@@ -52,6 +52,8 @@ private:
   int channel;
   int lifetime;
   mutable char file[256];
+  mutable char name[256];
+  mutable char dir[256];
   int index;
   char *aux;
 
@@ -59,7 +61,7 @@ public:
   cTimer(const PVR_TIMERINFO *Timer);
   cTimer();
   virtual ~cTimer();
-  
+
   int Index(void) const { return index; }
   bool Recording(void) const { return recording; }
   bool Pending(void) const { return pending; }
@@ -75,6 +77,8 @@ public:
   time_t FirstDay(void) const { return weekdays ? day : 0; }
   const char *Aux(void) const { return aux; }
   const char *File(void) const { return file; }
+  const char *Title(void) const { return name; }
+  const char *Dir(void) const { return dir; }
   bool Matches(time_t t = 0, bool Directly = false, int Margin = 0) const;
   time_t StartTime(void) const;
   time_t StopTime(void) const;

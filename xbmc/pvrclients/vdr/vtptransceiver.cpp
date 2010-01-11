@@ -1048,7 +1048,8 @@ PVR_ERROR CVTPTransceiver::RequestTimerList(PVRHANDLE handle)
     tag.starttime   = timer.StartTime();
     tag.endtime     = timer.StopTime();
     tag.recording   = timer.HasFlags(tfRecording) || timer.HasFlags(tfInstant);
-    tag.title       = timer.File();
+    tag.title       = timer.Title();
+    tag.directory   = timer.Dir();
     tag.priority    = timer.Priority();
     tag.lifetime    = timer.Lifetime();
     tag.repeat      = timer.WeekDays() == 0 ? false : true;

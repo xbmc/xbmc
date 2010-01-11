@@ -320,6 +320,7 @@ int cPVRTimerInfoTag::Compare(const cPVRTimerInfoTag &timer) const
 void cPVRTimerInfoTag::Reset()
 {
   m_strTitle      = "";
+  m_strDir        = "/";
   m_Summary       = "";
 
   m_Active        = false;

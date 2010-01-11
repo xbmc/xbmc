@@ -168,7 +168,7 @@ extern "C" {
       unsigned int codec_type;
       unsigned int codec_id;
     } stream[PVR_STREAM_MAX_STREAMS];
-  } ATTRIBUTE_PACKED PVR_STREAMPROPS; 
+  } ATTRIBUTE_PACKED PVR_STREAMPROPS;
 
   /**
   * EPG Channel Definition
@@ -238,6 +238,7 @@ extern "C" {
     int           index;
     int           active;
     const char   *title;
+    const char   *directory;
     int           channelNum;
     time_t        starttime;
     time_t        endtime;

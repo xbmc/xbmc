@@ -44,7 +44,6 @@ cTimer::cTimer()
 cTimer::cTimer(const PVR_TIMERINFO *Timer)
 {
   aux       = NULL;
-
   index     = Timer->index;
   startTime = Timer->starttime;
   stopTime  = Timer->endtime;
@@ -63,7 +62,15 @@ cTimer::cTimer(const PVR_TIMERINFO *Timer)
   priority  = Timer->priority;
   channel   = Timer->channelNum;
   lifetime  = Timer->lifetime;
-  strn0cpy(file, Timer->title, 256);
+
+  CStdString directory = Timer->directory;
+  directory.Replace('/','~');
+  if (directory[directory.size()-1] != '~') // this is a file
+   directory += "~";
+  strn0cpy(dir, directory.c_str(), 256);
+  strn0cpy(name, Timer->title, 256);
+  directory += Timer->title;
+  strn0cpy(file, directory.c_str(), 256);
 
   struct tm tm_r;
   struct tm *time = localtime_r(&startTime, &tm_r);
@@ -91,7 +98,7 @@ bool cTimer::Parse(const char *s)
   while (l2 > 0 && isspace(s[l2 - 1]))
     l2--;
 
-  if (s[l2 - 1] == ':') 
+  if (s[l2 - 1] == ':')
   {
     s2 = (char *)malloc(sizeof(char) * (l2 + 3));
     strcat(strn0cpy(s2, s, l2 + 1), " \n");
@@ -107,6 +114,36 @@ bool cTimer::Parse(const char *s)
     }
     //TODO add more plausibility checks
     result = ParseDay(daybuffer, day, weekdays);
+
+    CStdString fileName = filebuffer;
+    fileName.Replace('/', '_');
+    fileName.Replace('\\', '_');
+    fileName.Replace('?', '_');
+#if defined(_WIN32) || defined(_WIN64)
+    // just filter out some illegal characters on windows
+    fileName.Replace(':', '_');
+    fileName.Replace('*', '_');
+    fileName.Replace('?', '_');
+    fileName.Replace('\"', '_');
+    fileName.Replace('<', '_');
+    fileName.Replace('>', '_');
+    fileName.Replace('|', '_');
+    fileName.TrimRight(".");
+    fileName.TrimRight(" ");
+#endif
+    size_t found = fileName.find_last_of("~");
+    if (found != CStdString::npos)
+    {
+      CStdString directory = fileName.substr(0,found);
+      directory.Replace('~','/');
+      strn0cpy(dir, directory.c_str(), 256);
+      strn0cpy(name, fileName.substr(found+1).c_str(), 256);
+    }
+    else
+    {
+      dir[0] = 0;
+      strn0cpy(name, fileName.c_str(), 256);
+    }
 
     strn0cpy(file, filebuffer, 256);
     strreplace(file, '|', ':');
@@ -139,9 +176,9 @@ bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
     return false;
   const char *a = strchr(s, '@');
   const char *d = a ? a + 1 : isdigit(*s) ? s : NULL;
-  if (d) 
+  if (d)
   {
-    if (strlen(d) == 10) 
+    if (strlen(d) == 10)
     {
       struct tm tm_r;
       if (3 == sscanf(d, "%d-%d-%d", &tm_r.tm_year, &tm_r.tm_mon, &tm_r.tm_mday))
@@ -155,7 +192,7 @@ bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
       else
         return false;
     }
-    else 
+    else
     {
       // handle "day of month" for compatibility with older versions:
       char *tail = NULL;
@@ -164,10 +201,10 @@ bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
       return false;
       time_t t = time(NULL);
       int DaysToCheck = 61; // 61 to handle months with 31/30/31
-      for (int i = -1; i <= DaysToCheck; i++) 
+      for (int i = -1; i <= DaysToCheck; i++)
       {
         time_t t0 = IncDay(t, i);
-        if (GetMDay(t0) == day) 
+        if (GetMDay(t0) == day)
         {
           Day = SetTime(t0, 0);
           break;
@@ -268,16 +305,16 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
     startTime = SetTime(day, begin);
     stopTime = startTime + length;
   }
-  else 
+  else
   {
-    for (int i = -1; i <= 7; i++) 
+    for (int i = -1; i <= 7; i++)
     {
       time_t t0 = IncDay(day ? max(day, t) : t, i);
-      if (DayMatches(t0)) 
+      if (DayMatches(t0))
       {
         time_t a = SetTime(t0, begin);
         time_t b = a + length;
-        if ((!day || a >= day) && t < b) 
+        if ((!day || a >= day) && t < b)
         {
           startTime = a;
           stopTime = b;
@@ -291,7 +328,7 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
       day = 0;
   }
 
-  if (HasFlags(tfActive)) 
+  if (HasFlags(tfActive))
   {
     return startTime <= t + Margin && t < stopTime; // must stop *before* stopTime to allow adjacent timers
   }
@@ -331,12 +368,12 @@ CStdString cTimer::PrintDay(time_t Day, int WeekDays)
 #define DAYBUFFERSIZE 64
   char buffer[DAYBUFFERSIZE];
   char *b = buffer;
-  if (WeekDays) 
+  if (WeekDays)
   {
     const char *w = "MTWTFSS";
     for (int i = 0; i < 7; i++)
     {
-      if (WeekDays & 1) 
+      if (WeekDays & 1)
         *b++ = w[i];
       else
         *b++ = '-';
@@ -345,7 +382,7 @@ CStdString cTimer::PrintDay(time_t Day, int WeekDays)
     if (Day)
       *b++ = '@';
   }
-  if (Day) 
+  if (Day)
   {
     struct tm tm_r;
     localtime_r(&Day, &tm_r);

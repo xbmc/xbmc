@@ -40,6 +40,7 @@ using namespace std;
 #define CONTROL_TMR_NAME                29
 #define CONTROL_TMR_RADIO               50
 #define CONTROL_TMR_CHNAME_RADIO        51
+#define CONTROL_TMR_DIR                 52
 
 CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogPVRTimerSettings.xml")
@@ -62,9 +63,10 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
   m_settings.clear();
 
   // create our settings controls
-  AddBool(CONTROL_TMR_ACTIVE, 18401, &tag->m_Active);
-  AddButton(CONTROL_TMR_NAME, 18063, &tag->m_strTitle, true);
-  AddBool(CONTROL_TMR_RADIO, 18409, &tag->m_Radio);
+  AddBool(CONTROL_TMR_ACTIVE, 19074, &tag->m_Active);
+  AddButton(CONTROL_TMR_NAME, 19075, &tag->m_strTitle, true);
+  AddButton(CONTROL_TMR_DIR, 19076, &tag->m_strDir, true);
+  AddBool(CONTROL_TMR_RADIO, 19077, &tag->m_Radio);
 
   /// Channel names
   {
@@ -83,7 +85,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       channelstrings_tv.push_back(string);
     }
 
-    AddSpin(CONTROL_TMR_CHNAME_TV, 18402, &tag->m_channelNum, channelstrings_tv.size(), channelstrings_tv);
+    AddSpin(CONTROL_TMR_CHNAME_TV, 19078, &tag->m_channelNum, channelstrings_tv.size(), channelstrings_tv);
     EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_Radio);
 
     // For Radio
@@ -101,7 +103,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       channelstrings_radio.push_back(string);
     }
 
-    AddSpin(CONTROL_TMR_CHNAME_RADIO, 18402, &tag->m_channelNum, channelstrings_radio.size(), channelstrings_radio);
+    AddSpin(CONTROL_TMR_CHNAME_RADIO, 19078, &tag->m_channelNum, channelstrings_radio.size(), channelstrings_radio);
     EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_Radio);
   }
 
@@ -111,17 +113,17 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
     tm time_cur;
     tm time_tmr;
 
-    daystrings.push_back(g_localizeStrings.Get(18300));
-    daystrings.push_back(g_localizeStrings.Get(18301));
-    daystrings.push_back(g_localizeStrings.Get(18302));
-    daystrings.push_back(g_localizeStrings.Get(18303));
-    daystrings.push_back(g_localizeStrings.Get(18304));
-    daystrings.push_back(g_localizeStrings.Get(18305));
-    daystrings.push_back(g_localizeStrings.Get(18306));
-    daystrings.push_back(g_localizeStrings.Get(18307));
-    daystrings.push_back(g_localizeStrings.Get(18308));
-    daystrings.push_back(g_localizeStrings.Get(18309));
-    daystrings.push_back(g_localizeStrings.Get(18310));
+    daystrings.push_back(g_localizeStrings.Get(19086));
+    daystrings.push_back(g_localizeStrings.Get(19087));
+    daystrings.push_back(g_localizeStrings.Get(19088));
+    daystrings.push_back(g_localizeStrings.Get(19089));
+    daystrings.push_back(g_localizeStrings.Get(19090));
+    daystrings.push_back(g_localizeStrings.Get(19091));
+    daystrings.push_back(g_localizeStrings.Get(19092));
+    daystrings.push_back(g_localizeStrings.Get(19093));
+    daystrings.push_back(g_localizeStrings.Get(19094));
+    daystrings.push_back(g_localizeStrings.Get(19095));
+    daystrings.push_back(g_localizeStrings.Get(19096));
     CDateTime time = CDateTime::GetCurrentDateTime();
     CDateTime timestart = tag->m_StartTime;
 
@@ -167,13 +169,13 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
         m_tmp_day = 10;
     }
 
-    AddSpin(CONTROL_TMR_DAY, 18403, &m_tmp_day, daystrings.size(), daystrings);
+    AddSpin(CONTROL_TMR_DAY, 19079, &m_tmp_day, daystrings.size(), daystrings);
   }
 
-  AddButton(CONTROL_TMR_BEGIN, 18404, &timerStartTimeStr, true);
-  AddButton(CONTROL_TMR_END, 18405, &timerEndTimeStr, true);
-  AddSpin(CONTROL_TMR_PRIORITY, 18406, &tag->m_Priority, 0, 99);
-  AddSpin(CONTROL_TMR_LIFETIME, 18407, &tag->m_Lifetime, 0, 365);
+  AddButton(CONTROL_TMR_BEGIN, 19080, &timerStartTimeStr, true);
+  AddButton(CONTROL_TMR_END, 19081, &timerEndTimeStr, true);
+  AddSpin(CONTROL_TMR_PRIORITY, 19082, &tag->m_Priority, 0, 99);
+  AddSpin(CONTROL_TMR_LIFETIME, 19083, &tag->m_Lifetime, 0, 365);
 
   /// First day
   {
@@ -200,7 +202,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       }
     }
 
-    daystrings.push_back(g_localizeStrings.Get(18150));
+    daystrings.push_back(g_localizeStrings.Get(19030));
 
     for (int i = 1; i < 365; ++i)
     {
@@ -209,7 +211,7 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
       time += CDateTimeSpan(1, 0, 0, 0);
     }
 
-    AddSpin(CONTROL_TMR_FIRST_DAY, 18408, &m_tmp_iFirstDay, daystrings.size(), daystrings);
+    AddSpin(CONTROL_TMR_FIRST_DAY, 19084, &m_tmp_iFirstDay, daystrings.size(), daystrings);
 
     if (tag->m_Repeat)
       EnableSettings(CONTROL_TMR_FIRST_DAY, true);
@@ -224,9 +226,17 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
 
   if (setting.id == CONTROL_TMR_NAME)
   {
-    if (CGUIDialogKeyboard::ShowAndGetInput(tag->m_strTitle, g_localizeStrings.Get(18207), false))
+    if (CGUIDialogKeyboard::ShowAndGetInput(tag->m_strTitle, g_localizeStrings.Get(19097), false))
     {
       UpdateSetting(CONTROL_TMR_NAME);
+    }
+  }
+  else if (setting.id == CONTROL_TMR_DIR)
+  {
+    /// TODO: Use Directory structure from Recordings to select right folder
+    if (CGUIDialogKeyboard::ShowAndGetInput(tag->m_strDir, g_localizeStrings.Get(19104), false))
+    {
+      UpdateSetting(CONTROL_TMR_DIR);
     }
   }
   else if (setting.id == CONTROL_TMR_RADIO)
