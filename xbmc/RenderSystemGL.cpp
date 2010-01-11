@@ -42,6 +42,26 @@ CRenderSystemGL::~CRenderSystemGL()
   DestroyRenderSystem();
 }
 
+void CRenderSystemGL::CheckOpenGLQuirks()
+// This may not be correct on all hardware, Apple Tv(Nvidia 7300) having problems with this
+
+{
+#ifdef __APPLE__	
+  if (strstr (m_RenderVendor, "NVIDIA")) // nVidia drivers.
+  {             
+    char *arr[2]= { "7300","7600" };
+    int j;	
+    for(j=0; j < int(sizeof(arr)/sizeof(int)); j++)
+      if((int(m_RenderRenderer.find(arr[j])) > -1))
+      {
+        if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
+          m_renderCaps &= ~ RENDER_CAPS_DXT_NPOT;
+          break;
+      }		  
+  }
+#endif
+}	
+
 bool CRenderSystemGL::InitRenderSystem()
 {
   m_bVSync = false;
@@ -84,10 +104,12 @@ bool CRenderSystemGL::InitRenderSystem()
   if (glewIsSupported("GL_ARB_texture_non_power_of_two"))
   {
     m_renderCaps |= RENDER_CAPS_NPOT;
-    if (m_renderCaps & RENDER_CAPS_DXT  && !g_sysinfo.IsAppleTV())    // This may not be correct on all hardware, Apple Tv(Nvidia 7300) having problems with this
+    if (m_renderCaps & RENDER_CAPS_DXT) 
       m_renderCaps |= RENDER_CAPS_DXT_NPOT;
   }
-
+  //Check OpenGL quirks and revert m_renderCaps as needed
+  CheckOpenGLQuirks();
+	
   m_RenderExtensions  = " ";
   m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
   m_RenderExtensions += " ";
