@@ -46,13 +46,12 @@
 #include "PlatformDefs.h" // for __stat64
 #endif
 #include "Util.h"
-#include "FileSystem/IDirectory.h"
-#include "FileSystem/FactoryDirectory.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "FileSystem/Directory.h"
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
@@ -65,7 +64,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 #if defined(_MSC_VER) && _MSC_VER < 1500
 extern "C" {
@@ -76,11 +74,13 @@ extern "C" {
 
 struct SDirData
 {
-  DIRECTORY::IDirectory* Directory;
   CFileItemList items;
+  int curr_index;
+  struct dirent *last_entry;
   SDirData()
   {
-    Directory = NULL;
+    curr_index = -1;
+    last_entry = NULL;
   }
 };
 
@@ -181,12 +181,7 @@ extern "C"
     {
       for (int i=0;i < MAX_OPEN_DIRS; ++i)
       {
-        if (vecDirsOpen[i].Directory)
-        {
-          delete vecDirsOpen[i].Directory;
-          vecDirsOpen[i].items.Clear();
-          vecDirsOpen[i].Directory = NULL;
-        }
+        vecDirsOpen[i].items.Clear();
       }
       bVecDirsInited = false;
     }
@@ -729,9 +724,7 @@ extern "C"
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
-    vecDirsOpen[iDirSlot].Directory = CFactoryDirectory::Create(strURL);
-    vecDirsOpen[iDirSlot].Directory->SetMask(strMask);
-    vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
+    CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
       int size = sizeof(data->name);
@@ -811,8 +804,6 @@ extern "C"
     if (found >= MAX_OPEN_DIRS)
       return _findclose(handle);
 
-    delete vecDirsOpen[found].Directory;
-    vecDirsOpen[found].Directory = NULL;
     vecDirsOpen[found].items.Clear();
     return 0;
   }
@@ -824,6 +815,131 @@ extern "C"
   }
 
 #endif
+
+  DIR *dll_opendir(const char *file)
+  {
+    CURL url(_P(file));
+    if (url.IsLocal())
+    { // Make sure the slashes are correct & translate the path
+      return opendir(CURL::ValidatePath(file));
+    }
+
+    // locate next free directory
+    int iDirSlot=0;
+    while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+    if (iDirSlot >= MAX_OPEN_DIRS)
+    {
+      CLog::Log(LOGDEBUG, "Dll: Max open dirs reached");
+      return NULL; // no free slots
+    }
+
+    if (url.GetProtocol().Equals("filereader"))
+    {
+      CURL url2(url.GetFileName());
+      url = url2;
+    }
+
+    bVecDirsInited = true;
+    vecDirsOpen[iDirSlot].items.Clear();
+
+    if (DIRECTORY::CDirectory::GetDirectory(url.Get(), vecDirsOpen[iDirSlot].items))
+    {
+      vecDirsOpen[iDirSlot].curr_index = 0;
+      return (DIR *)&vecDirsOpen[iDirSlot];
+    }
+    else
+      return NULL;
+  }
+
+  struct dirent *dll_readdir(DIR *dirp)
+  {
+    if (!dirp)
+      return NULL;
+
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (dirp == (DIR*)&vecDirsOpen[i])
+      {
+        emulated = true;
+        break;
+      }
+    }
+    if (!emulated)
+      return readdir(dirp); // local dir
+
+    // dirp is actually a SDirData*
+    SDirData* dirData = (SDirData*)dirp;
+    if (dirData->last_entry)
+      free(dirData->last_entry);
+    struct dirent *entry = NULL;
+    entry = (dirent*) malloc(sizeof(*entry));
+    if (dirData->curr_index < dirData->items.Size() + 2)
+    { // simulate the '.' and '..' dir entries
+      if (dirData->curr_index == 0)
+        strncpy(entry->d_name, ".\0", 2);
+      else if (dirData->curr_index == 1)
+        strncpy(entry->d_name, "..\0", 3);
+      else
+      {
+        strncpy(entry->d_name, dirData->items[dirData->curr_index - 2]->GetLabel().c_str(), sizeof(entry->d_name));
+        entry->d_name[sizeof(entry->d_name)-1] = '\0'; // null-terminate any truncated paths
+      }
+      dirData->last_entry = entry;
+      dirData->curr_index++;
+      return entry;
+    }
+    return NULL;
+  }
+
+  int dll_closedir(DIR *dirp)
+  {
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (dirp == (DIR*)&vecDirsOpen[i])
+      {
+        emulated = true;
+        break;
+      }
+    }
+    if (!emulated)
+      return closedir(dirp);
+
+    SDirData* dirData = (SDirData*)dirp;
+    dirData->items.Clear();
+    if (dirData->last_entry)
+    {
+      dirData->last_entry = NULL;
+    }
+    dirData->curr_index = -1;
+    return 0;
+  }
+
+  void dll_rewinddir(DIR *dirp)
+  {
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (dirp == (DIR*)&vecDirsOpen[i])
+      {
+        emulated = true;
+        break;
+      }
+    }
+    if (!emulated)
+    {
+      rewinddir(dirp);
+      return;
+    }
+
+    SDirData* dirData = (SDirData*)dirp;
+    if (dirData->last_entry)
+    {
+      dirData->last_entry = NULL;
+    }
+    dirData->curr_index = 0;
+  }
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)
   {
