@@ -895,16 +895,16 @@ extern "C"
 
   int dll_closedir(DIR *dirp)
   {
-    int found = MAX_OPEN_DIRS;
+    bool emulated(false);
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
       if (dirp == (DIR*)&vecDirsOpen[i])
       {
-        found = i;
+        emulated = true;
         break;
       }
     }
-    if (found >= MAX_OPEN_DIRS)
+    if (!emulated)
       return closedir(dirp);
 
     SDirData* dirData = (SDirData*)dirp;
@@ -916,6 +916,33 @@ extern "C"
     }
     dirData->curr_index = -1;
     return 0;
+  }
+
+  void dll_rewinddir(DIR *dirp)
+  {
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (dirp == (DIR*)&vecDirsOpen[i])
+      {
+        emulated = true;
+        break;
+      }
+    }
+    if (!emulated)
+    {
+      rewinddir(dirp);
+      return;
+    }
+
+    SDirData* dirData = (SDirData*)dirp;
+    if (dirData->last_entry)
+    {
+      free(dirData->last_entry);
+      dirData->last_entry = NULL;
+    }
+    dirData->curr_index = 0;
+    return;
   }
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)
