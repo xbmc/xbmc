@@ -46,13 +46,12 @@
 #include "PlatformDefs.h" // for __stat64
 #endif
 #include "Util.h"
-#include "FileSystem/IDirectory.h"
-#include "FileSystem/FactoryDirectory.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "FileSystem/Directory.h"
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
@@ -65,7 +64,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 #if defined(_MSC_VER) && _MSC_VER < 1500
 extern "C" {
@@ -76,14 +74,12 @@ extern "C" {
 
 struct SDirData
 {
-  DIRECTORY::IDirectory* Directory;
   CFileItemList items;
-  unsigned int curr_index;
+  int curr_index;
   struct dirent *last_entry;
   SDirData()
   {
-    Directory = NULL;
-    curr_index = 0;
+    curr_index = -1;
     last_entry = NULL;
   }
 };
@@ -185,12 +181,7 @@ extern "C"
     {
       for (int i=0;i < MAX_OPEN_DIRS; ++i)
       {
-        if (vecDirsOpen[i].Directory)
-        {
-          delete vecDirsOpen[i].Directory;
-          vecDirsOpen[i].items.Clear();
-          vecDirsOpen[i].Directory = NULL;
-        }
+        vecDirsOpen[i].items.Clear();
       }
       bVecDirsInited = false;
     }
@@ -733,9 +724,7 @@ extern "C"
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
-    vecDirsOpen[iDirSlot].Directory = CFactoryDirectory::Create(strURL);
-    vecDirsOpen[iDirSlot].Directory->SetMask(strMask);
-    vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
+    CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
       int size = sizeof(data->name);
@@ -815,8 +804,6 @@ extern "C"
     if (found >= MAX_OPEN_DIRS)
       return _findclose(handle);
 
-    delete vecDirsOpen[found].Directory;
-    vecDirsOpen[found].Directory = NULL;
     vecDirsOpen[found].items.Clear();
     return 0;
   }
@@ -831,72 +818,37 @@ extern "C"
 
   DIR *dll_opendir(const char *file)
   {
-    char str[1024];
-    int size = sizeof(str);
     CURL url(_P(file));
     if (url.IsLocal())
-    {
-      // move to CFile classes
-      if (strncmp(file, "\\Device\\Cdrom0", 14) == 0)
-      {
-        // replace "\\Device\\Cdrom0" with "D:"
-        strncpy(str, "D:", size);
-        if (size)
-        {
-          str[size - 1] = '\0';
-          strncat(str, file + 14, size - strlen(str));
-        }
-      }
-      else
-      {
-        strncpy(str, file, size);
-        if (size)
-          str[size - 1] = '\0';
-      }
-      // Make sure the slashes are correct & translate the path
-      return opendir(_P(CURL::ValidatePath(str)));
+    { // Make sure the slashes are correct & translate the path
+      return opendir(CURL::ValidatePath(file));
     }
-    // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
-    CStdString strURL(file);
-    CStdString strMask;
-    if (url.GetFileName().Find("*.*") != string::npos)
-    {
-      CStdString strReplaced = url.GetFileName();
-      strReplaced.Replace("*.*","");
-      url.SetFileName(strReplaced);
-    }
-    else if (url.GetFileName().Find("*.") != string::npos)
-    {
-      CUtil::GetExtension(url.GetFileName(),strMask);
-      url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
-    }
-    int iDirSlot=0; // locate next free directory
-    while ((vecDirsOpen[iDirSlot].Directory) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+
+    // locate next free directory
+    int iDirSlot=0;
+    while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
     {
       CLog::Log(LOGDEBUG, "Dll: Max open dirs reached");
       return NULL; // no free slots
     }
+
     if (url.GetProtocol().Equals("filereader"))
     {
       CURL url2(url.GetFileName());
       url = url2;
     }
-    CStdString fName = url.GetFileName();
-    url.SetFileName("");
-    strURL = url.Get();
+
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
-    vecDirsOpen[iDirSlot].Directory = CFactoryDirectory::Create(strURL);
-    vecDirsOpen[iDirSlot].Directory->SetMask(strMask);
-    vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
-    if (vecDirsOpen[iDirSlot].items.Size())
+
+    if (DIRECTORY::CDirectory::GetDirectory(url.Get(), vecDirsOpen[iDirSlot].items))
     {
+      vecDirsOpen[iDirSlot].curr_index = 0;
       return (DIR *)&vecDirsOpen[iDirSlot];
     }
-    delete vecDirsOpen[iDirSlot].Directory;
-    vecDirsOpen[iDirSlot].Directory = NULL;
-    return NULL;
+    else
+      return NULL;
   }
 
   struct dirent *dll_readdir(DIR *dirp)
@@ -907,7 +859,7 @@ extern "C"
     bool emulated(false);
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      if (dirp == (DIR*)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      if (dirp == (DIR*)&vecDirsOpen[i])
       {
         emulated = true;
         break;
@@ -925,10 +877,8 @@ extern "C"
     entry = (dirent*) malloc(sizeof *entry);
     if (dirData->curr_index < dirData->items.Size())
     {
-      int size = sizeof(entry->d_name);
-      strncpy(entry->d_name,dirData->items[dirData->curr_index]->GetLabel().c_str(), size);
-      if (size)
-        entry->d_name[size-1] = '\0';
+      strncpy(entry->d_name, dirData->items[dirData->curr_index]->GetLabel().c_str(), sizeof(entry->d_name));
+      entry->d_name[sizeof(entry->d_name)-1] = '\0';
       dirData->last_entry = entry;
       dirData->curr_index++;
       return entry;
@@ -942,7 +892,7 @@ extern "C"
     int found = MAX_OPEN_DIRS;
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      if (dirp == (DIR*)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      if (dirp == (DIR*)&vecDirsOpen[i])
       {
         found = i;
         break;
@@ -952,15 +902,13 @@ extern "C"
       return closedir(dirp);
 
     SDirData* dirData = (SDirData*)dirp;
-    delete dirData->Directory;
-    dirData->Directory = NULL;
     dirData->items.Clear();
     if (dirData->last_entry)
     {
       free(dirData->last_entry);
       dirData->last_entry = NULL;
     }
-    dirData->curr_index = 0;
+    dirData->curr_index = -1;
     return 0;
   }
 
