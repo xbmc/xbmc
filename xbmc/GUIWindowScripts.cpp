@@ -111,7 +111,7 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
                 runningLabel += g_localizeStrings.Get(23053) + ")";
 			else
                 runningLabel += g_localizeStrings.Get(23054) + ")";
-            pItem->SetLabel(runningLabel)
+            pItem->SetLabel(runningLabel);
         }
       }
     }
