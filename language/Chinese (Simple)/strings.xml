@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 26371 -->
+<!--Based on english strings version 26656 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1846,8 +1846,6 @@
   <string id="20443">要刷新此目录下的</string>
   <string id="20444">所有项目吗？</string>
   <string id="20445">同人画</string>
-  <string id="20446">发现NFO文件。</string>
-  <string id="20447">从互联网刷新吗？</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2078,6 +2076,8 @@
   <string id="23050">开启图文电视</string>
   <string id="23051">片段 %i</string>
   <string id="23052">缓存 %i 字节</string>
+  <string id="23053">停止</string>
+  <string id="23054">运行</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">外部播放器激活</string>
