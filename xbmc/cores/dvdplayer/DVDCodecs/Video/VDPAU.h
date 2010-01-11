@@ -81,8 +81,6 @@ public:
   static void             FFDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
                                int y, int type, int height);
-  static enum PixelFormat FFGetFormat(struct AVCodecContext * avctx,
-                                         const enum PixelFormat * pix_fmt);
   static int              FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
