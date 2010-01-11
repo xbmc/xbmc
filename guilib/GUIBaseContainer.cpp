@@ -541,21 +541,19 @@ bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIBaseContainer::OnMouseClick(int button, const CPoint &point)
+bool CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
-  { // send click message to window
-    OnClick(ACTION_MOUSE_CLICK + button);
-    return true;
+  if (event.m_id >= ACTION_MOUSE_LEFT_CLICK && event.m_id <= ACTION_MOUSE_DOUBLE_CLICK)
+  {
+    if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
+    {
+      OnClick(event.m_id);
+      return true;
+    }
   }
-  return false;
-}
-
-bool CGUIBaseContainer::OnMouseDoubleClick(int button, const CPoint &point)
-{
-  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
-  { // send double click message to window
-    OnClick(ACTION_MOUSE_DOUBLE_CLICK + button);
+  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  {
+    Scroll(-event.m_wheel);
     return true;
   }
   return false;
@@ -594,12 +592,6 @@ bool CGUIBaseContainer::OnClick(int actionID)
   // Don't know what to do, so send to our parent window.
   CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
   return SendWindowMessage(msg);
-}
-
-bool CGUIBaseContainer::OnMouseWheel(char wheel, const CPoint &point)
-{
-  Scroll(-wheel);
-  return true;
 }
 
 CStdString CGUIBaseContainer::GetDescription() const

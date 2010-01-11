@@ -816,7 +816,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
       if (flip)
         CPicture::ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
       else
-        CPicture::CacheImage(tempFile, cachedThumb);
+        CPicture::CacheFanart(tempFile, cachedThumb);
     }
     CFile::Delete(tempFile);
     if (!succeeded)
@@ -827,7 +827,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     if (flip)
       CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
-      CPicture::CacheImage(result, cachedThumb);
+      CPicture::CacheFanart(result, cachedThumb);
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show

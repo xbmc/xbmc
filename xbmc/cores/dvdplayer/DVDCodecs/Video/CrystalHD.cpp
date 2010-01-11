@@ -1049,7 +1049,7 @@ bool CCrystalHD::IsOpenforDecode(void)
   return m_Device && m_IsConfigured;
 }
 
-void CCrystalHD::Flush(void)
+void CCrystalHD::Reset(void)
 {
   m_ignore_drop_count = 10;
 

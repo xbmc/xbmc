@@ -171,6 +171,7 @@ void CAdvancedSettings::Initialize()
   m_detectAsUdf = false;
 
   m_thumbSize = DEFAULT_THUMB_SIZE;
+  m_fanartHeight = DEFAULT_FANART_HEIGHT;
   m_useDDSFanart = false;
 
   m_sambaclienttimeout = 10;
@@ -641,7 +642,8 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetInt(pRootElement, "remoterepeat", m_remoteRepeat, 1, INT_MAX);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
-  XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 64, 1024);
+  XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 0, 1024);
+  XMLUtils::GetInt(pRootElement, "fanartheight", m_fanartHeight, 0, 1080);
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);

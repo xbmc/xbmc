@@ -66,13 +66,11 @@ public:
   float GetFloatValue() const;
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
-  virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseClick(int button, const CPoint &point);
-  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
-  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
   void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
 protected:
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);

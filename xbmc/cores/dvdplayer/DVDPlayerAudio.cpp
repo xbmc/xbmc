@@ -390,14 +390,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      /* try to wait for the audio player to close to empty */
-      double delay = m_dvdAudio.GetCacheTime();
-      if(delay > 0.1)
-        Sleep((int)(1000 * (delay - 0.1)));
-
-      /* timestamps after this point should match video player */
-      m_ptsOutput.Flush();
-
       ((CDVDMsgGeneralSynchronize*)pMsg)->Wait( &m_bStop, SYNCSOURCE_AUDIO );
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_SYNCHRONIZE");
     }
@@ -781,11 +773,9 @@ void CDVDPlayerAudio::WaitForBuffers()
 
   // make sure almost all has been rendered
   // leave 500ms to avound buffer underruns
-
-  while( m_dvdAudio.GetDelay() > DVD_TIME_BASE/2 )
-  {
-    Sleep(5);
-  }
+  double delay = m_dvdAudio.GetCacheTime();
+  if(delay > 0.5)
+    Sleep((int)(1000 * (delay - 0.5)));
 }
 
 string CDVDPlayerAudio::GetPlayerInfo()

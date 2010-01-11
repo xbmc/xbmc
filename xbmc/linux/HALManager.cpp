@@ -523,7 +523,7 @@ void CHALManager::AddDevice(const char *udi)
             break;
           }
 
-          g_Joystick.Initialize(NULL);
+          g_Joystick.Initialize();
           if (m_Notifications)
             g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13024), dev.FriendlyName.c_str());
         }
@@ -588,7 +588,7 @@ bool CHALManager::RemoveDevice(const char *udi)
           return false;
         }
 
-        g_Joystick.Initialize(NULL);
+        g_Joystick.Initialize();
         g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str());
       }
       m_Joysticks.erase(m_Joysticks.begin() + i);

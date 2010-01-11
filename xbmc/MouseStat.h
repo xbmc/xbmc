@@ -67,8 +67,7 @@ public:
   CMouseStat();
   virtual ~CMouseStat();
 
-  void Initialize(void *appData = NULL);
-  void Cleanup();
+  void Initialize();
   void HandleEvent(XBMC_Event& newEvent);
   void Acquire();
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
@@ -76,11 +75,6 @@ public:
   bool IsEnabled() const;
   bool HasMoved(bool allMoves = false) const;
   void SetActive(bool active = true);
-  void SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point);
-  void EndExclusiveAccess(const CGUIControl *control, int windowID);
-  int GetExclusiveWindowID() const { return m_exclusiveWindowID; };
-  const CGUIControl *GetExclusiveControl() const { return m_exclusiveControl; };
-  const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
@@ -115,7 +109,9 @@ private:
                          MB_SHORT_CLICK,   ///< a short click has occurred (a double click may be in process)
                          MB_LONG_CLICK,    ///< a long click has occurred
                          MB_DOUBLE_CLICK,  ///< a double click has occurred
-                         MB_DRAG };        ///< a drag action has occurred
+                         MB_DRAG_START,    ///< a drag action has started
+                         MB_DRAG,          ///< a drag action is in progress
+                         MB_DRAG_END };    ///< a drag action has finished
 
     CButtonState();
 
@@ -149,11 +145,6 @@ private:
 
   void UpdateInternal();
  
-  // exclusive access to mouse from a control
-  int m_exclusiveWindowID;
-  const CGUIControl *m_exclusiveControl;
-  CPoint m_exclusiveOffset;
-
   // state of the mouse
   MOUSE_STATE m_pointerState;
   MouseState m_mouseState;
@@ -177,7 +168,7 @@ public:
   // public access variables to button clicks etc.
   bool bClick[5];
   bool bDoubleClick[5];
-  bool bHold[5];
+  int  bHold[5];
 };
 
 extern CMouseStat g_Mouse;

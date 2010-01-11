@@ -49,6 +49,7 @@
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
@@ -128,6 +129,8 @@ void CSettings::Initialize()
   m_iSystemTimeTotalUp = 0;
   m_HttpApiBroadcastLevel = 0;
   m_HttpApiBroadcastPort = 8278;
+
+  m_userAgent = g_sysinfo.GetUserAgent();
 
   bUseLoginScreen = false;
 }

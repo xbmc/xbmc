@@ -146,6 +146,7 @@ class CAdvancedSettings
     bool m_detectAsUdf;
 
     int m_thumbSize;
+    int m_fanartHeight;
     bool m_useDDSFanart;
 
     int m_sambaclienttimeout;

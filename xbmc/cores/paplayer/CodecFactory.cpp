@@ -143,6 +143,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   }
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();
+  else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
+    return new OGGCodec();
 
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {

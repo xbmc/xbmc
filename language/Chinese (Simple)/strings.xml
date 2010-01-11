@@ -633,10 +633,10 @@
   <string id="763">亮绿</string>
   <string id="764">翠绿</string>
   <string id="765">青色</string>
-  <string id="766">保留</string>
-  <string id="767">保留</string>
-  <string id="768">保留</string>
-  <string id="769">保留</string>
+  <string id="766">浅灰</string>
+  <string id="767">灰色</string>
+  <!-- strings 768 and 769 reserved for more subtitle colors -->
+
   <string id="770">错误 %i：不能共享</string>
   <string id="771">- FTP 服务器限定工作在 FATX 格式</string>
   <string id="772">音频输出</string>

@@ -422,15 +422,17 @@ public:
 class CMouseEvent
 {
 public:
-  CMouseEvent(int actionID, char wheel = 0, float offsetX = 0, float offsetY = 0)
+  CMouseEvent(int actionID, int state = 0, char wheel = 0, float offsetX = 0, float offsetY = 0)
   {
     m_id = actionID;
+    m_state = state;
     m_wheel = wheel;
     m_offsetX = offsetX;
     m_offsetY = offsetY;
   };
 
   int    m_id;
+  int    m_state;
   char   m_wheel;
   float  m_offsetX;
   float  m_offsetY;

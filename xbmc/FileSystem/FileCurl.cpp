@@ -24,7 +24,7 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
-#include "SystemInfo.h"
+#include "Settings.h"
 #include "File.h"
 
 #include <vector>
@@ -449,7 +449,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
   else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
-    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, g_sysinfo.GetUserAgent().c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, g_settings.m_userAgent.c_str());
 
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);

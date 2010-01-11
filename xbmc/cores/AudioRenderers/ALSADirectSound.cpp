@@ -282,7 +282,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_bCanPause    = !!snd_pcm_hw_params_can_pause(hw_params);
   m_dwPacketSize = snd_pcm_frames_to_bytes(m_pPlayHandle, dwFrameCount);
   m_dwNumPackets = dwNumPackets;
-  m_uiBufferSize = (unsigned int)dwBufferSize;
+  m_uiBufferSize = snd_pcm_frames_to_bytes(m_pPlayHandle, dwBufferSize);
 
   CLog::Log(LOGDEBUG, "CALSADirectSound::Initialize - packet size:%u, packet count:%u, buffer size:%u"
                     , (unsigned int)m_dwPacketSize, m_dwNumPackets, (unsigned int)dwBufferSize);
