@@ -47,13 +47,16 @@ public:
 private:
   static int AskForAuthentication (struct MHD_Connection *connection);
   static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
-  static int answer_to_connection (void *cls, struct MHD_Connection *connection,
+  static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
                         size_t *upload_data_size, void **con_cls);
 
   static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
   static void ContentReaderFreeCallback (void *cls);
+  static int JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size);
+  static int HttpApi(struct MHD_Connection *connection);
+
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static void StringToBase64(const char *input, CStdString &output);
 

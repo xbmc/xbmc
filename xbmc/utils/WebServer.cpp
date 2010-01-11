@@ -86,7 +86,7 @@ bool CWebServer::IsAuthenticated (CWebServer *server, struct MHD_Connection *con
   return server->m_Credentials64Encoded.Equals(headervalue + strlen(strbase));
 }
 
-int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connection,
+int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                       const char *url, const char *method,
                       const char *version, const char *upload_data,
                       size_t *upload_data_size, void **con_cls)
@@ -99,30 +99,15 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
   CLog::Log(LOGNOTICE, "WebServer: %s | %s", method, url);
 
   CStdString strURL = url;
-#ifdef HAS_JSONRPC
+
   if (strURL.Equals("/jsonrpc") && strcmp (method, "POST") == 0)
-  {
-    char jsoncall[*upload_data_size + 1];
-    memcpy(jsoncall, upload_data, *upload_data_size);
-    jsoncall[*upload_data_size] = '\0';
-    if (*upload_data_size > 204800)
-      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
-    else
-      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall);
-    printf("%s\n", jsoncall);
-    CHTTPClient client;
-    CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall, (ITransportLayer *)cls, &client);
+    return JSONRPC(server, connection, upload_data, upload_data_size);
 
-    struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
-    int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
-    MHD_destroy_response(response);
-
-    return ret;
-  }
-#endif
   if (strcmp(method, "GET") == 0)
   {
-    if (strURL.Left(6).Equals("/thumb"))
+    if (strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
+      return HttpApi(connection);
+    else if (strURL.Left(6).Equals("/thumb"))
     {
       strURL = strURL.Right(strURL.length() - 7);
       strURL = strURL.Left(strURL.length() - 4);
@@ -132,23 +117,6 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
       strURL = strURL.Right(strURL.length() - 5);
       CUtil::UrlDecode(strURL);
     }
-#ifdef HAS_HTTPAPI
-    else if (strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
-    {
-      printf("getting argumentkinds\n");
-      map<CStdString, CStdString> arguments;
-      if (MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, FillArgumentMap, &arguments) > 0)
-      {
-        CStdString httpapiresponse = CHttpApi::MethodCall(arguments["command"], arguments["parameter"]);
-
-        struct MHD_Response *response = MHD_create_response_from_data(httpapiresponse.length(), (void *) httpapiresponse.c_str(), MHD_NO, MHD_YES);
-        int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
-        MHD_destroy_response(response);
-
-        return ret;
-      }
-    }
-#endif
 #ifdef HAS_WEB_INTERFACE
     else if (strURL.Equals("/"))
       strURL = "special://home/web/index.html";
@@ -176,6 +144,48 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
   return MHD_NO;
 }
 
+int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size)
+{
+#ifdef HAS_JSONRPC
+  char jsoncall[*upload_data_size + 1];
+  memcpy(jsoncall, upload_data, *upload_data_size);
+  jsoncall[*upload_data_size] = '\0';
+  if (*upload_data_size > 204800)
+    CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
+  else
+    CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall);
+  printf("%s\n", jsoncall);
+  CHTTPClient client;
+  CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall, server, &client);
+
+  struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
+  int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+  MHD_destroy_response(response);
+
+  return ret;
+#else
+  return MHD_NO;
+#endif
+}
+
+int CWebServer::HttpApi(struct MHD_Connection *connection)
+{
+#ifdef HAS_HTTPAPI
+  map<CStdString, CStdString> arguments;
+  if (MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, FillArgumentMap, &arguments) > 0)
+  {
+    CStdString httpapiresponse = CHttpApi::MethodCall(arguments["command"], arguments["parameter"]);
+
+    struct MHD_Response *response = MHD_create_response_from_data(httpapiresponse.length(), (void *) httpapiresponse.c_str(), MHD_NO, MHD_YES);
+    int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+    MHD_destroy_response(response);
+
+    return ret;
+  }
+#endif
+  return MHD_NO;
+}
+
 int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
 {
   CFile *file = (CFile *)cls;
@@ -196,7 +206,7 @@ bool CWebServer::Start(const char *ip, int port)
   if (!m_running)
   {
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
-    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, port, NULL, NULL, &CWebServer::answer_to_connection, this, MHD_OPTION_END);
+    m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
     m_running = m_daemon != NULL;
     CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
   }
