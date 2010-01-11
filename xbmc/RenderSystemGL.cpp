@@ -52,7 +52,7 @@ void CRenderSystemGL::CheckOpenGLQuirks()
     if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
     {
       char *arr[2]= { "7300","7600" };
-      for(int j = 0; j < int(sizeof(arr)/sizeof(int)); j++)
+      for(int j = 0; j < 2; j++)
       {
         if((int(m_RenderRenderer.find(arr[j])) > -1))
         {
