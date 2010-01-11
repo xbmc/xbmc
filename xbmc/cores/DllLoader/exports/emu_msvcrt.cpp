@@ -865,9 +865,8 @@ extern "C"
         break;
       }
     }
-    if (!emulated) {
+    if (!emulated)
       return readdir(dirp); // local dir
-    }
 
     // dirp is actually a SDirData*
     SDirData* dirData = (SDirData*)dirp;
@@ -942,7 +941,6 @@ extern "C"
       dirData->last_entry = NULL;
     }
     dirData->curr_index = 0;
-    return;
   }
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)
