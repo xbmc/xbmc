@@ -487,7 +487,7 @@ BOOL DXContext::Internal_Init(DXCONTEXT_PARAMS *pParams, BOOL bFirstInit)
 
     // 4. some DirectX- / DDraw-specific stuff.  Also determine hPluginMonitor.
 
-	 m_lpD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &m_caps);
+    m_lpDevice->GetDeviceCaps(&m_caps);
 
 #if 0
 	HMONITOR hPluginMonitor = NULL;
