@@ -54,6 +54,7 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
                       size_t *upload_data_size, void **con_cls)
 {
   printf("%s | %s\n", method, url);
+  CLog::Log(LOGNOTICE, "WebServer: %s | %s", method, url);
 
   CStdString strURL = url;
 #ifdef HAS_JSONRPC
@@ -124,7 +125,10 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
       return ret;
     }
     else
+    {
+      CLog::Log(LOGERROR, "WebServer: Failed to open %s", strUrl.c_str());
       delete file;
+    }
   }
 
   return MHD_NO;
@@ -151,6 +155,7 @@ bool CWebServer::Start(const char *ip, int port)
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
     m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_SSL, port, NULL, NULL, &CWebServer::answer_to_connection, this, MHD_OPTION_END);
     m_running = m_daemon != NULL;
+    CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
   }
   return m_running;
 }
@@ -161,6 +166,7 @@ bool CWebServer::Stop()
   {
     MHD_stop_daemon(m_daemon);
     m_running = false;
+    CLog::Log(LOGNOTICE, "WebServer: Stopped the webserver");
   }
 
   return !m_running;
