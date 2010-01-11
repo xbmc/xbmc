@@ -20,10 +20,8 @@
  */
 
 #include "FileSystem/PluginDirectory.h"
-#include "utils/AddonManager.h"
 #include "listitem.h"
 #include "FileItem.h"
-#include "GUIDialogAddonSettings.h"
 
 // include for constants
 #include "pyutil.h"
@@ -536,58 +534,6 @@ namespace PYXBMC
     return Py_None;
   }
 
-  PyDoc_STRVAR(openSettings__doc__,
-    "openSettings(handle[, reload]) -- Opens this plugin's settings dialog.\n"
-    "\n"
-    "handle      : integer - handle the plugin was started with.\n"
-    "reload      : [opt] bool - reload language strings and settings (default=True)\n"
-    "\n"
-    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
-    "       Once you use a keyword, all following arguments require the keyword.\n"
-    "       reload is only necessary if calling openSettings() from the plugin.\n"
-    "\n"
-    "example:\n"
-    "  - xbmcplugin.openSettings(int(sys.argv[1]))\n");
-
-  PyObject* XBMCPLUGIN_OpenSettings(PyTypeObject *type, PyObject *args, PyObject *kwds)
-  {
-    static const char *keywords[] = { "handle", "reload", NULL };
-    int handle = -1;
-    char bReload = true;
-    // parse arguments to constructor
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      (char*)"i|b",
-      (char**)keywords,
-      &handle,
-      &bReload
-      ))
-    {
-      return NULL;
-    };
-
-    //TODO avoid relying on plugin supplying a URL
-    /*ADDON::AddonPtr addon;
-    ADDON::CAddonMgr::Get()->GetAddonFromPath(url, addon);
-    if (!addon->HasSettings())
-    {
-      PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
-      return NULL;
-    }*/
-
-    //CGUIDialogAddonSettings::ShowAndGetInput(addon);
-
-    // reload plugin settings & strings
-/*    if (bReload)
-    {
-      addon->LoadSettings();
-    }*/
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
   // define c functions to be used in python here
   PyMethodDef pluginMethods[] = {
     {(char*)"addDirectoryItem", (PyCFunction)XBMCPLUGIN_AddDirectoryItem, METH_VARARGS|METH_KEYWORDS, addDirectoryItem__doc__},
@@ -601,7 +547,6 @@ namespace PYXBMC
     {(char*)"setPluginCategory", (PyCFunction)XBMCPLUGIN_SetPluginCategory, METH_VARARGS|METH_KEYWORDS, setPluginCategory__doc__},
     {(char*)"setPluginFanart", (PyCFunction)XBMCPLUGIN_SetPluginFanart, METH_VARARGS|METH_KEYWORDS, setPluginFanart__doc__},
     {(char*)"setProperty", (PyCFunction)XBMCPLUGIN_SetProperty, METH_VARARGS|METH_KEYWORDS, setProperty__doc__},
-    {(char*)"openSettings", (PyCFunction)XBMCPLUGIN_OpenSettings, METH_VARARGS|METH_KEYWORDS, openSettings__doc__},
     {NULL, NULL, 0, NULL}
   };
 
