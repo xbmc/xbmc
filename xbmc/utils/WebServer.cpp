@@ -126,7 +126,7 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
     }
     else
     {
-      CLog::Log(LOGERROR, "WebServer: Failed to open %s", strUrl.c_str());
+      CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
       delete file;
     }
   }
