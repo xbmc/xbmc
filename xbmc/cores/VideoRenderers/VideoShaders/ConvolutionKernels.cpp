@@ -51,7 +51,7 @@ void CConvolutionKernel::Lanczos2(int size)
 
   for (int i = 0; i < size; i++)
   {
-    double x = (double)i / (double)(size - 1);
+    double x = (double)i / (double)size;
 
     //generate taps
     for (int j = 0; j < 4; j++)
@@ -77,7 +77,7 @@ void CConvolutionKernel::Lanczos3(int size)
 
   for (int i = 0; i < size; i++)
   {
-    double x = (double)i / (double)(size - 1);
+    double x = (double)i / (double)size;
 
     //generate taps
     for (int j = 0; j < 3; j++)
@@ -113,7 +113,7 @@ void CConvolutionKernel::Bicubic(int size, double B, double C)
 
   for (int i = 0; i < size; i++)
   {
-    double x = (double)i / (double)(size - 1);
+    double x = (double)i / (double)size;
 
     //generate taps
     for (int j = 0; j < 4; j++)
