@@ -36,6 +36,16 @@ enum MPEGProfile
   MPEG_422_ML = 0x52
 };
 
+union TagUnion
+{
+  double pts;
+  struct
+  {
+    uint32_t u;
+    uint32_t l;
+  } tag;
+};
+
 //Decoder specific flags used internal to decoder
 #define DVP_FLAG_LIBMPEG2_MASK      0x0000f00
 #define DVP_FLAG_LIBMPEG2_ALLOCATED 0x0000100 //Set to indicate that this has allocated data
@@ -53,7 +63,6 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_irffpattern = 0;
   m_bFilm = false;
   m_bIs422 = false;
-  m_pts = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -190,7 +199,6 @@ void CDVDVideoCodecLibMpeg2::Dispose()
   DeleteBuffer(NULL);
   m_pCurrentBuffer = NULL;
   m_irffpattern = 0;
-  m_pts = DVD_NOPTS_VALUE;
 
   m_dll.Unload();
 }
@@ -207,7 +215,6 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
 
   if (pData && iSize)
   {
-    m_pts = pts;
     //buffer more data
     iState = m_dll.mpeg2_parse(m_pHandle);
     if (iState != STATE_BUFFER)
@@ -218,6 +225,9 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
 
     // libmpeg2 needs more data. Give it and parse the data again
     m_dll.mpeg2_buffer(m_pHandle, pData, pData + iSize);
+    TagUnion u;
+    u.pts = pts;
+    m_dll.mpeg2_tag_picture(m_pHandle, u.tag.l, u.tag.u);
   }
 
   iState = m_dll.mpeg2_parse(m_pHandle);
@@ -262,13 +272,6 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
         {
           if((m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
             m_dll.mpeg2_skip(m_pHandle, 1);
-        }
-        // attach pts to current buffer
-        if(m_pInfo->current_fbuf && m_pInfo->current_fbuf->id)
-        {
-          pBuffer = (DVDVideoPicture*)m_pInfo->current_fbuf->id;
-          pBuffer->pts = m_pts;
-          m_pts = DVD_NOPTS_VALUE;
         }
         //Not too interesting really
         //we can do everything when we get a full picture instead. simplifies things.
@@ -419,6 +422,14 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
             pBuffer->color_matrix = m_pInfo->sequence->matrix_coefficients;
             pBuffer->color_range = 0; // mpeg2 always have th 16->235/229 color range
 
+            TagUnion u;
+            u.tag.l = m_pInfo->display_picture->tag;
+            u.tag.u = m_pInfo->display_picture->tag2;
+            if(u.tag.l || u.tag.u)
+              pBuffer->pts = u.pts;
+            else
+              pBuffer->pts = DVD_NOPTS_VALUE;
+
             // only return this if it's not first image or an I frame
             if(m_pCurrentBuffer || pBuffer->iFrameType == FRAME_TYPE_I || pBuffer->iFrameType == FRAME_TYPE_UNDEF )
             {
@@ -461,7 +472,6 @@ void CDVDVideoCodecLibMpeg2::Reset()
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;
-  m_pts = DVD_NOPTS_VALUE;
 }
 
 bool CDVDVideoCodecLibMpeg2::GetPicture(DVDVideoPicture* pDvdVideoPicture)
