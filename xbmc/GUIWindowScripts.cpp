@@ -106,12 +106,12 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
         CFileItemPtr pItem = m_vecItems->Get(i);
         if (pItem->m_strPath == filename)
         {
-            CStdString runningLabel = pItem->GetLabel() + " (";
-            if (g_pythonParser.isStopping(id))
-                runningLabel += g_localizeStrings.Get(23053) + ")";
-			else
-                runningLabel += g_localizeStrings.Get(23054) + ")";
-            pItem->SetLabel(runningLabel);
+          CStdString runningLabel = pItem->GetLabel() + " (";
+          if (g_pythonParser.isStopping(id))
+            runningLabel += g_localizeStrings.Get(23053) + ")";
+          else
+            runningLabel += g_localizeStrings.Get(23054) + ")";
+          pItem->SetLabel(runningLabel);
         }
       }
     }
