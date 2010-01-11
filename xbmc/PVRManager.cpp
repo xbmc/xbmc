@@ -61,10 +61,6 @@ using namespace ADDON;
  ********************************************************************/
 CPVRManager::CPVRManager()
 {
-  m_hasRecordings = false;
-  m_isRecording   = false;
-  m_hasTimers     = false;
-
   InitializeCriticalSection(&m_critSection);
   CLog::Log(LOGDEBUG,"PVR: created");
 }
@@ -98,14 +94,18 @@ void CPVRManager::Start()
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
   /* Reset Member variables and System Info swap counters */
+  m_hasRecordings           = false;
+  m_isRecording             = false;
+  m_hasTimers               = false;
   m_CurrentGroupID          = -1;
   m_currentPlayingChannel   = NULL;
   m_currentPlayingRecording = NULL;
-  m_PreviousChannel[0]      = 1;
-  m_PreviousChannel[1]      = 1;
+  m_PreviousChannel[0]      = -1;
+  m_PreviousChannel[1]      = -1;
   m_PreviousChannelIndex    = 0;
   m_infoToggleStart         = NULL;
   m_infoToggleCurrent       = 0;
+  m_LastChannel             = 0;
 
   /* Discover, load and create chosen Client add-on's. */
   CAddonMgr::Get()->RegisterAddonCallback(ADDON_PVRDLL, this);
@@ -1576,13 +1576,14 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   cPVRChannelInfoTag* tagPrev = item.GetPVRChannelInfoTag();
-  if ((tagPrev != NULL) && (tagPrev->Number() != m_currentPlayingChannel->GetPVRChannelInfoTag()->Number()))
+  if (tagPrev && tagPrev->Number() != m_LastChannel)
   {
-    if (tagPrev->Number() != m_PreviousChannel[m_PreviousChannelIndex])
-      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = tagPrev->Number();
-
-    m_playingClientName = m_clients[tagNow->ClientID()]->GetBackendName() + ":" + m_clients[tagNow->ClientID()]->GetConnectionString();
+    m_LastChannel         = tagPrev->Number();
+    m_LastChannelChanged  = CTimeUtils::GetTimeMS();
+    m_playingClientName   = m_clients[tagNow->ClientID()]->GetBackendName() + ":" + m_clients[tagNow->ClientID()]->GetConnectionString();
   }
+  if (CTimeUtils::GetTimeMS() - m_LastChannelChanged >= g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
+     m_PreviousChannel[m_PreviousChannelIndex ^= 1] = m_LastChannel;
 
   return false;
 }

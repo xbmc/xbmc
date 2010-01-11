@@ -160,6 +160,8 @@ private:
   /*--- Previous Channel data ---*/
   int                 m_PreviousChannel[2];
   int                 m_PreviousChannelIndex;
+  int                 m_LastChannel;
+  long                m_LastChannelChanged;
 
   /*--- Stream playback data ---*/
   CFileItem          *m_currentPlayingChannel;    /* The current playing channel or NULL */

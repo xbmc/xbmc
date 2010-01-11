@@ -363,12 +363,19 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_application.CurrentFileItem().IsLiveTV())
       {
         int channelNr = -1;
-        int autoCloseTime = g_guiSettings.GetBool("pvrplayback.switchautoclose") ? 1500 : 0;
 
-        CStdString strChannel;
-        strChannel.Format("%i", action.id - REMOTE_0);
-        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
-          channelNr = atoi(strChannel.c_str());
+        if (action.id == REMOTE_0)
+        {
+          channelNr = g_PVRManager.GetPreviousChannel();
+        }
+        else
+        {
+          int autoCloseTime = g_guiSettings.GetBool("pvrplayback.switchautoclose") ? 1500 : 0;
+          CStdString strChannel;
+          strChannel.Format("%i", action.id - REMOTE_0);
+          if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
+            channelNr = atoi(strChannel.c_str());
+        }
 
         if (channelNr > 0)
         {
