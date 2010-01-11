@@ -565,8 +565,8 @@ void CDVDPlayerVideo::Process()
               m_iNrOfPicturesNotToSkip--;
             }
 
-            /* try to figure out a pts for this frame */
-            if(picture.pts == DVD_NOPTS_VALUE)
+            /* try to figure out a pts for this frame, always use dts if available */
+            if(picture.pts == DVD_NOPTS_VALUE || pPacket->dts != DVD_NOPTS_VALUE)
               picture.pts = pts;
 
             /* use forced aspect if any */
