@@ -89,6 +89,7 @@ int dll_fsetpos(FILE* stream, const fpos_t* pos);
 DIR* dll_opendir(const char* name);
 struct dirent* dll_readdir(DIR* dirp);
 int dll_closedir(DIR* dirp);
+void dll_rewinddir(DIR* dirp);
 int dll_fprintf(FILE* stream , const char * format, ...);
 int dllprintf(const char *format, ...);
 int dll_vfprintf(FILE *stream, const char *format, va_list va);
@@ -303,6 +304,11 @@ struct dirent * __wrap_readdir64(DIR* dirp)
 int __wrap_closedir(DIR* dirp)
 {
   return dll_closedir(dirp);
+}
+
+void __wrap_rewinddir(DIR* dirp)
+{
+  dll_rewinddir(dirp);
 }
 
 int __wrap_fprintf(FILE *stream, const char *format, ...)
