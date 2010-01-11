@@ -43,21 +43,24 @@ CRenderSystemGL::~CRenderSystemGL()
 }
 
 void CRenderSystemGL::CheckOpenGLQuirks()
-// This may not be correct on all hardware, Apple Tv(Nvidia 7300) having problems with this
 
 {
 #ifdef __APPLE__	
-  if (strstr (m_RenderVendor, "NVIDIA")) // nVidia drivers.
+  if (strstr (m_RenderVendor, "NVIDIA"))
   {             
-    char *arr[2]= { "7300","7600" };
-    int j;	
-    for(j=0; j < int(sizeof(arr)/sizeof(int)); j++)
-      if((int(m_RenderRenderer.find(arr[j])) > -1))
-      {
-        if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
-          m_renderCaps &= ~ RENDER_CAPS_DXT_NPOT;
-          break;
-      }		  
+		// Nvidia 7300 (AppleTV) and 7600 cannot do DXT with NPOT under OSX
+		if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
+		{
+			char *arr[2]= { "7300","7600" };
+			for(int j = 0; j < int(sizeof(arr)/sizeof(int)); j++)
+			{
+				if((int(m_RenderRenderer.find(arr[j])) > -1))
+				{
+					m_renderCaps &= ~ RENDER_CAPS_DXT_NPOT;
+					break;
+				}
+			}
+		}
   }
 #endif
 }	
