@@ -327,7 +327,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
             if( ((m_irffpattern & 0xff) == 0xaa || (m_irffpattern & 0xff) == 0x55) )  /* special case for ntsc 3:2 pulldown */
               pBuffer->iRepeatPicture = 0.25;
             else if( pBuffer->iFlags & DVP_FLAG_REPEAT_TOP_FIELD )
-              pBuffer->iRepeatPicture = 0.5 * (m_pInfo->current_picture->nb_fields - 2);
+              pBuffer->iRepeatPicture = 0.5 * (m_pInfo->display_picture->nb_fields - 2);
             else
               pBuffer->iRepeatPicture = 0.0;
 
