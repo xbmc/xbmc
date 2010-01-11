@@ -31,7 +31,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
+#ifdef _WIN32
+#include "win32-dirent.h"
+#else
 #include <dirent.h>
+#endif
 
 #ifdef __APPLE__
 typedef int64_t   off64_t;

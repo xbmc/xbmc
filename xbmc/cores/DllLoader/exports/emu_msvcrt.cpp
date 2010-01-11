@@ -875,9 +875,15 @@ extern "C"
       free(dirData->last_entry);
     struct dirent *entry = NULL;
     entry = (dirent*) malloc(sizeof *entry);
-    if (dirData->curr_index < dirData->items.Size())
-    {
-      strncpy(entry->d_name, dirData->items[dirData->curr_index]->GetLabel().c_str(), sizeof(entry->d_name));
+    if (dirData->curr_index < dirData->items.Size() + 2)
+    { // simulate the '.' and '..' dir entries
+      if (dirData->curr_index == 0)
+        strncpy(entry->d_name, ".", 1);
+      else if (dirData->curr_index == 1)
+        strncpy(entry->d_name, "..", 2);
+      else
+        strncpy(entry->d_name, dirData->items[dirData->curr_index - 2]->GetLabel().c_str(), sizeof(entry->d_name));
+
       entry->d_name[sizeof(entry->d_name)-1] = '\0';
       dirData->last_entry = entry;
       dirData->curr_index++;
