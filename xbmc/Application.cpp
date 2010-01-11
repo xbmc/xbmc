@@ -1342,13 +1342,11 @@ void CApplication::StartWebServer()
 #endif
     CSectionLoader::Load("LIBHTTP");
     if (m_network.GetFirstConnectedInterface())
-    {
       m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort/*, "special://xbmc/web", false*/);
-    }
-//    if (m_WebServer.IsStarted())
+
+    if (m_WebServer.IsStarted())
     {
-/*      m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
-      m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());*/
+      m_WebServer.SetCredentials(g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
 
       // publish web frontend and API services
 #ifdef HAS_WEBINTERFACE

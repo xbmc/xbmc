@@ -20,6 +20,8 @@
  *
  */
 
+#include "system.h"
+#include "StdString.h"
 #include <sys/types.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -29,6 +31,7 @@
 #include <stdint.h>
 #include <microhttpd.h>
 #include "../lib/libjsonrpc/ITransportLayer.h"
+#include "CriticalSection.h"
 
 class CWebServer : public JSONRPC::ITransportLayer
 {
@@ -37,10 +40,13 @@ public:
 
   bool Start(const char *ip, int port);
   bool Stop();
-
+  bool IsStarted();
+  void SetCredentials(const CStdString &username, const CStdString &password);
   virtual bool Download(const char *path, Json::Value &result);
   virtual int GetCapabilities();
 private:
+  static int AskForAuthentication (struct MHD_Connection *connection);
+  static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
   static int answer_to_connection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
@@ -48,9 +54,13 @@ private:
 
   static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
   static void ContentReaderFreeCallback (void *cls);
+  static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
+  static void StringToBase64(const char *input, CStdString &output);
 
   struct MHD_Daemon *m_daemon;
-  bool m_running;
+  bool m_running, m_needcredentials;
+  CStdString m_Credentials64Encoded;
+  CCriticalSection m_critSection;
 
   class CHTTPClient : public JSONRPC::IClient
   {

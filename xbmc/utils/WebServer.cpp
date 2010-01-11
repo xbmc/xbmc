@@ -19,13 +19,13 @@
  *
  */
 
-#include "system.h"
 #include "WebServer.h"
 #include "../lib/libjsonrpc/JSONRPC.h"
 #include "../lib/libhttpapi/HttpApi.h"
 #include "../FileSystem/File.h"
 #include "../Util.h"
 #include "log.h"
+#include "SingleLock.h"
 
 using namespace XFILE;
 using namespace std;
@@ -35,25 +35,67 @@ CWebServer::CWebServer()
 {
   m_running = false;
   m_daemon = NULL;
+  m_needcredentials = true;
+  m_Credentials64Encoded = "eGJtYzp4Ym1j"; // xbmc:xbmc
 }
 
-
-int PrintOutKey(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
+int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
 {
-  printf("%s %s\n", key, value);
-
   map<CStdString, CStdString> *arguments = (map<CStdString, CStdString> *)cls;
   arguments->insert( pair<CStdString,CStdString>(key,value) );
 
   return MHD_YES; 
 } 
 
+int CWebServer::AskForAuthentication (struct MHD_Connection *connection)
+{
+  int ret;
+  struct MHD_Response *response;
+
+  response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+  if (!response)
+    return MHD_NO;
+
+  ret = MHD_add_response_header (response, "WWW-Authenticate", "Basic realm=XBMC");
+  if (!ret)
+  {
+    MHD_destroy_response (response);
+    return MHD_NO;
+  }
+
+  ret = MHD_queue_response (connection, MHD_HTTP_UNAUTHORIZED, response);
+
+  MHD_destroy_response (response);
+
+  return ret;
+}
+
+bool CWebServer::IsAuthenticated (CWebServer *server, struct MHD_Connection *connection)
+{
+  CSingleLock lock (server->m_critSection);
+  if (!server->m_needcredentials)
+    return true;
+
+  const char *strbase = "Basic ";
+  const char *headervalue = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, "Authorization");
+  if (NULL == headervalue)
+    return false;
+  if (strncmp (headervalue, strbase, strlen(strbase)))
+    return false;
+
+  return server->m_Credentials64Encoded.Equals(headervalue + strlen(strbase));
+}
+
 int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connection,
                       const char *url, const char *method,
                       const char *version, const char *upload_data,
                       size_t *upload_data_size, void **con_cls)
 {
-  printf("%s | %s\n", method, url);
+  CWebServer *server = (CWebServer *)cls;
+
+  if (!IsAuthenticated(server, connection)) 
+    return AskForAuthentication(connection); 
+
   CLog::Log(LOGNOTICE, "WebServer: %s | %s", method, url);
 
   CStdString strURL = url;
@@ -95,7 +137,7 @@ int CWebServer::answer_to_connection (void *cls, struct MHD_Connection *connecti
     {
       printf("getting argumentkinds\n");
       map<CStdString, CStdString> arguments;
-      if (MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, PrintOutKey, &arguments) > 0)
+      if (MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, FillArgumentMap, &arguments) > 0)
       {
         CStdString httpapiresponse = CHttpApi::MethodCall(arguments["command"], arguments["parameter"]);
 
@@ -140,6 +182,7 @@ int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int ma
   file->Seek(pos);
   return file->Read(buf, max);
 }
+
 void CWebServer::ContentReaderFreeCallback(void *cls)
 {
   CFile *file = (CFile *)cls;
@@ -170,6 +213,58 @@ bool CWebServer::Stop()
   }
 
   return !m_running;
+}
+
+bool CWebServer::IsStarted()
+{
+  return m_running;
+}
+
+void CWebServer::StringToBase64(const char *input, CStdString &output)
+{
+  const char *lookup = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  unsigned long l;
+  size_t length = strlen (input);
+
+/*  tmp = (char *)malloc (length * 2);
+  if (NULL == tmp)
+    return tmp;
+
+  tmp[0] = 0;*/
+  output = "";
+
+  for (int i = 0; i < length; i += 3)
+  {
+    l = (((unsigned long) input[i]) << 16)
+      | (((i + 1) < length) ? (((unsigned long) input[i + 1]) << 8) : 0)
+      | (((i + 2) < length) ? ((unsigned long) input[i + 2]) : 0);
+
+
+    output.push_back(lookup[(l >> 18) & 0x3F]);
+    output.push_back(lookup[(l >> 12) & 0x3F]);
+
+    if (i + 1 < length)
+      output.push_back(lookup[(l >> 6) & 0x3F]);
+    if (i + 2 < length)
+      output.push_back(lookup[l & 0x3F]);
+  }
+
+  int left = 3 - (length % 3);
+
+  if (length % 3)
+  {
+    for (int i = 0; i < left; i++)
+      output.push_back('=');
+  }
+}
+
+void CWebServer::SetCredentials(const CStdString &username, const CStdString &password)
+{
+  CSingleLock lock (m_critSection);
+  CStdString str = username + ":" + password;
+
+  StringToBase64(str.c_str(), m_Credentials64Encoded);
+  m_needcredentials = !password.IsEmpty();
 }
 
 bool CWebServer::Download(const char *path, Json::Value &result)
