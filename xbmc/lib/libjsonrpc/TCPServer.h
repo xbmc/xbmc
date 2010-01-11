@@ -8,6 +8,7 @@
 #include "IAnnouncer.h"
 #include "ITransportLayer.h"
 #include "Thread.h"
+#include "CriticalSection.h"
 
 namespace JSONRPC
 {
@@ -41,6 +42,7 @@ namespace JSONRPC
       int m_socket;
       struct sockaddr m_cliaddr;
       socklen_t m_addrlen;
+      CCriticalSection m_critSection;
 
     private:
       int m_announcementflags;

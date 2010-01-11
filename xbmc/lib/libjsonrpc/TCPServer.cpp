@@ -6,6 +6,7 @@
 #include "../libjsoncpp/json.h"
 #include "AnnouncementManager.h"
 #include "log.h"
+#include "SingleLock.h"
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
@@ -145,6 +146,7 @@ void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char
     unsigned int sent = 0;
     do
     {
+      CSingleLock lock (m_connections[i].m_critSection);
       sent += send(m_connections[i].m_socket, str.c_str(), str.size() - sent, sent);
     } while (sent < str.size());
   }
@@ -247,6 +249,7 @@ void CTCPServer::CTCPClient::PushBuffer(CTCPServer *host, const char *buffer, in
       m_endBrackets++;
     if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
     {
+      CSingleLock lock (m_critSection);
       string line = CJSONRPC::MethodCall(m_buffer, host, this);
       send(m_socket, line.c_str(), line.size(), 0);
       m_beginBrackets = m_endBrackets = 0;
@@ -259,6 +262,7 @@ void CTCPServer::CTCPClient::Disconnect()
 {
   if (m_socket > 0)
   {
+    CSingleLock lock (m_critSection);
     shutdown(m_socket, SHUT_RDWR);
     close(m_socket);
     m_socket = -1;
