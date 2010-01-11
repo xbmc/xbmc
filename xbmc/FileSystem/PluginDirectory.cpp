@@ -45,8 +45,9 @@ using namespace ADDON;
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
 CCriticalSection CPluginDirectory::m_handleLock;
 
-CPluginDirectory::CPluginDirectory(void)
+CPluginDirectory::CPluginDirectory(const CONTENT_TYPE &content)
 {
+  m_content = content;
   m_fetchComplete = CreateEvent(NULL, false, false, NULL);
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
@@ -78,12 +79,14 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
   CURL url(strPath);
 
-  ADDON::AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, url.GetHostName(), addon))
+  if (!CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, url.GetHostName(), m_addon))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
   }
+
+  if (m_addon->HasSettings())
+    m_addon->LoadSettings();
 
   // get options
   CStdString options = url.GetOptions();
@@ -105,13 +108,13 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", handle);
-  const char *plugin_argv[] = {addon->Path().c_str(), strHandle.c_str(), options.c_str(), NULL };
+  const char *plugin_argv[] = {strPath.c_str(), strHandle.c_str(), options.c_str(), NULL };
 
   // run the script
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Path().c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
   bool success = false;
 #ifdef HAS_PYTHON
-  CStdString file = addon->Path() + addon->LibName();
+  CStdString file = m_addon->Path() + m_addon->LibName();
   if (g_pythonParser.evalFile(file.c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
@@ -120,7 +123,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   }
   else
 #endif
-    CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());
+    CLog::Log(LOGERROR, "Unable to run plugin %s", m_addon->Name().c_str());
 
   // free our handle
   removeHandle(handle);
@@ -130,7 +133,8 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 
 bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &resultItem)
 {
-  CPluginDirectory* newDir = new CPluginDirectory();
+  CURL url(strPath);
+  CPluginDirectory* newDir = new CPluginDirectory(TranslateContent(url.GetProtocol()));
 
   bool success = newDir->StartScript(strPath);
 
@@ -576,6 +580,34 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
+}
+
+CStdString CPluginDirectory::GetSetting(int handle, const CStdString &strID)
+{
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
+    return "";
+  }
+
+  CPluginDirectory *dir = globalHandles[handle];
+  if(dir->m_addon)
+    return dir->m_addon->GetSetting(strID);
+  else
+    return "";
+}
+
+void CPluginDirectory::SetSetting(int handle, const CStdString &strID, const CStdString &value)
+{
+  if (handle < 0 || handle >= (int)globalHandles.size())
+  {
+    CLog::Log(LOGERROR, "%s called with an invalid handle.", __FUNCTION__);
+    return;
+  }
+
+  CPluginDirectory *dir = globalHandles[handle];
+  if(dir->m_addon)
+    dir->m_addon->UpdateSetting(strID, value);
 }
 
 void CPluginDirectory::SetContent(int handle, const CStdString &strContent)

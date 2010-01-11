@@ -416,9 +416,9 @@ CStdString CAddon::GetSetting(const CStdString& key) const
   return "";
 }
 
-void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value)
+void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const CStdString& type/* = "" */)
 {
-  if (key == "") return;
+  if (key.empty()) return;
 
   // Try to find the setting and change its value
   if (!m_userXmlDoc.RootElement())
@@ -433,7 +433,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const 
     const char *storedtype = setting->Attribute("type");
     if (id && strcmpi(id, key) == 0)
     {
-      if (type && storedtype && strcmpi(storedtype, type) != 0)
+      if (!type.empty() && storedtype && strcmpi(storedtype, type) != 0)
         setting->SetAttribute("type", type.c_str());
 
       setting->SetAttribute("value", value.c_str());
@@ -445,7 +445,10 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const 
   // Setting not found, add it
   TiXmlElement nodeSetting("setting");
   nodeSetting.SetAttribute("id", std::string(key.c_str())); //FIXME otherwise attribute value isn't updated
-  nodeSetting.SetAttribute("type", std::string(type.c_str()));
+  if (!type.empty())
+    nodeSetting.SetAttribute("type", std::string(type.c_str()));
+  else
+    nodeSetting.SetAttribute("type", "text");
   nodeSetting.SetAttribute("value", std::string(value.c_str()));
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }

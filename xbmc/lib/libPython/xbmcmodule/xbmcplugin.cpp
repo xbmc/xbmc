@@ -293,56 +293,61 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(getSetting__doc__,
-    "getSetting(id) -- Returns the value of a setting as a string.\n"
+    "getSetting(handle, id) -- Returns the value of a setting as a string.\n"
     "\n"
+    "handle    : integer - handle the plugin was started with.\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "\n"
     "*Note, You can use the above as a keyword.\n"
     "\n"
     "example:\n"
-    "  - apikey = xbmcplugin.getSetting('apikey')\n");
+    "  - apikey = xbmcplugin.getSetting(int(sys.argv[1]), 'apikey')\n");
 
   PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    //TODO need to grab pointer to CAddon (using threadid?)
-    static const char *keywords[] = { "id", NULL };
+    static const char *keywords[] = { "handle", "id", NULL };
+    int handle = -1;
     char *id;
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"s",
+      (char*)"is",
       (char**)keywords,
+      &handle,
       &id
       ))
     {
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", "");
+    return Py_BuildValue((char*)"s", DIRECTORY::CPluginDirectory::GetSetting(handle, id).c_str());
   }
 
   PyDoc_STRVAR(setSetting__doc__,
-    "setSetting(id, value) -- Sets a plugin setting for the current running plugin.\n"
+    "setSetting(handle, id, value) -- Sets a plugin setting for the current running plugin.\n"
     "\n"
+    "handle    : integer - handle the plugin was started with.\n"
     "id        : string - id of the setting that the module needs to access.\n"
     "value     : string or unicode - value of the setting.\n"
     "\n"
     "*Note, You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
-    "  - xbmcplugin.setSetting(id='username', value='teamxbmc')\n");
+    "  - xbmcplugin.setSetting(int(sys.argv[1]), id='username', value='teamxbmc')\n");
 
   PyObject* XBMCPLUGIN_SetSetting(PyObject *self, PyObject *args, PyObject *kwds)
   {
-    static const char *keywords[] = { "id", "value", NULL };
+    static const char *keywords[] = { "handle", "id", "value" };
+    int handle = -1;
     char *id;
     PyObject *pValue = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"sO",
+      (char*)"isO",
       (char**)keywords,
+      &handle,
       &id,
       &pValue
       ))
@@ -352,10 +357,9 @@ namespace PYXBMC
 
     CStdString value;
     if (!id || !PyXBMCGetUnicodeString(value, pValue, 1))
-    {
-      PyErr_SetString(PyExc_ValueError, "Invalid id or value!");
       return NULL;
-    }
+
+    DIRECTORY::CPluginDirectory::SetSetting(handle, id, value);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -533,9 +537,9 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(openSettings__doc__,
-    "openSettings(url[, reload]) -- Opens this plugin's settings dialog.\n"
+    "openSettings(handle[, reload]) -- Opens this plugin's settings dialog.\n"
     "\n"
-    "url         : string or unicode - url of plugin. (plugin://pictures/picasa/)\n"
+    "handle      : integer - handle the plugin was started with.\n"
     "reload      : [opt] bool - reload language strings and settings (default=True)\n"
     "\n"
     "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
@@ -543,29 +547,25 @@ namespace PYXBMC
     "       reload is only necessary if calling openSettings() from the plugin.\n"
     "\n"
     "example:\n"
-    "  - xbmcplugin.openSettings(url=sys.argv[0])\n");
+    "  - xbmcplugin.openSettings(int(sys.argv[1]))\n");
 
   PyObject* XBMCPLUGIN_OpenSettings(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
-    static const char *keywords[] = { "url", "reload", NULL };
-    PyObject *pUrl = NULL;
+    static const char *keywords[] = { "handle", "reload", NULL };
+    int handle = -1;
     char bReload = true;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"O|b",
+      (char*)"i|b",
       (char**)keywords,
-      &pUrl,
+      &handle,
       &bReload
       ))
     {
       return NULL;
     };
-
-    CStdString url;
-    if (!pUrl || (pUrl && !PyXBMCGetUnicodeString(url, pUrl, 1)))
-      return NULL;
 
     //TODO avoid relying on plugin supplying a URL
     /*ADDON::AddonPtr addon;

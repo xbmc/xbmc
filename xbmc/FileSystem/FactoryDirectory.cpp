@@ -38,6 +38,8 @@
 #include "HTTPDirectory.h"
 #include "DAVDirectory.h"
 #include "Application.h"
+#include "StringUtils.h"
+#include "utils/Addon.h"
 
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
@@ -116,7 +118,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
 #endif
-  if (strProtocol == "plugin") return new CPluginDirectory();
+  if (StringUtils::ValidateUUID(url.GetHostName())) return new CPluginDirectory(ADDON::TranslateContent(strProtocol));
   if (strProtocol == "zip") return new CZipDirectory();
   if (strProtocol == "rar") return new CRarDirectory();
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();

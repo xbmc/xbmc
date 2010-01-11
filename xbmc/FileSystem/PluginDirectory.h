@@ -41,7 +41,7 @@ namespace DIRECTORY
 class CPluginDirectory : public IDirectory
 {
 public:
-  CPluginDirectory(void);
+  CPluginDirectory(const CONTENT_TYPE &content);
   ~CPluginDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
@@ -57,6 +57,8 @@ public:
   static bool AddItems(int handle, const CFileItemList *items, int totalItems);
   static void EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc);
   static void AddSortMethod(int handle, SORT_METHOD sortMethod);
+  static CStdString GetSetting(int handle, const CStdString &key);
+  static void SetSetting(int handle, const CStdString &key, const CStdString &value);
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
@@ -64,6 +66,7 @@ public:
 
 private:
   ADDON::AddonPtr m_addon;
+  CONTENT_TYPE m_content;
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 
   static std::vector<CPluginDirectory*> globalHandles;

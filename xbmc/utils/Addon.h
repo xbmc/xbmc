@@ -53,7 +53,7 @@ public:
   virtual bool LoadSettings();
   virtual void SaveSettings();
   virtual void SaveFromDefault();
-  virtual void UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value);
+  virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
   virtual CStdString GetSetting(const CStdString& key) const;
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id) const;

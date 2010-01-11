@@ -338,7 +338,7 @@ bool CGUIDialogAddonSettings::SaveSettings(void)
         default:
           break;
       }
-      m_addon->UpdateSetting(id, CStdString(type), value);
+      m_addon->UpdateSetting(id, value, CStdString(type));
     }
     setting = setting->NextSiblingElement("setting");
     controlId++;

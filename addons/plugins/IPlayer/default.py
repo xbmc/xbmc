@@ -305,7 +305,7 @@ def get_setting_videostream(feed=None,default='flashmed'):
             # The screen is not large enough for HD
             return 'h264 1500'
         
-    videostream = xbmcplugin.getSetting('video_stream')
+    videostream = xbmcplugin.getSetting(int(sys.argv[1]),'video_stream')
     #Auto|Flash VP6|H.264 (800kb)|H.264 (1500kb)|H.264 (3200kb)
     if videostream:
         if videostream == 'Flash (512kb)' or videostream == '1':
@@ -325,7 +325,7 @@ def get_setting_videostream(feed=None,default='flashmed'):
     return default
 
 def get_setting_audiostream(default='mp3'):
-    videostream = xbmcplugin.getSetting('audio_stream')
+    videostream = xbmcplugin.getSetting(int(sys.argv[1]),'audio_stream')
     #Auto|MP3|Real|AAC
     if videostream:
         if videostream == 'MP3' or videostream == '1':
@@ -338,7 +338,7 @@ def get_setting_audiostream(default='mp3'):
 
 
 def get_setting_thumbnail_size():
-    size = xbmcplugin.getSetting('thumbnail_size')
+    size = xbmcplugin.getSetting(int(sys.argv[1]),'thumbnail_size')
     #Biggest|Large|Small|Smallest|None
     if size:
         if size == 'Biggest' or size == '0':
@@ -355,7 +355,7 @@ def get_setting_thumbnail_size():
     return 'large'
 
 def get_setting_subtitles():
-    subtitles = xbmcplugin.getSetting('subtitles_control')
+    subtitles = xbmcplugin.getSetting(int(sys.argv[1]),'subtitles_control')
     #values="None|Download and Play|Download to File" default="None"
     if subtitles:
         if subtitles == 'None' or subtitles == '0':
@@ -896,14 +896,14 @@ if __name__ == "__main__":
 
     environment = os.environ.get( "OS", "xbox" )
     try:
-        timeout = int(xbmcplugin.getSetting('socket_timeout'))
+        timeout = int(xbmcplugin.getSetting(int(sys.argv[1]), 'socket_timeout'))
     except:
         timeout = 5
     if environment in ['Linux', 'xbox'] and timeout > 0:
         setdefaulttimeout(timeout)
 
     progcount = True
-    if xbmcplugin.getSetting('progcount') == 'false':  progcount = False
+    if xbmcplugin.getSetting(int(sys.argv[1]), 'progcount') == 'false':  progcount = False
   
     # get current state parameters
     (feed, listing, pid, tvradio, category, series, url, label) = read_url()
@@ -928,8 +928,7 @@ if __name__ == "__main__":
     elif not (feed or listing):
         if not tvradio:
             list_tvradio()
-        elif tvradio == 'Settings':
-            xbmcplugin.openSettings(sys.argv[ 0 ])  
+            xbmcplugin.openSettings(int(sys.argv[1]))  
         elif tvradio:
             feed = iplayer.feed(tvradio).channels_feed()
             list_feeds(feed, tvradio)
