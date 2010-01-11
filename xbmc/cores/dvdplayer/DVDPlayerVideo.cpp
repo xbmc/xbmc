@@ -520,6 +520,10 @@ void CDVDPlayerVideo::Process()
         iDropped++;
       }
 
+      // use dts if we have one
+      if(pPacket->dts != DVD_NOPTS_VALUE)
+        pts = pPacket->dts;
+
       // loop while no error
       while (!m_bStop)
       {
@@ -562,8 +566,8 @@ void CDVDPlayerVideo::Process()
             }
 
             /* try to figure out a pts for this frame */
-            if(picture.pts == DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
-              picture.pts = pPacket->dts;
+            if(picture.pts == DVD_NOPTS_VALUE)
+              picture.pts = pts;
 
             /* use forced aspect if any */
             if( m_fForcedAspectRatio != 0.0f )
