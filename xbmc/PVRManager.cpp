@@ -614,7 +614,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
           {
             kBTotal /= 1024; // Convert to MBytes
             kBUsed /= 1024;  // Convert to MBytes
-            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
+            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(19105), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
           }
           else
           {
@@ -684,7 +684,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
     }
     kBTotal /= 1024; // Convert to MBytes
     kBUsed /= 1024;  // Convert to MBytes
-    m_totalDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
+    m_totalDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(19105), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
     return m_totalDiskspace;
   }
   else if (dwInfo == PVR_NEXT_TIMER)
@@ -692,9 +692,9 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
     cPVRTimerInfoTag *next = PVRTimers.GetNextActiveTimer();
     if (next != NULL)
     {
-      m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(18190)
+      m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(19106)
                          , next->Start().GetAsLocalizedDate(true)
-                         , g_localizeStrings.Get(18191)
+                         , g_localizeStrings.Get(19107)
                          , next->Start().GetAsLocalizedTime("HH:mm", false));
       return m_nextTimer;
     }

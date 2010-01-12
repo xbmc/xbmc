@@ -45,7 +45,7 @@ void CGUIWindowOSD::Render()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (g_Mouse.HasMoved() || g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
+    if (g_Mouse.IsActive() || g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CHANNELS)
@@ -53,7 +53,7 @@ void CGUIWindowOSD::Render()
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_DIRECTOR)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_OSD_CUTTER)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
-      SetAutoClose(3000);
+      SetAutoClose(100); // enough for 10fps
   }
   CGUIDialog::Render();
 }

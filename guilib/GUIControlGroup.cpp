@@ -362,15 +362,15 @@ bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &ev
   // transform our position into child coordinates
   CPoint childPoint(point);
   m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
-  childPoint -= GetPosition();
 
   if (CGUIControl::CanFocus())
   {
+    CPoint pos(GetPosition());
     // run through our controls in reverse order (so that last rendered is checked first)
     for (rControls i = m_children.rbegin(); i != m_children.rend(); ++i)
     {
       CGUIControl *child = *i;
-      if (child->SendMouseEvent(childPoint, event))
+      if (child->SendMouseEvent(childPoint - pos, event))
       { // we've handled the action, and/or have focused an item
         return true;
       }

@@ -1540,7 +1540,6 @@
   <string id="18052">Radio Channels</string>
   <string id="18053">Can not start recording</string>
   <string id="18054">Timer</string>
-  <string id="18055">Size:</string>
   <string id="18056">Used:</string>
   <string id="18057">Add Timer...</string>
   <string id="18058">Switch</string>
@@ -1652,8 +1651,6 @@
   <string id="18166">Go to begin</string>
   <string id="18167">Go to end</string>
 
-  <string id="18190">Next timer on</string>
-  <string id="18191">at</string>
   <string id="18192">Recording</string>
   <string id="18193">Show Channel</string>
   <string id="18194">Show normal Channels</string>
@@ -1822,6 +1819,9 @@
   <string id="19102">Please switch to another Channel!</string>
   <string id="19103">Rescan for missing icons</string>
   <string id="19104">Enter the recording directory</string>
+  <string id="19105">Size:</string>
+  <string id="19106">Next timer on</string>
+  <string id="19107">at</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>
@@ -2622,6 +2622,8 @@
   <string id="23031">- Plugin settings</string>
   <string id="23051">Part %i</string>
   <string id="23052">Buffering %i bytes</string>
+  <string id="23053">Stopping</string>
+  <string id="23054">Running</string>
 
   <string id="23040">Add-on can not connect</string>
   <string id="23041">Please check your Settings or the Backend</string>

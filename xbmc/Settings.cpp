@@ -52,6 +52,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/Addon.h"
+#include "SystemInfo.h"
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
@@ -132,6 +133,8 @@ void CSettings::Initialize()
   m_iSystemTimeTotalUp = 0;
   m_HttpApiBroadcastLevel = 0;
   m_HttpApiBroadcastPort = 8278;
+
+  m_userAgent = g_sysinfo.GetUserAgent();
 
   bUseLoginScreen = false;
 }
@@ -862,7 +865,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_INVERSE_TELECINE);
     m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
     int scalingMethod;
-    GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_CUBIC);
+    GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_VDPAU_HARDWARE);
     m_defaultVideoSettings.m_ScalingMethod = (ESCALINGMETHOD)scalingMethod;
 
     GetInteger(pElement, "viewmode", m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);

@@ -928,6 +928,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
     m_renderQuality = RQ_SINGLEPASS;
     return;
 
+  case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
     if(!glewIsSupported("GL_ARB_texture_float"))
     {
@@ -947,7 +949,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       break;
     }
 
-    m_pVideoFilterShader = new BicubicFilterShader(0.0f, 0.5f);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -958,8 +960,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
     m_renderQuality = RQ_MULTIPASS;
     return;
 
-  case VS_SCALINGMETHOD_LANCZOS2:
-  case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_SINC8:
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
@@ -2277,13 +2277,14 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
 
-
   if(method == VS_SCALINGMETHOD_CUBIC
-  && glewIsSupported("GL_ARB_texture_float")
-  && glewIsSupported("GL_EXT_framebuffer_object")
-  && (m_renderMethod & RENDER_GLSL))
-    return true;
-
+  || method == VS_SCALINGMETHOD_LANCZOS2
+  || method == VS_SCALINGMETHOD_LANCZOS3)
+  {
+    if (glewIsSupported("GL_ARB_texture_float") && glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
+      return true;
+  }
+ 
   if (g_advancedSettings.m_videoHighQualityScaling != SOFTWARE_UPSCALING_DISABLED)
   {
     if(method == VS_SCALINGMETHOD_BICUBIC_SOFTWARE

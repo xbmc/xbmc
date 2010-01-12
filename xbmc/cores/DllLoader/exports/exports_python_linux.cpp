@@ -227,12 +227,6 @@ FILE* xbp_fopen64(const char *filename, const char *mode)
 #endif
 }
 
-DIR *xbp_opendir(const char *name)
-{
-  CStdString strName = _P(name);
-  return opendir(strName.c_str());
-}
-
 #ifdef __APPLE__
 
 int xbp_stat(const char * path, struct stat * buf)

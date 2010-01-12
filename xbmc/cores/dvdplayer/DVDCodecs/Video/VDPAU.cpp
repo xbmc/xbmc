@@ -1008,18 +1008,6 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
   }
 }
 
-enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
-                                                     const PixelFormat * fmt)
-{
-  //CLog::Log(LOGNOTICE," (VDPAU) %s",__FUNCTION__);
-  avctx->get_buffer      = FFGetBuffer;
-  avctx->release_buffer  = FFReleaseBuffer;
-  avctx->draw_horiz_band = FFDrawSlice;
-  avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-  return fmt[0];
-}
-
-
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);

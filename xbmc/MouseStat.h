@@ -73,7 +73,7 @@ public:
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
   bool IsActive();
   bool IsEnabled() const;
-  bool HasMoved(bool allMoves = false) const;
+
   void SetActive(bool active = true);
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
@@ -142,6 +142,14 @@ private:
     int m_x;
     int m_y;
   };
+
+  /*! \brief detect whether the mouse has moved
+
+  Uses a trigger threshold of 2 pixels to detect mouse movement
+
+  \return whether the mouse has moved past the trigger threshold.
+   */
+  bool MovedPastThreshold() const;
 
   void UpdateInternal();
  

@@ -318,11 +318,15 @@ void CDVDPlayerVideo::Process()
     else
       flags |= CONF_FLAGS_YUVCOEF_BT601;
 
+    // assume yv12 format
+    flags |= CONF_FLAGS_FORMAT_YV12;
+
     m_output.width     = m_hints.width;
     m_output.dwidth    = m_hints.width;
     m_output.height    = m_hints.height;
     m_output.dheight   = m_hints.height;
     m_output.framerate = (float)m_hints.fpsrate / m_hints.fpsscale;
+    m_output.color_format = DVDVideoPicture::FMT_YUV420P;
     m_output.inited    = true;
 
     if( g_renderManager.Configure(m_output.width
@@ -516,6 +520,10 @@ void CDVDPlayerVideo::Process()
         iDropped++;
       }
 
+      // use dts if we have one
+      if(pPacket->dts != DVD_NOPTS_VALUE)
+        pts = pPacket->dts;
+
       // loop while no error
       while (!m_bStop)
       {
@@ -557,9 +565,9 @@ void CDVDPlayerVideo::Process()
               m_iNrOfPicturesNotToSkip--;
             }
 
-            /* try to figure out a pts for this frame */
-            if(picture.pts == DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
-              picture.pts = pPacket->dts;
+            /* try to figure out a pts for this frame, always use dts if available */
+            if(picture.pts == DVD_NOPTS_VALUE || pPacket->dts != DVD_NOPTS_VALUE)
+              picture.pts = pts;
 
             /* use forced aspect if any */
             if( m_fForcedAspectRatio != 0.0f )
@@ -884,6 +892,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
    || m_output.framerate != m_fFrameRate
+   || m_output.color_format != pPicture->format
    || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
    || m_output.color_range != pPicture->color_range)
   {
@@ -951,6 +960,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     m_output.dwidth = pPicture->iDisplayWidth;
     m_output.dheight = pPicture->iDisplayHeight;
     m_output.framerate = m_fFrameRate;
+    m_output.color_format = pPicture->format;
     m_output.color_matrix = pPicture->color_matrix;
     m_output.color_range = pPicture->color_range;
   }

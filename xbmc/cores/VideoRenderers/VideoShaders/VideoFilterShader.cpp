@@ -21,6 +21,7 @@
 #include "system.h"
 #include "VideoFilterShader.h"
 #include "utils/log.h"
+#include "ConvolutionKernels.h"
 
 #include <string>
 #include <math.h>
@@ -162,8 +163,8 @@ bool BicubicFilterShader::CreateKernels(int size, float B, float C)
   glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, size, 1, 0, GL_RGBA, GL_FLOAT, img);
 
   glActiveTexture(GL_TEXTURE0);
@@ -205,6 +206,78 @@ float BicubicFilterShader::MitchellNetravali(float x, float B, float C)
   }
 //  val = ((val + 0.5) / 2);
   return val;
+}
+
+ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
+{
+  m_method = method;
+  m_kernelTex1 = 0;
+
+  if (m_method == VS_SCALINGMETHOD_CUBIC || m_method == VS_SCALINGMETHOD_LANCZOS2)
+    PixelShader()->LoadSource("convolution-4x4.glsl");
+  else if (m_method == VS_SCALINGMETHOD_LANCZOS3)
+    PixelShader()->LoadSource("convolution-6x6.glsl");
+}
+
+void ConvolutionFilterShader::OnCompiledAndLinked()
+{
+  // obtain shader attribute handles on successfull compilation
+  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
+  m_hStepX     = glGetUniformLocation(ProgramHandle(), "stepx");
+  m_hStepY     = glGetUniformLocation(ProgramHandle(), "stepy");
+  m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
+
+  int kernelsize = 256;
+  CConvolutionKernel kernel(m_method, kernelsize);
+
+  if (m_kernelTex1)
+  {
+    glDeleteTextures(1, &m_kernelTex1);
+    m_kernelTex1 = 0;
+  }
+
+  glGenTextures(1, &m_kernelTex1);
+
+  if ((m_kernelTex1<=0))
+  {
+    CLog::Log(LOGERROR, "GL: Error creating bicubic kernels, could not create textures");
+    return;
+  }
+
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, kernelsize, 1, 0, GL_RGBA, GL_FLOAT, kernel.GetPixels());
+
+  glActiveTexture(GL_TEXTURE0);
+
+  VerifyGLState();
+}
+
+bool ConvolutionFilterShader::OnEnabled()
+{
+  // set shader attributes once enabled
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+
+  glActiveTexture(GL_TEXTURE0);
+  glUniform1i(m_hSourceTex, m_sourceTexUnit);
+  glUniform1i(m_hKernTex, 2);
+  glUniform1f(m_hStepX, m_stepX);
+  glUniform1f(m_hStepY, m_stepY);
+  VerifyGLState();
+  return true;
+}
+
+void ConvolutionFilterShader::Free()
+{
+  if (m_kernelTex1)
+    glDeleteTextures(1, &m_kernelTex1);
+  m_kernelTex1 = 0;
+  BaseVideoFilterShader::Free();
 }
 
 #endif

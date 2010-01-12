@@ -1649,7 +1649,6 @@
   <string id="18052">Radio Kanäle</string>
   <string id="18053">Konnte Aufnahme nicht starten</string>
   <string id="18054">Timer</string>
-  <string id="18055">Größe:</string>
   <string id="18056">Benutzt:</string>
   <string id="18057">Timer hinzufügen...</string>
   <string id="18058">Umschalten</string>
@@ -1761,8 +1760,6 @@
   <string id="18166">Gehe zum Anfang</string>
   <string id="18167">Gehe zum Ende</string>
 
-  <string id="18190">Nächster Timer am</string>
-  <string id="18191">um</string>
   <string id="18192">Aufnahme</string>
   <string id="18193">Zeige Kanal</string>
   <string id="18194">Zeige normale Kanäle</string>
@@ -1929,6 +1926,9 @@
   <string id="19102">Bitte schalten Sie auf einen anderen Kanal!</string>
   <string id="19103">Suche fehlende Kanallogos</string>
   <string id="19104">Bitte geben Sie den Aufnahmeordner ein</string>
+  <string id="19105">Größe:</string>
+  <string id="19106">Nächster Timer am</string>
+  <string id="19107">um</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>
