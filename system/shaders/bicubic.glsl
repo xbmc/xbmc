@@ -43,4 +43,5 @@ void main()
 
   gl_FragColor = cubicFilter(f.y, t0, t1, t2, t3);   
   gl_FragColor.a = gl_Color.a;
-};
+}
+
