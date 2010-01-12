@@ -145,6 +145,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 
   CGUIControlFactory::GetMultipleString(pRootElement, "onload", m_loadActions);
   CGUIControlFactory::GetMultipleString(pRootElement, "onunload", m_unloadActions);
+  CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
 
   TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
@@ -803,6 +804,7 @@ void CGUIWindow::SetDefaults()
   m_origins.clear();
   m_hasCamera = false;
   m_animationsEnabled = true;
+  m_hitRect.SetRect(0, 0, g_settings.m_ResInfo[m_coordsRes].iWidth, g_settings.m_ResInfo[m_coordsRes].iHeight);
 }
 
 CRect CGUIWindow::GetScaledBounds() const
@@ -958,10 +960,4 @@ void CGUIWindow::RunLoadActions()
 void CGUIWindow::RunUnloadActions()
 {
   RunActions(m_unloadActions);
-}
-
-bool CGUIWindow::HitTest(const CPoint &point) const
-{
-  CRect rect(0, 0, m_width, m_height);
-  return rect.PtInRect(point - GetPosition());
 }
