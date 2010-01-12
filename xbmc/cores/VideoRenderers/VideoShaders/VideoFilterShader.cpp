@@ -213,7 +213,9 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   m_method = method;
   m_kernelTex1 = 0;
 
-  if (m_method == VS_SCALINGMETHOD_CUBIC || m_method == VS_SCALINGMETHOD_LANCZOS2)
+  if (m_method == VS_SCALINGMETHOD_CUBIC ||
+      m_method == VS_SCALINGMETHOD_LANCZOS2 ||
+      m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
     PixelShader()->LoadSource("convolution-4x4.glsl");
   else if (m_method == VS_SCALINGMETHOD_LANCZOS3)
     PixelShader()->LoadSource("convolution-6x6.glsl");

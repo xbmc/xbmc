@@ -929,6 +929,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
     if(!glewIsSupported("GL_ARB_texture_float"))
@@ -2279,6 +2280,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 
   if(method == VS_SCALINGMETHOD_CUBIC
   || method == VS_SCALINGMETHOD_LANCZOS2
+  || method == VS_SCALINGMETHOD_LANCZOS3_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
     if (glewIsSupported("GL_ARB_texture_float") && glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))

@@ -34,11 +34,11 @@ class CConvolutionKernel
 
   private:
 
-    void Lanczos2(int size);
+    void Lanczos2(int size, double radius);
     void Lanczos3(int size);
     void Bicubic(int size, double B, double C);
 
-    double LanczosWeight(double x, double radius);
+    double LanczosWeight(double x, double radius, double window);
     double BicubicWeight(double x, double B, double C);
 
     float* m_pixels;

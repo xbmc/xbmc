@@ -1485,6 +1485,7 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
+  <string id="16307">Lanczos3 fast</string>
 
   <string id="16307">Bicubic (software)</string>
   <string id="16308">Lanczos (software)</string>
