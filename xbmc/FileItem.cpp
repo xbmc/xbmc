@@ -439,7 +439,7 @@ void CFileItem::Serialize(CArchive& ar)
     SetInvalid();
   }
 }
-bool CFileItem::Exists() const
+bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
   if (m_strPath.IsEmpty()
    || m_strPath.Equals("add")
@@ -466,7 +466,7 @@ bool CFileItem::Exists() const
   if (m_bIsFolder)
     return CDirectory::Exists(strPath);
   else
-    return CFile::Exists(strPath);
+    return CFile::Exists(strPath, bUseCache);
 
   return false;
 }
