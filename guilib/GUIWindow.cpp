@@ -371,7 +371,7 @@ bool CGUIWindow::OnMouseAction()
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
   // create the mouse event
-  CMouseEvent event(0); // mouse move only
+  CMouseEvent event(0, 0, 0, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y); // mouse move only
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
     event = CMouseEvent(ACTION_MOUSE_LEFT_CLICK);
   else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
