@@ -33,7 +33,7 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
   if (method == VS_SCALINGMETHOD_LANCZOS2)
     Lanczos2(size, 2.0);
   else if (method == VS_SCALINGMETHOD_LANCZOS3_FAST)
-    Lanczos2(size, 3.0);
+    Lanczos2(size, 2.75);
   else if (method == VS_SCALINGMETHOD_LANCZOS3)
     Lanczos3(size);
   else if (method == VS_SCALINGMETHOD_CUBIC) 
