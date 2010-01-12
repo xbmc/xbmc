@@ -959,7 +959,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
     return GetPictureLabel(info);
 
-  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET)
+  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET &&
+      info - LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET < (int)m_listitemProperties.size())
   { // grab the property
     if (!m_currentFile)
       return "";
