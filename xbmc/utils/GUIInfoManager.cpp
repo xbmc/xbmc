@@ -915,6 +915,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   if (info.Equals("title")) return MUSICPLAYER_TITLE;
   else if (info.Equals("album")) return MUSICPLAYER_ALBUM;
   else if (info.Equals("artist")) return MUSICPLAYER_ARTIST;
+  else if (info.Equals("albumartist")) return MUSICPLAYER_ALBUM_ARTIST;
   else if (info.Equals("year")) return MUSICPLAYER_YEAR;
   else if (info.Equals("genre")) return MUSICPLAYER_GENRE;
   else if (info.Equals("duration")) return MUSICPLAYER_DURATION;
@@ -1048,6 +1049,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
+  case MUSICPLAYER_ALBUM_ARTIST:
   case MUSICPLAYER_GENRE:
   case MUSICPLAYER_YEAR:
   case MUSICPLAYER_TRACK_NUMBER:
@@ -2919,6 +2921,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     break;
   case MUSICPLAYER_ARTIST:
     if (tag.GetArtist().size()) { return tag.GetArtist(); }
+    break;
+  case MUSICPLAYER_ALBUM_ARTIST:
+    if (tag.GetAlbum().size()) { return tag.GetAlbumArtist(); }
     break;
   case MUSICPLAYER_YEAR:
     if (tag.GetYear()) { return tag.GetYearString(); }
