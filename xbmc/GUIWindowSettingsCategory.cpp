@@ -1391,7 +1391,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (CGUIDialogAddonBrowser::ManageAddons(ADDON_SCRAPER, CONTENT_ALBUMS))
     {
-      CSetting *pSetting = g_guiSettings.GetSetting("musiclibrary.defaultscraper");
+      CSetting *pSetting = g_guiSettings.GetSetting("musiclibrary.scraper");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_ALBUMS);
     }
