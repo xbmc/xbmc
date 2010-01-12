@@ -411,12 +411,12 @@ bool cPVRChannels::Load(bool radio)
   }
   else
   {
-    CLog::Log(LOGNOTICE, "cPVRChannels: TV Database holds no %s channels, reading channels from clients", m_bRadio ? "Radio" : "TV");
+    CLog::Log(LOGNOTICE, "PVR: TV Database holds no %s channels, reading channels from clients", m_bRadio ? "Radio" : "TV");
 
     CLIENTMAPITR itr = clients->begin();
     while (itr != clients->end())
     {
-      if ((*itr).second->GetNumChannels() > 0)
+      if ((*itr).second->ReadyToUse() && (*itr).second->GetNumChannels() > 0)
       {
         (*itr).second->GetChannelList(*this, m_bRadio);
       }
@@ -436,6 +436,11 @@ bool cPVRChannels::Load(bool radio)
   return false;
 }
 
+void cPVRChannels::Unload()
+{
+  Clear();
+}
+
 bool cPVRChannels::Update()
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
@@ -447,7 +452,7 @@ bool cPVRChannels::Update()
   CLIENTMAPITR itr = clients->begin();
   while (itr != clients->end())
   {
-    if ((*itr).second->GetNumChannels() > 0)
+    if ((*itr).second->ReadyToUse() && (*itr).second->GetNumChannels() > 0)
     {
       (*itr).second->GetChannelList(PVRChannels_tmp, m_bRadio);
     }
@@ -495,12 +500,12 @@ bool cPVRChannels::Update()
     if (changed)
     {
       database->UpdateDBChannel(at(i));
-      CLog::Log(LOGINFO,"PVRManager: Updated %s channel %s", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+      CLog::Log(LOGINFO,"PVR: Updated %s channel %s", m_bRadio?"Radio":"TV", at(i).Name().c_str());
     }
 
     if (!found)
     {
-      CLog::Log(LOGINFO,"PVRManager: Removing %s channel %s (no more present)", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+      CLog::Log(LOGINFO,"PVR: Removing %s channel %s (no more present)", m_bRadio?"Radio":"TV", at(i).Name().c_str());
       database->RemoveDBChannel(at(i));
       erase(begin()+i);
       i--;
@@ -515,7 +520,7 @@ bool cPVRChannels::Update()
   {
     PVRChannels_tmp[i].SetChannelID(database->AddDBChannel(PVRChannels_tmp[i]));
     push_back(PVRChannels_tmp[i]);
-    CLog::Log(LOGINFO,"PVRManager: Added %s channel %s", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
+    CLog::Log(LOGINFO,"PVR: Added %s channel %s", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
   }
 
   database->Close();
@@ -616,7 +621,7 @@ void cPVRChannels::SearchAndSetChannelIcons(bool writeDB)
     /// TODO
 
 
-    CLog::Log(LOGNOTICE,"PVRManager: No channel icon found for %s, use '%s' or '%08d' with extension 'tbn', 'jpg' or 'png'", at(i).Name().c_str(), at(i).ClientName().c_str(), at(i).UniqueID());
+    CLog::Log(LOGNOTICE,"PVR: No channel icon found for %s, use '%s' or '%08d' with extension 'tbn', 'jpg' or 'png'", at(i).Name().c_str(), at(i).ClientName().c_str(), at(i).UniqueID());
   }
 
   database->Close();
@@ -630,19 +635,19 @@ void cPVRChannels::ReNumberAndCheck(void)
   {
     if (at(i).ClientNumber() <= 0)
     {
-      CLog::Log(LOGERROR, "cPVRChannels: Channel '%s' from client '%i' is invalid, removing from list", at(i).Name().c_str(), at(i).ClientID());
+      CLog::Log(LOGERROR, "PVR: Channel '%s' from client '%i' is invalid, removing from list", at(i).Name().c_str(), at(i).ClientID());
       erase(begin()+i);
       i--;
       break;
     }
 
     if (at(i).UniqueID() <= 0)
-      CLog::Log(LOGNOTICE, "cPVRChannels: Channel '%s' from client '%i' have no unique ID. Contact PVR Client developer.", at(i).Name().c_str(), at(i).ClientID());
+      CLog::Log(LOGNOTICE, "PVR: Channel '%s' from client '%i' have no unique ID. Contact PVR Client developer.", at(i).Name().c_str(), at(i).ClientID());
 
     if (at(i).Name().IsEmpty())
     {
       CStdString name;
-      CLog::Log(LOGERROR, "cPVRChannels: Client channel '%i' from client '%i' have no channel name", at(i).ClientNumber(), at(i).ClientID());
+      CLog::Log(LOGERROR, "PVR: Client channel '%i' from client '%i' have no channel name", at(i).ClientNumber(), at(i).ClientID());
       name.Format(g_localizeStrings.Get(19085), at(i).ClientNumber());
       at(i).SetName(name);
     }
@@ -733,7 +738,7 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
     }
   }
 
-  CLog::Log(LOGNOTICE, "cPVRChannels: TV Channel %d moved to %d", oldindex, newindex);
+  CLog::Log(LOGNOTICE, "PVR: TV Channel %d moved to %d", oldindex, newindex);
   database->Close();
 
   /* Synchronize channel epg containers */
@@ -898,7 +903,7 @@ int cPVRChannels::GetNumChannelsFromAll()
 
 void cPVRChannels::SearchMissingChannelIcons()
 {
-  CLog::Log(LOGINFO,"PVRManager: Manual Channel Icon search started...");
+  CLog::Log(LOGINFO,"PVR: Manual Channel Icon search started...");
   PVRChannelsTV.SearchAndSetChannelIcons(true);
   PVRChannelsRadio.SearchAndSetChannelIcons(true);
   /// TODO: Add Process dialog here
@@ -992,11 +997,11 @@ bool cPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
       items.Add(item);
     }
 
-    for (unsigned int i = 0; i < PVRChannelGroups.size(); i++)
+    for (unsigned int i = 0; i < PVRChannelGroupsTV.size(); i++)
     {
-      base += "/" + PVRChannelGroups[i].GroupName() + "/";
+      base += "/" + PVRChannelGroupsTV[i].GroupName() + "/";
       item.reset(new CFileItem(base, true));
-      item->SetLabel(PVRChannelGroups[i].GroupName());
+      item->SetLabel(PVRChannelGroupsTV[i].GroupName());
       item->SetLabelPreformated(true);
       items.Add(item);
     }
@@ -1020,11 +1025,11 @@ bool cPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
       items.Add(item);
     }
 
-    for (unsigned int i = 0; i < PVRChannelGroups.size(); i++)
+    for (unsigned int i = 0; i < PVRChannelGroupsRadio.size(); i++)
     {
-      base += "/" + PVRChannelGroups[i].GroupName() + "/";
+      base += "/" + PVRChannelGroupsRadio[i].GroupName() + "/";
       item.reset(new CFileItem(base, true));
-      item->SetLabel(PVRChannelGroups[i].GroupName());
+      item->SetLabel(PVRChannelGroupsRadio[i].GroupName());
       item->SetLabelPreformated(true);
       items.Add(item);
     }
@@ -1046,7 +1051,7 @@ bool cPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
     }
     else
     {
-      int groupID = PVRChannelGroups.GetGroupId(fileName.substr(12));
+      int groupID = PVRChannelGroupsTV.GetGroupId(fileName.substr(12));
 
       for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
       {
@@ -1077,7 +1082,7 @@ bool cPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
     }
     else
     {
-      int groupID = PVRChannelGroups.GetGroupId(fileName.substr(15));
+      int groupID = PVRChannelGroupsRadio.GetGroupId(fileName.substr(15));
 
       for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
       {
@@ -1138,22 +1143,32 @@ cPVRChannelGroup::cPVRChannelGroup(void)
 
 // --- cPVRChannelGroups ----------------------------------------------------------
 
-cPVRChannelGroups PVRChannelGroups;
+cPVRChannelGroups PVRChannelGroupsTV;
+cPVRChannelGroups PVRChannelGroupsRadio;
 
 cPVRChannelGroups::cPVRChannelGroups(void)
 {
 }
 
-bool cPVRChannelGroups::Load()
+bool cPVRChannelGroups::Load(bool radio)
 {
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
+  m_bRadio = radio;
   Clear();
-  database->GetChannelGroupList(*this);
+  if (!m_bRadio)
+    database->GetChannelGroupList(*this);
+  else
+    database->GetRadioChannelGroupList(*this);
 
   database->Close();
   return true;
+}
+
+void cPVRChannelGroups::Unload()
+{
+  Clear();
 }
 
 int cPVRChannelGroups::GetGroupList(CFileItemList* results)
@@ -1168,13 +1183,13 @@ int cPVRChannelGroups::GetGroupList(CFileItemList* results)
   return size();
 }
 
-int cPVRChannelGroups::GetFirstChannelForGroupID(int GroupId, bool radio)
+int cPVRChannelGroups::GetFirstChannelForGroupID(int GroupId)
 {
   if (GroupId == -1)
     return 1;
 
   cPVRChannels *channels;
-  if (!radio)
+  if (!m_bRadio)
     channels = &PVRChannelsTV;
   else
     channels = &PVRChannelsRadio;
@@ -1239,8 +1254,16 @@ void cPVRChannelGroups::AddGroup(const CStdString &name)
   database->Open();
 
   Clear();
-  database->AddChannelGroup(name, -1);
-  database->GetChannelGroupList(*this);
+  if (!m_bRadio)
+  {
+    database->AddChannelGroup(name, -1);
+    database->GetChannelGroupList(*this);
+  }
+  else
+  {
+    database->AddRadioChannelGroup(name, -1);
+    database->GetRadioChannelGroupList(*this);
+  }
 
   database->Close();
 }
@@ -1251,8 +1274,16 @@ bool cPVRChannelGroups::RenameGroup(unsigned int GroupId, const CStdString &newn
   database->Open();
 
   Clear();
-  database->SetChannelGroupName(GroupId, newname);
-  database->GetChannelGroupList(*this);
+  if (!m_bRadio)
+  {
+    database->SetChannelGroupName(GroupId, newname);
+    database->GetChannelGroupList(*this);
+  }
+  else
+  {
+    database->SetRadioChannelGroupName(GroupId, newname);
+    database->GetRadioChannelGroupList(*this);
+  }
 
   database->Close();
   return true;
@@ -1263,30 +1294,43 @@ bool cPVRChannelGroups::DeleteGroup(unsigned int GroupId)
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
-  /* Delete the group inside Database */
-  database->DeleteChannelGroup(GroupId);
+  Clear();
 
   /* Set all channels with this group to undefined */
-  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+  if (!m_bRadio)
   {
-    if (PVRChannelsTV[i].GroupID() == GroupId)
-    {
-      PVRChannelsTV[i].SetGroupID(0);
-      database->UpdateDBChannel(PVRChannelsTV[i]);
-    }
-  }
-  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-  {
-    if (PVRChannelsRadio[i].GroupID() == GroupId)
-    {
-      PVRChannelsRadio[i].SetGroupID(0);
-      database->UpdateDBChannel(PVRChannelsRadio[i]);
-    }
-  }
+    /* Delete the group inside Database */
+    database->DeleteChannelGroup(GroupId);
 
-  /* Reload the group list */
-  Clear();
-  database->GetChannelGroupList(*this);
+    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+    {
+      if (PVRChannelsTV[i].GroupID() == GroupId)
+      {
+        PVRChannelsTV[i].SetGroupID(0);
+        database->UpdateDBChannel(PVRChannelsTV[i]);
+      }
+    }
+
+    /* Reload the group list */
+    database->GetChannelGroupList(*this);
+  }
+  else
+  {
+    /* Delete the group inside Database */
+    database->DeleteRadioChannelGroup(GroupId);
+
+    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+    {
+      if (PVRChannelsRadio[i].GroupID() == GroupId)
+      {
+        PVRChannelsRadio[i].SetGroupID(0);
+        database->UpdateDBChannel(PVRChannelsRadio[i]);
+      }
+    }
+
+    /* Reload the group list */
+    database->GetRadioChannelGroupList(*this);
+  }
 
   database->Close();
   return true;

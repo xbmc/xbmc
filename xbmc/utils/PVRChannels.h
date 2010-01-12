@@ -212,6 +212,7 @@ private:
 public:
   cPVRChannels(void);
   bool Load(bool radio);
+  void Unload();
   bool Update();
   void ReNumberAndCheck(void);
   void SearchAndSetChannelIcons(bool writeDB = false);
@@ -259,13 +260,17 @@ public:
 
 class cPVRChannelGroups : public std::vector<cPVRChannelGroup>
 {
+private:
+  bool  m_bRadio;
+
 public:
   cPVRChannelGroups(void);
 
-  bool Load();
+  bool Load(bool radio = false);
+  void Unload();
 
   int GetGroupList(CFileItemList* results);
-  int GetFirstChannelForGroupID(int GroupId, bool radio = false);
+  int GetFirstChannelForGroupID(int GroupId);
   int GetPrevGroupID(int current_group_id);
   int GetNextGroupID(int current_group_id);
 
@@ -280,4 +285,5 @@ public:
 
 extern cPVRChannels      PVRChannelsTV;
 extern cPVRChannels      PVRChannelsRadio;
-extern cPVRChannelGroups PVRChannelGroups;
+extern cPVRChannelGroups PVRChannelGroupsTV;
+extern cPVRChannelGroups PVRChannelGroupsRadio;

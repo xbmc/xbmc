@@ -568,6 +568,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         int iNewGroup = -1; // All Channels
 
+        cPVRChannelGroups *groups;
+        if (!g_PVRManager.IsPlayingRadio())
+          groups = &PVRChannelGroupsTV;
+        else
+          groups = &PVRChannelGroupsRadio;
+
         // Get the currently selected label of the Select button
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
         OnMessage(msg);
@@ -578,11 +584,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
           // thru all Group names, if one of this names match the label load
           // the ID of this group, if no equal name is found the default group
           // for all channels is used.
-          for (int i = 0; i < (int) PVRChannelGroups.size(); ++i)
+          for (int i = 0; i < (int) groups->size(); ++i)
           {
-            if (strLabel == PVRChannelGroups[i].GroupName())
+            if (strLabel == groups->at(i).GroupName())
             {
-              iNewGroup = PVRChannelGroups[i].GroupID();
+              iNewGroup = groups->at(i).GroupID();
               break;
             }
           }
@@ -595,7 +601,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
           g_PVRManager.SetPlayingGroup(iNewGroup);
           CAction action;
           action.id = ACTION_CHANNEL_SWITCH;
-          action.amount1 = PVRChannelGroups.GetFirstChannelForGroupID(iNewGroup);
+          action.amount1 = groups->GetFirstChannelForGroupID(iNewGroup);
           OnAction(action);
         }
 
@@ -1013,6 +1019,12 @@ void CGUIWindowFullScreen::FillInTVGroups()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_GROUP_CHOOSER);
   g_windowManager.SendMessage(msgReset);
 
+  cPVRChannelGroups *groups;
+  if (!g_PVRManager.IsPlayingRadio())
+    groups = &PVRChannelGroupsTV;
+  else
+    groups = &PVRChannelGroupsRadio;
+
   int iGroup        = 0;
   int iCurrentGroup = 0;
   {
@@ -1021,13 +1033,13 @@ void CGUIWindowFullScreen::FillInTVGroups()
     msg.SetLabel(593);
     g_windowManager.SendMessage(msg);
   }
-  for (int i = 0; i < (int) PVRChannelGroups.size(); ++i)
+  for (int i = 0; i < (int) groups->size(); ++i)
   {
-    if (PVRChannelGroups[i].GroupID() == g_PVRManager.GetPlayingGroup())
+    if (groups->at(i).GroupID() == g_PVRManager.GetPlayingGroup())
       iCurrentGroup = iGroup;
 
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);
-    msg.SetLabel(PVRChannelGroups[i].GroupName());
+    msg.SetLabel(groups->at(i).GroupName());
     g_windowManager.SendMessage(msg);
   }
   CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_CHOOSER, iCurrentGroup);

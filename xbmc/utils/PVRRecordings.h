@@ -97,6 +97,7 @@ private:
 public:
   cPVRRecordings(void);
   bool Load() { return Update(true); }
+  void Unload();
   bool Update(bool Wait = false);
   int GetNumRecordings();
   int GetRecordings(CFileItemList* results);

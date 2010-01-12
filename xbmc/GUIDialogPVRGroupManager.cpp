@@ -96,7 +96,10 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (strDescription != "")
           {
-            PVRChannelGroups.AddGroup(strDescription);
+            if (!m_bIsRadio)
+              PVRChannelGroupsTV.AddGroup(strDescription);
+            else
+              PVRChannelGroupsRadio.AddGroup(strDescription);
             Update();
           }
         }
@@ -110,15 +113,24 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
         if (pDialog)
         {
+          CStdString groupName;
+          if (!m_bIsRadio)
+            groupName = PVRChannelGroupsTV.GetGroupName(atoi(pItemGroup->m_strPath.c_str()));
+          else
+            groupName = PVRChannelGroupsRadio.GetGroupName(atoi(pItemGroup->m_strPath.c_str()));
+
           pDialog->SetHeading(117);
           pDialog->SetLine(0, "");
-          pDialog->SetLine(1, PVRChannelGroups.GetGroupName(atoi(pItemGroup->m_strPath.c_str())));
+          pDialog->SetLine(1, groupName);
           pDialog->SetLine(2, "");
           pDialog->DoModal();
 
           if (pDialog->IsConfirmed())
           {
-            PVRChannelGroups.DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
+            if (!m_bIsRadio)
+              PVRChannelGroupsTV.DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
+            else
+              PVRChannelGroupsRadio.DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
         }
@@ -130,7 +142,10 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (m_CurrentGroupName != "")
           {
-            PVRChannelGroups.RenameGroup(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()), m_CurrentGroupName);
+            if (!m_bIsRadio)
+              PVRChannelGroupsTV.RenameGroup(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()), m_CurrentGroupName);
+            else
+              PVRChannelGroupsRadio.RenameGroup(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()), m_CurrentGroupName);
             Update();
           }
         }
@@ -150,7 +165,10 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           {
             CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
             CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            PVRChannelGroups.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
+            if (!m_bIsRadio)
+              PVRChannelGroupsTV.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
+            else
+              PVRChannelGroupsRadio.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), atoi(pItemGroup->m_strPath.c_str()));
             Update();
           }
           return true;
@@ -166,7 +184,10 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
           if (m_channelRightItems->GetFileCount() > 0)
           {
             CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            PVRChannelGroups.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
+            if (!m_bIsRadio)
+              PVRChannelGroupsTV.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
+            else
+              PVRChannelGroupsRadio.ChannelToGroup(*pItemChannel->GetPVRChannelInfoTag(), 0);
             Update();
           }
           return true;
@@ -228,7 +249,12 @@ void CGUIDialogPVRGroupManager::Update()
   // empty the lists ready for population
   Clear();
 
-  int groups = PVRChannelGroups.GetGroupList(m_channelGroupItems);
+  int groups;
+  if (!m_bIsRadio)
+    groups = PVRChannelGroupsTV.GetGroupList(m_channelGroupItems);
+  else
+    groups = PVRChannelGroupsRadio.GetGroupList(m_channelGroupItems);
+
   m_viewControlGroup.SetItems(*m_channelGroupItems);
   m_viewControlGroup.SetSelectedItem(m_iSelectedGroup);
 

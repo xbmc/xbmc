@@ -39,7 +39,6 @@
 #include "PVRRecordings.h"
 #include "PVRManager.h"
 #include "GUIDialogOK.h"
-#include "GUIDialogPVRUpdateProgressBar.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 #include "Util.h"
@@ -197,12 +196,7 @@ cPVRRecordings::cPVRRecordings(void)
 void cPVRRecordings::Process()
 {
   CSingleLock lock(m_critSection);
-
-  CGUIDialogPVRUpdateProgressBar *scanner = (CGUIDialogPVRUpdateProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EPG_SCAN);
-  scanner->Show();
-  scanner->SetHeader(g_localizeStrings.Get(19066));
-
-  CLIENTMAP *clients  = g_PVRManager.Clients();
+  CLIENTMAP *clients = g_PVRManager.Clients();
 
   Clear();
 
@@ -211,10 +205,6 @@ void cPVRRecordings::Process()
   int cnt = 0;
   while (itr != clients->end())
   {
-    scanner->SetProgress(cnt/2, clients->size());
-    scanner->SetTitle((*itr).second->Name());
-    scanner->UpdateState();
-
     /* Load only if the client have Recordings */
     if ((*itr).second->GetNumRecordings() > 0)
     {
@@ -226,10 +216,6 @@ void cPVRRecordings::Process()
 
   for (unsigned int i = 0; i < size(); ++i)
   {
-    scanner->SetProgress(i+cnt, size()+cnt);
-    scanner->SetTitle(at(i).Title());
-    scanner->UpdateState();
-
     CFileItemPtr pFileItem(new CFileItem(at(i)));
 
     CStdString Path;
@@ -241,8 +227,13 @@ void cPVRRecordings::Process()
     Path += at(i).Title() + ".pvr";
     at(i).SetPath(Path);
   }
-  scanner->Close();
   return;
+}
+
+void cPVRRecordings::Unload()
+{
+  CSingleLock lock(m_critSection);
+  Clear();
 }
 
 bool cPVRRecordings::Update(bool Wait)
@@ -263,11 +254,13 @@ bool cPVRRecordings::Update(bool Wait)
 
 int cPVRRecordings::GetNumRecordings()
 {
+  CSingleLock lock(m_critSection);
   return size();
 }
 
 int cPVRRecordings::GetRecordings(CFileItemList* results)
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int i = 0; i < size(); ++i)
   {
     CFileItemPtr pFileItem(new CFileItem(at(i)));
@@ -304,6 +297,8 @@ bool cPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
 
 bool cPVRRecordings::RemoveRecording(const CFileItem &item)
 {
+  CSingleLock lock(m_critSection);
+
   if (!item.IsPVRRecording())
   {
     CLog::Log(LOGERROR, "cPVRRecordings: RemoveRecording no RecordingInfoTag given!");
@@ -325,6 +320,8 @@ bool cPVRRecordings::RemoveRecording(const CFileItem &item)
 
 bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
+  CSingleLock lock(m_critSection);
+
   CStdString base(strPath);
   CUtil::RemoveSlashAtEnd(base);
 
@@ -438,6 +435,8 @@ bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
 
 cPVRRecordingInfoTag *cPVRRecordings::GetByPath(CStdString &path)
 {
+  CSingleLock lock(m_critSection);
+
   CURL url(path);
   CStdString fileName = url.GetFileName();
   CUtil::RemoveSlashAtEnd(fileName);

@@ -115,15 +115,6 @@ void CPVRManager::Start()
     return;
   }
 
-  /* Get TV Channels from Backends */
-  PVRChannelsTV.Load(false);
-
-  /* Get Radio Channels from Backends */
-  PVRChannelsRadio.Load(true);
-
-  /* Load the Channel group lists */
-  PVRChannelGroups.Load();
-
   /* Create the supervisor thread to do all background activities */
   Create();
   SetName("XBMC PVR Supervisor");
@@ -435,6 +426,18 @@ void CPVRManager::Process()
   m_LastEPGScan            = Now;
   m_LastEPGUpdate          = Now;
 
+  /* Get TV Channels from Backends */
+  PVRChannelsTV.Load(false);
+
+  /* Get Radio Channels from Backends */
+  PVRChannelsRadio.Load(true);
+
+  /* Load the TV Channel group lists */
+  PVRChannelGroupsTV.Load(false);
+
+  /* Load the Radio Channel group lists */
+  PVRChannelGroupsRadio.Load(true);
+
   /* Get Timers from Backends */
   PVRTimers.Load();
 
@@ -502,8 +505,30 @@ void CPVRManager::Process()
     Sleep(1000);
   }
 
+  /* if a channel or recording is playing stop it first */
+  if (m_currentPlayingChannel || m_currentPlayingRecording)
+    g_application.StopPlaying();
+
   /* Remove Epg's from Memory */
   cPVREpgs::Unload();
+
+  /* Remove recordings from Memory */
+  PVRRecordings.Unload();
+
+  /* Remove Timers from Memory */
+  PVRTimers.Unload();
+
+  /* Remove TV Channel groups from Memory */
+  PVRChannelGroupsTV.Unload();
+
+  /* Remove Radio Channel groups from Memory */
+  PVRChannelGroupsRadio.Unload();
+
+  /* Remove Radio Channels from Memory */
+  PVRChannelsRadio.Unload();
+
+  /* Remove TV Channels from Memory */
+  PVRChannelsTV.Unload();
 }
 
 

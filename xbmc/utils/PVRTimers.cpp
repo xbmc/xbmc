@@ -514,11 +514,14 @@ cPVRTimers::cPVRTimers(void)
 
 }
 
+void cPVRTimers::Unload()
+{
+  Clear();
+}
+
 bool cPVRTimers::Update()
 {
-  CSingleLock lock(m_critSection);
-
-  CLIENTMAP *clients  = g_PVRManager.Clients();
+  CLIENTMAP *clients = g_PVRManager.Clients();
 
   Clear();
 

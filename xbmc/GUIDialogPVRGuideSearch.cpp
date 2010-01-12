@@ -342,7 +342,7 @@ void CGUIDialogPVRGuideSearch::Update()
   if (pSpin)
   {
     CFileItemList grouplist;
-    PVRChannelGroups.GetGroupList(&grouplist);
+    PVRChannelGroupsTV.GetGroupList(&grouplist);
 
     pSpin->Clear();
     pSpin->AddLabel(g_localizeStrings.Get(593), -1);

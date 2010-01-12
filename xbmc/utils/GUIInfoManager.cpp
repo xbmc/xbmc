@@ -3113,8 +3113,8 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
   case MUSICPLAYER_CHANNEL_GROUP:
     {
       cPVRChannelInfoTag* channeltag = m_currentFile->GetPVRChannelInfoTag();
-      if (channeltag)
-        return PVRChannelGroups.GetGroupName(g_PVRManager.GetPlayingGroup());
+      if (channeltag && channeltag->IsRadio())
+        return PVRChannelGroupsRadio.GetGroupName(g_PVRManager.GetPlayingGroup());
     }
     break;
   }
@@ -3201,7 +3201,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return strNumber;
     }
     case VIDEOPLAYER_CHANNEL_GROUP:
-      return PVRChannelGroups.GetGroupName(g_PVRManager.GetPlayingGroup());
+    {
+      if (tag && !tag->IsRadio())
+        return PVRChannelGroupsTV.GetGroupName(g_PVRManager.GetPlayingGroup());
+    }
     }
   }
   else if (m_currentFile->HasVideoInfoTag())
