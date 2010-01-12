@@ -53,18 +53,15 @@ namespace ADDON
 
   /**
   * Class - IAddonCallback
-  * Used to access Add-on internal functions
-  * The callback is handled from the parent class which
-  * handle this types of Add-on's, as example for PVR Clients
-  * it is CPVRManager
+  * This callback should be inherited by any class which manages
+  * specific addon types. Could be mostly used for Dll addon types to handle
+  * cleanup before restart/removal
   */
-  class IAddonCallback
+  class IAddonMgrCallback
   {
     public:
       virtual bool RequestRestart(const IAddon* addon, bool datachanged)=0;
       virtual bool RequestRemoval(const IAddon* addon)=0;
-      virtual ADDON_STATUS SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)=0;
-      virtual addon_settings_t GetSettings(const IAddon* addon)=0;
   };
 
   /**
@@ -98,21 +95,15 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr : public IAddonCallback
+  class CAddonMgr
   {
   public:
     static CAddonMgr* Get();
     virtual ~CAddonMgr();
 
-    IAddonCallback* GetCallbackForType(TYPE type);
-    bool RegisterAddonCallback(TYPE type, IAddonCallback* cb);
-    void UnregisterAddonCallback(TYPE type);
-
-    /* Dll/so callbacks */
-    addon_settings_t GetSettings(const IAddon* addon) { return NULL; }
-    ADDON_STATUS SetSetting(const IAddon* addon, const char *settingName, const void *settingValue);
-    bool RequestRestart(const IAddon* addon, bool datachanged);
-    bool RequestRemoval(const IAddon* addon);
+    IAddonMgrCallback* GetCallbackForType(TYPE type);
+    bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
+    void UnregisterAddonMgrCallback(TYPE type);
 
     /* Addon access */
     bool GetDefaultScraper(CScraperPtr &scaper, const CONTENT_TYPE &content);
@@ -146,7 +137,7 @@ namespace ADDON
 
     CAddonMgr();
     static CAddonMgr* m_pInstance;
-    static std::map<TYPE, IAddonCallback*> m_managers;
+    static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
     std::map<TYPE, CDateTime> m_lastScan;
     std::map<CStdString, AddonPtr> m_uuidMap;

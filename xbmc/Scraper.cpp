@@ -101,7 +101,7 @@ bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl*
     for (unsigned int i=0;i<url->m_url.size();++i)
     {
       CStdString strCurrHTML;
-      if (!CScraperUrl::Get(url->m_url[i],strCurrHTML,http) || strCurrHTML.size() == 0)
+      if (!CScraperUrl::Get(url->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
         return false;
       strHTML.push_back(strCurrHTML);
     }

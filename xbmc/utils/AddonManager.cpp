@@ -277,7 +277,7 @@ void CAddonStatusHandler::Process()
  */
 
 CAddonMgr* CAddonMgr::m_pInstance = NULL;
-std::map<ADDON::TYPE, ADDON::IAddonCallback*> CAddonMgr::m_managers;
+std::map<ADDON::TYPE, ADDON::IAddonMgrCallback*> CAddonMgr::m_managers;
 
 CAddonMgr::CAddonMgr()
 {
@@ -296,7 +296,7 @@ CAddonMgr* CAddonMgr::Get()
   return m_pInstance;
 }
 
-IAddonCallback* CAddonMgr::GetCallbackForType(ADDON::TYPE type)
+IAddonMgrCallback* CAddonMgr::GetCallbackForType(ADDON::TYPE type)
 {
   if (m_managers.find(type) == m_managers.end())
     return NULL;
@@ -304,7 +304,7 @@ IAddonCallback* CAddonMgr::GetCallbackForType(ADDON::TYPE type)
     return m_managers[type];
 }
 
-bool CAddonMgr::RegisterAddonCallback(const ADDON::TYPE type, IAddonCallback* cb)
+bool CAddonMgr::RegisterAddonMgrCallback(const ADDON::TYPE type, IAddonMgrCallback* cb)
 {
   if (cb == NULL)
     return false;
@@ -315,7 +315,7 @@ bool CAddonMgr::RegisterAddonCallback(const ADDON::TYPE type, IAddonCallback* cb
   return true;
 }
 
-void CAddonMgr::UnregisterAddonCallback(ADDON::TYPE type)
+void CAddonMgr::UnregisterAddonMgrCallback(ADDON::TYPE type)
 {
   m_managers.erase(type);
 }
@@ -953,79 +953,6 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
   //CLog::Log(LOGDEBUG, "ADDON: Discovered: Name: %s, UUID: %s, Version: %s, Path: %s", addon->Name().c_str(), addon->UUID().c_str(), addon->Version().c_str(), addon->Path().c_str());
 
   return true;
-}
-
-/*****************************************************************************/
-ADDON_STATUS CAddonMgr::SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)
-{
-  if (!addon)
-    return STATUS_UNKNOWN;
-
-  CLog::Log(LOGINFO, "ADDONS: set setting of clientName: %s, settingName: %s", addon->Name().c_str(), settingName);
-  /*CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-    {
-      if (m_clients[(*itr).first]->m_strName == addon->Name())
-      {
-        return m_clients[(*itr).first]->SetSetting(settingName, settingValue);
-      }
-    }
-    itr++;
-  } */
-  return STATUS_UNKNOWN;
-}
-
-bool CAddonMgr::RequestRestart(const IAddon* addon, bool datachanged)
-{
-  if (!addon)
-    return false;
-
-  CLog::Log(LOGINFO, "ADDONS: requested restart of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-  /*CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-    {
-      if (m_clients[(*itr).first]->m_strName == addon->Name())
-      {
-        CLog::Log(LOGINFO, "ADDONS: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-        m_clients[(*itr).first]->ReInit();
-        if (datachanged)
-        {
-
-        }
-      }
-    }
-    itr++;
-  }*/
-  return true;
-}
-
-bool CAddonMgr::RequestRemoval(const IAddon* addon)
-{
-  if (!addon)
-    return false;
-
-  CLog::Log(LOGINFO, "ADDONS: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-  /*CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-    {
-      if (m_clients[(*itr).first]->m_strName == addon->Name())
-      {
-        CLog::Log(LOGINFO, "ADDONS: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
-        m_clients[(*itr).first]->Remove();
-        m_clients.erase((*itr).first);
-        return true;
-      }
-    }
-    itr++;
-  }*/
-
-  return false;
 }
 
 CStdString CAddonMgr::GetAddonsXMLFile() const
