@@ -169,7 +169,7 @@ void CMouseStat::UpdateInternal()
 {
   uint32_t now = CTimeUtils::GetFrameTime();
   // update our state from the mouse device
-  if (HasMoved() || m_mouseState.dz)
+  if (MovedPastThreshold() || m_mouseState.dz)
     SetActive();
 
   // Perform the click mapping (for single, long single, and double click detection)
@@ -206,6 +206,8 @@ void CMouseStat::UpdateInternal()
 
   if (bNothingDown)
     SetState(MOUSE_STATE_NORMAL);
+  else
+    SetActive();
 }
 
 
@@ -250,10 +252,8 @@ bool CMouseStat::IsEnabled() const
   return m_mouseEnabled;
 }
 
-bool CMouseStat::HasMoved(bool detectAllMoves /* = false */) const
+bool CMouseStat::MovedPastThreshold() const
 {
-  if (detectAllMoves)
-    return m_mouseState.dx || m_mouseState.dy;
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
