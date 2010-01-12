@@ -747,10 +747,10 @@ namespace MediaFoundationSamples
 
         virtual ~MediaTypeBuilder()
         {
-          if (m_hModuleMFPLAT)
-            FreeLibrary(m_hModuleMFPLAT);
+          //if (m_hModuleMFPLAT)
+          //  FreeLibrary(m_hModuleMFPLAT);
           //TOFIX
-          S_RELEASE(m_pType);
+          //S_RELEASE(m_pType);
         }
 
     public:

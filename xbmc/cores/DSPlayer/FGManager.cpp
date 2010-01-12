@@ -59,9 +59,9 @@ CFGManager::CFGManager():
   HRESULT hr;
   //CLSCTX_INPROC_HANDLER
   //hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-  hr = CoCreateInstance(CLSID_FilterGraph,NULL,CLSCTX_INPROC, IID_IUnknown,(void**) &m_pUnkInner);
+  hr = CoCreateInstance(CLSID_FilterGraph,NULL,CLSCTX_ALL, IID_IUnknown,(void**) &m_pUnkInner);
   hr = m_pUnkInner->QueryInterface(IID_IFilterGraph,(void**)&m_pFG);
-  hr = CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_INPROC,__uuidof(m_pFM),(void**) &m_pFM);
+  hr = CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_ALL,__uuidof(m_pFM),(void**) &m_pFM);
 }
 
 CFGManager::~CFGManager()

@@ -63,6 +63,11 @@ m_pDsConfig(NULL)
   m_State.Clear();
   m_VideoInfo.Clear();
   HRESULT hr;
+  m_pMediaControl = NULL;
+  m_pMediaEvent = NULL;
+  m_pMediaSeeking = NULL;
+  m_pBasicAudio = NULL;
+  m_pBasicVideo = NULL;
 }
 
 CDSGraph::~CDSGraph()
@@ -288,6 +293,7 @@ void CDSGraph::SetDynamicRangeCompression(long drc)
 void CDSGraph::OnPlayStop()
 {
   LONGLONG pos = 0;
+  
   
   if (m_pMediaSeeking)
     m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
