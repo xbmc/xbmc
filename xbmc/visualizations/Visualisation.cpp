@@ -95,8 +95,9 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->height = h;
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
   m_pInfo->name = Name().c_str();
-  m_pInfo->presets = _P(Path()).c_str();
+  CStdString presets = _P(Path().c_str());
   CStdString store = _P(Profile());
+  m_pInfo->presets = presets.c_str();
   m_pInfo->datastore = store.c_str();
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())

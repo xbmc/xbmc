@@ -152,8 +152,6 @@ ADDON_STATUS Create(void* hdl, void* props)
 //-----------------------------------------------------------------------------
 extern "C" void Render()
 {
-  bool configured = true; //FALSE;
-
   glDisable(GL_BLEND);
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
@@ -166,22 +164,19 @@ extern "C" void Render()
   glDepthFunc(GL_LESS);
   glPolygonMode(GL_FRONT, GL_FILL);
   //glPolygonMode(GL_BACK, GL_FILL);
-  if(configured)
-  {
-    x_angle += x_speed;
-    if(x_angle >= 360.0)
-      x_angle -= 360.0;
+  x_angle += x_speed;
+  if(x_angle >= 360.0)
+    x_angle -= 360.0;
 
-    y_angle += y_speed;
-    if(y_angle >= 360.0)
-      y_angle -= 360.0;
+  y_angle += y_speed;
+  if(y_angle >= 360.0)
+    y_angle -= 360.0;
 
-    z_angle += z_speed;
-    if(z_angle >= 360.0)
-      z_angle -= 360.0;
+  z_angle += z_speed;
+  if(z_angle >= 360.0)
+    z_angle -= 360.0;
 
-    draw_bars();
-  }
+  draw_bars();
   glPopMatrix();
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
@@ -262,6 +257,14 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 }
 
 
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" int GetSubModules(char ***names, char ***paths)
+{
+  return 0; // this vis supports 0 sub modules
+}
+
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
@@ -279,12 +282,20 @@ extern "C" viz_preset_list_t GetPresets()
   return NULL;
 }
 
-//-- GetCurrentPreset ---------------------------------------------------------
+//-- GetPreset ----------------------------------------------------------------
 // Return the index of the current playing preset
 //-----------------------------------------------------------------------------
-extern "C" unsigned GetCurrentPreset()
+extern "C" unsigned GetPreset()
 {
   return 0;
+}
+
+//-- IsLocked -----------------------------------------------------------------
+// Returns true if this add-on use settings
+//-----------------------------------------------------------------------------
+extern "C" bool IsLocked()
+{
+  return false;
 }
 
 //-- Remove -------------------------------------------------------------------
@@ -315,6 +326,7 @@ extern "C" ADDON_STATUS GetStatus()
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
 extern "C" addon_settings_t GetSettings()
 {
@@ -439,10 +451,3 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
   return STATUS_UNKNOWN;
 }
 
-//-- GetSubModules ------------------------------------------------------------
-// Return any sub modules supported by this vis
-//-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
-{
-  return 0; // this vis supports 0 sub modules
-}

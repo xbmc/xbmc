@@ -252,7 +252,6 @@ extern "C" unsigned GetPreset()
 
 //-- IsLocked -----------------------------------------------------------------
 // Returns true if this add-on use settings
-// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
 extern "C" bool IsLocked()
 {
