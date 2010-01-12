@@ -239,12 +239,12 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   keysym->mod = XBMCKMOD_NONE;
   keysym->unicode = 0;
 
-  if ((vkey == VK_RETURN) && (scancode & 0x100)) 
+  if ((vkey == VK_RETURN) && (scancode & 0x100))
   {
     /* No VK_ code for the keypad enter key */
     keysym->sym = XBMCK_KP_ENTER;
   }
-  else 
+  else
   {
     keysym->sym = VK_keymap[XBMC_MapVirtualKey(scancode, vkey)];
   }
@@ -270,7 +270,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 }
 
 bool CWinEventsWin32::MessagePump()
-{ 
+{
   MSG  msg;
   while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
   {
@@ -300,7 +300,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   if(g_uQueryCancelAutoPlay != 0 && uMsg == g_uQueryCancelAutoPlay)
     return S_FALSE;
 
-  switch (uMsg) 
+  switch (uMsg)
   {
     case WM_CLOSE:
     case WM_QUIT:
@@ -345,7 +345,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       break;
     case WM_SYSKEYDOWN:
-      switch (wParam) 
+      switch (wParam)
       {
         case VK_F4: //alt-f4, default event quit.
           return(DefWindowProc(hWnd, uMsg, wParam, lParam));
@@ -355,9 +355,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           return 0;
       }
       //deliberate fallthrough
-    case WM_KEYDOWN: 
+    case WM_KEYDOWN:
     {
-      switch (wParam) 
+      switch (wParam)
       {
         case VK_CONTROL:
           if ( lParam & EXTENDED_KEYMASK )
@@ -389,9 +389,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     return(0);
 
     case WM_SYSKEYUP:
-    case WM_KEYUP: 
+    case WM_KEYUP:
       {
-      switch (wParam) 
+      switch (wParam)
       {
         case VK_CONTROL:
           if ( lParam&EXTENDED_KEYMASK )
@@ -404,7 +404,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             uint32_t scanCodeL = MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
             uint32_t scanCodeR = MapVirtualKey(VK_RSHIFT, MAPVK_VK_TO_VSC);
             uint32_t keyCode = (uint32_t)((lParam & 0xFF0000) >> 16);
-            if (keyCode == scanCodeL) 
+            if (keyCode == scanCodeL)
               wParam = VK_LSHIFT;
             else if (keyCode == scanCodeR)
               wParam = VK_RSHIFT;
@@ -576,7 +576,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
            if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
            {
               PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
-          
+
               // Check whether a CD or DVD was removed from a drive.
               if (lpdbv -> dbcv_flags & DBTF_MEDIA)
               {

@@ -34,7 +34,7 @@ CGUIControlProfilerItem::CGUIControlProfilerItem(CGUIControlProfiler *pProfiler,
     m_ControlType = m_pControl->GetControlType();
     m_strDescription = m_pControl->GetDescription();
   }
-  else 
+  else
   {
     m_controlID = 0;
     m_ControlType = CGUIControl::GUICONTROL_UNKNOWN;
@@ -73,7 +73,7 @@ void CGUIControlProfilerItem::EndVisibility(void)
 }
 
 void CGUIControlProfilerItem::BeginRender(void)
-{ 
+{
   m_i64RenderStart = CurrentHostCounter();
 }
 
@@ -86,42 +86,42 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
 {
   TiXmlElement *xmlControl = new TiXmlElement("control");
   parent->LinkEndChild(xmlControl);
-  
+
   const char *lpszType = NULL;
   switch (m_ControlType)
   {
-  case CGUIControl::GUICONTROL_BUTTON: 
+  case CGUIControl::GUICONTROL_BUTTON:
     lpszType = "button"; break;
-  case CGUIControl::GUICONTROL_CHECKMARK: 
+  case CGUIControl::GUICONTROL_CHECKMARK:
     lpszType = "checkmark"; break;
-  case CGUIControl::GUICONTROL_FADELABEL: 
+  case CGUIControl::GUICONTROL_FADELABEL:
     lpszType = "fadelabel"; break;
-  case CGUIControl::GUICONTROL_IMAGE: 
-  case CGUIControl::GUICONTROL_BORDEREDIMAGE: 
+  case CGUIControl::GUICONTROL_IMAGE:
+  case CGUIControl::GUICONTROL_BORDEREDIMAGE:
     lpszType = "image"; break;
-  case CGUIControl::GUICONTROL_LARGE_IMAGE: 
+  case CGUIControl::GUICONTROL_LARGE_IMAGE:
     lpszType = "largeimage"; break;
-  case CGUIControl::GUICONTROL_LABEL: 
+  case CGUIControl::GUICONTROL_LABEL:
     lpszType = "label"; break;
-  case CGUIControl::GUICONTROL_LISTGROUP: 
+  case CGUIControl::GUICONTROL_LISTGROUP:
     lpszType = "group"; break;
-  case CGUIControl::GUICONTROL_PROGRESS: 
+  case CGUIControl::GUICONTROL_PROGRESS:
     lpszType = "progress"; break;
-  case CGUIControl::GUICONTROL_RADIO: 
+  case CGUIControl::GUICONTROL_RADIO:
     lpszType = "radiobutton"; break;
-  case CGUIControl::GUICONTROL_RSS: 
+  case CGUIControl::GUICONTROL_RSS:
     lpszType = "rss"; break;
-  case CGUIControl::GUICONTROL_SELECTBUTTON: 
+  case CGUIControl::GUICONTROL_SELECTBUTTON:
     lpszType = "selectbutton"; break;
-  case CGUIControl::GUICONTROL_SLIDER: 
+  case CGUIControl::GUICONTROL_SLIDER:
     lpszType = "slider"; break;
-  case CGUIControl::GUICONTROL_SETTINGS_SLIDER: 
+  case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
     lpszType = "sliderex"; break;
-  case CGUIControl::GUICONTROL_SPIN: 
+  case CGUIControl::GUICONTROL_SPIN:
     lpszType = "spincontrol"; break;
-  case CGUIControl::GUICONTROL_SPINEX: 
+  case CGUIControl::GUICONTROL_SPINEX:
     lpszType = "spincontrolex"; break;
-  case CGUIControl::GUICONTROL_TEXTBOX: 
+  case CGUIControl::GUICONTROL_TEXTBOX:
     lpszType = "textbox"; break;
   case CGUIControl::GUICONTROL_TOGGLEBUTTON:
     lpszType = "togglebutton"; break;
@@ -157,11 +157,11 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "fixedlist"; break;
   case CGUIControl::GUICONTAINER_PANEL:
     lpszType = "panel"; break;
-  //case CGUIControl::GUICONTROL_LIST: 
-  //case CGUIControl::GUICONTROL_UNKNOWN: 
-  //case CGUIControl::GUICONTROL_LISTEX: 
-  //case CGUIControl::GUICONTROL_SPINBUTTON: 
-  //case CGUIControl::GUICONTROL_THUMBNAIL: 
+  //case CGUIControl::GUICONTROL_LIST:
+  //case CGUIControl::GUICONTROL_UNKNOWN:
+  //case CGUIControl::GUICONTROL_LISTEX:
+  //case CGUIControl::GUICONTROL_SPINBUTTON:
+  //case CGUIControl::GUICONTROL_THUMBNAIL:
   //case CGUIControl::GUICONTROL_CONSOLE:
   default:
     break;
@@ -169,7 +169,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
 
   if (lpszType)
     xmlControl->SetAttribute("type", lpszType);
-  if (m_controlID != 0)  
+  if (m_controlID != 0)
   {
     CStdString str;
     str.Format("%u", m_controlID);
@@ -188,7 +188,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   {
     TiXmlElement *elem = new TiXmlElement("description");
     xmlControl->LinkEndChild(elem);
-    TiXmlText *text = new TiXmlText(m_strDescription.c_str());  
+    TiXmlText *text = new TiXmlText(m_strDescription.c_str());
     elem->LinkEndChild(text);
   }
 
@@ -203,7 +203,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     val.Format("%u", rend);
     TiXmlText *text = new TiXmlText(val.c_str());
     elem->LinkEndChild(text);
-    
+
     elem = new TiXmlElement("visibletime");
     xmlControl->LinkEndChild(elem);
     val.Format("%u", vis);
@@ -240,7 +240,7 @@ CGUIControlProfilerItem *CGUIControlProfilerItem::FindOrAddControl(CGUIControl *
   }
 
   if (pControl->GetParentControl() == m_pControl)
-    return AddControl(pControl); 
+    return AddControl(pControl);
 
   return NULL;
 }
@@ -258,8 +258,8 @@ CGUIControlProfiler &CGUIControlProfiler::Instance(void)
   return _instance;
 }
 
-bool CGUIControlProfiler::IsRunning(void) 
-{ 
+bool CGUIControlProfiler::IsRunning(void)
+{
   return m_bIsRunning;
 }
 
@@ -303,7 +303,7 @@ CGUIControlProfilerItem *CGUIControlProfiler::FindOrAddControl(CGUIControl *pCon
     // the one we want again next time
     if (m_pLastItem->m_pControl == pControl)
       return m_pLastItem;
-    // If that control is not a match, usually the one we want is the next 
+    // If that control is not a match, usually the one we want is the next
     // sibling of that control, or the parent of that control so check
     // the parent first as it is more convenient
     m_pLastItem = m_pLastItem->m_pParent;

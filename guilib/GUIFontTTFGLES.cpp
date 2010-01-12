@@ -44,12 +44,12 @@ using namespace std;
 CGUIFontTTFGLES::CGUIFontTTFGLES(const CStdString& strFileName)
 : CGUIFontTTFBase(strFileName)
 {
- 
+
 }
 
 CGUIFontTTFGLES::~CGUIFontTTFGLES(void)
 {
-  
+
 }
 
 void CGUIFontTTFGLES::Begin()

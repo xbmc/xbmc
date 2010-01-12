@@ -653,7 +653,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
     strToVerify ="";
     return false;
   }
-  
+
   CStdString md5pword2;
   XBMC::MD5 md5state;
   md5state.append(strInput);

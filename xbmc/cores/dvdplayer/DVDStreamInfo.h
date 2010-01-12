@@ -29,7 +29,7 @@ enum StreamType;
 enum CodecID;
 #else
 #include "DVDDemuxers/DVDDemux.h"
-extern "C" { 
+extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
@@ -48,8 +48,8 @@ class CDVDStreamInfo
 {
 public:
   CDVDStreamInfo();
-  CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata );
-  CDVDStreamInfo(const CDemuxStream &right, bool withextradata );
+  CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata = true);
+  CDVDStreamInfo(const CDemuxStream &right, bool withextradata = true);
 
   ~CDVDStreamInfo();
 

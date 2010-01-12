@@ -180,7 +180,7 @@ bool CFileHomeRun::Exists(const CURL& url)
 }
 
 int64_t CFileHomeRun::Seek(int64_t iFilePosition, int iWhence)
-{ 
+{
   return -1;
 }
 

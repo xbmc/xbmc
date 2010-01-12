@@ -150,7 +150,7 @@ bool CGUIListContainer::MoveUp(bool wrapAround)
       if (offset < 0) offset = 0;
       SetCursor(m_items.size() - offset - 1);
       ScrollToOffset(offset);
-      g_infoManager.SetContainerMoving(GetID(), -1);
+      SetContainerMoving(-1);
     }
   }
   else
@@ -175,7 +175,7 @@ bool CGUIListContainer::MoveDown(bool wrapAround)
   { // move first item in list, and set our container moving in the "down" direction
     SetCursor(0);
     ScrollToOffset(0);
-    g_infoManager.SetContainerMoving(GetID(), 1);
+    SetContainerMoving(1);
   }
   else
     return false;
@@ -215,7 +215,7 @@ void CGUIListContainer::SetCursor(int cursor)
   if (cursor > m_itemsPerPage - 1) cursor = m_itemsPerPage - 1;
   if (cursor < 0) cursor = 0;
   if (!m_wasReset)
-    g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
+    SetContainerMoving(cursor - m_cursor);
   m_cursor = cursor;
 }
 
@@ -248,7 +248,7 @@ bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
     return false;
-  
+
   int row = 0;
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
   while (row < m_itemsPerPage + 1)  // 1 more to ensure we get the (possible) half item at the end.
@@ -258,8 +258,8 @@ bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
     { // found correct "row" -> check horizontal
       if (!InsideLayout(layout, point))
         return false;
-      
-      g_infoManager.SetContainerMoving(GetID(), row - m_cursor);
+
+      SetContainerMoving(row - m_cursor);
       m_cursor = row;
       CGUIListItemLayout *focusedLayout = GetFocusedLayout();
       if (focusedLayout)

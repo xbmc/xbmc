@@ -32,7 +32,7 @@ public:
 
   CStdString GetInfo(int info);
   void Refresh();
-  
+
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 protected:
   virtual CJob *GetJob() const=0;

@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #ifdef HAS_DX
 
 #include "WinRenderer.h"
@@ -37,12 +37,12 @@
 YUVRANGE yuv_range_lim =  { 16, 235, 16, 240, 16, 240 };
 YUVRANGE yuv_range_full = {  0, 255,  0, 255,  0, 255 };
 
-static float yuv_coef_bt601[4][4] = 
+static float yuv_coef_bt601[4][4] =
 {
     { 1.0f,      1.0f,     1.0f,     0.0f },
     { 0.0f,     -0.344f,   1.773f,   0.0f },
     { 1.403f,   -0.714f,   0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f } 
+    { 0.0f,      0.0f,     0.0f,     0.0f }
 };
 
 static float yuv_coef_bt709[4][4] =
@@ -53,7 +53,7 @@ static float yuv_coef_bt709[4][4] =
     { 0.0f,      0.0f,     0.0f,     0.0f }
 };
 
-static float yuv_coef_ebu[4][4] = 
+static float yuv_coef_ebu[4][4] =
 {
     { 1.0f,      1.0f,     1.0f,     0.0f },
     { 0.0f,     -0.3960f,  2.029f,   0.0f },
@@ -96,7 +96,7 @@ void CWinRenderer::ManageTextures()
   else if( m_NumYV12Buffers > neededbuffers )
   {
     m_NumYV12Buffers = neededbuffers;
-    m_iYV12RenderBuffer = m_iYV12RenderBuffer % m_NumYV12Buffers;    
+    m_iYV12RenderBuffer = m_iYV12RenderBuffer % m_NumYV12Buffers;
 
     for(int i = m_NumYV12Buffers-1; i>=neededbuffers;i--)
       DeleteYV12Texture(i);
@@ -187,9 +187,9 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (!m_bConfigured) return;
   ManageTextures();
 
-  if (!m_YUVMemoryTexture[m_iYV12RenderBuffer][0]) 
+  if (!m_YUVMemoryTexture[m_iYV12RenderBuffer][0])
     return ;
-  
+
   CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
@@ -229,11 +229,11 @@ unsigned int CWinRenderer::DrawSlice(unsigned char *src[], int stride[], int w, 
   BYTE *s;
   BYTE *d;
   int i, p;
-  
+
   int index = NextYV12Texture();
   if( index < 0 )
     return -1;
-  
+
   D3DLOCKED_RECT rect;
   RECT target;
 
@@ -262,7 +262,7 @@ unsigned int CWinRenderer::DrawSlice(unsigned char *src[], int stride[], int w, 
   target.top>>=1;
   target.bottom>>=1;
   target.left>>=1;
-  target.right>>=1; 
+  target.right>>=1;
 
   // copy U
   p = 1;
@@ -400,7 +400,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
       FLOAT tu3, tv3;
   };
 
-  CUSTOMVERTEX verts[4] = 
+  CUSTOMVERTEX verts[4] =
   {
     {
       m_destRect.x1                                                      ,  m_destRect.y1, 0.0f, 1.0f,
@@ -462,7 +462,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
      memcpy(temp.m, yuv_coef_smtp240m, 4*4*sizeof(float)); break;
    case CONF_FLAGS_YUVCOEF_BT709:
      memcpy(temp.m, yuv_coef_bt709   , 4*4*sizeof(float)); break;
-   case CONF_FLAGS_YUVCOEF_BT601:    
+   case CONF_FLAGS_YUVCOEF_BT601:
      memcpy(temp.m, yuv_coef_bt601   , 4*4*sizeof(float)); break;
    case CONF_FLAGS_YUVCOEF_EBU:
      memcpy(temp.m, yuv_coef_ebu     , 4*4*sizeof(float)); break;
@@ -503,7 +503,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     pD3DDevice->SetTexture(0, NULL);
     pD3DDevice->SetTexture(1, NULL);
     pD3DDevice->SetTexture(2, NULL);
-  
+
     m_YUV2RGBEffect.EndPass() ;
   }
 
@@ -564,10 +564,10 @@ void CWinRenderer::DeleteYV12Texture(int index)
 }
 
 void CWinRenderer::ClearYV12Texture(int index)
-{  
+{
   YUVMEMORYPLANES &planes = m_YUVMemoryTexture[index];
   D3DLOCKED_RECT rect;
-  
+
   rect.pBits = planes[0];
   rect.Pitch = m_sourceWidth;
   memset(rect.pBits, 0,   rect.Pitch * m_sourceHeight);

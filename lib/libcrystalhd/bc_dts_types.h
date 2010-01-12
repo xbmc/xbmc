@@ -66,7 +66,9 @@ typedef int	BOOL;
 typedef uint32_t	ULONG;
 typedef int32_t		LONG;
 typedef void		*HANDLE;
+#ifndef VOID
 typedef void		VOID;
+#endif
 typedef void		*LPVOID;
 typedef uint32_t	DWORD;
 typedef uint32_t	UINT32;

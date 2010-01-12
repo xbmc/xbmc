@@ -77,7 +77,7 @@ GUIBITMAPINFOHEADER;
  \ingroup textures
  \brief
  */
-typedef struct tagGUIBITMAPINFO 
+typedef struct tagGUIBITMAPINFO
 {
     GUIBITMAPINFOHEADER    bmiHeader;
     GUIRGBQUAD						 bmiColors[1];

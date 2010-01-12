@@ -37,7 +37,7 @@ namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                4
 #define NUM_VIDEO_SURFACES_MPEG2           10  // (1 frame being decoded, 2 reference)
-#define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references) 
+#define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references)
 #define NUM_VIDEO_SURFACES_VC1             10  // (same as MPEG-2)
 #define NUM_VIDEO_SURFACES_MAX_TRIES       100
 #define NUM_OUTPUT_SURFACES_FOR_FULLHD     2
@@ -81,8 +81,6 @@ public:
   static void             FFDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
                                int y, int type, int height);
-  static enum PixelFormat FFGetFormat(struct AVCodecContext * avctx,
-                                         const enum PixelFormat * pix_fmt);
   static int              FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
@@ -177,7 +175,7 @@ public:
   VdpVideoMixer videoMixer;
   VdpRect       outRect;
   VdpRect       outRectVid;
-  
+
   VdpBool upscalingAvailable;
 
   void*    dl_handle;

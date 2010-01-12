@@ -140,7 +140,6 @@ namespace VIDEO
     m_bUpdateAll = bUpdateAll;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
-    CScraperParser::ClearCache();
 
     if (strDirectory.IsEmpty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
@@ -314,11 +313,11 @@ namespace VIDEO
           m_database.SetPathHash(strDirectory, hash);
           m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
         }
-      } 
+      }
       else
       {
         m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
-        CLog::Log(LOGDEBUG, "Not adding item to library as no info was found :(");    
+        CLog::Log(LOGDEBUG, "Not adding item to library as no info was found :(");
       }
     }
 
@@ -562,7 +561,7 @@ namespace VIDEO
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
             pURL = &scrUrl;
 
-          // Get the correct movie title 
+          // Get the correct movie title
           CStdString strMovieName = pItem->GetMovieName(bDirNames);
 
           IMDB_MOVIELIST movielist;
@@ -1031,7 +1030,7 @@ namespace VIDEO
       }
     }
     else
-      CPicture::CacheImage(strUserThumb, strThumb);
+      CPicture::CacheThumb(strUserThumb, strThumb);
 
     CStdString strCheck=pItem->m_strPath;
     CStdString strDirectory;
@@ -1139,7 +1138,7 @@ namespace VIDEO
       key.second = file->iEpisode;
       bool bFound = false;
       IMDB_EPISODELIST::iterator guide = episodes.begin();;
-      
+
       for (; guide != episodes.end(); ++guide )
       {
         if (file->cDate.IsValid() && guide->cDate.IsValid() && file->cDate==guide->cDate)

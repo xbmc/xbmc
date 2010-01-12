@@ -1806,7 +1806,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
         AddSetToMovie(idMovie, idSet);
       }
     }
-  
+
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, idFile);
 
@@ -5383,14 +5383,8 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     else
       where.Format(" %s %s%s",where.Mid(0).c_str(),"and",str2.c_str());
   }
-  bool bResult = GetMusicVideosByWhere(strBaseDir, where, items);
-  if (bResult && idArtist > -1 && items.Size())
-  {
-   if (CFile::Exists(items[0]->GetCachedFanart()))
-     items.SetProperty("fanart_image",items[0]->GetCachedFanart());
-  }
 
-  return bResult;
+  return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)

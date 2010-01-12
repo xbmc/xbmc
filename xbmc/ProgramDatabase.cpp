@@ -232,7 +232,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     item->m_dateTime.GetAsTimeStamp(time);
 
     ULARGE_INTEGER lastAccessed;
-    lastAccessed.u.LowPart = time.dwLowDateTime; 
+    lastAccessed.u.LowPart = time.dwLowDateTime;
     lastAccessed.u.HighPart = time.dwHighDateTime;
 
     CStdString strPath, strParent;

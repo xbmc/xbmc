@@ -146,10 +146,10 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
     CDVDStreamInfo hint(*pDemuxer->GetStream(nVideoStream), true);
     hint.software = true;
-    
+
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
-      // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction 
+      // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction
       CDVDCodecOptions dvdOptions;
       pVideoCodec = CDVDFactoryCodec::OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions);
     }

@@ -31,7 +31,7 @@ class CRenderSystemGL : public CRenderSystemBase
 public:
   CRenderSystemGL();
   virtual ~CRenderSystemGL();
-
+  virtual void CheckOpenGLQuirks();
   virtual bool InitRenderSystem();
   virtual bool DestroyRenderSystem();
   virtual bool ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate);
@@ -57,12 +57,12 @@ public:
   virtual void RestoreHardwareTransform();
 
   virtual bool TestRender();
-  
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl() = 0;
   void CalculateMaxTexturesize();
-  
+
   int        m_iVSyncMode;
   int        m_iVSyncErrors;
   int64_t    m_iSwapStamp;

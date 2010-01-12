@@ -118,7 +118,7 @@ bool CConsoleDeviceKitPowerSyscall::ConsoleKitMethodCall(const char *method)
   if (reply)
   {
     bool boolean = false;
-    
+
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_BOOLEAN, &boolean, DBUS_TYPE_INVALID))
       return boolean;
   }

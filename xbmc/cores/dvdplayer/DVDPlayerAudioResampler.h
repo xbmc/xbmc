@@ -19,7 +19,7 @@
  *
  */
 #pragma once
- 
+
 #include <samplerate.h>
 
 #define MAXRATIO 30
@@ -38,30 +38,30 @@ class CDVDPlayerResampler
   public:
     CDVDPlayerResampler();
     ~CDVDPlayerResampler();
-  
+
     void Add(DVDAudioFrame &audioframe, double pts);       //add audioframes and resample
     bool Retrieve(DVDAudioFrame &audioframe, double &pts); //get audioframes fromt the samplebuffer
     void SetRatio(double ratio);                           //ratio higher than 1.0 means more output samples than input
     void Flush();                                          //clear samplebuffer
     void SetQuality(int quality);
     void Clean();                                          //free buffers
-  
+
   private:
-  
+
     int        m_nrchannels;
     int        m_quality;
     SRC_STATE* m_converter;
     SRC_DATA   m_converterdata;
     double     m_ratio;
-  
+
     float*     m_buffer;     //buffer for the audioframes
     int        m_bufferfill; //how many unread frames there are in the buffer
     int        m_buffersize; //size of allocated buffer in frames
     double*    m_ptsbuffer;  //ringbuffer for the pts value, each frame gets its own pts
-  
+
     void CheckResampleBuffers(int channels);
     void ResizeSampleBuffer(int nrframes);
-    
+
     //this makes sure value is bewteen min and max
     template <typename A, typename B, typename C>
         inline A Clamp(A value, B min, C max){ return value < max ? (value > min ? value : min) : max; }

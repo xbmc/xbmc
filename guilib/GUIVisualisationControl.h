@@ -41,9 +41,8 @@ public:
   virtual void FreeResources();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnMouseOver(const CPoint &point);
   virtual bool CanFocus() const;
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  virtual bool CanFocusFromPoint(const CPoint &point) const;
 
 private:
   void FreeVisualisation();

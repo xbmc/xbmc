@@ -34,7 +34,7 @@ public:
 
   // GetFileMetaData will fill pItem's properties according to what can be extracted from the file.
   static void GetFileMetaData(const CStdString &strPath, CFileItem *pItem);
-  
+
   // Probe the files streams and store the info in the VideoInfoTag
   static bool GetFileStreamDetails(CFileItem *pItem);
   static bool DemuxerToStreamDetails(CDVDDemux *pDemux, CStreamDetails &details);

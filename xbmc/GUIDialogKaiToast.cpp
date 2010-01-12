@@ -91,7 +91,7 @@ bool CGUIDialogKaiToast::DoWork()
 {
   CSingleLock lock(m_critical);
 
-  if (m_notifications.size() > 0 && 
+  if (m_notifications.size() > 0 &&
       CTimeUtils::GetFrameTime() - m_timer > TOAST_MESSAGE_TIME)
   {
     Notification toast = m_notifications.front();

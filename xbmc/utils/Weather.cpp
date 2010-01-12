@@ -457,7 +457,7 @@ void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   CStdString strLanguagePath = "special://xbmc/language/English/strings.xml";
-  
+
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strLanguagePath) || !xmlDoc.RootElement())
   {

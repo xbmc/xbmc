@@ -45,35 +45,35 @@ bool CXBTFReader::IsOpen() const
 bool CXBTFReader::Open(const CStdString& fileName)
 {
   m_fileName = fileName;
-  
+
 #ifdef _WIN32
   CStdStringW strPathW;
   g_charsetConverter.utf8ToW(_P(m_fileName), strPathW, false);
   m_file = _wfopen(strPathW.c_str(), L"rb");
 #else
   m_file = fopen(m_fileName.c_str(), "rb");
-#endif  
+#endif
   if (m_file == NULL)
   {
     return false;
   }
-  
+
   char magic[4];
   READ_STR(magic, 4, m_file);
-  
+
   if (strncmp(magic, XBTF_MAGIC, sizeof(magic)) != 0)
   {
     return false;
   }
-  
+
   char version[1];
   READ_STR(version, 1, m_file);
-  
+
   if (strncmp(version, XBTF_VERSION, sizeof(version)) != 0)
   {
     return false;
   }
-  
+
   unsigned int nofFiles;
   READ_U32(nofFiles, m_file);
   for (unsigned int i = 0; i < nofFiles; i++)
@@ -81,18 +81,18 @@ bool CXBTFReader::Open(const CStdString& fileName)
     CXBTFFile file;
     unsigned int u32;
     uint64_t u64;
-    
+
     READ_STR(file.GetPath(), 256, m_file);
     READ_U32(u32, m_file);
     file.SetLoop(u32);
-    
+
     unsigned int nofFrames;
     READ_U32(nofFrames, m_file);
-    
+
     for (unsigned int j = 0; j < nofFrames; j++)
     {
       CXBTFFrame frame;
-      
+
       READ_U32(u32, m_file);
       frame.SetWidth(u32);
       READ_U32(u32, m_file);
@@ -107,23 +107,23 @@ bool CXBTFReader::Open(const CStdString& fileName)
       frame.SetDuration(u32);
       READ_U64(u64, m_file);
       frame.SetOffset(u64);
-      
+
       file.GetFrames().push_back(frame);
     }
-    
+
     m_xbtf.GetFiles().push_back(file);
-    
+
     m_filesMap[file.GetPath()] = file;
-  } 
-  
+  }
+
   // Sanity check
   int64_t pos = ftell(m_file);
   if (pos != (int64_t)m_xbtf.GetHeaderSize())
   {
     printf("Expected header size (%"PRId64") != actual size (%"PRId64")\n", m_xbtf.GetHeaderSize(), pos);
     return false;
-  }  
-  
+  }
+
   return true;
 }
 
@@ -134,7 +134,7 @@ void CXBTFReader::Close()
     fclose(m_file);
     m_file = NULL;
   }
-  
+
   m_xbtf.GetFiles().clear();
   m_filesMap.clear();
 }
@@ -145,13 +145,13 @@ time_t CXBTFReader::GetLastModificationTimestamp()
   {
     return 0;
   }
-  
+
   struct stat fileStat;
   if (fstat(fileno(m_file), &fileStat) == -1)
   {
     return 0;
   }
-  
+
   return fileStat.st_mtime;
 }
 
@@ -167,7 +167,7 @@ CXBTFFile* CXBTFReader::Find(const CStdString& name)
   {
     return NULL;
   }
-  
+
   return &(iter->second);
 }
 
@@ -185,12 +185,12 @@ bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer)
   {
     return false;
   }
-  
+
   if (fread(buffer, 1, (size_t)frame.GetPackedSize(), m_file) != frame.GetPackedSize())
   {
     return false;
   }
-  
+
   return true;
 }
 

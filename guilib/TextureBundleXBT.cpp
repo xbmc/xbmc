@@ -45,7 +45,7 @@
 
 CTextureBundleXBT::CTextureBundleXBT(void)
 {
-  m_themeBundle = false;  
+  m_themeBundle = false;
 }
 
 CTextureBundleXBT::~CTextureBundleXBT(void)
@@ -81,25 +81,25 @@ bool CTextureBundleXBT::OpenBundle()
   }
 
   strPath = PTH_IC(strPath);
-  
+
   // Load the texture file
   if (!m_XBTFReader.Open(strPath))
   {
     return false;
   }
-  
+
   m_TimeStamp = m_XBTFReader.GetLastModificationTimestamp();
-  
+
   if (lzo_init() != LZO_E_OK)
   {
     return false;
   }
-  
+
   return true;
 }
 
 bool CTextureBundleXBT::HasFile(const CStdString& Filename)
-{   
+{
   if (!m_XBTFReader.IsOpen() && !OpenBundle())
     return false;
 
@@ -125,7 +125,7 @@ void CTextureBundleXBT::GetTexturesFromPath(const CStdString &path, std::vector<
   CStdString testPath = Normalize(path);
   CUtil::AddSlashAtEnd(testPath);
   int testLength = testPath.GetLength();
-  
+
   std::vector<CXBTFFile>& files = m_XBTFReader.GetFiles();
   for (size_t i = 0; i < files.size(); i++)
   {
@@ -143,19 +143,19 @@ bool CTextureBundleXBT::LoadTexture(const CStdString& Filename, CBaseTexture** p
   CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
     return false;
-  
+
   if (file->GetFrames().size() == 0)
     return false;
-  
+
   CXBTFFrame& frame = file->GetFrames().at(0);
   if (!ConvertFrameToTexture(Filename, frame, ppTexture))
   {
     return false;
   }
-  
+
   width = frame.GetWidth();
   height = frame.GetHeight();
-  
+
   return true;
 }
 
@@ -167,30 +167,30 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
   CXBTFFile* file = m_XBTFReader.Find(name);
   if (!file)
     return false;
-  
+
   if (file->GetFrames().size() == 0)
     return false;
-  
+
   size_t nTextures = file->GetFrames().size();
   *ppTextures = new CBaseTexture*[nTextures];
   *ppDelays = new int[nTextures];
-  
+
   for (size_t i = 0; i < nTextures; i++)
   {
     CXBTFFrame& frame = file->GetFrames().at(i);
-    
+
     if (!ConvertFrameToTexture(Filename, frame, &((*ppTextures)[i])))
     {
       return false;
     }
-    
+
     (*ppDelays)[i] = frame.GetDuration();
   }
-  
+
   width = file->GetFrames().at(0).GetWidth();
-  height = file->GetFrames().at(0).GetHeight();   
+  height = file->GetFrames().at(0).GetHeight();
   nLoops = file->GetLoop();
-  
+
   return nTextures;
 }
 
@@ -271,16 +271,16 @@ void CTextureBundleXBT::Cleanup()
   if (m_XBTFReader.IsOpen())
   {
     m_XBTFReader.Close();
-  }  
+  }
 }
-  
+
 void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 {
   m_themeBundle = themeBundle;
 }
 
 // normalize to how it's stored within the bundle
-// lower case + using forward slash rather than back slash 
+// lower case + using forward slash rather than back slash
 CStdString CTextureBundleXBT::Normalize(const CStdString &name)
 {
   CStdString newName(name);

@@ -51,8 +51,7 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
 
-  virtual bool HitTest(const CPoint &point) const;
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
+  virtual bool SendMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual void SetInitialVisibility();
@@ -90,6 +89,12 @@ public:
 #endif
 protected:
   /*!
+   \brief Return the coordinates of the top left of the group, in the group's parent coordinates
+   \return The top left coordinates of the group
+   */
+  virtual CPoint GetPosition() const { return CPoint(m_posX, m_posY); };
+  
+  /*!
    \brief Check whether a given control is valid
    Runs through controls and returns whether this control is valid.  Only functional
    for controls with non-zero id.
@@ -102,6 +107,7 @@ protected:
   std::vector<CGUIControl *> m_children;
   typedef std::vector<CGUIControl *>::iterator iControls;
   typedef std::vector<CGUIControl *>::const_iterator ciControls;
+  typedef std::vector<CGUIControl *>::reverse_iterator rControls;
   typedef std::vector<CGUIControl *>::const_reverse_iterator crControls;
 
   // fast lookup by id

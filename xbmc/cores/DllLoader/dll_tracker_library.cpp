@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "dll_tracker_library.h"
 #include "dll_tracker.h"
 #include "dll.h"
@@ -75,7 +75,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
         if (strlen(pDll->GetFileName()) > 0) CLog::Log(LOGDEBUG,"  : %s", pDll->GetFileName());
       }
     }
-    
+
     // now unload the dlls
     for (DllListIter it = pInfo->dllList.begin(); it != pInfo->dllList.end(); ++it)
     {
@@ -93,7 +93,7 @@ extern "C" void tracker_library_free_all(DllTrackInfo* pInfo)
     }
   }
 }
- 
+
 extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
 {
   uintptr_t loc = (uintptr_t)_ReturnAddress();
@@ -101,10 +101,10 @@ extern "C" HMODULE __stdcall track_LoadLibraryA(LPCSTR file)
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   char* path = NULL;
   if (pInfo) path = pInfo->pDll->GetFileName();
-  
+
   HMODULE hHandle = dllLoadLibraryExtended(file, path);
   tracker_library_track(loc, hHandle);
-  
+
   return hHandle;
 }
 
@@ -115,10 +115,10 @@ extern "C" HMODULE __stdcall track_LoadLibraryExA(LPCSTR lpLibFileName, HANDLE h
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(loc);
   char* path = NULL;
   if (pInfo) path = pInfo->pDll->GetFileName();
-  
+
   HMODULE hHandle = dllLoadLibraryExExtended(lpLibFileName, hFile, dwFlags, path);
   tracker_library_track(loc, hHandle);
-  
+
   return hHandle;
 }
 

@@ -632,10 +632,10 @@
   <string id="763">Bright green</string>
   <string id="764">Yellow green</string>
   <string id="765">Cyan</string>
-  <string id="766">Reserved</string>
-  <string id="767">Reserved</string>
-  <string id="768">Reserved</string>
-  <string id="769">Reserved</string>
+  <string id="766">Light grey</string>
+  <string id="767">Grey</string>
+  <!-- strings 768 and 769 reserved for more subtitle colors -->
+
   <string id="770">Error %i: share not available</string>
   <string id="771">- Auto FATX limiter</string>
   <string id="772">Audio output</string>
@@ -1485,6 +1485,7 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
+  <string id="16307">Lanczos3 fast</string>
 
   <string id="16307">Bicubic (software)</string>
   <string id="16308">Lanczos (software)</string>
@@ -2158,6 +2159,8 @@
   <string id="24006"></string>
   <string id="23051">Part %i</string>
   <string id="23052">Buffering %i bytes</string>
+  <string id="23053">Stopping</string>
+  <string id="23054">Running</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>

@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # Get ARCH from Makefile.include
-file=../../../Makefile.include
+file=../Makefile.include
 if [ -f $file ]
 then
   ARCH=$(grep "^ARCH=" $file | awk -F"=" '{print $2}')

@@ -218,7 +218,7 @@ bool CFileShoutcast::Open(const CURL& url)
   int ret;
 
   CGUIDialogProgress* dlgProgress = NULL;
-  
+
   // dvdplayer can deadlock with progress dialog so check first
   if (g_application.GetCurrentPlayer() == EPC_PAPLAYER)
   {
@@ -439,15 +439,15 @@ bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 
 CStdString CFileShoutcast::GetContent()
 {
-  switch (m_contenttype) 
-  { 
-    case CONTENT_TYPE_MP3: 
-      return "audio/mpeg"; 
-    case CONTENT_TYPE_OGG: 
-      return "audio/ogg"; 
-    case CONTENT_TYPE_AAC: 
-      return "audio/aac"; 
-    default: 
-      return "application/octet-stream";  
+  switch (m_contenttype)
+  {
+    case CONTENT_TYPE_MP3:
+      return "audio/mpeg";
+    case CONTENT_TYPE_OGG:
+      return "audio/ogg";
+    case CONTENT_TYPE_AAC:
+      return "audio/aac";
+    default:
+      return "application/octet-stream";
   }
 }

@@ -138,7 +138,7 @@ public:
   void  WaitPresentTime(double presenttime);
 
   CStdString GetVSyncState();
-  
+
   void UpdateResolution();
 
 #ifdef HAS_GL
@@ -149,7 +149,7 @@ public:
   CLinuxRenderer *m_pRenderer;
 #elif defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;
-  
+
 #endif
 
   void Present();
@@ -170,7 +170,7 @@ protected:
   CSharedSection m_sharedSection;
 
   bool m_bReconfigured;
-  
+
   int m_rendermethod;
 
   enum EPRESENTSTEP

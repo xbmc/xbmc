@@ -50,7 +50,7 @@ bool CRSSDirectory::ContainsFiles(const CStdString& strPath)
   CFileItemList items;
   if(!GetDirectory(strPath, items))
     return false;
-  
+
   return items.Size() > 0;
 }
 
@@ -130,7 +130,7 @@ static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdS
     }
 
     if(dur)
-      StringUtils::SecondsToTimeString(atoi(dur), vtag->m_strRuntime); 
+      StringUtils::SecondsToTimeString(atoi(dur), vtag->m_strRuntime);
 
     ParseItem(item, item_child);
   }

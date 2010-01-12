@@ -121,7 +121,7 @@
 				<expression>&lt;a href=.view.php.page=fassung&amp;fid=([0-9]+)&amp;vid=([0-9]+).&gt;Kino:</expression>
 			</RegExp>
 			<!--URL to IMDB-->
-			<RegExp input="$$1" output="&lt;url cache=&quot;ofdb-$$2-imdb.html&quot; function=&quot;IMDB-Details&quot;&gt;http://www.imdb.de/title/tt\2/&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;IMDB-Details&quot;&gt;http://www.imdb.de/title/tt\2/&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!--URL to IMDBcredits-->
@@ -129,7 +129,7 @@
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!--URL to Fanart-->
-			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;ofdb-$$2-imdb.html&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!--URL to MoviePosterDB -->
@@ -137,12 +137,12 @@
 				<expression>(imdb.com/)Title\?([0-9]+)</expression> 
 			</RegExp>
 			<!-- Ofdb Poster -->
-			<RegExp input="$$3" output="&lt;url cache=&quot;ofdb-$$2.html&quot; function=&quot;GetOfdbThumb&quot;&gt;\1&lt;/url&gt;" dest="5+">
-				<expression noclean="1"/>
+			<RegExp input="$$1" output="&lt;url cache=&quot;ofdb-\1.html&quot; function=&quot;GetOfdbThumb&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+				<expression>fid=([0-9]+)</expression>
 			</RegExp>
 			<!-- Cast -->
-			<RegExp input="$$2" output="&lt;url cache=&quot;ofdb-$$2.html&quot; function=&quot;GetMovieCast&quot;&gt;$$3&lt;/url&gt;" dest="5+">
-				<expression/>
+			<RegExp input="$$1" output="&lt;url cache=&quot;ofdb-\1.html&quot; function=&quot;GetMovieCast&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+				<expression>fid=([0-9]+)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>

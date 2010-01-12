@@ -21,7 +21,6 @@
 
 #include "GUIMoverControl.h"
 #include "GUIWindowManager.h"
-#include "MouseStat.h"
 #include "Key.h"
 #include "utils/TimeUtils.h"
 
@@ -135,19 +134,24 @@ void CGUIMoverControl::OnRight()
   Move((int)m_fSpeed, 0);
 }
 
-bool CGUIMoverControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
+bool CGUIMoverControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  g_Mouse.SetState(MOUSE_STATE_DRAG);
-  g_Mouse.SetExclusiveAccess(this, GetParentID(), point);
-  Move((int)offset.x, (int)offset.y);
-  return true;
-}
-
-bool CGUIMoverControl::OnMouseClick(int button, const CPoint &point)
-{
-  if (button != MOUSE_LEFT_BUTTON) return false;
-  g_Mouse.EndExclusiveAccess(this, GetParentID());
-  return true;
+  if (event.m_id == ACTION_MOUSE_DRAG)
+  {
+    if (event.m_state == 1)
+    { // grab exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+      SendWindowMessage(msg);
+    }
+    else if (event.m_state == 3)
+    { // release exclusive access
+      CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+      SendWindowMessage(msg);
+    }
+    Move((int)event.m_offsetX, (int)event.m_offsetY);
+    return true;
+  }
+  return false;
 }
 
 void CGUIMoverControl::UpdateSpeed(int nDirection)

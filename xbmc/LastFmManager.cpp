@@ -502,7 +502,7 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
       StopRadio(true);
     }
     else
-    { 
+    {
       unsigned int start = CTimeUtils::GetTimeMS();
       ReapSongs();
       MovePlaying();
@@ -607,7 +607,7 @@ void CLastFmManager::Process()
 
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
-  
+
   while (!m_bStop)
   {
     WaitForSingleObject(m_hWorkerEvent, INFINITE);
@@ -622,10 +622,10 @@ void CLastFmManager::Process()
     iNrCachedTracks = m_RadioTrackQueue->size();
     CacheTrackThumb(iNrCachedTracks);
   }
-  
+
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, bLastShuffleState);
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, LastRepeatState);
-  
+
   CLog::Log(LOGINFO,"LastFM thread terminated");
 }
 
@@ -655,7 +655,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
       }
     }
   }
-  
+
   if (!bKillSession)
   {
     SendUpdateMessage();

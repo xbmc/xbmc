@@ -261,10 +261,10 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     {
       strSQL=FormatSQL("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
                     idAlbum, crc, song.strTitle.c_str());
-      
+
       if (!m_pDS->query(strSQL.c_str()))
         return;
-      
+
       if (m_pDS->num_rows() != 0)
       {
         idSong = m_pDS->fv("idSong").get_asInt();
@@ -2254,7 +2254,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (!g_guiSettings.GetBool("audiocds.usecddb"))
     return false;
 
@@ -2374,12 +2374,12 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   return pCdInfo->HasCDDBInfo();
 #else
   return false;
-#endif  
+#endif
 }
 
 void CMusicDatabase::DeleteCDDBInfo()
 {
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
@@ -2454,7 +2454,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     }
     mapCDDBIds.erase(mapCDDBIds.begin(), mapCDDBIds.end());
   }
-#endif  
+#endif
 }
 
 void CMusicDatabase::Clean()
@@ -4272,7 +4272,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           xmlDoc.InsertEndChild(decl);
         }
       }
-      
+
       if ((current % 50) == 0 && progress)
       {
         progress->SetLine(1, artist.strArtist);
@@ -4783,7 +4783,7 @@ int CMusicDatabase::GetVariousArtistsAlbumsCount()
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
       result = m_pDS->fv(0).get_asInt();
-    m_pDS->close(); 
+    m_pDS->close();
   }
   catch(...)
   {

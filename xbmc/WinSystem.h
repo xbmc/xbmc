@@ -67,14 +67,14 @@ public:
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
   virtual int GetNumScreens() { return 0; }
-  bool IsFullScreen() { return m_bFullScreen; } 
+  bool IsFullScreen() { return m_bFullScreen; }
 
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);
-  
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate);
-  
+
   WindowSystemType m_eWindowSystem;
   int m_nWidth;
   int m_nHeight;

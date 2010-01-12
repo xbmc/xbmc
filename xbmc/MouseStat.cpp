@@ -40,7 +40,7 @@ bool CMouseStat::CButtonState::InClickRange(int x, int y) const
 {
   int dx = x - m_x;
   int dy = y - m_y;
-  return dx*dx + dy*dy <= click_confines*click_confines;
+  return (unsigned int)(dx*dx + dy*dy) <= click_confines*click_confines;
 }
 
 CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigned int time, int x, int y, bool down)
@@ -48,8 +48,9 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
   if (m_state == STATE_IN_DRAG)
   {
     if (down)
-      return MB_DRAG; 
+      return MB_DRAG;
     m_state = STATE_RELEASED;
+    return MB_DRAG_END;
   }
   else if (m_state == STATE_RELEASED)
   {
@@ -68,7 +69,7 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
       if (!InClickRange(x,y))
       { // beginning a drag
         m_state = STATE_IN_DRAG;
-        return MB_DRAG;
+        return MB_DRAG_START;
       }
     }
     else
@@ -112,8 +113,6 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
 
 CMouseStat::CMouseStat()
 {
-  m_exclusiveWindowID = WINDOW_INVALID;
-  m_exclusiveControl = NULL;
   m_pointerState = MOUSE_STATE_NORMAL;
   SetEnabled();
   m_speedX = m_speedY = 0;
@@ -125,15 +124,11 @@ CMouseStat::~CMouseStat()
 {
 }
 
-void CMouseStat::Initialize(void *appData)
+void CMouseStat::Initialize()
 {
   // Set the default resolution (PAL)
   SetResolution(720, 576, 1, 1);
   
-}
-
-void CMouseStat::Cleanup()
-{
 }
 
 void CMouseStat::HandleEvent(XBMC_Event& newEvent)
@@ -174,7 +169,7 @@ void CMouseStat::UpdateInternal()
 {
   uint32_t now = CTimeUtils::GetFrameTime();
   // update our state from the mouse device
-  if (HasMoved() || m_mouseState.dz)
+  if (MovedPastThreshold() || m_mouseState.dz)
     SetActive();
 
   // Perform the click mapping (for single, long single, and double click detection)
@@ -184,7 +179,7 @@ void CMouseStat::UpdateInternal()
   {
     bClick[i] = false;
     bDoubleClick[i] = false;
-    bHold[i] = false;
+    bHold[i] = 0;
 
     CButtonState::BUTTON_ACTION action = m_buttonState[i].Update(now, m_mouseState.x, m_mouseState.y, m_mouseState.button[i]);
     switch (action)
@@ -198,15 +193,21 @@ void CMouseStat::UpdateInternal()
       bDoubleClick[i] = true;
       bNothingDown = false;
       break;
+    case CButtonState::MB_DRAG_START:
     case CButtonState::MB_DRAG:
-      bHold[i] = true;
+    case CButtonState::MB_DRAG_END:
+      bHold[i] = action - CButtonState::MB_DRAG_START + 1;
       bNothingDown = false;
+      break;
+    default:
       break;
     }
   }
 
   if (bNothingDown)
     SetState(MOUSE_STATE_NORMAL);
+  else
+    SetActive();
 }
 
 
@@ -251,10 +252,8 @@ bool CMouseStat::IsEnabled() const
   return m_mouseEnabled;
 }
 
-bool CMouseStat::HasMoved(bool detectAllMoves /* = false */) const
+bool CMouseStat::MovedPastThreshold() const
 {
-  if (detectAllMoves)
-    return m_mouseState.dx || m_mouseState.dy;
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
@@ -284,23 +283,6 @@ void CMouseStat::UpdateMouseWheel(char dir)
 {
   m_mouseState.dz = dir;
   SetActive();
-}
-
-void CMouseStat::SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point)
-{
-  m_exclusiveControl = control;
-  m_exclusiveWindowID = windowID;
-  // convert posX, posY to screen coords...
-  // NOTE: This relies on the window resolution having been set correctly beforehand in CGUIWindow::OnMouseAction()
-  CPoint mouseCoords(GetLocation());
-  g_graphicsContext.InvertFinalCoords(mouseCoords.x, mouseCoords.y);
-  m_exclusiveOffset = point - mouseCoords;
-}
-
-void CMouseStat::EndExclusiveAccess(const CGUIControl *control, int windowID)
-{
-  if (m_exclusiveControl == control && m_exclusiveWindowID == windowID)
-    SetExclusiveAccess(NULL, WINDOW_INVALID, CPoint(0, 0));
 }
 
 void CMouseStat::Acquire()

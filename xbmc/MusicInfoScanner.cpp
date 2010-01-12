@@ -113,7 +113,7 @@ void CMusicInfoScanner::Process()
         /*
          * A copy of the directory path is used because the path supplied is
          * immediately removed from the m_pathsToScan set in DoScan(). If the
-         * reference points to the entry in the set a null reference error 
+         * reference points to the entry in the set a null reference error
          * occurs.
          */
         CStdString directory = *m_pathsToScan.begin();
@@ -337,7 +337,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   /*
    * remove this path from the list we're processing. This must be done prior to
-   * the check for file or folder exclusion to prevent an infinite while loop 
+   * the check for file or folder exclusion to prevent an infinite while loop
    * in Process().
    */
   set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
@@ -558,7 +558,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     {
       if (m_bStop)
         return songsToAdd.size();
-    
+
       long iAlbum = m_musicDatabase.GetAlbumByName(i->first, i->second);
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
@@ -859,7 +859,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     CLog::Log(LOGERROR, "%s - current and default scrapers are invalid.  Pick another one", __FUNCTION__);
     return false;
   }
-  
+
   if (!scraper.GetAlbumCount())
     scraper.FindAlbuminfo(strAlbum, strArtist);
 
@@ -1131,7 +1131,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
           { // none chosen
             if (!pDlg->IsButtonPressed())
             {
-              bCanceled = true;            
+              bCanceled = true;
               return false;
             }
             // manual button pressed

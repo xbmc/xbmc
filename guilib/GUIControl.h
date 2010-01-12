@@ -37,6 +37,7 @@
 
 class CGUIListItem; // forward
 class CAction;
+class CMouseEvent;
 
 enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
 
@@ -120,22 +121,42 @@ public:
   virtual void OnFocus() {};
   virtual void OnUnFocus() {};
 
-  /// \brief Called when the mouse is over the control.  Default implementation selects the control.
-  virtual bool OnMouseOver(const CPoint &point);
-  /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
-  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point) { return false; };
-  /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseClick(int button, const CPoint &point) { return false; };
-  /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseDoubleClick(int button, const CPoint &point) { return false; };
-  /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
-  virtual bool OnMouseWheel(char wheel, const CPoint &point) { return false; };
-  /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
-  virtual bool HitTest(const CPoint &point) const;
-  /// \brief Focus a control from a screen location.  Returns the coordinates of the screen location relative to the control and a pointer to the control.
-  virtual bool CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const;
-  /// \brief Unfocus a control if it's not in a screen location.
+  /*! \brief React to a mouse event
+
+   Mouse events are sent from the window to all controls, and each control can react based on the event
+   and location of the event.
+
+   \param point the location in transformed skin coordinates from the upper left corner of the parent control.
+   \param event the mouse event to perform
+   \return true if the control has handled this event, false otherwise
+   \sa HitTest, CanFocusFromPoint, CMouseEvent
+   */
+  virtual bool SendMouseEvent(const CPoint &point, const CMouseEvent &event);
+
+  /*! \brief Perform a mouse action
+
+   Mouse actions are sent from the window to all controls, and each control can react based on the event
+   and location of the actions.
+
+   \param point the location in transformed skin coordinates from the upper left corner of the parent control.
+   \param event the mouse event to perform
+   \return true if the control has handled this event, false otherwise
+   \sa SendMouseEvent, HitTest, CanFocusFromPoint, CMouseEvent
+   */
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event) { return false; };
+
+  /*! \brief Unfocus the control if the given point on screen is not within it's boundary
+   \param point the location in transformed skin coordinates from the upper left corner of the parent control.
+   \sa CanFocusFromPoint
+   */
   virtual void UnfocusFromPoint(const CPoint &point);
+
+  /*! \brief Used to test whether the point is inside a control.
+   \param point location to test
+   \return true if the point is inside the bounds of this control.
+   \sa SetHitRect
+   */
+  virtual bool HitTest(const CPoint &point) const;
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetID(void) const;
@@ -267,6 +288,20 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
+  /*! \brief Called when the mouse is over the control.
+   Default implementation selects the control.
+   \param point location of the mouse in transformed skin coordinates
+   \return true if handled, false otherwise.
+   */
+  virtual bool OnMouseOver(const CPoint &point);
+
+  /*! \brief Test whether we can focus a control from a point on screen
+   \param point the location in vanilla skin coordinates from the upper left corner of the parent control.
+   \return true if the control can be focused from this location
+   \sa UnfocusFromPoint, HitRect
+   */
+  virtual bool CanFocusFromPoint(const CPoint &point) const;
+
   virtual void UpdateColors();
   virtual void Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
@@ -280,7 +315,7 @@ protected:
   int m_controlDown;
   int m_controlNext;
   int m_controlPrev;
-  
+
   std::vector<CGUIActionDescriptor> m_leftActions;
   std::vector<CGUIActionDescriptor> m_rightActions;
   std::vector<CGUIActionDescriptor> m_upActions;

@@ -33,6 +33,7 @@
 #include "utils/AddonManager.h"
 #include "GUIDialogAddonSettings.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 #if defined(__APPLE__)
 #include "SpecialProtocol.h"
 #include "CocoaInterface.h"
@@ -105,13 +106,12 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
         CFileItemPtr pItem = m_vecItems->Get(i);
         if (pItem->m_strPath == filename)
         {
-          char tstr[1024];
-          strcpy(tstr, pItem->GetLabel());
+          CStdString runningLabel = pItem->GetLabel() + " (";
           if (g_pythonParser.isStopping(id))
-            strcat(tstr, " (Stopping)");
+            runningLabel += g_localizeStrings.Get(23053) + ")";
           else
-            strcat(tstr, " (Running)");
-          pItem->SetLabel(tstr);
+            runningLabel += g_localizeStrings.Get(23054) + ")";
+          pItem->SetLabel(runningLabel);
         }
       }
     }

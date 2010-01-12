@@ -167,7 +167,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
 
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  RESOLUTION GetResolution();  
+  RESOLUTION GetResolution();
 
 protected:
   virtual void Render(DWORD flags);

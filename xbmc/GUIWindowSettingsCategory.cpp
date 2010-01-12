@@ -1626,7 +1626,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_lcd->Initialize();
   }
 #endif
-  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport") || 
+  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport") ||
             strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
     if (strSetting.Equals("services.webserverport"))
@@ -3326,7 +3326,6 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
     for (unsigned int i = 0; i < addons.size(); i++)
     {
       AddonPtr addon = addons.at(i);
-
       // create the full path to the plugin
       CStdString strFileName = addon->Path() + addon->LibName();
       if (XFILE::CFile::Exists(strFileName))

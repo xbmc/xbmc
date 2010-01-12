@@ -100,7 +100,7 @@ void CGUIImage::Render()
   // check whether our image failed to allocate, and if so drop back to the fallback image
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
     m_texture.SetFileName(m_info.GetFallback());
-  
+
   if (m_crossFadeTime)
   {
     // make sure our texture has started allocating

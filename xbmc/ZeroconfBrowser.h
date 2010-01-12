@@ -81,13 +81,13 @@ public:
 
   // stops browsing
   void Stop();
-  
+
   ///returns the list of found services
   /// if this is updated, the following message with "zeroconf://" as path is sent:
   /// CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
   std::vector<ZeroconfService> GetFoundServices();
   ///@}
-  
+
   // resolves a ZeroconfService to ip + port
   // @param fcr_service the service to resolve
   // @param f_timeout timeout in seconds for resolving

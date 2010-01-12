@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
   }
 
   g_application.Preflight();
-  if (!g_application.Create(NULL))
+  if (!g_application.Create())
   {
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
     return -1;

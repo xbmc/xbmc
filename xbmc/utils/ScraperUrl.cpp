@@ -139,7 +139,7 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     m_xml = strUrl;
   }
   else
-  { 
+  {
     while (pElement)
     {
       ParseElement(pElement);
@@ -174,18 +174,22 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl& http)
+bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl& http, const CStdString& cacheContext1)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);
   CStdString strCachePath;
+
+  CStdString cacheContext = CUtil::GetFileName(cacheContext1);
 
   if (scrURL.m_isgz)
     http.SetContentEncoding("gzip");
 
   if (!scrURL.m_cache.IsEmpty())
   {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,
+                           "scrapers/"+cacheContext+"/"+scrURL.m_cache,
+                           strCachePath);
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
@@ -200,7 +204,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
   }
 
   CStdString strHTML1(strHTML);
-        
+
   if (scrURL.m_post)
   {
     CStdString strOptions = url.GetOptions();
@@ -208,7 +212,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
     url.SetOptions("");
 
     if (!http.Post(url.Get(), strOptions, strHTML1))
-      return false;    
+      return false;
   }
   else
     if (!http.Get(url.Get(), strHTML1))
@@ -231,7 +235,9 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
   if (!scrURL.m_cache.IsEmpty())
   {
     CStdString strCachePath;
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
+    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,
+                           "scrapers/"+cacheContext+"/"+scrURL.m_cache,
+                           strCachePath);
     XFILE::CFile file;
     if (file.OpenForWrite(strCachePath,true))
       file.Write(strHTML.data(),strHTML.size());
@@ -290,12 +296,18 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
   if (doc.RootElement())
   {
     TiXmlHandle docHandle( &doc );
-    TiXmlElement *link = docHandle.FirstChild( "episodeguide" ).FirstChild( "url" ).Element();
-    while (link)
+    TiXmlElement *link = docHandle.FirstChild("episodeguide").Element();
+    if (link->FirstChildElement("url"))
     {
-      ParseElement(link);
-      link = link->NextSiblingElement("url");
+      link = link->FirstChildElement("url");
+      while (link)
+      {
+        ParseElement(link);
+        link = link->NextSiblingElement("url");
+      }
     }
+    else if (link->FirstChild() && link->FirstChild()->Value())
+      ParseString(link->FirstChild()->Value());
   }
   else
     return false;

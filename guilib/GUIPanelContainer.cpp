@@ -88,7 +88,7 @@ void CGUIPanelContainer::Render()
         if (m_orientation == VERTICAL)
           RenderItem(m_posX + col * m_layout->Size(HORIZONTAL), pos, item.get(), false);
         else
-          RenderItem(pos, m_posY + col * m_layout->Size(VERTICAL), item.get(), false);          
+          RenderItem(pos, m_posY + col * m_layout->Size(VERTICAL), item.get(), false);
       }
     }
     // increment our position
@@ -269,7 +269,7 @@ bool CGUIPanelContainer::MoveDown(bool wrapAround)
   { // move first item in list
     SetCursor(m_cursor % m_itemsPerRow);
     ScrollToOffset(0);
-    g_infoManager.SetContainerMoving(GetID(), 1);
+    SetContainerMoving(1);
   }
   else
     return false;
@@ -290,7 +290,7 @@ bool CGUIPanelContainer::MoveUp(bool wrapAround)
     if (offset * m_itemsPerRow + m_cursor >= (int)m_items.size())
       SetCursor((int)m_items.size() - offset * m_itemsPerRow - 1);
     ScrollToOffset(offset);
-    g_infoManager.SetContainerMoving(GetID(), -1);
+    SetContainerMoving(-1);
   }
   else
     return false;
@@ -359,7 +359,7 @@ void CGUIPanelContainer::SetCursor(int cursor)
   if (cursor > (m_itemsPerPage + 1)*m_itemsPerRow - 1) cursor = (m_itemsPerPage + 1)*m_itemsPerRow - 1;
   if (cursor < 0) cursor = 0;
   if (!m_wasReset)
-    g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
+    SetContainerMoving(cursor - m_cursor);
   m_cursor = cursor;
 }
 

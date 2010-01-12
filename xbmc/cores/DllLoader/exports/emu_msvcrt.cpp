@@ -711,7 +711,7 @@ extern "C"
       url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
     }
     int iDirSlot=0; // locate next free directory
-    while ((vecDirsOpen[iDirSlot].Directory) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+    while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
       return -1; // no free slots
     if (url.GetProtocol().Equals("filereader"))
@@ -724,7 +724,7 @@ extern "C"
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
-    CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
+    DIRECTORY::CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
       int size = sizeof(data->name);
@@ -736,8 +736,7 @@ extern "C"
       data->time_access = 0;
       return (intptr_t)&vecDirsOpen[iDirSlot];
     }
-    delete vecDirsOpen[iDirSlot].Directory;
-    vecDirsOpen[iDirSlot].Directory = NULL;
+    vecDirsOpen[iDirSlot].curr_index = -1;
     return -1; // whatever != NULL
   }
 
@@ -764,7 +763,7 @@ extern "C"
     int found = MAX_OPEN_DIRS;
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      if (f == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      if (f == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].curr_index != -1)
       {
         found = i;
         break;
@@ -795,7 +794,7 @@ extern "C"
     int found = MAX_OPEN_DIRS;
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      if (handle == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      if (handle == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].curr_index != -1)
       {
         found = i;
         break;
@@ -805,6 +804,7 @@ extern "C"
       return _findclose(handle);
 
     vecDirsOpen[found].items.Clear();
+    vecDirsOpen[found].curr_index = -1;
     return 0;
   }
 
@@ -873,22 +873,22 @@ extern "C"
     if (dirData->last_entry)
       free(dirData->last_entry);
     struct dirent *entry = NULL;
-    entry = (dirent*) malloc(sizeof *entry);
+    entry = (dirent*) malloc(sizeof(*entry));
     if (dirData->curr_index < dirData->items.Size() + 2)
     { // simulate the '.' and '..' dir entries
       if (dirData->curr_index == 0)
-        strncpy(entry->d_name, ".", 1);
+        strncpy(entry->d_name, ".\0", 2);
       else if (dirData->curr_index == 1)
-        strncpy(entry->d_name, "..", 2);
+        strncpy(entry->d_name, "..\0", 3);
       else
+      {
         strncpy(entry->d_name, dirData->items[dirData->curr_index - 2]->GetLabel().c_str(), sizeof(entry->d_name));
-
-      entry->d_name[sizeof(entry->d_name)-1] = '\0';
+        entry->d_name[sizeof(entry->d_name)-1] = '\0'; // null-terminate any truncated paths
+      }
       dirData->last_entry = entry;
       dirData->curr_index++;
       return entry;
     }
-    dirData->items.Clear();
     return NULL;
   }
 
@@ -910,7 +910,6 @@ extern "C"
     dirData->items.Clear();
     if (dirData->last_entry)
     {
-      free(dirData->last_entry);
       dirData->last_entry = NULL;
     }
     dirData->curr_index = -1;
@@ -937,7 +936,6 @@ extern "C"
     SDirData* dirData = (SDirData*)dirp;
     if (dirData->last_entry)
     {
-      free(dirData->last_entry);
       dirData->last_entry = NULL;
     }
     dirData->curr_index = 0;

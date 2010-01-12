@@ -304,7 +304,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   if(!m_server.IsEmpty())
     url.SetHostName(m_server);
   if (((m_protocol == NET_PROTOCOL_FTP) ||
-       (m_protocol == NET_PROTOCOL_HTTP) || 
+       (m_protocol == NET_PROTOCOL_HTTP) ||
        (m_protocol == NET_PROTOCOL_HTTPS) ||
        (m_protocol == NET_PROTOCOL_RSS) ||
        (m_protocol == NET_PROTOCOL_XBMSP && !m_server.IsEmpty()) ||

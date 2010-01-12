@@ -23,7 +23,6 @@
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/TimeUtils.h"
-#include "MouseStat.h"
 #include "Key.h"
 
 CGUISelectButtonControl::CGUISelectButtonControl(int parentID, int controlID,
@@ -360,31 +359,27 @@ bool CGUISelectButtonControl::OnMouseOver(const CPoint &point)
   return ret;
 }
 
-bool CGUISelectButtonControl::OnMouseClick(int button, const CPoint &point)
-{ // only left click handled
-  if (button != MOUSE_LEFT_BUTTON) return false;
-  if (m_bShowSelect && m_imgLeft.HitTest(point))
-  { // move left
-    OnLeft();
-  }
-  else if (m_bShowSelect && m_imgRight.HitTest(point))
-  { // move right
-    OnRight();
-  }
-  else
-  { // normal select
-    CGUIButtonControl::OnMouseClick(button, point);
-  }
-  return true;
-}
-
-bool CGUISelectButtonControl::OnMouseWheel(char wheel, const CPoint &point)
+bool CGUISelectButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (wheel > 0)
-    OnLeft();
-  else
-    OnRight();
-  return true;
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
+  {
+    if (m_bShowSelect && m_imgLeft.HitTest(point))
+      OnLeft();
+    else if (m_bShowSelect && m_imgRight.HitTest(point))
+      OnRight();
+    else // normal select
+      CGUIButtonControl::OnMouseEvent(point, event);
+    return true;
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  {
+    if (event.m_wheel > 0)
+      OnLeft();
+    else
+      OnRight();
+    return true;
+  }
+  return false;
 }
 
 void CGUISelectButtonControl::SetPosition(float posX, float posY)

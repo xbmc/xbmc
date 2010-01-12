@@ -25,6 +25,7 @@
 #include <vector>
 #include "StdString.h"
 #include "IAddon.h"
+#include "DateTime.h"
 
 #define MAX_SCRAPER_BUFFERS 20
 
@@ -44,13 +45,14 @@ public:
   void Clear();
   bool Load(const CStdString& strXMLFile);
   bool Load(const ADDON::AddonPtr& scraper);
+  const CStdString GetFilename() { return m_strFile; }
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag);
   bool HasFunction(const CStdString& strTag);
   bool RequiresSettings() { return m_requiressettings; }
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
-  static void ClearCache();
+  void ClearCache();
 
 private:
   bool LoadFromXML();
@@ -68,6 +70,7 @@ private:
   TiXmlElement* m_pRootElement;
 
   const char* m_SearchStringEncoding;
+  CDateTimeSpan m_persistence;
   bool m_requiressettings;
 
   CStdString m_strFile;

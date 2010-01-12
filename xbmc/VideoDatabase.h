@@ -59,7 +59,7 @@ namespace VIDEO
 
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
-#define VIDEODB_MAX_COLUMNS 21 
+#define VIDEODB_MAX_COLUMNS 21
 #define VIDEODB_DETAILS_FILEID			VIDEODB_MAX_COLUMNS + 1
 #define VIDEODB_DETAILS_FILE			VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_PATH			VIDEODB_MAX_COLUMNS + 3

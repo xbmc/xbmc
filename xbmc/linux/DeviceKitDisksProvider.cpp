@@ -53,7 +53,7 @@ void CDeviceKitDiskDeviceOldAPI::Update()
 void CDeviceKitDiskDeviceNewAPI::Update()
 {
   PropertyMap properties;
-  
+
   m_isFileSystem = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "IdUsage").Equals("filesystem");
   if (m_isFileSystem)
   {
@@ -377,7 +377,7 @@ std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()
   {
     char** disks  = NULL;
     int    length = 0;
-    
+
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &disks, &length, DBUS_TYPE_INVALID))
     {
       for (int i = 0; i < length; i++)

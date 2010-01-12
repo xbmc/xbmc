@@ -28,7 +28,6 @@
 #include "SkinInfo.h"
 #include "StringUtils.h"
 #include "GUIControlFactory.h"
-#include "MouseStat.h"
 #include "tinyXML/tinyxml.h"
 #include "Key.h"
 
@@ -887,57 +886,33 @@ bool CGUIButtonScroller::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIButtonScroller::OnMouseClick(int button, const CPoint &point)
+bool CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (button != MOUSE_LEFT_BUTTON && button != MOUSE_RIGHT_BUTTON) return false;
-  // check if we are in the clickable button zone
-  float fStartAlpha, fEndAlpha;
-  GetScrollZone(fStartAlpha, fEndAlpha);
-  if (m_bHorizontal)
-  {
-    if (point.x >= fStartAlpha && point.x <= fEndAlpha)
-    { // click the appropriate item
-      m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
-      CAction action;
-      if (button == MOUSE_LEFT_BUTTON)
-        action.id = ACTION_SELECT_ITEM;
-      if (button == MOUSE_RIGHT_BUTTON)
-        action.id = ACTION_CONTEXT_MENU;
-      OnAction(action);
-      return true;
-    }
-  }
-  else
-  {
-    if (point.y >= fStartAlpha && point.y <= fEndAlpha)
-    {
-      m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
-      CAction action;
-      if (button == MOUSE_LEFT_BUTTON)
-        action.id = ACTION_SELECT_ITEM;
-      if (button == MOUSE_RIGHT_BUTTON)
-        action.id = ACTION_CONTEXT_MENU;
-      OnAction(action);
-      return true;
-    }
-  }
-  return false;
-}
-
-bool CGUIButtonScroller::OnMouseWheel(char wheel, const CPoint &point)
-{
-  // check if we are within the clickable button zone
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
   if ((m_bHorizontal && point.x >= fStartAlpha && point.x <= fEndAlpha) ||
-      (!m_bHorizontal && point.y >= fStartAlpha && point.y <= fEndAlpha))
+     (!m_bHorizontal && point.y >= fStartAlpha && point.y <= fEndAlpha))
   {
-    if (wheel > 0)
-      m_bScrollDown = true;
-    else
-      m_bScrollUp = true;
-    m_fScrollSpeed = SCROLL_SPEED;
-    return true;
+    if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
+    {
+      if (m_bHorizontal)
+        m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
+      else
+        m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
+      CAction action;
+      action.id = ACTION_SELECT_ITEM;
+      OnAction(action);
+      return true;
+    }
+    else if (event.m_id == ACTION_MOUSE_WHEEL)
+    {
+      if (event.m_wheel > 0)
+        m_bScrollDown = true;
+      else
+        m_bScrollUp = true;
+      m_fScrollSpeed = SCROLL_SPEED;
+      return true;
+    }
   }
   return false;
 }

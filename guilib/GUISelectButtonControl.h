@@ -105,8 +105,6 @@ public:
   virtual void OnRight();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(int button, const CPoint &point);
-  virtual bool OnMouseWheel(char wheel, const CPoint &point);
 
   virtual void AllocResources();
   virtual void FreeResources();
@@ -115,6 +113,7 @@ public:
   virtual void SetPosition(float posX, float posY);
 
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   bool m_bShowSelect;
   CGUITexture m_imgBackground;

@@ -50,7 +50,7 @@ CZipManager::~CZipManager()
 bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items)
 {
   CLog::Log(LOGDEBUG, "%s - Processing %s", __FUNCTION__, strPath.c_str());
-  
+
   CURL url(strPath);
   struct __stat64 m_StatData;
 
@@ -95,7 +95,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   CFile::Stat(strFile,&m_StatData);
   mZipDate.insert(make_pair(strFile,m_StatData.st_mtime));
 
-  
+
   // Look for end of central directory record
   // Zipfile comment may be up to 65535 bytes
   // End of central directory record is 22 bytes (ECDREC_SIZE)
@@ -112,7 +112,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   // It could be between 2 blocks, so we need to read 3 extra bytes
   char *buffer = new char[blockSize+3];
   bool found = false;
-  
+
   // Loop through blocks starting at the end of the file (minus ECDREC_SIZE-1)
   for (int nb=1; !found && (nb <= nbBlock); nb++)
   {
@@ -128,7 +128,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
       }
     }
   }
-  
+
   // If not found, look in the last block left...
   if ( !found && (extraBlockSize > 0) )
   {
@@ -144,7 +144,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
       }
     }
   }
-   
+
   delete [] buffer;
 
   if ( !found )
@@ -153,12 +153,12 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     mFile.Close();
     return false;
   }
- 
+
   unsigned int cdirOffset, cdirSize;
   // Get size of the central directory
   mFile.Seek(12,SEEK_CUR);
   mFile.Read(&cdirSize,4);
-  cdirSize = Endian_SwapLE32(cdirSize);  
+  cdirSize = Endian_SwapLE32(cdirSize);
   // Get Offset of start of central directory with respect to the starting disk number
   mFile.Read(&cdirOffset,4);
   cdirOffset = Endian_SwapLE32(cdirOffset);
@@ -185,22 +185,22 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
-    
+
     // Save the current position
     int64_t savePos = mFile.GetPosition();
-    
+
     // Go to the local file header to get the extra field length
     // !! local header extra field length != central file header extra field length !!
     mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
     mFile.Read(&(ze.elength),2);
     ze.elength = Endian_SwapLE16(ze.elength);
-    
+
     // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length
     ze.offset = ze.lhdrOffset + LHDR_SIZE + ze.flength + ze.elength;
-        
+
     // Jump after central file header extra field and file comment
     mFile.Seek(savePos + ze.eclength + ze.clength,SEEK_SET);
-	  
+	
     items.push_back(ze);
   }
 
@@ -309,7 +309,7 @@ void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
   info.clength = Endian_SwapLE16(*(unsigned short*)(buffer+32));
   // Skip disk number start, internal/external file attributes
   info.lhdrOffset = Endian_SwapLE32(*(unsigned int*)(buffer+42));
-  
+
 }
 
 void CZipManager::release(const CStdString& strPath)
