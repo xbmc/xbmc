@@ -149,16 +149,14 @@ void CAdvancedSettings::Initialize()
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
-  // foo_[s01]_[e01]
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
-  // foo.1x09* or just /1x09*
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.s01.e01, foo.s01_e01, S01E02 foo
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$"));
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][._-]?[Ee]([0-9]+)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
+  // foo.1x09* or just /1x09*
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
