@@ -587,6 +587,11 @@ bool CAdvancedSettings::Load()
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
+  // trailer matching regexps
+  TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");
+  if (pTrailerMatching)
+    GetCustomRegexps(pTrailerMatching, m_trailerMatchRegExps);
+
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)

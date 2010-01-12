@@ -3138,6 +3138,21 @@ CStdString CFileItem::FindTrailer() const
   strFile += "-trailer";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");
 
+  // Precompile our REs
+  VECCREGEXP matchRegExps;
+  CRegExp tmpRegExp(true);
+  const CStdStringArray& strMatchRegExps = g_advancedSettings.m_trailerMatchRegExps;
+
+  CStdStringArray::const_iterator strRegExp = strMatchRegExps.begin();
+  while (strRegExp != strMatchRegExps.end())
+  {
+    if (tmpRegExp.RegComp(*strRegExp))
+    {
+      matchRegExps.push_back(tmpRegExp);
+    }
+    strRegExp++;
+  }
+
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString strCandidate = items[i]->m_strPath;
@@ -3148,6 +3163,21 @@ CStdString CFileItem::FindTrailer() const
     {
       strTrailer = items[i]->m_strPath;
       break;
+    }
+    else
+    {
+      VECCREGEXP::iterator expr = matchRegExps.begin();
+
+      while (expr != matchRegExps.end())
+      {
+        if (expr->RegFind(strCandidate) != -1)
+        {
+          strTrailer = items[i]->m_strPath;
+          i = items.Size();
+          break;
+        }
+        expr++;
+      }
     }
   }
 
