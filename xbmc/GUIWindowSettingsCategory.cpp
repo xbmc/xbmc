@@ -833,7 +833,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 {
   for (unsigned int i = 0; i < m_vecSettings.size(); i++)
   {
-    CBaseSettingControl *pSettingControl = m_vecSettings[i];  
+    CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
     if (strSetting.Equals("videoplayer.upscalingalgorithm"))
@@ -1199,17 +1199,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        bool enabled = (g_guiSettings.GetBool("videoplayer.usedisplayasclock")) && 
+        bool enabled = (g_guiSettings.GetBool("videoplayer.usedisplayasclock")) &&
             (g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
         pControl->SetEnabled(enabled);
       }
-    }      
+    }
     else if (strSetting.Equals("videoplayer.resamplequality"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        bool enabled = (g_guiSettings.GetBool("videoplayer.usedisplayasclock")) && 
+        bool enabled = (g_guiSettings.GetBool("videoplayer.usedisplayasclock")) &&
             (g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
         pControl->SetEnabled(enabled);
       }
@@ -1477,9 +1477,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
   }
   else if (strSetting.Equals("videolibrary.export"))
-    CBuiltins::Execute("exportlibrary(video)");  
+    CBuiltins::Execute("exportlibrary(video)");
   else if (strSetting.Equals("musiclibrary.export"))
-    CBuiltins::Execute("exportlibrary(music)");  
+    CBuiltins::Execute("exportlibrary(music)");
   else if (strSetting.Equals("karaoke.export") )
   {
     vector<CStdString> choices;
@@ -1556,14 +1556,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       CSetting *pSetting = g_guiSettings.GetSetting("weather.plugin");
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInWeatherPlugins(pControl, pControl->GetCurrentLabel());      
+      FillInWeatherPlugins(pControl, pControl->GetCurrentLabel());
     }
   }
   else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
   {
     CStdString strPassword=g_guiSettings.GetString("scrobbler.lastfmpassword");
     CStdString strUserName=g_guiSettings.GetString("scrobbler.lastfmusername");
-    if ((g_guiSettings.GetBool("scrobbler.lastfmsubmit") || 
+    if ((g_guiSettings.GetBool("scrobbler.lastfmsubmit") ||
          g_guiSettings.GetBool("scrobbler.lastfmsubmitradio")) &&
          !strUserName.IsEmpty() && !strPassword.IsEmpty())
     {
@@ -1578,7 +1578,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CStdString strPassword=g_guiSettings.GetString("scrobbler.librefmpassword");
     CStdString strUserName=g_guiSettings.GetString("scrobbler.librefmusername");
-    if ((g_guiSettings.GetBool("scrobbler.librefmsubmit") || 
+    if ((g_guiSettings.GetBool("scrobbler.librefmsubmit") ||
          g_guiSettings.GetBool("scrobbler.librefmsubmitradio")) &&
          !strUserName.IsEmpty() && !strPassword.IsEmpty())
     {
@@ -1644,7 +1644,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
-  } 
+  }
   else if (strSetting.Equals("services.zeroconf"))
   {
 #ifdef HAS_ZEROCONF
@@ -2684,7 +2684,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       const AddonPtr addon = addons.at(i);
       vecVis.push_back(addon->Name());
     }
-  } 
+  }
 
   CStdString strDefaultVis = pSettingString->GetData();
   if (!strDefaultVis.Equals("None"))
@@ -3219,23 +3219,23 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     return;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-  
+
   CoreAudioDeviceList deviceList;
   CCoreAudioHardware::GetOutputDevices(&deviceList);
-  
+
   if (CCoreAudioHardware::GetDefaultOutputDevice())
     pControl->AddLabel("Default Output Device", 0); // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
   int activeDevice = 0;
-  
+
   CStdString deviceName;
   for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
   {
     CCoreAudioDevice device(deviceList.front());
     pControl->AddLabel(device.GetName(deviceName), i);
-    
+
     if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
       activeDevice = i; // Tag this one
-    
+
     deviceList.pop_front();
   }
   pControl->SetValue(activeDevice);
@@ -3257,7 +3257,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
     m_AnalogAudioSinkMap["custom"] = "custom";
   }
-  
+
   int numberSinks = 0;
 
   int selectedValue = -1;
