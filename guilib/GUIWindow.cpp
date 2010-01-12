@@ -804,7 +804,7 @@ void CGUIWindow::SetDefaults()
   m_origins.clear();
   m_hasCamera = false;
   m_animationsEnabled = true;
-  m_hitRect.SetRect(0, 0, g_settings.m_ResInfo[m_coordsRes].iWidth, g_settings.m_ResInfo[m_coordsRes].iHeight);
+  m_hitRect.SetRect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
 }
 
 CRect CGUIWindow::GetScaledBounds() const
