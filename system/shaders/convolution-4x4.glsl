@@ -49,4 +49,5 @@ void main()
   gl_FragColor += line(ypos, xf, linetaps) * columntaps.a;
 
   gl_FragColor.a = gl_Color.a;
-};
+}
+
