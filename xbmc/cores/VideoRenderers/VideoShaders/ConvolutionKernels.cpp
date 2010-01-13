@@ -27,7 +27,7 @@
 
 CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
 {
-  m_pixels = NULL;
+  m_pixels = new float[size * 4];
 
   if (method == VS_SCALINGMETHOD_LANCZOS2)
     Lanczos2(size);
@@ -48,8 +48,6 @@ CConvolutionKernel::~CConvolutionKernel()
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
 void CConvolutionKernel::Lanczos2(int size)
 {
-  m_pixels = new float[size * 4];
-
   for (int i = 0; i < size; i++)
   {
     double x = (double)i / (double)size;
@@ -77,8 +75,6 @@ void CConvolutionKernel::Lanczos2(int size)
 //so it can use the 4x4 convolution shader which is twice as fast as the 6x6 one
 void CConvolutionKernel::Lanczos3Fast(int size)
 {
-  m_pixels = new float[size * 4];
-
   for (int i = 0; i < size; i++)
   {
     double a = 3.0;
@@ -106,8 +102,6 @@ void CConvolutionKernel::Lanczos3Fast(int size)
 //each value of RGB has one tap, so a shader can load 3 taps with a single pixel lookup
 void CConvolutionKernel::Lanczos3(int size)
 {
-  m_pixels = new float[size * 4];
-
   for (int i = 0; i < size; i++)
   {
     double x = (double)i / (double)size;
@@ -142,8 +136,6 @@ void CConvolutionKernel::Lanczos3(int size)
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
 void CConvolutionKernel::Bicubic(int size, double B, double C)
 {
-  m_pixels = new float[size * 4];
-
   for (int i = 0; i < size; i++)
   {
     double x = (double)i / (double)size;
