@@ -99,7 +99,7 @@ void CGUIFadeLabelControl::Render()
   if (m_currentLabel >= m_infoLabels.size() )
     m_currentLabel = 0;
 
-  if (m_textLayout.Update(m_infoLabels[m_currentLabel].GetLabel(m_parentID)))
+  if (m_textLayout.Update(GetLabel()))
   { // changed label - update our suffix based on length of available text
     float width, height;
     m_textLayout.GetTextExtent(width, height);
@@ -181,15 +181,8 @@ void CGUIFadeLabelControl::Render()
   { // increment the label and reset scrolling
     if (m_fadeAnim->GetProcess() != ANIM_PROCESS_NORMAL)
     {
-      unsigned int label = m_currentLabel;
-      do
-      { // cycle until we get a non-empty label, or stick with the one we have
-        label++;
-        if (label >= m_infoLabels.size())
-          label = 0;
-      }
-      while (label != m_currentLabel && m_infoLabels[label].GetLabel(m_parentID).IsEmpty());
-      m_currentLabel = label;
+      if (++m_currentLabel >= m_infoLabels.size())
+        m_currentLabel = 0;
       m_scrollInfo.Reset();
       m_fadeAnim->QueueAnimation(ANIM_PROCESS_REVERSE);
     }
@@ -232,3 +225,18 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
+CStdString CGUIFadeLabelControl::GetLabel()
+{
+  if (m_currentLabel > m_infoLabels.size())
+    m_currentLabel = 0;
+
+  unsigned int numTries = 0;
+  CStdString label(m_infoLabels[m_currentLabel].GetLabel(m_parentID));
+  while (label.IsEmpty() && ++numTries < m_infoLabels.size())
+  {
+    if (++m_currentLabel >= m_infoLabels.size())
+      m_currentLabel = 0;
+    label = m_infoLabels[m_currentLabel].GetLabel(m_parentID);
+  }
+  return label;
+}

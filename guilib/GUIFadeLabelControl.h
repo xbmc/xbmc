@@ -55,6 +55,16 @@ protected:
   virtual void UpdateColors();
   void AddLabel(const std::string &label);
 
+  /*! \brief retrieve the current label for display
+
+   The fadelabel has multiple labels which it cycles through. This routine retrieves the current label.
+   It first checks the current label and if non-empty returns it. Otherwise it will iterate through all labels
+   until it has a non-empty label to return.
+
+   \return the label that should be displayed.  If empty, there is no label available.
+   */
+  CStdString GetLabel();
+
   std::vector< CGUIInfoLabel > m_infoLabels;
   unsigned int m_currentLabel;
   unsigned int m_lastLabel;
