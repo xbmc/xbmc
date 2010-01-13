@@ -34,7 +34,7 @@ public:
 
   bool AppendObjectPath(const char *object);
   bool AppendArgument(const char *string);
-  bool AppendArgument(const char **arrayString, int length);
+  bool AppendArgument(const char **arrayString, unsigned int length);
 
   DBusMessage *SendSystem();
   DBusMessage *SendSession();
@@ -44,7 +44,10 @@ public:
   void Close();
 
 private:
+  void PrepareArgument();
   DBusMessage *m_message;
   DBusMessage *m_reply;
+  DBusMessageIter m_args;
+  bool m_haveArgs;
 };
 #endif
