@@ -471,7 +471,8 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
       addon->Enable();
       CUtil::CreateDirectoryEx(addon->Profile());
       CLog::Log(LOGINFO,"ADDON: Enabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
-      return true; //don't update addons.xml until confirmed
+      LoadAddonsXML(type);
+      return true;
     }
   }
   CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", addon->Name().c_str());
@@ -575,8 +576,8 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool force)
   case ADDON_VIZ:
     { //TODO fix mvis handling
       if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/visualisations", items, ADDON_VIZ_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/visualisations", items, ADDON_VIZ_EXT, false);
+        CDirectory::GetDirectory("special://home/addons/visualizations", items, ADDON_VIZ_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/visualizations", items, ADDON_VIZ_EXT, false);
       break;
     }
   case ADDON_SCREENSAVER:
