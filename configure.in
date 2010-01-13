@@ -339,6 +339,13 @@ AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
+if test $MYSQL_CONFIG = "yes"; then
+	INCLUDES+=" `mysql_config --include`"
+	LIBS+=" `mysql_config --libs`"
+else
+	AC_MSG_ERROR($missing_program)
+fi
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
