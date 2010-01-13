@@ -81,7 +81,7 @@ void CConvolutionKernel::Lanczos3Fast(int size)
 
   for (int i = 0; i < size; i++)
   {
-    double a = 2.67;
+    double a = 3.0;
     double x = (double)i / (double)size;
 
     //generate taps
