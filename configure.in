@@ -1478,7 +1478,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   if test "$host_vendor" = "apple" ; then
 	./configure --with-ssl-dir=/opt/local/include
   else
-	./configure
+	./configure --without-openssl
   fi
 ], [0])
 
