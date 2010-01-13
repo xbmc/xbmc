@@ -339,13 +339,6 @@ AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
-if test $MYSQL_CONFIG = "yes"; then
-	INCLUDES+=" `mysql_config --include`"
-	LIBS+=" `mysql_config --libs`"
-else
-	AC_MSG_ERROR($missing_program)
-fi
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
@@ -402,6 +395,13 @@ if test "$host_vendor" = "apple" ; then
                     [INCLUDES+=" $VORBISENC_CFLAGS"; LIBS+=" $VORBISENC_LIBS"],
                     AC_MSG_ERROR($missing_library))
 else
+  AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
+  if test $MYSQL_CONFIG = "yes"; then
+                  INCLUDES+=" `mysql_config --include`"
+                  LIBS+=" `mysql_config --libs`"
+  else
+                  AC_MSG_ERROR($missing_program)
+  fi
   AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
