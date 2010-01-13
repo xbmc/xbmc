@@ -1,7 +1,9 @@
 ARCH=@ARCH@
+HOSTTYPE=@HOSTTYPE@
 
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
+
 ifeq (@USE_PYTHON2_6@,1)
     PYVERSION=python2.6
     SO=python26-$(ARCH).so
@@ -38,7 +40,7 @@ endif
 PYDIRS=bsddb compiler curses distutils email encodings hotshot idlelib \
 	lib-old lib-tk logging site-packages xml
 ifeq ($(ARCH), x86-osx)
-	PYLIBDIR=lib.macosx-10.4-i386-2.4
+	PYLIBDIR=lib.macosx-10.4-${HOSTTYPE}-2.4
 	PYDIRS+=plat-darwin
 	PYDIRS+=plat-mac
 else
