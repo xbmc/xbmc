@@ -94,7 +94,7 @@ namespace JSONRPC
       std::map<CStdString, Command> m_actionmap;
     };
 
-    static const Command    m_commands[];
-    static const CActionMap m_actionMap;
+    static Command    m_commands[];
+    static CActionMap m_actionMap;
   };
 }
