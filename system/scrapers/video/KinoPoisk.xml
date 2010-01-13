@@ -100,7 +100,7 @@
 			<RegExp input="$$1" output="&lt;url cache=&quot;KinoPoisk_opa.html&quot; function=&quot;GetPoster&quot;&gt;http://ya.ru/&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$4" output="&lt;url cache=&quot;tmdb_\2.html&quot; function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.imdb.com/find?s=tt&amp;tyear=\1&amp;q=\2&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$4" output="&lt;url cache=&quot;tmdb_\2.html&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.com/find?s=tt&amp;tyear=\1&amp;q=\2&lt;/url&gt;" dest="5+">
 				<RegExp input="$$1" output="\9:::\1.\2.\3.\4.\5.\6.\7.\8" dest="4">
 					<expression>&lt;span style="color: #666; font-size: 13px"&gt;([^&lt;\s]+)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)&lt;/span&gt;.+&lt;td class=&quot;&quot;&gt;&lt;a href=&quot;/level/10/m_act%5Byear%5D/\d+/&quot;&gt;(\d+)&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</expression>
 				</RegExp>
