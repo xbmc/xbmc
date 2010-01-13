@@ -26,12 +26,14 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "FileSystem/StackDirectory.h"
+#include "utils/Addon.h"
 #ifndef _LINUX
 #include <sys\types.h>
 #include <sys\stat.h>
 #endif
 
 using namespace std;
+using namespace ADDON;
 
 CStdString URLEncodeInline(const CStdString& strData)
 {
@@ -187,7 +189,7 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
-    || m_strProtocol.Equals("plugin")
+    || TranslateContent(m_strProtocol) != CONTENT_NONE // plugin paths
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
     || m_strProtocol.Equals("dav")

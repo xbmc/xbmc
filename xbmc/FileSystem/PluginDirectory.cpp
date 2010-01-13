@@ -92,7 +92,10 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   CStdString options = url.GetOptions();
   CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
                                     // is needed for all others, as XBMC adds slashes to "folders"
+  url.SetOptions(""); // do this because we can then use the url to generate the basepath
+                      // which is passed to the plugin (and represents the share)
 
+  CStdString basePath(url.Get());
   // reset our wait event, and grab a new handle
   ResetEvent(m_fetchComplete);
   int handle = getNewHandle(this);
@@ -108,7 +111,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   // setup our parameters to send the script
   CStdString strHandle;
   strHandle.Format("%i", handle);
-  const char *plugin_argv[] = {strPath.c_str(), strHandle.c_str(), options.c_str(), NULL };
+  const char *plugin_argv[] = {basePath.c_str(), strHandle.c_str(), options.c_str(), NULL };
 
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
