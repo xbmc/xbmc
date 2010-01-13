@@ -4,11 +4,14 @@
 	<include>common/movieposterdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart (themoviedb.org)&quot; type=&quot;bool&quot; id=&quot;tmdbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression /> 
+			<RegExp input="$$1" output="&lt;setting label=&quot;Poster (themoviedb.org)&quot; type=&quot;bool&quot; id=&quot;tmdbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Poster (movieposterdb.com)&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
@@ -131,13 +134,17 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetMovieCast&quot;&gt;http://www.imdb.de/title/tt\2/fullcredits#cast&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
-			<!--URL to Fanart-->
-			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
+			<!-- TMDB Fanart-->
+			<RegExp conditional="tmdbfanart" input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
+				<expression>(imdb.com/)Title\?([0-9]+)</expression>
+			</RegExp>
+			<!-- TMDB Poster-->
+			<RegExp conditional="tmdbthumbs" input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;GetTMDBThumbsById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!--URL to MoviePosterDB -->
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=\2&lt;/url&gt;" dest="5+">
-				<expression>(imdb.com/)Title\?([0-9]+)</expression> 
+				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!-- Ofdb Poster -->
 			<RegExp input="$$1" output="&lt;url cache=&quot;ofdb-\1.html&quot; function=&quot;GetOfdbThumb&quot;&gt;$$3&lt;/url&gt;" dest="5+">
