@@ -189,6 +189,7 @@ void CGUIDialogAddonBrowser::Render()
 {
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ADDONS, !m_getAddons);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, m_changed && !m_getAddons);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_CANCEL, !m_changed && !m_getAddons);
   CGUIDialog::Render();
 }
 
