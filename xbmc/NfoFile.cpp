@@ -63,16 +63,17 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
   if (FAILED(Load(strPath)))
     return NO_NFO;
 
-  CScraperPtr defaultScraper;
   bool bNfo=false;
 
-  VECADDONS addons; 
-  CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, m_content);
-  if (addons.empty())
+  if(!CAddonMgr::Get()->HasAddons(ADDON_SCRAPER, m_content))
     return NO_NFO;
 
-  if (!CAddonMgr::Get()->GetDefaultScraper(defaultScraper, m_content))
+  AddonPtr addon;
+  CScraperPtr defaultScraper;
+  if (!CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, m_content))
     return NO_NFO; //TODO check this is correct response
+  else
+    defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
 
   if (m_content == CONTENT_ALBUMS)
   {

@@ -242,7 +242,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
   AddonPtr addon;
   CStdString defaultUUID;
-  CAddonMgr::Get()->GetDefaultScraper(addon, content);
+  CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content);
   if (addon)
     defaultUUID = addon->UUID();
 

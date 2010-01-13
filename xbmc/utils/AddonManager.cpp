@@ -311,7 +311,7 @@ bool CAddonMgr::RegisterAddonMgrCallback(const ADDON::TYPE type, IAddonMgrCallba
 
   m_managers.erase(type);
   m_managers[type] = cb;
-  
+
   return true;
 }
 
@@ -331,15 +331,21 @@ bool CAddonMgr::HasAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content/*
 
 bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabled/*= true*/)
 {
-  // recheck addon folders if necessary
-  LoadAddonsXML(type);
+  // recheck addons.xml & each addontype's directories no more than once every ADDON_DIRSCAN_FREQ seconds
+  CDateTimeSpan span;
+  span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
+  if(!m_lastScan[type].IsValid() || (m_lastScan[type] + span) < CDateTime::GetCurrentDateTime())
+  {
+    m_lastScan[type] = CDateTime::GetCurrentDateTime();
+    LoadAddonsXML(type);
+  }
 
   addons.clear();
   if (m_addons.find(type) != m_addons.end())
   {
     IVECADDONS itr = m_addons[type].begin();
     while (itr != m_addons[type].end())
-    { // filter out what we're not looking for      
+    { // filter out what we're not looking for
       if ((enabled && (*itr)->Disabled())
         || (!(*itr)->Disabled() && !enabled)
         || (content != CONTENT_NONE && !(*itr)->Supports(content)))
@@ -351,25 +357,7 @@ bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONT
       ++itr;
     }
   }
-  return !addons.empty(); 
-}
-
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONPROPS &props, const CONTENT_TYPE &content, bool enabled)
-{
-  props.clear();
-  VECADDONS addons;
-  bool found = GetAddons(type, addons, content, enabled);
-  if (found)
-  {  // copy each addon's properties    
-    IVECADDONS itr = addons.begin();
-    while (itr != addons.end())
-    {
-      const AddonProps addon(*itr);
-      props.push_back(addon);
-      ++itr;
-    }
-  }
-  return found; 
+  return !addons.empty();
 }
 
 bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPtr &addon)
@@ -384,7 +372,7 @@ bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPt
   while (adnItr != addons.end())
   {
     //FIXME scrapers were previously registered by filename
-    if (isUUID && (*adnItr)->UUID() == str 
+    if (isUUID && (*adnItr)->UUID() == str
       || !isUUID && (*adnItr)->Name() == str
       || type == ADDON_SCRAPER && (*adnItr)->LibName() == str)
     {
@@ -398,18 +386,12 @@ bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPt
 }
 
 //TODO handle all 'default' cases here, not just scrapers?
-bool CAddonMgr::GetDefaultScraper(CScraperPtr &scraper, const CONTENT_TYPE & content)
-{ 
-  AddonPtr addon;
-  if (GetDefaultScraper(addon, content))
-    scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone());
-  else
+bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &scraper, const CONTENT_TYPE &content)
+{
+  // for now, only handle scrapers
+  if (type != ADDON_SCRAPER)
     return false;
 
-  return true;
-}
-bool CAddonMgr::GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content)
-{
   CStdString defaultScraper;
   switch (content)
   {
@@ -454,7 +436,7 @@ bool CAddonMgr::EnableAddon(const CStdString &uuid)
   AddonPtr addon = m_uuidMap[uuid];
   if (!addon)
     return false;
-  
+
   return EnableAddon(addon);
 }
 bool CAddonMgr::EnableAddon(AddonPtr &addon)
@@ -471,7 +453,7 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
       addon->Enable();
       CUtil::CreateDirectoryEx(addon->Profile());
       CLog::Log(LOGINFO,"ADDON: Enabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
-      LoadAddonsXML(type);
+      SaveAddonsXML(type);
       return true;
     }
   }
@@ -484,7 +466,7 @@ bool CAddonMgr::DisableAddon(const CStdString &uuid)
   AddonPtr addon = m_uuidMap[uuid];
   if (!addon)
     return false;
-  
+
   return DisableAddon(addon);
 }
 bool CAddonMgr::DisableAddon(AddonPtr &addon)
@@ -505,7 +487,7 @@ bool CAddonMgr::DisableAddon(AddonPtr &addon)
         m_addons[type].erase(itr);
       }
 
-      CLog::Log(LOGINFO,"ADDON: Disabled Add-on: %s", addon->Name().c_str());
+      CLog::Log(LOGINFO,"ADDON: Disabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
       SaveAddonsXML(type);
       return true;
     }
@@ -514,14 +496,14 @@ bool CAddonMgr::DisableAddon(AddonPtr &addon)
   return false;
 }
 
-bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type, const bool refreshDirs/*=false*/)
+bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type)
 {
   VECADDONPROPS props;
   if (!LoadAddonsXML(type, props))
     return false;
 
   // refresh addon dirs if neccesary/forced
-  FindAddons(type, refreshDirs);
+  FindAddons(type);
 
   // now enable accordingly
   VECADDONPROPS::const_iterator itr = props.begin();
@@ -547,19 +529,31 @@ bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type, const bool refreshDirs/*=
     }
     ++itr;
   }
+
+
   return true;
 }
 
-void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool force)
+bool CAddonMgr::GetAddonProps(const TYPE &type, VECADDONPROPS &props)
 {
-  if (!force)
+  props.clear();
+  VECADDONS addons;
+  bool found = GetAddons(type, addons);
+  if (found)
   {
-    // recheck each addontype's directories no more than once every ADDON_DIRSCAN_FREQ seconds
-    CDateTimeSpan span;
-    span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
-    if(m_lastScan[type].IsValid() && m_lastScan[type] > (CDateTime::GetCurrentDateTime() - span))
-      return;
+    IVECADDONS itr = addons.begin();
+    while (itr != addons.end())
+    {
+      const AddonProps addon(*itr);
+      props.push_back(addon);
+      ++itr;
+    }
   }
+  return found;
+}
+
+void CAddonMgr::FindAddons(const ADDON::TYPE &type)
+{
 
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
@@ -650,7 +644,7 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool force)
       }
     }
 
-    // check for/cache icon thumbnail 
+    // check for/cache icon thumbnail
     //TODO cache one thumb per addon uuid instead
     CFileItem item2(addon->Path());
     CUtil::AddFileToFolder(addon->Path(), addon->LibName(), item2.m_strPath);
@@ -676,7 +670,6 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool force)
     }
   }
 
-  m_lastScan[type] = CDateTime::GetCurrentDateTime();
   CLog::Log(LOGINFO, "ADDON: Found %zu addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
 }
 
@@ -708,7 +701,7 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
   * 5. summary exists
   * 6. for scrapers & plugins, support at least one type of content
   */
-  
+
   /* Read uuid */
   CStdString uuid;
   element = xmlDoc.RootElement()->FirstChildElement("uuid");
@@ -782,7 +775,7 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
 
   bool all;
   std::set<CStdString> platforms;
-  do 
+  do
   {
     CStdString platform = element->GetText();
     if (platform == "all")
@@ -850,7 +843,7 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
     }
 
     std::set<CONTENT_TYPE> contents;
-    do 
+    do
     {
       CONTENT_TYPE content = TranslateContent(element->GetText());
       if (content != CONTENT_NONE)
@@ -970,7 +963,7 @@ CStdString CAddonMgr::GetAddonsXMLFile() const
 bool CAddonMgr::SaveAddonsXML(const ADDON::TYPE &type)
 {
   VECADDONPROPS props;
-  GetAddons(type, props);
+  GetAddonProps(type, props);
 
   // TODO: Should we be specifying utf8 here??
   TiXmlDocument doc;
@@ -1060,7 +1053,7 @@ bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type, VECADDONPROPS &addons)
     CLog::Log(LOGERROR, "ADDONS: Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
-  else 
+  else
   {
     CLog::Log(LOGINFO, "ADDONS: No addons.xml found");
     return true; // no addons enabled for this profile yet

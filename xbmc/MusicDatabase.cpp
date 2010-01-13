@@ -4098,7 +4098,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
       else
       { // use default scraper for this content type
         ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, content))
+        if (ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, defaultScraper, content))
         {
           info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
           if (info)
@@ -4112,7 +4112,14 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
 
     if (!info)
     { // use default music scraper instead
-      return ADDON::CAddonMgr::Get()->GetDefaultScraper(info, CONTENT_ALBUMS);
+      ADDON::AddonPtr addon;
+      if(ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, CONTENT_ALBUMS))
+      {
+        info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+        return (info);
+      }
+      else
+        return false;
     }
 
     return true;

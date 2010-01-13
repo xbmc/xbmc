@@ -1285,7 +1285,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     database.Open();
     CScraperPtr scraper;
     AddonPtr defaultScraper;
-    CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS);
+    CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, defaultScraper, CONTENT_ALBUMS);
     if (database.GetScraperForPath("musicdb://",scraper))
     {
       //TODO merge error??
@@ -3167,7 +3167,7 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
     if ((*it)->Name().Equals(strSelected))
     {
       if (content == CONTENT_ALBUMS) // native strContent would be albums or artists but we're using the same scraper for both
-        g_guiSettings.SetString("musiclibrary.defaultscraper", (*it)->Name());
+        g_guiSettings.SetString("musiclibrary.scraper", (*it)->Name());
       else if (content == CONTENT_MOVIES)
         g_guiSettings.SetString("scrapers.moviedefault", (*it)->Name());
       else if (content == CONTENT_TVSHOWS)

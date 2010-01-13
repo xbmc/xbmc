@@ -5645,7 +5645,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CScraperPtr& s
         else
         { // use default scraper for this content type
           AddonPtr defaultScraper;
-          if (CAddonMgr::Get()->GetDefaultScraper(defaultScraper, content))
+          if (CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, defaultScraper, content))
           {
             scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone());
             if (scraper)

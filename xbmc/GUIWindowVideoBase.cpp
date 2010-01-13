@@ -505,14 +505,19 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   bool hasDetails(false);
   SScanSettings settings;
   CVideoInfoScanner scanner;
+  ADDON::AddonPtr addon;
   ADDON::CScraperPtr info;
 
   m_database.Open();
   if (!m_database.GetScraperForPath(item->m_strPath,info,settings))
   {
-    if (!ADDON::CAddonMgr::Get()->GetDefaultScraper(info, content))
+    if (!ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, content))
       return false;
   }
+  if(addon)
+    info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+  if (!info)
+    return false;
 
   if (info->HasSettings() && !info->GetSettingsXML()) 
   {  // scraper supports settings, but none are configured. load defaults //todo remove
