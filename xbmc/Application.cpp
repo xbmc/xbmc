@@ -4494,6 +4494,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   // Get Screensaver Mode
   m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
 
+  // disable screensaver lock from the login screen
+  m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
