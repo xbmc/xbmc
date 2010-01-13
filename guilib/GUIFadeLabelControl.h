@@ -53,6 +53,7 @@ public:
 
 protected:
   virtual void UpdateColors();
+  virtual CStdString GetDescription() const;
   void AddLabel(const std::string &label);
 
   /*! \brief retrieve the current label for display
