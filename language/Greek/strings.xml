@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 01/04/2010-->
+<!--Date of translation: 01/06/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 26363-->
+<!--Based on english strings version 26459-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1580,6 +1580,8 @@
   <string id="20250">Party on! (βίντεο)</string>
   <string id="20251">Αναμιγνύοντας τα ποτά (βίντεο)</string>
   <string id="20252">Γεμίζοντας τα ποτήρια (βίντεο)</string>
+  <string id="20253">Διακομιστής WebDAV (HTTP)</string>
+  <string id="20254">Διακομιστής WebDAV (HTTPS)</string>
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
@@ -1878,7 +1880,7 @@
   <string id="21887">Βιογραφικό</string>
   <string id="21888">Δισκογραφία</string>
   <string id="21889">Αναζήτηση καλλιτέχνη</string>
-  <string id="21890">Επιλογή καλλιτέχνη</string>
+  <string id="21890">Επιλογή καλλιτέ��νη</string>
   <string id="21891">Πληροφορίες καλλιτέχνη</string>
   <string id="21892">Όργανα</string>
   <string id="21893">Γέννηση</string>

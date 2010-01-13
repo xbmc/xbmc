@@ -136,7 +136,8 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     }
     m_dvdspus.m_bHasClut = true;
   }
-  else if( pMsg->IsType(CDVDMsg::GENERAL_FLUSH) )
+  else if( pMsg->IsType(CDVDMsg::GENERAL_FLUSH)
+        || pMsg->IsType(CDVDMsg::GENERAL_RESET) )
   {
     m_dvdspus.Reset();
     if (m_pSubtitleFileParser) 

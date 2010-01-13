@@ -62,7 +62,6 @@ public:
 #else
   void Update(bool bPauseDrawing)                   { }
 #endif
-  void UpdateMenuPicture();
  
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
@@ -175,6 +174,5 @@ protected:
   
   DVDVideoPicture* m_pTempOverlayPicture;
   
-  CRITICAL_SECTION m_critCodecSection;
 };
 

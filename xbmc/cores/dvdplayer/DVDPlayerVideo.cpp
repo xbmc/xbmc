@@ -62,7 +62,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iSubtitleDelay = 0;
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
-  InitializeCriticalSection(&m_critCodecSection);
 #ifdef _XBOX
   m_messageQueue.SetMaxDataSize(10 * 256 * 1024);
 #else
@@ -84,7 +83,6 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
 {
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
-  DeleteCriticalSection(&m_critCodecSection);
   
 #ifdef HAS_VIDEO_PLAYBACK 
   if(m_output.inited) 
@@ -110,7 +108,7 @@ double CDVDPlayerVideo::GetOutputDelay()
 }
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
-{  
+{
 
   if (hint.fpsrate && hint.fpsscale)
   {
@@ -178,7 +176,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   // wait for decode_video thread to end
   CLog::Log(LOGNOTICE, "waiting for video thread to exit");
 
-  StopThread(); // will set this->m_bStop to true  
+  StopThread(); // will set this->m_bStop to true
 
   m_messageQueue.End();
 
@@ -223,7 +221,7 @@ void CDVDPlayerVideo::Process()
   CDVDVideoPPFFmpeg mDeinterlace(g_advancedSettings.m_videoPPFFmpegType);
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
-  
+
   double pts = 0;
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
@@ -263,12 +261,12 @@ void CDVDPlayerVideo::Process()
   while (!m_bStop)
   {
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
-    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0) ? 1 : 0;
+    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0 && m_started) ? 1 : 0;
 
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
 
-    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT) 
+    if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
     {
       CLog::Log(LOGERROR, "Got MSGQ_ABORT or MSGO_IS_ERROR return true");
       break;
@@ -355,13 +353,18 @@ void CDVDPlayerVideo::Process()
       CLog::Log(LOGDEBUG, "CDVDPlayerVideo - CDVDMsg::VIDEO_SET_ASPECT");
       m_fForcedAspectRatio = *((CDVDMsgDouble*)pMsg);
     }
-    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
+    else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
-      EnterCriticalSection(&m_critCodecSection);
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
-      LeaveCriticalSection(&m_critCodecSection);
+      m_started = false;
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
+    {
+      if(m_pVideoCodec)
+        m_pVideoCodec->Reset();
       m_stalled = true;
+      m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -383,10 +386,9 @@ void CDVDPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
-      m_started = true;
       if (m_stalled)
       {
-        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");      
+        CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
         m_stalled = false;
 
         //don't allow the first frames after a still to be dropped
@@ -411,8 +413,6 @@ void CDVDPlayerVideo::Process()
       if(bPacketDrop)
         bRequestDrop = true;
 
-
-      EnterCriticalSection(&m_critCodecSection);
       // tell codec if next frame should be dropped
       // problem here, if one packet contains more than one frame
       // both frames will be dropped in that case instead of just the first
@@ -430,6 +430,10 @@ void CDVDPlayerVideo::Process()
         m_iDroppedFrames++;
         iDropped++;
       }
+
+      // use dts if we have one
+      if(pPacket->dts != DVD_NOPTS_VALUE)
+        pts = pPacket->dts;
 
       // loop while no error
       while (!m_bStop)
@@ -472,9 +476,9 @@ void CDVDPlayerVideo::Process()
               m_iNrOfPicturesNotToSkip--;
             }
 
-            /* try to figure out a pts for this frame */
-            if(picture.pts == DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
-              picture.pts = pPacket->dts;
+            /* try to figure out a pts for this frame, always use dts if available */
+            if(picture.pts == DVD_NOPTS_VALUE || pPacket->dts != DVD_NOPTS_VALUE)
+              picture.pts = pts;
 
             /* use forced aspect if any */
             if( m_fForcedAspectRatio != 0.0f )
@@ -514,6 +518,12 @@ void CDVDPlayerVideo::Process()
 
               if (iResult == EOS_ABORT) break;
 
+              if(m_started == false)
+              {
+                m_started = true;
+                m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+              }
+
               // guess next frame pts. iDuration is always valid
               pts += picture.iDuration * m_speed / abs(m_speed);
             }
@@ -545,7 +555,7 @@ void CDVDPlayerVideo::Process()
             m_pVideoCodec->Reset();
           }
         }
-        
+
         /*
         if (iDecoderState & VC_USERDATA)
         {
@@ -558,20 +568,17 @@ void CDVDPlayerVideo::Process()
           }
         }
         */
-        
+
         // if the decoder needs more data, we just break this loop
         // and try to get more data from the videoQueue
-        if (iDecoderState & VC_BUFFER) 
+        if (iDecoderState & VC_BUFFER)
           break;
 
         // the decoder didn't need more data, flush the remaning buffer
         iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
       }
+    }
 
-
-      LeaveCriticalSection(&m_critCodecSection);
-    }    
-    
     // all data is used by the decoder, we can safely free it now
     pMsg->Release();
   }
@@ -586,7 +593,7 @@ void CDVDPlayerVideo::OnExit()
     m_pOverlayCodecCC->Dispose();
     m_pOverlayCodecCC = NULL;
   }
-  
+
   CLog::Log(LOGNOTICE, "thread end: video_thread");
 }
 
@@ -595,14 +602,14 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
   // check userdata type
   BYTE* data = pVideoUserData->data;
   int size = pVideoUserData->size;
-  
+
   if (size >= 2)
   {
     if (data[0] == 'C' && data[1] == 'C')
     {
       data += 2;
       size -= 2;
-      
+
       // closed captioning
       if (!m_pOverlayCodecCC)
       {
@@ -615,7 +622,7 @@ void CDVDPlayerVideo::ProcessVideoUserData(DVDVideoUserData* pVideoUserData, dou
           m_pOverlayCodecCC = NULL;
         }
       }
-      
+
       if (m_pOverlayCodecCC)
       {
         m_pOverlayCodecCC->Decode(data, size, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
@@ -659,7 +666,7 @@ void CDVDPlayerVideo::StepFrame()
 }
 
 void CDVDPlayerVideo::Flush()
-{ 
+{
   /* flush using message as this get's called from dvdplayer thread */
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
@@ -704,7 +711,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 
   VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
   VecOverlaysIter it = pVecOverlays->begin();
-  
+
   //Check all overlays and render those that should be rendered, based on time and forced
   //Both forced and subs should check timeing, pts == 0 in the stillframe case
   while (it != pVecOverlays->end())
@@ -726,7 +733,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
         CDVDOverlayRenderer::Render(pDest, pOverlay, pts2);
     }
   }
-  
+
   m_pOverlayContainer->Unlock();
   
   if (bHasSpecialOverlay && m_pTempOverlayPicture)
@@ -756,7 +763,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     switch(pPicture->color_matrix)
     {
       case 7: // SMPTE 240M (1987)
-        flags |= CONF_FLAGS_YUVCOEF_240M; 
+        flags |= CONF_FLAGS_YUVCOEF_240M;
         break;
       case 6: // SMPTE 170M
       case 5: // ITU-R BT.470-2
@@ -766,7 +773,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       case 3: // RESERVED
       case 2: // UNSPECIFIED
       case 1: // ITU-R Rec.709 (1990) -- BT.709
-      default: 
+      default:
         flags |= CONF_FLAGS_YUVCOEF_BT709;
     }
 
@@ -866,9 +873,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     //if we're calculating the framerate,
     //don't drop frames until we've calculated a stable framerate
-    {
-      result |= EOS_VERYLATE;
-    }
+    result |= EOS_VERYLATE;
 
     //if we requested 5 drops in a row and we're still late, drop on output
     //this keeps a/v sync if the decoder can't drop, or we're still calculating the framerate
@@ -886,12 +891,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   if( m_speed < 0 )
   {
-    if( iClockSleep < -DVD_MSEC_TO_TIME(200) 
+    if( iClockSleep < -DVD_MSEC_TO_TIME(200)
     && !(pPicture->iFlags & DVP_FLAG_NOSKIP) )
-      return result | EOS_DROPPED;  
+      return result | EOS_DROPPED;
   }
 
-  if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) 
+  if( (pPicture->iFlags & DVP_FLAG_DROPPED) )
     return result | EOS_DROPPED;
 
   if( m_speed != DVD_PLAYSPEED_NORMAL && limited )
@@ -934,18 +939,18 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   int index = g_renderManager.GetImage(&image);
 
   // video device might not be done yet
-  while (index < 0 && !CThread::m_bStop && 
+  while (index < 0 && !CThread::m_bStop &&
          CDVDClock::GetAbsoluteClock() < iCurrentClock + iSleepTime )
   {
     Sleep(1);
     index = g_renderManager.GetImage(&image);
   }
 
-  if (index < 0) 
+  if (index < 0)
     return EOS_DROPPED;
 
   ProcessOverlays(pPicture, &image, pts);
-  
+
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
   g_renderManager.ReleaseImage(index);
@@ -965,21 +970,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   return result;
 
-}
-
-void CDVDPlayerVideo::UpdateMenuPicture()
-{
-  if (m_pVideoCodec)
-  {
-    DVDVideoPicture picture;
-    EnterCriticalSection(&m_critCodecSection);
-    if (m_pVideoCodec->GetPicture(&picture))
-    {
-      picture.iFlags |= DVP_FLAG_NOSKIP;
-      OutputPicture(&picture, 0);
-    }
-    LeaveCriticalSection(&m_critCodecSection);
-  }
 }
 
 std::string CDVDPlayerVideo::GetPlayerInfo()

@@ -30,6 +30,7 @@
 #include "FileItem.h"
 #include "ScriptSettings.h"
 #include "GUIDialogPluginSettings.h"
+#include "LocalizeStrings.h"
 
 using namespace XFILE;
 
@@ -100,13 +101,12 @@ bool CGUIWindowScripts::Update(const CStdString &strDirectory)
         CFileItemPtr pItem = m_vecItems->Get(i);
         if (pItem->m_strPath == filename)
         {
-          char tstr[1024];
-          strcpy(tstr, pItem->GetLabel());
-          if (g_pythonParser.isStopping(id))
-            strcat(tstr, " (Stopping)");
+            CStdString runningLabel = pItem->GetLabel() + " (";
+            if (g_pythonParser.isStopping(id))
+                runningLabel += g_localizeStrings.Get(23053) + ")";
           else
-            strcat(tstr, " (Running)");
-          pItem->SetLabel(tstr);
+                runningLabel += g_localizeStrings.Get(23054) + ")";
+            pItem->SetLabel(runningLabel);
         }
       }
     }

@@ -32,7 +32,7 @@
 #define SDL_SwapLE32(X) (X)
 #endif
 
-#define BYTES_TO_CHECK_FOR_BAD_TAGS 8192
+#define BYTES_TO_CHECK_FOR_BAD_TAGS 16384
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
