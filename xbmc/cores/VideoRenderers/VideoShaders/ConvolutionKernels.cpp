@@ -30,9 +30,9 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
   m_pixels = NULL;
 
   if (method == VS_SCALINGMETHOD_LANCZOS2)
-    Lanczos2(size, 2.0);
+    Lanczos2(size);
   else if (method == VS_SCALINGMETHOD_LANCZOS3_FAST)
-    Lanczos2(size, 2.68);
+    Lanczos3Fast(size);
   else if (method == VS_SCALINGMETHOD_LANCZOS3)
     Lanczos3(size);
   else if (method == VS_SCALINGMETHOD_CUBIC) 
@@ -46,10 +46,7 @@ CConvolutionKernel::~CConvolutionKernel()
 
 //generate a lanczos2 kernel which can be loaded with RGBA format
 //each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
-//radius can be increased to fit a "fake" lanczos3 kernel into a lanczos2 window
-//this looks very similar (little more aliasing) but since it uses a 4 taps shader
-//it runs a lot faster
-void CConvolutionKernel::Lanczos2(int size, double radius)
+void CConvolutionKernel::Lanczos2(int size)
 {
   m_pixels = new float[size * 4];
 
@@ -59,7 +56,39 @@ void CConvolutionKernel::Lanczos2(int size, double radius)
 
     //generate taps
     for (int j = 0; j < 4; j++)
-      m_pixels[i * 4 + j] = LanczosWeight(x + (double)(j - 2), radius, 2.0);
+      m_pixels[i * 4 + j] = LanczosWeight(x + (double)(j - 2), 2.0);
+
+    //any collection of 4 taps added together needs to be exactly 1.0
+    //for lanczos this is not always the case, so we take each collection of 4 taps
+    //and divide those taps by the sum of the taps
+    float weight = 0.0;
+    for (int j = 0; j < 4; j++)
+      weight += m_pixels[i * 4 + j];
+
+    for (int j = 0; j < 4; j++)
+      m_pixels[i * 4 + j] /= weight;
+  }
+}
+
+//generate a lanczos3 kernel which can be loaded with RGBA format
+//each value of RGBA has one tap, so a shader can load 4 taps with a single pixel lookup
+//the two outer lobes of the lanczos3 kernel are added to the two lobes one step to the middle
+//this basically looks the same as lanczos3, but the kernel only has 4 taps,
+//so it can use the 4x4 convolution shader which is twice as fast as the 6x6 one
+void CConvolutionKernel::Lanczos3Fast(int size)
+{
+  m_pixels = new float[size * 4];
+
+  for (int i = 0; i < size; i++)
+  {
+    double a = 2.67;
+    double x = (double)i / (double)size;
+
+    //generate taps
+    m_pixels[i * 4 + 0] = LanczosWeight(x - 2.0, a) + LanczosWeight(x - 3.0, a);
+    m_pixels[i * 4 + 1] = LanczosWeight(x - 1.0, a);
+    m_pixels[i * 4 + 2] = LanczosWeight(x      , a);
+    m_pixels[i * 4 + 3] = LanczosWeight(x + 1.0, a) + LanczosWeight(x + 2.0, a);
 
     //any collection of 4 taps added together needs to be exactly 1.0
     //for lanczos this is not always the case, so we take each collection of 4 taps
@@ -85,7 +114,7 @@ void CConvolutionKernel::Lanczos3(int size)
 
     //generate taps
     for (int j = 0; j < 3; j++)
-      m_pixels[i * 4 + j] = LanczosWeight(x * 2.0 + (double)(j * 2 - 3), 3.0, 3.0);
+      m_pixels[i * 4 + j] = LanczosWeight(x * 2.0 + (double)(j * 2 - 3), 3.0);
 
     m_pixels[i * 4 + 3] = 0.0;
   }
@@ -125,13 +154,13 @@ void CConvolutionKernel::Bicubic(int size, double B, double C)
   }
 }
 
-double CConvolutionKernel::LanczosWeight(double x, double radius, double window)
+double CConvolutionKernel::LanczosWeight(double x, double radius)
 {
   double ax = fabs(x);
 
   if (ax == 0.0)
     return 1.0;
-  else if (ax < window)
+  else if (ax < radius)
     return SINC(ax) * SINC(ax / radius);
   else
     return 0.0;
