@@ -374,8 +374,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
   CURL url(strPath);
-  //TODO using hostname for both content type and UUID. How to deal with informing plugin which contenttype to retrieve?
-  // for multi content plugins - eg IPlayer
   if (!StringUtils::ValidateUUID(url.GetHostName()))
   { // called with no script - we must be browsing root of plugins dir
     return GetPluginsDirectory(ADDON::TranslateContent(url.GetHostName()), items);
@@ -392,29 +390,27 @@ bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& it
 bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 {
   CURL url(strPath);
-  if (url.GetFileName().IsEmpty()) // called with no script - should never happen
+  if (url.GetHostName().IsEmpty()) // called with no script - should never happen
     return false;
 
-  // Load the settings incase they changed while in the plugins directory
-  //TODO g_currentPluginSettings.Load(url);
+  AddonPtr addon;
+  if (!CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, url.GetHostName(), addon))
+  {
+    CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
+    return false;
+  }
 
-  // Load language strings
-  // TODO CAddon::LoadAddonStrings(url);
-
-  // path is special://home/addons/plugins/<path from here>
-  CStdString pathToScript = "special://home/addons/plugins/";
-  CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
-  CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
-  CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
+  if (addon->HasSettings())
+    addon->LoadSettings();
 
   // options
   CStdString options = url.GetOptions();
   CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
                                     // is needed for all others, as XBMC adds slashes to "folders"
-  // base path
-  CStdString basePath = "plugin://";
-  CUtil::AddFileToFolder(basePath, url.GetHostName(), basePath);
-  CUtil::AddFileToFolder(basePath, url.GetFileName(), basePath);
+  url.SetOptions(""); // do this because we can then use the url to generate the basepath
+                      // which is passed to the plugin (and represents the share)
+
+  CStdString basePath(url.Get());
 
   // setup our parameters to send the script
   CStdString strHandle;
@@ -426,12 +422,13 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
   // run the script
 #ifdef HAS_PYTHON
-  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), argv[0], argv[1], argv[2]);
-  if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
+  CStdString file = addon->Path() + addon->LibName();
+  CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0], argv[1], argv[2]);
+  if (g_pythonParser.evalFile(file.c_str(), 3, (const char**)argv) >= 0)
     return true;
   else
 #endif
-    CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
+    CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());
 
   return false;
 }

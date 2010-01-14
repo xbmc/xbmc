@@ -788,8 +788,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
   }
   else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
   {
-    // don't support running addons like this for now
-    return false;
+    return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
   }
   else
   {
