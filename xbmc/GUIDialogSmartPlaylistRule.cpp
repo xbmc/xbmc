@@ -96,13 +96,13 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   CVideoDatabase videodatabase;
   videodatabase.Open();
 
-  CONTENT_TYPE type = CONTENT_MOVIES;
+  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
   if (m_type.Equals("tvshows"))
-    type = CONTENT_TVSHOWS;
+    type = VIDEODB_CONTENT_TVSHOWS;
   else if (m_type.Equals("musicvideos"))
-    type = CONTENT_MUSICVIDEOS;
+    type = VIDEODB_CONTENT_MUSICVIDEOS;
   else if (m_type.Equals("episodes"))
-    type = CONTENT_EPISODES;
+    type = VIDEODB_CONTENT_EPISODES;
 
   int iLabel = 0;
   if (m_rule.m_field == CSmartPlaylistRule::FIELD_GENRE)
@@ -114,7 +114,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     if (m_type.Equals("musicvideos") || m_type.Equals("mixed"))
     {
       CFileItemList items2;
-      videodatabase.GetGenresNav("videodb://3/1/",items2,CONTENT_MUSICVIDEOS);
+      videodatabase.GetGenresNav("videodb://3/1/",items2,VIDEODB_CONTENT_MUSICVIDEOS);
       items.Append(items2);
     }
     iLabel = 515;

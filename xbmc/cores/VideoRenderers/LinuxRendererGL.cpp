@@ -932,12 +932,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
-    if(!glewIsSupported("GL_ARB_texture_float"))
-    {
-      CLog::Log(LOGERROR, "GL: hardware doesn't support GL_ARB_texture_float");
-      break;
-    }
-
     if (!m_fbo.Initialize())
     {
       CLog::Log(LOGERROR, "GL: Error initializing FBO");
@@ -1728,7 +1722,11 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
   m_destRect.SetRect(0, 0, (float)width, (float)height);
 
   // clear framebuffer and invert Y axis to get non-inverted image
+  glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
+  glClearColor(0, 0, 0, 0);
+  glDisable(GL_BLEND);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(0, height, 0);

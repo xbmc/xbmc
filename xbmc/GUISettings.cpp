@@ -44,14 +44,11 @@
 using namespace std;
 
 // String id's of the masks
-#define MASK_DAYS   17999
-#define MASK_HOURS  17998
 #define MASK_MINS   14044
 #define MASK_SECS   14045
 #define MASK_MS    14046
 #define MASK_PERCENT 14047
 #define MASK_KBPS   14048
-#define MASK_MB    17997
 #define MASK_KB    14049
 #define MASK_DB    14050
 
@@ -232,11 +229,6 @@ void CGUISettings::Initialize()
 
   // Programs settings
 //  AddGroup(1, 0);
-
-  AddCategory(1,"programfiles",744);
-  AddBool(4, "programfiles.savefolderviews", 583, true);
-  AddString(5, "programfiles.defaultscraper", 20194, "", SPIN_CONTROL_TEXT);
-  AddString(6, "programfiles.managescraper", 23068, "", BUTTON_CONTROL_STANDARD);
 
   // My Weather settings
   AddGroup(2, 8);

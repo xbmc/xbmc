@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
+
 using namespace DIRECTORY;
 using namespace std;
 using namespace ADDON;
@@ -120,8 +121,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   CStdString file = m_addon->Path() + m_addon->LibName();
   if (g_pythonParser.evalFile(file.c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
-    CStdString scriptName = url.GetFileName();
-    CUtil::RemoveSlashAtEnd(scriptName);
+    CStdString scriptName = m_addon->Name();
     success = WaitOnScriptResult(file, scriptName);
   }
   else
@@ -200,9 +200,6 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
 
   if (!dir->m_listItems->HasSortDetails())
     dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", "%D"));
-
-  // Unload temporary language strings
-  /*ClearPluginStrings();*/
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
@@ -635,19 +632,3 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
   dir->m_listItems->SetProperty(strProperty, strValue);
 }
 
-CStdString CPluginDirectory::TranslatePluginDirectory(const CStdString &strPath)
-{
-  CStdString addonFileName;
-  CURL url(strPath);
-  if (url.GetProtocol() == "plugin")
-  {
-    addonFileName = "special://home/addons/plugins/";
-    CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
-    CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
-  }
-  else
-  {
-    addonFileName = strPath;
-  }
-  return addonFileName;
-}

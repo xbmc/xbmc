@@ -1,6 +1,4 @@
-#ifndef GUIDIALOG_PLUGIN_SETTINGS_
-#define GUIDIALOG_PLUGIN_SETTINGS_
-
+#pragma once
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -53,6 +51,4 @@ private:
   std::map<CStdString,CStdString> m_buttonValues;
   bool m_cancelled;
 };
-
-#endif
 

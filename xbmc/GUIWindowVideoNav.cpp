@@ -22,6 +22,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowVideoFiles.h"
+#include "GUIWindowMusicNav.h"
 #include "GUIWindowFileManager.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"

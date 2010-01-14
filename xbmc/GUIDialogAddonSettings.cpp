@@ -385,7 +385,6 @@ void CGUIDialogAddonSettings::CreateControls()
 
   // Create our base path, used for type "fileenum" settings
   CStdString basepath(m_addon->Path());
-  basepath = CPluginDirectory::TranslatePluginDirectory(basepath);
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
