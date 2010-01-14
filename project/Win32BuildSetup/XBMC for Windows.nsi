@@ -403,11 +403,24 @@ Section "DirectX WebInstall" SEC_DIRECTX
   File "${xbmc_root}\Xbmc\dxwebsetup.exe"
   DetailPrint "Running DirectX Setup..."
   ExecWait '"$TEMP\dxwebsetup.exe" /Q /r:n' $DirectXSetupError
-  DetailPrint "Finished DirectX Setup"
- 
   Delete "$TEMP\dxwebsetup.exe"
- 
   SetOutPath "$INSTDIR"
+
+  ;do minimal install if webinstaller failed for some reason
+  IfFileExists $SYSDIR\D3DX9_42.dll done
+  SetOutPath "$TEMP\dxsetup"
+  File "${xbmc_root}\..\dependencies\dxsetup\Aug2009_d3dx9_42_x86.cab"
+  File "${xbmc_root}\..\dependencies\dxsetup\dsetup32.dll"
+  File "${xbmc_root}\..\dependencies\dxsetup\DSETUP.dll"
+  File "${xbmc_root}\..\dependencies\dxsetup\dxdllreg_x86.cab"
+  File "${xbmc_root}\..\dependencies\dxsetup\DXSETUP.exe"
+  File "${xbmc_root}\..\dependencies\dxsetup\dxupdate.cab"
+  ExecWait '"$TEMP\dxsetup\dxsetup.exe" /silent' $DirectXSetupError
+  RMDir /r "$TEMP\dxsetup"
+  SetOutPath "$INSTDIR"
+
+  done:
+  DetailPrint "Finished DirectX Setup"
   
 SectionEnd
 
