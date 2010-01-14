@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo ""
+echo "Extracting CrystalHD drivers..."
+echo ""
+
+cd /
+
+tar xvf /root/crystalhd.tar
+
+rm /root/crystalhd.tar
+
+depmod -a

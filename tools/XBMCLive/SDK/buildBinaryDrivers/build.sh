@@ -6,8 +6,6 @@ WORKDIR=workarea
 . $THISDIR/getInstallers.sh
 . $THISDIR/mkConfig.sh
 
-# USE_LOCAL_INSTALLERS="yes"
-
 build()
 {
 	cd $THISDIR/$WORKDIR
@@ -38,14 +36,25 @@ fi
 #
 mkdir -p Files/chroot_local-includes/root &> /dev/null
 
-# Get latest installers 
-if [ -z "$USE_LOCAL_INSTALLERS" ]; then
-	rm *.run &> /dev/null
-	getInstallers
+# Get drivers if files are not already available
+if [ ! -f crystalhd-HEAD.tar.gz ]; then
+	getBCDriversSources
+else
+	mv crystalhd-HEAD.tar.gz Files/chroot_local-includes/root
+fi
+
+if [ -z "$(ls NVIDIA*.run)" ]; then
+	getNVIDIAInstaller
 else
 	mv NVIDIA*.run Files/chroot_local-includes/root
+fi
+
+if [ -z "$(ls ati*.run)" ]; then
+	getAMDInstaller
+else
 	mv ati*.run Files/chroot_local-includes/root
 fi
+
 
 # Clean any previous run
 rm -rf *.ext3 &> /dev/null
@@ -62,3 +71,4 @@ build
 
 # Get files from chroot
 cp $WORKDIR/chroot/tmp/*.ext3 .
+cp $WORKDIR/chroot/tmp/crystalhd.tar .
