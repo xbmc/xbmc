@@ -77,8 +77,8 @@ public:
   void SetScraperInfo(const SScraperInfo& info) { m_info.Reset(); m_info = info; }
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 private:
-  HRESULT Load(const CStdString&);
-  HRESULT Scrape(const CStdString&, const CStdString& strURL="");
+  int Load(const CStdString&);
+  int Scrape(const CStdString&, const CStdString& strURL="");
 private:
   char* m_doc;
   char* m_headofdoc;
