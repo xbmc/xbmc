@@ -1,11 +1,11 @@
 uniform sampler2D img;
 uniform float     stepx;
 uniform float     stepy;
-uniform sampler2D kernelTex;
+uniform sampler1D kernelTex;
 
 vec3 weight(float pos)
 {
-  return texture2D(kernelTex, vec2(pos, 0.5)).rgb;
+  return texture1D(kernelTex, pos).rgb;
 }
 
 vec3 pixel(float xpos, float ypos)

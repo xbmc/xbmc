@@ -242,17 +242,17 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 
   if ((m_kernelTex1<=0))
   {
-    CLog::Log(LOGERROR, "GL: Error creating bicubic kernels, could not create textures");
+    CLog::Log(LOGERROR, "GL: ConvolutionFilterShader: Error creating kernel texture");
     return;
   }
 
   glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, kernelsize, 1, 0, GL_RGBA, GL_FLOAT, kernel.GetPixels());
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, kernelsize, 0, GL_RGBA, GL_FLOAT, kernel.GetPixels());
 
   glActiveTexture(GL_TEXTURE0);
 
@@ -263,7 +263,7 @@ bool ConvolutionFilterShader::OnEnabled()
 {
   // set shader attributes once enabled
   glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
 
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
