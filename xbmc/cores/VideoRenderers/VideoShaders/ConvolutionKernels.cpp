@@ -18,6 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifdef _WIN32
+  #define _USE_MATH_DEFINES
+#endif
 
 #include "ConvolutionKernels.h"
 #include "system.h"
@@ -54,7 +57,7 @@ void CConvolutionKernel::Lanczos2(int size)
 
     //generate taps
     for (int j = 0; j < 4; j++)
-      m_pixels[i * 4 + j] = LanczosWeight(x + (double)(j - 2), 2.0);
+      m_pixels[i * 4 + j] = (float)LanczosWeight(x + (double)(j - 2), 2.0);
 
     //any collection of 4 taps added together needs to be exactly 1.0
     //for lanczos this is not always the case, so we take each collection of 4 taps
@@ -81,10 +84,10 @@ void CConvolutionKernel::Lanczos3Fast(int size)
     double x = (double)i / (double)size;
 
     //generate taps
-    m_pixels[i * 4 + 0] = LanczosWeight(x - 2.0, a) + LanczosWeight(x - 3.0, a);
-    m_pixels[i * 4 + 1] = LanczosWeight(x - 1.0, a);
-    m_pixels[i * 4 + 2] = LanczosWeight(x      , a);
-    m_pixels[i * 4 + 3] = LanczosWeight(x + 1.0, a) + LanczosWeight(x + 2.0, a);
+    m_pixels[i * 4 + 0] = (float)(LanczosWeight(x - 2.0, a) + LanczosWeight(x - 3.0, a));
+    m_pixels[i * 4 + 1] = (float) LanczosWeight(x - 1.0, a);
+    m_pixels[i * 4 + 2] = (float) LanczosWeight(x      , a);
+    m_pixels[i * 4 + 3] = (float)(LanczosWeight(x + 1.0, a) + LanczosWeight(x + 2.0, a));
 
     //any collection of 4 taps added together needs to be exactly 1.0
     //for lanczos this is not always the case, so we take each collection of 4 taps
@@ -108,7 +111,7 @@ void CConvolutionKernel::Lanczos3(int size)
 
     //generate taps
     for (int j = 0; j < 3; j++)
-      m_pixels[i * 4 + j] = LanczosWeight(x * 2.0 + (double)(j * 2 - 3), 3.0);
+      m_pixels[i * 4 + j] = (float)LanczosWeight(x * 2.0 + (double)(j * 2 - 3), 3.0);
 
     m_pixels[i * 4 + 3] = 0.0;
   }
@@ -142,7 +145,7 @@ void CConvolutionKernel::Bicubic(int size, double B, double C)
 
     //generate taps
     for (int j = 0; j < 4; j++)
-      m_pixels[i * 4 + j] = BicubicWeight(x + (double)(j - 2), B, C);
+      m_pixels[i * 4 + j] = (float)BicubicWeight(x + (double)(j - 2), B, C);
   }
 }
 
