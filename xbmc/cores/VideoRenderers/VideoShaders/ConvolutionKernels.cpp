@@ -206,8 +206,8 @@ void CConvolutionKernel::ToIntFract()
     int integer = value / 255;
     int fract   = value % 255;
 
-    m_intfractpixels[i] = integer;
-    m_intfractpixels[i + m_size * 4] = fract;
+    m_intfractpixels[i] = (uint8_t)integer;
+    m_intfractpixels[i + m_size * 4] = (uint8_t)fract;
   }
 
 #if 0
