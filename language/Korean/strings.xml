@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 01/11/2010-->
+<!--Date of translation: 01/14/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1391,6 +1391,7 @@
   <string id="16312">(VDPAU)잡음 제거</string>
   <string id="16313">(VDPAU)선명도</string>
   <string id="16314">역 텔레시네</string>
+  <string id="16315">랑초스3 최적화</string>
   <string id="17500">종료 시간제한 표시</string>
   <string id="19000">채널로 변경</string>
   <string id="20000">저장된 음악 폴더</string>
@@ -1419,7 +1420,7 @@
   <string id="20038">음악 윈도우 잠금</string>
   <string id="20039">비디오 윈도우 잠금</string>
   <string id="20040">사진 윈도우 잠금</string>
-  <string id="20041">프로그램, 저장 &amp; 스크립트 윈도우 잠금</string>
+  <string id="20041">프로그램 &amp; 스크립트 윈도우 잠금</string>
   <string id="20042">파일 관리자 잠금</string>
   <string id="20043">설정 잠금</string>
   <string id="20044">새로 고침 시작</string>
@@ -1932,6 +1933,8 @@
   <string id="23050">문자다중방송 활성화</string>
   <string id="23051">파트 %i</string>
   <string id="23052">%i 바이트 버퍼링</string>
+  <string id="23053">중지중</string>
+  <string id="23054">실행중</string>
   <string id="23100">외장 플레이어 활성</string>
   <string id="23101">플레이어를 종료하려면 예를 누르세요</string>
   <string id="23104">재생이 끝났으면 예를 누르세요</string>
