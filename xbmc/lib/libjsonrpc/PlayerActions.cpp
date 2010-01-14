@@ -83,9 +83,8 @@ JSON_STATUS CPlayerActions::BigSkipBackward(const CStdString &method, ITransport
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  CAction action;
-  action.id = ACTION_STOP;
-  return FillResult(g_application.OnAction(action), result);
+  CBuiltins::Execute("playercontrol(bigskipbackward)");
+  return FillResult(true, result);
 }
 
 JSON_STATUS CPlayerActions::BigSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
