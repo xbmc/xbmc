@@ -1,0 +1,13 @@
+This is a development package of the cURL libcurl library:
+http://curl.haxx.se/
+This SDK can be used f.e. for static and dynamic linking.
+
+version  : 7.19.7 SSH2 SSL SSPI LIBZ IDN
+license  : http://curl.haxx.se/docs/copyright.html 
+built by : G. Knauf <info@gknw.de>
+
+curl 7.19.7 (i386-pc-win32) libcurl/7.19.7 OpenSSL/0.9.8l zlib/1.2.3 libidn/1.14 libssh2/1.2.1
+Protocols: tftp ftp telnet dict ldap http file https ftps scp sftp
+Features: IDN Largefile NTLM SSL SSPI libz
+
+
