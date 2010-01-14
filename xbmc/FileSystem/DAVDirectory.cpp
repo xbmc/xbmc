@@ -70,7 +70,7 @@ bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString val
   }
   else if (result.size() > 2)
   {
-    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), result.size(), value.c_str());
+    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), (unsigned long int)result.size(), value.c_str());
   }
 
   return false;
