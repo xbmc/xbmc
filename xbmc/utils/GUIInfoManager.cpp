@@ -3798,7 +3798,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         CUtil::RemoveSlashAtEnd(path);
         path=CUtil::GetFileName(path);
       }
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
@@ -3811,7 +3811,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else
         path = item->m_strPath;
       path = CURL(path).GetWithoutUserDetails();
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
     }
   case LISTITEM_PICTURE_PATH:

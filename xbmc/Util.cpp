@@ -1144,7 +1144,7 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
   return atoi(strFilename.Mid(4, 2).c_str());
 }
 
-void CUtil::UrlDecode(CStdString& strURLData)
+void CUtil::URLDecode(CStdString& strURLData)
 //modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
 // However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {

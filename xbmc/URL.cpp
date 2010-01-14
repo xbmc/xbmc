@@ -342,13 +342,13 @@ void CURL::Parse(const CStdString& strURL1)
   /* decode urlencoding on this stuff */
   if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
   {
-    CUtil::UrlDecode(m_strHostName);
+    CUtil::URLDecode(m_strHostName);
     // Validate it as it is likely to contain a filename
     SetHostName(ValidatePath(m_strHostName));
   }
 
-  CUtil::UrlDecode(m_strUserName);
-  CUtil::UrlDecode(m_strPassword);
+  CUtil::URLDecode(m_strUserName);
+  CUtil::URLDecode(m_strPassword);
 }
 
 void CURL::SetFileName(const CStdString& strFileName)

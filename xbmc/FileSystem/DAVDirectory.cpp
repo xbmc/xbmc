@@ -113,7 +113,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
     if (ValueWithoutNamespace(pResponseChild, "href"))
     {
       item.m_strPath = pResponseChild->ToElement()->GetText();
-      CUtil::UrlDecode(item.m_strPath);
+      CUtil::URLDecode(item.m_strPath);
     }
     else if (ValueWithoutNamespace(pResponseChild, "propstat"))
     {
