@@ -133,7 +133,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 
       CStdString ext = CUtil::GetExtension(strURL);
       ext = ext.ToLower();
-      const char *mime = CreateMimeTypeFromExtention(ext.c_str());
+      const char *mime = CreateMimeTypeFromExtension(ext.c_str());
       if (mime)
         MHD_add_response_header(response, "Content-Type", mime);
 
@@ -306,7 +306,7 @@ int CWebServer::GetCapabilities()
   return Response | FileDownload;
 }
 
-const char *CWebServer::CreateMimeTypeFromExtention(const char *ext)
+const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
 {
   if      (strcmp(ext, ".aif") == 0)   return "audio/aiff";
   else if (strcmp(ext, ".aiff") == 0)  return "audio/aiff";
