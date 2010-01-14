@@ -233,7 +233,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         }
         else
         {
-          ClearProperty("filter");
+          SetProperty("filter", "");
           OnFilterItems();
         }
         return true;
@@ -435,7 +435,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     items.SetContent("songs");
 
   // clear the filter
-  ClearProperty("filter");
+  SetProperty("filter", "");
 
   return bResult;
 }

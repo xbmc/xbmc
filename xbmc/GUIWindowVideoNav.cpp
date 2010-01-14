@@ -284,7 +284,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         }
         else
         {
-          ClearProperty("filter");
+          SetProperty("filter", "");
           OnFilterItems();
         }
         return true;
@@ -545,7 +545,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   }
 
   // clear the filter
-  ClearProperty("filter");
+  SetProperty("filter", "");
   return bResult;
 }
 
