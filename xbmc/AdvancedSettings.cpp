@@ -592,6 +592,11 @@ bool CAdvancedSettings::Load()
   if (pTrailerMatching)
     GetCustomRegexps(pTrailerMatching, m_trailerMatchRegExps);
 
+  //everything thats a trailer is not a movie
+  m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
+                                        m_trailerMatchRegExps.begin(),
+                                        m_trailerMatchRegExps.end());
+
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
