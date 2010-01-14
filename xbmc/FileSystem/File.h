@@ -87,7 +87,7 @@ public:
   IFile *Detach();
   void   Attach(IFile *pFile, unsigned int flags = 0);
 
-  static bool Exists(const CStdString& strFileName);
+  static bool Exists(const CStdString& strFileName, bool bUseCache = true);
   static int  Stat(const CStdString& strFileName, struct __stat64* buffer);
   int Stat(struct __stat64 *buffer);
   static bool Delete(const CStdString& strFileName);

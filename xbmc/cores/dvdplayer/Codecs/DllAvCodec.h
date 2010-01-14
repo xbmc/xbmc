@@ -72,6 +72,7 @@ public:
   virtual void av_free_packet(AVPacket *pkt)=0;
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height)=0;
   virtual AVOption *av_set_string(void *obj, const char *name, const char *val)=0;
+  virtual enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat *fmt)=0;
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count)=0;
@@ -135,6 +136,7 @@ public:
   virtual AVOption *av_set_string(void *obj, const char *name, const char *val) { return ::av_set_string(obj, name, val); }
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic) { return ::avcodec_default_get_buffer(s, pic); }
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic) { ::avcodec_default_release_buffer(s, pic); }
+  virtual enum PixelFormat avcodec_default_get_format(struct AVCodecContext *s, const enum PixelFormat *fmt) { return ::avcodec_default_get_format(s, fmt); }
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count) { return ::avcodec_thread_init(s, thread_count); }
   virtual AVCodec *av_codec_next(AVCodec *c) { return ::av_codec_next(c); }
   virtual int av_get_bits_per_sample_format(enum SampleFormat sample_fmt) 
@@ -204,6 +206,8 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD3(AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
   DEFINE_METHOD2(int, avcodec_default_get_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(void, avcodec_default_release_buffer, (AVCodecContext *p1, AVFrame *p2))
+  DEFINE_METHOD2(enum PixelFormat, avcodec_default_get_format, (struct AVCodecContext *p1, const enum PixelFormat *p2))
+  
   DEFINE_METHOD2(int, avcodec_thread_init, (AVCodecContext *p1, int p2))
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
   DEFINE_METHOD1(int, av_get_bits_per_sample_format, (enum SampleFormat p1))
@@ -238,6 +242,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_set_string)
     RESOLVE_METHOD(avcodec_default_get_buffer)
     RESOLVE_METHOD(avcodec_default_release_buffer)
+    RESOLVE_METHOD(avcodec_default_get_format)
     RESOLVE_METHOD(avcodec_thread_init)
     RESOLVE_METHOD(av_codec_next)
     RESOLVE_METHOD(av_get_bits_per_sample_format)

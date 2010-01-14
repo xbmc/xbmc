@@ -3352,7 +3352,7 @@ CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
   }
   else //no parameters
     execute = cmd;
-  CUtil::UrlDecode(parameter);
+  CUtil::URLDecode(parameter);
   return xbmcProcessCommand(NO_EID, NULL, (char_t *) execute.c_str(), (char_t *) parameter.c_str());
 }
 

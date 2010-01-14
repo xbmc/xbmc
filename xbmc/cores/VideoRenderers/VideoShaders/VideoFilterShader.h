@@ -4,6 +4,7 @@
 #ifdef HAS_GL
 
 #include "../../../../guilib/Shader.h"
+#include "../../../settings/VideoSettings.h"
 
 using namespace Shaders;
 
@@ -53,6 +54,24 @@ namespace Shaders {
     // cubic interpolations parameters
     float m_B;
     float m_C;
+  };
+
+  class ConvolutionFilterShader : public BaseVideoFilterShader
+  {
+  public:
+    ConvolutionFilterShader(ESCALINGMETHOD method);
+    void OnCompiledAndLinked();
+    bool OnEnabled();
+    void Free();
+
+  protected:
+    // kernel textures
+    GLuint m_kernelTex1;
+
+    // shader handles to kernel textures
+    GLint m_hKernTex;
+
+    ESCALINGMETHOD m_method;
   };
 
 } // end namespace

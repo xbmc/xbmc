@@ -26,6 +26,7 @@ CDBusMessage::CDBusMessage(const char *destination, const char *object, const ch
 {
   m_reply = NULL;
   m_message = dbus_message_new_method_call (destination, object, interface, method);
+  m_haveArgs = false;
   CLog::Log(LOGDEBUG, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
 }
 
@@ -36,17 +37,28 @@ CDBusMessage::~CDBusMessage()
 
 bool CDBusMessage::AppendObjectPath(const char *object)
 {
-  return dbus_message_append_args(m_message, DBUS_TYPE_OBJECT_PATH, &object, DBUS_TYPE_INVALID);
+  PrepareArgument();
+  return dbus_message_iter_append_basic(&m_args, DBUS_TYPE_OBJECT_PATH, &object);
 }
 
 bool CDBusMessage::AppendArgument(const char *string)
 {
-  return dbus_message_append_args(m_message, DBUS_TYPE_STRING, &string, DBUS_TYPE_INVALID);
+  PrepareArgument();
+  return dbus_message_iter_append_basic(&m_args, DBUS_TYPE_STRING, &string);
 }
 
-bool CDBusMessage::AppendArgument(const char **arrayString, int length)
+bool CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
 {
-  return dbus_message_append_args(m_message, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, &arrayString, length, DBUS_TYPE_INVALID);
+  PrepareArgument();
+  DBusMessageIter sub;
+  bool success = dbus_message_iter_open_container(&m_args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
+
+  for (int i = 0; i < length && success; i++)
+    success &= dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &arrayString[i]);
+
+  success &= dbus_message_iter_close_container(&m_args, &sub);
+
+  return success;
 }
 
 DBusMessage *CDBusMessage::SendSystem()
@@ -82,6 +94,7 @@ DBusMessage *CDBusMessage::Send(DBusConnection *con, DBusError *error)
   {
     if (m_reply)
       dbus_message_unref(m_reply);
+
     m_reply = dbus_connection_send_with_reply_and_block(con, m_message, -1, error);
   }
 
@@ -95,5 +108,13 @@ void CDBusMessage::Close()
 
   if (m_reply)
     dbus_message_unref(m_reply);
+}
+
+void CDBusMessage::PrepareArgument()
+{
+  if (!m_haveArgs)
+    dbus_message_iter_init_append(m_message, &m_args);
+
+  m_haveArgs = true;
 }
 #endif

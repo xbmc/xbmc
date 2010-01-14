@@ -720,9 +720,6 @@
 				RelativePath=".\sha1.hpp">
 			</File>
 			<File
-				RelativePath=".\SmartStr.h">
-			</File>
-			<File
 				RelativePath=".\strfn.hpp">
 			</File>
 			<File

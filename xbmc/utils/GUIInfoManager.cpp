@@ -917,6 +917,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   if (info.Equals("title")) return MUSICPLAYER_TITLE;
   else if (info.Equals("album")) return MUSICPLAYER_ALBUM;
   else if (info.Equals("artist")) return MUSICPLAYER_ARTIST;
+  else if (info.Equals("albumartist")) return MUSICPLAYER_ALBUM_ARTIST;
   else if (info.Equals("year")) return MUSICPLAYER_YEAR;
   else if (info.Equals("genre")) return MUSICPLAYER_GENRE;
   else if (info.Equals("duration")) return MUSICPLAYER_DURATION;
@@ -961,7 +962,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
     return GetPictureLabel(info);
 
-  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET)
+  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET &&
+      info - LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET < (int)m_listitemProperties.size())
   { // grab the property
     if (!m_currentFile)
       return "";
@@ -1049,6 +1051,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
+  case MUSICPLAYER_ALBUM_ARTIST:
   case MUSICPLAYER_GENRE:
   case MUSICPLAYER_YEAR:
   case MUSICPLAYER_TRACK_NUMBER:
@@ -1803,10 +1806,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
       if (it != m_containerMoves.end())
       {
-        if (condition > CONTAINER_STATIC) // are we moving up?
-          bReturn = it->second > 0 && condition - CONTAINER_STATIC >= it->second;
+        if (condition > CONTAINER_STATIC) // moving up
+          bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
         else
-          bReturn = it->second < 0 && condition - CONTAINER_STATIC <= it->second;
+          bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
       }
     }
   }
@@ -2206,9 +2209,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (it != m_containerMoves.end())
           {
             if (condition > CONTAINER_STATIC) // moving up
-              bReturn = it->second > 0 && condition - CONTAINER_STATIC >= it->second;
+              bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
             else
-              bReturn = it->second < 0 && condition - CONTAINER_STATIC <= it->second;
+              bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
           }
         }
         break;
@@ -2497,7 +2500,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
     else
     { // no window specified - assume active
-      window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+      window = GetWindowWithCondition(contextWindow, 0);
     }
 
     if (window)
@@ -2920,6 +2923,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     break;
   case MUSICPLAYER_ARTIST:
     if (tag.GetArtist().size()) { return tag.GetArtist(); }
+    break;
+  case MUSICPLAYER_ALBUM_ARTIST:
+    if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtist(); }
     break;
   case MUSICPLAYER_YEAR:
     if (tag.GetYear()) { return tag.GetYearString(); }
@@ -3794,7 +3800,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         CUtil::RemoveSlashAtEnd(path);
         path=CUtil::GetFileName(path);
       }
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
@@ -3807,7 +3813,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else
         path = item->m_strPath;
       path = CURL(path).GetWithoutUserDetails();
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
     }
   case LISTITEM_PICTURE_PATH:

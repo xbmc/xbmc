@@ -25,7 +25,6 @@ sh configure MACOSX_DEPLOYMENT_TARGET=10.4 CFLAGS="-O2 -isysroot /Developer/SDKs
     --disable-ipv6 \
     --without-libidn \
     --without-libssh2 \
-    --without-ssl \
     --disable-ldap
 
 make

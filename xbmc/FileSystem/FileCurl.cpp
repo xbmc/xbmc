@@ -667,7 +667,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         }
 
         // url decode value
-        CUtil::UrlDecode(value);
+        CUtil::URLDecode(value);
 
         if(name.Equals("auth"))
         {

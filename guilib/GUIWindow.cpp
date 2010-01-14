@@ -145,6 +145,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 
   CGUIControlFactory::GetMultipleString(pRootElement, "onload", m_loadActions);
   CGUIControlFactory::GetMultipleString(pRootElement, "onunload", m_unloadActions);
+  CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
 
   TiXmlElement *pChild = pRootElement->FirstChildElement();
   while (pChild)
@@ -370,7 +371,7 @@ bool CGUIWindow::OnMouseAction()
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
   // create the mouse event
-  CMouseEvent event(0); // mouse move only
+  CMouseEvent event(0, 0, 0, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y); // mouse move only
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
     event = CMouseEvent(ACTION_MOUSE_LEFT_CLICK);
   else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
@@ -803,6 +804,7 @@ void CGUIWindow::SetDefaults()
   m_origins.clear();
   m_hasCamera = false;
   m_animationsEnabled = true;
+  m_hitRect.SetRect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
 }
 
 CRect CGUIWindow::GetScaledBounds() const
@@ -858,73 +860,57 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 #endif
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, const char *strValue)
+void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
 {
-  m_mapProperties[strKey] = strValue;
+  m_mapProperties[key] = value;
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, const CStdString &strValue)
+void CGUIWindow::SetProperty(const CStdString &key, const char *value)
 {
-  m_mapProperties[strKey] = strValue;
+  m_mapProperties[key] = value;
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, int nVal)
+void CGUIWindow::SetProperty(const CStdString &key, int value)
 {
   CStdString strVal;
-  strVal.Format("%d",nVal);
-  SetProperty(strKey, strVal);
+  strVal.Format("%d", value);
+  SetProperty(key, strVal);
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, bool bVal)
+void CGUIWindow::SetProperty(const CStdString &key, bool value)
 {
-  SetProperty(strKey, bVal?"1":"0");
+  SetProperty(key, value ? "1" : "0");
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, double dVal)
+void CGUIWindow::SetProperty(const CStdString &key, double value)
 {
   CStdString strVal;
-  strVal.Format("%f",dVal);
-  SetProperty(strKey, strVal);
+  strVal.Format("%f", value);
+  SetProperty(key, strVal);
 }
 
-CStdString CGUIWindow::GetProperty(const CStdString &strKey) const
+CStdString CGUIWindow::GetProperty(const CStdString &key) const
 {
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(key);
   if (iter == m_mapProperties.end())
     return "";
 
   return iter->second;
 }
 
-int CGUIWindow::GetPropertyInt(const CStdString &strKey) const
+int CGUIWindow::GetPropertyInt(const CStdString &key) const
 {
-  return atoi(GetProperty(strKey).c_str()) ;
+  return atoi(GetProperty(key).c_str());
 }
 
-bool CGUIWindow::GetPropertyBOOL(const CStdString &strKey) const
+bool CGUIWindow::GetPropertyBool(const CStdString &key) const
 {
-  return GetProperty(strKey) == "1";
+  return GetProperty(key) == "1";
 }
 
-double CGUIWindow::GetPropertyDouble(const CStdString &strKey) const
+double CGUIWindow::GetPropertyDouble(const CStdString &key) const
 {
-  return atof(GetProperty(strKey).c_str()) ;
-}
-
-bool CGUIWindow::HasProperty(const CStdString &strKey) const
-{
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return FALSE;
-
-  return TRUE;
-  }
-
-void CGUIWindow::ClearProperty(const CStdString &strKey)
-{
-  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
-  if (iter != m_mapProperties.end())
-    m_mapProperties.erase(iter);
+  return atof(GetProperty(key).c_str());
 }
 
 void CGUIWindow::ClearProperties()
@@ -958,10 +944,4 @@ void CGUIWindow::RunLoadActions()
 void CGUIWindow::RunUnloadActions()
 {
   RunActions(m_unloadActions);
-}
-
-bool CGUIWindow::HitTest(const CPoint &point) const
-{
-  CRect rect(0, 0, m_width, m_height);
-  return rect.PtInRect(point - GetPosition());
 }

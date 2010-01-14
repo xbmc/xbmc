@@ -71,7 +71,7 @@ bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString val
   }
   else if (result.size() > 2)
   {
-    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), (unsigned long)result.size(), value.c_str());
+    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), (unsigned long int)result.size(), value.c_str());
   }
 
   return false;
@@ -114,7 +114,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
     if (ValueWithoutNamespace(pResponseChild, "href"))
     {
       item.m_strPath = pResponseChild->ToElement()->GetText();
-      CUtil::UrlDecode(item.m_strPath);
+      CUtil::URLDecode(item.m_strPath);
     }
     else if (ValueWithoutNamespace(pResponseChild, "propstat"))
     {
@@ -184,27 +184,27 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     CLog::Log(LOGERROR, "%s - Failed to get any response", __FUNCTION__);
   }
 
-  // Iterarte over all responses
+  // Iterate over all responses
   for ( pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
   {
     if (ValueWithoutNamespace(pChild, "response"))
     {
       CFileItemPtr pItem(new CFileItem());
-      CStdString path;
-      CStdString filename;
 
       /* One item will be the actual directory, just ignore that one */
       if (ParseResponse(pChild->ToElement(), *pItem))
       {
-        // Remove first slash to get rid of dav://hostname//filename problem
-        url.SetFileName(pItem->m_strPath.substr(1));
+        // HACK: Since our pItem doesn't have the correct path anymore (http:// instead of dav:// with credentials)
+        // we take the path from our parent and re-insert it. There maybe a better way, not sure
+        CStdString filename = CUtil::GetFileName(pItem->m_strPath);
+        CStdString path(strPath);
+        
+        CUtil::AddSlashAtEnd(path);
+        pItem->m_strPath = path + filename;
 
-        pItem->m_strPath = url.Get();
-
-        CUtil::Split(pItem->m_strPath, path, filename);
         pItem->SetLabel(filename);
 
-        if (pItem->m_strPath != strPath)
+        if (pItem->m_strPath != path)
         {
           items.Add(pItem);
         }

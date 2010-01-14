@@ -79,12 +79,25 @@ retrieveLatestAMDURL()
 	echo $driverDownloadURL
 }
 
-getInstallers()
+getBCDriversSources()
 {
-	#
-	# Download the latest drivers installers
-	#
+	# Get Broadcom CristalHD main tree
 
+	# Remove previous Broadcom file
+	[ ! -f Files/chroot_local-includes/root/crystalhd*.gz ] || rm Files/chroot_local-includes/root/crystalhd*.gz
+
+	echo "Downloading Broadcom drivers snapshot from http://git.wilsonet.com/crystalhd.git ..."
+	wget -nc --no-proxy -q "http://git.wilsonet.com/crystalhd.git?a=snapshot;h=HEAD;sf=tgz" -O crystalhd-HEAD.tar.gz
+	if [ ! -f crystalhd-HEAD.tar.gz ]; then
+		echo "Error retrieving Broadcom drivers, exiting..."
+		exit 1
+	fi
+
+	mv crystalhd-HEAD.tar.gz Files/chroot_local-includes/root
+}
+
+getNVIDIAInstaller()
+{
 	# Remove previous NVIDIA installer
 	[ ! -f Files/chroot_local-includes/root/NVIDIA*.run ] || rm Files/chroot_local-includes/root/NVIDIA*.run
 
@@ -93,13 +106,16 @@ getInstallers()
 
 	echo "Downloading NVIDIA Installer from $driverDownloadURL ..."
 	wget -nc --no-proxy -q $driverDownloadURL
-	if [ "$?" -ne "0" ]; then
+	if [ -z "$(ls NVIDIA*.run)" ]; then
 		echo "Error retrieving NVIDIA drivers, exiting..."
 		exit 1
 	fi
 
 	mv NVIDIA*.run Files/chroot_local-includes/root
+}
 
+getAMDInstaller()
+{
 	# Remove previous AMD installer
 	[ ! -f Files/chroot_local-includes/root/ati*.run ] || rm Files/chroot_local-includes/root/ati*.run
 
@@ -108,7 +124,7 @@ getInstallers()
 
 	echo "Downloading AMD Installer from $driverDownloadURL ..."
 	wget -nc --no-proxy -q $driverDownloadURL
-	if [ "$?" -ne "0" ]; then
+	if [ -z "$(ls ati*.run)" ]; then
 		echo "Error retrieving ATI drivers, exiting..."
 		exit 1
 	fi

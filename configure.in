@@ -77,6 +77,8 @@ case $host in
     i386-apple-darwin*)
        ARCH="x86-osx"
        AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
+       # export kernelflags (i386/x86_64) (OS X > 10.6.1)
+       AC_SUBST([HOSTTYPE])
        ;;
     powerpc-apple-darwin*)
        ARCH="powerpc-osx"
@@ -399,6 +401,13 @@ if test "$host_vendor" = "apple" ; then
                     [INCLUDES+=" $VORBISENC_CFLAGS"; LIBS+=" $VORBISENC_LIBS"],
                     AC_MSG_ERROR($missing_library))
 else
+  AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
+  if test $MYSQL_CONFIG = "yes"; then
+                  INCLUDES+=" `mysql_config --include`"
+                  LIBS+=" `mysql_config --libs`"
+  else
+                  AC_MSG_ERROR($missing_program)
+  fi
   AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
@@ -1486,7 +1495,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   if test "$host_vendor" = "apple" ; then
 	./configure --with-ssl-dir=/opt/local/include
   else
-	./configure
+	./configure --without-openssl
   fi
 ], [0])
 

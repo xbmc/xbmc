@@ -31,9 +31,11 @@ public:
 
   static void CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb);
   static bool CreateThumbnail(const CStdString& file, const CStdString& thumbFile, bool checkExistence = false);
-  static bool CacheImage(const CStdString& sourceFile, const CStdString& destFile, int width, int height);
   static bool CacheThumb(const CStdString& sourceFile, const CStdString& destFile);
   static bool CacheFanart(const CStdString& sourceFile, const CStdString& destFile);
+
+private:
+  static bool CacheImage(const CStdString& sourceFile, const CStdString& destFile, int width, int height);
 };
 
 //this class calls CreateThumbnailFromSurface in a CJob, so a png file can be written without halting the render thread
