@@ -56,38 +56,38 @@ ln -s libglx.so.* libglx.so.1
 ln -s libglx.so.1 libglx.so
 popd
 
-for modulesdir in /lib/modules/*
-do
-	kernelVersion=$(basename $modulesdir)
-	apt-get install linux-headers-$kernelVersion
+# Assuming only one kernel is installed!
+modulesdir=/lib/modules/$(ls /lib/modules)
 
-	pushd .
-	cd usr/src/nv
-	make SYSSRC=/usr/src/linux-headers-$kernelVersion/ module
-	cp nvidia.ko /tmp
-	rm *.o *.ko
-	popd
+kernelVersion=$(basename $modulesdir)
+apt-get install linux-headers-$kernelVersion
 
-	pushd .
-	cd $modulesdir
-	mkdir -p updates/dkms
+pushd .
+cd usr/src/nv
+make SYSSRC=/usr/src/linux-headers-$kernelVersion/ module
+cp nvidia.ko /tmp
+rm *.o *.ko
+popd
 
-	cp /tmp/nvidia.ko updates/dkms
-	depmod -a $kernelVersion
-	tar cvf /tmp/modules.tar modules.* updates
-	rm updates/dkms/nvidia.ko
-	popd
+pushd .
+cd $modulesdir
+mkdir -p updates/dkms
 
-	pushd .
-	mkdir -p lib/modules/$kernelVersion
-	cd lib/modules/$kernelVersion
-	tar xvf /tmp/modules.tar
-	rm /tmp/modules.tar
-	popd
-done
+cp /tmp/nvidia.ko updates/dkms
+depmod -a $kernelVersion
+tar cvf /tmp/modules.tar modules.* updates
+rm updates/dkms/nvidia.ko
+popd
 
-overhead=1
-IMAGE_SIZE=$(((($(du -sm . | cut -d'	' -f1))/32 + $overhead) * 32))
+pushd .
+mkdir -p lib/modules/$kernelVersion
+cd lib/modules/$kernelVersion
+tar xvf /tmp/modules.tar
+rm /tmp/modules.tar
+popd
+
+overhead=10
+IMAGE_SIZE=$(($(du -sm . | cut -f1) + $overhead))
 
 dd if=/dev/zero of=/tmp/nvidia.ext3 bs=1M count=$IMAGE_SIZE
 mkfs.ext3 -F /tmp/nvidia.ext3
