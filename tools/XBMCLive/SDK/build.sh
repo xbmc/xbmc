@@ -83,9 +83,9 @@ fi
 cd $THISDIR
 
 #
-# Build restricted drivers
+# Build binary drivers
 #
-cd $WORKPATH/buildRestricted
+cd $WORKPATH/buildBinaryDrivers
 ./build.sh
 if [ "$?" -ne "0" ]; then
 	exit 1
@@ -123,11 +123,11 @@ if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
 fi
 cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
-if ! ls $WORKPATH/buildRestricted/*.ext3 > /dev/null 2>&1; then
+if ! ls $WORKPATH/buildBinaryDrivers/*.ext3 > /dev/null 2>&1; then
         echo "Files missing (5), exiting..."
         exit 1
 fi
-cp $WORKPATH/buildRestricted/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
+cp $WORKPATH/buildBinaryDrivers/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
 
 #
 # Perform XBMCLive image build
