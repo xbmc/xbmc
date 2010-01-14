@@ -2277,7 +2277,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LANCZOS3_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
-    if (glewIsSupported("GL_ARB_texture_float") && glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
+    if (glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
       return true;
   }
  

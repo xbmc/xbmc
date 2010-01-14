@@ -213,12 +213,24 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   m_method = method;
   m_kernelTex1 = 0;
 
+  string shadername;
+
   if (m_method == VS_SCALINGMETHOD_CUBIC ||
       m_method == VS_SCALINGMETHOD_LANCZOS2 ||
       m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
-    PixelShader()->LoadSource("convolution-4x4.glsl");
+    shadername = "convolution-4x4";
   else if (m_method == VS_SCALINGMETHOD_LANCZOS3)
-    PixelShader()->LoadSource("convolution-6x6.glsl");
+    shadername = "convolution-6x6";
+
+  m_floattex = glewIsSupported("GL_ARB_texture_float");
+
+  if (m_floattex)
+    shadername += "-float.glsl";
+  else
+    shadername += "-intfract.glsl";
+
+  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s", shadername.c_str());
+  PixelShader()->LoadSource(shadername);
 }
 
 void ConvolutionFilterShader::OnCompiledAndLinked()
@@ -246,12 +258,28 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   }
 
   glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
+
+  //if float textures are supported, we can load the kernel as a 1d float texture
+  //if not, we load it as a 2d texture with 2 rows, where row 0 contains the integral part
+  //and row 1 contains the fractional, which can be converted in the shader
+  if (m_floattex)
+  {
+    glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
+  }
+  else
+  {
+    glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, kernel.GetSize(), 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, kernel.GetIntFractPixels());
+  }
 
   glActiveTexture(GL_TEXTURE0);
 
@@ -262,7 +290,11 @@ bool ConvolutionFilterShader::OnEnabled()
 {
   // set shader attributes once enabled
   glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+
+  if (m_floattex)
+    glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+  else
+    glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
 
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
