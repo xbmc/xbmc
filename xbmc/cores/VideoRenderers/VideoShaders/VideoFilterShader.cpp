@@ -214,23 +214,24 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   m_kernelTex1 = 0;
 
   string shadername;
+  string defines;
 
   if (m_method == VS_SCALINGMETHOD_CUBIC ||
       m_method == VS_SCALINGMETHOD_LANCZOS2 ||
       m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
-    shadername = "convolution-4x4";
+    shadername = "convolution-4x4.glsl";
   else if (m_method == VS_SCALINGMETHOD_LANCZOS3)
-    shadername = "convolution-6x6";
+    shadername = "convolution-6x6.glsl";
 
   m_floattex = glewIsSupported("GL_ARB_texture_float");
 
   if (m_floattex)
-    shadername += "-float.glsl";
+    defines = "#define HAS_FLOAT 1\n";
   else
-    shadername += "-intfract.glsl";
+    defines = "#define HAS_FLOAT 0\n";
 
-  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s", shadername.c_str());
-  PixelShader()->LoadSource(shadername);
+  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines: %s", shadername.c_str(), defines.c_str());
+  PixelShader()->LoadSource(shadername, defines);
 }
 
 void ConvolutionFilterShader::OnCompiledAndLinked()

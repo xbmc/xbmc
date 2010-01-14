@@ -1,13 +1,23 @@
 uniform sampler2D img;
 uniform float     stepx;
 uniform float     stepy;
+
+#if (HAS_FLOAT)
+uniform sampler1D kernelTex;
+
+vec3 weight(float pos)
+{
+  return texture1D(kernelTex, pos).rgb;
+}
+#else
 uniform sampler2D kernelTex;
 
 vec3 weight(float pos)
 {
   //row 0 contains the integral part, row 1 contains the fractional
-  return ((texture2D(kernelTex, vec2(pos, 0.0)) + texture2D(kernelTex, vec2(pos, 2.0)) / 255.0) * 2.0 - 1.0).rgb;
+  return ((texture2D(kernelTex, vec2(pos, 0.0)) + texture2D(kernelTex, vec2(pos, 2.0)) / 255.0)).rgb * 2.0 - 1.0;
 }
+#endif
 
 vec3 pixel(float xpos, float ypos)
 {
