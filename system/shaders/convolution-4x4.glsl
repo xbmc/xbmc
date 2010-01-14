@@ -10,17 +10,17 @@ vec4 weight(float pos)
 
 vec4 pixel(float xpos, float ypos)
 {
-  return texture2D(img, vec2(gl_TexCoord[0].x + xpos * stepx, gl_TexCoord[0].y + ypos * stepy));
+  return texture2D(img, vec2(xpos, ypos));
 }
 
-vec4 line (float ypos, float xf, vec4 linetaps)
+vec4 line (float ypos, vec4 xpos, vec4 linetaps)
 {
   vec4  pixels;
 
-  pixels  = pixel(-0.5 - xf, ypos) * linetaps.r;
-  pixels += pixel( 0.5 - xf, ypos) * linetaps.g;
-  pixels += pixel( 1.5 - xf, ypos) * linetaps.b;
-  pixels += pixel( 2.5 - xf, ypos) * linetaps.a;
+  pixels  = pixel(xpos.r, ypos) * linetaps.r;
+  pixels += pixel(xpos.g, ypos) * linetaps.g;
+  pixels += pixel(xpos.b, ypos) * linetaps.b;
+  pixels += pixel(xpos.a, ypos) * linetaps.a;
 
   return pixels;
 }
@@ -33,10 +33,16 @@ void main()
   vec4 linetaps   = weight(1.0 - xf);
   vec4 columntaps = weight(1.0 - yf);
 
-  gl_FragColor  = line(-0.5 - yf, xf, linetaps) * columntaps.r;
-  gl_FragColor += line( 0.5 - yf, xf, linetaps) * columntaps.g;
-  gl_FragColor += line( 1.5 - yf, xf, linetaps) * columntaps.b;
-  gl_FragColor += line( 2.5 - yf, xf, linetaps) * columntaps.a;
+  vec4 xpos = vec4(
+      (-0.5 - xf) * stepx + gl_TexCoord[0].x,
+      ( 0.5 - xf) * stepx + gl_TexCoord[0].x,
+      ( 1.5 - xf) * stepx + gl_TexCoord[0].x,
+      ( 2.5 - xf) * stepx + gl_TexCoord[0].x);
+
+  gl_FragColor  = line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.r;
+  gl_FragColor += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.g;
+  gl_FragColor += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.b;
+  gl_FragColor += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.a;
 
   gl_FragColor.a = gl_Color.a;
 }
