@@ -168,17 +168,20 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
     vecScrapers.push_back(strDefault);
 
   // search ..
+  HRESULT res;
   for (unsigned int i=0;i<vecScrapers.size();++i)
-    if (!Scrape(vecScrapers[i]))
+    if ((res = Scrape(vecScrapers[i])) == S_OK || res == E_OUTOFMEMORY)
       break;
 
+  if (res == E_OUTOFMEMORY)
+    return ERROR_NFO;
   if (bNfo)
     return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
 
   return   (m_strImDbUrl.size() > 0) ? URL_NFO : NO_NFO;
 }
 
-void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const CStdString& strFunction)
+bool CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const CStdString& strFunction)
 {
   if (!pURL)
     parser.m_param[0] = m_doc;
@@ -190,7 +193,7 @@ void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
       CStdString strCurrHTML;
       XFILE::CFileCurl http;
       if (!CScraperUrl::Get(pURL->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
-        return;
+        return false;
       strHTML.push_back(strCurrHTML);
     }
     for (unsigned int i=0;i<strHTML.size();++i)
@@ -203,6 +206,12 @@ void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
 
   if (doc.RootElement())
   {
+    if (stricmp(doc.RootElement()->Value(),"error")==0)
+    {
+      CIMDB::ShowErrorDialog(doc.RootElement());
+      return false;
+    }
+
     TiXmlElement* xurl = doc.FirstChildElement("url");
     while (xurl && xurl->FirstChild())
     {
@@ -218,6 +227,7 @@ void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
     if (pId && pId->FirstChild())
       m_strImDbNr = pId->FirstChild()->Value();
   }
+  return true;
 }
 
 HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& strURL /* = "" */)
@@ -254,7 +264,8 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
       }
     }
 
-    DoScrape(m_parser);
+    if (!DoScrape(m_parser))
+      return E_OUTOFMEMORY; // hack until we sanify this to use ints
 
     if (m_strImDbUrl.size() > 0)
       return S_OK;
