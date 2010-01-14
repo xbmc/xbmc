@@ -29,7 +29,6 @@ namespace JSONRPC
   {
   public:
     static JSON_STATUS GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
-    static JSON_STATUS GetAvailablePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
@@ -44,5 +43,13 @@ namespace JSONRPC
     static JSON_STATUS Forward(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
 
     static JSON_STATUS Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+
+    static JSON_STATUS GetTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetTimeMS(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetPercentage(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS SeekTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+  private:
+    static inline bool IsCorrectPlayer(const CStdString &method);
+    static inline JSON_STATUS FillResult(bool ok, Json::Value &result);
   };
 }
