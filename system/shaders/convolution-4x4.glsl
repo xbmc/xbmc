@@ -8,14 +8,14 @@ vec4 weight(float pos)
   return texture2D(kernelTex, vec2(pos, 0.5));
 }
 
-vec4 pixel(float xpos, float ypos)
+vec3 pixel(float xpos, float ypos)
 {
-  return texture2D(img, vec2(xpos, ypos));
+  return texture2D(img, vec2(xpos, ypos)).rgb;
 }
 
-vec4 line (float ypos, vec4 xpos, vec4 linetaps)
+vec3 line (float ypos, vec4 xpos, vec4 linetaps)
 {
-  vec4  pixels;
+  vec3  pixels;
 
   pixels  = pixel(xpos.r, ypos) * linetaps.r;
   pixels += pixel(xpos.g, ypos) * linetaps.g;
@@ -39,10 +39,10 @@ void main()
       ( 1.5 - xf) * stepx + gl_TexCoord[0].x,
       ( 2.5 - xf) * stepx + gl_TexCoord[0].x);
 
-  gl_FragColor  = line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.r;
-  gl_FragColor += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.g;
-  gl_FragColor += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.b;
-  gl_FragColor += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.a;
+  gl_FragColor.rgb  = line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.r;
+  gl_FragColor.rgb += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.g;
+  gl_FragColor.rgb += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.b;
+  gl_FragColor.rgb += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.a;
 
   gl_FragColor.a = gl_Color.a;
 }
