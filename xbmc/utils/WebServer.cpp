@@ -160,6 +160,7 @@ int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, c
 
   struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
   int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+  MHD_add_response_header(response, "Content-Type", "application/json");
   MHD_destroy_response(response);
 
   return ret;
