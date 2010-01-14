@@ -2498,7 +2498,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
     else
     { // no window specified - assume active
-      window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+      window = GetWindowWithCondition(contextWindow, 0);
     }
 
     if (window)
