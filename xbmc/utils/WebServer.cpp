@@ -356,7 +356,6 @@ const char *CWebServer::CreateMimeTypeFromExtention(const char *ext)
   else if (strcmp(ext, ".wav") == 0)   return "audio/wav";
   else if (strcmp(ext, ".xm") == 0)    return "audio/xm";
   else if (strcmp(ext, ".xml") == 0)   return "text/xml";
-  else if (strcmp(ext, ".xmz") == 0)   return "xgl/movie";
   else if (strcmp(ext, ".zip") == 0)   return "application/zip";
   else return NULL;
 }
