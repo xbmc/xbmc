@@ -60,6 +60,8 @@ private:
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static void StringToBase64(const char *input, CStdString &output);
 
+  static const char *CreateMimeTypeFromExtention(const char *ext);
+
   struct MHD_Daemon *m_daemon;
   bool m_running, m_needcredentials;
   CStdString m_Credentials64Encoded;

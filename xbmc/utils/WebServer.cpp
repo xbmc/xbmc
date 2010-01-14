@@ -130,6 +130,13 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                                                                           2048,
                                                                           &CWebServer::ContentReaderCallback, file,
                                                                           &CWebServer::ContentReaderFreeCallback);
+
+      CStdString ext = CUtil::GetExtension(strURL);
+      ext = ext.ToLower();
+      const char *mime = CreateMimeTypeFromExtention(ext.c_str());
+      if (mime)
+        MHD_add_response_header(response, "Content-Type", mime);
+
       int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
       MHD_destroy_response(response);
       return ret;
@@ -236,12 +243,6 @@ void CWebServer::StringToBase64(const char *input, CStdString &output)
   const char *lookup = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   unsigned long l;
   size_t length = strlen (input);
-
-/*  tmp = (char *)malloc (length * 2);
-  if (NULL == tmp)
-    return tmp;
-
-  tmp[0] = 0;*/
   output = "";
 
   for (int i = 0; i < length; i += 3)
@@ -303,6 +304,61 @@ bool CWebServer::Download(const char *path, Json::Value &result)
 int CWebServer::GetCapabilities()
 {
   return Response | FileDownload;
+}
+
+const char *CWebServer::CreateMimeTypeFromExtention(const char *ext)
+{
+  if      (strcmp(ext, ".aif") == 0)   return "audio/aiff";
+  else if (strcmp(ext, ".aiff") == 0)  return "audio/aiff";
+  else if (strcmp(ext, ".asf") == 0)   return "video/x-ms-asf";
+  else if (strcmp(ext, ".asx") == 0)   return "video/x-ms-asf";
+  else if (strcmp(ext, ".avi") == 0)   return "video/avi";
+  else if (strcmp(ext, ".avs") == 0)   return "video/avs-video";
+  else if (strcmp(ext, ".bin") == 0)   return "application/octet-stream";
+  else if (strcmp(ext, ".bmp") == 0)   return "image/bmp";
+  else if (strcmp(ext, ".dv") == 0)    return "video/x-dv";
+  else if (strcmp(ext, ".fli") == 0)   return "video/fli";
+  else if (strcmp(ext, ".gif") == 0)   return "image/gif";
+  else if (strcmp(ext, ".htm") == 0)   return "text/html";
+  else if (strcmp(ext, ".html") == 0)  return "text/html";
+  else if (strcmp(ext, ".htmls") == 0) return "text/html";
+  else if (strcmp(ext, ".ico") == 0)   return "image/x-icon";
+  else if (strcmp(ext, ".it") == 0)    return "audio/it";
+  else if (strcmp(ext, ".jpeg") == 0)  return "image/jpeg";
+  else if (strcmp(ext, ".jpg") == 0)   return "image/jpeg";
+  else if (strcmp(ext, ".json") == 0)  return "application/json";
+  else if (strcmp(ext, ".kar") == 0)   return "audio/midi";
+  else if (strcmp(ext, ".list") == 0)  return "text/plain";
+  else if (strcmp(ext, ".log") == 0)   return "text/plain";
+  else if (strcmp(ext, ".lst") == 0)   return "text/plain";
+  else if (strcmp(ext, ".m2v") == 0)   return "video/mpeg";
+  else if (strcmp(ext, ".m3u") == 0)   return "audio/x-mpequrl";
+  else if (strcmp(ext, ".mid") == 0)   return "audio/midi";
+  else if (strcmp(ext, ".midi") == 0)  return "audio/midi";
+  else if (strcmp(ext, ".mod") == 0)   return "audio/mod";
+  else if (strcmp(ext, ".mov") == 0)   return "video/quicktime";
+  else if (strcmp(ext, ".mp2") == 0)   return "audio/mpeg";
+  else if (strcmp(ext, ".mp3") == 0)   return "audio/mpeg3";
+  else if (strcmp(ext, ".mpa") == 0)   return "audio/mpeg";
+  else if (strcmp(ext, ".mpeg") == 0)  return "video/mpeg";
+  else if (strcmp(ext, ".mpg") == 0)   return "video/mpeg";
+  else if (strcmp(ext, ".mpga") == 0)  return "audio/mpeg";
+  else if (strcmp(ext, ".pcx") == 0)   return "image/x-pcx";
+  else if (strcmp(ext, ".png") == 0)   return "image/png";
+  else if (strcmp(ext, ".rm") == 0)    return "audio/x-pn-realaudio";
+  else if (strcmp(ext, ".s3m") == 0)   return "audio/s3m";
+  else if (strcmp(ext, ".sid") == 0)   return "audio/x-psid";
+  else if (strcmp(ext, ".tif") == 0)   return "image/tiff";
+  else if (strcmp(ext, ".tiff") == 0)  return "image/tiff";
+  else if (strcmp(ext, ".txt") == 0)   return "text/plain";
+  else if (strcmp(ext, ".uni") == 0)   return "text/uri-list";
+  else if (strcmp(ext, ".viv") == 0)   return "video/vivo";
+  else if (strcmp(ext, ".wav") == 0)   return "audio/wav";
+  else if (strcmp(ext, ".xm") == 0)    return "audio/xm";
+  else if (strcmp(ext, ".xml") == 0)   return "text/xml";
+  else if (strcmp(ext, ".xmz") == 0)   return "xgl/movie";
+  else if (strcmp(ext, ".zip") == 0)   return "application/zip";
+  else return NULL;
 }
 
 int CWebServer::CHTTPClient::GetPermissionFlags()
