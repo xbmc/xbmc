@@ -112,7 +112,7 @@ VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
 PVR_DIRS=\
-	xbmc/pvrclients/vdr
+	xbmc/pvrclients/vdr-streamdev
 
 LIBADDON_DIRS=\
 	xbmc/addons/lib/addonlib++ \
@@ -286,7 +286,7 @@ ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(AR
 endif
 endif
 pvrclients: exports
-	$(MAKE) -C xbmc/pvrclients/vdr
+	$(MAKE) -C xbmc/pvrclients/vdr-streamdev
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libaddon: exports
