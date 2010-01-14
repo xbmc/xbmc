@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 26656 -->
+<!--Based on english strings version 26748 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1479,22 +1479,22 @@
   <string id="16206">部分文件删除失败</string>
 
   <string id="16300">视频扫描方式</string>
-  <string id="16301">最近邻近点</string>
-  <string id="16302">二元直线</string>
-  <string id="16303">双立方</string>
+  <string id="16301">最近邻</string>
+  <string id="16302">双线性</string>
+  <string id="16303">双三次</string>
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
-  <string id="16306">Sinc8</string>
-
-  <string id="16307">双立方（软件）</string>
+  <string id="16306">正弦8</string>
+  <string id="16307">双三次（软件）</string>
   <string id="16308">Lanczos（软件）</string>
-  <string id="16309">Sinc（软件）</string>
-
+  <string id="16309">正弦（软件）</string>
   <string id="16310">（VDPAU）时间平滑</string>
   <string id="16311">（VDPAU）时间/空间平滑</string>
   <string id="16312">（VDPAU）降噪</string>
   <string id="16313">（VDPAU）锐化</string>
   <string id="16314">帧率逆转换</string>
+  <string id="16315">Lanczos3优化</string>
+
   <string id="17500">显示睡眠时间</string>
 
   <string id="19000">切换到频道</string>
@@ -1533,7 +1533,7 @@
   <string id="20038">锁定音乐部分</string>
   <string id="20039">锁定视频部分</string>
   <string id="20040">锁定图片部分</string>
-  <string id="20041">锁定程序、存档与脚本部分</string>
+  <string id="20041">锁定程序与脚本部分</string>
   <string id="20042">锁定文件管理</string>
   <string id="20043">锁定系统设置</string>
   <string id="20044">重新设置</string>
