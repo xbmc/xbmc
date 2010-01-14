@@ -229,8 +229,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   m_hStepY     = glGetUniformLocation(ProgramHandle(), "stepy");
   m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
 
-  int kernelsize = 256;
-  CConvolutionKernel kernel(m_method, kernelsize);
+  CConvolutionKernel kernel(m_method, 256);
 
   if (m_kernelTex1)
   {
@@ -252,7 +251,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, kernelsize, 0, GL_RGBA, GL_FLOAT, kernel.GetPixels());
+  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
 
   glActiveTexture(GL_TEXTURE0);
 
