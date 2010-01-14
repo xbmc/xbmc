@@ -123,7 +123,7 @@
   <string id="165">Disc present</string>
   <string id="166">Skin</string>
   <string id="167">Enable FTP server</string>
-  <string id="168">Enable Internet time synchronization</string>
+  <string id="168"></string>
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
 
@@ -596,9 +596,9 @@
   <string id="726">Changes not saved. Continue without saving?</string>
   <string id="727">Web server</string>
   <string id="728">FTP server</string>
-  <string id="729">Internet time</string>
+  <string id="729"></string>
   <string id="730">- Port</string>
-  <string id="731">Time server host</string>
+  <string id="731"></string>
   <string id="732">Save &amp; apply</string>
   <string id="733">- Password</string>
   <string id="734">No pass</string>
