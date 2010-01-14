@@ -173,6 +173,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           destPath = "videodb://2/3/";
         else if (strDestination.Equals("TvShowActors"))
           destPath = "videodb://2/4/";
+        else if (strDestination.Equals("TvShowStudios"))
+          destPath = "videodb://2/5/";
         else if (strDestination.Equals("TvShows"))
           destPath = "videodb://2/";
         else if (strDestination.Equals("MusicVideoGenres"))
