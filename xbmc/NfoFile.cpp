@@ -168,7 +168,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
     vecScrapers.push_back(strDefault);
 
   // search ..
-  int res;
+  int res = -1;
   for (unsigned int i=0;i<vecScrapers.size();++i)
     if ((res = Scrape(vecScrapers[i])) == 0 || res == 2)
       break;
