@@ -58,27 +58,20 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   while(*cur != PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
-    if(CVDPAU::IsVDPAUFormat(*cur))
+    if(CVDPAU::IsVDPAUFormat(*cur) && ctx->IsHardwareAllowed())
     {
-      if(g_VDPAU == NULL)
+      if(ctx->GetHardware() == NULL)
       {
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Creating VDPAU(%ix%i)", avctx->width, avctx->height);
-        g_VDPAU = new CVDPAU(avctx->width, avctx->height, avctx->codec_id);
-        if(!g_VDPAU->HasDevice())
+        CVDPAU* vdp = new CVDPAU();
+        if(!vdp->Open(avctx, *cur))
         {
           CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Failed to get VDPAU device");
-          delete g_VDPAU;
-          g_VDPAU = NULL;
+          delete vdp;
         }
+        ctx->SetHardware(vdp);
       }
-      if(g_VDPAU)
-      {
-        avctx->get_buffer      = CVDPAU::FFGetBuffer;
-        avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
-        avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
-        avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-        return *cur;
-      }
+      return *cur;
     }
 #endif
     cur++;
@@ -98,17 +91,12 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
-  m_UsingSoftware = true;
+  m_bSoftware = false;
+  m_pHardware = NULL;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU && !m_UsingSoftware) {
-    delete g_VDPAU;
-    g_VDPAU = NULL;
-  }
-#endif
   Dispose();
 }
 
@@ -126,6 +114,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #endif
 
+  m_bSoftware     = hints.software;
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
 
   pCodec = NULL;
@@ -133,7 +122,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #ifdef HAVE_LIBVDPAU
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   if((requestedMethod == RENDER_METHOD_VDPAU || requestedMethod == RENDER_METHOD_AUTO)
-  && !hints.software)
+  && !m_bSoftware)
   {
     while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))
     {
@@ -141,20 +130,19 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       && pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
       {
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i, %d)",hints.width, hints.height, hints.codec);
-        g_VDPAU = new CVDPAU(hints.width, hints.height, hints.codec);
-        if(g_VDPAU->HasDevice())
+        CVDPAU* vdp = new CVDPAU();
+        m_pCodecContext->codec_id = hints.codec;
+        m_pCodecContext->width    = hints.width;
+        m_pCodecContext->height   = hints.height;
+        if(vdp->Open(m_pCodecContext, pCodec->pix_fmts ? pCodec->pix_fmts[0] : PIX_FMT_NONE))
         {
-          m_pCodecContext->get_buffer      = CVDPAU::FFGetBuffer;
-          m_pCodecContext->release_buffer  = CVDPAU::FFReleaseBuffer;
-          m_pCodecContext->draw_horiz_band = CVDPAU::FFDrawSlice;
-          m_pCodecContext->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;        
-          m_UsingSoftware = false;
+          m_pHardware = vdp;
+          m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
           break;
         }
-
+        m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");
-        delete g_VDPAU;
-        g_VDPAU = NULL;
+        delete vdp;
       }
     }
   }
@@ -218,7 +206,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 #if defined(_LINUX) || defined(_WIN32)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
-  if( num_threads > 1 && !hints.software && m_UsingSoftware // thumbnail extraction fails when run threaded
+  if( num_threads > 1 && !hints.software && m_pHardware == NULL // thumbnail extraction fails when run threaded
   && ( pCodec->id == CODEC_ID_H264
     || pCodec->id == CODEC_ID_MPEG4
     || pCodec->id == CODEC_ID_MPEG2VIDEO ))
@@ -244,11 +232,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDVideoCodecFFmpeg::Dispose()
 {
+  SAFE_DELETE(m_pHardware);
+
   if (m_pFrame) m_dllAvUtil.av_free(m_pFrame);
   m_pFrame = NULL;
 
   if (m_pConvertFrame)
-
   {
     m_dllAvCodec.avpicture_free(m_pConvertFrame);
     m_dllAvUtil.av_free(m_pConvertFrame);
@@ -328,24 +317,19 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext)
     return VC_ERROR;
 
-#ifdef HAVE_LIBVDPAU
-  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
+  if(m_pHardware)
   {
-    if(g_VDPAU->CheckRecover(false))
-    {
-      m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
-      return VC_FLUSHED;
-    }
-
-    if(pData == NULL)
-    {
-      int result = g_VDPAU->Decode(m_pCodecContext, NULL);
-      if((result & VC_PICTURE) 
-      || (result & VC_BUFFER))
-        return result;
-    }
+    int result;
+    if(pData)
+      result = m_pHardware->Check();
+    else
+      result = m_pHardware->Decode(m_pCodecContext, NULL);
+    
+    if((result & VC_PICTURE) 
+    || (result & VC_BUFFER)
+    || (result & VC_FLUSHED))
+      return result;
   }
-#endif
 
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
@@ -370,16 +354,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!iGotPicture)
     return VC_BUFFER;
 
-#ifdef HAVE_LIBVDPAU
-  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
-  {
-    if(g_VDPAU == NULL)
-      return VC_ERROR;
-  }
-  else
-#endif
   if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
-  && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
+  && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
+  && m_pHardware == NULL)
   {
     if (!m_dllSwScale.IsLoaded())
     {
@@ -441,19 +418,10 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
-#ifdef HAVE_LIBVDPAU
-  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
-  {
-    if(g_VDPAU->CheckRecover(false))
-    {
-      m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
-      return VC_FLUSHED;
-    }
-
-    return g_VDPAU->Decode(m_pCodecContext, m_pFrame);
-  }
-#endif
-  return VC_PICTURE | VC_BUFFER;
+  if(m_pHardware)
+    return m_pHardware->Decode(m_pCodecContext, m_pFrame);
+  else
+    return VC_PICTURE | VC_BUFFER;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
@@ -527,12 +495,10 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
-#ifdef HAVE_LIBVDPAU
-  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
-    return g_VDPAU->GetPicture(pDvdVideoPicture);
-#endif
-
-  return true;
+  if(m_pHardware)
+    return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
+  else
+    return true;
 }
 
 /*
@@ -557,10 +523,3 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
     iHeight = ((int)RINT(pCodecContext->width / aspect_ratio)) & -3;
   }
 }
-
-#ifdef HAVE_LIBVDPAU
-CVDPAU* CDVDVideoCodecFFmpeg::GetContextVDPAU()
-{
-  return g_VDPAU;
-}
-#endif

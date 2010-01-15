@@ -60,7 +60,7 @@ static float studioCSC[3][4] =
             return value; \
         } while(0);
 
-CVDPAU::CVDPAU(int width, int height, CodecID codec)
+CVDPAU::CVDPAU()
 {
   glXBindTexImageEXT = NULL;
   glXReleaseTexImageEXT = NULL;
@@ -96,12 +96,15 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
 
   videoMixer = VDP_INVALID_HANDLE;
+}
 
+bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
+{
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
   if (!dl_handle)
   {
     CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
-    return;
+    return false;
   }
 
   InitVDPAUProcs();
@@ -111,35 +114,51 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
     SpewHardwareAvailable();
 
     VdpDecoderProfile profile = 0;
-    if(codec == CODEC_ID_H264)
+    if(avctx->codec_id == CODEC_ID_H264)
       profile = VDP_DECODER_PROFILE_H264_HIGH;
 #ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
-    else if(codec == CODEC_ID_MPEG4)
+    else if(avctx->codec_id == CODEC_ID_MPEG4)
       profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
 #endif
     if(profile)
     {
       /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       VdpStatus vdp_st;
-      vdp_st = vdp_decoder_create(vdp_device, profile, width, height, 5, &decoder);
+      vdp_st = vdp_decoder_create(vdp_device, profile, avctx->width, avctx->height, 5, &decoder);
 
       if(vdp_st != VDP_STATUS_OK)
       {
         CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) checking for decoder support\n", vdp_get_error_string(vdp_st), vdp_st);
         FiniVDPAUProcs();
-        return;
+        return false;
       }
 
       vdp_decoder_destroy(decoder);
       CheckStatus(vdp_st, __LINE__);
     }
 
-    InitCSCMatrix(height);
-    MakePixmap(width,height);
+    InitCSCMatrix(avctx->height);
+    MakePixmap(avctx->width,avctx->height);
+
+    /* finally setup ffmpeg */
+    avctx->get_buffer      = CVDPAU::FFGetBuffer;
+    avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
+    avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
+    avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
+
+    /* hack for now, we need this in renderer */
+    g_VDPAU = this;
+    return true;
   }
+  return false;
 }
 
 CVDPAU::~CVDPAU()
+{
+  Close();
+}
+
+void CVDPAU::Close()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
   if (m_glPixmap)
@@ -164,12 +183,13 @@ CVDPAU::~CVDPAU()
     glXDestroyContext(m_Display, m_glContext);
     m_glContext = NULL;
   }
-
   if (dl_handle)
   {
     dlclose(dl_handle);
     dl_handle = NULL;
   }
+
+  g_VDPAU = NULL;
 }
 
 bool CVDPAU::MakePixmapGL()
@@ -822,7 +842,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CVDPAU*               vdp        = ctx->GetContextVDPAU();
+  CVDPAU*               vdp        = (CVDPAU*)ctx->GetHardware();
   struct pictureAge*    pA         = &vdp->picAge;
 
   // while we are waiting to recover we can't do anything
@@ -924,7 +944,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
                                            int y, int type, int height)
 {
   CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)s->opaque;
-  CVDPAU*               vdp = ctx->GetContextVDPAU();
+  CVDPAU*               vdp = (CVDPAU*)ctx->GetHardware();
 
   /* while we are waiting to recover we can't do anything */
   if(vdp->recover)
@@ -1086,7 +1106,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   }
 }
 
-bool CVDPAU::GetPicture(DVDVideoPicture* picture)
+bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
   picture->format = DVDVideoPicture::FMT_VDPAU;
   picture->iFlags = 0;
