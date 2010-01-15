@@ -22,6 +22,7 @@
 #ifndef CONVOLUTIONKERNELS
 #define CONVOLUTIONKERNELS
 
+#include "system.h"
 #include "../../../settings/VideoSettings.h"
 
 class CConvolutionKernel
@@ -30,19 +31,25 @@ class CConvolutionKernel
     CConvolutionKernel(ESCALINGMETHOD method, int size);
     ~CConvolutionKernel();
 
-    float* GetPixels() { return m_pixels; }
+    int      GetSize()           { return m_size; }
+    float*   GetFloatPixels()    { return m_floatpixels; }
+    uint8_t* GetIntFractPixels() { return m_intfractpixels; }
 
   private:
 
-    void Lanczos2(int size);
-    void Lanczos3Fast(int size);
-    void Lanczos3(int size);
-    void Bicubic(int size, double B, double C);
+    void Lanczos2();
+    void Lanczos3Fast();
+    void Lanczos3();
+    void Bicubic(double B, double C);
 
     double LanczosWeight(double x, double radius);
     double BicubicWeight(double x, double B, double C);
 
-    float* m_pixels;
+    void ToIntFract();
+
+    int      m_size;
+    float*   m_floatpixels;
+    uint8_t* m_intfractpixels;
 };
 
 #endif //CONVOLUTIONKERNELS

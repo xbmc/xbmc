@@ -77,8 +77,6 @@ case $host in
     i386-apple-darwin*)
        ARCH="x86-osx"
        AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
-       # export kernelflags (i386/x86_64) (OS X > 10.6.1)
-       AC_SUBST([HOSTTYPE])
        ;;
     powerpc-apple-darwin*)
        ARCH="powerpc-osx"
