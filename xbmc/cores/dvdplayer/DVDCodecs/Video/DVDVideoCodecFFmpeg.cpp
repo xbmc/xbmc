@@ -323,7 +323,7 @@ static double pts_itod(int64_t pts)
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
-  int iGotPicture = 0, len = 0, result = 0;
+  int iGotPicture = 0, len = 0;
 
   if (!m_pCodecContext)
     return VC_ERROR;
@@ -335,6 +335,14 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     {
       m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
       return VC_FLUSHED;
+    }
+
+    if(pData == NULL)
+    {
+      int result = g_VDPAU->Decode(m_pCodecContext, NULL);
+      if((result & VC_PICTURE) 
+      || (result & VC_BUFFER))
+        return result;
     }
   }
 #endif
@@ -520,8 +528,8 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
 #ifdef HAVE_LIBVDPAU
-  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
-    pDvdVideoPicture->format = DVDVideoPicture::FMT_VDPAU;
+  if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
+    return g_VDPAU->GetPicture(pDvdVideoPicture);
 #endif
 
   return true;

@@ -86,6 +86,7 @@ public:
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
   int  Decode(AVCodecContext *avctx, AVFrame *pFrame);
+  bool GetPicture(DVDVideoPicture* picture);
   void Present();
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
@@ -106,7 +107,6 @@ public:
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       interlaced;
   int        OutWidth, OutHeight;
 
   VdpProcamp    m_Procamp;
@@ -190,6 +190,10 @@ public:
   uint32_t max_references;
   Display* m_Display;
   bool     vdpauConfigured;
+
+  VdpVideoMixerPictureStructure m_mixerfield;
+  int                           m_mixerstep;
+
 
   static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt

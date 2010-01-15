@@ -27,6 +27,7 @@
 #include "TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
+#include "DVDClock.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
@@ -69,6 +70,8 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
   recover = false;
+  m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+  m_mixerstep  = 0;
 
   m_glPixmap = 0;
   m_glPixmapTexture = 0;
@@ -86,7 +89,6 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
-  interlaced     = false;
   max_references = 0;
   upscalingAvailable=false;
 
@@ -353,6 +355,10 @@ void CVDPAU::CheckFeatures()
 
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
+    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
+    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
+    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
+
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
     if (upscalingAvailable)
     {
@@ -360,13 +366,6 @@ void CVDPAU::CheckFeatures()
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
     }
 #endif
-    if (interlaced && tmpDeint)
-    {
-      CLog::Log(LOGNOTICE, " (VDPAU) Enabling deinterlacing features for the video mixer");
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
-    }
 
     VdpStatus vdp_st = VDP_STATUS_ERROR;
     vdp_st = vdp_video_mixer_create(vdp_device,
@@ -403,7 +402,7 @@ void CVDPAU::CheckFeatures()
     SetSharpness();
   }
 
-  if (interlaced && tmpDeint && tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
+  if (tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
   {
     tmpDeint = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     SetDeinterlacing();
@@ -501,27 +500,28 @@ void CVDPAU::SetDeinterlacing()
 
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_InterlaceMethod)
+  if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO
+  ||  g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_VDPAU)
   {
-    VdpBool enabled[]={0,0,0};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
-  }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO)
-  {
-    VdpBool enabled[]={1,0,0};
+    VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
   else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND)
   {
-    VdpBool enabled[]={1,1,0};
+    VdpBool enabled[]={1,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
   else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE)
   {
     VdpBool enabled[]={0,0,1};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    CheckStatus(vdp_st, __LINE__);
+  }
+  else
+  {
+    VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
@@ -970,8 +970,6 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
 int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
-  VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
   VdpTime time;
 
@@ -982,15 +980,6 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
   CheckFeatures();
 
-  if (interlaced && tmpDeint)
-    structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
-                                          VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
-  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
-
-  past[0] = past[1];
-  past[1] = current;
-  current = render->surface;
-
   if (( (int)outRectVid.x1 != OutWidth ) ||
       ( (int)outRectVid.y1 != OutHeight ))
   {
@@ -1000,20 +989,81 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = OutHeight;
   }
 
-  if (current == VDP_INVALID_HANDLE)
+  if(pFrame)
+  { // we have a new frame from decoder
+
+    vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
+    if(!render) // old style ffmpeg gave data on plane 0
+      render = (vdpau_render_state*)pFrame->data[0];
+    if(!render)
+      return VC_ERROR;
+
+    past[0] = past[1];
+    past[1] = current;
     current = render->surface;
+    m_mixerstep = 0;
+
+    EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
+    ||  method == VS_INTERLACEMETHOD_VDPAU
+    ||  method == VS_INTERLACEMETHOD_RENDER_BLEND
+    ||  method == VS_INTERLACEMETHOD_INVERSE_TELECINE )
+    {
+      if(pFrame->top_field_first)
+        m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+      else
+        m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
+    }
+    else
+      m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+
+  }
+  else
+  { // no new frame given, output second field of old frame
+    m_mixerstep = 1;
+
+    if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD)
+      m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
+    else
+      m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+  }
+
+  VdpVideoSurface past_surfaces[2] = { VDP_INVALID_HANDLE, VDP_INVALID_HANDLE };
+  VdpVideoSurface futu_surfaces[1] = { VDP_INVALID_HANDLE };
+
+  if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  {
+    past_surfaces[1] = past[0];
+    past_surfaces[0] = past[1];
+    futu_surfaces[0] = VDP_INVALID_HANDLE;
+  }
+  else
+  {
+    if(m_mixerstep == 0)
+    { // first field
+      past_surfaces[1] = past[1];
+      past_surfaces[0] = past[1];
+      futu_surfaces[0] = current;
+    }
+    else
+    { // second field
+      past_surfaces[1] = past[1];
+      past_surfaces[0] = current;
+      futu_surfaces[0] = VDP_INVALID_HANDLE;
+    }
+  }
 
   vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
-                                  0,
-                                  structure,
+                                  0, 
+                                  m_mixerfield,
                                   2,
-                                  past,
+                                  past_surfaces,
                                   current,
-                                  0,
-                                  NULL,
+                                  1,
+                                  futu_surfaces,
                                   NULL,
                                   outputSurface,
                                   &(outRectVid),
@@ -1024,7 +1074,31 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
-  return VC_BUFFER | VC_PICTURE;
+
+  if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+    return VC_BUFFER | VC_PICTURE;
+  else
+  {
+    if (m_mixerstep == 0)
+      return VC_PICTURE;
+    else
+      return VC_BUFFER | VC_PICTURE;
+  }
+}
+
+bool CVDPAU::GetPicture(DVDVideoPicture* picture)
+{
+  picture->format = DVDVideoPicture::FMT_VDPAU;
+  picture->iFlags = 0;
+
+  if(m_mixerfield != VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  {
+    picture->iRepeatPicture = -0.5;
+    picture->iFlags |= DVP_FLAG_NOAUTOSYNC;
+    if(m_mixerstep > 0)
+      picture->pts = DVD_NOPTS_VALUE;
+  }
+  return true;
 }
 
 void CVDPAU::Present()
