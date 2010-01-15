@@ -569,238 +569,48 @@ void CVDPAU::InitVDPAUProcs()
     vdp_device = VDP_INVALID_HANDLE;
     return;
   }
+#define VDP_PROC(id, proc) \
+  do { \
+    vdp_st = vdp_get_proc_address(vdp_device, id, (void**)&proc); \
+    CheckStatus(vdp_st, __LINE__); \
+  } while(0);
 
-  vdp_st = vdp_get_proc_address(vdp_device,
-                                VDP_FUNC_ID_GET_ERROR_STRING,
-                                (void **)&vdp_get_error_string);
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(vdp_device,
-                                VDP_FUNC_ID_DEVICE_DESTROY,
-                                (void **)&vdp_device_destroy);
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_CREATE,
-                                (void **)&vdp_video_surface_create);
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_DESTROY,
-                                (void **)&vdp_video_surface_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR,
-                                (void **)&vdp_video_surface_put_bits_y_cb_cr
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR,
-                                (void **)&vdp_video_surface_get_bits_y_cb_cr
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR,
-                                (void **)&vdp_output_surface_put_bits_y_cb_cr
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE,
-                                (void **)&vdp_output_surface_put_bits_native
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_CREATE,
-                                (void **)&vdp_output_surface_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY,
-                                (void **)&vdp_output_surface_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE,
-                                (void **)&vdp_output_surface_get_bits_native
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_CREATE,
-                                (void **)&vdp_video_mixer_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES,
-                                (void **)&vdp_video_mixer_set_feature_enables
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_DESTROY,
-                                (void **)&vdp_video_mixer_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_RENDER,
-                                (void **)&vdp_video_mixer_render
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_GENERATE_CSC_MATRIX,
-                                (void **)&vdp_generate_csc_matrix
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES,
-                                (void **)&vdp_video_mixer_set_attribute_values
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT,
-                                (void **)&vdp_video_mixer_query_parameter_support
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
-                                (void **)&vdp_video_mixer_query_feature_support
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY,
-                                (void **)&vdp_presentation_queue_target_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE,
-                                (void **)&vdp_presentation_queue_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY,
-                                (void **)&vdp_presentation_queue_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY,
-                                (void **)&vdp_presentation_queue_display
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE,
-                                (void **)&vdp_presentation_queue_block_until_surface_idle
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11,
-                                (void **)&vdp_presentation_queue_target_create_x11
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_CREATE,
-                                (void **)&vdp_decoder_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_DESTROY,
-                                (void **)&vdp_decoder_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_RENDER,
-                                (void **)&vdp_decoder_render
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES,
-                                (void **)&vdp_decoder_query_caps
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS,
-                                (void **)&vdp_presentation_queue_query_surface_status
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME,
-                                (void **)&vdp_presentation_queue_get_time
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE,
-                                (void **)&vdp_output_surface_render_output_surface
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED,
-                                (void **)&vdp_output_surface_put_bits_indexed
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PREEMPTION_CALLBACK_REGISTER,
-                                (void **)&vdp_preemption_callback_register
-                                );
-  CheckStatus(vdp_st, __LINE__);
+  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING                    , vdp_get_error_string);
+  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY                      , vdp_device_destroy);
+  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX                 , vdp_generate_csc_matrix);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE                , vdp_video_surface_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY               , vdp_video_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR      , vdp_video_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR      , vdp_video_surface_get_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR     , vdp_output_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE      , vdp_output_surface_put_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE               , vdp_output_surface_create);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY              , vdp_output_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE      , vdp_output_surface_get_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE, vdp_output_surface_render_output_surface);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED     , vdp_output_surface_put_bits_indexed);  
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE                  , vdp_video_mixer_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES     , vdp_video_mixer_set_feature_enables);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY                 , vdp_video_mixer_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER                  , vdp_video_mixer_render);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES    , vdp_video_mixer_set_attribute_values);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT , vdp_video_mixer_query_parameter_support);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT   , vdp_video_mixer_query_feature_support);
+  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE                      , vdp_decoder_create);
+  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , vdp_decoder_destroy);
+  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , vdp_decoder_render);
+  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , vdp_decoder_query_caps);
+  VDP_PROC(VDP_FUNC_ID_PREEMPTION_CALLBACK_REGISTER        , vdp_preemption_callback_register);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY          , vdp_presentation_queue_target_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE                  , vdp_presentation_queue_create);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY                 , vdp_presentation_queue_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY                 , vdp_presentation_queue_display);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE, vdp_presentation_queue_block_until_surface_idle);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , vdp_presentation_queue_target_create_x11);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , vdp_presentation_queue_query_surface_status);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , vdp_presentation_queue_get_time);
+  
+#undef VDP_PROC
 
   vdp_st = vdp_preemption_callback_register(vdp_device,
                                    &VDPPreemptionCallbackFunction,
