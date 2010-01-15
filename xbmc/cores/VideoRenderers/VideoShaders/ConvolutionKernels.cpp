@@ -33,7 +33,7 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
   m_floatpixels = new float[m_size * 4];
 
   if (method == VS_SCALINGMETHOD_LANCZOS2)
-    Lanczos3Fast();
+    Lanczos2();
   else if (method == VS_SCALINGMETHOD_LANCZOS3_FAST)
     Lanczos3Fast();
   else if (method == VS_SCALINGMETHOD_LANCZOS3)
@@ -197,14 +197,14 @@ void CConvolutionKernel::ToIntFract()
 
   for (int i = 0; i < m_size * 4; i++)
   {
-    int value = MathUtils::round_int((m_floatpixels[i] + 1.0) / 2.0 * 255.0 * 255.0);
+    int value = MathUtils::round_int((m_floatpixels[i] + 1.0) / 2.0 * 255.0 * 256.0);
     if (value < 0)
       value = 0;
-    else if (value > 65535)
-      value = 65535;
+    else if (value > 255 * 256)
+      value = 255 * 256;
     
-    int integer = value / 255;
-    int fract   = value % 255;
+    int integer = value / 256;
+    int fract   = value % 256;
 
     m_intfractpixels[i] = (uint8_t)integer;
     m_intfractpixels[i + m_size * 4] = (uint8_t)fract;
