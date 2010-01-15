@@ -187,7 +187,7 @@ double CConvolutionKernel::BicubicWeight(double x, double B, double C)
 }
 
 
-//convert float to integer/fractional, so the kernel can be loaded into an 8 bit texture
+//convert float to high byte/low byte, so the kernel can be loaded into an 8 bit texture
 //with height 2 and converted back to real float in the shader
 //it only works when the kernel texture uses nearest neighbour, but there's almost no difference
 //between that and linear interpolation
