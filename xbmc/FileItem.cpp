@@ -2783,8 +2783,7 @@ CStdString CFileItem::GetLocalFanart() const
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
+  CUtil::ReplaceExtension(strFile, "-fanart",strFile);
   fanarts.push_back(CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())
