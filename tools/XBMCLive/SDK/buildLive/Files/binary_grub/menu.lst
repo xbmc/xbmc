@@ -7,10 +7,6 @@ background 333333
 
 splashimage=/boot/grub/splash.xpm.gz
 
-#
-notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nofstab nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed
-
-
 
 title  XBMCLive - NVIDIA GPU
 kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 module=nvidia persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs

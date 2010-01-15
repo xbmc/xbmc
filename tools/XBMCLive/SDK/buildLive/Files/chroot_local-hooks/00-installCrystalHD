@@ -6,7 +6,7 @@ echo ""
 
 cd /
 
-tar xvf /root/crystalhd.tar
+tar xvf /root/crystalhd.tar > /dev/null
 
 rm /root/crystalhd.tar
 
