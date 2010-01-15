@@ -43,16 +43,21 @@ else
 	mv crystalhd-HEAD.tar.gz Files/chroot_local-includes/root
 fi
 
-if [ -z "$(ls NVIDIA*.run)" ]; then
-	getNVIDIAInstaller
-else
-	mv NVIDIA*.run Files/chroot_local-includes/root
-fi
+if [ -z "$DONOTBUILDRESTRICTEDDRIVERS" ]; then
+	if ! ls NVIDIA*.run > /dev/null 2>&1 ; then
+		getNVIDIAInstaller
+	else
+		mv NVIDIA*.run Files/chroot_local-includes/root
+	fi
 
-if [ -z "$(ls ati*.run)" ]; then
-	getAMDInstaller
+	if ! ls ati*.run > /dev/null 2>&1 ; then
+		getAMDInstaller
+	else
+		mv ati*.run Files/chroot_local-includes/root
+	fi
 else
-	mv ati*.run Files/chroot_local-includes/root
+	rm Files/chroot_local-hooks/20-buildAMD.sh
+	rm Files/chroot_local-hooks/30-buildNVIDIA.sh
 fi
 
 
@@ -70,5 +75,5 @@ makeConfig
 build
 
 # Get files from chroot
-cp $WORKDIR/chroot/tmp/*.ext3 .
+cp $WORKDIR/chroot/tmp/*.ext3 . &> /dev/null
 cp $WORKDIR/chroot/tmp/crystalhd.tar .
