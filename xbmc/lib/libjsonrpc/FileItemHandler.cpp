@@ -19,14 +19,14 @@
  *
  */
 
-#include "LibraryBase.h"
+#include "FileItemHandler.h"
 #include "../Util.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
 
-void CLibraryBase::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value& parameterObject, Value &result)
+void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value& parameterObject, Value &result)
 {
   if (videoInfo->IsEmpty())
     return;
@@ -54,7 +54,7 @@ void CLibraryBase::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value&
   }
 }
 
-void CLibraryBase::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value& parameterObject, Value &result)
+void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value& parameterObject, Value &result)
 {
   if (!musicInfo->GetTitle().IsEmpty())
     result["title"] =  musicInfo->GetTitle().c_str();
@@ -119,7 +119,7 @@ void CLibraryBase::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value&
   }
 }
 
-void CLibraryBase::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, unsigned int &start, unsigned int &end, const Value& parameterObject, Value &result)
+void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, unsigned int &start, unsigned int &end, const Value& parameterObject, Value &result)
 {
   unsigned int size   = (unsigned int)items.Size();
   start = parameterObject.get("start", 0).asUInt();
@@ -161,7 +161,7 @@ void CLibraryBase::HandleFileItemList(const char *id, const char *resultname, CF
   }
 }
 
-bool CLibraryBase::ParseSortMethods(const CStdString &method, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
+bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
 {
   if (order.Equals("ascending"))
     sortorder = SORT_ORDER_ASC;
@@ -242,7 +242,7 @@ bool CLibraryBase::ParseSortMethods(const CStdString &method, const CStdString &
   return true;
 }
 
-void CLibraryBase::Sort(CFileItemList &items, const Value& parameterObject)
+void CFileItemHandler::Sort(CFileItemList &items, const Value& parameterObject)
 {
   if (parameterObject.isMember("sortmethod") && parameterObject.isMember("sortorder"))
   {

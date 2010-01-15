@@ -22,8 +22,7 @@
 
 #include "StdString.h"
 #include "JSONRPC.h"
-#include "LibraryBase.h"
-#include "../FileItem.h"
+#include "FileItemHandler.h"
 
 /*
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
@@ -48,7 +47,7 @@
 
 namespace JSONRPC
 {
-  class CVideoLibrary : public CLibraryBase
+  class CVideoLibrary : public CFileItemHandler
   {
   public:
     static JSON_STATUS GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);

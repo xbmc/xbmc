@@ -22,11 +22,11 @@
 
 #include "StdString.h"
 #include "JSONRPC.h"
-#include "LibraryBase.h"
+#include "FileItemHandler.h"
 
 namespace JSONRPC
 {
-  class CMusicLibrary : public CLibraryBase
+  class CMusicLibrary : public CFileItemHandler
   {
   public:
     static JSON_STATUS GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);

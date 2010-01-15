@@ -22,12 +22,12 @@
 
 #include "StdString.h"
 #include "JSONRPC.h"
-#include "LibraryBase.h"
+#include "FileItemHandler.h"
 #include "PlayList.h"
 
 namespace JSONRPC
 {
-  class CPlaylistOperations : public CLibraryBase
+  class CPlaylistOperations : public CFileItemHandler
   {
   public:
     static JSON_STATUS GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);

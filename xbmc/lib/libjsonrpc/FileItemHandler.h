@@ -28,7 +28,7 @@
 
 namespace JSONRPC
 {
-  class CLibraryBase
+  class CFileItemHandler
   {
   protected:
     static void FillVideoDetails(const CVideoInfoTag *videoInfo, const Json::Value& parameterObject, Json::Value &result);
