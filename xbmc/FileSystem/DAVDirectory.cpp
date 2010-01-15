@@ -113,7 +113,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
     if (ValueWithoutNamespace(pResponseChild, "href"))
     {
       item.m_strPath = pResponseChild->ToElement()->GetText();
-      CUtil::URLDecode(item.m_strPath);
+      CUtil::RemoveSlashAtEnd(item.m_strPath);
     }
     else if (ValueWithoutNamespace(pResponseChild, "propstat"))
     {
@@ -136,6 +136,10 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
                 struct tm timeDate = {0};
                 strptime(pPropChild->ToElement()->GetText(), "%a, %d %b %Y %T", &timeDate);
                 item.m_dateTime = mktime(&timeDate);
+              }
+              else if (ValueWithoutNamespace(pPropChild, "displayname"))
+              {
+                item.SetLabel(pPropChild->ToElement()->GetText());
               }
               else if (!item.m_dateTime.IsValid() && ValueWithoutNamespace(pPropChild, "creationdate"))
               {
@@ -180,6 +184,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     "     <D:getcontentlength/>"
     "     <D:getlastmodified/>"
     "     <D:creationdate/>"
+    "     <D:displayname/>"
     "    </D:prop>"
     "  </D:propfind>");
 
@@ -204,23 +209,28 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     {
       CFileItemPtr pItem(new CFileItem());
 
-      /* One item will be the actual directory, just ignore that one */
       if (ParseResponse(pChild->ToElement(), *pItem))
       {
-        // HACK: Since our pItem doesn't have the correct path anymore (http:// instead of dav:// with credentials)
-        // we take the path from our parent and re-insert it. There maybe a better way, not sure
-        CStdString filename = CUtil::GetFileName(pItem->m_strPath);
-        CStdString path(strPath);
-        
-        CUtil::AddSlashAtEnd(path);
-        pItem->m_strPath = path + filename;
+        CURL url2(strPath);
+        CURL url3(pItem->m_strPath);
 
-        pItem->SetLabel(filename);
+        CStdString strBasePath = url2.GetWithoutFilename();
+        CStdString strFileName = url3.GetFileName();
+        CUtil::RemoveSlashAtEnd(strBasePath);
+        pItem->m_strPath = strBasePath + strFileName;
 
-        if (pItem->m_strPath != path)
+        if (pItem->GetLabel().IsEmpty())
         {
-          items.Add(pItem);
+          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
+          CUtil::URLDecode(pItem->m_strPath);
+          pItem->SetLabel(CUtil::GetFileName(pItem->m_strPath));
         }
+
+        if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
+        
+        if (!pItem->m_strPath.Equals(strPath))
+          items.Add(pItem);
       }
     }
   }
