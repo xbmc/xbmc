@@ -804,7 +804,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
     CDirectory::Create("special://home/addons/multitype");
-    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/visualizations");
     CDirectory::Create("special://home/addons/scripts");
     CDirectory::Create("special://home/addons/scrapers");
     CDirectory::Create("special://home/addons/screensavers");
@@ -915,7 +915,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
     CDirectory::Create("special://home/addons/multitype");
-    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/visualizations");
     CDirectory::Create("special://home/addons/scripts");
     CDirectory::Create("special://home/addons/scrapers");
     CDirectory::Create("special://home/addons/screensavers");
@@ -1010,7 +1010,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
     CDirectory::Create("special://home/addons/multitype");
-    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/visualizations");
     CDirectory::Create("special://home/addons/scripts");
     CDirectory::Create("special://home/addons/scrapers");
     CDirectory::Create("special://home/addons/screensavers");
@@ -1122,7 +1122,7 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/addons/multitype");
-    CDirectory::Create("special://xbmc/addons/visualisations");
+    CDirectory::Create("special://xbmc/addons/visualizations");
     CDirectory::Create("special://xbmc/addons/scripts");
     CDirectory::Create("special://xbmc/addons/scrapers");
     CDirectory::Create("special://xbmc/addons/screensavers");

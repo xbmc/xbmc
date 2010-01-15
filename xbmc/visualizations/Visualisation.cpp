@@ -234,6 +234,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       viz_release(track);
       return result;
     }
+    return m_pStruct->OnAction((int)action, param);
   }
   return false;
 }

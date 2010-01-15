@@ -115,7 +115,7 @@ bool CKaraokeWindowBackground::OnMessage(CGUIMessage & message)
 
   case GUI_MSG_GET_VISUALISATION:
       if ( m_currentMode == BACKGROUND_VISUALISATION )
-        message.SetPointer( m_VisControl->GetVisualisation() );
+        return m_VisControl->OnMessage(message);
     break;
 
   case GUI_MSG_VISUALISATION_ACTION:

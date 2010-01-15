@@ -54,6 +54,7 @@ using ADDON::CAddonMgr;
 using ADDON::CScraper;
 using ADDON::CScraperPtr;
 using ADDON::AddonPtr;
+using ADDON::TranslateContent;
 
 #define VIDEO_DATABASE_VERSION 34
 #define VIDEO_DATABASE_OLD_VERSION 3.f
