@@ -226,9 +226,9 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   m_floattex = glewIsSupported("GL_ARB_texture_float");
 
   if (m_floattex)
-    defines = "#define HAS_FLOAT 1\n";
+    defines = "#define HAS_FLOAT_TEXTURE 1\n";
   else
-    defines = "#define HAS_FLOAT 0\n";
+    defines = "#define HAS_FLOAT_TEXTURE 0\n";
 
   CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines: %s", shadername.c_str(), defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
