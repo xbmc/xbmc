@@ -34,6 +34,10 @@ THISDIR=$(pwd)
 WORKDIR=workarea
 WORKPATH=$THISDIR/$WORKDIR
 
+if [ -f $THISDIR/setAptProxy.sh ]; then
+	. $THISDIR/setAptProxy.sh
+fi
+
 if [ -d "$WORKPATH" ]; then
 	rm -rf $WORKPATH
 fi
