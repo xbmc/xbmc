@@ -73,47 +73,47 @@ extractModule()
 	rm -rf $WORKDIR 
 }
 
-makeDEBs()
-{
+if ! ls linux-image-*.deb > /dev/null 2>&1 ; then
+	# Get matching package
+	echo "Selecting and downloading the kernel package..."
+	packageName=$(getPackage)
+	if [ ! -f "$packageName" ]; then
+		echo "Error retrieving installer kernel, exiting..."
+		exit 1
+	fi
+
+	echo "Extracting files..."
+	extractModule $packageName
+fi
+
+if ! ls squashfs-udeb_*.udeb > /dev/null 2>&1 ; then
+	echo "Making squashfs-udeb..."
 	cd $THISDIR/squashfs-udeb
 	dpkg-buildpackage -rfakeroot -b -uc -us 
 	cd $THISDIR
+fi
 
+if ! ls xbmclive-installhelpers_*.udeb > /dev/null 2>&1 ; then
+	echo "Making xbmclive-installhelpers..."
 	cd $THISDIR/xbmclive-installhelpers
 	dpkg-buildpackage -rfakeroot -b -uc -us 
 	cd $THISDIR
+fi
 
+if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
+	echo "Making live-initramfs..."
 	cd $THISDIR/live-initramfs-ubuntu
 	dpkg-buildpackage -rfakeroot -b -uc -us 
 	cd $THISDIR
-}
-
-# Get matching package
-echo "Selecting and downloading the kernel package..."
-packageName=$(getPackage)
-if [ ! -f "$packageName" ]; then
-	echo "Error retrieving installer kernel, exiting..."
-	exit 1
 fi
-
-echo "Extracting files..."
-extractModule $packageName
-
-echo "Making debs..."
-makeDEBs
 
 # Retrieve live_installer from Debian's repositories
 # TODO identify & retrieve the latest!
-echo "Retrieving live_installer udebs..."
-wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer_13_i386.udeb"
-if [ "$?" -ne "0" ] || [ ! -f live-installer_13_i386.udeb ] ; then
-	echo "Needed package (1) not found, exiting..."
-	exit 1
+if ! ls live-installer*.udeb > /dev/null 2>&1 ; then
+	echo "Retrieving live_installer udebs..."
+	wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer_13_i386.udeb"
+	if [ "$?" -ne "0" ] || [ ! -f live-installer_13_i386.udeb ] ; then
+		echo "Needed package (1) not found, exiting..."
+		exit 1
+	fi
 fi
-
-wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer-launcher_13_all.deb"
-if [ "$?" -ne "0" ] || [ ! -f live-installer-launcher_13_all.deb ]; then
-	echo "Needed package (2) not found, exiting..."
-	exit 1
-fi
-
