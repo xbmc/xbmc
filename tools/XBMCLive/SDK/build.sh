@@ -68,11 +68,13 @@ if ! which lh > /dev/null ; then
 fi
 
 
-# Execute hook if env variable is defined
-if [ -n "$SDK_BUILDHOOK" ]; then
-	if [ -f $SDK_BUILDHOOK ]; then
-		$SDK_BUILDHOOK
-	fi
+# Execute hooks if env variable is defined
+if [ -n "$SDK_BUILDHOOKS" ]; then
+	for hook in $SDK_BUILDHOOKS; do
+		if [ -x $hook ]; then
+			$hook
+		fi
+	done
 fi
 
 #

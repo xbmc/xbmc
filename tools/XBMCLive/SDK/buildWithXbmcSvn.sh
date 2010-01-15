@@ -1,5 +1,5 @@
 #!/bin/sh
 
-export SDK_BUILDHOOK=xbmcSvnHook.sh
+export SDK_BUILDHOOKS="./xbmcSvnHook.sh"
 
 ./build.sh
