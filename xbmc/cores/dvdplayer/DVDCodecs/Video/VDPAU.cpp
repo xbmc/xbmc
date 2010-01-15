@@ -1112,6 +1112,20 @@ void CVDPAU::Present()
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
+
+  VdpPresentationQueueStatus status;
+  VdpTime time;
+  vdp_st = vdp_presentation_queue_query_surface_status(
+                vdp_flip_queue, outputSurface, &status, &time);
+  CheckStatus(vdp_st, __LINE__);
+
+  while(status != VDP_PRESENTATION_QUEUE_STATUS_VISIBLE && vdp_st == VDP_STATUS_OK)
+  {
+    Sleep(1);
+    vdp_st = vdp_presentation_queue_query_surface_status(
+                  vdp_flip_queue, outputSurface, &status, &time);
+    CheckStatus(vdp_st, __LINE__);
+  }
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
