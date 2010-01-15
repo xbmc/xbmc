@@ -1079,7 +1079,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     return VC_BUFFER | VC_PICTURE;
   else
   {
-    if (m_mixerstep == 0)
+    if (m_mixerstep == 0 && !avctx->hurry_up)
       return VC_PICTURE;
     else
       return VC_BUFFER | VC_PICTURE;
