@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "Builtins.h"
 #include "Util.h"
+#include "PlayListPlayer.h"
 
 using namespace Json;
 using namespace JSONRPC;
@@ -182,6 +183,20 @@ JSON_STATUS CPlayerActions::SeekTime(const CStdString &method, ITransportLayer *
 
   g_application.SeekTime(parameterObject.asInt());
   return FillResult(true, result);
+}
+
+JSON_STATUS CPlayerActions::GetPlaylist(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+{
+  int playlist = PLAYLIST_NONE;
+  if (method.Left(5).Equals("music"))
+    playlist = PLAYLIST_MUSIC;
+  else if (method.Left(5).Equals("video"))
+    playlist = PLAYLIST_VIDEO;
+
+  Value val = playlist;
+  result.swap(val);
+
+  return OK;
 }
 
 bool CPlayerActions::IsCorrectPlayer(const CStdString &method)

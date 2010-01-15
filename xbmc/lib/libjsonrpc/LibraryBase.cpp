@@ -34,13 +34,13 @@ void CLibraryBase::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value&
   if (!videoInfo->m_strTitle.IsEmpty())
     result["title"] = videoInfo->m_strTitle.c_str();
 
+  if (!videoInfo->m_strFileNameAndPath.IsEmpty())
+    result["file"] = videoInfo->m_strFileNameAndPath.c_str();
+
   const Value fields = parameterObject["fields"];
   for (unsigned int i = 0; i < fields.size(); i++)
   {
     CStdString field = fields[i].asString();
-
-    if (field.Equals("file") && !videoInfo->m_strFileNameAndPath.IsEmpty())
-      result["file"] = videoInfo->m_strTitle.c_str();
 
     if (field.Equals("genre") && !videoInfo->m_strGenre.IsEmpty())
       result["genre"] = videoInfo->m_strGenre.c_str();
@@ -63,14 +63,14 @@ void CLibraryBase::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value&
   else if (!musicInfo->GetArtist().IsEmpty())
     result["artist"] =  musicInfo->GetArtist().c_str();
 
+  if (!musicInfo->GetURL().IsEmpty())
+    result["file"] =  musicInfo->GetURL().c_str();
   const Json::Value fields = parameterObject["fields"];
 
   for (unsigned int i = 0; i < fields.size(); i++)
   {
     CStdString field = fields[i].asString();
 
-    if (field.Equals("file") && !musicInfo->GetURL().IsEmpty())
-      result["file"] =  musicInfo->GetURL().c_str();
     if (field.Equals("title") && !musicInfo->GetTitle().IsEmpty())
       result["title"] =  musicInfo->GetTitle().c_str();
     if (field.Equals("album") && !musicInfo->GetAlbum().IsEmpty())
@@ -119,7 +119,7 @@ void CLibraryBase::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value&
   }
 }
 
-void CLibraryBase::HandleFileItemList(const CStdString &id, const CStdString &resultname, CFileItemList &items, unsigned int &start, unsigned int &end, const Value& parameterObject, Value &result)
+void CLibraryBase::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, unsigned int &start, unsigned int &end, const Value& parameterObject, Value &result)
 {
   unsigned int size   = (unsigned int)items.Size();
   start = parameterObject.get("start", 0).asUInt();
@@ -137,14 +137,12 @@ void CLibraryBase::HandleFileItemList(const CStdString &id, const CStdString &re
     Value object;
     CFileItemPtr item = items.Get(i);
 
-    if (item->HasMusicInfoTag())
-      object[id] = (int)item->GetMusicInfoTag()->GetDatabaseId();
-    else if (item->HasVideoInfoTag())
-      object[id] = item->GetVideoInfoTag()->m_iDbId;
-    else
+    if (id)
     {
-//      CUtil::RemoveSlashAtEnd(item->m_strPath);
-      object[id] = item->m_strPath.c_str();
+      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
+        object[id] = (int)item->GetMusicInfoTag()->GetDatabaseId();
+      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
+        object[id] = item->GetVideoInfoTag()->m_iDbId;
     }
 
     if (!item->GetThumbnailImage().IsEmpty())
@@ -155,7 +153,11 @@ void CLibraryBase::HandleFileItemList(const CStdString &id, const CStdString &re
     if (item->HasMusicInfoTag())
       FillMusicDetails(item->GetMusicInfoTag(), parameterObject, object);
 
-    result[resultname].append(object);
+    if (!item->HasVideoInfoTag() && !item->HasMusicInfoTag() && !object.isMember("file"))
+      object["file"] = item->m_strPath.c_str();
+
+    if (resultname)
+      result[resultname].append(object);
   }
 }
 

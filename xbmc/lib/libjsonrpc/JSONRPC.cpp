@@ -21,6 +21,7 @@
 
 #include "JSONRPC.h"
 #include "PlayerActions.h"
+#include "PlaylistOperations.h"
 #include "FileActions.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
@@ -66,6 +67,8 @@ Command CJSONRPC::m_commands[] = {
   { "MusicPlayer.GetPercentage",        CPlayerActions::GetPercentage,          Response,     ReadData,        "Retrieve percentage" },
   { "MusicPlayer.SeekTime",             CPlayerActions::SeekTime,               Response,     ControlPlayback, "Seek to a specific time" },
 
+  { "MusicPlayer.GetPlaylist",          CPlayerActions::GetPlaylist,            Response,     ReadData,        "Retrieve active playlist" },
+
   { "MusicPlayer.Record",               CPlayerActions::Record,                 Response,     ControlPlayback, "" },
 // Video player
   { "VideoPlayer.PlayPause",            CPlayerActions::PlayPause,              Response,     ControlPlayback, "Pauses or unpause playback" },
@@ -85,6 +88,15 @@ Command CJSONRPC::m_commands[] = {
   { "VideoPlayer.GetTimeMS",            CPlayerActions::GetTimeMS,              Response,     ReadData,        "Retrieve time in MS" },
   { "VideoPlayer.GetPercentage",        CPlayerActions::GetPercentage,          Response,     ReadData,        "Retrieve percentage" },
   { "VideoPlayer.SeekTime",             CPlayerActions::SeekTime,               Response,     ControlPlayback, "Seek to a specific time" },
+
+  { "VideoPlayer.GetPlaylist",          CPlayerActions::GetPlaylist,            Response,     ReadData,        "Retrieve active playlist" },
+
+// Playlist
+  { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,         "Retrieve items in the playlist" },
+  { "Playlist.Add",                     CPlaylistOperations::Add,               Response,     ControlPlayback,  "Add items to the playlist" },
+  { "Playlist.Remove",                  CPlaylistOperations::Remove,            Response,     ControlPlayback,  "Remove items in the playlist" },
+  { "Playlist.Swap",                    CPlaylistOperations::Swap,              Response,     ControlPlayback,  "Swap items in the playlist" },
+  { "Playlist.Shuffle",                 CPlaylistOperations::Shuffle,           Response,     ControlPlayback,  "Shuffle playlist" },
 
 // File
 // Static methods
