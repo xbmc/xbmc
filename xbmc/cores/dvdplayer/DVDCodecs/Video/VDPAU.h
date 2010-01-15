@@ -85,7 +85,7 @@ public:
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
-  void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
+  int  Decode(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();

@@ -1157,7 +1157,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   vdp->CheckStatus(vdp_st, __LINE__);
 }
 
-void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
+int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
@@ -1166,7 +1166,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   VdpTime time;
 
   if (!vdpauConfigured)
-    return;
+    return VC_ERROR;
 
   outputSurface = outputSurfaces[surfaceNum];
 
@@ -1214,6 +1214,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
 
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
+  return VC_BUFFER | VC_PICTURE;
 }
 
 void CVDPAU::Present()

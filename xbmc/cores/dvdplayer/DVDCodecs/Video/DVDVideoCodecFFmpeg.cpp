@@ -433,8 +433,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
-  result = VC_PICTURE | VC_BUFFER;
-
 #ifdef HAVE_LIBVDPAU
   if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt) && g_VDPAU)
   {
@@ -444,10 +442,10 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       return VC_FLUSHED;
     }
 
-    g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
+    return g_VDPAU->Decode(m_pCodecContext, m_pFrame);
   }
 #endif
-  return result;
+  return VC_PICTURE | VC_BUFFER;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
