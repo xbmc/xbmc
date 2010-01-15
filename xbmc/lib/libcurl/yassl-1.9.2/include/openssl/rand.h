@@ -1,2 +1,0 @@
-/* rand.h for openSSL */
-
