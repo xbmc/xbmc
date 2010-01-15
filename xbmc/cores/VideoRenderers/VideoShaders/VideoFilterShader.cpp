@@ -261,7 +261,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   glActiveTexture(GL_TEXTURE2);
 
   //if float textures are supported, we can load the kernel as a 1d float texture
-  //if not, we load it as a 2d texture with 2 rows, where row 0 contains the integral part
+  //if not, we load it as a 2d texture with 2 rows, where row 0 contains the integer part
   //and row 1 contains the fractional, which can be converted in the shader
   if (m_floattex)
   {
