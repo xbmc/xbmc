@@ -197,11 +197,11 @@ void CConvolutionKernel::ToIntFract()
 
   for (int i = 0; i < m_size * 4; i++)
   {
-    int value = MathUtils::round_int((m_floatpixels[i] + 1.0) / 2.0 * 255.0 * 256.0);
+    int value = MathUtils::round_int((m_floatpixels[i] + 1.0) / 2.0 * 65535.0);
     if (value < 0)
       value = 0;
-    else if (value > 255 * 256)
-      value = 255 * 256;
+    else if (value > 65535)
+      value = 65535;
     
     int integer = value / 256;
     int fract   = value % 256;
