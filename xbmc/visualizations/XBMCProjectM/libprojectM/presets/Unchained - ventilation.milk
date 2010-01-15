@@ -1,0 +1,79 @@
+[preset00] 
+fRating=3.000000 
+fGammaAdj=2.000000 
+fDecay=0.997000 
+fVideoEchoZoom=0.999999 
+fVideoEchoAlpha=0.000000 
+nVideoEchoOrientation=0 
+nWaveMode=6 
+bAdditiveWaves=0 
+bWaveDots=0 
+bModWaveAlphaByVolume=0 
+bMaximizeWaveColor=0 
+bTexWrap=0 
+bDarkenCenter=0 
+bMotionVectorsOn=0 
+bRedBlueStereo=0 
+nMotionVectorsX=12 
+nMotionVectorsY=9 
+bBrighten=0 
+bDarken=0 
+bSolarize=0 
+bInvert=0 
+fWaveAlpha=1.000000 
+fWaveScale=0.264000 
+fWaveSmoothing=0.000000 
+fWaveParam=0.000000 
+fModWaveAlphaStart=0.850000 
+fModWaveAlphaEnd=1.950000 
+fWarpAnimSpeed=1.000000 
+fWarpScale=1.000000 
+fZoomExponent=18.423244 
+fShader=0.000000 
+zoom=1.000000 
+rot=0.000000 
+cx=0.500000 
+cy=0.500000 
+dx=0.000000 
+dy=0.000000 
+warp=1.000000 
+sx=0.990099 
+sy=0.990099 
+wave_r=0.400000 
+wave_g=0.400000 
+wave_b=0.400000 
+wave_x=0.500000 
+wave_y=0.500000 
+ob_size=0.005000 
+ob_r=0.000000 
+ob_g=0.000000 
+ob_b=0.000000 
+ob_a=1.000000 
+ib_size=0.000000 
+ib_r=0.000000 
+ib_g=0.000000 
+ib_b=0.000000 
+ib_a=0.000000 
+per_frame_1=warp=0; 
+per_frame_2=dx=-0.0005; 
+per_frame_3=dy=-0.0005; 
+per_frame_4=wave_random = rand(100)/100; 
+per_frame_5=wave_r = 1 + sin(-wave_random*3.1415); 
+per_frame_6=wave_g = abs(sin(2*wave_random*3.1415)); 
+per_frame_7=wave_b = sin(wave_random*3.1415); 
+per_frame_8=treb_effect = if(above((treb_att*3+mid_att+bass_att)/5,1.4),pow(.99,treb_att),1.03); 
+per_frame_9=net_effect = if(above(bass_att,0.8*treb_att),1,treb_effect); 
+per_frame_10=zoom = net_effect; 
+per_frame_11=rot = rot + rot_residual; 
+per_frame_12=bass_thresh = 1.3; 
+per_frame_13=bass_thresh = above((bass_att*3+mid_att+treb_att)/5,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.3)*0.96+1.3); 
+per_frame_14=shift = (tan(time*7)) -0.05; 
+per_frame_15=shift = if(above(shift,0),0,if(below(shift,-0.1),-0.1,shift)); 
+per_frame_16=rot_residual = if(equal(bass_thresh,2),shift,rot_residual); 
+per_frame_17=timer=sin(time*.888); 
+per_frame_18=wave_mystery=if(above(timer,0),0,1); 
+per_frame_19=q1=timer; 
+per_pixel_1=disk_shift = if(equal(abs(sin(ang)), if(above(q1,0),0,1)), -rot, 0.05); 
+per_pixel_2=timer=sin(time*1.3); 
+per_pixel_3=x_or_y=if(above(q1,0),y,x); 
+per_pixel_4=rot = rot + if(equal(x_or_y*10%2,0),if(below(timer,0),disk_shift,-rot),if(above(timer,0),disk_shift,-rot));

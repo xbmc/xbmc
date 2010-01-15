@@ -1,0 +1,87 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.000000
+fDecay=0.995000
+fVideoEchoZoom=1.228237
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=3
+nWaveMode=7
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=1
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=4.099998
+fWaveScale=0.120321
+fWaveSmoothing=0.630000
+fWaveParam=-0.200000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999514
+rot=-0.100000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.000000
+wave_g=1.000000
+wave_b=1.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.300000
+ob_r=0.010000
+ob_g=0.000000
+ob_b=0.200000
+ob_a=0.100000
+ib_size=0.260000
+ib_r=0.100000
+ib_g=0.100000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=7.552002
+nMotionVectorsY=14.400000
+mv_dx=0.006000
+mv_dy=0.000000
+mv_l=5.000000
+mv_r=0.100000
+mv_g=0.000000
+mv_b=0.000000
+mv_a=0.000000
+per_frame_1=ab15 = above(bass_att,1.5);
+per_frame_2=ab10 = above(bass_att, 1.0) - ab15;
+per_frame_3=ab05 = above(bass_att, 0.5) - ab15 - ab10;
+per_frame_4=ab00 = 1                                - ab15 - ab10 - ab05;
+per_frame_5=wave_r = ab15*1   + ab10*(6*sin(time*.31)+ .5) + 
+per_frame_6=                ab05*(.4*sin(time*.15)+.2) + ab00*.1;
+per_frame_7=wave_g = ab15*.5 + ab10*(.2*sin(time*.316)+.1) + 
+per_frame_8=                ab05*(.2*sin(time*.101)+.1) + ab00*1;
+per_frame_9=wave_b = ab15*0  + ab10*(.4*sin(time*.407)+.7) + 
+per_frame_10=                ab05*(.3*sin(time*.112)+.4) + ab00*.1;
+per_frame_11=exb =exb*.92 + bass*.05;
+per_frame_12=ext  =ext *.92 + treb*.05;
+per_frame_13=ob_t=.5;
+per_frame_14=monitor = ext;
+per_frame_15=w_y = w_y*.6+.2*max(min(1,bass_att*exb),.2);
+per_frame_16=wave_y=w_y;
+per_frame_17=wave_y = wave_y *(1- pow(progress,4));
+per_frame_18=
+per_frame_19=wave_m = wave_m -  fps*pow(1-wave_y, 3)*.01;
+per_frame_20=wave_mystery = wave_m;
+per_frame_21=//ob_a=above(bass_att,4);
+per_frame_22=
+per_pixel_1=rot = rot + (2-ang+time*1)*1.9+1.0*time;
+per_frame_init_1=wave_m = 0;

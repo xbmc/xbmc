@@ -1,0 +1,157 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=1.210000
+fDecay=1.000000
+fVideoEchoZoom=1.006596
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=3
+nWaveMode=3
+bAdditiveWaves=0
+bWaveDots=1
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=1
+bSolarize=0
+bInvert=0
+fWaveAlpha=9.088520
+fWaveScale=0.499500
+fWaveSmoothing=0.000000
+fWaveParam=1.000000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999514
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.990000
+wave_g=0.000000
+wave_b=0.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.300000
+ob_g=0.000000
+ob_b=0.500000
+ob_a=0.000000
+ib_size=0.260000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=2.759997
+mv_dx=0.000000
+mv_dy=-0.620000
+mv_l=5.000000
+mv_r=0.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.400000
+per_frame_1=// Hello,
+per_frame_2=
+per_frame_3=// My beat detection algorithm had the aim of being able to detect and pickup a reliable beat throughout a song.  This has creative possibilities of being able to PREDICT coming beats, and to have things lasting for (say) half a beat, etc.  It still requires work, but I think I have made progress.
+per_frame_4=// I emplore you to have a look over it and try to underdstand it. Help me out here - I think it could be reallly good.
+per_frame_5=
+per_frame_6=//Telek Sterling =:-)
+per_frame_7=//Dilettante Extrodinaire
+per_frame_8=
+per_frame_9=
+per_frame_10=//rt = realtime (for use with beat count)
+per_frame_11=rt=time-start;
+per_frame_12=
+per_frame_13=//color cycling, yellow dynamic treble
+per_frame_14=wave_g = max(0,min(1,.25*sin(time*10)+treb/2));
+per_frame_15=wave_x = cos(time*2.12)*.33+.5;
+per_frame_16=wave_y = sin(time*1.5)*.13+.3;
+per_frame_17=
+per_frame_18=//initialisation bug patch
+per_frame_19=beatrate = if(below(beatcount,2),.1,beatrate);
+per_frame_20=
+per_frame_21=//beat = if(longer that 10 sec,1,above(bass, decaying threshold)*(can't be less that .4 of last beat length)
+per_frame_22=beat =if(above(rt-lastbeat,10),1, above(bass,1.6+.2*(lastbeat-rt)/beatrate)* above((rt-lastbeat)/beatrate,max(.4,.95-abs(accuracy*2))));
+per_frame_23=
+per_frame_24=//Testing auto-beat trigger... exciting stuff..
+per_frame_25=beat = if(beat,1, if(below(abs(accuracy),0.1)*below((lastbeat-rt)/beatrate,-1),1,0));
+per_frame_26=
+per_frame_27=//Comparison of last beat duration to current. Best value is 0. -1 and 5 are pretty bad.
+per_frame_28=accuracy =if(beat,(rt-nextbeat)/beatrate,accuracy);
+per_frame_29=
+per_frame_30=beatcount = beatcount + beat;
+per_frame_31=
+per_frame_32=w_a = if(beat,1,w_a*0);
+per_frame_33=wave_a = w_a;            // I can't actually change this, can I..... Oh well, it's here now.
+per_frame_34=
+per_frame_35=//Preserve beat rate
+per_frame_36=l_beatrate=if(beat,beatrate, l_beatrate);
+per_frame_37=//Record new beatrate
+per_frame_38=beatrate = if(beat,rt-lastbeat,beatrate);
+per_frame_39=
+per_frame_40=//Record most recent beat
+per_frame_41=lastbeat=if(beat,rt,lastbeat);
+per_frame_42=//Predict time of next beat
+per_frame_43=nextbeat=if(beat,rt+beatrate,nextbeat);
+per_frame_44=
+per_frame_45=
+per_frame_46=
+per_frame_47=
+per_frame_48=//Actual Display code:
+per_frame_49=
+per_frame_50=//Current direction of travel
+per_frame_51=state = beat * (state+1)%4+(1-beat)*state;
+per_frame_52=
+per_frame_53=//acceleration of horizon point
+per_frame_54=dddy = state%2-.5;
+per_frame_55=dddx = above(state,1.5)-.5;
+per_frame_56=
+per_frame_57=//adjustment factors to play with
+per_frame_58=ddx = dddx*.5;
+per_frame_59=ddy = dddy*.5;
+per_frame_60=
+per_frame_61=
+per_frame_62=q1 = (qq1*19+ddx)*.041;
+per_frame_63=//preserve q variables
+per_frame_64=qq1 = q1;
+per_frame_65=
+per_frame_66=q2 = (qq2*19+ddy)*.035;
+per_frame_67=qq2 = q2;
+per_frame_68=
+per_frame_69=//Decay to Blue!!
+per_frame_70=ob_a = 0.1*above(frame%10,6);
+per_frame_71=
+per_frame_72=
+per_frame_73=
+per_frame_74=
+per_frame_75=//Well, what do we want to monitor??
+per_frame_76=
+per_frame_77=//monitor = q1;
+per_frame_78=//monitor = beat;
+per_frame_79=//monitor = 1.6+.2*(lastbeat-rt)/beatrate;
+per_frame_80=monitor = (rt-lastbeat)/beatrate;
+per_frame_81=//monitor = accuracy;
+per_frame_82=//monitor = max(.4,.95-abs(accuracy*2));
+per_frame_83=//monitor = wave_a;
+per_frame_84=//monitor = wave_g;
+per_frame_85=//qwer =   accuracy + if(below(abs(accuracy),0.1)*above((lastbeat-rt)/beatrate,1),1,0)*1000;
+per_frame_86=//monitor = qwer;
+per_frame_87=//monitor  = (lastbeat-rt)/beatrate;
+per_pixel_1=dx = sin(.5-x)*.1+q1;
+per_pixel_2=dy = sin(.5-y)*.1+q2;
+per_frame_init_1=ddx = 0;
+per_frame_init_2=ddy = 0;
+per_frame_init_3=start = time;
+per_frame_init_4=rt = 0;
+per_frame_init_5=beatcount = 0;

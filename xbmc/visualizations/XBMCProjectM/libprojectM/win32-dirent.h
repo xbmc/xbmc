@@ -19,7 +19,9 @@ extern "C"
 
 typedef struct DIR DIR;
 
+#ifndef WIN32
 static int errno;
+#endif
 
 struct dirent
 {

@@ -1,0 +1,88 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=1.998000
+fDecay=0.990000
+fVideoEchoZoom=2.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=6
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=1
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=1
+bSolarize=0
+bInvert=0
+fWaveAlpha=0.051300
+fWaveScale=2.778365
+fWaveSmoothing=0.900000
+fWaveParam=-0.799999
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=2.853000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.001829
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.770000
+wave_g=0.600000
+wave_b=0.600000
+wave_x=0.420000
+wave_y=0.500000
+ob_size=0.005500
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.520000
+ob_a=0.180000
+ib_size=0.000500
+ib_r=0.291000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=2.400000
+mv_dx=0.000000
+mv_dy=-0.100000
+mv_l=5.000000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=wave_r = min(1,max(0,0.2*bass));
+per_frame_2=wave_g = min(1,max(0,0.2*mid));
+per_frame_3=wave_b = min(1,max(0,0.2*treb));
+per_frame_4=xpos = 0.01*rand(100);
+per_frame_5=wave_x =  xpos;
+per_frame_6=decay = .99;
+per_frame_7=
+per_frame_8=//Thanks to Zylot for rainbow generator
+per_frame_9=counter1 = if(equal(counter2,1),if(equal(counter1,1),0,counter1+.2),1);
+per_frame_10=counter2 = if(equal(counter1,1),if(equal(counter2,1),0,counter2+.2),1);
+per_frame_11=cdelay1 = if(equal(cdelay2,1),1,if(equal(colorcounter%2,1),if(equal(counter1,1),2 ,0), if(equal(counter2,1),2,0)));
+per_frame_12=cdelay2 = if(equal(cdelay1,2),1,0);
+per_frame_13=colorcounter = if(above(colorcounter,7),0,if(equal(cdelay1,1),colorcounter+1,colorcounter));
+per_frame_14=ob_r = .5*if(equal(colorcounter,1),1, if(equal(colorcounter,2),1, if(equal(colorcounter,3),1, if(equal(colorcounter,4),sin(counter2+2.1), if(equal(colorcounter,5),0, if(equal(colorcounter,6),0,sin(counter1)))))));
+per_frame_15=ob_g = .5*if(equal(colorcounter,1),0, if(equal(colorcounter,2),sin(counter2*.5), if(equal(colorcounter,3),sin((counter1+1.75)*.4), if(equal(colorcounter,4),1, if(equal(colorcounter,5),1, if(equal(colorcounter,6),sin(counter2+2),0))))));
+per_frame_16=ob_b = if(equal(colorcounter,1),sin(counter1+2.1), if(equal(colorcounter,2),0, if(equal(colorcounter,3),0, if(equal(colorcounter,4),0, if(equal(colorcounter,5),sin(counter1), if(equal(colorcounter,6),1,1))))));
+per_frame_17=
+per_frame_18=q3=10+bass+mid+treb;
+per_pixel_1=empty = 1-(above(x,.97)*below(y,.46));
+per_pixel_2=sea=q3;
+per_pixel_3=mang=atan((-0.5+0.1*sin(time)+y)/(-1+x*3))-.65+.20*sin(time);
+per_pixel_4=cx = int(x*sea)/sea;
+per_pixel_5=cy = int(y*sea)/sea;
+per_pixel_6=rot = rot+.2*(bass_att)*empty-.3*(1-2*below(2*sin(mang)+2*cos(mang),.2*bass))*empty;
+per_pixel_7=dy = dy +sin(time*.3)*.01*cos(rad/x);

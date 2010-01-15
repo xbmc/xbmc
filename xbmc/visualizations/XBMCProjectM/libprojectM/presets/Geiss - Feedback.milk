@@ -1,0 +1,224 @@
+[preset00]
+fRating=4.000000
+fGammaAdj=1.000000
+fDecay=0.900000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=3
+nWaveMode=6
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=1
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=0.311604
+fWaveScale=1.228910
+fWaveSmoothing=0.000000
+fWaveParam=0.200000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.459526
+fWarpScale=2.006761
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999902
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.460478
+sx=1.000000
+sy=1.000000
+wave_r=0.650000
+wave_g=0.650000
+wave_b=0.650000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.006500
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.260000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.850000
+mv_r=0.499900
+mv_g=0.499900
+mv_b=0.499900
+mv_a=0.000000
+wavecode_0_enabled=0
+wavecode_0_samples=512
+wavecode_0_sep=0
+wavecode_0_bSpectrum=0
+wavecode_0_bUseDots=0
+wavecode_0_bDrawThick=0
+wavecode_0_bAdditive=0
+wavecode_0_scaling=1.000000
+wavecode_0_smoothing=0.500000
+wavecode_0_r=1.000000
+wavecode_0_g=1.000000
+wavecode_0_b=1.000000
+wavecode_0_a=1.000000
+wavecode_1_enabled=0
+wavecode_1_samples=512
+wavecode_1_sep=0
+wavecode_1_bSpectrum=0
+wavecode_1_bUseDots=0
+wavecode_1_bDrawThick=0
+wavecode_1_bAdditive=0
+wavecode_1_scaling=1.000000
+wavecode_1_smoothing=0.500000
+wavecode_1_r=1.000000
+wavecode_1_g=1.000000
+wavecode_1_b=1.000000
+wavecode_1_a=1.000000
+wavecode_2_enabled=0
+wavecode_2_samples=512
+wavecode_2_sep=0
+wavecode_2_bSpectrum=0
+wavecode_2_bUseDots=0
+wavecode_2_bDrawThick=0
+wavecode_2_bAdditive=0
+wavecode_2_scaling=1.000000
+wavecode_2_smoothing=0.500000
+wavecode_2_r=1.000000
+wavecode_2_g=1.000000
+wavecode_2_b=1.000000
+wavecode_2_a=1.000000
+shapecode_0_enabled=1
+shapecode_0_sides=4
+shapecode_0_additive=0
+shapecode_0_thickOutline=0
+shapecode_0_textured=0
+shapecode_0_x=0.370000
+shapecode_0_y=0.500000
+shapecode_0_rad=2.999997
+shapecode_0_ang=3.644249
+shapecode_0_tex_ang=0.000000
+shapecode_0_tex_zoom=1.000000
+shapecode_0_r=0.000000
+shapecode_0_g=0.000000
+shapecode_0_b=0.000000
+shapecode_0_a=0.500000
+shapecode_0_r2=0.000000
+shapecode_0_g2=0.000000
+shapecode_0_b2=1.000000
+shapecode_0_a2=0.300000
+shapecode_0_border_r=1.000000
+shapecode_0_border_g=1.000000
+shapecode_0_border_b=1.000000
+shapecode_0_border_a=1.000000
+shape_0_init1=t1 = rand(100)*0.01;
+shape_0_init2=t2 = rand(100)*0.01;
+shape_0_per_frame1=ang = time*(0.3 + 0.1*t1);
+shape_0_per_frame2=rad = rad * (0.9 + 0.2*t2);
+shape_0_per_frame3=r = min(1,max(0,r + 0.1*sin(time*0.417 + 1)));
+shape_0_per_frame4=g = min(1,max(0,g + 0.1*sin(time*0.391 + 2)));
+shape_0_per_frame5=b = min(1,max(0,b + 0.1*sin(time*0.432 + 4)));
+shape_0_per_frame6=r2 = min(1,max(0,r2 + 0.1*sin(time*0.457 + 3)));
+shape_0_per_frame7=g2 = min(1,max(0,g2 + 0.1*sin(time*0.437 + 5)));
+shape_0_per_frame8=b2 = min(1,max(0,b2 + 0.1*sin(time*0.484 + 6)));
+shapecode_1_enabled=1
+shapecode_1_sides=4
+shapecode_1_additive=1
+shapecode_1_thickOutline=0
+shapecode_1_textured=1
+shapecode_1_x=0.370000
+shapecode_1_y=0.500000
+shapecode_1_rad=0.749999
+shapecode_1_ang=3.644249
+shapecode_1_tex_ang=0.000000
+shapecode_1_tex_zoom=1.000000
+shapecode_1_r=1.000000
+shapecode_1_g=1.000000
+shapecode_1_b=1.000000
+shapecode_1_a=0.800000
+shapecode_1_r2=1.000000
+shapecode_1_g2=1.000000
+shapecode_1_b2=1.000000
+shapecode_1_a2=0.000000
+shapecode_1_border_r=1.000000
+shapecode_1_border_g=1.000000
+shapecode_1_border_b=1.000000
+shapecode_1_border_a=0.000000
+shape_1_init1=t1 = rand(100)*0.01;
+shape_1_init2=t2 = rand(100)*0.01;
+shape_1_per_frame1=ang = time*(0.3 + 0.1*t1);
+shape_1_per_frame2=rad = rad * (0.9 + 0.2*t2);
+shape_1_per_frame3=r = min(1,max(0,r + 0.1*sin(time*0.417 + 1)));
+shape_1_per_frame4=g = min(1,max(0,g + 0.1*sin(time*0.391 + 2)));
+shape_1_per_frame5=b = min(1,max(0,b + 0.1*sin(time*0.432 + 4)));
+shape_1_per_frame6=r2 = min(1,max(0,r2 + 0.1*sin(time*0.457 + 3)));
+shape_1_per_frame7=g2 = min(1,max(0,g2 + 0.1*sin(time*0.437 + 5)));
+shape_1_per_frame8=b2 = min(1,max(0,b2 + 0.1*sin(time*0.484 + 6)));
+shapecode_2_enabled=1
+shapecode_2_sides=4
+shapecode_2_additive=1
+shapecode_2_thickOutline=0
+shapecode_2_textured=1
+shapecode_2_x=0.670000
+shapecode_2_y=0.430000
+shapecode_2_rad=0.749999
+shapecode_2_ang=4.209736
+shapecode_2_tex_ang=0.000000
+shapecode_2_tex_zoom=1.000000
+shapecode_2_r=1.000000
+shapecode_2_g=1.000000
+shapecode_2_b=1.000000
+shapecode_2_a=0.800000
+shapecode_2_r2=1.000000
+shapecode_2_g2=1.000000
+shapecode_2_b2=1.000000
+shapecode_2_a2=0.000000
+shapecode_2_border_r=1.000000
+shapecode_2_border_g=1.000000
+shapecode_2_border_b=1.000000
+shapecode_2_border_a=0.000000
+shape_2_init1=t1 = rand(100)*0.01;
+shape_2_init2=t2 = rand(100)*0.01;
+shape_2_per_frame1=ang = time*(0.3 + 0.1*t1);
+shape_2_per_frame2=rad = rad * (0.9 + 0.2*t2);
+shape_2_per_frame3=r = min(1,max(0,r + 0.1*sin(time*0.417 + 1)));
+shape_2_per_frame4=g = min(1,max(0,g + 0.1*sin(time*0.391 + 2)));
+shape_2_per_frame5=b = min(1,max(0,b + 0.1*sin(time*0.432 + 4)));
+shape_2_per_frame6=r2 = min(1,max(0,r2 + 0.1*sin(time*0.457 + 3)));
+shape_2_per_frame7=g2 = min(1,max(0,g2 + 0.1*sin(time*0.437 + 5)));
+shape_2_per_frame8=b2 = min(1,max(0,b2 + 0.1*sin(time*0.484 + 6)));
+shapecode_3_enabled=1
+shapecode_3_sides=60
+shapecode_3_additive=0
+shapecode_3_thickOutline=0
+shapecode_3_textured=0
+shapecode_3_x=0.700000
+shapecode_3_y=0.580000
+shapecode_3_rad=0.161222
+shapecode_3_ang=0.000000
+shapecode_3_tex_ang=0.000000
+shapecode_3_tex_zoom=1.000000
+shapecode_3_r=1.000000
+shapecode_3_g=1.000000
+shapecode_3_b=0.000000
+shapecode_3_a=1.000000
+shapecode_3_r2=1.000000
+shapecode_3_g2=0.000000
+shapecode_3_b2=0.000000
+shapecode_3_a2=0.000000
+shapecode_3_border_r=1.000000
+shapecode_3_border_g=1.000000
+shapecode_3_border_b=1.000000
+shapecode_3_border_a=1.000000

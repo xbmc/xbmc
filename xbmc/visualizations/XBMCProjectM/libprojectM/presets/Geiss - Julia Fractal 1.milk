@@ -1,0 +1,77 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=2.000000
+fDecay=0.980000
+fVideoEchoZoom=1.010000
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=3
+nWaveMode=2
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=1
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=7.740000
+fWaveScale=0.656000
+fWaveSmoothing=0.800000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.750000
+fModWaveAlphaEnd=0.950000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.772000
+fZoomExponent=1.960000
+fShader=0.000000
+zoom=0.980000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.513000
+sx=1.000000
+sy=1.000000
+wave_r=0.500000
+wave_g=0.500000
+wave_b=0.500000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.010000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.010000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=12.000000
+nMotionVectorsY=9.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.900000
+mv_r=1.000000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=wave_x = wave_x + 0.500*( 0.60*sin(2.121*time) + 0.40*sin(1.621*time) );
+per_frame_2=wave_y = wave_y + 0.500*( 0.60*sin(1.742*time) + 0.40*sin(2.322*time) );
+per_frame_3=wave_r = wave_r + 0.500*( 0.60*sin(0.823*time) + 0.40*sin(0.916*time) );
+per_frame_4=wave_g = wave_g + 0.500*( 0.60*sin(0.900*time) + 0.40*sin(1.023*time) );
+per_frame_5=wave_b = wave_b + 0.500*( 0.60*sin(0.808*time) + 0.40*sin(0.949*time) );
+per_frame_6=zoom = zoom + 0.070*( 0.60*sin(0.239*time) + 0.40*sin(0.296*time) );
+per_frame_7=rot = rot + 0.038*( 0.60*sin(0.381*time) + 0.40*sin(0.539*time) );
+per_frame_8=cx = cx + 0.030*( 0.60*sin(0.374*time) + 0.40*sin(0.194*time) );
+per_frame_9=cy = cy + 0.037*( 0.60*sin(0.274*time) + 0.40*sin(0.394*time) );
+per_frame_10=dx = dx + 0.025*( 0.60*sin(0.334*time) + 0.40*sin(0.277*time) );
+per_frame_11=dy = dy + 0.025*( 0.60*sin(0.384*time) + 0.40*sin(0.247*time) );
+per_frame_12=sx = sx + 0.015*( 0.60*sin(0.313*time) + 0.40*sin(0.383*time) );
+per_frame_13=decay = decay - 0.01*equal(frame%50,0);
+per_pixel_1=rot=rot+rad*0.25*sin(0.3986*time);

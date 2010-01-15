@@ -1,0 +1,92 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=1.000000
+fDecay=1.000000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=1
+nWaveMode=1
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=1
+bSolarize=0
+bInvert=0
+fWaveAlpha=100.000000
+fWaveScale=0.535234
+fWaveSmoothing=0.500000
+fWaveParam=-0.500000
+fModWaveAlphaStart=0.500000
+fModWaveAlphaEnd=1.000000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=1.000000
+zoom=1.000000
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000010
+dy=0.000010
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=1.000000
+wave_g=1.000000
+wave_b=1.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.400000
+ob_g=0.300000
+ob_b=0.000000
+ob_a=1.000000
+ib_size=0.010000
+ib_r=1.000000
+ib_g=0.600000
+ib_b=0.000000
+ib_a=1.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=2.000000
+mv_dx=0.000000
+mv_dy=-0.100000
+mv_l=5.000000
+mv_r=0.200000
+mv_g=1.000000
+mv_b=1.000000
+mv_a=0.500000
+per_frame_1=warp = 0;
+per_frame_2=wave_r = 0.5 + 0.3*sin(time*0.894);
+per_frame_3=wave_g = 0.53 + 0.33*sin(time*1.14);
+per_frame_4=wave_b = 0.4 + 0.1*(1-bass);
+per_frame_5=thresh = above(bass_att,thresh)*2+(1-above(bass_att,thresh))*((thresh-1.3)*0.96+1.3);
+per_frame_6=test = equal(thresh,2);
+per_frame_7=dx_r = test*0.002*sin(5*time)+(1-test)*dx_r;
+per_frame_8=dy_r = test*0.002*sin(6*time)+(1-test)*dy_r;
+per_frame_9=zoom = zoom -0.01*thresh;
+per_frame_10=dx = 1.1* dx_r;
+per_frame_11=dy = 1.1* dy_r;
+per_frame_12=dx = dx + if (above(bass,1.3), 21*dx_r, 0);
+per_frame_13=mv_x = if(test,2,64);
+per_frame_14=mv_y = if(test,64,2);
+per_frame_15=mv_dx = if(test,-0.1,0);
+per_frame_16=mv_dy = if(test,0,-0.1);
+per_frame_17=mv_a = if(test,1,0.5);
+per_frame_18=xpos = xpos + 0.05*(80*dx_r - xpos);
+per_frame_19=ypos = ypos + 0.05*(80*dy_r - ypos);
+per_frame_20=wave_x = 0.5 - xpos + 0.1*sin(2*time);
+per_frame_21=wave_y = 0.5 - ypos + 0.1*cos(2*time);
+per_frame_22=q1 = wave_x;
+per_frame_23=q2 = 1 - wave_y;
+per_pixel_1=newx = x - q1;
+per_pixel_2=newy = y - q2;
+per_pixel_3=newrad = sqrt((newx)*(newx)+0.5625*(newy)*(newy))*2;
+per_pixel_4=newzoom = pow(1.03, pow(0.01+sin(newrad*newrad), newrad*2-1));
+per_pixel_5=dx = min(5*newrad,1)*dx + max(-newrad*5+1,0)*((newx)*newzoom - newx);
+per_pixel_6=dy = min(5*newrad,1)*dy + max(-newrad*5+1,0)*((newy)*newzoom - newy);
