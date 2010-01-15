@@ -916,6 +916,19 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   VerifyGLState();
 
+  if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
+  {
+    bool scaleSD = (int)m_sourceWidth < m_upscalingWidth && (int)m_sourceHeight < m_upscalingHeight &&
+                   m_sourceHeight < 720 && m_sourceWidth < 1280;
+
+    if (Supports(VS_SCALINGMETHOD_VDPAU_HARDWARE))
+      m_scalingMethod = VS_SCALINGMETHOD_VDPAU_HARDWARE;
+    else if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD)
+      m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
+    else
+      m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  }
+
   switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
@@ -2269,7 +2282,8 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 {
   if(method == VS_SCALINGMETHOD_NEAREST
-  || method == VS_SCALINGMETHOD_LINEAR)
+  || method == VS_SCALINGMETHOD_LINEAR
+  || method == VS_SCALINGMETHOD_AUTO)
     return true;
 
   if(method == VS_SCALINGMETHOD_CUBIC
