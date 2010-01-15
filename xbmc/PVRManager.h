@@ -91,6 +91,7 @@ public:
   /*--- Stream reading functions ---*/
   bool OpenLiveStream(const cPVRChannelInfoTag* tag);
   bool OpenRecordedStream(const cPVRRecordingInfoTag* tag);
+  CStdString GetLiveStreamURL(const cPVRChannelInfoTag* tag);
   void CloseStream();
   int ReadStream(BYTE* buf, int buf_size);
   bool SeekTimeRequired();

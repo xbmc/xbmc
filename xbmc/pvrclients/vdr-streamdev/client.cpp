@@ -1058,4 +1058,8 @@ long long LengthRecordedStream(void)
   return m_currentPlayingRecordBytes;
 }
 
+const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
+{
+  return ""; // not implemented
 }
+} //end extern "C"

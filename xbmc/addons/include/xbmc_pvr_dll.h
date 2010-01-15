@@ -53,6 +53,7 @@ extern "C"
   int ReadRecordedStream(unsigned char* buf, int buf_size);
   long long SeekRecordedStream(long long pos, int whence=SEEK_SET);
   long long LengthRecordedStream(void);
+  const char* GetLiveStreamURL(const PVR_CHANNEL &channelinfo);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
@@ -97,6 +98,7 @@ extern "C"
     pClient->ReadRecordedStream     = ReadRecordedStream;
     pClient->SeekRecordedStream     = SeekRecordedStream;
     pClient->LengthRecordedStream   = LengthRecordedStream;
+    pClient->GetLiveStreamURL       = GetLiveStreamURL;
   };
 };
 

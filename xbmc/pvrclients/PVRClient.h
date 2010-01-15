@@ -97,6 +97,7 @@ public:
   int GetCurrentClientChannel();
   bool SwitchChannel(const cPVRChannelInfoTag &channelinfo);
   bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
+  const std::string GetLiveStreamURL(const cPVRChannelInfoTag &channelinfo);
 
   bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
   void CloseRecordedStream(void);

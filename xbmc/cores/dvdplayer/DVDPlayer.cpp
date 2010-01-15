@@ -67,6 +67,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/StreamDetails.h"
 #include "MediaManager.h"
+#include "PVRManager.h"
+#include "FileSystem/PVRFile.h"
 
 using namespace std;
 
@@ -379,6 +381,17 @@ bool CDVDPlayer::CloseFile()
   // we are done after the StopThread call
   StopThread();
 
+  // Added to stop live TV streams from the PVR addons at the backend side
+  // Used for the MediaPortal PVR addon to stop the rtsp timeshift stream
+  if (m_item.HasPVRChannelInfoTag())
+  {
+    if (m_item.GetPVRChannelInfoTag()->StreamURL().compare(0,13, "pvr://stream/") == 0)
+    {
+      m_filename = m_item.m_strPath; //Restore the original pvr path
+      g_PVRManager.CloseStream();
+    }
+  }
+
   m_Edl.Clear();
   m_EdlAutoSkipMarkers.Clear();
 
@@ -425,6 +438,16 @@ bool CDVDPlayer::OpenInputStream()
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
     m_filename = g_mediaManager.TranslateDevicePath("");
+  }
+
+  //margro: Added pvr://stream/ for MediaPortal streams
+  //        XBMC can handle rtsp:// streams directly, but
+  //        we don't know the URL of the live tv/radio stream on beforehand
+  //        So, we need to ask the PVR plugin for the stream URL for this
+  //        channel, before starting the right player
+  if (m_filename.compare(0, 6, "pvr://") == 0)
+  {
+    m_filename = XFILE::CPVRFile::TranslatePVRFilename(m_filename);
   }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);

@@ -239,13 +239,30 @@ bool CPVRFile::UpdateItem(CFileItem& item)
 CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 {
   CStdString FileName = pathFile;
+
   if (FileName.substr(0, 14) == "pvr://channels")
   {
     cPVRChannelInfoTag *tag = cPVRChannels::GetByPath(FileName);
-    if (tag && !tag->StreamURL().IsEmpty())
-      return tag->StreamURL();
-    else
-      return FileName;
+    if (tag)
+    {
+      CStdString stream = tag->StreamURL();
+      if(!stream.IsEmpty())
+      {
+        if (stream.compare(6, 7, "stream/") == 0)
+        {
+          // pvr://stream
+          // This function was added to retrieve the stream URL for this item
+          // Is is used for the MediaPortal PVR addon
+          // see PVRManager.cpp
+          return g_PVRManager.GetLiveStreamURL(tag);
+        }
+        else
+        {
+          return stream;
+        }
+      }
+    }
+    return FileName;
   }
   else if (FileName.substr(0, 16) == "pvr://recordings")
   {

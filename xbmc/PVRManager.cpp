@@ -1424,6 +1424,46 @@ bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
 }
 
 /********************************************************************
+ * CPVRManager GetLiveStreamURL
+ *
+ * Returns a during runtime generated stream URL from the PVR Client.
+ * Backends like Mediaportal generates the URL for the RTSP streams
+ * during opening.
+ ********************************************************************/
+CStdString CPVRManager::GetLiveStreamURL(const cPVRChannelInfoTag* tag)
+{
+  CStdString stream_url;
+
+  EnterCriticalSection(&m_critSection);
+
+  /* Check if a channel or recording is already opened and clear it if yes */
+  if (m_currentPlayingChannel)
+    delete m_currentPlayingChannel;
+  if (m_currentPlayingRecording)
+    delete m_currentPlayingRecording;
+
+  /* Set the new channel information */
+  m_currentPlayingChannel   = new CFileItem(*tag);
+  m_currentPlayingRecording = NULL;
+  m_scanStart               = CTimeUtils::GetTimeMS();  /* Reset the stream scan timer */
+  ResetQualityData();
+
+  /* Retrieve the dynamily generated stream URL from the Client */
+  stream_url = m_clients[tag->ClientID()]->GetLiveStreamURL(*tag);
+  if (stream_url.IsEmpty())
+  {
+    delete m_currentPlayingChannel;
+    m_currentPlayingChannel = NULL;
+    LeaveCriticalSection(&m_critSection);
+    return "";
+  }
+
+  LeaveCriticalSection(&m_critSection);
+
+  return stream_url;
+}
+
+/********************************************************************
  * CPVRManager CloseStream
  *
  * Close the stream on the PVR Client.

@@ -33,7 +33,6 @@
 #else
 #ifndef _LINUX
 #include <windows.h>
-#include <stdint.h>
 #else
 #undef __cdecl
 #define __cdecl
@@ -343,6 +342,8 @@ extern "C" {
     int (__cdecl* GetCurrentClientChannel)();
     bool (__cdecl* SwitchChannel)(const PVR_CHANNEL &channelinfo);
     PVR_ERROR (__cdecl* SignalQuality)(PVR_SIGNALQUALITY &qualityinfo);
+    /** PVR Live Stream Function for the MediaPortal PVR addon **/
+    const char* (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL &channelinfo);
 
     /** PVR Recording Stream Functions **/
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDINGINFO &recinfo);

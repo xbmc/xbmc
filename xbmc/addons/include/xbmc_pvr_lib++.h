@@ -23,8 +23,6 @@
 #ifndef LIBPVR_PLUS_PLUS_H
 #define LIBPVR_PLUS_PLUS_H
 
-#include <vector>
-#include <string>
 #include "xbmc_pvr_types.h"
 
 void PVR_register_me(ADDON_HANDLE hdl);

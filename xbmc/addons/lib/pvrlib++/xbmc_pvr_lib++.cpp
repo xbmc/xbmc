@@ -37,8 +37,6 @@
 #include "xbmc_pvr_lib++.h"
 #include "addon_local.h"
 
-using namespace std;
-
 AddonCB *m_pvr_cb = NULL;
 
 void PVR_register_me(ADDON_HANDLE hdl)

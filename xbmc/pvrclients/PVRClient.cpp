@@ -940,6 +940,10 @@ PVR_ERROR CPVRClient::AddTimer(const cPVRTimerInfoTag &timerinfo)
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
 
+      //Workaround for string transfer to PVRclient
+      CStdString myTitle = timerinfo.Title();
+      tag.title = myTitle.c_str();
+
       ret = m_pStruct->AddTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
@@ -970,6 +974,10 @@ PVR_ERROR CPVRClient::DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force)
     {
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
+
+      //Workaround for string transfer to PVRclient
+      CStdString myTitle = timerinfo.Title();
+      tag.title = myTitle.c_str();
 
       ret = m_pStruct->DeleteTimer(tag, force);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -1002,6 +1010,10 @@ PVR_ERROR CPVRClient::RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString 
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
 
+      //Workaround for string transfer to PVRclient
+      CStdString myTitle = timerinfo.Title();
+      tag.title = myTitle.c_str();
+
       ret = m_pStruct->RenameTimer(tag, newname.c_str());
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
@@ -1032,6 +1044,10 @@ PVR_ERROR CPVRClient::UpdateTimer(const cPVRTimerInfoTag &timerinfo)
     {
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
+
+      //Workaround for string transfer to PVRclient
+      CStdString myTitle = timerinfo.Title();
+      tag.title = myTitle.c_str();
 
       ret = m_pStruct->UpdateTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -1171,6 +1187,27 @@ bool CPVRClient::SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
     }
   }
   return false;
+}
+
+const std::string CPVRClient::GetLiveStreamURL(const cPVRChannelInfoTag &channelinfo)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      PVR_CHANNEL tag;
+      WriteClientChannelInfo(channelinfo, tag);
+      return m_pStruct->GetLiveStreamURL(tag);
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetLiveStreamURL occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+    }
+  }
+  /* return string "Unavailable" as fallback */
+  return g_localizeStrings.Get(161);
 }
 
 void CPVRClient::WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag)

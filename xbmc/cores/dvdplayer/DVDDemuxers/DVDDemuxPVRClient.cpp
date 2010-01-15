@@ -48,6 +48,17 @@
 #include "utils/log.h"
 #include "Thread.h"
 #include "utils/TimeUtils.h"
+extern "C" {
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #else
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "libavcodec/avcodec.h"
+#endif
+}
 
 void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
 {
