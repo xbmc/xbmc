@@ -792,6 +792,16 @@ bool CFileItem::IsSmb() const
   return CUtil::IsSmb(m_strPath);
 }
 
+bool CFileItem::IsXBMS() const
+{
+  return CUtil::IsXBMS(m_strPath);
+}
+
+bool CFileItem::IsURL() const
+{
+  return CUtil::IsURL(m_strPath);
+}
+
 bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
@@ -1960,7 +1970,7 @@ void CFileItemList::Stack()
       // 2. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
-        || item->m_strPath.Left(7).Equals("xbms://")
+        || item->IsXBMS()
         || CUtil::IsInRAR(item->m_strPath)
         || CUtil::IsInZIP(item->m_strPath)
         )

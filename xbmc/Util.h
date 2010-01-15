@@ -118,6 +118,8 @@ public:
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
+  static bool IsXBMS(const CStdString& strFile);
+  static bool IsURL(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);

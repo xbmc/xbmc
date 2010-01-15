@@ -1014,6 +1014,21 @@ bool CUtil::IsSmb(const CStdString& strFile)
   return url.GetProtocol().Equals("smb");
 }
 
+bool CUtil::IsURL(const CStdString& strFile)
+{
+  return strFile.Find("://") >= 0;
+}
+
+bool CUtil::IsXBMS(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return strFile2.Left(5).Equals("xbms:");
+}
+
 bool CUtil::IsFTP(const CStdString& strFile)
 {
   CStdString strFile2(strFile);
@@ -1609,7 +1624,7 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     if (url.GetFileName() != strFolder)
@@ -1640,7 +1655,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
@@ -1664,7 +1679,7 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
 void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
