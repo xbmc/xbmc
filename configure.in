@@ -1200,6 +1200,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
+      --disable-decoder=pam \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
