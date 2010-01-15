@@ -131,6 +131,18 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
               {
                 item.m_dwSize = atoi(pPropChild->ToElement()->GetText());
               }
+              else if (ValueWithoutNamespace(pPropChild, "getlastmodified"))
+              {
+                struct tm timeDate = {0};
+                strptime(pPropChild->ToElement()->GetText(), "%a, %d %b %Y %T", &timeDate);
+                item.m_dateTime = mktime(&timeDate);
+              }
+              else if (!item.m_dateTime.IsValid() && ValueWithoutNamespace(pPropChild, "creationdate"))
+              {
+                struct tm timeDate = {0};
+                strptime(pPropChild->ToElement()->GetText(), "%Y-%m-%dT%T", &timeDate);
+                item.m_dateTime = mktime(&timeDate);
+              }
               else if (ValueWithoutNamespace(pPropChild, "resourcetype"))
               {
                 if (ValueWithoutNamespace(pPropChild->FirstChild(), "collection"))
@@ -166,6 +178,8 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     "   <D:prop>"
     "     <D:resourcetype/>"
     "     <D:getcontentlength/>"
+    "     <D:getlastmodified/>"
+    "     <D:creationdate/>"
     "    </D:prop>"
     "  </D:propfind>");
 
