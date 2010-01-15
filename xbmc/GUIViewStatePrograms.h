@@ -21,38 +21,17 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "lib/libPython/Python/Include/Python.h"
-#endif
+#include "GUIViewState.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-namespace PYXBMC
+class CGUIViewStateWindowPrograms : public CGUIViewState
 {
-  typedef struct {
-    PyObject_HEAD
-    ADDON::IAddon* pAddon;
-  } Settings;
+public:
+  CGUIViewStateWindowPrograms(const CFileItemList& items);
 
-  extern PyTypeObject Settings_Type;
-  void initSettings_Type();
-}
+protected:
+  virtual void SaveViewState();
+  virtual CStdString GetLockType();
+  virtual CStdString GetExtensions();
+  virtual VECSOURCES& GetSources();
+};
 
-#ifdef __cplusplus
-}
-#endif

@@ -407,29 +407,29 @@ CStdString StringUtils::CreateUUID()
 
   /*Data1 - 8 characters.*/
   for(i = 0; i < 8; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55; 
+    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
   /*Data2 - 4 characters.*/
-  *pUuidStr++ = '-'; 
+  *pUuidStr++ = '-';
   for(i = 0; i < 4; i++, pUuidStr++)
     ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
   /*Data3 - 4 characters.*/
-  *pUuidStr++ = '-'; 
+  *pUuidStr++ = '-';
   for(i = 0; i < 4; i++, pUuidStr++)
     ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
   /*Data4 - 4 characters.*/
-  *pUuidStr++ = '-'; 
+  *pUuidStr++ = '-';
   for(i = 0; i < 4; i++, pUuidStr++)
     ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
   /*Data5 - 12 characters.*/
-  *pUuidStr++ = '-'; 
+  *pUuidStr++ = '-';
   for(i = 0; i < 12; i++, pUuidStr++)
     ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
-  *pUuidStr = '\0'; 
+  *pUuidStr = '\0';
 
   m_lastUUID = UuidStrTmp;
   return UuidStrTmp;

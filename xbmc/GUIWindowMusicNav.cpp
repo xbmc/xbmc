@@ -400,7 +400,7 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     if (node == NODE_TYPE_ALBUM ||
         node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
         node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
-        node == NODE_TYPE_ALBUM_TOP100 || 
+        node == NODE_TYPE_ALBUM_TOP100 ||
         node == NODE_TYPE_ALBUM_COMPILATIONS ||
         node == NODE_TYPE_YEAR_ALBUM)
       items.SetContent("albums");
@@ -500,7 +500,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowMusicBase::OnWindowLoaded();
-  
+
   if (m_searchWithEdit)
   {
     SendMessage(GUI_MSG_SET_TYPE, CONTROL_SEARCH, CGUIEditControl::INPUT_TYPE_SEARCH);
@@ -1011,12 +1011,25 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowMusicBase::OnPrepareFileItems(items);
   // set fanart
+  SetupFanart(items);
+}
+
+void CGUIWindowMusicNav::SetupFanart(CFileItemList& items)
+{
+  // set fanart
   map<CStdString, CStdString> artists;
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
-    if (!item->HasMusicInfoTag() || item->HasProperty("fanart_image"))
+    CStdString strArtist;
+    if (item->HasProperty("fanart_image"))
       continue;
+    if (item->HasMusicInfoTag())
+      strArtist = item->GetMusicInfoTag()->GetArtist();
+   if (item->HasVideoInfoTag())
+     strArtist = item->GetVideoInfoTag()->m_strArtist;
+   if (strArtist.IsEmpty())
+     continue;
     map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
     if (artist == artists.end())
     {
@@ -1025,7 +1038,7 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
         item->SetProperty("fanart_image",strFanart);
       else
         strFanart = "";
-      artists.insert(make_pair(item->GetMusicInfoTag()->GetArtist(), strFanart));
+      artists.insert(make_pair(strArtist, strFanart));
     }
     else
       item->SetProperty("fanart_image",artist->second);

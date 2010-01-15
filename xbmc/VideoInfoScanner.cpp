@@ -199,7 +199,7 @@ namespace VIDEO
     int iFound;
     bool bSkip=false;
     // first time m_info is set
-    
+
     if (!m_database.GetScraperForPath(strDirectory,m_info,settings, iFound))
     {
       m_info.reset();
@@ -534,7 +534,7 @@ namespace VIDEO
             ADDON::CScraperPtr temp;
             SScanSettings settings;
             if (m_database.GetScraperForPath(pItem->m_strPath,temp,settings))
-            { 
+            {
               ADDON::AddonPtr addon;
               if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, temp->Parent(), addon))
               { // as we are working with a new clone, default scraper settings are saved
@@ -586,7 +586,7 @@ namespace VIDEO
                 m_pObserver->OnSetTitle(url.strTitle);
               CUtil::ClearCache();
               long lResult=1;
-              lResult=GetIMDBDetails(pItem.get(), url, info2, 
+              lResult=GetIMDBDetails(pItem.get(), url, info2,
                                      bDirNames && (info2->Content() == CONTENT_MOVIES),
                                      NULL, result==CNfoFile::COMBINED_NFO);
               if (info2->Content() == CONTENT_TVSHOWS)
@@ -937,7 +937,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &strContent, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -945,7 +945,7 @@ namespace VIDEO
       CLog::Log(LOGERROR, "%s - failed to open database", __FUNCTION__);
       return -1;
     }
-    CLog::Log(LOGDEBUG,"Adding new item to %s:%s", strContent.c_str(), pItem->m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"Adding new item to %s:%s", content.c_str(), pItem->m_strPath.c_str());
     long lResult=-1;
 
     CONTENT_TYPE content = ADDON::TranslateContent(strContent);

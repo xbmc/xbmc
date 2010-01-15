@@ -192,6 +192,7 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderASAP.cpp \
      GUIWindowTestPattern.cpp \
      GUIViewStateScripts.cpp \
+     GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
      PowerManager.cpp \
@@ -217,4 +218,5 @@ DISTCLEAN_FILES=DllPaths_generated.h
 
 include ../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
 

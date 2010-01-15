@@ -333,7 +333,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python 
+libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python addons visualizations screensavers
 
 xcode_depends: \
@@ -478,7 +478,7 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex '.*/\.svn/.*|^skin/[^/]*/media/.*[^x][^b][^t]' -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 	@# Icons and links

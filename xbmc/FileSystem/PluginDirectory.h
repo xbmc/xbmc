@@ -19,8 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef PLUGINDIRECTORY_H
-#define PLUGINDIRECTORY_H
 
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/Directory.h"
@@ -82,5 +80,3 @@ private:
   int    m_totalItems;   // set by script in AddDirectoryItem
 };
 }
-
-#endif /* PLUGINDIRECTORY_H */

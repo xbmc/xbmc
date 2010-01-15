@@ -44,8 +44,6 @@
 
 #include <vector>
 #include <map>
-#include <set>
-#include <list>
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1

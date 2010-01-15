@@ -1948,13 +1948,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       break;
     case VISUALISATION_LOCKED:
       {
-        /*CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+        CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
         g_windowManager.SendMessage(msg);
         if (msg.GetPointer())
         {
           CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
           bReturn = pVis->IsLocked();
-        }*/
+        }
       }
     break;
     case VISUALISATION_ENABLED:

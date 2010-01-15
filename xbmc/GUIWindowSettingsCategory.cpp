@@ -53,7 +53,6 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogAddonBrowser.h"
 #include "GUIDialogAddonSettings.h"
-#include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"

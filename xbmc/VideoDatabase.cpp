@@ -54,7 +54,6 @@ using ADDON::CAddonMgr;
 using ADDON::CScraper;
 using ADDON::CScraperPtr;
 using ADDON::AddonPtr;
-using ADDON::TranslateContent;
 
 #define VIDEO_DATABASE_VERSION 34
 #define VIDEO_DATABASE_OLD_VERSION 3.f
@@ -2721,7 +2720,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, i
       break;
     case VIDEODB_CONTENT_MUSICVIDEOS:
       GetMusicVideoInfo("", details, id);
-      break;
     default:
       break;
   }
@@ -3982,7 +3980,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
-            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
               mapGenres.insert(pair<int, pair<CStdString,int> >(idGenre, pair<CStdString,int>(strGenre,m_pDS->fv(3).get_asInt())));
             else
               mapGenres.insert(pair<int, pair<CStdString,int> >(idGenre, pair<CStdString,int>(strGenre,0)));
@@ -3999,7 +3997,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
         if (!items.Contains(pItem->m_strPath))
         {
@@ -4018,7 +4016,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent==CONTENT_MUSICVIDEOS)
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
         {
           // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
           // only if the number of videos watched is equal to the total number (i.e. every video watched)
@@ -4099,7 +4097,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
-            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
               mapStudios.insert(pair<int, pair<CStdString,int> >(idStudio, pair<CStdString,int>(strStudio,m_pDS->fv(3).get_asInt())));
             else
               mapStudios.insert(pair<int, pair<CStdString,int> >(idStudio, pair<CStdString,int>(strStudio,0)));
@@ -4134,7 +4132,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
           // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
           // only if the number of videos watched is equal to the total number (i.e. every video watched)
@@ -4209,7 +4207,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
           CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
-            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
               mapSets.insert(pair<int, pair<CStdString,int> >(idSet, pair<CStdString,int>(strSet,m_pDS->fv(3).get_asInt())));
             else
               mapSets.insert(pair<int, pair<CStdString,int> >(idSet, pair<CStdString,int>(strSet,0)));
@@ -4226,7 +4224,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
           pItem->GetVideoInfoTag()->m_strTitle = pItem->GetLabel();
@@ -4276,7 +4274,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
             m_pDS2->close();
           }
         }
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent== CONTENT_MUSICVIDEOS)
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
         {
           // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
           // only if the number of videos watched is equal to the total number (i.e. every video watched)
@@ -4397,11 +4395,6 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
       }
       m_pDS->close();
     }
-    if (idArtist > -1 && items.Size())
-    {
-      if (CFile::Exists(items[0]->GetCachedFanart()))
-        items.SetProperty("fanart_image",items[0]->GetCachedFanart());
-    }
 
 //    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", CTimeUtils::GetTimeMS() - time);
     return true;
@@ -4435,8 +4428,6 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
         if (CFile::Exists(pItem->GetCachedArtistThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
         pItem->SetIconImage("DefaultArtist.png");
-        if (CFile::Exists(pItem->GetCachedFanart()))
-          pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
       }
       else
       {
@@ -4564,6 +4555,8 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
             // only if the number of videos watched is equal to the total number (i.e. every video watched)
             pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0;
           }
+          if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
+            pItem->GetVideoInfoTag()->m_strArtist = pItem->GetLabel();
           items.Add(pItem);
           m_pDS->next();
         }
@@ -4649,7 +4642,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           time.SetFromDateString(m_pDS->fv(0).get_asString());
           lYear = time.GetYear();
         }
-        else if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+        else if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
           lYear = m_pDS->fv(0).get_asInt();
         it = mapYears.find(lYear);
         if (it == mapYears.end())
@@ -4659,7 +4652,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           {
             CStdString year;
             year.Format("%d", lYear);
-            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+            if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
               mapYears.insert(pair<int, pair<CStdString,int> >(lYear, pair<CStdString,int>(year,m_pDS->fv(2).get_asInt())));
             else
               mapYears.insert(pair<int, pair<CStdString,int> >(lYear, pair<CStdString,int>(year,0)));
@@ -4678,7 +4671,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
         items.Add(pItem);
       }
@@ -4696,7 +4689,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           lYear = time.GetYear();
           strLabel.Format("%i",lYear);
         }
-        else if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+        else if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
           lYear = m_pDS->fv(0).get_asInt();
           strLabel = m_pDS->fv(0).get_asString();
@@ -4711,7 +4704,7 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
         strDir.Format("%ld/", lYear);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
-        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == CONTENT_MUSICVIDEOS)
+        if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
           // fv(2) is the number of videos watched, fv(1) is the total number.  We set the playcount
           // only if the number of videos watched is equal to the total number (i.e. every video watched)
@@ -6119,8 +6112,6 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
         CFileItemPtr item(new CFileItem(musicvideo));
         item->m_strPath.Format("%s%ld",baseDir,idMVideo);
         item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,musicvideo.m_playCount > 0);
-        if (CFile::Exists(item->GetCachedFanart()))
-          item->SetProperty("fanart_image",item->GetCachedFanart());
         items.Add(item);
       }
       m_pDS->next();
@@ -7599,7 +7590,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
               XMLUtils::GetString(path, "scraperpath", uuid);
               uuid = CUtil::GetFileName(uuid);
             }
-            
+
             if (CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, uuid, addon))
             {
               SScanSettings settings;

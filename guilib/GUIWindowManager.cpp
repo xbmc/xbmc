@@ -24,8 +24,6 @@
 #include "GUIDialog.h"
 #include "Application.h"
 #include "GUIPassword.h"
-#include "utils/AddonManager.h"
-#include "GUIDialogAddonSettings.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/SingleLock.h"
 #include "Util.h"
@@ -362,14 +360,6 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
     // destination path cannot be used with virtual window
     passParams = false;
   }
-  // Activate full screen visualisation settings
-  if (iWindowID == WINDOW_DIALOG_VIS_SETTINGS)
-  {
-    ADDON::AddonPtr addon;
-    if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_VIZ, g_guiSettings.GetString("musicplayer.visualisation"), addon))
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
-  }
-
 
   // debug
   CLog::Log(LOGDEBUG, "Activating window ID: %i", iWindowID);

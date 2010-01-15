@@ -138,7 +138,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
         g_graphicsContext.ApplyStateBlock();
       }
       m_bInitialized = false;
-      
+
       m_addon.reset();
       // Setup new screensaver instance
       ADDON::AddonPtr addon;

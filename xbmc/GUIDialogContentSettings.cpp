@@ -259,7 +259,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
     }
 
     if (iter != m_scrapers.end())
-    {      
+    {
       if (isDefault)
         iter->second.insert(iter->second.begin(), scraper);
       else

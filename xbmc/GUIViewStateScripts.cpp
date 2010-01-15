@@ -61,18 +61,6 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
 {
   m_sources.clear();
 
-/*  // plugins share
-  if (CPluginDirectory::HasPlugins(CONTENT_PROGRAMS))
-  {
-    CMediaSource share;
-    share.strName = g_localizeStrings.Get(1043); // Program Plugins
-    share.strPath = "plugin://programs/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultProgramPlugins.png");
-    share.m_ignore= true;
-    AddOrReplace(g_settings.m_programSources,share);
-  }
-  return g_settings.m_programSources;*/
-
   CMediaSource share;
   if (g_settings.m_vecProfiles.size() > 1)
   {
@@ -91,7 +79,7 @@ VECSOURCES& CGUIViewStateWindowScripts::GetSources()
 
   share.strPath = "special://home/scripts";
   if (!CDirectory::Exists(share.strPath))
-    share.strPath = "special://scripts";
+    share.strPath = "special://xbmc/scripts";
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 

@@ -499,7 +499,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
     CGUIDialogOK::ShowAndGetInput(13346,14057,-1,-1);
     return false;
   }
- 
+
   // 2. Look for a nfo File to get the search URL
   CScraperUrl scrUrl;
   bool hasDetails(false);

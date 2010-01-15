@@ -1012,7 +1012,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   if (iType == VIDEODB_CONTENT_EPISODES)
     database.DeleteEpisode(path, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == VIDEODB_CONTENT_TVSHOWS)
-   database.DeleteTvShow(path);
+    database.DeleteTvShow(path);
   if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
     database.DeleteMusicVideo(path);
 
@@ -1032,10 +1032,16 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIWindowVideoBase::OnPrepareFileItems(items);
 
-  // now filter as necessary
+  // set fanart
+  CQueryParams params;
   CVideoDatabaseDirectory dir;
+  dir.GetQueryParams(items.m_strPath,params);
+  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+    CGUIWindowMusicNav::SetupFanart(items);
+
   NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
 
+  // now filter as necessary
   bool filterWatched=false;
   if (node == NODE_TYPE_EPISODES
   ||  node == NODE_TYPE_SEASONS
@@ -1048,6 +1054,7 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
     filterWatched = true;
   if (items.IsPlugin())
     filterWatched = true;
+
   int itemsBefore = items.Size();
 
   for (int i = 0; i < items.Size(); i++)
@@ -1146,7 +1153,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     CFileItemPtr item = m_unfilteredItems->Get(i);
     if (item->IsParentFolder() || filter.IsEmpty())
     {
-      if ((params.GetContentType() != CONTENT_MOVIES  && params.GetContentType() != CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
+      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
       continue;
     }
@@ -1169,7 +1176,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
     if (pos != CStdString::npos)
     {
-      if ((params.GetContentType() != CONTENT_MOVIES && params.GetContentType() != CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
+      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
     }
   }

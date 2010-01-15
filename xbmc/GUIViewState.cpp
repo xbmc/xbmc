@@ -23,6 +23,7 @@
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePictures.h"
+#include "GUIViewStatePrograms.h"
 #include "GUIViewStateScripts.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
@@ -115,6 +116,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
+
+  if (windowId==WINDOW_PROGRAMS)
+    return new CGUIViewStateWindowPrograms(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
