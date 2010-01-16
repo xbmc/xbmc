@@ -639,7 +639,7 @@ void CFileItem::Serialize(CArchive& ar)
     SetInvalid();
   }
 }
-bool CFileItem::Exists() const
+bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
   if (m_strPath.IsEmpty()
    || m_strPath.Equals("add")
@@ -666,7 +666,7 @@ bool CFileItem::Exists() const
   if (m_bIsFolder)
     return CDirectory::Exists(strPath);
   else
-    return CFile::Exists(strPath);
+    return CFile::Exists(strPath, bUseCache);
 
   return false;
 }
@@ -1014,6 +1014,16 @@ bool CFileItem::IsRemote() const
 bool CFileItem::IsSmb() const
 {
   return CUtil::IsSmb(m_strPath);
+}
+
+bool CFileItem::IsXBMS() const
+{
+  return CUtil::IsXBMS(m_strPath);
+}
+
+bool CFileItem::IsURL() const
+{
+  return CUtil::IsURL(m_strPath);
 }
 
 bool CFileItem::IsDAAP() const
@@ -2203,7 +2213,7 @@ void CFileItemList::Stack()
       // 2. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
-        || item->m_strPath.Left(7).Equals("xbms://")
+        || item->IsXBMS()
         || CUtil::IsInRAR(item->m_strPath)
         || CUtil::IsInZIP(item->m_strPath)
         )
@@ -2472,7 +2482,7 @@ void CFileItemList::Stack()
         // the label is converted from utf8, but the filename is not)
         if (!g_guiSettings.GetBool("filelists.showextensions"))
           CUtil::RemoveExtension(stackName);
-        CUtil::UrlDecode(stackName);
+        CUtil::URLDecode(stackName);
         item1->SetLabel(stackName);
         item1->m_dwSize = size;
         break;
@@ -2922,7 +2932,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   CUtil::RemoveSlashAtEnd(strMovieName);
   strMovieName = CUtil::GetFileName(strMovieName);
-  CUtil::UrlDecode(strMovieName);
+  CUtil::URLDecode(strMovieName);
 
   return strMovieName;
 }
@@ -3018,8 +3028,7 @@ CStdString CFileItem::GetLocalFanart() const
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
+  CUtil::ReplaceExtension(strFile, "-fanart",strFile);
   fanarts.push_back(CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())
@@ -3415,6 +3424,21 @@ CStdString CFileItem::FindTrailer() const
   strFile += "-trailer";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");
 
+  // Precompile our REs
+  VECCREGEXP matchRegExps;
+  CRegExp tmpRegExp(true);
+  const CStdStringArray& strMatchRegExps = g_advancedSettings.m_trailerMatchRegExps;
+
+  CStdStringArray::const_iterator strRegExp = strMatchRegExps.begin();
+  while (strRegExp != strMatchRegExps.end())
+  {
+    if (tmpRegExp.RegComp(*strRegExp))
+    {
+      matchRegExps.push_back(tmpRegExp);
+    }
+    strRegExp++;
+  }
+
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString strCandidate = items[i]->m_strPath;
@@ -3425,6 +3449,21 @@ CStdString CFileItem::FindTrailer() const
     {
       strTrailer = items[i]->m_strPath;
       break;
+    }
+    else
+    {
+      VECCREGEXP::iterator expr = matchRegExps.begin();
+
+      while (expr != matchRegExps.end())
+      {
+        if (expr->RegFind(strCandidate) != -1)
+        {
+          strTrailer = items[i]->m_strPath;
+          i = items.Size();
+          break;
+        }
+        expr++;
+      }
     }
   }
 

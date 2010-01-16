@@ -175,7 +175,7 @@ void CLastFmManager::InitProgressDialog(const CStdString& strUrl)
       dlgProgress->SetHeading(15200);
       dlgProgress->SetLine(0, 259);
       CStdString strUrlDec = strUrl;
-      CUtil::UrlDecode(strUrlDec);
+      CUtil::URLDecode(strUrlDec);
       dlgProgress->SetLine(1, strUrlDec);
       dlgProgress->SetLine(2, "");
       if (!dlgProgress->IsDialogRunning())

@@ -189,7 +189,7 @@ void CGUIDialogMusicScan::UpdateState()
   {
     CURL url(m_strCurrentDir);
     CStdString strStrippedPath = url.GetWithoutUserDetails();
-    CUtil::UrlDecode(strStrippedPath);
+    CUtil::URLDecode(strStrippedPath);
 
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
 

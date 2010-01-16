@@ -46,6 +46,8 @@ do
 
 	chown $xbmcUser:$xbmcUser /home/$xbmcUser/.xsession
 
+	initctl emit starting-x
+
 	if [ "$(whoami)" == "root" ] ; then
 		su $xbmcUser -c "startx -- -br > /dev/null 2>&1" -l
 	else

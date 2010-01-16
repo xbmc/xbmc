@@ -24,7 +24,7 @@
 				<scroll>true</scroll>
 				<align>center</align>
 				<aligny>center</aligny>
-				<label>Current Selected</label>
+				<label>$LOCALIZE[31061]</label>
 			</control>
 			<control type="group" id="9000">
 				<posx>475</posx>

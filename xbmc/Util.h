@@ -115,11 +115,13 @@ public:
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
-  static void UrlDecode(CStdString& strURLData);
+  static void URLDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
+  static bool IsXBMS(const CStdString& strFile);
+  static bool IsURL(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);

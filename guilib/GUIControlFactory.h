@@ -49,6 +49,20 @@ public:
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
+
+  /*! \brief grab a dimension out of the XML
+   
+   Supports plain reading of a number (or constant) and, in addition allows "auto" as the value
+   for the dimension, whereby value is set to the max attribute (if it exists) and min is set the min
+   attribute (if it exists) or 1.  Auto values are thus detected by min != 0.
+
+   \param pRootNode XML node to read
+   \param strTag tag within pRootNode to read
+   \param value value to set, or maximum value if using auto
+   \param min minimum value - set != 0 if auto is used.
+   \return true if we found and read the tag.
+   */
+  static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min);
   static bool GetUnsigned(const TiXmlNode* pRootNode, const char* strTag, unsigned int& value);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
   static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info);

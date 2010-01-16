@@ -75,6 +75,10 @@
 #include "CocoaInterface.h"
 #endif
 
+#ifdef HAS_CDDA_RIPPER
+#include "cdrip/CDDARipper.h"
+#endif
+
 #include <vector>
 
 using namespace std;
@@ -125,6 +129,7 @@ const BUILT_IN commands[] = {
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
+  { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Skin.ToggleSetting",         true,   "Toggles a skin setting on or off" },
   { "Skin.SetString",             true,   "Prompts and sets skin string" },
   { "Skin.SetNumeric",            true,   "Prompts and sets numeric input" },
@@ -808,6 +813,13 @@ int CBuiltins::Execute(const CStdString& execString)
   {
 #ifdef HAS_DVD_DRIVE
     CAutorun::PlayDisc();
+#endif
+  }
+  else if (execute.Equals("ripcd"))
+  {
+#ifdef HAS_CDDA_RIPPER
+    CCDDARipper ripper;
+    ripper.RipCD();
 #endif
   }
   else if (execute.Equals("skin.togglesetting"))

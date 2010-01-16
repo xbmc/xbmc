@@ -2,7 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 01/10/2010-->
+<!--Date of translation: 01/14/2010-->
+<!--$Revision$-->
+<!--Based on english strings version 26748-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -992,7 +994,6 @@
   <string id="13279">Nätverk</string>
   <string id="13280">Grafik</string>
   <string id="13281">Hårdvara</string>
-  <string id="13282">_</string>
   <string id="13283">Operativsystem:</string>
   <string id="13284">CPU-hastighet:</string>
   <string id="13285">Igenkänt BIOS:</string>
@@ -1385,6 +1386,7 @@
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
+  <string id="16315">Lanczos3 optimerad</string>
   <string id="17500">Visa insommningstimeout</string>
   <string id="19000">Byt till kanal</string>
   <string id="20000">Mapp för sparad musik</string>
@@ -1413,7 +1415,7 @@
   <string id="20038">Lås musikfönster</string>
   <string id="20039">Lås filmfönster</string>
   <string id="20040">Lås bildfönster</string>
-  <string id="20041">Lås program, sparade spel och skriptfönster</string>
+  <string id="20041">Lås program &amp; skriptfönster</string>
   <string id="20042">Lås filhanteraren</string>
   <string id="20043">Lås inställningar</string>
   <string id="20044">Starta på nytt</string>
@@ -1572,6 +1574,8 @@
   <string id="20250">Festa på! (filmer)</string>
   <string id="20251">Blandar drinkar (filmer)</string>
   <string id="20252">Fyller glasen (filmer)</string>
+  <string id="20253">WebDAV-server (HTTP)</string>
+  <string id="20254">WebDAV-server (HTTPS)</string>
   <string id="20300">WebDAV-server (HTTP)</string>
   <string id="20301">WebDAV-server (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
@@ -1923,9 +1927,9 @@
   <string id="23001">- Tilläggsinställningar</string>
   <string id="23050">Aktivera teletext</string>
   <string id="23051">Del %i</string>
-  <string id="23052">Buffrar %i bytes</string> 
-  <string id="23053">Stoppar</string> 
-  <string id="23054">Igång</string> 
+  <string id="23052">Buffrar %i bytes</string>
+  <string id="23053">Stoppar</string>
+  <string id="23054">Igång</string>
   <string id="23100">Extern spelare är aktiv</string>
   <string id="23101">Klicka OK för att avsluta spelaren</string>
   <string id="23104">Klicka OK när uppspelningen har slutat</string>

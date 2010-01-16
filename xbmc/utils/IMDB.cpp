@@ -125,20 +125,10 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
     return 0;
   }
+
   if (stricmp(doc.RootElement()->Value(),"error")==0)
   {
-    TiXmlElement* title = doc.RootElement()->FirstChildElement("title");
-    CStdString strTitle;
-    if (title && title->FirstChild() && title->FirstChild()->Value())
-      strTitle = title->FirstChild()->Value();
-    TiXmlElement* message = doc.RootElement()->FirstChildElement("message");
-    CStdString strMessage;
-    if (message && message->FirstChild() && message->FirstChild()->Value())
-      strMessage = message->FirstChild()->Value();
-    CGUIDialogOK* dialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    dialog->SetHeading(strTitle);
-    dialog->SetLine(0,strMessage);
-    g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
+    ShowErrorDialog(doc.RootElement());
     return -1;
   }
 
@@ -233,6 +223,22 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
 bool CIMDB::RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &right)
 {
   return left.relevance > right.relevance;
+}
+
+void CIMDB::ShowErrorDialog(const TiXmlElement* element)
+{
+  const TiXmlElement* title = element->FirstChildElement("title");
+  CStdString strTitle;
+  if (title && title->FirstChild() && title->FirstChild()->Value())
+    strTitle = title->FirstChild()->Value();
+  const TiXmlElement* message = element->FirstChildElement("message");
+  CStdString strMessage;
+  if (message && message->FirstChild() && message->FirstChild()->Value())
+    strMessage = message->FirstChild()->Value();
+  CGUIDialogOK* dialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+  dialog->SetHeading(strTitle);
+  dialog->SetLine(0,strMessage);
+  g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
 }
 
 bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details)
