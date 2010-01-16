@@ -407,8 +407,8 @@ DYNOBJSXBMC= \
 ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \
 	xbmc/osx/osx.a \
-	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
-	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
+	lib/libSDL-OSX/libSDL-@ARCH@.a \
+	lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
