@@ -286,7 +286,6 @@ void CGUISettings::Initialize()
   AddString(8, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15219);
 
   AddCategory(3, "audiocds", 620);
-  AddBool(1, "audiocds.autorun", 14085, false);
   AddBool(2, "audiocds.usecddb", 227, true);
   AddSeparator(3, "audiocds.sep1");
   AddPath(4,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
