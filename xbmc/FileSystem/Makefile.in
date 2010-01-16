@@ -68,6 +68,8 @@ SRCS=ASAPFileDirectory.cpp \
      PlaylistDirectory.cpp \
      PlaylistFileDirectory.cpp \
      PluginDirectory.cpp \
+     PVRFile.cpp \
+     PVRDirectory.cpp \
      RarDirectory.cpp \
      RarManager.cpp \
      RSSDirectory.cpp \
