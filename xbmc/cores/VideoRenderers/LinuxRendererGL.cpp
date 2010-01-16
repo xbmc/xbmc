@@ -932,12 +932,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
-    if(!glewIsSupported("GL_ARB_texture_float"))
-    {
-      CLog::Log(LOGERROR, "GL: hardware doesn't support GL_ARB_texture_float");
-      break;
-    }
-
     if (!m_fbo.Initialize())
     {
       CLog::Log(LOGERROR, "GL: Error initializing FBO");
@@ -2283,7 +2277,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LANCZOS3_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
-    if (glewIsSupported("GL_ARB_texture_float") && glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
+    if (glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
       return true;
   }
  

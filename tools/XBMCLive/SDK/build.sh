@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Depencency list: git-core apt-cacher-ng debootstrap asciidoc docbook-xsl curl build-essential
+# Depencency list: git-core debootstrap asciidoc docbook-xsl curl build-essential
 #
 
 #
@@ -30,20 +30,13 @@ cleanup()
 }
 trap 'cleanup' EXIT TERM INT
 
-# Using apt-cacher(-ng) to speed up apt-get downloads
-export APT_HTTP_PROXY="http://127.0.0.1:3142"
-export APT_FTP_PROXY="http://127.0.0.1:3142"
-
-# We use apt-cacher when retrieving d-i udebs, too
-export http_proxy="http://127.0.0.1:3142"
-export ftp_proxy="http://127.0.0.1:3142"
-
-# Closest Ubuntu mirror
-export UBUNTUMIRROR_BASEURL="http://mirror.bytemark.co.uk/ubuntu/"
-
 THISDIR=$(pwd)
 WORKDIR=workarea
 WORKPATH=$THISDIR/$WORKDIR
+
+if [ -f $THISDIR/setAptProxy.sh ]; then
+	. $THISDIR/setAptProxy.sh
+fi
 
 if [ -d "$WORKPATH" ]; then
 	rm -rf $WORKPATH
@@ -51,18 +44,20 @@ fi
 mkdir $WORKPATH
 
 # cp all (except svn directories) into workarea
-rsync -r --exclude=.svn --exclude=$WORKDIR . $WORKDIR
+rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
 
 if ! which lh > /dev/null ; then
 	cd $WORKPATH/Tools
-	git clone git://live.debian.net/git/live-helper.git
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
+	if [ ! -d live-helper ]; then
+		git clone git://live.debian.net/git/live-helper.git
+		if [ "$?" -ne "0" ]; then
+			exit 1
+		fi
 
-	# Fix for missing directory for karmic d-i, to be removed when fixed upstream!
-	cd live-helper/data/debian-cd
-	ln -s lenny karmic
+		# Fix for missing directory for karmic d-i, to be removed when fixed upstream!
+		cd live-helper/data/debian-cd
+		ln -s lenny karmic
+	fi
 
 	LH_HOMEDIR=$WORKPATH/Tools/live-helper
 
@@ -70,6 +65,16 @@ if ! which lh > /dev/null ; then
 	export PATH="${LH_BASE}/helpers:${PATH}"
 
 	cd $THISDIR
+fi
+
+
+# Execute hooks if env variable is defined
+if [ -n "$SDK_BUILDHOOKS" ]; then
+	for hook in $SDK_BUILDHOOKS; do
+		if [ -x $hook ]; then
+			$hook
+		fi
+	done
 fi
 
 #
@@ -83,9 +88,9 @@ fi
 cd $THISDIR
 
 #
-# Build restricted drivers
+# Build binary drivers
 #
-cd $WORKPATH/buildRestricted
+cd $WORKPATH/buildBinaryDrivers
 ./build.sh
 if [ "$?" -ne "0" ]; then
 	exit 1
@@ -97,7 +102,7 @@ cd $THISDIR
 #
 mkdir -p $WORKPATH/buildLive/Files/chroot_local-packages &> /dev/null
 mkdir -p $WORKPATH/buildLive/Files/binary_local-udebs &> /dev/null
-mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
+mkdir -p $WORKPATH/buildLive/Files/chroot_local-includes/root &> /dev/null
 
 if ! ls $WORKPATH/buildDEBs/live-initramfs*.* > /dev/null 2>&1; then
         echo "Files missing (1), exiting..."
@@ -123,11 +128,22 @@ if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
 fi
 cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
-if ! ls $WORKPATH/buildRestricted/*.ext3 > /dev/null 2>&1; then
-        echo "Files missing (5), exiting..."
+
+if [ -z "$DONOTBUILDRESTRICTEDDRIVERS" ]; then
+	mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
+
+	if ! ls $WORKPATH/buildBinaryDrivers/*.ext3 > /dev/null 2>&1; then
+		echo "Files missing (5), exiting..."
+		exit 1
+	fi
+	cp $WORKPATH/buildBinaryDrivers/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
+fi
+
+if ! ls $WORKPATH/buildBinaryDrivers/crystalhd.tar > /dev/null 2>&1; then
+        echo "Files missing (6), exiting..."
         exit 1
 fi
-cp $WORKPATH/buildRestricted/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
+cp $WORKPATH/buildBinaryDrivers/crystalhd.tar $WORKPATH/buildLive/Files/chroot_local-includes/root
 
 #
 # Perform XBMCLive image build

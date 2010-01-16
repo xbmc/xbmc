@@ -140,20 +140,50 @@ public:
   void       RunLoadActions();
   void       RunUnloadActions();
 
-  bool HasProperty(const CStdString &strKey) const;
-  void SetProperty(const CStdString &strKey, const char *strValue);
-  void SetProperty(const CStdString &strKey, const CStdString &strValue);
-  void SetProperty(const CStdString &strKey, int nVal);
-  void SetProperty(const CStdString &strKey, bool bVal);
-  void SetProperty(const CStdString &strKey, double dVal);
+  /*! \brief Set a property
+   Sets the value of a property referenced by a key.
+   \param key name of the property to set
+   \param value value to set, may be a string, integer, boolean or double.
+   \sa GetProperty
+   */
+  void SetProperty(const CStdString &key, const CStdString &value);
+  void SetProperty(const CStdString &key, const char *value);
+  void SetProperty(const CStdString &key, int value);
+  void SetProperty(const CStdString &key, bool value);
+  void SetProperty(const CStdString &key, double value);
 
-  CStdString GetProperty(const CStdString &strKey) const;
-  int        GetPropertyInt(const CStdString &strKey) const;
-  bool       GetPropertyBOOL(const CStdString &strKey) const;
-  double     GetPropertyDouble(const CStdString &strKey) const;
+  /*! \brief Retreive a property
+   \param key name of the property to retrieve
+   \return value of the property, empty if it doesn't exist
+   \sa SetProperty, GetPropertyInt, GetPropertyBool, GetPropertyDouble
+   */
+  CStdString GetProperty(const CStdString &key) const;
 
+  /*! \brief Retreive an integer property
+   \param key name of the property to retrieve
+   \return value of the property, 0 if it doesn't exist
+   \sa SetProperty, GetProperty
+   */
+  int        GetPropertyInt(const CStdString &key) const;
+
+  /*! \brief Retreive a boolean property
+   \param key name of the property to retrieve
+   \return value of the property, false if it doesn't exist
+   \sa SetProperty, GetProperty
+   */
+  bool       GetPropertyBool(const CStdString &key) const;
+
+  /*! \brief Retreive a double precision property
+   \param key name of the property to retrieve
+   \return value of the property, 0 if it doesn't exist
+   \sa SetProperty, GetProperty
+   */
+  double     GetPropertyDouble(const CStdString &key) const;
+
+  /*! \brief Clear a all the window's properties
+   \sa SetProperty, HasProperty, GetProperty
+   */
   void ClearProperties();
-  void ClearProperty(const CStdString &strKey);
 
 #ifdef _DEBUG
   void DumpTextureUse();

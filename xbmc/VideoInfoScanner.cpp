@@ -362,7 +362,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::CScraperPtr& scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::CScraperPtr& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
     m_IMDB.SetScraperInfo(scraper);
 
@@ -525,11 +525,14 @@ namespace VIDEO
               (info2->Content() == CONTENT_MUSICVIDEOS && m_database.HasMusicVideoInfo(pItem->m_strPath)))
              continue;
 
-          CNfoFile::NFOResult result;
+          CNfoFile::NFOResult result=CNfoFile::NO_NFO;
           CScraperUrl scrUrl;
           // handle .nfo files
-          result = CheckForNFOFile(pItem.get(),bDirNames,info2->Content(),scrUrl);
-          if (info2->Content() == CONTENT_TVSHOWS && result != CNfoFile::NO_NFO)
+          if (!ignoreNfo)
+            result = CheckForNFOFile(pItem.get(),bDirNames,info2->Content(),scrUrl);
+          if (result == CNfoFile::ERROR_NFO)
+            continue;
+          if (info2.strContent.Equals("tvshows") && result != CNfoFile::NO_NFO)
           { // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
             ADDON::CScraperPtr temp;
             SScanSettings settings;

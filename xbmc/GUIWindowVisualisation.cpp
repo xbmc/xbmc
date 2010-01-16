@@ -197,14 +197,17 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
     action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
-  // some other mouse action has occurred - bring up the OSD
-  CGUIDialog *pOSD = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
-  if (pOSD)
-  {
-    pOSD->SetAutoClose(3000);
-    pOSD->DoModal();
+  if (event.m_id || event.m_offsetX || event.m_offsetY)
+  { // some other mouse action has occurred - bring up the OSD
+    CGUIDialog *pOSD = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
+    if (pOSD)
+    {
+      pOSD->SetAutoClose(3000);
+      pOSD->DoModal();
+    }
+    return true;
   }
-  return true;
+  return false;
 }
 
 void CGUIWindowVisualisation::Render()

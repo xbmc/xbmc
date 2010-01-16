@@ -127,7 +127,7 @@
 					<onright>703</onright>
 					<onup>603</onup>
 					<ondown>603</ondown>
-					<onclick>XBMC.LastFM.Hate</onclick>
+					<onclick>XBMC.LastFM.Ban</onclick>
 				</control>
 			</control>
 			<control type="group" id="201">

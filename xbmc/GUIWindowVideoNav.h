@@ -70,7 +70,6 @@ protected:
 
   // filtered item views
   CFileItemList* m_unfilteredItems;
-  CStdString m_filter;
 
   CStdString m_startDirectory;
 };

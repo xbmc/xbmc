@@ -81,7 +81,7 @@ public:
   virtual void Serialize(CArchive& ar);
   virtual bool IsFileItem() const { return true; };
 
-  bool Exists() const;
+  bool Exists(bool bUseCache = true) const;
   bool IsVideo() const;
   bool IsPicture() const;
   bool IsLyrics() const;
@@ -114,6 +114,8 @@ public:
   bool IsHD() const;
   bool IsRemote() const;
   bool IsSmb() const;
+  bool IsXBMS() const;
+  bool IsURL() const;
   bool IsDAAP() const;
   bool IsStack() const;
   bool IsMultiPath() const;

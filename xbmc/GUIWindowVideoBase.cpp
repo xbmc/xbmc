@@ -33,6 +33,7 @@
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"
@@ -519,15 +520,22 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   if (!info)
     return false;
 
-  if (info->HasSettings() && !info->GetSettingsXML()) 
-  {  // scraper supports settings, but none are configured. load defaults //todo remove
-    info->LoadSettings();
-    info->SaveFromDefault();
-  }
-
+  bool ignoreNfo=false;
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info->Content(),scrUrl);
-  if (result == CNfoFile::FULL_NFO)
-    hasDetails = true;
+  if (result == CNfoFile::ERROR_NFO)
+    ignoreNfo=true;
+  else
+  if (result != CNfoFile::NO_NFO)
+  {
+    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+      hasDetails=true;
+    else
+    {
+      ignoreNfo=true;
+      scrUrl.Clear();
+    }
+  }
+  
   if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     scanner.m_IMDB.SetScraperInfo(info);
 
@@ -672,7 +680,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress,ignoreNfo))
       {
         if (info->Content() == CONTENT_MOVIES)
           m_database.GetMovieInfo(item->m_strPath,movieDetails);

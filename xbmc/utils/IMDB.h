@@ -76,6 +76,8 @@ public:
 
   void SetScraperInfo(const ADDON::CScraperPtr& scraper) { m_info = scraper; }
   const ADDON::CScraperPtr GetScraperInfo() const { return m_info; }
+
+  static void ShowErrorDialog(const TiXmlElement* element);
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
 

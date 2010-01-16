@@ -1,35 +1,39 @@
 uniform sampler2D img;
 uniform float     stepx;
 uniform float     stepy;
+
+#if (HAS_FLOAT_TEXTURE)
+uniform sampler1D kernelTex;
+
+vec3 weight(float pos)
+{
+  return texture1D(kernelTex, pos).rgb;
+}
+#else
 uniform sampler2D kernelTex;
 
-vec4 weight(float pos)
+vec3 weight(float pos)
 {
-  return texture2D(kernelTex, vec2(pos, 0.5));
+  //row 0 contains the high byte, row 1 contains the low byte
+  return ((texture2D(kernelTex, vec2(pos, 0.0)) * 256.0 + texture2D(kernelTex, vec2(pos, 1.0)))).rgb / 128.5 - 1.0;
+}
+#endif
+
+vec3 pixel(float xpos, float ypos)
+{
+  return texture2D(img, vec2(xpos, ypos)).rgb;
 }
 
-vec4 pixel(float xpos, float ypos)
+vec3 line (float ypos, vec3 xpos1, vec3 xpos2, vec3 linetaps1, vec3 linetaps2)
 {
-  return texture2D(img, vec2(gl_TexCoord[0].x + xpos * stepx + stepx / 2.0, gl_TexCoord[0].y + ypos * stepy + stepy / 2.0));
-}
+  vec3  pixels;
 
-vec4 line (float ypos, float xf, vec4 linetaps1, vec4 linetaps2)
-{
-  float xpos;
-  vec4  pixels;
-
-  xpos    = -2.0 - xf;
-  pixels  = pixel(xpos, ypos) * linetaps1.r;
-  xpos    = -1.0 - xf;
-  pixels += pixel(xpos, ypos) * linetaps2.r;
-  xpos    =  0.0 - xf;
-  pixels += pixel(xpos, ypos) * linetaps1.g;
-  xpos    =  1.0 - xf;
-  pixels += pixel(xpos, ypos) * linetaps2.g;
-  xpos    =  2.0 - xf;
-  pixels += pixel(xpos, ypos) * linetaps1.b;
-  xpos    =  3.0 - xf;
-  pixels += pixel(xpos, ypos) * linetaps2.b;
+  pixels  = pixel(xpos1.r, ypos) * linetaps1.r;
+  pixels += pixel(xpos1.g, ypos) * linetaps2.r;
+  pixels += pixel(xpos1.b, ypos) * linetaps1.g;
+  pixels += pixel(xpos2.r, ypos) * linetaps2.g;
+  pixels += pixel(xpos2.g, ypos) * linetaps1.b;
+  pixels += pixel(xpos2.b, ypos) * linetaps2.b;
 
   return pixels;
 }
@@ -38,25 +42,27 @@ void main()
 {
   float xf = fract(gl_TexCoord[0].x / stepx);
   float yf = fract(gl_TexCoord[0].y / stepy);
-  float ypos;
 
-  vec4 linetaps1   = weight((1.0 - xf) / 2.0);
-  vec4 linetaps2   = weight((1.0 - xf) / 2.0 + 0.5);
-  vec4 columntaps1 = weight((1.0 - yf) / 2.0);
-  vec4 columntaps2 = weight((1.0 - yf) / 2.0 + 0.5);
+  vec3 linetaps1   = weight((1.0 - xf) / 2.0);
+  vec3 linetaps2   = weight((1.0 - xf) / 2.0 + 0.5);
+  vec3 columntaps1 = weight((1.0 - yf) / 2.0);
+  vec3 columntaps2 = weight((1.0 - yf) / 2.0 + 0.5);
 
-  ypos = -2.0 - yf;
-  gl_FragColor  = line(ypos, xf, linetaps1, linetaps2) * columntaps1.r;
-  ypos = -1.0 - yf;
-  gl_FragColor += line(ypos, xf, linetaps1, linetaps2) * columntaps2.r;
-  ypos =  0.0 - yf;
-  gl_FragColor += line(ypos, xf, linetaps1, linetaps2) * columntaps1.g;
-  ypos =  1.0 - yf;
-  gl_FragColor += line(ypos, xf, linetaps1, linetaps2) * columntaps2.g;
-  ypos =  2.0 - yf;
-  gl_FragColor += line(ypos, xf, linetaps1, linetaps2) * columntaps1.b;
-  ypos =  3.0 - yf;
-  gl_FragColor += line(ypos, xf, linetaps1, linetaps2) * columntaps2.b;
+  vec3 xpos1 = vec3(
+      (-1.5 - xf) * stepx + gl_TexCoord[0].x,
+      (-0.5 - xf) * stepx + gl_TexCoord[0].x,
+      ( 0.5 - xf) * stepx + gl_TexCoord[0].x);
+  vec3 xpos2 = vec3(
+      ( 1.5 - xf) * stepx + gl_TexCoord[0].x,
+      ( 2.5 - xf) * stepx + gl_TexCoord[0].x,
+      ( 3.5 - xf) * stepx + gl_TexCoord[0].x);
+
+  gl_FragColor.rgb  = line((-1.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r;
+  gl_FragColor.rgb += line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r;
+  gl_FragColor.rgb += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g;
+  gl_FragColor.rgb += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g;
+  gl_FragColor.rgb += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b;
+  gl_FragColor.rgb += line(( 3.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
 
   gl_FragColor.a = gl_Color.a;
 }

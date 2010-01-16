@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/30/2009-->
+<!--Date of translation: 01/15/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">변경</string>
@@ -20,11 +20,11 @@
   <string id="31025">항목</string>
   <string id="31026">기타 옵션</string>
   <string id="31027">위치</string>
-  <string id="31028">포스터 바꿈</string>
+  <string id="31028">포스터 나열</string>
   <string id="31029">팬아트</string>
   <string id="31030">전체 목록</string>
   <string id="31031">사진 미리보기</string>
-  <string id="31032">이미지 바꿈</string>
+  <string id="31032">이미지 나열</string>
   <string id="31040">지금 재생중</string>
   <string id="31042">재생중</string>
   <string id="31043">일시중지됨</string>
@@ -40,6 +40,7 @@
   <string id="31058">시스템 음악 파일</string>
   <string id="31059">현재 재생목록</string>
   <string id="31060">이 파일은 연결되었습니다, 재생하고 싶은 부분을 선택하세요.</string>
+  <string id="31061">현재 선택됨</string>
   <string id="31100">
   </string>
   <string id="31101">홈 화면 옵션</string>

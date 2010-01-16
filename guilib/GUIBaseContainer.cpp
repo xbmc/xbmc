@@ -823,7 +823,7 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
 void CGUIBaseContainer::SetContainerMoving(int direction)
 {
   if (direction)
-    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollTimer.IsRunning());
+    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollSpeed != 0);
 }
 
 void CGUIBaseContainer::UpdateScrollOffset()

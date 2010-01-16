@@ -1,1 +1,0 @@
-/* sha.h  for openvpn */

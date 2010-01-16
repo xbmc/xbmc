@@ -1485,17 +1485,16 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-  <string id="16307">Lanczos3 fast</string>
-
   <string id="16307">Bicubic (software)</string>
   <string id="16308">Lanczos (software)</string>
   <string id="16309">Sinc (software)</string>
-
   <string id="16310">(VDPAU)Temporal</string>
   <string id="16311">(VDPAU)Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
+  <string id="16315">Lanczos3 optimized</string>
+
   <string id="17500">Display sleep timeout</string>
 
   <string id="19000">Switch to channel</string>
@@ -1534,7 +1533,7 @@
   <string id="20038">Lock music window</string>
   <string id="20039">Lock videos window</string>
   <string id="20040">Lock pictures window</string>
-  <string id="20041">Lock programs, saves &amp; scripts windows</string>
+  <string id="20041">Lock programs &amp; scripts windows</string>
   <string id="20042">Lock file manager</string>
   <string id="20043">Lock settings</string>
   <string id="20044">Start fresh</string>
@@ -1847,6 +1846,8 @@
   <string id="20443">Do you want to refresh info for all</string>
   <string id="20444">items within this path?</string>
   <string id="20445">Fanart</string>
+  <string id="20446">Locally stored information found.</string>
+  <string id="20447">Ignore and refresh from internet?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
