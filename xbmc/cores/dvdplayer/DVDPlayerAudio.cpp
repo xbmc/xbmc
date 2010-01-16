@@ -21,7 +21,6 @@
  
 #include "stdafx.h"
 #include "DVDPlayerAudio.h"
-#include "DVDPlayer.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -121,10 +120,9 @@ double CPTSInputQueue::Get(__int64 bytes, bool consume)
   return DVD_NOPTS_VALUE;
 }
 
-CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
+CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
 : CThread()
 , m_messageQueue("audio")
-, m_messageParent(parent)
 , m_dvdAudio((bool&)m_bStop)
 {
   m_pClock = pClock;
@@ -133,7 +131,6 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_droptime = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
-  m_started = false;
   m_duration = 0.0;
 
 #ifdef _XBOX
@@ -171,7 +168,6 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_droptime = 0;
   m_audioClock = 0;
   m_stalled = true;
-  m_started = false;
 
   CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
@@ -335,7 +331,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (m_messageQueue.ReceivedAbortRequest()) return DECODE_FLAG_ABORT;
 
     CDVDMsg* pMsg;
-    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) && m_started ? 1 : 0;
+    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
 
     int timeout;
     if(m_duration > 0)
@@ -394,7 +390,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
       m_decode.Release();
-      m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
@@ -402,7 +397,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_ptsOutput.Flush();
       m_ptsInput.Flush();
       m_stalled   = true;
-      m_started   = false;
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
@@ -538,13 +532,6 @@ void CDVDPlayerAudio::Process()
     // don't try to fix a desynced clock, until we played out the full audio buffer
     if( fabs(m_pClock->DistanceToDisc()) < m_dvdAudio.GetDelay() )
       continue;
-
-    // signal to our parent that we have initialized
-    if(m_started == false)
-    {
-      m_started = true;
-      m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
-    }
 
     if( m_ptsOutput.Current() == DVD_NOPTS_VALUE )
       continue;
