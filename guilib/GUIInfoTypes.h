@@ -80,7 +80,7 @@ public:
 
   const CStdString GetFallback() const { return m_fallback; };
 
-  static CStdString GetLabel(const CStdString &label, bool preferImage = false);
+  static CStdString GetLabel(const CStdString &label, int contextWindow = 0, bool preferImage = false);
 
   /*!
    \brief Replaces instances of $LOCALIZE[number] with the appropriate localized string
