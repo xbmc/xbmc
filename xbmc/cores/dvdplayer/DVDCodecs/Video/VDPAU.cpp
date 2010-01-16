@@ -993,6 +993,9 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   VdpStatus vdp_st;
   VdpTime time;
 
+  if (CheckRecover(false))
+    return VC_FLUSHED;
+
   if (!vdpauConfigured)
     return VC_ERROR;
 
