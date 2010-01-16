@@ -125,7 +125,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-/* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
+      /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
       CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
@@ -215,6 +215,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       DisplayEmptyDatabaseMessage(false); // reset message state
 
+      SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
+      
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
@@ -307,6 +309,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bMyVideoNavFlatten = !g_settings.m_bMyVideoNavFlatten;
         g_settings.Save();
+        SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
         CUtil::DeleteVideoDatabaseDirectoryCache();
         SetupShares();
         Update("");
