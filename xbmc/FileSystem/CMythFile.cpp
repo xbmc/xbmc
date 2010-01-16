@@ -162,6 +162,10 @@ bool CCMythFile::SetupRecording(const CURL& url)
     }
     m_dll->ref_release(recorder);
   }
+
+  if (m_recording)
+    CLog::Log(LOGDEBUG, "%s - Currently recording: %s", __FUNCTION__, m_filename.c_str());
+
   return true;
 }
 
