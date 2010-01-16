@@ -709,6 +709,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     GetDirectory(pItem->m_strPath, items);
     //OnRetrieveMusicInfo(items);
     FormatAndSort(items);
+    SetupFanart(items);
     for (int i = 0; i < items.Size(); ++i)
       AddItemToPlayList(items[i], queuedItems);
   }
@@ -1387,5 +1388,34 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
     items.SetCachedMusicThumbs();
 }
 
-
+void CGUIWindowMusicBase::SetupFanart(CFileItemList& items)
+{
+  // set fanart
+  map<CStdString, CStdString> artists;
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr item = items[i];
+    CStdString strArtist;
+    if (item->HasProperty("fanart_image"))
+      continue;
+    if (item->HasMusicInfoTag())
+      strArtist = item->GetMusicInfoTag()->GetArtist();
+   if (item->HasVideoInfoTag())
+     strArtist = item->GetVideoInfoTag()->m_strArtist;
+   if (strArtist.IsEmpty())
+     continue;
+    map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
+    if (artist == artists.end())
+    {
+      CStdString strFanart = item->GetCachedFanart();
+      if (XFILE::CFile::Exists(strFanart))
+        item->SetProperty("fanart_image",strFanart);
+      else
+        strFanart = "";
+      artists.insert(make_pair(strArtist, strFanart));
+    }
+    else
+      item->SetProperty("fanart_image",artist->second);
+  }
+}
 
