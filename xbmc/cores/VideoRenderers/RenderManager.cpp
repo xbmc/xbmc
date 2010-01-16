@@ -437,11 +437,6 @@ void CXBMCRenderManager::Present()
   }
 
   CSharedLock lock(m_sharedSection);
-#ifdef HAVE_LIBVDPAU
-  /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
-    WaitPresentTime(m_presenttime);
-#endif
 
   if     ( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB
         || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
@@ -458,14 +453,7 @@ void CXBMCRenderManager::Present()
 
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
-  {
-#ifdef HAVE_LIBVDPAU
-    if (!g_VDPAU)
-#endif
-    {
-      WaitPresentTime(m_presenttime);
-    }
-  }
+    WaitPresentTime(m_presenttime);
 
   m_presentevent.Set();
 }

@@ -52,9 +52,9 @@ In this case you will have to manually compile the latest version.
    # make
    # sudo make install
 
-On 8.04 and older versions, libcurl is outdated and thus XBMC will not compile properly.
+On 8.10 and older versions, libcurl is outdated and thus XBMC will not compile properly.
 In this case you will have to manually compile the latest version.
-   # wget "wget http://curl.sourceforge.net/download/curl-7.19.7.tar.gz"
+   # wget http://curl.sourceforge.net/download/curl-7.19.7.tar.gz
    # tar -xzf curl-7.19.7.tar.gz
    # cd curl-7.19.7
    # ./configure --disable-ipv6 --without-libidn --without-libssh2 --disable-ldap --prefix=/usr

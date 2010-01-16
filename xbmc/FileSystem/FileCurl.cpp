@@ -348,10 +348,15 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
 
   // set username and password for current handle
+#if (LIBCURL_VERSION_NUM >= 0x071301)
   if (m_username.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
   if (m_password.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
+#else
+  if (m_username.length() || m_password.length())
+    CLog::Log(LOGERROR, "CFileCurl::SetCommonOptions - curl version doesn't support password");
+#endif
 
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
