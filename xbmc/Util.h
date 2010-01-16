@@ -150,7 +150,7 @@ public:
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
-  static void UrlDecode(CStdString& strURLData);
+  static void URLDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool CacheXBEIcon(const CStdString& strFilePath, const CStdString& strIcon);
   static bool GetXBEDescription(const CStdString& strFileName, CStdString& strDescription);
@@ -163,6 +163,9 @@ public:
   static bool ShortenFileName(CStdString& strFileNameAndPath);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
+  static bool IsXBMS(const CStdString& strFile);
+  static bool IsURL(const CStdString& strFile);
+  static bool IsFTP(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
   static bool IsWritable(const CStdString& strFile);
@@ -230,7 +233,6 @@ public:
 
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
   static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
-  static bool IsFTP(const CStdString& strFile);
   static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
   static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
   static bool SetXBOXNickName(CStdString strXboxNickNameIn, CStdString &strXboxNickNameOut);

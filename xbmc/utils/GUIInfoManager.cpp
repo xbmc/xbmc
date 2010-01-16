@@ -522,7 +522,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(9).Equals("timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(info.Mid(9))));
     else if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
     else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
-    else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
+    else if (info.Left(9).Equals("property("))
+      return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
     else
       ret = TranslateMusicPlayerString(strTest.Mid(12));
   }
@@ -982,7 +983,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     return GetPictureLabel(info);
 
   if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET &&
-      info - LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET < (int)m_listitemProperties.size())
+      info - (LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET) < (int)m_listitemProperties.size())
   { // grab the property
     if (!m_currentFile)
       return "";
@@ -2549,7 +2550,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
     else
     { // no window specified - assume active
-      window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+      window = GetWindowWithCondition(contextWindow, 0);
     }
 
     if (window)
@@ -3810,7 +3811,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         CUtil::RemoveSlashAtEnd(path);
         path=CUtil::GetFileName(path);
       }
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
      }
    case LISTITEM_FILENAME_AND_PATH:
@@ -3823,7 +3824,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else
         path = item->m_strPath;
       path = CURL(path).GetWithoutUserDetails();
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
     }
   case LISTITEM_PICTURE_PATH:

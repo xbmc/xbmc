@@ -150,7 +150,7 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
   if (pos >= 0)
   {
     CStdString firstPath = strPath.Mid(12, pos - 12);
-    CUtil::UrlDecode(firstPath);
+    CUtil::URLDecode(firstPath);
     return firstPath;
   }
   return "";
@@ -175,10 +175,33 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
     CStdString tempPath = vecTemp[i];
-    CUtil::UrlDecode(tempPath);
+    CUtil::URLDecode(tempPath);
     vecPaths.push_back(tempPath);
   }
   return true;
+}
+
+bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& strPathToFind)
+{
+  // remove multipath:// from path and any trailing / (so that the last path doesn't get any more than it originally had)
+  CStdString strPath1 = strPath.Mid(12);
+  CUtil::RemoveSlashAtEnd(strPath1);
+
+  // split on "/"
+  vector<CStdString> vecTemp;
+  StringUtils::SplitString(strPath1, "/", vecTemp);
+  if (vecTemp.size() == 0)
+    return false;
+
+  // check each item
+  for (unsigned int i = 0; i < vecTemp.size(); i++)
+  {
+    CStdString tempPath = vecTemp[i];
+    CUtil::URLDecode(tempPath);
+    if(tempPath == strPathToFind)
+      return true;
+  }
+  return false;
 }
 
 CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, const vector<int> &stack)

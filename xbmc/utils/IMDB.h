@@ -76,6 +76,8 @@ public:
 
   void SetScraperInfo(const SScraperInfo& info) { m_info.Reset(); m_info = info; }
   const SScraperInfo& GetScraperInfo() const { return m_info; }
+
+  static void ShowErrorDialog(const TiXmlElement* element);
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
 

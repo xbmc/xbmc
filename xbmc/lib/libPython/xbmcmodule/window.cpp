@@ -911,7 +911,7 @@ namespace PYXBMC
     "key            : string - property name.\n"
     "value          : string or unicode - value of property.\n"
     "\n"
-    "*Note, Key is NOT case sensitive.\n"
+    "*Note, key is NOT case sensitive. Setting value to an empty string is equivalent to clearProperty(key)\n"
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
@@ -947,7 +947,7 @@ namespace PYXBMC
     CStdString lowerKey = key;
 
     PyXBMCGUILock();
-    pWindow->SetProperty(lowerKey.ToLower(), uText.c_str());
+    pWindow->SetProperty(lowerKey.ToLower(), uText);
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -959,7 +959,7 @@ namespace PYXBMC
     "\n"
     "key            : string - property name.\n"
     "\n"
-    "*Note, Key is NOT case sensitive.\n"
+    "*Note, key is NOT case sensitive.\n"
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
@@ -999,7 +999,7 @@ namespace PYXBMC
     "\n"
     "key            : string - property name.\n"
     "\n"
-    "*Note, Key is NOT case sensitive.\n"
+    "*Note, key is NOT case sensitive. Equivalent to setProperty(key,'')\n"
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
@@ -1028,7 +1028,7 @@ namespace PYXBMC
 
     PyXBMCGUILock();
     CStdString lowerKey = key;
-    pWindow->ClearProperty(lowerKey.ToLower());
+    pWindow->SetProperty(lowerKey.ToLower(), "");
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);

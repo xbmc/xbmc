@@ -21,6 +21,8 @@
 
 #include "stdafx.h"
 #include "LastFmManager.h"
+#include "Album.h"
+#include "Artist.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
@@ -169,7 +171,7 @@ void CLastFmManager::InitProgressDialog(const CStdString& strUrl)
       dlgProgress->SetHeading(15200);
       dlgProgress->SetLine(0, 259);
       CStdString strUrlDec = strUrl;
-      CUtil::UrlDecode(strUrlDec);
+      CUtil::URLDecode(strUrlDec);
       dlgProgress->SetLine(1, strUrlDec);
       dlgProgress->SetLine(2, "");
       if (!dlgProgress->IsDialogRunning())
@@ -473,6 +475,9 @@ void CLastFmManager::AddToPlaylist(const int nrTracks)
       CFileItemPtr item = (*m_RadioTrackQueue)[0];
       if (item->GetMusicInfoTag()->Loaded())
       {
+        CMusicDatabase database;
+        database.Open();
+        database.SetPropertiesForFileItem(*item);
         CSingleLock lock(m_lockCache);
         m_RadioTrackQueue->Remove(0);
         CSingleLock lock2(m_lockPlaylist);

@@ -640,7 +640,7 @@ __int64 CFileMMS::GetLength()
 bool CFileMMS::Open(const CURL& url)
 {
   CStdString filename = url.GetFileName();
-  CUtil::UrlDecode(filename);
+  CUtil::URLDecode(filename);
 
   int result = streaming_start((char*) url.GetHostName().c_str(),
       url.GetPort(), (char*) filename.c_str());

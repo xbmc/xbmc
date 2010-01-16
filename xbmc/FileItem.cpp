@@ -780,6 +780,16 @@ bool CFileItem::IsSmb() const
   return CUtil::IsSmb(m_strPath);
 }
 
+bool CFileItem::IsXBMS() const
+{
+  return CUtil::IsXBMS(m_strPath);
+}
+
+bool CFileItem::IsURL() const
+{
+  return CUtil::IsURL(m_strPath);
+}
+
 bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
@@ -1958,7 +1968,7 @@ void CFileItemList::Stack()
       // 2. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
-        || item->m_strPath.Left(7).Equals("xbms://")
+        || item->IsXBMS()
         || CUtil::IsInRAR(item->m_strPath)
         || CUtil::IsInZIP(item->m_strPath)
         )
@@ -2216,7 +2226,7 @@ void CFileItemList::Stack()
         // the label is converted from utf8, but the filename is not)
         if (!g_guiSettings.GetBool("filelists.showextensions"))
           CUtil::RemoveExtension(stackName);
-        CUtil::UrlDecode(stackName);
+        CUtil::URLDecode(stackName);
         item1->SetLabel(stackName);
         item1->m_dwSize = size;
         break;
@@ -2659,7 +2669,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   CUtil::RemoveSlashAtEnd(strMovieName);
   strMovieName = CUtil::GetFileName(strMovieName);
-  CUtil::UrlDecode(strMovieName);
+  CUtil::URLDecode(strMovieName);
 
   return strMovieName;
 }
@@ -2759,8 +2769,7 @@ CStdString CFileItem::GetLocalFanart() const
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
+  CUtil::ReplaceExtension(strFile, "-fanart",strFile);
   fanarts.push_back(CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())

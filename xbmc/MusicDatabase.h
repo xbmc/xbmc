@@ -192,6 +192,7 @@ public:
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
+  void SetPropertiesForFileItem(CFileItem& item);
   static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
   static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
 protected:

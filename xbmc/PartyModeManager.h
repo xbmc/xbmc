@@ -60,7 +60,7 @@ private:
   void Process();
   bool AddRandomSongs(int iSongs = 0);
   bool AddInitialSongs(std::vector< std::pair<int,int> > &songIDs);
-  void Add(const CFileItemPtr &pItem);
+  void Add(CFileItemPtr &pItem);
   bool ReapSongs();
   bool MovePlaying();
   void SendUpdateMessage();

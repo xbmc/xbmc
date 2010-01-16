@@ -368,7 +368,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
     m_IMDB.SetScraperInfo(info);
 
@@ -545,10 +545,13 @@ namespace VIDEO
               (info2.strContent.Equals("musicvideos") && m_database.HasMusicVideoInfo(pItem->m_strPath)))
              continue;
 
-          CNfoFile::NFOResult result;
+          CNfoFile::NFOResult result=CNfoFile::NO_NFO;
           CScraperUrl scrUrl;
           // handle .nfo files
+          if (!ignoreNfo)
           result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
+          if (result == CNfoFile::ERROR_NFO)
+            continue;
           if (info2.strContent.Equals("tvshows") && result != CNfoFile::NO_NFO)
           {
             SScraperInfo info3(info2);

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 01/08/2010-->
+<!--Date of translation: 01/11/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -605,10 +605,8 @@
   <string id="763">밝은 녹색</string>
   <string id="764">연두</string>
   <string id="765">맑은 파랑</string>
-  <string id="766">예약</string>
-  <string id="767">예약</string>
-  <string id="768">예약</string>
-  <string id="769">예약</string>
+  <string id="766">밝은 회색</string>
+  <string id="767">회색</string>
   <string id="770">오류 %i: 공유를 사용할수 없음</string>
   <string id="771">- FATX 제한 자동</string>
   <string id="772">오디오 출력</string>

@@ -1923,6 +1923,35 @@ bool CUtil::IsSmb(const CStdString& strFile)
   return url.GetProtocol().Equals("smb");
 }
 
+bool CUtil::IsURL(const CStdString& strFile)
+{
+  return strFile.Find("://") >= 0;
+}
+
+bool CUtil::IsXBMS(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return strFile2.Left(5).Equals("xbms:");
+}
+
+bool CUtil::IsFTP(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  CURL url(strFile2);
+
+  return url.GetProtocol() == "ftp"  ||
+         url.GetProtocol() == "ftpx" ||
+         url.GetProtocol() == "ftps";
+}
+
 bool CUtil::IsDAAP(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("daap:");
@@ -2053,7 +2082,7 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
   return atoi(strFilename.Mid(4, 2).c_str());
 }
 
-void CUtil::UrlDecode(CStdString& strURLData)
+void CUtil::URLDecode(CStdString& strURLData)
 //modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
 // However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
@@ -2914,7 +2943,7 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     if (url.GetFileName() != strFolder)
@@ -2945,7 +2974,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
@@ -2969,7 +2998,7 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
 void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
@@ -5423,22 +5452,6 @@ void CUtil::AutoDetectionGetSource(VECSOURCES &shares)
       }
     }
   }
-}
-bool CUtil::IsFTP(const CStdString& strFile)
-{
-  CStdString strFile2(strFile);
-
-  if (IsStack(strFile))
-    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
-
-  CURL url(strFile2);
-
-  if (url.GetProtocol() == "ftp"  ||
-      url.GetProtocol() == "ftpx" ||
-      url.GetProtocol() == "ftps")
-  return true;
-
-  return false;
 }
 
 bool CUtil::GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax )
