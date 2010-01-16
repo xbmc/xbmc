@@ -68,7 +68,7 @@
 				AdditionalDependencies="ws2_32.lib"
 				OutputFile="../../../../../addons/pvr/MediaPortal/XBMC_MPTV_win32.pvr"
 				LinkIncremental="2"
-				IgnoreDefaultLibraryNames="libc;libcmtd;msvcprt"
+				IgnoreDefaultLibraryNames="libc;libcmtd;msvcprtd"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/XBMC_MPTV.pdb"
 				SubSystem="2"
