@@ -1237,7 +1237,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         {
           struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
 
-          // wait until data is avialable or a timeout occours
+          // wait until data is available or a timeout occurs
           if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
             return false;
         }
