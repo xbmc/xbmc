@@ -20,6 +20,8 @@
  */
 
 #include "LastFmManager.h"
+#include "Album.h"
+#include "Artist.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
@@ -479,6 +481,9 @@ void CLastFmManager::AddToPlaylist(const int nrTracks)
       CFileItemPtr item = (*m_RadioTrackQueue)[0];
       if (item->GetMusicInfoTag()->Loaded())
       {
+        CMusicDatabase database;
+        database.Open();
+        database.SetPropertiesForFileItem(*item);
         CSingleLock lock(m_lockCache);
         m_RadioTrackQueue->Remove(0);
         CSingleLock lock2(m_lockPlaylist);
