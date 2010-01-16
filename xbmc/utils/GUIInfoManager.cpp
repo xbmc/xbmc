@@ -498,7 +498,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(9).Equals("timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(info.Mid(9))));
     else if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
     else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
-    else if (info.Left(9).Equals("property(")) { printf(" add %s\n",info.Mid(9,info.GetLength()-10).c_str()); return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);}
+    else if (info.Left(9).Equals("property("))
+      return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
     else
       ret = TranslateMusicPlayerString(strTest.Mid(12));
   }
