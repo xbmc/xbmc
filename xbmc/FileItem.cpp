@@ -793,6 +793,16 @@ bool CFileItem::IsSmb() const
   return CUtil::IsSmb(m_strPath);
 }
 
+bool CFileItem::IsXBMS() const
+{
+  return CUtil::IsXBMS(m_strPath);
+}
+
+bool CFileItem::IsURL() const
+{
+  return CUtil::IsURL(m_strPath);
+}
+
 bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
@@ -2771,8 +2781,7 @@ CStdString CFileItem::GetLocalFanart() const
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
+  CUtil::ReplaceExtension(strFile, "-fanart",strFile);
   fanarts.push_back(CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())

@@ -34,6 +34,10 @@ THISDIR=$(pwd)
 WORKDIR=workarea
 WORKPATH=$THISDIR/$WORKDIR
 
+if [ -f $THISDIR/setAptProxy.sh ]; then
+	. $THISDIR/setAptProxy.sh
+fi
+
 if [ -d "$WORKPATH" ]; then
 	rm -rf $WORKPATH
 fi
@@ -63,6 +67,16 @@ if ! which lh > /dev/null ; then
 	cd $THISDIR
 fi
 
+
+# Execute hooks if env variable is defined
+if [ -n "$SDK_BUILDHOOKS" ]; then
+	for hook in $SDK_BUILDHOOKS; do
+		if [ -x $hook ]; then
+			$hook
+		fi
+	done
+fi
+
 #
 # Build needed packages
 #
@@ -88,7 +102,6 @@ cd $THISDIR
 #
 mkdir -p $WORKPATH/buildLive/Files/chroot_local-packages &> /dev/null
 mkdir -p $WORKPATH/buildLive/Files/binary_local-udebs &> /dev/null
-mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
 mkdir -p $WORKPATH/buildLive/Files/chroot_local-includes/root &> /dev/null
 
 if ! ls $WORKPATH/buildDEBs/live-initramfs*.* > /dev/null 2>&1; then
@@ -115,11 +128,16 @@ if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
 fi
 cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
-if ! ls $WORKPATH/buildBinaryDrivers/*.ext3 > /dev/null 2>&1; then
-        echo "Files missing (5), exiting..."
-        exit 1
+
+if [ -z "$DONOTBUILDRESTRICTEDDRIVERS" ]; then
+	mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
+
+	if ! ls $WORKPATH/buildBinaryDrivers/*.ext3 > /dev/null 2>&1; then
+		echo "Files missing (5), exiting..."
+		exit 1
+	fi
+	cp $WORKPATH/buildBinaryDrivers/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
 fi
-cp $WORKPATH/buildBinaryDrivers/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
 
 if ! ls $WORKPATH/buildBinaryDrivers/crystalhd.tar > /dev/null 2>&1; then
         echo "Files missing (6), exiting..."

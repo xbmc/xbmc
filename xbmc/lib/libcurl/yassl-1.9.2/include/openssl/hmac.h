@@ -1,1 +1,0 @@
-/* hmac.h  for openvpn */

@@ -106,7 +106,7 @@ getNVIDIAInstaller()
 
 	echo "Downloading NVIDIA Installer from $driverDownloadURL ..."
 	wget -nc --no-proxy -q $driverDownloadURL
-	if [ -z "$(ls NVIDIA*.run)" ]; then
+	if ! ls NVIDIA*.run  > /dev/null 2>&1 ; then
 		echo "Error retrieving NVIDIA drivers, exiting..."
 		exit 1
 	fi
@@ -124,7 +124,7 @@ getAMDInstaller()
 
 	echo "Downloading AMD Installer from $driverDownloadURL ..."
 	wget -nc --no-proxy -q $driverDownloadURL
-	if [ -z "$(ls ati*.run)" ]; then
+	if ! ls ati*.run  > /dev/null 2>&1 ; then
 		echo "Error retrieving ATI drivers, exiting..."
 		exit 1
 	fi
