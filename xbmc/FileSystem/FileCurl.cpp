@@ -346,13 +346,13 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
-
+#if (LIBCURL_VERSION_NUM >= 0x071301)
   // set username and password for current handle
   if (m_username.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
   if (m_password.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
-
+#endif
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
