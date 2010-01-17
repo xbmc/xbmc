@@ -57,11 +57,14 @@ void main()
       ( 1.5 - xf) * stepx + gl_TexCoord[0].x,
       ( 2.5 - xf) * stepx + gl_TexCoord[0].x);
 
-  gl_FragColor.rgb  = line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.r;
-  gl_FragColor.rgb += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.g;
-  gl_FragColor.rgb += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.b;
-  gl_FragColor.rgb += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.a;
+  half3 output;
 
+  output  = line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.r;
+  output += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.g;
+  output += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.b;
+  output += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.a;
+
+  gl_FragColor.rgb = output;
   gl_FragColor.a = gl_Color.a;
 }
 
