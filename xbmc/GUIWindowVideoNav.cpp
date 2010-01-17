@@ -1736,7 +1736,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
       return true;
 
     // update list
-    m_vecItems->RemoveDiscCache();
+    m_vecItems->RemoveDiscCache(GetID());
     Update(m_vecItems->m_strPath);
     m_viewControl.SetSelectedItem(iItem);
     return true;

@@ -381,12 +381,42 @@ public:
   void Stack();
   SORT_ORDER GetSortOrder() const { return m_sortOrder; }
   SORT_METHOD GetSortMethod() const { return m_sortMethod; }
-  bool Load();
-  bool Save();
+  /*! \brief load a CFileItemList out of the cache
+
+   The file list may be cached based on which window we're viewing in, as different
+   windows will be listing different portions of the same URL (eg viewing music files
+   versus viewing video files)
+   
+   \param windowID id of the window that's loading this list (defaults to 0)
+   \return true if we loaded from the cache, false otherwise.
+   \sa Save,RemoveDiscCache
+   */
+  bool Load(int windowID = 0);
+
+  /*! \brief save a CFileItemList to the cache
+   
+   The file list may be cached based on which window we're viewing in, as different
+   windows will be listing different portions of the same URL (eg viewing music files
+   versus viewing video files)
+   
+   \param windowID id of the window that's saving this list (defaults to 0)
+   \return true if successful, false otherwise.
+   \sa Load,RemoveDiscCache
+   */
+  bool Save(int windowID = 0);
   void SetCacheToDisc(CACHE_TYPE cacheToDisc) { m_cacheToDisc = cacheToDisc; }
   bool CacheToDiscAlways() const { return m_cacheToDisc == CACHE_ALWAYS; }
   bool CacheToDiscIfSlow() const { return m_cacheToDisc == CACHE_IF_SLOW; }
-  void RemoveDiscCache() const;
+  /*! \brief remove a previously cached CFileItemList from the cache
+   
+   The file list may be cached based on which window we're viewing in, as different
+   windows will be listing different portions of the same URL (eg viewing music files
+   versus viewing video files)
+   
+   \param windowID id of the window whose cache we which to remove (defaults to 0)
+   \sa Save,Load
+   */
+  void RemoveDiscCache(int windowID = 0) const;
   bool AlwaysCache() const;
 
   void SetCachedVideoThumbs();
@@ -412,7 +442,7 @@ public:
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
-  CStdString GetDiscCacheFile() const;
+  CStdString GetDiscCacheFile(int windowID) const;
 
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;

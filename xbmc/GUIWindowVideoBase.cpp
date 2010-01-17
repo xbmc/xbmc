@@ -1279,7 +1279,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
       { // need to update
-        m_vecItems->RemoveDiscCache();
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       return true;
