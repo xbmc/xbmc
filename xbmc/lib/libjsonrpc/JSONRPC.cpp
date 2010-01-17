@@ -135,7 +135,14 @@ Command CJSONRPC::m_commands[] = {
   { "System.Reboot",                    CSystemOperations::Reboot,              Response,     ControlPower,    "" },
 
 // XBMC Operations
-  { "XBMC.Quit",                        CXBMCOperations::Quit,                  Response,     ControlPower,    "" }
+  { "XBMC.GetVolume",                   CXBMCOperations::GetVolume,             Response,     ReadData,        "Retrieve the current volume" },
+  { "XBMC.SetVolume",                   CXBMCOperations::SetVolume,             Response,     ControlPlayback, "Set volume" },
+  { "XBMC.ToggleMute",                  CXBMCOperations::ToggleMute,            Response,     ControlPlayback, "Toggle mute" },
+
+  { "XBMC.Play",                        CXBMCOperations::Play,                  Response,     ControlPlayback, "Starts playback" },
+  { "XBMC.StartSlideshow",              CXBMCOperations::StartSlideshow,        Response,     ControlPlayback, "Starts slideshow" },
+
+  { "XBMC.Quit",                        CXBMCOperations::Quit,                  Response,     ControlPower,    "Quit xbmc" }
 };
 
 CJSONRPC::CActionMap CJSONRPC::m_actionMap(m_commands, sizeof(m_commands) / sizeof(m_commands[0]) );
