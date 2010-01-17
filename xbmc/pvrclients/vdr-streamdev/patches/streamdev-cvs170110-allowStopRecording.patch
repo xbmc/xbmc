@@ -1,0 +1,66 @@
+diff -NaurwB streamdev/server/connectionVTP.c streamdev-patched/server/connectionVTP.c
+--- streamdev/server/connectionVTP.c	2010-01-17 17:52:57.000000000 +0100
++++ streamdev-patched/server/connectionVTP.c	2010-01-17 17:51:56.000000000 +0100
+@@ -1384,22 +1490,52 @@
+ {
+ 	INIT_WRAPPER();
+ 	if (*Option) {
+-		if (isnumber(Option)) {
+-			cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
++		int number = 0;
++		bool force = false;
++		char buf[strlen(Option) + 1];
++		strcpy(buf, Option);
++		const char *delim = " \t";
++		char *strtok_next;
++		char *p = strtok_r(buf, delim, &strtok_next);
++
++		if (isnumber(p)) {
++			number = strtol(p, NULL, 10) - 1;
++		}
++		else if (strcasecmp(p, "FORCE") == 0) {
++			force = true;
++		}
++		if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
++			if (isnumber(p)) {
++				number = strtol(p, NULL, 10) - 1;
++			}
++			else if (strcasecmp(p, "FORCE") == 0) {
++				force = true;
++			}
++			else {
++				Reply(501, "Timer not found or wrong syntax");
++			}
++		}
++
++		cTimer *timer = Timers.Get(number);
+ 			if (timer) {
+-				if (!timer->Recording()) {
++			if (timer->Recording()) {
++				if (force) {
++					timer->Skip();
++					cRecordControls::Process(time(NULL));
++				}
++				else {
++					Reply(550, "Timer \"%i\" is recording", number);
++					EXIT_WRAPPER();
++				}
++			}
+ 					isyslog("deleting timer %s", *timer->ToDescr());
+ 					Timers.Del(timer);
+ 					Timers.SetModified();
+-					Reply(250, "Timer \"%s\" deleted", Option);
++			Reply(250, "Timer \"%i\" deleted", number);
+ 				} else
+-					Reply(550, "Timer \"%s\" is recording", Option);
++			Reply(501, "Timer \"%i\" not defined", number);
+ 			} else
+-				Reply(501, "Timer \"%s\" not defined", Option);
+-		} else
+-			Reply(501, "Error in timer number \"%s\"", Option);
+-	} else
+-		Reply(501, "Missing timer number");
++		Reply(501, "Missing timer option");
+ 	EXIT_WRAPPER();
+ }
+ 
