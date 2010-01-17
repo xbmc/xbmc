@@ -833,7 +833,7 @@
   <string id="10020">脚本</string>
 
   <string id="10028">视频/播放列表</string>
-  <string id="10034">设置-&gt;用户设置</string>
+  <string id="10034">设置-&gt;用户配置</string>
 
   <string id="10100">"是/否"对话框</string>
   <string id="10101">进度对话框</string>
@@ -1045,9 +1045,9 @@
   <string id="13173">硬盘安装日期：</string>
   <string id="13174">硬盘运转周期：</string>
 
-  <string id="13200">预存设置</string>
-  <string id="13201">删除预存设置'%s'？</string>
-  <string id="13204">最近载入的预存设置：</string>
+  <string id="13200">用户配置</string>
+  <string id="13201">删除用户配置'%s'？</string>
+  <string id="13204">最近载入的用户配置：</string>
   <string id="13205">未知</string>
   <string id="13206">覆盖</string>
   <string id="13208">闹铃</string>
@@ -1370,7 +1370,7 @@
   <string id="15252">选择电台...</string>
   <string id="15253">寻找相似的艺人...</string>
   <string id="15254">寻找相似的标记...</string>
-  <string id="15255">%name% 的设置</string>
+  <string id="15255">你的用户配置（%name%）</string>
   <string id="15256">所有排行</string>
   <string id="15257">%name% 艺人排行</string>
   <string id="15258">%name% 专辑排行</string>
@@ -1539,7 +1539,7 @@
   <string id="20044">重新设置</string>
   <string id="20045">进入管理员模式</string>
   <string id="20046">离开管理员模式</string>
-  <string id="20047">建立预设文件'%s'？</string>
+  <string id="20047">创建用户配置'%s'？</string>
   <string id="20048">应用新的设置开始</string>
   <string id="20049">最适合模式</string>
   <string id="20050">自动切换 16x9 与 4x3 模式</string>
@@ -1550,19 +1550,19 @@
   <string id="20055">Allmusic.com 缩略图</string>
 
   <string id="20057">移除缩略图</string>
-  <string id="20058">新加入预设文件...</string>
+  <string id="20058">新加入用户配置...</string>
   <string id="20059">下载所有专辑的讯息</string>
   <string id="20060">媒体讯息</string>
   <string id="20061">分离的</string>
   <string id="20062">共用预设值</string>
   <string id="20063">共用预设值（只读）</string>
   <string id="20064">复制预设值</string>
-  <string id="20065">预设文件图片</string>
+  <string id="20065">用户配置图片</string>
   <string id="20066">锁定偏好设置</string>
-  <string id="20067">编辑预设文件</string>
-  <string id="20068">锁定预设文件</string>
+  <string id="20067">编辑用户配置</string>
+  <string id="20068">锁定用户配置</string>
   <string id="20069">无法建立目录</string>
-  <string id="20070">预设文件目录</string>
+  <string id="20070">用户配置目录</string>
   <string id="20071">启动时刷新媒体来源</string>
   <string id="20072">请确定选择的目录是可写入的</string>
   <string id="20073">且是有效的目录名称</string>
@@ -1584,10 +1584,10 @@
   <string id="20089">可用的磁盘空间</string>
   <string id="20090">输入一个已有的共享名称</string>
   <string id="20091">密码</string>
-  <string id="20092">载入预设文件</string>
-  <string id="20093">预设文件名称</string>
+  <string id="20092">载入用户配置</string>
+  <string id="20093">用户配置名称</string>
   <string id="20094">媒体来源</string>
-  <string id="20095">预设文件密码</string>
+  <string id="20095">用户配置密码</string>
   <string id="20096">登录窗口</string>
   <string id="20097">抓取专辑讯息</string>
   <string id="20098">正在取得专辑讯息</string>
@@ -1595,7 +1595,7 @@
   <string id="20100">管理员密码与设置</string>
   <string id="20101">输入管理员密码后，始终启用管理员模式</string>
   <string id="20102">或是从预设值中复制？</string>
-  <string id="20103">储存变更到预设文件？</string>
+  <string id="20103">保存变更到用户配置文件？</string>
   <string id="20104">发现旧设置值</string>
   <string id="20105">你要使用吗？</string>
   <string id="20106">发现旧媒体来源</string>
@@ -1606,8 +1606,8 @@
   <string id="20111">自动启动 UPnP 客户端</string>
   <string id="20112">上次登录：%s</string>
   <string id="20113">从未登录</string>
-  <string id="20114">预设文件%i / %i</string>
-  <string id="20115">使用者登录 / 选择预设文件</string>
+  <string id="20114">用户配置%i / %i</string>
+  <string id="20115">用户登录/选择用户配置</string>
   <string id="20116">在登录窗口中使用锁定</string>
   <string id="20117">密码无效</string>
   <string id="20118">需先设置管理员锁定</string>
@@ -2043,7 +2043,7 @@
   <string id="22010">显示卡温度：</string>
   <string id="22011">CPU 温度：</string>
   <string id="22012">可用内存</string>
-  <string id="22013">预存设置数据</string>
+  <string id="22013">用户配置数据</string>
   <string id="22014">视频播放暂停时画面变暗</string>
   <string id="22015">所有记录</string>
   <string id="22016">标题</string>
