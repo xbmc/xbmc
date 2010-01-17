@@ -678,16 +678,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     m_url = url2.GetWithoutUserDetails();
   else
 #endif
-  {
     m_url = url2.Get();
-    
-    if (m_username.length() > 0 || m_password.length() > 0)
-    {
-      m_username="";
-      m_password="";
-      CLog::Log(LOGNOTICE, "%s - cURL version doesn't support username/password option, using URL-encoding instead", __FUNCTION__);
-    }
-  }
 }
 
 bool CFileCurl::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
