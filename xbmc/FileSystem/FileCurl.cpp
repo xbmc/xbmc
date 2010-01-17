@@ -339,13 +339,13 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
-
+#if (LIBCURL_VERSION_NUM >= 0x071301)
   // set username and password for current handle
   if (m_username.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
   if (m_password.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
-
+#endif
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
@@ -1213,6 +1213,9 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         long timeout = 0;
         if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
           timeout = 200;
+
+        if( maxfd < 0 ) // hack for broken curl
+          maxfd = fdread.fd_count + fdwrite.fd_count + fdexcep.fd_count - 1;
 
         if (maxfd >= 0)
         {
