@@ -164,6 +164,8 @@
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
 		7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */; };
+		7C45DD681102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DD661102AB5100D4BBF3 /* GUIStaticItem.cpp */; };
+		7C45DD691102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C45DD661102AB5100D4BBF3 /* GUIStaticItem.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		7C62F22E104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */; };
 		7C62F22F104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */; };
@@ -1968,6 +1970,8 @@
 		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
 		7C45DBE710F325C400D4BBF3 /* DAVDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DAVDirectory.cpp; sourceTree = "<group>"; };
 		7C45DBE810F325C400D4BBF3 /* DAVDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAVDirectory.h; sourceTree = "<group>"; };
+		7C45DD661102AB5100D4BBF3 /* GUIStaticItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIStaticItem.cpp; sourceTree = "<group>"; };
+		7C45DD671102AB5100D4BBF3 /* GUIStaticItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIStaticItem.h; sourceTree = "<group>"; };
 		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
 		7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdvancedSettings.cpp; sourceTree = "<group>"; };
@@ -4016,6 +4020,8 @@
 				E38E14050D25F9F900618676 /* GUIListLabel.h */,
 				E38E140C0D25F9F900618676 /* GUIPanelContainer.cpp */,
 				E38E140D0D25F9F900618676 /* GUIPanelContainer.h */,
+				7C45DD661102AB5100D4BBF3 /* GUIStaticItem.cpp */,
+				7C45DD671102AB5100D4BBF3 /* GUIStaticItem.h */,
 				E38E14340D25F9F900618676 /* GUIWrappingListContainer.cpp */,
 				E38E14350D25F9F900618676 /* GUIWrappingListContainer.h */,
 			);
@@ -8001,6 +8007,7 @@
 				F595994510E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp in Sources */,
 				7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
 				F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
+				7C45DD681102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8848,6 +8855,7 @@
 				F591FAA110D56F9B001DF66A /* DVDInputStreamMPLS.cpp in Sources */,
 				7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
 				F592568910FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
+				7C45DD691102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
