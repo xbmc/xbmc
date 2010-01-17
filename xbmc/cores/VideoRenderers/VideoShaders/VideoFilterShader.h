@@ -73,6 +73,7 @@ namespace Shaders {
 
     ESCALINGMETHOD m_method;
     bool           m_floattex; //if float textures are supported
+    GLint          m_internalformat;
   };
 
 } // end namespace
