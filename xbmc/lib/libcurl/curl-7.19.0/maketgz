@@ -1,0 +1,152 @@
+#! /bin/sh
+# Script to build release-archives with
+#
+
+version=$1
+
+if [ -z "$version" ]; then
+  echo "Specify a version number!"
+  exit
+fi
+
+libversion="$version"
+
+# we make curl the same version as libcurl
+curlversion=$libversion
+
+major=`echo $libversion |cut -d. -f1 | sed -e "s/[^0-9]//g"`
+minor=`echo $libversion |cut -d. -f2 | sed -e "s/[^0-9]//g"`
+patch=`echo $libversion |cut -d. -f3 | cut -d- -f1 | sed -e "s/[^0-9]//g"`
+
+numeric=`perl -e 'printf("%02x%02x%02x\n", '"$major, $minor, $patch);"`
+
+HEADER=include/curl/curlver.h
+CHEADER=src/version.h
+
+# requires a date command that knows -u for UTC time zone
+datestamp=`date -u`
+
+# Replace version number in header file:
+sed -e 's/^#define LIBCURL_VERSION .*/#define LIBCURL_VERSION "'$libversion'"/g' \
+    -e 's/^#define LIBCURL_VERSION_NUM .*/#define LIBCURL_VERSION_NUM 0x'$numeric'/g' \
+    -e 's/^#define LIBCURL_VERSION_MAJOR .*/#define LIBCURL_VERSION_MAJOR '$major'/g' \
+    -e 's/^#define LIBCURL_VERSION_MINOR .*/#define LIBCURL_VERSION_MINOR '$minor'/g' \
+    -e 's/^#define LIBCURL_VERSION_PATCH .*/#define LIBCURL_VERSION_PATCH '$patch'/g' \
+    -e "s/^#define LIBCURL_TIMESTAMP .*/#define LIBCURL_TIMESTAMP \"$datestamp\"/g" \
+ $HEADER >$HEADER.dist
+
+# Replace version number in header file:
+sed 's/#define CURL_VERSION .*/#define CURL_VERSION "'$curlversion'"/g' $CHEADER >$CHEADER.dist
+
+echo "generate VC8 makefiles"
+# Generate VC8 versions from the VC6 Makefile versions 
+perl -pe 's%/GX /DWIN32 /YX%/EHsc /DWIN32%;' -e 's%/GZ%/RTC1%;' -e 's%wsock32.lib%wsock32.lib bufferoverflowu.lib%g;' -e 's%(VC)6%${1}8%gi;' lib/Makefile.vc6 > lib/Makefile.vc8.dist
+perl -pe "s%/GX /DWIN32 /YX%/EHsc /DWIN32%;" -e 's%/GZ%/RTC1%;' -e 's%wsock32.lib%wsock32.lib bufferoverflowu.lib%g;' -e 's%(VC)6%${1}8%gi;' -e 's/^#MANIFESTTOOL/MANIFESTTOOL/' src/Makefile.vc6 > src/Makefile.vc8.dist
+
+# Replace version number in plist file:
+PLIST=lib/libcurl.plist
+sed "s/7\.12\.3/$libversion/g" $PLIST > $PLIST.dist
+
+echo "curl version $curlversion"
+echo "libcurl version $libversion"
+echo "libcurl numerical $numeric"
+echo "datestamp $datestamp"
+
+findprog()
+{
+  file="$1"
+  for part in `echo $PATH| tr ':' ' '`; do
+    path="$part/$file"
+    if [ -x "$path" ]; then
+      # there it is!
+      return 1
+    fi
+  done
+
+  # no such executable
+  return 0
+}
+
+echo "maketgz: cp lib/config.h.in src/config.h.in"
+cp lib/config.h.in src/config.h.in
+
+############################################################################
+#
+# Enforce a rerun of configure (updates the VERSION)
+#
+
+echo "Re-running config.status"
+./config.status --recheck >/dev/null
+
+############################################################################
+#
+# automake is needed to run to make a non-GNU Makefile.in if Makefile.am has
+# been modified.
+#
+
+if { findprog automake >/dev/null 2>/dev/null; } then
+  echo "- Could not find or run automake, I hope you know what you're doing!"
+else
+  echo "Runs automake --include-deps"
+  automake --include-deps Makefile >/dev/null
+fi
+
+############################################################################
+#
+# Make sure we have updated HTML versions of all man pages:
+#
+echo "make html"
+make -s html
+
+# And the PDF versions
+echo "make pdf"
+make -s pdf
+
+############################################################################
+#
+# Now run make dist to generate a tar.gz archive
+#
+
+echo "make dist"
+targz="curl-$version.tar.gz"
+make -s dist VERSION=$version
+
+############################################################################
+#
+# Now make a bz2 archive from the tar.gz original
+#
+
+bzip2="curl-$version.tar.bz2"
+echo "Generating $bzip2"
+gzip -dc $targz | bzip2 - > $bzip2
+
+############################################################################
+#
+# Now make a zip archive from the tar.gz original
+#
+makezip ()
+{
+  rm -rf $tempdir
+  mkdir $tempdir
+  cd $tempdir
+  gzip -dc ../$targz | tar -xf -
+  find . | zip $zip -@ >/dev/null
+  mv $zip ../
+  cd ..
+  rm -rf $tempdir
+}
+
+zip="curl-$version.zip"
+echo "Generating $zip"
+tempdir=".builddir"
+makezip
+
+echo "------------------"
+echo "maketgz report:"
+echo ""
+ls -l $targz $bzip2 $zip
+
+md5sum $targz $bzip2 $zip
+
+echo "Run this:"
+echo "gpg -b -a $targz && gpg -b -a $bzip2 && gpg -b -a $zip"

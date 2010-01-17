@@ -26,7 +26,7 @@
 namespace XCURL
 {
   #define CURL CURL_HANDLE
-  #include <curl/curl.h>
+  #include "curl/curl.h"
   #undef CURL
 
   class DllLibCurlInterface

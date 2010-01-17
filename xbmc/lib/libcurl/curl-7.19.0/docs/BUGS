@@ -1,0 +1,82 @@
+$Id: BUGS,v 1.8 2007-07-19 21:35:36 bagder Exp $
+                                  _   _ ____  _     
+                              ___| | | |  _ \| |    
+                             / __| | | | |_) | |    
+                            | (__| |_| |  _ <| |___ 
+                             \___|\___/|_| \_\_____|
+
+BUGS
+
+  Curl and libcurl have grown substantially since the beginning. At the time
+  of writing (July 2007), there are about 47000 lines of source code, and by
+  the time you read this it has probably grown even more.
+
+  Of course there are lots of bugs left. And lots of misfeatures.
+
+  To help us make curl the stable and solid product we want it to be, we need
+  bug reports and bug fixes.
+
+WHERE TO REPORT
+
+  If you can't fix a bug yourself and submit a fix for it, try to report an as
+  detailed report as possible to a curl mailing list to allow one of us to
+  have a go at a solution. You should also post your bug/problem at curl's bug
+  tracking system over at
+
+        http://sourceforge.net/bugs/?group_id=976
+
+  (but please read the sections below first before doing that)
+
+  If you feel you need to ask around first, find a suitable mailing list and
+  post there. The lists are available on http://curl.haxx.se/mail/
+
+WHAT TO REPORT
+
+  When reporting a bug, you should include all information that will help us
+  understand what's wrong, what you expected to happen and how to repeat the
+  bad behavior. You therefore need to tell us:
+
+   - your operating system's name and version number (uname -a under a unix
+     is fine)
+   - what version of curl you're using (curl -V is fine)
+   - versions of the used libraries that libcurl is built to use
+   - what URL you were working with (if possible), at least which protocol
+
+  and anything and everything else you think matters. Tell us what you
+  expected to happen, tell use what did happen, tell us how you could make it
+  work another way. Dig around, try out, test. Then include all the tiny bits
+  and pieces in your report. You will benefit from this yourself, as it will
+  enable us to help you quicker and more accurately.
+
+  Since curl deals with networks, it often helps us if you include a protocol
+  debug dump with your bug report. The output you get by using the -v or
+  --trace options.
+
+  If curl crashed, causing a core dump (in unix), there is hardly any use to
+  send that huge file to anyone of us. Unless we have an exact same system
+  setup as you, we can't do much with it. Instead we ask you to get a stack
+  trace and send that (much smaller) output to us instead!
+
+  The address and how to subscribe to the mailing lists are detailed in the
+  MANUAL file.
+
+HOW TO GET A STACK TRACE
+
+  First, you must make sure that you compile all sources with -g and that you
+  don't 'strip' the final executable. Try to avoid optimizing the code as
+  well, remove -O, -O2 etc from the compiler options.
+
+  Run the program until it cores.
+
+  Run your debugger on the core file, like '<debugger> curl core'. <debugger>
+  should be replaced with the name of your debugger, in most cases that will
+  be 'gdb', but 'dbx' and others also occur.
+
+  When the debugger has finished loading the core file and presents you a
+  prompt, enter 'where' (without the quotes) and press return.
+
+  The list that is presented is the stack trace. If everything worked, it is
+  supposed to contain the chain of functions that were called when curl
+  crashed. Include the stack trace with your detailed bug report. It'll help a
+  lot.
+

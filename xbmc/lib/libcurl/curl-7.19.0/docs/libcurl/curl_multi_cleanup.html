@@ -1,0 +1,58 @@
+<html><head>
+<title>curl_multi_cleanup man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_cleanup - close down a multi session <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0"><span Class="bold">CURLMcode curl_multi_cleanup( CURLM *multi_handle );</span> 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">Cleans up and removes a whole multi stack. It does not free or touch any individual easy handles in any way - they still need to be closed individually, using the usual <a class="emphasis" href="./curl_easy_cleanup.html">curl_easy_cleanup(3)</a> way. The order of cleaning up should be: 
+<p class="level0">1 - <a class="emphasis" href="./curl_multi_remove_handle.html">curl_multi_remove_handle(3)</a> before any easy handles are cleaned up 
+<p class="level0">2 - <a class="emphasis" href="./curl_easy_cleanup.html">curl_easy_cleanup(3)</a> can now be called independently since the easy handle is no longer connected to the multi handle 
+<p class="level0">3 - <a class="emphasis" href="./curl_multi_cleanup.html">curl_multi_cleanup(3)</a> should be called when all easy handles are removed <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">CURLMcode type, general libcurl multi interface error code. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_init.html">curl_multi_init (3)</a> <a class="manpage" href="./curl_easy_cleanup.html"> curl_easy_cleanup (3)</a> <a class="manpage" href="./curl_easy_init.html"> curl_easy_init (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

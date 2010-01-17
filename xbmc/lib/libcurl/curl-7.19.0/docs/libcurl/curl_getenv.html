@@ -1,0 +1,57 @@
+<html><head>
+<title>curl_getenv man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_getenv - return value for environment name <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0"><span Class="bold">char *curl_getenv(const char * name );</span> 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">curl_getenv() is a portable wrapper for the getenv() function, meant to emulate its behaviour and provide an identical interface for all operating systems libcurl builds on (including win32). <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function will be removed from the public libcurl API in a near future. It will instead be made "available" by source code access only, and then as curlx_getenv(). <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">If successful, curl_getenv() returns a pointer to the value of the specified environment. The memory it refers to is malloc()ed so the application must free() this when the data is no longer needed. When <a class="emphasis" href="./curl_getenv.html">curl_getenv(3)</a> fails to find the specified name, it returns a null pointer. <a name="NOTE"></a><h2 class="nroffsh">NOTE</h2>
+<p class="level0">Under unix operating systems, there isn't any point in returning an allocated memory, although other systems won't work properly if this isn't done. The unix implementation thus have to suffer slightly from the drawbacks of other systems. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><span Class="manpage">getenv (3C)</span> <span Class="manpage"> </span> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>
