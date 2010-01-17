@@ -75,6 +75,7 @@ public:
   CFileItem(const CVideoInfoTag& movie);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
+  virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
   void Reset();
   const CFileItem& operator=(const CFileItem& item);

@@ -59,7 +59,7 @@ public:
   CGUIListItem(const CGUIListItem& item);
   CGUIListItem(const CStdString& strLabel);
   virtual ~CGUIListItem(void);
-
+  virtual CGUIListItem *Clone() const { return new CGUIListItem(*this); };
 
   const CGUIListItem& operator =(const CGUIListItem& item);
 
