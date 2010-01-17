@@ -219,12 +219,15 @@ void cPVRRecordings::Process()
     CFileItemPtr pFileItem(new CFileItem(at(i)));
 
     CStdString Path;
+    CStdString strTitle = at(i).Title();
+    strTitle.Replace('/','-');
+
     Path.Format("pvr://recordings/client_%04i/", at(i).ClientID());
     if (at(i).Directory() != "")
       Path += at(i).Directory();
 
     CUtil::AddSlashAtEnd(Path);
-    Path += at(i).Title() + ".pvr";
+    Path += strTitle + ".pvr";
     at(i).SetPath(Path);
   }
   return;
@@ -372,9 +375,12 @@ bool cPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
         continue;
 
       CStdString strEntryName;
+      CStdString strTitle = at(i).Title();
       strEntryName.Format("recordings/client_%04i/%s", clientID, at(i).Directory());
       CUtil::AddSlashAtEnd(strEntryName);
-      strEntryName += at(i).Title();
+
+      strTitle.Replace('/','-');
+      strEntryName += strTitle;
       strEntryName.Replace('\\','/');
       CStdString strOrginalName = strEntryName;
 
