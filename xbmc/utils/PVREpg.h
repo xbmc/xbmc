@@ -211,7 +211,7 @@ public:
   static bool ClearChannel(long ChannelID);
   static void Load();
   static void Unload();
-  static void Update(bool Scan = false, bool Notify = true);
+  static void Update(bool Scan = false);
   static int GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter);
   static int GetEPGAll(CFileItemList* results, bool radio = false);
   static int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);

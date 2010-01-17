@@ -294,6 +294,14 @@ CStdString cPVRChannelInfoTag::NowGenre(void) const
   return m_epgNow->Genre();
 }
 
+int cPVRChannelInfoTag::NowParentalRating() const
+{
+  if (m_epgNow == NULL)
+    return 0;
+
+  return m_epgNow->ParentalRating();
+}
+
 CStdString cPVRChannelInfoTag::NextTitle(void) const
 {
   if (m_epgNext == NULL)
@@ -356,6 +364,14 @@ CStdString cPVRChannelInfoTag::NextGenre(void) const
     return "";
 
   return m_epgNext->Genre();
+}
+
+int cPVRChannelInfoTag::NextParentalRating() const
+{
+  if (m_epgNow == NULL)
+    return 0;
+
+  return m_epgNow->ParentalRating();
 }
 
 bool cPVRChannelInfoTag::IsEmpty() const

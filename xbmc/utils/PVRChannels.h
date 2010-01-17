@@ -189,6 +189,7 @@ public:
   int        NowDuration() const;
   int        NowPlayTime() const;
   CStdString NowGenre(void) const;
+  int        NowParentalRating() const;
 
   /* EPG information for next playing event */
   CStdString NextTitle() const;
@@ -198,6 +199,7 @@ public:
   CDateTime  NextEndTime(void) const;
   int        NextDuration() const;
   CStdString NextGenre(void) const;
+  int        NextParentalRating() const;
 
   void ClearChannelLinkage() { m_linkedChannels.erase(m_linkedChannels.begin(), m_linkedChannels.end()); }
   void AddChannelLinkage(long LinkedChannel) { m_linkedChannels.push_back(LinkedChannel); }

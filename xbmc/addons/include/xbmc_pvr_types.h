@@ -228,6 +228,7 @@ extern "C" {
     time_t        endtime;
     int           genre_type;
     int           genre_sub_type;
+    int           parental_rating;
   } ATTRIBUTE_PACKED PVR_PROGINFO;
 
   /**

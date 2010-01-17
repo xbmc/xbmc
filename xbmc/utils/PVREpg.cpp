@@ -464,6 +464,7 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
       InfoTag->SetPlotOutline(data->subtitle);
       InfoTag->SetPlot(data->description);
       InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
+      InfoTag->SetParentalRating(data->parental_rating);
       InfoTag->SetIcon(Epg->m_Channel->Icon());
       InfoTag->m_Epg = Epg;
 
@@ -493,6 +494,7 @@ bool cPVREpg::AddDB(const PVR_PROGINFO *data, cPVREpg *Epg)
     InfoTag.SetPlotOutline(data->subtitle);
     InfoTag.SetPlot(data->description);
     InfoTag.SetGenre(data->genre_type, data->genre_sub_type);
+    InfoTag.SetParentalRating(data->parental_rating);
     InfoTag.SetIcon(Epg->m_Channel->Icon());
     InfoTag.m_Epg = Epg;
 
@@ -793,7 +795,7 @@ void cPVREpgs::Unload()
   }
 }
 
-void cPVREpgs::Update(bool Scan, bool Notify)
+void cPVREpgs::Update(bool Scan)
 {
   long perfCnt      = CTimeUtils::GetTimeMS();
   int channelcount  = PVRChannelsTV.size() + PVRChannelsRadio.size();
@@ -802,17 +804,9 @@ void cPVREpgs::Update(bool Scan, bool Notify)
   int daysToLoad    = g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
 
   if (Scan)
-  {
     CLog::Log(LOGINFO, "PVR: Starting EPG scan for %i channels", channelcount);
-    if (Notify)
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, g_localizeStrings.Get(19068), "", 1500, false);
-  }
   else
-  {
     CLog::Log(LOGINFO, "PVR: Starting EPG update for %i channels", channelcount);
-    if (Notify)
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, g_localizeStrings.Get(19067), "", 1500, false);
-  }
 
   time_t endLoad;
   CDateTime::GetCurrentDateTime().GetAsTime(endLoad);

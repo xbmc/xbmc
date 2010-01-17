@@ -38,6 +38,7 @@ cEpg::cEpg()
   m_genre           = NULL;
   m_genre_type      = 0;
   m_genre_sub_type  = 0;
+  m_parental_rating = -1;
   m_vps             = 0;
 
 }
@@ -64,6 +65,7 @@ void cEpg::Reset()
   m_Duration        = 0;
   m_genre_type      = 0;
   m_genre_sub_type  = 0;
+  m_parental_rating = -1;
   m_vps             = 0;
   m_uid             = 0;
   m_title           = NULL;
@@ -119,6 +121,8 @@ bool cEpg::ParseLine(const char *s)
     case 'c': break;
     case 'V': SetVps(atoi(t));
               break;
+    case 'R': SetParentalRating(atoi(t));
+              break;
     case 'e': return true;
     default:  XBMC_log(LOG_ERROR, "cEpg::ParseLine - unexpected tag while reading EPG data: %s", s);
               return true;
@@ -152,4 +156,9 @@ void cEpg::SetGenre(const char *Genre, int genreType, int genreSubType)
 void cEpg::SetVps(time_t Vps)
 {
   m_vps = Vps;
+}
+
+void cEpg::SetParentalRating(int Rating)
+{
+  m_parental_rating = Rating;
 }

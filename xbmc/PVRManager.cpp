@@ -441,7 +441,6 @@ void CPVRManager::Process()
   cPVREpgs::Load();
 
   int Now = CTimeUtils::GetTimeMS()/1000;
-  bool firstRound = true;
   m_LastTVChannelCheck     = Now;
   m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
   m_LastRecordingsCheck    = Now;
@@ -486,10 +485,9 @@ void CPVRManager::Process()
     /* Check for new or updated EPG entries */
     if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgscan")*60*60) // don't do this too often
     {
-      cPVREpgs::Update(true, !firstRound);
+      cPVREpgs::Update(true);
       m_LastEPGScan   = Now;
       m_LastEPGUpdate = Now;  // Data is also updated during scan
-      firstRound      = false;
     }
     else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
     {

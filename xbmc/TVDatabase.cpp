@@ -569,6 +569,7 @@ bool CTVDatabase::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREp
       broadcast.description     = m_pDS->fv("strPlot").get_asString().c_str();
       broadcast.genre_type      = m_pDS->fv("GenreType").get_asInt();
       broadcast.genre_sub_type  = m_pDS->fv("GenreSubType").get_asInt();
+      broadcast.parental_rating = m_pDS->fv("parentalRating").get_asInt();
       startTime.SetFromDBDateTime(m_pDS->fv("StartTime").get_asString());
       endTime.SetFromDBDateTime(m_pDS->fv("EndTime").get_asString());
       startTime.GetAsTime(startTime_t);

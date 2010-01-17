@@ -42,13 +42,14 @@ private:
   char *m_genre;
   int m_genre_type;
   int m_genre_sub_type;
+  int m_parental_rating;
   time_t m_vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
-    
+
 public:
   cEpg();
   virtual ~cEpg();
   void Reset();
-  
+
   bool ParseLine(const char *s);
   bool ParseEntryLine(const char *s);
   const char *Aux(void) const { return m_aux; }
@@ -64,12 +65,12 @@ public:
   const char *Genre(void) const { return m_genre; }
   int GenreType(void) const { return m_genre_type; }
   int GenreSubType(void) const { return m_genre_sub_type; }
+  int ParentalRating(void) const { return m_parental_rating; }
+  void SetParentalRating(int Rating);
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);
   void SetGenre(const char *Genre, int genreType, int genreSubType);
-
-
 };
 
 #endif //__EPG_H

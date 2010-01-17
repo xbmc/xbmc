@@ -172,7 +172,7 @@ void cPVRClientMediaPortal::Disconnect()
   if (m_bConnected && m_bTimeShiftStarted)
   {
     result = SendCommand("IsTimeshifting:\n");
-    
+
     if (result.find("True") != std::string::npos )
     {
       result = SendCommand("StopTimeshift:\n");
@@ -345,7 +345,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestEPGForChannel(const PVR_CHANNEL &channel
         uri::decode(data);
 
         bool isEnd = epg.ParseLine(data);
-        
+
         if (isEnd && epg.StartTime() != 0)
         {
           broadcast.channum         = channel.number;
@@ -357,6 +357,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestEPGForChannel(const PVR_CHANNEL &channel
           broadcast.endtime         = epg.EndTime();
           broadcast.genre_type      = epg.GenreType();
           broadcast.genre_sub_type  = epg.GenreSubType();
+          broadcast.parental_rating = 0;
           PVR_transfer_epg_entry(handle, &broadcast);
         }
         epg.Reset();
@@ -513,7 +514,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestRecordingsList(PVRHANDLE handle)
 
   return PVR_ERROR_NO_ERROR;
 }
-    
+
 PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
   char            command[256];
@@ -676,7 +677,7 @@ PVR_ERROR cPVRClientMediaPortal::AddTimer(const PVR_TIMERINFO &timerinfo)
   CStdString title = timerinfo.title;
   title.Replace("|","");  //Remove commas from title field
 
-  snprintf(command, 1024, "AddSchedule:%i|%s|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i\n", 
+  snprintf(command, 1024, "AddSchedule:%i|%s|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i\n",
           timerinfo.channelNum,                                              //Channel number
           title.c_str(),                                                     //Program title
           starttime.tm_year + 1900, starttime.tm_mon + 1, starttime.tm_mday, //Start date
@@ -784,7 +785,7 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMERINFO &timerinfo)
   CStdString title = timerinfo.title;
   title.Replace(",","");  //Remove commas from title field
 
-  snprintf(command, 1024, "UpdateSchedule:%i|%i|%i|%s|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i\n", 
+  snprintf(command, 1024, "UpdateSchedule:%i|%i|%i|%s|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i|%i\n",
           timerinfo.index,                                                   //Schedule index
           timerinfo.active,                                                  //Active
           timerinfo.channelNum,                                              //Channel number

@@ -609,6 +609,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.channelname")) return VIDEOPLAYER_CHANNEL_NAME;
     else if (strTest.Equals("videoplayer.channelnumber")) return VIDEOPLAYER_CHANNEL_NUMBER;
     else if (strTest.Equals("videoplayer.channelgroup")) return VIDEOPLAYER_CHANNEL_GROUP;
+    else if (strTest.Equals("videoplayer.parentalrating")) return VIDEOPLAYER_PARENTAL_RATING;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -988,6 +989,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("hastimer")) return LISTITEM_HASTIMER;
   else if (info.Equals("isrecording")) return LISTITEM_ISRECORDING;
   else if (info.Equals("isencrypted")) return LISTITEM_ISENCRYPTED;
+  else if (info.Equals("parentalrating")) return LISTITEM_PARENTALRATING;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -1222,6 +1224,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case VIDEOPLAYER_CHANNEL_NAME:
   case VIDEOPLAYER_CHANNEL_NUMBER:
   case VIDEOPLAYER_CHANNEL_GROUP:
+  case VIDEOPLAYER_PARENTAL_RATING:
     strLabel = GetVideoLabel(info);
   break;
   case VIDEOPLAYER_VIDEO_CODEC:
@@ -3189,28 +3192,37 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_NEXT_ENDTIME:
       return tag->NextEndTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_NEXT_DURATION:
-    {
-      CStdString duration;
-      if (tag->NextDuration() > 0)
-        StringUtils::SecondsToTimeString(tag->NextDuration(), duration);
+      {
+        CStdString duration;
+        if (tag->NextDuration() > 0)
+          StringUtils::SecondsToTimeString(tag->NextDuration(), duration);
 
-      return duration;
-    }
+        return duration;
+      }
+
+    case VIDEOPLAYER_PARENTAL_RATING:
+      {
+        CStdString rating;
+        if (tag->NowParentalRating() > 0)
+          rating.Format("%i", tag->NowParentalRating());
+        return rating;
+      }
+      break;
 
     /* General channel infos */
     case VIDEOPLAYER_CHANNEL_NAME:
       return tag->Name();
     case VIDEOPLAYER_CHANNEL_NUMBER:
-    {
-      CStdString strNumber;
-      strNumber.Format("%i", tag->Number());
-      return strNumber;
-    }
+      {
+        CStdString strNumber;
+        strNumber.Format("%i", tag->Number());
+        return strNumber;
+      }
     case VIDEOPLAYER_CHANNEL_GROUP:
-    {
-      if (tag && !tag->IsRadio())
-        return PVRChannelGroupsTV.GetGroupName(g_PVRManager.GetPlayingGroup());
-    }
+      {
+        if (tag && !tag->IsRadio())
+          return PVRChannelGroupsTV.GetGroupName(g_PVRManager.GetPlayingGroup());
+      }
     }
   }
   else if (m_currentFile->HasVideoInfoTag())
@@ -4284,6 +4296,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_NEXT_GENRE:
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->NextGenre();
+    break;
+  case LISTITEM_PARENTALRATING:
+    {
+      CStdString rating;
+      if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->ParentalRating() > 0)
+        rating.Format("%i", item->GetEPGInfoTag()->ParentalRating());
+      return rating;
+    }
     break;
   }
   return "";
