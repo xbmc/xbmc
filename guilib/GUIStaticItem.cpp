@@ -63,6 +63,21 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     if (thumb.Find("$INFO") >= 0) SetProperty("info:thumb", thumb);
     m_iprogramCount = id ? atoi(id) : 0;
     m_idepth = visibleCondition;
+    // add any properties
+    const TiXmlElement *property = item->FirstChildElement("property");
+    while (property)
+    {
+      CStdString name = property->Attribute("name");
+      CStdString value = property->FirstChild() ? property->FirstChild()->Value() : "";
+      if (!name.IsEmpty() && !value.IsEmpty())
+      {
+        value = CGUIControlFactory::FilterLabel(value);
+        SetProperty(name, CGUIInfoLabel::GetLabel(value, parentID));
+        if (value.Find("$INFO") >= 0)
+          SetProperty("info:" + name, value);
+      }
+      property = property->NextSiblingElement("property");
+    }
   }
   else
   {
