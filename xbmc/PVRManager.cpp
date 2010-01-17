@@ -419,13 +419,6 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
 
 void CPVRManager::Process()
 {
-  int Now = CTimeUtils::GetTimeMS()/1000;
-  m_LastTVChannelCheck     = Now;
-  m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
-  m_LastRecordingsCheck    = Now;
-  m_LastEPGScan            = Now;
-  m_LastEPGUpdate          = Now;
-
   /* Get TV Channels from Backends */
   PVRChannelsTV.Load(false);
 
@@ -446,6 +439,21 @@ void CPVRManager::Process()
 
   /* Get Epg's from Backend */
   cPVREpgs::Load();
+
+  int Now = CTimeUtils::GetTimeMS()/1000;
+  bool firstRound = true;
+  m_LastTVChannelCheck     = Now;
+  m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
+  m_LastRecordingsCheck    = Now;
+  m_LastEPGUpdate          = Now;
+  /* Check the last EPG scan date if XBMC is restarted to prevent a rescan if
+     the time is not longer as one hour ago */
+  m_database.Open();
+  if (m_database.GetLastEPGScanTime() < CDateTime::GetCurrentDateTime()-CDateTimeSpan(0,1,0,0))
+    m_LastEPGScan          = Now-(g_guiSettings.GetInt("pvrepg.epgscan")*60*60)+120;
+  else
+    m_LastEPGScan          = Now;
+  m_database.Close();
 
   while (!m_bStop)
   {
@@ -478,9 +486,10 @@ void CPVRManager::Process()
     /* Check for new or updated EPG entries */
     if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgscan")*60*60) // don't do this too often
     {
-      cPVREpgs::Update(true);
-      m_LastEPGScan = Now;
+      cPVREpgs::Update(true, !firstRound);
+      m_LastEPGScan   = Now;
       m_LastEPGUpdate = Now;  // Data is also updated during scan
+      firstRound      = false;
     }
     else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
     {

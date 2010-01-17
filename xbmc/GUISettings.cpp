@@ -664,7 +664,7 @@ void CGUISettings::Initialize()
 
   AddCategory(8,"pvrepg", 19069);
   AddInt(1, "pvrepg.epgscan", 19070, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
-  AddInt(2, "pvrepg.epgupdate", 19071, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(2, "pvrepg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(3, "pvrepg.ignoredbforclient", 19072, false);
 
   AddCategory(8,"pvrplayback", 18023);

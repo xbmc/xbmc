@@ -72,6 +72,7 @@ public:
   void DelInfoTag(cPVREPGInfoTag *tag);
   void Cleanup(CDateTime Time);
   void Cleanup(void);
+  void Sort(void);
   const std::vector<cPVREPGInfoTag*> *InfoTags(void) const { return &m_tags; }
   const cPVREPGInfoTag *GetInfoTagNow(void) const;
   const cPVREPGInfoTag *GetInfoTagNext(void) const;
@@ -210,7 +211,7 @@ public:
   static bool ClearChannel(long ChannelID);
   static void Load();
   static void Unload();
-  static void Update(bool Scan = false);
+  static void Update(bool Scan = false, bool Notify = true);
   static int GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter);
   static int GetEPGAll(CFileItemList* results, bool radio = false);
   static int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);

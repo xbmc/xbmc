@@ -290,6 +290,17 @@ CStdString cPVREPGInfoTag::ConvertGenreIdToString(int ID, int subID) const
 
 /// ----- cPVREpg ---------------------------------------------------------------------------------
 
+struct sortEPGbyDate
+{
+  bool operator()(cPVREPGInfoTag* strItem1, cPVREPGInfoTag* strItem2)
+  {
+    if (!strItem1 || !strItem2)
+      return false;
+
+    return strItem1->Start() < strItem2->Start();
+  }
+};
+
 cPVREpg::cPVREpg(long ChannelID)
 {
   m_channelID = ChannelID;
@@ -317,6 +328,11 @@ void cPVREpg::DelInfoTag(cPVREPGInfoTag *tag)
       }
     }
   }
+}
+
+void cPVREpg::Sort(void)
+{
+  sort(m_tags.begin(), m_tags.end(), sortEPGbyDate());
 }
 
 void cPVREpg::Cleanup(void)
@@ -480,7 +496,7 @@ bool cPVREpg::AddDB(const PVR_PROGINFO *data, cPVREpg *Epg)
     InfoTag.SetIcon(Epg->m_Channel->Icon());
     InfoTag.m_Epg = Epg;
 
-    return database->AddEPGEntry(InfoTag);
+    return database->UpdateEPGEntry(InfoTag);
   }
   return false;
 }
@@ -593,6 +609,7 @@ void cPVREpgs::Load()
   int daysToLoad        = g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
   CLIENTMAP   *clients  = g_PVRManager.Clients();
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  bool completeNew      = true;
 
   CLog::Log(LOGINFO, "PVR: Starting EPG load for %i channels", channelcount);
 
@@ -624,7 +641,11 @@ void cPVREpgs::Load()
         if (p)
         {
           bool ret = database->GetEPGForChannel(PVRChannelsTV[i], p, start, end);
-          if (!ret)
+          if (ret)
+          {
+            completeNew = false;
+          }
+          else
           {
             // If "ret" is false the database contains no EPG for this channel, load it now from client or over
             // scrapers for only one day to speed up load, rest is done by Background Update
@@ -641,8 +662,10 @@ void cPVREpgs::Load()
               ret = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, start, end) == PVR_ERROR_NO_ERROR ? true : false;
               if (ignoreDB)
                 ret = false;  // This prevent the save of the loaded data inside the Database
-              else
+              else if (p->InfoTags()->size() > 0)
                 CLog::Log(LOGINFO, "PVR: TV Database contains no EPG data for TV Channel '%s', loaded from client '%li'", PVRChannelsTV[i].Name().c_str(), PVRChannelsTV[i].ClientID());
+              else
+                CLog::Log(LOGDEBUG, "PVR: TV Channel '%s', on client '%li' contains no EPG data", PVRChannelsTV[i].Name().c_str(), PVRChannelsTV[i].ClientID());
             }
             else
             {
@@ -659,7 +682,7 @@ void cPVREpgs::Load()
             if (ret)
             {
               for (unsigned int i = 0; i < p->InfoTags()->size(); i++)
-                database->AddEPGEntry(*p->InfoTags()->at(i));
+                database->UpdateEPGEntry(*p->InfoTags()->at(i));
             }
           }
 
@@ -680,7 +703,11 @@ void cPVREpgs::Load()
         if (p)
         {
           bool ret = database->GetEPGForChannel(PVRChannelsRadio[i], p, start, end);
-          if (!ret)
+          if (ret)
+          {
+            completeNew = false;
+          }
+          else
           {
             // If "ret" is false the database contains no EPG for this channel, load it now from client or over
             // scrapers for only one day to speed up load
@@ -697,14 +724,16 @@ void cPVREpgs::Load()
               ret = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, start, end) == PVR_ERROR_NO_ERROR ? true : false;
               if (ignoreDB)
                 ret = false;  // This prevent the save of the loaded data inside the Database
-              else
+              else if (p->InfoTags()->size() > 0)
                 CLog::Log(LOGINFO, "PVR: TV Database contains no EPG data for Radio Channel '%s', loaded from client '%li'", PVRChannelsRadio[i].Name().c_str(), PVRChannelsRadio[i].ClientID());
+              else
+                CLog::Log(LOGDEBUG, "PVR: Radio Channel '%s', on client '%li' contains no EPG data", PVRChannelsRadio[i].Name().c_str(), PVRChannelsRadio[i].ClientID());
             }
             else
             {
-              if (PVRChannelsTV[i].Grabber().IsEmpty())
+              if (PVRChannelsRadio[i].Grabber().IsEmpty())
               {
-                CLog::Log(LOGERROR, "PVR: No EPG grabber defined for Radio Channel '%s'", PVRChannelsTV[i].Name().c_str());
+                CLog::Log(LOGERROR, "PVR: No EPG grabber defined for Radio Channel '%s'", PVRChannelsRadio[i].Name().c_str());
                 return;
               }
               CLog::Log(LOGINFO, "PVR: TV Database contains no EPG data for Radio Channel '%s', loading with scraper '%s'", PVRChannelsRadio[i].Name().c_str(), PVRChannelsRadio[i].Grabber().c_str());
@@ -715,7 +744,7 @@ void cPVREpgs::Load()
             if (ret)
             {
               for (unsigned int i = 0; i < p->InfoTags()->size(); i++)
-                database->AddEPGEntry(*p->InfoTags()->at(i));
+                database->UpdateEPGEntry(*p->InfoTags()->at(i));
             }
           }
 
@@ -724,6 +753,9 @@ void cPVREpgs::Load()
         }
       }
     }
+
+    if (completeNew)
+      database->UpdateLastEPGScan(CDateTime::GetCurrentDateTime());
 
     database->Close();
     scanner->Close();
@@ -761,7 +793,7 @@ void cPVREpgs::Unload()
   }
 }
 
-void cPVREpgs::Update(bool Scan)
+void cPVREpgs::Update(bool Scan, bool Notify)
 {
   long perfCnt      = CTimeUtils::GetTimeMS();
   int channelcount  = PVRChannelsTV.size() + PVRChannelsRadio.size();
@@ -772,12 +804,14 @@ void cPVREpgs::Update(bool Scan)
   if (Scan)
   {
     CLog::Log(LOGINFO, "PVR: Starting EPG scan for %i channels", channelcount);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, g_localizeStrings.Get(19068), "", 1500, false);
+    if (Notify)
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, g_localizeStrings.Get(19068), "", 1500, false);
   }
   else
   {
     CLog::Log(LOGINFO, "PVR: Starting EPG update for %i channels", channelcount);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, g_localizeStrings.Get(19067), "", 1500, false);
+    if (Notify)
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, g_localizeStrings.Get(19067), "", 1500, false);
   }
 
   time_t endLoad;
@@ -882,18 +916,33 @@ void cPVREpgs::Update(bool Scan)
           ///   program A on MTV runs from 20.00-21.00 on 1 november 2004
           ///   program B on MTV runs from 20.55-22.00 on 1 november 2004
           ///   this case, program B will be removed
+          p->Sort();
+          CStdString previousName = "";
+          CDateTime previousStart;
           CDateTime previousEnd(1980, 1, 1, 0, 0, 0);
           for (unsigned int i = 0; i < p->InfoTags()->size(); i++)
           {
             if (previousEnd > p->InfoTags()->at(i)->Start())
             {
               //remove this program
-              CLog::Log(LOGNOTICE, "PVR: Removing Overlapping TV Event '%s' on channel '%s' at date '%s'", p->InfoTags()->at(i)->Title().c_str(), p->InfoTags()->at(i)->ChannelName().c_str(), p->InfoTags()->at(i)->Start().GetAsLocalizedDateTime(false, false).c_str());
+              CLog::Log(LOGNOTICE, "PVR: Removing Overlapped TV Event '%s' on channel '%s' at date '%s' to '%s'",
+                                   p->InfoTags()->at(i)->Title().c_str(),
+                                   p->InfoTags()->at(i)->ChannelName().c_str(),
+                                   p->InfoTags()->at(i)->Start().GetAsLocalizedDateTime(false, false).c_str(),
+                                   p->InfoTags()->at(i)->End().GetAsLocalizedDateTime(false, false).c_str());
+              CLog::Log(LOGNOTICE, "     Overlapps with '%s' at date '%s' to '%s'",
+                                   previousName.c_str(),
+                                   previousStart.GetAsLocalizedDateTime(false, false).c_str(),
+                                   previousEnd.GetAsLocalizedDateTime(false, false).c_str());
               database->RemoveEPGEntry(*p->InfoTags()->at(i));
               p->DelInfoTag(p->InfoTags()->at(i));
             }
             else
+            {
+              previousName = p->InfoTags()->at(i)->Title();
+              previousStart = p->InfoTags()->at(i)->Start();
               previousEnd = p->InfoTags()->at(i)->End();
+            }
           }
         }
       }
@@ -988,13 +1037,24 @@ void cPVREpgs::Update(bool Scan)
           ///   program A on MTV runs from 20.00-21.00 on 1 november 2004
           ///   program B on MTV runs from 20.55-22.00 on 1 november 2004
           ///   this case, program B will be removed
+          p->Sort();
+          CStdString previousName = "";
+          CDateTime previousStart;
           CDateTime previousEnd(1980, 1, 1, 0, 0, 0);
           for (unsigned int i = 0; i < p->InfoTags()->size(); i++)
           {
             if (previousEnd > p->InfoTags()->at(i)->Start())
             {
               //remove this program
-              CLog::Log(LOGNOTICE, "PVR: Removing Overlapping Radio Event '%s' on channel '%s' at date '%s'", p->InfoTags()->at(i)->Title().c_str(), p->InfoTags()->at(i)->ChannelName().c_str(), p->InfoTags()->at(i)->Start().GetAsLocalizedDateTime(false, false).c_str());
+              CLog::Log(LOGNOTICE, "PVR: Removing Overlapped Radio Event '%s' on channel '%s' at date '%s' to '%s'",
+                                   p->InfoTags()->at(i)->Title().c_str(),
+                                   p->InfoTags()->at(i)->ChannelName().c_str(),
+                                   p->InfoTags()->at(i)->Start().GetAsLocalizedDateTime(false, false).c_str(),
+                                   p->InfoTags()->at(i)->End().GetAsLocalizedDateTime(false, false).c_str());
+              CLog::Log(LOGNOTICE, "     Overlapps with '%s' at date '%s' to '%s'",
+                                   previousName.c_str(),
+                                   previousStart.GetAsLocalizedDateTime(false, false).c_str(),
+                                   previousEnd.GetAsLocalizedDateTime(false, false).c_str());
               database->RemoveEPGEntry(*p->InfoTags()->at(i));
               p->DelInfoTag(p->InfoTags()->at(i));
             }
@@ -1005,6 +1065,8 @@ void cPVREpgs::Update(bool Scan)
       }
     }
 
+    if (Scan)
+      database->UpdateLastEPGScan(CDateTime::GetCurrentDateTime());
     database->Close();
     CLog::Log(LOGINFO, "PVR: EPG update finished after %li.%li seconds", (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
   }

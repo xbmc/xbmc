@@ -33,9 +33,9 @@ public:
   CTVDatabase(void);
   virtual ~CTVDatabase(void);
 
-  virtual bool CommitTransaction();
-
   long AddClient(const CStdString &client, const CStdString &guid);
+  CDateTime GetLastEPGScanTime();
+  bool UpdateLastEPGScan(const CDateTime lastScan);
   int GetLastChannel();
   bool UpdateLastChannel(const cPVRChannelInfoTag &info);
 
@@ -98,4 +98,5 @@ protected:
 
 private:
   virtual bool CreateTables();
+  virtual bool UpdateOldVersion(int version);
 };

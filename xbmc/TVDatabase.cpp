@@ -27,7 +27,7 @@ using namespace std;
 
 using namespace dbiplus;
 
-#define TV_DATABASE_VERSION 4
+#define TV_DATABASE_VERSION 5
 #define TV_DATABASE_OLD_VERSION 3
 #define TV_DATABASE_NAME "MyTV1.db"
 
@@ -53,8 +53,11 @@ bool CTVDatabase::CreateTables()
     CLog::Log(LOGINFO, "TV-Database: Creating Clients table");
     m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Name text, GUID text)\n");
 
-    CLog::Log(LOGINFO, "TV-Database: Creating Last Channel table");
+    CLog::Log(LOGINFO, "TV-Database: Creating LastChannel table");
     m_pDS->exec("CREATE TABLE LastChannel (idChannel integer primary key, Number integer, Name text)\n");
+
+    CLog::Log(LOGINFO, "TV-Database: Creating LastEPGScan table");
+    m_pDS->exec("CREATE TABLE LastEPGScan (idScan integer primary key, ScanTime datetime)\n");
 
     CLog::Log(LOGINFO, "TV-Database: Creating GuideData table");
     m_pDS->exec("CREATE TABLE GuideData (idDatabaseBroadcast integer primary key, idUniqueBroadcast integer, idChannel integer, StartTime datetime, "
@@ -95,16 +98,92 @@ bool CTVDatabase::CreateTables()
   return true;
 }
 
-bool CTVDatabase::CommitTransaction()
+bool CTVDatabase::UpdateOldVersion(int iVersion)
 {
-  if (CDatabase::CommitTransaction())
+  BeginTransaction();
+
+  try
   {
-    // number of items in the db has likely changed, so reset the infomanager cache
-    g_infoManager.ResetPersistentCache(); /// what is this
-    return true;
+    if (iVersion < 5)
+    {
+      CLog::Log(LOGINFO, "TV-Database: Creating LastEPGScan table");
+      m_pDS->exec("CREATE TABLE LastEPGScan (idScan integer primary key, ScanTime datetime)\n");
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Error attempting to update the database version!");
+    RollbackTransaction();
+    return false;
+  }
+  CommitTransaction();
+  return true;
+}
+
+CDateTime CTVDatabase::GetLastEPGScanTime()
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    CStdString SQL=FormatSQL("select * from LastEPGScan");
+
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      CDateTime lastTime;
+      lastTime.SetFromDBDateTime(m_pDS->fv("ScanTime").get_asString());
+      m_pDS->close();
+      return lastTime;
+    }
+    else
+    {
+      m_pDS->close();
+      return NULL;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
 
-  return false;
+  return -1;
+}
+
+bool CTVDatabase::UpdateLastEPGScan(const CDateTime lastScan)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString SQL=FormatSQL("select * from LastEPGScan");
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      CStdString SQL=FormatSQL("update LastEPGScan set ScanTime='%s'", lastScan.GetAsDBDateTime().c_str());
+
+      m_pDS->exec(SQL.c_str());
+      return true;
+    }
+    else   // add the items
+    {
+      m_pDS->close();
+      SQL=FormatSQL("insert into LastEPGScan ( ScanTime ) values ('%s')\n", lastScan.GetAsDBDateTime().c_str());
+      m_pDS->exec(SQL.c_str());
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
+  }
 }
 
 int CTVDatabase::GetLastChannel()
@@ -328,7 +407,7 @@ long CTVDatabase::AddEPGEntry(const cPVREPGInfoTag &info)
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-    if (info.GetUniqueBroadcastID() < 0) return -1;
+    if (info.GetUniqueBroadcastID() <= 0) return -1;
 
     CStdString SQL = FormatSQL("insert into GuideData (idDatabaseBroadcast, idChannel, StartTime, "
                                "EndTime, strTitle, strPlotOutline, strPlot, GenreType, GenreSubType, "
@@ -358,11 +437,11 @@ bool CTVDatabase::UpdateEPGEntry(const cPVREPGInfoTag &info)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    if (info.GetUniqueBroadcastID() < 0) return false;
+    if (info.GetUniqueBroadcastID() <= 0) return false;
 
     CStdString SQL;
 
-    SQL=FormatSQL("select * from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelID());
+    SQL=FormatSQL("select idDatabaseBroadcast from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelID());
     m_pDS->query(SQL.c_str());
 
     if (m_pDS->num_rows() > 0)
@@ -401,7 +480,7 @@ bool CTVDatabase::UpdateEPGEntry(const cPVREPGInfoTag &info)
 
       if (GetEPGDataEnd(info.ChannelID()) > info.End())
       {
-        CLog::Log(LOGINFO, "TV-Database: erasing epg data due to event change");
+        CLog::Log(LOGINFO, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelName().c_str());
         EraseChannelEPGAfterTime(info.ChannelID(), info.End());
       }
       return true;
@@ -409,7 +488,7 @@ bool CTVDatabase::UpdateEPGEntry(const cPVREPGInfoTag &info)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.Title().c_str());
+    CLog::Log(LOGERROR, "%s (%s on Channel %s) failed", __FUNCTION__, info.Title().c_str(), info.ChannelName().c_str());
     return false;
   }
 }
