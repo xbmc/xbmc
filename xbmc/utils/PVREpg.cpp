@@ -425,44 +425,31 @@ CDateTime cPVREpg::GetLastEPGDate()
   return last;
 }
 
-bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg, bool correctTime/* = true*/)
+bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
 {
   if (Epg && data)
   {
     cPVREPGInfoTag *InfoTag     = NULL;
     cPVREPGInfoTag *newInfoTag  = NULL;
     long uniqueBroadcastID      = data->uid;
-    int timeCorrection          = g_PVRManager.Clients()->find(Epg->m_Channel->ClientID())->second->GetTimeCorrection();
 
-    CDateTime StartTime, EndTime;
-    if (correctTime)
-    {
-      StartTime = (time_t)data->starttime+timeCorrection;
-      EndTime   = (time_t)data->endtime+timeCorrection;
-    }
-    else
-    {
-      StartTime = (time_t)data->starttime;
-      EndTime   = (time_t)data->endtime;
-    }
-
-    InfoTag = (cPVREPGInfoTag *)Epg->GetInfoTag(uniqueBroadcastID, StartTime);
+    InfoTag = (cPVREPGInfoTag *)Epg->GetInfoTag(uniqueBroadcastID, data->starttime);
     if (!InfoTag)
       InfoTag = newInfoTag = new cPVREPGInfoTag(uniqueBroadcastID);
 
     if (InfoTag)
     {
-      InfoTag->SetStart(StartTime);
-      InfoTag->SetEnd(EndTime);
+      CStdString path;
+      path.Format("pvr://guide/channel-%04i/%s.epg", Epg->m_Channel->Number(), InfoTag->Start().GetAsDBDateTime().c_str());
+      InfoTag->SetPath(path);
+      InfoTag->SetStart((time_t)data->starttime);
+      InfoTag->SetEnd((time_t)data->endtime);
       InfoTag->SetTitle(data->title);
       InfoTag->SetPlotOutline(data->subtitle);
       InfoTag->SetPlot(data->description);
       InfoTag->SetGenre(data->genre_type, data->genre_sub_type);
       InfoTag->SetIcon(Epg->m_Channel->Icon());
       InfoTag->m_Epg = Epg;
-      CStdString path;
-      path.Format("pvr://guide/channel-%04i/%s.epg", Epg->m_Channel->Number(), InfoTag->Start().GetAsDBDateTime().c_str());
-      InfoTag->SetPath(path);
 
       if (newInfoTag)
         Epg->AddInfoTag(newInfoTag);
@@ -473,35 +460,25 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg, bool correctTime/* = t
   return false;
 }
 
-bool cPVREpg::AddDB(const PVR_PROGINFO *data, cPVREpg *Epg, bool correctTime/* = true*/)
+bool cPVREpg::AddDB(const PVR_PROGINFO *data, cPVREpg *Epg)
 {
   if (Epg && data)
   {
     CTVDatabase *database = g_PVRManager.GetTVDatabase();
-    int timeCorrection    = g_PVRManager.Clients()->find(Epg->m_Channel->ClientID())->second->GetTimeCorrection();
     cPVREPGInfoTag InfoTag(data->uid);
 
     /// NOTE: Database is already opened by the EPG Update function
-
-    if (correctTime)
-    {
-      InfoTag.SetStart(CDateTime((time_t)data->starttime+timeCorrection));
-      InfoTag.SetEnd(CDateTime((time_t)data->endtime+timeCorrection));
-    }
-    else
-    {
-      InfoTag.SetStart(CDateTime((time_t)data->starttime));
-      InfoTag.SetEnd(CDateTime((time_t)data->endtime));
-    }
+    CStdString path;
+    path.Format("pvr://guide/channel-%04i/%s.epg", Epg->m_Channel->Number(), InfoTag.Start().GetAsDBDateTime().c_str());
+    InfoTag.SetPath(path);
+    InfoTag.SetStart(CDateTime((time_t)data->starttime));
+    InfoTag.SetEnd(CDateTime((time_t)data->endtime));
     InfoTag.SetTitle(data->title);
     InfoTag.SetPlotOutline(data->subtitle);
     InfoTag.SetPlot(data->description);
     InfoTag.SetGenre(data->genre_type, data->genre_sub_type);
     InfoTag.SetIcon(Epg->m_Channel->Icon());
     InfoTag.m_Epg = Epg;
-    CStdString path;
-    path.Format("pvr://guide/channel-%04i/%s.epg", Epg->m_Channel->Number(), InfoTag.Start().GetAsDBDateTime().c_str());
-    InfoTag.SetPath(path);
 
     return database->AddEPGEntry(InfoTag);
   }
@@ -863,20 +840,19 @@ void cPVREpgs::Update(bool Scan)
           {
             time_t DataLastTime;
             unsigned int cntEntries = p->InfoTags()->size();
-            int timeCorrection = g_PVRManager.Clients()->find(PVRChannelsTV[i].ClientID())->second->GetTimeCorrection();
 
             if (PVRChannelsTV[i].Grabber() == "client" && g_PVRManager.GetClientProps(PVRChannelsTV[i].ClientID())->SupportEPG && clients->find(PVRChannelsTV[i].ClientID())->second->ReadyToUse())
             {
               if (ignoreDB)
               {
                 p->GetLastEPGDate().GetAsTime(DataLastTime);
-                clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime-timeCorrection, endLoad);
+                clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime, endLoad);
                 ret = false;  // This prevent the save of the loaded data inside the Database
               }
               else
               {
                 database->GetEPGDataEnd(PVRChannelsTV[i].ChannelID()).GetAsTime(DataLastTime);
-                ret = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime-timeCorrection, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
+                ret = clients->find(PVRChannelsTV[i].ClientID())->second->GetEPGForChannel(PVRChannelsTV[i], p, DataLastTime, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
               }
             }
             else
@@ -969,20 +945,19 @@ void cPVREpgs::Update(bool Scan)
           {
             time_t DataLastTime;
             unsigned int cntEntries = p->InfoTags()->size();
-            int timeCorrection = g_PVRManager.Clients()->find(PVRChannelsTV[i].ClientID())->second->GetTimeCorrection();
 
             if (PVRChannelsRadio[i].Grabber() == "client" && g_PVRManager.GetClientProps(PVRChannelsRadio[i].ClientID())->SupportEPG && clients->find(PVRChannelsRadio[i].ClientID())->second->ReadyToUse())
             {
               if (ignoreDB)
               {
                 p->GetLastEPGDate().GetAsTime(DataLastTime);
-                clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime-timeCorrection, endLoad);
+                clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime, endLoad);
                 ret = false;  // This prevent the save of the loaded data inside the Database
               }
               else
               {
                 database->GetEPGDataEnd(PVRChannelsRadio[i].ChannelID()).GetAsTime(DataLastTime);
-                ret = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime-timeCorrection, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
+                ret = clients->find(PVRChannelsRadio[i].ClientID())->second->GetEPGForChannel(PVRChannelsRadio[i], p, DataLastTime, 0, true) == PVR_ERROR_NO_ERROR ? true : false;
               }
             }
             else

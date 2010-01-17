@@ -330,13 +330,14 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cP
   {
     try
     {
+      if (start)
+        start -= m_iTimeCorrection;
+      if (end)
+        end -= m_iTimeCorrection;
       PVR_CHANNEL tag;
       PVRHANDLE_STRUCT handle;
       handle.DATA_ADDRESS = (cPVREpg*) epg;
-      if (toDB)
-        handle.DATA_IDENTIFIER = 1;
-      else
-        handle.DATA_IDENTIFIER = 0;
+      handle.DATA_IDENTIFIER = toDB ? 1 : 0;
       WriteClientChannelInfo(channelinfo, tag);
       ret = m_pStruct->RequestEPGForChannel(&handle, tag, start, end);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -366,10 +367,13 @@ void CPVRClient::PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, con
   }
 
   cPVREpg *xbmcEpg = (cPVREpg*) handle->DATA_ADDRESS;
+  PVR_PROGINFO *epgentry2 = (PVR_PROGINFO*) epgentry;
+  epgentry2->starttime += client->m_iTimeCorrection;
+  epgentry2->endtime   += client->m_iTimeCorrection;
   if (handle->DATA_IDENTIFIER == 1)
-    cPVREpg::AddDB(epgentry, xbmcEpg);
+    cPVREpg::AddDB(epgentry2, xbmcEpg);
   else
-    cPVREpg::Add(epgentry, xbmcEpg);
+    cPVREpg::Add(epgentry2, xbmcEpg);
 
   return;
 }

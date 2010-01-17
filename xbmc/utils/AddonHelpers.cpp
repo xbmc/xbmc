@@ -144,7 +144,7 @@ void CAddonUtils::AddOnLog(void *addonData, const addon_log_t loglevel, const ch
     }
 
     /* finally write the logmessage */
-    CLog::Log(xbmclog, xbmcMsg);
+    CLog::Log(xbmclog, "%s", xbmcMsg.c_str());
   }
   catch (std::exception &e)
   {

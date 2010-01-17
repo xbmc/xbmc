@@ -244,7 +244,12 @@ bool CVTPTransceiver::Connect(const string &host, int port)
   // VTP Server will send a greeting
   string line;
   int    code;
-  ReadResponse(code, line);
+  if (!ReadResponse(code, line))
+  {
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Connect - Failed reading response");
+    Close();
+    return false;
+  }
 
   XBMC_log(LOG_INFO, "CVTPTransceiver::Connect - server greeting: %s", line.c_str());
   return true;

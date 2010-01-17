@@ -79,8 +79,8 @@ public:
   const cPVREPGInfoTag *GetInfoTagAround(CDateTime Time) const;
   CDateTime GetLastEPGDate();
 
-  static bool Add(const PVR_PROGINFO *data, cPVREpg *Epg, bool correctTime = true);
-  static bool AddDB(const PVR_PROGINFO *data, cPVREpg *Epg, bool correctTime = true);
+  static bool Add(const PVR_PROGINFO *data, cPVREpg *Epg);
+  static bool AddDB(const PVR_PROGINFO *data, cPVREpg *Epg);
 };
 
 
