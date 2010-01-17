@@ -82,6 +82,16 @@ unsigned int CTimeUtils::GetTimeMS()
   return timeGetTime();
 #elif defined(_LINUX)
 #if defined(__APPLE__)
+  static uint64_t start_time = 0;
+  uint64_t now_time;
+
+  now_time = CVGetCurrentHostTime() * 1000 / CVGetHostClockFrequency();
+  if (start_time == 0)
+    start_time = now_time;
+
+  return(now_time - start_time);
+
+  /*
   static long double cv;
   static uint64_t start_time = 0;
   uint64_t now_time;
@@ -98,6 +108,7 @@ unsigned int CTimeUtils::GetTimeMS()
   }
 
   return( (now_time - start_time) * cv / 1000000.0);
+  */
 #else
   static uint64_t start_mstime = 0;
   uint64_t now_mstime;
