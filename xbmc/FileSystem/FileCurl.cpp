@@ -348,15 +348,10 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
 
   // set username and password for current handle
-#if (LIBCURL_VERSION_NUM >= 0x071301)
   if (m_username.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
   if (m_password.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
-#else
-  if (m_username.length() || m_password.length())
-    CLog::Log(LOGERROR, "CFileCurl::SetCommonOptions - curl version doesn't support password");
-#endif
 
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
@@ -684,6 +679,22 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
     }
   }
+  
+#if (LIBCURL_VERSION_NUM >= 0x071301)
+  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+    m_url = url2.GetWithoutUserDetails();
+  else
+#endif
+  {
+    m_url = url2.Get();
+    
+    if (m_username.length() > 0 || m_password.length() > 0)
+    {
+      m_username="";
+      m_password="";
+      CLog::Log(LOGNOTICE, "%s - cURL version doesn't support username/password option, using URL-encoding instead", __FUNCTION__);
+    }
+  }
 }
 
 bool CFileCurl::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
@@ -791,11 +802,6 @@ bool CFileCurl::Open(const CURL& url)
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
-
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());
 
@@ -988,11 +994,6 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
-
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
 
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
