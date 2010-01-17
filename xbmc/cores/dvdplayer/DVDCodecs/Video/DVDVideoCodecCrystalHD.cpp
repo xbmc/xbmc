@@ -117,6 +117,9 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
+  int maxWait;
+  unsigned int lastTime;
+  unsigned int maxTime;
   bool annexbfiltered = false;
 
   m_Device->BusyListPop();
@@ -140,41 +143,56 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
     }
   }
 
-  if (pData)
+  // we have to throttle input demux packets by waiting for a returned picture frame
+  // or we can suck vqueue dry and DVDPlayer starts thrashing about. If we are dropping
+  // frames, then drop the timeout so we can catch up quickly.
+  if (m_DropPictures)
+    maxWait = 5;
+  else
+    maxWait = 40;
+
+  lastTime = CTimeUtils::GetTimeMS();
+  maxTime = lastTime + maxWait;
+  do
   {
-    if ( m_Device->AddInput(pData, iSize, pts) )
+    if (pData)
     {
-      if (annexbfiltered)
-        free(pData);
-      pData = NULL;
+      if ( m_Device->AddInput(pData, iSize, pts) )
+      {
+        if (annexbfiltered)
+          free(pData);
+        pData = NULL;
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
+        Sleep(10);
+      }
     }
-    else
+
+    if (m_Device->GetInputCount() < 10)
+      ret |= VC_BUFFER;
+
+    if (!m_DropPictures)
+      Sleep(1);
+
+    // Handle Output
+    if (m_Device->GetReadyCount())
     {
-      CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
-      Sleep(10);
+      ret |= VC_PICTURE;
+      if (!pData)
+        break;
     }
-  }
+  } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
 
-  if (m_Device->GetInputCount() < 10)
-    ret |= VC_BUFFER;
-
-  if (!m_DropPictures)
-    Sleep(20);
-
-  // Handle Output
-  if (m_Device->GetReadyCount())
-    ret |= VC_PICTURE;
-
-  if (!ret)
-    ret = VC_ERROR;
+  m_DecodeReturn = ret;
 
   return ret;
 }
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
-  CLog::Log(LOGDEBUG, "%s: Reset, flushing decoder.", __MODULE_NAME__);
-  m_Device->Reset();
+  m_Device->Reset( !(m_DecodeReturn & VC_ERROR) );
 }
 
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
