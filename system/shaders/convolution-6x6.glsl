@@ -2,31 +2,38 @@ uniform sampler2D img;
 uniform float     stepx;
 uniform float     stepy;
 
+//nvidia's half is a 16 bit float and can bring some speed improvements
+//without affecting quality
+#ifndef __GLSL_CG_DATA_TYPES
+  #define half3 vec3
+  #define half4 vec4
+#endif
+
 #if (HAS_FLOAT_TEXTURE)
 uniform sampler1D kernelTex;
 
-vec3 weight(float pos)
+half3 weight(float pos)
 {
   return texture1D(kernelTex, pos).rgb;
 }
 #else
 uniform sampler2D kernelTex;
 
-vec3 weight(float pos)
+half3 weight(float pos)
 {
   //row 0 contains the high byte, row 1 contains the low byte
   return ((texture2D(kernelTex, vec2(pos, 0.0)) * 256.0 + texture2D(kernelTex, vec2(pos, 1.0)))).rgb / 128.5 - 1.0;
 }
 #endif
 
-vec3 pixel(float xpos, float ypos)
+half3 pixel(float xpos, float ypos)
 {
   return texture2D(img, vec2(xpos, ypos)).rgb;
 }
 
-vec3 line (float ypos, vec3 xpos1, vec3 xpos2, vec3 linetaps1, vec3 linetaps2)
+half3 line (float ypos, vec3 xpos1, vec3 xpos2, half3 linetaps1, half3 linetaps2)
 {
-  vec3  pixels;
+  half3  pixels;
 
   pixels  = pixel(xpos1.r, ypos) * linetaps1.r;
   pixels += pixel(xpos1.g, ypos) * linetaps2.r;
@@ -43,10 +50,10 @@ void main()
   float xf = fract(gl_TexCoord[0].x / stepx);
   float yf = fract(gl_TexCoord[0].y / stepy);
 
-  vec3 linetaps1   = weight((1.0 - xf) / 2.0);
-  vec3 linetaps2   = weight((1.0 - xf) / 2.0 + 0.5);
-  vec3 columntaps1 = weight((1.0 - yf) / 2.0);
-  vec3 columntaps2 = weight((1.0 - yf) / 2.0 + 0.5);
+  half3 linetaps1   = weight((1.0 - xf) / 2.0);
+  half3 linetaps2   = weight((1.0 - xf) / 2.0 + 0.5);
+  half3 columntaps1 = weight((1.0 - yf) / 2.0);
+  half3 columntaps2 = weight((1.0 - yf) / 2.0 + 0.5);
 
   vec3 xpos1 = vec3(
       (-1.5 - xf) * stepx + gl_TexCoord[0].x,
