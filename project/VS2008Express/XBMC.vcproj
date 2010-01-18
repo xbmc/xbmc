@@ -2041,6 +2041,14 @@
 					Name="Shaders"
 					>
 					<File
+						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.cpp"
 						>
 					</File>

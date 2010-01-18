@@ -338,7 +338,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         { // need to remove the disc cache
           CFileItemList items;
           CUtil::GetDirectory(newItem->m_strPath, items.m_strPath);
-          items.RemoveDiscCache();
+          items.RemoveDiscCache(GetID());
         }
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
@@ -476,7 +476,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
 
     // Should these items be saved to the hdd
     if (items.CacheToDiscAlways())
-      items.Save();
+      items.Save(GetID());
   }
 }
 
@@ -535,7 +535,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
   // see if we can load a previously cached folder
   CFileItemList cachedItems(strDirectory);
-  if (!strDirectory.IsEmpty() && cachedItems.Load())
+  if (!strDirectory.IsEmpty() && cachedItems.Load(GetID()))
   {
     items.Assign(cachedItems);
   }
@@ -548,7 +548,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 
     // took over a second, and not normally cached, so cache it
     if (time + 1000 < CTimeUtils::GetTimeMS() && items.CacheToDiscIfSlow())
-      items.Save();
+      items.Save(GetID());
 
     // if these items should replace the current listing, then pop it off the top
     if (items.GetReplaceListing())
@@ -763,7 +763,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       // party mode playlist item - if it doesn't exist, prompt for user to define it
       if (!XFILE::CFile::Exists(pItem->m_strPath))
       {
-        m_vecItems->RemoveDiscCache();
+        m_vecItems->RemoveDiscCache(GetID());
         if (CGUIDialogSmartPlaylistEditor::EditPlaylist(pItem->m_strPath))
           Update(m_vecItems->m_strPath);
         return true;
@@ -773,7 +773,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     // remove the directory cache if the folder is not normally cached
     CFileItemList items(pItem->m_strPath);
     if (!items.AlwaysCache())
-      items.RemoveDiscCache();
+      items.RemoveDiscCache(GetID());
 
     CFileItem directory(*pItem);
     if (!Update(directory.m_strPath))
@@ -791,13 +791,13 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     if (pItem->m_strPath == "newplaylist://")
     {
-      m_vecItems->RemoveDiscCache();
+      m_vecItems->RemoveDiscCache(GetID());
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
     else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
     {
-      m_vecItems->RemoveDiscCache();
+      m_vecItems->RemoveDiscCache(GetID());
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->m_strPath.Mid(19)))
         Update(m_vecItems->m_strPath);
       return true;
@@ -1131,7 +1131,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
 
   if (!CGUIWindowFileManager::DeleteItem(&item))
     return;
-  m_vecItems->RemoveDiscCache();
+  m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }
@@ -1146,7 +1146,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 
   if (!CGUIWindowFileManager::RenameFile(m_vecItems->Get(iItem)->m_strPath))
     return;
-  m_vecItems->RemoveDiscCache();
+  m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->m_strPath);
   m_viewControl.SetSelectedItem(iItem);
 }

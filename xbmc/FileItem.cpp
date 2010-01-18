@@ -2247,10 +2247,10 @@ void CFileItemList::Stack()
   }
 }
 
-bool CFileItemList::Load()
+bool CFileItemList::Load(int windowID)
 {
   CFile file;
-  if (file.Open(GetDiscCacheFile()))
+  if (file.Open(GetDiscCacheFile(windowID)))
   {
     CLog::Log(LOGDEBUG,"Loading fileitems [%s]",m_strPath.c_str());
     CArchive ar(&file, CArchive::load);
@@ -2264,7 +2264,7 @@ bool CFileItemList::Load()
   return false;
 }
 
-bool CFileItemList::Save()
+bool CFileItemList::Save(int windowID)
 {
   int iSize = Size();
   if (iSize <= 0)
@@ -2273,7 +2273,7 @@ bool CFileItemList::Save()
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscCacheFile(), true)) // overwrite always
+  if (file.OpenForWrite(GetDiscCacheFile(windowID), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2286,16 +2286,17 @@ bool CFileItemList::Save()
   return false;
 }
 
-void CFileItemList::RemoveDiscCache() const
+void CFileItemList::RemoveDiscCache(int windowID) const
 {
-  if (CFile::Exists(GetDiscCacheFile()))
+  CStdString cacheFile(GetDiscCacheFile(windowID));
+  if (CFile::Exists(cacheFile))
   {
     CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
-    CFile::Delete(GetDiscCacheFile());
+    CFile::Delete(cacheFile);
   }
 }
 
-CStdString CFileItemList::GetDiscCacheFile() const
+CStdString CFileItemList::GetDiscCacheFile(int windowID) const
 {
   CStdString strPath=m_strPath;
   CUtil::RemoveSlashAtEnd(strPath);
@@ -2310,6 +2311,8 @@ CStdString CFileItemList::GetDiscCacheFile() const
     cacheFile.Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
   else if (IsVideoDb())
     cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
+  else if (windowID)
+    cacheFile.Format("special://temp/%i-%08x.fi", windowID, (unsigned __int32)crc);
   else
     cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
   return cacheFile;

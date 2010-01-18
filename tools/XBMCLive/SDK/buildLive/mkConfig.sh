@@ -36,17 +36,6 @@ makeConfig()
 
 	lh config --mode ubuntu --archive-areas "$CATEGORIES" $configString
 
-	# Get TVHeadend public key
-	wget --no-proxy -q http://www.lonelycoder.com/public.key
-	if [ "$?" -ne "0" ]; then
-		echo "Needed public key not found, exiting..."
-		exit 1
-	fi
-
-	cp public.key "$THISDIR"/Files/chroot_sources/tvheadend.binary.gpg
-	cp public.key "$THISDIR"/Files/chroot_sources/tvheadend.chroot.gpg
-	rm public.key 
-
 	# Copy files for chroot
 	cp -R "$THISDIR"/Files/chroot_* config
 

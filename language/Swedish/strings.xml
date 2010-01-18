@@ -1387,6 +1387,7 @@
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimerad</string>
+  <string id="16316">Auto</string>
   <string id="17500">Visa insommningstimeout</string>
   <string id="19000">Byt till kanal</string>
   <string id="20000">Mapp för sparad musik</string>
@@ -1717,6 +1718,8 @@
   <string id="20443">Vill du uppdatera info för alla</string>
   <string id="20444">objekt i denna sökväg?</string>
   <string id="20445">Fanart</string>
+  <string id="20446">Lokalt lagrad information hittad.</string>
+  <string id="20447">Ignorera och uppdatera från Internet?</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>
