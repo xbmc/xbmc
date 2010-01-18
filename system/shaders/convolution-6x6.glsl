@@ -33,16 +33,13 @@ half3 pixel(float xpos, float ypos)
 
 half3 line (float ypos, vec3 xpos1, vec3 xpos2, half3 linetaps1, half3 linetaps2)
 {
-  half3  pixels;
-
-  pixels  = pixel(xpos1.r, ypos) * linetaps1.r;
-  pixels += pixel(xpos1.g, ypos) * linetaps2.r;
-  pixels += pixel(xpos1.b, ypos) * linetaps1.g;
-  pixels += pixel(xpos2.r, ypos) * linetaps2.g;
-  pixels += pixel(xpos2.g, ypos) * linetaps1.b;
-  pixels += pixel(xpos2.b, ypos) * linetaps2.b;
-
-  return pixels;
+  return
+    pixel(xpos1.r, ypos) * linetaps1.r +
+    pixel(xpos1.g, ypos) * linetaps2.r +
+    pixel(xpos1.b, ypos) * linetaps1.g +
+    pixel(xpos2.r, ypos) * linetaps2.g +
+    pixel(xpos2.g, ypos) * linetaps1.b +
+    pixel(xpos2.b, ypos) * linetaps2.b; 
 }
 
 void main()
@@ -55,25 +52,21 @@ void main()
   half3 columntaps1 = weight((1.0 - yf) / 2.0);
   half3 columntaps2 = weight((1.0 - yf) / 2.0 + 0.5);
 
-  vec3 xpos1 = vec3(
-      (-1.5 - xf) * stepx + gl_TexCoord[0].x,
-      (-0.5 - xf) * stepx + gl_TexCoord[0].x,
-      ( 0.5 - xf) * stepx + gl_TexCoord[0].x);
-  vec3 xpos2 = vec3(
-      ( 1.5 - xf) * stepx + gl_TexCoord[0].x,
-      ( 2.5 - xf) * stepx + gl_TexCoord[0].x,
-      ( 3.5 - xf) * stepx + gl_TexCoord[0].x);
+  float xstart = (-1.5 - xf) * stepx + gl_TexCoord[0].x;
+  vec3 xpos1 = vec3(xstart, xstart + stepx, xstart + stepx * 2.0);
+  xstart += stepx * 3.0;
+  vec3 xpos2 = vec3(xstart, xstart + stepx, xstart + stepx * 2.0);
 
-  half3 output;
+  float ystart = (-1.5 - yf) * stepy + gl_TexCoord[0].y;
 
-  output  = line((-1.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r;
-  output += line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r;
-  output += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g;
-  output += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g;
-  output += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b;
-  output += line(( 3.5 - yf) * stepy + gl_TexCoord[0].y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
+  gl_FragColor.rgb =
+   line(ystart              , xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
+   line(ystart + stepy      , xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
+   line(ystart + stepy * 2.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +
+   line(ystart + stepy * 3.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g +
+   line(ystart + stepy * 4.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
+   line(ystart + stepy * 5.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
 
-  gl_FragColor.rgb = output;
   gl_FragColor.a = gl_Color.a;
 }
 

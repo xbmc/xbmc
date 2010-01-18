@@ -33,14 +33,11 @@ half3 pixel(float xpos, float ypos)
 
 half3 line (float ypos, vec4 xpos, half4 linetaps)
 {
-  half3  pixels;
-
-  pixels  = pixel(xpos.r, ypos) * linetaps.r;
-  pixels += pixel(xpos.g, ypos) * linetaps.g;
-  pixels += pixel(xpos.b, ypos) * linetaps.b;
-  pixels += pixel(xpos.a, ypos) * linetaps.a;
-
-  return pixels;
+  return
+    pixel(xpos.r, ypos) * linetaps.r +
+    pixel(xpos.g, ypos) * linetaps.g +
+    pixel(xpos.b, ypos) * linetaps.b +
+    pixel(xpos.a, ypos) * linetaps.a;
 }
 
 void main()
@@ -51,20 +48,17 @@ void main()
   half4 linetaps   = weight(1.0 - xf);
   half4 columntaps = weight(1.0 - yf);
 
-  vec4 xpos = vec4(
-      (-0.5 - xf) * stepx + gl_TexCoord[0].x,
-      ( 0.5 - xf) * stepx + gl_TexCoord[0].x,
-      ( 1.5 - xf) * stepx + gl_TexCoord[0].x,
-      ( 2.5 - xf) * stepx + gl_TexCoord[0].x);
+  float xstart = (-0.5 - xf) * stepx + gl_TexCoord[0].x;
+  vec4 xpos = vec4(xstart, xstart + stepx, xstart + stepx * 2.0, xstart + stepx * 3.0);
 
-  half3 output;
+  float ystart = (-0.5 - yf) * stepy + gl_TexCoord[0].y;
 
-  output  = line((-0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.r;
-  output += line(( 0.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.g;
-  output += line(( 1.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.b;
-  output += line(( 2.5 - yf) * stepy + gl_TexCoord[0].y, xpos, linetaps) * columntaps.a;
+  gl_FragColor.rgb =
+    line(ystart              , xpos, linetaps) * columntaps.r +
+    line(ystart + stepy      , xpos, linetaps) * columntaps.g +
+    line(ystart + stepy * 2.0, xpos, linetaps) * columntaps.b +
+    line(ystart + stepy * 3.0, xpos, linetaps) * columntaps.a;
 
-  gl_FragColor.rgb = output;
   gl_FragColor.a = gl_Color.a;
 }
 
