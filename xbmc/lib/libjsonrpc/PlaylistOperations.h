@@ -39,7 +39,6 @@ namespace JSONRPC
     static JSON_STATUS UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
   private:
     static inline bool GetPlaylist(const Json::Value& parameterObject, PLAYLIST::CPlayList **playlist, bool &current);
-    static inline JSON_STATUS FillResult(bool ok, Json::Value &result);
     static inline void NotifyAll();
   };
 }

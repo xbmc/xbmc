@@ -56,7 +56,7 @@ JSON_STATUS CPlayerActions::Stop(const CStdString &method, ITransportLayer *tran
 
   CAction action;
   action.id = ACTION_STOP;
-  return FillResult(g_application.OnAction(action), result);
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerActions::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -66,7 +66,7 @@ JSON_STATUS CPlayerActions::SkipPrevious(const CStdString &method, ITransportLay
 
   CAction action;
   action.id = ACTION_PREV_ITEM;
-  return FillResult(g_application.OnAction(action), result);
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerActions::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -76,7 +76,7 @@ JSON_STATUS CPlayerActions::SkipNext(const CStdString &method, ITransportLayer *
 
   CAction action;
   action.id = ACTION_NEXT_ITEM;
-  return FillResult(g_application.OnAction(action), result);
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerActions::BigSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -85,7 +85,7 @@ JSON_STATUS CPlayerActions::BigSkipBackward(const CStdString &method, ITransport
     return FailedToExecute;
 
   CBuiltins::Execute("playercontrol(bigskipbackward)");
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlayerActions::BigSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -94,7 +94,7 @@ JSON_STATUS CPlayerActions::BigSkipForward(const CStdString &method, ITransportL
     return FailedToExecute;
 
   CBuiltins::Execute("playercontrol(bigskipforward)");
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlayerActions::SmallSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -103,7 +103,7 @@ JSON_STATUS CPlayerActions::SmallSkipBackward(const CStdString &method, ITranspo
     return FailedToExecute;
 
   CBuiltins::Execute("playercontrol(smallskipbackward)");
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlayerActions::SmallSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -112,7 +112,7 @@ JSON_STATUS CPlayerActions::SmallSkipForward(const CStdString &method, ITranspor
     return FailedToExecute;
 
   CBuiltins::Execute("playercontrol(smallskipforward)");
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlayerActions::Rewind(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -122,7 +122,7 @@ JSON_STATUS CPlayerActions::Rewind(const CStdString &method, ITransportLayer *tr
 
   CAction action;
   action.id = ACTION_PLAYER_REWIND;
-  return FillResult(g_application.OnAction(action), result);
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerActions::Forward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -132,7 +132,7 @@ JSON_STATUS CPlayerActions::Forward(const CStdString &method, ITransportLayer *t
 
   CAction action;
   action.id = ACTION_PLAYER_FORWARD;
-  return FillResult(g_application.OnAction(action), result);
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerActions::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -141,7 +141,7 @@ JSON_STATUS CPlayerActions::Record(const CStdString &method, ITransportLayer *tr
     return FailedToExecute;
 
   CBuiltins::Execute("playercontrol(record)");
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlayerActions::GetTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
@@ -182,7 +182,7 @@ JSON_STATUS CPlayerActions::SeekTime(const CStdString &method, ITransportLayer *
     return FailedToExecute;
 
   g_application.SeekTime(parameterObject.asInt());
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlayerActions::GetPlaylist(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
@@ -202,15 +202,4 @@ JSON_STATUS CPlayerActions::GetPlaylist(const CStdString &method, ITransportLaye
 bool CPlayerActions::IsCorrectPlayer(const CStdString &method)
 {
   return (method.Left(5).Equals("music") && g_application.IsPlayingAudio()) || (method.Left(5).Equals("video") && g_application.IsPlayingVideo());
-}
-
-JSON_STATUS CPlayerActions::FillResult(bool ok, Value &result)
-{
-  if (ok)
-  {
-    Value val = "OK";
-    result.swap(val);
-  }
-
-  return ok ? OK : FailedToExecute;
 }

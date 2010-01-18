@@ -52,6 +52,5 @@ namespace JSONRPC
     static JSON_STATUS GetPlaylist(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
   private:
     static inline bool IsCorrectPlayer(const CStdString &method);
-    static inline JSON_STATUS FillResult(bool ok, Json::Value &result);
   };
 }

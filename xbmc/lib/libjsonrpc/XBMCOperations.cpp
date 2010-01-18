@@ -64,11 +64,7 @@ JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *tra
   CStdString path = parameterObject.asString();
   CFileItem item(path, CUtil::HasSlashAtEnd(path));
   if (g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
-  {
-    Value val = "OK";
-    result.swap(val);
-    return OK;
-  }
+    return ACK;
   else
     return FailedToExecute;
 }
@@ -98,9 +94,7 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
   ThreadMessage msg = { TMSG_EXECUTE_BUILT_IN, (DWORD)0, (DWORD)0, exec };
   g_application.getApplicationMessenger().SendMessage(msg);
 
-  Value val = "OK";
-  result.swap(val);
-  return OK;
+  return ACK;
 }
 
 JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -120,17 +114,13 @@ JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *tran
   else
     return InvalidParams;
 
-  Value val = "OK";
-  result.swap(val);
-  return OK;
+  return ACK;
 }
 
 JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   g_application.getApplicationMessenger().Quit();
-  Value val = "OK";
-  result.swap(val);
-  return OK;
+  return ACK;
 }
 
 int CXBMCOperations::ParseLogLevel(const char *level)

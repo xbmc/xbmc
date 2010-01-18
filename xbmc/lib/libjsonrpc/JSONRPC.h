@@ -35,6 +35,7 @@ namespace JSONRPC
   enum JSON_STATUS
   {
     OK = 0,
+    ACK = -1,
     MethodNotFound = -32601,
     InvalidParams = -32602,
     InternalError = -32603,

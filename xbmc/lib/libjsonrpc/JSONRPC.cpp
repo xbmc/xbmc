@@ -238,9 +238,7 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
 
   CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), parameterObject.isMember("data") ? parameterObject["sender"].asString().c_str() : NULL);
 
-  Value temp = "OK";
-  result.swap(temp);
-  return OK;
+  return ACK;
 }
 
 CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client)
@@ -266,6 +264,9 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
   {
     case OK:
       outputroot["result"] = result;
+      break;
+    case ACK:
+      outputroot["result"] = "OK";
       break;
     case InvalidParams:
       outputroot["error"]["code"] = InvalidParams;

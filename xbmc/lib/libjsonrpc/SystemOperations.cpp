@@ -31,7 +31,7 @@ JSON_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLaye
   if (g_powerManager.CanPowerdown())
   {
     g_application.getApplicationMessenger().Powerdown();
-    return OK;
+    return ACK;
   }
   else
     return FailedToExecute;
@@ -42,7 +42,7 @@ JSON_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLayer
   if (g_powerManager.CanSuspend())
   {
     g_application.getApplicationMessenger().Suspend();
-    return OK;
+    return ACK;
   }
   else
     return FailedToExecute;
@@ -53,7 +53,7 @@ JSON_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransportLay
   if (g_powerManager.CanHibernate())
   {
     g_application.getApplicationMessenger().Hibernate();
-    return OK;
+    return ACK;
   }
   else
     return FailedToExecute;
@@ -64,7 +64,7 @@ JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer 
   if (g_powerManager.CanReboot())
   {
     g_application.getApplicationMessenger().Restart();
-    return OK;
+    return ACK;
   }
   else
     return FailedToExecute;

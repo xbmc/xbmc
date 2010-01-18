@@ -76,7 +76,7 @@ JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *
     return InvalidParams;
 
   NotifyAll();
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
@@ -97,7 +97,7 @@ JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLaye
     return InvalidParams;
 
   NotifyAll();
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
@@ -116,7 +116,7 @@ JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer 
     return InvalidParams;
 
   NotifyAll();
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
@@ -129,7 +129,7 @@ JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer
   playlist->Clear();
 
   NotifyAll();
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
@@ -142,7 +142,7 @@ JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLay
   playlist->Shuffle();
 
   NotifyAll();
-  return FillResult(true, result);
+  return ACK;
 }
 
 JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
@@ -155,7 +155,7 @@ JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportL
   playlist->UnShuffle();
 
   NotifyAll();
-  return FillResult(true, result);
+  return ACK;
 }
 
 bool CPlaylistOperations::GetPlaylist(const Value& parameterObject, CPlayList **playlist, bool &current)
@@ -172,17 +172,6 @@ bool CPlaylistOperations::GetPlaylist(const Value& parameterObject, CPlayList **
   }
   else
     return false;
-}
-
-JSON_STATUS CPlaylistOperations::FillResult(bool ok, Value &result)
-{
-  if (ok)
-  {
-    Value val = "OK";
-    result.swap(val);
-  }
-
-  return ok ? OK : FailedToExecute;
 }
 
 void CPlaylistOperations::NotifyAll()
