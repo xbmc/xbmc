@@ -1,12 +1,14 @@
 #!/bin/sh
 
 echo ""
-echo "Set hts_tvheadend web credentials..."
+echo "Set hts_tvheadend user & web credentials..."
 echo ""
 
-# dpkg-reconfigure hts-tvheadend
+cat > /etc/default/tvheadend << EOF
+DAEMON_ARGS="-f -u xbmc -g video"
+EOF
 
-cat > /home/hts/.hts/tvheadend/superuser << EOF
+cat > /home/xbmc/.hts/tvheadend/superuser << EOF
 {
 "username": "xbmc",
 "password": "xbmc"
