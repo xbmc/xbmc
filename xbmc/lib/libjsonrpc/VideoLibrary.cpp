@@ -28,6 +28,9 @@ using namespace JSONRPC;
 
 JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
@@ -47,6 +50,9 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
@@ -66,17 +72,21 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
-  int tvshowID = parameterObject.get("tvshowid", -1).asInt();
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  int tvshowID = param.get("tvshowid", -1).asInt();
 
   CFileItemList items;
   if (videodatabase.GetSeasonsNav("", items, -1, -1, -1, -1, tvshowID))
   {
     unsigned start, end;
-    HandleFileItemList("seasonid", "seasons", items, start, end, parameterObject, result);
+    HandleFileItemList("seasonid", "seasons", items, start, end, param, result);
   }
 
   videodatabase.Close();
@@ -85,18 +95,22 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
-  int tvshowID = parameterObject.get("tvshowid", -1).asInt();
-  int seasonID = parameterObject.get("seasonid", -1).asInt();
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  int tvshowID = param.get("tvshowid", -1).asInt();
+  int seasonID = param.get("seasonid", -1).asInt();
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("", items, -1, -1, -1, -1, tvshowID, seasonID))
   {
     unsigned start, end;
-    HandleFileItemList("episodeid", "episodes", items, start, end, parameterObject, result);
+    HandleFileItemList("episodeid", "episodes", items, start, end, param, result);
   }
 
   videodatabase.Close();
@@ -125,18 +139,22 @@ JSON_STATUS CVideoLibrary::GetMusicVideoAlbums(const CStdString &method, ITransp
 
 JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
 
-  int artistID = parameterObject.get("artistid", -1).asInt();
-  int albumID  = parameterObject.get("albumid",  -1).asInt();
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  int artistID = param.get("artistid", -1).asInt();
+  int albumID  = param.get("albumid",  -1).asInt();
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("", items, -1, -1, artistID, -1, -1, albumID))
   {
     unsigned start, end;
-    HandleFileItemList("musicvideoid", "musicvideos", items, start, end, parameterObject, result);
+    HandleFileItemList("musicvideoid", "musicvideos", items, start, end, param, result);
   }
 
   videodatabase.Close();
@@ -145,7 +163,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
 JSON_STATUS CVideoLibrary::GetMovieInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!parameterObject.isMember("movieid") || parameterObject.get("movieid", -1).asInt() < 0 || !parameterObject.isMember("fields"))
+  if (!parameterObject.isObject() || !parameterObject.isMember("movieid") || parameterObject.get("movieid", -1).asInt() < 0 || !parameterObject.isMember("fields"))
     return InvalidParams;
 
   int movieID = parameterObject.get("movieid", -1).asInt();

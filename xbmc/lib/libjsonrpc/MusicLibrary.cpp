@@ -32,17 +32,21 @@ using namespace JSONRPC;
 
 JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  int genreID = parameterObject.get("genreid", -1).asInt();
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  int genreID = param.get("genreid", -1).asInt();
 
   CFileItemList items;
   if (musicdatabase.GetArtistsNav("", items, genreID, false))
   {
     unsigned start, end;
-    HandleFileItemList("artistid", "artists", items, start, end, parameterObject, result);
+    HandleFileItemList("artistid", "artists", items, start, end, param, result);
   }
 
   musicdatabase.Close();
@@ -51,18 +55,22 @@ JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  int artistID = parameterObject.get("artistid", -1).asInt();
-  int genreID = parameterObject.get("genreid", -1).asInt();
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  int artistID = param.get("artistid", -1).asInt();
+  int genreID = param.get("genreid", -1).asInt();
 
   CFileItemList items;
   if (musicdatabase.GetAlbumsNav("", items, genreID, artistID))
   {
     unsigned start, end;
-    HandleFileItemList("albumid", "albums", items, start, end, parameterObject, result);
+    HandleFileItemList("albumid", "albums", items, start, end, param, result);
   }
 
   musicdatabase.Close();
@@ -71,19 +79,23 @@ JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  int artistID = parameterObject.get("artistid", -1).asInt();
-  int albumID = parameterObject.get("albumid", -1).asInt();
-  int genreID = parameterObject.get("genreid", -1).asInt();
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  int artistID = param.get("artistid", -1).asInt();
+  int albumID = param.get("albumid", -1).asInt();
+  int genreID = param.get("genreid", -1).asInt();
 
   CFileItemList items;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))
   {
     unsigned start, end;
-    HandleFileItemList("songid", "songs", items, start, end, parameterObject, result);
+    HandleFileItemList("songid", "songs", items, start, end, param, result);
   }
 
   musicdatabase.Close();
@@ -92,6 +104,8 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
 
 JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!parameterObject.isObject())
+    return InvalidParams;
   int songID = parameterObject.get("songid", -1).asInt();
 
   if (songID < 0)

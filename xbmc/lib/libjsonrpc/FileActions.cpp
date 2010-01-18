@@ -33,7 +33,8 @@ using namespace JSONRPC;
 
 JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  CStdString type = parameterObject.get("type", "null").asString();
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  CStdString type = param.get("type", "null").asString();
   type = type.ToLower();
 
   if (type.Equals("video") || type.Equals("music") || type.Equals("pictures") || type.Equals("files") || type.Equals("programs"))
@@ -41,8 +42,8 @@ JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportL
     VECSOURCES *sources = g_settings.GetSourcesFromType(type);
     if (sources)
     {
-      unsigned int start = parameterObject.get("start", 0).asUInt();
-      unsigned int end   = parameterObject.get("end", (unsigned int)sources->size()).asUInt();
+      unsigned int start = param.get("start", 0).asUInt();
+      unsigned int end   = param.get("end", (unsigned int)sources->size()).asUInt();
       end = end > sources->size() ? sources->size() : end;
 
       result["start"] = start;
@@ -63,7 +64,7 @@ JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportL
 
 JSON_STATUS CFileActions::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (parameterObject.isMember("type") && parameterObject.isMember("directory"))
+  if (parameterObject.isObject() && parameterObject.isMember("type") && parameterObject.isMember("directory"))
   {   
     CStdString type = parameterObject.get("type", "files").asString();
     type = type.ToLower();
@@ -110,8 +111,8 @@ JSON_STATUS CFileActions::GetDirectory(const CStdString &method, ITransportLayer
 
 JSON_STATUS CFileActions::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!parameterObject.isMember("file"))
+  if (!parameterObject.isString())
     return InvalidParams;
 
-  return transport->Download(parameterObject["file"].asString().c_str(), result) ? OK : BadPermission;
+  return transport->Download(parameterObject.asString().c_str(), result) ? OK : BadPermission;
 }

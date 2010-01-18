@@ -149,9 +149,13 @@ CJSONRPC::CActionMap CJSONRPC::m_actionMap(m_commands, sizeof(m_commands) / size
 
 JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  bool getDescriptions = parameterObject.get("getdescriptions", true).asBool();
-  bool getPermissions = parameterObject.get("getpermissions", true).asBool();
-  bool filterByTransport = parameterObject.get("filterbytransport", true).asBool();
+  if (!(parameterObject.isObject() || parameterObject.isNull()))
+    return InvalidParams;
+
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+  bool getDescriptions = param.get("getdescriptions", true).asBool();
+  bool getPermissions = param.get("getpermissions", true).asBool();
+  bool filterByTransport = param.get("filterbytransport", true).asBool();
 
   int length = sizeof(m_commands) / sizeof(Command);
   int clientflags = client->GetPermissionFlags();
@@ -206,6 +210,9 @@ JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport,
 
 JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
+  if (!parameterObject.isObject())
+    return InvalidParams;
+
   int flags = 0;
 
   if (parameterObject.get("playback", false).asBool())
@@ -222,7 +229,7 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
 
 JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
-  if (!parameterObject.isMember("sender") || !parameterObject.isMember("message"))
+  if (!parameterObject.isObject() || !parameterObject.isMember("sender") || !parameterObject.isMember("message"))
     return InvalidParams;
 
   CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(), parameterObject["message"].asString().c_str(), parameterObject.isMember("data") ? parameterObject["sender"].asString().c_str() : NULL);
@@ -239,7 +246,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
   JSON_STATUS errorCode = OK;
   Reader reader;
 
-  if (reader.parse(inputString, inputroot) && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot.isMember("id"))
+  if (reader.parse(inputString, inputroot) && inputroot.isObject() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot.isMember("id"))
   {
     CStdString method = inputroot.get("method", "").asString();
     method = method.ToLower();
