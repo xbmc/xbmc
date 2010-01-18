@@ -151,10 +151,10 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
   int res = -1;
   for (unsigned int i=0;i<vecScrapers.size();++i)
     if ((res = Scrape(vecScrapers[i])) == 0 || res == 2)
-      break;*/
+      break;
 
   if (res == 2)
-    return ERROR_NFO;
+    return ERROR_NFO;*/
   if (bNfo)
     return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
 
