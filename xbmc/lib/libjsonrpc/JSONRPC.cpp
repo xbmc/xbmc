@@ -167,7 +167,7 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
     if (getDescriptions)
       val["description"] = m_commands[i].description;
     if (getPermissions)
-      val["permission"] = m_commands[i].permission == ReadData ? "ReadData" : "ControlPlayback";
+      val["permission"] = PermissionToString(m_commands[i].permission);
 
     result["commands"].append(val);
   }
@@ -189,6 +189,10 @@ JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *tran
     result["permission"].append("ReadData");
   if (flags & ControlPlayback)
     result["permission"].append("ControlPlayback");
+  if (flags & ControlAnnounce)
+    result["permission"].append("ControlAnnounce");
+  if (flags & ControlPower)
+    result["permission"].append("ControlPower");
 
   return OK;
 }
@@ -235,7 +239,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
   JSON_STATUS errorCode = OK;
   Reader reader;
 
-  if (reader.parse(inputString, inputroot) && inputroot.get("jsonrpc", "-1") == "2.0" && inputroot.isMember("method") && inputroot.isMember("id"))
+  if (reader.parse(inputString, inputroot) && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot.isMember("id"))
   {
     CStdString method = inputroot.get("method", "").asString();
     method = method.ToLower();
@@ -295,6 +299,23 @@ JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Val
   }
   else
     return MethodNotFound;
+}
+
+inline const char *CJSONRPC::PermissionToString(const OperationPermission &permission)
+{
+  switch (permission)
+  {
+  case ReadData:
+    return "ReadData";
+  case ControlPlayback:
+    return "ControlPlayback";
+  case ControlAnnounce:
+    return "ControlAnnounce";
+  case ControlPower:
+    return "ControlPower";
+  default:
+    return "Unkown";
+  }
 }
 
 CJSONRPC::CActionMap::CActionMap(const Command commands[], int length)

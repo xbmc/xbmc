@@ -82,6 +82,8 @@ namespace JSONRPC
   private:
     static JSON_STATUS InternalMethodCall(const CStdString& method, Json::Value& o, Json::Value &result, ITransportLayer *transport, IClient *client);
 
+    inline static const char *PermissionToString(const OperationPermission &permission);
+
     class CActionMap
     {
     public:
