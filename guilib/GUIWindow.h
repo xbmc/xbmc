@@ -97,8 +97,6 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  virtual bool OnMouse(const CPoint &point);
-  bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -141,21 +139,51 @@ public:
   void       SetRunActionsManually();
   void       RunLoadActions();
   void       RunUnloadActions();
-  
-  bool HasProperty(const CStdString &strKey) const;
-  void SetProperty(const CStdString &strKey, const char *strValue);
-  void SetProperty(const CStdString &strKey, const CStdString &strValue);
-  void SetProperty(const CStdString &strKey, int nVal);
-  void SetProperty(const CStdString &strKey, bool bVal);
-  void SetProperty(const CStdString &strKey, double dVal);
 
-  CStdString GetProperty(const CStdString &strKey) const;
-  int        GetPropertyInt(const CStdString &strKey) const;
-  bool       GetPropertyBOOL(const CStdString &strKey) const;
-  double     GetPropertyDouble(const CStdString &strKey) const;
+  /*! \brief Set a property
+   Sets the value of a property referenced by a key.
+   \param key name of the property to set
+   \param value value to set, may be a string, integer, boolean or double.
+   \sa GetProperty
+   */
+  void SetProperty(const CStdString &key, const CStdString &value);
+  void SetProperty(const CStdString &key, const char *value);
+  void SetProperty(const CStdString &key, int value);
+  void SetProperty(const CStdString &key, bool value);
+  void SetProperty(const CStdString &key, double value);
 
+  /*! \brief Retreive a property
+   \param key name of the property to retrieve
+   \return value of the property, empty if it doesn't exist
+   \sa SetProperty, GetPropertyInt, GetPropertyBool, GetPropertyDouble
+   */
+  CStdString GetProperty(const CStdString &key) const;
+
+  /*! \brief Retreive an integer property
+   \param key name of the property to retrieve
+   \return value of the property, 0 if it doesn't exist
+   \sa SetProperty, GetProperty
+   */
+  int        GetPropertyInt(const CStdString &key) const;
+
+  /*! \brief Retreive a boolean property
+   \param key name of the property to retrieve
+   \return value of the property, false if it doesn't exist
+   \sa SetProperty, GetProperty
+   */
+  bool       GetPropertyBool(const CStdString &key) const;
+
+  /*! \brief Retreive a double precision property
+   \param key name of the property to retrieve
+   \return value of the property, 0 if it doesn't exist
+   \sa SetProperty, GetProperty
+   */
+  double     GetPropertyDouble(const CStdString &key) const;
+
+  /*! \brief Clear a all the window's properties
+   \sa SetProperty, HasProperty, GetProperty
+   */
   void ClearProperties();
-  void ClearProperty(const CStdString &strKey);
 
 #ifdef _DEBUG
   void DumpTextureUse();
@@ -164,6 +192,7 @@ public:
   bool HasSaveLastControl() const { return !m_defaultAlways; };
 
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
@@ -202,7 +231,7 @@ protected:
 //#endif
 
   void RunActions(std::vector<CGUIActionDescriptor>& actions);
-  
+
   int m_idRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;
@@ -216,6 +245,12 @@ protected:
 
   int m_renderOrder;      // for render order of dialogs
 
+  /*! \brief Grabs the window's top,left position in skin coordinates
+   The window origin may change based on <origin> tag conditions in the skin.
+
+   \return the window's origin in skin coordinates
+   */
+  virtual CPoint GetPosition() const;
   std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states
@@ -236,8 +271,10 @@ protected:
 
   std::vector<CGUIActionDescriptor> m_loadActions;
   std::vector<CGUIActionDescriptor> m_unloadActions;
-  
+
   bool m_manualRunActions;
+
+  int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 };
 
 #endif

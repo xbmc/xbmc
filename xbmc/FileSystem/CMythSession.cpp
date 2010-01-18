@@ -26,6 +26,7 @@
 #include "DateTime.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "Util.h"
 #include "StringUtils.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
@@ -188,6 +189,116 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
   }
 
   return true;
+}
+
+void CCMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program)
+{
+  if (!program)
+    return;
+
+  /*
+   * Set the FileItem meta-data.
+   */
+  CStdString title        = GetValue(m_dll->proginfo_title(program)); // e.g. Mythbusters
+  CStdString subtitle     = GetValue(m_dll->proginfo_subtitle(program)); // e.g. The Pirate Special
+  item.m_strTitle         = title;
+  if (!subtitle.IsEmpty())
+    item.m_strTitle      += " - \"" + subtitle + "\""; // e.g. Mythbusters - "The Pirate Special"
+  item.m_dateTime         = GetValue(m_dll->proginfo_rec_start(program));
+  item.m_dwSize           = m_dll->proginfo_length(program); // size in bytes
+
+  /*
+   * Set the VideoInfoTag meta-data so it matches the FileItem meta-data where possible.
+   */
+  CVideoInfoTag* tag      = item.GetVideoInfoTag();
+  tag->m_strTitle         = item.m_strTitle; // With subtitle included, if present, as above. Shown in the OSD
+  tag->m_strShowTitle     = title;
+  tag->m_strOriginalTitle = title;
+  tag->m_strPlotOutline   = subtitle;
+  tag->m_strPlot          = GetValue(m_dll->proginfo_description(program));
+  /*
+   * TODO: Strip out the subtitle from the description if it is present at the start? OR add the
+   * subtitle to the start of the plot if not already as it used to? Seems strange, should be
+   * handled by skin?
+   *
+  if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
+    tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
+   */
+  tag->m_strGenre         = GetValue(m_dll->proginfo_category(program)); // e.g. Sports
+  tag->m_strAlbum         = GetValue(m_dll->proginfo_chansign(program)); // e.g. TV3
+  StringUtils::SecondsToTimeString(m_dll->proginfo_length_sec(program), tag->m_strRuntime);
+  tag->m_iSeason          = 0; // So XBMC treats the content as an episode and displays tag information.
+  tag->m_iEpisode         = 0;
+
+  /*
+   * Video sort title is the raw title with the date appended on the end in a sortable format so
+   * when the "All Recordings" listing is sorted by "Name" rather than "Date", all of the episodes
+   * for a given show are still presented in date order (even though some may have a subtitle that
+   * would cause it to be shown in a different position if it was indeed strictly sorting by
+   * what is displayed in the list).
+   */
+  tag->m_strSortTitle = title + " " + item.m_dateTime.GetAsDBDateTime(); // e.g. Mythbusters 2009-12-13 12:23:14
+
+  /*
+   * Set further FileItem and VideoInfoTag meta-data based on whether it is LiveTV or not.
+   */
+  CURL url(item.m_strPath);
+  if (url.GetFileName().Left(9) == "channels/")
+  {
+    /*
+     * Prepend the channel number onto the FileItem title for the listing so it's clear what is
+     * playing on each channel without using up as much room as the channel name.
+     */
+    CStdString number = GetValue(m_dll->proginfo_chanstr(program));
+    item.m_strTitle = number + " - " + item.m_strTitle;
+
+    /*
+     * Append the channel name onto the end of the tag title for the OSD so it's clear what LiveTV
+     * channel is currently being watched to give some context for Next or Previous channel. Added
+     * to the end so sorting by title will work, and it's not really as important as the title
+     * within the OSD.
+     */
+    CStdString name = GetValue(m_dll->proginfo_chansign(program));
+    if (!name.IsEmpty())
+      tag->m_strTitle += " - " + name;
+
+    /*
+     * Set the sort title to be the channel number.
+     */
+    tag->m_strSortTitle = number;
+
+    /*
+     * Set the status so XBMC treats the content as LiveTV.
+     */
+    tag->m_strStatus = "livetv";
+
+    /*
+     * Update the path and channel icon for LiveTV in case the channel has changed through
+     * NextChannel(), PreviousChannel() or SetChannel().
+     */
+    if (!number.IsEmpty())
+    {
+      url.SetFileName("channels/" + number + ".ts"); // e.g. channels/3.ts
+      item.m_strPath = url.Get();
+    }
+    CStdString chanicon = GetValue(m_dll->proginfo_chanicon(program));
+    if (!chanicon.IsEmpty())
+    {
+      url.SetFileName("files/channels/" + CUtil::GetFileName(chanicon)); // e.g. files/channels/tv3.jpg
+      item.SetThumbnailImage(url.Get());
+    }
+  }
+  else
+  {
+    /*
+     * MythTV thumbnails aren't generated until a program has finished recording.
+     */
+    if (m_dll->proginfo_rec_status(program) == RS_RECORDED)
+    {
+      url.SetFileName("files/" + CUtil::GetFileName(GetValue(m_dll->proginfo_pathname(program))) + ".png");
+      item.SetThumbnailImage(url.Get());
+    }
+  }
 }
 
 CCMythSession::CCMythSession(const CURL& url)

@@ -109,7 +109,7 @@ cmyth_get_commbreaklist(cmyth_conn_t conn, cmyth_proginfo_t prog)
 	}
 
 	sprintf(buf,"%s %ld %i", "QUERY_COMMBREAK", prog->proginfo_chanId, 
-	        cmyth_timestamp_to_unixtime(prog->proginfo_rec_start_ts));
+	        (int)cmyth_timestamp_to_unixtime(prog->proginfo_rec_start_ts));
 	pthread_mutex_lock(&mutex);
 	if ((err = cmyth_send_message(conn, buf)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,

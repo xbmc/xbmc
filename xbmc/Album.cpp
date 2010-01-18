@@ -76,10 +76,10 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
       CStdString strDur;
       XMLUtils::GetString(node,"duration",strDur);
       song.iDuration = StringUtils::TimeStringToSeconds(strDur);
-  
+
       if (bIncrement)
         song.iTrack = song.iTrack + 1;
-     
+
       songs.push_back(song);
     }
     node = node->NextSiblingElement("track");
@@ -128,7 +128,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   if (!thumbURL.m_xml.empty())
   {
     TiXmlDocument doc;
-    doc.Parse(thumbURL.m_xml); 
+    doc.Parse(thumbURL.m_xml);
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {

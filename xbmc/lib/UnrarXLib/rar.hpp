@@ -51,7 +51,6 @@
 #include "encname.hpp"
 #include "resource.hpp"
 #include "compress.hpp"
-#include "SmartStr.h"
 
 #include "rarvm.hpp"
 #include "model.hpp"

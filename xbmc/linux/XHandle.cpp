@@ -190,7 +190,7 @@ BOOL WINAPI DuplicateHandle(
 
   if(lpTargetHandle)
     *lpTargetHandle = hSourceHandle;
-  
+
   return TRUE;
 }
 

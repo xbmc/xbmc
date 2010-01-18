@@ -47,7 +47,8 @@ public:
     NO_NFO       = 0,
     FULL_NFO     = 1,
     URL_NFO      = 2,
-    COMBINED_NFO = 3
+    COMBINED_NFO = 3,
+    ERROR_NFO    = 4
   };
 
   NFOResult Create(const CStdString&,const CStdString&, int episode=-1);
@@ -76,15 +77,15 @@ public:
   void SetScraperInfo(const SScraperInfo& info) { m_info.Reset(); m_info = info; }
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 private:
-  HRESULT Load(const CStdString&);
-  HRESULT Scrape(const CStdString&, const CStdString& strURL="");
+  int Load(const CStdString&);
+  int Scrape(const CStdString&, const CStdString& strURL="");
 private:
   char* m_doc;
   char* m_headofdoc;
   int m_size;
   SScraperInfo m_info;
   CStdString m_strContent;
-  void DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
+  bool DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

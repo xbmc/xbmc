@@ -25,7 +25,7 @@
 #include <cstring>
 #include "Atomics.h"
 
-#define SPINLOCK_ACQUIRE(l) while(cas(&l, 0, 1)) {} 
+#define SPINLOCK_ACQUIRE(l) while(cas(&l, 0, 1)) {}
 #define SPINLOCK_RELEASE(l) l = 0
 
 // A unique-valued pointer. Version is incremented with each write.
@@ -34,7 +34,7 @@ struct atomic_ptr
   void* ptr;
 #if !defined(__ppc__) && !defined(__powerpc__)
   long version;
-#endif  
+#endif
 };
 
 #if defined(__ppc__) || defined(__powerpc__)

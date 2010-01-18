@@ -40,7 +40,7 @@ CDAVDirectory::~CDAVDirectory(void) {}
  * Return true if pElement value is equal value without namespace.
  *
  * if pElement is <DAV:foo> and value is foo then ValueWithoutNamespace is true
- */ 
+ */
 bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString value)
 {
   CStdStringArray result;
@@ -57,7 +57,7 @@ bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString val
   {
     return false;
   }
-    
+
   StringUtils::SplitString(pElement->Value(), ":", result, 2);
 
   if (result.size() == 1 && result[0] == value)
@@ -70,9 +70,9 @@ bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString val
   }
   else if (result.size() > 2)
   {
-    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), result.size(), value.c_str());
+    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), (unsigned long int)result.size(), value.c_str());
   }
-    
+
   return false;
 }
 
@@ -83,7 +83,7 @@ CStdString CDAVDirectory::GetStatusTag(const TiXmlElement *pElement)
 {
   const TiXmlElement *pChild;
 
-  for (pChild = pElement->FirstChild()->ToElement(); pChild != 0; pChild = pChild->NextSibling()->ToElement()) 
+  for (pChild = pElement->FirstChild()->ToElement(); pChild != 0; pChild = pChild->NextSibling()->ToElement())
   {
     if (ValueWithoutNamespace(pChild, "status"))
     {
@@ -108,19 +108,19 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
   const TiXmlNode *pPropChild;
 
   /* Iterate response children elements */
-  for (pResponseChild = pElement->FirstChild(); pResponseChild != 0; pResponseChild = pResponseChild->NextSibling()) 
+  for (pResponseChild = pElement->FirstChild(); pResponseChild != 0; pResponseChild = pResponseChild->NextSibling())
   {
     if (ValueWithoutNamespace(pResponseChild, "href"))
     {
       item.m_strPath = pResponseChild->ToElement()->GetText();
-      CUtil::UrlDecode(item.m_strPath);
+      CUtil::RemoveSlashAtEnd(item.m_strPath);
     }
     else if (ValueWithoutNamespace(pResponseChild, "propstat"))
     {
       if (GetStatusTag(pResponseChild->ToElement()) == "HTTP/1.1 200 OK")
       {
         /* Iterate propstat children elements */
-        for (pPropstatChild = pResponseChild->FirstChild(); pPropstatChild != 0; pPropstatChild = pPropstatChild->NextSibling()) 
+        for (pPropstatChild = pResponseChild->FirstChild(); pPropstatChild != 0; pPropstatChild = pPropstatChild->NextSibling())
         {
           if (ValueWithoutNamespace(pPropstatChild, "prop"))
           {
@@ -130,6 +130,22 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
               if (ValueWithoutNamespace(pPropChild, "getcontentlength"))
               {
                 item.m_dwSize = atoi(pPropChild->ToElement()->GetText());
+              }
+              else if (ValueWithoutNamespace(pPropChild, "getlastmodified"))
+              {
+                struct tm timeDate = {0};
+                strptime(pPropChild->ToElement()->GetText(), "%a, %d %b %Y %T", &timeDate);
+                item.m_dateTime = mktime(&timeDate);
+              }
+              else if (ValueWithoutNamespace(pPropChild, "displayname"))
+              {
+                item.SetLabel(pPropChild->ToElement()->GetText());
+              }
+              else if (!item.m_dateTime.IsValid() && ValueWithoutNamespace(pPropChild, "creationdate"))
+              {
+                struct tm timeDate = {0};
+                strptime(pPropChild->ToElement()->GetText(), "%Y-%m-%dT%T", &timeDate);
+                item.m_dateTime = mktime(&timeDate);
               }
               else if (ValueWithoutNamespace(pPropChild, "resourcetype"))
               {
@@ -144,7 +160,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
       }
     }
   }
-  
+
   return true;
 }
 
@@ -166,6 +182,9 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     "   <D:prop>"
     "     <D:resourcetype/>"
     "     <D:getcontentlength/>"
+    "     <D:getlastmodified/>"
+    "     <D:creationdate/>"
+    "     <D:displayname/>"
     "    </D:prop>"
     "  </D:propfind>");
 
@@ -181,32 +200,37 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (!strResponse)
   {
     CLog::Log(LOGERROR, "%s - Failed to get any response", __FUNCTION__);
-  } 
+  }
 
-  // Iterarte over all responses
-  for ( pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) 
+  // Iterate over all responses
+  for ( pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
   {
     if (ValueWithoutNamespace(pChild, "response"))
     {
       CFileItemPtr pItem(new CFileItem());
-      CStdString path;
-      CStdString filename;
 
-      /* One item will be the actual directory, just ignore that one */
       if (ParseResponse(pChild->ToElement(), *pItem))
       {
-        // Remove first slash to get rid of dav://hostname//filename problem
-        url.SetFileName(pItem->m_strPath.substr(1));
+        CURL url2(strPath);
+        CURL url3(pItem->m_strPath);
 
-        pItem->m_strPath = url.Get();
+        CStdString strBasePath = url2.GetWithoutFilename();
+        CStdString strFileName = url3.GetFileName();
+        CUtil::RemoveSlashAtEnd(strBasePath);
+        pItem->m_strPath = strBasePath + strFileName;
 
-        CUtil::Split(pItem->m_strPath, path, filename);
-        pItem->SetLabel(filename);
-
-        if (pItem->m_strPath != strPath)
+        if (pItem->GetLabel().IsEmpty())
         {
-          items.Add(pItem);
+          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
+          CUtil::URLDecode(pItem->m_strPath);
+          pItem->SetLabel(CUtil::GetFileName(pItem->m_strPath));
         }
+
+        if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
+        
+        if (!pItem->m_strPath.Equals(strPath))
+          items.Add(pItem);
       }
     }
   }

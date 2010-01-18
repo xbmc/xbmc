@@ -3,8 +3,7 @@ openssh-server
 less nano language-pack-en unrar hfsprogs
 bzip2 locales ntfs-3g  dosfstools unzip curl
 acpi acpi-support
-alsa-utils hal lirc pm-utils
-linux-headers-generic dkms
+alsa-utils hal lirc pm-utils psmisc
 fakeroot
 grub
 xorg xinit fluxbox
@@ -17,3 +16,7 @@ usplash-theme-xbmc*
 python-apt
 xbmc-live
 xbmc
+libgtk2.0-0
+policykit-1
+devicekit-power
+devicekit-disks

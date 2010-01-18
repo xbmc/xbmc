@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 01/04/2010-->
+<!--Date of translation: 01/14/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 26363-->
+<!--Based on english strings version 26789-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -607,10 +607,8 @@
   <string id="763">Φωτεινό πράσινο</string>
   <string id="764">Κιτρινοπράσινο</string>
   <string id="765">Κυανό</string>
-  <string id="766">Κρατημένο</string>
-  <string id="767">Κρατημένο</string>
-  <string id="768">Κρατημένο</string>
-  <string id="769">Κρατημένο</string>
+  <string id="766">Ανοικτό γκρι</string>
+  <string id="767">Γκρι</string>
   <string id="770">Σφάλμα %i: ο κοινόχρηστος πόρος δεν είναι διαθέσιμος</string>
   <string id="771">- Αυτόματο όριο Fatx</string>
   <string id="772">Έξοδος ήχου</string>
@@ -1580,6 +1578,8 @@
   <string id="20250">Party on! (βίντεο)</string>
   <string id="20251">Αναμιγνύοντας τα ποτά (βίντεο)</string>
   <string id="20252">Γεμίζοντας τα ποτήρια (βίντεο)</string>
+  <string id="20253">Διακομιστής WebDAV (HTTP)</string>
+  <string id="20254">Διακομιστής WebDAV (HTTPS)</string>
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
@@ -1878,7 +1878,7 @@
   <string id="21887">Βιογραφικό</string>
   <string id="21888">Δισκογραφία</string>
   <string id="21889">Αναζήτηση καλλιτέχνη</string>
-  <string id="21890">Επιλογή καλλιτέχνη</string>
+  <string id="21890">Επιλογή καλλιτέ��νη</string>
   <string id="21891">Πληροφορίες καλλιτέχνη</string>
   <string id="21892">Όργανα</string>
   <string id="21893">Γέννηση</string>
@@ -1932,6 +1932,8 @@
   <string id="23050">Ενεργοποίηση Teletext</string>
   <string id="23051">Μέρος %i</string>
   <string id="23052">Aποθήκευση %i bytes</string>
+  <string id="23053">Διακόπτεται</string>
+  <string id="23054">Εκτελείται</string>
   <string id="23100">Ενεργός εξωτερικός αναπαραγωγέας</string>
   <string id="23101">Πιέστε το 'Εντάξει' για να τερματίσετε τον αναπαραγωγέα</string>
   <string id="23104">Πιέστε το 'Εντάξει' όταν η αναπαραγωγή ολοκληρωθεί</string>
@@ -1972,10 +1974,10 @@
   <string id="33031">Ροή εξώφυλλων</string>
   <string id="33032">Μετάφραση κειμένου</string>
   <string id="33033">Κατηγορία λίστας χαρτών %s</string>
-  <string id="33034">36ωρη </string>
+  <string id="33034">Τριήμερη</string>
   <string id="33035">Χάρτες καιρού</string>
   <string id="33036">Ωριαία</string>
-  <string id="33037">Σαββατοκύριακου</string>
+  <string id="33037">Σαββατοκύριακο</string>
   <string id="33038">%sη ημέρα</string>
   <string id="33049">Προειδοποίηση</string>
   <string id="33050">Προειδοποιήσεις</string>

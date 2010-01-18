@@ -256,14 +256,11 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
   const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
   CStdString strFileNameTemp = strFileName;
-  CStdString strFileNameLower = strFileName;
-  strFileNameLower.MakeLower();
 
   CStdString strVolume;
   CStdString strTestString;
-  CRegExp reg;
+  CRegExp reg(true);
 
-//  CLog::Log(LOGDEBUG, "GetVolumeFromFileName:[%s]", strFileNameLower.c_str());
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     CStdString strRegExp = regexps[i];
@@ -274,7 +271,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
     }
 //    CLog::Log(LOGDEBUG, "Regexp:[%s]", regexps[i].c_str());
 
-    int iFoundToken = reg.RegFind(strFileNameLower.c_str());
+    int iFoundToken = reg.RegFind(strFileName.c_str());
     if (iFoundToken >= 0)
     {
       int iRegLength = reg.GetFindLen();
@@ -388,7 +385,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
 
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
-  CRegExp reTags, reYear;
+  CRegExp reTags(true);
+  CRegExp reYear;
   CStdString strExtension;
   GetExtension(strFileName, strExtension);
 
@@ -415,7 +413,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) > 0)
+    if ((j=reTags.RegFind(strFileName.c_str())) > 0)
       strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
@@ -858,11 +856,11 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     // check if we are on the local subnet
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
-    
+
     if (g_application.getNetwork().HasInterfaceForIP(address))
       return true;
   }
-  
+
   return false;
 }
 
@@ -925,10 +923,10 @@ bool CUtil::IsRAR(const CStdString& strFile)
 
   if (strExtension.Equals(".001") && strFile.Mid(strFile.length()-7,7).CompareNoCase(".ts.001"))
     return true;
-  
+
   if (strExtension.CompareNoCase(".cbr") == 0)
     return true;
-  
+
   if (strExtension.CompareNoCase(".rar") == 0)
     return true;
 
@@ -1014,6 +1012,21 @@ bool CUtil::IsSmb(const CStdString& strFile)
   CURL url(strFile2);
 
   return url.GetProtocol().Equals("smb");
+}
+
+bool CUtil::IsURL(const CStdString& strFile)
+{
+  return strFile.Find("://") >= 0;
+}
+
+bool CUtil::IsXBMS(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return strFile2.Left(5).Equals("xbms:");
 }
 
 bool CUtil::IsFTP(const CStdString& strFile)
@@ -1110,10 +1123,7 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
   if (strFileOrFolder.IsEmpty())
     return false;
 
-  CStdString strExclude = strFileOrFolder;
-  strExclude.MakeLower();
-
-  CRegExp regExExcludes;
+  CRegExp regExExcludes(true);  // case insensitive regex
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -1122,9 +1132,9 @@ bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStr
       CLog::Log(LOGERROR, "%s: Invalid exclude RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
       continue;
     }
-    if (regExExcludes.RegFind(strExclude) > -1)
+    if (regExExcludes.RegFind(strFileOrFolder) > -1)
     {
-      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strExclude.c_str(), regexps[i].c_str());
+      CLog::Log(LOGDEBUG, "%s: File '%s' excluded. (Matches exclude rule RegExp:'%s')", __FUNCTION__, strFileOrFolder.c_str(), regexps[i].c_str());
       return true;
     }
   }
@@ -1149,7 +1159,7 @@ int CUtil::GetDVDIfoTitle(const CStdString& strFile)
   return atoi(strFilename.Mid(4, 2).c_str());
 }
 
-void CUtil::UrlDecode(CStdString& strURLData)
+void CUtil::URLDecode(CStdString& strURLData)
 //modified to be more accomodating - if a non hex value follows a % take the characters directly and don't raise an error.
 // However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
@@ -1245,21 +1255,21 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
       strIcon = "DefaultXboxDVD.png";
       return ;
     }
-#endif    
+#endif
     strIcon = "DefaultDVDRom.png";
     return ;
   }
 
   if ( IsISO9660(strPath) )
   {
-#ifdef HAS_DVD_DRIVE    
+#ifdef HAS_DVD_DRIVE
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
       return ;
     }
-#endif    
+#endif
     strIcon = "DefaultDVDRom.png";
     return ;
   }
@@ -1396,7 +1406,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     CStdString strPath2;
     GetParentPath(strPath,strPath2);
     strLookInPaths.push_back(strPath2);
-  } 
+  }
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -1614,7 +1624,7 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     if (url.GetFileName() != strFolder)
@@ -1645,7 +1655,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
@@ -1669,7 +1679,7 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
 void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
 {
-  if(strFolder.Find("://") >= 0)
+  if (IsURL(strFolder))
   {
     CURL url(strFolder);
     CStdString file = url.GetFileName();
@@ -1923,7 +1933,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   for (int y = 0; y < height; y++)
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
 
-  delete [] pixels; 
+  delete [] pixels;
 
 #else
   //nothing to take a screenshot from
@@ -2130,22 +2140,22 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
-  
+
   // we currently only allow HD and smb paths
   if (!CUtil::IsHD(strPath) && !CUtil::IsSmb(strPath))
   {
     CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
   }
-  
+
   CURL url(strPath);
   // silly CStdString can't take a char in the constructor
   CStdString sep(1, url.GetDirectorySeparator());
-  
+
   // split the filename portion of the URL up into separate dirs
   CStdStringArray dirs;
   StringUtils::SplitString(url.GetFileName(), sep, dirs);
-  
+
   // we start with the root path
   CStdString dir = url.GetWithoutFilename();
   unsigned int i = 0;
@@ -2161,7 +2171,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
     dir = CUtil::AddFileToFolder(dir, dirs[i]);
     CDirectory::Create(dir);
   }
-  
+
   // was the final destination directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
   return true;
@@ -2209,7 +2219,7 @@ bool CUtil::IsUsingTTFSubtitles()
 void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<CStdString> &parameters)
 {
   CStdString paramString;
- 
+
   int iPos = execString.Find("(");
   int iPos2 = execString.ReverseFind(")");
   if (iPos > 0 && iPos2 > 0)
@@ -2943,9 +2953,9 @@ void CUtil::ClearFileItemCache()
 
 void CUtil::InitRandomSeed()
 {
-  // Init random seed 
-  int64_t now; 
-  now = CurrentHostCounter(); 
+  // Init random seed
+  int64_t now;
+  now = CurrentHostCounter();
   unsigned int seed = (unsigned int)now;
 //  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
   srand(seed);

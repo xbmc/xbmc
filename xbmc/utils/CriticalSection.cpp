@@ -37,11 +37,11 @@ CCriticalSection::CCriticalSection(const CCriticalSection& section)
 {
   *this = section;
 }
- 
+
 CCriticalSection& CCriticalSection::operator=(const CCriticalSection& section)
 {
   if (this == &section) return * this;
- 
+
   m_criticalSection.Initialize();
   return *this;
 }

@@ -465,7 +465,7 @@ void CGUISettings::Initialize()
   #define SYNCSETTINGS 1
 #endif
   AddBool(SYNCSETTINGS ? 6 : 0, "videoplayer.usedisplayasclock", 13510, false);
-  AddInt(SYNCSETTINGS ? 7 : 0, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddInt(SYNCSETTINGS ? 7 : 0, "videoplayer.synctype", 13500, SYNC_RESAMPLE, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
   AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
   AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
   AddInt(8, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);

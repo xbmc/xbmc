@@ -100,7 +100,7 @@ CCPUInfo::CCPUInfo(void)
   RegCloseKey(hKey);
 
   SYSTEM_INFO siSysInfo;
-  GetSystemInfo(&siSysInfo); 
+  GetSystemInfo(&siSysInfo);
   m_cpuCount = siSysInfo.dwNumberOfProcessors;
 
   CoreInfo core;
@@ -272,7 +272,7 @@ CTemperature CCPUInfo::getTemperature()
   if (cmd.IsEmpty() && m_fProcTemperature == NULL)
     return CTemperature();
 
-  if (!cmd.IsEmpty()) 
+  if (!cmd.IsEmpty())
   {
     p = popen (cmd.c_str(), "r");
     if (p)
@@ -284,13 +284,13 @@ CTemperature CCPUInfo::getTemperature()
   else
   {
     // procfs is deprecated in the linux kernel, we should move away from
-    // using it for temperature data.  It doesn't seem that sysfs has a 
+    // using it for temperature data.  It doesn't seem that sysfs has a
     // general enough interface to bother implementing ATM.
     rewind(m_fProcTemperature);
     fflush(m_fProcTemperature);
     ret = fscanf(m_fProcTemperature, "temperature: %d %c", &value, &scale);
   }
-  
+
   if (ret != 2)
     return CTemperature();
 

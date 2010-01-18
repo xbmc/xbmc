@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 30/12/2009 -->
-  <!-- Finnish strings for Confluence skin based on English strings revision 26163-->
+  <!-- Date of translation: 14/1/2009 -->
+  <!-- Finnish strings for Confluence skin based on English strings revision 26808-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Määritä</string>
@@ -19,14 +19,14 @@
   <string id="31023">Toistaa</string>
   <string id="31024">Sivu</string>
   <string id="31025">Kohdetta</string>
-  <string id="31026">Muita asetuksia</string>
+  <string id="31026">Muut asetukset</string>
   <string id="31027">Paikkakunta</string>
  
   <!-- View Type labels -->
   <string id="31028">Julistekierto</string>
   <string id="31029">Fanitaide</string>
   <string id="31030">Täysi lista</string>
-  <string id="31031">Kuvan kuvake</string>
+  <string id="31031">Kuva kuvake</string>
   <string id="31032">Kuvakierto</string>
 
   <!-- Extra labels -->
@@ -46,9 +46,10 @@
   <string id="31055">Avaa toistolista</string>
   <string id="31056">Tallenna toistolista</string>
   <string id="31057">Sulje toistolista</string>
-  <string id="31058">Järjestelmän musiikkitiedostot</string>
+  <string id="31058">Musiikkitiedostot</string>
   <string id="31059">Nykyinen toistolista</string>
   <string id="31060">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa.</string>
+  <string id="31061">Nyt valittuna</string> 
 
   <!-- Skin Settings labels -->
   <string id="31100"></string>
@@ -101,7 +102,7 @@
   <string id="31252">TWC -skripti</string>
 
   <!-- Extra labels -->
-  <string id="31300">Nykyinen lämpötila</string>
+  <string id="31300">Tämänhetkinen säätila</string>
   <string id="31301">Viimeksi päivitetty</string>
   <string id="31302">Valikko</string>
   <string id="31303"></string>
@@ -121,7 +122,7 @@
   <string id="31317">Polku</string>
   <string id="31318">Pieni fanitaide</string>
   <string id="31319">Valittu profiili</string>
-  <string id="31320">Viimeksi sisään kirjauduttu</string>
+  <string id="31320">Viimeksi kirjauduttu</string>
   <string id="31321">Karaoke kappaleen valinta</string>
   <string id="31322">Esitetty</string>
   <string id="31323">Viimeisimmät elokuvat</string>

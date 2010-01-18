@@ -49,6 +49,7 @@
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "SystemInfo.h"
 #ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
@@ -128,6 +129,8 @@ void CSettings::Initialize()
   m_iSystemTimeTotalUp = 0;
   m_HttpApiBroadcastLevel = 0;
   m_HttpApiBroadcastPort = 8278;
+
+  m_userAgent = g_sysinfo.GetUserAgent();
 
   bUseLoginScreen = false;
 }
@@ -249,34 +252,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
   if (type == "programs" || type == "myprograms")
     return &m_programSources;
   else if (type == "files")
-  {
-    // this nasty block of code is needed as we have to
-    // call getlocaldrives after localize strings has been loaded
-    bool bAdded=false;
-    for (unsigned int i=0;i<m_fileSources.size();++i)
-    {
-      if (m_fileSources[i].m_ignore)
-      {
-        bAdded = true;
-        break;
-      }
-    }
-    if (!bAdded)
-    {
-      VECSOURCES shares;
-      g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
-      m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
-
-      CMediaSource source;
-      source.strName = g_localizeStrings.Get(22013);
-      source.m_ignore = true;
-      source.strPath = "special://profile/";
-      source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-      m_fileSources.push_back(source);
-    }
-
     return &m_fileSources;
-  }
   else if (type == "music")
     return &m_musicSources;
   else if (type == "video")
@@ -554,7 +530,7 @@ void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString 
     return;
   }
   GetInteger(pNode, "viewmode", viewState.m_viewMode, defaultView, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-  
+
   int sortMethod;
   GetInteger(pNode, "sortmethod", sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
   viewState.m_sortMethod = (SORT_METHOD)sortMethod;
@@ -595,7 +571,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
     {
       if (res == RES_WINDOW)
         continue;
-      
+
       if (m_ResInfo[res].strMode == mode)
       { // found, read in the rest of the information for this item
         const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
@@ -771,7 +747,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_INVERSE_TELECINE);
     m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
     int scalingMethod;
-    GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_CUBIC);
+    GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_VDPAU_HARDWARE);
     m_defaultVideoSettings.m_ScalingMethod = (ESCALINGMETHOD)scalingMethod;
 
     GetInteger(pElement, "viewmode", m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
@@ -1033,7 +1009,7 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
-    
+
     CPasswordManager::GetInstance().Clear();
 
     // to set labels - shares are reloaded

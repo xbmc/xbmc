@@ -99,9 +99,9 @@ void CGUIDialogMusicOSD::Render()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (g_Mouse.HasMoved() || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS)
+    if (g_Mouse.IsActive() || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
-      SetAutoClose(3000);
+      SetAutoClose(100); // enough for 10fps
   }
   CGUIDialog::Render();
 }
@@ -123,14 +123,14 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIDialogMusicOSD::OnMouse(const CPoint &point)
+bool CGUIDialogMusicOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause
     CAction action;
     action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
-  return CGUIDialog::OnMouse(point);
+  return CGUIDialog::OnMouseEvent(point, event);
 }
 

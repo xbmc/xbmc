@@ -49,10 +49,10 @@ void* CAtomicAllocator::Alloc()
 
 void CAtomicAllocator::Free(void* p)
 {
-  lf_heap_free(&m_Heap, p);  
+  lf_heap_free(&m_Heap, p);
 }
 
-size_t CAtomicAllocator::GetBlockSize() 
+size_t CAtomicAllocator::GetBlockSize()
 {
   return m_BlockSize;
 }
@@ -79,7 +79,7 @@ CSliceQueue::~CSliceQueue()
 // NOTE: The value of m_TotalBytes is only guaranteed to be accurate to within one slice,
 //  but is sufficient. This means that it may at times be one slice too high or one slice
 //  tool low, but will never be < 0.
-void CSliceQueue::Push(audio_slice* pSlice) 
+void CSliceQueue::Push(audio_slice* pSlice)
 {
   if (pSlice)
   {
@@ -134,11 +134,11 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
 {
   if (!pBuf || !bufLen)
     return 0;
-  
+
   size_t remainder = 0;
   audio_slice* pNext = NULL;
   size_t bytesUsed = 0;
-  
+
   // See if we can fill the request out of our partial slice (if there is one)
   if (m_RemainderSize >= bufLen)
   {
@@ -155,7 +155,7 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
       bytesUsed += m_RemainderSize;
       m_RemainderSize = 0;
     }
-    
+
     // Pull slices from the fifo until we have enough data
     do // TODO: The efficiency of this loop can be improved (a lot I imagine)
     {
@@ -169,27 +169,27 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
       bytesUsed += (nextLen - remainder); // Increment output size (remainder will be captured separately)
       if (!remainder)
         m_pAllocator->Free(pNext); // Free the copied slice
-    } while (bytesUsed < bufLen);    
+    } while (bytesUsed < bufLen);
   }
-  
+
   // Clean up the previous partial slice
   if (!m_RemainderSize && m_pPartialSlice)
   {
     m_pAllocator->Free(m_pPartialSlice);
     m_pPartialSlice = NULL;
   }
-  
+
   // Save off the new partial slice (if there is one)
   if (remainder)
   {
     m_pPartialSlice = pNext;
     m_RemainderSize = remainder;
   }
-  
+
   return bytesUsed;
 }
 
-size_t CSliceQueue::GetTotalBytes() 
+size_t CSliceQueue::GetTotalBytes()
 {
   return m_TotalBytes + m_RemainderSize;
 }
@@ -220,12 +220,12 @@ CCoreAudioPerformance::CCoreAudioPerformance() :
   m_WatchdogBitrateSensitivity(0.99f),
   m_WatchdogPreroll(0)
 {
-  
+
 }
 
 CCoreAudioPerformance::~CCoreAudioPerformance()
 {
-  
+
 }
 
 void CCoreAudioPerformance::Init(UInt32 expectedBytesPerSec, UInt32 watchdogInterval /*= 1000*/, UInt32 flags /*=0*/)
@@ -239,10 +239,10 @@ void CCoreAudioPerformance::ReportData(UInt32 bytesIn, UInt32 bytesOut)
 {
   m_TotalBytesIn += bytesIn;
   m_TotalBytesOut += bytesOut;
-  
+
   if (!m_WatchdogEnable)
     return;
-  
+
   // Perform watchdog funtions
   UInt32 time = CTimeUtils::GetTimeMS();
   if (!m_LastWatchdogCheck)
@@ -254,12 +254,12 @@ void CCoreAudioPerformance::ReportData(UInt32 bytesIn, UInt32 bytesOut)
     if (m_TotalBytesOut > m_WatchdogPreroll) // Allow m_WatchdogPreroll bytes to go by unmonitored
     {
       // Check outgoing bitrate
-      if (m_ActualBytesPerSec < m_WatchdogBitrateSensitivity * m_ExpectedBytesPerSec) 
+      if (m_ActualBytesPerSec < m_WatchdogBitrateSensitivity * m_ExpectedBytesPerSec)
         CLog::Log(LOGWARNING, "CCoreAudioPerformance: Outgoing bitrate is lagging. Target: %lu, Actual: %lu. deltaTime was %lu", m_ExpectedBytesPerSec, m_ActualBytesPerSec, deltaTime);
     }
     m_LastWatchdogCheck = time;
     m_LastWatchdogBytesIn = m_TotalBytesIn;
-    m_LastWatchdogBytesOut = m_TotalBytesOut;    
+    m_LastWatchdogBytesOut = m_TotalBytesOut;
   }
 }
 
@@ -287,7 +287,7 @@ void CCoreAudioPerformance::Reset()
   m_ActualBytesPerSec = 0;
   m_LastWatchdogCheck = 0;
   m_LastWatchdogBytesIn = 0;
-  m_LastWatchdogBytesOut = 0;  
+  m_LastWatchdogBytesOut = 0;
 }
 
 //***********************************************************************************************
@@ -310,7 +310,7 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   SInt32 major,  minor;
   Gestalt(gestaltSystemVersionMajor, &major);
   Gestalt(gestaltSystemVersionMinor, &minor);
-  
+
   // By default, kAudioHardwarePropertyRunLoop points at the process's main thread on SnowLeopard,
   // If your process lacks such a run loop, you can set kAudioHardwarePropertyRunLoop to NULL which
   // tells the HAL to run it's own thread for notifications (which was the default prior to SnowLeopard).
@@ -342,17 +342,17 @@ if (!m_Initialized) \
 return x
 
 bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
-{  
+{
   if (m_Initialized) // Have to clean house before we start again. TODO: Should we return failure instead?
     Deinitialize();
-  
+
   if(bPassthrough)
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE_DIGITAL);
   else
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
   // TODO: If debugging, output information about all devices/streams
-  
+
   // Attempt to find the configured output device
   AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(g_guiSettings.GetString("audiooutput.audiodevice"));
   if (!outputDevice) // Fall back to the default device if no match is found
@@ -362,9 +362,9 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     if (!outputDevice) // Not a lot to be done with no device. TODO: Should we just grab the first existing device?
       return false;
   }
-  
+
   // TODO: Determine if the device is in-use/locked by another process.
-  
+
   // Attach our output object to the device
   m_AudioDevice.Open(outputDevice);
 
@@ -376,7 +376,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     Sleep(100);
   }
 
-  // If this is a PCM stream, or we failed to handle a passthrough stream natively, 
+  // If this is a PCM stream, or we failed to handle a passthrough stream natively,
   // prepare the standard interleaved PCM interface
   if (!m_Passthrough)
   {
@@ -387,7 +387,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     // Hook the Ouput AudioUnit to the selected device
     if (!m_AudioUnit.SetCurrentDevice(outputDevice))
       return false;
-    
+
     // If we are here and this is a passthrough stream, native handling failed.
     // Try to handle it as IEC61937 data over straight PCM (DD-Wav)
     bool configured = false;
@@ -399,28 +399,28 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
       Sleep(100);
     }
     else
-    { 
+    {
       // Standard PCM data
       configured = InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample);
       // TODO: wait for audio device startup
       Sleep(100);
     }
-    
+
     if (!configured) // No suitable output format was able to be configured
       return false;
-    
+
     // Configure the maximum number of frames that the AudioUnit will ask to process at one time.
     // If this is not called, there is no guarantee that the callback will ever be called.
     UInt32 bufferFrames = m_AudioUnit.GetBufferFrameSize(); // Size of the output buffer, in Frames
     if (!m_AudioUnit.SetMaxFramesPerSlice(bufferFrames))
-      return false;    
-    
+      return false;
+
     m_ChunkLen = bufferFrames * m_BytesPerFrame;  // This is the minimum amount of data that we will accept from a client
 
     // Setup the callback function that the AudioUnit will use to request data	
     if (!m_AudioUnit.SetRenderProc(RenderCallback, this))
       return false;
-    
+
     // Initialize the Output AudioUnit
     if (!m_AudioUnit.Initialize())
       return false;
@@ -431,9 +431,9 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     m_AudioUnit.GetInputFormat(&inputDesc_end);
     m_AudioUnit.GetOutputFormat(&outputDesc_end);
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Input Stream Format %s", StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));    
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));
   }
-  
+
   m_NumLatencyFrames = m_AudioDevice.GetNumLatencyFrames();
   m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
   m_Pause = true;                       // Suspend rendering. We will start once we have some data.
@@ -447,11 +447,11 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   m_DoRunout = 0;
 
   SetCurrentVolume(g_settings.m_nVolumeLevel);
-  
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
-  CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");  
 
-  
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
+  CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");
+
+
   return true;
 }
 
@@ -478,11 +478,11 @@ bool CCoreAudioRenderer::Deinitialize()
   m_RunoutEvent = kInvalidID;
   m_DoRunout = 0;
   m_EnableVolumeControl = true;
-  
+
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-  
+
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
-  
+
   return true;
 }
 
@@ -492,7 +492,7 @@ bool CCoreAudioRenderer::Deinitialize()
 bool CCoreAudioRenderer::Pause()
 {
   VERIFY_INIT(false);
-  
+
   if (!m_Pause)
   {
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Pause: Pausing Playback.");
@@ -562,14 +562,14 @@ void CCoreAudioRenderer::Mute(bool bMute)
 }
 
 bool CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
-{  
+{
   VERIFY_INIT(false);
 
   if (m_EnableVolumeControl) // Don't change actual volume for encoded streams
-  {  
+  {
     // Convert milliBels to percent
     Float32 volPct = pow(10.0f, (float)nVolume/2000.0f);
-    
+
     // Try to set the volume. If it fails there is not a lot to be done.
     if (!m_AudioUnit.SetCurrentVolume(volPct))
       return false;
@@ -588,25 +588,25 @@ unsigned int CCoreAudioRenderer::GetSpace()
 }
 
 unsigned int CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
-{  
+{
   VERIFY_INIT(0);
-  
+
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
   if (len < m_ChunkLen || m_pCache->GetTotalBytes() >= m_MaxCacheLen)
     return 0;
 
-  unsigned int cacheSpace = GetSpace();  
+  unsigned int cacheSpace = GetSpace();
   if (len > cacheSpace)
     return 0; // Wait until we can accept all of it
-  
+
   size_t bytesUsed = m_pCache->AddData((void*)data, len);
-  
+
 #ifdef _DEBUG
   // Update tracking variable
   m_PerfMon.ReportData(bytesUsed, 0);
 #endif
   Resume();  // We have some data. Attmept to resume playback
-  
+
   return bytesUsed; // Number of bytes added to cache;
 }
 
@@ -617,7 +617,7 @@ float CCoreAudioRenderer::GetDelay()
   float delay = (float)m_pCache->GetTotalBytes()/(float)m_AvgBytesPerSec;
   // TODO: Obtain hardware/os latency for better accuracy
   delay += (float)m_NumLatencyFrames/(float)m_AvgBytesPerSec;
-  
+
   return delay;
 }
 
@@ -642,7 +642,7 @@ void CCoreAudioRenderer::WaitCompletion()
 
   if (m_pCache->GetTotalBytes() == 0) // The cache is already empty. There is nothing to wait for.
     return;
-  
+
   if (m_RunoutEvent != kInvalidID)
   {
     AtomicIncrement(&m_DoRunout); // Signal that we are waiting
@@ -667,7 +667,7 @@ void CCoreAudioRenderer::WaitCompletion()
   }
   else
     CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: Invalid runout event. Remaining data will be truncated.");
-  
+
   Stop();
 }
 
@@ -675,10 +675,10 @@ void CCoreAudioRenderer::WaitCompletion()
 // Rendering Methods
 //***********************************************************************************************
 OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
-{  
+{
   if (!m_Initialized)
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Callback to de/unitialized renderer.");
-  
+
   // Process the request
   UInt32 bytesRequested = m_BytesPerFrame * inNumberFrames; // Data length requested, based on the input data format
   UInt32 bytesRead = (UInt32)m_pCache->GetData(ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
@@ -695,11 +695,11 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Buffer underrun.");
   }
   // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
-  if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM) 
+  if (!m_EnableVolumeControl && m_CurrentVolume <= VOLUME_MINIMUM)
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
   else
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytesRead;
-  
+
 #ifdef _DEBUG
   // Calculate stats and perform a sanity check
   m_PerfMon.ReportData(0, bytesRead); // TODO: Should we check the result?
@@ -707,7 +707,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   return noErr;
 }
 
-// Static Callback from AudioUnit 
+// Static Callback from AudioUnit
 OSStatus CCoreAudioRenderer::RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   return ((CCoreAudioRenderer*)inRefCon)->OnRender(ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
@@ -724,7 +724,7 @@ OSStatus CCoreAudioRenderer::DirectRenderCallback(AudioDeviceID inDevice, const 
 // Audio Device Initialization Methods
 //***********************************************************************************************
 bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample)
-{  
+{
   // Set the input stream format for the AudioUnit (this is what is being sent to us)
   AudioStreamBasicDescription inputFormat;
   inputFormat.mFormatID = kAudioFormatLinearPCM;			      //	Data encoding format
@@ -736,17 +736,17 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   inputFormat.mBitsPerChannel = bitsPerSample;              // Number of bits per sample, per channel
   inputFormat.mBytesPerFrame = (bitsPerSample>>3) * channels; // Size of a frame == 1 sample per channel		
   inputFormat.mFramesPerPacket = 1;                         // The smallest amount of indivisible data. Always 1 for uncompressed audio 	
-  inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket; 
+  inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
   inputFormat.mReserved = 0;
   if (!m_AudioUnit.SetInputFormat(&inputFormat))
     return false;
 
   // TODO: Handle channel mapping
-  
+
   m_BytesPerFrame = inputFormat.mBytesPerFrame;
   m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame;      // 1 sample per channel per frame
   m_EnableVolumeControl = true;
-  
+
   return true;
 }
 
@@ -754,40 +754,40 @@ bool CCoreAudioRenderer::InitializePCMEncoded(UInt32 sampleRate)
 {
   m_AudioDevice.SetHogStatus(true); // Prevent any other application from using this device.
   m_AudioDevice.SetMixingSupport(false); // Try to disable mixing support. Effectiveness depends on the device.
-  
+
   // Set the Sample Rate as defined by the spec.
   m_AudioDevice.SetNominalSampleRate((float)sampleRate);
 
   if (!InitializePCM(2, sampleRate, 16))
     return false;
-  
+
   m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio
-  return true;  
+  return true;
 }
 
 bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sampleRate)
 {
   //return false; // un-comment to force PCM Spoofing (DD-Wav). For testing use only.
-  
+
   CStdString formatString;
   AudioStreamBasicDescription outputFormat = {0};
   AudioStreamID outputStream = 0;
-        
+
   // Fetch a list of the streams defined by the output device
   AudioStreamIdList streams;
   UInt32  streamIndex = 0;
   m_AudioDevice.GetStreams(&streams);
-  
+
   while (!streams.empty())
   {
     // Get the next stream
     CCoreAudioStream stream;
     stream.Open(streams.front());
     streams.pop_front(); // We copied it, now we are done with it
-    
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Found %s stream - id: 0x%04X, Terminal Type: 0x%04lX", 
-              stream.GetDirection() ? "Input" : "Output", 
-              stream.GetId(), 
+
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Found %s stream - id: 0x%04X, Terminal Type: 0x%04lX",
+              stream.GetDirection() ? "Input" : "Output",
+              stream.GetId(),
               stream.GetTerminalType());
 
    // Probe physical formats
@@ -805,32 +805,32 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
         break;
       }
       physicalFormats.pop_front();
-    }    
-    
+    }
+
     // TODO: How do we determine if this is the right stream (not just the right format) to use?
     if (outputFormat.mFormatID)
       break; // We found a suitable format. No need to continue.
     streamIndex++;
   }
-  
+
   if (!outputFormat.mFormatID) // No match found
   {
     CLog::Log(LOGERROR, "CoreAudioRenderer::InitializeEncoded: Unable to identify suitable output format.");
     return false;
-  }    
+  }
 
   m_ChunkLen = outputFormat.mBytesPerPacket; // 1 Chunk == 1 Packet
   m_AvgBytesPerSec = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3) * outputFormat.mSampleRate; // mBytesPerFrame is 0 for a cac3 stream
   m_BytesPerFrame = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3);
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Selected stream[%lu] - id: 0x%04lX, Physical Format: %s (%lu Bytes/sec.)", streamIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_AvgBytesPerSec);  
-  
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Selected stream[%lu] - id: 0x%04lX, Physical Format: %s (%lu Bytes/sec.)", streamIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_AvgBytesPerSec);
+
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
   // It appears that leaving this set will aslo restore the previous stream format when the
   // Application exits. If auto hogging is set and we try to set hog mode, we will deadlock
   // From the SDK docs: "If the AudioDevice is in a non-mixable mode, the HAL will automatically take hog mode on behalf of the first process to start an IOProc."
-  
+
   // Lock down the device.  This MUST be done PRIOR to switching to a non-mixable format, if it is done at all
-  // If it is attempted after the format change, there is a high likelihood of a deadlock 
+  // If it is attempted after the format change, there is a high likelihood of a deadlock
   // We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
 
   CCoreAudioHardware::SetAutoHogMode(false); // Auto-Hog does not always un-hog the device when changing back to a mixable mode. Handle this on our own until it is fixed.
@@ -842,7 +842,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
     m_AudioDevice.SetMixingSupport(false); // Try to disable mixing. If we cannot, it may not be a problem
   }
   m_NumLatencyFrames = m_AudioDevice.GetNumLatencyFrames();
-  
+
   // Configure the output stream object
   m_OutputStream.Open(outputStream); // This is the one we will keep
   AudioStreamBasicDescription previousFormat;
@@ -850,10 +850,10 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
   CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%lu Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_AvgBytesPerSec);
   m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
   m_NumLatencyFrames += m_OutputStream.GetNumLatencyFrames();
-  
+
   // Register for data request callbacks from the driver
   m_AudioDevice.AddIOProc(DirectRenderCallback, this);
-  
+
   m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio
   return true;
 }

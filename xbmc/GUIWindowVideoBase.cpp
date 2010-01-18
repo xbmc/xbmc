@@ -31,6 +31,7 @@
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"
@@ -404,7 +405,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
   CUtil::ClearCache();
-  CScraperParser::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
@@ -527,9 +527,22 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
   }
 
+  bool ignoreNfo=false;
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-  if (result == CNfoFile::FULL_NFO)
-    hasDetails = true;
+  if (result == CNfoFile::ERROR_NFO)
+    ignoreNfo=true;
+  else
+  if (result != CNfoFile::NO_NFO)
+  {
+    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+      hasDetails=true;
+    else
+    {
+      ignoreNfo=true;
+      scrUrl.Clear();
+    }
+  }
+  
   if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     scanner.m_IMDB.SetScraperInfo(info);
 
@@ -674,7 +687,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress,ignoreNfo))
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);

@@ -27,6 +27,7 @@
 #include "TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
+#include "DVDClock.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
@@ -46,7 +47,7 @@ CVDPAU::Desc decoder_profiles[] = {
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Desc);
 
-static float studioCSC[3][4] = 
+static float studioCSC[3][4] =
 {
     { 1.0f,        0.0f, 1.57480000f,-0.78740000f},
     { 1.0f,-0.18737736f,-0.46813736f, 0.32775736f},
@@ -69,6 +70,8 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
   recover = false;
+  m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+  m_mixerstep  = 0;
 
   m_glPixmap = 0;
   m_glPixmapTexture = 0;
@@ -86,8 +89,8 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
-  interlaced     = false;
   max_references = 0;
+  upscalingAvailable=false;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -95,7 +98,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
   videoMixer = VDP_INVALID_HANDLE;
 
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
-  if (!dl_handle) 
+  if (!dl_handle)
   {
     CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
     return;
@@ -116,7 +119,7 @@ CVDPAU::CVDPAU(int width, int height, CodecID codec)
 #endif
     if(profile)
     {
-      /* attempt to create a decoder with this width/height, some sizes are note supported by hw */
+      /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       VdpStatus vdp_st;
       vdp_st = vdp_decoder_create(vdp_device, profile, width, height, 5, &decoder);
 
@@ -328,7 +331,7 @@ bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 void CVDPAU::CheckFeatures()
 {
   if (videoMixer == VDP_INVALID_HANDLE)
-  { 
+  {
     CLog::Log(LOGNOTICE, " (VDPAU) Creating the video mixer");
     // Creation of VideoMixer.
     VdpVideoMixerParameter parameters[] = {
@@ -352,20 +355,17 @@ void CVDPAU::CheckFeatures()
 
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
+    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
+    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
+    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
+
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    if (upscalingAvailable)
     {
       CLog::Log(LOGNOTICE,"(VDPAU) enabling VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1");
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
     }
 #endif
-    if (interlaced && tmpDeint)
-    {
-      CLog::Log(LOGNOTICE, " (VDPAU) Enabling deinterlacing features for the video mixer");
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
-    }
 
     VdpStatus vdp_st = VDP_STATUS_ERROR;
     vdp_st = vdp_video_mixer_create(vdp_device,
@@ -377,7 +377,7 @@ void CVDPAU::CheckFeatures()
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (g_guiSettings.GetBool("videoplayer.vdpauUpscalingLevel"))
+    if (upscalingAvailable)
     {
       SetHWUpscaling();
     }
@@ -402,7 +402,7 @@ void CVDPAU::CheckFeatures()
     SetSharpness();
   }
 
-  if (interlaced && tmpDeint && tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
+  if (tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
   {
     tmpDeint = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     SetDeinterlacing();
@@ -443,7 +443,7 @@ void CVDPAU::SetNoiseReduction()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_NoiseReduction) 
+  if (!g_settings.m_currentVideoSettings.m_NoiseReduction)
   {
     VdpBool enabled[]= {0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -465,7 +465,7 @@ void CVDPAU::SetSharpness()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_Sharpness) 
+  if (!g_settings.m_currentVideoSettings.m_Sharpness)
   {
     VdpBool enabled[]={0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -484,24 +484,11 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-/* Disabled for 9.11
-  CLog::Log(LOGNOTICE,"Enabling VDPAU HQ Upscaling");
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
   VdpStatus vdp_st;
-  VdpBool available;
-  
-  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &available);
-  
-  if ( (vdp_st != VDP_STATUS_OK) || !available )
-  {
-    CLog::Log(LOGNOTICE,"VDPAU HQ upscaling not available");
-    return;
-  }
-  
   VdpBool enabled[]={1};
   vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   CheckStatus(vdp_st, __LINE__);
-*/
 #endif
 }
 
@@ -513,27 +500,28 @@ void CVDPAU::SetDeinterlacing()
 
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_InterlaceMethod) 
-  {
-    VdpBool enabled[]={0,0,0};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
-  }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO) 
-  {
-    VdpBool enabled[]={1,0,0};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
-  }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND) 
+  if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO
+  ||  g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_VDPAU)
   {
     VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE) 
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND)
+  {
+    VdpBool enabled[]={1,0,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    CheckStatus(vdp_st, __LINE__);
+  }
+  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE)
   {
     VdpBool enabled[]={0,0,1};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    CheckStatus(vdp_st, __LINE__);
+  }
+  else
+  {
+    VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
     CheckStatus(vdp_st, __LINE__);
   }
@@ -574,245 +562,55 @@ void CVDPAU::InitVDPAUProcs()
     vdp_device = VDP_INVALID_HANDLE;
     return;
   }
-  
-  if (vdp_st != VDP_STATUS_OK) 
+
+  if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
     vdp_device = VDP_INVALID_HANDLE;
     return;
   }
+#define VDP_PROC(id, proc) \
+  do { \
+    vdp_st = vdp_get_proc_address(vdp_device, id, (void**)&proc); \
+    CheckStatus(vdp_st, __LINE__); \
+  } while(0);
 
-  vdp_st = vdp_get_proc_address(vdp_device,
-                                VDP_FUNC_ID_GET_ERROR_STRING,
-                                (void **)&vdp_get_error_string);
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(vdp_device,
-                                VDP_FUNC_ID_DEVICE_DESTROY,
-                                (void **)&vdp_device_destroy);
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_CREATE,
-                                (void **)&vdp_video_surface_create);
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_DESTROY,
-                                (void **)&vdp_video_surface_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR,
-                                (void **)&vdp_video_surface_put_bits_y_cb_cr
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR,
-                                (void **)&vdp_video_surface_get_bits_y_cb_cr
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR,
-                                (void **)&vdp_output_surface_put_bits_y_cb_cr
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE,
-                                (void **)&vdp_output_surface_put_bits_native
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_CREATE,
-                                (void **)&vdp_output_surface_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY,
-                                (void **)&vdp_output_surface_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE,
-                                (void **)&vdp_output_surface_get_bits_native
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_CREATE,
-                                (void **)&vdp_video_mixer_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES,
-                                (void **)&vdp_video_mixer_set_feature_enables
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_DESTROY,
-                                (void **)&vdp_video_mixer_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_RENDER,
-                                (void **)&vdp_video_mixer_render
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_GENERATE_CSC_MATRIX,
-                                (void **)&vdp_generate_csc_matrix
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES,
-                                (void **)&vdp_video_mixer_set_attribute_values
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT,
-                                (void **)&vdp_video_mixer_query_parameter_support
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT,
-                                (void **)&vdp_video_mixer_query_feature_support
-                                );
-  CheckStatus(vdp_st, __LINE__);  
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY,
-                                (void **)&vdp_presentation_queue_target_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE,
-                                (void **)&vdp_presentation_queue_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY,
-                                (void **)&vdp_presentation_queue_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY,
-                                (void **)&vdp_presentation_queue_display
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE,
-                                (void **)&vdp_presentation_queue_block_until_surface_idle
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11,
-                                (void **)&vdp_presentation_queue_target_create_x11
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_CREATE,
-                                (void **)&vdp_decoder_create
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_DESTROY,
-                                (void **)&vdp_decoder_destroy
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_RENDER,
-                                (void **)&vdp_decoder_render
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES,
-                                (void **)&vdp_decoder_query_caps
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS,
-                                (void **)&vdp_presentation_queue_query_surface_status
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME,
-                                (void **)&vdp_presentation_queue_get_time
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE,
-                                (void **)&vdp_output_surface_render_output_surface
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED,
-                                (void **)&vdp_output_surface_put_bits_indexed
-                                );
-  CheckStatus(vdp_st, __LINE__);
-
-  vdp_st = vdp_get_proc_address(
-                                vdp_device,
-                                VDP_FUNC_ID_PREEMPTION_CALLBACK_REGISTER,
-                                (void **)&vdp_preemption_callback_register
-                                );
-  CheckStatus(vdp_st, __LINE__);
+  VDP_PROC(VDP_FUNC_ID_GET_ERROR_STRING                    , vdp_get_error_string);
+  VDP_PROC(VDP_FUNC_ID_DEVICE_DESTROY                      , vdp_device_destroy);
+  VDP_PROC(VDP_FUNC_ID_GENERATE_CSC_MATRIX                 , vdp_generate_csc_matrix);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_CREATE                , vdp_video_surface_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_DESTROY               , vdp_video_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_PUT_BITS_Y_CB_CR      , vdp_video_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_SURFACE_GET_BITS_Y_CB_CR      , vdp_video_surface_get_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_Y_CB_CR     , vdp_output_surface_put_bits_y_cb_cr);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_NATIVE      , vdp_output_surface_put_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_CREATE               , vdp_output_surface_create);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_DESTROY              , vdp_output_surface_destroy);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_GET_BITS_NATIVE      , vdp_output_surface_get_bits_native);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_RENDER_OUTPUT_SURFACE, vdp_output_surface_render_output_surface);
+  VDP_PROC(VDP_FUNC_ID_OUTPUT_SURFACE_PUT_BITS_INDEXED     , vdp_output_surface_put_bits_indexed);  
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_CREATE                  , vdp_video_mixer_create);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_FEATURE_ENABLES     , vdp_video_mixer_set_feature_enables);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_DESTROY                 , vdp_video_mixer_destroy);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_RENDER                  , vdp_video_mixer_render);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_SET_ATTRIBUTE_VALUES    , vdp_video_mixer_set_attribute_values);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_PARAMETER_SUPPORT , vdp_video_mixer_query_parameter_support);
+  VDP_PROC(VDP_FUNC_ID_VIDEO_MIXER_QUERY_FEATURE_SUPPORT   , vdp_video_mixer_query_feature_support);
+  VDP_PROC(VDP_FUNC_ID_DECODER_CREATE                      , vdp_decoder_create);
+  VDP_PROC(VDP_FUNC_ID_DECODER_DESTROY                     , vdp_decoder_destroy);
+  VDP_PROC(VDP_FUNC_ID_DECODER_RENDER                      , vdp_decoder_render);
+  VDP_PROC(VDP_FUNC_ID_DECODER_QUERY_CAPABILITIES          , vdp_decoder_query_caps);
+  VDP_PROC(VDP_FUNC_ID_PREEMPTION_CALLBACK_REGISTER        , vdp_preemption_callback_register);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_DESTROY          , vdp_presentation_queue_target_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_CREATE                  , vdp_presentation_queue_create);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DESTROY                 , vdp_presentation_queue_destroy);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_DISPLAY                 , vdp_presentation_queue_display);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_BLOCK_UNTIL_SURFACE_IDLE, vdp_presentation_queue_block_until_surface_idle);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , vdp_presentation_queue_target_create_x11);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , vdp_presentation_queue_query_surface_status);
+  VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , vdp_presentation_queue_get_time);
+  
+#undef VDP_PROC
 
   vdp_st = vdp_preemption_callback_register(vdp_device,
                                    &VDPPreemptionCallbackFunction,
@@ -865,7 +663,7 @@ void CVDPAU::FiniVDPAUOutput()
   CheckStatus(vdp_st, __LINE__);
   vdp_flip_target = VDP_INVALID_HANDLE;
 
-  for (int i = 0; i < totalAvailableOutputSurfaces; i++) 
+  for (int i = 0; i < totalAvailableOutputSurfaces; i++)
   {
     vdp_st = vdp_output_surface_destroy(outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
@@ -891,7 +689,7 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
                          , VdpDecoderProfile &vdp_decoder_profile
                          , VdpChromaType     &vdp_chroma_type)
 {
-  switch (fmt) 
+  switch (fmt)
   {
     case PIX_FMT_VDPAU_MPEG1:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
@@ -970,10 +768,10 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   int tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES;
   if (vid_width == FULLHD_WIDTH)
-    tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES_FOR_FULLHD; 
+    tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES_FOR_FULLHD;
 
   // Creation of outputSurfaces
-  for (int i = 0; i < NUM_OUTPUT_SURFACES && i < tmpMaxOutputSurfaces; i++) 
+  for (int i = 0; i < NUM_OUTPUT_SURFACES && i < tmpMaxOutputSurfaces; i++)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
@@ -983,7 +781,7 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
     CHECK_VDPAU_RETURN(vdp_st, false);
     totalAvailableOutputSurfaces++;
   }
-  CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)", 
+  CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)",
                        totalAvailableOutputSurfaces,
                        tmpMaxOutputSurfaces,
                        NUM_OUTPUT_SURFACES);
@@ -991,7 +789,12 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
-  vdpauConfigured = true;
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &upscalingAvailable);
+  CLog::Log(LOGNOTICE,"VDPAU HQ upscaling: %i",upscalingAvailable);
+#endif
+
+vdpauConfigured = true;
   return true;
 }
 
@@ -1015,18 +818,6 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
   }
 }
 
-enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
-                                                     const PixelFormat * fmt)
-{
-  //CLog::Log(LOGNOTICE," (VDPAU) %s",__FUNCTION__);
-  avctx->get_buffer      = FFGetBuffer;
-  avctx->release_buffer  = FFReleaseBuffer;
-  avctx->draw_horiz_band = FFDrawSlice;
-  avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-  return fmt[0];
-}
-
-
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
@@ -1040,7 +831,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - returning due to awaiting recovery");
     return -1;
   }
-  
+
   vdpau_render_state * render = NULL;
 
   // find unused surface
@@ -1124,7 +915,7 @@ void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
   for(i=0; i<4; i++)
-    pic->data[i]= NULL;  
+    pic->data[i]= NULL;
 }
 
 
@@ -1160,7 +951,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(s->pix_fmt == PIX_FMT_VDPAU_H264)
     max_refs = render->info.h264.num_ref_frames;
 
-  if(vdp->decoder == VDP_INVALID_HANDLE 
+  if(vdp->decoder == VDP_INVALID_HANDLE
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
   {
@@ -1176,29 +967,18 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   vdp->CheckStatus(vdp_st, __LINE__);
 }
 
-void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
+int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  vdpau_render_state * render = (vdpau_render_state*)pFrame->data[0];
-  VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
   VdpTime time;
 
   if (!vdpauConfigured)
-    return;
+    return VC_ERROR;
 
   outputSurface = outputSurfaces[surfaceNum];
 
   CheckFeatures();
-
-  if (interlaced && tmpDeint)
-    structure = pFrame->top_field_first ? VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD :
-                                          VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
-  else structure = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME; 
-
-  past[0] = past[1];
-  past[1] = current;
-  current = render->surface;
 
   if (( (int)outRectVid.x1 != OutWidth ) ||
       ( (int)outRectVid.y1 != OutHeight ))
@@ -1208,21 +988,82 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.x1 = OutWidth;
     outRectVid.y1 = OutHeight;
   }
-  
-  if (current == VDP_INVALID_HANDLE)
+
+  if(pFrame)
+  { // we have a new frame from decoder
+
+    vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
+    if(!render) // old style ffmpeg gave data on plane 0
+      render = (vdpau_render_state*)pFrame->data[0];
+    if(!render)
+      return VC_ERROR;
+
+    past[0] = past[1];
+    past[1] = current;
     current = render->surface;
-  
+    m_mixerstep = 0;
+
+    EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
+    ||  method == VS_INTERLACEMETHOD_VDPAU
+    ||  method == VS_INTERLACEMETHOD_RENDER_BLEND
+    ||  method == VS_INTERLACEMETHOD_INVERSE_TELECINE )
+    {
+      if(pFrame->top_field_first)
+        m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+      else
+        m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
+    }
+    else
+      m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+
+  }
+  else
+  { // no new frame given, output second field of old frame
+    m_mixerstep = 1;
+
+    if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD)
+      m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
+    else
+      m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+  }
+
+  VdpVideoSurface past_surfaces[2] = { VDP_INVALID_HANDLE, VDP_INVALID_HANDLE };
+  VdpVideoSurface futu_surfaces[1] = { VDP_INVALID_HANDLE };
+
+  if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  {
+    past_surfaces[1] = past[0];
+    past_surfaces[0] = past[1];
+    futu_surfaces[0] = VDP_INVALID_HANDLE;
+  }
+  else
+  {
+    if(m_mixerstep == 0)
+    { // first field
+      past_surfaces[1] = past[1];
+      past_surfaces[0] = past[1];
+      futu_surfaces[0] = current;
+    }
+    else
+    { // second field
+      past_surfaces[1] = past[1];
+      past_surfaces[0] = current;
+      futu_surfaces[0] = VDP_INVALID_HANDLE;
+    }
+  }
+
   vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
-                                  0,
-                                  structure,
+                                  0, 
+                                  m_mixerfield,
                                   2,
-                                  past,
+                                  past_surfaces,
                                   current,
-                                  0,
-                                  NULL,
+                                  1,
+                                  futu_surfaces,
                                   NULL,
                                   outputSurface,
                                   &(outRectVid),
@@ -1230,9 +1071,34 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   0,
                                   NULL);
   CheckStatus(vdp_st, __LINE__);
-  
+
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
+
+  if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+    return VC_BUFFER | VC_PICTURE;
+  else
+  {
+    if (m_mixerstep == 0)
+      return VC_PICTURE;
+    else
+      return VC_BUFFER | VC_PICTURE;
+  }
+}
+
+bool CVDPAU::GetPicture(DVDVideoPicture* picture)
+{
+  picture->format = DVDVideoPicture::FMT_VDPAU;
+  picture->iFlags = 0;
+
+  if(m_mixerfield != VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  {
+    picture->iRepeatPicture = -0.5;
+    picture->iFlags |= DVP_FLAG_NOAUTOSYNC;
+    if(m_mixerstep > 0)
+      picture->pts = DVD_NOPTS_VALUE;
+  }
+  return true;
 }
 
 void CVDPAU::Present()

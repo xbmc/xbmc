@@ -61,6 +61,7 @@ public:
   DllLibCMyth*     GetLibrary();
 
   bool             UpdateItem(CFileItem &item, cmyth_proginfo_t info);
+  void             SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program);
 
   CDateTime        GetValue(cmyth_timestamp_t t);
   CStdString       GetValue(char* str);

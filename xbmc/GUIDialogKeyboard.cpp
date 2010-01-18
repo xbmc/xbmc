@@ -152,7 +152,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       MoveCursor( -1);
     }
     else if (b == 0x27) // right
-    { 
+    {
       MoveCursor(1);
     }
     else if (b == 0x0D) // enter

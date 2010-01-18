@@ -49,6 +49,20 @@ public:
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
+
+  /*! \brief grab a dimension out of the XML
+   
+   Supports plain reading of a number (or constant) and, in addition allows "auto" as the value
+   for the dimension, whereby value is set to the max attribute (if it exists) and min is set the min
+   attribute (if it exists) or 1.  Auto values are thus detected by min != 0.
+
+   \param pRootNode XML node to read
+   \param strTag tag within pRootNode to read
+   \param value value to set, or maximum value if using auto
+   \param min minimum value - set != 0 if auto is used.
+   \return true if we found and read the tag.
+   */
+  static bool GetDimension(const TiXmlNode* pRootNode, const char* strTag, float &value, float &min);
   static bool GetUnsigned(const TiXmlNode* pRootNode, const char* strTag, unsigned int& value);
   static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
   static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info);
@@ -65,6 +79,7 @@ public:
   static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CGUIActionDescriptor>& vecStringValue);
   static void GetRectFromString(const CStdString &string, CRect &rect);
   static bool GetAction(const TiXmlElement* pElement, CGUIActionDescriptor &action);
+  static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
 private:
   bool GetNavigation(const TiXmlElement *node, const char *tag, int &direction, std::vector<CGUIActionDescriptor> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
@@ -72,6 +87,5 @@ private:
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);
-  bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
 };
 #endif

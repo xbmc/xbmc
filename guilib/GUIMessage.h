@@ -107,6 +107,10 @@
  */
 #define GUI_MSG_RENDERER_RESET 36
 
+/*!
+ \brief A control wishes to have (or release) exclusive access to mouse actions
+ */
+#define GUI_MSG_EXCLUSIVE_MOUSE 37
 
 #define GUI_MSG_USER         1000
 
@@ -301,7 +305,7 @@ private:
   int m_param1;
   int m_param2;
   CGUIListItemPtr m_item;
-  
+
   static CStdString empty_string;
 };
 #endif

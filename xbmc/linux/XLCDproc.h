@@ -36,8 +36,8 @@ public:
   virtual void Initialize();
   virtual bool IsConnected();
   virtual void Stop();
-  virtual void Suspend(); 
-  virtual void Resume(); 
+  virtual void Suspend();
+  virtual void Resume();
   virtual void SetBackLight(int iLight);
   virtual void SetContrast(int iContrast);
 

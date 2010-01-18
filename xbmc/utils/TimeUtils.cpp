@@ -76,8 +76,8 @@ unsigned int CTimeUtils::GetTimeMS()
   // best replacement for windows timeGetTime/GetTickCount
   // 1st call sets start_mstime, subsequent are the diff
   // between start_mstime and now_mstime to match SDL_GetTick behavior
-  // of previous usage. We might want to change this as CTimeUtils::GetTimeMS is 
-  // time (ms) since system startup. 
+  // of previous usage. We might want to change this as CTimeUtils::GetTimeMS is
+  // time (ms) since system startup.
 #if defined(_WIN32)
   return timeGetTime();
 #elif defined(_LINUX)
@@ -91,12 +91,12 @@ unsigned int CTimeUtils::GetTimeMS()
   if (start_time == 0)
   {
     mach_timebase_info_data_t tbinfo;
-    
+
     mach_timebase_info(&tbinfo);
     cv = ((long double) tbinfo.numer) / ((long double) tbinfo.denom);
     start_time = now_time;
   }
-  
+
   return( (now_time - start_time) * cv / 1000000.0);
 #else
   static uint64_t start_mstime = 0;
@@ -109,7 +109,7 @@ unsigned int CTimeUtils::GetTimeMS()
   {
     start_mstime = now_mstime;
   }
-  
+
   return(now_mstime - start_mstime);
 #endif
 #endif

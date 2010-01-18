@@ -65,8 +65,6 @@ public:
   virtual void OnRight();
   virtual void OnDown();
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(int button, const CPoint &point);
-  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual void Render();
   virtual void AllocResources();
   virtual void FreeResources();
@@ -82,6 +80,7 @@ public:
   void LoadButtons(TiXmlNode *node);
 
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   int GetNext(int iCurrent) const;
   int GetPrevious(int iCurrent);

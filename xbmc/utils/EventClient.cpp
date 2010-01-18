@@ -137,7 +137,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
       m_bSequenceError = true;
       delete m_seqPackets[ packet->Sequence() ];
     }
- 
+
     m_seqPackets[ packet->Sequence() ] = packet;
     if (m_seqPackets.size() == packet->Size())
     {

@@ -37,7 +37,6 @@ public:
   virtual void FreeResources(bool forceUnLoad = false);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse(const CPoint &point);
   virtual void Render();
   virtual void OnWindowLoaded();
   void RenderFullScreen();
@@ -46,6 +45,7 @@ public:
 
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void OnDeinitWindow(int nextWindow) {}; // no out window animation for fullscreen video
 
 private:

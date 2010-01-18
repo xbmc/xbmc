@@ -41,7 +41,7 @@ public:
   CSetting* GetSetting() { return m_pSetting; };
   virtual bool NeedsUpdate() { return false; };   ///< Returns true if the control needs an update
   virtual void Reset() {}; ///< Resets the NeedsUpdate() state
-  
+
   /*!
    \brief Specifies that this setting should update after a delay
    Useful for settings that have options to navigate through
@@ -51,7 +51,7 @@ public:
    \sa IsDelayed()
    */
   void SetDelayed() { m_delayed = true; };
-  
+
   /*!
    \brief Returns whether this setting should have delayed update
    \return true if the setting's update should be delayed

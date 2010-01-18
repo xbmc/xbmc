@@ -928,7 +928,6 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
     res = PLT_XmlHelper::GetAttribute(entry, "refID", m_ReferenceID);
-    NPT_CHECK_LABEL_SEVERE(res, cleanup);
 
     res = PLT_XmlHelper::GetChildText(entry, "title", m_Title, didl_namespace_dc);
     NPT_CHECK_LABEL_SEVERE(res, cleanup);

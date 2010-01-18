@@ -21,7 +21,7 @@
 
 /*!
 \file TextureDX.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_TEXTUREDX_H

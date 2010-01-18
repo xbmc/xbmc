@@ -443,10 +443,10 @@ Do_snapshot ()
 					grep -F -v -f "${EXCLUDE_LIST}" | \
 					tr '\n' '\0' | \
 					tr '\1' '\n' | \
-					$COPY_CMD || exit 1
+					eval $COPY_CMD || exit 1
 			else
 				cat "${TMP_FILELIST}" | \
-					$COPY_CMD || exit 1
+					eval $COPY_CMD || exit 1
 			fi
 			cd "${OLDPWD}"
 			;;

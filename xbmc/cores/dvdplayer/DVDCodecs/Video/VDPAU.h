@@ -37,7 +37,7 @@ namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                4
 #define NUM_VIDEO_SURFACES_MPEG2           10  // (1 frame being decoded, 2 reference)
-#define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references) 
+#define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references)
 #define NUM_VIDEO_SURFACES_VC1             10  // (same as MPEG-2)
 #define NUM_VIDEO_SURFACES_MAX_TRIES       100
 #define NUM_OUTPUT_SURFACES_FOR_FULLHD     2
@@ -81,13 +81,12 @@ public:
   static void             FFDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
                                int y, int type, int height);
-  static enum PixelFormat FFGetFormat(struct AVCodecContext * avctx,
-                                         const enum PixelFormat * pix_fmt);
   static int              FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
-  void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
+  int  Decode(AVCodecContext *avctx, AVFrame *pFrame);
+  bool GetPicture(DVDVideoPicture* picture);
   void Present();
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
@@ -108,7 +107,6 @@ public:
   int        tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
-  bool       interlaced;
   int        OutWidth, OutHeight;
 
   VdpProcamp    m_Procamp;
@@ -178,6 +176,8 @@ public:
   VdpRect       outRect;
   VdpRect       outRectVid;
 
+  VdpBool upscalingAvailable;
+
   void*    dl_handle;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
   VdpStatus (*dl_vdp_get_proc_address)(VdpDevice device, VdpFuncId function_id, void** function_pointer);
@@ -190,6 +190,10 @@ public:
   uint32_t max_references;
   Display* m_Display;
   bool     vdpauConfigured;
+
+  VdpVideoMixerPictureStructure m_mixerfield;
+  int                           m_mixerstep;
+
 
   static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt

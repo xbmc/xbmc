@@ -21,6 +21,7 @@
 #include "system.h"
 #include "VideoFilterShader.h"
 #include "utils/log.h"
+#include "ConvolutionKernels.h"
 
 #include <string>
 #include <math.h>
@@ -162,8 +163,8 @@ bool BicubicFilterShader::CreateKernels(int size, float B, float C)
   glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, size, 1, 0, GL_RGBA, GL_FLOAT, img);
 
   glActiveTexture(GL_TEXTURE0);
@@ -205,6 +206,112 @@ float BicubicFilterShader::MitchellNetravali(float x, float B, float C)
   }
 //  val = ((val + 0.5) / 2);
   return val;
+}
+
+ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
+{
+  m_method = method;
+  m_kernelTex1 = 0;
+
+  string shadername;
+  string defines;
+
+  if (m_method == VS_SCALINGMETHOD_CUBIC ||
+      m_method == VS_SCALINGMETHOD_LANCZOS2 ||
+      m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
+    shadername = "convolution-4x4.glsl";
+  else if (m_method == VS_SCALINGMETHOD_LANCZOS3)
+    shadername = "convolution-6x6.glsl";
+
+  m_floattex = glewIsSupported("GL_ARB_texture_float");
+
+  if (m_floattex)
+    defines = "#define HAS_FLOAT_TEXTURE 1\n";
+  else
+    defines = "#define HAS_FLOAT_TEXTURE 0\n";
+
+  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines: %s", shadername.c_str(), defines.c_str());
+  PixelShader()->LoadSource(shadername, defines);
+}
+
+void ConvolutionFilterShader::OnCompiledAndLinked()
+{
+  // obtain shader attribute handles on successfull compilation
+  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
+  m_hStepX     = glGetUniformLocation(ProgramHandle(), "stepx");
+  m_hStepY     = glGetUniformLocation(ProgramHandle(), "stepy");
+  m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
+
+  CConvolutionKernel kernel(m_method, 256);
+
+  if (m_kernelTex1)
+  {
+    glDeleteTextures(1, &m_kernelTex1);
+    m_kernelTex1 = 0;
+  }
+
+  glGenTextures(1, &m_kernelTex1);
+
+  if ((m_kernelTex1<=0))
+  {
+    CLog::Log(LOGERROR, "GL: ConvolutionFilterShader: Error creating kernel texture");
+    return;
+  }
+
+  glActiveTexture(GL_TEXTURE2);
+
+  //if float textures are supported, we can load the kernel as a 1d float texture
+  //if not, we load it as a 2d texture with 2 rows, where row 0 contains the high byte
+  //and row 1 contains the low byte, which can be converted in the shader
+  if (m_floattex)
+  {
+    glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA16F_ARB, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
+  }
+  else
+  {
+    glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, kernel.GetSize(), 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, kernel.GetIntFractPixels());
+  }
+
+  glActiveTexture(GL_TEXTURE0);
+
+  VerifyGLState();
+}
+
+bool ConvolutionFilterShader::OnEnabled()
+{
+  // set shader attributes once enabled
+  glActiveTexture(GL_TEXTURE2);
+
+  if (m_floattex)
+    glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+  else
+    glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+
+  glActiveTexture(GL_TEXTURE0);
+  glUniform1i(m_hSourceTex, m_sourceTexUnit);
+  glUniform1i(m_hKernTex, 2);
+  glUniform1f(m_hStepX, m_stepX);
+  glUniform1f(m_hStepY, m_stepY);
+  VerifyGLState();
+  return true;
+}
+
+void ConvolutionFilterShader::Free()
+{
+  if (m_kernelTex1)
+    glDeleteTextures(1, &m_kernelTex1);
+  m_kernelTex1 = 0;
+  BaseVideoFilterShader::Free();
 }
 
 #endif

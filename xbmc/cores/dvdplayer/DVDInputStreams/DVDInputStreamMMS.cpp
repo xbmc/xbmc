@@ -80,7 +80,7 @@ bool CDVDInputStreamMMS::SeekTime(int iTimeInMsec)
 {
   if (mmsx_get_seekable(m_mms))
     return (mmsx_time_seek(NULL,m_mms,double(iTimeInMsec)/1000) != -1);
-  
+
   return false;
 }
 

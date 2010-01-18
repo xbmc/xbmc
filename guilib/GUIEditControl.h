@@ -71,11 +71,11 @@ public:
   void SetCursorPosition(unsigned int iPosition);
 
   void SetInputType(INPUT_TYPE type, int heading);
-  
+
   void SetTextChangeActions(const std::vector<CGUIActionDescriptor>& textChangeActions) { m_textChangeActions = textChangeActions; };
-  
+
   bool HasTextChangeActions() { return m_textChangeActions.size() > 0; };
-  
+
 protected:
   virtual void RenderText();
   CStdStringW GetDisplayedText() const;
@@ -97,14 +97,14 @@ protected:
 
   int m_inputHeading;
   INPUT_TYPE m_inputType;
-  
-  std::vector<CGUIActionDescriptor> m_textChangeActions;  
 
-  
+  std::vector<CGUIActionDescriptor> m_textChangeActions;
+
+
   unsigned int m_smsKeyIndex;
   unsigned int m_smsLastKey;
   CStopWatch   m_smsTimer;
-  
+
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;
 };

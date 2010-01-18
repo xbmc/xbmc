@@ -36,7 +36,7 @@ namespace HTSP
 {
 
 template<typename T>
-class const_circular_iter 
+class const_circular_iter
   : public std::iterator< typename std::iterator_traits<T>::iterator_category
                         , typename std::iterator_traits<T>::value_type
                         , typename std::iterator_traits<T>::difference_type
@@ -164,7 +164,7 @@ struct SQueueStatus
   uint32_t delay;   // Estimated delay of queue (in µs)
   uint32_t bdrops;  // Number of B-frames dropped
   uint32_t pdrops;  // Number of P-frames dropped
-  uint32_t idrops;  // Number of I-frames dropped 
+  uint32_t idrops;  // Number of I-frames dropped
 
   SQueueStatus() { Clear(); }
   void Clear()

@@ -63,6 +63,7 @@ Depends: xbmc-standalone (= ${binary:Version}),
          ${python:Depends},
          python-apt,
          adduser,
+         whois,
          sudo,
          ${misc:Depends},
 Conflicts: kdm, gdm, xdm, wdm
@@ -92,6 +93,10 @@ Depends: xbmc-data (= ${binary:Version}),
          xbmc-skin-confluence (= ${binary:Version}) |
          xbmc-skin-pm3-hd (= ${binary:Version}),
          xbmc-web-pm3 (= ${binary:Version}),
+         x11-common, 
+         xserver-xorg-core,
+         x11-xserver-utils,
+         xinit,
          ${misc:Depends}
 Suggests: xbmc-third-parties
 Description: XBMC Media Center (standalone program)

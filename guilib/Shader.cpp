@@ -64,13 +64,13 @@ bool CGLSLVertexShader::Compile()
 
   Free();
 
-#ifdef HAS_GL  
+#ifdef HAS_GL
   if(!GLEW_VERSION_2_0)
   {
     CLog::Log(LOGERROR, "GL: GLSL vertex shaders not supported");
     return false;
   }
-#endif  
+#endif
 
   m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
   const char *ptr = m_source.c_str();
@@ -101,10 +101,10 @@ bool CGLSLVertexShader::Compile()
 
 void CGLSLVertexShader::Free()
 {
-#ifdef HAS_GL  
+#ifdef HAS_GL
   if(!GLEW_VERSION_2_0)
     return;
-#endif  
+#endif
 
   if (m_vertexShader)
     glDeleteShader(m_vertexShader);
@@ -163,14 +163,14 @@ void CARBVertexShader::Free()
 //////////////////////////////////////////////////////////////////////
 bool CGLSLPixelShader::Compile()
 {
-#ifdef HAS_GL  
+#ifdef HAS_GL
   if(!GLEW_VERSION_2_0)
   {
     CLog::Log(LOGERROR, "GL: GLSL pixel shaders not supported");
     return false;
   }
 #endif
-  
+
   GLint params[4];
 
   Free();
@@ -210,7 +210,7 @@ bool CGLSLPixelShader::Compile()
 
 void CGLSLPixelShader::Free()
 {
-#ifdef HAS_GL  
+#ifdef HAS_GL
   if(!GLEW_VERSION_2_0)
     return;
 #endif
@@ -272,7 +272,7 @@ void CARBPixelShader::Free()
 //////////////////////////////////////////////////////////////////////
 void CGLSLShaderProgram::Free()
 {
-#ifdef HAS_GL  
+#ifdef HAS_GL
   if(!GLEW_VERSION_2_0)
     return;
 #endif
@@ -291,7 +291,7 @@ void CGLSLShaderProgram::Free()
 
 bool CGLSLShaderProgram::CompileAndLink()
 {
-#ifdef HAS_GL  
+#ifdef HAS_GL
   // check that we support shaders
   if(!GLEW_VERSION_2_0)
   {
@@ -299,7 +299,7 @@ bool CGLSLShaderProgram::CompileAndLink()
     return false;
   }
 #endif
-  
+
   GLint params[4];
 
   // free resources
@@ -378,11 +378,11 @@ bool CGLSLShaderProgram::CompileAndLink()
 
 bool CGLSLShaderProgram::Enable()
 {
-#ifdef HAS_GL  
+#ifdef HAS_GL
   if(!GLEW_VERSION_2_0)
     return false;
 #endif
-  
+
   if (OK())
   {
     glUseProgram(m_shaderProgram);
@@ -403,11 +403,11 @@ bool CGLSLShaderProgram::Enable()
 
 void CGLSLShaderProgram::Disable()
 {
-#ifdef HAS_GL  
+#ifdef HAS_GL
   if(!GLEW_VERSION_2_0)
     return;
 #endif
-  
+
   if (OK())
   {
     glUseProgram(0);

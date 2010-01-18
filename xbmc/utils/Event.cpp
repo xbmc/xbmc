@@ -65,7 +65,7 @@ CEvent& CEvent::operator=(const CEvent& src)
                     , TRUE
                     , DUPLICATE_SAME_ACCESS ))
   {
-    CLog::Log(LOGERROR, "CEvent - failed to duplicate handle");  
+    CLog::Log(LOGERROR, "CEvent - failed to duplicate handle");
     m_hEvent = INVALID_HANDLE_VALUE;
   }
   return *this;

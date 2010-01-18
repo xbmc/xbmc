@@ -23,6 +23,7 @@
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 
 #define DEFAULT_SKIN        "Confluence"
+#define DEFAULT_FANART_HEIGHT 0
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED
 #define DEFAULT_THUMB_SIZE  256
@@ -192,6 +193,8 @@ public:
   int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
   bool m_bMute;
   int m_iSystemTimeTotalUp;    // Uptime in minutes!
+
+  CStdString m_userAgent;
 
   struct RssSet
   {

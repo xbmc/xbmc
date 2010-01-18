@@ -244,7 +244,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   if(bIsMusic)
     m_PreCacheSize = m_uiBufferLen / 2; //Start music only when the buffer is half filled.
   else
-    m_PreCacheSize = 0;
+    m_PreCacheSize = m_uiChunkSize;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_uiChunkSize, m_uiAvgBytesPerSec);
 
@@ -315,6 +315,7 @@ bool CWin32WASAPI::Pause()
 
   if (m_bPause) // Already paused
     return true;
+
   m_bPause = true;
   m_pAudioClient->Stop();
 
@@ -331,10 +332,14 @@ bool CWin32WASAPI::Resume()
 
   if(!m_bPause) // Already playing
     return true;
+
   m_bPause = false;
+
   UpdateCacheStatus();
-  if(m_CacheLen > m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
+  if(m_CacheLen >= m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
     m_pAudioClient->Start();
+  else
+    m_bPlaying = false;  // Trigger playback restart the next time data is added to the buffer.
 
   return true;
 }

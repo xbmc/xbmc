@@ -396,6 +396,13 @@ if test "$host_vendor" = "apple" ; then
                     [INCLUDES+=" $VORBISENC_CFLAGS"; LIBS+=" $VORBISENC_LIBS"],
                     AC_MSG_ERROR($missing_library))
 else
+  AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
+  if test $MYSQL_CONFIG = "yes"; then
+                  INCLUDES+=" `mysql_config --include`"
+                  LIBS+=" `mysql_config --libs`"
+  else
+                  AC_MSG_ERROR($missing_program)
+  fi
   AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
@@ -1048,6 +1055,7 @@ OUTPUT_FILES="Makefile \
              xbmc/lib/libUPnP/Makefile \
              xbmc/DllPaths_generated.h \
              xbmc/linux/Makefile \
+             xbmc/FileSystem/Makefile \
              xbmc/screensavers/Makefile \
              xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
              xbmc/visualizations/XBMCProjectM/Makefile \
@@ -1319,8 +1327,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-O3 -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --with-pic \
-      --with-mp4v2
+      --with-pic
   else
     true
   fi
@@ -1473,7 +1480,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   if test "$host_vendor" = "apple" ; then
 	./configure --with-ssl-dir=/opt/local/include
   else
-	./configure
+	./configure --without-openssl
   fi
 ], [0])
 

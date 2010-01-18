@@ -108,7 +108,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
   {
     //decode the path first
     CStdString decoded = path;
-    CUtil::UrlDecode(decoded);
+    CUtil::URLDecode(decoded);
     try
     {
       CZeroconfBrowser::ZeroconfService zeroconf_service = CZeroconfBrowser::ZeroconfService::fromPath(decoded);

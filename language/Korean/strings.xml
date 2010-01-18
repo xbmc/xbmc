@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 01/05/2010-->
+<!--Date of translation: 01/14/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -125,7 +125,7 @@
   <string id="170">비디오에 맞게 화면 새로고침 비율 조정</string>
   <string id="172">개봉일</string>
   <string id="175">분위기</string>
-  <string id="176">형식</string>
+  <string id="176">스타일</string>
   <string id="179">노래</string>
   <string id="180">재생시간</string>
   <string id="181">앨범 선택</string>
@@ -578,7 +578,7 @@
   <string id="733">- 비밀번호</string>
   <string id="734">암호 없음</string>
   <string id="735">- 문자 집합</string>
-  <string id="736">- 형식</string>
+  <string id="736">- 스타일</string>
   <string id="737">- 색깔</string>
   <string id="738">보통</string>
   <string id="739">굵게</string>
@@ -605,10 +605,8 @@
   <string id="763">밝은 녹색</string>
   <string id="764">연두</string>
   <string id="765">맑은 파랑</string>
-  <string id="766">예약</string>
-  <string id="767">예약</string>
-  <string id="768">예약</string>
-  <string id="769">예약</string>
+  <string id="766">밝은 회색</string>
+  <string id="767">회색</string>
   <string id="770">오류 %i: 공유를 사용할수 없음</string>
   <string id="771">- FATX 제한 자동</string>
   <string id="772">오디오 출력</string>
@@ -1393,6 +1391,7 @@
   <string id="16312">(VDPAU)잡음 제거</string>
   <string id="16313">(VDPAU)선명도</string>
   <string id="16314">역 텔레시네</string>
+  <string id="16315">랑초스3 최적화</string>
   <string id="17500">종료 시간제한 표시</string>
   <string id="19000">채널로 변경</string>
   <string id="20000">저장된 음악 폴더</string>
@@ -1421,7 +1420,7 @@
   <string id="20038">음악 윈도우 잠금</string>
   <string id="20039">비디오 윈도우 잠금</string>
   <string id="20040">사진 윈도우 잠금</string>
-  <string id="20041">프로그램, 저장 &amp; 스크립트 윈도우 잠금</string>
+  <string id="20041">프로그램 &amp; 스크립트 윈도우 잠금</string>
   <string id="20042">파일 관리자 잠금</string>
   <string id="20043">설정 잠금</string>
   <string id="20044">새로 고침 시작</string>
@@ -1563,7 +1562,7 @@
   <string id="20182">사이띄개</string>
   <string id="20183">스킨 새로고침</string>
   <string id="20184">EXIF 정보를 이용해 사진 회전</string>
-  <string id="20185">TV 쇼에서 포스터 보기 형식 사용</string>
+  <string id="20185">TV 쇼에서 포스터 보기 스타일 사용</string>
   <string id="20186">기다려 주세요</string>
   <string id="20187">EEPROM 백업</string>
   <string id="20188">BIOS 백업</string>
@@ -1723,8 +1722,6 @@
   <string id="20443">이 경로의 모든 항목 정보를</string>
   <string id="20444">새로고치겠습니까?</string>
   <string id="20445">팬아트</string>
-  <string id="20446">NFO-파일 찾음.</string>
-  <string id="20447">인터넷에서 새로고치겠습니까?</string>
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-모드 입니다!</string>
@@ -1936,6 +1933,8 @@
   <string id="23050">문자다중방송 활성화</string>
   <string id="23051">파트 %i</string>
   <string id="23052">%i 바이트 버퍼링</string>
+  <string id="23053">중지중</string>
+  <string id="23054">실행중</string>
   <string id="23100">외장 플레이어 활성</string>
   <string id="23101">플레이어를 종료하려면 예를 누르세요</string>
   <string id="23104">재생이 끝났으면 예를 누르세요</string>

@@ -46,13 +46,12 @@
 #include "PlatformDefs.h" // for __stat64
 #endif
 #include "Util.h"
-#include "FileSystem/IDirectory.h"
-#include "FileSystem/FactoryDirectory.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "FileSystem/Directory.h"
 
 #include "emu_msvcrt.h"
 #include "emu_dummy.h"
@@ -65,7 +64,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 #if defined(_MSC_VER) && _MSC_VER < 1500
 extern "C" {
@@ -76,11 +74,13 @@ extern "C" {
 
 struct SDirData
 {
-  DIRECTORY::IDirectory* Directory;
   CFileItemList items;
+  int curr_index;
+  struct dirent *last_entry;
   SDirData()
   {
-    Directory = NULL;
+    curr_index = -1;
+    last_entry = NULL;
   }
 };
 
@@ -98,7 +98,7 @@ struct _env
 };
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 50
-char *dll__environ[EMU_MAX_ENVIRONMENT_ITEMS + 1]; 
+char *dll__environ[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 CRITICAL_SECTION dll_cs_environ;
 
 #define dll_environ    (*dll___p__environ())   /* pointer to environment table */
@@ -107,17 +107,17 @@ extern "C" void __stdcall init_emu_environ()
 {
   InitializeCriticalSection(&dll_cs_environ);
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
-  
+
   // libdvdnav
   dll_putenv("DVDREAD_NOKEYS=1");
   //dll_putenv("DVDREAD_VERBOSE=1");
   //dll_putenv("DVDREAD_USE_DIRECT=1");
-  
+
   // libdvdcss
   dll_putenv("DVDCSS_METHOD=key");
   dll_putenv("DVDCSS_VERBOSE=3");
   dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
-  
+
   // python
 #ifdef _XBOX
   dll_putenv("OS=xbox");
@@ -181,12 +181,7 @@ extern "C"
     {
       for (int i=0;i < MAX_OPEN_DIRS; ++i)
       {
-        if (vecDirsOpen[i].Directory)
-        {
-          delete vecDirsOpen[i].Directory;
-          vecDirsOpen[i].items.Clear();
-          vecDirsOpen[i].Directory = NULL;
-        }
+        vecDirsOpen[i].items.Clear();
       }
       bVecDirsInited = false;
     }
@@ -285,7 +280,7 @@ extern "C"
       CLog::Log(LOGDEBUG,"  msg: %s", szLine);
     else
       CLog::Log(LOGDEBUG,"  msg: %s\n", szLine);
-    
+
     // return a non negative value
     return 0;
   }
@@ -299,7 +294,7 @@ extern "C"
     va_end(va);
     tmp[2048 - 1] = 0;
     CLog::Log(LOGDEBUG, "  msg: %s", tmp);
-    
+
     return strlen(tmp);
   }
 
@@ -366,7 +361,7 @@ extern "C"
       // let the operating system handle it
       return _fdopen(fd, mode);
     }
-    
+
     not_implement("msvcrt.dll incomplete function _fdopen(...) called\n");
     return NULL;
   }
@@ -410,7 +405,7 @@ extern "C"
       bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
     else
       bResult = pFile->Open(CURL::ValidatePath(str));
-    
+
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -439,7 +434,7 @@ extern "C"
       // Translate the path
       return freopen(_P(path).c_str(), mode, stream);
     }
-    
+
     // error
     // close stream and return NULL
     dll_fclose(stream);
@@ -504,7 +499,7 @@ extern "C"
     if (pFile != NULL)
     {
       g_emuFileWrapper.UnRegisterFileObjectByDescriptor(fd);
-      
+
       pFile->Close();
       delete pFile;
       return 0;
@@ -578,7 +573,7 @@ extern "C"
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
-    { 
+    {
       g_emuFileWrapper.LockFileObjectByDescriptor(fd);
       return;
     }
@@ -716,7 +711,7 @@ extern "C"
       url.SetFileName(url.GetFileName().Left(url.GetFileName().Find("*.")));
     }
     int iDirSlot=0; // locate next free directory
-    while ((vecDirsOpen[iDirSlot].Directory) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+    while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
     if (iDirSlot >= MAX_OPEN_DIRS)
       return -1; // no free slots
     if (url.GetProtocol().Equals("filereader"))
@@ -729,9 +724,7 @@ extern "C"
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
-    vecDirsOpen[iDirSlot].Directory = CFactoryDirectory::Create(strURL);
-    vecDirsOpen[iDirSlot].Directory->SetMask(strMask);
-    vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
+    DIRECTORY::CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
       int size = sizeof(data->name);
@@ -743,8 +736,7 @@ extern "C"
       data->time_access = 0;
       return (intptr_t)&vecDirsOpen[iDirSlot];
     }
-    delete vecDirsOpen[iDirSlot].Directory;
-    vecDirsOpen[iDirSlot].Directory = NULL;
+    vecDirsOpen[iDirSlot].curr_index = -1;
     return -1; // whatever != NULL
   }
 
@@ -771,7 +763,7 @@ extern "C"
     int found = MAX_OPEN_DIRS;
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      if (f == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      if (f == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].curr_index != -1)
       {
         found = i;
         break;
@@ -802,7 +794,7 @@ extern "C"
     int found = MAX_OPEN_DIRS;
     for (int i = 0; i < MAX_OPEN_DIRS; i++)
     {
-      if (handle == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].Directory)
+      if (handle == (intptr_t)&vecDirsOpen[i] && vecDirsOpen[i].curr_index != -1)
       {
         found = i;
         break;
@@ -811,9 +803,8 @@ extern "C"
     if (found >= MAX_OPEN_DIRS)
       return _findclose(handle);
 
-    delete vecDirsOpen[found].Directory;
-    vecDirsOpen[found].Directory = NULL;
     vecDirsOpen[found].items.Clear();
+    vecDirsOpen[found].curr_index = -1;
     return 0;
   }
 
@@ -824,6 +815,131 @@ extern "C"
   }
 
 #endif
+
+  DIR *dll_opendir(const char *file)
+  {
+    CURL url(_P(file));
+    if (url.IsLocal())
+    { // Make sure the slashes are correct & translate the path
+      return opendir(CURL::ValidatePath(file));
+    }
+
+    // locate next free directory
+    int iDirSlot=0;
+    while ((vecDirsOpen[iDirSlot].curr_index != -1) && (iDirSlot<MAX_OPEN_DIRS)) iDirSlot++;
+    if (iDirSlot >= MAX_OPEN_DIRS)
+    {
+      CLog::Log(LOGDEBUG, "Dll: Max open dirs reached");
+      return NULL; // no free slots
+    }
+
+    if (url.GetProtocol().Equals("filereader"))
+    {
+      CURL url2(url.GetFileName());
+      url = url2;
+    }
+
+    bVecDirsInited = true;
+    vecDirsOpen[iDirSlot].items.Clear();
+
+    if (DIRECTORY::CDirectory::GetDirectory(url.Get(), vecDirsOpen[iDirSlot].items))
+    {
+      vecDirsOpen[iDirSlot].curr_index = 0;
+      return (DIR *)&vecDirsOpen[iDirSlot];
+    }
+    else
+      return NULL;
+  }
+
+  struct dirent *dll_readdir(DIR *dirp)
+  {
+    if (!dirp)
+      return NULL;
+
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (dirp == (DIR*)&vecDirsOpen[i])
+      {
+        emulated = true;
+        break;
+      }
+    }
+    if (!emulated)
+      return readdir(dirp); // local dir
+
+    // dirp is actually a SDirData*
+    SDirData* dirData = (SDirData*)dirp;
+    if (dirData->last_entry)
+      free(dirData->last_entry);
+    struct dirent *entry = NULL;
+    entry = (dirent*) malloc(sizeof(*entry));
+    if (dirData->curr_index < dirData->items.Size() + 2)
+    { // simulate the '.' and '..' dir entries
+      if (dirData->curr_index == 0)
+        strncpy(entry->d_name, ".\0", 2);
+      else if (dirData->curr_index == 1)
+        strncpy(entry->d_name, "..\0", 3);
+      else
+      {
+        strncpy(entry->d_name, dirData->items[dirData->curr_index - 2]->GetLabel().c_str(), sizeof(entry->d_name));
+        entry->d_name[sizeof(entry->d_name)-1] = '\0'; // null-terminate any truncated paths
+      }
+      dirData->last_entry = entry;
+      dirData->curr_index++;
+      return entry;
+    }
+    return NULL;
+  }
+
+  int dll_closedir(DIR *dirp)
+  {
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (dirp == (DIR*)&vecDirsOpen[i])
+      {
+        emulated = true;
+        break;
+      }
+    }
+    if (!emulated)
+      return closedir(dirp);
+
+    SDirData* dirData = (SDirData*)dirp;
+    dirData->items.Clear();
+    if (dirData->last_entry)
+    {
+      dirData->last_entry = NULL;
+    }
+    dirData->curr_index = -1;
+    return 0;
+  }
+
+  void dll_rewinddir(DIR *dirp)
+  {
+    bool emulated(false);
+    for (int i = 0; i < MAX_OPEN_DIRS; i++)
+    {
+      if (dirp == (DIR*)&vecDirsOpen[i])
+      {
+        emulated = true;
+        break;
+      }
+    }
+    if (!emulated)
+    {
+      rewinddir(dirp);
+      return;
+    }
+
+    SDirData* dirData = (SDirData*)dirp;
+    if (dirData->last_entry)
+    {
+      dirData->last_entry = NULL;
+    }
+    dirData->curr_index = 0;
+  }
 
   char* dll_fgets(char* pszString, int num ,FILE * stream)
   {
@@ -845,7 +961,7 @@ extern "C"
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
       return fgets(pszString, num, stream);
-    } 
+    }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return NULL;
   }
@@ -896,7 +1012,7 @@ extern "C"
     {
       // it is a emulated file
       char szString[10];
-      
+
       if (dll_feof(stream))
       {
         return EOF;
@@ -906,7 +1022,7 @@ extern "C"
       {
         return -1;
       }
-      
+
       byte byKar = (byte)szString[0];
       int iKar = byKar;
       return iKar;
@@ -937,7 +1053,7 @@ extern "C"
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EOF;
   }
-  
+
   FILE* dll_fopen(const char* filename, const char* mode)
   {
     FILE* file = NULL;
@@ -958,13 +1074,13 @@ extern "C"
       iMode |= O_RDWR | _O_TRUNC;
     else if (strchr(mode, 'w'))
       iMode |= _O_WRONLY  | O_CREAT;
-      
+
     int fd = dll_open(filename, iMode);
     if (fd >= 0)
     {
       file = g_emuFileWrapper.GetStreamByDescriptor(fd);;
     }
-    
+
     return file;
   }
 
@@ -985,7 +1101,7 @@ extern "C"
   {
     return dll_putc(c, stdout);
   }
-  
+
   int dll_fputc(int character, FILE* stream)
   {
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
@@ -1037,7 +1153,7 @@ extern "C"
         return fputs(szLine, stream);
       }
     }
-    
+
     OutputDebugString(szLine);
     OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
@@ -1189,9 +1305,9 @@ extern "C"
       {
         memcpy(buf, buffer, size * count);
         buf[size * count] = 0; // string termination
-        
+
         CLog::Log(LOGDEBUG, "%s", buf);
-        
+
         free(buf);
         return count;
       }
@@ -1233,7 +1349,7 @@ extern "C"
       // let the operating system handle it
       return fflush(stream);
     }
-    
+
     // std stream, no need to flush
     return 0;
   }
@@ -1272,7 +1388,7 @@ extern "C"
       CLog::Log(LOGWARNING, "dll_vfprintf: Data lost due to undersized buffer");
     }
     tmp[2048 - 1] = 0;
-    
+
     if (IS_STDOUT_STREAM(stream) || IS_STDERR_STREAM(stream))
     {
       CLog::Log(LOGINFO, "  msg: %s", tmp);
@@ -1318,7 +1434,7 @@ extern "C"
         return vfprintf(stream, format, va);
       }
     }
-    
+
     OutputDebugString(tmp);
     OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
@@ -1334,7 +1450,7 @@ extern "C"
     va_end(va);
     return res;
   }
-  
+
   int dll_fgetpos(FILE* stream, fpos_t* pos)
   {
     fpos64_t tmpPos;
@@ -1457,10 +1573,10 @@ extern "C"
     return 0;
   }
 
-  uintptr_t dll_beginthread( 
+  uintptr_t dll_beginthread(
     void( *start_address )( void * ),
     unsigned stack_size,
-    void *arglist 
+    void *arglist
   )
   {
     return _beginthread(start_address, stack_size, arglist);
@@ -1483,7 +1599,7 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
-      
+
 #ifdef _LINUX
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
     {
@@ -1561,7 +1677,7 @@ extern "C"
     {
       return fstat(fd, buffer);
     }
-    
+
     // fstat on stdin, stdout or stderr should fail
     // this is what python expects
     return -1;
@@ -1573,7 +1689,7 @@ extern "C"
     if (pFile != NULL)
     {
       CLog::Log(LOGINFO, "Stating open file");
-      
+
       buffer->st_size = pFile->GetLength();
       buffer->st_mode = _S_IFREG;
       return 0;
@@ -1590,7 +1706,7 @@ extern "C"
       }
       return res;
     }
-    
+
     // fstat on stdin, stdout or stderr should fail
     // this is what python expects
     return -1;
@@ -1641,31 +1757,31 @@ extern "C"
   int dll_putenv(const char* envstring)
   {
     bool added = false;
-    
+
     if (envstring != NULL)
     {
       const char *value_start = strchr(envstring, '=');
-      
+
       if (value_start != NULL)
       {
         char var[64];
         int size = strlen(envstring) + 1;
         char *value = (char*)malloc(size);
-        
+
         if (!value)
           return -1;
         value[0] = 0;
-        
+
         memcpy(var, envstring, value_start - envstring);
         var[value_start - envstring] = 0;
         strupr(var);
-        
+
         strncpy(value, value_start + 1, size);
         if (size)
           value[size - 1] = '\0';
 
         EnterCriticalSection(&dll_cs_environ);
-        
+
         char** free_position = NULL;
         for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
         {
@@ -1685,7 +1801,7 @@ extern "C"
             free_position = &dll__environ[i];
           }
         }
-        
+
         if (free_position != NULL)
         {
           // free position, copy value
@@ -1700,13 +1816,13 @@ extern "C"
             added = true;
           }
         }
-        
+
         LeaveCriticalSection(&dll_cs_environ);
 
         free(value);
       }
     }
-    
+
     return added ? 0 : -1;
   }
 
@@ -1715,7 +1831,7 @@ extern "C"
   char *getenv(const char *s)
   {
     // some libs in the solution linked to getenv which was exported in python.lib
-    // now python is in a dll this needs the be fixed, or not 
+    // now python is in a dll this needs the be fixed, or not
     CLog::Log(LOGWARNING, "old getenv from python.lib called, library check needed");
     return NULL;
   }
@@ -1749,17 +1865,17 @@ extern "C"
         value = ctemp;
     }
 #endif
-    
+
     LeaveCriticalSection(&dll_cs_environ);
-    
+
     if (value != NULL)
     {
       return value;
     }
-    
+
     return NULL;
   }
-  
+
   int dll_ctype(int i)
   {
     not_implement("msvcrt.dll fake function dll_ctype() called\n");
@@ -1775,7 +1891,7 @@ extern "C"
   void (__cdecl * dll_signal(int sig, void (__cdecl *func)(int)))(int)
   {
 #ifdef _XBOX
-    // the xbox has a NSIG of 23 (+1), problem is when calling signal with 
+    // the xbox has a NSIG of 23 (+1), problem is when calling signal with
     // one of the signals below the xbox wil crash. Just return SIG_ERR
     if (sig == SIGILL || sig == SIGFPE || sig == SIGSEGV) return SIG_ERR;
 #elif defined(_WIN32)
@@ -1790,7 +1906,7 @@ extern "C"
   {
     return 1;
   }
-  
+
   int dll__commit(int fd)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
@@ -1809,11 +1925,11 @@ extern "C"
       return fsync(fd);
 #endif
     }
-    
+
     // std stream, no need to flush
     return 0;
   }
-  
+
   char*** dll___p__environ()
   {
     static char*** t = (char***)&dll__environ;

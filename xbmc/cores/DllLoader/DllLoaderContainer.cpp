@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "DllLoaderContainer.h"
 #ifdef _LINUX
 #include "SoLoader.h"
@@ -69,7 +69,7 @@ LibraryLoader* DllLoaderContainer::GetModule(HMODULE hModule)
 {
   for (int i = 0; m_dlls[i] != NULL && i < m_iNrOfDlls; i++)
   {
-    if (m_dlls[i]->GetHModule() == hModule) return m_dlls[i];    
+    if (m_dlls[i]->GetHModule() == hModule) return m_dlls[i];
   }
   return NULL;
 }
@@ -88,7 +88,7 @@ LibraryLoader* DllLoaderContainer::LoadModule(const char* sName, const char* sCu
     strPath+=sName;
     pDll = GetModule(strPath.c_str());
   }
-  
+
   if (!pDll)
   {
     pDll = GetModule(sName);
@@ -165,7 +165,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   // can't find it in any of our paths - could be a system dll
   if ((pDll = LoadDll(sName, bLoadSymbols)) != NULL)
     return pDll;
-  
+
   CLog::Log(LOGDEBUG, "Dll %s was not found in path", sName);
   return NULL;
 }
@@ -224,7 +224,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   else
 #endif
     pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
-    
+
   if (!pLoader)
   {
     CLog::Log(LOGERROR, "Unable to create dll %s", sName);
@@ -326,18 +326,18 @@ void DllLoaderContainer::UnloadPythonDlls()
       LibraryLoader* pDll = m_dlls[i];
       pDll->IncrRef();
       while (pDll->DecrRef() > 1) pDll->DecrRef();
-      
+
       // since we freed all python extension dlls first, we have to remove any associations with them first
       DllTrackInfo* info = tracker_get_dlltrackinfo_byobject((DllLoader*) pDll);
       if (info != NULL)
       {
         info->dllList.clear();
       }
-      
+
       ReleaseModule(pDll);
       break;
     }
   }
 
-  
+
 }

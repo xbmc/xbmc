@@ -93,7 +93,7 @@ SYSTEM_INFO, *LPSYSTEM_INFO;
 typedef DWORD LCTYPE;
 #if defined (_XBOX) || defined (_LINUX)
 typedef BOOL (*PHANDLER_ROUTINE)(DWORD);
- 
+
 typedef struct _OSVERSIONINFO
 {
   DWORD dwOSVersionInfoSize;
@@ -125,9 +125,9 @@ typedef struct _EXCEPTION_RECORD {
   PVOID ExceptionAddress;
   DWORD NumberParameters;
   ULONG_PTR ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
-} EXCEPTION_RECORD, 
+} EXCEPTION_RECORD,
  *PEXCEPTION_RECORD;
- 
+
 #define LPOVERLAPPED void *
 #endif
 
@@ -153,15 +153,15 @@ typedef struct _EXCEPTION_RECORD {
 
 #define PROCESSOR_ARCHITECTURE_UNKNOWN 0xFFFF
 
-#define PF_FLOATING_POINT_PRECISION_ERRATA  0  
-#define PF_FLOATING_POINT_EMULATED          1  
-#define PF_COMPARE_EXCHANGE_DOUBLE          2  
-#define PF_MMX_INSTRUCTIONS_AVAILABLE       3  
-#define PF_PPC_MOVEMEM_64BIT_OK             4  
-#define PF_ALPHA_BYTE_INSTRUCTIONS          5  
-#define PF_XMMI_INSTRUCTIONS_AVAILABLE      6  
-#define PF_3DNOW_INSTRUCTIONS_AVAILABLE     7  
-#define PF_RDTSC_INSTRUCTION_AVAILABLE      8  
+#define PF_FLOATING_POINT_PRECISION_ERRATA  0
+#define PF_FLOATING_POINT_EMULATED          1
+#define PF_COMPARE_EXCHANGE_DOUBLE          2
+#define PF_MMX_INSTRUCTIONS_AVAILABLE       3
+#define PF_PPC_MOVEMEM_64BIT_OK             4
+#define PF_ALPHA_BYTE_INSTRUCTIONS          5
+#define PF_XMMI_INSTRUCTIONS_AVAILABLE      6
+#define PF_3DNOW_INSTRUCTIONS_AVAILABLE     7
+#define PF_RDTSC_INSTRUCTION_AVAILABLE      8
 #define PF_PAE_ENABLED                      9
 
 #define ERROR_INVALID_FUNCTION 1
@@ -586,7 +586,7 @@ typedef struct _EXCEPTION_RECORD {
 #endif /* (WINVER >= 0x0500) */
 #ifndef  _BASETSD_H
 typedef long LONG_PTR;
-#endif 
+#endif
 #endif
 
 //All kernel32 function should use WINAPI calling convention.

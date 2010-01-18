@@ -91,13 +91,13 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
       return 0;
   }
   else
-    scrURL = *pUrl;  
-  
+    scrURL = *pUrl;
+
   vector<CStdString> strHTML;
   for (unsigned int i=0;i<scrURL.m_url.size();++i)
   {
     CStdString strCurrHTML;
-    if (!CScraperUrl::Get(scrURL.m_url[i],strCurrHTML,m_http) || strCurrHTML.size() == 0)
+    if (!CScraperUrl::Get(scrURL.m_url[i],strCurrHTML,m_http,m_parser.GetFilename()) || strCurrHTML.size() == 0)
       return 0;
     strHTML.push_back(strCurrHTML);
   }
@@ -125,23 +125,13 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
     return 0;
   }
+
   if (stricmp(doc.RootElement()->Value(),"error")==0)
   {
-    TiXmlElement* title = doc.RootElement()->FirstChildElement("title");
-    CStdString strTitle;
-    if (title && title->FirstChild() && title->FirstChild()->Value())
-      strTitle = title->FirstChild()->Value();
-    TiXmlElement* message = doc.RootElement()->FirstChildElement("message");
-    CStdString strMessage;
-    if (message && message->FirstChild() && message->FirstChild()->Value())
-      strMessage = message->FirstChild()->Value();
-    CGUIDialogOK* dialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    dialog->SetHeading(strTitle);
-    dialog->SetLine(0,strMessage);
-    g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
+    ShowErrorDialog(doc.RootElement());
     return -1;
   }
- 
+
   TiXmlHandle docHandle( &doc );
 
   TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
@@ -235,13 +225,29 @@ bool CIMDB::RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &ri
   return left.relevance > right.relevance;
 }
 
+void CIMDB::ShowErrorDialog(const TiXmlElement* element)
+{
+  const TiXmlElement* title = element->FirstChildElement("title");
+  CStdString strTitle;
+  if (title && title->FirstChild() && title->FirstChild()->Value())
+    strTitle = title->FirstChild()->Value();
+  const TiXmlElement* message = element->FirstChildElement("message");
+  CStdString strMessage;
+  if (message && message->FirstChild() && message->FirstChild()->Value())
+    strMessage = message->FirstChild()->Value();
+  CGUIDialogOK* dialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+  dialog->SetHeading(strTitle);
+  dialog->SetLine(0,strMessage);
+  g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
+}
+
 bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details)
 {
   IMDB_EPISODELIST temp;
   for(unsigned int i=0; i < url.m_url.size(); i++)
   {
     CStdString strHTML;
-    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http) || strHTML.size() == 0)
+    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http,m_parser.GetFilename()) || strHTML.size() == 0)
     {
       CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
       if (temp.size() > 0 || (i == 0 && url.m_url.size() > 1)) // use what was fetched
@@ -362,7 +368,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     CStdString strCurrHTML;
     if (url.m_xml.Equals("filenamescrape"))
       return ScrapeFilename(movieDetails.m_strFileNameAndPath,movieDetails);
-    if (!CScraperUrl::Get(url.m_url[i],strCurrHTML,m_http) || strCurrHTML.size() == 0)
+    if (!CScraperUrl::Get(url.m_url[i],strCurrHTML,m_http,m_parser.GetFilename()) || strCurrHTML.size() == 0)
       return false;
     strHTML.push_back(strCurrHTML);
   }
@@ -461,7 +467,7 @@ void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, con
   // convert to the encoding requested by the parser
   g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
   CUtil::URLEncode(m_parser.m_param[0]);
- 
+
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
 }
 
@@ -510,7 +516,7 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   // load our scraper xml
   if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
     return 0;
-  CScraperParser::ClearCache();
+  m_parser.ClearCache();
 
   if (pProgress)
   { // threaded version
@@ -539,7 +545,7 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
     CloseThread();
     return found;
   }
-  
+
   // unthreaded
   bool sortList = true;
   int success = InternalFindMovie(strMovie, movieList, sortList);

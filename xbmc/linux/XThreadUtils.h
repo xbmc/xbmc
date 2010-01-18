@@ -76,24 +76,24 @@ BOOL WINAPI SetThreadPriority(
 class TLS
 {
 public:
-  TLS() 
+  TLS()
   {
     pthread_key_create(&m_key, free);
   }
-  
+
   ~TLS()
   {
     pthread_key_delete(m_key);
   }
-  
-  void *Get() 
+
+  void *Get()
   {
     if (pthread_getspecific(m_key) == NULL)
 	  pthread_setspecific(m_key, malloc(8));
-	   
-    return pthread_getspecific(m_key); 
+	
+    return pthread_getspecific(m_key);
   }
-  
+
   pthread_key_t  m_key;
 };
 

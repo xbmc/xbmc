@@ -290,7 +290,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   if (sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
-    
+
     vector<CGUIActionDescriptor> textChangeActions = m_textChangeActions;
     for (unsigned int i = 0; i < textChangeActions.size(); i++)
     {
@@ -355,7 +355,7 @@ void CGUIEditControl::RenderText()
 {
   if (m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     UpdateText();
-  
+
   if (m_bInvalidated)
   {
     m_textLayout.Update(m_info.GetLabel(GetParentID()));
@@ -488,7 +488,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
   assert(key < 10);
   bool sendUpdate = false;
   if (m_smsTimer.IsRunning())
-  { 
+  {
     // we're already entering an SMS character
     if (key != m_smsLastKey || m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     { // a different key was clicked than last time, or we have timed out
@@ -508,9 +508,9 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
     m_smsLastKey = key;
     m_smsKeyIndex = 0;
   }
-  
+
   m_smsKeyIndex = m_smsKeyIndex % strlen(smsLetters[key]);
-  
+
   m_text2.insert(m_text2.begin() + m_cursorPos++, smsLetters[key][m_smsKeyIndex]);
   UpdateText(sendUpdate);
   m_smsTimer.StartZero();
@@ -533,13 +533,13 @@ void CGUIEditControl::OnPasteClipboard()
   {
     hglb = GetClipboardData(CF_TEXT);
     if (hglb != NULL)
-    { 
+    {
       lptstr = (LPTSTR)GlobalLock(hglb);
       if (lptstr != NULL)
-      { 
+      {
         m_text2 = (char*)lptstr;
         GlobalUnlock(hglb);
-      } 
+      }
     }
     CloseClipboard();
     UpdateText();

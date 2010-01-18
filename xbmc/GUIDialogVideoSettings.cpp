@@ -112,6 +112,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_SCALINGMETHOD_LINEAR           , 16302));
     entries.push_back(make_pair(VS_SCALINGMETHOD_CUBIC            , 16303));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS2         , 16304));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3_FAST    , 16315));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3         , 16305));
     entries.push_back(make_pair(VS_SCALINGMETHOD_SINC8            , 16306));
 //    entries.push_back(make_pair(VS_SCALINGMETHOD_NEDI             , ?????));
@@ -191,7 +192,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
     UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
   }
-  else 
+  else
 #endif
   if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {

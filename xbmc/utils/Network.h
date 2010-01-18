@@ -109,7 +109,7 @@ public:
 
    // callback from application controlled thread to handle any setup
    void NetworkMessage(EMESSAGE message, int param);
-   
+
    void StartServices();
    void StopServices(bool bWait);
 
