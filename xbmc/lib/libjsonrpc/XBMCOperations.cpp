@@ -24,6 +24,7 @@
 #include "ApplicationMessenger.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "log.h"
 
 using namespace Json;
 using namespace JSONRPC;
@@ -102,10 +103,52 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
   return OK;
 }
 
+JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+{
+  if (parameterObject.isString())
+    CLog::Log(LOGDEBUG, parameterObject.asString().c_str());
+  else if (parameterObject.isObject() && parameterObject.isMember("message") && parameterObject["message"].isString())
+  {
+    if (parameterObject.isMember("level") && !parameterObject["level"].isString())
+      return InvalidParams;
+
+    CStdString strlevel = parameterObject.get("level", "debug").asString();
+    int level = ParseLogLevel(strlevel.ToLower().c_str());
+
+    CLog::Log(level, parameterObject["message"].asString().c_str());
+  }
+  else
+    return InvalidParams;
+
+  Value val = "OK";
+  result.swap(val);
+  return OK;
+}
+
 JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   g_application.getApplicationMessenger().Quit();
   Value val = "OK";
   result.swap(val);
   return OK;
+}
+
+int CXBMCOperations::ParseLogLevel(const char *level)
+{
+  if (strcmp(level, "debug") == 0)
+    return LOGDEBUG;
+  else if (strcmp(level, "info") == 0)
+    return LOGINFO;
+  else if (strcmp(level, "notice") == 0)
+    return LOGNOTICE;
+  else if (strcmp(level, "warning") == 0)
+    return LOGWARNING;
+  else if (strcmp(level, "error") == 0)
+    return LOGERROR;
+  else if (strcmp(level, "severe") == 0)
+    return LOGSEVERE;
+  else if (strcmp(level, "fatal") == 0)
+    return LOGFATAL;
+  else if (strcmp(level, "none") == 0)
+    return LOGNONE;
 }

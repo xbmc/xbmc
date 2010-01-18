@@ -55,9 +55,10 @@ namespace JSONRPC
     ControlPlayback = 0x2,
     ControlAnnounce = 0x4,
     ControlPower = 0x8,
+    Logging = 0x10,
   };
 
-  #define OPERATION_PERMISSION_ALL (ReadData | ControlPlayback | ControlAnnounce | ControlPower)
+  #define OPERATION_PERMISSION_ALL (ReadData | ControlPlayback | ControlAnnounce | ControlPower | Logging)
 
   typedef struct
   {

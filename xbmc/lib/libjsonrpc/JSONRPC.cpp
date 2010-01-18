@@ -142,6 +142,8 @@ Command CJSONRPC::m_commands[] = {
   { "XBMC.Play",                        CXBMCOperations::Play,                  Response,     ControlPlayback, "Starts playback" },
   { "XBMC.StartSlideshow",              CXBMCOperations::StartSlideshow,        Response,     ControlPlayback, "Starts slideshow" },
 
+  { "XBMC.Log",                         CXBMCOperations::Log,                   Response,     Logging,         "Logs a line in the xbmc.log" },
+
   { "XBMC.Quit",                        CXBMCOperations::Quit,                  Response,     ControlPower,    "Quit xbmc" }
 };
 
@@ -197,6 +199,8 @@ JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *tran
     result["permission"].append("ControlAnnounce");
   if (flags & ControlPower)
     result["permission"].append("ControlPower");
+  if (flags & Logging)
+    result["permission"].append("Logging");
 
   return OK;
 }
@@ -320,6 +324,8 @@ inline const char *CJSONRPC::PermissionToString(const OperationPermission &permi
     return "ControlAnnounce";
   case ControlPower:
     return "ControlPower";
+  case Logging:
+    return "Logging";
   default:
     return "Unkown";
   }
