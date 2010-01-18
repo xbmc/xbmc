@@ -390,8 +390,7 @@ OBJSXBMC=	\
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/visualizations/visualization.a \
-	xbmc/posix/posix.a
+	xbmc/visualizations/visualization.a
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
@@ -412,6 +411,9 @@ OBJSXBMC += \
 	xbmc/osx/osx.a \
 	lib/libSDL-OSX/libSDL-@ARCH@.a \
 	lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
+else
+OBJSXBMC += \
+	xbmc/posix/posix.a
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)

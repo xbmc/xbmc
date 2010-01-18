@@ -30,7 +30,7 @@
 
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
-#include "Semaphore.h"
+#include "Semaphore.hpp"
 #include <list>
 
 struct CXHandle {

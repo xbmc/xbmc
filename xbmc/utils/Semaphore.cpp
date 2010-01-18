@@ -1,5 +1,5 @@
 
-#include "Semaphore.h"
+#include "Semaphore.hpp"
 #ifdef __linux__
 #include "SemaphorePOSIX.h"
 #elif defined(__APPLE__)
@@ -24,7 +24,7 @@ CSemaphore::CSemaphore(const CSemaphore& sem)
 #ifdef _SEMAPHORE_H
   m_pSemaphore = new CSemaphorePOSIX(sem.GetCount());
 #elif defined(_BSD_SEMAPHORE_H)
-  m_pSemaphore = new CSemaphoreDarwin(initialCount);
+  m_pSemaphore = new CSemaphoreDarwin(sem.GetCount());
 #else
 #error No supported semaphore implementation available
 #endif
