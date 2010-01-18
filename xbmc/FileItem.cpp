@@ -2443,8 +2443,6 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
    || CUtil::IsUPnP(m_strPath)
    || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
    || IsParentFolder()
-   || IsSmartPlayList()
-   || IsPlayList()
    || IsMusicDb())
     return "";
 
@@ -2454,7 +2452,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
     return fileThumb;
 
   // if a folder, check for folder.jpg
-  if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
@@ -2597,8 +2595,6 @@ CStdString CFileItem::GetUserVideoThumb() const
    || CUtil::IsUPnP(m_strPath)
    || (CUtil::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
    || IsParentFolder()
-   || IsSmartPlayList()
-   || IsPlayList()
    || IsLiveTV())
     return "";
 
@@ -2619,7 +2615,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   }
 
   // 3. check folder image in_m_dvdThumbs (folder.jpg)
-  if (m_bIsFolder)
+  if (m_bIsFolder && !IsFileFolder())
   {
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
