@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 26873 -->
+<!--Based on english strings version 26891 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -11,7 +11,7 @@
   <string id="6">XBMC SVN</string>
   <string id="7">文件管理</string>
   <string id="8">天气</string>
-  <string id="9">xbmc 媒体中心</string>
+  <string id="9">XBMC媒体中心</string>
   
   <string id="11">星期一</string>
   <string id="12">星期二</string>
@@ -1494,6 +1494,7 @@
   <string id="16313">（VDPAU）锐化</string>
   <string id="16314">帧率逆转换</string>
   <string id="16315">Lanczos3优化</string>
+  <string id="16316">自动</string>
 
   <string id="17500">显示睡眠时间</string>
 
