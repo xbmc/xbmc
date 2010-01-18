@@ -160,14 +160,14 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
 
   AddSeparator(9);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUE, 23055, &g_settings.m_currentVideoSettings.m_BoblightValue, 0.0, 0.1, 20.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMIN, 23056, &g_settings.m_currentVideoSettings.m_BoblightValueMin, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMAX, 23057, &g_settings.m_currentVideoSettings.m_BoblightValueMax, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SATURATION, 23058, &g_settings.m_currentVideoSettings.m_BoblightSaturation, 0.0, 0.1, 20.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMIN, 23059, &g_settings.m_currentVideoSettings.m_BoblightSaturationMin, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMAX, 23060, &g_settings.m_currentVideoSettings.m_BoblightSaturationMax, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SPEED, 23061, &g_settings.m_currentVideoSettings.m_BoblightSpeed, 0.0, 1.0, 100.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_AUTOSPEED, 23062, &g_settings.m_currentVideoSettings.m_BoblightAutoSpeed, 0.0, 0.25, 100.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUE, 23072, &g_settings.m_currentVideoSettings.m_BoblightValue, 0.0, 0.1, 20.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMIN, 23073, &g_settings.m_currentVideoSettings.m_BoblightValueMin, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMAX, 23074, &g_settings.m_currentVideoSettings.m_BoblightValueMax, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATURATION, 23075, &g_settings.m_currentVideoSettings.m_BoblightSaturation, 0.0, 0.1, 20.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMIN, 23076, &g_settings.m_currentVideoSettings.m_BoblightSaturationMin, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMAX, 23077, &g_settings.m_currentVideoSettings.m_BoblightSaturationMax, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SPEED, 23078, &g_settings.m_currentVideoSettings.m_BoblightSpeed, 0.0, 1.0, 100.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_AUTOSPEED, 23079, &g_settings.m_currentVideoSettings.m_BoblightAutoSpeed, 0.0, 0.25, 100.0, FormatFloat);
 }
 
 void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)

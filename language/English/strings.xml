@@ -2081,16 +2081,16 @@
   <string id="23053">Stopping</string>
   <string id="23054">Running</string>
 
-  <string id="23053">Enable boblight</string>
-  <string id="23054">Enable boblight test mode</string>
-  <string id="23055">Boblight value</string>
-  <string id="23056">Boblight value min</string>
-  <string id="23057">Boblight value max</string>
-  <string id="23058">Boblight saturation</string>
-  <string id="23059">Boblight saturation min</string>
-  <string id="23060">Boblight saturation max</string>
-  <string id="23061">Boblight speed</string>
-  <string id="23062">Boblight autospeed</string>
+  <string id="23070">Enable boblight</string>
+  <string id="23071">Enable boblight test mode</string>
+  <string id="23072">Boblight value</string>
+  <string id="23073">Boblight value min</string>
+  <string id="23074">Boblight value max</string>
+  <string id="23075">Boblight saturation</string>
+  <string id="23076">Boblight saturation min</string>
+  <string id="23077">Boblight saturation max</string>
+  <string id="23078">Boblight speed</string>
+  <string id="23079">Boblight autospeed</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>
