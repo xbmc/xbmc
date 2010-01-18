@@ -37,9 +37,12 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Va
   if (!videoInfo->m_strFileNameAndPath.IsEmpty())
     result["file"] = videoInfo->m_strFileNameAndPath.c_str();
 
-  const Value fields = parameterObject["fields"];
+  const Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
   for (unsigned int i = 0; i < fields.size(); i++)
   {
+    if (!fields[i].isString())
+      continue;
+
     CStdString field = fields[i].asString();
 
     if (field.Equals("genre") && !videoInfo->m_strGenre.IsEmpty())
@@ -65,10 +68,13 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Va
 
   if (!musicInfo->GetURL().IsEmpty())
     result["file"] =  musicInfo->GetURL().c_str();
-  const Json::Value fields = parameterObject["fields"];
+  const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
 
   for (unsigned int i = 0; i < fields.size(); i++)
   {
+    if (!fields[i].isString())
+      continue;
+
     CStdString field = fields[i].asString();
 
     if (field.Equals("title") && !musicInfo->GetTitle().IsEmpty())
@@ -121,12 +127,14 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Va
 
 void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, unsigned int &start, unsigned int &end, const Value& parameterObject, Value &result)
 {
+  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
+
   unsigned int size   = (unsigned int)items.Size();
-  start = parameterObject.get("start", 0).asUInt();
-  end   = parameterObject.get("end", size).asUInt();
+  start = param.get("start", 0).asUInt();
+  end   = param.get("end", size).asUInt();
   end = end > size ? size : end;
 
-  Sort(items, parameterObject);
+  Sort(items, param);
 
   result["start"] = start;
   result["end"]   = end;
@@ -149,9 +157,9 @@ void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname
       object["thumbnail"] = item->GetThumbnailImage().c_str();
 
     if (item->HasVideoInfoTag())
-      FillVideoDetails(item->GetVideoInfoTag(), parameterObject, object);
+      FillVideoDetails(item->GetVideoInfoTag(), param, object);
     if (item->HasMusicInfoTag())
-      FillMusicDetails(item->GetMusicInfoTag(), parameterObject, object);
+      FillMusicDetails(item->GetMusicInfoTag(), param, object);
 
     if (!item->HasVideoInfoTag() && !item->HasMusicInfoTag() && !object.isMember("file"))
       object["file"] = item->m_strPath.c_str();

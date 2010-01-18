@@ -161,7 +161,7 @@ JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportL
 
 bool CPlaylistOperations::GetPlaylist(const Value& parameterObject, CPlayList **playlist, bool &current)
 {
-  const Value id = parameterObject["playlist"];
+  const Value id = (parameterObject.isObject() && parameterObject.isMember("playlist")) ? parameterObject["playlist"] : Value(nullValue);
   int nbr;
   if (id.isNull() || id.isInt())
   {
@@ -169,7 +169,7 @@ bool CPlaylistOperations::GetPlaylist(const Value& parameterObject, CPlayList **
     *playlist = &g_playlistPlayer.GetPlaylist(nbr);
 
     current = g_playlistPlayer.GetCurrentPlaylist() == nbr;
-    return playlist != NULL;
+    return *playlist != NULL;
   }
   else
     return false;
