@@ -1777,7 +1777,6 @@
 		F5E55B7110741340006E788A /* Teletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B6E10741340006E788A /* Teletext.cpp */; };
 		F5E55C861075B60F006E788A /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.dylib */; };
 		F5E55C871075B610006E788A /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.dylib */; };
-		F5E55E901076B3F9006E788A /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */; };
 		F5E560711077003E006E788A /* libSDL_mixer-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */; };
 		F5E560BC10770F9F006E788A /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E560BB10770F9F006E788A /* OggCallback.cpp */; };
 		F5E560BD10770F9F006E788A /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E560BB10770F9F006E788A /* OggCallback.cpp */; };
@@ -1799,6 +1798,11 @@
 		F5EEB974106B07910019B552 /* GUIInfoTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EEB971106B07910019B552 /* GUIInfoTypes.cpp */; };
 		F5EEBA87107015070019B552 /* SamiTagConvertor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EEBA85107015070019B552 /* SamiTagConvertor.cpp */; };
 		F5EEBA88107015070019B552 /* SamiTagConvertor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EEBA85107015070019B552 /* SamiTagConvertor.cpp */; };
+		F5F23E8E11041531009126C6 /* Semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F23E8D11041531009126C6 /* Semaphore.cpp */; };
+		F5F23E8F11041531009126C6 /* Semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F23E8D11041531009126C6 /* Semaphore.cpp */; };
+		F5F23E9611041596009126C6 /* SemaphoreDarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F23E9511041596009126C6 /* SemaphoreDarwin.cpp */; };
+		F5F23E9711041596009126C6 /* SemaphoreDarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F23E9511041596009126C6 /* SemaphoreDarwin.cpp */; };
+		F5F23EBC1104245F009126C6 /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
@@ -3762,6 +3766,10 @@
 		F5EEB972106B07910019B552 /* GUIInfoTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoTypes.h; sourceTree = "<group>"; };
 		F5EEBA85107015070019B552 /* SamiTagConvertor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SamiTagConvertor.cpp; sourceTree = "<group>"; };
 		F5EEBA86107015070019B552 /* SamiTagConvertor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SamiTagConvertor.h; sourceTree = "<group>"; };
+		F5F23E8C11041531009126C6 /* Semaphore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Semaphore.hpp; sourceTree = "<group>"; };
+		F5F23E8D11041531009126C6 /* Semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Semaphore.cpp; sourceTree = "<group>"; };
+		F5F23E9411041595009126C6 /* SemaphoreDarwin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SemaphoreDarwin.h; sourceTree = "<group>"; };
+		F5F23E9511041596009126C6 /* SemaphoreDarwin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SemaphoreDarwin.cpp; sourceTree = "<group>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
@@ -3830,11 +3838,11 @@
 				F5D8F88C104CD47D004A11AB /* libmms.dylib in Frameworks */,
 				43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */,
 				F5E55C861075B60F006E788A /* libmad.dylib in Frameworks */,
-				F5E55E901076B3F9006E788A /* libSDL-x86-osx.a in Frameworks */,
 				F5E560711077003E006E788A /* libSDL_mixer-x86-osx.a in Frameworks */,
 				60CF88BF10CB49F3000921B6 /* libcmyth.a in Frameworks */,
 				60CF88C110CB4A16000921B6 /* librefmem.a in Frameworks */,
 				F591FAA910D5703D001DF66A /* libbdnav.a in Frameworks */,
+				F5F23EBC1104245F009126C6 /* libSDL-x86-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4235,6 +4243,8 @@
 				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
 				F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */,
 				F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */,
+				F5F23E9511041596009126C6 /* SemaphoreDarwin.cpp */,
+				F5F23E9411041595009126C6 /* SemaphoreDarwin.h */,
 				F599CD73108E6A7A0010EC2A /* DarwinStorageProvider.cpp */,
 				F599CD72108E6A7A0010EC2A /* DarwinStorageProvider.h */,
 				7C779E2B104A57E500F444C4 /* WinSystemOSX.mm */,
@@ -6692,6 +6702,8 @@
 				E38E1E780D25F9FD00618676 /* ScraperParser.h */,
 				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
 				7CAA25381085971C0096DE39 /* ScraperUrl.h */,
+				F5F23E8D11041531009126C6 /* Semaphore.cpp */,
+				F5F23E8C11041531009126C6 /* Semaphore.hpp */,
 				E38E1E790D25F9FD00618676 /* SharedSection.cpp */,
 				E38E1E7A0D25F9FD00618676 /* SharedSection.h */,
 				E38E1E7B0D25F9FD00618676 /* SingleLock.cpp */,
@@ -8008,6 +8020,8 @@
 				7C45DBE910F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
 				F592568810FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
 				7C45DD681102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */,
+				F5F23E8E11041531009126C6 /* Semaphore.cpp in Sources */,
+				F5F23E9611041596009126C6 /* SemaphoreDarwin.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8856,6 +8870,8 @@
 				7C45DBEA10F325C400D4BBF3 /* DAVDirectory.cpp in Sources */,
 				F592568910FBF2E100D2C91D /* ConvolutionKernels.cpp in Sources */,
 				7C45DD691102AB5100D4BBF3 /* GUIStaticItem.cpp in Sources */,
+				F5F23E8F11041531009126C6 /* Semaphore.cpp in Sources */,
+				F5F23E9711041596009126C6 /* SemaphoreDarwin.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8943,6 +8959,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$(SRCROOT)/xbmc/lib/cmyth/libcmyth\"";
@@ -8950,6 +8967,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libSDL-OSX\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libtsci2/tsc-i2lib/.libs\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libsmb\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)\"";
@@ -9037,6 +9055,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/xbmc/lib/cmyth/libcmyth\"";
@@ -9044,6 +9063,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$(SRCROOT)/xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libSDL-OSX\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libsmb\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/xbmc/lib/libsquish\"";
