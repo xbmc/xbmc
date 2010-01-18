@@ -232,8 +232,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDVideoCodecFFmpeg::Dispose()
 {
-  SAFE_DELETE(m_pHardware);
-
   if (m_pFrame) m_dllAvUtil.av_free(m_pFrame);
   m_pFrame = NULL;
 
@@ -256,6 +254,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
+  SAFE_DELETE(m_pHardware);
 
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
