@@ -243,6 +243,8 @@ xbmc/lib/libsquish/libsquish-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libsquish
 xbmc/linux/linux.a: force
 	$(MAKE) -C xbmc/linux
+xbmc/posix/posix.a: force
+	$(MAKE) -C xbmc/posix
 xbmc/screensavers/screensaver.a: force
 	$(MAKE) -C xbmc/screensavers
 xbmc/settings/settings.a: force
@@ -388,7 +390,8 @@ OBJSXBMC=	\
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/visualizations/visualization.a
+	xbmc/visualizations/visualization.a \
+	xbmc/posix/posix.a
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \

@@ -16,6 +16,7 @@ SRCS = \
 	ZeroconfBrowserOSX.cpp \
 	WinSystemOSX.mm \
 	WinSystemOSXGL.mm \
+	SemaphoreDarwin.cpp
 	
 LIB=osx.a
 
