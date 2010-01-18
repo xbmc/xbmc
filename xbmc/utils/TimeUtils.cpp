@@ -20,12 +20,11 @@
  */
 
 #include "TimeUtils.h"
-#ifdef _LINUX
-#include <time.h>
 #ifdef __APPLE__
 #include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
-#endif
+#elif defined(_LINUX)
+#include <time.h>
 #elif defined(_WIN32)
 #include <windows.h>
 #endif
@@ -73,56 +72,21 @@ unsigned int CTimeUtils::GetFrameTime()
 
 unsigned int CTimeUtils::GetTimeMS()
 {
-  // best replacement for windows timeGetTime/GetTickCount
-  // 1st call sets start_mstime, subsequent are the diff
-  // between start_mstime and now_mstime to match SDL_GetTick behavior
-  // of previous usage. We might want to change this as CTimeUtils::GetTimeMS is
-  // time (ms) since system startup.
-#if defined(_WIN32)
-  return timeGetTime();
-#elif defined(_LINUX)
+#ifdef _LINUX
+          uint64_t now_time;
+  static  uint64_t start_time = 0;
 #if defined(__APPLE__)
-  static uint64_t start_time = 0;
-  uint64_t now_time;
-
   now_time = CVGetCurrentHostTime() * 1000 / CVGetHostClockFrequency();
-  if (start_time == 0)
-    start_time = now_time;
-
-  return(now_time - start_time);
-
-  /*
-  static long double cv;
-  static uint64_t start_time = 0;
-  uint64_t now_time;
-
-  now_time = mach_absolute_time();
-
-  if (start_time == 0)
-  {
-    mach_timebase_info_data_t tbinfo;
-
-    mach_timebase_info(&tbinfo);
-    cv = ((long double) tbinfo.numer) / ((long double) tbinfo.denom);
-    start_time = now_time;
-  }
-
-  return( (now_time - start_time) * cv / 1000000.0);
-  */
 #else
-  static uint64_t start_mstime = 0;
-  uint64_t now_mstime;
-  struct timespec ts;
-
+  struct timespec ts = {};
   clock_gettime(CLOCK_MONOTONIC, &ts);
-  now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-  if (start_mstime == 0)
-  {
-    start_mstime = now_mstime;
-  }
-
-  return(now_mstime - start_mstime);
+  now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
 #endif
+  if (start_time == 0)
+    start_time = now_time;
+  return (now_time - start_time);
+#else
+  return timeGetTime();
 #endif
 }
 
