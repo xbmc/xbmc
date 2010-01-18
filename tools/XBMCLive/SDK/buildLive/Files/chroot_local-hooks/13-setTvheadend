@@ -8,9 +8,12 @@ cat > /etc/default/tvheadend << EOF
 DAEMON_ARGS="-f -u xbmc -g video"
 EOF
 
+mkdir -p /home/xbmc/.hts/tvheadend
 cat > /home/xbmc/.hts/tvheadend/superuser << EOF
 {
 "username": "xbmc",
 "password": "xbmc"
 }
 EOF
+
+chown -R xbmc:xbmc /home/xbmc/.hts
