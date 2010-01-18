@@ -164,7 +164,7 @@ JSON_STATUS CJSONRPC::Introspect(const CStdString &method, ITransportLayer *tran
 
     val["command"] = m_commands[i].command;
     val["executable"] = (clientflags & m_commands[i].permission) > 0 ? true : false;
-    if (getDescriptions)
+    if (getDescriptions && m_commands[i].description)
       val["description"] = m_commands[i].description;
     if (getPermissions)
       val["permission"] = PermissionToString(m_commands[i].permission);
