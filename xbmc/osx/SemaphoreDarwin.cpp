@@ -1,14 +1,11 @@
 
 #include "SemaphoreDarwin.h"
-#include <sys/stat.h>
-#include <fcntl.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <unistd.h>
 #include <cerrno>
 #include <climits>
 #include <cstdio>
-#include <ctime>
 #include <CoreVideo/CVHostTime.h>
 
 #define SEM_NAME_LEN (NAME_MAX-4)
