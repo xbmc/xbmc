@@ -30,6 +30,7 @@
 
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
+#include "Semaphore.h"
 #include <list>
 
 struct CXHandle {
@@ -46,7 +47,7 @@ public:
   inline HandleType GetType() { return m_type; }
   void ChangeType(HandleType newType);
 
-  SDL_sem               *m_hSem;
+  CSemaphore            *m_pSem;
   ThreadIdentifier      m_hThread;
   bool                  m_threadValid;
   SDL_cond              *m_hCond;
