@@ -46,8 +46,8 @@ Command CJSONRPC::m_commands[] = {
   { "JSONRPC.Announce",                 CJSONRPC::Announce,                     Response,     ReadData,        "Announce to other connected clients" },
 
 // Player
-// Static methods
   { "Player.GetActivePlayers",          CPlayerActions::GetActivePlayers,       Response,     ReadData,        "Returns all active players IDs"},
+
 // Music player
   { "MusicPlayer.PlayPause",            CPlayerActions::PlayPause,              Response,     ControlPlayback, "Pauses or unpause playback" },
   { "MusicPlayer.Stop",                 CPlayerActions::Stop,                   Response,     ControlPlayback, "Stops playback" },
@@ -70,6 +70,7 @@ Command CJSONRPC::m_commands[] = {
   { "MusicPlayer.GetPlaylist",          CPlayerActions::GetPlaylist,            Response,     ReadData,        "Retrieve active playlist" },
 
   { "MusicPlayer.Record",               CPlayerActions::Record,                 Response,     ControlPlayback, "" },
+
 // Video player
   { "VideoPlayer.PlayPause",            CPlayerActions::PlayPause,              Response,     ControlPlayback, "Pauses or unpause playback" },
   { "VideoPlayer.Stop",                 CPlayerActions::Stop,                   Response,     ControlPlayback, "Stops playback" },
@@ -99,18 +100,16 @@ Command CJSONRPC::m_commands[] = {
   { "Playlist.Shuffle",                 CPlaylistOperations::Shuffle,           Response,     ControlPlayback,  "Shuffle playlist" },
 
 // File
-// Static methods
   { "Files.GetShares",                  CFileActions::GetRootDirectory,         Response,     ReadData,        "Get the root directory of the media windows" },
   { "Files.Download",                   CFileActions::Download,                 FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
-// Object methods
+
   { "Files.GetDirectory",               CFileActions::GetDirectory,             Response,     ReadData,        "Retrieve the specified directory" },
 
 // Music library
-// Static/Object methods
   { "MusicLibrary.GetArtists",          CMusicLibrary::GetArtists,              Response,     ReadData,        "Retrieve all artists" },
   { "MusicLibrary.GetAlbums",           CMusicLibrary::GetAlbums,               Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
   { "MusicLibrary.GetSongs",            CMusicLibrary::GetSongs,                Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
-// Object methods
+
   { "MusicLibrary.GetSongInfo",         CMusicLibrary::GetSongInfo,             Response,     ReadData,        "Retrieve the wanted info from the specified song" },
 
 // Video library
@@ -122,7 +121,7 @@ Command CJSONRPC::m_commands[] = {
 
   { "VideoLibrary.GetMusicVideoAlbums", CVideoLibrary::GetMusicVideoAlbums,     Response,     ReadData,        "" },
   { "VideoLibrary.GetMusicVideos",      CVideoLibrary::GetMusicVideos,          Response,     ReadData,        "" },
-// Object methods
+
   { "VideoLibrary.GetMovieInfo",        CVideoLibrary::GetMovieInfo,            Response,     ReadData,        "" },
   { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "" },
   { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "" },
