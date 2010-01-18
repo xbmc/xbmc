@@ -69,3 +69,31 @@ JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer 
   else
     return FailedToExecute;
 }
+
+JSON_STATUS CSystemOperations::GetInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+{
+  if (!parameterObject.isArray())
+    return InvalidParams;
+
+  bool CanControlPower = (client->GetPermissionFlags() & ControlPower) > 0;
+
+  for (unsigned int i = 0; i < parameterObject.size(); i++)
+  {
+    if (!parameterObject[i].isString())
+      continue;
+
+    CStdString field = parameterObject[i].asString();
+    field = field.ToLower();
+
+    if (field.Equals("canshutdown"))
+      result["CanShutdown"] = (g_powerManager.CanPowerdown() && CanControlPower);
+    else if (field.Equals("cansuspend"))
+      result["CanSuspend"] = (g_powerManager.CanSuspend() && CanControlPower);
+    else if (field.Equals("canhibernate"))
+      result["CanHibernate"] = (g_powerManager.CanHibernate() && CanControlPower);
+    else if (field.Equals("canreboot"))
+      result["CanReboot"] = (g_powerManager.CanReboot() && CanControlPower);
+  }
+
+  return OK;
+}
