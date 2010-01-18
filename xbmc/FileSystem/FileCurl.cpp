@@ -415,7 +415,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   }
 
   // setup requested http authentication method
-  if(m_httpauth.length() > 0 && m_username.length() > 0 && m_password.length() > 0)
+  if(m_httpauth.length() > 0)
   {
     if( m_httpauth.Equals("any") )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
@@ -632,11 +632,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
-
+#if (LIBCURL_VERSION_NUM >= 0x071301)
     // get username and password
     m_username = url2.GetUserName();
     m_password = url2.GetPassWord();
-
+#endif
     // handle any protocol options
     CStdString options = url2.GetProtocolOptions();
     options.TrimRight('/'); // hack for trailing slashes being added from source
@@ -680,21 +680,10 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     }
   }
   
-#if (LIBCURL_VERSION_NUM >= 0x071301)
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+  if (m_username.length() > 0 || m_password.length() > 0)
     m_url = url2.GetWithoutUserDetails();
   else
-#endif
-  {
     m_url = url2.Get();
-    
-    if (m_username.length() > 0 || m_password.length() > 0)
-    {
-      m_username="";
-      m_password="";
-      CLog::Log(LOGNOTICE, "%s - cURL version doesn't support username/password option, using URL-encoding instead", __FUNCTION__);
-    }
-  }
 }
 
 bool CFileCurl::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
