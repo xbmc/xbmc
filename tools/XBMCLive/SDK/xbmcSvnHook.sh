@@ -1,9 +1,6 @@
 #!/bin/sh
 
-# Add XBMC SVN PPA to sources
+# Uncomment XBMC SVN PPA sources
 
-echo "deb http://ppa.launchpad.net/team-xbmc-svn/ppa/ubuntu/ karmic main" >> buildLive/Files/chroot_sources/xbmc-svn.list.chroot
-echo "deb-src http://ppa.launchpad.net/team-xbmc-svn/ppa/ubuntu/ karmic main" >> buildLive/Files/chroot_sources/xbmc-svn.list.chroot
-
-echo "deb http://ppa.launchpad.net/team-xbmc-svn/ppa/ubuntu/ karmic main" >> buildLive/Files/chroot_sources/xbmc-svn.list.binary
-echo "deb-src http://ppa.launchpad.net/team-xbmc-svn/ppa/ubuntu/ karmic main" >> buildLive/Files/chroot_sources/xbmc-svn.list.binary
+sed -i -e "s/^#//" $WORKPATH/buildLive/Files/chroot_sources/xbmc-svn.list.chroot
+sed -i -e "s/^#//" $WORKPATH/buildLive/Files/chroot_sources/xbmc-svn.list.chroot
