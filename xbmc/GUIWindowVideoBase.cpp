@@ -333,7 +333,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
         CFileItemPtr item2 = items[i];
 
         if (item2->IsVideo() && !item2->IsPlayList() &&
-	    !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
+            !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
         {
           item.m_strPath = item2->m_strPath;
           item.m_bIsFolder = false;
@@ -527,18 +527,18 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
   }
 
-  bool ignoreNfo=false;
+  bool ignoreNfo(false);
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
   if (result == CNfoFile::ERROR_NFO)
-    ignoreNfo=true;
+    ignoreNfo = true;
   else
   if (result != CNfoFile::NO_NFO)
   {
     if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
-      hasDetails=true;
+      hasDetails = true;
     else
     {
-      ignoreNfo=true;
+      ignoreNfo = true;
       scrUrl.Clear();
     }
   }
@@ -703,11 +703,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         }
 
         // set path hash
-	if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
+        if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
         {
           CStdString hash, strParent;
           CFileItemList items;
-	  CUtil::GetParentPath(list.m_strPath,strParent);
+          CUtil::GetParentPath(list.m_strPath,strParent);
           CDirectory::GetDirectory(strParent,items,g_settings.m_videoExtensions);
           scanner.GetPathHash(items, hash);
           m_database.SetPathHash(strParent, hash);
@@ -1945,5 +1945,3 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& 
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }
-
-
