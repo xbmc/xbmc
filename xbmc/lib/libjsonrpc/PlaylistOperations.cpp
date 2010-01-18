@@ -48,8 +48,7 @@ JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLa
       result["name"] = playlist->GetName();
   }
 
-  unsigned start, end;
-  HandleFileItemList(NULL, "items", items, start, end, parameterObject, result);
+  HandleFileItemList(NULL, "items", items, parameterObject, result);
 
   if (current)
     result["current"] = g_playlistPlayer.GetCurrentSong();

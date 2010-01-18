@@ -125,13 +125,13 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Va
   }
 }
 
-void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, unsigned int &start, unsigned int &end, const Value& parameterObject, Value &result)
+void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Value& parameterObject, Value &result)
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
-  unsigned int size   = (unsigned int)items.Size();
-  start = param.get("start", 0).asUInt();
-  end   = param.get("end", size).asUInt();
+  unsigned int size  = (unsigned int)items.Size();
+  unsigned int start = param.get("start", 0).asUInt();
+  unsigned int end   = param.get("end", size).asUInt();
   end = end > size ? size : end;
 
   Sort(items, param);

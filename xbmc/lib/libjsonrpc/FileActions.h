@@ -22,10 +22,11 @@
 
 #include "StdString.h"
 #include "JSONRPC.h"
+#include "FileItemHandler.h"
 
 namespace JSONRPC
 {
-  class CFileActions
+  class CFileActions : public CFileItemHandler
   {
   public:
     static JSON_STATUS GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);

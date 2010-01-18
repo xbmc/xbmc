@@ -44,10 +44,7 @@ JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer 
 
   CFileItemList items;
   if (musicdatabase.GetArtistsNav("", items, genreID, false))
-  {
-    unsigned start, end;
-    HandleFileItemList("artistid", "artists", items, start, end, param, result);
-  }
+    HandleFileItemList("artistid", "artists", items, param, result);
 
   musicdatabase.Close();
   return OK;
@@ -68,10 +65,7 @@ JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *
 
   CFileItemList items;
   if (musicdatabase.GetAlbumsNav("", items, genreID, artistID))
-  {
-    unsigned start, end;
-    HandleFileItemList("albumid", "albums", items, start, end, param, result);
-  }
+    HandleFileItemList("albumid", "albums", items, param, result);
 
   musicdatabase.Close();
   return OK;
@@ -93,10 +87,7 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
 
   CFileItemList items;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))
-  {
-    unsigned start, end;
-    HandleFileItemList("songid", "songs", items, start, end, param, result);
-  }
+    HandleFileItemList("songid", "songs", items, param, result);
 
   musicdatabase.Close();
   return OK;

@@ -39,10 +39,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
   CFileItemList items;
   if (videodatabase.GetMoviesNav("", items))
-  {
-    unsigned start, end;
-    HandleFileItemList("movieid", "movies", items, start, end, parameterObject, result);
-  }
+    HandleFileItemList("movieid", "movies", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -61,10 +58,7 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
 
   CFileItemList items;
   if (videodatabase.GetTvShowsNav("", items))
-  {
-    unsigned start, end;
-    HandleFileItemList("tvshowid", "tvshows", items, start, end, parameterObject, result);
-  }
+    HandleFileItemList("tvshowid", "tvshows", items, parameterObject, result);
 
   videodatabase.Close();
   return OK;
@@ -84,10 +78,7 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
 
   CFileItemList items;
   if (videodatabase.GetSeasonsNav("", items, -1, -1, -1, -1, tvshowID))
-  {
-    unsigned start, end;
-    HandleFileItemList("seasonid", "seasons", items, start, end, param, result);
-  }
+    HandleFileItemList("seasonid", "seasons", items, param, result);
 
   videodatabase.Close();
   return OK;
@@ -108,10 +99,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("", items, -1, -1, -1, -1, tvshowID, seasonID))
-  {
-    unsigned start, end;
-    HandleFileItemList("episodeid", "episodes", items, start, end, param, result);
-  }
+    HandleFileItemList("episodeid", "episodes", items, param, result);
 
   videodatabase.Close();
   return OK;
@@ -128,10 +116,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideoAlbums(const CStdString &method, ITransp
   CFileItemList items;
 //  bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idArtist=-1, int idDirector=-1, int idStudio=-1, int idAlbum=-1);
   if (videodatabase.GetMusicVideoAlbumsNav("", items, -1, -1, artistID, -1, -1, -1, -1))
-  {
-    unsigned start, end;
-    HandleFileItemList("albumid", "albums", items, start, end, parameterObject, result);
-  }
+    HandleFileItemList("albumid", "albums", items, parameterObject, result);
 
   videodatabase.Close();*/
   return OK;
@@ -152,10 +137,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("", items, -1, -1, artistID, -1, -1, albumID))
-  {
-    unsigned start, end;
-    HandleFileItemList("musicvideoid", "musicvideos", items, start, end, param, result);
-  }
+    HandleFileItemList("musicvideoid", "musicvideos", items, param, result);
 
   videodatabase.Close();
   return OK;
