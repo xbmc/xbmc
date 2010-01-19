@@ -184,5 +184,7 @@ protected:
   DVDVideoPicture* m_pTempOverlayPicture;
 
   CPullupCorrection m_pullupCorrection;
+
+  std::list<DVDMessageListItem> m_packets;
 };
 

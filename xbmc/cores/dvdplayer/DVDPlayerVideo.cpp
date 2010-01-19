@@ -440,12 +440,14 @@ void CDVDPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      m_packets.clear();
       m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      m_packets.clear();
 
       m_pullupCorrection.Flush();
       //we need to recalculate the framerate
@@ -509,6 +511,16 @@ void CDVDPlayerVideo::Process()
       m_pVideoCodec->SetDropState(bRequestDrop);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+
+      // buffer packets so we can recover should decoder flush for some reason
+      if(m_pVideoCodec->GetConvergeCount() > 0)
+      {
+        m_packets.push_back(DVDMessageListItem(pMsg, 0));
+        if(m_packets.size() > m_pVideoCodec->GetConvergeCount() 
+        || m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
+          m_packets.pop_front();
+      }
+
       m_videoStats.AddSampleBytes(pPacket->iSize);
       // assume decoder dropped a picture if it didn't give us any
       // picture from a demux packet, this should be reasonable
@@ -532,7 +544,20 @@ void CDVDPlayerVideo::Process()
         if (iDecoderState & VC_FLUSHED)
         {
           CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder was flushed");
-          m_messageParent.Put(new CDVDMsgPlayerSeek(pts/1000, true, true, true));
+          while(!m_packets.empty())
+          {
+            CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
+            m_packets.pop_front();
+
+            // all packets except the last one should be dropped
+            // if prio packets and current packet should be dropped, this is likely a new reset
+            msg->m_drop = !m_packets.empty() || iPriority > 0 && bPacketDrop;
+            m_messageQueue.Put(msg, iPriority + 10);
+          }
+
+          m_pVideoCodec->Reset();
+          m_packets.clear();
+          break;
         }
 
         // if decoder had an error, tell it to reset to avoid more problems

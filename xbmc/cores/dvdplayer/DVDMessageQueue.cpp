@@ -128,7 +128,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
   }
   m_list.insert(it, DVDMessageListItem(pMsg, priority));
 
-  if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+  if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) && priority == 0)
   {
     DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
     if(packet)
@@ -150,7 +150,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
   return MSGQ_OK;
 }
 
-MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority)
+MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority)
 {
   CSingleLock lock(m_section);
 
@@ -169,8 +169,9 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     if(!m_list.empty() && m_list.back().priority >= priority && !m_bCaching)
     {
       DVDMessageListItem& item(m_list.back());
+      priority = item.priority;
 
-      if (item.message->IsType(CDVDMsg::DEMUXER_PACKET))
+      if (item.message->IsType(CDVDMsg::DEMUXER_PACKET) && item.priority == 0)
       {
         DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.message)->GetPacket();
         if(packet)

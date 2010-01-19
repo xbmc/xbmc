@@ -96,9 +96,14 @@ public:
   /**
    * msg,       message type from DVDMessage.h
    * timeout,   timeout in msec
+   * priority,  minimum priority to get, outputs returned packets priority
    */
-  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority = 0);
-
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds)
+  {
+    int priority = 0;
+    return Get(pMsg, iTimeoutInMilliSeconds, priority);
+  }
 
   int GetDataSize() const               { return m_iDataSize; }
   unsigned GetPacketCount(CDVDMsg::Message type);
