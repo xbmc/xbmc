@@ -25,6 +25,7 @@
 
 #include "FGFilter.h"
 #include "IGraphBuilder2.h"
+#include "DSConfig.h"
 #include "Filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
 #include "File.h"
@@ -71,7 +72,7 @@ public:
 	public: 
     std::list<CMediaType> mts;
 	};
-
+  CDSConfig* GetDsConfig() {return m_pDsConfig;};
 private:
   DWORD m_dwRegister;
   CStreamPath m_streampath;
@@ -88,6 +89,8 @@ protected:
 
   CFile                m_File;
   CFGLoader*           m_CfgLoader;
+  CDSConfig*           m_pDsConfig;
+
   DIRECTSHOW_RENDERER  m_CurrentRenderer;
 
 	CStdString           m_xbmcConfigFilePath;

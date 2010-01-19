@@ -46,7 +46,7 @@ CDSConfig::~CDSConfig()
   SAFE_RELEASE(m_pIAMStreamSelect);
 }
 
-HRESULT CDSConfig::LoadGraph(IGraphBuilder2* pGB)
+HRESULT CDSConfig::LoadGraph(IFilterGraph2* pGB)
 {
   HRESULT hr = S_OK;
   m_pGraphBuilder = pGB;

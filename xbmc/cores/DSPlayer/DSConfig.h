@@ -35,7 +35,7 @@ class CDSConfig
 public:
   CDSConfig();
   virtual ~CDSConfig();
-  virtual HRESULT LoadGraph(IGraphBuilder2* pGB);
+  virtual HRESULT LoadGraph(IFilterGraph2* pGB);
 
   CStdString GetDxvaMode()  { return m_pStdDxva; };
 //AudioStream
@@ -55,8 +55,7 @@ protected:
   
 private:
   //Direct Show Filters
-  IGraphBuilder2*                m_pGraphBuilder;
-  //CComQIPtr<IMPCVideoDecFilter>	 m_pIMpcDecFilter;
+  IFilterGraph2*                 m_pGraphBuilder;
   IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
   IMpaDecFilter*                 m_pIMpaDecFilter;
   IAMStreamSelect*               m_pIAMStreamSelect;

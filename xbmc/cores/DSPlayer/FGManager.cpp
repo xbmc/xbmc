@@ -33,7 +33,8 @@
 
 
 #include "filters/VMR9AllocatorPresenter.h"
-#include "filters/evrAllocatorPresenter.h"
+#include "filters/EVRAllocatorPresenter.h"
+
 #include <initguid.h>
 #include "moreuuids.h"
 #include <dmodshow.h>
@@ -54,7 +55,8 @@ using namespace std;
 //
 
 CFGManager::CFGManager():
-  m_dwRegister(0)
+  m_dwRegister(0),
+  m_pDsConfig(NULL)
 {
   HRESULT hr;
   //CLSCTX_INPROC_HANDLER
@@ -74,7 +76,7 @@ CFGManager::~CFGManager()
   while(!m_override.empty()) 
     m_override.pop_back();
 
-  
+  delete m_pDsConfig;
   SAFE_RELEASE(m_pUnkInner);
 }
 
@@ -526,7 +528,9 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
     return E_FAIL;
   hr = ConnectFilter(m_CfgLoader->GetSplitter(),NULL);
   DShowUtil::RemoveUnconnectedFilters(m_pFG);
-  
+  m_pDsConfig = new CDSConfig();
+  //Get all custom interface
+  m_pDsConfig->LoadGraph(m_pFG);
   return hr;
   
 }

@@ -53,8 +53,7 @@ using namespace std;
 using namespace MediaInfoDLL;
 
 CDSGraph::CDSGraph() :
-m_pGraphBuilder(NULL),
-m_pDsConfig(NULL)
+m_pGraphBuilder(NULL)
 {
   
   m_PlaybackRate = 1;
@@ -99,9 +98,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaEvent),(void **)&m_pMediaEvent);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicVideo),(void **)&m_pBasicVideo);
-  m_pDsConfig = new CDSConfig();
-  //Get all custom interface
-  //m_pDsConfig->LoadGraph(m_pGraphBuilder);
+  
 
   LONGLONG tmestamp;
   tmestamp = CTimeUtils::GetTimeMS();
@@ -132,8 +129,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 void CDSGraph::CloseFile()
 {
   OnPlayStop();
-  if (m_pDsConfig)
-    m_pDsConfig = NULL;
   HRESULT hr;
   if (m_pGraphBuilder)
     hr = m_pGraphBuilder->RemoveFromROT();
@@ -202,8 +197,8 @@ void CDSGraph::UpdateState()
 }
 void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
-
-  m_VideoInfo.dxva_info= m_pDsConfig->GetDxvaMode();
+  
+  m_VideoInfo.dxva_info= m_pGraphBuilder->GetDsConfig()->GetDxvaMode();
   m_pGraphBuilder->GetFileInfo(&m_VideoInfo.filter_source,&m_VideoInfo.filter_splitter,&m_VideoInfo.filter_audio_dec,&m_VideoInfo.filter_video_dec,&m_VideoInfo.filter_audio_renderer);
   
   

@@ -135,7 +135,7 @@ public:
 
   COuterEVR(const TCHAR* pName, LPUNKNOWN pUnk, HRESULT& hr, CEVRAllocatorPresenter *pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
-    hr = CoCreateInstance(CLSID_EnhancedVideoRenderer,NULL,CLSCTX_ALL,__uuidof(m_pEVR),(void**)&m_pEVR );
+    hr = CoCreateInstance(CLSID_EnhancedVideoRenderer, GetOwner(),CLSCTX_ALL,__uuidof(m_pEVR),(void**)&m_pEVR );
     m_pAllocatorPresenter = pAllocatorPresenter;
   }
 
@@ -298,6 +298,11 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     CMacrovisionKicker* pMK  = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
     IUnknown* pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
     COuterEVR *pOuterEVR = new COuterEVR(NAME("COuterEVR"), pUnk, hr, this);
+	if (FAILED (hr))
+    {
+      CLog::Log(LOGERROR,"%s Failed creating outer enchanced video renderer",__FUNCTION__);
+      break;
+    }
     m_pOuterEVR = pOuterEVR;
     pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuterEVR);
     IBaseFilter* pBF;
@@ -965,7 +970,7 @@ HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedTy
     if (fWidth >= 1280 || fHeight >=720)
     {
       CHECK_HR(hr = pmtOptimal->SetYUVMatrix(MFVideoTransferMatrix_BT709));
-      CLog::Log(LOGNOTICE,"%s Setting to HD with Didnt get any frame dimensions on video sample defaulting the MF_MT_YUV_MATRIX to MFVideoTransferMatrix_BT709",__FUNCTION__);
+      CLog::Log(LOGNOTICE,"%s Setting to HD with MF_MT_YUV_MATRIX to MFVideoTransferMatrix_BT709",__FUNCTION__);
     }
     //SD
     else

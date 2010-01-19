@@ -90,10 +90,11 @@ public:
   virtual float GetPercentage();
 
 //Audio stream selection
-  virtual int  GetAudioStreamCount()  { return m_pDsConfig->GetAudioStreamCount(); }
-  virtual int  GetAudioStream()       { return m_pDsConfig->GetAudioStream(); }
-  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pDsConfig->GetAudioStreamName(iStream,strStreamName); };
-  virtual void SetAudioStream(int iStream) { m_pDsConfig->SetAudioStream(iStream); };
+  //
+  virtual int  GetAudioStreamCount()  { return m_pGraphBuilder->GetDsConfig()->GetAudioStreamCount(); }
+  virtual int  GetAudioStream()       { return m_pGraphBuilder->GetDsConfig()->GetAudioStream(); }
+  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pGraphBuilder->GetDsConfig()->GetAudioStreamName(iStream,strStreamName); };
+  virtual void SetAudioStream(int iStream) { m_pGraphBuilder->GetDsConfig()->SetAudioStream(iStream); };
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
   void OnPlayStop();
   void CloseFile();
@@ -178,5 +179,5 @@ private:
   IMediaSeeking*                  m_pMediaSeeking;
   IBasicAudio*                    m_pBasicAudio;
   IBasicVideo2*                   m_pBasicVideo;
-  CDSConfig                       *m_pDsConfig;
+  
 };
