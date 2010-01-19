@@ -82,7 +82,8 @@ CVDPAU::CVDPAU()
   if (!glXReleaseTexImageEXT)
     glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
-  totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
+  totalAvailableOutputSurfaces = 0;
+  outputSurface = presentSurface = VDP_INVALID_HANDLE;
   vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
@@ -308,6 +309,23 @@ void CVDPAU::BindPixmap()
 {
   if (m_glPixmap)
   {
+    if(presentSurface != VDP_INVALID_HANDLE)
+    {
+      VdpPresentationQueueStatus status;
+      VdpTime time;
+      VdpStatus vdp_st;
+      vdp_st = vdp_presentation_queue_query_surface_status(
+                    vdp_flip_queue, presentSurface, &status, &time);
+      CheckStatus(vdp_st, __LINE__);
+      while(status != VDP_PRESENTATION_QUEUE_STATUS_VISIBLE && vdp_st == VDP_STATUS_OK)
+      {
+        Sleep(1);
+        vdp_st = vdp_presentation_queue_query_surface_status(
+                      vdp_flip_queue, presentSurface, &status, &time);
+        CheckStatus(vdp_st, __LINE__);
+      }
+    }
+    
     glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
   }
@@ -682,6 +700,8 @@ void CVDPAU::FiniVDPAUOutput()
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
   CheckStatus(vdp_st, __LINE__);
   vdp_flip_target = VDP_INVALID_HANDLE;
+
+  outputSurface = presentSurface = VDP_INVALID_HANDLE;
 
   for (int i = 0; i < totalAvailableOutputSurfaces; i++)
   {
@@ -1128,27 +1148,14 @@ void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
+  presentSurface = outputSurface;
 
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
-                                          outputSurface,
+                                          presentSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-
-  VdpPresentationQueueStatus status;
-  VdpTime time;
-  vdp_st = vdp_presentation_queue_query_surface_status(
-                vdp_flip_queue, outputSurface, &status, &time);
-  CheckStatus(vdp_st, __LINE__);
-
-  while(status != VDP_PRESENTATION_QUEUE_STATUS_VISIBLE && vdp_st == VDP_STATUS_OK)
-  {
-    Sleep(1);
-    vdp_st = vdp_presentation_queue_query_surface_status(
-                  vdp_flip_queue, outputSurface, &status, &time);
-    CheckStatus(vdp_st, __LINE__);
-  }
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
