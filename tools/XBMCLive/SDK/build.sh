@@ -48,7 +48,7 @@ rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
 if ! which lh > /dev/null ; then
 	cd $WORKPATH/Tools
 	if [ ! -d live-helper ]; then
-		tsocks git clone git://live.debian.net/git/live-helper.git
+		git clone git://live.debian.net/git/live-helper.git
 		if [ "$?" -ne "0" ]; then
 			exit 1
 		fi
