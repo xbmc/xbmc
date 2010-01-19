@@ -256,8 +256,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
   }
 
   // get our calibrated full screen resolution
-  float screenWidth = (float)(g_settings.m_ResInfo[m_resolution].Overscan.right - g_settings.m_ResInfo[m_resolution].Overscan.left);
-  float screenHeight = (float)(g_settings.m_ResInfo[m_resolution].Overscan.bottom - g_settings.m_ResInfo[m_resolution].Overscan.top);
+  RESOLUTION res = GetResolution();
+  float screenWidth = (float)(g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left);
+  float screenHeight = (float)(g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
 
@@ -265,7 +266,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   { // zoom image so no black bars
     g_settings.m_fPixelRatio = 1.0;
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[m_resolution].fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[res].fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full height.
     float newHeight = screenHeight;
     float newWidth = newHeight * outputFrameRatio;
@@ -280,10 +281,10 @@ void CBaseRenderer::SetViewMode(int viewMode)
   else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
   { // stretch image to 4:3 ratio
     g_settings.m_fZoomAmount = 1.0;
-    if (m_resolution == RES_PAL_4x3 || m_resolution == RES_PAL60_4x3 || m_resolution == RES_NTSC_4x3 || m_resolution == RES_HDTV_480p_4x3)
+    if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
-      g_settings.m_fPixelRatio = (screenWidth / screenHeight) * g_settings.m_ResInfo[m_resolution].fPixelRatio / sourceFrameRatio;
+      g_settings.m_fPixelRatio = (screenWidth / screenHeight) * g_settings.m_ResInfo[res].fPixelRatio / sourceFrameRatio;
     }
     else
     {
@@ -298,7 +299,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     // outputFrameRatio = 14:9.
     g_settings.m_fPixelRatio = (14.0f / 9.0f) / sourceFrameRatio;
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[m_resolution].fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[res].fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full height.
     float newHeight = screenHeight;
     float newWidth = newHeight * outputFrameRatio;
@@ -313,7 +314,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
   { // stretch image to 16:9 ratio
     g_settings.m_fZoomAmount = 1.0;
-    if (m_resolution == RES_PAL_4x3 || m_resolution == RES_PAL60_4x3 || m_resolution == RES_NTSC_4x3 || m_resolution == RES_HDTV_480p_4x3)
+    if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
     { // now we need to set g_settings.m_fPixelRatio so that
       // outputFrameRatio = 16:9.
       g_settings.m_fPixelRatio = (16.0f / 9.0f) / sourceFrameRatio;
@@ -321,7 +322,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     else
     { // stretch to the limits of the 16:9 screen.
       // incorrect behaviour, but it's what the users want, so...
-      g_settings.m_fPixelRatio = (screenWidth / screenHeight) * g_settings.m_ResInfo[m_resolution].fPixelRatio / sourceFrameRatio;
+      g_settings.m_fPixelRatio = (screenWidth / screenHeight) * g_settings.m_ResInfo[res].fPixelRatio / sourceFrameRatio;
     }
   }
   else // if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
@@ -329,7 +330,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     g_settings.m_fPixelRatio = 1.0;
     // get the size of the media file
     // calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[m_resolution].fPixelRatio;
+    float outputFrameRatio = sourceFrameRatio * g_settings.m_fPixelRatio / g_settings.m_ResInfo[res].fPixelRatio;
     // now calculate the correct zoom amount.  First zoom to full width.
     float newWidth = screenWidth;
     float newHeight = newWidth / outputFrameRatio;
