@@ -317,6 +317,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext)
     return VC_ERROR;
 
+  if(pData)
+    m_iLastKeyframe++;
+
   if(m_pHardware)
   {
     int result;
@@ -330,9 +333,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     || (result & VC_FLUSHED))
       return result;
   }
-
-  if(pData)
-    m_iLastKeyframe++;
 
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
