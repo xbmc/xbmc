@@ -302,43 +302,6 @@ void CDVDPlayerVideo::Process()
   int iDropped = 0; //frames dropped in a row
   bool bRequestDrop = false;
 
-  // attempt to do a initial configure of output device
-  if(!g_renderManager.IsConfigured()
-  && m_hints.width
-  && m_hints.height
-  && m_hints.fpsrate
-  && m_hints.fpsscale )
-  {
-    int flags = 0;
-    if(m_bAllowFullscreen)
-      flags |= CONF_FLAGS_FULLSCREEN;
-
-    if(m_hints.width > 1024 || m_hints.height >= 600)
-      flags |= CONF_FLAGS_YUVCOEF_BT709;
-    else
-      flags |= CONF_FLAGS_YUVCOEF_BT601;
-
-    // assume yv12 format
-    flags |= CONF_FLAGS_FORMAT_YV12;
-
-    m_output.width     = m_hints.width;
-    m_output.dwidth    = m_hints.width;
-    m_output.height    = m_hints.height;
-    m_output.dheight   = m_hints.height;
-    m_output.framerate = (float)m_hints.fpsrate / m_hints.fpsscale;
-    m_output.color_format = DVDVideoPicture::FMT_YUV420P;
-    m_output.inited    = true;
-
-    if( g_renderManager.Configure(m_output.width
-                                , m_output.height
-                                , m_output.dwidth
-                                , m_output.dheight
-                                , m_output.framerate
-                                , flags) )
-      m_output.inited    = true;
-  }
-
-
   m_videoStats.Start();
 
   while (!m_bStop)
