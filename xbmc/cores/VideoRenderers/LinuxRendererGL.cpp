@@ -921,9 +921,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     bool scaleSD = (int)m_sourceWidth < m_upscalingWidth && (int)m_sourceHeight < m_upscalingHeight &&
                    m_sourceHeight < 720 && m_sourceWidth < 1280;
 
-    if (Supports(VS_SCALINGMETHOD_VDPAU_HARDWARE))
-      m_scalingMethod = VS_SCALINGMETHOD_VDPAU_HARDWARE;
-    else if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD)
+    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD)
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     else
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
@@ -2302,9 +2300,6 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
       return true;
   }
-
-  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && (m_renderMethod & RENDER_VDPAU))
-    return true;
 
   return false;
 }
