@@ -190,8 +190,12 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
   // horizontal resolution of the default NTSC or PAL frame sizes
 
   // The following are the defined standard ratios for PAL and NTSC pixels
-  float PALPixelRatio = 128.0f / 117.0f;
-  float NTSCPixelRatio = 4320.0f / 4739.0f;
+  // NOTE: These aren't technically (in terms of BT601) correct - the commented values are,
+  //       but it seems that many DVDs nowadays are mastered incorrectly, so two wrongs
+  //       may indeed make a right.  The "wrong" values here ensure the output frame is
+  //       4x3 (or 16x9)
+  const float PALPixelRatio = 16.0f / 15.0f;      // 128.0f / 117.0f;
+  const float NTSCPixelRatio = 8.0f / 9.0f;       // 4320.0f / 4739.0f;
 
   // Calculate the correction needed for anamorphic sources
   float Non4by3Correction = m_sourceFrameRatio / (4.0f / 3.0f);
