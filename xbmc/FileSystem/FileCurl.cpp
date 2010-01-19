@@ -339,13 +339,14 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
-#if (LIBCURL_VERSION_NUM >= 0x071301)
+
   // set username and password for current handle
-  if (m_username.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
-  if (m_password.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
-#endif
+  if (m_username.length() > 0 && m_password.length() > 0)
+  {
+    CStdString userpwd = m_username + ":" + m_password;
+    g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
+  }
+
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
@@ -626,6 +627,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
 
+    // replace invalid spaces
+    CStdString strFileName = url2.GetFileName();
+    strFileName.Replace(" ", "\%20");
+    url2.SetFileName(strFileName);
+
     // get username and password
     m_username = url2.GetUserName();
     m_password = url2.GetPassWord();
@@ -673,11 +679,9 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     }
   }
   
-#if (LIBCURL_VERSION_NUM >= 0x071301)
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
+  if (m_username.length() > 0 && m_password.length() > 0)
     m_url = url2.GetWithoutUserDetails();
   else
-#endif
     m_url = url2.Get();
 }
 
