@@ -564,7 +564,6 @@ void CDVDPlayerVideo::Process()
         if (iDecoderState & VC_ERROR)
         {
           CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder returned error");
-          m_pVideoCodec->Reset();
           break;
         }
 
