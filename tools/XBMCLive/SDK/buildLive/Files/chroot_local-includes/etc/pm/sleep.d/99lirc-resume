@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# This script will restart lirc drivers, Lirc, and XBMC's lirc interpreter upon resume.
+
+case "$1" in  
+	resume)
+		lircDriver=$(dmesg | grep usbcore | grep -i 'lirc' | sed -e "s/.* \(lirc*\)/\1/" | head -n 1)
+ 		curl "http://127.0.0.1:8080/xbmcCmds /xbmcHttp?command=ExecBuilt&Inparameter=LIRC.Stop"
+		/etc/init.d/lirc stop 
+		rmmod $lircDriver
+		modprobe $lircDriver
+		/etc/init.d/lirc start 
+		#remove the comment if the computer automatically sleeps after resume
+		#irw & sleep 1; killall irw
+		curl "http://127.0.0.1:8080/xbmcCmds/xbmcHttp?command=ExecBuiltIn&parameter=LIRC.Start" 
+	;;
+esac
