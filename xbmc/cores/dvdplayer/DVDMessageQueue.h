@@ -28,6 +28,42 @@
 
 struct DVDMessageListItem
 {
+  DVDMessageListItem(CDVDMsg* msg, int prio)
+  {
+    message  = msg->Acquire();
+    priority = prio;
+  }
+  DVDMessageListItem()
+  {
+    message  = NULL;
+    priority = 0;
+  }
+  DVDMessageListItem(const DVDMessageListItem& item)
+  {
+    if(item.message)
+      message = item.message->Acquire();
+    else
+      message = NULL;
+    priority = item.priority;
+  }
+ ~DVDMessageListItem()
+  {
+    if(message)
+      message->Release();
+  }
+
+  DVDMessageListItem& operator=(const DVDMessageListItem& item)
+  {
+    if(message)
+      message->Release();
+    if(item.message)
+      message = item.message->Acquire();
+    else
+      message = NULL;
+    priority = item.priority;
+    return *this;
+  }
+
   CDVDMsg* message;
   int      priority;
 };
