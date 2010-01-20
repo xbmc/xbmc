@@ -23,3 +23,7 @@ echo "tmpfs /var/tmp tmpfs defaults 0 0" >> /etc/fstab
 EOF
 
 chmod +x $WORKPATH/buildLive/Files/chroot_local-hooks/02-setFstab
+
+
+# Modify menu.lst
+sed -i '/## BEGIN INSTALLER ##/,/## END INSTALLER ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
