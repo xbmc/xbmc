@@ -28,7 +28,7 @@ using namespace std;
 class CSectionLoader g_sectionLoader;
 
 //  delay for unloading dll's
-#define UNLOAD_DELAY 30*1000 // 30 sec.
+#define UNLOAD_DELAY 10*1000 // 10 sec.
 
 //Define this to get loggin on all calls to load/unload sections/dlls
 //#define LOGALL
