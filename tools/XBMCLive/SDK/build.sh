@@ -34,6 +34,7 @@ WORKPATH=$THISDIR/$WORKDIR
 export WORKPATH
 
 if [ -d "$WORKPATH" ]; then
+	echo "Deleting old workarea..." 
 	rm -rf $WORKPATH
 fi
 mkdir $WORKPATH
@@ -41,6 +42,8 @@ mkdir $WORKPATH
 if ls $THISDIR/binary.* > /dev/null 2>&1; then
 	rm -rf $THISDIR/binary.*
 fi
+
+echo "Creating workarea..." 
 
 # cp all (except svn directories) into workarea
 rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
@@ -66,6 +69,7 @@ if ! which lh > /dev/null ; then
 	cd $THISDIR
 fi
 
+echo "Start building..."
 
 # Execute hooks if env variable is defined
 if [ -n "$SDK_BUILDHOOKS" ]; then
