@@ -636,7 +636,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
     // replace invalid spaces
     CStdString strFileName = url2.GetFileName();
-    strFileName.Replace(" ", "\%20");
+    strFileName.Replace(" ", "%20");
     url2.SetFileName(strFileName);
 
     // get username and password
