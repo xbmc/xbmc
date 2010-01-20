@@ -636,7 +636,7 @@ void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action, 
   if (actionID == 0 && fallback)
     actionID = GetActionCode( -1, key, strAction);
   // Now fill our action structure
-  action.id = actionID;
+  action.actionId = actionID;
   action.strAction = strAction;
   action.amount1 = 1; // digital button (could change this for repeat acceleration)
   action.amount2 = 0;

@@ -225,7 +225,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicSongs::OnAction(const CAction& action)
 {
-  if (action.id == ACTION_SCAN_ITEM)
+  if (action.actionId == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
     if (item > -1 && m_vecItems->Get(item)->m_bIsFolder)

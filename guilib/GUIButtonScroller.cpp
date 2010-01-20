@@ -114,7 +114,7 @@ CGUIButtonScroller::~CGUIButtonScroller(void)
 
 bool CGUIButtonScroller::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_SELECT_ITEM)
+  if (action.actionId == ACTION_SELECT_ITEM)
   {
     // send the appropriate message to the parent window
     vector<CGUIActionDescriptor> actions = m_vecButtons[GetActiveButton()]->clickActions;
@@ -127,13 +127,13 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     }
     return true;
   }
-  if (action.id == ACTION_CONTEXT_MENU)
+  if (action.actionId == ACTION_CONTEXT_MENU)
   { // send a click message to our parent
-    SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.id);
+    SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.actionId);
     return true;
   }
   // smooth scrolling (for analog controls)
-  if (action.id == ACTION_SCROLL_UP)
+  if (action.actionId == ACTION_SCROLL_UP)
   {
     m_fAnalogScrollSpeed += action.amount1 * action.amount1;
     bool handled = false;
@@ -147,7 +147,7 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     }
     return handled;
   }
-  if (action.id == ACTION_SCROLL_DOWN)
+  if (action.actionId == ACTION_SCROLL_DOWN)
   {
     m_fAnalogScrollSpeed += action.amount1 * action.amount1;
     bool handled = false;
@@ -900,7 +900,7 @@ bool CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
       else
         m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
       CAction action;
-      action.id = ACTION_SELECT_ITEM;
+      action.actionId = ACTION_SELECT_ITEM;
       OnAction(action);
       return true;
     }

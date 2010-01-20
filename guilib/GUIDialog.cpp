@@ -68,7 +68,7 @@ void CGUIDialog::OnWindowLoaded()
 
 bool CGUIDialog::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_CLOSE_DIALOG || action.actionId == ACTION_PREVIOUS_MENU)
   {
     Close();
     return true;

@@ -40,7 +40,7 @@ CGUIFixedListContainer::~CGUIFixedListContainer(void)
 
 bool CGUIFixedListContainer::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_PAGE_UP:
     {
