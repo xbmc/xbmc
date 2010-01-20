@@ -1536,7 +1536,6 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 #endif
 }
 
-
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];

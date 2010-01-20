@@ -33,7 +33,8 @@
 typedef enum _RenderingSystemType
 {
   RENDERING_SYSTEM_OPENGL,
-  RENDERING_SYSTEM_DIRECTX
+  RENDERING_SYSTEM_DIRECTX,
+  RENDERING_SYSTEM_OPENGLES
 } RenderingSystemType;
 
 /*

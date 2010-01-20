@@ -3,6 +3,7 @@ INCLUDES=-I../../.. -I. -I.. -I../../ -I../../../ -I../../linux -I../../../guili
 SRCS=LinuxRenderer.cpp \
      RenderManager.cpp \
      LinuxRendererGL.cpp \
+     LinuxRendererGLES.cpp \
      OverlayRenderer.cpp \
      OverlayRendererGL.cpp \
      OverlayRendererUtil.cpp \

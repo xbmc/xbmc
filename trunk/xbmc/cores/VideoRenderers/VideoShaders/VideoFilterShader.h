@@ -1,7 +1,7 @@
 #ifndef __VIDEOFILTER_SHADER_H__
 #define __VIDEOFILTER_SHADER_H__
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 #include "../../../../guilib/Shader.h"
 

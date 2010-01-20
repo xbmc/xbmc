@@ -32,12 +32,12 @@
 struct atomic_ptr
 {
   void* ptr;
-#if !defined(__ppc__) && !defined(__powerpc__)
+#if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__)
   long version;
 #endif  
 };
 
-#if defined(__ppc__) || defined(__powerpc__)
+#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__)
   #define atomic_ptr_to_long(p) (long) *((long*)&p)
 #else
   // This is ugly but correct as long as sizeof(void*) == sizeof(long)...

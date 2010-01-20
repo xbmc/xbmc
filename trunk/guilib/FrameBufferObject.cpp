@@ -21,11 +21,21 @@
 
 #include "system.h"
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 #include "../xbmc/Settings.h"
 #include "WindowingFactory.h"
 #include "FrameBufferObject.h"
 #include "utils/log.h"
+
+#if HAS_GLES == 2
+// For OpenGL ES2.0, FBO are not extensions but part of the API.
+#define glGenFramebuffersEXT		glGenFramebuffers
+#define glDeleteFramebuffersEXT		glDeleteFramebuffers
+#define glFramebufferTexture2DEXT	glFramebufferTexture2D
+#define glCheckFramebufferStatusEXT	glCheckFramebufferStatus
+#define GL_COLOR_ATTACHMENT0_EXT	GL_COLOR_ATTACHMENT0
+#define GL_FRAMEBUFFER_COMPLETE_EXT	GL_FRAMEBUFFER_COMPLETE
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // CFrameBufferObject

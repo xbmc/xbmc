@@ -260,6 +260,7 @@ exports:
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
+ifneq (arm, $(ARCH))
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
@@ -268,8 +269,11 @@ ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(AR
 	$(MAKE) -C xbmc/visualizations/Goom
 endif
 endif
+endif
 screensavers: exports
+ifneq (arm, $(ARCH))
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
+endif
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
@@ -315,10 +319,10 @@ ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifeq ($(findstring powerpc,$(ARCH)),)
+ifeq ($(or $(findstring powerpc,$(ARCH)),(arm, $(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
 endif
-ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
+ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH)),(arm, $(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
 imagelib: dllloader

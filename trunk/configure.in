@@ -88,6 +88,10 @@ case $host in
        ARCH="powerpc64-linux"
        AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
        ;;
+    arm-*-linux-gnu*)
+       ARCH="arm"
+       AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
+       ;;
     *)
        AC_MSG_ERROR(unsupported host ($host))
 esac
@@ -110,6 +114,12 @@ AC_ARG_ENABLE([gl],
                [enable OpenGL rendering (default is yes)])],
             [use_gl=$enableval],
             [use_gl=yes])
+            
+AC_ARG_ENABLE([gles],
+            [AS_HELP_STRING([--enable-gles],
+               [enable OpenGLES rendering (default is no)])],
+            [use_gles=$enableval],
+            [use_gles=no])
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
@@ -297,6 +307,10 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
+elif test "$host_cpu" = "arm" ; then
+# Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
+  CFLAGS="$CFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
+  CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
 fi
 
 # Add top source directory for all builds so we can use config.h
@@ -308,20 +322,25 @@ AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
-if test "$use_gl" = "yes"; then
-  if test "$host_vendor" = "apple" ; then
-    # linking to OpenGL.framework instead of libGL, libGLU
-    AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
-  else
-    AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
-    AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
-  fi
+if test "$use_gles" = "yes"; then
+  # GLES overwrites GL if both set to yes.
+  AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
 else
-  AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
-  AC_CHECK_LIB([SDL_gfx], [main])
+  if test "$use_gl" = "yes"; then
+    if test "$host_vendor" = "apple" ; then
+      # linking to OpenGL.framework instead of libGL, libGLU
+      AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+    else
+      AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
+    fi
+  else
+    AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
+    AC_CHECK_LIB([SDL_gfx], [main])
+  fi
 fi
-
 
 # platform independent libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
@@ -339,41 +358,41 @@ AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
-                  [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
+                  [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
-                  [INCLUDES+=" $FONTCONFIG_CFLAGS"; LIBS+=" $FONTCONFIG_LIBS"],
+                  [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
-                  [INCLUDES+=" $FRIBIDI_CFLAGS"; LIBS+=" $FRIBIDI_LIBS"],
+                  [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SQLITE3],    [sqlite3],
-                  [INCLUDES+=" $SQLITE3_CFLAGS"; LIBS+=" $SQLITE3_LIBS"],
+                  [INCLUDES="$INCLUDES $SQLITE3_CFLAGS"; LIBS="$LIBS $SQLITE3_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PNG],        [libpng],
-                  [INCLUDES+=" $PNG_CFLAGS"; LIBS+=" $PNG_LIBS"],
+                  [INCLUDES="$INCLUDES $PNG_CFLAGS"; LIBS="$LIBS $PNG_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRE],       [libpcre],
-                  [INCLUDES+=" $PCRE_CFLAGS"; LIBS+=" $PCRE_LIBS"]; \
+                  [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
                   AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CDIO],       [libcdio],
-                  [INCLUDES+=" $CDIO_CFLAGS"; LIBS+=" $CDIO_LIBS"],
+                  [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
-                  [INCLUDES+=" $SAMPLERATE_CFLAGS"; LIBS+=" $SAMPLERATE_LIBS"],
+                  [INCLUDES="$INCLUDES $SAMPLERATE_CFLAGS"; LIBS="$LIBS $SAMPLERATE_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MMS],        [libmms],
-                  [INCLUDES+=" $MMS_CFLAGS"; LIBS+=" $MMS_LIBS"],
+                  [INCLUDES="$INCLUDES $MMS_CFLAGS"; LIBS="$LIBS $MMS_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
-                  [INCLUDES+=" $FREETYPE2_CFLAGS"; LIBS+=" $FREETYPE2_LIBS"],
+                  [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([OGG],        [ogg],
-                  [INCLUDES+=" $OGG_CFLAGS"; LIBS+=" $OGG_LIBS"],
+                  [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([VORBIS],     [vorbis],
-                  [INCLUDES+=" $VORBIS_CFLAGS"; LIBS+=" $VORBIS_LIBS"],
+                  [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
                   AC_MSG_ERROR($missing_library))
 
 # platform dependent libraries
@@ -381,10 +400,10 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
-                    [INCLUDES+=" $VORBISFILE_CFLAGS"; LIBS+=" $VORBISFILE_LIBS"],
+                    [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([VORBISENC],     [vorbisenc],
-                    [INCLUDES+=" $VORBISENC_CFLAGS"; LIBS+=" $VORBISENC_LIBS"],
+                    [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
                     AC_MSG_ERROR($missing_library))
 else
   AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
@@ -399,37 +418,37 @@ else
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
-                  [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
+                  [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
                   AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([ENCA],         [enca],
-                    [INCLUDES+=" $ENCA_CFLAGS"; LIBS+=" $ENCA_LIBS"],
+                    [INCLUDES="$INCLUDES $ENCA_CFLAGS"; LIBS="$LIBS $ENCA_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XT],           [xt],
-                    [INCLUDES+=" $XT_CFLAGS"; LIBS+=" $XT_LIBS"],
+                    [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XTST],         [xtst],
-                    [INCLUDES+=" $XTST_CFLAGS"; LIBS+=" $XTST_LIBS"],
+                    [INCLUDES="$INCLUDES $XTST_CFLAGS"; LIBS="$LIBS $XTST_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XMU],          [xmu],
-                    [INCLUDES+=" $XMU_CFLAGS"; LIBS+=" $XMU_LIBS"],
+                    [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XINERAMA],     [xinerama],
-                    [INCLUDES+=" $XINERAMA_CFLAGS"; LIBS+=" $XINERAMA_LIBS"],
+                    [INCLUDES="$INCLUDES $XINERAMA_CFLAGS"; LIBS="$LIBS $XINERAMA_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([CURL],         [libcurl],
-                    [INCLUDES+=" $CURL_CFLAGS"; LIBS+=" $CURL_LIBS"],
+                    [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS $CURL_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([DBUS],         [dbus-1],
-                    [INCLUDES+=" $DBUS_CFLAGS"; LIBS+=" $DBUS_LIBS"],
+                    [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
-                    [INCLUDES+=" $HAL_STORAGE_CFLAGS"; LIBS+=" $HAL_STORAGE_LIBS"], 
+                    [INCLUDES="$INCLUDES $HAL_STORAGE_CFLAGS"; LIBS="$LIBS $HAL_STORAGE_LIBS"], 
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([SDL],          [sdl],
-                    [INCLUDES+=" $SDL_CFLAGS"; LIBS+=" $SDL_LIBS"],
+                    [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([HAL],          [hal],
-                    [INCLUDES+=" $HAL_CFLAGS"; LIBS+=" $HAL_LIBS"],
+                    [INCLUDES="$INCLUDES $HAL_CFLAGS"; LIBS="$LIBS $HAL_LIBS"],
                     AC_MSG_ERROR($missing_library))
 fi
 
@@ -801,11 +820,15 @@ else
   final_message="$final_message\n  Optimization:\tNo"
 fi
 
-if test "$use_gl" = "yes"; then
-  final_message="$final_message\n  OpenGL:\tYes"
+if test "$use_gles" = "yes"; then
+  final_message="$final_message\n  OpenGLES:\tYes"
 else
-  final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
-  SDL_DEFINES="-DHAS_SDL_2D"
+  if test "$use_gl" = "yes"; then
+    final_message="$final_message\n  OpenGL:\tYes"
+  else
+    final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
+    SDL_DEFINES="-DHAS_SDL_2D"
+  fi
 fi
 
 if test "$use_vdpau" = "yes"; then
@@ -1082,7 +1105,7 @@ if [[ $3 != "1" ]]; then
             popd
         fi
     else
-        AC_MSG_ERROR([[Submodule $1 doesn't exist]])
+        AC_MSG_ERROR([[Submodule $1 doesnt exist]])
     fi
 else
     AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])
@@ -1190,7 +1213,12 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
 
   else
+  
+if test "$host_cpu" = "arm" ; then FFMPEG_EXTRACFLAGS="-mfpu=neon -mfloat-abi=softfp" ; fi
+  
     ./configure \
+      `if test "$host_cpu" = "arm" ; then echo --arch=arm --cpu=cortex-a8; fi` \
+      --extra-cflags="$FFMPEG_EXTRACFLAGS" \
       --disable-static \
       --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
@@ -1209,7 +1237,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
-      `if test "$host_cpu" = "powerpc" || test "$host_cpu" = "powerpc64"; then echo --enable-pic; fi` \
+      `if test "$host_cpu" = "powerpc" || test "$host_cpu" = "powerpc64" || test "$host_cpu" = "arm"; then echo --enable-pic; fi` \
       --cc="$CC"
   fi
 ], [$USE_EXTERNAL_FFMPEG])
@@ -1411,6 +1439,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 ], [$BUILD_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
+if test "$host_cpu" != "arm" ; then
   if test "$host_vendor" = "apple" ; then
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -1443,6 +1472,7 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-lattice \
       --disable-skyrocket
   fi
+fi
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [

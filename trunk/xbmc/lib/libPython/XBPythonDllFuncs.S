@@ -12,6 +12,12 @@
 		lwz 12,(p_##name)@l(11);	\
 		mtctr 12;			\
 		bctr 
+#elif defined(__arm__)
+#define FUNCTION(name)          \
+    .globl name;            \
+    .type name, %function;      \
+    name:               \
+        b (p_##name)
 #else
 #define FUNCTION(name)			\
 	.globl name;			\
