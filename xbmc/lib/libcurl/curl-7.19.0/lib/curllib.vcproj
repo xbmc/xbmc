@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\zlib\;&quot;..\..\yassl-1.9.2\include&quot;;.;..\include"
+				AdditionalIncludeDirectories="..\..\..\zlib\;&quot;..\..\yassl-1.9.8\include&quot;;.;..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;BUILDING_LIBCURL"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"

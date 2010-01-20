@@ -1,0 +1,62 @@
+
+***** Create a self signed cert ************
+
+1) openssl genrsa 512 > client-key.pem
+
+2) openssl req -new -x509 -nodes -md5 -days 1000 -key client-key.pem > client-cert.pem
+
+-- adding metadata to beginning
+
+3) openssl x509 -in client-cert.pem -text > tmp.pem
+
+4) mv tmp.pem client-cert.pem
+
+
+***** Create a CA, signing authority **********
+
+same as self signed, use ca prefix instead of client
+
+
+***** Create a cert signed by CA **************
+
+1) openssl req -newkey rsa:512 -md5 -days 1000 -nodes -keyout server-key.pem > server-req.pem
+
+2) copy ca-key.pem ca-cert.srl   (why ????)
+
+3) openssl x509 -req -in server-req.pem -days 1000 -md5 -CA ca-cert.pem -CAkey ca-key.pem -set_serial 01 > server-cert.pem
+
+
+
+***** To create a dsa cert ********************
+
+1) openssl dsaparam 512 > dsa512.param       # creates group params
+
+2) openssl gendsa dsa512.param > dsa512.pem  # creates private key
+
+3) openssl req -new -x509 -nodes -days 1000 -key dsa512.pem > dsa-cert.pem 
+
+
+
+
+***** To convert from PEM to DER **************
+
+a) openssl x509 -in cert.pem -inform PEM -out cert.der -outform DER
+
+to convert rsa private PEM to DER :
+
+b) openssl rsa -in key.pem -outform DER -out key.der
+
+
+**** To encrypt rsa key already in pem **********
+
+a) openssl rsa <server-key.pem.bak -des >server-keyEnc.pem
+
+note location of des, pass = yassl123
+
+
+*** To make a public key from a private key ******
+
+
+openssl rsa -in 1024rsa.priv -pubout -out 1024rsa.pub
+
+

@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "taocrypt", "taocrypt.vcproj", "{EEE1B039-5105-4576-9CF6-8DA69985B7F9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{E723AAC6-7B3B-4F45-A33E-275E9DAE132A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EEE1B039-5105-4576-9CF6-8DA69985B7F9} = {EEE1B039-5105-4576-9CF6-8DA69985B7F9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "benchmark", "benchmark\benchmark.vcproj", "{A56D2AE7-183E-4B04-A814-FD62ACBE0588}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EEE1B039-5105-4576-9CF6-8DA69985B7F9} = {EEE1B039-5105-4576-9CF6-8DA69985B7F9}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EEE1B039-5105-4576-9CF6-8DA69985B7F9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EEE1B039-5105-4576-9CF6-8DA69985B7F9}.Debug|Win32.Build.0 = Debug|Win32
+		{EEE1B039-5105-4576-9CF6-8DA69985B7F9}.Release|Win32.ActiveCfg = Release|Win32
+		{EEE1B039-5105-4576-9CF6-8DA69985B7F9}.Release|Win32.Build.0 = Release|Win32
+		{E723AAC6-7B3B-4F45-A33E-275E9DAE132A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E723AAC6-7B3B-4F45-A33E-275E9DAE132A}.Debug|Win32.Build.0 = Debug|Win32
+		{E723AAC6-7B3B-4F45-A33E-275E9DAE132A}.Release|Win32.ActiveCfg = Release|Win32
+		{E723AAC6-7B3B-4F45-A33E-275E9DAE132A}.Release|Win32.Build.0 = Release|Win32
+		{A56D2AE7-183E-4B04-A814-FD62ACBE0588}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A56D2AE7-183E-4B04-A814-FD62ACBE0588}.Debug|Win32.Build.0 = Debug|Win32
+		{A56D2AE7-183E-4B04-A814-FD62ACBE0588}.Release|Win32.ActiveCfg = Release|Win32
+		{A56D2AE7-183E-4B04-A814-FD62ACBE0588}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

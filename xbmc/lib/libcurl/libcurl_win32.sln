@@ -1,10 +1,14 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yassl", "yassl-1.9.2\yassl.vcproj", "{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yassl", "yassl-1.9.8\yassl.vcproj", "{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1} = {F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "taocrypt", "yassl-1.9.2\taocrypt\taocrypt.vcproj", "{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "taocrypt", "yassl-1.9.8\taocrypt\taocrypt.vcproj", "{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
