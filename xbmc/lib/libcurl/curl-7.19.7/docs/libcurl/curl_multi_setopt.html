@@ -1,0 +1,73 @@
+<html><head>
+<title>curl_multi_setopt man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_setopt - set options for a curl multi handle <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">#include &lt;curl/curl.h&gt; 
+<p class="level0">CURLMcode curl_multi_setopt(CURLM * multi_handle, CURLMoption option, param); <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">curl_multi_setopt() is used to tell a libcurl multi handle how to behave. By using the appropriate options to <a class="emphasis" href="./curl_multi_setopt.html">curl_multi_setopt(3)</a>, you can change libcurl's behaviour when using that multi handle.  All options are set with the <span Class="emphasis">option</span> followed by the parameter <span Class="emphasis">param</span>. That parameter can be a <span Class="bold">long</span>, a <span Class="bold">function pointer</span>, an <span Class="bold">object pointer</span> or a <span Class="bold">curl_off_t</span> type, depending on what the specific option expects. Read this manual carefully as bad input values may cause libcurl to behave badly! You can only set one option in each function call. 
+<p class="level0"><a name="OPTIONS"></a><h2 class="nroffsh">OPTIONS</h2>
+<p class="level0">
+<p class="level0"><a name="CURLMOPTSOCKETFUNCTION"></a><span class="nroffip">CURLMOPT_SOCKETFUNCTION</span> 
+<p class="level1">Pass a pointer to a function matching the <span Class="bold">curl_socket_callback</span> prototype. The <a class="emphasis" href="./curl_multi_socket_action.html">curl_multi_socket_action(3)</a> function informs the application about updates in the socket (file descriptor) status by doing none, one, or multiple calls to the curl_socket_callback given in the <span Class="bold">param</span> argument. They update the status with changes since the previous time a <a class="emphasis" href="./curl_multi_socket.html">curl_multi_socket(3)</a> function was called. If the given callback pointer is NULL, no callback will be called. Set the callback's <span Class="bold">userp</span> argument with <a class="emphasis" href="#CURLMOPTSOCKETDATA">CURLMOPT_SOCKETDATA</a>.  See <a class="emphasis" href="./curl_multi_socket.html">curl_multi_socket(3)</a> for more callback details. 
+<p class="level0"><a name="CURLMOPTSOCKETDATA"></a><span class="nroffip">CURLMOPT_SOCKETDATA</span> 
+<p class="level1">Pass a pointer to whatever you want passed to the <span Class="bold">curl_socket_callback</span>'s forth argument, the userp pointer. This is not used by libcurl but only passed-thru as-is. Set the callback pointer with <a class="emphasis" href="#CURLMOPTSOCKETFUNCTION">CURLMOPT_SOCKETFUNCTION</a>. 
+<p class="level0"><a name="CURLMOPTPIPELINING"></a><span class="nroffip">CURLMOPT_PIPELINING</span> 
+<p class="level1">Pass a long set to 1 to enable or 0 to disable. Enabling pipelining on a multi handle will make it attempt to perform HTTP Pipelining as far as possible for transfers using this handle. This means that if you add a second request that can use an already existing connection, the second request will be "piped" on the same connection rather than being executed in parallel. (Added in 7.16.0) 
+<p class="level0"><a name="CURLMOPTTIMERFUNCTION"></a><span class="nroffip">CURLMOPT_TIMERFUNCTION</span> 
+<p class="level1">Pass a pointer to a function matching the <span Class="bold">curl_multi_timer_callback</span> prototype.  This function will then be called when the timeout value changes. The timeout value is at what latest time the application should call one of the "performing" functions of the multi interface (<a class="emphasis" href="./curl_multi_socket_action.html">curl_multi_socket_action(3)</a> and <a class="emphasis" href="./curl_multi_perform.html">curl_multi_perform(3)</a>) - to allow libcurl to keep timeouts and retries etc to work. A timeout value of -1 means that there is no timeout at all, and 0 means that the timeout is already reached. Libcurl attempts to limit calling this only when the fixed future timeout time actually changes. See also <a class="emphasis" href="#CURLMOPTTIMERDATA">CURLMOPT_TIMERDATA</a>. This callback can be used instead of, or in addition to, <a class="emphasis" href="./curl_multi_timeout.html">curl_multi_timeout(3)</a>. (Added in 7.16.0) 
+<p class="level0"><a name="CURLMOPTTIMERDATA"></a><span class="nroffip">CURLMOPT_TIMERDATA</span> 
+<p class="level1">Pass a pointer to whatever you want passed to the <span Class="bold">curl_multi_timer_callback</span>'s third argument, the userp pointer.  This is not used by libcurl but only passed-thru as-is. Set the callback pointer with <a class="emphasis" href="#CURLMOPTTIMERFUNCTION">CURLMOPT_TIMERFUNCTION</a>. (Added in 7.16.0) 
+<p class="level0"><a name="CURLMOPTMAXCONNECTS"></a><span class="nroffip">CURLMOPT_MAXCONNECTS</span> 
+<p class="level1">Pass a long. The set number will be used as the maximum amount of simultaneously open connections that libcurl may cache. Default is 10, and libcurl will enlarge the size for each added easy handle to make it fit 4 times the number of added easy handles. 
+<p class="level1">By setting this option, you can prevent the cache size from growing beyond the limit set by you. 
+<p class="level1">When the cache is full, curl closes the oldest one in the cache to prevent the number of open connections from increasing. 
+<p class="level1">This option is for the multi handle's use only, when using the easy interface you should instead use the <span Class="emphasis">CURLOPT_MAXCONNECTS</span> option. 
+<p class="level1">(Added in 7.16.3) <a name="RETURNS"></a><h2 class="nroffsh">RETURNS</h2>
+<p class="level0">The standard CURLMcode for multi interface error codes. Note that it returns a CURLM_UNKNOWN_OPTION if you try setting an option that this version of libcurl doesn't know of. <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function was added in libcurl 7.15.4. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_cleanup.html">curl_multi_cleanup (3)</a> <a class="manpage" href="./curl_multi_init.html">  curl_multi_init (3)</a> <span Class="manpage"> </span> <a class="manpage" href="./curl_multi_socket.html">curl_multi_socket (3)</a> <a class="manpage" href="./curl_multi_info_read.html">  curl_multi_info_read (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

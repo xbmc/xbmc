@@ -1,0 +1,103 @@
+<html><head>
+<title>libcurl man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">libcurl - client-side URL transfers <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">This is a short overview on how to use libcurl in your C programs. There are specific man pages for each function mentioned in here. There are also the <span Class="emphasis">libcurl-easy(3)</span> man page, the <span Class="emphasis">libcurl-multi(3)</span> man page, the <span Class="emphasis">libcurl-share(3)</span> man page and the <span Class="emphasis">libcurl-tutorial(3)</span> man page for in-depth understanding on how to program with libcurl. 
+<p class="level0">There are more than thirty custom bindings available that bring libcurl access to your favourite language. Look elsewhere for documentation on those. 
+<p class="level0">libcurl has a global constant environment that you must set up and maintain while using libcurl.  This essentially means you call <a class="emphasis" href="./curl_global_init.html">curl_global_init(3)</a> at the start of your program and <a class="emphasis" href="./curl_global_cleanup.html">curl_global_cleanup(3)</a> at the end.  See GLOBAL CONSTANTS below for details. 
+<p class="level0">To transfer files, you always set up an "easy handle" using <a class="emphasis" href="./curl_easy_init.html">curl_easy_init(3)</a>, but when you want the file(s) transferred you have the option of using the "easy" interface, or the "multi" interface. 
+<p class="level0">The easy interface is a synchronous interface with which you call <a class="emphasis" href="./curl_easy_perform.html">curl_easy_perform(3)</a> and let it perform the transfer. When it is completed, the function returns and you can continue. More details are found in the <span Class="emphasis">libcurl-easy(3)</span> man page. 
+<p class="level0">The multi interface on the other hand is an asynchronous interface, that you call and that performs only a little piece of the transfer on each invoke. It is perfect if you want to do things while the transfer is in progress, or similar. The multi interface allows you to select() on libcurl action, and even to easily download multiple files simultaneously using a single thread. See further details in the <span Class="emphasis">libcurl-multi(3)</span> man page. 
+<p class="level0">You can have multiple easy handles share certain data, even if they are used in different threads. This magic is setup using the share interface, as described in the <span Class="emphasis">libcurl-share(3)</span> man page. 
+<p class="level0">There is also a series of other helpful functions to use, including these: 
+<p class="level1">
+<p class="level0"><a name="curlversioninfo"></a><span class="nroffip">curl_version_info()</span> 
+<p class="level1">gets detailed libcurl (and other used libraries) version info 
+<p class="level0"><a name="curlgetdate"></a><span class="nroffip">curl_getdate()</span> 
+<p class="level1">converts a date string to time_t 
+<p class="level0"><a name="curleasygetinfo"></a><span class="nroffip">curl_easy_getinfo()</span> 
+<p class="level1">get information about a performed transfer 
+<p class="level0"><a name="curlformadd"></a><span class="nroffip">curl_formadd()</span> 
+<p class="level1">helps building an HTTP form POST 
+<p class="level0"><a name="curlformfree"></a><span class="nroffip">curl_formfree()</span> 
+<p class="level1">free a list built with <a class="emphasis" href="./curl_formadd.html">curl_formadd(3)</a> 
+<p class="level0"><a name="curlslistappend"></a><span class="nroffip">curl_slist_append()</span> 
+<p class="level1">builds a linked list 
+<p class="level0"><a name="curlslistfreeall"></a><span class="nroffip">curl_slist_free_all()</span> 
+<p class="level1">frees a whole curl_slist 
+<p class="level0">
+<p class="level0"><a name="LINKING"></a><h2 class="nroffsh">LINKING WITH LIBCURL</h2>
+<p class="level0">On unix-like machines, there's a tool named curl-config that gets installed with the rest of the curl stuff when 'make install' is performed. 
+<p class="level0">curl-config is added to make it easier for applications to link with libcurl and developers to learn about libcurl and how to use it. 
+<p class="level0">Run 'curl-config --libs' to get the (additional) linker options you need to link with the particular version of libcurl you've installed. See the <span Class="emphasis">curl-config(1)</span> man page for further details. 
+<p class="level0">Unix-like operating system that ship libcurl as part of their distributions often don't provide the curl-config tool, but simply install the library and headers in the common path for this purpose. 
+<p class="level0"><a name="LIBCURL"></a><h2 class="nroffsh">LIBCURL SYMBOL NAMES</h2>
+<p class="level0">All public functions in the libcurl interface are prefixed with 'curl_' (with a lowercase c). You can find other functions in the library source code, but other prefixes indicate that the functions are private and may change without further notice in the next release. 
+<p class="level0">Only use documented functions and functionality! <a name="PORTABILITY"></a><h2 class="nroffsh">PORTABILITY</h2>
+<p class="level0">libcurl works <span Class="bold">exactly</span> the same, on any of the platforms it compiles and builds on. <a name="THREADS"></a><h2 class="nroffsh">THREADS</h2>
+<p class="level0">Never ever call curl-functions simultaneously using the same handle from several threads. libcurl is thread-safe and can be used in any number of threads, but you must use separate curl handles if you want to use libcurl in more than one thread simultaneously. 
+<p class="level0">The global environment functions are not thread-safe.  See GLOBAL CONSTANTS below for details. 
+<p class="level0"><a name="PERSISTENT"></a><h2 class="nroffsh">PERSISTENT CONNECTIONS</h2>
+<p class="level0">Persistent connections means that libcurl can re-use the same connection for several transfers, if the conditions are right. 
+<p class="level0">libcurl will <span Class="bold">always</span> attempt to use persistent connections. Whenever you use <a class="emphasis" href="./curl_easy_perform.html">curl_easy_perform(3)</a> or <a class="emphasis" href="./curl_multi_perform.html">curl_multi_perform(3)</a>, libcurl will attempt to use an existing connection to do the transfer, and if none exists it'll open a new one that will be subject for re-use on a possible following call to <a class="emphasis" href="./curl_easy_perform.html">curl_easy_perform(3)</a> or <a class="emphasis" href="./curl_multi_perform.html">curl_multi_perform(3)</a>. 
+<p class="level0">To allow libcurl to take full advantage of persistent connections, you should do as many of your file transfers as possible using the same curl handle. When you call <a class="emphasis" href="./curl_easy_cleanup.html">curl_easy_cleanup(3)</a>, all the possibly open connections held by libcurl will be closed and forgotten. 
+<p class="level0">Note that the options set with <a class="emphasis" href="./curl_easy_setopt.html">curl_easy_setopt(3)</a> will be used on every repeated <a class="emphasis" href="./curl_easy_perform.html">curl_easy_perform(3)</a> call. 
+<p class="level0"><a name="GLOBAL"></a><h2 class="nroffsh">GLOBAL CONSTANTS</h2>
+<p class="level0">There are a variety of constants that libcurl uses, mainly through its internal use of other libraries, which are too complicated for the library loader to set up.  Therefore, a program must call a library function after the program is loaded and running to finish setting up the library code.  For example, when libcurl is built for SSL capability via the GNU TLS library, there is an elaborate tree inside that library that describes the SSL protocol. 
+<p class="level0"><span Class="emphasis">curl_global_init()</span> is the function that you must call.  This may allocate resources (e.g. the memory for the GNU TLS tree mentioned above), so the companion function <span Class="emphasis">curl_global_cleanup()</span> releases them. 
+<p class="level0">The basic rule for constructing a program that uses libcurl is this: Call <span Class="emphasis">curl_global_init()</span>, with a <span Class="emphasis">CURL_GLOBAL_ALL</span> argument, immediately after the program starts, while it is still only one thread and before it uses libcurl at all.  Call <span Class="emphasis">curl_global_cleanup()</span> immediately before the program exits, when the program is again only one thread and after its last use of libcurl. 
+<p class="level0">You can call both of these multiple times, as long as all calls meet these requirements and the number of calls to each is the same. 
+<p class="level0">It isn't actually required that the functions be called at the beginning and end of the program -- that's just usually the easiest way to do it. It <span Class="emphasis">is</span> required that the functions be called when no other thread in the program is running. 
+<p class="level0">These global constant functions are <span Class="emphasis">not thread safe</span>, so you must not call them when any other thread in the program is running.  It isn't good enough that no other thread is using libcurl at the time, because these functions internally call similar functions of other libraries, and those functions are similarly thread-unsafe.  You can't generally know what these libraries are, or whether other threads are using them. 
+<p class="level0">The global constant situation merits special consideration when the code you are writing to use libcurl is not the main program, but rather a modular piece of a program, e.g. another library.  As a module, your code doesn't know about other parts of the program -- it doesn't know whether they use libcurl or not.  And its code doesn't necessarily run at the start and end of the whole program. 
+<p class="level0">A module like this must have global constant functions of its own, just like <span Class="emphasis">curl_global_init()</span> and <span Class="emphasis">curl_global_cleanup()</span>. The module thus has control at the beginning and end of the program and has a place to call the libcurl functions.  Note that if multiple modules in the program use libcurl, they all will separately call the libcurl functions, and that's OK because only the first <span Class="emphasis">curl_global_init()</span> and the last <span Class="emphasis">curl_global_cleanup()</span> in a program change anything.  (libcurl uses a reference count in static memory). 
+<p class="level0">In a C++ module, it is common to deal with the global constant situation by defining a special class that represents the global constant environment of the module.  A program always has exactly one object of the class, in static storage.  That way, the program automatically calls the constructor of the object as the program starts up and the destructor as it terminates.  As the author of this libcurl-using module, you can make the constructor call <span Class="emphasis">curl_global_init()</span> and the destructor call <span Class="emphasis">curl_global_cleanup()</span> and satisfy libcurl's requirements without your user having to think about it. 
+<p class="level0"><span Class="emphasis">curl_global_init()</span> has an argument that tells what particular parts of the global constant environment to set up.  In order to successfully use any value except <span Class="emphasis">CURL_GLOBAL_ALL</span> (which says to set up the whole thing), you must have specific knowledge of internal workings of libcurl and all other parts of the program of which it is part. 
+<p class="level0">A special part of the global constant environment is the identity of the memory allocator.  <span Class="emphasis">curl_global_init()</span> selects the system default memory allocator, but you can use <span Class="emphasis">curl_global_init_mem()</span> to supply one of your own.  However, there is no way to use <span Class="emphasis">curl_global_init_mem()</span> in a modular program -- all modules in the program that might use libcurl would have to agree on one allocator. 
+<p class="level0">There is a failsafe in libcurl that makes it usable in simple situations without you having to worry about the global constant environment at all: <span Class="emphasis">curl_easy_init()</span> sets up the environment itself if it hasn't been done yet.  The resources it acquires to do so get released by the operating system automatically when the program exits. 
+<p class="level0">This failsafe feature exists mainly for backward compatibility because there was a time when the global functions didn't exist.  Because it is sufficient only in the simplest of programs, it is not recommended for any program to rely on it. <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

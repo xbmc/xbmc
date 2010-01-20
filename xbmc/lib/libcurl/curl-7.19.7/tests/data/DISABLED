@@ -1,0 +1,8 @@
+# $Id: DISABLED,v 1.45 2009-09-26 20:51:51 bagder Exp $
+# This file can be used to specify test cases that should not run when all
+# test cases are run by runtests.pl. Just add the plain test case numbers, one
+# per line.
+# Lines starting with '#' letters are treated as comments.
+563
+564
+

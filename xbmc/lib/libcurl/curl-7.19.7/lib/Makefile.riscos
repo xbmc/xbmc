@@ -1,0 +1,174 @@
+# Makefile for project libcurl
+# Generated on Sun,13 Jan 2002.16:57:00 by EasyGCC (0.1.3 [beta 2] (3 Jan 2002))
+# Contact: easygcc@melotech.co.uk
+
+# Project objects:
+objs =	o.base64 o.connect o.cookie o.dict \
+	o.dllinit o.easy o.escape o.file \
+	o.formdata o.ftp o.getenv \
+	o.getinfo o.getpass o.hostip \
+	o.hostip4 o.hostsyn o.http \
+	o.http_chunks o.inet_ntop o.inet_pton o.if2ip o.krb4 o.ldap \
+	o.memdebug o.mprintf o.netrc o.parsedate o.progress \
+	o.security o.select o.sendf o.speedcheck o.ssluse \
+	o.strequal o.strtok o.telnet o.timeval \
+	o.transfer o.url o.version o.strtoofft o.sslgen o.gtls \
+	o.rawstr o.curl_addrinfo o.slist o.nonblock o.curl_rand \
+	o.curl_memrchr
+
+
+# Compile options:
+linkopts	= -o libcurl
+compileropts	= -mpoke-function-name -IUtilLib: -mthrowback 
+
+# Project target:
+libcurl:		$(objs)
+		makealf $(linkopts) $(objs)
+
+# Static dependancies:
+o.base64:	c.base64
+		gcc $(compileropts) -c -o base64.o c.base64
+
+o.connect:	c.connect
+		gcc $(compileropts) -c -o connect.o c.connect
+
+o.cookie:	c.cookie
+		gcc $(compileropts) -c -o cookie.o c.cookie
+
+o.curl_addrinfo:	c.curl_addrinfo
+		gcc $(compileropts) -c -o curl_addrinfo.o c.curl_addrinfo
+
+o.curl_memrchr:	c.curl_memrchr
+		gcc $(compileropts) -c -o curl_memrchr.o c.curl_memrchr
+
+o.curl_rand:	c.curl_rand
+		gcc $(compileropts) -c -o curl_rand.o c.curl_rand
+
+o.dict:	c.dict
+		gcc $(compileropts) -c -o dict.o c.dict
+
+o.dllinit:	c.dllinit
+		gcc $(compileropts) -c -o dllinit.o c.dllinit
+
+o.easy:	c.easy
+		gcc $(compileropts) -c -o easy.o c.easy
+
+o.escape:	c.escape
+		gcc $(compileropts) -c -o escape.o c.escape
+
+o.file:	c.file
+		gcc $(compileropts) -c -o file.o c.file
+
+o.formdata:	c.formdata
+		gcc $(compileropts) -c -o formdata.o c.formdata
+
+o.ftp:	c.ftp
+		gcc $(compileropts) -c -o ftp.o c.ftp
+
+o.getenv:	c.getenv
+		gcc $(compileropts) -c -o getenv.o c.getenv
+
+o.getinfo:	c.getinfo
+		gcc $(compileropts) -c -o getinfo.o c.getinfo
+
+o.getpass:	c.getpass
+		gcc $(compileropts) -c -o getpass.o c.getpass
+
+o.hostip:	c.hostip
+		gcc $(compileropts) -c -o hostip.o c.hostip
+
+o.hostip4:	c.hostip4
+		gcc $(compileropts) -c -o hostip4.o c.hostip4
+
+o.hostsyn:	c.hostsyn
+		gcc $(compileropts) -c -o hostsyn.o c.hostsyn
+
+o.http:	c.http
+		gcc $(compileropts) -c -o http.o c.http
+
+o.http_chunks:	c.http_chunks
+		gcc $(compileropts) -c -o http_chunks.o c.http_chunks
+
+o.if2ip:	c.if2ip
+		gcc $(compileropts) -c -o if2ip.o c.if2ip
+
+o.inet_ntop:	c.inet_ntop
+		gcc $(compileropts) -c -o inet_ntop.o c.inet_ntop
+
+o.inet_pton:	c.inet_pton
+		gcc $(compileropts) -c -o inet_pton.o c.inet_pton
+
+o.krb4:	c.krb4
+		gcc $(compileropts) -c -o krb4.o c.krb4
+
+o.ldap:	c.ldap
+		gcc $(compileropts) -IOpenLDAP: -c -o ldap.o c.ldap
+
+o.memdebug:	c.memdebug
+		gcc $(compileropts) -c -o memdebug.o c.memdebug
+
+o.mprintf:	c.mprintf
+		gcc $(compileropts) -c -o mprintf.o c.mprintf
+
+o.netrc:	c.netrc
+		gcc $(compileropts) -c -o netrc.o c.netrc
+
+o.parsedate:	c.parsedate
+		gcc $(compileropts) -c -o parsedate.o c.parsedate
+
+o.progress:	c.progress
+		gcc $(compileropts) -c -o progress.o c.progress
+
+o.security:	c.security
+		gcc $(compileropts) -c -o security.o c.security
+
+o.select:	c.select
+		gcc $(compileropts) -c -o select.o c.select
+
+o.sendf:	c.sendf
+		gcc $(compileropts) -c -o sendf.o c.sendf
+
+o.slist:	c.slist
+		gcc $(compileropts) -c -o slist.o c.slist
+
+o.speedcheck:	c.speedcheck
+		gcc $(compileropts) -c -o speedcheck.o c.speedcheck
+
+o.gtls:	c.gtls
+		gcc $(compileropts) -c -o gtls.o c.gtls
+
+o.sslgen:	c.sslgen
+		gcc $(compileropts) -c -o sslgen.o c.sslgen
+
+o.ssluse:	c.ssluse
+		gcc $(compileropts) -c -o ssluse.o c.ssluse
+
+o.nonblock:	c.nonblock
+		gcc $(compileropts) -c -o nonblock.o c.nonblock
+
+o.rawstr:	c.rawstr
+		gcc $(compileropts) -c -o rawstr.o c.rawstr
+
+o.strequal:	c.strequal
+		gcc $(compileropts) -c -o strequal.o c.strequal
+
+o.strtok:	c.strtok
+		gcc $(compileropts) -c -o strtok.o c.strtok
+
+o.strtoofft:	c.strtoofft
+		gcc $(compileropts) -c -o strtoofft.o c.strtoofft
+
+o.telnet:	c.telnet
+		gcc $(compileropts) -c -o telnet.o c.telnet
+
+o.timeval:	c.timeval
+		gcc $(compileropts) -c -o timeval.o c.timeval
+
+o.transfer:	c.transfer
+		gcc $(compileropts) -c -o transfer.o c.transfer
+
+o.url:	c.url
+		gcc $(compileropts) -c -o url.o c.url
+
+o.version:	c.version
+		gcc $(compileropts) -c -o version.o c.version

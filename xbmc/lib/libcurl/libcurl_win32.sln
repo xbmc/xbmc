@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "taocrypt", "yassl-1.9.8\tao
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curllib", "curl-7.19.0\lib\curllib.vcproj", "{429A304A-C1DA-43D6-9704-35BB82BAF43C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curllib", "curl-7.19.7\lib\curllib.vcproj", "{429A304A-C1DA-43D6-9704-35BB82BAF43C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4} = {9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}
 		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1} = {F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}

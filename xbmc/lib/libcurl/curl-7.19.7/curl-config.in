@@ -1,0 +1,157 @@
+#! /bin/sh
+#***************************************************************************
+#                                  _   _ ____  _
+#  Project                     ___| | | |  _ \| |
+#                             / __| | | | |_) | |
+#                            | (__| |_| |  _ <| |___
+#                             \___|\___/|_| \_\_____|
+#
+# Copyright (C) 2001 - 2009, Daniel Stenberg, <daniel@haxx.se>, et al.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://curl.haxx.se/docs/copyright.html.
+#
+# You may opt to use, copy, modify, merge, publish, distribute and/or sell
+# copies of the Software, and permit persons to whom the Software is
+# furnished to do so, under the terms of the COPYING file.
+#
+# This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
+# KIND, either express or implied.
+#
+# $Id: curl-config.in,v 1.36 2009-03-20 12:42:29 bagder Exp $
+###########################################################################
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+includedir=@includedir@
+
+usage()
+{
+    cat <<EOF
+Usage: curl-config [OPTION]
+
+Available values for OPTION include:
+
+  --ca        ca bundle install path
+  --cc        compiler
+  --cflags    pre-processor and compiler flags
+  --checkfor [version] check for (lib)curl of the specified version
+  --features  newline separated list of enabled features
+  --help      display this help and exit
+  --libs      library linking information
+  --prefix    curl install prefix
+  --protocols newline separated list of enabled protocols
+  --static-libs static libcurl library linking information
+  --version   output version information
+  --vernum    output the version information as a number (hexadecimal)
+EOF
+
+    exit $1
+}
+
+if test $# -eq 0; then
+    usage 1
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+    # this deals with options in the style
+    # --option=value and extracts the value part
+    # [not currently used]
+    -*=*) value=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) value= ;;
+    esac
+
+    case "$1" in
+    --ca)
+	echo "@CURL_CA_BUNDLE@"
+	;;
+
+    --cc)
+	echo "@CC@"
+	;;
+
+    --prefix)
+	echo "$prefix"
+	;;
+
+    --feature|--features)
+        for feature in @SUPPORT_FEATURES@ ""; do
+            test -n "$feature" && echo "$feature"
+        done
+	;;
+
+    --protocols)
+        for protocol in @SUPPORT_PROTOCOLS@; do
+            echo "$protocol"
+        done
+	;;
+    --version)
+	echo libcurl @VERSION@
+	exit 0
+	;;
+
+    --checkfor)
+        checkfor=$2
+        cmajor=`echo $checkfor | cut -d. -f1`
+        cminor=`echo $checkfor | cut -d. -f2`
+        # when extracting the patch part we strip off everything after a
+	# dash as that's used for things like version 1.2.3-CVS
+	cpatch=`echo $checkfor | cut -d. -f3 | cut -d- -f1`
+        checknum=`echo "$cmajor*256*256 + $cminor*256 + ${cpatch:-0}" | bc`
+        numuppercase=`echo @VERSIONNUM@ | tr 'a-f' 'A-F'`
+        nownum=`echo "obase=10; ibase=16; $numuppercase" | bc`
+
+	if test "$nownum" -ge "$checknum"; then
+	  # silent success
+	  exit 0
+	else
+	  echo "requested version $checkfor is newer than existing @VERSION@"
+	  exit 1
+	fi
+	;;
+
+    --vernum)
+	echo @VERSIONNUM@
+	exit 0
+	;;
+
+    --help)
+	usage 0
+	;;
+
+    --cflags)
+       	if test "X@includedir@" = "X/usr/include"; then
+          echo ""
+        else
+          echo "-I@includedir@"
+        fi
+       	;;
+
+    --libs)
+	if test "X@libdir@" != "X/usr/lib" -a "X@libdir@" != "X/usr/lib64"; then
+	   CURLLIBDIR="-L@libdir@ "
+	else
+	   CURLLIBDIR=""
+	fi
+	if test "X@REQUIRE_LIB_DEPS@" = "Xyes"; then
+	  echo ${CURLLIBDIR}-lcurl @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
+	else
+	  echo ${CURLLIBDIR}-lcurl @LDFLAGS@ @LIBS@
+	fi
+	;;
+
+    --static-libs)
+	echo @libdir@/libcurl.@libext@ @LDFLAGS@ @LIBCURL_LIBS@ @LIBS@
+	;;
+
+    *)
+        echo "unknown option: $1"
+	usage 1
+	;;
+    esac
+    shift
+done
+
+exit 0

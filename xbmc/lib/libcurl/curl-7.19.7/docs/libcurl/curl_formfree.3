@@ -1,0 +1,20 @@
+.\" You can view this file with:
+.\" nroff -man [file]
+.\" $Id: curl_formfree.3,v 1.4 2008-12-28 21:56:56 bagder Exp $
+.\"
+.TH curl_formfree 3 "6 April 2001" "libcurl 7.7.1" "libcurl Manual"
+.SH NAME
+curl_formfree - free a previously build multipart/formdata HTTP POST chain
+.SH SYNOPSIS
+.B #include <curl/curl.h>
+.sp
+.BI "void curl_formfree(struct curl_httppost *" form);
+.ad
+.SH DESCRIPTION
+curl_formfree() is used to clean up data previously built/appended with
+\fIcurl_formadd(3)\fP. This must be called when the data has been used, which
+typically means after \fIcurl_easy_perform(3)\fP has been called.
+.SH RETURN VALUE
+None
+.SH "SEE ALSO"
+.BR curl_formadd "(3) "

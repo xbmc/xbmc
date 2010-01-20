@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="libcurl"
+	ProjectGUID="{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool Name="VCPreBuildEventTool"
+			/>
+			<Tool Name="VCCustomBuildTool"
+			/>
+			<Tool Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool Name="VCMIDLTool" PreprocessorDefinitions="NDEBUG" MkTypLibCompatible="true" SuppressStartupBanner="true" TargetEnvironment="1" TypeLibraryName=".\Release/libcurl.tlb" HeaderFileName=""
+			/>
+			<Tool Name="VCCLCompilerTool" Optimization="2" InlineFunctionExpansion="1" AdditionalIncludeDirectories=".,..\include" PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;BUILDING_LIBCURL" StringPooling="true" RuntimeLibrary="2" EnableFunctionLevelLinking="true" PrecompiledHeaderFile=".\Release/libcurl.pch" AssemblerListingLocation=".\Release/" ObjectFile=".\Release/" ProgramDataBaseFileName=".\Release/" BrowseInformation="1" WarningLevel="0" SuppressStartupBanner="true" DebugInformationFormat="3"
+			/>
+			<Tool Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool Name="VCResourceCompilerTool" PreprocessorDefinitions="NDEBUG" Culture="1033"
+			/>
+			<Tool Name="VCPreLinkEventTool"
+			/>
+			<Tool Name="VCLibrarianTool"
+			/>
+			<Tool Name="VCALinkTool"
+			/>
+			<Tool Name="VCXDCMakeTool"
+			/>
+			<Tool Name="VCBscMakeTool" SuppressStartupBanner="true" OutputFile=".\Release/libcurl.bsc"
+			/>
+			<Tool Name="VCFxCopTool"
+			/>
+			<Tool Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool Name="VCPreBuildEventTool"
+			/>
+			<Tool Name="VCCustomBuildTool"
+			/>
+			<Tool Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool Name="VCMIDLTool" PreprocessorDefinitions="_DEBUG" MkTypLibCompatible="true" SuppressStartupBanner="true" TargetEnvironment="1" TypeLibraryName=".\Debug/libcurl.tlb" HeaderFileName=""
+			/>
+			<Tool Name="VCCLCompilerTool" Optimization="0" AdditionalIncludeDirectories=".,..\include" PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILDING_LIBCURL" MinimalRebuild="true" BasicRuntimeChecks="3" RuntimeLibrary="3" PrecompiledHeaderFile=".\Debug/libcurl.pch" AssemblerListingLocation=".\Debug/" ObjectFile=".\Debug/" ProgramDataBaseFileName=".\Debug/" BrowseInformation="1" WarningLevel="0" SuppressStartupBanner="true" DebugInformationFormat="3"
+			/>
+			<Tool Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool Name="VCResourceCompilerTool" PreprocessorDefinitions="_DEBUG" Culture="1033"
+			/>
+			<Tool Name="VCPreLinkEventTool"
+			/>
+			<Tool Name="VCLibrarianTool"
+			/>
+			<Tool Name="VCALinkTool"
+			/>
+			<Tool Name="VCXDCMakeTool"
+			/>
+			<Tool Name="VCBscMakeTool" SuppressStartupBanner="true" OutputFile=".\Debug/libcurl.bsc"
+			/>
+			<Tool Name="VCFxCopTool"
+			/>
+			<Tool Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			>
+
+<File RelativePath="base64.c"></File>
+<File RelativePath="connect.c"></File>
+<File RelativePath="content_encoding.c"></File>
+<File RelativePath="cookie.c"></File>
+<File RelativePath="curl_addrinfo.c"></File>
+<File RelativePath="curl_memrchr.c"></File>
+<File RelativePath="curl_rand.c"></File>
+<File RelativePath="curl_sspi.c"></File>
+<File RelativePath="dict.c"></File>
+<File RelativePath="easy.c"></File>
+<File RelativePath="escape.c"></File>
+<File RelativePath="file.c"></File>
+<File RelativePath="formdata.c"></File>
+<File RelativePath="ftp.c"></File>
+<File RelativePath="getenv.c"></File>
+<File RelativePath="getinfo.c"></File>
+<File RelativePath="gtls.c"></File>
+<File RelativePath="hash.c"></File>
+<File RelativePath="hostares.c"></File>
+<File RelativePath="hostasyn.c"></File>
+<File RelativePath="hostip4.c"></File>
+<File RelativePath="hostip6.c"></File>
+<File RelativePath="hostip.c"></File>
+<File RelativePath="hostsyn.c"></File>
+<File RelativePath="hostthre.c"></File>
+<File RelativePath="http.c"></File>
+<File RelativePath="http_chunks.c"></File>
+<File RelativePath="http_digest.c"></File>
+<File RelativePath="http_negotiate.c"></File>
+<File RelativePath="http_ntlm.c"></File>
+<File RelativePath="if2ip.c"></File>
+<File RelativePath="inet_ntop.c"></File>
+<File RelativePath="inet_pton.c"></File>
+<File RelativePath="krb4.c"></File>
+<File RelativePath="krb5.c"></File>
+<File RelativePath="ldap.c"></File>
+<File RelativePath="llist.c"></File>
+<File RelativePath="md5.c"></File>
+<File RelativePath="memdebug.c"></File>
+<File RelativePath="mprintf.c"></File>
+<File RelativePath="multi.c"></File>
+<File RelativePath="netrc.c"></File>
+<File RelativePath="nonblock.c"></File>
+<File RelativePath="nss.c"></File>
+<File RelativePath="parsedate.c"></File>
+<File RelativePath="progress.c"></File>
+<File RelativePath="qssl.c"></File>
+<File RelativePath="rawstr.c"></File>
+<File RelativePath="security.c"></File>
+<File RelativePath="select.c"></File>
+<File RelativePath="sendf.c"></File>
+<File RelativePath="share.c"></File>
+<File RelativePath="slist.c"></File>
+<File RelativePath="socks.c"></File>
+<File RelativePath="socks_gssapi.c"></File>
+<File RelativePath="socks_sspi.c"></File>
+<File RelativePath="speedcheck.c"></File>
+<File RelativePath="splay.c"></File>
+<File RelativePath="ssh.c"></File>
+<File RelativePath="sslgen.c"></File>
+<File RelativePath="ssluse.c"></File>
+<File RelativePath="strdup.c"></File>
+<File RelativePath="strequal.c"></File>
+<File RelativePath="strerror.c"></File>
+<File RelativePath="strtok.c"></File>
+<File RelativePath="strtoofft.c"></File>
+<File RelativePath="telnet.c"></File>
+<File RelativePath="tftp.c"></File>
+<File RelativePath="timeval.c"></File>
+<File RelativePath="transfer.c"></File>
+<File RelativePath="url.c"></File>
+<File RelativePath="version.c"></File>
+</Filter><Filter	Name="Header Files">
+<File RelativePath="arpa_telnet.h"></File>
+<File RelativePath="config-win32.h"></File>
+<File RelativePath="connect.h"></File>
+<File RelativePath="content_encoding.h"></File>
+<File RelativePath="cookie.h"></File>
+<File RelativePath="curl_addrinfo.h"></File>
+<File RelativePath="curl_base64.h"></File>
+<File RelativePath="curl_ldap.h"></File>
+<File RelativePath="curl_md5.h"></File>
+<File RelativePath="curl_memory.h"></File>
+<File RelativePath="curl_memrchr.h"></File>
+<File RelativePath="curl_rand.h"></File>
+<File RelativePath="curl_sspi.h"></File>
+<File RelativePath="curlx.h"></File>
+<File RelativePath="dict.h"></File>
+<File RelativePath="easyif.h"></File>
+<File RelativePath="escape.h"></File>
+<File RelativePath="file.h"></File>
+<File RelativePath="formdata.h"></File>
+<File RelativePath="ftp.h"></File>
+<File RelativePath="getinfo.h"></File>
+<File RelativePath="gtls.h"></File>
+<File RelativePath="hash.h"></File>
+<File RelativePath="hostip.h"></File>
+<File RelativePath="http_chunks.h"></File>
+<File RelativePath="http_digest.h"></File>
+<File RelativePath="http.h"></File>
+<File RelativePath="http_negotiate.h"></File>
+<File RelativePath="http_ntlm.h"></File>
+<File RelativePath="if2ip.h"></File>
+<File RelativePath="inet_ntop.h"></File>
+<File RelativePath="inet_pton.h"></File>
+<File RelativePath="krb4.h"></File>
+<File RelativePath="llist.h"></File>
+<File RelativePath="memdebug.h"></File>
+<File RelativePath="multiif.h"></File>
+<File RelativePath="netrc.h"></File>
+<File RelativePath="nonblock.h"></File>
+<File RelativePath="nssg.h"></File>
+<File RelativePath="parsedate.h"></File>
+<File RelativePath="progress.h"></File>
+<File RelativePath="qssl.h"></File>
+<File RelativePath="rawstr.h"></File>
+<File RelativePath="select.h"></File>
+<File RelativePath="sendf.h"></File>
+<File RelativePath="setup.h"></File>
+<File RelativePath="setup_once.h"></File>
+<File RelativePath="share.h"></File>
+<File RelativePath="slist.h"></File>
+<File RelativePath="sockaddr.h"></File>
+<File RelativePath="socks.h"></File>
+<File RelativePath="speedcheck.h"></File>
+<File RelativePath="splay.h"></File>
+<File RelativePath="ssh.h"></File>
+<File RelativePath="sslgen.h"></File>
+<File RelativePath="ssluse.h"></File>
+<File RelativePath="strdup.h"></File>
+<File RelativePath="strequal.h"></File>
+<File RelativePath="strerror.h"></File>
+<File RelativePath="strtok.h"></File>
+<File RelativePath="strtoofft.h"></File>
+<File RelativePath="telnet.h"></File>
+<File RelativePath="tftp.h"></File>
+<File RelativePath="timeval.h"></File>
+<File RelativePath="transfer.h"></File>
+<File RelativePath="urldata.h"></File>
+<File RelativePath="url.h"></File>
+
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+			>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

@@ -1,0 +1,60 @@
+<html><head>
+<title>curl_multi_perform man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_perform - reads/writes available data from each easy handle <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">#include &lt;curl/curl.h&gt; 
+<p class="level0">CURLMcode curl_multi_perform(CURLM *multi_handle, int *running_handles); 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">When the app thinks there's data available for the multi_handle, it should call this function to read/write whatever there is to read or write right now. curl_multi_perform() returns as soon as the reads/writes are done. This function does not require that there actually is any data available for reading or that data can be written, it can be called just in case. It will write the number of handles that still transfer data in the second argument's integer-pointer. 
+<p class="level0">When you call curl_multi_perform() and the amount of <span Class="emphasis">running_handles</span> is changed from the previous call (or is less than the amount of easy handles you've added to the multi handle), you know that there is one or more transfers less "running". You can then call <a class="emphasis" href="./curl_multi_info_read.html">curl_multi_info_read(3)</a> to get information about each individual completed transfer, and that returned info includes CURLcode and more. 
+<p class="level0">When <span Class="emphasis">running_handles</span> is set to zero (0) on the return of this function, there is no longer any transfers in progress. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">CURLMcode type, general libcurl multi interface error code. 
+<p class="level0">If you receive <span Class="emphasis">CURLM_CALL_MULTI_PERFORM</span>, this basically means that you should call <span Class="emphasis">curl_multi_perform</span> again, before you select() on more actions. You don't have to do it immediately, but the return code means that libcurl may have more data available to return or that there may be more data to send off before it is "satisfied". Do note that <a class="emphasis" href="./curl_multi_perform.html">curl_multi_perform(3)</a> will return <span Class="emphasis">CURLM_CALL_MULTI_PERFORM</span> only when it wants to be called again <span Class="bold">immediately</span>. When things are fine and there is nothing immediate it wants done, it'll return <span Class="emphasis">CURLM_OK</span> and you need to wait for "action" and then call this function again. 
+<p class="level0">NOTE that this only returns errors etc regarding the whole multi stack. Problems still might have occurred on individual transfers even when this function returns <span Class="emphasis">CURLM_OK</span>. <a name="TYPICAL"></a><h2 class="nroffsh">TYPICAL USAGE</h2>
+<p class="level0">Most applications will use <a class="emphasis" href="./curl_multi_fdset.html">curl_multi_fdset(3)</a> to get the multi_handle's file descriptors, then it'll wait for action on them using <span Class="bold">select(3)</span> and as soon as one or more of them are ready, <a class="emphasis" href="./curl_multi_perform.html">curl_multi_perform(3)</a> gets called. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_cleanup.html">curl_multi_cleanup (3)</a> <a class="manpage" href="./curl_multi_init.html">  curl_multi_init (3)</a> <span Class="manpage"> </span> <a class="manpage" href="./curl_multi_fdset.html">curl_multi_fdset (3)</a> <a class="manpage" href="./curl_multi_info_read.html">  curl_multi_info_read (3)</a> <span Class="manpage"> </span> <span Class="manpage">libcurl-errors (3)</span> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

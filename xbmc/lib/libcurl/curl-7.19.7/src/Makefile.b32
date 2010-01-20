@@ -1,0 +1,90 @@
+############################################################
+# $Id: Makefile.b32,v 1.13 2009-05-19 12:12:22 yangtse Exp $
+#
+#  Makefile.b32 - Borland's C++ Compiler 5.X
+#
+#  'src' directory
+#
+#  'BCCDIR' has to be set up to point to the base directory
+#  of the compiler, i.e. SET BCCDIR = c:\Borland\BCC55
+#  where c:\Borland\BCC55 is the compiler is installed
+#
+#  Written by Jaepil Kim, pit@paradise.net.nz
+############################################################
+
+# Edit the path below to point to the base of your Zlib sources.
+!ifndef ZLIB_PATH
+ZLIB_PATH = ../../zlib-1.2.1
+!endif
+
+# Edit the path below to point to the base of your OpenSSL package.
+!ifndef OPENSSL_PATH
+OPENSSL_PATH = ../../openssl-0.9.7d
+!endif
+
+# Set program's name
+PROGNAME = curl.exe
+
+# Setup environment
+CXX      = bcc32
+LD       = bcc32
+CP       = copy
+RM       = del
+LIB      = tlib
+
+CXXFLAGS = -q -5 -O2 -w-aus -w-ccc -w-csu -w-par -w-pia -w-rch -w-inl -w-ngu -w-pro -tWM
+LDFLAGS  = -q -lq -lap
+
+INCDIRS  = -I.;../include;../lib
+LINKLIB  = $(BCCDIR)/lib/cw32mt.lib
+
+# If you build with SSL support, set WITH_SSL=1
+DEFINES  = -DNDEBUG -DWIN32
+
+!ifdef DYNAMIC
+LIBCURL_LIB = ../lib/libcurl_imp.lib
+!else
+LIBCURL_LIB = ../lib/libcurl.lib
+DEFINES = $(DEFINES) -DCURL_STATICLIB
+!endif
+
+!ifdef WITH_ZLIB
+DEFINES  = $(DEFINES) -DHAVE_LIBZ -DHAVE_ZLIB_H
+INCDIRS  = $(INCDIRS);$(ZLIB_PATH)
+LINKLIB  = $(LINKLIB) $(ZLIB_PATH)/zlib.lib
+!endif
+
+!ifdef WITH_SSL
+DEFINES  = $(DEFINES) -DUSE_SSLEAY
+INCDIRS  = $(INCDIRS);$(OPENSSL_PATH)/inc32;$(OPENSSL_PATH)/inc32/openssl
+LINKLIB  = $(LINKLIB) $(OPENSSL_PATH)/out32/ssleay32.lib $(OPENSSL_PATH)/out32/libeay32.lib
+!endif
+
+.autodepend
+
+# Makefile.inc provides the CSOURCES and HHEADERS defines
+top_srcdir = ..
+!include Makefile.inc
+
+CSOURCES = $(CURL_SOURCES) $(CURLX_ONES)
+OBJECTS  = $(CSOURCES:.c=.obj)
+
+.c.obj:
+	$(CXX) -c $(INCDIRS) $(CXXFLAGS) $(DEFINES) $<
+
+all:	$(PROGNAME)
+
+clean:
+	-$(RM) $(PROGNAME)
+	-$(RM) *.obj
+	-$(RM) hugehelp.c
+
+$(PROGNAME): $(OBJECTS) $(LIBCURL_LIB) $(LINKLIB)
+	@-$(RM) $@
+	$(LD) $(LDFLAGS) -e$@ $**
+
+hugehelp.c: hugehelp.c.cvs
+	@echo Creating $@
+	@$(CP) $** $@
+
+

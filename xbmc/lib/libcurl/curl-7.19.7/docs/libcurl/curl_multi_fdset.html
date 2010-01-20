@@ -1,0 +1,64 @@
+<html><head>
+<title>curl_multi_fdset man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_fdset - extracts file descriptor information from a multi handle <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><pre>
+<p class="level0">#include &lt;curl/curl.h&gt;
+ <p class="level0">CURLMcode curl_multi_fdset(CURLM *multi_handle,
+ &nbsp;                          fd_set *read_fd_set,
+ &nbsp;                          fd_set *write_fd_set,
+ &nbsp;                          fd_set *exc_fd_set,
+ &nbsp;                          int *max_fd);
+ <p class="level0"></pre>
+<a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">This function extracts file descriptor information from a given multi_handle. libcurl returns its fd_set sets. The application can use these to select() on, but be sure to FD_ZERO them before calling this function as <a class="emphasis" href="./curl_multi_fdset.html">curl_multi_fdset(3)</a> only adds its own descriptors, it doesn't zero or otherwise remove any others. The <a class="emphasis" href="./curl_multi_perform.html">curl_multi_perform(3)</a> function should be called as soon as one of them is ready to be read from or written to. 
+<p class="level0">If no file descriptors are set by libcurl, <span Class="emphasis">max_fd</span> will contain -1 when this function returns. Otherwise it will contain the higher descriptor number libcurl set. 
+<p class="level0">You should also be aware that when doing select(), you should consider using a rather small (single-digit number of seconds) timeout and call <span Class="emphasis">curl_multi_perform</span> regularly - even if no activity has been seen on the fd_sets - as otherwise libcurl-internal retries and timeouts may not work as you'd think and want. 
+<p class="level0">Starting with libcurl 7.16.0, you should use <span Class="bold">curl_multi_timeout</span> to figure out how long to wait for action. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">CURLMcode type, general libcurl multi interface error code. See <span Class="emphasis">libcurl-errors(3)</span> <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_cleanup.html">curl_multi_cleanup (3)</a> <a class="manpage" href="./curl_multi_init.html"> curl_multi_init (3)</a> <span Class="manpage"> </span> <a class="manpage" href="./curl_multi_timeout.html">curl_multi_timeout (3) </a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

@@ -1,0 +1,71 @@
+<html><head>
+<title>curl_easy_pause man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_easy_pause - pause and unpause a connection <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0"><span Class="bold">CURLcode curl_easy_pause(CURL *handle , int bitmask  );</span> 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">Using this function, you can explicitly mark a running connection to get paused, and you can unpause a connection that was previously paused. 
+<p class="level0">A connection can be paused by using this function or by letting the read or the write callbacks return the proper magic return code (<span Class="emphasis">CURL_READFUNC_PAUSE</span> and <span Class="emphasis">CURL_WRITEFUNC_PAUSE</span>). A write callback that returns pause signals to the library that it couldn't take care of any data at all, and that data will then be delivered again to the callback when the writing is later unpaused. 
+<p class="level0">NOTE: while it may feel tempting, take care and notice that you cannot call this function from another thread. 
+<p class="level0">When this function is called to unpause reading, the chance is high that you will get your write callback called before this function returns. 
+<p class="level0">The <span Class="bold">handle</span> argument is of course identifying the handle that operates on the connection you want to pause or unpause. 
+<p class="level0">The <span Class="bold">bitmask</span> argument is a set of bits that sets the new state of the connection. The following bits can be used: 
+<p class="level0"><a name="CURLPAUSERECV"></a><span class="nroffip">CURLPAUSE_RECV</span> 
+<p class="level1">Pause receiving data. There will be no data received on this connection until this function is called again without this bit set. Thus, the write callback (<span Class="emphasis">CURLOPT_WRITEFUNCTION</span>) won't be called. 
+<p class="level0"><a name="CURLPAUSESEND"></a><span class="nroffip">CURLPAUSE_SEND</span> 
+<p class="level1">Pause sending data. There will be no data sent on this connection until this function is called again without this bit set. Thus, the read callback (<span Class="emphasis">CURLOPT_READFUNCTION</span>) won't be called. 
+<p class="level0"><a name="CURLPAUSEALL"></a><span class="nroffip">CURLPAUSE_ALL</span> 
+<p class="level1">Convenience define that pauses both directions. 
+<p class="level0"><a name="CURLPAUSECONT"></a><span class="nroffip">CURLPAUSE_CONT</span> 
+<p class="level1">Convenience define that unpauses both directions <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">CURLE_OK (zero) means that the option was set properly, and a non-zero return code means something wrong occurred after the new state was set.  See the <span Class="emphasis">libcurl-errors(3)</span> man page for the full list with descriptions. <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function was added in libcurl 7.18.0. Before this version, there was no explicit support for pausing transfers. <a name="MEMORY"></a><h2 class="nroffsh">MEMORY USE</h2>
+<p class="level0">When pausing a read by returning the magic return code from a write callback, the read data is already in libcurl's internal buffers so it'll have to keep it in an allocated buffer until the reading is again unpaused using this function. 
+<p class="level0">If the downloaded data is compressed and is asked to get uncompressed automatically on download, libcurl will continue to uncompress the entire downloaded chunk and it will cache the data uncompressed. This has the side- effect that if you download something that is compressed a lot, it can result in a very large data amount needing to be allocated to save the data during the pause. This said, you should probably consider not using paused reading if you allow libcurl to uncompress data automatically. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_easy_cleanup.html">curl_easy_cleanup (3)</a> <a class="manpage" href="./curl_easy_reset.html">  curl_easy_reset (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

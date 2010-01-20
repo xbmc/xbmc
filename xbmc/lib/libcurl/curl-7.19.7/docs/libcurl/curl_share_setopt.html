@@ -1,0 +1,79 @@
+<html><head>
+<title>curl_share_setopt man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_share_setopt - Set options for a shared object <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0">CURLSHcode curl_share_setopt(CURLSH *share, CURLSHoption option, parameter); 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">Set the <span Class="emphasis">option</span> to <span Class="emphasis">parameter</span> for the given <span Class="emphasis">share</span>. <a name="OPTIONS"></a><h2 class="nroffsh">OPTIONS</h2>
+<p class="level0">
+<p class="level0"><a name="CURLSHOPTLOCKFUNC"></a><span class="nroffip">CURLSHOPT_LOCKFUNC</span> 
+<p class="level1">The <span Class="emphasis">parameter</span> must be a pointer to a function matching the following prototype: 
+<p class="level1">void lock_function(CURL *handle, curl_lock_data data, curl_lock_access access, void *userptr); 
+<p class="level1"><span Class="emphasis">data</span> defines what data libcurl wants to lock, and you must make sure that only one lock is given at any time for each kind of data. 
+<p class="level1"><span Class="emphasis">access</span> defines what access type libcurl wants, shared or single. 
+<p class="level1"><span Class="emphasis">userptr</span> is the pointer you set with <a class="emphasis" href="#CURLSHOPTUSERDATA">CURLSHOPT_USERDATA</a>. 
+<p class="level0"><a name="CURLSHOPTUNLOCKFUNC"></a><span class="nroffip">CURLSHOPT_UNLOCKFUNC</span> 
+<p class="level1">The <span Class="emphasis">parameter</span> must be a pointer to a function matching the following prototype: 
+<p class="level1">void unlock_function(CURL *handle, curl_lock_data data, void *userptr); 
+<p class="level1"><span Class="emphasis">data</span> defines what data libcurl wants to unlock, and you must make sure that only one lock is given at any time for each kind of data. 
+<p class="level1"><span Class="emphasis">userptr</span> is the pointer you set with <a class="emphasis" href="#CURLSHOPTUSERDATA">CURLSHOPT_USERDATA</a>. 
+<p class="level0"><a name="CURLSHOPTSHARE"></a><span class="nroffip">CURLSHOPT_SHARE</span> 
+<p class="level1">The <span Class="emphasis">parameter</span> specifies a type of data that should be shared. This may be set to one of the values described below. 
+<p class="level2">
+<p class="level1"><a name="CURLLOCKDATACOOKIE"></a><span class="nroffip">CURL_LOCK_DATA_COOKIE</span> 
+<p class="level2">Cookie data will be shared across the easy handles using this shared object. 
+<p class="level1"><a name="CURLLOCKDATADNS"></a><span class="nroffip">CURL_LOCK_DATA_DNS</span> 
+<p class="level2">Cached DNS hosts will be shared across the easy handles using this shared object. Note that when you use the multi interface, all easy handles added to the same multi handle will share DNS cache by default without this having to be used! 
+<p class="level1">
+<p class="level0"><a name="CURLSHOPTUNSHARE"></a><span class="nroffip">CURLSHOPT_UNSHARE</span> 
+<p class="level1">This option does the opposite of <a class="emphasis" href="#CURLSHOPTSHARE">CURLSHOPT_SHARE</a>. It specifies that the specified <span Class="emphasis">parameter</span> will no longer be shared. Valid values are  the same as those for <a class="emphasis" href="#CURLSHOPTSHARE">CURLSHOPT_SHARE</a>. 
+<p class="level0"><a name="CURLSHOPTUSERDATA"></a><span class="nroffip">CURLSHOPT_USERDATA</span> 
+<p class="level1">The <span Class="emphasis">parameter</span> allows you to specify a pointer to data that will be passed to the lock_function and unlock_function each time it is called. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">CURLSHE_OK (zero) means that the option was set properly, non-zero means an error occurred as <span Class="emphasis">&lt;curl/curl.h&gt;</span> defines. See the <span Class="emphasis">libcurl-errors.3</span> man page for the full list with descriptions. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_share_cleanup.html">curl_share_cleanup (3)</a> <a class="manpage" href="./curl_share_init.html">  curl_share_init (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

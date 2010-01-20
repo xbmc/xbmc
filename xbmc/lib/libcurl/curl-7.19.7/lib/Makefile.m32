@@ -1,0 +1,157 @@
+#########################################################################
+# $Id: Makefile.m32,v 1.60 2009-06-15 02:29:49 yangtse Exp $
+#
+## Makefile for building libcurl.a with MingW32 (GCC-3.2 or later)
+## and optionally OpenSSL (0.9.8), libssh2 (1.1), zlib (1.2.3)
+##
+## Usage:
+## mingw32-make -f Makefile.m32 [SSL=1] [SSH2=1] [ZLIB=1] [IDN=1] [SSPI=1] [IPV6=1] [LDAPS=1] [DYN=1]
+##
+## Hint: you can also set environment vars to control the build, f.e.:
+## set ZLIB_PATH=c:/zlib-1.2.3
+## set ZLIB=1
+##
+## Comments to: Troy Engel <tengel@sonic.net> or
+##              Joern Hartroth <hartroth@acm.org>
+#########################################################################
+
+# Edit the path below to point to the base of your Zlib sources.
+ifndef ZLIB_PATH
+ZLIB_PATH = ../../zlib-1.2.3
+endif
+# Edit the path below to point to the base of your OpenSSL package.
+ifndef OPENSSL_PATH
+OPENSSL_PATH = ../../openssl-0.9.8k
+endif
+# Edit the path below to point to the base of your LibSSH2 package.
+ifndef LIBSSH2_PATH
+LIBSSH2_PATH = ../../libssh2-1.1
+endif
+# Edit the path below to point to the base of your libidn package.
+ifndef LIBIDN_PATH
+LIBIDN_PATH = ../../libidn-1.13
+endif
+# Edit the path below to point to the base of your Novell LDAP NDK.
+ifndef LDAP_SDK
+LDAP_SDK = c:/novell/ndk/cldapsdk/win32
+endif
+
+ARES_LIB = ../ares
+
+CC = gcc
+AR = ar
+# comment LDFLAGS below to keep debug info
+LDFLAGS = -s
+RANLIB = ranlib
+RC = windres
+RCFLAGS = --include-dir=../include -DDEBUGBUILD=0 -O COFF -i
+RM = del /q /f > NUL 2>&1
+STRIP = strip -g
+
+########################################################
+## Nothing more to do below this line!
+
+INCLUDES = -I. -I../include
+CFLAGS = -g -O2 -DBUILDING_LIBCURL
+ifdef ARES
+  INCLUDES += -I$(ARES_LIB)
+  CFLAGS += -DUSE_ARES
+  DLL_LIBS += -L$(ARES_LIB) -lcares
+  libcurl_dll_DEPENDENCIES = $(ARES_LIB)/libcares.a
+endif
+ifdef SSH2
+  INCLUDES += -I"$(LIBSSH2_PATH)/include" -I"$(LIBSSH2_PATH)/win32"
+  CFLAGS += -DUSE_LIBSSH2 -DHAVE_LIBSSH2_H
+  DLL_LIBS += -L$(LIBSSH2_PATH)/win32 -lssh2
+endif
+ifdef SSL
+  INCLUDES += -I"$(OPENSSL_PATH)/outinc" -I"$(OPENSSL_PATH)/outinc/openssl"
+  CFLAGS += -DUSE_SSLEAY -DUSE_OPENSSL -DHAVE_OPENSSL_ENGINE_H -DHAVE_OPENSSL_PKCS12_H \
+            -DHAVE_ENGINE_LOAD_BUILTIN_ENGINES -DOPENSSL_NO_KRB5 \
+            -DCURL_WANTS_CA_BUNDLE_ENV
+  DLL_LIBS += -L$(OPENSSL_PATH)/out -leay32 -lssl32
+endif
+ifdef ZLIB
+  INCLUDES += -I"$(ZLIB_PATH)"
+  CFLAGS += -DHAVE_LIBZ -DHAVE_ZLIB_H
+  DLL_LIBS += -L$(ZLIB_PATH) -lz
+endif
+ifdef IDN
+  INCLUDES += -I"$(LIBIDN_PATH)/include"
+  CFLAGS += -DUSE_LIBIDN
+  DLL_LIBS += -L$(LIBIDN_PATH)/lib -lidn
+endif
+ifdef SSPI
+  CFLAGS += -DUSE_WINDOWS_SSPI
+endif
+ifdef IPV6
+  CFLAGS += -DENABLE_IPV6
+endif
+ifdef LDAPS
+  CFLAGS += -DHAVE_LDAP_SSL
+endif
+ifdef USE_LDAP_NOVELL
+  INCLUDES += -I"$(LDAP_SDK)/inc"
+  CFLAGS += -DCURL_HAS_NOVELL_LDAPSDK
+  DLL_LIBS += -L"$(LDAP_SDK)/lib/mscvc" -lldapsdk -lldapssl -lldapx
+endif
+ifdef USE_LDAP_OPENLDAP
+  INCLUDES += -I"$(LDAP_SDK)/include"
+  CFLAGS += -DCURL_HAS_OPENLDAP_LDAPSDK
+  DLL_LIBS += -L"$(LDAP_SDK)/lib" -lldap -llber
+endif
+ifndef USE_LDAP_NOVELL
+ifndef USE_LDAP_OPENLDAP
+DLL_LIBS += -lwldap32
+endif
+endif
+DLL_LIBS += -lws2_32
+COMPILE = $(CC) $(INCLUDES) $(CFLAGS)
+
+# Makefile.inc provides the CSOURCES and HHEADERS defines
+include Makefile.inc
+
+libcurl_dll_LIBRARY = libcurl.dll
+libcurl_dll_a_LIBRARY = libcurldll.a
+libcurl_a_LIBRARY = libcurl.a
+
+libcurl_a_OBJECTS := $(patsubst %.c,%.o,$(strip $(CSOURCES)))
+libcurl_a_DEPENDENCIES := $(strip $(CSOURCES) $(HHEADERS))
+
+RESOURCE = libcurl.res
+
+.SUFFIXES: .rc .res
+
+all: $(libcurl_a_LIBRARY) $(libcurl_dll_LIBRARY)
+
+$(libcurl_a_LIBRARY): $(libcurl_a_OBJECTS) $(libcurl_a_DEPENDENCIES)
+	-$(RM) $@
+	$(AR) cru $@ $(libcurl_a_OBJECTS)
+	$(RANLIB) $@
+	$(STRIP) $@
+
+# remove the last line above to keep debug info
+
+$(libcurl_dll_LIBRARY): $(libcurl_a_OBJECTS) $(RESOURCE) $(libcurl_dll_DEPENDENCIES)
+	-$(RM) $@
+	$(CC) $(LDFLAGS) -shared -Wl,--out-implib,$(libcurl_dll_a_LIBRARY) \
+	  -o $@ $(libcurl_a_OBJECTS) $(RESOURCE) $(DLL_LIBS)
+
+.c.o:
+	$(COMPILE) -c $<
+
+.rc.res:
+	$(RC) $(RCFLAGS) $< -o $@
+
+clean:
+	-$(RM) $(libcurl_a_OBJECTS) $(RESOURCE)
+
+distrib: clean
+	-$(RM) $(libcurl_a_LIBRARY) $(libcurl_dll_LIBRARY) $(libcurl_dll_a_LIBRARY)
+
+FORCE: ;
+
+$(ARES_LIB)/libcares.a:
+	$(MAKE) -C $(ARES_LIB) -f Makefile.m32
+
+

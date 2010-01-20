@@ -1,0 +1,155 @@
+<html><head>
+<title>curl_easy_getinfo man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_easy_getinfo - extract information from a curl handle <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0"><span Class="bold">CURLcode curl_easy_getinfo(CURL *curl, CURLINFO info, ... );</span> 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">Request internal information from the curl session with this function.  The third argument <span Class="bold">MUST</span> be a pointer to a long, a pointer to a char *, a pointer to a struct curl_slist * or a pointer to a double (as this documentation describes further down).  The data pointed-to will be filled in accordingly and can be relied upon only if the function returns CURLE_OK.  Use this function AFTER a performed transfer if you want to get transfer- oriented data. 
+<p class="level0">You should not free the memory returned by this function unless it is explicitly mentioned below. <a name="AVAILABLE"></a><h2 class="nroffsh">AVAILABLE INFORMATION</h2>
+<p class="level0">The following information can be extracted: 
+<p class="level0"><a name="CURLINFOEFFECTIVEURL"></a><span class="nroffip">CURLINFO_EFFECTIVE_URL</span> 
+<p class="level1">Pass a pointer to a char pointer to receive the last used effective URL. 
+<p class="level0"><a name="CURLINFORESPONSECODE"></a><span class="nroffip">CURLINFO_RESPONSE_CODE</span> 
+<p class="level1">Pass a pointer to a long to receive the last received HTTP or FTP code. This option was known as CURLINFO_HTTP_CODE in libcurl 7.10.7 and earlier. This will be zero if no server response code has been received. Note that a proxy's CONNECT response should be read with <a class="emphasis" href="#CURLINFOHTTPCONNECTCODE">CURLINFO_HTTP_CONNECTCODE</a> and not this. 
+<p class="level0"><a name="CURLINFOHTTPCONNECTCODE"></a><span class="nroffip">CURLINFO_HTTP_CONNECTCODE</span> 
+<p class="level1">Pass a pointer to a long to receive the last received proxy response code to a CONNECT request. 
+<p class="level0"><a name="CURLINFOFILETIME"></a><span class="nroffip">CURLINFO_FILETIME</span> 
+<p class="level1">Pass a pointer to a long to receive the remote time of the retrieved document (in number of seconds since 1 jan 1970 in the GMT/UTC time zone). If you get -1, it can be because of many reasons (unknown, the server hides it or the server doesn't support the command that tells document time etc) and the time of the document is unknown. Note that you must tell the server to collect this information before the transfer is made, by using the CURLOPT_FILETIME option to <a class="emphasis" href="./curl_easy_setopt.html">curl_easy_setopt(3)</a> or you will unconditionally get a -1 back. (Added in 7.5) 
+<p class="level0"><a name="CURLINFOTOTALTIME"></a><span class="nroffip">CURLINFO_TOTAL_TIME</span> 
+<p class="level1">Pass a pointer to a double to receive the total time in seconds for the previous transfer, including name resolving, TCP connect etc. 
+<p class="level0"><a name="CURLINFONAMELOOKUPTIME"></a><span class="nroffip">CURLINFO_NAMELOOKUP_TIME</span> 
+<p class="level1">Pass a pointer to a double to receive the time, in seconds, it took from the start until the name resolving was completed. 
+<p class="level0"><a name="CURLINFOCONNECTTIME"></a><span class="nroffip">CURLINFO_CONNECT_TIME</span> 
+<p class="level1">Pass a pointer to a double to receive the time, in seconds, it took from the start until the connect to the remote host (or proxy) was completed. 
+<p class="level0"><a name="CURLINFOAPPCONNECTTIME"></a><span class="nroffip">CURLINFO_APPCONNECT_TIME</span> 
+<p class="level1">Pass a pointer to a double to receive the time, in seconds, it took from the start until the SSL/SSH connect/handshake to the remote host was completed. This time is most often very near to the PRETRANSFER time, except for cases such as HTTP pippelining where the pretransfer time can be delayed due to waits in line for the pipeline and more. (Added in 7.19.0) 
+<p class="level0"><a name="CURLINFOPRETRANSFERTIME"></a><span class="nroffip">CURLINFO_PRETRANSFER_TIME</span> 
+<p class="level1">Pass a pointer to a double to receive the time, in seconds, it took from the start until the file transfer is just about to begin. This includes all pre-transfer commands and negotiations that are specific to the particular protocol(s) involved. 
+<p class="level0"><a name="CURLINFOSTARTTRANSFERTIME"></a><span class="nroffip">CURLINFO_STARTTRANSFER_TIME</span> 
+<p class="level1">Pass a pointer to a double to receive the time, in seconds, it took from the start until the first byte is just about to be transferred. This includes CURLINFO_PRETRANSFER_TIME and also the time the server needs to calculate the result. 
+<p class="level0"><a name="CURLINFOREDIRECTTIME"></a><span class="nroffip">CURLINFO_REDIRECT_TIME</span> 
+<p class="level1">Pass a pointer to a double to receive the total time, in seconds, it took for all redirection steps include name lookup, connect, pretransfer and transfer before final transaction was started. CURLINFO_REDIRECT_TIME contains the complete execution time for multiple redirections.  (Added in 7.9.7) 
+<p class="level0"><a name="CURLINFOREDIRECTCOUNT"></a><span class="nroffip">CURLINFO_REDIRECT_COUNT</span> 
+<p class="level1">Pass a pointer to a long to receive the total number of redirections that were actually followed.  (Added in 7.9.7) 
+<p class="level0"><a name="CURLINFOREDIRECTURL"></a><span class="nroffip">CURLINFO_REDIRECT_URL</span> 
+<p class="level1">Pass a pointer to a char pointer to receive the URL a redirect <span Class="emphasis">would</span> take you to if you would enable CURLOPT_FOLLOWLOCATION. This can come very handy if you think using the built-in libcurl redirect logic isn't good enough for you but you would still prefer to avoid implementing all the magic of figuring out the new URL. (Added in 7.18.2) 
+<p class="level0"><a name="CURLINFOSIZEUPLOAD"></a><span class="nroffip">CURLINFO_SIZE_UPLOAD</span> 
+<p class="level1">Pass a pointer to a double to receive the total amount of bytes that were uploaded. 
+<p class="level0"><a name="CURLINFOSIZEDOWNLOAD"></a><span class="nroffip">CURLINFO_SIZE_DOWNLOAD</span> 
+<p class="level1">Pass a pointer to a double to receive the total amount of bytes that were downloaded. The amount is only for the latest transfer and will be reset again for each new transfer. 
+<p class="level0"><a name="CURLINFOSPEEDDOWNLOAD"></a><span class="nroffip">CURLINFO_SPEED_DOWNLOAD</span> 
+<p class="level1">Pass a pointer to a double to receive the average download speed that curl measured for the complete download. Measured in bytes/second. 
+<p class="level0"><a name="CURLINFOSPEEDUPLOAD"></a><span class="nroffip">CURLINFO_SPEED_UPLOAD</span> 
+<p class="level1">Pass a pointer to a double to receive the average upload speed that curl measured for the complete upload. Measured in bytes/second. 
+<p class="level0"><a name="CURLINFOHEADERSIZE"></a><span class="nroffip">CURLINFO_HEADER_SIZE</span> 
+<p class="level1">Pass a pointer to a long to receive the total size of all the headers received. Measured in number of bytes. 
+<p class="level0"><a name="CURLINFOREQUESTSIZE"></a><span class="nroffip">CURLINFO_REQUEST_SIZE</span> 
+<p class="level1">Pass a pointer to a long to receive the total size of the issued requests. This is so far only for HTTP requests. Note that this may be more than one request if FOLLOWLOCATION is true. 
+<p class="level0"><a name="CURLINFOSSLVERIFYRESULT"></a><span class="nroffip">CURLINFO_SSL_VERIFYRESULT</span> 
+<p class="level1">Pass a pointer to a long to receive the result of the certification verification that was requested (using the CURLOPT_SSL_VERIFYPEER option to <a class="emphasis" href="./curl_easy_setopt.html">curl_easy_setopt(3)</a>). 
+<p class="level0"><a name="CURLINFOSSLENGINES"></a><span class="nroffip">CURLINFO_SSL_ENGINES</span> 
+<p class="level1">Pass the address of a 'struct curl_slist *' to receive a linked-list of OpenSSL crypto-engines supported. Note that engines are normally implemented in separate dynamic libraries. Hence not all the returned engines may be available at run-time. <span Class="bold">NOTE:</span> you must call <a class="emphasis" href="./curl_slist_free_all.html">curl_slist_free_all(3)</a> on the list pointer once you're done with it, as libcurl will not free the data for you. (Added in 7.12.3) 
+<p class="level0"><a name="CURLINFOCONTENTLENGTHDOWNLOAD"></a><span class="nroffip">CURLINFO_CONTENT_LENGTH_DOWNLOAD</span> 
+<p class="level1">Pass a pointer to a double to receive the content-length of the download. This is the value read from the Content-Length: field. Since 7.19.4, this returns -1 if the size isn't known. 
+<p class="level0"><a name="CURLINFOCONTENTLENGTHUPLOAD"></a><span class="nroffip">CURLINFO_CONTENT_LENGTH_UPLOAD</span> 
+<p class="level1">Pass a pointer to a double to receive the specified size of the upload.  Since 7.19.4, this returns -1 if the size isn't known. 
+<p class="level0"><a name="CURLINFOCONTENTTYPE"></a><span class="nroffip">CURLINFO_CONTENT_TYPE</span> 
+<p class="level1">Pass a pointer to a char pointer to receive the content-type of the downloaded object. This is the value read from the Content-Type: field. If you get NULL, it means that the server didn't send a valid Content-Type header or that the protocol used doesn't support this. 
+<p class="level0"><a name="CURLINFOPRIVATE"></a><span class="nroffip">CURLINFO_PRIVATE</span> 
+<p class="level1">Pass a pointer to a char pointer to receive the pointer to the private data associated with the curl handle (set with the CURLOPT_PRIVATE option to <a class="emphasis" href="./curl_easy_setopt.html">curl_easy_setopt(3)</a>). Please note that for internal reasons, the value is returned as a char pointer, although effectively being a 'void *'. (Added in 7.10.3) 
+<p class="level0"><a name="CURLINFOHTTPAUTHAVAIL"></a><span class="nroffip">CURLINFO_HTTPAUTH_AVAIL</span> 
+<p class="level1">Pass a pointer to a long to receive a bitmask indicating the authentication method(s) available. The meaning of the bits is explained in the CURLOPT_HTTPAUTH option for <a class="emphasis" href="./curl_easy_setopt.html">curl_easy_setopt(3)</a>.  (Added in 7.10.8) 
+<p class="level0"><a name="CURLINFOPROXYAUTHAVAIL"></a><span class="nroffip">CURLINFO_PROXYAUTH_AVAIL</span> 
+<p class="level1">Pass a pointer to a long to receive a bitmask indicating the authentication method(s) available for your proxy authentication.  (Added in 7.10.8) 
+<p class="level0"><a name="CURLINFOOSERRNO"></a><span class="nroffip">CURLINFO_OS_ERRNO</span> 
+<p class="level1">Pass a pointer to a long to receive the errno variable from a connect failure. Note that the value is only set on failure, it is not reset upon a successfull operation.  (Added in 7.12.2) 
+<p class="level0"><a name="CURLINFONUMCONNECTS"></a><span class="nroffip">CURLINFO_NUM_CONNECTS</span> 
+<p class="level1">Pass a pointer to a long to receive how many new connections libcurl had to create to achieve the previous transfer (only the successful connects are counted).  Combined with <a class="emphasis" href="#CURLINFOREDIRECTCOUNT">CURLINFO_REDIRECT_COUNT</a> you are able to know how many times libcurl successfully reused existing connection(s) or not.  See the Connection Options of <a class="emphasis" href="./curl_easy_setopt.html">curl_easy_setopt(3)</a> to see how libcurl tries to make persistent connections to save time.  (Added in 7.12.3) 
+<p class="level0"><a name="CURLINFOPRIMARYIP"></a><span class="nroffip">CURLINFO_PRIMARY_IP</span> 
+<p class="level1">Pass a pointer to a char pointer to receive the pointer to a zero-terminated string holding the IP address of the most recent connection done with this <span Class="bold">curl</span> handle. This string may be IPv6 if that's enabled. Note that you get a pointer to a memory area that will be re-used at next request so you need to copy the string if you want to keep the information. (Added in 7.19.0) 
+<p class="level0"><a name="CURLINFOCOOKIELIST"></a><span class="nroffip">CURLINFO_COOKIELIST</span> 
+<p class="level1">Pass a pointer to a 'struct curl_slist *' to receive a linked-list of all cookies cURL knows (expired ones, too). Don't forget to <a class="emphasis" href="./curl_slist_free_all.html">curl_slist_free_all(3)</a> the list after it has been used.  If there are no cookies (cookies for the handle have not been enabled or simply none have been received) 'struct curl_slist *' will be set to point to NULL. (Added in 7.14.1) 
+<p class="level0"><a name="CURLINFOLASTSOCKET"></a><span class="nroffip">CURLINFO_LASTSOCKET</span> 
+<p class="level1">Pass a pointer to a long to receive the last socket used by this curl session. If the socket is no longer valid, -1 is returned. When you finish working with the socket, you must call curl_easy_cleanup() as usual and let libcurl close the socket and cleanup other resources associated with the handle. This is typically used in combination with <span Class="emphasis">CURLOPT_CONNECT_ONLY</span>. (Added in 7.15.2) 
+<p class="level0"><a name="CURLINFOFTPENTRYPATH"></a><span class="nroffip">CURLINFO_FTP_ENTRY_PATH</span> 
+<p class="level1">Pass a pointer to a char pointer to receive a pointer to a string holding the path of the entry path. That is the initial path libcurl ended up in when logging on to the remote FTP server. This stores a NULL as pointer if something is wrong. (Added in 7.15.4) 
+<p class="level0"><a name="CURLINFOCERTINFO"></a><span class="nroffip">CURLINFO_CERTINFO</span> 
+<p class="level1">Pass a pointer to a 'struct curl_certinfo *' and you'll get it set to point to struct that holds a number of linked lists with info about the certificate chain, assuming you had CURLOPT_CERTINFO enabled when the previous request was done. The struct reports how many certs it found and then you can extract info for each of those certs by following the linked lists. The info chain is provided in a series of data in the format "name:content" where the content is for the specific named data. See also the certinfo.c example. NOTE: this option is only available in libcurl built with OpenSSL support. (Added in 7.19.1) 
+<p class="level0"><a name="CURLINFOCONDITIONUNMET"></a><span class="nroffip">CURLINFO_CONDITION_UNMET</span> 
+<p class="level1">Pass a pointer to a long to receive the number 1 if the condition provided in the previous request didn't match (see <span Class="emphasis">CURLOPT_TIMECONDITION</span>). Alas, if this returns a 1 you know that the reason you didn't get data in return is because it didn't fulfill the condition. The long ths argument points to will get a zero stored if the condition instead was met. (Added in 7.19.4) <a name="TIMES"></a><h2 class="nroffsh">TIMES</h2>
+<p class="level0"><pre>
+<p class="level0">An overview of the six time values available from curl_easy_getinfo()
+ <p class="level0">curl_easy_perform()
+ &nbsp;   |
+ &nbsp;   |--NAMELOOKUP
+ &nbsp;   |--|--CONNECT
+ &nbsp;   |--|--|--APPCONNECT
+ &nbsp;   |--|--|--|--PRETRANSFER
+ &nbsp;   |--|--|--|--|--STARTTRANSFER
+ &nbsp;   |--|--|--|--|--|--TOTAL
+ &nbsp;   |--|--|--|--|--|--REDIRECT
+ </pre>
+
+<p class="level0">
+<p class="level0"><a name="NAMELOOKUP"></a><span class="nroffip">NAMELOOKUP</span> 
+<p class="level1"><a class="emphasis" href="#CURLINFONAMELOOKUPTIME">CURLINFO_NAMELOOKUP_TIME</a>. The time it took from the start until the name resolving was completed. 
+<p class="level0"><a name="CONNECT"></a><span class="nroffip">CONNECT</span> 
+<p class="level1"><a class="emphasis" href="#CURLINFOCONNECTTIME">CURLINFO_CONNECT_TIME</a>. The time it took from the start until the connect to the remote host (or proxy) was completed. 
+<p class="level0"><a name="APPCONNECT"></a><span class="nroffip">APPCONNECT</span> 
+<p class="level1"><a class="emphasis" href="#CURLINFOAPPCONNECTTIME">CURLINFO_APPCONNECT_TIME</a>. The time it took from the start until the SSL connect/handshake with the remote host was completed. (Added in in 7.19.0) 
+<p class="level0"><a name="PRETRANSFER"></a><span class="nroffip">PRETRANSFER</span> 
+<p class="level1"><a class="emphasis" href="#CURLINFOPRETRANSFERTIME">CURLINFO_PRETRANSFER_TIME</a>. The time it took from the start until the file transfer is just about to begin. This includes all pre-transfer commands and negotiations that are specific to the particular protocol(s) involved. 
+<p class="level0"><a name="STARTTRANSFER"></a><span class="nroffip">STARTTRANSFER</span> 
+<p class="level1"><a class="emphasis" href="#CURLINFOSTARTTRANSFERTIME">CURLINFO_STARTTRANSFER_TIME</a>. The time it took from the start until the first byte is just about to be transferred. 
+<p class="level0"><a name="TOTAL"></a><span class="nroffip">TOTAL</span> 
+<p class="level1"><a class="emphasis" href="#CURLINFOTOTALTIME">CURLINFO_TOTAL_TIME</a>. Total time of the previous request. 
+<p class="level0"><a name="REDIRECT"></a><span class="nroffip">REDIRECT</span> 
+<p class="level1"><a class="emphasis" href="#CURLINFOREDIRECTTIME">CURLINFO_REDIRECT_TIME</a>. The time it took for all redirection steps include name lookup, connect, pretransfer and transfer before final transaction was started. So, this is zero if no redirection took place. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">If the operation was successful, CURLE_OK is returned. Otherwise an appropriate error code will be returned. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_easy_setopt.html">curl_easy_setopt (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

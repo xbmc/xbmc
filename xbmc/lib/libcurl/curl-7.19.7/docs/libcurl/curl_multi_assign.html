@@ -1,0 +1,61 @@
+<html><head>
+<title>curl_multi_assign man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_assign - set data to association with an internal socket <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">#include &lt;curl/curl.h&gt; 
+<p class="level0">CURLMcode curl_multi_assign(CURLM *multi_handle, curl_socket_t sockfd, &nbsp;                           void *sockptr); <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">This function assigns an association in the multi handle between the given socket and a private pointer of the application. This is (only) useful for <a class="emphasis" href="./curl_multi_socket.html">curl_multi_socket(3)</a> uses. 
+<p class="level0">When set, the <span Class="emphasis">sockptr</span> pointer will be passed to all future socket callbacks for the specific <span Class="emphasis">sockfd</span> socket. 
+<p class="level0">If the given <span Class="emphasis">sockfd</span> isn't already in use by libcurl, this function will return an error. 
+<p class="level0">libcurl only keeps one single pointer associated with a socket, so calling this function several times for the same socket will make the last set pointer get used. 
+<p class="level0">The idea here being that this association (socket to private pointer) is something that just about every application that uses this API will need and then libcurl can just as well do it since it already has an internal hash table lookup for this. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">The standard CURLMcode for multi interface error codes. <a name="TYPICAL"></a><h2 class="nroffsh">TYPICAL USAGE</h2>
+<p class="level0">In a typical application you allocate a struct or at least use some kind of semi-dynamic data for each socket that we must wait for action on when using the <a class="emphasis" href="./curl_multi_socket.html">curl_multi_socket(3)</a> approach. 
+<p class="level0">When our socket-callback gets called by libcurl and we get to know about yet another socket to wait for, we can use <a class="emphasis" href="./curl_multi_assign.html">curl_multi_assign(3)</a> to point out the particular data so that when we get updates about this same socket again, we don't have to find the struct associated with this socket by ourselves. <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function was added in libcurl 7.15.5, although not deemed stable yet. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_setopt.html">curl_multi_setopt (3)</a> <a class="manpage" href="./curl_multi_socket.html">  curl_multi_socket (3) </a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

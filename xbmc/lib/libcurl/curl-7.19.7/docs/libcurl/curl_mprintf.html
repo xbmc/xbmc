@@ -1,0 +1,70 @@
+<html><head>
+<title>curl_printf man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_maprintf, curl_mfprintf, curl_mprintf, curl_msnprintf, curl_msprintf curl_mvaprintf, curl_mvfprintf, curl_mvprintf, curl_mvsnprintf, curl_mvsprintf - formatted output conversion <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/mprintf.h&gt;</span> 
+<p class="level0"><span Class="bold">int curl_mprintf(const char * format , ...);</span> <br><span Class="bold">int curl_mfprintf(FILE * fd , const char * format , ...);</span> <br><span Class="bold">int curl_msprintf(char * buffer , const char * format , ...);</span> <br><span Class="bold">int curl_msnprintf(char * buffer , size_t  maxlength , const char * format , ...);</span> <br><span Class="bold">int curl_mvprintf(const char * format , va_list  args );</span> <br><span Class="bold">int curl_mvfprintf(FILE * fd , const char * format , va_list  args );</span> <br><span Class="bold">int curl_mvsprintf(char * buffer , const char * format , va_list  args );</span> <br><span Class="bold">int curl_mvsnprintf(char * buffer , size_t  maxlength , const char * format , va_list  args );</span> <br><span Class="bold">char *curl_maprintf(const char * format , ...);</span> <br><span Class="bold">char *curl_mvaprintf(const char * format , va_list  args );</span> <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">These are all functions that produce output according to a format string and given arguments. These are mostly clones of the well-known C-style functions and there will be no detailed explanation of all available formatting rules and usage here. 
+<p class="level0">See this table for notable exceptions. 
+<p class="level1">
+<p class="level1"><span Class="bold">curl_mprintf()</span> Normal printf() clone. 
+<p class="level1"><span Class="bold">curl_mfprintf()</span> Normal fprintf() clone. 
+<p class="level1"><span Class="bold">curl_msprintf()</span> Normal sprintf() clone. 
+<p class="level1"><span Class="bold">curl_msnprintf()</span> snprintf() clone. Many systems don't have this. It is just like <span Class="bold">sprintf</span> but with an extra argument after the buffer that specifies the length of the target buffer. 
+<p class="level1"><span Class="bold">curl_mvprintf()</span> Normal vprintf() clone. 
+<p class="level1"><span Class="bold">curl_mvfprintf()</span> Normal vfprintf() clone. 
+<p class="level1"><span Class="bold">curl_mvsprintf()</span> Normal vsprintf() clone. 
+<p class="level1"><span Class="bold">curl_mvsnprintf()</span> vsnprintf() clone.  Many systems don't have this. It is just like <span Class="bold">vsprintf</span> but with an extra argument after the buffer that specifies the length of the target buffer. 
+<p class="level1"><span Class="bold">curl_maprintf()</span> Like printf() but returns the output string as a malloc()ed string. The returned string must be free()ed by the receiver. 
+<p class="level1"><span Class="bold">curl_mvaprintf()</span> Like curl_maprintf() but takes a va_list pointer argument instead of a variable amount of arguments. 
+<p class="level0">
+<p class="level0">To easily use all these cloned functions instead of the normal ones, #define _MPRINTF_REPLACE before you include the &lt;curl/mprintf.h&gt; file. Then all the normal names like printf, fprintf, sprintf etc will use the curl-functions instead. <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">These function will be removed from the public libcurl API in a near future. They will instead be made "available" by source code access only, and then as curlx_-prefixed functions. See lib/README.curlx for further details. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">The <span Class="bold">curl_maprintf</span> and <span Class="bold">curl_mvaprintf</span> functions return a pointer to a newly allocated string, or NULL if it failed. 
+<p class="level0">All other functions return the number of characters they actually outputted. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><span Class="manpage">printf (3)</span> <span Class="manpage">  sprintf (3)</span> <span Class="manpage">  fprintf (3)</span> <span Class="manpage">  vprintf (3) </span> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>
