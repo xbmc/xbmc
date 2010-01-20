@@ -157,4 +157,4 @@ cd $WORKPATH/buildLive
 cd $THISDIR
 
 mv $WORKPATH/buildLive/binary.* .
-chmod 777 *.iso
+chmod 777 binary.*
