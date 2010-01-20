@@ -20,17 +20,24 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
 	m_bufferCount(4)
 {
   m_bNeedNewDevice = false;
-	SetRectEmpty(&m_rcDestRect);
-  HMODULE    hLib;
-  hLib = LoadLibrary ("dxva2.dll");
-  pfDXVA2CreateDirect3DDeviceManager9  = hLib ? (PTR_DXVA2CreateDirect3DDeviceManager9) GetProcAddress (hLib, "DXVA2CreateDirect3DDeviceManager9") : NULL;
-  hLib = LoadLibrary ("evr.dll");
-  pfMFCreateVideoSampleFromSurface  = hLib ? (PTR_MFCreateVideoSampleFromSurface)  GetProcAddress (hLib, "MFCreateVideoSampleFromSurface") : NULL;
+  SetRectEmpty(&m_rcDestRect);
+
+  pDXVA2HLib = LoadLibrary ("dxva2.dll");
+  pfDXVA2CreateDirect3DDeviceManager9  = pDXVA2HLib ? (PTR_DXVA2CreateDirect3DDeviceManager9) GetProcAddress (pDXVA2HLib, "DXVA2CreateDirect3DDeviceManager9") : NULL;
+  pEVRHLib = LoadLibrary ("evr.dll");
+  pfMFCreateVideoSampleFromSurface  = pEVRHLib ? (PTR_MFCreateVideoSampleFromSurface)  GetProcAddress (pEVRHLib, "MFCreateVideoSampleFromSurface") : NULL;
+
   if (!pfMFCreateVideoSampleFromSurface)
     CLog::Log(LOGERROR,"Could not find MFCreateVideoSampleFromSurface (evr.dll)");
+
   m_pVideoSurface = NULL;
-  m_pVideoTexture = new CD3DTexture();
+  //m_pVideoTexture = new CD3DTexture();
+  m_pVideoTexture = NULL;
+
   ZeroMemory(&m_DisplayMode, sizeof(m_DisplayMode));
+  ZeroMemory(m_pInternalVideoTexture, 7 * sizeof(IDirect3DTexture9*));
+  ZeroMemory(m_pInternalVideoSurface, 7 * sizeof(IDirect3DSurface9*));
+
   hr = InitializeD3D();
 }
 
@@ -41,8 +48,13 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
 
 D3DPresentEngine::~D3DPresentEngine()
 {
-  m_pDeviceManager = NULL;
+	m_pDeviceManager = NULL;
 	m_pCallback = NULL;
+	// Unload DLL
+	if (pDXVA2HLib)
+	  FreeLibrary(pDXVA2HLib);
+	if (pEVRHLib)
+	  FreeLibrary(pEVRHLib);
 }
 
 
@@ -61,9 +73,7 @@ D3DPresentEngine::~D3DPresentEngine()
 HRESULT D3DPresentEngine::GetService(REFGUID guidService, REFIID riid, void** ppv)
 {
   assert(ppv != NULL);
-
   HRESULT hr = S_OK;
-
   if (riid == __uuidof(IDirect3DDeviceManager9))
   {
     if (!m_pDeviceManager)
@@ -89,34 +99,34 @@ HRESULT D3DPresentEngine::GetService(REFGUID guidService, REFIID riid, void** pp
 
 HRESULT D3DPresentEngine::CheckFormat(D3DFORMAT format)
 {
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
 
-    UINT uAdapter = D3DADAPTER_DEFAULT;
-    D3DDEVTYPE type = D3DDEVTYPE_HAL;
+  UINT uAdapter = D3DADAPTER_DEFAULT;
+  D3DDEVTYPE type = D3DDEVTYPE_HAL;
 
-    D3DDISPLAYMODE mode;
-    D3DDEVICE_CREATION_PARAMETERS params;
+  D3DDISPLAYMODE mode;
+  D3DDEVICE_CREATION_PARAMETERS params;
 
-    if (g_Windowing.Get3DDevice())
-    {
-        hr = g_Windowing.Get3DDevice()->GetCreationParameters(&params);
-        if(FAILED(hr))
-          CLog::Log(LOGERROR,"%s",__FUNCTION__);
-
-        uAdapter = params.AdapterOrdinal;
-        type = params.DeviceType;
-
-    }
-    hr = g_Windowing.Get3DObject()->GetAdapterDisplayMode(uAdapter, &mode);
-        if(FAILED(hr))
-          CLog::Log(LOGERROR,"%s",__FUNCTION__);
-
-    hr = g_Windowing.Get3DObject()->CheckDeviceType(uAdapter, type, mode.Format, format, TRUE); 
+  if (g_Windowing.Get3DDevice())
+  {
+    hr = g_Windowing.Get3DDevice()->GetCreationParameters(&params);
     if(FAILED(hr))
       CLog::Log(LOGERROR,"%s",__FUNCTION__);
 
+    uAdapter = params.AdapterOrdinal;
+    type = params.DeviceType;
+
+  }
+  hr = g_Windowing.Get3DObject()->GetAdapterDisplayMode(uAdapter, &mode);
+  if(FAILED(hr))
+    CLog::Log(LOGERROR,"%s",__FUNCTION__);
+
+  hr = g_Windowing.Get3DObject()->CheckDeviceType(uAdapter, type, mode.Format, format, TRUE); 
+  if(FAILED(hr))
+    CLog::Log(LOGERROR,"%s",__FUNCTION__);
+
 done:
-    return hr;
+  return hr;
 }
 
 //-----------------------------------------------------------------------------
@@ -127,18 +137,11 @@ done:
 
 HRESULT D3DPresentEngine::SetDestinationRect(const RECT& rcDest)
 {
-    if (EqualRect(&rcDest, &m_rcDestRect))
-    {
-        return S_OK; // No change.
-    }
-
-    HRESULT hr = S_OK;
-
-    CAutoLock lock(&m_ObjectLock);
-
-    m_rcDestRect = rcDest;
-
-    return hr;
+  if (EqualRect(&rcDest, &m_rcDestRect))
+    return S_OK; // No change.
+  CAutoLock lock(&m_ObjectLock);
+  m_rcDestRect = rcDest;
+  return S_OK;
 }
 
 //-----------------------------------------------------------------------------
@@ -155,79 +158,79 @@ HRESULT D3DPresentEngine::SetDestinationRect(const RECT& rcDest)
 // D3DPresentEngine renders the video frame by presenting the swap chain.
 //-----------------------------------------------------------------------------
 
-HRESULT D3DPresentEngine::CreateVideoSamples(
-    IMFMediaType *pFormat, 
-    VideoSampleList& videoSampleQueue
-    )
+HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleList& videoSampleQueue)
 {
-
-    if (pFormat == NULL)
-    {
-        return MF_E_UNEXPECTED;
-    }
+  if (!pFormat)
+    return MF_E_UNEXPECTED;
 
 	HRESULT hr = S_OK;
 	D3DPRESENT_PARAMETERS pp;
 
-    IDirect3DSwapChain9 *pSwapChain = NULL;    // Swap chain
 	IMFSample *pVideoSample = NULL;            // Sampl
 	
-    CAutoLock lock(&m_ObjectLock);
+  CAutoLock lock(&m_ObjectLock);
 
-    ReleaseResources();
+  ReleaseResources();
 
-    // Get the swap chain parameters from the media type.
-    //hr = GetSwapChainPresentParameters(pFormat, &pp);
-    hr = MFGetAttributeSize(pFormat, MF_MT_FRAME_SIZE, &m_iVideoWidth, &m_iVideoHeight);
-    if (FAILED(hr))
-      CLog::Log(LOGERROR,"%s",__FUNCTION__);
+//get the video frame size for the current IMFMediaType
+  hr = MFGetAttributeSize(pFormat, MF_MT_FRAME_SIZE, &m_iVideoWidth, &m_iVideoHeight);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR,"%s Getting the frame size returned an error",__FUNCTION__);
+    return hr;
+  }
   
-  
-	
   m_pVideoSurface = NULL;
+  if (m_pVideoTexture)
+	  SAFE_DELETE(m_pVideoTexture);
+
   m_pVideoTexture = new CD3DTexture();
      
-  if (!m_pVideoTexture->Create(m_iVideoWidth ,m_iVideoHeight ,
-                          1,
-                          D3DUSAGE_RENDERTARGET,
-                          D3DFMT_X8R8G8B8,
-                          D3DPOOL_DEFAULT))
+  if (!m_pVideoTexture->Create(m_iVideoWidth ,
+                               m_iVideoHeight ,
+                               1 , 
+                               D3DUSAGE_RENDERTARGET,
+                               D3DFMT_X8R8G8B8,
+                               D3DPOOL_DEFAULT))
+  {
+    CLog::Log(LOGERROR,"%s Error while creating the video texture",__FUNCTION__);
     return E_FAIL;
-  hr = m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);
-  
+  }
+	S_RELEASE(m_pVideoSurface);
+	hr = m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);  
   
 	// Create the video samples.
-    for (int i = 0; i < m_bufferCount; i++)
-    {
-      hr = g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth,m_iVideoHeight,
-                                            1,
-                                            D3DUSAGE_RENDERTARGET,
-                                            D3DFMT_X8R8G8B8,
-                                            D3DPOOL_DEFAULT,&m_pInternalVideoTexture[i],NULL);
-        
+  for (int i = 0; i < m_bufferCount; i++)
+  {
+    hr = g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth ,
+                                                  m_iVideoHeight ,
+                                                  1 ,
+                                                  D3DUSAGE_RENDERTARGET ,
+                                                  D3DFMT_X8R8G8B8 ,
+                                                  D3DPOOL_DEFAULT ,
+                                                  &m_pInternalVideoTexture[i] ,
+                                                  NULL);
+	  CHECK_HR(hr);
+    hr  = m_pInternalVideoTexture[i]->GetSurfaceLevel(0, &m_pInternalVideoSurface[i]);
+	  if (FAILED(hr))
+		  m_pInternalVideoSurface[i] = 0;
 
-      hr  = m_pInternalVideoTexture[i]->GetSurfaceLevel(0, &m_pInternalVideoSurface[i]);
-      hr = CreateD3DSample(m_pInternalVideoSurface[i], &pVideoSample,i);
-      //pVideoSample->SetUINT32 (GUID_SURFACE_INDEX, i);
-      //hr = pfMFCreateVideoSampleFromSurface (m_pInternalVideoSurface[i], &pVideoSample);
-      
+    hr = CreateD3DSample(m_pInternalVideoSurface[i], &pVideoSample,i);
     
-        // Add it to the list.
+    // Add it to the samples list.
 		CHECK_HR(hr = videoSampleQueue.InsertBack(pVideoSample));
-    	S_RELEASE(pVideoSample);
-    }
+    S_RELEASE(pVideoSample);
+  }
 
 	// Let the derived class create any additional D3D resources that it needs.
-    CHECK_HR(hr = OnCreateVideoSamples(pp));
+  CHECK_HR(hr = OnCreateVideoSamples(pp));
 
 done:
-    if (FAILED(hr))
-    {
-        ReleaseResources();
-    }
+  if (FAILED(hr))
+    ReleaseResources();
 		
 	S_RELEASE(pVideoSample);
-    return hr;
+  return hr;
 }
 
 
@@ -240,31 +243,22 @@ done:
 
 void D3DPresentEngine::ReleaseResources()
 {
-    // Let the derived class release any resources it created.
+	// Let the derived class release any resources it created.
 	OnReleaseResources();
-  HANDLE hDev; 
-  HRESULT hr = S_OK; 
-  //hr = m_pDeviceManager->OpenDeviceHandle(&hDev); 
-  CHECK_HR(hr); 
-  IDirect3DDevice9* pD3dDev; 
-  //hr = m_pDeviceManager->LockDevice(hDev,&pD3dDev,true); 
-  if (SUCCEEDED(hr)) 
-  { 
-    m_pVideoTexture = NULL;
-    m_pVideoSurface = NULL;
-       //SAFE_RELEASE(m_pVideoSurface);
-     for (int i = 0; i < 7; i++) 
-     { 
-       m_pInternalVideoTexture[i] = NULL;
-       m_pInternalVideoSurface[i] = NULL;
-     } 
-   }
-  //hr = m_pDeviceManager->UnlockDevice(hDev,
- done: 
-   if (FAILED(hr)) 
-     CLog::Log(LOGDEBUG,"ReleaseResources Failed!"); 
 
-  //TODO
+	CAutoLock lock(&m_ObjectLock);
+
+
+	if (m_pVideoTexture)
+		SAFE_DELETE(m_pVideoTexture);
+
+	S_RELEASE(m_pVideoSurface);
+  //Releasing video surface
+	for (int i = 0; i < 7; i++) 
+	{ 
+	  S_RELEASE(m_pInternalVideoTexture[i]);
+	  m_pInternalVideoSurface[i] = NULL;
+	} 
 }
 
 //-----------------------------------------------------------------------------

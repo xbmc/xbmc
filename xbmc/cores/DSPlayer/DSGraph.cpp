@@ -52,8 +52,7 @@ enum
 using namespace std;
 using namespace MediaInfoDLL;
 
-CDSGraph::CDSGraph() :
-m_pGraphBuilder(NULL)
+CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
 {
   
   m_PlaybackRate = 1;
@@ -61,12 +60,12 @@ m_pGraphBuilder(NULL)
   g_userId = 0xACDCACDC;
   m_State.Clear();
   m_VideoInfo.Clear();
-  HRESULT hr;
   m_pMediaControl = NULL;
   m_pMediaEvent = NULL;
   m_pMediaSeeking = NULL;
   m_pBasicAudio = NULL;
   m_pBasicVideo = NULL;
+  m_bReachedEnd = false;
 }
 
 CDSGraph::~CDSGraph()
@@ -128,16 +127,24 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
 void CDSGraph::CloseFile()
 {
-  OnPlayStop();
+  CAutoLock lock(&m_ObjectLock);
+
   HRESULT hr;
   if (m_pGraphBuilder)
-    hr = m_pGraphBuilder->RemoveFromROT();
-  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(),pEF,pBF)
   {
-    m_pGraphBuilder->GetGraphBuilder2()->RemoveFilter(pBF);
+	  OnPlayStop();
+	  hr = m_pGraphBuilder->RemoveFromROT();
+	  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(),pEF,pBF)
+	  {
+		m_pGraphBuilder->GetGraphBuilder2()->RemoveFilter(pBF);
+		pBF->Release(); // Release filter
+	  }
+	  EndEnumFilters
+
+	  SAFE_DELETE(m_pGraphBuilder);
+
+	  // DShowUtil::UnloadExternalObjects(); //TODO: Test that !
   }
-  EndEnumFilters
-  
 }
 
 bool CDSGraph::InitializedOutputDevice()
@@ -166,6 +173,8 @@ void CDSGraph::UpdateTime()
   if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
     m_State.time = double(Position);
   }
+  if ( m_State.time == m_State.time_total )
+    m_bReachedEnd = true;
 }
 
 void CDSGraph::UpdateState()
@@ -294,6 +303,10 @@ void CDSGraph::OnPlayStop()
     m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
   if (m_pMediaControl)
     m_pMediaControl->Stop();
+
+  if (! m_pGraphBuilder)
+	  return;
+
   BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(), pEF, pBF)
   {
     IAMNetworkStatus* pAMNS = NULL;
@@ -405,20 +418,26 @@ void CDSGraph::SeekInMilliSec(double sec)
   LONGLONG seekrequest,earliest,latest;
   //Really need to verify those com interface before using them 
   //even if the player finished playback those function can still be called
-  if ((!m_pMediaControl) || (!m_pMediaSeeking))
-    return;
-  m_pMediaSeeking->GetAvailable(&earliest,&latest);
-  hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
-
-  seekrequest = ( LONGLONG )( sec * 10000 );
-  if ( seekrequest < 0 )
-    seekrequest = 0;
-  m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, NULL,AM_SEEKING_NoPositioning);
-  if(m_State.current_filter_state == State_Stopped)
+  try
   {
-    m_pMediaControl->Pause();
-    m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
-    m_pMediaControl->Stop();
+    if ((!m_pMediaControl) || (!m_pMediaSeeking))
+      return;
+    m_pMediaSeeking->GetAvailable(&earliest,&latest);
+    hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
+
+    seekrequest = ( LONGLONG )( sec * 10000 );
+    if ( seekrequest < 0 )
+      seekrequest = 0;
+    m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, NULL,AM_SEEKING_NoPositioning);
+    if(m_State.current_filter_state == State_Stopped)
+    {
+      m_pMediaControl->Pause();
+      m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
+      m_pMediaControl->Stop();
+    }
+  }
+  catch (...)
+  {
   }
 }
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)

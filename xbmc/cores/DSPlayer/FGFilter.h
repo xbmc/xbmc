@@ -41,7 +41,7 @@ protected:
 
 public:
 	CFGFilter(const CLSID& clsid, CStdString name = L"", UINT64 merit = MERIT64_DO_USE);
-	virtual ~CFGFilter() {}
+	virtual ~CFGFilter() {};
 
 	CLSID GetCLSID() {return m_clsid;}
 	CStdStringW GetName() {return m_name;}
@@ -116,12 +116,17 @@ public:
   
 };
 
+interface IDsRenderer;
+
 class CFGFilterVideoRenderer : public CFGFilter
 {
 public:
 	CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE);
+	~CFGFilterVideoRenderer();
 
 	HRESULT Create(IBaseFilter** ppBF);
+private:
+	IDsRenderer* pCAP; // for delete
 };
 
 class CFGFilterList

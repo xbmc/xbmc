@@ -18,6 +18,9 @@ using namespace std;
 #include "event.h"
 #include "D3DResource.h"
 #include "utils/CriticalSection.h"
+#include "dvdplayer/DVDPlayer.h"
+#include "dvdplayer/DVDPlayerSubtitle.h"
+
 #define DS_NBR_3D_SURFACE 3
 #define DS_MAX_3D_SURFACE 10
 [uuid("0403C469-E53E-4eda-8C1E-883CF2D760C7")]
@@ -53,7 +56,9 @@ protected:
   int                                     m_iVideoWidth;
   int                                     m_iVideoHeight;
 
-  
+  CDVDPlayerSubtitle m_dsPlayerSubtitle; // subtitle part
+  CDVDOverlayContainer m_overlayContainer;
+  CCurrentStream m_CurrentSubtitle;
 };
 
 #endif // _DSRENDERER_H

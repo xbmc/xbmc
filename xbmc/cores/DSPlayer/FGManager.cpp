@@ -59,24 +59,40 @@ CFGManager::CFGManager():
   m_pDsConfig(NULL)
 {
   HRESULT hr;
-  //CLSCTX_INPROC_HANDLER
-  //hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
   hr = CoCreateInstance(CLSID_FilterGraph,NULL,CLSCTX_ALL, IID_IUnknown,(void**) &m_pUnkInner);
-  hr = m_pUnkInner->QueryInterface(IID_IFilterGraph,(void**)&m_pFG);
+  hr = m_pUnkInner->QueryInterface(IID_IFilterGraph2,(void**)&m_pFG);
   hr = CoCreateInstance(CLSID_FilterMapper2,NULL,CLSCTX_ALL,__uuidof(m_pFM),(void**) &m_pFM);
 }
 
 CFGManager::~CFGManager()
 {
   CAutoLock cAutoLock(this);
+
   while(!m_source.empty()) 
     m_source.pop_back();
-  while(!m_transform.empty()) 
-    m_transform.pop_back();
+  while(!m_transform.empty())
+  {
+	  if (m_transform.back())
+		  delete m_transform.back();
+	  
+	  m_transform.pop_back();
+  }
   while(!m_override.empty()) 
     m_override.pop_back();
 
-  delete m_pDsConfig;
+  if (m_pDsConfig)
+  {
+	delete m_pDsConfig;
+	m_pDsConfig = 0;
+  }
+
+  /*BeginEnumFilters(this, pEF, pBF)
+  {
+	  this->RemoveFilter(pBF);
+	  pBF->Release();
+  }
+  EndEnumFilters*/
+
   SAFE_RELEASE(m_pUnkInner);
 }
 
@@ -163,19 +179,22 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
   CAutoLock cAutoLock(this);
 
   HRESULT hr;
-  IFilterGraph2* pIFG;
+  /*IFilterGraph2* pIFG;
   hr = m_pUnkInner->QueryInterface(__uuidof(pIFG),(void**)&pIFG);
   if(FAILED(hr))
-    return hr;
-  hr = pIFG->AddFilter(pFilter, pName);
-  if(FAILED(hr))
-    return hr;
+    return hr;*/
+  if (m_pFG)
+  {
+	  hr = m_pFG->AddFilter(pFilter, pName);
+	  if(FAILED(hr))
+		return hr;
+  }
 
   // TODO
   hr = pFilter->JoinFilterGraph(NULL, NULL);
   hr = pFilter->JoinFilterGraph(m_pFG, pName);
   
-  SAFE_RELEASE(pIFG);
+  //SAFE_RELEASE(pIFG);
   return hr;
 }
 
@@ -183,10 +202,14 @@ STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
 {
   if(!m_pUnkInner) 
     return E_UNEXPECTED;
+
   CAutoLock cAutoLock(this);
-  IFilterGraph2* pIFG;
-  if (SUCCEEDED(m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG)))
-    return pIFG->RemoveFilter(pFilter);
+
+  /*IFilterGraph2* pIFG;
+  if (SUCCEEDED(m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG)))*/
+  if (m_pFG)
+    return m_pFG->RemoveFilter(pFilter);
+
   return E_FAIL;
   //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->RemoveFilter(pFilter);
 }
@@ -198,9 +221,9 @@ STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
   //Locking make crash reclock
   //solution comming from mpc-hc
   //CAutoLock cAutoLock(this);
-  IFilterGraph2* pIFG;
-  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
-  return pIFG->EnumFilters(ppEnum);
+  /*IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);*/
+  return m_pFG->EnumFilters(ppEnum);
   //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->EnumFilters(ppEnum);
 }
 
@@ -209,9 +232,9 @@ STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
   if(!m_pUnkInner) 
     return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
-  IFilterGraph2* pIFG;
-  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
-  return pIFG->FindFilterByName(pName, ppFilter);
+  /*IFilterGraph2* pIFG;
+  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);*/
+  return m_pFG->FindFilterByName(pName, ppFilter);
   //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->FindFilterByName(pName, ppFilter);
 }
 
@@ -292,7 +315,11 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     IPin* pPinTo;
     if(SUCCEEDED(hr = pPinOut->ConnectedTo(&pPinTo)) || pPinTo
     || pPinIn && (SUCCEEDED(hr = pPinIn->ConnectedTo(&pPinTo)) || pPinTo))
-      return VFW_E_ALREADY_CONNECTED;
+	{
+		if (pPinTo)
+			pPinTo->Release();
+		return VFW_E_ALREADY_CONNECTED;
+	}
   }
 
   bool fDeadEnd = true;

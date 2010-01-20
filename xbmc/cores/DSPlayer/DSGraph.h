@@ -72,7 +72,8 @@ public:
 
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
   virtual HRESULT HandleGraphEvent();
-  
+  bool FileReachedEnd(){ return m_bReachedEnd; };
+
   virtual bool IsPaused() const;
   virtual double GetPlaySpeed() { return m_currentSpeed; };
 
@@ -114,6 +115,7 @@ public:
 protected:
 
   bool m_bAllowFullscreen;
+  bool m_bReachedEnd;
   CStdString m_Filename;
   int m_PlaybackRate;
   int m_currentSpeed;
@@ -123,6 +125,7 @@ protected:
   
   
   DWORD_PTR g_userId;
+  CCritSec m_ObjectLock;
 
   
 

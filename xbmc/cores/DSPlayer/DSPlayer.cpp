@@ -28,6 +28,9 @@
 #include "utils/log.h"
 #include "RegExp.h"
 #include "URL.h"
+
+#include "dshowutil/dshowutil.h" // unload loaded filters
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -46,6 +49,7 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
 CDSPlayer::~CDSPlayer()
 {
   m_pDsGraph.CloseFile();
+
   m_bAbortRequest = true;
   //g_renderManager.UnInit();
   CLog::Log(LOGNOTICE, "DSPlayer: waiting for threads to exit");
@@ -53,6 +57,9 @@ CDSPlayer::~CDSPlayer()
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
   StopThread();
+
+  /* Unload all loaded filters */
+  DShowUtil::UnloadExternalObjects();
 }
 
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
@@ -84,7 +91,9 @@ bool CDSPlayer::CloseFile()
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
   m_pDsGraph.CloseFile();
-  //g_renderManager.UnInit();
+  g_renderManager.UnInit();
+  
+//  CoFreeUnusedLibraries();
   CLog::Log(LOGNOTICE, "CDSPlayer: finished waiting");
   //StopThread();
   m_bAbortRequest = true;
@@ -155,6 +164,7 @@ void CDSPlayer::OnExit()
       m_callback.OnPlayBackStopped();
     else
       m_callback.OnPlayBackEnded();
+
   m_bStop = true;
 }
 void CDSPlayer::Process()
@@ -187,12 +197,19 @@ void CDSPlayer::Process()
       Sleep(100);
 	  }
 	  else if (m_currentSpeed == 0)
+    {      
       Sleep(250);
+    } 
     else
     {
 	    Sleep(250);
 	    m_pDsGraph.UpdateTime();
 	  }
+    if (m_pDsGraph.FileReachedEnd())
+    { 
+      CLog::Log(LOGDEBUG,"%s Graph detected end of video file",__FUNCTION__);
+      break;
+    }
   }
   m_callback.OnPlayBackEnded();
 

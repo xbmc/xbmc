@@ -30,12 +30,12 @@
 
 #include "DshowCommon.h"
 
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#ifndef dsmax
+#define dsmax(a,b)            (((a) > (b)) ? (a) : (b))
 #endif
 
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#ifndef dsmin
+#define dsmin(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 #ifdef _DEBUG
   #define DNew new

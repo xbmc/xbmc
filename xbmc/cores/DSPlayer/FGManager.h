@@ -131,7 +131,7 @@ protected:
 public:
 	CFGManager();
 	virtual ~CFGManager();
-  void InitManager();
+    void InitManager();
   
   // IGraphBuilder2
 	HRESULT IsPinDirection(IPin* pPin, PIN_DIRECTION dir);

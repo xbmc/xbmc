@@ -276,6 +276,9 @@ m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
 {
+  // Release resources
+  ReleaseResources();
+
   // COM interfaces
   SAFE_RELEASE(m_pClock);
   SAFE_RELEASE(m_pMixer);
@@ -285,6 +288,8 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   SAFE_DELETE(m_pD3DPresentEngine);
   
   g_renderManager.UnInit();
+
+  CLog::Log(LOGDEBUG, "%s EVR Allocator resources released", __FUNCTION__);
 }
 
 
@@ -624,7 +629,7 @@ HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TY
 
     // Renegotiate the media type with the mixer.
     case MFVP_MESSAGE_INVALIDATEMEDIATYPE:
-        CLog::Log(LOGDEBUG,"MFVP_MESSAGE_INVALIDATEMEDIATYPE");
+        CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_INVALIDATEMEDIATYPE message received", __FUNCTION__);
         hr = RenegotiateMediaType();
         break;
 
@@ -636,13 +641,13 @@ HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TY
 
     // Streaming is about to start.
     case MFVP_MESSAGE_BEGINSTREAMING:
-      CLog::Log(LOGDEBUG,"MFVP_MESSAGE_BEGINSTREAMING");
+      CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_BEGINSTREAMING message received", __FUNCTION__);
         hr = BeginStreaming();
         break;
 
     // Streaming has ended. (The EVR has stopped.)
     case MFVP_MESSAGE_ENDSTREAMING:
-      CLog::Log(LOGDEBUG,"MFVP_MESSAGE_ENDSTREAMING");
+      CLog::Log(LOGDEBUG,"%s MFVP_MESSAGE_ENDSTREAMING message received", __FUNCTION__);
         hr = EndStreaming();
         break;
 
@@ -1111,13 +1116,13 @@ HRESULT CEVRAllocatorPresenter::GetCurrentMediaType(IMFVideoMediaType** ppMediaT
 
   if (m_pMediaType == NULL)
   {
-    CLog::Log(LOGERROR,"MediaType is NULL");
+    CLog::Log(LOGERROR,"%s MediaType is NULL", __FUNCTION__);
   }
   hr = m_pMediaType->QueryInterface(__uuidof(IMFVideoMediaType), (void**)ppMediaType);
   if FAILED(hr)
-    CLog::Log(LOGERROR,"Query interface failed in GetCurrentMediaType");
+    CLog::Log(LOGERROR,"%s Query interface failed", __FUNCTION__);
 
-  CLog::Log(LOGNOTICE,"GetCurrentMediaType done" );
+  CLog::Log(LOGNOTICE,"%s Done", __FUNCTION__);
   return hr;
 }
 
@@ -1141,6 +1146,7 @@ STDMETHODIMP CEVRAllocatorPresenter::InitServicePointers(/* [in] */ __in  IMFTop
   SAFE_RELEASE(m_pClock);
   SAFE_RELEASE(m_pMixer);
   SAFE_RELEASE(m_pMediaEventSink);
+
   hr = pLookup->LookupService (MF_SERVICE_LOOKUP_GLOBAL, 0, MR_VIDEO_RENDER_SERVICE,
                                __uuidof (IMFClock ), (void**)&m_pClock, &dwObjects);
 

@@ -434,9 +434,9 @@ CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW na
 HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
 {
   CheckPointer(ppBF, E_POINTER);
-
-  HRESULT hr;
+  HRESULT hr = E_FAIL;
   hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
+
   if (FAILED(hr))
 	  CLog::Log(LOGERROR,"%s FAILED clsid:%s path:%s",__FUNCTION__,DShowUtil::CStringFromGUID(m_clsid).c_str(),m_path.c_str());
 
@@ -453,9 +453,24 @@ void CFGFilterFile::SetAutoLoad(bool autoload)
 //
 
 CFGFilterVideoRenderer::CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name, UINT64 merit) 
-  : CFGFilter(clsid, name, merit)
+  : CFGFilter(clsid, name, merit), pCAP(0)
 {
   AddType(MEDIATYPE_Video, MEDIASUBTYPE_NULL);
+}
+
+CFGFilterVideoRenderer::~CFGFilterVideoRenderer()
+{
+	if (pCAP)
+	{
+		if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
+			delete (CVMR9AllocatorPresenter *) pCAP;
+		else if (m_clsid == __uuidof(CEVRAllocatorPresenter))
+			delete (CEVRAllocatorPresenter *) pCAP;
+		else
+			delete pCAP;
+
+		pCAP = NULL;
+	}
 }
 
 HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
@@ -464,7 +479,6 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
 
   HRESULT hr = S_OK;
 
-  IDsRenderer* pCAP;
   CStdString __err;
   if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
     pCAP = new CVMR9AllocatorPresenter(hr,__err);

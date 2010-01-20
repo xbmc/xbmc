@@ -67,6 +67,8 @@ public:
 private:
   PTR_MFCreateVideoSampleFromSurface    pfMFCreateVideoSampleFromSurface;
   PTR_DXVA2CreateDirect3DDeviceManager9  pfDXVA2CreateDirect3DDeviceManager9;
+  HMODULE	pDXVA2HLib;
+  HMODULE	pEVRHLib;
 protected:
 	HRESULT InitializeD3D();
   HRESULT GetSwapChainPresentParameters(IMFMediaType *pType, D3DPRESENT_PARAMETERS* pPP);

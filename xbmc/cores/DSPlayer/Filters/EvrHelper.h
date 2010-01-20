@@ -486,6 +486,7 @@ template <class T>
     };
 
 typedef ComPtrList<IMFSample>           VideoSampleList;
+
 class SamplePool 
 {
 public:

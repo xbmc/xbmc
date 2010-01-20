@@ -32,7 +32,9 @@
 #include "dxerr.h"
 
 CDsRenderer::CDsRenderer()
-: CUnknown(NAME("CDsRenderer"), NULL)
+: CUnknown(NAME("CDsRenderer"), NULL),
+m_CurrentSubtitle(STREAM_SUBTITLE),
+m_dsPlayerSubtitle(&m_overlayContainer)
 {
   m_nCurSurface = 0;
   g_renderManager.PreInit(true);

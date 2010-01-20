@@ -1201,20 +1201,17 @@ typedef struct
   CLSID clsid;
 } ExternalObject;
 
-static std::list<ExternalObject> s_extobjs;
+static std::vector<ExternalObject> s_extobjs;
 
 HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, void** ppv)
 {
   CheckPointer(ppv, E_POINTER);
 
-  CStdString fullpath = path; 
-  //need to verify if its ok for the path
-  //CStdString fullpath = MakeFullPath(path);
-
+  CStdString fullpath = path;
   HINSTANCE hInst = NULL;
   bool fFound = false;
 
-  for (std::list<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
+  for (std::vector<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
   {
     if(!(*it).path.CompareNoCase(fullpath))
     {
@@ -1223,23 +1220,11 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
       break;
     }
   }
-  /*
-  POSITION pos = s_extobjs.GetHeadPosition();
-  while(pos)
-  {
-    ExternalObject& eo = s_extobjs.GetNext(pos);
-    if(!eo.path.CompareNoCase(fullpath))
-    {
-      hInst = eo.hInst;
-      fFound = true;
-      break;
-    }
-  }*/
 
   HRESULT hr = E_FAIL;
   CStdStringW fullpathW;
   g_charsetConverter.subtitleCharsetToW(fullpath,fullpathW);
-  if(hInst || (hInst = CoLoadLibrary(LPOLESTR(fullpathW.c_str()), TRUE)))
+  if(hInst || (hInst = CoLoadLibrary(LPOLESTR(fullpathW.c_str()), true)))
   {
     typedef HRESULT (__stdcall * PDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
     PDllGetClassObject p = (PDllGetClassObject)GetProcAddress(hInst, "DllGetClassObject");
@@ -1248,11 +1233,11 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
     {
       IClassFactory* pCF;
       if(SUCCEEDED(hr = p(clsid, __uuidof(IClassFactory), (void**)&pCF)))
-      {
         hr = pCF->CreateInstance(NULL, iid, ppv);
-      }
     }
-  }
+  } 
+  else 
+	  CLog::Log(LOGDEBUG, "%s CoLoadLibrary fails : %d", __FUNCTION__, GetLastError());
 
   if(FAILED(hr) && hInst && !fFound)
   {
@@ -1282,7 +1267,7 @@ HRESULT DShowUtil::LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPrope
   CLSID clsid2 = GUID_NULL;
   if(FAILED(pP->GetClassID(&clsid2))) return E_FAIL;
 
-  for (std::list<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
+  for (std::vector<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
   {
     if((*it).clsid == clsid2)
     {
@@ -1295,10 +1280,12 @@ HRESULT DShowUtil::LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPrope
 
 void DShowUtil::UnloadExternalObjects()
 {
-  for (std::list<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
+  for (std::vector<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
   {
     CoFreeLibrary((*it).hInst);
+	CLog::Log(LOGDEBUG, "%s Filter unloaded : %d", __FUNCTION__, GetLastError());
   }
+
   while (!s_extobjs.empty())
     s_extobjs.pop_back();
 }
