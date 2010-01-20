@@ -1,0 +1,24 @@
+locale name    locale charmap   nl_langinfo(CODESET) locale_charset() 
+
+POSIX            ISO8859-1         ISO8859-1         ISO-8859-1        
+da_DK.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+de_CH.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+de_DE.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+el_GR.ISO8859-7  ISO8859-7         ISO8859-7         ISO-8859-7        
+en_GB.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+en_US.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+en_US.cp850      cp850             cp850             CP850             
+es_ES.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+fi_FI.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+fr_BE.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+fr_CA.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+fr_CH.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+fr_FR.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+is_IS.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+it_IT.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+nl_BE.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+nl_NL.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+no_NO.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+pt_PT.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+sv_SE.ISO8859-1  ISO8859-1         ISO8859-1         ISO-8859-1        
+tr_TR.ISO8859-9  ISO8859-9         ISO8859-9         ISO-8859-9        

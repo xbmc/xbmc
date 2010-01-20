@@ -1,0 +1,97 @@
+a52dec-0.7.4 Sat Jul 27 20:44:00 PDT 2002
+-The library is now fully reentrant.
+-Added win32 output module, al file output, gain control.
+-A few additional portability enhancements.
+
+a52dec-0.7.3 Wed Feb 20 23:38:22 PST 2002
+-rewrite of the imdct code, making a52dec 40% to 80% faster than version 0.7.2
+-fixed one memory corruption problem in parse.c
+-small liba52 portability fixes
+-byte order and CRLF bugfixes in wav file output
+-aif file output
+-IRIX al sound output (untested, tell us if it works)
+
+a52dec-0.7.2 Sun Dec 16 14:39:56 PST 2001
+-demuxer improvements, with support for TS streams.
+-smaller demux buffer, making it easier to use a52dec as a pipe
+-wav output
+-avoid -fPIC when possible (-prefer-non-pic)
+-support for vc++ and TenDRA
+-portability fixes
+	
+a52dec-0.7.1b Fri Aug 31 02:37:23 PDT 2001
+-removed an #include <stdint.h> that was only breaking libc5 builds
+
+a52dec-0.7.1 Thu Aug 30 02:13:23 PDT 2001
+-gcc 3.0 fixes
+-mlib fixes (now passes the test suite)
+-in a52dec.c, made sample_data and flags static
+-removed a few statics in liba52/parse.c (still not reentrant, but closer)
+
+a52dec-0.7.0 Thu Aug 23 23:18:00 PDT 2001
+-Downmix to arbitrary speaker configurations
+-Dynamic range compression
+-Major speedups: 2x for 2.0 streams with 2.0 output,
+                 3x for 5.1 streams with 2.0 output.
+-New library interface
+-Rematrixing bugfix
+-Higher precision
+
+ac3dec-0.6.1 Mon Mar 27 20:27:06 EST 2000
+-Fix another 2.0 problem (rematrix was wrong).
+-Fix the never resync on a bad crc bug.
+
+ac3dec-0.6.0 Sat Mar 18 19:43:25 EST 2000
+-New library interface 
+-Fix bug wrt coupling channels that was causing sound quality problems. 
+-Fix 2.0 mode problems (aka the I forgot to implement the phase flags bug). 
+-All around speed improvements (almost twice as fast) 
+-Improved robustness when fed bad data. The entire frame is checksummed before playback.
+
+ac3dec-0.5.6 Tue Nov 16 00:37:34 EST 1999
+-Irix support 
+-Alpha fixes 
+-Minor performance enhancements to downmix and imdct
+-OpenBSD fixes 
+-extract_ac3 can now read from stdin
+-Change output_linux to block on write instead of using the
+ ring buffer. Let me know if this causes/fixes any problems
+
+ac3dec-0.5.5 Wed Aug 25 15:36:44 EDT 1999
+-Fixed a cut and paste bug (argh!) in parse.c which potentially 
+ screwed up delta bit allocation info.
+-Martin Mueller <mamueller@topmail.de> informed me that I was missing
+ some corrections from the AC-3 errata document. It turns out that 
+ I used an earlier version of the errata when I initially wrote ac3dec.
+ Fortunately the errata fix the outstanding bugs that I was pulling
+ my hair out on for a long time. Woohoo! Thanks Martin. Kudos to Dolby
+ Labs for keeping their documentation up to date as well.
+-stereo downmixing (downmix.c) is now in. Matrix encoded surround 
+ (Dolby Prologic Surround) should work too.
+-clipping due to high level signals has been fixed. We normalize a
+ block of samples by its maximum absolute value if the max exceeds 
+ the %100 digital level. This shouldn't be a problem, but for some 
+ reason some channels have a dynamic range that exceeds [-1.0,1.0].
+ I blame the encoder :)
+-Multiple track support in extract_ac3. Simply just give it the track
+ number you want [1,8] after the filename.
+
+ac3dec-0.5.4 Thu Jul 29 16:55:10 PDT 1999
+-Fixed a stupid bug with the coupling channel that was causing
+ high frequencies to be attenuated.
+-Re-wrote the extract_ac3 tool.
+-Added to a tool to verify the checksums on a given AC3 stream. 
+ (tools/verify_ac3)
+
+ac3dec-0.5.3  Mon Jul 12 10:45:56 PDT 1999
+-Fixed problems related to streams with coupling channel enabled.
+-Minor performance enhancements
+
+ac3dec-0.5.2  Sun Jul  4 12:00:25 PDT 1999
+-output_linux.c patch provided by Michael Holzt <kju@flummi.de>
+
+ac3dec-0.5.1  Wed Jun 30 17:48:52 PDT 1999
+-Compiles and dies gracefully under Linux now.
+
+ac3dec-0.5.0  Wed Jun 23 11:06:06 EDT 1999
+-First public release of ac3dec.

@@ -1,0 +1,19 @@
+whois klibc-utils
+openssh-server
+less nano language-pack-en unrar hfsprogs
+bzip2 locales ntfs-3g  dosfstools unzip curl
+acpi acpi-support
+alsa-utils hal lirc pm-utils
+linux-headers-generic dkms
+fakeroot
+grub
+xorg xinit fluxbox
+mesa-utils libgl1-mesa-dri xlibmesa-glu
+genext2fs
+cpufrequtils
+hts-tvheadend
+xbmc-ppa-keyring
+usplash-theme-xbmc*
+python-apt
+xbmc-live
+xbmc

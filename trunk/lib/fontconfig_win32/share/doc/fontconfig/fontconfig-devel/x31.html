@@ -1,0 +1,590 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Datatypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+HREF="t1.html"><LINK
+REL="PREVIOUS"
+TITLE="FUNCTIONAL OVERVIEW"
+HREF="x19.html"><LINK
+REL="NEXT"
+TITLE="FUNCTIONS"
+HREF="x102.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x19.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x102.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN31"
+>Datatypes</A
+></H1
+><P
+>Fontconfig uses abstract datatypes to hide internal implementation details
+for most data structures.  A few structures are exposed where appropriate.
+  </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN34"
+>FcChar8, FcChar16, FcChar32, FcBool</A
+></H2
+><P
+>These are primitive datatypes; the FcChar* types hold precisely the number
+of bits stated (if supported by the C implementation).  FcBool holds
+one of two CPP symbols: FcFalse or FcTrue.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN37"
+>FcMatrix</A
+></H2
+><P
+>An FcMatrix holds an affine transformation, usually used to reshape glyphs.
+A small set of matrix operations are provided to manipulate these.
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        typedef struct _FcMatrix {
+                double xx, xy, yx, yy;
+        } FcMatrix;
+    </PRE
+></TD
+></TR
+></TABLE
+>
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN41"
+>FcCharSet</A
+></H2
+><P
+>An FcCharSet is an abstract type that holds the set of encoded unicode chars
+in a font.  Operations to build and compare these sets are provided.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN44"
+>FcLangSet</A
+></H2
+><P
+>An FcLangSet is an abstract type that holds the set of languages supported
+by a font.  Operations to build and compare these sets are provided. These
+are computed for a font based on orthographic information built into the
+fontconfig library. Fontconfig has orthographies for all of the ISO 639-1
+languages except for MS, NA, PA, PS, QU, RN, RW, SD, SG, SN, SU and ZA. If
+you have orthographic information for any of these languages, please submit
+them.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN47"
+>FcLangResult</A
+></H2
+><P
+>An FcLangResult is an enumeration used to return the results of comparing
+two language strings or FcLangSet objects. FcLangEqual means the
+objects match language and territory. FcLangDifferentTerritory means
+the objects match in language but differ in territory.
+FcLangDifferentLang means the objects differ in language.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN50"
+>FcType</A
+></H2
+><P
+>Tags the kind of data stored in an FcValue.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN53"
+>FcValue</A
+></H2
+><P
+>An FcValue object holds a single value with one of a number of different
+types.  The 'type' tag indicates which member is valid.
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        typedef struct _FcValue {
+                FcType type;
+                union {
+                        const FcChar8 *s;
+                        int i;
+                        FcBool b;
+                        double d;
+                        const FcMatrix *m;
+                        const FcCharSet *c;
+			void *f;
+			const FcLangSet *l;
+                } u;
+        } FcValue;
+    </PRE
+></TD
+></TR
+></TABLE
+>
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                  FcValue Members
+
+        Type            Union member    Datatype
+        --------------------------------
+        FcTypeVoid      (none)          (none)
+        FcTypeInteger   i               int
+        FcTypeDouble    d               double
+        FcTypeString    s               FcChar8 *
+        FcTypeBool      b               b
+        FcTypeMatrix    m               FcMatrix *
+        FcTypeCharSet   c               FcCharSet *
+	FcTypeFTFace	f		void * (FT_Face)
+	FcTypeLangSet	l		FcLangSet *
+    </PRE
+></TD
+></TR
+></TABLE
+>
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN58"
+>FcPattern</A
+></H2
+><P
+>holds a set of names with associated value lists; each name refers to a
+property of a font.  FcPatterns are used as inputs to the matching code as
+well as holding information about specific fonts.  Each property can hold
+one or more values; conventionally all of the same type, although the
+interface doesn't demand that.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN61"
+>FcFontSet</A
+></H2
+><P
+>    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        typedef struct _FcFontSet {
+                int nfont;
+                int sfont;
+                FcPattern **fonts;
+        } FcFontSet;
+    </PRE
+></TD
+></TR
+></TABLE
+>
+An FcFontSet contains a list of FcPatterns.  Internally fontconfig uses this
+data structure to hold sets of fonts.  Externally, fontconfig returns the
+results of listing fonts in this format.  'nfont' holds the number of
+patterns in the 'fonts' array; 'sfont' is used to indicate the size of that
+array.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN65"
+>FcStrSet, FcStrList</A
+></H2
+><P
+>FcStrSet holds a list of strings that can be appended to and enumerated.
+Its unique characteristic is that the enumeration works even while strings
+are appended during enumeration.  FcStrList is used during enumeration to
+safely and correctly walk the list of strings even while that list is edited
+in the middle of enumeration.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN68"
+>FcObjectSet</A
+></H2
+><P
+>      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        typedef struct _FcObjectSet {
+                int nobject;
+                int sobject;
+                const char **objects;
+        } FcObjectSet;
+      </PRE
+></TD
+></TR
+></TABLE
+>
+holds a set of names and is used to specify which fields from fonts are
+placed in the the list of returned patterns when listing fonts.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN72"
+>FcObjectType</A
+></H2
+><P
+>      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        typedef struct _FcObjectType {
+                const char *object;
+                FcType type;
+        } FcObjectType;
+      </PRE
+></TD
+></TR
+></TABLE
+>
+marks the type of a pattern element generated when parsing font names.
+Applications can add new object types so that font names may contain the new
+elements.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN76"
+>FcConstant</A
+></H2
+><P
+>      <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        typedef struct _FcConstant {
+            const FcChar8 *name;
+            const char *object;
+            int value;
+        } FcConstant;
+      </PRE
+></TD
+></TR
+></TABLE
+>
+Provides for symbolic constants for new pattern elements.  When 'name' is
+seen in a font name, an 'object' element is created with value 'value'.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN80"
+>FcBlanks</A
+></H2
+><P
+>holds a list of Unicode chars which are expected to be blank; unexpectedly
+blank chars are assumed to be invalid and are elided from the charset
+associated with the font.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN83"
+>FcFileCache</A
+></H2
+><P
+>holds the per-user cache information for use while loading the font
+database. This is built automatically for the current configuration when
+that is loaded.  Applications must always pass '0' when one is requested.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN86"
+>FcConfig</A
+></H2
+><P
+>holds a complete configuration of the library; there is one default
+configuration, other can be constructed from XML data structures.  All
+public entry points that need global data can take an optional FcConfig*
+argument; passing 0 uses the default configuration.  FcConfig objects hold two
+sets of fonts, the first contains those specified by the configuration, the
+second set holds those added by the application at run-time.  Interfaces
+that need to reference a particulat set use one of the FcSetName enumerated
+values.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN89"
+>FcSetName</A
+></H2
+><P
+>Specifies one of the two sets of fonts available in a configuration;
+FcSetSystem for those fonts specified in the configuration and
+FcSetApplication which holds fonts provided by the application.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN92"
+>FcResult</A
+></H2
+><P
+>Used as a return type for functions manipulating FcPattern objects.
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>      FcResult Values
+        Result Code             Meaning
+        -----------------------------------------------------------
+        FcResultMatch           Object exists with the specified ID
+        FcResultNoMatch         Object doesn't exist at all
+        FcResultTypeMismatch    Object exists, but the type doesn't match
+        FcResultNoId            Object exists, but has fewer values
+                                than specified
+        FcResultOutOfMemory     Malloc failed
+    </PRE
+></TD
+></TR
+></TABLE
+>
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN96"
+>FcAtomic</A
+></H2
+><P
+>Used for locking access to config files.  Provides a safe way to update
+configuration files.
+    </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN99"
+>FcCache</A
+></H2
+><P
+>Holds information about the fonts contained in a single directory. Normal
+applications need not worry about this as caches for font access are
+automatically managed by the library. Applications dealing with cache
+management may want to use some of these objects in their work, however the
+included 'fc-cache' program generally suffices for all of that.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x19.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="t1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x102.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FUNCTIONAL OVERVIEW</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FUNCTIONS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,6 @@
+// $Id: bad-msf-2.toc,v 1.1 2004/05/07 10:57:50 rocky Exp $
+// bad MSF in second field
+
+TRACK AUDIO
+NO COPY       // so that all CTL flags are 0
+FILE "cdda.bin" 0:60:0  // seconds should be less than 60

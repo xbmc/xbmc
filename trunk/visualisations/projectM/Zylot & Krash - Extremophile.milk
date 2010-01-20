@@ -1,0 +1,115 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.700000
+fDecay=0.997000
+fVideoEchoZoom=1.000224
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=1
+nWaveMode=6
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=1
+bSolarize=1
+bInvert=0
+fWaveAlpha=1.003100
+fWaveScale=1.004873
+fWaveSmoothing=0.000000
+fWaveParam=0.000000
+fModWaveAlphaStart=1.010000
+fModWaveAlphaEnd=1.010000
+fWarpAnimSpeed=0.999994
+fWarpScale=1.002083
+fZoomExponent=0.627608
+fShader=1.000000
+zoom=0.994800
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.010000
+dy=0.010000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.000000
+wave_g=0.000000
+wave_b=0.000000
+wave_x=0.000000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.029900
+ib_size=0.000000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=0.000000
+nMotionVectorsY=0.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=0.850000
+mv_r=0.499900
+mv_g=0.499900
+mv_b=0.499900
+mv_a=0.000000
+per_frame_1=volume = 0.3*(bass+mid+att);
+per_frame_2=beatrate = equal(beatrate,0) + (1-equal(beatrate,0))*(below(volume,0.01) + (1-below(volume,0.01))*beatrate);
+per_frame_3=lastbeat = lastbeat + equal(lastbeat,0)*time;
+per_frame_4=meanbass_att = 0.1*(meanbass_att*9 + bass_att);
+per_frame_5=peakbass_att = max(bass_att,peakbass_att);
+per_frame_6=beat = above(volume,0.8)*below(peakbass_att - bass_att, 0.05*peakbass_att)*above(time - lastbeat, 0.1 + 0.5*(beatrate - 0.1));
+per_frame_7=beatrate = max(if(beat,if(below(time-lastbeat,2*beatrate),0.1*(beatrate*9 + time - lastbeat),beatrate),beatrate),0.1);
+per_frame_8=peakbass_att = beat*bass_att + (1-beat)*peakbass_att*(above(time - lastbeat, 2*beatrate)*0.95 + (1-above(time - lastbeat, 2*beatrate))*0.995);
+per_frame_9=lastbeat = beat*time + (1-beat)*lastbeat;
+per_frame_10=peakbass_att = max(peakbass_att,1.1*meanbass_att);
+per_frame_11=xamptarg = if(equal(frame%15,0),min(0.25*volume*bass_att,0.5),xamptarg);
+per_frame_12=xamp = xamp + 0.5*(xamptarg-xamp);
+per_frame_13=xdir = if(above(abs(xpos),xamp),-sign(xpos),if(below(abs(xspeed),0.1),2*above(xpos,0)-1,xdir));
+per_frame_14=xspeed = xspeed + xdir*xamp - xpos - xspeed*0.055*below(abs(xpos),xamp);
+per_frame_15=xpos = xpos + 0.001*xspeed;
+per_frame_16=wave_x = 1.5*xpos + 0.5;
+per_frame_17=yamptarg = if(equal(frame%15,0),min(0.15*volume*treb_att,0.5),yamptarg);
+per_frame_18=yamp = yamp + 0.5*(yamptarg-yamp);
+per_frame_19=ydir = if(above(abs(ypos),yamp),-sign(ypos),if(below(abs(yspeed),0.1),2*above(ypos,0)-1,ydir));
+per_frame_20=yspeed = yspeed + ydir*yamp - ypos - yspeed*0.055*below(abs(ypos),yamp);
+per_frame_21=ypos = ypos + 0.001*yspeed;
+per_frame_22=mode = if(beat,rand(2),mode);
+per_frame_23=q1 = (25+15*sin(time*1.56) + 10*sin(time*0.643))*0.08;
+per_frame_24=q2 = 1 - mode*2;
+per_frame_25=red=if(below(frame%6,3),bass*0.5,0);
+per_frame_26=blue=if(above(frame%6,2),bass*0.5,0);
+per_frame_27=green=0.9+sin(time)*0.1;
+per_frame_28=q3 = 3 + sin(time*0.496) + sin(time*0.591);
+per_frame_29=mode2 = frame%2;
+per_frame_30=wave_r = if(mode2,red,green);
+per_frame_31=wave_g = if(mode2,green,0.5*blue);
+per_frame_32=wave_b = if(mode2,blue,red);
+per_frame_33=wave_mode = if(mode2,6,0);
+per_frame_34=wave_x = if(mode2,0,0.5 + xpos + 0.1*sin(time));
+per_frame_35=wave_y = if(mode2,0.5,0.5+ ypos + 0.1*cos(time));
+per_frame_36=q4 = 0.5 + xpos + 0.18*sin(time);
+per_frame_37=q5 = 0.5 - ypos - 0.18*cos(time);
+per_frame_38=wave_mystery = if(mode2,0,-0.4);
+per_frame_39=wave_r=abs(wave_r-my_rand);
+per_frame_40=wave_b=abs(wave_b-my_rand);
+per_frame_41=wave_g=abs(wave_g-my_rand);
+per_pixel_1=dx = dx*pow(-1,0&(13+q1 - 2*(q2*y)))*min(0.5*bass,1.2);
+per_pixel_2=dy = dy*pow(-1,0&(13+q1 - 5*(x*q3)))*min(0.5*bass,1.2)-0.01;
+per_pixel_3=newx = x - q4;
+per_pixel_4=newy = y - q5;
+per_pixel_5=newrad = min(sqrt((newx)*(newx)+0.5625*(newy)*(newy))*2,1);
+per_pixel_6=newzoom = pow(1.03, pow(0.01+sin(newrad*newrad), newrad*2-1));
+per_pixel_7=dx = (min(5*newrad,1)*dx + max(1 - newrad*5,0)*((newx)*newzoom - newx*bass));
+per_pixel_8=dy = (min(5*newrad,1)*dy + max(1 - newrad*5,0)*((newy)*newzoom - newy*treb));
+per_pixel_9=sy=sy+above(x,.5)*sin(rad*q5*1.68*mid)*.8;
+per_pixel_10=zoom=zoom-.04*sin((x-.5)*8+q4)*sin(y*31.4+q3*sin(bass+ang*treb+time));
+per_frame_init_1=my_rand=abs(sin(rand(500)));

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Release" />
+	<File name="CHANGELOG" open="1" top="0" tabpos="7">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="README" open="0" top="0" tabpos="8">
+		<Cursor position="3582" topLine="0" />
+	</File>
+	<File name="example-sdl/sdl.c" open="1" top="0" tabpos="6">
+		<Cursor position="3235" topLine="105" />
+	</File>
+	<File name="example/example.c" open="1" top="0" tabpos="5">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="src/classic.c" open="0" top="0" tabpos="4">
+		<Cursor position="2464" topLine="53" />
+	</File>
+	<File name="src/definitions.h" open="1" top="0" tabpos="9">
+		<Cursor position="1099" topLine="12" />
+	</File>
+	<File name="src/dynamics.c" open="0" top="0" tabpos="10">
+		<Cursor position="3216" topLine="59" />
+	</File>
+	<File name="src/events.c" open="1" top="0" tabpos="4">
+		<Cursor position="2983" topLine="117" />
+	</File>
+	<File name="src/guitar_hero_3.c" open="0" top="0" tabpos="0">
+		<Cursor position="2604" topLine="45" />
+	</File>
+	<File name="src/io.c" open="0" top="0" tabpos="6">
+		<Cursor position="1817" topLine="60" />
+	</File>
+	<File name="src/io_nix.c" open="0" top="0" tabpos="8">
+		<Cursor position="6286" topLine="211" />
+	</File>
+	<File name="src/io_win.c" open="0" top="0" tabpos="9">
+		<Cursor position="4021" topLine="123" />
+	</File>
+	<File name="src/ir.c" open="1" top="0" tabpos="8">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="src/ir.h" open="0" top="0" tabpos="0">
+		<Cursor position="1059" topLine="0" />
+	</File>
+	<File name="src/nunchuk.c" open="0" top="0" tabpos="10">
+		<Cursor position="2454" topLine="43" />
+	</File>
+	<File name="src/nunchuk.h" open="0" top="0" tabpos="0">
+		<Cursor position="1171" topLine="0" />
+	</File>
+	<File name="src/wiiuse.c" open="1" top="0" tabpos="1">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="src/wiiuse.h" open="1" top="1" tabpos="2">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="src/wiiuse_internal.h" open="1" top="0" tabpos="3">
+		<Cursor position="3424" topLine="81" />
+	</File>
+</CodeBlocks_layout_file>

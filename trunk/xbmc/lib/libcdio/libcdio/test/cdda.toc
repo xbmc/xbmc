@@ -1,0 +1,14 @@
+// $Id: cdda.toc,v 1.4 2004/12/31 07:51:43 rocky Exp $
+
+// Language number should always start with 0
+LANGUAGE 0 {
+  // Required fields - at least all CD-TEXT CDs I've seen so far have them.
+  TITLE "Join us now we have the software"
+  PERFORMER "Richard Stallman"
+}
+CATALOG "0000010271955"
+CD_DA
+
+TRACK	  AUDIO
+COPY
+FILE "cdda.bin"   00:00:00 00:00:00

@@ -1,0 +1,23 @@
+                             xmms-mp4 plugin v0.5
+                              (dynamic version)
+                       "a mp4/aac audio player for xmms"
+                       coded by ciberfred from france  
+				-------------
+
+This source code allow to xmms to read .mp4/.m4a/.aac files
+
+About.
+ This plugin is a merge between aac and mp4 plugin. so now you could read
+all new and old files encoded with different encoder and different format
+(for the aac part). This is possible since the libfaad2 allow to read
+old aac ADTS format.
+
+For any informations about this plugin contact me at :
+
+mail : frederic.fondriest@laposte.net
+ICQ  : 17293220
+aac plugin homepage (and more) : http://fondriest.frederic.free.fr/realisations/
+IRC  : irc.eu.freenode.net (#lamip)
+
+-- 
+Frederic Fondriest

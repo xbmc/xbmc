@@ -1,0 +1,50 @@
+#!/bin/sh
+# script from Jamin W. Collins  BTS: #255165
+#        modded by Oumar Aziz OUATTARA
+# 
+# Set the PBUILDER_XBMC_BASE_DIR var to your custom pbuilder base directory. You can set it while calling the script.
+# To select an ubuntu distribution to launch the build, use the first argument of the script.
+# The second is the actual command to launch.
+
+OPERATION=$2
+DISTRIBUTION=$1
+PROCEED=false
+
+if [ -z $PBUILDER_XBMC_BASE_DIR ] ; then 
+   PBUILDER_XBMC_BASE_DIR="/var/cache/pbuilder"
+fi
+
+case $OPERATION in
+   create|update|build|clean|login|execute)
+      PROCEED=true
+      ;;
+esac
+if ( $PROCEED == true ) then
+   shift 2
+   sudo pbuilder $OPERATION \
+      --basetgz $PBUILDER_XBMC_BASE_DIR/$DISTRIBUTION-base.tgz \
+      --distribution $DISTRIBUTION \
+      --buildresult $PBUILDER_XBMC_BASE_DIR/result \
+      --aptcache $PBUILDER_XBMC_BASE_DIR/aptcache \
+      --buildplace $PBUILDER_XBMC_BASE_DIR/build \
+      --extrapackages "less vim gnupg" \
+      --mirror "http://archive.ubuntu.com/ubuntu/" \
+      --components "main restricted universe multiverse" \
+      --othermirror "deb http://ppa.launchpad.net/team-xbmc/ppa/ubuntu $DISTRIBUTION main|\
+deb http://ppa.launchpad.net/nvidia-vdpau/ppa/ubuntu $DISTRIBUTION main|\
+deb http://security.ubuntu.com/ubuntu $DISTRIBUTION-security main restricted universe multiverse|\
+deb http://archive.ubuntu.com/ubuntu/ $DISTRIBUTION-backports main restricted universe multiverse|\
+deb http://archive.ubuntu.com/ubuntu/ $DISTRIBUTION-updates main restricted universe multiverse" "$@"
+
+else
+   echo "Usage: $0 [distribution] [command] "
+   echo "Invalid command..."
+   echo "Valid commands are:"
+   echo "   create"
+   echo "   update"
+   echo "   build"
+   echo "   clean"
+   echo "   login"
+   echo "   execute"
+   exit 1
+fi

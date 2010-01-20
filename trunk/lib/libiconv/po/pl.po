@@ -1,0 +1,358 @@
+# Polish translation for libiconv.
+# Copyright (C) 2003, 2006 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libiconv package.
+# Arkadiusz Lipiec <alipiec@elka.pw.edu.pl>, 2003.
+# Jakub Bogusz <qboosh@pld-linux.org>, 2006-2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.12\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2009-06-30 22:53+0200\n"
+"PO-Revision-Date: 2007-12-26 23:20+0100\n"
+"Last-Translator: Jakub Bogusz <qboosh@pld-linux.org>\n"
+"Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. TRANSLATORS: The first line of the short usage message.
+#: src/iconv.c:103
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Sk³adnia: iconv [-c] [-s] [f z_kodu] [-t do_kodu] [plik ...]"
+
+#. TRANSLATORS: The second line of the short usage message.
+#. Align it correctly against the first line.
+#: src/iconv.c:107
+msgid "or:    iconv -l"
+msgstr "lub:    iconv -l"
+
+#: src/iconv.c:109
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "`%s --help' poka¿e wiêcej informacji.\n"
+
+#. TRANSLATORS: The first line of the long usage message.
+#. The %s placeholder expands to the program name.
+#: src/iconv.c:114
+#, c-format, no-wrap
+msgid "Usage: %s [OPTION...] [-f ENCODING] [-t ENCODING] [INPUTFILE...]\n"
+msgstr "Sk³adnia: %s [OPCJA...] [-f KODOWANIE] [-t KODOWANIE] [PLIK_WEJ...]\n"
+
+#. TRANSLATORS: The second line of the long usage message.
+#. Align it correctly against the first line.
+#. The %s placeholder expands to the program name.
+#: src/iconv.c:121
+#, c-format, no-wrap
+msgid "or:    %s -l\n"
+msgstr "lub:    %s -l\n"
+
+#. TRANSLATORS: Description of the iconv program.
+#: src/iconv.c:127
+#, c-format, no-wrap
+msgid "Converts text from one encoding to another encoding.\n"
+msgstr "Konwersja tekstu z jednego kodowania do innego.\n"
+
+#: src/iconv.c:131
+#, c-format, no-wrap
+msgid "Options controlling the input and output format:\n"
+msgstr "Opcje steruj±ce formatem wej¶cia i wyj¶cia:\n"
+
+#: src/iconv.c:134
+#, c-format, no-wrap
+msgid ""
+"  -f ENCODING, --from-code=ENCODING\n"
+"                              the encoding of the input\n"
+msgstr ""
+"  -f KODOWANIE, --from-code=KODOWANIE\n"
+"                              kodowanie wej¶cia\n"
+
+#: src/iconv.c:138
+#, c-format, no-wrap
+msgid ""
+"  -t ENCODING, --to-code=ENCODING\n"
+"                              the encoding of the output\n"
+msgstr ""
+"  -t KODOWANIE, --to-code=KODOWANIE\n"
+"                              kodowanie wyj¶cia\n"
+
+#: src/iconv.c:143
+#, c-format, no-wrap
+msgid "Options controlling conversion problems:\n"
+msgstr "Opcje steruj±ce zagadnieniami konwersji:\n"
+
+#: src/iconv.c:146
+#, c-format, no-wrap
+msgid "  -c                          discard unconvertible characters\n"
+msgstr "  -c                          pominiêcie niekonwertowalnych znaków\n"
+
+#: src/iconv.c:149
+#, c-format, no-wrap
+msgid ""
+"  --unicode-subst=FORMATSTRING\n"
+"                              substitution for unconvertible Unicode characters\n"
+msgstr ""
+"  --unicode-subst=£AÑCUCH_FORMATUJ¡CY\n"
+"                              zamiennik dla niekonwertowalnych znaków Unicode\n"
+
+#: src/iconv.c:153
+#, c-format, no-wrap
+msgid "  --byte-subst=FORMATSTRING   substitution for unconvertible bytes\n"
+msgstr "  --byte-subst=£AÑCUCH_FORMATUJ¡CY   zamiennik dla niekonwertowalnych bajtów\n"
+
+#: src/iconv.c:156
+#, c-format, no-wrap
+msgid ""
+"  --widechar-subst=FORMATSTRING\n"
+"                              substitution for unconvertible wide characters\n"
+msgstr ""
+"  --widechar-subst=£AÑCUCH_FORMATUJ¡CY\n"
+"                              zamiennik dla niekonwertowalnych znaków szerokich\n"
+
+#: src/iconv.c:161
+#, c-format, no-wrap
+msgid "Options controlling error output:\n"
+msgstr "Opcje steruj±ce wyj¶ciem b³êdów:\n"
+
+#: src/iconv.c:164
+#, c-format, no-wrap
+msgid "  -s, --silent                suppress error messages about conversion problems\n"
+msgstr "  -s, --silent                pominiêcie komunikatów b³êdów dotycz±cych konwersji\n"
+
+#: src/iconv.c:168
+#, c-format, no-wrap
+msgid "Informative output:\n"
+msgstr "Wyj¶cie informacyjne:\n"
+
+#: src/iconv.c:171
+#, c-format, no-wrap
+msgid "  -l, --list                  list the supported encodings\n"
+msgstr "  -l, --list                  wypisanie obs³ugiwanych kodowañ\n"
+
+#: src/iconv.c:174
+#, c-format, no-wrap
+msgid "  --help                      display this help and exit\n"
+msgstr "  --help                      wy¶wietlenie tego opisu i zakoñczenie\n"
+
+#: src/iconv.c:177
+#, c-format, no-wrap
+msgid "  --version                   output version information and exit\n"
+msgstr "  --version                   wy¶wietlenie informacji o wersji i zakoñczenie\n"
+
+#. TRANSLATORS: The placeholder indicates the bug-reporting address
+#. for this package.  Please add _another line_ saying
+#. "Report translation bugs to <...>\n" with the address for translation
+#. bugs (typically your translation team's web or email address).
+#: src/iconv.c:184
+msgid "Report bugs to <bug-gnu-libiconv@gnu.org>.\n"
+msgstr "B³êdy proszê zg³aszaæ na adres <bug-gnu-libiconv@gnu.org>.\n"
+
+#: src/iconv.c:195
+#, fuzzy, no-wrap
+msgid ""
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr ""
+"Licencja GPLv2+: GNU GPL wersja 2 lub pó¼niejsza <http://gnu.org/licenses/gpl.html>\n"
+"To jest oprogramowanie wolnodostêpne: mo¿na je modyfikowaæ i rozpowszechniaæ.\n"
+"Nie ma ¯ADNEJ GWARANCJI w zakresie dopuszczalnym przez prawo.\n"
+
+# s TRANSLATORS: The %s placeholder expands to an author's name.
+#. TRANSLATORS: The %s placeholder expands to an author's name.
+#: src/iconv.c:201
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Napisane przez %s.\n"
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:295
+#, c-format
+msgid ""
+"%s argument: A format directive with a variable width is not allowed here."
+msgstr ""
+"Argument %s: dyrektywa formatuj±ca o zmiennej szeroko¶ci nie jest tutaj "
+"dozwolona."
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:310
+#, c-format
+msgid ""
+"%s argument: A format directive with a variable precision is not allowed "
+"here."
+msgstr ""
+"Argument %s: dyrektywa formatuj±ca o zmiennej precyzji nie jest tutaj "
+"dozwolona."
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:326
+#, c-format
+msgid "%s argument: A format directive with a size is not allowed here."
+msgstr ""
+"Argument %s: dyrektywa formatuj±ca z rozmiarem nie jest tutaj dozwolona."
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:368
+#, c-format
+msgid "%s argument: The string ends in the middle of a directive."
+msgstr "Argument %s: ³añcuch koñczy siê w ¶rodku dyrektywy."
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#. The %c placeholder expands to an unknown format directive.
+#: src/iconv.c:375
+#, c-format
+msgid "%s argument: The character '%c' is not a valid conversion specifier."
+msgstr "Argument %s: znak '%c' nie jest poprawnym okre¶leniem konwersji."
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:381
+#, c-format
+msgid ""
+"%s argument: The character that terminates the format directive is not a "
+"valid conversion specifier."
+msgstr ""
+"Argument %s: znak koñcz±cy dyrektywê formatuj±c± nie jest poprawnym "
+"okre¶leniem konwersji."
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#. The %u placeholder expands to the number of arguments consumed by the format string.
+#: src/iconv.c:397
+#, c-format
+msgid ""
+"%s argument: The format string consumes more than one argument: %u argument."
+msgid_plural ""
+"%s argument: The format string consumes more than one argument: %u arguments."
+msgstr[0] ""
+"Argument %s: ³añcuch formatuj±cy pobiera wiêcej ni¿ jeden argument: %u "
+"argument."
+msgstr[1] ""
+"Argument %s: ³añcuch formatuj±cy pobiera wiêcej ni¿ jeden argument: %u "
+"argumenty."
+msgstr[2] ""
+"Argument %s: ³añcuch formatuj±cy pobiera wiêcej ni¿ jeden argument: %u "
+"argumentów."
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --byte-subst.
+#: src/iconv.c:455
+#, c-format
+msgid "cannot convert byte substitution to Unicode: %s"
+msgstr "nie mo¿na przekonwertowaæ zamiennika bajtu na Unicode: %s"
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --unicode-subst.
+#: src/iconv.c:495
+#, c-format
+msgid "cannot convert unicode substitution to target encoding: %s"
+msgstr "nie mo¿na przekonwertowaæ zamiennika unicode na kodowanie docelowe: %s"
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --byte-subst.
+#: src/iconv.c:536
+#, c-format
+msgid "cannot convert byte substitution to wide string: %s"
+msgstr "nie mo¿na przekonwertowaæ zamiennika bajtu na ³añcuch szeroki: %s"
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --widechar-subst.
+#: src/iconv.c:577
+#, c-format
+msgid "cannot convert widechar substitution to target encoding: %s"
+msgstr ""
+"nie mo¿na przekonwertowaæ zamiennika znaku szerokiego na kodowanie docelowe: "
+"%s"
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --byte-subst.
+#: src/iconv.c:618
+#, c-format
+msgid "cannot convert byte substitution to target encoding: %s"
+msgstr "nie mo¿na przekonwertowaæ zamiennika bajtu na kodowanie docelowe: %s"
+
+#. TRANSLATORS: An error message.
+#. The placeholders expand to the input file name, a line number, and a column number.
+#: src/iconv.c:637
+#, c-format
+msgid "%s:%u:%u: cannot convert"
+msgstr "%s:%u:%u: nie mo¿na skonwertowaæ"
+
+#. TRANSLATORS: An error message.
+#. The placeholders expand to the input file name, a line number, and a column number.
+#. A "shift sequence" is a sequence of bytes that changes the state of the converter;
+#. this concept exists only for "stateful" encodings like ISO-2022-JP.
+#: src/iconv.c:651
+#, c-format
+msgid "%s:%u:%u: incomplete character or shift sequence"
+msgstr "%s:%u:%u niedokoñczony znak lub sekwencja shift"
+
+#. TRANSLATORS: The first part of an error message.
+#. It is followed by a colon and a detail message.
+#. The placeholders expand to the input file name, a line number, and a column number.
+#: src/iconv.c:664
+#, c-format
+msgid "%s:%u:%u"
+msgstr "%s:%u:%u"
+
+#. TRANSLATORS: An error message.
+#. The placeholder expands to the input file name.
+#: src/iconv.c:819
+#, c-format
+msgid "%s: I/O error"
+msgstr "%s: b³±d wej./wyj."
+
+#. TRANSLATORS: An error message.
+#. The placeholder expands to the encoding name, specified through --from-code.
+#: src/iconv.c:1007
+#, c-format
+msgid "conversion from %s unsupported"
+msgstr "konwersja z kodu %s jest nieobs³ugiwana"
+
+#. TRANSLATORS: An error message.
+#. The placeholder expands to the encoding name, specified through --to-code.
+#: src/iconv.c:1013
+#, c-format
+msgid "conversion to %s unsupported"
+msgstr "konwersja do kodu %s jest nieobs³ugiwana"
+
+#. TRANSLATORS: An error message.
+#. The placeholders expand to the encoding names, specified through --from-code and --to-code, respectively.
+#: src/iconv.c:1019
+#, c-format
+msgid "conversion from %s to %s unsupported"
+msgstr "konwersja z kodu %s do kodu %s jest nieobs³ugiwana"
+
+#. TRANSLATORS: Additional advice after an error message.
+#. The %s placeholder expands to the program name.
+#: src/iconv.c:1024
+#, c-format
+msgid "try '%s -l' to get the list of supported encodings"
+msgstr "'%s -l' poda listê obs³ugiwanych kodowañ"
+
+#. TRANSLATORS: A filename substitute denoting standard input.
+#: src/iconv.c:1081
+msgid "(stdin)"
+msgstr "(stdin)"
+
+#. TRANSLATORS: The first part of an error message.
+#. It is followed by a colon and a detail message.
+#. The %s placeholder expands to the input file name.
+#: src/iconv.c:1093
+#, c-format
+msgid "%s"
+msgstr "%s"
+
+#. TRANSLATORS: An error message.
+#: src/iconv.c:1107
+#, c-format
+msgid "I/O error"
+msgstr "b³±d wej./wyj."

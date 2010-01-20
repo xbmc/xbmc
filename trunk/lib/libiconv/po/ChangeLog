@@ -1,0 +1,289 @@
+2009-03-24  Bruno Haible  <bruno@clisp.org>
+
+	* bg.po: New file, from Roumen Petrov <transl@roumenpetrov.info>.
+	* LINGUAS: Add bg.
+
+2009-01-24  Bruno Haible  <bruno@clisp.org>
+
+	* id.po: Update from Arif E. Nugroho <arif_endro@yahoo.com>.
+	* it.po: Update from Milo Casagrande <milo_casagrande@yahoo.it>.
+
+2008-11-11  Bruno Haible  <bruno@clisp.org>
+
+	* zh_CN.po: Update from Ji ZhengYu <zhengyuji@gmail.com>.
+
+2008-05-18  Bruno Haible  <bruno@clisp.org>
+
+	* zh_CN.po: Update from Ji ZhengYu <zhengyuji@gmail.com>.
+
+2008-04-27  Bruno Haible  <bruno@clisp.org>
+
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+
+2008-03-30  Bruno Haible  <bruno@clisp.org>
+
+	* fr.po: Update from François-Xavier Coudert <fxcoudert@gmail.com>.
+
+2008-02-18  Bruno Haible  <bruno@clisp.org>
+
+	* ga.po: Update from Kevin Scannell <kscanne@gmail.com>.
+
+2008-02-09  Bruno Haible  <bruno@clisp.org>
+
+	* sv.po: Update from Daniel Nylander <po@danielnylander.se>.
+
+2008-01-31  Bruno Haible  <bruno@clisp.org>
+
+	* sk.po: Update from Marcel Telka <marcel@telka.sk>.
+
+2008-01-08  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update from Bruno Haible <bruno@clisp.org>.
+	* eo.po: Update from Edmund Grimley Evans <edmundo@rano.org>.
+	* fi.po: Update from Jorma Karvonen <karvjorm@users.sf.net>.
+	* nl.po: Update from Tim Van Holder <tim.van.holder@telenet.be>.
+	* pl.po: Update from Jakub Bogusz <qboosh@pld-linux.org>.
+	* vi.po: Update from Clytie Siddall <clytie@riverland.net.au>.
+
+2007-11-30  Bruno Haible  <bruno@clisp.org>
+
+	* pl.po: Update from Jakub Bogusz <qboosh@pld-linux.org>.
+
+2007-11-11  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.17.
+	* Rules-quot: Upgrade to gettext-0.17.
+
+2007-10-24  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in.in: Update from gettext-0.16.2.
+
+2007-10-24  Bruno Haible  <bruno@clisp.org>
+
+	* fi.po: Update from Jorma Karvonen <karvjorm@users.sf.net>.
+
+2007-10-15  Bruno Haible  <bruno@clisp.org>
+
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+
+2007-09-15  Bruno Haible  <bruno@clisp.org>
+
+	* eo.po: Update from Edmund Grimley Evans <edmundo@rano.org>.
+	* ga.po: Update from Kevin Scannell <kscanne@gmail.com>.
+	* nl.po: Update from Tim Van Holder <tim.van.holder@telenet.be>.
+	* sv.po: Update from Daniel Nylander <po@danielnylander.se>.
+	* vi.po: Update from Clytie Siddall <clytie@riverland.net.au>.
+	* wa.po: Update from Pablo Saratxaga <pablo@walon.org>.
+
+2007-05-30  Bruno Haible  <bruno@clisp.org>
+
+	* sv.po: Update from Daniel Nylander <po@danielnylander.se>.
+
+2006-10-02  Bruno Haible  <bruno@clisp.org>
+
+	* sl.po: Update from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+
+2006-09-28  Bruno Haible  <bruno@clisp.org>
+
+	* et.po: Update from Toomas Soome <Toomas.Soome@microlink.ee>.
+	* sr.po: Update from Aleksandar Jelenak <jelenak@verizon.net>.
+
+2006-07-19  Bruno Haible  <bruno@clisp.org>
+
+	* de.po: Update.
+	* ga.po: Update from Kevin Patrick Scannell <scannell@slu.edu>.
+
+2006-07-03  Bruno Haible  <bruno@clisp.org>
+
+	* eo.po: Update from Edmund Grimley Evans <edmundo@rano.org>.
+
+2006-06-23  Bruno Haible  <bruno@clisp.org>
+
+	* vi.po: Update from Clytie Siddall <clytie@riverland.net.au>.
+
+2006-05-16  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in.in: Update from GNU gettext.
+	* Makevars (XGETTEXT_OPTIONS): Add more flags.
+	(USE_MSGCTXT): New variable.
+
+2005-12-29  Bruno Haible  <bruno@clisp.org>
+
+	* zh_TW.po: New file, from Wei-Lun Chao <chaoweilun@pcmail.com.tw>.
+	* LINGUAS: Add zh_TW.
+
+2005-02-11  Bruno Haible  <bruno@clisp.org>
+
+	* rm.po: New file, from Florian Verdet <fvgoto@linuxbourg.ch>.
+	* vi.po: New file, from Clytie Siddall <clytie@riverland.net.au>.
+	* LINGUAS: Add rm, vi.
+
+2005-01-10  Bruno Haible  <bruno@clisp.org>
+
+	* el.po: New file, from Balaskas Euaggelos <ebalaskas@ebalaskas.gr>.
+	* LINGUAS: Add el.
+
+2005-01-06  Bruno Haible  <bruno@clisp.org>
+
+	* sq.po: New file, from Laurent Dhima <laurenti@alblinux.net>.
+	* fr.po: Update from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* wa.po: Update from Pablo Saratxaga <pablo@walon.org>.
+	* LINGUAS: Add sq.
+
+2004-03-21  Bruno Haible  <bruno@clisp.org>
+
+	* af.po: New file, from Petri Jooste <rkwjpj@puk.ac.za>.
+	* ca.po: Update from Ivan Vilata i Balaguer <ivan@selidor.net>.
+	* LINGUAS: Add af.
+
+2003-11-13  Bruno Haible  <bruno@clisp.org>
+
+	* sr.po: New file, from Aleksandar Jelenak <jelenak@netlinkplus.net>.
+	* LINGUAS: Add sr.
+
+2003-10-14  Bruno Haible  <bruno@clisp.org>
+
+	* pl.po: New file, from Arkadiusz Lipiec <A.Lipiec@elka.pw.edu.pl>.
+	* LINGUAS: Add pl.
+
+2003-08-22  Bruno Haible  <bruno@clisp.org>
+
+	* wa.po: New file, from Pablo Saratxaga <pablo@walon.org>.
+	* LINGUAS: Add wa.
+
+2003-08-05  Bruno Haible  <bruno@clisp.org>
+
+	* nl.po: Update from Elros Cyriatan <cyriatan@fastmail.fm>.
+
+2003-07-31  Bruno Haible  <bruno@clisp.org>
+
+	* nl.po: New file, from Taco Witte <T.C.Witte@phys.uu.nl>.
+	* LINGUAS: Add nl.
+
+2003-06-11  Bruno Haible  <bruno@clisp.org>
+
+	* et.po: New file, from Toomas Soome <Toomas.Soome@microlink.ee>.
+	* ro.po: Update from Eugen Hoanca <eugenh@urban-grafx.ro>.
+	* ru.po: Update from Dmitry S. Sivachenko <mitya@cavia.pp.ru>.
+	* zh_CN.po: New file, from Wang Jian <lark@linux.net.cn>.
+	* LINGUAS: Add et and zh_CN.
+
+2003-05-07  Bruno Haible  <bruno@clisp.org>
+
+	* ga.po: Update from Kevin Patrick Scannell <scannell@slu.edu>.
+
+2003-05-06  Bruno Haible  <bruno@clisp.org>
+
+	* ga.po: New file, from Kevin Patrick Scannell <scannell@slu.edu>.
+	* LINGUAS: Add it.
+
+2003-04-22  Bruno Haible  <bruno@clisp.org>
+
+	* ro.po: New file, from Eugen Hoanca <eugenh@urban-grafx.ro>.
+	* LINGUAS: Add it.
+
+2003-04-05  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.msvc.sh (PREFIX): New variable.
+	(prefix): Use it.
+	(clean): Drop Unix specific removal.
+
+2003-04-09  Bruno Haible  <bruno@clisp.org>
+
+	* Makevars (MSGID_BUGS_ADDRESS): New variable.
+
+2003-04-09  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.12-pre3.
+
+2003-03-17  Bruno Haible  <bruno@clisp.org>
+
+	Improved MSVC support.
+	* Makefile.msvc.sh: New file.
+	* Rules-msvc: New file.
+
+2003-02-10  Bruno Haible  <bruno@clisp.org>
+
+	* uk.po: New file, from Volodymyr M. Lisivka <lvm@mystery.lviv.net>.
+	* LINGUAS: Add it.
+
+2002-12-05  Bruno Haible  <bruno@clisp.org>
+
+	* it.po: New file, from Marco Parrone <marc0@autistici.org>.
+	* LINGUAS: Add it.
+
+2002-11-12  Bruno Haible  <bruno@clisp.org>
+
+	* da.po: New file, from Keld Simonsen <keld@dkuug.dk>.
+	* LINGUAS: Add da.
+
+2002-10-29  Bruno Haible  <bruno@clisp.org>
+
+	* id.po: New file, from Tedi Heriyanto <tedi_h@gmx.net>.
+	* LINGUAS: Add id.
+
+2002-08-23  Bruno Haible  <bruno@clisp.org>
+
+	* fi.po: New file, from Matti Koskimies <matti@apulanta.fi>.
+	* fr.po: New file, from Michel Robitaille <robitail@iro.umontreal.ca>.
+	* pt_BR.po: Update from
+	Alexandre Folle de Menezes <afmenez@terra.com.br>.
+	* ru.po: New file, from Dmitry S. Sivachenko <mitya@cavia.pp.ru>.
+	* sl.po: New file, from
+	Primož Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>.
+	* tr.po: New file, from Deniz Akkus Kanca <deniz@arayan.com>.
+	* LINGUAS: Add fi, fr, ru, sl, tr.
+
+2002-06-20  Bruno Haible  <bruno@clisp.org>
+
+	* es.po: New file, from Santiago Vila Doncel <sanvila@unex.es>.
+	* LINGUAS: Add es.
+
+2002-06-14  Bruno Haible  <bruno@clisp.org>
+
+	* hr.po: New file, from Denis Lackovic <delacko@fly.srk.fer.hr>.
+	* LINGUAS: Add hr.
+
+2002-06-14  Bruno Haible  <bruno@clisp.org>
+
+	* pt_BR.po: Update from
+	Alexandre Folle de Menezes <afmenez@terra.com.br>.
+
+2002-06-11  Bruno Haible  <bruno@clisp.org>
+
+	* sv.po: New file, from Christian Rose <menthos@menthos.com>.
+	* LINGUAS: Add sv.
+
+2002-06-05  Bruno Haible  <bruno@clisp.org>
+
+	* pt_BR.po: New file, from
+	Alexandre Folle de Menezes <afmenez@terra.com.br>.
+	* LINGUAS: Add pt_BR.
+
+2002-06-03  Bruno Haible  <bruno@clisp.org>
+
+	* gl.po: New file, from Jacobo Tarrio <jtarrio@trasno.net>.
+	* LINGUAS: Add gl.
+
+2002-05-31  Bruno Haible  <bruno@clisp.org>
+
+	* ca.po: New file, from Ivan Vilata i Balaguer <ivan@selidor.net>.
+	* eo.po: New file, from Edmund Grimley Evans <edmundo@rano.org>.
+	* hu.po: New file, from Emese Kovacs <emese@gnome.hu>.
+	* sk.po: New file, from Marcel Telka <marcel@telka.sk>.
+	* LINGUAS: Add ca, eo, hu, sk.
+
+2002-04-27  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: New file, from gettext-0.11.1.
+	* Rules-quot: New file, from gettext-0.11.1.
+	* boldquot.sed: New file, from gettext-0.11.1.
+	* en@boldquot.header: New file, from gettext-0.11.1.
+	* en@quot.header: New file, from gettext-0.11.1.
+	* insert-header.sin: New file, from gettext-0.11.1.
+	* quot.sed: New file, from gettext-0.11.1.
+	* remove-potcdate.sin: New file, from gettext-0.11.1.
+

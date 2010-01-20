@@ -1,0 +1,22 @@
+Aaron Holtzman <aholtzma@ess.engr.uvic.ca> started the project and
+made the initial working implementation.
+
+Michel Lespinasse <walken@zoy.org> did major changes for speed and
+conformance and is the current maintainer.
+
+Other contributors include:
+	Gildas Bazin <gbazin@netcourrier.com> - mingw32 port
+	Billy Biggs <vektor@div8.net> - most of liba52.txt
+	Eduard Hasenleithner <eduardh@aon.at> - gcc 3.0 fixes
+	Håkan Hjort <d95hjort@dtek.chalmers.se> - Solaris output, mlib code
+	Charles M. Hannum <root@ihack.net> - fixes
+	Chris Hodges <hodges@stradis.com> - made the library reentrant
+	Michael Holzt <kju@flummi.de> - OSS output.c and misc errata
+	Angelos Keromytis <angelos@dsl.cis.upenn.edu> - OpenBSD fixes
+	David I. Lehn <dlehn@vt.edu> - API cleanup suggestion
+	Don Mahurin <dmahurin@dma.org> - stdin support for extract_a52
+	Jim Miller <jmiller@heli.engr.sgi.com> - IRIX output.c
+	Takefumi Sayo <stake@niagara.shiojiri.ne.jp> - FreeBSD tweak
+	Shoji Tokunaga <toku@mac.com> - aif file output
+
+(let me know if I forgot anyone)

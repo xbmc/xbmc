@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo ""
+echo "Set usplash theme..."
+echo ""
+
+if [ -f /etc/alternatives/usplash-artwork.so ]; then
+	echo ""
+	echo "Set default usplash theme..."
+	echo ""
+
+	# update-alternatives --config usplash-artwork.so
+	update-alternatives --set usplash-artwork.so /usr/lib/usplash/xbmc-splash-spinner-black-silver.so
+
+	cat > /etc/usplash.conf <<End-of-file
+# Usplash configuration file
+# These parameters will only apply after running update-initramfs.
+
+xres=800
+yres=600
+End-of-file
+
+	update-initramfs -u
+fi

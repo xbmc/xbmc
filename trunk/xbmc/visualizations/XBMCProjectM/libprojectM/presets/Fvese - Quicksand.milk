@@ -1,0 +1,78 @@
+[preset00]
+fRating=4.500000
+fGammaAdj=1.000000
+fDecay=0.992000
+fVideoEchoZoom=1.008000
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=0
+nWaveMode=3
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=1
+bRedBlueStereo=0
+bBrighten=1
+bDarken=0
+bSolarize=1
+bInvert=0
+fWaveAlpha=100.000000
+fWaveScale=0.499226
+fWaveSmoothing=0.900000
+fWaveParam=0.000000
+fModWaveAlphaStart=1.489999
+fModWaveAlphaEnd=0.750000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999500
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000005
+dy=0.000000
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.760000
+wave_g=0.480000
+wave_b=0.390000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.000000
+ob_r=0.000000
+ob_g=1.000000
+ob_b=0.200000
+ob_a=0.000000
+ib_size=0.000000
+ib_r=1.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=5.000000
+mv_r=0.669900
+mv_g=0.480000
+mv_b=0.390000
+mv_a=0.200000
+per_frame_1=wave_r = wave_r + 0.350*( 0.60*sin(0.825*time) + 0.40*sin(0.915*time) );
+per_frame_2=wave_g = wave_g + 0.350*( 0.60*sin(0.900*time) + 0.40*sin(1.025*time) );
+per_frame_3=vol = (5*bass + 3*mid + 2*treb)/10;
+per_frame_4=wave_x = wave_x + 0.03*vol*sin(0.727*time);
+per_frame_5=wave_y = wave_y + 0.04*vol*sin(0.777*time);
+per_frame_6=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.3)*0.96+1.3);
+per_frame_7=dx = 0.005 + 0.002*( 0.60*sin(0.234*time) + 0.40*sin(0.277*time) );
+per_frame_8=dy = 0.005 + 0.002*( 0.60*sin(0.234*time) + 0.40*sin(0.277*time) );
+per_frame_9=monitor = time;
+per_pixel_1=cx = (0.25&(x*5-0.5))*0.1+0.025;
+per_pixel_2=cy = (0.25&(y*5-0.5))*0.1+0.025;
+per_pixel_3=sx = sx -.005-abs(x-1)*.01;
+per_pixel_4=sy = sy -.005-abs(x-1)*.01;
+per_pixel_5=zoom = pow(rad,0.05)+.050;
+per_pixel_6=rot = 0.03*sin(0.84*time)-0.013*cos(0.784*time)+0.02*sin(1-rad);

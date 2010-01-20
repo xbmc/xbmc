@@ -1,0 +1,170 @@
+About libdts
+------------
+
+libdts is a free library for decoding DTS Coherent Acoustics streams. It is
+released under the terms of the GPL license. The DTS Coherent Acoustics
+standard is used in a variety of applications, including DVD, DTS audio CD and
+radio broadcasting.
+
+The main goals in libdts development are:
+
+      *	Portability - currently all of the code is written in C, and
+	when we write platform-specific optimizations we will always
+	keep a generic C routine to fall back on.
+
+      *	Reuseability - we do not want libdts to include any
+	project-specific code, but it should still include enough
+	features to be used by very diverse projects.
+
+      *	Precision - we do not yet fully support all the core specification of
+        the DTS Coherent Acoustics standard (see TODO) so do not expect too
+        much of this library for now.
+
+      *	Speed - current code is not optimised at all.
+
+The project homepage is at http://www.videolan.org/dtsdec.html
+
+
+dtsdec
+------
+
+dtsdec is a test program for libdts. It decodes DTS Coherent Acoustics streams,
+and also includes a demultiplexer for mpeg-1 and mpeg-2 program streams.
+
+The libdts source code is always distributed in the dtsdec package, to
+make sure it easier for people to test it.
+
+The basic usage is to just type "dtsdec file" where file is a DTS Coherent
+Acoustics file.
+
+The "-s" option must be used for multiplexed (audio and video) mpeg-2
+files. These files are usualy found on the internet or on unencrypted
+DVDs.
+
+The "-o" option is used to select a given output layer. By default
+dtsdec does a stereo downmix and outputs to your speakers, but you can
+try other choices using this option. This is also used for performance
+testing and conformance testing.
+
+The "-r" option is used to disable the dynamic range compression.
+
+
+Other projects using libdts
+---------------------------
+
+right now libdts is only being used by VLC media player
+(http://www.videolan.org/) a cross-platform video player and streaming
+solution.
+
+If you use libdts in another project, let us know !
+
+
+Tasks
+-----
+
+There are several places where we could easily use some help:
+
+      *	Testing: If you find any stream that does not decode right
+	with libdts, let us know ! The best thing would be to mail to
+	the libdts-devel mailing list. Also if you have access to
+	encoders, we'd love to get test streams that would be free of
+	rights - so that we can put them on this server.
+
+      *	Coding: you can have a look in the TODO file first ! The most
+	important items are probably to finish implementing the full
+        specification and to make sure of the accuracy of the audio output.
+
+      *	Porting: If you're porting to a new architecture, you might
+	want to experiment with the compile flags defined in
+	configure.in . When you figure out whats fastest on your
+	platform, send us a patch !
+
+
+References
+----------
+
+The DTS Coherent Acoustics standard (ETSI 102 114 v1.2.1), as published by the
+ETSI, is available at http://pda.etsi.org/pda/queryform.asp (look for DTS
+Coherent Acoustics)
+
+
+SVN repository
+--------------
+
+The latest libdts and dtsdec source code can always be found by anonymous
+SVN repository:
+
+# svn co svn://svn.videolan.org/libdts/trunk libdts-trunk
+
+If you build libdts from SVN you'll have to run ./bootstrap first.
+
+
+Support / mailing-lists
+-----------------------
+
+See the support information at http://www.videolan.org/support/
+
+libdts-devel
+
+This is the main mailing list for technical discussion about
+libdts. Anyone wanting to work on libdts, or maybe just stay informed
+about the development process, should probably subscribe to this list.
+
+
+Unix build instructions
+-----------------------
+
+./configure
+make
+make install
+
+
+Building for win32
+------------------
+
+There are at least three ways to do it:
+
+- natively on Windows using Microsoft VC++ and the vc++ project
+  included in this distribution.
+
+- natively on Windows using MSYS + MINGW (www.mingw.org) (MSYS is a
+  minimal build environnement to compile unixish projects under
+  windows. It provides all the common unix tools like sh, gmake...)
+
+- or on Linux, using the mingw32 cross-compiler
+
+
+Building using MSYS + MINGW on windows
+--------------------------------------
+
+First you will need to download and install the latest MSYS (version
+1.0.7 as of now) and MINGW. The installation is really easy. Begin
+with the MSYS auto-installer and once this is done, extract MINGW into
+c:\msys\1.0\mingw. You also have to remember to remove the make
+utility included with MINGW as it conflicts with the one from MSYS
+(just rename or remove c:\msys\1.0\mingw\bin\make.exe).
+
+http://prdownloads.sourceforge.net/mingw/MSYS-1.0.7-i686-2002.04.24-1.exe
+http://prdownloads.sourceforge.net/mingw/MinGW-1.1.tar.gz
+
+Then you can build the package using:
+# ./configure
+# make
+
+
+Building using the mingw32 cross-compiler
+-----------------------------------------
+
+You need to install mingw32 first. For Debian GNU/Linux users, there
+is a mingw32 package. Otherwise you might get it from the mingw site
+at http://www.mingw.org/download.shtml.
+
+The videolan project also keeps precompiled mingw32 binaries at
+http://www.videolan.org/vlc/windows.html . If you install these,
+you'll have to set your PATH accordingly to include
+/usr/local/cross-tools/bin too.
+
+The build should then proceed using something like:
+# CC=i586-mingw32msvc-gcc ./configure --host=i586-mingw32msvc
+# make
+

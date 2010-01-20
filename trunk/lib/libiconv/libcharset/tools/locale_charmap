@@ -1,0 +1,4 @@
+#! /bin/sh
+# Prints the system dependent name for the current locale's charmap.
+
+locale charmap

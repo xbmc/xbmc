@@ -1,0 +1,226 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_WAV_INFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 195
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 95
+    END
+
+    IDD_APE_INFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 242
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 211
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MONKEY_LEFT         ICON                    "Monkey Head.ico"
+IDI_MONKEY_RIGHT        ICON                    "Monkey Head (1).ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WAV_INFO DIALOG  0, 0, 202, 102
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "WAV File Info"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDI_MONKEY_LEFT,IDC_STATIC,2,2,20,20
+    ICON            IDI_MONKEY_RIGHT,IDC_STATIC,180,0,20,20
+    GROUPBOX        "Size Info",IDC_STATIC,5,28,93,68
+    GROUPBOX        "Audio Info",IDC_STATIC,105,28,92,47
+    LTEXT           "Bits Per Sample:",3002,115,60,78,8,SS_NOPREFIX
+    LTEXT           "Channels:",3001,115,50,78,8,SS_NOPREFIX
+    LTEXT           "Sample Rate:",3000,115,39,78,8,SS_NOPREFIX
+    LTEXT           "Track Length:",2001,15,50,78,8,SS_NOPREFIX
+    LTEXT           "File Size:",2000,15,39,78,8,SS_NOPREFIX
+    LTEXT           "Terminating Bytes:",2004,15,82,78,8,SS_NOPREFIX
+    LTEXT           "Header Bytes:",2003,15,71,78,8,SS_NOPREFIX
+    LTEXT           "Audio Bytes:",2002,15,60,78,8,SS_NOPREFIX
+    PUSHBUTTON      "OK",4000,105,81,92,15
+    CTEXT           "File Name...",1000,26,2,152,18
+END
+
+IDD_APE_INFO DIALOG  0, 0, 249, 218
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "APE File Info"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        5000,49,99,189,12,ES_AUTOHSCROLL
+    EDITTEXT        5001,49,115,189,12,ES_AUTOHSCROLL
+    EDITTEXT        5002,49,131,189,12,ES_AUTOHSCROLL
+    EDITTEXT        5003,49,147,189,12,ES_AUTOHSCROLL
+    EDITTEXT        5004,49,163,24,12,ES_AUTOHSCROLL
+    COMBOBOX        5005,109,163,77,85,CBS_DROPDOWN | CBS_OEMCONVERT | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        5006,220,163,18,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Save Tag",6000,11,195,69,12
+    PUSHBUTTON      "Remove Tag",6001,90,195,69,12
+    PUSHBUTTON      "Cancel",6002,169,195,69,12
+    ICON            IDI_MONKEY_LEFT,IDC_STATIC,3,3,20,20
+    ICON            IDI_MONKEY_RIGHT,IDC_STATIC,225,3,20,20
+    CONTROL         "Format Flags:",2002,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,11,61,59,8
+    CONTROL         "Mode:",2001,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,11,50,59,8
+    CONTROL         "Version:",2000,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,11,39,59,8
+    GROUPBOX        "Format Info",IDC_STATIC,5,29,70,56
+    GROUPBOX        "Audio Info",IDC_STATIC,79,29,78,56
+    CONTROL         "Bits Per Sample:",3002,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,86,61,66,8
+    CONTROL         "Channels:",3001,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,86,50,66,8
+    CONTROL         "Sample Rate:",3000,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,86,39,66,8
+    GROUPBOX        "Tag Info",IDC_STATIC,5,88,240,94
+    LTEXT           "Album:",IDC_STATIC,11,134,23,8,SS_NOPREFIX
+    LTEXT           "Artist:",IDC_STATIC,11,118,23,8,SS_NOPREFIX
+    LTEXT           "Title:",IDC_STATIC,11,102,18,8,SS_NOPREFIX
+    LTEXT           "Comment:",IDC_STATIC,11,150,33,8,SS_NOPREFIX
+    LTEXT           "Year:",IDC_STATIC,11,166,18,8,SS_NOPREFIX
+    LTEXT           "Genre: ",IDC_STATIC,82,166,24,8,SS_NOPREFIX
+    CONTROL         "Length:",4000,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,167,39,71,8
+    CONTROL         "Compression:",4003,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,167,72,71,8
+    LTEXT           "Track:",IDC_STATIC,195,166,22,8,SS_NOPREFIX
+    GROUPBOX        "Exit",IDC_STATIC,5,185,240,29
+    CONTROL         "Peak Level:",3003,"Static",SS_LEFTNOWORDWRAP | 
+                    SS_NOPREFIX | WS_GROUP,86,72,66,8
+    EDITTEXT        1000,28,4,193,18,ES_CENTER | ES_MULTILINE | 
+                    ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    CONTROL         "APE:",4002,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,167,61,71,8
+    CONTROL         "Tagged:",2003,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,11,71,59,9
+    GROUPBOX        "Length / Size Info",IDC_STATIC,161,29,83,56
+    CONTROL         "WAV:",4001,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | 
+                    WS_GROUP,167,50,71,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 3,9,9,0
+ PRODUCTVERSION 3,9,9,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "Compression and decompression library for Monkey's Audio"
+            VALUE "CompanyName", "Matthew T. Ashland"
+            VALUE "FileDescription", "Monkey's Audio DLL Library"
+            VALUE "FileVersion", "3.99"
+            VALUE "LegalCopyright", "Copyright © 2000-2004"
+            VALUE "OriginalFilename", "MACDll.dll"
+            VALUE "ProductName", "Monkey's Audio"
+            VALUE "ProductVersion", "3.99"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

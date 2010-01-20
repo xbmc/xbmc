@@ -1,0 +1,106 @@
+/*
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
+#pragma once
+
+#include <string>
+#include <stdint.h>
+
+class CDDSImage
+{
+public:
+  CDDSImage();
+  CDDSImage(unsigned int width, unsigned int height, unsigned int format);
+  ~CDDSImage();
+
+  unsigned int GetWidth() const;
+  unsigned int GetHeight() const;
+  unsigned int GetFormat() const;
+  unsigned int GetSize() const;
+  unsigned char *GetData() const;
+
+  bool ReadFile(const std::string &file);
+  bool WriteFile(const std::string &file) const;
+
+private:
+  unsigned int GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format) const;
+  enum {
+    ddsd_caps        = 0x00000001,
+    ddsd_height      = 0x00000002,
+    ddsd_width       = 0x00000004,
+    ddsd_pitch       = 0x00000008,
+    ddsd_pixelformat = 0x00001000,
+    ddsd_mipmapcount = 0x00020000,
+    ddsd_linearsize  = 0x00080000,
+    ddsd_depth       = 0x00800000
+  };
+
+  enum {
+    ddpf_alphapixels = 0x00000001,
+    ddpf_fourcc      = 0x00000004,
+    ddpf_rgb         = 0x00000040
+  };
+
+  enum {
+    ddscaps_complex = 0x00000008,
+    ddscaps_texture = 0x00001000,
+    ddscaps_mipmap  = 0x00400000
+  };
+
+  #pragma pack(push, 2)
+  typedef struct
+  {
+    uint32_t size;
+    uint32_t flags;
+    uint32_t fourcc;
+    uint32_t rgbBitCount;
+    uint32_t rBitMask;
+    uint32_t gBitMask;
+    uint32_t bBitMask;
+    uint32_t aBitMask;
+  } ddpixelformat;
+
+  typedef struct
+  {
+    uint32_t flags1;
+    uint32_t flags2;
+    uint32_t reserved[2];
+  } ddcaps2;
+
+  typedef struct
+  {
+    uint32_t      size;
+    uint32_t      flags;
+    uint32_t      height;
+    uint32_t      width;
+    uint32_t      linearSize;
+    uint32_t      depth;
+    uint32_t      mipmapcount;
+    uint32_t      reserved[11];
+    ddpixelformat pixelFormat;
+    ddcaps2       caps;
+    uint32_t      reserved2;
+  } ddsurfacedesc2;
+  #pragma pack(pop)
+
+  ddsurfacedesc2 m_desc;
+  unsigned char *m_data;
+};

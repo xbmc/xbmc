@@ -1,0 +1,30 @@
+Monkey.pas (ID3v1.pas, ID3v2.pas, APEtag.pas needed)
+Tested with Borland Delphi 3,4,5,6
+
+{ *************************************************************************** }
+{                                                                             }
+{ Audio Tools Library (Freeware)                                              }
+{ Class TMonkey - for manipulating with Monkey's Audio file information       }
+{                                                                             }
+{ Uses:                                                                       }
+{   - Class TID3v1                                                            }
+{   - Class TID3v2                                                            }
+{   - Class TAPEtag                                                           }
+{                                                                             }
+{ Copyright (c) 2001,2002 by Jurgen Faul                                      }
+{ E-mail: jfaul@gmx.de                                                        }
+{ http://jfaul.de/atl                                                         }
+{                                                                             }
+{ Version 1.2 (21 April 2002)                                                 }
+{   - Class TID3v2: support for ID3v2 tags                                    }
+{   - Class TAPEtag: support for APE tags                                     }
+{                                                                             }
+{ Version 1.1 (11 September 2001)                                             }
+{   - Added property Samples                                                  }
+{   - Removed WAV header information                                          }
+{                                                                             }
+{ Version 1.0 (7 September 2001)                                              }
+{   - Support for Monkey's Audio files                                        }
+{   - Class TID3v1: reading & writing support for ID3v1.x tags                }
+{                                                                             }
+{ *************************************************************************** }

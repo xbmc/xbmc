@@ -1,0 +1,19 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umGetFirstGroup -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umGetFirstGroup</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2>Synopsis</H2><P>	Returns the first group name found in the group table.</P><H2>Prototype</H2><PRE>
+ #include &quot;um.h&quot;
+
+ char_t *umGetFirstGroup();</PRE><H2>Parameters</H2><P>	None</P><H2>Description</H2><P>	The returned string is a pointer to the data stored in the group table.  Use this function with <A HREF="umGetNextGroup.htm">umGetNextGroup</A> to retrieve a list of group names contained in the group table.</P><H2>Return Value</H2><P>	umGetFirstGroup returns a pointer to the group name or NULL on error.</P><H2>Example</H2><PRE>char_t	*group = umGetFirstGroup();</PRE><H2>See Also</H2><P>	<A HREF="umGetNextGroup.htm">umGetNextGroup</A>()</P><P></P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

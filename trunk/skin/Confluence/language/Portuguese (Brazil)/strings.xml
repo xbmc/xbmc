@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--Language file for skin\Confluence -->
+<!--Translated: manually -->
+<!--Translator: bugre (werner)-->
+<!--Email: wxxx333@gmail.com-->
+<!--Date of translation: 11/23/2009-->
+<!--$Revision$-->
+<!--Based on english strings version 24877 -->
+
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Alterar seu</string>
+  <string id="31001">Amor</string>
+  <string id="31002">Ódio</string>
+  <string id="31003">Opções de energia/poder</string>
+
+  <string id="31007">Plugins</string>
+
+  <string id="31020">Adicionado recentemente</string>
+  <string id="31021">Video - Arquivos</string>
+  <string id="31022">Music - Arquivos</string>
+  <string id="31023">Executando</string>
+  <string id="31024">Página</string>
+  <string id="31025">Itens</string>
+  <string id="31026">Opções diversas</string>
+  <string id="31027">Localização</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Vitrine</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Lista Completa</string>
+  <string id="31031">Ícones de imagens</string>
+  <string id="31032">Vitrine Img</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Tocando agora</string>
+
+  <string id="31042">TOCANDO</string>
+  <string id="31043">PAUSADO</string>
+  <string id="31044">AVANÇO RÁPIDO</string>
+  <string id="31045">RETROCEDER</string>
+  <string id="31046">Propriedades de áudio</string>
+  <string id="31047">Preconfiguração atual</string>
+  <string id="31048">Visualizar preconfigurações</string>
+  <string id="31049">Tempo de término</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Abrir playlist</string>
+  <string id="31056">Salvar playlist</string>
+  <string id="31057">Fechar playlist</string>
+  <string id="31058">Arquivos de música do sistema</string>
+  <string id="31059">Playlist atual</string>
+  <string id="31060">Este arquivo está empilhado, selecione a parte de onde executar.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Opções da tela principal (home)</string>
+  <string id="31102">Fundo</string>
+  <string id="31103">Exibir "Pausado" em exibição de imagens (slideshow)</string>
+  <string id="31104"></string>
+  <string id="31105">Exibir títulos de mídia em busca secudária</string>
+  <string id="31106">Opções diversas</string>
+  <string id="31107"></string>
+  <string id="31108">Ocultar botões do Menu Principal</string>
+  <string id="31109">Fundos da tela principal (home)</string>
+  <string id="31110">Editar fundo para botão principal (home)</string>
+  <string id="31111">Ocultar</string>
+  <string id="31112">Opções</string>
+  <string id="31113">Imagem única</string>
+  <string id="31114">Image múltipla</string>
+  <string id="31115">Personalizador</string>
+  <string id="31116">Scripts</string>
+  <string id="31117">Exibir vídeos adicionados recentemente</string>
+  <string id="31118">Submenu da Página Principal</string>
+  <string id="31119">Habilitar botão de Script Personalizado</string>
+  <string id="31120">RÓTULO DE BOTÃO</string>
+  <string id="31121">CAMINHO PARA O SCRIPT</string>
+  <string id="31122">Página do Tempo</string>
+  <string id="31123">Usar "Pôsters" ao invés de "Faixas" para Seriados</string>
+  <string id="31124">Exibir fundo Vídeo "Tocando Agora"</string>
+  <string id="31125">Exibir fundo Visualização "Tocando Agora"</string>
+
+  <string id="31126">Habilitar Letras no OSD de Música</string>
+  <string id="31127">CAMINHO PARA SCRIPT DE LETRAS</string>
+  <string id="31128">Letras XBMC</string>
+
+  <!-- Script labels -->
+  <string id="31200">Atalhos</string>
+  <string id="31201">Categorias</string>
+  <string id="31202">Elenco do Seriado</string>
+  <string id="31203">Escolha sua música</string>
+  <string id="31204">Seção de Links</string>
+  <string id="31205">Origem das Letras</string>
+
+  <!-- The Weather Channel Script labels -->
+  <string id="31250">Radar &amp; Previsão</string>
+  <string id="31251">Previsão</string>
+  <string id="31252">Script TWC (The Weather Channel)</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Temp. Atual</string>
+  <string id="31301">Última atualização</string>
+  <string id="31302">Menu</string>
+  <string id="31303"></string>
+  <string id="31304">Imagem</string>
+  <string id="31305">Nenhum disco de mídia detectado</string>
+  <string id="31306">Ejectar</string>
+  <string id="31307">Ocultar Fanart</string>
+  <string id="31308">Detalhes do vídeo</string>
+  <string id="31309">Memória usada:</string>
+  <string id="31310">Número da faixa</string>
+  <string id="31311">IMAGEM DE FANART[CR][CR]INDISPONÍVEL[CR][CR] CLIQUE O BOTÃO PARA DEFINIR</string>
+  <string id="31312">Scraper Atual</string>
+  <string id="31313">Escolha um Scraper</string>
+  <string id="31314">Opções de busca de conteúdo</string>
+  <string id="31315">Básico</string>
+  <string id="31316"></string>
+  <string id="31317">Definir caminho do Fanart</string>
+  <string id="31318">Fanart Pequeno</string>
+  <string id="31319">Perfil selecionado</string>
+  <string id="31320">Última conexão</string>
+  <string id="31321">Selecionador de Música Karaoke</string>
+  <string id="31322">Transmitido</string>
+  <string id="31323">Últimos Filmes</string>
+  <string id="31324">Últimos Episódios</string>
+  <string id="31325">Opções do Playlist</string>
+  <string id="31326">Criado</string>
+  <string id="31327">Resolução</string>
+  <string id="31328">Adicionado Recentemente</string>
+  <string id="31329">[B]DEFINIR TIMER![/B] [COLOR=grey2] - SISTEMA SE AUTO-DESLIGARÁ EM[/COLOR]</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]CONFIGURAR AJUSTES DE APARÊNCIA[/B][CR][CR]Mudar o skin · Definir idioma e região · Definir opções de listagem de arquivos · Definir um descanso de tela</string>
+  <string id="31401">[B]CONFIGURAR AJUSTES DE VÍDEO[/B][CR][CR]Gerenciar sua coleção de vídeos · Definir opções de execução de vídeo · Alterar opções de listagem de vídeo · Definir fonte para legendas</string>
+  <string id="31402">[B]CONFIGURAR AJUSTES DE MÚSICAS[/B][CR][CR]Gerenciar sua coleção de músicas · Definir opções de execução de música · Alterar opções de listagem de música · Configurar submissão de música · Definir opções de karaoke</string>
+  <string id="31403">[B]CONFIGURAR AJUSTES DE IMAGENS[/B][CR][CR]Definir opções de listagem de imagens · Configurar exibição de imagens(slideshow)</string>
+  <string id="31404">[B]CONFIGURAR AJUSTES DE TEMPO[/B][CR][CR]Definir três cidades para buscar informações sobre o tempo</string>
+  <string id="31405">[B]CONFIGURAR AJUSTES DE REDE[/B][CR][CR]Configurar controle do XBMC através de UPnP e HTTP · Configurar compartilhamento de arquivo · Definir opções de acesso de internet</string>
+  <string id="31406">[B]CONFIGURAR AJUSTES DE SISTEMA[/B][CR][CR]Configurar e calibrar telas · Configurar saída de áudio · Configurar controles remotos · Definir opções para economia de energia · Habilitar depuração · Configurar bloqueio mestre</string>
+  <string id="31407">[B]CONFIGURAR AJUSTES DE SKIN[/B][CR][CR]Configurar o skin Confluence · Adicionar e remover itens no menu principal(home) · Alterar fundos do skin</string>
+
+  <string id="31420">[B][COLOR=white]XBMC não detectou um disco.[/COLOR][/B][CR][CR]Insira um disco no drive e tente novamente ou Cancele</string>
+  <string id="31421">Selecione seu Perfil de usuário XBMC[CR]para conectar e continue</string>
+</strings>

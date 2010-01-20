@@ -1,0 +1,978 @@
+2009-02-14  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/common.h src/samplerate.c
+    Add new error value SRC_ERR_SINC_PREPARE_DATA_BAD_LEN.
+
+    * src/common.h
+    Add WARN_UNUSED macro.
+
+    * src/src_sinc.c
+    Fix a segfault which occurs when memcpy is passed a bad length parameter.
+    This bug has zero security implications beyond the ability to cause a
+    program hitting this bug to exit immediately with a segfault.
+    See : http://www.mega-nerd.com/erikd/Blog/2009/Feb/14/index.html
+    Thanks to David Cournapeau for the bug report.
+
+    * doc/win32.html Makefile.am configure.ac
+    Reinstate Win32/MSVC compile instructions.
+
+    * doc/*.html
+    Update for new release.
+
+    * configure.ac
+    Verison 0.1.7.
+
+2009-02-13  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/common.h src/samplerate.c
+    Fix SRC_ERR_BAD_SRC_RATIO error string. Thanks David Cournapeau.
+
+2009-01-30  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Replace C99 "variable length arrays" with arrays allocated on the heap so
+    that libsamplerate can be compiled with crappy compilers like MSVC.
+
+2009-01-27  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac NEWS README doc/*.html
+    Updates for 0.1.6 release.
+
+2009-01-12  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/termination_test.c
+    Fix termination test error on x86_64. Error probably due to difference in
+    rounding.
+
+2009-01-11  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/win32.html
+    Update win32 compile instructions to explain that this release cannot be
+    compiled using the microsoft compiler.
+
+    * NEWS README doc/*.html
+    Updates for 0.1.5 release.
+
+    * Makefile.am configure.ac
+    Remove Win32 directory from distributed tarball.
+
+2008-12-16  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/multi_channel_test.c tests/multichan_throughput_test.c
+    Update tests to make sure tests include tests for 10 channels.
+
+    * src/src_sinc.c
+    Make 6 channel Sinc conversion another special case.
+    Use Duff's Device to speed up the multi-channel case.
+
+    * tests/multi_channel_test.c
+    Only test 1, 2 and 3 channels for ZOH and linear converters.
+
+2008-12-15  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.c
+    Move variable definition out one scope level to avoid warnings from static
+    analysis tools. Thanks Erik Hovland.
+
+    * tests/util.c
+    Make sure FILE* is closed. Thanks Erik Hovland.
+
+    * tests/multi_channel_test.c tests/multichan_throughput_test.c
+    Update tests to make sure tests include tests for 6 channels with the Sinc
+    converters.
+
+2008-12-13  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/multichan_throughput_test.c
+    Do throughput test on all three SINC based converters.
+
+    * src/src_sinc.c
+    Rejig converter so filter coefficients are calculated once per frame and
+    special case channel counts of 1, 2 and 4.
+
+2008-12-12  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    *  src/samplerate.c examples/audio_out.c tests/*.c
+    Fix a couple of very minor warnings uncovered by Erik Hovland using a
+    static analysis tool.
+
+    * src/src_*.c
+    Fix a potential memory leak. Thanks to Peter G. Vavaroutsos for point this
+    out.
+
+    * tests/multi_channel_test.c
+    Robustify test.
+
+2008-12-11  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * reconfigure.mk autogen.sh
+    Remove the first, add the second.
+
+    * configure.ac
+    Various updates.
+
+    * tests/multichan_throughput_test.c tests/Makefile.am
+    Add new test and hook into build.
+
+2008-11-11  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/index.html
+    Update best converter specs.
+
+2008-10-22  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/audio_out.c
+    Fix gcc-4.3 compiler warning.
+
+2008-10-17  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/faq.html
+    Add Q/A about accuracy of src_ratio field of SRC_DATA struct.
+
+2008-10-09  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * INSTALL
+    Fix minor typo. Thanks to Sean Wood.
+
+2008-09-27  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Optimization. About a 5% improvement in throughput.
+
+2008-09-26  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/util.[ch]
+    Add function print_cpu_name.
+
+    * tests/throughput_test.c
+    Add ability to do best-of N runs, print CPU type.
+
+2008-09-17  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac
+    Add AC_PROG_MKDIR_P.
+
+2008-07-10  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.c
+    Fix a valgrind warning which occured when the call back function returns
+    a count of zero without modifying the pointer value. Thanks to Paul Kelly.
+
+    * tests/callback_test.c
+    Add a callback test where the callback returns a zero count without setting
+    the data pointer. The problem can only be detected when run under valgrind.
+
+2008-07-09  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Remove use of llrint because sizeof (increment_t) is guaranteed not to be 8.
+
+    * tests/callback_test.c
+    Test with 2 channels for improved generality. Simplify setup.
+
+    * src/src_linear.c src/src_zoh.c
+    Change local variable names to be the same across these two files for easier
+    comparison.
+
+    * src/src_linear.c
+    Fix a bug where the the converter was reading beyond the end of the input.
+    Thanks to Paul Kelly for the bug report.
+
+2008-07-02  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/downsample_test.c
+    New test file to test for buffer overrun bugs at extreme low conversion
+    ratios.
+
+    * tests/Makefile.am
+    Hook above test program into build.
+
+    * src/src_sinc.c
+    Fix buffer overrrun bug at extreme low conversion ratios. Thanks to Russell
+    O'Connor for the report.
+
+    * configure.ac NEWS README doc/*.html
+    Update for 0.1.4 release.
+
+2008-05-13  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac
+    Make use of libsndfile optional. Patch from Samuli Suominen.
+
+2008-04-26  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * Win32/libsamplerate-0.def
+    Add src_int_to_float/float_to_int_array to exports.
+
+    * examples/sndfile-resample.c
+    Add printing of libsndfile version, modify libsamplerate version.
+
+2008-03-23  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/*.html
+    Final documentation tweaks for release.
+
+2008-03-17  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/throughput_test.c
+    Include config.h and float_cast.h." -- tests/throughput_test.c
+
+    * Make.bat Win32/*
+    Bunch more Win32 updates.
+
+2008-03-15  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/* tests/*
+    Remove all traces of old SRC_OLD_SINC_* converters.
+
+    * Make.bat Win32/*
+    Preliminary Win32 updates.
+
+    * configure.ac
+    Bump version to 0.1.3.
+
+2008-03-11  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/api_simple.html
+    Try once again to convince people that src_simple cannot be used on small
+    chunks of a larger piece of audio.
+
+2008-03-08  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/snr_bw_test.c
+    Remove bodgy old throughput calculations.
+
+2008-03-07  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/benchmark.c tests/throughput_test.c
+    Rename former to the latter and make significant improvements.
+
+2008-03-04  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/old_high_qual_coeffs.h src/old_mid_qual_coeffs.h
+    Copy these from the old versions.
+
+    * src/high_qual_coeffs.h src/mid_qual_coeffs.h
+    New versions of the coefficients with improved SNR.
+
+2008-02-10  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * Makefile.am configure.ac
+    Add DISTCHECK_CONFIGURE_FLAGS to Makefile.am and a bunch of configure
+    cleanups.
+
+2008-01-21  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/audio_out.c
+    Apply patch from Yair K. to fix compiles with OSS v4.
+
+2007-07-07  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * acinclude.m4
+    Add AC_CHECK_SIGNAL macro.
+
+    * configure.ac
+    Use AC_CHECK_SIGNAL to check for SIGALRM.
+
+    * tests/callback_hang_test.c
+    Use HAVE_SIGGALRM and add empty main function if it doesn't exist.
+
+2007-06-15  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/*_coeffs.h
+    Change the way the coefficients are defined for improved safety.
+
+    * src/src_sinc.c
+    Adapt to the above.
+
+2007-05-24  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Change macros into inline functions for better error checking.
+
+    * src/common.h
+    Add static inline function fmod_one.
+
+    * src/*.c
+    Use fmod_one where appropriate.
+
+2007-05-12  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests.Makefile.am
+    Fix includes for varispeed_test target.
+
+2007-04-20  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/snr_bw_test.c
+    Remove cruft.
+
+    * doc/index.html
+    Add link to Foobar 2000 plugin.
+
+    * configure.ac tests/callback_hang_test.c
+    Test for functions alarm and signal and only compile test if both are
+    available.
+
+2007-01-27  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.c
+    Refactor checking of supplied src ratio against min and max.
+
+    * configure.ac
+    Remove -pendantic from CFLAGS and add -std=gnu99.
+
+    * tests/callback_hang_test.c tests/Makefile.am
+    Add new test program and hook it into build.
+
+    * src/src_linear.c src/src_sinc.c src/src_zoh.c
+    Fix a bug where the src_callback_read () function would hang under varying
+    src_ratio.
+
+2007-01-21  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/api.html doc/api_callback.html doc/api_misc.html
+    Update docs to make handling of interleaved data more explicit.
+
+2006-07-26  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/audio_out.c
+    Fix bug arising from last change.
+
+    * configure.ac
+    Add -Wpointer-arith to CFLAGS.
+
+2006-07-12  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/audio_out.c
+    Be more explicit about setting the audio output format.
+
+2006-06-06  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.c src/src_linear.c src/src_sinc.c
+    Fix MSVC compiler warnings.
+
+2006-05-26  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/calc_snr.c
+    Fix minor bug in analysis routines.
+
+    * tests/varispeed_test.c tests/snr_bw_test.c
+    Fix knock on effects of above change.
+
+2006-05-23  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/Makefile.am
+    Update check-asm rule to check src_linear.c and src_zoh.c.
+
+    * src/src_linear.c
+    Remove all uses of floor() function.
+
+2006-04-18  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.[ch] src/Version_script.in
+    Add functions src_int_to_float_array and src_float_to_int_array.
+
+    * tests/float_short_test.c
+    Update test to including testing of above.
+
+    * doc/api_misc.html
+    Update docs for the above addition.
+
+2006-03-31  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/common.h src/src_*.c src/samplerate.c
+    Add slots for vari_process and const_process functions.
+
+    * tests/varispeed_test.c tests/Makefile.am
+    Add new test and hook into build.
+
+    * tests/util.[ch]
+    Add new function reverse_data.
+
+2005-12-29  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/sndfile-resample.c
+    Exit if SRC ratio is 1.0. Suggested by Bram de Jong.
+
+2005-11-19  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/timewarp-file.c
+    New file.
+
+2005-09-06  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/float_cast.h
+    Update to include Cygwin specific fixes.
+
+    * doc/api_callback.html
+    Complete the documentation of the callback API.
+
+2005-08-11  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/termination_test.c
+    Rename term_test() to init_term_test() and add extra test functionality
+    to sanity test the first sample output after reset.
+
+    * src/src_zoh.c src/src_linear.c
+    Fix bug found by new test. Thanks Stas Sergeev for bringint this to my
+    attention.
+
+2005-08-02  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/Makefile.am
+    Fix a bug preventing the inclusion of the html API docs in the tarball.
+
+    * src/src_zoh.c src/src_linear.c
+    Improve calculation of input_index.
+    Fix updating of input_index (thanks to Stas Sergeev).
+
+    * tests/calc_snr.c
+    Fix a compile problem when FFTW is not present (thanks to Stas Sergeev).
+
+2005-04-18  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac src/Makefile.am
+    Fix minor problems with generation of shared library version number.
+
+2005-02-19  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/faq.html
+    Add a question about the use of src_simple().
+
+    * src/api_simple.html
+    Fix defintion of src_ratio.
+
+2004-12-04  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac tests/Makefile.am tests/*.c
+    Ditch detection and use of libefence. Valgrind is a far better debugging
+    tool.
+
+    * INSTALL
+    Write complete libsamplerate specific install instructions.
+
+2004-10-06  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/configure.ac src/makefile.am
+    Finally fix the bulding of DLLs on Win32/MinGW.
+
+    * tests/makefile.am
+    Fix running of tests on Win32/MinGW.
+
+2004-09-30  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac Win32/Makefile.mingw.in
+    More support for compiling on Win32 using MinGW. Now uses FFTW3.
+
+    * examples/audio_out.c
+    Remove include of <mmreg.h> on win32.
+
+2004-09-12  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac Win32/Makefile.mingw.in
+    Add preliminary support for compiling on Win32 using MinGW.
+
+    * configure.ac
+    Bump version to 0.1.2.
+    Add --enable-gcc-werror configure option.
+
+    * examples/sndfile-resample.c tests/src-evaluate.c
+    Use ISO C standard function remove instead of unlink.
+
+    * Win32/Makefile.msvc
+    Add the top level directory to the include path (for sndfile.h).
+
+2004-09-10  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/util.h tests/*.c
+    Move macros for ABS, MIN, MAX and ARRAY_LEN to util.h.
+
+    * tests/reset_test.c
+    Add test function callback_reset_test() to test for the problem below.
+
+    * src/samplerate.c
+    Reset SRC_PRIVATE fields saved_data and saved_frames in src_reset(). Thanks
+    to Justin Drury for pointing this out.
+
+2004-08-27  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Fix typos in converter name strings. Thanks to Tom Szilagyi for finding them.
+
+2004-07-18  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac
+    Bump version to 0.1.1.
+
+    * doc/*.html Win32/config.h
+    Changes for new version.
+
+    * Makefile.am src/Makefile.am
+    Add "make check-asm" target which is not used by default.
+
+2004-06-27  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Use fmod() to calculate input_index. This is more resitant to rounding
+    errors than input_index -= floor (input_index).
+
+2004-06-25  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Removed redundant field in SINC_FILTER struct.
+
+2004-06-15  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/sndfile-resample.c
+    Modified to restart conversion if clipping has occurred.
+
+2004-06-09  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/benchmark.c
+    Added benchmark program.
+
+2004-05-27  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/callback_test.c
+    Improve callback_test to find input/output length mismatches. This also
+    catches the bug Mark Deggeller reported.
+
+2004-05-25  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.c
+    Fix a bug in src_callback_read() reported by Mark Deggeller. Data retreived
+    but not used during one call to src_callback_read() must be saved for the
+    next call.
+
+    * src/common.h
+    Add fields saved_frames and saved_data to SF_PRIVATE struct for storing
+    data between sucessive calls to src_callback_read().
+    Also rearange the fields of SF_PRIVATE.
+
+2004-03-20  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac
+    Use AC_HELP_STRING in AC_ARG_ENABLE statements.
+
+2004-03-14  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * Win32/config.h Win32/sndfile.h
+    Updates for Win32.
+
+2004-02-19  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * NEWS README
+    Finally got around to adding text to these.
+
+    * doc/win32.html doc/history.html
+    Minor updates.
+
+2004-01-26  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/common.h
+    Changed allowed SRC ratio to range [1/256, 256].
+
+    * configure.ac tests/snr_bw_test.c tests/src-evaluate.c tests/Makefile.am
+    Use FFTW3 instead of version 2.
+
+2003-12-14  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/api.html doc/api_misc.html
+    Add documentation for conversions functions.
+
+    * doc/faq.html
+    Add Q/A about detecting presence of libsamplerate.
+
+2003-12-13  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.h src/samplerate.c
+    Added functions for short->float and float->short conversions on arrays
+    of data. This will make it a little easier for people who need the
+    input or output data in shorts rather than floats.
+
+    * configure.ac
+    Added tests for CPU clipping mode which was required for the float to
+    short conversion.
+
+    * tests/float_short_test.c
+    New code for testing the new functionality.
+
+2003-10-28  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_zoh.c src/src_linear.c
+    Fixed an off-by-one indexing issue which was causing distortion at the
+    boundaries between calls to src_process().
+
+    * tests/multi_channel_test.c
+    Finally passing tests for all three access methods (simple, process and
+    callback).
+
+2003-10-27  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/calc_snr.c
+    SNR calculation was being screwed up because the peak detector was
+    mistaking side lobes caused by the windowded FFT as noise/aliasing peaks.
+    Therefore added code to wipe out the troughs between peaks which erases
+    the side lobe peaks without affecting the noise/aliasing peaks.
+
+    * tests/multi_channel_test.c
+    Added a callback_test to work on multiple channels.
+
+2003-10-14  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.h
+    Add definitions for the callback based API (src_callback_new and
+    src_callback_read).
+
+    * doc/*.html
+    Add link to faq.html.
+
+    * doc/faq.html
+    Add a new question/answer.
+
+    * src/samplerate.c tests/callback_test.c
+    Move callback functions (src_callback_new and src_callback_read) from
+    callback_test.c to samplerate.c
+    Add checking to make sure that an SRC_STATE object created with
+    src_callback_new() is not used with src_process() etc.
+
+    * examples/varispeed.c
+    Add #include <stdlib.h> to prevent compiler warning.
+
+    * src/samplerate.h
+    Add definitions for the callback based API.
+
+    * src/Version_script.in
+    Add entries for two new public functions.
+
+2003-10-12  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/callback_test.c
+    More work on getting callback based API working.
+
+    * tests/termination_test.c
+    Tightened up the test pass crieria yet again. This shows up problems
+    with the ZOH and Linear converters.
+
+    * src/src_zoh.c src/src_linear.c
+    Fixed problems with converters shown up by improved tests.
+
+2003-09-25  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/api.html
+    Be more explicit about the inclusion of <samplerate.h>.
+
+2003-09-21  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/sndfile-resample.c examples/audio_out.c
+    Add include for <stdlib.h>.
+
+    * configure.ac
+    Check for libsndfile >= 1.0.6.
+
+    * examples/sndfile-resample.c
+    Turn on clipping of output when saving to integer PCM output formats.
+
+2003-08-21  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/callback_test.c
+    Start work on a callback based API. The implementation will be done
+    in this test program first and when it is working, the code that does
+    the work will be moved back to the library code.
+
+2003-08-19  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/bugs.html
+    New file detailing how to submit bug reports for SRC.
+
+2003-08-13  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * libsamplerate.spec.in
+    Apply corrections from Giuliano Pochini.
+
+2003-08-05  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/snr_bw_test.c
+    Added test for conversion ratio of 1.0 for all converters. For this
+    conversion ratio, all converters have a better than 149db SNR ratio.
+
+    * src/src_linear.c
+    Changes to make this converter work more like src_zoh.c.
+
+2003-05-04  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/quality.html
+    Fixed a couple of broken links pointed out by Anand Kumria.
+
+2003-05-03  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.h
+    Add URL of API documentation to the top of file.
+
+    * doc/api_misc.html
+    Clarify use of SRC_DATA struct.
+
+2003-04-29  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/reset_test.c
+    Add call to src_set_ratio() to test that this function has been exported.
+
+2003-03-24  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * samplerate.pc.in
+    Changed 'sndfile' to 'samplerate'.
+
+2003-02-08  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_zoh.c
+    Fixed a bug causing clicks in the output data.
+
+2003-02-07  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.c
+    Fixed a compiler warning.
+
+    * tests/termination_test.c
+    Tightened up the test pass crieria.
+
+    * src/src_sinc.c
+    Fixed bug showed up by new termination tests.
+
+2003-02-04  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/sndfile-resample.c
+    Fixed a bug which was messing up handling of multi-channel files.
+
+    * tests/multi_channel_test.c
+    Disabled all the new code.
+
+2003-02-03  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/multi_channel_test.c
+    Rehacking multi-channel tests to find possible problems in src_process()
+    when processing multichannel data. Need to use signal to noise ratio
+    measurements.
+
+    * tests/Makefile.am
+    Mods to add calc_snr.c and utils.c to build of multi_channel_test.
+
+    * tests/util.[ch]
+    Add functions for interleaving and de-interleaving data.
+
+2003-01-24  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * Win32/config.h
+    Added Win32 specific #pragma to disable warnings when double precision
+    constants are assigned to floats.
+
+    * tests/calc_snr.c
+    Added #include <string.h> to prevent compiler warning about use of memset()
+    function.
+
+2003-01-13  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.[ch]
+    Added function src_set_ratio() at the suggestion of Dr William Bland.
+
+    * doc/api_full.html
+    Added docs for above function.
+
+2003-01-11  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/Makefile.am tests/Makefile.am
+    Fixes for Mac OSX.
+    Tidy up handling addition of SNDFILE_CFLAGS
+
+2003-01-08  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * Win32/config.h
+    Disabled HAVE_STDINT_H for Win32.
+
+    * Win32/unistd.h
+    Added empty header file for Win32.
+
+    * src/audio_out.c
+    Final fixes to get audio out working on Win32.
+
+2003-01-05  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_sinc.c
+    Phase one or refactoring. Replace use of a circular buffer to hold short
+    window of data with a linear buffer.
+    Linear buffer requires that data is periodically copied from the end if
+    the buffer back to the beginning. However, it also means that the
+    calc_output() function no longer needs to calculate the next data index
+    modulo the buffer length.
+    Since the data index is calculated 40 times (minimum) per output sample,
+    and the copy from end of buffer to start of buffer is done every 1000 or
+    so output samples, this change results in a significant speedup (up to
+    about 50% improvement for SRC_SINC_FASTEST).
+    Memory use has increased somewhat (max 6k per channel per converter) due
+    to this fix, but that should go down again during next phase of
+    refactoring.
+
+    * examples/varispeed-play.c
+    Fixed a bug where data_in and data_out buffers were overlapping.
+
+2003-01-03  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/win32.html
+    Completed documentation on compiling for Win32.
+
+    * doc/*.html
+    Added links to Win32 compiling information.
+
+    * configure.ac tests/Makefile.am
+    Detect libefence and link it to all the test programs if configued
+    with --enable-debug.
+
+    * tests/utils.[ch]
+    New function force_efence_banner().
+
+    * tests/*test.c
+    Add a call to force_efence_banner() to force printing of the Electric Fence
+    banner at start of program.
+
+2003-01-02  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac
+    Added --enable-debug configuration flag.
+
+    * tests/termination_test.c
+    More modifications to catch corner cases.
+    Added extra test to check for negative return values for input_frames_used
+    and output_frames_gen fields of SRC_DATA.
+
+    * src/src_zoh.c src/src_linear.c
+    Fixed more bugs found using modified streaming_test.
+
+    * src/samplerate.c
+    Set input_frames and output_frames of SRC_DATA to zero if they are negative.
+    Add check for overlapping SRC_DATA data_in and data_out arrays.
+
+    * doc/api_full.html
+    Document the fact that the SRC_DATA->data_in and data_out arrays may not
+    overlap. Thanks to Paul Davis for pointing out this documentation oversight.
+
+2002-12-24  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/termination_test.c tests/streaming_test.c
+    Merged these two test programs into termination_test.c.
+
+    * tests/Makefile.am
+    Modified for above change.
+
+    * src/src_zoh.c src/src_linear.c
+    Fixed bug found using modified streaming_test.
+
+2002-12-21  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.c src/src_*.c
+    Changed the way multichannel accounting was done.
+
+2002-12-20  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/snr_bw_test.c
+    Rearranged order of tests.
+
+2002-12-17  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * doc/lists.html
+    Added "subscribe" HREF.
+
+2002-12-15  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/src_zoh.c src/src_linear.c
+    Fixed a bug which was causing an incorrent number of output samples to be
+    generated for a given conversion ratio and number of input samples.
+
+    * tests/streaming_test.c tests/termination_test.c
+    Modified pick up the above problem if it returns.
+
+2002-12-14  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * tests/streaming_test.c
+    Modified to mix long and short input buffers. This will help testing of
+    smooth switching between standard sinc_process() and long_sinc_process().
+
+2002-12-11  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/audio_out.c
+    More hacking to get this working on Win32.
+
+    * tests/src-evaluate.c
+    More work.
+
+2002-12-05  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/samplerate.[ch] src/Version_script.in Win32/libsamplerate.def
+    Added function src_get_version() to return a version string.
+
+    * examples/sndfile-resample.c
+    Add "--version" option to print out a version string.
+
+    * tests/src-evaluate.c
+    New file. This program will be used to evaluate other sample rate
+    converters for comparison to the rabbit.
+
+    * tests/calc_snr.[ch] tests/snr_bw_test.c
+    Minor changes required by src-evaluate program.
+
+2002-12-04  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * Win32/config.h
+    New file for Win32. When building for Win32, this file gets copied into the
+    src/ directory.
+
+    * Make.bat
+    First attempt to see if this works.
+
+    * src/*.[ch]
+    Changed name of SRC_PRIVATE filed errno to error because the brain damaged
+    Win32 compiler was barfing.
+
+2002-12-03  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * examples/audio_out.c
+    Now working on MacOSX.
+
+    * examples/varispeed-play.c
+    Add ability to choose converter.
+
+2002-12-03  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * configure.ac
+    Fixes for MacOSX.
+
+    * examples/new-varispeed-play.c examples/varispeed-play.c
+    The first file replaces the later.
+
+2002-12-02  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/float_cast.h
+    New file for lrint() and lrintf().
+
+    * src/common.h src/src_*.c
+    Add workaround for systems without <stdint.h>.
+    Add #include "float_cast.h" to pick up replacement lrint() and lrintf()
+    functions.
+
+    * examples/audio_out.c
+    Fixes for the case where libsndfile is not found.
+
+    * new-varispeed-play.c
+    Fixes for Solaris. Now works.
+
+2002-11-29  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * src/high_qual_coeffs.h
+    Conrad Parker found a file which produced clicking when run thru the
+    SRC_SINC_BEST_QUALITY filter. Recalculated the filter with slightly less
+    stringent design parameters and fixed the problem. The band with of the
+    new filter is 96.6% while the old one was a little ober 97%.
+
+2002-11-28  Erik de Castro Lopo  <erikd AT mega-nerd DOT com>
+
+    * All files.
+    libsamplerate is working. There have been a couple of private releases
+    for people to test but no public release.

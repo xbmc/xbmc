@@ -1,0 +1,13 @@
+// $Id: data7.toc,v 1.2 2005/01/23 00:45:57 rocky Exp $
+// Video CD
+// 
+
+CD_ROM_XA
+
+TRACK MODE1 // ISO filesystem
+FILE "isofs-m1.bin" 00:00:00 00:13:57
+
+TRACK MODE2_FORM_MIX // XA track with form 1 and form 2 sectors
+PREGAP 0:2:0
+FILE "isofs-m1.bin" 00:20:71 00:00:00
+

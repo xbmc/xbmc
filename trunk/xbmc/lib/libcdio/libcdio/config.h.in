@@ -1,0 +1,307 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* compiler does least-significant bit first in struct bitfields */
+#undef BITFIELD_LSBF
+
+/* Define 1 if you are compiling using cygwin */
+#undef CYGWIN
+
+/* what to put between the brackets for empty arrays */
+#undef EMPTY_ARRAY_SIZE
+
+/* Define 1 if you have BSDI-type CD-ROM support */
+#undef HAVE_BSDI_CDROM
+
+/* Define to 1 if you have the `bzero' function. */
+#undef HAVE_BZERO
+
+/* Define this if you have libcddb installed */
+#undef HAVE_CDDB
+
+/* Define to 1 if you have the <CoreFoundation/CFBase.h> header file. */
+#undef HAVE_COREFOUNDATION_CFBASE_H
+
+/* Define to 1 if you have the <curses.h> header file. */
+#undef HAVE_CURSES_H
+
+/* Define 1 if you have Darwin OS X-type CD-ROM support */
+#undef HAVE_DARWIN_CDROM
+
+/* Define if time.h defines extern long timezone and int daylight vars. */
+#undef HAVE_DAYLIGHT
+
+/* Define to 1 if you have the Apple DiskArbitration framework */
+#undef HAVE_DISKARBITRATION
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the `drand48' function. */
+#undef HAVE_DRAND48
+
+/* Define to 1 if you have the <dvd.h> header file. */
+#undef HAVE_DVD_H
+
+/* Define to 1 if you have the <errno.h> header file. */
+#undef HAVE_ERRNO_H
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define 1 if you have FreeBSD CD-ROM support */
+#undef HAVE_FREEBSD_CDROM
+
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#undef HAVE_FSEEKO
+
+/* Define to 1 if you have the `ftruncate' function. */
+#undef HAVE_FTRUNCATE
+
+/* Define to 1 if you have the `geteuid' function. */
+#undef HAVE_GETEUID
+
+/* Define to 1 if you have the `getgid' function. */
+#undef HAVE_GETGID
+
+/* Define to 1 if you have the <getopt.h> header file. */
+#undef HAVE_GETOPT_H
+
+/* Define to 1 if you have the `getpwuid' function. */
+#undef HAVE_GETPWUID
+
+/* Define to 1 if you have the `gettimeofday' function. */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define to 1 if you have the `getuid' function. */
+#undef HAVE_GETUID
+
+/* Define to 1 if you have the <glob.h> header file. */
+#undef HAVE_GLOB_H
+
+/* Define if you have the iconv() function. */
+#undef HAVE_ICONV
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <IOKit/IOKitLib.h> header file. */
+#undef HAVE_IOKIT_IOKITLIB_H
+
+/* Supports ISO _Pragma() macro */
+#undef HAVE_ISOC99_PRAGMA
+
+/* Define 1 if you want ISO-9660 Joliet extension support. You must have also
+   libiconv installed to get Joliet extension support. */
+#undef HAVE_JOLIET
+
+/* Define this if your libcurses has keypad */
+#undef HAVE_KEYPAD
+
+/* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
+#undef HAVE_LANGINFO_CODESET
+
+/* Define to 1 if you have the `nsl' library (-lnsl). */
+#undef HAVE_LIBNSL
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define to 1 if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
+/* Define 1 if you have Linux-type CD-ROM support */
+#undef HAVE_LINUX_CDROM
+
+/* Define to 1 if you have the <linux/cdrom.h> header file. */
+#undef HAVE_LINUX_CDROM_H
+
+/* Define 1 if timeout is in cdrom_generic_command struct */
+#undef HAVE_LINUX_CDROM_TIMEOUT
+
+/* Define to 1 if you have the <linux/major.h> header file. */
+#undef HAVE_LINUX_MAJOR_H
+
+/* Define to 1 if you have the <linux/version.h> header file. */
+#undef HAVE_LINUX_VERSION_H
+
+/* Define to 1 if you have the `lstat' function. */
+#undef HAVE_LSTAT
+
+/* Define to 1 if you have the `memcpy' function. */
+#undef HAVE_MEMCPY
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the `memset' function. */
+#undef HAVE_MEMSET
+
+/* Define to 1 if you have the <ncurses.h> header file. */
+#undef HAVE_NCURSES_H
+
+/* Define to 1 if you have the <pwd.h> header file. */
+#undef HAVE_PWD_H
+
+/* Define to 1 if you have the `rand' function. */
+#undef HAVE_RAND
+
+/* Define to 1 if you have the `readlink' function. */
+#undef HAVE_READLINK
+
+/* Define 1 if you want ISO-9660 Rock-Ridge extension support. */
+#undef HAVE_ROCK
+
+/* Define to 1 if you have the `setegid' function. */
+#undef HAVE_SETEGID
+
+/* Define to 1 if you have the `seteuid' function. */
+#undef HAVE_SETEUID
+
+/* Define to 1 if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
+
+/* Define 1 if you have Solaris CD-ROM support */
+#undef HAVE_SOLARIS_CDROM
+
+/* Define to 1 if you have the <stdarg.h> header file. */
+#undef HAVE_STDARG_H
+
+/* Define to 1 if you have the <stdbool.h> header file. */
+#undef HAVE_STDBOOL_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/cdio.h> header file. */
+#undef HAVE_SYS_CDIO_H
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/timeb.h> header file. */
+#undef HAVE_SYS_TIMEB_H
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define this <sys/stat.h> defines S_ISLNK() */
+#undef HAVE_S_ISLNK
+
+/* Define this <sys/stat.h> defines S_ISSOCK() */
+#undef HAVE_S_ISSOCK
+
+/* Define if you have an extern long timenzone variable. */
+#undef HAVE_TIMEZONE_VAR
+
+/* Define if struct tm has the tm_gmtoff member. */
+#undef HAVE_TM_GMTOFF
+
+/* Define if time.h defines extern extern char *tzname[2] variable */
+#undef HAVE_TZNAME
+
+/* Define to 1 if you have the `tzset' function. */
+#undef HAVE_TZSET
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define this if you have libvcdinfo installed */
+#undef HAVE_VCDINFO
+
+/* Define to 1 if you have the `vsnprintf' function. */
+#undef HAVE_VSNPRINTF
+
+/* Define 1 if you have MinGW CD-ROM support */
+#undef HAVE_WIN32_CDROM
+
+/* Define as const if the declaration of iconv() needs const. */
+#undef ICONV_CONST
+
+/* Is set when libcdio's config.h has been included. Applications wishing to
+   sue their own config.h values (such as set by the application's configure
+   script can define this before including any of libcdio's headers. */
+#undef LIBCDIO_CONFIG_H
+
+/* Full path to libcdio top_sourcedir. */
+#undef LIBCDIO_SOURCE_PATH
+
+/* Define 1 if you are compiling using MinGW */
+#undef MINGW32
+
+/* Define 1 if you need timezone defined to get timzone defined as a variable.
+   In cygwin it is a function too */
+#undef NEED_TIMEZONEVAR
+
+/* Define to 1 if your C compiler doesn't accept -c and -o together. */
+#undef NO_MINUS_C_MINUS_O
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
+
+/* Define to 1 if your processor stores words with the most significant byte
+   first (like Motorola and SPARC, unlike Intel and VAX). */
+#undef WORDS_BIGENDIAN
+
+/* Define to 1 if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+#undef _LARGEFILE_SOURCE
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif

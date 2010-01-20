@@ -1,0 +1,106 @@
+If you check out the source from CVS run
+  ./autogen.sh then follow as below, except you don't need to run 
+  ./configure.
+
+To compile the source:
+
+  ./configure MAKE=gmake 
+  make
+  make check
+  make install  # may have to do this as root 
+
+
+If you have problems linking libcdio or libiso9660, see the BSD
+section.  You might also try the option --without-versioned-libs. However
+this option does help with the situtation described below so it is
+preferred all other things being equal.
+
+If you are debugging libcdio, the libtool and the dynamic libraries
+can make things harder. I suggest setting CFLAGS to include
+'-fno-inline -g' and using --disable-shared on configure.
+
+
+VCD dependency:
+---------------
+One thing that confuses people is the "dependency" on libvcdinfo from
+vcdimager, while vcdimager has a dependency on libcdio.  This libcdio
+dependency on vcdimager is an optional (i.e. not mandatory) dependency,
+while the vcdimager dependency right now is mandatory. libvcdinfo is
+used only by the utility program cd-info. If you want cd-info to use
+the VCD reporting portion and you don't already have vcdimager
+installed, build and install libcdio, then vcdimager, then configure
+libcdio again and it should find libvcdinfo. 
+
+People who make packages might consider making two packages, a libcdio
+package with just the libraries (and no dependency on libvcdinfo) and
+a libcdio-utils which contains cd-info and iso-info, cd-read,
+iso-read. Should you want cd-info with VCD support then you'd add a
+dependency in that package to libvcdinfo.
+
+Another thing one can do is "make install" inside the library, or run
+"configure --without-vcd-info --without-cddb" (since libcddb also has
+an optional dependency on libcdio).
+
+Microsoft Windows
+-------
+
+The building under Microsoft Windows the thing to do is to install
+cygwin (http://www.cygwin.com). It has been reported that MinGW
+(http://www.mingw.org/) also works, but it is possible you may
+encounter more problems there. 
+
+Folks may have used Microsoft compilers (e.g. Visual C), but you may
+find you need to make your own "project" files.  Don't undertake this
+unless you are willing to spend time hacking. xboxmediacenter team
+folks I believe go this route, so you may be able to use their project
+files as a starting point. 
+
+XBOX
+-------
+
+Consult the xboxmediacenter team (www.xboxmediacenter.de)
+
+
+BSD
+---
+
+Unless you use --without-versioned-libs (not recommended), you need to
+use GNU make which usually can be found under the name "gmake".
+
+If you use another make you are likely to get problems linking libcdio
+and libiso9660.
+
+
+Solaris
+-------
+
+You may need to use --without-versioned-libs if you get a problem
+building libcdio or libiso9660. 
+
+If you get a message like:
+   libcdio.so: attempted multiple inclusion of file
+
+because you have enable vcd-info and it is installed, then the only
+way I know how to get around is to use configure with --disable-shared.
+
+OS Support
+---------------
+
+Support for Operating Systems's is really based on the desire, ability
+and willingness of others to help out. I use GNU/Linux so that
+probably works best. Before a release I'll test on servers I have
+available. I also announce a pending release on libcdio-devel@gnu.org
+and ask others to test out.
+
+Steve Schultz has done a great job making BSDI CD support look like
+GNU/Linux and usually he let's me know where I've blown things on BSDI
+and Darwin. Usage on Darwin has been picking up although Darwin is in
+a world of its own so support for that (e.g. issuing MMC commnads)
+seems to lag behind.
+
+Of late FreeBSD folks have been pretty good about testing new releases
+and reporting problems. If you search the Internet, you'll see that
+someone has copied and modified the FreeBSD code to work on
+NetBSD. Because that is not GPL, it can't be included here.
+
+$Id: README.libcdio,v 1.11 2006/03/18 01:05:42 rocky Exp $

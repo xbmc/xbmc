@@ -1,0 +1,176 @@
+
+
+ABOUT LIBA52
+
+liba52 is a free library for decoding ATSC A/52 streams. It is
+released under the terms of the GPL license. The A/52 standard is used
+in a variety of applications, including digital television and DVD. It
+is also known as AC-3.
+
+The main goals in liba52 development are:
+
+      *	Portability - Currently all of the code is written in C, and
+	when we write platform-specific optimizations we will always
+	keep a generic C routine to fall back on.
+
+      *	Reuseability - we do not want liba52 to include any
+	project-specific code, but it should still include enough
+	features to be used by very diverse projects.
+
+      *	Precision - We are trying to implement all of the A/52
+	standard, and to have a very precise output by doing all the
+	calculations in floating point. We have a test suite that
+	detects any deviation in the output when compared to previous
+	versions. We do not have access to official A/52 test vectors
+	though, so we have to use our judgement to ensure that such
+	deviations are only intruduced when we fix bugs !
+
+      *	Speed - liba52 is really fast, on any modern PC it should take
+	only a few percent of CPU time.
+
+The project homepage is at http://liba52.sourceforge.net/
+
+
+A52DEC
+
+a52dec is a test program for liba52. It decodes ATSC A/52 streams, and
+also includes a demultiplexer for mpeg-1 and mpeg-2 program streams.
+
+The liba52 source code is always distributed in the a52dec package, to
+make sure it easier for people to test it.
+
+The basic usage is to just type "a52dec file" where file is an ATSC
+A/52 file.
+
+The "-s" option must be used for multiplexed (audio and video) mpeg-2
+files. These files are usualy found on the internet or on unencrypted
+DVDs.
+
+The "-o" option is used to select a given output layer. By default
+a52dec does a stereo downmix and outputs to your speakers, but you can
+try other choices using this option. This is also used for performance
+testing and conformance testing.
+
+The "-c" option is used to disable all optimizations (currently only djbfft).
+
+The "-r" option is used to disable the dynamic range compression.
+
+
+OTHER PROJECTS USING LIBA52
+
+liba52 (and its ancestor libac3) is being used by various other
+projects, including:
+
+      *	xine (http://xine.sourceforge.net/) - started as a simple
+	mpeg-2 audio and video decoder, but it since became a
+	full-featured DVD and video media player.
+
+      *	MPlayer (http://www.MPlayerHQ.hu) - another good player, it is
+	also very robust against damaged streams.
+
+      *	movietime (http://movietime.sourceforge.net/) - still quite
+	young, but it looks very promising !
+
+      *	ffmpeg (http://ffmpeg.sourceforge.net/) - a nice audio/video
+	encoder and transcoder, uses liba52 for decoding A/52 streams.
+
+      *	Ogle (http://www.dtek.chalmers.se/groups/dvd/) - a good DVD
+	player with menu support
+
+      * a52decX (http://homepage1.nifty.com/~toku/software_en.html) -
+	a graphical interface for a52dec in macintosh osX.
+
+      * bd4go (http://denisx.dyndns.org/bd4go/) - another graphical
+	interface for macintosh osX.
+
+      *	OMS (http://www.linuxvideo.org/oms/)
+
+      *	XMPS (http://xmps.sourceforge.net/)
+
+      *	GStreamer (http://www.gstreamer.net/) - a framework for
+	streaming media; it has an A/52 decoding plugin based on liba52.
+
+      *	mpeglib (http://mpeglib.sourceforge.net/) - a video decoding
+	library that usess liba52 when decoding A/52 streams.
+
+If you use liba52 in another project, let us know !
+
+VideoLAN (http://www.videolan.org/) does not use liba52, but this is
+still a cool project :)
+
+
+TASKS
+
+There are several places where we could easily use some help:
+
+      *	Web design: This site sucks ! at the very least, we'd like to
+	come up with a nicer background picture and a logo.
+
+      *	Testing: If you find any stream that does not decode right
+	with liba52, let us know ! The best thing would be to mail to
+	the liba52-devel mailing list. Also if you have access to
+	encoders, we'd love to get test streams that would be free of
+	rights - so that we can put them on this server.
+
+      *	Coding: you can have a look in the TODO file first ! The most
+	important item is probably to make the code fully reentrant.
+
+      *	Porting: If you're porting to a new architecture, you might
+	want to experiment with the compile flags defined in
+	configure.in . When you figure out whats fastest on your
+	platform, send us a patch !
+
+
+REFERENCES
+
+The A/52 standard, as published by the ATSC, is available at
+http://www.atsc.org/standards/a_52a.pdf
+
+
+CVS SNAPSHOTS
+
+A daily snapshot is created using "make distcheck" every night and
+uploaded to http://liba52.sourceforge.net/files/a52dec-snapshot.tar.gz .
+It is easier to use than the CVS repository, because you do not need
+to have the right versions of automake, autoconf and libtool
+installed. It might be convenient when working on a liba52 port for
+example.
+
+
+CVS REPOSITORY
+
+The latest liba52 and a52dec source code can always be found by
+anonymous CVS:
+
+# export CVSROOT=:pserver:anonymous@cvs.liba52.sourceforge.net:/cvsroot/liba52
+# cvs login (Just press Return when prompted for a password)
+# cvs checkout a52dec
+
+You can also browse the latest changes online at
+http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/liba52/a52dec/
+
+The other CVS modules are ac3dec-livid for the CVS history of the
+project while it was still hosted on the linuxvideo.org servers, and
+ac3dec for the CVS history of the project while the linuxvideo.org
+servers were down and before the library switched its name to liba52.
+
+
+MAILING LISTS
+
+See the subscription information at http://liba52.sourceforge.net/lists.html
+
+liba52-devel
+
+This is the main mailing list for technical discussion about
+liba52. Anyone wanting to work on liba52, or maybe just stay informed
+about the development process, should probably subscribe to this list.
+
+liba52-checkins
+
+All liba52 checkins are announced there. This is a good way to keep
+track of what goes into CVS.
+
+liba52-announce
+
+This is a very low traffic mailing list, only for announcements of new
+versions of liba52. Only project administrators can post there.

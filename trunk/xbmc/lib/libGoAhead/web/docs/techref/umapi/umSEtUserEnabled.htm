@@ -1,0 +1,18 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umSetUserEnabled -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umSetUserEnabled</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B>	</H2><P>Set the enabled state of a given user.</P><H2><B>Prototype</B></H2><PRE> #include &quot;um.h&quot;
+
+ int umSetUserEnabled(char_t * user, bool_t enabled);</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="54%" BORDER="0"><TR><TD WIDTH="27%" HEIGHT="20">user</TD><TD WIDTH="73%" HEIGHT="20">user ID</TD></TR><TR><TD WIDTH="27%">enabled</TD><TD WIDTH="73%">enabled state</TD></TR></TABLE><H2><B>Description</B></H2><P>int umSetUserEnabled(char_t * user, bool_t enabled);</P><H2><B>Return Value</B></H2><P>	This function returns 0 if successful, or -1 on error.</P><H2><B>Example</B></H2><PRE>int nCheck = umSetUserEnabled(T(&quot;Mortimer&quot;), TRUE);</PRE><H2><B>See Also</B></H2><P>	<A HREF="umGetUserEnabled.htm">umGetUserEnabled</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

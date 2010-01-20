@@ -1,0 +1,84 @@
+.\" $Id: curl_multi_setopt.3,v 1.7 2007-12-11 21:19:38 bagder Exp $
+.\"
+.TH curl_multi_setopt 3 "10 Oct 2006" "libcurl 7.16.0" "libcurl Manual"
+.SH NAME
+curl_multi_setopt \- set options for a curl multi handle
+.SH SYNOPSIS
+#include <curl/curl.h>
+
+CURLMcode curl_multi_setopt(CURLM * multi_handle, CURLMoption option, param);
+.SH DESCRIPTION
+curl_multi_setopt() is used to tell a libcurl multi handle how to behave. By
+using the appropriate options to \fIcurl_multi_setopt(3)\fP, you can change
+libcurl's behaviour when using that multi handle.  All options are set with
+the \fIoption\fP followed by the parameter \fIparam\fP. That parameter can be
+a \fBlong\fP, a \fBfunction pointer\fP, an \fBobject pointer\fP or a
+\fBcurl_off_t\fP type, depending on what the specific option expects. Read
+this manual carefully as bad input values may cause libcurl to behave badly!
+You can only set one option in each function call.
+
+.SH OPTIONS
+.IP CURLMOPT_SOCKETFUNCTION
+Pass a pointer to a function matching the \fBcurl_socket_callback\fP
+prototype. The \fIcurl_multi_socket(3)\fP functions inform the application
+about updates in the socket (file descriptor) status by doing none, one or
+multiple calls to the curl_socket_callback given in the \fBparam\fP
+argument. They update the status with changes since the previous time a
+\fIcurl_multi_socket(3)\fP function was called. If the given callback pointer
+is NULL, no callback will be called. Set the callback's \fBuserp\fP argument
+with \fICURLMOPT_SOCKETDATA\fP.  See \fIcurl_multi_socket(3)\fP for more
+callback details.
+.IP CURLMOPT_SOCKETDATA
+Pass a pointer to whatever you want passed to the \fBcurl_socket_callback\fP's
+forth argument, the userp pointer. This is not used by libcurl but only
+passed-thru as-is. Set the callback pointer with
+\fICURLMOPT_SOCKETFUNCTION\fP.
+.IP CURLMOPT_PIPELINING
+Pass a long set to 1 to enable or 0 to disable. Enabling pipelining on a multi
+handle will make it attempt to perform HTTP Pipelining as far as possible for
+transfers using this handle. This means that if you add a second request that
+can use an already existing connection, the second request will be \&"piped"
+on the same connection rather than being executed in parallell. (Added in
+7.16.0)
+.IP CURLMOPT_TIMERFUNCTION
+Pass a pointer to a function matching the \fBcurl_multi_timer_callback\fP
+prototype.  This function will then be called when the timeout value
+changes. The timeout value is at what latest time the application should call
+one of the \&"performing" functions of the multi interface
+(\fIcurl_multi_socket(3)\fP, \fIcurl_multi_socket_all(3)\fP and
+\fIcurl_multi_perform(3)\fP) - to allow libcurl to keep timeouts and retries
+etc to work. A timeout value of -1 means that there is no timeout at all, and
+0 means that the timeout is already reached. Libcurl attempts to limit calling
+this only when the fixed future timeout time actually change. See also
+\fICURLMOPT_TIMERDATA\fP. This callback can be used instead of, or in addition
+to, \fIcurl_multi_timeout(3)\fP. (Added in 7.16.0)
+.IP CURLMOPT_TIMERDATA
+Pass a pointer to whatever you want passed to the
+\fBcurl_multi_timer_callback\fP's third argument, the userp pointer.  This is
+not used by libcurl but only passed-thru as-is. Set the callback pointer with
+\fICURLMOPT_TIMERFUNCTION\fP. (Added in 7.16.0)
+.IP CURLMOPT_MAXCONNECTS
+Pass a long. The set number will be used as the maximum amount of
+simultaneously open connections that libcurl may cache. Default is 10, and
+libcurl will enlarge the size for each added easy handle to make it fit 4
+times the number of added easy handles.
+
+By setting this option, you can prevent the cache size to grow beyond the
+limit set by you.
+
+When the cache is full, curl closes the oldest one in the cache to prevent the
+number of open connections to increase.
+
+This option is for the multi handle's use only, when using the easy interface
+you should instead use the \fICURLOPT_MAXCONNECTS\fP option.
+
+(Added in 7.16.3)
+.SH RETURNS
+The standard CURLMcode for multi interface error codes. Note that it returns a
+CURLM_UNKNOWN_OPTION if you try setting an option that this version of libcurl
+doesn't know of.
+.SH AVAILABILITY
+This function was added in libcurl 7.15.4.
+.SH "SEE ALSO"
+.BR curl_multi_cleanup "(3), " curl_multi_init "(3), "
+.BR curl_multi_socket "(3), " curl_multi_info_read "(3)"

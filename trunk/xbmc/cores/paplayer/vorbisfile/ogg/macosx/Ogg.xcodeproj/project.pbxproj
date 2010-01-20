@@ -1,0 +1,344 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		730F236309181A8D00AB638C /* bitwise.c in Sources */ = {isa = PBXBuildFile; fileRef = 730F236109181A8D00AB638C /* bitwise.c */; };
+		730F236409181A8D00AB638C /* framing.c in Sources */ = {isa = PBXBuildFile; fileRef = 730F236209181A8D00AB638C /* framing.c */; };
+		730F236709181ABE00AB638C /* ogg.h in Headers */ = {isa = PBXBuildFile; fileRef = 730F236509181ABE00AB638C /* ogg.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		730F236809181ABE00AB638C /* os_types.h in Headers */ = {isa = PBXBuildFile; fileRef = 730F236609181ABE00AB638C /* os_types.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8D07F2BE0486CC7A007CD1D0 /* Ogg_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32BAE0B70371A74B00C91783 /* Ogg_Prefix.pch */; };
+		8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		4F0BB7EC011F40E904CA0E50 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		4F0BB7ED011F40E904CA0E50 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		32BAE0B70371A74B00C91783 /* Ogg_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ogg_Prefix.pch; sourceTree = "<group>"; };
+		730F236109181A8D00AB638C /* bitwise.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bitwise.c; path = ../src/bitwise.c; sourceTree = SOURCE_ROOT; };
+		730F236209181A8D00AB638C /* framing.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = framing.c; path = ../src/framing.c; sourceTree = SOURCE_ROOT; };
+		730F236509181ABE00AB638C /* ogg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ogg.h; path = ../include/ogg/ogg.h; sourceTree = SOURCE_ROOT; };
+		730F236609181ABE00AB638C /* os_types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_types.h; path = ../include/ogg/os_types.h; sourceTree = SOURCE_ROOT; };
+		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D07F2C80486CC7A007CD1D0 /* Ogg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ogg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D07F2C30486CC7A007CD1D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DDFF38A45A11DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D07F2C80486CC7A007CD1D0 /* Ogg.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* Ogg */ = {
+			isa = PBXGroup;
+			children = (
+				730F235F09181A3E00AB638C /* Headers */,
+				08FB77ACFE841707C02AAC07 /* Source */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DDFF38A45A11DB9C8B /* Products */,
+			);
+			name = Ogg;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D07F2C70486CC7A007CD1D0 /* Info.plist */,
+				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77ACFE841707C02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				730F236109181A8D00AB638C /* bitwise.c */,
+				730F236209181A8D00AB638C /* framing.c */,
+				32BAE0B70371A74B00C91783 /* Ogg_Prefix.pch */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		730F235F09181A3E00AB638C /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				730F236509181ABE00AB638C /* ogg.h */,
+				730F236609181ABE00AB638C /* os_types.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8D07F2BD0486CC7A007CD1D0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2BE0486CC7A007CD1D0 /* Ogg_Prefix.pch in Headers */,
+				730F236709181ABE00AB638C /* ogg.h in Headers */,
+				730F236809181ABE00AB638C /* os_types.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8D07F2BC0486CC7A007CD1D0 /* Ogg */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 730F235409181A3A00AB638C /* Build configuration list for PBXNativeTarget "Ogg" */;
+			buildPhases = (
+				8D07F2BD0486CC7A007CD1D0 /* Headers */,
+				8D07F2BF0486CC7A007CD1D0 /* Resources */,
+				8D07F2C10486CC7A007CD1D0 /* Sources */,
+				8D07F2C30486CC7A007CD1D0 /* Frameworks */,
+				8D07F2C50486CC7A007CD1D0 /* Rez */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Ogg_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				LIBRARY_STYLE = DYNAMIC;
+				PRODUCT_NAME = Ogg;
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			name = Ogg;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = Ogg;
+			productReference = 8D07F2C80486CC7A007CD1D0 /* Ogg.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 730F235809181A3A00AB638C /* Build configuration list for PBXProject "Ogg" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				4F0BB7EC011F40E904CA0E50 /* Development */,
+				4F0BB7ED011F40E904CA0E50 /* Deployment */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* Ogg */;
+			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
+			projectDirPath = "";
+			targets = (
+				8D07F2BC0486CC7A007CD1D0 /* Ogg */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D07F2BF0486CC7A007CD1D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		8D07F2C50486CC7A007CD1D0 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D07F2C10486CC7A007CD1D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				730F236309181A8D00AB638C /* bitwise.c in Sources */,
+				730F236409181A8D00AB638C /* framing.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1667FE841158C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		730F235509181A3A00AB638C /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Ogg_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = /Library/Frameworks;
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = Ogg;
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		730F235609181A3A00AB638C /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Ogg_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = /Library/Frameworks;
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = Ogg;
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		730F235709181A3A00AB638C /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Ogg_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = /Library/Frameworks;
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				PRODUCT_NAME = Ogg;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Default;
+		};
+		730F235909181A3A00AB638C /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = __MACOSX__;
+			};
+			name = Development;
+		};
+		730F235A09181A3A00AB638C /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = __MACOSX__;
+			};
+			name = Deployment;
+		};
+		730F235B09181A3A00AB638C /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = __MACOSX__;
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		730F235409181A3A00AB638C /* Build configuration list for PBXNativeTarget "Ogg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				730F235509181A3A00AB638C /* Development */,
+				730F235609181A3A00AB638C /* Deployment */,
+				730F235709181A3A00AB638C /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		730F235809181A3A00AB638C /* Build configuration list for PBXProject "Ogg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				730F235909181A3A00AB638C /* Development */,
+				730F235A09181A3A00AB638C /* Deployment */,
+				730F235B09181A3A00AB638C /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

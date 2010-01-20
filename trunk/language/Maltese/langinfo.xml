@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language>
+  <charsets>
+    <gui unicodefont="true">CP1252</gui>
+    <subtitle>CP1252</subtitle>
+  </charsets>
+  <dvd>
+    <menu>mt</menu>
+    <audio>mt</audio>
+    <subtitle>mt</subtitle>
+  </dvd>
+  <regions>
+    <region name="Malta">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions>
+</language>

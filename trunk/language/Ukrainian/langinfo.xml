@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language>
+  <charsets>
+    <gui unicodefont="true">CP1251</gui>
+    <subtitle>CP1251</subtitle>
+  </charsets>
+  <dvd>
+    <menu>ru</menu>
+    <audio>ru</audio>
+    <subtitle>ru</subtitle>
+  </dvd>
+  <regions>
+    <region>
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY 'р.'</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>mps</speedunit>
+    </region>
+  </regions>
+</language>

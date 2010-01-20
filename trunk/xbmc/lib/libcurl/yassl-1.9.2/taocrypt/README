@@ -1,0 +1,48 @@
+TaoCrypt release 0.9.2   02/5/2007
+
+
+This release includes bug fixes, portability enhancements, and some 
+optimiations.
+
+See 0.9.0 for build instructions.
+
+
+
+
+******************TaoCrypt release 0.9.0   09/18/2006
+
+This is the first release of TaoCrypt, it was previously only included with
+yaSSL. TaoCrypt is highly portable and fast, its features include:
+
+One way hash functions: SHA-1, MD2, MD4, MD5, RIPEMD-160
+Message authentication codes: HMAC
+Block Ciphers: DES, Triple-DES, AES, Blowfish, Twofish
+Stream Ciphers: ARC4
+Public Key Crypto: RSA, DSA, Diffie-Hellman
+Password based key derivation: PBKDF2 from PKCS #5
+Pseudo Random Number Generators
+Lare Integer Support
+Base 16/64 encoding/decoding
+DER encoding/decoding
+X.509 processing
+SSE2 and ia32 asm for the right processors and compilers
+
+
+To build on Unix
+
+    ./configure
+    make
+
+    To test the build, from the ./test directory run ./test
+
+
+On Windows
+
+    Open the taocrypt project workspace
+    Choose (Re)Build All
+
+    To test the build, run the test executable
+
+
+Please send any questions or comments to todd@yassl.com.
+

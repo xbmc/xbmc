@@ -1,0 +1,201 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:		live-initramfs
+# Required-Start:	$syslog
+# Required-Stop:	$syslog
+# Should-Start:		$local_fs
+# Should-Stop:		$local_fs
+# Default-Start:	1 2 3 4 5
+# Default-Stop:		0 6
+# Short-Description:	live-initramfs init script
+# Description:		Resyncs snapshots, evantually caches files in order to
+#			let remove the media.
+### END INIT INFO
+
+# Authors: Tollef Fog Heen <tfheen@canonical.com>
+#	   Marco Amadori <marco.amadori@gmail.com>
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+NAME=live-initramfs
+SCRIPTNAME=/etc/init.d/${NAME}
+DO_SNAPSHOT=/sbin/live-snapshot
+
+# Exit if system was not booted by live-initramfs
+grep -qs boot=live /proc/cmdline || exit 0
+
+# Exit if the system was booted from an ISO image rather than a physical CD
+grep -qs find_iso= /proc/cmdline && exit 0
+
+# Read configuration variable file if it is present
+[ -r /etc/live.conf ] && . /etc/live.conf
+
+# Load the VERBOSE setting and other rcS variables
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
+
+# Try to cache everything we're likely to need after ejecting.  This
+# is fragile and simple-minded, but our options are limited.
+cache_path()
+{
+	path="${1}"
+
+	if [ -d "${path}" ]
+	then
+		find "${path}" -type f | xargs cat > /dev/null 2>&1
+	elif [ -f "${path}" ]
+	then
+		if [ -x "${path}" ]
+		then
+			if file "${path}" | grep -q 'dynamically linked'
+			then
+				for lib in $(ldd "${path}" | awk '{ print $3 }')
+				do
+					cache_path "${lib}"
+				done
+			fi
+		fi
+
+		cat "${path}" >/dev/null 2>&1
+	fi
+}
+
+get_boot_device()
+{
+	# search in /proc/mounts for the device that is mounted at /live/image
+	while read DEVICE MOUNT REST
+	do
+		if [ "${MOUNT}" = "/live/image" ]
+		then
+			echo "${DEVICE}"
+			exit 0
+		fi
+	done < /proc/mounts
+}
+
+device_is_USB_flash_drive()
+{
+	# remove leading "/dev/" and all trailing numbers from input
+	DEVICE=$(expr substr ${1} 6 3)
+
+	# check that device starts with "sd"
+	[ "$(expr substr ${DEVICE} 1 2)" != "sd" ] && return 1
+
+	# check that the device is an USB device
+	if readlink /sys/block/${DEVICE} | grep -q usb ||
+	   readlink /sys/block/${DEVICE}/device | grep -q usb # linux < 2.6.29
+	then
+		return 0
+	fi
+
+	return 1
+}
+
+do_stop ()
+{
+	if ! grep -qs nopersistent /proc/cmdline && grep -qs persistent /proc/cmdline
+	then
+		if [ ! -z "${ROOTSNAP}" ]
+		then
+			${DO_SNAPSHOT} --resync-string="${ROOTSNAP}"
+		fi
+
+		if [ ! -z "${HOMESNAP}" ]
+		then
+			${DO_SNAPSHOT} --resync-string="${HOMESNAP}"
+		fi
+	fi
+
+	# check for netboot
+	if [ ! -z "${NETBOOT}" ] || grep -qs netboot /proc/cmdline || grep -qsi root=/dev/nfs /proc/cmdline  || grep -qsi root=/dev/cifs /proc/cmdline
+	then
+		return 0
+	fi
+
+	prompt=1
+	if grep -qs noprompt /proc/cmdline
+	then
+		prompt=
+	fi
+
+	for path in $(which halt) $(which reboot) /etc/rc?.d /etc/default $(which stty)
+	do
+		cache_path "${path}"
+	done
+
+	for x in $(cat /proc/cmdline)
+	do
+		case ${x} in
+			quickreboot)
+				QUICKREBOOT="Yes"
+				;;
+		esac
+	done
+
+	if [ -z ${QUICKREBOOT} ]
+	then
+		# TODO: i18n
+		BOOT_DEVICE="$(get_boot_device)"
+
+		if device_is_USB_flash_drive ${BOOT_DEVICE}
+		then
+			# do NOT eject USB flash drives!
+			# otherwise rebooting with most USB flash drives
+			# failes because they actually remember the
+			# "ejected" state even after reboot
+			MESSAGE="Please remove the USB flash drive"
+		else
+			# ejecting is a very good idea here
+			MESSAGE="Please remove the disc, close the the tray (if any)"
+
+			if [ -x /usr/bin/eject ]
+			then
+				eject -p -m /live/image >/dev/null 2>&1
+			fi
+
+			[ "$prompt" ] || return 0
+		fi
+
+		stty sane < /dev/console
+
+		printf "\n\n${MESSAGE} and press ENTER to continue:" > /dev/console
+
+		if [ -x /sbin/usplash_write ]
+		then
+			/sbin/usplash_write "TIMEOUT 86400"
+			/sbin/usplash_write "TEXT-URGENT ${MESSAGE}"
+			/sbin/usplash_write "TEXT-URGENT and press ENTER to continue"
+		fi
+
+		read x < /dev/console
+	fi
+}
+
+case "${1}" in
+	start|restart|reload|force-reload|status)
+		[ "${VERBOSE}" != no ] && log_end_msg 0
+		;;
+
+	stop)
+		log_begin_msg "${NAME} is resyncing snapshots and caching reboot files..."
+		do_stop
+
+		case "${?}" in
+			0|1)
+				[ "${VERBOSE}" != no ] && log_end_msg 0
+				;;
+
+			2)
+				[ "${VERBOSE}" != no ] && log_end_msg 1
+				;;
+		esac
+		;;
+
+	*)
+		log_success_msg "Usage: ${SCRIPTNAME} {start|stop|restart|force-reload}" >&2
+		exit 3
+		;;
+esac

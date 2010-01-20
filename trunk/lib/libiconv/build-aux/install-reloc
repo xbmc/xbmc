@@ -1,0 +1,196 @@
+#!/bin/sh
+# install-reloc - install a program including a relocating wrapper
+# Copyright (C) 2003, 2005-2007, 2009 Free Software Foundation, Inc.
+# Written by Bruno Haible <bruno@clisp.org>, 2003.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Usage:
+#   install-reloc library_path_var library_path_value prefix destdir \
+#                 compile_command srcdir builddir config_h_dir exeext \
+#                 strip_command \
+#                 install_command... destprog
+# where
+#   - library_path_var is the platform dependent runtime library path variable
+#   - library_path_value is a colon separated list of directories that contain
+#     the libraries at installation time (use this instead of -rpath)
+#   - prefix is the base directory at installation time
+#   - destdir is a string that is prepended to all file names at installation
+#     time; it is already prepended to destprog but not to library_path_value
+#     and prefix
+#   - compile_command is a C compiler compilation and linking command
+#   - srcdir is the directory where to find relocwrapper.c and its dependencies
+#   - builddir is the directory where to find built dependencies (namely,
+#     alloca.h and stdbool.h)
+#   - config_h_dir is the directory where to find config.h
+#   - exeext is platform dependent suffix of executables
+#   - strip_command is the command for stripping executables, or : if no
+#     stripping is desired
+#   - install_command is the install command line, excluding the final destprog
+#   - destprog is the destination program name
+# install-reloc renames destprog to destprog.bin and installs a relocating
+# wrapper in the place of destprog.
+
+progname=$0
+
+if test $# -eq 2; then
+  # Get arguments from environment variables.
+  library_path_var=$RELOC_LIBRARY_PATH_VAR
+  library_path_value=$RELOC_LIBRARY_PATH_VALUE
+  prefix=$RELOC_PREFIX
+  destdir=$RELOC_DESTDIR
+  compile_command=$RELOC_COMPILE_COMMAND
+  srcdir=$RELOC_SRCDIR
+  builddir=$RELOC_BUILDDIR
+  config_h_dir=$RELOC_CONFIG_H_DIR
+  exeext=$RELOC_EXEEXT
+  strip_prog=$RELOC_STRIP_PROG
+  install_prog=$RELOC_INSTALL_PROG # including the "-c" option
+else
+  if test $# -ge 11; then
+    # Get fixed position arguments.
+    library_path_var=$1
+    library_path_value=$2
+    prefix=$3
+    destdir=$4
+    shift
+    shift
+    shift
+    shift
+    compile_command=$1
+    srcdir=$2
+    builddir=$3
+    config_h_dir=$4
+    exeext=$5
+    shift
+    shift
+    shift
+    shift
+    shift
+    strip_prog=$1
+    shift
+    install_prog=$1 # maybe not including the "-c" option
+    shift
+  else
+    echo "Usage: $0 library_path_var library_path_value prefix destdir" \
+         "compile_command srcdir builddir config_h_dir exeext" \
+         "strip_command" \
+         "install_command... destprog" 1>&2
+    exit 1
+  fi
+fi
+
+# Get destprog, last argument.
+destprog=
+for arg
+do
+  destprog=$arg
+done
+# Remove trailing $exeext, if present.
+if test -n "$exeext"; then
+  sed_quote='s,\.,\\.,g'
+  sed_remove_exeext='s|'`echo "$exeext" | sed -e "$sed_quote"`'$||'
+  destprog=`echo "$destprog" | sed -e "$sed_remove_exeext"`
+fi
+
+# Outputs a command and runs it.
+func_verbose ()
+{
+  echo "$@"
+  "$@"
+}
+
+# Run install_command.
+func_verbose $install_prog "$@" || exit $?
+
+# Run strip_command.
+test "$strip_prog" = ':' || func_verbose "$strip_prog" "$destprog$exeext" || exit $?
+
+# If the platform doesn't support LD_LIBRARY_PATH or similar, we cannot build
+# a wrapper.
+test -n "$library_path_var" || exit 0
+
+libdirs=
+save_IFS="$IFS"; IFS=":"
+for dir in $library_path_value; do
+  IFS="$save_IFS"
+  if test -n "$dir"; then
+    case "$libdirs" in
+      *"\"$dir\""*) ;; # remove duplicate
+      *) libdirs="$libdirs\"$dir\"," ;;
+    esac
+  fi
+done
+IFS="$save_IFS"
+# If there are no library directories to add at runtime, we don't need a
+# wrapper.
+test -n "$libdirs" || exit 0
+
+# Determine installdir from destprog, removing a leading destdir if present.
+installdir=`echo "$destprog" | sed -e 's,/[^/]*$,,'`
+if test -n "$destdir"; then
+  sed_quote='s,\([|.\*^$[]\),\\\1,g'
+  sed_remove_destdir='s|^'`echo "$destdir" | sed -e "$sed_quote"`'||'
+  installdir=`echo "$installdir" | sed -e "$sed_remove_destdir"`
+fi
+
+# Compile wrapper.
+func_verbose $compile_command \
+             -I"$builddir" -I"$srcdir" -I"$config_h_dir" \
+             -DHAVE_CONFIG_H -DIN_RELOCWRAPPER -DNO_XMALLOC \
+             -D"INSTALLPREFIX=\"$prefix\"" -D"INSTALLDIR=\"$installdir\"" \
+             -D"LIBPATHVAR=\"$library_path_var\"" -D"LIBDIRS=$libdirs" \
+             -D"EXEEXT=\"$exeext\"" \
+             "$srcdir"/relocwrapper.c \
+             "$srcdir"/progname.c \
+             "$srcdir"/progreloc.c \
+             "$srcdir"/areadlink.c \
+             "$srcdir"/readlink.c \
+             "$srcdir"/canonicalize-lgpl.c \
+             "$srcdir"/malloca.c \
+             "$srcdir"/relocatable.c \
+             "$srcdir"/setenv.c \
+             "$srcdir"/strerror.c \
+             "$srcdir"/c-ctype.c \
+             -o "$destprog.wrapper$exeext"
+rc=$?
+# Clean up object files left over in the current directory by the native C
+# compilers on Solaris, HP-UX, OSF/1, IRIX.
+rm -f relocwrapper.o \
+      progname.o \
+      progreloc.o \
+      xreadlink.o \
+      areadlink.o \
+      canonicalize-lgpl.o \
+      malloca.o \
+      relocatable.o \
+      setenv.o \
+      strerror.o \
+      c-ctype.o
+test $rc = 0 || exit $?
+# Clean up debugging information left over by the native C compiler on MacOS X.
+rm -rf "$destprog.wrapper$exeext.dSYM"
+test $rc = 0 || exit $?
+
+# Strip wrapper.
+test "$strip_prog" = ':' || func_verbose "$strip_prog" "$destprog.wrapper$exeext" || exit $?
+
+# Rename $destprog.wrapper -> $destprog -> $destprog.bin.
+ln -f "$destprog$exeext" "$destprog.bin$exeext" \
+  || { rm -f "$destprog.bin$exeext" \
+       && cp -p "$destprog$exeext" "$destprog.bin$exeext"; } \
+  || exit 1
+mv "$destprog.wrapper$exeext" "$destprog$exeext" || exit 1
+
+exit 0

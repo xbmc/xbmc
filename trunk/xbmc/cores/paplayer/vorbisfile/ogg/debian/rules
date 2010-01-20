@@ -1,0 +1,154 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+#
+# Modified to make a template file for a multi-binary package with separated
+# build-arch and build-indep targets  by Bill Allombert 2001
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This is the debhelper compatibility version to use.
+export DH_COMPAT=4
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+objdir = $(CURDIR)/obj-$(DEB_BUILD_GNU_TYPE)
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+
+	# make build directory
+	mkdir $(objdir)
+
+	# run configure with build tree $(objdir)
+	# change ../configure to ../autogen.sh for CVS build
+	cd $(objdir) && \
+	../configure --build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE) \
+	--prefix=/usr --enable-static
+
+	touch configure-stamp
+
+#Architecture
+build: build-arch build-indep
+
+build-arch: build-arch-stamp
+build-arch-stamp: configure-stamp
+
+	cd $(objdir) && \
+	$(MAKE)
+
+	touch build-arch-stamp
+
+build-indep: build-indep-stamp
+build-indep-stamp: configure-stamp
+
+	# Add here commands to compile the indep part of the package.
+	#$(MAKE) doc
+	touch build-indep-stamp
+
+debian-clean:
+	dh_testdir
+	dh_testroot
+
+	dh_clean
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp configure-stamp
+
+	# Remove build tree
+	rm -rf $(objdir)
+
+	# if Makefile exists run distclean
+	if test -f Makefile; then \
+		$(MAKE) distclean; \
+	fi
+
+	#if test -d CVS; then \
+		$(MAKE) cvs-clean ;\
+	fi
+
+	dh_clean
+
+install: install-indep install-arch
+install-indep:
+	dh_testdir
+	dh_testroot
+#	dh_clean -k -i
+#	dh_installdirs -i
+
+#	dh_install -i --list-missing
+
+install-arch:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -s
+	dh_installdirs -s
+
+	cd $(objdir) && \
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+
+	dh_install -s --list-missing
+
+# Must not depend on anything. This is to be called by
+# binary-arch/binary-indep
+# in another 'make' thread.
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installexamples
+#	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+#	dh_perl
+#	dh_python
+	dh_makeshlibs -V
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture independant packages using the common target.
+binary-indep: build-indep install-indep
+#	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+# Build architecture dependant packages using the common target.
+binary-arch: build-arch install-arch
+	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch configure

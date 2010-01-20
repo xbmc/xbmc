@@ -1,0 +1,28 @@
+changes that affected the PCM output:
+
+2001/05/14 05:48:59 - aaron's 0.6.1 was cutting before the end
+
+2001/06/04 01:42:47 - slightly adjusted some values (volume, downmix adjustemtn, clev/slev tables)
+2001/06/04 05:48:31 - added adjust_level to the downmix
+
+2001/06/12
+2001/06/13          - changed the order of the dither() calls
+                      also introduced bug with thx_2_0 stream
+
+2001/06/22 08:23:37 - fixed bug with thx_2_0 stream (see parse.c)
+
+2001/07/02 08:44:55 - changed float-to-int conversion (+ added saturation)
+
+2001/07/06 06:53:01 - more precise imdct init, more precise q_* coefficients
+
+2001/07/06 08:52:30 - rematrixing fixes
+
+2001/07/26 21:31:39 - do 3dB dither reduction in coeff_get() not dither_gen()
+
+2001/08/09 08:11:31 - implemented dynamic range compression
+
+2002/02/24 08:54:49 - window function computed at runtime, with more precision
+
+2003/01/28 06.57:37 - switched to integer q_* coefficients
+
+2003/01/28 07:39:35 - use level of 0.75 for dithering instead of 0.707

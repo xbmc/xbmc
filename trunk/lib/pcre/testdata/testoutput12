@@ -1,0 +1,474 @@
+/-- These tests for Unicode property support test PCRE's API and show some of
+    the compiled code. They are not Perl-compatible. --/
+
+/[\p{L}]/DZ
+------------------------------------------------------------------
+        Bra
+        [\p{L}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+No options
+No first char
+No need char
+
+/[\p{^L}]/DZ
+------------------------------------------------------------------
+        Bra
+        [\P{L}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+No options
+No first char
+No need char
+
+/[\P{L}]/DZ
+------------------------------------------------------------------
+        Bra
+        [\P{L}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+No options
+No first char
+No need char
+
+/[\P{^L}]/DZ
+------------------------------------------------------------------
+        Bra
+        [\p{L}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+No options
+No first char
+No need char
+
+/[abc\p{L}\x{0660}]/8DZ
+------------------------------------------------------------------
+        Bra
+        [a-c\p{L}\x{660}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: utf8
+No first char
+No need char
+
+/[\p{Nd}]/8DZ
+------------------------------------------------------------------
+        Bra
+        [\p{Nd}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: utf8
+No first char
+No need char
+    1234
+ 0: 1
+
+/[\p{Nd}+-]+/8DZ
+------------------------------------------------------------------
+        Bra
+        [+\-\p{Nd}]+
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: utf8
+No first char
+No need char
+    1234
+ 0: 1234
+    12-34
+ 0: 12-34
+    12+\x{661}-34  
+ 0: 12+\x{661}-34
+    ** Failers
+No match
+    abcd  
+No match
+
+/A\x{391}\x{10427}\x{ff3a}\x{1fb0}/8iDZ
+------------------------------------------------------------------
+        Bra
+     NC A\x{391}\x{10427}\x{ff3a}\x{1fb0}
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: caseless utf8
+First char = 'A' (caseless)
+No need char
+
+/A\x{391}\x{10427}\x{ff3a}\x{1fb0}/8DZ
+------------------------------------------------------------------
+        Bra
+        A\x{391}\x{10427}\x{ff3a}\x{1fb0}
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: utf8
+First char = 'A'
+Need char = 176
+
+/AB\x{1fb0}/8DZ
+------------------------------------------------------------------
+        Bra
+        AB\x{1fb0}
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: utf8
+First char = 'A'
+Need char = 176
+
+/AB\x{1fb0}/8DZi
+------------------------------------------------------------------
+        Bra
+     NC AB\x{1fb0}
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: caseless utf8
+First char = 'A' (caseless)
+Need char = 'B' (caseless)
+
+/[\x{105}-\x{109}]/8iDZ
+------------------------------------------------------------------
+        Bra
+        [\x{104}-\x{109}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: caseless utf8
+No first char
+No need char
+    \x{104}
+ 0: \x{104}
+    \x{105}
+ 0: \x{105}
+    \x{109}  
+ 0: \x{109}
+    ** Failers
+No match
+    \x{100}
+No match
+    \x{10a} 
+No match
+    
+/[z-\x{100}]/8iDZ 
+------------------------------------------------------------------
+        Bra
+        [Z\x{39c}\x{178}z-\x{101}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: caseless utf8
+No first char
+No need char
+    Z
+ 0: Z
+    z
+ 0: z
+    \x{39c}
+ 0: \x{39c}
+    \x{178}
+ 0: \x{178}
+    |
+ 0: |
+    \x{80}
+ 0: \x{80}
+    \x{ff}
+ 0: \x{ff}
+    \x{100}
+ 0: \x{100}
+    \x{101} 
+ 0: \x{101}
+    ** Failers
+No match
+    \x{102}
+No match
+    Y
+No match
+    y           
+No match
+
+/[z-\x{100}]/8DZi
+------------------------------------------------------------------
+        Bra
+        [Z\x{39c}\x{178}z-\x{101}]
+        Ket
+        End
+------------------------------------------------------------------
+Capturing subpattern count = 0
+Options: caseless utf8
+No first char
+No need char
+
+/(?:[\PPa*]*){8,}/
+
+/[\P{Any}]/BZ
+------------------------------------------------------------------
+        Bra
+        [\P{Any}]
+        Ket
+        End
+------------------------------------------------------------------
+
+/[\P{Any}\E]/BZ
+------------------------------------------------------------------
+        Bra
+        [\P{Any}]
+        Ket
+        End
+------------------------------------------------------------------
+
+/(\P{Yi}+\277)/
+
+/(\P{Yi}+\277)?/
+
+/(?<=\P{Yi}{3}A)X/
+
+/\p{Yi}+(\P{Yi}+)(?1)/
+
+/(\P{Yi}{2}\277)?/
+
+/[\P{Yi}A]/
+
+/[\P{Yi}\P{Yi}\P{Yi}A]/
+
+/[^\P{Yi}A]/
+
+/[^\P{Yi}\P{Yi}\P{Yi}A]/
+
+/(\P{Yi}*\277)*/
+
+/(\P{Yi}*?\277)*/
+
+/(\p{Yi}*+\277)*/
+
+/(\P{Yi}?\277)*/
+
+/(\P{Yi}??\277)*/
+
+/(\p{Yi}?+\277)*/
+
+/(\P{Yi}{0,3}\277)*/
+
+/(\P{Yi}{0,3}?\277)*/
+
+/(\p{Yi}{0,3}+\277)*/
+
+/\p{Zl}{2,3}+/8BZ
+------------------------------------------------------------------
+        Bra
+        prop Zl {2}
+        prop Zl ?+
+        Ket
+        End
+------------------------------------------------------------------
+    \xe2\x80\xa8\xe2\x80\xa8
+ 0: \x{2028}\x{2028}
+    \x{2028}\x{2028}\x{2028}
+ 0: \x{2028}\x{2028}\x{2028}
+    
+/\p{Zl}/8BZ
+------------------------------------------------------------------
+        Bra
+        prop Zl
+        Ket
+        End
+------------------------------------------------------------------
+
+/\p{Lu}{3}+/8BZ
+------------------------------------------------------------------
+        Bra
+        prop Lu {3}
+        Ket
+        End
+------------------------------------------------------------------
+
+/\pL{2}+/8BZ
+------------------------------------------------------------------
+        Bra
+        prop L {2}
+        Ket
+        End
+------------------------------------------------------------------
+
+/\p{Cc}{2}+/8BZ
+------------------------------------------------------------------
+        Bra
+        prop Cc {2}
+        Ket
+        End
+------------------------------------------------------------------
+
+/^\p{Cs}/8
+    \?\x{dfff}
+ 0: \x{dfff}
+    ** Failers
+No match
+    \x{09f} 
+No match
+  
+/^\p{Sc}+/8
+    $\x{a2}\x{a3}\x{a4}\x{a5}\x{a6}
+ 0: $\x{a2}\x{a3}\x{a4}\x{a5}
+    \x{9f2}
+ 0: \x{9f2}
+    ** Failers
+No match
+    X
+No match
+    \x{2c2}
+No match
+  
+/^\p{Zs}/8
+    \ \
+ 0:  
+    \x{a0}
+ 0: \x{a0}
+    \x{1680}
+ 0: \x{1680}
+    \x{180e}
+ 0: \x{180e}
+    \x{2000}
+ 0: \x{2000}
+    \x{2001}     
+ 0: \x{2001}
+    ** Failers
+No match
+    \x{2028}
+No match
+    \x{200d} 
+No match
+  
+/-- These four are here rather than in test 6 because Perl has problems with
+    the negative versions of the properties. --/
+      
+/\p{^Lu}/8i
+    1234
+ 0: 1
+    ** Failers
+ 0: *
+    ABC 
+No match
+
+/\P{Lu}/8i
+    1234
+ 0: 1
+    ** Failers
+ 0: *
+    ABC 
+No match
+
+/\p{Ll}/8i 
+    a
+ 0: a
+    Az
+ 0: z
+    ** Failers
+ 0: a
+    ABC   
+No match
+
+/\p{Lu}/8i
+    A
+ 0: A
+    a\x{10a0}B 
+ 0: \x{10a0}
+    ** Failers 
+ 0: F
+    a
+No match
+    \x{1d00}  
+No match
+
+/[\x{c0}\x{391}]/8i
+    \x{c0}
+ 0: \x{c0}
+    \x{e0} 
+ 0: \x{e0}
+
+/-- The next two are special cases where the lengths of the different cases of
+the same character differ. The first went wrong with heap frame storage; the
+second was broken in all cases. --/
+
+/^\x{023a}+?(\x{0130}+)/8i
+  \x{023a}\x{2c65}\x{0130}
+ 0: \x{23a}\x{2c65}\x{130}
+ 1: \x{130}
+  
+/^\x{023a}+([^X])/8i
+  \x{023a}\x{2c65}X
+ 0: \x{23a}\x{2c65}
+ 1: \x{2c65}
+
+/\x{c0}+\x{116}+/8i
+    \x{c0}\x{e0}\x{116}\x{117}
+ 0: \x{c0}\x{e0}\x{116}\x{117}
+
+/[\x{c0}\x{116}]+/8i
+    \x{c0}\x{e0}\x{116}\x{117}
+ 0: \x{c0}\x{e0}\x{116}\x{117}
+
+/(\x{de})\1/8i
+    \x{de}\x{de}
+ 0: \x{de}\x{de}
+ 1: \x{de}
+    \x{de}\x{fe}
+ 0: \x{de}\x{fe}
+ 1: \x{de}
+    \x{fe}\x{fe}
+ 0: \x{fe}\x{fe}
+ 1: \x{fe}
+    \x{fe}\x{de}
+ 0: \x{fe}\x{de}
+ 1: \x{fe}
+
+/^\x{c0}$/8i
+    \x{c0}
+ 0: \x{c0}
+    \x{e0} 
+ 0: \x{e0}
+
+/^\x{e0}$/8i
+    \x{c0}
+ 0: \x{c0}
+    \x{e0} 
+ 0: \x{e0}
+
+/-- The next two should be Perl-compatible, but it fails to match \x{e0}. PCRE
+will match it only with UCP support, because without that it has no notion
+of case for anything other than the ASCII letters. --/ 
+
+/((?i)[\x{c0}])/8
+    \x{c0}
+ 0: \x{c0}
+ 1: \x{c0}
+    \x{e0} 
+ 0: \x{e0}
+ 1: \x{e0}
+
+/(?i:[\x{c0}])/8
+    \x{c0}
+ 0: \x{c0}
+    \x{e0} 
+ 0: \x{e0}
+    
+/-- End of testinput12 --/

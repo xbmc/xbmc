@@ -1,0 +1,8 @@
+; iconv.def (emx+gcc)
+LIBRARY ICONV 
+DESCRIPTION 'OS/2 port of libiconv <http://www.gnu.org/software/libiconv/>'
+EXPORTS
+	libiconv_open	@1
+	libiconv	@2
+	libiconv_close	@3
+	libiconvctl	@4

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 12/09/2009-->
+<!--$Revision$-->
+<strings>
+  <string id="0">RSS redigerare</string>
+  <string id="1">Ändra uppsättning</string>
+  <string id="4">källa</string>
+  <string id="5">Uppsättning</string>
+  <string id="11">Välj en källa att ta bort</string>
+  <string id="12">RSS-källsurl</string>
+  <string id="13">Updateringsintervall</string>
+  <string id="14">Ange sökvägar för dina RSS-källor %s</string>
+  <string id="20">Vad är uppsättningar</string>
+  <string id="21">För att använda en annan uppsättning i ditt skal,</string>
+  <string id="22">måste varje bli anropade från skalet</string>
+  <string id="23">med ett unikt id</string>
+  <string id="24">Välj en uppsättning</string>
+  <string id="25">UppsättningsID</string>
+  <string id="26">Uppsättning %s finns redan</string>
+  <string id="27">Aktivera höger till vänster text för denna uppsättning?</string>
+  <string id="30">Uppsättningsredigerare</string>
+  <string id="40">Fel:</string>
+  <string id="41">hittades endera inte på systemet,</string>
+  <string id="42">eller inehåller inte tolkningsbar XML</string>
+  <string id="43">Prova att ta bort det från din userdata mapp och starta om XBMC.</string>
+  <string id="44">Att ta bort</string>
+  <string id="45">Kan inte ta bort uppsättning 1</string>
+  <string id="46">Uppsättning 1 är obligatorisk. Du kan inte ta bort detta.</string>
+  <string id="47">Återställ uppsättning 1 till standard?</string>
+  <string id="48">Återställning krävs</string>
+  <string id="49">Du måste starta om XBMC för ändringarna ska träda i kraft</string>
+  <string id="50">Uppsättning %s existerar redan.</string>
+  <string id="51">Din RSSFeeds.xml fil är skadad.</string>
+  <string id="52">Försök att återskapa</string>
+  <string id="53">Du kommer att förlora alla tidigare inställningar</string>
+</strings>

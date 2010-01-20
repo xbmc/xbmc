@@ -1,0 +1,140 @@
+#!/bin/sh
+# Check of --unicode-subst, --byte-subst, --widechar-subst options.
+set -e
+iconv=../src/iconv_no_i18n
+# Make sure the charset.alias file is found.
+CHARSETALIASDIR=../lib
+export CHARSETALIASDIR
+
+options_ascii='--unicode-subst=<U+%04X> --byte-subst=<0x%02x> --widechar-subst=<%08x>'
+options_utf8='--unicode-subst=«U+%04X» --byte-subst=«0x%02x» --widechar-subst=«%08x»'
+
+# Test of --byte-subst with an ASCII substitution.
+
+cat > tmp-in <<\EOF
+Böse Bübchen
+EOF
+$iconv $options_ascii -f ASCII -t ASCII < tmp-in > tmp-out
+cat > tmp-ok <<\EOF
+B<0xc3><0xb6>se B<0xc3><0xbc>bchen
+EOF
+cmp tmp-out tmp-ok
+
+# Test of --byte-subst with a non-ASCII substitution.
+
+if test "`(locale charmap) 2>/dev/null`" = UTF-8; then
+  cat > tmp-in <<\EOF
+Böse Bübchen
+EOF
+  $iconv $options_utf8 -f ASCII -t UTF-8 2>/dev/null < tmp-in > tmp-out
+  cat > tmp-ok <<\EOF
+B«0xc3»«0xb6»se B«0xc3»«0xbc»bchen
+EOF
+  cmp tmp-out tmp-ok
+fi
+
+if test "`(locale charmap) 2>/dev/null`" = UTF-8; then
+  cat > tmp-in <<\EOF
+Böse Bübchen
+EOF
+  $iconv $options_utf8 -f ASCII -t ISO-8859-1 2>/dev/null < tmp-in > tmp-out
+  $iconv -f ISO-8859-1 -t UTF-8 < tmp-out > tmp-out2
+  cat > tmp-ok <<\EOF
+B«0xc3»«0xb6»se B«0xc3»«0xbc»bchen
+EOF
+  cmp tmp-out2 tmp-ok
+fi
+
+# Test of --byte-subst with a very long substitution.
+
+cat > tmp-in <<\EOF
+Böse Bübchen
+EOF
+$iconv --byte-subst='<0x%010000x>' -f ASCII -t ASCII < tmp-in > tmp-out
+# This printf command crashes on Solaris 10.
+if printf 'B<0x%010000x><0x%010000x>se B<0x%010000x><0x%010000x>bchen\n' 0xC3 0xB6 0xC3 0xBC > tmp-ok 2>/dev/null; then
+  cmp tmp-out tmp-ok
+fi
+
+# Test of --unicode-subst with an ASCII substitution.
+
+cat > tmp-in <<\EOF
+Böse Bübchen
+EOF
+$iconv $options_ascii -f UTF-8 -t ASCII < tmp-in > tmp-out
+cat > tmp-ok <<\EOF
+B<U+00F6>se B<U+00FC>bchen
+EOF
+cmp tmp-out tmp-ok
+
+cat > tmp-in <<\EOF
+Russian (Русский)
+EOF
+$iconv $options_ascii -f UTF-8 -t ISO-8859-1 2>/dev/null < tmp-in | $iconv -f ISO-8859-1 -t UTF-8 > tmp-out
+cat > tmp-ok <<\EOF
+Russian (<U+0420><U+0443><U+0441><U+0441><U+043A><U+0438><U+0439>)
+EOF
+cmp tmp-out tmp-ok
+
+# Test of --unicode-subst with a non-ASCII substitution.
+
+if test "`(locale charmap) 2>/dev/null`" = UTF-8; then
+  cat > tmp-in <<\EOF
+Russian (Русский)
+EOF
+  $iconv $options_utf8 -f UTF-8 -t ISO-8859-1 2>/dev/null < tmp-in > tmp-out
+  $iconv -f ISO-8859-1 -t UTF-8 < tmp-out > tmp-out2
+  cat > tmp-ok <<\EOF
+Russian («U+0420»«U+0443»«U+0441»«U+0441»«U+043A»«U+0438»«U+0439»)
+EOF
+  cmp tmp-out2 tmp-ok
+fi
+
+# Test of --unicode-subst with a very long substitution.
+
+cat > tmp-in <<\EOF
+Böse Bübchen
+EOF
+$iconv --unicode-subst='<U+%010000X>' -f UTF-8 -t ASCII < tmp-in > tmp-out
+# This printf command crashes on Solaris 10.
+if printf 'B<U+%010000X>se B<U+%010000X>bchen\n' 0x00F6 0x00FC > tmp-ok 2>/dev/null; then
+  cmp tmp-out tmp-ok
+fi
+
+cat > tmp-in <<\EOF
+Böse Bübchen
+EOF
+$iconv --byte-subst='<0x%010000x>' -f ASCII -t ASCII < tmp-in > tmp-out
+# This printf command crashes on Solaris 10.
+if printf 'B<0x%010000x><0x%010000x>se B<0x%010000x><0x%010000x>bchen\n' 0xC3 0xB6 0xC3 0xBC > tmp-ok 2>/dev/null; then
+  cmp tmp-out tmp-ok
+fi
+
+# Test of --widechar-subst:
+# wcrtomb() doesn't exist on FreeBSD 4.0 and is broken on MacOS X 10.3.
+# So far this has been tested only on a glibc system with !__STDC_ISO_10646__.
+
+if false && test "`(locale charmap) 2>/dev/null`" = UTF-8; then
+  cat > tmp-in <<\EOF
+Russian (Русский)
+EOF
+  $iconv -f char -t wchar_t < tmp-in > tmp-inw
+  LC_ALL=C                $iconv $options_ascii -f wchar_t -t ASCII < tmp-inw > tmp-out1
+  LC_ALL=de_DE.ISO-8859-1 $iconv $options_ascii -f wchar_t -t ASCII < tmp-inw > tmp-out2
+  cat > tmp-ok <<\EOF
+Russian (<00000420><00000443><00000441><00000441><0000043a><00000438><00000439>)
+EOF
+  cmp tmp-out1 tmp-ok
+  cmp tmp-out2 tmp-ok
+  if test "`(LC_ALL=de_DE.ISO-8859-1 locale charmap) 2>/dev/null`" = ISO-8859-1; then
+    options_latin1=`echo " $options_utf8" | $iconv -f UTF-8 -t ISO-8859-1`
+    LC_ALL=de_DE.ISO-8859-1 $iconv $options_latin1 -f wchar_t -t UTF-8 < tmp-inw > tmp-out1
+    cat > tmp-ok <<\EOF
+Russian («00000420»«00000443»«00000441»«00000441»«0000043a»«00000438»«00000439»)
+EOF
+    cmp tmp-out1 tmp-ok
+  fi
+fi
+
+rm -f tmp-in* tmp-out* tmp-ok
+exit 0

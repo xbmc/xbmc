@@ -1,0 +1,320 @@
+[preset00]
+fRating=5.000000
+fGammaAdj=1.000000
+fDecay=0.900000
+fVideoEchoZoom=0.999999
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=1
+nWaveMode=6
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=1
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=1
+bDarken=0
+bSolarize=1
+bInvert=0
+fWaveAlpha=0.311600
+fWaveScale=1.228910
+fWaveSmoothing=0.000000
+fWaveParam=0.200000
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.459526
+fWarpScale=2.006761
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=0.999902
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=-1.000000
+warp=0.010000
+sx=0.999998
+sy=1.000000
+wave_r=0.000000
+wave_g=0.000000
+wave_b=0.000000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=1.000000
+ib_size=0.260000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=1.850000
+mv_r=0.499900
+mv_g=0.499900
+mv_b=0.499900
+mv_a=0.000000
+wavecode_0_enabled=0
+wavecode_0_samples=512
+wavecode_0_sep=0
+wavecode_0_bSpectrum=0
+wavecode_0_bUseDots=0
+wavecode_0_bDrawThick=0
+wavecode_0_bAdditive=0
+wavecode_0_scaling=1.000000
+wavecode_0_smoothing=0.500000
+wavecode_0_r=1.000000
+wavecode_0_g=1.000000
+wavecode_0_b=1.000000
+wavecode_0_a=1.000000
+wavecode_1_enabled=0
+wavecode_1_samples=512
+wavecode_1_sep=0
+wavecode_1_bSpectrum=0
+wavecode_1_bUseDots=0
+wavecode_1_bDrawThick=0
+wavecode_1_bAdditive=0
+wavecode_1_scaling=1.000000
+wavecode_1_smoothing=0.500000
+wavecode_1_r=1.000000
+wavecode_1_g=1.000000
+wavecode_1_b=1.000000
+wavecode_1_a=1.000000
+wavecode_2_enabled=0
+wavecode_2_samples=512
+wavecode_2_sep=0
+wavecode_2_bSpectrum=0
+wavecode_2_bUseDots=0
+wavecode_2_bDrawThick=0
+wavecode_2_bAdditive=0
+wavecode_2_scaling=1.000000
+wavecode_2_smoothing=0.500000
+wavecode_2_r=1.000000
+wavecode_2_g=1.000000
+wavecode_2_b=1.000000
+wavecode_2_a=1.000000
+wavecode_3_enabled=0
+wavecode_3_samples=512
+wavecode_3_sep=0
+wavecode_3_bSpectrum=0
+wavecode_3_bUseDots=0
+wavecode_3_bDrawThick=0
+wavecode_3_bAdditive=0
+wavecode_3_scaling=1.000000
+wavecode_3_smoothing=0.500000
+wavecode_3_r=1.000000
+wavecode_3_g=1.000000
+wavecode_3_b=1.000000
+wavecode_3_a=1.000000
+shapecode_0_enabled=1
+shapecode_0_sides=4
+shapecode_0_additive=0
+shapecode_0_thickOutline=0
+shapecode_0_textured=1
+shapecode_0_x=0.500000
+shapecode_0_y=0.500000
+shapecode_0_rad=6.650134
+shapecode_0_ang=3.644249
+shapecode_0_tex_ang=3.141593
+shapecode_0_tex_zoom=0.068793
+shapecode_0_r=0.500000
+shapecode_0_g=0.500000
+shapecode_0_b=1.000000
+shapecode_0_a=0.550000
+shapecode_0_r2=0.000000
+shapecode_0_g2=0.000000
+shapecode_0_b2=0.000000
+shapecode_0_a2=0.000000
+shapecode_0_border_r=1.000000
+shapecode_0_border_g=1.000000
+shapecode_0_border_b=1.000000
+shapecode_0_border_a=0.000000
+shape_0_init1=t1 = rand(100)*0.01;
+shape_0_init2=t2 = rand(100)*0.01;
+shape_0_per_frame1=rate = fps/(fps+1/3);
+shape_0_per_frame2=beat = above(bass,bassthresh);
+shape_0_per_frame3=bassthresh = beat*4 + (1-beat)*((bassthresh - 1.3)*rate+1.3);
+shape_0_per_frame4=poly = if(beat,rand(30)+6,poly);
+shape_0_per_frame5=sides = poly;
+shape_0_per_frame6=
+shape_0_per_frame7=te = te + max(bass/fps/3,0.003);
+shape_0_per_frame8=x = 0.5+0.45*sin(te*1.87)+0.07*sin(time*0.6);
+shape_0_per_frame9=y = 0.5+0.35*cos(te*1.87)+0.07*sin(time*1.3);
+shape_0_per_frame10=ang = 3*sin(-te*1.67) + 3*cos(te*0.4);
+shape_0_per_frame11=rad = rad * (0.9 + 0.2*t2);
+shape_0_per_frame12=r = min(1,max(0,r + 0.4*sin(time*0.517 + 1)));
+shape_0_per_frame13=g = min(1,max(0,g + 0.4*sin(time*0.491 + 2)));
+shape_0_per_frame14=b = min(1,max(0,b + 0.4*sin(time*0.532 + 4)));
+shape_0_per_frame15=r2 = min(1,max(0,r2 + 0.4*sin(time*0.457 + 3)));
+shape_0_per_frame16=g2 = min(1,max(0,g2 + 0.4*sin(time*0.437 + 5)));
+shape_0_per_frame17=b2 = min(1,max(0,b2 + 0.4*sin(time*0.484 + 6)));
+shapecode_1_enabled=1
+shapecode_1_sides=3
+shapecode_1_additive=1
+shapecode_1_thickOutline=1
+shapecode_1_textured=1
+shapecode_1_x=0.370000
+shapecode_1_y=0.490000
+shapecode_1_rad=0.749999
+shapecode_1_ang=3.644249
+shapecode_1_tex_ang=0.000000
+shapecode_1_tex_zoom=1.000000
+shapecode_1_r=1.000000
+shapecode_1_g=1.000000
+shapecode_1_b=1.000000
+shapecode_1_a=1.000000
+shapecode_1_r2=1.000000
+shapecode_1_g2=1.000000
+shapecode_1_b2=1.000000
+shapecode_1_a2=0.000000
+shapecode_1_border_r=0.000000
+shapecode_1_border_g=0.000000
+shapecode_1_border_b=1.000000
+shapecode_1_border_a=0.000000
+shape_1_init1=t1 = rand(100)*0.01;
+shape_1_init2=t2 = rand(100)*0.01;
+shape_1_init3=te = 1;
+shape_1_init4=poly = 4;
+shape_1_per_frame1=
+shape_1_per_frame2=rate = fps/(fps+1/2);
+shape_1_per_frame3=beat = above(bass,bassthresh);
+shape_1_per_frame4=bassthresh = beat*4 + (1-beat)*((bassthresh - 1.5)*rate+1.5);
+shape_1_per_frame5=ran = rand(8)+4;
+shape_1_per_frame6=poly = if(beat,if(equal(ran,poly),poly+1,ran),poly);
+shape_1_per_frame7=//poly = if(above(poly,8),4,poly);
+shape_1_per_frame8=sides = poly;
+shape_1_per_frame9=
+shape_1_per_frame10=rate2 = fps/(fps+10);
+shape_1_per_frame11=out = (1-beat)*rate2*out + beat;
+shape_1_per_frame12=border_a = out;
+shape_1_per_frame13=te = bass/fps/2 + te;
+shape_1_per_frame14=x = x + 0.056*sin(te*1.67);
+shape_1_per_frame15=y = y + 0.043*sin(te*1.23);
+shape_1_per_frame16=ang = 3*sin(-te*0.67) + 3*cos(te*0.4);
+shape_1_per_frame17=rad = rad * (0.9 + 0.2*t2) - 0.1*sin(te*1.51);;
+shape_1_per_frame18=r = min(1,max(0,r + 0.3*sin(time*0.427 + 1)));
+shape_1_per_frame19=g = min(1,max(0,g + 0.3*sin(time*0.401 + 2)));
+shape_1_per_frame20=b = min(1,max(0,b + 0.3*sin(time*0.452 + 4)));
+shape_1_per_frame21=r2 = min(1,max(0,r2 + 0.3*sin(time*0.417 + 3)));
+shape_1_per_frame22=g2 = min(1,max(0,g2 + 0.3*sin(time*0.457 + 5)));
+shape_1_per_frame23=b2 = min(1,max(0,b2 + 0.3*sin(time*0.434 + 6)));
+shapecode_2_enabled=0
+shapecode_2_sides=4
+shapecode_2_additive=0
+shapecode_2_thickOutline=1
+shapecode_2_textured=1
+shapecode_2_x=0.670000
+shapecode_2_y=0.430000
+shapecode_2_rad=0.331672
+shapecode_2_ang=4.209736
+shapecode_2_tex_ang=0.000000
+shapecode_2_tex_zoom=1.000000
+shapecode_2_r=1.000000
+shapecode_2_g=1.000000
+shapecode_2_b=1.000000
+shapecode_2_a=1.000000
+shapecode_2_r2=1.000000
+shapecode_2_g2=1.000000
+shapecode_2_b2=1.000000
+shapecode_2_a2=0.000000
+shapecode_2_border_r=1.000000
+shapecode_2_border_g=1.000000
+shapecode_2_border_b=0.000000
+shapecode_2_border_a=0.000000
+shape_2_init1=t1 = rand(100)*0.01;
+shape_2_init2=t2 = rand(100)*0.01;
+shape_2_init3=te = 1;
+shape_2_init4=poly = 5;
+shape_2_per_frame1=rate = fps/(fps+1/2);
+shape_2_per_frame2=beat = above(mid,bassthresh);
+shape_2_per_frame3=bassthresh = beat*4 + (1-beat)*((bassthresh - 1.6)*rate+1.6);
+shape_2_per_frame4=ran = rand(8)+4;
+shape_2_per_frame5=poly = if(beat,if(equal(ran,poly),poly+1,ran),poly);
+shape_2_per_frame6=//poly = if(above(poly,8),4,poly);
+shape_2_per_frame7=sides = poly;
+shape_2_per_frame8=
+shape_2_per_frame9=rate2 = fps/(fps+10);
+shape_2_per_frame10=out = (1-beat)*rate2*out + beat;
+shape_2_per_frame11=border_a = out;
+shape_2_per_frame12=
+shape_2_per_frame13=te = mid/fps/2 + te;
+shape_2_per_frame14=x = x + 0.05*sin(te*1.17);
+shape_2_per_frame15=y = y + 0.05*sin(te*1.83);
+shape_2_per_frame16=ang = 3*sin(te*0.5)+2*sin(te*1.1)+4*sin(te*0.3);
+shape_2_per_frame17=rad = rad * (0.9 + 0.2*t2) + 0.1*sin(te*1.3);
+shape_2_per_frame18=r = min(1,max(0,r + 0.3*sin(time*0.417 + 1)));
+shape_2_per_frame19=g = min(1,max(0,g + 0.3*sin(time*0.391 + 2)));
+shape_2_per_frame20=b = min(1,max(0,b + 0.3*sin(time*0.432 + 4)));
+shape_2_per_frame21=r2 = min(1,max(0,r2 + 0.3*sin(time*0.457 + 3)));
+shape_2_per_frame22=g2 = min(1,max(0,g2 + 0.3*sin(time*0.437 + 5)));
+shape_2_per_frame23=b2 = min(1,max(0,b2 + 0.3*sin(time*0.484 + 6)));
+shapecode_3_enabled=1
+shapecode_3_sides=3
+shapecode_3_additive=0
+shapecode_3_thickOutline=0
+shapecode_3_textured=0
+shapecode_3_x=0.500000
+shapecode_3_y=0.500000
+shapecode_3_rad=0.265151
+shapecode_3_ang=0.000000
+shapecode_3_tex_ang=0.000000
+shapecode_3_tex_zoom=1.000000
+shapecode_3_r=1.000000
+shapecode_3_g=1.000000
+shapecode_3_b=0.000000
+shapecode_3_a=1.000000
+shapecode_3_r2=0.100000
+shapecode_3_g2=0.000000
+shapecode_3_b2=0.000000
+shapecode_3_a2=0.000000
+shapecode_3_border_r=0.500000
+shapecode_3_border_g=0.500000
+shapecode_3_border_b=0.500000
+shapecode_3_border_a=1.000000
+shape_3_per_frame1=rate = fps/(fps+1/2);
+shape_3_per_frame2=
+shape_3_per_frame3=ang = time*0.5;
+shape_3_per_frame4=vol = (bass_att+mid_att+treb_att)/6;
+shape_3_per_frame5=te = vol/fps + te;
+shape_3_per_frame6=x = x + 0.2*sin(te*1.14);
+shape_3_per_frame7=y = y + 0.2*sin(te*0.96+2);
+shape_3_per_frame8=
+shape_3_per_frame9=beat = above(vol*1.5,bassthresh);
+shape_3_per_frame10=bassthresh = beat*4 + (1-beat)*((bassthresh - 1.4)*rate+1.4);
+shape_3_per_frame11=poly = if(beat,rand(5)+3,poly);
+shape_3_per_frame12=poly = if(equal(poly,7),rand(50)+7,poly);
+shape_3_per_frame13=sides = poly;
+shape_3_per_frame14=rad = rad-log(poly)/100;
+shape_3_per_frame15=
+shape_3_per_frame16=a=pow(vol*2,2);
+shape_3_per_frame17=border_a=a;
+shape_3_per_frame18=rad=rad*0.7+a*0.015
+per_frame_1=//This Preset is based on Geiss - Feedback and Geiss - Feedback 2
+per_frame_2=
+per_frame_3=//Ever since Geiss made those presets I've made slight changes
+per_frame_4=//to them and saved them. They were so cool, I used to watch
+per_frame_5=//them for hours. This preset is then one that flowed from
+per_frame_6=//changing and tweaking those.
+per_frame_7=
+per_frame_8=//Almost everything is changed, but the one shape, (shape 4)
+per_frame_9=//feeding back into the two bigger ones (shape 2 and 3) is
+per_frame_10=//obtained from the Feedback presets.
+per_frame_11=
+per_frame_12=//I've added a 4th shape (shape 1) that is the big 'filter'
+per_frame_13=//to change colours etc.  It is also textured, so thats why
+per_frame_14=//the 'triple' feedback is for.
+per_frame_15=
+per_frame_16=//Shapes 3 and 2 can have their borders displayed in a strobe
+per_frame_17=//like fashion on beats. They also change amount of sides.
+per_frame_18=
+per_frame_19=//-Reenen
+per_frame_20=
+per_frame_21=zoom=1.05;
+per_frame_22=decay=0.85

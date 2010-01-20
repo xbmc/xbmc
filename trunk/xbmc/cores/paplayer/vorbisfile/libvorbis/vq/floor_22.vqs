@@ -1,0 +1,27 @@
+GO
+>floor_22
+=22c0_s 22c1_s 22c2_s
+
+build line_256x7_class0 0-64
+build line_256x7_class1 0-256
+build line_256x7_0sub1  1-9
+build line_256x7_0sub2  9-25
+build line_256x7_0sub3  25-64
+build line_256x7_1sub1  1-9
+build line_256x7_1sub2  9-25
+build line_256x7_1sub3  25-64
+
+build line_512x17_class1 0-8
+build line_512x17_class2 0-64
+build line_512x17_class3 0-64
+build line_512x17_0sub0  0-128
+build line_512x17_1sub0  0-32
+build line_512x17_1sub1  32-128
+build line_512x17_2sub1  1-18
+build line_512x17_2sub2  18-50
+build line_512x17_2sub3  50-128
+build line_512x17_3sub1  1-18
+build line_512x17_3sub2  18-50
+build line_512x17_3sub3  50-128
+
+

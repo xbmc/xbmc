@@ -1,0 +1,537 @@
+Release Notes 2.1.1:
+
+Added:
+
+Support for basic C64 tunes and direct running of C64 (.prg/.c64) files.  Note that
+prgs requiring user feedback (e.g. keyboard) or storage support (e.g. tape/disk
+loads/saves) will not work.
+
+VIC sprite emulation.
+
+CIA Serial Port and I/O port emulation.
+
+
+Changes:
+
+Tidied up handling of mono to stereo channel splitting, especially when driving a
+hardsid.
+
+Channel splitting can now be turned off when stereo output is enabled.
+
+Utilise new hardsid calls to indicate user selected mixer changes from program
+selected mixer changes.  Prevents user constantly re-configuring the mixer
+after stopping/starting a tune.
+
+Updated all file formats to comply with latest RSID/PSIDv2NG specifications.
+
+Stereo MUS files loaded in the wrong order will now display the credits
+correctly and play the tunes on the correct channels (Amiga icon file
+format needs testing).
+
+
+Fixes:
+
+Creation order of new sid-emulations was incorrect with respect to setting the
+mute/volume properties (meaning the new emulation did not see the settings).
+
+ROM/RAM memory not deleted on exit.
+
+Emulated CPU instruction pipeline to overlap instructions on correct cycle.
+
+Other minor fixes.
+
+
+
+Release Notes 2.1.0:
+
+Added:
+
+Introduction of sidbuilder classes.  These classes can be used to create new sid
+emulations for libsidplay2.  The front end player owns these emulations and passes
+them into libsidplay2 at runtime.  Such emulations could be a revised SID emulation,
+HardSID driver, Sidstation driver, etc...  This feature will be used by sidplay/w
+and sidplay2 in future.
+
+Implemetation of the component library classes.  These classes provide a standard
+way to create new components (e.g. VIC, CPU, etc).  Note that the sidbuilder
+classes use these.  The current implementation is a half measure which sees
+all components being seperated fully from the running environment.  However,
+due to the current design the components are static.  A second version of these
+classes will be released to allow dynamic allocation and linkage.  This actually
+means this project becomes a generic IC emulation test bed which are effectively
+added and wired together at runtime.  Given the right component emulations, this
+project could be a C64, BBC, etc.
+
+Support for exporting credits.
+
+New event scheduler that is used by all components.  The significantly improves
+the speed of the emulation.
+
+Start time and fastforward support.
+
+Support for the PSID 2 proposal B (PSID 2NG).  This allows relocation information
+to be added to the tune such that it can be played on a real C64 (based emulation).
+This is necessary as additional house keeping/contol code must be placed safely
+in C64 ram without it running the risk of being overwritten by the song.
+
+
+Changes:
+
+Code now builds under GCC3.
+
+Supporting and config requirements of the new builder classes required modification
+to libsidplay2's configuration interface.
+
+Sidplay1 specific code moved to seperate components sid6510 and sid6526.  This
+provides the simple cut down versions of the CIA (6526) and a CPU which forgives
+badly written tune code (6510).  These components are only used in the old
+sidplay/playsid modes.
+
+Direct ReSID support removed.  Now supported through extenal sidbuilder class.
+
+Floating point code in critical code parts have been converted to fixed point.
+
+Relocatable C64 assembly driver added using PSID 2NG.
+
+Support for random tunes in Real C64 mode.
+
+
+Fixes:
+
+The library has sufficient emulation to run PRGs.  As such I managed to run the
+C64 Emulator Testsuite 2.15 by Wolfram Roemhild.
+
+All CPU instructions (including extended ones) now run correctly with the correct
+number of cycles.  Results from other C64 environment tests are still being
+worked on (nothing serious).
+
+
+
+Release Notes 2.0.7-5:
+
+Performance fix (corrected player.bin).
+
+
+Release Notes 2.0.7-4:
+
+GCC 2.96 fixes.
+	
+
+Release Notes 2.0.7-3:
+
+Linux RPM fixes
+
+Changes:
+
+Fixed SidTune ('/' directory seperators are allowed on Microsoft platforms with
+programs that use standard c/c++ libraries).
+
+Songs with there own interrupt handlers are no longer assumed to initialise
+the VIC should the require it.  Songs that do install there own handlers MUST
+acknowledge the interrupt source else the song will play too fast.
+
+
+Release Notes 2.0.7-2:
+
+Linux RPM fixes
+
+
+Release Notes 2.0.7:
+
+This version sees a fully compliant C64 cycle based emulation.  The emulation
+only covers those parts which are necessary.  Things like CIA and VIC are not
+complete because it's not deemed usefull to play the tunes better.  The
+VIC emulation can still be improved a little to support bad cycles and perhaps
+the light pen interrupt.  The CIA emulation is also incomplete but now
+supports both Timer A and B and all timer modes except those which use
+external signals.  The CIA emulation will probably be fully completed in a
+near future release since I have the code pretty much written.  It's not
+been added because the rest of the player requires a design concept change to
+use the C++ "observer model".
+
+Please note this version has a totally different concept design to the last.
+The previous version is the last "SIDPlay Compatible" version.  Since this
+is the case SIDPlay specific songs which are possibly bad may no longer
+work.  If such songs are found please report them as they will be fixed.
+
+Lastly this version can run original tunes and even prgs taken from a real C64
+without any modifications.  In most cases it's just a simple case of locating
+the tunes INIT address, making a sid info header and then rename the *.prg to
+*.dat.  SIDPlay2 can then run the tune, it's even possible to create a PSID
+all in one file using a conversion tool.  One thing to note is that these
+real tunes will mostly not play (correctly) in other SID Players apart from
+VSID (Vice SIDPlayer).  However, VICE is not pretending to be fully or even
+mostly SIDPlay compatible.  It therefore wont run as many tunes or play
+extended samples like those found all the HSVC sample tunes.
+
+For those wishing to do the above you must set the play address to 0xffff.
+This is an illegal address like 0 and behaves similiar, but it tells the
+player to turn off extended sample support, ignore the CIA/VIC speed flag
+and enable NMI support.
+
+NOTE FOR DEVELOPERS:
+
+You will require libtool 1.3b or greater to be able to link against
+the libsidplay2 libraries.  Versions of libtool prior to this
+(including 1.3.5) DO NOT import library dependency information from the
+installed *.la files.
+
+Libsidplay2 uses a modified version of ReSID.  ReSID patches can be located
+at:
+
+ftp://sidplay2.sourceforge.net/pub/sidplay2/resid
+
+
+Changes:
+
+Partial VIC emulation which models both the NTSC and PAL chips.  Full raster
+interrupts supported and therefore VIC multispeed tunes.
+
+Partial CIA emulation with full interrupt capability for Timer A and B.  NMI
+interrupts are also supported for "real C64 samples".
+
+MOS6510s interrupts are now used.  Interrupt/BRK now fixed to always run the
+first instruction in the interrupt handler.  This means the an IRQ cannot
+interrupt an NMI should the first instruction in the handler be SEI.
+
+SID6510.  SID specialisation of the processor now improved and those bits from
+the player enviroment which should have been here now are.  This module
+provides most of the SIDPlay1 compatibility, but not everything can now be
+supported as in version 2.0.6 due to other environment changes.
+
+XSID now is pretty much fixed for HardSID usage.  It correctly determines
+legal SID volume offsets and traps volume changes to the SID made by the
+C64 program.  This prevents song clicks, quiet main voices and even allows
+the main voices to change there volume correctly whilst samples are playing.
+The user now has the ability to select whether they would like samples through
+SID or samples on there own idependent channel.  The default is samples
+through SID.  Note that real Samples cannot be taken off the SID.
+
+Due to the Interrupt support the C64 now allows code execution overlaping.
+E.g. the play routine might trigger before the INIT has completed and multiple
+play calls may overlap each other.  This also happens on a real C64 and as to
+whether it works depends on if the ripped code still has the capability to
+deal with it.  Since it seems that some tune DO NOT do this properly, nor do
+they acknowledge interrupts correctly, C64 code has been provided by Dag Lem
+to deal with this issue.  This code is the PSIDDRV from the Vice project.
+The version available here has been modified by me to support almost
+all tunes and deals with some of the SIDPlay compatibility issues better.
+
+
+Problems:
+
+There are known problems with this version, but the benefits are far greater.
+
+Some tunes currently will just not play.  These are tunes which install code
+across the interrupt handlers and therefore don't behave correctly when an
+interrupt occurs.  These tunes are probably missing things which were setup
+by the original game code.   The methods used by SIDPlay1 and 2 to determine
+the initial bank register state does not accomadate this fact.  SIDPlay1
+like release 2.0.6 does not have this problem because interrupts are not
+emulated.
+
+There are performance issues with this version and specifications have increased
+due to the extra/modified component emulations :(.  I hope to fix/improve on
+this in a next release.
+
+Either the NMI or VIC interrupts seem to have jitter on them.  For tunes in
+HVSC this dosen't occur.  For some real sample tunes the music can sound a little
+distorted.  This should be fixed for the next release.
+
+The PSIDDRV has to sit in RAM and therefore can be trashed by the tune.  To stop
+this the zero page has been reserved to store the PSIDDRV and some special non
+standard C64 bankswitching added to flip in and out the driver.  This means that
+the tune cannot put any code on the zero page but it can store data on this page.
+Since benefits of using this page are only available when storing data on it there
+is no tune currently in HSVC that causes a problem.  It is possible to put this
+driver into roms, some code must still go in RAM do deal the calls to play/init
+routines that may lie under the ROMS.  However, this would break some of the older
+modes e.g. playsid mode does not have ROMS, sidplay1 combatibilty modes prevent
+code execution in ROMS.
+
+
+
+Changes since 2.0.6 (Note this version is intended mainly
+for developers):
+
+(ms) Fixed fake6526.cpp to unlock timer upon reset. When playing
+sub-tunes and switching from CIA to VBI speed and vice versa, the
+speed is now correct.
+
+(ms) Fixed clock to [re]start at 0:00 upon [song] initialization.
+
+(ms) Converted complete source tree from kdevelop to native Automake
+and made it build a library and the console player. Developers are
+advised to configure the package with --disable-shared, so that they
+don't need to install a shared library and/or set the
+LD_LIBRARY_PATH, respectively.
+
+
+Changes:
+
+Resid now linked against library and not against application.  This
+means that a application linking to the library does not need to know it's
+using resid.
+
+External interface changed to hopefully allow better compatibilty.
+
+
+Problems:
+
+For OSS left and right channels are reversed.  According to OSS docs,
+left channel in writing before right which is the order it's currently
+being done (oss driver bug).  Both Windows drivers are correct.
+	
+
+Bug Fixes:
+
+Fixed bug when reading tunes from stdin.
+
+Added new loadSong function to allow selecting another subsong without
+reloading the file.  This is important when reading files from stdin.
+
+External interface changed to hopefully allow better compatibilty.
+
+Fixed IO bug whereby a write to the IO registers could not be read back.
+
+Keyboard input is now read from stderr.  This allows the keyboard to be
+read whilst a file is passed using stdin.
+
+Stderr redefined as console output instead of stdout.  This allows you to
+redirect or pipe the output whilist allowing keyboard events to be processed
+correctly
+
+Changin any of the sid settings effects both sids.
+
+The library can now be configured at run time by putting the library into paused
+mode.  If you are using a multiplte threads to drive the library, be carefull
+as it's not thread safe.  Use mutually exclusive semaphores to protect the library.
+
+Use of extended keys quiting the program.
+
+	
+Added:
+
+Null sound driver to allow faster songlength detection (Code for songlength
+detection not provided in this library) and eventual hardsid support.
+
+Cursor keys now work on Linux and Windows.  But there is a bug in Windows 98
+first Edition which prevents them from working properly.  This information
+has been admitted by Microsoft the the only proposed solution is to upgrade to
+Win 98 Second Edition.  (For the time being you can use the cursor keys on
+the numpad).
+
+Added a mileage count to help determine the sid usuage since the begining of time.
+
+Added ability to use unforced PAL or NTSC.
+
+For -s, mono songs now get converted to stereo by spliting the
+channels between multiple sids.
+
+
+Removed:
+
+Timer changed test.  This can easily be worked out another way.
+
+
+	
+Release Notes 2.0.6:
+
+This version mainly sees bug fixes and finally gets both the Linux and
+Windows versions to exactly the same code state.
+
+Bug Fixes:
+
+Tunes which didn't play.
+DirectX fixes.
+Timers fixed for both directx and mmsystem drivers and will therefore
+never cache ahead by more than 0.5 secs.  This still needs doing under
+Linux to prevent the timers getting 3 seconds ahead.
+And more...
+
+
+Added:
+
+Most of the other features of the expermental version now classed as 2.0.5
+apart from fastforward/rewind and filter redefinition.
+Ability to skip to the prev/next subtune using the '<' and '>' keys.
+And more...
+
+
+Features for next release:
+
+Ansi console support delayed till next release.
+Songlength database support delayed.
+Filter redefinition delayed.
+Fastforward/rewind, delayed indefinately untill feedback is provided
+on how good/bad it is (please any feedback at all!).
+Player configuration file.
+
+
+
+Release Notes 2.0.4-2:
+
+Bug fixes to sid mixer.
+Program termination now quicker from ^C.
+New xSID code included for testing.
+New man page added.
+Thanks to those concerened for finding/fixing the bugs in this release.
+
+To follow shortly:
+Again 2.0.5 will follow, with the last of the features from my unofficial
+experimental version (found on the sidplay2 ftp site).  Be warned that there
+are now bug fixes in the main version which the experimental one does not
+contain!
+
+From now on experimental versions will be released as patches on the
+main release versions in CVS until they are determined to be stable.
+
+
+
+Release Notes 2.0.4:
+
+Temporary release to try and bring code upto date.  A 2.0.5 will follow shortly
+to achieve all that implemented in  experimental release 2.0.4pre5 (This is available
+at ftp://sidplay2.sourceforge.net/pub/sidplay2)
+
+Lots of new options added, bug fixes for Solaris drivers, 16 bit support...  Other
+additions will fall into 2.0.5 once they have stabalised.
+
+
+
+CHANGES since 2.0.2:
+
+Added:
+
+* Timer
+
+* Support for credits
+
+* Option -fd, overrides values returned by sidtune and forces dual sid support
+  with the second sid being mapped at 0xd500.  Use this to support stereo sids
+  (not stereo mus) until the format is changed to support them properly.
+
+* Windows Drivers.  Code now now be built as a Win32 console application.
+  The include paths need to be changed to Visual C++ so all the headers can
+  be seen.  Paths need are PATH/libsidplay-<ver>/ and PATH/libsidplay-<ver>/win.
+
+* Sparc Driver (This driver hasn't been tested or compiled)
+
+* Support for playing of playsid smaples through reSID
+
+
+Changed:
+
+* Changing the environment whilist the song is playing nolonger stops the song.
+  Environment changes are now delayed until a new song is loaded
+
+* environment class renamed to SidEnvironment to avoid some naming issues with
+  Visual C++.
+
+* xSID minior fixes to make code compile on Visual C++.
+
+* Structure of audio drivers for better auto detection and Win32 support.
+
+* Sidplayer structure now implements Cheshire Cat techniques to hide private members
+  This means that all header files required by private members no longer need to be
+  installed
+
+* Added workaround in CPU code for bug found in Visual C++ 5.
+
+* Finally corrected all playsid digi modes using information provided bu
+  Michael Schwendt from the original source of Game Over.
+
+* Removed nasty code hacks for Windows.
+
+
+Fixed:
+
+* xSID bug preventing it from not playing some samples.
+
+* myTune now initialised to NULL (reported by Jarno)
+
+* Placing of an invalid switch on an otherwise legal line did not throw an error.
+
+* Use of bitfields which breaks portability of CPU emulation
+
+* Unions on Big Endian machines where all variables are varying sizes
+
+
+Issues:
+
+* Timer is actually what has been decoded rather than what has been
+  played.  This is due to the soundcard drivers buffer the samples.
+  Anyway, it's better than nothing.
+
+
+
+CHANGES since 2.0.1:
+
+Added:
+
+* Time count
+
+* xsidplays audio drivers (well linux one)
+
+* Command line options
+
+* Volume controls for left and right
+
+* 8 bit mixer
+
+
+Changed:
+
+* Renamed the project to libsidplay (eventually this code will be a library).
+  main.cpp and the audio directory will form the basis of a new project called
+  sidplay-2.X.X.
+
+* Sidtune.  Only need one player emulation for stereo MUS files.
+
+* WavFile now converted to be another driver. (Makes code have better re-use)
+
+* New are now have error checking
+
+* Configure files now work
+
+* Prevented the loadSong function initialising the player twice.
+
+
+
+CHANGES since 2.0.0:
+
+Added:
+
+* Extended sid support (xSID, written by myself from scratch).  xSIDs interface is designed to look like reSID and can easily be used to help developers of other players.
+
+* Support for all libsidplay-1.X.X environment modes.
+
+* Stereo SID & MUS file support.
+
+* Sid2Wav support (thanks to Michael Schwendt).
+
+
+Fixed:
+
+* CPU using wrong address for reset vector.
+
+* The use of statics in CPU a member function (Required to play stereo MUS files).
+
+
+Changed:
+
+* All data types now use _sidt namespace.
+
+* Better handling of reSID clock calls to seriously reduce CPU overhead.
+
+
+
+CHANGES from libsidplay 1.X.X
+
+* Most of the code has been re-written by myself with all the new emulated IC's being cycle based.
+
+* The interface has been revamped and is based on standard functions provided by a music player e.g. play, stop, pause, etc
+
+* reSID is now the default and currently only provided SID emulation. (written by Dag Lem)
+
+* Sidtune library taken from libsidplay-1.X.X for file support. (written by Michael Schwendt)

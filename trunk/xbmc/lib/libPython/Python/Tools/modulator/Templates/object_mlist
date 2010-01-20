@@ -1,0 +1,8 @@
+
+static struct PyMethodDef $abbrev$_methods[] = {
+	$methodlist$
+	{NULL,		NULL}		/* sentinel */
+};
+
+/* ---------- */
+

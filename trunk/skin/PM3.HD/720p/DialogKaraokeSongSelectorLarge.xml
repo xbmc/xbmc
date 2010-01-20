@@ -1,0 +1,55 @@
+<window type="dialog" id="143">
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>415</posx>
+		<posy>280</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>450</width>
+				<height>160</height>
+				<colordiffuse>DDFFFFFF</colordiffuse>
+				<texture>black-back.png</texture>
+				<bordertexture border="3">NoCover_1.png</bordertexture>
+				<bordersize>2</bordersize>
+			</control>
+			<control type="label" id="1">
+				<description>heading label</description>
+				<posx>10</posx>
+				<posy>20</posy>
+				<width>410</width>
+				<height>20</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font18</font>
+				<label>22039</label>
+				<textcolor>dialogheader</textcolor>
+			</control>
+			<control type="label" id="401">
+				<description>Song Number Label</description>
+				<posx>20</posx>
+				<posy>65</posy>
+				<width>410</width>
+				<height>40</height>
+				<font>font25</font>
+				<textcolor>green</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="label" id="402">
+				<description>Song Name Label</description>
+				<posx>20</posx>
+				<posy>100</posy>
+				<width>410</width>
+				<height>40</height>
+				<font>font22</font>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+		</control>
+	</controls>
+</window>

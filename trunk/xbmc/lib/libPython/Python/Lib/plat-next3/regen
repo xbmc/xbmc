@@ -1,0 +1,6 @@
+#! /bin/sh
+set -v
+INCLUDE="/NextDeveloper/Headers;/NextDeveloper/Headers/ansi;/NextDeveloper/Headers/bsd"
+export INCLUDE
+
+python ../../Tools/scripts/h2py.py -i '(u_long)' /usr/include/bsd/netinet/in.h

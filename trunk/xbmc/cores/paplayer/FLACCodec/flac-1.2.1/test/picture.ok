@@ -1,0 +1,42 @@
+
++++ grabbag unit test: picture
+
+testing grabbag__picture_parse_specification("")... OK (failed as expected, error: error opening picture file)
+testing grabbag__picture_parse_specification("||||")... OK (failed as expected: error opening picture file)
+testing grabbag__picture_parse_specification("|image/gif|||")... OK (failed as expected: error opening picture file)
+testing grabbag__picture_parse_specification("|image/gif|desc|320|0.gif")... OK (failed as expected: invalid picture specification: can't parse resolution/color part)
+testing grabbag__picture_parse_specification("|image/gif|desc|320x240|0.gif")... OK (failed as expected: invalid picture specification: can't parse resolution/color part)
+testing grabbag__picture_parse_specification("|image/gif|desc|320x240x9|")... OK (failed as expected: error opening picture file)
+testing grabbag__picture_parse_specification("|image/gif|desc|320x240x9/2345|0.gif")... OK (failed as expected: invalid picture specification: can't parse resolution/color part)
+testing grabbag__picture_parse_specification("1|-->|desc|32x24x9|0.gif")... OK (failed as expected: type 1 icon must be a 32x32 pixel PNG)
+testing grabbag__picture_parse_specification("|-->|desc||http://blah.blah.blah/z.gif")... OK (failed as expected: unable to extract resolution and color info from URL, user must set explicitly)
+testing grabbag__picture_parse_specification("|-->|desc|320x240x9|http://blah.blah.blah/z.gif")... OK
+testing grabbag__picture_parse_specification("pictures/0.gif")... OK
+testing grabbag__picture_parse_specification("pictures/1.gif")... OK
+testing grabbag__picture_parse_specification("pictures/2.gif")... OK
+testing grabbag__picture_parse_specification("pictures/0.jpg")... OK
+testing grabbag__picture_parse_specification("pictures/4.jpg")... OK
+testing grabbag__picture_parse_specification("pictures/0.png")... OK
+testing grabbag__picture_parse_specification("pictures/1.png")... OK
+testing grabbag__picture_parse_specification("pictures/2.png")... OK
+testing grabbag__picture_parse_specification("pictures/3.png")... OK
+testing grabbag__picture_parse_specification("pictures/4.png")... OK
+testing grabbag__picture_parse_specification("pictures/5.png")... OK
+testing grabbag__picture_parse_specification("pictures/6.png")... OK
+testing grabbag__picture_parse_specification("pictures/7.png")... OK
+testing grabbag__picture_parse_specification("pictures/8.png")... OK
+testing grabbag__picture_parse_specification("3|image/gif|||pictures/0.gif")... OK
+testing grabbag__picture_parse_specification("4|image/gif|||pictures/1.gif")... OK
+testing grabbag__picture_parse_specification("0|image/gif|||pictures/2.gif")... OK
+testing grabbag__picture_parse_specification("3|image/jpeg|||pictures/0.jpg")... OK
+testing grabbag__picture_parse_specification("3|image/jpeg|||pictures/4.jpg")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/0.png")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/1.png")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/2.png")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/3.png")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/4.png")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/5.png")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/6.png")... OK
+testing grabbag__picture_parse_specification("3|image/png|||pictures/7.png")... OK
+testing grabbag__picture_parse_specification("999|image/png|||pictures/8.png")... OK
+testing grabbag__picture_parse_specification("3|image/gif||320x240x3/2|pictures/0.gif")... OK

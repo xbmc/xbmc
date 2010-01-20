@@ -1,0 +1,16 @@
+<HTML>
+<HEAD>
+<TITLE>User Management Setup</TITLE>
+<LINK REL="stylesheet" HREF="../../../style/normal_ws.css" TYPE="text/css">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+
+<H1>User Management Setup</H1><H2>Creating the Administrator</H2><P>An Administrator  has access  rights  to create and administer users and security.  It is best  to create and configure the administrator   before performing user management.  By default,  the WebServer has no security data.  The user configuration data can be created using  the <A HREF="webInterface.htm">Web Interface</A>  or using the <A HREF="configFile.htm">User Management C function API</A>.</P><P>  To create an administrator user:</P><OL><OL><LI>Create an &quot;Administrators&quot; User Group.  <BR>Give this group all privileges and the  default access method of <B>DIGEST</B>.</LI><LI>Create an &quot;Admin&quot; user.  <BR>This user must belong to the &quot;Administrators&quot; group created in the previous step.  The &quot;Admin&quot; must also be enabled and protected (the web Interface does not permit adding delete-protected users).</LI></OL></OL><H2>Creating Access Limits</H2><P>Once you have created the administrator user and  user groups, it is a good idea to create Access Limits for the user management web pages.  Use the Add Access Limit function (either with the Web Interface menu item, or using the User Management C API) to create Access Limits.   </P><H2> Creating Users </H2><P>Once you have created the administrator user, user groups and access limits, you can use the Add User function (either through the Web Interface menu , or using the User Management C API) to create users.</P><P>&nbsp;
+</P></TD></TR></TABLE>
+</BODY>
+</HTML>

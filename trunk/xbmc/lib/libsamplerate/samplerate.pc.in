@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: samplerate
+Description: An audio Sample Rate Conversion library
+Requires: 
+Version: @VERSION@
+Libs: -L${libdir} -lsamplerate
+Cflags: -I${includedir} 

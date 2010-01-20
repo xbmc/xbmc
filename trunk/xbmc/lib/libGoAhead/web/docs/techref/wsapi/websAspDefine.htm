@@ -1,0 +1,36 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websApiDefine -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websAspDefine</b></TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Define an ASP script procedure.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ int <b>websAspDefine</b>(char_t *name, int (*fn)
+     (int ejid, webs_t wp, int argc, char_t **argv)); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="8%">name</TD><TD WIDTH="92%">Name of ASP command 
+to define.</TD></TR><TR> <TD VALIGN="TOP" WIDTH="8%">fn</TD><TD WIDTH="92%">Pointer 
+to function to call when the script <EM>name</EM> is invoked in an ASP page.</TD></TR></table><h2>Description</h2><P> 
+websAspDefine creates an ASP JavaScript procedure that can be called from within 
+an ASP page. The <i>function</i> supplied will be called whenever the <EM>name</EM> 
+procedure is executed in the ASP page. The <i>name</i> must be unique. </P><P>The 
+<EM>name</EM> procedure is provided a wp handle to the browser connection. This 
+can be used to call many other GoAhead WebServer functions. The <EM>argv</EM> 
+parameter includes any script arguments provided in the ASP page when calling 
+the <EM>name</EM> script. </P><P><I>Fn</I> must meet the prototype requirement shown above, i.e., it must accept the four arguments <I>ejid</I>, <I>wp</I>, <I>argc</I>, and <I>argv</I>. <I>ejid</I> is the JavaScript interpreter handle used when calling JavaScript related functions such as <I>ejGetVar</I> or <I>ejSetResult</I>. <I>wp</I> is the WebServer handle to the browser connection used when calling webs related functions such as <I>websDone</I>. <I>arcg</I> and <I>argv</I> contain the count and content of the script arguments to name. </P><h2>Return Value</h2><p>Returns 0 if successful; 
+returns -1 on errors.</p><h2>Example</h2><pre>int outputMyTable(int ejid, webs_t wp, int argc, char_t **argv)
+{ 
+	websWrite(wp, &quot;Add HTML code to create a table for %s&quot;, argv[0]); 
+} 
+
+websAspDefine(&quot;outputTable&quot;, outputMyTable); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p><A href="../../../over/ejs.htm">JavaScript</A>, <A href="../../../over/asp.htm">Active 
+Server Pages</A></p></td></tr></table>
+</body>
+</html>

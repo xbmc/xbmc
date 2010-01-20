@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.2.8: http://docutils.sourceforge.net/" />
+<title>GoAhead WebServer 2.1.7 Release Notes</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="goahead-webserver-2-1-7-release-notes">
+<h1 class="title">GoAhead WebServer 2.1.7 Release Notes</h1>
+<!-- NOTES: -->
+<!-- This document is maintained using the reStructuredText markup system.  -->
+<!-- You may download this from <http://docutils.sf.net>. Also note that running  -->
+<!-- the docutils code requires that a version of Python version 2.1 or later -->
+<!-- be installed on the machine. Since the GoAhead release procedure itself  -->
+<!-- runs in Python, this should not be a problem. -->
+<!--  -->
+<!-- To add new entries to the release notes, follow the markup shown below  -->
+<!-- (releases should be underlined with a row of '=' characters, each item -->
+<!-- noted within a release should be underlined with '-' characters. -->
+<div class="contents topic" id="contents">
+<p class="topic-title"><a name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#id1" id="id2" name="id2">GoAhead WebServer 2.1.7 Release Notes</a><ul>
+<li><a class="reference" href="#added-support-for-the-mocana-ssl-toolkit" id="id3" name="id3">Added support for the Mocana SSL Toolkit</a></li>
+<li><a class="reference" href="#changes-to-dbsearchstring" id="id4" name="id4">Changes to <tt class="literal"><span class="pre">dbSearchString()</span></tt></a></li>
+<li><a class="reference" href="#use-memcpy-when-converting-to-from-unicode" id="id5" name="id5">Use <tt class="literal"><span class="pre">memcpy()</span></tt> when converting to/from Unicode</a></li>
+<li><a class="reference" href="#bug-when-using-utf-8-encoded-text-inside-asp-ejscript-blocks" id="id6" name="id6">Bug when using UTF-8 encoded text inside ASP/ejScript blocks</a></li>
+<li><a class="reference" href="#wrong-error-code-on-invalid-password" id="id7" name="id7">Wrong error code on invalid password</a></li>
+<li><a class="reference" href="#windows-ce-net" id="id8" name="id8">Windows CE.NET</a></li>
+<li><a class="reference" href="#lynx-makefile" id="id9" name="id9">LYNX <tt class="literal"><span class="pre">Makefile</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference" href="#goahead-webserver-2-1-6-release-notes" id="id10" name="id10">GoAhead WebServer 2.1.6 Release Notes</a><ul>
+<li><a class="reference" href="#null-pointer-crash-in-webssafeurl" id="id11" name="id11"><tt class="literal"><span class="pre">NULL</span></tt> pointer crash in <tt class="literal"><span class="pre">websSafeUrl()</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference" href="#goahead-webserver-2-1-5-release-notes" id="id12" name="id12">GoAhead WebServer 2.1.5 Release Notes</a><ul>
+<li><a class="reference" href="#bopen-failure-mode" id="id13" name="id13"><tt class="literal"><span class="pre">bopen()</span></tt> failure mode</a></li>
+<li><a class="reference" href="#windows-95-98-me-aux-denial-of-service" id="id14" name="id14">Windows 95/98/ME <tt class="literal"><span class="pre">AUX</span></tt> Denial of Service</a></li>
+<li><a class="reference" href="#cross-site-scripting-exploit" id="id15" name="id15">404 Cross-site Scripting Exploit</a></li>
+<li><a class="reference" href="#long-url-overflow-crash" id="id16" name="id16">Long URL Overflow Crash</a></li>
+<li><a class="reference" href="#incorrect-error-code-in-security-c" id="id17" name="id17">Incorrect Error Code in <tt class="literal"><span class="pre">security.c</span></tt></a></li>
+<li><a class="reference" href="#pragma-code-for-risc-architectures" id="id18" name="id18">Pragma Code for RISC Architectures</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#goahead-webserver-2-1-4-release-notes" id="id19" name="id19">GoAhead® WebServer 2.1.4 Release Notes</a><ul>
+<li><a class="reference" href="#fixed-vulnerability-to-malicious-code-in-webs-c" id="id20" name="id20">Fixed vulnerability to malicious code in <tt class="literal"><span class="pre">webs.c</span></tt></a></li>
+<li><a class="reference" href="#https-bug-in-security-handler" id="id21" name="id21">https:// bug in security handler</a></li>
+<li><a class="reference" href="#fixed-vulnerability-to-malicious-code-in-sockgen-c" id="id22" name="id22">Fixed vulnerability to malicious code in sockGen.c</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#bug-fixes-for-version-2-1-3" id="id23" name="id23">Bug Fixes for Version 2.1.3</a><ul>
+<li><a class="reference" href="#directory-traversal-exploit" id="id24" name="id24">Directory Traversal Exploit</a></li>
+<li><a class="reference" href="#mime-type-for-external-javascript-files" id="id25" name="id25">MIME type for external JavaScript files</a></li>
+<li><a class="reference" href="#bug-in-if-modified-since-parsing" id="id26" name="id26">Bug in If-Modified-Since parsing</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#bug-fixes-for-version-2-1-2" id="id27" name="id27">Bug Fixes for Version 2.1.2</a><ul>
+<li><a class="reference" href="#ejscript-error-messages" id="id28" name="id28">Ejscript Error Messages</a></li>
+<li><a class="reference" href="#security-handler-response-codes" id="id29" name="id29">Security Handler Response Codes</a></li>
+<li><a class="reference" href="#security-handler-memory-leak" id="id30" name="id30">Security Handler Memory Leak</a></li>
+<li><a class="reference" href="#ejscript-write-corruption" id="id31" name="id31">Ejscript Write Corruption</a></li>
+<li><a class="reference" href="#error-in-dsnprintf-x-format" id="id32" name="id32">Error in dsnprintf(): &quot;%X&quot; format</a></li>
+<li><a class="reference" href="#bug018565-re-fixed" id="id33" name="id33">BUG018565 Re-fixed</a></li>
+<li><a class="reference" href="#potential-error-in-error" id="id34" name="id34">Potential Error in <tt class="literal"><span class="pre">error()</span></tt></a></li>
+<li><a class="reference" href="#added-support-for-customized-access-control" id="id35" name="id35">Added Support For Customized Access Control</a></li>
+<li><a class="reference" href="#memory-leak-in-websparserequest" id="id36" name="id36">Memory Leak in websParseRequest()</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#macintosh-os-x-support" id="id37" name="id37">Macintosh OS X Support</a></li>
+<li><a class="reference" href="#bug-fixes-for-version-2-1-1" id="id38" name="id38">Bug Fixes for Version 2.1.1</a><ul>
+<li><a class="reference" href="#intermittent-access-error-for-cgi-scripts-bug01937" id="id39" name="id39">Intermittent Access Error for CGI Scripts (BUG01937)</a></li>
+<li><a class="reference" href="#cpu-utilization-hangs-at-100-on-a-socket-disconnect-bug01865" id="id40" name="id40">CPU Utilization Hangs at 100% on a Socket Disconnect (BUG01865)</a></li>
+<li><a class="reference" href="#security-features-can-be-bypassed-by-adding-an-extra-slash-in-the-url-bug01518" id="id41" name="id41">Security Features can be Bypassed by Adding an Extra Slash in the URL (BUG01518)</a></li>
+<li><a class="reference" href="#call-to-webssetvar-causes-a-crash-bug01938" id="id42" name="id42">Call to <tt class="literal"><span class="pre">websSetVar</span></tt> causes a crash (BUG01938)</a></li>
+<li><a class="reference" href="#remove-stray-semicolon-in-emfdb-c-bug01820" id="id43" name="id43">Remove stray semicolon in <tt class="literal"><span class="pre">emfdb.c</span></tt> (BUG01820)</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#novell-netware-support" id="id44" name="id44">Novell Netware Support</a></li>
+<li><a class="reference" href="#copyright-information" id="id45" name="id45">Copyright Information</a></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h1><a class="toc-backref" href="#id2" name="id1">GoAhead WebServer 2.1.7 Release Notes</a></h1>
+<dl>
+<dt>Release Date:</dt>
+<dd>01 Oct 2003</dd>
+</dl>
+<div class="section" id="added-support-for-the-mocana-ssl-toolkit">
+<h2><a class="toc-backref" href="#id3" name="added-support-for-the-mocana-ssl-toolkit">Added support for the Mocana SSL Toolkit</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>Added support for Mocana Corporation's embedded SSL server</dd>
+</dl>
+</div>
+<div class="section" id="changes-to-dbsearchstring">
+<h2><a class="toc-backref" href="#id4" name="changes-to-dbsearchstring">Changes to <tt class="literal"><span class="pre">dbSearchString()</span></tt></a></h2>
+<p>Description:</p>
+<blockquote>
+Pass <tt class="literal"><span class="pre">DB_CASE_INSENSITIVE</span></tt> as the &quot;flags&quot; argument to
+dbSearchString() to force a case-insensitive search.</blockquote>
+</div>
+<div class="section" id="use-memcpy-when-converting-to-from-unicode">
+<h2><a class="toc-backref" href="#id5" name="use-memcpy-when-converting-to-from-unicode">Use <tt class="literal"><span class="pre">memcpy()</span></tt> when converting to/from Unicode</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>The functions <tt class="literal"><span class="pre">uniToAsc()</span></tt> and <tt class="literal"><span class="pre">ascToUni()</span></tt> were using the relatively
+slow <tt class="literal"><span class="pre">strncpy()</span></tt> runtime library function.</dd>
+<dt>Fix:</dt>
+<dd>A new preprocessor macro <tt class="literal"><span class="pre">kUseMemcopy</span></tt> was added to <tt class="literal"><span class="pre">misc.c</span></tt>, and both
+functions were recoded to use <tt class="literal"><span class="pre">memcpy()</span></tt> when that macro is defined.
+Remove the definition to revert to the earlier code, using <tt class="literal"><span class="pre">strncpy()</span></tt>.</dd>
+</dl>
+</div>
+<div class="section" id="bug-when-using-utf-8-encoded-text-inside-asp-ejscript-blocks">
+<h2><a class="toc-backref" href="#id6" name="bug-when-using-utf-8-encoded-text-inside-asp-ejscript-blocks">Bug when using UTF-8 encoded text inside ASP/ejScript blocks</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>When reading ASP code containing UTF-8 encoded source text, any characters
+encountered having a value &gt; 127 were treated as an error by the parser.</dd>
+<dt>Fix:</dt>
+<dd>The ring queue code in <tt class="literal"><span class="pre">ringq.c</span></tt> was modified so that it can correctly
+handle any character it encounters by casting to unsigned char before
+casting back to signed integer.</dd>
+</dl>
+</div>
+<div class="section" id="wrong-error-code-on-invalid-password">
+<h2><a class="toc-backref" href="#id7" name="wrong-error-code-on-invalid-password">Wrong error code on invalid password</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>The WebServer was sending back an inappropriate error code when it received
+an incorrect password.</dd>
+<dt>Fix:</dt>
+<dd>Changed error code returned from <tt class="literal"><span class="pre">405</span></tt> to <tt class="literal"><span class="pre">401</span></tt>. (Thanks to Jay
+Chalfant).</dd>
+</dl>
+</div>
+<div class="section" id="windows-ce-net">
+<h2><a class="toc-backref" href="#id8" name="windows-ce-net">Windows CE.NET</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>Removed &quot;compatibility functions&quot; that are directly supported in Windows
+CE.NET.</dd>
+</dl>
+</div>
+<div class="section" id="lynx-makefile">
+<h2><a class="toc-backref" href="#id9" name="lynx-makefile">LYNX <tt class="literal"><span class="pre">Makefile</span></tt></a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>Corrected problem in LYNX Makefile that prevented OpenSSL from being linked
+in correctly.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="goahead-webserver-2-1-6-release-notes">
+<h1><a class="toc-backref" href="#id10" name="goahead-webserver-2-1-6-release-notes">GoAhead WebServer 2.1.6 Release Notes</a></h1>
+<dl>
+<dt>Release Date:</dt>
+<dd>25 Mar 2003</dd>
+</dl>
+<div class="section" id="null-pointer-crash-in-webssafeurl">
+<h2><a class="toc-backref" href="#id11" name="null-pointer-crash-in-webssafeurl"><tt class="literal"><span class="pre">NULL</span></tt> pointer crash in <tt class="literal"><span class="pre">websSafeUrl()</span></tt></a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>Passing a NULL pointer into the <tt class="literal"><span class="pre">websSafeUrl()</span></tt> function (as would happen
+when the server is processing an invalid URL) crashes the server.</dd>
+<dt>Fix:</dt>
+<dd>Code modified to check for NULL pointer before performing any string
+operations.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="goahead-webserver-2-1-5-release-notes">
+<h1><a class="toc-backref" href="#id12" name="goahead-webserver-2-1-5-release-notes">GoAhead WebServer 2.1.5 Release Notes</a></h1>
+<dl>
+<dt>Release Date:</dt>
+<dd>19 Mar 2003</dd>
+</dl>
+<div class="section" id="bopen-failure-mode">
+<h2><a class="toc-backref" href="#id13" name="bopen-failure-mode"><tt class="literal"><span class="pre">bopen()</span></tt> failure mode</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>New failure behavior for <tt class="literal"><span class="pre">bopen()</span></tt> (see <tt class="literal"><span class="pre">balloc.c</span></tt>)</dd>
+<dt>Fix:</dt>
+<dd>Changed failure behavior of the bopen() function (suggested by Simon
+Byholm).  If the malloc() request fails, we reset the bopenCount
+variable, and thus allow the client code to reattempt the open with
+a smaller memory request.</dd>
+</dl>
+</div>
+<div class="section" id="windows-95-98-me-aux-denial-of-service">
+<h2><a class="toc-backref" href="#id14" name="windows-95-98-me-aux-denial-of-service">Windows 95/98/ME <tt class="literal"><span class="pre">AUX</span></tt> Denial of Service</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd><p class="first">When running on Windows 95/98/ME, URLs requested with path components
+matching a set of reserved DOS device names caused the WebServer to crash.</p>
+<p>The names that cause the crash are:</p>
+<pre class="last literal-block">
+aux
+con
+nul
+clock$
+config$
+</pre>
+</dd>
+<dt>Fix:</dt>
+<dd><p class="first">Code added to the <tt class="literal"><span class="pre">websValidateUrl()</span></tt> function to check the contents of
+the parsed URL against the list of prohibited names. If any of those names
+are present in the parsed URL, the URL is rejected as invalid.</p>
+<p>The code that checks for these prohibited pathname components checks for
+them in the form of either:</p>
+<pre class="literal-block">
+http://&lt;&lt;server address&gt;&gt;/aux
+</pre>
+<p>or:</p>
+<pre class="literal-block">
+http://&lt;&lt;server address&gt;&gt;/aux:
+</pre>
+<p class="last">where any non-alphanumeric character following one of the prohibited names
+will cause the URL request to be rejected.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="cross-site-scripting-exploit">
+<h2><a class="toc-backref" href="#id15" name="cross-site-scripting-exploit">404 Cross-site Scripting Exploit</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>Malicious users could request an invalid URL containing embedded JavaScript
+code that would be executed in the user's browser.</dd>
+<dt>Fix:</dt>
+<dd>404 (and other error messages) returned by the WebServer no longer display
+the invalid URL.</dd>
+</dl>
+</div>
+<div class="section" id="long-url-overflow-crash">
+<h2><a class="toc-backref" href="#id16" name="long-url-overflow-crash">Long URL Overflow Crash</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>URLs containing more than 64 levels of path components caused the WebServer
+to crash, entering a buffer overflow condition.</dd>
+<dt>Fix:</dt>
+<dd>The WebServer now keeps track of the depth as it validates the URL. URLs
+that are too long are now rejected with an error message.</dd>
+</dl>
+</div>
+<div class="section" id="incorrect-error-code-in-security-c">
+<h2><a class="toc-backref" href="#id17" name="incorrect-error-code-in-security-c">Incorrect Error Code in <tt class="literal"><span class="pre">security.c</span></tt></a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>Pages assigned an access level of <tt class="literal"><span class="pre">AM_NONE</span></tt> should return an error code
+of 404 instead of 400 when an attempt it made to access them.</dd>
+<dt>Fix:</dt>
+<dd>Error code corrected.</dd>
+</dl>
+</div>
+<div class="section" id="pragma-code-for-risc-architectures">
+<h2><a class="toc-backref" href="#id18" name="pragma-code-for-risc-architectures">Pragma Code for RISC Architectures</a></h2>
+<dl>
+<dt>Description:</dt>
+<dd>A pragma was not set correctly when compiling for SPARC machines.</dd>
+<dt>Fix:</dt>
+<dd><p class="first">Code added to <tt class="literal"><span class="pre">uemf.h</span></tt>:</p>
+<pre class="last literal-block">
+#ifdef sparc
+# define __NO_PACK
+#endif /* sparc */
+</pre>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="goahead-webserver-2-1-4-release-notes">
+<h1><a class="toc-backref" href="#id19" name="goahead-webserver-2-1-4-release-notes">GoAhead® WebServer 2.1.4 Release Notes</a></h1>
+<dl>
+<dt>Release Date:</dt>
+<dd>17 Oct 2002</dd>
+</dl>
+<div class="section" id="fixed-vulnerability-to-malicious-code-in-webs-c">
+<h2><a class="toc-backref" href="#id20" name="fixed-vulnerability-to-malicious-code-in-webs-c">Fixed vulnerability to malicious code in <tt class="literal"><span class="pre">webs.c</span></tt></a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>There were two vulnerabilities in <tt class="literal"><span class="pre">webs.c</span></tt>. Sending a POST message
+with a content-length but no data resulted in an attempt to perform
+a <tt class="literal"><span class="pre">strlen()</span></tt> on a NULL pointer (thanks to Richard Cullen). Also,
+sending an HTTP POST message with a Content-Length header indicating
+that the length of the posted data was less than zero would crash
+the server (thanks to Auriemma Luigi).</dd>
+<dt>Fix:</dt>
+<dd>Code errors corrected.</dd>
+</dl>
+</div>
+<div class="section" id="https-bug-in-security-handler">
+<h2><a class="toc-backref" href="#id21" name="https-bug-in-security-handler"><a class="reference" href="https://">https://</a> bug in security handler</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>The <tt class="literal"><span class="pre">websSecurityHandler()</span></tt> function was performing a logical
+OR: (<tt class="literal"><span class="pre">flags</span> <span class="pre">|</span> <span class="pre">WEBS_SECURE</span></tt>) instead of a logical AND (<tt class="literal"><span class="pre">flags</span> <span class="pre">&amp;</span>
+<span class="pre">WEBS_SECURE</span></tt>), leading to incorrect results (thanks to &quot;Dhanwa T&quot;).</dd>
+<dt>Fix:</dt>
+<dd>Code errors corrected.</dd>
+</dl>
+</div>
+<div class="section" id="fixed-vulnerability-to-malicious-code-in-sockgen-c">
+<h2><a class="toc-backref" href="#id22" name="fixed-vulnerability-to-malicious-code-in-sockgen-c">Fixed vulnerability to malicious code in sockGen.c</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>At line 613 of <tt class="literal"><span class="pre">sockGen.c</span></tt>, the return value of the function
+<tt class="literal"><span class="pre">socketInputBuffered()</span></tt> was being discarded, leading to incorrect
+behavior in some cases. (Thanks to Richard Cullen)</dd>
+<dt>Fix:</dt>
+<dd>Code errors corrected.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="bug-fixes-for-version-2-1-3">
+<h1><a class="toc-backref" href="#id23" name="bug-fixes-for-version-2-1-3">Bug Fixes for Version 2.1.3</a></h1>
+<div class="section" id="directory-traversal-exploit">
+<h2><a class="toc-backref" href="#id24" name="directory-traversal-exploit">Directory Traversal Exploit</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>Several sources have reported that requesting an URL with URL-encoded
+backslashes (%5C) allow accessing files located outside the server's
+designated web root. This should only have been possible on Windows, as
+URL-encoded forward slashes (%2F) were already being handled correctly.</dd>
+<dt>Fix:</dt>
+<dd>Modified <tt class="literal"><span class="pre">default.c</span></tt> so that any backslash characters created as
+part of decoding the URL string are converted (in place) to forward
+slashes. The pre-existing directory-traversal detection code then
+rejects the bad URL as expected.</dd>
+</dl>
+</div>
+<div class="section" id="mime-type-for-external-javascript-files">
+<h2><a class="toc-backref" href="#id25" name="mime-type-for-external-javascript-files">MIME type for external JavaScript files</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>The WebServer would not serve external JavaScript files (<tt class="literal"><span class="pre">*.js</span></tt>)
+correctly.</dd>
+<dt>Fix:</dt>
+<dd>modified <tt class="literal"><span class="pre">mime.c</span></tt> to associate <tt class="literal"><span class="pre">.js</span></tt> files with the MIME
+type <tt class="literal"><span class="pre">application/x-javascript</span></tt>.</dd>
+</dl>
+</div>
+<div class="section" id="bug-in-if-modified-since-parsing">
+<h2><a class="toc-backref" href="#id26" name="bug-in-if-modified-since-parsing">Bug in If-Modified-Since parsing</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>There was an off-by-one error when converting from Gregorian date to
+time_t.</dd>
+<dt>Fix:</dt>
+<dd>modified function <tt class="literal"><span class="pre">dateToTimet</span></tt> in file <tt class="literal"><span class="pre">webs.c</span></tt>.  The <tt class="literal"><span class="pre">month</span></tt>
+parameter is numbered from  0 (Jan == 0), but <tt class="literal"><span class="pre">FixedFromGregorian()</span></tt>
+takes months numbered from 1 (January == 1). We need to add 1 to
+the month before calling FixedFromGregorian.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="bug-fixes-for-version-2-1-2">
+<h1><a class="toc-backref" href="#id27" name="bug-fixes-for-version-2-1-2">Bug Fixes for Version 2.1.2</a></h1>
+<div class="section" id="ejscript-error-messages">
+<h2><a class="toc-backref" href="#id28" name="ejscript-error-messages">Ejscript Error Messages</a></h2>
+<p>Summary:</p>
+<blockquote>
+Changed ejEval() function so it displays in the browser the error string that is 
+reported by the ejScript interpreter (old code discarded it completely).</blockquote>
+<dl>
+<dt>Fix:</dt>
+<dd>modified <tt class="literal"><span class="pre">websuemf.c</span></tt></dd>
+</dl>
+</div>
+<div class="section" id="security-handler-response-codes">
+<h2><a class="toc-backref" href="#id29" name="security-handler-response-codes">Security Handler Response Codes</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>Several places in the <tt class="literal"><span class="pre">websSecurityHandler()</span></tt> function were
+returning error code 200 (success) instead of the correct 400-level error code.</dd>
+<dt>Fix:</dt>
+<dd>Corrected error codes in <tt class="literal"><span class="pre">security.c</span></tt></dd>
+</dl>
+</div>
+<div class="section" id="security-handler-memory-leak">
+<h2><a class="toc-backref" href="#id30" name="security-handler-memory-leak">Security Handler Memory Leak</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>In <tt class="literal"><span class="pre">websSecurityHandler()</span></tt>, if the WebServer was compiled with
+<tt class="literal"><span class="pre">WEBS_SSL_SUPPORT</span></tt> enabled, there was a return path that leaked
+memory.</dd>
+<dt>Fix:</dt>
+<dd>Added call to <tt class="literal"><span class="pre">bfree(B_L,</span> <span class="pre">accessLimit);</span></tt></dd>
+</dl>
+</div>
+<div class="section" id="ejscript-write-corruption">
+<h2><a class="toc-backref" href="#id31" name="ejscript-write-corruption">Ejscript Write Corruption</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>Very long text strings passed to the Ejscript <tt class="literal"><span class="pre">write()</span></tt> function
+were being corrupted before being displayed.</dd>
+<dt>Fix:</dt>
+<dd>Commented out a <tt class="literal"><span class="pre">trace()</span></tt> statement in <tt class="literal"><span class="pre">ejGetLexToken()</span></tt> that appears to have been the
+culprit. The value of <tt class="literal"><span class="pre">ep-&gt;token</span></tt> was being corrupted somewhere
+in the trace.</dd>
+</dl>
+</div>
+<div class="section" id="error-in-dsnprintf-x-format">
+<h2><a class="toc-backref" href="#id32" name="error-in-dsnprintf-x-format">Error in dsnprintf(): &quot;%X&quot; format</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>The &quot;%X&quot; format specifier did not correctly cause the function to output
+uppercase hexadecimal digits.</dd>
+<dt>Fix:</dt>
+<dd>Added support for the &quot;%X&quot; format specifier.</dd>
+</dl>
+</div>
+<div class="section" id="bug018565-re-fixed">
+<h2><a class="toc-backref" href="#id33" name="bug018565-re-fixed">BUG018565 Re-fixed</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>See 2.1.1 release notes (below). This bug fix did not make it into the
+2.1.1 release.</dd>
+<dt>Fix:</dt>
+<dd>Corrected code in <tt class="literal"><span class="pre">sockGen.c</span></tt>.</dd>
+</dl>
+</div>
+<div class="section" id="potential-error-in-error">
+<h2><a class="toc-backref" href="#id34" name="potential-error-in-error">Potential Error in <tt class="literal"><span class="pre">error()</span></tt></a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>If <tt class="literal"><span class="pre">error()</span></tt> is called where the etype parameter is not E_LOG, E_ASSERT, 
+or E_USER, the call to <tt class="literal"><span class="pre">bfreeSafe(B_L,</span> <span class="pre">buf)</span></tt> now at line 71 will fail, 
+because 'buf' is randomly  initialized.</dd>
+<dt>Fix:</dt>
+<dd>We format a message saying that this is an unknown message type, 
+and in doing so give buf a valid value.</dd>
+</dl>
+</div>
+<div class="section" id="added-support-for-customized-access-control">
+<h2><a class="toc-backref" href="#id35" name="added-support-for-customized-access-control">Added Support For Customized Access Control</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>Several users requested a method to control URL access in a hierarchical
+fashion. For example, users assigned to an 'admin' group might have
+access to all URLs on the WebServer, and users assigned to the group
+'technician' would have access to a smaller set of pages, and users
+assigned to the group 'users' would perhaps only have access to a set of
+read-only pages. The built-in WebServer access control system only
+allows users to access URLs that exactly match their group membership.</dd>
+<dt>Fix:</dt>
+<dd>Added call to a user-supplied function `` bool_t dmfCanAccess(const
+char_t* userGroup, const char_t* group)``. This function is called
+from inside <tt class="literal"><span class="pre">umUserCanAccessURL()</span></tt> if the macro
+<tt class="literal"><span class="pre">qHierarchicalAccess</span></tt> is defined.</dd>
+</dl>
+</div>
+<div class="section" id="memory-leak-in-websparserequest">
+<h2><a class="toc-backref" href="#id36" name="memory-leak-in-websparserequest">Memory Leak in websParseRequest()</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>Memory was being leaked in the code now at line 907 of <tt class="literal"><span class="pre">webs.c</span></tt>.</dd>
+<dt>Fix:</dt>
+<dd>Added a call to <tt class="literal"><span class="pre">bfree()</span></tt>.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="macintosh-os-x-support">
+<h1><a class="toc-backref" href="#id37" name="macintosh-os-x-support">Macintosh OS X Support</a></h1>
+<p>A separate Mac OS X platform directory has been added, and this platform
+has been tested on version 10.1.5 of the operating system.
+To build the WebServer on OS X:</p>
+<pre class="literal-block">
+cd MACOSX
+make
+</pre>
+<p>Note that like all *nix operating systems, only the root user has
+permission to open a server port with a lower number than 1024. You must
+run the WebServer as root to serve pages over port 80, or change the server
+port (in <tt class="literal"><span class="pre">main.c</span></tt>) to a different port (typically port 8080).</p>
+</div>
+<div class="section" id="bug-fixes-for-version-2-1-1">
+<h1><a class="toc-backref" href="#id38" name="bug-fixes-for-version-2-1-1">Bug Fixes for Version 2.1.1</a></h1>
+<div class="section" id="intermittent-access-error-for-cgi-scripts-bug01937">
+<h2><a class="toc-backref" href="#id39" name="intermittent-access-error-for-cgi-scripts-bug01937">Intermittent Access Error for CGI Scripts (BUG01937)</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>Pages were occasionally replaced with the message, <tt class="literal"><span class="pre">Access</span> <span class="pre">Error:</span> <span class="pre">Data</span> 
+<span class="pre">follows</span> <span class="pre">when</span> <span class="pre">trying</span> <span class="pre">to</span> <span class="pre">obtain</span> <span class="pre">CGI</span> <span class="pre">generated</span> <span class="pre">no</span> <span class="pre">output</span></tt>.</dd>
+<dt>Fix:</dt>
+<dd>On multiple CPU systems, it is possible for a CGI application to exit before 
+its output is flushed to disk. The change for this release locates the code 
+that collects the output from the CGI application in a separate routine. 
+In addition to calling that routine from within the CGI application processing 
+loop, it is also called in a brief loop after the CGI application has exited. 
+This extra loop runs for only up to one second while the collected output 
+remains empty. If, after 1 second, the output remains empty, the original 
+course of action is followed (<tt class="literal"><span class="pre">Access</span> <span class="pre">Error</span></tt> is reported).</dd>
+</dl>
+</div>
+<div class="section" id="cpu-utilization-hangs-at-100-on-a-socket-disconnect-bug01865">
+<h2><a class="toc-backref" href="#id40" name="cpu-utilization-hangs-at-100-on-a-socket-disconnect-bug01865">CPU Utilization Hangs at 100% on a Socket Disconnect (BUG01865)</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>This error occurs whenever a user terminates a request before the server 
+has had ample time to service it. This can be simulated by quickly hitting 
+the refresh button on the browser twice in a row, causing the first request 
+to be terminated. The server then enters into a tight loop that utilizes 
+all of its time.</dd>
+<dt>Fix:</dt>
+<dd>Always close the socket prior to a disconnect.</dd>
+</dl>
+</div>
+<div class="section" id="security-features-can-be-bypassed-by-adding-an-extra-slash-in-the-url-bug01518">
+<h2><a class="toc-backref" href="#id41" name="security-features-can-be-bypassed-by-adding-an-extra-slash-in-the-url-bug01518">Security Features can be Bypassed by Adding an Extra Slash in the URL (BUG01518)</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>By adding an extra slash in a URL, password prompting is bypassed, allowing 
+unrestricted access to secured pages.</dd>
+<dt>Fix:</dt>
+<dd>Remove multiple adjacent occurrences of slashes in the URL before passing 
+it to the security handler.</dd>
+</dl>
+</div>
+<div class="section" id="call-to-webssetvar-causes-a-crash-bug01938">
+<h2><a class="toc-backref" href="#id42" name="call-to-webssetvar-causes-a-crash-bug01938">Call to <tt class="literal"><span class="pre">websSetVar</span></tt> causes a crash (BUG01938)</a></h2>
+<dl>
+<dt>Summary:</dt>
+<dd>Whenever a request is not completed while being processed by websGetInput(), 
+a call to websDone is made, followed by an attempt to process the partial 
+request data.</dd>
+<dt>Fix:</dt>
+<dd>Return immediately after closing the socket.</dd>
+</dl>
+</div>
+<div class="section" id="remove-stray-semicolon-in-emfdb-c-bug01820">
+<h2><a class="toc-backref" href="#id43" name="remove-stray-semicolon-in-emfdb-c-bug01820">Remove stray semicolon in <tt class="literal"><span class="pre">emfdb.c</span></tt> (BUG01820)</a></h2>
+<dl>
+<dt>Summary and Fix:</dt>
+<dd>A stray semicolon was removed from this file.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="novell-netware-support">
+<h1><a class="toc-backref" href="#id44" name="novell-netware-support">Novell Netware Support</a></h1>
+<p>With the addition of Novell Netware in this 2.11 release, WebServer now supports these platforms:</p>
+<blockquote>
+<ul class="simple">
+<li>LINUX</li>
+<li>LynxOS</li>
+<li>Novell Netware &lt;/font&gt;4.2, 5.1</li>
+<li>Mac OS X</li>
+<li>UNIX - SCO OpenServer 3.2V5.0.0</li>
+<li>VxWorks 5.3.1</li>
+<li>Windows 2000</li>
+<li>Windows 98</li>
+<li>Windows 95</li>
+<li>Windows NT</li>
+<li>Windows CE</li>
+</ul>
+</blockquote>
+<p>To make a Novell Netware target file (<tt class="literal"><span class="pre">webs.nlm</span></tt>):</p>
+<pre class="literal-block">
+cd NW
+wmake webs.nlm
+load &lt;path&gt;; \webs.nlm
+webs
+</pre>
+<p><strong>Note:</strong> This makefile lacks a valid default rule. In addition, an
+environment variable (QMKVER) controls the amount of debug information
+that is compiled and linked into the nlm file. If this variable is set
+to <tt class="literal"><span class="pre">P</span></tt>, it produces a production version. All other settings
+(or the omission of the variable) results in a debug version.  For other
+platforms supported by WebServer, please refer to your WebServer 2.1
+documentation for appropriate instructions.</p>
+</div>
+<div class="section" id="copyright-information">
+<h1><a class="toc-backref" href="#id45" name="copyright-information">Copyright Information</a></h1>
+<dl>
+<dt>Trademarks</dt>
+<dd>GoAhead and GoAhead WebServer are registered trademarks of GoAhead
+Software.  All other brand or product names are the trademarks or
+registered trademarks of their respective holders.</dd>
+<dt>Copyright </dt>
+<dd>Copyright © 2000, 2001 GoAhead Software, Inc. All rights reserved.
+Product and technical information in this document is subject to
+change without notice and does not represent a commitment on the part
+of GoAhead Software, Inc.</dd>
+<dt>Copy Restrictions </dt>
+<dd>The software described in this document may be used and copied only
+in accordance with the terms of the accompanying license agreement.</dd>
+<dt>GoAhead Software, Inc.</dt>
+<dd>10900 NE 8th Street Suite 750 Bellevue, WA 98004 +1 ( 425) 453-1900
+www.goahead.com <a class="reference" href="mailto:info&#64;goahead.com">info&#64;goahead.com</a></dd>
+</dl>
+<p>1-53-03</p>
+</div>
+</div>
+</body>
+</html>

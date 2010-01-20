@@ -1,0 +1,338 @@
+<window id="129">
+	<defaultcontrol always="true">22</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>45</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsVisible(smartplaylistrule)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>800</width>
+				<height>630</height>
+				<texture border="40">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<posx>80</posx>
+				<posy>10</posy>
+				<width>640</width>
+				<height>90</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>710</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>22</onleft>
+				<onright>22</onright>
+				<onup>22</onup>
+				<ondown>22</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="label" id="2">
+				<description>header label</description>
+				<posx>20</posx>
+				<posy>18</posy>
+				<width>760</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[21432]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="spincontrolex" id="22">
+				<description>Set Playlist type</description>
+				<posx>20</posx>
+				<posy>70</posy>
+				<width>760</width>
+				<height>40</height>
+				<label>467</label>
+				<font>font13</font>
+				<texturefocus>MenuItemFO.png</texturefocus>
+				<texturenofocus>MenuItemNF.png</texturenofocus>
+				<onright>22</onright>
+				<onleft>22</onleft>
+				<onup>9001</onup>
+				<ondown>12</ondown>
+			</control>
+			<control type="label">
+				<description>Name Label</description>
+				<posx>30</posx>
+				<posy>125</posy>
+				<width>740</width>
+				<label>21433</label>
+				<font>font12caps</font>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="edit" id="12">
+				<description>Name Button</description>
+				<posx>20</posx>
+				<posy>155</posy>
+				<width>760</width>
+				<height>40</height>
+				<textoffsetx>10</textoffsetx>
+				<textwidth>750</textwidth>
+				<font>font13</font>
+				<align>center</align>
+				<texturefocus>MenuItemFO.png</texturefocus>
+				<texturenofocus>MenuItemNF.png</texturenofocus>
+				<label>-</label>
+				<onup>22</onup>
+				<onleft>12</onleft>
+				<onright>12</onright>
+				<ondown>10</ondown>
+			</control>
+			<control type="label">
+				<description>rules label</description>
+				<posx>30</posx>
+				<posy>210</posy>
+				<width>740</width>
+				<align>left</align>
+				<label>21434</label>
+				<font>font12caps</font>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="list" id="10">
+				<description>Rules List Control</description>
+				<posx>20</posx>
+				<posy>245</posy>
+				<width>560</width>
+				<height>121</height>
+				<onup>12</onup>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<ondown>16</ondown>
+				<itemlayout width="560" height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>560</width>
+						<height>41</height>
+						<texture>MenuItemNF.png</texture>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>545</width>
+						<height>40</height>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+						<selectedcolor>selected</selectedcolor>
+						<font>font13</font>
+					</control>
+				</itemlayout>
+				<focusedlayout width="560" height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>560</width>
+						<height>41</height>
+						<texture>MenuItemFO.png</texture>
+						<visible>Control.HasFocus(10)</visible>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>560</width>
+						<height>41</height>
+						<texture>MenuItemNF.png</texture>
+						<visible>!Control.HasFocus(10)</visible>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>540</width>
+						<height>40</height>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+						<selectedcolor>selected</selectedcolor>
+						<font>font13</font>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="group" id="9000">
+				<control type="button" id="13">
+					<description>Add Rule Button</description>
+					<posx>600</posx>
+					<posy>245</posy>
+					<width>180</width>
+					<height>41</height>
+					<label>15019</label>
+					<font>font12_title</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">button-focus.png</texturefocus>
+					<onup>17</onup>
+					<onleft>10</onleft>
+					<onright>10</onright>
+					<ondown>14</ondown>
+				</control>
+				<control type="button" id="14">
+					<description>Remove Rule Button</description>
+					<posx>600</posx>
+					<posy>285</posy>
+					<height>41</height>
+					<width>180</width>
+					<label>1210</label>
+					<font>font12_title</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">button-focus.png</texturefocus>
+					<onup>13</onup>
+					<onleft>10</onleft>
+					<onright>10</onright>
+					<ondown>15</ondown>
+				</control>
+				<control type="button" id="15">
+					<description>Edit Rule Button</description>
+					<posx>600</posx>
+					<posy>325</posy>
+					<height>41</height>
+					<width>180</width>
+					<label>21435</label>
+					<font>font12_title</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">button-focus.png</texturefocus>
+					<onup>14</onup>
+					<onleft>10</onleft>
+					<onright>10</onright>
+					<ondown>16</ondown>
+				</control>
+			</control>
+
+			<control type="label">
+				<description>Name Label</description>
+				<posx>30</posx>
+				<posy>380</posy>
+				<width>740</width>
+				<label>31325</label>
+				<font>font12caps</font>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="spincontrolex" id="16">
+				<posx>20</posx>
+				<posy>415</posy>
+				<width>760</width>
+				<height>41</height>
+				<label>21424</label>
+				<font>font13</font>
+				<texturefocus>MenuItemFO.png</texturefocus>
+				<texturenofocus>MenuItemNF.png</texturenofocus>
+				<onright>16</onright>
+				<onleft>16</onleft>
+				<onup>10</onup>
+				<ondown>17</ondown>
+			</control>
+
+			<control type="spincontrolex" id="17">
+				<posx>20</posx>
+				<posy>455</posy>
+				<width>760</width>
+				<height>41</height>
+				<label>21427</label>
+				<font>font13</font>
+				<texturefocus>MenuItemFO.png</texturefocus>
+				<texturenofocus>MenuItemNF.png</texturenofocus>
+				<onright>17</onright>
+				<onleft>17</onleft>
+				<onup>16</onup>
+				<ondown>18</ondown>
+			</control>
+
+			<control type="spincontrolex" id="18">
+				<posx>20</posx>
+				<posy>495</posy>
+				<width>560</width>
+				<height>41</height>
+				<label>21429</label>
+				<font>font13</font>
+				<texturefocus>MenuItemFO.png</texturefocus>
+				<texturenofocus>MenuItemNF.png</texturenofocus>
+				<onright>19</onright>
+				<onleft>19</onleft>
+				<onup>17</onup>
+				<ondown>9001</ondown>
+			</control>
+
+			<control type="togglebutton" id="19">
+				<posx>600</posx>
+				<posy>495</posy>
+				<width>180</width>
+				<height>40</height>
+				<font>font12_title</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<alttexturenofocus border="5">MenuItemNF.png</alttexturenofocus>
+				<alttexturefocus border="5">button-focus.png</alttexturefocus>
+				<label>21431</label>
+				<altlabel>21430</altlabel>
+				<onright>18</onright>
+				<onleft>18</onleft>
+				<onup>17</onup>
+				<ondown>9001</ondown>
+			</control>
+			<control type="group" id="9001">
+				<control type="button" id="20">
+					<description>Ok Button</description>
+					<posx>195</posx>
+					<posy>560</posy>
+					<width>200</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">button-focus.png</texturefocus>
+					<label>186</label>
+					<font>font12_title</font>
+					<onup>18</onup>
+					<onleft>21</onleft>
+					<onright>21</onright>
+					<ondown>22</ondown>
+				</control>
+				<control type="button" id="21">
+					<description>Cancel Button</description>
+					<posx>405</posx>
+					<posy>560</posy>
+					<width>200</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">button-focus.png</texturefocus>
+					<label>222</label>
+					<font>font12_title</font>
+					<onup>18</onup>
+					<onleft>20</onleft>
+					<onright>20</onright>
+					<ondown>22</ondown>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<title>libvorbisenc - function - vorbis_encode_setup_init</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libvorbisenc documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+<h1>vorbis_encode_setup_init</h1>
+
+<p><i>declared in "vorbis/libvorbisenc.h";</i></p>
+
+<p>This function performs the last stage of three-step encoding setup, as described in the API overview under <a href="overview.html#BBR">managed bitrate modes</a>.
+
+<p>Before this function is called, the <a
+href="vorbis_info.html">vorbis_info</a> struct should be initialized
+by using vorbis_info_init() from the libvorbis API, one of <a
+href="vorbis_encode_setup_managed.html">vorbis_encode_setup_managed()</a>
+or <a
+href="vorbis_encode_setup_vbr.html">vorbis_encode_setup_vbr()</a>
+called to initialize the high-level encoding setup, and <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> called if
+necessary to make encoding setup changes.  vorbis_encode_setup_init()
+finalizes the highlevel encoding structure into a complete encoding
+setup after which the application may make no further setup changes.<p>
+
+After encoding, vorbis_info_clear should be called.
+<p>
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+extern int vorbis_encode_setup_init(<a href="vorbis_info.html">vorbis_info</a> *vi);
+
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>vi</i></dt>
+<dd>File pointer to an initialized <a href="vorbis_info.html">vorbis_info</a> struct.</dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<li>
+0 for success</li>
+
+<li>less than zero for failure:</li>
+<ul>
+<li>OV_EFAULT - Internal logic fault; indicates a bug or heap/stack corruption.</li>
+<li>OV_EINVAL - Attempt to use vorbis_encode_setup_init() without first calling one of <a
+href="vorbis_encode_setup_managed.html">vorbis_encode_setup_managed()</a>
+or <a
+href="vorbis_encode_setup_vbr.html">vorbis_encode_setup_vbr()</a>
+to initialize the high-level encoding setup
+</li>
+</ul>
+</blockquote>
+<p>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2004 xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@vorbis.org">team@vorbis.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>libvorbisenc documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+
+</body>
+
+</html>

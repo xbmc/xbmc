@@ -1,0 +1,37 @@
+Installation on Woe32 (WinNT/2000/XP/Vista, Win95/98/ME):
+
+Building requires the mingw or cygwin development environment (includes gcc).
+MS Visual C/C++ with "nmake" is no longer supported.
+
+This file explains how to create binaries for the mingw execution environment.
+For how to create binaries for the cygwin environment, please see the normal
+INSTALL file.  MS Visual C/C++ with "nmake" is no longer supported.
+
+I recommend to use the cygwin environment as the development environment
+and mingw only as the target (runtime, deployment) environment.
+For this, you need to install
+  - cygwin,
+  - the mingw runtime package, also from the cygwin site.
+
+You must not install cygwin programs directly under /usr/local -
+because the mingw compiler and linker would pick up the include files
+and libraries from there, thus introducing an undesired dependency to
+cygwin. You can for example achieve this by using the
+configure option --prefix=/usr/local/cygwin each time you build a
+program for cygwin.
+
+Building for mingw is then achieved through the following preparation
+and configure commands:
+
+   PATH=/usr/local/mingw/bin:$PATH
+   export PATH
+   ./configure --host=i586-pc-mingw32 --prefix=/usr/local/mingw \
+     CPPFLAGS="-mno-cygwin -Wall -I/usr/local/mingw/include" \
+     CFLAGS="-mno-cygwin -O2 -g" \
+     CXXFLAGS="-mno-cygwin -O2 -g" \
+     LDFLAGS="-mno-cygwin -L/usr/local/mingw/lib"
+
+The -mno-cygwin tells the cygwin compiler and linker to build for mingw.
+The -I and -L option are so that packages previously built for the
+same environment are found. The --host option tells the various
+tools that you are building for mingw, not cygwin.

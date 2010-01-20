@@ -1,0 +1,14 @@
+XBMCProjectM should be checked out into the sources/visualisations dir at the same level as XBMC (as it is in svn).
+
+projectM now uses cmake, so get it:
+sudo apt-get install cmake
+
+For complete projectM build instructions see:
+http://projectm.wiki.sourceforge.net/Installation+Instructions
+
+Unset CC and CXX environment variables or you'll upset CMake:
+unset CC
+unset CXX
+
+Quick and dirty projectM build instructions:
+make

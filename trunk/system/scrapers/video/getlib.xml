@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="gb2312"?>
+<scraper framework="1.1" date="2009-12-14" name="getlib" content="movies" thumb="getlib.gif" language="zh">
+	<include>common/tmdb.xml</include>
+	<include>common/movieposterdb.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetSettings>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.getlib.com/title/tt\1&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3">
+			<expression clear="yes" noclean="1">getlib.com/title/tt([0-9]*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url&gt;http://www.getlib.com/title/tt\1&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3+">
+			<expression clear="yes" noclean="1">imdb.com/Title\?([0-9]*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url&gt;http://www.getlib.com/title/tt\1&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3+">
+			<expression clear="yes" noclean="1">imdb.com/title/tt([0-9]*)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3" SearchStringEncoding="gb2312">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.getlib.com/?keyword=\1&amp;amp;a=search&amp;amp;Type=movie&lt;/url&gt;" dest="3">
+			<expression noclean="1"/>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://www.getlib.com/title/\3&lt;/url&gt;&lt;id&gt;\3&lt;/id&gt;&lt;/entity&gt;" dest="5">
+				<expression clear="yes" noclean="1">&lt;h1&gt;(.*?)\(&lt;a href=.*?&gt;([0-9]*)&lt;/a&gt;.*?&lt;a href=&quot;http://www.getlib.com/title/(tt[0-9]+)&quot;&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://www.getlib.com/title/\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=&quot;title/(tt[0-9]+)&quot; target=&quot;_blank&quot;&gt;(.*?)&lt;/a&gt; \(([0-9]+)\)</expression>
+			</RegExp>
+			<expression clear="yes" noclean="1"/>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$2" output="&lt;id&gt;\1&lt;/id&gt;" dest="5">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression trim="1" noclean="1">&lt;h1&gt;(.*?)(/| |\()</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>&lt;h1&gt;.*?href=&quot;http://www.getlib.com/Sections/Years/([0-9]+)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+				<expression>&lt;h3&gt;MPAA：&lt;/h3&gt;.*?class=&quot;moinfo&quot;&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;certification&gt;\1&lt;/certification&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=http://www.getlib.com/Sections/Certification/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+				<expression>id=&quot;mtime&quot;&gt;([^&lt;]*)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="5+">
+				<expression>id=&quot;mimdbrate&quot;&gt;.*?&lt;b&gt;(.*?)/10&lt;/b&gt;\(&amp;nbsp;([0-9]*)票</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=http://www.getlib.com/Sections/Genres/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<RegExp input="$$1" output="\1\n" dest="6">
+					<expression>id=&quot;content&quot;&gt;(.*?)&lt;/div&gt;</expression>
+				</RegExp>
+				<RegExp input="$$6" output="\1" dest="7">
+					<expression repeat="yes">(.*?)[\n\r\t]</expression>
+				</RegExp>
+				<expression noclean="1"/>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetFullcredits&quot;&gt;$$3/fullcredits&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=\1&lt;/url&gt;" dest="5+">
+				<expression>/title/tt([0-9]*)/ratings</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url cache=&quot;\1-posters.html&quot; function=&quot;GetPoster&quot;&gt;http://www.getlib.com/poster/\1&lt;/url&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=&quot;http://www.getlib.com/poster/([0-9]+)&quot;</expression>
+			</RegExp>
+			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDetails>	
+	<GetFullcredits clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression clear="yes" noclean="1">&lt;h3 align=&quot;center&quot;&gt;演员&lt;/h3&gt;(.*?)&lt;h3</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2">
+				<expression repeat="yes">&lt;div class=&quot;castname&quot;&gt;(.*?)&lt;/div&gt;.*?&lt;div class=&quot;castaction&quot;&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression clear="yes" noclean="1">align=&quot;center&quot;&gt;导演&lt;/h3&gt;(.*?)&lt;h3</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
+				<expression repeat="yes">&lt;div class=&quot;castname&quot;&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression clear="yes" noclean="1">align=&quot;center&quot;&gt;编剧&lt;/h3&gt;(.*?)&lt;h3 </expression>
+			</RegExp>
+			<RegExp input="$$8" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
+				<expression repeat="yes">&lt;div class=&quot;castname&quot;&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetFullcredits>
+	<GetPoster dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="6">
+				<expression>&lt;img src=&quot;(http://www.getlib.com/dataz/posters_big/.*?)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetPoster>
+</scraper>

@@ -1,0 +1,95 @@
+<!-- X10 Lola UR89A in PC MODE 
+Button = CMD
+Record = X10CMD_RECORD 
+Stop = X10CMD_STOP
+Pause = X10CMD_NONE
+Scan- = X10CMD_INPUT
+Rew = X10CMD_REWIND
+Play = X10CMD_PLAY
+FF = X10CMD_FF
+Scan+ = X10CMD_ZOOM
+Top = X10CMD_MTRADIO
+End = X10CMD_MTPC
+Find = X10CMD_HANDSYMBOL
+Select = X10CMD_MTCHANNELLIST
+Page Up = X10CMD_BOOKMARK
+Page Dn = X10CMD_RESIZE
+Playlist = X10CMD_BUTTON_B
+Playing = X10CMD_MTVCR
+Left = X10CMD_LEFT
+Right = X10CMD_RIGHT
+Up = X10CMD_UP
+Down = X10CMD_DN
+Enter = X10CMD_ENTER
+Album = X10CMD_BUTTON_C
+Artist = X10CMD_BUTTON_D
+Genre = X10CMD_BUTTON_E
+Track = X10CMD_BUTTON_F 
+1 = X10CMD_1
+2 = X10CMD_2
+3 = X10CMD_3
+4 = X10CMD_4
+5 = X10CMD_5
+6 = X10CMD_6
+7 = X10CMD_7
+8 = X10CMD_8
+9 = X10CMD_9
+0 = X10CMD_0
+Add/Del = X10CMD_MTADDDELETE
+A/B = X10CMT_MTAB
+Vol Left = X10CMD_VOL_UP  (this button is actually labeled Vol-)
+Vol Right = X10CMD_VOL_DN  (this button is actually labeled Vol+)
+Chan Up = X10CMD_CH_UP
+Chan Down = X10CMD_CH_DN
+M/All Off = X10CMD_MUTE
+Power/All Lts On = X10CMD_POWER
+ -->
+<irssmap>
+	<remote device="X10">
+		<pause>X10CMD_NONE</pause> <!-- Pause -->
+		<stop>X10CMD_STOP</stop> <!-- Stop -->
+		<play>X10CMD_PLAY</play> <!-- Play -->
+		<forward>X10CMD_FF</forward> <!-- FF -->
+		<reverse>X10CMD_REWIND</reverse> <!-- Rew -->
+		<left>X10CMD_LEFT</left> <!-- Left -->
+		<right>X10CMD_RIGHT</right> <!-- Right -->
+		<up>X10CMD_UP</up> <!-- Up -->
+		<down>X10CMD_DN</down> <!-- Down -->
+		<select>X10CMD_ENTER</select> <!-- Enter -->
+		<pageplus>X10CMD_BOOKMARK</pageplus> <!-- Page Up -->
+		<pageminus>X10CMD_RESIZE</pageminus> <!-- Page Down -->
+		<back>X10CMD_MTAB</back> <!-- A/B -->
+		<menu>X10CMD_MTRADIO</menu> <!-- Top -->
+		<title>X10CMD_MTPC</title> <!-- End -->
+		<info>X10CMD_HANDSYMBOL</info> <!-- Find -->
+		<skipplus>X10CMD_INPUT</skipplus> <!-- Scan- -->
+		<skipminus>X10CMD_ZOOM</skipminus> <!-- Scan+ -->
+		<display>X10CMD_MTVCR</display> <!-- Playing -->
+		<start>X10CMD_MTCHANNELLIST</start> <!-- Select -->
+		<record>X10CMD_RECORD</record> <!-- Rec -->
+		<mute>X10CMD_MUTE</mute> <!-- M/All off -->
+		<power>X10CMD_POWER</power> <!-- Power/All Lts on -->
+		<one>X10CMD_1</one> <!-- 1 -->
+		<two>X10CMD_2</two> <!-- 2 --> 
+		<three>X10CMD_3</three> <!-- 3 -->
+		<four>X10CMD_4</four> <!-- 4 -->
+		<five>X10CMD_5</five> <!-- 5 -->
+		<six>X10CMD_6</six> <!-- 6 -->
+		<seven>X10CMD_7</seven> <!-- 7 -->
+		<eight>X10CMD_8</eight> <!-- 8 -->
+		<nine>X10CMD_9</nine> <!-- 9 -->
+		<zero>X10CMD_0</zero> <!-- 0 -->
+		<channelplus>X10CMD_CH_UP</channelplus> <!-- CH+ -->
+		<channelminus>X10CMD_CH_DN</channelminus> <!-- CH- -->
+		<volumeplus>X10CMD_VOL_DN</volumeplus> <!-- VOL+ (volume commands are reversed) -->
+		<volumeminus>X10CMD_VOL_UP</volumeminus> <!-- VOL- (volume commands are reversed) -->
+		<livetv>X10CMD_BUTTON_B</livetv> <!-- Playlist -->
+		<star></star>
+		<hash></hash>
+		<clear>X10CMD_MTADDDELETE</clear> <!-- Add/Delete -->
+		<mytv></mytv>
+		<mymusic></mymusic>
+		<mypictures></mypictures>
+		<myvideo></myvideo>
+	</remote>
+</irssmap>

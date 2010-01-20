@@ -1,0 +1,41 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>WebServer Architecture</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../style/normal_ws.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+<h1>Secure Sockets Layer</h1><p>The Secure Sockets Layer (SSL) is a protocol created by <A HREF="http://www.netscape.com/eng/ssl3/" TARGET="new">Netscape Communications Corporation</A> for authentication and encryption over TCP/IP networks.  SSL is, for the most part, invisible to the end user.  The web browser may notify the user that they are about to enter a secure web page, and perhaps use a visual cue to indicate the duration that SSL is active. The HTTPS prefix on the URL  (<B>https</B>://www.goahead.com)  indicates that the SSL protocol will be used. </p><p>WebServer 2.1 provides a code patch file (websSSL.c) that implements SSL via a toolkit provided by <A HREF="http://rsasecurity.com/" TARGET="new">RSA Security</A> called RSA BSAFE SSL-C. This product is required to enable SSL on WebServer 2.1 and can be acquired directly  from RSA Security. Refer to <A HREF="../docs/user/RSA.htm">Incorporating RSA Security</A> for additional information.   </p><P> 
+
+SSL uses two layers:  the <B>SSL Message Layer</B> and the <B>SSL Record Layer</B>.  The Message Layer  constructs and sends user data, handshake messages, alert messages, and change cipher specification messages.  Its primary  task is to set  up the mutual understanding required by both client and server for the SSL Record Layer, which is responsible for sending  SSL data records.
+
+ 
+
+</P><P>The  sequence of events for Secure Socket Layer is as follows:
+</P><OL><OL><LI>Client sends a ClientHello message (a part of the HTTPS request).
+</LI><LI>Server sends a ServerHello message.
+</LI><LI>Server sends its certificate.</LI><LI>Server sends ServerKeyExchange message.
+</LI><LI>Server sends CertificateRequest message.</LI><LI>Client sends its certificate.
+</LI><LI>Client sends a ClientKeyExchange.
+</LI><LI>Client sends a CertificateVerify.</LI><LI>Client and server both send ChangeCipherSpec messages.</LI><LI>Client and server both send Finished messages.
+</LI><LI>Application data can now flow via SSL Record Layer.
+
+ 
+ </LI></OL></OL><H4>SSL Record Layer
+
+</H4><P>The SSL Record Layer sends blocks of data called &quot;records&quot;  between client and server.  The maximum number of bytes   that a block can contain is  16,383.  </P><P>Each record layer  message contains the following:
+</P><UL><LI>Content type
+</LI><LI>Protocol version number
+</LI><LI>Length
+</LI><LI>Data payload (optionally compressed and encrypted)
+
+</LI></UL><P>The SSL protocol begins with the compression function CompressionMethod.null and encryption method of SSL_NULL_WITH_NULL_NULL.  This can change during an SSL session.
+
+
+ 
+</P><p>&nbsp;</p></td></tr></table>
+</body>
+</html>

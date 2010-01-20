@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mv binary/live/initrd.img-* binary/live/initrd.img
+mv binary/live/vmlinuz-* binary/live/vmlinuz

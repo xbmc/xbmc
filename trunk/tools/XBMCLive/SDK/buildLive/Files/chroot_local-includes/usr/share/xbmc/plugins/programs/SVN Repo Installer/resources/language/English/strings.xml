@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- Update messages -->
+    <string id="30000">Would you like to install this item?</string>
+    <string id="30001">Fetching file ...</string>
+    <string id="30002">Fetching file list...</string>
+    <string id="30003">Please wait...</string>
+    <string id="30004">Backup Created</string>
+    <string id="30005">Fetching:</string>
+    <string id="30006">Path:</string>
+    <string id="30007">File:</string>
+    <string id="30008">Your new item was installed to:</string>
+    <string id="30009">Looking for installed Addons ...</string>
+    <string id="30010">Checking SVN ...</string>
+    <string id="30011">OK</string>
+    <string id="30012">Not in SVN</string>
+    <string id="30013">Unknown Version</string>
+    <string id="30014">New</string>
+    <string id="30015">Incompatible</string>
+    <string id="30016">Update</string>
+    <string id="30017">ChangeLog</string>
+    <string id="30018">Uninstalled</string>
+    <string id="30019">Update All</string>
+
+    <string id="30020">Skip</string>
+    <string id="30021">Install</string>
+    <string id="30022">Uninstall</string>
+    <string id="30023">Author:</string>
+    <string id="30024">Date:</string>
+    <string id="30025">Version:</string>
+    <string id="30026">Category:</string>
+    <string id="30027">Close</string>
+
+    <!-- settings -->
+    <string id="30500">Check for updates</string>
+    <string id="30510">Updates: Show Addons not in SVN?</string>
+    <string id="30520">Updates: Show Addons wihout a version?</string>
+    <string id="30530">View Readme</string>
+    <string id="30540">View Changelog</string>
+
+    <!-- context menu -->
+    <string id="30600">View Changelog</string>
+    <string id="30610">View Readme</string>
+
+    <!-- compatible messages -->
+    <string id="30700">Version</string>
+    <string id="30701">This version of %s requires an</string>
+    <string id="30702">XBMC revision of %s or greater to run.</string>
+    <string id="30703">Please update your XBMC.</string>
+    <string id="30704">Compatible</string>
+    <string id="30705">Incompatible</string>
+    <string id="30706">Unknown</string>
+
+    <!-- Update error messages -->
+    <string id="30030">There was an error installing item!</string>
+</strings>

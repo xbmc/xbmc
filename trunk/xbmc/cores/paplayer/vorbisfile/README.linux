@@ -1,0 +1,11 @@
+To compile:
+# cd libvorbis
+# chmod 755 configure
+# ./configure
+# make
+# cd ../ogg
+# chmod 755 configure
+# ./configure
+# make
+# cd ..
+# make vorbisfile-i486-linux.so

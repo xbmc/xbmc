@@ -1,0 +1,22 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>dbReadStr -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">dbReadStr</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>Retrieves string values from the databases.</P><H2><B>Prototype</B></H2><PRE>
+ #include &quot;emfdb.h&quot;
+
+ int dbReadStr(ind did, char_t* table, char_t* column, int row, 
+     char_t **returnValue); </PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="40%" BORDER="0"><TR><TD WIDTH="26%">did</TD><TD WIDTH="74%">database id</TD></TR><TR><TD WIDTH="26%">table</TD><TD WIDTH="74%">table name in the database</TD></TR><TR><TD WIDTH="26%">column</TD><TD WIDTH="74%">column name in the table</TD></TR><TR><TD WIDTH="26%">row</TD><TD WIDTH="74%">row number in the column</TD></TR><TR><TD WIDTH="26%">returnValue</TD><TD WIDTH="74%">returns the string database element</TD></TR></TABLE><H2><B>Description</B></H2><P>Read a string from the database.</P><H2><B>Return Value</B></H2><P>dbReadStr returns 0 if success, or -1 if an error occurred.</P><H2><B>Example</B></H2><PRE>char_t* fsname; 
+dbReadStr(smd, &quot;base_fs_static&quot;, &quot;name&quot;, row, &amp;fsname); 
+</PRE><H2><B>See Also</B></H2><P> <A HREF="dbReadInt.htm">dbReadInt</A> </P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></td></tr></table>
+</body>
+</html>

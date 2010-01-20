@@ -1,0 +1,602 @@
+<!-- Creator     : groff version 1.18.1 -->
+<!-- CreationDate: Tue Jun 30 22:52:08 2009 -->
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title>ICONV_OPEN</title>
+</head>
+<body>
+
+<h1 align=center>ICONV_OPEN</h1>
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#ERRORS">ERRORS</a><br>
+<a href="#CONFORMING TO">CONFORMING TO</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>iconv_open &minus; allocate descriptor for character set
+conversion</p>
+</td>
+</table>
+<a name="SYNOPSIS"></a>
+<h2>SYNOPSIS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<pre><b>#include &lt;iconv.h&gt;
+
+iconv_t iconv_open (const char*</b> <i>tocode</i><b>, const char*</b> <i>fromcode</i><b>);
+</b></pre>
+</td>
+</table>
+<a name="DESCRIPTION"></a>
+<h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The <b>iconv_open</b> function allocates a conversion
+descriptor suitable for converting byte sequences from
+character encoding <i>fromcode</i> to character encoding
+<i>tocode</i>.</p>
+<!-- INDENTATION -->
+<p>The values permitted for <i>fromcode</i> and
+<i>tocode</i> and the supported combinations are system
+dependent. For the libiconv library, the following encodings
+are supported, in all combinations.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>European languages</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>ASCII,
+ISO&minus;8859&minus;{1,2,3,4,5,7,9,10,13,14,15,16},
+KOI8&minus;R, KOI8&minus;U, KOI8&minus;RU,
+CP{1250,1251,1252,1253,1254,1257}, CP{850,866,1131},
+Mac{Roman,CentralEurope,Iceland,Croatian,Romania},
+Mac{Cyrillic,Ukraine,Greek,Turkish}, Macintosh</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Semitic languages</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>ISO&minus;8859&minus;{6,8}, CP{1255,1256}, CP862,
+Mac{Hebrew,Arabic}</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Japanese</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>EUC&minus;JP, SHIFT_JIS, CP932, ISO&minus;2022&minus;JP,
+ISO&minus;2022&minus;JP&minus;2,
+ISO&minus;2022&minus;JP&minus;1</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Chinese</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>EUC&minus;CN, HZ, GBK, CP936, GB18030, EUC&minus;TW,
+BIG5, CP950, BIG5&minus;HKSCS, BIG5&minus;HKSCS:2001,
+BIG5&minus;HKSCS:1999, ISO&minus;2022&minus;CN,
+ISO&minus;2022&minus;CN&minus;EXT</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="8%">
+
+<p>Korean</p>
+</td>
+<td width="79%">
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>EUC&minus;KR, CP949, ISO&minus;2022&minus;KR, JOHAB</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Armenian</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>ARMSCII&minus;8</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Georgian</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Georgian&minus;Academy, Georgian&minus;PS</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+<p>Tajik</p>
+</td>
+<td width="80%">
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>KOI8&minus;T</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="8%">
+
+<p>Kazakh</p>
+</td>
+<td width="79%">
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>PT154, RK1048</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="5%">
+
+<p>Thai</p>
+</td>
+<td width="82%">
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>TIS&minus;620, CP874, MacThai</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Laotian</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>MuleLao&minus;1, CP1133</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Vietnamese</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>VISCII, TCVN, CP1258</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Platform specifics</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>HP&minus;ROMAN8, NEXTSTEP</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Full Unicode</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>UTF&minus;8</p>
+<!-- INDENTATION -->
+<p>UCS&minus;2, UCS&minus;2BE, UCS&minus;2LE</p>
+<!-- INDENTATION -->
+<p>UCS&minus;4, UCS&minus;4BE, UCS&minus;4LE</p>
+<!-- INDENTATION -->
+<p>UTF&minus;16, UTF&minus;16BE, UTF&minus;16LE</p>
+<!-- INDENTATION -->
+<p>UTF&minus;32, UTF&minus;32BE, UTF&minus;32LE</p>
+<!-- INDENTATION -->
+<p>UTF&minus;7</p>
+<!-- INDENTATION -->
+<p>C99, JAVA</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Full Unicode, in terms of <b>uint16_t</b> or
+<b>uint32_t</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>(with machine dependent endianness and alignment)</p>
+<!-- INDENTATION -->
+<p>UCS&minus;2&minus;INTERNAL,
+UCS&minus;4&minus;INTERNAL</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Locale dependent, in terms of <b>char</b> or
+<b>wchar_t</b></p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>(with machine dependent endianness and alignment, and
+with semantics depending on the OS and the current LC_CTYPE
+locale facet)</p>
+<!-- INDENTATION -->
+<p>char, wchar_t</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>When configured with the option
+<b>&minus;&minus;enable&minus;extra&minus;encodings</b>, it
+also provides support for a few extra encodings:</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>European languages</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<pre>CP{437,737,775,852,853,855,857,858,860,861,863,865,869,1125}
+</pre>
+</td>
+</table>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Semitic languages</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>CP864</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Japanese</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>EUC&minus;JISX0213, Shift_JISX0213,
+ISO&minus;2022&minus;JP&minus;3</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Chinese</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>BIG5&minus;2003 (experimental)</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Turkmen</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>TDS565</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>Platform specifics</p></td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>ATARIST, RISCOS&minus;LATIN1</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The empty encoding name &quot;&quot; is equivalent to
+&quot;char&quot;: it denotes the locale dependent character
+encoding.</p>
+<!-- INDENTATION -->
+<p>When the string &quot;//TRANSLIT&quot; is appended to
+<i>tocode</i>, transliteration is activated. This means that
+when a character cannot be represented in the target
+character set, it can be approximated through one or several
+characters that look similar to the original character.</p>
+<!-- INDENTATION -->
+<p>When the string &quot;//IGNORE&quot; is appended to
+<i>tocode</i>, characters that cannot be represented in the
+target character set will be silently discarded.</p>
+<!-- INDENTATION -->
+<p>The resulting conversion descriptor can be used with
+<b>iconv</b> any number of times. It remains valid until
+deallocated using <b>iconv_close</b>.</p>
+<!-- INDENTATION -->
+<p>A conversion descriptor contains a conversion state.
+After creation using <b>iconv_open</b>, the state is in the
+initial state. Using <b>iconv</b> modifies the
+descriptor&rsquo;s conversion state. (This implies that a
+conversion descriptor can not be used in multiple threads
+simultaneously.) To bring the state back to the initial
+state, use <b>iconv</b> with NULL as <i>inbuf</i>
+argument.</p>
+</td>
+</table>
+<a name="RETURN VALUE"></a>
+<h2>RETURN VALUE</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The <b>iconv_open</b> function returns a freshly
+allocated conversion descriptor. In case of error, it sets
+<b>errno</b> and returns (iconv_t)(&minus;1).</p>
+</td>
+</table>
+<a name="ERRORS"></a>
+<h2>ERRORS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The following error can occur, among others:</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="4" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="8%">
+
+<p><b>EINVAL</b></p>
+</td>
+<td width="1%"></td>
+<td width="77%">
+
+<p>The conversion from <i>fromcode</i> to <i>tocode</i> is
+not supported by the implementation.</p>
+</td>
+</table>
+<a name="CONFORMING TO"></a>
+<h2>CONFORMING TO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>POSIX:2001</p>
+</td>
+</table>
+<a name="SEE ALSO"></a>
+<h2>SEE ALSO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>iconv</b>(3) <b>iconvctl</b>(3)
+<b>iconv_close</b>(3)</p>
+</td>
+</table>
+<hr>
+</body>
+</html>

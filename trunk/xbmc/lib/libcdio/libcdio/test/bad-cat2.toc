@@ -1,0 +1,8 @@
+// $Id: bad-cat2.toc,v 1.2 2004/07/09 20:47:08 rocky Exp $
+// test catalog number. -- not enough digits
+
+CATALOG 167890123  // Should be 13 digits
+
+TRACK AUDIO
+NO COPY
+FILE "cdda.bin" 1:0:0

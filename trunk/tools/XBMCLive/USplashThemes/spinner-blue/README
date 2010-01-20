@@ -1,0 +1,39 @@
+XBMC Splash - Black
+====================
+
+This is my 3rd attempt at a decent USplash theme for my linux XBMC HTPC (and possibly yours too :).
+
+It cotains several resolutions:
+1024x768
+1280x720
+1366x768
+1280x1024
+1440x900
+1920x1080
+1920x1200
+
+Those might work depending on the use (and support for your vid card) of the UVESAFB kernel module.
+On my system (Radeon 3850 and 17" LCD) I was able to use 1024x768 and 1280x1024.
+
+
+Build Instructions
+==================================================
+For Ubuntu, you will need the following packages installed:
+build-essential, libusplash-dev.
+
+As it updates the initrd image, you'll need to work as root (or sudo).
+
+1. extract the package.
+2. make (or make -j2 -for a faster compile)
+3. backup your current ubuntu usplash: sudo cp /usr/lib/usplash/usplash-theme-ubuntu.so ~/
+4. replace it with your brand new xbmc usplash: sudo cp ./xbmc-splash.so /usr/lib/usplash/usplash-theme-ubuntu.so
+5. update the initrd image: sudo update-initramfs -u
+6. reboot
+7. enjoy.
+
+
+Thank yous
+==================================================
+For anyone who has ever tackled this damned USplash :)
+For all the themes at gnome-looks
+kilo323@yahoo.com for the spinner code.

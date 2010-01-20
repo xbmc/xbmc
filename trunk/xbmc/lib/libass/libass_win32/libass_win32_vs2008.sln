@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass_win32", "libass_win32_vs2008.vcproj", "{BA5B08FC-2ECB-4571-9F25-F8054522FC65}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Debug|Win32.Build.0 = Debug|Win32
+		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release|Win32.ActiveCfg = Release|Win32
+		{BA5B08FC-2ECB-4571-9F25-F8054522FC65}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

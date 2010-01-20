@@ -1,0 +1,126 @@
+live-snapshot(1)
+================
+
+Name
+----
+live-snapshot - uno script per facilitare l'uso della persistenza sui sistemi live
+
+Synopsis
+--------
+live-snapshot [-c|--cow **DIRECTORY**s] [-d|--device **DEVICE**] [-e|--exclude-list **FILE**] [-o|--output **FILE**] [-t|--type **TYPE**]
+
+live-snapshot [-r|--resync-string **STRING**]
+
+live-snapshot [-h|--help]
+
+live-snapshot [-u|--usage]
+
+live-snapshot [-v|--version]
+
+Description
+-----------
+
+live-snapshot `e uno script che pu`o essere usato per costruire un file immagine formattato
+correttamente per essere usato da live-initramfs(7); viene inoltre usato dallo script di
+init di live-initramfs in uscita per sincronizzare i device di snapshot riconosciuti al boot.
+
+Options
+-------
+
+  -c, --cow **DIRECTORY**::
+
+specifica la directory da clonare nel file immagine. Il valore di default `e
+lo stesso default usato da live-initramfs per la sua directory COW (copy on
+write, un tempo situata in "/live/cow") ed `e sufficiente per gli usi comuni.
+Pu`o essere utile tuttavia specificare "/home" e come tipo "ext2" per
+preparare un file immagine adatto per essere montato da live-initramfs come
+"/home" al boot.
+
+  -d, --device **DEVICE**::
+
+seleziona il device dove il file/partizione di snapshot o persistenza dovr`a
+essere sistemato. Se il device non ha un filesystem, ne verr`a creato uno
+automaticamente, di tipo ext2 ed etichettato (label) in base al valore
+specificato nell'opzione "--output" o con un default. Se non viene specificato
+nessun device, verr`a usato un "tmpfs" linkato sul desktop dell'utente, in
+modo che port`a essere mosso dove si vuole.
+
+  -e, --exclude-list **FILE**::
+
+un file contenente una lista di file e percorsi che NON devono essere salvati.
+Questa lista verr`a inclusa nello snapshot per essere riutilizzata.
+
+  -o, --output **FILE**::
+
+il nome del file o l'etichetta (label) da usare per il file o la partizione di
+snapshot. Se non specificata, live-snapshot cercher\`a un file all'interno
+del device oppure user`a l'intera partizione.
+
+  -r, --resync-string **STRING**::
+
+usato internamente nelle sincronizzazioni dallo script di init di
+live-initramfs. Il formato pu\`o cambiare, usatelo a vostro rischio.
+
+  -f, --refresh::
+
+scatena la stessa operazione che verrebbe fatta al reboot o all'halt della
+macchina, provando a fare il resync degli snapshot trovati al boot, usabile
+per salvare le modifiche in vista di un crash o di una mancanza di corrente.
+
+  -t, --type **TYPE**::
+
+il tipo pu`o essere "cpio", "squashfs" o "ext2".
+
+  -h, --help::
+
+mostra l'aiuto ed esce
+
+  -u, --usage::
+
+mostra l'utilizzo ed esce
+
+  -v, --version::
+
+da informazioni sulla versione ed esce
+
+Files
+-----
+
+  /etc/live-snapshot.list
+
+Facoltativo, se presente cambia completamente il funzionamento di live-snapshot; solo i files e le directory elencate verranno effettivamente inclusi nello snapshot.
+Funziona attualmente solo con gli snapshot di tipo "cpio" e "partizione intera".
+
+  /etc/live-snapshot.exclude_list
+
+Facoltativo, se presente verrà utilizzato per filtrare i file da includere negli snapshot. Tutte i file che conterranno le stringhe elecate (come "grep -F -v") non verranno salvati da live-snapshot.
+Funziona attualmente solo con gli snapshot di tipo "cpio", "partizione intera" e "squashfs"; è utile per filtrare contenuti poco significativi come i file temporanei e la cache.
+
+See also
+--------
+
+live-initramfs(8)
+
+Questo programma fa parte di live-initramfs.
+
+Bugs
+----
+
+Riportate i bug sul pacchetto live-initramfs
+link:http://packages.qa.debian.org/live-initramfs[http://packages.qa.debian.org/live-initramfs].
+
+Homepage
+--------
+
+Ulteriori informazioni su progetto Debian Live possono essere trovate su
+link:http://debian-live.alioth.debian.org/[http://debian-live.alioth.debian.org/] e
+link:http://wiki.debian.org/DebianLive/[http://wiki.debian.org/DebianLive/].
+
+Authors
+-------
+
+live-initramfs `e mantenuto da Daniel Baumann <daniel@debian.org> per il
+progetto Debian. live-initramfs `e un fork di
+link:http://packages.ubuntu.com/casper[casper]. casper `e stato scritto
+originariamente da Tollef Fog Heen <tfheen@canonical.com> e Matt Zimmerman
+<mdz@canonical.com>.

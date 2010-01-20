@@ -1,0 +1,208 @@
+<html>
+
+<head>
+<title>Vorbisfile - Example Code</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+<h1>Decoding Example Code</h1>
+
+<p>
+The following is a run-through of the decoding example program supplied
+with libvorbisfile, vorbisfile_example.c.  
+This program takes a vorbis bitstream from stdin and writes raw pcm to stdout.
+
+<p>
+First, relevant headers, including vorbis-specific "vorbis/codec.h" and "vorbisfile.h" have to be included.
+
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include "vorbis/codec.h"
+#include "vorbisfile.h"
+</b></pre>
+	</td>
+</tr>
+</table>
+<p>
+We also have to make a concession to Windows users here.  If we are using windows for decoding, we must declare these libraries so that we can set stdin/stdout to binary.
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+#ifdef _WIN32
+#include &lt;io.h&gt;
+#include &lt;fcntl.h&gt;
+#endif
+</b></pre>
+	</td>
+</tr>
+</table>
+<p>
+Next, a buffer for the pcm audio output is declared.
+
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+        <td>
+<pre><b>
+char pcmout[4096];
+</b></pre>
+        </td>
+</tr>
+</table>
+
+<p>Inside main(), we declare our primary OggVorbis_File structure.  We also declare a few other helpful variables to track out progress within the file.
+Also, we make our final concession to Windows users by setting the stdin and stdout to binary mode.
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+        <td>
+<pre><b>
+int main(int argc, char **argv){
+  OggVorbis_File vf;
+  int eof=0;
+  int current_section;
+
+#ifdef _WIN32
+  _setmode( _fileno( stdin ), _O_BINARY );
+  _setmode( _fileno( stdout ), _O_BINARY );
+#endif
+</b></pre>
+        </td>
+</tr>
+</table>
+
+<p>We call <a href="ov_open_callbacks.html">ov_open_callbacks()</a> to
+initialize the <b>OggVorbis_File</b> structure with default values.
+<a href="ov_open_callbacks.html">ov_open_callbacks()</a> also checks
+to ensure that we're reading Vorbis format and not something else. The
+OV_CALLBACKS_NOCLOSE callbacks instruct libvorbisfile not to close
+stdin later during cleanup.
+
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+        <td>
+<pre><b>
+  if(ov_open_callbacks(stdin, &vf, NULL, 0, OV_CALLBACKS_NOCLOSE) < 0) {
+      fprintf(stderr,"Input does not appear to be an Ogg bitstream.\n");
+      exit(1);
+  }
+
+</b></pre>
+        </td>
+</tr>
+</table>
+
+<p>
+We're going to pull the channel and bitrate info from the file using <a href="ov_info.html">ov_info()</a> and show them to the user.
+We also want to pull out and show the user a comment attached to the file using <a href="ov_comment.html">ov_comment()</a>.
+
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+        <td>
+<pre><b>
+  {
+    char **ptr=ov_comment(&vf,-1)->user_comments;
+    vorbis_info *vi=ov_info(&vf,-1);
+    while(*ptr){
+      fprintf(stderr,"%s\n",*ptr);
+      ++ptr;
+    }
+    fprintf(stderr,"\nBitstream is %d channel, %ldHz\n",vi->channels,vi->rate);
+    fprintf(stderr,"\nDecoded length: %ld samples\n",
+            (long)ov_pcm_total(&vf,-1));
+    fprintf(stderr,"Encoded by: %s\n\n",ov_comment(&vf,-1)->vendor);
+  }
+  
+</b></pre>
+        </td>
+</tr>
+</table>
+
+<p>
+Here's the read loop:
+
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+        <td>
+<pre><b>
+
+  while(!eof){
+    long ret=ov_read(&vf,pcmout,sizeof(pcmout),0,2,1,&current_section);
+    if (ret == 0) {
+      /* EOF */
+      eof=1;
+    } else if (ret < 0) {
+      /* error in the stream.  Not a problem, just reporting it in
+	 case we (the app) cares.  In this case, we don't. */
+    } else {
+      /* we don't bother dealing with sample rate changes, etc, but
+	 you'll have to*/
+      fwrite(pcmout,1,ret,stdout);
+    }
+  }
+
+  
+</b></pre>
+        </td>
+</tr>
+</table>
+
+<p>
+The code is reading blocks of data using <a href="ov_read.html">ov_read()</a>.
+Based on the value returned, we know if we're at the end of the file or have invalid data.  If we have valid data, we write it to the pcm output.
+
+<p>
+Now that we've finished playing, we can pack up and go home.  It's important to call <a href="ov_clear.html">ov_clear()</a> when we're finished.
+
+<br><br>
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+        <td>
+<pre><b>
+
+  ov_clear(&vf);
+    
+  fprintf(stderr,"Done.\n");
+  return(0);
+}
+</b></pre>
+        </td>
+</tr>
+</table>
+
+<p>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2007 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

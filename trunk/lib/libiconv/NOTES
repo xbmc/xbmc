@@ -1,0 +1,399 @@
+Q: Why does libiconv support encoding XXX? Why does libiconv not support
+   encoding ZZZ?
+
+A: libiconv, as an internationalization library, supports those character
+   sets and encodings which are in wide-spread use in at least one territory
+   of the world.
+
+   Hint1: On http://www.w3c.org/International/O-charset-lang.html you find a
+   page "Languages, countries, and the charsets typically used for them".
+   From this table, we can conclude that the following are in active use:
+
+     ISO-8859-1, CP1252   Afrikaans, Albanian, Basque, Catalan, Danish, Dutch,
+                          English, Faroese, Finnish, French, Galician, German,
+                          Icelandic, Irish, Italian, Norwegian, Portuguese,
+                          Scottish, Spanish, Swedish
+     ISO-8859-2           Croatian, Czech, Hungarian, Polish, Romanian, Slovak,
+                          Slovenian
+     ISO-8859-3           Esperanto, Maltese
+     ISO-8859-5           Bulgarian, Byelorussian, Macedonian, Russian,
+                          Serbian, Ukrainian
+     ISO-8859-6           Arabic
+     ISO-8859-7           Greek
+     ISO-8859-8           Hebrew
+     ISO-8859-9, CP1254   Turkish
+     ISO-8859-10          Inuit, Lapp
+     ISO-8859-13          Latvian, Lithuanian
+     ISO-8859-15          Estonian
+     KOI8-R               Russian
+     SHIFT_JIS            Japanese
+     ISO-2022-JP          Japanese
+     EUC-JP               Japanese
+
+   Ordered by frequency on the web (1997):
+     ISO-8859-1, CP1252   96%
+     SHIFT_JIS             1.6%
+     ISO-2022-JP           1.2%
+     EUC-JP                0.4%
+     CP1250                0.3%
+     CP1251                0.2%
+     CP850                 0.1%
+     MACINTOSH             0.1%
+     ISO-8859-5            0.1%
+     ISO-8859-2            0.0%
+
+   Hint2: The character sets mentioned in the XFree86 4.0 locale.alias file.
+
+     ISO-8859-1           Afrikaans, Basque, Breton, Catalan, Danish, Dutch,
+                          English, Estonian, Faroese, Finnish, French,
+                          Galician, German, Greenlandic, Icelandic,
+                          Indonesian, Irish, Italian, Lithuanian, Norwegian,
+                          Occitan, Portuguese, Scottish, Spanish, Swedish,
+                          Walloon, Welsh
+     ISO-8859-2           Albanian, Croatian, Czech, Hungarian, Polish,
+                          Romanian, Serbian, Slovak, Slovenian
+     ISO-8859-3           Esperanto
+     ISO-8859-4           Estonian, Latvian, Lithuanian
+     ISO-8859-5           Bulgarian, Byelorussian, Macedonian, Russian,
+                          Serbian, Ukrainian
+     ISO-8859-6           Arabic
+     ISO-8859-7           Greek
+     ISO-8859-8           Hebrew
+     ISO-8859-9           Turkish
+     ISO-8859-14          Breton, Irish, Scottish, Welsh
+     ISO-8859-15          Basque, Breton, Catalan, Danish, Dutch, Estonian,
+                          Faroese, Finnish, French, Galician, German,
+                          Greenlandic, Icelandic, Irish, Italian, Lithuanian,
+                          Norwegian, Occitan, Portuguese, Scottish, Spanish,
+                          Swedish, Walloon, Welsh
+     KOI8-R               Russian
+     KOI8-U               Russian, Ukrainian
+     EUC-JP (alias eucJP)      Japanese
+     ISO-2022-JP (alias JIS7)  Japanese
+     SHIFT_JIS (alias SJIS)    Japanese
+     U90                       Japanese
+     S90                       Japanese
+     EUC-CN (alias eucCN)      Chinese
+     EUC-TW (alias eucTW)      Chinese
+     BIG5                      Chinese
+     EUC-KR (alias eucKR)      Korean
+     ARMSCII-8                 Armenian
+     GEORGIAN-ACADEMY          Georgian
+     GEORGIAN-PS               Georgian
+     TIS-620 (alias TACTIS)    Thai
+     MULELAO-1                 Laothian
+     IBM-CP1133                Laothian
+     VISCII                    Vietnamese
+     TCVN                      Vietnamese
+     NUNACOM-8                 Inuktitut
+
+   Hint3: The character sets supported by Netscape Communicator 4.
+
+     Where is this documented? For the complete picture, I had to use
+     "strings netscape" and then a lot of guesswork. For a quick take,
+     look at the "View - Character set" menu of Netscape Communicator 4.6:
+
+     ISO-8859-{1,2,5,7,9,15}
+     WINDOWS-{1250,1251,1253}
+     KOI8-R               Cyrillic
+     CP866                Cyrillic
+     Autodetect           Japanese  (EUC-JP, ISO-2022-JP, ISO-2022-JP-2, SJIS)
+     EUC-JP               Japanese
+     SHIFT_JIS            Japanese
+     GB2312               Chinese
+     BIG5                 Chinese
+     EUC-TW               Chinese
+     Autodetect           Korean    (EUC-KR, ISO-2022-KR, but not JOHAB)
+
+     UTF-8
+     UTF-7
+
+   Hint4: The character sets supported by Microsoft Internet Explorer 4.
+
+     ISO-8859-{1,2,3,4,5,6,7,8,9}
+     WINDOWS-{1250,1251,1252,1253,1254,1255,1256,1257}
+     KOI8-R               Cyrillic
+     KOI8-RU              Ukrainian
+     ASMO-708             Arabic
+     EUC-JP               Japanese
+     ISO-2022-JP          Japanese
+     SHIFT_JIS            Japanese
+     GB2312               Chinese
+     HZ-GB-2312           Chinese
+     BIG5                 Chinese
+     EUC-KR               Korean
+     ISO-2022-KR          Korean
+     WINDOWS-874          Thai
+     WINDOWS-1258         Vietnamese
+
+     UTF-8
+     UTF-7
+     UNICODE             actually UNICODE-LITTLE
+     UNICODEFEFF         actually UNICODE-BIG
+
+     and various DOS character sets: DOS-720, DOS-862, IBM852, CP866.
+
+   We take the union of all these four sets. The result is:
+
+   European and Semitic languages
+     * ASCII.
+       We implement this because it is occasionally useful to know or to
+       check whether some text is entirely ASCII (i.e. if the conversion
+       ISO-8859-x -> UTF-8 is trivial).
+     * ISO-8859-{1,2,3,4,5,6,7,8,9,10}
+       We implement this because they are widely used. Except ISO-8859-4
+       which appears to have been superseded by ISO-8859-13 in the baltic
+       countries. But it's an ISO standard anyway.
+     * ISO-8859-13
+       We implement this because it's a standard in Lithuania and Latvia.
+     * ISO-8859-14
+       We implement this because it's an ISO standard.
+     * ISO-8859-15
+       We implement this because it's increasingly used in Europe, because
+       of the Euro symbol.
+     * ISO-8859-16
+       We implement this because it's an ISO standard.
+     * KOI8-R, KOI8-U
+       We implement this because it appears to be the predominant encoding
+       on Unix in Russia and Ukraine, respectively.
+     * KOI8-RU
+       We implement this because MSIE4 supports it.
+     * KOI8-T
+       We implement this because it is the locale encoding in glibc's Tajik
+       locale.
+     * PT154
+       We implement this because it is the locale encoding in glibc's Kazakh
+       locale.
+     * RK1048
+       We implement this because it's a standard in Kazakhstan.
+     * CP{1250,1251,1252,1253,1254,1255,1256,1257}
+       We implement these because they are the predominant Windows encodings
+       in Europe.
+     * CP850
+       We implement this because it is mentioned as occurring in the web
+       in the aforementioned statistics.
+     * CP862
+       We implement this because Ron Aaron says it is sometimes used in web
+       pages and emails.
+     * CP866
+       We implement this because Netscape Communicator does.
+     * CP1131
+       We implement this because it is the locale encoding of a Belorusian
+       locale in FreeBSD and MacOS X.
+     * Mac{Roman,CentralEurope,Croatian,Romania,Cyrillic,Greek,Turkish} and
+       Mac{Hebrew,Arabic}
+       We implement these because the Sun JDK does, and because Mac users
+       don't deserve to be punished.
+     * Macintosh
+       We implement this because it is mentioned as occurring in the web
+       in the aforementioned statistics.
+   Japanese
+     * EUC-JP, SHIFT_JIS, ISO-2022-JP
+       We implement these because they are widely used. EUC-JP and SHIFT_JIS
+       are more used for files, whereas ISO-2022-JP is recommended for email.
+     * CP932
+       We implement this because it is the Microsoft variant of SHIFT_JIS,
+       used on Windows.
+     * ISO-2022-JP-2
+       We implement this because it's the common way to represent mails which
+       make use of JIS X 0212 characters.
+     * ISO-2022-JP-1
+       We implement this because it's in the RFCs, but I don't think it is
+       really used.
+     * U90, S90
+       We DON'T implement this because I have no informations about what it
+       is or who uses it.
+   Simplified Chinese
+     * EUC-CN = GB2312
+       We implement this because it is the widely used representation
+       of simplified Chinese.
+     * GBK
+       We implement this because it appears to be used on Solaris and Windows.
+     * GB18030
+       We implement this because it is an official requirement in the
+       People's Republic of China.
+     * ISO-2022-CN
+       We implement this because it is in the RFCs, but I have no idea
+       whether it is really used.
+     * ISO-2022-CN-EXT
+       We implement this because it's in the RFCs, but I don't think it is
+       really used.
+     * HZ = HZ-GB-2312
+       We implement this because the RFCs recommend it for Usenet postings,
+       and because MSIE4 supports it.
+   Traditional Chinese
+     * EUC-TW
+       We implement it because it appears to be used on Unix.
+     * BIG5
+       We implement it because it is the de-facto standard for traditional
+       Chinese.
+     * CP950
+       We implement this because it is the Microsoft variant of BIG5, used
+       on Windows.
+     * BIG5+
+       We DON'T implement this because it doesn't appear to be in wide use.
+       Only the CWEX fonts use this encoding. Furthermore, the conversion
+       tables in the big5p package are not coherent: If you convert directly,
+       you get different results than when you convert via GBK.
+     * BIG5-HKSCS
+       We implement it because it is the de-facto standard for traditional
+       Chinese in Hongkong.
+   Korean
+     * EUC-KR
+       We implement these because they appear to be the widely used
+       representations for Korean.
+     * CP949
+       We implement this because it is the Microsoft variant of EUC-KR, used
+       on Windows.
+     * ISO-2022-KR
+       We implement it because it is in the RFCs and because MSIE4 supports
+       it, but I have no idea whether it's really used.
+     * JOHAB
+       We implement this because it is apparently used on Windows as a locale
+       encoding (codepage 1361).
+     * ISO-646-KR
+       We DON'T implement this because although an old ASCII variant, its
+       glyph for 0x7E is not clear: RFC 1345 and unicode.org's JOHAB.TXT
+       say it's a tilde, but Ken Lunde's "CJKV information processing" says
+       it's an overline. And it is not ISO-IR registered.
+   Armenian
+     * ARMSCII-8
+       We implement it because XFree86 supports it.
+   Georgian
+     * Georgian-Academy, Georgian-PS
+       We implement these because they appear to be both used for Georgian;
+       Xfree86 supports them.
+   Thai
+     * ISO-8859-11, TIS-620
+       We implement these because it seems to be standard for Thai.
+     * CP874
+       We implement this because MSIE4 supports it.
+     * MacThai
+       We implement this because the Sun JDK does, and because Mac users
+       don't deserve to be punished.
+   Laotian
+     * MuleLao-1, CP1133
+       We implement these because XFree86 supports them. I have no idea which
+       one is used more widely.
+   Vietnamese
+     * VISCII, TCVN
+       We implement these because XFree86 supports them.
+     * CP1258
+       We implement this because MSIE4 supports it.
+   Other languages
+     * NUNACOM-8 (Inuktitut)
+       We DON'T implement this because it isn't part of Unicode yet, and
+       therefore doesn't convert to anything except itself.
+   Platform specifics
+     * HP-ROMAN8, NEXTSTEP
+       We implement these because they were the native character set on HPs
+       and NeXTs for a long time, and libiconv is intended to be usable on
+       these old machines.
+   Full Unicode
+     * UTF-8, UCS-2, UCS-4
+       We implement these. Obviously.
+     * UCS-2BE, UCS-2LE, UCS-4BE, UCS-4LE
+       We implement these because they are the preferred internal
+       representation of strings in Unicode aware applications. These are
+       non-ambiguous names, known to glibc. (glibc doesn't have
+       UCS-2-INTERNAL and UCS-4-INTERNAL.)
+     * UTF-16, UTF-16BE, UTF-16LE
+       We implement these, because UTF-16 is still the favourite encoding of
+       the president of the Unicode Consortium (for political reasons), and
+       because they appear in RFC 2781.
+     * UTF-32, UTF-32BE, UTF-32LE
+       We implement these because they are part of Unicode 3.1.
+     * UTF-7
+       We implement this because it is essential functionality for mail
+       applications.
+     * C99
+       We implement it because it's used for C and C++ programs and because
+       it's a nice encoding for debugging.
+     * JAVA
+       We implement it because it's used for Java programs and because it's
+       a nice encoding for debugging.
+     * UNICODE (big endian), UNICODEFEFF (little endian)
+       We DON'T implement these because they are stupid and not standardized.
+   Full Unicode, in terms of `uint16_t' or `uint32_t'
+   (with machine dependent endianness and alignment)
+     * UCS-2-INTERNAL, UCS-4-INTERNAL
+       We implement these because they are the preferred internal
+       representation of strings in Unicode aware applications.
+
+Q: Support encodings mentioned in RFC 1345 ?
+A: No, they are not in use any more. Supporting ISO-646 variants is pointless
+   since ISO-8859-* have been adopted.
+
+Q: Support EBCDIC ?
+A: No!
+
+Q: How do I add a new character set?
+A: 1. Explain the "why" in this file, above.
+   2. You need to have a conversion table from/to Unicode. Transform it into
+   the format used by the mapping tables found on ftp.unicode.org: each line
+   contains the character code, in hex, with 0x prefix, then whitespace,
+   then the Unicode code point, in hex, 4 hex digits, with 0x prefix. '#'
+   counts as a comment delimiter until end of line.
+   Please also send your table to Mark Leisher <mleisher@crl.nmsu.edu> so he
+   can include it in his collection.
+   3. If it's an 8-bit character set, use the '8bit_tab_to_h' program in the
+   tools directory to generate the C code for the conversion. You may tweak
+   the resulting C code if you are not satisfied with its quality, but this
+   is rarely needed.
+   If it's a two-dimensional character set (with rows and columns), use the
+   'cjk_tab_to_h' program in the tools directory to generate the C code for
+   the conversion. You will need to modify the main() function to recognize
+   the new character set name, with the proper dimensions, but that shouldn't
+   be too hard. This yields the CCS. The CES you have to write by hand.
+   4. Store the resulting C code file in the lib directory. Add a #include
+   directive to converters.h, and add an entry to the encodings.def file.
+   5. Compile the package, and test your new encoding using a program like
+   iconv(1) or clisp(1).
+   6. Augment the testsuite: Add a line to tests/Makefile.in. For a stateless
+   encoding, create the complete table as a TXT file. For a stateful encoding,
+   provide a text snippet encoded using your new encoding and its UTF-8
+   equivalent.
+   7. Update the README and man/iconv_open.3, to mention the new encoding.
+   Add a note in the NEWS file.
+
+Q: What about bidirectional text? Should it be tagged or reversed when
+   converting from ISO-8859-8 or ISO-8859-6 to Unicode? Qt appears to do
+   this, see qt-2.0.1/src/tools/qrtlcodec.cpp.
+A: After reading RFC 1556: I don't think so. Support for ISO-8859-8-I and
+   ISO-8859-E remains to be implemented.
+   On the other hand, a page on www.w3c.org says that ISO-8859-8 in *email*
+   is visually encoded, ISO-8859-8 in *HTML* is logically encoded, i.e.
+   the same as ISO-8859-8-I. I'm confused.
+
+Other character sets not implemented:
+"MNEMONIC" = "csMnemonic"
+"MNEM" = "csMnem"
+"ISO-10646-UCS-Basic" = "csUnicodeASCII"
+"ISO-10646-Unicode-Latin1" = "csUnicodeLatin1" = "ISO-10646"
+"ISO-10646-J-1"
+"UNICODE-1-1" = "csUnicode11"
+"csWindows31Latin5"
+
+Other aliases not implemented (and not implemented in glibc-2.1 either):
+  From MSIE4:
+    ISO-8859-1: alias ISO8859-1
+    ISO-8859-2: alias ISO8859-2
+    KSC_5601: alias KS_C_5601
+    UTF-8: aliases UNICODE-1-1-UTF-8 UNICODE-2-0-UTF-8
+
+
+Q: How can I integrate libiconv into my package?
+A: Just copy the entire libiconv package into a subdirectory of your package.
+   At configuration time, call libiconv's configure script with the
+   appropriate --srcdir option and maybe --enable-static or --disable-shared.
+   Then "cd libiconv && make && make install-lib libdir=... includedir=...".
+   'install-lib' is a special (not GNU standardized) target which installs
+   only the include file - in $(includedir) - and the library - in $(libdir) -
+   and does not use other directory variables. After "installing" libiconv
+   in your package's build directory, building of your package can proceed.
+
+Q: Why is the testsuite so big?
+A: Because some of the tests are very comprehensive.
+   If you don't feel like using the testsuite, you can simply remove the
+   tests/ directory.
+

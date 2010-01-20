@@ -1,0 +1,17 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>dbWriteInt -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">dbWriteInt</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>Updates integer values to the designated cell.</P><H2><B>Prototype</B></H2><PRE> #include &quot;emfdb.h&quot;
+
+ int dbWriteInt(int did, char_t* table, char_t* column, int row, int i); </PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="68%" BORDER="0"><TR><TD WIDTH="15%">did</TD><TD WIDTH="85%">database ID returned when the database was created</TD></TR><TR><TD WIDTH="15%">table</TD><TD WIDTH="85%">table name in the database</TD></TR><TR><TD WIDTH="15%">column</TD><TD WIDTH="85%">column name in the table</TD></TR><TR><TD WIDTH="15%">row</TD><TD WIDTH="85%">row number in the column</TD></TR><TR><TD WIDTH="15%">i</TD><TD WIDTH="85%">integer value to be written to the cell</TD></TR></TABLE><H2><B>Description</B></H2><P>Write an integer to the database.</P><H2><B>Return Value</B></H2><P>dbWriteInt returns  0 on success, or a  -1 if a  failure.</P><H2><B>Example</B></H2><PRE>dbWriteInt(smd, &quot;base_os&quot;, &quot;swap_free&quot;, 0, value_integer(1000)); </PRE><H2><B>See Also</B></H2><P><A HREF="dbWriteInt.htm">dbWriteInt</A>, <A HREF="dbWriteStr.htm">dbWriteStr</A> </P><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></td></tr></table>
+</body>
+</html>

@@ -1,0 +1,2 @@
+Now this directory is private to GLib. Only the files relevant to GLib
+are left. See the separate "build" module in GNOME SVN for history.

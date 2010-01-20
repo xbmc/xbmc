@@ -1,0 +1,28 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umAddAccessLimit -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="530" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umAddAccessLimit</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <H2><B>Synopsis</B></H2><P>	Add an access limit to the User Management database in the Access Limit table.</P><H2><B>Prototype</B></H2><PRE>
+ #include &quot;um.h&quot; 
+
+
+ int umAddAccessLimit(char_t * url, 
+     accessMeth_t am, 
+     short secure, 
+     char_t * group);</PRE><H2><B>Parameters</B></H2><TABLE WIDTH=100% BORDER=0 CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">url</TD><TD WIDTH="87%">URL name</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">am</TD><TD WIDTH="87%"> 	access method</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">secure</TD><TD WIDTH="87%">security flag (reserved for future use)</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">group</TD><TD WIDTH="87%">user group to use</TD></TR> 
+</TABLE><H2><B>Description</B></H2><P>	Access method can be one of:<BR>		AM_NONE  -	 URL may not be accessed<BR>		AM_FULL -	no authorization is required for the URL<BR>		AM_BASIC - 	URL requires at least basic authentication,<BR>		AM_DIGEST - 	URL requires at least digest authentication,<BR>		AM_INVALID - 	not a valid access method</P><P>	Access limits apply to URLs, upon which they are keyed.  URLs can specify directories or filenames.  If an access limit specifies a user  group, then only members of that user  group can have access to the URL.</P><H2><B>Return Value</B></H2><P>	umAddAccessLimit returns 0 if successful or    -1 on error.</P><H2><B>Example</B></H2><PRE>int nCheck = umAddAccessLimit(T(&quot;/cgi-bin&quot;), AM_DIGEST, 0, T(&quot;users&quot;));</PRE><H2><B>See Also</B></H2><P>	<A HREF="umDeleteAccessLimit.htm">umDeleteAccessLimit</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

@@ -1,0 +1,35 @@
+#!/bin/sh
+
+if test x"$srcdir" != x""; then
+    builddir="."	# running from make check, but it does not define that
+else
+    srcdir=`echo "$0" | sed s,[^/]*$,,`
+    test "$srcdir" = "$0" && srcdir=.
+    test -z "$srcdir" && srcdir=.
+    builddir="$srcdir"	# running manually, have to assume
+fi
+
+srcdir=`cd $srcdir;pwd`
+builddir=`cd $builddir;pwd`
+
+error=0
+
+bad_globals=`nm -g --defined-only $builddir/../libmpeg2/*.o |\
+    awk '{if ($3) print $3}' | grep -v '^_\?mpeg2_'`
+
+if test x"$bad_globals" != x""; then
+    echo BAD GLOBAL SYMBOLS:
+    for s in $bad_globals; do echo $s; done
+    error=1
+fi
+
+bad_globals=`nm -g --defined-only $builddir/../libmpeg2/convert/*.o |\
+    awk '{if ($3) print $3}' | grep -v '^_\?mpeg2convert_'`
+
+if test x"$bad_globals" != x""; then
+    echo BAD GLOBAL SYMBOLS:
+    for s in $bad_globals; do echo $s; done
+    error=1
+fi
+
+exit $error

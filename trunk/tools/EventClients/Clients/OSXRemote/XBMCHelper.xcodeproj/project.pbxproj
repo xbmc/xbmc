@@ -1,0 +1,266 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E449C9DA1090622500783487 /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E449C9D91090622500783487 /* HIDRemote.m */; };
+		E4E62F370F83DB760066AF9D /* xbmchelper_main.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */; };
+		E4E62F380F83DB760066AF9D /* XBMCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F360F83DB760066AF9D /* XBMCHelper.m */; };
+		E4E62F600F83FB8C0066AF9D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E62F5F0F83FB8C0066AF9D /* IOKit.framework */; };
+		E4E62F690F83FBB40066AF9D /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E62F680F83FBB40066AF9D /* Carbon.framework */; };
+		E4E62FD40F83FD7C0066AF9D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E62FD30F83FD7C0066AF9D /* Cocoa.framework */; };
+		E4E62FE80F83FDD90066AF9D /* xbmcclientwrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4E62FE60F83FDD90066AF9D /* xbmcclientwrapper.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F7B0486A8DE00D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		8DD76F7E0486A8DE00D96B5E /* XBMCHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMCHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		E424E23710877D5400659D45 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		E449C9D81090622500783487 /* HIDRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HIDRemote.h; path = HIDRemote/HIDRemote.h; sourceTree = "<group>"; };
+		E449C9D91090622500783487 /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HIDRemote.m; path = HIDRemote/HIDRemote.m; sourceTree = "<group>"; };
+		E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmchelper_main.mm; sourceTree = "<group>"; };
+		E4E62F350F83DB760066AF9D /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
+		E4E62F360F83DB760066AF9D /* XBMCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCHelper.m; sourceTree = "<group>"; };
+		E4E62F5F0F83FB8C0066AF9D /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		E4E62F680F83FBB40066AF9D /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		E4E62FD30F83FD7C0066AF9D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		E4E62FE50F83FDD90066AF9D /* xbmcclientwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xbmcclientwrapper.h; sourceTree = "<group>"; };
+		E4E62FE60F83FDD90066AF9D /* xbmcclientwrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmcclientwrapper.mm; sourceTree = "<group>"; };
+		E4E62FE70F83FDD90066AF9D /* XBMCDebugHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCDebugHelpers.h; sourceTree = "<group>"; };
+		E4E630030F8406900066AF9D /* xbmcclient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xbmcclient.h; path = "../../lib/c++/xbmcclient.h"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F780486A8DE00D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4E62F600F83FB8C0066AF9D /* IOKit.framework in Frameworks */,
+				E4E62F690F83FBB40066AF9D /* Carbon.framework in Frameworks */,
+				E4E62FD40F83FD7C0066AF9D /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* XBMCHelper */ = {
+			isa = PBXGroup;
+			children = (
+				E424E23710877D5400659D45 /* Makefile.in */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E96029091FE04C91782 /* Documentation */,
+				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
+				19C28FBDFE9D53C911CA2CBB /* Products */,
+				E4E62F5F0F83FB8C0066AF9D /* IOKit.framework */,
+				E4E62F680F83FBB40066AF9D /* Carbon.framework */,
+				E4E62FD30F83FD7C0066AF9D /* Cocoa.framework */,
+			);
+			name = XBMCHelper;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				E449C9D71090621100783487 /* HIDRemote */,
+				E4E630030F8406900066AF9D /* xbmcclient.h */,
+				E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */,
+				E4E62F350F83DB760066AF9D /* XBMCHelper.h */,
+				E4E62F360F83DB760066AF9D /* XBMCHelper.m */,
+				E4E62FE70F83FDD90066AF9D /* XBMCDebugHelpers.h */,
+				E4E62FE50F83FDD90066AF9D /* xbmcclientwrapper.h */,
+				E4E62FE60F83FDD90066AF9D /* xbmcclientwrapper.mm */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		19C28FBDFE9D53C911CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F7E0486A8DE00D96B5E /* XBMCHelper */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859E96029091FE04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		E449C9D71090621100783487 /* HIDRemote */ = {
+			isa = PBXGroup;
+			children = (
+				E449C9D81090622500783487 /* HIDRemote.h */,
+				E449C9D91090622500783487 /* HIDRemote.m */,
+			);
+			name = HIDRemote;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F740486A8DE00D96B5E /* XBMCHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMCHelper" */;
+			buildPhases = (
+				8DD76F760486A8DE00D96B5E /* Sources */,
+				8DD76F780486A8DE00D96B5E /* Frameworks */,
+				8DD76F7B0486A8DE00D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XBMCHelper;
+			productInstallPath = "$(HOME)/bin";
+			productName = XBMCHelper;
+			productReference = 8DD76F7E0486A8DE00D96B5E /* XBMCHelper */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "XBMCHelper" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* XBMCHelper */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F740486A8DE00D96B5E /* XBMCHelper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F760486A8DE00D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4E62F370F83DB760066AF9D /* xbmchelper_main.mm in Sources */,
+				E4E62F380F83DB760066AF9D /* XBMCHelper.m in Sources */,
+				E4E62FE80F83FDD90066AF9D /* xbmcclientwrapper.mm in Sources */,
+				E449C9DA1090622500783487 /* HIDRemote.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB924808733DCA0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../osx;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				INSTALL_PATH = /usr/local/bin;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = XBMCHelper;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				STRIP_STYLE = debugging;
+			};
+			name = Debug;
+		};
+		1DEB924908733DCA0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../osx;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = 4.0;
+				INSTALL_PATH = /usr/local/bin;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = XBMCHelper;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				STRIP_STYLE = debugging;
+			};
+			name = Release;
+		};
+		1DEB924C08733DCA0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ONLY_ACTIVE_ARCH_PRE_XCODE_3_1)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = 4.0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH)";
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB924D08733DCA0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMCHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB924808733DCA0010E9CD /* Debug */,
+				1DEB924908733DCA0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB924B08733DCA0010E9CD /* Build configuration list for PBXProject "XBMCHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB924C08733DCA0010E9CD /* Debug */,
+				1DEB924D08733DCA0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>ejArgs -- GoAhead Embedded JavaScript</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+ <table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0>
+<TR>
+	
+<td class="titleLeft" align=left width="33%">ejArgs</TD><td class="titleCenter" align=center width="33%"><b>GoAhead JavaScript API</b></TD><td class="titleRight" align=right><B>GoAhead EMF</B></TD></TABLE><HR>
+
+
+
+<h2>Synopsis</h2><p>Crack the arguments given to an JavaScript script procedure.</p><h2>Prototype</h2><pre>
+ #include &quot;ej.h&quot;
+
+ int <b>ejArgs</b>(int argc, char_t **argv, char_t *fmt, ...);
+</pre><h2>Parameters</h2><p><table width=90%>
+    
+    <TR>
+        <TD width=40>argc
+        <TD>Number of arguments in argv
+    <TR>
+        <TD width=40>argv
+        <TD>   List of arguments
+    <TR>
+        <TD width=40>fmt
+        <TD>Sprintf style format string with %s and %d parameters<tr>
+	<td width=40 cellpadding = 20>...</td><td cellpadding = 20>Pointers to variables to store %s and %d parameters</td></tr></table><h2>Description</h2><P style="LEFT: -7798249px; TOP: 503px"> The ejArgv procedure is used by JavaScript procedures to crack their ASP scripting 
+arguments. It parses the <i>argv</i>parameter and stores the arguments in individual variables 
+passed to ejArgs. The <EM>fmt</EM> parameter provides a sprintf style argument specification. Only %s and 
+%d specifiers are supported. </P><h2>Return Value</h2><p>Returns the number of arguments found in 
+<EM>args</EM>       .</p><h2>Example</h2><pre>
+if (ejArgs(argc, argv, &quot;%s %d&quot;, &amp;name, &amp;age) &lt;  2) {
+    websError(wp, 400, &quot;Insufficient args\n&quot;);
+    return -1;
+}
+</pre><h2>See Also</h2><p><A href="../../../over/ejs.htm">JavaScript</A>,&nbsp; <A href="../../../over/asp.htm">Active Server Pages</A></p></td></tr></table>
+</body>
+</html>

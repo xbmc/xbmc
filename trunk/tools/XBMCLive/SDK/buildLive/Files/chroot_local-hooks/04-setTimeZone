@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo ""
+echo "Set time zone..."
+echo ""
+
+# dpkg-reconfigure tzdata
+
+echo "Etc/UTC" > /etc/timezone    
+dpkg-reconfigure -f noninteractive tzdata

@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>FcFontList</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+HREF="t1.html"><LINK
+REL="UP"
+TITLE="FcConfig"
+HREF="x102.html#AEN2554"><LINK
+REL="PREVIOUS"
+TITLE="FcFontRenderPrepare"
+HREF="fcfontrenderprepare.html"><LINK
+REL="NEXT"
+TITLE="FcConfigFilename"
+HREF="fcconfigfilename.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fcfontrenderprepare.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fcconfigfilename.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="FCFONTLIST"
+></A
+>FcFontList</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3194"
+></A
+><H2
+>Name</H2
+>FcFontList&nbsp;--&nbsp;List fonts</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3197"
+></A
+><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN3198"
+></A
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &#60;fontconfig.h&#62;
+	</PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>FcFontSet * <TT
+CLASS="FUNCTION"
+>FcFontList</TT
+></CODE
+>(FcConfig *<TT
+CLASS="PARAMETER"
+><I
+>config</I
+></TT
+>, FcPattern *<TT
+CLASS="PARAMETER"
+><I
+>p</I
+></TT
+>, FcObjectSet *<TT
+CLASS="PARAMETER"
+><I
+>os</I
+></TT
+>);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3209"
+></A
+><H2
+>Description</H2
+><P
+>Selects fonts matching <TT
+CLASS="PARAMETER"
+><I
+>p</I
+></TT
+>, creates patterns from those fonts containing
+only the objects in <TT
+CLASS="PARAMETER"
+><I
+>os</I
+></TT
+> and returns the set of unique such patterns.
+If <TT
+CLASS="PARAMETER"
+><I
+>config</I
+></TT
+> is NULL, the default configuration is checked
+to be up to date, and used.
+	    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3215"
+></A
+><H2
+>Version</H2
+><P
+>Fontconfig version 2.7.3
+
+	    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fcfontrenderprepare.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="t1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fcconfigfilename.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FcFontRenderPrepare</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="x102.html#AEN2554"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FcConfigFilename</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

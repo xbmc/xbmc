@@ -1,0 +1,6 @@
+libdts (0.0.2-svn-1) unstable; urgency=low
+
+  * Initial release (Closes: #232256).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 24 Feb 2004 20:33:44 +0100
+

@@ -1,0 +1,4 @@
+This script will upgrade your system on an aptitude based distro.
+
+also python-apt needs to be installed.
+sudo apt-get install python-apt

@@ -1,0 +1,5 @@
+# Automatically added by dh_installinit
+if [ -x "/etc/init.d/live-initramfs" ]; then
+	update-rc.d live-initramfs start 89 0 6 . >/dev/null || exit $?
+fi
+# End automatically added section

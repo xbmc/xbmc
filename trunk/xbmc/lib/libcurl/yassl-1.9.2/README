@@ -1,0 +1,592 @@
+*** Note, Please read ***
+
+yaSSL takes a different approach to certificate verification than OpenSSL does.
+The default policy for the client is to verify the server, this means that if
+you don't load CAs to verify the server you'll get a connect error, unable to 
+verify.  It you want to mimic OpenSSL behavior of not verifying the server and
+reducing security you can do this by calling:
+
+SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, 0);
+
+before calling SSL_new();
+
+*** end Note ***
+
+*****************yaSSL Release notes, version 1.9.2 (9/24/08)
+
+    This release of yaSSL contains bug fixes and improved certificate verify
+    callback support. 
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0 and note in 1.5.8.
+
+
+*****************yaSSL Release notes, version 1.8.8 (5/7/08)
+
+    This release of yaSSL contains bug fixes, and better socket handling. 
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0 and note in 1.5.8.
+
+
+*****************yaSSL Release notes, version 1.8.6 (1/31/08)
+
+    This release of yaSSL contains bug fixes, and fixes security problems
+    associated with using SSL 2.0 client hellos and improper input handling.
+    Please upgrade to this version if you are using a previous one. 
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0 and note in 1.5.8.
+
+
+*****************yaSSL Release notes, version 1.7.5 (10/15/07)
+
+    This release of yaSSL contains bug fixes, adds MSVC 2005 project support,
+    GCC 4.2 support, IPV6 support and test, and new test certificates. 
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0 and note in 1.5.8.
+
+
+*****************yaSSL Release notes, version 1.7.2 (8/20/07)
+
+    This release of yaSSL contains bug fixes and adds initial OpenVPN support.
+    Just configure at this point and beginning of build. 
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0 and note in 1.5.8.
+
+
+*****************yaSSL Release notes, version 1.6.8 (4/16/07)
+
+    This release of yaSSL contains bug fixes and adds SHA-256, SHA-512, SHA-224,
+    and SHA-384.
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0 and note in 1.5.8.
+
+
+*****************yaSSL Release notes, version 1.6.0 (2/22/07)
+
+    This release of yaSSL contains bug fixes, portability enhancements, and
+    better X509 support.
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0 and note in 1.5.8.
+
+*****************yaSSL Release notes, version 1.5.8 (1/10/07)
+
+    This release of yaSSL contains bug fixes, portability enhancements, and
+    support for GCC 4.1.1 and vs2005 sp1.
+
+
+
+    Since yaSSL now supports zlib, as does libcur, the libcurl build test can
+    fail if yaSSL is built with zlib support since the zlib library isn't 
+    passed.  You can do two things to fix this: 
+
+        1) build yaSSL w/o zlib --without-zlib
+        2) or add flags to curl configure LDFLAGS="-lm -lz"
+
+
+
+*****************yaSSL Release notes, version 1.5.0 (11/09/06)
+
+    This release of yaSSL contains bug fixes, portability enhancements,
+    and full TLS 1.1 support.  Use the functions:
+
+        SSL_METHOD *TLSv1_1_server_method(void);
+        SSL_METHOD *TLSv1_1_client_method(void);
+    
+    or the SSLv23 versions (even though yaSSL doesn't support SSL 2.0 the v23
+    means to pick the highest of SSL 3.0, TLS 1.0, or TLS 1.1).
+
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0.
+
+
+
+****************yaSSL Release notes, version 1.4.5 (10/15/06)
+
+
+    This release of yaSSL contains bug fixes, portability enhancements,
+    zlib compression support, removal of assembly instructions at runtime if
+    not supported, and initial TLS 1.1 support.
+
+
+    Compression Notes:  yaSSL uses zlib for compression and the compression
+    should only be used if yaSSL is at both ends because the implementation
+    details aren't yet standard.  If you'd like to turn compression on use
+    the SSL_set_compression() function on the client before calling
+    SSL_connect().  If both the client and server were built with zlib support
+    then the connection will use compression.  If the client isn't built with
+    support then SSL_set_compression() will return an error (-1).
+
+    To build yaSSL with zlib support on Unix simply have zlib support on your
+    system and configure will find it if it's in the standard locations.  If
+    it's somewhere else use the option ./configure --with-zlib=DIR.  If you'd
+    like to disable compression support in yaSSL use ./configure --without-zlib.
+
+    To build yaSSL with zlib support on Windows:
+
+        1) download zlib from http://www.zlib.net/
+        2) follow the instructions in zlib from projects/visualc6/README.txt
+           for how to add the zlib project into the yaSSL workspace noting that
+           you'll need to add configuration support for "Win32 Debug" and
+           "Win32 Release" in note 3 under "To use:". 
+        3) define HAVE_LIBZ when building yaSSL
+
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0.
+
+
+********************yaSSL Release notes, version 1.4.0 (08/13/06)
+
+
+    This release of yaSSL contains bug fixes, portability enhancements,
+    nonblocking connect and accept, better OpenSSL error mapping, and 
+    certificate caching for session resumption.
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0.
+
+
+********************yaSSL Release notes, version 1.3.7 (06/26/06)
+
+
+    This release of yaSSL contains bug fixes, portability enhancements,
+    and libcurl 7.15.4 support (any newer versions may not build). 
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0.
+
+
+********************yaSSL Release notes, version 1.3.5 (06/01/06)
+
+
+    This release of yaSSL contains bug fixes, portability enhancements,
+    better libcurl support, and improved non-blocking I/O.
+
+See normal  build instructions below under 1.0.6.
+See libcurl build instructions below under 1.3.0.
+
+
+********************yaSSL Release notes, version 1.3.0 (04/26/06)
+
+
+    This release of yaSSL contains minor bug fixes, portability enhancements,
+    and libcurl support.
+
+See normal build instructions below under 1.0.6.
+
+
+--To build for libcurl on Linux, Solaris, *BSD, Mac OS X, or Cygwin:
+
+  To build for libcurl the library needs to be built without C++ globals since
+  the linker will be called in a C context, also libcurl configure will expect
+  OpenSSL library names so some symbolic links are created.
+
+    ./configure --enable-pure-c
+    make
+    make openssl-links
+
+    (then go to your libcurl home and tell libcurl about yaSSL build dir)
+    ./configure --with-ssl=/yaSSL-BuildDir LDFLAGS=-lm
+    make
+
+
+--To build for libcurl on Win32:
+
+    Simply add the yaSSL project as a dependency to libcurl, add 
+    yaSSL-Home\include and yaSSL-Home\include\openssl to the include list, and
+    define USE_SSLEAY and USE_OPENSSL
+
+    please email todd@yassl.com if you have any questions.
+    
+
+*******************yaSSL Release notes, version 1.2.2 (03/27/06)
+
+
+    This release of yaSSL contains minor bug fixes and portability enhancements.
+
+See build instructions below under 1.0.6:
+
+
+
+*******************yaSSL Release notes, version 1.2.0
+
+
+    This release of yaSSL contains minor bug fixes, portability enhancements,
+    Diffie-Hellman compatibility fixes for other servers and client,
+    optimization improvements, and x86 ASM changes.
+
+See build instructions below under 1.0.6:
+
+
+
+*****************yaSSL Release notes, version 1.1.5
+
+    This release of yaSSL contains minor bug fixes, portability enhancements,
+    and user requested changes including the ability to add all certificates in
+    a directory, more robust socket handling, no new overloading unless
+    requested, and an SSL_VERIFY_NONE option.
+
+
+See build instructions below under 1.0.6:
+
+
+
+******************yaSSL Release notes, version 1.0.6
+
+This release of yaSSL contains minor bug fixes, portability enhancements,
+x86 assembly for ARC4, SHA, MD5, and RIPEMD, --enable-ia32-asm configure
+option, and a security patch for certificate chain processing.
+
+--To build on Linux, Solaris, *BSD, Mac OS X, or Cygwin:
+
+    ./configure
+    make
+
+    run testsuite from yaSSL-Home/testsuite to test the build
+
+to make a release build:
+
+    ./configure --disable-debug
+    make
+
+    run testsuite from yaSSL-Home/testsuite to test the build
+
+
+--To build on Win32
+
+Choose (Re)Build All from the project workspace
+
+run Debug\testsuite.exe from yaSSL-Home\testsuite to test the build
+
+
+
+***************** yaSSL Release notes, version 1.0.5
+
+This release of yaSSL contains minor bug fixes, portability enhancements,
+x86 assembly for AES, 3DES, BLOWFISH, and TWOFISH, --without-debug configure
+option, and --enable-kernel-mode configure option for using TaoCrypt with
+kernel modules.
+
+--To build on Linux, Solaris, *BSD, Mac OS X, or Cygwin:
+
+    ./configure
+    make
+
+    run testsuite from yaSSL-Home/testsuite to test the build
+
+to make a release build:
+
+    ./configure --without-debug
+    make
+
+    run testsuite from yaSSL-Home/testsuite to test the build
+
+
+--To build on Win32
+
+Choose (Re)Build All from the project workspace
+
+run Debug\testsuite.exe from yaSSL-Home\testsuite to test the build
+
+
+******************yaSSL Release notes, version 1.0.1
+
+This release of yaSSL contains minor bug fixes, portability enhancements,
+GCC 3.4.4 support, MSVC 2003 support, and more documentation.
+
+Please see build instructions in the release notes for 0.9.6 below.
+
+
+******************yaSSL Release notes, version 1.0
+
+This release of yaSSL contains minor bug fixes, portability enhancements,
+GCC 4.0 support, testsuite, improvements, and API additions.
+
+Please see build instructions in the release notes for 0.9.6 below.
+
+
+******************yaSSL Release notes, version 0.9.9
+
+This release of yaSSL contains minor bug fixes, portability enchancements,
+MSVC 7 support, memory improvements, and API additions.
+
+Please see build instructions in the release notes for 0.9.6 below.
+
+
+******************yaSSL Release notes, version 0.9.8
+
+This release of yaSSL contains minor bug fixes and portability enchancements.
+
+Please see build instructions in the release notes for 0.9.6 below.
+
+
+******************yaSSL Release notes, version 0.9.6
+
+This release of yaSSL contains minor bug fixes, removal of STL support, and
+removal of exceptions and rtti so that the library can be linked without the
+std c++ library.
+
+--To build on Linux, Solaris, FreeBSD, Mac OS X, or Cygwin
+
+./configure
+make
+
+run testsuite from yaSSL-Home/testsuite to test the build
+
+
+--To build on Win32
+
+Choose (Re)Build All from the project workspace
+
+run Debug\testsuite.exe from yaSSL-Home\testsuite to test the build
+
+
+
+******************yaSSL Release notes, version 0.9.2
+
+This release of yaSSL contains minor bug fixes, expanded certificate
+verification and chaining, and improved documentation.
+
+Please see build instructions in release notes 0.3.0.
+
+
+
+******************yaSSL Release notes, version 0.9.0
+
+This release of yaSSL contains minor bug fixes, client verification handling,
+hex and base64 encoing/decoding, and an improved test suite.
+
+Please see build instructions in release notes 0.3.0.
+
+
+******************yaSSL Release notes, version 0.8.0
+
+This release of yaSSL contains minor bug fixes, and initial porting effort to
+64bit, BigEndian, and more UNIX systems.
+
+Please see build instructions in release notes 0.3.0.
+
+
+******************yaSSL Release notes, version 0.6.0
+
+This release of yaSSL contains minor bug fixes, source cleanup, and binary beta
+(1) of the yaSSL libraries.
+
+Please see build instructions in release notes 0.3.0.
+
+
+
+******************yaSSL Release notes, version 0.5.0
+
+This release of yaSSL contains minor bug fixes, full session resumption
+support, and initial testing suite support.
+
+
+
+Please see build instructions in release notes 0.3.0.
+
+
+
+******************yaSSL Release notes, version 0.4.0
+
+This release of yaSSL contains minor bug fixes, an optional memory tracker,
+an echo client and server with input/output redirection for load testing, 
+and initial session caching support. 
+
+
+Please see build instructions in release notes 0.3.0.
+
+
+******************yaSSL Release notes, version 0.3.5
+
+This release of yaSSL contains minor bug fixes and extensions to the crypto
+library including a full test suite.
+
+
+*******************yaSSL Release notes, version 0.3.0
+
+This release of yaSSL contains minor bug fixes and extensions to the crypto
+library including AES and an improved random number generator.  GNU autoconf
+and automake are now used to simplify the build process on Linux.
+
+*** Linux Build process
+
+./configure
+make
+
+*** Windows Build process
+
+open the yassl workspace and build the project
+
+
+*******************yaSSL Release notes, version 0.2.9
+
+This release of yaSSL contains minor bug fixes and extensions to the crypto
+library.
+
+See the notes at the bottom of this page for build instructions.
+
+
+*******************yaSSL Release notes, version 0.2.5
+
+This release of yaSSL contains minor bug fixes and a beta binary of the yaSSL
+libraries for win32 and linux.
+
+See the notes at the bottom of this page for build instructions.
+
+
+
+*******************yaSSL Release notes, version 0.2.0
+
+This release of yaSSL contains minor bug fixes and initial alternate crypto
+functionality. 
+
+*** Complete Build ***
+
+See the notes in Readme.txt for build instructions.
+
+*** Update Build ***
+
+If you have already done a complete build of yaSSL as described in the release
+0.0.1 - 0.1.0 notes and downloaded the update to 0.2.0, place the update file
+yassl-update-0.2.0.tar.gz in the yaSSL home directory and issue the command:
+
+gzip -cd yassl-update-0.2.0.tar.gz | tar xvf -
+
+to update the previous release.
+
+Then issue the make command on linux or rebuild the yaSSL project on Windows. 
+
+*******************yaSSL Release notes, version 0.1.0
+
+This release of yaSSL contains minor bug fixes, full client and server TLSv1
+support including full ephemeral Diffie-Hellman support, SSL type RSA and DSS
+signing and verification, and initial stunnel 4.05 build support.
+
+
+
+*********************yaSSL Release notes, version 0.0.3
+
+The third release of yaSSL contains minor bug fixes, client certificate
+enhancements, and initial ephemeral Diffie-Hellman integration:
+
+
+
+*********************
+
+yaSSL Release notes, version 0.0.2
+
+The second release of yaSSL contains minor bug fixes, client certificate
+enhancements, session resumption, and improved TLS support including:
+
+- HMAC for MD5 and SHA-1
+- PRF (pseudo random function)
+- Master Secret and Key derivation routines
+- Record Authentication codes
+- Finish verify data check
+
+Once ephemeral RSA and DH are added yaSSL will be fully complaint with TLS.
+
+
+
+**********************
+
+yassl Release notes, version 0.0.1
+
+The first release of yassl supports normal RSA mode SSLv3 connections with
+support for SHA-1 and MD5 digests.  Ciphers include DES, 3DES, and RC4.
+
+yassl uses the CryptoPP library for cryptography, the source is available at
+www.cryptopp.com .
+
+yassl uses CML (the Certificate Management Library) for x509 support.  More
+features will be in future versions.  The CML source is available for download
+from www.digitalnet.com/knowledge/cml_home.htm .
+
+The next release of yassl will support the 3 lesser-used SSL connection modes;
+HandShake resumption, Ephemeral RSA (or DH), and Client Authentication as well
+as full support for TLS.  Backwards support for SSLv2 is not planned at this
+time.
+
+
+**********************
+
+Building yassl on linux:
+
+use the ./buildall script to build everything.
+
+buildall will configure and build CML, CryptoPP, and yassl.  Testing was 
+preformed with gcc version 3.3.2 on kernel 2.4.22.
+
+
+**********************
+
+Building yassl on Windows:
+
+Testing was preformed on Windows 2000 with Visual C++ 6 sp5.
+
+1) decompress esnacc_r16.tgz in place, see buildall for syntax if unsure
+
+2) decompress smp_r23.tgz in place
+
+3) unzip cryptopp51/crypto51.zip in place
+
+4) Build SNACC (part of CML) using snacc_builds.dsw in the SNACC directory
+
+5) Build SMP (part of CMP) using smp.dsw in the smp directory
+
+6) Build yassl using yassl.dsw
+
+
+**********************
+
+examples, server and client:
+
+Please see the server and client examples in both versions to see how to link
+to yassl and the support libraries.  On linux do 'make server' and 'make
+client' to build them. On Windows you will find the example projects in the
+main workspace, yassl.dsw.
+
+The example server and client are compatible with openssl.
+
+
+**********************
+
+Building yassl into mysql on linux:
+
+Testing was done using mysql version 4.0.17.
+
+alter openssl_libs in the configure file, line 21056. Change '-lssl -lcrypto'
+to '-lyassl -lcryptopp -lcmapi -lcmlasn -lctil -lc++asn1'.
+
+see build/config_command for the configure command used to configure mysql
+please change /home/touska/ to the relevant directory of course.
+
+add yassl/lib to the LD_LIBRARY_PATH because libmysql/conf_to_src does not
+use the ssl lib directory though it does use the ssl libraries.
+
+make
+
+make install
+
+
+*********************
+
+License:  yassl is currently under the GPL, please see license information
+in the source and include files.
+
+
+*********************
+
+Contact: please send comments or questions to Todd A Ouska at todd@yassl.com
+and/or Larry Stefonic at larry@yassl.com.
+
+
+

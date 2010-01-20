@@ -1,0 +1,105 @@
+/* unix/config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define if the C++ compiler supports BOOL */
+#undef HAVE_BOOL
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define if your C++ compiler implements exception-handling. */
+#undef HAVE_EXCEPTIONS
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define if standard member ``ios::binary'' is called ``ios::bin''. */
+#undef HAVE_IOS_BIN
+
+/* Define if ``ios::openmode'' is supported. */
+#undef HAVE_IOS_OPENMODE
+
+/* Define to 1 if you support file names longer than 14 characters. */
+#undef HAVE_LONG_FILE_NAMES
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define if you have the <sstream> header file. */
+#undef HAVE_SSTREAM
+
+/* Define to 1 if you have the <stdbool.h> header file. */
+#undef HAVE_STDBOOL_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define if you have the strcasecmp function. */
+#undef HAVE_STRCASECMP
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define if you have the strncasecmp function. */
+#undef HAVE_STRNCASECMP
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The size of `char', as computed by sizeof. */
+#undef SIZEOF_CHAR
+
+/* The size of `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The number of bytes in type long */
+#undef SIZEOF_LONG
+
+/* The size of `long int', as computed by sizeof. */
+#undef SIZEOF_LONG_INT
+
+/* The number of bytes in type short */
+#undef SIZEOF_SHORT
+
+/* The size of `short int', as computed by sizeof. */
+#undef SIZEOF_SHORT_INT
+
+/* The number of bytes in type void* */
+#undef SIZEOF_VOIDP
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if your processor stores words with the most significant byte
+   first (like Motorola and SPARC, unlike Intel and VAX). */
+#undef WORDS_BIGENDIAN
+
+/* Email addresses */
+#define S_A_WHITE_EMAIL "sidplay2@yahoo.com"
+

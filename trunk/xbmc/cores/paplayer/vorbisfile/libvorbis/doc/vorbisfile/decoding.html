@@ -1,0 +1,87 @@
+<html>
+
+<head>
+<title>Vorbisfile - Decoding</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+<h1>Decoding</h1>
+
+<p>
+All libvorbisfile decoding routines are declared in "vorbis/vorbisfile.h".
+<p>
+
+After <a href="initialization.html">initialization</a>, decoding audio
+is as simple as calling <a href="ov_read.html">ov_read()</a>. This
+function works similarly to reading from a normal file using
+<tt>read()</tt>.<p>
+
+However, a few differences are worth noting:
+
+<h2>multiple stream links</h2>
+
+A Vorbis stream may consist of multiple sections (called links) that
+encode differing numbers of channels or sample rates.  It is vitally
+important to pay attention to the link numbers returned by <a
+href="ov_read.html">ov_read</a> and handle audio changes that may
+occur at link boundaries.  Such multi-section files do exist in the
+wild and are not merely a specification curiosity.
+
+<h2>returned data amount</h2>
+
+<a href="ov_read.html">ov_read</a> does not attempt to completely fill
+a large, passed in data buffer; it merely guarantees that the passed
+back data does not overflow the passed in buffer size.  Large buffers
+may be filled by iteratively looping over calls to <a
+href="ov_read.html">ov_read</a> (incrementing the buffer pointer)
+until the original buffer is filled.
+
+<h2>file cursor position</h2>
+
+Vorbis files do not necessarily start at a sample number or time offset
+of zero.  Do not be surprised if a file begins at a positive offset of
+several minutes or hours, such as would happen if a large stream (such
+as a concert recording) is chopped into multiple seperate files.
+
+<p>
+<table border=1 color=black width=50% cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td><b>function</b></td>
+	<td><b>purpose</b></td>
+</tr>
+<tr valign=top>
+	<td><a href="ov_read.html">ov_read</a></td>
+	<td>This function makes up the main chunk of a decode loop. It takes an
+OggVorbis_File structure, which must have been initialized by a previous
+call to <a href="ov_open.html"><tt>ov_open()</tt></a>, <a href="ov_fopen.html"><tt>ov_fopen()</tt></a>, 
+or <a href="ov_open_callbacks.html"><tt>ov_open_callbacks()</tt></a>.</td>
+</tr>
+<tr valign=top>
+        <td><a href="ov_read_float.html">ov_read_float</a></td>
+        <td>This function decodes to floats instead of integer samples.</td>
+</tr>
+</table>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2007 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+autoreconf -vif
+autoreconf -vif xbmc/lib/libass
+autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
+
+echo "Please (re)run configure..."
+

@@ -1,0 +1,44 @@
+<testcase>
+<info>
+<keywords>
+HTTP
+HTTP PUT
+HTTP/1.0
+</keywords>
+</info>
+
+# Server-side
+<reply>
+<data>
+HTTP/1.0 500 Impossible swsclose
+Date: Thu, 09 Nov 2010 14:49:00 GMT
+Server: test-server/fake
+
+blablabla
+
+</data>
+</reply>
+
+# Client-side
+<client>
+<server>
+http
+</server>
+<name>
+HTTP 1.0 PUT from stdin with no content length
+</name>
+ <command>
+http://%HOSTIP:%HTTPPORT/bzz/1069 -T - -0
+</command>
+<stdin>
+this data can't be sent
+</stdin>
+</client>
+
+# Verify data after the test has been "shot"
+<verify>
+<errorcode>
+25
+</errorcode>
+</verify>
+</testcase>

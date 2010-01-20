@@ -1,0 +1,41 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>bfreeSafe -- basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+
+<table width="550"> <tr><td>
+ 
+<table border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<tr>
+	<td class="titleLeft" align=left width="33%"><b> bfreeSafe</b></td><td class="titleCenter" align=center width="33%"><b> basic</b></td><td class="titleRight" align=right width="33%"><B> EMF</B></td></tr>
+</table><hr>
+<h2>Synopsis</h2><p>Safe version of <a href="bfree.htm">bfree</a>.</p><h2>Prototype</h2><pre>
+ #include &quot;uemf.h&quot;
+
+ void <b>bfreeSafe</b>(B_ARGS_DEC, void *mp); 
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <TR> 
+    <TD VALIGN="TOP" width="13%">B_ARGS_DEC</TD><TD width="87%">Caller's source file name and line number. Really two arguments. 
+    </TD></TR>
+  <tr> 
+    <td width="13%">mp</td><td width="87%">Pointer to the memory that is being freed.</td></tr>
+</table><p></p><h2>Description</h2><p> This &quot;safe&quot; version verifies that the pointer is not NULL before 
+  doing the free. </p><h2>Return Value</h2><p>No return value.</p><h2>Example</h2><pre>
+char_t* buf;
+
+buf = NULL;
+fmtAlloc(buf, FNAMSIZE, T("%s %d"), string, integer);
+
+...
+
+bfreeSafe(B_L, buf);
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2></h2><h2></h2><h2>See Also</h2><p>
+<a href="balloc.htm">balloc</a>,
+<a href="bfree.htm">bfree</a>
+</p></td></tr></table>
+</body>
+</html>

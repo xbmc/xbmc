@@ -1,0 +1,200 @@
+\input texinfo @c -*- texinfo -*-
+
+@settitle Libavfilter Documentation
+@titlepage
+@sp 7
+@center @titlefont{Libavfilter Documentation}
+@sp 3
+@end titlepage
+
+
+@chapter Introduction
+
+Libavfilter is the filtering API of FFmpeg. It is the substitute of the
+now deprecated 'vhooks' and started as a Google Summer of Code project.
+
+Integrating libavfilter into the main FFmpeg repository is a work in
+progress. If you wish to try the unfinished development code of
+libavfilter then check it out from the libavfilter repository into
+some directory of your choice by:
+
+@example
+   svn checkout svn://svn.ffmpeg.org/soc/libavfilter
+@end example
+
+And then read the README file in the top directory to learn how to
+integrate it into ffmpeg and ffplay.
+
+But note that there may still be serious bugs in the code and its API
+and ABI should not be considered stable yet!
+
+@chapter Tutorial
+
+In libavfilter, it is possible for filters to have multiple inputs and
+multiple outputs.
+To illustrate the sorts of things that are possible, we can
+use a complex filter graph. For example, the following one:
+
+@example
+input --> split --> fifo -----------------------> overlay --> output
+            |                                        ^
+            |                                        |
+            +------> fifo --> crop --> vflip --------+
+@end example
+
+splits the stream in two streams, sends one stream through the crop filter
+and the vflip filter before merging it back with the other stream by
+overlaying it on top. You can use the following command to achieve this:
+
+@example
+./ffmpeg -i in.avi -s 240x320 -vfilters "[in] split [T1], fifo, [T2] overlay= 0:240 [out]; [T1] fifo, crop=0:0:-1:240, vflip [T2]
+@end example
+
+where input_video.avi has a vertical resolution of 480 pixels. The
+result will be that in output the top half of the video is mirrored
+onto the bottom half.
+
+Video filters are loaded using the @var{-vfilters} option passed to
+ffmpeg or to ffplay. Filters in the same linear chain are separated by
+commas. In our example, @var{split, fifo, overlay} are in one linear
+chain, and @var{fifo, crop, vflip} are in another. The points where
+the linear chains join are labeled by names enclosed in square
+brackets. In our example, that is @var{[T1]} and @var{[T2]}. The magic
+labels @var{[in]} and @var{[out]} are the points where video is input
+and output.
+
+Some filters take in input a list of parameters: they are specified
+after the filter name and an equal sign, and are separated each other
+by a semicolon.
+
+There exist so-called @var{source filters} that do not have a video
+input, and we expect in the future some @var{sink filters} that will
+not have video output.
+
+@chapter Available video filters
+
+When you configure your FFmpeg build, you can disable any of the
+existing video filters.
+The configure output will show the video filters included in your
+build.
+
+Below is a description of the currently available video filters.
+
+@section crop
+
+Crop the input video to x:y:width:height.
+
+@example
+./ffmpeg -i in.avi -vfilters "crop=0:0:0:240" out.avi
+@end example
+
+``x'' and ``y'' specify the position of the top-left corner of the
+output (non-cropped) area.
+
+The default value of ``x'' and ``y'' is 0.
+
+The ``width'' and ``height'' parameters specify the width and height
+of the output (non-cropped) area.
+
+A value of 0 is interpreted as the maximum possible size contained in
+the area delimited by the top-left corner at position x:y.
+
+For example the parameters:
+
+@example
+"crop=100:100:0:0"
+@end example
+
+will delimit the rectangle with the top-left corner placed at position
+100:100 and the right-bottom corner corresponding to the right-bottom
+corner of the input image.
+
+The default value of ``width'' and ``height'' is 0.
+
+@section format
+
+Convert the input video to one of the specified pixel formats.
+Libavfilter will try to pick one that is supported for the input to
+the next filter.
+
+The filter accepts a list of pixel format names, separated by ``:'',
+for example ``yuv420p:monow:rgb24''.
+
+The following command:
+
+@example
+./ffmpeg -i in.avi -vfilters "format=yuv420p" out.avi
+@end example
+
+will convert the input video to the format ``yuv420p''.
+
+@section noformat
+
+Force libavfilter not to use any of the specified pixel formats for the
+input to the next filter.
+
+The filter accepts a list of pixel format names, separated by ``:'',
+for example ``yuv420p:monow:rgb24''.
+
+The following command:
+
+@example
+./ffmpeg -i in.avi -vfilters "noformat=yuv420p, vflip" out.avi
+@end example
+
+will make libavfilter use a format different from ``yuv420p'' for the
+input to the vflip filter.
+
+@section null
+
+Pass the source unchanged to the output.
+
+@section scale
+
+Scale the input video to width:height and/or convert the image format.
+
+For example the command:
+
+@example
+./ffmpeg -i in.avi -vfilters "scale=200:100" out.avi
+@end example
+
+will scale the input video to a size of 200x100.
+
+If the input image format is different from the format requested by
+the next filter, the scale filter will convert the input to the
+requested format.
+
+If the value for ``width'' or ``height'' is 0, the respective input
+size is used for the output.
+
+If the value for ``width'' or ``height'' is -1, the scale filter will
+use, for the respective output size, a value that maintains the aspect
+ratio of the input image.
+
+The default value of ``width'' and ``height'' is 0.
+
+@section slicify
+
+Pass the images of input video on to next video filter as multiple
+slices.
+
+@example
+./ffmpeg -i in.avi -vfilters "slicify=32" out.avi
+@end example
+
+The filter accepts the slice height as parameter. If the parameter is
+not specified it will use the default value of 16.
+
+Adding this in the beginning of filter chains should make filtering
+faster due to better use of the memory cache.
+
+@section vflip
+
+Flip the input video vertically.
+
+@example
+./ffmpeg -i in.avi -vfilters "vflip" out.avi
+@end example
+
+@bye

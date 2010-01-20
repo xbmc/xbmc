@@ -1,0 +1,64 @@
+2003-05-10  Bruno Haible  <bruno@clisp.org>
+
+	* iconv_string.c (iconv_string): Don't return -1 just because the
+	string is longer than 4 KB.
+
+2002-02-13  Bruno Haible  <bruno@clisp.org>
+
+	* iconv.m4: Remove file. Obsoleted by m4/iconv.m4.
+
+2000-06-16  Bruno Haible  <haible@clisp.cons.org>
+
+        * iconv.m4: Change prefix to AM.
+
+2001-05-23  Bruno Haible  <haible@clisp.cons.org>
+
+        * iconv.m4 (jm_ICONV): Accept --with-libiconv-prefix option.
+
+2001-03-23  Bruno Haible  <haible@clisp.cons.org>
+
+        * iconv.m4 (jm_ICONV): Tweak printing of prototype.
+
+2001-03-20  Bruno Haible  <haible@clisp.cons.org>
+
+        * iconv.m4 (jm_ICONV): Recommend GNU libiconv.
+
+2001-01-03  Bruno Haible  <haible@clisp.cons.org>
+
+        * iconv.m4 (jm_ICONV): Also check whether the iconv declaration
+          has const.
+
+2000-02-02  Bruno Haible  <haible@clisp.cons.org>
+
+        * iconv.m4: New file.
+
+2001-01-29  Bruno Haible  <haible@clisp.cons.org>
+
+        * locale_charset.c: Remove file. Obsoleted by libcharset.
+
+2000-10-22  Bruno Haible  <haible@clisp.cons.org>
+
+        * locale_charset.c (get_locale_charset): Accept french and spanish
+          names in both ISO-8859-1 and UTF-8.
+
+2000-08-24  Jim Blackson  <blackson@ontrack-japan.com>
+
+        * iconv_string.c (iconv_string): Fix return value for autodetect.
+
+2000-01-24  Bruno Haible  <haible@clisp.cons.org>
+
+        * iconv_string.c (iconv_string): Stop recognizing JOHAB.
+          Fix typo for EUC-JP.
+
+1999-12-18  Bruno Haible  <haible@clisp.cons.org>
+
+        * locale_charset.c (get_locale_charset): Recognize more language codes:
+          "af" (afrikaans), "ca" (catalan), "eu" (basque), "fo" (faeroese),
+          "ga" (irish), "gd" (scottish), "gl" (galician), "sq" (albanian),
+          "eo" (esperanto), "mt" (maltese), "be" (byelorussian),
+          "et" (estonian), "lt" (lithuanian), "lv" (latvian), "uk" (ukrainian).
+          Recognize more aliases: "english", "slovenian", "macedonian",
+          "serbian", "arabic".
+          Change default: KOI8-R for "ru" (russian) instead of ISO-8859-5,
+          ISO-8859-5 for "sr" instead of ISO-8859-2.
+

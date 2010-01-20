@@ -1,0 +1,134 @@
+\section{\module{urlparse} ---
+         Parse URLs into components}
+\declaremodule{standard}{urlparse}
+
+\modulesynopsis{Parse URLs into components.}
+
+\index{WWW}
+\index{World Wide Web}
+\index{URL}
+\indexii{URL}{parsing}
+\indexii{relative}{URL}
+
+
+This module defines a standard interface to break Uniform Resource
+Locator (URL) strings up in components (addressing scheme, network
+location, path etc.), to combine the components back into a URL
+string, and to convert a ``relative URL'' to an absolute URL given a
+``base URL.''
+
+The module has been designed to match the Internet RFC on Relative
+Uniform Resource Locators (and discovered a bug in an earlier
+draft!). It supports the following URL schemes:
+\code{file}, \code{ftp}, \code{gopher}, \code{hdl}, \code{http}, 
+\code{https}, \code{imap}, \code{mailto}, \code{mms}, \code{news}, 
+\code{nntp}, \code{prospero}, \code{rsync}, \code{rtsp}, \code{rtspu}, 
+\code{shttp}, \code{sip}, \code{snews}, \code{svn}, \code{svn+ssh}, 
+\code{telnet}, \code{wais}.
+
+The \module{urlparse} module defines the following functions:
+
+\begin{funcdesc}{urlparse}{urlstring\optional{, default_scheme\optional{, allow_fragments}}}
+Parse a URL into 6 components, returning a 6-tuple: (addressing
+scheme, network location, path, parameters, query, fragment
+identifier).  This corresponds to the general structure of a URL:
+\code{\var{scheme}://\var{netloc}/\var{path};\var{parameters}?\var{query}\#\var{fragment}}.
+Each tuple item is a string, possibly empty.
+The components are not broken up in smaller parts (e.g. the network
+location is a single string), and \% escapes are not expanded.
+The delimiters as shown above are not part of the tuple items,
+except for a leading slash in the \var{path} component, which is
+retained if present.
+
+Example:
+
+\begin{verbatim}
+urlparse('http://www.cwi.nl:80/%7Eguido/Python.html')
+\end{verbatim}
+
+yields the tuple
+
+\begin{verbatim}
+('http', 'www.cwi.nl:80', '/%7Eguido/Python.html', '', '', '')
+\end{verbatim}
+
+If the \var{default_scheme} argument is specified, it gives the
+default addressing scheme, to be used only if the URL string does not
+specify one.  The default value for this argument is the empty string.
+
+If the \var{allow_fragments} argument is zero, fragment identifiers
+are not allowed, even if the URL's addressing scheme normally does
+support them.  The default value for this argument is \code{1}.
+\end{funcdesc}
+
+\begin{funcdesc}{urlunparse}{tuple}
+Construct a URL string from a tuple as returned by \code{urlparse()}.
+This may result in a slightly different, but equivalent URL, if the
+URL that was parsed originally had redundant delimiters, e.g. a ? with
+an empty query (the draft states that these are equivalent).
+\end{funcdesc}
+
+\begin{funcdesc}{urlsplit}{urlstring\optional{,
+                           default_scheme\optional{, allow_fragments}}}
+This is similar to \function{urlparse()}, but does not split the
+params from the URL.  This should generally be used instead of
+\function{urlparse()} if the more recent URL syntax allowing
+parameters to be applied to each segment of the \var{path} portion of
+the URL (see \rfc{2396}) is wanted.  A separate function is needed to
+separate the path segments and parameters.  This function returns a
+5-tuple: (addressing scheme, network location, path, query, fragment
+identifier).
+\versionadded{2.2}
+\end{funcdesc}
+
+\begin{funcdesc}{urlunsplit}{tuple}
+Combine the elements of a tuple as returned by \function{urlsplit()}
+into a complete URL as a string.
+\versionadded{2.2}
+\end{funcdesc}
+
+\begin{funcdesc}{urljoin}{base, url\optional{, allow_fragments}}
+Construct a full (``absolute'') URL by combining a ``base URL''
+(\var{base}) with a ``relative URL'' (\var{url}).  Informally, this
+uses components of the base URL, in particular the addressing scheme,
+the network location and (part of) the path, to provide missing
+components in the relative URL.
+
+Example:
+
+\begin{verbatim}
+urljoin('http://www.cwi.nl/%7Eguido/Python.html', 'FAQ.html')
+\end{verbatim}
+
+yields the string
+
+\begin{verbatim}
+'http://www.cwi.nl/%7Eguido/FAQ.html'
+\end{verbatim}
+
+The \var{allow_fragments} argument has the same meaning as for
+\code{urlparse()}.
+\end{funcdesc}
+
+\begin{funcdesc}{urldefrag}{url}
+If \var{url} contains a fragment identifier, returns a modified
+version of \var{url} with no fragment identifier, and the fragment
+identifier as a separate string.  If there is no fragment identifier
+in \var{url}, returns \var{url} unmodified and an empty string.
+\end{funcdesc}
+
+
+\begin{seealso}
+  \seerfc{1738}{Uniform Resource Locators (URL)}{
+        This specifies the formal syntax and semantics of absolute
+        URLs.}
+  \seerfc{1808}{Relative Uniform Resource Locators}{
+        This Request For Comments includes the rules for joining an
+        absolute and a relative URL, including a fair number of
+        ``Abnormal Examples'' which govern the treatment of border
+        cases.}
+  \seerfc{2396}{Uniform Resource Identifiers (URI): Generic Syntax}{
+        Document describing the generic syntactic requirements for
+        both Uniform Resource Names (URNs) and Uniform Resource
+        Locators (URLs).}
+\end{seealso}

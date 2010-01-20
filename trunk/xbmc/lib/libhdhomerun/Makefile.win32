@@ -1,0 +1,26 @@
+ARCH=@ARCH@
+
+OBJS += hdhomerun_pkt.o
+OBJS += hdhomerun_debug.o
+OBJS += hdhomerun_discover.o
+OBJS += hdhomerun_channels.o
+OBJS += hdhomerun_channelscan.o
+OBJS += hdhomerun_control.o
+OBJS += hdhomerun_video.o
+OBJS += hdhomerun_device.o
+
+CFLAGS += -Wall -O2 -D__MINGW__ -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith
+CC=gcc
+
+SLIBS += -lws2_32 -liphlpapi
+
+SYSDIR=../../../system
+DLL=hdhomerun.dll
+SLIB=$(SYSDIR)/$(DLL)
+
+hdhomerun_dll : $(OBJS)
+	gcc $(OBJS) $(SLIBS) -Wl,--out-implib,hdhomerun.lib -shared -o $(SLIB)
+
+clean :
+	rm $(OBJS)
+	rm hdhomerun.lib

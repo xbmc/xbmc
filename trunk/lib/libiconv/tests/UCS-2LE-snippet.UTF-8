@@ -1,0 +1,46 @@
+This is a list of ways to say hello in various languages.
+Its purpose is to illustrate a number of scripts.
+
+---------------------------------------------------------
+Amharic	(አማርኛ)	ሠላም
+Arabic			ﺍﻟﺴﻼﻡ ﻋﻠﻴﻜﻢ
+Czech (česky)		Dobrý den
+Danish (Dansk)		Hej, Goddag
+English			Hello
+Esperanto		Saluton
+Estonian		Tere, Tervist
+FORTRAN			PROGRAM
+Finnish (Suomi)		Hei
+French (Français)	Bonjour, Salut
+German (Deutsch Nord)	Guten Tag
+German (Deutsch Süd)	Grüß Gott
+Greek (Ελληνικά)	Γειά σας
+Hebrew			שלום
+Italiano		Ciao, Buon giorno
+Lao(ພາສາລາວ)            ສະບາຍດີ, ຂໍໃຫ້ໂຊກດີ
+Maltese			Ciao
+Nederlands, Vlaams	Hallo, Dag
+Norwegian (Norsk)	Hei, God dag
+Polish			Dzień dobry, Hej
+Russian (Русский)	Здравствуйте!
+Slovak			Dobrý deň
+Spanish (Español)	¡Hola!
+Swedish (Svenska)	Hej, Goddag
+Thai (ภาษาไทย)		สวัสดีครับ, สวัสดีค่ะ
+
+Tigrigna (ትግርኛ)	ሰላማት
+Turkish (Türkçe)	Merhaba
+Vietnamese (Tiếng Việt)	Chào bạn
+
+Japanese (日本語)		こんにちは, ｺﾝﾆﾁﾊ
+Chinese (中文,普通话,汉语)	你好
+Cantonese (粵語,廣東話)		早晨, 你好
+Korean (한글)			안녕하세요, 안녕하십니까
+
+Difference among chinese characters in GB, JIS, KSC, BIG5:
+	GB   -- 元气  开发
+	JIS  -- 元気  開発
+	KSC  -- 元氣  開發
+	BIG5 -- 元氣  開發
+
+Just for a test of JISX0212: 騏驎 (the second character is of JISX0212)

@@ -1,0 +1,33 @@
+<html>
+
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>bfree - basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<table border="0" width="100%" cellspacing="0" cellpadding="0" CLASS="apiTitle">
+  <tr>
+    <td class="titleLeft" align=left width="33%"><b>bfree</b></td><td class="titleCenter" align=center width="33%"><b>basic</b></td><td class="titleRight" align=right width="33%"><b>EMF</b></td></tr>
+</table><hr>
+
+<h2>Synopsis</h2><p>Free a dynamic block of memory allocated with balloc.</p><h2>Prototypes</h2><pre>
+ #include &quot;webs.h&quot; 
+
+ void <b>bfree</b>(B_ARGS_DEC, void *buf);
+</pre><h2>Parameters</h2><table width="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+  <tr VALIGN="TOP"> 
+    <td width="14%">B_ARGS_DEC </td><td width="86%">Callers source file name and line number. Really two arguments. 
+    </td></tr>
+  <tr VALIGN="TOP"> 
+    <td width="14%">buf </td><td width="86%">Pointer to buffer to free.</td></tr>
+</table><p></p><h2>Description</h2><p>The bfree procedure releases a block of memory back to the
+<a href="balloc.htm">balloc</a> free queues. Memory is not actually freed to
+the operating system, but is kept locally for future use.</p><p></p><p>Use B_L as the first argument to bfree to provide the source file name and
+line number arguments.</p><h2>Return Value</h2><p>No return value.</p><h2>Example</h2><pre>
+bfree(B_L, buf);
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2></h2><h2></h2><h2>See Also</h2><p><a href="balloc.htm">balloc</a>, <a href="bopen.htm">bopen</a></p></td></tr></table>
+</body>
+</html>

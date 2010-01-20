@@ -1,0 +1,35 @@
+.TH mpeg2dec "1" "extract_mpeg2"
+.SH NAME
+extract_mpeg2 \- extract MPEG video streams from a multiplexed stream.
+.SH SYNOPSIS
+.B extract_mpeg2
+[\fI-h\fR] [\fI-s [track]\fR] [\fI-t pid\fR] [\fIfile\fR]
+.SH DESCRIPTION
+`extract_mpeg2' extracts MPEG video streams from a multiplexed stream.
+Input is from stdin if no file is given.
+.TP
+\fB\-h\fR
+display help
+.TP
+\fB\-s track\fR
+set track number (0-0xf or 0xe0-0xef)
+.TP
+\fB\-t pid\fR
+use transport stream demultiplexer, pid 0x10-0x1ffe
+.SH AUTHORS
+Michel Lespinasse <walken@zoy.org>
+.br
+Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
+.br
+And many others on the net.
+.SH "REPORTING BUGS"
+Report bugs to <libmpeg2-devel@lists.sourceforge.net>.
+.SH COPYRIGHT
+Copyright \(co 2000-2003 Michel Lespinasse
+.br
+Copyright \(co 1999-2000 Aaron Holtzman
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH "SEE ALSO"
+.BR mpeg2dec "(1)"

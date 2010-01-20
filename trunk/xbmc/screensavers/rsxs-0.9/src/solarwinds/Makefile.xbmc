@@ -1,0 +1,4 @@
+plasma.xbs: solarwinds.o wind.o
+	g++ -shared -o SolarWinds.xbs ../common.o solarwinds.o wind.o ../../lib/libmisc.a -lXmu
+#	cp SolarWinds.xbs /home/yuvalt/XBMC/screensavers/
+	cp SolarWinds.xbs ../../../../../XBMC/screensavers/

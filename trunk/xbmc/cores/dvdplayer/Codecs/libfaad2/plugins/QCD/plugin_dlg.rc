@@ -1,0 +1,141 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOGEX 0, 0, 179, 133
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "FAAC Decoder Configuration"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "Enable variable bitrate display",VARBITRATE_CHK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,7,140,10
+    EDITTEXT        STREAM_BUFFER_TXT,87,21,21,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        LOCAL_BUFFER_TXT,87,38,21,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Buffer entire files into memory",IDC_MEMMAP,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,60,140,10
+    CONTROL         "Slider1",THREAD_PRIORITY_SLIDER,"msctls_trackbar32",
+                    TBS_AUTOTICKS | WS_TABSTOP,7,89,165,11,WS_EX_TRANSPARENT
+    PUSHBUTTON      "OK",OK_BTN,64,112,50,14
+    PUSHBUTTON      "Cancel",CANCEL_BTN,121,112,50,14
+    LTEXT           "HTTP stream buffer:",IDC_STATIC,7,22,77,8
+    LTEXT           "Decode Thread Priority: Highest (default)",IDC_STATIC2,
+                    7,78,165,8
+    LTEXT           "Local file buffer: ",IDC_STATIC,7,40,77,8
+    PUSHBUTTON      "Reset",RESET_BTN,7,112,50,14
+END
+
+IDD_ABOUT DIALOG DISCARDABLE  0, 0, 191, 168
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About FAAD Plug-in"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,70,147,50,14
+    CTEXT           "",IDC_PLUGINVER,29,73,133,16
+    CTEXT           "",IDC_FAADVER,40,123,111,8
+    LTEXT           "QCD Input Plug-in by",IDC_STATIC,62,97,67,8
+    CONTROL         107,IDC_LOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | 
+                    SS_REALSIZEIMAGE,7,0,177,68
+    LTEXT           "Shao Hao",IDC_MAIL1,79,111,33,8
+    LTEXT           "M. Bakker",IDC_MAIL3,59,134,34,8
+    LTEXT           "menno",IDC_MAIL2,109,134,22,8
+    LTEXT           "&&",IDC_STATIC,97,134,8,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 172
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 126
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 184
+        BOTTOMMARGIN, 161
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_LOGO                BITMAP  DISCARDABLE     "logo.bmp"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,80 @@
+[preset00]
+fRating=2.500000
+fGammaAdj=2.200000
+fDecay=0.980000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=3
+nWaveMode=3
+bAdditiveWaves=1
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=1
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=1
+bDarken=0
+bSolarize=1
+bInvert=0
+fWaveAlpha=1.000000
+fWaveScale=0.610095
+fWaveSmoothing=0.900000
+fWaveParam=0.000000
+fModWaveAlphaStart=1.000000
+fModWaveAlphaEnd=1.000000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=1.000000
+fShader=0.000000
+zoom=1.000000
+rot=0.000000
+cx=0.000000
+cy=0.000000
+dx=0.000000
+dy=0.000000
+warp=0.000000
+sx=1.000000
+sy=1.000000
+wave_r=0.400000
+wave_g=0.400000
+wave_b=0.400000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.000000
+ob_r=0.500000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.000000
+ib_r=0.000000
+ib_g=0.000000
+ib_b=0.500000
+ib_a=0.000000
+nMotionVectorsX=8.319999
+nMotionVectorsY=2.400000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=2.000000
+mv_r=0.000000
+mv_g=0.000000
+mv_b=1.000000
+mv_a=0.000000
+per_frame_1=wave_r = rand(100)/100;
+per_frame_2=wave_g = rand(100)/100;
+per_frame_3=wave_b = rand(100)/100;
+per_frame_4=wave_x = wave_x + if(above(wave_y,.75), - 0.1*tan(time), + 0.1*tan(time))-.4+((cos(vol))/2)*myeff;
+per_frame_5=wave_y = wave_y + if(below(wave_x,.75), -0.1*tan(time), +0.1*tan(time))-.4+((cos(vol))/2)*myeff;
+per_frame_6=cx = cx + 0.410*( 0.60*sin(0.374*time) + 0.40*sin(0.294*time)+vol );
+per_frame_7=cy = cy + 0.410*( 0.60*sin(0.393*time) + 0.40*sin(0.223*time)+vol );
+per_frame_8=zoom = zoom + 0.020*( 0.60*sin(0.339*time) + 0.40*sin(0.276*time)*vol );
+per_frame_9=rot = rot + 0.005*( 0.60*sin(0.281*time) + 0.40*sin(0.839*time)*vol );
+per_frame_10=vol = (bass_att+bass+mid+mid_att+treb+treb_att);
+per_frame_11=myeff=(wave_x + if(above(wave_y,0.75), + 0.1*tan(time), + 0.1*tan(time))+.4+((cos(vol))/2) & wave_y + 0.40*sin(8*mid)+.25+(vol/10));
+per_frame_12=dx = dx + 0.085*pow(rad,y*2)*sin(time)/vol;
+per_frame_13=dy = dy + 0.085*pow(rad,y*2)*cos(time)/vol;
+per_frame_14=sx = sx + 0.0555*pow(rad,x*2)*sin(time)/vol;
+per_frame_15=sy = sy + 0.0777*pow(rad,y*2)*sin(time);
+per_frame_16=monitor = vol;
+per_frame_17=

@@ -1,0 +1,51 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+. /scripts/live-functions
+
+log_begin_msg "Copying config on real root fs"
+
+# live-initramfs script
+
+if [ -f /etc/live.conf ]
+then
+	if [ ! -z "${LIVECONF}" ]
+	then
+		# Updating live.conf
+		sed -i -e 's/\(USERNAME="\).*"/\1'"${USERNAME}"'"/g' \
+		       -e 's/\(USERFULLNAME="\).*"/\1'"${USERFULLNAME}"'"/g' \
+		       -e 's/\(HOSTNAME="\).*"/\1'"${HOSTNAME}"'"/g' \
+		/etc/live.conf
+	fi
+
+	cp -p /etc/live.conf /root/etc/live.conf
+else
+
+cat > /root/etc/live.conf << EOF
+export USERNAME="${USERNAME}"
+export USERFULLNAME="${USERFULLNAME}"
+export HOSTNAME="${HOSTNAME}"
+EOF
+
+fi
+
+log_end_msg

@@ -1,0 +1,44 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+if [ -n "${NOLANGUAGESELECTOR}" ]
+then
+	exit 0
+fi
+
+. /scripts/live-functions
+
+log_begin_msg "Fixing language selector"
+
+# live-initramfs script
+
+if [ -e /root/usr/share/applications/language-selector.desktop ]
+then
+	sed -i '/^Exec/ s|/usr/bin/gnome-language-selector|& -n|' /root/usr/share/applications/language-selector.desktop
+fi
+
+if [ -x /root/usr/bin/fontconfig-voodoo ]
+then
+	chroot /root fontconfig-voodoo --auto --quiet || true
+fi
+
+log_end_msg

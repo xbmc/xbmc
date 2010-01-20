@@ -1,0 +1,15 @@
+LoadTool('gcc-generic', env)
+
+### Special for the MAC: universal flags
+universal_flags =  [('-arch', 'ppc'), ('-arch', 'i386'), ('-isysroot', '/Developer/SDKs/MacOSX10.4u.sdk'), '-mmacosx-version-min=10.4']
+env.AppendUnique(CCFLAGS   = universal_flags + ['-fno-common'])
+#env.AppendUnique(CXXFLAGS = universal_flags)
+env.AppendUnique(LINKFLAGS = universal_flags)
+
+### Force the dynamic libraries to be bundles
+env.AppendUnique(SHLINKFLAGS = ['$LINKFLAGS', '-bundle', '-twolevel_namespace'])
+env.AppendUnique(SHLIBSUFFIX = ['.so']) # we need to override the scons default on the mac which is '.dylib'
+
+### Neptune System Files
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp'}
+

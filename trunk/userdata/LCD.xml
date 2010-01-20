@@ -1,0 +1,40 @@
+<lcd>
+   <!-- set this to video,music to disable the LCD on playback of music and video-->
+   <disableonplay>video</disableonplay>
+   <navigation>
+      <line>$INFO[System.CurrentWindow]</line>
+      <line>$INFO[System.CurrentControl]</line>
+      <line>Freemem: $INFO[System.FreeMemory]</line>
+      <line>$INFO[System.ScreenWidth]x$INFO[System.ScreenHeight] $INFO[System.ScreenMode]</line>
+   </navigation>
+   <music>
+      <line>$INFO[LCD.PlayIcon] $INFO[Player.Time]/$INFO[Player.Duration]</line>
+      <line>$INFO[MusicPlayer.Title]</line>
+      <line>$INFO[MusicPlayer.Artist]</line>
+      <line>$INFO[MusicPlayer.Album] ($INFO[MusicPlayer.Year])</line>
+   </music>
+   <video>
+      <line>$INFO[LCD.PlayIcon] $INFO[Player.Time]/$INFO[Player.Duration]</line>
+      <line>$INFO[VideoPlayer.Title]</line>
+      <line>$INFO[VideoPlayer.Genre]</line>
+      <line>$INFO[LCD.ProgressBar]</line>
+      <line>Freemem: $INFO[System.FreeMemory]</line>
+   </video>
+   <general>
+      <line>XBMC running...</line>
+      <line>$INFO[System.Time] $INFO[System.Date]</line>
+      <line>Freemem: $INFO[System.FreeMemory]</line>
+      <line>$INFO[System.ScreenWidth]x$INFO[System.ScreenHeight] $INFO[System.ScreenMode]</line>
+   </general>
+   <screensaver>
+      <line>$INFO[System.CurrentWindow]</line>
+      <line>$INFO[LCD.TimeWide21]</line>
+      <line>$INFO[LCD.TimeWide22]</line>
+      <line>Freemem: $INFO[System.FreeMemory]</line>
+   </screensaver>
+   <xbelaunch>
+      <line></line>
+      <line>Playing</line>
+      <line>$INFO[System.LaunchXBE]</line>
+   </xbelaunch>
+</lcd>

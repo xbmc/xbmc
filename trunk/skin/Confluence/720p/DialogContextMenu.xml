@@ -1,0 +1,70 @@
+<window id="106">
+	<defaultcontrol>1000</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="997">
+			<description>background top image</description>
+			<posx>0</posx>
+			<posy>-54</posy>
+			<width>370</width>
+			<height>54</height>
+			<texture border="45,45,45,0">DialogContextTop.png</texture>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>260</posx>
+			<posy>-24</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>1000</onleft>
+			<onright>1000</onright>
+			<onup>1000</onup>
+			<ondown>1000</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+		<control type="image">
+			<posx>34</posx>
+			<posy>-6</posy>
+			<width>297</width>
+			<height>4</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="image" id="999">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>370</width>
+			<texture border="45,0,45,0">DialogContextMiddle.png</texture>
+		</control>
+		<control type="image" id="998">
+			<description>background bottom image</description>
+			<posx>0</posx>
+			<width>370</width>
+			<height>50</height>
+			<texture border="45,0,45,49">DialogContextBottom.png</texture>
+		</control>
+		<control type="button" id="1000">
+			<description>button template</description>
+			<posx>34</posx>
+			<posy>-</posy>
+			<width>297</width>
+			<height>38</height>
+			<font>fontContextMenu</font>
+			<align>center</align>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus border="5">button-focus.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+	</controls>
+</window>

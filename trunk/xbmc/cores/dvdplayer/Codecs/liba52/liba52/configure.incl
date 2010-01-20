@@ -1,0 +1,19 @@
+AC_SUBST([LIBA52_CFLAGS])
+AC_SUBST([LIBA52_LIBS])
+
+dnl avoid -fPIC when possible
+LIBA52_CFLAGS="$LIBA52_CFLAGS -prefer-non-pic"
+
+AC_ARG_ENABLE([double],
+    [  --enable-double         use double-precision samples])
+if test x"$enable_double" = x"yes"; then
+    AC_DEFINE([LIBA52_DOUBLE],,[a52 sample precision])
+fi
+
+dnl check for djbttf
+AC_ARG_ENABLE([djbfft],
+    [  --enable-djbfft         make a version using djbfft])
+if test x"$enable_djbfft" = x"yes"; then
+    AC_DEFINE([LIBA52_DJBFFT],,[liba52 djbfft support])
+    LIBA52_LIBS="$LIBA52_LIBS -ldjbfft"
+fi

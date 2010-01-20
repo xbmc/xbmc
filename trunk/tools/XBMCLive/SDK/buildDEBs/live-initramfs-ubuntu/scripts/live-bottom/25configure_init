@@ -1,0 +1,114 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+. /scripts/live-functions
+
+log_begin_msg "Setting up init"
+
+# live-initramfs script
+
+# Arrange for shells on virtual consoles, rather than login prompts
+
+if [ -z "${NOAUTOLOGIN}" ] && [ -n "${USERNAME}" ]
+then
+	if [ ! -z "${LIVE_GETTY}" ]
+	then
+		if echo "${DEFCONSOLE}" | grep -qs ttyS
+		then
+			# AUTOMATIC SERIAL CONSOLE #
+			PORT=$(echo "${DEFCONSOLE}" | \
+				sed -e 's%,.*%%')
+			SPEED=$(echo "${DEFCONSOLE}" | \
+				sed -e 's%ttyS[0-9]\+,%%' \
+				-e's%\([0-9]\+\).*%\1%')
+
+			if ! ( sed -n -e'/^[^#]/p' /root/etc/inittab | grep -qs ":respawn:/sbin/getty.*${PORT}" )
+			then
+				IDs="A B C D E F G H I J K L M N O P Q R S T Q U V V X Y Z 0 1 2 3 4 5 6 7 8 9"
+
+				for ID1 in ${IDs}
+				do
+					for ID2 in ${IDs}
+					do
+						ID="${ID1}${ID2}"
+
+						if ! grep "^${ID}:" /etc/inittab
+						then
+							#make sure it is not already in use
+							break 2
+						fi
+					done
+				done
+
+				echo "${ID}:2345:respawn:/sbin/live-getty -L ${PORT} ${SPEED} vt100" >> /root/etc/inittab
+			fi
+		fi
+
+		if [ -f /root/etc/inittab ]
+		then
+			sed -i -e'/^[^#]/s%respawn:/sbin/getty%respawn:/sbin/live-getty%' /root/etc/inittab
+		fi
+	else
+		if [ -f /root/etc/inittab ]
+		then
+			sed -i -e "s|^\([^:]*:[^:]*:[^:]*\):.*getty.*\<\(tty[0-9]*\).*$|\1:/bin/login -f ${USERNAME} </dev/\2 >/dev/\2 2>\&1|" /root/etc/inittab
+		fi
+
+		if [ "/root/etc/event.d/tty*" != "$(echo /root/etc/event.d/tty*)" ]
+		then
+			for f in /root/etc/event.d/tty*
+			do
+				sed -i -e "/^respawn$/!s|^respawn.*|respawn /bin/login -f ${USERNAME} </dev/$(basename ${f}) > /dev/$(basename ${f}) 2>\&1|" ${f}
+				sed -i -e "s|^exec.*|exec /bin/login -f ${USERNAME} </dev/$(basename ${f}) > /dev/$(basename ${f}) 2>\&1|" ${f}
+			done
+		fi
+	fi
+
+	# Since we use autologin, lastlog doesn't make sense on the console.
+	sed -i '/^[^#].*pam_lastlog\.so/s/^/# /' /root/etc/pam.d/login
+fi
+
+# do not try to remove files if using file-rc
+if [ -d /root/etc/rc0.d ]
+then
+	# This has the nice side effect of the cron.{daily,weekly,monthly} jobs in
+	# /etc/crontab remaining disabled, yet also not run by anacron
+	if [ -x /root/usr/sbin/anacron ]
+	then
+		chroot /root dpkg-divert --add --rename --quiet /usr/sbin/anacron
+		ln -s /bin/true /root/usr/sbin/anacron
+	fi
+
+	# Avoid clobbering the user's clock
+	rm -f /root/etc/rc?.d/K??hwclock.sh
+fi
+
+# Disable readahead since it doesn't play well with squashfs + unionfs
+# use chmod instead of mv to not trigger unionfs bugs.
+if [ -e /root/sbin/readahead-list ]
+then
+	chmod -x /root/sbin/readahead-list
+fi
+
+log_end_msg
+
+exit 0

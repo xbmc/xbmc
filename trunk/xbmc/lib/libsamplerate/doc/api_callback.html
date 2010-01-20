@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+
+<HEAD>
+	<TITLE>
+	Secret Rabbit Code (aka libsamplerate)
+	</TITLE>
+	<META NAME="Author"      CONTENT="Erik de Castro Lopo (erikd AT mega-nerd DOT com)">
+    <META NAME="Version"     CONTENT="libsamplerate-0.1.7">
+	<META NAME="Description" CONTENT="The Secret Rabbit Code Home Page">
+	<META NAME="Keywords"    CONTENT="libsamplerate sound resample audio dsp Linux">
+	<LINK REL=StyleSheet HREF="SRC.css" TYPE="text/css" MEDIA="all">
+</HEAD>
+
+<BODY TEXT="#FFFFFF" BGCOLOR="#000000" LINK="#FB1465" VLINK="#FB1465" ALINK="#FB1465">
+<!-- pepper -->
+<CENTER>
+	<IMG SRC="SRC.png" HEIGHT=100 WIDTH=760 ALT="SRC.png">
+</CENTER>
+<!-- pepper -->
+<BR>
+<!-- pepper -->
+<TABLE ALIGN="center" WIDTH="98%">
+<TR>
+<TD VALIGN="top">
+<BR>
+<DIV CLASS="nav">
+	<BR>
+	<A HREF="index.html">Home</A><BR>
+	<BR>
+	<A HREF="api_simple.html">Simple API</A><BR>
+	<A HREF="api_full.html">Full API</A><BR>
+	<A HREF="api_callback.html">Callback API</A><BR>
+	<A HREF="api_misc.html">Miscellaneous</A><BR>
+	<A HREF="api_misc.html#ErrorReporting">Error Handling</A><BR>
+<BR>
+<DIV CLASS="block">
+Author :<BR>Erik de Castro Lopo
+<!-- pepper -->
+<BR><BR>
+<!-- pepper -->
+
+</DIV>
+	<IMG SRC=
+	"/cgi-bin/Count.cgi?ft=6|frgb=55;55;55|tr=0|md=6|dd=B|st=1|sh=1|df=src_api.dat"
+	HEIGHT=30 WIDTH=100 ALT="counter.gif">
+</DIV>
+
+</TD>
+<!-- pepper -->
+<!-- ######################################################################## -->
+<!-- pepper -->
+<TD VALIGN="top">
+<DIV CLASS="block">
+
+<H1><B>Callback API</B></H1>
+<P>
+The callback API consists of the following functions :
+</P>
+<PRE>
+      typedef long (*src_callback_t) (void *cb_data, float **data) ;
+
+      SRC_STATE* <A HREF="#Init">src_callback_new</A> (src_callback_t func,
+	                      int converter_type, int channels,
+	                      int *error, void* cb_data) ;
+
+      SRC_STATE* <A HREF="api_full.html#CleanUp">src_delete</A> (SRC_STATE *state) ;
+
+      long <A HREF="#Read">src_callback_read</A> (SRC_STATE *state, double src_ratio,
+	                       long frames, float *data) ;
+
+      int <A HREF="api_full.html#Reset">src_reset</A> (SRC_STATE *state) ;
+      int <A HREF="api_full.html#SetRatio">src_set_ratio</A> (SRC_STATE *state, double new_ratio) ;
+</PRE>
+<BR>
+
+<P>
+Like the
+	<A HREF="api_simple.html">simple API</a>
+and the
+	<A HREF="api_full.html">full API</a>,
+the callback based API is able to operate on interleaved multi channel data.
+</P>
+
+<P>
+An example of the use of the callback based API can be found in the
+<B>varispeed-play</B> program in the <B>examples/</B> directory of the
+source code tarball.
+</P>
+
+<!-- pepper -->
+<A NAME="Init"></A>
+<H3><BR>Initialisation</H3>
+<PRE>
+      SRC_STATE* src_callback_new (src_callback_t func,
+	                      int converter_type, int channels,
+	                      int *error, void* cb_data) ;
+</PRE>
+<P>
+The <B>src_callback_new</B> function returns an anonymous pointer to a
+sample rate converter callback object, src_state.
+This is the same type of object as that returned by <A HREF="api_full.html#init">
+src_new</A>, but with different internal state.
+Although these are the same object type, they cannot be used interchangeably.
+If an error occurs the function returns a NULL pointer and fills in the
+error value pointed to by the <B>error</B> pointer supplied by the caller.
+</P>
+<P>
+The caller then passes the SRC_STATE object to the <B>src_callback_read</B>
+function to pull data out of the converter.
+When the caller is finished with the converter they should pass it to the
+clean up function <A HREF="api_full.html#CleanUp">src_delete</A>.
+</P>
+<P>
+The <B>func</B> parameter is a user supplied function which must match the
+<B>src_callback_t</B> type signature while <B>cb_data</B> is a pointer to
+data which be passed as the first parameter to the user supplied callback
+function.
+This function is called by the converter whenever it needs input data as a
+result of being calls to <B>src_callback_read</B>.
+</P>
+<P>
+If the converter was initialised to work with more than one channel, the
+callback function must work with mutiple channels of interleaved data.
+The callback function should return the number of frames it supplying to
+the converter.
+For multi channel files, this return value should be the number of floats
+divided by the number of channels.
+</P>
+<P>
+The converter must be one of the supplied converter types documented
+<A HREF="api_misc.html#Converters">here</A>.
+</P>
+<P>
+The caller then passes the SRC_STATE pointer to the <B>src_callback_read</B>
+function to pull data out of the converter.
+</P>
+
+<!-- pepper -->
+<A NAME="Read"></A>
+<H3><BR>Callback Read</H3>
+<PRE>
+      long src_callback_read (SRC_STATE *state, double src_ratio,
+	                       long frames, float *data) ;
+</PRE>
+<P>
+The <B>src_callback_read</B> function is passed the
+	<A HREF="api_misc.html#SRC_DATA"><B>SRC_STATE</B></A>
+pointer returned by <B>src_callback_new</B>, the coversion ratio
+(output_sample_rate / input_sample_rate), the maximum number of output frames
+to generate and a pointer to a buffer in which to place the output data.
+For multi channel files, the data int the output buffer is stored in
+interleaved format.
+</P>
+<P>
+The <B>src_callback_read</B> function returns the number of frames generated
+or zero if an error occurs or it runs out of input (ie the user supplied
+callback function returns zero and there is no more data buffered internally).
+If an error has occurred, the function <A HREF="api_misc.html#ErrorReporting">
+src_error</A> will return non-zero.
+</P>
+
+<!-- pepper -->
+
+</DIV>
+</TD></TR>
+</TABLE>
+
+</BODY>
+</HTML>
+

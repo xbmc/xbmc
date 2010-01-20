@@ -1,0 +1,92 @@
+<html>
+
+<head>
+<title>vorbis - datatype - ov_ectl_ratemanage2_arg</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libvorbisenc documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+<h1>ov_ectl_ratemanage2_arg</h1>
+
+<p><i>declared in "vorbis/vorbisenc.h"</i></p>
+
+<p>
+
+The ov_ectl_ratemanage2_arg structure is used with <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> and the OV_ECTL_RATEMANAGE2_GET and
+OV_ECTL_RATEMANAGE2_SET  calls in order to query and modify specifics
+of the encoder's bitrate management configuration.
+
+<p>
+
+<table border=0 width=100% color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>struct ovectl_ratemanage2_arg {
+  int    management_active;
+
+  long   bitrate_limit_min_kbps;
+  long   bitrate_limit_max_kbps;
+  long   bitrate_limit_reservoir_bits;
+  double bitrate_limit_reservoir_bias;
+
+  long   bitrate_average_kbps;
+  double bitrate_average_damping;
+};</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Relevant Struct Members</h3>
+<dl>
+<dt><i>management_active</i></dt>
+<dd>nonzero if bitrate management is active</dd>
+
+<dt><i>bitrate_limit_min_kbps</i></dt>
+<dd>Lower allowed bitrate limit in kilobits per second</dd>
+<dt><i>bitrate_limit_max_kbps</i></dt>
+<dd>Upper allowed bitrate limit in kilobits per second</dd>
+<dt><i>bitrate_limit_reservoir_bits</i></dt>
+<dd>Size of the bitrate reservoir in bits</dd>
+<dt><i>bitrate_limit_reservoir_bias</i></dt>
+
+<dd>Regulates the bitrate reservoir's preferred fill level in a range
+from 0.0 to 1.0; 0.0 tries to bank bits to buffer against future
+bitrate spikes, 1.0 buffers against future sudden drops in
+instantaneous bitrate.  Default is 0.1 </dd>
+
+<dt><i>bitrate_average_kbps</i></dt>
+<dd>Average bitrate setting in kilobits per second</dd>
+
+<dt><i>bitrate_average_damping</i></dt> <dd>Slew rate limit setting
+for average bitrate adjustment; sets the minimum time in seconds the
+bitrate tracker may swing from one extreme to the other when boosting
+or damping average bitrate.</dd>
+
+
+
+</dl>
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2004 vorbis team</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@vorbis.org">team@vorbis.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>vorbisfile documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

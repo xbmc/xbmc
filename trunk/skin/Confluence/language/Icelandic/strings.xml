@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Translator: Kristján Bjarni Guðmundsson-->
+<!--Email: kristjanbjarni@gmail.com-->
+<!--Date of translation: 2009-12-02-->
+<!--$Revision$-->
+<!--Based on english strings version 25203-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Breyta -</string>
+  <string id="31001">Ást</string>
+  <string id="31002">Hatri</string>
+  <string id="31003">Orkukostir</string>
+
+  <string id="31007">Tengiforrit</string>
+
+  <string id="31020">Nýlega bætt við</string>
+  <string id="31021">Myndefni - Skrár</string>
+  <string id="31022">Tónlist - Skrár</string>
+  <string id="31023">Spila</string>
+  <string id="31024">Síða</string>
+  <string id="31025">Hlutir</string>
+  <string id="31026">Ýmsir valkostir</string>
+  <string id="31027">Staðsetning</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Veggspjaldafletting</string>
+  <string id="31029">Aðdáendamyndir</string>
+  <string id="31030">Heildarlisti</string>
+  <string id="31031">Smámyndir</string>
+  <string id="31032">Myndafletting</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Í spilun</string>
+
+  <string id="31042">SPILA</string>
+  <string id="31043">Í BIÐ</string>
+  <string id="31044">HRATT ÁFRAM</string>
+  <string id="31045">TIL BAKA</string>
+  <string id="31046">Hljóðeiginleikar</string>
+  <string id="31047">Gildandi forstilling</string>
+  <string id="31048">Forstillingar myndskreytinga</string>
+  <string id="31049">Lokatími</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Opna lagalista</string>
+  <string id="31056">Vista lagalista</string>
+  <string id="31057">Loka lagalista</string>
+  <string id="31058">Tónlistarskrár kerfis</string>
+  <string id="31059">Núgildandi lagalisti</string>
+  <string id="31060">Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"/>
+  <string id="31101">Stillingar heimaskjás</string>
+  <string id="31102">Bakgrunnur</string>
+  <string id="31103">Sýna "Í bið" í myndasýningu</string>
+  <string id="31104"/>
+  <string id="31105">Sýna myndatitla í bakgrunnsleit</string>
+  <string id="31106">Ýmsir valkostir</string>
+  <string id="31107"/>
+  <string id="31108">Fela hnapp í aðalvalmynd</string>
+  <string id="31109">Bakgrunnar heimasvæðis</string>
+  <string id="31110">Breyta bakgrunni fyrir heimahnapp</string>
+  <string id="31111">Fela</string>
+  <string id="31112">Valkostir</string>
+  <string id="31113">Einföld mynd</string>
+  <string id="31114">Margföld mynd</string>
+  <string id="31115">Sérsníðari</string>
+  <string id="31116">Viðbótarskriftur</string>
+  <string id="31117">Sýna myndbönd sem var nýlega bætt við</string>
+  <string id="31118">Undirvalmynd heimasíðu</string>
+  <string id="31119">Virkja hnapp fyrir sérsniðna skriftu</string>
+  <string id="31120">HNAPPAHEITI</string>
+  <string id="31121">SLÓÐ Á SKRIFTU</string>
+  <string id="31122">Veðursíða</string>
+  <string id="31123">Nota "Veggspjöld" í staðinn fyrir "Borða" fyrir sjónvarpsþætti</string>
+  <string id="31124">Sýna "Í spilun" myndband í bakgrunni</string>
+  <string id="31125">Sýna "Í spilun" myndskreytingu í bakgrunni</string>
+
+  <string id="31126">Virkja lagatexta á tónlistarskjá</string>
+  <string id="31127">SLÓÐ Á LAGATEXTASKRIFTU</string>
+  <string id="31128">XBMC lagatextar</string>
+
+  <!-- Script labels -->
+  <string id="31200">Flýtileiðir</string>
+  <string id="31201">Flokkar</string>
+  <string id="31202">Sýna leikara</string>
+  <string id="31203">Veldu þitt lag</string>
+  <string id="31204">Tenglar svæðis</string>
+  <string id="31205">Frumkóði lagatexta</string>
+
+  <!-- The Weather Channel Script labels -->
+  <string id="31250">Ratsjá og Veðurspá</string>
+  <string id="31251">Veðurspá</string>
+  <string id="31252">TWC skrifta</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Núverandi hiti</string>
+  <string id="31301">Síðast uppfært</string>
+  <string id="31302">Valmynd</string>
+  <string id="31303"/>
+  <string id="31304">Mynd</string>
+  <string id="31305">Enginn diskur með myndefni fannst</string>
+  <string id="31306">Ýta út</string>
+  <string id="31307">Fela aðdáendamyndir</string>
+  <string id="31308">Kvikmyndaupplýsingar</string>
+  <string id="31309">Minni notað</string>
+  <string id="31310">Númer lags</string>
+  <string id="31311">AÐDÁENDAMYND[CR][CR]EKKI FÁANLEG[CR][CR] SMELLTU TIL AÐ BREYTA</string>
+  <string id="31312">Núverandi skafa</string>
+  <string id="31313">Veldu sköfu</string>
+  <string id="31314">Stillingar fyrir skönnun innihalds</string>
+  <string id="31315">Einfalt</string>
+  <string id="31316"/>
+  <string id="31317">Breyta slóð fyrir aðdáendamyndir</string>
+  <string id="31318">Lítil aðdáendamynd</string>
+  <string id="31319">Veldu notanda</string>
+  <string id="31320">Seinast skráður inn</string>
+  <string id="31321">Karaoke lagaveljari</string>
+  <string id="31322">Sýnt</string>
+  <string id="31323">Nýjustu kvikmyndirnar</string>
+  <string id="31324">Nýjustu þættirnir</string>
+  <string id="31325">Valkostir lagalista</string>
+  <string id="31326">Búið til</string>
+  <string id="31327">Upplausn</string>
+  <string id="31328">Nýlega bætt við</string>
+  <string id="31329">[B]TÍMAMÆLIR VIRKUR![/B] [COLOR=grey2] - SJÁLFVIRK SLÖKKT EFTIR[/COLOR]</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]BREYTA VIÐMÓTSSTILLINGUM[/B][CR][CR]Breyta útlitinu · Breyta tungumáli og svæði · Breyta stillingum skráarlista[CR]Breyta skjáhvílu</string>
+  <string id="31401">[B]BREYTA SKJÁSTILLINGUM[/B][CR][CR]Sýsla með myndabandasafn · Breyta myndbandaspilun · Breyta stillingum myndbandalista[CR]Breyta leturgerðum skjátexta</string>
+  <string id="31402">[B]BREYTA TÓNLISTARSTILLINGUM[/B][CR][CR]Sýsla með tónlistarsafn · Breyta stillingum tónlistarspilara · Breyta stillingum tónlistarlista[CR]Skilgreina laga upphal · Breyta karaoke stillingum</string>
+  <string id="31403">[B]BREYTA LJÓSMYNDASTILLINGUM[/B][CR][CR]Breyta stillingum ljósmyndalista · Stilla myndasýningar</string>
+  <string id="31404">[B]BREYTA VEÐURSTILLINGUM[/B][CR][CR]Skilgreindu þrjár borgir til að ná í veðurupplýsingar fyrir</string>
+  <string id="31405">[B]BREYTA NETSTILLINGUM[/B][CR][CR]Breyta hvernig XBMC er stjórnað með UPnP eða HTTP · Breyta skráardeilingu[CR]Breyta Internet stillingum</string>
+  <string id="31406">[B]BREYTA KERFISSTILLINGUM[/B][CR][CR]Breyta og stilla skjái · Breyta hljóðúttaki · 
+Skilgreina fjarstýringar[CR]Breyta orkukostum · Virkja aflúsun · Skilgreina aðallykilorð</string>
+  <string id="31407">[B]BREYTA ÚTLITSSTILLINGUM[/B][CR][CR]Breyta útliti Confluence · Bæta við og fjarlægja hluti úr aðalvamynd[CR]Breyta bakgrunni</string>
+
+  <string id="31420">[B][COLOR=white]XBMC fann ekki disk.[/COLOR][/B][CR][CR]Settu inn disk í drifið og reyndu aftur eða hættu við</string>
+  <string id="31421">Veldu þinn XBMC notanda[CR]til að skrá þig inn og halda áfram</string>
+</strings>

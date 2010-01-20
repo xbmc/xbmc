@@ -1,0 +1,61 @@
+<html><head>
+<title>libcurl-share man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">libcurl-share - how to use the share interface <a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">This is an overview on how to use the libcurl share interface in your C programs. There are specific man pages for each function mentioned in here. 
+<p class="level0">All functions in the share interface are prefixed with curl_share. 
+<p class="level0"><a name="OBJECTIVES"></a><h2 class="nroffsh">OBJECTIVES</h2>
+<p class="level0">The share interface was added to enable sharing of data between curl "handles". <a name="ONE"></a><h2 class="nroffsh">ONE SET OF DATA - MANY TRANSFERS</h2>
+<p class="level0">You can have multiple easy handles share data between them. Have them update and use the <span Class="bold">same</span> cookie database or DNS cache! This way, each single transfer will take advantage from data updates made by the other transfer(s). <a name="SHARE"></a><h2 class="nroffsh">SHARE OBJECT</h2>
+<p class="level0">You create a shared object with <a class="emphasis" href="./curl_share_init.html">curl_share_init(3)</a>. It returns a handle for a newly created one. 
+<p class="level0">You tell the shared object what data you want it to share by using <a class="emphasis" href="./curl_share_setopt.html">curl_share_setopt(3)</a>. Currently you can only share DNS and/or COOKIE data. 
+<p class="level0">Since you can use this share from multiple threads, and libcurl has no internal thread synchronization, you must provide mutex callbacks if you're using this multi-threaded. You set lock and unlock functions with <a class="emphasis" href="./curl_share_setopt.html">curl_share_setopt(3)</a> too. 
+<p class="level0">Then, you make an easy handle to use this share, you set the <span Class="emphasis">CURLOPT_SHARE</span> option with <a class="emphasis" href="./curl_easy_setopt.html">curl_easy_setopt(3)</a>, and pass in share handle. You can make any number of easy handles share the same share handle. 
+<p class="level0">To make an easy handle stop using that particular share, you set <span Class="emphasis">CURLOPT_SHARE</span> to NULL for that easy handle. To make a handle stop sharing a particular data, you can <span Class="emphasis">CURLSHOPT_UNSHARE</span> it. 
+<p class="level0">When you're done using the share, make sure that no easy handle is still using it, and call <a class="emphasis" href="./curl_share_cleanup.html">curl_share_cleanup(3)</a> on the handle. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_share_init.html">curl_share_init (3)</a> <a class="manpage" href="./curl_share_setopt.html">  curl_share_setopt (3)</a> <a class="manpage" href="./curl_share_cleanup.html">  curl_share_cleanup (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

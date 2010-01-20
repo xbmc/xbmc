@@ -1,0 +1,52 @@
+1.10
+* Iterative cluster fit is now considered to be a new compression mode
+* The core cluster fit is now 4x faster using contributions by Ignacio
+Castano from NVIDIA
+* The single colour lookup table has been halved by exploiting symmetry
+
+1.9
+* Added contributed SSE1 truncate implementation
+* Changed use of SQUISH_USE_SSE to be 1 for SSE and 2 for SSE2 instructions
+* Cluster fit is now iterative to further reduce image error
+
+1.8
+* Switched from using floor to trunc for much better SSE performance (again)
+* Xcode build now expects libpng in /usr/local for extra/squishpng
+
+1.7
+* Fixed floating-point equality issue in clusterfit sort (x86 affected only)
+* Implemented proper SSE(2) floor function for 50% speedup on SSE builds 
+* The range fit implementation now uses the correct colour metric
+
+1.6
+* Fixed bug in CompressImage where masked pixels were not skipped over
+* DXT3 and DXT5 alpha compression now properly use the mask to ignore pixels
+* Fixed major DXT1 bug that can generate unexpected transparent pixels
+
+1.5
+* Added CompressMasked function to handle incomplete DXT blocks more cleanly
+* Added kWeightColourByAlpha flag for better quality images when alpha blending
+
+1.4
+* Fixed stack overflow in rangefit
+
+1.3
+* Worked around SSE floor implementation bug, proper fix needed!
+* This release has visual studio and makefile builds that work
+
+1.2
+* Added provably optimal single colour compressor
+* Added extra/squishgen.cpp that generates single colour lookup tables
+
+1.1
+* Fixed a DXT1 colour output bug
+* Changed argument order for Decompress function to match Compress
+* Added GetStorageRequirements function
+* Added CompressImage function
+* Added DecompressImage function
+* Moved squishtool.cpp to extra/squishpng.cpp
+* Added extra/squishtest.cpp
+
+1.0
+* Initial release
+

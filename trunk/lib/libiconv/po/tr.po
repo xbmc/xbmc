@@ -1,0 +1,348 @@
+# libiconv Turkish translation.
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Deniz Akkus Kanca <deniz@arayan.com>, 2002.
+# This file is distributed under the same license as the libiconv package.
+# Deniz Akkus Kanca <deniz@arayan.com>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libiconv 1.8\n"
+"Report-Msgid-Bugs-To: bug-gnu-libiconv@gnu.org\n"
+"POT-Creation-Date: 2009-06-30 22:53+0200\n"
+"PO-Revision-Date: 2002-06-28 11:00+0200\n"
+"Last-Translator: Deniz Akkus Kanca <deniz@arayan.com>\n"
+"Language-Team: Turkish <gnu-tr-u12a@lists.sourceforge.net>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TRANSLATORS: The first line of the short usage message.
+#: src/iconv.c:103
+msgid "Usage: iconv [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+msgstr "Kullanım: iconv [-c] [-s] [-f kaynakkod] [-t hedefkod] [dosya ...]"
+
+#. TRANSLATORS: The second line of the short usage message.
+#. Align it correctly against the first line.
+#: src/iconv.c:107
+msgid "or:    iconv -l"
+msgstr "veya:  iconv -l"
+
+#: src/iconv.c:109
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr ""
+
+#. TRANSLATORS: The first line of the long usage message.
+#. The %s placeholder expands to the program name.
+#: src/iconv.c:114
+#, c-format, no-wrap
+msgid "Usage: %s [OPTION...] [-f ENCODING] [-t ENCODING] [INPUTFILE...]\n"
+msgstr ""
+
+#. TRANSLATORS: The second line of the long usage message.
+#. Align it correctly against the first line.
+#. The %s placeholder expands to the program name.
+#: src/iconv.c:121
+#, fuzzy, c-format, no-wrap
+msgid "or:    %s -l\n"
+msgstr "veya:  iconv -l"
+
+#. TRANSLATORS: Description of the iconv program.
+#: src/iconv.c:127
+#, c-format, no-wrap
+msgid "Converts text from one encoding to another encoding.\n"
+msgstr ""
+
+#: src/iconv.c:131
+#, c-format, no-wrap
+msgid "Options controlling the input and output format:\n"
+msgstr ""
+
+#: src/iconv.c:134
+#, c-format, no-wrap
+msgid ""
+"  -f ENCODING, --from-code=ENCODING\n"
+"                              the encoding of the input\n"
+msgstr ""
+
+#: src/iconv.c:138
+#, c-format, no-wrap
+msgid ""
+"  -t ENCODING, --to-code=ENCODING\n"
+"                              the encoding of the output\n"
+msgstr ""
+
+#: src/iconv.c:143
+#, c-format, no-wrap
+msgid "Options controlling conversion problems:\n"
+msgstr ""
+
+#: src/iconv.c:146
+#, c-format, no-wrap
+msgid "  -c                          discard unconvertible characters\n"
+msgstr ""
+
+#: src/iconv.c:149
+#, c-format, no-wrap
+msgid ""
+"  --unicode-subst=FORMATSTRING\n"
+"                              substitution for unconvertible Unicode characters\n"
+msgstr ""
+
+#: src/iconv.c:153
+#, c-format, no-wrap
+msgid "  --byte-subst=FORMATSTRING   substitution for unconvertible bytes\n"
+msgstr ""
+
+#: src/iconv.c:156
+#, c-format, no-wrap
+msgid ""
+"  --widechar-subst=FORMATSTRING\n"
+"                              substitution for unconvertible wide characters\n"
+msgstr ""
+
+#: src/iconv.c:161
+#, c-format, no-wrap
+msgid "Options controlling error output:\n"
+msgstr ""
+
+#: src/iconv.c:164
+#, c-format, no-wrap
+msgid "  -s, --silent                suppress error messages about conversion problems\n"
+msgstr ""
+
+#: src/iconv.c:168
+#, c-format, no-wrap
+msgid "Informative output:\n"
+msgstr ""
+
+#: src/iconv.c:171
+#, c-format, no-wrap
+msgid "  -l, --list                  list the supported encodings\n"
+msgstr ""
+
+#: src/iconv.c:174
+#, c-format, no-wrap
+msgid "  --help                      display this help and exit\n"
+msgstr ""
+
+#: src/iconv.c:177
+#, c-format, no-wrap
+msgid "  --version                   output version information and exit\n"
+msgstr ""
+
+#. TRANSLATORS: The placeholder indicates the bug-reporting address
+#. for this package.  Please add _another line_ saying
+#. "Report translation bugs to <...>\n" with the address for translation
+#. bugs (typically your translation team's web or email address).
+#: src/iconv.c:184
+msgid "Report bugs to <bug-gnu-libiconv@gnu.org>.\n"
+msgstr ""
+
+#: src/iconv.c:195
+#, no-wrap
+msgid ""
+"License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+"This is free software: you are free to change and redistribute it.\n"
+"There is NO WARRANTY, to the extent permitted by law.\n"
+msgstr ""
+
+#. TRANSLATORS: The %s placeholder expands to an author's name.
+#: src/iconv.c:201
+#, c-format
+msgid "Written by %s.\n"
+msgstr "Yazan: %s\n"
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:295
+#, c-format
+msgid ""
+"%s argument: A format directive with a variable width is not allowed here."
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:310
+#, c-format
+msgid ""
+"%s argument: A format directive with a variable precision is not allowed "
+"here."
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:326
+#, c-format
+msgid "%s argument: A format directive with a size is not allowed here."
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:368
+#, c-format
+msgid "%s argument: The string ends in the middle of a directive."
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#. The %c placeholder expands to an unknown format directive.
+#: src/iconv.c:375
+#, c-format
+msgid "%s argument: The character '%c' is not a valid conversion specifier."
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#: src/iconv.c:381
+#, c-format
+msgid ""
+"%s argument: The character that terminates the format directive is not a "
+"valid conversion specifier."
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a command-line option.
+#. The %u placeholder expands to the number of arguments consumed by the format string.
+#: src/iconv.c:397
+#, c-format
+msgid ""
+"%s argument: The format string consumes more than one argument: %u argument."
+msgid_plural ""
+"%s argument: The format string consumes more than one argument: %u arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --byte-subst.
+#: src/iconv.c:455
+#, c-format
+msgid "cannot convert byte substitution to Unicode: %s"
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --unicode-subst.
+#: src/iconv.c:495
+#, c-format
+msgid "cannot convert unicode substitution to target encoding: %s"
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --byte-subst.
+#: src/iconv.c:536
+#, c-format
+msgid "cannot convert byte substitution to wide string: %s"
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --widechar-subst.
+#: src/iconv.c:577
+#, c-format
+msgid "cannot convert widechar substitution to target encoding: %s"
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The %s placeholder expands to a piece of text, specified through --byte-subst.
+#: src/iconv.c:618
+#, c-format
+msgid "cannot convert byte substitution to target encoding: %s"
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The placeholders expand to the input file name, a line number, and a column number.
+#: src/iconv.c:637
+#, fuzzy, c-format
+msgid "%s:%u:%u: cannot convert"
+msgstr "iconv: %s: dönüştürülemedi\n"
+
+#. TRANSLATORS: An error message.
+#. The placeholders expand to the input file name, a line number, and a column number.
+#. A "shift sequence" is a sequence of bytes that changes the state of the converter;
+#. this concept exists only for "stateful" encodings like ISO-2022-JP.
+#: src/iconv.c:651
+#, fuzzy, c-format
+msgid "%s:%u:%u: incomplete character or shift sequence"
+msgstr "iconv: %s: eksik karakter ya da shift dizisi\n"
+
+#. TRANSLATORS: The first part of an error message.
+#. It is followed by a colon and a detail message.
+#. The placeholders expand to the input file name, a line number, and a column number.
+#: src/iconv.c:664
+#, c-format
+msgid "%s:%u:%u"
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#. The placeholder expands to the input file name.
+#: src/iconv.c:819
+#, fuzzy, c-format
+msgid "%s: I/O error"
+msgstr "iconv: %s: I/O hatası\n"
+
+#. TRANSLATORS: An error message.
+#. The placeholder expands to the encoding name, specified through --from-code.
+#: src/iconv.c:1007
+#, fuzzy, c-format
+msgid "conversion from %s unsupported"
+msgstr "iconv: %s'den dönüşüm desteklenmiyor\n"
+
+#. TRANSLATORS: An error message.
+#. The placeholder expands to the encoding name, specified through --to-code.
+#: src/iconv.c:1013
+#, fuzzy, c-format
+msgid "conversion to %s unsupported"
+msgstr "iconv: %s'e dönüşüm desteklenmiyor\n"
+
+#. TRANSLATORS: An error message.
+#. The placeholders expand to the encoding names, specified through --from-code and --to-code, respectively.
+#: src/iconv.c:1019
+#, fuzzy, c-format
+msgid "conversion from %s to %s unsupported"
+msgstr "iconv: %s'den %s'e dönüşüm desteklenmiyor\n"
+
+#. TRANSLATORS: Additional advice after an error message.
+#. The %s placeholder expands to the program name.
+#: src/iconv.c:1024
+#, c-format
+msgid "try '%s -l' to get the list of supported encodings"
+msgstr ""
+
+#. TRANSLATORS: A filename substitute denoting standard input.
+#: src/iconv.c:1081
+msgid "(stdin)"
+msgstr "(standart girdi)"
+
+#. TRANSLATORS: The first part of an error message.
+#. It is followed by a colon and a detail message.
+#. The %s placeholder expands to the input file name.
+#: src/iconv.c:1093
+#, c-format
+msgid "%s"
+msgstr ""
+
+#. TRANSLATORS: An error message.
+#: src/iconv.c:1107
+#, fuzzy, c-format
+msgid "I/O error"
+msgstr "iconv: I/O hatası\n"
+
+#~ msgid ""
+#~ "Usage: iconv [--binary] [-c] [-s] [-f fromcode] [-t tocode] [file ...]"
+#~ msgstr ""
+#~ "Kullanım: iconv [--binary] [-c] [-s] [-f kaynakkod] [-t hedefkod] "
+#~ "[dosya ...]"
+
+#~ msgid ""
+#~ "This is free software; see the source for copying conditions.  There is "
+#~ "NO\n"
+#~ "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR "
+#~ "PURPOSE.\n"
+#~ msgstr ""
+#~ "Bu bir serbest yazılımdır; kopyalama kuralları için kaynak koduna "
+#~ "bakınız.\n"
+#~ "HİÇ BİR garantisi yoktur; hatta SATILABİLİRLİĞİ veya HERHANGİ BİR AMACA\n"
+#~ "UYGUNLUĞU için dahi garanti verilmez.\n"
+
+#~ msgid "iconv: %s: "
+#~ msgstr "iconv: %s: "

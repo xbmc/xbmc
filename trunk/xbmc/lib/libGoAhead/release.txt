@@ -1,0 +1,594 @@
+=====================================
+GoAhead WebServer 2.1.7 Release Notes
+=====================================
+
+.. NOTES:
+.. This document is maintained using the reStructuredText markup system. 
+.. You may download this from <http://docutils.sf.net>. Also note that running 
+.. the docutils code requires that a version of Python version 2.1 or later
+.. be installed on the machine. Since the GoAhead release procedure itself 
+.. runs in Python, this should not be a problem.
+.. 
+.. To add new entries to the release notes, follow the markup shown below 
+.. (releases should be underlined with a row of '=' characters, each item
+.. noted within a release should be underlined with '-' characters.
+
+
+.. contents::
+
+GoAhead WebServer 2.1.7 Release Notes
+=====================================
+
+Release Date:
+   01 Oct 2003
+
+Added support for the Mocana SSL Toolkit
+----------------------------------------
+
+Description:
+   Added support for Mocana Corporation's embedded SSL server
+
+Changes to ``dbSearchString()``
+-------------------------------
+
+Description:
+   
+   Pass ``DB_CASE_INSENSITIVE`` as the "flags" argument to
+   dbSearchString() to force a case-insensitive search.
+   
+
+Use ``memcpy()`` when converting to/from Unicode
+------------------------------------------------
+Description:
+   The functions ``uniToAsc()`` and ``ascToUni()`` were using the relatively
+   slow ``strncpy()`` runtime library function. 
+
+Fix:
+   A new preprocessor macro ``kUseMemcopy`` was added to ``misc.c``, and both
+   functions were recoded to use ``memcpy()`` when that macro is defined.
+   Remove the definition to revert to the earlier code, using ``strncpy()``.
+
+
+Bug when using UTF-8 encoded text inside ASP/ejScript blocks   
+---------------------------------------------------------------
+
+Description:
+   When reading ASP code containing UTF-8 encoded source text, any characters
+   encountered having a value > 127 were treated as an error by the parser.
+
+Fix:
+   The ring queue code in ``ringq.c`` was modified so that it can correctly
+   handle any character it encounters by casting to unsigned char before
+   casting back to signed integer.
+
+Wrong error code on invalid password
+------------------------------------
+
+Description:
+   The WebServer was sending back an inappropriate error code when it received
+   an incorrect password.
+
+Fix:
+   Changed error code returned from ``405`` to ``401``. (Thanks to Jay
+   Chalfant).
+
+Windows CE.NET   
+-----------------
+
+Description:
+   Removed "compatibility functions" that are directly supported in Windows
+   CE.NET.
+
+LYNX ``Makefile``
+-----------------
+
+Description:
+   Corrected problem in LYNX Makefile that prevented OpenSSL from being linked
+   in correctly.
+
+GoAhead WebServer 2.1.6 Release Notes
+=====================================
+Release Date:
+   25 Mar 2003
+
+``NULL`` pointer crash in ``websSafeUrl()``
+-------------------------------------------
+
+Description:
+   Passing a NULL pointer into the ``websSafeUrl()`` function (as would happen
+   when the server is processing an invalid URL) crashes the server.
+
+Fix:
+   Code modified to check for NULL pointer before performing any string
+   operations.
+
+
+GoAhead WebServer 2.1.5 Release Notes
+=====================================
+Release Date:
+   19 Mar 2003
+
+
+
+``bopen()`` failure mode
+------------------------
+
+
+
+Description:
+   New failure behavior for ``bopen()`` (see ``balloc.c``)
+
+Fix:
+   Changed failure behavior of the bopen() function (suggested by Simon
+   Byholm).  If the malloc() request fails, we reset the bopenCount
+   variable, and thus allow the client code to reattempt the open with
+   a smaller memory request.
+
+   
+Windows 95/98/ME ``AUX`` Denial of Service
+------------------------------------------
+
+
+  
+Description:
+   When running on Windows 95/98/ME, URLs requested with path components
+   matching a set of reserved DOS device names caused the WebServer to crash.
+   
+   The names that cause the crash are::
+
+      aux
+      con
+      nul
+      clock$
+      config$
+
+   
+   
+
+Fix:
+   Code added to the ``websValidateUrl()`` function to check the contents of
+   the parsed URL against the list of prohibited names. If any of those names
+   are present in the parsed URL, the URL is rejected as invalid.
+
+   The code that checks for these prohibited pathname components checks for
+   them in the form of either::
+
+      http://<<server address>>/aux
+
+   or::
+
+      http://<<server address>>/aux:
+
+   where any non-alphanumeric character following one of the prohibited names
+   will cause the URL request to be rejected.
+
+
+404 Cross-site Scripting Exploit   
+-----------------------------------
+
+
+Description:
+   Malicious users could request an invalid URL containing embedded JavaScript
+   code that would be executed in the user's browser.
+
+Fix:
+   404 (and other error messages) returned by the WebServer no longer display
+   the invalid URL.
+
+Long URL Overflow Crash
+-----------------------
+
+
+Description:
+   URLs containing more than 64 levels of path components caused the WebServer
+   to crash, entering a buffer overflow condition.
+
+Fix:
+   The WebServer now keeps track of the depth as it validates the URL. URLs
+   that are too long are now rejected with an error message.
+
+Incorrect Error Code in ``security.c``
+--------------------------------------
+
+
+Description:
+   Pages assigned an access level of ``AM_NONE`` should return an error code
+   of 404 instead of 400 when an attempt it made to access them.
+
+Fix:
+   Error code corrected.
+
+Pragma Code for RISC Architectures   
+-------------------------------------
+
+
+Description:
+   A pragma was not set correctly when compiling for SPARC machines.
+
+Fix:
+   Code added to ``uemf.h``::
+      
+      #ifdef sparc
+      # define __NO_PACK
+      #endif /* sparc */
+
+
+
+
+   
+GoAhead® WebServer 2.1.4 Release Notes 
+=======================================
+      
+Release Date:
+   17 Oct 2002
+
+
+
+
+Fixed vulnerability to malicious code in ``webs.c``
+---------------------------------------------------
+
+
+
+Summary:
+    There were two vulnerabilities in ``webs.c``. Sending a POST message
+    with a content-length but no data resulted in an attempt to perform
+    a ``strlen()`` on a NULL pointer (thanks to Richard Cullen). Also,
+    sending an HTTP POST message with a Content-Length header indicating
+    that the length of the posted data was less than zero would crash
+    the server (thanks to Auriemma Luigi).
+
+Fix:
+   Code errors corrected.
+    
+   
+
+https:// bug in security handler
+--------------------------------
+
+  
+Summary:
+    The ``websSecurityHandler()`` function was performing a logical
+    OR: (``flags | WEBS_SECURE``) instead of a logical AND (``flags &
+    WEBS_SECURE``), leading to incorrect results (thanks to "Dhanwa T").
+
+Fix:
+      Code errors corrected.
+    
+   
+
+Fixed vulnerability to malicious code in sockGen.c
+--------------------------------------------------
+
+  
+Summary:
+    At line 613 of ``sockGen.c``, the return value of the function
+    ``socketInputBuffered()`` was being discarded, leading to incorrect
+    behavior in some cases. (Thanks to Richard Cullen)
+
+Fix:
+      Code errors corrected.
+    
+   
+Bug Fixes for Version 2.1.3
+===========================
+
+
+Directory Traversal Exploit 
+----------------------------
+
+  
+Summary:
+      Several sources have reported that requesting an URL with URL-encoded
+      backslashes (%5C) allow accessing files located outside the server's
+      designated web root. This should only have been possible on Windows, as
+      URL-encoded forward slashes (%2F) were already being handled correctly.
+
+Fix:
+      Modified ``default.c`` so that any backslash characters created as
+      part of decoding the URL string are converted (in place) to forward
+      slashes. The pre-existing directory-traversal detection code then
+      rejects the bad URL as expected.
+    
+   
+MIME type for external JavaScript files 
+----------------------------------------
+
+  
+Summary:
+      The WebServer would not serve external JavaScript files (``*.js``)
+      correctly.
+
+
+Fix:
+    modified ``mime.c`` to associate ``.js`` files with the MIME
+    type ``application/x-javascript``.
+   
+   
+Bug in If-Modified-Since parsing
+--------------------------------
+
+  
+Summary:
+      There was an off-by-one error when converting from Gregorian date to
+      time_t. 
+
+Fix:
+      modified function ``dateToTimet`` in file ``webs.c``.  The ``month``
+      parameter is numbered from  0 (Jan == 0), but ``FixedFromGregorian()``
+      takes months numbered from 1 (January == 1). We need to add 1 to
+      the month before calling FixedFromGregorian.
+
+   
+
+   
+Bug Fixes for Version 2.1.2 
+============================
+
+
+Ejscript Error Messages 
+------------------------
+
+  
+Summary:
+
+      Changed ejEval() function so it displays in the browser the error string that is 
+      reported by the ejScript interpreter (old code discarded it completely).
+
+Fix:
+    modified ``websuemf.c``
+   
+
+Security Handler Response Codes 
+--------------------------------
+
+  
+Summary:
+      Several places in the ``websSecurityHandler()`` function were
+      returning error code 200 (success) instead of the correct 400-level error code.
+Fix:
+      Corrected error codes in ``security.c``
+   
+Security Handler Memory Leak 
+-----------------------------
+
+  
+Summary:
+      In ``websSecurityHandler()``, if the WebServer was compiled with
+      ``WEBS_SSL_SUPPORT`` enabled, there was a return path that leaked
+      memory.
+
+Fix:
+      Added call to ``bfree(B_L, accessLimit);``
+   
+Ejscript Write Corruption 
+--------------------------
+
+  
+Summary:
+      Very long text strings passed to the Ejscript ``write()`` function
+      were being corrupted before being displayed.
+      
+Fix:
+      Commented out a ``trace()`` statement in ``ejGetLexToken()`` that appears to have been the
+      culprit. The value of ``ep->token`` was being corrupted somewhere
+      in the trace.
+   
+Error in dsnprintf(): "%X" format 
+----------------------------------
+
+  
+Summary:
+      The "%X" format specifier did not correctly cause the function to output
+      uppercase hexadecimal digits.
+
+Fix:
+      Added support for the "%X" format specifier.
+   
+BUG018565 Re-fixed 
+-------------------
+
+  
+Summary:
+      See 2.1.1 release notes (below). This bug fix did not make it into the
+      2.1.1 release.
+      
+Fix:
+      Corrected code in ``sockGen.c``.
+   
+Potential Error in ``error()`` 
+-------------------------------
+
+
+  
+Summary:
+      If ``error()`` is called where the etype parameter is not E_LOG, E_ASSERT, 
+      or E_USER, the call to ``bfreeSafe(B_L, buf)`` now at line 71 will fail, 
+      because 'buf' is randomly  initialized. 
+
+Fix:
+      We format a message saying that this is an unknown message type, 
+      and in doing so give buf a valid value.    
+    
+
+Added Support For Customized Access Control 
+--------------------------------------------
+
+  
+Summary:
+      Several users requested a method to control URL access in a hierarchical
+      fashion. For example, users assigned to an 'admin' group might have
+      access to all URLs on the WebServer, and users assigned to the group
+      'technician' would have access to a smaller set of pages, and users
+      assigned to the group 'users' would perhaps only have access to a set of
+      read-only pages. The built-in WebServer access control system only
+      allows users to access URLs that exactly match their group membership. 
+      
+Fix:
+      Added call to a user-supplied function `` bool_t dmfCanAccess(const
+      char_t* userGroup, const char_t* group)``. This function is called
+      from inside ``umUserCanAccessURL()`` if the macro
+      ``qHierarchicalAccess`` is defined. 
+   
+   
+
+Memory Leak in websParseRequest() 
+----------------------------------
+
+  
+Summary:
+      Memory was being leaked in the code now at line 907 of ``webs.c``.
+
+Fix:
+      Added a call to ``bfree()``.
+   
+Macintosh OS X Support  
+========================
+
+
+A separate Mac OS X platform directory has been added, and this platform
+has been tested on version 10.1.5 of the operating system.
+To build the WebServer on OS X::
+
+   cd MACOSX
+   make
+
+
+Note that like all \*nix operating systems, only the root user has
+permission to open a server port with a lower number than 1024. You must
+run the WebServer as root to serve pages over port 80, or change the server
+port (in ``main.c``) to a different port (typically port 8080).
+   
+   
+
+
+Bug Fixes for Version 2.1.1
+===========================
+
+Intermittent Access Error for CGI Scripts (BUG01937)
+----------------------------------------------------
+
+   
+Summary:
+      Pages were occasionally replaced with the message, ``Access Error: Data 
+      follows when trying to obtain CGI generated no output``. 
+Fix:
+      On multiple CPU systems, it is possible for a CGI application to exit before 
+      its output is flushed to disk. The change for this release locates the code 
+      that collects the output from the CGI application in a separate routine. 
+      In addition to calling that routine from within the CGI application processing 
+      loop, it is also called in a brief loop after the CGI application has exited. 
+      This extra loop runs for only up to one second while the collected output 
+      remains empty. If, after 1 second, the output remains empty, the original 
+      course of action is followed (``Access Error`` is reported).
+  
+  
+CPU Utilization Hangs at 100% on a Socket Disconnect (BUG01865)
+---------------------------------------------------------------
+
+   
+Summary:
+      This error occurs whenever a user terminates a request before the server 
+      has had ample time to service it. This can be simulated by quickly hitting 
+      the refresh button on the browser twice in a row, causing the first request 
+      to be terminated. The server then enters into a tight loop that utilizes 
+      all of its time.
+      
+Fix:
+      Always close the socket prior to a disconnect.
+  
+  
+Security Features can be Bypassed by Adding an Extra Slash in the URL (BUG01518)
+--------------------------------------------------------------------------------
+
+   
+Summary:
+      By adding an extra slash in a URL, password prompting is bypassed, allowing 
+      unrestricted access to secured pages. 
+      
+Fix:
+      Remove multiple adjacent occurrences of slashes in the URL before passing 
+      it to the security handler.
+  
+  
+Call to ``websSetVar`` causes a crash (BUG01938)
+------------------------------------------------
+
+
+   
+Summary:
+      Whenever a request is not completed while being processed by websGetInput(), 
+      a call to websDone is made, followed by an attempt to process the partial 
+      request data.
+      
+Fix:
+      Return immediately after closing the socket.
+  
+  
+Remove stray semicolon in ``emfdb.c`` (BUG01820)
+------------------------------------------------
+
+  
+Summary and Fix:
+      A stray semicolon was removed from this file.
+  
+Novell Netware Support
+======================
+
+ 
+With the addition of Novell Netware in this 2.11 release, WebServer now supports these platforms:
+
+    *  LINUX
+    *  LynxOS
+    *  Novell Netware </font>4.2, 5.1
+    *  Mac OS X
+    *  UNIX - SCO OpenServer 3.2V5.0.0
+    *  VxWorks 5.3.1
+    *  Windows 2000
+    *  Windows 98
+    *  Windows 95 
+    *  Windows NT
+    *  Windows CE
+  
+To make a Novell Netware target file (``webs.nlm``)::
+
+   cd NW
+   wmake webs.nlm
+   load <path>; \webs.nlm
+   webs
+
+
+**Note:** This makefile lacks a valid default rule. In addition, an
+environment variable (QMKVER) controls the amount of debug information
+that is compiled and linked into the nlm file. If this variable is set
+to ``P``, it produces a production version. All other settings
+(or the omission of the variable) results in a debug version.  For other
+platforms supported by WebServer, please refer to your WebServer 2.1
+documentation for appropriate instructions.
+
+Copyright Information
+=====================
+
+
+Trademarks
+   GoAhead and GoAhead WebServer are registered trademarks of GoAhead
+   Software.  All other brand or product names are the trademarks or
+   registered trademarks of their respective holders.
+
+Copyright 
+   Copyright © 2000, 2001 GoAhead Software, Inc. All rights reserved.
+   Product and technical information in this document is subject to
+   change without notice and does not represent a commitment on the part
+   of GoAhead Software, Inc.
+
+Copy Restrictions 
+   The software described in this document may be used and copied only
+   in accordance with the terms of the accompanying license agreement.
+
+   
+GoAhead Software, Inc.
+ 10900 NE 8th Street Suite 750 Bellevue, WA 98004 +1 ( 425) 453-1900
+ www.goahead.com info@goahead.com
+
+1-53-03
+

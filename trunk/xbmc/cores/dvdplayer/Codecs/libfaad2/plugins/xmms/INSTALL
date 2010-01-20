@@ -1,0 +1,2 @@
+the installation of this plugin is provide by the faad2 package.
+add to configure time the option '--with-xmms' and the plugin will be build

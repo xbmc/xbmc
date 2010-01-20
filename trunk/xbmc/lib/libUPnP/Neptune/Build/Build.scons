@@ -1,0 +1,208 @@
+import sys
+import os
+import imp
+from glob import glob
+
+#######################################################
+# reusable functions and data structures
+#######################################################
+def LoadTool(name, env, **kw):
+    config_path = GetBuildPath('#/Build/Tools/SCons')
+    file, path, desc = imp.find_module(name, [config_path])
+    module = imp.load_module(name, file, path, desc)
+    module.generate(env, **kw)
+    
+def MergeListUnique(item_list, items):
+    for item in items: 
+        if not item in item_list: item_list.append(item)
+
+def MergeItemUnique(item_list, item):
+    if not item in item_list: item_list.append(item)
+
+def GlobSources(drct, patterns, excluded_files=[]):
+    root = GetBuildPath('#'+drct)
+    files = []
+    for pattern in Split(patterns):
+        files += glob(root+'/'+pattern)
+    return [drct+'/'+os.path.basename(x) for x in  files if os.path.basename(x) not in excluded_files]
+
+def GetDirPath(dir):
+    return '#/'+dir
+    
+def DeclareBuildDir(dir):
+    env.BuildDir(dir, GetDirPath(dir), duplicate=0)
+    
+def GetIncludeDirs(modules, exclude=None):
+    dirs = []
+    for module in Split(modules):
+        if Modules.has_key(module) and not module == exclude:
+            dirs += Modules[module].GetIncludeDirs()
+        else:
+            dirs += [GetDirPath(module)]
+    return dirs
+
+def GetLibraries(modules):
+    libs = []
+    for module in Split(modules):
+        if Modules.has_key(module):
+            libs += Modules[module].GetLibraries()
+        else:
+            libs += [module]
+    return libs
+
+def BuildApp(source_dir, name, deps):
+    DeclareBuildDir(source_dir)
+    libs = GetLibraries(deps)
+    cpp_path = GetIncludeDirs(deps)
+    prog = env.Program(target=name,
+                       source=GlobSources(source_dir, ['*c', '*.cpp']),
+                       LIBS=libs, CPPPATH=cpp_path)
+    env.Alias(name, prog)
+
+Modules = {}
+class Module:
+    def __init__(self, name, included_modules = [], linked_modules = []):
+        self.name             = name
+        self.included_modules = included_modules
+        self.linked_modules   = linked_modules
+        self.product          = []
+
+    def GetLibraries(self):
+        return self.product+GetLibraries(self.linked_modules)
+        
+    def GetIncludeDirs(self):
+        return GetIncludeDirs(self.included_modules+self.build_include_dirs, self.name)
+    
+class LibraryModule(Module):
+    def __init__(self, name, 
+                 build_source_dirs     = ['.'], 
+                 build_source_files    = {},
+                 source_root           = 'Source',
+                 build_source_pattern  = ['*.c', '*.cpp'], 
+                 build_include_dirs    = [], 
+                 included_modules      = [], 
+                 included_only_modules = [],
+                 linked_modules        = [],
+                 environment           = None,
+                 excluded_files        = [],
+                 extra_cpp_defines     = [],
+                 shared                = False) :
+        build_source_dirs = [source_root+'/'+drct for drct in build_source_dirs]
+        Module.__init__(self, 
+                        name, 
+                        Split(included_modules)+Split(included_only_modules)+Split(build_source_dirs), 
+                        Split(linked_modules)+Split(included_modules))
+        self.build_include_dirs = build_include_dirs
+        if environment is None:
+            self.env = env.Clone()
+        else:
+            self.env = environment.Clone()
+        self.env.AppendUnique(CPPDEFINES = extra_cpp_defines)
+        
+        # store this new object in the module dictionary
+        Modules[name] = self
+                
+        # for each source drct to build, create a BuildDir
+        # to say where we want the object files to be built,
+        # and compute the list of source files to build
+        sources = []
+        for drct in Split(build_source_dirs):
+            DeclareBuildDir(drct)
+            sources += GlobSources(drct, build_source_pattern, excluded_files)
+            
+        # add cherry-picked files
+        for drct in build_source_files.keys():
+            pattern = build_source_files[drct]
+            drct_path = source_root+'/'+drct
+            DeclareBuildDir(drct_path)
+            sources += GlobSources(drct_path, pattern)
+
+        # calculate our build include path
+        cpp_path = GetIncludeDirs(Split(self.build_include_dirs) + Split(build_source_dirs) + self.included_modules + self.linked_modules)
+
+        # the product is a library
+        self.env.AppendUnique(CPPPATH=cpp_path)
+        if shared is False:
+            self.product = self.env.Library(target=name, source=sources)
+        else:
+            libs = GetLibraries(Split(linked_modules))
+            self.product = self.env.SharedLibrary(target=name, LIBS=libs, source=sources)
+        self.env.Alias(name, self.product)
+        
+        
+def Application(name, dir):
+    DeclareBuildDir(dir)
+    libs = GetLibraries('Neptune')
+    cpp_path = GetIncludeDirs('Neptune')
+    
+    prog = env.Program(name, 
+                       GlobSources(dir, ['*.c', '*.cpp']), 
+                       LIBS=libs, CPPPATH=cpp_path)
+    #env.Alias(name, prog)
+    if env.has_key('NPT_EXECUTABLE_POST_PROCESSOR'):
+        env.AddPostAction(prog, env['NPT_EXECUTABLE_POST_PROCESSOR'])
+    
+#######################################################
+# Main Build
+#######################################################
+Import("env")
+
+### defaults
+env['NPT_EXTRA_LIBS'] = []
+
+if (env['build_config'] == 'Debug'):
+    env.AppendUnique(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
+
+### try to read in any target specific configuration
+target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
+if os.path.exists(target_config_file):
+    # Load the target-specific config file    
+    execfile(target_config_file)
+
+#######################################################
+# modules
+#
+# Usage:
+#
+# The LibraryModule() function declares a code module
+# The included_modules parameter is a list of all the modules and/or directories
+# that will be added to the include path when building this module AND to
+# the include path of any other module that depends on this one.
+# The linked_modules parameter is a list of all the modules and/or directories
+# that are necessary to build this module. These modules will be added to
+# the include path of this module, but not to that of the modules that depend
+# on this module. The modules that depend on this module, however, will 
+# automatically link with the linked_modules. 
+# Note that the included_modules list is automatically added to the 
+# linked_modules list, so that you do not need to list in linked_modules
+# the modules that are already listed in included_modules.
+# If a module needs to export an include path to its dependents that
+# is not a module that the dependent can link with (ex: an include dir),
+# list it in the included_only_modules.
+# To summarize: included_modules should list all the modules that users
+# of the public interface should depend on; linked_modules should list
+# all the modules not listed in included_modules that are used by the
+# module's implementation only.
+#######################################################
+
+LibraryModule(name                  = 'Zlib',
+              source_root           = '.',
+              build_source_dirs     = ['ThirdParty/zlib-1.2.3'])
+
+
+extra_cpp_flags = []
+if not env.has_key('NPT_CONFIG_NO_ZIP'):
+    extra_cpp_flags = ['NPT_CONFIG_ENABLE_ZIP']
+    
+LibraryModule(name                  = 'Neptune',
+              build_source_dirs     = ['Core'],
+              build_source_files    = env['NPT_SYSTEM_SOURCES'],
+              extra_cpp_defines     = extra_cpp_flags,
+              linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'])
+           
+for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho', 'MiniHttpServer']:
+    Application(app, 'Source/Apps/'+app)
+    
+for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Queue1', 'Messages1', 'Messages2', 'Url1', 'Zip1', 'Time1']:
+    Application(test+'Test', 'Source/Tests/'+test)
+

@@ -1,0 +1,30 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websWrite -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websWrite</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p> Write formatted data 
+to the user's browser.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ int <b>websWrite</b>(webs_t wp, char_t *fmt, ...); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="4%">wp <TD WIDTH="96%">Web server connection handle. 
+<TR> <TD VALIGN="TOP" WIDTH="4%">fmt <TD WIDTH="96%">Output format string.<TR> 
+<TD VALIGN="TOP" WIDTH="4%">... <TD WIDTH="96%">Variable arguments to supply data 
+for the format string.</TD></TR></table><h2>Description</h2><P>The websWrite procedure 
+is the primary routine to write formatted data back to the user's browser. It 
+can be used within both ASP procedures and Form procedures. It uses a <EM>printf 
+</EM>style format string with a variable number of arguments. Data will be immediately 
+flushed to the user's browser.</P><h2>Return Value</h2><p> The number of bytes 
+actually written.</p><h2>Example</h2><pre> websWrite(wp, &quot;Name %s, Address %s&quot;, name, address); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <A href="../../../over/asp.htm">Active Server Pages</A>, <A href="../../../over/goforms.htm">GoForms</A>, 
+<A href="websDone.htm">websDone</A>, <A href="websFooter.htm">websFooter</A>, 
+<A href="websHeader.htm">websHeader</A> </p></td></tr></table>
+</body>
+</html>

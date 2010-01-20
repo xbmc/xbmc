@@ -1,0 +1,85 @@
+# Makefile for libiconv/preload
+
+#### Start of system configuration section. ####
+
+# Directories used by "make":
+srcdir = @srcdir@
+
+# Directories used by "make install":
+prefix = @prefix@
+local_prefix = /usr/local
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+
+# Programs used by "make":
+CC = @CC@
+CFLAGS = @CFLAGS@ @CFLAG_VISIBILITY@
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+INCLUDES = -I../lib -I$(srcdir)/../lib -I../include -I$(srcdir)/../include -I.. -I$(srcdir)/..
+# -DBUILDING_LIBICONV: Change expansion of LIBICONV_DLL_EXPORTED macro.
+# -DBUILDING_DLL: Change expansion of RELOCATABLE_DLL_EXPORTED macro.
+DEFS = -DLIBDIR=\"$(libdir)\" -DBUILDING_LIBICONV -DBUILDING_DLL \
+-DENABLE_RELOCATABLE=1 -DIN_LIBRARY -DINSTALLDIR=\"$(libdir)\" -DNO_XMALLOC \
+-Dset_relocation_prefix=libiconv_set_relocation_prefix \
+-Drelocate=libiconv_relocate @DEFS@
+LIBTOOL = @LIBTOOL@
+LIBTOOL_COMPILE = $(LIBTOOL) --mode=compile
+LIBTOOL_LINK = $(LIBTOOL) --mode=link
+LN_S = @LN_S@
+RM = rm -f
+
+# Programs used by "make install":
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+mkinstalldirs = $(SHELL) @top_srcdir@/build-aux/mkinstalldirs
+
+#### End of system configuration section. ####
+
+SHELL = /bin/sh
+
+# Needed by $(LIBTOOL).
+top_builddir = .
+
+SOURCES = $(srcdir)/../lib/iconv.c $(srcdir)/../libcharset/lib/localcharset.c $(srcdir)/../lib/relocatable.c
+
+all : @PLUGLIB@
+
+preloadable_libiconv.so : $(SOURCES)
+	$(RM) -r objects
+	mkdir objects && \
+	for f in $(SOURCES); do \
+	  $(LIBTOOL_COMPILE) $(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(DEFS) -DLIBICONV_PLUG -c $$f -o objects/`basename $$f | sed -e 's,\.c$$,.o,'` || exit 1; \
+	done && \
+	$(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) -o libiconv.la -rpath $(libdir) -no-undefined objects/*.lo && \
+	$(RM) -r objects
+	cp .libs/libiconv.so preloadable_libiconv.so
+
+install : all force
+	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
+	if test -n "@PLUGLIB@"; then $(INSTALL_DATA) @PLUGLIB@ $(DESTDIR)$(libdir)/@PLUGLIB@.new && mv $(DESTDIR)$(libdir)/@PLUGLIB@.new $(DESTDIR)$(libdir)/@PLUGLIB@ ; fi
+
+install-strip : install
+
+installdirs : force
+	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
+
+uninstall : force
+	if test -n "@PLUGLIB@"; then $(RM) $(DESTDIR)$(libdir)/@PLUGLIB@ ; fi
+
+check : all
+
+mostlyclean : clean
+
+clean : force
+	$(RM) *.o *.lo *.a *.la preloadable_libiconv* core *.stackdump so_locations
+	$(RM) -r .libs _libs objects
+
+distclean : clean
+	$(RM) config.status config.log config.cache Makefile libtool
+
+maintainer-clean : distclean
+
+force :
+

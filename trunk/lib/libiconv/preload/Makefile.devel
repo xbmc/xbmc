@@ -1,0 +1,21 @@
+# This is the developer's makefile, not the user's makefile.
+# Don't use it unless you know exactly what you do!
+
+SHELL = /bin/sh
+MAKE = make
+AUTOCONF = autoconf-2.63
+ACLOCAL = aclocal-1.11
+CP = cp
+RM = rm -f
+
+all : configures
+
+aclocal.m4 : $(wildcard ../m4/*.m4)
+	$(ACLOCAL) -I ../m4 -I ../srcm4 --output=$@
+
+configures : configure
+
+configure : configure.ac aclocal.m4
+	$(AUTOCONF)
+
+force :

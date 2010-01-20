@@ -1,0 +1,43 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+if [ -n "${NOXSCREENSAVER}" ]
+then
+	exit 0
+fi
+
+. /scripts/live-functions
+
+log_begin_msg "Configuring screensaver"
+
+# live-initramfs script
+
+gnome_screensaver_version=$(chroot /root dpkg-query -W --showformat='${Version}' gnome-screensaver 2>/dev/null) || gnome_screensaver_version=""
+
+if [ -n "${gnome_screensaver_version}" ]
+then
+	# Support legacy gconf value
+	chroot /root sudo -u "${USERNAME}" gconftool-2 -t bool -s /apps/gnome-screensaver/lock false
+	chroot /root sudo -u "${USERNAME}" gconftool-2 -t bool -s /apps/gnome-screensaver/lock_enabled false
+fi
+
+log_end_msg

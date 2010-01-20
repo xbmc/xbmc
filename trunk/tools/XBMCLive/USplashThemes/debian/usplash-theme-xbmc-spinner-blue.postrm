@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+#DEBHELPER#
+
+if [ "$1" = remove ]; then
+    update-initramfs -u
+fi

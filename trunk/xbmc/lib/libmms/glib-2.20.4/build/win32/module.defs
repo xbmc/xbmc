@@ -1,0 +1,113 @@
+# Note that this file is hardly maintained, hardly usable without
+# manual editing, and not really part of a recommended way to build
+# GLib and related software with Microsoft's compilers. Only a few
+# persons use a build setup that involves this file.
+
+# This file is included by makefiles for both GNU Make (for gcc
+# (mingw) builds, and NMAKE (for MSVC builds).
+
+MODULE_DEFS_INCLUDED=1
+
+################
+# The version macros define what versions of libraries to use.
+
+# The version numbers are defined unconditionally. If you want to
+# produce a newer version of one of these libraries, the new number
+# should be defined in the specific project makefile _after_ including
+# this file (or make.{mingw,msc}). These version numbers are used in
+# the names of some import libraries. 
+
+# Please note that there are two (or three) ways to build the GLib
+# (and GTK+ etc) libraries on Win32: Either using the same
+# auto*/configure mechanism to generate makefiles as on Unix, and
+# libtool to handle DLL creation. This currently only works for gcc,
+# and even then it is hellish to set up to work 100% correctly. For
+# people using that, this file is totally irrelevant.
+
+# Or, use hand-written makefiles, either for MSVC (these are called
+# makefile.msc and maintained by Hans Breuer), or for gcc
+# (makefile.mingw, by Tor Lillqvist). Only for GLib are the
+# makefile.mingw files believed to be up-to-date, for other modules
+# they have been left to rot after Tor started using the
+# autoconfiscated way of building.
+
+# The stuff here uses the same name for (import) libraries as on Unix,
+# as libtool uses those, and the semi-official developer packages are
+# built using libtool.
+
+ATK_VER = 1.0
+CAIRO_VER = 0.3
+FREETYPE2_VER = 2.0
+GIMP_VER = 1.2
+GDK_PIXBUF_VER = 2.0
+GLIB_VER = 2.0
+GTKGLAREA_VER = 1.2.2
+GTK2_VER = 2.0
+LIBGLADE_VER = 0.14
+LIBICONV_VER = 1.7
+LIBXML_VER = 1.8.7
+LIBXML2_VER = 2.4.2
+PANGO_VER = 1.0
+POPT_VER = 1.4
+SVG_VER = 0.1
+RSVG_VER = 2.4
+
+################
+# Locations of various source directories. TOP is defined in make.{mingw,msc}
+
+# First stuff that is in the GNOME CVS repository.
+# In alphabetical order.
+
+ATK = $(TOP)/atk
+CAIRO = $(TOP)\cairo
+GIMP = $(TOP)/gimp
+GLIB = $(TOP)/glib
+GNOMECANVAS = $(TOP)\libgnomecanvas
+GNOMECANVAS_VER = 2.9
+
+# GTK+ 1.3.0, gtk-1-3-win32-production branch. Rename directory
+# to gtk+p after initial checkout from CVS.
+GTK = $(TOP)/gtk+p
+# GTK+ 2.0
+GTK2 = $(TOP)/gtk+
+GNOMEPRINT = $(TOP)\libgnomeprint
+GNOMEPRINT_VER = 2.8
+GDK_PIXBUF = $(GTK)
+LIBGLADE = $(TOP)/libglade
+LIBXML = $(TOP)/libxml-$(LIBXML_VER)
+PANGO = $(TOP)/pango
+
+GNOMEPRINTUI = $(TOP)\libgnomeprintui
+GNOMEPRINTUI_VER = 2.2
+
+# Aux programs
+GLIB_GENMARSHAL = $(GLIB)/gobject/glib-genmarshal
+
+# Stuff from other places.
+
+# Note this was is specific to what tml happened to have on his disk
+# at some time in history. To really be able to recompile something
+# that uses for instance libjpeg, you should download a suitable
+# binary "developer" distribution of it, unpack it into some location,
+# and edit this file correspondingly. You should not take the versions
+# mentioned here too literally, use the latest version you can find,
+# or the ones the current GTK+ 2.0 for Windows uses.
+
+FREETYPE2 = $(TOP)/freetype2
+GTKEXTRA = $(TOP)/gtk+extra
+GTKGLAREA = $(TOP)/gtkglarea
+INTL = $(TOP)/gettext-0.10.40/intl
+JPEG = $(TOP)/jpeg-6b
+LIBART = $(TOP)/libart_lgpl
+LIBICONV = $(TOP)/libiconv-$(LIBICONV_VER)
+LIBXSLT = $(TOP)/libxslt
+PNG = $(TOP)/libpng-1.2.0
+RSVG = $(TOP)\librsvg
+SVG = $(TOP)\libsvg
+TIFF = $(TOP)/tiff-v3.4
+ZLIB = $(TOP)/zlib-1.1.3
+
+# Headers from Microsoft's PlatformSDK (that aren't present in
+# mingw) are needed by a just a few packages when compiling with gcc.
+# This is just where tml has it installed.
+PLATFORMSDK = i:/src/psdk

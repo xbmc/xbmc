@@ -1,0 +1,11 @@
+[SYNOPSIS]
+.B cd-read
+\fIOPTION\fR...
+.TP
+Reads Information from a CD or CD-image.
+[SEE ALSO] 
+\&\f(CWcd-info(1)\fR for information about a CD;
+\&\f(CWcd-drive(1)\fR for CD-ROM characteristics;
+\&\f(CWiso-read(1)\fR for information about an ISO-9660 image.
+[AUTHOR] 
+Rocky Bernstein <rocky@panix.com>

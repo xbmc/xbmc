@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>FcFontSetList</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+HREF="t1.html"><LINK
+REL="UP"
+TITLE="FcFontSet"
+HREF="x102.html#AEN1052"><LINK
+REL="PREVIOUS"
+TITLE="FcFontSetAdd"
+HREF="fcfontsetadd.html"><LINK
+REL="NEXT"
+TITLE="FcFontSetMatch"
+HREF="fcfontsetmatch.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fcfontsetadd.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fcfontsetmatch.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="FCFONTSETLIST"
+></A
+>FcFontSetList</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1124"
+></A
+><H2
+>Name</H2
+>FcFontSetList&nbsp;--&nbsp;List fonts from a set of font sets</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1127"
+></A
+><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN1128"
+></A
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &#60;fontconfig.h&#62;
+	</PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>FcFontSet * <TT
+CLASS="FUNCTION"
+>FcFontSetList</TT
+></CODE
+>(FcConfig *<TT
+CLASS="PARAMETER"
+><I
+>config</I
+></TT
+>, FcFontSet **<TT
+CLASS="PARAMETER"
+><I
+>sets</I
+></TT
+>, int<TT
+CLASS="PARAMETER"
+><I
+>nsets</I
+></TT
+>, FcPattern *<TT
+CLASS="PARAMETER"
+><I
+>pattern</I
+></TT
+>, FcObjectSet *<TT
+CLASS="PARAMETER"
+><I
+>object_set</I
+></TT
+>);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1143"
+></A
+><H2
+>Description</H2
+><P
+>Selects fonts matching <TT
+CLASS="PARAMETER"
+><I
+>pattern</I
+></TT
+> from
+<TT
+CLASS="PARAMETER"
+><I
+>sets</I
+></TT
+>, creates patterns from those
+fonts containing only the objects in <TT
+CLASS="PARAMETER"
+><I
+>object_set</I
+></TT
+> and returns
+the set of unique such patterns.
+If <TT
+CLASS="PARAMETER"
+><I
+>config</I
+></TT
+> is NULL, the default configuration is checked
+to be up to date, and used.
+	    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1150"
+></A
+><H2
+>Version</H2
+><P
+>Fontconfig version 2.7.3
+
+	    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fcfontsetadd.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="t1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fcfontsetmatch.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FcFontSetAdd</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="x102.html#AEN1052"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FcFontSetMatch</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

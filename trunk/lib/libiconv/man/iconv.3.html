@@ -1,0 +1,209 @@
+<!-- Creator     : groff version 1.18.1 -->
+<!-- CreationDate: Tue Jun 30 22:52:08 2009 -->
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title>ICONV</title>
+</head>
+<body>
+
+<h1 align=center>ICONV</h1>
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#ERRORS">ERRORS</a><br>
+<a href="#CONFORMING TO">CONFORMING TO</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>iconv &minus; perform character set conversion</p>
+</td>
+</table>
+<a name="SYNOPSIS"></a>
+<h2>SYNOPSIS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<pre><b>#include &lt;iconv.h&gt;
+
+size_t iconv (iconv_t</b> <i>cd</i><b>,
+              const char* *</b> <i>inbuf</i><b>, size_t *</b> <i>inbytesleft</i><b>,
+              char* *</b> <i>outbuf</i><b>, size_t *</b> <i>outbytesleft</i><b>);
+</b></pre>
+</td>
+</table>
+<a name="DESCRIPTION"></a>
+<h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The argument <i>cd</i> must be a conversion descriptor
+created using the function <b>iconv_open</b>.</p>
+<!-- INDENTATION -->
+<p>The main case is when <i>inbuf</i> is not NULL and
+<i>*inbuf</i> is not NULL. In this case, the <b>iconv</b>
+function converts the multibyte sequence starting at
+<i>*inbuf</i> to a multibyte sequence starting at
+<i>*outbuf</i>. At most <i>*inbytesleft</i> bytes, starting
+at <i>*inbuf</i>, will be read. At most <i>*outbytesleft</i>
+bytes, starting at <i>*outbuf</i>, will be written.</p>
+<!-- INDENTATION -->
+<p>The <b>iconv</b> function converts one multibyte
+character at a time, and for each character conversion it
+increments <i>*inbuf</i> and decrements <i>*inbytesleft</i>
+by the number of converted input bytes, it increments
+<i>*outbuf</i> and decrements <i>*outbytesleft</i> by the
+number of converted output bytes, and it updates the
+conversion state contained in <i>cd</i>. If the character
+encoding of the input is stateful, the <b>iconv</b> function
+can also convert a sequence of input bytes to an update of
+the conversion state without producing any output bytes;
+such input is called a <i>shift sequence</i>. The conversion
+can stop for four reasons:</p>
+<!-- INDENTATION -->
+<p>1. An invalid multibyte sequence is encountered in the
+input. In this case it sets <b>errno</b> to <b>EILSEQ</b>
+and returns (size_t)(&minus;1). <i>*inbuf</i> is left
+pointing to the beginning of the invalid multibyte
+sequence.</p>
+<!-- INDENTATION -->
+<p>2. The input byte sequence has been entirely converted,
+i.e. <i>*inbytesleft</i> has gone down to 0. In this case
+<b>iconv</b> returns the number of non-reversible
+conversions performed during this call.</p>
+<!-- INDENTATION -->
+<p>3. An incomplete multibyte sequence is encountered in the
+input, and the input byte sequence terminates after it. In
+this case it sets <b>errno</b> to <b>EINVAL</b> and returns
+(size_t)(&minus;1). <i>*inbuf</i> is left pointing to the
+beginning of the incomplete multibyte sequence.</p>
+<!-- INDENTATION -->
+<p>4. The output buffer has no more room for the next
+converted character. In this case it sets <b>errno</b> to
+<b>E2BIG</b> and returns (size_t)(&minus;1).</p>
+<!-- INDENTATION -->
+<p>A different case is when <i>inbuf</i> is NULL or
+<i>*inbuf</i> is NULL, but <i>outbuf</i> is not NULL and
+<i>*outbuf</i> is not NULL. In this case, the <b>iconv</b>
+function attempts to set <i>cd</i>&rsquo;s conversion state
+to the initial state and store a corresponding shift
+sequence at <i>*outbuf</i>. At most <i>*outbytesleft</i>
+bytes, starting at <i>*outbuf</i>, will be written. If the
+output buffer has no more room for this reset sequence, it
+sets <b>errno</b> to <b>E2BIG</b> and returns
+(size_t)(&minus;1). Otherwise it increments <i>*outbuf</i>
+and decrements <i>*outbytesleft</i> by the number of bytes
+written.</p>
+<!-- INDENTATION -->
+<p>A third case is when <i>inbuf</i> is NULL or
+<i>*inbuf</i> is NULL, and <i>outbuf</i> is NULL or
+<i>*outbuf</i> is NULL. In this case, the <b>iconv</b>
+function sets <i>cd</i>&rsquo;s conversion state to the
+initial state.</p>
+</td>
+</table>
+<a name="RETURN VALUE"></a>
+<h2>RETURN VALUE</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The <b>iconv</b> function returns the number of
+characters converted in a non-reversible way during this
+call; reversible conversions are not counted. In case of
+error, it sets <b>errno</b> and returns
+(size_t)(&minus;1).</p>
+</td>
+</table>
+<a name="ERRORS"></a>
+<h2>ERRORS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The following errors can occur, among others:</p>
+</td>
+</table>
+<!-- TABS -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="10%">
+
+<p><b>E2BIG</b></p>
+</td>
+<td width="77%">
+
+<p>There is not sufficient room at <i>*outbuf</i>.</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="10%">
+
+<p><b>EILSEQ</b></p>
+</td>
+<td width="77%">
+
+<p>An invalid multibyte sequence has been encountered in
+the input.</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="10%">
+
+<p><b>EINVAL</b></p>
+</td>
+<td width="77%">
+
+<p>An incomplete multibyte sequence has been encountered in
+the input.</p>
+</td>
+</table>
+<a name="CONFORMING TO"></a>
+<h2>CONFORMING TO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>POSIX:2001</p>
+</td>
+</table>
+<a name="SEE ALSO"></a>
+<h2>SEE ALSO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>iconv_open</b>(3), <b>iconvctl</b>(3)
+<b>iconv_close</b>(3)</p>
+</td>
+</table>
+<hr>
+</body>
+</html>

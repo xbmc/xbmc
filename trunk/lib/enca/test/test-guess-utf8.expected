@@ -1,0 +1,100 @@
+be-utf8.ibm855: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from IBM855
+be-utf8.iso88595: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from ISO-8859-5
+bg-utf8.bin: Universal transformation format 8 bits; UTF-8
+  Surrounded by/intermixed with non-text data
+bg-utf8.cp1251: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from CP1251
+bg-utf8.ecma113: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from ECMA-113
+bg-utf8.ibm855: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from IBM855
+bg-utf8.iso88595: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from ISO-8859-5
+bg-utf8.maccyr: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from maccyr
+cs-utf8.bin: Universal transformation format 8 bits; UTF-8
+  Surrounded by/intermixed with non-text data
+cs-utf8.cork: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from CORK
+cs-utf8.ibm852: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: IBM852 KEYBCS2
+cs-utf8.iso88592: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: ISO-8859-2 CP1250
+et-utf8.bin: Universal transformation format 8 bits; UTF-8
+  Surrounded by/intermixed with non-text data
+et-utf8.ibm775: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from IBM775
+et-utf8.iso885913: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: CP1257 ISO-8859-13 baltic
+et-utf8.iso88594: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from ISO-8859-4
+hr-utf8.cp1250: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: CP1250 ISO-8859-2
+hr-utf8.ibm852: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from IBM852
+hu-utf8.cork: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from CORK
+hu-utf8.cp1250: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from one of: ISO-8859-2 CP1250
+hu-utf8.ibm852: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from IBM852
+hu-utf8.macce: Universal transformation format 8 bits; UTF-8
+  CR line terminators
+  Doubly-encoded to UTF-8 from macce
+lt-utf8.ibm775: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from IBM775
+lt-utf8.iso88594: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: CP1257 ISO-8859-4 ISO-8859-13 baltic
+lt-utf8.macce: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from macce
+lv-utf8.ibm775: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from IBM775
+lv-utf8.iso88594: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: CP1257 ISO-8859-4 ISO-8859-13 baltic
+lv-utf8.macce: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from macce
+pl-utf8.baltic: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from one of: ISO-8859-13 baltic CORK
+pl-utf8.ibm852: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from IBM852
+pl-utf8.iso885916: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from ISO-8859-16
+ru-utf8.cp866: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from IBM866
+ru-utf8.koi8r: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from KOI8-R
+ru-utf8.maccyr: Universal transformation format 8 bits; UTF-8
+  CR line terminators
+  Doubly-encoded to UTF-8 from maccyr
+sk-utf8.cp1250: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: CP1250 ISO-8859-2
+sk-utf8.keybcs2: Universal transformation format 8 bits; UTF-8
+  CRLF line terminators
+  Doubly-encoded to UTF-8 from one of: IBM852 KEYBCS2
+sl-utf8.cork: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from CORK
+sl-utf8.ibm852: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from IBM852
+sl-utf8.iso88592: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from one of: ISO-8859-2 CP1250
+sl-utf8.macce: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from macce
+uk-utf8.bin: Universal transformation format 8 bits; UTF-8
+  Surrounded by/intermixed with non-text data
+uk-utf8.cp1251: Universal transformation format 8 bits; UTF-8
+  Doubly-encoded to UTF-8 from CP1251
+none-utf8.messy: Universal transformation format 8 bits; UTF-8
+  Surrounded by/intermixed with non-text data

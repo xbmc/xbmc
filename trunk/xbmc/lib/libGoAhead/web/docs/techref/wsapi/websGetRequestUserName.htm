@@ -1,0 +1,31 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websGetRequestUserName -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websGetRequestUserName</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Return the user name 
+specified by the browser with the current request.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ char_t *<b>websGetRequestUserName</b>(webs_t wp); 
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" width="5%">wp <TD width="95%">Web server connection handle.</TD></TR></table><h2>Description</h2><P>The 
+websGetRequestUserName procedure returns the user name supplied by the browser. 
+After a user has entered a username and password to access a secured web page, 
+the browser will continue to provide that username and password with every request 
+for web documents under that point in the URL hierarchy. <A HREF="websGetRequestPassword.htm">websGetRequestPassword</A> 
+and websGetRequestUsername return decoded 
+strings. </P><P> Note: The <A href="websSecurityHandler.htm">websSecurityHandler</a> 
+currently ignores the user name. </P><h2>Return Value</h2><p>Pointer to a statically 
+allocated string containing the decoded password. Do not call <A href="../basicapi/bfree.htm">bfree</A>.</p><h2>Example</h2><pre> 
+path = websGetRequestUserName(wp); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <a href="websGetRequestPassword.htm">websGetRequestPassword</a>, 
+<a href="websSecurityHandler.htm">WebsSecurityHandler</a></p></td></tr></table>
+</body>
+</html>

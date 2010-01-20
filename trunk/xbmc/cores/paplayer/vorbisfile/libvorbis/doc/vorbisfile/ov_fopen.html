@@ -1,0 +1,124 @@
+<html>
+
+<head>
+<title>Vorbisfile - function - ov_fopen</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+<h1>ov_fopen</h1>
+
+<p><i>declared in "vorbis/vorbisfile.h";</i></p>
+
+<p>This is the simplest function used to open and initialize an OggVorbis_File
+structure. It sets up all the related decoding structure.
+<p>The first argument is a file path suitable
+for passing to fopen(). <tt>vf</tt> should be a pointer to an empty
+OggVorbis_File structure -- this is used for ALL the externally visible
+libvorbisfile functions. Once this has been called, the same <a
+href="OggVorbis_File.html">OggVorbis_File</a> struct should be passed
+to all the libvorbisfile functions.
+<p>The <tt>vf</tt> structure initialized using ov_fopen() must
+eventually be cleaned using <a href="ov_clear.html">ov_clear()</a>.
+
+<p>
+It is often useful to call <tt>ov_fopen()</tt> simply to determine
+whether a given file is a Vorbis bitstream. If the <tt>ov_fopen()</tt>
+call fails, then the file is either inaccessable (errno is set) or not
+recognizable as Vorbis (errno unchanged).  If the call succeeds but
+the initialized <tt>vf</tt> structure will not be used, the
+application is responsible for calling <a
+href="ov_clear.html">ov_clear()</a> to clear the decoder's buffers and
+close the file.<p>
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+int ov_fopen(char *path,<a href="OggVorbis_File.html">OggVorbis_File</a> *vf);
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>path</i></dt>
+<dd>Null terminated string containing a file path suitable for passing to <tt>fopen()</tt>.
+</dd>
+<dt><i>vf</i></dt>
+<dd>A pointer to the OggVorbis_File structure--this is used for ALL the externally visible libvorbisfile
+functions. Once this has been called, the same <tt>OggVorbis_File</tt>
+struct should be passed to all the libvorbisfile functions.</dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<li>0 indicates success</li>
+
+<li>less than zero for failure:</li>
+<ul>
+<li>OV_EREAD - A read from media returned an error.</li>
+<li>OV_ENOTVORBIS - Bitstream does not contain any Vorbis data.</li>
+<li>OV_EVERSION - Vorbis version mismatch.</li>
+<li>OV_EBADHEADER - Invalid Vorbis bitstream header.</li>
+<li>OV_EFAULT - Internal logic fault; indicates a bug or heap/stack corruption.</li>
+</ul>
+</blockquote>
+<p>
+
+<h3>Notes</h3>
+<dl>
+
+<dt><b>[a] Threaded decode</b><p>
+<dd>If your decoder is threaded, it is recommended that you NOT call
+<tt>ov_open_callbacks()</tt>
+in the main control thread--instead, call <tt>ov_open_callbacks()</tt> in your decode/playback
+thread. This is important because <tt>ov_open_callbacks()</tt> may be a fairly time-consuming
+call, given that the full structure of the file is determined at this point,
+which may require reading large parts of the file under certain circumstances
+(determining all the logical bitstreams in one physical bitstream, for
+example).  See <a href="threads.html">Thread Safety</a> for other information on using libvorbisfile with threads.
+<p>
+
+<dt><b>[b] Mixed media streams</b><p>
+<dd>
+As of Vorbisfile release 1.2.0, Vorbisfile is able to access the
+Vorbis content in mixed-media Ogg streams, not just Vorbis-only
+streams.  For example, Vorbisfile may be used to open and access the
+audio from an Ogg stream consisting of Theora video and Vorbis audio.
+Vorbisfile 1.2.0 decodes the first logical audio stream of each
+physical stream section.<p>
+
+<dt><b>[c] Faster testing for Vorbis files</b><p>
+<dd><a href="ov_test.html">ov_test()</a> and <a
+href="ov_test_callbacks.html">ov_test_callbacks()</a> provide less
+computationally expensive ways to test a file for Vorbisness, but
+require more setup code.<p>
+
+</dl>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2007 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

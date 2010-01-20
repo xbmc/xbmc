@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<TITLE>User Management Configuration File</TITLE>
+<LINK REL="stylesheet" HREF="../../../style/normal_ws.css" TYPE="text/css">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+
+<H1>Editing the User Configuration File
+</H1><P>The data for User Management configuration is stored by default in a file called &quot;umconfig.txt&quot;.  Although it is not recommended, you can use a text editor to modify this file; however, you should use the User Management C function set of the Web Server application, or the web-based user interface supplied as an example,  for manipulating the user configuration data.</P><H2>The Key-Value Pair</H2><P>Data is stored in the text file as Key-Value pairs with the following  format:</P><BLOCKQUOTE><BLOCKQUOTE><PRE>KEY=VALUE</PRE></BLOCKQUOTE></BLOCKQUOTE><P>Where <FONT FACE="Courier New, Courier, mono">KEY</FONT> is the name of the data element, and <FONT FACE="Courier New, Courier, mono">VALUE</FONT> is the data for the data element.  Each Key-Value pair is on its own line, and contains an equals-sign character (&quot;=&quot;) to separate the key and the value.</P><H2>The TABLE Directive</H2><P>The <FONT FACE="Courier New, Courier, mono">TABLE</FONT> key-value pair indicates a new data table.  The value for <FONT FACE="Courier New, Courier, mono">TABLE</FONT> is the table name.  All data in the text file following the <FONT FACE="Courier New, Courier, mono">TABLE</FONT> directive pertains to the table defined in the table name, until either another <FONT FACE="Courier New, Courier, mono">TABLE</FONT> directive or the end of the file is found.</P><H2>The ROW Directive</H2><P>The <FONT FACE="Courier New, Courier, mono">ROW</FONT> key-value pair indicates the beginning of row data for a new data record.  The value for <FONT FACE="Courier New, Courier, mono">ROW</FONT> is the row number, although these are not used by the database.  All data in the text file following the <FONT FACE="Courier New, Courier, mono">ROW</FONT> directive pertains to the new row that is created by the <FONT FACE="Courier New, Courier, mono">ROW</FONT> directive, until either another <FONT FACE="Courier New, Courier, mono">ROW</FONT> directive or the end of the file is found.</P><H2> Raw User Configuration Data Example</H2><BLOCKQUOTE><PRE>TABLE=users
+ROW=0
+name=admin
+password=KZasF
+group=administrators
+prot=0
+disable=0
+ROW=1
+name=user
+password=qwerty
+group=users
+prot=0
+disable=0
+TABLE=groups
+ROW=0
+name=administrators
+priv=4
+method=3
+prot=0
+disable=0
+ROW=1
+name=users
+priv=1
+method=1
+prot=0
+disable=0
+TABLE=access
+ROW=0
+name=/adduser.asp
+method=3
+secure=0
+group=administrators</PRE></BLOCKQUOTE><P></P><P>&nbsp;
+</P></TD></TR></TABLE>
+</BODY>
+</HTML>

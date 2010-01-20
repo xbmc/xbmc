@@ -1,0 +1,7 @@
+MSVC Help
+---------
+
+In order to build using any application that requires libdvdnav using MSVC the 
+following directories (lib and include) must be copied to the msvc directory of 
+the particular application. 
+

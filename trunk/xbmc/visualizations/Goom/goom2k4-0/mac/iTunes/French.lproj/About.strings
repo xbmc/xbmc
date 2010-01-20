@@ -1,0 +1,3 @@
+/* Localized versions of about strings */
+
+"AboutString" = "Ecrit par Jeko, Gyom et Fred\n \nTouches :\nQ pour changer de qualite\nF pour voir la frequence d'affichage\nT pour desactiver cet affichage\n< et > pour modifier la sensibilite\n \nContact : Gyom (gyom@ios-software.com)";

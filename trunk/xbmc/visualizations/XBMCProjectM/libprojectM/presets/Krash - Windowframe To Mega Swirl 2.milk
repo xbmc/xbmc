@@ -1,0 +1,81 @@
+[preset00] 
+fRating=2.000000 
+fGammaAdj=2.000000 
+fDecay=0.980000 
+fVideoEchoZoom=2.000000 
+fVideoEchoAlpha=0.000000 
+nVideoEchoOrientation=0 
+nWaveMode=2 
+bAdditiveWaves=0 
+bWaveDots=0 
+bModWaveAlphaByVolume=0 
+bMaximizeWaveColor=1 
+bTexWrap=0 
+bDarkenCenter=0 
+bMotionVectorsOn=0 
+bRedBlueStereo=0 
+nMotionVectorsX=12 
+nMotionVectorsY=9 
+bBrighten=0 
+bDarken=0 
+bSolarize=0 
+bInvert=0 
+fWaveAlpha=3.300000 
+fWaveScale=1.170000 
+fWaveSmoothing=0.500000 
+fWaveParam=0.000000 
+fModWaveAlphaStart=0.750000 
+fModWaveAlphaEnd=0.950000 
+fWarpAnimSpeed=1.000000 
+fWarpScale=2.853000 
+fZoomExponent=2.100000 
+fShader=0.000000 
+zoom=1.025000 
+rot=0.000000 
+cx=0.500000 
+cy=0.500000 
+dx=0.000000 
+dy=0.000000 
+warp=1.290770 
+sx=1.000000 
+sy=1.000000 
+wave_r=0.800000 
+wave_g=0.500000 
+wave_b=0.300000 
+wave_x=0.500000 
+wave_y=0.500000 
+ob_size=0.010000 
+ob_r=0.000000 
+ob_g=0.000000 
+ob_b=0.000000 
+ob_a=1.000000 
+ib_size=0.010000 
+ib_r=0.250000 
+ib_g=0.250000 
+ib_b=0.250000 
+ib_a=0.000000 
+per_frame_1=wave_r = wave_r + 0.400*( 0.60*sin(0.933*time) + 0.40*sin(1.045*time) ); 
+per_frame_2=wave_g = wave_g + 0.400*( 0.60*sin(0.900*time) + 0.40*sin(0.956*time) ); 
+per_frame_3=wave_b = wave_b + 0.400*( 0.60*sin(0.910*time) + 0.40*sin(0.920*time) ); 
+per_frame_4=zoom = zoom + 0.01*( 0.60*sin(0.339*time) + 0.40*sin(0.276*time) ); 
+per_frame_5=rot = rot + 0.010*( 0.60*sin(0.381*time) + 0.40*sin(0.579*time) ); 
+per_frame_6=decay = decay - 0.01*equal(frame%6,0); 
+per_frame_7=left = 0.5 + 0.25*(sin(0.555*time) + sin(1.111*time)); 
+per_frame_8=right = 0.5 + 0.25*(sin(0.333*time) + sin(1.222*time)); 
+per_frame_9=centrex = (left+right)/2; 
+per_frame_10=distx = 0.1 + (abs(centrex-left)+abs(centrex-right))/2; 
+per_frame_11=q1 = centrex + distx; 
+per_frame_12=q2 = centrex - distx; 
+per_frame_13=wave_x = centrex; 
+per_frame_14=top = 0.5 + 0.25*(sin(0.888*time) + sin(0.999*time)); 
+per_frame_15=bottom = 0.5 + 0.25*(sin(0.444*time) + sin(1.333*time)); 
+per_frame_16=centrey = (top+bottom)/2; 
+per_frame_17=disty = 0.1 + (abs(centrey-top)+abs(centrey-bottom))/2; 
+per_frame_18=q3 = centrey + disty; 
+per_frame_19=q4 = centrey - disty; 
+per_frame_20=wave_y = 1-centrey; 
+per_pixel_1=rot=rot+0.16*sin(time*-3.3+rad*11)*(1.3-rad); 
+per_pixel_2=dx = if(above(x,q1), 1,dx); 
+per_pixel_3=dx = if(below(x,q2), -1,dx); 
+per_pixel_4=dy = if(above(y,q3), 1,dy); 
+per_pixel_5=dy = if(below(y,q4), -1,dy);

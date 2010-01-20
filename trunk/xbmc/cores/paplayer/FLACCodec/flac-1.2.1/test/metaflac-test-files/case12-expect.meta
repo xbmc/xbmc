@@ -1,0 +1,12 @@
+METADATA block #1
+  type: 3 (SEEKTABLE)
+  is last: false
+  length: 18
+  seek points: 1
+    point 0: sample_number=0
+METADATA block #2
+  type: 4 (VORBIS_COMMENT)
+  is last: false
+  length: 74
+  comments: 1
+    comment[0]: TITLE=He_who_smelt_it_dealt_it

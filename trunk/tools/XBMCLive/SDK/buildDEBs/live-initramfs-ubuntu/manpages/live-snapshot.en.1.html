@@ -1,0 +1,487 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.2.6" />
+<style type="text/css">
+/* Debug borders */
+p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
+/*
+  border: 1px solid red;
+*/
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+tt {
+  color: navy;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  font-family: sans-serif;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+
+div.sectionbody {
+  font-family: serif;
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+span#author {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+span#email {
+}
+span#revision {
+  font-family: sans-serif;
+}
+
+div#footer {
+  font-family: sans-serif;
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+div#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+div#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+div#preamble,
+div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-right: 10%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+
+div.listingblock {
+  margin-right: 0%;
+}
+div.listingblock > div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock > div.content {
+  padding-left: 2.0em;
+}
+
+div.attribution {
+  text-align: right;
+}
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 2px solid silver;
+}
+
+div.exampleblock > div.content {
+  border-left: 2px solid silver;
+  padding: 0.5em;
+}
+
+div.verseblock div.content {
+  white-space: pre;
+}
+
+div.imageblock div.content { padding-left: 0; }
+div.imageblock img { border: 1px solid silver; }
+span.image img { border-style: none; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+div.olist > ol {
+  list-style-type: decimal;
+}
+div.olist2 > ol {
+  list-style-type: lower-alpha;
+}
+
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+tfoot {
+  font-weight: bold;
+}
+
+div.hlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hlist td {
+  padding-bottom: 15px;
+}
+td.hlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+}
+td.hlist2 {
+  vertical-align: top;
+}
+
+@media print {
+  div#footer-badges { display: none; }
+}
+
+div#toctitle {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+/* Workarounds for IE6's broken and incomplete CSS2. */
+
+div.sidebar-content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+div.sidebar-title, div.image-title {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  margin-top: 0.0em;
+  margin-bottom: 0.5em;
+}
+
+div.listingblock div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock-content {
+  padding-left: 2.0em;
+}
+
+div.exampleblock-content {
+  border-left: 2px solid silver;
+  padding-left: 0.5em;
+}
+
+/* IE6 sets dynamically generated links as visited. */
+div#toc a:visited { color: blue; }
+
+/* Because IE6 child selector is broken. */
+div.olist2 ol {
+  list-style-type: lower-alpha;
+}
+div.olist2 div.olist ol {
+  list-style-type: decimal;
+}
+</style>
+<title>live-snapshot(1)</title>
+</head>
+<body>
+<div id="header">
+<h1>live-snapshot(1)</h1>
+</div>
+<h2 id="_name">Name</h2>
+<div class="sectionbody">
+<div class="para"><p>live-snapshot - a simple script to ease persistence usage</p></div>
+</div>
+<h2 id="_synopsis">Synopsis</h2>
+<div class="sectionbody">
+<div class="para"><p>live-snapshot [-c|&#8212;cow <strong>DIRECTORY</strong>s] [-d|&#8212;device <strong>DEVICE</strong>] [-e|&#8212;exclude-list <strong>FILE</strong>] [-o|&#8212;output <strong>FILE</strong>] [-t|&#8212;type <strong>TYPE</strong>]</p></div>
+<div class="para"><p>live-snapshot [-r|&#8212;resync-string <strong>STRING</strong>]</p></div>
+<div class="para"><p>live-snapshot [-h|&#8212;help]</p></div>
+<div class="para"><p>live-snapshot [-u|&#8212;usage]</p></div>
+<div class="para"><p>live-snapshot [-v|&#8212;version]</p></div>
+</div>
+<h2 id="_description">Description</h2>
+<div class="sectionbody">
+<div class="para"><p>live-snapshot is a script which can be used to build the right types of
+persistent image files supported by live-initramfs(7). It is also used on
+exit by the live-initramfs init script to resync the boot-found snapshots
+devices.</p></div>
+</div>
+<h2 id="_options">Options</h2>
+<div class="sectionbody">
+<div class="vlist"><dl>
+<dt>
+-c, &#8212;cow <strong>DIRECTORY</strong>
+</dt>
+<dd>
+<p>
+specifies the input directory to be cloned in the image file. Its default value
+"/live/cow" should be right for most uses. However it could be handy to specify
+"/home" and type ext2 for the type to prepare an image file suited to be
+directly mounted by live-initramfs as home.
+</p>
+</dd>
+<dt>
+-d, &#8212;device <strong>DEVICE</strong>
+</dt>
+<dd>
+<p>
+sets the device where the media which the snapshot/persistence file/partition
+will be put. If it is not specified, a tmpfs will be used and linked to the
+user's desktop to move it where it is needed. If the device has no filesystem,
+an ext2 fs will be automatically created and labelled according to the values
+specified after the "&#8212;output" value or with a sane default.
+</p>
+</dd>
+<dt>
+-e, &#8212;exclude-list <strong>FILE</strong>
+</dt>
+<dd>
+<p>
+a file containing a list of filenames/paths that should not be saved. This exclude list will be remebered on the target snapshot media for reuse.
+</p>
+</dd>
+<dt>
+-o, &#8212;output <strong>FILE</strong>
+</dt>
+<dd>
+<p>
+the filename/label used for the output file/partition. If left blank, live-snapshot will search for a proper file on the device or use the whole partition.
+</p>
+</dd>
+<dt>
+-r, &#8212;resync-string <strong>STRING</strong>
+</dt>
+<dd>
+<p>
+internally used on resyncs.
+</p>
+</dd>
+<dt>
+-f, &#8212;refresh
+</dt>
+<dd>
+<p>
+try to do the same operation that should be done at reboot or halt, resyncing
+boot-time auto discovered snapshots. Useful to prevent a crash or surge
+power-off.
+</p>
+</dd>
+<dt>
+-t, &#8212;type <strong>TYPE</strong>
+</dt>
+<dd>
+<p>
+Type could be one of "cpio", "squashfs", "ext2", "ext3", "ext4", or "jffs2".
+</p>
+</dd>
+<dt>
+-h, &#8212;help
+</dt>
+<dd>
+<p>
+display help and exit
+</p>
+</dd>
+<dt>
+-u, &#8212;usage
+</dt>
+<dd>
+<p>
+show usage and exit
+</p>
+</dd>
+<dt>
+-v, &#8212;version
+</dt>
+<dd>
+<p>
+output version information and exit
+</p>
+</dd>
+</dl></div>
+</div>
+<h2 id="_files">Files</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre><tt>/etc/live-snapshot.list</tt></pre>
+</div></div>
+<div class="para"><p>This optional file, if present changes the behaviour of live-snapshot, only files and directories listed there are included (integrally) in the snapshot. It works only for cpio and whole partition targets.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><tt>/etc/live-snapshot.exclude_list</tt></pre>
+</div></div>
+<div class="para"><p>This optional file, if present will filter the files that will be saved by live-snapshot removing (as in "grep -F -v") all filenames that will be matched by strings listed in it.
+It works for cpio, whole partition and squashfs snapshot types only; it is pretty useful for filtering temporary files and disk caches.</p></div>
+</div>
+<h2 id="_see_also">See also</h2>
+<div class="sectionbody">
+<div class="para"><p>live-initramfs(8)</p></div>
+<div class="para"><p>This program is a part of live-initramfs.</p></div>
+</div>
+<h2 id="_bugs">Bugs</h2>
+<div class="sectionbody">
+<div class="para"><p>Report bugs against live-initramfs
+<a href="http://packages.qa.debian.org/live-initramfs">http://packages.qa.debian.org/live-initramfs</a>.</p></div>
+</div>
+<h2 id="_homepage">Homepage</h2>
+<div class="sectionbody">
+<div class="para"><p>More information about the Debian Live project can be found at
+<a href="http://debian-live.alioth.debian.org/">http://debian-live.alioth.debian.org/</a> and
+<a href="http://wiki.debian.org/DebianLive/">http://wiki.debian.org/DebianLive/</a>.</p></div>
+</div>
+<h2 id="_authors">Authors</h2>
+<div class="sectionbody">
+<div class="para"><p>live-initramfs is maintained by Daniel Baumann &lt;daniel@debian.org&gt; for the
+Debian project. live-initramfs is a fork of
+<a href="http://packages.ubuntu.com/casper/">casper</a>. casper was originally written
+by Tollef Fog Heen &lt;tfheen@canonical.com&gt; and Matt Zimmerman &lt;mdz@canonical.com&gt;.</p></div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2009-06-29 14:34:56 CEST
+</div>
+</div>
+</body>
+</html>

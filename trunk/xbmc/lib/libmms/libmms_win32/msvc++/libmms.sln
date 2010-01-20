@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmms", "libmms.vcproj", "{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}"
+	ProjectSection(ProjectDependencies) = postProject
+		{12BCA020-EABF-429E-876A-A476BC9C10C0} = {12BCA020-EABF-429E-876A-A476BC9C10C0}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glib", "..\..\glib-2.20.4\build\win32\vs9\glib.vcproj", "{12BCA020-EABF-429E-876A-A476BC9C10C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Debug|Win32.Build.0 = Debug|Win32
+		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Release|Win32.ActiveCfg = Release|Win32
+		{3A575CF0-45B3-41CC-85E2-9F9CE8C56B38}.Release|Win32.Build.0 = Release|Win32
+		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Debug|Win32.Build.0 = Debug|Win32
+		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release|Win32.ActiveCfg = Release|Win32
+		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,801 @@
+live-initramfs (1.157.3-1) unstable; urgency=medium
+
+  * ad-hoc fixes for Ubuntu Jaunty, Karmic
+
+ -- Luigi Capriotti <l.capriotti@xbmc.org>  Thu, 23 June 2009 10:00:00 +0200
+
+live-initramfs (1.157.2-1) unstable; urgency=medium
+
+  * Correcting fstab handling to not always append entries forever when using
+    persistency.
+  * Correcting kdm live-autologin handling to not always append entries forever
+    when using persistency.
+  * Correcting handling of locale default and environment handling to not always
+    append entries forever when using persistency.
+  * Correcting swap partition handling in fstab to not always append entries
+    forever when using persistency.
+  * Applying patch from Michael Prokop <mika@grml.org> to support udev >= 0.140.
+  * Merging swap live-bottom script into fstab script; there is no other sane
+    possibility to prevent appending again and again in persistent mode.
+  * Making sure that old swap entries are removed before new ones are added.
+  * Adding cryptsetup to recommends, it's used for encrypted persistent
+    partitions.
+  * Restoring previous behaviour of ejecting the cd when being in non-persistent
+    mode, thanks to Julien Cristau <jcristau@debian.org>.
+  * Updating eject prevention for USB devices in initscripts for linux 2.6.29
+    and newer.
+
+ -- Daniel Baumann <daniel@debian.org>  Thu, 14 May 2009 10:00:00 +0200
+
+live-initramfs (1.157.1-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * Only snapshotting in initscript when we actually run with persistence.
+
+  [ Rene Mayrhofer ]
+  * Checking if /var/log is writable before trying to copy live.log to the newly
+    mounted root filesystem (Closes: #516914).
+
+  [ Daniel Baumann ]
+  * Improving check in 21xdriver when we don't do anything.
+  * Adding hack to remove live specific filesystems from umounfs initscript
+    (Closes: #506410, #515718).
+  * Adding comsetic line wrapping for output of local-gen messages during boot.
+  * Merging casper 1.157.
+  * Only calling install-keymap if it's actually installed, which is always but
+    in minimal images the case though (Closes: #517153).
+  * Adding silent boot parameter.
+  * Respecting media timeout even when specificing media device manually.
+  * Also allowing to use the removable keyword for specifying a live media.
+  * Correcting accidental syntax error in one of the previous commits in
+    19keyboard bottom script.
+  * Adding removable-usb keyword to further restrict live media selection.
+  * Correcting check for usb when using removable-usb keyword.
+  * Correcting typo in locale bottom script.
+
+ -- Daniel Baumann <daniel@debian.org>  Sat, 21 Mar 2009 14:00:00 +0100
+
+live-initramfs (1.156.1-1) unstable; urgency=high
+
+  [ Daniel Baumann ]
+  * Revert using debhelper 7 command in rules.
+  * Updating copyright file.
+  * Prefixing debhelper files with package name.
+  * Updating bug script.
+  * Removing bashism in initscript.
+  * Usage of dialog in initscript is not actually a todo.
+  * Correcting medium eject message in initscript.
+  * Making medium removal message working again with usplash.
+  * Rewrapping init script.
+  * Reordering rules file.
+  * Merging casper 1.155.
+  * Adding ext4 support.
+  * Merging casper 1.156.
+  * Correct eject login in initscript.
+  * Updating parameters.txt.
+
+  [ Ronny Standtke ]
+  * Do not eject USB flash drives (Closes: #457070).
+
+ -- Daniel Baumann <daniel@debian.org>  Sun,  8 Feb 2009 15:00:00 +0100
+
+live-initramfs (1.154.8-1) unstable; urgency=high
+
+  [ Kai Hendry ]
+  * Adding basic xrandr support for lenny to enforce a particular
+    resolution through bootparameter.
+
+ -- Daniel Baumann <daniel@debian.org>  Fri, 30 Jan 2009 00:00:00 +0100
+
+live-initramfs (1.154.7-1) unstable; urgency=medium
+
+  * Adding note about URL limitations in live-initramfs manpage when
+    using fetch parameter.
+  * Removing wc from hook again, that's an ubuntu only problem they have
+    to care about.
+
+ -- Daniel Baumann <daniel@debian.org>  Tue, 27 Jan 2009 18:00:00 +0100
+
+live-initramfs (1.154.6-1) unstable; urgency=medium
+
+  * Replacing casper with live in live-new-uuid.
+  * Including wc in initramfs (Closes: #512413).
+  * Added missing variable quoting that lead to broken root persistence, thanks
+    to Thierry Walrant <debian.tgc@walrant.net> (Closes: #512656).
+  * Adding patch from Thierry Walrant <debian.tgc@walrant.net> to allow setting
+    a path for the persistence files through persistent-path boot parameter
+    (Closes: #512661).
+  * Adding persistent-path to parameter list and manpage.
+  * Actually building/cleaning manpages through targets in Makefile.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 26 Jan 2009 02:00:00 +0100
+
+live-initramfs (1.154.5-1) unstable; urgency=low
+
+  * Also checking for wicd in 23networking, thanks to Ben Armstrong
+    <synrg@debian.org>.
+  * Don't redirect output of fstype detection to standard out, thanks to Ronny
+    Standtke <Ronny.Standtke@gmx.net>.
+  * Silencing grep call on /etc/passwd.
+  * Silencing xorg reconfiguration, thanks to Ronny Standtke
+    <Ronny.Standtke@gmx.net>.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 12 Jan 2009 13:00:00 -0500
+
+live-initramfs (1.154.4-1) unstable; urgency=low
+
+  [ Rene Mayrhofer ]
+  * Support further checks on loopback image and support skipping union
+    mounts (Closes: #509446).
+
+ -- Daniel Baumann <daniel@debian.org>  Fri, 26 Dec 2008 09:00:00 +0100
+
+live-initramfs (1.154.3-1) unstable; urgency=medium
+
+  * Sourcing live.vars in 21xdriver and 21xvidemode in order to be able
+    to set variables in previous bottom scripts.
+
+ -- Daniel Baumann <daniel@debian.org>  Sat, 20 Dec 2008 15:00:00 +0100
+
+live-initramfs (1.154.2-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * Updating authors file.
+
+  [ Marco Amadori ]
+  * Reworked integrity-check (Closes: #507477).
+  * Cleaned the boot log a bit.
+
+ -- Daniel Baumann <daniel@debian.org>  Thu, 11 Dec 2008 06:00:00 +0100
+
+live-initramfs (1.154.1-1) unstable; urgency=low
+
+  * Merging casper 1.140-1.154.
+  * Add a warning message when no image can be found.
+  * Adding a panic message when we netboot and have no supported network
+    device (Closes: #496684).
+  * Turning 'no supported filesystem images found' into a panic message,
+    rather than a warning.
+  * Also adding ralink to network device check.
+  * Removing spurious 'livefs_root' in copy_live_to();.
+
+ -- Daniel Baumann <daniel@debian.org>  Tue, 25 Nov 2008 12:00:00 +0100
+
+live-initramfs (1.139.1-4) unstable; urgency=medium
+
+  [ Chris Lamb ]
+  * Remove (accidental?) debian/changelog entry.
+  * Use "grep -qs" over "grep -q" for compatibility (see grep(1))
+  * Use "test -s" instead of testing file availability and size.
+  * Be consistent in using 0/1 for True/False values instead of English
+    representations.
+  * Reflow some grammar in comments and in live-initramfs(7).
+  * Reflow long 'tr'-based pipelines for readability.
+  * Don't "cat |" to grep.
+
+  [ Daniel Baumann ]
+  * Replacing obsolete dh_clean -k with dh_prep.
+
+  [ Marco Amadori ]
+  * Changed HOSTNAME and /etc/hosts handling.
+  * Conditional creation of /etc/fstab.
+  * live-snapshot: fixed include-list handling.
+  * Reordered persistence lookups and boundaries (Closes: #500672).
+  * Search for partition labels only (Closes: #486469).
+  * Implemented a snapshot exclude list.
+  * Implemented a persistence exclude list.
+  * Manpage clarifications on "nofiles".
+  * Do not pollute the logs when looking for swap partitions.
+  * Removed all "cat | grep", with grep, awk and sed.
+
+ -- Daniel Baumann <daniel@debian.org>  Tue, 11 Nov 2008 13:00:00 +0100
+
+live-initramfs (1.139.1-3) unstable; urgency=medium
+
+  [ Chris Lamb ]
+  * Remove local overiddes of log_*_msg - #494257 is now fixed in testing.
+
+  [ Daniel Baumann ]
+  * Removing currently unused Upstream-Depends field in control.
+  * Updating vcs fields in control file.
+  * Sourcing live.vars in 15autologin directly, rather than to inherit
+    from live-functions.
+
+  [ Marco Amadori ]
+  * Removed some useless spaces.
+  * Fix default user handling.
+  * Added a pretty vital mount debug string.
+  * Create /etc/mtab on the initramfs ASAP.
+  * Removed mount -n option, since mtab is there.
+  * Re-enable "break=live-premount" debug.
+  * Skipped some runtime duplicated execution.
+  * Add real cpio to initramfs for snapshot's uses.
+  * Fixed try_snap() umounting on error.
+  * Override maybe_break from initramfs-tools.
+  * Forces use of initramfs cpio over busybox's one.
+  * Fixed a wrong trial to copy an unexistant snapshot.
+  * Check for files and umount only if you can mount it first.
+  * Included more debug and comments on persistence code.
+  * Set -u in live-snapshot only in debug mode.
+
+  [ Michael Prokop ]
+  * Ignore errors from fstype.
+
+ -- Daniel Baumann <daniel@debian.org>  Fri, 19 Sep 2008 14:00:00 +0200
+
+live-initramfs (1.139.1-2) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * If the filesystem type of the rootfs cannot be automatically detected, we
+    try to assume it from the extension of the imagefile we have found. Thanks
+    to Jordi Pujol <jordi_pujol@telefonica.net> (Closes: #460456).
+  * Setting project email address to the new debian-live@lists.debian.org.
+  * Disabling default usage of local swap partitions. Can be enabled with the
+    'swapon' boot parameter. Thanks to Joseph Rawson <umeboshi3@gmail.com> for
+    bringing it up.
+
+  [ Michal Suchanek ]
+  * Enabling the "remove CD" prompt in splashy.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  1 Sep 2008 00:00:00 +0200
+
+live-initramfs (1.139.1-1) unstable; urgency=medium
+
+  [ Ben Voui ]
+  * Adding support for Virtio vd[a-z] drives.
+
+  [ Chris Lamb ]
+  * Move loop-aes-tools to Suggests; live-helper should install them if
+    required.
+  * Remove unnecessary indentation level.
+  * Modify hiding of harmless X.org reconfiguring messages.
+  * Revert to using uid 1000 as PAM bug seems to have disappeared
+    (Closes: #433076)
+  * Hide error from attempting to "mount --move"
+  * Rework ugly `echo "debug:..` message to use log_{begin,end}_msg.
+  * Don't configure X.org if it's not installed.
+  * Fix check for X.org.
+  * Add an /etc/fstab to the initramfs to silence harmless "empty fstab"
+    warnings.
+  * Silence another "script-not-executable" message for a sourced library.
+  * Add missing pipe. Thanks to Andreas Bombe.
+  * Shamefully adding myself to CREDITS
+  * Tidy "Disabling update-initramfs" message.
+  * Re-order some commands so we don't call log_begin_msg without calling
+    log_end_msg.
+  * Don't configure X when /usr/bin/X does not exist.
+  * Silence 'script-not-executable' lintian warning - live-functions script is
+    always sourced.
+  * Fix spacing in swirl.
+  * Override log_*_msg to print nicer status text (until #494257 is merged).
+  * Hide "overwriting possibly-customised configuration file" in X.org setup
+    output.
+  * Hide "Shadow passwords are now on" status message on bootup.
+  * Remove a number of "${quiet}" checks - they are repeated in the log_*_msg
+    functions.
+  * Rework locale handling
+  * Print friendly error message on live-initramfs panic.
+  * Fix path issue with live-preseed causing noisy errors when booting.
+  * Silence a number of annoying and distracting bootup messages.
+  * Add missing "log_end_msg" to live-bottom/21xdriver.
+  * Set different log messages for live-bottom/21{xdriver,xvidemode}.
+  * Remove trailing "..." from calls to log_begin_msg - they get added anyway.
+  * Move some arch-indep helper utilities to Build-Depends-Indep.
+  * Set default cow_mountopt where the other defaults are used.
+  * Don't use /sbin/losetup to test for '-r' option when the scripts just use
+    "lostup"
+
+  [ Daniel Baumann ]
+  * Updating authors file.
+  * Merging casper 1.139.
+  * Not going over the top with exclamation marks in the panic message.
+  * Updating credits file.
+  * Slightely adjusting to the more widespread used ascii swirl.
+  * Merging casper 1.138.
+  * Merging casper 1.137.
+
+  [ Marco Amadori ]
+  * Added "-n" option to all mount commands, thanks to Peter Holik
+    <peter@holik.at> for pointing this out.
+  * Be sure that the discovered filesystem is not null.
+  * The list of supported filesytems goes dynamic.
+  * Added ntfs filesystem to the initramfs.
+
+  [ Michael Prokop ]
+  * Move sourcing of live-functions in 38disable_restricted_manager to correct
+    place.
+
+  [ Steven Shiau ]
+  * Adding support for using tftp in fetch= parameter.
+  * Another fix about using udevsettle or "udevadm settle".
+
+ -- Daniel Baumann <daniel@debian.org>  Sun, 24 Aug 2008 00:00:00 +0200
+
+live-initramfs (1.136.3-1) unstable; urgency=medium
+
+  [ Michael Prokop ]
+  * Make sure mounting /cow-tmpfs provides mount options.
+
+ -- Daniel Baumann <daniel@debian.org>  Fri, 18 Jul 2008 00:00:00 +0200
+
+live-initramfs (1.136.2-1) unstable; urgency=medium
+
+  * Replacing previous imperfect changes for udevadm with check for
+    udevadm and using old commands when beeing on etch. Also handling
+    udevtrigger with udevadm if available.
+  * Correcting httpfs2 inclusion in hook.
+
+ -- Daniel Baumann <daniel@debian.org>  Wed, 16 Jul 2008 00:00:00 +0200
+
+live-initramfs (1.136.1-1) unstable; urgency=medium
+
+  [ Chris Lamb ]
+  * Fix call to log_warning_msg. Thanks to Bradley Smith
+    <brad@brad-smith.co.uk>.
+  * Expand glob for kernels in post{inst,rm} to include "vmlinux"-prefixed
+    kernels on powerpc.
+  * Check losetup capabilities before specifying to mount as read-only.
+  * Modprobe 'esp' SCSI driver for the benefit of sparc.
+  * Quieten call to modprobe ide-generic.
+  * Move local-top/live to live-premount/modules so it gets called before
+    find_livefs.
+  * Sync bug script "dpkg -l" calls with debian/control
+
+  [ Daniel Baumann ]
+  * Defaulting now to aufs if no union= parameter is given.
+  * Merging casper version 1.136.
+  * Merging casper version 1.135.
+  * Merging casper version 1.134.
+  * Merging casper version 1.133.
+  * Converting udev depends into a versioned depends in order to reflect udevadm
+    introduction.
+  * Updating live-snapshot to GPL-3+.
+  * Updating to standards 3.8.0.
+  * Renaming forgotton uuid file to live-uuid.
+
+  [ Marco Amadori ]
+  * udevtrigger replacement.
+  * live-snapshot: fixed the remount helper.
+  * live-snapshot: now supports a static keep file list.
+  * Try to bind /cow to /live/cow if unable to move.
+  * live-snapshot: cleaned some wordings.
+  * live-snapshot: included vital informations on exit.
+  * live-snapshot: new "--refresh" option.
+  * live-snapshot: cleaned and sorted used command line defaults.
+  * live-snapshot: nicer default auto unmount logic.
+  * live-snapshot: honour "-o|--output FILE".
+  * live-snapshot: removed a useless mkdir.
+  * live-snapshot: removed an unused and useless function.
+  * live-snapshot: fixes snapshotting from resync string.
+
+  [ Michal Suchanek ]
+  * Add support for httpfs= and ftpfs= parameters.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 14 Jul 2008 00:00:00 +0200
+
+live-initramfs (1.132.1-1) unstable; urgency=medium
+
+  [ Chris Lamb ]
+  * Don't escape asterisks in languagelist update code
+
+  [ Daniel Baumann ]
+  * Updating copyright header in live-snapshot.
+  * Removing useless whitespaces and empty lines.
+  * Correcting grammatical errors in live-snapshot description.
+  * Removing live-snapshot version as this component is always released
+    within live-initramfs itself.
+  * Adding Michal Suchanek <hramrach@centrum.cz> to credits file.
+  * Merging casper 1.132.
+  * Merging casper 1.131.
+  * Ignoring floppy devices for live filesystem as well as live
+    persistency.
+  * Adding patch from Michal Suchanek <hramrach@centrum.cz> to tail
+    live.log and show its messages during boot (Closes: #440238).
+  * Updating vcs fields in control file.
+  * Handling conflicting klibc includes with initramfs-hooks of other
+    packages (Closes: 475783).
+
+  [ Marco Amadori ]
+  * Fixes "live-snapshot on reboot could not find a writable '/tmp' or
+    '/mnt'" bug.
+  * Calling live-snapshot now produces an output file.
+
+  [ Michal Suchanek ]
+  * Workaround loop-aes-utils losetup incompatibility
+  * Fix toram (change mount --move to mount -o move)
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 02 Jun 2008 00:00:00 +0200
+
+live-initramfs (1.130.1-3) unstable; urgency=high
+
+  * Handle non-existing klibc includes in live hook (Closes: #475783).
+  * Adding loop-aes-utils to recommends.
+
+ -- Daniel Baumann <daniel@debian.org>  Sat, 26 Apr 2008 16:00:00 +0200
+
+live-initramfs (1.130.1-2) unstable; urgency=medium
+
+  [ Chris Lamb ]
+  * Remove bogus dependency on Ubuntu "localechooser-data" package
+
+ -- Daniel Baumann <daniel@debian.org>  Thu, 17 Apr 2008 06:00:00 +0200
+
+live-initramfs (1.130.1-1) unstable; urgency=medium
+
+  [ Chris Lamb ]
+  * Use triggers when calling update-initramfs in postinst and postrm
+
+  [ Daniel Baumann ]
+  * Sorting some lines in live hook.
+  * Merging casper 1.130.
+  * Merging casper 1.129.
+  * Adjusting code formating in maintainer scripts.
+  * Restricting counting of installed kernels based on /boot/vmlinuz-*
+    instead of /boot/vmlinuz*.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 14 Apr 2008 00:00:00 +0200
+
+live-initramfs (1.128.1-1) unstable; urgency=medium
+
+  [ Marco Amadori ]
+  * Fixed a misleading debug message.
+  * Added /cow mounting debug messages.
+  * Fixed /cow mounting.
+  * Klibc: added some libraries to the intramfs.
+
+  [ Daniel Baumann ]
+  * Merging casper 1.128.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  7 Apr 2008 00:00:00 +0200
+
+live-initramfs (1.127.1-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * Merging casper 1.127.
+  * Merging casper 1.126.
+  * Removing too early recommends to live-initscripts in control to make
+    some people happy (Closes: #431000).
+
+  [ Chris Lamb ]
+  * hooks/live, scripts/live: Add USB modules, workaround udevtrigger
+    (?) bug
+  * scripts/live-helpers: Don't search ram block devices
+  * scripts/live-helpers: Search / use case
+  * scripts/live-helpers: Fixes for set -e
+  * bin/live-snapshot: Vastly rework script
+  * bin/live-snapshot: Fix argument handling (Closes: #461595)
+  * scripts/live: Make 'nopersistent' parameter actually disable
+    persistence
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 31 Mar 2008 00:00:00 +0200
+
+live-initramfs (1.125.1-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * Merging casper 1.125.
+
+  [ Chris Lamb ]
+  * scripts/live-helpers: Cosmetic changes to loop-aes passphrase prompt
+  * Rename 18hostname -> 06hostname
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 24 Mar 2008 00:00:00 +0100
+
+live-initramfs (1.124.1-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * Adjusting live-snapshot to live-initramfs.
+  * Merging casper 1.124.
+  * Adjusting 44pk_allow to live-initramfs.
+  * Merging casper 1.123.
+  * Merging casper 1.122.
+  * Merging casper 1.121.
+  * Merging casper 1.120.
+
+  [ Chris Lamb ]
+  * 99hook: Download hook script from inside target filesystem
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 17 Mar 2008 00:00:00 +0100
+
+live-initramfs (1.119.1-1) unstable; urgency=medium
+
+  * Creating resolv.conf when netbooting not just when there's no
+    resolv.conf, but also when it is empty.
+  * Making hooks executable after fetching them.
+  * Removing disabling of kwallet.
+  * Merging casper 1.119.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 10 Mar 2008 00:00:00 +0100
+
+live-initramfs (1.118.2-1) unstable; urgency=medium
+
+  [ Andrey Asadchev ]
+  * Explicitly set Xorg video driver.
+  * Patch to use cryptsetup volumes for persistent storage.
+
+  [ Daniel Baumann ]
+  * New upstream release.
+  * Fixing wrong email address in changelog (was bug in git-dch config).
+  * Bumping package to policy 3.7.3.
+  * Rewriting copyright in machine-interpretable format.
+  * Adding hook parameter to execute custom scripts.
+  * Adding plainroot.
+
+  [ Marco Amadori ]
+  * Now it includes lzma kernel module dependencies.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  3 Mar 2008 00:00:00 +0100
+
+live-initramfs (1.118.1-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * New upstream release.
+  * Adding direct depends to udev, thanks to Anton Lundin
+    <glance@acc.umu.se> (Closes: #452448).
+  * Merging casper 1.111.
+  * Bumping version to 1.110.1-1.
+  * Merging casper 1.112.
+  * Merging casper 1.113.
+  * Adjusting to live-initramfs.
+  * Bumping version to 1.113.1-1.
+  * Merging casper 1.114.
+  * Merging casper 1.115.
+  * Merging casper 1.116.
+  * Merging casper 1.117.
+  * Merging casper 1.118.
+  * Bumping version to 1.118.1-1.
+
+  [ Otavio Salvador ]
+  * debian: add mtd-tools as suggestion since it's required for jffs2
+    support
+  * hooks: include jffs2 kernel module on initramfs image
+  * live-snapshot: add support to use jffs2 images
+  * live: add support for jffs2 images and snapshots
+  * live-helpers: add jffs2 as a valid image
+  * live-snapshot.en.1: add ext3 and jffs2 images as valid options
+
+ -- Daniel Baumann <daniel@debian.org>  Tue, 26 Feb 2008 13:35:00 +0100
+
+live-initramfs (1.110.7-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Fixing fstab handling.
+  * Fixing regression from mounting the ow device on a nfs volume,
+    thanks to An-Cheng Huang <ancheng@vyatta.com>.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 19 Nov 2007 00:00:00 +0100
+
+live-initramfs (1.110.6-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Preparing live-initramfs 1.110.6-1.
+  * Adding custom reportbug script.
+  * Fixed a few bashisms, thanks to Trent W. Buck <trentbuck@gmail.com>.
+  * Adding checkbashsms call to test target of the Makefile as suggested
+    by Trent W. Buck <trentbuck@gmail.com>.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 12 Nov 2007 00:00:00 +0100
+
+live-initramfs (1.110.5-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Preparing live-initramfs 1.110.5-1.
+  * Using kdm initscript autologin overrides, thanks to Kel Modderman
+    <kel@otaku42.de>.
+  * Setting the kdm language, thanks to Jordi Pujol
+    <jordi_pujol@telefonica.net>.
+  * Adding files to the live filesystem according to the MAC number,
+    thanks to Jordi Pujol <jordi_pujol@telefonica.net>.
+  * Fixing some coding style issues.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  5 Nov 2007 00:00:00 +0100
+
+live-initramfs (1.110.4-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * New upstream release.
+  * Preparing live-initramfs 1.110.3-1.
+  * Correcting homepage field.
+  * Correcting vcs fields.
+
+  [ Jesse Hathaway ]
+  * add support for mounting the cow device on an nfs volume
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 29 Oct 2007 00:00:00 +0100
+
+live-initramfs (1.110.3-1) unstable; urgency=medium
+
+  [ Daniel Baumann ]
+  * New upstream release.
+  * Preparing live-initramfs 1.110.3-1.
+  * Removing ubuntu support.
+
+  [ Alex Owen ]
+  * Fix typo to get serial console to work
+
+  [ Jesse Hathaway ]
+  * add support for exposedroot option for live-helper
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 22 Oct 2007 00:00:00 +0200
+
+live-initramfs (1.110.2-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Preparing live-initramfs 1.110.2-1.
+  * Fixing typing error.
+  * Removing nodiratime as it is already included in noatime, thanks to Kel
+    Modderman <kel@otaku42.de>.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 15 Oct 2007 00:00:00 +0200
+
+live-initramfs (1.110.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Preparing live-initramfs 1.107.2-1.
+  * Also using nodiratime, not just noatime.
+  * Merging casper 1.108.
+  * Adjusting to live-initramfs.
+  * Merging casper 1.109.
+  * Adjusting to live-initramfs.
+  * Merging casper 1.110.
+  * Adjusting to live-initramfs.
+  * Bumping version to 1.110.1-1.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  8 Oct 2007 00:00:00 +0200
+
+live-initramfs (1.107.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Preparing live-initramfs 1.102.4-2.
+  * Replacing backticks with POSIX expression.
+  * Consistently using curly brackets for variables.
+  * Fixing bashism.
+  * Merging casper 1.105.
+  * Adjusting to live-initramfs.
+  * Bumping version to 1.105.1-1.
+  * Applied patch from Jesse W. Hathaway <jesse@mbuki-mvuki.org> to move
+    cow mount rather than binding it on /live/cow. This prevents the
+    /cow mount showing up in /proc/mounts.
+  * Merging casper 1.106.
+  * Adjusting to live-initramfs.
+  * Bumping version to 1.106.1-1.
+  * Fixing wrong homepage field.
+  * Fixing typing error.
+  * Merging casper 1.107.
+  * Bumping version to 1.107.1-1.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  1 Oct 2007 00:00:00 +0200
+
+live-initramfs (1.104.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 24 Sep 2007 00:00:00 +0200
+
+live-initramfs (1.102.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 17 Sep 2007 00:00:00 +0200
+
+live-initramfs (1.99.2-1) unstable; urgency=medium
+
+  * New upstream release:
+    - Contains patch from Jim Paris <jim@jtan.com> to fix wrong ipconfig usage
+      (Closes: #440235).
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 10 Sep 2007 00:00:00 +0200
+
+live-initramfs (1.99.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  3 Sep 2007 00:00:00 +0200
+
+live-initramfs (1.96.2-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 27 Aug 2007 00:00:00 +0200
+
+live-initramfs (1.96.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 20 Aug 2007 00:00:00 +0200
+
+live-initramfs (1.95.3-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 13 Aug 2007 00:00:00 +0200
+
+live-initramfs (1.95.2-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  6 Aug 2007 00:00:00 +0200
+
+live-initramfs (1.95.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 30 Jul 2007 00:00:00 +0200
+
+live-initramfs (1.91.6-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 23 Jul 2007 00:00:00 +0200
+
+live-initramfs (1.91.5-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 16 Jul 2007 00:00:00 +0200
+
+live-initramfs (1.91.4-1) unstable; urgency=medium
+
+  * New upstream release:
+    - Dropping transitional package, not needed anymore.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  9 Jul 2007 00:00:00 +0200
+
+live-initramfs (1.91.3-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  2 Jul 2007 00:00:00 +0200
+
+live-initramfs (1.91.2-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 25 Jun 2007 00:00:00 +0200
+
+live-initramfs (1.91.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 18 Jun 2007 00:00:00 +0200
+
+live-initramfs (1.90.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 11 Jun 2007 00:00:00 +0200
+
+live-initramfs (1.87.6-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  4 Jun 2007 00:00:00 +0200
+
+live-initramfs (1.87.5-1) unstable; urgency=medium
+
+  * New upstream release, replacing casper.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 28 May 2007 00:00:00 +0200
+
+live-initramfs (1.87.4-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 21 May 2007 00:00:00 +0200
+
+live-initramfs (1.87.3-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 14 May 2007 00:00:00 +0200
+
+live-initramfs (1.87.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon,  7 May 2007 00:00:00 +0200
+
+live-initramfs (1.87.1-1) unstable; urgency=low
+
+  * Initial release, forking casper.
+
+ -- Daniel Baumann <daniel@debian.org>  Mon, 30 Apr 2007 00:00:00 +0200

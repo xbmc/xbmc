@@ -1,0 +1,172 @@
+New in 1.13:
+* The library and the iconv program now understand platform dependent aliases,
+  for better compatibility with the platform's own iconv_open function.
+  Examples: "646" on Solaris, "iso88591" on HP-UX, "IBM-1252" on AIX.
+* For stateful encodings, when the input ends with a shift sequence followed
+  by invalid input, the iconv function now increments the input pointer past
+  the shift sequence before returning (size_t)(-1) with errno = EILSEQ. This
+  is also like GNU libc's iconv() behaves.
+* The library exports a new function iconv_open_into() that stores the
+  conversion descriptor in pre-allocated memory, rather than allocating fresh
+  memory for it.
+* Added CP1131 converter.
+
+New in 1.12:
+* The iconv program is now licensed under the GPL version 3, instead of the
+  GPL version 2. The libiconv library continues to be licensed under LGPL.
+* Added RK1048 converter.
+* On AIX, an existing system libiconv no longer causes setlocale() to fail.
+* Upgraded EUC-KR, JOHAB to include the Korean postal code sign.
+
+New in 1.11:
+* The iconv program has new options --unicode-subst, --byte-subst,
+  --widechar-subst that allow to specify substitutions for characters that
+  cannot be converted.
+* The iconv program now understands long options:
+    long option    equivalent to
+    --from-code    -f
+    --to-code      -t
+    --list         -l
+    --silent       -s
+* The CP936 converter is now different from the GBK converter: it has changed
+  to include the Euro sign and private area characters. CP936 is no longer an
+  alias of GBK.
+* Updated GB18030 converter to include all private area characters.
+* Updated CP950 converter to include the Euro sign and private area characters.
+* Updated CP949 converter to include private area characters.
+* Updated the BIG5-HKSCS converter. The old BIG5-HKSCS converter is renamed to
+  BIG5-HKSCS:1999 and updated to Unicode 4. New converters BIG5-HKSCS:2001 and
+  BIG5-HKSCS:2004 are added. BIG5-HKSCS is now an alias for BIG5-HKSCS:2004.
+* Added a few irreversible mappings to the CP932 converter.
+* Tidy up the list of symbols exported from libiconv (assumes gcc >= 4.0).
+
+New in 1.10:
+* Added ISO-8859-11 converter.
+* Updated the ISO-8859-7 converter.
+* Added ATARIST converter, available through --enable-extra-encodings.
+* Added BIG5-2003 converter (experimental), available through
+  --enable-extra-encodings.
+* Updated EUC-TW converter to include the Euro sign.
+* The preloadable library has been renamed from libiconv_plug.so to
+  preloadable_libiconv.so.
+* Portability to mingw.
+
+New in 1.9:
+* Many more transliterations.
+* New configuration option --enable-relocatable.  See the INSTALL.generic file
+  for details.
+
+New in 1.8:
+* The iconv program has new options -l, -c, -s.
+* The iconv program is internationalized.
+* Added C99 converter.
+* Added KOI8-T converter.
+* New configuration option --enable-extra-encodings that enables a bunch of
+  additional encodings; see the README for details.
+* Updated the ISO-8859-16 converter.
+* Upgraded BIG5-HKSCS, EUC-TW, ISO-2022-CN, ISO-2022-CN-EXT converters to
+  Unicode 3.2.
+* Upgraded EUC-KR, CP949, JOHAB converters to include the Euro sign.
+* Changed the ARMSCII-8 converter.
+* Extended the EUC-JP encoder so that YEN SIGN characters don't cause failures
+  in Shift_JIS to EUC-JP conversion.
+* The JAVA converter now handles characters outside the Unicode BMP correctly.
+* Fixed a bug in the CP1255, CP1258, TCVN decoders: The base characters of
+  combining characters could be dropped at the end of the conversion buffer.
+* Fixed a bug in the transliteration that could lead to excessive memory
+  allocations in libintl when transliteration was needed.
+* Portability to BSD/OS and SCO 3.2.5.
+
+New in 1.7:
+* Added UTF-32, UTF-32BE, UTF-32LE converters.
+* Changed CP1255, CP1258 and TCVN converters to handle combining characters.
+* Changed EUC-JP, SHIFT_JIS, CP932, ISO-2022-JP, ISO-2022-JP-2, ISO-2022-JP-1
+  converters to use fullwidth Yen sign instead of halfwidth Yen sign, and
+  fullwidth tilde instead of halfwidth tilde.
+* Upgraded EUC-TW, ISO-2022-CN, ISO-2022-CN-EXT converters to Unicode 3.1.
+* Changed the GB18030 converter to not reject unassigned and private-use
+  Unicode characters.
+* Fixed a bug in the byte order mark treatment of the UCS-4 decoder.
+* The manual pages are now distributed also in HTML format.
+
+New in 1.6:
+* The iconv program's -f and -t options are now optional.
+* Many more transliterations.
+* Added CP862 converter.
+* Changed the GB18030 converter.
+* Portability to DOS with DJGPP.
+
+New in 1.5:
+* Added an iconv(1) program.
+* New locale dependent encodings "char", "wchar_t".
+* Transliteration is now off by default. Use a //TRANSLIT suffix to enable it.
+* The JOHAB encoding is documented again.
+* Changed a few mappings in the CP950 converter.
+
+New in 1.4:
+* Added GB18030, BIG5HKSCS converters.
+* Portability to OS/2 with emx+gcc.
+
+New in 1.3:
+* Added UCS-2BE, UCS-2LE, UCS-4BE, UCS-4LE converters.
+* Fixed the definition of EILSEQ on SunOS4.
+* Fixed a build problem on OSF/1.
+* Support for building as a shared library on Woe32.
+
+New in 1.2:
+* Added UTF-16BE and UTF-16LE converters.
+* Changed the UTF-16 encoder.
+* Fixed the treatment of tab characters in the UTF-7 converter.
+* Fixed an internal error when output buffer was not large enough.
+
+New in 1.1:
+* Added ISO-8859-16 converter.
+* Added CP932 converter, a variant of SHIFT_JIS.
+* Added CP949 converter, a variant of EUC-KR.
+* Improved the ISO-2022-CN-EXT converter: It now covers the ISO-IR-165 range.
+* Updated the ISO-8859-8 conversion table.
+* The JOHAB encoding is deprecated and not documented any more.
+* Fixed two build problems: 1. "make -n check" failed. 2. When libiconv was
+  already installed, "make" failed.
+
+New in 1.0:
+* Added transliteration facilities.
+* Added a test suite.
+* Fixed the iconv(3) manual page and function: the return value was not
+  described correctly.
+* Fixed a bug in the CP1258 decoder: invalid bytes now yield EILSEQ instead of
+  U+FFFD.
+* Fixed a bug in the Georgian-PS encoder: accept U+00E6.
+* Fixed a bug in the EUC-JP encoder: reject 0x8E5C and 0x8E7E.
+* Fixed a bug in the KSC5601 and JOHAB converters: they recognized some Hangul
+  characters at some invalid code positions.
+* Fixed a bug in the EUC-TW decoder; it was severely broken.
+* Fixed a bug in the CP950 converter: it recognized a dubious BIG5 range.
+
+New in 0.3:
+* Reduced the size of the tables needed for the JOHAB converter.
+* Portability to Woe32.
+
+New in 0.2:
+* Added KOI8-RU, CP850, CP866, CP874, CP950, ISO-2022-CN-EXT, GBK and
+  ISO-2022-JP-1 converters.
+* Added MACINTOSH as an alias for MAC-ROMAN.
+* Added ASMO-708 as an alias for ISO-8859-6.
+* Added ELOT_928 as an alias for ISO-8859-7.
+* Improved the EUC-TW converter: Treat CNS 11643 plane 3.
+* Improved the ISO-2022-KR and EUC-KR converters: Hangul characters are
+  decomposed into Jamo when needed.
+* Improved the CP932 converter.
+* Updated the CP1133, MULELAO-1 and ARMSCII-8 mappings.
+* The EUC-JP and SHIFT_JIS converters now cover the user-defined range.
+* Fixed a possible buffer overrun in the JOHAB converter.
+* Fixed a bug in the UTF-7, ISO-2022-*, HZ decoders: a shift sequence a the
+  end of the input no longer gives an error.
+* The HZ encoder now always terminates its output in the ASCII state.
+* Use a perfect hash table for looking up the aliases.
+
+New in 0.1:
+* Portability to Linux/glibc-2.0.x, Linux/libc5, OSF/1, FreeBSD.
+* Fixed a bug in the EUC-JP decoder. Extended the ISO-2022-JP-2 converter.
+* Made TIS-620 mapping consistent with glibc-2.1.
+

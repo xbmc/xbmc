@@ -1,0 +1,44 @@
+The files
+ 
+ asnprintf.c 
+ printf-args.c
+ printf-args.h
+ printf-parse.c
+ printf-parse.h
+ vasnprintf.c
+ vasnprintf.h
+
+are taken from the vasnprintf module of the GNUlib package, which can
+be found at: 
+
+ http://www.gnu.org/software/gnulib/
+
+All files have been modified to include g-gnulib.h. 
+
+vasnprintf.c has also been modified to include support for long long 
+printing if the system printf doesn't. This code is protected by 
+#ifndef HAVE_LONG_LONG_FORMAT.
+
+Code has been added to printf-args.[ch], printf-parse.c and vasnprintf.c
+to support printing of __int64 values with the I64 format modifier. This
+is protected by #ifdef HAVE_INT64_AND_I64.
+
+The files
+
+ printf.h 
+ printf.c
+ g-gnulib.h
+
+have been written by me. printf.[hc] contain implementations of the  
+remaining functions in the printf family based on vasnprintf. 
+g-gnulib.h is included by all source files in order to move all
+exported functions to the _g_gnulib namespace, replace malloc by
+g_malloc and make sure that snprintf is only used if it implements 
+C99 return value semantics. 
+
+Matthias Clasen
+November 1, 2003
+
+
+
+

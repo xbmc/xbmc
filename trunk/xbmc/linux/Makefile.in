@@ -1,0 +1,16 @@
+ARCH=@ARCH@
+
+INCLUDES=-I. -I.. -I../../guilib -I../utils -I../cores -I../FileSystem
+ifeq ($(findstring osx,$(ARCH)), osx)
+	INCLUDES+=-I../osx
+endif
+
+CXXFLAGS+=-fPIC #-DHAS_SDL
+
+SRCS=ConvUtils.cpp XEventUtils.cpp XFileUtils.cpp XHandle.cpp XSyncUtils.cpp XTimeUtils.cpp XMemUtils.cpp XThreadUtils.cpp NetworkLinux.cpp LinuxResourceCounter.cpp LinuxTimezone.cpp XRandR.cpp XCriticalSection.cpp XLCDproc.cpp HALManager.cpp HALPowerSyscall.cpp ConsoleDeviceKitPowerSyscall.cpp DBusUtil.cpp DBusMessage.cpp ZeroconfAvahi.cpp ZeroconfBrowserAvahi.cpp HALProvider.cpp PosixMountProvider.cpp DeviceKitDisksProvider.cpp
+
+LIB=linux.a
+
+include ../../Makefile.include
+
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

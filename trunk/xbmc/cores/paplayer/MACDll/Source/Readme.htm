@@ -1,0 +1,67 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Monkey</title>
+</head>
+
+<body>
+
+<p align="center"><font size="4" face="Verdana">Monkey's Audio Source Code
+Readme<br>
+</font><font face="Verdana" size="2">(last updated July 7, 2002)</font></p>
+<p><b><font size="2" face="Verdana">Introduction</font></b></p>
+<p><font size="2" face="Verdana">First off, just to be clear, you have to fully
+agree with the included license agreement before using / viewing any of the
+included materials.&nbsp; The big points are that you can't steal code or try to
+make money with it (without permission) and that you have to submit changes and
+improvements back to the Monkey's Audio project.&nbsp; With that out of the way,
+I'm hoping that by releasing the source code, we'll be able to work together to
+make Monkey's Audio better.&nbsp; Please direct any suggestions or improvements
+to the Monkey's Audio developer's forum or to me personally when appropriate.
+(email @ monkeysaudio.com)&nbsp; And thank you for taking the time to help.</font></p>
+<p><b><font size="2" face="Verdana">Important Note</font></b></p>
+<p><font size="2" face="Verdana">The Monkey's Audio format is not
+&quot;finalized&quot;.&nbsp; In fact, the compression / decompression engines
+are continually being improved.&nbsp; This is what makes MAC fun to work on, and
+it's what makes progress possible.&nbsp; I realize that this can be a pain for
+3rd party developers, but it's the only way to avoid stagnation.&nbsp; So, you
+can not hard code Monkey's Audio support and expect it to work with the newest
+versions of MAC forever.&nbsp; Either use a DLL or else accept that you'll have
+to re-link to MACLib once in a while.</font></p>
+<p><b><font size="2" face="Verdana">Things that it'd be great if you worked on</font></b></p>
+<p><font face="Verdana" size="2">1. It would be nice to have makefiles for gcc
+or any other compilers that people commonly use.</font></p>
+<p><font size="2" face="Verdana">2. Pour through the code and look for bone-head
+maneuvers.</font></p>
+<p><font size="2" face="Verdana">3. Submit any necessary changes for
+cross-platform compilation.&nbsp;</font></p>
+<p><font size="2" face="Verdana">4. XMMS, Lame DLL, PocketPC, etc. plugins /
+implementations.</font></p>
+<p><font size="2" face="Verdana">5. A console front-end that doesn't suck. (more
+options, etc.)&nbsp; Also, don't worry about maintaining compatibility with the
+current parameter passing scheme -- just use whatever makes sense.</font></p>
+<p><b><font size="2" face="Verdana">Tips for building MACLib outside of Windows</font></b></p>
+<p><font face="Verdana" size="2">1. in &quot;Shared/All.h&quot; do this:</font></p>
+<ul>
+  <li><font size="2" face="Verdana">#define BUILD_CROSS_PLATFORM</font></li>
+  <li><font face="Verdana" size="2">look through &quot;Shared/All.h&quot; and
+    &quot;Shared/NoWindows.h&quot; to make sure all the defines are acceptable</font></li>
+</ul>
+<p><font face="Verdana" size="2">2. You need to use NASM to build the assembly
+if you want it. (helps speed a lot)&nbsp; Check out &quot;MacLib/Assembly/...&quot;
+for more information.</font></p>
+<p><b><font size="2" face="Verdana">Known non-Windows problems (help fixing them
+would be great)</font></b></p>
+<p><font size="2" face="Verdana">2. The macros PUMP_MESSAGE_LOOP, MESSAGEBOX, and a few others don't work.</font></p>
+<p>&nbsp;</p>
+<p align="center" style="margin:0in;margin-bottom:.0001pt;text-align:center"><font face="Verdana" size="2">-
+All materials and programs copyrighted ©2000-2002 by Matthew T. Ashland -</font></p>
+<p align="center" style="margin:0in;margin-bottom:.0001pt;text-align:center"><font face="Verdana" size="2">-
+All rights reserved. -</font></p>
+
+</body>
+
+</html>

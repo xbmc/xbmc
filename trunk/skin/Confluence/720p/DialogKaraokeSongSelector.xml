@@ -1,0 +1,39 @@
+<window type="dialog" id="143">
+	<animation effect="slide" start="0,-40" end="0,0" time="100">WindowOpen</animation>
+	<animation effect="slide" start="0,0" end="0,-40" delay="400" time="100">WindowClose</animation>
+	<controls>
+		<control type="group">
+			<posx>100</posx>
+			<posy>0</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>-10</posy>
+				<width>370</width>
+				<height>70</height>
+				<texture flipy="true" border="20,20,20,2">InfoMessagePanel.png</texture>
+			</control>
+			<control type="label" id="401">
+				<description>Song Number Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>340</width>
+				<height>25</height>
+				<font>font13_title</font>
+				<textcolor>selected</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="label" id="402">
+				<description>Song Name Label</description>
+				<posx>15</posx>
+				<posy>27</posy>
+				<width>340</width>
+				<height>20</height>
+				<font>font13</font>
+				<textcolor>blue</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+		</control>
+	</controls>
+</window>

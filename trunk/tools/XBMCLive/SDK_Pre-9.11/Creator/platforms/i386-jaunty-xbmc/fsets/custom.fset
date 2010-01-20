@@ -1,0 +1,25 @@
+[DevelTools]
+DESC=Application Development Toolkit
+PKGS=subversion make build-essential autoconf automake gawk
+
+[MiscUtils]
+DESC=Additional packages
+PKGS=mingetty unrar  nano  lirc ntfs-3g hfsprogs grub dosfstools language-pack-en 
+#lcdproc
+
+[HWUtils]
+DESC=Additional HW-related packages
+PKGS=powernowd acpi acpi-support alsa-utils
+
+[OpenGL-X11]
+DESC=OpenGl-enabled X11 package set
+PKGS=mesa-utils libgl1-mesa-dri xlibmesa-glu
+
+[XBMC]
+DESC=Install XBMC from PPAs
+PKGS=xbmc hal
+
+[ModuleBuildTools]
+DESC=Required packages to build kernel modules (e.g. ATI/AMD and nvidia)
+PKGS=build-essential fakeroot dh-make debhelper debconf libstdc++5 dkms 
+# linux-headers-$(uname -r)

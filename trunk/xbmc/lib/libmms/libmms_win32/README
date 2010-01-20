@@ -1,0 +1,57 @@
+				LibMMS
+
+			 library for parsing
+		      Microsoft Media Streaming
+			       protocol
+
+
+What is LibMMS?
+===============
+
+LibMMS is common library for parsing mms:// and mmsh:// type network
+streams. These are commonly used to stream Windows Media Video content
+over the web. LibMMS itself is only for receiving MMS stream, it
+doesn't handle sending at all. If you need streaming functionality,
+look for other protocol, such as RT(S)P. MMS is legacy thing, being
+closed with no specs and abandoned even by its creator, the Microsoft Corp.
+
+Why LibMMS?
+===========
+
+LibMMS was created out of need for common library that would remedy
+current situation where each Free Software project maintains its own
+implementation of MMS protocol handling, creating unnecessary code and
+effort duplication and introducing feature disparity as not every
+bugfix gets into each of them. It also addresses need for LGPL
+licensed code for that task, as every current implementation is
+licensed as GPL, thus knocking out many projects that do not use GPL
+themselves.
+
+Howto LibMMS?
+=============
+
+LibMMS is intended to be small and simple, being useful for any
+project that needs MMS handling functionality. It is constructed in
+such a way that allows plugging custom I/O implementation, thus being
+easy to integrate with custom framework, and providing a way to add
+timeouted or cancelable I/O etc.
+
+Hmm, you said no specs? How so?
+===============================
+
+LibMMS code is based on amazing work done by SDP guys (http://get.to/sdp)
+Without the specs they've reverse-engineered, there won't be any free
+implementation of MMS handling today.
+
+How is LibMMS licensed?
+=======================
+
+LibMMS is Free Software, licensed under GNU Library General Public
+License. Original code comes from Xine project (http://xine.sf.net),
+and it got separated for number of reasons, one of them being desire
+to provide non GPL projects with library they could use. There's a
+number of valuable LGPL projects locked out by GPL libraries, besides
+we strongly feel that GPL is bad license for a library, as it's not
+library thing to mess with its users licensing by vague interpretations
+of wether linking makes binary derived work. We want libraries to be
+used, and for that, we need to stay clean.

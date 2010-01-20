@@ -1,0 +1,97 @@
+<!-- Creator     : groff version 1.18.1 -->
+<!-- CreationDate: Tue Jun 30 22:52:08 2009 -->
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title>ICONV_CLOSE</title>
+</head>
+<body>
+
+<h1 align=center>ICONV_CLOSE</h1>
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#RETURN VALUE">RETURN VALUE</a><br>
+<a href="#CONFORMING TO">CONFORMING TO</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>iconv_close &minus; deallocate descriptor for character
+set conversion</p>
+</td>
+</table>
+<a name="SYNOPSIS"></a>
+<h2>SYNOPSIS</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<pre><b>#include &lt;iconv.h&gt;
+
+int iconv_close (iconv_t</b> <i>cd</i><b>);
+</b></pre>
+</td>
+</table>
+<a name="DESCRIPTION"></a>
+<h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>The <b>iconv_close</b> function deallocates a conversion
+descriptor <i>cd</i> previously allocated using
+<b>iconv_open</b>.</p>
+</td>
+</table>
+<a name="RETURN VALUE"></a>
+<h2>RETURN VALUE</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>When successful, the <b>iconv_close</b> function returns
+0. In case of error, it sets <b>errno</b> and returns
+&minus;1.</p>
+</td>
+</table>
+<a name="CONFORMING TO"></a>
+<h2>CONFORMING TO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p>POSIX:2001</p>
+</td>
+</table>
+<a name="SEE ALSO"></a>
+<h2>SEE ALSO</h2>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>iconv_open</b>(3) <b>iconv</b>(3)</p>
+</td>
+</table>
+<hr>
+</body>
+</html>

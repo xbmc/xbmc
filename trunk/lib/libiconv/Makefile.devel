@@ -1,0 +1,201 @@
+# -*- makefile -*-
+# This is the developer's makefile, not the user's makefile.
+# Don't use it unless you know exactly what you do!
+
+SHELL = /bin/sh
+MAKE = make
+AUTOCONF = autoconf-2.63
+AUTOHEADER = autoheader-2.63
+AUTOMAKE = automake-1.11
+ACLOCAL = aclocal-1.11
+GPERF = gperf
+CC = gcc
+CFLAGS = -O
+MAN2HTML = groff -mandoc -Thtml
+CP = cp
+RM = rm -f
+
+
+all : configures config.h.in \
+      srclib/Makefile.gnulib srclib/Makefile.in \
+      include/iconv.h.build.in \
+      lib/aliases.h lib/aliases_sysaix.h lib/aliases_syshpux.h lib/aliases_sysosf1.h lib/aliases_syssolaris.h \
+      lib/aliases_aix.h lib/aliases_aix_sysaix.h \
+      lib/aliases_osf1.h lib/aliases_osf1_sysosf1.h \
+      lib/aliases_dos.h \
+      lib/aliases_extra.h \
+      lib/flags.h lib/translit.h \
+      man/iconv.1.html man/iconv.3.html man/iconv_close.3.html man/iconv_open.3.html force
+	cd libcharset && $(MAKE) -f Makefile.devel all
+	cd preload && $(MAKE) -f Makefile.devel all
+
+
+# Before making a new release:
+# - check that the encoding lists in README and man/iconv_open.3 are up to date,
+# - increment the version number in
+#     include/iconv.h.in
+#     README
+#     djgpp/README
+#     djgpp/fnchange.lst
+#     libcharset/djgpp/README
+#     libcharset/djgpp/fnchange.lst
+# - update the version info in lib/Makefile.in,
+# - do "make -f Makefile.devel".
+
+
+CONFIGURES = configure
+CONFIGURES_IN = configure.ac
+
+aclocal.m4 : $(CONFIGURES_IN) srclib/Makefile.gnulib $(wildcard m4/*.m4) $(wildcard srcm4/*.m4)
+	$(ACLOCAL) -I m4 -I srcm4 --output=$@ && touch $@
+
+configures : $(CONFIGURES)
+
+AUTOCONF_FILES = aclocal.m4 $(wildcard m4/*.m4) $(wildcard srcm4/*.m4)
+
+configure : configure.ac $(AUTOCONF_FILES)
+	$(AUTOCONF)
+
+check-configures : $(CONFIGURES)
+	set -e; for f in $(CONFIGURES); do bash -x -n $$f; done
+
+config.h.in : configure.ac $(AUTOCONF_FILES)
+	$(AUTOHEADER)
+	touch $@
+
+
+GNULIB_MODULES = \
+  binary-io \
+  error \
+  exit \
+  gettext \
+  gettext-h \
+  mbstate \
+  memmove \
+  progname \
+  relocatable-prog \
+  sigpipe \
+  stdio \
+  strerror \
+  unistd \
+  uniwidth/width \
+  unlocked-io \
+  xalloc \
+  libiconv-misc
+
+srclib/Makefile.gnulib :
+	if test -n "$$GNULIB_TOOL"; then \
+	  $$GNULIB_TOOL --lib=libicrt --source-base=srclib --m4-base=srcm4 --makefile-name=Makefile.gnulib --no-libtool --local-dir=gnulib-local \
+	    --import $(GNULIB_MODULES); \
+	fi
+
+srclib/Makefile.in : srclib/Makefile.am srclib/Makefile.gnulib
+	touch build-aux/compile \
+	&& $(AUTOMAKE) --gnits srclib/Makefile \
+	&& rm -f build-aux/compile
+
+
+include/iconv.h.build.in : include/iconv.h.in include/export.h
+	sed -e 's/extern \([^"]\)/extern LIBICONV_DLL_EXPORTED \1/' \
+	    -e '/_LIBICONV_VERSION/r include/export.h' \
+	  < $< > $@
+
+
+lib/aliases.h lib/canonical.h lib/canonical_local.h : lib/encodings.def lib/encodings_local.def lib/genaliases.c
+	$(CC) $(CFLAGS) lib/genaliases.c -o genaliases
+	./genaliases > lib/aliases.gperf 3> canonical.sh 4> canonical_local.sh
+	$(RM) genaliases
+	$(GPERF) -m 10 lib/aliases.gperf > tmp.h
+	$(CP) tmp.h lib/aliases.h
+	sh canonical.sh > lib/canonical.h
+	sh canonical_local.sh > lib/canonical_local.h
+	$(RM) tmp.h canonical.sh canonical_local.sh
+
+lib/aliases_sysaix.h lib/canonical_sysaix.h lib/canonical_local_sysaix.h : lib/encodings.def lib/encodings_local.def lib/genaliases.c
+	$(CC) $(CFLAGS) -DUSE_AIX_ALIASES lib/genaliases.c -o genaliases
+	./genaliases > lib/aliases_sysaix.gperf 3> canonical.sh 4> canonical_local.sh
+	$(RM) genaliases
+	$(GPERF) -m 10 lib/aliases_sysaix.gperf > tmp.h
+	$(CP) tmp.h lib/aliases_sysaix.h
+	sh canonical.sh > lib/canonical_sysaix.h
+	sh canonical_local.sh > lib/canonical_local_sysaix.h
+	$(RM) tmp.h canonical.sh canonical_local.sh
+
+lib/aliases_syshpux.h lib/canonical_syshpux.h lib/canonical_local_syshpux.h : lib/encodings.def lib/encodings_local.def lib/genaliases.c
+	$(CC) $(CFLAGS) -DUSE_HPUX_ALIASES lib/genaliases.c -o genaliases
+	./genaliases > lib/aliases_syshpux.gperf 3> canonical.sh 4> canonical_local.sh
+	$(RM) genaliases
+	$(GPERF) -m 10 lib/aliases_syshpux.gperf > tmp.h
+	$(CP) tmp.h lib/aliases_syshpux.h
+	sh canonical.sh > lib/canonical_syshpux.h
+	sh canonical_local.sh > lib/canonical_local_syshpux.h
+	$(RM) tmp.h canonical.sh canonical_local.sh
+
+lib/aliases_sysosf1.h lib/canonical_sysosf1.h lib/canonical_local_sysosf1.h : lib/encodings.def lib/encodings_local.def lib/genaliases.c
+	$(CC) $(CFLAGS) -DUSE_OSF1_ALIASES lib/genaliases.c -o genaliases
+	./genaliases > lib/aliases_sysosf1.gperf 3> canonical.sh 4> canonical_local.sh
+	$(RM) genaliases
+	$(GPERF) -m 10 lib/aliases_sysosf1.gperf > tmp.h
+	$(CP) tmp.h lib/aliases_sysosf1.h
+	sh canonical.sh > lib/canonical_sysosf1.h
+	sh canonical_local.sh > lib/canonical_local_sysosf1.h
+	$(RM) tmp.h canonical.sh canonical_local.sh
+
+lib/aliases_syssolaris.h lib/canonical_syssolaris.h lib/canonical_local_syssolaris.h : lib/encodings.def lib/encodings_local.def lib/genaliases.c
+	$(CC) $(CFLAGS) -DUSE_SOLARIS_ALIASES lib/genaliases.c -o genaliases
+	./genaliases > lib/aliases_syssolaris.gperf 3> canonical.sh 4> canonical_local.sh
+	$(RM) genaliases
+	$(GPERF) -m 10 lib/aliases_syssolaris.gperf > tmp.h
+	$(CP) tmp.h lib/aliases_syssolaris.h
+	sh canonical.sh > lib/canonical_syssolaris.h
+	sh canonical_local.sh > lib/canonical_local_syssolaris.h
+	$(RM) tmp.h canonical.sh canonical_local.sh
+
+lib/aliases_aix.h lib/canonical_aix.h : lib/encodings_aix.def lib/genaliases2.c
+	$(CC) $(CFLAGS) -DUSE_AIX lib/genaliases2.c -o genaliases
+	./genaliases aix > lib/aliases_aix.h 3> lib/canonical_aix.h
+	$(RM) genaliases
+
+lib/aliases_aix_sysaix.h lib/canonical_aix_sysaix.h : lib/encodings_aix.def lib/genaliases2.c
+	$(CC) $(CFLAGS) -DUSE_AIX -DUSE_AIX_ALIASES lib/genaliases2.c -o genaliases
+	./genaliases aix > lib/aliases_aix_sysaix.h 3> lib/canonical_aix_sysaix.h
+	$(RM) genaliases
+
+lib/aliases_osf1.h lib/canonical_osf1.h : lib/encodings_osf1.def lib/genaliases2.c
+	$(CC) $(CFLAGS) -DUSE_OSF1 lib/genaliases2.c -o genaliases
+	./genaliases osf1 > lib/aliases_osf1.h 3> lib/canonical_osf1.h
+	$(RM) genaliases
+
+lib/aliases_osf1_sysosf1.h lib/canonical_osf1_sysosf1.h : lib/encodings_osf1.def lib/genaliases2.c
+	$(CC) $(CFLAGS) -DUSE_OSF1 -DUSE_OSF1_ALIASES lib/genaliases2.c -o genaliases
+	./genaliases osf1 > lib/aliases_osf1_sysosf1.h 3> lib/canonical_osf1_sysosf1.h
+	$(RM) genaliases
+
+lib/aliases_dos.h lib/canonical_dos.h : lib/encodings_dos.def lib/genaliases2.c
+	$(CC) $(CFLAGS) -DUSE_DOS lib/genaliases2.c -o genaliases
+	./genaliases dos > lib/aliases_dos.h 3> lib/canonical_dos.h
+	$(RM) genaliases
+
+lib/aliases_extra.h lib/canonical_extra.h : lib/encodings_extra.def lib/genaliases2.c
+	$(CC) $(CFLAGS) -DUSE_EXTRA lib/genaliases2.c -o genaliases
+	./genaliases extra > lib/aliases_extra.h 3> lib/canonical_extra.h
+	$(RM) genaliases
+
+
+lib/flags.h : lib/encodings.def lib/encodings_aix.def lib/encodings_osf1.def lib/encodings_dos.def lib/encodings_extra.def lib/converters.h lib/genflags.c
+	$(CC) $(CFLAGS) lib/genflags.c -o genflags
+	./genflags > lib/flags.h
+	$(RM) genflags
+
+
+lib/translit.h : lib/translit.def lib/gentranslit.c
+	$(CC) $(CFLAGS) lib/gentranslit.c -o gentranslit
+	ulimit -s unlimited; ./gentranslit < lib/translit.def > lib/translit.h
+	$(RM) gentranslit
+
+
+man/%.html : man/%
+	$(MAN2HTML) $< > $@
+
+
+force :

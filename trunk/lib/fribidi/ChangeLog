@@ -1,0 +1,757 @@
+2007-07-09  Behdad Esfahbod  <behdad@gnome.org>
+	GNU FriBidi 0.10.9 released.
+
+2007-08-09  Behdad Esfahbod  <behdad@gnome.org>
+	* fribidi_char_sets_cap_rtl.c (fribidi_char_set_enter_cap_rtl):
+	Zero-out allocated memory by using calloc.  We were assuming
+	memory is zeroed without ever zeroing it.  Oops!
+
+2007-05-25  Behdad Esfahbod  <behdad@gnome.org>
+	GNU FriBidi 0.10.8 released.
+	Update Unicode version to 5.0.0.
+
+2007-05-25  Behdad Esfahbod  <behdad@gnu.org>
+	* wcwidth.c (mk_wcwidth): Update to latest version, reflecting
+	Unicode Character Database 5.0.0.
+
+2006-07-21  Behdad Esfahbod <behdad@gnu.org>
+	* *.i: Update to Unicode Character Database 5.0.0.
+
+2006-04-27  Behdad Esfahbod <behdad@gnu.org>
+	* Makefile.am: Pass -no-undefined to linker.
+	(fixes fd.o bug #5509)
+
+2006-02-23  Behdad Esfahbod <behdad@gnu.org>
+	* fribidi_main.c: #include fribidi.h before checking for iconv.
+	(fixes fd.o bug #4659)
+
+2005-09-25  Behdad Esfahbod <behdad@gnu.org>
+	GNU FriBidi 0.10.7 released.  0.10.6 was not shipped for some reasons.
+
+2005-09-25  Behdad Esfahbod <behdad@gnu.org>
+	GNU FriBidi 0.10.6 released.
+
+2005-09-25  Behdad Esfahbod <behdad@gnu.org>
+	* configure.in: Updated to new autoconf/automake syntax. Copied
+	from fribidi2 tree.
+	* Makefile.am, bootstrap, configure.in: More update from the
+	fribidi2 tree, and voodoo to make it all work.
+	* acconfig.h, acinclude.m4, stamp-h.in: Removed, you generated
+	bastards!
+	* *: const added in places.
+	* fribidi_type.c: Define prop array as const.
+	* fribidi_types.h: Back to not using stdint.h. (#4319)
+
+2005-06-08  Behdad Esfahbod <fribidi@behdad.org>
+	* NEWS, README, AUTHORS, THANKS: Updated.
+	* ANNOUNCE: Removed.
+	* 0.10.5: released.
+
+2005-06-07  Behdad Esfahbod <fribidi@behdad.org>
+	* *: Updated to Unicode 4.1.0.  Misc build fixes.
+	* wcwidth.c,i: Renamed from fribidi_wcwidth.c,i.
+	* fribidi_types.h: Include stdint.h and use the int types from there.
+
+2002-12-22  Behdad Esfahbod <fribidi@behdad.org>
+	* Makefile.am: Added fribidi_types.i to
+	libfribidiinc_HEADERS, to fix bug reported by Omer Zak.
+
+2002-12-10  Behdad Esfahbod <fribidi@behdad.org>
+	* Created CVSROOT entries.
+
+2002-08-07  Behdad Esfahbod <fribidi@behdad.org>
+	* AUTHORS: Added Tomas Frydrych <tomas@frydrych.uklinux.net>.
+	* READMY: Moved AbiWord to applications that use fribidi.
+	* fribidi.h: Removed #include "fribidi_mem.h".
+	* fribidi_config.h: Added to CVS, to make MSVC builds from CVS
+	possible.
+	* win/*: Added to CVS.
+
+2002-08-01  Behdad Esfahbod <fribidi@behdad.org>
+	* *.c, *.h, fribidi_config.h.in, configure.in, acconfig.h: Applied
+	and completed the patch from Tomas Frydrych, to add FRIBIDI_EXPORT
+	and FRIBIDI_API symbols.  These symbols are needed for ports of
+	fribidi to Windows and other platforms.
+	* fribidi_char_sets.i, fribidi_types.i: Added.
+
+2002-06-17  Behdad Esfahbod <fribidi@behdad.org>
+	* fribidi_unicode.h: Set Unicode chars based on sizeof FriBidiChar.
+	Now if one changes FriBidiChar to 16bit, and regenerate char_type
+	tables, they will be 16bit too.
+
+2002-05-19  Behdad Esfahbod <fribidi@behdad.org>
+	* Fribidi 0.10.4 released.
+	* configure.in: Changed version information.
+
+2002-05-18  Behdad Esfahbod <fribidi@behdad.org>
+	* packtab.c: Updated the search and output generating routines,
+	to use select among int8, int16 and int32 types, this helps to
+	compress better, and generate fewer symbols.
+
+2002-05-16  Behdad Esfahbod <fribidi@behdad.org>
+	* fribidi_wcwidth.c: Updated to latest source of 2002-05-08.
+	* fribidi_wcwidth.i: Added, fribidi_wcwidth.c includes this to reduces
+	changes needed in fribidi_wcwidth.c.
+	* fribidi_mem.h, fribidi_types.h, *.c: Common type names like int32,
+	boolean, ..., changed name to have fribidi prefix.
+	* .indent.pro: Updated type names.
+	* fribidi_char_sets_utf8.c: Fixed to support 4-byte length utf-8
+	sequences.
+
+2002-05-04  Behdad Esfahbod <fribidi@behdad.org>
+	* fribidi_wcwidth.c: Updated to latest source of 2002-05-03.
+
+2002-04-07  Behdad Esfahbod <behdad@bamdad.org>
+	* unidata/*, fribidi_unicode.h, fribidi_wcwidth.c: Update to
+	Unicode 3.2.
+	* configure.in: Version information updated.
+	* fribidi.c: Version information changed to contain Unicode version too.
+	* 0.10.3 released.
+
+2002-03-25  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c: Fixed a bug introduced in adding L3 rule.
+
+2002-03-15  Behdad Esfahbod <behdad@bamdad.org>
+	* 0.10.2 released.
+	* configure.in: Changed version to 0.10.2.
+
+2002-03-15  Behdad Esfahbod <behdad@bamdad.org>
+	* packtab.c: Updated the output generating routine, to generate much
+	fewer symbols, to reduce the relocation time (suggested by Owen
+	Taylor).
+
+2002-03-15  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c, fribidi.h: Applied the patch from
+	Dominique Unruh <dominique@unruh.de> to reorder the NSM character
+	to follow their base character (rule L3), fribidi_reorder_nsm_status(),
+	fribidi_set_reorder_nsm() added.
+	* fribidi_main.c: Option --reordernsm added, also --test sets
+	--reordernsm.
+	* TODO: Done task for rule L3 removed.
+	* AUTHORS: Dominique Unruh <dominique@unruh.de> added.
+	* tests/test_UTF-8_nsmreorder.input,
+	tests/test_UTF-8_nsmreorder.reference: Added.
+	* NEWS: Updated, will be used to reflect each release News.
+
+2002-03-12  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.spec.in: Small cleanup.
+
+2002-03-08  Behdad Esfahbod <behdad@bamdad.org>
+	* Makefile.am: Small cleanup.
+	* bootstrap: automake options removed, added in Makefile.am.
+
+2002-01-25  Behdad Esfahbod <behdad@bamdad.org>
+	* Makefile.am: Added fribidi.spec to distribution, to be able to make
+	RPMs from released distribution with 'rpm -tb'.
+	* fribidi.c: Added 'do { ... } while (0)' stuff around #defined codes.
+
+2002-01-23  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi_create_char_types.c, fribidi_create_mirroring.c: Changed
+	to use sprintf() instead of snprintf().
+
+2002-01-04  Roozbeh Pournader <roozbeh@sharif.edu>
+	* FriBidi 0.10.1 released.
+	* configure.in: Changed the version to 0.10.1.
+
+2002-01-18  Behdad Esfahbod <behdad@bamdad.org>
+	* configure.in, fribidi.spec.in: Clean up, different version components
+	defined, rpm names changed from fribidi to fribidi{majorversion}.
+
+2002-01-14  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c: Rewrote run_length_encode_types() main loop.
+
+2002-01-12  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.spec.in: Define RPM serial version as interface version.
+	* TODO: New tasks added.
+
+2002-01-11  Behdad Esfahbod <behdad@bamdad.org>
+	* packtab.c: Fixed the bug Owen Taylor <otaylor@redhat.com>, defines
+	internal arrays as "static const" in output.
+	* fribidi_create_char_types.c, fribidi_create_mirroring.c: Fixed to
+	add "#ifndef ... #define ..." stuff around output.
+	
+2002-01-10  Behdad Esfahbod <behdad@bamdad.org>
+	* configure.in: Changed the version to 0.10.1pre.
+	* TODO: Done tasks removed.
+	* *.h: "extern C" stuff added.
+	* fribidi-config.in: Include path changed from @includedir@/fribidi
+	to @includedir@.
+	* fribidi.c: Set FRIBIDI_CHUNK_SIZE according to MEM_OPTIMIZED flag
+	to 16 or 128.
+	* fribidi.c, fribidi_unicode.h, conformance/test: Do not set
+	MAX_LEVEL to 15 if flag DEBUG defined, renamed to
+	UNI_MAX_BIDI_LEVEL and moved to fribidi_unicode.h, should not check
+	fribidi with debug-enabled reference code anymore.  Updated
+	conformance/test to reflect this change.
+	* README: Sample input and output removed, refered to tests directory
+	* fribidi_config.h.in: Added, configure creates fribidi_config.h from
+	this.
+	* fribidi.spec.in: Added, configure creates fribidi.spec from this.
+	It can be used to create RPM packages.
+
+2002-01-04  Roozbeh Pournader <roozbeh@sharif.edu>
+	* FriBidi 0.10.0 released.
+	* configure.in: Changed the version to 0.10.0.
+
+2002-01-02  Behdad Esfahbod <behdad@bamdad.org>
+	* bootstrap: automake option -a added
+	* fribidi_types.h: FriBidiStrIndex type changed from uint16 to int.
+	FriBidiLevel introduced, as uint8 to hold the type for bidi levels.
+	* fribidi.c, fribidi.h, fribidi_utils.c, fribidi_main.c: Updated to
+	use FriBidiLeveli and FriBidiStrIndex.
+	* fribidi.h, fribidi.c: fribidi_remove_explicits() replaced by
+	fribidi_remove_bidi_marks() which also updates l2v, v2l and levels.
+	* fribidi.h, fribidi_char_type.c: fribidi_get_types() added.
+	* wcwidth.c: Replaced by fribidi_wcwidth.c.
+	* fribidi_wcwidth.c: Markus Kuhn's implementation of wcwidth(),
+	updated to use fribidi's types.
+	* fribidi.pc.in: Added, input file for pkgconfig support.
+	* configure.in, Makefile.am: Updated to make fribidi.pc, which
+	pkgconfig needs.
+	* AUTHORS: Abel Cheung <maddog@linux.org.hk> added, has implemented
+	pkgconfig support.
+	* fribidi_char_sets.h, fribidi_char_sets.c: Check for macro
+	FRIBIDI_INTERFACE_1 to define fribidi_*_to_unicode functions with
+	interface version 1.
+	* Makefile.am: A small dependency problem fixed.
+	* unidata/README: Added, Unicode disclaimer.
+	* Makefile.am: unidata/README, unidata/UnicodeData.txt,
+	BidiMirroring.txt: Added to distribution files.
+	* Removed wget mechanism for autogetting the Unicode data files.
+
+2001-12-31  Behdad Esfahbod <behdad@bamdad.org>
+	* configure.in: Check for sed added.
+	* Makefile.am: Scripts fixed to work with sh (not bash).
+
+2001-12-14  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi_get_type.c: Removed, replaced by fribidi_char_type.c and
+	fribidi_mirroring.c.
+	* Makefile.noglib, fribidi_mini_glib.c, fribidi_mini_glib.h: removed,
+	no glib dependency, replaced by fribidi_mem.c, and fribidi_mem.h.
+	* fribidi_tables.i: Removed, replaced by fribidi_tab_mirroring.i,
+	fribidi_tab_char_type_2.i, and fribidi_tab_char_type_9.i.
+	* unidata/CreateGetType.pl: Removed, replaced by
+	fribidi_create_mirroring.c, and fribidi_create_char_types.c.
+	* tests/test-CapRTL, tests/test-CapRTL.reference: Removed, replaced by
+	tests/test_CapRTL_implicit.input, and
+	tests/test_CapRTL_implicit.reference.
+	* tests/test-explicit, tests/test-explicit.reference: Removed, replaced
+	by tests/test_CapRTL_explicit.input, and
+	tests/test_CapRTL_explicit.reference.
+	* tests/test-hebrew, tests/test-hebrew.reference: Removed, replaced by
+	tests/test_ISO8859-8_hebrew.input, and
+	tests/test_ISO8859-8_hebrew.reference.
+	* tests/test_CapRTL_implicit.input,
+	tests/test_CapRTL_implicit.reference,
+	tests/test_CapRTL_explicit.input,
+	tests/test_CapRTL_explicit.reference,
+	tests/test_ISO8859-8_hebrew.input,
+	tests/test_ISO8859-8_hebrew.reference,
+	tests/test_UTF-8_persian.input,
+	tests/test_UTF-8_persian.reference: Added.
+	* wcwidth.c: Added, determines a characters width, to break lines.
+	* fribidi_create_mirroring.c: Added, creates fribidi_tab_mirroring.i
+	from unidata/BidiMirroring.txt
+	* fribidi_create_char_types.c: Added, creates fribidi_tab_char_type_*.i
+	from unidata/UnicodeData.txt
+	* fribidi_tab_mirroring.i: Added, mirroring table.
+	* fribidi_tab_char_type_2.i, fribidi_tab_char_type_9.i: Added, as
+	default character type tables, one optimized for speed, one for
+	space, MEM_OPTIMIZED flag will decide which one to use.
+	* fribidi_mirroring.c: Added, #includes fribidi_tab_mirroring.i.
+	* fribidi_char_type.c: Added, #includes one of
+	'fribidi_tab_char_type_*.i'.
+	* fribidi_mem.c, fribidi_mem.h: Added, define some types and functions
+	that was previously defined by glib.
+	* fribidi_unicode.h: Added, Unicode-dependent definitions moved here.
+	* packtab.c, packtab.h: Added, fribidi_create_char_type.c uses these,
+	to compress the types table.
+
+	* AUTHORS: Markus Kuhn added, as he has wrote wcwidth.c.
+	* INSTALL: "Building without glib" material removed.
+	* TODO: Updated, done tasks removed, new tasks added.
+	* NEWS: Updated, compile farm results added.
+	* Makefile.am: Lots of changes, to recent changes, new special
+	target fribidi_tab_char_type_N.i added, which N is replaced with
+	a digit between 2 and 9, and makes a table with compress level N.
+	* acinclude.m4: glib material removed.
+	* configure.in: VERISON update, INTERFACE_VERSION added. glib
+	material removed, fribidi_tab_char_types_N.i configuration added,
+	option --without-charsets added.  Also creates fribidi_config.h.
+	* fribidi-config.in: A small bug fixed, to set the --cflags output
+	correctly, glib material removed.
+	* fribidi.h: Preprocessor material added for easier link with c++
+	codes, new headers included.
+	* fribidi_benchmark.c: Character set dependency removed, uses no
+	charset code.
+	* fribidi_char_sets*.c, fribidi_char_sets*.h: Preprocessor material
+	added to reflect the effect of --without-charsets configure option.
+	* fribidi_char_sets_utf8.c, fribidi_char_sets_utf8.h: Unused code
+	removed.
+	* fribidi_main.c: Changed to reflect the effect of --without-charsets
+	configure option, and use iconv if no charsets.  Option --nobreak
+	added for no line breaks.  Line break code rewrote to break correctly
+	in UTF-8 mode.
+	* fribidi_types.h: In definition of FriBidiChar values, states that
+	sign bit is reserved for user's private use, FRIBIDI_TYPE_PRIVATE
+	macro defined to check for this.
+	* run.tests: Changed to test fribidi with all test files in tests/
+	directory, and also automatically extract the character set from
+	the test's name.
+	* *.c, *.h: glib material replaced with their equivalents: gchar
+	replaced with char, gint replaced by int, ...
+
+2001-12-11  Roozbeh Pournader <roozbeh@sharif.edu>
+	* FriBidi 0.9.1 released.
+	* configure.in: changed the version to 0.9.1.
+
+2001-12-10  Roozbeh Pournader <roozbeh@sharif.edu>
+	* fribidi.c: fixed a memory boundary bug (fix by Hidetoshi Tajima
+	<hidetoshi.tajima@sun.com>).
+	* INSTALL: added a comment for how to install from CVS (suggested by
+	Omer Zak); cleaned up some vertical spacing.
+	* ChangeLog: changed Behdad's address to 'bamdad.org'.
+
+2001-08-23  Behdad Esfahbod <behdad@sharif.edu>
+	* acinclude.m4, ltmain.sh, ltmain.in, ltconfig: Updated with
+	libtool-1.4 to configure under latest cygwin.
+
+2001-05-29  Behdad Esfahbod <behdad@sharif.edu>
+	* fribidi_get_type.c: Updated to use new 'fribidi_tables.i'.
+	* fribidi_utils.c: very small code cleanup.
+
+2001-05-29  Roozbeh Pournader <roozbeh@sharif.edu>
+	* unidata/CreateGetType.pl, fribidi_tables.i, Makefile.am: Updated
+	for Unicode 3.1. Replace PropList parsing with UnicodeData parsing.
+	Unassigned characters are now treated as specified in Table 3-7 of
+	UAX #9.
+	* unidata/PropList.txt: removed.
+	* unidata/UnicodeData.txt: added.
+
+2001-05-22  Behdad Esfahbod <behdad@sharif.edu>
+	* fribidi_char_sets_utf8.c: Fixed a little bug in utf-8 -> unicode
+	converter.
+
+2001-05-16  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c: Fixed a bug in rule W1, that caused W5 not to work
+	properly when adjacent to a NSM.
+
+2001-05-06  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi_types.h: Changed to use #define instead of enum's
+	work properly with machines with 16bit ints.
+
+2001-04-13  Roozbeh Pournader <roozbeh@sharif.edu>
+	* configure.in: Added Owen Taylor's patch to make warnings on
+	by default.
+
+2001-04-12  Behdad Esfahbod <behdad@bamdad.org>
+	* configure.in, Makefile.am: Changed to use getopt.* if no glibc.
+	* getopt.c, getopt.h, getopt1.c: Added to be used if no glibc.
+
+2001-04-11  Behdad Esfahbod <behdad@bamdad.org>
+	* acinclude.m4: Added macro definitions of libtool.
+	* configure.in, Makefile.am: Changed to use fribidi_mini_glib
+	whenever glib library not found.
+	* TODO: Removed done tasks.
+
+2001-04-11  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi_char_sets_*.c: Fixed bugs introduced in guchar to gchar
+	conversion.
+
+2001-04-10  Behdad Esfahbod <behdad@bamdad.org>
+	* *.c/*.h: Changed all "guchar"s to "gchar" and neede casts done.
+	* Makefile.am: Added MAINTAINERCLEANFILES to remove files
+	"configure", "config.h.in", "Makefile.in", "aclocal.m4" by
+	maintainer-clean target.
+
+2001-04-07  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi_main.c, fribidi_benchmark.c: Check for HAVE_CONFIG_H flag.
+
+2001-04-03  Behdad Esfahbod <behdad@sharif.edu>
+	* fribidi_mini_glib.h, fribidi_mini_glib.c: Added functions
+	for working with MemChunks, some more definitions of glib added.
+	* fribidi.c: No more dependency on FRIBIDI_USE_MINI_GLIB flag. 
+
+2001-04-01  Behdad Esfahbod <behdad@bamdad.org>
+	* Makefile.noglib: fribidi_types.c added to sources.
+	* fribidi.c: Fixed a bug in free_rl_list() when USE_SIMPLE_MALLOC
+	was set, that caused core dumps.
+	* fribidi_main.c: Option --nomirror added.
+	* fribidi_mini_glib.h: Fixed a bug that caused core dumps, the bug
+	was in macro definition #define g_new(T, n) malloc(n * sizeof(T)),
+	that caused g_new(X, n + 1) allocate (n + (1 * sizeof(X))) instead
+	of ((n + 1) * sizeof(X))!, that should be
+	#define g_new(T, n) malloc((n) * sizeof(T)).
+	* fribidi_mini_glib.h: Does not set USE_SIMPLE_ALLOC anymore.
+	* fribidi.c: Use g_malloc when FRIBIDI_USE_MINI_GLIB is set, but
+	still use the free_type_link_list, for efficiency.
+
+2001-03-31  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi_benchmark.c: #included <stdarg.h>, to compile under cygwin.
+	* fribidi.c, fribidi.h: Changed fribidi_log2vis_get_embedding_levels()
+	to return TRUE if successful and FALSE otherwise.
+	* fribidi.c: Function bidi_string_strlen() removed, because we
+	have not assumed that a fribidi string is ended with char 0.
+	Fixed all the bugs that roozbeh found and some more. Some more
+	debug information added. All internal functions defined as static.
+	* fribidi_main.c: Set to do not allocate visual array, if --novisual
+	options set.
+	* .indent.par: Added, it helps program "indent" to change the
+	appearance of sources to GNU style, each typedef should be added
+	to this file too.	
+
+2001-03-31  Roozbeh Pournader <roozbeh@sharif.edu>
+	* fribidi.c, fribidi_benchmark.c, fribidi_char_set_cap_rtl.c:
+	removed some unused variables.
+	* fribidi_char_sets*.c, fribidi_main.c: #included <string.h>. 
+	* fribidi.c, fribidi_char_sets_cap_rtl.c: added some comment lines
+	to places that bugs probably exist. find with searching for "--RP".
+	* COPYING.LIB: renamed to COPYING (based on a recent suggestion on
+	GNU web site).
+	* bootstrap: removed lines that suppressed warnings about missing
+	COPYING.
+
+2001-03-30  Roozbeh Pournader <roozbeh@sharif.edu>
+	* Makefile.noglib: replaced by a new version from Dan Kenigsberg
+	<danken@cs.technion.ac.il>.
+	* AUTHORS: added Dan Kenigsberg.
+	* '*.c', '*.h': changed all "//" comments to "/* */" pairs.
+
+2001-03-30  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c, fribidi.h: Changed fribidi_log2vis() to return TRUE
+	if successful and FALSE otherwise.
+	* fribidi_main.c, fribidi_benchmark.c: Changed to use getopt library,
+	to handle command line parameters better.
+	* fribidi_main.c: Changed to if COLUMNS enviroment variable is
+	defined, use its value for text width.
+
+2001-03-29  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c, fribidi_char_sets.h, fribidi_char_sets_cap_rtl.c,
+	fribidi_main.c, tests/test-CapRTL, tests/test-CapRTL.reference,
+	tests/test-hebrew, tests/test-hebrew.reference: Fixed a bug in
+	--clean that didn't remove RLM and LRM, and updated tests to reflect
+	this change.
+	* fribidi_main.c: Options --wltr and --wrtl added.
+	* TODO: A recently done task removed.
+
+2001-03-29  Roozbeh Pournader <roozbeh@sharif.edu>
+	* fribidi-0.9.0: fribidi-0.9.0 released.
+
+2001-03-28  Roozbeh Pournader <roozbeh@sharif.edu>
+	* bootstrap: swapped 'aclocal' and 'autoheader'. do not warn for
+	missing COPYING.
+	* COPYING: removed.
+	* COPYING.LIB: added.
+	* README, *.h, *.c, unidata/CreateGetType.pl: changes to reflect LGPL.
+	* Makefile.am: added 'bootstrap' to distribution.
+
+2001-03-28  Behdad Esfahbod <behdad@bamdad.org>
+	* Makefile.am: New target "fribidi_tables.i" defined to download
+	"unidata/BidiMirroring.txt" and "unidata/PropList.txt" if not
+	available, and call "unidata/CreateGetType.pl" if needed to update
+	"fribidi_tables.i".
+	* fribidi_types.h, fribidi_types.c, fribidi_get_type.c,
+	unidata/CreateGetType.pl: Define symbol MEM_OPTIMIZED added to
+	make Dov happy :-), if MEM_OPTIMIZED defined, fribidi_tables.i
+	entries will be guint8 instead of gint to free 27KB extra memory
+	that was used to make fribidi use bitmasks, the overhead will be
+	three array lookups instead of two, in fribidi_get_type().	
+	* fribidi_main.c: Options --verbose and --basedir added.
+	Options --test and --caprtl updated.
+	* conformance/test_gen.c: File name changed to
+	conformance/test_gen_explicit.c
+	* run.tests: Make to work with "make test" and "make check" when
+	making from other directories.
+	* fribidi.c: Rule L1 ("Reset the embedding levels") moved from
+	fribidi_log2vis() to fribidi_analyse_string(), to affect
+	fribidi_log2vis_get_embedding_levels() too. New functions
+	fribidi_mirroring_status() and fribidi_set_mirroring() added to
+	turn on or off mirroring (Rule L3).  Changed to warn about too long
+	strings only if at least one of	position_L_to_V_list or
+	position_V_to_L_list is asked.
+	* fribidi.h: Updated to reflect new functions in fribidi.c,
+	#include "config.h" removed, and added to each .c file that use it,
+	because config.h should not be included by other apps/libs.
+	* fribidi.c, fribidi_main.c, fribidi_benchmark.c: #included "config.h",
+	Now, --version options shows the options that library is compiled
+	with (DEBUG, MEM_OPTIMIZED, USE_SIMPLE_MALLOC, FRIBIDI_USE_MINI_GLIB).
+	* fribidi_types.h, fribidi.c, fribidi.h, fribidi_utils.c: TypeDefined
+	FriBidiStrIndex as guint16 and used for the type of
+	position_L_to_V_list and postition_V_to_L_list arrays.
+	
+2001-03-27  Roozbeh Pournader <roozbeh@sharif.edu>
+	* fribidi.h: Removed definition of PACKAGE and VERSION. #included
+	"config.h"
+	* Makefile.am: Make "make dist" work.
+
+2001-03-27  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c, fribidi_types.h: Some bugs introduced in the last
+	changes removed, "Resolving weak types" rewritten, no known
+	conformance bugs.  Defined macros for external use, changed their
+	name to have a prefix of FRIBIDI_.
+	* fribidi.c, fribidi.h: Function fribidi_remove_explicits() added
+	to remove the explicit marks from a fribidi string.
+	* fribidi.c: Fixed a bug that caused position_l_to_v and
+	position_v_to_l	not to calculated correctly.
+	* fribidi.h: Defined symbols PACKAGE and VERSION manually, autoconf
+	should set them, but I don't know how to.
+	* fribidi_char_sets.c, fribidi_char_sets.h, fribidi_char_sets_*:
+	Each charset moved to a pair of .c/.h file.  CapRTL defined as a
+	character set for testing with the reference implementation, with
+	explicit marks escape strings, beware that it differs from the old
+	capital rtl, it is a character set, only for test, with the property
+	that contains all character types in ascii characters.  Some
+	functions defined to make charset conversion easy.  An interface
+	designed for adding new charsets.
+	* fribidi_main.c: API revised, many new options added,	
+	Default charset changed to UTF-8
+	Option --caprtl simulates the old style (same as --charset CapRTL)
+	Option --test simulates the old test_fribidi (same as --fill
+	--showinput --clean)
+	Option --clean now works for all charsets.
+	Option --fill implementated.
+	Options --version, --showinput, --ltov, --vtol, --levels, --changes,
+	--novisual, --charsetdesc added.
+	Now use the charset conventions, lots of code removed.
+	* test_fribidi.c: Got removed!	`fribidi --test' should	be used 
+	instead.
+	* fribidi_benchmark: Explicit support added, now benchmarks with
+	two strings, one without explicit marks and one with them.
+	* run.tests, tests/test-CapRTL, tests/test-CapRTL.reference,
+	tests/test-explicit, tests/test-explicit.reference,
+	tests/test-hebrew, tests/test-hebrew.reference: New test datas
+	added, for better testing of weak types and explicit support.  Test
+	outputs updated for the new CapRTL character set.  Test output for
+	test-hebrew added.
+	* Makefile.in, Makefile.am: Updated to use fribidi instead of
+	test_fribidi for test targets.  New files added.
+	* TODO: Some done tasks removed, some new tasks added!
+
+2001-03-09  Dov Grobgeld  <dov@orbotech.orbotech.co.il>
+	* fribidi_mini_glib.c, fribidi_mini_glib.h: Applied patch
+	received from Dan Kenigsberg <danken@cs.technion.ac.il> that
+	allows compiling fribidi without glib if the flag
+	FRIBIDI_USE_MINI_GLIB is turned on.  This option is currently
+	turned on when compiling through Makefile.noglib .
+	* TODO: Added the task of making autoconf automatically turn
+	on FRIBIDI_USE_MINI_GLIB if glib isn't found.
+
+2001-03-07  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c: Removed dead codes, many parts rewritten more efficient,
+	including Resolving Neutrals, Resolving Implicit Levels and ....
+	* fribidi_types.h: Almost redefined, to use bitfields for char types,
+	and many macros defined for efficient querying about char types.
+	Some unused char types removed, also char types L, R, N converted
+	to LTR, RTL and ON everywhere.
+	* CreateGetType.pl: Changed to define tables as arrays of 
+	FriBidiCharType instead of guchar.
+	* conformance/: Updated some scripts for automatic testing with
+	reference implementation.
+
+2001-02-19  Behdad Esfahbod <behdad@bamdad.org>
+	* fribidi.c: Added support for all explicit marks (embeddings and
+	overrides), it means rules X1 .. X10 of specification.
+	* fribidi.c: Added support for L1 rule of specification, it's
+	resetting the char type of some characters, just before reordering.
+	* fribidi.c: Added 'AL' to types that change the paragraph embedding
+	level, it previously only checked for 'R'.
+	* fribidi.c: Define symbol NO_STDIO changed to DEBUG, to turn on or
+	off all debug codes compile time, also a function fribidi_set_debug,
+	turns on and off the debug output generations in run time.
+	* fribidi.c: Added some more debug information, all debug informations
+	revised and go to stderr now.
+	* fribidi.c: Fixed a bug in rule W5, that is when some european
+	terminators are between some arabic letters and some european
+	numbers.
+	* fribidi_main.c: Added support for inputting explicit marks, in
+	CapRTL charset mode.
+	* fribidi_main.c: Added command line option for debug mode.
+	* fribidi_main.c: Fixed a small bug that would annoy when the size
+	of original string may be different to the derived one.
+	* fribidi_main.c: Fixed a small bug in padding when the size of the
+	out string was more than the page width.
+	* fribidi_types.h: Added some types needed for debug info.
+
+2001-02-19  Roozbeh Pournader <roozbeh@sharif.edu>
+	* CreateGetType.pl: changed to use BidiMirroring.txt instead
+	of UnicodeData.txt.
+
+2000-11-12  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released fribidi-0.1.15.
+	* fribidi.c: [OZ] Applied Owen Taylor's patch from 2000-07-19 to
+	fribidi.c.  The patch affects pp->prev rules for the last element
+	in cases W3 and W7.
+	* fribidi.c: [OZ] fribidi_log2vis() and
+	fribidi_log2vis_get_embedding_levels() now check for len==0 and if
+	so, they return immediately (instead of getting stuck).
+	* fribidi.c: [OZ] new_type_link() is now declared as
+	new_type_link(void) to prevent a compiler error message.
+	* fribidi.c: [OZ] The positions of the is_v2l_map and len
+	arguments in fribidi_map_range() prototype were switched around,
+	to conform to actual use in the source code file. 
+	* fribidi.c: [OZ] The first argument to fribidi_is_char_rtl() was
+	changed from gint8 to guint8, to conform to data type returned by
+	fribidi_log2vis().  
+	* fribidi.c: [OZ] bidi_string_strlen() now uses gint rather than int.
+	* fribidi.c: [OZ] bidi_string_reverse() now uses gint rather than int.
+	* fribidi.c: [OZ] int16_array_reverse() is now guint16_array_reverse().
+	* fribidi.c: Added define symbols NO_STDIO, FRIBIDI_MAX_STRING_LENGTH,
+	USE_SIMPLE_MALLOC that may be used to effect what code is being 
+	generated.
+	* fribidi_char_sets.h, fribidi_char_sets.c: Added Omer Zaks more 
+	general ut8 to unicode and unicode to ut8 functions.
+	* fribidi.c: [OZ] Replaced int to gint to better support embedded
+	libraries.
+	* Applied lots of code contributed by Omer Zak <omerz@actcom.co.il>
+	detailed above.
+	
+
+2000-10-14  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+
+	* Released fribidi-0.1.14.
+
+	* CreateGetType.pl, fribidi_tables.i: Applied a patch received
+ 	from Roozbeh Pournader <roozbeh@sina.sharif.ac.ir> (who has got
+ 	quite some courage sending an email from Iran to Israel) which
+	updates the character tables according to UnicodeData-3.0.1.txt .
+
+	* fribidi_char_sets.c: Cleaned up the mess and made it compile!
+
+2000-10-09  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released fribidi-0.1.13 .
+	* acinclude.m4: Added file including a m4 macro for glib-2.0
+	as suggested by Owen Taylor.
+	* Makefile.am: Added acinclude.m4 to extra sources.
+	* configure.in: Changed it to use new macro.
+
+2000-05-19  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* fribidi_char_sets.c: Added support for the LRM and RLM 
+	characters for the iso-8859-8 converts at unused positions 
+	0xFE and 0xFF . 
+	* CreateGetType.pl, fribidi.c, fribidi_tables.i, fribidi_types.h:
+ 	Updated the algorithms to be consistance with the latest Unicode
+ 	Technical Report #9 release. Still no explicit overrides, but
+ 	hopefully the implicit algorithm now works according to the
+ 	specification.
+	* CreateGetType.pl, fribidi_tables.i: Overwrote the character
+ 	bidi-assignment of all non-assigned characters within blocks with
+ 	the property of the previous character in order to create a few
+ 	more reused secondary lookup character tables.
+	* CreateGetType.pl, fribidi.c, fribidi_tables.i: Added Owen
+ 	Taylor's speed patch that speeds up fribidi by a factor of 4!
+  	Owen's patch consists of two parts. The first part is a double
+ 	table lookup scheme for accessing the character properties,
+ 	replacing the old binary search. The second part is a reuse of the
+ 	links in the character properties linked list in order to minimize
+ 	mallocs.
+
+2000-05-02  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released fribidi-0.1.11 .
+	* Fixed one remaining bug in Makefile.am.
+
+2000-04-27  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released fribidi-0.1.10 .
+	* Added libtool configuration added by Manish Singh.
+	* Added sevaral arabic charset converts contributed by Pablo
+ 	Saratxaga.
+
+2000-03-20  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released fribidi-0.1.9 .
+
+2000-02-22  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* fribidi_types.h: Changed basic type FriBidiChar to guint32
+	  which corresponds to UCS4, which is more reasonable to use.
+
+2000-02-21  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* tests/test-capital-rtl: Added new tests to check percentage
+	  signs and updated tests.reference to reflect this.
+	* fribidi.c(fribidi_analyse_string): Added the rule 
+	  EN,ET=>EN,EN which takes care of the problem of percentage
+	  signs were put in the wrong place.
+
+2000-02-20  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* fribidi.c: Fixed several memory leaks found by Owen Taylor.
+
+2000-01-01  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Added documentation of the utility functions to fribidi.h .
+
+1999-12-24  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Added new function fribidi_is_char_rtl() that uses the 
+	embedding levels or the base dir to determine the resolved
+	direction of a character.
+	* Added new function fribidi_xpos_resolve() to fribidi_utils 
+	that is needed in an gui interaction to resolve a mouse event 
+	to the proper logical and visual positions.
+	
+
+1999-12-21  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Added patches for UTF8 support contributed by raphael@cs.uky.edu.
+
+1999-12-05  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Added two new types FRIBIDI_TYPE_WL and FRIBIDI_TYPE_WR that
+	indicate weak directions. These directions are used if no strong
+	direction is found in the string.
+	* Changed analyse_string() to return base_type FRIBIDI_TYPE_N if
+	the base direction cannot be determined. It is then up to a higher
+	level protocol to determine the base direction.
+
+1999-11-22  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released version 0.1.7.
+	* Added arabic support contributed by Pablo Saratxaga.
+
+1999-06-20  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Created file fribidi_utils.c which will be used for common 
+	  patterns that are common in Bidi supported programs.
+
+1999-04-28  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Fixed bug in fribidi_log2vis which occured if only the v2l
+	  array was requested and not the l2v array.
+	* Fixed bug in test_fribidi when using option test_vtol .
+	* Changed types in call to fribidi_log2vis to be more memory 
+	  conservative. 
+	* Added single character translation functions to fribidi_char_sets.
+
+1999-04-10  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Changed building to use glib-config as glib-1.2 is now released.
+	* Added some short cut optimizations.
+	* Cleaned up the TYPE_RULE_C macro and used in in lots of places.
+
+1999-02-09  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Added ./ to the execution of test_fribidi in run.tests.
+
+1999-02-08  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released 0.1.3 to match the perl module FriBidi.
+	* Added length paramater to fribidi_unicode_to_iso8859_8().
+	* Fixed bug in fribidi.c related to zero length strings.
+	* Released 0.1.2.
+	* Added options -ltr and -rtl to fribidi to force LTR and RTL 
+	  directions.
+	* Added function fribidi_log2vis_get_embedding_levels() which
+	  just returns an array of embedding levels.
+	* Added benchmark program.
+	* Added new check in test_fribidi that checks the changes 
+	  calculation.
+	* Changed interface to fribidi_log2vis() to include length of
+	  string on input and the embedding level of output.
+	* Added function fribidi_find_string_changes() which finds the
+	  bounding box of the changes between two FriBidiStrings.
+
+1999-01-19  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Added the option -bol to fribidi_main.c to print out stuff
+	  in the beginning of a line.
+
+1999-01-14  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Released version 0.1.1
+	* Added program fribidi as a command line interface to the library.
+
+1999-01-13  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* Added flag -nopad to test_fribidi to make it not insert spaces.
+	* Make P1 rules (ES and CS) work only if the span of the ES or
+	  the CS is 1. This is the same as in Hebrew Windoze.
+	* Replaced all the ET rules with the simpler ET,EN=>EN,EN
+	* Added `gtk-config --cflags` and `gtk-config -ldflags` to Makefile.am.
+	* Made test_fribidi read from stdin if no file given.
+	* Added options -outputonly to test_fribidi.
+
+1999-01-11  Dov Grobgeld  <dov@imagic.weizmann.ac.il>
+	* First Release!

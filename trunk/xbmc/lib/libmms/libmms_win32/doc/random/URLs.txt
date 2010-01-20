@@ -1,0 +1,9 @@
+(This file contains various mms:// URLs available on 'net for our
+pleasure and testing purposes :)
+
+- mms://sr-wm.qbrick.com/02038_srk-wm-High - Swedish classical music
+  radio
+
+- http://live.atlas.cz/pwf/default.asp - Czech news site, with many
+  mms:// video streams (requires some digging through html, though)
+

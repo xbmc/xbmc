@@ -1,0 +1,90 @@
+<!-- This file contains the mapping of IR Server Suite keys to XBMC keys used in Keymap.xml  -->
+
+<irssmap>
+	<remote device="Microsoft MCE">
+		<pause>31719</pause> <!-- pause -->
+		<stop>31718</stop> <!-- stop -->
+		<play>31721</play> <!-- play -->
+		<forward>31723</forward> <!-- forward -->
+		<reverse>31722</reverse> <!-- reverse -->
+		<left>31711</left> <!-- left -->
+		<right>31710</right> <!-- right -->
+		<up>31713</up> <!-- up -->
+		<down>31712</down> <!-- down -->
+		<select>31709</select> <!-- ok -->
+		<pageplus>31725</pageplus> <!-- channel up -->
+		<pageminus>31724</pageminus> <!-- channel down -->
+		<back>31708</back> <!-- previous -->
+		<menu>31707</menu> <!-- dvd menu -->
+		<title>31671</title> <!-- recorded tv -->
+		<info>31728</info> <!-- info -->
+		<skipplus>31717</skipplus> <!-- skip -->
+		<skipminus>31716</skipminus> <!-- repeat -->
+		<display>31705</display> <!-- guide -->
+		<start>31730</start> <!-- start -->
+		<record>31720</record> <!-- record -->
+		<volumeplus>31727</volumeplus> <!-- volume up -->
+		<volumeminus>31726</volumeminus> <!-- volume down -->
+		<mute>31729</mute> <!-- mute -->
+		<power>31642</power> <!-- tv power -->
+		<mytv>31706</mytv> <!-- live tv -->
+		<one>31742</one>
+		<two>31741</two>
+		<three>31740</three>
+		<four>31739</four>
+		<five>31738</five>
+		<six>31737</six>
+		<seven>31736</seven>
+		<eight>31735</eight>
+		<nine>31734</nine>
+		<zero>31743</zero>
+		<mytv>31652</mytv> <!-- red -->
+		<mymusic>31651</mymusic> <!-- green -->
+		<mypictures>31650</mypictures> <!-- yellow -->
+		<myvideo>31649</myvideo> <!-- blue -->
+	</remote>
+	<remote device="Abstract">
+		<!-- This is a default remote used by IR Server Suite to send english names instead of remote codes -->
+		<!-- And should allow for more remotes to work out of the box with newer IR Server Suite installed  -->
+		<pause>Pause</pause>
+		<stop>Stop</stop>
+		<play>Play</play>
+		<forward>FastForward</forward>
+		<reverse>Rewind</reverse>
+		<left>Left</left>
+		<right>Right</right>
+		<up>Up</up>
+		<down>Down</down>
+		<select>OK</select>
+		<pageplus>ChannelUp</pageplus>
+		<pageminus>ChannelDown</pageminus>
+		<back>Back</back>
+		<menu>DVD</menu>
+		<title>RecordedTV</title>
+		<info>Info</info>
+		<skipplus>NextChapter</skipplus>
+		<skipminus>PreviousChapter</skipminus>
+		<display>Guide</display>
+		<start>Start</start>
+		<record>Record</record>
+		<volumeplus>VolumeUp</volumeplus>
+		<volumeminus>VolumeDown</volumeminus>
+		<mute>Mute</mute>
+		<power>Power</power>
+		<mytv>LiveTV</mytv>
+		<one>Number1</one>
+		<two>Number2</two>
+		<three>Number3</three>
+		<four>Number4</four>
+		<five>Number5</five>
+		<six>Number6</six>
+		<seven>Number7</seven>
+		<eight>Number8</eight>
+		<nine>Number9</nine>
+		<zero>Number0</zero>
+		<mytv>Red</mytv>
+		<mymusic>Green</mymusic>
+		<mypictures>Yellow</mypictures>
+		<myvideo>Blue</myvideo>
+	</remote>
+</irssmap>

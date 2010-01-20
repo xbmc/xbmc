@@ -1,0 +1,19 @@
+usplash-theme-xbmc (2.0) jaunty; urgency=high
+
+  * Added usplash themes spinner black silver.
+
+ -- Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>  Sat, 12 Dec 2009 21:31:22 +0100
+
+usplash-theme-xbmc (1.1) jaunty; urgency=low
+
+  * Updated usplash pulsating logo. These contain fixes for the missing boot messages,
+    an issue that has been reported in the forums.
+
+ -- Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>  Thu, 03 Sep 2009 13:07:36 +0200
+
+usplash-theme-xbmc (1.0) jaunty; urgency=low
+
+  * Usplash Themes for XBMC (provided by Duduke)
+    http://du-duke.blogspot.com
+
+ -- Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>  Thu, 07 May 2009 18:43:05 +0200

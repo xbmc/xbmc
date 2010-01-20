@@ -1,0 +1,44 @@
+<window type="dialog" id="143">
+	<animation effect="fade" time="200">WindowClose</animation>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>10</posx>
+		<posy>10</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>68</height>
+				<colordiffuse>DDFFFFFF</colordiffuse>
+				<texture>black-back.png</texture>
+				<bordertexture border="3">NoCover_1.png</bordertexture>
+				<bordersize>2</bordersize>
+			</control>
+			<control type="label" id="401">
+				<description>Song Number Label</description>
+				<posx>10</posx>
+				<posy>2</posy>
+				<width>380</width>
+				<height>28</height>
+				<font>font13</font>
+				<textcolor>green</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="label" id="402">
+				<description>Song Name Label</description>
+				<posx>10</posx>
+				<posy>30</posy>
+				<width>380</width>
+				<height>30</height>
+				<font>font13</font>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+		</control>
+	</controls>
+</window>

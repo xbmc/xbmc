@@ -1,0 +1,61 @@
+<html><head>
+<title>curl_multi_add_handle man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_multi_add_handle - add an easy handle to a multi session <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0">#include &lt;curl/curl.h&gt; 
+<p class="level0">CURLMcode curl_multi_add_handle(CURLM *multi_handle, CURL *easy_handle); 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">Adds a standard easy handle to the multi stack. This function call will make this <span Class="emphasis">multi_handle</span> control the specified <span Class="emphasis">easy_handle</span>. Furthermore, libcurl now initiates the connection associated with the specified <span Class="emphasis">easy_handle</span>. 
+<p class="level0">When an easy handle has been added to a multi stack, you can not and you must not use <a class="emphasis" href="./curl_easy_perform.html">curl_easy_perform(3)</a> on that handle! 
+<p class="level0">If the easy handle is not set to use a shared (CURLOPT_SHARE) or global DNS cache (CURLOPT_DNS_USE_GLOBAL_CACHE), it will be made to use the DNS cache that is shared between all easy handles within the multi handle when <a class="emphasis" href="./curl_multi_add_handle.html">curl_multi_add_handle(3)</a> is called. 
+<p class="level0">The easy handle will remain added until you remove it again with <a class="emphasis" href="./curl_multi_remove_handle.html">curl_multi_remove_handle(3)</a>. You should remove the easy handle from the multi stack before you terminate first the easy handle and then the multi handle: 
+<p class="level0">1 - <a class="emphasis" href="./curl_multi_remove_handle.html">curl_multi_remove_handle(3)</a> 
+<p class="level0">2 - <a class="emphasis" href="./curl_easy_cleanup.html">curl_easy_cleanup(3)</a> 
+<p class="level0">3 - <a class="emphasis" href="./curl_multi_cleanup.html">curl_multi_cleanup(3)</a> <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">CURLMcode type, general libcurl multi interface error code. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_multi_cleanup.html">curl_multi_cleanup (3)</a> <a class="manpage" href="./curl_multi_init.html"> curl_multi_init (3)</a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

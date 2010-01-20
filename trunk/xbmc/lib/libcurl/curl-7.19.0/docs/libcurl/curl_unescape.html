@@ -1,0 +1,59 @@
+<html><head>
+<title>curl_unescape man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_unescape - URL decodes the given string <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0"><span Class="bold">char *curl_unescape( char * url , int length  );</span> 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">Obsolete function. Use <a class="emphasis" href="./curl_easy_unescape.html">curl_easy_unescape(3)</a> instead! 
+<p class="level0">This function will convert the given URL encoded input string to a "plain string" and return that as a new allocated string. All input characters that are URL encoded (%XX where XX is a two-digit hexadecimal number) will be converted to their plain text versions. 
+<p class="level0">If the 'length' argument is set to 0, curl_unescape() will use strlen() on the input 'url' string to find out the size. 
+<p class="level0">You must curl_free() the returned string when you're done with it. <a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">Since 7.15.4, <a class="emphasis" href="./curl_easy_unescape.html">curl_easy_unescape(3)</a> should be used. This function will be removed in a future release. <a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">A pointer to a zero terminated string or NULL if it failed. <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><span Class="emphasis">curl_easy_escape(3), curl_easy_unescape(3), curl_free(3), RFC 2396</span> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>
