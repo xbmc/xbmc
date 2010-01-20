@@ -9,6 +9,13 @@
 /*                          HEADER FILES                            */
 /* ---------------------------------------------------------------- */
 
+/* for using yaSSL libraries now */
+#define USE_SSLEAY
+#define USE_OPENSSL
+#define HAVE_ZLIB_H
+#define HAVE_LIBZ
+#define CURL_DISABLE_LDAP
+
 /* Define if you have the <arpa/inet.h> header file.  */
 /* #define HAVE_ARPA_INET_H 1 */
 
@@ -179,7 +186,7 @@
 
 /* Define to 1 if you have the `CRYPTO_cleanup_all_ex_data' function.
    This is present in OpenSSL versions after 0.9.6b */
-#define HAVE_CRYPTO_CLEANUP_ALL_EX_DATA 1
+#undef HAVE_CRYPTO_CLEANUP_ALL_EX_DATA
 
 /* Define if you have the select function.  */
 #define HAVE_SELECT 1

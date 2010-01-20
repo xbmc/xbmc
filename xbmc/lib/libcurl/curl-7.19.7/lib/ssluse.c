@@ -63,8 +63,9 @@
 #ifdef USE_OPENSSL
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
-#include <openssl/dsa.h>
-#include <openssl/dh.h>
+// yaSSL doesn't have these:
+//#include <openssl/dsa.h>
+//#include <openssl/dh.h>
 #else
 #include <rand.h>
 #include <x509v3.h>
@@ -91,7 +92,8 @@
 #if OPENSSL_VERSION_NUMBER >= 0x00907001L
 /* ENGINE_load_private_key() takes four arguments */
 #define HAVE_ENGINE_LOAD_FOUR_ARGS
-#include <openssl/ui.h>
+// yaSSL doesn't have this:
+//#include <openssl/ui.h>
 #else
 /* ENGINE_load_private_key() takes three arguments */
 #undef HAVE_ENGINE_LOAD_FOUR_ARGS
@@ -563,8 +565,23 @@ int cert_stuff(struct connectdata *conn,
 /* returns non-zero on failure */
 static int x509_name_oneline(X509_NAME *a, char *buf, size_t size)
 {
-#if 0
-  return X509_NAME_oneline(a, buf, size);
+
+#if 1
+  // yaSSL returns *char, not int so change this:
+//  return X509_NAME_oneline(a, buf, size);
+  char *str = X509_NAME_oneline(a, buf, size);
+  if (str)
+  {
+    CRYPTO_free(str);
+    // Fail
+    return -1;
+  }
+  else
+  {
+    CRYPTO_free(str);
+    // Success
+    return 0;
+  }
 #else
   BIO *bio_out = BIO_new(BIO_s_mem());
   BUF_MEM *biomem;
@@ -1534,6 +1551,8 @@ ossl_connect_step1(struct connectdata *conn,
   if (data->set.str[STRING_SSL_CRLFILE]) {
     /* tell SSL where to find CRL file that is used to check certificate
      * revocation */
+// yaSSL doesn't support revocation yet
+#if 0
     lookup=X509_STORE_add_lookup(connssl->ctx->cert_store,X509_LOOKUP_file());
     if ( !lookup ||
          (!X509_load_crl_file(lookup,data->set.str[STRING_SSL_CRLFILE],
@@ -1553,6 +1572,7 @@ ossl_connect_step1(struct connectdata *conn,
     infof(data,
           "  CRLfile: %s\n", data->set.str[STRING_SSL_CRLFILE] ?
           data->set.str[STRING_SSL_CRLFILE]: "none");
+#endif
   }
 
   /* SSL always tries to verify the peer, this only says whether it should
@@ -1713,6 +1733,8 @@ ossl_connect_step2(struct connectdata *conn, int sockindex)
   }
 }
 
+// Doesn't work for yaSSL:
+#if 0
 static int asn1_object_dump(ASN1_OBJECT *a, char *buf, size_t len)
 {
   int i, ilen;
@@ -2081,7 +2103,7 @@ static CURLcode get_cert_chain(struct connectdata *conn,
 
   return CURLE_OK;
 }
-
+#endif
 /*
  * Get the server cert, verify it and show it etc, only call failf() if the
  * 'strict' argument is TRUE as otherwise all this is for informational
@@ -2102,11 +2124,12 @@ static CURLcode servercert(struct connectdata *conn,
   X509 *issuer;
   FILE *fp;
   char buffer[256];
-
+// Doesn't work for yaSSL:
+#if 0
   if(data->set.ssl.certinfo)
     /* we've been asked to gather certificate info! */
     (void)get_cert_chain(conn, connssl);
-
+#endif
   data->set.ssl.certverifyresult = !X509_V_OK;
 
   connssl->server_cert = SSL_get_peer_certificate(connssl->handle);
@@ -2168,29 +2191,33 @@ static CURLcode servercert(struct connectdata *conn,
         connssl->server_cert = NULL;
         return CURLE_SSL_ISSUER_ERROR;
       }
-      issuer = PEM_read_X509(fp,NULL,ZERO_NULL,NULL);
+      // Doesn't work for yaSSL so set to NULL instead:
+      //issuer = PEM_read_X509(fp,NULL,ZERO_NULL,NULL);
+      issuer = NULL;
       if (!issuer) {
         if (strict)
           failf(data, "SSL: Unable to read issuer cert (%s)\n",
                 data->set.str[STRING_SSL_ISSUERCERT]);
         X509_free(connssl->server_cert);
-        X509_free(issuer);
+//        X509_free(issuer);
         fclose(fp);
         return CURLE_SSL_ISSUER_ERROR;
       }
       fclose(fp);
-      if (X509_check_issued(issuer,connssl->server_cert) != X509_V_OK) {
+      // Doesn't work for yaSSL so set to TRUE:
+      //if (X509_check_issued(issuer,connssl->server_cert) != X509_V_OK) {
+      if(TRUE) {
         if (strict)
           failf(data, "SSL: Certificate issuer check failed (%s)\n",
                 data->set.str[STRING_SSL_ISSUERCERT]);
         X509_free(connssl->server_cert);
-        X509_free(issuer);
+//        X509_free(issuer);
         connssl->server_cert = NULL;
         return CURLE_SSL_ISSUER_ERROR;
       }
       infof(data, "\t SSL certificate issuer check ok (%s)\n",
             data->set.str[STRING_SSL_ISSUERCERT]);
-      X509_free(issuer);
+//      X509_free(issuer);
     }
 
     lerr = data->set.ssl.certverifyresult=
