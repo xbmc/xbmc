@@ -215,10 +215,9 @@ BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority)
 {
 #if defined(__APPLE__)
   struct sched_param sched;
-  pthread_t currentThread = pthread_self();
   int rtn, policy;
 
-  rtn = pthread_getschedparam(currentThread, &policy, &sched);
+  rtn = pthread_getschedparam(hThread->m_hThread, &policy, &sched);
   int min = sched_get_priority_min(policy);
   int max = sched_get_priority_max(policy);
 
@@ -227,7 +226,7 @@ BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority)
   if(nPriority > max)
     sched.sched_priority = max;
 
-  rtn = pthread_setschedparam(currentThread, policy, &sched);
+  rtn = pthread_setschedparam(hThread->m_hThread, policy, &sched);
 
   return true;
 #else
