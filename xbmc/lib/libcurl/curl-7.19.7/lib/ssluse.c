@@ -578,7 +578,6 @@ static int x509_name_oneline(X509_NAME *a, char *buf, size_t size)
   }
   else
   {
-    CRYPTO_free(str);
     // Success
     return 0;
   }
@@ -2121,7 +2120,8 @@ static CURLcode servercert(struct connectdata *conn,
   long lerr;
   ASN1_TIME *certdate;
   struct SessionHandle *data = conn->data;
-  X509 *issuer;
+// Doesn't work for yaSSL:
+//  X509 *issuer;
   FILE *fp;
   char buffer[256];
 // Doesn't work for yaSSL:
@@ -2191,10 +2191,10 @@ static CURLcode servercert(struct connectdata *conn,
         connssl->server_cert = NULL;
         return CURLE_SSL_ISSUER_ERROR;
       }
-      // Doesn't work for yaSSL so set to NULL instead:
+      // Doesn't work for yaSSL so set to TRUE:
       //issuer = PEM_read_X509(fp,NULL,ZERO_NULL,NULL);
-      issuer = NULL;
-      if (!issuer) {
+//      if (!issuer) {
+      if (TRUE) {
         if (strict)
           failf(data, "SSL: Unable to read issuer cert (%s)\n",
                 data->set.str[STRING_SSL_ISSUERCERT]);
