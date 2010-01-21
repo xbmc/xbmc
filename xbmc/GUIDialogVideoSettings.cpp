@@ -83,8 +83,13 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB_INVERTED  , 16022));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB           , 16021));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE          , 16020));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU                , 16310));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_INVERSE_TELECINE     , 16314));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , 16311));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , 16310));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_BOB                  , 16310));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF, 33085));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF        , 33084));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , 16314));
 
     /* remove unsupported methods */
     for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)

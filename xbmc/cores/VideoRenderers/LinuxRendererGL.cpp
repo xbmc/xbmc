@@ -2257,11 +2257,10 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 
   if(m_renderMethod & RENDER_VDPAU)
   {
-    if(method == VS_INTERLACEMETHOD_VDPAU
-    || method == VS_INTERLACEMETHOD_RENDER_BLEND
-    || method == VS_INTERLACEMETHOD_INVERSE_TELECINE)
-      return true;
-    return false;
+    if(g_VDPAU)
+      return g_VDPAU->Supports(method);
+    else
+      return false;
   }
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)

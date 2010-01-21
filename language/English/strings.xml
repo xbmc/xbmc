@@ -1488,8 +1488,8 @@
   <string id="16307">Bicubic (software)</string>
   <string id="16308">Lanczos (software)</string>
   <string id="16309">Sinc (software)</string>
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16310">Temporal</string>
+  <string id="16311">Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
@@ -2171,4 +2171,7 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
+  <string id="33084">Temporal (Half)</string>
+  <string id="33085">Temporal/Spatial (Half)</string>
+  
 </strings>

@@ -31,6 +31,7 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include "utils/CriticalSection.h"
+#include "settings/VideoSettings.h"
 namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                4
@@ -204,6 +205,7 @@ public:
   int                           m_mixerstep;
 
   bool Supports(VdpVideoMixerFeature feature);
+  bool Supports(EINTERLACEMETHOD method);
 
   VdpVideoMixerFeature m_features[10];
   int                  m_feature_count;

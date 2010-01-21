@@ -54,6 +54,19 @@ static float studioCSC[3][4] =
     { 1.0f, 1.85556000f,        0.0f,-0.92780000f}
 };
 
+static struct SInterlaceMapping
+{
+  const EINTERLACEMETHOD     method;
+  const VdpVideoMixerFeature feature;
+} g_interlace_mapping[] = 
+{ {VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
+, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF        , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
+, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL}
+, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL}
+, {VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE} 
+, {VS_INTERLACEMETHOD_NONE                       , (VdpVideoMixerFeature)-1}
+};
+
 #define CHECK_VDPAU_RETURN(vdp, value) \
         do { \
           if(CheckStatus(vdp, __LINE__)) \
@@ -435,6 +448,20 @@ bool CVDPAU::Supports(VdpVideoMixerFeature feature)
   return false;
 }
 
+bool CVDPAU::Supports(EINTERLACEMETHOD method)
+{
+  if(method == VS_INTERLACEMETHOD_VDPAU_BOB
+  || method == VS_INTERLACEMETHOD_AUTO)
+    return true;
+
+  for(SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
+  {
+    if(p->method == method)
+      return Supports(p->feature);
+  }
+  return false;
+}
+
 void CVDPAU::SetColor()
 {
   VdpStatus vdp_st;
@@ -529,37 +556,41 @@ void CVDPAU::SetHWUpscaling()
 
 void CVDPAU::SetDeinterlacing()
 {
+  VdpStatus vdp_st;
+  EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
                                      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
 
-  VdpStatus vdp_st;
-
-  if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO
-  ||  g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_VDPAU)
+  if (method == VS_INTERLACEMETHOD_AUTO)
   {
     VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND)
+  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
   {
     VdpBool enabled[]={1,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE)
+  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
+       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
+  {
+    VdpBool enabled[]={0,1,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+  }
+  else if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
   {
     VdpBool enabled[]={0,0,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
   }
   else
   {
     VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
   }
+  CheckStatus(vdp_st, __LINE__);
 }
 
 void CVDPAU::InitVDPAUProcs()
@@ -1053,6 +1084,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = OutHeight;
   }
 
+  EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+
   if(pFrame)
   { // we have a new frame from decoder
 
@@ -1065,31 +1098,50 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     past[0] = past[1];
     past[1] = current;
     current = render->surface;
-    m_mixerstep = 0;
 
-    EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
-    ||  method == VS_INTERLACEMETHOD_VDPAU
-    ||  method == VS_INTERLACEMETHOD_RENDER_BLEND
-    ||  method == VS_INTERLACEMETHOD_INVERSE_TELECINE )
+    ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+    ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE )
     {
+      if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+      || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+      || avctx->hurry_up)
+        m_mixerstep = 0;
+      else
+        m_mixerstep = 1;
+
       if(pFrame->top_field_first)
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
       else
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
     }
     else
+    {
+      m_mixerstep  = 0;
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+    }
 
   }
-  else
+  else if(m_mixerstep == 1)
   { // no new frame given, output second field of old frame
-    m_mixerstep = 1;
 
+    if(avctx->hurry_up)
+      return VC_BUFFER;
+
+    m_mixerstep = 2;
     if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD)
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
     else
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CVDPAU::Decode - invalid mixer state reached");
+    return VC_BUFFER;
   }
 
   VdpVideoSurface past_surfaces[2] = { VDP_INVALID_HANDLE, VDP_INVALID_HANDLE };
@@ -1103,7 +1155,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   }
   else
   {
-    if(m_mixerstep == 0)
+    if(m_mixerstep == 1)
     { // first field
       past_surfaces[1] = past[1];
       past_surfaces[0] = past[1];
@@ -1143,7 +1195,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     return VC_BUFFER | VC_PICTURE;
   else
   {
-    if (m_mixerstep == 0 && !avctx->hurry_up)
+    if(m_mixerstep == 1)
       return VC_PICTURE;
     else
       return VC_BUFFER | VC_PICTURE;
@@ -1155,11 +1207,11 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   picture->format = DVDVideoPicture::FMT_VDPAU;
   picture->iFlags = 0;
 
-  if(m_mixerfield != VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  if(m_mixerstep)
   {
     picture->iRepeatPicture = -0.5;
     picture->iFlags |= DVP_FLAG_NOAUTOSYNC;
-    if(m_mixerstep > 0)
+    if(m_mixerstep > 1)
       picture->pts = DVD_NOPTS_VALUE;
   }
   return true;
