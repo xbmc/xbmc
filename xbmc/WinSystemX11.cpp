@@ -186,6 +186,9 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
   {
+    if (!(m_SDLSurface->flags & SDL_OPENGL))
+      CLog::Log(LOGERROR, "CWinSystemX11::SetFullScreen SDL_OPENGL not set, opengl probably not available");
+
     RefreshGlxContext();
     return true;
   }
