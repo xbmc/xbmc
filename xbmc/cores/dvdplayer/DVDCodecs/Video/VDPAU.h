@@ -186,8 +186,6 @@ public:
   VdpRect       outRect;
   VdpRect       outRectVid;
 
-  VdpBool upscalingAvailable;
-
   void*    dl_handle;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
   VdpStatus (*dl_vdp_get_proc_address)(VdpDevice device, VdpFuncId function_id, void** function_pointer);
@@ -201,9 +199,14 @@ public:
   Display* m_Display;
   bool     vdpauConfigured;
 
+
   VdpVideoMixerPictureStructure m_mixerfield;
   int                           m_mixerstep;
 
+  bool Supports(VdpVideoMixerFeature feature);
+
+  VdpVideoMixerFeature m_features[10];
+  int                  m_feature_count;
 
   static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt
@@ -211,6 +214,8 @@ public:
                           , VdpChromaType     &chroma_type);
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
+  
+  
 };
 
 extern CVDPAU*          g_VDPAU;

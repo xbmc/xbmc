@@ -91,7 +91,6 @@ CVDPAU::CVDPAU()
   tmpBrightness  = 0;
   tmpContrast    = 0;
   max_references = 0;
-  upscalingAvailable=false;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -388,38 +387,18 @@ void CVDPAU::CheckFeatures()
     tmpContrast = 0;
     tmpNoiseReduction = 0;
     tmpSharpness = 0;
-    int featuresCount = 0;
-    VdpVideoMixerFeature features[6];
-
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
-
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (upscalingAvailable)
-    {
-      CLog::Log(LOGNOTICE,"(VDPAU) enabling VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1");
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
-    }
-#endif
 
     VdpStatus vdp_st = VDP_STATUS_ERROR;
     vdp_st = vdp_video_mixer_create(vdp_device,
-                                    featuresCount,
-                                    features,
+                                    m_feature_count,
+                                    m_features,
                                     ARSIZE(parameters),
                                     parameters,
                                     parameter_values,
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (upscalingAvailable)
-    {
-      SetHWUpscaling();
-    }
-#endif
+
+    SetHWUpscaling();
   }
 
   if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness ||
@@ -439,12 +418,21 @@ void CVDPAU::CheckFeatures()
     tmpSharpness = g_settings.m_currentVideoSettings.m_Sharpness;
     SetSharpness();
   }
-
   if (tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
   {
     tmpDeint = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     SetDeinterlacing();
   }
+}
+
+bool CVDPAU::Supports(VdpVideoMixerFeature feature)
+{
+  for(int i = 0; i < m_feature_count; i++)
+  {
+    if(m_features[i] == feature)
+      return true;
+  }
+  return false;
 }
 
 void CVDPAU::SetColor()
@@ -477,6 +465,9 @@ void CVDPAU::SetColor()
 
 void CVDPAU::SetNoiseReduction()
 {
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION))
+    return;
+
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
@@ -499,6 +490,9 @@ void CVDPAU::SetNoiseReduction()
 
 void CVDPAU::SetSharpness()
 {
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_SHARPNESS))
+    return;
+  
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
@@ -522,6 +516,9 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
+    return;
+
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
   VdpStatus vdp_st;
   VdpBool enabled[]={1};
@@ -829,11 +826,6 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &upscalingAvailable);
-  CLog::Log(LOGNOTICE,"VDPAU HQ upscaling: %i",upscalingAvailable);
-#endif
-
 vdpauConfigured = true;
   return true;
 }
@@ -856,6 +848,35 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
                 max_level, max_macroblocks, max_width, max_height);
     }
   }
+  CLog::Log(LOGNOTICE,"------------------------------------");
+  m_feature_count = 0;
+#define CHECK_SUPPORT(feature)  \
+  do { \
+    VdpBool supported; \
+    if(vdp_video_mixer_query_feature_support(vdp_device, feature, &supported) == VDP_STATUS_OK && supported) { \
+      CLog::Log(LOGNOTICE, "Mixer feature: "#feature);  \
+      m_features[m_feature_count++] = feature; \
+    } \
+  } while(false)
+
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_SHARPNESS);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE);
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9);
+#endif
+#undef CHECK_SUPPORT
+
 }
 
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
