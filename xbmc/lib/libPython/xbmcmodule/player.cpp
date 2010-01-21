@@ -304,7 +304,7 @@ namespace PYXBMC
 
   // Player_IsPlaying
   PyDoc_STRVAR(isPlaying__doc__,
-    "isPlayingAudio() -- returns True is xbmc is playing a file.");
+    "isPlaying() -- returns True is xbmc is playing a file.");
 
   PyObject* Player_IsPlaying(PyObject *self, PyObject *args)
   {

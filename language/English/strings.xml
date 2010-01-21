@@ -1495,6 +1495,8 @@
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimized</string>
   <string id="16316">Auto</string>
+  <string id="16317">Temporal (Half)</string>
+  <string id="16318">Temporal/Spatial (Half)</string>
 
   <string id="17500">Display sleep timeout</string>
 
@@ -2171,7 +2173,4 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
-  <string id="33084">Temporal (Half)</string>
-  <string id="33085">Temporal/Spatial (Half)</string>
-  
 </strings>
