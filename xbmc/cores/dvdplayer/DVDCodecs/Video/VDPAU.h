@@ -38,7 +38,6 @@ namespace Surface { class CSurface; }
 #define NUM_VIDEO_SURFACES_MPEG2           10  // (1 frame being decoded, 2 reference)
 #define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references)
 #define NUM_VIDEO_SURFACES_VC1             10  // (same as MPEG-2)
-#define NUM_VIDEO_SURFACES_MAX_TRIES       100
 #define NUM_OUTPUT_SURFACES_FOR_FULLHD     2
 #define FULLHD_WIDTH                       1920
 

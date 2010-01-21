@@ -937,30 +937,25 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     }
   }
 
-  int tries = 0;
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (render == NULL)
   {
-    while(vdp_st != VDP_STATUS_OK && tries < NUM_VIDEO_SURFACES_MAX_TRIES)
-    {
-      tries++;
-      CLog::Log(LOGNOTICE, " (VDPAU) Didnt find a Video Surface Available (Total: %i). Creating a new one. TRY #%i",
-                          vdp->m_videoSurfaces.size(), tries);
-      // create a new surface
-      VdpDecoderProfile profile;
-      ReadFormatOf(avctx->pix_fmt, profile, vdp->vdp_chroma_type);
-      render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
-      vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
-                                             vdp->vdp_chroma_type,
-                                             avctx->width,
-                                             avctx->height,
-                                             &render->surface);
-      vdp->CheckStatus(vdp_st, __LINE__);
-      if (vdp_st == VDP_STATUS_OK)
-        vdp->m_videoSurfaces.push_back(render);
-    }
+    // create a new surface
+    VdpDecoderProfile profile;
+    ReadFormatOf(avctx->pix_fmt, profile, vdp->vdp_chroma_type);
+    render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
+    vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
+                                           vdp->vdp_chroma_type,
+                                           avctx->width,
+                                           avctx->height,
+                                           &render->surface);
+    vdp->CheckStatus(vdp_st, __LINE__);
     if (vdp_st != VDP_STATUS_OK)
-      CLog::Log(LOGNOTICE, " (VDPAU) No Video surface available could be created.... continuing with an invalid handler");
+    {
+      free(render);
+      CLog::Log(LOGERROR, "CVDPAU::FFGetBuffer - No Video surface available could be created");
+      return -1;
+    }
   }
 
   if (render == NULL)
