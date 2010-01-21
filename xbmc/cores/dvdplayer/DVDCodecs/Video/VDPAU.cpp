@@ -956,6 +956,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
       CLog::Log(LOGERROR, "CVDPAU::FFGetBuffer - No Video surface available could be created");
       return -1;
     }
+    vdp->m_videoSurfaces.push_back(render);
   }
 
   if (render == NULL)
