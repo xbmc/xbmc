@@ -2255,6 +2255,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
+#ifdef HAVE_LIBVDPAU
   if(m_renderMethod & RENDER_VDPAU)
   {
     if(g_VDPAU)
@@ -2262,6 +2263,7 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     else
       return false;
   }
+#endif
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
