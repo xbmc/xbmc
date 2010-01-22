@@ -1496,7 +1496,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
 XB_CONFIG_MODULE([xbmc/lib/libapetag], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --disable-shared
   else
     ./configure
   fi
@@ -1506,7 +1506,7 @@ XB_CONFIG_MODULE([lib/libmodplug], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
     CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --enable-static
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
   else
     ./configure --with-pic --enable-static
   fi
