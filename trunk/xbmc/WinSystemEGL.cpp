@@ -133,13 +133,15 @@ bool CWinSystemEGL::DestroyWindowSystem()
   if (m_eglWindow)
     XDestroyWindow(m_dpy, m_eglWindow);
 
+  // Needed???
+  if (m_wmWindow)
+    XDestroyWindow(m_dpy, m_wmWindow);
+
   if (m_eglDisplay)
     eglTerminate(m_eglDisplay);
 
   if (m_dpy)
     XCloseDisplay(m_dpy);
-
-  // m_SDLSurface is free()'d by SDL_Quit().
 
   return true;
 }
@@ -397,7 +399,9 @@ void CWinSystemEGL::SetVSyncImpl(bool enable)
 
 void CWinSystemEGL::ShowOSMouse(bool show)
 {
-  SDL_ShowCursor(show ? 1 : 0);
+  // Have to force it to show the cursor, otherwise it hangs!
+  //SDL_ShowCursor(show ? 1 : 0);
+  SDL_ShowCursor(1);
 }
 
 void CWinSystemEGL::NotifyAppActiveChange(bool bActivated)
@@ -423,18 +427,16 @@ bool CWinSystemEGL::Restore()
 
 bool CWinSystemEGL::Hide()
 {
-//  XUnmapWindow(m_dpy, m_wmWindow);
-//  XSync(m_dpy, False);
-//  return true;
-	return false;
+  XUnmapWindow(m_dpy, m_wmWindow);
+  XSync(m_dpy, False);
+  return true;
 }
 
 bool CWinSystemEGL::Show(bool raise)
 {
-//  XMapWindow(m_dpy, m_wmWindow);
-//  XSync(m_dpy, False);
-//  return true;
-	return false;
+  XMapWindow(m_dpy, m_wmWindow);
+  XSync(m_dpy, False);
+  return true;
 }
 
 #endif

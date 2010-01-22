@@ -57,7 +57,7 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
   m_renderCaps = 0;
-  // Get the GL version number 
+  // Get the GLES version number
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
 
@@ -177,9 +177,8 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension)
   {
     if (extension == "GL_TEXTURE_NPOT")
     {
-      // GLES can have different methods to detect this one.
-      // Check define first, then do extension string search if not defined.
-#ifdef GL_IMG_texture_npot
+      // GLES can have different methods to detect this one based on chipset.
+#ifdef GL_IMG_texture_npot	// IMG POWERVR SGX
       return true;
 #endif
     }
@@ -253,9 +252,9 @@ void CRenderSystemGLES::SetVSync(bool enable)
     return;
   
   if (enable)
-    CLog::Log(LOGINFO, "GL: Enabling VSYNC");
+    CLog::Log(LOGINFO, "GLES: Enabling VSYNC");
   else
-    CLog::Log(LOGINFO, "GL: Disabling VSYNC");
+    CLog::Log(LOGINFO, "GLES: Disabling VSYNC");
 
   m_iVSyncMode   = 0;
   m_iVSyncErrors = 0;
@@ -284,16 +283,16 @@ void CRenderSystemGLES::SetVSync(bool enable)
       m_iSwapRate   = (int64_t)((double)freq / rate);
       m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
       m_iSwapStamp  = 0;
-      CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
+      CLog::Log(LOGINFO, "GLES: Using artificial vsync sleep with rate %f", rate);
       if(!m_iVSyncMode)
         m_iVSyncMode = 1;
     }
   }
     
   if (!m_iVSyncMode)
-    CLog::Log(LOGERROR, "GL: Vertical Blank Syncing unsupported");
+    CLog::Log(LOGERROR, "GLES: Vertical Blank Syncing unsupported");
   else
-    CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);  
+    CLog::Log(LOGINFO, "GLES: Selected vsync mode %d", m_iVSyncMode);
 }
 
 void CRenderSystemGLES::CaptureStateBlock()
@@ -440,7 +439,7 @@ void CRenderSystemGLES::RestoreHardwareTransform()
 void CRenderSystemGLES::CalculateMaxTexturesize()
 {
   // GLES cannot do PROXY textures to determine maximum size,
-  CLog::Log(LOGINFO, "GL: Maximum texture width: %u", m_maxTextureSize);
+  CLog::Log(LOGINFO, "GLES: Maximum texture width: %u", m_maxTextureSize);
 }
 
 void CRenderSystemGLES::GetViewPort(CRect& viewPort)
