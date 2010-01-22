@@ -21,6 +21,7 @@
 
 #include "JSONRPC.h"
 #include "PlayerActions.h"
+#include "SlideshowOperations.h"
 #include "PlaylistOperations.h"
 #include "FileActions.h"
 #include "MusicLibrary.h"
@@ -91,6 +92,22 @@ Command CJSONRPC::m_commands[] = {
   { "VideoPlayer.SeekTime",             CPlayerActions::SeekTime,               Response,     ControlPlayback, "Seek to a specific time" },
 
   { "VideoPlayer.GetPlaylist",          CPlayerActions::GetPlaylist,            Response,     ReadData,        "Retrieve active playlist" },
+
+// Slideshow player
+  { "Slideshow.PlayPause",              CSlideshowOperations::PlayPause,        Response,     ControlPlayback, "Pauses or unpause slideshow" },
+  { "Slideshow.Stop",                   CSlideshowOperations::Stop,             Response,     ControlPlayback, "Stops slideshow" },
+  { "Slideshow.SkipPrevious",           CSlideshowOperations::SkipPrevious,     Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
+  { "Slideshow.SkipNext",               CSlideshowOperations::SkipNext,         Response,     ControlPlayback, "Skips to next picture in the slideshow" },
+
+  { "Slideshow.MoveLeft",               CSlideshowOperations::MoveLeft,         Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
+  { "Slideshow.MoveRight",              CSlideshowOperations::MoveRight,        Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
+  { "Slideshow.MoveDown",               CSlideshowOperations::MoveDown,         Response,     ControlPlayback, "If picture is zoomed move viewport down" },
+  { "Slideshow.MoveUp",                 CSlideshowOperations::MoveUp,           Response,     ControlPlayback, "If picture is zoomed move viewport up" },
+
+  { "Slideshow.ZoomOut",                CSlideshowOperations::ZoomOut,          Response,     ControlPlayback, "Zoom out once" },
+  { "Slideshow.ZoomIn",                 CSlideshowOperations::ZoomIn,           Response,     ControlPlayback, "Zoom in once" },
+  { "Slideshow.Zoom",                   CSlideshowOperations::Zoom,             Response,     ControlPlayback, "Zooms current picture" },
+  { "Slideshow.Rotate",                 CSlideshowOperations::Rotate,           Response,     ControlPlayback, "Rotates current picture" },
 
 // Playlist
   { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,         "Retrieve items in the playlist" },
