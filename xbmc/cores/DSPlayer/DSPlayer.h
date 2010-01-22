@@ -60,6 +60,12 @@ public:
   virtual int  GetAudioStream()       { return m_pDsGraph.GetAudioStream(); }
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pDsGraph.GetAudioStreamName(iStream,strStreamName); };
   virtual void SetAudioStream(int iStream) { m_pDsGraph.SetAudioStream(iStream); };
+
+  virtual int  GetSubtitleCount()     { return m_pDsGraph.GetSubtitleCount(); }
+  virtual int  GetSubtitle()          { return m_pDsGraph.GetSubtitle(); }
+  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pDsGraph.GetSubtitleName(iStream, strStreamName); };
+  virtual void SetSubtitle(int iStream) { return m_pDsGraph.SetSubtitle(iStream); };
+
   void Update(bool bPauseDrawing)                               { m_pDsGraph.Update(bPauseDrawing); }
   void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { m_pDsGraph.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_pDsGraph.GetAspectRatio(); }

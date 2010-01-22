@@ -82,16 +82,9 @@ CFGManager::~CFGManager()
 
   if (m_pDsConfig)
   {
-	delete m_pDsConfig;
-	m_pDsConfig = 0;
+	  delete m_pDsConfig;
+	  m_pDsConfig = 0;
   }
-
-  /*BeginEnumFilters(this, pEF, pBF)
-  {
-	  this->RemoveFilter(pBF);
-	  pBF->Release();
-  }
-  EndEnumFilters*/
 
   SAFE_RELEASE(m_pUnkInner);
 }
@@ -114,22 +107,6 @@ HRESULT CFGManager::QueryInterface(const IID &iid, void** ppv)
   
   return hr;
 }
-
-/*STDMETHODIMP CFGManager::NonDelegatingQueryInterface(REFIID riid, void** ppv)
-{
-    CheckPointer(ppv, E_POINTER);
-
-  return
-    QI(IFilterGraph)
-    QI(IGraphBuilder)
-    QI(IFilterGraph2)
-    QI(IGraphBuilder2)
-    QI(IGraphBuilderDeadEnd)
-    m_pUnkInner && (riid != IID_IUnknown && SUCCEEDED(m_pUnkInner->QueryInterface(riid, ppv))) ? S_OK :
-    __super::NonDelegatingQueryInterface(riid, ppv);
-}*/
-
-//
 
 void CFGManager::CStreamPath::Append(IBaseFilter* pBF, IPin* pPin)
 {
@@ -179,10 +156,7 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
   CAutoLock cAutoLock(this);
 
   HRESULT hr;
-  /*IFilterGraph2* pIFG;
-  hr = m_pUnkInner->QueryInterface(__uuidof(pIFG),(void**)&pIFG);
-  if(FAILED(hr))
-    return hr;*/
+
   if (m_pFG)
   {
 	  hr = m_pFG->AddFilter(pFilter, pName);
@@ -205,31 +179,28 @@ STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
 
   CAutoLock cAutoLock(this);
 
-  /*IFilterGraph2* pIFG;
-  if (SUCCEEDED(m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG)))*/
+  HRESULT hr = E_FAIL;
   if (m_pFG)
-    return m_pFG->RemoveFilter(pFilter);
+  {
+    hr = m_pFG->RemoveFilter(pFilter);
+    if (SUCCEEDED(hr))
+      pFilter->JoinFilterGraph(NULL, NULL);
+  }
 
-  return E_FAIL;
-  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->RemoveFilter(pFilter);
+  return hr;
 }
 
 STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
 {
-  if(!m_pUnkInner) 
+  if(!m_pFG) 
     return E_UNEXPECTED;
-  //Locking make crash reclock
-  //solution comming from mpc-hc
-  //CAutoLock cAutoLock(this);
-  /*IFilterGraph2* pIFG;
-  m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);*/
+
   return m_pFG->EnumFilters(ppEnum);
-  //return CComQIPtr<IFilterGraph2>(m_pUnkInner)->EnumFilters(ppEnum);
 }
 
 STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
 {
-  if(!m_pUnkInner) 
+  if(!m_pFG) 
     return E_UNEXPECTED;
   CAutoLock cAutoLock(this);
   /*IFilterGraph2* pIFG;
@@ -245,21 +216,44 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
 
 	CAutoLock cAutoLock(this);
 
-  IBaseFilter* pBF = DShowUtil::GetFilterFromPin(pPinIn);
-	CLSID clsid = DShowUtil::GetCLSID(pBF);
+  IBaseFilter* pBFIn = DShowUtil::GetFilterFromPin(pPinIn);
+	CLSID clsidIn = DShowUtil::GetCLSID(pBFIn);
+
+  IBaseFilter* pBFOut = DShowUtil::GetFilterFromPin(pPinOut);
+  CLSID clsidOut = DShowUtil::GetCLSID(pBFOut);
 
 	// TODO: GetUpStreamFilter goes up on the first input pin only
 	for(IBaseFilter* pBFUS = DShowUtil::GetFilterFromPin(pPinOut); pBFUS; pBFUS = DShowUtil::GetUpStreamFilter(pBFUS))
 	{
-		if(pBFUS == pBF) 
+		if(pBFUS == pBFIn) 
       return VFW_E_CIRCULAR_GRAPH;
-    if(DShowUtil::GetCLSID(pBFUS) == clsid) 
+    if(DShowUtil::GetCLSID(pBFUS) == clsidIn) 
       return VFW_E_CANNOT_CONNECT;
 	}
   IFilterGraph2* pIFG;
   m_pUnkInner->QueryInterface(__uuidof(IFilterGraph2),(void**)&pIFG);
-  return pIFG->ConnectDirect(pPinOut, pPinIn, pmt);
-	//return CComQIPtr<IFilterGraph2>(m_pUnkInner)->ConnectDirect(pPinOut, pPinIn, pmt);
+
+  HRESULT hr = pIFG->ConnectDirect(pPinOut, pPinIn, pmt);
+
+#ifdef _DEBUG
+  CStdString filterNameIn, filterNameOut;
+  CStdString pinNameIn, pinNameOut;
+
+  g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBFOut), filterNameOut);
+  g_charsetConverter.wToUTF8(DShowUtil::GetPinName(pPinOut), pinNameOut);
+  g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBFIn), filterNameIn);
+  g_charsetConverter.wToUTF8(DShowUtil::GetPinName(pPinIn), pinNameIn);
+
+  CLog::Log(LOGDEBUG, "%s Trying to connect %s.%s pin to %s.%s", __FUNCTION__, filterNameOut.c_str(), pinNameOut.c_str(), filterNameIn.c_str(), pinNameIn.c_str());
+
+  if (SUCCEEDED(hr))
+  {
+    CLog::Log(LOGDEBUG, "%s Succeeded !", __FUNCTION__);
+  } else
+    CLog::Log(LOGDEBUG, "%s Failed !", __FUNCTION__);
+#endif
+
+  return hr;
 }
 
 STDMETHODIMP CFGManager::Reconnect(IPin* ppin)
@@ -403,7 +397,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
           return hr;
       }
 
-      EXECUTE_ASSERT(Disconnect(pPinOut));
+      //EXECUTE_ASSERT(Disconnect(pPinOut));
+      Disconnect(pPinOut);
     }
   }
 
@@ -553,11 +548,24 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   HRESULT hr = S_OK;
   if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem) ))
     return E_FAIL;
-  hr = ConnectFilter(m_CfgLoader->GetSplitter(),NULL);
-  DShowUtil::RemoveUnconnectedFilters(m_pFG);
+
+#ifdef _DEBUG
+  LogFilterGraph();
+#endif
+
+  //Connect video pin form splitter
+  IPin* pVideoPin;
+  PIN_DIRECTION dir;
+  AM_MEDIA_TYPE mediaType;
+  hr = ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
   m_pDsConfig = new CDSConfig();
   //Get all custom interface
   m_pDsConfig->LoadGraph(m_pFG);
+  //Apparently the graph dont start with wmv when you have unconnected filters
+  DShowUtil::RemoveUnconnectedFilters(m_pFG);
+#ifdef _DEBUG
+  LogFilterGraph();
+#endif
   return hr;
   
 }
@@ -841,6 +849,20 @@ STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, std::list<CStdStringW>& path, st
 //
 //   CFGManagerCustom
 //
+#ifdef _DEBUG
+void CFGManager::LogFilterGraph(void)
+{
+  CStdString buffer;
+  CLog::Log(LOGDEBUG, "Starting filters listing ...");
+  BeginEnumFilters(m_pFG, pEF, pBF)
+  {
+    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), buffer);
+    CLog::Log(LOGDEBUG, "%s", buffer.c_str());
+  }
+  EndEnumFilters
+  CLog::Log(LOGDEBUG, "End of filters listing");
+}
+#endif
 
 void CFGManager::InitManager()
 {
@@ -875,9 +897,15 @@ void CFGManager::InitManager()
 // mainconcept color space converter
   m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{272D77A0-A852-4851-ADA4-9091FEAD4C86}")), MERIT64_DO_NOT_USE));
 
-//Block if vmr9 is used
-  if(m_CurrentRenderer == DIRECTSHOW_RENDERER_VMR9 )
-    m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
+  //Block if vmr9 is used
+  if (g_sysinfo.IsVistaOrHigher())
+    if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
+      m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
+  else
+    if (!g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
+      m_transform.push_back(new CFGFilterRegistry(DShowUtil::GUIDFromCString(_T("{9852A670-F845-491B-9BE6-EBD841B8A613}")), MERIT64_DO_NOT_USE));
+
+    
   
   if(m_pFM)
   {
@@ -933,23 +961,6 @@ void CFGManager::InitManager()
     CLog::Log(LOGNOTICE,"Successfully loaded %s",fileconfigtmp.c_str());
   else
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());
-  if (g_sysinfo.IsVistaOrHigher())
-    if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
-    else 
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
-  else
-    if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
-    else 
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
-    
-
-  // Renderers
-  if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
-    m_transform.push_back(new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR", m_vrmerit));
-  else
-    m_transform.push_back(new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)", m_vrmerit));
 }
 
 //

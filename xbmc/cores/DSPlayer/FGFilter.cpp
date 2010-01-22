@@ -434,7 +434,9 @@ CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW na
 HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
 {
   CheckPointer(ppBF, E_POINTER);
+
   HRESULT hr = E_FAIL;
+
   hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
 
   if (FAILED(hr))

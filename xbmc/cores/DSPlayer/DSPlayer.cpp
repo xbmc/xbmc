@@ -59,7 +59,7 @@ CDSPlayer::~CDSPlayer()
   StopThread();
 
   /* Unload all loaded filters */
-  DShowUtil::UnloadExternalObjects();
+  // DShowUtil::UnloadExternalObjects(); //TODO: Too buggy. Crach if ffdshow audio is loaded
 }
 
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
@@ -342,7 +342,4 @@ bool CDSPlayer::OnAction(const CAction &action)
   return false;
 	
 }
-
-
-
 

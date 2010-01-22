@@ -41,20 +41,20 @@ static const GUID GUID_SURFACE_INDEX = { 0x30c8e9f6, 0x415, 0x4b81, { 0xa3, 0x15
 
 enum RENDER_STATE
 {
-    RENDER_STATE_STARTED = 1,
-    RENDER_STATE_STOPPED,
-    RENDER_STATE_PAUSED,
-    RENDER_STATE_SHUTDOWN,  // Initial state. 
+  RENDER_STATE_STARTED = 1,
+  RENDER_STATE_STOPPED,
+  RENDER_STATE_PAUSED,
+  RENDER_STATE_SHUTDOWN,  // Initial state. 
 };
 
 // FRAMESTEP_STATE: Defines the presenter's state with respect to frame-stepping.
 enum FRAMESTEP_STATE
 {
-    FRAMESTEP_NONE,             // Not frame stepping.
-    FRAMESTEP_WAITING_START,    // Frame stepping, but the clock is not started.
-    FRAMESTEP_PENDING,          // Clock is started. Waiting for samples.
-    FRAMESTEP_SCHEDULED,        // Submitted a sample for rendering.
-    FRAMESTEP_COMPLETE          // Sample was rendered. 
+  FRAMESTEP_NONE,             // Not frame stepping.
+  FRAMESTEP_WAITING_START,    // Frame stepping, but the clock is not started.
+  FRAMESTEP_PENDING,          // Clock is started. Waiting for samples.
+  FRAMESTEP_SCHEDULED,        // Submitted a sample for rendering.
+  FRAMESTEP_COMPLETE          // Sample was rendered. 
 };
 
 class COuterEVR;
@@ -176,122 +176,122 @@ private:
 
 
 protected:
-inline HRESULT CheckShutdown() const 
+  inline HRESULT CheckShutdown() const 
+  {
+    if (m_RenderState == RENDER_STATE_SHUTDOWN)
     {
-        if (m_RenderState == RENDER_STATE_SHUTDOWN)
-        {
-            return MF_E_SHUTDOWN;
-        }
-        else
-        {
-            return S_OK;
-        }
+      return MF_E_SHUTDOWN;
     }
-
-    // IsActive: The "active" state is started or paused.
-    inline BOOL IsActive() const
+    else
     {
-        return ((m_RenderState == RENDER_STATE_STARTED) || (m_RenderState == RENDER_STATE_PAUSED));
+      return S_OK;
     }
+  }
 
-    // IsScrubbing: Scrubbing occurs when the frame rate is 0.
-    inline BOOL IsScrubbing() const { return m_fRate == 0.0f; }
+  // IsActive: The "active" state is started or paused.
+  inline BOOL IsActive() const
+  {
+    return ((m_RenderState == RENDER_STATE_STARTED) || (m_RenderState == RENDER_STATE_PAUSED));
+  }
 
-    // NotifyEvent: Send an event to the EVR through its IMediaEventSink interface.
-    void NotifyEvent(long EventCode, LONG_PTR Param1, LONG_PTR Param2)
+  // IsScrubbing: Scrubbing occurs when the frame rate is 0.
+  inline BOOL IsScrubbing() const { return m_fRate == 0.0f; }
+
+  // NotifyEvent: Send an event to the EVR through its IMediaEventSink interface.
+  void NotifyEvent(long EventCode, LONG_PTR Param1, LONG_PTR Param2)
+  {
+    if (m_pMediaEventSink)
     {
-        if (m_pMediaEventSink)
-        {
-            m_pMediaEventSink->Notify(EventCode, Param1, Param2);
-        }
+      m_pMediaEventSink->Notify(EventCode, Param1, Param2);
     }
+  }
 
-    float GetMaxRate(BOOL bThin);
+  float GetMaxRate(BOOL bThin);
 
-    // Mixer operations
-    HRESULT ConfigureMixer(IMFTransform *pMixer);
+  // Mixer operations
+  HRESULT ConfigureMixer(IMFTransform *pMixer);
 
-    // Formats
-    HRESULT CreateOptimalVideoType(IMFMediaType* pProposed, IMFMediaType **ppOptimal);
-    HRESULT CalculateOutputRectangle(IMFMediaType *pProposed, RECT *prcOutput);
-    HRESULT SetMediaType(IMFMediaType *pType);
-    HRESULT IsMediaTypeSupported(IMFMediaType *pMediaType);
+  // Formats
+  HRESULT CreateOptimalVideoType(IMFMediaType* pProposed, IMFMediaType **ppOptimal);
+  HRESULT CalculateOutputRectangle(IMFMediaType *pProposed, RECT *prcOutput);
+  HRESULT SetMediaType(IMFMediaType *pType);
+  HRESULT IsMediaTypeSupported(IMFMediaType *pMediaType);
 
-    // Message handlers
-    HRESULT Flush();
-    HRESULT RenegotiateMediaType();
-    HRESULT ProcessInputNotify();
-    HRESULT BeginStreaming();
-    HRESULT EndStreaming();
-    HRESULT CheckEndOfStream();
+  // Message handlers
+  HRESULT Flush();
+  HRESULT RenegotiateMediaType();
+  HRESULT ProcessInputNotify();
+  HRESULT BeginStreaming();
+  HRESULT EndStreaming();
+  HRESULT CheckEndOfStream();
 
-    // Managing samples
-    void    ProcessOutputLoop();   
+  // Managing samples
+  void    ProcessOutputLoop();   
 	HRESULT ProcessOutput();
-    HRESULT DeliverSample(IMFSample *pSample, BOOL bRepaint);
-    HRESULT TrackSample(IMFSample *pSample);
-    void    ReleaseResources();
+  HRESULT DeliverSample(IMFSample *pSample, BOOL bRepaint);
+  HRESULT TrackSample(IMFSample *pSample);
+  void    ReleaseResources();
 
-    // Frame-stepping
-    HRESULT PrepareFrameStep(DWORD cSteps);
-    HRESULT StartFrameStep();
-    HRESULT DeliverFrameStepSample(IMFSample *pSample);
-    HRESULT CompleteFrameStep(IMFSample *pSample);
-    HRESULT CancelFrameStep();
+  // Frame-stepping
+  HRESULT PrepareFrameStep(DWORD cSteps);
+  HRESULT StartFrameStep();
+  HRESULT DeliverFrameStepSample(IMFSample *pSample);
+  HRESULT CompleteFrameStep(IMFSample *pSample);
+  HRESULT CancelFrameStep();
 
-    // Callbacks
+  // Callbacks
 
-    // Callback when a video sample is released.
-    HRESULT OnSampleFree(IMFAsyncResult *pResult);
-    AsyncCallback<CEVRAllocatorPresenter>   m_SampleFreeCB;
+  // Callback when a video sample is released.
+  HRESULT OnSampleFree(IMFAsyncResult *pResult);
+  AsyncCallback<CEVRAllocatorPresenter>   m_SampleFreeCB;
   
 protected:
 
-    // FrameStep: Holds information related to frame-stepping. 
-    // Note: The purpose of this structure is simply to organize the data in one variable.
-    struct FrameStep
+  // FrameStep: Holds information related to frame-stepping. 
+  // Note: The purpose of this structure is simply to organize the data in one variable.
+  struct FrameStep
+  {
+    FrameStep() : state(FRAMESTEP_NONE), steps(0), pSampleNoRef(NULL)
     {
-        FrameStep() : state(FRAMESTEP_NONE), steps(0), pSampleNoRef(NULL)
-        {
-        }
+    }
 
-        FRAMESTEP_STATE     state;          // Current frame-step state.
-        VideoSampleList     samples;        // List of pending samples for frame-stepping.
-        DWORD               steps;          // Number of steps left.
-        DWORD_PTR           pSampleNoRef;   // Identifies the frame-step sample.
-    };
+    FRAMESTEP_STATE     state;          // Current frame-step state.
+    VideoSampleList     samples;        // List of pending samples for frame-stepping.
+    DWORD               steps;          // Number of steps left.
+    DWORD_PTR           pSampleNoRef;   // Identifies the frame-step sample.
+  };
 
 
 protected:
 
-    RENDER_STATE                m_RenderState;          // Rendering state.
-    FrameStep                   m_FrameStep;            // Frame-stepping information.
+  RENDER_STATE                m_RenderState;          // Rendering state.
+  FrameStep                   m_FrameStep;            // Frame-stepping information.
 
-    CCritSec                     m_ObjectLock;			// Serializes our public methods.  
+  CCritSec                     m_ObjectLock;			// Serializes our public methods.  
 
 	// Samples and scheduling
     
-    SamplePool                  m_SamplePool;           // Pool of allocated samples.
-    DWORD                       m_TokenCounter;         // Counter. Incremented whenever we create new samples.
+  SamplePool                  m_SamplePool;           // Pool of allocated samples.
+  DWORD                       m_TokenCounter;         // Counter. Incremented whenever we create new samples.
 
 	// Rendering state
 	BOOL						m_bSampleNotify;		// Did the mixer signal it has an input sample?
 	BOOL						m_bRepaint;				// Do we need to repaint the last sample?
 	BOOL						m_bPrerolled;	        // Have we presented at least one sample?
-    BOOL                        m_bEndStreaming;		// Did we reach the end of the stream (EOS)?
+  BOOL                        m_bEndStreaming;		// Did we reach the end of the stream (EOS)?
 
-    MFVideoNormalizedRect       m_nrcSource;            // Source rectangle.
-    float                       m_fRate;                // Playback rate.
+  MFVideoNormalizedRect       m_nrcSource;            // Source rectangle.
+  float                       m_fRate;                // Playback rate.
 
-    // Deletable objects.
-    D3DPresentEngine            *m_pD3DPresentEngine;    // Rendering engine. (Never null if the constructor succeeds.)
-    CEvrScheduler               m_scheduler;			       // Manages scheduling of samples.
+  // Deletable objects.
+  D3DPresentEngine            *m_pD3DPresentEngine;    // Rendering engine. (Never null if the constructor succeeds.)
+  CEvrScheduler               m_scheduler;			       // Manages scheduling of samples.
 
-    // COM interfaces.
-    IMFClock                    *m_pClock;               // The EVR's clock.
-    IMFTransform                *m_pMixer;               // The mixer.
-    IMediaEventSink             *m_pMediaEventSink;      // The EVR's event-sink interface.
-    IMFMediaType                *m_pMediaType;           // Output media type
+  // COM interfaces.
+  IMFClock                    *m_pClock;               // The EVR's clock.
+  IMFTransform                *m_pMixer;               // The mixer.
+  IMediaEventSink             *m_pMediaEventSink;      // The EVR's event-sink interface.
+  IMFMediaType                *m_pMediaType;           // Output media type
 };
 
 #endif

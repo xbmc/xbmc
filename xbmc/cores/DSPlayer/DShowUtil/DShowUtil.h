@@ -59,6 +59,7 @@ public:
   static bool GuidVectItterCompare(GuidListIter it,const std::vector<GUID>::const_reference vect);
   static bool GuidItteratorIsNull(GuidListIter it);
   static bool GuidVectIsNull(const std::vector<GUID>::const_reference vect);
+  static HRESULT IsPinConnected(IPin* pPin);
   static long MFTimeToMsec(const LONGLONG& time);
   static CStdString GetFilterPath(CStdString pClsid);
   static CStdStringW AnsiToUTF16(const CStdString strFrom);

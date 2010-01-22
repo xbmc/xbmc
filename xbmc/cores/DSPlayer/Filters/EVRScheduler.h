@@ -15,31 +15,31 @@ struct SchedulerCallback;
 class CEvrScheduler
 {
 public:
-    CEvrScheduler();
-    virtual ~CEvrScheduler();
+  CEvrScheduler();
+  virtual ~CEvrScheduler();
 
-    void SetCallback(SchedulerCallback *pCB)
-    {
-        m_pCB = pCB;
-    }
+  void SetCallback(SchedulerCallback *pCB)
+  {
+    m_pCB = pCB;
+  }
 
-    void SetFrameRate(MFTIME TimePerFrame);
-    void SetClockRate(float fRate) { m_fRate = fRate; }
+  void SetFrameRate(MFTIME TimePerFrame);
+  void SetClockRate(float fRate) { m_fRate = fRate; }
 
-    const LONGLONG& LastSampleTime() const { return m_LastSampleTime; }
-    const LONGLONG& FrameDuration() const { return m_PerFrameInterval; }
+  const LONGLONG& LastSampleTime() const { return m_LastSampleTime; }
+  const LONGLONG& FrameDuration() const { return m_PerFrameInterval; }
 
-    HRESULT StartScheduler(IMFClock *pClock);
-    HRESULT StopScheduler();
+  HRESULT StartScheduler(IMFClock *pClock);
+  HRESULT StopScheduler();
 
-    HRESULT ScheduleSample(IMFSample *pSample, BOOL bPresentNow);
-    HRESULT ProcessSamplesInQueue(LONG *plNextSleep);
-    float   GetFps();
-    HRESULT ProcessSample(IMFSample *pSample, LONG *plNextSleep);
-    HRESULT Flush();
+  HRESULT ScheduleSample(IMFSample *pSample, BOOL bPresentNow);
+  HRESULT ProcessSamplesInQueue(LONG *plNextSleep);
+  float   GetFps();
+  HRESULT ProcessSample(IMFSample *pSample, LONG *plNextSleep);
+  HRESULT Flush();
 
-    // ThreadProc for the scheduler thread.
-    static DWORD WINAPI SchedulerThreadProc(LPVOID lpParameter);
+  // ThreadProc for the scheduler thread.
+  static DWORD WINAPI SchedulerThreadProc(LPVOID lpParameter);
 
 private: 
     // non-static version of SchedulerThreadProc.
@@ -71,7 +71,7 @@ private:
 
 struct SchedulerCallback
 {
-    virtual HRESULT PresentSample(IMFSample *pSample, LONGLONG llTarget) = 0;
+  virtual HRESULT PresentSample(IMFSample *pSample, LONGLONG llTarget) = 0;
 };
 
 

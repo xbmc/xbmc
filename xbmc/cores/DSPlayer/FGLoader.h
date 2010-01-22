@@ -26,6 +26,14 @@
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
 #include <list>
+#include "SystemInfo.h" //g_sysinfo
+#include "GUISettings.h"//g_guiSettings
+
+enum DIRECTSHOW_RENDERER
+{
+    DIRECTSHOW_RENDERER_VMR9 = 1,
+    DIRECTSHOW_RENDERER_EVR = 2,
+};
 
 class CFGLoader : public CCritSec
 {
@@ -41,6 +49,7 @@ public:
   HRESULT    InsertAudioDecoder(TiXmlElement *pRule);
   HRESULT    InsertVideoDecoder(TiXmlElement *pRule);
   HRESULT    InsertAudioRenderer();
+  HRESULT    InsertVideoRenderer();
   HRESULT    InsertAutoLoad();
   
   IBaseFilter* GetSplitter() { return m_SplitterF; };
@@ -62,6 +71,7 @@ protected:
   XFILE::CFile              m_File;
   IBaseFilter*              m_SourceF;
   IBaseFilter*              m_SplitterF;
+  DIRECTSHOW_RENDERER       m_CurrentRenderer;
 
 };
 

@@ -46,11 +46,7 @@ typedef std::list<path_t>::const_iterator PathListConstIter;
 
 using namespace XFILE;
 
-enum DIRECTSHOW_RENDERER
-{
-    DIRECTSHOW_RENDERER_VMR9 = 1,
-    DIRECTSHOW_RENDERER_EVR = 2,
-};
+
 class CFGLoader;
 class CFGManager:
 /*	: public CUnknown
@@ -91,7 +87,7 @@ protected:
   CFGLoader*           m_CfgLoader;
   CDSConfig*           m_pDsConfig;
 
-  DIRECTSHOW_RENDERER  m_CurrentRenderer;
+  
 
 	CStdString           m_xbmcConfigFilePath;
 
@@ -100,9 +96,7 @@ protected:
 	STDMETHODIMP RemoveFilter(IBaseFilter* pFilter);
 	STDMETHODIMP EnumFilters(IEnumFilters** ppEnum);
 	STDMETHODIMP FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter);
-	STDMETHODIMP ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt);
 	STDMETHODIMP Reconnect(IPin* ppin);
-	STDMETHODIMP Disconnect(IPin* ppin);
 	STDMETHODIMP SetDefaultSyncSource();
 
 	// IGraphBuilder
@@ -131,7 +125,13 @@ protected:
 public:
 	CFGManager();
 	virtual ~CFGManager();
-    void InitManager();
+  void InitManager();
+#ifdef _DEBUG
+  void LogFilterGraph(void);
+#endif
+
+  STDMETHODIMP ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt);
+  STDMETHODIMP Disconnect(IPin* ppin);
   
   // IGraphBuilder2
 	HRESULT IsPinDirection(IPin* pPin, PIN_DIRECTION dir);

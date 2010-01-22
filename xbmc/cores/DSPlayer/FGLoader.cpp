@@ -32,6 +32,9 @@
 #include "XMLUtils.h"
 #include "WINDirectShowEnumerator.h"
 #include "GuiSettings.h"
+#include "filters/VMR9AllocatorPresenter.h"
+#include "filters/EVRAllocatorPresenter.h"
+
 using namespace std;
 CFGLoader::CFGLoader()
 {
@@ -41,8 +44,12 @@ CFGLoader::CFGLoader()
 CFGLoader::~CFGLoader()
 {
   CAutoLock cAutoLock(this);
-  while(!m_configFilter.empty()) 
+  while(!m_configFilter.empty())
+  {
+    if (m_configFilter.back())
+      delete m_configFilter.back();
     m_configFilter.pop_back();
+  }
 }
 
 
@@ -88,7 +95,8 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
 	  IFileSourceFilter *pFS = NULL;
 	  m_SourceF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
     CStdStringW strFileW;
-    g_charsetConverter.subtitleCharsetToW(pWinFilePath,strFileW);
+    
+    g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
     hr = pFS->Load(strFileW.c_str(), NULL);
     if (SUCCEEDED(hr))
     {
@@ -242,6 +250,36 @@ HRESULT CFGLoader::InsertAudioRenderer()
   return hr;
 }
 
+HRESULT CFGLoader::InsertVideoRenderer()
+{
+  HRESULT hr = S_OK;
+  IBaseFilter* ppBF;
+  CFGFilterVideoRenderer* pFGF;
+  
+  if (g_sysinfo.IsVistaOrHigher())
+    if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
+    else 
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
+  else
+    if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
+    else 
+      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
+    
+
+  // Renderers
+  if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
+    pFGF = new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR");
+  else
+    pFGF = new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)");
+  hr = pFGF->Create(&ppBF);
+  hr = m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName());
+  SAFE_RELEASE(ppBF);
+  return hr;
+  
+}
+
 HRESULT CFGLoader::InsertAutoLoad()
 {
   HRESULT hr = S_OK;
@@ -268,7 +306,7 @@ HRESULT CFGLoader::InsertAutoLoad()
 
 HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 {
-  HRESULT hr;
+  HRESULT hr = S_OK;
   //Load the rules from the xml
   TiXmlDocument graphConfigXml;
   if (!graphConfigXml.LoadFile(m_xbmcConfigFilePath))
@@ -284,6 +322,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   {
     if (((CStdString)pRules->Attribute("filetypes")).Equals(pFileItem.GetAsUrl().GetFileType().c_str(),false))
     {
+      InsertVideoRenderer();
       if (FAILED(InsertSourceFilter(pFileItem,pRules)))
         hr = E_FAIL;
 
@@ -315,7 +354,6 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   }
   if ( m_SplitterF )
   {
-    //hr = m_pGraphBuilder->ConnectFilter(m_SplitterF,NULL);
     if (FAILED(hr))
       CLog::Log(LOGERROR,"DSPlayer %s Failed to connect every filters together",__FUNCTION__);
     else
@@ -327,18 +365,23 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
 HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg,CStdString configFile)
 {
+
   m_pGraphBuilder = fg;
   fg = NULL;
   HRESULT hr = S_OK;
   m_xbmcConfigFilePath = configFile;
+
   if (!CFile::Exists(configFile))
     return false;
+
   TiXmlDocument graphConfigXml;
   if (!graphConfigXml.LoadFile(configFile))
     return false;
+
   TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
   if ( !graphConfigRoot)
     return false;
+
   CStdString strFPath, strFGuid, strFAutoLoad, strFileType;
   CStdString strTmpFilterName, strTmpFilterType,strTmpOsdName;
   CStdStringW strTmpOsdNameW;
@@ -346,30 +389,47 @@ HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg,CStdString configFile)
   CFGFilterFile* pFGF;
   TiXmlElement *pFilters = graphConfigRoot->FirstChildElement("filters");
   pFilters = pFilters->FirstChildElement("filter");
+  bool p_bGotThisFilter;
+
   while (pFilters)
   {
     strTmpFilterName = pFilters->Attribute("name");
     strTmpFilterType = pFilters->Attribute("type");
     XMLUtils::GetString(pFilters,"osdname",strTmpOsdName);
     g_charsetConverter.subtitleCharsetToW(strTmpOsdName,strTmpOsdNameW);
-    if (XMLUtils::GetString(pFilters,"path",strFPath))
+    p_bGotThisFilter = false;
+    //first look if we got the path in the config file
+    if (XMLUtils::GetString(pFilters, "path" , strFPath))
 	  {
 		  CStdString strPath2;
-		  strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
-		  if (!CFile::Exists(strFPath) && CFile::Exists(strPath2))
-		    strFPath = _P(strPath2);
-
-		  XMLUtils::GetString(pFilters,"guid",strFGuid);
+      XMLUtils::GetString(pFilters,"guid",strFGuid);
 		  XMLUtils::GetString(pFilters,"filetype",strFileType);
-		  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
+		  strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
+
+      //First verify if we have the full path or just the name of the file
+		  if (!CFile::Exists(strFPath))
+      {
+        if (CFile::Exists(strPath2))
+        {
+		      strFPath = _P(strPath2);
+          p_bGotThisFilter = true;
+        }
+      }
+      else
+        p_bGotThisFilter = true;      
+
+		  if (p_bGotThisFilter)
+		    pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
 	  }
-	  else
+
+	  if (! p_bGotThisFilter)
 	  {
       XMLUtils::GetString(pFilters,"guid",strFGuid);
       XMLUtils::GetString(pFilters,"filetype",strFileType);
 	    strFPath = DShowUtil::GetFilterPath(strFGuid);
 	    pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
 	  }
+
     if (XMLUtils::GetString(pFilters,"alwaysload",strFAutoLoad))
 	  {
       if ( ( strFAutoLoad.Equals("1",false) ) || ( strFAutoLoad.Equals("true",false) ) )
@@ -380,5 +440,61 @@ HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg,CStdString configFile)
       m_configFilter.push_back(pFGF);
 
     pFilters = pFilters->NextSiblingElement();
+
   }//end while
+
+  //m_pGraphBuilder = fg;
+  //fg = NULL;
+  //HRESULT hr = S_OK;
+  //m_xbmcConfigFilePath = configFile;
+  //if (!CFile::Exists(configFile))
+  //  return false;
+  //TiXmlDocument graphConfigXml;
+  //if (!graphConfigXml.LoadFile(configFile))
+  //  return false;
+  //TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
+  //if ( !graphConfigRoot)
+  //  return false;
+  //CStdString strFPath, strFGuid, strFAutoLoad, strFileType;
+  //CStdString strTmpFilterName, strTmpFilterType,strTmpOsdName;
+  //CStdStringW strTmpOsdNameW;
+
+  //CFGFilterFile* pFGF;
+  //TiXmlElement *pFilters = graphConfigRoot->FirstChildElement("filters");
+  //pFilters = pFilters->FirstChildElement("filter");
+  //while (pFilters)
+  //{
+  //  strTmpFilterName = pFilters->Attribute("name");
+  //  strTmpFilterType = pFilters->Attribute("type");
+  //  XMLUtils::GetString(pFilters,"osdname",strTmpOsdName);
+  //  g_charsetConverter.subtitleCharsetToW(strTmpOsdName,strTmpOsdNameW);
+  //  if (XMLUtils::GetString(pFilters,"path",strFPath) && !strFPath.empty())
+	 // {
+		//  CStdString strPath2;
+		//  strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
+		//  if (!CFile::Exists(strFPath) && CFile::Exists(strPath2))
+		//    strFPath = _P(strPath2);
+
+		//  XMLUtils::GetString(pFilters,"guid",strFGuid);
+		//  XMLUtils::GetString(pFilters,"filetype",strFileType);
+		//  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
+	 // }
+	 // else
+	 // {
+  //    XMLUtils::GetString(pFilters,"guid",strFGuid);
+  //    XMLUtils::GetString(pFilters,"filetype",strFileType);
+	 //   strFPath = DShowUtil::GetFilterPath(strFGuid);
+	 //   pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
+	 // }
+  //  if (XMLUtils::GetString(pFilters,"alwaysload",strFAutoLoad))
+	 // {
+  //    if ( ( strFAutoLoad.Equals("1",false) ) || ( strFAutoLoad.Equals("true",false) ) )
+  //      pFGF->SetAutoLoad(true);
+  //  }
+ 
+  //  if (pFGF)
+  //    m_configFilter.push_back(pFGF);
+
+  //  pFilters = pFilters->NextSiblingElement();
+  //}//end while
 }

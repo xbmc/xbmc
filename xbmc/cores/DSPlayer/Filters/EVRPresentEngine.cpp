@@ -166,13 +166,13 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
 	HRESULT hr = S_OK;
 	D3DPRESENT_PARAMETERS pp;
 
-	IMFSample *pVideoSample = NULL;            // Sampl
+	IMFSample *pVideoSample = NULL;
 	
   CAutoLock lock(&m_ObjectLock);
 
   ReleaseResources();
 
-//get the video frame size for the current IMFMediaType
+  //get the video frame size for the current IMFMediaType
   hr = MFGetAttributeSize(pFormat, MF_MT_FRAME_SIZE, &m_iVideoWidth, &m_iVideoHeight);
   if (FAILED(hr))
   {
@@ -275,10 +275,10 @@ void D3DPresentEngine::ReleaseResources()
 
 HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 {
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
 
-    IMFMediaBuffer* pBuffer = NULL;
-    IDirect3DSurface9* pSurface = NULL;
+  IMFMediaBuffer* pBuffer = NULL;
+  IDirect3DSurface9* pSurface = NULL;
     
   if (!g_renderManager.IsConfigured())
     return S_OK;
@@ -304,25 +304,25 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
   }
 
 done:
-    S_RELEASE(pSurface);
-    S_RELEASE(pBuffer);
+  S_RELEASE(pSurface);
+  S_RELEASE(pBuffer);
 
-    if (FAILED(hr))
+  if (FAILED(hr))
+  {
+    if (hr == D3DERR_DEVICELOST || hr == D3DERR_DEVICENOTRESET)
     {
-        if (hr == D3DERR_DEVICELOST || hr == D3DERR_DEVICENOTRESET)
-        {
-          CLog::Log(LOGDEBUG,"D3DDevice was lost!");
-            // Ignore. We need to reset or re-create the device, but this method
-            // is probably being called from the scheduler thread, which is not the
-            // same thread that created the device. The Reset(Ex) method must be
-            // called from the thread that created the device.
+      CLog::Log(LOGDEBUG,"D3DDevice was lost!");
+      // Ignore. We need to reset or re-create the device, but this method
+      // is probably being called from the scheduler thread, which is not the
+      // same thread that created the device. The Reset(Ex) method must be
+      // called from the thread that created the device.
 
-            // The presenter will detect the state when it calls CheckDeviceState() 
-            // on the next sample.
-            hr = S_OK;
-        }
+      // The presenter will detect the state when it calls CheckDeviceState() 
+      // on the next sample.
+      hr = S_OK;
     }
-    return hr;
+  }
+  return hr;
 }
 
 //-----------------------------------------------------------------------------
@@ -382,17 +382,17 @@ HRESULT D3DPresentEngine::ResetD3dDevice()
 
 HRESULT D3DPresentEngine::CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample,int surfaceIndex)
 {
-    // Caller holds the object lock.
+  // Caller holds the object lock.
 
 	HRESULT hr = S_OK;
-    D3DCOLOR clrBlack = D3DCOLOR_ARGB(0xFF, 0x00, 0x00, 0x00);
+  D3DCOLOR clrBlack = D3DCOLOR_ARGB(0xFF, 0x00, 0x00, 0x00);
 
-    IMFSample* pSample = NULL;
-    // Create the sample.
-    CHECK_HR(hr = pfMFCreateVideoSampleFromSurface(pSurface, &pSample));
-    CHECK_HR(hr = pSample->SetUINT32(GUID_SURFACE_INDEX,surfaceIndex));
+  IMFSample* pSample = NULL;
+  // Create the sample.
+  CHECK_HR(hr = pfMFCreateVideoSampleFromSurface(pSurface, &pSample));
+  CHECK_HR(hr = pSample->SetUINT32(GUID_SURFACE_INDEX,surfaceIndex));
 
-    // Return the pointer to the caller.
+  // Return the pointer to the caller.
 	*ppVideoSample = pSample;
 	(*ppVideoSample)->AddRef();
 
@@ -452,17 +452,17 @@ HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID)
 	cAdapters = pD3D9->GetAdapterCount();
 	for (UINT i = 0; i < cAdapters; i++)
 	{
-        HMONITOR hMonitorTmp = pD3D9->GetAdapterMonitor(i);
+    HMONITOR hMonitorTmp = pD3D9->GetAdapterMonitor(i);
 
-        if (hMonitorTmp == NULL)
-        {
-            break;
-        }
-        if (hMonitorTmp == hMonitor)
-        {
-            uAdapterID = i;
-            break;
-        }
+    if (! hMonitorTmp)
+    {
+      break;
+    }
+    if (hMonitorTmp == hMonitor)
+    {
+      uAdapterID = i;
+      break;
+    }
 	}
 
 	if (uAdapterID != (UINT)-1)

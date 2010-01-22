@@ -23,40 +23,40 @@ class D3DPresentEngine : public SchedulerCallback
 public:
 
     // State of the Direct3D device.
-    enum DeviceState
-    {
-        DeviceOK,
-        DeviceReset,    // The device was reset OR re-created.
-        DeviceRemoved,  // The device was removed.
-    };
+  enum DeviceState
+  {
+    DeviceOK,
+    DeviceReset,    // The device was reset OR re-created.
+    DeviceRemoved,  // The device was removed.
+  };
 
-    D3DPresentEngine(HRESULT& hr);
-    virtual ~D3DPresentEngine();
+  D3DPresentEngine(HRESULT& hr);
+  virtual ~D3DPresentEngine();
 
-    // GetService: Returns the IDirect3DDeviceManager9 interface.
-    // (The signature is identical to IMFGetService::GetService but 
-    // this object does not derive from IUnknown.)
-    virtual HRESULT GetService(REFGUID guidService, REFIID riid, void** ppv);
-    virtual HRESULT CheckFormat(D3DFORMAT format);
-  
+  // GetService: Returns the IDirect3DDeviceManager9 interface.
+  // (The signature is identical to IMFGetService::GetService but 
+  // this object does not derive from IUnknown.)
+  virtual HRESULT GetService(REFGUID guidService, REFIID riid, void** ppv);
+  virtual HRESULT CheckFormat(D3DFORMAT format);
 
-    // Video window / destination rectangle:
-    // This object implements a sub-set of the functions defined by the 
-    // IMFVideoDisplayControl interface. However, some of the method signatures 
-    // are different. The presenter's implementation of IMFVideoDisplayControl 
-    // calls these methods.
-    HRESULT SetVideoWindow(HWND hwnd);
-    //HWND    GetVideoWindow() const { return m_hwnd; }
-    HRESULT SetDestinationRect(const RECT& rcDest);
-    RECT    GetDestinationRect() const { return m_rcDestRect; };
 
-    HRESULT CreateVideoSamples(IMFMediaType *pFormat, VideoSampleList& videoSampleQueue);
-    void    ReleaseResources();
+  // Video window / destination rectangle:
+  // This object implements a sub-set of the functions defined by the 
+  // IMFVideoDisplayControl interface. However, some of the method signatures 
+  // are different. The presenter's implementation of IMFVideoDisplayControl 
+  // calls these methods.
+  HRESULT SetVideoWindow(HWND hwnd);
+  //HWND    GetVideoWindow() const { return m_hwnd; }
+  HRESULT SetDestinationRect(const RECT& rcDest);
+  RECT    GetDestinationRect() const { return m_rcDestRect; };
+
+  HRESULT CreateVideoSamples(IMFMediaType *pFormat, VideoSampleList& videoSampleQueue);
+  void    ReleaseResources();
 
     
-    HRESULT PresentSample(IMFSample* pSample, LONGLONG llTarget); 
+  HRESULT PresentSample(IMFSample* pSample, LONGLONG llTarget); 
 
-    UINT    RefreshRate() const { return m_DisplayMode.RefreshRate; }
+  UINT    RefreshRate() const { return m_DisplayMode.RefreshRate; }
 
 	HRESULT RegisterCallback(IEVRPresenterCallback *pCallback);
 

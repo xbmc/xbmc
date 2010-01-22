@@ -95,7 +95,13 @@ public:
   virtual int  GetAudioStreamCount()  { return m_pGraphBuilder->GetDsConfig()->GetAudioStreamCount(); }
   virtual int  GetAudioStream()       { return m_pGraphBuilder->GetDsConfig()->GetAudioStream(); }
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pGraphBuilder->GetDsConfig()->GetAudioStreamName(iStream,strStreamName); };
-  virtual void SetAudioStream(int iStream) { m_pGraphBuilder->GetDsConfig()->SetAudioStream(iStream); };
+  virtual void SetAudioStream(int iStream); // { m_pGraphBuilder->GetDsConfig()->SetAudioStream(iStream); };
+
+  virtual int  GetSubtitleCount()     { return m_pGraphBuilder->GetDsConfig()->GetSubtitleCount(); }
+  virtual int  GetSubtitle()          { return m_pGraphBuilder->GetDsConfig()->GetSubtitle(); }
+  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pGraphBuilder->GetDsConfig()->GetSubtitleName(iStream, strStreamName); };
+  virtual void SetSubtitle(int iStream) { return m_pGraphBuilder->GetDsConfig()->SetSubtitle(iStream); };
+
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
   void OnPlayStop();
   void CloseFile();

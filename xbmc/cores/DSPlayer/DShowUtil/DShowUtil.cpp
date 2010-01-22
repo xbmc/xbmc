@@ -39,6 +39,15 @@ else
   return true;
 }
 
+HRESULT DShowUtil::IsPinConnected(IPin* pPin)
+{
+  CheckPointer(pPin, E_POINTER);
+
+  IPin* pPinTo;
+  return SUCCEEDED(pPin->ConnectedTo(&pPinTo)) && pPinTo ? S_OK : S_FALSE;
+}
+
+
 LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
 {
   //Time / one sec / one millisec
@@ -47,30 +56,32 @@ LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
 
 CStdString DShowUtil::GetFilterPath(CStdString pClsid)
 {
-  int ret = -1;
-  CStdString strReg,strResult;
-  strReg = _T("\\CLSID\\") + pClsid + _T("\\InprocServer32");
-  //CRegKey reg;
-  
-  if (RegLoadKey(HKEY_CLASSES_ROOT,strReg,KEY_READ == ERROR_SUCCESS))//reg.Open(HKEY_CLASSES_ROOT, strReg, KEY_READ) == ERROR_SUCCESS) 
-  {
-			TCHAR		val[1024];
-			PLONG		len;
-      //LONG ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",0, KEY_READ, &hKey);
-      //ret = RegQueryValueEx(hKey,"~MHz", NULL, NULL, (LPBYTE)&dwMHz, &dwSize);
-      //RegCloseKey(hKey);
-      if (RegQueryValue(HKEY_CLASSES_ROOT,strReg.c_str(),val,NULL) == ERROR_SUCCESS)
-      {
-        strResult = val;
-        ret = 0;
-      }
-			//reg.QueryStringValue(_T(""), val, &len);
-			
 
-			//ret = 0;
-			//reg.Close();
+  CStdString subKey = _T("\\CLSID\\") + pClsid + _T("\\InprocServer32");
+  HKEY hSubKey;
+
+  DWORD res = RegOpenKeyEx(HKEY_CLASSES_ROOT, subKey.c_str(),
+    0, KEY_READ, &hSubKey);
+  if (res != ERROR_SUCCESS)
+  {
+    return "";
   }
-		return strResult;
+
+  char tab[MAX_PATH] = {0};
+  DWORD tabSize = MAX_PATH;
+
+  res = RegQueryValueEx(hSubKey, "", 0,
+    NULL, (LPBYTE) tab, &tabSize);
+  if ( res != ERROR_SUCCESS )
+  {
+    RegCloseKey(hSubKey);
+    return "";
+  }
+  
+  RegCloseKey(hSubKey);
+
+  CStdString returnVal = tab;
+  return returnVal;
 }
 
 
@@ -1018,7 +1029,7 @@ bool DShowUtil::ExtractDim(const AM_MEDIA_TYPE* pmt, int& w, int& h, int& arx, i
       w = (ptr[4]<<4)|(ptr[5]>>4);
       h = ((ptr[5]&0xf)<<8)|ptr[6];
       struct {int x, y;} ar[] = {{w,h},{4,3},{16,9},{221,100},{w,h}};
-      int i = min(max(ptr[7]>>4, 1), 5)-1;
+      int i = dsmin(dsmax(ptr[7]>>4, 1), 5)-1;
       arx = ar[i].x;
       ary = ar[i].y;
     }
@@ -1223,7 +1234,7 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
 
   HRESULT hr = E_FAIL;
   CStdStringW fullpathW;
-  g_charsetConverter.subtitleCharsetToW(fullpath,fullpathW);
+  g_charsetConverter.utf8ToW(fullpath, fullpathW);
   if(hInst || (hInst = CoLoadLibrary(LPOLESTR(fullpathW.c_str()), true)))
   {
     typedef HRESULT (__stdcall * PDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);

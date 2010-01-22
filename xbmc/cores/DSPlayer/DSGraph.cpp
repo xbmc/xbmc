@@ -120,6 +120,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   if (m_pMediaControl)
     m_pMediaControl->Run();
+
   m_currentSpeed = 10000;
 
   return hr;
@@ -591,4 +592,72 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
 	  CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
       break;
   }
+}
+
+void CDSGraph::SetAudioStream(int iStream)
+{
+
+  if (m_pGraphBuilder->GetDsConfig()->GetStreamSelector())
+  {
+    int i =0; long lIndex = 0;
+    for (std::map<long, IAMStreamSelectInfos *>::const_iterator it = m_pGraphBuilder->GetDsConfig()->GetAudioStreams().begin();
+      it != m_pGraphBuilder->GetDsConfig()->GetAudioStreams().end(); ++it, i++)
+    {
+      /* Disable all streams */
+      m_pGraphBuilder->GetDsConfig()->GetStreamSelector()->Enable(it->first, 0);
+      it->second->flags = 0;
+      if (iStream == i)
+        lIndex = it->first;
+    }
+
+    if (SUCCEEDED(m_pGraphBuilder->GetDsConfig()->GetStreamSelector()->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
+    {
+      m_pGraphBuilder->GetDsConfig()->GetAudioStreams()[lIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+      CLog::Log(LOGDEBUG, "%s Sucessfully selected audio stream", __FUNCTION__);
+    }
+  } else {
+
+    if ((!m_pMediaControl) || (!m_pMediaSeeking))
+      return;
+
+    std::map<long, IAMStreamSelectInfos *> audioStreams = m_pGraphBuilder->GetDsConfig()->GetAudioStreams();
+
+    long disableIndex = 0, enableIndex = iStream;
+    for (std::map<long, IAMStreamSelectInfos *>::const_iterator it = audioStreams.begin();
+      it != audioStreams.end(); ++it)
+    {
+      if (it->second->flags == AMSTREAMSELECTINFO_ENABLED)
+      {
+        disableIndex = it->first;
+        break;
+      }
+    }
+
+    IPin *connectedPin = NULL;
+    HRESULT hr;
+
+    LONGLONG currentPos;
+    m_pMediaSeeking->GetCurrentPosition(&currentPos);
+    m_pMediaControl->Stop();
+
+    /* Disable filter */
+    IPin *pin = (IPin *)(audioStreams[disableIndex]->pObj);
+    pin->ConnectedTo(&connectedPin);
+
+    hr = m_pGraphBuilder->Disconnect(connectedPin);
+    hr = m_pGraphBuilder->Disconnect(pin);
+
+    audioStreams[disableIndex]->flags = 0;
+
+    /* Enable filter */
+    pin = (IPin *)(audioStreams[enableIndex]->pObj);
+    hr = m_pGraphBuilder->ConnectDirect(pin, connectedPin, NULL);
+    audioStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+
+    m_pMediaControl->Run();
+    this->SeekInMilliSec(DShowUtil::MFTimeToMsec(currentPos));
+
+    CLog::Log(LOGNOTICE, "%s Successfully changed audio stream", __FUNCTION__);
+  }
+
 }
