@@ -258,6 +258,10 @@ xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
 xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
+xbmc/lib/libapetag/.libs/libapetag.a: force
+	$(MAKE) -C xbmc/lib/libapetag
+lib/libmodplug/src/.libs/libmodplug.a: force
+	$(MAKE) -C lib/libmodplug
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -299,10 +303,6 @@ libhdhomerun: dllloader
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
-libapetag: dllloader
-	$(MAKE) -C xbmc/lib/libapetag
-libmodplug: dllloader
-	$(MAKE) -C lib/libmodplug
 papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
@@ -331,7 +331,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag libapetag libmodplug imagelib libexif python
+libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
