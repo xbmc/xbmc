@@ -1965,10 +1965,13 @@ void CFileItemList::Stack()
     if (item->m_bIsFolder)
     {
       // only check known fast sources?
+      // xbms included because it supports file existance
       // NOTES:
-      // 1. rars and zips may be on slow sources? is this supposed to be allowed?
+      // 1. xbms would not have worked previously: item->m_strPath.Left(5).Equals("xbms", false)
+      // 2. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
+        || item->IsXBMS()
         || CUtil::IsInRAR(item->m_strPath)
         || CUtil::IsInZIP(item->m_strPath)
         )

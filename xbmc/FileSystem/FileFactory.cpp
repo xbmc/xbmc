@@ -37,6 +37,9 @@
 #include "FileSmb.h"
 #endif
 #endif
+#ifdef HAS_CCXSTREAM
+#include "FileXBMSP.h"
+#endif
 #ifdef HAS_FILESYSTEM_CDDA
 #include "FileCDDA.h"
 #endif
@@ -127,6 +130,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #else
     else if (strProtocol == "smb") return new CFileSMB();
 #endif
+#endif
+#ifdef HAS_CCXSTREAM
+    else if (strProtocol == "xbms") return new CFileXBMSP();
 #endif
 #ifdef HAS_FILESYSTEM
 #ifdef HAS_FILESYSTEM_RTV
