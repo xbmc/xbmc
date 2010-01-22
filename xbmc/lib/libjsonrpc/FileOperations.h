@@ -26,7 +26,7 @@
 
 namespace JSONRPC
 {
-  class CFileActions : public CFileItemHandler
+  class CFileOperations : public CFileItemHandler
   {
   public:
     static JSON_STATUS GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);

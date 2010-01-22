@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../ -I../../ -I../../../ -I../../utils -I../../FileSystem -I../../linux -I../../cores -I../../../guilib
 
-SRCS=JSONRPC.cpp PlayerActions.cpp SlideshowOperations.cpp PlaylistOperations.cpp FileActions.cpp MusicLibrary.cpp VideoLibrary.cpp FileItemHandler.cpp SystemOperations.cpp XBMCOperations.cpp TCPServer.cpp
+SRCS=JSONRPC.cpp PlayerOperations.cpp SlideshowOperations.cpp PlaylistOperations.cpp FileOperations.cpp MusicLibrary.cpp VideoLibrary.cpp FileItemHandler.cpp SystemOperations.cpp XBMCOperations.cpp TCPServer.cpp
 
 LIB= libjsonrpc.a
 

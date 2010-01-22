@@ -19,7 +19,7 @@
  *
  */
 
-#include "PlayerActions.h"
+#include "PlayerOperations.h"
 #include "Application.h"
 #include "Builtins.h"
 #include "Util.h"
@@ -28,7 +28,7 @@
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CPlayerActions::GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (g_application.IsPlayingVideo())
     result["players"].append("video");
@@ -38,7 +38,7 @@ JSON_STATUS CPlayerActions::GetActivePlayers(const CStdString &method, ITranspor
   return OK;
 }
 
-JSON_STATUS CPlayerActions::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -49,7 +49,7 @@ JSON_STATUS CPlayerActions::PlayPause(const CStdString &method, ITransportLayer 
   return OK;
 }
 
-JSON_STATUS CPlayerActions::Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -59,7 +59,7 @@ JSON_STATUS CPlayerActions::Stop(const CStdString &method, ITransportLayer *tran
   return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
-JSON_STATUS CPlayerActions::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -69,7 +69,7 @@ JSON_STATUS CPlayerActions::SkipPrevious(const CStdString &method, ITransportLay
   return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
-JSON_STATUS CPlayerActions::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -79,7 +79,7 @@ JSON_STATUS CPlayerActions::SkipNext(const CStdString &method, ITransportLayer *
   return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
-JSON_STATUS CPlayerActions::BigSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::BigSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -88,7 +88,7 @@ JSON_STATUS CPlayerActions::BigSkipBackward(const CStdString &method, ITransport
   return ACK;
 }
 
-JSON_STATUS CPlayerActions::BigSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::BigSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -97,7 +97,7 @@ JSON_STATUS CPlayerActions::BigSkipForward(const CStdString &method, ITransportL
   return ACK;
 }
 
-JSON_STATUS CPlayerActions::SmallSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::SmallSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -106,7 +106,7 @@ JSON_STATUS CPlayerActions::SmallSkipBackward(const CStdString &method, ITranspo
   return ACK;
 }
 
-JSON_STATUS CPlayerActions::SmallSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::SmallSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -115,7 +115,7 @@ JSON_STATUS CPlayerActions::SmallSkipForward(const CStdString &method, ITranspor
   return ACK;
 }
 
-JSON_STATUS CPlayerActions::Rewind(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::Rewind(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -125,7 +125,7 @@ JSON_STATUS CPlayerActions::Rewind(const CStdString &method, ITransportLayer *tr
   return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
-JSON_STATUS CPlayerActions::Forward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::Forward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -135,7 +135,7 @@ JSON_STATUS CPlayerActions::Forward(const CStdString &method, ITransportLayer *t
   return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
-JSON_STATUS CPlayerActions::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlayerOperations::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -144,7 +144,7 @@ JSON_STATUS CPlayerActions::Record(const CStdString &method, ITransportLayer *tr
   return ACK;
 }
 
-JSON_STATUS CPlayerActions::GetTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlayerOperations::GetTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -154,7 +154,7 @@ JSON_STATUS CPlayerActions::GetTime(const CStdString &method, ITransportLayer *t
   return OK;
 }
 
-JSON_STATUS CPlayerActions::GetTimeMS(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlayerOperations::GetTimeMS(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -164,7 +164,7 @@ JSON_STATUS CPlayerActions::GetTimeMS(const CStdString &method, ITransportLayer 
   return OK;
 }
 
-JSON_STATUS CPlayerActions::GetPercentage(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlayerOperations::GetPercentage(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -174,7 +174,7 @@ JSON_STATUS CPlayerActions::GetPercentage(const CStdString &method, ITransportLa
   return OK;
 }
 
-JSON_STATUS CPlayerActions::SeekTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlayerOperations::SeekTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!parameterObject.isInt())
     return InvalidParams;
@@ -185,7 +185,7 @@ JSON_STATUS CPlayerActions::SeekTime(const CStdString &method, ITransportLayer *
   return ACK;
 }
 
-JSON_STATUS CPlayerActions::GetPlaylist(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlayerOperations::GetPlaylist(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   int playlist = PLAYLIST_NONE;
   if (method.Left(5).Equals("music"))
@@ -199,7 +199,7 @@ JSON_STATUS CPlayerActions::GetPlaylist(const CStdString &method, ITransportLaye
   return OK;
 }
 
-bool CPlayerActions::IsCorrectPlayer(const CStdString &method)
+bool CPlayerOperations::IsCorrectPlayer(const CStdString &method)
 {
   return (method.Left(5).Equals("music") && g_application.IsPlayingAudio()) || (method.Left(5).Equals("video") && g_application.IsPlayingVideo());
 }

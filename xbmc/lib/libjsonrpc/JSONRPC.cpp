@@ -20,10 +20,10 @@
  */
 
 #include "JSONRPC.h"
-#include "PlayerActions.h"
+#include "PlayerOperations.h"
 #include "SlideshowOperations.h"
 #include "PlaylistOperations.h"
-#include "FileActions.h"
+#include "FileOperations.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
@@ -47,51 +47,51 @@ Command CJSONRPC::m_commands[] = {
   { "JSONRPC.Announce",                 CJSONRPC::Announce,                     Response,     ReadData,        "Announce to other connected clients" },
 
 // Player
-  { "Player.GetActivePlayers",          CPlayerActions::GetActivePlayers,       Response,     ReadData,        "Returns all active players IDs"},
+  { "Player.GetActivePlayers",          CPlayerOperations::GetActivePlayers,    Response,     ReadData,        "Returns all active players IDs"},
 
 // Music player
-  { "MusicPlayer.PlayPause",            CPlayerActions::PlayPause,              Response,     ControlPlayback, "Pauses or unpause playback" },
-  { "MusicPlayer.Stop",                 CPlayerActions::Stop,                   Response,     ControlPlayback, "Stops playback" },
-  { "MusicPlayer.SkipPrevious",         CPlayerActions::SkipPrevious,           Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "MusicPlayer.SkipNext",             CPlayerActions::SkipNext,               Response,     ControlPlayback, "Skips to next item on the playlist" },
+  { "MusicPlayer.PlayPause",            CPlayerOperations::PlayPause,           Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "MusicPlayer.Stop",                 CPlayerOperations::Stop,                Response,     ControlPlayback, "Stops playback" },
+  { "MusicPlayer.SkipPrevious",         CPlayerOperations::SkipPrevious,        Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "MusicPlayer.SkipNext",             CPlayerOperations::SkipNext,            Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "MusicPlayer.BigSkipBackward",      CPlayerActions::BigSkipBackward,        Response,     ControlPlayback, "" },
-  { "MusicPlayer.BigSkipForward",       CPlayerActions::BigSkipForward,         Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipBackward",    CPlayerActions::SmallSkipBackward,      Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipForward",     CPlayerActions::SmallSkipForward,       Response,     ControlPlayback, "" },
+  { "MusicPlayer.BigSkipBackward",      CPlayerOperations::BigSkipBackward,     Response,     ControlPlayback, "" },
+  { "MusicPlayer.BigSkipForward",       CPlayerOperations::BigSkipForward,      Response,     ControlPlayback, "" },
+  { "MusicPlayer.SmallSkipBackward",    CPlayerOperations::SmallSkipBackward,   Response,     ControlPlayback, "" },
+  { "MusicPlayer.SmallSkipForward",     CPlayerOperations::SmallSkipForward,    Response,     ControlPlayback, "" },
 
-  { "MusicPlayer.Rewind",               CPlayerActions::Rewind,                 Response,     ControlPlayback, "Rewind current playback" },
-  { "MusicPlayer.Forward",              CPlayerActions::Forward,                Response,     ControlPlayback, "Forward current playback" },
+  { "MusicPlayer.Rewind",               CPlayerOperations::Rewind,              Response,     ControlPlayback, "Rewind current playback" },
+  { "MusicPlayer.Forward",              CPlayerOperations::Forward,             Response,     ControlPlayback, "Forward current playback" },
 
-  { "MusicPlayer.GetTime",              CPlayerActions::GetTime,                Response,     ReadData,        "Retrieve time" },
-  { "MusicPlayer.GetTimeMS",            CPlayerActions::GetTimeMS,              Response,     ReadData,        "Retrieve time in MS" },
-  { "MusicPlayer.GetPercentage",        CPlayerActions::GetPercentage,          Response,     ReadData,        "Retrieve percentage" },
-  { "MusicPlayer.SeekTime",             CPlayerActions::SeekTime,               Response,     ControlPlayback, "Seek to a specific time" },
+  { "MusicPlayer.GetTime",              CPlayerOperations::GetTime,             Response,     ReadData,        "Retrieve time" },
+  { "MusicPlayer.GetTimeMS",            CPlayerOperations::GetTimeMS,           Response,     ReadData,        "Retrieve time in MS" },
+  { "MusicPlayer.GetPercentage",        CPlayerOperations::GetPercentage,       Response,     ReadData,        "Retrieve percentage" },
+  { "MusicPlayer.SeekTime",             CPlayerOperations::SeekTime,            Response,     ControlPlayback, "Seek to a specific time" },
 
-  { "MusicPlayer.GetPlaylist",          CPlayerActions::GetPlaylist,            Response,     ReadData,        "Retrieve active playlist" },
+  { "MusicPlayer.GetPlaylist",          CPlayerOperations::GetPlaylist,         Response,     ReadData,        "Retrieve active playlist" },
 
-  { "MusicPlayer.Record",               CPlayerActions::Record,                 Response,     ControlPlayback, "" },
+  { "MusicPlayer.Record",               CPlayerOperations::Record,              Response,     ControlPlayback, "" },
 
 // Video player
-  { "VideoPlayer.PlayPause",            CPlayerActions::PlayPause,              Response,     ControlPlayback, "Pauses or unpause playback" },
-  { "VideoPlayer.Stop",                 CPlayerActions::Stop,                   Response,     ControlPlayback, "Stops playback" },
-  { "VideoPlayer.SkipPrevious",         CPlayerActions::SkipPrevious,           Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "VideoPlayer.SkipNext",             CPlayerActions::SkipNext,               Response,     ControlPlayback, "Skips to next item on the playlist" },
+  { "VideoPlayer.PlayPause",            CPlayerOperations::PlayPause,           Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "VideoPlayer.Stop",                 CPlayerOperations::Stop,                Response,     ControlPlayback, "Stops playback" },
+  { "VideoPlayer.SkipPrevious",         CPlayerOperations::SkipPrevious,        Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "VideoPlayer.SkipNext",             CPlayerOperations::SkipNext,            Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "VideoPlayer.BigSkipBackward",      CPlayerActions::BigSkipBackward,        Response,     ControlPlayback, "" },
-  { "VideoPlayer.BigSkipForward",       CPlayerActions::BigSkipForward,         Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipBackward",    CPlayerActions::SmallSkipBackward,      Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipForward",     CPlayerActions::SmallSkipForward,       Response,     ControlPlayback, "" },
+  { "VideoPlayer.BigSkipBackward",      CPlayerOperations::BigSkipBackward,     Response,     ControlPlayback, "" },
+  { "VideoPlayer.BigSkipForward",       CPlayerOperations::BigSkipForward,      Response,     ControlPlayback, "" },
+  { "VideoPlayer.SmallSkipBackward",    CPlayerOperations::SmallSkipBackward,   Response,     ControlPlayback, "" },
+  { "VideoPlayer.SmallSkipForward",     CPlayerOperations::SmallSkipForward,    Response,     ControlPlayback, "" },
 
-  { "VideoPlayer.Rewind",               CPlayerActions::Rewind,                 Response,     ControlPlayback, "Rewind current playback" },
-  { "VideoPlayer.Forward",              CPlayerActions::Forward,                Response,     ControlPlayback, "Forward current playback" },
+  { "VideoPlayer.Rewind",               CPlayerOperations::Rewind,              Response,     ControlPlayback, "Rewind current playback" },
+  { "VideoPlayer.Forward",              CPlayerOperations::Forward,             Response,     ControlPlayback, "Forward current playback" },
 
-  { "VideoPlayer.GetTime",              CPlayerActions::GetTime,                Response,     ReadData,        "Retrieve time" },
-  { "VideoPlayer.GetTimeMS",            CPlayerActions::GetTimeMS,              Response,     ReadData,        "Retrieve time in MS" },
-  { "VideoPlayer.GetPercentage",        CPlayerActions::GetPercentage,          Response,     ReadData,        "Retrieve percentage" },
-  { "VideoPlayer.SeekTime",             CPlayerActions::SeekTime,               Response,     ControlPlayback, "Seek to a specific time" },
+  { "VideoPlayer.GetTime",              CPlayerOperations::GetTime,             Response,     ReadData,        "Retrieve time" },
+  { "VideoPlayer.GetTimeMS",            CPlayerOperations::GetTimeMS,           Response,     ReadData,        "Retrieve time in MS" },
+  { "VideoPlayer.GetPercentage",        CPlayerOperations::GetPercentage,       Response,     ReadData,        "Retrieve percentage" },
+  { "VideoPlayer.SeekTime",             CPlayerOperations::SeekTime,            Response,     ControlPlayback, "Seek to a specific time" },
 
-  { "VideoPlayer.GetPlaylist",          CPlayerActions::GetPlaylist,            Response,     ReadData,        "Retrieve active playlist" },
+  { "VideoPlayer.GetPlaylist",          CPlayerOperations::GetPlaylist,         Response,     ReadData,        "Retrieve active playlist" },
 
 // Slideshow player
   { "Slideshow.PlayPause",              CSlideshowOperations::PlayPause,        Response,     ControlPlayback, "Pauses or unpause slideshow" },
@@ -117,10 +117,10 @@ Command CJSONRPC::m_commands[] = {
   { "Playlist.Shuffle",                 CPlaylistOperations::Shuffle,           Response,     ControlPlayback,  "Shuffle playlist" },
 
 // File
-  { "Files.GetShares",                  CFileActions::GetRootDirectory,         Response,     ReadData,        "Get the root directory of the media windows" },
-  { "Files.Download",                   CFileActions::Download,                 FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
+  { "Files.GetShares",                  CFileOperations::GetRootDirectory,      Response,     ReadData,        "Get the root directory of the media windows" },
+  { "Files.Download",                   CFileOperations::Download,              FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
 
-  { "Files.GetDirectory",               CFileActions::GetDirectory,             Response,     ReadData,        "Retrieve the specified directory" },
+  { "Files.GetDirectory",               CFileOperations::GetDirectory,          Response,     ReadData,        "Retrieve the specified directory" },
 
 // Music library
   { "MusicLibrary.GetArtists",          CMusicLibrary::GetArtists,              Response,     ReadData,        "Retrieve all artists" },

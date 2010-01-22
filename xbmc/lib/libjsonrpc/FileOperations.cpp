@@ -19,7 +19,7 @@
  *
  */
 
-#include "FileActions.h"
+#include "FileOperations.h"
 #include "Settings.h"
 #include "MediaSource.h"
 #include "../FileSystem/Directory.h"
@@ -31,7 +31,7 @@ using namespace DIRECTORY;
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
   CStdString type = param.get("type", "null").asString();
@@ -62,7 +62,7 @@ JSON_STATUS CFileActions::GetRootDirectory(const CStdString &method, ITransportL
     return InvalidParams;
 }
 
-JSON_STATUS CFileActions::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (parameterObject.isObject() && parameterObject.isMember("type") && parameterObject.isMember("directory"))
   {   
@@ -103,7 +103,7 @@ JSON_STATUS CFileActions::GetDirectory(const CStdString &method, ITransportLayer
   return InvalidParams;
 }
 
-JSON_STATUS CFileActions::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!parameterObject.isString())
     return InvalidParams;
