@@ -1492,11 +1492,22 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/lib/libapetag], [
-  ./configure
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    ./configure
+  fi
 ], [0])
 
 XB_CONFIG_MODULE([lib/libmodplug], [
-  ./configure --with-pic --enable-static
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --enable-static
+  else
+    ./configure --with-pic --enable-static
+  fi
 ], [0])
 
 AC_OUTPUT
