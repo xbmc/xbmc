@@ -47,7 +47,8 @@ BIN_DIRS=	\
 	xbmc/utils \
 	xbmc/settings \
 	xbmc/linux \
-	xbmc/osx
+	xbmc/osx \
+	xbmc/posix
 
 EC_DIRS= \
 	tools/EventClients
