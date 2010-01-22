@@ -514,7 +514,7 @@ void CDVDPlayerVideo::Process()
 
             // all packets except the last one should be dropped
             // if prio packets and current packet should be dropped, this is likely a new reset
-            msg->m_drop = !m_packets.empty() || iPriority > 0 && bPacketDrop;
+            msg->m_drop = !m_packets.empty() || (iPriority > 0 && bPacketDrop);
             m_messageQueue.Put(msg, iPriority + 10);
           }
 
