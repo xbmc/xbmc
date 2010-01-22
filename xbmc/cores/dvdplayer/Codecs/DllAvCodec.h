@@ -33,13 +33,10 @@ extern "C" {
     #endif
   #endif
   /* We'll just inlude this header in our project for now */
-  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/audioconvert.h"
+  #include "libavcodec/audioconvert.h"
 #else
-  /* Need to explicitly include avutil.h so avcodec.h doesn't pull system
-   * header of avutil.h */
-  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
-  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/avcodec.h"
-  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/audioconvert.h"
+  #include "libavcodec/avcodec.h"
+  #include "libavcodec/audioconvert.h"
 #endif
 }
 
