@@ -25,7 +25,7 @@
 #include <deque>
 #include <vector>
 
-#include "DVDVideoCodec.h"
+#include "../DVDVideoCodec.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 template <class T>
