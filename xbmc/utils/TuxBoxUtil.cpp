@@ -40,6 +40,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "tinyXML/tinyxml.h"
+#include "log.h"
 
 using namespace XFILE;
 using namespace std;

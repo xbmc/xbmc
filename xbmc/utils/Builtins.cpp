@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "AlarmClock.h"
 #include "Application.h"
 #include "Autorun.h"
@@ -45,7 +48,9 @@
 #include "Util.h"
 
 #include "FileSystem/PluginDirectory.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/ZipManager.h"
 
 #include "GUIWindowManager.h"
@@ -398,8 +403,10 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (CUtil::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
+#ifdef HAVE_XBMC_NONFREE
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
+#endif
     else
       CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
   }

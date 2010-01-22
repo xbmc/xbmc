@@ -25,6 +25,8 @@
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #define CONTROL_LABELSTATUS       401
 #define CONTROL_LABELDIRECTORY    402

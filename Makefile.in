@@ -38,7 +38,6 @@ BIN_DIRS=	\
 	xbmc/lib/libscrobbler \
 	xbmc/lib/libshout \
 	xbmc/lib/libUPnP \
-	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
@@ -72,10 +71,8 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
-	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
-	xbmc/cores/paplayer/MACDll
 
 ifeq (@USE_ASAP_CODEC@,1)
 PAPCODEC_DIRS+= \
@@ -93,7 +90,9 @@ LIB_DIRS=\
 	xbmc/lib/libexif \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
-	xbmc/lib/libPython/linux
+	xbmc/lib/libapetag \
+	xbmc/lib/libPython/linux \
+	lib/libmodplug
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -229,8 +228,6 @@ xbmc/lib/libshout/libshout-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libshout
 xbmc/lib/libUPnP/libupnp-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libUPnP
-xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
-	$(MAKE) -C xbmc/lib/libXBMS
 xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
 xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
@@ -298,6 +295,10 @@ libhdhomerun: dllloader
 	$(MAKE) -C xbmc/lib/libhdhomerun
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
+libapetag: dllloader
+	$(MAKE) -C xbmc/lib/libapetag
+libmodplug: dllloader
+	$(MAKE) -C lib/libmodplug
 papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
@@ -310,7 +311,6 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/timidity
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 ifeq (@USE_ASAP_CODEC@,1)
   ifneq ($(findstring osx,$(ARCH)), osx)
 	  $(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
@@ -320,9 +320,6 @@ ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifeq ($(findstring powerpc,$(ARCH)),)
-	$(MAKE) -C xbmc/cores/paplayer/MACDll
-endif
 ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
@@ -330,7 +327,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag libapetag libmodplug imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -341,7 +338,6 @@ xcode_depends: \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
-	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
@@ -383,11 +379,12 @@ OBJSXBMC=	\
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
-	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
+	xbmc/lib/libapetag/.libs/libapetag.a \
+	lib/libmodplug/src/.libs/libmodplug.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/visualizations/visualization.a

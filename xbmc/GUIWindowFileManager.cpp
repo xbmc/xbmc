@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "GUIWindowFileManager.h"
 #include "Application.h"
@@ -45,7 +48,9 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "Favourites.h"
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
@@ -56,6 +61,7 @@
 #include "MouseStat.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
@@ -681,6 +687,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       CURL url(strFile);
       if (url.GetProtocol() == "rar")
       {
+#ifdef HAVE_XBMC_NONFREE
         g_RarManager.SetWipeAtWill(false);
         CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
         CStdString strDestPath;
@@ -691,6 +698,9 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         g_advancedSettings.m_cachePath = strOriginalCachePath;
         g_RarManager.SetWipeAtWill(true);
         return bResult;
+#else
+        return false;
+#endif
       }
       else
       {
@@ -1525,8 +1535,6 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
     if (pItem->m_iDriveType!=CMediaSource::SOURCE_TYPE_REMOTE) //  Local shares incl. dvd drive
       idMessageText=15300;
-    else if (url.GetProtocol()=="xbms" && strHostName.IsEmpty()) //  xbms server discover
-      idMessageText=15302;
     else if (url.GetProtocol()=="smb" && strHostName.IsEmpty()) //  smb workgroup
       idMessageText=15303;
     else  //  All other remote shares

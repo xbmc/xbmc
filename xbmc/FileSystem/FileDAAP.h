@@ -31,6 +31,7 @@
 #include "lib/libXDAAP/client.h"
 #include "FileCurl.h"
 #include "URL.h"
+#include "utils/CriticalSection.h"
 
 class CDaapClient : public CCriticalSection
 {

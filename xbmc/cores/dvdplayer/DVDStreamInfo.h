@@ -37,7 +37,7 @@ extern "C" {
     #include <ffmpeg/avcodec.h>
   #endif
 #else
-  #include "libavcodec/avcodec.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/avcodec.h"
 #endif
 }
 #endif

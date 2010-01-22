@@ -29,8 +29,8 @@ extern "C" {
     #include <postproc/postprocess.h>
   #endif
 #else
-  #include "libavutil/avutil.h"
-  #include "libpostproc/postprocess.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavutil/avutil.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libpostproc/postprocess.h"
 #endif
 }
 

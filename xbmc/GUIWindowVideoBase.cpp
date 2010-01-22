@@ -58,6 +58,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"

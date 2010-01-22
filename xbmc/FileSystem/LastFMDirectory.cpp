@@ -33,6 +33,7 @@
 #include "FileCurl.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

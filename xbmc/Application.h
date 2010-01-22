@@ -61,7 +61,6 @@ class CFileItemList;
 #endif
 
 class CWebServer;
-class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
@@ -221,7 +220,6 @@ public:
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
-  CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;
   IPlayer* m_pPlayer;
 

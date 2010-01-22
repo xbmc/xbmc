@@ -355,6 +355,10 @@ PKG_CHECK_MODULES([PCRE],       [libpcre],
                   [INCLUDES+=" $PCRE_CFLAGS"; LIBS+=" $PCRE_LIBS"]; \
                   AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
                   AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([PCRECPP],    [libpcrecpp],
+                  [INCLUDES+=" $PCRECPP_CFLAGS"; LIBS+=" $PCRECPP_LIBS"]; \
+                  AC_DEFINE([HAVE_LIBPCRECPP],[1],["Define to 1 if libpcrecpp is installed"]),
+                  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CDIO],       [libcdio],
                   [INCLUDES+=" $CDIO_CFLAGS"; LIBS+=" $CDIO_LIBS"],
                   AC_MSG_ERROR($missing_library))
@@ -550,9 +554,22 @@ if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"
   # Disable vdpau support if external libavcodec doesn't have it
   AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
     use_vdpau=no;AC_MSG_RESULT($ffmpeg_vdpau_not_supported))
+
+  # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
+  if test "$use_vdpau" = "yes"; then
+    AC_LANG_PUSH([C++])
+    AC_LINK_IFELSE([
+        #include <libavutil/pixfmt.h>
+        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }
+      ],
+      [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
+       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
+    AC_LANG_POP([C++])
+  fi
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
+  AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
 # External liba52
@@ -1016,11 +1033,9 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/dvdplayer/Codecs/libdvd/Makefile \
              xbmc/cores/AudioRenderers/Makefile \
              xbmc/cores/paplayer/Makefile \
-             xbmc/cores/paplayer/MACDll/Makefile \
              xbmc/cores/paplayer/timidity/Makefile \
              xbmc/cores/paplayer/AC3Codec/Makefile \
              xbmc/cores/paplayer/ADPCMCodec/Makefile \
-             xbmc/cores/paplayer/ModuleCodec/Makefile \
              xbmc/cores/paplayer/GYMCodec/Makefile \
              xbmc/cores/paplayer/NSFCodec/Makefile \
              xbmc/cores/paplayer/SIDCodec/Makefile \
@@ -1030,7 +1045,6 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile \
              guilib/common/Makefile \
              xbmc/lib/libass/xbmc/Makefile \
-             xbmc/lib/libXBMS/Makefile \
              xbmc/lib/libRTV/Makefile \
              xbmc/lib/libexif/Makefile \
              xbmc/lib/libXDAAP/Makefile \
@@ -1052,6 +1066,7 @@ OUTPUT_FILES="Makefile \
              xbmc/visualizations/OpenGLSpectrum/Makefile \
              xbmc/visualizations/WaveForm/Makefile \
              xbmc/visualizations/iTunes/Makefile \
+             xbmc/FileSystem/Makefile \
              tools/Linux/xbmc.sh \
              tools/TexturePacker/Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"
@@ -1471,6 +1486,14 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   else
 	./configure --without-openssl
   fi
+], [0])
+
+XB_CONFIG_MODULE([xbmc/lib/libapetag], [
+  ./configure
+], [0])
+
+XB_CONFIG_MODULE([lib/libmodplug], [
+  ./configure --with-pic --enable-static
 ], [0])
 
 AC_OUTPUT
