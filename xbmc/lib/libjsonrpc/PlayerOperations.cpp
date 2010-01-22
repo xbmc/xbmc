@@ -56,8 +56,7 @@ JSON_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer *t
 
   CAction action;
   action.id = ACTION_STOP;
-  g_application.getApplicationMessenger().SendAction(action);
-  return ACK;
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -67,8 +66,7 @@ JSON_STATUS CPlayerOperations::SkipPrevious(const CStdString &method, ITransport
 
   CAction action;
   action.id = ACTION_PREV_ITEM;
-  g_application.getApplicationMessenger().SendAction(action);
-  return ACK;
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -78,8 +76,7 @@ JSON_STATUS CPlayerOperations::SkipNext(const CStdString &method, ITransportLaye
 
   CAction action;
   action.id = ACTION_NEXT_ITEM;
-  g_application.getApplicationMessenger().SendAction(action);
-  return ACK;
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerOperations::BigSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -125,8 +122,7 @@ JSON_STATUS CPlayerOperations::Rewind(const CStdString &method, ITransportLayer 
 
   CAction action;
   action.id = ACTION_PLAYER_REWIND;
-  g_application.getApplicationMessenger().SendAction(action);
-  return ACK;
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerOperations::Forward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -136,8 +132,7 @@ JSON_STATUS CPlayerOperations::Forward(const CStdString &method, ITransportLayer
 
   CAction action;
   action.id = ACTION_PLAYER_FORWARD;
-  g_application.getApplicationMessenger().SendAction(action);
-  return ACK;
+  return g_application.OnAction(action) ? ACK : FailedToExecute;
 }
 
 JSON_STATUS CPlayerOperations::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
