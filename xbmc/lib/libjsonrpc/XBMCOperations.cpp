@@ -50,10 +50,8 @@ JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLaye
 {
   CAction action;
   action.id = ACTION_MUTE;
-  if (g_application.OnAction(action))
-    return GetVolume(method, transport, client, parameterObject, result);
-  else
-    return FailedToExecute;
+  g_application.getApplicationMessenger().SendAction(action);
+  return GetVolume(method, transport, client, parameterObject, result);
 }
 
 JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
@@ -61,12 +59,8 @@ JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *tra
   if (!parameterObject.isString())
     return InvalidParams;
 
-  CStdString path = parameterObject.asString();
-  CFileItem item(path, CUtil::HasSlashAtEnd(path));
-  if (g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
-    return ACK;
-  else
-    return FailedToExecute;
+  g_application.getApplicationMessenger().MediaPlay(parameterObject.asString());
+  return ACK;
 }
 
 JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
