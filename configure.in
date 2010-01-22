@@ -1034,6 +1034,7 @@ OUTPUT_FILES="Makefile \
              Makefile.include \
              xbmc/cores/dvdplayer/Codecs/Makefile \
              xbmc/cores/dvdplayer/Codecs/libdvd/Makefile \
+             xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/Makefile \
              xbmc/cores/AudioRenderers/Makefile \
              xbmc/cores/paplayer/Makefile \
              xbmc/cores/paplayer/timidity/Makefile \

@@ -23,7 +23,7 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 
-#include "CrystalHD.h"
+#include "CrystalHD/CrystalHD.h"
 #include "DVDVideoCodec.h"
 
 typedef struct H264BSFContext {

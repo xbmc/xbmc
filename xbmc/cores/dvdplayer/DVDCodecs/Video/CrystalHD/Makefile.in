@@ -1,0 +1,16 @@
+abs_top_srcdir=@abs_top_srcdir@
+
+INCLUDES=-I$(abs_top_srcdir) \
+	 -I$(abs_top_srcdir)/guilib \
+	 -I$(abs_top_srcdir)/xbmc \
+	 -I$(abs_top_srcdir)/xbmc/linux \
+	 -I$(abs_top_srcdir)/xbmc/cores/dvdplayer \
+	 -I$(abs_top_srcdir)/xbmc/cores/dvdplayer/DVDCodecs/Video \
+
+SRCS=	CrystalHD.cpp \
+
+LIB= CrystalHD.a
+
+include $(abs_top_srcdir)/Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+

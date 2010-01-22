@@ -14,6 +14,7 @@ BIN_DIRS=	\
 	xbmc/cores/dvdplayer/DVDCodecs/Audio \
 	xbmc/cores/dvdplayer/DVDCodecs/Overlay \
 	xbmc/cores/dvdplayer/DVDCodecs/Video \
+	xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD \
 	xbmc/cores/dvdplayer/DVDDemuxers/ \
 	xbmc/cores/dvdplayer/DVDInputStreams/ \
 	xbmc/cores/dvdplayer/DVDSubtitles/ \
@@ -184,6 +185,8 @@ xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
 xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video
+xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.a: force
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD
 xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDDemuxers
 xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a: force
@@ -367,6 +370,7 @@ OBJSXBMC=	\
 	xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
 	xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
 	xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
+	xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.a \
 	xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
 	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
 	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
