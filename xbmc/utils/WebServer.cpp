@@ -115,7 +115,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     else if (strURL.Left(4).Equals("/vfs"))
     {
       strURL = strURL.Right(strURL.length() - 5);
-      CUtil::UrlDecode(strURL);
+      CUtil::URLDecode(strURL);
     }
 #ifdef HAS_WEB_INTERFACE
     else if (strURL.Equals("/"))
