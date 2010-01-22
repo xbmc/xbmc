@@ -135,7 +135,7 @@ public:
 
   COuterEVR(const TCHAR* pName, LPUNKNOWN pUnk, HRESULT& hr, CEVRAllocatorPresenter *pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
-    hr = CoCreateInstance(CLSID_EnhancedVideoRenderer, GetOwner(),CLSCTX_ALL,__uuidof(m_pEVR),(void**)&m_pEVR );
+    hr = CoCreateInstance(CLSID_EnhancedVideoRenderer, GetOwner(), CLSCTX_ALL, __uuidof(m_pEVR), (void**)&m_pEVR );
     m_pAllocatorPresenter = pAllocatorPresenter;
   }
 
@@ -183,6 +183,7 @@ HRESULT STDMETHODCALLTYPE COuterEVR::GetState( DWORD dwMilliSecsTimeout, __out  
 
 COuterEVR::~COuterEVR()
 {
+  SAFE_RELEASE(m_pEVR);
 }
 
 // Default frame rate.
@@ -286,6 +287,8 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   SAFE_RELEASE(m_pMediaType);
   // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
+  SAFE_DELETE(m_pOuterEVR);
+  SAFE_DELETE(m_pMacrovisionKicker);
   
   g_renderManager.UnInit();
 
@@ -300,16 +303,16 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   HRESULT hr = E_FAIL;
   do
   {
-    CMacrovisionKicker* pMK  = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
-    IUnknown* pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
+    m_pMacrovisionKicker  = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
+    IUnknown* pUnk = (IUnknown *)(INonDelegatingUnknown *) m_pMacrovisionKicker;
     COuterEVR *pOuterEVR = new COuterEVR(NAME("COuterEVR"), pUnk, hr, this);
-	if (FAILED (hr))
+    if (FAILED (hr))
     {
       CLog::Log(LOGERROR,"%s Failed creating outer enchanced video renderer",__FUNCTION__);
       break;
     }
     m_pOuterEVR = pOuterEVR;
-    pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuterEVR);
+    m_pMacrovisionKicker->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuterEVR);
     IBaseFilter* pBF;
     hr = pUnk->QueryInterface(__uuidof(IBaseFilter),(void**)&pBF );
     if (FAILED (hr))

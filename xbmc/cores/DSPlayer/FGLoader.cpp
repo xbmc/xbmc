@@ -35,6 +35,9 @@
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"
 
+#include <ks.h>
+#include <Codecapi.h>
+
 using namespace std;
 CFGLoader::CFGLoader()
 {
@@ -185,7 +188,7 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
 
   
   SAFE_RELEASE(ppBF);
-  CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the audio decoder filter",__FUNCTION__);
+  CLog::Log(LOGDEBUG,"DSPlayer %s Successfully added the audio decoder filter",__FUNCTION__);
   return hr;
 }
 
@@ -201,6 +204,24 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
       {
         m_pGraphBuilder->AddFilter(ppBF,(*it)->GetName().c_str());
         g_charsetConverter.wToUTF8((*it)->GetName(),m_pStrVideodec);
+
+        //// TEST //
+        //BeginEnumPins(ppBF, pEP, pPin)
+        //{
+        //  ICodecAPI *codecApi;
+        //  hr = pPin->QueryInterface(__uuidof(codecApi), (void **) &codecApi);
+
+        //  if (SUCCEEDED(hr))
+        //  {
+        //    VARIANT value;
+        //    hr = codecApi->GetValue(&CODECAPI_AVDecCommonInputFormat,  &value);
+        //    VariantClear(&value);
+        //    hr = codecApi->GetValue(&CODECAPI_AVDecCommonOutputFormat, &value);
+        //    VariantClear(&value);
+        //  }
+        //  hr = S_OK;
+        //}
+        //EndEnumPins
         break;
       }
 	    else
@@ -212,7 +233,7 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
   }
   
   SAFE_RELEASE(ppBF);
-  CLog::Log(LOGDEBUG,"DSPlayer %s Sucessfully added the video decoder filter",__FUNCTION__);
+  CLog::Log(LOGDEBUG,"DSPlayer %s Successfully added the video decoder filter",__FUNCTION__);
   return hr;
 }
 
@@ -323,12 +344,18 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     if (((CStdString)pRules->Attribute("filetypes")).Equals(pFileItem.GetAsUrl().GetFileType().c_str(),false))
     {
       InsertVideoRenderer();
-      if (FAILED(InsertSourceFilter(pFileItem,pRules)))
+
+      if (FAILED(InsertSourceFilter(pFileItem, pRules)))
         hr = E_FAIL;
+      CLog::Log(LOGDEBUG, "%s Source filter successfully inserted", __FUNCTION__);
 
       if (!m_SplitterF)
+      {
         if (FAILED(InsertSplitter(pRules)))
           hr = E_FAIL;
+      } else {
+        CLog::Log(LOGDEBUG, "%s The source filter is also the splitter filter", __FUNCTION__);
+      }
 
       if (FAILED(InsertVideoDecoder(pRules)))
         hr = E_FAIL;

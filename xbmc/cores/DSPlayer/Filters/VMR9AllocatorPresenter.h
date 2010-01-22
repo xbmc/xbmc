@@ -19,6 +19,8 @@
 #include "DsRenderer.h"
 #include "geometry.h"
 
+class CMacrovisionKicker;
+class COuterVMR9;
 
 [uuid("A2636B41-5E3C-4426-B6BC-CD8616600912")]
 class CVMR9AllocatorPresenter  : public CDsRenderer,
@@ -77,6 +79,8 @@ private:
   std::vector<IDirect3DSurface9*>     m_pSurfaces;
   int                                 m_pNbrSurface;
   int                                 m_pCurSurface;
+  CMacrovisionKicker *                m_pMacrovisionKicker;
+  COuterVMR9 *                        m_pOuterVMR9;
 };
 
 #endif // _DXALLOCATORPRESENTER_H

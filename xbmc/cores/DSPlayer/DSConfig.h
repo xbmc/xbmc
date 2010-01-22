@@ -45,7 +45,7 @@ class CDSConfig
 public:
   CDSConfig();
   virtual ~CDSConfig();
-  virtual HRESULT LoadGraph(IFilterGraph2* pGB);
+  virtual HRESULT LoadGraph(IFilterGraph2* pGB, IBaseFilter * splitter);
 
   CStdString GetDxvaMode()  { return m_pStdDxva; };
   std::map<long, IAMStreamSelectInfos *> GetAudioStreams() { return m_pAudioStreams; }
@@ -63,7 +63,7 @@ public:
   virtual void SetSubtitle(int iStream);
   
 protected:
-  bool LoadAudioStreams(IBaseFilter* pBF);
+  bool LoadAudioStreams();
   bool GetMpaDec(IBaseFilter* pBF);
   bool GetMpcVideoDec(IBaseFilter* pBF);
   bool GetffdshowVideo(IBaseFilter* pBF);

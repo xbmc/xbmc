@@ -58,6 +58,8 @@ enum FRAMESTEP_STATE
 };
 
 class COuterEVR;
+class CMacrovisionKicker;
+
 [uuid("7612B889-0929-4363-9BA3-580D735AA0F6")]
 class CEVRAllocatorPresenter : public IDsRenderer,
                                public IMFVideoDeviceID,
@@ -160,6 +162,7 @@ private:
   long m_refCount;
   
   COuterEVR *m_pOuterEVR;
+  CMacrovisionKicker *m_pMacrovisionKicker;
   bool m_fUseInternalTimer;
   bool m_bNeedNewDevice;
 

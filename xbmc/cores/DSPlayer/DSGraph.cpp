@@ -119,7 +119,21 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //g_dllMpcSubs.GetSubtitlesList();
 
   if (m_pMediaControl)
-    m_pMediaControl->Run();
+    hr = m_pMediaControl->Run();
+
+/*  if (hr == S_FALSE)
+  {
+    hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
+    if (hr == VFW_S_STATE_INTERMEDIATE)
+    {
+      while (hr != S_OK)
+      {
+        hr = m_pMediaControl->Run();
+        hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
+      }
+    }
+  }*/
+
 
   m_currentSpeed = 10000;
 
@@ -597,22 +611,25 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
 void CDSGraph::SetAudioStream(int iStream)
 {
 
-  if (m_pGraphBuilder->GetDsConfig()->GetStreamSelector())
+  IAMStreamSelect *stream = m_pGraphBuilder->GetDsConfig()->GetStreamSelector();
+  if (stream)
   {
+    std::map<long, IAMStreamSelectInfos *> audioStreams = m_pGraphBuilder->GetDsConfig()->GetAudioStreams();
+
     int i =0; long lIndex = 0;
-    for (std::map<long, IAMStreamSelectInfos *>::const_iterator it = m_pGraphBuilder->GetDsConfig()->GetAudioStreams().begin();
-      it != m_pGraphBuilder->GetDsConfig()->GetAudioStreams().end(); ++it, i++)
+    for (std::map<long, IAMStreamSelectInfos *>::iterator it = audioStreams.begin();
+      it != audioStreams.end(); ++it, i++)
     {
       /* Disable all streams */
-      m_pGraphBuilder->GetDsConfig()->GetStreamSelector()->Enable(it->first, 0);
+      stream->Enable(it->first, 0);
       it->second->flags = 0;
       if (iStream == i)
         lIndex = it->first;
     }
 
-    if (SUCCEEDED(m_pGraphBuilder->GetDsConfig()->GetStreamSelector()->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
+    if (SUCCEEDED(stream->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
     {
-      m_pGraphBuilder->GetDsConfig()->GetAudioStreams()[lIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+      audioStreams[lIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       CLog::Log(LOGDEBUG, "%s Sucessfully selected audio stream", __FUNCTION__);
     }
   } else {

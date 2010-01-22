@@ -47,13 +47,13 @@ public:
 
   COuterVMR9(const TCHAR* pName, LPUNKNOWN pUnk, CVMR9AllocatorPresenter *_pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
-    CoCreateInstance(CLSID_VideoMixingRenderer9,NULL,CLSCTX_ALL,__uuidof(m_pVMR),(void**) &m_pVMR);
+    CoCreateInstance(CLSID_VideoMixingRenderer9, NULL, CLSCTX_ALL, __uuidof(m_pVMR), (void**) &m_pVMR);
     m_pAllocatorPresenter = _pAllocatorPresenter;
   }
 
   ~COuterVMR9()
   {
-    m_pVMR = NULL;
+    SAFE_RELEASE(m_pVMR);
   }
 
   DECLARE_IUNKNOWN;
@@ -82,12 +82,14 @@ public:
   STDMETHODIMP GetNativeVideoSize(LONG* lpWidth, LONG* lpHeight, LONG* lpARWidth, LONG* lpARHeight)
   {
     IVMRWindowlessControl9* pWC9 = NULL;
+    HRESULT hr = E_NOTIMPL;
     m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9);
     
     if(pWC9)
-      return pWC9->GetNativeVideoSize(lpWidth, lpHeight, lpARWidth, lpARHeight);
-
-    return E_NOTIMPL;
+      hr = pWC9->GetNativeVideoSize(lpWidth, lpHeight, lpARWidth, lpARHeight);
+    
+    SAFE_RELEASE(pWC9);
+    return hr;
   }
 
   STDMETHODIMP GetMinIdealVideoSize(LONG* lpWidth, LONG* lpHeight) {return E_NOTIMPL;}
@@ -96,12 +98,13 @@ public:
 
   STDMETHODIMP SetVideoPosition(const LPRECT lpSRCRect, const LPRECT lpDSTRect) {return E_NOTIMPL;}
 
-    STDMETHODIMP GetVideoPosition(LPRECT lpSRCRect, LPRECT lpDSTRect)
+  STDMETHODIMP GetVideoPosition(LPRECT lpSRCRect, LPRECT lpDSTRect)
   {
+    HRESULT hr = E_NOTIMPL;
     IVMRWindowlessControl9* pWC9 = NULL;
     if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
-      return pWC9->GetVideoPosition(lpSRCRect, lpDSTRect);
+      hr = pWC9->GetVideoPosition(lpSRCRect, lpDSTRect);
     }
     SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
@@ -113,6 +116,7 @@ public:
     if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       *lpAspectRatioMode = VMR_ARMODE_NONE;
+      SAFE_RELEASE(pWC9);
       return S_OK;
     }
     SAFE_RELEASE(pWC9);
@@ -134,8 +138,8 @@ public:
   STDMETHODIMP GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo** ppTInfo) {return E_NOTIMPL;}
   STDMETHODIMP GetIDsOfNames(REFIID riid, LPOLESTR* rgszNames, UINT cNames, LCID lcid, DISPID* rgDispId) {return E_NOTIMPL;}
   STDMETHODIMP Invoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult, EXCEPINFO* pExcepInfo, UINT* puArgErr) {return E_NOTIMPL;}
-    STDMETHODIMP put_Caption(BSTR strCaption) {return E_NOTIMPL;}
-    STDMETHODIMP get_Caption(BSTR* strCaption) {return E_NOTIMPL;}
+  STDMETHODIMP put_Caption(BSTR strCaption) {return E_NOTIMPL;}
+  STDMETHODIMP get_Caption(BSTR* strCaption) {return E_NOTIMPL;}
   STDMETHODIMP put_WindowStyle(long WindowStyle) {return E_NOTIMPL;}
   STDMETHODIMP get_WindowStyle(long* WindowStyle) {return E_NOTIMPL;}
   STDMETHODIMP put_WindowStyleEx(long WindowStyleEx) {return E_NOTIMPL;}
@@ -159,7 +163,7 @@ public:
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
       *pWidth = d.right-d.left;
-      //*pWidth = d.Width();
+      SAFE_RELEASE(pWC9);
       return hr;
     }
     SAFE_RELEASE(pWC9);
@@ -176,6 +180,7 @@ public:
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
       *pHeight = g_geometryHelper.GetHeight(d);
+      SAFE_RELEASE(pWC9);
       return hr;
     }
     SAFE_RELEASE(pWC9);
@@ -189,9 +194,9 @@ public:
   STDMETHODIMP put_BorderColor(long Color) {return E_NOTIMPL;}
   STDMETHODIMP get_FullScreenMode(long* FullScreenMode) {return E_NOTIMPL;}
   STDMETHODIMP put_FullScreenMode(long FullScreenMode) {return E_NOTIMPL;}
-    STDMETHODIMP SetWindowForeground(long Focus) {return E_NOTIMPL;}
-    STDMETHODIMP NotifyOwnerMessage(OAHWND hwnd, long uMsg, LONG_PTR wParam, LONG_PTR lParam) {return E_NOTIMPL;}
-    STDMETHODIMP SetWindowPosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
+  STDMETHODIMP SetWindowForeground(long Focus) {return E_NOTIMPL;}
+  STDMETHODIMP NotifyOwnerMessage(OAHWND hwnd, long uMsg, LONG_PTR wParam, LONG_PTR lParam) {return E_NOTIMPL;}
+  STDMETHODIMP SetWindowPosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
   STDMETHODIMP GetWindowPosition(long* pLeft, long* pTop, long* pWidth, long* pHeight) {return E_NOTIMPL;}
   STDMETHODIMP GetMinIdealImageSize(long* pWidth, long* pHeight) {return E_NOTIMPL;}
   STDMETHODIMP GetMaxIdealImageSize(long* pWidth, long* pHeight) {return E_NOTIMPL;}
@@ -200,35 +205,34 @@ public:
   STDMETHODIMP IsCursorHidden(long* CursorHidden) {return E_NOTIMPL;}
 
   // IBasicVideo2
-    STDMETHODIMP get_AvgTimePerFrame(REFTIME* pAvgTimePerFrame) {return E_NOTIMPL;}
-    STDMETHODIMP get_BitRate(long* pBitRate) {return E_NOTIMPL;}
-    STDMETHODIMP get_BitErrorRate(long* pBitErrorRate) {return E_NOTIMPL;}
-    STDMETHODIMP get_VideoWidth(long* pVideoWidth) {return E_NOTIMPL;}
-    STDMETHODIMP get_VideoHeight(long* pVideoHeight) {return E_NOTIMPL;}
-    STDMETHODIMP put_SourceLeft(long SourceLeft) {return E_NOTIMPL;}
-    STDMETHODIMP get_SourceLeft(long* pSourceLeft) {return E_NOTIMPL;}
-    STDMETHODIMP put_SourceWidth(long SourceWidth) {return E_NOTIMPL;}
-    STDMETHODIMP get_SourceWidth(long* pSourceWidth) {return E_NOTIMPL;}
-    STDMETHODIMP put_SourceTop(long SourceTop) {return E_NOTIMPL;}
-    STDMETHODIMP get_SourceTop(long* pSourceTop) {return E_NOTIMPL;}
-    STDMETHODIMP put_SourceHeight(long SourceHeight) {return E_NOTIMPL;}
-    STDMETHODIMP get_SourceHeight(long* pSourceHeight) {return E_NOTIMPL;}
-    STDMETHODIMP put_DestinationLeft(long DestinationLeft) {return E_NOTIMPL;}
-    STDMETHODIMP get_DestinationLeft(long* pDestinationLeft) {return E_NOTIMPL;}
-    STDMETHODIMP put_DestinationWidth(long DestinationWidth) {return E_NOTIMPL;}
-    STDMETHODIMP get_DestinationWidth(long* pDestinationWidth) {return E_NOTIMPL;}
-    STDMETHODIMP put_DestinationTop(long DestinationTop) {return E_NOTIMPL;}
-    STDMETHODIMP get_DestinationTop(long* pDestinationTop) {return E_NOTIMPL;}
-    STDMETHODIMP put_DestinationHeight(long DestinationHeight) {return E_NOTIMPL;}
-    STDMETHODIMP get_DestinationHeight(long* pDestinationHeight) {return E_NOTIMPL;}
-    STDMETHODIMP SetSourcePosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
-    STDMETHODIMP GetSourcePosition(long* pLeft, long* pTop, long* pWidth, long* pHeight)
+  STDMETHODIMP get_AvgTimePerFrame(REFTIME* pAvgTimePerFrame) {return E_NOTIMPL;}
+  STDMETHODIMP get_BitRate(long* pBitRate) {return E_NOTIMPL;}
+  STDMETHODIMP get_BitErrorRate(long* pBitErrorRate) {return E_NOTIMPL;}
+  STDMETHODIMP get_VideoWidth(long* pVideoWidth) {return E_NOTIMPL;}
+  STDMETHODIMP get_VideoHeight(long* pVideoHeight) {return E_NOTIMPL;}
+  STDMETHODIMP put_SourceLeft(long SourceLeft) {return E_NOTIMPL;}
+  STDMETHODIMP get_SourceLeft(long* pSourceLeft) {return E_NOTIMPL;}
+  STDMETHODIMP put_SourceWidth(long SourceWidth) {return E_NOTIMPL;}
+  STDMETHODIMP get_SourceWidth(long* pSourceWidth) {return E_NOTIMPL;}
+  STDMETHODIMP put_SourceTop(long SourceTop) {return E_NOTIMPL;}
+  STDMETHODIMP get_SourceTop(long* pSourceTop) {return E_NOTIMPL;}
+  STDMETHODIMP put_SourceHeight(long SourceHeight) {return E_NOTIMPL;}
+  STDMETHODIMP get_SourceHeight(long* pSourceHeight) {return E_NOTIMPL;}
+  STDMETHODIMP put_DestinationLeft(long DestinationLeft) {return E_NOTIMPL;}
+  STDMETHODIMP get_DestinationLeft(long* pDestinationLeft) {return E_NOTIMPL;}
+  STDMETHODIMP put_DestinationWidth(long DestinationWidth) {return E_NOTIMPL;}
+  STDMETHODIMP get_DestinationWidth(long* pDestinationWidth) {return E_NOTIMPL;}
+  STDMETHODIMP put_DestinationTop(long DestinationTop) {return E_NOTIMPL;}
+  STDMETHODIMP get_DestinationTop(long* pDestinationTop) {return E_NOTIMPL;}
+  STDMETHODIMP put_DestinationHeight(long DestinationHeight) {return E_NOTIMPL;}
+  STDMETHODIMP get_DestinationHeight(long* pDestinationHeight) {return E_NOTIMPL;}
+  STDMETHODIMP SetSourcePosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
+  STDMETHODIMP GetSourcePosition(long* pLeft, long* pTop, long* pWidth, long* pHeight)
   {
     // DVD Nav. bug workaround fix
-    {
-      *pLeft = *pTop = 0;
-      return GetVideoSize(pWidth, pHeight);
-    }
+    *pLeft = *pTop = 0;
+    return GetVideoSize(pWidth, pHeight);
+  }
 /*
     if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
@@ -241,11 +245,9 @@ public:
       return hr;
     }
 */
-    return E_NOTIMPL;
-  }
-    STDMETHODIMP SetDefaultSourcePosition() {return E_NOTIMPL;}
-    STDMETHODIMP SetDestinationPosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
-    STDMETHODIMP GetDestinationPosition(long* pLeft, long* pTop, long* pWidth, long* pHeight)
+  STDMETHODIMP SetDefaultSourcePosition() {return E_NOTIMPL;}
+  STDMETHODIMP SetDestinationPosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
+  STDMETHODIMP GetDestinationPosition(long* pLeft, long* pTop, long* pWidth, long* pHeight)
   {
     IVMRWindowlessControl9* pWC9 = NULL;
     if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
@@ -256,13 +258,14 @@ public:
       *pTop = d.top;
       *pWidth = g_geometryHelper.GetWidth(d);
       *pHeight = g_geometryHelper.GetHeight(d);
+      SAFE_RELEASE(pWC9);
       return hr;
     }
     SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
-    STDMETHODIMP SetDefaultDestinationPosition() {return E_NOTIMPL;}
-    STDMETHODIMP GetVideoSize(long* pWidth, long* pHeight)
+  STDMETHODIMP SetDefaultDestinationPosition() {return E_NOTIMPL;}
+  STDMETHODIMP GetVideoSize(long* pWidth, long* pHeight)
   {
     IVMRWindowlessControl9* pWC9 = NULL;
     if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
@@ -270,27 +273,29 @@ public:
       LONG aw, ah;
       HRESULT hr = pWC9->GetNativeVideoSize(pWidth, pHeight, &aw, &ah);
       *pWidth = *pHeight * aw / ah;
+      SAFE_RELEASE(pWC9);
       return hr;
     }
     SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 
-    STDMETHODIMP GetVideoPaletteEntries(long StartIndex, long Entries, long* pRetrieved, long* pPalette) {return E_NOTIMPL;}
-    STDMETHODIMP GetCurrentImage(long* pBufferSize, long* pDIBImage) {return E_NOTIMPL;}
-    STDMETHODIMP IsUsingDefaultSource() {return E_NOTIMPL;}
-    STDMETHODIMP IsUsingDefaultDestination() {return E_NOTIMPL;}
+  STDMETHODIMP GetVideoPaletteEntries(long StartIndex, long Entries, long* pRetrieved, long* pPalette) {return E_NOTIMPL;}
+  STDMETHODIMP GetCurrentImage(long* pBufferSize, long* pDIBImage) {return E_NOTIMPL;}
+  STDMETHODIMP IsUsingDefaultSource() {return E_NOTIMPL;}
+  STDMETHODIMP IsUsingDefaultDestination() {return E_NOTIMPL;}
 
   STDMETHODIMP GetPreferredAspectRatio(long* plAspectX, long* plAspectY)
   {
+    HRESULT hr = E_NOTIMPL;
     IVMRWindowlessControl9* pWC9 = NULL;
     if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
     {
       LONG w, h;
-      return pWC9->GetNativeVideoSize(&w, &h, plAspectX, plAspectY);
+      hr = pWC9->GetNativeVideoSize(&w, &h, plAspectX, plAspectY);
     }
     SAFE_RELEASE(pWC9);
-    return E_NOTIMPL;
+    return hr;
   }
 };
 
@@ -308,8 +313,9 @@ CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 {
   DeleteVmrSurfaces();
   DeleteSurfaces();
-  
 
+  SAFE_DELETE(m_pMacrovisionKicker);
+  SAFE_DELETE(m_pOuterVMR9);
 }
 
 void CVMR9AllocatorPresenter::DeleteVmrSurfaces()
@@ -318,7 +324,7 @@ void CVMR9AllocatorPresenter::DeleteVmrSurfaces()
 	CAutoLock cRenderLock(&m_RenderLock);
   for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
   {
-    m_pSurfaces[i] = NULL;
+    SAFE_RELEASE(m_pSurfaces[i]);
   }
 }
 
@@ -330,7 +336,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   CLog::Log(LOGDEBUG,"%s %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", __FUNCTION__,
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
-	((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
+	  ((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
 
   if( !lpAllocInfo || !lpNumBuffers )
     return E_POINTER;
@@ -413,8 +419,8 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
       SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
   {
     DShowUtil::ExtractAvgTimePerFrame(&mt,m_rtTimePerFrame);
-    if (mt.formattype==FORMAT_VideoInfo || mt.formattype==FORMAT_MPEGVideo)
-    {
+    if (mt.formattype == FORMAT_VideoInfo || mt.formattype == FORMAT_MPEGVideo) {
+
       VIDEOINFOHEADER *vh = (VIDEOINFOHEADER*)mt.pbFormat;
       m_iVideoWidth = vh->bmiHeader.biWidth;
       m_iVideoHeight = abs(vh->bmiHeader.biHeight);
@@ -426,9 +432,9 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
         m_iVideoHeight = vh->rcTarget.bottom - vh->rcTarget.top;
       else if (vh->rcSource.bottom - vh->rcSource.top > 0)
         m_iVideoHeight = vh->rcSource.bottom - vh->rcSource.top;
-    }
-    else if (mt.formattype==FORMAT_VideoInfo2 || mt.formattype==FORMAT_MPEG2Video)
-    {
+
+    } else if (mt.formattype==FORMAT_VideoInfo2 || mt.formattype==FORMAT_MPEG2Video) {
+
       VIDEOINFOHEADER2 *vh = (VIDEOINFOHEADER2*)mt.pbFormat;
       m_iVideoWidth = vh->bmiHeader.biWidth;
       m_iVideoHeight = abs(vh->bmiHeader.biHeight);
@@ -441,7 +447,9 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
         m_iVideoHeight = vh->rcTarget.bottom - vh->rcTarget.top;
       else if (vh->rcSource.bottom - vh->rcSource.top > 0)
         m_iVideoHeight = vh->rcSource.bottom - vh->rcSource.top;
+
     }
+
     // If 0 defaulting framerate to 23.97...
 		if (m_rtTimePerFrame == 0) 
       m_rtTimePerFrame = 417166;
@@ -451,7 +459,7 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
     g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
 
   }
-
+  SAFE_RELEASE(pVMR9);
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
@@ -506,7 +514,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
   ASSERT( g_Windowing.Get3DDevice() );
   if( !g_Windowing.Get3DDevice() )
     hr =  E_FAIL;
-
   
   return hr;
 }
@@ -567,19 +574,18 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 {
   CheckPointer(ppRenderer, E_POINTER);
 
-  *ppRenderer = NULL;
-
   HRESULT hr;
+  *ppRenderer = NULL;
 
   do
   {
-    CMacrovisionKicker* pMK = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
-    IUnknown* pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
+    m_pMacrovisionKicker = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
+    IUnknown* pUnk = (IUnknown*)(INonDelegatingUnknown*) m_pMacrovisionKicker;
 
-    COuterVMR9 *pOuter = new COuterVMR9(NAME("COuterVMR9"), pUnk, this);
+    m_pOuterVMR9 = new COuterVMR9(NAME("COuterVMR9"), pUnk, this);
 
 
-    pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuter);
+    m_pMacrovisionKicker->SetInner((IUnknown*)(INonDelegatingUnknown*) m_pOuterVMR9);
     IBaseFilter* pBF = NULL;
     pUnk->QueryInterface(__uuidof(IBaseFilter), (void**)&pBF);
 
@@ -593,16 +599,23 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     IAMVideoAccelerator* pAMVA;
     if (SUCCEEDED(pPin->QueryInterface(__uuidof(IAMVideoAccelerator), (void**)&pAMVA)))
       HookAMVideoAccelerator((IAMVideoAcceleratorC*)(IAMVideoAccelerator*)pAMVA);
+
+    SAFE_RELEASE(pPin);
+    SAFE_RELEASE(pAMVA);
+    SAFE_RELEASE(pMemInputPin);
     
     IVMRFilterConfig9* pConfig = NULL;
     pBF->QueryInterface(__uuidof(IVMRFilterConfig9), (void**)&pConfig);
     if(!pConfig)
       break;
 
-    if(1)//s.fVMR9MixerMode)
+    if (1)
     {
       if(FAILED(hr = pConfig->SetNumberOfStreams(1)))
+      {
+        SAFE_RELEASE(pConfig);
         break;
+      }
 
       IVMRMixerControl9* pMC;
       if (SUCCEEDED(pBF->QueryInterface(__uuidof(IVMRMixerControl9), (void**)&pMC)))
@@ -616,23 +629,39 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
         dwPrefs &= ~MixerPref9_RenderTargetMask; 
         dwPrefs |= MixerPref9_RenderTargetYUV;
 
-        pMC->SetMixingPrefs(dwPrefs);    
+        pMC->SetMixingPrefs(dwPrefs); 
+
+        SAFE_RELEASE(pMC);
       }
     }
 
     if(FAILED(hr = pConfig->SetRenderingMode(VMR9Mode_Renderless)))
+    {
+      SAFE_RELEASE(pConfig);
       break;
+    }
 
     IVMRSurfaceAllocatorNotify9* pSAN;
     if (FAILED(pBF->QueryInterface(__uuidof(IVMRSurfaceAllocatorNotify9), (void**)&pSAN)))
+    {
+      SAFE_RELEASE(pConfig);
       break;
+    }
+
     DWORD_PTR MY_USER_ID = 0xACDCACDC;
     if(FAILED(hr = pSAN->AdviseSurfaceAllocator(MY_USER_ID, static_cast<IVMRSurfaceAllocator9*>(this)))
     || FAILED(hr = AdviseNotify(pSAN)))
+    {
+      SAFE_RELEASE(pConfig);
+      SAFE_RELEASE(pSAN);
       break;
+    }
 
-    *ppRenderer = (IUnknown*)pBF;
-    pBF = NULL;
+    SAFE_RELEASE(pConfig);
+    SAFE_RELEASE(pSAN);
+
+    *ppRenderer = (IUnknown *) pBF;
+    SAFE_RELEASE(pBF);
 
     return S_OK;
   }
@@ -675,6 +704,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   {
     // When using VMR9AllocFlag_TextureSurface
     // Didnt got it working yet
+    SAFE_RELEASE(pTexture);
   }
   else
   {

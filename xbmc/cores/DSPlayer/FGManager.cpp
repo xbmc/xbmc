@@ -560,7 +560,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   hr = ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
   m_pDsConfig = new CDSConfig();
   //Get all custom interface
-  m_pDsConfig->LoadGraph(m_pFG);
+  m_pDsConfig->LoadGraph(m_pFG, m_CfgLoader->GetSplitter());
   //Apparently the graph dont start with wmv when you have unconnected filters
   DShowUtil::RemoveUnconnectedFilters(m_pFG);
 #ifdef _DEBUG
