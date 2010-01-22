@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 18/12/2009-->
-<!--Based on English strings revision 25792-->
+<!--Date of translation: 05/01/2010-->
+<!--Based on English strings revision 26731-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -46,6 +46,19 @@
   <string id="45">Cum</string>
   <string id="46">Cmt</string>
   <string id="47">Paz</string>
+
+  <string id="51">Oca</string>
+  <string id="52">Şub</string>
+  <string id="53">Mar</string>
+  <string id="54">Nis</string>
+  <string id="55">May</string>
+  <string id="56">Haz</string>
+  <string id="57">Tem</string>
+  <string id="58">Ağu</string>
+  <string id="59">Eyl</string>
+  <string id="60">Eki</string>
+  <string id="61">Kas</string>
+  <string id="62">Ara</string>
 
   <string id="98">Görünüm: Otomatik</string>
   <string id="99">Görünüm: Otomatik büyük</string>
@@ -1195,6 +1208,7 @@
   <string id="13422">Slayt gösterisine buradan başla</string>
   <string id="13423">Bu yolu hatırla</string>
   <string id="13424">Piksel tampon nesnelerini kullan</string>
+  <string id="13425">Broadcom Crystal HD</string>
 
   <string id="13500">Ses/Video senkron biçimi</string>
   <string id="13501">Ses saati</string>
@@ -1689,6 +1703,8 @@
   <string id="20250">Partiye devam! (videolar)</string>
   <string id="20251">İçecekler karıştırılıyor (videolar)</string>
   <string id="20252">Bardaklar dolduruluyor (videolar)</string>
+  <string id="20253">WebDAV sunucu (HTTP)</string>
+  <string id="20254">WebDAV sunucu (HTTPS)</string>
 
   <string id="20300">Web sunucu dizini (HTTP)</string>
   <string id="20301">Web sunucu dizini (HTTPS)</string>
@@ -1836,6 +1852,8 @@
   <string id="20443">Bu yolun içindeki tüm öğelerin bilgilerini</string>
   <string id="20444">yenilemek istiyor musunuz?</string>
   <string id="20445">Fanart</string>
+  <string id="20446">NFO-dosyası bulundu.</string>
+  <string id="20447">İnternet'ten yenilensin mi?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>

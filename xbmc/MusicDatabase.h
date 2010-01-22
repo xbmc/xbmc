@@ -197,6 +197,7 @@ public:
   void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );
   void ImportKaraokeInfo(const CStdString &inputFile );
 
+  void SetPropertiesForFileItem(CFileItem& item);
   static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
   static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
 protected:

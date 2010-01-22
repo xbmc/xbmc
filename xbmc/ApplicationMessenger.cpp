@@ -33,6 +33,7 @@
 #include "GUIWindowSlideShow.h"
 #include "utils/Builtins.h"
 #include "utils/Network.h"
+#include "utils/log.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -406,7 +407,7 @@ case TMSG_POWERDOWN:
       g_graphicsContext.ToggleFullScreenRoot();
       g_graphicsContext.Unlock();
       break;
-      
+
     case TMSG_MINIMIZE:
       g_application.Minimize();
       break;
@@ -520,6 +521,14 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_GUI_DIALOG_CLOSE:
+      {
+        CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
+        if (dialog)
+          dialog->Close_Internal(pMsg->dwParam1 > 0);
+      }
+      break;
+
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
         g_windowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
@@ -546,6 +555,24 @@ case TMSG_POWERDOWN:
       g_windowManager.Render_Internal();
       break;
 
+    case TMSG_GUI_ACTION:
+      {
+        if (pMsg->lpVoid)
+        {
+          if (pMsg->dwParam1 == WINDOW_INVALID)
+            g_application.OnAction(*(CAction *)pMsg->lpVoid);
+          else
+          {
+            CGUIWindow *pWindow = g_windowManager.GetWindow(pMsg->dwParam1);  
+            if (pWindow)
+              pWindow->OnAction(*(CAction *)pMsg->lpVoid);
+            else
+              CLog::Log(LOGWARNING, "Failed to get window with ID %i to send an action to", pMsg->dwParam1);
+          }
+        }
+      }
+      break;
+
 #ifdef HAS_DVD_DRIVE
     case TMSG_OPTICAL_MOUNT:
       {
@@ -561,7 +588,7 @@ case TMSG_POWERDOWN:
         share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
         g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
       }
-      break; 
+      break;
 
     case TMSG_OPTICAL_UNMOUNT:
       {
@@ -570,7 +597,7 @@ case TMSG_POWERDOWN:
         share.strName = share.strPath;
         g_mediaManager.RemoveAutoSource(share);
       }
-      break; 
+      break;
 #endif
   }
 }
@@ -820,6 +847,13 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DIALOG_CLOSE, forceClose ? 1 : 0};
+  tMsg.lpVoid = dialog;
+  SendMessage(tMsg, true);
+}
+
 void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
@@ -840,17 +874,25 @@ void CApplicationMessenger::Render()
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun) 
-{ 
+void CApplicationMessenger::SendAction(const CAction &action, int windowID)
+{
+  ThreadMessage tMsg = {TMSG_GUI_ACTION};
+  tMsg.dwParam1 = windowID;
+  tMsg.lpVoid = (void*)&action;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)
+{
   ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT};
   tMsg.strParam = device;
   tMsg.dwParam1 = (DWORD)bautorun;
   SendMessage(tMsg, false);
-} 
- 
-void CApplicationMessenger::OpticalUnMount(CStdString device) 
-{ 
+}
+
+void CApplicationMessenger::OpticalUnMount(CStdString device)
+{
   ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
   tMsg.strParam = device;
   SendMessage(tMsg, false);
-} 
+}

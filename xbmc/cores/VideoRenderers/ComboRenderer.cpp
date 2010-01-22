@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "ComboRenderer.h"
 #include "Application.h"
@@ -198,7 +198,7 @@ void CComboRenderer::FlipPage(int source)
 }
 
 void CComboRenderer::YV12toYUY2()
-{ 
+{
   int index = m_iYV12RenderBuffer;
   if (!m_RGBSurface[m_iYUY2RenderBuffer]) return;
 

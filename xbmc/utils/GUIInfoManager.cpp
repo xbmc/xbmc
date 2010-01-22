@@ -498,7 +498,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Left(9).Equals("timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(info.Mid(9))));
     else if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
     else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
-    else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
+    else if (info.Left(9).Equals("property("))
+      return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
     else
       ret = TranslateMusicPlayerString(strTest.Mid(12));
   }
@@ -617,8 +618,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
     else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
-    else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
-    else if (info.Equals("onprevious")) ret = CONTAINER_ON_PREVIOUS;
+    else if (info.Equals("onnext")) ret = CONTAINER_MOVE_NEXT;
+    else if (info.Equals("onprevious")) ret = CONTAINER_MOVE_PREVIOUS;
+    else if (info.Equals("onscrollnext")) ret = CONTAINER_SCROLL_NEXT;
+    else if (info.Equals("onscrollprevious")) ret = CONTAINER_SCROLL_PREVIOUS;
     else if (info.Equals("totaltime")) ret = CONTAINER_TOTALTIME;
     else if (info.Equals("scrolling"))
       return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
@@ -670,7 +673,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(CONTAINER_PROPERTY, id, compareString));
     }
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
-    if (id && (ret == CONTAINER_ON_NEXT || ret == CONTAINER_ON_PREVIOUS || ret == CONTAINER_NUM_PAGES ||
+    if (id && ((ret >= CONTAINER_SCROLL_PREVIOUS && ret <= CONTAINER_SCROLL_NEXT) || ret == CONTAINER_NUM_PAGES ||
                ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
       return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
   }
@@ -913,6 +916,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   if (info.Equals("title")) return MUSICPLAYER_TITLE;
   else if (info.Equals("album")) return MUSICPLAYER_ALBUM;
   else if (info.Equals("artist")) return MUSICPLAYER_ARTIST;
+  else if (info.Equals("albumartist")) return MUSICPLAYER_ALBUM_ARTIST;
   else if (info.Equals("year")) return MUSICPLAYER_YEAR;
   else if (info.Equals("genre")) return MUSICPLAYER_GENRE;
   else if (info.Equals("duration")) return MUSICPLAYER_DURATION;
@@ -957,7 +961,8 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
     return GetPictureLabel(info);
 
-  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET)
+  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET &&
+      info - (LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET) < (int)m_listitemProperties.size())
   { // grab the property
     if (!m_currentFile)
       return "";
@@ -1045,6 +1050,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
+  case MUSICPLAYER_ALBUM_ARTIST:
   case MUSICPLAYER_GENRE:
   case MUSICPLAYER_YEAR:
   case MUSICPLAYER_TRACK_NUMBER:
@@ -1789,7 +1795,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty());
-  else if (condition == CONTAINER_ON_NEXT || condition == CONTAINER_ON_PREVIOUS)
+  else if (condition >= CONTAINER_SCROLL_PREVIOUS && condition <= CONTAINER_SCROLL_NEXT)
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
     // can only happen if the list has focus.
@@ -1798,7 +1804,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     {
       map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
       if (it != m_containerMoves.end())
-        bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+      {
+        if (condition > CONTAINER_STATIC) // moving up
+          bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
+        else
+          bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
+      }
     }
   }
   else if (g_application.IsPlaying())
@@ -2143,7 +2154,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
-          if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && CUtil::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2153,7 +2164,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
-          if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && CUtil::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2188,12 +2199,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
           bReturn = g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
-      case CONTAINER_ON_NEXT:
-      case CONTAINER_ON_PREVIOUS:
+      case CONTAINER_SCROLL_PREVIOUS:
+      case CONTAINER_MOVE_PREVIOUS:
+      case CONTAINER_MOVE_NEXT:
+      case CONTAINER_SCROLL_NEXT:
         {
           map<int,int>::const_iterator it = m_containerMoves.find(info.GetData1());
           if (it != m_containerMoves.end())
-            bReturn = condition == CONTAINER_ON_NEXT ? it->second > 0 : it->second < 0;
+          {
+            if (condition > CONTAINER_STATIC) // moving up
+              bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
+            else
+              bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
+          }
         }
         break;
       case CONTAINER_CONTENT:
@@ -2481,7 +2499,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
     else
     { // no window specified - assume active
-      window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+      window = GetWindowWithCondition(contextWindow, 0);
     }
 
     if (window)
@@ -2904,6 +2922,9 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     break;
   case MUSICPLAYER_ARTIST:
     if (tag.GetArtist().size()) { return tag.GetArtist(); }
+    break;
+  case MUSICPLAYER_ALBUM_ARTIST:
+    if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtist(); }
     break;
   case MUSICPLAYER_YEAR:
     if (tag.GetYear()) { return tag.GetYearString(); }
@@ -3540,7 +3561,10 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
       return (int)i + MULTI_INFO_START;
   // return the new offset
   m_multiInfo.push_back(info);
-  return (int)m_multiInfo.size() + MULTI_INFO_START - 1;
+  int id = (int)m_multiInfo.size() + MULTI_INFO_START - 1;
+  if (id > MULTI_INFO_END)
+    CLog::Log(LOGERROR, "%s - too many multiinfo bool/labels in this skin", __FUNCTION__);
+  return id;
 }
 
 int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
@@ -3775,7 +3799,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         CUtil::RemoveSlashAtEnd(path);
         path=CUtil::GetFileName(path);
       }
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
     }
   case LISTITEM_FILENAME_AND_PATH:
@@ -3788,7 +3812,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else
         path = item->m_strPath;
       path = CURL(path).GetWithoutUserDetails();
-      CUtil::UrlDecode(path);
+      CUtil::URLDecode(path);
       return path;
     }
   case LISTITEM_PICTURE_PATH:

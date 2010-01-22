@@ -374,27 +374,6 @@ Section "Uninstall"
 SectionEnd
 
 ;--------------------------------
-;DirectX webinstaller Section
-
-!if "${xbmc_target}" == "dx"
-Section "DirectX WebInstall" SEC_DIRECTX
- 
-  SectionIn 1 2
- 
-  SetOutPath "$TEMP"
-  File "${xbmc_root}\Xbmc\dxwebsetup.exe"
-  DetailPrint "Running DirectX Setup..."
-  ExecWait '"$TEMP\dxwebsetup.exe" /Q /r:n' $DirectXSetupError
-  DetailPrint "Finished DirectX Setup"
- 
-  Delete "$TEMP\dxwebsetup.exe"
- 
-  SetOutPath "$INSTDIR"
- 
-SectionEnd
-!endif
-
-;--------------------------------
 ;vs redist installer Section
 
 Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
@@ -411,3 +390,44 @@ Section "Microsoft Visual C++ 2008 Redistributable Package (x86)" SEC_VCREDIST
  
   SetOutPath "$INSTDIR"
 SectionEnd
+
+;--------------------------------
+;DirectX webinstaller Section
+
+!if "${xbmc_target}" == "dx"
+Section "DirectX WebInstall" SEC_DIRECTX
+ 
+  SectionIn 1 2
+ 
+  SetOutPath "$TEMP"
+  File "${xbmc_root}\Xbmc\dxwebsetup.exe"
+  DetailPrint "Running DirectX Setup..."
+  ExecWait '"$TEMP\dxwebsetup.exe" /Q /r:n' $DirectXSetupError
+  Delete "$TEMP\dxwebsetup.exe"
+  SetOutPath "$INSTDIR"
+
+  ;do minimal install if webinstaller failed for some reason
+  IfFileExists $SYSDIR\D3DX9_42.dll done
+  SetOutPath "$TEMP\dxsetup"
+  File "${xbmc_root}\..\dependencies\dxsetup\Aug2009_d3dx9_42_x86.cab"
+  File "${xbmc_root}\..\dependencies\dxsetup\dsetup32.dll"
+  File "${xbmc_root}\..\dependencies\dxsetup\DSETUP.dll"
+  File "${xbmc_root}\..\dependencies\dxsetup\dxdllreg_x86.cab"
+  File "${xbmc_root}\..\dependencies\dxsetup\DXSETUP.exe"
+  File "${xbmc_root}\..\dependencies\dxsetup\dxupdate.cab"
+  ExecWait '"$TEMP\dxsetup\dxsetup.exe" /silent' $DirectXSetupError
+  RMDir /r "$TEMP\dxsetup"
+  SetOutPath "$INSTDIR"
+
+  done:
+  DetailPrint "Finished DirectX Setup"
+  
+SectionEnd
+
+Section "-Check DirectX installation" SEC_DIRECTXCHECK
+
+  IfFileExists $SYSDIR\D3DX9_42.dll +2 0
+    MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "DirectX9 wasn't installed properly.$\nPlease download the DirectX End-User Runtimes from Microsoft and install it again."
+
+SectionEnd
+!endif

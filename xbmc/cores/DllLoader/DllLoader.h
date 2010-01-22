@@ -55,7 +55,7 @@ typedef struct _LoadedList
   DllLoader* pDll;
   _LoadedList* pNext;
 } LoadedList;
-  
+
 class DllLoader : public CoffLoader, public LibraryLoader
 {
 public:
@@ -69,14 +69,14 @@ public:
   virtual int ResolveOrdinal(unsigned long ordinal, void** ptr);
   virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   virtual bool IsSystemDll() { return m_bSystemDll; }
-  virtual HMODULE GetHModule() { return (HMODULE)hModule; }  
-  
+  virtual HMODULE GetHModule() { return (HMODULE)hModule; }
+
   Export* GetExportByFunctionName(const char* sFunctionName);
   Export* GetExportByOrdinal(unsigned long ordinal);
-protected:  
+protected:
   int Parse();
   int ResolveImports();
-  
+
   void AddExport(unsigned long ordinal, void* function, void* track_function = NULL);
   void AddExport(char* sFunctionName, unsigned long ordinal, void* function, void* track_function = NULL);
   void AddExport(char* sFunctionName, void* function, void* track_function = NULL);
@@ -101,7 +101,7 @@ protected:
   void PrintImportLookupTable(unsigned long ImportLookupTable_RVA);
   void PrintImportTable(ImportDirTable_t *ImportDirTable);
   void PrintExportTable(ExportDirTable_t *ExportDirTable);
-  
+
   int ResolveOrdinal(char*, unsigned long, void**);
   int ResolveName(char*, char*, void **);
   char* ResolveReferencedDll(char* dll);

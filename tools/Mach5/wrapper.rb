@@ -1672,6 +1672,10 @@ mappings = {
 'popen' => true,
 'printf' => true,
 'read' => true,
+'opendir' => true,
+'readdir' => true,
+'closedir' => true,
+'rewinddir' => true,
 #'realloc' => true,
 'rewind' => true,
 'stat' => true,
@@ -1688,7 +1692,7 @@ prefix_python = '___py_wrap_'
 mappings_python = {
   'getcwd' => true, 'chdir' => true, 'access' => true, 'unlink' => true, 'chmod' => true, 
   'rmdir' => true, 'utime' => true, 'rename' => true, 'mkdir' => true,  
-  'opendir' => true, 'dlopen' => true, 'dlclose' => true, 'dlsym' => true,
+  'dlopen' => true, 'dlclose' => true, 'dlsym' => true,
   'lstat' => true
 }
 

@@ -48,7 +48,7 @@ Export win32_exports[] =
   { "SetEvent",                                     -1, (void*)SetEvent,                                     NULL },
 //  { "GetModuleHandleA",                             -1, (void*)dllGetModuleHandleA,                          NULL },
   { "CreateFileA",                                  -1, (void*)dllCreateFileA,                               NULL },
-  { "LoadLibraryExA",                               -1, (void*)dllLoadLibraryExA,                            (void*)track_LoadLibraryExA }, 
+  { "LoadLibraryExA",                               -1, (void*)dllLoadLibraryExA,                            (void*)track_LoadLibraryExA },
   { "GetModuleFileNameA",                           -1, (void*)dllGetModuleFileNameA,                        NULL },
 // potential vfs stuff
 //  { "CreateDirectoryA",                             -1, (void*)dllCreateDirectoryA,                          NULL },
@@ -279,7 +279,7 @@ void Win32DllLoader::OverrideImports(const CStdString &dll)
     return;
   }
 
-  // loop over all imported dlls 
+  // loop over all imported dlls
   for (int i = 0; imp_desc[i].Characteristics != 0; i++)
   {
     char *dllName = (char*)(image_base + imp_desc[i].Name);
@@ -290,7 +290,7 @@ void Win32DllLoader::OverrideImports(const CStdString &dll)
       // this will do a loadlibrary on it, which should effectively make sure that it's hooked
       // Note that the library has obviously already been loaded by the OS (as it's implicitly linked)
       // so all this will do is insert our hook and make sure our DllLoaderContainer knows about it
-      HMODULE hModule = dllLoadLibraryA(dllName); 
+      HMODULE hModule = dllLoadLibraryA(dllName);
       if (hModule)
         m_referencedDlls.push_back(hModule);
     }

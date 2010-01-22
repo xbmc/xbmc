@@ -21,7 +21,7 @@
 
 /*!
 \file Texture.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_TEXTURE_H

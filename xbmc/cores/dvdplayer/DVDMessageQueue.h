@@ -26,12 +26,47 @@
 #include <list>
 #include "CriticalSection.h"
 
-typedef struct stDVDMessageListItem
+struct DVDMessageListItem
 {
-  CDVDMsg* pMsg;
-  int priority;
-}
-DVDMessageListItem;
+  DVDMessageListItem(CDVDMsg* msg, int prio)
+  {
+    message  = msg->Acquire();
+    priority = prio;
+  }
+  DVDMessageListItem()
+  {
+    message  = NULL;
+    priority = 0;
+  }
+  DVDMessageListItem(const DVDMessageListItem& item)
+  {
+    if(item.message)
+      message = item.message->Acquire();
+    else
+      message = NULL;
+    priority = item.priority;
+  }
+ ~DVDMessageListItem()
+  {
+    if(message)
+      message->Release();
+  }
+
+  DVDMessageListItem& operator=(const DVDMessageListItem& item)
+  {
+    if(message)
+      message->Release();
+    if(item.message)
+      message = item.message->Acquire();
+    else
+      message = NULL;
+    priority = item.priority;
+    return *this;
+  }
+
+  CDVDMsg* message;
+  int      priority;
+};
 
 enum MsgQueueReturnCode
 {
@@ -61,9 +96,14 @@ public:
   /**
    * msg,       message type from DVDMessage.h
    * timeout,   timeout in msec
+   * priority,  minimum priority to get, outputs returned packets priority
    */
-  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority = 0);
-
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds)
+  {
+    int priority = 0;
+    return Get(pMsg, iTimeoutInMilliSeconds, priority);
+  }
 
   int GetDataSize() const               { return m_iDataSize; }
   unsigned GetPacketCount(CDVDMsg::Message type);
@@ -75,7 +115,7 @@ public:
   int  GetLevel() const;
 
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
-  void SetMaxTimeSize(double sec)       { m_TimeSize  = 0.5 / std::max(1.0, sec); }
+  void SetMaxTimeSize(double sec)       { m_TimeSize  = 1.0 / std::max(1.0, sec); }
   int GetMaxDataSize() const            { return m_iMaxDataSize; }
   bool IsInited() const                 { return m_bInitialized; }
 

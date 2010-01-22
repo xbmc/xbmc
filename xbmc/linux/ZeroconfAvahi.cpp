@@ -310,7 +310,7 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
 void CZeroconfAvahi::shutdownCallback(AvahiTimeout *fp_e, void *fp_data)
 {
   CZeroconfAvahi* p_instance = static_cast<CZeroconfAvahi*>(fp_data);
-  //should only be called on shutdown 
+  //should only be called on shutdown
   if (p_instance->m_shutdown)
   {
     avahi_threaded_poll_quit(p_instance->mp_poll);

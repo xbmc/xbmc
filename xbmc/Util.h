@@ -97,8 +97,8 @@ public:
   static bool IsInZIP(const CStdString& strFile);
   static bool IsInArchive(const CStdString& strFile);
   static bool IsSpecial(const CStdString& strFile);
-  static bool IsPlugin(const CStdString& strFile); 
-  static bool IsPluginRoot(const CStdString& strFile); 
+  static bool IsPlugin(const CStdString& strFile);
+  static bool IsPluginRoot(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
@@ -113,12 +113,14 @@ public:
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
-  static void UrlDecode(CStdString& strURLData);
+  static void URLDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
-  static bool IsFTP(const CStdString& strFile);  
+  static bool IsXBMS(const CStdString& strFile);
+  static bool IsURL(const CStdString& strFile);
+  static bool IsFTP(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
   static bool IsWritable(const CStdString& strFile);
@@ -164,7 +166,7 @@ public:
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
-  
+
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
@@ -193,7 +195,7 @@ public:
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
-  
+
   static void InitRandomSeed();
 
 #ifdef _LINUX

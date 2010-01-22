@@ -32,13 +32,13 @@ class CWinEventsSDL : public CWinEventsBase
 {
 public:
   static bool MessagePump();
-  
+
 protected:
-#ifdef __APPLE__  
+#ifdef __APPLE__
   static bool ProcessOSXShortcuts(SDL_Event& event);
 #elif defined(_LINUX)
   static bool ProcessLinuxShortcuts(SDL_Event& event);
-#endif  
+#endif
 };
 
 #endif // WINDOW_EVENTS_SDL_H

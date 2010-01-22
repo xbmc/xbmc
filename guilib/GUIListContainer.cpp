@@ -150,7 +150,7 @@ bool CGUIListContainer::MoveUp(bool wrapAround)
       if (offset < 0) offset = 0;
       SetCursor(m_items.size() - offset - 1);
       ScrollToOffset(offset);
-      g_infoManager.SetContainerMoving(GetID(), -1);
+      SetContainerMoving(-1);
     }
   }
   else
@@ -175,7 +175,7 @@ bool CGUIListContainer::MoveDown(bool wrapAround)
   { // move first item in list, and set our container moving in the "down" direction
     SetCursor(0);
     ScrollToOffset(0);
-    g_infoManager.SetContainerMoving(GetID(), 1);
+    SetContainerMoving(1);
   }
   else
     return false;
@@ -215,7 +215,7 @@ void CGUIListContainer::SetCursor(int cursor)
   if (cursor > m_itemsPerPage - 1) cursor = m_itemsPerPage - 1;
   if (cursor < 0) cursor = 0;
   if (!m_wasReset)
-    g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
+    SetContainerMoving(cursor - m_cursor);
   m_cursor = cursor;
 }
 
@@ -243,6 +243,42 @@ void CGUIListContainer::SelectItem(int item)
     }
   }
 }
+
+bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
+{
+  if (!m_focusedLayout || !m_layout)
+    return false;
+
+  int row = 0;
+  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+  while (row < m_itemsPerPage + 1)  // 1 more to ensure we get the (possible) half item at the end.
+  {
+    const CGUIListItemLayout *layout = (row == m_cursor) ? m_focusedLayout : m_layout;
+    if (pos < layout->Size(m_orientation) && row + m_offset < (int)m_items.size())
+    { // found correct "row" -> check horizontal
+      if (!InsideLayout(layout, point))
+        return false;
+
+      SetContainerMoving(row - m_cursor);
+      m_cursor = row;
+      CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+      if (focusedLayout)
+      {
+        CPoint pt(point);
+        if (m_orientation == VERTICAL)
+          pt.y = pos;
+        else
+          pt.x = pos;
+        focusedLayout->SelectItemFromPoint(pt);
+      }
+      return true;
+    }
+    row++;
+    pos -= layout->Size(m_orientation);
+  }
+  return false;
+}
+
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height,
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,

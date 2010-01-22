@@ -24,7 +24,6 @@
 #include "GUIDialog.h"
 #include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
-#include "MouseStat.h"
 
 using namespace std;
 
@@ -238,11 +237,10 @@ void CGUIButtonControl::UpdateColors()
   m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 
-bool CGUIButtonControl::OnMouseClick(int button, const CPoint &point)
+bool CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (button == MOUSE_LEFT_BUTTON)
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
-    g_Mouse.SetState(MOUSE_STATE_CLICK);
     CAction action;
     action.id = ACTION_SELECT_ITEM;
     OnAction(action);

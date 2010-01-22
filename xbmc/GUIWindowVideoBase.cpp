@@ -31,6 +31,7 @@
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"
@@ -188,6 +189,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
+
+          if (item->m_strPath.Equals("add") || item->IsParentFolder())
+            return false;
+
           if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
             info.strContent = "plugin";
           else if(m_vecItems->IsLiveTV())
@@ -297,7 +302,12 @@ void CGUIWindowVideoBase::UpdateButtons()
 
 void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
 {
-  if ( !pItem ) return ;
+  if (!pItem)
+    return;
+
+  if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->m_strPath.Equals("add"))
+    return;
+
   // ShowIMDB can kill the item as this window can be closed while we do it,
   // so take a copy of the item now
   CFileItem item(*pItem);
@@ -308,6 +318,39 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
     else
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
+  else
+  {
+    if (item.m_bIsFolder && !info.strContent.Equals("tvshows"))
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(item.m_strPath, items);
+      items.Stack();
+
+      // check for media files
+      bool bFoundFile(false);
+      for (int i = 0; i < items.Size(); ++i)
+      {
+        CFileItemPtr item2 = items[i];
+
+        if (item2->IsVideo() && !item2->IsPlayList() &&
+            !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
+        {
+          item.m_strPath = item2->m_strPath;
+          item.m_bIsFolder = false;
+          bFoundFile = true;
+          break;
+        }
+      }
+
+      // no video file in this folder
+      if (!bFoundFile)
+      {
+        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
+        return;
+      }
+    }
+  }
+
   bool modified = ShowIMDB(&item, info);
   if (modified && !info.strContent.Equals("plugin") && !info.strContent.Equals("livetv") &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
@@ -362,7 +405,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
   CUtil::ClearCache();
-  CScraperParser::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
@@ -485,9 +527,22 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
   }
 
+  bool ignoreNfo(false);
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-  if (result == CNfoFile::FULL_NFO)
-    hasDetails = true;
+  if (result == CNfoFile::ERROR_NFO)
+    ignoreNfo = true;
+  else
+  if (result != CNfoFile::NO_NFO)
+  {
+    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+      hasDetails = true;
+    else
+    {
+      ignoreNfo = true;
+      scrUrl.Clear();
+    }
+  }
+  
   if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     scanner.m_IMDB.SetScraperInfo(info);
 
@@ -632,7 +687,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress,ignoreNfo))
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);
@@ -648,11 +703,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         }
 
         // set path hash
-	if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
+        if (info.strContent.Equals("movies") || info.strContent.Equals("musicvideos"))
         {
           CStdString hash, strParent;
           CFileItemList items;
-	  CUtil::GetParentPath(list.m_strPath,strParent);
+          CUtil::GetParentPath(list.m_strPath,strParent);
           CDirectory::GetDirectory(strParent,items,g_settings.m_videoExtensions);
           scanner.GetPathHash(items, hash);
           m_database.SetPathHash(strParent, hash);
@@ -1224,7 +1279,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
       { // need to update
-        m_vecItems->RemoveDiscCache();
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       return true;
@@ -1890,5 +1945,3 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& 
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }
-
-

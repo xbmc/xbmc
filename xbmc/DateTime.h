@@ -56,6 +56,7 @@ public:
 
   void SetDateTimeSpan(int day, int hour, int minute, int second);
   void SetFromPeriod(const CStdString &period);
+  void SetFromTimeString(const CStdString& time);
 
   int GetDays() const;
   int GetHours() const;

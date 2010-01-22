@@ -82,7 +82,7 @@ void CEventServer::StartServer()
   CSingleLock lock(m_critSection);
   if(m_bRunning)
     return;
-    
+
   // set default port
   string port = (const char*)g_guiSettings.GetString("services.esport");
   assert(port.length());

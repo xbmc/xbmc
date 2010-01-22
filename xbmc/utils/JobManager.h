@@ -43,7 +43,7 @@ private:
 /*!
  \ingroup jobs
  \brief Job Queue class to handle a queue of unique jobs to be processed sequentially
- 
+
  Holds a queue of jobs to be processed sequentially, either first in,first out
  or last in, first out.  Jobs are unique, so queueing multiple copies of the same job
  (based on the CJob::operator==) will not add additional jobs.
@@ -104,7 +104,7 @@ public:
 
   /*!
    \brief The callback used when a job completes.
-   
+
    OnJobComplete is called at the completion of the CJob::DoWork function, and is used
    to return information to the caller on the result of the job.  On returning from this function
    the CJobManager will destroy this job.
@@ -112,7 +112,7 @@ public:
    Subclasses should override this function if they wish to transfer information from the job prior
    to it's deletion.  They must then call this base class function, which will move on to the next
    job.
-   
+
    \sa CJobManager, IJobCallback and  CJob
    */
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
@@ -134,7 +134,7 @@ private:
 /*!
  \ingroup jobs
  \brief Job Manager class for scheduling asynchronous jobs.
- 
+
  Controls asynchronous job execution, by allowing clients to add and cancel jobs.
  Should be accessed via CJobManager::GetInstance().  Jobs are allocated based on
  priority levels.  Lower priority jobs are executed only if there are sufficient
@@ -174,7 +174,7 @@ class CJobManager
     unsigned int  m_id;
     IJobCallback *m_callback;
   };
-  
+
 public:
   /*!
    \brief The only way through which the global instance of the CJobManager should be accessed.

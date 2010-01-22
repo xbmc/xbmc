@@ -96,7 +96,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     database.Open();
     if (database.GetArtistInfo(param.GetArtistId(),artist,false))
       CMusicDatabase::SetPropertiesFromArtist(*pItem,artist);
-    
+
     CAlbum album;
     if (database.GetAlbumInfo(param.GetAlbumId(),album,NULL))
       CMusicDatabase::SetPropertiesFromAlbum(*pItem,album);

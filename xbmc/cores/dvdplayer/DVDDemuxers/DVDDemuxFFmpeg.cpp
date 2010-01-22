@@ -44,6 +44,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "FileSystem/File.h"
+#include "FileSystem/Directory.h"
 #include "utils/log.h"
 #include "Thread.h"
 #include "utils/TimeUtils.h"
@@ -375,14 +376,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if (!iformat)
       {
         // av_probe_input_format failed, re-probe the ffmpeg/ffplay method.
-        // av_open_input_file uses av_probe_input_format2 for probing format, 
-        // starting at 2048, up to max buffer size of 1048576. We just probe to 
-        // the buffer size allocated above so as to avoid seeks on content that 
+        // av_open_input_file uses av_probe_input_format2 for probing format,
+        // starting at 2048, up to max buffer size of 1048576. We just probe to
+        // the buffer size allocated above so as to avoid seeks on content that
         // might not be seekable.
         int max_buf_size = pd.buf_size;
-        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1) 
+        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1)
         {
-          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size); 
+          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size);
           int score= probe_size < max_buf_size ? AVPROBE_SCORE_MAX/4 : 0;
           pd.buf_size = probe_size;
           iformat = m_dllAvFormat.av_probe_input_format2(&pd, 1, &score);
@@ -826,7 +827,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return true;
   }
 
-#ifdef HAS_FILESYSTEM_MMS 
+#ifdef HAS_FILESYSTEM_MMS
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS))
   {
     if (!((CDVDInputStreamMMS*)m_pInput)->SeekTime(time))
@@ -997,8 +998,14 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_DATA:
       {
-#if (! defined USE_EXTERNAL_FFMPEG)
-        if (pStream->codec->codec_id == CODEC_ID_EBU_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
+        m_streams[iId] = new CDemuxStream();
+        m_streams[iId]->type = STREAM_DATA;
+        break;
+      }
+    case CODEC_TYPE_SUBTITLE:
+      {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
+        if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
           m_streams[iId] = st;
@@ -1008,27 +1015,22 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         else
 #endif
         {
-          m_streams[iId] = new CDemuxStream();
-          m_streams[iId]->type = STREAM_DATA;
+          CDemuxStreamSubtitle* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
+          m_streams[iId] = st;
+          if(pStream->codec)
+            st->identifier = pStream->codec->sub_id;
           break;
         }
-      }
-    case CODEC_TYPE_SUBTITLE:
-      {
-        CDemuxStreamSubtitle* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
-        m_streams[iId] = st;
-        if(pStream->codec)
-          st->identifier = pStream->codec->sub_id;
-        break;
       }
     case CODEC_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
-          XFILE::CFile file;
-          std::string fileName = "special://temp/";
+          std::string fileName = "special://temp/fonts/";
+          DIRECTORY::CDirectory::Create(fileName);
           fileName += pStream->filename;
-          if(file.OpenForWrite(fileName) && pStream->codec->extradata)
+          XFILE::CFile file;
+          if(pStream->codec->extradata && file.OpenForWrite(fileName))
           {
             file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
             file.Close();
@@ -1194,7 +1196,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
   if (stream)
   {
     unsigned int in = stream->codec_fourcc;
-    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV 
+    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV
     // are 2 bytes and audio codecs in transport streams have subtle variation
     // e.g AC-3 instead of ac3
     if (stream->type == STREAM_VIDEO && in != 0)

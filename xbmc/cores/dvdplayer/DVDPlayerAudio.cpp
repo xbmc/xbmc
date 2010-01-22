@@ -21,6 +21,7 @@
 
 #include "utils/SingleLock.h"
 #include "DVDPlayerAudio.h"
+#include "DVDPlayer.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -125,9 +126,10 @@ double CPTSInputQueue::Get(__int64 bytes, bool consume)
   return DVD_NOPTS_VALUE;
 }
 
-CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
+CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
 : CThread()
 , m_messageQueue("audio")
+, m_messageParent(parent)
 , m_dvdAudio((bool&)m_bStop)
 {
   m_pClock = pClock;
@@ -136,13 +138,13 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_droptime = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
+  m_started = false;
   m_duration = 0.0;
 
   m_freq = CurrentHostFrequency();
 
-  InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(4.0);
+  m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
 }
 
@@ -153,7 +155,6 @@ CDVDPlayerAudio::~CDVDPlayerAudio()
 
   // close the stream, and don't wait for the audio to be finished
   // CloseStream(true);
-  DeleteCriticalSection(&m_critCodecSection);
 }
 
 bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
@@ -173,6 +174,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_droptime = 0;
   m_audioClock = 0;
   m_stalled = true;
+  m_started = false;
 
   m_synctype = SYNC_DISCON;
   m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
@@ -237,8 +239,6 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
 bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*/, unsigned int size /* = 0*/)
 {
-  EnterCriticalSection(&m_critCodecSection);
-
   /* close current audio codec */
   if( m_pAudioCodec )
   {
@@ -257,15 +257,12 @@ bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*
     CLog::Log(LOGERROR, "Unsupported audio codec");
 
     m_streaminfo.Clear();
-    LeaveCriticalSection(&m_critCodecSection);
     return false;
   }
 
   /* update codec information from what codec gave ut */
   m_streaminfo.channels = m_pAudioCodec->GetChannels();
   m_streaminfo.samplerate = m_pAudioCodec->GetSampleRate();
-
-  LeaveCriticalSection(&m_critCodecSection);
 
   return true;
 }
@@ -358,7 +355,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (m_messageQueue.ReceivedAbortRequest()) return DECODE_FLAG_ABORT;
 
     CDVDMsg* pMsg;
-    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
+    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) && m_started ? 1 : 0;
 
     int timeout;
     if(m_duration > 0)
@@ -367,9 +364,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       timeout = 1000;
 
     // read next packet and return -1 on error
-    LeaveCriticalSection(&m_critCodecSection); //Leave here as this might stall a while
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
-    EnterCriticalSection(&m_critCodecSection);
 
     if (ret == MSGQ_TIMEOUT)
       return DECODE_FLAG_TIMEOUT;
@@ -414,6 +409,13 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       else
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_RESYNC(%f, 0)", m_audioClock);
     }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
+    {
+      if (m_pAudioCodec)
+        m_pAudioCodec->Reset();
+      m_decode.Release();
+      m_started = false;
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
       m_dvdAudio.Flush();
@@ -422,6 +424,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_resampler.Flush();
       m_syncclock = true;
       m_stalled   = true;
+      m_started   = false;
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
@@ -482,7 +485,7 @@ void CDVDPlayerAudio::Process()
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
   int result;
-  bool packetadded;
+  bool packetadded(false);
 
   DVDAudioFrame audioframe;
   m_audioStats.Start();
@@ -490,9 +493,7 @@ void CDVDPlayerAudio::Process()
   while (!m_bStop)
   {
     //Don't let anybody mess with our global variables
-    EnterCriticalSection(&m_critCodecSection);
     result = DecodeFrame(audioframe, m_speed > DVD_PLAYSPEED_NORMAL || m_speed < 0); // blocks if no audio is available, but leaves critical section before doing so
-    LeaveCriticalSection(&m_critCodecSection);
 
     if( result & DECODE_FLAG_ERROR )
     {
@@ -528,7 +529,7 @@ void CDVDPlayerAudio::Process()
       m_dvdAudio.Destroy();
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
-      m_messageQueue.SetMaxTimeSize(4.0 - m_dvdAudio.GetCacheTotal());
+      m_messageQueue.SetMaxTimeSize(8.0 - m_dvdAudio.GetCacheTotal());
     }
 
     if( result & DECODE_FLAG_DROP )
@@ -550,7 +551,7 @@ void CDVDPlayerAudio::Process()
       m_droptime = 0.0;
 
       SetSyncType(audioframe.passthrough);
-      
+
       // add any packets play
       packetadded = OutputPacket(audioframe);
 
@@ -562,6 +563,13 @@ void CDVDPlayerAudio::Process()
     // store the delay for this pts value so we can calculate the current playing
     if(m_speed != DVD_PLAYSPEED_PAUSE && packetadded)
       m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+
+    // signal to our parent that we have initialized
+    if(m_started == false)
+    {
+      m_started = true;
+      m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
+    }
 
     if( m_ptsOutput.Current() == DVD_NOPTS_VALUE )
       continue;
@@ -610,7 +618,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   {
     m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
     if(m_speed == DVD_PLAYSPEED_NORMAL)
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+error, error);
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+error, error);
 
     m_errorbuff = 0;
     m_errorcount = 0;
@@ -651,7 +659,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     {
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+m_error, 0);
       if(m_speed == DVD_PLAYSPEED_NORMAL)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
     }
     else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
     {
@@ -765,11 +773,9 @@ void CDVDPlayerAudio::WaitForBuffers()
 
   // make sure almost all has been rendered
   // leave 500ms to avound buffer underruns
-
-  while( m_dvdAudio.GetDelay() > DVD_TIME_BASE/2 )
-  {
-    Sleep(5);
-  }
+  double delay = m_dvdAudio.GetCacheTime();
+  if(delay > 0.5)
+    Sleep((int)(1000 * (delay - 0.5)));
 }
 
 string CDVDPlayerAudio::GetPlayerInfo()
@@ -784,7 +790,7 @@ int CDVDPlayerAudio::GetAudioBitrate()
 {
   return (int)m_audioStats.GetBitrate();
 }
-  
+
 bool CDVDPlayerAudio::IsPassthrough() const
 {
   return m_pAudioCodec && m_pAudioCodec->NeedPassthrough();

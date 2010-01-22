@@ -41,11 +41,11 @@ void CGUITextureGL::Begin()
 
   glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
   glEnable(GL_TEXTURE_2D);
-  
+
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-     
+
   // diffuse coloring
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
   glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -97,7 +97,7 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   if (m_diffuse.size())
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y1);
   glVertex3f(x[0], y[0], z[0]);
-  
+
   // Top-right vertex (corner)
   glColor4ub(r, g, b, a);
   if (orientation & 4)
@@ -119,7 +119,7 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   if (m_diffuse.size())
     glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x2, diffuse.y2);
   glVertex3f(x[2], y[2], z[2]);
-  
+
   // Bottom-left vertex (corner)
   glColor4ub(r, g, b, a);
   if (orientation & 4)

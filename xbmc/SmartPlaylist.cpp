@@ -350,13 +350,13 @@ CStdString CSmartPlaylistRule::GetVideoResolutionQuery(void)
 {
   CStdString retVal(" in (select distinct idFile from streamdetails where iVideoWidth ");
   int iRes = atoi(m_parameter.c_str());
-  
+
   int min, max;
   if (iRes >= 1080)     { min = 1281; max = INT_MAX; }
   else if (iRes >= 720) { min =  961; max = 1280; }
   else if (iRes >= 540) { min =  721; max =  960; }
   else                  { min =    0; max =  720; }
-  
+
   switch (m_operator)
   {
     case OPERATOR_EQUALS:
@@ -405,7 +405,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     if (op == OPERATOR_DOES_NOT_EQUAL)
       negate = " NOT";
   }
-  else 
+  else
   {
     // the comparison piece
     switch (op)
@@ -440,7 +440,7 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
 
     parameter = CDatabase::FormatSQL(operatorString.c_str(), m_parameter.c_str());
   }
-  
+
   if (m_field == FIELD_LASTPLAYED)
   {
     if (m_operator == OPERATOR_IN_THE_LAST || m_operator == OPERATOR_NOT_IN_THE_LAST)

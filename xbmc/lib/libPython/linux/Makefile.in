@@ -2,6 +2,7 @@ ARCH=@ARCH@
 
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
+
 ifeq (@USE_PYTHON2_6@,1)
     PYVERSION=python2.6
     SO=python26-$(ARCH).so
@@ -51,7 +52,7 @@ else
 endif
 endif
 
-PY=$(wildcard ../Python/Lib/*.py) 
+PY=$(wildcard ../Python/Lib/*.py)
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*.py))
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*.py))
 PY+=$(foreach DIR, $(PYDIRS), $(wildcard ../Python/Lib/$(DIR)/*/*/*.py))

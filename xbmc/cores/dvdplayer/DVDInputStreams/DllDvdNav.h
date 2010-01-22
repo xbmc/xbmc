@@ -24,13 +24,13 @@
 extern "C" {
 #define DVDNAV_COMPILE
  #include <stdint.h>
- 
+
  #include "dvdnav/dvdnav.h"
 
  #ifndef WIN32
  #define WIN32
  #endif // WIN32
- 
+
  #ifndef HAVE_CONFIG_H
  #define HAVE_CONFIG_H
  #endif

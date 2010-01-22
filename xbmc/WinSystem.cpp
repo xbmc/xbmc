@@ -57,7 +57,7 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   newRes.bFullScreen = true;
   newRes.iSubtitles = (int)(0.965 * height);
   newRes.fRefreshRate = refreshRate;
-  newRes.fPixelRatio = 1.0f;  
+  newRes.fPixelRatio = 1.0f;
   newRes.iWidth = width;
   newRes.iHeight = height;
   newRes.strMode.Format("%dx%d", width, height);

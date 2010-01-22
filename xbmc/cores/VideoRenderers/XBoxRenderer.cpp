@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "XBoxRenderer.h"
 #include "Application.h"
@@ -45,13 +45,13 @@ YUVCOEF yuv_coef_bt709 = {
 YUVCOEF yuv_coef_ebu = {
     0.0f,  1.140f,
  -0.396f, -0.581f,
-  2.029f,    0.0f, 
+  2.029f,    0.0f,
 };
 
 YUVCOEF yuv_coef_smtp240m = {
      0.0f,  1.5756f,
  -0.2253f, -0.5000f, /* page above have the 0.5000f as positive */
-  1.8270f,     0.0f,  
+  1.8270f,     0.0f,
 };
 
 
@@ -284,7 +284,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
 
   if(true /*isvobsub*/) // xbox_video.cpp is fixed to 720x576 osd, so this should be fine
   { // vobsubs are given to us unscaled
-    // scale them up to the full output, assuming vobsubs have same 
+    // scale them up to the full output, assuming vobsubs have same
     // pixel aspect ratio as the movie, and are 720 pixels wide
 
     float pixelaspect = m_fSourceFrameRatio * m_iSourceHeight / m_iSourceWidth;
@@ -299,7 +299,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
     xscale = 1.0f;
     yscale = 1.0f;
   }
-  
+
   // horizontal centering, and align to bottom of subtitles line
   osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
@@ -371,7 +371,7 @@ void CXBoxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, 
   m_pOSDATexture[iOSDBuffer]->UnlockRect(0);
 #else
   if (SDL_LockSurface(m_pOSDYTexture[iOSDBuffer]) == 0 &&
-      SDL_LockSurface(m_pOSDATexture[iOSDBuffer]) == 0) 
+      SDL_LockSurface(m_pOSDATexture[iOSDBuffer]) == 0)
   {
     //clear the textures
     memset(m_pOSDYTexture[iOSDBuffer]->pixels, 0, m_pOSDYTexture[iOSDBuffer]->pitch*m_iOSDTextureHeight[iOSDBuffer]);
@@ -766,7 +766,7 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_iSourceWidth = width;
   m_iSourceHeight = height;
   m_iFlags = flags;
-  
+
   // setup what colorspace we live in
   if(flags & CONF_FLAGS_YUV_FULLRANGE)
     m_yuvrange = yuv_range_full;
@@ -779,7 +779,7 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
       m_yuvcoef = yuv_coef_smtp240m; break;
     case CONF_FLAGS_YUVCOEF_BT709:
       m_yuvcoef = yuv_coef_bt709; break;
-    case CONF_FLAGS_YUVCOEF_BT601:    
+    case CONF_FLAGS_YUVCOEF_BT601:
       m_yuvcoef = yuv_coef_bt601; break;
     case CONF_FLAGS_YUVCOEF_EBU:
       m_yuvcoef = yuv_coef_ebu; break;
@@ -802,7 +802,7 @@ int CXBoxRenderer::NextYV12Texture()
 #ifdef MP_DIRECTRENDERING
   int source = m_iYV12RenderBuffer;
   do {
-    source = (source + 1) % m_NumYV12Buffers;    
+    source = (source + 1) % m_NumYV12Buffers;
   } while( source != m_iYV12RenderBuffer
     && m_image[source].flags & IMAGE_FLAG_INUSE);
 
@@ -825,7 +825,7 @@ int CXBoxRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if( source == AUTOSOURCE )
     source = NextYV12Texture();
 
-#ifdef MP_DIRECTRENDERING 
+#ifdef MP_DIRECTRENDERING
     if( source < 0 )
     { /* no free source existed, so create one */
       CSingleLock lock(g_graphicsContext);
@@ -861,12 +861,12 @@ void CXBoxRenderer::ReleaseImage(int source, bool preserve)
 {
   if( m_image[source].flags & IMAGE_FLAG_WRITING )
     SetEvent(m_eventTexturesDone[source]);
-  
+
   m_image[source].flags &= ~IMAGE_FLAG_INUSE;
 
   /* if image should be preserved reserve it so it's not auto seleceted */
   if( preserve )
-    m_image[source].flags |= IMAGE_FLAG_RESERVED;  
+    m_image[source].flags |= IMAGE_FLAG_RESERVED;
 }
 
 void CXBoxRenderer::Reset()
@@ -876,7 +876,7 @@ void CXBoxRenderer::Reset()
     /* reset all image flags, this will cleanup textures later */
     m_image[i].flags = 0;
     /* reset texure locks, abit uggly, could result in tearing */
-    SetEvent(m_eventTexturesDone[i]); 
+    SetEvent(m_eventTexturesDone[i]);
   }
 }
 
@@ -919,7 +919,7 @@ void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 }
 
 void CXBoxRenderer::FlipPage(int source)
-{  
+{
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
@@ -948,7 +948,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   BYTE *s;
   BYTE *d;
   int i, p;
-  
+
   int index = NextYV12Texture();
   if( index < 0 )
     return -1;
@@ -1065,7 +1065,7 @@ void CXBoxRenderer::UnInit()
     DeleteYV12Texture(i);
     DeleteOSDTextures(i);
   }
-  
+
   if (m_hLowMemShader)
   {
 #ifndef _LINUX

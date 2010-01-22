@@ -164,12 +164,12 @@ void CSMB::Init()
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
 #else
-    m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0; 
-    m_context->callbacks.auth_fn = xb_smbc_auth; 
-    orig_cache = m_context->callbacks.get_cached_srv_fn; 
-    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache; 
-    m_context->options.one_share_per_server = false; 
-    m_context->options.browse_max_lmb_count = 0; 
+    m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
+    m_context->callbacks.auth_fn = xb_smbc_auth;
+    orig_cache = m_context->callbacks.get_cached_srv_fn;
+    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
+    m_context->options.one_share_per_server = false;
+    m_context->options.browse_max_lmb_count = 0;
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
 #endif
 
@@ -496,7 +496,7 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
 
       // set up new filehandle (as CFileSMB::Open does)
       strPath = GetAuthenticatedPath(url);
-      
+
       fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
     }
   }

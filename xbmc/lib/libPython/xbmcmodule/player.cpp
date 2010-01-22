@@ -278,6 +278,30 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // Player_OnPlayBackPaused
+  PyDoc_STRVAR(onPlayBackPaused__doc__,
+    "onPlayBackPaused() -- onPlayBackPaused method.\n"
+    "\n"
+    "Will be called when user pauses a playing file");
+
+  PyObject* Player_OnPlayBackPaused(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // Player_OnPlayBackResumed
+  PyDoc_STRVAR(onPlayBackResumed__doc__,
+    "onPlayBackPaused() -- onPlayBackResumed method.\n"
+    "\n"
+    "Will be called when user resumes a paused file");
+
+  PyObject* Player_OnPlayBackResumed(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // Player_IsPlaying
   PyDoc_STRVAR(isPlaying__doc__,
     "isPlayingAudio() -- returns True is xbmc is playing a file.");
@@ -452,50 +476,50 @@ namespace PYXBMC
     g_application.m_pPlayer->SetSubtitleVisible(true);
     g_application.m_pPlayer->AddSubtitle(cLine);
     g_application.m_pPlayer->SetSubtitle(nStream);
-    
+
     Py_INCREF(Py_None);
     return Py_None;
   }
 
-	
+
   // Player_GetSubtitles
   PyDoc_STRVAR(getSubtitles__doc__,
     "getSubtitles() -- get subtitle stream name\n");
-	
+
   PyObject* Player_GetSubtitles(PyObject *self)
   {
     if (g_application.m_pPlayer)
-    {	
+    {
       int i = g_application.m_pPlayer->GetSubtitle();
       CStdString strName;
       g_application.m_pPlayer->GetSubtitleName(i, strName);
 
       if (strName == "Unknown(Invalid)")
-        strName = "";		  
+        strName = "";
       return Py_BuildValue((char*)"s", strName.c_str());
     }
-	  
+
     Py_INCREF(Py_None);
-    return Py_None;	  
-  }	
+    return Py_None;
+  }
 
   // Player_DisableSubtitles
   PyDoc_STRVAR(DisableSubtitles__doc__,
     "DisableSubtitles() -- disable subtitles\n");
-	
+
   PyObject* Player_DisableSubtitles(PyObject *self)
   {
-    if (g_application.m_pPlayer)	  
-    {	
+    if (g_application.m_pPlayer)
+    {
       g_settings.m_currentVideoSettings.m_SubtitleOn = false;
       g_application.m_pPlayer->SetSubtitleVisible(false);
-		
+
       Py_INCREF(Py_None);
       return Py_None;
     }
     return NULL;
   }
-	
+
   PyMethodDef Player_methods[] = {
     {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
@@ -506,6 +530,8 @@ namespace PYXBMC
     {(char*)"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
     {(char*)"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
     {(char*)"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
+    {(char*)"onPlayBackPaused", (PyCFunction)Player_OnPlayBackPaused, METH_VARARGS, onPlayBackPaused__doc__},
+    {(char*)"onPlayBackResumed", (PyCFunction)Player_OnPlayBackResumed, METH_VARARGS, onPlayBackResumed__doc__},
     {(char*)"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
     {(char*)"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
     {(char*)"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},

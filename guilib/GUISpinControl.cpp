@@ -21,7 +21,6 @@
 
 #include "GUISpinControl.h"
 #include "utils/CharsetConverter.h"
-#include "MouseStat.h"
 #include "Key.h"
 
 using namespace std;
@@ -858,52 +857,32 @@ bool CGUISpinControl::HitTest(const CPoint &point) const
 
 bool CGUISpinControl::OnMouseOver(const CPoint &point)
 {
-  if (m_imgspinUpFocus.HitTest(point))
-  {
-    CGUIControl::OnMouseOver(point);
-    m_iSelect = SPIN_BUTTON_UP;
-  }
-  else if (m_imgspinDownFocus.HitTest(point))
-  {
-    CGUIControl::OnMouseOver(point);
-    m_iSelect = SPIN_BUTTON_DOWN;
-  }
-  else
-  {
-    CGUIControl::OnMouseOver(point);
-    m_iSelect = SPIN_BUTTON_UP;
-  }
-  return true;
-}
-
-bool CGUISpinControl::OnMouseClick(int button, const CPoint &point)
-{ // only left button handled
-  if (button != MOUSE_LEFT_BUTTON) return false;
-  if (m_imgspinUpFocus.HitTest(point))
-  {
-    MoveUp();
-  }
   if (m_imgspinDownFocus.HitTest(point))
-  {
-    MoveDown();
-  }
-  return true;
+    m_iSelect = SPIN_BUTTON_DOWN;
+  else
+    m_iSelect = SPIN_BUTTON_UP;
+  return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUISpinControl::OnMouseWheel(char wheel, const CPoint &point)
+bool CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  for (int i = 0; i < abs(wheel); i++)
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
-    if (wheel > 0)
-    {
+    if (m_imgspinUpFocus.HitTest(point))
       MoveUp();
-    }
-    else
-    {
+    else if (m_imgspinDownFocus.HitTest(point))
       MoveDown();
-    }
+    return true;
   }
-  return true;
+  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  {
+    if (event.m_wheel > 0)
+      MoveUp();
+    else
+      MoveDown();
+    return true;
+  }
+  return false;
 }
 
 CStdString CGUISpinControl::GetDescription() const

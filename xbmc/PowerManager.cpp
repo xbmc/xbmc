@@ -23,7 +23,6 @@
 #include "PowerManager.h"
 #include "Application.h"
 #include "KeyboardStat.h"
-#include "MouseStat.h"
 #include "GUISettings.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
@@ -42,6 +41,7 @@
 #endif
 #elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
+extern HWND g_hWnd;
 #endif
 
 #ifdef HAS_LIRC
@@ -128,7 +128,7 @@ void CPowerManager::Initialize()
 
   g_guiSettings.SetInt("powermanagement.shutdownstate", defaultShutdown);
 }
-  
+
 bool CPowerManager::Powerdown()
 {
 
@@ -186,12 +186,17 @@ void CPowerManager::Resume()
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
 #ifdef HAS_SDL
-  // Hack to reclaim focus, thus rehiding system mouse pointer.
-  // Surely there's a better way?
   if (g_Windowing.IsFullScreen())
   {
+#ifdef _WIN32
+    ShowWindow(g_hWnd,SW_RESTORE);
+    SetForegroundWindow(g_hWnd);
+#else
+    // Hack to reclaim focus, thus rehiding system mouse pointer.
+    // Surely there's a better way?
     g_graphicsContext.ToggleFullScreenRoot();
     g_graphicsContext.ToggleFullScreenRoot();
+#endif
   }
   g_application.ResetScreenSaver();
 #endif

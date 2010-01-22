@@ -93,7 +93,7 @@ public:
   virtual void DoRender();
   virtual void RenderNoPresent();
   virtual void Preflight();
-  virtual bool Create(HWND hWnd);
+  virtual bool Create();
   virtual bool Cleanup();
 
   void StartServices();
@@ -200,7 +200,7 @@ public:
   bool ExecuteAction(CGUIActionDescriptor action);
 
   static bool OnEvent(XBMC_Event& newEvent);
-  
+
 
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
@@ -220,10 +220,10 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;
 #endif
-  
+
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif

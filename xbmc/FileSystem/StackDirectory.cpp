@@ -107,7 +107,7 @@ namespace DIRECTORY
                     strStackTitlePath,
                     strStackTitle,
                     strCommonDir        = CUtil::GetParentPath(strPath);
-    
+
     stack.GetDirectory(strPath, files);
 
     if (files.Size() > 1)

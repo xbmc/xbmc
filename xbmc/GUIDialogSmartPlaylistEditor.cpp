@@ -250,16 +250,6 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 {
   CONTROL_ENABLE(CONTROL_OK); // always enabled since we can have no rules -> match everything (as we do with default partymode playlists)
 
-  if (m_playlist.m_playlistRules.size() <= 1)
-  {
-    CONTROL_DISABLE(CONTROL_RULE_REMOVE);
-    CONTROL_DISABLE(CONTROL_MATCH);
-  }
-  else
-  {
-    CONTROL_ENABLE(CONTROL_RULE_REMOVE);
-    CONTROL_ENABLE(CONTROL_MATCH);
-  }
   // name
   if (m_mode == "partyvideo" || m_mode == "partymusic")
   {
@@ -270,6 +260,9 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   {
   SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName);
   }
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_RULE_REMOVE, m_playlist.m_playlistRules.size() > 0);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_MATCH, m_playlist.m_playlistRules.size() > 1);
 
   int currentItem = GetSelectedItem();
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_RULE_LIST);

@@ -230,14 +230,6 @@ bool CButtonTranslator::Load()
     }
   }
 
-  //try to load userdata/Keymap.xml for backward compatibility
-  const CStdString oldKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
-  if( CFile::Exists(oldKeymapPath) )
-  {
-    CLog::Log(LOGWARNING, "CButtonTranslator::Load - Keymap.xml in userdata found (%s). This is DEPRECATED! Please move it to the \"keymaps/\" folder", oldKeymapPath.c_str());
-    success |= LoadKeymap(oldKeymapPath);
-  }
-
   if (!success)
   {
     g_LoadErrorStr.Format("Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
@@ -252,6 +244,7 @@ bool CButtonTranslator::Load()
 #endif
   CStdString lircmapPath;
   CUtil::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
+  lircRemotesMap.clear();
   if(CFile::Exists(lircmapPath))
     success |= LoadLircMap(lircmapPath);
   else
@@ -333,7 +326,6 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     return false; // This is so people who don't have the file won't fail, just warn
   }
 
-  lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
   if (strValue != REMOTEMAPTAG)

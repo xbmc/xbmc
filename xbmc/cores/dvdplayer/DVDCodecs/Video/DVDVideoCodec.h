@@ -35,7 +35,7 @@
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
-{  
+{
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
   BYTE* data[4];      // [4] = alpha channel, currently not used
   int iLineSize[4];   // [4] = alpha channel, currently not used
@@ -57,7 +57,9 @@ struct DVDVideoPicture
   enum EFormat {
     FMT_YUV420P = 0,
     FMT_VDPAU,
-    FMT_NV12
+    FMT_NV12,
+    FMT_UYVY,       // place holder for future expansion
+    FMT_YUY2        //place holder for future expansion
   } format;
 };
 
@@ -146,4 +148,15 @@ public:
    * should return codecs name
    */
   virtual const char* GetName() = 0;
+
+  /*
+   *
+   * How many packets should player remember, so codec
+   * can recover should something cause it to flush
+   * outside of players control
+   */
+  virtual unsigned GetConvergeCount()
+  {
+    return 0;
+  }
 };

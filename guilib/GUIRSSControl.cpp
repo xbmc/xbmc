@@ -96,8 +96,8 @@ void CGUIRSSControl::Render()
     if (m_pReader == NULL)
     {
       if (g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
-        m_scrollInfo.characterPos = m_pReader->m_SavedScrollPos; 
-      else 
+        m_scrollInfo.characterPos = m_pReader->m_SavedScrollPos;
+      else
       {
         if (m_strRSSTags != "")
         {

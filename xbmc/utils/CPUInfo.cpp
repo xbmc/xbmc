@@ -100,7 +100,7 @@ CCPUInfo::CCPUInfo(void)
   RegCloseKey(hKey);
 
   SYSTEM_INFO siSysInfo;
-  GetSystemInfo(&siSysInfo); 
+  GetSystemInfo(&siSysInfo);
   m_cpuCount = siSysInfo.dwNumberOfProcessors;
 
   CoreInfo core;
@@ -166,7 +166,7 @@ CCPUInfo::CCPUInfo(void)
     m_cpuModel = "Unknown";
   }
 
-  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks);
+  readProcStat(m_userTicks, m_niceTicks, m_systemTicks, m_idleTicks, m_ioTicks);
 #endif
 }
 
@@ -193,8 +193,9 @@ int CCPUInfo::getUsedPercentage()
   unsigned long long niceTicks;
   unsigned long long systemTicks;
   unsigned long long idleTicks;
+  unsigned long long ioTicks;
 
-  if (!readProcStat(userTicks, niceTicks, systemTicks, idleTicks))
+  if (!readProcStat(userTicks, niceTicks, systemTicks, idleTicks, ioTicks))
   {
     return 0;
   }
@@ -203,17 +204,19 @@ int CCPUInfo::getUsedPercentage()
   niceTicks -= m_niceTicks;
   systemTicks -= m_systemTicks;
   idleTicks -= m_idleTicks;
+  ioTicks -= m_ioTicks;
 
 #ifdef _WIN32
   int result = (int) ((userTicks + systemTicks - idleTicks) * 100 / (userTicks + systemTicks));
 #else
-  int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks));
+  int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks + ioTicks));
 #endif
 
   m_userTicks += userTicks;
   m_niceTicks += niceTicks;
   m_systemTicks += systemTicks;
   m_idleTicks += idleTicks;
+  m_ioTicks += ioTicks;
 
   m_lastUsedPercentage = result;
 
@@ -272,7 +275,7 @@ CTemperature CCPUInfo::getTemperature()
   if (cmd.IsEmpty() && m_fProcTemperature == NULL)
     return CTemperature();
 
-  if (!cmd.IsEmpty()) 
+  if (!cmd.IsEmpty())
   {
     p = popen (cmd.c_str(), "r");
     if (p)
@@ -284,13 +287,13 @@ CTemperature CCPUInfo::getTemperature()
   else
   {
     // procfs is deprecated in the linux kernel, we should move away from
-    // using it for temperature data.  It doesn't seem that sysfs has a 
+    // using it for temperature data.  It doesn't seem that sysfs has a
     // general enough interface to bother implementing ATM.
     rewind(m_fProcTemperature);
     fflush(m_fProcTemperature);
     ret = fscanf(m_fProcTemperature, "temperature: %d %c", &value, &scale);
   }
-  
+
   if (ret != 2)
     return CTemperature();
 
@@ -320,7 +323,7 @@ const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
 }
 
 bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
-    unsigned long long& system, unsigned long long& idle)
+    unsigned long long& system, unsigned long long& idle, unsigned long long& io)
 {
 
 #ifdef _WIN32
@@ -351,7 +354,8 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   m_cores[0].m_user += coreUser;
   m_cores[0].m_system += coreSystem;
   m_cores[0].m_idle += coreIdle;
-  gettimeofday(&m_cores[0].m_lastSample, NULL);
+
+  io = 0;
 
 #else
   if (m_fProcStat == NULL)
@@ -364,12 +368,18 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   if (!fgets(buf, sizeof(buf), m_fProcStat))
     return false;
 
-  int num = sscanf(buf, "cpu %llu %llu %llu %llu %*s\n", &user, &nice, &system, &idle);
+  int num = sscanf(buf, "cpu %llu %llu %llu %llu %llu %*s\n", &user, &nice, &system, &idle, &io);
+  if (num < 5)
+    io = 0;
+
   while (fgets(buf, sizeof(buf), m_fProcStat) && num >= 4)
   {
-    unsigned long long coreUser, coreNice, coreSystem, coreIdle;
+    unsigned long long coreUser, coreNice, coreSystem, coreIdle, coreIO;
     int nCpu=0;
-    num = sscanf(buf, "cpu%d %llu %llu %llu %llu %*s\n", &nCpu, &coreUser, &coreNice, &coreSystem, &coreIdle);
+    num = sscanf(buf, "cpu%d %llu %llu %llu %llu %llu %*s\n", &nCpu, &coreUser, &coreNice, &coreSystem, &coreIdle, &coreIO);
+    if (num < 6)
+      coreIO = 0;
+
     map<int, CoreInfo>::iterator iter = m_cores.find(nCpu);
     if (num > 4 && iter != m_cores.end())
     {
@@ -377,12 +387,16 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
       coreNice -= iter->second.m_nice;
       coreSystem -= iter->second.m_system;
       coreIdle -= iter->second.m_idle;
-      iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / (double)(coreUser + coreNice + coreSystem + coreIdle);
+      coreIO -= iter->second.m_io;
+
+      double total = (double)(coreUser + coreNice + coreSystem + coreIdle + coreIO);
+      iter->second.m_fPct = ((double)(coreUser + coreNice + coreSystem) * 100.0) / total;
+
       iter->second.m_user += coreUser;
       iter->second.m_nice += coreNice;
       iter->second.m_system += coreSystem;
       iter->second.m_idle += coreIdle;
-      gettimeofday(&iter->second.m_lastSample, NULL);
+      iter->second.m_io += coreIO;
     }
   }
 #endif

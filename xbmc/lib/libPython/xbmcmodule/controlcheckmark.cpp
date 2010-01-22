@@ -72,10 +72,10 @@ namespace PYXBMC
 
     self = (ControlCheckMark*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-    new(&self->strFont) string();    
-    new(&self->strText) string();    
-    new(&self->strTextureFocus) string();    
-    new(&self->strTextureNoFocus) string();    
+    new(&self->strFont) string();
+    new(&self->strText) string();
+    new(&self->strTextureFocus) string();
+    new(&self->strTextureNoFocus) string();
 
     // set up default values in case they are not supplied
     self->checkWidth = 30;
@@ -179,7 +179,7 @@ namespace PYXBMC
   {
     char *cDisabledColor = NULL;
 
-    if (!PyArg_ParseTuple(args, (char*)"s", &cDisabledColor))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cDisabledColor)) return NULL;
 
     if (cDisabledColor)
     {

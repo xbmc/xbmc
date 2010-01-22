@@ -24,7 +24,7 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
-#include "SystemInfo.h"
+#include "Settings.h"
 #include "File.h"
 
 #include <vector>
@@ -302,6 +302,7 @@ CFileCurl::CFileCurl()
   m_postdata = "";
   m_username = "";
   m_password = "";
+  m_httpauth = "";
   m_state = new CReadState();
 }
 
@@ -345,13 +346,13 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
-
+#if (LIBCURL_VERSION_NUM >= 0x071301)
   // set username and password for current handle
   if (m_username.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
   if (m_password.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
-
+#endif
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
@@ -400,7 +401,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
     g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
-    
+
   // setup any requested authentication
   if( m_ftpauth.length() > 0 )
   {
@@ -411,6 +412,19 @@ void CFileCurl::SetCommonOptions(CReadState* state)
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_SSL);
     else if( m_ftpauth.Equals("tls") )
       g_curlInterface.easy_setopt(h, CURLOPT_FTPSSLAUTH, CURLFTPAUTH_TLS);
+  }
+
+  // setup requested http authentication method
+  if(m_httpauth.length() > 0)
+  {
+    if( m_httpauth.Equals("any") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+    else if( m_httpauth.Equals("anysafe") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE);
+    else if( m_httpauth.Equals("digest") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+    else if( m_httpauth.Equals("ntlm") )
+      g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
   }
 
   // allow passive mode for ftp
@@ -432,7 +446,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
   else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
-    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, g_sysinfo.GetUserAgent().c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, g_settings.m_userAgent.c_str());
 
   if (m_useOldHttpVersion)
     g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
@@ -514,11 +528,14 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     url2.SetProtocol("ftp");
   else if( url2.GetProtocol().Equals("shout")
        ||  url2.GetProtocol().Equals("daap")
+       ||  url2.GetProtocol().Equals("dav")
        ||  url2.GetProtocol().Equals("tuxbox")
        ||  url2.GetProtocol().Equals("lastfm")
        ||  url2.GetProtocol().Equals("mms")
        ||  url2.GetProtocol().Equals("rss"))
     url2.SetProtocol("http");
+  else if (url2.GetProtocol().Equals("davs"))
+    url2.SetProtocol("https");
 
   if( url2.GetProtocol().Equals("ftp")
   ||  url2.GetProtocol().Equals("ftps") )
@@ -616,10 +633,16 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
 
+    // replace invalid spaces
+    CStdString strFileName = url2.GetFileName();
+    strFileName.Replace(" ", "\%20");
+    url2.SetFileName(strFileName);
+
+#if (LIBCURL_VERSION_NUM >= 0x071301)
     // get username and password
     m_username = url2.GetUserName();
     m_password = url2.GetPassWord();
-
+#endif
     // handle any protocol options
     CStdString options = url2.GetProtocolOptions();
     options.TrimRight('/'); // hack for trailing slashes being added from source
@@ -645,16 +668,28 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
           name = (*it);
           value = "";
         }
+
         // url decode value
-        CUtil::UrlDecode(value);
-        // set headers
-        if (name.Equals("User-Agent"))
+        CUtil::URLDecode(value);
+
+        if(name.Equals("auth"))
+        {
+          m_httpauth = value;
+          if(m_httpauth.IsEmpty())
+            m_httpauth = "any";
+        }
+        else if (name.Equals("User-Agent"))
           SetUserAgent(value);
         else
           SetRequestHeader(name, value);
       }
     }
   }
+  
+  if (m_username.length() > 0 || m_password.length() > 0)
+    m_url = url2.GetWithoutUserDetails();
+  else
+    m_url = url2.Get();
 }
 
 bool CFileCurl::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
@@ -759,14 +794,9 @@ bool CFileCurl::Open(const CURL& url)
 {
 
   m_opened = true;
-  
+
   CURL url2(url);
   ParseAndCorrectUrl(url2);
-
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());
 
@@ -839,7 +869,7 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
   {
     if (m_fileSize != 0)
       CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
-      
+
     return false;
   }
 
@@ -960,11 +990,6 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
-
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
 
@@ -1029,8 +1054,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   {
     char content[255];
     if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
-    { 
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL); 
+    {
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
       return -1;
     }
@@ -1163,7 +1188,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         }
 
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
-        
+
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);
@@ -1208,7 +1233,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         {
           struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
 
-          // wait until data is avialable or a timeout occours
+          // wait until data is available or a timeout occurs
           if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
             return false;
         }

@@ -234,11 +234,11 @@ void CGUIListItem::Serialize(CArchive &ar)
     ar >> m_strThumbnailImage;
     ar >> m_strIcon;
     ar >> m_bSelected;
-    
+
     int overlayIcon;
     ar >> overlayIcon;
     m_overlayIcon = GUIIconOverlay(overlayIcon);
-    
+
     int mapSize;
     ar >> mapSize;
     for (int i = 0; i < mapSize; i++)
@@ -313,7 +313,7 @@ void CGUIListItem::SetProperty(const CStdString &strKey, const CStdString &strVa
 
 CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
 {
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return "";
 
@@ -322,7 +322,7 @@ CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
 
 bool CGUIListItem::HasProperty(const CStdString &strKey) const
 {
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return false;
 
@@ -331,7 +331,7 @@ bool CGUIListItem::HasProperty(const CStdString &strKey) const
 
 void CGUIListItem::ClearProperty(const CStdString &strKey)
 {
-  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
+  PropertyMap::iterator iter = m_mapProperties.find(strKey);
   if (iter != m_mapProperties.end())
     m_mapProperties.erase(iter);
 }

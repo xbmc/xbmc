@@ -48,7 +48,7 @@ typedef std::vector<character_t> vecText;
 
 class IRssObserver;
 
-class CRssReader : public CThread, 
+class CRssReader : public CThread,
                    public CCriticalSection
 {
 public:
@@ -91,7 +91,6 @@ private:
   CStdString m_encoding;
   bool m_rtlText;
   bool m_requestRefresh;
-  CStdString m_userAgent;
 };
 
 class CRssManager

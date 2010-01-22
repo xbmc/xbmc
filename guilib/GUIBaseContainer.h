@@ -50,9 +50,6 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(int button, const CPoint &point);
-  virtual bool OnMouseDoubleClick(int button, const CPoint &point);
-  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
@@ -90,14 +87,13 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
-  virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
   virtual bool MoveUp(bool wrapAround);
-  virtual void MoveToItem(int item);
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout(bool refreshAllItems = false);
@@ -105,6 +101,7 @@ protected:
   virtual void UpdatePageControl(int offset);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
+  virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
@@ -138,7 +135,8 @@ protected:
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;
 
-  virtual void ScrollToOffset(int offset);
+  void ScrollToOffset(int offset);
+  void SetContainerMoving(int direction);
   void UpdateScrollOffset();
 
   unsigned int m_scrollLastTime;

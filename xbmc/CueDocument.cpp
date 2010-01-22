@@ -357,7 +357,7 @@ bool CCueDocument::ResolvePath(CStdString &strPath, const CStdString &strBase)
 {
   CStdString strDirectory;
   CUtil::GetDirectory(strBase, strDirectory);
-  
+
   CStdString strFilename = strPath;
   CUtil::GetFileName(strFilename);
 

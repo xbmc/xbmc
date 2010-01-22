@@ -45,7 +45,6 @@ public:
   virtual void OnRight();
   virtual bool HitTest(const CPoint &point) const;
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
 
   virtual CStdString GetDescription() const;
@@ -62,6 +61,7 @@ public:
   virtual void SetAnimations(const std::vector<CAnimation> &animations);
   virtual void SetFocus(bool focus);
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
   void PositionButtons();

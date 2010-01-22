@@ -391,7 +391,7 @@ void CGUIDialogContentSettings::FillListControl()
     if (iter->strLanguage.Equals("multi"))
       strLanguage = g_localizeStrings.Get(21418);
     else
-      g_LangCodeExpander.Lookup(strLanguage, iter->strLanguage); 
+      g_LangCodeExpander.Lookup(strLanguage, iter->strLanguage);
 
     item->SetLabel(iter->strTitle + " (" + strLanguage + ")");
 

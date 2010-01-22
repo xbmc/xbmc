@@ -21,6 +21,9 @@
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
+#elif defined(_WIN32)
+#include "system.h"
+#include "libavcodec/avcodec.h"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -48,19 +51,37 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  
-  if ((requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
+
+  if ((requestedMethod == RENDER_METHOD_AUTO ||
+       requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
-    BCM_CODEC_TYPE codec_type;
-    BCM_STREAM_TYPE stream_type;
-    
-    codec_type = hints.codec;
-    stream_type = BC_STREAM_TYPE_ES;
-    
-    if (hints.codec == CODEC_ID_H264)
-      m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
-    else
-      m_annexbfiltering = false;
+    CRYSTALHD_CODEC_TYPE codec_type;
+    CRYSTALHD_STREAM_TYPE stream_type;
+
+    switch (hints.codec)
+    {
+      case CODEC_ID_MPEG2VIDEO:
+        codec_type = CRYSTALHD_CODEC_ID_MPEG2;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = false;
+        m_pFormatName = "bcm-mpeg2";
+      break;
+      case CODEC_ID_H264:
+        codec_type = CRYSTALHD_CODEC_ID_H264;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = init_h264_mp4toannexb_filter(hints);
+        m_pFormatName = "bcm-h264";
+      break;
+      case CODEC_ID_VC1:
+        codec_type = CRYSTALHD_CODEC_ID_VC1;
+        stream_type = CRYSTALHD_STREAM_TYPE_ES;
+        m_annexbfiltering = false;
+        m_pFormatName = "bcm-vc1";
+      break;
+      default:
+        return false;
+      break;
+    }
 
     m_Device = CCrystalHD::GetInstance();
     if (!m_Device)
@@ -68,19 +89,19 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
     }
-    
-    if (m_Device && !m_Device->Open(stream_type, codec_type))
+
+    if (m_Device && !m_Device->OpenDecoder(stream_type, codec_type))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
     }
 
     m_DropPictures = false;
-    
+
     CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
     return true;
   }
-  
+
   return false;
 }
 
@@ -88,7 +109,7 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 {
   if (m_Device)
   {
-    m_Device->Close();
+    m_Device->CloseDecoder();
     m_Device = NULL;
   }
 }
@@ -96,14 +117,13 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
-
   int maxWait;
   unsigned int lastTime;
   unsigned int maxTime;
   bool annexbfiltered = false;
 
-  m_Device->ClearBusyList();
-  
+  m_Device->BusyListPop();
+
   // in NULL is passed, DVDPlayer wants us to flush any internal picture frame.
   // we don't have internal picture frames so just return.
   if (!pData)
@@ -113,7 +133,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   {
     int outbuf_size = 0;
     uint8_t *outbuf = NULL;
-    
+
     h264_mp4toannexb_filter(pData, iSize, &outbuf, &outbuf_size);
     if (outbuf)
     {
@@ -122,12 +142,12 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
       iSize = outbuf_size;
     }
   }
-  
+
   // we have to throttle input demux packets by waiting for a returned picture frame
   // or we can suck vqueue dry and DVDPlayer starts thrashing about. If we are dropping
   // frames, then drop the timeout so we can catch up quickly.
   if (m_DropPictures)
-    maxWait = 1;
+    maxWait = 5;
   else
     maxWait = 40;
 
@@ -135,7 +155,6 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   maxTime = lastTime + maxWait;
   do
   {
-    // Handle Input
     if (pData)
     {
       if ( m_Device->AddInput(pData, iSize, pts) )
@@ -150,16 +169,14 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
         Sleep(10);
       }
     }
-    
-    if (m_Device->GetInputCount() < 25)
+
+    if (m_Device->GetInputCount() < 10)
       ret |= VC_BUFFER;
 
     if (!m_DropPictures)
-      Sleep(5);
-      
+      Sleep(1);
+
     // Handle Output
-    // wait for both consumed demux packet and a returned picture frame
-    // this help throttle consuming demux packets and we don't drain vqueue.
     if (m_Device->GetReadyCount())
     {
       ret |= VC_PICTURE;
@@ -168,21 +185,14 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
     }
   } while ((lastTime = CTimeUtils::GetTimeMS()) < maxTime);
 
-  if (lastTime >= maxTime)
-  {
-    CLog::Log(LOGDEBUG, "%s: Timeout in Decode. maxWait: %d, ret: 0x%08x pData: %p", __MODULE_NAME__, maxWait, ret, pData);
-  }
-  
-  if (!ret)
-    ret = VC_ERROR;
+  m_DecodeReturn = ret;
 
   return ret;
 }
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
-  CLog::Log(LOGDEBUG, "%s: Reset, flushing decoder.", __MODULE_NAME__);   
-  m_Device->Flush();
+  m_Device->Reset( !(m_DecodeReturn & VC_ERROR) );
 }
 
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -202,7 +212,7 @@ bool CDVDVideoCodecCrystalHD::init_h264_mp4toannexb_filter(CDVDStreamInfo &hints
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
-  
+
   m_sps_pps_data = NULL;
   m_sps_pps_size = 0;
 
@@ -263,7 +273,7 @@ void CDVDVideoCodecCrystalHD::alloc_and_copy(uint8_t **poutbuf,     int *poutbuf
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
-  
+
   #define CHD_WB32(p, d) { \
     ((uint8_t*)(p))[3] = (d); \
     ((uint8_t*)(p))[2] = (d) >> 8; \
@@ -297,7 +307,7 @@ bool CDVDVideoCodecCrystalHD::h264_mp4toannexb_filter(BYTE* pData, int iSize, ui
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
   // and Licensed GPL 2.1 or greater
-  
+
   uint8_t   *buf = pData;
   int       buf_size = iSize;
   uint8_t   unit_type;
@@ -318,7 +328,7 @@ bool CDVDVideoCodecCrystalHD::h264_mp4toannexb_filter(BYTE* pData, int iSize, ui
     // prepend only to the first type 5 NAL unit of an IDR picture
     if (m_sps_pps_context.first_idr && unit_type == 5)
     {
-      alloc_and_copy(poutbuf, poutbuf_size, 
+      alloc_and_copy(poutbuf, poutbuf_size,
         m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
       m_sps_pps_context.first_idr = 0;
     }

@@ -57,7 +57,7 @@ void XCriticalSection::Initialize()
 	pthread_mutexattr_t attr;
 	SAFELY(pthread_mutexattr_init(&attr));
 	SAFELY(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE));
-    
+
 	// Create the mutexes
 	SAFELY(pthread_mutex_init(&m_mutex, &attr));
 	SAFELY(pthread_mutex_init(&m_countMutex, &attr));
@@ -92,7 +92,7 @@ XCriticalSection::~XCriticalSection()
 }
 
 //////////////////////////////////////////////////////////////////////
-void XCriticalSection::Enter() 
+void XCriticalSection::Enter()
 {	
 	if (m_isDestroyed)
 	{
@@ -196,7 +196,7 @@ DWORD XCriticalSection::Exit()
     DWORD count = m_count;
     for (DWORD i=0; i<count; i++)
     	Leave();
-    
+
     pthread_mutex_unlock(&m_countMutex);
 
 	return count;
@@ -229,10 +229,10 @@ void XCriticalSection::Restore(DWORD count)
 }
 
 // The C API.
-void  InitializeCriticalSection(XCriticalSection* section)             { section->Initialize(); } 
+void  InitializeCriticalSection(XCriticalSection* section)             { section->Initialize(); }
 void  DeleteCriticalSection(XCriticalSection* section)                 { section->Destroy(); }
 BOOL  OwningCriticalSection(XCriticalSection* section)                 { return section->Owning(); }
-DWORD ExitCriticalSection(XCriticalSection* section)                   { return section->Exit(); } 
+DWORD ExitCriticalSection(XCriticalSection* section)                   { return section->Exit(); }
 void  RestoreCriticalSection(XCriticalSection* section, DWORD count)   { return section->Restore(count); }
 void  EnterCriticalSection(XCriticalSection* section)                  { section->Enter(); }
 void  LeaveCriticalSection(XCriticalSection* section)                  { section->Leave(); }

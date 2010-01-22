@@ -61,7 +61,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
     deviceString = g_guiSettings.GetString("audiooutput.passthroughdevice");
     if (deviceString.Equals("custom"))
       deviceString = g_guiSettings.GetString("audiooutput.custompassthrough");
-      
+
     // some platforms (osx) do not have a separate passthroughdevice setting.
     if (deviceString.IsEmpty())
       deviceString = g_guiSettings.GetString("audiooutput.audiodevice");
@@ -71,7 +71,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
     deviceString = g_guiSettings.GetString("audiooutput.audiodevice");
     if (deviceString.Equals("custom"))
       deviceString = g_guiSettings.GetString("audiooutput.customdevice");
-  } 
+  }
   int iPos = deviceString.Find(":");
   if (iPos > 0)
   {
@@ -80,6 +80,15 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
     {
       device = deviceString.Right(deviceString.length() - iPos - 1);
       ReturnOnValidInitialize();
+
+#ifdef _WIN32
+      //If WASAPI failed try DirectSound.
+      if(deviceString.Left(iPos).Equals("wasapi"))
+      {
+        audioSink = CreateFromUri("directsound");
+        ReturnOnValidInitialize();
+      }
+#endif
 
       audioSink = new CNullDirectSound();
       audioSink->Initialize(pCallback, device, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);

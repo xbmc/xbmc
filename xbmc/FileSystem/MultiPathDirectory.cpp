@@ -151,7 +151,7 @@ CStdString CMultiPathDirectory::GetFirstPath(const CStdString &strPath)
   if (pos >= 0)
   {
     CStdString firstPath = strPath.Mid(12, pos - 12);
-    CUtil::UrlDecode(firstPath);
+    CUtil::URLDecode(firstPath);
     return firstPath;
   }
   return "";
@@ -176,7 +176,7 @@ bool CMultiPathDirectory::GetPaths(const CStdString& strPath, vector<CStdString>
   for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
     CStdString tempPath = vecTemp[i];
-    CUtil::UrlDecode(tempPath);
+    CUtil::URLDecode(tempPath);
     vecPaths.push_back(tempPath);
   }
   return true;
@@ -198,7 +198,7 @@ bool CMultiPathDirectory::HasPath(const CStdString& strPath, const CStdString& s
   for (unsigned int i = 0; i < vecTemp.size(); i++)
   {
     CStdString tempPath = vecTemp[i];
-    CUtil::UrlDecode(tempPath);
+    CUtil::URLDecode(tempPath);
     if(tempPath == strPathToFind)
       return true;
   }

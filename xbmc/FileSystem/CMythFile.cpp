@@ -20,9 +20,11 @@
  */
 
 #include "CMythFile.h"
+#include "DateTime.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
 #include "URL.h"
+#include "DirectoryCache.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -141,26 +143,45 @@ bool CCMythFile::SetupRecording(const CURL& url)
     return false;
   }
 
-  /* check if this program is currently recording       *
-   * sadly proginfo_get_from_basename doesn't give us   *
-   * that with the new interface, maybe the myth people *
-   * will fix this eventually                           */
+  /*
+   * proginfo_get_from_basename doesn't return the recording status. Hopefully this will be added to
+   * mythbackend eventually.
+   *
+   * Since cycling through the recorders to check if the program is recording takes some time
+   * (depending on the MythTV backend configuration), make some assumptions based on the recording
+   * end time since nearly all recordings opened won't be recording.
+   */
   m_recording = false;
-  for(int i=0;i<16 && !m_recording;i++)
+  CDateTime start = GetValue(m_dll->proginfo_rec_start(m_program));
+  CDateTime end   = GetValue(m_dll->proginfo_rec_end(m_program));
+  if (end > start // Assume could be recording if empty date comes back as the epoch
+  &&  end < CDateTime::GetCurrentDateTime())
+    CLog::Log(LOGDEBUG, "%s - Assumed not recording since recording end time before current time: %s",
+              __FUNCTION__, end.GetAsLocalizedDateTime().c_str());
+  else
   {
-    cmyth_recorder_t recorder = m_dll->conn_get_recorder_from_num(m_control, i);
-    if(!recorder)
-      continue;
-    if(m_dll->recorder_is_recording(recorder))
+    CLog::Log(LOGDEBUG, "%s - Checking recording status using tuners since recording end time NULL or before current time: %s",
+              __FUNCTION__, end.GetAsLocalizedDateTime().c_str());
+    for(int i=0;i<16 && !m_recording;i++)
     {
-      cmyth_proginfo_t program = m_dll->recorder_get_cur_proginfo(recorder);
+      cmyth_recorder_t recorder = m_dll->conn_get_recorder_from_num(m_control, i);
+      if(!recorder)
+        continue;
+      if(m_dll->recorder_is_recording(recorder))
+      {
+        cmyth_proginfo_t program = m_dll->recorder_get_cur_proginfo(recorder);
 
-      if(m_dll->proginfo_compare(program, m_program) == 0)
-        m_recording = true;
-      m_dll->ref_release(program);
+        if(m_dll->proginfo_compare(program, m_program) == 0)
+          m_recording = true;
+        m_dll->ref_release(program);
+      }
+      m_dll->ref_release(recorder);
     }
-    m_dll->ref_release(recorder);
   }
+
+  if (m_recording)
+    CLog::Log(LOGDEBUG, "%s - Currently recording: %s", __FUNCTION__, m_filename.c_str());
+
   return true;
 }
 
@@ -419,7 +440,22 @@ bool CCMythFile::Delete(const CURL& url)
       return false;
 
     if(m_dll->proginfo_delete_recording(m_control, m_program))
+    {
+      CLog::Log(LOGDEBUG, "%s - Error deleting recording: %s", __FUNCTION__, url.GetFileName().c_str());
       return false;
+    }
+
+    if (path.Left(8) == "tvshows/")
+    {
+      /*
+       * Clear the directory cache for the TV Shows folder so the listing is accurate if this was
+       * the last TV Show in the current directory that was deleted.
+       */
+      CURL tvshows(url);
+      tvshows.SetFileName("tvshows/");
+      g_directoryCache.ClearDirectory(tvshows.Get());
+    }
+
     return true;
   }
   return false;

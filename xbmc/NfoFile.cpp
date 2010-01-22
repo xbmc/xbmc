@@ -168,17 +168,20 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
     vecScrapers.push_back(strDefault);
 
   // search ..
+  int res = -1;
   for (unsigned int i=0;i<vecScrapers.size();++i)
-    if (!Scrape(vecScrapers[i]))
+    if ((res = Scrape(vecScrapers[i])) == 0 || res == 2)
       break;
 
+  if (res == 2)
+    return ERROR_NFO;
   if (bNfo)
     return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
 
   return   (m_strImDbUrl.size() > 0) ? URL_NFO : NO_NFO;
 }
 
-void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const CStdString& strFunction)
+bool CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const CStdString& strFunction)
 {
   if (!pURL)
     parser.m_param[0] = m_doc;
@@ -189,8 +192,8 @@ void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
     {
       CStdString strCurrHTML;
       XFILE::CFileCurl http;
-      if (!CScraperUrl::Get(pURL->m_url[i],strCurrHTML,http) || strCurrHTML.size() == 0)
-        return;
+      if (!CScraperUrl::Get(pURL->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
+        return false;
       strHTML.push_back(strCurrHTML);
     }
     for (unsigned int i=0;i<strHTML.size();++i)
@@ -203,6 +206,12 @@ void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
 
   if (doc.RootElement())
   {
+    if (stricmp(doc.RootElement()->Value(),"error")==0)
+    {
+      CIMDB::ShowErrorDialog(doc.RootElement());
+      return false;
+    }
+
     TiXmlElement* xurl = doc.FirstChildElement("url");
     while (xurl && xurl->FirstChild())
     {
@@ -218,18 +227,19 @@ void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
     if (pId && pId->FirstChild())
       m_strImDbNr = pId->FirstChild()->Value();
   }
+  return true;
 }
 
-HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& strURL /* = "" */)
+int CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& strURL /* = "" */)
 {
   CScraperParser m_parser;
   if (!m_parser.Load(strScraperPath))
-    return E_FAIL;
+    return 0;
   if (m_parser.GetContent() != m_strContent &&
       !(m_strContent.Equals("artists") && m_parser.GetContent().Equals("albums")))
       // artists are scraped by album content scrapers
   {
-    return E_FAIL;
+    return 1;
   }
 
   m_strScraper = CUtil::GetFileName(strScraperPath);
@@ -250,28 +260,29 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
         m_doc = new char[m_size+1];
         m_headofdoc = m_doc;
         strcpy(m_doc,m_strImDbUrl.c_str());
-        return S_OK;
+        return 0;
       }
     }
 
-    DoScrape(m_parser);
+    if (!DoScrape(m_parser))
+      return 2;
 
     if (m_strImDbUrl.size() > 0)
-      return S_OK;
+      return 0;
     else
-      return E_FAIL;
+      return 1;
   }
   else // we check to identify the episodeguide url
   {
     m_parser.m_param[0] = strURL;
     CStdString strEpGuide = m_parser.Parse("EpisodeGuideUrl", m_strScraper.CompareNoCase(m_info.strPath) == 0 ? &m_info.settings : 0); // allow corrections?
     if (strEpGuide.IsEmpty())
-      return E_FAIL;
-    return S_OK;
+      return 1;
+    return 0;
   }
 }
 
-HRESULT CNfoFile::Load(const CStdString& strFile)
+int CNfoFile::Load(const CStdString& strFile)
 {
   Close();
   XFILE::CFile file;
@@ -286,19 +297,19 @@ HRESULT CNfoFile::Load(const CStdString& strFile)
     catch (...)
     {
       CLog::Log(LOGERROR, "%s: Exception while creating file buffer",__FUNCTION__);
-      return E_FAIL;
+      return 1;
     }
     if (!m_doc)
     {
       file.Close();
-      return E_FAIL;
+      return 1;
     }
     file.Read(m_doc, m_size);
     m_doc[m_size] = 0;
     file.Close();
-    return S_OK;
+    return 0;
   }
-  return E_FAIL;
+  return 1;
 }
 
 void CNfoFile::Close()

@@ -408,7 +408,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         // Set .amount1 = 1 for APPCOMMANDS like VOL_UP and DOWN that need to know how much to change the volume
         CAction action;
         action.id = newEvent.appcommand.action;
-        action.amount1 = 1;
         g_application.OnAction(action);
       }
       break;
@@ -457,7 +456,7 @@ void CApplication::Preflight()
 #endif
 }
 
-bool CApplication::Create(HWND hWnd)
+bool CApplication::Create()
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
@@ -607,13 +606,13 @@ bool CApplication::Create(HWND hWnd)
   }
 
   // Create the Mouse and Keyboard devices
-  g_Mouse.Initialize(&hWnd);
+  g_Mouse.Initialize();
   g_Keyboard.Initialize();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize(hWnd);
+  g_Joystick.Initialize();
 #endif
 
   CLog::Log(LOGINFO, "Drives are mapped");
@@ -688,7 +687,17 @@ bool CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  m_splash = new CSplash("special://xbmc/media/Splash.png");
+  CStdString strUserSplash = "special://home/media/Splash.png";
+  if (CFile::Exists(strUserSplash))
+  {
+    CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
+    m_splash = new CSplash(strUserSplash);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
+    m_splash = new CSplash("special://xbmc/media/Splash.png");
+  }
   m_splash->Show();
 
   CStdString strLanguagePath;
@@ -797,6 +806,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -909,6 +919,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1005,6 +1016,7 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1973,7 +1985,7 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
         continue;
       }
       // set the window's xml file, and add it to the window manager.
-      pWindow->SetXMLFile(FindFileData.cFileName);
+      pWindow->SetProperty("xmlfile", FindFileData.cFileName);
       pWindow->SetID(WINDOW_HOME + id);
       g_windowManager.AddCustomWindow(pWindow);
     }
@@ -2065,7 +2077,7 @@ void CApplication::DoRender()
 
   {
     // reset image scaling and effect states
-    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
+    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
 
     // If we have the remote codes enabled, then show them
     if (g_advancedSettings.m_displayRemoteCodes)
@@ -2274,7 +2286,7 @@ void CApplication::RenderMemoryStatus()
   {
     // reset the window scaling and fade status
     RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
+    g_graphicsContext.SetRenderingResolution(res, false);
 
     CStdString info;
     MEMORYSTATUS stat;
@@ -3371,7 +3383,6 @@ bool CApplication::Cleanup()
     g_settings.Clear();
     g_guiSettings.Clear();
     g_advancedSettings.Clear();
-    g_Mouse.Cleanup();
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();
@@ -4531,6 +4542,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   // Get Screensaver Mode
   m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
 
+  // disable screensaver lock from the login screen
+  m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
   if (!forceType)
   {
     // set to Dim in the case of a dialog on screen or playing video
@@ -4716,10 +4729,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.ResetCurrentItem();
       m_currentStack->Clear();
 
-      // stop lastfm
-      if (CLastFmManager::GetInstance()->IsRadioEnabled())
-        CLastFmManager::GetInstance()->StopRadio();
-
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
         // sending true to PlayNext() effectively passes bRestart to PlayFile()
@@ -4729,6 +4738,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       else
       {
+        // stop lastfm
+        if (CLastFmManager::GetInstance()->IsRadioEnabled())
+          CLastFmManager::GetInstance()->StopRadio();
+
         delete m_pPlayer;
         m_pPlayer = 0;
       }

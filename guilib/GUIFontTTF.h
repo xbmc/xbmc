@@ -54,7 +54,7 @@ typedef std::vector<color_t> vecColors;
 typedef struct _SVertex
 {
   float u, v;
-  unsigned char r, g, b, a;    
+  unsigned char r, g, b, a;
   float x, y, z;
 } SVertex;
 
@@ -62,7 +62,7 @@ typedef struct _SVertex
 class CGUIFontTTFBase
 {
   friend class CGUIFont;
-  
+
 public:
 
   CGUIFontTTFBase(const CStdString& strFileName);
@@ -84,7 +84,6 @@ protected:
     float left, top, right, bottom;
     float advance;
     character_t letterAndStyle;
-    int   glyphIndex;
   };
   void AddReference();
   void RemoveReference();

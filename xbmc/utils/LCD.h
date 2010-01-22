@@ -51,8 +51,8 @@ public:
   virtual void Initialize();
   virtual bool IsConnected();
   virtual void Stop() = 0;
-  virtual void Suspend() = 0; 
-  virtual void Resume() = 0; 
+  virtual void Suspend() = 0;
+  virtual void Resume() = 0;
   virtual void SetBackLight(int iLight) = 0;
   virtual void SetContrast(int iContrast) = 0;
   virtual void SetLine(int iLine, const CStdString& strLine) = 0;

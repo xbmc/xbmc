@@ -83,13 +83,13 @@ namespace PYXBMC
 
     self = (ControlRadioButton*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-    new(&self->strFont) string();    
-    new(&self->strText) string();    
-    new(&self->strTextureFocus) string();    
-    new(&self->strTextureNoFocus) string(); 
-    new(&self->strTextureRadioFocus) string();    
-    new(&self->strTextureRadioNoFocus) string(); 
-    
+    new(&self->strFont) string();
+    new(&self->strText) string();
+    new(&self->strTextureFocus) string();
+    new(&self->strTextureNoFocus) string();
+    new(&self->strTextureRadioFocus) string();
+    new(&self->strTextureRadioNoFocus) string();
+
     // set up default values in case they are not supplied
     self->textOffsetX = CONTROL_TEXT_OFFSET_X;
     self->textOffsetY = CONTROL_TEXT_OFFSET_Y;
@@ -220,7 +220,7 @@ namespace PYXBMC
       NULL};
 
     char selected = false;
- 
+
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
@@ -292,7 +292,7 @@ namespace PYXBMC
     char *cShadowColor = NULL;
     char *cFocusedColor = NULL;
     PyObject *pObjectText = NULL;
- 
+
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
@@ -355,7 +355,7 @@ namespace PYXBMC
       "width",
       "height",
       NULL};
- 
+
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,

@@ -83,7 +83,7 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
   m_videoIgnoreAtStart = 15;
-  m_videoIgnoreAtEnd = 5; 
+  m_videoIgnoreAtEnd = 5;
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
@@ -139,8 +139,8 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
-  m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
-  m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
+  m_moviesExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ ]");
+  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ ]");
 
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
@@ -149,20 +149,18 @@ void CAdvancedSettings::Initialize()
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
-  // foo_[s01]_[e01]
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
-  // foo.1x09* or just /1x09*
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.s01.e01, foo.s01_e01, S01E02 foo
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$"));
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
+  // foo.1x09* or just /1x09*
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
-  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
+  m_tvshowMultiPartStackRegExp = "^[-_EeXx]+([0-9]+)";
 
   m_remoteRepeat = 480;
   m_controllerDeadzone = 0.2f;
@@ -171,6 +169,7 @@ void CAdvancedSettings::Initialize()
   m_detectAsUdf = false;
 
   m_thumbSize = DEFAULT_THUMB_SIZE;
+  m_fanartHeight = DEFAULT_FANART_HEIGHT;
   m_useDDSFanart = false;
 
   m_sambaclienttimeout = 10;
@@ -303,7 +302,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
-    
+
     XMLUtils::GetBoolean(pElement, "usetimeseeking", m_musicUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", m_musicTimeSeekForward, 0, 6000);
     XMLUtils::GetInt(pElement, "timeseekbackward", m_musicTimeSeekBackward, -6000, 0);
@@ -427,7 +426,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
-    
+
     TiXmlElement* pMyMovies = pElement->FirstChildElement("mymovies");
     if (pMyMovies)
       XMLUtils::GetBoolean(pMyMovies, "categoriestogenres", m_bVideoLibraryMyMoviesCategoriesToGenres);
@@ -536,7 +535,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "defaultrootmenu", m_iTuxBoxDefaultRootMenu, 0, 4);
     XMLUtils::GetInt(pElement, "zapwaittime", m_iTuxBoxZapWaitTime, 0, 120);
   }
-  
+
   // Myth TV
   pElement = pRootElement->FirstChildElement("myth");
   if (pElement)
@@ -549,7 +548,7 @@ bool CAdvancedSettings::Load()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", m_bEdlMergeShortCommBreaks);
-    XMLUtils::GetInt(pElement, "maxcommbreaklength", m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes 
+    XMLUtils::GetInt(pElement, "maxcommbreaklength", m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes
     XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
     XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
@@ -587,6 +586,16 @@ bool CAdvancedSettings::Load()
   CUtil::AddSlashAtEnd(m_cachePath);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
+
+  // trailer matching regexps
+  TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");
+  if (pTrailerMatching)
+    GetCustomRegexps(pTrailerMatching, m_trailerMatchRegExps);
+
+  //everything thats a trailer is not a movie
+  m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
+                                        m_trailerMatchRegExps.begin(),
+                                        m_trailerMatchRegExps.end());
 
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
@@ -641,7 +650,8 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetInt(pRootElement, "remoterepeat", m_remoteRepeat, 1, INT_MAX);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
-  XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 64, 1024);
+  XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 0, 1024);
+  XMLUtils::GetInt(pRootElement, "fanartheight", m_fanartHeight, 0, 1080);
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
@@ -795,7 +805,6 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringA
       if (pRegExp->FirstChild())
       {
         CStdString regExp = pRegExp->FirstChild()->Value();
-        regExp.MakeLower();
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, regExp);
         else

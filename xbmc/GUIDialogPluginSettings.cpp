@@ -202,9 +202,15 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
         if (strcmp(type, "text") == 0)
         {
           // get any options
-          bool bHidden = false;
+          bool bHidden  = false;
+          bool bEncoded = false;
           if (option)
-            bHidden = (strcmp(option, "hidden") == 0);
+          {
+            bHidden = (strstr(option, "hidden") != NULL);
+            bEncoded = (strstr(option, "urlencoded") != NULL);
+          }
+          if (bEncoded)
+            CUtil::URLDecode(value);
 
           if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
           {
@@ -217,6 +223,8 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             }
             else
               ((CGUIButtonControl*) control)->SetLabel2(value);
+            if (bEncoded)
+              CUtil::URLEncode(value);
           }
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
@@ -453,16 +461,19 @@ void CGUIDialogPluginSettings::CreateControls()
         if (id)
         {
           m_buttonValues[id] = m_settings.Get(id);
+          CStdString value=m_settings.Get(id);
           // get any option to test for hidden
           const char *option = setting->Attribute("option");
-          if (option && (strcmp(option, "hidden") == 0))
+          if (option && (strstr(option, "urlencoded")))
+            CUtil::URLDecode(value);
+          if (option && (strstr(option, "hidden")))
           {
             CStdString hiddenText;
-            hiddenText.append(m_settings.Get(id).size(), L'*');
+            hiddenText.append(value.size(), L'*');
             ((CGUIButtonControl *)pControl)->SetLabel2(hiddenText);
           }
           else
-            ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
+            ((CGUIButtonControl *)pControl)->SetLabel2(value);
         }
       }
       else if (strcmpi(type, "bool") == 0)

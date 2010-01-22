@@ -37,7 +37,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
    size_t linelen = 0;
    CStdString s;
    vector<CStdString> tokens;
-   
+
    // Load timezones
    FILE* fp = fopen("/usr/share/zoneinfo/zone.tab", "r");
    if (fp)

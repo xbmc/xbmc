@@ -198,11 +198,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
         {
-#ifdef HAS_DVD_DRIVE          
+#ifdef HAS_DVD_DRIVE
           if (pItem->IsDVD())
             return MEDIA_DETECT::CAutorun::PlayDisc();
 #endif
-          
+
           if (pItem->m_bIsShareOrDrive)
             return false;
           // if playback is paused or playback speed != 1, return
@@ -228,10 +228,11 @@ bool CGUIWindowVideoFiles::OnAction(const CAction &action)
   if (action.id == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-    if (pItem && pItem->GetOverlayImage().Equals("OverlayUnWatched.png")) 
-      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
+
     if (pItem && pItem->GetOverlayImage().Equals("OverlayWatched.png"))
       return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
+    else
+      return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
   }
   return CGUIWindowVideoBase::OnAction(action);
 }
@@ -313,21 +314,6 @@ void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
 
 bool CGUIWindowVideoFiles::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-  CStdString strExtension;
-  CUtil::GetExtension(pItem->m_strPath, strExtension);
-
-  if (strcmpi(strExtension.c_str(), ".nfo") == 0) // WTF??
-  {
-    SScraperInfo info;
-    info.strPath = "imdb.xml";
-    info.strContent = "movies";
-    info.strTitle = "IMDb";
-    OnInfo(pItem.get(),info);
-    return true;
-  }
-
   return CGUIWindowVideoBase::OnClick(iItem);
 }
 
@@ -336,11 +322,11 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();
 #endif
-  
+
   if (pItem->m_bIsShareOrDrive)
     return false;
 
@@ -359,114 +345,6 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 
     return CGUIWindowVideoBase::OnPlayMedia(iItem);
   }
-}
-
-void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
-{
-  if ( !pItem ) return ;
-  bool bFolder(false);
-  if (info.strContent.Equals("tvshows"))
-  {
-    CGUIWindowVideoBase::OnInfo(pItem,info);
-    return;
-  }
-  CStdString strFolder = "";
-  CStdString strFile = pItem->m_strPath;
-  if (pItem->m_bIsFolder && pItem->IsParentFolder()) return ;
-  if (pItem->m_bIsShareOrDrive) // oh no u don't
-    return ;
-  if (pItem->m_bIsFolder)
-  {
-    // IMDB is done on a folder
-    // stack and then find first file in folder
-    bFolder = true;
-    CFileItemList vecitems;
-    GetStackedDirectory(pItem->m_strPath, vecitems);
-    bool bFoundFile(false);
-    for (int i = 0; i < (int)vecitems.Size(); ++i)
-    {
-      CFileItemPtr item = vecitems[i];
-      if (!item->m_bIsFolder)
-      {
-        if (item->IsVideo() && !item->IsNFO() && !item->IsPlayList() &&
-            item->m_strPath.Find("-trailer.") == -1)
-        {
-          bFoundFile = true;
-          strFile = item->m_strPath;
-          break;
-        }
-      }
-      else
-      { // check for a dvdfolder
-        if (item->GetLabel().CompareNoCase("VIDEO_TS") == 0)
-        { // found a dvd folder - grab the main .ifo file
-          CUtil::AddFileToFolder(item->m_strPath, "VIDEO_TS.IFO", strFile);
-          if (CFile::Exists(strFile))
-          {
-            bFoundFile = true;
-            break;
-          }
-        }
-        // check for a "CD1" folder
-        if (item->GetLabel().CompareNoCase("CD1") == 0)
-        {
-          CFileItemList items;
-          GetStackedDirectory(item->m_strPath, items);
-          for (int i = 0; i < items.Size(); i++)
-          {
-            CFileItemPtr item = items[i];
-            if (!item->m_bIsFolder && item->IsVideo() && !item->IsNFO() &&
-                !item->IsPlayList())
-            {
-              bFoundFile = true;
-              strFile = item->m_strPath;
-              break;
-            }
-          }
-          if (bFoundFile)
-            break;
-        }
-      }
-    }
-    if (!bFoundFile)
-    {
-      // no video file in this folder?
-      if (info.strContent.Equals("movies"))
-        CGUIDialogOK::ShowAndGetInput(13346,20349,20022,20022);
-
-      return ;
-    }
-  }
-
-  // setup our item with the label and thumb information
-  CFileItem item(strFile, false);
-  item.SetLabel(pItem->GetLabel());
-
-  // hack since our label sometimes contains extensions
-  if(!pItem->m_bIsFolder && g_guiSettings.GetBool("filelists.showextensions") &&
-     !pItem->IsLabelPreformated())
-  {
-    item.RemoveExtension();
-  }
-
-  item.SetCachedVideoThumb();
-  if (!item.HasThumbnail() && pItem->GetProperty("HasAutoThumb") != "1") // inherit from the original item if it exists
-    item.SetThumbnailImage(pItem->GetThumbnailImage());
-
-  if(!info.strContent.Equals("plugin")
-  && !info.strContent.Equals("livetv"))
-    AddFileToDatabase(&item);
-  else
-  {
-    if (pItem->HasVideoInfoTag())
-      *item.GetVideoInfoTag() = *pItem->GetVideoInfoTag();
-  }
-  // we need to also request any thumbs also be applied to the folder item
-  if (pItem->m_bIsFolder)
-    item.SetProperty("set_folder_thumb", pItem->m_strPath);
-  if (ShowIMDB(&item,info) && !info.strContent.Equals("plugin")
-                           && !info.strContent.Equals("livetv"))
-    Update(m_vecItems->m_strPath);
 }
 
 void CGUIWindowVideoFiles::AddFileToDatabase(const CFileItem* pItem)
@@ -533,9 +411,9 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
     {
       OnUnAssignContent(iItem,20375,20340,20341);
     }
-    if (!info.strContent.IsEmpty()      && 
+    if (!info.strContent.IsEmpty()      &&
         !info2.strContent.IsEmpty()     &&
-        !info.strContent.Equals("None") && 
+        !info.strContent.Equals("None") &&
        (info2.strContent != info.strContent ||
         !info.strPath.Equals(info2.strPath)))
     {
@@ -646,7 +524,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           if (info.strContent.Equals("musicvideos"))
             infoString = 20393;
 
-          if (item->m_bIsFolder)
+          if (item->m_bIsFolder && !item->IsParentFolder())
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
               if (!item->IsPlayList() && !item->IsLiveTV())
@@ -703,9 +581,10 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
+
       if (item->GetOverlayImage().Equals("OverlayWatched.png"))
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-      if (item->GetOverlayImage().Equals("OverlayUnWatched.png"))
+      else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
     }
   }

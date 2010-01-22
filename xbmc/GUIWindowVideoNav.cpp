@@ -125,7 +125,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-/* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
+      /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
       CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
@@ -173,6 +173,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           destPath = "videodb://2/3/";
         else if (strDestination.Equals("TvShowActors"))
           destPath = "videodb://2/4/";
+        else if (strDestination.Equals("TvShowStudios"))
+          destPath = "videodb://2/5/";
         else if (strDestination.Equals("TvShows"))
           destPath = "videodb://2/";
         else if (strDestination.Equals("MusicVideoGenres"))
@@ -213,6 +215,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       DisplayEmptyDatabaseMessage(false); // reset message state
 
+      SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
+      
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
@@ -272,15 +276,19 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         { // filter updated
           CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
           OnMessage(selected);
-          m_filter = selected.GetLabel();
+          SetProperty("filter", selected.GetLabel());
           OnFilterItems();
           return true;
         }
-        if (m_filter.IsEmpty())
-          CGUIDialogKeyboard::ShowAndGetFilter(m_filter, false);
+        if (GetProperty("filter").IsEmpty())
+        {
+          CStdString filter(GetProperty("filter"));
+          CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
+          SetProperty("filter", filter);
+        }
         else
         {
-          m_filter.Empty();
+          SetProperty("filter", "");
           OnFilterItems();
         }
         return true;
@@ -301,6 +309,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bMyVideoNavFlatten = !g_settings.m_bMyVideoNavFlatten;
         g_settings.Save();
+        SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
         CUtil::DeleteVideoDatabaseDirectoryCache();
         SetupShares();
         Update("");
@@ -333,15 +342,17 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
       {
+        CStdString filter(GetProperty("filter"));
         if (message.GetParam2() == 1)  // append
-          m_filter += message.GetStringParam();
+          filter += message.GetStringParam();
         else if (message.GetParam2() == 2) // delete
         {
-          if (m_filter.size())
-            m_filter.erase(m_filter.end() - 1);
+          if (filter.size())
+            filter.erase(filter.end() - 1);
         }
         else
-          m_filter = message.GetStringParam();
+          filter = message.GetStringParam();
+        SetProperty("filter", filter);
         OnFilterItems();
       }
     }
@@ -539,7 +550,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   }
 
   // clear the filter
-  m_filter.Empty();
+  SetProperty("filter", "");
   return bResult;
 }
 
@@ -594,8 +605,10 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
 
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !m_filter.IsEmpty());
-  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, m_filter);
+  // #ifdef HAS_SKIN_VERSION_3
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").IsEmpty());
+  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter"));
+  // #endif
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -1052,6 +1065,8 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   if (items.IsPlugin())
     filterWatched = true;
 
+  int itemsBefore = items.Size();
+
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items.Get(i);
@@ -1073,6 +1088,8 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
       }
     }
   }
+  if (g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL && itemsBefore != items.Size() && items.GetObjectCount() == 0)
+    GoParentFolder();
 }
 
 void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
@@ -1091,7 +1108,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
     filter = true;
   }
 
-  if (filter && !m_filter.IsEmpty())
+  if (filter && !GetProperty("filter").IsEmpty())
     FilterItems(items);
 }
 
@@ -1135,7 +1152,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     return;
   }
 
-  CStdString filter = m_filter;
+  CStdString filter(GetProperty("filter"));
   filter.TrimLeft().ToLower();
   bool numericMatch = StringUtils::IsNaturalNumber(filter);
 
@@ -1719,7 +1736,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
       return true;
 
     // update list
-    m_vecItems->RemoveDiscCache();
+    m_vecItems->RemoveDiscCache(GetID());
     Update(m_vecItems->m_strPath);
     m_viewControl.SetSelectedItem(iItem);
     return true;

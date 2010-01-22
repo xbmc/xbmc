@@ -630,7 +630,7 @@ namespace PYXBMC
   {
     PyObject *pObjectText;
     if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
- 
+
     string strText;
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
@@ -711,7 +711,7 @@ namespace PYXBMC
     if (CUtil::IsPlugin(strText))
     {
       strPath = strText;
-      strPath.Replace("plugin://","special://home/plugins/");  
+      strPath.Replace("plugin://","special://home/plugins/");
     }
 
     strPath = CSpecialProtocol::TranslatePath(strText);
@@ -928,7 +928,7 @@ namespace PYXBMC
   {
     // init general xbmc modules
     PyObject* pXbmcModule;
-    
+
     Py_INCREF(&Keyboard_Type);
     Py_INCREF(&Player_Type);
     Py_INCREF(&PlayList_Type);

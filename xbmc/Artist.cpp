@@ -66,7 +66,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
     }
     node = node->NextSiblingElement("album");
   }
-  
+
   // fanart
   const TiXmlElement *fanart2 = artist->FirstChildElement("fanart");
   if (fanart2)
@@ -114,7 +114,7 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   if (!thumbURL.m_xml.empty())
   {
     TiXmlDocument doc;
-    doc.Parse(thumbURL.m_xml); 
+    doc.Parse(thumbURL.m_xml);
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {

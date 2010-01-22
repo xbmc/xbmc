@@ -419,17 +419,20 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
   return false;
 }
 
-bool CFile::Exists(const CStdString& strFileName)
+bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
 {
   try
   {
     if (strFileName.IsEmpty()) return false;
 
     bool bPathInCache;
-    if (g_directoryCache.FileExists(strFileName, bPathInCache) )
-      return true;
-    if (bPathInCache)
-      return false;
+    if (bUseCache)
+    {
+      if (g_directoryCache.FileExists(strFileName, bPathInCache) )
+        return true;
+      if (bPathInCache)
+        return false;
+    }
 
     CURL url(strFileName);
 

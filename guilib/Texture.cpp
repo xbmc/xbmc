@@ -79,7 +79,7 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   m_pixels = new unsigned char[GetPitch() * GetRows()];
 }
 
-void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU) 
+void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU)
 {
   if (pixels == NULL)
     return;
@@ -233,7 +233,7 @@ bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigne
   return true;
 }
 
-unsigned int CBaseTexture::PadPow2(unsigned int x) 
+unsigned int CBaseTexture::PadPow2(unsigned int x)
 {
   --x;
   x |= x >> 1;

@@ -39,7 +39,7 @@ public:
   CXBTFFile* Find(const CStdString& name);
   bool Load(const CXBTFFrame& frame, unsigned char* buffer);
   std::vector<CXBTFFile>&  GetFiles();
-  
+
 private:
   CXBTF      m_xbtf;
   CStdString m_fileName;

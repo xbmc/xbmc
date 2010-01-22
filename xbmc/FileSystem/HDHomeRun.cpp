@@ -53,8 +53,8 @@ public:
         value = "";
       }
 
-      CUtil::UrlDecode(name);
-      CUtil::UrlDecode(value);
+      CUtil::URLDecode(name);
+      CUtil::URLDecode(value);
       insert(value_type(name, value));
     }
   }
@@ -180,7 +180,7 @@ bool CFileHomeRun::Exists(const CURL& url)
 }
 
 int64_t CFileHomeRun::Seek(int64_t iFilePosition, int iWhence)
-{ 
+{
   return -1;
 }
 

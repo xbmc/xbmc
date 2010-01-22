@@ -45,11 +45,11 @@ void CGUIWindowOSD::Render()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (g_Mouse.HasMoved() || g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
+    if (g_Mouse.IsActive() || g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
-      SetAutoClose(3000);
+      SetAutoClose(100); // enough for 10fps
   }
   CGUIDialog::Render();
 }
@@ -70,24 +70,24 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIWindowOSD::OnMouse(const CPoint &point)
+bool CGUIWindowOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (g_Mouse.GetWheel())
+  if (event.m_id == ACTION_MOUSE_WHEEL)
   { // Mouse wheel
-    int wheel = abs(g_Mouse.GetWheel());
+    int wheel = abs(event.m_wheel);
     CAction action;
     action.amount1 = 0.5f * (float)wheel;
-    action.id = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    action.id = event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
     return g_application.OnAction(action);
   }
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause
     CAction action;
     action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
 
-  return CGUIDialog::OnMouse(point);
+  return CGUIDialog::OnMouseEvent(point, event);
 }
 
 bool CGUIWindowOSD::OnMessage(CGUIMessage& message)

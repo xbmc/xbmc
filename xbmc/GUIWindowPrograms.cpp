@@ -310,11 +310,11 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     return false;
   }
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();
 #endif
-  
+
   if (pItem->m_bIsFolder) return false;
 
   return false;

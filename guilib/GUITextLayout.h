@@ -96,7 +96,7 @@ protected:
   void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
   CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
-  
+
   // our text to render
   vecColors m_colors;
   std::vector<CGUIString> m_lines;

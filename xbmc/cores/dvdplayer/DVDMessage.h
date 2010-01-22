@@ -47,7 +47,8 @@ public:
     // messages used in the whole system
 
     GENERAL_RESYNC,                 //
-    GENERAL_FLUSH,                  //
+    GENERAL_FLUSH,                  // flush all buffers
+    GENERAL_RESET,                  // reset codecs for new data
     GENERAL_STREAMCHANGE,           //
     GENERAL_SYNCHRONIZE,            //
     GENERAL_DELAY,                  //
@@ -69,6 +70,7 @@ public:
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
     PLAYER_CHANNEL_SELECT,          // switches to given playback channel
+    PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
 
     // demuxer related messages
 
@@ -302,7 +304,6 @@ public:
   DemuxPacket* GetPacket()      { return m_packet; }
   unsigned int GetPacketSize()  { if(m_packet) return m_packet->iSize; else return 0; }
   bool         GetPacketDrop()  { return m_drop; }
-private:
   DemuxPacket* m_packet;
   bool         m_drop;
 };

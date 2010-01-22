@@ -101,7 +101,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           if (bOkay)
           {
-            if (CFile::Exists("special://scripts/autoexec.py") && 
+            if (CFile::Exists("special://scripts/autoexec.py") &&
                 watch.GetElapsedMilliseconds() < 5000.f)
             {
               while (watch.GetElapsedMilliseconds() < 5000) Sleep(10);
