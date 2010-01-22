@@ -384,7 +384,6 @@ OBJSXBMC=	\
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
-	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \
@@ -397,6 +396,7 @@ OBJSXBMC=	\
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
+	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/UnrarXLib/UnrarXLib.a
 endif
 

@@ -48,7 +48,7 @@
 #include "SMBDirectory.h"
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
 #include "XBMSDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -57,7 +57,6 @@
 #include "PluginDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
-#include "XBMSDirectory.h"
 #ifdef HAS_FILESYSTEM_RTV
 #include "RTVDirectory.h"
 #endif
@@ -150,7 +149,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
     if (strProtocol == "xbms") return new CXBMSDirectory();
 #endif
 #ifdef HAS_FILESYSTEM

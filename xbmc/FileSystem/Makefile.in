@@ -42,7 +42,6 @@ SRCS=ASAPFileDirectory.cpp \
      FileSpecialProtocol.cpp \
      FileSmb.cpp \
      FileTuxBox.cpp \
-     FileXBMSP.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
@@ -86,7 +85,6 @@ SRCS=ASAPFileDirectory.cpp \
      VTPDirectory.cpp \
      VTPSession.cpp \
      VTPFile.cpp \
-     XBMSDirectory.cpp \
      ZeroconfDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
@@ -94,7 +92,10 @@ SRCS=ASAPFileDirectory.cpp \
 ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=RarDirectory.cpp \
       RarManager.cpp \
-      FileRar.cpp
+      FileRar.cpp \
+      XBMSDirectory.cpp \
+      FileXBMSP.cpp \
+
 endif
 
 INCLUDES+=-I../lib/libUPnP/Platinum/Source/Core \
