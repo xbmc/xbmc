@@ -32,6 +32,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef __APPLE__
+#include <sys/stat.h>
+#endif
 
 #define TS_SYNC_BYTE          0x47
 #define TS_SIZE               188

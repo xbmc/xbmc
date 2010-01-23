@@ -39,7 +39,9 @@
 #include <sys/wait.h>
 #include <sys/signal.h>
 #include <sys/resource.h>
-#include <sys/prctl.h>
+#ifndef __APPLE__
+#include <sys/prctl.h> 
+#endif
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>

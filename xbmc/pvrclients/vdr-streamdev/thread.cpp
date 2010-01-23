@@ -26,7 +26,10 @@
 #include "tools.h"
 #include "thread.h"
 #include <errno.h>
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include "StdString.h"
@@ -154,7 +157,11 @@ cMutex::cMutex(void)
   locked = 0;
   pthread_mutexattr_t attr;
   pthread_mutexattr_init(&attr);
+#ifndef __APPLE__
   pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK_NP);
+#else
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
+#endif
   pthread_mutex_init(&mutex, &attr);
 }
 
@@ -208,8 +215,10 @@ void cThread::SetPriority(int Priority)
 void cThread::SetIOPriority(int Priority)
 {
 #if !defined(__WINDOWS__)
+#ifdef HAVE_LINUXIOPRIO
   if (syscall(SYS_ioprio_set, 1, 0, (Priority & 0xff) | (2 << 13)) < 0) // best effort class
      XBMC_log(LOG_ERROR, "ERROR (%s,%d): %m", __FILE__, __LINE__);
+#endif
 #endif
 }
 
@@ -326,10 +335,14 @@ void cThread::Cancel(int WaitSeconds)
 
 tThreadId cThread::ThreadId(void)
 {
+#ifdef __APPLE__
+    return (int)pthread_self();
+#else
 #ifdef __WINDOWS__
   return GetCurrentThreadId();
 #else
   return syscall(__NR_gettid);
+#endif
 #endif
 }
 

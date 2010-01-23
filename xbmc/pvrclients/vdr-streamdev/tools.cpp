@@ -438,7 +438,9 @@ bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)
 // --- cUnbufferedFile -------------------------------------------------------
 
 #if !defined(__WINDOWS__)
+#if !defined(__APPLE__)
 #define USE_FADVISE
+#endif
 #endif
 
 #define WRITE_BUFFER KILOBYTE(800)
