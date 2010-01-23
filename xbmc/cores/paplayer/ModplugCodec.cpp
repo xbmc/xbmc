@@ -52,28 +52,19 @@ bool ModplugCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_CodecName.erase(0,1);
   m_CodecName.ToUpper();
 
-  CStdString strLoadFile = "special://temp/cachedmod";
-  if (!CUtil::IsHD(strFile))
-    CFile::Cache(strFile,"special://temp/cachedmod");
-  else
-    strLoadFile = strFile;
-
   // Read our file to memory so it can be passed to ModPlug_Load()
-  FILE *file = fopen(strLoadFile.c_str(), "rb");
-  if (!file)
+  CFile file;
+  if (!file.Open(strFile))
   {
     CLog::Log(LOGERROR,"ModplugCodec: error opening file %s!",strFile.c_str());
     return false;
   }
-  fseek(file, 0L, SEEK_END);
-  long size = ftell(file);
-  rewind(file);
-  char *data = (char*)malloc(size);
-  fread(data, size, sizeof(char), file);
-  fclose(file);
+  char *data = new char[file.GetLength()];
+  file.Read(data,file.GetLength());
 
   // Now load the module
-  m_module = m_dll.ModPlug_Load(data, size);
+  m_module = m_dll.ModPlug_Load(data,file.GetLength());
+  delete[] data;
   if (!m_module)
   {
     CLog::Log(LOGERROR,"ModplugCodec: error loading module file %s!",strFile.c_str());
