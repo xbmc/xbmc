@@ -448,7 +448,7 @@ bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
       
       //dts = 1 for setting speaker
       m_pIMpaDecFilter->SetSpeakerConfig((IMpaDecFilter::enctype)1, pSpkConfig);
-      m_pIMpaDecFilter->SaveSettings();
+      //m_pIMpaDecFilter->SaveSettings();
     }
     else
     {
@@ -470,7 +470,7 @@ bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
       
       //aac to stereo
       m_pIMpaDecFilter->SetSpeakerConfig((IMpaDecFilter::enctype)2, audiodowntostereo ? 1 : 0);
-      m_pIMpaDecFilter->SaveSettings();
+      //m_pIMpaDecFilter->SaveSettings();
     }
     
     CLog::Log(LOGNOTICE,"%s %s",__FUNCTION__,audiodowntostereo ? "dts and ac3 is now on stereo" : "dts and ac3 is now on 3 front, 2 rear");
