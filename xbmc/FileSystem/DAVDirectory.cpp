@@ -230,7 +230,11 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
         if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
           CUtil::AddSlashAtEnd(pItem->m_strPath);
-        
+
+        // Add back protocol options
+        if (!url2.GetProtocolOptions().IsEmpty())
+          pItem->m_strPath = pItem->m_strPath + "|" + url2.GetProtocolOptions();
+
         if (!pItem->m_strPath.Equals(strPath))
           items.Add(pItem);
       }
