@@ -136,9 +136,9 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
 #ifdef _XBOX
   m_messageQueue.SetMaxDataSize(10 * 16 * 1024);
 #else
-  m_messageQueue.SetMaxDataSize(1024 * 1024);
+  m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
 #endif
-  m_messageQueue.SetMaxTimeSize(4.0);
+  m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableAudioQueue(&m_messageQueue);
 }
 
@@ -496,7 +496,7 @@ void CDVDPlayerAudio::Process()
       m_dvdAudio.Destroy();
       if(!m_dvdAudio.Create(audioframe, m_streaminfo.codec))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
-      m_messageQueue.SetMaxTimeSize(4.0 - m_dvdAudio.GetCacheTotal());
+      m_messageQueue.SetMaxTimeSize(8.0 - m_dvdAudio.GetCacheTotal());
     }
 
     if( result & DECODE_FLAG_DROP )

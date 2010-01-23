@@ -67,7 +67,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 #else
   m_messageQueue.SetMaxDataSize(8 * 1024 * 1024);
 #endif
-  m_messageQueue.SetMaxTimeSize(4.0);
+  m_messageQueue.SetMaxTimeSize(8.0);
 
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
   
@@ -109,7 +109,6 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
-
   if (hint.fpsrate && hint.fpsscale)
   {
     m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
@@ -227,34 +226,6 @@ void CDVDPlayerVideo::Process()
 
   int iDropped = 0; //frames dropped in a row
   bool bRequestDrop = false;
-
-  // attempt to do a initial configure of output device
-  if(!g_renderManager.IsConfigured()
-  && m_hints.width
-  && m_hints.height
-  && m_hints.fpsrate
-  && m_hints.fpsscale )
-  {
-    int flags = 0;
-    flags |= m_bAllowFullscreen ? CONF_FLAGS_FULLSCREEN : 0;
-    flags |= CONF_FLAGS_YUVCOEF_BT709;
-
-    m_output.width     = m_hints.width;
-    m_output.dwidth    = m_hints.width;
-    m_output.height    = m_hints.height;
-    m_output.dheight   = m_hints.height;
-    m_output.framerate = (float)m_hints.fpsrate / m_hints.fpsscale;
-    m_output.inited    = true;
-
-    if( g_renderManager.Configure(m_output.width
-                                , m_output.height
-                                , m_output.dwidth
-                                , m_output.dheight
-                                , m_output.framerate
-                                , flags) )
-      m_output.inited    = true;
-  }
-
 
   m_videoStats.Start();
 
@@ -449,7 +420,6 @@ void CDVDPlayerVideo::Process()
         if (iDecoderState & VC_ERROR)
         {
           CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder returned error");
-          m_pVideoCodec->Reset();
           break;
         }
 

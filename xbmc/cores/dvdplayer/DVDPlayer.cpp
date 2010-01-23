@@ -837,7 +837,6 @@ void CDVDPlayer::Process()
   // make sure all selected stream have data on startup
   SetCaching(CACHESTATE_INIT);
 
-
   while (!m_bAbortRequest)
   {
     // handle messages send to this thread, like seek or demuxer reset requests
