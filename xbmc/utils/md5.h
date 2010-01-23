@@ -22,8 +22,13 @@
 #ifndef _MD5_H_
 #define _MD5_H_ 1
 
-#include <openssl/evp.h>
 #include "StdString.h"
+
+struct MD5Context {
+	uint32_t buf[4];
+	uint32_t bytes[2];
+	uint32_t in[16];
+};
 
 namespace XBMC
 {
@@ -38,8 +43,7 @@ namespace XBMC
     void getDigest(CStdString& digest);
 
   private:
-    EVP_MD_CTX m_ctx;
-    unsigned int m_mdlen;
+    MD5Context m_ctx;
   };
 }
 

@@ -19,7 +19,12 @@
  *
  */
 
+#if _WIN32
+#define PCRE_STATIC
+#include "lib/pcre/pcrecpp.h"
+#else
 #include <pcrecpp.h>
+#endif
 #include <cmath>
 #include "FTPParse.h"
 
@@ -276,7 +281,7 @@ int CFTPParse::getDayOfWeek(int month, int date, int year)
   /* Now determine the doomsday */
   int y = year % 100;
   int dday =
-    (((int)floor(y/12) + (y % 12) + (int)floor((y % 12)/4)) % 7) + anchor;
+    ((y/12 + (y % 12) + ((y % 12)/4)) % 7) + anchor;
 
   /* Determine if the given year is a leap year */
   int leap_year = 0;
