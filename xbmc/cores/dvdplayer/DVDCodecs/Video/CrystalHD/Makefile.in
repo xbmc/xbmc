@@ -7,7 +7,13 @@ INCLUDES=-I$(abs_top_srcdir) \
 	 -I$(abs_top_srcdir)/xbmc/cores/dvdplayer \
 	 -I$(abs_top_srcdir)/xbmc/cores/dvdplayer/DVDCodecs/Video \
 
+CFLAGS+= -DNOVDPAU
+CXXFLAGS+= -DNOVDPAU
+
 SRCS=	CrystalHD.cpp \
+	h264_parser.c \
+	cpb.c \
+	nal.c
 
 LIB= CrystalHD.a
 
