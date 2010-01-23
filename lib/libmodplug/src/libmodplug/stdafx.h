@@ -36,9 +36,20 @@
 #include <stdio.h>
 #include <malloc.h>
 
+#pragma warning(disable:4996)
+
+typedef unsigned __int32 uint32_t;
+typedef          __int32  int32_t;
+typedef unsigned __int16 uint16_t;
+typedef          __int16  int16_t;
+typedef unsigned __int8   uint8_t;
+typedef          __int8    int8_t;
+
 #define srandom(_seed)  srand(_seed)
 #define random()        rand()
 #define sleep(_ms)      Sleep(_ms)
+#define strncasecmp     strnicmp
+#define strcasecmp      stricmp
 
 inline void ProcessPlugins(int n) {}
 
@@ -47,6 +58,7 @@ inline void ProcessPlugins(int n) {}
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif

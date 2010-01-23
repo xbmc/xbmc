@@ -4,8 +4,8 @@
  * Authors: Olivier Lapicque <olivierl@jps.net>
  */
 
-#include <libmodplug/stdafx.h>
-#include <libmodplug/sndfile.h>
+#include "libmodplug/stdafx.h"
+#include "libmodplug/sndfile.h"
 
 #ifndef MODPLUG_FASTSOUNDLIB
 //#pragma data_seg(".tables")

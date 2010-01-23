@@ -33,7 +33,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include <unistd.h> // for sleep
+#include "stdafx.h"
 
 #ifdef NEWMIKMOD
 #include "mikmod.h"
@@ -134,9 +134,9 @@ typedef struct {
 
 #define C4SPD	8363
 #define C4mHz	523251
-#define C4	  523.251
-#define PI 	  3.141592653589793
-#define OMEGA	((2.0 * PI * C4)/(float)C4SPD)
+#define C4	  523.251f
+#define PI 	  3.141592653589793f
+#define OMEGA	((2.0f * PI * C4)/(float)C4SPD)
 
 /**************************************************************************
 **************************************************************************/
@@ -252,9 +252,9 @@ static float pat_sinus(int i)
 
 static float pat_square(int i)
 {
-	float res = 30.0 * sinf(OMEGA * (float)i);
-	if( res > 0.99 ) return 0.99;
-	if( res < -0.99 ) return -0.99;
+	float res = 30.0f * sinf(OMEGA * (float)i);
+	if( res > 0.99f ) return 0.99f;
+	if( res < -0.99f ) return -0.99f;
 	return res;
 }
 
@@ -269,8 +269,8 @@ static float pat_sawtooth(int i)
 		i = -2;
 	}
 	res = (float)i * res / PI;
-	if( res > 0.9 ) return 1.0 - res;
-	if( res < -0.9 ) return 1.0 + res;
+	if( res > 0.9f ) return 1.0f - res;
+	if( res < -0.9f ) return 1.0f + res;
 	return res;
 }
 
@@ -299,6 +299,7 @@ static PAT_SAMPLE_FUN pat_fun[] = { pat_sinus, pat_square, pat_sawtooth };
 #define DupStr(h,buf,sz)						strdup(buf)
 #define _mm_calloc(h,n,sz)					calloc(n,sz)
 #define _mm_recalloc(h,buf,sz,elsz)	realloc(buf,sz)
+#undef  _mm_free
 #define _mm_free(h,p)								free(p)
 
 typedef struct {

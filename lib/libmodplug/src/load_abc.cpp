@@ -29,7 +29,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include <unistd.h> // for sleep
+#include "stdafx.h"
 
 #ifdef NEWMIKMOD
 #include "mikmod.h"
@@ -400,6 +400,7 @@ static void abc_dumptracks(ABCHANDLE *h, const char *p)
 #define DupStr(h,buf,sz)		strdup(buf)
 #define _mm_calloc(h,n,sz)		calloc(n,sz)
 #define _mm_recalloc(h,buf,sz,elsz)	realloc(buf,sz)
+#undef _mm_free
 #define _mm_free(h,p)								free(p)
 
 typedef struct {
@@ -2369,7 +2370,7 @@ static ABCHANDLE *ABC_Init(void)
 			}
 		}
 		else {
-			srandom(time(0));	// initialize random generator with seed
+			srandom((unsigned int)time(0));	// initialize random generator with seed
 			retval->pickrandom = 1+(int)(10000.0*random()/(RAND_MAX+1.0));
 			// can handle pickin' from songbooks with 10.000 songs
 #ifdef NEWMIKMOD

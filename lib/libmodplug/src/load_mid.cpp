@@ -29,7 +29,7 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include <unistd.h> // for sleep
+#include "stdafx.h"
 
 #ifdef NEWMIKMOD
 #include "mikmod.h"
@@ -119,6 +119,7 @@ typedef struct _MIDTRACK
 #define DupStr(h,buf,sz)						strdup(buf)
 #define _mm_calloc(h,n,sz)					calloc(n,sz)
 #define _mm_recalloc(h,buf,sz,elsz)	realloc(buf,sz)
+#undef  _mm_free
 #define _mm_free(h,p)								free(p)
 
 typedef struct {
@@ -1157,7 +1158,7 @@ static int MID_ReadPatterns(MODCOMMAND *pattern[], WORD psize[], MIDHANDLE *h, i
 						n   = pat_modnote(e->note);
 						ins = e->smpno;
 						if( e->volume == 0 ) {
-							m->param = modticks(h, e->tracktick - tt1);
+							m->param = (BYTE)modticks(h, e->tracktick - tt1);
 							if( m->param ) { // note cut
 								m->command = CMD_S3MCMDEX;
 								m->param  |= 0xC0;
@@ -1171,14 +1172,14 @@ static int MID_ReadPatterns(MODCOMMAND *pattern[], WORD psize[], MIDHANDLE *h, i
 						else {
 							vol = e->volume/2;
 							if( el->volume == 0 ) {
-								m->param = modticks(h, el->tracktick - tt1);
+								m->param = (BYTE)modticks(h, el->tracktick - tt1);
 								if( m->param ) { // note cut
 									m->command = CMD_S3MCMDEX;
 									m->param  |= 0xC0;
 								}
 							}
 							else {
-								m->param = modticks(h, e->tracktick - tt1);
+								m->param = (BYTE)modticks(h, e->tracktick - tt1);
 								if( m->param ) { // note delay
 									m->command = CMD_S3MCMDEX;
 									m->param  |= 0xD0;
@@ -1211,7 +1212,7 @@ static int MID_ReadPatterns(MODCOMMAND *pattern[], WORD psize[], MIDHANDLE *h, i
 							}
 							else {	// retrigger same note...
 								m->command = CMD_RETRIG;
-								m->param = modticks(h, el->tracktick - tt1);
+								m->param = (BYTE)modticks(h, el->tracktick - tt1);
 							}
 						}
 						else

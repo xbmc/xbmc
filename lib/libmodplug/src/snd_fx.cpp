@@ -7,6 +7,7 @@
 #include "stdafx.h"
 #include "sndfile.h"
 #include "tables.h"
+#include <stdlib.h>
 
 #ifdef MSC_VER
 #pragma warning(disable:4244)
