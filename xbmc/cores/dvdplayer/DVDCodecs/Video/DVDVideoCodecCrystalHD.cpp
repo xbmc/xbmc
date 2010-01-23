@@ -309,7 +309,7 @@ bool CDVDVideoCodecCrystalHD::h264_mp4toannexb_filter(BYTE* pData, int iSize, ui
   // and Licensed GPL 2.1 or greater
 
   uint8_t   *buf = pData;
-  int       buf_size = iSize;
+  uint32_t  buf_size = iSize;
   uint8_t   unit_type;
   uint32_t  nal_size, cumul_size = 0;
 
