@@ -112,7 +112,8 @@ VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
 PVR_DIRS=\
-	xbmc/pvrclients/vdr-streamdev
+	xbmc/pvrclients/vdr-streamdev \
+	xbmc/pvrclients/tvheadend
 
 LIBADDON_DIRS=\
 	xbmc/addons/lib/addonlib++ \
@@ -287,6 +288,7 @@ endif
 endif
 pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/vdr-streamdev
+	$(MAKE) -C xbmc/pvrclients/tvheadend
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libaddon: exports

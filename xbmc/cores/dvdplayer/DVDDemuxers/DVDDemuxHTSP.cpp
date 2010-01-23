@@ -23,6 +23,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamHTSP.h"
+#include "DVDInputStreams/DVDInputStreamPVRManager.h"
 #include "DVDDemuxHTSP.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
@@ -96,10 +97,18 @@ bool CDVDDemuxHTSP::Open(CDVDInputStream* input)
 {
   Dispose();
 
-  if(!input->IsStreamType(DVDSTREAM_TYPE_HTSP))
+  if (input->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)) {
+    CDVDInputStreamPVRManager* pvr_input = (CDVDInputStreamPVRManager*)input;
+
+    if (pvr_input->IsStreamType(DVDSTREAM_TYPE_HTSP))
+      m_Input = (CDVDInputStreamHTSP*)pvr_input->GetOtherStream();
+    else
+      return false;
+  } else if(input->IsStreamType(DVDSTREAM_TYPE_HTSP))
+    m_Input       = (CDVDInputStreamHTSP*)input;
+  else
     return false;
 
-  m_Input       = (CDVDInputStreamHTSP*)input;
   m_StatusCount = 0;
 
   while(m_Streams.size() == 0 && m_StatusCount == 0)
@@ -323,7 +332,7 @@ void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStatus - %s", status);
-    g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
+    g_application.m_guiDialogKaiToast.QueueNotification("Tvheadend Status", status);
   }
 }
 

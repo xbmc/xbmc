@@ -324,7 +324,7 @@ bool CHTSPSession::GetEvent(SEvent& event, uint32_t id)
 
 bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 {
-  uint32_t start, stop, next;
+  uint32_t start, stop, next, chan_id, content;
   const char *title, *desc;
   if(         htsmsg_get_u32(msg, "start", &start)
   ||          htsmsg_get_u32(msg, "stop" , &stop)
@@ -340,15 +340,25 @@ bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   event.start = start;
   event.stop  = stop;
   event.title = title;
+  
   if((desc = htsmsg_get_str(msg, "description")))
     event.descs = desc;
   if(htsmsg_get_u32(msg, "nextEventId", &next))
     event.next = 0;
   else
     event.next = next;
+  if(htsmsg_get_u32(msg, "channelId", &chan_id))
+    event.chan_id = -1;
+  else 
+    event.chan_id = chan_id;
+  if(htsmsg_get_u32(msg, "contentType", &content))
+    event.content = -1;
+  else 
+    event.content = content;
 
-  CLog::Log(LOGDEBUG, "CHTSPSession::ParseEvent - id:%u, title:'%s', desc:'%s', start:%u, stop:%u, next:%u"
+  CLog::Log(LOGDEBUG, "CHTSPSession::ParseEvent - id:%u, chan_id:%u, title:'%s', desc:'%s', start:%u, stop:%u, next:%u"
                     , event.id
+                    , event.chan_id
                     , event.title.c_str()
                     , event.descs.c_str()
                     , event.start

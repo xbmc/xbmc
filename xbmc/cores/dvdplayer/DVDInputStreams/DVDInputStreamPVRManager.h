@@ -34,6 +34,8 @@ class ILiveTVInterface;
 class IRecordable;
 }
 
+class IDVDPlayer;
+
 class CDVDInputStreamPVRManager
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
@@ -64,6 +66,12 @@ public:
   bool            Record(bool bOnOff);
 
   bool            UpdateItem(CFileItem& item);
+  
+  /* overloaded is streamtype to support m_pOtherStream */
+  bool            IsStreamType(DVDStreamType type) const; 
+
+  /* returns m_pOtherStream */
+  CDVDInputStream* GetOtherStream();
 
 protected:
   IDVDPlayer*               m_pPlayer;
@@ -73,3 +81,18 @@ protected:
   XFILE::IRecordable*       m_pRecordable;
   bool                      m_eof;
 };
+
+
+inline bool CDVDInputStreamPVRManager::IsStreamType(DVDStreamType type) const 
+{ 
+  if (m_pOtherStream) 
+    return m_pOtherStream->IsStreamType(type); 
+  
+  return m_streamType == type; 
+}
+
+inline CDVDInputStream* CDVDInputStreamPVRManager::GetOtherStream() 
+{ 
+  return m_pOtherStream; 
+};
+

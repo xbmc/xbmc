@@ -139,7 +139,9 @@ struct SEvent
 {
   int         id;
   int         next;
+  int         chan_id;
 
+  int         content;
   int         start;
   int         stop;
   std::string title;
