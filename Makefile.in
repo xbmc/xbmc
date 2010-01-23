@@ -342,6 +342,8 @@ xcode_depends: \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
+	xbmc/lib/libapetag/.libs/libapetag.a \
+	lib/libmodplug/src/.libs/libmodplug.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
