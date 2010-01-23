@@ -1,4 +1,8 @@
-INCLUDES+=-I../ -I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem -I/usr/include/freetype2 -Icores/dvdplayer -Icores/dvdplayer/Codecs/ffmpeg
+INCLUDES+=-I../ -I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem -I/usr/include/freetype2 -Icores/dvdplayer
+
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  INCLUDES+=-Icores/dvdplayer/Codecs/ffmpeg
+endif
 
 INCLUDES+=-Ilib/libUPnP/Platinum/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Platinum \

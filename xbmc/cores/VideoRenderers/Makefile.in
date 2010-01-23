@@ -1,4 +1,7 @@
-INCLUDES=-I../../.. -I. -I.. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer/Codecs/ffmpeg -I../dvdplayer
+INCLUDES=-I../../.. -I. -I.. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  INCLUDES+=-I../dvdplayer/Codecs/ffmpeg
+endif
 
 SRCS=LinuxRenderer.cpp \
      RenderManager.cpp \
