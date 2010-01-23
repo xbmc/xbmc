@@ -126,7 +126,7 @@ public:
   bool OpenDecoder(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type);
   void CloseDecoder(void);
   bool IsOpenforDecode(void);
-  void Reset(void);
+  void Reset(bool flag);
   unsigned int GetInputCount(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
 
@@ -146,7 +146,6 @@ protected:
 
   bool          m_IsConfigured;
   bool          m_drop_state;
-  int           m_ignore_drop_count;
   unsigned int  m_OutputTimeout;
   unsigned int  m_field;
   unsigned int  m_width;

@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix
 
 SRCS=Addon.cpp \
      AddonHelpers.cpp \
@@ -67,7 +67,8 @@ SRCS=Addon.cpp \
      fastmemcpy.cpp \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
-     TextSearch.cpp
+     TextSearch.cpp \
+     Semaphore.cpp
 
 LIB=utils.a
 

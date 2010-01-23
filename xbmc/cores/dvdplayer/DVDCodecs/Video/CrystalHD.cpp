@@ -797,10 +797,36 @@ bool CMPCOutputThread::GetDecoderOutput(void)
 
 void CMPCOutputThread::Process(void)
 {
+  bool got_picture;
+  BCM::BC_STATUS ret;
+  BCM::BC_DTS_STATUS decoder_status;
+
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
-    GetDecoderOutput();
+    got_picture = false;
+    
+    // limit ready list to 20, makes no sense to pre-decode any more
+    if (m_ReadyList.Count() < 20)
+    {
+      ret = m_dll->DtsGetDriverStatus(m_Device, &decoder_status);
+      if (ret == BCM::BC_STS_SUCCESS)
+      {
+        if (decoder_status.ReadyListCount > 0)
+        {
+          got_picture = GetDecoderOutput();
+          /*
+          CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
+            decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
+          CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
+            decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
+          */
+        }
+      }
+    }
+
+    if (!got_picture)
+      Sleep(10);
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -835,7 +861,6 @@ CCrystalHD::CCrystalHD() :
   m_Device(NULL),
   m_IsConfigured(false),
   m_drop_state(false),
-  m_ignore_drop_count(0),
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
@@ -1006,7 +1031,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
     m_pOutputThread->Create();
 
     m_drop_state = false;
-    m_ignore_drop_count = 10;
     m_IsConfigured = true;
 
     CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
@@ -1049,15 +1073,29 @@ bool CCrystalHD::IsOpenforDecode(void)
   return m_Device && m_IsConfigured;
 }
 
-void CCrystalHD::Reset(void)
+void CCrystalHD::Reset(bool flag)
 {
-  m_ignore_drop_count = 10;
+  // if being asked to flush while asking to drop, ignore it.
+  if (!m_drop_state && flag)
+  {
+    // Calling for non-error flush, flush all 
+    m_dll->DtsFlushInput(m_Device, 2);
+    m_pInputThread->Flush();
+    m_pOutputThread->Flush();
 
-  m_pInputThread->Flush();
-  m_pOutputThread->Flush();
-  m_dll->DtsFlushInput(m_Device, 2);
+    while( m_BusyList.Count())
+      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
-  CLog::Log(LOGDEBUG, "%s: codec flush", __MODULE_NAME__);
+  }
+  else
+  {
+    m_pOutputThread->Flush();
+
+    while( m_BusyList.Count())
+      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
+  }
+  
+  Sleep(20);
 }
 
 unsigned int CCrystalHD::GetInputCount(void)
@@ -1115,8 +1153,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->iLineSize[2] = 0;
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  //pDvdVideoPicture->iDuration = 0;
-  pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
+  pDvdVideoPicture->iDuration = 0;
+  //pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
   pDvdVideoPicture->color_range = 1;
   // todo
   //pDvdVideoPicture->color_matrix = 1;
@@ -1136,31 +1174,18 @@ void CCrystalHD::SetDropState(bool bDrop)
   if (m_drop_state != bDrop)
   {
     m_drop_state = bDrop;
-    if (m_drop_state)
-    {
-      if (m_ignore_drop_count-- > 0)
-      {
-        m_drop_state = false;
-        return;
-      }
-
-      m_dll->DtsSetFFRate(m_Device, 2);
-    }
-    else
-    {
-      m_dll->DtsSetFFRate(m_Device, 1);
-    }
-
-    if (m_drop_state)
-    {
-      // pop all picture off the ready list and push back into the free list
-      while (m_pOutputThread->GetReadyCount())
-      {
-        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
-      }
-    }
-
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d", __MODULE_NAME__, m_drop_state);
+  }
+  
+  if (m_drop_state)
+  {
+    // pop all picture off the ready list and push back into the free list
+    while (m_pOutputThread->GetReadyCount() > 1)
+    {
+      m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+    }
+    while( m_BusyList.Count())
+      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
   }
 }
 

@@ -53,7 +53,7 @@ bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
 
   // we use semaphores instead of the mutex because in SDL we CANT wait for a mutex
   // to lock with timeout.
-  hMutex->m_hSem    = SDL_CreateSemaphore(bInitialOwner?0:1);
+  hMutex->m_pSem    = new CSemaphore(bInitialOwner?0:1);
   hMutex->m_hMutex  = SDL_CreateMutex();
   hMutex->ChangeType(CXHandle::HND_MUTEX);
 
@@ -66,14 +66,14 @@ bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
 }
 
 bool  DestroyRecursiveMutex(HANDLE hMutex) {
-  if (hMutex == NULL || hMutex->m_hMutex == NULL || hMutex->m_hSem == NULL)
+  if (hMutex == NULL || hMutex->m_hMutex == NULL || hMutex->m_pSem == NULL)
     return false;
 
-  SDL_DestroySemaphore(hMutex->m_hSem);
+  delete hMutex->m_pSem;
   SDL_DestroyMutex(hMutex->m_hMutex);
 
   hMutex->m_hMutex = NULL;
-  hMutex->m_hSem = NULL;
+  hMutex->m_pSem = NULL;
 
   return true;
 }
@@ -87,7 +87,7 @@ HANDLE  WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInit
 }
 
 bool WINAPI ReleaseMutex( HANDLE hMutex ) {
-  if (hMutex == NULL || hMutex->m_hSem == NULL || hMutex->m_hMutex == NULL)
+  if (hMutex == NULL || hMutex->m_pSem == NULL || hMutex->m_hMutex == NULL)
     return false;
 
   BOOL bOk = false;
@@ -97,7 +97,7 @@ bool WINAPI ReleaseMutex( HANDLE hMutex ) {
     bOk = true;
     if (--hMutex->RecursionCount == 0) {
       hMutex->OwningThread = 0;
-      SDL_SemPost(hMutex->m_hSem);
+      hMutex->m_pSem->Post();
     }
   }
   SDL_mutexV(hMutex->m_hMutex);

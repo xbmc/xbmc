@@ -221,9 +221,10 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
         if (pItem->GetLabel().IsEmpty())
         {
-          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
-          CUtil::URLDecode(pItem->m_strPath);
-          pItem->SetLabel(CUtil::GetFileName(pItem->m_strPath));
+          CStdString name(pItem->m_strPath);
+          CUtil::RemoveSlashAtEnd(name);
+          CUtil::URLDecode(name);
+          pItem->SetLabel(CUtil::GetFileName(name));
         }
 
         if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))

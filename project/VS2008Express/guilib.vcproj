@@ -526,6 +526,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUIStaticItem.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUITextBox.cpp"
 				>
 			</File>
@@ -928,7 +932,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUITeletextBox.h"
+				RelativePath="..\..\guilib\GUIStaticItem.h"
 				>
 			</File>
 			<File

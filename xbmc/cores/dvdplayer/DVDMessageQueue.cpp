@@ -68,9 +68,9 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
 
   for(SList::iterator it = m_list.begin(); it != m_list.end();)
   {
-    if (it->pMsg->IsType(type) ||  type == CDVDMsg::NONE)
+    if (it->message->IsType(type) ||  type == CDVDMsg::NONE)
     {
-      it->pMsg->Release();
+      it->message->Release();
       it = m_list.erase(it);
     }
     else
@@ -125,7 +125,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   DVDMessageListItem item;
 
-  item.pMsg = pMsg;
+  item.message = pMsg;
   item.priority = priority;
 
   SList::iterator it = m_list.begin();
@@ -139,7 +139,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
-    DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.pMsg)->GetPacket();
+    DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.message)->GetPacket();
     if(packet)
     {
       m_iDataSize += packet->iSize;
@@ -177,9 +177,9 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     {
       DVDMessageListItem item(m_list.back());
 
-      if (item.pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
+      if (item.message->IsType(CDVDMsg::DEMUXER_PACKET))
       {
-        DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.pMsg)->GetPacket();
+        DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)item.message)->GetPacket();
         if(packet)
         {
           m_iDataSize -= packet->iSize;
@@ -199,7 +199,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
           m_bEmptied = false;
       }
 
-      *pMsg = item.pMsg;
+      *pMsg = item.message;
       m_list.pop_back();
 
       ret = MSGQ_OK;
@@ -239,7 +239,7 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
   unsigned count = 0;
   for(SList::iterator it = m_list.begin(); it != m_list.end();it++)
   {
-    if(it->pMsg->IsType(type))
+    if(it->message->IsType(type))
       count++;
   }
 

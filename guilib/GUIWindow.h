@@ -120,8 +120,6 @@ public:
   virtual bool IsActive() const;
   void SetCoordsRes(RESOLUTION res) { m_coordsRes = res; };
   RESOLUTION GetCoordsRes() const { return m_coordsRes; };
-  void SetXMLFile(const CStdString &xmlFile) { m_xmlFile = xmlFile; };
-  const CStdString &GetXMLFile() const { return m_xmlFile; };
   void LoadOnDemand(bool loadOnDemand) { m_loadOnDemand = loadOnDemand; };
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
@@ -237,7 +235,6 @@ protected:
   OVERLAY_STATE m_overlayState;
   RESOLUTION m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
-  CStdString m_xmlFile;  // xml file to load
   bool m_windowLoaded;  // true if the window's xml file has been loaded
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.

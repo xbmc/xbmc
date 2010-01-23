@@ -44,6 +44,7 @@ SRCS=AnimatedGif.cpp \
      GUISpinControl.cpp \
      GUISpinControlEx.cpp \
      GUIStandardWindow.cpp \
+     GUIStaticItem.cpp \
      GUITextBox.cpp \
      GUITexture.cpp \
      GUITextureGL.cpp \
