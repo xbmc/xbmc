@@ -108,6 +108,6 @@ int parse_frame(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len,
  */
 void process_mmc_operations(struct h264_parser *parser, struct coded_picture *picture);
 
-void parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len);
+int parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len);
 
 #endif

@@ -1571,7 +1571,7 @@ void free_parser(struct h264_parser *parser)
   free(parser);
 }
 
-void parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len)
+int parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len)
 {
   struct buf_reader bufr;
 #ifdef NOVDPAU
@@ -1607,27 +1607,36 @@ void parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_l
   struct coded_picture *dummy = NULL;
   for(i = 0; i < sps_count; i++) {
     uint16_t sps_size = read_bits(&bufr, 16);
-    inbuf += 2;
-    inbuf_len -= 2;
+    
+    if (sps_size > inbuf_len) {
+      free(nal);
+      free(parser->nal_size_length_buf);
+      parser->nal_size_length = 0;
+      return 1;
+    }
+    if (sps_size && sps_size <= inbuf_len) {
+      inbuf += 2;
+      inbuf_len -= 2;
 #ifdef NOVDPAU
-    printf("parse codec private SPS\n");
-    /* copy SPS NALU's to privatebuf */
-    static const uint8_t start_seq[4] = { 0x00, 0x00, 0x00, 0x01 };
-		if(nFirst) {
-			nFirst = 0;
-	    fast_memcpy(parser->privatebuf+parser->privatebuf_len, start_seq, 4);
-			parser->privatebuf_len+=4;
-		} else {
-	    fast_memcpy(parser->privatebuf+parser->privatebuf_len, start_seq + 1, 3);
-			parser->privatebuf_len+=3;
-		}
+      printf("parse codec private SPS\n");
+      /* copy SPS NALU's to privatebuf */
+      static const uint8_t start_seq[4] = { 0x00, 0x00, 0x00, 0x01 };
+      if(nFirst) {
+        nFirst = 0;
+        fast_memcpy(parser->privatebuf+parser->privatebuf_len, start_seq, 4);
+        parser->privatebuf_len+=4;
+      } else {
+        fast_memcpy(parser->privatebuf+parser->privatebuf_len, start_seq + 1, 3);
+        parser->privatebuf_len+=3;
+      }
 
-		fast_memcpy(parser->privatebuf+parser->privatebuf_len, inbuf, sps_size);
-		parser->privatebuf_len+=sps_size;
+      fast_memcpy(parser->privatebuf+parser->privatebuf_len, inbuf, sps_size);
+      parser->privatebuf_len+=sps_size;
 #endif
-    parse_nal(inbuf, sps_size, parser, &dummy);
-    inbuf += sps_size;
-    inbuf_len -= sps_size;
+      parse_nal(inbuf, sps_size, parser, &dummy);
+      inbuf += sps_size;
+      inbuf_len -= sps_size;
+    }
   }
 
   bufr.buf = inbuf;
@@ -1662,6 +1671,8 @@ void parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_l
   }
 
   nal_buffer_append(parser->sps_buffer, nal);
+  
+  return 0;
 }
 
 #if 0
