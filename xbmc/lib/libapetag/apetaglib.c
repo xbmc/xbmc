@@ -43,8 +43,12 @@
 #ifdef _MSC_VER
 #pragma warning(disable: 4996)
 #define strcasecmp stricmp
-#define truncate
 #define snprintf _snprintf
+#define USE_CHSIZE
+#define S_IRUSR 0
+#define S_IWUSR 0
+#define S_IRGRP 0
+#define S_IWGRP 0
 #if defined(_WIN64)
  typedef __int64 ssize_t; 
 #else
@@ -600,7 +604,6 @@ apetag_free (apetag *mem_cnt)
     return;
 
 }
-
 
 /**
     \brief read id3v1 and add frames
