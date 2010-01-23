@@ -71,7 +71,6 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/NSFCodec \
 	xbmc/cores/paplayer/timidity \
 	xbmc/cores/paplayer/SIDCodec \
-	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
@@ -322,9 +321,6 @@ ifeq (@USE_ASAP_CODEC@,1)
   ifneq ($(findstring osx,$(ARCH)), osx)
 	  $(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
   endif
-endif
-ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
-	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
 ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
