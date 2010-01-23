@@ -57,7 +57,7 @@ SRCS=AlarmClock.cpp \
      TimeUtils.cpp \
      JobManager.cpp \
      Teletext.cpp \
-     fastmemcpy.cpp \
+     fastmemcpy.c \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
      RingBuffer.cpp \
