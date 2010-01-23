@@ -26,6 +26,10 @@
 #include "info_mac.h"
 #include "is_tag.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4996)
+#endif
+
 #define MAC_FORMAT_FLAG_8_BIT                 1    // 8-bit wave
 #define MAC_FORMAT_FLAG_CRC                   2    // new CRC32 error detection
 #define MAC_FORMAT_FLAG_HAS_PEAK_LEVEL        4    // u-long Peak_Level after the header
@@ -129,7 +133,7 @@ info_mac_read(const char *fn, StreamInfoMac * Info)
         header->finalFrameBlocks;
     
     Info->Duration        = Info->SampleFreq > 0 ? 
-        ((float)Info->Samples / Info->SampleFreq)*1000 : 0;
+        (int)(((float)Info->Samples / Info->SampleFreq)*1000) : 0;
     
     Info->Compresion      = header->compLevel;
     Info->CompresionName  = monkey_stringify(Info->Compresion);
@@ -140,12 +144,12 @@ info_mac_read(const char *fn, StreamInfoMac * Info)
     Info->CompresionRatio = 
         (Info->UncompresedSize + header->headerBytesWAV) > 0 ?
         Info->FileSize / (float) (Info->UncompresedSize + 
-        header->headerBytesWAV) : 0. ;
+        header->headerBytesWAV) : 0.0f ;
     
-    Info->Bitrate         = Info->Duration > 0 ? (((Info->Samples * 
+    Info->Bitrate         = Info->Duration > 0 ? (int)((((Info->Samples * 
         Info->Channels * Info->BitsPerSample) / (float) Info->Duration) *
-        Info->CompresionRatio) * 1000 : 0;
+        Info->CompresionRatio) * 1000) : 0;
     
-    Info->PeakRatio=Info->ByteLength=0;
+    Info->PeakRatio=(float)(Info->ByteLength=0);
     return 0;
 }

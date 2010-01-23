@@ -29,7 +29,7 @@
 #include <limits.h>
 #include <assert.h>
 #include <math.h>
-#ifndef __BORLANDC__
+#if !defined(__BORLANDC__) && !defined(_MSC_VER)
 #    include <unistd.h>
 #endif
 #include "apetaglib.h"
@@ -38,6 +38,18 @@
 #include "genres.h"
 #ifdef ID3V2_READ
 #    include "id3v2_read.h"
+#endif
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4996)
+#define strcasecmp stricmp
+#define truncate
+#define snprintf _snprintf
+#if defined(_WIN64)
+ typedef __int64 ssize_t; 
+#else
+ typedef long ssize_t;
+#endif
 #endif
 
 /* LOCAL STRUCTURES */
@@ -713,7 +725,7 @@ apetag_read_fp(apetag *mem_cnt, FILE * fp, char *filename, int flag)
         return ATL_NOINIT;
     }
     
-    fseek(fp, id3v1 ? -128 - sizeof (ape_footer) : -sizeof (ape_footer), SEEK_END);
+    fseek(fp, id3v1 ? -128 - (ssize_t)sizeof (ape_footer) : -(ssize_t)sizeof (ape_footer), SEEK_END);
     if (sizeof (ape_footer) != fread(&ape_footer, 1, sizeof (ape_footer), fp)){
         PRINT_ERR( "ERROR->libapetag->apetag_read_fp:fread1\n");
         fseek(fp, savedFilePosition, SEEK_SET);
@@ -738,8 +750,8 @@ apetag_read_fp(apetag *mem_cnt, FILE * fp, char *filename, int flag)
             return ATL_MALOC;
         }
         
-        fseek(fp, id3v1 ? -ape2long(ape_footer.length) -
-              128 : -ape2long(ape_footer.length), SEEK_END);
+        fseek(fp, id3v1 ? -(long)ape2long(ape_footer.length) -
+              128 : -(long)ape2long(ape_footer.length), SEEK_END);
         memset(buff, 0, buffLength);
         if (ape2long(ape_footer.length) != fread(buff, 1, ape2long(ape_footer.length), fp)) {
             PRINT_ERR( "ERROR->libapetag->apetag_read_fp:fread2\n");

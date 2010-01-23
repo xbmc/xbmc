@@ -34,6 +34,9 @@
 #include "info_mpc.h"
 #include "is_tag.h"
  
+#ifdef _MSC_VER
+#pragma warning(disable: 4996)
+#endif
 
 /*
 *.MPC,*.MP+,*.MPP
@@ -146,7 +149,7 @@ info_mpc_read(const char *fn, StreamInfoMpc * Info)
             }
         }
         // estimation, exact value needs too much time
-        Info->Bitrate = (long) (Info->ByteLength) * 8. * Info->SampleFreq / (1152 * Info->Frames - 576);
+        Info->Bitrate = (unsigned int)((long) (Info->ByteLength) * 8. * Info->SampleFreq / (1152 * Info->Frames - 576));
         
     } else {
         // read the file-header (SV6 and below)
