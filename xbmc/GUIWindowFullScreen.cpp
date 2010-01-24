@@ -363,7 +363,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         int channelNr = -1;
 
-        if (action.id == REMOTE_0)
+        if (action.actionId == REMOTE_0)
         {
           channelNr = g_PVRManager.GetPreviousChannel();
         }
@@ -371,7 +371,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         {
           int autoCloseTime = g_guiSettings.GetBool("pvrplayback.switchautoclose") ? 1500 : 0;
           CStdString strChannel;
-          strChannel.Format("%i", action.id - REMOTE_0);
+          strChannel.Format("%i", action.actionId - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
             channelNr = atoi(strChannel.c_str());
         }
@@ -600,7 +600,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         {
           g_PVRManager.SetPlayingGroup(iNewGroup);
           CAction action;
-          action.id = ACTION_CHANNEL_SWITCH;
+          action.actionId = ACTION_CHANNEL_SWITCH;
           action.amount1 = groups->GetFirstChannelForGroupID(iNewGroup);
           OnAction(action);
         }
@@ -638,7 +638,7 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
     if (!item.HasPVRChannelInfoTag())
     {
       CAction action;
-      action.id = ACTION_PAUSE;
+      action.actionId = ACTION_PAUSE;
       return g_application.OnAction(action);
     }
   }
@@ -969,9 +969,9 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
     {
       CAction action;
       if(bPlus)
-        action.id = ACTION_NEXT_ITEM;
+        action.actionId = ACTION_NEXT_ITEM;
       else
-        action.id = ACTION_PREV_ITEM;
+        action.actionId = ACTION_PREV_ITEM;
       OnAction(action);
       return;
     }
@@ -1062,7 +1062,7 @@ void CGUIWindowFullScreen::ChangetheTVGroup(bool next)
 
     // fire off an event that we've pressed this button...
     CAction action;
-    action.id = ACTION_SELECT_ITEM;
+    action.actionId = ACTION_SELECT_ITEM;
     OnAction(action);
 
     m_bGroupSelectShow = true;

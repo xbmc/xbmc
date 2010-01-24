@@ -70,7 +70,7 @@ CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 
 bool CGUIEPGGridContainer::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
@@ -118,7 +118,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
   case ACTION_TELETEXT_GREEN:
   case ACTION_SCROLL_UP: // left horizontal scrolling
     {
-      int blocksToJump = action.id == ACTION_TELETEXT_RED ? m_blocksPerPage/2 : m_blocksPerPage/4;
+      int blocksToJump = action.actionId == ACTION_TELETEXT_RED ? m_blocksPerPage/2 : m_blocksPerPage/4;
 
       m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
@@ -147,7 +147,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
   case ACTION_TELETEXT_YELLOW:
   case ACTION_SCROLL_DOWN: // right horizontal scrolling
     {
-      int blocksToJump = action.id == ACTION_TELETEXT_BLUE ? m_blocksPerPage/2 : m_blocksPerPage/4;
+      int blocksToJump = action.actionId == ACTION_TELETEXT_BLUE ? m_blocksPerPage/2 : m_blocksPerPage/4;
 
       m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
@@ -174,9 +174,9 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
 
   default:
 
-    if (action.id)
+    if (action.actionId)
     {
-      return OnClick(action.id);
+      return OnClick(action.actionId);
     }
   }
 

@@ -62,7 +62,7 @@ CGUIDialogAddonBrowser::~CGUIDialogAddonBrowser()
 
 bool CGUIDialogAddonBrowser::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_CONTEXT_MENU || action.id == ACTION_MOUSE_RIGHT_CLICK)
+  if (action.actionId == ACTION_CONTEXT_MENU || action.actionId == ACTION_MOUSE_RIGHT_CLICK)
   {
     int iItem = m_viewControl.GetSelectedItem();
     return OnContextMenu(iItem);
