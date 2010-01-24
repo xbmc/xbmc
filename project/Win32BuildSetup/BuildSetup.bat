@@ -98,7 +98,8 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\%buildconfig%\BuildLog.htm for details."
+	copy /Y "..\vs2008express\XBMC\%buildconfig%\BuildLog.htm" .
+  	set DIETEXT="XBMC.EXE failed to build!  See BuildLog.htm for details."
   	goto DIE
   )
   ECHO Done!
@@ -111,8 +112,8 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\%buildconfig%\BuildLog\BuildLog.htm for details."
-  	goto DIE
+	copy /Y "..\vs2008express\XBMC\%buildconfig%\BuildLog.htm" .
+  	set DIETEXT="XBMC.EXE failed to build!  See BuildLog.htm for details."
   )
   ECHO Done!
   ECHO ------------------------------------------------------------
@@ -251,7 +252,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   IF NOT EXIST "%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm" goto END
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-  start /D"%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm"
+  start BuildLog.htm
   goto END
 
 :END
