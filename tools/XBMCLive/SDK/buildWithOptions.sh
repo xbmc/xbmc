@@ -6,7 +6,7 @@ SDK_BUILDHOOKS=""
 
 # getopt-parse.bash
 
-TEMP=$(getopt -o snp:ulk --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea -- "$@")
+TEMP=$(getopt -o snp:ulkg --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea,grub2 -- "$@")
 eval set -- "$TEMP"
 
 while true
@@ -37,6 +37,11 @@ do
 		export KEEP_WORKAREA=1
 		shift
 		;;
+	-g|--grub2)
+		echo "Enable option: Use grub2"
+		export SDK_BUILDHOOKS="$SDK_BUILDHOOKS ./grub2Hook.sh"
+		shift
+		;;
 	-p|--proxy)
 		echo "Enable option: Use APT proxy"
 		case "$2" in
@@ -56,5 +61,4 @@ do
 	esac
 done
 
-echo "Start building..."
 ./build.sh

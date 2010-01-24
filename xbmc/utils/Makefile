@@ -64,10 +64,11 @@ SRCS=Addon.cpp \
      TimeUtils.cpp \
      JobManager.cpp \
      Teletext.cpp \
-     fastmemcpy.cpp \
+     fastmemcpy.c \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
      TextSearch.cpp \
+     RingBuffer.cpp \
      Semaphore.cpp
 
 LIB=utils.a

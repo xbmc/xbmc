@@ -194,7 +194,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
     return true;
 
-  switch (action.id)
+  switch (action.actionId)
   {
 
   case ACTION_SHOW_GUI:
@@ -305,13 +305,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SUBTITLE_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(22006), g_settings.m_currentVideoSettings.m_SubtitleDelay,
                                                                    -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.id);
+                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.actionId);
     return true;
     break;
   case ACTION_AUDIO_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(297), g_settings.m_currentVideoSettings.m_AudioDelay,
                                                                  -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
-                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.id);
+                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.actionId);
     return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
@@ -379,14 +379,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         if (channelNr > 0)
         {
           CAction action;
-          action.id = ACTION_CHANNEL_SWITCH;
+          action.actionId = ACTION_CHANNEL_SWITCH;
           action.amount1 = (float)channelNr;
           OnAction(action);
         }
       }
       else
       {
-        ChangetheTimeCode(action.id);
+        ChangetheTimeCode(action.actionId);
       }
       return true;
     }
@@ -627,7 +627,7 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.id = ACTION_SHOW_GUI;
+    action.actionId = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
@@ -647,7 +647,7 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
     int wheel = abs(event.m_wheel);
     CAction action;
     action.amount1 = 0.5f * (float)wheel;
-    action.id = event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    action.actionId = event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
     return g_application.OnAction(action);
   }
   if (event.m_id || event.m_offsetX || event.m_offsetY)

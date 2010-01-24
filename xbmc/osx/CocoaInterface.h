@@ -23,7 +23,7 @@
 
 #include <string>
 #include "StdString.h"
-
+#include <Carbon/Carbon.h>
 #ifdef __cplusplus
 extern "C"
 {
@@ -75,6 +75,9 @@ extern "C"
 
   const char *Cocoa_Paste() ;  
 
+  // helper from QA 1134
+  // http://developer.apple.com/mac/library/qa/qa2001/qa1134.html
+  OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend);
 #ifdef __cplusplus
 }
 #endif

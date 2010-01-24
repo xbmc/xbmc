@@ -93,6 +93,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_iScreenHeight = 0;
   m_bSoftware = false;
   m_pHardware = NULL;
+  m_iLastKeyframe = 0;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -316,6 +317,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext)
     return VC_ERROR;
 
+  if(pData)
+    m_iLastKeyframe++;
+
   if(m_pHardware)
   {
     int result;
@@ -341,6 +345,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     return VC_ERROR;
   }
 
+  if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 1)
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
+
   if (len < 0)
   {
     CLog::Log(LOGERROR, "%s - avcodec_decode_video returned failure", __FUNCTION__);
@@ -352,6 +359,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
   if (!iGotPicture)
     return VC_BUFFER;
+
+  if(m_pFrame->key_frame)
+    m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
 
   if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
@@ -427,6 +437,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 {
   try {
 
+  m_iLastKeyframe = m_pCodecContext->has_b_frames;
   m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
 
   if (m_pConvertFrame)
@@ -521,4 +532,12 @@ void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigne
     iWidth = pCodecContext->width;
     iHeight = ((int)RINT(pCodecContext->width / aspect_ratio)) & -3;
   }
+}
+
+unsigned CDVDVideoCodecFFmpeg::GetConvergeCount()
+{
+  if(m_pHardware)
+    return m_iLastKeyframe;
+  else
+    return 0;
 }

@@ -46,7 +46,7 @@ CGUIDialogTeletext::~CGUIDialogTeletext()
 
 bool CGUIDialogTeletext::OnAction(const CAction& action)
 {
-  if (action.id == ACTION_PREVIOUS_MENU || action.id == ACTION_CLOSE_DIALOG)
+  if (action.actionId == ACTION_PREVIOUS_MENU || action.actionId == ACTION_CLOSE_DIALOG)
   {
     m_bClose = true;
     return true;

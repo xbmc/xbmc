@@ -14,8 +14,7 @@ sh ./NVIDIA-Linux-*.run --extract-only
 
 cd NVIDIA-Linux-*
 
-# TODO, make it cleaner
-mv * usr/bin
+mv $(ls -1d * | grep -v usr) usr/bin
 
 pushd .
 cd usr/lib

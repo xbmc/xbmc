@@ -112,7 +112,7 @@
 #include "WindowingFactory.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #endif
 
 using namespace std;
@@ -168,7 +168,7 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 
 bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
   {
     g_settings.Save();
     if (m_iWindowBeforeJump!=WINDOW_INVALID)

@@ -53,7 +53,7 @@ bool CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
   DBusMessageIter sub;
   bool success = dbus_message_iter_open_container(&m_args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
 
-  for (int i = 0; i < length && success; i++)
+  for (unsigned int i = 0; i < length && success; i++)
     success &= dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &arrayString[i]);
 
   success &= dbus_message_iter_close_container(&m_args, &sub);

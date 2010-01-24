@@ -85,14 +85,14 @@ void CGUIMoverControl::Render()
 
 bool CGUIMoverControl::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_SELECT_ITEM)
+  if (action.actionId == ACTION_SELECT_ITEM)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
     SendWindowMessage(message);
     return true;
   }
-  if (action.id == ACTION_ANALOG_MOVE)
+  if (action.actionId == ACTION_ANALOG_MOVE)
   {
     //  if (m_dwAllowedDirections == ALLOWED_DIRECTIONS_UPDOWN)
     //   Move(0, (int)(-m_fAnalogSpeed*action.amount2));

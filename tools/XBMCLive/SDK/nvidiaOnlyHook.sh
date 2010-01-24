@@ -38,44 +38,6 @@ export DONOTBUILDRESTRICTEDDRIVERS=1
 
 
 # Modify menu.lst
-# TODO mangle the existing one instead of creating a new one
-#
-cat >  $WORKPATH/buildLive/Files/binary_grub/menu.lst << 'EOF'
-default 0
-timeout 10
-
-foreground eeeeee
-background 333333
-
-splashimage=/boot/grub/splash.xpm.gz
-
-
-title  XBMCLive
-kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
-initrd /live/initrd.img
-quiet
-boot
-
-title  XBMCLive - SAFE MODE
-kernel /live/vmlinuz boot=live vga=788 xbmc=tempfs,nodiskmount,setvolume quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
-initrd /live/initrd.img
-quiet
-boot
-
-title  ---
-root
-
-title Boot Operating System on Hard Disk
-root (hd0)
-savedefault
-makeactive
-chainloader +1
-quiet
-boot
-
-title Memory test (memtest86+)
-kernel /live/memtest   
-quiet
-boot
-EOF
+sed -i '/## BEGIN AMD ##/,/## END AMD ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+sed -i '/## BEGIN INTEL ##/,/## END INTEL ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
 

@@ -58,6 +58,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"
@@ -93,13 +94,13 @@ CGUIWindowVideoBase::~CGUIWindowVideoBase()
 
 bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_SHOW_PLAYLIST)
+  if (action.actionId == ACTION_SHOW_PLAYLIST)
   {
     OutputDebugString("activate guiwindowvideoplaylist!\n");
     g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
   }
-  if (action.id == ACTION_SCAN_ITEM)
+  if (action.actionId == ACTION_SCAN_ITEM)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
 
   return CGUIMediaWindow::OnAction(action);

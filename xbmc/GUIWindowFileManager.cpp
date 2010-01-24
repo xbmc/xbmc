@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "GUIWindowFileManager.h"
 #include "Application.h"
@@ -45,7 +48,9 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "Favourites.h"
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
@@ -56,6 +61,7 @@
 #include "MouseStat.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
@@ -117,12 +123,12 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
   if (list >= 0 && list <= 1)
   {
     // the non-contextual menu can be called at any time
-    if (action.id == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
+    if (action.actionId == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
     {
       OnPopupMenu(list,-1, false);
       return true;
     }
-    if (action.id == ACTION_DELETE_ITEM)
+    if (action.actionId == ACTION_DELETE_ITEM)
     {
       if (CanDelete(list))
       {
@@ -132,7 +138,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.id == ACTION_COPY_ITEM)
+    if (action.actionId == ACTION_COPY_ITEM)
     {
       if (CanCopy(list))
       {
@@ -142,7 +148,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.id == ACTION_MOVE_ITEM)
+    if (action.actionId == ACTION_MOVE_ITEM)
     {
       if (CanMove(list))
       {
@@ -152,7 +158,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.id == ACTION_RENAME_ITEM)
+    if (action.actionId == ACTION_RENAME_ITEM)
     {
       if (CanRename(list))
       {
@@ -162,7 +168,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.id == ACTION_PARENT_DIR)
+    if (action.actionId == ACTION_PARENT_DIR)
     {
       if (m_vecItems[list]->IsVirtualDirectoryRoot())
         g_windowManager.PreviousWindow();
@@ -170,7 +176,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
         GoParentFolder(list);
       return true;
     }
-    if (action.id == ACTION_PLAYER_PLAY)
+    if (action.actionId == ACTION_PLAYER_PLAY)
     {
 #ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
@@ -178,7 +184,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 #endif
     }
   }
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
@@ -681,6 +687,7 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       CURL url(strFile);
       if (url.GetProtocol() == "rar")
       {
+#ifdef HAVE_XBMC_NONFREE
         g_RarManager.SetWipeAtWill(false);
         CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
         CStdString strDestPath;
@@ -691,6 +698,9 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         g_advancedSettings.m_cachePath = strOriginalCachePath;
         g_RarManager.SetWipeAtWill(true);
         return bResult;
+#else
+        return false;
+#endif
       }
       else
       {

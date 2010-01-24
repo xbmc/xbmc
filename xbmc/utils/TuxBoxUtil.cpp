@@ -40,6 +40,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "tinyXML/tinyxml.h"
+#include "log.h"
 
 using namespace XFILE;
 using namespace std;
@@ -229,11 +230,21 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
 }
 bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild)
 {
-  CStdString strItemName, strItemPath;
+  CStdString strItemName, strItemPath, strPort;
   TiXmlElement *pRootElement = root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
   items.m_idepth = 1;
+
+  //Detect Port
+  if (url.GetPort()!=0 && url.GetPort()!=80)
+  {
+    strPort.Format(":%i",url.GetPort());
+  }
+  else
+  {
+    strPort = "";
+  }
 
   if (!pRootElement)
   {
@@ -257,7 +268,7 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
       strItemName = pIt->FirstChild()->Value();
       pItem->m_bIsFolder = true;
       pItem->SetLabel(strItemName);
-      pItem->m_strPath = "tuxbox://"+url.GetHostName()+":80/"+strItemName+"/";
+      pItem->m_strPath = "tuxbox://"+url.GetHostName()+strPort+"/"+strItemName+"/";
       items.Add(pItem);
       pNode = pNode->NextSiblingElement("e2bouquet");
     }

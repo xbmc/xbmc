@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
   "XBMC Live" installer
-  V1.007 - 20091023
+  V1.008 - 20100121
   Luigi Capriotti @2009
 
 """ 
@@ -767,6 +767,32 @@ def main():
 		bIsLiveV2 = True
 		permStorageFilename = gPermStorageFilenameV2
 		rootFS = gRootFSV2
+
+
+	if cmdLineOptions.isoFileName == None:
+		outString, retCode = runSilent('mount | grep iso9660')
+		if len(outString):
+			mountOpts = "-o ro -t iso9660"
+		else:
+			mountOpts = "-t vfat"
+
+		mountDevice(bootVolume, mountOpts, gBootPartMountPoint)
+	else:
+		mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)
+
+	if os.path.exists(gBootPartMountPoint + "/boot/grub/grub.cfg"):
+		grubPackage = "grub-pc"
+	else:
+		grubPackage = "grub"
+
+	umountDevice(gBootPartMountPoint)
+
+	# Check if the grub package to be used is available
+	cmdLine = "apt-cache policy" + grubPackage + " | grep Installed | grep -v none"
+	aType, retCode = runSilent(cmdLine)
+	if not aType.find("Installed") >=0:
+		print "Your system uses a different bootloader, the image uses a different one (" + grubPackage + "). Exiting..."
+		sys.exit(-1)
 
 	while True:
 		os.system('clear')

@@ -59,6 +59,7 @@
 #include "Settings.h"
 #include "utils/TimeUtils.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "karaoke/karaokelyricsfactory.h"
 
 using namespace std;
@@ -849,7 +850,6 @@ bool CFileItem::IsInternetStream() const
 bool CFileItem::IsFileFolder() const
 {
   return (
-   (IsPlugin() && m_bIsFolder) ||
     IsSmartPlayList() ||
    (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
     IsZIP() ||

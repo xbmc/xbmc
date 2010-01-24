@@ -31,13 +31,13 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include "utils/CriticalSection.h"
+#include "settings/VideoSettings.h"
 namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                4
 #define NUM_VIDEO_SURFACES_MPEG2           10  // (1 frame being decoded, 2 reference)
 #define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references)
 #define NUM_VIDEO_SURFACES_VC1             10  // (same as MPEG-2)
-#define NUM_VIDEO_SURFACES_MAX_TRIES       100
 #define NUM_OUTPUT_SURFACES_FOR_FULLHD     2
 #define FULLHD_WIDTH                       1920
 
@@ -186,8 +186,6 @@ public:
   VdpRect       outRect;
   VdpRect       outRectVid;
 
-  VdpBool upscalingAvailable;
-
   void*    dl_handle;
   VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
   VdpStatus (*dl_vdp_get_proc_address)(VdpDevice device, VdpFuncId function_id, void** function_pointer);
@@ -201,9 +199,15 @@ public:
   Display* m_Display;
   bool     vdpauConfigured;
 
+
   VdpVideoMixerPictureStructure m_mixerfield;
   int                           m_mixerstep;
 
+  bool Supports(VdpVideoMixerFeature feature);
+  bool Supports(EINTERLACEMETHOD method);
+
+  VdpVideoMixerFeature m_features[10];
+  int                  m_feature_count;
 
   static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt
@@ -211,6 +215,8 @@ public:
                           , VdpChromaType     &chroma_type);
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
+  
+  
 };
 
 extern CVDPAU*          g_VDPAU;

@@ -447,7 +447,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
     return false;
   }
 
-  if (action.id == ACTION_MOVE_UP)
+  if (action.actionId == ACTION_MOVE_UP)
   {
     if (m_RenderInfo.PageCatching)
       CatchNextPage(-1, -1);
@@ -455,7 +455,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
       GetNextPageOne(true);
     return true;
   }
-  else if (action.id == ACTION_MOVE_DOWN)
+  else if (action.actionId == ACTION_MOVE_DOWN)
   {
     if (m_RenderInfo.PageCatching)
       CatchNextPage(1, 1);
@@ -463,7 +463,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
       GetNextPageOne(false);
     return true;
   }
-  else if (action.id == ACTION_MOVE_RIGHT)
+  else if (action.actionId == ACTION_MOVE_RIGHT)
   {
     if (m_RenderInfo.PageCatching)
       CatchNextPage(0, 1);
@@ -486,7 +486,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
     }
     return true;
   }
-  else if (action.id == ACTION_MOVE_LEFT)
+  else if (action.actionId == ACTION_MOVE_LEFT)
   {
     if (m_RenderInfo.PageCatching)
       CatchNextPage(0, -1);
@@ -510,12 +510,12 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
     }
     return true;
   }
-  else if (action.id >= REMOTE_0 && action.id <= REMOTE_9)
+  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
   {
-    PageInput(action.id - REMOTE_0);
+    PageInput(action.actionId - REMOTE_0);
     return true;
   }
-  else if (action.id >= KEY_ASCII) // FIXME make it KEY_UNICODE
+  else if (action.actionId >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
     if (action.unicode >= 48 && action.unicode < 58)
     {
@@ -524,17 +524,17 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
     }
     return false;
   }
-  else if (action.id == ACTION_PAGE_UP)
+  else if (action.actionId == ACTION_PAGE_UP)
   {
     SwitchZoomMode();
     return true;
   }
-  else if (action.id == ACTION_PAGE_DOWN)
+  else if (action.actionId == ACTION_PAGE_DOWN)
   {
     SwitchTranspMode();
     return true;
   }
-  else if (action.id == ACTION_SELECT_ITEM)
+  else if (action.actionId == ACTION_SELECT_ITEM)
   {
     if (m_txtCache->SubPageTable[m_txtCache->Page] == 0xFF)
       return false;
@@ -554,27 +554,27 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
     return true;
   }
 
-  if (action.id == ACTION_SHOW_INFO)
+  if (action.actionId == ACTION_SHOW_INFO)
   {
     SwitchHintMode();
     return true;
   }
-  else if (action.id == ACTION_TELETEXT_RED)
+  else if (action.actionId == ACTION_TELETEXT_RED)
   {
     ColorKey(m_RenderInfo.Prev_100);
     return true;
   }
-  else if (action.id == ACTION_TELETEXT_GREEN)
+  else if (action.actionId == ACTION_TELETEXT_GREEN)
   {
     ColorKey(m_RenderInfo.Prev_10);
     return true;
   }
-  else if (action.id == ACTION_TELETEXT_YELLOW)
+  else if (action.actionId == ACTION_TELETEXT_YELLOW)
   {
     ColorKey(m_RenderInfo.Next_10);
     return true;
   }
-  else if (action.id == ACTION_TELETEXT_BLUE)
+  else if (action.actionId == ACTION_TELETEXT_BLUE)
   {
     ColorKey(m_RenderInfo.Next_100);
     return true;

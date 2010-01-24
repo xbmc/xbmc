@@ -53,6 +53,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "MediaManager.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -92,7 +93,7 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PARENT_DIR)
+  if (action.actionId == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB &&
         m_vecItems->m_strPath == m_startDirectory)
@@ -101,7 +102,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
       return true;
     }
   }
-  if (action.id == ACTION_TOGGLE_WATCHED)
+  if (action.actionId == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
     if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)

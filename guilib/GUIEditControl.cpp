@@ -97,7 +97,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  if (action.id == ACTION_BACKSPACE)
+  if (action.actionId == ACTION_BACKSPACE)
   {
     // backspace
     if (m_cursorPos)
@@ -107,7 +107,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     }
     return true;
   }
-  else if (action.id == ACTION_MOVE_LEFT)
+  else if (action.actionId == ACTION_MOVE_LEFT)
   {
     if (m_cursorPos > 0)
     {
@@ -116,7 +116,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.id == ACTION_MOVE_RIGHT)
+  else if (action.actionId == ACTION_MOVE_RIGHT)
   {
     if ((unsigned int) m_cursorPos < m_text2.size())
     {
@@ -125,14 +125,14 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.id == ACTION_PASTE)
+  else if (action.actionId == ACTION_PASTE)
   {
     OnPasteClipboard();
   }
-  else if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
+  else if (action.actionId >= KEY_VKEY && action.actionId < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
-    BYTE b = action.id & 0xFF;
+    BYTE b = action.actionId & 0xFF;
     if (b == 0x24) // home
     {
       m_cursorPos = 0;
@@ -176,7 +176,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.id >= KEY_ASCII)
+  else if (action.actionId >= KEY_ASCII)
   {
     // input from the keyboard
     switch (action.unicode)
@@ -212,15 +212,15 @@ bool CGUIEditControl::OnAction(const CAction &action)
     UpdateText();
     return true;
   }
-  else if (action.id >= REMOTE_0 && action.id <= REMOTE_9)
+  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
   { // input from the remote
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
-      m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.id - REMOTE_0));
+      m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.actionId - REMOTE_0));
       UpdateText();
     }
     else
-      OnSMSCharacter(action.id - REMOTE_0);
+      OnSMSCharacter(action.actionId - REMOTE_0);
     return true;
   }
   return CGUIButtonControl::OnAction(action);

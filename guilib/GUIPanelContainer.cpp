@@ -119,7 +119,7 @@ void CGUIPanelContainer::Render()
 
 bool CGUIPanelContainer::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_PAGE_UP:
     {

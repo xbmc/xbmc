@@ -350,7 +350,10 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          value = m_buttonValues[id];
+          if (strcmpi(type, "folder") == 0)
+            value.Format("%s", ((CGUIButtonControl*) control)->GetLabel2().c_str());	  
+          else  
+            value = m_buttonValues[id];
           break;
         case CGUIControl::GUICONTROL_RADIO:
           value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";

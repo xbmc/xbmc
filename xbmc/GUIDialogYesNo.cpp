@@ -63,7 +63,7 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
 
 bool CGUIDialogYesNo::OnAction(const CAction& action)
 {
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
   {
     m_bCanceled = true;
     m_bConfirmed = false;
