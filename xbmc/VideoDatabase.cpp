@@ -21,7 +21,6 @@
 
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
-#include "utils/fstrcmp.h"
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"

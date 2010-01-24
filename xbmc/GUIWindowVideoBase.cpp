@@ -36,7 +36,6 @@
 #include "Application.h"
 #include "NfoFile.h"
 #include "Picture.h"
-#include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"

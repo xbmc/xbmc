@@ -20,7 +20,6 @@
  */
 
 #include "ProgramDatabase.h"
-#include "utils/fstrcmp.h"
 #include "Util.h"
 #include "GUIWindowFileManager.h"
 #include "FileItem.h"
