@@ -1814,6 +1814,10 @@
 		F5F23E9711041596009126C6 /* SemaphoreDarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F23E9511041596009126C6 /* SemaphoreDarwin.cpp */; };
 		F5F23EBC1104245F009126C6 /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */; };
 		F5F240EF110A4F76009126C6 /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F240EB110A4F76009126C6 /* CrystalHD.cpp */; };
+		F5F241D5110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D4110BFCD6009126C6 /* libmpeg2.dylib */; };
+		F5F241D6110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D4110BFCD6009126C6 /* libmpeg2.dylib */; };
+		F5F241D8110BFCF4009126C6 /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D7110BFCF4009126C6 /* libwavpack.dylib */; };
+		F5F241D9110BFCF4009126C6 /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D7110BFCF4009126C6 /* libwavpack.dylib */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
@@ -3765,6 +3769,8 @@
 		F5F23E9511041596009126C6 /* SemaphoreDarwin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SemaphoreDarwin.cpp; sourceTree = "<group>"; };
 		F5F240EB110A4F76009126C6 /* CrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CrystalHD.cpp; sourceTree = "<group>"; };
 		F5F240EC110A4F76009126C6 /* CrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrystalHD.h; sourceTree = "<group>"; };
+		F5F241D4110BFCD6009126C6 /* libmpeg2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpeg2.dylib; path = /opt/local/lib/libmpeg2.dylib; sourceTree = "<absolute>"; };
+		F5F241D7110BFCF4009126C6 /* libwavpack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwavpack.dylib; path = /opt/local/lib/libwavpack.dylib; sourceTree = "<absolute>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
@@ -3842,6 +3848,8 @@
 				F5DC8817110A4B8900EE1B15 /* libxbms-x86-osx.a in Frameworks */,
 				F5DC888B110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5DC888E110A655000EE1B15 /* libmodplug.a in Frameworks */,
+				F5F241D5110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
+				F5F241D8110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3898,6 +3906,8 @@
 				F5DC880A110A495600EE1B15 /* libcrypto.dylib in Frameworks */,
 				F5DC888C110A654000EE1B15 /* libapetag.a in Frameworks */,
 				F5DC888F110A655000EE1B15 /* libmodplug.a in Frameworks */,
+				F5F241D6110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
+				F5F241D9110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6809,6 +6819,8 @@
 				889693360DF0B72500F1DA75 /* libbz2.1.0.dylib */,
 				88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */,
 				E3EB8F030D5D5C0300FFF489 /* libmad.dylib */,
+				F5F241D4110BFCD6009126C6 /* libmpeg2.dylib */,
+				F5F241D7110BFCF4009126C6 /* libwavpack.dylib */,
 				F5D8F88B104CD47D004A11AB /* libmms.dylib */,
 				E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */,
 				E38E24240D26317D00618676 /* libfribidi.dylib */,
