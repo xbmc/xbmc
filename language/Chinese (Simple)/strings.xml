@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27047 -->
+<!--Based on english strings version 27060 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -124,7 +124,7 @@
   <string id="165">当前光盘</string>
   <string id="166">皮肤</string>
   <string id="167">启用 FTP 服务器</string>
-  <string id="168">启用网络时间同步</string>
+  <string id="168"></string>
   <string id="169">分辨率</string>
   <string id="170">调整显示器刷新率适应视频</string>
 
@@ -597,9 +597,9 @@
   <string id="726">修改未保存，继续且不保存吗？</string>
   <string id="727">Web 服务器</string>
   <string id="728">FTP 服务器</string>
-  <string id="729">互联网时间</string>
+  <string id="729"></string>
   <string id="730">- 端口</string>
-  <string id="731">网络校时服务器地址</string>
+  <string id="731">h</string>
   <string id="732">保存和应用</string>
   <string id="733">- 密码</string>
   <string id="734">无密码</string>
