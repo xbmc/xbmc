@@ -114,6 +114,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   IF NOT EXIST %EXE% (
 	copy /Y "..\vs2008express\XBMC\%buildconfig%\BuildLog.htm" .
   	set DIETEXT="XBMC.EXE failed to build!  See BuildLog.htm for details."
+  	goto DIE
   )
   ECHO Done!
   ECHO ------------------------------------------------------------
