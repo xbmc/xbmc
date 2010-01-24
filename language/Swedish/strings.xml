@@ -120,7 +120,6 @@
   <string id="165">Skiva laddad</string>
   <string id="166">Skal</string>
   <string id="167">Aktivera FTP-server</string>
-  <string id="168">Aktivera tidssynkronisering via Internet</string>
   <string id="169">Upplösning</string>
   <string id="170">Justera uppdateringsfrekvens till att matcha video</string>
   <string id="172">Utgivningsdatum</string>
@@ -571,9 +570,7 @@
   <string id="726">Inställningar sparades inte. Fortsätt utan att spara?</string>
   <string id="727">Webbserver</string>
   <string id="728">FTP-server</string>
-  <string id="729">Tidsserver</string>
   <string id="730">- Port</string>
-  <string id="731">Tidsserverns adress</string>
   <string id="732">Spara &amp; ange</string>
   <string id="733">- Lösenord</string>
   <string id="734">Inget lösenord</string>
