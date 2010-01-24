@@ -165,16 +165,12 @@ void CGUIFontTTFBase::RemoveReference()
 
 void CGUIFontTTFBase::ClearCharacterCache()
 {
-  if (m_texture)
-  {
-    delete(m_texture);
-  }
+  delete(m_texture);
 
   DeleteHardwareTexture();
 
   m_texture = NULL;
-  if (m_char)
-    delete[] m_char;
+  delete[] m_char;
   m_char = new Character[CHAR_CHUNK];
   memset(m_charquick, 0, sizeof(m_charquick));
   m_numChars = 0;
@@ -187,12 +183,9 @@ void CGUIFontTTFBase::ClearCharacterCache()
 
 void CGUIFontTTFBase::Clear()
 {
-  if (m_texture)
-    delete(m_texture);
-
+  delete(m_texture);
   m_texture = NULL;
-  if (m_char)
-    delete[] m_char;
+  delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
   m_char = NULL;
   m_maxChars = 0;
@@ -246,12 +239,9 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   m_height = height;
 
-  if (m_texture)
-    delete(m_texture);
-
+  delete(m_texture);
   m_texture = NULL;
-  if (m_char)
-    delete[] m_char;
+  delete[] m_char;
   m_char = NULL;
 
   m_maxChars = 0;
