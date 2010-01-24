@@ -175,7 +175,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
       ret |= VC_BUFFER;
 
     //if (!m_DropPictures)
-      Sleep(5);
+      Sleep(1);
 
     // Handle Output
     if (m_Device->GetReadyCount())

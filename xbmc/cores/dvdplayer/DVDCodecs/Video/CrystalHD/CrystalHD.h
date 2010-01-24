@@ -68,7 +68,7 @@ protected:
 class CPictureBuffer
 {
 public:
-  CPictureBuffer(int ybuffsize, int uvbuffsize);
+  CPictureBuffer(DVDVideoPicture::EFormat format, int width, int height);
   virtual ~CPictureBuffer();
 
   unsigned int  m_width;
@@ -78,9 +78,14 @@ public:
   double        m_framerate;
   uint64_t      m_timestamp;
   unsigned int  m_PictureNumber;
+  DVDVideoPicture::EFormat m_format;
   unsigned char *m_y_buffer_ptr;
+  unsigned char *m_u_buffer_ptr;
+  unsigned char *m_v_buffer_ptr;
   unsigned char *m_uv_buffer_ptr;
   int           m_y_buffer_size;
+  int           m_u_buffer_size;
+  int           m_v_buffer_size;
   int           m_uv_buffer_size;
 };
 

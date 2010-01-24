@@ -242,6 +242,7 @@ protected:
   double              m_framerate;
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
+  CPictureBuffer      *m_interlace_buf;
 };
 
 
@@ -304,7 +305,12 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
     m_extradata_size = extradata_size;
     m_extradata = (uint8_t*)malloc(extradata_size);
     memcpy(m_extradata, extradata, extradata_size);
-    parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
+    if (parse_codec_private(m_nal_parser, m_extradata, m_extradata_size) != 0)
+    {
+      free(m_extradata);
+      m_extradata = NULL;
+      m_extradata_size = 0;
+    }
   }
 }
 
@@ -489,21 +495,47 @@ void CMPCInputThread::Process(void)
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CPictureBuffer::CPictureBuffer(int m_width, int m_height)
+CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int height)
 {
+  m_width = width;
+  m_height = height;
   m_field = CRYSTALHD_FIELD_FULL;
   m_interlace = false;
   m_timestamp = DVD_NOPTS_VALUE;
   m_PictureNumber = 0;
+  m_format = format;
+  
+  // setup y plane
   m_y_buffer_size = m_width * m_height;
-  m_uv_buffer_size = m_y_buffer_size / 2;
   m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
-  m_uv_buffer_ptr = (unsigned char*)_aligned_malloc(m_uv_buffer_size, 16);
+  
+  switch(m_format)
+  {
+    default:
+    case DVDVideoPicture::FMT_NV12:
+      m_u_buffer_size = 0;
+      m_v_buffer_size = 0;
+      m_u_buffer_ptr = NULL;
+      m_v_buffer_ptr = NULL;
+      m_uv_buffer_size = m_y_buffer_size / 2;
+      m_uv_buffer_ptr = (unsigned char*)_aligned_malloc(m_uv_buffer_size, 16);
+    break;
+    case DVDVideoPicture::FMT_YUV420P:
+      m_uv_buffer_size = 0;
+      m_uv_buffer_ptr = NULL;
+      m_u_buffer_size = m_y_buffer_size / 4;
+      m_v_buffer_size = m_y_buffer_size / 4;
+      m_u_buffer_ptr = (unsigned char*)_aligned_malloc(m_u_buffer_size, 16);
+      m_v_buffer_ptr = (unsigned char*)_aligned_malloc(m_v_buffer_size, 16);
+    break;
+  }
 }
 
 CPictureBuffer::~CPictureBuffer()
 {
   if (m_y_buffer_ptr) _aligned_free(m_y_buffer_ptr);
+  if (m_u_buffer_ptr) _aligned_free(m_u_buffer_ptr);
+  if (m_v_buffer_ptr) _aligned_free(m_v_buffer_ptr);
   if (m_uv_buffer_ptr) _aligned_free(m_uv_buffer_ptr);
 }
 
@@ -515,7 +547,8 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   CThread(),
   m_dll(dll),
   m_Device(device),
-  m_OutputTimeout(20)
+  m_OutputTimeout(20),
+  m_interlace_buf(NULL)
 {
 }
 
@@ -525,6 +558,9 @@ CMPCOutputThread::~CMPCOutputThread()
     delete m_ReadyList.Pop();
   while(m_FreeList.Count())
     delete m_FreeList.Pop();
+    
+  if (m_interlace_buf)
+    delete m_interlace_buf;
 }
 
 unsigned int CMPCOutputThread::GetReadyCount(void)
@@ -773,7 +809,11 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           if (!pBuffer)
           {
             // No free pre-allocated buffers so make one
-            pBuffer = new CPictureBuffer(m_width, m_height);
+            if (m_interlace)
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+            else
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
+              
             CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
 
@@ -783,6 +823,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_interlace = m_interlace > 0 ? true : false;
           pBuffer->m_framerate = m_framerate;
           pBuffer->m_timestamp = m_timestamp;
+          
           pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
 
           int w = procOut.PicInfo.width;
@@ -798,32 +839,53 @@ bool CMPCOutputThread::GetDecoderOutput(void)
               {
                 // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
                 // can't tell which frames are odd, which are even so use picture number.
-                unsigned char *s, *d;
+                uint8_t *s, *d;
                 int stride = w*2;
 
                 if (pBuffer->m_PictureNumber & 1)
-                  pBuffer->m_field = CRYSTALHD_FIELD_ODD;
+                  m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
                 else
-                  pBuffer->m_field = CRYSTALHD_FIELD_EVEN;
+                  m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
 
-                // copy y
+                // copy luma
                 s = procOut.Ybuff;
-                d = pBuffer->m_y_buffer_ptr;
-                if (pBuffer->m_field == CRYSTALHD_FIELD_ODD)
+                d = m_interlace_buf->m_y_buffer_ptr;
+                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
                   d += stride;
                 for (int y = 0; y < h/2; y++, s += w, d += stride)
                 {
                   fast_memcpy(d, s, w);
                 }
-                // copy uv
-                s = procOut.UVbuff;
-                d = pBuffer->m_uv_buffer_ptr;
-                if (pBuffer->m_field == CRYSTALHD_FIELD_ODD)
-                  d += stride;
-                for (int y = 0; y < h/4; y++, s += w, d += stride)
+
+                //copy chroma
+                stride = w/2;
+                uint32_t uvdoublet;
+                uint32_t *s_uv = (uint32_t*)procOut.UVbuff;
+                uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
+                uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
+
+                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
                 {
-                  fast_memcpy(d, s, w);
+                  d_u += stride;
+                  d_v += stride;
                 }
+                for (int y = 0; y < h/4; y++, d_u += stride, d_v += stride) {
+                  for (int x = 0; x < w/4; x++) {
+                    uvdoublet = *s_uv++;
+                    *d_u++ = (uint8_t)(uvdoublet);
+                    *d_v++ = (uint8_t)(uvdoublet >> 8 );
+                    *d_u++ = (uint8_t)(uvdoublet >> 16);
+                    *d_v++ = (uint8_t)(uvdoublet >> 24);
+                  }
+                }
+
+                pBuffer->m_field = m_interlace_buf->m_field;
+                // copy y
+                fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,  pBuffer->m_y_buffer_size);
+                // copy u
+                fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
+                // copy v
+                fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
               }
               else
               {
@@ -912,6 +974,11 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         m_height = procOut.PicInfo.height;
         SetAspectRatio(&procOut.PicInfo);
         SetFrameRate(procOut.PicInfo.frame_rate);
+        if (procOut.PicInfo.flags & VDEC_FLAG_INTERLACED_SRC)
+        {
+          m_interlace = true;
+          m_interlace_buf = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+        }
         m_OutputTimeout = 2000;
       }
     break;
@@ -1156,6 +1223,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
     else
       m_pInputThread = new CMPCInputThread(m_Device, m_dll, codec_type, 0, extradata);
     m_pInputThread->Create();
+
     m_pOutputThread = new CMPCOutputThread(m_Device, m_dll);
     m_pOutputThread->Create();
 
@@ -1274,25 +1342,39 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   // Y plane
   pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
   pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
-  // UV packed plane
-  pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_uv_buffer_ptr;
-  pDvdVideoPicture->iLineSize[1] = pBuffer->m_width;
-  // unused
-  pDvdVideoPicture->data[2] = NULL;
-  pDvdVideoPicture->iLineSize[2] = 0;
+  switch(pBuffer->m_format)
+  {
+    default:
+    case DVDVideoPicture::FMT_NV12:
+      // UV packed plane
+      pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_uv_buffer_ptr;
+      pDvdVideoPicture->iLineSize[1] = pBuffer->m_width;
+      // unused
+      pDvdVideoPicture->data[2] = NULL;
+      pDvdVideoPicture->iLineSize[2] = 0;
+    break;
+    case DVDVideoPicture::FMT_YUV420P:
+      // U plane
+      pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_u_buffer_ptr;
+      pDvdVideoPicture->iLineSize[1] = pBuffer->m_width / 2;
+      // V plane
+      pDvdVideoPicture->data[2] = (BYTE*)pBuffer->m_v_buffer_ptr;
+      pDvdVideoPicture->iLineSize[2] = pBuffer->m_width / 2;
+    break;
+  }
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  //pDvdVideoPicture->iDuration = 0;
-  pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
+  pDvdVideoPicture->iDuration = 0;
+  //pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
   pDvdVideoPicture->color_range = 1;
   // todo
   //pDvdVideoPicture->color_matrix = 1;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= pBuffer->m_interlace ? DVP_FLAG_INTERLACED : 0;
-  //if (m_interlace)
+  //if (pBuffer->m_interlace)
   //  pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
-  pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
+  pDvdVideoPicture->format = pBuffer->m_format;
 
   m_BusyList.Push(pBuffer);
   return true;
