@@ -1010,14 +1010,13 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   // In case we are performing a stat() with no buffer (eg. called from ::exists()) we fail immediately
   if (!buffer)
   {
+    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
     if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
     {
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       return 0;
     }
     else
     {
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
       return -1;
     }
