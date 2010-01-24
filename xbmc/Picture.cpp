@@ -96,8 +96,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   if (!m_dll.Load()) return false;
 
   memset(&m_info, 0, sizeof(ImageInfo));
-  CURL url(strFileName);
-  if (url.GetProtocol().Equals("http") || url.GetProtocol().Equals("https"))
+  if (CUtil::IsInternetStream(strFileName, true))
   {
     CFileCurl http;
     CStdString thumbData;

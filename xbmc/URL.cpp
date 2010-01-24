@@ -111,6 +111,7 @@ void CURL::Parse(const CStdString& strURL1)
   else
   {
     m_strProtocol = strURL.Left(iPos);
+    m_strProtocol.ToLower();
     iPos += 3;
   }
 
@@ -139,21 +140,19 @@ void CURL::Parse(const CStdString& strURL1)
   int iEnd = strURL.length();
   const char* sep = NULL;
 
-  if(m_strProtocol.Equals("http")
-    || m_strProtocol.Equals("https")
-    || m_strProtocol.Equals("shout")
-    || m_strProtocol.Equals("tuxbox")
-    || m_strProtocol.Equals("daap")
-    || m_strProtocol.Equals("plugin")
-    || m_strProtocol.Equals("hdhomerun")
-    || m_strProtocol.Equals("rtsp")
-    || m_strProtocol.Equals("dav")
-    || m_strProtocol.Equals("davs")
-    || m_strProtocol.Equals("zip"))
+  CStdString strProtocol2 = GetTranslatedProtocol();
+  if(m_strProtocol.Equals("rss"))
+    sep = "?";
+  else
+  if(strProtocol2.Equals("http")
+    || strProtocol2.Equals("https")
+    || strProtocol2.Equals("plugin")
+    || strProtocol2.Equals("hdhomerun")
+    || strProtocol2.Equals("rtsp")
+    || strProtocol2.Equals("zip"))
     sep = "?;#|";
-  else if(m_strProtocol.Equals("ftp")
-       || m_strProtocol.Equals("ftps")
-       || m_strProtocol.Equals("ftpx"))
+  else if(strProtocol2.Equals("ftp")
+       || strProtocol2.Equals("ftps"))
     sep = "?;";
 
   if(sep)
@@ -236,7 +235,6 @@ void CURL::Parse(const CStdString& strURL1)
     {
       m_strHostName = strHostNameAndPort;
     }
-
   }
   else
   {
@@ -338,6 +336,7 @@ void CURL::SetPassword(const CStdString& strPassword)
 void CURL::SetProtocol(const CStdString& strProtocol)
 {
   m_strProtocol = strProtocol;
+  m_strProtocol.ToLower();
 }
 
 void CURL::SetOptions(const CStdString& strOptions)
@@ -410,6 +409,26 @@ const CStdString& CURL::GetProtocol() const
   return m_strProtocol;
 }
 
+const CStdString CURL::GetTranslatedProtocol() const
+{
+  if (m_strProtocol == "ftpx")
+    return "ftp";
+
+  if (m_strProtocol == "shout"
+   || m_strProtocol == "daap"
+   || m_strProtocol == "dav"
+   || m_strProtocol == "tuxbox"
+   || m_strProtocol == "lastfm"
+   || m_strProtocol == "mms"
+   || m_strProtocol == "rss")
+   return "http";
+  
+  if (m_strProtocol == "davs")
+    return "https";
+    
+  return m_strProtocol;
+}
+
 const CStdString& CURL::GetFileType() const
 {
   return m_strFileType;
@@ -420,7 +439,7 @@ const CStdString& CURL::GetOptions() const
   return m_strOptions;
 }
 
-const CStdString CURL::GetProtocolOptions() const
+const CStdString& CURL::GetProtocolOptions() const
 {
   return m_strProtocolOptions;
 }
@@ -459,9 +478,9 @@ CStdString CURL::Get() const
 
   if (m_strProtocol == "")
     return m_strFileName;
-  
+
   CStdString strURL;
-    strURL.reserve(sizeneed);
+  strURL.reserve(sizeneed);
 
   strURL = GetWithoutFilename();
   strURL += m_strFileName;
@@ -504,7 +523,7 @@ CStdString CURL::GetWithoutUserDetails() const
                         + m_strProtocolOptions.length()
                         + 10;
 
-    strURL.reserve(sizeneed);
+  strURL.reserve(sizeneed);
 
   if (m_strProtocol == "")
     return m_strFileName;
@@ -551,7 +570,7 @@ CStdString CURL::GetWithoutFilename() const
                         + 10;
 
   CStdString strURL;
-    strURL.reserve(sizeneed);
+  strURL.reserve(sizeneed);
 
   strURL = m_strProtocol;
   strURL += "://";
@@ -614,21 +633,21 @@ bool CURL::IsFullPath(const CStdString &url)
 CStdString CURL::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
-  
+
   // Don't do any stuff on URLs containing %-characters as we may screw up
   // URL-encoded (embedded) filenames (like with zip:// & rar://)
   if (path.Find("://") >= 0 && path.Find('%') >= 0)
     return result;
-   
+
   // check the path for incorrect slashes
 #ifdef _WIN32
   if (CUtil::IsDOSPath(path))
   {
     result.Replace('/', '\\');
-    // Fixup for double back slashes (but ignore the \\ of unc-paths) 
-    for (int x=1; x<result.GetLength()-1; x++) 
+    // Fixup for double back slashes (but ignore the \\ of unc-paths)
+    for (int x=1; x<result.GetLength()-1; x++)
     {
-      if (result[x] == '\\' && result[x+1] == '\\') 
+      if (result[x] == '\\' && result[x+1] == '\\')
         result.Delete(x);
     }
   }
@@ -636,20 +655,21 @@ CStdString CURL::ValidatePath(const CStdString &path)
   {
     result.Replace('\\', '/');
     // Fixup for double forward slashes(/) but don't touch the :// of URLs
-    for (int x=1; x<result.GetLength()-1; x++) 
+    for (int x=1; x<result.GetLength()-1; x++)
     {
-      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
-        result.Delete(x); 
+      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
+        result.Delete(x);
     }
   }
 #else
   result.Replace('\\', '/');
-  // Fixup for double forward slashes(/) but don't touch the :// of URLs 
-  for (int x=1; x<result.GetLength()-1; x++) 
-  { 
-    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
-      result.Delete(x); 
-  }        
+  // Fixup for double forward slashes(/) but don't touch the :// of URLs
+  for (int x=1; x<result.GetLength()-1; x++)
+  {
+    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
+      result.Delete(x);
+  }
 #endif
   return result;
 }
+

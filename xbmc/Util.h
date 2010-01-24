@@ -166,6 +166,7 @@ public:
   static bool IsXBMS(const CStdString& strFile);
   static bool IsURL(const CStdString& strFile);
   static bool IsFTP(const CStdString& strFile);
+  static bool IsInternetStream(const CStdString& strFile, bool bStrictCheck = false);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
   static bool IsWritable(const CStdString& strFile);
