@@ -118,14 +118,6 @@
 				<label>($INFO[Container(450).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages])</label>
 			</control>
 		</control>
-		<control type="image">
-			<posx>1254</posx>
-			<posy>0</posy>
-			<width>846</width>
-			<height>720</height>
-			<texture flipx="true">HomeBlade.png</texture>
-			<animation effect="slide" start="35,0" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(Home)">WindowOpen</animation>
-			<animation effect="slide" end="35,0" time="300" tween="quadratic" easing="out" condition="Window.IsVisible(Home)">WindowClose</animation>
-		</control>
+		<include>SideBladeRight</include>
 	</controls>
 </window>
