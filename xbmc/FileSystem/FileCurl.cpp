@@ -1151,11 +1151,12 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             if (msg->data.result == CURLE_OK)
               return true;
 
-            CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
+            CLog::Log(LOGWARNING, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
             // We need to check the data.result here as we don't want to retry on every error
             if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
-                  msg->data.result == CURLE_PARTIAL_FILE) &&
+                  msg->data.result == CURLE_PARTIAL_FILE       ||
+                  msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
               CURLresult=msg->data.result;
             else
