@@ -31,6 +31,8 @@
 #include "Application.h"
 
 #include <libmms/mmsio.h> // FIXME: remove this header once the ubuntu headers is fixed (variable named this)
+#include <libmms/mms.h>
+#include <libmms/mmsh.h>
 
 using namespace XFILE;
 
@@ -49,10 +51,42 @@ bool CDVDInputStreamMMS::IsEOF()
   return false;
 }
 
+#if 1
+struct mmsx_s {
+  mms_t *connection;
+  mmsh_t *connection_h;
+};
+#endif
+
 bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
 {
+  // TODO: remove this code if upstream accepts my patch
+  // tracked at https://bugs.launchpad.net/libmms/+bug/512089
+  // also see the struct definition further up (needed due to opaqueness)
+#if 1
+  m_mms = (mmsx_t*)calloc(1, sizeof(mmsx_t));
+  
+  if (!m_mms)
+    return false;
+  
+  m_mms->connection_h = mmsh_connect((mms_io_t*)mms_get_default_io_impl(),
+                                     NULL,strFile,2000*1000);
+  if (m_mms->connection_h)
+    return true;
+    
+  m_mms->connection = mms_connect((mms_io_t*)mms_get_default_io_impl(),
+                                  NULL,strFile,2000*1000);
+  if (m_mms->connection)
+    return true;
+    
+  free(m_mms);
+  return false;
+#endif
+
+#if 0
   m_mms = mmsx_connect((mms_io_t*)mms_get_default_io_impl(),NULL,strFile,2000*1000); // TODO: what to do with bandwidth?
   return (m_mms != NULL);
+#endif
 }
 
 // close file and reset everyting
