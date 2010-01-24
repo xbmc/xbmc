@@ -528,21 +528,11 @@ void CFileCurl::SetCorrectHeaders(CReadState* state)
 
 void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
-  if( url2.GetProtocol().Equals("ftpx") )
-    url2.SetProtocol("ftp");
-  else if( url2.GetProtocol().Equals("shout")
-       ||  url2.GetProtocol().Equals("daap")
-       ||  url2.GetProtocol().Equals("dav")
-       ||  url2.GetProtocol().Equals("tuxbox")
-       ||  url2.GetProtocol().Equals("lastfm")
-       ||  url2.GetProtocol().Equals("mms")
-       ||  url2.GetProtocol().Equals("rss"))
-    url2.SetProtocol("http");
-  else if (url2.GetProtocol().Equals("davs"))
-    url2.SetProtocol("https");
-
-  if( url2.GetProtocol().Equals("ftp")
-  ||  url2.GetProtocol().Equals("ftps") )
+  CStdString strProtocol = url2.GetTranslatedProtocol();
+  url2.SetProtocol(strProtocol);
+  
+  if( strProtocol.Equals("ftp")
+  ||  strProtocol.Equals("ftps") )
   {
     /* this is uggly, depending on from where   */
     /* we get the link it may or may not be     */
@@ -622,8 +612,8 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     /* ftp has no options */
     url2.SetOptions("");
   }
-  else if( url2.GetProtocol().Equals("http")
-       ||  url2.GetProtocol().Equals("https"))
+  else if( strProtocol.Equals("http")
+       ||  strProtocol.Equals("https"))
   {
     if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
     {

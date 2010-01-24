@@ -116,6 +116,7 @@ void CURL::Parse(const CStdString& strURL1)
         if (iPos == strURL.GetLength() - 1)
         {
           m_strProtocol = strURL.Left(iPos);
+          m_strProtocol.ToLower();
           iPos += 1;
           break;
         }
@@ -154,6 +155,7 @@ void CURL::Parse(const CStdString& strURL1)
   else
   {
     m_strProtocol = strURL.Left(iPos);
+    m_strProtocol.ToLower();
     iPos += 3;
   }
 
@@ -182,24 +184,20 @@ void CURL::Parse(const CStdString& strURL1)
   int iEnd = strURL.length();
   const char* sep = NULL;
 
-  if(m_strProtocol.Equals("http")
-    || m_strProtocol.Equals("https")
-    || m_strProtocol.Equals("shout")
-    || m_strProtocol.Equals("tuxbox")
-    || m_strProtocol.Equals("daap")
-    || m_strProtocol.Equals("plugin")
-    || m_strProtocol.Equals("hdhomerun")
-    || m_strProtocol.Equals("rtsp")
-    || m_strProtocol.Equals("dav")
-    || m_strProtocol.Equals("davs")
-    || m_strProtocol.Equals("zip"))
-    sep = "?;#|";
-  else if(m_strProtocol.Equals("ftp")
-       || m_strProtocol.Equals("ftps")
-       || m_strProtocol.Equals("ftpx"))
-    sep = "?;";
-  else if(m_strProtocol.Equals("rss"))
+  CStdString strProtocol2 = GetTranslatedProtocol();
+  if(m_strProtocol.Equals("rss"))
     sep = "?";
+  else
+  if(strProtocol2.Equals("http")
+    || strProtocol2.Equals("https")
+    || strProtocol2.Equals("plugin")
+    || strProtocol2.Equals("hdhomerun")
+    || strProtocol2.Equals("rtsp")
+    || strProtocol2.Equals("zip"))
+    sep = "?;#|";
+  else if(strProtocol2.Equals("ftp")
+       || strProtocol2.Equals("ftps"))
+    sep = "?;";
 
   if(sep)
   {
@@ -383,6 +381,7 @@ void CURL::SetPassword(const CStdString& strPassword)
 void CURL::SetProtocol(const CStdString& strProtocol)
 {
   m_strProtocol = strProtocol;
+  m_strProtocol.ToLower();
 }
 
 void CURL::SetOptions(const CStdString& strOptions)
@@ -455,6 +454,26 @@ const CStdString& CURL::GetProtocol() const
   return m_strProtocol;
 }
 
+const CStdString CURL::GetTranslatedProtocol() const
+{
+  if (m_strProtocol == "ftpx")
+    return "ftp";
+
+  if (m_strProtocol == "shout"
+   || m_strProtocol == "daap"
+   || m_strProtocol == "dav"
+   || m_strProtocol == "tuxbox"
+   || m_strProtocol == "lastfm"
+   || m_strProtocol == "mms"
+   || m_strProtocol == "rss")
+   return "http";
+  
+  if (m_strProtocol == "davs")
+    return "https";
+    
+  return m_strProtocol;
+}
+
 const CStdString& CURL::GetFileType() const
 {
   return m_strFileType;
@@ -465,7 +484,7 @@ const CStdString& CURL::GetOptions() const
   return m_strOptions;
 }
 
-const CStdString CURL::GetProtocolOptions() const
+const CStdString& CURL::GetProtocolOptions() const
 {
   return m_strProtocolOptions;
 }
@@ -700,3 +719,4 @@ CStdString CURL::ValidatePath(const CStdString &path)
 #endif
   return result;
 }
+

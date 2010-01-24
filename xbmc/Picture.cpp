@@ -39,8 +39,7 @@ bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFi
 
   CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", file.c_str(), thumbFile.c_str());
 
-  CURL url(file);
-  if (url.GetProtocol().Equals("http") || url.GetProtocol().Equals("https"))
+  if (CUtil::IsInternetStream(file, true))
   {
     CFileCurl http;
     CStdString thumbData;
