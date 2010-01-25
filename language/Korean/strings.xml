@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 01/14/2010-->
+<!--Date of translation: 01/25/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -120,7 +120,6 @@
   <string id="165">디스크 있음</string>
   <string id="166">스킨</string>
   <string id="167">FTP 서버 사용</string>
-  <string id="168">인터넷 시간 동기화 사용</string>
   <string id="169">해상도</string>
   <string id="170">비디오에 맞게 화면 새로고침 비율 조정</string>
   <string id="172">개봉일</string>
@@ -467,7 +466,7 @@
   <string id="560">ID</string>
   <string id="561">파일</string>
   <string id="562">연도</string>
-  <string id="563">평점</string>
+  <string id="563">등급</string>
   <string id="564">형식</string>
   <string id="565">사용량</string>
   <string id="566">앨범 아티스트</string>
@@ -571,9 +570,7 @@
   <string id="726">변경이 저장되지 않음. 저장않고 계속 하시겠습니까?</string>
   <string id="727">웹 서버</string>
   <string id="728">FTP 서버</string>
-  <string id="729">인터넷 시간</string>
   <string id="730">- 포트</string>
-  <string id="731">시간 서버 주소</string>
   <string id="732">저장 &amp;  적용</string>
   <string id="733">- 비밀번호</string>
   <string id="734">암호 없음</string>
@@ -1386,12 +1383,15 @@
   <string id="16307">바이큐빅 (소프트웨어)</string>
   <string id="16308">랑초스 (소프트웨어)</string>
   <string id="16309">싱크 (소프트웨어)</string>
-  <string id="16310">(VDPAU)시간적</string>
-  <string id="16311">(VDPAU)시간적/공간적</string>
+  <string id="16310">시간적</string>
+  <string id="16311">시간적/공간적</string>
   <string id="16312">(VDPAU)잡음 제거</string>
   <string id="16313">(VDPAU)선명도</string>
   <string id="16314">역 텔레시네</string>
   <string id="16315">랑초스3 최적화</string>
+  <string id="16316">자동</string>
+  <string id="16317">시간적 (반)</string>
+  <string id="16318">시간적/공간적 (반)</string>
   <string id="17500">종료 시간제한 표시</string>
   <string id="19000">채널로 변경</string>
   <string id="20000">저장된 음악 폴더</string>
@@ -1722,6 +1722,8 @@
   <string id="20443">이 경로의 모든 항목 정보를</string>
   <string id="20444">새로고치겠습니까?</string>
   <string id="20445">팬아트</string>
+  <string id="20446">로컬에 저장된 정보 찾음.</string>
+  <string id="20447">무시하고 인터넷에서 새로고침 할까요?</string>
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-모드 입니다!</string>
@@ -1883,13 +1885,13 @@
   <string id="21891">아티스트 정보</string>
   <string id="21892">악기</string>
   <string id="21893">출생</string>
-  <string id="21894">발매</string>
+  <string id="21894">결성</string>
   <string id="21895">테마</string>
   <string id="21896">해체</string>
   <string id="21897">사망</string>
   <string id="21898">활동기간</string>
   <string id="21899">라벨</string>
-  <string id="21900">출시/발매</string>
+  <string id="21900">출생/결성</string>
   <string id="22000">시작때 라이브러리 업데이트</string>
   <string id="22001">항상 백그라운드로 라이브러리 업데이트</string>
   <string id="22002">- DNS 접미사</string>
