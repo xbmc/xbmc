@@ -54,8 +54,20 @@ rm $WORKPATH/buildLive/Files/binary_local-includes/live/*.module
 
 export DONOTBUILDRESTRICTEDDRIVERS=1
 
-
 # Modify menu.lst
-sed -i '/## BEGIN AMD ##/,/## END AMD ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
-sed -i '/## BEGIN INTEL ##/,/## END INTEL ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+if [ -f $WORKPATH/buildLive/Files/binary_grub/menu.lst ]; then
+	sed -i '/## BEGIN AMD ##/,/## END AMD ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+	sed -i '/## BEGIN INTEL ##/,/## END INTEL ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+fi
 
+# Modify grub.cfg
+if [ -f $WORKPATH/buildLive/Files/binary_grub/menu.lst ]; then
+	sed -i '/## BEGIN AMD ##/,/## END AMD ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+	sed -i '/## BEGIN INTEL ##/,/## END INTEL ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+fi
+
+# Modify syslinux menu
+if [ -f $WORKPATH/buildLive/Files/binary_syslinux/live.cfg ]; then
+	sed -i '/## BEGIN AMD ##/,/## END AMD ##/d' $WORKPATH/buildLive/Files/binary_syslinux/live.cfg
+	sed -i '/## BEGIN INTEL ##/,/## END INTEL ##/d' $WORKPATH/buildLive/Files/binary_syslinux/live.cfg
+fi
