@@ -210,8 +210,10 @@ xbmc/lib/cmyth/libcmyth/libcmyth.a: force
 	$(MAKE) -C xbmc/lib/cmyth/libcmyth
 xbmc/lib/cmyth/librefmem/librefmem.a: force
 	$(MAKE) -C xbmc/lib/cmyth/librefmem
+ifneq (arm, $(ARCH))
 xbmc/lib/libhts/libhts.a: force
 	$(MAKE) -C xbmc/lib/libhts
+endif
 xbmc/lib/libPython/python.a: force
 	$(MAKE) -C xbmc/lib/libPython
 xbmc/lib/libPython/xbmcmodule/xbmcmodule.a: force
@@ -375,7 +377,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
-	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libscrobbler/scrobbler.a \
@@ -410,6 +411,15 @@ OBJSXBMC += \
 	xbmc/osx/osx.a \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
+endif
+
+ifeq (arm, $(ARCH))
+# Force external python2.5 for now!
+    LIBS += -lpython2.5
+else
+# Cant include libhts for arm due to GPLv3
+OBJSXBMC+= \
+    xbmc/lib/libhts/libhts.a
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)

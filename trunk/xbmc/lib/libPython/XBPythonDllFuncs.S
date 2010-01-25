@@ -1,7 +1,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-
+#ifndef __arm__
 #ifndef __APPLE__
 #if defined(__PPC__)
 #define FUNCTION(name)				\
@@ -120,7 +120,7 @@
   FUNCTION(PySys_SetArgv)
   FUNCTION(PyObject_RichCompare)
   FUNCTION(PyFloat_FromDouble)
-
+#endif
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits
 #endif
