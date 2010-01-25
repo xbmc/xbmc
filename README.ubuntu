@@ -45,9 +45,9 @@ For Ubuntu (all versions >= 7.04):
 
 On 8.04 and older versions, libmms is outdated and thus XBMC will not compile properly.
 In this case you will have to manually compile the latest version.
-   # wget "http://launchpad.net/libmms/trunk/0.4/+download/libmms-0.4.tar.gz"
-   # tar zxvf libmms-0.4.tar.gz
-   # cd libmms-0.4
+   # wget "http://launchpad.net/libmms/trunk/0.5/+download/libmms-0.5.tar.gz"
+   # tar zxvf libmms-0.5.tar.gz
+   # cd libmms-0.5
    # ./configure --prefix=/usr
    # make
    # sudo make install
