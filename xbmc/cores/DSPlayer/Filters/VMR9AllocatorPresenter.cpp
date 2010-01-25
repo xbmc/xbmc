@@ -388,7 +388,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   if ( FAILED( hr ) )
     return hr;
 
-  for( int i = 0; i < DS_MAX_3D_SURFACE-1; ++i ) 
+  for( int i = 0; i < DS_NBR_3D_SURFACE-1; ++i ) 
   {
     hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[i], NULL, 0);
     if (SUCCEEDED(hr))

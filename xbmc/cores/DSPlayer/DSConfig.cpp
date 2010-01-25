@@ -93,6 +93,17 @@ bool CDSConfig::LoadAudioStreams()
 
   CLog::Log(LOGDEBUG, "%s Looking for audio streams in %s splitter", __FUNCTION__, splitterName.c_str());
 
+  /* Regex to rename audio stream */
+  std::vector<CRegExp *> regex;
+
+  CRegExp *reg = new CRegExp(true);
+  reg->RegComp("(.*?)(\\(audio.*?\\)|\\(subtitle.*?\\))"); // mkv source audio / subtitle
+  regex.push_back(reg);
+
+  reg = new CRegExp(true);
+  reg->RegComp(".* - (.*),.*\\(.*\\)"); // mpeg source audio / subtitle
+  regex.push_back(reg);
+
   /* Does the splitter support IAMStreamSelect ?*/
   HRESULT hr = m_pSplitter->QueryInterface(__uuidof(m_pIAMStreamSelect), (void **) &m_pIAMStreamSelect);
   if (SUCCEEDED(hr))
@@ -107,7 +118,7 @@ bool CDSConfig::LoadAudioStreams()
     m_pIAMStreamSelect->Count(&nStreams);
 
     AM_MEDIA_TYPE * mediaType = NULL;
-    for(long i = 0; i < nStreams; i++)
+    for(int i = 0; i < nStreams; i++)
     {
       infos = new IAMStreamSelectInfos();
       infos->group = 0;  infos->lcid = 0; infos->pObj = 0; infos->pUnk = 0; infos->flags = 0;
@@ -116,13 +127,23 @@ bool CDSConfig::LoadAudioStreams()
       g_charsetConverter.wToUTF8(wname, infos->name);
       CoTaskMemFree(wname);
 
+      /* Apply regex */
+      for (std::vector<CRegExp *>::const_iterator it = regex.begin(); it != regex.end(); ++it)
+      {
+        if ( (*it)->RegFind(infos->name) > -1 )
+        {
+          infos->name = (*it)->GetMatch(1);
+          break;
+        }
+      }
+
       if (mediaType->majortype == MEDIATYPE_Audio)
       {
         /* Audio stream */
         m_pAudioStreams.insert( std::pair<long, IAMStreamSelectInfos *>(i, infos) );
         CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
 
-      } else if (mediaType->majortype == MEDIATYPE_Subtitle || mediaType->majortype == GUID_NULL)
+      } else if (mediaType->majortype == MEDIATYPE_Subtitle)
       {
         /* Embed subtitles */
         m_pEmbedSubtitles.insert( std::pair<long, IAMStreamSelectInfos *>(i, infos) );
@@ -136,110 +157,119 @@ bool CDSConfig::LoadAudioStreams()
   
     // Enumerate output pins
     PIN_DIRECTION dir;
-    AM_MEDIA_TYPE mediaType;
     int i = 0, j = 0;
-    CStdStringW pinName;
+    CStdStringW pinNameW;
+    CStdString pinName;
     IAMStreamSelectInfos *infos;
     bool pinConnected = FALSE;
     bool audioPinAlreadyConnected = FALSE, subtitlePinAlreadyConnected = FALSE;
-    //the regex for removing the (audio #) in the name
-    CRegExp reAudioName(true);
-    reAudioName.RegComp("(.*?)(\\(audio.*?\\)\|\\(subtitle.*?\\))");
+
+    int nIn = 0, nOut = 0, nInC = 0, nOutC = 0;
+    DShowUtil::CountPins(m_pSplitter, nIn, nOut, nInC, nOutC);
+    CLog::Log(LOGDEBUG, "%s The splitter has %d output pins", __FUNCTION__, nOut);
 
     BeginEnumPins(m_pSplitter, pEP, pPin)
     {
       if (SUCCEEDED(pPin->QueryDirection(&dir)) && ( dir == PINDIR_OUTPUT ))
       {
-        if (SUCCEEDED(pPin->ConnectionMediaType(&mediaType))
-          && ( mediaType.majortype == MEDIATYPE_Audio ))
+
+        pinNameW = DShowUtil::GetPinName(pPin);
+        g_charsetConverter.wToUTF8(pinNameW, pinName);
+        CLog::Log(LOGDEBUG, "%s Output pin found : %s", __FUNCTION__, pinName.c_str());
+
+        /* TODO: Ne pas utiliser ConnectionMediaType. Renvois false si la pin n'est pas connecté -> problème.
+         Utiliser BeginEnumMediaTypes comme en dessous pour TOUTES les pins */
+
+        BeginEnumMediaTypes(pPin, pET, pMediaType)
         {
-          pinName = DShowUtil::GetPinName(pPin);
-          
+
+          CLog::Log(LOGDEBUG, "%s Output pin major type : %s", __FUNCTION__, GuidNames[pMediaType->majortype]);
+          CLog::Log(LOGDEBUG, "%s Output pin sub type : %s", __FUNCTION__, GuidNames[pMediaType->subtype]);
+          CLog::Log(LOGDEBUG, "%s Output pin format type : %s", __FUNCTION__, GuidNames[pMediaType->formattype]);
+
+          if (pMediaType->majortype != MEDIATYPE_Audio &&
+            pMediaType->majortype != MEDIATYPE_Subtitle)
+            continue;
+
           infos = new IAMStreamSelectInfos();
           infos->group = 0;  infos->lcid = 0; infos->pObj = 0; infos->pUnk = 0; infos->flags = 0;
           pinConnected = FALSE;
 
-          g_charsetConverter.wToUTF8(pinName, infos->name);
-          if ( reAudioName.RegFind(infos->name) > -1 )
+          infos->name = pinName;
+
+          /* Apply regex */
+          for (std::vector<CRegExp *>::const_iterator it = regex.begin(); it != regex.end(); ++it)
           {
-            // "English, 3/2 (Audio 1)" should be renamed to "English, 3/2" - Treat also subtitles
-            infos->name = reAudioName.GetMatch(1);
+            if ( (*it)->RegFind(infos->name) > -1 )
+            {
+              infos->name = (*it)->GetMatch(1);
+              break;
+            }
           }
 
           infos->pObj = pPin;
 
-          if (SUCCEEDED(DShowUtil::IsPinConnected(pPin)))
+          if (pMediaType->majortype == MEDIATYPE_Audio)
           {
-            if (audioPinAlreadyConnected)
-            { // Prevent multiple audio stream at the same time
-              IPin *pin = NULL;
-              pPin->ConnectedTo(&pin);
-              m_pGraphBuilder->Disconnect(pPin);
-              m_pGraphBuilder->Disconnect(pin);
-              SAFE_RELEASE(pin);
-            } 
-            else 
+            if (SUCCEEDED(DShowUtil::IsPinConnected(pPin)))
             {
-              infos->flags = AMSTREAMSELECTINFO_ENABLED;
-              audioPinAlreadyConnected = TRUE;
+              if (audioPinAlreadyConnected)
+              { // Prevent multiple audio stream at the same time
+                IPin *pin = NULL;
+                pPin->ConnectedTo(&pin);
+                m_pGraphBuilder->Disconnect(pPin);
+                m_pGraphBuilder->Disconnect(pin);
+                SAFE_RELEASE(pin);
+              } 
+              else 
+              {
+                infos->flags = AMSTREAMSELECTINFO_ENABLED;
+                audioPinAlreadyConnected = TRUE;
+              }
             }
-          }
 
-          m_pAudioStreams.insert( std::pair<long, IAMStreamSelectInfos *>(i, infos) );
-          CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
-          i++;
+            m_pAudioStreams.insert( std::pair<long, IAMStreamSelectInfos *>(i, infos) );
+            CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
+            i++;
+          } else {
 
-        } else {
-
-          BeginEnumMediaTypes(pPin, pET, pMediaType)
-          {
-            if (pMediaType->majortype == MEDIATYPE_Subtitle)
+            if (SUCCEEDED(DShowUtil::IsPinConnected(pPin)))
             {
-              pinName = DShowUtil::GetPinName(pPin);
-          
-              infos = new IAMStreamSelectInfos();
-              infos->group = 0;  infos->lcid = 0; infos->pObj = 0; infos->pUnk = 0; infos->flags = 0;
-              pinConnected = FALSE;
-
-              g_charsetConverter.wToUTF8(pinName, infos->name);
-              if ( reAudioName.RegFind(infos->name) > -1 )
+              if (subtitlePinAlreadyConnected)
+              { // Prevent multiple audio stream at the same time
+                IPin *pin = NULL;
+                pPin->ConnectedTo(&pin);
+                m_pGraphBuilder->Disconnect(pPin);
+                m_pGraphBuilder->Disconnect(pin);
+                SAFE_RELEASE(pin);
+              } 
+              else 
               {
-                // "English, 3/2 (Audio 1)" should be renamed to "English, 3/2" - Treat also subtitles
-                infos->name = reAudioName.GetMatch(1);
+                infos->flags = AMSTREAMSELECTINFO_ENABLED;
+                subtitlePinAlreadyConnected = TRUE;
               }
-
-              infos->pObj = pPin;
-
-              if (SUCCEEDED(DShowUtil::IsPinConnected(pPin)))
-              {
-                if (subtitlePinAlreadyConnected)
-                { // Prevent multiple audio stream at the same time
-                  IPin *pin = NULL;
-                  pPin->ConnectedTo(&pin);
-                  m_pGraphBuilder->Disconnect(pPin);
-                  m_pGraphBuilder->Disconnect(pin);
-                  SAFE_RELEASE(pin);
-                } 
-                else 
-                {
-                  infos->flags = AMSTREAMSELECTINFO_ENABLED;
-                  subtitlePinAlreadyConnected = TRUE;
-                }
-              }
-
-              m_pEmbedSubtitles.insert( std::pair<long, IAMStreamSelectInfos *>(j, infos) );
-              CLog::Log(LOGNOTICE, "%s Embed subtitle found : %s", __FUNCTION__, infos->name.c_str());
-              j++;
             }
+
+            m_pEmbedSubtitles.insert( std::pair<long, IAMStreamSelectInfos *>(j, infos) );
+            CLog::Log(LOGNOTICE, "%s Embed subtitle found : %s", __FUNCTION__, infos->name.c_str());
+            j++;
+
           }
-          EndEnumMediaTypes(pMediaType)
 
         }
-        DeleteMediaType(&mediaType);
+        EndEnumMediaTypes(pMediaType)
       }
     }
     EndEnumPins
   }
+
+  /* Delete regex */
+  while (! regex.empty())
+  {
+    delete regex.back();
+    regex.pop_back();
+  }
+
   return false;
 }
 
@@ -277,6 +307,8 @@ int CDSConfig::GetAudioStream()
     if ( (*it).second->flags == AMSTREAMSELECTINFO_ENABLED)
       return i;
   }
+
+  return -1;
 }
 
 void CDSConfig::GetAudioStreamName(int iStream, CStdString &strStreamName)
@@ -335,6 +367,8 @@ int CDSConfig::GetSubtitle()
     if ( (*it).second->flags == AMSTREAMSELECTINFO_ENABLED)
       return i;
   }
+
+  return -1;
 }
 
 void CDSConfig::GetSubtitleName(int iStream, CStdString &strStreamName)

@@ -195,7 +195,7 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
 HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
 {
   HRESULT hr = S_OK;
-  IBaseFilter* ppBF;
+  IBaseFilter* ppBF = NULL;
   for (list<CFGFilterFile*>::iterator it = m_configFilter.begin(); it != m_configFilter.end(); it++)
   {
     if ( ((CStdString)pRule->Attribute("videodec")).Equals((*it)->GetXFilterName().c_str(),false) )

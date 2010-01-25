@@ -187,6 +187,4 @@ private:
   IMediaEventEx*                  m_pMediaEvent;
   IMediaSeeking*                  m_pMediaSeeking;
   IBasicAudio*                    m_pBasicAudio;
-  IBasicVideo2*                   m_pBasicVideo;
-  
 };

@@ -64,7 +64,6 @@ CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
   m_pMediaEvent = NULL;
   m_pMediaSeeking = NULL;
   m_pBasicAudio = NULL;
-  m_pBasicVideo = NULL;
   m_bReachedEnd = false;
 }
 
@@ -96,8 +95,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaControl),(void **)&m_pMediaControl);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaEvent),(void **)&m_pMediaEvent);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
-  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicVideo),(void **)&m_pBasicVideo);
-  
 
   LONGLONG tmestamp;
   tmestamp = CTimeUtils::GetTimeMS();

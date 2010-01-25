@@ -43,7 +43,6 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
 {
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
   m_bAbortRequest = false;
-  
 }
 
 CDSPlayer::~CDSPlayer()

@@ -99,7 +99,10 @@
 	  <guid>{2DE1D17E-46B1-42A8-9AEC-E20E80D9B1A9}</guid>
 	  <osdname>Broadcom VideoDecoder</osdname>
     </filter>
-	
+    <filter name="haali" type="source">
+      <guid>{55DA30FC-F16B-49FC-BAA5-AE59FC65F82D}</guid>
+      <osdname>Haali Media Splitter</osdname>
+    </filter>
     <!-- Video renderers-->
     <!--evr and vmr9 are platform specific-->
 	<!--evr for vista and windows 7-->
@@ -131,7 +134,7 @@
     <rule filetypes="mpg" source="mpegsource" splitter="mpegsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     <rule filetypes="m2ts" source="mpegsource" splitter="mpegsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
 
-    <rule filetypes="mkv" source="mkvsource" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="mkv" source="mkvsource" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     
 	<!-- the WM ASF Reader is a source and a splitter -->
     <rule filetypes="wmv" source="wmasfreader" videodec="ffdvideodec" audiodec="wmaudiodecoder"/>

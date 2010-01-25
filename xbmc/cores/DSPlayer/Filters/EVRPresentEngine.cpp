@@ -185,12 +185,29 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
 	  SAFE_DELETE(m_pVideoTexture);
 
   m_pVideoTexture = new CD3DTexture();
-     
+
+  D3DFORMAT d3dFormat;
+  GUID subtype = GUID_NULL;
+  /* Get D3DFORMAT from MEDIA_SubType*/
+
+  pFormat->GetGUID(MF_MT_SUBTYPE, & subtype);
+
+  if (subtype == MFVideoFormat_RGB565)
+    d3dFormat = D3DFMT_R5G6B5;
+  else if (subtype == MFVideoFormat_RGB555)
+    d3dFormat = D3DFMT_X1R5G5B5;
+  else if (subtype == MFVideoFormat_RGB24)
+    d3dFormat = D3DFMT_R8G8B8;
+  else if (subtype == MFVideoFormat_ARGB32)
+    d3dFormat = D3DFMT_A8R8G8B8;
+  else
+    d3dFormat = D3DFMT_X8R8G8B8;
+
   if (!m_pVideoTexture->Create(m_iVideoWidth ,
                                m_iVideoHeight ,
                                1 , 
                                D3DUSAGE_RENDERTARGET,
-                               D3DFMT_X8R8G8B8,
+                               d3dFormat,
                                D3DPOOL_DEFAULT))
   {
     CLog::Log(LOGERROR,"%s Error while creating the video texture",__FUNCTION__);
@@ -206,7 +223,7 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
                                                   m_iVideoHeight ,
                                                   1 ,
                                                   D3DUSAGE_RENDERTARGET ,
-                                                  D3DFMT_X8R8G8B8 ,
+                                                  d3dFormat ,
                                                   D3DPOOL_DEFAULT ,
                                                   &m_pInternalVideoTexture[i] ,
                                                   NULL);

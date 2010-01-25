@@ -72,7 +72,7 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
   m_SurfaceType = Format;
   bool hrb;
 
-  for( int i = 0; i < DS_MAX_3D_SURFACE-1; ++i ) 
+  for( int i = 0; i < DS_MAX_3D_SURFACE; ++i ) 
   {
     m_pVideoTexture[i] = new CD3DTexture();
     m_pVideoSurface[i] = NULL;
@@ -87,10 +87,16 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
                                     D3DUSAGE_RENDERTARGET,
                                     m_SurfaceType,        /* D3D_FORMAT */
                                     D3DPOOL_DEFAULT);
-    g_Windowing.Register(m_pVideoTexture[i]);
     if (!hrb)
-      CLog::Log(LOGERROR,"Failed to create texture");
-    hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
+    {
+      CLog::Log(LOGERROR,"%s Failed to create texture number %i",__FUNCTION__,i);
+      break;
+    }
+    else
+    {
+      g_Windowing.Register(m_pVideoTexture[i]);
+      hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
+    }
   }
   return hr;
 }
@@ -100,16 +106,11 @@ void CDsRenderer::DeleteSurfaces()
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-  for( int i = 0; i < DS_MAX_3D_SURFACE; ++i ) 
+  for( int i = 0; i < DS_NBR_3D_SURFACE; ++i ) 
   {
-    try
-    {
-      SAFE_RELEASE(m_pVideoTexture[i]);
-      m_pVideoSurface[i] = NULL;
-    }
-    catch (...)
-    {
-    }
+    if (m_pVideoTexture[i] != NULL)
+      m_pVideoTexture[i]->Release();
+    m_pVideoSurface[i] = NULL;
   }
 
 }
