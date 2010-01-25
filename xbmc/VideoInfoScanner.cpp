@@ -32,6 +32,8 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogOK.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "Settings.h"
@@ -307,8 +309,8 @@ namespace VIDEO
         strPath = "special://xbmc/system/scrapers/video/" + m_info.strPath;
       if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
       {
-        m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + m_info.strPath);
-        m_info.settings.SaveFromDefault();
+        if (m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + m_info.strPath))
+          m_info.settings.SaveFromDefault();
       }
     }
 
@@ -419,8 +421,12 @@ namespace VIDEO
         CScraperParser parser;
         if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
         {
-          info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
-          info2.settings.SaveFromDefault();
+          if (info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath))
+            info2.settings.SaveFromDefault();
+          else if (!DownloadFailed(pDlgProgress))
+            return false;
+          else
+            continue;
         }
       }
 
@@ -631,11 +637,13 @@ namespace VIDEO
               Return = true;
             }
           }
-          else if (returncode == -1)
+          else if (returncode == -1 || !DownloadFailed(pDlgProgress))
           {
             m_bStop = true;
             return false;
           }
+          else
+            continue;
         }
       }
       pURL = NULL;
@@ -1476,5 +1484,15 @@ namespace VIDEO
       CLog::Log(LOGDEBUG,"No NFO file found. Using title search for '%s'", pItem->m_strPath.c_str());
 
     return result;
+  }
+
+  bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
+  {
+    if (pDialog)
+    {
+      CGUIDialogOK::ShowAndGetInput(20448,20449,20022,20022);
+      return false;
+    }
+    return CGUIDialogYesNo::ShowAndGetInput(20448,20449,20450,20022);
   }
 }

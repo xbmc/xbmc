@@ -1851,6 +1851,9 @@
   <string id="20445">Fanart</string>
   <string id="20446">Locally stored information found.</string>
   <string id="20447">Ignore and refresh from internet?</string>
+  <string id="20448">Could not download information</string>
+  <string id="20449">Server is most likely unavailable.</string>
+  <string id="20450">Would you like to continue scanning?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

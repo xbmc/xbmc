@@ -147,10 +147,11 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     xurl = xurl->NextSiblingElement("url");
   }
 
-  TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
+  TiXmlElement *movie = docHandle.FirstChild("results").Element();
   if (!movie)
     return 0;
 
+  movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
   while (movie)
   {
     // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
