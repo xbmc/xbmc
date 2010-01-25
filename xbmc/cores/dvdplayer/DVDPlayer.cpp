@@ -1019,6 +1019,10 @@ void CDVDPlayer::Process()
       m_CurrentVideo.inited    = false;
       m_CurrentSubtitle.inited = false;
       m_CurrentTeletext.inited = false;
+      m_CurrentAudio.started    = false;
+      m_CurrentVideo.started    = false;
+      m_CurrentSubtitle.started = false;
+      m_CurrentTeletext.started = false;
 
       // if we are caching, start playing it again
       SetCaching(CACHESTATE_DONE);
@@ -1447,6 +1451,10 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
     m_CurrentVideo.inited = false;
     m_CurrentSubtitle.inited = false;
     m_CurrentTeletext.inited = false;
+    m_CurrentAudio.started    = false;
+    m_CurrentVideo.started    = false;
+    m_CurrentSubtitle.started = false;
+    m_CurrentTeletext.started = false;
   }
 
   /* stream jump forward */
@@ -1461,6 +1469,10 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
     m_CurrentVideo.inited = false;
     m_CurrentSubtitle.inited = false;
     m_CurrentTeletext.inited = false;
+    m_CurrentAudio.started    = false;
+    m_CurrentVideo.started    = false;
+    m_CurrentSubtitle.started = false;
+    m_CurrentTeletext.started = false;
   }
 
   if(current.dts != DVD_NOPTS_VALUE && pPacket->dts < current.dts && current.inited)
@@ -2751,6 +2763,10 @@ void CDVDPlayer::FlushBuffers(bool queued)
   m_CurrentVideo.inited = false;
   m_CurrentSubtitle.inited = false;
   m_CurrentTeletext.inited = false;
+  m_CurrentAudio.started    = false;
+  m_CurrentVideo.started    = false;
+  m_CurrentSubtitle.started = false;
+  m_CurrentTeletext.started = false;
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
