@@ -49,6 +49,7 @@ In this case you will have to manually compile the latest version.
    # tar zxvf libmms-0.5.tar.gz
    # cd libmms-0.5
    # ./configure --prefix=/usr
+   # edit mmsh.h and mmsx.h and change *this to *instance
    # make
    # sudo make install
 
