@@ -65,7 +65,6 @@ void CDBusUtil::GetAll(PropertyMap& properties, const char *destination, const c
   CDBusMessage message(destination, object, "org.freedesktop.DBus.Properties", "GetAll");
   message.AppendArgument(interface);
   DBusMessage *reply = message.SendSystem();
-  CStdString result;
   if (reply)
   {
     DBusMessageIter iter;
@@ -85,7 +84,7 @@ void CDBusUtil::GetAll(PropertyMap& properties, const char *destination, const c
             dbus_message_iter_recurse(&sub, &dict);
             do
             {
-              const char *    key     = NULL;
+              const char * key = NULL;
 
               dbus_message_iter_get_basic(&dict, &key);
               dbus_message_iter_next(&dict);

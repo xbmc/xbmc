@@ -275,7 +275,6 @@ int CWeatherJob::ConvertSpeed(int curSpeed)
 
 bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 {
-  int iTmpInt;
   CStdString iTmpStr;
   SYSTEMTIME time;
 
@@ -336,6 +335,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
     GetString(pElement, "t", m_info.currentConditions, "");   //current condition
     LocalizeOverview(m_info.currentConditions);
 
+    int iTmpInt;
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
     CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
     m_info.currentTemperature.Format("%2.0f", temp.ToLocale());

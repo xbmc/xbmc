@@ -433,6 +433,19 @@ CTeletextDecoder::CTeletextDecoder()
   memcpy(m_RenderInfo.gn0,gn0,TXT_Color_SIZECOLTABLE*sizeof(unsigned short));
   memcpy(m_RenderInfo.bl0,bl0,TXT_Color_SIZECOLTABLE*sizeof(unsigned short));
   memcpy(m_RenderInfo.tr0,tr0,TXT_Color_SIZECOLTABLE*sizeof(unsigned short));
+
+  m_LastPage = 0;
+  m_TempPage = 0;
+  m_Ascender = 0;
+  m_PCOldCol = 0;
+  m_PCOldRow = 0;
+  m_CatchedPage = 0;
+  m_CatchCol = 0;
+  m_CatchRow = 0;
+  prevTimeSec = 0;
+  prevHeaderPage = 0;
+  m_updateTexture = false;
+  m_YOffset = 0;
 }
 
 CTeletextDecoder::~CTeletextDecoder()
@@ -2368,7 +2381,6 @@ int CTeletextDecoder::RenderChar(color_t *buffer,    // pointer to render buffer
                                 unsigned char *axdrcs,    // width and height of DRCS-chars
                                 int Ascender)             // Ascender of font
 {
-  int Row;
   color_t bgcolor, fgcolor;
   int factor, xfactor;
   int national_subset_local = m_txtCache->NationalSubset;
@@ -2668,7 +2680,7 @@ int CTeletextDecoder::RenderChar(color_t *buffer,    // pointer to render buffer
       return 0;
     case 0xE8: /* Ii */
       FillRect(buffer,xres,*pPosX +1, PosY, curfontwidth -1, FontHeight, bgcolor);
-      for (Row=0; Row < curfontwidth/2; Row++)
+      for (int Row=0; Row < curfontwidth/2; Row++)
         DrawVLine(buffer,xres,*pPosX + Row, PosY + Row, FontHeight - Row, fgcolor);
       *pPosX += curfontwidth;
       return 0;
@@ -2684,7 +2696,7 @@ int CTeletextDecoder::RenderChar(color_t *buffer,    // pointer to render buffer
       return 0;
     case 0xEB: /* ¨ */
       FillRect(buffer,xres,*pPosX, PosY +1, curfontwidth, FontHeight -1, bgcolor);
-      for (Row=0; Row < curfontwidth/2; Row++)
+      for (int Row=0; Row < curfontwidth/2; Row++)
         DrawHLine(buffer,xres,*pPosX + Row, PosY + Row, curfontwidth - Row, fgcolor);
       *pPosX += curfontwidth;
       return 0;

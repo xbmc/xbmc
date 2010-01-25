@@ -164,7 +164,6 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
       }
     }
 
-    CScraperUrl url;
     TiXmlNode *title = movie->FirstChild("title");
     TiXmlElement *link = movie->FirstChildElement("url");
     TiXmlNode *year = movie->FirstChild("year");
@@ -172,6 +171,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     TiXmlNode* language = movie->FirstChild("language");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
+      CScraperUrl url;
       url.strTitle = title->FirstChild()->Value();
       while (link && link->FirstChild())
       {

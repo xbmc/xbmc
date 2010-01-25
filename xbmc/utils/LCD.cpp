@@ -166,8 +166,6 @@ unsigned char ILCD::GetLCDCharsetCharacter( UINT _nCharacter, int _nCharset )
 
 CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
 {
-  CStdString strProgressBar;
-  double tmpTest, dBlockSize, dBlockSizeRest;
   unsigned char cLCDsmallBlocks = 0xb0; //this char (0xAC-0xAF) will be translated in LCD.cpp to the smallBlock
   unsigned char cLCDbigBlock = 0xab;  //this char will be translated in LCD.cpp to the right bigBlock
   int iBigBlock = 5;      // a big block is a combination of 5 small blocks
@@ -175,10 +173,10 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
 
   if (m_iColumns > 0)
   {
-    dBlockSize = tTotal * 0.99 / m_iColumns / iBigBlock; // mult with 0.99 to show the last bar
-    dBlockSizeRest = (tCurrent - ((int)(tCurrent / dBlockSize) * dBlockSize));
+    double dBlockSize = tTotal * 0.99 / m_iColumns / iBigBlock; // mult with 0.99 to show the last bar
+    double dBlockSizeRest = (tCurrent - ((int)(tCurrent / dBlockSize) * dBlockSize));
 
-    strProgressBar = "[";
+    CStdString strProgressBar = "[";
     for (int i = 1;i <= m_iColumns;i++)
     {
       //set full blocks
@@ -189,7 +187,7 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
       //set a part of a block at the end, when needed
       else if (tCurrent > (i - 1) * iBigBlock * dBlockSize + dBlockSize)
       {
-        tmpTest = tCurrent - ((int)(tCurrent / (iBigBlock * dBlockSize)) * iBigBlock * dBlockSize );
+        double tmpTest = tCurrent - ((int)(tCurrent / (iBigBlock * dBlockSize)) * iBigBlock * dBlockSize );
         tmpTest = (tmpTest / dBlockSize);
         if (tmpTest >= iBigBlock) tmpTest = iBigBlock - 1;
         strProgressBar += char(cLCDsmallBlocks - (int)tmpTest);
