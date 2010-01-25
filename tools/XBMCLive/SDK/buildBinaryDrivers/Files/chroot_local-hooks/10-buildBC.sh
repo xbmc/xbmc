@@ -45,9 +45,6 @@ cp crystalhd/firmware/fwbin/70012/*.bin ./Files/lib/firmware
 mkdir -p ./Files/usr/lib
 mv crystalhd/linux_lib/libcrystalhd/libcrystalhd.so* ./Files/usr/lib
 
-mkdir -p ./Files/etc/udev/rules.d/
-cp -f 20-crystalhd.rules ./Files/etc/udev/rules.d/
-
 pushd .
 
 # Assuming only one kernel is installed!
@@ -78,6 +75,11 @@ tar cvf /tmp/modules.tar modules.* kernel/drivers/video/broadcom/*
 popd
 
 pushd .
+mkdir -p ./Files/etc/udev/rules.d/
+cp -f crystalhd/driver/linux/20-crystalhd.rules ./Files/etc/udev/rules.d/
+mkdir -p ./Files/lib/udev/rules.d/
+cp -f crystalhd/driver/linux/20-crystalhd.rules ./Files/lib/udev/rules.d/
+
 mkdir -p ./Files/lib/modules/$kernelVersion
 cd ./Files/lib/modules/$kernelVersion
 tar xvf /tmp/modules.tar
