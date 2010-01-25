@@ -1290,6 +1290,11 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   if((current.type == STREAM_AUDIO && m_dvdPlayerAudio.IsStalled())
   || (current.type == STREAM_VIDEO && m_dvdPlayerVideo.IsStalled()))
   {
+    // don't start caching if it's only a single stream that has run dry
+    if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50
+    || m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
+      return false;
+
     if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP)
     || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
       SetCaching(CACHESTATE_INIT);
