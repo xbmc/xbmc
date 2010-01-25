@@ -1212,9 +1212,6 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
           timeout = 200;
 
-        if( maxfd < 0 ) // hack for broken curl
-          maxfd = fdread.fd_count + fdwrite.fd_count + fdexcep.fd_count - 1;
-
         if (maxfd >= 0)
         {
           struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
