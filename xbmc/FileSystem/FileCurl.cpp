@@ -346,13 +346,13 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
-
+#if (LIBCURL_VERSION_NUM >= 0x071301)
   // set username and password for current handle
   if (m_username.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
   if (m_password.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
-
+#endif
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
@@ -415,7 +415,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   }
 
   // setup requested http authentication method
-  if(m_httpauth.length() > 0 && m_username.length() > 0 && m_password.length() > 0)
+  if(m_httpauth.length() > 0)
   {
     if( m_httpauth.Equals("any") )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
@@ -633,10 +633,16 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
 
+    // replace invalid spaces
+    CStdString strFileName = url2.GetFileName();
+    strFileName.Replace(" ", "\%20");
+    url2.SetFileName(strFileName);
+
+#if (LIBCURL_VERSION_NUM >= 0x071301)
     // get username and password
     m_username = url2.GetUserName();
     m_password = url2.GetPassWord();
-
+#endif
     // handle any protocol options
     CStdString options = url2.GetProtocolOptions();
     options.TrimRight('/'); // hack for trailing slashes being added from source
@@ -679,6 +685,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
     }
   }
+  
+  if (m_username.length() > 0 || m_password.length() > 0)
+    m_url = url2.GetWithoutUserDetails();
+  else
+    m_url = url2.Get();
 }
 
 bool CFileCurl::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
@@ -786,11 +797,6 @@ bool CFileCurl::Open(const CURL& url)
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
-
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());
 
@@ -983,11 +989,6 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
-
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
 
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
@@ -1232,7 +1233,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         {
           struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
 
-          // wait until data is avialable or a timeout occours
+          // wait until data is available or a timeout occurs
           if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
             return false;
         }

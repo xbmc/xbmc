@@ -19,7 +19,6 @@
  *
  */
 #include "system.h"
-#include <iostream> //for debugging, please remove
 #include <list>
 #include "StdString.h"
 #include "VideoReferenceClock.h"
@@ -29,6 +28,7 @@
 #include "utils/SingleLock.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
+  #include <sstream>
   #include <X11/extensions/Xrandr.h>
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate 2>&1"
 #elif defined(__APPLE__)
@@ -234,9 +234,23 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  if (!strstr(glXQueryExtensionsString(m_Dpy, DefaultScreen(m_Dpy)), "SGI_video_sync"))
+  bool          ExtensionFound = false;
+  istringstream Extensions(glXQueryExtensionsString(m_Dpy, DefaultScreen(m_Dpy)));
+  string        ExtensionStr;
+
+  while (!ExtensionFound)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: X server does not support SGI_video_sync");
+    Extensions >> ExtensionStr;
+    if (Extensions.fail())
+      break;
+
+    if (ExtensionStr == "GLX_SGI_video_sync")
+      ExtensionFound = true;
+  }
+
+  if (!ExtensionFound)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: X server does not support GLX_SGI_video_sync");
     return false;
   }
 

@@ -23,6 +23,7 @@
 #include "IFile.h"
 #include "ILiveTV.h"
 #include "CMythSession.h"
+#include "DateTime.h"
 #include "VideoInfoTag.h"
 
 #include <queue>
@@ -90,6 +91,7 @@ protected:
   bool SetupFile(const CURL& url);
 
   CStdString GetValue(char* str) { return m_session->GetValue(str); }
+  CDateTime  GetValue(const cmyth_timestamp_t t) { return m_session->GetValue(t); }
 
   CCMythSession*    m_session;
   DllLibCMyth*      m_dll;

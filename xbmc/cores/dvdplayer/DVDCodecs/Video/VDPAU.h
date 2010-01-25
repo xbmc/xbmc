@@ -22,9 +22,7 @@
  */
 
 #include "DVDVideoCodec.h"
-#include "Codecs/DllAvCodec.h"
-#include "Codecs/DllAvFormat.h"
-#include "Codecs/DllSwScale.h"
+#include "DVDVideoCodecFFmpeg.h"
 #include "libavcodec/vdpau.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -44,6 +42,7 @@ namespace Surface { class CSurface; }
 #define FULLHD_WIDTH                       1920
 
 class CVDPAU
+ : public CDVDVideoCodecFFmpeg::IHardwareDecoder
 {
 public:
 
@@ -60,9 +59,22 @@ public:
     uint32_t aux; /* optional extra parameter... */
   };
 
-
-  CVDPAU(int width, int height, CodecID codec);
+  CVDPAU();
   virtual ~CVDPAU();
+  
+  virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
+  virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
+  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
+  virtual void Close();
+
+  virtual int  Check() 
+  { 
+    if(CheckRecover(false))
+      return VC_FLUSHED;
+    else
+      return 0;
+  }
+
 
   bool MakePixmap(int width, int height);
   bool MakePixmapGL();
@@ -85,8 +97,6 @@ public:
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
-  int  Decode(AVCodecContext *avctx, AVFrame *pFrame);
-  bool GetPicture(DVDVideoPicture* picture);
   void Present();
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();

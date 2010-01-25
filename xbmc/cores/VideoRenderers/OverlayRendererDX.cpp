@@ -27,6 +27,8 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "Application.h"
 #include "WindowingFactory.h"
+#include "Settings.h"
+#include "MathUtils.h"
 
 #ifdef HAS_DX
 
@@ -111,8 +113,19 @@ static bool LoadTexture(int width, int height, int stride
 
 COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 {
-  m_width  = (float)g_graphicsContext.GetWidth();
-  m_height = (float)g_graphicsContext.GetHeight();
+  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
+
+  int width  = res.iWidth;
+  int height = res.iHeight;
+
+  m_width  = (float)width;
+  m_height = (float)height;
+
+  if     (res.fPixelRatio > 1.0)
+    width  = MathUtils::round_int(width  * res.fPixelRatio);
+  else if(res.fPixelRatio < 1.0)
+    height = MathUtils::round_int(height / res.fPixelRatio);
+
   m_fvf    = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
   m_align  = ALIGN_SCREEN;
   m_pos    = POSITION_ABSOLUTE;
@@ -121,7 +134,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
 
 
   SQuads quads;
-  if(!convert_quad(o, pts, (int)m_width, (int)m_height, quads))
+  if(!convert_quad(o, pts, width, height, quads))
     return;
 
   float u, v;
@@ -156,8 +169,8 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
   float scale_u = u    / quads.size_x;
   float scale_v = v    / quads.size_y;
 
-  float scale_x = 1.0f / m_width;
-  float scale_y = 1.0f / m_height;
+  float scale_x = 1.0f / width;
+  float scale_y = 1.0f / height;
 
   for(int i = 0; i < quads.count; i++)
   {

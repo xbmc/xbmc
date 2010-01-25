@@ -140,10 +140,12 @@ protected:
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
 
-  bool LoadEffect();
+  void UpdateVideoFilter();
+
+  bool LoadEffect(CD3DEffect &effect, CStdString filename);
 
   // low memory renderer (default PixelShaderRenderer)
-  void RenderLowMem(DWORD flags);
+  void RenderLowMem(CD3DEffect &effect, DWORD flags);
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
@@ -169,7 +171,17 @@ protected:
   YUVVIDEOBUFFERS m_YUVVideoTexture;
   YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
+  CD3DTexture m_HQKernelTexture;
   CD3DEffect  m_YUV2RGBEffect;
+  CD3DEffect  m_YUV2RGBHQScalerEffect;
+
+  ESCALINGMETHOD m_scalingMethod;
+  ESCALINGMETHOD m_scalingMethodGui;
+
+  D3DCAPS9 m_deviceCaps;
+
+  bool m_bUseHQScaler;
+  bool m_bFilterInitialized;
 
   // clear colour for "black" bars
   DWORD m_clearColour;

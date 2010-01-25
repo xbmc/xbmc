@@ -1,6 +1,6 @@
 ARCH=@ARCH@
 
-CFLAGS +=-D_LINUX -DHAVE_UNIX -DHAVE_STRCASECMP -DHAVE_STRNCASECMP -DHAVE_IOS_OPENMODE -fPIC -Ilibsidplay/win/VC -Ibuilders/resid-builder/include/sidplay/builders -Ilibsidplay/include/sidplay -Iresid -Ilibsidplay/include -I../../../linux -I../../../ -I../../../../guilib/ -fPIC
+CFLAGS +=-D_LINUX -DHAVE_UNIX -DHAVE_STRCASECMP -DHAVE_STRNCASECMP -DHAVE_IOS_OPENMODE -fPIC -Ilibsidplay/win/VC -Ibuilders/resid-builder/include/sidplay/builders -Ilibsidplay/include/sidplay -Iresid -Ilibsidplay/include -I../../../linux -I../../../utils -I../../../ -I../../../../guilib/ -fPIC
 CXXFLAGS += $(CFLAGS)
 ifeq ($(ARCH), powerpc-osx)
 	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
