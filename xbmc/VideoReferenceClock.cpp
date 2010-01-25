@@ -887,10 +887,7 @@ int64_t CVideoReferenceClock::GetTime()
   }
   else
   {
-    int64_t ClockOffset = m_ClockOffset; //get offset of clock
-    //SingleLock.Leave();
-
-    return CurrentHostCounter() + ClockOffset;
+    return CurrentHostCounter() + m_ClockOffset;
   }
 }
 
