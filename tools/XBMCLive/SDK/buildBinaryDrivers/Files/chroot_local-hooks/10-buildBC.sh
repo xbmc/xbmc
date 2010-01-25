@@ -45,6 +45,9 @@ cp crystalhd/firmware/fwbin/70012/*.bin ./Files/lib/firmware
 mkdir -p ./Files/usr/lib
 mv crystalhd/linux_lib/libcrystalhd/libcrystalhd.so* ./Files/usr/lib
 
+mkdir -p ./Files/etc/udev/rules.d/
+cp -f 20-crystalhd.rules ./Files/etc/udev/rules.d/
+
 pushd .
 
 # Assuming only one kernel is installed!
