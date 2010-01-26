@@ -35,6 +35,7 @@ d4rk@xbmc.org
 */
 
 #include "xbmc_vis_dll.h"
+#include "xbmc_addon_cpp_dll.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
@@ -49,7 +50,8 @@ int gx=40,gy=30;
 int fps=100;
 char *disp;
 char g_visName[512];
-viz_preset_list_t g_presets=NULL;
+char **g_presets=NULL;
+unsigned int g_numPresets = 0;
 projectM::Settings g_configPM;
 std::string g_configFile;
 
@@ -137,7 +139,15 @@ extern "C" void Stop()
     globalPM = NULL;
   }
   if (g_presets)
-    viz_release(g_presets);
+  {
+    for (unsigned i = 0; i <g_numPresets; i++)
+    {
+      free(g_presets[i]);
+    }
+    free(g_presets);
+    g_presets = NULL;
+  }
+  g_numPresets = 0;
 }
 
 //-- Audiodata ----------------------------------------------------------------
@@ -213,27 +223,21 @@ extern "C" bool OnAction(long flags, const void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" viz_preset_list_t GetPresets()
+extern "C" unsigned int GetPresets(char ***presets)
 {
-  if (!g_presets)
+  g_numPresets = globalPM->getPlaylistSize();
+  if (g_numPresets > 0)
   {
-    g_presets = viz_preset_list_create();
-    if (g_presets)
+    g_presets = (char**) malloc(sizeof(char*)*g_numPresets);
+    for (unsigned i = 0; i < g_numPresets; i++)
     {
-      viz_preset_t preset;
-      for (unsigned int i = 0; i < globalPM->getPlaylistSize() ; i++)
-      {
-        preset = viz_preset_create();
-        if (viz_preset_set_name(preset, globalPM->getPresetName(i).c_str()))
-        {
-          viz_preset_list_add_item(g_presets, preset);
-        }
-      }
+      g_presets[i] = (char*) malloc(strlen(globalPM->getPresetName(i).c_str())+2);
+      if (g_presets[i])
+        strcpy(g_presets[i], globalPM->getPresetName(i).c_str());
     }
+    *presets = g_presets;
   }
-
-  // XBMC never alters this presetlist
-  return g_presets;
+  return g_numPresets;
 }
 
 //-- GetPreset ----------------------------------------------------------------
@@ -291,56 +295,17 @@ extern "C" ADDON_STATUS GetStatus()
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
 
-extern "C" addon_settings_t GetSettings()
+extern "C" unsigned int GetSettings(StructSetting ***sSet)
 {
+  return 0;
+}
 
-  addon_settings_t settings = addon_settings_create();
-  addon_setting_t quality = addon_setting_create(SETTING_ENUM, "Quality");
-  addon_setting_set_type(quality, SETTING_ENUM);
-  addon_setting_set_label(quality, "30000");
-  addon_setting_set_lvalues(quality, "30001|30002|30003|30004");
+//-- FreeSettings --------------------------------------------------------------
+// Free the settings struct passed from XBMC
+//-----------------------------------------------------------------------------
 
-  addon_setting_t shuffleMode = addon_setting_create(SETTING_BOOL, "Shuffle");
-  addon_setting_set_type(quality, SETTING_BOOL);
-  addon_setting_set_label(shuffleMode, "30010");
-
-  addon_setting_t smoothPresetDuration = addon_setting_create(SETTING_ENUM, "Smooth Preset Duration");
-  addon_setting_set_type(quality, SETTING_ENUM);
-  addon_setting_set_label(smoothPresetDuration, "30020");
-
-  addon_settings_add_item(settings, quality);
-  addon_settings_add_item(settings, shuffleMode);
-  addon_settings_add_item(settings, smoothPresetDuration);
-/*  for (int i=0; i < 50; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%i secs", i);
-    smoothPresetDuration.AddEntry(temp);
-  }
-
-  VisSetting presetDuration(VisSetting::SPIN, "Preset Duration");
-  for (int i=0; i < 50; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%i secs", i);
-    presetDuration.AddEntry(temp);
-  }
-  presetDuration.current = (int)(g_configPM.presetDuration);
-  m_vecSettings.push_back(presetDuration);
-
-  VisSetting beatSensitivity(VisSetting::SPIN, "Beat Sensitivity");
-  for (int i=0; i <= 100; i++)
-  {
-    char temp[10];
-    sprintf(temp, "%2.1f", (float)(i + 1)/5);
-    beatSensitivity.AddEntry(temp);
-  }
-  beatSensitivity.current = (int)(g_configPM.beatSensitivity * 5 - 1);
-  m_vecSettings.push_back(beatSensitivity);
-
-  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
-  *sSet = m_structSettings;*/
-  return settings;
+extern "C" void FreeSettings()
+{
 }
 
 //-- UpdateSetting ------------------------------------------------------------
@@ -351,7 +316,7 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
   if (!id || !value)
     return STATUS_UNKNOWN;
 
-  if (strcmp(id, "Quality")==0)
+  if (strcmp(id, "quality")==0)
   {
     switch (*(int*) value)
     {
@@ -369,12 +334,18 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
         break;
     }
   }
-  else if (strcmp(id, "Shuffle")==0)
+  else if (strcmp(id, "shuffle")==0)
   {
     g_configPM.shuffleEnabled = !g_configPM.shuffleEnabled;
     if (globalPM)
       OnAction(VIS_ACTION_RANDOM_PRESET, value);
   }
+  else if (strcmp(id, "smooth_duration")==0)
+    g_configPM.smoothPresetDuration = *(int*)value;
+  else if (strcmp(id, "preset_duration")==0)
+    g_configPM.presetDuration = *(int*)value;
+  else if (strcmp(id, "beat_sens")==0)
+    g_configPM.beatSensitivity = *(int*)value;
 
   return STATUS_OK;
 }

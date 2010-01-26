@@ -21,7 +21,6 @@
  */
 #include "Addon.h"
 #include "../DllAddon.h"
-#include "../addons/include/libaddon.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
@@ -64,7 +63,7 @@ namespace ADDON
   private:
     TheDll* m_pDll;
     virtual ADDON_STATUS TransferSettings();
-    TiXmlElement MakeSetting(addon_setting_t setting) const;
+    TiXmlElement MakeSetting(DllSetting& setting) const;
 
     static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
@@ -244,10 +243,14 @@ bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
   if (!LoadDll())
     return false;
 
-  addon_settings_t settings = NULL;
+  StructSetting** sSet;
+  std::vector<DllSetting> vSet;
+  unsigned entries = 0;
   try
   {
-    settings = m_pDll->GetSettings();
+    entries = m_pDll->GetSettings(&sSet);
+    DllUtils::StructToVec(entries, &sSet, &vSet);
+    m_pDll->FreeSettings();
   }
   catch (std::exception &e)
   {
@@ -255,23 +258,17 @@ bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
     return false;
   }
 
-  if (settings)
+  if (vSet.size())
   {
     // regenerate XML doc
     m_addonXmlDoc.Clear();
     TiXmlElement node("settings");
     m_addonXmlDoc.InsertEndChild(node);
 
-    int count = addon_settings_get_count(settings);
-    addon_setting_t setting;
-    for (int i=0; i < count; i++)
+    for (int i=0; i < entries; i++)
     {
-       setting = addon_settings_get_item(settings, i);
-       if (!setting)
-         return false;
-
+       DllSetting& setting = vSet[i];
        m_addonXmlDoc.RootElement()->InsertEndChild(MakeSetting(setting));
-       addon_release(setting);
     }
   }
   else
@@ -281,29 +278,25 @@ bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
 }
 
 template<class TheDll, typename TheStruct, typename Props>
-TiXmlElement CAddonDll<TheDll, TheStruct, Props>::MakeSetting(addon_setting_t setting) const
+TiXmlElement CAddonDll<TheDll, TheStruct, Props>::MakeSetting(DllSetting& setting) const
 {
   TiXmlElement node("setting");
-  addon_setting_type_t type = addon_setting_type(setting);
-  CStdString id = addon_setting_id(setting);
-  CStdString label = addon_setting_label(setting);
-  CStdString lvalues = addon_setting_lvalues(setting);
 
-  switch (type)
+  switch (setting.type)
   {
-  case SETTING_BOOL:
+    case DllSetting::CHECK:
     {
-      node.SetAttribute("id", id.c_str());
+      node.SetAttribute("id", setting.id);
       node.SetAttribute("type", "bool");
-      node.SetAttribute("label", label.c_str());
+      node.SetAttribute("label", setting.label);
       break;
     }
-  case SETTING_ENUM:
+    case DllSetting::SPIN:
     {
-      node.SetAttribute("id", id.c_str());
+      node.SetAttribute("id", setting.id);
       node.SetAttribute("type", "enum");
-      node.SetAttribute("label", label.c_str());
-      node.SetAttribute("lvalues", lvalues.c_str());
+      node.SetAttribute("label", setting.label);
+      //node.SetAttribute("lvalues", lvalues.c_str());
       break;
     }
   default:
@@ -342,8 +335,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, Props>::TransferSettings()
 
   CLog::Log(LOGDEBUG, "Calling TransferSettings for: %s", Name().c_str());
 
-  if (!LoadUserSettings())
-    return STATUS_MISSING_FILE;
+  LoadUserSettings();
 
   TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
   while (setting)

@@ -26,8 +26,6 @@
 #ifndef __VISUALISATION_TYPES_H__
 #define __VISUALISATION_TYPES_H__
 
-#include "libvisualisation.h"
-
 extern "C"
 {
   struct VIS_INFO
@@ -63,6 +61,37 @@ extern "C"
     VIS_ACTION_UPDATE_TRACK
   };
 
+  class VisTrack
+  {
+  public:
+    VisTrack()
+    {
+      title = artist = album = albumArtist = NULL;
+      genre = comment = lyrics = reserved1 = reserved2 = NULL;
+      trackNumber = discNumber = duration = year = 0;
+      rating = 0;
+      reserved3 = reserved4 = 0;
+    }
+
+    const char *title;
+    const char *artist;
+    const char *album;
+    const char *albumArtist;
+    const char *genre;
+    const char *comment;
+    const char *lyrics;
+    const char *reserved1;
+    const char *reserved2;
+
+    int        trackNumber;
+    int        discNumber;
+    int        duration;
+    int        year;
+    char       rating;
+    int        reserved3;
+    int        reserved4;
+  };
+
   struct Visualisation
   {
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
@@ -72,8 +101,8 @@ extern "C"
     void (__cdecl* GetInfo)(VIS_INFO *info);
     bool (__cdecl* OnAction)(long flags, const void *param);
     int (__cdecl* HasPresets)();
-    viz_preset_list_t (__cdecl *GetPresets)();
-    unsigned (__cdecl *GetPreset)();
+    unsigned int (__cdecl *GetPresets)(char ***presets);
+    unsigned int (__cdecl *GetPreset)();
     bool (__cdecl* IsLocked)();
   };
 }

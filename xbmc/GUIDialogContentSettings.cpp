@@ -35,7 +35,6 @@
 #define CONTROL_SCRAPER_SETTINGS    6
 #define CONTROL_START              30
 
-using namespace DIRECTORY;
 using namespace std;
 using namespace ADDON;
 

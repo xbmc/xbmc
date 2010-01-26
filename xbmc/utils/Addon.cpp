@@ -24,6 +24,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "StringUtils.h"
+#include "FileSystem/Directory.h"
 #include "log.h"
 
 namespace ADDON

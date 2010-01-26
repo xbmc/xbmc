@@ -16,11 +16,12 @@
 #endif
 #include <windows.h>
 #endif
-#include "xbmc_addon_dll.h"  
-#include "xbmc_scr_types.h"
 #include <sys/stat.h>
 #include <errno.h>
 #endif
+
+#include "xbmc_addon_dll.h"  
+#include "xbmc_scr_types.h"
 
 extern "C"
 {

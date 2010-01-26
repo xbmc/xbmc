@@ -21,13 +21,10 @@
  */
 
 #include "IAddon.h"
-#include "../addons/include/libaddon.h"
-#include "FileSystem/PluginDirectory.h"
 #include "tinyXML/tinyxml.h"
 #include "Util.h"
 #include "URL.h"
 #include "LocalizeStrings.h"
-#include "boost/shared_ptr.hpp"
 
 class CURL;
 class TiXmlElement;
@@ -111,13 +108,6 @@ private:
   int         m_childs;      ///< How many child add-on's are present
   CLocalizeStrings  m_strings;
 };
-
-//template<class Derived>
-//AddonPtr CAddon::Clone() const
-//{
-//  AddonPtr addon(new Derived(dynamic_cast<Derived&>(*this)));
-//  return addon;
-//}
 
 }; /* namespace ADDON */
 

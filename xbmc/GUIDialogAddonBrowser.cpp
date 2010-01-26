@@ -22,6 +22,7 @@
 #include "utils/AddonManager.h"
 #include "GUIDialogAddonBrowser.h"
 #include "GUISpinControlEx.h"
+#include "Settings.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogYesNo.h"

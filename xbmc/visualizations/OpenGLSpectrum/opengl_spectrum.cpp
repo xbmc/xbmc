@@ -277,9 +277,9 @@ extern "C" bool OnAction(long flags, const void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" viz_preset_list_t GetPresets()
+extern "C" unsigned int GetPresets(char ***presets)
 {
-  return NULL;
+  return 0;
 }
 
 //-- GetPreset ----------------------------------------------------------------
@@ -328,41 +328,18 @@ extern "C" ADDON_STATUS GetStatus()
 // Return the settings for XBMC to display
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" addon_settings_t GetSettings()
+extern "C" unsigned int GetSettings(StructSetting ***sSet)
 {
-  // create settings list and setting pointers
-  addon_settings_t settings = NULL;
-  addon_setting_t setting = NULL;
-  addon_setting_t setting2 = NULL;
-  addon_setting_t setting3 = NULL;
+  return 0;
+}
 
-  // allocate the structures
-  settings = addon_settings_create();
-  setting = addon_setting_create(SETTING_ENUM, "Size");
-  setting2 = addon_setting_create(SETTING_ENUM, "Mode");
-  setting3 = addon_setting_create(SETTING_ENUM, "Speed");
+//-- FreeSettings --------------------------------------------------------------
+// Free the settings struct passed from XBMC
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
 
-  if (!settings || !setting || !setting2 || !setting3) {
-    return NULL;
-  }
-
-  addon_setting_set_label(setting, "30000");
-  addon_setting_set_lvalues(setting, "30001|30002|30003|30004");
-
-  addon_setting_set_label(setting2, "30005");
-  addon_setting_set_lvalues(setting2, "30006|30007|30008");
-
-  addon_setting_set_label(setting3, "30009");
-  addon_setting_set_lvalues(setting3, "30010|30011|30012|30013|30014");
-
-  if (addon_settings_add_item(settings, setting) == 0)
-    return NULL;
-  if (addon_settings_add_item(settings, setting2) == 0)
-    return NULL;
-  if (addon_settings_add_item(settings, setting3) == 0)
-    return NULL;
-
-  return settings;
+extern "C" void FreeSettings()
+{
 }
 
 //-- SetSetting ---------------------------------------------------------------
@@ -374,7 +351,7 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
   if (!strSetting || !value)
     return STATUS_UNKNOWN;
 
-  if (strcmp(strSetting, "Mode")==0)
+  if (strcmp(strSetting, "mode")==0)
   {
     switch (*(int*) value)
     {
@@ -393,7 +370,7 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
     }
     return STATUS_OK;
   }
-  else if (strcmp(strSetting, "Size")==0)
+  else if (strcmp(strSetting, "size")==0)
   {
     switch (*(int*) value)
     {
@@ -420,7 +397,7 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
     }
     return STATUS_OK;
   }
-  else if (strcmp(strSetting, "Speed")==0)
+  else if (strcmp(strSetting, "speed")==0)
   {
     switch (*(int*) value)
     {

@@ -32,6 +32,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 
+#include "FileSystem/Directory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/ShoutcastDirectory.h"

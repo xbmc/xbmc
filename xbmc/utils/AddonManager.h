@@ -19,13 +19,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef ADDONMANAGER_H
-#define ADDONMANAGER_H
-
-#include "Settings.h"
 #include "Addon.h"
-#include "../Scraper.h"
-#include "../addons/include/libaddon.h"
+#include "../addons/include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
 #include "Thread.h"
 #include "StdString.h"
@@ -106,7 +101,7 @@ namespace ADDON
     void UnregisterAddonMgrCallback(TYPE type);
 
     /* Addon access */
-    bool GetDefault(const TYPE &type, AddonPtr &scraper, const CONTENT_TYPE &content = CONTENT_NONE);
+    bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
@@ -143,5 +138,3 @@ namespace ADDON
   };
 
 }; /* namespace ADDON */
-
-#endif /* ADDONMANAGER_H */

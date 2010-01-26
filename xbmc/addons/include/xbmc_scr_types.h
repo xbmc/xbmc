@@ -23,8 +23,6 @@
 #ifndef __SCREENSAVER_TYPES_H__
 #define __SCREENSAVER_TYPES_H__
 
-#include "libaddon.h"
-
 extern "C"
 {
   struct SCR_INFO

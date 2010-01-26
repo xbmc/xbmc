@@ -21,7 +21,7 @@
 */
 
 #include "DynamicDll.h"
-#include "addons/include/libaddon.h"
+#include "addons/include/xbmc_addon_cpp_dll.h"
 
 template <typename TheStruct, typename Props>
 class DllAddonInterface
@@ -31,7 +31,8 @@ public:
   virtual ADDON_STATUS Create(void *cb, Props *info) =0;
   virtual ADDON_STATUS GetStatus() =0;
   virtual bool HasSettings() =0;
-  virtual addon_settings_t GetSettings()=0;
+  virtual unsigned int GetSettings(StructSetting*** sSet)=0;
+  virtual void FreeSettings()=0;
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
   virtual void Remove() =0;
 };
@@ -44,7 +45,8 @@ public:
   DEFINE_METHOD2(ADDON_STATUS, Create, (void* p1, Props* p2))
   DEFINE_METHOD0(ADDON_STATUS, GetStatus)
   DEFINE_METHOD0(bool, HasSettings)
-  DEFINE_METHOD0(addon_settings_t, GetSettings)
+  DEFINE_METHOD1(unsigned int, GetSettings, (StructSetting ***p1))
+  DEFINE_METHOD0(void, FreeSettings)
   DEFINE_METHOD2(ADDON_STATUS, SetSetting, (const char *p1, const void *p2))
   DEFINE_METHOD0(void, Remove)
   DEFINE_METHOD1(void, GetAddon, (TheStruct* p1))
@@ -54,6 +56,7 @@ public:
     RESOLVE_METHOD(GetStatus)
     RESOLVE_METHOD(SetSetting)
     RESOLVE_METHOD(GetSettings)
+    RESOLVE_METHOD(FreeSettings)
     RESOLVE_METHOD(HasSettings)
     RESOLVE_METHOD(Remove)
   END_METHOD_RESOLVE()

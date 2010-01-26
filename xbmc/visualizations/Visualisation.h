@@ -22,7 +22,6 @@
 
 #include "Key.h"
 #include "DllVisualisation.h"
-#include "../addons/include/libvisualisation.h"
 #include "AddonDll.h"
 #include "cores/IAudioCallback.h"
 

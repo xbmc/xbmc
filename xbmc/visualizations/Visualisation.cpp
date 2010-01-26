@@ -216,23 +216,21 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
     if ( action == VIS_ACTION_UPDATE_TRACK && param )
     {
       const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-      viz_track_t track = viz_track_create();
-      viz_track_set_title(track, tag->GetTitle().c_str());
-      viz_track_set_artist(track, tag->GetArtist().c_str());
-      viz_track_set_album(track, tag->GetAlbum().c_str());
-      viz_track_set_albumartist(track, tag->GetAlbumArtist().c_str());
-      viz_track_set_genre(track, tag->GetGenre().c_str());
-      viz_track_set_comment(track, tag->GetComment().c_str());
-      viz_track_set_lyrics(track, tag->GetLyrics().c_str());
-      viz_track_set_tracknum(track, tag->GetTrackNumber());
-      viz_track_set_discnum(track, tag->GetDiscNumber());
-      viz_track_set_duration(track, tag->GetDuration());
-      viz_track_set_year(track, tag->GetYear());
-      viz_track_set_rating(track, tag->GetRating());
+      VisTrack track;
+      track.title       = tag->GetTitle().c_str();
+      track.artist      = tag->GetArtist().c_str();
+      track.album       = tag->GetAlbum().c_str();
+      track.albumArtist = tag->GetAlbumArtist().c_str();
+      track.genre       = tag->GetGenre().c_str();
+      track.comment     = tag->GetComment().c_str();
+      track.lyrics      = tag->GetLyrics().c_str();
+      track.trackNumber = tag->GetTrackNumber();
+      track.discNumber  = tag->GetDiscNumber();
+      track.duration    = tag->GetDuration();
+      track.year        = tag->GetYear();
+      track.rating      = tag->GetRating();
 
-      bool result = m_pStruct->OnAction(action, track);
-      viz_release(track);
-      return result;
+      return m_pStruct->OnAction(action, &track);
     }
     return m_pStruct->OnAction((int)action, param);
   }
@@ -388,29 +386,26 @@ bool CVisualisation::GetPresetList(std::vector<CStdString> &vecpresets)
 bool CVisualisation::GetPresets()
 {
   m_presets.clear();
-  viz_preset_list_t presets = NULL;
+  char **presets = NULL;
+  unsigned int entries = 0;
   try
   {
-    presets = m_pStruct->GetPresets();
+    entries = m_pStruct->GetPresets(&presets);
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "Exception in Visualisation::GetPresets()");
     return false;
   }
-  if (presets)
+  if (presets && entries > 0)
   {
-    int c = viz_preset_list_get_count(presets);
-    for (int i=0; i < c; i++)
+    for (int i=0; i < entries; i++)
     {
-      viz_preset_t preset = NULL;
-      preset = viz_preset_list_get_item(presets, i);
-      if (preset)
+      if (presets[i])
       {
-        m_presets.push_back(viz_preset_name(preset));
+        m_presets.push_back(presets[i]);
       }
     }
-    viz_release(presets);
   }
   return (!m_presets.empty());
 }

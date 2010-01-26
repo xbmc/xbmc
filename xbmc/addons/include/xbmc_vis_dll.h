@@ -3,7 +3,6 @@
 
 #include "xbmc_addon_dll.h"
 #include "xbmc_vis_types.h"
-#include "libvisualisation.h"
 
 #include <ctype.h>
 #ifdef HAS_XBOX_HARDWARE
@@ -60,7 +59,7 @@ extern "C"
   void Stop();
   bool OnAction(long action, const void *param);
   void GetInfo(VIS_INFO* pInfo);
-  viz_preset_list_t GetPresets();
+  unsigned int GetPresets(char ***presets);
   unsigned GetPreset();
   bool IsLocked();
 
