@@ -917,6 +917,8 @@
 		E435380411076A2900792AB8 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */; };
 		E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
+		E49070F4110E7E76003865FD /* libvorbisenc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E49070F3110E7E76003865FD /* libvorbisenc.dylib */; };
+		E49070F5110E7E76003865FD /* libvorbisenc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E49070F3110E7E76003865FD /* libvorbisenc.dylib */; };
 		E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
 		E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
 		E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */; };
@@ -3562,6 +3564,7 @@
 		E46F7C290F77217400C25D29 /* Zeroconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zeroconf.h; sourceTree = "<group>"; };
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
+		E49070F3110E7E76003865FD /* libvorbisenc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisenc.dylib; path = /opt/local/lib/libvorbisenc.dylib; sourceTree = "<absolute>"; };
 		E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.dylib; sourceTree = "<absolute>"; };
 		E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
 		E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfDirectory.cpp; sourceTree = "<group>"; };
@@ -3850,6 +3853,7 @@
 				F5DC888E110A655000EE1B15 /* libmodplug.a in Frameworks */,
 				F5F241D5110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
 				F5F241D8110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
+				E49070F4110E7E76003865FD /* libvorbisenc.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3908,6 +3912,7 @@
 				F5DC888F110A655000EE1B15 /* libmodplug.a in Frameworks */,
 				F5F241D6110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
 				F5F241D9110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
+				E49070F5110E7E76003865FD /* libvorbisenc.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6809,6 +6814,7 @@
 		F57E1ED30E36E96B00700C9D /* macport libs */ = {
 			isa = PBXGroup;
 			children = (
+				E49070F3110E7E76003865FD /* libvorbisenc.dylib */,
 				E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
 				F5D8F880104CD40B004A11AB /* liblzo2.dylib */,

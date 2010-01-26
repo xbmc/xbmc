@@ -57,8 +57,6 @@ external_libdts_enabled="== Use of external libdts enabled. =="
 external_libdts_disabled="== Use of external libdts disabled. =="
 external_libass_enabled="== Use of external libass enabled. =="
 external_libass_disabled="== Use of external libass disabled. =="
-external_libogg_enabled="== Use of external libogg enabled. =="
-external_libogg_disabled="== Use of external libogg disabled. =="
 external_python_enabled="== Use of external python enabled. =="
 external_python_disabled="== Use of external python disabled. =="
 ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
@@ -221,12 +219,6 @@ AC_ARG_ENABLE([external-libass],
             [enable use of external libass library (default is no) 'Linux only'])],
             [use_external_libass=$enableval],
             [use_external_libass=no])
-
-AC_ARG_ENABLE([external-libogg],
-            [AS_HELP_STRING([--enable-external-libogg],
-            [enable use of external libogg library (default is no) 'Linux only'])],
-            [use_external_libogg=$enableval],
-            [use_external_libogg=no])
 
 AC_ARG_ENABLE([external-python],
             [AS_HELP_STRING([--enable-external-python],
@@ -601,16 +593,6 @@ else
   USE_EXTERNAL_LIBASS=0
 fi
 
-# External libogg
-if test "$use_external_libraries" = "yes" || test "$use_external_libogg" = "yes"; then
-  AC_MSG_NOTICE($external_libogg_enabled)
-  USE_EXTERNAL_LIBOGG=1
-  AC_DEFINE([USE_EXTERNAL_LIBOGG], [1], [Whether to use external libogg library.])
-else
-  AC_MSG_NOTICE($external_libogg_disabled)
-  USE_EXTERNAL_LIBOGG=0
-fi
-
 # External Python
 if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
   AC_CHECK_LIB([python2.6], [main],
@@ -970,11 +952,6 @@ else
   else
     final_message="$final_message\n  External libass:\tNo"
   fi
-  if test "$use_external_libogg" = "yes"; then
-    final_message="$final_message\n  External libogg:\tYes"
-  else
-    final_message="$final_message\n  External libogg:\tNo"
-  fi
   if test "$use_external_python" = "yes"; then
     final_message="$final_message\n  External Python:\tYes"
   else
@@ -1041,8 +1018,8 @@ OUTPUT_FILES="Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"
 
 if test "$host_vendor" = "apple"; then
-  OUTPUT_FILES+=" xbmc/cores/paplayer/FLACCodec/Makefile \
-             xbmc/cores/paplayer/vorbisfile/Makefile"
+  OUTPUT_FILES+=" \
+                xbmc/cores/paplayer/FLACCodec/Makefile"
 fi
 
 AC_CONFIG_FILES([${OUTPUT_FILES}])
@@ -1060,8 +1037,6 @@ AC_SUBST(USE_EXTERNAL_LIBA52)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBASS)
-AC_SUBST(USE_EXTERNAL_LIBVORBIS)
-AC_SUBST(USE_EXTERNAL_LIBOGG)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
@@ -1143,24 +1118,6 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
       --disable-cpplibs \
       CC="$CC" \
       CXX="$CXX"
-  else
-    true
-  fi
-], [0])
-
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
-  else
-    true
-  fi
-], [0])
-
-XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
     true
   fi
