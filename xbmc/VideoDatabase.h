@@ -336,6 +336,7 @@ public:
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   void SetStreamDetailsForFile(const CStreamDetails& details, const CStdString &strFileNameAndPath);
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
+  void SetDetail(const CStdString& strDetail, int id, int field, VIDEODB_CONTENT_TYPE type);
 
   void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, bool bKeepThumb = false);
