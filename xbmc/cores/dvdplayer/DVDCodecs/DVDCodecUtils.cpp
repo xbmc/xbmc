@@ -158,6 +158,64 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
   return true;
 }
 
+DVDVideoPicture* CDVDCodecUtils::ConvertToNV12Picture(DVDVideoPicture *pSrc)
+{
+  // Clone a YV12 picture to new NV12 picture.
+  DVDVideoPicture* pPicture = new DVDVideoPicture;
+  if (pPicture)
+  {
+    *pPicture = *pSrc;
+
+    int w = pPicture->iWidth / 2;
+    int h = pPicture->iHeight / 2;
+    int size = w * h;
+    int totalsize = (pPicture->iWidth * pPicture->iHeight) + size * 2;
+    BYTE* data = new BYTE[totalsize];
+    if (data)
+    {
+      pPicture->data[0] = data;
+      pPicture->data[1] = pPicture->data[0] + (pPicture->iWidth * pPicture->iHeight);
+      pPicture->data[2] = NULL;
+      pPicture->data[3] = NULL;
+      pPicture->iLineSize[0] = pPicture->iWidth;
+      pPicture->iLineSize[1] = pPicture->iWidth;
+      pPicture->iLineSize[2] = 0;
+      pPicture->iLineSize[3] = 0;
+      pPicture->format = DVDVideoPicture::FMT_NV12;
+      
+      // copy luma
+      uint8_t *s = pSrc->data[0];
+      uint8_t *d = pPicture->data[0];
+      for (int y = 0; y < pSrc->iHeight; y++)
+      {
+        fast_memcpy(d, s, pSrc->iWidth);
+        s += pSrc->iLineSize[0];
+        d += pPicture->iLineSize[0];
+      }
+
+      //copy chroma
+      uint8_t *s_u, *s_v, *d_uv;
+      for (int y = 0; y < pSrc->iHeight/2; y++) {
+        s_u = pSrc->data[1] + (y * pSrc->iLineSize[1]);
+        s_v = pSrc->data[2] + (y * pSrc->iLineSize[2]);
+        d_uv = pPicture->data[1] + (y * pPicture->iLineSize[1]);
+        for (int x = 0; x < pSrc->iWidth/2; x++) {
+          *d_uv++ = *s_u++;
+          *d_uv++ = *s_v++;
+        }
+      }
+      
+    }
+    else
+    {
+      CLog::Log(LOGFATAL, "CDVDCodecUtils::AllocateNV12Picture, unable to allocate new video picture, out of memory.");
+      delete pPicture;
+      pPicture = NULL;
+    }
+  }
+  return pPicture;
+}
+
 bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
   BYTE *s = pSrc->data[0];
