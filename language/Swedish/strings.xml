@@ -1576,8 +1576,8 @@
   <string id="20252">Fyller glasen (filmer)</string>
   <string id="20253">WebDAV-server (HTTP)</string>
   <string id="20254">WebDAV-server (HTTPS)</string>
-  <string id="20300">WebDAV-server (HTTP)</string>
-  <string id="20301">WebDAV-server (HTTPS)</string>
+  <string id="20300">Webserver katalog (HTTP)</string>
+  <string id="20301">Webserver katalog (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
   <string id="20303">Vill du hoppa över och fortsätta?</string>
   <string id="20304">RSS-flöde</string>
