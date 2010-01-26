@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27060 -->
+<!--Based on english strings version 27170 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1851,6 +1851,9 @@
   <string id="20445">同人画</string>
   <string id="20446">发现本地存储的信息。</string>
   <string id="20447">忽略并从互联网刷新吗？</string>
+  <string id="20448">无法下载信息</string>
+  <string id="20449">服务器不可用。</string>
+  <string id="20450">要继续扫描吗？</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
