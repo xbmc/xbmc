@@ -42,12 +42,12 @@ mmsx_t *mmsx_connect(mms_io_t *io, void *data, const char *url, int bandwidth)
   if (!mmsx)
     return mmsx;
     
-  mmsx->connection = mms_connect(io, data, url, bandwidth);
-  if (mmsx->connection)
-    return mmsx;
-    
   mmsx->connection_h = mmsh_connect(io, data, url, bandwidth);
   if (mmsx->connection_h)
+    return mmsx;
+
+  mmsx->connection = mms_connect(io, data, url, bandwidth);
+  if (mmsx->connection)
     return mmsx;
 
   free(mmsx);
