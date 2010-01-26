@@ -407,7 +407,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 
         GetString(pOneDayElement, "low", iTmpStr, "");
         if (iTmpStr == "N/A")
-          m_info.forecast[i].m_high = "";
+          m_info.forecast[i].m_low = "";
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
