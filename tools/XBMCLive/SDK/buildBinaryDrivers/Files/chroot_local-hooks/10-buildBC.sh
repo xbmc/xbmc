@@ -56,7 +56,7 @@ apt-get -y install linux-headers-$kernelVersion
 # Make kernel module
 cd crystalhd/driver/linux
 autoconf
-./configure
+./configure --with-kernel-path=$modulesdir/build
 make
 
 # Output is 
