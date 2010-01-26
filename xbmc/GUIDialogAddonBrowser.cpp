@@ -45,7 +45,7 @@
 using namespace ADDON;
 
 CGUIDialogAddonBrowser::CGUIDialogAddonBrowser(void)
-: CGUIDialog(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonBrowser.xml")
+: CGUIDialog(WINDOW_DIALOG_ADDON_BROWSER, "DialogAddonBrowser.xml")
 {
   m_vecItems = new CFileItemList;
   m_confirmed = false;
