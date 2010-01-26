@@ -1719,6 +1719,9 @@
   <string id="20445">Fanart</string>
   <string id="20446">Lokalt lagrad information hittad.</string>
   <string id="20447">Ignorera och uppdatera från Internet?</string>
+  <string id="20448">Kunde inte ladda ner information</string>
+  <string id="20449">Servern är troligtvis inte tillgänglig.</string>
+  <string id="20450">Vill du fortsätta skanna?</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>
