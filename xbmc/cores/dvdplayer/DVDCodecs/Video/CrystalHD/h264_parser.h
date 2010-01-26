@@ -25,6 +25,11 @@
 
 #include <stdlib.h>
 
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "nal.h"
 //#include "dpb.h"
 
@@ -109,5 +114,10 @@ int parse_frame(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len,
 void process_mmc_operations(struct h264_parser *parser, struct coded_picture *picture);
 
 int parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len);
+
+/* Ends C function definitions when using C++ */
+#ifdef __cplusplus
+}
+#endif
 
 #endif
