@@ -125,7 +125,6 @@ HRESULT D3DPresentEngine::CheckFormat(D3DFORMAT format)
   if(FAILED(hr))
     CLog::Log(LOGERROR,"%s",__FUNCTION__);
 
-done:
   return hr;
 }
 

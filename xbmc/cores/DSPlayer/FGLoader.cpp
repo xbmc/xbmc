@@ -127,6 +127,8 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
     }
     return hr;
   }
+
+  return hr;
 }
 HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)
 {
@@ -468,7 +470,10 @@ HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg,CStdString configFile)
 
     pFilters = pFilters->NextSiblingElement();
 
-  }//end while
+  }
+  
+  return true;
+  //end while
 
   //m_pGraphBuilder = fg;
   //fg = NULL;

@@ -11,7 +11,7 @@
 
 #include "oaidl.H"
 
-bool DShowUtil::GuidVectItterCompare(GuidListIter it,const std::vector<GUID>::const_reference vect)
+bool DShowUtil::GuidVectItterCompare(GuidListIter it, std::vector<GUID>::const_reference vect)
 {
 if (it->Data1 == vect.Data1 && it->Data2 == vect.Data2 && it->Data3 == vect.Data3 && it->Data4 == vect.Data4)
   return true;
@@ -29,7 +29,7 @@ else
   return true;
 }
 
-bool DShowUtil::GuidVectIsNull(const std::vector<GUID>::const_reference vect)
+bool DShowUtil::GuidVectIsNull(std::vector<GUID>::const_reference vect)
 {
   GUID gnull;
   gnull = GUID_NULL;
@@ -90,7 +90,7 @@ std::vector<IMoniker*> DShowUtil::GetAudioRenderersGuid()
   
   std::vector<IMoniker*> vAudioRenderers;
   //CLSID_AudioRendererCategory
-  IEnumMoniker* pEM;
+  //IEnumMoniker* pEM;
   BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
 	{
 	  vAudioRenderers.push_back(pMoniker);
@@ -728,11 +728,11 @@ bool DShowUtil::IsCLSIDRegistered(LPCTSTR clsid)
   CStdString rootkey1(_T("CLSID\\"));
   CStdString rootkey2(_T("CLSID\\{083863F1-70DE-11d0-BD40-00A0C911CE86}\\Instance\\"));
   HKEY pkey;
-  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey1 + clsid,&pkey));
-    resReg=true;
+  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey1 + clsid,&pkey))
+    resReg = true;
   RegCloseKey(pkey);
-  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey2 + clsid,&pkey));
-    resReg=true;
+  if (ERROR_SUCCESS == RegOpenKey(HKEY_CLASSES_ROOT,rootkey2 + clsid,&pkey))
+    resReg = true;
   RegCloseKey(pkey);
   //return ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey1 + clsid, KEY_READ)
   //  || ERROR_SUCCESS == CRegKey().Open(HKEY_CLASSES_ROOT, rootkey2 + clsid, KEY_READ);

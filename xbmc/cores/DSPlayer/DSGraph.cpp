@@ -470,15 +470,15 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
   {
     float percent;
     if (bLargeStep)
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+      percent = (float) (bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig);
     else
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
+      percent = (float) (bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward);
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
   
   UpdateTime();
-  SeekInMilliSec(seek);
+  SeekInMilliSec((double) seek);
 }
 
 // return time in ms
@@ -647,31 +647,53 @@ void CDSGraph::SetAudioStream(int iStream)
       }
     }
 
-    IPin *connectedPin = NULL;
-    HRESULT hr;
+    IPin *connectedToPin = NULL;
+    HRESULT hr = S_OK;
 
     LONGLONG currentPos;
     m_pMediaSeeking->GetCurrentPosition(&currentPos);
     m_pMediaControl->Stop();
 
     /* Disable filter */
-    IPin *pin = (IPin *)(audioStreams[disableIndex]->pObj);
-    pin->ConnectedTo(&connectedPin);
+    IPin *oldAudioStreamPin = (IPin *)(audioStreams[disableIndex]->pObj);
+    hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
+    if (FAILED(hr))
+      goto done;
 
-    hr = m_pGraphBuilder->Disconnect(connectedPin);
-    hr = m_pGraphBuilder->Disconnect(pin);
+    hr = m_pGraphBuilder->Disconnect(connectedToPin);
+    if (FAILED(hr))
+      goto done;
+    hr = m_pGraphBuilder->Disconnect(oldAudioStreamPin);
+    if (FAILED(hr))
+    {
+      /* Reconnect pin */
+      m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
+      goto done;
+    }
 
     audioStreams[disableIndex]->flags = 0;
 
     /* Enable filter */
-    pin = (IPin *)(audioStreams[enableIndex]->pObj);
-    hr = m_pGraphBuilder->ConnectDirect(pin, connectedPin, NULL);
+    IPin *newAudioStreamPin = (IPin *)(audioStreams[enableIndex]->pObj);
+    hr = m_pGraphBuilder->ConnectDirect(newAudioStreamPin, connectedToPin, NULL);
+    if (FAILED(hr))
+    {
+      /* Reconnect previous working pins */
+      m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
+      audioStreams[disableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+      goto done;
+    }
+
     audioStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
 
+done:
     m_pMediaControl->Run();
     this->SeekInMilliSec(DShowUtil::MFTimeToMsec(currentPos));
 
-    CLog::Log(LOGNOTICE, "%s Successfully changed audio stream", __FUNCTION__);
+    if (SUCCEEDED(hr))
+      CLog::Log(LOGNOTICE, "%s Successfully changed audio stream", __FUNCTION__);
+    else
+      CLog::Log(LOGERROR, "%s Can't change audio stream", __FUNCTION__);
   }
 
 }

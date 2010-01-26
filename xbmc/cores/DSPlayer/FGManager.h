@@ -78,6 +78,8 @@ protected:
   IFilterMapper2* m_pFM;
   IFilterGraph2*  m_pFG;
   IUnknown* m_pUnkInner;
+  bool m_audioPinConnected;
+  bool m_videoPinConnected;
 
   std::list<CFGFilter*> m_source, m_transform, m_override;
 

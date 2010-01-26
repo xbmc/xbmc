@@ -118,7 +118,7 @@ bool CDSConfig::LoadAudioStreams()
     m_pIAMStreamSelect->Count(&nStreams);
 
     AM_MEDIA_TYPE * mediaType = NULL;
-    for(int i = 0; i < nStreams; i++)
+    for(unsigned int i = 0; i < nStreams; i++)
     {
       infos = new IAMStreamSelectInfos();
       infos->group = 0;  infos->lcid = 0; infos->pObj = 0; infos->pUnk = 0; infos->flags = 0;
@@ -183,9 +183,9 @@ bool CDSConfig::LoadAudioStreams()
         BeginEnumMediaTypes(pPin, pET, pMediaType)
         {
 
-          CLog::Log(LOGDEBUG, "%s Output pin major type : %s", __FUNCTION__, GuidNames[pMediaType->majortype]);
-          CLog::Log(LOGDEBUG, "%s Output pin sub type : %s", __FUNCTION__, GuidNames[pMediaType->subtype]);
-          CLog::Log(LOGDEBUG, "%s Output pin format type : %s", __FUNCTION__, GuidNames[pMediaType->formattype]);
+          CLog::Log(LOGDEBUG, "%s \tOutput pin major type : %s", __FUNCTION__, GuidNames[pMediaType->majortype]);
+          CLog::Log(LOGDEBUG, "%s \tOutput pin sub type : %s", __FUNCTION__, GuidNames[pMediaType->subtype]);
+          CLog::Log(LOGDEBUG, "%s \tOutput pin format type : %s", __FUNCTION__, GuidNames[pMediaType->formattype]);
 
           if (pMediaType->majortype != MEDIATYPE_Audio &&
             pMediaType->majortype != MEDIATYPE_Subtitle)
@@ -206,6 +206,9 @@ bool CDSConfig::LoadAudioStreams()
               break;
             }
           }
+
+          if (infos->name.Equals("Undetermined"))
+            infos->name.Format("Audio %02d", i);
 
           infos->pObj = pPin;
 

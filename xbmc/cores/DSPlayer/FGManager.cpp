@@ -56,7 +56,9 @@ using namespace std;
 
 CFGManager::CFGManager():
   m_dwRegister(0),
-  m_pDsConfig(NULL)
+  m_pDsConfig(NULL),
+  m_audioPinConnected(false),
+  m_videoPinConnected(false)
 {
   HRESULT hr;
   hr = CoCreateInstance(CLSID_FilterGraph,NULL,CLSCTX_ALL, IID_IUnknown,(void**) &m_pUnkInner);
@@ -553,21 +555,19 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   LogFilterGraph();
 #endif
 
-  //Connect video pin form splitter
-  IPin* pVideoPin;
-  PIN_DIRECTION dir;
-  AM_MEDIA_TYPE mediaType;
   hr = ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
-  m_pDsConfig = new CDSConfig();
+
   //Get all custom interface
+  m_pDsConfig = new CDSConfig();
   m_pDsConfig->LoadGraph(m_pFG, m_CfgLoader->GetSplitter());
   //Apparently the graph dont start with wmv when you have unconnected filters
   DShowUtil::RemoveUnconnectedFilters(m_pFG);
+
 #ifdef _DEBUG
   LogFilterGraph();
 #endif
-  return hr;
-  
+
+  return hr;  
 }
 
 HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer)
@@ -654,6 +654,14 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
     return VFW_E_INVALID_DIRECTION;
 
   int nTotal = 0, nRendered = 0;
+  GUID mediaType = GUID_NULL;
+
+  /* Only the video pin and one audio pin can be connected
+  if the filter is the splitter */
+  if (pBF == m_CfgLoader->GetSplitter()
+    && m_audioPinConnected
+    && m_videoPinConnected)
+    return S_OK;
 
   BeginEnumPins(pBF, pEP, pPin)
   {
@@ -661,6 +669,21 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
     && S_OK == IsPinDirection(pPin, PINDIR_OUTPUT)
     && S_OK != IsPinConnected(pPin))
     {
+      BeginEnumMediaTypes(pPin, pEnum, pMediaType)
+      {
+        mediaType = pMediaType->majortype;
+      }
+      EndEnumMediaTypes(pMediaType)
+
+      if ((mediaType == MEDIATYPE_Video) 
+          && m_videoPinConnected)
+        continue;                               // A video pin is already connected, continue !
+      else if ((mediaType == MEDIATYPE_Audio)
+          && m_audioPinConnected)
+        continue;                               // An audio pin is already connected, continue !
+      else if (mediaType == MEDIATYPE_Subtitle)
+        continue;                               // We don't connect subtitle pin yet, continue !
+
       m_streampath.Append(pBF, pPin);
 
       HRESULT hr = Connect(pPin, pPinIn);
@@ -683,7 +706,14 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
       m_streampath.pop_back();
 
-      if(SUCCEEDED(hr) && pPinIn) 
+      if ((mediaType == MEDIATYPE_Video) 
+          && SUCCEEDED(hr))
+        m_videoPinConnected = true;
+      else if ((mediaType == MEDIATYPE_Audio)
+          && SUCCEEDED(hr))
+        m_audioPinConnected = true;
+
+      if(SUCCEEDED(hr) && pPinIn)
         return S_OK;
     }
   }
