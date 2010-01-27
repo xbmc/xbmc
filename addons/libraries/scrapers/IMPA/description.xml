@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>3cfce449-2e54-4a40-86cc-a6d2199c73b3</uuid>
+  <type>scraper-library</type>
+  <title>IMPA</title>
+  <library>impa.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>IMPA Scraper Library</summary>
+  <description>some description</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>movies</content>
+  </supportedcontent>
+</addoninfo>

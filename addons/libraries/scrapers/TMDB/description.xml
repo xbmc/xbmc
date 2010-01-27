@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>52f01b59-f059-4950-a133-dbd778fa9b23</uuid>
+  <type>scraper-library</type>
+  <title>TMDB</title>
+  <library>tmdb.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>TMDB Scraper Library</summary>
+  <description>some description</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>movies</content>
+  </supportedcontent>
+</addoninfo>
