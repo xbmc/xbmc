@@ -18,6 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #ifdef __APPLE__
 #include <sys/param.h>
@@ -43,7 +46,9 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/RSSDirectory.h"
 #include "ThumbnailCache.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/CMythDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
@@ -1038,9 +1043,38 @@ bool CUtil::IsFTP(const CStdString& strFile)
 
   CURL url(strFile2);
 
-  return url.GetProtocol() == "ftp"  ||
-         url.GetProtocol() == "ftpx" ||
-         url.GetProtocol() == "ftps";
+  return url.GetTranslatedProtocol() == "ftp"  ||
+         url.GetTranslatedProtocol() == "ftps";
+}
+
+bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = false */)
+{
+  CURL url(strFile);
+  CStdString strProtocol = url.GetProtocol();
+  
+  if (strProtocol.IsEmpty())
+    return false;
+
+  // there's nothing to stop internet streams from being stacked
+  if (strProtocol == "stack")
+  {
+    CStdString strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsInternetStream(strFile2);
+  }
+
+  CStdString strProtocol2 = url.GetTranslatedProtocol();
+
+  // Special case these
+  if (strProtocol2 == "ftp" || strProtocol2 == "ftps" ||
+      strProtocol  == "dav" || strProtocol  == "davs")
+    return bStrictCheck;
+
+  if (strProtocol2 == "http" || strProtocol2 == "https" ||
+      strProtocol  == "rtp"  || strProtocol  == "udp"   ||
+      strProtocol  == "rtmp" || strProtocol  == "rtsp")
+    return true;
+
+  return false;
 }
 
 bool CUtil::IsDAAP(const CStdString& strFile)
@@ -1544,10 +1578,14 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
   }
   else
   {
+#ifdef HAVE_XBMC_NONFREE
     // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
     // so now we dont have to find any subdirs anymore, all files in the rar is checked.
     if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") )
       return false;
+#else
+      return false;
+#endif
   }
   for (int it= 0 ; it <ItemList.Size();++it)
   {

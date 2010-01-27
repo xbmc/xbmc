@@ -425,7 +425,6 @@ bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSe
         settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
       }
     }
-
     return true;
   }
   return false;

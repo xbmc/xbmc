@@ -38,7 +38,6 @@
 #include "Application.h"
 #include "NfoFile.h"
 #include "Picture.h"
-#include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
@@ -60,6 +59,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"
@@ -95,13 +95,13 @@ CGUIWindowVideoBase::~CGUIWindowVideoBase()
 
 bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_SHOW_PLAYLIST)
+  if (action.actionId == ACTION_SHOW_PLAYLIST)
   {
     OutputDebugString("activate guiwindowvideoplaylist!\n");
     g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
   }
-  if (action.id == ACTION_SCAN_ITEM)
+  if (action.actionId == ACTION_SCAN_ITEM)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
 
   return CGUIMediaWindow::OnAction(action);
@@ -332,7 +332,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scr
         CFileItemPtr item2 = items[i];
 
         if (item2->IsVideo() && !item2->IsPlayList() &&
-	    !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
+            !CUtil::ExcludeFileOrFolder(item2->m_strPath, g_advancedSettings.m_moviesExcludeFromScanRegExps))
         {
           item.m_strPath = item2->m_strPath;
           item.m_bIsFolder = false;
@@ -520,18 +520,18 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   if (!info)
     return false;
 
-  bool ignoreNfo=false;
+  bool ignoreNfo(false);
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info->Content(),scrUrl);
   if (result == CNfoFile::ERROR_NFO)
-    ignoreNfo=true;
+    ignoreNfo = true;
   else
   if (result != CNfoFile::NO_NFO)
   {
     if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
-      hasDetails=true;
+      hasDetails = true;
     else
     {
-      ignoreNfo=true;
+      ignoreNfo = true;
       scrUrl.Clear();
     }
   }
@@ -595,7 +595,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
           }
         }
       }
-      if (returncode == -1)
+      else if (returncode == -1 || !CVideoInfoScanner::DownloadFailed(pDlgProgress))
       {
         pDlgProgress->Close();
         return false;
@@ -1271,7 +1271,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
       { // need to update
-        m_vecItems->RemoveDiscCache();
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       return true;
@@ -1937,5 +1937,3 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScanSettings&
   if (pDialog)
     pDialog->StartScanning(strPath,settings,false);
 }
-
-

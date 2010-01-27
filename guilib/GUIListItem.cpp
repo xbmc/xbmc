@@ -313,7 +313,7 @@ void CGUIListItem::SetProperty(const CStdString &strKey, const CStdString &strVa
 
 CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
 {
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return "";
 
@@ -322,7 +322,7 @@ CStdString CGUIListItem::GetProperty(const CStdString &strKey) const
 
 bool CGUIListItem::HasProperty(const CStdString &strKey) const
 {
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return false;
 
@@ -331,7 +331,7 @@ bool CGUIListItem::HasProperty(const CStdString &strKey) const
 
 void CGUIListItem::ClearProperty(const CStdString &strKey)
 {
-  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
+  PropertyMap::iterator iter = m_mapProperties.find(strKey);
   if (iter != m_mapProperties.end())
     m_mapProperties.erase(iter);
 }

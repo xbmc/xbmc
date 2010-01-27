@@ -29,6 +29,7 @@
 #include "StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "XMLUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -221,14 +222,19 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
         if (pItem->GetLabel().IsEmpty())
         {
-          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
-          CUtil::URLDecode(pItem->m_strPath);
-          pItem->SetLabel(CUtil::GetFileName(pItem->m_strPath));
+          CStdString name(pItem->m_strPath);
+          CUtil::RemoveSlashAtEnd(name);
+          CUtil::URLDecode(name);
+          pItem->SetLabel(CUtil::GetFileName(name));
         }
 
         if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
           CUtil::AddSlashAtEnd(pItem->m_strPath);
-        
+
+        // Add back protocol options
+        if (!url2.GetProtocolOptions().IsEmpty())
+          pItem->m_strPath = pItem->m_strPath + "|" + url2.GetProtocolOptions();
+
         if (!pItem->m_strPath.Equals(strPath))
           items.Add(pItem);
       }

@@ -4777,6 +4777,31 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
     item.SetProperty("album_rating", album.iRating);
 }
 
+void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
+{
+  if (!item.HasMusicInfoTag())
+    return;
+  int idArtist = GetArtistByName(item.GetMusicInfoTag()->GetArtist());
+  if (idArtist > -1)
+  {
+    CArtist artist;
+    if (GetArtistInfo(idArtist,artist))
+      SetPropertiesFromArtist(item,artist);
+  }
+  int idAlbum = GetAlbumByName(item.GetMusicInfoTag()->GetAlbum(),
+                               item.GetMusicInfoTag()->GetArtist());
+  if (idAlbum > -1)
+  {
+    CAlbum album;
+    if (GetAlbumInfo(idAlbum,album,NULL))
+      SetPropertiesFromAlbum(item,album);
+  }
+
+  CStdString strFanart = item.GetCachedFanart();
+  if (XFILE::CFile::Exists(strFanart))
+    item.SetProperty("fanart_image",strFanart);
+}
+
 int CMusicDatabase::GetVariousArtistsAlbumsCount()
 {
   CStdString strVariousArtists = g_localizeStrings.Get(340);

@@ -368,7 +368,7 @@
 						<posy>4</posy>
 						<width>40</width>
 						<height>32</height>
-						<texture>$INFO[ListItem.Icon]</texture>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="label">
 						<posx>60</posx>
@@ -436,7 +436,7 @@
 						<posy>4</posy>
 						<width>40</width>
 						<height>32</height>
-						<texture>$INFO[ListItem.Icon]</texture>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="label">
 						<posx>60</posx>

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-extern "C" void
+extern "C" void __attribute__ ((weak))
 __eprintf(const char *string, const char *expression,
           unsigned int line, const char *filename)
   {

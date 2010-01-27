@@ -45,8 +45,7 @@ CFileZip::CFileZip()
 
 CFileZip::~CFileZip()
 {
-  if (m_szStringBuffer)
-    delete[] m_szStringBuffer;
+  delete[] m_szStringBuffer;
   Close();
 }
 

@@ -218,7 +218,6 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   DWORD cbBuffer = 16384;     // 16K is a good size
   LPNETRESOURCEW lpnrLocal;   // pointer to enumerated structures
   DWORD cEntries = -1;        // enumerate all possible entries
-  DWORD i;
   //
   // Call the WNetOpenEnum function to begin the enumeration.
   //
@@ -275,7 +274,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
     //
     if (dwResultEnum == NO_ERROR) 
     {
-      for (i = 0; i < cEntries; i++) 
+      for (DWORD i = 0; i < cEntries; i++) 
       {
         DWORD dwDisplayType = lpnrLocal[i].dwDisplayType;
         DWORD dwType = lpnrLocal[i].dwType;

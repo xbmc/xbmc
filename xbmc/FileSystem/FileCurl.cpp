@@ -34,11 +34,14 @@
 #include <errno.h>
 #include <inttypes.h>
 #include "../linux/XFileUtils.h"
+#include "../linux/XTimeUtils.h"
+#include "../linux/ConvUtils.h"
 #endif
 
 #include "DllLibCurl.h"
 #include "FileShoutcast.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -54,8 +57,9 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
 
-  // unless this debug information becomes useful, we disable it.
-  return 0;
+  // Only shown cURL debug into with loglevel DEBUG_SAMBA or higher
+  if( g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_SAMBA )
+    return 0;
 
   CStdString strLine;
   strLine.append(output, size);
@@ -125,14 +129,14 @@ size_t CFileCurl::CReadState::HeaderCallback(void *ptr, size_t size, size_t nmem
 size_t CFileCurl::CReadState::WriteCallback(char *buffer, size_t size, size_t nitems)
 {
   unsigned int amount = size * nitems;
-//  CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback (%p) with %i bytes, readsize = %i, writesize = %i", this, amount, m_buffer.GetMaxReadSize(), m_buffer.GetMaxWriteSize() - m_overflowSize);
+//  CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback (%p) with %i bytes, readsize = %i, writesize = %i", this, amount, m_buffer.getMaxReadSize(), m_buffer.getMaxWriteSize() - m_overflowSize);
   if (m_overflowSize)
   {
     // we have our overflow buffer - first get rid of as much as we can
-    unsigned int maxWriteable = XMIN((unsigned int)m_buffer.GetMaxWriteSize(), m_overflowSize);
+    unsigned int maxWriteable = XMIN((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
     if (maxWriteable)
     {
-      if (!m_buffer.WriteBinary(m_overflowBuffer, maxWriteable))
+      if (!m_buffer.WriteData(m_overflowBuffer, maxWriteable))
         CLog::Log(LOGERROR, "Unable to write to buffer - what's up?");
       if (m_overflowSize > maxWriteable)
       { // still have some more - copy it down
@@ -142,10 +146,10 @@ size_t CFileCurl::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
     }
   }
   // ok, now copy the data into our ring buffer
-  unsigned int maxWriteable = XMIN((unsigned int)m_buffer.GetMaxWriteSize(), amount);
+  unsigned int maxWriteable = XMIN((unsigned int)m_buffer.getMaxWriteSize(), amount);
   if (maxWriteable)
   {
-    if (!m_buffer.WriteBinary(buffer, maxWriteable))
+    if (!m_buffer.WriteData(buffer, maxWriteable))
       CLog::Log(LOGERROR, "Unable to write to buffer - what's up?");
     amount -= maxWriteable;
     buffer += maxWriteable;
@@ -200,7 +204,7 @@ bool CFileCurl::CReadState::Seek(int64_t pos)
 
   if(pos > m_filePos && pos < m_filePos + m_bufferSize)
   {
-    int len = m_buffer.GetMaxReadSize();
+    int len = m_buffer.getMaxReadSize();
     m_filePos += len;
     m_buffer.SkipBytes(len);
     if(!FillBuffer(m_bufferSize))
@@ -348,10 +352,11 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
 
   // set username and password for current handle
-  if (m_username.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
-  if (m_password.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
+  if (m_username.length() > 0 && m_password.length() > 0)
+  {
+    CStdString userpwd = m_username + ":" + m_password;
+    g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
+  }
 
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
@@ -415,7 +420,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   }
 
   // setup requested http authentication method
-  if(m_httpauth.length() > 0 && m_username.length() > 0 && m_password.length() > 0)
+  if(m_httpauth.length() > 0)
   {
     if( m_httpauth.Equals("any") )
       g_curlInterface.easy_setopt(h, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
@@ -524,21 +529,11 @@ void CFileCurl::SetCorrectHeaders(CReadState* state)
 
 void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
-  if( url2.GetProtocol().Equals("ftpx") )
-    url2.SetProtocol("ftp");
-  else if( url2.GetProtocol().Equals("shout")
-       ||  url2.GetProtocol().Equals("daap")
-       ||  url2.GetProtocol().Equals("dav")
-       ||  url2.GetProtocol().Equals("tuxbox")
-       ||  url2.GetProtocol().Equals("lastfm")
-       ||  url2.GetProtocol().Equals("mms")
-       ||  url2.GetProtocol().Equals("rss"))
-    url2.SetProtocol("http");
-  else if (url2.GetProtocol().Equals("davs"))
-    url2.SetProtocol("https");
-
-  if( url2.GetProtocol().Equals("ftp")
-  ||  url2.GetProtocol().Equals("ftps") )
+  CStdString strProtocol = url2.GetTranslatedProtocol();
+  url2.SetProtocol(strProtocol);
+  
+  if( strProtocol.Equals("ftp")
+  ||  strProtocol.Equals("ftps") )
   {
     /* this is uggly, depending on from where   */
     /* we get the link it may or may not be     */
@@ -618,8 +613,8 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     /* ftp has no options */
     url2.SetOptions("");
   }
-  else if( url2.GetProtocol().Equals("http")
-       ||  url2.GetProtocol().Equals("https"))
+  else if( strProtocol.Equals("http")
+       ||  strProtocol.Equals("https"))
   {
     if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
     {
@@ -632,6 +627,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
+
+    // replace invalid spaces
+    CStdString strFileName = url2.GetFileName();
+    strFileName.Replace(" ", "%20");
+    url2.SetFileName(strFileName);
 
     // get username and password
     m_username = url2.GetUserName();
@@ -679,6 +679,11 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
     }
   }
+  
+  if (m_username.length() > 0 && m_password.length() > 0)
+    m_url = url2.GetWithoutUserDetails();
+  else
+    m_url = url2.Get();
 }
 
 bool CFileCurl::Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML)
@@ -757,13 +762,10 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
   if (!checkDNS)
     strURL = "http://74.125.19.103"; // www.google.com ip
 
-  int result = Stat(strURL, NULL);
+  bool found = Exists(strURL);
   Close();
-
-  if (result)
-    return false;
-
-  return true;
+  
+  return found;
 }
 
 void CFileCurl::Cancel()
@@ -786,11 +788,6 @@ bool CFileCurl::Open(const CURL& url)
 
   CURL url2(url);
   ParseAndCorrectUrl(url2);
-
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());
 
@@ -856,7 +853,7 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
     return false;
 
   // ensure only available data is considered
-  want = XMIN((unsigned int)m_buffer.GetMaxReadSize(), want);
+  want = XMIN((unsigned int)m_buffer.getMaxReadSize(), want);
 
   /* check if we finished prematurely */
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
@@ -870,7 +867,7 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
   char* pLine = szLine;
   do
   {
-    if (!m_buffer.ReadBinary(pLine, 1))
+    if (!m_buffer.ReadData(pLine, 1))
       break;
 
     pLine++;
@@ -984,11 +981,6 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  if(url2.GetProtocol().Equals("http") || url2.GetProtocol().Equals("https"))
-    m_url = url2.GetWithoutUserDetails();
-  else
-    m_url = url2.Get();
-
   ASSERT(m_state->m_easyHandle == NULL);
   g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
 
@@ -1006,6 +998,20 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
+  // In case we are performing a stat() with no buffer (eg. called from ::exists()) we fail immediately
+  if (!buffer)
+  {
+    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+    if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
+    {
+      return 0;
+    }
+    else
+    {
+      errno = ENOENT;
+      return -1;
+    }
+  }
 
   if(result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR )
   {
@@ -1049,23 +1055,20 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCorrectHeaders(m_state);
 
-  if(buffer)
+  char content[255];
+  if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
   {
-    char content[255];
-    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
-    {
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-      errno = ENOENT;
-      return -1;
-    }
+    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+    errno = ENOENT;
+    return -1;
+  }
+  else
+  {
+    buffer->st_size = (int64_t)length;
+    if(strstr(content, "text/html")) //consider html files directories
+      buffer->st_mode = _S_IFDIR;
     else
-    {
-      buffer->st_size = (int64_t)length;
-      if(strstr(content, "text/html")) //consider html files directories
-        buffer->st_mode = _S_IFDIR;
-      else
-        buffer->st_mode = _S_IFREG;
-    }
+      buffer->st_mode = _S_IFREG;
   }
 
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
@@ -1079,10 +1082,10 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, int64_t uiBufSize)
     return 0;
 
   /* ensure only available data is considered */
-  unsigned int want = (unsigned int)XMIN(m_buffer.GetMaxReadSize(), uiBufSize);
+  unsigned int want = (unsigned int)XMIN(m_buffer.getMaxReadSize(), uiBufSize);
 
   /* xfer data to caller */
-  if (m_buffer.ReadBinary((char *)lpBuf, want))
+  if (m_buffer.ReadData((char *)lpBuf, want))
   {
     m_filePos += want;
     return want;
@@ -1109,7 +1112,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while ((unsigned int)m_buffer.GetMaxReadSize() < want && m_buffer.GetMaxWriteSize() > 0 )
+  while ((unsigned int)m_buffer.getMaxReadSize() < want && m_buffer.getMaxWriteSize() > 0 )
   {
     if (m_cancelled)
       return false;
@@ -1117,8 +1120,8 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     /* if there is data in overflow buffer, try to use that first */
     if (m_overflowSize)
     {
-      unsigned amount = XMIN((unsigned int)m_buffer.GetMaxWriteSize(), m_overflowSize);
-      m_buffer.WriteBinary(m_overflowBuffer, amount);
+      unsigned amount = XMIN((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
+      m_buffer.WriteData(m_overflowBuffer, amount);
 
       if (amount < m_overflowSize)
         memcpy(m_overflowBuffer, m_overflowBuffer+amount,m_overflowSize-amount);
@@ -1134,7 +1137,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
       if (result == CURLM_OK)
       {
         /* if we still have stuff in buffer, we are fine */
-        if (m_buffer.GetMaxReadSize())
+        if (m_buffer.getMaxReadSize())
           return true;
 
         /* verify that we are actually okey */
@@ -1148,11 +1151,12 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             if (msg->data.result == CURLE_OK)
               return true;
 
-            CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
+            CLog::Log(LOGWARNING, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
             // We need to check the data.result here as we don't want to retry on every error
             if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
-                  msg->data.result == CURLE_PARTIAL_FILE) &&
+                  msg->data.result == CURLE_PARTIAL_FILE       ||
+                  msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
               CURLresult=msg->data.result;
             else
@@ -1199,7 +1203,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     }
 
     // We've finished out first loop
-    if(m_bFirstLoop && m_buffer.GetMaxReadSize() > 0)
+    if(m_bFirstLoop && m_buffer.getMaxReadSize() > 0)
       m_bFirstLoop = false;
 
     switch (result)
@@ -1232,7 +1236,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         {
           struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
 
-          // wait until data is avialable or a timeout occours
+          // wait until data is available or a timeout occurs
           if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
             return false;
         }

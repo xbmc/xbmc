@@ -21,7 +21,6 @@
 
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
-#include "utils/fstrcmp.h"
 #include "utils/RegExp.h"
 #include "utils/AddonManager.h"
 #include "utils/GUIInfoManager.h"
@@ -43,6 +42,7 @@
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -7764,5 +7764,34 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
+                               VIDEODB_CONTENT_TYPE type)
+{
+  if (NULL == m_pDB.get()) return;
+  if (NULL == m_pDS.get()) return;
 
+  CStdString strTable, strField;
+  if (type == VIDEODB_CONTENT_MOVIES)
+  {
+    strTable = "movies";
+    strField = "idMovie";
+  }
+  if (type == VIDEODB_CONTENT_TVSHOWS)
+  {
+    strTable = "tvshows";
+    strField = "idShow";
+  }
+  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+  {
+    strTable = "musicvideos";
+    strField = "idMVideo";
+  }
+
+  if (strTable.IsEmpty())
+    return;
+
+  CStdString strSQL = FormatSQL("update %s set c%02u='%s' where %s=%u",
+                                strTable.c_str(),field,strField.c_str(),id);
+  m_pDS->exec(strSQL.c_str());
+}
 

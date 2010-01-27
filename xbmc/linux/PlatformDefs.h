@@ -105,6 +105,10 @@
 #define PRIdS "zd"
 #endif
 
+#ifndef PRIuS
+#define PRIuS "zu"
+#endif
+
 #ifdef _LINUX
 
 #define XXLog(a,b) printf("%s", (b))

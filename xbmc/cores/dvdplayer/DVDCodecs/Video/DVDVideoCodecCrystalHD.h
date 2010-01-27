@@ -23,7 +23,7 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 
-#include "CrystalHD.h"
+#include "CrystalHD/CrystalHD.h"
 #include "DVDVideoCodec.h"
 
 typedef struct H264BSFContext {
@@ -61,6 +61,7 @@ protected:
   H264BSFContext  m_sps_pps_context;
 
   CCrystalHD      *m_Device;
+  int             m_DecodeReturn;
   bool            m_DropPictures;
   const char      *m_pFormatName;
 };

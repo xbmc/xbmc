@@ -262,8 +262,8 @@ protected:
   void HandlePlaySpeed();
   bool IsInMenu() const;
 
-  void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
-  void SyncronizeDemuxer(DWORD timeout);
+  void SynchronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
+  void SynchronizeDemuxer(DWORD timeout);
   void CheckAutoSceneSkip();
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);

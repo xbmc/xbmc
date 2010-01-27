@@ -22,6 +22,7 @@
 #ifdef HAS_DX
 
 #include "WinRenderer.h"
+#include "Application.h"
 #include "Util.h"
 #include "Settings.h"
 #include "Texture.h"
@@ -31,6 +32,7 @@
 #include "utils/log.h"
 #include "FileSystem/File.h"
 #include "MathUtils.h"
+#include "VideoShaders/ConvolutionKernels.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -75,6 +77,12 @@ CWinRenderer::CWinRenderer()
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
+
+  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  m_scalingMethodGui = (ESCALINGMETHOD)-1;
+
+  m_bUseHQScaler = false;
+  m_bFilterInitialized = false;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -304,25 +312,30 @@ unsigned int CWinRenderer::PreInit()
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
+  g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
+
   return 0;
 }
-
 
 void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
   m_YUV2RGBEffect.Release();
+  m_YUV2RGBHQScalerEffect.Release();
+  m_HQKernelTexture.Release();
+
   m_bConfigured = false;
+  m_bFilterInitialized = false;
+
   for(int i = 0; i < NUM_BUFFERS; i++)
     DeleteYV12Texture(i);
+
   m_NumYV12Buffers = 0;
 }
 
-bool CWinRenderer::LoadEffect()
+bool CWinRenderer::LoadEffect(CD3DEffect &effect, CStdString filename)
 {
-  CStdString filename = "special://xbmc/system/shaders/yuv2rgb_d3d.fx";
-
   XFILE::CFileStream file;
   if(!file.Open(filename))
   {
@@ -333,7 +346,7 @@ bool CWinRenderer::LoadEffect()
   CStdString pStrEffect;
   getline(file, pStrEffect, '\0');
 
-  if (!m_YUV2RGBEffect.Create(pStrEffect))
+  if (!effect.Create(pStrEffect))
   {
     CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect.c_str());
     return false;
@@ -342,15 +355,127 @@ bool CWinRenderer::LoadEffect()
   return true;
 }
 
-void CWinRenderer::Render(DWORD flags)
+void CWinRenderer::UpdateVideoFilter()
 {
-  if( flags & RENDER_FLAG_NOOSD ) return;
+  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && m_bFilterInitialized)
+    return;
+
+  m_bFilterInitialized = true;
+
+  m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
+  m_scalingMethod    = m_scalingMethodGui;
+
+  if(m_YUV2RGBHQScalerEffect.Get())
+    m_YUV2RGBHQScalerEffect.Release();
+
+  if(m_HQKernelTexture.Get())
+    m_HQKernelTexture.Release();
+
+  CStdString effectString;
+
+  switch (m_scalingMethod)
+  {
+  case VS_SCALINGMETHOD_NEAREST:
+  case VS_SCALINGMETHOD_LINEAR:
+    m_bUseHQScaler = false;
+    break;
+
+  case VS_SCALINGMETHOD_CUBIC:
+  case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_LANCZOS3_FAST:
+    effectString = "special://xbmc/system/shaders/yuv2rgb_4x4_d3d.fx";
+    m_bUseHQScaler = true;
+    break;
+
+  case VS_SCALINGMETHOD_LANCZOS3:
+    effectString = "special://xbmc/system/shaders/yuv2rgb_6x6_d3d.fx";
+    m_bUseHQScaler = true;
+    break;
+
+  case VS_SCALINGMETHOD_SINC8:
+  case VS_SCALINGMETHOD_NEDI:
+    CLog::Log(LOGERROR, "D3D: TODO: This scaler has not yet been implemented");
+    break;
+
+  case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
+  case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
+  case VS_SCALINGMETHOD_SINC_SOFTWARE:
+    CLog::Log(LOGERROR, "D3D: TODO: Software scaling has not yet been implemented");
+    break;
+
+  case VS_SCALINGMETHOD_AUTO:
+    effectString = "special://xbmc/system/shaders/yuv2rgb_4x4_d3d.fx";
+    m_bUseHQScaler = true;
+    break;
+
+  default:
+    break;
+  }
+
+  if(m_bUseHQScaler)
+  {
+
+    if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth >= 1280)
+    {
+      m_bUseHQScaler = false;
+      return;
+    }
+
+    if(!LoadEffect(m_YUV2RGBHQScalerEffect, effectString))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+      g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+      m_bUseHQScaler = false;
+      return;
+    }
+
+    if(!m_HQKernelTexture.Create(256, 1, 1, 0, D3DFMT_A16B16G16R16F, D3DPOOL_MANAGED))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
+      g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+      m_YUV2RGBHQScalerEffect.Release();
+      m_bUseHQScaler = false;
+      return;
+    }
+
+    CConvolutionKernel kern(m_scalingMethod == VS_SCALINGMETHOD_AUTO ? VS_SCALINGMETHOD_LANCZOS3_FAST : m_scalingMethod, 256);
+
+    float *kernelVals = kern.GetFloatPixels();
+    D3DXFLOAT16 float16Vals[256*4];
+
+    for(int i = 0; i < 256*4; i++)
+      float16Vals[i] = kernelVals[i];
+
+    D3DLOCKED_RECT lr;
+    m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD);
+    memcpy(lr.pBits, float16Vals, sizeof(D3DXFLOAT16)*256*4);
+    m_HQKernelTexture.UnlockRect(0);
+  }
 }
 
-void CWinRenderer::RenderLowMem(DWORD flags)
+void CWinRenderer::Render(DWORD flags)
 {
-  if (!m_YUV2RGBEffect.Get())
-    LoadEffect();
+  UpdateVideoFilter();
+
+  //If the GUI is active or we don't need scaling use the bilinear filter.
+  if(!m_bUseHQScaler
+    || !g_graphicsContext.IsFullScreenVideo()
+    || g_graphicsContext.IsCalibrating()
+    || (m_destRect.Width() == m_sourceWidth && m_destRect.Height() == m_sourceHeight))
+  {
+    RenderLowMem(m_YUV2RGBEffect, flags);
+  }
+  else
+  {
+    RenderLowMem(m_YUV2RGBHQScalerEffect, flags);
+  }
+}
+
+void CWinRenderer::RenderLowMem(CD3DEffect &effect, DWORD flags)
+{
+  //If no effect is loaded, use the default.
+  if (!effect.Get())
+    LoadEffect(effect, "special://xbmc/system/shaders/yuv2rgb_d3d.fx");
 
   CSingleLock lock(g_graphicsContext);
 
@@ -478,14 +603,20 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   D3DXMatrixScaling(&temp, contrast, contrast, contrast);
   D3DXMatrixMultiply(&mat, &mat, &temp);
 
-  m_YUV2RGBEffect.SetMatrix( "g_ColorMatrix", &mat);
-  m_YUV2RGBEffect.SetTechnique( "YUV2RGB_T" );
-  m_YUV2RGBEffect.SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
-  m_YUV2RGBEffect.SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
-  m_YUV2RGBEffect.SetTexture( "g_VTexture",  m_YUVVideoTexture[index][2] ) ;
+  float texSteps[] = {1.0f/(float)m_sourceWidth,        1.0f/(float)m_sourceHeight,
+                      1.0f/(float)(m_sourceWidth >> 1), 1.0f/(float)(m_sourceHeight >> 1)};
+
+  effect.SetMatrix( "g_ColorMatrix", &mat);
+  effect.SetTechnique( "YUV2RGB_T" );
+  effect.SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
+  effect.SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
+  effect.SetTexture( "g_VTexture",  m_YUVVideoTexture[index][2] ) ;
+  effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
+  effect.SetFloatArray("g_YStep", &texSteps[0], 2);
+  effect.SetFloatArray("g_UVStep", &texSteps[2], 2);
 
   UINT cPasses, iPass;
-  if (!m_YUV2RGBEffect.Begin( &cPasses, 0 ))
+  if (!effect.Begin( &cPasses, 0 ))
   {
     CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect");
     return;
@@ -493,7 +624,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
   for( iPass = 0; iPass < cPasses; iPass++ )
   {
-    if (!m_YUV2RGBEffect.BeginPass( iPass ))
+    if (!effect.BeginPass( iPass ))
     {
       CLog::Log(LOGERROR, "CWinRenderer::RenderLowMem - failed to begin d3d effect pass");
       break;
@@ -504,10 +635,10 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     pD3DDevice->SetTexture(1, NULL);
     pD3DDevice->SetTexture(2, NULL);
 
-    m_YUV2RGBEffect.EndPass() ;
+    effect.EndPass() ;
   }
 
-  m_YUV2RGBEffect.End() ;
+  effect.End() ;
   pD3DDevice->SetPixelShader( NULL );
 }
 
@@ -527,7 +658,7 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
     pD3DDevice->GetRenderTarget(0, &oldRT);
     pD3DDevice->SetRenderTarget(0, surface);
     pD3DDevice->BeginScene();
-    RenderLowMem(0);
+    RenderLowMem(m_YUV2RGBEffect, 0);
     pD3DDevice->EndScene();
     m_destRect = saveSize;
     pD3DDevice->SetRenderTarget(0, oldRT);
@@ -581,9 +712,6 @@ void CWinRenderer::ClearYV12Texture(int index)
   memset(rect.pBits, 128, rect.Pitch * m_sourceHeight>>1);
 }
 
-
-
-
 bool CWinRenderer::CreateYV12Texture(int index)
 {
 
@@ -624,8 +752,17 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
 bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
-  if(method == VS_SCALINGMETHOD_NEAREST
-  || method == VS_SCALINGMETHOD_LINEAR)
+  if(D3DSHADER_VERSION_MAJOR(m_deviceCaps.PixelShaderVersion) >= 3)
+  {
+    if(method == VS_SCALINGMETHOD_LINEAR
+    || method == VS_SCALINGMETHOD_CUBIC
+    || method == VS_SCALINGMETHOD_LANCZOS2
+    || method == VS_SCALINGMETHOD_LANCZOS3_FAST
+    || method == VS_SCALINGMETHOD_LANCZOS3
+    || method == VS_SCALINGMETHOD_AUTO)
+      return true;
+  }
+  else if(method == VS_SCALINGMETHOD_LINEAR)
     return true;
 
   return false;
@@ -648,8 +785,6 @@ bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, un
 
 void CPixelShaderRenderer::Render(DWORD flags)
 {
-  // this is the low memory renderer
-  CWinRenderer::RenderLowMem(flags);
   CWinRenderer::Render(flags);
 }
 

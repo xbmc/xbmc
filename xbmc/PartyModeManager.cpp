@@ -32,6 +32,7 @@
 #include "PlayList.h"
 #include "Settings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace PLAYLIST;
@@ -409,9 +410,15 @@ bool CPartyModeManager::AddRandomSongs(int iSongs /* = 0 */)
   return true;
 }
 
-void CPartyModeManager::Add(const CFileItemPtr &pItem)
+void CPartyModeManager::Add(CFileItemPtr &pItem)
 {
   int iPlaylist = m_bIsVideo ? PLAYLIST_VIDEO : PLAYLIST_MUSIC;
+  if (pItem->HasMusicInfoTag())
+  {
+    CMusicDatabase database;
+    database.Open();
+    database.SetPropertiesForFileItem(*pItem);
+  }
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
   playlist.Add(pItem);
@@ -600,7 +607,8 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
     items.Randomize(); //randomizing the initial list or they will be in database order
     for (int i = 0; i < items.Size(); i++)
     {
-      Add(items[i]);
+      CFileItemPtr item(items[i]);
+      Add(item);
       // TODO: Allow "relaxed restrictions" later?
     }
   }

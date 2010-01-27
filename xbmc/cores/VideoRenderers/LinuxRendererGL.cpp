@@ -916,6 +916,16 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   VerifyGLState();
 
+  if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
+  {
+    bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
+
+    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD)
+      m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
+    else
+      m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  }
+
   switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
@@ -2244,14 +2254,15 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
+#ifdef HAVE_LIBVDPAU
   if(m_renderMethod & RENDER_VDPAU)
   {
-    if(method == VS_INTERLACEMETHOD_VDPAU
-    || method == VS_INTERLACEMETHOD_RENDER_BLEND
-    || method == VS_INTERLACEMETHOD_INVERSE_TELECINE)
-      return true;
-    return false;
+    if(g_VDPAU)
+      return g_VDPAU->Supports(method);
+    else
+      return false;
   }
+#endif
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
@@ -2269,7 +2280,8 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
 {
   if(method == VS_SCALINGMETHOD_NEAREST
-  || method == VS_SCALINGMETHOD_LINEAR)
+  || method == VS_SCALINGMETHOD_LINEAR
+  || method == VS_SCALINGMETHOD_AUTO)
     return true;
 
   if(method == VS_SCALINGMETHOD_CUBIC
@@ -2288,9 +2300,6 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     || method == VS_SCALINGMETHOD_SINC_SOFTWARE)
       return true;
   }
-
-  if(method == VS_SCALINGMETHOD_VDPAU_HARDWARE && (m_renderMethod & RENDER_VDPAU))
-    return true;
 
   return false;
 }

@@ -31,6 +31,17 @@ class CVDPAU;
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
 public:
+  class IHardwareDecoder
+  {
+    public:
+    virtual ~IHardwareDecoder() {};
+    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
+    virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
+    virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
+    virtual void Close() = 0;
+    virtual int  Check() = 0;
+  };
+
   CDVDVideoCodecFFmpeg();
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
@@ -40,10 +51,11 @@ public:
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
+  virtual unsigned GetConvergeCount();
 
-#ifdef HAVE_LIBVDPAU
-  CVDPAU* GetContextVDPAU();
-#endif
+  bool               IsHardwareAllowed()                     { return !m_bSoftware; }
+  IHardwareDecoder * GetHardware()                           { return m_pHardware; };
+  void               SetHardware(IHardwareDecoder* hardware) { m_pHardware = hardware; }
 
 protected:
   static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
@@ -64,6 +76,8 @@ protected:
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
   std::string m_name;
-  bool m_UsingSoftware;
+  bool              m_bSoftware;
+  IHardwareDecoder *m_pHardware;
+  int m_iLastKeyframe;
 };
 

@@ -38,13 +38,10 @@ struct CoreInfo
   unsigned long long m_nice;
   unsigned long long m_system;
   unsigned long long m_idle;
-  struct timeval m_lastSample;
+  unsigned long long m_io;
   CStdString m_strVendor;
   CStdString m_strModel;
-  CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_idle(0LL)
-  {
-    memset(&m_lastSample,0,sizeof(struct timeval));
-  }
+  CoreInfo() : m_id(0), m_fSpeed(.0), m_fPct(.0), m_user(0LL), m_nice(0LL), m_system(0LL), m_idle(0LL), m_io(0LL) {}
 };
 
 class CCPUInfo
@@ -66,7 +63,7 @@ public:
 
 private:
   bool readProcStat(unsigned long long& user, unsigned long long& nice, unsigned long long& system,
-    unsigned long long& idle);
+    unsigned long long& idle, unsigned long long& io);
 
   FILE* m_fProcStat;
   FILE* m_fProcTemperature;
@@ -76,6 +73,7 @@ private:
   unsigned long long m_niceTicks;
   unsigned long long m_systemTicks;
   unsigned long long m_idleTicks;
+  unsigned long long m_ioTicks;
 
   int m_lastUsedPercentage;
   time_t m_lastReadTime;

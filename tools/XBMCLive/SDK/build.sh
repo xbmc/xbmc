@@ -1,5 +1,24 @@
 #!/bin/sh
 
+#      Copyright (C) 2005-2008 Team XBMC
+#      http://www.xbmc.org
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with XBMC; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+
+
 #
 # Depencency list: git-core debootstrap asciidoc docbook-xsl curl build-essential
 #
@@ -11,9 +30,6 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
-# May be useful for debugging purposes
-# KEEP_WORKAREA="yes"
-
 # Clean our mess on exiting
 cleanup()
 {
@@ -22,7 +38,7 @@ cleanup()
 			echo "Cleaning workarea..." 
 			rm -rf $WORKPATH
 			if [ -f $THISDIR/binary.iso ]; then
-				chmod 777 $THISDIR/binary.iso 
+				chmod 777 $THISDIR/binary.* 
 			fi
 			echo "All clean"
 		fi
@@ -30,18 +46,23 @@ cleanup()
 }
 trap 'cleanup' EXIT TERM INT
 
+
 THISDIR=$(pwd)
 WORKDIR=workarea
 WORKPATH=$THISDIR/$WORKDIR
-
-if [ -f $THISDIR/setAptProxy.sh ]; then
-	. $THISDIR/setAptProxy.sh
-fi
+export WORKPATH
 
 if [ -d "$WORKPATH" ]; then
+	echo "Deleting old workarea..." 
 	rm -rf $WORKPATH
 fi
 mkdir $WORKPATH
+
+if ls $THISDIR/binary.* > /dev/null 2>&1; then
+	rm -rf $THISDIR/binary.*
+fi
+
+echo "Creating workarea..." 
 
 # cp all (except svn directories) into workarea
 rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
@@ -67,6 +88,7 @@ if ! which lh > /dev/null ; then
 	cd $THISDIR
 fi
 
+echo "Start building..."
 
 # Execute hooks if env variable is defined
 if [ -n "$SDK_BUILDHOOKS" ]; then
@@ -110,24 +132,25 @@ if ! ls $WORKPATH/buildDEBs/live-initramfs*.* > /dev/null 2>&1; then
 fi
 cp $WORKPATH/buildDEBs/live-initramfs*.* $WORKPATH/buildLive/Files/chroot_local-packages
 
-if ! ls $WORKPATH/buildDEBs/squashfs-udeb*.* > /dev/null 2>&1; then
-        echo "Files missing (2), exiting..."
-        exit 1
-fi
-cp $WORKPATH/buildDEBs/squashfs-udeb*.* $WORKPATH/buildLive/Files/binary_local-udebs
+if [ -z "$DONOTINCLUDEINSTALLER" ]; then
+	if ! ls $WORKPATH/buildDEBs/squashfs-udeb*.* > /dev/null 2>&1; then
+		echo "Files missing (2), exiting..."
+		exit 1
+	fi
+	cp $WORKPATH/buildDEBs/squashfs-udeb*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
-if ! ls $WORKPATH/buildDEBs/live-installer*.* > /dev/null 2>&1; then
-        echo "Files missing (3), exiting..."
-        exit 1
-fi
-cp $WORKPATH/buildDEBs/live-installer*.* $WORKPATH/buildLive/Files/binary_local-udebs
+	if ! ls $WORKPATH/buildDEBs/live-installer*.* > /dev/null 2>&1; then
+		echo "Files missing (3), exiting..."
+		exit 1
+	fi
+	cp $WORKPATH/buildDEBs/live-installer*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
-if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
-        echo "Files missing (4), exiting..."
-        exit 1
+	if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
+		echo "Files missing (4), exiting..."
+		exit 1
+	fi
+	cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
 fi
-cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
-
 
 if [ -z "$DONOTBUILDRESTRICTEDDRIVERS" ]; then
 	mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
@@ -152,5 +175,5 @@ cd $WORKPATH/buildLive
 ./build.sh
 cd $THISDIR
 
-mv $WORKPATH/buildLive/binary.iso .
-chmod 777 *.iso
+mv $WORKPATH/buildLive/binary.* .
+chmod 777 binary.*

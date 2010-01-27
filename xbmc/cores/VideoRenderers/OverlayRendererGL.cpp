@@ -30,6 +30,8 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "WindowingFactory.h"
+#include "Settings.h"
+#include "MathUtils.h"
 
 #ifdef HAS_GL
 
@@ -197,10 +199,20 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
 COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 {
-  m_vertex = NULL;
+  RESOLUTION_INFO& res = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
 
-  m_width  = (float)g_graphicsContext.GetWidth();
-  m_height = (float)g_graphicsContext.GetHeight();
+  int width  = res.iWidth;
+  int height = res.iHeight;
+
+  m_width  = (float)width;
+  m_height = (float)height;
+
+  if     (res.fPixelRatio > 1.0)
+    width  = MathUtils::round_int(width  * res.fPixelRatio);
+  else if(res.fPixelRatio < 1.0)
+    height = MathUtils::round_int(height / res.fPixelRatio);
+
+  m_vertex = NULL;
   m_align  = ALIGN_SCREEN;
   m_pos    = POSITION_ABSOLUTE;
   m_x      = (float)0.0f;
@@ -209,7 +221,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_texture = ~(GLuint)0;
 
   SQuads quads;
-  if(!convert_quad(o, pts, (int)m_width, (int)m_height, quads))
+  if(!convert_quad(o, pts, width, height, quads))
     return;
 
   glGenTextures(1, &m_texture);
@@ -233,8 +245,8 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   float scale_u = m_u / quads.size_x;
   float scale_v = m_v / quads.size_y;
 
-  float scale_x = 1.0f / m_width;
-  float scale_y = 1.0f / m_height;
+  float scale_x = 1.0f / width;
+  float scale_y = 1.0f / height;
 
   m_count  = quads.count;
   m_vertex = (VERTEX*)calloc(m_count * 4, sizeof(VERTEX));

@@ -20,6 +20,8 @@
  */
 
 #include "LastFmManager.h"
+#include "Album.h"
+#include "Artist.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"
 #include "PlayListPlayer.h"
@@ -47,6 +49,8 @@
 #include "LocalizeStrings.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/TimeUtils.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include <sstream>
 
@@ -479,6 +483,9 @@ void CLastFmManager::AddToPlaylist(const int nrTracks)
       CFileItemPtr item = (*m_RadioTrackQueue)[0];
       if (item->GetMusicInfoTag()->Loaded())
       {
+        CMusicDatabase database;
+        database.Open();
+        database.SetPropertiesForFileItem(*item);
         CSingleLock lock(m_lockCache);
         m_RadioTrackQueue->Remove(0);
         CSingleLock lock2(m_lockPlaylist);
@@ -664,7 +671,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
 {
-  XBMC::MD5 md5state;
+  XBMC::XBMC_MD5 md5state;
   md5state.append(bufferToHash);
   md5state.getDigest(hash);
   hash.ToLower();

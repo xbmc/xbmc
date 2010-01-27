@@ -54,6 +54,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "MediaManager.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -93,7 +94,7 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PARENT_DIR)
+  if (action.actionId == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB &&
         m_vecItems->m_strPath == m_startDirectory)
@@ -102,7 +103,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
       return true;
     }
   }
-  if (action.id == ACTION_TOGGLE_WATCHED)
+  if (action.actionId == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
     if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
@@ -126,7 +127,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-/* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
+      /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
       CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
@@ -216,6 +217,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       DisplayEmptyDatabaseMessage(false); // reset message state
 
+      SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
+      
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
 
@@ -308,6 +311,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         g_settings.m_bMyVideoNavFlatten = !g_settings.m_bMyVideoNavFlatten;
         g_settings.Save();
+        SetProperty("flattened", g_settings.m_bMyVideoNavFlatten);
         CUtil::DeleteVideoDatabaseDirectoryCache();
         SetupShares();
         Update("");
@@ -1735,7 +1739,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
       return true;
 
     // update list
-    m_vecItems->RemoveDiscCache();
+    m_vecItems->RemoveDiscCache(GetID());
     Update(m_vecItems->m_strPath);
     m_viewControl.SetSelectedItem(iItem);
     return true;

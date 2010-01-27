@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 01/14/2010-->
+<!--Date of translation: 01/24/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 26789-->
+<!--Based on english strings version 27135-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1386,11 +1386,15 @@
   <string id="16307">Δικυβική (με λογισμικό)</string>
   <string id="16308">Lanczos (με λογισμικό)</string>
   <string id="16309">Sinc (με λογισμικό)</string>
-  <string id="16310">(VDPAU) Χρονική</string>
-  <string id="16311">(VDPAU) Χρονική/Χωρική</string>
+  <string id="16310">Χρονική</string>
+  <string id="16311">Χρονική/Χωρική</string>
   <string id="16312">(VDPAU) Μείωση θορύβου</string>
   <string id="16313">(VDPAU) Οξύτητα</string>
   <string id="16314">Αντίστροφη Telecine</string>
+  <string id="16315">Lanczos3 βελτιστοποιημένη</string>
+  <string id="16316">Αυτόματη</string>
+  <string id="16317">Χρονική (κατά το ήμισυ)</string>
+  <string id="16318">Χρονική/Χωρική (κατά το ήμισυ)</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
   <string id="19000">Αλλαγή καναλιού</string>
   <string id="20000">Φάκελος αποθήκευσης μουσικής</string>
@@ -1419,7 +1423,7 @@
   <string id="20038">Κλείδωμα της μουσικής</string>
   <string id="20039">Κλείδωμα των βίντεο</string>
   <string id="20040">Κλείδωμα των φωτογραφιών</string>
-  <string id="20041">Κλείδωμα των εφαρμογών και των Scripts</string>
+  <string id="20041">Κλείδωμα των windows εφαρμογών και των scripts</string>
   <string id="20042">Κλείδωμα της διαχείρισης αρχείων</string>
   <string id="20043">Κλείδωμα των ρυθμίσεων</string>
   <string id="20044">Νέα έναρξη</string>
@@ -1721,6 +1725,8 @@
   <string id="20443">Επιθυμείτε να ανανεώσετε τις πληροφορίες</string>
   <string id="20444">για όλα τα στοιχεία αυτής της διαδρομής;</string>
   <string id="20445">Fanart</string>
+  <string id="20446">Βρέθηκαν τοπικά αποθηκευμένες πληροφορίες.</string>
+  <string id="20447">Να αγνοηθούν και να ανανεωθούν από το internet;</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε κατάσταση εγγραφής!</string>

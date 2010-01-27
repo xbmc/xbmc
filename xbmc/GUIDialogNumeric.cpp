@@ -55,28 +55,28 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_CLOSE_DIALOG || action.actionId == ACTION_PREVIOUS_MENU)
     OnCancel();
-  else if (action.id == ACTION_NEXT_ITEM)
+  else if (action.actionId == ACTION_NEXT_ITEM)
     OnNext();
-  else if (action.id == ACTION_PREV_ITEM)
+  else if (action.actionId == ACTION_PREV_ITEM)
     OnPrevious();
-  else if (action.id == ACTION_BACKSPACE)
+  else if (action.actionId == ACTION_BACKSPACE)
     OnBackSpace();
-  else if (action.id == ACTION_ENTER)
+  else if (action.actionId == ACTION_ENTER)
     OnOK();
-  else if (action.id >= REMOTE_0 && action.id <= REMOTE_9)
-    OnNumber(action.id - REMOTE_0);
-  else if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
+  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
+    OnNumber(action.actionId - REMOTE_0);
+  else if (action.actionId >= KEY_VKEY && action.actionId < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    BYTE b = action.id & 0xFF;
+    BYTE b = action.actionId & 0xFF;
     if (b == 0x25) OnPrevious();     // left
     else if (b == 0x27) OnNext();  // right
     else if (b == 0x0D) OnOK();         // enter
     else if (b == 0x08) OnBackSpace();    // backspace
     else if (b == 0x1B) OnCancel();        // escape
   }
-  else if (action.id >= KEY_ASCII) // FIXME make it KEY_UNICODE
+  else if (action.actionId >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
     if (action.unicode == 10 || action.unicode == 13) OnOK(); // enter
     else if (action.unicode == 8) OnBackSpace(); // backspace
@@ -655,7 +655,7 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
   }
 
   CStdString md5pword2;
-  XBMC::MD5 md5state;
+  XBMC::XBMC_MD5 md5state;
   md5state.append(strInput);
   md5state.getDigest(md5pword2);
 

@@ -19,9 +19,14 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "Weather.h"
 #include "FileSystem/ZipManager.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/FileCurl.h"
 #include "XMLUtils.h"
 #include "Temperature.h"
@@ -39,6 +44,7 @@
 #include "FileSystem/Directory.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
+#include "log.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -128,8 +134,10 @@ bool CWeatherJob::DoWork()
       CDirectory::Create(WEATHER_BASE_PATH);
       if (WEATHER_USE_ZIP)
         g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+#ifdef HAVE_XBMC_NONFREE
       else if (WEATHER_USE_RAR)
         g_RarManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+#endif
       m_imagesOkay = true;
     }
     LoadWeather(xml);
@@ -267,7 +275,6 @@ int CWeatherJob::ConvertSpeed(int curSpeed)
 
 bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 {
-  int iTmpInt;
   CStdString iTmpStr;
   SYSTEMTIME time;
 
@@ -328,6 +335,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
     GetString(pElement, "t", m_info.currentConditions, "");   //current condition
     LocalizeOverview(m_info.currentConditions);
 
+    int iTmpInt;
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
     CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
     m_info.currentTemperature.Format("%2.0f", temp.ToLocale());
@@ -399,7 +407,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 
         GetString(pOneDayElement, "low", iTmpStr, "");
         if (iTmpStr == "N/A")
-          m_info.forecast[i].m_high = "";
+          m_info.forecast[i].m_low = "";
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));

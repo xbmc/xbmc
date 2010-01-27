@@ -438,6 +438,8 @@ iso9660::iso9660( )
   memset(m_isoFiles, 0, sizeof(m_isoFiles));
   InitializeCriticalSection(&m_critSection);
   m_hCDROM = NULL;
+  m_lastpath = NULL;
+  m_searchpointer = NULL;
   Reset();
 }
 
@@ -526,7 +528,7 @@ void iso9660::Scan()
   }
 
   memcpy( &m_info.isodir, &m_info.iso.szRootDir, sizeof(m_info.isodir) );
-  m_dirtree = ReadRecursiveDirFromSector( from_733(m_info.isodir.extent), "\\" );
+  ReadRecursiveDirFromSector( from_733(m_info.isodir.extent), "\\" );
   LeaveCriticalSection(&m_critSection);
 }
 

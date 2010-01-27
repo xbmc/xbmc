@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "AlarmClock.h"
 #include "Application.h"
 #include "Autorun.h"
@@ -46,7 +49,9 @@
 #include "Util.h"
 
 #include "FileSystem/PluginDirectory.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/ZipManager.h"
 
 #include "GUIWindowManager.h"
@@ -298,7 +303,6 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     // get the parameters
     CStdString strWindow;
-    CStdString strPath;
     if (params.size())
     {
       strWindow = params[0];
@@ -399,8 +403,10 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (CUtil::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
+#ifdef HAVE_XBMC_NONFREE
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
+#endif
     else
       CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
   }
@@ -560,13 +566,13 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Equals("next"))
     {
       CAction action;
-      action.id = ACTION_NEXT_ITEM;
+      action.actionId = ACTION_NEXT_ITEM;
       g_application.OnAction(action);
     }
     else if (parameter.Equals("previous"))
     {
       CAction action;
-      action.id = ACTION_PREV_ITEM;
+      action.actionId = ACTION_PREV_ITEM;
       g_application.OnAction(action);
     }
     else if (parameter.Equals("bigskipbackward"))
@@ -596,7 +602,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CAction action;
         action.amount1 = action.amount2 = action.repeat = 0.0;
         action.buttonCode = 0;
-        action.id = ACTION_SHOW_VIDEOMENU;
+        action.actionId = ACTION_SHOW_VIDEOMENU;
         g_application.m_pPlayer->OnAction(action);
       }
     }
@@ -703,7 +709,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
     CAction action;
-    action.id = ACTION_PLAYER_PLAY;
+    action.actionId = ACTION_PLAYER_PLAY;
     g_application.OnAction(action);
   }
   else if (execute.Equals("mute"))
@@ -719,11 +725,10 @@ int CBuiltins::Execute(const CStdString& execString)
     // playlist.playoffset(offset)
     // playlist.playoffset(music|video,offset)
     CStdString strPos = parameter;
-    CStdString strPlaylist;
     if (params.size() > 1)
     {
       // ignore any other parameters if present
-      strPlaylist = params[0];
+      CStdString strPlaylist = params[0];
       strPos = params[1];
 
       int iPlaylist = PLAYLIST_NONE;
@@ -861,12 +866,11 @@ int CBuiltins::Execute(const CStdString& execString)
 
     int iTheme = -1;
 
-    CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
-        strTmpTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+        CStdString strTmpTheme(g_guiSettings.GetString("lookandfeel.skintheme"));
         CUtil::RemoveExtension(strTmpTheme);
         if (vecTheme[i].Equals(strTmpTheme))
         {
@@ -1269,17 +1273,10 @@ int CBuiltins::Execute(const CStdString& execString)
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
       CAction action;
-      action.id = actionID;
+      action.actionId = actionID;
       action.amount1 = 1.0f;
-      if (params.size() == 2)
-      { // have a window - convert it and send to it.
-        int windowID = CButtonTranslator::TranslateWindowString(params[1].c_str());
-        CGUIWindow *window = g_windowManager.GetWindow(windowID);
-        if (window)
-          window->OnAction(action);
-      }
-      else // send to our app
-        g_application.OnAction(action);
+      int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindowString(params[1].c_str()) : WINDOW_INVALID;
+      g_application.getApplicationMessenger().SendAction(action, windowID);
     }
   }
   else if (execute.Equals("setproperty") && params.size() == 2)

@@ -27,6 +27,8 @@
 class ID3DResource
 {
 public:
+  virtual ~ID3DResource() {};
+
   virtual void OnDestroyDevice()=0;
   virtual void OnCreateDevice()=0;
   virtual void OnLostDevice() {};
@@ -74,6 +76,7 @@ public:
   virtual ~CD3DEffect();
   bool Create(const CStdString &effectString);
   void Release();
+  bool SetFloatArray(D3DXHANDLE handle, const float* val, unsigned int count);
   bool SetMatrix(D3DXHANDLE handle, const D3DXMATRIX* mat);
   bool SetTechnique(D3DXHANDLE handle);
   bool SetTexture(D3DXHANDLE handle, CD3DTexture &texture);

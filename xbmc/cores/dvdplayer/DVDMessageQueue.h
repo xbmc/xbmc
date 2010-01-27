@@ -26,12 +26,47 @@
 #include <list>
 #include "CriticalSection.h"
 
-typedef struct stDVDMessageListItem
+struct DVDMessageListItem
 {
-  CDVDMsg* pMsg;
-  int priority;
-}
-DVDMessageListItem;
+  DVDMessageListItem(CDVDMsg* msg, int prio)
+  {
+    message  = msg->Acquire();
+    priority = prio;
+  }
+  DVDMessageListItem()
+  {
+    message  = NULL;
+    priority = 0;
+  }
+  DVDMessageListItem(const DVDMessageListItem& item)
+  {
+    if(item.message)
+      message = item.message->Acquire();
+    else
+      message = NULL;
+    priority = item.priority;
+  }
+ ~DVDMessageListItem()
+  {
+    if(message)
+      message->Release();
+  }
+
+  DVDMessageListItem& operator=(const DVDMessageListItem& item)
+  {
+    if(message)
+      message->Release();
+    if(item.message)
+      message = item.message->Acquire();
+    else
+      message = NULL;
+    priority = item.priority;
+    return *this;
+  }
+
+  CDVDMsg* message;
+  int      priority;
+};
 
 enum MsgQueueReturnCode
 {
@@ -61,9 +96,14 @@ public:
   /**
    * msg,       message type from DVDMessage.h
    * timeout,   timeout in msec
+   * priority,  minimum priority to get, outputs returned packets priority
    */
-  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority = 0);
-
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int &priority);
+  MsgQueueReturnCode Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds)
+  {
+    int priority = 0;
+    return Get(pMsg, iTimeoutInMilliSeconds, priority);
+  }
 
   int GetDataSize() const               { return m_iDataSize; }
   unsigned GetPacketCount(CDVDMsg::Message type);

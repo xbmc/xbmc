@@ -129,7 +129,7 @@ bool CFileXBMSP::Open(const CURL& urlUtf8)
   }
 
 
-  CStdString strDir, strPath;
+  CStdString strDir;
   strDir = "";
 
   if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
@@ -137,7 +137,7 @@ bool CFileXBMSP::Open(const CURL& urlUtf8)
 
   if (cc_xstream_client_setcwd(m_connection, "/") == CC_XSTREAM_CLIENT_OK)
   {
-    strPath = szPath;
+    CStdString strPath = szPath;
     for (int i = 0; i < (int)strPath.size(); ++i)
     {
       if (strPath[i] == '/' || strPath[i] == '\\')

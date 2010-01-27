@@ -156,7 +156,7 @@ void CGUIMultiSelectTextControl::UpdateInfo(const CGUIListItem *item)
 
 bool CGUIMultiSelectTextControl::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_SELECT_ITEM)
+  if (action.actionId == ACTION_SELECT_ITEM)
   {
     // item is clicked - see if we have a clickaction
     CStdString clickAction;
@@ -252,7 +252,7 @@ bool CGUIMultiSelectTextControl::OnMouseEvent(const CPoint &point, const CMouseE
   {
     m_selectedItem = GetItemFromPoint(point);
     CAction action;
-    action.id = ACTION_SELECT_ITEM;
+    action.actionId = ACTION_SELECT_ITEM;
     OnAction(action);
     return true;
   }

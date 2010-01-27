@@ -23,7 +23,7 @@
 // CApeTag in 2005 by JMarshall
 //------------------------------
 #include "cores/paplayer/ReplayGain.h"
-#include "cores/paplayer/DllMACDll.h"
+#include "DllLibapetag.h"
 
 namespace MUSIC_INFO
 {
@@ -35,7 +35,7 @@ class CAPEv2Tag
 public:
   CAPEv2Tag(void);
   virtual ~CAPEv2Tag(void);
-  bool ReadTag(const char* filename, bool checkID3Tag = false);
+  bool ReadTag(const char* filename);
   CStdString GetTitle() { return m_strTitle; }
   CStdString GetArtist() { return m_strArtist; }
   CStdString GetYear() { return m_strYear; }
@@ -52,7 +52,7 @@ public:
   CStdString GetComment() { return m_strComment; };
   CStdString GetLyrics() { return m_strLyrics; };
   char GetRating() { return m_rating; };
-  void GetReplayGainFromTag(IAPETag *pTag);
+  void GetReplayGainFromTag(apetag *tag);
   const CReplayGain &GetReplayGain() { return m_replayGain; };
 protected:
   CStdString m_strTitle;
@@ -74,6 +74,6 @@ protected:
   int64_t m_nDuration;
   char m_rating;
 
-  DllMACDll m_dll;
+  DllLibApeTag m_dll;
 };
 }

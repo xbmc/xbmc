@@ -239,7 +239,6 @@ void CLog::MemDump(char *pData, int length)
       strLine += " ";
     for (int j=0; j < 16 && i + j < length; j++)
     {
-      CStdString strFormat;
       if (*alpha > 31)
         strLine += *alpha;
       else

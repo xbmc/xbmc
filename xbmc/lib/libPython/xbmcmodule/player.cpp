@@ -278,9 +278,33 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // Player_OnPlayBackPaused
+  PyDoc_STRVAR(onPlayBackPaused__doc__,
+    "onPlayBackPaused() -- onPlayBackPaused method.\n"
+    "\n"
+    "Will be called when user pauses a playing file");
+
+  PyObject* Player_OnPlayBackPaused(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+  // Player_OnPlayBackResumed
+  PyDoc_STRVAR(onPlayBackResumed__doc__,
+    "onPlayBackPaused() -- onPlayBackResumed method.\n"
+    "\n"
+    "Will be called when user resumes a paused file");
+
+  PyObject* Player_OnPlayBackResumed(PyObject *self, PyObject *args)
+  {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   // Player_IsPlaying
   PyDoc_STRVAR(isPlaying__doc__,
-    "isPlayingAudio() -- returns True is xbmc is playing a file.");
+    "isPlaying() -- returns True is xbmc is playing a file.");
 
   PyObject* Player_IsPlaying(PyObject *self, PyObject *args)
   {
@@ -446,12 +470,15 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    int nStream = g_application.m_pPlayer->GetSubtitleCount();
+    if (g_application.m_pPlayer)
+    {
+      int nStream = g_application.m_pPlayer->GetSubtitleCount();
 
-    g_settings.m_currentVideoSettings.m_SubtitleOn = true;
-    g_application.m_pPlayer->SetSubtitleVisible(true);
-    g_application.m_pPlayer->AddSubtitle(cLine);
-    g_application.m_pPlayer->SetSubtitle(nStream);
+      g_settings.m_currentVideoSettings.m_SubtitleOn = true;
+      g_application.m_pPlayer->SetSubtitleVisible(true);
+      g_application.m_pPlayer->AddSubtitle(cLine);
+      g_application.m_pPlayer->SetSubtitle(nStream);
+    }
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -506,6 +533,8 @@ namespace PYXBMC
     {(char*)"onPlayBackStarted", (PyCFunction)Player_OnPlayBackStarted, METH_VARARGS, onPlayBackStarted__doc__},
     {(char*)"onPlayBackEnded", (PyCFunction)Player_OnPlayBackEnded, METH_VARARGS, onPlayBackEnded__doc__},
     {(char*)"onPlayBackStopped", (PyCFunction)Player_OnPlayBackStopped, METH_VARARGS, onPlayBackStopped__doc__},
+    {(char*)"onPlayBackPaused", (PyCFunction)Player_OnPlayBackPaused, METH_VARARGS, onPlayBackPaused__doc__},
+    {(char*)"onPlayBackResumed", (PyCFunction)Player_OnPlayBackResumed, METH_VARARGS, onPlayBackResumed__doc__},
     {(char*)"isPlaying", (PyCFunction)Player_IsPlaying, METH_VARARGS, isPlaying__doc__},
     {(char*)"isPlayingAudio", (PyCFunction)Player_IsPlayingAudio, METH_VARARGS, isPlayingAudio__doc__},
     {(char*)"isPlayingVideo", (PyCFunction)Player_IsPlayingVideo, METH_VARARGS, isPlayingVideo__doc__},

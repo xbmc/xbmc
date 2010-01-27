@@ -101,28 +101,35 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
   }
 
-  if (type != (iconv_t) - 1 && strSource.length())
+  if (type != (iconv_t) - 1)
   {
-    size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
-    size_t outBytes = (strSource.length() + 1)*multiplier;
-    const char *src = (const char*)strSource.c_str();
-    char       *dst = (char*)strDest.GetBuffer(outBytes);
-
-    if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
+    if (strSource.IsEmpty())
     {
-      CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      return false;
+      strDest.Empty();
     }
-
-    if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+    else
     {
-      CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
-      strDest.ReleaseBuffer();
-      return false;
-    }
+      size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
+      size_t outBytes = (strSource.length() + 1)*multiplier;
+      const char *src = (const char*)strSource.c_str();
+      char       *dst = (char*)strDest.GetBuffer(outBytes);
 
-    strDest.ReleaseBuffer();
+      if (iconv_const(type, &src, &inBytes, &dst, &outBytes) == (size_t)-1)
+      {
+        CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+        strDest.ReleaseBuffer();
+        return false;
+      }
+
+      if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
+      {
+        CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
+        strDest.ReleaseBuffer();
+        return false;
+      }
+
+      strDest.ReleaseBuffer();
+    }
   }
   return true;
 }
@@ -362,11 +369,10 @@ void CCharsetConverter::reset(void)
 // of the string is already made or the string is not displayed in the GUI
 void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool forceLTRReadingOrder /*=false*/, bool* bWasFlipped/*=NULL*/)
 {
-  CStdStringA strFlipped;
-
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
+    CStdStringA strFlipped;
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);

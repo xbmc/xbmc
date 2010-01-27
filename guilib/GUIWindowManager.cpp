@@ -456,7 +456,7 @@ bool CGUIWindowManager::OnAction(const CAction &action)
     }
     // music or video overlay are handled as a special case, as they're modeless, but we allow
     // clicking on them with the mouse.
-    if (action.id == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
+    if (action.actionId == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
                                        dialog->GetID() == WINDOW_MUSIC_OVERLAY))
     {
       if (dialog->OnAction(action))
@@ -753,12 +753,12 @@ bool CGUIWindowManager::IsWindowActive(const CStdString &xmlFile, bool ignoreClo
 {
   CSingleLock lock(g_graphicsContext);
   CGUIWindow *window = GetWindow(GetActiveWindow());
-  if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(xmlFile)) return true;
+  if (window && CUtil::GetFileName(window->GetProperty("xmlfile")).Equals(xmlFile)) return true;
   // run through the dialogs
   for (ciDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
   {
     CGUIWindow *window = *it;
-    if (CUtil::GetFileName(window->GetXMLFile()).Equals(xmlFile) && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    if (CUtil::GetFileName(window->GetProperty("xmlfile")).Equals(xmlFile) && (!ignoreClosing || !window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
       return true;
   }
   return false; // window isn't active
@@ -880,7 +880,7 @@ bool CGUIWindowManager::IsWindowTopMost(int id) const
 bool CGUIWindowManager::IsWindowTopMost(const CStdString &xmlFile) const
 {
   CGUIWindow *topMost = GetTopMostDialog();
-  if (topMost && CUtil::GetFileName(topMost->GetXMLFile()).Equals(xmlFile))
+  if (topMost && CUtil::GetFileName(topMost->GetProperty("xmlfile")).Equals(xmlFile))
     return true;
   return false;
 }

@@ -53,7 +53,7 @@ CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_SHOW_INFO:
     {
@@ -187,14 +187,14 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.id = ACTION_SHOW_GUI;
+    action.actionId = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // no control found to absorb this click - toggle the track INFO
     CAction action;
-    action.id = ACTION_PAUSE;
+    action.actionId = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   if (event.m_id || event.m_offsetX || event.m_offsetY)

@@ -190,7 +190,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
           else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
           {
             CAction action;
-            action.id = ACTION_CONTEXT_MENU;
+            action.actionId = ACTION_CONTEXT_MENU;
 
             PyXBMCAction* inf = new PyXBMCAction;
             inf->pObject = Action_FromAction(action);
@@ -282,7 +282,7 @@ void CGUIPythonWindowXML::PulseActionEvent()
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
   CStdString tmpDir;
-  CUtil::GetDirectory(m_xmlFile, tmpDir);
+  CUtil::GetDirectory(GetProperty("xmlfile"), tmpDir);
   CStdString fallbackMediaPath;
   CUtil::GetParentPath(tmpDir, fallbackMediaPath);
   CUtil::RemoveSlashAtEnd(fallbackMediaPath);

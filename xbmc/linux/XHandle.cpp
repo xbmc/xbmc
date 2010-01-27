@@ -47,8 +47,8 @@ CXHandle::CXHandle(const CXHandle &src)
   CLog::Log(LOGWARNING,"%s, copy handle.", __FUNCTION__);
 
   Init();
-  if (src.m_hSem)
-    m_hSem = SDL_CreateSemaphore(SDL_SemValue(src.m_hSem));
+  if (src.m_pSem)
+    m_pSem = new CSemaphore(*src.m_pSem);
 
   if (m_threadValid)
   {
@@ -83,10 +83,8 @@ CXHandle::~CXHandle()
     CLog::Log(LOGERROR,"%s, destroying handle with ref count %d", __FUNCTION__, m_nRefCount);
     assert(false);
   }
-
-  if (m_hSem) {
-    SDL_DestroySemaphore(m_hSem);
-  }
+  
+  delete m_pSem;
 
   if (m_hMutex) {
     SDL_DestroyMutex(m_hMutex);
@@ -113,7 +111,7 @@ CXHandle::~CXHandle()
 void CXHandle::Init()
 {
   fd=0;
-  m_hSem=NULL;
+  m_pSem=NULL;
   m_hMutex=NULL;
   m_threadValid=false;
   m_hCond=NULL;

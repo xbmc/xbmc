@@ -81,10 +81,10 @@ void CGUICheckMarkControl::Render()
 
 bool CGUICheckMarkControl::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_SELECT_ITEM)
+  if (action.actionId == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
-    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.id);
+    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.actionId);
     SendWindowMessage(msg);
     return true;
   }
@@ -148,7 +148,7 @@ bool CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMouseEvent &
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
     CAction action;
-    action.id = ACTION_SELECT_ITEM;
+    action.actionId = ACTION_SELECT_ITEM;
     OnAction(action);
     return true;
   }

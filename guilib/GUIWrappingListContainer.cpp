@@ -48,7 +48,7 @@ void CGUIWrappingListContainer::UpdatePageControl(int offset)
 
 bool CGUIWrappingListContainer::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_PAGE_UP:
     Scroll(-m_itemsPerPage);
@@ -141,10 +141,7 @@ void CGUIWrappingListContainer::ValidateOffset()
       // add additional copies of items, as we require extras at render time
       for (unsigned int i = 0; i < numItems; i++)
       {
-        if (m_items[i]->IsFileItem())
-          m_items.push_back(CFileItemPtr(new CFileItem(*(CFileItem *)m_items[i].get())));
-        else
-          m_items.push_back(CGUIListItemPtr(new CGUIListItem(*m_items[i])));
+        m_items.push_back(CGUIListItemPtr(m_items[i]->Clone()));
         m_extraItems++;
       }
     }

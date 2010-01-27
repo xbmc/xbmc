@@ -38,13 +38,11 @@ SRCS=AddonsDirectory.cpp \
      FileISO.cpp \
      FileLastFM.cpp \
      FileMusicDatabase.cpp \
-     FileRar.cpp \
      FileRTV.cpp \
      FileShoutcast.cpp \
      FileSpecialProtocol.cpp \
      FileSmb.cpp \
      FileTuxBox.cpp \
-     FileXBMSP.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
@@ -69,8 +67,6 @@ SRCS=AddonsDirectory.cpp \
      PlaylistDirectory.cpp \
      PlaylistFileDirectory.cpp \
      PluginDirectory.cpp \
-     RarDirectory.cpp \
-     RarManager.cpp \
      RSSDirectory.cpp \
      RTVDirectory.cpp \
      SAPDirectory.cpp \
@@ -90,10 +86,18 @@ SRCS=AddonsDirectory.cpp \
      VTPDirectory.cpp \
      VTPSession.cpp \
      VTPFile.cpp \
-     XBMSDirectory.cpp \
      ZeroconfDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
+
+ifeq (@HAVE_XBMC_NONFREE@,1)
+SRCS+=RarDirectory.cpp \
+      RarManager.cpp \
+      FileRar.cpp \
+      XBMSDirectory.cpp \
+      FileXBMSP.cpp \
+
+endif
 
 INCLUDES+=-I../lib/libUPnP/Platinum/Source/Core \
           -I../lib/libUPnP/Platinum/Source/Platinum \

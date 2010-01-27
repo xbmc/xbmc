@@ -49,6 +49,7 @@
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -296,7 +297,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::OnAction(const CAction& action)
 {
-  if (action.id == ACTION_PARENT_DIR)
+  if (action.actionId == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
@@ -304,7 +305,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
       return true;
     }
   }
-  if (action.id == ACTION_SCAN_ITEM)
+  if (action.actionId == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
     CMusicDatabaseDirectory dir;
@@ -1027,37 +1028,6 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
   CGUIWindowMusicBase::OnPrepareFileItems(items);
   // set fanart
   SetupFanart(items);
-}
-
-void CGUIWindowMusicNav::SetupFanart(CFileItemList& items)
-{
-  // set fanart
-  map<CStdString, CStdString> artists;
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CFileItemPtr item = items[i];
-    CStdString strArtist;
-    if (item->HasProperty("fanart_image"))
-      continue;
-    if (item->HasMusicInfoTag())
-      strArtist = item->GetMusicInfoTag()->GetArtist();
-   if (item->HasVideoInfoTag())
-     strArtist = item->GetVideoInfoTag()->m_strArtist;
-   if (strArtist.IsEmpty())
-     continue;
-    map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
-    if (artist == artists.end())
-    {
-      CStdString strFanart = item->GetCachedFanart();
-      if (XFILE::CFile::Exists(strFanart))
-        item->SetProperty("fanart_image",strFanart);
-      else
-        strFanart = "";
-      artists.insert(make_pair(strArtist, strFanart));
-    }
-    else
-      item->SetProperty("fanart_image",artist->second);
-  }
 }
 
 void CGUIWindowMusicNav::OnFinalizeFileItems(CFileItemList &items)

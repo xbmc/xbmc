@@ -244,6 +244,7 @@ bool CButtonTranslator::Load()
 #endif
   CStdString lircmapPath;
   CUtil::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
+  lircRemotesMap.clear();
   if(CFile::Exists(lircmapPath))
     success |= LoadLircMap(lircmapPath);
   else
@@ -325,7 +326,6 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     return false; // This is so people who don't have the file won't fail, just warn
   }
 
-  lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
   if (strValue != REMOTEMAPTAG)
@@ -636,7 +636,7 @@ void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action, 
   if (actionID == 0 && fallback)
     actionID = GetActionCode( -1, key, strAction);
   // Now fill our action structure
-  action.id = actionID;
+  action.actionId = actionID;
   action.strAction = strAction;
   action.amount1 = 1; // digital button (could change this for repeat acceleration)
   action.amount2 = 0;

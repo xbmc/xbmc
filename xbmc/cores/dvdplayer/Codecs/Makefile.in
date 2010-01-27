@@ -16,9 +16,6 @@ endif
 ifneq (@USE_EXTERNAL_LIBDTS@,1)
   DIRS+=libdts
 endif
-ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
-  DIRS+=libmpeg2
-endif
 
 LIBS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
@@ -34,9 +31,6 @@ ifneq (@USE_EXTERNAL_LIBA52@,1)
 endif
 ifneq (@USE_EXTERNAL_LIBDTS@,1)
   LIBS+=libdts-$(ARCH).so
-endif
-ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
-  LIBS+=libmpeg2-$(ARCH).so
 endif
 
 ifeq ($(findstring osx,$(ARCH)),osx)
@@ -131,11 +125,6 @@ $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER_OSX) liba52/libao/libao.a
 		liba52/libao/libao.a $(BUNDLE1_O)
 	#$(WRAPPER_OSX) $@;mv output.so $@
 
-$(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER_OSX) libmpeg2/libmpeg2/libmpeg2.la
-	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		libmpeg2/libmpeg2/.libs/*.o $(BUNDLE1_O)
-	$(WRAPPER_OSX) $@;mv output.so $@
-
 libdts/libdts/libdts.a : libdts;
 libdts:
 	$(MAKE) -C $@
@@ -151,10 +140,6 @@ libmad:
 liba52/liba52/liba52.la: liba52
 liba52/libao/libao.a: liba52
 liba52:
-	$(MAKE) -C $@
-
-libmpeg2/libmpeg2/libmpeg2.la: libmpeg2
-libmpeg2:
 	$(MAKE) -C $@
 
 else
@@ -203,10 +188,6 @@ $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER) liba52/libao/libao.a
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/libao/libao.a \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-$(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER) libmpeg2/libmpeg2/libmpeg2.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ libmpeg2/libmpeg2/.libs/*.o \
-		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
-
 libdts/libdts/libdts.a : libdts;
 libdts:
 	$(MAKE) -C $@
@@ -214,10 +195,6 @@ libdts:
 liba52/liba52/liba52.la: liba52
 liba52/libao/libao.a: liba52
 liba52:
-	$(MAKE) -C $@
-
-libmpeg2/libmpeg2/libmpeg2.la: libmpeg2
-libmpeg2:
 	$(MAKE) -C $@
 
 endif

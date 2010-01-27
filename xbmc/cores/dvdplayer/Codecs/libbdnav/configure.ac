@@ -196,14 +196,13 @@ if test "$ac_cv_openssl_linker_option" != '(none)' ; then
 fi
 fi
 
-dnl if NOSSL
-fi
-
-
 # Make sure OpenSSL is cool enough to play with the big boys.
 AC_CHECK_HEADERS([openssl/ecdsa.h], [], [
   AC_MSG_ERROR([Version of OpenSSL does not feature openssl/ecdsa.h, please upgrade]) ]
       , [])
+
+dnl if NOSSL
+fi
 
 
 AM_CONFIG_HEADER(config.h)
