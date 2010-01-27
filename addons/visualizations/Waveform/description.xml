@@ -7,6 +7,7 @@
   <librarywin32>Waveform_win32.vis</librarywin32>
   <version>1.0.0</version>
   <platforms>
+    <platform>linux</platform>
     <platform>windows</platform>
   </platforms>
   <minversion>
@@ -14,5 +15,5 @@
   </minversion>
   <summary>Visualization</summary>
   <description>Visualization showing a Waveform Graph</description>
-  <author>TEAMXBMC</author>
+  <author>MrC</author>
 </addoninfo>
