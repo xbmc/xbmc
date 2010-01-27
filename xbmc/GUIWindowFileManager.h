@@ -26,6 +26,7 @@
 #include "FileSystem/DirectoryHistory.h"
 #include "utils/CriticalSection.h"
 #include "FileSystem/File.h"
+#include "Job.h"
 
 class CFileItem;
 class CFileItemList;
@@ -33,7 +34,8 @@ class CGUIDialogProgress;
 
 class CGUIWindowFileManager :
       public CGUIWindow,
-      public XFILE::IFileCallback
+      public XFILE::IFileCallback,
+      public IJobCallback
 {
 public:
 
@@ -53,6 +55,9 @@ public:
 
   void ResetProgressBar(bool showProgress = true);
   static int64_t CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
+
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
+  virtual void OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job);
 protected:
   virtual void OnInitWindow();
   void SetInitialPath(const CStdString &path);
@@ -105,4 +110,6 @@ protected:
   CStdString m_strParentPath[2];
   CGUIDialogProgress* m_dlgProgress;
   CDirectoryHistory m_history[2];
+
+  int m_errorHeading, m_errorLine;
 };

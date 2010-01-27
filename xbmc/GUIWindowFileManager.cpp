@@ -63,6 +63,9 @@
 #include "StringUtils.h"
 #include "utils/log.h"
 
+#include "JobManager.h"
+#include "FileOperationJob.h"
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -887,14 +890,10 @@ void CGUIWindowFileManager::OnCopy(int iList)
 
   ResetProgressBar();
 
-  bool success = DoProcess(ACTION_COPY, *m_vecItems[iList], m_Directory[1 - iList]->m_strPath);
+  m_errorHeading = 16201;
+  m_errorLine    = 16202;
 
-  if (m_dlgProgress) m_dlgProgress->Close();
-
-  if(!success)
-    CGUIDialogOK::ShowAndGetInput(16201, 16202, 16200, 0);
-
-  Refresh(1 - iList);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy, *m_vecItems[iList], m_Directory[1 - iList]->m_strPath), this);
 }
 
 void CGUIWindowFileManager::OnMove(int iList)
@@ -904,14 +903,10 @@ void CGUIWindowFileManager::OnMove(int iList)
 
   ResetProgressBar();
 
-  bool success = DoProcess(ACTION_MOVE, *m_vecItems[iList], m_Directory[1 - iList]->m_strPath);
+  m_errorHeading = 16203;
+  m_errorLine    = 16204;
 
-  if (m_dlgProgress) m_dlgProgress->Close();
-
-  if(!success)
-    CGUIDialogOK::ShowAndGetInput(16203, 16204, 16200, 0);
-
-  Refresh();
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionMove, *m_vecItems[iList], m_Directory[1 - iList]->m_strPath), this);
 }
 
 void CGUIWindowFileManager::OnDelete(int iList)
@@ -921,14 +916,10 @@ void CGUIWindowFileManager::OnDelete(int iList)
 
   ResetProgressBar(false);
 
-  bool success = DoProcess(ACTION_DELETE, *m_vecItems[iList], m_Directory[iList]->m_strPath);
+  m_errorHeading = 16205;
+  m_errorLine    = 16206;
 
-  if (m_dlgProgress) m_dlgProgress->Close();
-
-  if(!success)
-    CGUIDialogOK::ShowAndGetInput(16205, 16206, 16200, 0);
-
-  Refresh(iList);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, *m_vecItems[iList], m_Directory[iList]->m_strPath), this);
 }
 
 void CGUIWindowFileManager::OnRename(int iList)
@@ -1442,6 +1433,43 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
       totalSize += items[i]->m_dwSize;
   }
   return totalSize;
+}
+
+void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  m_dlgProgress->SetLine(0, 1040);
+  m_dlgProgress->SetLine(1, "");
+  m_dlgProgress->SetLine(2, "");
+  m_dlgProgress->SetPercentage(100);
+  Refresh();
+  m_dlgProgress->Close();
+
+  if(!success)
+    CGUIDialogOK::ShowAndGetInput(m_errorHeading, m_errorLine, 16200, 0);
+}
+
+void CGUIWindowFileManager::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
+{
+  if (m_dlgProgress->IsCanceled())
+  {
+    CJobManager::GetInstance().CancelJob(jobID);
+    m_dlgProgress->SetLine(0, 1040);
+    m_dlgProgress->SetLine(1, "");
+    m_dlgProgress->SetLine(2, "");
+    Refresh();
+    m_dlgProgress->Close();
+  }
+  else
+  {
+    CFileOperationJob *fileJob = (CFileOperationJob *)job;
+
+    m_dlgProgress->SetLine(0, fileJob->GetCurrentOperation());
+    m_dlgProgress->SetLine(1, fileJob->GetCurrentFile());
+    m_dlgProgress->SetLine(2, fileJob->GetAverageSpeed());
+
+    if (total > 0)
+      m_dlgProgress->SetPercentage((int)((float)progress * 100.0f / (float)total));
+  }
 }
 
 bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
