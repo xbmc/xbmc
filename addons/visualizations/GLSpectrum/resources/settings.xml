@@ -1,0 +1,5 @@
+<settings>
+<setting id="mode" label="30000" type="enum" lvalues="30001|30002|30003" default="0"/>
+<setting id="bar_height" label="30004" type="enum" lvalues="30005|30006|30007|30008" default="1"/>
+<setting id="speed" label="30009" type="enum" lvalues="30010|30011|30012|30013|30014" default="2"/>
+</settings>
