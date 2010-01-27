@@ -38,7 +38,10 @@
 #include <libmms/mmsio.h> // FIXME: remove this header once the ubuntu headers is fixed (variable named this)
 #include <libmms/mms.h>
 #include <libmms/mmsh.h>
+#include <libmms/mmsx.h>
 #undef this
+#else
+#include "libmms/libmms_win32/src/mmsx.h"
 #endif
 
 using namespace XFILE;

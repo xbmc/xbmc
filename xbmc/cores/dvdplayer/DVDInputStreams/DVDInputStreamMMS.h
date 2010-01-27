@@ -25,11 +25,9 @@
 #ifdef HAS_FILESYSTEM_MMS
 
 #include "DVDInputStream.h"
-#ifdef _WIN32
-#include "libmms/libmms_win32/src/mmsx.h"
-#else
-#include <libmms/mmsx.h>
-#endif
+
+//forward declare this so we avoid including mmsx.h
+typedef struct mmsx_s mmsx_t;
 
 class CDVDInputStreamMMS : public CDVDInputStream
 {
