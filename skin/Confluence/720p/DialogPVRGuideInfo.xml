@@ -266,5 +266,6 @@
 				</control>
 			</control>
 		</control>
+		<include>SideBladeRight</include>
 	</controls>
 </window>
