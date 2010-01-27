@@ -6,8 +6,8 @@
     <string id="30002">Medium</string>
     <string id="30003">High</string>
     <string id="30004">Maximum</string>
-    <string id="30010">Shuffle Mode</string>
-    <string id="30020">Smooth Preset Duration</string>
-    <string id="30021">Preset Duration</string>
-    <string id="30022">Beat Sensitivity</string>
+    <string id="30005">Shuffle Mode</string>
+    <string id="30006">Smooth Preset Duration</string>
+    <string id="30007">Preset Duration</string>
+    <string id="30008">Beat Sensitivity</string>
 </strings>

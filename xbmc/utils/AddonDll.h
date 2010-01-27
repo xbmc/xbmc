@@ -272,7 +272,7 @@ bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
     }
   }
   else
-    return false;
+    return CAddon::LoadSettings();
 
   return CAddon::LoadUserSettings();
 }

@@ -55,6 +55,11 @@ unsigned int g_numPresets = 0;
 projectM::Settings g_configPM;
 std::string g_configFile;
 
+// settings vector
+std::vector<DllSetting> g_vecSettings;
+StructSetting** g_structSettings;
+unsigned int g_uiVisElements;
+
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
@@ -62,6 +67,9 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
 {
   if (!props)
     return STATUS_UNKNOWN;
+
+  g_vecSettings.clear();
+  g_uiVisElements = 0;
 
   strcpy(g_visName, "projectM");
 
@@ -115,6 +123,63 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
     printf("exception in projectM ctor");
     return STATUS_UNKNOWN;
   }
+
+  DllSetting quality(DllSetting::SPIN, "quality", "30000");
+  quality.AddEntry("30001");
+  quality.AddEntry("30002");
+  quality.AddEntry("30003");
+  quality.AddEntry("30004");
+  if (g_configPM.textureSize == 2048)
+  {
+    quality.current = 3;
+  }
+  else if (g_configPM.textureSize == 1024)
+  {
+    quality.current = 2;
+  }
+  else if (g_configPM.textureSize == 512)
+  {
+    quality.current = 1;
+  }
+  else if (g_configPM.textureSize == 256)
+  {
+    quality.current = 0;
+  }
+  g_vecSettings.push_back(quality);
+
+  DllSetting shuffleMode(DllSetting::CHECK, "shuffle", "30005");
+  shuffleMode.current = globalPM->isShuffleEnabled();
+  g_vecSettings.push_back(shuffleMode);
+  
+  DllSetting smoothPresetDuration(DllSetting::SPIN, "smooth_duration", "30006");
+  for (int i=0; i < 50; i++)
+  {
+    char temp[10];
+    sprintf(temp, "%i secs", i);
+    smoothPresetDuration.AddEntry(temp);
+  }
+  smoothPresetDuration.current = (int)(g_configPM.smoothPresetDuration);
+  g_vecSettings.push_back(smoothPresetDuration);
+  
+  DllSetting presetDuration(DllSetting::SPIN, "preset_duration", "30007");
+  for (int i=0; i < 50; i++)
+  {
+    char temp[10];
+    sprintf(temp, "%i secs", i);
+    presetDuration.AddEntry(temp);
+  }
+  presetDuration.current = (int)(g_configPM.presetDuration);
+  g_vecSettings.push_back(presetDuration);
+
+  DllSetting beatSensitivity(DllSetting::SPIN, "beat_sens", "30008");
+  for (int i=0; i <= 100; i++)
+  {
+    char temp[10];
+    sprintf(temp, "%2.1f", (float)(i + 1)/5);
+    beatSensitivity.AddEntry(temp);
+  }
+  beatSensitivity.current = (int)(g_configPM.beatSensitivity * 5 - 1);
+  g_vecSettings.push_back(beatSensitivity);
 
   return STATUS_NEED_SETTINGS;
 }
@@ -297,7 +362,9 @@ extern "C" ADDON_STATUS GetStatus()
 
 extern "C" unsigned int GetSettings(StructSetting ***sSet)
 {
-  return 0;
+  g_uiVisElements = DllUtils::VecToStruct(g_vecSettings, &g_structSettings);
+  *sSet = g_structSettings;
+  return g_uiVisElements;
 }
 
 //-- FreeSettings --------------------------------------------------------------
@@ -306,6 +373,7 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
 
 extern "C" void FreeSettings()
 {
+  DllUtils::FreeStruct(g_uiVisElements, &g_structSettings);
 }
 
 //-- UpdateSetting ------------------------------------------------------------
