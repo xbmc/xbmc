@@ -1933,6 +1933,14 @@
 					RelativePath="..\..\xbmc\visualizations\Visualisation.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="VideoRenderers"
@@ -2055,6 +2063,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.h"
 					>
 				</File>
 				<File
@@ -2186,6 +2202,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogPluginSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPluginSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUISettings.cpp"
 					>
 				</File>
@@ -2227,6 +2251,30 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowTestPatternGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PluginSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PluginSettings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScraperSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScraperSettings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScriptSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScriptSettings.h"
 					>
 				</File>
 				<File
@@ -2678,26 +2726,6 @@
 				Name="Utils"
 				>
 				<File
-					RelativePath="..\..\xbmc\utils\Addon.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\Addon.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonDll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\AlarmClock.cpp"
 					>
 				</File>
@@ -3094,14 +3122,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\Scraper.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Scraper.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\ScraperParser.cpp"
 					>
 				</File>
@@ -3342,22 +3362,6 @@
 				Name="GUI Dialog"
 				>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIDialogAccessPoints.cpp"
 					>
 				</File>
@@ -3587,6 +3591,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogVisualisationPresetList.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogVisualisationSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogVisualisationSettings.h"
 					>
 				</File>
 				<File

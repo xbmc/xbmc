@@ -1,8 +1,8 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I.. -I../../../xbmc/linux -I../../../xbmc -I../../../guilib -I../../../visualisations -I/opt/local/include
+INCLUDES=-I. -I../../addons/include -I/opt/local/include
 OBJS=Main.o itunes_vis.o qview.o common_osx.o
 CXXFLAGS=-Wall -g -fPIC
-SLIB=../../../visualisations/iTunes.mvis
+SLIB=../../../addons/visualizations/iTunes/iTunes.mvis
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)

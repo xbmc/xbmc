@@ -272,7 +272,7 @@ dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
-	$(MAKE) -C xbmc/visualizations/Waveform
+	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
 ifneq (@BUILD_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
@@ -332,7 +332,7 @@ libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
-	codecs libs python addons visualizations screensavers eventclients \
+	codecs libs python visualizations screensavers eventclients \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
