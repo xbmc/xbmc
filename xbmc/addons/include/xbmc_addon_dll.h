@@ -1,17 +1,14 @@
 #ifndef __XBMC_ADDON_H__
 #define __XBMC_ADDON_H__
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
-#ifndef _LINUX
+#ifdef _WIN32
 #include <windows.h>
 #else
-#undef __cdecl
+#ifndef __cdecl
 #define __cdecl
-#undef __declspec
-#define __declspec(x)
-#include <time.h>
+#endif
+#ifndef __declspec
+#define __declspec(X)
 #endif
 #endif
 

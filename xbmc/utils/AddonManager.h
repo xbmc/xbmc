@@ -38,8 +38,7 @@ namespace ADDON
 
   const int        ADDON_DIRSCAN_FREQ         = 300;
   const CStdString ADDON_METAFILE             = "description.xml";
-  const CStdString ADDON_VIZ_EXT              = "*.vis";
-  const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
+  const CStdString ADDON_VIS_EXT              = "*.vis";
   const CStdString ADDON_PYTHON_EXT           = "*.py";
   const CStdString ADDON_SCRAPER_EXT          = "*.xml";
   const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";

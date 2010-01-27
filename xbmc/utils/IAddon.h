@@ -47,15 +47,15 @@ namespace ADDON
 {
   typedef enum
   {
-    ADDON_MULTITYPE         = 0,
-    ADDON_VIZ               = 1,
-    ADDON_SKIN              = 2,
-    ADDON_PVRDLL            = 3,
-    ADDON_SCRIPT            = 4,
-    ADDON_SCRAPER           = 5,
-    ADDON_SCREENSAVER       = 6,
-    ADDON_PLUGIN            = 7,
-    ADDON_DSP_AUDIO         = 8
+    ADDON_UNKNOWN,
+    ADDON_VIZ,
+    ADDON_SKIN,
+    ADDON_PVRDLL,
+    ADDON_SCRIPT,
+    ADDON_SCRAPER,
+    ADDON_SCRAPER_LIBRARY,
+    ADDON_SCREENSAVER,
+    ADDON_PLUGIN
   } TYPE;
 
   class IAddon;

@@ -172,7 +172,7 @@ void CAddonStatusHandler::Process()
 
     if (m_addon->Type() == ADDON_SKIN)
     {
-      CLog::Log(LOGERROR, "ADDONS: Incompatible type (%s) encountered", ADDON::TranslateType(m_addon->Type()).c_str());
+      CLog::Log(LOGERROR, "ADDONS: Incompatible type (%s) encountered", TranslateType(m_addon->Type()).c_str());
       return;
     }
 
@@ -233,7 +233,7 @@ void CAddonStatusHandler::Process()
  */
 
 CAddonMgr* CAddonMgr::m_pInstance = NULL;
-std::map<ADDON::TYPE, ADDON::IAddonMgrCallback*> CAddonMgr::m_managers;
+std::map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 CAddonMgr::CAddonMgr()
 {
@@ -252,7 +252,7 @@ CAddonMgr* CAddonMgr::Get()
   return m_pInstance;
 }
 
-IAddonMgrCallback* CAddonMgr::GetCallbackForType(ADDON::TYPE type)
+IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
 {
   if (m_managers.find(type) == m_managers.end())
     return NULL;
@@ -260,7 +260,7 @@ IAddonMgrCallback* CAddonMgr::GetCallbackForType(ADDON::TYPE type)
     return m_managers[type];
 }
 
-bool CAddonMgr::RegisterAddonMgrCallback(const ADDON::TYPE type, IAddonMgrCallback* cb)
+bool CAddonMgr::RegisterAddonMgrCallback(const TYPE type, IAddonMgrCallback* cb)
 {
   if (cb == NULL)
     return false;
@@ -271,12 +271,12 @@ bool CAddonMgr::RegisterAddonMgrCallback(const ADDON::TYPE type, IAddonMgrCallba
   return true;
 }
 
-void CAddonMgr::UnregisterAddonMgrCallback(ADDON::TYPE type)
+void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 {
   m_managers.erase(type);
 }
 
-bool CAddonMgr::HasAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
+bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
 {
   if (content == CONTENT_NONE)
     return (m_addons.find(type) != m_addons.end());
@@ -285,7 +285,7 @@ bool CAddonMgr::HasAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content/*
   return GetAddons(type, addons, content, true);
 }
 
-bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabled/*= true*/)
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabled/*= true*/)
 {
   // recheck addons.xml & each addontype's directories no more than once every ADDON_DIRSCAN_FREQ seconds
   CDateTimeSpan span;
@@ -316,7 +316,7 @@ bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONT
   return !addons.empty();
 }
 
-bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPtr &addon)
+bool CAddonMgr::GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon)
 {
   if (m_addons.find(type) == m_addons.end())
     return false;
@@ -397,7 +397,7 @@ bool CAddonMgr::EnableAddon(const CStdString &uuid)
 }
 bool CAddonMgr::EnableAddon(AddonPtr &addon)
 {
-  const ADDON::TYPE type = addon->Type();
+  const TYPE type = addon->Type();
 
   if (m_addons.find(type) == m_addons.end())
     return false;
@@ -427,7 +427,7 @@ bool CAddonMgr::DisableAddon(const CStdString &uuid)
 }
 bool CAddonMgr::DisableAddon(AddonPtr &addon)
 {
-  const ADDON::TYPE type = addon->Type();
+  const TYPE type = addon->Type();
 
   if (m_addons.find(type) == m_addons.end())
     return false;
@@ -452,7 +452,7 @@ bool CAddonMgr::DisableAddon(AddonPtr &addon)
   return false;
 }
 
-bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type)
+bool CAddonMgr::LoadAddonsXML(const TYPE &type)
 {
   VECADDONPROPS props;
   if (!LoadAddonsXML(type, props))
@@ -508,7 +508,7 @@ bool CAddonMgr::GetAddonProps(const TYPE &type, VECADDONPROPS &props)
   return found;
 }
 
-void CAddonMgr::FindAddons(const ADDON::TYPE &type)
+void CAddonMgr::FindAddons(const TYPE &type)
 {
 
   // parse the user & system dirs for addons of the requested type
@@ -516,18 +516,11 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type)
   bool isHome = CSpecialProtocol::XBMCIsHome();
   switch (type)
   {
-  case ADDON_PVRDLL:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/pvr", items, ADDON_PVRDLL_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
-      break;
-    }
   case ADDON_VIZ:
     { //TODO fix mvis handling
       if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/visualizations", items, ADDON_VIZ_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/visualizations", items, ADDON_VIZ_EXT, false);
+        CDirectory::GetDirectory("special://home/addons/visualizations", items, ADDON_VIS_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/visualizations", items, ADDON_VIS_EXT, false);
       break;
     }
   case ADDON_SCREENSAVER:
@@ -537,18 +530,18 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type)
       CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
       break;
     }
-  case ADDON_DSP_AUDIO:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
-      break;
-    }
   case ADDON_SCRAPER:
     {
       if (!isHome)
         CDirectory::GetDirectory("special://home/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
       CDirectory::GetDirectory("special://xbmc/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
+      break;
+    }
+  case ADDON_SCRAPER_LIBRARY:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/libraries/scrapers", items, ADDON_SCRAPER_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/libraries/scrapers", items, ADDON_SCRAPER_EXT, false);
       break;
     }
   case ADDON_SCRIPT:
@@ -629,7 +622,7 @@ void CAddonMgr::FindAddons(const ADDON::TYPE &type)
   CLog::Log(LOGINFO, "ADDON: Found %zu addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
 }
 
-bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &path, AddonPtr &addon)
+bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon)
 {
   // First check that we can load description.xml
   CStdString strPath(path);
@@ -670,7 +663,7 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
 
   /* Validate type */
   element = xmlDoc.RootElement()->FirstChildElement("type");
-  ADDON::TYPE type = TranslateType(element->GetText());
+  TYPE type = TranslateType(element->GetText());
   if (type != reqType)
   {
     CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", strPath.c_str(), type);
@@ -916,7 +909,7 @@ CStdString CAddonMgr::GetAddonsXMLFile() const
   return folder;
 }
 
-bool CAddonMgr::SaveAddonsXML(const ADDON::TYPE &type)
+bool CAddonMgr::SaveAddonsXML(const TYPE &type)
 {
   VECADDONPROPS props;
   GetAddonProps(type, props);
@@ -944,10 +937,10 @@ bool CAddonMgr::SaveAddonsXML(const ADDON::TYPE &type)
   return doc.SaveFile(GetAddonsXMLFile());
 }
 
-bool CAddonMgr::SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const VECADDONPROPS &addons)
+bool CAddonMgr::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS &addons)
 {
   CStdString strType;
-  strType = ADDON::TranslateType(type);
+  strType = TranslateType(type);
 
   if (strType.IsEmpty())
     return false;
@@ -985,7 +978,7 @@ bool CAddonMgr::SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const VECADD
   return true;
 }
 
-bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type, VECADDONPROPS &addons)
+bool CAddonMgr::LoadAddonsXML(const TYPE &type, VECADDONPROPS &addons)
 {
   CStdString strXMLFile;
   TiXmlDocument xmlDoc;
@@ -1024,10 +1017,10 @@ bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type, VECADDONPROPS &addons)
   return false;
 }
 
-void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, VECADDONPROPS &addons)
+void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const TYPE &type, VECADDONPROPS &addons)
 {
   CStdString strTagName;
-  strTagName = ADDON::TranslateType(type);
+  strTagName = TranslateType(type);
 
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
   if (pChild)
@@ -1049,7 +1042,7 @@ void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &t
   }
 }
 
-bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
+bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
 {
   // uuid
   const TiXmlNode *pNodePath = node->FirstChild("uuid");

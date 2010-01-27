@@ -399,7 +399,7 @@ bool CVisualisation::GetPresets()
   }
   if (presets && entries > 0)
   {
-    for (int i=0; i < entries; i++)
+    for (unsigned i=0; i < entries; i++)
     {
       if (presets[i])
       {

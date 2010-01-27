@@ -265,7 +265,7 @@ bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
     TiXmlElement node("settings");
     m_addonXmlDoc.InsertEndChild(node);
 
-    for (int i=0; i < entries; i++)
+    for (unsigned i=0; i < entries; i++)
     {
        DllSetting& setting = vSet[i];
        m_addonXmlDoc.RootElement()->InsertEndChild(MakeSetting(setting));

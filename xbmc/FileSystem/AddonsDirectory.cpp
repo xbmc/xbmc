@@ -48,9 +48,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   VECADDONS addons;
 
-  if (path.GetHostName().empty())
-    CAddonMgr::Get()->GetAddons(ADDON_MULTITYPE, addons);
-  else if (path.GetPassWord().empty())
+  if (path.GetPassWord().empty())
     CAddonMgr::Get()->GetAddons(TranslateType(path.GetHostName()), addons);
   else
     CAddonMgr::Get()->GetAddons(TranslateType(path.GetHostName()), addons, TranslateContent(path.GetPassWord()));

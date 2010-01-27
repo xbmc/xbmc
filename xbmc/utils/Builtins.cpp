@@ -955,7 +955,7 @@ int CBuiltins::Execute(const CStdString& execString)
       CStdString strMask = (params.size() > 1) ? params[1] : "";
       strMask.ToLower();
       ADDON::TYPE type;
-      if ((type = ADDON::TranslateType(strMask)) != ADDON::ADDON_MULTITYPE)
+      if ((type = ADDON::TranslateType(strMask)) != ADDON::ADDON_UNKNOWN)
       {
         CURL url;
         url.SetProtocol("addons");

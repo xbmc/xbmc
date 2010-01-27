@@ -151,7 +151,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
 	else if (string.Equals("visualization")) return ADDON_VIZ;
 	else if (string.Equals("plugin")) return ADDON_PLUGIN;
 	else if (string.Equals("script")) return ADDON_SCRIPT;
-	else return ADDON_MULTITYPE;
+	else return ADDON_UNKNOWN;
 }
 
 CAddon::CAddon(const AddonProps &props)
@@ -217,9 +217,6 @@ void CAddon::BuildLibName()
   CStdString ext;
 	switch (m_type)
 	{
-	case ADDON_PVRDLL:
-    ext = ADDON_PVRDLL_EXT;
-    break;
 	case ADDON_SCRAPER:
     ext = ADDON_SCRAPER_EXT;
     break;
@@ -227,7 +224,7 @@ void CAddon::BuildLibName()
     ext = ADDON_SCREENSAVER_EXT;
     break;
 	case ADDON_VIZ:
-    ext = ADDON_VIZ_EXT;
+    ext = ADDON_VIS_EXT;
     break;
 	case ADDON_PLUGIN:
     ext = ADDON_PYTHON_EXT;
