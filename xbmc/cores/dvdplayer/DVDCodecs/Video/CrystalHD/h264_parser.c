@@ -112,7 +112,7 @@ static void decode_nal(uint8_t **ret, int *len_ret, uint8_t *buf, int buf_len)
 {
   // TODO: rework without copying
   uint8_t *end = &buf[buf_len];
-  uint8_t *pos = malloc(buf_len);
+  uint8_t *pos = (uint8_t*)malloc(buf_len);
 
   *ret = pos;
   while (buf < end) {
@@ -248,7 +248,7 @@ struct nal_unit* parse_nal_header(struct buf_reader *buf,
   struct nal_unit *nal = create_nal_unit();
 
   nal->nal_ref_idc = (buf->buf[0] >> 5) & 0x03;
-  nal->nal_unit_type = buf->buf[0] & 0x1f;
+  nal->nal_unit_type = (enum nal_unit_types)(buf->buf[0] & 0x1f);
 
   buf->cur_pos = buf->buf + 1;
   //printf("NAL: %d\n", nal->nal_unit_type);
@@ -915,7 +915,7 @@ uint8_t parse_pps(struct buf_reader *buf, struct pic_parameter_set_rbsp *pps)
       unsigned int i_group;
       for (i_group = 0; i_group <= pps->num_slice_groups_minus1; i_group++) {
         pps->slice_group_id[i_group] = read_bits(buf, ceil(log(
-            pps->num_slice_groups_minus1 + 1)));
+            (double)pps->num_slice_groups_minus1 + 1)));
       }
     }
   }
@@ -1527,7 +1527,7 @@ void parse_dec_ref_pic_marking(struct buf_reader *buf,
 
 struct h264_parser* init_parser()
 {
-  struct h264_parser *parser = calloc(1, sizeof(struct h264_parser));
+  struct h264_parser *parser = (struct h264_parser *)calloc(1, sizeof(struct h264_parser));
   parser->pic = create_coded_picture();
   parser->position = NON_VCL;
   parser->last_vcl_nal = NULL;
@@ -1585,7 +1585,7 @@ int parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_le
   bufr.len = inbuf_len;
 
   // FIXME: Might be broken!
-  struct nal_unit *nal = calloc(1, sizeof(struct nal_unit));
+  struct nal_unit *nal = (struct nal_unit *)calloc(1, sizeof(struct nal_unit));
 
 
   /* reserved */
@@ -1596,7 +1596,7 @@ int parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_le
   read_bits(&bufr, 6);
 
   parser->nal_size_length = read_bits(&bufr, 2) + 1;
-  parser->nal_size_length_buf = calloc(1, parser->nal_size_length);
+  parser->nal_size_length_buf = (uint8_t *)calloc(1, parser->nal_size_length);
   read_bits(&bufr, 3);
   uint8_t sps_count = read_bits(&bufr, 5);
 
@@ -1749,7 +1749,7 @@ int parse_frame(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len,
 #ifdef NOVDPAU
       uint8_t *p;
       *ret_len = parser->buf_len + parser->privatebuf_len;
-      *ret_buf = malloc(*ret_len);
+      *ret_buf = (uint8_t *)malloc(*ret_len);
       p = *ret_buf;
 
       //if(parser->pic->flag_mask & IDR_PIC) {

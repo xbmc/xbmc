@@ -26,7 +26,7 @@
 
 struct coded_picture* create_coded_picture()
 {
-  struct coded_picture* pic = calloc(1, sizeof(struct coded_picture));
+  struct coded_picture* pic = (struct coded_picture *)calloc(1, sizeof(struct coded_picture));
   return pic;
 }
 
@@ -42,4 +42,3 @@ void free_coded_picture(struct coded_picture *pic)
 
   free(pic);
 }
-
