@@ -336,7 +336,7 @@ void CGUIWindow::Close(bool forceClose)
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_MOUSE)
+  if (action.actionId == ACTION_MOUSE)
     return OnMouseAction();
 
   CGUIControl *focusedControl = GetFocusedControl();
@@ -405,7 +405,7 @@ bool CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go to previous menu
     CAction action;
-    action.id = ACTION_PREVIOUS_MENU;
+    action.actionId = ACTION_PREVIOUS_MENU;
     return OnAction(action);
   }
   return false;

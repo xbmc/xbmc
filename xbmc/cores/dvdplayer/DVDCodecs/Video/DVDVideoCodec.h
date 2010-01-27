@@ -148,4 +148,15 @@ public:
    * should return codecs name
    */
   virtual const char* GetName() = 0;
+
+  /*
+   *
+   * How many packets should player remember, so codec
+   * can recover should something cause it to flush
+   * outside of players control
+   */
+  virtual unsigned GetConvergeCount()
+  {
+    return 0;
+  }
 };

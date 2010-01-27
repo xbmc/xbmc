@@ -304,7 +304,6 @@ public:
   DemuxPacket* GetPacket()      { return m_packet; }
   unsigned int GetPacketSize()  { if(m_packet) return m_packet->iSize; else return 0; }
   bool         GetPacketDrop()  { return m_drop; }
-private:
   DemuxPacket* m_packet;
   bool         m_drop;
 };

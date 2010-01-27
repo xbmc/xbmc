@@ -7,6 +7,7 @@ background 333333
 
 splashimage=/boot/grub/splash.xpm.gz
 
+## BEGIN NVIDIA ##
 
 title  XBMCLive - NVIDIA GPU
 kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 module=nvidia persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
@@ -20,6 +21,10 @@ initrd /live/initrd.img
 quiet
 boot
 
+## END NVIDIA ##
+
+## BEGIN AMD ##
+
 title  XBMCLive - ATI/AMD GPU
 kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 module=amd persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
 initrd /live/initrd.img
@@ -31,6 +36,10 @@ kernel /live/vmlinuz boot=live vga=788 xbmc=tempfs,nodiskmount,setvolume quiet l
 initrd /live/initrd.img
 quiet
 boot
+
+## END AMD ##
+
+## BEGIN INTEL ##
 
 title  XBMCLive - Intel GPU
 kernel /live/vmlinuz boot=live vga=788 xbmc=autostart,tempfs,nodiskmount,setvolume splash quiet loglevel=0 persistent quickreboot quickusbmodules notimezone noaccessibility noapparmor noaptcdrom noautologin noxautologin noconsolekeyboard nofastboot nognomepanel nohosts nokpersonalizer nolanguageselector nolocales nonetworking nopowermanagement noprogramcrashes nojockey nosudo noupdatenotifier nouser nopolkitconf noxautoconfig noxscreensaver nopreseed union=aufs
@@ -44,8 +53,12 @@ initrd /live/initrd.img
 quiet
 boot
 
+## END INTEL ##
+
 title  ---
 root
+
+## BEGIN INSTALLER ##
 
 title  Install XBMCLive to disk
 kernel /install/vmlinuz vga=normal quiet preseed/file=/cdrom/install/preseed.cfg cdrom-detect/try-usb=true priority=critical -- 
@@ -55,6 +68,8 @@ boot
 
 title  ---
 root
+
+## END INSTALLER ##
 
 title Boot Operating System on Hard Disk
 root (hd0)

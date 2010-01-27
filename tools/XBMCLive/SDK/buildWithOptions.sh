@@ -56,5 +56,4 @@ do
 	esac
 done
 
-echo "Start building..."
 ./build.sh

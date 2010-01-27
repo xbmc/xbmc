@@ -203,7 +203,7 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
 
 bool CGUIDialogSettings::OnAction(const CAction& action)
 {
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
   {
     OnCancel();
     Close();

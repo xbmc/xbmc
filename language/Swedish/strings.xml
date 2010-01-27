@@ -1381,13 +1381,15 @@
   <string id="16307">Bicubic (mjukvara)</string>
   <string id="16308">Lanczos (mjukvara)</string>
   <string id="16309">Sinc (mjukvara)</string>
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16310">Temporal</string>
+  <string id="16311">Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimerad</string>
   <string id="16316">Auto</string>
+  <string id="16317">Temporal (Halv)</string>
+  <string id="16318">Temporal/Spatial (Halv)</string>
   <string id="17500">Visa insommningstimeout</string>
   <string id="19000">Byt till kanal</string>
   <string id="20000">Mapp för sparad musik</string>

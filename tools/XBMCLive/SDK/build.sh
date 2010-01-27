@@ -34,6 +34,7 @@ WORKPATH=$THISDIR/$WORKDIR
 export WORKPATH
 
 if [ -d "$WORKPATH" ]; then
+	echo "Deleting old workarea..." 
 	rm -rf $WORKPATH
 fi
 mkdir $WORKPATH
@@ -42,13 +43,15 @@ if ls $THISDIR/binary.* > /dev/null 2>&1; then
 	rm -rf $THISDIR/binary.*
 fi
 
+echo "Creating workarea..." 
+
 # cp all (except svn directories) into workarea
 rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
 
 if ! which lh > /dev/null ; then
 	cd $WORKPATH/Tools
 	if [ ! -d live-helper ]; then
-		tsocks git clone git://live.debian.net/git/live-helper.git
+		git clone git://live.debian.net/git/live-helper.git
 		if [ "$?" -ne "0" ]; then
 			exit 1
 		fi
@@ -66,6 +69,7 @@ if ! which lh > /dev/null ; then
 	cd $THISDIR
 fi
 
+echo "Start building..."
 
 # Execute hooks if env variable is defined
 if [ -n "$SDK_BUILDHOOKS" ]; then
@@ -153,4 +157,4 @@ cd $WORKPATH/buildLive
 cd $THISDIR
 
 mv $WORKPATH/buildLive/binary.* .
-chmod 777 *.iso
+chmod 777 binary.*

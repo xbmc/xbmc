@@ -302,43 +302,6 @@ void CDVDPlayerVideo::Process()
   int iDropped = 0; //frames dropped in a row
   bool bRequestDrop = false;
 
-  // attempt to do a initial configure of output device
-  if(!g_renderManager.IsConfigured()
-  && m_hints.width
-  && m_hints.height
-  && m_hints.fpsrate
-  && m_hints.fpsscale )
-  {
-    int flags = 0;
-    if(m_bAllowFullscreen)
-      flags |= CONF_FLAGS_FULLSCREEN;
-
-    if(m_hints.width > 1024 || m_hints.height >= 600)
-      flags |= CONF_FLAGS_YUVCOEF_BT709;
-    else
-      flags |= CONF_FLAGS_YUVCOEF_BT601;
-
-    // assume yv12 format
-    flags |= CONF_FLAGS_FORMAT_YV12;
-
-    m_output.width     = m_hints.width;
-    m_output.dwidth    = m_hints.width;
-    m_output.height    = m_hints.height;
-    m_output.dheight   = m_hints.height;
-    m_output.framerate = (float)m_hints.fpsrate / m_hints.fpsscale;
-    m_output.color_format = DVDVideoPicture::FMT_YUV420P;
-    m_output.inited    = true;
-
-    if( g_renderManager.Configure(m_output.width
-                                , m_output.height
-                                , m_output.dwidth
-                                , m_output.dheight
-                                , m_output.framerate
-                                , flags) )
-      m_output.inited    = true;
-  }
-
-
   m_videoStats.Start();
 
   while (!m_bStop)
@@ -440,12 +403,14 @@ void CDVDPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      m_packets.clear();
       m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      m_packets.clear();
 
       m_pullupCorrection.Flush();
       //we need to recalculate the framerate
@@ -509,6 +474,16 @@ void CDVDPlayerVideo::Process()
       m_pVideoCodec->SetDropState(bRequestDrop);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+
+      // buffer packets so we can recover should decoder flush for some reason
+      if(m_pVideoCodec->GetConvergeCount() > 0)
+      {
+        m_packets.push_back(DVDMessageListItem(pMsg, 0));
+        if(m_packets.size() > m_pVideoCodec->GetConvergeCount() 
+        || m_packets.size() * frametime > DVD_SEC_TO_TIME(10))
+          m_packets.pop_front();
+      }
+
       m_videoStats.AddSampleBytes(pPacket->iSize);
       // assume decoder dropped a picture if it didn't give us any
       // picture from a demux packet, this should be reasonable
@@ -532,14 +507,26 @@ void CDVDPlayerVideo::Process()
         if (iDecoderState & VC_FLUSHED)
         {
           CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder was flushed");
-          m_messageParent.Put(new CDVDMsgPlayerSeek(pts/1000, true, true, true));
+          while(!m_packets.empty())
+          {
+            CDVDMsgDemuxerPacket* msg = (CDVDMsgDemuxerPacket*)m_packets.front().message->Acquire();
+            m_packets.pop_front();
+
+            // all packets except the last one should be dropped
+            // if prio packets and current packet should be dropped, this is likely a new reset
+            msg->m_drop = !m_packets.empty() || iPriority > 0 && bPacketDrop;
+            m_messageQueue.Put(msg, iPriority + 10);
+          }
+
+          m_pVideoCodec->Reset();
+          m_packets.clear();
+          break;
         }
 
         // if decoder had an error, tell it to reset to avoid more problems
         if (iDecoderState & VC_ERROR)
         {
           CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder returned error");
-          m_pVideoCodec->Reset();
           break;
         }
 

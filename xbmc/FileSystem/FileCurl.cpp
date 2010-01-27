@@ -346,13 +346,14 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEDATA, state);
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEFUNCTION, write_callback);
-#if (LIBCURL_VERSION_NUM >= 0x071301)
+
   // set username and password for current handle
-  if (m_username.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_USERNAME, m_username.c_str());
-  if (m_password.length() > 0)
-    g_curlInterface.easy_setopt(h, CURLOPT_PASSWORD, m_password.c_str());
-#endif
+  if (m_username.length() > 0 && m_password.length() > 0)
+  {
+    CStdString userpwd = m_username + ":" + m_password;
+    g_curlInterface.easy_setopt(h, CURLOPT_USERPWD, userpwd.c_str());
+  }
+
   // make sure headers are seperated from the data stream
   g_curlInterface.easy_setopt(h, CURLOPT_WRITEHEADER, state);
   g_curlInterface.easy_setopt(h, CURLOPT_HEADERFUNCTION, header_callback);
@@ -635,14 +636,13 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 
     // replace invalid spaces
     CStdString strFileName = url2.GetFileName();
-    strFileName.Replace(" ", "\%20");
+    strFileName.Replace(" ", "%20");
     url2.SetFileName(strFileName);
 
-#if (LIBCURL_VERSION_NUM >= 0x071301)
     // get username and password
     m_username = url2.GetUserName();
     m_password = url2.GetPassWord();
-#endif
+
     // handle any protocol options
     CStdString options = url2.GetProtocolOptions();
     options.TrimRight('/'); // hack for trailing slashes being added from source
@@ -686,7 +686,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     }
   }
   
-  if (m_username.length() > 0 || m_password.length() > 0)
+  if (m_username.length() > 0 && m_password.length() > 0)
     m_url = url2.GetWithoutUserDetails();
   else
     m_url = url2.Get();
@@ -768,13 +768,10 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
   if (!checkDNS)
     strURL = "http://74.125.19.103"; // www.google.com ip
 
-  int result = Stat(strURL, NULL);
+  bool found = Exists(strURL);
   Close();
-
-  if (result)
-    return false;
-
-  return true;
+  
+  return found;
 }
 
 void CFileCurl::Cancel()
@@ -1007,6 +1004,21 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 
+  // In case we are performing a stat() with no buffer (eg. called from ::exists()) we fail immediately
+  if (!buffer)
+  {
+    if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
+    {
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+      return 0;
+    }
+    else
+    {
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+      errno = ENOENT;
+      return -1;
+    }
+  }
 
   if(result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR )
   {
@@ -1050,23 +1062,20 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCorrectHeaders(m_state);
 
-  if(buffer)
+  char content[255];
+  if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
   {
-    char content[255];
-    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
-    {
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-      errno = ENOENT;
-      return -1;
-    }
+    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+    errno = ENOENT;
+    return -1;
+  }
+  else
+  {
+    buffer->st_size = (int64_t)length;
+    if(strstr(content, "text/html")) //consider html files directories
+      buffer->st_mode = _S_IFDIR;
     else
-    {
-      buffer->st_size = (int64_t)length;
-      if(strstr(content, "text/html")) //consider html files directories
-        buffer->st_mode = _S_IFDIR;
-      else
-        buffer->st_mode = _S_IFREG;
-    }
+      buffer->st_mode = _S_IFREG;
   }
 
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);

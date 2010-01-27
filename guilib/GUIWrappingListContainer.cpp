@@ -48,7 +48,7 @@ void CGUIWrappingListContainer::UpdatePageControl(int offset)
 
 bool CGUIWrappingListContainer::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_PAGE_UP:
     Scroll(-m_itemsPerPage);

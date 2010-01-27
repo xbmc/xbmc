@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 26891 -->
+<!--Based on english strings version 27047 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1488,13 +1488,15 @@
   <string id="16307">双三次（软件）</string>
   <string id="16308">Lanczos（软件）</string>
   <string id="16309">正弦（软件）</string>
-  <string id="16310">（VDPAU）时间平滑</string>
-  <string id="16311">（VDPAU）时间/空间平滑</string>
+  <string id="16310">时间平滑</string>
+  <string id="16311">时间/空间平滑</string>
   <string id="16312">（VDPAU）降噪</string>
   <string id="16313">（VDPAU）锐化</string>
   <string id="16314">帧率逆转换</string>
   <string id="16315">Lanczos3优化</string>
   <string id="16316">自动</string>
+  <string id="16317">时间平滑（半速）</string>
+  <string id="16318">时间/空间平滑（半速）</string>
 
   <string id="17500">显示睡眠时间</string>
 
