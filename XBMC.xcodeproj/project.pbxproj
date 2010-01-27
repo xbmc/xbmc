@@ -1820,6 +1820,8 @@
 		F5F241D6110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D4110BFCD6009126C6 /* libmpeg2.dylib */; };
 		F5F241D8110BFCF4009126C6 /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D7110BFCF4009126C6 /* libwavpack.dylib */; };
 		F5F241D9110BFCF4009126C6 /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D7110BFCF4009126C6 /* libwavpack.dylib */; };
+		F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
+		F5F244661110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
@@ -3774,6 +3776,8 @@
 		F5F240EC110A4F76009126C6 /* CrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrystalHD.h; sourceTree = "<group>"; };
 		F5F241D4110BFCD6009126C6 /* libmpeg2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpeg2.dylib; path = /opt/local/lib/libmpeg2.dylib; sourceTree = "<absolute>"; };
 		F5F241D7110BFCF4009126C6 /* libwavpack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwavpack.dylib; path = /opt/local/lib/libwavpack.dylib; sourceTree = "<absolute>"; };
+		F5F244631110DC6B009126C6 /* FileOperationJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperationJob.h; sourceTree = "<group>"; };
+		F5F244641110DC6B009126C6 /* FileOperationJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileOperationJob.cpp; sourceTree = "<group>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
@@ -6628,6 +6632,8 @@
 				E38E1E390D25F9FD00618676 /* FastDelegate.h */,
 				F5E5697210803FC3006E788A /* fastmemcpy.c */,
 				43BF09DD1080D39300E25290 /* fastmemcpy.h */,
+				F5F244641110DC6B009126C6 /* FileOperationJob.cpp */,
+				F5F244631110DC6B009126C6 /* FileOperationJob.h */,
 				E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */,
 				E38E1E3D0D25F9FD00618676 /* fstrcmp.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
@@ -8030,6 +8036,7 @@
 				F5DC8823110A559700EE1B15 /* h264_parser.c in Sources */,
 				F5DC8826110A559E00EE1B15 /* cpb.c in Sources */,
 				F5DC8829110A55A500EE1B15 /* nal.c in Sources */,
+				F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8880,6 +8887,7 @@
 				F5DC8802110A46C700EE1B15 /* ModplugCodec.cpp in Sources */,
 				F5DC8810110A4A0B00EE1B15 /* FileXBMSP.cpp in Sources */,
 				F5DC8814110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */,
+				F5F244661110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
