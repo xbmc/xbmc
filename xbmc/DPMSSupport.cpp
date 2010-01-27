@@ -122,6 +122,7 @@ bool DPMSSupport::DisablePowerSaving()
 // Once again, INT64 is not used in the APIs we need, so we can #ifdef it away.
 #define BOOL __X11_SPECIFIC_BOOL
 #define INT64 __X11_SPECIFIC_INT64
+#include <X11/Xlib.h>
 #include <X11/extensions/dpms.h>
 #include <X11/extensions/XTest.h>
 #undef INT64
