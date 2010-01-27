@@ -54,7 +54,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_pVideoCodec = NULL;
   m_pOverlayCodecCC = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
-  
+
   m_bRenderSubs = false;
   m_stalled = false;
   m_started = false;
@@ -68,12 +68,10 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_messageQueue.SetMaxDataSize(8 * 1024 * 1024);
 #endif
   m_messageQueue.SetMaxTimeSize(8.0);
-
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
-  
+
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
-  m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
   memset(&m_output, 0, sizeof(m_output));
@@ -232,7 +230,7 @@ void CDVDPlayerVideo::Process()
   while (!m_bStop)
   {
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
-    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0) ? 1 : 0;
+    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0 && m_started) ? 1 : 0;
 
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
@@ -328,12 +326,14 @@ void CDVDPlayerVideo::Process()
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
+      m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDPlayerVideo::Flush())
     {
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
       m_stalled = true;
+      m_started = false;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -355,7 +355,6 @@ void CDVDPlayerVideo::Process()
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
 
-      m_started = true;
       if (m_stalled)
       {
         CLog::Log(LOGINFO, "CDVDPlayerVideo - Stillframe left, switching to normal playback");
@@ -376,7 +375,6 @@ void CDVDPlayerVideo::Process()
 #else
       if (m_iNrOfPicturesNotToSkip > 0) bRequestDrop = false;
       if (m_speed < 0)                  bRequestDrop = false;
-      if (m_bDropFrames == false)       bRequestDrop = false;
 #endif
 
       // if player want's us to drop this packet, do so nomatter what
@@ -414,6 +412,8 @@ void CDVDPlayerVideo::Process()
         {
           CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder was flushed");
           m_messageParent.Put(new CDVDMsgPlayerSeek(pts/1000, true, true, true));
+          m_pVideoCodec->Reset();
+          break;
         }
 
         // if decoder had an error, tell it to reset to avoid more problems
@@ -472,9 +472,10 @@ void CDVDPlayerVideo::Process()
             if(picture.pts != DVD_NOPTS_VALUE)
               pts = picture.pts;
 
+            if (picture.iRepeatPicture)
+              picture.iDuration *= picture.iRepeatPicture + 1;
+
             int iResult;
-            do 
-            {
               try 
               {
                 iResult = OutputPicture(&picture, pts);
@@ -485,16 +486,20 @@ void CDVDPlayerVideo::Process()
                 iResult = EOS_ABORT;
               }
 
-              if (iResult == EOS_ABORT) break;
 
-              // guess next frame pts. iDuration is always valid
-              pts += picture.iDuration * m_speed / abs(m_speed);
+
+            if(m_started == false)
+            {
+              m_started = true;
+              m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
             }
-            while (!m_bStop && picture.iRepeatPicture-- > 0);
+
+            // guess next frame pts. iDuration is always valid
+            pts += picture.iDuration * m_speed / abs(m_speed);
 
             if( iResult & EOS_ABORT )
             {
-              //if we break here and we directly try to decode again wihout 
+              //if we break here and we directly try to decode again wihout
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
@@ -926,13 +931,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   else
     g_renderManager.FlipPage( (DWORD)(delay * 1000 / DVD_TIME_BASE), -1, mDisplayField);
 
+  return result;
 #else
   // no video renderer, let's mark it as dropped
-  result|= EOS_DROPPED;
+  return EOS_DROPPED;
 #endif
-
-  return result;
-
 }
 
 std::string CDVDPlayerVideo::GetPlayerInfo()
