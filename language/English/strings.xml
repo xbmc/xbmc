@@ -1916,8 +1916,6 @@
   <string id="21407">less than</string>
   <string id="21408">after</string>
   <string id="21409">before</string>
-  <string id="21416">Scraper</string>
-  <string id="21417">No scrapers present</string>
   <string id="21410">in the last</string>
   <string id="21411">not in the last</string>
   <string id="21412">Scrapers</string>
@@ -1927,6 +1925,7 @@
   <string id="21416">Enable fallback based on scraper language</string>
   <string id="21417">- Settings</string>
   <string id="21418">Multilingual</string>
+  <string id="21419">No scrapers present</string>
 
   <string id="21420">Value to match</string>
   <string id="21421">Smart playlist rule</string>
@@ -2142,7 +2141,7 @@
   <string id="23067">Manage Music Scrapers...</string>
   <string id="23068">Manage Music-Video Scrapers...</string>
   <string id="23069">Manage Screensavers...</string>
-  <string id="23070"></string>
+  <string id="23070">Manage TV-Show Scrapers...</string>
   <string id="23071"></string>
   <string id="23072"></string>
   <string id="23073"></string>
