@@ -8,9 +8,8 @@
 	</coordinates>
 	<controls>
 		<control type="group">
-			<posx>100r</posx>
+			<posx>80r</posx>
 			<posy>0</posy>
-			<animation effect="slide" start="0,0" end="20,0" delay="0" time="300" condition="Window.IsActive(Home)">conditional</animation>
 			<animation effect="slide" end="100,0" time="200" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="100,0" time="200" tween="quadratic" easing="out">WindowOpen</animation>
 			<control type="image">
