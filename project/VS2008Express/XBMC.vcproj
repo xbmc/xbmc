@@ -2906,6 +2906,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\FileOperationJob.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\FileOperationJob.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\fstrcmp.cpp"
 					>
 				</File>
