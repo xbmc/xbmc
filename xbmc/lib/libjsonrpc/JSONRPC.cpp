@@ -266,7 +266,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
   JSON_STATUS errorCode = OK;
   Reader reader;
 
-  if (reader.parse(inputString, inputroot) && inputroot.isObject() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot.isMember("id"))
+  if (reader.parse(inputString, inputroot) && inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot["method"].isString() && inputroot.isMember("id"))
   {
     CStdString method = inputroot.get("method", "").asString();
     method = method.ToLower();
