@@ -209,16 +209,12 @@ JSON_STATUS CJSONRPC::Version(const CStdString &method, ITransportLayer *transpo
 JSON_STATUS CJSONRPC::Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   int flags = client->GetPermissionFlags();
-  if (flags & ReadData)
-    result["permission"].append("ReadData");
-  if (flags & ControlPlayback)
-    result["permission"].append("ControlPlayback");
-  if (flags & ControlAnnounce)
-    result["permission"].append("ControlAnnounce");
-  if (flags & ControlPower)
-    result["permission"].append("ControlPower");
-  if (flags & Logging)
-    result["permission"].append("Logging");
+  
+  for (int i = 1; i <= OPERATION_PERMISSION_ALL; i *= 2)
+  {
+    if (flags & i)
+      result["permission"].append(PermissionToString((OperationPermission)(flags & i)));
+  }
 
   return OK;
 }
