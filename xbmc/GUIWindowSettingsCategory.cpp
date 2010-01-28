@@ -1775,7 +1775,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (pControl->GetValue() == 0) // Use default theme
       strSkinTheme = "SKINDEFAULT";
     else
-      strSkinTheme = pControl->GetCurrentLabel() + ".xpr";
+      strSkinTheme = pControl->GetCurrentLabel();
 
     if (strSkinTheme != pSettingString->GetData())
     {
@@ -2901,8 +2901,8 @@ void CGUIWindowSettingsCategory::JumpToPreviousSection()
 
 void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
 {
-  // There is a default theme (just Textures.xpr)
-  // any other *.xpr files are additional themes on top of this one.
+  // There is a default theme (just Textures.xpr/xbt)
+  // any other *.xpr|*.xbt files are additional themes on top of this one.
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skintheme");
@@ -2912,19 +2912,17 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   // Clear and add. the Default Label
   pControl->Clear();
   pControl->SetShowRange(true);
-  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standart Textures.xpr will be used!
+  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT" The standard Textures.xpr/xbt will be used
 
-  // find all *.xpr in this path
   CStdString strDefaultTheme = pSettingString->GetData();
 
   // Search for Themes in the Current skin!
   vector<CStdString> vecTheme;
   CUtil::GetSkinThemes(vecTheme);
 
-  // Remove the .xpr extension from the Themes
-  CStdString strExtension;
-  CUtil::GetExtension(strSettingString, strExtension);
-  if (strExtension == ".xpr") strSettingString.Delete(strSettingString.size() - 4, 4);
+  // Remove the extension from the current Theme (backward compat)
+  CUtil::RemoveExtension(strSettingString);
+
   // Sort the Themes for GUI and list them
   int iCurrentTheme = 0;
   for (int i = 0; i < (int) vecTheme.size(); ++i)

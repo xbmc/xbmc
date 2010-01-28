@@ -892,10 +892,8 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme==-1)
       g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
     else
-    {
-      strSkinTheme.Format("%s.xpr",vecTheme[iTheme]);
       g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
-    }
+
     // also set the default color theme
     CStdString colorTheme(strSkinTheme);
     CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
