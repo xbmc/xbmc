@@ -25,6 +25,7 @@
 #endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
+#include "GUISettings.h"
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
@@ -81,6 +82,13 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if(m_pCodecContext->bits_per_coded_sample == 0)
     m_pCodecContext->bits_per_coded_sample = 16;
+
+  /* if we need to downmix, do it in ffmpeg as codecs are smarter then we can ever be */
+  if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
+  {
+    m_pCodecContext->request_channel_layout = CH_LAYOUT_STEREO;
+    m_pCodecContext->request_channels       = 2;
+  }
 
   if( hints.extradata && hints.extrasize > 0 )
   {
@@ -141,6 +149,16 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
                                                  , &m_iBufferSize1
                                                  , pData
                                                  , iSize);
+
+#if (LIBAVCODEC_VERSION_INT > AV_VERSION_INT(52, 48, 0))
+  #warning "Make sure upstream version still needs this workaround (ffmpeg issue #1709)"
+#endif
+  /* upstream ac3dec is bugged, returns the packet size, not a negative value on error */
+  if (m_pCodecContext->codec_id == CODEC_ID_AC3 && iBytesUsed > iSize)
+  {
+    m_iBufferSize1 = 0;
+    return iSize;
+  }
 
   if(m_iBufferSize1 == 0 && iBytesUsed >= 0)
     m_iBuffered += iBytesUsed;

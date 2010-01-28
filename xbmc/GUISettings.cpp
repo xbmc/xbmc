@@ -363,22 +363,26 @@ void CGUISettings::Initialize()
   AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
+  AddBool(6, "audiooutput.aacpassthrough", 299, false);
+  AddBool(7, "audiooutput.mp1passthrough", 300, false);
+  AddBool(8, "audiooutput.mp2passthrough", 301, false);
+  AddBool(9, "audiooutput.mp3passthrough", 302, false);
 #ifdef __APPLE__
-  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddString(10, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
-  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+  AddBool(11, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
-  AddSeparator(6, "audiooutput.sep1");
-  AddString(7, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
-  AddString(8, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
-  AddSeparator(9, "audiooutput.sep2");
-  AddString(10, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
-  AddString(11, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
-  AddSeparator(12, "audiooutput.sep3");
-  AddBool(13, "audiooutput.downmixmultichannel", 548, true);
+  AddSeparator(10, "audiooutput.sep1");
+  AddString(11, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
+  AddString(12, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
+  AddSeparator(13, "audiooutput.sep2");
+  AddString(14, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
+  AddString(15, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
+  AddSeparator(16, "audiooutput.sep3");
+  AddBool(17, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32)
-  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+  AddString(10, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(11, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   AddCategory(4, "input", 14094);
@@ -947,6 +951,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "AAC pass through is %s", GetBool("audiooutput.aacpassthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP1 pass through is %s", GetBool("audiooutput.mp1passthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP2 pass through is %s", GetBool("audiooutput.mp2passthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP3 pass through is %s", GetBool("audiooutput.mp3passthrough") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__

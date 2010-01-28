@@ -46,6 +46,7 @@
 #if defined(USE_LIB52_DECODER) || defined(USE_LIBDTS_DECODER)
   #include "Audio/DVDAudioCodecPassthrough.h"
 #endif
+#include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
@@ -185,6 +186,9 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
   pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
   if( pCodec ) return pCodec;
 #endif
+
+  pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
+  if ( pCodec ) return pCodec;
 
   switch (hint.codec)
   {

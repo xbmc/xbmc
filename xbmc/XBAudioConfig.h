@@ -34,6 +34,14 @@ public:
   void SetAC3Enabled(bool bEnable);
   bool GetDTSEnabled();
   void SetDTSEnabled(bool bEnable);
+  bool GetAACEnabled();
+  void SetAACEnabled(bool bEnable);
+  bool GetMP1Enabled();
+  void SetMP1Enabled(bool bEnable);
+  bool GetMP2Enabled();
+  void SetMP2Enabled(bool bEnable);
+  bool GetMP3Enabled();
+  void SetMP3Enabled(bool bEnable);
   bool NeedsSave();
   void Save();
 
