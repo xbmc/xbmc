@@ -246,7 +246,10 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
   else if (parameterObject.get("other", false).asBool())
     flags |= Other;
 
-  return client->SetAnnouncementFlags(flags) ? OK : BadPermission;
+  if (client->SetAnnouncementFlags(flags))
+    return Permission(method, transport, client, parameterObject, result);
+
+  return BadPermission;
 }
 
 JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
