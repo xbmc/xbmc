@@ -299,15 +299,17 @@ void XBPython::Process()
   if (bStartup)
   {
     bStartup = false;
-	
-    // We need to make sure the network is up in case the start scripts require network
-    g_network.WaitForSetup(10000);
     
     // autoexec.py - system
     strAutoExecPy = "special://xbmc/scripts/autoexec.py";
 
     if (XFILE::CFile::Exists(strAutoExecPy))
+    {
+      // We need to make sure the network is up in case the start scripts require network
+      g_network.WaitForSetup(5000);
+      
       evalFile(strAutoExecPy);
+    }
     else
       CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
   }
