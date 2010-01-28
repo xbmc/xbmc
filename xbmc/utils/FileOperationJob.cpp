@@ -192,25 +192,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     {
       CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
-      CURL url(m_strFileA);
-      if (url.GetProtocol() == "rar")
-      {
-#ifdef HAVE_XBMC_NONFREE
-        g_RarManager.SetWipeAtWill(false);
-        CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
-        CStdString strDestPath;
-        CUtil::GetDirectory(m_strFileB, strDestPath);
-        g_advancedSettings.m_cachePath = strDestPath;
-        CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
-        bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,-2);
-        g_advancedSettings.m_cachePath = strOriginalCachePath;
-        g_RarManager.SetWipeAtWill(true);
-#else
-        bResult = false;
-#endif
-      }
-      else
-        bResult = CFile::Cache(m_strFileA, m_strFileB, this, &data);
+      bResult = CFile::Cache(m_strFileA, m_strFileB, this, &data);
     }
     break;
     case ActionMove:
