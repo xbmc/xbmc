@@ -65,6 +65,7 @@
 
 #include "JobManager.h"
 #include "FileOperationJob.h"
+#include "FileUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -676,213 +677,6 @@ void CGUIWindowFileManager::OnMark(int iList, int iItem)
   // UpdateButtons();
 }
 
-bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile, const CStdString& strDestFile)
-{
-  CStdString strShortSourceFile = CURL(strFile).GetWithoutUserDetails();
-  CStdString strShortDestFile   = CURL(strDestFile).GetWithoutUserDetails();
-
-  switch (iAction)
-  {
-  case ACTION_COPY:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
-
-      CURL url(strFile);
-      if (url.GetProtocol() == "rar")
-      {
-#ifdef HAVE_XBMC_NONFREE
-        g_RarManager.SetWipeAtWill(false);
-        CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
-        CStdString strDestPath;
-        CUtil::GetDirectory(strDestFile,strDestPath);
-        g_advancedSettings.m_cachePath = strDestPath;
-        CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
-        bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,-2);
-        g_advancedSettings.m_cachePath = strOriginalCachePath;
-        g_RarManager.SetWipeAtWill(true);
-        return bResult;
-#else
-        return false;
-#endif
-      }
-      else
-      {
-        CAsyncFileCopy copier;
-        if (!copier.Copy(strFile, strDestFile, g_localizeStrings.Get(115)))
-          return false;
-      }
-    }
-    break;
-
-
-  case ACTION_MOVE:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: move %s->%s\n", strFile.c_str(), strDestFile.c_str());
-
-#ifndef _LINUX
-      if (strFile[1] == ':' && strFile[0] == strDestFile[0])
-      {
-        // quick move on same drive
-        CFile::Rename(strFile, strDestFile);
-      }
-      else
-#else
-      if (CUtil::IsHD(strFile) && CUtil::IsHD(strDestFile))
-        CFile::Rename(strFile,strDestFile);
-      else
-#endif
-      {
-        CAsyncFileCopy copier;
-        if (copier.Copy(strFile, strDestFile, g_localizeStrings.Get(116)))
-        {
-          CFile::Delete(strFile);
-        }
-        else
-          return false;
-      }
-    }
-    break;
-
-  case ACTION_DELETE:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: delete %s\n", strFile.c_str());
-
-      CFile::Delete(strFile);
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 117);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, "");
-        m_dlgProgress->Progress();
-      }
-    }
-    break;
-
-  case ACTION_DELETEFOLDER:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: delete folder %s\n", strFile.c_str());
-
-      CDirectory::Remove(strFile);
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 117);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, "");
-        m_dlgProgress->Progress();
-      }
-    }
-    break;
-
-  case ACTION_CREATEFOLDER:
-    {
-      CLog::Log(LOGDEBUG,"FileManager: create folder %s\n", strFile.c_str());
-
-      CDirectory::Create(strFile);
-
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 119);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, "");
-        m_dlgProgress->Progress();
-      }
-    }
-    break;
-  }
-
-  bool bResult = true;
-  if (m_dlgProgress)
-  {
-    m_dlgProgress->Progress();
-    bResult = !m_dlgProgress->IsCanceled();
-  }
-  return bResult;
-}
-
-bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPath, const CStdString& strDestFile)
-{
-  // check whether this folder is a filedirectory - if so, we don't process it's contents
-  CFileItem item(strPath, false);
-  IFileDirectory *file = CFactoryFileDirectory::Create(strPath, &item);
-  if (file)
-  {
-    delete file;
-    return true;
-  }
-  CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
-  CFileItemList items;
-  //m_rootDir.GetDirectory(strPath, items);
-  CDirectory::GetDirectory(strPath, items, "", false);
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CFileItemPtr pItem = items[i];
-    pItem->Select(true);
-    CLog::Log(LOGDEBUG,"  -- %s",pItem->m_strPath.c_str());
-  }
-
-  if (!DoProcess(iAction, items, strDestFile)) return false;
-
-  if (iAction == ACTION_MOVE)
-  {
-    CDirectory::Remove(strPath);
-  }
-  return true;
-}
-
-bool CGUIWindowFileManager::DoProcess(int iAction, CFileItemList & items, const CStdString& strDestFile)
-{
-  for (int iItem = 0; iItem < items.Size(); ++iItem)
-  {
-    CFileItemPtr pItem = items[iItem];
-    if (pItem->IsSelected())
-    {
-      CStdString strNoSlash = pItem->m_strPath;
-      CUtil::RemoveSlashAtEnd(strNoSlash);
-      CStdString strFileName = CUtil::GetFileName(strNoSlash);
-
-      // special case for upnp
-      if (CUtil::IsUPnP(items.m_strPath) || CUtil::IsUPnP(pItem->m_strPath))
-      {
-        // get filename from label instead of path
-        strFileName = pItem->GetLabel();
-
-        if(!pItem->m_bIsFolder && CUtil::GetExtension(strFileName).length() == 0)
-        {
-          // FIXME: for now we only work well if the url has the extension
-          // we should map the content type to the extension otherwise
-          strFileName += CUtil::GetExtension(pItem->m_strPath);
-        }
-
-        strFileName = CUtil::MakeLegalFileName(strFileName);
-      }
-
-      CStdString strnewDestFile;
-      if(!strDestFile.IsEmpty()) // only do this if we have a destination
-        CUtil::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
-
-      if (pItem->m_bIsFolder)
-      {
-        // create folder on dest. drive
-        if (iAction != ACTION_DELETE)
-        {
-          CLog::Log(LOGDEBUG, "Create folder with strDestFile=%s, strnewDestFile=%s, pFileName=%s", strDestFile.c_str(), strnewDestFile.c_str(), strFileName.c_str());
-          if (!DoProcessFile(ACTION_CREATEFOLDER, strnewDestFile, "")) return false;
-        }
-        if (!DoProcessFolder(iAction, pItem->m_strPath, strnewDestFile)) return false;
-        if (iAction == ACTION_DELETE)
-        {
-          if (!DoProcessFile(ACTION_DELETEFOLDER, pItem->m_strPath, "")) return false;
-        }
-      }
-      else
-      {
-        if (!DoProcessFile(iAction, pItem->m_strPath, strnewDestFile)) return false;
-      }
-    }
-  }
-  return true;
-}
-
 void CGUIWindowFileManager::OnCopy(int iList)
 {
   if (!CGUIDialogYesNo::ShowAndGetInput(120, 123, 0, 0))
@@ -935,7 +729,7 @@ void CGUIWindowFileManager::OnRename(int iList)
     }
   }
 
-  RenameFile(strFile);
+  CFileUtils::RenameFile(strFile);
 
   Refresh(iList);
 }
@@ -950,37 +744,6 @@ void CGUIWindowFileManager::OnSelectAll(int iList)
       pItem->Select(true);
     }
   }
-}
-
-bool CGUIWindowFileManager::RenameFile(const CStdString &strFile)
-{
-  CStdString strFileAndPath(strFile);
-  CUtil::RemoveSlashAtEnd(strFileAndPath);
-  CStdString strFileName = CUtil::GetFileName(strFileAndPath);
-  CStdString strPath = strFile.Left(strFileAndPath.size() - strFileName.size());
-  if (CGUIDialogKeyboard::ShowAndGetInput(strFileName, g_localizeStrings.Get(16013), false))
-  {
-    strPath += strFileName;
-    CLog::Log(LOGINFO,"FileManager: rename %s->%s\n", strFileAndPath.c_str(), strPath.c_str());
-    if (CUtil::IsMultiPath(strFileAndPath))
-    { // special case for multipath renames - rename all the paths.
-      vector<CStdString> paths;
-      CMultiPathDirectory::GetPaths(strFileAndPath, paths);
-      bool success = false;
-      for (unsigned int i = 0; i < paths.size(); ++i)
-      {
-        CStdString filePath(paths[i]);
-        CUtil::RemoveSlashAtEnd(filePath);
-        CUtil::GetDirectory(filePath, filePath);
-        CUtil::AddFileToFolder(filePath, strFileName, filePath);
-        if (CFile::Rename(paths[i], filePath))
-          success = true;
-      }
-      return success;
-    }
-    return CFile::Rename(strFileAndPath, strPath);
-  }
-  return false;
 }
 
 void CGUIWindowFileManager::OnNewFolder(int iList)
@@ -1472,89 +1235,6 @@ void CGUIWindowFileManager::OnJobProgress(unsigned int jobID, unsigned int progr
   }
 }
 
-bool CGUIWindowFileManager::DeleteItem(const CFileItem *pItem)
-{
-  if (!pItem) return false;
-  CLog::Log(LOGDEBUG,"FileManager::DeleteItem: %s",pItem->GetLabel().c_str());
-
-  // prompt user for confirmation of file/folder deletion
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-  if (pDialog)
-  {
-    pDialog->SetHeading(122);
-    pDialog->SetLine(0, 125);
-    pDialog->SetLine(1, CUtil::GetFileName(pItem->m_strPath));
-    pDialog->SetLine(2, "");
-    pDialog->DoModal();
-    if (!pDialog->IsConfirmed()) return false;
-  }
-
-  // Create a temporary item list containing the file/folder for deletion
-  CFileItemPtr pItemTemp(new CFileItem(*pItem));
-  pItemTemp->Select(true);
-  CFileItemList items;
-  items.Add(pItemTemp);
-
-  // grab the real filemanager window, set up the progress bar,
-  // and process the delete action
-  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)g_windowManager.GetWindow(WINDOW_FILES);
-  if (pFileManager)
-  {
-    pFileManager->m_dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    pFileManager->ResetProgressBar(false);
-    pFileManager->DoProcess(ACTION_DELETE, items, "");
-    if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
-  }
-  return true;
-}
-
-bool CGUIWindowFileManager::CopyItem(const CFileItem *pItem, const CStdString& strDirectory, bool bSilent, CGUIDialogProgress* pProgress)
-{
-  if (!pItem) return false;
-  CLog::Log(LOGDEBUG,"FileManager::CopyItem: %s",pItem->GetLabel().c_str());
-
-  // prompt user for confirmation of file/folder deletion
-  if (!bSilent)
-      if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(122),g_localizeStrings.Get(125),  CUtil::GetFileName(pItem->m_strPath), ""))
-      return false;
-
-  // Create a temporary item list containing the file/folder for deletion
-  CFileItemList items;
-
-  if (pItem->m_bIsFolder)
-  {
-    CDirectory::GetDirectory(pItem->m_strPath,items,"",false);
-    for (int i=0;i<items.Size();++i)
-      items[i]->Select(true);
-  }
-  else
-  {
-    CFileItemPtr pItemTemp(new CFileItem(*pItem));
-    pItemTemp->Select(true);
-    items.Add(pItemTemp);
-  }
-
-  bool bAllocated = false;
-  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)g_windowManager.GetWindow(WINDOW_FILES);
-  if (!pFileManager)
-  {
-    pFileManager = new CGUIWindowFileManager();
-    bAllocated = true;
-  }
-  if (pFileManager)
-  {
-    pFileManager->m_dlgProgress = pProgress;
-    pFileManager->ResetProgressBar(false);
-    pFileManager->DoProcess(ACTION_COPY, items, strDirectory);
-    if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
-  }
-  if (bAllocated)
-    delete pFileManager;
-
-  return true;
-}
-
-
 void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive)
@@ -1672,52 +1352,6 @@ void CGUIWindowFileManager::ResetProgressBar(bool showProgress /*= true */)
     m_dlgProgress->SetPercentage(0);
     m_dlgProgress->ShowProgressBar(showProgress);
   }
-}
-
-bool CGUIWindowFileManager::MoveItem(const CFileItem *pItem, const CStdString& strDirectory, bool bSilent, CGUIDialogProgress* pProgress)
-{
-  if (!pItem) return false;
-  CLog::Log(LOGDEBUG,"FileManager::MoveItem: %s",pItem->GetLabel().c_str());
-
-  // prompt user for confirmation of file/folder moving
-  //if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(121),g_localizeStrings.Get(124),  CUtil::GetFileName(pItem->m_strPath), "")) return false;
-  if (!bSilent)
-    if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(121),g_localizeStrings.Get(124),  CUtil::GetFileName(pItem->m_strPath), ""))
-      return false;
-
-  // Create a temporary item list containing the file/folder for deletion
-  CFileItemList items;
-
-  if (pItem->m_bIsFolder)
-  {
-    CDirectory::GetDirectory(pItem->m_strPath,items,"",false);
-    for (int i=0;i<items.Size();++i)
-      items[i]->Select(true);
-  }
-  else
-  {
-    CFileItemPtr pItemTemp(new CFileItem(*pItem));
-    items.Add(pItemTemp);
-  }
-
-  bool bAllocated = false;
-  CGUIWindowFileManager *pFileManager = (CGUIWindowFileManager *)g_windowManager.GetWindow(WINDOW_FILES);
-  if (!pFileManager)
-  {
-    pFileManager = new CGUIWindowFileManager();
-    bAllocated = true;
-  }
-  if (pFileManager)
-  {
-    pFileManager->m_dlgProgress = pProgress;
-    pFileManager->ResetProgressBar(false);
-    pFileManager->DoProcess(ACTION_MOVE, items, strDirectory);
-    if (pFileManager->m_dlgProgress) pFileManager->m_dlgProgress->Close();
-  }
-  if (bAllocated)
-    delete pFileManager;
-
-  return true;
 }
 
 const CFileItem& CGUIWindowFileManager::CurrentDirectory(int indx) const

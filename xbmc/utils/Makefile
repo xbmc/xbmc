@@ -62,7 +62,8 @@ SRCS=AlarmClock.cpp \
      AliasShortcutUtils.cpp \
      RingBuffer.cpp \
      Semaphore.cpp \
-     FileOperationJob.cpp
+     FileOperationJob.cpp \
+     FileUtils.cpp
 
 LIB=utils.a
 

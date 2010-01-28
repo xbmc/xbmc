@@ -23,7 +23,7 @@
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowMusicNav.h"
-#include "GUIWindowFileManager.h"
+#include "utils/FileUtils.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 #include "utils/RegExp.h"
@@ -896,8 +896,8 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     CStdString path;
     CUtil::GetDirectory(pItem->m_strPath,path);
     path.Replace("plugin://","special://home/plugins/");
-    CFileItem item2(path,true);
-    CGUIWindowFileManager::DeleteItem(&item2);
+    CFileItemPtr item2 = CFileItemPtr(new CFileItem(path,true));
+    CFileUtils::DeleteItem(item2);
   }
   else if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") &&
            pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)

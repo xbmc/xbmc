@@ -57,6 +57,7 @@
 #include "FileSystem/SMBDirectory.h"
 #endif
 #include "playercorefactory/PlayerCoreFactory.h"
+#include "utils/FileUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -975,11 +976,11 @@ bool CSettings::DeleteProfile(int index)
         Save();
       }
 
-      CFileItem item(CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory));
-      item.m_strPath = CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory + "\\");
-      item.m_bIsFolder = true;
-      item.Select(true);
-      CGUIWindowFileManager::DeleteItem(&item);
+      CFileItemPtr item = CFileItemPtr(new CFileItem(CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory)));
+      item->m_strPath = CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory + "\\");
+      item->m_bIsFolder = true;
+      item->Select(true);
+      CFileUtils::DeleteItem(item);
     }
     else
       return false;
