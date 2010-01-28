@@ -1919,9 +1919,9 @@
   <string id="21410">in the last</string>
   <string id="21411">not in the last</string>
   <string id="21412">Scrapers</string>
-  <string id="21413">Default movie scraper</string>
-  <string id="21414">Default tvshow scraper</string>
-  <string id="21415">Default musicvideo scraper</string>
+  <string id="21413">Default Movie scraper</string>
+  <string id="21414">Default TV-Show scraper</string>
+  <string id="21415">Default Music-video scraper</string>
   <string id="21416">Enable fallback based on scraper language</string>
   <string id="21417">- Settings</string>
   <string id="21418">Multilingual</string>

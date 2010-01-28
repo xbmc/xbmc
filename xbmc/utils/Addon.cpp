@@ -89,7 +89,7 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
   else if (string.Equals("artists")) return CONTENT_ARTISTS;
   else if (string.Equals("movies")) return CONTENT_MOVIES;
   else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
-  else if (string.Equals("episoes")) return CONTENT_EPISODES;
+  else if (string.Equals("episodes")) return CONTENT_EPISODES;
   else if (string.Equals("musicvideos")) return CONTENT_MUSICVIDEOS;
   else if (string.Equals("plugin")) return CONTENT_PLUGIN;
   else if (string.Equals("weather")) return CONTENT_WEATHER;
@@ -111,6 +111,10 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
       if (pretty)
         return g_localizeStrings.Get(21416);
 			return "scraper";
+		}
+	case ADDON::ADDON_SCRAPER_LIBRARY:
+		{
+			return "scraper-library";
 		}
 	case ADDON::ADDON_SCREENSAVER:
 		{
@@ -147,6 +151,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
 {
 	if (string.Equals("pvrclient")) return ADDON_PVRDLL;
 	else if (string.Equals("scraper")) return ADDON_SCRAPER;
+	else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
 	else if (string.Equals("screensaver")) return ADDON_SCREENSAVER;
 	else if (string.Equals("visualization")) return ADDON_VIZ;
 	else if (string.Equals("plugin")) return ADDON_PLUGIN;
@@ -218,6 +223,7 @@ void CAddon::BuildLibName()
 	switch (m_type)
 	{
 	case ADDON_SCRAPER:
+	case ADDON_SCRAPER_LIBRARY:
     ext = ADDON_SCRAPER_EXT;
     break;
 	case ADDON_SCREENSAVER:
