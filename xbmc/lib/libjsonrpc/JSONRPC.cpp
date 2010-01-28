@@ -266,7 +266,7 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
   JSON_STATUS errorCode = OK;
   Reader reader;
 
-  if (reader.parse(inputString, inputroot) && inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot["method"].isString() && inputroot.isMember("id"))
+  if (reader.parse(inputString, inputroot) && IsProperJSONRPC(inputroot))
   {
     CStdString method = inputroot.get("method", "").asString();
     method = method.ToLower();
@@ -329,6 +329,11 @@ JSON_STATUS CJSONRPC::InternalMethodCall(const CStdString& method, Value& o, Val
   }
   else
     return MethodNotFound;
+}
+
+inline bool CJSONRPC::IsProperJSONRPC(const Json::Value& inputroot)
+{
+  return inputroot.isObject() && inputroot.isMember("jsonrpc") && inputroot["jsonrpc"].isString() && inputroot.get("jsonrpc", "-1").asString() == "2.0" && inputroot.isMember("method") && inputroot["method"].isString() && inputroot.isMember("id");
 }
 
 inline const char *CJSONRPC::PermissionToString(const OperationPermission &permission)
