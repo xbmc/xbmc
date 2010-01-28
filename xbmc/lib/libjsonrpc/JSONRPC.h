@@ -28,6 +28,7 @@
 #include <string>
 #include <iostream>
 #include "ITransportLayer.h"
+#include "IAnnouncer.h"
 #include "../libjsoncpp/json.h"
 
 namespace JSONRPC
@@ -79,6 +80,7 @@ namespace JSONRPC
     static JSON_STATUS Version(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Permission(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Ping(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+    static JSON_STATUS GetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Announce(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
   private:
@@ -86,6 +88,7 @@ namespace JSONRPC
     static inline bool IsProperJSONRPC(const Json::Value& inputroot);
 
     inline static const char *PermissionToString(const OperationPermission &permission);
+    inline static const char *AnnouncementFlagToString(const ANNOUNCEMENT::EAnnouncementFlag &announcement);
 
     class CActionMap
     {

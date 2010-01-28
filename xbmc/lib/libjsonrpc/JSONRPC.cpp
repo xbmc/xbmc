@@ -43,6 +43,7 @@ Command CJSONRPC::m_commands[] = {
   { "JSONRPC.Version",                  CJSONRPC::Version,                      Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
   { "JSONRPC.Permission",               CJSONRPC::Permission,                   Response,     ReadData,        "Retrieve the clients permissions" },
   { "JSONRPC.Ping",                     CJSONRPC::Ping,                         Response,     ReadData,        "Ping responder" },
+  { "JSONRPC.GetAnnouncementFlags",     CJSONRPC::GetAnnouncementFlags,         Announcing,   ReadData,        "Get announcement flags" },
   { "JSONRPC.SetAnnouncementFlags",     CJSONRPC::SetAnnouncementFlags,         Announcing,   ControlAnnounce, "Change the announcement flags" },
   { "JSONRPC.Announce",                 CJSONRPC::Announce,                     Response,     ReadData,        "Announce to other connected clients" },
 
@@ -226,6 +227,19 @@ JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport,
   return OK;
 }
 
+JSON_STATUS CJSONRPC::GetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+{
+  int flags = client->GetAnnouncementFlags();
+  
+  for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
+  {
+    if (flags & i)
+      result["permission"].append(AnnouncementFlagToString((EAnnouncementFlag)(flags & i)));
+  }
+
+  return OK;
+}
+
 JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
 {
   if (!parameterObject.isObject())
@@ -243,7 +257,7 @@ JSON_STATUS CJSONRPC::SetAnnouncementFlags(const CStdString &method, ITransportL
     flags |= Other;
 
   if (client->SetAnnouncementFlags(flags))
-    return Permission(method, transport, client, parameterObject, result);
+    return GetAnnouncementFlags(method, transport, client, parameterObject, result);
 
   return BadPermission;
 }
@@ -349,6 +363,23 @@ inline const char *CJSONRPC::PermissionToString(const OperationPermission &permi
     return "ControlPower";
   case Logging:
     return "Logging";
+  default:
+    return "Unkown";
+  }
+}
+
+inline const char *CJSONRPC::AnnouncementFlagToString(const EAnnouncementFlag &announcement)
+{
+  switch (announcement)
+  {
+  case Playback:
+    return "Playback";
+  case GUI:
+    return "GUI";
+  case System:
+    return "System";
+  case Other:
+    return "Other";
   default:
     return "Unkown";
   }

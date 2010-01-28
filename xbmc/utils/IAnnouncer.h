@@ -29,7 +29,9 @@ namespace ANNOUNCEMENT
     System = 0x4,
     Other = 0x8
   };
-  
+
+  #define ANNOUNCE_ALL (Playback | GUI | System | Other)
+
   class IAnnouncer
   {
   public:
