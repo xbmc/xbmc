@@ -21,6 +21,9 @@
  *
  */
 
+#include "system.h"
+#ifdef USE_LIBA52_DECODER
+
 #include "DVDAudioCodec.h"
 #include "DllLiba52.h"
 
@@ -76,4 +79,4 @@ protected:
   BYTE m_inputBuffer[4096] XBMC_ALIGN_INT;
   int  m_inputSize;
 };
-
+#endif

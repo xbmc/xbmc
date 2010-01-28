@@ -21,6 +21,9 @@
  *
  */
 
+#include "system.h"
+#ifdef USE_LIBDTS_DECODER
+
 #include "DVDAudioCodec.h"
 #include "DllLibDts.h"
 
@@ -69,4 +72,6 @@ protected:
 
   BYTE m_inputBuffer[4096];
   int  m_inputSize;
-  };
+};
+
+#endif

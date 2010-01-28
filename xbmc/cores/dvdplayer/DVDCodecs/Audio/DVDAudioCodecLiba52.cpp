@@ -19,9 +19,11 @@
  *
  */
 
+#include "DVDAudioCodecLiba52.h"
+#ifdef USE_LIBA52_DECODER
+
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
-#include "DVDAudioCodecLiba52.h"
 #include "DVDStreamInfo.h"
 #include "utils/log.h"
 
@@ -354,3 +356,4 @@ void CDVDAudioCodecLiba52::Reset()
   m_fSamples = m_dll.a52_samples(m_pState);
 }
 
+#endif /* USE_LIBA52_DECODER */

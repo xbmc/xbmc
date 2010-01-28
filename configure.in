@@ -188,6 +188,16 @@ AC_ARG_ENABLE([asap-codec],
                 [enable ASAP ADPCM support])],
               [use_asap=$enableval],
               [use_asap=no])
+AC_ARG_ENABLE([libdts],
+              [AS_HELP_STRING([--enable-libdts],
+                [enable deprecated libdts support])],
+              [use_libdts=$enableval],
+              [use_libdts=no])
+AC_ARG_ENABLE([liba52],
+              [AS_HELP_STRING([--enable-liba52],
+                [enable deprecated liba52 support])],
+              [use_liba52=$enableval],
+              [use_liba52=no])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -925,6 +935,22 @@ if test "$use_asap" = "yes"; then
 else
   USE_ASAP_CODEC=0
   final_message="$final_message\n  ASAP Codec:\tNo"
+fi
+
+if test "$use_libdts" = "yes"; then
+  USE_LIBDTS_DECODER=1
+  AC_DEFINE([USE_LIBDTS_DECODER], [1], [Define to 1 to enable deprecated libdts support])
+  final_message="$final_message\n  Deprecated libdts:\tYes"
+else
+  final_message="$final_message\n  Deprecated libdts:\tNo"
+fi
+
+if test "$use_liba52" = "yes"; then
+  USE_LIBA52_DECODER=1
+  AC_DEFINE([USE_LIBA52_DECODER], [1], [Define to 1 to enable deprecated liba52 support])
+  final_message="$final_message\n  Deprecated liba52:\tYes"
+else
+  final_message="$final_message\n  Deprecated liba52:\tNo"
 fi
 
 ### External libraries messages

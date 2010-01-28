@@ -19,9 +19,11 @@
  *
  */
 
+#include "DVDAudioCodecLibDts.h"
+#ifdef USE_LIBDTS_DECODER
+
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
-#include "DVDAudioCodecLibDts.h"
 #include "DVDStreamInfo.h"
 #include "utils/log.h"
 
@@ -366,3 +368,4 @@ void CDVDAudioCodecLibDts::Reset()
   m_fSamples = m_dll.dts_samples(m_pState);
 }
 
+#endif /* USE_LIBDTS_DECODER */
