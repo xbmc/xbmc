@@ -23,7 +23,6 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "Util.h"
-#include "lib/zlib/zlib.h"
 #include "URL.h"
 #include "ZipManager.h"
 #include "FileItem.h"

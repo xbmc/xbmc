@@ -30,6 +30,7 @@
 
 #include "Application.h"
 
+#ifndef _WIN32
 // work around for braindead usage of "this" keyword as parameter name in libmms headers
 // some distros have already patched this but upstream @ https://launchpad.net/libmms
 // does still has the "this" usage.
@@ -37,7 +38,11 @@
 #include <libmms/mmsio.h> // FIXME: remove this header once the ubuntu headers is fixed (variable named this)
 #include <libmms/mms.h>
 #include <libmms/mmsh.h>
+#include <libmms/mmsx.h>
 #undef this
+#else
+#include "libmms/libmms_win32/src/mmsx.h"
+#endif
 
 using namespace XFILE;
 
@@ -56,7 +61,7 @@ bool CDVDInputStreamMMS::IsEOF()
   return false;
 }
 
-#if 1
+#ifndef _WIN32
 struct mmsx_s {
   mms_t *connection;
   mmsh_t *connection_h;
@@ -68,7 +73,7 @@ bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
   // TODO: remove this code if upstream accepts my patch
   // tracked at https://bugs.launchpad.net/libmms/+bug/512089
   // also see the struct definition further up (needed due to opaqueness)
-#if 1
+#ifndef _WIN32
   m_mms = (mmsx_t*)calloc(1, sizeof(mmsx_t));
   
   if (!m_mms)
@@ -86,9 +91,7 @@ bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
     
   free(m_mms);
   return false;
-#endif
-
-#if 0
+#else
   m_mms = mmsx_connect((mms_io_t*)mms_get_default_io_impl(),NULL,strFile,2000*1000); // TODO: what to do with bandwidth?
   return (m_mms != NULL);
 #endif

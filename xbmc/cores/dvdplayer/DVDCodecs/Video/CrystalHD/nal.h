@@ -28,6 +28,11 @@
 #include <vdpau/vdpau.h>
 #endif
 
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum nal_unit_types
 {
   NAL_UNSPECIFIED = 0,
@@ -494,5 +499,10 @@ struct nal_unit* create_nal_unit();
 void lock_nal_unit(struct nal_unit *nal);
 void release_nal_unit(struct nal_unit *nal);
 void copy_nal_unit(struct nal_unit *dest, struct nal_unit *src);
+
+/* Ends C function definitions when using C++ */
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* NAL_H_ */

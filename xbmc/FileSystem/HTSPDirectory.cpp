@@ -100,6 +100,7 @@ CHTSPDirectorySession* CHTSPDirectorySession::Acquire(const CURL& url)
       return it->session;
     }
   }
+  lock.Leave();
 
   CHTSPDirectorySession* session = new CHTSPDirectorySession();
   if(session->Open(url))
@@ -111,6 +112,7 @@ CHTSPDirectorySession* CHTSPDirectorySession::Acquire(const CURL& url)
     data.password = url.GetPassWord();
     data.session  = session;
     data.refs     = 1;
+    lock.Enter();
     g_sessions.push_back(data);
     return session;
   }

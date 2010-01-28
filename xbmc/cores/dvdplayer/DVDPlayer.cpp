@@ -939,7 +939,9 @@ void CDVDPlayer::Process()
     ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
     {
       Sleep(10);
-      if (m_caching != CACHESTATE_INIT)
+      if( m_caching != CACHESTATE_INIT
+      || (m_dvdPlayerAudio.m_messageQueue.GetDataSize() == 0 && m_CurrentAudio.id >= 0)
+      || (m_dvdPlayerVideo.m_messageQueue.GetDataSize() == 0 && m_CurrentVideo.id >= 0))
       {
         SetCaching(CACHESTATE_DONE);
         SAFE_RELEASE(m_CurrentAudio.startsync);

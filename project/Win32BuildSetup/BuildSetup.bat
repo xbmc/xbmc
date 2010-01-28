@@ -98,8 +98,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-	copy /Y "..\vs2008express\XBMC\%buildconfig%\BuildLog.htm" .
-  	set DIETEXT="XBMC.EXE failed to build!  See BuildLog.htm for details."
+  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\%buildconfig%\BuildLog.htm for details."
   	goto DIE
   )
   ECHO Done!
@@ -112,8 +111,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-	copy /Y "..\vs2008express\XBMC\%buildconfig%\BuildLog.htm" .
-  	set DIETEXT="XBMC.EXE failed to build!  See BuildLog.htm for details."
+  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\%buildconfig%\BuildLog\BuildLog.htm for details."
   	goto DIE
   )
   ECHO Done!
@@ -126,6 +124,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
+  Echo CVS>>exclude.txt
   Echo .so>>exclude.txt
   Echo Thumbs.db>>exclude.txt
   Echo Desktop.ini>>exclude.txt
@@ -166,7 +165,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   rem xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   if %target%==gl (
     xcopy ..\..\visualisations\*_win32.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
-    xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+    xcopy ..\..\xbmc\visualizations\XBMCProjectM\libprojectM\presets BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   ) else (
     xcopy ..\..\visualisations\*_win32dx.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
     xcopy ..\..\visualisations\Milkdrop BUILD_WIN32\Xbmc\visualisations\Milkdrop /Q /I /Y /EXCLUDE:exclude.txt > NUL
@@ -253,7 +252,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   IF NOT EXIST "%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm" goto END
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-  start BuildLog.htm
+  start /D"%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm"
   goto END
 
 :END

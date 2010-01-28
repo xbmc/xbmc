@@ -53,6 +53,7 @@
 #include "utils/TimeUtils.h"
 #include "FactoryFileDirectory.h"
 #include "utils/log.h"
+#include "utils/FileUtils.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -1124,16 +1125,16 @@ void CGUIMediaWindow::UpdateFileList()
 void CGUIMediaWindow::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size()) return;
-  CFileItem item(*m_vecItems->Get(iItem));
+  CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item.IsPlayList())
-    item.m_bIsFolder = false;
+  if (item->IsPlayList())
+    item->m_bIsFolder = false;
 
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
-  if (!CGUIWindowFileManager::DeleteItem(&item))
+  if (!CFileUtils::DeleteItem(item))
     return;
   m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->m_strPath);
@@ -1148,7 +1149,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
-  if (!CGUIWindowFileManager::RenameFile(m_vecItems->Get(iItem)->m_strPath))
+  if (!CFileUtils::RenameFile(m_vecItems->Get(iItem)->m_strPath))
     return;
   m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->m_strPath);

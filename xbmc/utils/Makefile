@@ -63,7 +63,9 @@ SRCS=Addon.cpp \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
      RingBuffer.cpp \
-     Semaphore.cpp
+     Semaphore.cpp \
+     FileOperationJob.cpp \
+     FileUtils.cpp
 
 LIB=utils.a
 

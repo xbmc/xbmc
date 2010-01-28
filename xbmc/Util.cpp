@@ -370,9 +370,9 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask += "|" + g_settings.m_musicExtensions;
     strFileMask += "|" + g_settings.m_videoExtensions;
 #if defined(__APPLE__)
-    strFileMask += "|.py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
+    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg|.app|.applescript|.workflow";
 #else
-    strFileMask += "|.py|.xml|.milk|.xpr|.cdg";
+    strFileMask += "|.py|.xml|.milk|.xpr|.xbt|.cdg";
 #endif
     strFileMask += "|";
 
@@ -2913,7 +2913,8 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
     {
       CStdString strExtension;
       CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr"))
+      if ((strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr")) ||
+          (strExtension == ".xbt" && pItem->GetLabel().CompareNoCase("Textures.xbt")))
       {
         CStdString strLabel = pItem->GetLabel();
         vecTheme.push_back(strLabel.Mid(0, strLabel.size() - 4));

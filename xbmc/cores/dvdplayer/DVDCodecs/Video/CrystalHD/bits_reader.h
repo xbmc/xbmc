@@ -1,5 +1,9 @@
 #include <sys/types.h>
 
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 typedef struct {
@@ -34,4 +38,9 @@ static uint32_t read_bits( bits_reader_t *br, int nbits )
 
   return ret;
 }
+
+/* Ends C function definitions when using C++ */
+#ifdef __cplusplus
+}
+#endif
 
