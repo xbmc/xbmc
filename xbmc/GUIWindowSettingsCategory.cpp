@@ -495,13 +495,13 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(603), CDDARIP_QUALITY_EXTREME);
       pControl->SetValue(pSettingInt->GetData());
     }
+#ifdef HAS_WEB_SERVER
     else if (strSetting.Equals("services.webserverport"))
     {
-#ifdef HAS_WEB_SERVER
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
-#endif
     }
+#endif
     else if (strSetting.Equals("services.esport"))
     {
 #ifdef HAS_EVENT_SERVER
@@ -1516,20 +1516,20 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_lcd->Initialize();
   }
 #endif
+#ifdef HAS_WEB_SERVER
   else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport"))
   {
     if (strSetting.Equals("services.webserverport"))
       ValidatePortNumber(pSettingControl, "8080", "80");
-#ifdef HAS_WEB_SERVER
     g_application.StopWebServer(true);
     if (g_guiSettings.GetBool("services.webserver"))
       g_application.StartWebServer();
-#endif
   }
   else if (strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
     g_application.m_WebServer.SetCredentials(g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
   }
+#endif
   else if (strSetting.Equals("services.zeroconf"))
   {
 #ifdef HAS_ZEROCONF

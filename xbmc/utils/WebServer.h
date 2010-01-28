@@ -21,6 +21,7 @@
  */
 
 #include "system.h"
+#ifdef HAS_WEB_SERVER
 #include "StdString.h"
 #include <sys/types.h>
 #include <sys/select.h>
@@ -75,5 +76,4 @@ private:
     virtual bool SetAnnouncementFlags(int flags);
   };
 };
-
-
+#endif

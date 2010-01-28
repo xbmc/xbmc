@@ -20,6 +20,7 @@
  */
 
 #include "WebServer.h"
+#ifdef HAS_WEB_SERVER
 #include "../lib/libjsonrpc/JSONRPC.h"
 #include "../lib/libhttpapi/HttpApi.h"
 #include "../FileSystem/File.h"
@@ -375,3 +376,4 @@ bool CWebServer::CHTTPClient::SetAnnouncementFlags(int flags)
 {
   return false;
 }
+#endif
