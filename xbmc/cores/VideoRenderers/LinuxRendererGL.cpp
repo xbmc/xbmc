@@ -1009,36 +1009,6 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else
 #endif //HAVE_LIBVDPAU
-  if (m_iFlags & CONF_FLAGS_FORMAT_NV12)
-  {
-    err = false;
-    CLog::Log(LOGNOTICE, "GL: Using NV12 render method");
-    m_renderMethod = RENDER_NV12;
-    if (m_pYUVShader)
-    {
-      m_pYUVShader->Free();
-      delete m_pYUVShader;
-      m_pYUVShader = NULL;
-    }
-
-    // create regular progressive scan shader
-    m_pYUVShader = new NV12ToRGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB NV12ToRGB shader");
-
-    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
-    {
-      UpdateVideoFilter();
-    }
-    else
-    {
-      m_pYUVShader->Free();
-      delete m_pYUVShader;
-      m_pYUVShader = NULL;
-      err = true;
-      CLog::Log(LOGERROR, "GL: Error enabling NV12toRGB ARB shader");
-    }
-  }
-  else
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1154,7 +1124,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_pboused = false;
 
   // Now that we now the render method, setup texture function handlers
-  if (m_renderMethod & RENDER_NV12)
+  if (m_iFlags & CONF_FLAGS_FORMAT_NV12)
   {
     LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadNV12Textures;
     CreateTextureFuncPtr = &CLinuxRendererGL::CreateNV12Texture;
@@ -1257,10 +1227,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderVDPAU(renderBuffer, m_currentField);
   }
 #endif
-  else if (m_renderMethod & RENDER_NV12)
-  {
-    RenderNV12(renderBuffer, m_currentField);
-  }
   else
   {
     RenderSoftware(renderBuffer, m_currentField);
@@ -1606,83 +1572,6 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 #endif
 }
 
-void CLinuxRendererGL::RenderNV12(int index, int field)
-{
-  YV12Image &im     = m_buffers[index].image;
-  YUVFIELDS &fields = m_buffers[index].fields;
-  YUVPLANES &planes = fields[field];
-
-  // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
-
-  if (m_reloadShaders)
-  {
-    m_reloadShaders = 0;
-    LoadShaders(field);
-  }
-
-  glDisable(GL_DEPTH_TEST);
-
-  // Y
-  glActiveTextureARB(GL_TEXTURE0);
-  glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, planes[0].id);
-
-  // UV
-  glActiveTextureARB(GL_TEXTURE1);
-  glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, planes[1].id);
-
-  glActiveTextureARB(GL_TEXTURE0);
-  VerifyGLState();
-
-  m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
-  m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
-  m_pYUVShader->SetWidth(im.width);
-  m_pYUVShader->SetHeight(im.height);
-  if     (field == FIELD_ODD)
-    m_pYUVShader->SetField(1);
-  else if(field == FIELD_EVEN)
-    m_pYUVShader->SetField(0);
-
-  m_pYUVShader->Enable();
-
-  glBegin(GL_QUADS);
-
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y1);
-  glVertex4f(m_destRect.x1, m_destRect.y1, 0, 1.0f );
-
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y1);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y1);
-  glVertex4f(m_destRect.x2, m_destRect.y1, 0, 1.0f);
-
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y2);
-  glVertex4f(m_destRect.x2, m_destRect.y2, 0, 1.0f);
-
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y2);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y2);
-  glVertex4f(m_destRect.x1, m_destRect.y2, 0, 1.0f);
-
-  glEnd();
-  VerifyGLState();
-
-  m_pYUVShader->Disable();
-  VerifyGLState();
-
-  glActiveTextureARB(GL_TEXTURE1);
-  glDisable(m_textureTarget);
-
-  glActiveTextureARB(GL_TEXTURE0);
-  glDisable(m_textureTarget);
-
-  glMatrixMode(GL_MODELVIEW);
-
-  VerifyGLState();
-}
-
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];
@@ -1930,7 +1819,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       if (m_renderMethod & RENDER_SW)
         glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       else
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(m_textureTarget, 0, GL_INTENSITY, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -2013,7 +1902,7 @@ void CLinuxRendererGL::LoadNV12Textures(int source)
   }
   SetEvent(m_eventTexturesDone[source]);
 
-  CalculateTextureSourceRects(source, 2);
+  CalculateTextureSourceRects(source, 3);
 
   glDisable(m_textureTarget);
 }
@@ -2088,6 +1977,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
       }
       fields[f][p].pbo = pbo[p];
     }
+    fields[f][2].id = fields[f][1].id;
   }
 
   // YUV
@@ -2102,9 +1992,12 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
     planes[1].texheight = planes[0].texheight >> im.cshift_y;
 
+    planes[2].texwidth  = planes[1].texwidth;
+    planes[2].texheight = planes[1].texheight;
+
     if(m_renderMethod & RENDER_POT)
     {
-      for(int p = 0; p < 2; p++)
+      for(int p = 0; p < 3; p++)
       {
         planes[p].texwidth  = NP2(planes[p].texwidth);
         planes[p].texheight = NP2(planes[p].texheight);
@@ -2159,6 +2052,7 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
         fields[f][p].id = 0;
       }
     }
+    fields[f][2].id = 0;
   }
   g_graphicsContext.EndPaint();
 
@@ -2222,9 +2116,9 @@ bool CLinuxRendererGL::SupportsBrightness()
   if (g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
-  return m_renderMethod == RENDER_GLSL
-      || m_renderMethod == RENDER_ARB
-      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
+  return (m_renderMethod & RENDER_GLSL)
+      || (m_renderMethod & RENDER_ARB)
+      || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
 }
 
 bool CLinuxRendererGL::SupportsContrast()
@@ -2233,9 +2127,9 @@ bool CLinuxRendererGL::SupportsContrast()
   if (g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
-  return m_renderMethod == RENDER_GLSL
-      || m_renderMethod == RENDER_ARB
-      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
+  return (m_renderMethod & RENDER_GLSL)
+      || (m_renderMethod & RENDER_ARB)
+      || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
 }
 
 bool CLinuxRendererGL::SupportsGamma()
