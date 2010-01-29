@@ -72,6 +72,7 @@ protected:
   IBaseFilter*              m_SourceF;
   IBaseFilter*              m_SplitterF;
   DIRECTSHOW_RENDERER       m_CurrentRenderer;
+  CFGFilterVideoRenderer*   m_pFGF;
 
 };
 

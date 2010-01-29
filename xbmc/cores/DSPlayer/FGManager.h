@@ -21,7 +21,7 @@
 
 #pragma once
 
-
+#define _DSPLAYER_DEBUG
 
 #include "FGFilter.h"
 #include "IGraphBuilder2.h"
@@ -128,7 +128,7 @@ public:
 	CFGManager();
 	virtual ~CFGManager();
   void InitManager();
-#ifdef _DEBUG
+#ifdef _DSPLAYER_DEBUG
   void LogFilterGraph(void);
 #endif
 

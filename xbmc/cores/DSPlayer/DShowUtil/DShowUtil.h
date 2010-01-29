@@ -171,29 +171,31 @@ public:
 #define BeginEnumFilters(pFilterGraph, pEnumFilters, pBaseFilter) \
   {IEnumFilters* pEnumFilters; \
   if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
-  { \
-    for(IBaseFilter* pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+  { IBaseFilter* pBaseFilter = NULL; \
+    for(; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter->Release(), pBaseFilter = NULL) \
     { \
 
-#define EndEnumFilters }}}
+#define EndEnumFilters(pEnumFilters, pBaseFilter) \
+    } \
+    SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumFilters); }}
 
 #define BeginEnumCachedFilters(pGraphConfig, pEnumFilters, pBaseFilter) \
   {IEnumFilters* pEnumFilters; \
   if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
-  { \
-    for(IBaseFilter* pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+  { IBaseFilter* pBaseFilter= NULL;\
+    for(; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter->Release(), pBaseFilter = NULL) \
     { \
 
-#define EndEnumCachedFilters }}}
+#define EndEnumCachedFilters(pEnumFilters, pBaseFilter) } SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumFilters); }}
 //error in enumpins
 #define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
   {IEnumPins* pEnumPins; \
   if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
-  { \
-    for(IPin* pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin = NULL) \
+  { IPin* pPin = NULL; \
+    for(; S_OK == pEnumPins->Next(1, &pPin, 0); pPin->Release(), pPin = NULL) \
     { \
 
-#define EndEnumPins }}}
+#define EndEnumPins(pEnumPins, pBaseFilter) } SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumPins); }}
 
 #define BeginEnumMediaTypes(pPin, pEnumMediaTypes, pMediaType) \
   {IEnumMediaTypes* pEnumMediaTypes; \
@@ -203,7 +205,7 @@ public:
     for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
     { \
 
-#define EndEnumMediaTypes(pMediaType) } if(pMediaType) DeleteMediaType(pMediaType); }}
+#define EndEnumMediaTypes(pEnumMediaTypes, pMediaType) } SAFE_RELEASE(pEnumMediaTypes); if(pMediaType) DeleteMediaType(pMediaType); }}
 
 #define BeginEnumSysDev(clsid, pMoniker) \
   {ICreateDevEnum* pDevEnum4$##clsid; \

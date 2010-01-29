@@ -53,6 +53,7 @@ CFGLoader::~CFGLoader()
       delete m_configFilter.back();
     m_configFilter.pop_back();
   }
+  SAFE_DELETE(m_pFGF);
 }
 
 
@@ -62,9 +63,9 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
 {
 
   HRESULT hr = S_OK;
-  bool failedWithFirstSourceFilter = false;
+  bool failedWithFirstSourceFilter = true;
   CStdString pWinFilePath;
-  bool pForceXbmcSourceFilter=false;
+  bool pForceXbmcSourceFilter = false;
   pWinFilePath = pFileItem.m_strPath;
 
   if ((pWinFilePath.Left(6)).Equals("smb://",false))
@@ -76,20 +77,25 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
   pWinFilePath.Replace("/","\\");
   if ( (( (CStdString)pRule->Attribute("source")).length() > 0 ) && ( !pForceXbmcSourceFilter ))
   {
-    CLog::Log(LOGNOTICE,"%s Starting this file with dsplayer \"%s\"",__FUNCTION__,pWinFilePath.c_str());
+    CLog::Log(LOGNOTICE, "%s Starting this file with dsplayer (%s)", __FUNCTION__, pWinFilePath.c_str());
     for (list<CFGFilterFile*>::iterator it = m_configFilter.begin(); it != m_configFilter.end(); it++)
     {
       if ( ((CStdString)pRule->Attribute("source")).Equals((*it)->GetXFilterName().c_str(),false) )
       {
         if (SUCCEEDED((*it)->Create(&m_SourceF)))
         {
-          m_pGraphBuilder->AddFilter(m_SourceF,(*it)->GetName().c_str());
-          g_charsetConverter.wToUTF8((*it)->GetName(),m_pStrSource);
+          g_charsetConverter.wToUTF8((*it)->GetName(), m_pStrSource);
+
+          if (SUCCEEDED(m_pGraphBuilder->AddFilter(m_SourceF,(*it)->GetName().c_str())))
+            CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrSource.c_str());
+          else
+            CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, m_pStrSource.c_str());
+
           break;
         }
 	      else
 	      {
-          CLog::Log(LOGERROR,"DSPlayer %s Failed to create the source filter",__FUNCTION__);
+          CLog::Log(LOGERROR,"%s Failed to create the source filter", __FUNCTION__);
           return E_FAIL;
         }
       }
@@ -103,25 +109,38 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
     hr = pFS->Load(strFileW.c_str(), NULL);
     if (SUCCEEDED(hr))
     {
-      failedWithFirstSourceFilter = true;
-    //If the source filter is the splitter set the splitter the same as source
-	    if (DShowUtil::IsSplitter(m_SourceF,false))
+      failedWithFirstSourceFilter = false;
+      
+	    if (DShowUtil::IsSplitter(m_SourceF, false)) //If the source filter is the splitter set the splitter the same as source
         m_SplitterF = m_SourceF;
+
+      m_SourceF->Release(); // AddRef added by IFilterGraph
+      SAFE_RELEASE(pFS);
       return hr;
+    } else {
+      CLog::Log(LOGERROR, "%s Source filter \"%s\" can't open file \"%s\"", __FUNCTION__, m_pStrSource.c_str(), pWinFilePath.c_str());
     }
-}
+    SAFE_RELEASE(pFS);
+  }
   
-  if (!failedWithFirstSourceFilter)
+  if (failedWithFirstSourceFilter)
   {
-    CLog::Log(LOGNOTICE,"%s DSplayer: Inserting xbmc source filter for this file \"%s\"",__FUNCTION__,pWinFilePath.c_str());
+    CLog::Log(LOGNOTICE,"%s Inserting xbmc source filter for this file \"%s\"", __FUNCTION__, pWinFilePath.c_str());
 	
     //if(m_File.Open(pFileItem.GetAsUrl().GetFileName().c_str(), READ_TRUNCATED | READ_BUFFERED))
     if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
     {
       IBaseFilter* pSrc;
       CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File,&pSrc,&hr);
+      m_pGraphBuilder->RemoveFilter(m_SourceF);
+
       m_SourceF = pSrc;
-      m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source");
+      if (SUCCEEDED(m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source")))
+      {
+        CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
+      } else {
+        CLog::Log(LOGERROR, "%s Failted to add xbmc source filter to the graph", __FUNCTION__);
+      }
       m_pStrSource = CStdString("XBMC File Source");
       return hr;
     }
@@ -140,26 +159,31 @@ HRESULT CFGLoader::InsertSplitter(TiXmlElement *pRule)
     {
       if(SUCCEEDED((*it)->Create(&m_SplitterF)))
       {
-        m_pGraphBuilder->AddFilter(m_SplitterF,(*it)->GetName().c_str());
-        g_charsetConverter.wToUTF8((*it)->GetName(),m_pStrSplitter);
+        g_charsetConverter.wToUTF8((*it)->GetName(), m_pStrSplitter);
+        if (SUCCEEDED(m_pGraphBuilder->AddFilter(m_SplitterF,(*it)->GetName().c_str())))
+        {
+          CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrSplitter.c_str());
+        } else {
+          CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, m_pStrSplitter.c_str());
+        }
         break;
       }
 	    else
 	    {
-        CLog::Log(LOGERROR,"DSPlayer %s Failed to create spliter",__FUNCTION__);
+        CLog::Log(LOGERROR,"%s Failed to create the spliter", __FUNCTION__);
         return E_FAIL;
 	    }
 	  }
   }
 
   
-  hr = ::ConnectFilters(m_pGraphBuilder,m_SourceF,m_SplitterF);
+  hr = ::ConnectFilters(m_pGraphBuilder, m_SourceF, m_SplitterF);
   //If the splitter successully connected to the source
   if ( SUCCEEDED( hr ) )
-    CLog::Log(LOGNOTICE,"DSPlayer %s Connected the source to the spillter",__FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s Successfully connected the source to the spillter", __FUNCTION__);
   else
   {
-    CLog::Log(LOGERROR,"DSPlayer %s Failed to connect the source to the spliter",__FUNCTION__);
+    CLog::Log(LOGERROR, "%s Failed to connect the source to the spliter", __FUNCTION__);
     return hr;
   }
   return hr;
@@ -173,15 +197,21 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
   {
     if ( ((CStdString)pRule->Attribute("audiodec")).Equals((*it)->GetXFilterName().c_str(),false) )
     {
+      g_charsetConverter.wToUTF8((*it)->GetName(), m_pStrAudiodec);
       if(SUCCEEDED((*it)->Create(&ppBF)))
       {
-        m_pGraphBuilder->AddFilter(ppBF,(*it)->GetName().c_str());
-        g_charsetConverter.wToUTF8((*it)->GetName(),m_pStrAudiodec);
+        if (SUCCEEDED(m_pGraphBuilder->AddFilter(ppBF,(*it)->GetName().c_str())))
+        {
+          CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrAudiodec.c_str());
+        } else {
+          CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, m_pStrAudiodec.c_str());
+        }
+        
         break;
       }
 	    else
 	    {
-        CLog::Log(LOGERROR,"DSPlayer %s Failed to create the audio decoder filter",__FUNCTION__);
+        CLog::Log(LOGERROR, "%s Failed to create the audio decoder filter", __FUNCTION__);
         return E_FAIL;
       }
 	  }
@@ -190,7 +220,6 @@ HRESULT CFGLoader::InsertAudioDecoder(TiXmlElement *pRule)
 
   
   SAFE_RELEASE(ppBF);
-  CLog::Log(LOGDEBUG,"DSPlayer %s Successfully added the audio decoder filter",__FUNCTION__);
   return hr;
 }
 
@@ -202,10 +231,15 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
   {
     if ( ((CStdString)pRule->Attribute("videodec")).Equals((*it)->GetXFilterName().c_str(),false) )
     {
+      g_charsetConverter.wToUTF8((*it)->GetName(), m_pStrVideodec);
       if(SUCCEEDED((*it)->Create(&ppBF)))
       {
-        m_pGraphBuilder->AddFilter(ppBF,(*it)->GetName().c_str());
-        g_charsetConverter.wToUTF8((*it)->GetName(),m_pStrVideodec);
+        if (SUCCEEDED(m_pGraphBuilder->AddFilter(ppBF,(*it)->GetName().c_str())))
+        {
+          CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrVideodec.c_str());
+        } else {
+          CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, m_pStrVideodec.c_str());
+        }        
 
         //// TEST //
         //BeginEnumPins(ppBF, pEP, pPin)
@@ -228,14 +262,14 @@ HRESULT CFGLoader::InsertVideoDecoder(TiXmlElement *pRule)
       }
 	    else
 	    {
-        CLog::Log(LOGERROR,"DSPlayer %s Failed to create the video decoder filter",__FUNCTION__);
+        CLog::Log(LOGERROR,"%s Failed to create video decoder filter \"%s\"", __FUNCTION__, m_pStrVideodec.c_str());
+        m_pStrVideodec = "";
         return E_FAIL;
       }
     }
   }
   
   SAFE_RELEASE(ppBF);
-  CLog::Log(LOGDEBUG,"DSPlayer %s Successfully added the video decoder filter",__FUNCTION__);
   return hr;
 }
 
@@ -276,8 +310,7 @@ HRESULT CFGLoader::InsertAudioRenderer()
 HRESULT CFGLoader::InsertVideoRenderer()
 {
   HRESULT hr = S_OK;
-  IBaseFilter* ppBF;
-  CFGFilterVideoRenderer* pFGF;
+  IBaseFilter* ppBF = NULL;
   
   if (g_sysinfo.IsVistaOrHigher())
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
@@ -293,11 +326,17 @@ HRESULT CFGLoader::InsertVideoRenderer()
 
   // Renderers
   if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
-    pFGF = new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR");
+    m_pFGF = new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR");
   else
-    pFGF = new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)");
-  hr = pFGF->Create(&ppBF);
-  hr = m_pGraphBuilder->AddFilter(ppBF,pFGF->GetName());
+    m_pFGF = new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)");
+  hr = m_pFGF->Create(&ppBF);
+  hr = m_pGraphBuilder->AddFilter(ppBF, m_pFGF->GetName());
+  if (SUCCEEDED(hr))
+  {
+    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully added to the graph (Renderer: %d)",  __FUNCTION__, m_CurrentRenderer);
+  } else {
+    CLog::Log(LOGERROR, "%s Failed to add allocator presenter to the graph (hr = %X)", __FUNCTION__, hr);
+  }
   SAFE_RELEASE(ppBF);
   return hr;
   
@@ -349,14 +388,13 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
       if (FAILED(InsertSourceFilter(pFileItem, pRules)))
         hr = E_FAIL;
-      CLog::Log(LOGDEBUG, "%s Source filter successfully inserted", __FUNCTION__);
 
       if (!m_SplitterF)
       {
         if (FAILED(InsertSplitter(pRules)))
           hr = E_FAIL;
       } else {
-        CLog::Log(LOGDEBUG, "%s The source filter is also the splitter filter", __FUNCTION__);
+        CLog::Log(LOGNOTICE, "%s The source filter is also the splitter filter", __FUNCTION__);
       }
 
       if (FAILED(InsertVideoDecoder(pRules)))

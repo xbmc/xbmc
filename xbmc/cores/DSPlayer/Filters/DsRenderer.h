@@ -21,6 +21,7 @@ using namespace std;
 #include "dvdplayer/DVDPlayer.h"
 #include "dvdplayer/DVDPlayerSubtitle.h"
 
+
 #define DS_NBR_3D_SURFACE 3
 #define DS_MAX_3D_SURFACE 10
 [uuid("0403C469-E53E-4eda-8C1E-883CF2D760C7")]
@@ -37,6 +38,8 @@ public:
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer) { return E_NOTIMPL; };
   STDMETHODIMP RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface);
+  void AddSubtitleStream();
+  bool AddSubtitleFile(const std::string& filename);
   
 protected:
   HRESULT CreateSurfaces(D3DFORMAT Format = D3DFMT_X8R8G8B8);
@@ -59,6 +62,8 @@ protected:
   CDVDPlayerSubtitle m_dsPlayerSubtitle; // subtitle part
   CDVDOverlayContainer m_overlayContainer;
   CCurrentStream m_CurrentSubtitle;
+  CSelectionStreams m_SelectionStreams;
+  CDVDDemux* m_pSubtitleDemuxer;
 };
 
 #endif // _DSRENDERER_H

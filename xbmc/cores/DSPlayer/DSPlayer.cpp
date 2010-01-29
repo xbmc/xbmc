@@ -56,9 +56,6 @@ CDSPlayer::~CDSPlayer()
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
   StopThread();
-
-  /* Unload all loaded filters */
-  // DShowUtil::UnloadExternalObjects(); //TODO: Too buggy. Crach if ffdshow audio is loaded
 }
 
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
@@ -97,6 +94,8 @@ bool CDSPlayer::CloseFile()
   //StopThread();
   m_bAbortRequest = true;
   m_callback.OnPlayBackEnded();
+
+  // DShowUtil::UnloadExternalObjects(); //TODO: Test that !
   return true;
 }
 

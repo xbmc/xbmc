@@ -8,7 +8,7 @@ using namespace XFILE;
 #include "XBMCFileSource.h"
 #include "utils/log.h"
 
-CXBMCFileStream::CXBMCFileStream(CFile *file, IBaseFilter **pBF,HRESULT *phr) :
+CXBMCFileStream::CXBMCFileStream(CFile *file, IBaseFilter **pBF, HRESULT *phr) :
     m_llLength(0)
 {
   if (! pBF)
@@ -23,10 +23,10 @@ CXBMCFileStream::CXBMCFileStream(CFile *file, IBaseFilter **pBF,HRESULT *phr) :
   {
     *pBF = pXBMCReader;
 	  (*pBF)->AddRef();
-	  CLog::Log(LOGNOTICE,"%s Added xbmc source filter to graph",__FUNCTION__);
+	  CLog::Log(LOGNOTICE,"%s Successfully created xbmc source filter", __FUNCTION__);
   }
   else
-    CLog::Log(LOGERROR,"%s Failed to create xbmc source filter",__FUNCTION__);
+    CLog::Log(LOGERROR,"%s Failed to create xbmc source filter", __FUNCTION__);
 }
 
 HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)

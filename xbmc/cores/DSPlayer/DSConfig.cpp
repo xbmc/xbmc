@@ -82,8 +82,39 @@ void CDSConfig::LoadFilters()
 	  GetMpcVideoDec(pBF);
 	  GetMpaDec(pBF);
   }
-  EndEnumFilters
+  EndEnumFilters(pEF, pBF)
   LoadAudioStreams();
+}
+
+HRESULT CDSConfig::UnloadGraph()
+{
+  HRESULT hr = S_OK;
+
+  IEnumFilters *pEnum = NULL;
+  IBaseFilter *pBF = NULL;
+
+  m_pGraphBuilder->EnumFilters(&pEnum);
+
+  // Disconnect all the pins
+  while (S_OK == pEnum->Next(1, &pBF, 0))
+  {
+    pBF->Stop();
+    CStdString filterName;
+    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
+    //hr = RemoveFilter(m_pGraphBuilder, pBF);
+    m_pGraphBuilder->RemoveFilter(pBF);
+    if (SUCCEEDED(hr))
+    {
+      //pBF->JoinFilterGraph(NULL, NULL); // Notify the filter we remove it from the graph - DONE IN REMOVE FILTER
+      CLog::Log(LOGNOTICE, "%s Successfully removed \"%s\" from the graph", __FUNCTION__, filterName.c_str());
+    } else 
+      CLog::Log(LOGERROR, "%s Failed to remove \"%s\" from the graph", __FUNCTION__, filterName.c_str());
+    SAFE_RELEASE(pBF);
+    pEnum->Reset();
+  }
+
+  SAFE_RELEASE(pEnum);
+  return hr;
 }
 
 bool CDSConfig::LoadAudioStreams()
@@ -260,10 +291,10 @@ bool CDSConfig::LoadAudioStreams()
           }
 
         }
-        EndEnumMediaTypes(pMediaType)
+        EndEnumMediaTypes(pET, pMediaType)
       }
     }
-    EndEnumPins
+    EndEnumPins(pEP, pPin)
   }
 
   /* Delete regex */

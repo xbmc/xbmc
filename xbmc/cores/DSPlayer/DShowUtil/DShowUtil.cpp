@@ -130,7 +130,7 @@ int DShowUtil::CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& 
       else if(dir == PINDIR_OUTPUT) {nOut++; if(pPinConnectedTo) nOutC++;}
     }
   }
-  EndEnumPins
+  EndEnumPins(pEP, pPin)
 
   return(nIn+nOut);
 }
@@ -187,11 +187,12 @@ bool DShowUtil::IsVideoRenderer(IBaseFilter* pBF)
         continue;
 
       FreeMediaType(mt);
-
+      SAFE_RELEASE(pPin);
+      SAFE_RELEASE(pEP);
       return(!!(mt.majortype == MEDIATYPE_Video));
         /*&& (mt.formattype == FORMAT_VideoInfo || mt.formattype == FORMAT_VideoInfo2));*/
     }
-    EndEnumPins
+    EndEnumPins(pEP, pPin)
   }
 
   CLSID clsid;
@@ -221,11 +222,11 @@ bool DShowUtil::IsAudioWaveRenderer(IBaseFilter* pBF)
         continue;
 
       FreeMediaType(mt);
-
+      SAFE_RELEASE(pPin);
       return(!!(mt.majortype == MEDIATYPE_Audio)
         /*&& mt.formattype == FORMAT_WaveFormatEx*/);
     }
-    EndEnumPins
+    EndEnumPins(pEP, pPin)
   }
 
   CLSID clsid;
@@ -269,6 +270,7 @@ if (pGraph == NULL)
 
         // The previous call made the enumerator stale. 
         pEnum->Reset(); 
+        SAFE_RELEASE(pFilter);
     }
 
 done:
@@ -300,7 +302,7 @@ IPin* DShowUtil::GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin)
       return(pRet);
     }
   }
-  EndEnumPins
+  EndEnumPins(pEP, pPin)
 
   return(NULL);
 }
@@ -321,7 +323,7 @@ IPin* DShowUtil::GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir)
       return(pRet);
     }
   }
-  EndEnumPins
+  EndEnumPins(pEP, pPin)
 
   return(NULL);
 }
@@ -343,7 +345,7 @@ IPin* DShowUtil::GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)
       return(pRet);
     }
   }
-  EndEnumPins
+  EndEnumPins(pEP, pPin)
 
   return(NULL);
 }
@@ -361,9 +363,14 @@ IBaseFilter* DShowUtil::FindFilter(const CLSID& clsid, IFilterGraph* pFG)
   {
     CLSID clsid2;
     if(SUCCEEDED(pBF->GetClassID(&clsid2)) && clsid == clsid2)
-      return(pBF);
+    {
+      IBaseFilter* pRet = pBF;
+      pBF = NULL;
+      pRet->Release();
+      return(pRet);
+    }
   }
-  EndEnumFilters
+  EndEnumFilters(pEF, pBF)
 
   return NULL;
 }
@@ -383,13 +390,18 @@ IPin* DShowUtil::FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MED
       {
         if (pmt->majortype == pRequestedMT->majortype && pmt->subtype == pRequestedMT->subtype)
         {
+          IPin* pRet = pPin;
+          pPin = NULL;
+          pRet->Release();
+          DeleteMediaType(pmt);
+          SAFE_RELEASE(pEM);
           return (pPin);
         }
       }
-      EndEnumMediaTypes(pmt)
+      EndEnumMediaTypes(pEM, pmt)
     }
   }
-  EndEnumPins
+  EndEnumPins(pEP, pPin)
   return NULL;
 }
 
@@ -476,7 +488,7 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     pFilters.push_back(pBF);
     BeginEnumFilters(pGB, pEnum, pBF2) 
       pFilters.push_back(pBF2); 
-    EndEnumFilters
+    EndEnumFilters(pEnum, pBF2)
 
     if(FAILED(pGB->AddFilter(pBF, CStdStringW(var.bstrVal))))
       break;
@@ -494,7 +506,7 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
             pEnum->Reset();
         }
       }
-    EndEnumFilters
+    EndEnumFilters(pEnum, pBF2)
 
     pPinTo = GetFirstPin(pBF, PINDIR_INPUT);
     if(!pPinTo)
@@ -523,7 +535,7 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
       
       //if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
       //  pEnum->Reset();
-    EndEnumFilters
+    EndEnumFilters(pEnum, pBF2)
 
     pRet = GetFirstPin(pBF, PINDIR_OUTPUT);
     if(!pRet)
@@ -641,22 +653,22 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::vector<GUID>& types)
     types.pop_back();
 
     BeginEnumMediaTypes(pPin, pEM, pmt)
-  {
-    bool fFound = false;
-
-    for(int i = 0; !fFound && i < (int)types.size(); i += 2)
     {
-      if(types[i] == pmt->majortype && types[i+1] == pmt->subtype)
-        fFound = true;
-    }
+      bool fFound = false;
 
-    if(!fFound)
-    {
-      types.push_back(pmt->majortype);
-      types.push_back(pmt->subtype);
-    }
+      for(int i = 0; !fFound && i < (int)types.size(); i += 2)
+      {
+        if(types[i] == pmt->majortype && types[i+1] == pmt->subtype)
+          fFound = true;
+      }
+
+      if(!fFound)
+      {
+        types.push_back(pmt->majortype);
+        types.push_back(pmt->subtype);
+      }
   }
-  EndEnumMediaTypes(pmt)
+  EndEnumMediaTypes(pEM, pmt)
 }
 
 void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
@@ -677,10 +689,14 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
         mts.push_back(CMediaType(*pmt));
       }
       if (fFound)
+      {
+        DeleteMediaType(pmt);
+        SAFE_RELEASE(pEM);
         break;
+      }
     }
   }
-  EndEnumMediaTypes(pmt)
+  EndEnumMediaTypes(pEM, pmt)
     /*POSITION pos = mts.GetHeadPosition();
     while(!fFound && pos)
     {
@@ -1169,9 +1185,13 @@ IBaseFilter* DShowUtil::AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuild
         continue;
 
       if(SUCCEEDED(pGB->ConnectDirect(pPin, pPinTo, NULL)))
+      {
+        SAFE_RELEASE(pPinTo);
+        SAFE_RELEASE(pEP);
         return(pBF);
+      }
     }
-    EndEnumFilters
+    EndEnumPins(pEP, pPinTo)
 
     pGB->RemoveFilter(pBF);
   }
@@ -1291,11 +1311,12 @@ HRESULT DShowUtil::LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPrope
 
 void DShowUtil::UnloadExternalObjects()
 {
-  for (std::vector<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++)
+  int i = 1;
+  for (std::vector<ExternalObject>::iterator it = s_extobjs.begin() ; it != s_extobjs.end(); it++, i++)
   {
     CoFreeLibrary((*it).hInst);
-	CLog::Log(LOGDEBUG, "%s Filter unloaded : %d", __FUNCTION__, GetLastError());
   }
+  CLog::Log(LOGDEBUG, "%s Filters unloaded : %d", __FUNCTION__, i);
 
   while (!s_extobjs.empty())
     s_extobjs.pop_back();
@@ -2235,9 +2256,9 @@ std::list<CStdString> sl;
         //sl.AddTail(mt.ToString() + CStdString(L" [" + DShowUtil::GetPinName(pPin) + L"]"));
       }
     }
-    EndEnumPins
+    EndEnumPins(pEP, pPin)
   }
-  EndEnumFilters
+  EndEnumFilters(pEF, pBF)
   
   CStdString text;// = Implode(sl, '\n');
   //text.Replace(_T("\n"), _T("\r\n"));

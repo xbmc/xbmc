@@ -52,8 +52,11 @@ std::vector<DSFilterInfo> CDirectShowEnumerator::GetAudioRenderers()
     //would it be better to enum with this flag CDEF_DEVMON_FILTER
     //this is enumerating only the native DirectShow filters.
     hr = sys_dev_enum->CreateClassEnumerator(CLSID_AudioRendererCategory, &enum_moniker, 0);
-    if (hr != NOERROR) 
+    if (hr != NOERROR)
+    {
+      SAFE_RELEASE(sys_dev_enum);
       break;
+    }
     
   //vDSFilterInfo.push_back(
     IMoniker			*moniker = NULL;
@@ -75,9 +78,12 @@ std::vector<DSFilterInfo> CDirectShowEnumerator::GetAudioRenderers()
           filterGuid = CStdString(var.bstrVal);
         directshow_add_filter(filterGuid,filterName);
       }
-    }   
+      SAFE_RELEASE(moniker);
+    }
+    SAFE_RELEASE(enum_moniker);
   } while (0);
 
+  SAFE_RELEASE(sys_dev_enum);
   return vDSFilterInfo;
 }
 

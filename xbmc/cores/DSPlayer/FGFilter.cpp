@@ -440,7 +440,9 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
   hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
 
   if (FAILED(hr))
-	  CLog::Log(LOGERROR,"%s FAILED clsid:%s path:%s",__FUNCTION__,DShowUtil::CStringFromGUID(m_clsid).c_str(),m_path.c_str());
+	  CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+  else
+    CLog::Log(LOGDEBUG, "%s Successfully loaded external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
 
   return hr;
 }
@@ -484,20 +486,23 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
   CStdString __err;
   if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
     pCAP = new CVMR9AllocatorPresenter(hr,__err);
-  if (m_clsid == __uuidof(CEVRAllocatorPresenter))
+  else if (m_clsid == __uuidof(CEVRAllocatorPresenter))
     pCAP = new CEVRAllocatorPresenter(hr,__err);
 
   if(pCAP == NULL)
+  {
+    CLog::Log(LOGERROR, "%s Failed to create the allocater presenter (clsid: %s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str());
     return E_FAIL;
-  IUnknown* pRenderer;
+  }
+
+  IUnknown* pRenderer = NULL;
   if(SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer)))
   {
     IBaseFilter* pBF;
     pBF = (IBaseFilter*)pRenderer;
     *ppBF = pBF;
     pBF = NULL;
-    //*ppBF = CComQIPtr<IBaseFilter>(pRenderer).Detach();
-    //pUnks.AddTail(pCAP);
+    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created (clsid: %s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid));
   }
   if(!*ppBF) hr = E_FAIL;
 

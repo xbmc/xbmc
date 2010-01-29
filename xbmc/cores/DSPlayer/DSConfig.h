@@ -46,6 +46,7 @@ public:
   CDSConfig();
   virtual ~CDSConfig();
   virtual HRESULT LoadGraph(IFilterGraph2* pGB, IBaseFilter * splitter);
+  virtual HRESULT UnloadGraph();
 
   CStdString GetDxvaMode()  { return m_pStdDxva; };
   std::map<long, IAMStreamSelectInfos *> GetAudioStreams() { return m_pAudioStreams; }

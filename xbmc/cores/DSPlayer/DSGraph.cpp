@@ -83,14 +83,13 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_pGraphBuilder = new CFGManager();
   m_pGraphBuilder->InitManager();
-  hr = m_pGraphBuilder->AddToROT();
-  //Adding every filters required for this file into the igraphbuilder
 
+  hr = m_pGraphBuilder->AddToROT();
 
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   if (FAILED(hr))
     return hr;
-  //This
+
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaSeeking),(void **)&m_pMediaSeeking);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaControl),(void **)&m_pMediaControl);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaEvent),(void **)&m_pMediaEvent);
@@ -140,22 +139,20 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 void CDSGraph::CloseFile()
 {
   CAutoLock lock(&m_ObjectLock);
-
   HRESULT hr;
+
   if (m_pGraphBuilder)
   {
 	  OnPlayStop();
-	  hr = m_pGraphBuilder->RemoveFromROT();
-	  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(),pEF,pBF)
-	  {
-		m_pGraphBuilder->GetGraphBuilder2()->RemoveFilter(pBF);
-		pBF->Release(); // Release filter
-	  }
-	  EndEnumFilters
+    SAFE_RELEASE(m_pMediaSeeking);
+    SAFE_RELEASE(m_pMediaControl);
+    SAFE_RELEASE(m_pMediaEvent);
+    SAFE_RELEASE(m_pBasicAudio);
 
-	  SAFE_DELETE(m_pGraphBuilder);
+    m_pGraphBuilder->GetDsConfig()->UnloadGraph();
+    hr = m_pGraphBuilder->RemoveFromROT();
 
-	  // DShowUtil::UnloadExternalObjects(); //TODO: Test that !
+	  SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
   }
 }
 
@@ -333,11 +330,14 @@ void CDSGraph::OnPlayStop()
       {
         pFSF->Load(pFN, NULL);
         CoTaskMemFree(pFN);
+        DeleteMediaType(&mt);
       }
+      SAFE_RELEASE(pEF);
+      SAFE_RELEASE(pBF);
       break;
     }
   }
-  EndEnumFilters
+  EndEnumFilters(pEF, pBF)
 
 }
 void CDSGraph::Play()

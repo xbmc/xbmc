@@ -30,6 +30,8 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "dxerr.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxVobsub.h"
+#include "util.h"
 
 CDsRenderer::CDsRenderer()
 : CUnknown(NAME("CDsRenderer"), NULL),
@@ -49,6 +51,39 @@ CDsRenderer::~CDsRenderer()
   
 }
 
+void CDsRenderer::AddSubtitleStream()
+{
+
+}
+
+bool CDsRenderer::AddSubtitleFile(const std::string& filename)
+{
+  std::string ext = CUtil::GetExtension(filename);
+  if(ext == ".idx")
+  {
+    CDVDDemuxVobsub v;
+    if(!v.Open(filename))
+      return false;
+
+    m_SelectionStreams.Update(NULL, &v);
+    return true;
+  }
+  if(ext == ".sub")
+  {
+    CStdString strReplace;
+    CUtil::ReplaceExtension(filename,".idx",strReplace);
+    if (XFILE::CFile::Exists(strReplace))
+      return false;
+  }
+  SelectionStream s;
+  s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
+  s.type     = STREAM_SUBTITLE;
+  s.id       = 0;
+  s.filename = filename;
+  s.name     = CUtil::GetFileName(filename);
+  m_SelectionStreams.Update(s);
+  return true;
+}
 
 UINT CDsRenderer::GetAdapter(IDirect3D9* pD3D)
 {

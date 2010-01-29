@@ -454,7 +454,7 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
 		if (m_rtTimePerFrame == 0) 
       m_rtTimePerFrame = 417166;
 
-		m_fps = 10000000.0 / m_rtTimePerFrame;
+		m_fps = (float) ( 10000000.0 / m_rtTimePerFrame );
     
     g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
 
@@ -699,7 +699,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 
   IDirect3DTexture9* pTexture = NULL;
   lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
-  HRESULT hrrr;
   if(pTexture)
   {
     // When using VMR9AllocFlag_TextureSurface
