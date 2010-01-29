@@ -2114,11 +2114,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32ChannelRemap.cpp"
+					RelativePath="..\..\xbmc\utils\PCMRemap.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32ChannelRemap.h"
+					RelativePath="..\..\xbmc\utils\PCMRemap.h"
 					>
 				</File>
 				<File

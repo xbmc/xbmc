@@ -43,11 +43,12 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels()      { return m_iOutputChannels; }
-  virtual int GetSampleRate()    { return m_iSourceSampleRate; }
-  virtual int GetBufferSize()    { return m_inputSize; }
-  virtual int GetBitsPerSample() { return 16; }
-  virtual const char* GetName() { return "liba52"; }
+  virtual int GetChannels()        { return m_iOutputChannels; }
+  virtual int8_t *GetChannelMap() { return m_pChannelMap; }
+  virtual int GetSampleRate()      { return m_iSourceSampleRate; }
+  virtual int GetBufferSize()      { return m_inputSize; }
+  virtual int GetBitsPerSample()   { return 16; }
+  virtual const char* GetName()    { return "liba52"; }
 
 protected:
   void SetDefault();
@@ -67,7 +68,7 @@ protected:
 
   int m_iOutputFlags;
   int m_iOutputChannels;
-  unsigned int m_iOutputMapping;
+  uint8_t *m_pChannelMap;
 
   DllLiba52 m_dll;
 

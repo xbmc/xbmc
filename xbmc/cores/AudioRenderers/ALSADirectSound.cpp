@@ -47,14 +47,44 @@ CALSADirectSound::CALSADirectSound()
   m_bIsAllocated = false;
 }
 
-bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
+  static int8_t ALSAChannelMap[8] =
+  {
+    PCM_FRONT_LEFT  , PCM_FRONT_RIGHT  ,
+    PCM_BACK_LEFT   , PCM_BACK_RIGHT   ,
+    PCM_FRONT_CENTER, PCM_LOW_FREQUENCY,
+    PCM_SIDE_LEFT   , PCM_SIDE_RIGHT
+  };
+
   CStdString deviceuse;
 
-  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", device.c_str());
+  /* setup the channel mapping */
+  m_uiDataChannels = iChannels;
+  m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
 
-  if (iChannels == 0)
-    iChannels = 2;
+  if (channelMap)
+  {
+    unsigned int outChannels = 0;
+    for(unsigned int ch = 0; ch < m_uiDataChannels; ++ch)
+      for(unsigned int map = 0; map < 8; ++map)
+        if (channelMap[ch] == ALSAChannelMap[map])
+        {
+          if (map > outChannels)
+            outChannels = map;
+          break;
+        }
+
+    m_remap.SetOutputFormat(++outChannels, ALSAChannelMap);
+    if (m_remap.CanRemap())
+    {
+      iChannels = outChannels;
+      if (m_uiDataChannels != (unsigned int)iChannels)
+        CLog::Log(LOGDEBUG, "CALSADirectSound::CALSADirectSound - Requested channels changed from %i to %i", m_uiDataChannels, iChannels);
+    }
+  }
+
+  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", device.c_str());
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
@@ -126,47 +156,24 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
 
     if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
     {
-      if(iChannels == 6)
-        deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'";
+      switch(iChannels)
+      {
+        case 8: deviceuse = "xbmc_71to2:'" + EscapeDevice(deviceuse) + "'"; break;
+        case 6: deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'"; break;
+        case 5: deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'"; break;
+      }
     }
     else
     {
       if(deviceuse == "default")
-      {
-        if(iChannels == 6)
-          deviceuse = "surround51";
-        else if(iChannels == 5)
-          deviceuse = "surround50";
-        else if(iChannels == 4)
-          deviceuse = "surround40";
-      }
+        switch(iChannels)
+        {
+          case 8: deviceuse = "surround71"; break;
+          case 6: deviceuse = "surround51"; break;
+          case 5: deviceuse = "surround50"; break;
+          case 4: deviceuse = "surround40"; break;
+        }
     }
-
-    // setup channel mapping to linux default
-    if (strstr(strAudioCodec, "AAC"))
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_aac51:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_aac50:'" + EscapeDevice(deviceuse) + "'";
-    }
-    else if (strstr(strAudioCodec, "DMO") || strstr(strAudioCodec, "FLAC") || strstr(strAudioCodec, "PCM"))
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_win51:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_win50:'" + EscapeDevice(deviceuse) + "'";
-    }
-    else if (strstr(strAudioCodec, "OggVorbis"))
-    {
-      if(iChannels == 6)
-        deviceuse = "xbmc_ogg51:'" + EscapeDevice(deviceuse) + "'";
-      else if(iChannels == 5)
-        deviceuse = "xbmc_ogg50:'" + EscapeDevice(deviceuse) + "'";
-    }
-
 
     if(deviceuse != device)
     {
@@ -320,7 +327,8 @@ bool CALSADirectSound::Deinitialize()
   return true;
 }
 
-void CALSADirectSound::Flush() {
+void CALSADirectSound::Flush()
+{
   if (!m_bIsAllocated)
      return;
 
@@ -427,7 +435,8 @@ unsigned int CALSADirectSound::GetSpace()
       Flush();
     }
   }
-  if (nSpace < 0) {
+  if (nSpace < 0)
+  {
      CLog::Log(LOGWARNING,"CALSADirectSound::GetSpace - get space failed. err: %d (%s)", nSpace, snd_strerror(nSpace));
      nSpace = 0;
      Flush();
@@ -438,7 +447,8 @@ unsigned int CALSADirectSound::GetSpace()
 //***********************************************************************************************
 unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 {
-  if (!m_bIsAllocated) {
+  if (!m_bIsAllocated)
+  {
     CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no valid play handle!");
     return len;
   }
@@ -447,21 +457,21 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   if(m_bPause)
     return 0;
 
-  const unsigned char *pcmPtr = (const unsigned char *)data;
   int framesToWrite;
 
-  framesToWrite  = std::min(GetSpace(), len);
-  framesToWrite /= m_dwPacketSize;
-  framesToWrite *= m_dwPacketSize;
-  int bytesToWrite = framesToWrite;
-  framesToWrite  = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
+  framesToWrite     = std::min(GetSpace(), (len / m_uiDataChannels) * m_uiChannels);
+  framesToWrite    /= m_dwPacketSize;
+  framesToWrite    *= m_dwPacketSize;
+  int bytesToWrite  = framesToWrite;
+  int inputSamples  = ((framesToWrite / m_uiChannels) * m_uiDataChannels) / 2;
+  framesToWrite     = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
 
   if(framesToWrite == 0)
     return 0;
 
   // handle volume de-amp
   if (!m_bPassthrough)
-    m_amp.DeAmplify((short *)pcmPtr, framesToWrite * m_uiChannels);
+    m_amp.DeAmplify((short *)data, inputSamples);
 
   int writeResult;
   if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
@@ -471,24 +481,36 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     writeResult = snd_pcm_writei(m_pPlayHandle, dummy, framesToWrite);
   }
   else
-    writeResult = snd_pcm_writei(m_pPlayHandle, pcmPtr, framesToWrite);
-  if (  writeResult == -EPIPE  ) {
+  {
+    if (m_remap.CanRemap())
+    {
+      /* remap the data to the correct channels */
+      uint8_t outData[bytesToWrite];
+      m_remap.Remap((void *)data, outData, framesToWrite);
+      writeResult = snd_pcm_writei(m_pPlayHandle, outData, framesToWrite);
+    }
+    else
+      writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
+  }
+  if (  writeResult == -EPIPE  )
+  {
     CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
             framesToWrite);
     Flush();
     return 0;
   }
-  else if (writeResult != framesToWrite) {
+  else if (writeResult != framesToWrite)
+  {
     CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
             "bad write (err: %d) - %s",
             framesToWrite, writeResult, snd_strerror(writeResult));
     Flush();
   }
 
-  if (writeResult>0)
-    pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle, writeResult);
+  if (writeResult > 0)
+    return writeResult * (m_uiBitsPerSample / 8) * m_uiDataChannels;
 
-  return writeResult * (m_uiBitsPerSample / 8) * m_uiChannels;
+  return 0;
 }
 
 //***********************************************************************************************
@@ -501,12 +523,14 @@ float CALSADirectSound::GetDelay()
 
   int nErr = snd_pcm_delay(m_pPlayHandle, &frames);
   CHECK_ALSA(LOGERROR,"snd_pcm_delay",nErr);
-  if (nErr < 0) {
+  if (nErr < 0)
+  {
     frames = 0;
     Flush();
   }
 
-  if (frames < 0) {
+  if (frames < 0)
+  {
 #if SND_LIB_VERSION >= 0x000901 /* snd_pcm_forward() exists since 0.9.0rc8 */
     snd_pcm_forward(m_pPlayHandle, -frames);
 #endif
@@ -529,7 +553,7 @@ float CALSADirectSound::GetCacheTotal()
 //***********************************************************************************************
 unsigned int CALSADirectSound::GetChunkLen()
 {
-  return m_dwPacketSize;
+  return (m_dwPacketSize / m_uiChannels) * m_uiDataChannels;
 }
 //***********************************************************************************************
 int CALSADirectSound::SetPlaySpeed(int iSpeed)
