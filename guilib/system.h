@@ -126,7 +126,6 @@
 #define HAS_SDL_AUDIO
 #define HAS_LIRC
 #define HAS_SDL_WIN_EVENTS
-#define HAS_WEB_SERVER
 #ifdef HAVE_LIBPULSE
 #define HAS_PULSEAUDIO
 #endif
