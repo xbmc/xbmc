@@ -41,7 +41,6 @@
 #include "PlayList.h"
 #include "musicInfoTag.h"
 #include "PictureInfoTag.h"
-#include "utils/HTTP.h"
 #include "AdvancedSettings.h"
 
 #ifdef _WIN32PC
