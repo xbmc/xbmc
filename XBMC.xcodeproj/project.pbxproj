@@ -8982,7 +8982,6 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					xbmc/lib/libRTV,
-					xbmc/lib/libcdio,
 					xbmc/lib/libshout,
 					xbmc/lib/libXDAAP,
 					xbmc/lib/libGoAhead,
@@ -9063,7 +9062,6 @@
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
 					xbmc/lib/libRTV,
-					xbmc/lib/libcdio,
 					xbmc/lib/libshout,
 					xbmc/lib/libXDAAP,
 					xbmc/lib/libGoAhead,
