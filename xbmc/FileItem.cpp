@@ -2432,17 +2432,14 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
   // if a folder, check for folder.jpg
   if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
-    CFileItemList items;
-    CDirectory::GetDirectory(m_strPath, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
-
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      for (int j = 0; j < items.Size(); j++)
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
       {
-        if (items[j]->m_strPath.CompareNoCase(GetFolderThumb(thumbs[i])) == 0)
-          return items[j]->m_strPath;
+        return folderThumb;
       }
     }
   }
@@ -2598,17 +2595,14 @@ CStdString CFileItem::GetUserVideoThumb() const
   // 3. check folder image in_m_dvdThumbs (folder.jpg)
   if (m_bIsFolder && !IsFileFolder())
   {
-    CFileItemList items;
-    CDirectory::GetDirectory(m_strPath, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
-
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      for (int j = 0; j < items.Size(); j++)
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
       {
-        if (items[j]->m_strPath.CompareNoCase(GetFolderThumb(thumbs[i])) == 0)
-          return items[j]->m_strPath;
+        return folderThumb;
       }
     }
   }
