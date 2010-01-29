@@ -326,7 +326,7 @@ extern "C"
 
     if(flags & MSG_PEEK)
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - called with MSG_PEEK set, attempting workaround");
+//      CLog::Log(LOGDEBUG, __FUNCTION__" - called with MSG_PEEK set, attempting workaround");
       // work around for peek, it will give garbage as data
       
       if(socket.data == NULL)
