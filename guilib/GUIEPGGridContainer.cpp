@@ -1109,8 +1109,8 @@ CGUIListItemPtr CGUIEPGGridContainer::GetClosestItem(const int &channel)
 
   if (right <= SHORTGAP && right <= left && m_blockCursor + right < m_blocksPerPage)
     return m_gridIndex[channel + m_channelOffset][m_blockCursor + right + m_blockOffset];
-  else
-    return m_gridIndex[channel + m_channelOffset][m_blockCursor - left  + m_blockOffset];
+
+  return m_gridIndex[channel + m_channelOffset][m_blockCursor - left  + m_blockOffset];
 }
 
 int CGUIEPGGridContainer::GetItemSize(CGUIListItemPtr item)
