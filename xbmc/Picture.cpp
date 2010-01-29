@@ -41,11 +41,14 @@ bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFi
 
   if (CUtil::IsInternetStream(file, true))
   {
-    CFileCurl http;
+    CFileCurl stream;
     CStdString thumbData;
-    if (http.Get(file, thumbData))
+    if (stream.Get(file, thumbData))
       return CreateThumbnailFromMemory((const unsigned char *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(file), thumbFile);
+    
+    return false;
   }
+  
   // load our dll
   DllImageLib dll;
   if (!dll.Load()) return false;
@@ -57,39 +60,67 @@ bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFi
   return true;
 }
 
-bool CPicture::CacheImage(const CStdString& sourceFile, const CStdString& destFile, int width, int height)
+bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height)
 {
   if (width > 0 && height > 0)
   {
-    CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceFile.c_str(), destFile.c_str(), width, height);
+    CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceUrl.c_str(), destFile.c_str(), width, height);
+    
     DllImageLib dll;
     if (!dll.Load()) return false;
-    if (!dll.CreateThumbnail(sourceFile.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+
+    if (CUtil::IsInternetStream(sourceUrl, true))
     {
-      CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceFile.c_str());
+      CFileCurl stream;
+      CStdString tempFile = "special://temp/image_download.jpg";
+      if (stream.Download(sourceUrl, tempFile))
+      {
+        if (!dll.CreateThumbnail(tempFile.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+        {
+          CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
+          CFile::Delete(tempFile);
+          return false;
+        }
+        CFile::Delete(tempFile);
+        return true;
+      }
+      return false;
+    }
+    
+    if (!dll.CreateThumbnail(sourceUrl.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+    {
+      CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
       return false;
     }
     return true;
   }
   else
   {
-    CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFile.c_str(), destFile.c_str());
-    return CFile::Cache(sourceFile, destFile);
+    CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceUrl.c_str(), destFile.c_str());
+    if (CUtil::IsInternetStream(sourceUrl, true))
+    {
+      CFileCurl stream;
+      return stream.Download(sourceUrl, destFile);
+    }
+    else
+    {
+      return CFile::Cache(sourceUrl, destFile);
+    }
   }
 }
 
-bool CPicture::CacheThumb(const CStdString& sourceFile, const CStdString& destFile)
+bool CPicture::CacheThumb(const CStdString& sourceUrl, const CStdString& destFile)
 {
-  return CacheImage(sourceFile, destFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
+  return CacheImage(sourceUrl, destFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
 }
 
-bool CPicture::CacheFanart(const CStdString& sourceFile, const CStdString& destFile)
+bool CPicture::CacheFanart(const CStdString& sourceUrl, const CStdString& destFile)
 {
   int height = g_advancedSettings.m_fanartHeight;
   // Assume 16:9 size
   int width = height * 16 / 9;
 
-  return CacheImage(sourceFile, destFile, width, height);
+  return CacheImage(sourceUrl, destFile, width, height);
 }
 
 bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSize, const CStdString& extension, const CStdString& thumbFile)
@@ -119,6 +150,7 @@ void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &fol
     }
     szThumbs[i] = cachedThumbs[i].c_str();
   }
+
   DllImageLib dll;
   if (!dll.Load()) return;
   if (!dll.CreateFolderThumbnail(szThumbs, folderThumb.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
