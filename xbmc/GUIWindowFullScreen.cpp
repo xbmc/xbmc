@@ -408,6 +408,40 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
+  case ACTION_ZOOM_IN:
+    {
+      g_settings.m_currentVideoSettings.m_CustomZoomAmount += 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  case ACTION_ZOOM_OUT:
+    {
+      g_settings.m_currentVideoSettings.m_CustomZoomAmount -= 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  case ACTION_INCREASE_PAR:
+    {
+      g_settings.m_currentVideoSettings.m_CustomPixelRatio += 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  case ACTION_DECREASE_PAR:
+    {
+      g_settings.m_currentVideoSettings.m_CustomPixelRatio -= 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  default:
+      break;
   }
   return CGUIWindow::OnAction(action);
 }
