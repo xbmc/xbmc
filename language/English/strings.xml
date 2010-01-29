@@ -2180,4 +2180,9 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
 </strings>
