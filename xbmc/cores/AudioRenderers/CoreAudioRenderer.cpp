@@ -341,7 +341,7 @@ CCoreAudioRenderer::~CCoreAudioRenderer()
 if (!m_Initialized) \
 return x
 
-bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   if (m_Initialized) // Have to clean house before we start again. TODO: Should we return failure instead?
     Deinitialize();

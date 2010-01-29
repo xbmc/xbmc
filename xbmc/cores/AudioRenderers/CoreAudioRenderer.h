@@ -105,7 +105,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual ~CCoreAudioRenderer();
     virtual unsigned int GetChunkLen();
     virtual float GetDelay();
-    virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+    virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
     virtual bool Deinitialize();
     virtual unsigned int AddPackets(const void* data, unsigned int len);
     virtual unsigned int GetSpace();
