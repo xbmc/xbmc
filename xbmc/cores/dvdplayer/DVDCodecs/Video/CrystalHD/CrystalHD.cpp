@@ -226,6 +226,8 @@ public:
 protected:
   void                SetFrameRate(uint32_t resolution);
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
+  void                CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -691,8 +693,8 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
   {
     m_framerate /= 2;
   }
-  CLog::Log(LOGDEBUG, "%s: resolution = %x  interlace = %d", __MODULE_NAME__, resolution, m_interlace);
 
+  CLog::Log(LOGDEBUG, "%s: resolution = %x  interlace = %d", __MODULE_NAME__, resolution, m_interlace);
 }
 
 void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
@@ -782,6 +784,61 @@ void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
   CLog::Log(LOGDEBUG, "%s: dec_par x = %d, dec_par y = %d", __MODULE_NAME__, m_aspectratio_x, m_aspectratio_y);
 }
 
+void CMPCOutputThread::CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  // copy y
+  if (w == stride)
+  {
+    fast_memcpy(pBuffer->m_y_buffer_ptr, procOut->Ybuff, w * h);
+  }
+  else
+  {
+    uint8_t *s_y = procOut->Ybuff;
+    uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+    for (int y = 0; y < h; y++, s_y += stride, d_y += w)
+      fast_memcpy(d_y, s_y, w);
+  }
+
+  //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
+  uint8_t *s_uv;
+  uint8_t *d_u = pBuffer->m_u_buffer_ptr;
+  uint8_t *d_v = pBuffer->m_v_buffer_ptr;
+  for (int y = 0; y < h/2; y++)
+  {
+    s_uv = procOut->UVbuff + (y * stride);
+    for (int x = 0; x < w/2; x++)
+    {
+      *d_u++ = *s_uv++;
+      *d_v++ = *s_uv++;
+    }
+  }
+}
+
+void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  if (w == stride)
+  {
+    int bytes = w * h;
+    // copy y
+    fast_memcpy(pBuffer->m_y_buffer_ptr, procOut->Ybuff, bytes);
+    // copy uv
+    fast_memcpy(pBuffer->m_uv_buffer_ptr, procOut->UVbuff, bytes/2 );
+  }
+  else
+  {
+    // copy y
+    uint8_t *s = procOut->Ybuff;
+    uint8_t *d = pBuffer->m_y_buffer_ptr;
+    for (int y = 0; y < h; y++, s += stride, d += w)
+      fast_memcpy(d, s, w);
+    // copy uv
+    s = procOut->UVbuff;
+    d = pBuffer->m_uv_buffer_ptr;
+    for (int y = 0; y < h/2; y++, s += stride, d += w)
+      fast_memcpy(d, s, w);
+    }
+}
+
 bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
@@ -808,8 +865,15 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer = m_FreeList.Pop();
           if (!pBuffer)
           {
+#ifdef _WIN32
+            // force Windows to use YV12 until DX renderer gets fixed.
+            if (TRUE)
+#else
             // No free pre-allocated buffers so make one
             if (m_interlace)
+#endif
+              // Something wrong with NV12 rendering of interlaced so copy out as YV12.
+              // Setting the picture format will determine the copy out method.
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
             else
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
@@ -823,127 +887,77 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_interlace = m_interlace > 0 ? true : false;
           pBuffer->m_framerate = m_framerate;
           pBuffer->m_timestamp = m_timestamp;
-          
           pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
 
           int w = procOut.PicInfo.width;
           int h = procOut.PicInfo.height;
-
-          switch(procOut.PicInfo.width)
+          // frame that are not equal in width to 720, 1280 or 1920
+          // need to be copied by a quantized stride (possible lib/driver bug) so force it.
+          int stride;
+          if (w <= 720)
+            stride = 720;
+          else if (w <= 1280)
+            stride = 1280;
+          else
+            stride = 1920;
+            
+          if (pBuffer->m_format == DVDVideoPicture::FMT_NV12)
           {
-            case 720:
-            case 1280:
-            case 1920:
+            CopyOutAsNV12(pBuffer, &procOut, w, h, stride);
+          }
+          else
+          {
+            if (pBuffer->m_interlace)
             {
-              if (pBuffer->m_interlace)
-              {
-                // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
-                // can't tell which frames are odd, which are even so use picture number.
-                uint8_t *s, *d;
-                int stride = w*2;
+              // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
+              // can't tell which frames are odd, which are even so use picture number.
+              int line_width = w*2;
 
-                if (pBuffer->m_PictureNumber & 1)
-                  m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
-                else
-                  m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
-
-                // copy luma
-                s = procOut.Ybuff;
-                d = m_interlace_buf->m_y_buffer_ptr;
-                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-                  d += stride;
-                for (int y = 0; y < h/2; y++, s += w, d += stride)
-                {
-                  fast_memcpy(d, s, w);
-                }
-
-                //copy chroma
-                stride = w/2;
-                uint32_t uvdoublet;
-                uint32_t *s_uv = (uint32_t*)procOut.UVbuff;
-                uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
-                uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
-
-                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-                {
-                  d_u += stride;
-                  d_v += stride;
-                }
-                for (int y = 0; y < h/4; y++, d_u += stride, d_v += stride) {
-                  for (int x = 0; x < w/4; x++) {
-                    uvdoublet = *s_uv++;
-                    *d_u++ = (uint8_t)(uvdoublet);
-                    *d_v++ = (uint8_t)(uvdoublet >> 8 );
-                    *d_u++ = (uint8_t)(uvdoublet >> 16);
-                    *d_v++ = (uint8_t)(uvdoublet >> 24);
-                  }
-                }
-
-                pBuffer->m_field = m_interlace_buf->m_field;
-                // copy y
-                fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,  pBuffer->m_y_buffer_size);
-                // copy u
-                fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
-                // copy v
-                fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
-              }
+              if (pBuffer->m_PictureNumber & 1)
+                m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
               else
-              {
-                // copy y
-                fast_memcpy(pBuffer->m_y_buffer_ptr, procOut.Ybuff, pBuffer->m_y_buffer_size);
-                // copy uv
-                fast_memcpy(pBuffer->m_uv_buffer_ptr, procOut.UVbuff, pBuffer->m_uv_buffer_size);
-              }
-            }
-            break;
+                m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
 
-            // frame that are not equal in width to 720, 1280 or 1920
-            // need to be copied by a quantized stride (possible lib/driver bug).
-            default:
+              // copy luma
+              uint8_t *s_y = procOut.Ybuff;
+              uint8_t *d_y = m_interlace_buf->m_y_buffer_ptr;
+              if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
+                d_y += line_width;
+              for (int y = 0; y < h/2; y++, s_y += stride, d_y += line_width)
+              {
+                fast_memcpy(d_y, s_y, w);
+              }
+
+              //copy chroma
+              line_width = w/2;
+              uint8_t *s_uv;
+              uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
+              uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
+              if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
+              {
+                d_u += line_width;
+                d_v += line_width;
+              }
+              for (int y = 0; y < h/4; y++, d_u += line_width, d_v += line_width) {
+                s_uv = procOut.UVbuff + (y * stride);
+                for (int x = 0; x < w/2; x++) {
+                  *d_u++ = *s_uv++;
+                  *d_v++ = *s_uv++;
+                }
+              }
+
+              pBuffer->m_field = m_interlace_buf->m_field;
+              // copy y
+              fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,  pBuffer->m_y_buffer_size);
+              // copy u
+              fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
+              // copy v
+              fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
+            }
+            else
             {
-              unsigned char *s, *d;
-
-              if (w < 720)
-              {
-                // copy y
-                s = procOut.Ybuff;
-                d = pBuffer->m_y_buffer_ptr;
-                for (int y = 0; y < h; y++, s += 720, d += w)
-                  fast_memcpy(d, s, w);
-                // copy uv
-                s = procOut.UVbuff;
-                d = pBuffer->m_uv_buffer_ptr;
-                for (int y = 0; y < h/2; y++, s += 720, d += w)
-                  fast_memcpy(d, s, w);
-              }
-              else if (w < 1280)
-              {
-                // copy y
-                s = procOut.Ybuff;
-                d = pBuffer->m_y_buffer_ptr;
-                for (int y = 0; y < h; y++, s += 1280, d += w)
-                  fast_memcpy(d, s, w);
-                // copy uv
-                s = procOut.UVbuff;
-                d = pBuffer->m_uv_buffer_ptr;
-                for (int y = 0; y < h/2; y++, s += 1280, d += w)
-                  fast_memcpy(d, s, w);
-              }
-              else
-              {
-                // copy y
-                s = procOut.Ybuff;
-                d = pBuffer->m_y_buffer_ptr;
-                for (int y = 0; y < h; y++, s += 1920, d += w)
-                  fast_memcpy(d, s, w);
-                // copy uv
-                s = procOut.UVbuff;
-                d = pBuffer->m_uv_buffer_ptr;
-                for (int y = 0; y < h/2; y++, s += 1920, d += w)
-                  fast_memcpy(d, s, w);
-              }
+              CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
             }
-            break;
           }
 
           m_ReadyList.Push(pBuffer);
