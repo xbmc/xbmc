@@ -18,7 +18,9 @@ make distclean
 --disable-encoders \
 --disable-ipv6 \
 --disable-debug \
---enable-muxer=spdif &&
+--enable-muxer=spdif \
+--enable-encoder=ac3 \
+--enable-encoder=aac &&
  
 make -j3 && 
 mkdir .libs &&
