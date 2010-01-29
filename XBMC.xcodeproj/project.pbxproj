@@ -1822,6 +1822,10 @@
 		F5F241D9110BFCF4009126C6 /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F241D7110BFCF4009126C6 /* libwavpack.dylib */; };
 		F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
 		F5F244661110DC6B009126C6 /* FileOperationJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F244641110DC6B009126C6 /* FileOperationJob.cpp */; };
+		F5F245DA1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */; };
+		F5F245DB1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */; };
+		F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
+		F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
@@ -3778,6 +3782,10 @@
 		F5F241D7110BFCF4009126C6 /* libwavpack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwavpack.dylib; path = /opt/local/lib/libwavpack.dylib; sourceTree = "<absolute>"; };
 		F5F244631110DC6B009126C6 /* FileOperationJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperationJob.h; sourceTree = "<group>"; };
 		F5F244641110DC6B009126C6 /* FileOperationJob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileOperationJob.cpp; sourceTree = "<group>"; };
+		F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthroughFFmpeg.cpp; sourceTree = "<group>"; };
+		F5F245D91112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthroughFFmpeg.h; sourceTree = "<group>"; };
+		F5F245EC1112C9AB009126C6 /* FileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUtils.cpp; sourceTree = "<group>"; };
+		F5F245ED1112C9AB009126C6 /* FileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtils.h; sourceTree = "<group>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
@@ -5029,6 +5037,8 @@
 				E38E15120D25F9F900618676 /* DVDAudioCodecLPcm.h */,
 				E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */,
 				E38E15140D25F9F900618676 /* DVDAudioCodecPassthrough.h */,
+				F5F245D81112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp */,
+				F5F245D91112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.h */,
 				E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */,
 				E38E15160D25F9F900618676 /* DVDAudioCodecPcm.h */,
 				E38E15170D25F9F900618676 /* liba52 */,
@@ -6634,6 +6644,8 @@
 				43BF09DD1080D39300E25290 /* fastmemcpy.h */,
 				F5F244641110DC6B009126C6 /* FileOperationJob.cpp */,
 				F5F244631110DC6B009126C6 /* FileOperationJob.h */,
+				F5F245EC1112C9AB009126C6 /* FileUtils.cpp */,
+				F5F245ED1112C9AB009126C6 /* FileUtils.h */,
 				E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */,
 				E38E1E3D0D25F9FD00618676 /* fstrcmp.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
@@ -8037,6 +8049,8 @@
 				F5DC8826110A559E00EE1B15 /* cpb.c in Sources */,
 				F5DC8829110A55A500EE1B15 /* nal.c in Sources */,
 				F5F244651110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
+				F5F245DA1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
+				F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8888,6 +8902,8 @@
 				F5DC8810110A4A0B00EE1B15 /* FileXBMSP.cpp in Sources */,
 				F5DC8814110A4A2400EE1B15 /* XBMSDirectory.cpp in Sources */,
 				F5F244661110DC6B009126C6 /* FileOperationJob.cpp in Sources */,
+				F5F245DB1112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.cpp in Sources */,
+				F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
