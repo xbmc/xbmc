@@ -12,6 +12,9 @@ PREFIX  ?= /usr/local
 ADDONDIR = $(PREFIX)/share/xbmc/addons
 LIBS     = ../../addons/include/xbmc_addon_lib++.a ../../addons/include/xbmc_pvr_lib++.a
 INCLUDES = -I. -I../../linux -I../../ -I ../../../guilib -I../../../xbmc/utils
+ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
+INCLUDES +=  -I/opt/local/include
+endif
 DEFINES += -D_LINUX -fPIC
 LIBDIR   = ../../../addons/pvr/Tvheadend
 LIB      = ../../../addons/pvr/Tvheadend/XBMC_Tvheadend.pvr
