@@ -85,7 +85,7 @@ CWin32WASAPI::CWin32WASAPI() :
 {
 }
 
-bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, uint8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
   //First check if the version of Windows we are running on even supports WASAPI.
   OSVERSIONINFO winVersion;
@@ -681,7 +681,7 @@ void CWin32WASAPI::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 }
 
 //***********************************************************************************************
-void CWin32WASAPI::BuildChannelMapping(int channels, uint8_t* map)
+void CWin32WASAPI::BuildChannelMapping(int channels, int8_t* map)
 {
   bool usedChannels[WASAPI_TOTAL_CHANNELS];
 
