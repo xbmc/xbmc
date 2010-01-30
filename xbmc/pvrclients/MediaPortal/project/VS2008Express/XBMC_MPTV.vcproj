@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="XBMC_MPTV"
+	Name="pvrclient_mptv"
 	ProjectGUID="{74C9642E-1988-48DC-8404-11717C355378}"
 	RootNamespace="XBMC_MPTV"
 	Keyword="Win32Proj"
@@ -260,11 +260,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\windows\Socket.h"
+				RelativePath="..\..\Socket.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\Socket.h"
+				RelativePath="..\..\windows\Socket.h"
 				>
 			</File>
 			<File
@@ -279,12 +279,6 @@
 				RelativePath="..\..\utils.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>
