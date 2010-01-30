@@ -240,6 +240,8 @@ protected:
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
+  unsigned int        m_color_range;
+  unsigned int        m_color_matrix;
   int                 m_interlace;
   double              m_framerate;
   int                 m_aspectratio_x;
@@ -505,6 +507,8 @@ CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int h
   m_interlace = false;
   m_timestamp = DVD_NOPTS_VALUE;
   m_PictureNumber = 0;
+  m_color_range = 0;
+  m_color_matrix = 4;
   m_format = format;
   
   // setup y plane
@@ -887,6 +891,8 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_interlace = m_interlace > 0 ? true : false;
           pBuffer->m_framerate = m_framerate;
           pBuffer->m_timestamp = m_timestamp;
+          pBuffer->m_color_range = m_color_range;
+          pBuffer->m_color_matrix = m_color_matrix;
           pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
 
           int w = procOut.PicInfo.width;
@@ -986,6 +992,8 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         m_width = procOut.PicInfo.width;
         m_height = procOut.PicInfo.height;
+        m_color_range = 0;
+        m_color_matrix = procOut.PicInfo.colour_primaries;
         SetAspectRatio(&procOut.PicInfo);
         SetFrameRate(procOut.PicInfo.frame_rate);
         if (procOut.PicInfo.flags & VDEC_FLAG_INTERLACED_SRC)
@@ -1378,11 +1386,9 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   }
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  pDvdVideoPicture->iDuration = 0;
-  //pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
-  pDvdVideoPicture->color_range = 1;
-  // todo
-  //pDvdVideoPicture->color_matrix = 1;
+  pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
+  pDvdVideoPicture->color_range = pBuffer->m_color_range;
+  pDvdVideoPicture->color_matrix = pBuffer->m_color_matrix;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= pBuffer->m_interlace ? DVP_FLAG_INTERLACED : 0;
   //if (pBuffer->m_interlace)
