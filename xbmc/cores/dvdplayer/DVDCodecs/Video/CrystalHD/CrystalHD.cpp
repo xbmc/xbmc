@@ -1020,24 +1020,28 @@ bool CMPCOutputThread::GetDecoderOutput(void)
 void CMPCOutputThread::Process(void)
 {
   bool got_picture;
-  //BCM::BC_STATUS ret;
-  //BCM::BC_DTS_STATUS decoder_status;
+  BCM::BC_STATUS ret;
+  BCM::BC_DTS_STATUS decoder_status;
 
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
     got_picture = false;
     
-    // limit ready list to 20, makes no sense to pre-decode any more
-    if (m_ReadyList.Count() < 20)
+    ret = m_dll->DtsGetDriverStatus(m_Device, &decoder_status);
+    if (ret == BCM::BC_STS_SUCCESS)
     {
-      got_picture = GetDecoderOutput();
-      /*
-      CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
-        decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
-      CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
-        decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
-      */
+      // limit ready list to 20, makes no sense to pre-decode any more
+      if (m_ReadyList.Count() < 20)
+      {
+        got_picture = GetDecoderOutput();
+        /*
+        CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
+          decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
+        CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
+          decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
+        */
+      }
     }
 
     if (!got_picture)
