@@ -2914,10 +2914,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\fastmemcpy.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\fastmemcpy.h"
 					>
 				</File>
