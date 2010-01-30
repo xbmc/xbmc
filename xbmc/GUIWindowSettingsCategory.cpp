@@ -802,7 +802,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 #ifdef __APPLE__
     else if (strSetting.Equals("input.appleremotemode"))
     {
-      bool cancelled;
       int remoteMode = g_guiSettings.GetInt("input.appleremotemode");
 
       // if it's not disabled, start the event server or else apple remote won't work
@@ -815,6 +814,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       // if XBMC helper is running, prompt user before effecting change
       if ( g_xbmcHelper.IsRunning() && g_xbmcHelper.GetMode()!=remoteMode )
       {
+        bool cancelled;
         if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
         {
           // user declined, restore previous spinner state and appleremote mode
@@ -2142,7 +2142,11 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
     pControl->SetWidth(width);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
   }
-  if (!pControl) return;
+  if (!pControl)
+  {
+    delete pSettingControl;
+    return;
+  }
   pControl->SetID(iControlID++);
   pControl->SetVisible(true);
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
@@ -2546,7 +2550,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
         {
           map<string, string> subModules;
           map<string, string>::iterator iter;
-          string moduleName, path;
+          string moduleName;
           CStdString visName = pItem->GetLabel();
           visName = visName.Mid(0, visName.size() - 5);
 

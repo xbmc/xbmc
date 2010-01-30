@@ -297,12 +297,12 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 {
   vector<CVideoInfoTag> episodes;
   CVideoDatabase videoDatabase;
-  CPoint pos;
   videoDatabase.Open();
   videoDatabase.GetEpisodesByFile(g_application.CurrentFile(), episodes);
   videoDatabase.Close();
   if(episodes.size() > 0)
   {
+    CPoint pos;
     CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     map<int, CVideoInfoTag*> buttons;
     const CGUIControl *pList = GetControl(CONTROL_ADD_EPISODE_BOOKMARK);

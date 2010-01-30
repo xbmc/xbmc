@@ -1649,9 +1649,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   m_skinReloadTime = 0;
 
-  CStdString strHomePath;
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
   // save the current window details
@@ -5295,10 +5293,12 @@ void CApplication::UpdateLibraries()
   {
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
     VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
+    {
+      SScraperInfo info;
       scanner->StartScanning("",info,settings,false);
+    }
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

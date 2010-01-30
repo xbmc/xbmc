@@ -184,8 +184,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_SHOW_INFO)
         {
           SScraperInfo info;
-          SScanSettings settings;
-          CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems->Size())
             return false;
 
@@ -200,6 +198,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             info.strContent = "livetv";
           else
           {
+            CStdString strDir;
             if (item->IsVideoDb()       &&
                 item->HasVideoInfoTag() &&
               !item->GetVideoInfoTag()->m_strPath.IsEmpty())
@@ -209,6 +208,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             else
               CUtil::GetDirectory(item->m_strPath,strDir);
 
+            SScanSettings settings;
             int iFound;
             m_database.GetScraperForPath(strDir, info, settings, iFound);
 
@@ -513,7 +513,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
   m_database.GetScraperForPath(item->m_strPath,info,settings);
-  CStdString nfoFile;
 
   if (!info.settings.GetPluginRoot() && info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
   {

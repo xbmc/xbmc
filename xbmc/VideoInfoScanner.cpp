@@ -470,10 +470,10 @@ namespace VIDEO
           if (files.size() == 0) // no update or no files
             continue;
 
-          CScraperUrl url;
           //convert m_strEpisodeGuide in url.m_scrURL
           if (!showDetails.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
           {
+            CScraperUrl url;
             url.ParseEpisodeGuide(showDetails.m_strEpisodeGuide);
             if (pDlgProgress)
             {

@@ -640,7 +640,6 @@ bool CALSADirectSound::SoundDeviceExists(const CStdString& device)
 {
   void **hints, **n;
   char *name;
-  CStdString strName;
   bool retval = false;
 
   if (snd_device_name_hint(-1, "pcm", &hints) == 0)
@@ -649,7 +648,7 @@ bool CALSADirectSound::SoundDeviceExists(const CStdString& device)
     {
       if ((name = snd_device_name_get_hint(*n, "NAME")) != NULL)
       {
-        strName = name;
+        CStdString strName = name;
         free(name);
         if (strName.find(device) != string::npos)
         {
