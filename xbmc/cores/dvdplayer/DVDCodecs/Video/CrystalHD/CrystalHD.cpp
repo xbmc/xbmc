@@ -599,103 +599,104 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 
   switch (resolution)
   {
-    case BCM::vdecRESOLUTION_480p0:
-      m_framerate = 60.0;
-    break;
-    case BCM::vdecRESOLUTION_576p0:
-      m_framerate = 25.0;
-    break;
-    case BCM::vdecRESOLUTION_720p0:
-      m_framerate = 60.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p0:
-      m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_480i0:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_1080i0:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_1080p23_976:
-      m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p29_97 :
-      m_framerate = 30.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p30  :
+    case BCM::vdecRESOLUTION_1080p30:
       m_framerate = 30.0;
     break;
-    case BCM::vdecRESOLUTION_1080p24  :
-      m_framerate = 24.0;
+    case BCM::vdecRESOLUTION_1080p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_1080p25 :
       m_framerate = 25.0;
     break;
+    case BCM::vdecRESOLUTION_1080p23_976:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_1080p0:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_1080p24:
+      m_framerate = 24.0;
+    break;
+    
     case BCM::vdecRESOLUTION_1080i29_97:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
+      m_framerate = 30.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
-    case BCM::vdecRESOLUTION_1080i25:
-      m_framerate = 50.0;
+    case BCM::vdecRESOLUTION_1080i0:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_1080i:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
+      m_framerate = 30.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
+    case BCM::vdecRESOLUTION_1080i25:
+      m_framerate = 25.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
+    break;
+    
     case BCM::vdecRESOLUTION_720p59_94:
       m_framerate = 60.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_720p50:
-      m_framerate = 50.0;
-    break;
     case BCM::vdecRESOLUTION_720p:
-      m_framerate = 60.0;
+      m_framerate = 60.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_720p50:
+      m_framerate = 50.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_720p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p24:
+      m_framerate = 24.0;
+    break;
+    case BCM::vdecRESOLUTION_720p0:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
+    break;
+    
+    case BCM::vdecRESOLUTION_576p25:
       m_framerate = 25.0;
-      break;
-    case BCM::vdecRESOLUTION_720p29_97:
-      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_480i:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_NTSC:
-      m_framerate = 60.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_480p:
-      m_framerate = 60.0;
+    case BCM::vdecRESOLUTION_576p0:
+      m_framerate = 25.0;
     break;
     case BCM::vdecRESOLUTION_PAL1:
-      m_framerate = 50.0;
+      m_framerate = 25.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
+    break;
+    
+    case BCM::vdecRESOLUTION_480p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_480p0:
+      m_framerate = 60.0;
+    break;
+    case BCM::vdecRESOLUTION_480p:
+      m_framerate = 60.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_480p29_97:
+    
+    case BCM::vdecRESOLUTION_480i0:
       m_framerate = 30.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
     break;
-    case BCM::vdecRESOLUTION_576p25:
-      m_framerate = 25.0;
+    case BCM::vdecRESOLUTION_480i:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
     break;
+    case BCM::vdecRESOLUTION_NTSC:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
+    break;
+    
     default:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
-  }
-
-  if(m_interlace)
-  {
-    m_framerate /= 2;
   }
 
   CLog::Log(LOGDEBUG, "%s: resolution = %x  interlace = %d", __MODULE_NAME__, resolution, m_interlace);
@@ -1292,29 +1293,17 @@ bool CCrystalHD::IsOpenforDecode(void)
   return m_Device && m_IsConfigured;
 }
 
-void CCrystalHD::Reset(bool flag)
+void CCrystalHD::Reset(void)
 {
-  // if being asked to flush while asking to drop, ignore it.
-  if (!m_drop_state && flag)
-  {
-    // Calling for non-error flush, flush all 
-    m_dll->DtsFlushInput(m_Device, 2);
-    m_pInputThread->Flush();
-    m_pOutputThread->Flush();
+  // Calling for non-error flush, flush all 
+  m_dll->DtsFlushInput(m_Device, 2);
+  m_pInputThread->Flush();
+  m_pOutputThread->Flush();
 
-    while( m_BusyList.Count())
-      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
+  while( m_BusyList.Count())
+    m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
-  }
-  else
-  {
-    m_pOutputThread->Flush();
-
-    while( m_BusyList.Count())
-      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
-  }
-  
-  Sleep(20);
+  CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
 
 unsigned int CCrystalHD::GetInputCount(void)

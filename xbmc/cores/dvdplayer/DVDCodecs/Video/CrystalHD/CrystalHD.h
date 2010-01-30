@@ -133,7 +133,7 @@ public:
   bool OpenDecoder(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type, int extradata_size, void *extradata);
   void CloseDecoder(void);
   bool IsOpenforDecode(void);
-  void Reset(bool flag);
+  void Reset(void);
   unsigned int GetInputCount(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
 

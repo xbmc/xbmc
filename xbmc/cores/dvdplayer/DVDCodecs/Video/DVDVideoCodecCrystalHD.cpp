@@ -190,7 +190,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
-  m_Device->Reset( !(m_DecodeReturn & VC_ERROR) );
+  m_Device->Reset();
 }
 
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
