@@ -659,7 +659,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] );
 
-      LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_ODD][2], GL_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
 
@@ -668,7 +668,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] + im->stride[1] );
 
-      LoadPlane( fields[FIELD_EVEN][2], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_EVEN][2], GL_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] + im->stride[2] );
 
@@ -679,7 +679,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[1], im->plane[1] );
 
-      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_FULL][2], GL_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[2], im->plane[2] );
     }
@@ -1817,9 +1817,19 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
       glBindTexture(m_textureTarget, plane.id);
       if (m_renderMethod & RENDER_SW)
+      {
         glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      }
       else
-        glTexImage2D(m_textureTarget, 0, GL_INTENSITY, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+      {
+	GLint format;
+	if (p == 2) //V plane needs an alpha texture
+	  format = GL_ALPHA;
+	else
+	  format = GL_LUMINANCE;
+
+        glTexImage2D(m_textureTarget, 0, format, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
+      }
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
