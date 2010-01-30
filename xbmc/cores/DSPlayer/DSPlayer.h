@@ -66,6 +66,13 @@ public:
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pDsGraph.GetSubtitleName(iStream, strStreamName); };
   virtual void SetSubtitle(int iStream) { return m_pDsGraph.SetSubtitle(iStream); };
 
+  // Chapters
+
+  virtual int  GetChapterCount()                               { return m_pDsGraph.GetChapterCount(); }
+  virtual int  GetChapter()                                    { return m_pDsGraph.GetChapter(); }
+  virtual void GetChapterName(CStdString& strChapterName)      { m_pDsGraph.GetChapterName(strChapterName); }
+  virtual int  SeekChapter(int iChapter)                       { return m_pDsGraph.SeekChapter(iChapter); }
+
   void Update(bool bPauseDrawing)                               { m_pDsGraph.Update(bPauseDrawing); }
   void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { m_pDsGraph.GetVideoRect(SrcRect, DestRect); }
   virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_pDsGraph.GetAspectRatio(); }

@@ -102,6 +102,13 @@ public:
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pGraphBuilder->GetDsConfig()->GetSubtitleName(iStream, strStreamName); };
   virtual void SetSubtitle(int iStream) { return m_pGraphBuilder->GetDsConfig()->SetSubtitle(iStream); };
 
+  // Chapters
+  virtual int  GetChapterCount()                               { return m_pGraphBuilder->GetDsConfig()->GetChapterCount(); }
+  virtual int  GetChapter()                                    { return m_pGraphBuilder->GetDsConfig()->GetChapter(); }
+  virtual void GetChapterName(CStdString& strChapterName)      { m_pGraphBuilder->GetDsConfig()->GetChapterName(strChapterName); }
+  virtual int  SeekChapter(int iChapter); //                       { return m_pGraphBuilder->GetDsConfig()->SeekChapter(iChapter); }
+  void         UpdateChapters( __int64 currentTime )           { m_pGraphBuilder->GetDsConfig()->UpdateChapters(currentTime); }
+
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
   void OnPlayStop();
   void CloseFile();

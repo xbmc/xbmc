@@ -37,6 +37,7 @@ CDSConfig::CDSConfig()
   m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
   m_pIAMStreamSelect = NULL;
+  m_pIAMExtendedSeeking = NULL;
   m_pSplitter = NULL;
 }
 
@@ -45,6 +46,7 @@ CDSConfig::~CDSConfig()
   SAFE_RELEASE(m_pIMpaDecFilter);
   SAFE_RELEASE(m_pIMpcDecFilter);
   SAFE_RELEASE(m_pIAMStreamSelect);
+  SAFE_RELEASE(m_pIAMExtendedSeeking);
   SAFE_RELEASE(m_pSplitter);
 
   for (std::map<long, IAMStreamSelectInfos *>::iterator it = m_pAudioStreams.begin();
@@ -62,6 +64,21 @@ CDSConfig::~CDSConfig()
     //SAFE_RELEASE(it->second->pUnk);
     delete it->second;
   }
+
+  while (! m_pPropertiesFilters.empty())
+  {
+    SAFE_RELEASE(m_pPropertiesFilters.back());
+    m_pPropertiesFilters.pop_back();
+  }
+
+  for (std::map<long, ChapterInfos *>::iterator it = m_pChapters.begin();
+    it != m_pChapters.end(); ++it)
+  {
+    //SAFE_RELEASE(it->second->pObj);
+    //SAFE_RELEASE(it->second->pUnk);
+    delete it->second;
+  }
+
 }
 
 HRESULT CDSConfig::LoadGraph(IFilterGraph2* pGB, IBaseFilter * splitter)
@@ -81,9 +98,12 @@ void CDSConfig::LoadFilters()
   {
 	  GetMpcVideoDec(pBF);
 	  GetMpaDec(pBF);
+    LoadPropertiesPage(pBF);
   }
   EndEnumFilters(pEF, pBF)
-  LoadAudioStreams();
+  LoadStreams();
+  if (! LoadChapters())
+    CLog::Log(LOGNOTICE, "%s No chapters found", __FUNCTION__);
 }
 
 HRESULT CDSConfig::UnloadGraph()
@@ -117,7 +137,7 @@ HRESULT CDSConfig::UnloadGraph()
   return hr;
 }
 
-bool CDSConfig::LoadAudioStreams()
+bool CDSConfig::LoadStreams()
 {
   CStdString splitterName;
   g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(m_pSplitter), splitterName);
@@ -307,6 +327,105 @@ bool CDSConfig::LoadAudioStreams()
   return false;
 }
 
+bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
+{
+  ISpecifyPropertyPages *pSpec;
+  HRESULT hr = pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **)&pSpec);
+  if(hr == S_OK)
+  {
+    pBF->AddRef();
+    m_pPropertiesFilters.push_back(pBF);
+    /*hr = pSpec->GetPages(&cauuid);
+    hr = OleCreatePropertyFrame(g_hWnd, 0, 0, NULL , 1,
+    (IUnknown **)&pBF, cauuid.cElems,
+    (GUID *)cauuid.pElems, 0, 0, NULL);
+    CoTaskMemFree(cauuid.pElems);
+    pSpec->Release();*/
+    CStdString filterName;
+    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
+    CLog::Log(LOGNOTICE, "%s \"%s\" expose ISpecifyPropertyPages", __FUNCTION__, filterName.c_str());
+
+    return true;
+  } else
+    return false;
+}
+bool CDSConfig::LoadChapters(void)
+{
+  if (! m_pSplitter)
+    return false;
+
+  CStdString splitterName;
+  g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(m_pSplitter), splitterName);
+
+  CLog::Log(LOGDEBUG, "%s Looking for chapters in \"%s\"", __FUNCTION__, splitterName.c_str());
+
+  if (SUCCEEDED(m_pSplitter->QueryInterface(IID_IAMExtendedSeeking, (void **) &m_pIAMExtendedSeeking)))
+  {
+    long chaptersCount = -1;
+    m_pIAMExtendedSeeking->get_MarkerCount(&chaptersCount);
+    if (chaptersCount <= 0)
+    {
+      SAFE_RELEASE(m_pIAMExtendedSeeking);
+      return false;
+    }
+
+    ChapterInfos *infos = NULL;
+    BSTR chapterName;
+    for (int i = 1; i < chaptersCount + 1; i++)
+    {
+      infos = new ChapterInfos();
+      infos->name = ""; infos->time = 0;
+
+      if (SUCCEEDED(m_pIAMExtendedSeeking->GetMarkerName(i, &chapterName)))
+      {
+        g_charsetConverter.wToUTF8(chapterName, infos->name);
+        SysFreeString(chapterName);
+      } else
+        infos->name = "Unknown chapter";
+
+      m_pIAMExtendedSeeking->GetMarkerTime(i, &infos->time);
+
+      infos->time *= 1000; // To ms      
+      CLog::Log(LOGNOTICE, "%s Chapter \"%s\" found. Start time: %f", __FUNCTION__, infos->name.c_str(), infos->time);
+      m_pChapters.insert( std::pair<long, ChapterInfos *>(i, infos) );
+    }
+
+    m_lCurrentChapter = 1;
+
+    return true;
+  } else
+  {
+    CLog::Log(LOGERROR, "%s The splitter \"%s\" doesn't support chapters", __FUNCTION__, splitterName.c_str());
+    return false;
+  }
+
+}
+void CDSConfig::UpdateChapters( __int64 currentTime )
+{
+  if (!m_pChapters.empty()
+    && GetChapterCount() > 1)
+  {
+
+    m_pIAMExtendedSeeking->get_CurrentMarker(&m_lCurrentChapter);
+
+    /*for (std::map<long, ChapterInfos *>::iterator it = m_pChapters.begin();
+      it != m_pChapters.end(); ++it)
+    {
+      if (it->first == GetChapterCount())
+      {
+        m_lCurrentChapter = it->first;
+        return;
+      }
+
+      if ((currentTime >= (__int64)(it->second->time)) &&
+        (currentTime < (__int64)(m_pChapters[it->first + 1]->time)))
+      {
+        m_lCurrentChapter = it->first;
+        return;
+      }
+    }*/
+  }
+}
 int CDSConfig::GetAudioStreamCount()
 {
 /*  if (!m_pIAMStreamSelect)
@@ -319,21 +438,7 @@ int CDSConfig::GetAudioStream()
 {
   if (m_pAudioStreams.size() == 0)
     return -1;
-  //DWORD nStreams = 0, flags, group, prevgroup = -1;
-  //LCID lcid;
-  //WCHAR* wname = NULL;
-  //IUnknown* pObj;
-  //IUnknown* pUnk;
-  //m_pIAMStreamSelect->Count(&nStreams);
-  //flags = 0;
-  //group = 0;
-  //wname = NULL;
-  //for(DWORD i = 0; i < nStreams; i++, pObj = NULL, pUnk = NULL)
-  //{
-  //  m_pIAMStreamSelect->Info(i, NULL, &flags, &lcid, &group, &wname, &pObj, &pUnk);
-  //  if ( ((int)flags) == 1 )//AMSTREAMSELECTENABLE_ENABLE = 1
-  //    return (int)i;
-  //}
+  
   int i = 0;
   for (std::map<long, IAMStreamSelectInfos *>::const_iterator it = m_pAudioStreams.begin();
     it != m_pAudioStreams.end(); ++it, i++)
@@ -360,32 +465,6 @@ void CDSConfig::GetAudioStreamName(int iStream, CStdString &strStreamName)
     }
   }
 }
-
-void CDSConfig::SetAudioStream(int iStream)
-{
-
-  if (!m_pIAMStreamSelect)
-    return;
-
-  //DWORD nCount = m_pAudioStreams.size();
-  int i =0; long lIndex = 0;
-  for (std::map<long, IAMStreamSelectInfos *>::const_iterator it = m_pAudioStreams.begin();
-    it != m_pAudioStreams.end(); ++it, i++)
-  {
-    /* Delete all streams */
-    m_pIAMStreamSelect->Enable(it->first, 0);
-    it->second->flags = 0;
-    if (iStream == i)
-      lIndex = it->first;
-  }
-
-  if (SUCCEEDED(m_pIAMStreamSelect->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
-  {
-    m_pAudioStreams[lIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-    CLog::Log(LOGDEBUG, "%s Sucessfully selected audio stream", __FUNCTION__);
-  }
-}
-
 
 int CDSConfig::GetSubtitleCount()
 {
@@ -546,4 +625,28 @@ bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
                                                 
   }
   return true;
+}
+
+int CDSConfig::GetChapterCount()
+{
+  if (! m_pChapters.empty())
+    return m_pChapters.size();
+  else
+    return -1;
+}
+int CDSConfig::GetChapter()
+{
+  if ( m_pChapters.empty())
+    return -1;
+  else
+    return m_lCurrentChapter;
+}
+
+void CDSConfig::GetChapterName(CStdString& strChapterName)
+{
+  int currentChapter = GetChapter();
+  if (currentChapter == -1)
+    return;
+
+  strChapterName = m_pChapters[currentChapter]->name;
 }

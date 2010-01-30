@@ -118,7 +118,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, TiXmlElement *
       SAFE_RELEASE(pFS);
       return hr;
     } else {
-      CLog::Log(LOGERROR, "%s Source filter \"%s\" can't open file \"%s\"", __FUNCTION__, m_pStrSource.c_str(), pWinFilePath.c_str());
+      CLog::Log(LOGERROR, "%s Source filter \"%s\" can't open file \"%s\" (result: %X)", __FUNCTION__, m_pStrSource.c_str(), pWinFilePath.c_str(), hr);
     }
     SAFE_RELEASE(pFS);
   }
@@ -282,27 +282,35 @@ HRESULT CFGLoader::InsertAudioRenderer()
 
   CDirectShowEnumerator p_dsound;
   std::vector<DSFilterInfo> deviceList = p_dsound.GetAudioRenderers();
-  std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
+  
   //see if there a config first 
-  for (int i=0; iter != deviceList.end(); i++)
+  for (std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
+    iter != deviceList.end(); ++iter)
   {
     DSFilterInfo dev = *iter;
     if (g_guiSettings.GetString("dsplayer.audiorenderer").Equals(dev.lpstrName))
     {
       currentGuid = dev.lpstrGuid;
       currentName = dev.lpstrName;
+      break;
     }
-    ++iter;
   }
   if (currentName.IsEmpty())
   {
     currentGuid = DShowUtil::CStringFromGUID(CLSID_DSoundRender);
     currentName.Format("Default DirectSound Device");
   }
+
   m_pStrAudioRenderer = currentName;
   pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
   hr = pFGF->Create(&ppBF);
   hr = m_pGraphBuilder->AddFilter(ppBF,DShowUtil::AnsiToUTF16(currentName));
+
+  if (SUCCEEDED(hr))
+    CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrAudioRenderer.c_str());
+  else
+    CLog::Log(LOGNOTICE, "%s Failed to add \"%s\" to the graph (result: %X)", __FUNCTION__, m_pStrAudioRenderer.c_str(), hr);
+
   SAFE_RELEASE(ppBF);
   return hr;
 }
@@ -313,15 +321,19 @@ HRESULT CFGLoader::InsertVideoRenderer()
   IBaseFilter* ppBF = NULL;
   
   if (g_sysinfo.IsVistaOrHigher())
+  {
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
       m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
     else 
       m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
+  }
   else
+  {
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
       m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
     else 
       m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
+  }
     
 
   // Renderers

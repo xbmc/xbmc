@@ -454,8 +454,20 @@ void CDSGraph::SeekInMilliSec(double sec)
 }
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
+  // Chapter support
+  if (bLargeStep && GetChapterCount() > 1)
+  {
+    if (bPlus)
+      SeekChapter(GetChapter() + 1);
+    else
+      SeekChapter(GetChapter() - 1);
+
+    return;
+  }
+
   if (!m_pMediaSeeking || !m_pMediaControl)
     return;
+
   __int64 seek;
   if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
@@ -575,13 +587,13 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
       SeekInMilliSec((LPARAM)lParam);
       break;
     case ID_SEEK_FORWARDSMALL:
-      Seek(true,false);
-	  CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
-	  break;
+      Seek(true, false);
+	    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
+	    break;
 	case ID_SEEK_FORWARDLARGE:
-      Seek(true,true);
-	  CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
-	  break;
+      Seek(true, true);
+	    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
+	    break;
     case ID_SEEK_BACKWARDSMALL:
       Seek(false,false);
 	  CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
@@ -696,4 +708,28 @@ done:
       CLog::Log(LOGERROR, "%s Can't change audio stream", __FUNCTION__);
   }
 
+}
+
+int CDSGraph::SeekChapter(int iChapter)
+{
+  if (GetChapterCount() > 0)
+  {
+    if (iChapter < 1)
+      iChapter = 1;
+    if (iChapter > GetChapterCount())
+      return 0;
+
+    // Seek to the chapter.
+    CLog::Log(LOGDEBUG, "%s Seeking to chapter %d", __FUNCTION__, iChapter);
+    SeekInMilliSec( m_pGraphBuilder->GetDsConfig()->GetChapters()[iChapter]->time );
+  }
+  else
+  {
+    // Do a regular big jump.
+    if (iChapter > GetChapter())
+      Seek(true, true);
+    else
+      Seek(false, true);
+  }
+  return 0;
 }

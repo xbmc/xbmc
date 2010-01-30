@@ -2168,7 +2168,7 @@
   <string id="33083">Enable custom script button</string>
   
   <string id="33100">DsPlayer</string>
-  <string id="33101">Force Windows xp default renderer VMR9</string>
-  <string id="33102">Force Windows Vista and higher default renderer EVR</string>
+  <string id="33101">Use VMR9 instead of EVR Renderer</string>
+  <string id="33102">Use EVR instead of VMR9 Renderer</string>
   <string id="33103">Audio Renderer</string>
 </strings>

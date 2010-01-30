@@ -25,6 +25,9 @@
 #include <streams.h>
 #include <map>
 
+// IAMExtendedSeeking
+#include <qnetwork.h>
+
 #include "igraphbuilder2.h"
 #include "Filters/IMpaDecFilter.h"
 #include "Filters/IMPCVideoDecFilter.h"
@@ -40,6 +43,12 @@ struct IAMStreamSelectInfos
   DWORD group;
 };
 
+struct ChapterInfos
+{
+  CStdString name;
+  double time; // in ms
+};
+
 class CDSConfig
 {
 public:
@@ -50,36 +59,47 @@ public:
 
   CStdString GetDxvaMode()  { return m_pStdDxva; };
   std::map<long, IAMStreamSelectInfos *> GetAudioStreams() { return m_pAudioStreams; }
+  std::map<long, ChapterInfos *> GetChapters() { return m_pChapters; }
   IAMStreamSelect * GetStreamSelector() { return m_pIAMStreamSelect; }
 
 //AudioStream
   virtual int  GetAudioStreamCount();
   virtual int  GetAudioStream();
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
-  virtual void SetAudioStream(int iStream);
 
   virtual int  GetSubtitleCount();
   virtual int  GetSubtitle();
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName);
   virtual void SetSubtitle(int iStream);
+
+  // Chapters
+  virtual int  GetChapterCount();
+  virtual int  GetChapter();
+  virtual void GetChapterName(CStdString& strChapterName);
+  void UpdateChapters( __int64 currentTime );
   
 protected:
-  bool LoadAudioStreams();
+  bool LoadStreams();
+  bool LoadPropertiesPage(IBaseFilter *pBF);
+  bool LoadChapters();
   bool GetMpaDec(IBaseFilter* pBF);
   bool GetMpcVideoDec(IBaseFilter* pBF);
   bool GetffdshowVideo(IBaseFilter* pBF);
   void LoadFilters();
   CCritSec m_pLock;
-  //
   
 private:
   //Direct Show Filters
+  long                           m_lCurrentChapter;
   IFilterGraph2*                 m_pGraphBuilder;
   IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
   IMpaDecFilter*                 m_pIMpaDecFilter;
   IAMStreamSelect*               m_pIAMStreamSelect;
+  IAMExtendedSeeking*            m_pIAMExtendedSeeking;
   IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
   std::map<long, IAMStreamSelectInfos *>     m_pAudioStreams;
   std::map<long, IAMStreamSelectInfos *>     m_pEmbedSubtitles;
+  std::vector<IBaseFilter *>                 m_pPropertiesFilters;
+  std::map<long, ChapterInfos *>             m_pChapters;
 };

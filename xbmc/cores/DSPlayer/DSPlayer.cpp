@@ -168,6 +168,7 @@ void CDSPlayer::OnExit()
 void CDSPlayer::Process()
 {
   m_callback.OnPlayBackStarted();
+
   bool pStartPosDone = true;
   // allow renderer to switch to fullscreen if requested
   //m_pDsGraph.EnableFullscreen(true);
@@ -202,6 +203,7 @@ void CDSPlayer::Process()
     {
 	    Sleep(250);
 	    m_pDsGraph.UpdateTime();
+      m_pDsGraph.UpdateChapters( m_pDsGraph.GetTime() );
 	  }
     if (m_pDsGraph.FileReachedEnd())
     { 
@@ -301,16 +303,16 @@ void CDSPlayer::Seek(bool bPlus, bool bLargeStep)
   if (bPlus)
   {
     if (!bLargeStep)
-      SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_FORWARDSMALL,0);
-	else
-	  SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_FORWARDLARGE,0);
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDSMALL,0);
+	  else
+	    SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDLARGE,0);
   }
   else
   {
     if (!bLargeStep)
-      SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_BACKWARDSMALL,0);
-	else
-	  SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_BACKWARDLARGE,0);
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDSMALL,0);
+	  else
+	    SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDLARGE,0);
   }
 }
 
@@ -332,8 +334,25 @@ bool CDSPlayer::OnAction(const CAction &action)
   switch(action.id)
   {
     case ACTION_NEXT_ITEM:
-      Stop();
-	  break;
+    case ACTION_PAGE_UP:
+      if(GetChapterCount() > 0)
+      {
+        SeekChapter( GetChapter() + 1 );
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      }
+      else
+        break;
+    case ACTION_PREV_ITEM:
+    case ACTION_PAGE_DOWN:
+      if(GetChapterCount() > 0)
+      {
+        SeekChapter( GetChapter() - 1 );
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      }
+      else
+        break;
   }
 	
   // return false to inform the caller we didn't handle the message

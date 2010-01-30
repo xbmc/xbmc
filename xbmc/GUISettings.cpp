@@ -526,7 +526,7 @@ void CGUISettings::Initialize()
   //Dsplayer
   AddCategory(5,"dsplayer",33100);
   //If vista or higher non default is vmr9
-  AddBool(1, "dsplayer.forcenondefaultrenderer", 33101 ? 33102 : g_sysinfo.IsVistaOrHigher(), false);
+  AddBool(1, "dsplayer.forcenondefaultrenderer", g_sysinfo.IsVistaOrHigher() ? 33101 : 33102 , false);
   AddSeparator(2,"dsplayer.sep1");
   AddString(3, "dsplayer.audiorenderer", 33103, "Default", SPIN_CONTROL_TEXT);
 
