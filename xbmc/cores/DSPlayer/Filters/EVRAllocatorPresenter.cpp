@@ -293,7 +293,7 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   if (m_pMacrovisionKicker)
     m_pMacrovisionKicker->Release();
   SAFE_DELETE(m_pMacrovisionKicker);
-  
+  g_Windowing.Unregister(this);
   g_renderManager.UnInit();
 
   CLog::Log(LOGDEBUG, "%s EVR Allocator resources released", __FUNCTION__);
