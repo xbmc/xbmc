@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27170 -->
+<!--Based on english strings version 27287 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -127,6 +127,8 @@
   <string id="168"></string>
   <string id="169">分辨率</string>
   <string id="170">调整显示器刷新率适应视频</string>
+  <string id="171">把 4:3 节目拉伸到 16:9</string>
+
 
   <string id="172">发行时间</string>
 
@@ -240,6 +242,10 @@
   <string id="296">清除书签</string>
   <string id="297">声音延迟</string>
   <string id="298">书签</string>
+  <string id="299">- AAC 数字音效</string>
+  <string id="300">- MP1 数字音效</string>
+  <string id="301">- MP2 数字音效</string>
+  <string id="302">- MP3 数字音效</string>
   <string id="303">延迟</string>
   <string id="304">语言</string>
   <string id="305">开启</string>
