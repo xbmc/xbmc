@@ -491,7 +491,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
 
   if(pCAP == NULL)
   {
-    CLog::Log(LOGERROR, "%s Failed to create the allocater presenter (clsid: %s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str());
+    CLog::Log(LOGERROR, "%s Failed to create the allocater presenter (error: %s)", __FUNCTION__, __err.c_str());
     return E_FAIL;
   }
 
@@ -502,7 +502,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
     pBF = (IBaseFilter*)pRenderer;
     *ppBF = pBF;
     pBF = NULL;
-    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created (clsid: %s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid));
+    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created", __FUNCTION__);
   }
   if(!*ppBF) hr = E_FAIL;
 

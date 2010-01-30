@@ -50,16 +50,16 @@ CDSConfig::~CDSConfig()
   for (std::map<long, IAMStreamSelectInfos *>::iterator it = m_pAudioStreams.begin();
     it != m_pAudioStreams.end(); ++it)
   {
-    SAFE_RELEASE(it->second->pObj);
-    SAFE_RELEASE(it->second->pUnk);
+    //SAFE_RELEASE(it->second->pObj);
+    //SAFE_RELEASE(it->second->pUnk);
     delete it->second;
   }
 
   for (std::map<long, IAMStreamSelectInfos *>::iterator it = m_pEmbedSubtitles.begin();
     it != m_pEmbedSubtitles.end(); ++it)
   {
-    SAFE_RELEASE(it->second->pObj);
-    SAFE_RELEASE(it->second->pUnk);
+    //SAFE_RELEASE(it->second->pObj);
+    //SAFE_RELEASE(it->second->pUnk);
     delete it->second;
   }
 }

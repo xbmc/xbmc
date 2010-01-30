@@ -360,7 +360,8 @@ HRESULT D3DPresentEngine::InitializeD3D()
 
   if (SUCCEEDED(hr))
   {
-    CLog::Log(LOGNOTICE,"Sucess to create DXVA2CreateDirect3DDeviceManager9");
+    CLog::Log(LOGNOTICE, "%s Successfully created IDirect3DDeviceManager9", __FUNCTION__);
+
     hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
   }
   IDirectXVideoDecoderService* pDecoderService = NULL;
