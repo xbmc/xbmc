@@ -27,6 +27,10 @@
 #include "RssReader.h"
 #include "log.h"
 
+#ifdef _WIN32
+#define close closesocket
+#endif
+
 using namespace std;
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
