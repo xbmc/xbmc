@@ -2098,12 +2098,12 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 #endif
 
-  if((bPlus && GetChapter() < GetChapterCount())
-  || (!bPlus && GetChapter() > 1))
+  if(((bPlus && GetChapter() < GetChapterCount())
+  || (!bPlus && GetChapter() > 1)) && bLargeStep)
   {
-    if(bPlus && GetChapter() < GetChapterCount())
+    if(bPlus)
       SeekChapter(GetChapter() + 1);
-    else if(!bPlus && GetChapter() > 1)
+    else
       SeekChapter(GetChapter() - 1);
     return;
   }
