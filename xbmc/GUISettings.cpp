@@ -41,6 +41,7 @@
 #include "visualizations/Visualisation.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 
 using namespace std;
 
