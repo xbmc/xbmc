@@ -712,7 +712,10 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     FormatAndSort(items);
     SetupFanart(items);
     for (int i = 0; i < items.Size(); ++i)
+    {
+      m_musicdatabase.SetPropertiesForFileItem(*items[i]);
       AddItemToPlayList(items[i], queuedItems);
+    }
   }
   else
   {
