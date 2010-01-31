@@ -39,9 +39,13 @@
 #include <Codecapi.h>
 
 using namespace std;
-CFGLoader::CFGLoader()
+CFGLoader::CFGLoader():
+  m_pGraphBuilder(NULL),
+  m_SourceF(NULL),
+  m_SplitterF(NULL),
+  m_pFGF(NULL)
 {
-  m_SourceF = NULL;
+
 }
 
 CFGLoader::~CFGLoader()
@@ -380,7 +384,7 @@ HRESULT CFGLoader::InsertAutoLoad()
 
 HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 {
-  HRESULT hr = S_OK;
+  HRESULT hr = E_FAIL;
   //Load the rules from the xml
   TiXmlDocument graphConfigXml;
   if (!graphConfigXml.LoadFile(m_xbmcConfigFilePath))
@@ -396,6 +400,8 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   {
     if (((CStdString)pRules->Attribute("filetypes")).Equals(pFileItem.GetAsUrl().GetFileType().c_str(),false))
     {
+      hr = S_OK;
+
       InsertVideoRenderer();
 
       if (FAILED(InsertSourceFilter(pFileItem, pRules)))
@@ -423,6 +429,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
       //AutoLoad is useless the only filters autoloading is the one that dont work with audio renderers 
       //if (FAILED(InsertAutoLoad()))
       //  hr = E_FAIL;
+      break;
     }
     pRules = pRules->NextSiblingElement();
   }

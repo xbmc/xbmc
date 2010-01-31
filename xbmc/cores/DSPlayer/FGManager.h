@@ -48,10 +48,8 @@ using namespace XFILE;
 
 
 class CFGLoader;
+
 class CFGManager:
-/*	: public CUnknown
-	, public IFilterGraph2
-	, public IGraphBuilderDeadEnd*/
 	public CCritSec
 {
 public:

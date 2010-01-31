@@ -66,18 +66,11 @@ CDSConfig::~CDSConfig()
   }
 
   while (! m_pPropertiesFilters.empty())
-  {
-    SAFE_RELEASE(m_pPropertiesFilters.back());
     m_pPropertiesFilters.pop_back();
-  }
 
   for (std::map<long, ChapterInfos *>::iterator it = m_pChapters.begin();
     it != m_pChapters.end(); ++it)
-  {
-    //SAFE_RELEASE(it->second->pObj);
-    //SAFE_RELEASE(it->second->pUnk);
     delete it->second;
-  }
 
 }
 
@@ -116,18 +109,28 @@ HRESULT CDSConfig::UnloadGraph()
   m_pGraphBuilder->EnumFilters(&pEnum);
 
   // Disconnect all the pins
+  int test = 0;
   while (S_OK == pEnum->Next(1, &pBF, 0))
   {
-    pBF->Stop();
+    hr = pBF->Stop();
     CStdString filterName;
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
-    //hr = RemoveFilter(m_pGraphBuilder, pBF);
-    m_pGraphBuilder->RemoveFilter(pBF);
-    if (SUCCEEDED(hr))
+
+    try
     {
-      //pBF->JoinFilterGraph(NULL, NULL); // Notify the filter we remove it from the graph - DONE IN REMOVE FILTER
+      hr = RemoveFilter(m_pGraphBuilder, pBF);
+    }
+    catch (...)
+    {
+      // ffdshow dxva decoder crash here, don't know why!
+      hr = E_FAIL;
+    }
+
+    pBF->JoinFilterGraph(NULL, NULL); // Notify the filter we remove it from the graph
+
+    if (SUCCEEDED(hr))
       CLog::Log(LOGNOTICE, "%s Successfully removed \"%s\" from the graph", __FUNCTION__, filterName.c_str());
-    } else 
+    else 
       CLog::Log(LOGERROR, "%s Failed to remove \"%s\" from the graph", __FUNCTION__, filterName.c_str());
     SAFE_RELEASE(pBF);
     pEnum->Reset();
@@ -156,6 +159,7 @@ bool CDSConfig::LoadStreams()
   regex.push_back(reg);
 
   /* Does the splitter support IAMStreamSelect ?*/
+  m_pIAMStreamSelect = NULL;
   HRESULT hr = m_pSplitter->QueryInterface(__uuidof(m_pIAMStreamSelect), (void **) &m_pIAMStreamSelect);
   if (SUCCEEDED(hr))
   {
@@ -228,9 +232,6 @@ bool CDSConfig::LoadStreams()
         g_charsetConverter.wToUTF8(pinNameW, pinName);
         CLog::Log(LOGDEBUG, "%s Output pin found : %s", __FUNCTION__, pinName.c_str());
 
-        /* TODO: Ne pas utiliser ConnectionMediaType. Renvois false si la pin n'est pas connecté -> problème.
-         Utiliser BeginEnumMediaTypes comme en dessous pour TOUTES les pins */
-
         BeginEnumMediaTypes(pPin, pET, pMediaType)
         {
 
@@ -258,14 +259,14 @@ bool CDSConfig::LoadStreams()
             }
           }
 
-          if (infos->name.Equals("Undetermined"))
-            infos->name.Format("Audio %02d", i);
+          if (infos->name.Trim().Equals("Undetermined"))
+            infos->name.Format("Audio %02d", i + 1);
 
           infos->pObj = pPin;
 
           if (pMediaType->majortype == MEDIATYPE_Audio)
           {
-            if (SUCCEEDED(DShowUtil::IsPinConnected(pPin)))
+            /*if (S_OK == DShowUtil::IsPinConnected(pPin))
             {
               if (audioPinAlreadyConnected)
               { // Prevent multiple audio stream at the same time
@@ -280,7 +281,10 @@ bool CDSConfig::LoadStreams()
                 infos->flags = AMSTREAMSELECTINFO_ENABLED;
                 audioPinAlreadyConnected = TRUE;
               }
-            }
+            }*/
+            pPin->ConnectedTo((IPin **)&infos->pUnk);
+            if (i == 0)
+              infos->flags = AMSTREAMSELECTINFO_ENABLED;
 
             m_pAudioStreams.insert( std::pair<long, IAMStreamSelectInfos *>(i, infos) );
             CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
@@ -309,7 +313,7 @@ bool CDSConfig::LoadStreams()
             j++;
 
           }
-
+          break; // if the pin has multiple output type, get only the first one
         }
         EndEnumMediaTypes(pET, pMediaType)
       }
@@ -329,26 +333,27 @@ bool CDSConfig::LoadStreams()
 
 bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
 {
-  ISpecifyPropertyPages *pSpec;
-  HRESULT hr = pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **)&pSpec);
-  if(hr == S_OK)
+  ISpecifyPropertyPages *pProp;
+  CAUUID pPages;
+  if ( SUCCEEDED( pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **) &pProp) ) )
   {
-    pBF->AddRef();
-    m_pPropertiesFilters.push_back(pBF);
-    /*hr = pSpec->GetPages(&cauuid);
-    hr = OleCreatePropertyFrame(g_hWnd, 0, 0, NULL , 1,
-    (IUnknown **)&pBF, cauuid.cElems,
-    (GUID *)cauuid.pElems, 0, 0, NULL);
-    CoTaskMemFree(cauuid.pElems);
-    pSpec->Release();*/
-    CStdString filterName;
-    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
-    CLog::Log(LOGNOTICE, "%s \"%s\" expose ISpecifyPropertyPages", __FUNCTION__, filterName.c_str());
-
+    pProp->GetPages(&pPages);
+    if (pPages.cElems > 0)
+    {
+      pBF->AddRef();
+      m_pPropertiesFilters.push_back(pBF);
+    
+      CStdString filterName;
+      g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
+      CLog::Log(LOGNOTICE, "%s \"%s\" expose ISpecifyPropertyPages", __FUNCTION__, filterName.c_str());
+    }
     return true;
-  } else
+    
+  } 
+  else
     return false;
 }
+
 bool CDSConfig::LoadChapters(void)
 {
   if (! m_pSplitter)
@@ -402,10 +407,11 @@ bool CDSConfig::LoadChapters(void)
 }
 void CDSConfig::UpdateChapters( __int64 currentTime )
 {
-  if (!m_pChapters.empty()
+  CAutoLock lock(&m_pLock);
+
+  if (m_pIAMExtendedSeeking && !m_pChapters.empty()
     && GetChapterCount() > 1)
   {
-
     m_pIAMExtendedSeeking->get_CurrentMarker(&m_lCurrentChapter);
 
     /*for (std::map<long, ChapterInfos *>::iterator it = m_pChapters.begin();
@@ -629,10 +635,7 @@ bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
 
 int CDSConfig::GetChapterCount()
 {
-  if (! m_pChapters.empty())
-    return m_pChapters.size();
-  else
-    return -1;
+  return m_pChapters.size();
 }
 int CDSConfig::GetChapter()
 {

@@ -18,6 +18,9 @@
 #include "D3DResource.h"
 typedef HRESULT (__stdcall *PTR_MFCreateVideoSampleFromSurface)(IUnknown* pUnkSurface, IMFSample** ppSample);
 typedef HRESULT (__stdcall *PTR_DXVA2CreateDirect3DDeviceManager9)(UINT* pResetToken, IDirect3DDeviceManager9** ppDeviceManager);
+
+class CEVRAllocatorPresenter;
+
 class D3DPresentEngine : public SchedulerCallback
 {
 public:
@@ -30,7 +33,7 @@ public:
     DeviceRemoved,  // The device was removed.
   };
 
-  D3DPresentEngine(HRESULT& hr);
+  D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& hr);
   virtual ~D3DPresentEngine();
 
   // GetService: Returns the IDirect3DDeviceManager9 interface.
@@ -88,6 +91,8 @@ protected:
 	RECT						         m_rcDestRect;           // Destination rectangle.
   D3DDISPLAYMODE              m_DisplayMode;          // Adapter's display mode.
 
+  CEVRAllocatorPresenter     * m_pAllocatorPresenter;
+  bool                         m_bExiting;
   CCritSec                     m_ObjectLock;           // Thread lock for the D3D device.
 
     // COM interfaces

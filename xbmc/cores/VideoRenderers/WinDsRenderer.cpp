@@ -33,7 +33,10 @@
 #include "MathUtils.h"
 #include "DShowUtil/DShowUtil.h"
 #include "Subtitles/DsSubtitleManager.h"
-CWinDsRenderer::CWinDsRenderer()
+CWinDsRenderer::CWinDsRenderer():
+  m_bConfigured(false),
+  m_D3DVideoTexture(NULL),
+  m_D3DMemorySurface(NULL)
 {
 }
 
@@ -99,7 +102,7 @@ unsigned int CWinDsRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
-  m_D3DVideoTexture = new CD3DTexture();
+  //m_D3DVideoTexture = new CD3DTexture();
   return 0;
 }
 

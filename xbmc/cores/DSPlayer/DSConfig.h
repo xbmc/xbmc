@@ -37,8 +37,8 @@ struct IAMStreamSelectInfos
 {
   CStdString name;
   DWORD flags;
-  IUnknown *pObj;
-  IUnknown *pUnk;
+  IUnknown *pObj; // Output pin of the splitter
+  IUnknown *pUnk; // Intput pin of the filter
   LCID  lcid;
   DWORD group;
 };
@@ -62,7 +62,8 @@ public:
   std::map<long, ChapterInfos *> GetChapters() { return m_pChapters; }
   IAMStreamSelect * GetStreamSelector() { return m_pIAMStreamSelect; }
 
-//AudioStream
+
+// AudioStream
   virtual int  GetAudioStreamCount();
   virtual int  GetAudioStream();
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
@@ -72,12 +73,14 @@ public:
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName);
   virtual void SetSubtitle(int iStream);
 
-  // Chapters
+// Chapters
   virtual int  GetChapterCount();
   virtual int  GetChapter();
   virtual void GetChapterName(CStdString& strChapterName);
   void UpdateChapters( __int64 currentTime );
   
+// Filters Property Pages
+  virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages() { return m_pPropertiesFilters; };
 protected:
   bool LoadStreams();
   bool LoadPropertiesPage(IBaseFilter *pBF);

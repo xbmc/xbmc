@@ -237,7 +237,7 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
   m_nrcSource.left = 0;
   m_nrcSource.bottom = 1;
   m_nrcSource.right = 1;
-  m_pD3DPresentEngine = new D3DPresentEngine(hr);
+  m_pD3DPresentEngine = new D3DPresentEngine(this, hr);
   m_bNeedNewDevice = false;
   if (!m_pD3DPresentEngine)
     hr = E_OUTOFMEMORY;
@@ -587,6 +587,18 @@ STDMETHODIMP CEVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, vo
     //hr = m_pDeviceManager->QueryInterface (__uuidof(IDirect3DDeviceManager9), (void**) ppv);
 
   return hr;
+}
+
+inline HRESULT CEVRAllocatorPresenter::CheckShutdown() const
+{
+  if (m_RenderState == RENDER_STATE_SHUTDOWN)
+  {
+    return MF_E_SHUTDOWN;
+  }
+  else
+  {
+    return S_OK;
+  }
 }
 
 
@@ -1199,7 +1211,8 @@ STDMETHODIMP CEVRAllocatorPresenter::ReleaseServicePointers()
   SAFE_RELEASE(m_pClock);
   SAFE_RELEASE(m_pMixer);
   SAFE_RELEASE(m_pMediaEventSink);
-
+  
+  CLog::Log(LOGDEBUG,"%s Mixer released", __FUNCTION__);
   return hr;
 }
 
@@ -1766,6 +1779,9 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
 
   HRESULT hr = S_OK;
   D3DPresentEngine::DeviceState state = D3DPresentEngine::DeviceOK;
+
+  if (m_RenderState == RENDER_STATE_SHUTDOWN)
+    return S_OK;
     
   if (!g_renderManager.IsConfigured())
     g_renderManager.Configure(m_pD3DPresentEngine->GetVideoWidth(),m_pD3DPresentEngine->GetVideoHeight(),m_pD3DPresentEngine->GetVideoWidth(),m_pD3DPresentEngine->GetVideoHeight(),m_scheduler.GetFps(),CONF_FLAGS_FULLSCREEN);

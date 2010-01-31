@@ -56,7 +56,7 @@ enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
                   MOVIE_PLAYING   = 0x02,
                   MOVIE_STOPPED   = 0x03,
                   MOVIE_PAUSED    = 0x04 };
-
+class CDSPlayer;
 class CDSGraph
 {
 public:
@@ -71,7 +71,7 @@ public:
   bool InitializedOutputDevice();
 
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
-  virtual HRESULT HandleGraphEvent();
+  virtual HRESULT HandleGraphEvent(CDSPlayer *player);
   bool FileReachedEnd(){ return m_bReachedEnd; };
 
   virtual bool IsPaused() const;
@@ -96,6 +96,7 @@ public:
   virtual int  GetAudioStream()       { return m_pGraphBuilder->GetDsConfig()->GetAudioStream(); }
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pGraphBuilder->GetDsConfig()->GetAudioStreamName(iStream,strStreamName); };
   virtual void SetAudioStream(int iStream); // { m_pGraphBuilder->GetDsConfig()->SetAudioStream(iStream); };
+  bool         IsChangingAudioStream () { return m_bChangingAudioStream; }
 
   virtual int  GetSubtitleCount()     { return m_pGraphBuilder->GetDsConfig()->GetSubtitleCount(); }
   virtual int  GetSubtitle()          { return m_pGraphBuilder->GetDsConfig()->GetSubtitle(); }
@@ -103,11 +104,24 @@ public:
   virtual void SetSubtitle(int iStream) { return m_pGraphBuilder->GetDsConfig()->SetSubtitle(iStream); };
 
   // Chapters
-  virtual int  GetChapterCount()                               { return m_pGraphBuilder->GetDsConfig()->GetChapterCount(); }
-  virtual int  GetChapter()                                    { return m_pGraphBuilder->GetDsConfig()->GetChapter(); }
+  virtual int  GetChapterCount()                               {
+    if (m_pGraphBuilder && m_pGraphBuilder->GetDsConfig())
+      return m_pGraphBuilder->GetDsConfig()->GetChapterCount();
+    else
+      return 0;
+  }
+  virtual int  GetChapter()                                    {
+    if (m_pGraphBuilder && m_pGraphBuilder->GetDsConfig())
+      return m_pGraphBuilder->GetDsConfig()->GetChapter();
+    else
+      return 0;
+  }
   virtual void GetChapterName(CStdString& strChapterName)      { m_pGraphBuilder->GetDsConfig()->GetChapterName(strChapterName); }
   virtual int  SeekChapter(int iChapter); //                       { return m_pGraphBuilder->GetDsConfig()->SeekChapter(iChapter); }
-  void         UpdateChapters( __int64 currentTime )           { m_pGraphBuilder->GetDsConfig()->UpdateChapters(currentTime); }
+  void         UpdateChapters( __int64 currentTime )           {
+    if (m_pGraphBuilder && m_pGraphBuilder->GetDsConfig())
+      m_pGraphBuilder->GetDsConfig()->UpdateChapters(currentTime);
+  }
 
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
   void OnPlayStop();
@@ -133,6 +147,7 @@ protected:
   int m_PlaybackRate;
   int m_currentSpeed;
   float m_fFrameRate;
+  bool m_bChangingAudioStream;
 
   CFile m_File;
   

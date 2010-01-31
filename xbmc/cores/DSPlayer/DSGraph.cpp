@@ -20,6 +20,7 @@
  */
 
 #include "DSGraph.h"
+#include "DSPlayer.h"
 #include "winsystemwin32.h" //Important needed to get the right hwnd
 #include "WindowingFactory.h" //important needed to get d3d object and device
 #include "Util.h"
@@ -65,6 +66,7 @@ CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
   m_pMediaSeeking = NULL;
   m_pBasicAudio = NULL;
   m_bReachedEnd = false;
+  m_bChangingAudioStream = false;
 }
 
 CDSGraph::~CDSGraph()
@@ -84,7 +86,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   m_pGraphBuilder = new CFGManager();
   m_pGraphBuilder->InitManager();
 
-  hr = m_pGraphBuilder->AddToROT();
+  if (SUCCEEDED(m_pGraphBuilder->AddToROT()))
+    CLog::Log(LOGDEBUG, "%s Successfully added XBMC to the Running Object Table", __FUNCTION__);
+  else
+    CLog::Log(LOGERROR, "%s Failed to add XBMC to the Running Object Table", __FUNCTION__);
 
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   if (FAILED(hr))
@@ -143,14 +148,18 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
+    if (IsChangingAudioStream())
+      return;
+
 	  OnPlayStop();
     SAFE_RELEASE(m_pMediaSeeking);
     SAFE_RELEASE(m_pMediaControl);
     SAFE_RELEASE(m_pMediaEvent);
     SAFE_RELEASE(m_pBasicAudio);
 
-    m_pGraphBuilder->GetDsConfig()->UnloadGraph();
     hr = m_pGraphBuilder->RemoveFromROT();
+    if (m_pGraphBuilder->GetDsConfig()) // It's possible that CDSConfig == NULL
+      m_pGraphBuilder->GetDsConfig()->UnloadGraph();
 
 	  SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
   }
@@ -241,7 +250,7 @@ void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 }
 
 
-HRESULT CDSGraph::HandleGraphEvent(void)
+HRESULT CDSGraph::HandleGraphEvent(CDSPlayer *player)
 {
   LONG evCode;
   LONG_PTR evParam1, evParam2;
@@ -252,41 +261,41 @@ HRESULT CDSGraph::HandleGraphEvent(void)
     return S_OK;
 
   // Process all queued events
-  while(SUCCEEDED(m_pMediaEvent->GetEvent(&evCode, &evParam1, &evParam2, 0)))
+  while(!player->IsAborted() &&  SUCCEEDED(m_pMediaEvent->GetEvent(&evCode, &evParam1, &evParam2, 0)))
   {
-// Free memory associated with callback, since we're not using it
-  hr = m_pMediaEvent->FreeEventParams(evCode, evParam1, evParam2);
-  switch(evCode)
-  {
-    case EC_STEP_COMPLETE:
-		  CLog::Log(LOGDEBUG,"%s EC_STEP_COMPLETE",__FUNCTION__);
-      g_application.m_pPlayer->CloseFile();
-      break;
-    case EC_COMPLETE:
-			CLog::Log(LOGDEBUG,"%s EC_COMPLETE",__FUNCTION__);
-			g_application.m_pPlayer->CloseFile();
-			break;
-    case EC_USERABORT:
-			CLog::Log(LOGDEBUG,"%s EC_USERABORT",__FUNCTION__);
-			g_application.m_pPlayer->CloseFile();
-			break;
-    case EC_ERRORABORT:
-		  CLog::Log(LOGDEBUG,"%s EC_ERRORABORT",__FUNCTION__);
-      g_application.m_pPlayer->CloseFile();
-      break;
-		case EC_STATE_CHANGE:
-      CLog::Log(LOGDEBUG,"%s EC_STATE_CHANGE",__FUNCTION__);
-      break;
-		case EC_DEVICE_LOST:
-      CLog::Log(LOGDEBUG,"%s EC_DEVICE_LOST",__FUNCTION__);
-      break;
-		case EC_VMR_RECONNECTION_FAILED:
-      CLog::Log(LOGDEBUG,"%s EC_VMR_RECONNECTION_FAILED",__FUNCTION__);
-      break;
-      default:
-      break;
-    }
-    }
+    switch(evCode)
+    {
+      case EC_STEP_COMPLETE:
+		    CLog::Log(LOGDEBUG,"%s EC_STEP_COMPLETE", __FUNCTION__);
+        g_application.m_pPlayer->CloseFile();
+        break;
+      case EC_COMPLETE:
+			  CLog::Log(LOGDEBUG,"%s EC_COMPLETE", __FUNCTION__);
+			  g_application.m_pPlayer->CloseFile();
+			  break;
+      case EC_USERABORT:
+			  CLog::Log(LOGDEBUG,"%s EC_USERABORT", __FUNCTION__);
+			  g_application.m_pPlayer->CloseFile();
+			  break;
+      case EC_ERRORABORT:
+        CLog::Log(LOGDEBUG,"%s EC_ERRORABORT. Error code: %X", __FUNCTION__, evParam1);
+        g_application.m_pPlayer->CloseFile();
+        break;
+		  case EC_STATE_CHANGE:
+        CLog::Log(LOGDEBUG,"%s EC_STATE_CHANGE", __FUNCTION__);
+        break;
+		  case EC_DEVICE_LOST:
+        CLog::Log(LOGDEBUG,"%s EC_DEVICE_LOST",__FUNCTION__);
+        break;
+		  case EC_VMR_RECONNECTION_FAILED:
+        CLog::Log(LOGDEBUG,"%s EC_VMR_RECONNECTION_FAILED",__FUNCTION__);
+        break;
+        default:
+        break;
+      }
+    if (m_pMediaEvent)
+      hr = m_pMediaEvent->FreeEventParams(evCode, evParam1, evParam2);
+  }
 
     return hr;
 }
@@ -619,7 +628,7 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
 
 void CDSGraph::SetAudioStream(int iStream)
 {
-
+  m_bChangingAudioStream = true; // Prevent DSPlayer to shutdown
   IAMStreamSelect *stream = m_pGraphBuilder->GetDsConfig()->GetStreamSelector();
   if (stream)
   {
@@ -643,7 +652,7 @@ void CDSGraph::SetAudioStream(int iStream)
     }
   } else {
 
-    if ((!m_pMediaControl) || (!m_pMediaSeeking))
+    if (!m_pMediaControl || !m_pMediaSeeking)
       return;
 
     std::map<long, IAMStreamSelectInfos *> audioStreams = m_pGraphBuilder->GetDsConfig()->GetAudioStreams();
@@ -668,7 +677,10 @@ void CDSGraph::SetAudioStream(int iStream)
 
     /* Disable filter */
     IPin *oldAudioStreamPin = (IPin *)(audioStreams[disableIndex]->pObj);
-    hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
+    connectedToPin = (IPin *)(audioStreams[disableIndex]->pUnk);
+    if (! connectedToPin)
+      hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
+
     if (FAILED(hr))
       goto done;
 
@@ -701,6 +713,7 @@ void CDSGraph::SetAudioStream(int iStream)
 done:
     m_pMediaControl->Run();
     this->SeekInMilliSec(DShowUtil::MFTimeToMsec(currentPos));
+    m_bChangingAudioStream = false;
 
     if (SUCCEEDED(hr))
       CLog::Log(LOGNOTICE, "%s Successfully changed audio stream", __FUNCTION__);

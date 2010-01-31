@@ -82,7 +82,8 @@ public:
   STDMETHOD_(ULONG, Release)();
 //IDsRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
-  
+
+  inline HRESULT CheckShutdown() const;
   
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
@@ -158,6 +159,7 @@ public:
   virtual void OnLostDevice();
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
+
 private:
   long m_refCount;
   
@@ -179,17 +181,6 @@ private:
 
 
 protected:
-  inline HRESULT CheckShutdown() const 
-  {
-    if (m_RenderState == RENDER_STATE_SHUTDOWN)
-    {
-      return MF_E_SHUTDOWN;
-    }
-    else
-    {
-      return S_OK;
-    }
-  }
 
   // IsActive: The "active" state is started or paused.
   inline BOOL IsActive() const

@@ -549,8 +549,12 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   CAutoLock cAutoLock(this);
   HRESULT hr = S_OK;
 
-  if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem) ))
+  if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem)))
+  {
+    CLog::Log(LOGERROR, "%s Failed to load filters rules", __FUNCTION__);
     return E_FAIL;
+  } else
+    CLog::Log(LOGDEBUG, "%s Successfully loaded filters rules", __FUNCTION__);
 
   hr = ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
 
@@ -846,8 +850,8 @@ HRESULT CFGManager::RemoveFromROT()
   if(!m_dwRegister) return S_FALSE;
 
   IRunningObjectTable* pROT;
-    if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
-  && SUCCEEDED(hr = pROT->Revoke(m_dwRegister)))
+  if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
+    && SUCCEEDED(hr = pROT->Revoke(m_dwRegister)))
     m_dwRegister = 0;
 
   return hr;

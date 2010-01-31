@@ -47,9 +47,10 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
 
 CDSPlayer::~CDSPlayer()
 {
+  m_bAbortRequest = true;
+
   m_pDsGraph.CloseFile();
 
-  m_bAbortRequest = true;
   //g_renderManager.UnInit();
   CLog::Log(LOGNOTICE, "DSPlayer: waiting for threads to exit");
   // wait for the main thread to finish up
@@ -72,7 +73,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   hr = m_pDsGraph.SetFile(file,m_PlayerOptions);
   if ( FAILED(hr) )
   {
-    CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s",__FUNCTION__,file.GetAsUrl().GetFileName().c_str());
+    CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__,file.GetAsUrl().GetFileName().c_str());
     return false;
   }
   
@@ -91,8 +92,7 @@ bool CDSPlayer::CloseFile()
   
 //  CoFreeUnusedLibraries();
   CLog::Log(LOGNOTICE, "CDSPlayer: finished waiting");
-  //StopThread();
-  m_bAbortRequest = true;
+
   m_callback.OnPlayBackEnded();
 
   // DShowUtil::UnloadExternalObjects(); //TODO: Test that !
@@ -188,7 +188,7 @@ void CDSPlayer::Process()
       SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
       pStartPosDone = true;
 	  }
-	  m_pDsGraph.HandleGraphEvent();
+	  m_pDsGraph.HandleGraphEvent(this);
     //Handle fastforward stuff
 	  if (m_currentSpeed != 10000)
 	  {

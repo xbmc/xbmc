@@ -1,4 +1,5 @@
 #include "EVRPresentEngine.h"
+#include "EVRAllocatorPresenter.h"
 #include <evr.h>
 #include <d3dx9tex.h>
 #include "utils/log.h"
@@ -12,14 +13,19 @@ HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID);
 //-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------
-static const GUID GUID_SURFACE_INDEX = { 0x30c8e9f6, 0x415, 0x4b81, { 0xa3, 0x15, 0x1, 0xa, 0xc6, 0xa9, 0xda, 0x19 } };
-D3DPresentEngine::D3DPresentEngine(HRESULT& hr) : 
+//static const GUID GUID_SURFACE_INDEX = { 0x30c8e9f6, 0x415, 0x4b81, { 0xa3, 0x15, 0x1, 0xa, 0xc6, 0xa9, 0xda, 0x19 } };
+
+D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& hr) : 
   m_DeviceResetToken(0),
   m_pDeviceManager(NULL),
   m_pCallback(NULL),
-	m_bufferCount(4)
+	m_bufferCount(4),
+  m_pAllocatorPresenter(presenter),
+  m_bExiting(false),
+  m_pVideoSurface(NULL),
+  m_pVideoTexture(NULL),
+  m_bNeedNewDevice(false)
 {
-  m_bNeedNewDevice = false;
   SetRectEmpty(&m_rcDestRect);
 
   pDXVA2HLib = LoadLibrary ("dxva2.dll");
@@ -30,13 +36,11 @@ D3DPresentEngine::D3DPresentEngine(HRESULT& hr) :
   if (!pfMFCreateVideoSampleFromSurface)
     CLog::Log(LOGERROR,"Could not find MFCreateVideoSampleFromSurface (evr.dll)");
 
-  m_pVideoSurface = NULL;
-  //m_pVideoTexture = new CD3DTexture();
-  m_pVideoTexture = NULL;
-
   ZeroMemory(&m_DisplayMode, sizeof(m_DisplayMode));
   ZeroMemory(m_pInternalVideoTexture, 7 * sizeof(IDirect3DTexture9*));
   ZeroMemory(m_pInternalVideoSurface, 7 * sizeof(IDirect3DSurface9*));
+
+  m_pVideoTexture = new CD3DTexture();
 
   hr = InitializeD3D();
 }
@@ -55,6 +59,7 @@ D3DPresentEngine::~D3DPresentEngine()
 	  FreeLibrary(pDXVA2HLib);
 	if (pEVRHLib)
 	  FreeLibrary(pEVRHLib);
+  SAFE_DELETE(m_pVideoTexture);
 }
 
 
@@ -178,12 +183,6 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
     CLog::Log(LOGERROR,"%s Getting the frame size returned an error",__FUNCTION__);
     return hr;
   }
-  
-  m_pVideoSurface = NULL;
-  if (m_pVideoTexture)
-	  SAFE_DELETE(m_pVideoTexture);
-
-  m_pVideoTexture = new CD3DTexture();
 
   D3DFORMAT d3dFormat;
   GUID subtype = GUID_NULL;
@@ -202,7 +201,7 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
   else
     d3dFormat = D3DFMT_X8R8G8B8;
 
-  if (!m_pVideoTexture->Create(m_iVideoWidth ,
+  if (! m_pVideoTexture->Create(m_iVideoWidth ,
                                m_iVideoHeight ,
                                1 , 
                                D3DUSAGE_RENDERTARGET,
@@ -264,11 +263,8 @@ void D3DPresentEngine::ReleaseResources()
 
 	CAutoLock lock(&m_ObjectLock);
 
-
-	if (m_pVideoTexture)
-		SAFE_DELETE(m_pVideoTexture);
-
 	S_RELEASE(m_pVideoSurface);
+
   //Releasing video surface
 	for (int i = 0; i < 7; i++) 
 	{ 
@@ -288,6 +284,7 @@ void D3DPresentEngine::ReleaseResources()
 //
 // This method is called by the scheduler and/or the presenter.
 //-----------------------------------------------------------------------------
+class CEVRAllocatorPresenter;
 
 HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 {
@@ -295,10 +292,17 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 
   IMFMediaBuffer* pBuffer = NULL;
   IDirect3DSurface9* pSurface = NULL;
+
+  if (m_pAllocatorPresenter->CheckShutdown() != S_OK)
+    return S_OK;
     
   if (!g_renderManager.IsConfigured())
     return S_OK;
+
   if (m_bNeedNewDevice)
+    return S_OK;
+
+  if (! m_pVideoTexture)
     return S_OK;
   
   if (pSample)
@@ -311,10 +315,11 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
   }
   if (m_bNeedNewDevice || !g_Windowing.Get3DDevice())
     return S_OK;
+
   if (pSurface)
   {
-    hr = g_Windowing.Get3DDevice()->StretchRect(pSurface,NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
-    g_renderManager.PaintVideoTexture(m_pVideoTexture,m_pVideoSurface);
+    hr = g_Windowing.Get3DDevice()->StretchRect(pSurface, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
+    g_renderManager.PaintVideoTexture(m_pVideoTexture, m_pVideoSurface);
     g_application.NewFrame();
     g_application.WaitFrame(100);
   }

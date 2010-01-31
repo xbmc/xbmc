@@ -54,6 +54,7 @@ public:
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo(CStdString& strGeneralInfo);
+  virtual bool IsAborted()                                      { return m_bAbortRequest; }
 
 //Audio stream selection
   virtual int  GetAudioStreamCount()  { return m_pDsGraph.GetAudioStreamCount(); }
@@ -93,7 +94,7 @@ public:
   
 //CDSPlayer
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam) { m_pDsGraph.ProcessDsWmCommand(wParam, lParam); }
-  virtual HRESULT HandleGraphEvent()                            { return m_pDsGraph.HandleGraphEvent(); }
+  virtual HRESULT HandleGraphEvent()                            { return m_pDsGraph.HandleGraphEvent(this); }
   virtual void Stop();
 protected:
   virtual void OnStartup();
