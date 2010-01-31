@@ -472,6 +472,7 @@ void CMPCInputThread::Process(void)
       switch (m_codec_type)
       {
         case CRYSTALHD_CODEC_ID_VC1:
+        case CRYSTALHD_CODEC_ID_WMV3:
           ProcessVC1(pInput);
         break;
         default:
@@ -1190,10 +1191,10 @@ void CCrystalHD::CheckCrystalHDLibraryPath(void)
 #endif
 }
 
-bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type,
-  int extradata_size, void *extradata)
+bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata)
 {
   BCM::BC_STATUS res;
+  uint32_t StreamType;
 
   if (!m_Device)
     return false;
@@ -1206,12 +1207,19 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
   {
     case CRYSTALHD_CODEC_ID_VC1:
       videoAlg = BCM::BC_VID_ALGO_VC1;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
+    break;
+    case CRYSTALHD_CODEC_ID_WMV3:
+      videoAlg = BCM::BC_VID_ALGO_VC1MP;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_H264:
       videoAlg = BCM::BC_VID_ALGO_H264;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     default:
       return false;
@@ -1220,7 +1228,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
 
   do
   {
-    res = m_dll->DtsOpenDecoder(m_Device, stream_type);
+    res = m_dll->DtsOpenDecoder(m_Device, StreamType);
     if (res != BCM::BC_STS_SUCCESS)
     {
       CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
