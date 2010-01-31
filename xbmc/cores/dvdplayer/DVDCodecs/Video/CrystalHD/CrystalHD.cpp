@@ -1211,7 +1211,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     break;
     case CRYSTALHD_CODEC_ID_WMV3:
       videoAlg = BCM::BC_VID_ALGO_VC1MP;
-      StreamType = BCM::BC_STREAM_TYPE_ES;
+      StreamType = BCM::BC_STREAM_TYPE_PES;
     break;
     case CRYSTALHD_CODEC_ID_H264:
       videoAlg = BCM::BC_VID_ALGO_H264;
