@@ -1399,6 +1399,12 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   if( pPacket->dts == DVD_NOPTS_VALUE )
     return;
 
+#if 0
+  // these checks seem to cause more harm, than good
+  // looping stillframes are not common in normal files
+  // and a better fix for this behaviour would be to 
+  // correct the timestamps with some offset
+
   if (current.type == STREAM_VIDEO
   && m_CurrentAudio.dts != DVD_NOPTS_VALUE
   && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
@@ -1428,6 +1434,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
       return;
     }
   }
+#endif
 
   double mindts, maxdts;
   if(m_CurrentAudio.dts == DVD_NOPTS_VALUE)
