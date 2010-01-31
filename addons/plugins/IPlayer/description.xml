@@ -9,7 +9,7 @@
   </platforms>
   <supportedcontent>
     <content>movies</content>
-	  <content>albums</content>
+    <content>albums</content>
   </supportedcontent>
   <minversion>
     <xbmc>25000</xbmc>

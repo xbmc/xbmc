@@ -3,7 +3,7 @@
 	<string id="30001">Radio stream to use</string>
 	<string id="30002">Only use preferred streams (no fallback)</string>
 	<string id="30005">Collapse programmes into series</string>
-	<string id="30006">Include programme count in Series and Category listings</string>	
+	<string id="30006">Include programme count in Series and Category listings</string>
 	<string id="30007">Thumbnail size (smaller = faster to load)</string>
 	<string id="30010">Use old stream (ignores stream settings)</string>
 	<string id="30020">Download thumbnails</string>

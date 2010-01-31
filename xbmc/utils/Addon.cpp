@@ -98,65 +98,65 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
-	switch (type)
-	{
-	case ADDON::ADDON_PVRDLL:
-		{
+  switch (type)
+  {
+    case ADDON::ADDON_PVRDLL:
+    {
       if (pretty)
         return g_localizeStrings.Get(23015);
-			return "pvrclient";
-		}
-	case ADDON::ADDON_SCRAPER:
-		{
+      return "pvrclient";
+    }
+    case ADDON::ADDON_SCRAPER:
+    {
       if (pretty)
         return g_localizeStrings.Get(21416);
-			return "scraper";
-		}
-	case ADDON::ADDON_SCRAPER_LIBRARY:
-		{
-			return "scraper-library";
-		}
-	case ADDON::ADDON_SCREENSAVER:
-		{
+      return "scraper";
+    }
+    case ADDON::ADDON_SCRAPER_LIBRARY:
+    {
+      return "scraper-library";
+    }
+    case ADDON::ADDON_SCREENSAVER:
+    {
       if (pretty)
         return g_localizeStrings.Get(23021);
-			return "screensaver";
-		}
-	case ADDON::ADDON_VIZ:
-		{
+      return "screensaver";
+    }
+    case ADDON::ADDON_VIZ:
+    {
       if (pretty)
         return g_localizeStrings.Get(23013);
-			return "visualization";
-		}
-	case ADDON::ADDON_PLUGIN:
-		{
+      return "visualization";
+    }
+    case ADDON::ADDON_PLUGIN:
+    {
       if (pretty)
         return g_localizeStrings.Get(23029);
-			return "plugin";
-		}
-	case ADDON::ADDON_SCRIPT:
-		{
+      return "plugin";
+    }
+    case ADDON::ADDON_SCRIPT:
+    {
       if (pretty)
         return g_localizeStrings.Get(23016);
-			return "script";
-		}
-	default:
-		{
-			return "";
-		}
-	}
+      return "script";
+    }
+    default:
+    {
+      return "";
+    }
+  }
 }
 
 const ADDON::TYPE TranslateType(const CStdString &string)
 {
-	if (string.Equals("pvrclient")) return ADDON_PVRDLL;
-	else if (string.Equals("scraper")) return ADDON_SCRAPER;
-	else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
-	else if (string.Equals("screensaver")) return ADDON_SCREENSAVER;
-	else if (string.Equals("visualization")) return ADDON_VIZ;
-	else if (string.Equals("plugin")) return ADDON_PLUGIN;
-	else if (string.Equals("script")) return ADDON_SCRIPT;
-	else return ADDON_UNKNOWN;
+  if (string.Equals("pvrclient")) return ADDON_PVRDLL;
+  else if (string.Equals("scraper")) return ADDON_SCRAPER;
+  else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
+  else if (string.Equals("screensaver")) return ADDON_SCREENSAVER;
+  else if (string.Equals("visualization")) return ADDON_VIZ;
+  else if (string.Equals("plugin")) return ADDON_PLUGIN;
+  else if (string.Equals("script")) return ADDON_SCRIPT;
+  else return ADDON_UNKNOWN;
 }
 
 bool AddonVersion::operator==(const AddonVersion &rhs) const
@@ -229,31 +229,31 @@ const AddonVersion CAddon::Version()
   return m_props.version;
 }
 
-//TODO platform/path crap should be negotiated between the addon and 
+//TODO platform/path crap should be negotiated between the addon and
 // the handler for it's type
 void CAddon::BuildLibName()
 {
   m_strLibName = "default";
   CStdString ext;
-	switch (m_props.type)
-	{
-	case ADDON_SCRAPER:
-	case ADDON_SCRAPER_LIBRARY:
+  switch (m_props.type)
+  {
+  case ADDON_SCRAPER:
+  case ADDON_SCRAPER_LIBRARY:
     ext = ADDON_SCRAPER_EXT;
     break;
-	case ADDON_SCREENSAVER:
+  case ADDON_SCREENSAVER:
     ext = ADDON_SCREENSAVER_EXT;
     break;
-	case ADDON_VIZ:
+  case ADDON_VIZ:
     ext = ADDON_VIS_EXT;
     break;
-	case ADDON_PLUGIN:
+  case ADDON_PLUGIN:
     ext = ADDON_PYTHON_EXT;
     break;
-	default:
+  default:
     m_strLibName.clear();
     return;
-	}
+  }
   // extensions are returned as *.ext
   // so remove the asterisk
   ext.erase(0,1);
