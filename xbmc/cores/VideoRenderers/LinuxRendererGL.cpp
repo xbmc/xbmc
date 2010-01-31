@@ -1822,11 +1822,11 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       }
       else
       {
-	GLint format;
-	if (p == 2) //V plane needs an alpha texture
-	  format = GL_ALPHA;
-	else
-	  format = GL_LUMINANCE;
+        GLint format;
+        if (p == 2) //V plane needs an alpha texture
+          format = GL_ALPHA;
+        else
+          format = GL_LUMINANCE;
 
         glTexImage2D(m_textureTarget, 0, format, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
       }
