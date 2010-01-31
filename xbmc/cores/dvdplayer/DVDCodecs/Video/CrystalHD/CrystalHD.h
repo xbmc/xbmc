@@ -149,6 +149,8 @@ protected:
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;
+  double        m_last_in_pts;
+  double        m_last_out_pts;
 
   CMPCInputThread *m_pInputThread;
   CMPCOutputThread *m_pOutputThread;

@@ -1081,6 +1081,8 @@ CCrystalHD::CCrystalHD() :
   m_Device(NULL),
   m_IsConfigured(false),
   m_drop_state(false),
+  m_last_in_pts(DVD_NOPTS_VALUE),
+  m_last_out_pts(DVD_NOPTS_VALUE),
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
@@ -1307,6 +1309,9 @@ bool CCrystalHD::IsOpenforDecode(void)
 
 void CCrystalHD::Reset(void)
 {
+  m_last_in_pts = DVD_NOPTS_VALUE;
+  m_last_out_pts = DVD_NOPTS_VALUE;
+
   // Calling for non-error flush, flush all 
   m_dll->DtsFlushInput(m_Device, 2);
   m_pInputThread->Flush();
@@ -1329,7 +1334,10 @@ unsigned int CCrystalHD::GetInputCount(void)
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
 {
   if (m_pInputThread)
+  {
+    m_last_in_pts = pts;
     return m_pInputThread->AddInput(pData, size, pts_dtoi(pts) );
+  }
   else
     return false;
 }
@@ -1356,7 +1364,31 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
   CPictureBuffer* pBuffer = m_pOutputThread->ReadyListPop();
 
-  pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
+  m_last_out_pts = pts_itod(pBuffer->m_timestamp);
+  if (m_last_in_pts != DVD_NOPTS_VALUE && (m_last_out_pts != DVD_NOPTS_VALUE) )
+  {
+    double  delta_pts;
+
+    delta_pts = m_last_in_pts - m_last_out_pts;
+    // figure out if we are running late.
+    if (delta_pts > DVD_MSEC_TO_TIME(750) )
+    {
+      // if really late, pop the ready list
+      while (m_pOutputThread->GetReadyCount())
+      {
+        m_pOutputThread->FreeListPush( pBuffer );
+        pBuffer = m_pOutputThread->ReadyListPop();      
+        m_last_out_pts = pts_itod(pBuffer->m_timestamp);
+        delta_pts = m_last_in_pts - m_last_out_pts;
+        if (delta_pts < DVD_MSEC_TO_TIME(750) )
+          break;
+      }
+      //CLog::Log(LOGDEBUG, "%s: m_in_pts(%f), m_out_pts(%f), delta_pts(%f)\n", __MODULE_NAME__,
+      //  m_last_in_pts, m_last_out_pts, delta_pts);
+    }
+  }
+
+  pDvdVideoPicture->pts = m_last_out_pts;
   pDvdVideoPicture->iWidth = pBuffer->m_width;
   pDvdVideoPicture->iHeight = pBuffer->m_height;
   pDvdVideoPicture->iDisplayWidth = pBuffer->m_width;
