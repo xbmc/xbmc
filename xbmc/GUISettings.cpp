@@ -457,7 +457,7 @@ void CGUISettings::Initialize()
 
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "powermanagement.shutdownstate", 13008, 0, shutdown, SPIN_CONTROL_TEXT);
+    AddInt(3, "powermanagement.shutdownstate", 13008, POWERSTATE_SHUTDOWN, shutdown, SPIN_CONTROL_TEXT);
   else
   {
     shutdown.insert(make_pair(13009,POWERSTATE_QUIT));
