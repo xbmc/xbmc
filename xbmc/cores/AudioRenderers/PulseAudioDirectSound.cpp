@@ -232,6 +232,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
       }
     }
   }
+  else
+    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA); 
 
   pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
 
