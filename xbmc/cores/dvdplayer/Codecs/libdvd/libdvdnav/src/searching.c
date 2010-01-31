@@ -310,7 +310,7 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
     return DVDNAV_STATUS_ERR;
   }
 #ifdef LOG_DEBUG
-  fprintf(MSG_OUT, "libdvdnav: seeking to offset=%lu pos=%u length=%u\n", offset, target, length);
+  fprintf(MSG_OUT, "libdvdnav: seeking to offset=%llu pos=%u length=%u\n", offset, target, length);
   fprintf(MSG_OUT, "libdvdnav: Before cellN=%u blockN=%u\n", state->cellN, state->blockN);
 #endif
 
