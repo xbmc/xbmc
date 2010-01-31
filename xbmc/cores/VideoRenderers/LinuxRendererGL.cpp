@@ -47,6 +47,13 @@
 #include <GL/glx.h>
 #endif
 
+//aligning stride to 16 makes fast_memcpy faster
+#define ALIGN_SIZE 16
+
+//due to a bug on osx nvidia, using gltexsubimage2d with a pbo bound and a null pointer
+//screws up the alpha, an offset fixes this
+#define PBO_OFFSET ALIGN_SIZE
+
 using namespace Shaders;
 
 static const GLubyte stipple_weave[] = {
@@ -1730,6 +1737,15 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.stride[1] = im.width >> im.cshift_x;
     im.stride[2] = im.width >> im.cshift_x;
 
+    //align stride, makes fast_memcpy faster
+    for (int i = 0; i < 3; i++)
+    {
+      im.stride[i] += ALIGN_SIZE - (im.stride[i] % ALIGN_SIZE);
+      //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
+      if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
+        im.stride[i] += ALIGN_SIZE;
+    }
+
     im.planesize[0] = im.stride[0] * im.height;
     im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
     im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
@@ -1741,8 +1757,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       for (int i = 0; i < 3; i++)
       {
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
-        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
       }
 
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -1936,6 +1952,15 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     im.stride[0] = im.width;
     im.stride[1] = im.width;
     im.stride[2] = 0;
+
+    //align stride, makes fast_memcpy faster
+    for (int i = 0; i < 2; i++)
+    {
+      im.stride[i] += ALIGN_SIZE - (im.stride[i] % ALIGN_SIZE);
+      //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
+      if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
+        im.stride[i] += ALIGN_SIZE;
+    }
 
     im.plane[0] = NULL;
     im.plane[1] = NULL;
@@ -2214,13 +2239,13 @@ void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
   bool pbo = false;
   for(int plane = 0; plane < MAX_PLANES; plane++)
   {
-    if(!buff.pbo[plane] || !buff.image.plane[plane])
+    if(!buff.pbo[plane] || buff.image.plane[plane] == (BYTE*)PBO_OFFSET)
       continue;
     pbo = true;
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
     glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
-    buff.image.plane[plane] = NULL;
+    buff.image.plane[plane] = (BYTE*)PBO_OFFSET;
   }
   if(pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -2231,13 +2256,13 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
   bool pbo = false;
   for(int plane = 0; plane < MAX_PLANES; plane++)
   {
-    if(!buff.pbo[plane] || buff.image.plane[plane])
+    if(!buff.pbo[plane] || buff.image.plane[plane] != (BYTE*)PBO_OFFSET)
       continue;
     pbo = true;
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
-    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.image.planesize[plane], NULL, GL_STREAM_DRAW_ARB);
-    buff.image.plane[plane] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.image.planesize[plane] + PBO_OFFSET, NULL, GL_STREAM_DRAW_ARB);
+    buff.image.plane[plane] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
   }
   if(pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
