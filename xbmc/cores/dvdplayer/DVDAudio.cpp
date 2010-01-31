@@ -92,7 +92,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   else
     codecstring = "PCM";
 
-  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
+  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
 
   if (!m_pAudioDecoder) return false;
 

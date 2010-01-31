@@ -3809,7 +3809,6 @@ bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
 
 bool CMusicDatabase::GetPathHash(const CStdString &path, CStdString &hash)
 {
-  CStdString strSQL;
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -4350,11 +4349,10 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
     entry = root->FirstChildElement();
     while (entry)
     {
-      CArtist artist;
-      CAlbum album;
       CStdString strTitle;
       if (strnicmp(entry->Value(), "artist", 6) == 0)
       {
+        CArtist artist;
         artist.Load(entry);
         strTitle = artist.strArtist;
         int idArtist = GetArtistByName(artist.strArtist);
@@ -4365,6 +4363,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
       }
       else if (strnicmp(entry->Value(), "album", 5) == 0)
       {
+        CAlbum album;
         album.Load(entry);
         strTitle = album.strAlbum;
         int idAlbum = GetAlbumByName(album.strAlbum,album.strArtist);

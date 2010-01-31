@@ -77,6 +77,8 @@ public:
   bool          m_interlace;
   double        m_framerate;
   uint64_t      m_timestamp;
+  unsigned int  m_color_range;
+  unsigned int  m_color_matrix;
   unsigned int  m_PictureNumber;
   DVDVideoPicture::EFormat m_format;
   unsigned char *m_y_buffer_ptr;
@@ -91,23 +93,15 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-/* We really don't want to include ffmpeg headers, so define these */
 enum _CRYSTALHD_CODEC_TYPES
 {
-  CRYSTALHD_CODEC_ID_MPEG2 = 2,
-  CRYSTALHD_CODEC_ID_H264  = 28,
-  CRYSTALHD_CODEC_ID_VC1   = 73,
-};
-enum _CRYSTALHD_STREAM_TYPE
-{
-  CRYSTALHD_STREAM_TYPE_ES         = 0,
-  CRYSTALHD_STREAM_TYPE_PES        = 1,
-  CRYSTALHD_STREAM_TYPE_TS         = 2,
-  CRYSTALHD_STREAM_TYPE_ES_TSTAMP  = 6,
+  CRYSTALHD_CODEC_ID_MPEG2 = 0,
+  CRYSTALHD_CODEC_ID_H264  = 1,
+  CRYSTALHD_CODEC_ID_VC1   = 2,
+  CRYSTALHD_CODEC_ID_WMV3  = 3,
 };
 
 typedef uint32_t CRYSTALHD_CODEC_TYPE;
-typedef uint32_t CRYSTALHD_STREAM_TYPE;
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 #define CRYSTALHD_FIELD_FULL        0x00
@@ -128,10 +122,10 @@ public:
 
   bool DevicePresent(void);
 
-  bool OpenDecoder(CRYSTALHD_CODEC_TYPE stream_type, CRYSTALHD_STREAM_TYPE codec_type, int extradata_size, void *extradata);
+  bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
   void CloseDecoder(void);
   bool IsOpenforDecode(void);
-  void Reset(bool flag);
+  void Reset(void);
   unsigned int GetInputCount(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
 
@@ -155,6 +149,8 @@ protected:
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;
+  double        m_last_in_pts;
+  double        m_last_out_pts;
 
   CMPCInputThread *m_pInputThread;
   CMPCOutputThread *m_pOutputThread;

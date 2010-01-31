@@ -564,11 +564,13 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
 
-      CMusicAlbumInfo albumInfo;
       bCanceled = false;
       if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
+      {
+        CMusicAlbumInfo albumInfo;
         if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
           m_albumsScanned.push_back(iAlbum);
+      }
     }
   }
   if (m_pObserver)

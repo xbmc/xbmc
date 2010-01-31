@@ -457,7 +457,6 @@ void CApplication::Preflight()
 
 bool CApplication::Create()
 {
-  g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
@@ -613,6 +612,7 @@ bool CApplication::Create()
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize();
 #endif
+  g_powerManager.Initialize();
 
   CLog::Log(LOGINFO, "Drives are mapped");
 
@@ -622,6 +622,8 @@ bool CApplication::Create()
   if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
     g_settings.m_iLastLoadedProfileIndex = 0;
 
+  g_guiSettings.Initialize();  // Initialize default Settings - don't move
+  g_powerManager.SetDefaults();
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
@@ -1293,8 +1295,6 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
-  g_powerManager.Initialize();
-
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -1645,9 +1645,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   m_skinReloadTime = 0;
 
-  CStdString strHomePath;
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
   // save the current window details

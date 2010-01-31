@@ -186,8 +186,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_SHOW_INFO)
         {
           ADDON::CScraperPtr scraper;
-          SScanSettings settings;
-          CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems->Size())
             return false;
 
@@ -200,6 +198,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             scraper->m_pathContent = CONTENT_NONE;
           else
           {
+            CStdString strDir;
             if (item->IsVideoDb()       &&
                 item->HasVideoInfoTag() &&
               !item->GetVideoInfoTag()->m_strPath.IsEmpty())
@@ -209,6 +208,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             else
               CUtil::GetDirectory(item->m_strPath,strDir);
 
+            SScanSettings settings;
             int iFound;
             m_database.GetScraperForPath(strDir, scraper, settings, iFound);
 
@@ -506,7 +506,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   CScraperUrl scrUrl;
   bool hasDetails(false);
   SScanSettings settings;
-  CVideoInfoScanner scanner;
   ADDON::AddonPtr addon;
   ADDON::CScraperPtr info;
 
@@ -550,6 +549,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   {
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
+    IMDB_MOVIELIST movielist;
+    if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
+      hasDetails = true;
+
     if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
@@ -564,10 +567,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
-      IMDB_MOVIELIST movielist;
-      if (info->Content() == CONTENT_TVSHOWS && !item->m_bIsFolder)
-        hasDetails = true;
-
       int returncode=0;
       if (!hasDetails && (returncode=scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress)) > 0)
       {

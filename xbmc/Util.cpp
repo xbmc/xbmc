@@ -262,8 +262,6 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 
   CStdString strFileNameTemp = strFileName;
 
-  CStdString strVolume;
-  CStdString strTestString;
   CRegExp reg(true);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
@@ -1600,7 +1598,6 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
     // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
     if (CUtil::IsRAR(strPathInRar) || CUtil::IsZIP(strPathInRar))
     {
-      CStdString strExtAdded;
       CStdString strRarInRar;
       if (CUtil::GetExtension(strPathInRar).Equals(".rar"))
         CUtil::CreateArchivePath(strRarInRar, "rar", strRarPath, strPathInRar);
@@ -1619,7 +1616,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
       {
         if (strExt.CompareNoCase(sub_exts[iPos]) == 0)
         {
-          CStdString strSourceUrl, strDestUrl;
+          CStdString strSourceUrl;
           if (CUtil::GetExtension(strRarPath).Equals(".rar"))
             CUtil::CreateArchivePath(strSourceUrl, "rar", strRarPath, strPathInRar);
           else

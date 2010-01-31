@@ -7,6 +7,7 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "GUISettings.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace ADDON;

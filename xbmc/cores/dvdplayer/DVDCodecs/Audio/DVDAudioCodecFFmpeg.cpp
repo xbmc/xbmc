@@ -25,6 +25,7 @@
 #endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
+#include "GUISettings.h"
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
@@ -81,6 +82,19 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if(m_pCodecContext->bits_per_coded_sample == 0)
     m_pCodecContext->bits_per_coded_sample = 16;
+
+  /* if we need to downmix, do it in ffmpeg as codecs are smarter then we can ever be */
+  if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
+  {
+    m_pCodecContext->request_channel_layout = CH_LAYOUT_STEREO;
+    m_pCodecContext->request_channels       = 2;
+  }
+
+  if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
+  {
+    m_pCodecContext->request_channel_layout = CH_LAYOUT_STEREO;
+    m_pCodecContext->channels               = 2;
+  }
 
   if( hints.extradata && hints.extrasize > 0 )
   {
@@ -141,6 +155,16 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
                                                  , &m_iBufferSize1
                                                  , pData
                                                  , iSize);
+
+#if (LIBAVCODEC_VERSION_INT > AV_VERSION_INT(52, 48, 0))
+  #warning "Make sure upstream version still needs this workaround (ffmpeg issue #1709)"
+#endif
+  /* upstream ac3dec is bugged, returns the packet size, not a negative value on error */
+  if (m_pCodecContext->codec_id == CODEC_ID_AC3 && iBytesUsed > iSize)
+  {
+    m_iBufferSize1 = 0;
+    return iSize;
+  }
 
   if(m_iBufferSize1 == 0 && iBytesUsed >= 0)
     m_iBuffered += iBytesUsed;
@@ -228,3 +252,45 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
 {
   return 16;
 }
+
+int8_t* CDVDAudioCodecFFmpeg::GetChannelMap()
+{
+  static int8_t map[14][8] =
+  {
+    {/* MONO         */ PCM_FRONT_CENTER                                                                                                                                          },
+    {/* STEREO       */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT                                                                                                                           },
+    {/* 2_1          */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_CENTER                                                                                                          },
+    {/* SURROUND     */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER                                                                                                         },
+    {/* 4POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_CENTER                                                                                        },
+    {/* 2_2          */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_SIDE_LEFT   , PCM_SIDE_RIGHT                                                                                         },
+    {/* QUAD         */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                         },
+    {/* 5POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_SIDE_LEFT    , PCM_SIDE_RIGHT                                                                      },
+    {/* 5POINT1      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                                      },
+    {/* 5POINT0_BACK */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                      },
+    {/* 5POINT1_BACK */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                      },
+    {/* 7POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                      },
+    {/* 7POINT1      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT, PCM_SIDE_LEFT            , PCM_SIDE_RIGHT           },
+    {/* 7POINT1_WIDE */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER , PCM_FRONT_RIGHT_OF_CENTER}
+  };
+
+  switch(m_pCodecContext->channel_layout &~ CH_LAYOUT_STEREO_DOWNMIX)
+  {
+    case CH_LAYOUT_MONO        : return map[ 0];
+    case CH_LAYOUT_STEREO      : return map[ 1];
+    case CH_LAYOUT_2_1         : return map[ 2];
+    case CH_LAYOUT_SURROUND    : return map[ 3];
+    case CH_LAYOUT_4POINT0     : return map[ 4];
+    case CH_LAYOUT_2_2         : return map[ 5];
+    case CH_LAYOUT_QUAD        : return map[ 6];
+    case CH_LAYOUT_5POINT0     : return map[ 7];
+    case CH_LAYOUT_5POINT1     : return map[ 8];
+    case CH_LAYOUT_5POINT0_BACK: return map[ 9];
+    case CH_LAYOUT_5POINT1_BACK: return map[10];
+    case CH_LAYOUT_7POINT0     : return map[11];
+    case CH_LAYOUT_7POINT1     : return map[12];
+    case CH_LAYOUT_7POINT1_WIDE: return map[13];
+    default:
+      return NULL;
+  }
+}
+

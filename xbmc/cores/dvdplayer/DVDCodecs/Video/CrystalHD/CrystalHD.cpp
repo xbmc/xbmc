@@ -226,6 +226,8 @@ public:
 protected:
   void                SetFrameRate(uint32_t resolution);
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
+  void                CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -238,6 +240,8 @@ protected:
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
+  unsigned int        m_color_range;
+  unsigned int        m_color_matrix;
   int                 m_interlace;
   double              m_framerate;
   int                 m_aspectratio_x;
@@ -468,6 +472,7 @@ void CMPCInputThread::Process(void)
       switch (m_codec_type)
       {
         case CRYSTALHD_CODEC_ID_VC1:
+        case CRYSTALHD_CODEC_ID_WMV3:
           ProcessVC1(pInput);
         break;
         default:
@@ -503,6 +508,8 @@ CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int h
   m_interlace = false;
   m_timestamp = DVD_NOPTS_VALUE;
   m_PictureNumber = 0;
+  m_color_range = 0;
+  m_color_matrix = 4;
   m_format = format;
   
   // setup y plane
@@ -593,106 +600,107 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 
   switch (resolution)
   {
-    case BCM::vdecRESOLUTION_480p0:
-      m_framerate = 60.0;
-    break;
-    case BCM::vdecRESOLUTION_576p0:
-      m_framerate = 25.0;
-    break;
-    case BCM::vdecRESOLUTION_720p0:
-      m_framerate = 60.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p0:
-      m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_480i0:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_1080i0:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_1080p23_976:
-      m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p29_97 :
-      m_framerate = 30.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p30  :
+    case BCM::vdecRESOLUTION_1080p30:
       m_framerate = 30.0;
     break;
-    case BCM::vdecRESOLUTION_1080p24  :
-      m_framerate = 24.0;
+    case BCM::vdecRESOLUTION_1080p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_1080p25 :
       m_framerate = 25.0;
     break;
+    case BCM::vdecRESOLUTION_1080p23_976:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_1080p0:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_1080p24:
+      m_framerate = 24.0;
+    break;
+    
     case BCM::vdecRESOLUTION_1080i29_97:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
+      m_framerate = 30.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
-    case BCM::vdecRESOLUTION_1080i25:
-      m_framerate = 50.0;
+    case BCM::vdecRESOLUTION_1080i0:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
     case BCM::vdecRESOLUTION_1080i:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
+      m_framerate = 30.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
     break;
+    case BCM::vdecRESOLUTION_1080i25:
+      m_framerate = 25.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
+    break;
+    
     case BCM::vdecRESOLUTION_720p59_94:
       m_framerate = 60.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_720p50:
-      m_framerate = 50.0;
-    break;
     case BCM::vdecRESOLUTION_720p:
-      m_framerate = 60.0;
+      m_framerate = 60.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_720p50:
+      m_framerate = 50.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_720p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p24:
+      m_framerate = 24.0;
+    break;
+    case BCM::vdecRESOLUTION_720p0:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
+    break;
+    
+    case BCM::vdecRESOLUTION_576p25:
       m_framerate = 25.0;
-      break;
-    case BCM::vdecRESOLUTION_720p29_97:
-      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_480i:
-      m_framerate = 60.0 * 1000.0 / 1001.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_NTSC:
-      m_framerate = 60.0;
-      m_interlace = TRUE;
-    break;
-    case BCM::vdecRESOLUTION_480p:
-      m_framerate = 60.0;
+    case BCM::vdecRESOLUTION_576p0:
+      m_framerate = 25.0;
     break;
     case BCM::vdecRESOLUTION_PAL1:
-      m_framerate = 50.0;
+      m_framerate = 25.0 * 1000.0 / 1001.0;
       m_interlace = TRUE;
+    break;
+    
+    case BCM::vdecRESOLUTION_480p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_480p0:
+      m_framerate = 60.0;
+    break;
+    case BCM::vdecRESOLUTION_480p:
+      m_framerate = 60.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_480p29_97:
+    
+    case BCM::vdecRESOLUTION_480i0:
       m_framerate = 30.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
     break;
-    case BCM::vdecRESOLUTION_576p25:
-      m_framerate = 25.0;
+    case BCM::vdecRESOLUTION_480i:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
     break;
+    case BCM::vdecRESOLUTION_NTSC:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
+      m_interlace = TRUE;
+    break;
+    
     default:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
   }
 
-  if(m_interlace)
-  {
-    m_framerate /= 2;
-  }
   CLog::Log(LOGDEBUG, "%s: resolution = %x  interlace = %d", __MODULE_NAME__, resolution, m_interlace);
-
 }
 
 void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
@@ -782,6 +790,61 @@ void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
   CLog::Log(LOGDEBUG, "%s: dec_par x = %d, dec_par y = %d", __MODULE_NAME__, m_aspectratio_x, m_aspectratio_y);
 }
 
+void CMPCOutputThread::CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  // copy y
+  if (w == stride)
+  {
+    fast_memcpy(pBuffer->m_y_buffer_ptr, procOut->Ybuff, w * h);
+  }
+  else
+  {
+    uint8_t *s_y = procOut->Ybuff;
+    uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+    for (int y = 0; y < h; y++, s_y += stride, d_y += w)
+      fast_memcpy(d_y, s_y, w);
+  }
+
+  //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
+  uint8_t *s_uv;
+  uint8_t *d_u = pBuffer->m_u_buffer_ptr;
+  uint8_t *d_v = pBuffer->m_v_buffer_ptr;
+  for (int y = 0; y < h/2; y++)
+  {
+    s_uv = procOut->UVbuff + (y * stride);
+    for (int x = 0; x < w/2; x++)
+    {
+      *d_u++ = *s_uv++;
+      *d_v++ = *s_uv++;
+    }
+  }
+}
+
+void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  if (w == stride)
+  {
+    int bytes = w * h;
+    // copy y
+    fast_memcpy(pBuffer->m_y_buffer_ptr, procOut->Ybuff, bytes);
+    // copy uv
+    fast_memcpy(pBuffer->m_uv_buffer_ptr, procOut->UVbuff, bytes/2 );
+  }
+  else
+  {
+    // copy y
+    uint8_t *s = procOut->Ybuff;
+    uint8_t *d = pBuffer->m_y_buffer_ptr;
+    for (int y = 0; y < h; y++, s += stride, d += w)
+      fast_memcpy(d, s, w);
+    // copy uv
+    s = procOut->UVbuff;
+    d = pBuffer->m_uv_buffer_ptr;
+    for (int y = 0; y < h/2; y++, s += stride, d += w)
+      fast_memcpy(d, s, w);
+    }
+}
+
 bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
@@ -808,8 +871,15 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer = m_FreeList.Pop();
           if (!pBuffer)
           {
+#ifdef _WIN32
+            // force Windows to use YV12 until DX renderer gets fixed.
+            if (TRUE)
+#else
             // No free pre-allocated buffers so make one
             if (m_interlace)
+#endif
+              // Something wrong with NV12 rendering of interlaced so copy out as YV12.
+              // Setting the picture format will determine the copy out method.
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
             else
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
@@ -823,127 +893,79 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_interlace = m_interlace > 0 ? true : false;
           pBuffer->m_framerate = m_framerate;
           pBuffer->m_timestamp = m_timestamp;
-          
+          pBuffer->m_color_range = m_color_range;
+          pBuffer->m_color_matrix = m_color_matrix;
           pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
 
           int w = procOut.PicInfo.width;
           int h = procOut.PicInfo.height;
-
-          switch(procOut.PicInfo.width)
+          // frame that are not equal in width to 720, 1280 or 1920
+          // need to be copied by a quantized stride (possible lib/driver bug) so force it.
+          int stride;
+          if (w <= 720)
+            stride = 720;
+          else if (w <= 1280)
+            stride = 1280;
+          else
+            stride = 1920;
+            
+          if (pBuffer->m_format == DVDVideoPicture::FMT_NV12)
           {
-            case 720:
-            case 1280:
-            case 1920:
+            CopyOutAsNV12(pBuffer, &procOut, w, h, stride);
+          }
+          else
+          {
+            if (pBuffer->m_interlace)
             {
-              if (pBuffer->m_interlace)
-              {
-                // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
-                // can't tell which frames are odd, which are even so use picture number.
-                uint8_t *s, *d;
-                int stride = w*2;
+              // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
+              // can't tell which frames are odd, which are even so use picture number.
+              int line_width = w*2;
 
-                if (pBuffer->m_PictureNumber & 1)
-                  m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
-                else
-                  m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
-
-                // copy luma
-                s = procOut.Ybuff;
-                d = m_interlace_buf->m_y_buffer_ptr;
-                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-                  d += stride;
-                for (int y = 0; y < h/2; y++, s += w, d += stride)
-                {
-                  fast_memcpy(d, s, w);
-                }
-
-                //copy chroma
-                stride = w/2;
-                uint32_t uvdoublet;
-                uint32_t *s_uv = (uint32_t*)procOut.UVbuff;
-                uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
-                uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
-
-                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-                {
-                  d_u += stride;
-                  d_v += stride;
-                }
-                for (int y = 0; y < h/4; y++, d_u += stride, d_v += stride) {
-                  for (int x = 0; x < w/4; x++) {
-                    uvdoublet = *s_uv++;
-                    *d_u++ = (uint8_t)(uvdoublet);
-                    *d_v++ = (uint8_t)(uvdoublet >> 8 );
-                    *d_u++ = (uint8_t)(uvdoublet >> 16);
-                    *d_v++ = (uint8_t)(uvdoublet >> 24);
-                  }
-                }
-
-                pBuffer->m_field = m_interlace_buf->m_field;
-                // copy y
-                fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,  pBuffer->m_y_buffer_size);
-                // copy u
-                fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
-                // copy v
-                fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
-              }
+              if (pBuffer->m_PictureNumber & 1)
+                m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
               else
-              {
-                // copy y
-                fast_memcpy(pBuffer->m_y_buffer_ptr, procOut.Ybuff, pBuffer->m_y_buffer_size);
-                // copy uv
-                fast_memcpy(pBuffer->m_uv_buffer_ptr, procOut.UVbuff, pBuffer->m_uv_buffer_size);
-              }
-            }
-            break;
+                m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
 
-            // frame that are not equal in width to 720, 1280 or 1920
-            // need to be copied by a quantized stride (possible lib/driver bug).
-            default:
+              // copy luma
+              uint8_t *s_y = procOut.Ybuff;
+              uint8_t *d_y = m_interlace_buf->m_y_buffer_ptr;
+              if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
+                d_y += line_width;
+              for (int y = 0; y < h/2; y++, s_y += stride, d_y += line_width)
+              {
+                fast_memcpy(d_y, s_y, w);
+              }
+
+              //copy chroma
+              line_width = w/2;
+              uint8_t *s_uv;
+              uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
+              uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
+              if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
+              {
+                d_u += line_width;
+                d_v += line_width;
+              }
+              for (int y = 0; y < h/4; y++, d_u += line_width, d_v += line_width) {
+                s_uv = procOut.UVbuff + (y * stride);
+                for (int x = 0; x < w/2; x++) {
+                  *d_u++ = *s_uv++;
+                  *d_v++ = *s_uv++;
+                }
+              }
+
+              pBuffer->m_field = m_interlace_buf->m_field;
+              // copy y
+              fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,  pBuffer->m_y_buffer_size);
+              // copy u
+              fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
+              // copy v
+              fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
+            }
+            else
             {
-              unsigned char *s, *d;
-
-              if (w < 720)
-              {
-                // copy y
-                s = procOut.Ybuff;
-                d = pBuffer->m_y_buffer_ptr;
-                for (int y = 0; y < h; y++, s += 720, d += w)
-                  fast_memcpy(d, s, w);
-                // copy uv
-                s = procOut.UVbuff;
-                d = pBuffer->m_uv_buffer_ptr;
-                for (int y = 0; y < h/2; y++, s += 720, d += w)
-                  fast_memcpy(d, s, w);
-              }
-              else if (w < 1280)
-              {
-                // copy y
-                s = procOut.Ybuff;
-                d = pBuffer->m_y_buffer_ptr;
-                for (int y = 0; y < h; y++, s += 1280, d += w)
-                  fast_memcpy(d, s, w);
-                // copy uv
-                s = procOut.UVbuff;
-                d = pBuffer->m_uv_buffer_ptr;
-                for (int y = 0; y < h/2; y++, s += 1280, d += w)
-                  fast_memcpy(d, s, w);
-              }
-              else
-              {
-                // copy y
-                s = procOut.Ybuff;
-                d = pBuffer->m_y_buffer_ptr;
-                for (int y = 0; y < h; y++, s += 1920, d += w)
-                  fast_memcpy(d, s, w);
-                // copy uv
-                s = procOut.UVbuff;
-                d = pBuffer->m_uv_buffer_ptr;
-                for (int y = 0; y < h/2; y++, s += 1920, d += w)
-                  fast_memcpy(d, s, w);
-              }
+              CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
             }
-            break;
           }
 
           m_ReadyList.Push(pBuffer);
@@ -972,6 +994,8 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         m_width = procOut.PicInfo.width;
         m_height = procOut.PicInfo.height;
+        m_color_range = 0;
+        m_color_matrix = procOut.PicInfo.colour_primaries;
         SetAspectRatio(&procOut.PicInfo);
         SetFrameRate(procOut.PicInfo.frame_rate);
         if (procOut.PicInfo.flags & VDEC_FLAG_INTERLACED_SRC)
@@ -997,24 +1021,28 @@ bool CMPCOutputThread::GetDecoderOutput(void)
 void CMPCOutputThread::Process(void)
 {
   bool got_picture;
-  //BCM::BC_STATUS ret;
-  //BCM::BC_DTS_STATUS decoder_status;
+  BCM::BC_STATUS ret;
+  BCM::BC_DTS_STATUS decoder_status;
 
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
     got_picture = false;
     
-    // limit ready list to 20, makes no sense to pre-decode any more
-    if (m_ReadyList.Count() < 20)
+    ret = m_dll->DtsGetDriverStatus(m_Device, &decoder_status);
+    if (ret == BCM::BC_STS_SUCCESS)
     {
-      got_picture = GetDecoderOutput();
-      /*
-      CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
-        decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
-      CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
-        decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
-      */
+      // limit ready list to 20, makes no sense to pre-decode any more
+      if (m_ReadyList.Count() < 20)
+      {
+        got_picture = GetDecoderOutput();
+        /*
+        CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
+          decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
+        CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
+          decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
+        */
+      }
     }
 
     if (!got_picture)
@@ -1053,6 +1081,8 @@ CCrystalHD::CCrystalHD() :
   m_Device(NULL),
   m_IsConfigured(false),
   m_drop_state(false),
+  m_last_in_pts(DVD_NOPTS_VALUE),
+  m_last_out_pts(DVD_NOPTS_VALUE),
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
@@ -1163,10 +1193,10 @@ void CCrystalHD::CheckCrystalHDLibraryPath(void)
 #endif
 }
 
-bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_TYPE codec_type,
-  int extradata_size, void *extradata)
+bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata)
 {
   BCM::BC_STATUS res;
+  uint32_t StreamType;
 
   if (!m_Device)
     return false;
@@ -1179,12 +1209,19 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
   {
     case CRYSTALHD_CODEC_ID_VC1:
       videoAlg = BCM::BC_VID_ALGO_VC1;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
+    break;
+    case CRYSTALHD_CODEC_ID_WMV3:
+      videoAlg = BCM::BC_VID_ALGO_VC1MP;
+      StreamType = BCM::BC_STREAM_TYPE_PES;
     break;
     case CRYSTALHD_CODEC_ID_H264:
       videoAlg = BCM::BC_VID_ALGO_H264;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     default:
       return false;
@@ -1193,7 +1230,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_STREAM_TYPE stream_type, CRYSTALHD_CODEC_
 
   do
   {
-    res = m_dll->DtsOpenDecoder(m_Device, stream_type);
+    res = m_dll->DtsOpenDecoder(m_Device, StreamType);
     if (res != BCM::BC_STS_SUCCESS)
     {
       CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
@@ -1270,29 +1307,20 @@ bool CCrystalHD::IsOpenforDecode(void)
   return m_Device && m_IsConfigured;
 }
 
-void CCrystalHD::Reset(bool flag)
+void CCrystalHD::Reset(void)
 {
-  // if being asked to flush while asking to drop, ignore it.
-  if (!m_drop_state && flag)
-  {
-    // Calling for non-error flush, flush all 
-    m_dll->DtsFlushInput(m_Device, 2);
-    m_pInputThread->Flush();
-    m_pOutputThread->Flush();
+  m_last_in_pts = DVD_NOPTS_VALUE;
+  m_last_out_pts = DVD_NOPTS_VALUE;
 
-    while( m_BusyList.Count())
-      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
+  // Calling for non-error flush, flush all 
+  m_dll->DtsFlushInput(m_Device, 2);
+  m_pInputThread->Flush();
+  m_pOutputThread->Flush();
 
-  }
-  else
-  {
-    m_pOutputThread->Flush();
+  while( m_BusyList.Count())
+    m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
-    while( m_BusyList.Count())
-      m_pOutputThread->FreeListPush( m_BusyList.Pop() );
-  }
-  
-  Sleep(20);
+  CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
 
 unsigned int CCrystalHD::GetInputCount(void)
@@ -1306,7 +1334,10 @@ unsigned int CCrystalHD::GetInputCount(void)
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
 {
   if (m_pInputThread)
+  {
+    m_last_in_pts = pts;
     return m_pInputThread->AddInput(pData, size, pts_dtoi(pts) );
+  }
   else
     return false;
 }
@@ -1333,7 +1364,31 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
   CPictureBuffer* pBuffer = m_pOutputThread->ReadyListPop();
 
-  pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
+  m_last_out_pts = pts_itod(pBuffer->m_timestamp);
+  if (m_last_in_pts != DVD_NOPTS_VALUE && (m_last_out_pts != DVD_NOPTS_VALUE) )
+  {
+    double  delta_pts;
+
+    delta_pts = m_last_in_pts - m_last_out_pts;
+    // figure out if we are running late.
+    if (delta_pts > DVD_MSEC_TO_TIME(750) )
+    {
+      // if really late, pop the ready list
+      while (m_pOutputThread->GetReadyCount())
+      {
+        m_pOutputThread->FreeListPush( pBuffer );
+        pBuffer = m_pOutputThread->ReadyListPop();      
+        m_last_out_pts = pts_itod(pBuffer->m_timestamp);
+        delta_pts = m_last_in_pts - m_last_out_pts;
+        if (delta_pts < DVD_MSEC_TO_TIME(750) )
+          break;
+      }
+      //CLog::Log(LOGDEBUG, "%s: m_in_pts(%f), m_out_pts(%f), delta_pts(%f)\n", __MODULE_NAME__,
+      //  m_last_in_pts, m_last_out_pts, delta_pts);
+    }
+  }
+
+  pDvdVideoPicture->pts = m_last_out_pts;
   pDvdVideoPicture->iWidth = pBuffer->m_width;
   pDvdVideoPicture->iHeight = pBuffer->m_height;
   pDvdVideoPicture->iDisplayWidth = pBuffer->m_width;
@@ -1364,11 +1419,9 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   }
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  pDvdVideoPicture->iDuration = 0;
-  //pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
-  pDvdVideoPicture->color_range = 1;
-  // todo
-  //pDvdVideoPicture->color_matrix = 1;
+  pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
+  pDvdVideoPicture->color_range = pBuffer->m_color_range;
+  pDvdVideoPicture->color_matrix = pBuffer->m_color_matrix;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= pBuffer->m_interlace ? DVP_FLAG_INTERLACED : 0;
   //if (pBuffer->m_interlace)

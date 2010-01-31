@@ -2201,13 +2201,15 @@ void CFileItemList::Stack()
       if (stack.size() > 1)
       {
         // have a stack, remove the items and add the stacked item
-        CStackDirectory dir;
         // dont actually stack a multipart rar set, just remove all items but the first
         CStdString stackPath;
         if (Get(stack[0])->IsRAR())
           stackPath = Get(stack[0])->m_strPath;
         else
+        {
+          CStackDirectory dir;
           stackPath = dir.ConstructStackPath(*this, stack);
+        }
         item1->m_strPath = stackPath;
         // clean up list
         for (unsigned k = 1; k < stack.size(); k++)
@@ -2432,17 +2434,14 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
   // if a folder, check for folder.jpg
   if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
-    CFileItemList items;
-    CDirectory::GetDirectory(m_strPath, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
-
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      for (int j = 0; j < items.Size(); j++)
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
       {
-        if (items[j]->m_strPath.CompareNoCase(GetFolderThumb(thumbs[i])) == 0)
-          return items[j]->m_strPath;
+        return folderThumb;
       }
     }
   }
@@ -2598,17 +2597,14 @@ CStdString CFileItem::GetUserVideoThumb() const
   // 3. check folder image in_m_dvdThumbs (folder.jpg)
   if (m_bIsFolder && !IsFileFolder())
   {
-    CFileItemList items;
-    CDirectory::GetDirectory(m_strPath, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
-
     for (unsigned int i = 0; i < thumbs.size(); ++i)
     {
-      for (int j = 0; j < items.Size(); j++)
+      CStdString folderThumb(GetFolderThumb(thumbs[i]));
+      if (CFile::Exists(folderThumb))
       {
-        if (items[j]->m_strPath.CompareNoCase(GetFolderThumb(thumbs[i])) == 0)
-          return items[j]->m_strPath;
+        return folderThumb;
       }
     }
   }

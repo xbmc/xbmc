@@ -84,6 +84,10 @@ void CPowerManager::Initialize()
   m_instance = new CNullPowerSyscall();
 #endif
 
+}
+
+void CPowerManager::SetDefaults()
+{
   int defaultShutdown = g_guiSettings.GetInt("powermanagement.shutdownstate");
 
   switch (defaultShutdown)

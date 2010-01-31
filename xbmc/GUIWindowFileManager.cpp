@@ -122,10 +122,11 @@ CGUIWindowFileManager::~CGUIWindowFileManager(void)
 
 bool CGUIWindowFileManager::OnAction(const CAction &action)
 {
-  int item;
   int list = GetFocusedList();
   if (list >= 0 && list <= 1)
   {
+    int item;
+
     // the non-contextual menu can be called at any time
     if (action.actionId == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
     {

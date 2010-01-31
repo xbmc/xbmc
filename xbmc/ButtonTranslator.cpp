@@ -189,7 +189,9 @@ static const ActionMapping actions[] =
         {"red"               , ACTION_TELETEXT_RED},
         {"green"             , ACTION_TELETEXT_GREEN},
         {"yellow"            , ACTION_TELETEXT_YELLOW},
-        {"blue"              , ACTION_TELETEXT_BLUE}};
+        {"blue"              , ACTION_TELETEXT_BLUE},
+        {"increasepar"       , ACTION_INCREASE_PAR},
+        {"decreasepar"       , ACTION_DECREASE_PAR}};
 
 CButtonTranslator& CButtonTranslator::GetInstance()
 {

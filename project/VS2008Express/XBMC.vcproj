@@ -856,6 +856,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPassthroughFFmpeg.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.cpp"
 							>
 						</File>
@@ -867,14 +875,6 @@
 					<Filter
 						Name="Video"
 						>
-						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.h"
-							>
-						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h"
 							>
@@ -915,6 +915,142 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoPPFFmpeg.h"
 							>
 						</File>
+						<Filter
+							Name="CrystlHD"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\bits_reader.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\cpb.c"
+								>
+								<FileConfiguration
+									Name="Release (OpenGL)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (OpenGL)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\cpb.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\h264_parser.c"
+								>
+								<FileConfiguration
+									Name="Release (OpenGL)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (OpenGL)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\h264_parser.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\nal.c"
+								>
+								<FileConfiguration
+									Name="Release (OpenGL)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (OpenGL)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\nal.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="Overlay"
@@ -2098,19 +2234,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\PCMRemap.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PCMRemap.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\AudioRenderers\PulseAudioDirectSound.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32ChannelRemap.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\AudioRenderers\Win32ChannelRemap.h"
 					>
 				</File>
 				<File

@@ -702,7 +702,10 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     FormatAndSort(items);
     SetupFanart(items);
     for (int i = 0; i < items.Size(); ++i)
+    {
+      m_musicdatabase.SetPropertiesForFileItem(*items[i]);
       AddItemToPlayList(items[i], queuedItems);
+    }
   }
   else
   {
@@ -1238,7 +1241,6 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
   // sending a blank thumb to the skin.)
   if (g_application.IsPlayingAudio())
   {
-    CStdString strSongFolder;
     const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
     if (tag)
     {

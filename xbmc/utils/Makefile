@@ -36,6 +36,7 @@ SRCS=Addon.cpp \
      Win32Exception.cpp \
      CPUInfo.cpp \
      PCMAmplifier.cpp \
+     PCMRemap.cpp \
      LabelFormatter.cpp \
      Network.cpp \
      BitstreamStats.cpp \

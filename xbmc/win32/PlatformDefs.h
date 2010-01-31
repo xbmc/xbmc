@@ -82,6 +82,8 @@ typedef unsigned long ThreadIdentifier;
 #define lrint(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 #define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
 
+#define strtoll(p, e, b) _strtoi64(p, e, b)
+
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
 
 #endif // _WIN32

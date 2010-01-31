@@ -18,11 +18,14 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
     #include <libavformat/avformat.h>
+    #include <libavformat/riff.h>
   #else
     #include <ffmpeg/avformat.h>
+    #include <ffmpeg/riff.h>
   #endif
 #else
   #include "libavformat/avformat.h"
+  #include "libavformat/riff.h"
 #endif
 }
 
@@ -61,6 +64,21 @@ public:
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence)=0;
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
+  virtual AVFormatContext *avformat_alloc_context(void)=0;
+  virtual AVStream *av_new_stream(AVFormatContext *s, int id)=0;
+#if LIBAVFORMAT_VERSION_MAJOR < 53
+  virtual AVOutputFormat *guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
+#else
+  virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
+#endif
+  virtual int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap)=0;
+  virtual ByteIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
+                                           int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
+                                           int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
+                                           offset_t (*seek)(void *opaque, offset_t offset, int whence))=0;
+  virtual int av_write_header (AVFormatContext *s)=0;
+  virtual int av_write_trailer(AVFormatContext *s)=0;
+  virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -102,7 +120,22 @@ public:
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
-  
+  virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
+  virtual AVStream *av_new_stream(AVFormatContext *s, int id) { return ::av_new_stream(s, id); }
+#if LIBAVFORMAT_VERSION_MAJOR < 53
+  virtual AVOutputFormat *guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::guess_format(short_name, filename, mime_type); }
+#else
+  virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::av_guess_format(short_name, filename, mime_type); }
+#endif
+  virtual int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap) { return ::av_set_parameters(s, ap); }
+  virtual ByteIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
+                                           int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
+                                           int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
+                                           offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::av_alloc_put_byte(buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek) }
+  virtual int av_write_header (AVFormatContext *s) { return ::av_write_header (s); }
+  virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
+  virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
+
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
@@ -159,6 +192,21 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD3(int, url_fopen, (ByteIOContext **p1, const char *p2, int p3))
   DEFINE_METHOD1(int, url_fclose, (ByteIOContext *p1))
   DEFINE_METHOD3(offset_t, url_fseek, (ByteIOContext *p1, offset_t p2, int p3))
+  DEFINE_METHOD0(AVFormatContext *, avformat_alloc_context)
+  DEFINE_METHOD2(AVStream *, av_new_stream, (AVFormatContext *p1, int p2))
+#if LIBAVFORMAT_VERSION_MAJOR < 53
+  DEFINE_METHOD3(AVOutputFormat *, guess_format, (const char *p1, const char *p2, const char *p3))
+#else
+  DEFINE_METHOD3(AVOutputFormat *, av_guess_format, (const char *p1, const char *p2, const char *p3))
+#endif
+  DEFINE_METHOD2(int, av_set_parameters, (AVFormatContext *p1, AVFormatParameters *p2));
+  DEFINE_METHOD7(ByteIOContext *, av_alloc_put_byte, (unsigned char *p1, int p2, int p3, void *p4,
+                  int(*p5)(void *opaque, uint8_t *buf, int buf_size),
+                  int(*p6)(void *opaque, uint8_t *buf, int buf_size),
+                  offset_t(*p7)(void *opaque, offset_t offset, int whence)))
+  DEFINE_METHOD1(int, av_write_header , (AVFormatContext *p1))
+  DEFINE_METHOD1(int, av_write_trailer, (AVFormatContext *p1))
+  DEFINE_METHOD2(int, av_write_frame  , (AVFormatContext *p1, AVPacket *p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
     RESOLVE_METHOD(av_find_input_format)
@@ -184,6 +232,18 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(url_fseek)
     RESOLVE_METHOD(get_buffer)
     RESOLVE_METHOD(get_partial_buffer)
+    RESOLVE_METHOD(avformat_alloc_context)
+    RESOLVE_METHOD(av_new_stream)
+#if LIBAVFORMAT_VERSION_MAJOR < 53
+    RESOLVE_METHOD(guess_format)
+#else
+    RESOLVE_METHOD(av_guess_format)
+#endif
+    RESOLVE_METHOD(av_set_parameters)
+    RESOLVE_METHOD(av_alloc_put_byte)
+    RESOLVE_METHOD(av_write_header)
+    RESOLVE_METHOD(av_write_trailer)
+    RESOLVE_METHOD(av_write_frame)
   END_METHOD_RESOLVE()
 public:
   void av_register_all()

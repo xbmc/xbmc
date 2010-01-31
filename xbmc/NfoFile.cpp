@@ -64,6 +64,8 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
   if (FAILED(Load(strPath)))
     return NO_NFO;
 
+  CFileItemList items;
+  CStdString strScraperBasePath, strDefault, strSelected;
   bool bNfo=false;
 
   if(!CAddonMgr::Get()->HasAddons(ADDON_SCRAPER, m_content))

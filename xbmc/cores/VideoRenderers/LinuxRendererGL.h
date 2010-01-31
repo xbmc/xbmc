@@ -68,7 +68,6 @@ enum RenderMethod
   RENDER_SW=0x04,
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
-  RENDER_NV12=0x20
 };
 
 enum RenderQuality
@@ -165,7 +164,6 @@ protected:
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
-  void RenderNV12(int renderBuffer, int field);       // render using NV12 texture format
 
   CFrameBufferObject m_fbo;
 
