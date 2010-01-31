@@ -556,6 +556,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   {
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
+    IMDB_MOVIELIST movielist;
+    if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
+      hasDetails = true;
+
     if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
@@ -570,10 +574,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
-      IMDB_MOVIELIST movielist;
-      if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
-        hasDetails = true;
-
       int returncode=0;
       if (!hasDetails && (returncode=scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress)) > 0)
       {
