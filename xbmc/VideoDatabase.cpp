@@ -3265,7 +3265,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CScrape
     else
     {
       CStdString content = TranslateContent(scraper->Content());
-      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i where idPath=%i", content.c_str(), scraper->Parent().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
+      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i where idPath=%i", content.c_str(), scraper->Path().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
     }
     m_pDS->exec(strSQL.c_str());
   }

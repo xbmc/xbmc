@@ -2090,8 +2090,8 @@
   <string id="23007">New search</string>
   <string id="23008">Configure Add-on</string>
   <string id="23009">Disable Add-on</string>
-  <string id="23010">Are you sure you want to disable this add-on?</string>
-  <string id="23011">You may re-enable this from the 'Add Source' dialog</string>
+  <string id="23010">Enable Add-on</string>
+  <string id="23011">Version:</string>
   <string id="23012"></string>
   <string id="23013">Visualization</string>
   <string id="23014"></string>

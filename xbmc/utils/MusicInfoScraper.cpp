@@ -100,8 +100,8 @@ void CMusicInfoScraper::FindAlbuminfo()
   CUtil::URLEncode(parser.m_param[0]);
   CUtil::URLEncode(parser.m_param[1]);
 
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (file: '%s', content: '%s', date: '_s', framework: '%s')",
-    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content()).c_str()/*, m_scraper->m_strDate.c_str()*/, m_scraper->Version().c_str());
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (file: '%s', content: '%s')",
+    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content()).c_str());
 
   CScraperUrl scrURL;
   scrURL.ParseString(parser.Parse("CreateAlbumSearchUrl"));
@@ -200,7 +200,7 @@ void CMusicInfoScraper::FindArtistinfo()
   if (!parser.Load(m_scraper) || !parser.HasFunction("CreateAlbumSearchUrl"))
     return;
 
-  if (!m_scraper->GetSettingsXML() && m_scraper->GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))
+  if (!m_scraper->GetSettingsXML() && parser.HasFunction("GetSettings"))
   {
     m_scraper->LoadSettings();
     m_scraper->SaveFromDefault();

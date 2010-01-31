@@ -144,7 +144,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
   int controlId = CONTROL_START_CONTROL;
   bool bCloseDialog = false;
 
-  TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
   while (setting)
   {
     if (controlId == iControl)
@@ -307,7 +307,7 @@ bool CGUIDialogAddonSettings::SaveSettings(void)
 
   // Retrieve all the values from the GUI components and put them in the model
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
   while (setting)
   {
     CStdString id;
@@ -388,7 +388,7 @@ void CGUIDialogAddonSettings::CreateControls()
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
   while (setting)
   {
     const char *type = setting->Attribute("type");
@@ -405,8 +405,8 @@ void CGUIDialogAddonSettings::CreateControls()
     CStdString label;
     if (setting->Attribute("label") && atoi(setting->Attribute("label")) > 0)
     {
-      if (m_addon->Parent() != "")
-        label.Format("$ADDON[%s %s]", m_addon->Parent().c_str(), setting->Attribute("label"));
+      if (m_addon->Parent())
+        label.Format("$ADDON[%s %s]", m_addon->Parent()->UUID().c_str(), setting->Attribute("label"));
       else
         label.Format("$ADDON[%s %s]", m_addon->UUID().c_str(), setting->Attribute("label"));
     }
@@ -555,7 +555,7 @@ void CGUIDialogAddonSettings::CreateControls()
 void CGUIDialogAddonSettings::EnableControls()
 {
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
@@ -675,7 +675,7 @@ void CGUIDialogAddonSettings::SetDefaults()
   if (!m_addon)
     return;
 
-  TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);

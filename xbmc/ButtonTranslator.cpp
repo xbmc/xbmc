@@ -871,6 +871,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videofiles")) windowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("videolibrary")) windowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) windowID = WINDOW_VIDEO_PLAYLIST;
+  else if (strWindow.Equals("addonbrowser")) windowID = WINDOW_ADDON_BROWSER;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
   else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;

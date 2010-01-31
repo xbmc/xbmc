@@ -252,7 +252,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
     AddonPtr scraper = (*it)->Clone();
 
-    if (m_scraper && m_scraper->Parent() == (*it)->UUID())
+    if (m_scraper && m_scraper->Parent() && m_scraper->Parent()->UUID() == (*it)->UUID())
     { // don't overwrite preconfigured scraper
       scraper = m_scraper;
     }

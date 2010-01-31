@@ -536,15 +536,15 @@ namespace VIDEO
           if (result == CNfoFile::ERROR_NFO)
             continue;
           if (info2->Content() == CONTENT_TVSHOWS && result != CNfoFile::NO_NFO)
-          { // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
+          { //FIXME this comment doesn't match second comment
+            // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
             ADDON::CScraperPtr temp;
             SScanSettings settings;
             if (m_database.GetScraperForPath(pItem->m_strPath,temp,settings))
             {
-              ADDON::AddonPtr addon;
-              if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, temp->Parent(), addon))
+              if (temp->Parent())
               { // as we are working with a new clone, default scraper settings are saved
-                temp = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+                temp = boost::dynamic_pointer_cast<ADDON::CScraper>(temp->Parent());
                 m_database.SetScraperForPath(pItem->m_strPath,temp,settings);
               }
             }

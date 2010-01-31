@@ -27,6 +27,7 @@
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 #include <sstream>
 
@@ -43,7 +44,8 @@ AddonPtr CScraper::Clone() const
 
 bool CScraper::LoadSettings()
 {
-  if (Parent().IsEmpty())
+  //TODO if cloned settings don't exist, load master settings and copy
+  if (!Parent())
     return CAddon::LoadUserSettings();
   else
     return LoadSettingsXML();
@@ -77,10 +79,10 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
-  CStdString uuid = Parent();
-  if (uuid.IsEmpty())
+  CStdString uuid = UUID();
+  if (Parent())
   { // called from DialogAddonBrowser, so we are working with the master scraper settings
-    uuid = UUID();
+    uuid = Parent()->UUID();
   }
 
   // load our scraper xml

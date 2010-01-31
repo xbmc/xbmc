@@ -7,6 +7,8 @@ SRCS=Addon.cpp \
      Builtins.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \
+     DownloadQueue.cpp \
+     DownloadQueueManager.cpp \
      Event.cpp \
      fstrcmp.cpp \
      GUIInfoManager.cpp \

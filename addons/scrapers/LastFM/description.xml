@@ -14,6 +14,9 @@
   <summary>LastFM Music Scraper</summary>
   <description>Download Music information</description>
   <author>TEAMXBMC</author>
+  <dependencies>
+    <dependency minversion="1234" maxversion="">56e2e02c-1b76-4c91-87bb-0e90b1cb7c72</dependency>
+  </dependencies>
   <supportedcontent>
     <content>albums</content>
     <content>artists</content>

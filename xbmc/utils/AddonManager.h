@@ -25,6 +25,7 @@
 #include "Thread.h"
 #include "StdString.h"
 #include "DateTime.h"
+#include "DownloadQueue.h"
 #include <vector>
 #include <map>
 
@@ -37,6 +38,7 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
 
   const int        ADDON_DIRSCAN_FREQ         = 300;
+  const CStdString ADDON_XBMC_REPO_URL        = "http://mirrors.xbmc.org/addons/addons.xml";
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
   const CStdString ADDON_PYTHON_EXT           = "*.py";
@@ -89,7 +91,7 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr
+  class CAddonMgr : public IDownloadQueueObserver
   {
   public:
     static CAddonMgr* Get();
@@ -104,7 +106,8 @@ namespace ADDON
     bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
-    CStdString GetString(const CStdString &uuid, const int number);
+    bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
+   CStdString GetString(const CStdString &uuid, const int number);
 
     /* Addon operations */
     bool EnableAddon(AddonPtr &addon);
@@ -114,10 +117,19 @@ namespace ADDON
     bool Clone(const AddonPtr& parent, AddonPtr& child);
 
   private:
+    /* Addon Repositories */
+    virtual void OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult);
+    std::vector<TICKET> m_downloads;
+    VECADDONPROPS m_remoteAddons;
+    void UpdateRepos();
+    bool ParseRepoXML(const CStdString &path);
+
     void FindAddons(const TYPE &type);
     bool LoadAddonsXML(const TYPE &type);
     bool SaveAddonsXML(const TYPE &type);
     bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
+    bool DependenciesMet(AddonPtr &addon);
+    bool UpdateIfKnown(AddonPtr &addon);
 
     /* addons.xml */
     CStdString GetAddonsXMLFile() const;
@@ -132,7 +144,7 @@ namespace ADDON
     static CAddonMgr* m_pInstance;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
-    std::map<TYPE, CDateTime> m_lastScan;
+    std::map<TYPE, CDateTime> m_lastDirScan;
     std::map<CStdString, AddonPtr> m_uuidMap;
   };
 

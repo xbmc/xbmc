@@ -159,45 +159,62 @@ const ADDON::TYPE TranslateType(const CStdString &string)
 	else return ADDON_UNKNOWN;
 }
 
-CAddon::CAddon(const AddonProps &props)
-  : m_type(props.type)
-  , m_content(props.contents)
-  , m_guid(props.uuid)
-  , m_guid_parent(props.parent)
+bool AddonVersion::operator==(const AddonVersion &rhs) const
 {
-  m_strPath     = props.path;
-  m_strProfile  = GetProfilePath();
-  m_disabled    = true;
-  if (props.icon.empty()) BuildIconPath();
-  else m_icon   = props.icon;
-  m_stars       = props.stars;
-  m_strVersion  = props.version;
-  m_strName     = props.name;
-  m_summary     = props.summary;
-  m_strDesc     = props.description;
-  m_disclaimer  = props.disclaimer;
+  return str.Equals(rhs.str);
+}
+
+bool AddonVersion::operator!=(const AddonVersion &rhs) const
+{
+  return !(*this == rhs);
+}
+
+bool AddonVersion::operator>(const AddonVersion &rhs) const
+{
+  // easy compare two integer revisions
+  if (!str.Find('.') && !rhs.str.Find('.'))
+    return (atoi(str) > atoi(rhs.str));
+
+  return false;
+}
+
+bool AddonVersion::operator>=(const AddonVersion &rhs) const
+{
+  return (*this == rhs) || (*this > rhs);
+}
+
+bool AddonVersion::operator<(const AddonVersion &rhs) const
+{
+  return !(*this == rhs) && !(*this > rhs);
+}
+
+bool AddonVersion::operator<=(const AddonVersion &rhs) const
+{
+  return (*this == rhs) || !(*this > rhs);
+}
+
+std::ostream& AddonVersion::operator<<(std::ostream& out) const
+{
+  return out << str;
+}
+
+CAddon::CAddon(const AddonProps &props)
+  : m_props(props)
+  , m_parent(AddonPtr()) // null parent AddonPtr as default
+{
   if (props.libname.empty()) BuildLibName();
   else m_strLibName = props.libname;
   m_userSettingsPath = GetUserSettingsPath();
 }
 
 CAddon::CAddon(const CAddon &rhs)
-  : m_type(rhs.Type())
-  , m_content(rhs.m_content)
-  , m_guid(StringUtils::CreateUUID())
-  , m_guid_parent(rhs.UUID())
+  : m_props(rhs.Props())
+  , m_parent(const_cast<CAddon*>(&rhs))
 {
+  //m_uuid(StringUtils::CreateUUID())
   m_userXmlDoc  = rhs.m_userXmlDoc;
-  m_strPath     = rhs.Path();
   m_strProfile  = GetProfilePath();
   m_disabled    = false;
-  m_icon        = rhs.Icon();
-  m_stars       = rhs.Stars();
-  m_strVersion  = rhs.Version();
-  m_strName     = rhs.Name();
-  m_summary     = rhs.Summary();
-  m_strDesc     = rhs.Description();
-  m_disclaimer  = rhs.Disclaimer();
   m_strLibName  = rhs.LibName();
   m_userSettingsPath = GetUserSettingsPath();
 }
@@ -207,11 +224,9 @@ AddonPtr CAddon::Clone() const
   return AddonPtr(new CAddon(*this));
 }
 
-//TODO should cache thumbs/gfx by UUID rather than rely on these paths
-void CAddon::BuildIconPath()
+const AddonVersion CAddon::Version()
 {
-  m_icon.append(Path());
-  m_icon.append("/default.tbn");
+  return m_props.version;
 }
 
 //TODO platform/path crap should be negotiated between the addon and 
@@ -220,7 +235,7 @@ void CAddon::BuildLibName()
 {
   m_strLibName = "default";
   CStdString ext;
-	switch (m_type)
+	switch (m_props.type)
 	{
 	case ADDON_SCRAPER:
 	case ADDON_SCRAPER_LIBRARY:
@@ -254,8 +269,8 @@ bool CAddon::LoadStrings()
     return false;
 
   // Path where the language strings reside
-  CStdString pathToLanguageFile = m_strPath;
-  CStdString pathToFallbackLanguageFile = m_strPath;
+  CStdString pathToLanguageFile = m_props.path;
+  CStdString pathToFallbackLanguageFile = m_props.path;
   CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
@@ -285,7 +300,7 @@ CStdString CAddon::GetString(uint32_t id) const
 */
 bool CAddon::HasSettings()
 {
-  CStdString addonFileName = m_strPath;
+  CStdString addonFileName = m_props.path;
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
@@ -304,7 +319,7 @@ bool CAddon::HasSettings()
 
 bool CAddon::LoadSettings()
 {
-  CStdString addonFileName = m_strPath;
+  CStdString addonFileName = m_props.path;
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
@@ -366,7 +381,7 @@ void CAddon::SaveFromDefault()
     return;
   }
 
-  TiXmlElement *setting = GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = GetSettingsXML()->FirstChildElement("setting");
   while (setting)
   {
     CStdString id;

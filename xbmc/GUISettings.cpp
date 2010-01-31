@@ -238,15 +238,12 @@ void CGUISettings::Initialize()
   AddString(3, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
   AddString(5, "weather.plugin", 23027, "", SPIN_CONTROL_TEXT, true);
-  //FIXME keep this here until we figure out what to do with weather 'plugins'
-  AddString(6, "weather.manageplugins", 23075, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
   AddCategory(3,"musiclibrary",14022);
   AddBool(0, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.showcompilationartists", 13414, true);
-  AddString(7, "musiclibrary.managescraper", 23067, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
   AddString(6, "musiclibrary.scraper", 20194, "allmusic.xml", SPIN_CONTROL_TEXT);
@@ -269,7 +266,6 @@ void CGUISettings::Initialize()
   AddBool(6, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(7, "musicplayer.sep3");
   AddString(8, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
-  AddString(9, "musicplayer.managevisual", 23061, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicfiles", 14081);
   AddBool(1, "musicfiles.usetags", 258, true);
@@ -520,13 +516,9 @@ void CGUISettings::Initialize()
 
   AddCategory(5, "scrapers", 21412);
   AddString(1, "scrapers.moviedefault", 21413, "tmdb.xml", SPIN_CONTROL_TEXT);
-  AddString(2, "scrapers.managemoviescraper", 23066, "", BUTTON_CONTROL_STANDARD);
-  AddString(3, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
-  AddString(4, "scrapers.managetvshowscraper", 23070, "", BUTTON_CONTROL_STANDARD);
-  AddString(5, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
-  AddString(6, "scrapers.managemusicvideoscraper", 23068, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(7,"scrapers.sep2");
-  AddBool(8, "scrapers.langfallback", 21416, true);
+  AddString(2, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
+  AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
+  AddBool(4, "scrapers.langfallback", 21416, true);
 
   // network settings
   AddGroup(6, 705);
@@ -639,8 +631,6 @@ void CGUISettings::Initialize()
   AddPath(7, "screensaver.slideshowpath", 774, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(8, "screensaver.sep2");
   AddString(9, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(12, "screensaver.sep2");
-  AddString(13, "screensaver.manage", 23080, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "window", 0);
   AddInt(0, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);

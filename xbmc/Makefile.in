@@ -17,10 +17,12 @@ INCLUDES+=-Ilib/libcdio/libcdio/include
 SRCS=Application.cpp \
      CueDocument.cpp \
      GUISettings.cpp \
+     GUIWindowAddonBrowser.cpp \
      GUIWindowSettings.cpp \
      GUIWindowSettingsCategory.cpp \
      GUIWindowSettingsProfile.cpp \
      GUIWindowSettingsScreenCalibration.cpp \
+     Scraper.cpp \
      Settings.cpp \
      SettingsControls.cpp \
      GUIDialogMusicScan.cpp \
@@ -115,7 +117,6 @@ SRCS=Application.cpp \
      Song.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
-     GUIDialogAddonBrowser.cpp \
      GUIDialogAddonSettings.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
      GUIDialogBoxBase.cpp \

@@ -851,11 +851,13 @@ void CGUIWindowVideoNav::Render()
 
 void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper)
 {
+  //TODO wtf
+  // why reclone? at all
   ADDON::AddonPtr addon;
-  if (!scraper || !ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, scraper->Parent(), addon))
+  if (!scraper || !scraper->Parent())
     return;
 
-  ADDON::CScraperPtr info2 = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+  ADDON::CScraperPtr info2 = boost::dynamic_pointer_cast<ADDON::CScraper>(scraper->Clone());
   CStdString strPath,strFile;
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
