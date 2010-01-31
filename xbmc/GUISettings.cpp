@@ -514,12 +514,33 @@ void CGUISettings::Initialize()
   resume.insert(make_pair(12020,RESUME_ASK));
   AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, resume, SPIN_CONTROL_TEXT);
   AddSeparator(2, "videoplayer.sep1");
-#if defined(_WIN32) && defined(HAS_DX)
-  // No render methods other than AUTO on win32 DirectX
-  AddInt(0, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_AUTO, SPIN_CONTROL_TEXT);
-#else
-  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_CRYSTALHD, SPIN_CONTROL_TEXT);
+
+  map<int, int> renderers;
+  renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
+
+#ifdef HAS_XBOX_D3D
+  renderers.insert(make_pair(13355, RENDER_LQ_RGB_SHADER));
+  renderers.insert(make_pair(13356, RENDER_OVERLAYS));
+  renderers.insert(make_pair(13357, RENDER_HQ_RGB_SHADER));
+  renderers.insert(make_pair(21397, RENDER_HQ_RGB_SHADERV2));
 #endif
+
+#ifdef HAS_GL
+  renderers.insert(make_pair(13417, RENDER_METHOD_ARB));
+  renderers.insert(make_pair(13418, RENDER_METHOD_GLSL));
+  renderers.insert(make_pair(13419, RENDER_METHOD_SOFTWARE));
+#endif
+
+#ifdef HAVE_LIBVDPAU
+  renderers.insert(make_pair(13421, RENDER_METHOD_VDPAU));
+#endif
+
+#ifdef HAVE_LIBCRYSTALHD
+  if (CCrystalHD::GetInstance()->DevicePresent())
+    renderers.insert(make_pair(13425, RENDER_METHOD_CRYSTALHD));
+#endif
+  AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
+
 #ifdef HAS_GL
   AddBool(4, "videoplayer.usepbo", 13424, false);
 #endif

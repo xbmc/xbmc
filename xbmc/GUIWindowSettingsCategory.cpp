@@ -666,30 +666,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("videoplayer.rendermethod"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-#ifdef HAS_XBOX_D3D
-      pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
-      pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
-      pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
-      pControl->AddLabel(g_localizeStrings.Get(21397), RENDER_HQ_RGB_SHADERV2);
-#else
-      pControl->AddLabel(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
-      pControl->AddLabel(g_localizeStrings.Get(13417), RENDER_METHOD_ARB);
-      pControl->AddLabel(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL);
-      pControl->AddLabel(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE);
-#ifdef HAVE_LIBVDPAU
-      pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
-#endif
-#ifdef HAVE_LIBCRYSTALHD
-      if (CCrystalHD::GetInstance()->DevicePresent())
-        pControl->AddLabel(g_localizeStrings.Get(13425), RENDER_METHOD_CRYSTALHD);
-#endif
-#endif
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("network.enc"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
