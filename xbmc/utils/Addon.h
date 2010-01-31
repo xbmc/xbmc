@@ -33,7 +33,7 @@ class TiXmlElement;
 namespace ADDON
 {
 
-// utils  
+// utils
 const CStdString    TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
@@ -68,9 +68,9 @@ public:
     , version(addon->Version())
   { if(addon->Parent()) parent = addon->Parent()->UUID(); }
 
-  bool operator=(const AddonProps &rhs) 
+  bool operator=(const AddonProps &rhs)
   { return (*this).uuid == rhs.uuid
-    && (*this).type == rhs.type 
+    && (*this).type == rhs.type
     && (*this).version == rhs.version; }
   const CStdString uuid;
   const TYPE type;

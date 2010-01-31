@@ -54,7 +54,7 @@ protected:
   void Update();
   bool OnContextMenu(int iItem);
   void OnGetAddons(const ADDON::TYPE &type);
-  
+
   ADDON::TYPE m_type;
   CONTENT_TYPE m_content;
   CFileItemList* m_vecItems;

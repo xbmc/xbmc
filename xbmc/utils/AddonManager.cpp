@@ -554,7 +554,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
   bool isHome = CSpecialProtocol::XBMCIsHome();
-  
+
   // store any addons with unresolved deps, then recheck at the end
   VECADDONS unresolved;
 
@@ -757,7 +757,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
   * 5. operating system matches ours
   * 6. summary exists
   * 7. for scrapers & plugins, support at least one type of content
-  * 
+  *
   * NOTE: addon dependencies are handled in ::FindAddons()
   */
 
@@ -1034,7 +1034,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
       return false;
   }
 
-  addon->SetDeps(deps); 
+  addon->SetDeps(deps);
   return true;
 }
 
