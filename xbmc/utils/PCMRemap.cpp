@@ -92,6 +92,14 @@ void CPCMRemap::DumpMap(CStdString info, unsigned int channels, int8_t *channelM
   CLog::Log(LOGINFO, "CPCMRemap: %s channel map: %s\n", info.c_str(), mapping.c_str());
 }
 
+void CPCMRemap::Reset()
+{
+  m_inMap  = NULL;
+  m_outMap = NULL;
+  m_inSet  = false;
+  m_outSet = false;
+}
+
 /* sets the input format */
 void CPCMRemap::SetInputFormat(unsigned int channels, int8_t *channelMap, unsigned int sampleSize)
 {

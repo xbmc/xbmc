@@ -61,6 +61,7 @@ public:
   CPCMRemap();
   ~CPCMRemap();
 
+  void Reset();
   void SetInputFormat (unsigned int channels, int8_t *channelMap, unsigned int sampleSize);
   void SetOutputFormat(unsigned int channels, int8_t *channelMap);
   void Remap(void *data, void *out, unsigned int samples);

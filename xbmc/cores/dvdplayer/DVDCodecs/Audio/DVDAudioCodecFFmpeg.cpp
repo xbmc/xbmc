@@ -255,6 +255,7 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
 
 int8_t* CDVDAudioCodecFFmpeg::GetChannelMap()
 {
+  /* the side channels for < 7.0 are mapped to the back intentionally, do not change this! */
   static int8_t map[14][8] =
   {
     {/* MONO         */ PCM_FRONT_CENTER                                                                                                                                          },
@@ -262,10 +263,10 @@ int8_t* CDVDAudioCodecFFmpeg::GetChannelMap()
     {/* 2_1          */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_CENTER                                                                                                          },
     {/* SURROUND     */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER                                                                                                         },
     {/* 4POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_CENTER                                                                                        },
-    {/* 2_2          */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_SIDE_LEFT   , PCM_SIDE_RIGHT                                                                                         },
+    {/* 2_2          */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                         },
     {/* QUAD         */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                         },
-    {/* 5POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_SIDE_LEFT    , PCM_SIDE_RIGHT                                                                      },
-    {/* 5POINT1      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                                      },
+    {/* 5POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                      },
+    {/* 5POINT1      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                      },
     {/* 5POINT0_BACK */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                      },
     {/* 5POINT1_BACK */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                      },
     {/* 7POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                      },
