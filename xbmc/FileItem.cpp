@@ -792,6 +792,16 @@ bool CFileItem::IsSmb() const
   return CUtil::IsSmb(m_strPath);
 }
 
+bool CFileItem::IsXBMS() const
+{
+  return CUtil::IsXBMS(m_strPath);
+}
+
+bool CFileItem::IsURL() const
+{
+  return CUtil::IsURL(m_strPath);
+}
+
 bool CFileItem::IsDAAP() const
 {
   return CUtil::IsDAAP(m_strPath);
@@ -1960,7 +1970,7 @@ void CFileItemList::Stack()
       // 2. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
-        || item->m_strPath.Left(7).Equals("xbms://")
+        || item->IsXBMS()
         || CUtil::IsInRAR(item->m_strPath)
         || CUtil::IsInZIP(item->m_strPath)
         )
@@ -2229,7 +2239,7 @@ void CFileItemList::Stack()
         // the label is converted from utf8, but the filename is not)
         if (!g_guiSettings.GetBool("filelists.showextensions"))
           CUtil::RemoveExtension(stackName);
-        CUtil::UrlDecode(stackName);
+        CUtil::URLDecode(stackName);
         item1->SetLabel(stackName);
         item1->m_dwSize = size;
         break;
@@ -2239,10 +2249,10 @@ void CFileItemList::Stack()
   }
 }
 
-bool CFileItemList::Load()
+bool CFileItemList::Load(int windowID)
 {
   CFile file;
-  if (file.Open(GetDiscCacheFile()))
+  if (file.Open(GetDiscCacheFile(windowID)))
   {
     CLog::Log(LOGDEBUG,"Loading fileitems [%s]",m_strPath.c_str());
     CArchive ar(&file, CArchive::load);
@@ -2256,7 +2266,7 @@ bool CFileItemList::Load()
   return false;
 }
 
-bool CFileItemList::Save()
+bool CFileItemList::Save(int windowID)
 {
   int iSize = Size();
   if (iSize <= 0)
@@ -2265,7 +2275,7 @@ bool CFileItemList::Save()
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscCacheFile(), true)) // overwrite always
+  if (file.OpenForWrite(GetDiscCacheFile(windowID), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2278,16 +2288,17 @@ bool CFileItemList::Save()
   return false;
 }
 
-void CFileItemList::RemoveDiscCache() const
+void CFileItemList::RemoveDiscCache(int windowID) const
 {
-  if (CFile::Exists(GetDiscCacheFile()))
+  CStdString cacheFile(GetDiscCacheFile(windowID));
+  if (CFile::Exists(cacheFile))
   {
     CLog::Log(LOGDEBUG,"Clearing cached fileitems [%s]",m_strPath.c_str());
-    CFile::Delete(GetDiscCacheFile());
+    CFile::Delete(cacheFile);
   }
 }
 
-CStdString CFileItemList::GetDiscCacheFile() const
+CStdString CFileItemList::GetDiscCacheFile(int windowID) const
 {
   CStdString strPath=m_strPath;
   CUtil::RemoveSlashAtEnd(strPath);
@@ -2302,6 +2313,8 @@ CStdString CFileItemList::GetDiscCacheFile() const
     cacheFile.Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
   else if (IsVideoDb())
     cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
+  else if (windowID)
+    cacheFile.Format("special://temp/%i-%08x.fi", windowID, (unsigned __int32)crc);
   else
     cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
   return cacheFile;
@@ -2439,7 +2452,7 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
     return fileThumb;
 
   // if a folder, check for folder.jpg
-  if (m_bIsFolder && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || g_guiSettings.GetBool("musicfiles.findremotethumbs")))
   {
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_musicThumbs, "|", thumbs);
@@ -2602,7 +2615,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   }
 
   // 3. check folder image in_m_dvdThumbs (folder.jpg)
-  if (m_bIsFolder)
+  if (m_bIsFolder && !IsFileFolder())
   {
     CStdStringArray thumbs;
     StringUtils::SplitString(g_advancedSettings.m_dvdThumbs, "|", thumbs);
@@ -2677,7 +2690,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   CUtil::RemoveSlashAtEnd(strMovieName);
   strMovieName = CUtil::GetFileName(strMovieName);
-  CUtil::UrlDecode(strMovieName);
+  CUtil::URLDecode(strMovieName);
 
   return strMovieName;
 }
@@ -2773,8 +2786,7 @@ CStdString CFileItem::GetLocalFanart() const
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
+  CUtil::ReplaceExtension(strFile, "-fanart",strFile);
   fanarts.push_back(CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())

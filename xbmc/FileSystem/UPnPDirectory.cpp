@@ -133,7 +133,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         object_id.TrimRight("/");
         if (object_id.GetLength()) {
             CStdString tmp = (char*) object_id;
-            CUtil::UrlDecode(tmp);
+            CUtil::URLDecode(tmp);
             object_id = tmp;
         }
 

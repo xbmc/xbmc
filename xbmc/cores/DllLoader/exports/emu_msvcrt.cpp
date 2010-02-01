@@ -732,8 +732,9 @@ extern "C"
       if (size)
         data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
-      data->time_write = iDirSlot; // save for later lookups
+      data->time_write = 0;
       data->time_access = 0;
+      vecDirsOpen[iDirSlot].curr_index = 0;
       return (intptr_t)&vecDirsOpen[iDirSlot];
     }
     vecDirsOpen[iDirSlot].curr_index = -1;
@@ -773,7 +774,7 @@ extern "C"
       return _findnext64i32(f, data); // local dir
 
     // we have a valid data struture. get next item!
-    int iItem=(int)data->time_access;
+    int iItem = vecDirsOpen[found].curr_index;
     if (iItem+1 < vecDirsOpen[found].items.Size()) // we have a winner!
     {
       int size = sizeof(data->name);
@@ -781,7 +782,7 @@ extern "C"
       if (size)
         data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[found].items[iItem+1]->m_dwSize);
-      data->time_access++;
+      vecDirsOpen[found].curr_index++;
       return 0;
     }
 

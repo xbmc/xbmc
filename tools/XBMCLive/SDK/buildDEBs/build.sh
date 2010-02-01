@@ -3,8 +3,8 @@
 #
 # rationale for squashfs-udeb: 
 # karmic d-i does not include squashfs module, we need one!
-# Lucid has been fixed already:
-# https://bugs.launchpad.net/ubuntu/+source/grub-installer/+bug/484832
+# Lucid has been fixed already
+# https://bugs.launchpad.net/ubuntu/+source/linux/+bug/352615
 #
 # This is a quick hack to get the installer work on karmic right now, 
 # hopefully the fix will be backported to karmic as well
@@ -15,7 +15,7 @@ WORKDIR="workarea"
 
 getPackage()
 {
-	udebListURL="${UBUNTUMIRROR_BASEURL}dists/karmic/main/installer-i386/current/images/udeb.list"
+	udebListURL="http://archive.ubuntu.com/ubuntu/dists/karmic/main/installer-i386/current/images/udeb.list"
 
 	tmpFile=$(mktemp -q)
 	curl -x "" -s -f -o $tmpFile $udebListURL
@@ -34,10 +34,10 @@ getPackage()
 	# linux-image-2.6.31-14-generic_2.6.31-14.48_i386.deb
 	packageName=linux-image-$(echo $kernelVersion | awk -F'.' '{ print $1"."$2"."$3}')-generic_"$kernelVersion"_i386.deb
 
-	packageURL="${UBUNTUMIRROR_BASEURL}pool/main/l/linux/$packageName"
+	packageURL="http://archive.ubuntu.com/ubuntu/pool/main/l/linux/$packageName"
 
 	wget -q $packageURL
-	if [ "$?" -ne "0" ]; then
+	if [ "$?" -ne "0" ] || [ ! -f "$packageName" ] ; then
 		echo "Needed kernel not found, exiting..."
 		exit 1
 	fi
@@ -73,21 +73,7 @@ extractModule()
 	rm -rf $WORKDIR 
 }
 
-makeDEBs()
-{
-	cd $THISDIR/squashfs-udeb
-	dpkg-buildpackage -rfakeroot -b -uc -us 
-	cd $THISDIR
-
-	cd $THISDIR/xbmclive-installhelpers
-	dpkg-buildpackage -rfakeroot -b -uc -us 
-	cd $THISDIR
-
-	cd $THISDIR/live-initramfs-ubuntu
-	dpkg-buildpackage -rfakeroot -b -uc -us 
-	cd $THISDIR
-}
-
+if ! ls linux-image-*.deb > /dev/null 2>&1 ; then
 # Get matching package
 echo "Selecting and downloading the kernel package..."
 packageName=$(getPackage)
@@ -98,22 +84,39 @@ fi
 
 echo "Extracting files..."
 extractModule $packageName
+fi
 
-echo "Making debs..."
-makeDEBs
+if [ -z "$DONOTINCLUDEINSTALLER" ]; then
+	if ! ls squashfs-udeb_*.udeb > /dev/null 2>&1 ; then
+		echo "Making squashfs-udeb..."
+		cd $THISDIR/squashfs-udeb
+		dpkg-buildpackage -rfakeroot -b -uc -us 
+		cd $THISDIR
+	fi
+
+	if ! ls xbmclive-installhelpers_*.udeb > /dev/null 2>&1 ; then
+		echo "Making xbmclive-installhelpers..."
+		cd $THISDIR/xbmclive-installhelpers
+		dpkg-buildpackage -rfakeroot -b -uc -us 
+		cd $THISDIR
+	fi
 
 # Retrieve live_installer from Debian's repositories
 # TODO identify & retrieve the latest!
+	if ! ls live-installer*.udeb > /dev/null 2>&1 ; then
 echo "Retrieving live_installer udebs..."
 wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer_13_i386.udeb"
-if [ "$?" -ne "0" ]; then
+		if [ "$?" -ne "0" ] || [ ! -f live-installer_13_i386.udeb ] ; then
 	echo "Needed package (1) not found, exiting..."
 	exit 1
 fi
+	fi
+fi
 
-wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer-launcher_13_all.deb"
-if [ "$?" -ne "0" ]; then
-	echo "Needed package (2) not found, exiting..."
-	exit 1
+if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
+	echo "Making live-initramfs..."
+	cd $THISDIR/live-initramfs-ubuntu
+	dpkg-buildpackage -rfakeroot -b -uc -us 
+	cd $THISDIR
 fi
 

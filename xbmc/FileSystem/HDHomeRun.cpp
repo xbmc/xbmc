@@ -53,8 +53,8 @@ public:
         value = "";
       }
 
-      CUtil::UrlDecode(name);
-      CUtil::UrlDecode(value);
+      CUtil::URLDecode(name);
+      CUtil::URLDecode(value);
       insert(value_type(name, value));
     }
   }

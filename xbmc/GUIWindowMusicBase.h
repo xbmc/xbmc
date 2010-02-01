@@ -51,6 +51,7 @@ public:
   virtual bool OnAction(const CAction& action);
 
   void OnInfo(CFileItem *pItem, bool bShowInfo = false);
+  static void SetupFanart(CFileItemList& items);
 
 protected:
   /*!

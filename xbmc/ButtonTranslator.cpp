@@ -244,6 +244,7 @@ bool CButtonTranslator::Load()
 #endif
   CStdString lircmapPath;
   CUtil::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
+  lircRemotesMap.clear();
   if(CFile::Exists(lircmapPath))
     success |= LoadLircMap(lircmapPath);
   else
@@ -325,7 +326,6 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     return false; // This is so people who don't have the file won't fail, just warn
   }
 
-  lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
   if (strValue != REMOTEMAPTAG)

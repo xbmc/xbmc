@@ -101,8 +101,14 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     type = iconv_open(strToCharset.c_str(), strFromCharset.c_str());
   }
 
-  if (type != (iconv_t) - 1 && strSource.length())
+  if (type != (iconv_t) - 1)
   {
+    if (strSource.IsEmpty())
+    {
+      strDest.Empty();
+    }
+    else
+    {
     size_t inBytes  = (strSource.length() + 1)*sizeof(strSource[0]);
     size_t outBytes = (strSource.length() + 1)*multiplier;
     const char *src = (const char*)strSource.c_str();
@@ -123,6 +129,7 @@ static bool convert_checked(iconv_t& type, int multiplier, const CStdString& str
     }
 
     strDest.ReleaseBuffer();
+  }
   }
   return true;
 }

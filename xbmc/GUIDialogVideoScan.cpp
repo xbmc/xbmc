@@ -170,7 +170,7 @@ void CGUIDialogVideoScan::UpdateState()
   {
     CURL url(m_strCurrentDir);
     CStdString strStrippedPath = url.GetWithoutUserDetails();
-    CUtil::UrlDecode(strStrippedPath);
+    CUtil::URLDecode(strStrippedPath);
 
     SET_CONTROL_LABEL(CONTROL_LABELDIRECTORY, strStrippedPath);
     SET_CONTROL_LABEL(CONTROL_LABELTITLE, m_strTitle);

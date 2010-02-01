@@ -5,8 +5,8 @@ makeConfig()
 
 	configString=""
 	configString="$configString --distribution karmic"
-	# configString="$configString --mirror-chroot-security http://security.ubuntu.com/ubuntu/"
-	# configString="$configString --mirror-binary-security http://security.ubuntu.com/ubuntu/"
+	configString="$configString --mirror-chroot-security http://security.ubuntu.com/ubuntu/"
+	configString="$configString --mirror-binary-security http://security.ubuntu.com/ubuntu/"
 	configString="$configString --binary-images iso"
 	configString="$configString --binary-filesystem fat32"
 	configString="$configString --hostname XBMCLive"
@@ -30,24 +30,11 @@ makeConfig()
 		configString="$configString --apt-ftp-proxy $APT_FTP_PROXY"
 	fi
 
-	if [ -n "$UBUNTUMIRROR_BASEURL" ]; then
-		configString="$configString --mirror-bootstrap $UBUNTUMIRROR_BASEURL"
-		configString="$configString --mirror-binary $UBUNTUMIRROR_BASEURL"
-		configString="$configString --mirror-chroot $UBUNTUMIRROR_BASEURL"
-	fi
+	configString="$configString --mirror-bootstrap http://archive.ubuntu.com/ubuntu/"
+	configString="$configString --mirror-binary http://archive.ubuntu.com/ubuntu/"
+	configString="$configString --mirror-chroot http://archive.ubuntu.com/ubuntu/"
 
 	lh config --mode ubuntu --archive-areas "$CATEGORIES" $configString
-
-	# Get TVHeadend public key
-	wget --no-proxy -q http://www.lonelycoder.com/public.key
-	if [ "$?" -ne "0" ]; then
-		echo "Needed public key not found, exiting..."
-		exit 1
-	fi
-
-	cp public.key "$THISDIR"/Files/chroot_sources/tvheadend.binary.gpg
-	cp public.key "$THISDIR"/Files/chroot_sources/tvheadend.chroot.gpg
-	rm public.key 
 
 	# Copy files for chroot
 	cp -R "$THISDIR"/Files/chroot_* config

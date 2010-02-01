@@ -36,6 +36,7 @@
 #endif
 #include "utils/Builtins.h"
 #include "utils/Network.h"
+#include "utils/log.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -553,6 +554,24 @@ case TMSG_POWERDOWN:
       g_windowManager.Render_Internal();
       break;
 
+    case TMSG_GUI_ACTION:
+      {
+        if (pMsg->lpVoid)
+        {
+          if (pMsg->dwParam1 == WINDOW_INVALID)
+            g_application.OnAction(*(CAction *)pMsg->lpVoid);
+          else
+          {
+            CGUIWindow *pWindow = g_windowManager.GetWindow(pMsg->dwParam1);  
+            if (pWindow)
+              pWindow->OnAction(*(CAction *)pMsg->lpVoid);
+            else
+              CLog::Log(LOGWARNING, "Failed to get window with ID %i to send an action to", pMsg->dwParam1);
+          }
+        }
+      }
+      break;
+
 #ifdef HAS_DVD_DRIVE
     case TMSG_OPTICAL_MOUNT:
       {
@@ -851,6 +870,14 @@ void CApplicationMessenger::WindowManagerProcess(bool renderOnly)
 void CApplicationMessenger::Render()
 {
   ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_RENDER};
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::SendAction(const CAction &action, int windowID)
+{
+  ThreadMessage tMsg = {TMSG_GUI_ACTION};
+  tMsg.dwParam1 = windowID;
+  tMsg.lpVoid = (void*)&action;
   SendMessage(tMsg, true);
 }
 

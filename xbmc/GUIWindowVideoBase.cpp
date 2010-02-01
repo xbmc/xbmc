@@ -31,6 +31,7 @@
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"
@@ -526,9 +527,22 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
   }
 
+  bool ignoreNfo(false);
   CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-  if (result == CNfoFile::FULL_NFO)
+  if (result == CNfoFile::ERROR_NFO)
+    ignoreNfo = true;
+  else
+  if (result != CNfoFile::NO_NFO)
+  {
+    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
     hasDetails = true;
+    else
+    {
+      ignoreNfo = true;
+      scrUrl.Clear();
+    }
+  }
+  
   if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     scanner.m_IMDB.SetScraperInfo(info);
 
@@ -673,7 +687,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress))
+      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress,ignoreNfo))
       {
         if (info.strContent.Equals("movies"))
           m_database.GetMovieInfo(item->m_strPath,movieDetails);
@@ -1265,7 +1279,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
       { // need to update
-        m_vecItems->RemoveDiscCache();
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       return true;
@@ -1931,5 +1945,3 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScraperInfo& 
   if (pDialog)
     pDialog->StartScanning(strPath,info,settings,false);
 }
-
-

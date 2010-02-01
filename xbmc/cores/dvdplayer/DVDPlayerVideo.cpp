@@ -892,7 +892,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
    || m_output.framerate != m_fFrameRate
-   || m_output.color_format != pPicture->format
+   || m_output.color_format != (unsigned int)pPicture->format
    || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
    || m_output.color_range != pPicture->color_range)
   {

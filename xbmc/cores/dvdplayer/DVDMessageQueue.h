@@ -26,12 +26,11 @@
 #include <list>
 #include "CriticalSection.h"
 
-typedef struct stDVDMessageListItem
+struct DVDMessageListItem
 {
-  CDVDMsg* pMsg;
+  CDVDMsg* message;
   int priority;
-}
-DVDMessageListItem;
+};
 
 enum MsgQueueReturnCode
 {

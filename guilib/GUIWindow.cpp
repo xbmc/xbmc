@@ -50,7 +50,7 @@ using namespace std;
 CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
   SetID(id);
-  m_xmlFile = xmlFile;
+  SetProperty("xmlfile", xmlFile);
   m_idRange = 1;
   m_lastControlID = 0;
   m_bRelativeCoords = false;
@@ -106,7 +106,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   int64_t end, freq;
   end = CurrentHostCounter();
   freq = CurrentHostFrequency();
-  CLog::Log(LOGDEBUG,"Load %s: %.2fms", m_xmlFile.c_str(), 1000.f * (end - start) / freq);
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms", GetProperty("xmlfile").c_str(), 1000.f * (end - start) / freq);
 
   return ret;
 }
@@ -476,7 +476,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", m_xmlFile.c_str());
+      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
       if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
       OnInitWindow();
       return true;
@@ -485,7 +485,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", m_xmlFile.c_str());
+      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
       OnDeinitWindow(message.GetParam1());
       // now free the window
       if (m_dynamicResourceAlloc) FreeResources();
@@ -607,12 +607,13 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   int64_t start;
   start = CurrentHostCounter();
 
-  // load skin xml file
+  // load skin xml fil
+  CStdString xmlFile = GetProperty("xmlfile");
   bool bHasPath=false;
-  if (m_xmlFile.Find("\\") > -1 || m_xmlFile.Find("/") > -1 )
+  if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
     bHasPath = true;
-  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
-    Load(m_xmlFile,bHasPath);
+  if (xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
+    Load(xmlFile,bHasPath);
 
   int64_t slend;
   slend = CurrentHostCounter();
@@ -653,7 +654,7 @@ void CGUIWindow::ClearAll()
 
 bool CGUIWindow::Initialize()
 {
-  return Load(m_xmlFile);
+  return Load(GetProperty("xmlfile"));
 }
 
 void CGUIWindow::SetInitialVisibility()
@@ -860,73 +861,57 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 #endif
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, const char *strValue)
+void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
 {
-  m_mapProperties[strKey] = strValue;
+  m_mapProperties[key] = value;
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, const CStdString &strValue)
+void CGUIWindow::SetProperty(const CStdString &key, const char *value)
 {
-  m_mapProperties[strKey] = strValue;
+  m_mapProperties[key] = value;
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, int nVal)
+void CGUIWindow::SetProperty(const CStdString &key, int value)
 {
   CStdString strVal;
-  strVal.Format("%d",nVal);
-  SetProperty(strKey, strVal);
+  strVal.Format("%d", value);
+  SetProperty(key, strVal);
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, bool bVal)
+void CGUIWindow::SetProperty(const CStdString &key, bool value)
 {
-  SetProperty(strKey, bVal?"1":"0");
+  SetProperty(key, value ? "1" : "0");
 }
 
-void CGUIWindow::SetProperty(const CStdString &strKey, double dVal)
+void CGUIWindow::SetProperty(const CStdString &key, double value)
 {
   CStdString strVal;
-  strVal.Format("%f",dVal);
-  SetProperty(strKey, strVal);
+  strVal.Format("%f", value);
+  SetProperty(key, strVal);
 }
 
-CStdString CGUIWindow::GetProperty(const CStdString &strKey) const
+CStdString CGUIWindow::GetProperty(const CStdString &key) const
 {
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
+  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(key);
   if (iter == m_mapProperties.end())
     return "";
 
   return iter->second;
 }
 
-int CGUIWindow::GetPropertyInt(const CStdString &strKey) const
+int CGUIWindow::GetPropertyInt(const CStdString &key) const
 {
-  return atoi(GetProperty(strKey).c_str()) ;
+  return atoi(GetProperty(key).c_str());
 }
 
-bool CGUIWindow::GetPropertyBOOL(const CStdString &strKey) const
+bool CGUIWindow::GetPropertyBool(const CStdString &key) const
 {
-  return GetProperty(strKey) == "1";
+  return GetProperty(key) == "1";
 }
 
-double CGUIWindow::GetPropertyDouble(const CStdString &strKey) const
+double CGUIWindow::GetPropertyDouble(const CStdString &key) const
 {
-  return atof(GetProperty(strKey).c_str()) ;
-}
-
-bool CGUIWindow::HasProperty(const CStdString &strKey) const
-{
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(strKey);
-  if (iter == m_mapProperties.end())
-    return FALSE;
-
-  return TRUE;
-  }
-
-void CGUIWindow::ClearProperty(const CStdString &strKey)
-{
-  std::map<CStdString,CStdString,icompare>::iterator iter = m_mapProperties.find(strKey);
-  if (iter != m_mapProperties.end())
-    m_mapProperties.erase(iter);
+  return atof(GetProperty(key).c_str());
 }
 
 void CGUIWindow::ClearProperties()

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<scraper framework="1.1" date="2009-12-02" name="OFDb" content="movies" thumb="ofdb.png" language="de">
+<scraper framework="1.1" date="2010-01-13" name="OFDb" content="movies" thumb="ofdb.png" language="de">
 	<include>common/tmdb.xml</include>
 	<include>common/movieposterdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart (themoviedb.org)&quot; type=&quot;bool&quot; id=&quot;tmdbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Poster (themoviedb.org)&quot; type=&quot;bool&quot; id=&quot;tmdbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression /> 
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Poster (movieposterdb.com)&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Trailer&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
@@ -36,14 +39,17 @@
 		</RegExp>
 	</GetByIMDBId>
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="http://www.ofdb.de/view.php?SText=\1&amp;Kat=Titel&amp;page=suchergebnis&amp;sourceid=mozilla-search" dest="3">
-			<expression noclean="1">([^\(]+)</expression>
+		<RegExp input="$$1" output="http://api.bing.com/xml.aspx?AppId=16E50AB9947899C41433EB944C60174737855036&Sources=web&xmltype=attributebased&Query=site:ofdb.de/film+\1$$4&web.count=50" dest="3">
+			<RegExp input="$$2" output="%20\1" dest="4+">
+				<expression clear="yes">(.+)</expression>
+		</RegExp>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\4) | \3&lt;/title&gt;&lt;year&gt;\4&lt;/year&gt;&lt;url cache=&quot;ofdb-\1.html&quot;&gt;http://www.ofdb.de/film/\1,&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1">&lt;a href=.[^0-9]+([0-9]+)[^ ]+ onmouseover=.Tip..&lt;[^&gt;]+&gt;[^&gt;]+&gt;([^&lt;]+)&lt;font size=.1.&gt; . ([^&lt;]+)&lt;/font&gt; \(([0-9]+)\)&lt;/a&gt;</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;&lt;url cache=&quot;ofdb-\4.html&quot;&gt;\3\4,&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes" trim="1">Title=&quot;OFDb - ([^&quot;]*)\(([0-9]*)\)&quot;.*?Url=&quot;(http://www.ofdb.de/film/)([0-9]*),</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -128,8 +134,12 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetMovieCast&quot;&gt;http://www.imdb.de/title/tt\2/fullcredits#cast&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
-			<!--URL to Fanart-->
-			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
+			<!-- TMDB Fanart-->
+			<RegExp conditional="tmdbfanart" input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
+				<expression>(imdb.com/)Title\?([0-9]+)</expression>
+			</RegExp>
+			<!-- TMDB Poster-->
+			<RegExp conditional="tmdbthumbs" input="$$1" output="&lt;url cache=&quot;ofdb-tt\2-imdb.html&quot; function=&quot;GetTMDBThumbsById&quot;&gt;http://www.imdb.de/title/tt\2&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 			<!--URL to MoviePosterDB -->
@@ -138,10 +148,6 @@
 			</RegExp>
 			<!-- Ofdb Poster -->
 			<RegExp input="$$1" output="&lt;url cache=&quot;ofdb-\1.html&quot; function=&quot;GetOfdbThumb&quot;&gt;$$3&lt;/url&gt;" dest="5+">
-				<expression>fid=([0-9]+)</expression>
-			</RegExp>
-			<!-- Cast -->
-			<RegExp input="$$1" output="&lt;url cache=&quot;ofdb-\1.html&quot; function=&quot;GetMovieCast&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression>fid=([0-9]+)</expression>
 			</RegExp>
 			<expression noclean="1"/>

@@ -75,6 +75,10 @@
 #include "CocoaInterface.h"
 #endif
 
+#ifdef HAS_CDDA_RIPPER
+#include "cdrip/CDDARipper.h"
+#endif
+
 #include <vector>
 
 using namespace std;
@@ -125,6 +129,7 @@ const BUILT_IN commands[] = {
   { "Action",                     true,   "Executes an action for the active window (same as in keymap)" },
   { "Notification",               true,   "Shows a notification on screen, specify header, then message, and optionally time in milliseconds and a icon." },
   { "PlayDVD",                    false,  "Plays the inserted CD or DVD media from the DVD-ROM Drive!" },
+  { "RipCD",                      false,  "Rip the currently inserted audio CD"},
   { "Skin.ToggleSetting",         true,   "Toggles a skin setting on or off" },
   { "Skin.SetString",             true,   "Prompts and sets skin string" },
   { "Skin.SetNumeric",            true,   "Prompts and sets numeric input" },
@@ -810,6 +815,13 @@ int CBuiltins::Execute(const CStdString& execString)
     CAutorun::PlayDisc();
 #endif
   }
+  else if (execute.Equals("ripcd"))
+  {
+#ifdef HAS_CDDA_RIPPER
+    CCDDARipper ripper;
+    ripper.RipCD();
+#endif
+  }
   else if (execute.Equals("skin.togglesetting"))
   {
     int setting = g_settings.TranslateSkinBool(parameter);
@@ -1246,17 +1258,10 @@ int CBuiltins::Execute(const CStdString& execString)
       CAction action;
       action.id = actionID;
       action.amount1 = 1.0f;
-      if (params.size() == 2)
-      { // have a window - convert it and send to it.
-        int windowID = CButtonTranslator::TranslateWindowString(params[1].c_str());
-        CGUIWindow *window = g_windowManager.GetWindow(windowID);
-        if (window)
-          window->OnAction(action);
+      int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindowString(params[1].c_str()) : WINDOW_INVALID;
+      g_application.getApplicationMessenger().SendAction(action, windowID);
       }
-      else // send to our app
-        g_application.OnAction(action);
     }
-  }
   else if (execute.Equals("setproperty") && params.size() == 2)
   {
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());

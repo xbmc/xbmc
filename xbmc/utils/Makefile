@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
@@ -59,7 +59,8 @@ SRCS=AlarmClock.cpp \
      Teletext.cpp \
      fastmemcpy.cpp \
      PasswordManager.cpp \
-     AliasShortcutUtils.cpp
+     AliasShortcutUtils.cpp \
+     Semaphore.cpp
 
 LIB=utils.a
 

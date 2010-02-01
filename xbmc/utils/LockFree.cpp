@@ -19,6 +19,10 @@
  *
  */
 
+#ifdef __ppc__
+#pragma GCC optimization_level 0
+#endif
+
 #include "LockFree.h"
 #include <stdlib.h>
 
@@ -268,3 +272,7 @@ void* lf_queue_dequeue(lf_queue* pQueue)
   AtomicDecrement(&pQueue->len);
   return pVal;
 }
+
+#ifdef __ppc__
+#pragma GCC optimization_level reset
+#endif

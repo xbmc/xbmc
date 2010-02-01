@@ -61,6 +61,7 @@ protected:
   H264BSFContext  m_sps_pps_context;
 
   CCrystalHD      *m_Device;
+  int             m_DecodeReturn;
   bool            m_DropPictures;
   const char      *m_pFormatName;
 };

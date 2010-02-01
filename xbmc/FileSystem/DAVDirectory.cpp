@@ -70,7 +70,7 @@ bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString val
   }
   else if (result.size() > 2)
   {
-    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), result.size(), value.c_str());
+    CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), (unsigned long int)result.size(), value.c_str());
   }
     
   return false;
@@ -113,7 +113,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
     if (ValueWithoutNamespace(pResponseChild, "href"))
     {
       item.m_strPath = pResponseChild->ToElement()->GetText();
-      CUtil::UrlDecode(item.m_strPath);
+      CUtil::RemoveSlashAtEnd(item.m_strPath);
     }
     else if (ValueWithoutNamespace(pResponseChild, "propstat"))
     {
@@ -130,6 +130,22 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
               if (ValueWithoutNamespace(pPropChild, "getcontentlength"))
               {
                 item.m_dwSize = atoi(pPropChild->ToElement()->GetText());
+              }
+              else if (ValueWithoutNamespace(pPropChild, "getlastmodified"))
+              {
+                struct tm timeDate = {0};
+                strptime(pPropChild->ToElement()->GetText(), "%a, %d %b %Y %T", &timeDate);
+                item.m_dateTime = mktime(&timeDate);
+              }
+              else if (ValueWithoutNamespace(pPropChild, "displayname"))
+              {
+                item.SetLabel(pPropChild->ToElement()->GetText());
+              }
+              else if (!item.m_dateTime.IsValid() && ValueWithoutNamespace(pPropChild, "creationdate"))
+              {
+                struct tm timeDate = {0};
+                strptime(pPropChild->ToElement()->GetText(), "%Y-%m-%dT%T", &timeDate);
+                item.m_dateTime = mktime(&timeDate);
               }
               else if (ValueWithoutNamespace(pPropChild, "resourcetype"))
               {
@@ -166,6 +182,9 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     "   <D:prop>"
     "     <D:resourcetype/>"
     "     <D:getcontentlength/>"
+    "     <D:getlastmodified/>"
+    "     <D:creationdate/>"
+    "     <D:displayname/>"
     "    </D:prop>"
     "  </D:propfind>");
 
@@ -183,33 +202,39 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     CLog::Log(LOGERROR, "%s - Failed to get any response", __FUNCTION__);
   } 
 
-  // Iterarte over all responses
+  // Iterate over all responses
   for ( pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) 
   {
     if (ValueWithoutNamespace(pChild, "response"))
     {
       CFileItemPtr pItem(new CFileItem());
-      CStdString path;
-      CStdString filename;
 
-      /* One item will be the actual directory, just ignore that one */
       if (ParseResponse(pChild->ToElement(), *pItem))
       {
-        // Remove first slash to get rid of dav://hostname//filename problem
-        url.SetFileName(pItem->m_strPath.substr(1));
+        CURL url2(strPath);
+        CURL url3(pItem->m_strPath);
 
-        pItem->m_strPath = url.Get();
+        CStdString strBasePath = url2.GetWithoutFilename();
+        CStdString strFileName = url3.GetFileName();
+        CUtil::RemoveSlashAtEnd(strBasePath);
+        pItem->m_strPath = strBasePath + strFileName;
 
-        CUtil::Split(pItem->m_strPath, path, filename);
-        pItem->SetLabel(filename);
-
-        if (pItem->m_strPath != strPath)
+        if (pItem->GetLabel().IsEmpty())
         {
+          CStdString name(pItem->m_strPath);
+          CUtil::RemoveSlashAtEnd(name);
+          CUtil::URLDecode(name);
+          pItem->SetLabel(CUtil::GetFileName(name));
+        }
+
+        if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
+        
+        if (!pItem->m_strPath.Equals(strPath))
           items.Add(pItem);
         }
       }
     }
-  }
 
   dav.Close();
 

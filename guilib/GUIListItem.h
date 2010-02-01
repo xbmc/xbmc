@@ -59,7 +59,7 @@ public:
   CGUIListItem(const CGUIListItem& item);
   CGUIListItem(const CStdString& strLabel);
   virtual ~CGUIListItem(void);
-
+  virtual CGUIListItem *Clone() const { return new CGUIListItem(*this); };
 
   const CGUIListItem& operator =(const CGUIListItem& item);
 
@@ -141,7 +141,8 @@ protected:
     }
   };
 
-  std::map<CStdString, CStdString, icompare> m_mapProperties;
+  typedef std::map<CStdString, CStdString, icompare> PropertyMap;
+  PropertyMap m_mapProperties;
 private:
   CStdString m_sortLabel;     // text for sorting
   CStdString m_strLabel;      // text of column1

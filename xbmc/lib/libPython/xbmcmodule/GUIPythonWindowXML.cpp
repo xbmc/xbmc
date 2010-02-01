@@ -282,7 +282,7 @@ void CGUIPythonWindowXML::PulseActionEvent()
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
   CStdString tmpDir;
-  CUtil::GetDirectory(m_xmlFile, tmpDir);
+  CUtil::GetDirectory(GetProperty("xmlfile"), tmpDir);
   CStdString fallbackMediaPath;
   CUtil::GetParentPath(tmpDir, fallbackMediaPath);
   CUtil::RemoveSlashAtEnd(fallbackMediaPath);

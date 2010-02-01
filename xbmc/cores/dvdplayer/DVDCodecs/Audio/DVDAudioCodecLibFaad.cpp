@@ -131,7 +131,17 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
       unsigned char channels;
 
       int res = m_dll.faacDecInit(m_pHandle, m_InputBuffer, m_InputBufferSize, &samplerate, &channels);
-      if (res >= 0)
+      if(res < 0)
+      {
+        CLog::Log(LOGERROR, "CDVDAudioCodecLibFaad() : unable to init faad");
+        m_InputBufferSize = 0;
+
+        // faac leeks when faacDecInit is called multiple times on same handle
+        CloseDecoder();
+        if(!OpenDecoder())
+          return -1;
+      }
+      else
       {
         m_iSourceSampleRate = samplerate;
         m_iSourceChannels = channels;

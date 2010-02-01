@@ -160,7 +160,7 @@ void CAdvancedSettings::Initialize()
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
-  m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
+  m_tvshowMultiPartStackRegExp = "^[-_EeXx]+([0-9]+)";
 
   m_remoteRepeat = 480;
   m_controllerDeadzone = 0.2f;
@@ -591,6 +591,11 @@ bool CAdvancedSettings::Load()
   TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");
   if (pTrailerMatching)
     GetCustomRegexps(pTrailerMatching, m_trailerMatchRegExps);
+
+  //everything thats a trailer is not a movie
+  m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
+                                        m_trailerMatchRegExps.begin(),
+                                        m_trailerMatchRegExps.end());
 
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
