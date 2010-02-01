@@ -46,7 +46,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/RSSDirectory.h"
 #include "ThumbnailCache.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 #include "FileSystem/CMythDirectory.h"
@@ -1576,7 +1576,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
   }
   else
   {
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
     // get _ALL_files in the rar, even those located in subdirectories because we set the bMask to false.
     // so now we dont have to find any subdirs anymore, all files in the rar is checked.
     if( !g_RarManager.GetFilesInRar(ItemList, strRarPath, false, "") )

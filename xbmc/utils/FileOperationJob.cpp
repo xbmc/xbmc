@@ -9,7 +9,7 @@
 #include "Util.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 

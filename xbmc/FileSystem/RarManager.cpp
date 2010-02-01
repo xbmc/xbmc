@@ -21,7 +21,7 @@
 
 #include "system.h"
 #include "RarManager.h"
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
 #include "../lib/UnrarXLib/rar.hpp"
 #endif
 #include "Util.h"
@@ -69,7 +69,7 @@ CRarManager::~CRarManager()
 
 bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir, const int64_t iSize)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   CSingleLock lock(m_CritSection);
 
   //If file is listed in the cache, then use listed copy or cleanup before overwriting.
@@ -228,7 +228,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath,
                                 bool bMask, const CStdString& strPathInRar)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   CSingleLock lock(m_CritSection);
 
   ArchiveList_struct* pFileList = NULL;
@@ -329,7 +329,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
 
 bool CRarManager::ListArchive(const CStdString& strRarPath, ArchiveList_struct* &pArchiveList)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
  return urarlib_list((char*) strRarPath.c_str(), &pArchiveList, NULL) == 1;
 #else
  return false;
@@ -338,7 +338,7 @@ bool CRarManager::ListArchive(const CStdString& strRarPath, ArchiveList_struct* 
 
 CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return NULL;
@@ -352,7 +352,7 @@ CFileInfo* CRarManager::GetFileInRar(const CStdString& strRarPath, const CStdStr
 
 bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
   if (j == m_ExFiles.end())
     return false;
@@ -366,7 +366,7 @@ bool CRarManager::GetPathInCache(CStdString& strPathInCache, const CStdString& s
 
 bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   bResult = false;
   CFileItemList ItemList;
 
@@ -390,7 +390,7 @@ bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const
 
 void CRarManager::ClearCache(bool force)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   CSingleLock lock(m_CritSection);
   map<CStdString, pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j;
   for (j = m_ExFiles.begin() ; j != m_ExFiles.end() ; j++)
@@ -411,7 +411,7 @@ void CRarManager::ClearCache(bool force)
 
 void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   CSingleLock lock(m_CritSection);
 
   map<CStdString,pair<ArchiveList_struct*,vector<CFileInfo> > >::iterator j = m_ExFiles.find(strRarPath);
@@ -434,7 +434,7 @@ void CRarManager::ClearCachedFile(const CStdString& strRarPath, const CStdString
 
 void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString& strPath)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   CStdString strPath2(strPath);
   CUtil::RemoveSlashAtEnd(strPath2);
   if (!urarlib_get(const_cast<char*>(strArchive.c_str()), const_cast<char*>(strPath2.c_str()),NULL))
