@@ -508,6 +508,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   SScanSettings settings;
   ADDON::AddonPtr addon;
   ADDON::CScraperPtr info;
+  CVideoInfoScanner scanner;
 
   m_database.Open();
   if (!m_database.GetScraperForPath(item->m_strPath,info,settings))
@@ -550,7 +551,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
     IMDB_MOVIELIST movielist;
-    if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
+    if (info->Content() == CONTENT_TVSHOWS && !item->m_bIsFolder)
       hasDetails = true;
 
     if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
