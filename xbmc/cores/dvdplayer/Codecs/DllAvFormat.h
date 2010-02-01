@@ -132,7 +132,7 @@ public:
   virtual ByteIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                                            int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                                            int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                                           offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::av_alloc_put_byte(buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek) }
+                                           offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::av_alloc_put_byte(buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
   virtual int av_write_header (AVFormatContext *s) { return ::av_write_header (s); }
   virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
