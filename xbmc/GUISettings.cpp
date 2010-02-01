@@ -581,8 +581,8 @@ void CGUISettings::Initialize()
 #endif
   AddSeparator(11, "videoplayer.sep5");
   AddBool(12, "videoplayer.teletextenabled", 23050, true);
-  AddBool(13, "videoplayer.boblightenabled", 23053, false);
-  AddBool(14, "videoplayer.boblighttestmode", 23054, false);
+  AddBool(13, "videoplayer.boblightenabled", 23073, false);
+  AddBool(14, "videoplayer.boblighttestmode", 23074, false);
 
   AddCategory(5, "myvideos", 14081);
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
