@@ -1024,23 +1024,29 @@ void CMPCOutputThread::Process(void)
   BCM::BC_DTS_STATUS decoder_status;
 
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
+
+  // wait for decoder startup, calls into DtsProcOutputXXCopy will
+  // return immediately until decoder starts getting input packets. 
   while (!m_bStop)
   {
     ret = m_dll->DtsGetDriverStatus(m_Device, &decoder_status);
-    if (ret == BCM::BC_STS_SUCCESS)
+    if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount)
     {
-      // limit ready list to 20, makes no sense to pre-decode any more
-      if (m_ReadyList.Count() < 20)
-      {
-        GetDecoderOutput();
-        /*
-        CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
-          decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
-        CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
-          decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
-        */
-      }
+      GetDecoderOutput();
+      break;
     }
+    Sleep(10);
+  }
+
+  // decoder is primed so now calls in DtsProcOutputXXCopy will block
+  while (!m_bStop)
+  {
+    // limit ready list to 20, makes no sense to pre-decode any more
+    if (m_ReadyList.Count() < 20)
+      GetDecoderOutput();
+
+    // we still sleep as decoder can output picture frames faster
+    // than we can render them.
     Sleep(1);
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
