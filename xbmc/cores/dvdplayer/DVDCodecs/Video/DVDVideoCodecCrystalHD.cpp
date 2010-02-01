@@ -38,6 +38,7 @@
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
+  m_decode_started(false),
   m_DropPictures(false),
   m_Duration(0.0),
   m_pFormatName("")
@@ -171,14 +172,23 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   }
 
   // Handle Output
-  if (m_Device->GetReadyCount())
-    ret |= VC_PICTURE;
+  if (m_decode_started && m_Device->GetReadyCount())
+      ret |= VC_PICTURE;
+  else
+  {
+    if (m_Device->GetReadyCount() > 4)
+    {
+      m_decode_started = true;
+      ret |= VC_PICTURE;
+    }
+  }
 
   return ret;
 }
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
+  m_decode_started = false;
   m_Device->Reset();
 }
 
