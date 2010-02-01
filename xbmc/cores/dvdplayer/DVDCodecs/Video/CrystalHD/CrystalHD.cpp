@@ -1041,6 +1041,7 @@ void CMPCOutputThread::Process(void)
         */
       }
     }
+    Sleep(1);
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
