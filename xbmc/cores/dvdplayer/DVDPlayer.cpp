@@ -2019,7 +2019,7 @@ void CDVDPlayer::SetCaching(ECacheState state)
   }
 
   if(state == CACHESTATE_PLAY
-  || state == CACHESTATE_DONE)
+  ||(state == CACHESTATE_DONE && m_caching != CACHESTATE_PLAY))
   {
     m_clock.SetSpeed(m_playSpeed);
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
