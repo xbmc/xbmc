@@ -76,6 +76,26 @@ HANDLE WINAPI CreateThread(
     h = NULL;
   }
   pthread_attr_destroy(&attr);
+
+#ifdef __APPLE__
+  // we've now created the thread and started it
+  // now set the priority of the thread to the nominated priority and make the thread fixed
+  int32_t result;
+  thread_extended_policy_data_t theFixedPolicy;
+
+  // make thread fixed, set to TRUE for a non-fixed thread
+  theFixedPolicy.timeshare = FALSE;
+  result = thread_policy_set(pthread_mach_thread_np(h->m_hThread), THREAD_EXTENDED_POLICY, 
+    (thread_policy_t)&theFixedPolicy, THREAD_EXTENDED_POLICY_COUNT);
+
+  int policy;
+  struct sched_param param;
+  result = pthread_getschedparam(h->m_hThread, &policy, &param );
+  // change from default SCHED_OTHER to SCHED_RR
+  policy = SCHED_RR;
+  result = pthread_setschedparam(h->m_hThread, policy, &param );
+#endif
+
   if (h && lpThreadId)
     // WARNING: This can truncate thread IDs on x86_64.
     *lpThreadId = (DWORD)h->m_hThread;
