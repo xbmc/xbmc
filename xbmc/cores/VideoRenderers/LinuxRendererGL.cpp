@@ -47,9 +47,12 @@
 #include <GL/glx.h>
 #endif
 
+//aligning stride to 16 makes fast_memcpy faster
+#define ALIGN_SIZE 16
+
 //due to a bug on osx nvidia, using gltexsubimage2d with a pbo bound and a null pointer
 //screws up the alpha, an offset fixes this
-#define PBO_OFFSET 16
+#define PBO_OFFSET ALIGN_SIZE
 
 using namespace Shaders;
 
@@ -1737,10 +1740,10 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     //align stride, makes fast_memcpy faster
     for (int i = 0; i < 3; i++)
     {
-      im.stride[i] = ALIGN(im.stride[i], 16);
+      im.stride[i] += ALIGN_SIZE - (im.stride[i] % ALIGN_SIZE);
       //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
       if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
-        im.stride[i] += PBO_OFFSET;
+        im.stride[i] += ALIGN_SIZE;
     }
 
     im.planesize[0] = im.stride[0] * im.height;
@@ -1953,10 +1956,10 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     //align stride, makes fast_memcpy faster
     for (int i = 0; i < 2; i++)
     {
-      im.stride[i] = ALIGN(im.stride[i], 16);
+      im.stride[i] += ALIGN_SIZE - (im.stride[i] % ALIGN_SIZE);
       //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
       if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
-        im.stride[i] += PBO_OFFSET;
+        im.stride[i] += ALIGN_SIZE;
     }
 
     im.plane[0] = NULL;
