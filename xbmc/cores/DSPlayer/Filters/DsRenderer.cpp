@@ -40,12 +40,13 @@ m_dsPlayerSubtitle(&m_overlayContainer)
 {
   m_nCurSurface = 0;
   g_renderManager.PreInit(true);
-  g_Windowing.Register(this);  
+  g_Windowing.Register(this); 
 }
 
 CDsRenderer::~CDsRenderer()
 {
-  g_renderManager.UnInit();  
+  g_renderManager.UnInit();
+  g_Windowing.Unregister(this);
 }
 
 void CDsRenderer::AddSubtitleStream()

@@ -71,11 +71,18 @@ CAudioContext::~CAudioContext()
 // \brief Create a new device by type (DEFAULT_DEVICE, DIRECTSOUND_DEVICE, AC97_DEVICE)
 void CAudioContext::SetActiveDevice(int iDevice)
 {
+  CStdString strAudioDev = g_guiSettings.GetString("audiooutput.audiodevice");
+
   /* if device is the same, no need to bother */
 #ifdef _WIN32
+
+  int iPos = strAudioDev.Find(':');
+  if(iPos != CStdString::npos)
+    strAudioDev.erase(0, iPos+1);
+
   if (iDevice == DEFAULT_DEVICE)
     iDevice = DIRECTSOUND_DEVICE; // default device on win32 is directsound device
-  if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
+  if(m_iDevice == iDevice && strAudioDev.Equals(m_strDevice))
   {
     if (iDevice != NONE && m_pDirectSoundDevice)
     {
@@ -98,7 +105,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   RemoveActiveDevice();
 
   m_iDevice=iDevice;
-  m_strDevice=g_guiSettings.GetString("audiooutput.audiodevice");
+  m_strDevice=strAudioDev;
 
 #ifdef HAS_AUDIO
   memset(&g_digitaldevice, 0, sizeof(GUID));
@@ -117,7 +124,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
     {
       DSDeviceInfo dev = *iter;
 
-      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev.strDescription))
+      if (strAudioDev.Equals(dev.strDescription))
       {
         guid = dev.lpGuid;
         CLog::Log(LOGDEBUG, "%s - selecting %s as output devices", __FUNCTION__, dev.strDescription.c_str());

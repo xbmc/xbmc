@@ -4376,8 +4376,7 @@ void CPlugin::WriteRealtimeConfig()
 
 void CPlugin::dumpmsg(char *s)
 {
-	OutputDebugString(s);
-	//g_dumpmsg(s);
+  printf(s);
 }
 
 void CPlugin::LoadPreviousPreset(float fBlendTime) 

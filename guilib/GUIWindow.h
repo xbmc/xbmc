@@ -97,8 +97,6 @@ public:
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
 
-  virtual bool OnMouse(const CPoint &point);
-  bool HandleMouse(CGUIControl *pControl, const CPoint &point);
   bool OnMove(int fromControl, int moveAction);
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -164,6 +162,7 @@ public:
   bool HasSaveLastControl() const { return !m_defaultAlways; };
 
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
   bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
@@ -216,6 +215,12 @@ protected:
 
   int m_renderOrder;      // for render order of dialogs
 
+  /*! \brief Grabs the window's top,left position in skin coordinates
+   The window origin may change based on <origin> tag conditions in the skin.
+
+   \return the window's origin in skin coordinates
+   */
+  virtual CPoint GetPosition() const;
   std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states
@@ -238,6 +243,8 @@ protected:
   std::vector<CGUIActionDescriptor> m_unloadActions;
   
   bool m_manualRunActions;
+
+  int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 };
 
 #endif

@@ -928,6 +928,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
     m_renderQuality = RQ_SINGLEPASS;
     return;
 
+  case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_LANCZOS3_FAST:
+  case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
     if(!glewIsSupported("GL_ARB_texture_float"))
     {
@@ -947,7 +950,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       break;
     }
 
-    m_pVideoFilterShader = new BicubicFilterShader(0.0f, 0.5f);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -958,8 +961,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
     m_renderQuality = RQ_MULTIPASS;
     return;
 
-  case VS_SCALINGMETHOD_LANCZOS2:
-  case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_SINC8:
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
@@ -2114,11 +2115,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
 
       glBindTexture(m_textureTarget, plane.id);
 
-      if(m_renderMethod & RENDER_POT)
-        CLog::Log(LOGNOTICE, "GL: Creating NV12 POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-        else
-        CLog::Log(LOGDEBUG,  "GL: Creating NV12 NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
-
       if (p == 1)
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
       else
@@ -2144,8 +2140,6 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
-  CLog::Log(LOGDEBUG, "Deleted NV12 texture %i", index);
-  
   // finish up all textures, and delete them
   g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -2157,7 +2151,6 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
         if (glIsTexture(fields[f][p].id))
         {
           glDeleteTextures(1, &fields[f][p].id);
-          CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
         }
         fields[f][p].id = 0;
       }
@@ -2285,12 +2278,14 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
 
-
   if(method == VS_SCALINGMETHOD_CUBIC 
-  && glewIsSupported("GL_ARB_texture_float")
-  && glewIsSupported("GL_EXT_framebuffer_object")
-  && (m_renderMethod & RENDER_GLSL))
+  || method == VS_SCALINGMETHOD_LANCZOS2
+  || method == VS_SCALINGMETHOD_LANCZOS3_FAST
+  || method == VS_SCALINGMETHOD_LANCZOS3)
+  {
+    if (glewIsSupported("GL_ARB_texture_float") && glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
     return true;
+  }
 
   if (g_advancedSettings.m_videoHighQualityScaling != SOFTWARE_UPSCALING_DISABLED)
   {

@@ -220,6 +220,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
 
 	// Set the scale <ignacio>
 	cinfo.scale_denom = GetJpegScale();
+	cinfo.scale_num = 1;
 
 	// Borrowed the idea from GIF implementation <ignacio>
 	if (info.nEscape == -1) {

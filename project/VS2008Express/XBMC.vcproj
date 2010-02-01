@@ -98,7 +98,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -192,7 +192,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -292,7 +292,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -386,7 +386,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="DeclareDPIAware.manifest"
+				AdditionalManifestFiles="DeclareDPIAware.manifest;VC90.CRT.x86.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -1787,6 +1787,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_python_win32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DllLoader\exports\win32-dirent.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DllLoader\exports\win32-dirent.h"
 						>
 					</File>
 					<Filter

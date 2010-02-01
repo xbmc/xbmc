@@ -102,8 +102,8 @@ public:
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   // output scaling
-  void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
-  void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
+  void SetRenderingResolution(RESOLUTION res, bool needsScaling);  ///< Sets scaling up for rendering
+  void SetScalingResolution(RESOLUTION res, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
   void Flip();
   void InvertFinalCoords(float &x, float &y) const;

@@ -59,13 +59,11 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   void SetValue(int value);
   int GetValue() const;
-  virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseClick(int button, const CPoint &point);
-  virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
-  virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
   virtual bool IsVisible() const;
 protected:
+  virtual bool HitTest(const CPoint &point) const;
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   void UpdateBarSize();
   virtual void Move(int iNumSteps);

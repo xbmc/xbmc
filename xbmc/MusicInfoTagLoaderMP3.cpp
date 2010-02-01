@@ -600,6 +600,14 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
     }
   }
 
+  if (m_seekInfo.GetNumOffsets() == 0)
+  {
+    float offset[2];
+    offset[0] = (float)firstFrameOffset;
+    offset[1] = (float)(firstFrameOffset + nMp3DataSize);
+    m_seekInfo.SetOffsets(1, offset);
+  }
+
   // Calculate duration if we have a Xing/VBRI VBR file
   if (frame_count > 0)
   {
@@ -614,10 +622,6 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
   if (bitrate > 0)
    d = (double)(nMp3DataSize / ((bitrate * 1000) / 8));
   m_seekInfo.SetDuration((float)d);
-  float offset[2];
-  offset[0] = (float)firstFrameOffset;
-  offset[1] = (float)firstFrameOffset + nMp3DataSize;
-  m_seekInfo.SetOffsets(1, offset);
   return (int)d;
 }
 

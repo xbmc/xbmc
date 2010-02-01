@@ -46,9 +46,9 @@ public:
 #endif
 
 protected:
+  static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
 
   void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);
-
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
 

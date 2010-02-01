@@ -32,9 +32,9 @@ public:
   virtual ~CGUIWindowVisualisation(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMouse(const CPoint &point);
   virtual void Render();
 protected:
+  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   unsigned int m_initTimer;
   unsigned int m_lockedTimer;
   bool m_bShowPreset;

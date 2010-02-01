@@ -27,6 +27,12 @@
 #define _onexit_t void*
 #endif
 
+#ifdef WIN32
+#include "win32-dirent.h"
+#else
+#include <dirent.h>
+#endif
+
 typedef void ( *PFV)(void);
 
 #define __IS_STDIN_STREAM(stream)   (stream == stdin  || stream->_file == 0)
@@ -84,6 +90,10 @@ extern "C"
   int dll_findnext64i32(intptr_t f, _finddata64i32_t* data);
   void dll__security_error_handler(int code, void *data);
 #endif
+  DIR *dll_opendir(const char *filename);
+  struct dirent *dll_readdir(DIR *dirp);
+  int dll_closedir(DIR *dirp);
+  void dll_rewinddir(DIR *dirp);
   char * dll_fgets (char* pszString, int num , FILE * stream);
   int dll_fgetc (FILE* stream);
   int dll_feof (FILE * stream);

@@ -510,6 +510,19 @@ bool CGUIControl::HitTest(const CPoint &point) const
   return m_hitRect.PtInRect(point);
 }
 
+bool CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  CPoint childPoint(point);
+  m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
+  if (!CanFocusFromPoint(childPoint))
+    return false;
+
+  bool handled = OnMouseOver(childPoint);
+  if (OnMouseEvent(childPoint, event))
+    return true;
+  return handled && !event.m_id;
+}
+
 // override this function to implement custom mouse behaviour
 bool CGUIControl::OnMouseOver(const CPoint &point)
 {
@@ -812,20 +825,10 @@ int CGUIControl::GetNextControl(int direction) const
   }
 }
 
-// input the point with respect to this control to hit, and return
-// the control and the point with respect to his control if we have a hit
-bool CGUIControl::CanFocusFromPoint(const CPoint &point, CGUIControl **control, CPoint &controlPoint) const
+bool CGUIControl::CanFocusFromPoint(const CPoint &point) const
 {
-  controlPoint = point;
-  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
-  if (CanFocus() && HitTest(controlPoint))
-  {
-    *control = (CGUIControl *)this;
-    return true;
+  return CanFocus() && HitTest(point);
   }
-  *control = NULL;
-  return false;
-}
 
 void CGUIControl::UnfocusFromPoint(const CPoint &point)
 {
@@ -879,7 +882,7 @@ void CGUIControl::ExecuteActions(const vector<CGUIActionDescriptor> &actions)
 CPoint CGUIControl::GetRenderPosition() const
 {
   float z = 0;
-  CPoint point(m_posX, m_posY);
+  CPoint point(GetXPosition(), GetYPosition());
   m_transform.TransformPosition(point.x, point.y, z);
   if (m_parentControl)
     point += m_parentControl->GetRenderPosition();

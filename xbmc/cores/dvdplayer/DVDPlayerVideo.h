@@ -63,7 +63,6 @@ public:
 #else
   void Update(bool bPauseDrawing)                   { }
 #endif
-  void UpdateMenuPicture();
 
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
@@ -148,6 +147,7 @@ protected:
     unsigned int height;
     unsigned int dwidth;
     unsigned int dheight;
+    unsigned int color_format;
     unsigned int color_matrix : 4;
     unsigned int color_range  : 1;
     float        framerate;
@@ -183,8 +183,6 @@ protected:
 
   DVDVideoPicture* m_pTempOverlayPicture;
 
-  CRITICAL_SECTION m_critCodecSection;
-  
   CPullupCorrection m_pullupCorrection;
 };
 

@@ -149,16 +149,14 @@ void CAdvancedSettings::Initialize()
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
 
-  // foo_[s01]_[e01]
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
-  // foo.1x09* or just /1x09*
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.s01.e01, foo.s01_e01, S01E02 foo
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$"));
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[][._-]*[Ee]([0-9]+)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
+  // foo.1x09* or just /1x09*
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
@@ -171,6 +169,7 @@ void CAdvancedSettings::Initialize()
   m_detectAsUdf = false;
 
   m_thumbSize = DEFAULT_THUMB_SIZE;
+  m_fanartHeight = DEFAULT_FANART_HEIGHT;
   m_useDDSFanart = false;
 
   m_sambaclienttimeout = 10;
@@ -588,6 +587,11 @@ bool CAdvancedSettings::Load()
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
+  // trailer matching regexps
+  TiXmlElement* pTrailerMatching = pRootElement->FirstChildElement("trailermatching");
+  if (pTrailerMatching)
+    GetCustomRegexps(pTrailerMatching, m_trailerMatchRegExps);
+
   // stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
@@ -641,7 +645,8 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetInt(pRootElement, "remoterepeat", m_remoteRepeat, 1, INT_MAX);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
-  XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 64, 1024);
+  XMLUtils::GetInt(pRootElement, "thumbsize", m_thumbSize, 0, 1024);
+  XMLUtils::GetInt(pRootElement, "fanartheight", m_fanartHeight, 0, 1080);
   XMLUtils::GetBoolean(pRootElement, "useddsfanart", m_useDDSFanart);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
@@ -795,7 +800,6 @@ void CAdvancedSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringA
       if (pRegExp->FirstChild())
       {
         CStdString regExp = pRegExp->FirstChild()->Value();
-        regExp.MakeLower();
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, regExp);
         else

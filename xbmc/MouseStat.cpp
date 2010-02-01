@@ -28,10 +28,91 @@
 
 CMouseStat g_Mouse;
 
+CMouseStat::CButtonState::CButtonState()
+{
+  m_state = STATE_RELEASED;
+  m_time = 0;
+  m_x = 0;
+  m_y = 0;
+}
+
+bool CMouseStat::CButtonState::InClickRange(int x, int y) const
+{
+  int dx = x - m_x;
+  int dy = y - m_y;
+  return (unsigned int)(dx*dx + dy*dy) <= click_confines*click_confines;
+}
+
+CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigned int time, int x, int y, bool down)
+{
+  if (m_state == STATE_IN_DRAG)
+  {
+    if (down)
+      return MB_DRAG;
+    m_state = STATE_RELEASED;
+    return MB_DRAG_END;
+  }
+  else if (m_state == STATE_RELEASED)
+  {
+    if (down)
+    {
+      m_state = STATE_IN_CLICK;
+      m_time = time;
+      m_x = x;
+      m_y = y;
+    }
+  }
+  else if (m_state == STATE_IN_CLICK)
+  {
+    if (down)
+    {
+      if (!InClickRange(x,y))
+      { // beginning a drag
+        m_state = STATE_IN_DRAG;
+        return MB_DRAG_START;
+      }
+    }
+    else
+    { // button up
+      if (time - m_time < short_click_time)
+      { // single click
+        m_state = STATE_IN_DOUBLE_CLICK;
+        m_time = time; // double click time and positioning is measured from the
+        m_x = x;       // end of a single click
+        m_y = y;
+        return MB_SHORT_CLICK;
+      }
+      else
+      { // long click
+        m_state = STATE_RELEASED;
+        return MB_LONG_CLICK;
+      }
+    }
+  }
+  else if (m_state == STATE_IN_DOUBLE_CLICK)
+  {
+    if (time - m_time > double_click_time || !InClickRange(x,y))
+    { // too long, or moved to much - reset to released state and re-update, as we may be starting a new click
+      m_state = STATE_RELEASED;
+      return Update(time, x, y, down);
+    }
+    if (down)
+    {
+      m_state = STATE_IN_DOUBLE_IGNORE;
+      return MB_DOUBLE_CLICK;
+    }
+  }
+  else if (m_state == STATE_IN_DOUBLE_IGNORE)
+  {
+    if (!down)
+      m_state = STATE_RELEASED;
+  }
+
+  return MB_NONE;
+}
+
 CMouseStat::CMouseStat()
 {
-  m_exclusiveWindowID = WINDOW_INVALID;
-  m_exclusiveControl = NULL;
   m_pointerState = MOUSE_STATE_NORMAL;
   SetEnabled();
   m_speedX = m_speedY = 0;
@@ -43,15 +124,11 @@ CMouseStat::~CMouseStat()
 {
 }
 
-void CMouseStat::Initialize(void *appData)
+void CMouseStat::Initialize()
 {
   // Set the default resolution (PAL)
   SetResolution(720, 576, 1, 1);
   
-}
-
-void CMouseStat::Cleanup()
-{
 }
 
 void CMouseStat::HandleEvent(XBMC_Event& newEvent)
@@ -88,52 +165,49 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   UpdateInternal();
 }
 
-
 void CMouseStat::UpdateInternal()
 {
   uint32_t now = CTimeUtils::GetFrameTime();
   // update our state from the mouse device
-  if (HasMoved() || m_mouseState.dz)
+  if (MovedPastThreshold() || m_mouseState.dz)
     SetActive();
 
-  // Perform the click mapping (for single + double click detection)
+  // Perform the click mapping (for single, long single, and double click detection)
   bool bNothingDown = true;
   
   for (int i = 0; i < 5; i++)
   {
     bClick[i] = false;
     bDoubleClick[i] = false;
-    bHold[i] = false;
-    if (m_mouseState.button[i])
+    bHold[i] = 0;
+
+    CButtonState::BUTTON_ACTION action = m_buttonState[i].Update(now, m_mouseState.x, m_mouseState.y, m_mouseState.button[i]);
+    switch (action)
     {
+    case CButtonState::MB_SHORT_CLICK:
+    case CButtonState::MB_LONG_CLICK:
+      bClick[i] = true;
       bNothingDown = false;
-      SetActive();
-      if (m_lastDown[i])
-      { // start of hold
-        bHold[i] = true;
-      }
-      else
-      {
-        if (now - m_lastClickTime[i] < MOUSE_DOUBLE_CLICK_LENGTH)
-        { // Double click
+      break;
+    case CButtonState::MB_DOUBLE_CLICK:
           bDoubleClick[i] = true;
-        }
-      }
-    }
-    else
-    {
-      if (m_lastDown[i])
-      { // Mouse up
         bNothingDown = false;
-        bClick[i] = true;
-        m_lastClickTime[i] = now;
+      break;
+    case CButtonState::MB_DRAG_START:
+    case CButtonState::MB_DRAG:
+    case CButtonState::MB_DRAG_END:
+      bHold[i] = action - CButtonState::MB_DRAG_START + 1;
+      bNothingDown = false;
+      break;
+    default:
+      break;
       }
     }
-    m_lastDown[i] = m_mouseState.button[i];
-  }
 
   if (bNothingDown)
     SetState(MOUSE_STATE_NORMAL);
+  else
+    SetActive();
 }
 
 
@@ -178,10 +252,8 @@ bool CMouseStat::IsEnabled() const
   return m_mouseEnabled;
 }
 
-bool CMouseStat::HasMoved(bool detectAllMoves /* = false */) const
+bool CMouseStat::MovedPastThreshold() const
 {
-  if (detectAllMoves)
-    return m_mouseState.dx || m_mouseState.dy;
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
@@ -211,23 +283,6 @@ void CMouseStat::UpdateMouseWheel(char dir)
 {
   m_mouseState.dz = dir;
   SetActive();
-}
-
-void CMouseStat::SetExclusiveAccess(const CGUIControl *control, int windowID, const CPoint &point)
-{
-  m_exclusiveControl = control;
-  m_exclusiveWindowID = windowID;
-  // convert posX, posY to screen coords...
-  // NOTE: This relies on the window resolution having been set correctly beforehand in CGUIWindow::OnMouseAction()
-  CPoint mouseCoords(GetLocation());
-  g_graphicsContext.InvertFinalCoords(mouseCoords.x, mouseCoords.y);
-  m_exclusiveOffset = point - mouseCoords;
-}
-
-void CMouseStat::EndExclusiveAccess(const CGUIControl *control, int windowID)
-{
-  if (m_exclusiveControl == control && m_exclusiveWindowID == windowID)
-    SetExclusiveAccess(NULL, WINDOW_INVALID, CPoint(0, 0));
 }
 
 void CMouseStat::Acquire()

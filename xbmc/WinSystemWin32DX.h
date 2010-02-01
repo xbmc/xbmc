@@ -46,8 +46,6 @@ protected:
   virtual void UpdateMonitor();
 };
 
-extern CWinSystemWin32DX g_RenderSystem;
-
 #endif
 
 #endif // WIN_SYSTEM_WIN32_DX_H

@@ -138,7 +138,14 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
   }
   if (!m_strEpisodeGuide.IsEmpty())
+  {
+    TiXmlDocument doc;
+    doc.Parse(m_strEpisodeGuide);
+    if (doc.RootElement())
+      movie->InsertEndChild(*doc.RootElement());
+    else
     XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
+  }
 
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetString(movie, "genre", m_strGenre);
@@ -508,15 +515,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
-    if (epguide->FirstChild() && strncmp(epguide->FirstChild()->Value(),"<episodeguide>",14) == 0)
-      m_strEpisodeGuide = epguide->FirstChild()->Value();
-    else if (epguide->FirstChild() && strlen(epguide->FirstChild()->Value()) > 0)
-    {
       stringstream stream;
       stream << *epguide;
       m_strEpisodeGuide = stream.str();
     }
-  }
 
   // fanart
   const TiXmlElement *fanart = movie->FirstChildElement("fanart");

@@ -541,21 +541,19 @@ bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIBaseContainer::OnMouseClick(int button, const CPoint &point)
+bool CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
+  if (event.m_id >= ACTION_MOUSE_LEFT_CLICK && event.m_id <= ACTION_MOUSE_DOUBLE_CLICK)
+  {
   if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
-  { // send click message to window
-    OnClick(ACTION_MOUSE_CLICK + button);
+    {
+      OnClick(event.m_id);
     return true;
   }
-  return false;
 }
-
-bool CGUIBaseContainer::OnMouseDoubleClick(int button, const CPoint &point)
+  else if (event.m_id == ACTION_MOUSE_WHEEL)
 {
-  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
-  { // send double click message to window
-    OnClick(ACTION_MOUSE_DOUBLE_CLICK + button);
+    Scroll(-event.m_wheel);
     return true;
   }
   return false;
@@ -594,12 +592,6 @@ bool CGUIBaseContainer::OnClick(int actionID)
   // Don't know what to do, so send to our parent window.
   CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), actionID, subItem);
   return SendWindowMessage(msg);
-}
-
-bool CGUIBaseContainer::OnMouseWheel(char wheel, const CPoint &point)
-{
-  Scroll(-wheel);
-  return true;
 }
 
 CStdString CGUIBaseContainer::GetDescription() const
@@ -819,13 +811,19 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
   if (!m_wasReset)
   {
-    g_infoManager.SetContainerMoving(GetID(), offset - m_offset);
+    SetContainerMoving(offset - m_offset);
     if (m_scrollSpeed)
       m_scrollTimer.Start();
     else
       m_scrollTimer.Stop();
   }
   m_offset = offset;
+}
+
+void CGUIBaseContainer::SetContainerMoving(int direction)
+{
+  if (direction)
+    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollSpeed != 0);
 }
 
 void CGUIBaseContainer::UpdateScrollOffset()

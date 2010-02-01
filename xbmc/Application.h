@@ -90,7 +90,7 @@ public:
   virtual void DoRender();
   virtual void RenderNoPresent();
   virtual void Preflight();
-  virtual bool Create(HWND hWnd);
+  virtual bool Create();
   virtual bool Cleanup();
 
   void StartServices();

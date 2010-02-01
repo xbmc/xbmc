@@ -97,7 +97,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
   for (unsigned int i=0;i<scrURL.m_url.size();++i)
   {
     CStdString strCurrHTML;
-    if (!CScraperUrl::Get(scrURL.m_url[i],strCurrHTML,m_http) || strCurrHTML.size() == 0)
+    if (!CScraperUrl::Get(scrURL.m_url[i],strCurrHTML,m_http,m_parser.GetFilename()) || strCurrHTML.size() == 0)
       return 0;
     strHTML.push_back(strCurrHTML);
   }
@@ -241,7 +241,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
   for(unsigned int i=0; i < url.m_url.size(); i++)
   {
     CStdString strHTML;
-    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http) || strHTML.size() == 0)
+    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http,m_parser.GetFilename()) || strHTML.size() == 0)
     {
       CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
       if (temp.size() > 0 || (i == 0 && url.m_url.size() > 1)) // use what was fetched
@@ -362,7 +362,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     CStdString strCurrHTML;
     if (url.m_xml.Equals("filenamescrape"))
       return ScrapeFilename(movieDetails.m_strFileNameAndPath,movieDetails);
-    if (!CScraperUrl::Get(url.m_url[i],strCurrHTML,m_http) || strCurrHTML.size() == 0)
+    if (!CScraperUrl::Get(url.m_url[i],strCurrHTML,m_http,m_parser.GetFilename()) || strCurrHTML.size() == 0)
       return false;
     strHTML.push_back(strCurrHTML);
   }
@@ -510,7 +510,7 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   // load our scraper xml
   if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
     return 0;
-  CScraperParser::ClearCache();
+  m_parser.ClearCache();
 
   if (pProgress)
   { // threaded version

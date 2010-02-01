@@ -30,7 +30,7 @@
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif
-#include "SystemInfo.h"
+#include "Settings.h"
 #include "LocalizeStrings.h"
 #include "GUIRSSControl.h"
 #include "utils/TimeUtils.h"
@@ -48,8 +48,6 @@ CRssReader::CRssReader() : CThread()
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
   m_SavedScrollPos = 0;
-
-  m_userAgent = g_sysinfo.GetUserAgent();
 }
 
 CRssReader::~CRssReader()
@@ -127,7 +125,7 @@ void CRssReader::Process()
     m_strColors[iFeed] = "";
 
     CFileCurl http;
-    http.SetUserAgent(m_userAgent);
+    http.SetUserAgent(g_settings.m_userAgent);
     http.SetTimeout(2);
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];
