@@ -33,6 +33,7 @@
 #include "FileCurl.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;
@@ -139,7 +140,6 @@ void CLastFMDirectory::AddEntry(int iString, CStdString strPath, CStdString strI
 void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const char *count, const char *date, const char *icon, CStdString strPath, CFileItemList &items)
 {
   CStdString strName;
-  CStdString strCount;
   CFileItemPtr pItem(new CFileItem);
   CMusicInfoTag* musicinfotag = pItem->GetMusicInfoTag();
   musicinfotag->SetTitle(name);

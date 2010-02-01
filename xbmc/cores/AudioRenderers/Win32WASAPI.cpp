@@ -57,7 +57,10 @@ const int wasapi_channel_mask[] =
   SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_SIDE_LEFT   | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY
 };
 
+const int wasapi_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
+
 #define WASAPI_CHANNEL_MASK_COUNT 8
+#define WASAPI_TOTAL_CHANNELS 11
 
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason, __VA_ARGS__); goto failed;}
 
@@ -82,7 +85,7 @@ CWin32WASAPI::CWin32WASAPI() :
 {
 }
 
-bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
   //First check if the version of Windows we are running on even supports WASAPI.
   OSVERSIONINFO winVersion;
@@ -95,6 +98,16 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     CLog::Log(LOGERROR, __FUNCTION__": Version %i.%i of Windows detected.  WASAPI output requires version 6.0 (Vista) or higher.", winVersion.dwMajorVersion, winVersion.dwMinorVersion);
     return false;
   }
+
+  //If there is a listing of required channels, build the speaker mask and mapping from that.
+  //Otherwise, use the default.
+  if(channelMap)
+    BuildChannelMapping(iChannels, channelMap);
+  else
+    m_uiSpeakerMask = wasapi_channel_mask[iChannels-1];
+
+  m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+  m_remap.SetOutputFormat(iChannels, m_SpeakerOrder);
 
   //Only one exclusive stream may be initialized at one time.
   if(m_bIsAllocated)
@@ -137,7 +150,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   } 
   else
   {
-    wfxex.dwChannelMask          = wasapi_channel_mask[iChannels - 1];
+    wfxex.dwChannelMask          = m_uiSpeakerMask;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
     wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_PCM;
     wfxex.Format.wBitsPerSample  = uiBitsPerSample == 24 ? 32 : uiBitsPerSample;
@@ -250,9 +263,6 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, (void**)&m_pRenderClient);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI render client interface.")
-
-  // Set up channel mapping
-  SetChannelMap(iChannels, uiBitsPerSample, bAudioPassthrough, strAudioCodec);
 
   m_bIsAllocated = true;
   m_CacheLen = 0;
@@ -657,7 +667,11 @@ void CWin32WASAPI::AddDataToBuffer(unsigned char* pData, unsigned int len, unsig
     }
   }
 
-  MapDataIntoBuffer(pData, len, pOut);
+  // Remap the data to the correct channels
+  if (m_remap.CanRemap())
+    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerFrame);
+  else
+    memcpy(pOut, pData, len);
 }
 
 //***********************************************************************************************
@@ -665,3 +679,76 @@ void CWin32WASAPI::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
   return;
 }
+
+//***********************************************************************************************
+void CWin32WASAPI::BuildChannelMapping(int channels, int8_t* map)
+{
+  bool usedChannels[WASAPI_TOTAL_CHANNELS];
+
+  memset(usedChannels, false, sizeof(usedChannels));
+
+  m_uiSpeakerMask = 0;
+
+  //Build the speaker mask and note which are used.
+  for(int i = 0; i < channels; i++)
+  {
+    switch(map[i])
+    {
+    case PCM_FRONT_LEFT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_LEFT;
+      break;
+    case PCM_FRONT_RIGHT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_RIGHT;
+      break;
+    case PCM_FRONT_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_CENTER;
+      break;
+    case PCM_LOW_FREQUENCY:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_LOW_FREQUENCY;
+      break;
+    case PCM_BACK_LEFT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_BACK_LEFT;
+      break;
+    case PCM_BACK_RIGHT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_BACK_RIGHT;
+      break;
+    case PCM_FRONT_LEFT_OF_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_LEFT_OF_CENTER;
+      break;
+    case PCM_FRONT_RIGHT_OF_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_RIGHT_OF_CENTER;
+      break;
+    case PCM_BACK_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_BACK_CENTER;
+      break;
+    case PCM_SIDE_LEFT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_SIDE_LEFT;
+      break;
+    case PCM_SIDE_RIGHT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_SIDE_RIGHT;
+      break;
+    }
+  }
+
+  //Assemble a compacted channel set.
+  for(int i = 0, j = 0; i < WASAPI_TOTAL_CHANNELS; i++)
+  {
+    if(usedChannels[i])
+    {
+      m_SpeakerOrder[j] = wasapi_channel_order[i];
+      j++;
+    }
+  }
+}
+

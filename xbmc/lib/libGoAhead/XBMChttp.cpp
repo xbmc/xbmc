@@ -48,6 +48,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

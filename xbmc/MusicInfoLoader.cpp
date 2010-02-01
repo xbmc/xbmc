@@ -107,10 +107,10 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
 
   // we load up the actual tag for this file
-  CMusicInfoTag tag;
   auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
   if (NULL != pLoader.get())
   {
+    CMusicInfoTag tag;
     pLoader->Load(path, tag);
     // then we set the fields from the file tags to the item
     pItem->SetProperty("lyrics", tag.GetLyrics());

@@ -1,0 +1,13 @@
+INCLUDES=-I../../../.. -I. -I../ -I../../ -I../../../ -I../../../linux -I../../../../guilib
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  INCLUDES+=-I../Codecs/ffmpeg
+endif
+
+SRCS=	DVDCodecUtils.cpp \
+	DVDFactoryCodec.cpp \
+
+LIB=	DVDCodecs.a
+
+include ../../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+

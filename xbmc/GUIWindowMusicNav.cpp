@@ -22,6 +22,7 @@
 #include "GUIWindowMusicNav.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/FileUtils.h"
 #include "PlayListM3U.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
@@ -37,7 +38,6 @@
 #include "GUIWindowVideoNav.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
-#include "GUIWindowFileManager.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIEditControl.h"
@@ -49,6 +49,7 @@
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -761,7 +762,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (item->IsPlayList() || item->IsSmartPlayList())
     {
       item->m_bIsFolder = false;
-      CGUIWindowFileManager::DeleteItem(item.get());
+      CFileUtils::DeleteItem(item);
     }
     else
     {

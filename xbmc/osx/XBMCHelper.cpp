@@ -46,6 +46,7 @@ XBMCHelper::XBMCHelper()
   : m_alwaysOn(false)
   , m_mode(APPLE_REMOTE_DISABLED)
   , m_sequenceDelay(0)
+  , m_port(0)
   , m_errorStarting(false)
 {
   // Compute the XBMC_HOME path.

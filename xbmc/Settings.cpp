@@ -57,6 +57,7 @@
 #include "FileSystem/SMBDirectory.h"
 #endif
 #include "playercorefactory/PlayerCoreFactory.h"
+#include "utils/FileUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -164,83 +165,18 @@ bool CSettings::Reset()
   return LoadSettings(GetSettingsFile());
 }
 
-bool CSettings::Load(bool& bXboxMediacenter, bool& bSettings)
+bool CSettings::Load()
 {
-  // load settings file...
-  bXboxMediacenter = bSettings = false;
-
   CSpecialProtocol::SetProfilePath(GetProfileUserDataFolder());
   CLog::Log(LOGNOTICE, "loading %s", GetSettingsFile().c_str());
   if (!LoadSettings(GetSettingsFile()))
   {
     CLog::Log(LOGERROR, "Unable to load %s, creating new %s with default values", GetSettingsFile().c_str(), GetSettingsFile().c_str());
-    Save();
-    if (!(bSettings = Reset()))
+    if (!Reset())
       return false;
   }
 
-  // clear sources, then load xml file...
-  m_fileSources.clear();
-  m_musicSources.clear();
-  m_pictureSources.clear();
-  m_programSources.clear();
-  m_videoSources.clear();
-  CStdString strXMLFile = GetSourcesFile();
-  CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
-  TiXmlDocument xmlDoc;
-  TiXmlElement *pRootElement = NULL;
-  if ( xmlDoc.LoadFile( strXMLFile ) )
-  {
-    pRootElement = xmlDoc.RootElement();
-    CStdString strValue;
-    if (pRootElement)
-      strValue = pRootElement->Value();
-    if ( strValue != "sources")
-      CLog::Log(LOGERROR, "%s sources.xml file does not contain <sources>", __FUNCTION__);
-  }
-  else if (CFile::Exists(strXMLFile))
-    CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-
-  // look for external sources file
-  TiXmlNode *pInclude = pRootElement ? pRootElement->FirstChild("remote") : NULL;
-  if (pInclude)
-  {
-    CStdString strRemoteFile = pInclude->FirstChild()->Value();
-    if (!strRemoteFile.IsEmpty())
-    {
-      CLog::Log(LOGDEBUG, "Found <remote> tag");
-      CLog::Log(LOGDEBUG, "Attempting to retrieve remote file: %s", strRemoteFile.c_str());
-      // sometimes we have to wait for the network
-      if (!g_application.getNetwork().IsAvailable(true) && CFile::Exists(strRemoteFile))
-      {
-        if ( xmlDoc.LoadFile(strRemoteFile) )
-        {
-          pRootElement = xmlDoc.RootElement();
-          CStdString strValue;
-          if (pRootElement)
-            strValue = pRootElement->Value();
-          if ( strValue != "sources")
-            CLog::Log(LOGERROR, "%s remote_sources.xml file does not contain <sources>", __FUNCTION__);
-        }
-        else
-          CLog::Log(LOGERROR, "%s unable to load file: %s, Line %d, %s", __FUNCTION__, strRemoteFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-      }
-      else
-        CLog::Log(LOGNOTICE, "Could not retrieve remote file, defaulting to local sources");
-    }
-  }
-
-  if (pRootElement)
-  { // parse sources...
-    GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
-    GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
-    GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
-    GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
-    GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
-  }
-
-  bXboxMediacenter = true;
-
+  LoadSources();
   LoadRSSFeeds();
   LoadUserFolderLayout();
 
@@ -970,12 +906,11 @@ bool CSettings::LoadProfile(int index)
 {
   int iOldIndex = m_iLastLoadedProfileIndex;
   m_iLastLoadedProfileIndex = index;
-  bool bSourcesXML=true;
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
   CStdString strOldColors = g_guiSettings.GetString("lookandfeel.skincolors");
-  if (Load(bSourcesXML,bSourcesXML))
+  if (Load())
   {
     CreateProfileFolders();
 
@@ -1059,11 +994,11 @@ bool CSettings::DeleteProfile(int index)
         Save();
       }
 
-      CFileItem item(CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory));
-      item.m_strPath = CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory + "\\");
-      item.m_bIsFolder = true;
-      item.Select(true);
-      CGUIWindowFileManager::DeleteItem(&item);
+      CFileItemPtr item = CFileItemPtr(new CFileItem(CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory)));
+      item->m_strPath = CUtil::AddFileToFolder(GetUserDataFolder(), strDirectory + "\\");
+      item->m_bIsFolder = true;
+      item->Select(true);
+      CFileUtils::DeleteItem(item);
     }
     else
       return false;
@@ -1467,6 +1402,41 @@ bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCE
     }
   }
   return true;
+}
+
+void CSettings::LoadSources()
+{
+  // clear sources
+  m_fileSources.clear();
+  m_musicSources.clear();
+  m_pictureSources.clear();
+  m_programSources.clear();
+  m_videoSources.clear();
+
+  CStdString strSourcesFile = GetSourcesFile();
+  CLog::Log(LOGNOTICE, "Loading media sources from %s", strSourcesFile.c_str());
+
+  // load xml file
+  TiXmlDocument xmlDoc;
+  TiXmlElement *pRootElement = NULL;
+  if (xmlDoc.LoadFile(strSourcesFile))
+  {
+    pRootElement = xmlDoc.RootElement();
+    if (pRootElement && strcmpi(pRootElement->Value(),"sources") != 0)
+      CLog::Log(LOGERROR, "%s sources.xml file does not contain <sources>", __FUNCTION__);
+  }
+  else if (CFile::Exists(strSourcesFile))
+    CLog::Log(LOGERROR, "%s Error loading %s: Line %d, %s", __FUNCTION__, strSourcesFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+
+  // parse sources
+  if (pRootElement)
+  {
+    GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
+    GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
+    GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
+    GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
+    GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
+  }
 }
 
 void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)

@@ -279,40 +279,4 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
   return true;
 }
 
-//////////////////////////////////////////////////////////////////////
-// NV122RGBProgressiveShaderARB - NV122RGB with no deinterlacing
-//////////////////////////////////////////////////////////////////////
-
-NV12ToRGBProgressiveShaderARB::NV12ToRGBProgressiveShaderARB(bool rect, unsigned flags)
-  : BaseYUV2RGBARBShader(flags)
-{
-  m_black      = 0.0f;
-  m_contrast   = 1.0f;
-
-  if(rect)
-    PixelShader()->LoadSource("nv12rgb_basic_rect.arb");
-  else
-    PixelShader()->LoadSource("nv12rgb_basic_2d.arb");
-}
-
-
-void NV12ToRGBProgressiveShaderARB::OnCompiledAndLinked()
-{
-
-}
-
-bool NV12ToRGBProgressiveShaderARB::OnEnabled()
-{
-  GLfloat matrix[4][4];
-  CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
-
-  for(int i=0;i<4;i++)
-    glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, i
-                               , matrix[0][i]
-                               , matrix[1][i]
-                               , matrix[2][i]
-                               , matrix[3][i]);
-  return true;
-}
-
 #endif // HAS_GL

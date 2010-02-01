@@ -11,6 +11,7 @@
 #include "utils/SingleLock.h"
 #include "utils/GUIInfoManager.h"
 #include "GUISettings.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -140,7 +141,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     return;
 
   CVisualisationFactory factory;
-  CStdString strVisz, strModule;
+  CStdString strVisz;
   m_currentVis = g_guiSettings.GetString("musicplayer.visualisation");
 
   if (m_currentVis.Equals("None"))
@@ -151,7 +152,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     int colonPos = m_currentVis.ReverseFind(":");
     if ( colonPos > 0 )
     {
-      strModule = m_currentVis.Mid( colonPos+1 );
+      CStdString strModule = m_currentVis.Mid( colonPos+1 );
       strVisz = m_currentVis.Mid( 0, colonPos );
       m_pVisualisation = factory.LoadVisualisation(strVisz, strModule);
     }
@@ -374,7 +375,7 @@ bool CGUIVisualisationControl::UpdateTrack()
   if ( m_pVisualisation )
   {
     // get the current album art filename
-    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+    m_AlbumThumb = _P(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
 
     // get the current track tag
     const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();

@@ -18,10 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#ifdef __APPLE__
 #ifndef _COCOA_POWER_SYSCALL_H_
 #define _COCOA_POWER_SYSCALL_H_
+
+#ifdef __APPLE__
 #include "IPowerSyscall.h"
 
 class CCocoaPowerSyscall : public IPowerSyscall

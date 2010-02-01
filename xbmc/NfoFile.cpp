@@ -32,6 +32,7 @@
 #include "Album.h"
 #include "Artist.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 #include <vector>
 
@@ -67,7 +68,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
     return NO_NFO;
 
   CFileItemList items;
-  CStdString strURL, strScraperBasePath, strDefault, strSelected;
+  CStdString strScraperBasePath, strDefault, strSelected;
   bool bNfo=false;
   if (m_strContent.Equals("albums"))
   {
@@ -108,7 +109,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
           bNfo = GetDetails(details);
       }
     }
-    strURL = details.m_strEpisodeGuide;
+    CStdString strURL = details.m_strEpisodeGuide;
     strScraperBasePath = "special://xbmc/system/scrapers/video/";
     CDirectory::GetDirectory("special://xbmc/system/scrapers/video/",items,".xml",false);
 

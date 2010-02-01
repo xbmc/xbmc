@@ -34,6 +34,8 @@
 #include "LocalizeStrings.h"
 #include "GUIRSSControl.h"
 #include "utils/TimeUtils.h"
+#include "SingleLock.h"
+#include "log.h"
 
 using namespace std;
 using namespace XFILE;

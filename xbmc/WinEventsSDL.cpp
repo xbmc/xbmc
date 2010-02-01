@@ -172,6 +172,7 @@ bool CWinEventsSDL::MessagePump()
       newEvent.resize.h = event.resize.h;
       newEvent.resize.type = event.resize.type;
       ret |= g_application.OnEvent(newEvent);
+      break;
     }
     case SDL_USEREVENT:
     {
@@ -179,6 +180,7 @@ bool CWinEventsSDL::MessagePump()
       newEvent.type = XBMC_USEREVENT;
       newEvent.user.code = event.user.code;
       ret |= g_application.OnEvent(newEvent);
+      break;
     }
 
     }

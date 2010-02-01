@@ -64,9 +64,11 @@ bool CTextureBundleXBT::OpenBundle()
   {
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
-    CStdString themeXBT = g_guiSettings.GetString("lookandfeel.skintheme");
-    if (!themeXBT.IsEmpty() && themeXBT.Find(".xbt") != -1 && themeXBT.CompareNoCase("SKINDEFAULT"))
+    CStdString theme = g_guiSettings.GetString("lookandfeel.skintheme");
+    if (!theme.IsEmpty() && theme.CompareNoCase("SKINDEFAULT"))
     {
+      CStdString themeXBT;
+      CUtil::ReplaceExtension(theme, ".xbt", themeXBT);
       strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
       strPath = CUtil::AddFileToFolder(strPath, themeXBT);
     }

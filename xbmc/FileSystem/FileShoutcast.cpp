@@ -48,6 +48,7 @@
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
@@ -122,19 +123,19 @@ void rip_callback(int message, void *data)
 extern "C" {
 error_code filelib_write_show(char *buf, u_long size)
 {
-  if ((int)size > m_ringbuf.Size())
+  if ((unsigned int)size > m_ringbuf.getSize())
   {
     CLog::Log(LOGERROR, "Shoutcast chunk too big: %lu", size);
     return SR_ERROR_BUFFER_FULL;
   }
-  while (m_ringbuf.GetMaxWriteSize() < (int)size) Sleep(10);
-  m_ringbuf.WriteBinary(buf, size);
+  while (m_ringbuf.getMaxWriteSize() < (unsigned int)size) Sleep(10);
+  m_ringbuf.WriteData(buf, size);
   m_ripFile.Write( buf, size ); //will only write, if it has to
   if (m_fileState.bBuffering)
   {
     if (rip_manager_get_content_type() == CONTENT_TYPE_OGG)
     {
-      if (m_ringbuf.GetMaxReadSize() > (m_ringbuf.Size() / 8) )
+      if (m_ringbuf.getMaxReadSize() > (m_ringbuf.getSize() / 8) )
       {
         // hack because ogg streams are very broke, force it to go.
         m_fileState.bBuffering = false;
@@ -309,7 +310,7 @@ bool CFileShoutcast::Open(const CURL& url)
       Sleep(100);
       char szTmp[1024];
       //g_dialog.SetCaption(0, "Shoutcast" );
-      sprintf(szTmp, g_localizeStrings.Get(23052).c_str(), m_ringbuf.GetMaxReadSize());
+      sprintf(szTmp, g_localizeStrings.Get(23052).c_str(), m_ringbuf.getMaxReadSize());
       if (dlgProgress)
       {
         dlgProgress->SetLine(2, szTmp );
@@ -380,7 +381,7 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
   }
 
   int slept=0;
-  while (m_ringbuf.GetMaxReadSize() <= 0 && slept < g_advancedSettings.m_curlconnecttimeout*1000)
+  while (m_ringbuf.getMaxReadSize() <= 0 && slept < g_advancedSettings.m_curlconnecttimeout*1000)
   {
     Sleep(10);
     slept += 10;
@@ -388,9 +389,9 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
   if (slept >= g_advancedSettings.m_curlconnecttimeout*1000)
     return -1;
 
-  int iRead = m_ringbuf.GetMaxReadSize();
+  int iRead = m_ringbuf.getMaxReadSize();
   if (iRead > uiBufSize) iRead = (int)uiBufSize;
-  m_ringbuf.ReadBinary((char*)lpBuf, iRead);
+  m_ringbuf.ReadData((char*)lpBuf, iRead);
 
   if (CTimeUtils::GetTimeMS() - m_lastTime > 500)
   {

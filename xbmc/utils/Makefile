@@ -32,6 +32,7 @@ SRCS=AlarmClock.cpp \
      Win32Exception.cpp \
      CPUInfo.cpp \
      PCMAmplifier.cpp \
+     PCMRemap.cpp \
      LabelFormatter.cpp \
      Network.cpp \
      BitstreamStats.cpp \
@@ -57,10 +58,13 @@ SRCS=AlarmClock.cpp \
      TimeUtils.cpp \
      JobManager.cpp \
      Teletext.cpp \
-     fastmemcpy.cpp \
+     fastmemcpy.c \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
-     Semaphore.cpp
+     RingBuffer.cpp \
+     Semaphore.cpp \
+     FileOperationJob.cpp \
+     FileUtils.cpp
 
 LIB=utils.a
 

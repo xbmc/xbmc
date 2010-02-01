@@ -262,14 +262,23 @@ class CSettingInt : public CSetting
 public:
   CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat);
   CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin);
+  CSettingInt(int iOrder, const char *strSetting, int iLabel, int iData, const std::map<int,int>& entries, int iControlType);
   virtual ~CSettingInt() {};
 
   virtual int GetType() { return SETTINGS_TYPE_INT; };
   virtual void FromString(const CStdString &strValue);
   virtual CStdString ToString();
 
-  void SetData(int iData) { m_iData = iData; if (m_iData < m_iMin) m_iData = m_iMin; if (m_iData > m_iMax) m_iData = m_iMax;};
-int GetData() const { return m_iData; };
+  void SetData(int iData)
+  { 
+    m_iData = iData;
+    if (m_entries.empty())
+    {
+      if (m_iData < m_iMin) m_iData = m_iMin; 
+      if (m_iData > m_iMax) m_iData = m_iMax;
+    }
+  }
+  int GetData() const { return m_iData; };
 
   int m_iMin;
   int m_iStep;
@@ -277,6 +286,7 @@ int GetData() const { return m_iData; };
   int m_iFormat;
   int m_iLabelMin;
   CStdString m_strFormat;
+  std::map<int,int> m_entries;
 
 protected:
   int m_iData;
@@ -401,6 +411,8 @@ public:
 
   void AddInt(int iOrder, const char *strSetting, int iLabel, int fSetting, int iMin, int iStep, int iMax, int iControlType, const char *strFormat = NULL);
   void AddInt(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, int iFormat, int iLabelMin=-1);
+  void AddInt(int iOrder, const char *strSetting, int iLabel, int iData, const std::map<int,int>& entries, int iControlType);
+  void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, int> > &values);
   int GetInt(const char *strSetting) const;
   void SetInt(const char *strSetting, int fSetting);
 

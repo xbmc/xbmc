@@ -85,7 +85,7 @@ inline std::size_t weightedRandomNormalized(std::vector<float> weights) {
     // Sum up mass, stopping when cutoff is reached. This is the typical
     // weighted sampling algorithm.
 	float mass = 0;
-	for (std::size_t i = 0; i< weights.size() ; i) {
+	for (std::size_t i = 0; i< weights.size() ; i++) {
 		mass += weights[i];
 		if (mass >= cutoff)
 			return i;

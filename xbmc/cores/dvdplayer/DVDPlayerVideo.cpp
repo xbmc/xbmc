@@ -514,7 +514,7 @@ void CDVDPlayerVideo::Process()
 
             // all packets except the last one should be dropped
             // if prio packets and current packet should be dropped, this is likely a new reset
-            msg->m_drop = !m_packets.empty() || iPriority > 0 && bPacketDrop;
+            msg->m_drop = !m_packets.empty() || (iPriority > 0 && bPacketDrop);
             m_messageQueue.Put(msg, iPriority + 10);
           }
 
@@ -596,7 +596,14 @@ void CDVDPlayerVideo::Process()
             if (picture.iRepeatPicture)
               picture.iDuration *= picture.iRepeatPicture + 1;
 
+#if 1
             int iResult = OutputPicture(&picture, pts);
+#else
+            // testing NV12 rendering functions
+            DVDVideoPicture* pTempNV12Picture = CDVDCodecUtils::ConvertToNV12Picture(&picture);
+            int iResult = OutputPicture(pTempNV12Picture, pts);
+            CDVDCodecUtils::FreePicture(pTempNV12Picture);
+#endif
 
             if(m_started == false)
             {

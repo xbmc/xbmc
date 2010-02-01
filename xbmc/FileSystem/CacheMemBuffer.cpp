@@ -72,19 +72,19 @@ int CacheMemBuffer::Close()
 int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
 {
   CSingleLock lock(m_sync);
-  unsigned int nToWrite = m_buffer.GetMaxWriteSize() ;
+  unsigned int nToWrite = m_buffer.getMaxWriteSize() ;
 
   // must also check the forward buffer.
   // if we have leftovers from the previous seek - we need not read anymore until they are utilized
-  if (nToWrite == 0 || m_forwardBuffer.GetMaxReadSize() > 0)
+  if (nToWrite == 0 || m_forwardBuffer.getMaxReadSize() > 0)
     return 0;
 
   if (nToWrite > iSize)
     nToWrite = iSize;
 
-  if (!m_buffer.WriteBinary(pBuffer, nToWrite))
+  if (!m_buffer.WriteData((char*)pBuffer, nToWrite))
   {
-    CLog::Log(LOGWARNING,"%s, failed to write %d bytes to buffer. max buffer size: %d", __FUNCTION__, nToWrite, m_buffer.GetMaxWriteSize());
+    CLog::Log(LOGWARNING,"%s, failed to write %d bytes to buffer. max buffer size: %d", __FUNCTION__, nToWrite, m_buffer.getMaxWriteSize());
     nToWrite = 0;
   }
 
@@ -96,32 +96,32 @@ int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
 int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   CSingleLock lock(m_sync);
-  if ( m_buffer.GetMaxReadSize() == 0 ) {
+  if ( m_buffer.getMaxReadSize() == 0 ) {
     return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
   }
 
   int nRead = iMaxSize;
-  if ((size_t) m_buffer.GetMaxReadSize() < iMaxSize)
-    nRead = m_buffer.GetMaxReadSize();
+  if ((size_t) m_buffer.getMaxReadSize() < iMaxSize)
+    nRead = m_buffer.getMaxReadSize();
 
   if (nRead > 0)
   {
-    if (!m_buffer.ReadBinary(pBuffer, nRead))
+    if (!m_buffer.ReadData(pBuffer, nRead))
     {
-      CLog::Log(LOGWARNING, "%s, failed to read %d bytes from buffer. max read size: %d", __FUNCTION__, nRead, m_buffer.GetMaxReadSize());
+      CLog::Log(LOGWARNING, "%s, failed to read %d bytes from buffer. max read size: %d", __FUNCTION__, nRead, m_buffer.getMaxReadSize());
       return 0;
     }
 
     // copy to history so we can seek back
-    if ((int) m_HistoryBuffer.GetMaxWriteSize() < nRead)
+    if ((int) m_HistoryBuffer.getMaxWriteSize() < nRead)
       m_HistoryBuffer.SkipBytes(nRead);
-    m_HistoryBuffer.WriteBinary(pBuffer, nRead);
+    m_HistoryBuffer.WriteData(pBuffer, nRead);
 
     m_nStartPosition += nRead;
   }
 
   // check forward buffer and copy it when enough space is available
-  if (m_forwardBuffer.GetMaxReadSize() > 0 && m_buffer.GetMaxWriteSize() >= m_forwardBuffer.GetMaxReadSize())
+  if (m_forwardBuffer.getMaxReadSize() > 0 && m_buffer.getMaxWriteSize() >= m_forwardBuffer.getMaxReadSize())
   {
     m_buffer.Append(m_forwardBuffer);
     m_forwardBuffer.Clear();
@@ -136,13 +136,13 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
 {
   if (millis == 0 || IsEndOfInput())
-    return m_buffer.GetMaxReadSize();
+    return m_buffer.getMaxReadSize();
 
   unsigned int time = CTimeUtils::GetTimeMS() + millis;
-  while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && CTimeUtils::GetTimeMS() < time )
+  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && CTimeUtils::GetTimeMS() < time )
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
 
-  return m_buffer.GetMaxReadSize();
+  return m_buffer.getMaxReadSize();
 }
 
 int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
@@ -158,24 +158,24 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
   // we try to avoid a (heavy) seek on the source
-  if (iFilePosition > m_nStartPosition + m_buffer.GetMaxReadSize() &&
-      iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize() + 100000)
+  if (iFilePosition > m_nStartPosition + m_buffer.getMaxReadSize() &&
+      iFilePosition < m_nStartPosition + m_buffer.getMaxReadSize() + 100000)
   {
-    int nRequired = (int)(iFilePosition - (m_nStartPosition + m_buffer.GetMaxReadSize()));
+    int nRequired = (int)(iFilePosition - (m_nStartPosition + m_buffer.getMaxReadSize()));
     lock.Leave();
     WaitForData(nRequired + 1, 5000);
     lock.Enter();
   }
 
   // check if seek is inside the current buffer
-  if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize())
+  if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.getMaxReadSize())
   {
-    int nOffset = (int)(iFilePosition - m_nStartPosition);
+    unsigned int nOffset = (iFilePosition - m_nStartPosition);
     // copy to history so we can seek back
-    if (m_HistoryBuffer.GetMaxWriteSize() < nOffset)
+    if (m_HistoryBuffer.getMaxWriteSize() < nOffset)
       m_HistoryBuffer.SkipBytes(nOffset);
 
-    if (!m_buffer.ReadBinary(m_HistoryBuffer, nOffset))
+    if (!m_buffer.ReadData(m_HistoryBuffer, nOffset))
     {
       CLog::Log(LOGERROR, "%s, failed to copy %d bytes to history", __FUNCTION__, nOffset);
     }
@@ -185,23 +185,23 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition, int iWhence)
     return m_nStartPosition;
   }
 
-  int64_t iHistoryStart = m_nStartPosition - m_HistoryBuffer.GetMaxReadSize();
+  int64_t iHistoryStart = m_nStartPosition - m_HistoryBuffer.getMaxReadSize();
   if (iFilePosition < m_nStartPosition && iFilePosition > iHistoryStart)
   {
     CRingBuffer saveHist, saveUnRead;
     int64_t nToSkip = iFilePosition - iHistoryStart;
-    SEEK_CHECK_RET(m_HistoryBuffer.ReadBinary(saveHist, (int)nToSkip));
+    SEEK_CHECK_RET(m_HistoryBuffer.ReadData(saveHist, (int)nToSkip));
 
     SEEK_CHECK_RET(saveUnRead.Copy(m_buffer));
 
     SEEK_CHECK_RET(m_buffer.Copy(m_HistoryBuffer));
-    int nSpace = m_buffer.GetMaxWriteSize();
-    int nToCopy = saveUnRead.GetMaxReadSize();
+    int nSpace = m_buffer.getMaxWriteSize();
+    int nToCopy = saveUnRead.getMaxReadSize();
 
     if (nToCopy < nSpace)
       nSpace = nToCopy;
 
-    SEEK_CHECK_RET(saveUnRead.ReadBinary(m_buffer, nSpace));
+    SEEK_CHECK_RET(saveUnRead.ReadData(m_buffer, nSpace));
     nToCopy -= nSpace;
     if (nToCopy > 0)
       m_forwardBuffer.Copy(saveUnRead);

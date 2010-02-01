@@ -123,9 +123,10 @@
   <string id="165">Disc present</string>
   <string id="166">Skin</string>
   <string id="167">Enable FTP server</string>
-  <string id="168">Enable Internet time synchronization</string>
+  <string id="168"></string>
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
+  <string id="171">Stretch 4:3 content to 16:9</string>
 
   <string id="172">Release date</string>
 
@@ -239,6 +240,10 @@
   <string id="296">Clear bookmarks</string>
   <string id="297">Audio offset</string>
   <string id="298">Bookmarks</string>
+  <string id="299">- AAC Capable Receiver</string>
+  <string id="300">- MP1 Capable Reciever</string>
+  <string id="301">- MP2 Capable Reciever</string>
+  <string id="302">- MP3 Capable Reciever</string>
   <string id="303">Delay</string>
   <string id="304">Language</string>
   <string id="305">Enabled</string>
@@ -596,9 +601,9 @@
   <string id="726">Changes not saved. Continue without saving?</string>
   <string id="727">Web server</string>
   <string id="728">FTP server</string>
-  <string id="729">Internet time</string>
+  <string id="729"></string>
   <string id="730">- Port</string>
-  <string id="731">Time server host</string>
+  <string id="731"></string>
   <string id="732">Save &amp; apply</string>
   <string id="733">- Password</string>
   <string id="734">No pass</string>
@@ -1851,6 +1856,9 @@
   <string id="20445">Fanart</string>
   <string id="20446">Locally stored information found.</string>
   <string id="20447">Ignore and refresh from internet?</string>
+  <string id="20448">Could not download information</string>
+  <string id="20449">Server is most likely unavailable.</string>
+  <string id="20450">Would you like to continue scanning?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2084,16 +2092,16 @@
   <string id="23053">Stopping</string>
   <string id="23054">Running</string>
 
-  <string id="23070">Enable boblight</string>
-  <string id="23071">Enable boblight test mode</string>
-  <string id="23072">Boblight value</string>
-  <string id="23073">Boblight value min</string>
-  <string id="23074">Boblight value max</string>
-  <string id="23075">Boblight saturation</string>
-  <string id="23076">Boblight saturation min</string>
-  <string id="23077">Boblight saturation max</string>
-  <string id="23078">Boblight speed</string>
-  <string id="23079">Boblight autospeed</string>
+  <string id="23053">Enable boblight</string>
+  <string id="23054">Enable boblight test mode</string>
+  <string id="23055">Boblight value</string>
+  <string id="23056">Boblight value min</string>
+  <string id="23057">Boblight value max</string>
+  <string id="23058">Boblight saturation</string>
+  <string id="23059">Boblight saturation min</string>
+  <string id="23060">Boblight saturation max</string>
+  <string id="23061">Boblight speed</string>
+  <string id="23062">Boblight autospeed</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>
@@ -2184,4 +2192,9 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
 </strings>

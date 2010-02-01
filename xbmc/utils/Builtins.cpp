@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "AlarmClock.h"
 #include "Application.h"
 #include "Autorun.h"
@@ -45,7 +48,9 @@
 #include "Util.h"
 
 #include "FileSystem/PluginDirectory.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/ZipManager.h"
 
 #include "GUIWindowManager.h"
@@ -172,6 +177,7 @@ const BUILT_IN commands[] = {
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
+  { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -297,7 +303,6 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     // get the parameters
     CStdString strWindow;
-    CStdString strPath;
     if (params.size())
     {
       strWindow = params[0];
@@ -398,8 +403,10 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (CUtil::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
+#ifdef HAVE_XBMC_NONFREE
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
+#endif
     else
       CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
   }
@@ -718,11 +725,10 @@ int CBuiltins::Execute(const CStdString& execString)
     // playlist.playoffset(offset)
     // playlist.playoffset(music|video,offset)
     CStdString strPos = parameter;
-    CStdString strPlaylist;
     if (params.size() > 1)
     {
       // ignore any other parameters if present
-      strPlaylist = params[0];
+      CStdString strPlaylist = params[0];
       strPos = params[1];
 
       int iPlaylist = PLAYLIST_NONE;
@@ -860,12 +866,11 @@ int CBuiltins::Execute(const CStdString& execString)
 
     int iTheme = -1;
 
-    CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
-        strTmpTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+        CStdString strTmpTheme(g_guiSettings.GetString("lookandfeel.skintheme"));
         CUtil::RemoveExtension(strTmpTheme);
         if (vecTheme[i].Equals(strTmpTheme))
         {
@@ -888,10 +893,8 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme==-1)
       g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
     else
-    {
-      strSkinTheme.Format("%s.xpr",vecTheme[iTheme]);
       g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
-    }
+
     // also set the default color theme
     CStdString colorTheme(strSkinTheme);
     CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
@@ -1048,14 +1051,16 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      SScraperInfo info;
       VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
+        {
+          SScraperInfo info;
           CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
+        }
       }
     }
   }
@@ -1267,6 +1272,10 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
+  }
+  else if (execute.Equals("wakeonlan"))
+  {
+    g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))

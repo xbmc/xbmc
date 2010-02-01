@@ -438,6 +438,8 @@ Arguments ()
 				export NOXAUTOCONFIG
 				NOXSCREENSAVER="Yes"
 				export NOXSCREENSAVER
+				NOPRESEED="Yes"
+				export NOPRESEED
 				;;
 
 			*/*=*)

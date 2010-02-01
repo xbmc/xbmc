@@ -538,8 +538,8 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
     CStdString baseDir = GetScraperDirectory(scraper);
     if (!baseDir.IsEmpty() && (!scraper.settings.GetPluginRoot() || scraper.settings.GetSettings().IsEmpty()))
     { // load default scraper settings
-      scraper.settings.LoadSettingsXML(baseDir + scraper.strPath);
-      scraper.settings.SaveFromDefault();
+      if (scraper.settings.LoadSettingsXML(baseDir + scraper.strPath))
+        scraper.settings.SaveFromDefault();
     }
 
     return true;

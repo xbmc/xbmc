@@ -33,11 +33,9 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
-#include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
-#include "utils/fstrcmp.h"
 #include "VideoDatabase.h"
 #include "MusicDatabase.h"
 #include "SortFileItem.h"
@@ -53,8 +51,8 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
-#include "utils/TimeUtils.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "karaoke/karaokelyricsfactory.h"
 
 using namespace std;
@@ -597,35 +595,15 @@ bool CFileItem::IsLastFM() const
 
 bool CFileItem::IsInternetStream() const
 {
-  CURL url(m_strPath);
-  CStdString strProtocol = url.GetProtocol();
-  strProtocol.ToLower();
-
-  if (strProtocol.IsEmpty() || HasProperty("IsHTTPDirectory"))
+  if (HasProperty("IsHTTPDirectory"))
     return false;
 
-  // there's nothing to stop internet streams from being stacked
-  if (strProtocol == "stack")
-  {
-    CFileItem fileItem(CStackDirectory::GetFirstStackedFile(m_strPath), false);
-    return fileItem.IsInternetStream();
-  }
-
-  if (strProtocol == "shout" || strProtocol == "mms" ||
-      strProtocol == "http" || /*strProtocol == "ftp" ||*/
-      strProtocol == "rtsp" || strProtocol == "rtp" ||
-      strProtocol == "udp"  || strProtocol == "lastfm" ||
-      strProtocol == "rss"  ||
-      strProtocol == "https" || strProtocol == "rtmp")
-    return true;
-
-  return false;
+  return CUtil::IsInternetStream(m_strPath);
 }
 
 bool CFileItem::IsFileFolder() const
 {
   return (
-   (IsPlugin() && m_bIsFolder) ||
     IsSmartPlayList() ||
    (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
     IsZIP() ||
@@ -2223,13 +2201,15 @@ void CFileItemList::Stack()
       if (stack.size() > 1)
       {
         // have a stack, remove the items and add the stacked item
-        CStackDirectory dir;
         // dont actually stack a multipart rar set, just remove all items but the first
         CStdString stackPath;
         if (Get(stack[0])->IsRAR())
           stackPath = Get(stack[0])->m_strPath;
         else
+        {
+          CStackDirectory dir;
           stackPath = dir.ConstructStackPath(*this, stack);
+        }
         item1->m_strPath = stackPath;
         // clean up list
         for (unsigned k = 1; k < stack.size(); k++)

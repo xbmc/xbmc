@@ -52,11 +52,11 @@ void CDeviceKitDiskDeviceOldAPI::Update()
 
 void CDeviceKitDiskDeviceNewAPI::Update()
 {
-  PropertyMap properties;
-
   m_isFileSystem = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "IdUsage").Equals("filesystem");
   if (m_isFileSystem)
   {
+    PropertyMap properties;
+  
     CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
 
     m_UDI         = properties["IdUuid"];
@@ -87,6 +87,7 @@ CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
   m_isPartition = false;
   m_isFileSystem = false;
   m_isSystemInternal = false;
+  m_PartitionSizeGiB = 0.0f;
 }
 
 bool CDeviceKitDiskDevice::Mount()

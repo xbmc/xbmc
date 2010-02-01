@@ -155,7 +155,7 @@ static void show_pict_info(MpegEncContext *s){
     );
 }
 
-#if CONFIG_ENCODERS
+#if CONFIG_H263_ENCODER
 
 static void aspect_to_info(MpegEncContext * s, AVRational aspect){
     int i;
@@ -721,7 +721,7 @@ void ff_h263_update_motion_val(MpegEncContext * s){
     }
 }
 
-#if CONFIG_ENCODERS
+#if CONFIG_H263_ENCODER
 
 static inline int h263_get_motion_length(MpegEncContext * s, int val, int f_code){
     int l, bit_size, code;

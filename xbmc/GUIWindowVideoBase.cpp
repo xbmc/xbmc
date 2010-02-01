@@ -36,7 +36,6 @@
 #include "Application.h"
 #include "NfoFile.h"
 #include "Picture.h"
-#include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
@@ -58,6 +57,8 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
+#include "utils/FileUtils.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"
@@ -183,8 +184,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_SHOW_INFO)
         {
           SScraperInfo info;
-          SScanSettings settings;
-          CStdString strDir;
           if (iItem < 0 || iItem >= m_vecItems->Size())
             return false;
 
@@ -199,6 +198,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             info.strContent = "livetv";
           else
           {
+            CStdString strDir;
             if (item->IsVideoDb()       &&
                 item->HasVideoInfoTag() &&
               !item->GetVideoInfoTag()->m_strPath.IsEmpty())
@@ -208,6 +208,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             else
               CUtil::GetDirectory(item->m_strPath,strDir);
 
+            SScanSettings settings;
             int iFound;
             m_database.GetScraperForPath(strDir, info, settings, iFound);
 
@@ -512,7 +513,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
   m_database.GetScraperForPath(item->m_strPath,info,settings);
-  CStdString nfoFile;
 
   if (!info.settings.GetPluginRoot() && info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
   {
@@ -556,6 +556,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   {
     // 4. if we don't have a url, or need to refresh the search
     //    then do the web search
+    IMDB_MOVIELIST movielist;
+    if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
+      hasDetails = true;
+
     if (!hasDetails && (scrUrl.m_url.size() == 0 || needsRefresh))
     {
       // 4a. show dialog that we're busy querying www.imdb.com
@@ -570,10 +574,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
-      IMDB_MOVIELIST movielist;
-      if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
-        hasDetails = true;
-
       int returncode=0;
       if (!hasDetails && (returncode=scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress)) > 0)
       {
@@ -602,7 +602,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           }
         }
       }
-      if (returncode == -1)
+      else if (returncode == -1 || !CVideoInfoScanner::DownloadFailed(pDlgProgress))
       {
         pDlgProgress->Close();
         return false;
@@ -1485,7 +1485,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  CGUIWindowFileManager::DeleteItem(item.get());
+  CFileUtils::DeleteItem(item);
 }
 
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)

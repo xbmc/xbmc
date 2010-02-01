@@ -76,8 +76,6 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
   CURL url(strPath);
 
-  CStdString fileName;
-
   // path is special://home/plugins/<path from here>
   CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);

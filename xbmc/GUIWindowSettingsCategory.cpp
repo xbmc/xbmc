@@ -90,7 +90,6 @@
 #include "File.h"
 
 #include "Zeroconf.h"
-#include "PowerManager.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -110,7 +109,7 @@
 #include "Boblight.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #endif
 
 using namespace std;
@@ -347,6 +346,10 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       {
         g_audioConfig.SetAC3Enabled(g_guiSettings.GetBool("audiooutput.ac3passthrough"));
         g_audioConfig.SetDTSEnabled(g_guiSettings.GetBool("audiooutput.dtspassthrough"));
+        g_audioConfig.SetAACEnabled(g_guiSettings.GetBool("audiooutput.aacpassthrough"));
+        g_audioConfig.SetMP1Enabled(g_guiSettings.GetBool("audiooutput.mp1passthrough"));
+        g_audioConfig.SetMP2Enabled(g_guiSettings.GetBool("audiooutput.mp2passthrough"));
+        g_audioConfig.SetMP3Enabled(g_guiSettings.GetBool("audiooutput.mp3passthrough"));
         if (g_audioConfig.NeedsSave())
         { // should we perhaps show a dialog here?
           g_audioConfig.Save();
@@ -438,6 +441,21 @@ void CGUIWindowSettingsCategory::CreateSettings()
     CSetting *pSetting = settings[i];
     AddSetting(pSetting, group->GetWidth(), iControlID);
     CStdString strSetting = pSetting->GetSetting();
+    if (pSetting->GetType() == SETTINGS_TYPE_INT)
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      if (!pSettingInt->m_entries.empty())
+      {
+        CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+        for (map<int,int>::iterator it=pSettingInt->m_entries.begin();
+             it != pSettingInt->m_entries.end();++it)
+        {
+          pControl->AddLabel(g_localizeStrings.Get(it->first), it->second);
+        }
+        pControl->SetValue(pSettingInt->GetData());
+        continue;
+      }
+    }
     if (strSetting.Equals("musicplayer.visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
@@ -462,15 +480,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), "musicvideos");
     }
-    else if (strSetting.Equals("audiooutput.mode"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(338), AUDIO_ANALOG);
-      if (g_audioConfig.HasDigitalOutput())
-        pControl->AddLabel(g_localizeStrings.Get(339), AUDIO_DIGITAL);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("videooutput.aspect"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -478,25 +487,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(21375), VIDEO_NORMAL);
       pControl->AddLabel(g_localizeStrings.Get(21376), VIDEO_LETTERBOX);
       pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("audiocds.encoder"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel("Lame", CDDARIP_ENCODER_LAME);
-      pControl->AddLabel("Vorbis", CDDARIP_ENCODER_VORBIS);
-      pControl->AddLabel("Wav", CDDARIP_ENCODER_WAV);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("audiocds.quality"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(604), CDDARIP_QUALITY_CBR);
-      pControl->AddLabel(g_localizeStrings.Get(601), CDDARIP_QUALITY_MEDIUM);
-      pControl->AddLabel(g_localizeStrings.Get(602), CDDARIP_QUALITY_STANDARD);
-      pControl->AddLabel(g_localizeStrings.Get(603), CDDARIP_QUALITY_EXTREME);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("services.webserverusername"))
@@ -567,14 +557,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("karaoke.fontcolors"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      for (int i = KARAOKE_COLOR_START; i <= KARAOKE_COLOR_END; i++)
-        pControl->AddLabel(g_localizeStrings.Get(22040 + i), i);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
     {
       FillInSubtitleHeights(pSetting);
@@ -641,10 +623,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInResolutions(pSetting, false);
     }
-    else if (strSetting.Equals("videoscreen.vsync"))
-    {
-      FillInVSyncs(pSetting);
-    }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
       FillInSkinThemes(pSetting);
@@ -689,72 +667,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
-#ifdef __APPLE__
-    else if (strSetting.Equals("input.appleremotemode"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(13610), APPLE_REMOTE_DISABLED);
-      pControl->AddLabel(g_localizeStrings.Get(13611), APPLE_REMOTE_STANDARD);
-      pControl->AddLabel(g_localizeStrings.Get(13612), APPLE_REMOTE_UNIVERSAL);
-      pControl->AddLabel(g_localizeStrings.Get(13613), APPLE_REMOTE_MULTIREMOTE);
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
-    else if (strSetting.Equals("powermanagement.shutdownstate"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      if (!g_application.IsStandAlone())
-      {
-        pControl->AddLabel(g_localizeStrings.Get(13009), POWERSTATE_QUIT);
-        pControl->AddLabel(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
-      }
-
-      if (g_powerManager.CanPowerdown())
-        pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
-
-      if (g_powerManager.CanHibernate())
-        pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
-
-      if (g_powerManager.CanSuspend())
-        pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
-
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("videoplayer.rendermethod"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-#ifdef HAS_XBOX_D3D
-      pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
-      pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
-      pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
-      pControl->AddLabel(g_localizeStrings.Get(21397), RENDER_HQ_RGB_SHADERV2);
-#else
-      pControl->AddLabel(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
-      pControl->AddLabel(g_localizeStrings.Get(13417), RENDER_METHOD_ARB);
-      pControl->AddLabel(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL);
-      pControl->AddLabel(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE);
-#ifdef HAVE_LIBVDPAU
-      pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
-#endif
-#ifdef HAVE_LIBCRYSTALHD
-      if (CCrystalHD::GetInstance()->DevicePresent())
-        pControl->AddLabel(g_localizeStrings.Get(13425), RENDER_METHOD_CRYSTALHD);
-#endif
-#endif
-      pControl->SetValue(pSettingInt->GetData());
-    }
-    else if (strSetting.Equals("musicplayer.replaygaintype"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(351), REPLAY_GAIN_NONE);
-      pControl->AddLabel(g_localizeStrings.Get(639), REPLAY_GAIN_TRACK);
-      pControl->AddLabel(g_localizeStrings.Get(640), REPLAY_GAIN_ALBUM);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("network.enc"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -784,15 +696,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
       FillInAudioDevices(pSetting,true);
-    }
-    else if (strSetting.Equals("videoplayer.resumeautomatically"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(106), RESUME_NO);
-      pControl->AddLabel(g_localizeStrings.Get(107), RESUME_YES);
-      pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
-      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
@@ -876,7 +779,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 #ifdef __APPLE__
     else if (strSetting.Equals("input.appleremotemode"))
     {
-      bool cancelled;
       int remoteMode = g_guiSettings.GetInt("input.appleremotemode");
 
       // if it's not disabled, start the event server or else apple remote won't work
@@ -889,6 +791,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       // if XBMC helper is running, prompt user before effecting change
       if ( g_xbmcHelper.IsRunning() && g_xbmcHelper.GetMode()!=remoteMode )
       {
+        bool cancelled;
         if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
         {
           // user declined, restore previous spinner state and appleremote mode
@@ -975,7 +878,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
+    else if (
+             strSetting.Equals("audiooutput.passthroughdevice") ||
+             strSetting.Equals("audiooutput.ac3passthrough") ||
+             strSetting.Equals("audiooutput.dtspassthrough") ||
+             strSetting.Equals("audiooutput.aacpassthrough") ||
+             strSetting.Equals("audiooutput.mp1passthrough") ||
+             strSetting.Equals("audiooutput.mp2passthrough") ||
+             strSetting.Equals("audiooutput.mp3passthrough"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
@@ -1776,7 +1686,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (pControl->GetValue() == 0) // Use default theme
       strSkinTheme = "SKINDEFAULT";
     else
-      strSkinTheme = pControl->GetCurrentLabel() + ".xpr";
+      strSkinTheme = pControl->GetCurrentLabel();
 
     if (strSkinTheme != pSettingString->GetData())
     {
@@ -2216,7 +2126,11 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
     pControl->SetWidth(width);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
   }
-  if (!pControl) return;
+  if (!pControl)
+  {
+    delete pSettingControl;
+    return;
+  }
   pControl->SetID(iControlID++);
   pControl->SetVisible(true);
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
@@ -2620,7 +2534,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
         {
           map<string, string> subModules;
           map<string, string>::iterator iter;
-          string moduleName, path;
+          string moduleName;
           CStdString visName = pItem->GetLabel();
           visName = visName.Mid(0, visName.size() - 5);
 
@@ -2691,21 +2605,6 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
     pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
   }
   pControl->SetValue(CGUISettings::GetResFromString(pSettingString->GetData()));
-}
-
-void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
-{
-  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->Clear();
-#if !defined(__APPLE__) && !defined(_WIN32)
-  pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
-#endif
-  pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
-  pControl->AddLabel(g_localizeStrings.Get(13107) , VSYNC_VIDEO);
-  pControl->AddLabel(g_localizeStrings.Get(13108) , VSYNC_ALWAYS);
-
-  pControl->SetValue(pSettingInt->GetData());
 }
 
 void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
@@ -2909,8 +2808,8 @@ void CGUIWindowSettingsCategory::JumpToPreviousSection()
 
 void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
 {
-  // There is a default theme (just Textures.xpr)
-  // any other *.xpr files are additional themes on top of this one.
+  // There is a default theme (just Textures.xpr/xbt)
+  // any other *.xpr|*.xbt files are additional themes on top of this one.
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skintheme");
@@ -2920,19 +2819,17 @@ void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
   // Clear and add. the Default Label
   pControl->Clear();
   pControl->SetShowRange(true);
-  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standart Textures.xpr will be used!
+  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT" The standard Textures.xpr/xbt will be used
 
-  // find all *.xpr in this path
   CStdString strDefaultTheme = pSettingString->GetData();
 
   // Search for Themes in the Current skin!
   vector<CStdString> vecTheme;
   CUtil::GetSkinThemes(vecTheme);
 
-  // Remove the .xpr extension from the Themes
-  CStdString strExtension;
-  CUtil::GetExtension(strSettingString, strExtension);
-  if (strExtension == ".xpr") strSettingString.Delete(strSettingString.size() - 4, 4);
+  // Remove the extension from the current Theme (backward compat)
+  CUtil::RemoveExtension(strSettingString);
+
   // Sort the Themes for GUI and list them
   int iCurrentTheme = 0;
   for (int i = 0; i < (int) vecTheme.size(); ++i)

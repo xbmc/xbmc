@@ -53,11 +53,12 @@ public:
   const CStdString& GetPassWord() const;
   const CStdString& GetFileName() const;
   const CStdString& GetProtocol() const;
+  const CStdString GetTranslatedProtocol() const;
   const CStdString& GetFileType() const;
   const CStdString& GetShareName() const;
   const CStdString& GetOptions() const;
-  const CStdString GetProtocolOptions() const;
-  const CStdString  GetFileNameWithoutPath() const; /* return the filename excluding path */
+  const CStdString& GetProtocolOptions() const;
+  const CStdString GetFileNameWithoutPath() const; /* return the filename excluding path */
 
   char GetDirectorySeparator() const;
 

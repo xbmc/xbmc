@@ -28,6 +28,7 @@
 #include "AdvancedSettings.h"
 #include "StringUtils.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

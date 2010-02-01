@@ -20,7 +20,6 @@
  */
 
 #include "ProgramDatabase.h"
-#include "utils/fstrcmp.h"
 #include "Util.h"
 #include "GUIWindowFileManager.h"
 #include "FileItem.h"
@@ -235,7 +234,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     lastAccessed.u.LowPart = time.dwLowDateTime;
     lastAccessed.u.HighPart = time.dwHighDateTime;
 
-    CStdString strPath, strParent;
+    CStdString strPath;
     CUtil::GetDirectory(item->m_strPath,strPath);
     // special case - programs in root of sources
     bool bIsShare=false;

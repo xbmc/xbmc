@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
@@ -45,7 +48,7 @@
 #include "SMBDirectory.h"
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
 #include "XBMSDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -54,7 +57,6 @@
 #include "PluginDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
-#include "XBMSDirectory.h"
 #ifdef HAS_FILESYSTEM_RTV
 #include "RTVDirectory.h"
 #endif
@@ -76,7 +78,9 @@
 #endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "RarDirectory.h"
+#endif
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythDirectory.h"
@@ -116,7 +120,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
+#ifdef HAVE_XBMC_NONFREE
   if (strProtocol == "rar") return new CRarDirectory();
+#endif
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
@@ -143,7 +149,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
     if (strProtocol == "xbms") return new CXBMSDirectory();
 #endif
 #ifdef HAS_FILESYSTEM

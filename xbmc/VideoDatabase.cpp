@@ -21,7 +21,6 @@
 
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
-#include "utils/fstrcmp.h"
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
@@ -42,6 +41,7 @@
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -365,8 +365,6 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     paths.clear();
 
     SScanSettings settings;
-    SScraperInfo info;
-
     memset(&settings, 0, sizeof(settings));
 
     // grab all paths with movie content set
@@ -515,7 +513,6 @@ int CVideoDatabase::AddPath(const CStdString& strPath)
 
 bool CVideoDatabase::GetPathHash(const CStdString &path, CStdString &hash)
 {
-  CStdString strSQL;
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -732,9 +729,10 @@ int CVideoDatabase::GetMovieId(const CStdString& strFilenameAndPath)
     // needed for query parameters
     int idFile = GetFileId(strFilenameAndPath);
     int idPath=-1;
-    CStdString strPath, strFile;
+    CStdString strPath;
     if (idFile < 0)
     {
+      CStdString strFile;
       SplitPath(strFilenameAndPath,strPath,strFile);
 
       // have to join movieinfo table for correct results
@@ -3958,7 +3956,6 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         if (it == mapGenres.end())
         {
           // check path
-          CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
@@ -4075,7 +4072,6 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
         if (it == mapStudios.end())
         {
           // check path
-          CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
@@ -4185,7 +4181,6 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         if (it == mapSets.end())
         {
           // check path
-          CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
           {
             if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
@@ -4240,7 +4235,6 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         }
         if (!thumb || !fanart) // use the first item's thumb
         {
-          CFileItemList items;
           CStdString strSQL = FormatSQL("select strPath, strFileName from movieview join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie where setlinkmovie.idSet=%u",m_pDS->fv("sets.idSet").get_asInt());
           m_pDS2->query(strSQL.c_str());
           if (!m_pDS2->eof())
@@ -4322,7 +4316,6 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         if (it == mapAlbums.end())
         {
           // check path
-          CStdString strPath;
           if (g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),g_settings.m_videoSources))
             mapAlbums.insert(make_pair(lidMVideo, make_pair(strAlbum,m_pDS->fv(2).get_asString())));
         }
@@ -7438,7 +7431,6 @@ bool CVideoDatabase::ExportSkipEntry(const CStdString &nfoFile)
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 {
   CGUIDialogProgress *progress=NULL;
-  CVideoInfoScanner scanner;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -7476,6 +7468,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       movie = movie->NextSiblingElement();
     }
 
+    CVideoInfoScanner scanner;
     movie = root->FirstChildElement();
     while (movie)
     {
@@ -7692,5 +7685,34 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
+                               VIDEODB_CONTENT_TYPE type)
+{
+  if (NULL == m_pDB.get()) return;
+  if (NULL == m_pDS.get()) return;
 
+  CStdString strTable, strField;
+  if (type == VIDEODB_CONTENT_MOVIES)
+  {
+    strTable = "movies";
+    strField = "idMovie";
+  }
+  if (type == VIDEODB_CONTENT_TVSHOWS)
+  {
+    strTable = "tvshows";
+    strField = "idShow";
+  }
+  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+  {
+    strTable = "musicvideos";
+    strField = "idMVideo";
+  }
+
+  if (strTable.IsEmpty())
+    return;
+
+  CStdString strSQL = FormatSQL("update %s set c%02u='%s' where %s=%u",
+                                strTable.c_str(),field,strField.c_str(),id);
+  m_pDS->exec(strSQL.c_str());
+}
 

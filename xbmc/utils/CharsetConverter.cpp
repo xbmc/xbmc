@@ -369,11 +369,10 @@ void CCharsetConverter::reset(void)
 // of the string is already made or the string is not displayed in the GUI
 void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool forceLTRReadingOrder /*=false*/, bool* bWasFlipped/*=NULL*/)
 {
-  CStdStringA strFlipped;
-
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
+    CStdStringA strFlipped;
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);

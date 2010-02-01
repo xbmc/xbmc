@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "Application.h"
 #include "utils/Builtins.h"
 #include "Splash.h"
@@ -72,7 +75,9 @@
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
+#ifdef HAVE_XBMC_NONFREE
 #include "FileSystem/RarManager.h"
+#endif
 #include "PlayList.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
@@ -117,9 +122,6 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #include "lib/libGoAhead/WebServer.h"
 #endif
-#ifdef HAS_TIME_SERVER
-#include "utils/Sntp.h"
-#endif
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
@@ -127,7 +129,7 @@
 #include "utils/DbusServer.h"
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #endif
 
 // Windows includes
@@ -458,7 +460,6 @@ void CApplication::Preflight()
 
 bool CApplication::Create()
 {
-  g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
   g_boblight.Initialize();
@@ -616,6 +617,7 @@ bool CApplication::Create()
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize();
 #endif
+  g_powerManager.Initialize();
 
   CLog::Log(LOGINFO, "Drives are mapped");
 
@@ -625,8 +627,9 @@ bool CApplication::Create()
   if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
     g_settings.m_iLastLoadedProfileIndex = 0;
 
-  m_bAllSettingsLoaded = g_settings.Load(m_bXboxMediacenterLoaded, m_bSettingsLoaded);
-  if (!m_bAllSettingsLoaded)
+  g_guiSettings.Initialize();  // Initialize default Settings - don't move
+  g_powerManager.SetDefaults();
+  if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
   update_emu_environ();//apply the GUI settings
@@ -1144,18 +1147,6 @@ bool CApplication::Initialize()
     CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
 
-  // initialize network
-  if (!m_bXboxMediacenterLoaded)
-  {
-    CLog::Log(LOGINFO, "using default network settings");
-    g_guiSettings.SetString("network.ipaddress", "192.168.0.100");
-    g_guiSettings.SetString("network.subnet", "255.255.255.0");
-    g_guiSettings.SetString("network.gateway", "192.168.0.1");
-    g_guiSettings.SetString("network.dns", "192.168.0.1");
-    g_guiSettings.SetBool("services.webserver", false);
-    g_guiSettings.SetBool("locale.timeserver", false);
-  }
-
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -1292,22 +1283,6 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  if (!m_bAllSettingsLoaded)
-  {
-    CLog::Log(LOGWARNING, "settings not correct, show dialog");
-    CStdString test;
-    CUtil::GetHomePath(test);
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
-    {
-      dialog->SetHeading(279);
-      dialog->SetLine(0, "Error while loading settings");
-      dialog->SetLine(1, test);
-      dialog->SetLine(2, "");;
-      dialog->DoModal();
-    }
-  }
-
   //  Show mute symbol
   if (g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
     Mute();
@@ -1331,8 +1306,6 @@ bool CApplication::Initialize()
 #if defined(HAVE_LIBCRYSTALHD)
   CCrystalHD::GetInstance();
 #endif
-
-  g_powerManager.Initialize();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -1398,35 +1371,6 @@ void CApplication::StopWebServer(bool bWait)
       CZeroconf::GetInstance()->RemoveService("services.webserver");
       CZeroconf::GetInstance()->RemoveService("services.webapi");
     }
-  }
-#endif
-}
-
-void CApplication::StartTimeServer()
-{
-#ifdef HAS_TIME_SERVER
-  if (g_guiSettings.GetBool("locale.timeserver") && m_network.IsAvailable() )
-  {
-    if( !m_psntpClient )
-    {
-      CSectionLoader::Load("SNTP");
-      CLog::Log(LOGNOTICE, "start timeserver client");
-
-      m_psntpClient = new CSNTPClient();
-      m_psntpClient->Update();
-    }
-  }
-#endif
-}
-
-void CApplication::StopTimeServer()
-{
-#ifdef HAS_TIME_SERVER
-  if( m_psntpClient )
-  {
-    CLog::Log(LOGNOTICE, "stop time server client");
-    SAFE_DELETE(m_psntpClient);
-    CSectionLoader::Unload("SNTP");
   }
 #endif
 }
@@ -1713,9 +1657,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   m_skinReloadTime = 0;
 
-  CStdString strHomePath;
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
   // save the current window details
@@ -3469,7 +3411,9 @@ void CApplication::Stop()
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
+#ifdef HAVE_XBMC_NONFREE
     g_RarManager.ClearCache(true);
+#endif
 
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
@@ -4929,12 +4873,6 @@ void CApplication::ProcessSlow()
   HTSP::CHTSPDirectorySession::CheckIdle();
 #endif
 
-#ifdef HAS_TIME_SERVER
-  // check for any needed sntp update
-  if(m_psntpClient && m_psntpClient->UpdateNeeded())
-    m_psntpClient->Update();
-#endif
-
 #ifdef HAS_KARAOKE
   if ( m_pKaraokeMgr )
     m_pKaraokeMgr->ProcessSlow();
@@ -5375,10 +5313,12 @@ void CApplication::UpdateLibraries()
   {
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
     VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
+    {
+      SScraperInfo info;
       scanner->StartScanning("",info,settings,false);
+    }
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

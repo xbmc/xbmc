@@ -60,7 +60,6 @@ CFileInfo::~CFileInfo()
 /////////////////////////////////////////////////
 CRarManager::CRarManager()
 {
-  m_bWipe = true;
 }
 
 CRarManager::~CRarManager()
@@ -124,10 +123,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
     ClearCache();
     if (CheckFreeSpace(strDir) < iSize)
     {
-      // wipe at will - if allowed. fixes the evil file manager bug
-      if (!m_bWipe)
-        return false;
-
       CFileItemList items;
       CDirectory::GetDirectory(g_advancedSettings.m_cachePath,items);
       items.Sort(SORT_METHOD_SIZE, SORT_ORDER_DESC);
@@ -258,7 +253,6 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   unsigned int iDepth = vec.size();
 
   ArchiveList_struct* pIterator;
-  CStdString strMatch;
   CStdString strCompare = strPathInRar;
   if (!CUtil::HasSlashAtEnd(strCompare) && !strCompare.IsEmpty())
     strCompare += '/';

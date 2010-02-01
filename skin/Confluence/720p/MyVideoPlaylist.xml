@@ -87,13 +87,7 @@
 				<texturefocus>-</texturefocus>
 				<visible>true</visible>
 			</control>
-			<control type="image">
-				<posx>-820</posx>
-				<posy>0</posy>
-				<width>846</width>
-				<height>720</height>
-				<texture>HomeBlade.png</texture>
-			</control>
+			<include>SideBladeLeft</include>
 			<control type="image">
 				<description>LOGO</description>
 				<posx>-230</posx>
@@ -181,13 +175,6 @@
 					<visible>false</visible>
 				</control>
 			</control>
-		</control>
-		<control type="image">
-			<posx>26r</posx>
-			<posy>0</posy>
-			<width>846</width>
-			<height>720</height>
-			<texture flipx="true">HomeBlade.png</texture>
 		</control>
 		<control type="group">
 			<posx>60</posx>

@@ -32,12 +32,15 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogOK.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "Settings.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -306,8 +309,8 @@ namespace VIDEO
         strPath = "special://xbmc/system/scrapers/video/" + m_info.strPath;
       if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
       {
-        m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + m_info.strPath);
-        m_info.settings.SaveFromDefault();
+        if (m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + m_info.strPath))
+          m_info.settings.SaveFromDefault();
       }
     }
 
@@ -418,8 +421,12 @@ namespace VIDEO
         CScraperParser parser;
         if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
         {
-          info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
-          info2.settings.SaveFromDefault();
+          if (info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath))
+            info2.settings.SaveFromDefault();
+          else if (!DownloadFailed(pDlgProgress))
+            return false;
+          else
+            continue;
         }
       }
 
@@ -463,10 +470,10 @@ namespace VIDEO
           if (files.size() == 0) // no update or no files
             continue;
 
-          CScraperUrl url;
           //convert m_strEpisodeGuide in url.m_scrURL
           if (!showDetails.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
           {
+            CScraperUrl url;
             url.ParseEpisodeGuide(showDetails.m_strEpisodeGuide);
             if (pDlgProgress)
             {
@@ -630,11 +637,13 @@ namespace VIDEO
               Return = true;
             }
           }
-          else if (returncode == -1)
+          else if (returncode == -1 || !DownloadFailed(pDlgProgress))
           {
             m_bStop = true;
             return false;
           }
+          else
+            continue;
         }
       }
       pURL = NULL;
@@ -1335,7 +1344,7 @@ namespace VIDEO
   {
     // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
     if (0 == items.Size()) return 0;
-    XBMC::MD5 md5state;
+    XBMC::XBMC_MD5 md5state;
     int count = 0;
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -1475,5 +1484,15 @@ namespace VIDEO
       CLog::Log(LOGDEBUG,"No NFO file found. Using title search for '%s'", pItem->m_strPath.c_str());
 
     return result;
+  }
+
+  bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
+  {
+    if (pDialog)
+    {
+      CGUIDialogOK::ShowAndGetInput(20448,20449,20022,20022);
+      return false;
+    }
+    return CGUIDialogYesNo::ShowAndGetInput(20448,20449,20450,20022);
   }
 }

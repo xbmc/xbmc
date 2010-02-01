@@ -597,7 +597,7 @@ bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const
   // check the password
   if (checkInput == userInput)
   {
-    XBMC::MD5 md5state;
+    XBMC::XBMC_MD5 md5state;
     md5state.append(userInput);
     md5state.getDigest(newPassword);
     newPassword.ToLower();
@@ -639,7 +639,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
       return 0;
 
     CStdString md5pword2;
-    XBMC::MD5 md5state;
+    XBMC::XBMC_MD5 md5state;
     md5state.append(strUserInput);
     md5state.getDigest(md5pword2);
     if (strPassword.Equals(md5pword2))
@@ -650,7 +650,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
   {
     if (!strUserInput.IsEmpty())
     {
-      XBMC::MD5 md5state;
+      XBMC::XBMC_MD5 md5state;
       md5state.append(strUserInput);
       md5state.getDigest(strPassword);
       strPassword.ToLower();

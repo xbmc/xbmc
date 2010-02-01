@@ -71,6 +71,8 @@
 #include "SkinInfo.h"
 #include "MediaManager.h"
 #include "TimeUtils.h"
+#include "SingleLock.h"
+#include "log.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!-- Version: 2.03 -->
-<scraper name="KinoPoisk.ru" date="2010-01-12" content="movies" framework="1.1" thumb="KinoPoisk.gif" ServerContentEncoding="CP1251" language="ru">
+<!-- Version: 2.05 -->
+<scraper name="KinoPoisk.ru" date="2010-01-23" content="movies" framework="1.1" thumb="KinoPoisk.gif" ServerContentEncoding="CP1251" language="ru">
 	<include>common/tmdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -138,6 +138,9 @@
 	<GMP dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="&lt;url function=&quot;GMPP&quot;&gt;http://www.kinopoisk.ru\1&lt;/url&gt;" dest="5">
+				<expression repeat="yes" noclean="1">&lt;a href="([^"]+)"&gt;&lt;img class="new" src="/images/poster/sm_\d+.jpg" width="\d+" height="\d+" alt="</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GMPP&quot;&gt;http://www.kinopoisk.ru\1&lt;/url&gt;" dest="5+">
 				<expression repeat="yes" noclean="1">&lt;a href="([^"]+)"&gt;&lt;img  src="/images/poster/sm_\d+.jpg" width="\d+" height="\d+" alt="</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -145,7 +148,7 @@
 	</GMP>
 	<GMPP clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.kinopoisk.ru/images/poster/sm_\2.jpg&quot;&gt;\1-\2.jpg&lt;/thumb&gt;" dest="6+">
-			<expression noclean="1">&lt;img border='0' alt=&quot;[^"]*&quot; src='(http://.+?)-(\d+)\.jpg' width='\d+' height='\d+' style=&quot;border:1px solid #777&quot; onLoad=''&gt;</expression>
+			<expression noclean="1">&lt;img alt=&quot;[^"]*&quot; src='(http://.+?)-(\d+)\.jpg' width='\d+' height='\d+' style="border: 1px #777 solid" onload=''&gt;</expression>
 		</RegExp>
 	</GMPP>
 	<GetPoster dest="5">
@@ -163,8 +166,8 @@
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression noclean="1">&lt;tr&gt;&lt;td colspan=3&gt;&lt;a name="actor"&gt;&lt;/td&gt;&lt;/tr&gt;.+?&lt;/table&gt;(.*?)&lt;tr&gt;&lt;td colspan=3&gt;&lt;a name="producer"&gt;&lt;/td&gt;&lt;/tr&gt;</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb spoof=&quot;http://www.kinopoisk.ru/&quot;&gt;http://www.kinopoisk.ru\1&lt;/thumb&gt;&lt;/actor&gt;" dest="7">
-				<expression repeat="yes" trim="3">&lt;img src="([^"]+)" alt=.+?&lt;p&gt;&lt;a href="/level/4/people/\d+/"&gt;([^&lt;]+)&lt;/a&gt;&lt;b&gt;[^&lt;]+?&lt;/b&gt;... ([^&lt;]+)&lt;/p&gt;</expression>
+			<RegExp input="$$8" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb spoof=&quot;http://www.kinopoisk.ru/&quot;&gt;http://www.kinopoisk.ru/images/actor/\1.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="7">
+				<expression repeat="yes" trim="3">&lt;img src="/images/sm_actor/(\d+).jpg" alt=.+?&lt;p&gt;&lt;a href="/level/4/people/\d+/"&gt;([^&lt;]+)&lt;/a&gt;&lt;b&gt;[^&lt;]+?&lt;/b&gt;... ([^&lt;]+)&lt;/p&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression noclean="1">&lt;tr&gt;&lt;td colspan=3&gt;&lt;a name="director"&gt;&lt;/td&gt;&lt;/tr&gt;.+?&lt;/table&gt;(.*?)&lt;tr&gt;&lt;td colspan=3&gt;&lt;a name="actor"&gt;&lt;/td&gt;&lt;/tr&gt;</expression>

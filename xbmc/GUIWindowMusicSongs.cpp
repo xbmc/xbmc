@@ -37,6 +37,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "AutoPtrHandle.h"
+#include "utils/log.h"
 
 using namespace AUTOPTR;
 

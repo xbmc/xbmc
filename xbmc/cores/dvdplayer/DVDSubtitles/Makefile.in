@@ -1,0 +1,22 @@
+INCLUDES=-I../../../.. -I. -I../ -I../../../ -I../../../linux -I../../../../guilib -I../../../FileSystem/ -I../DVDCodecs/Overlay/
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  INCLUDES+=-I../Codecs/ffmpeg
+endif
+
+SRCS=	DVDFactorySubtitle.cpp \
+	DVDSubtitleLineCollection.cpp \
+	DVDSubtitleParserSubrip.cpp \
+	DVDSubtitleParserVplayer.cpp \
+	DVDSubtitleStream.cpp \
+	DVDSubtitleParserMicroDVD.cpp \
+	DVDSubtitleParserMPL2.cpp \
+	DVDSubtitleParserSami.cpp \
+	DVDSubtitlesLibass.cpp \
+	DVDSubtitleParserSSA.cpp \
+	SamiTagConvertor.cpp \
+
+LIB=	DVDSubtitles.a
+
+include ../../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
