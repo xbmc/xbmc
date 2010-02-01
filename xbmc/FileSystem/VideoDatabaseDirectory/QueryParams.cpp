@@ -21,7 +21,7 @@
 
 #include "QueryParams.h"
 
-using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
+using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CQueryParams::CQueryParams()
 {

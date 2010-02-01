@@ -15,7 +15,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items, const CStdString& strDestFile)
 {

@@ -62,7 +62,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;

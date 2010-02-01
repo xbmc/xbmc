@@ -37,7 +37,7 @@
 
 
 using namespace AUTOPTR;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CWINSMBDirectory::CWINSMBDirectory(void)
 {

@@ -22,7 +22,7 @@
 #include "DirectoryNodeAlbumRecentlyPlayedSong.h"
 #include "MusicDatabase.h"
 
-using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
+using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeAlbumRecentlyPlayedSong::CDirectoryNodeAlbumRecentlyPlayedSong(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS, strName, pParent)

@@ -38,7 +38,7 @@
 #define CONTROL_SCRAPER_SETTINGS    6
 #define CONTROL_START              30
 
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace std;
 
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)

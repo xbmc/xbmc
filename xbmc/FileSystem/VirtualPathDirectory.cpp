@@ -31,7 +31,7 @@
 #include "utils/TimeUtils.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 // virtualpath://type/sourcename
 

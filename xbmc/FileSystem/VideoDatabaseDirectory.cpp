@@ -33,7 +33,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
 
 CVideoDatabaseDirectory::CVideoDatabaseDirectory(void)

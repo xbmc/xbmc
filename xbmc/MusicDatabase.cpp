@@ -58,7 +58,6 @@
 using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f

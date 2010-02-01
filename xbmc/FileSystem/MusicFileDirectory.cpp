@@ -26,7 +26,7 @@
 #include "LocalizeStrings.h"
 
 using namespace MUSIC_INFO;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CMusicFileDirectory::CMusicFileDirectory(void)
 {

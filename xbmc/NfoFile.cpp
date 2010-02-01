@@ -36,7 +36,7 @@
 
 #include <vector>
 
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace std;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

@@ -59,7 +59,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 using namespace std;
 using namespace MUSIC_GRABBER;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 

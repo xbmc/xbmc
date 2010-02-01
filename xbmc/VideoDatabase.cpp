@@ -46,7 +46,6 @@
 using namespace std;
 using namespace dbiplus;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace VIDEO;
 
 #define VIDEO_DATABASE_VERSION 34

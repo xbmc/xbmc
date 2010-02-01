@@ -87,7 +87,7 @@
 #include <vector>
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace MEDIA_DETECT;
 
 typedef struct

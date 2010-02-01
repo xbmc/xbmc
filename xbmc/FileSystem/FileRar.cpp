@@ -37,7 +37,6 @@
 #endif
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace std;
 
 #define SEEKTIMOUT 30000

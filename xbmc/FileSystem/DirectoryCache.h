@@ -29,7 +29,7 @@
 
 class CFileItem;
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CDirectoryCache
   {
@@ -90,4 +90,4 @@ namespace DIRECTORY
 #endif
   };
 }
-extern DIRECTORY::CDirectoryCache g_directoryCache;
+extern XFILE::CDirectoryCache g_directoryCache;

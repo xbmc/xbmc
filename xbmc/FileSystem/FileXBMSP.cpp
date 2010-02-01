@@ -29,7 +29,7 @@
 
 #include <sys/stat.h>
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 namespace XFILE
 {

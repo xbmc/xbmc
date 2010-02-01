@@ -347,7 +347,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (IsActive())
         {
           if((message.GetStringParam() == m_vecItems->m_strPath) ||
-             (m_vecItems->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam())))
+             (m_vecItems->IsMultiPath() && XFILE::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam())))
           {
             Update(m_vecItems->m_strPath);
           }
@@ -734,8 +734,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder())
   {
-    DIRECTORY::IFileDirectory *pFileDirectory = NULL;
-    pFileDirectory = DIRECTORY::CFactoryFileDirectory::Create(pItem->m_strPath, pItem.get(), "");
+    XFILE::IFileDirectory *pFileDirectory = NULL;
+    pFileDirectory = XFILE::CFactoryFileDirectory::Create(pItem->m_strPath, pItem.get(), "");
     if(pFileDirectory)
       pItem->m_bIsFolder = true;
     else if(pItem->m_bIsFolder)
@@ -784,7 +784,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
   }
   else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
   {
-    return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
+    return XFILE::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
   }
   else
   {

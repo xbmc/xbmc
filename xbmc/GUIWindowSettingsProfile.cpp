@@ -36,7 +36,7 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3

@@ -69,7 +69,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 
 #define ACTION_COPY                     1

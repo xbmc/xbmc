@@ -25,7 +25,7 @@
 
 class CFileItemList;
 
-namespace DIRECTORY
+namespace XFILE
 {
   namespace MUSICDATABASEDIRECTORY
   {

@@ -38,7 +38,6 @@
 #include "cores/dvdplayer/DVDFileInfo.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace std;
 
 CThumbLoader::CThumbLoader(int nThreads) :

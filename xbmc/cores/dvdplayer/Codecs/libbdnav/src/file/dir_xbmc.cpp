@@ -5,7 +5,7 @@
 #include "FileItem.h"
 #include "Util.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 extern "C"
 {

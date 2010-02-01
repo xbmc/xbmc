@@ -22,7 +22,7 @@
 
 #include "DirectoryNode.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   namespace VIDEODATABASEDIRECTORY
   {

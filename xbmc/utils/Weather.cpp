@@ -48,7 +48,7 @@
 #include "log.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3

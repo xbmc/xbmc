@@ -547,7 +547,7 @@ CStdString CURL::GetWithoutUserDetails() const
     CFileItemList items;
     CStdString strURL2;
     strURL2 = Get();
-    DIRECTORY::CStackDirectory dir;
+    XFILE::CStackDirectory dir;
     dir.GetDirectory(strURL2,items);
     vector<CStdString> newItems;
     for (int i=0;i<items.Size();++i)

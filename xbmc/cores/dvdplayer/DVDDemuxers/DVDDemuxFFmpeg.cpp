@@ -1053,7 +1053,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           std::string fileName = "special://temp/fonts/";
-          DIRECTORY::CDirectory::Create(fileName);
+          XFILE::CDirectory::Create(fileName);
           fileName += pStream->filename;
           XFILE::CFile file;
           if(pStream->codec->extradata && file.OpenForWrite(fileName))

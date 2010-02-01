@@ -56,7 +56,6 @@
 #include "utils/log.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace std;
 
@@ -440,7 +439,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   {
     if (items.IsVideoDb())
     {
-      DIRECTORY::CVideoDatabaseDirectory dir;
+      XFILE::CVideoDatabaseDirectory dir;
       CQueryParams params;
       dir.GetQueryParams(items.m_strPath,params);
       VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
@@ -1406,7 +1405,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CFileItemList items;
       CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"imdbthumbs",strPath);
       CUtil::WipeDir(strPath);
-      DIRECTORY::CDirectory::Create(strPath);
+      XFILE::CDirectory::Create(strPath);
       CFileItemPtr noneitem(new CFileItem("thumb://None", false));
       int i=1;
       CStdString cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();

@@ -91,7 +91,7 @@
 #include "ZeroconfDirectory.h"
 #endif
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .

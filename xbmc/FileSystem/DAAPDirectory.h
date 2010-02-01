@@ -26,7 +26,7 @@ extern "C"
 #include "lib/libXDAAP/private.h"
 }
 
-namespace DIRECTORY
+namespace XFILE
 {
 class CDAAPDirectory :
 

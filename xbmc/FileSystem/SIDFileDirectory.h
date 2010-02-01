@@ -24,7 +24,7 @@
 #include "MusicFileDirectory.h"
 #include "cores/paplayer/DllSidplay2.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CSIDFileDirectory : public CMusicFileDirectory
   {

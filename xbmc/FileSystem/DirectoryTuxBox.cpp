@@ -35,7 +35,6 @@
 #include "utils/log.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 CDirectoryTuxBox::CDirectoryTuxBox(void)
 {

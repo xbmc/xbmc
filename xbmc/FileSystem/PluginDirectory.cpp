@@ -37,7 +37,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace std;
 
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;

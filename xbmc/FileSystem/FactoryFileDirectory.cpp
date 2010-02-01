@@ -50,7 +50,6 @@
 #include "FileItem.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace std;
 

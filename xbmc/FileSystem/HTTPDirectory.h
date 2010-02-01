@@ -22,7 +22,7 @@
 
 #include "IDirectory.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CHTTPDirectory : public IDirectory
   {

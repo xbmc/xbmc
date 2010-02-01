@@ -21,7 +21,7 @@
 #pragma once
 #include "IDirectory.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 
   class CZeroconfDirectory : public IDirectory
