@@ -1049,7 +1049,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     //if we're calculating the framerate,
     //don't drop frames until we've calculated a stable framerate
-    if (m_bAllowDrop)
+    if (m_bAllowDrop || m_speed != DVD_PLAYSPEED_NORMAL)
     {
       result |= EOS_VERYLATE;
       m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
