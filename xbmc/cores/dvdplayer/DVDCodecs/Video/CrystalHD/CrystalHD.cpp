@@ -295,7 +295,7 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
   CThread(),
   m_dll(dll),
   m_Device(device),
-  m_SleepTime(10),
+  m_SleepTime(1),
   m_codec_type(codec_type),
   m_start_decoding(0),
   m_extradata(NULL),
@@ -331,7 +331,7 @@ CMPCInputThread::~CMPCInputThread()
 
 bool CMPCInputThread::AddInput(unsigned char* pData, size_t size, uint64_t pts)
 {
-  if (m_InputList.Count() > 75)
+  if (m_InputList.Count() > 1024)
     return false;
 
   CMPCDecodeBuffer* pBuffer = AllocBuffer(size);
@@ -1020,22 +1020,19 @@ bool CMPCOutputThread::GetDecoderOutput(void)
 
 void CMPCOutputThread::Process(void)
 {
-  bool got_picture;
   BCM::BC_STATUS ret;
   BCM::BC_DTS_STATUS decoder_status;
 
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
-    got_picture = false;
-    
     ret = m_dll->DtsGetDriverStatus(m_Device, &decoder_status);
     if (ret == BCM::BC_STS_SUCCESS)
     {
       // limit ready list to 20, makes no sense to pre-decode any more
       if (m_ReadyList.Count() < 20)
       {
-        got_picture = GetDecoderOutput();
+        GetDecoderOutput();
         /*
         CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
           decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
@@ -1044,9 +1041,6 @@ void CMPCOutputThread::Process(void)
         */
       }
     }
-
-    if (!got_picture)
-      Sleep(5);
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -1365,13 +1359,14 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   CPictureBuffer* pBuffer = m_pOutputThread->ReadyListPop();
 
   m_last_out_pts = pts_itod(pBuffer->m_timestamp);
+  /*
   if (m_last_in_pts != DVD_NOPTS_VALUE && (m_last_out_pts != DVD_NOPTS_VALUE) )
   {
     double  delta_pts;
 
     delta_pts = m_last_in_pts - m_last_out_pts;
     // figure out if we are running late.
-    if (delta_pts > DVD_MSEC_TO_TIME(750) )
+    if (delta_pts > DVD_MSEC_TO_TIME(1000) )
     {
       // if really late, pop the ready list
       while (m_pOutputThread->GetReadyCount())
@@ -1387,6 +1382,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
       //  m_last_in_pts, m_last_out_pts, delta_pts);
     }
   }
+  */
 
   pDvdVideoPicture->pts = m_last_out_pts;
   pDvdVideoPicture->iWidth = pBuffer->m_width;
