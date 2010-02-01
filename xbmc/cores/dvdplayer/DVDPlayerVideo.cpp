@@ -970,7 +970,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   maxfps = g_renderManager.GetMaximumFPS();
 
   // check if our output will limit speed
-  if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
+  if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps)
     limited = true;
 
   //correct any pattern in the timestamps
