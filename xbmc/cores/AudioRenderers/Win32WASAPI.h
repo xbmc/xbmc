@@ -46,7 +46,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
   virtual unsigned int GetSpace();
@@ -68,7 +68,7 @@ private:
   void AddDataToBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut);
   void UpdateCacheStatus();
   void CheckPlayStatus();
-  void BuildChannelMapping(int channels, int8_t* map);
+  void BuildChannelMapping(int channels, enum PCMChannels* map);
 
   IMMDevice* m_pDevice;
   IAudioClient* m_pAudioClient;
