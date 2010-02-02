@@ -80,6 +80,10 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       int iSelected = msg.GetParam1();
       AddonPtr last = m_scraper;
       m_scraper = m_scrapers[m_content][iSelected];
+
+      if (!last && m_scraper)
+        SetupPage();
+
       m_bNeedSave = m_scraper != last;
       CONTROL_ENABLE_ON_CONDITION(CONTROL_SCRAPER_SETTINGS, m_scraper->HasSettings());
       SET_CONTROL_FOCUS(CONTROL_START,0);
@@ -101,10 +105,9 @@ void CGUIDialogContentSettings::OnWindowLoaded()
 
 void CGUIDialogContentSettings::SetupPage()
 {
-  CreateSettings();
-
   if (m_content == CONTENT_NONE)
   {
+    m_bShowScanSettings = false;
     SET_CONTROL_HIDDEN(CONTROL_SCRAPER_LIST);
     CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS);
   }
@@ -112,12 +115,17 @@ void CGUIDialogContentSettings::SetupPage()
   {
     FillListControl();
     SET_CONTROL_VISIBLE(CONTROL_SCRAPER_LIST);
-    if (m_scraper && m_scraper->Supports(m_content) && m_scraper->HasSettings())
-      CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
+    if (m_scraper)
+    {
+      m_bShowScanSettings = true;
+      if (m_scraper->Supports(m_content) && m_scraper->HasSettings())
+        CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
+    }
     else
       CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS);
   }
 
+  CreateSettings();
   CGUIDialogSettings::SetupPage();
   SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
 }
@@ -130,36 +138,36 @@ void CGUIDialogContentSettings::CreateSettings()
   {
   case CONTENT_TVSHOWS:
     {
-      AddBool(1,20345,&m_bRunScan);
-      AddBool(2,20379,&m_bSingleItem);
-      AddBool(3,20432,&m_bNoUpdate);
+      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
+      AddBool(2,20379,&m_bSingleItem, m_bShowScanSettings);
+      AddBool(3,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
     break;
   case CONTENT_MOVIES:
     {
-      AddBool(1,20345,&m_bRunScan);
-      AddBool(2,20330,&m_bUseDirNames);
-      AddBool(3,20346,&m_bScanRecursive, (m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames);
-      AddBool(4,20383,&m_bSingleItem, m_bUseDirNames && !m_bScanRecursive);
-      AddBool(5,20432,&m_bNoUpdate);
+      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
+      AddBool(2,20330,&m_bUseDirNames, m_bShowScanSettings);
+      AddBool(3,20346,&m_bScanRecursive, m_bShowScanSettings && ((m_bUseDirNames && !m_bSingleItem) || !m_bUseDirNames));
+      AddBool(4,20383,&m_bSingleItem, m_bShowScanSettings && (m_bUseDirNames && !m_bScanRecursive));
+      AddBool(5,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
     break;
   case CONTENT_MUSICVIDEOS:
     {
-      AddBool(1,20345,&m_bRunScan);
-      AddBool(2,20346,&m_bScanRecursive);
-      AddBool(3,20432,&m_bNoUpdate);
+      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
+      AddBool(2,20346,&m_bScanRecursive, m_bShowScanSettings);
+      AddBool(3,20432,&m_bNoUpdate, m_bShowScanSettings);
     }
     break;
   case CONTENT_ALBUMS:
     {
-      AddBool(1,20345,&m_bRunScan);
+      AddBool(1,20345,&m_bRunScan, m_bShowScanSettings);
     }
     break;
   case CONTENT_NONE:
   default:
     {
-      AddBool(1,20380,&m_bExclude);
+      AddBool(1,20380,&m_bExclude, !m_bShowScanSettings);
     }
   }
 }
@@ -425,8 +433,10 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
         settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
       }
     }
-    return true;
   }
-  return false;
+
+  dialog->m_scraper.reset();
+  dialog->m_content = dialog->m_origContent = CONTENT_NONE;
+  return dialog->m_bNeedSave;
 }
 

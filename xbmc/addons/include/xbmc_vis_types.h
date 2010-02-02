@@ -25,6 +25,7 @@
 
 #ifndef __VISUALISATION_TYPES_H__
 #define __VISUALISATION_TYPES_H__
+#include <cstddef>
 
 extern "C"
 {
