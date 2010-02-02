@@ -110,7 +110,7 @@
 #endif
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace ADDON;
 
 #define CONTROL_GROUP_BUTTONS           0

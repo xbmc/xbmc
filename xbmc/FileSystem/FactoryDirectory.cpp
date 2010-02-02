@@ -51,7 +51,7 @@
 #include "SMBDirectory.h"
 #endif
 #endif
-#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
+#if defined(HAS_FILESYSTEM_CCX)
 #include "XBMSDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -81,7 +81,7 @@
 #endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
 #endif
 #include "DirectoryTuxBox.h"
@@ -94,7 +94,7 @@
 #include "ZeroconfDirectory.h"
 #endif
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -124,7 +124,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   if (StringUtils::ValidateUUID(url.GetHostName())) return new CPluginDirectory(ADDON::TranslateContent(strProtocol));
   if (strProtocol == "zip") return new CZipDirectory();
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
   if (strProtocol == "rar") return new CRarDirectory();
 #endif
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
@@ -153,7 +153,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
 #endif
-#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
+#ifdef HAS_FILESYSTEM_CCX
     if (strProtocol == "xbms") return new CXBMSDirectory();
 #endif
 #ifdef HAS_FILESYSTEM

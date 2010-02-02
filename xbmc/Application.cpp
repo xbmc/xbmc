@@ -75,7 +75,7 @@
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 #include "PlayList.h"
@@ -264,7 +264,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
 #endif
@@ -3389,7 +3388,7 @@ void CApplication::Stop()
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
     g_RarManager.ClearCache(true);
 #endif
 
@@ -3607,7 +3606,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
     CFileItem item_new;
-    if (DIRECTORY::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+    if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
       return PlayFile(item_new, false);
     return false;
   }

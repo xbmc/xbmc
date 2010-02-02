@@ -36,7 +36,7 @@
 #include "LocalizeStrings.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_HEADING          2
 #define CONTROL_PATH            10

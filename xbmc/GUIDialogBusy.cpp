@@ -25,7 +25,7 @@
 CGUIDialogBusy::CGUIDialogBusy(void)
 : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml")
 {
-  m_loadOnDemand = true;
+  m_loadOnDemand = false;
 }
 
 CGUIDialogBusy::~CGUIDialogBusy(void)
@@ -58,9 +58,5 @@ void CGUIDialogBusy::OnWindowLoaded()
 
 void CGUIDialogBusy::Render()
 {
-  //only render if system is busy
-  if (g_ApplicationRenderer.IsBusy() || IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-  {
-    CGUIDialog::Render();
-  }
+  CGUIDialog::Render();
 }

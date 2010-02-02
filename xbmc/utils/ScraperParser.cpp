@@ -43,7 +43,6 @@
 using namespace std;
 using namespace ADDON;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 CScraperParser::CScraperParser()
 {

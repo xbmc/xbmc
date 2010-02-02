@@ -1051,6 +1051,14 @@
 								>
 							</File>
 						</Filter>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="Overlay"

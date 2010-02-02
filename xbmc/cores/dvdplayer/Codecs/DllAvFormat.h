@@ -44,6 +44,7 @@ public:
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt)=0;
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
+  virtual void av_read_frame_flush(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
 #if (!defined USE_EXTERNAL_FFMPEG)
   virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
@@ -131,7 +132,7 @@ public:
   virtual ByteIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                                            int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                                            int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                                           offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::av_alloc_put_byte(buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek) }
+                                           offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::av_alloc_put_byte(buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
   virtual int av_write_header (AVFormatContext *s) { return ::av_write_header (s); }
   virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
@@ -161,6 +162,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(void, av_close_input_stream, (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_read_pause, (AVFormatContext *p1))
+  DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext *p1))
 #ifndef _LINUX
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
@@ -217,6 +219,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_frame)
     RESOLVE_METHOD(av_read_play)
     RESOLVE_METHOD(av_read_pause)
+    RESOLVE_METHOD(av_read_frame_flush)
     RESOLVE_METHOD(av_seek_frame)
     RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)

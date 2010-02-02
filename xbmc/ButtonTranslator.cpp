@@ -221,10 +221,10 @@ bool CButtonTranslator::Load()
   bool success = false;
 
   for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex) {
-    if( DIRECTORY::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
+    if( XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
     {
       CFileItemList files;
-      DIRECTORY::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
+      XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
       //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
       files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)

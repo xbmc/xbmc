@@ -24,7 +24,7 @@
 
 class CVTPSession;
 
-namespace DIRECTORY {
+namespace XFILE {
 
 class CVTPDirectory
   : public IDirectory

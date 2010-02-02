@@ -34,7 +34,7 @@
 #include "RSSDirectory.h"
 #include "cores/paplayer/ASAPCodec.h"
 #endif
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
 #endif
 #include "ZipDirectory.h"
@@ -50,7 +50,6 @@
 #include "FileItem.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace std;
 
@@ -181,7 +180,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     }
     else
     {
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
       // compressed or more than one file -> create a rar dir
       pItem->m_strPath = strUrl;
       return new CRarDirectory;

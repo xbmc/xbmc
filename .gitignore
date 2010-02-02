@@ -1,0 +1,832 @@
+# global patterns
+config.cache
+config.status
+config.log
+*.d
+*.depend
+*.ncb
+*.pc
+*.P
+*.suo
+*.vcproj.*.user
+*.mode1v3
+*.pbxuser
+
+.libs/
+.deps/
+
+# /
+/autotools
+/aclocal.m4
+/autom4te.cache/
+/BUILD
+/xbmc.log
+/xbmc.old.log
+/Makefile
+/Makefile.depend
+/Makefile.include
+/config.guess
+/config.status
+/config.sub
+/config.h
+/config.h.in
+/configure
+/xbmc-xrandr
+/svn_revision.h
+/build
+
+# /guilib/
+/guilib/Makefile
+/guilib/*.obj
+/guilib/*.idb
+/guilib/*.pdb
+/guilib/*.bak
+/guilib/Debug (Win32)
+/guilib/Release (Win32)
+/guilib/Release
+/guilib/Release_LTCG
+/guilib/Debug
+/guilib/Profile
+/guilib/Profile_FastCap
+
+# /guilib/common/
+/guilib/common/Makefile
+
+# /guilib/tinyXML/
+
+# /screensavers/
+/screensavers/Solarwinds.xbs
+/screensavers/Euphoria.xbs
+/screensavers/Plasma.xbs
+
+# /skin/Confluence/
+/skin/Confluence/BUILD
+
+# /skin/PM3.HD/
+/skin/PM3.HD/BUILD
+
+# /skin/PM3.HD/media/
+/skin/PM3.HD/media/*.db
+
+# /skin/PM3.HD/media/Apple Movie Trailers/
+/skin/PM3.HD/media/Apple Movie Trailers/*.db
+
+# /skin/PM3.HD/media/busy/
+/skin/PM3.HD/media/busy/*.db
+
+# /skin/PM3.HD/media/flagging/aspectratio/
+/skin/PM3.HD/media/flagging/aspectratio/Thumbs.db
+
+# /skin/PM3.HD/media/flagging/audio/
+/skin/PM3.HD/media/flagging/audio/Thumbs.db
+
+# /skin/PM3.HD/media/flagging/video/
+/skin/PM3.HD/media/flagging/video/Thumbs.db
+
+# /system/
+/system/profiles.xml
+
+# /tools/Changelog/
+/tools/Changelog/Changelog.txt
+/tools/Changelog/svn_log.xml
+/tools/Changelog/Release
+/tools/Changelog/Debug
+
+# /tools/EventClients/
+/tools/EventClients/*.pyc
+
+# /tools/Linux/
+/tools/Linux/xbmc.sh
+
+# /tools/XBMCTex/
+/tools/XBMCTex/Makefile
+
+# /userdata/
+/userdata/Database
+/userdata/playlists
+/userdata/Thumbnails
+/userdata/cache
+/userdata/guisettings.xml
+/userdata/avpacksettings.xml
+
+# /visualisations/
+/visualisations/Goom.vis
+/visualisations/ProjectM.vis
+/visualisations/Waveform.vis
+/visualisations/opengl_spectrum.vis
+
+# /xbmc/
+/xbmc/DllPaths_generated.h
+/xbmc/Makefile
+
+# /xbmc/linux/
+/xbmc/linux/Makefile
+
+# /xbmc/cores/AudioRenderers/
+/xbmc/cores/AudioRenderers/Makefile
+
+# /xbmc/cores/DllLoader/exports/
+/xbmc/cores/DllLoader/exports/wrapper.def
+
+/xbmc/cores/Makefile
+
+/xbmc/cores/VideoRenderers/Makefile
+
+/xbmc/cores/dvdplayer/Makefile
+
+/xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/Makefile
+/xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile
+
+/xbmc/cores/dvdplayer/DVDDemuxers/Makefile
+
+/xbmc/cores/dvdplayer/DVDSubtitles/Makefile
+
+/xbmc/cores/playercorefactory/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/
+/xbmc/cores/dvdplayer/Codecs/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/ffmpeg/
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/config.err
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/config.mak
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/
+/xbmc/cores/dvdplayer/Codecs/liba52/config.log
+/xbmc/cores/dvdplayer/Codecs/liba52/config.status
+/xbmc/cores/dvdplayer/Codecs/liba52/libtool
+/xbmc/cores/dvdplayer/Codecs/liba52/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/autotools/
+/xbmc/cores/dvdplayer/Codecs/liba52/autotools/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/doc/
+/xbmc/cores/dvdplayer/Codecs/liba52/doc/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/include/
+/xbmc/cores/dvdplayer/Codecs/liba52/include/stamp-h
+/xbmc/cores/dvdplayer/Codecs/liba52/include/config.h
+/xbmc/cores/dvdplayer/Codecs/liba52/include/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/liba52/
+/xbmc/cores/dvdplayer/Codecs/liba52/liba52/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/libao/
+/xbmc/cores/dvdplayer/Codecs/liba52/libao/Makefil
+/xbmc/cores/dvdplayer/Codecs/liba52/libao/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/src/
+/xbmc/cores/dvdplayer/Codecs/liba52/src/Makefi
+/xbmc/cores/dvdplayer/Codecs/liba52/src/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/test/
+/xbmc/cores/dvdplayer/Codecs/liba52/test/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/liba52/vc++/
+/xbmc/cores/dvdplayer/Codecs/liba52/vc++/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/
+/xbmc/cores/dvdplayer/Codecs/libdts/config.log
+/xbmc/cores/dvdplayer/Codecs/libdts/config.h
+/xbmc/cores/dvdplayer/Codecs/libdts/Makefile
+/xbmc/cores/dvdplayer/Codecs/libdts/config.status
+/xbmc/cores/dvdplayer/Codecs/libdts/stamp-h1
+/xbmc/cores/dvdplayer/Codecs/libdts/configure.lineno
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/autotools/
+/xbmc/cores/dvdplayer/Codecs/libdts/autotools/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/debian/
+/xbmc/cores/dvdplayer/Codecs/libdts/debian/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/doc/
+/xbmc/cores/dvdplayer/Codecs/libdts/doc/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/include/
+/xbmc/cores/dvdplayer/Codecs/libdts/include/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/libao/
+/xbmc/cores/dvdplayer/Codecs/libdts/libao/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/libdts/
+/xbmc/cores/dvdplayer/Codecs/libdts/libdts/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/src/
+/xbmc/cores/dvdplayer/Codecs/libdts/src/extract_dts
+/xbmc/cores/dvdplayer/Codecs/libdts/src/dtsdec
+/xbmc/cores/dvdplayer/Codecs/libdts/src/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/test/
+/xbmc/cores/dvdplayer/Codecs/libdts/test/compare
+/xbmc/cores/dvdplayer/Codecs/libdts/test/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdts/vc++/
+/xbmc/cores/dvdplayer/Codecs/libdts/vc++/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/
+/xbmc/cores/dvdplayer/Codecs/libdvd/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/includes/
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dv
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/ifo_print.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/dvd_udf.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/dvd_input.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/bswap.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/nav_read.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/dvd_reader.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/nav_print.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/ifo_types.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/bitreader.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/md5.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/dvdread
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/dvdread_internal.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/ifo_read.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/nav_types.h
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.log
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.st
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/stamp-h1
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/libtool
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/configure.lineno
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/Makefile
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.status
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/d
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/dvdcss/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/dvdcss/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/test/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/test/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/conf
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/obj
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.mak
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.status
+
+# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.h
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/obj
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.mak
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/config.log
+/xbmc/cores/dvdplayer/Codecs/libfaad2/config.h
+/xbmc/cores/dvdplayer/Codecs/libfaad2/Makefile
+/xbmc/cores/dvdplayer/Codecs/libfaad2/config.status
+/xbmc/cores/dvdplayer/Codecs/libfaad2/stamp-h1
+/xbmc/cores/dvdplayer/Codecs/libfaad2/configure.lineno
+/xbmc/cores/dvdplayer/Codecs/libfaad2/libtool
+/xbmc/cores/dvdplayer/Codecs/libfaad2/faad2.spec
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/common/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/common/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/common/mp4ff/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/common/mp4ff/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/frontend/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/frontend/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/libfaad/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/libfaad/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/mpeg4ip/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/mpeg4ip/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/xmms/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/xmms/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/xmms/src/
+/xbmc/cores/dvdplayer/Codecs/libfaad2/plugins/xmms/src/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmad/
+/xbmc/cores/dvdplayer/Codecs/libmad/config.h
+/xbmc/cores/dvdplayer/Codecs/libmad/Makefile
+/xbmc/cores/dvdplayer/Codecs/libmad/config.status
+/xbmc/cores/dvdplayer/Codecs/libmad/libmad.list
+/xbmc/cores/dvdplayer/Codecs/libmad/libtool
+/xbmc/cores/dvdplayer/Codecs/libmad/config.log
+/xbmc/cores/dvdplayer/Codecs/libmad/stamp-h1
+/xbmc/cores/dvdplayer/Codecs/libmad/configure.lineno
+
+# /xbmc/cores/dvdplayer/Codecs/libmad/msvc++/
+/xbmc/cores/dvdplayer/Codecs/libmad/msvc++/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/config.log
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/config.status
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/libtool
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/configure.lineno
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/doc/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/doc/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/include/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/include/stamp-h1
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/include/config.h
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/include/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/libmpeg2/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/libmpeg2/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/libmpeg2/convert/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/libmpeg2/convert/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/libvo/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/libvo/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/src/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/src/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/test/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/test/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libmpeg2/vc++/
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/vc++/Makefile
+
+# /xbmc/cores/paplayer/
+/xbmc/cores/paplayer/Makefile
+
+# /xbmc/cores/paplayer/AC3Codec/
+/xbmc/cores/paplayer/AC3Codec/Makefile
+
+# /xbmc/cores/paplayer/ADPCMCodec/
+/xbmc/cores/paplayer/ADPCMCodec/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/Makefilee
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/config.log
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/config.h
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/config.status
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/libtool-disable-static
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/stamp-h1
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/configure.lineno
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/config.cache
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/Makefile
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/libtool
+
+/xbmc/cores/paplayer/FLACCodec/Makefile
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/test_libs_common/Makefile
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/ppc/Makefile
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/ppc/as/Makefile
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/ppc/gas/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/build/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/build/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/FLAC/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/FLAC/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/FLAC++/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/FLAC++/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/share/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/share/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/share/grabbag/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/include/share/grabbag/Makefile
+
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/m4/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/m4/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/debug/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/debug/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/debug/bin/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/debug/bin/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/debug/lib/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/debug/lib/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/release/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/release/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/release/bin/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/release/bin/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/release/lib/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/obj/release/lib/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/flac/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/flac/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/ia32/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/ia32/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/include/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/include/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/include/private/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/include/private/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/include/protected/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC/include/protected/Makefile
+
+
+
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC++/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/libFLAC++/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/metaflac/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/metaflac/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/monkeys_audio_utilities/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/monkeys_audio_utilities/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/monkeys_audio_utilities/flac_mac/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/monkeys_audio_utilities/flac_mac/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/monkeys_audio_utilities/flac_ren/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/monkeys_audio_utilities/flac_ren/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_common/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_common/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_winamp2/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_winamp2/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_winamp2/include/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_winamp2/include/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_winamp2/include/winamp2/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_winamp2/include/winamp2/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_xmms/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/plugin_xmms/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/getopt/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/getopt/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/grabbag/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/grabbag/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_analysis/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_analysis/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_synthesis/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_synthesis/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_synthesis/include/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_synthesis/include/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_synthesis/include/private/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/replaygain_synthesis/include/private/Makefile
+
+# /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/utf8/
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/share/utf8/Makefile
+
+# /xbmc/cores/paplayer/GYMCodec/
+/xbmc/cores/paplayer/GYMCodec/Makefile
+
+# /xbmc/cores/paplayer/MACDll/
+/xbmc/cores/paplayer/MACDll/Makefile
+
+# /xbmc/cores/paplayer/NSFCodec/
+/xbmc/cores/paplayer/NSFCodec/Makefile
+
+# /xbmc/cores/paplayer/SIDCodec/
+/xbmc/cores/paplayer/SIDCodec/Makefile
+
+# /xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/
+/xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile
+
+# /xbmc/cores/paplayer/WavPackCodec/
+/xbmc/cores/paplayer/WavPackCodec/Makefile
+
+# /xbmc/cores/paplayer/YMCodec/StSoundLibrary/
+/xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile
+
+# /xbmc/cores/paplayer/ogg/
+
+# /xbmc/cores/paplayer/shn/
+
+
+# /xbmc/cores/paplayer/timidity/
+/xbmc/cores/paplayer/timidity/Makefile
+
+# /xbmc/cores/paplayer/vgmstream/
+/xbmc/cores/paplayer/vgmstream/Makefile
+
+# /xbmc/cores/paplayer/vgmstream/win32/
+/xbmc/cores/paplayer/vgmstream/win32/Debug
+/xbmc/cores/paplayer/vgmstream/win32/Release
+/xbmc/cores/paplayer/vgmstream/win32/win32.ncb
+/xbmc/cores/paplayer/vgmstream/win32/win32.suo
+
+# /xbmc/cores/paplayer/vorbisfile/
+/xbmc/cores/paplayer/vorbisfile/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/config.log
+/xbmc/cores/paplayer/vorbisfile/libvorbis/config.h
+/xbmc/cores/paplayer/vorbisfile/libvorbis/Makefile
+/xbmc/cores/paplayer/vorbisfile/libvorbis/libvorbis.spec
+/xbmc/cores/paplayer/vorbisfile/libvorbis/config.status
+/xbmc/cores/paplayer/vorbisfile/libvorbis/stamp-h1
+/xbmc/cores/paplayer/vorbisfile/libvorbis/configure.lineno
+/xbmc/cores/paplayer/vorbisfile/libvorbis/libtool
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/doc/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/doc/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/doc/vorbisenc/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/doc/vorbisenc/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/doc/vorbisfile/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/doc/vorbisfile/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/examples/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/examples/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/include/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/include/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/include/vorbis/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/include/vorbis/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/lib/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/lib/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/coupled/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/coupled/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/floor/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/floor/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/uncoupled/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/lib/books/uncoupled/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/lib/modes/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/lib/modes/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/libvorbis/vq/
+/xbmc/cores/paplayer/vorbisfile/libvorbis/vq/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/ogg/
+/xbmc/cores/paplayer/vorbisfile/ogg/config.log
+/xbmc/cores/paplayer/vorbisfile/ogg/config.h
+/xbmc/cores/paplayer/vorbisfile/ogg/Makefile
+/xbmc/cores/paplayer/vorbisfile/ogg/config.status
+/xbmc/cores/paplayer/vorbisfile/ogg/stamp-h1
+/xbmc/cores/paplayer/vorbisfile/ogg/libogg.spec
+/xbmc/cores/paplayer/vorbisfile/ogg/configure.lineno
+/xbmc/cores/paplayer/vorbisfile/ogg/libtool
+
+# /xbmc/cores/paplayer/vorbisfile/ogg/doc/
+/xbmc/cores/paplayer/vorbisfile/ogg/doc/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/ogg/doc/libogg/
+/xbmc/cores/paplayer/vorbisfile/ogg/doc/libogg/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/ogg/include/
+/xbmc/cores/paplayer/vorbisfile/ogg/include/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/ogg/include/ogg/
+/xbmc/cores/paplayer/vorbisfile/ogg/include/ogg/config_types.h
+/xbmc/cores/paplayer/vorbisfile/ogg/include/ogg/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/ogg/src/
+/xbmc/cores/paplayer/vorbisfile/ogg/src/Makefile
+
+# /xbmc/cores/paplayer/vorbisfile/ogg/win32/
+/xbmc/cores/paplayer/vorbisfile/ogg/win32/Makefile
+
+# /xbmc/karaoke/
+/xbmc/karaoke/Makefile
+
+/xbmc/lib/libRTV/Makefile
+
+/xbmc/lib/libUPnP/Makefile
+
+/xbmc/lib/libXBMS/Makefile
+
+/xbmc/lib/libXDAAP/Makefile
+
+/xbmc/lib/libexif/Makefile
+
+/xbmc/lib/libhdhomerun/Makefile
+
+/xbmc/lib/libshout/Makefile
+
+/xbmc/lib/libsquish/Makefile
+
+# /xbmc/lib/cmyth/
+/xbmc/lib/cmyth/Makefile.depend
+
+# /xbmc/lib/cximage-6.0/
+/xbmc/lib/cximage-6.0/Makefile
+
+# /xbmc/lib/cximage-6.0/zlib/
+/xbmc/lib/cximage-6.0/zlib/zconf.h
+/xbmc/lib/cximage-6.0/zlib/Makefile
+
+# /xbmc/lib/libGoAhead/
+/xbmc/lib/libGoAhead/Makefile.depend
+/xbmc/lib/libGoAhead/Makefile
+
+# /xbmc/lib/libGoAhead/src/
+
+/skin/Confluence/media/Textures.xbt
+/skin/PM3.HD/media/Textures.xbt
+
+/lib/libmodplug/libtool
+/lib/libmodplug/src/stamp-h1
+/lib/libmodplug/Makefile
+/lib/libmodplug/src/Makefile
+/lib/libmodplug/src/config.h
+
+/system/python/Lib/
+
+/tools/EventClients/Clients/OSXRemote/Makefile
+/tools/EventClients/Clients/OSXRemote/build/
+
+/tools/TexturePacker/TexturePacker
+/tools/TexturePacker/Makefile
+
+/tools/osx/XBMCHelper
+
+/xbmc/cores/DllLoader/exports/build_wrapper.sh
+
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/*.html
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/doc/*.1
+
+/xbmc/cores/dvdplayer/Codecs/liba52/include/stamp-h1
+/xbmc/cores/dvdplayer/Codecs/liba52/src/a52dec
+/xbmc/cores/dvdplayer/Codecs/liba52/src/extract_a52
+/xbmc/cores/dvdplayer/Codecs/liba52/test/compare
+
+/xbmc/cores/dvdplayer/Codecs/libbdnav/config.h
+/xbmc/cores/dvdplayer/Codecs/libbdnav/Makefile
+/xbmc/cores/dvdplayer/Codecs/libbdnav/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libbdnav/aclocal.m4
+/xbmc/cores/dvdplayer/Codecs/libbdnav/autom4te.cache/
+/xbmc/cores/dvdplayer/Codecs/libbdnav/build-aux/
+/xbmc/cores/dvdplayer/Codecs/libbdnav/config.h.in
+/xbmc/cores/dvdplayer/Codecs/libbdnav/configure
+/xbmc/cores/dvdplayer/Codecs/libbdnav/libtool
+/xbmc/cores/dvdplayer/Codecs/libbdnav/m4/*
+/xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/Makefile
+/xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libbdnav/stamp-h1
+
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/doxygen.cfg
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/test/csstest
+
+/xbmc/cores/dvdplayer/Codecs/libfaad2/frontend/faad
+
+/xbmc/cores/dvdplayer/Codecs/libmad/mad.h
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/src/corrupt_mpeg2
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/src/extract_mpeg2
+/xbmc/cores/dvdplayer/Codecs/libmpeg2/src/mpeg2dec
+
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/flac/flac
+/xbmc/cores/paplayer/FLACCodec/flac-1.2.1/src/metaflac/metaflac
+
+/xbmc/cores/paplayer/vorbisfile/ogg/src/test_bitwise
+/xbmc/cores/paplayer/vorbisfile/ogg/src/test_framing
+
+/xbmc/lib/libPython/linux/Makefile
+/xbmc/lib/libPython/Python/Makefile
+/xbmc/lib/libPython/Python/Include/pyconfig.h
+/xbmc/lib/libPython/Python/Makefile.pre
+/xbmc/lib/libPython/Python/Modules/Setup
+/xbmc/lib/libPython/Python/Modules/Setup.config
+/xbmc/lib/libPython/Python/Modules/Setup.local
+/xbmc/lib/libPython/Python/Modules/config.c
+/xbmc/lib/libPython/Python/Parser/pgen
+/xbmc/lib/libPython/Python/build/
+/xbmc/lib/libPython/Python/buildno
+/xbmc/lib/libPython/Python/pyconfig.h
+/xbmc/lib/libPython/Python/pyconfig.hbak
+/xbmc/lib/libPython/Python/python.exe
+
+/xbmc/lib/libapetag/Makefile
+/xbmc/lib/libapetag/libtool
+/xbmc/lib/libapetag/stamp-h1
+/xbmc/lib/libapetag/config.h
+
+/xbmc/lib/libass/config.guess
+/xbmc/lib/libass/config.h
+/xbmc/lib/libass/config.sub
+/xbmc/lib/libass/depcomp
+/xbmc/lib/libass/Makefile
+/xbmc/lib/libass/libass/Makefile
+/xbmc/lib/libass/test/Makefile
+/xbmc/lib/libass/xbmc/Makefile
+/xbmc/lib/libass/Makefile.in
+/xbmc/lib/libass/aclocal.m4
+/xbmc/lib/libass/autom4te.cache/
+/xbmc/lib/libass/compile
+/xbmc/lib/libass/config.h.in
+/xbmc/lib/libass/configure
+/xbmc/lib/libass/install-sh
+/xbmc/lib/libass/libass/Makefile.in
+/xbmc/lib/libass/libtool
+/xbmc/lib/libass/ltmain.sh
+/xbmc/lib/libass/missing
+/xbmc/lib/libass/shave/libtool.m4
+/xbmc/lib/libass/shave/ltoptions.m4
+/xbmc/lib/libass/shave/ltsugar.m4
+/xbmc/lib/libass/shave/ltversion.m4
+/xbmc/lib/libass/shave/lt~obsolete.m4
+/xbmc/lib/libass/shave/shave
+/xbmc/lib/libass/shave/shave-libtool
+/xbmc/lib/libass/stamp-h1
+/xbmc/lib/libass/test/Makefile.in
+/xbmc/lib/libass/test/test
+
+/xbmc/lib/libid3tag/Makefile
+/xbmc/lib/libid3tag/libid3tag/compat.c
+/xbmc/lib/libid3tag/libid3tag/frametype.c
+/xbmc/lib/libid3tag/libid3tag/libid3tag.list
+/xbmc/lib/libid3tag/libid3tag/libtool
+/xbmc/lib/libid3tag/libid3tag/stamp-h1
+
+/xbmc/screensavers/Makefile
+
+/xbmc/screensavers/rsxs-0.9/Makefile
+/xbmc/screensavers/rsxs-0.9/config.h
+/xbmc/screensavers/rsxs-0.9/config.log
+/xbmc/screensavers/rsxs-0.9/config/Makefile
+/xbmc/screensavers/rsxs-0.9/lib/Makefile
+/xbmc/screensavers/rsxs-0.9/libltdl/Makefile
+/xbmc/screensavers/rsxs-0.9/src/Makefile
+/xbmc/screensavers/rsxs-0.9/src/cyclone/Makefile
+/xbmc/screensavers/rsxs-0.9/src/euphoria/Makefile
+/xbmc/screensavers/rsxs-0.9/src/fieldlines/Makefile
+/xbmc/screensavers/rsxs-0.9/src/flocks/Makefile
+/xbmc/screensavers/rsxs-0.9/src/flux/Makefile
+/xbmc/screensavers/rsxs-0.9/src/helios/Makefile
+/xbmc/screensavers/rsxs-0.9/src/hyperspace/Makefile
+/xbmc/screensavers/rsxs-0.9/src/lattice/Makefile
+/xbmc/screensavers/rsxs-0.9/src/plasma/Makefile
+/xbmc/screensavers/rsxs-0.9/src/skyrocket/Makefile
+/xbmc/screensavers/rsxs-0.9/src/solarwinds/Makefile
+/xbmc/screensavers/rsxs-0.9/xbmc/Makefile
+/xbmc/screensavers/rsxs-0.9/autom4te.cache/
+/xbmc/screensavers/rsxs-0.9/lib/alloca.h
+/xbmc/screensavers/rsxs-0.9/lib/argz.h
+/xbmc/screensavers/rsxs-0.9/lib/getopt.h
+/xbmc/screensavers/rsxs-0.9/rsxs.spec
+/xbmc/screensavers/rsxs-0.9/src/.dirstamp
+/xbmc/screensavers/rsxs-0.9/src/euphoria/rs-euphoria
+/xbmc/screensavers/rsxs-0.9/src/plasma/rs-plasma
+/xbmc/screensavers/rsxs-0.9/src/solarwinds/rs-solarwinds
+/xbmc/screensavers/rsxs-0.9/stamp-h1
+
+/xbmc/visualizations/Goom/Makefile
+
+/xbmc/visualizations/OpenGLSpectrum/Makefile
+
+/xbmc/visualizations/WaveForm/Makefile
+
+/xbmc/visualizations/iTunes/Makefile
+
+/xbmc/visualizations/XBMCProjectM/Makefile
+/xbmc/visualizations/XBMCProjectM/libprojectM/Makefile
+/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeCache.txt
+/xbmc/visualizations/XBMCProjectM/libprojectM/CMakeFiles/
+/xbmc/visualizations/XBMCProjectM/libprojectM/cmake_install.cmake
+/xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
+
+/xbmc/FileSystem/Makefile
+

@@ -38,8 +38,8 @@ public:
     virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
+    virtual int  Check     (AVCodecContext* avctx) = 0;
     virtual void Close() = 0;
-    virtual int  Check() = 0;
   };
 
   CDVDVideoCodecFFmpeg();

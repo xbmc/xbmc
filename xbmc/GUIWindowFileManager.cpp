@@ -48,7 +48,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 #include "Favourites.h"
@@ -69,7 +69,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 
 #define ACTION_COPY                     1

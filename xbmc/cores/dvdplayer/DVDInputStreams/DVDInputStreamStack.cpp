@@ -28,7 +28,6 @@
 #include <limits.h>
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace boost;
 using namespace std;
 

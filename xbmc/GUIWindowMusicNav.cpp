@@ -52,7 +52,7 @@
 #include "utils/log.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSICDATABASEDIRECTORY;
 

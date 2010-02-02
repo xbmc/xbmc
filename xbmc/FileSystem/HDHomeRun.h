@@ -71,7 +71,7 @@ class DllHdHomeRun : public DllDynamic, public DllHdHomeRunInterface
   END_METHOD_RESOLVE()
 };
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CDirectoryHomeRun : public IDirectory
   {

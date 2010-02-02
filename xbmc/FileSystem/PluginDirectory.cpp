@@ -39,7 +39,7 @@
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace std;
 using namespace ADDON;
 

@@ -27,7 +27,7 @@
 
 class CGUIDialogProgress;
 
-namespace DIRECTORY
+namespace XFILE
 {
 class CLastFMDirectory :
       public IDirectory, public IRunnable

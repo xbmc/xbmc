@@ -30,7 +30,7 @@
 #include "tinyXML/tinyxml.h"
 #include "FileItem.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 extern "C"
 {

@@ -45,7 +45,6 @@
 #include "utils/log.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -281,7 +280,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         if (IsActive())
         {
           if((message.GetStringParam() == m_Directory->m_strPath) ||
-             (m_Directory->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_Directory->m_strPath, message.GetStringParam())))
+             (m_Directory->IsMultiPath() && XFILE::CMultiPathDirectory::HasPath(m_Directory->m_strPath, message.GetStringParam())))
           {
             int iItem = m_viewControl.GetSelectedItem();
             Update(m_Directory->m_strPath);

@@ -61,7 +61,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
 
   /* setup the channel mapping */
   m_uiDataChannels = iChannels;
-  m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+  m_remap.Reset();
 
   if (channelMap)
   {
@@ -75,6 +75,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
           break;
         }
 
+    m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
     m_remap.SetOutputFormat(++outChannels, ALSAChannelMap);
     if (m_remap.CanRemap())
     {

@@ -872,6 +872,10 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     AutoCrop(pSource);
     CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
   }
+#ifdef HAS_DX
+  else if(pSource->format == DVDVideoPicture::FMT_DXVA)
+    g_renderManager.AddProcessor(pSource->proc, pSource->proc_id);
+#endif
 
 }
 #endif
@@ -933,6 +937,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         break;
       case DVDVideoPicture::FMT_YUY2:
         flags |= CONF_FLAGS_FORMAT_YUY2;
+        break;
+      case DVDVideoPicture::FMT_DXVA:
+        flags |= CONF_FLAGS_FORMAT_DXVA;
         break;
     }
 
@@ -1049,7 +1056,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     //if we're calculating the framerate,
     //don't drop frames until we've calculated a stable framerate
-    if (m_bAllowDrop)
+    if (m_bAllowDrop || m_speed != DVD_PLAYSPEED_NORMAL)
     {
       result |= EOS_VERYLATE;
       m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it

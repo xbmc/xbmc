@@ -48,7 +48,7 @@ typedef WIN32_FIND_DATA LOCAL_WIN32_FIND_DATA;
 #endif
 
 using namespace AUTOPTR;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CHDDirectory::CHDDirectory(void)
 {}

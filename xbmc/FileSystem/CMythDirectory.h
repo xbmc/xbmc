@@ -24,7 +24,7 @@
 #include "CMythSession.h"
 #include "DateTime.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 enum FilterType
