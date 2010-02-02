@@ -12,6 +12,10 @@ config.log
 *.mode1v3
 *.pbxuser
 *.[oa]
+*.l[oa]
+*.so
+*.so.*
+*.lineno
 *.py[co]
 
 .libs/
