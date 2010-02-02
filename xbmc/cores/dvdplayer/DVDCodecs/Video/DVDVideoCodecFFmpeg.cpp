@@ -60,7 +60,9 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   if(!ctx->IsHardwareAllowed())
     return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 
+#if defined(HAVE_LIBVDPAU) || defined(HAS_DX)
   int method = g_guiSettings.GetInt("videoplayer.rendermethod");
+#endif
 
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
