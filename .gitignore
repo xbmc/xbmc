@@ -731,6 +731,7 @@ config.log
 /xbmc/cores/paplayer/vorbisfile/ogg/src/test_framing
 
 /xbmc/lib/libPython/linux/Makefile
+/xbmc/lib/libPython/linux/wrapper_python.def
 /xbmc/lib/libPython/Python/Makefile
 /xbmc/lib/libPython/Python/Include/pyconfig.h
 /xbmc/lib/libPython/Python/Makefile.pre
@@ -743,6 +744,7 @@ config.log
 /xbmc/lib/libPython/Python/buildno
 /xbmc/lib/libPython/Python/pyconfig.h
 /xbmc/lib/libPython/Python/pyconfig.hbak
+/xbmc/lib/libPython/Python/python
 /xbmc/lib/libPython/Python/python.exe
 
 /xbmc/lib/libapetag/Makefile
@@ -781,11 +783,14 @@ config.log
 /xbmc/lib/libass/test/test
 
 /xbmc/lib/libid3tag/Makefile
+/xbmc/lib/libid3tag/libid3tag/Makefile
 /xbmc/lib/libid3tag/libid3tag/compat.c
+/xbmc/lib/libid3tag/libid3tag/config.h
 /xbmc/lib/libid3tag/libid3tag/frametype.c
 /xbmc/lib/libid3tag/libid3tag/libid3tag.list
 /xbmc/lib/libid3tag/libid3tag/libtool
 /xbmc/lib/libid3tag/libid3tag/stamp-h1
+/xbmc/lib/libid3tag/libid3tag/msvc++/Makefile
 
 /xbmc/screensavers/Makefile
 
