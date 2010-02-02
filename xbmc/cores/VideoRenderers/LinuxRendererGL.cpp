@@ -1981,7 +1981,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
       for (int i = 0; i < 2; i++)
       {
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
+        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
         im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
       }
 
