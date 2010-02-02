@@ -65,6 +65,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/StreamDetails.h"
 #include "MediaManager.h"
+#include "GUIDialogBusy.h"
 
 using namespace std;
 
@@ -322,7 +323,14 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     m_ready.Reset();
     Create();
-    m_ready.Wait();
+    if(!m_ready.WaitMSec(100))
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      dialog->Show();
+      while(!m_ready.WaitMSec(1))
+        g_windowManager.Process(true);
+      dialog->Close();
+    }
 
     // Playback might have been stopped due to some error
     if (m_bStop || m_bAbortRequest)
