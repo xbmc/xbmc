@@ -1756,7 +1756,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
         glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
         im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
-        memset(im.plane[i], 0, im.planesize[i] + PBO_OFFSET);
+        memset(im.plane[i], 0, im.planesize[i]);
       }
 
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -1979,8 +1979,8 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
       {
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
         glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
-        memset(im.plane[i], 0, im.planesize[i] + PBO_OFFSET);
+        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+        memset(im.plane[i], 0, im.planesize[i]);
       }
 
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
