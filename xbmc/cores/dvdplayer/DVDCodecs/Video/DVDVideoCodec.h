@@ -32,13 +32,24 @@
 #define FRAME_TYPE_B 3
 #define FRAME_TYPE_D 4
 
+namespace DXVA { class CProcessor; }
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
 {
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
-  BYTE* data[4];      // [4] = alpha channel, currently not used
-  int iLineSize[4];   // [4] = alpha channel, currently not used
+
+  union
+  {
+    struct {
+      BYTE* data[4];      // [4] = alpha channel, currently not used
+      int iLineSize[4];   // [4] = alpha channel, currently not used
+    };
+    struct {
+      DXVA::CProcessor* proc;
+      int64_t           proc_id;
+    };
+  };
 
   unsigned int iFlags;
 
@@ -59,7 +70,8 @@ struct DVDVideoPicture
     FMT_VDPAU,
     FMT_NV12,
     FMT_UYVY,       // place holder for future expansion
-    FMT_YUY2        //place holder for future expansion
+    FMT_YUY2,       //place holder for future expansion
+    FMT_DXVA,
   } format;
 };
 

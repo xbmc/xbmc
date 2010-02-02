@@ -48,6 +48,9 @@
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
 #endif
+#ifdef HAS_DX
+#include "DXVA.h"
+#endif
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )
@@ -79,6 +82,20 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       }
       return *cur;
     }
+#endif
+#ifdef HAS_DX
+  if(DXVA::CDecoder::Supports(*cur)
+  && method == RENDER_METHOD_DXVA)
+  {
+    DXVA::CDecoder* dec = new DXVA::CDecoder();
+    if(dec->Open(avctx, *cur))
+    {
+      ctx->SetHardware(dec);
+      return *cur;
+    }
+    else
+      delete dec;
+  }
 #endif
     cur++;
   }

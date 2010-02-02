@@ -33,6 +33,7 @@
 #include "FileSystem/File.h"
 #include "MathUtils.h"
 #include "VideoShaders/ConvolutionKernels.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -143,6 +144,17 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
+void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id)
+
+{
+  int source = NextYV12Texture();
+  if(source < 0)
+    return;
+  m_Processor[source].Clear();
+  m_Processor[source].proc = processor->Acquire();
+  m_Processor[source].id   = id;
+}
+
 int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
 {
   /* take next available buffer */
@@ -217,6 +229,8 @@ void CWinRenderer::FlipPage(int source)
 {
   if(source == AUTOSOURCE)
     source = NextYV12Texture();
+
+  m_Processor[m_iYV12RenderBuffer].Clear();
 
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
@@ -329,7 +343,10 @@ void CWinRenderer::UnInit()
   m_bFilterInitialized = false;
 
   for(int i = 0; i < NUM_BUFFERS; i++)
+  {
     DeleteYV12Texture(i);
+    m_Processor[i].Clear();
+  }
 
   m_NumYV12Buffers = 0;
 }
@@ -455,6 +472,12 @@ void CWinRenderer::UpdateVideoFilter()
 
 void CWinRenderer::Render(DWORD flags)
 {
+  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  {
+    CWinRenderer::RenderProcessor(flags);
+    return;
+  }
+
   UpdateVideoFilter();
 
   //If the GUI is active or we don't need scaling use the bilinear filter.
@@ -642,6 +665,31 @@ void CWinRenderer::RenderLowMem(CD3DEffect &effect, DWORD flags)
   pD3DDevice->SetPixelShader( NULL );
 }
 
+void CWinRenderer::RenderProcessor(DWORD flags)
+{
+  CSingleLock lock(g_graphicsContext);
+  RECT rect;
+  rect.top    = m_destRect.y1;
+  rect.bottom = m_destRect.y2;
+  rect.left   = m_destRect.x1;
+  rect.right  = m_destRect.x2;
+
+  SProcessImage& image = m_Processor[m_iYV12RenderBuffer];
+  if(image.proc == NULL)
+    return;
+
+  IDirect3DSurface9* target;
+  if(FAILED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &target)))
+  {
+    CLog::Log(LOGERROR, "CWinRenderer::RenderSurface - failed to get back buffer");
+    return;
+  }
+
+  image.proc->Render(rect, target, image.id);
+
+  target->Release();
+}
+
 void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
@@ -768,6 +816,13 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   return false;
 }
 
+void CWinRenderer::SProcessImage::Clear()
+{
+  SAFE_RELEASE(proc);
+  id = 0;
+}
+
+
 CPixelShaderRenderer::CPixelShaderRenderer()
     : CWinRenderer()
 {
@@ -787,5 +842,7 @@ void CPixelShaderRenderer::Render(DWORD flags)
 {
   CWinRenderer::Render(flags);
 }
+
+
 
 #endif

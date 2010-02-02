@@ -2186,4 +2186,7 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+
 </strings>
