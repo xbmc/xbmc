@@ -178,7 +178,19 @@ protected:
   uint64_t m_Pts;
 };
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////
+//#define USE_FFMPEG_ANNEXB
+
+#ifdef USE_FFMPEG_ANNEXB
+typedef struct H264BSFContext {
+    uint8_t  length_size;
+    uint8_t  first_idr;
+    uint8_t *sps_pps_data;
+    uint32_t size;
+} H264BSFContext;
+#endif
+
 class CMPCInputThread : public CThread
 {
 public:
@@ -194,6 +206,13 @@ protected:
   void                FreeBuffer(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer*   GetNext(void);
   void                ProcessMPEG2(CMPCDecodeBuffer* pInput);
+#ifdef USE_FFMPEG_ANNEXB
+  bool                init_h264_mp4toannexb_filter(uint8_t *in_extradata, int in_extrasize);
+  void                alloc_and_copy(uint8_t **poutbuf,     int *poutbuf_size,
+                                const uint8_t *sps_pps, uint32_t sps_pps_size,
+                                const uint8_t *in,      uint32_t in_size);
+  bool                h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
+#endif
   void                ProcessH264(CMPCDecodeBuffer* pInput);
   void                ProcessVC1(CMPCDecodeBuffer* pInput);
   void                Process(void);
@@ -206,9 +225,15 @@ protected:
   CRYSTALHD_CODEC_TYPE m_codec_type;
 
   int                 m_start_decoding;
+#ifdef USE_FFMPEG_ANNEXB
+  bool                m_annexbfiltering;
+  uint32_t            m_sps_pps_size;
+  H264BSFContext      m_sps_pps_context;
+#else
+  struct h264_parser  *m_nal_parser;
 	uint8_t             *m_extradata;
 	int                 m_extradata_size;
-  struct h264_parser  *m_nal_parser;
+#endif
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,7 +273,6 @@ protected:
   int                 m_aspectratio_y;
   CPictureBuffer      *m_interlace_buf;
 };
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(__APPLE__)
@@ -297,11 +321,13 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
   m_Device(device),
   m_SleepTime(1),
   m_codec_type(codec_type),
-  m_start_decoding(0),
-  m_extradata(NULL),
-  m_extradata_size(0),
-  m_nal_parser(NULL)
+  m_start_decoding(0)
 {
+#ifdef USE_FFMPEG_ANNEXB
+  m_annexbfiltering = init_h264_mp4toannexb_filter((uint8_t*)extradata, extradata_size);
+#else
+  m_extradata = NULL;
+  m_extradata_size = 0;
   m_nal_parser = init_parser();
 
   if (extradata_size > 0)
@@ -316,6 +342,7 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
       m_extradata_size = 0;
     }
   }
+#endif
 }
 
 CMPCInputThread::~CMPCInputThread()
@@ -323,10 +350,15 @@ CMPCInputThread::~CMPCInputThread()
   while (m_InputList.Count())
     delete m_InputList.Pop();
 
+#ifdef USE_FFMPEG_ANNEXB
+	if (m_sps_pps_context.sps_pps_data)
+		free(m_sps_pps_context.sps_pps_data);
+#else
 	if (m_extradata)
 		free(m_extradata);
 
   free_parser(m_nal_parser);
+#endif
 }
 
 bool CMPCInputThread::AddInput(unsigned char* pData, size_t size, uint64_t pts)
@@ -348,9 +380,11 @@ void CMPCInputThread::Flush(void)
     delete m_InputList.Pop();
 
   m_start_decoding = 0;
+#ifndef USE_FFMPEG_ANNEXB
   reset_parser(m_nal_parser);
 	if (m_extradata_size > 0)
 		parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
+#endif
 }
 
 unsigned int CMPCInputThread::GetInputCount(void)
@@ -391,6 +425,183 @@ void CMPCInputThread::ProcessMPEG2(CMPCDecodeBuffer* pInput)
   } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
 }
 
+#ifdef USE_FFMPEG_ANNEXB
+bool CMPCInputThread::init_h264_mp4toannexb_filter(uint8_t *in_extradata, int in_extrasize)
+{
+  // based on h264_mp4toannexb_bsf.c (ffmpeg)
+  // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
+  // and Licensed GPL 2.1 or greater
+
+  m_sps_pps_size = 0;
+  m_sps_pps_context.sps_pps_data = NULL;
+  
+  // nothing to filter
+  if (!in_extradata || in_extrasize < 6)
+    return false;
+
+  uint16_t unit_size;
+  uint32_t total_size = 0;
+  uint8_t *out = NULL, unit_nb, sps_done = 0;
+  const uint8_t *extradata = (uint8_t*)in_extradata + 4;
+  static const uint8_t nalu_header[4] = {0, 0, 0, 1};
+
+  // retrieve length coded size
+  m_sps_pps_context.length_size = (*extradata++ & 0x3) + 1;
+  if (m_sps_pps_context.length_size == 3)
+    return false;
+
+  // retrieve sps and pps unit(s)
+  unit_nb = *extradata++ & 0x1f;  // number of sps unit(s)
+  if (!unit_nb)
+  {
+    unit_nb = *extradata++;       // number of pps unit(s)
+    sps_done++;
+  }
+  while (unit_nb--)
+  {
+    unit_size = extradata[0] << 8 | extradata[1];
+    total_size += unit_size + 4;
+    if ( (extradata + 2 + unit_size) > ((uint8_t*)in_extradata + in_extrasize) )
+    {
+      free(out);
+      return false;
+    }
+    out = (uint8_t*)realloc(out, total_size);
+    if (!out)
+      return false;
+
+    memcpy(out + total_size - unit_size - 4, nalu_header, 4);
+    memcpy(out + total_size - unit_size, extradata + 2, unit_size);
+    extradata += 2 + unit_size;
+
+    if (!unit_nb && !sps_done++)
+      unit_nb = *extradata++;     // number of pps unit(s)
+  }
+
+  m_sps_pps_context.sps_pps_data = out;
+  m_sps_pps_context.size = total_size;
+  m_sps_pps_context.first_idr = 1;
+
+  return true;
+}
+
+void CMPCInputThread::alloc_and_copy(uint8_t **poutbuf,     int *poutbuf_size,
+                                const uint8_t *sps_pps, uint32_t sps_pps_size,
+                                const uint8_t *in,      uint32_t in_size)
+{
+  // based on h264_mp4toannexb_bsf.c (ffmpeg)
+  // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
+  // and Licensed GPL 2.1 or greater
+
+  #define CHD_WB32(p, d) { \
+    ((uint8_t*)(p))[3] = (d); \
+    ((uint8_t*)(p))[2] = (d) >> 8; \
+    ((uint8_t*)(p))[1] = (d) >> 16; \
+    ((uint8_t*)(p))[0] = (d) >> 24; }
+
+  uint32_t offset = *poutbuf_size;
+  uint8_t nal_header_size = offset ? 3 : 4;
+
+  *poutbuf_size += sps_pps_size + in_size + nal_header_size;
+  *poutbuf = (uint8_t*)realloc(*poutbuf, *poutbuf_size);
+  if (sps_pps)
+  {
+    memcpy(*poutbuf + offset, sps_pps, sps_pps_size);
+  }
+  memcpy(*poutbuf + sps_pps_size + nal_header_size + offset, in, in_size);
+  if (!offset)
+  {
+    CHD_WB32(*poutbuf + sps_pps_size, 1);
+  }
+  else
+  {
+    (*poutbuf + offset + sps_pps_size)[0] = 0;
+    (*poutbuf + offset + sps_pps_size)[1] = 0;
+    (*poutbuf + offset + sps_pps_size)[2] = 1;
+  }
+}
+
+bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
+{
+  // based on h264_mp4toannexb_bsf.c (ffmpeg)
+  // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
+  // and Licensed GPL 2.1 or greater
+
+  uint8_t   *buf = pData;
+  uint32_t  buf_size = iSize;
+  uint8_t   unit_type;
+  uint32_t  nal_size, cumul_size = 0;
+
+  do
+  {
+    if (m_sps_pps_context.length_size == 1)
+      nal_size = buf[0];
+    else if (m_sps_pps_context.length_size == 2)
+      nal_size = buf[0] << 8 | buf[1];
+    else
+      nal_size = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
+
+    buf += m_sps_pps_context.length_size;
+    unit_type = *buf & 0x1f;
+
+    // prepend only to the first type 5 NAL unit of an IDR picture
+    if (m_sps_pps_context.first_idr && unit_type == 5)
+    {
+      alloc_and_copy(poutbuf, poutbuf_size,
+        m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
+      m_sps_pps_context.first_idr = 0;
+    }
+    else
+    {
+      alloc_and_copy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size);
+      if (!m_sps_pps_context.first_idr && unit_type == 1)
+          m_sps_pps_context.first_idr = 1;
+    }
+
+    buf += nal_size;
+    cumul_size += nal_size + m_sps_pps_context.length_size;
+  } while (cumul_size < buf_size);
+
+  return true;
+}
+
+void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
+{
+  BCM::BC_STATUS ret;
+  bool annexbfiltered = false;
+  int demuxer_bytes = pInput->GetSize();
+  int64_t demuxer_pts = pInput->GetPts();
+  uint8_t *demuxer_content = pInput->GetPtr();
+
+  if (m_annexbfiltering)
+  {
+    int outbuf_size = 0;
+    uint8_t *outbuf = NULL;
+
+    h264_mp4toannexb_filter(demuxer_content, demuxer_bytes, &outbuf, &outbuf_size);
+    if (outbuf)
+    {
+      annexbfiltered = true;
+      demuxer_content = outbuf;
+      demuxer_bytes = outbuf_size;
+    }
+  }
+
+  do
+  {
+    ret = m_dll->DtsProcInput(m_Device, demuxer_content, demuxer_bytes, demuxer_pts, 0);
+    if (ret == BCM::BC_STS_BUSY)
+    {
+      CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+      Sleep(m_SleepTime); // Buffer is full, sleep it empty
+    }
+  } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
+
+  if (annexbfiltered)
+    free(demuxer_content);
+
+}
+#else
 void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
 {
   int bytes = 0;
@@ -439,6 +650,7 @@ void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
       m_dll->DtsFlushInput(m_Device, 2);
   }
 }
+#endif
 
 void CMPCInputThread::ProcessVC1(CMPCDecodeBuffer* pInput)
 {
