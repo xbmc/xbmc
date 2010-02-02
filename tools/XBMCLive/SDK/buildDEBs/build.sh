@@ -91,20 +91,20 @@ extractModule()
 	rm -rf $WORKDIR 
 }
 
-if ! ls linux-image-*.deb > /dev/null 2>&1 ; then
-	# Get matching package
-	echo "Selecting and downloading the kernel package..."
-	packageName=$(getPackage)
-	if [ ! -f "$packageName" ]; then
-		echo "Error retrieving installer kernel, exiting..."
-		exit 1
+if [ -z "$DONOTINCLUDEINSTALLER" ]; then
+	if ! ls linux-image-*.deb > /dev/null 2>&1 ; then
+		# Get matching package
+		echo "Selecting and downloading the kernel package..."
+		packageName=$(getPackage)
+		if [ ! -f "$packageName" ]; then
+			echo "Error retrieving installer kernel, exiting..."
+			exit 1
+		fi
+
+		echo "Extracting files..."
+		extractModule $packageName
 	fi
 
-	echo "Extracting files..."
-	extractModule $packageName
-fi
-
-if [ -z "$DONOTINCLUDEINSTALLER" ]; then
 	if ! ls squashfs-udeb_*.udeb > /dev/null 2>&1 ; then
 		echo "Making squashfs-udeb..."
 		cd $THISDIR/squashfs-udeb
