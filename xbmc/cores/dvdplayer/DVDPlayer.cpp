@@ -284,8 +284,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
 
-  m_pDlgCache = NULL;
-
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
@@ -313,12 +311,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     if(ThreadHandle())
       CloseFile();
 
-    // dialog must be opened in this thread
-    if (m_item.IsInternetStream())
-      m_pDlgCache = new CDlgCache(0   , g_localizeStrings.Get(10214), m_item.GetLabel());
-    else
-      m_pDlgCache = new CDlgCache(3000, ""                          , m_item.GetLabel());
-
     m_bAbortRequest = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
@@ -343,12 +335,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
-    if (m_pDlgCache)
-    {
-      m_pDlgCache->Close();
-      m_pDlgCache = NULL;
-    }
-
     return false;
   }
 }
@@ -749,17 +735,11 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 
 void CDVDPlayer::Process()
 {
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
-
   if (!OpenInputStream())
   {
     m_bAbortRequest = true;
     return;
   }
-
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
 
   if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -779,9 +759,6 @@ void CDVDPlayer::Process()
     m_bAbortRequest = true;
     return;
   }
-
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
 
   // allow renderer to switch to fullscreen if requested
   m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
@@ -860,12 +837,6 @@ void CDVDPlayer::Process()
   // we are done initializing now, set the readyevent
   SetEvent(m_hReadyEvent);
 
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
-
-  if (m_pDlgCache)
-    m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
-
   // make sure all selected stream have data on startup
   SetCaching(CACHESTATE_INIT);
 
@@ -915,24 +886,6 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
-
-    // present the cache dialog until playback actually started
-    if (m_pDlgCache)
-    {
-      if (m_pDlgCache->IsCanceled())
-        return;
-
-      if (m_caching)
-      {
-        m_pDlgCache->ShowProgressBar(true);
-        m_pDlgCache->SetPercentage(GetCacheLevel());
-      }
-      else
-      {
-        m_pDlgCache->Close();
-        m_pDlgCache = NULL;
-      }
-    }
 
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
@@ -1679,15 +1632,6 @@ void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 void CDVDPlayer::OnExit()
 {
   g_dvdPerformanceCounter.DisableMainPerformance();
-
-  if (m_pDlgCache)
-  {
-    if(m_pDlgCache->IsCanceled())
-      m_bAbortRequest = true;
-
-    m_pDlgCache->Close();
-    m_pDlgCache = NULL;
-  }
 
   try
   {

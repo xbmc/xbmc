@@ -38,7 +38,6 @@
 #include "utils/BitstreamStats.h"
 
 #include "Edl.h"
-#include "dlgcache.h"
 #include "FileItem.h"
 
 
@@ -337,8 +336,6 @@ protected:
     int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;
-
-  CDlgCache *m_pDlgCache;
 
   struct SPlayerState
   {
