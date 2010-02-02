@@ -86,7 +86,7 @@ private:
   unsigned int m_uiChannels;
   unsigned int m_uiAvgBytesPerSec;
   unsigned int m_uiSpeakerMask;
-  int8_t       m_SpeakerOrder[8];
+  enum PCMChannels m_SpeakerOrder[8];
 
   static bool m_bIsAllocated;
   bool m_bPlaying;
