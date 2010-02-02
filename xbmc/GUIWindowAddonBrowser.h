@@ -48,6 +48,7 @@ public:
 protected:
   virtual void OnInitWindow();
   int GetSelectedItem();
+  bool SelectItem(int select);
   void OnClick(int iItem);
   void OnSort();
   void ClearListItems();

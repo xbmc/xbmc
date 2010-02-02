@@ -7709,6 +7709,8 @@ void CVideoDatabase::InvalidatePathHash(const CStdString& strPath)
   int iFound;
   GetScraperForPath(strPath,info,settings,iFound);
   SetPathHash(strPath,"");
+  if (!info)
+    return;
   if (info->Content() == CONTENT_TVSHOWS || (info->Content() == CONTENT_MOVIES && iFound != 1)) // if we scan by folder name we need to invalidate parent as well
   {
     if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)

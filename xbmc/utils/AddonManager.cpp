@@ -444,7 +444,7 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
 {
   CUtil::CreateDirectoryEx(addon->Profile());
   addon->Enable();
-  CLog::Log(LOGINFO,"ADDON: Enabled %s: %s : %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Version().str.c_str());
+  CLog::Log(LOGINFO,"ADDON: Enabled %s: %s : %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Version().Print().c_str());
   SaveAddonsXML(addon->Type());
   return true;
   /*const TYPE type = addon->Type();
@@ -613,6 +613,13 @@ void CAddonMgr::FindAddons(const TYPE &type)
     return;
   }
 
+  //FIXME this only checks library dependencies - multiple addon type deps
+  //need a more sophisticated approach
+  if (type == ADDON_SCRAPER)
+    FindAddons(ADDON_SCRAPER_LIBRARY);
+  else if (type == ADDON_VIZ)
+    FindAddons(ADDON_VIZ_LIBRARY);
+
   // for all folders found
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -704,7 +711,6 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
 
   ADDONDEPS deps = addon->GetDeps();
   ADDONDEPS::iterator itr = deps.begin();
-  bool met(false);
   while (itr != deps.end())
   {
     CStdString uuid;
@@ -714,11 +720,13 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
     if (m_uuidMap.count(uuid))
     {
       AddonPtr dep = m_uuidMap[uuid];
-      if (dep->Version() >= min && dep->Version() <= max)
-      {
-        met = true;
-        break;
-      }
+      // we're guaranteed to have at least max OR min here
+      if (!min.str.IsEmpty() && !max.str.IsEmpty())
+        return (dep->Version() >= min && dep->Version() <= max);
+      else if (!min.str.IsEmpty())
+        return (dep->Version() >= min);
+      else
+        return (dep->Version() <= max);
     }
     for (unsigned i=0; i < m_remoteAddons.size(); i++)
     {
@@ -726,14 +734,14 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
       {
         if(m_remoteAddons[i].version >= min && m_remoteAddons[i].version <= max)
         {
-          //TODO line up download up remote addon
-          met = true;
+          //TODO line up download
+          return false;
         }
       }
     }
     itr++;
   }
-  return (met || deps.empty());
+  return deps.empty();
 }
 
 bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon)
@@ -995,6 +1003,11 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
         CStdString min = element->Attribute("minversion");
         CStdString max = element->Attribute("maxversion");
         CStdString uuid = element->GetText();
+        if (!uuid || (!min && ! max))
+        {
+          CLog::Log(LOGDEBUG, "ADDON: %s malformed <dependency> element, will ignore this dependency", strPath.c_str());
+          continue;
+        }
         deps.insert(std::make_pair(uuid, std::make_pair(AddonVersion(min), AddonVersion(max))));
         element = element->NextSiblingElement("dependency");
       } while (element != NULL);
@@ -1008,11 +1021,6 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
   switch (type)
   {
     case ADDON_PLUGIN:
-    {
-      AddonPtr temp(new CAddon(addonProps));
-      addon = temp;
-      break;
-    }
     case ADDON_SCRIPT:
     {
       AddonPtr temp(new CAddon(addonProps));
@@ -1034,6 +1042,13 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     case ADDON_SCREENSAVER:
     {
       AddonPtr temp(new CScreenSaver(addonProps));
+      addon = temp;
+      break;
+    }
+    case ADDON_SCRAPER_LIBRARY:
+    case ADDON_VIZ_LIBRARY:
+    {
+      AddonPtr temp(new CAddonLibrary(addonProps));
       addon = temp;
       break;
     }

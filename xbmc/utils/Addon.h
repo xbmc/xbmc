@@ -42,14 +42,14 @@ const TYPE          TranslateType(const CStdString &string);
 struct AddonVersion
 {
 public:
-  AddonVersion(CStdString &version) : str(version) {}
+  AddonVersion(const CStdString &str) : str(str) {}
   bool operator==(const AddonVersion &rhs) const;
   bool operator!=(const AddonVersion &rhs) const;
   bool operator>(const AddonVersion &rhs) const;
   bool operator>=(const AddonVersion &rhs) const;
   bool operator<(const AddonVersion &rhs) const;
   bool operator<=(const AddonVersion &rhs) const;
-  std::ostream& operator<<(std::ostream& out) const;
+  CStdString Print() const;
   const CStdString str;
 };
 
@@ -141,6 +141,8 @@ private:
   CStdString GetProfilePath();
   CStdString GetUserSettingsPath();
 
+  virtual bool IsAddonLibrary() { return false; }
+
   void Enable() { LoadStrings(); m_disabled = false; }
   void Disable() { m_disabled = true; ClearStrings();}
 
@@ -156,6 +158,17 @@ private:
   CStdString  m_strLibName;
   bool        m_disabled;
   CLocalizeStrings  m_strings;
+};
+
+class CAddonLibrary : public CAddon
+{
+public:
+  CAddonLibrary(const AddonProps &props);
+
+private:
+  virtual bool IsAddonLibrary() { return true; }
+  TYPE SetAddonType();
+  const TYPE m_addonType; // addon type this library enhances
 };
 
 }; /* namespace ADDON */

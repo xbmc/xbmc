@@ -137,6 +137,12 @@ int CGUIWindowAddonBrowser::GetSelectedItem()
   return msg.GetParam1();
 }
 
+bool CGUIWindowAddonBrowser::SelectItem(int select)
+{
+  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ADDONSLIST, select);
+  return g_windowManager.SendMessage(msg);
+}
+
 void CGUIWindowAddonBrowser::OnSort()
 {
   m_vecItems->Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -144,6 +150,7 @@ void CGUIWindowAddonBrowser::OnSort()
 
 void CGUIWindowAddonBrowser::Update()
 {
+  int selected = GetSelectedItem();
   m_vecItems->Clear();
 
   VECADDONS addons;
@@ -158,8 +165,7 @@ void CGUIWindowAddonBrowser::Update()
     pItem->SetProperty("Addon.Type", TranslateType(addon->Type()));
     pItem->SetProperty("Addon.Disabled", addon->Disabled());
     pItem->SetProperty("Addon.Name", addon->Name());
-    CStdString version = addon->Version().str;
-    pItem->SetProperty("Addon.Version", version);
+    pItem->SetProperty("Addon.Version", addon->Version().Print());
     pItem->SetProperty("Addon.Summary", addon->Summary());
     pItem->SetProperty("Addon.Description", addon->Description());
     pItem->SetProperty("Addon.Creator", addon->Author());
@@ -172,6 +178,9 @@ void CGUIWindowAddonBrowser::Update()
   OnSort();
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_ADDONSLIST, 0, 0, m_vecItems);
   OnMessage(msg);
+
+  if (selected != 0)
+    SelectItem(selected);
 }
 
 void CGUIWindowAddonBrowser::OnClick(int iItem)
@@ -212,11 +221,19 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
-    /* open up settings dialog */
     AddonPtr addon;
     TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
     if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    {
+      if (addon->Disabled())
+      {
+        CAddonMgr::Get()->EnableAddon(addon);
+        Update();
+
+      }
+      else
+        CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
   }
 }
 
@@ -301,13 +318,16 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
 
   int btn_Disable = -1;
   int btn_Enable = -1;
+  int btn_Settings = -1;
 
   if (addon->Disabled())
     btn_Enable = pMenu->AddButton(iEnableLabel);
   else
+  {
     btn_Disable = pMenu->AddButton(iDisableLabel);
+    btn_Settings = pMenu->AddButton(iSettingsLabel);
+  }
 
-  int btn_Settings = pMenu->AddButton(iSettingsLabel);
 
   pMenu->CenterWindow();
   pMenu->DoModal();

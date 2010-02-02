@@ -49,6 +49,7 @@ namespace ADDON
   {
     ADDON_UNKNOWN,
     ADDON_VIZ,
+    ADDON_VIZ_LIBRARY,
     ADDON_SKIN,
     ADDON_PVRDLL,
     ADDON_SCRIPT,
@@ -98,6 +99,7 @@ namespace ADDON
     
   private:
     friend class CAddonMgr;
+    virtual bool IsAddonLibrary() =0;
     virtual void Enable() =0;
     virtual void Disable() =0;
     virtual bool LoadStrings() =0;

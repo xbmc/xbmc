@@ -47,7 +47,6 @@ AddonPtr CScraper::Clone(const AddonPtr &self) const
 CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
-  int test = 23;
 }
 
 bool CScraper::LoadSettings()

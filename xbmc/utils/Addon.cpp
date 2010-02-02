@@ -26,6 +26,7 @@
 #include "StringUtils.h"
 #include "FileSystem/Directory.h"
 #include "log.h"
+#include <string.h>
 
 using XFILE::CDirectory;
 
@@ -130,6 +131,12 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
         return g_localizeStrings.Get(23013);
       return "visualization";
     }
+    case ADDON::ADDON_VIZ_LIBRARY:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(23013);
+      return "visualization-library";
+    }
     case ADDON::ADDON_PLUGIN:
     {
       if (pretty)
@@ -156,12 +163,13 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
   else if (string.Equals("screensaver")) return ADDON_SCREENSAVER;
   else if (string.Equals("visualization")) return ADDON_VIZ;
+  else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("script")) return ADDON_SCRIPT;
   else return ADDON_UNKNOWN;
 }
 
-bool AddonVersion::operator==(const AddonVersion &rhs) const
+Bool AddonVersion::operator==(const AddonVersion &rhs) const
 {
   return str.Equals(rhs.str);
 }
@@ -173,11 +181,7 @@ bool AddonVersion::operator!=(const AddonVersion &rhs) const
 
 bool AddonVersion::operator>(const AddonVersion &rhs) const
 {
-  // easy compare two integer revisions
-  if (!str.Find('.') && !rhs.str.Find('.'))
-    return (atoi(str) > atoi(rhs.str));
-
-  return false;
+  return (strverscmp(str.c_str(), rhs.str.c_str()) > 0);
 }
 
 bool AddonVersion::operator>=(const AddonVersion &rhs) const
@@ -187,7 +191,7 @@ bool AddonVersion::operator>=(const AddonVersion &rhs) const
 
 bool AddonVersion::operator<(const AddonVersion &rhs) const
 {
-  return !(*this == rhs) && !(*this > rhs);
+  return (strverscmp(str.c_str(), rhs.str.c_str()) < 0);
 }
 
 bool AddonVersion::operator<=(const AddonVersion &rhs) const
@@ -195,9 +199,11 @@ bool AddonVersion::operator<=(const AddonVersion &rhs) const
   return (*this == rhs) || !(*this > rhs);
 }
 
-std::ostream& AddonVersion::operator<<(std::ostream& out) const
+CStdString AddonVersion::Print() const
 {
-  return out << str;
+  CStdString out;
+  out.Format("%s %s", g_localizeStrings.Get(23011), str); // "Version: <str>"
+  return CStdString(out);
 }
 
 CAddon::CAddon(const AddonProps &props)
@@ -491,6 +497,22 @@ CStdString CAddon::GetUserSettingsPath()
   CStdString path;
   CUtil::AddFileToFolder(Profile(), "settings.xml", path);
   return path;
+}
+
+CAddonLibrary::CAddonLibrary(const AddonProps& props)
+  : CAddon(props)
+  , m_addonType(SetAddonType())
+{
+}
+
+TYPE CAddonLibrary::SetAddonType()
+{
+  if (Type() == ADDON_SCRAPER_LIBRARY)
+    return ADDON_SCRAPER;
+  else if (Type() == ADDON_VIZ_LIBRARY)
+    return ADDON_VIZ;
+  else
+    return ADDON_UNKNOWN;
 }
 
 } /* namespace ADDON */
