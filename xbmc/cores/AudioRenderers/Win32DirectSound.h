@@ -67,7 +67,7 @@ public:
 private:
   void UpdateCacheStatus();
   void CheckPlayStatus();
-  void BuildChannelMapping(int channels, int8_t* map);
+  void BuildChannelMapping(int channels, enum PCMChannels* map);
 
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;

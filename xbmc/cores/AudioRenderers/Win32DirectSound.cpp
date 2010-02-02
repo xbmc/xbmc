@@ -584,7 +584,7 @@ char * CWin32DirectSound::dserr2str(int err)
 }
 
 //***********************************************************************************************
-void CWin32DirectSound::BuildChannelMapping(int channels, int8_t* map)
+void CWin32DirectSound::BuildChannelMapping(int channels, enum PCMChannels* map)
 {
   bool usedChannels[DSOUND_TOTAL_CHANNELS];
 
