@@ -83,6 +83,8 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if(m_pCodecContext->bits_per_coded_sample == 0)
     m_pCodecContext->bits_per_coded_sample = 16;
 
+/* for now, only set the requested layout for non-apple architecture */
+#ifdef __APPLE__
   /* if we need to downmix, do it in ffmpeg as codecs are smarter then we can ever be */
   /* wmapro does not support this */
   if(hints.codec != CODEC_ID_WMAPRO && g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
@@ -91,6 +93,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     // below is required or center channel is missing with VC1 content under OSX.
     m_pCodecContext->request_channels = 2;
   }
+#endif
 
   if( hints.extradata && hints.extrasize > 0 )
   {
@@ -249,45 +252,112 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
   return 16;
 }
 
-int8_t* CDVDAudioCodecFFmpeg::GetChannelMap()
+enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
 {
-  /* the side channels for < 7.0 are mapped to the back intentionally, do not change this! */
-  static int8_t map[14][8] =
-  {
-    {/* MONO         */ PCM_FRONT_CENTER                                                                                                                                          },
-    {/* STEREO       */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT                                                                                                                           },
-    {/* 2_1          */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_CENTER                                                                                                          },
-    {/* SURROUND     */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER                                                                                                         },
-    {/* 4POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_CENTER                                                                                        },
-    {/* 2_2          */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                         },
-    {/* QUAD         */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                         },
-    {/* 5POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                      },
-    {/* 5POINT1      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                      },
-    {/* 5POINT0_BACK */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                      },
-    {/* 5POINT1_BACK */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                      },
-    {/* 7POINT0      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                      },
-    {/* 7POINT1      */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT, PCM_SIDE_LEFT            , PCM_SIDE_RIGHT           },
-    {/* 7POINT1_WIDE */ PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER , PCM_FRONT_RIGHT_OF_CENTER}
-  };
+  int index = 0;
+  if (m_pCodecContext->channel_layout && CH_FRONT_LEFT           ) m_channelMap[index++] = PCM_FRONT_LEFT           ;
+  if (m_pCodecContext->channel_layout && CH_FRONT_RIGHT          ) m_channelMap[index++] = PCM_FRONT_RIGHT          ;
+  if (m_pCodecContext->channel_layout && CH_FRONT_CENTER         ) m_channelMap[index++] = PCM_FRONT_CENTER         ;
+  if (m_pCodecContext->channel_layout && CH_LOW_FREQUENCY        ) m_channelMap[index++] = PCM_LOW_FREQUENCY        ;
+  if (m_pCodecContext->channel_layout && CH_BACK_LEFT            ) m_channelMap[index++] = PCM_BACK_LEFT            ;
+  if (m_pCodecContext->channel_layout && CH_BACK_RIGHT           ) m_channelMap[index++] = PCM_BACK_RIGHT           ;
+  if (m_pCodecContext->channel_layout && CH_FRONT_LEFT_OF_CENTER ) m_channelMap[index++] = PCM_FRONT_LEFT_OF_CENTER ;
+  if (m_pCodecContext->channel_layout && CH_FRONT_RIGHT_OF_CENTER) m_channelMap[index++] = PCM_FRONT_RIGHT_OF_CENTER;
+  if (m_pCodecContext->channel_layout && CH_BACK_CENTER          ) m_channelMap[index++] = PCM_BACK_CENTER          ;
+  if (m_pCodecContext->channel_layout && CH_SIDE_LEFT            ) m_channelMap[index++] = PCM_SIDE_LEFT            ;
+  if (m_pCodecContext->channel_layout && CH_SIDE_RIGHT           ) m_channelMap[index++] = PCM_SIDE_RIGHT           ;
+  if (m_pCodecContext->channel_layout && CH_TOP_CENTER           ) m_channelMap[index++] = PCM_TOP_CENTER           ;
+  if (m_pCodecContext->channel_layout && CH_TOP_FRONT_LEFT       ) m_channelMap[index++] = PCM_TOP_FRONT_LEFT       ;
+  if (m_pCodecContext->channel_layout && CH_TOP_FRONT_CENTER     ) m_channelMap[index++] = PCM_TOP_FRONT_CENTER     ;
+  if (m_pCodecContext->channel_layout && CH_TOP_FRONT_RIGHT      ) m_channelMap[index++] = PCM_TOP_FRONT_RIGHT      ;
+  if (m_pCodecContext->channel_layout && CH_TOP_BACK_LEFT        ) m_channelMap[index++] = PCM_TOP_BACK_LEFT        ;
+  if (m_pCodecContext->channel_layout && CH_TOP_BACK_CENTER      ) m_channelMap[index++] = PCM_TOP_BACK_CENTER      ;
+  if (m_pCodecContext->channel_layout && CH_TOP_BACK_RIGHT       ) m_channelMap[index++] = PCM_TOP_BACK_RIGHT       ;
 
-  switch(m_pCodecContext->channel_layout &~ CH_LAYOUT_STEREO_DOWNMIX)
+  /* if there is less channels in the map then advertised, we need to fix it */
+  if (index < m_pCodecContext->channels)
   {
-    case CH_LAYOUT_MONO        : return map[ 0];
-    case CH_LAYOUT_STEREO      : return map[ 1];
-    case CH_LAYOUT_2_1         : return map[ 2];
-    case CH_LAYOUT_SURROUND    : return map[ 3];
-    case CH_LAYOUT_4POINT0     : return map[ 4];
-    case CH_LAYOUT_2_2         : return map[ 5];
-    case CH_LAYOUT_QUAD        : return map[ 6];
-    case CH_LAYOUT_5POINT0     : return map[ 7];
-    case CH_LAYOUT_5POINT1     : return map[ 8];
-    case CH_LAYOUT_5POINT0_BACK: return map[ 9];
-    case CH_LAYOUT_5POINT1_BACK: return map[10];
-    case CH_LAYOUT_7POINT0     : return map[11];
-    case CH_LAYOUT_7POINT1     : return map[12];
-    case CH_LAYOUT_7POINT1_WIDE: return map[13];
-    default:
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg did not repot the channel layout properly, trying to guess");
+
+    index = 0;
+    switch(m_pCodecContext->codec_id)
+    {
+      case CODEC_ID_FLAC:
+        switch(m_pCodecContext->channels)
+        {
+          case 1:
+            m_channelMap[index++] = PCM_FRONT_CENTER;
+            break;
+
+          case 2:
+            m_channelMap[index++] = PCM_FRONT_LEFT;
+            m_channelMap[index++] = PCM_FRONT_RIGHT;
+            break;
+
+          case 3:
+            m_channelMap[index++] = PCM_FRONT_LEFT;
+            m_channelMap[index++] = PCM_FRONT_RIGHT;
+            m_channelMap[index++] = PCM_FRONT_CENTER;
+            break;
+
+          case 4:
+            m_channelMap[index++] = PCM_FRONT_LEFT;
+            m_channelMap[index++] = PCM_FRONT_RIGHT;
+            m_channelMap[index++] = PCM_BACK_LEFT;
+            m_channelMap[index++] = PCM_BACK_RIGHT;
+            break;
+
+          case 5:
+            m_channelMap[index++] = PCM_FRONT_LEFT;
+            m_channelMap[index++] = PCM_FRONT_RIGHT;
+            m_channelMap[index++] = PCM_FRONT_CENTER;
+            m_channelMap[index++] = PCM_SIDE_LEFT;
+            m_channelMap[index++] = PCM_SIDE_RIGHT;
+            break;
+
+          case 6:
+            m_channelMap[index++] = PCM_FRONT_LEFT;
+            m_channelMap[index++] = PCM_FRONT_RIGHT;
+            m_channelMap[index++] = PCM_FRONT_CENTER;
+            m_channelMap[index++] = PCM_LOW_FREQUENCY;
+            m_channelMap[index++] = PCM_SIDE_LEFT;
+            m_channelMap[index++] = PCM_SIDE_RIGHT;
+            break;
+
+          case 7:
+            m_channelMap[index++] = PCM_FRONT_LEFT;
+            m_channelMap[index++] = PCM_FRONT_RIGHT;
+            m_channelMap[index++] = PCM_FRONT_CENTER;
+            m_channelMap[index++] = PCM_BACK_LEFT;
+            m_channelMap[index++] = PCM_BACK_RIGHT;
+            m_channelMap[index++] = PCM_SIDE_LEFT;
+            m_channelMap[index++] = PCM_SIDE_RIGHT;
+            break;
+
+          case 8:
+            m_channelMap[index++] = PCM_FRONT_LEFT;
+            m_channelMap[index++] = PCM_FRONT_RIGHT;
+            m_channelMap[index++] = PCM_FRONT_CENTER;
+            m_channelMap[index++] = PCM_LOW_FREQUENCY;
+            m_channelMap[index++] = PCM_BACK_LEFT;
+            m_channelMap[index++] = PCM_BACK_RIGHT;
+            m_channelMap[index++] = PCM_SIDE_LEFT;
+            m_channelMap[index++] = PCM_SIDE_RIGHT;
+            break;
+        }
+        break;
+
+      default:;
+    }
+
+    if (index == 0)
+    {
+      CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::GetChannelMap - Unable to guess a channel layout, please report this to XBMC and submit a sample file");
       return NULL;
+    }
+    return m_channelMap;
   }
-}
 
+  m_channelMap[index] = PCM_INVALID;
+  return m_channelMap;
+}

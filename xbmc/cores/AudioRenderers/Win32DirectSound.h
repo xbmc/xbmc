@@ -45,7 +45,7 @@ public:
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
   CWin32DirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CWin32DirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -87,7 +87,7 @@ private:
   unsigned int m_AvgBytesPerSec;
   unsigned int m_uiBytesPerFrame;
   unsigned int m_uiSpeakerMask;
-  int8_t       m_SpeakerOrder[8];
+  enum PCMChannels m_SpeakerOrder[8];
 
   char * dserr2str(int err);
 

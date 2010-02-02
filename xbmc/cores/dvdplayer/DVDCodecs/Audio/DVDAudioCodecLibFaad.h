@@ -38,7 +38,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels()        { return m_iSourceChannels; }
-  virtual int8_t* GetChannelMap();
+  virtual enum PCMChannels* GetChannelMap();
   virtual int GetSampleRate()      { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample()   { return 16; }
   virtual const char* GetName()    { return "libfaad"; }
@@ -53,7 +53,7 @@ private:
 
   int m_iSourceSampleRate;
   int m_iSourceChannels;
-  int8_t m_pChannelMap[64];
+  enum PCMChannels m_pChannelMap[64];
   int m_iSourceBitrate;
 
   bool m_bInitializedDecoder;

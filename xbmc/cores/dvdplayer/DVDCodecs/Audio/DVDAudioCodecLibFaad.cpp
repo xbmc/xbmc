@@ -103,7 +103,7 @@ bool CDVDAudioCodecLibFaad::SyncStream()
   return false;
 }
 
-int8_t* CDVDAudioCodecLibFaad::GetChannelMap()
+enum PCMChannels* CDVDAudioCodecLibFaad::GetChannelMap()
 {
   for(int i = 0; i < m_iSourceChannels; ++i)
   {
@@ -247,7 +247,11 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
 
     // modify some stuff here
     pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
+#ifdef __APPLE__
     pConfiguration->downMatrix   = g_guiSettings.GetBool("audiooutput.downmixmultichannel") ? 1 : 0;
+#else
+    pConfiguration->downMatrix   = 0;
+#endif
 
     m_dll.faacDecSetConfiguration(m_pHandle, pConfiguration);
 

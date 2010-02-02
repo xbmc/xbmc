@@ -293,10 +293,10 @@ int CDVDAudioCodecPcm::GetChannels()
   return m_iOutputChannels;
 }
 
-int8_t* CDVDAudioCodecPcm::GetChannelMap()
+enum PCMChannels* CDVDAudioCodecPcm::GetChannelMap()
 {
   /* ? = probarbly wrong, just a guess */
-  static int8_t map[8][8] =
+  static enum PCMChannels map[8][8] =
   {
     /* MONO   */ {PCM_FRONT_CENTER                                                                                                                                                },
     /* STEREO */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT                                                                                                                                 },

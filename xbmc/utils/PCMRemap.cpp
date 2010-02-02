@@ -22,20 +22,176 @@
 #include <cstdlib>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "PCMRemap.h"
 #include "utils/log.h"
+#include "GUISettings.h"
+
+static enum PCMChannels PCMLayoutMap[PCM_MAX_LAYOUT][PCM_MAX_CH + 1] =
+{
+  /* 2.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_INVALID},
+  /* 2.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_LOW_FREQUENCY, PCM_INVALID},
+  /* 3.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_INVALID},
+  /* 3.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_INVALID},
+  /* 4.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_INVALID},
+  /* 4.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_INVALID},
+  /* 5.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_INVALID},
+  /* 5.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_LOW_FREQUENCY, PCM_INVALID},
+  /* 7.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_INVALID},
+  /* 7.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_LOW_FREQUENCY, PCM_INVALID}
+};
+
+static const char* PCMChannelName[PCM_MAX_CH] =
+{
+  "FL",
+  "FR",
+  "CE",
+  "LFE",
+  "BL",
+  "BR",
+  "FLOC",
+  "FROC",
+  "BC",
+  "SL",
+  "SR",
+  "TFL",
+  "TFR",
+  "TFC",
+  "TC",
+  "TBL",
+  "TBR",
+  "TBC",
+};
+
+static const char* PCMLayoutName[PCM_MAX_LAYOUT] =
+{
+  "2.0",
+  "2.1",
+  "3.0",
+  "3.1",
+  "4.0",
+  "4.1",
+  "5.0",
+  "5.1",
+  "7.0",
+  "7.1"
+};
+
+/*
+  map missing output into channel @ volume level
+  the order of this table is important, mix tables can not depend on channels that have not been defined yet
+  eg, FC can only be mixed into FL, FR as they are the only channels that have been defined
+*/
+#define PCM_MAX_MIX 3
+static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
+{
+  /* PCM_FRONT_LEFT */
+  {
+    {PCM_INVALID}
+  },
+  /* PCM_FRONT_RIGHT */
+  {
+    {PCM_INVALID}
+  },
+  /* PCM_FRONT_CENTER */
+  {
+    {PCM_FRONT_LEFT           , 0.5},
+    {PCM_FRONT_RIGHT          , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_LOW_FREQUENCY */
+  {
+    {PCM_FRONT_LEFT           , 1.0},
+    {PCM_FRONT_RIGHT          , 1.0},
+    {PCM_INVALID}
+  },
+  /* PCM_BACK_LEFT */
+  {
+    {PCM_FRONT_LEFT           , 0.3},
+    {PCM_INVALID}
+  },
+  /* PCM_BACK_RIGHT */
+  {
+    {PCM_FRONT_RIGHT          , 0.3},
+    {PCM_INVALID}
+  },
+  /* PCM_FRONT_LEFT_OF_CENTER */
+  {
+    {PCM_FRONT_LEFT           , 0.5},
+    {PCM_FRONT_CENTER         , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_FRONT_RIGHT_OF_CENTER */
+  {
+    {PCM_FRONT_RIGHT          , 0.5},
+    {PCM_FRONT_CENTER         , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_BACK_CENTER */
+  {
+    {PCM_BACK_LEFT            , 0.5},
+    {PCM_BACK_RIGHT           , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_SIDE_LEFT */
+  {
+    {PCM_BACK_LEFT            , 1.0},
+    {PCM_INVALID}
+  },
+  /* PCM_SIDE_RIGHT */
+  {
+    {PCM_BACK_RIGHT           , 1.0},
+    {PCM_INVALID}
+  },
+  /* PCM_TOP_FRONT_LEFT */
+  {
+    {PCM_FRONT_LEFT           , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_TOP_FRONT_RIGHT */
+  {
+    {PCM_FRONT_RIGHT          , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_TOP_FRONT_CENTER */
+  {
+    {PCM_TOP_FRONT_LEFT       , 0.5},
+    {PCM_TOP_FRONT_RIGHT      , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_TOP_CENTER */
+  {
+    {PCM_TOP_FRONT_LEFT       , 0.5},
+    {PCM_TOP_FRONT_RIGHT      , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_TOP_BACK_LEFT */
+  {
+    {PCM_BACK_LEFT            , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_TOP_BACK_RIGHT */
+  {
+    {PCM_BACK_LEFT            , 0.5},
+    {PCM_INVALID}
+  },
+  /* PCM_TOP_BACK_CENTER */
+  {
+    {PCM_TOP_BACK_LEFT        , 0.5},
+    {PCM_TOP_BACK_RIGHT       , 0.5},
+    {PCM_INVALID}
+  }
+};
 
 CPCMRemap::CPCMRemap() :
-  m_inSet   (false),
-  m_outSet  (false),
+  m_inSet       (false),
+  m_outSet      (false),
   m_inChannels  (0),
   m_outChannels (0),
-  m_inSampleSize(0),
-  m_inMap   (NULL ),
-  m_outMap  (NULL ),
-  m_chLookup(NULL )
+  m_inSampleSize(0)
 {
+  Dispose();
 }
 
 CPCMRemap::~CPCMRemap()
@@ -45,8 +201,36 @@ CPCMRemap::~CPCMRemap()
 
 void CPCMRemap::Dispose()
 {
-  delete[] m_chLookup;
-  m_chLookup = NULL;
+  memset(m_useable  , 0          , sizeof(m_useable  ));
+  memset(m_lookupMap, PCM_INVALID, sizeof(m_lookupMap));
+}
+
+/* resolves the channels recursively and returns the new index of tablePtr */
+struct PCMMapInfo* CPCMRemap::ResolveChannel(enum PCMChannels channel, float level, struct PCMMapInfo *tablePtr)
+{
+  if (channel == PCM_INVALID) return tablePtr;
+
+  /* if its a 1 to 1 mapping, return */
+  if (m_useable[channel])
+  {
+    tablePtr->channel = channel;
+    tablePtr->level   = level;
+
+    ++tablePtr;
+    tablePtr->channel = PCM_INVALID;
+    return tablePtr;
+  }
+
+  /* loop through the downmix children and resolve them */
+  struct PCMMapInfo *info;
+  for(info = PCMDownmixTable[channel]; info->channel != PCM_INVALID; ++info)
+  {
+    /* calculate the level based on our full volume */
+    float  l = (info->level * (level / 100)) * 100;
+    tablePtr = ResolveChannel(info->channel, l, tablePtr);
+  }
+
+  return tablePtr;
 }
 
 /*
@@ -55,27 +239,59 @@ void CPCMRemap::Dispose()
 */
 void CPCMRemap::BuildMap()
 {
-  unsigned int in_ch, out_ch;
-
   if (!m_inSet || !m_outSet) return;
   Dispose();
 
-  delete[] m_chLookup;
-  m_chLookup = new int8_t[m_inChannels];
-  for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
+  unsigned int in_ch, out_ch;
+
+  /* figure out what channels we have and can use */
+  for(enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
   {
     for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
-    {
-      if (m_outMap[out_ch] == m_inMap[in_ch])
+      if (m_outMap[out_ch] == *chan)
       {
-        m_chLookup[in_ch] = out_ch;
+        m_useable[*chan] = true;
         break;
       }
+  }
+
+  /* resolve all the channels */
+  struct PCMMapInfo table[PCM_MAX_CH + 1], *info, *dst;
+  for(in_ch = 0; in_ch < m_inChannels; ++in_ch) {
+    ResolveChannel(m_inMap[in_ch], 1.0f, table);
+    for(info = table; info->channel != PCM_INVALID; ++info)
+    {
+      /* get the table, find the end of the table */
+      for(dst = m_lookupMap[info->channel]; dst->channel != PCM_INVALID; ++dst) {}
+
+      /* append it to the table */
+      dst->channel = m_inMap[in_ch];
+      dst->level   = info->level;
+
+      /* terminate the table */
+      ++dst;
+      dst->channel = PCM_INVALID;
     }
+  }
+  
+  /* build our reverse lookup table */
+  for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
+    m_inLookup[m_inMap[in_ch]] = in_ch;
+
+  /* output the final map for debugging */
+  for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
+  {
+    CStdString s = "", f;
+    for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
+    {
+      f.Format("%s(%f) ",  PCMChannelName[dst->channel], dst->level);
+      s += f;
+    }
+    CLog::Log(LOGDEBUG, "CPCMRemap: %s = %s\n", PCMChannelName[m_outMap[out_ch]], s.c_str());
   }
 }
 
-void CPCMRemap::DumpMap(CStdString info, unsigned int channels, int8_t *channelMap)
+void CPCMRemap::DumpMap(CStdString info, unsigned int channels, enum PCMChannels *channelMap)
 {
   if (channelMap == NULL)
   {
@@ -83,12 +299,10 @@ void CPCMRemap::DumpMap(CStdString info, unsigned int channels, int8_t *channelM
     return;
   }
 
-  CStdString mapping = "", convert;
+  CStdString mapping = "";
   for(unsigned int i = 0; i < channels; ++i)
-  {
-    convert.Format("%d", channelMap[i]);
-    mapping += ((i == 0) ? "" : ",") + convert;
-  }
+    mapping += ((i == 0) ? "" : ",") + (CStdString)PCMChannelName[channelMap[i]];
+
   CLog::Log(LOGINFO, "CPCMRemap: %s channel map: %s\n", info.c_str(), mapping.c_str());
 }
 
@@ -98,28 +312,41 @@ void CPCMRemap::Reset()
   m_outMap = NULL;
   m_inSet  = false;
   m_outSet = false;
+  Dispose();
 }
 
-/* sets the input format */
-void CPCMRemap::SetInputFormat(unsigned int channels, int8_t *channelMap, unsigned int sampleSize)
+/* sets the input format, and returns the requested channel layout */
+enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize)
 {
   m_inChannels   = channels;
   m_inMap        = channelMap;
   m_inSampleSize = sampleSize;
   m_inSet        = channelMap != NULL;
 
-  DumpMap("Input", channels, channelMap);
+  /* fix me later */
+  assert(sampleSize == 2);
+
+  /* get the audio layout, and count the channels in it */
+  m_channelLayout  = (enum PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout");
+  if (m_channelLayout >= PCM_MAX_LAYOUT) m_channelLayout = PCM_LAYOUT_2_0;
+
+  CLog::Log(LOGINFO, "CPCMRemap: Channel Layout: %s\n", PCMLayoutName[m_channelLayout]);
+  m_layoutMap      = PCMLayoutMap[m_channelLayout];
+
+  DumpMap("I", channels, channelMap);
   BuildMap();
+
+  return m_layoutMap;
 }
 
-/* sets the output format required */
-void CPCMRemap::SetOutputFormat(unsigned int channels, int8_t *channelMap)
+/* sets the output format supported by the audio renderer */
+void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap)
 {
   m_outChannels   = channels;
   m_outMap        = channelMap;
   m_outSet        = channelMap != NULL;
 
-  DumpMap("Output", channels, channelMap);
+  DumpMap("O", channels, channelMap);
   BuildMap();
 }
 
@@ -140,12 +367,23 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
   memset(out, 0, samples * (m_inSampleSize * m_outChannels));
   for(i = 0; i < samples; ++i)
   {
-    for(ch = 0; ch < m_inChannels; ++ch)
+    for(ch = 0; ch < m_outChannels; ++ch)
     {
-      src = insample  + (ch             * m_inSampleSize);
-      dst = outsample + (m_chLookup[ch] * m_inSampleSize);
-      memcpy(dst, src, m_inSampleSize);
+      struct PCMMapInfo *info;
+      float value = 0;
+      int   div   = 0;
+
+      for(info = m_lookupMap[m_outMap[ch]]; info->channel != PCM_INVALID; ++info)
+      {
+        src    = insample + m_inLookup[info->channel] * m_inSampleSize;
+        value += (float)(*(int16_t*)src) * info->level;
+        ++div;
+      }
+      value /= (float)div;
+      dst = outsample + ch * m_inSampleSize;
+      *((int16_t*)dst) = (int16_t)((value > 0.0) ? floor(value + 0.5) : ceil(value - 0.5));
     }
+
     insample  += m_inSampleSize * m_inChannels;
     outsample += m_inSampleSize * m_outChannels;
   }
