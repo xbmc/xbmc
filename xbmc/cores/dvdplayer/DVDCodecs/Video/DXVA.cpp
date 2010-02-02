@@ -77,11 +77,13 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Windows Media Video 9 post processing",  &DXVA2_ModeWMV9_A, 0 },
 
     { "VC-1 VLD",             &DXVA2_ModeVC1_D, CODEC_ID_VC1 },
+    { "VC-1 VLD",             &DXVA2_ModeVC1_D, CODEC_ID_WMV3 },
     { "VC-1 IDCT",            &DXVA2_ModeVC1_C, 0 },
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B, 0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A, 0 },
 
     { "Intel VC-1 VLD",       &DXVADDI_Intel_ModeVC1_E, CODEC_ID_VC1 },
+    { "Intel VC-1 VLD",       &DXVADDI_Intel_ModeVC1_E, CODEC_ID_WMV3 },
 
     { NULL, NULL, 0 }
 };
