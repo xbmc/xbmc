@@ -54,11 +54,17 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 {
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
+  if(!ctx->IsHardwareAllowed())
+    return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
+
+  int method = g_guiSettings.GetInt("videoplayer.rendermethod");
+
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
-    if(CVDPAU::IsVDPAUFormat(*cur) && ctx->IsHardwareAllowed())
+    if(CVDPAU::IsVDPAUFormat(*cur) 
+    && (method == RENDER_METHOD_VDPAU || method == RENDER_METHOD_AUTO))
     {
       if(ctx->GetHardware() == NULL)
       {
