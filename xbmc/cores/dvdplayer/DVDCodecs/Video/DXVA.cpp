@@ -22,6 +22,7 @@
 #include <windows.h>
 #include <d3d9.h>
 #include <Initguid.h>
+#include <dxva.h>
 #include <dxva2api.h>
 #include "libavcodec/dxva2.h"
 
@@ -335,6 +336,40 @@ int CDecoder::Check(AVCodecContext* avctx)
       return VC_ERROR;
     }
     return VC_FLUSHED;
+  }
+
+  if(avctx->codec_id != CODEC_ID_H264
+  && avctx->codec_id != CODEC_ID_VC1
+  && avctx->codec_id != CODEC_ID_WMV3)
+    return 0;
+
+  DXVA2_DecodeExecuteParams params = {};
+  DXVA2_DecodeExtensionData data   = {};
+  union {
+    DXVA_Status_H264 h264;
+    DXVA_Status_VC1  vc1;
+  } status = {};
+
+  params.pExtensionData = &data;
+  data.Function = 7;
+  data.pPrivateOutputData    = &status;
+  data.PrivateOutputDataSize = sizeof(status);
+  if(FAILED(m_decoder->Execute(&params)))
+  {
+    CLog::Log(LOGWARNING, "DXVA - failed to get decoder status");
+    return VC_ERROR;
+  }
+
+  if(avctx->codec_id == CODEC_ID_H264)
+  {
+    if(status.h264.bStatus)
+      CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.h264.bStatus, status.h264.bBufType);
+  }
+  else if(avctx->codec_id == CODEC_ID_VC1
+       || avctx->codec_id == CODEC_ID_WMV3)
+  {
+    if(status.vc1.bStatus)
+      CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.h264.bStatus, status.vc1.bBufType);
   }
   return 0;
 }
