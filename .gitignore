@@ -11,6 +11,8 @@ config.log
 *.vcproj.*.user
 *.mode1v3
 *.pbxuser
+*.[oa]
+*.py[co]
 
 .libs/
 .deps/
