@@ -86,7 +86,11 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   /* if we need to downmix, do it in ffmpeg as codecs are smarter then we can ever be */
   /* wmapro does not support this */
   if(hints.codec != CODEC_ID_WMAPRO && g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
+  {
     m_pCodecContext->request_channel_layout = CH_LAYOUT_STEREO;
+    // below is required or center channel is missing with VC1 content under OSX.
+    m_pCodecContext->request_channels = 2;
+  }
 
   if( hints.extradata && hints.extrasize > 0 )
   {
