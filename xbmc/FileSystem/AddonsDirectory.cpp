@@ -28,7 +28,7 @@
 
 using namespace ADDON;
 
-namespace DIRECTORY
+namespace XFILE 
 {
 
 CAddonsDirectory::CAddonsDirectory(void)

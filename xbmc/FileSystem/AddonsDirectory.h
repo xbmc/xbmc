@@ -25,7 +25,7 @@
 
 class CURL;
 
-namespace DIRECTORY
+namespace XFILE 
 {
 
   /*!

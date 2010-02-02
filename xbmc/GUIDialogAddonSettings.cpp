@@ -42,7 +42,8 @@
 #include "FileItem.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace ADDON;
+using XFILE::CDirectory;
 
 #define CONTROL_AREA                    2
 #define CONTROL_DEFAULT_BUTTON          3
@@ -55,8 +56,6 @@ using namespace DIRECTORY;
 #define ID_BUTTON_DEFAULT               12
 #define CONTROL_HEADING_LABEL           20
 #define CONTROL_START_CONTROL           100
-
-using namespace ADDON;
 
 CGUIDialogAddonSettings::CGUIDialogAddonSettings()
    : CGUIDialogBoxBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")

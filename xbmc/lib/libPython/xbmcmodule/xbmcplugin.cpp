@@ -318,7 +318,7 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", DIRECTORY::CPluginDirectory::GetSetting(handle, id).c_str());
+    return Py_BuildValue((char*)"s", XFILE::CPluginDirectory::GetSetting(handle, id).c_str());
   }
 
   PyDoc_STRVAR(setSetting__doc__,
@@ -357,7 +357,7 @@ namespace PYXBMC
     if (!id || !PyXBMCGetUnicodeString(value, pValue, 1))
       return NULL;
 
-    DIRECTORY::CPluginDirectory::SetSetting(handle, id, value);
+    XFILE::CPluginDirectory::SetSetting(handle, id, value);
 
     Py_INCREF(Py_None);
     return Py_None;
