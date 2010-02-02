@@ -489,6 +489,21 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (!frame)
     return false;
 
+  pDvdVideoPicture->iRepeatPicture = 0.5 * frame->repeat_pict;
+  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+  pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
+  pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+  if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
+    pDvdVideoPicture->color_range = 1;
+
+  if(frame->reordered_opaque)
+    pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
+  else
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
+  if(m_pHardware)
+    return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
+
   if(m_pConvertFrame)
   {
     for (int i = 0; i < 4; i++)
@@ -503,25 +518,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     for (int i = 0; i < 4; i++)
       pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   }
-  pDvdVideoPicture->iRepeatPicture = 0.5 * frame->repeat_pict;
-  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
-  pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+
   pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;
-  if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
-    pDvdVideoPicture->color_range = 1;
-
-  if(frame->reordered_opaque)
-    pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
-  else
-    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-
   pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
-  if(m_pHardware)
-    return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
-  else
-    return true;
+  return true;
 }
 
 /*
