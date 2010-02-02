@@ -324,13 +324,14 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   {
     int result;
     if(pData)
-      result = m_pHardware->Check();
+      result = m_pHardware->Check(m_pCodecContext);
     else
       result = m_pHardware->Decode(m_pCodecContext, NULL);
-    
-    if((result & VC_PICTURE) 
-    || (result & VC_BUFFER)
-    || (result & VC_FLUSHED))
+
+    if(result & VC_FLUSHED)
+      Reset();
+
+    if(result)
       return result;
   }
 
@@ -427,10 +428,16 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
+  int result;
   if(m_pHardware)
-    return m_pHardware->Decode(m_pCodecContext, m_pFrame);
+    result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
   else
-    return VC_PICTURE | VC_BUFFER;
+    result = VC_PICTURE | VC_BUFFER;
+
+  if(result & VC_FLUSHED)
+    Reset();
+
+  return result;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
