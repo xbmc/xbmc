@@ -1971,12 +1971,8 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     // third plane is not used
     im.planesize[2] = 0;
 
-    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo")
-        && !(m_renderMethod & RENDER_SW))
+    if (m_pboused)
     {
-      CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
-      m_pboused = true;
-
       glGenBuffersARB(2, pbo);
 
       for (int i = 0; i < 2; i++)
@@ -1991,9 +1987,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     }
     else
     {
-      CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
-      m_pboused = false;
-
       for (int i = 0; i < 2; i++)
         im.plane[i] = new BYTE[im.planesize[i]];
     }
