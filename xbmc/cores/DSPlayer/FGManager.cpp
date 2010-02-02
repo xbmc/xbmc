@@ -56,7 +56,6 @@ using namespace std;
 
 CFGManager::CFGManager():
   m_dwRegister(0),
-  m_pDsConfig(NULL),
   m_audioPinConnected(false),
   m_videoPinConnected(false)
 {
@@ -81,8 +80,6 @@ CFGManager::~CFGManager()
   }
   while(!m_override.empty()) 
     m_override.pop_back();
-
-  SAFE_DELETE(m_pDsConfig);
   SAFE_DELETE(m_CfgLoader);
 
   SAFE_RELEASE(m_pFM);
@@ -559,8 +556,10 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   hr = ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
 
   //Get all custom interface
-  m_pDsConfig = new CDSConfig();
-  m_pDsConfig->LoadGraph(m_pFG, m_CfgLoader->GetSplitter());
+  //To verify
+  //m_pDsConfig = new CDSConfig();
+
+  g_dsconfig.LoadGraph(m_pFG, m_CfgLoader->GetSplitter());
   //Apparently the graph dont start with wmv when you have unconnected filters
   DShowUtil::RemoveUnconnectedFilters(m_pFG);
 

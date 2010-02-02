@@ -158,8 +158,8 @@ void CDSGraph::CloseFile()
     SAFE_RELEASE(m_pBasicAudio);
 
     hr = m_pGraphBuilder->RemoveFromROT();
-    if (m_pGraphBuilder->GetDsConfig()) // It's possible that CDSConfig == NULL
-      m_pGraphBuilder->GetDsConfig()->UnloadGraph();
+    //if (g_dsconfig) // It's possible that CDSConfig == NULL
+      g_dsconfig.UnloadGraph();
 
 	  SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
   }
@@ -225,7 +225,7 @@ void CDSGraph::UpdateState()
 void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
   
-  m_VideoInfo.dxva_info= m_pGraphBuilder->GetDsConfig()->GetDxvaMode();
+  m_VideoInfo.dxva_info = g_dsconfig.GetDxvaMode();
   m_pGraphBuilder->GetFileInfo(&m_VideoInfo.filter_source,&m_VideoInfo.filter_splitter,&m_VideoInfo.filter_audio_dec,&m_VideoInfo.filter_video_dec,&m_VideoInfo.filter_audio_renderer);
   
   
@@ -629,10 +629,10 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
 void CDSGraph::SetAudioStream(int iStream)
 {
   m_bChangingAudioStream = true; // Prevent DSPlayer to shutdown
-  IAMStreamSelect *stream = m_pGraphBuilder->GetDsConfig()->GetStreamSelector();
+  IAMStreamSelect *stream = g_dsconfig.GetStreamSelector();
   if (stream)
   {
-    std::map<long, IAMStreamSelectInfos *> audioStreams = m_pGraphBuilder->GetDsConfig()->GetAudioStreams();
+    std::map<long, IAMStreamSelectInfos *> audioStreams = g_dsconfig.GetAudioStreams();
 
     int i =0; long lIndex = 0;
     for (std::map<long, IAMStreamSelectInfos *>::iterator it = audioStreams.begin();
@@ -655,7 +655,7 @@ void CDSGraph::SetAudioStream(int iStream)
     if (!m_pMediaControl || !m_pMediaSeeking)
       return;
 
-    std::map<long, IAMStreamSelectInfos *> audioStreams = m_pGraphBuilder->GetDsConfig()->GetAudioStreams();
+    std::map<long, IAMStreamSelectInfos *> audioStreams = g_dsconfig.GetAudioStreams();
 
     long disableIndex = 0, enableIndex = iStream;
     for (std::map<long, IAMStreamSelectInfos *>::const_iterator it = audioStreams.begin();
@@ -734,7 +734,7 @@ int CDSGraph::SeekChapter(int iChapter)
 
     // Seek to the chapter.
     CLog::Log(LOGDEBUG, "%s Seeking to chapter %d", __FUNCTION__, iChapter);
-    SeekInMilliSec( m_pGraphBuilder->GetDsConfig()->GetChapters()[iChapter]->time );
+    SeekInMilliSec( g_dsconfig.GetChapters()[iChapter]->time );
   }
   else
   {

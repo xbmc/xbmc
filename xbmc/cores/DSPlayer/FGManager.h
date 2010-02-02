@@ -66,7 +66,7 @@ public:
 	public: 
     std::list<CMediaType> mts;
 	};
-  CDSConfig* GetDsConfig() {return m_pDsConfig;};
+
 private:
   DWORD m_dwRegister;
   CStreamPath m_streampath;
@@ -85,9 +85,6 @@ protected:
 
   CFile                m_File;
   CFGLoader*           m_CfgLoader;
-  CDSConfig*           m_pDsConfig;
-
-  
 
 	CStdString           m_xbmcConfigFilePath;
 

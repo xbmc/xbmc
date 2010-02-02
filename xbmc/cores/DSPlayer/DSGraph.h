@@ -25,7 +25,6 @@
 #include "StringUtils.h"
 
 #include <dshow.h> //needed for CLSID_VideoRenderer
-//#include <atlbase.h>
 #include <initguid.h>
 #include <dvdmedia.h>
 #include <strmif.h>
@@ -90,40 +89,29 @@ public:
   __int64 GetTotalTimeInMsec();
   virtual float GetPercentage();
 
+
 //Audio stream selection
-  //
-  virtual int  GetAudioStreamCount()  { return m_pGraphBuilder->GetDsConfig()->GetAudioStreamCount(); }
-  virtual int  GetAudioStream()       { return m_pGraphBuilder->GetDsConfig()->GetAudioStream(); }
-  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pGraphBuilder->GetDsConfig()->GetAudioStreamName(iStream,strStreamName); };
-  virtual void SetAudioStream(int iStream); // { m_pGraphBuilder->GetDsConfig()->SetAudioStream(iStream); };
+  virtual int  GetAudioStreamCount()  { return ::g_dsconfig.GetAudioStreamCount(); }
+  virtual int  GetAudioStream()       { return g_dsconfig.GetAudioStream(); }
+  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { g_dsconfig.GetAudioStreamName(iStream,strStreamName); };
+  virtual void SetAudioStream(int iStream); // { g_dsconfig.SetAudioStream(iStream); };
   bool         IsChangingAudioStream () { return m_bChangingAudioStream; }
 
-  virtual int  GetSubtitleCount()     { return m_pGraphBuilder->GetDsConfig()->GetSubtitleCount(); }
-  virtual int  GetSubtitle()          { return m_pGraphBuilder->GetDsConfig()->GetSubtitle(); }
-  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pGraphBuilder->GetDsConfig()->GetSubtitleName(iStream, strStreamName); };
-  virtual void SetSubtitle(int iStream) { return m_pGraphBuilder->GetDsConfig()->SetSubtitle(iStream); };
+//Subtitles
+  virtual int  GetSubtitleCount()     { return g_dsconfig.GetSubtitleCount(); }
+  virtual int  GetSubtitle()          { return g_dsconfig.GetSubtitle(); }
+  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return g_dsconfig.GetSubtitleName(iStream, strStreamName); };
+  virtual void SetSubtitle(int iStream) { return g_dsconfig.SetSubtitle(iStream); };
 
-  // Chapters
-  virtual int  GetChapterCount()                               {
-    if (m_pGraphBuilder && m_pGraphBuilder->GetDsConfig())
-      return m_pGraphBuilder->GetDsConfig()->GetChapterCount();
-    else
-      return 0;
-  }
-  virtual int  GetChapter()                                    {
-    if (m_pGraphBuilder && m_pGraphBuilder->GetDsConfig())
-      return m_pGraphBuilder->GetDsConfig()->GetChapter();
-    else
-      return 0;
-  }
-  virtual void GetChapterName(CStdString& strChapterName)      { m_pGraphBuilder->GetDsConfig()->GetChapterName(strChapterName); }
-  virtual int  SeekChapter(int iChapter); //                       { return m_pGraphBuilder->GetDsConfig()->SeekChapter(iChapter); }
-  void         UpdateChapters( __int64 currentTime )           {
-    if (m_pGraphBuilder && m_pGraphBuilder->GetDsConfig())
-      m_pGraphBuilder->GetDsConfig()->UpdateChapters(currentTime);
-  }
+// Chapters
+  virtual int  GetChapterCount() { return g_dsconfig.GetChapterCount(); }
+  virtual int  GetChapter(){ return g_dsconfig.GetChapter(); }
+  virtual void GetChapterName(CStdString& strChapterName)      { g_dsconfig.GetChapterName(strChapterName); }
+  virtual int  SeekChapter(int iChapter);
+  void UpdateChapters( __int64 currentTime ) { g_dsconfig.UpdateChapters(currentTime); }
 
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
+
   void OnPlayStop();
   void CloseFile();
   

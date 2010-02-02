@@ -31,7 +31,8 @@
 #include "GuiSettings.h"
 using namespace std;
 
-CDSConfig::CDSConfig()
+class CDSConfig g_dsconfig;
+CDSConfig::CDSConfig(void)
 {
   m_pGraphBuilder = NULL;
   m_pIMpcDecFilter = NULL;
@@ -41,7 +42,7 @@ CDSConfig::CDSConfig()
   m_pSplitter = NULL;
 }
 
-CDSConfig::~CDSConfig()
+CDSConfig::~CDSConfig(void)
 {
   SAFE_RELEASE(m_pIMpaDecFilter);
   SAFE_RELEASE(m_pIMpcDecFilter);

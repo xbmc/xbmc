@@ -49,11 +49,12 @@ struct ChapterInfos
   double time; // in ms
 };
 
+
 class CDSConfig
 {
 public:
-  CDSConfig();
-  virtual ~CDSConfig();
+  CDSConfig(void);
+  virtual ~CDSConfig(void);
   virtual HRESULT LoadGraph(IFilterGraph2* pGB, IBaseFilter * splitter);
   virtual HRESULT UnloadGraph();
 
@@ -106,3 +107,5 @@ private:
   std::vector<IBaseFilter *>                 m_pPropertiesFilters;
   std::map<long, ChapterInfos *>             m_pChapters;
 };
+
+extern class CDSConfig g_dsconfig;
