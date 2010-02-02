@@ -34,7 +34,7 @@ namespace MUSIC_GRABBER
 class CMusicInfoScraper : public CThread
 {
 public:
-  CMusicInfoScraper(const ADDON::CScraperPtr &scraper);
+  CMusicInfoScraper(const ADDON::ScraperPtr &scraper);
   virtual ~CMusicInfoScraper(void);
   void FindAlbuminfo(const CStdString& strAlbum, const CStdString& strArtist = "");
   void LoadAlbuminfo(int iAlbum);
@@ -56,7 +56,7 @@ public:
   {
     return m_vecAlbums;
   }
-  void SetScraperInfo(const ADDON::CScraperPtr& scraper)
+  void SetScraperInfo(const ADDON::ScraperPtr& scraper)
   {
     m_scraper = scraper;
   }
@@ -84,7 +84,7 @@ protected:
   bool m_bSuccessfull;
   bool m_bCanceled;
   XFILE::CFileCurl m_http;
-  ADDON::CScraperPtr m_scraper;
+  ADDON::ScraperPtr m_scraper;
 };
 
 }

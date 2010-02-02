@@ -365,7 +365,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::CScraperPtr& scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::ScraperPtr& scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
     m_IMDB.SetScraperInfo(scraper);
 
@@ -400,7 +400,7 @@ namespace VIDEO
       CFileItemPtr pItem = items[i];
 
       // we do this since we may have a override per dir
-      ADDON::CScraperPtr info2;
+      ADDON::ScraperPtr info2;
       if (pItem->m_bIsFolder)
         m_database.GetScraperForPath(pItem->m_strPath,info2);
       else
@@ -538,7 +538,7 @@ namespace VIDEO
           if (info2->Content() == CONTENT_TVSHOWS && result != CNfoFile::NO_NFO)
           { //FIXME this comment doesn't match second comment
             // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
-            ADDON::CScraperPtr temp;
+            ADDON::ScraperPtr temp;
             SScanSettings settings;
             if (m_database.GetScraperForPath(pItem->m_strPath,temp,settings))
             {
@@ -1117,7 +1117,7 @@ namespace VIDEO
 
       // handle .nfo files
       CScraperUrl scrUrl;
-      ADDON::CScraperPtr info(m_IMDB.GetScraperInfo());
+      ADDON::ScraperPtr info(m_IMDB.GetScraperInfo());
       item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
       CNfoFile::NFOResult result = CheckForNFOFile(&item,false,info->Content(),scrUrl);
       if (result == CNfoFile::FULL_NFO)
@@ -1295,7 +1295,7 @@ namespace VIDEO
     return nfoFile;
   }
 
-  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::CScraperPtr& scraper, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool combined)
+  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr& scraper, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool combined)
   {
     CVideoInfoTag movieDetails;
     m_IMDB.SetScraperInfo(scraper);

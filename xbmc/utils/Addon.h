@@ -96,7 +96,7 @@ class CAddon : public IAddon
 public:
   CAddon(const AddonProps &addonprops);
   virtual ~CAddon() {}
-  virtual AddonPtr Clone() const;
+  virtual AddonPtr Clone(const AddonPtr& parent) const;
 
   // settings & language
   virtual bool HasSettings();
@@ -128,6 +128,7 @@ public:
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
+  CAddon(const CAddon&, const AddonPtr&);
   bool LoadUserSettings();
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
@@ -136,7 +137,7 @@ protected:
 private:
   friend class AddonMgr;
   AddonProps m_props;
-  const AddonPtr m_parent;
+  const AddonPtr    m_parent;
   CStdString GetProfilePath();
   CStdString GetUserSettingsPath();
 

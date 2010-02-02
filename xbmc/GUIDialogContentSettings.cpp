@@ -250,7 +250,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
     bool isDefault = ((*it)->UUID() == defaultUUID);
     map<CONTENT_TYPE,VECADDONS>::iterator iter=m_scrapers.find(content);
 
-    AddonPtr scraper = (*it)->Clone();
+    AddonPtr scraper = (*it)->Clone((*it));
 
     if (m_scraper && m_scraper->Parent() && m_scraper->Parent()->UUID() == (*it)->UUID())
     { // don't overwrite preconfigured scraper
@@ -331,7 +331,7 @@ CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
   return m_vecItems->Get(item);
 }
 
-bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)
+bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)
 {
   CVideoDatabase database;
   database.Open();
@@ -344,13 +344,13 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   return bResult;
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
+bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
 {
   VIDEO::SScanSettings dummy;
   return Show(scraper,dummy,bRunScan,musicContext);
 }
 
-bool CGUIDialogContentSettings::Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
+bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext/*=CONTENT_NONE*/)
 {
   CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog)

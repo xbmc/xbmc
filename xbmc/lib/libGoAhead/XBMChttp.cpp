@@ -2294,7 +2294,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, g_guiSettings.GetString("musiclibrary.defaultscraper"), addon))
     SetResponse(openTag+"Error");
 
-  ADDON::CScraperPtr scraper;
+  ADDON::ScraperPtr scraper;
   scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
   if (!scraper)
     return 0; //?

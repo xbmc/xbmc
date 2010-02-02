@@ -40,7 +40,7 @@ public:
   virtual void ClearFileItems();
   virtual void OnFinalizeFileItems(CFileItemList &items);
   virtual void OnPrepareFileItems(CFileItemList &items);
-  virtual void OnInfo(CFileItem* pItem, const ADDON::CScraperPtr &info);
+  virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
   static bool CanDelete(const CStdString& strPath);
   static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 

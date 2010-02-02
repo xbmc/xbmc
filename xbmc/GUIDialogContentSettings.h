@@ -39,9 +39,9 @@ public:
   virtual ~CGUIDialogContentSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
 
-  static bool Show(ADDON::CScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
-  static bool Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
-  static bool ShowForDirectory(const CStdString& strDirectory, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
+  static bool Show(ADDON::ScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
+  static bool Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
+  static bool ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:

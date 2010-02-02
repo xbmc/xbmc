@@ -849,26 +849,19 @@ void CGUIWindowVideoNav::Render()
   CGUIWindowVideoBase::Render();
 }
 
-void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper)
+void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
-  //TODO wtf
-  // why reclone? at all
-  ADDON::AddonPtr addon;
-  if (!scraper || !scraper->Parent())
-    return;
-
-  ADDON::CScraperPtr info2 = boost::dynamic_pointer_cast<ADDON::CScraper>(scraper->Clone());
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
-    m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,info2);
+    m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,scraper);
   else
   {
     CStdString strPath,strFile;
     CUtil::Split(pItem->m_strPath,strPath,strFile);
-    m_database.GetScraperForPath(strPath,info2);
+    m_database.GetScraperForPath(strPath,scraper);
   }
   m_database.Close();
-  CGUIWindowVideoBase::OnInfo(pItem,info2);
+  CGUIWindowVideoBase::OnInfo(pItem,scraper);
 }
 
 bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
@@ -1223,7 +1216,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   else
   {
-    ADDON::CScraperPtr info;
+    ADDON::ScraperPtr info;
     VIDEO::SScanSettings settings;
     GetScraperForItem(item.get(), info, settings);
 

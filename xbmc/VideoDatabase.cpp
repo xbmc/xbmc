@@ -52,7 +52,7 @@ using namespace VIDEO;
 
 using ADDON::CAddonMgr;
 using ADDON::CScraper;
-using ADDON::CScraperPtr;
+using ADDON::ScraperPtr;
 using ADDON::AddonPtr;
 using ADDON::TranslateContent;
 
@@ -3227,7 +3227,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     progress->Close();
 }
 
-void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CScraperPtr& scraper, const VIDEO::SScanSettings& settings)
+void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const ScraperPtr& scraper, const VIDEO::SScanSettings& settings)
 {
   // if we have a multipath, set scraper for all contained paths too
   if(CUtil::IsMultiPath(filePath))
@@ -3263,7 +3263,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const CScrape
     else
     {
       CStdString content = TranslateContent(scraper->Content());
-      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i where idPath=%i", content.c_str(), scraper->Path().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
+      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i where idPath=%i", content.c_str(), scraper->UUID().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
     }
     m_pDS->exec(strSQL.c_str());
   }
@@ -5549,25 +5549,25 @@ int CVideoDatabase::GetMusicVideoCount(const CStdString& strWhere)
   return 0;
 }
 
-bool CVideoDatabase::GetScraperForPath( const CStdString& strPath, CScraperPtr& scraper )
+bool CVideoDatabase::GetScraperForPath( const CStdString& strPath, ScraperPtr& scraper )
 {
   int iDummy;
   return GetScraperForPath(strPath, scraper, iDummy);
 }
 
-bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CScraperPtr& scraper, int& iFound)
+bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& scraper, int& iFound)
 {
   SScanSettings settings;
   return GetScraperForPath(strPath, scraper, settings, iFound);
 }
 
-bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CScraperPtr& scraper, SScanSettings& settings)
+bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& scraper, SScanSettings& settings)
 {
   int iDummy;
   return GetScraperForPath(strPath, scraper, settings, iDummy);
 }
 
-bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CScraperPtr& scraper, SScanSettings& settings, int& iFound)
+bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& scraper, SScanSettings& settings, int& iFound)
 {
   try
   {
@@ -5618,7 +5618,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CScraperPtr& s
         if (!scraperUUID.empty() && 
           CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, scraperUUID, addon))
         {
-          scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone());
+          scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
           if (!scraper)
             return false;
 
@@ -5631,10 +5631,9 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CScraperPtr& s
         }
         else
         { // use default scraper for this content type
-          AddonPtr defaultScraper;
-          if (CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, defaultScraper, content))
+          if (CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, content))
           {
-            scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone());
+            scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
             if (scraper)
             {
               scraper->m_pathContent = content;
@@ -5664,7 +5663,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, CScraperPtr& s
               continue;
             }
 
-            scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone());
+            scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone(defaultScraper));
             content = TranslateContent(m_pDS->fv("path.strContent").get_asString());
             scraper->m_pathContent = content;
             scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
@@ -7401,7 +7400,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       TiXmlNode *pPaths = pMain->InsertEndChild(xmlPathElement);
       for( map<CStdString,SScanSettings>::iterator iter=paths.begin();iter != paths.end();++iter)
       {
-        CScraperPtr info;
+        ScraperPtr info;
         int iFound=0;
         if (GetScraperForPath(iter->first,info,iFound) && iFound == 1)
         {
@@ -7588,7 +7587,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
             if (CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, uuid, addon))
             {
               SScanSettings settings;
-              CScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
+              ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
               scraper->m_pathContent = TranslateContent(content);
               XMLUtils::GetInt(path,"scanrecursive",settings.recurse);
               XMLUtils::GetBoolean(path,"usefoldernames",settings.parent_name);
@@ -7706,7 +7705,7 @@ void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString&
 
 void CVideoDatabase::InvalidatePathHash(const CStdString& strPath)
 {
-  CScraperPtr info;
+  ScraperPtr info;
   SScanSettings settings;
   int iFound;
   GetScraperForPath(strPath,info,settings,iFound);

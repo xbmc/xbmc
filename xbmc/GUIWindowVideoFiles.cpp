@@ -274,7 +274,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   if (!CGUIWindowVideoBase::GetDirectory(strDirectory, items))
     return false;
 
-  ADDON::CScraperPtr info2;
+  ADDON::ScraperPtr info2;
 
   m_stackingAvailable = true;
   m_cleaningAvailable = true;
@@ -380,7 +380,7 @@ bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, 
   {
     if (!bCanceled)
     {
-      ADDON::CScraperPtr info;
+      ADDON::ScraperPtr info;
       SScanSettings settings;
       settings.exclude = true;
       m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info,settings);
@@ -390,7 +390,7 @@ bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, 
   return false;
 }
 
-void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::CScraperPtr& scraper, SScanSettings& settings)
+void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& scraper, SScanSettings& settings)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
   bool bScan=false;
@@ -494,7 +494,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
         CVideoDatabase database;
         database.Open();
-        ADDON::CScraperPtr info;
+        ADDON::ScraperPtr info;
 
         if (item && database.GetScraperForPath(item->m_strPath,info))
         {
@@ -514,7 +514,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
         if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
         {
-          ADDON::CScraperPtr info;
+          ADDON::ScraperPtr info;
           VIDEO::SScanSettings settings;
           GetScraperForItem(item.get(), info, settings);
 
@@ -631,7 +631,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      ADDON::CScraperPtr info;
+      ADDON::ScraperPtr info;
       SScanSettings settings;
       if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
         m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, info, settings);

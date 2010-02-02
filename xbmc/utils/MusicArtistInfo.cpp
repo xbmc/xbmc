@@ -77,7 +77,7 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
   return true;
 }
 
-bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const ADDON::CScraperPtr& scraper, const CStdString& strFunction, const CScraperUrl* url)
+bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
   if (!m_parser.Load(scraper))

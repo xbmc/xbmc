@@ -368,11 +368,11 @@ public:
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
 
   // scraper settings
-  void SetScraperForPath(const CStdString& filePath, const ADDON::CScraperPtr& info, const VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
+  void SetScraperForPath(const CStdString& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
   CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned

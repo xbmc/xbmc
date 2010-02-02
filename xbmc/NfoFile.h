@@ -52,7 +52,7 @@ public:
   };
 
   NFOResult Create(const CStdString&, const CONTENT_TYPE&, int episode=-1) { return NO_NFO; }
-  NFOResult Create(const CStdString&, ADDON::CScraperPtr&, int episode=-1);
+  NFOResult Create(const CStdString&, ADDON::ScraperPtr&, int episode=-1);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
@@ -74,8 +74,8 @@ public:
   CStdString m_strImDbUrl;
   CStdString m_strImDbNr;
   void Close();
-  void SetScraperInfo(const ADDON::CScraperPtr& info) { m_info = info; }
-  const ADDON::CScraperPtr& GetScraperInfo() const { return m_info; }
+  void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; }
+  const ADDON::ScraperPtr& GetScraperInfo() const { return m_info; }
 private:
   int Load(const CStdString&);
   int Scrape(const ADDON::AddonPtr& scraper, const CStdString& strURL="");
@@ -83,7 +83,7 @@ private:
   char* m_doc;
   char* m_headofdoc;
   int m_size;
-  ADDON::CScraperPtr m_info;
+  ADDON::ScraperPtr m_info;
   CStdString m_strContent;
   CONTENT_TYPE m_content;
   bool DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");

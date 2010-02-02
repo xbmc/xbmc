@@ -53,7 +53,7 @@ public:
   float GetRelevance() const { return m_relevance; }
   void SetTitle(const CStdString& strTitle);
   void SetRelevance(float relevance) { m_relevance = relevance; }
-  bool Load(XFILE::CFileCurl& http, const ADDON::CScraperPtr& scraper, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
+  bool Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
   bool Parse(const TiXmlElement* album, bool bChained=false);
 protected:
   CAlbum m_album;

@@ -185,7 +185,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          ADDON::CScraperPtr scraper;
           if (iItem < 0 || iItem >= m_vecItems->Size())
             return false;
 
@@ -194,9 +193,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           if (item->m_strPath.Equals("add") || item->IsParentFolder())
             return false;
 
-          if (m_vecItems->IsPlugin() || m_vecItems->IsRSS() || m_vecItems->IsLiveTV())
-            scraper->m_pathContent = CONTENT_NONE;
-          else
+          ADDON::ScraperPtr scraper;
+          if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
           {
             CStdString strDir;
             if (item->IsVideoDb()       &&
@@ -300,9 +298,12 @@ void CGUIWindowVideoBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper)
+void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper)
 {
   if (!pItem)
+    return;
+
+  if (!scraper)
     return;
 
   if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->m_strPath.Equals("add"))
@@ -507,7 +508,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   bool hasDetails(false);
   SScanSettings settings;
   ADDON::AddonPtr addon;
-  ADDON::CScraperPtr info;
+  ADDON::ScraperPtr info;
   CVideoInfoScanner scanner;
 
   m_database.Open();
@@ -1222,7 +1223,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_INFO:
     {
-      ADDON::CScraperPtr info;
+      ADDON::ScraperPtr info;
       VIDEO::SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
 
@@ -1241,7 +1242,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if( !item)
         return false;
-      ADDON::CScraperPtr info;
+      ADDON::ScraperPtr info;
       SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
       CStdString strPath = item->m_strPath;
@@ -1907,7 +1908,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
   m_viewControl.SetFocused();
 }
 
-int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::CScraperPtr &info, SScanSettings& settings)
+int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, SScanSettings& settings)
 {
   if (!item)
     return 0;

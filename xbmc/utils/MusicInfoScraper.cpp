@@ -32,7 +32,7 @@ using namespace MUSIC_GRABBER;
 using namespace HTML;
 using namespace ADDON;
 
-CMusicInfoScraper::CMusicInfoScraper(const ADDON::CScraperPtr &scraper)
+CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr &scraper)
 {
   m_bSuccessfull=false;
   m_bCanceled=false;

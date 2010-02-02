@@ -57,7 +57,7 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& info, int episode)
+CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info, int episode)
 {
   m_info = info; // assume we can use these settings
   m_content = info->Content();
@@ -72,7 +72,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
     return NO_NFO;
 
   AddonPtr addon;
-  CScraperPtr defaultScraper;
+  ScraperPtr defaultScraper;
   if (!CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, m_content))
     return NO_NFO; //TODO check this is correct response
   else
@@ -115,7 +115,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
 
   // Get Selected Scraper
   CVideoDatabase database;
-  ADDON::CScraperPtr selected;
+  ADDON::ScraperPtr selected;
   database.Open();
   database.GetScraperForPath(strPath,selected);
   database.Close();
@@ -216,7 +216,7 @@ bool CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
 int CNfoFile::Scrape(const AddonPtr& addon, const CStdString& strURL /* = "" */)
 {
   CScraperParser parser;
-  CScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
+  ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
   if (!parser.Load(scraper))
     return 0;
   if (scraper->Content() != m_content &&

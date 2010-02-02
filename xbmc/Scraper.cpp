@@ -37,9 +37,17 @@ using std::stringstream;
 namespace ADDON
 {
 
-AddonPtr CScraper::Clone() const
+class CAddon;
+
+AddonPtr CScraper::Clone(const AddonPtr &self) const
 {
-  return boost::shared_ptr<CScraper>(new CScraper(*this));
+  return AddonPtr(new CScraper(*this, self));
+}
+
+CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
+  : CAddon(rhs, self)
+{
+  int test = 23;
 }
 
 bool CScraper::LoadSettings()

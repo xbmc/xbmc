@@ -4010,7 +4010,7 @@ bool CMusicDatabase::CommitTransaction()
   return false;
 }
 
-bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::CScraperPtr& scraper)
+bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::ScraperPtr& scraper)
 {
   try
   {
@@ -4035,7 +4035,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::C
   return false;
 }
 
-bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& info)
+bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info)
 {
   try
   {
@@ -4085,7 +4085,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
         ADDON::AddonPtr addon;
         if (!scraperUUID.empty() && ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, scraperUUID, addon) && addon)
         {
-          info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+          info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone(addon));
           if (!info)
             return false;
         }
@@ -4099,7 +4099,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, defaultScraper, content))
         {
-          info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+          info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone(defaultScraper));
           if (info)
           {
             info->m_pathContent = content;

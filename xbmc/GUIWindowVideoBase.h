@@ -39,7 +39,7 @@ public:
 
   void AddToDatabase(int iItem);
   static void OnScan(const CStdString& strPath, const VIDEO::SScanSettings& settings);
-  virtual void OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper);
+  virtual void OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper);
   virtual void OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId);
   static void MarkWatched(const CFileItemPtr &pItem, bool mark);
   static void UpdateVideoTitle(const CFileItem* pItem);
@@ -61,7 +61,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnAssignContent(int iItem, int iFound, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings) {};
+  virtual void OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(CFileItemPtr pItem);
@@ -86,7 +86,7 @@ protected:
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
-  int GetScraperForItem(CFileItem *item, ADDON::CScraperPtr &info, VIDEO::SScanSettings& settings);
+  int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

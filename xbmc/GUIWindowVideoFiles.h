@@ -47,7 +47,7 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 
   virtual void OnQueueItem(int iItem);
-  virtual void OnAssignContent(int iItem, int iFound, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  virtual void OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
   virtual bool OnUnAssignContent(int iItem, int label1, int label2, int label3);
 
   virtual void LoadPlayList(const CStdString& strFileName);

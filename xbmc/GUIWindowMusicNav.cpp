@@ -539,7 +539,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                        m_vecItems->m_strPath.Equals("special://musicplaylists/");
 
     CMusicDatabaseDirectory dir;
-    ADDON::CScraperPtr info;
+    ADDON::ScraperPtr info;
     m_musicdatabase.GetScraperForPath(item->m_strPath, info);
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() &&
@@ -687,7 +687,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
       if (pWindow)
       {
-        ADDON::CScraperPtr info;
+        ADDON::ScraperPtr info;
         pWindow->OnInfo(item.get(),info);
         Update(m_vecItems->m_strPath);
       }
@@ -775,7 +775,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_CONTENT:
     {
       bool bScan=false;
-      ADDON::CScraperPtr scraper;
+      ADDON::ScraperPtr scraper;
       CStdString path(item->m_strPath);
       CQueryParams params;
       CDirectoryNode::GetDatabaseInfo(item->m_strPath, params);
@@ -789,7 +789,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         ADDON::AddonPtr defaultScraper;
         if (ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, defaultScraper, CONTENT_ALBUMS))
         {
-          scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+          scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone(defaultScraper));
         }
       }
 

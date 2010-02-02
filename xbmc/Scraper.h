@@ -25,14 +25,14 @@
 namespace ADDON
 {
   class CScraper;
-  typedef boost::shared_ptr<CScraper> CScraperPtr;
+  typedef boost::shared_ptr<CScraper> ScraperPtr;
 
   class CScraper : public CAddon
   {
   public:
     CScraper(const AddonProps &props) : CAddon(props) { }
     virtual ~CScraper() {}
-    virtual AddonPtr Clone() const;
+    virtual AddonPtr Clone(const AddonPtr &self) const;
 
     // from CAddon
     virtual bool HasSettings();
@@ -49,6 +49,7 @@ namespace ADDON
     CONTENT_TYPE m_pathContent;
 
   private:
+    CScraper(const CScraper&, const AddonPtr&);
     bool m_hasSettings;
     CStdString m_framework;
   };

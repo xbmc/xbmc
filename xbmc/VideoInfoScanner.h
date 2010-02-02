@@ -81,8 +81,8 @@ namespace VIDEO
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
     bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
-    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::CScraperPtr& scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::CScraperPtr& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
+    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr& scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::ScraperPtr& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
@@ -107,7 +107,7 @@ namespace VIDEO
     bool m_bClean;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
-    ADDON::CScraperPtr m_info;
+    ADDON::ScraperPtr m_info;
     std::map<CStdString,SScanSettings> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
     std::vector<int> m_pathsToClean;

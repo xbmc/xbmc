@@ -69,7 +69,7 @@ namespace ADDON
   class IAddon
   {
   public:
-    virtual AddonPtr Clone() const =0;
+    virtual AddonPtr Clone(const AddonPtr& self) const =0;
     virtual const TYPE Type() const =0;
     virtual AddonProps Props() const =0;
     virtual const CStdString UUID() const =0;

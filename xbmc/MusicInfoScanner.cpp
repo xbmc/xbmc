@@ -808,7 +808,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     return true;
 
   // find album info
-  ADDON::CScraperPtr info;
+  ADDON::ScraperPtr info;
   if (!m_musicDatabase.GetScraperForPath(strPath,info))
   {
     m_musicDatabase.Close();
@@ -1036,7 +1036,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     return true;
 
   // find artist info
-  ADDON::CScraperPtr info;
+  ADDON::ScraperPtr info;
   if (!m_musicDatabase.GetScraperForPath(strPath,info))
   {
     m_musicDatabase.Close();

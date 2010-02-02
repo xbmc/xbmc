@@ -432,13 +432,22 @@ bool CAddonMgr::EnableAddon(const CStdString &uuid)
 {
   AddonPtr addon = m_uuidMap[uuid];
   if (!addon)
+  {
+    CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", uuid.c_str());
     return false;
+  }
 
   return EnableAddon(addon);
 }
+
 bool CAddonMgr::EnableAddon(AddonPtr &addon)
 {
-  const TYPE type = addon->Type();
+  CUtil::CreateDirectoryEx(addon->Profile());
+  addon->Enable();
+  CLog::Log(LOGINFO,"ADDON: Enabled %s: %s : %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Version().str.c_str());
+  SaveAddonsXML(addon->Type());
+  return true;
+  /*const TYPE type = addon->Type();
 
   if (m_addons.find(type) == m_addons.end())
     return false;
@@ -447,15 +456,13 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
   {
     if (addon->UUID() == (*itr)->UUID())
     {
-      addon->Enable();
       CUtil::CreateDirectoryEx(addon->Profile());
+      addon->Enable();
       CLog::Log(LOGINFO,"ADDON: Enabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
       SaveAddonsXML(type);
       return true;
     }
-  }
-  CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", addon->Name().c_str());
-  return false;
+  }*/
 }
 
 bool CAddonMgr::DisableAddon(const CStdString &uuid)
@@ -513,7 +520,7 @@ bool CAddonMgr::LoadAddonsXML(const TYPE &type)
     }
     else if (GetAddon(type, itr->parent, addon))
     { // multiple addon configurations
-      AddonPtr clone = addon->Clone();
+      AddonPtr clone = addon->Clone(addon);
       if (clone)
       {
         m_addons[type].push_back(clone);
@@ -1056,7 +1063,6 @@ bool CAddonMgr::SaveAddonsXML(const TYPE &type)
 
   // TODO: Should we be specifying utf8 here??
   TiXmlDocument doc;
-
   if (!doc.LoadFile(GetAddonsXMLFile()))
     doc.ClearError();
 
@@ -1092,7 +1098,6 @@ bool CAddonMgr::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS
   { // must delete the original section before regenerating
     root->RemoveChild(sectionNode);
   }
-
   if (!addons.empty())
   { // only recreate the sectionNode if there's addons of this type enabled
     sectionNode = root->InsertEndChild(sectionElement);
@@ -1101,20 +1106,13 @@ bool CAddonMgr::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS
     while (itr != addons.end())
     {
       TiXmlElement element("addon");
-
-      XMLUtils::SetString(&element, "name", itr->name);
       XMLUtils::SetString(&element, "uuid", itr->uuid);
       if (!itr->parent.IsEmpty())
         XMLUtils::SetString(&element, "parentuuid", itr->parent);
-
-      if (!itr->icon.IsEmpty())
-        XMLUtils::SetPath(&element, "thumbnail", itr->icon);
-
       sectionNode->InsertEndChild(element);
       ++itr;
     }
   }
-
   return true;
 }
 
@@ -1198,15 +1196,13 @@ bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS 
   CStdString version;
   AddonProps props(uuid, type, version);
 
-  // name
+  // name if present
   const TiXmlNode *pNodeName = node->FirstChild("name");
   CStdString strName;
   if (pNodeName && pNodeName->FirstChild())
   {
     props.name = pNodeName->FirstChild()->Value();
   }
-  else
-    return false;
 
   // parent uuid if present
   const TiXmlNode *pNodeChildGUID = node->FirstChild("parentuuid");
@@ -1222,14 +1218,8 @@ bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS 
     props.icon = pThumbnailNode->FirstChild()->Value();
   }
 
-  // finished
-  if (/*props.Valid()*/true)
-  {
-    addons.insert(addons.end(), props);
-    return true;
-  }
-
-  return false;
+  addons.insert(addons.end(), props);
+  return true;
 }
 
 } /* namespace ADDON */

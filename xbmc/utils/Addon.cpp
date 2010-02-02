@@ -200,16 +200,16 @@ std::ostream& AddonVersion::operator<<(std::ostream& out) const
 
 CAddon::CAddon(const AddonProps &props)
   : m_props(props)
-  , m_parent(AddonPtr()) // null parent AddonPtr as default
 {
   if (props.libname.empty()) BuildLibName();
   else m_strLibName = props.libname;
   m_userSettingsPath = GetUserSettingsPath();
+  m_disabled = true;
 }
 
-CAddon::CAddon(const CAddon &rhs)
+CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   : m_props(rhs.Props())
-  , m_parent(const_cast<CAddon*>(&rhs))
+  , m_parent(parent)
 {
   //m_uuid(StringUtils::CreateUUID())
   m_userXmlDoc  = rhs.m_userXmlDoc;
@@ -219,9 +219,9 @@ CAddon::CAddon(const CAddon &rhs)
   m_userSettingsPath = GetUserSettingsPath();
 }
 
-AddonPtr CAddon::Clone() const
+AddonPtr CAddon::Clone(const AddonPtr &self) const
 {
-  return AddonPtr(new CAddon(*this));
+  return AddonPtr(new CAddon(*this, self));
 }
 
 const AddonVersion CAddon::Version()
