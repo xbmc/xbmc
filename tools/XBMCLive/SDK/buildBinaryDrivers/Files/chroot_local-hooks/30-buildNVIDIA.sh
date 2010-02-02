@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -27,6 +27,10 @@ if [ ! -f /etc/mtab ]; then
 fi
 
 cd /root
+
+if ! ls ./NVIDIA-Linux-*.run > /dev/null 2>&1; then
+	exit
+fi
 
 sh ./NVIDIA-Linux-*.run --extract-only
 
@@ -114,3 +118,6 @@ mount -o loop /tmp/nvidia.ext3 ../Image
 cp -RP * ../Image
 umount ../Image
 rm -rf ../Image
+
+cd /root
+rm -rf NVIDIA-Linux-*
