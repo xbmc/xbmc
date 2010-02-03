@@ -57,8 +57,8 @@ public:
   virtual void         PaintVideoTexture(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface);
 
   // TODO:DIRECTX - implement these
-  virtual bool         SupportsBrightness() { return true; }
-  virtual bool         SupportsContrast() { return true; }
+  virtual bool         SupportsBrightness() { return false; }
+  virtual bool         SupportsContrast() { return false; }
   virtual bool         SupportsGamma() { return false; }
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);

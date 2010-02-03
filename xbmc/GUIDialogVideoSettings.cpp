@@ -35,7 +35,11 @@
 #include "SkinInfo.h"
 
 using namespace std;
-
+#ifdef HAS_DX
+#include "cores/DSPlayer/DSConfig.h"
+#include "CharsetConverter.h"
+#include "LocalizeStrings.h"
+#endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
@@ -66,6 +70,8 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 #define VIDEO_SETTING_VDPAU_NOISE         19
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
+
+#define VIDEO_SETTINGS_DS_FILTERS         30
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -139,6 +145,29 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_settings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
+#ifdef HAS_DX
+  if ( g_renderManager.GetRendererType() == RENDERER_DSHOW )
+  {
+    //AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
+    //g_dsconfig
+    FILTER_INFO pInf;
+    CStdString pStrFName;
+    std::vector<IBaseFilter *> pDsFilters;
+    pDsFilters = g_dsconfig.GetFiltersWithPropertyPages();
+    //g_localizeStrings.LoadBlock
+    for (std::vector<IBaseFilter*>::iterator it = pDsFilters.begin() ; it != pDsFilters.end(); it++)
+    {
+      (*it)->QueryFilterInfo(&pInf);
+      g_charsetConverter.wToUTF8(pInf.achName,pStrFName);
+      //Ici je ne suis pas sure de comment rajouter les titres en texte sans modifier 5000 affaires
+      //g_localizeStrings.
+      //AddButton(VIDEO_SETTINGS_DS_FILTERS,
+      //CGUIButtonControl *pControl = (CGUIButtonControl *)
+      
+
+    }
+  }
+#endif
 #ifdef HAVE_LIBVDPAU
   CSharedLock lock(g_renderManager.GetSection());
   if (g_VDPAU) {

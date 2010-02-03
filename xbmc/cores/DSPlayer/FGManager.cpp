@@ -559,7 +559,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   //To verify
   //m_pDsConfig = new CDSConfig();
 
-  g_dsconfig.LoadGraph(m_pFG, m_CfgLoader->GetSplitter());
+  g_dsconfig.ConfigureFilters(m_pFG, m_CfgLoader->GetSplitter());
   //Apparently the graph dont start with wmv when you have unconnected filters
   DShowUtil::RemoveUnconnectedFilters(m_pFG);
 

@@ -28,6 +28,19 @@
 #include "StringUtils.h"
 #include "DSGraph.h"
 
+#include "AudioStreamsManager.h"
+#include "ChaptersManager.h"
+
+enum DSPLAYER_STATE
+{
+  DSPLAYER_LOADING,
+  DSPLAYER_LOADED,
+  DSPLAYER_PLAYING,
+  DSPLAYER_PAUSED,
+  DSPLAYER_STOPPED,
+  DSPLAYER_CLOSING,
+  DSPLAYER_CLOSED
+};
 
 class CDSPlayer : public IPlayer, public CThread
 {
@@ -54,25 +67,25 @@ public:
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo(CStdString& strGeneralInfo);
-  virtual bool IsAborted()                                      { return m_bAbortRequest; }
+  virtual bool Closing()                                      { return PlayerState == DSPLAYER_CLOSING; }
 
 //Audio stream selection
-  virtual int  GetAudioStreamCount()  { return m_pDsGraph.GetAudioStreamCount(); }
-  virtual int  GetAudioStream()       { return m_pDsGraph.GetAudioStream(); }
-  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { m_pDsGraph.GetAudioStreamName(iStream,strStreamName); };
-  virtual void SetAudioStream(int iStream) { m_pDsGraph.SetAudioStream(iStream); };
+  virtual int  GetAudioStreamCount()  { return CAudioStreamsManager::getSingleton()->GetAudioStreamCount(); }
+  virtual int  GetAudioStream()       { return CAudioStreamsManager::getSingleton()->GetAudioStream(); }
+  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { CAudioStreamsManager::getSingleton()->GetAudioStreamName(iStream,strStreamName); };
+  virtual void SetAudioStream(int iStream) { CAudioStreamsManager::getSingleton()->SetAudioStream(iStream); };
 
-  virtual int  GetSubtitleCount()     { return m_pDsGraph.GetSubtitleCount(); }
+/*  virtual int  GetSubtitleCount()     { return m_pDsGraph.GetSubtitleCount(); }
   virtual int  GetSubtitle()          { return m_pDsGraph.GetSubtitle(); }
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pDsGraph.GetSubtitleName(iStream, strStreamName); };
-  virtual void SetSubtitle(int iStream) { return m_pDsGraph.SetSubtitle(iStream); };
+  virtual void SetSubtitle(int iStream) { return m_pDsGraph.SetSubtitle(iStream); }; */
 
   // Chapters
 
-  virtual int  GetChapterCount()                               { return m_pDsGraph.GetChapterCount(); }
-  virtual int  GetChapter()                                    { return m_pDsGraph.GetChapter(); }
-  virtual void GetChapterName(CStdString& strChapterName)      { m_pDsGraph.GetChapterName(strChapterName); }
-  virtual int  SeekChapter(int iChapter)                       { return m_pDsGraph.SeekChapter(iChapter); }
+  virtual int  GetChapterCount()                               { return CChaptersManager::getSingleton()->GetChapterCount(); }
+  virtual int  GetChapter()                                    { return CChaptersManager::getSingleton()->GetChapter(); }
+  virtual void GetChapterName(CStdString& strChapterName)      { CChaptersManager::getSingleton()->GetChapterName(strChapterName); }
+  virtual int  SeekChapter(int iChapter)                       { return CChaptersManager::getSingleton()->SeekChapter(iChapter); }
 
   void Update(bool bPauseDrawing)                               { m_pDsGraph.Update(bPauseDrawing); }
   void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { m_pDsGraph.GetVideoRect(SrcRect, DestRect); }
@@ -94,8 +107,11 @@ public:
   
 //CDSPlayer
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam) { m_pDsGraph.ProcessDsWmCommand(wParam, lParam); }
-  virtual HRESULT HandleGraphEvent()                            { return m_pDsGraph.HandleGraphEvent(this); }
+  virtual HRESULT HandleGraphEvent()                            { return m_pDsGraph.HandleGraphEvent(); }
   virtual void Stop();
+
+  static DSPLAYER_STATE PlayerState;
+
 protected:
   virtual void OnStartup();
   virtual void OnExit();
@@ -105,7 +121,7 @@ protected:
   CDSGraph m_pDsGraph;
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;
-  bool m_bAbortRequest;
+  //bool m_bAbortRequest;
   HANDLE m_hReadyEvent;
   
 };

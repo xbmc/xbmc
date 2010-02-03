@@ -31,6 +31,7 @@
 #include "Log.h"
 #include "URL.h"
 #include "AdvancedSettings.h"
+#include "AudioStreamsManager.h"
 
 #include <streams.h>
 #include "DShowUtil/DShowUtil.h"
@@ -71,16 +72,16 @@ CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
 
 CDSGraph::~CDSGraph()
 {
-  CloseFile();
-  //CoUninitialize();
 }
 
 //This is alo creating the Graph
 HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 {
+  if (CDSPlayer::PlayerState != DSPLAYER_LOADING)
+    return E_FAIL;
+
   HRESULT hr;
-  if (m_pGraphBuilder)
-	  CloseFile();
+
   m_VideoInfo.Clear();
 
   m_pGraphBuilder = new CFGManager();
@@ -100,6 +101,16 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaEvent),(void **)&m_pMediaEvent);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
 
+  // Audio streams
+  CAudioStreamsManager::getSingleton()->InitManager(this->m_pGraphBuilder->GetSplitter(),
+    m_pGraphBuilder->GetGraphBuilder2(), this);
+  CAudioStreamsManager::getSingleton()->LoadAudioStreams();
+
+  // Chapters
+  CChaptersManager::getSingleton()->InitManager(m_pGraphBuilder->GetSplitter(), this);
+  if (!CChaptersManager::getSingleton()->LoadChapters())
+    CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
+
   LONGLONG tmestamp;
   tmestamp = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s Timestamp before loading video info with mediainfo.dll %I64d",__FUNCTION__,tmestamp);
@@ -111,7 +122,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   
 
   SetVolume(g_settings.m_nVolumeLevel);
-  UpdateState();
 
   //bool ok;
   //ok = g_dllMpcSubs.Load(); //return true if loaded
@@ -119,10 +129,11 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //g_dllMpcSubs.EnableSubtitle(true);
   //g_dllMpcSubs.GetSubtitlesList();
 
-  if (m_pMediaControl)
-    hr = m_pMediaControl->Run();
+  CDSPlayer::PlayerState = DSPLAYER_LOADED;
 
-/*  if (hr == S_FALSE)
+  Play();
+  
+  /*  if (hr == S_FALSE)
   {
     hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
     if (hr == VFW_S_STATE_INTERMEDIATE)
@@ -148,20 +159,26 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    if (IsChangingAudioStream())
+    if (CAudioStreamsManager::getSingleton()->IsChangingAudioStream())
       return;
 
-	  OnPlayStop();
+	  Stop(true);
+
     SAFE_RELEASE(m_pMediaSeeking);
     SAFE_RELEASE(m_pMediaControl);
     SAFE_RELEASE(m_pMediaEvent);
     SAFE_RELEASE(m_pBasicAudio);
 
     hr = m_pGraphBuilder->RemoveFromROT();
-    //if (g_dsconfig) // It's possible that CDSConfig == NULL
-      g_dsconfig.UnloadGraph();
+    UnloadGraph();
+
+    CAudioStreamsManager::Destroy();
+    CChaptersManager::Destroy();
 
 	  SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
+  } else
+  {
+    CLog::Log(LOGDEBUG, "%s CloseFile called more than one time!", __FUNCTION__);
   }
 }
 
@@ -220,7 +237,23 @@ void CDSGraph::UpdateState()
     hr = m_pMediaSeeking->GetRate(&newRate);
     m_PlaybackRate=(int)newRate;
   }
-  
+
+  if (CDSPlayer::PlayerState == DSPLAYER_CLOSING ||
+    CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+    return;
+
+  switch (m_State.current_filter_state)
+  {
+    case State_Running:
+      CDSPlayer::PlayerState = DSPLAYER_PLAYING;
+      break;
+    case State_Paused:
+      CDSPlayer::PlayerState = DSPLAYER_PAUSED;
+      break;
+    case State_Stopped:
+      CDSPlayer::PlayerState = DSPLAYER_STOPPED;
+      break;
+  }
 }
 void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 {
@@ -250,7 +283,7 @@ void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
 }
 
 
-HRESULT CDSGraph::HandleGraphEvent(CDSPlayer *player)
+HRESULT CDSGraph::HandleGraphEvent()
 {
   LONG evCode;
   LONG_PTR evParam1, evParam2;
@@ -261,7 +294,8 @@ HRESULT CDSGraph::HandleGraphEvent(CDSPlayer *player)
     return S_OK;
 
   // Process all queued events
-  while(!player->IsAborted() &&  SUCCEEDED(m_pMediaEvent->GetEvent(&evCode, &evParam1, &evParam2, 0)))
+  while((CDSPlayer::PlayerState != DSPLAYER_CLOSING && CDSPlayer::PlayerState != DSPLAYER_CLOSED)
+    &&  SUCCEEDED(m_pMediaEvent->GetEvent(&evCode, &evParam1, &evParam2, 0)))
   {
     switch(evCode)
     {
@@ -312,15 +346,17 @@ void CDSGraph::SetDynamicRangeCompression(long drc)
     m_pBasicAudio->put_Volume(drc);
 }
 
-void CDSGraph::OnPlayStop()
+void CDSGraph::Stop(bool rewind)
 {
-  LONGLONG pos = 0;
+  LONGLONG pos = 0;  
   
-  
-  if (m_pMediaSeeking)
+  if (rewind && m_pMediaSeeking)
     m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
-  if (m_pMediaControl)
+
+  if (m_pMediaControl && m_State.current_filter_state != State_Stopped)
     m_pMediaControl->Stop();
+
+  UpdateState();
 
   if (! m_pGraphBuilder)
 	  return;
@@ -347,33 +383,33 @@ void CDSGraph::OnPlayStop()
     }
   }
   EndEnumFilters(pEF, pBF)
-
 }
+
 void CDSGraph::Play()
 {
-  UpdateState();
   if (m_State.current_filter_state != State_Running)
     m_pMediaControl->Run();
+
+  UpdateState();
 }
+
 void CDSGraph::Pause()
 {
-  UpdateState();
-  if (m_currentSpeed == 0)
+  if (CDSPlayer::PlayerState == DSPLAYER_PAUSED)
   {
     if (m_State.current_filter_state != State_Running)
       m_pMediaControl->Run();
+    
     m_currentSpeed = 10000;
-	//SetPlaySpeed(1);
   }
   else
   {
     if (m_pMediaControl)
-	  {
-	  if ( SUCCEEDED( m_pMediaControl->Pause() ) )
-	    m_currentSpeed = 0;
+	    if ( SUCCEEDED( m_pMediaControl->Pause() ) )
+	      m_currentSpeed = 0;
 	}
-  
-  }
+
+  UpdateState();
 }
 
 //The fastforward is based on mediaportal fastforward
@@ -418,58 +454,90 @@ void CDSGraph::DoFFRW(int currentSpeed)
 
 }
 
+HRESULT CDSGraph::UnloadGraph()
+{
+  HRESULT hr = S_OK;
+
+  IEnumFilters *pEnum = NULL;
+  IBaseFilter *pBF = NULL;
+
+  m_pGraphBuilder->GetGraphBuilder2()->EnumFilters(&pEnum);
+
+  // Disconnect all the pins
+  int test = 0;
+  while (S_OK == pEnum->Next(1, &pBF, 0))
+  {
+    hr = pBF->Stop();
+    CStdString filterName;
+    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
+
+    try
+    {
+      hr = RemoveFilter(m_pGraphBuilder->GetGraphBuilder2(), pBF);
+    }
+    catch (...)
+    {
+      // ffdshow dxva decoder crash here, don't know why!
+      hr = E_FAIL;
+    }
+
+    pBF->JoinFilterGraph(NULL, NULL); // Notify the filter we remove it from the graph
+
+    if (SUCCEEDED(hr))
+      CLog::Log(LOGNOTICE, "%s Successfully removed \"%s\" from the graph", __FUNCTION__, filterName.c_str());
+    else 
+      CLog::Log(LOGERROR, "%s Failed to remove \"%s\" from the graph", __FUNCTION__, filterName.c_str());
+    SAFE_RELEASE(pBF);
+    pEnum->Reset();
+  }
+
+  SAFE_RELEASE(pEnum);
+  return hr;
+}
+
 bool CDSGraph::IsPaused() const
 {
-  if (!m_pMediaControl)
-    return true;
-
-  return (m_currentSpeed == 0);
-  /*m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
-  if (m_State.current_filter_state == State_Running )
-    return false;
-  else if (m_State.current_filter_state == State_Paused)
-    return true;
-  else
-    return true;*/
+  return CDSPlayer::PlayerState == DSPLAYER_PAUSED;
 }
 
 void CDSGraph::SeekInMilliSec(double sec)
 {
-  HRESULT hr;
-  LONGLONG seekrequest,earliest,latest;
-  //Really need to verify those com interface before using them 
-  //even if the player finished playback those function can still be called
-  try
-  {
-    if ((!m_pMediaControl) || (!m_pMediaSeeking))
-      return;
-    m_pMediaSeeking->GetAvailable(&earliest,&latest);
-    hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
+  LONGLONG seekrequest = 0;
 
-    seekrequest = ( LONGLONG )( sec * 10000 );
-    if ( seekrequest < 0 )
-      seekrequest = 0;
-    m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, NULL,AM_SEEKING_NoPositioning);
-    if(m_State.current_filter_state == State_Stopped)
-    {
-      m_pMediaControl->Pause();
-      m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
-      m_pMediaControl->Stop();
-    }
-  }
-  catch (...)
+  if ( !m_pMediaSeeking )
+    return;
+
+  if( m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME )
+    seekrequest = ( LONGLONG )( sec * TIME_FORMAT_TO_MS );
+  else
+    seekrequest = sec;
+
+  if ( seekrequest < 0 )
+    seekrequest = 0;
+
+  m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, 
+    NULL, AM_SEEKING_NoPositioning);
+
+  /*if(m_State.current_filter_state == State_Stopped)
   {
-  }
+    m_pMediaControl->Pause();
+    m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
+    m_pMediaControl->Stop();
+  }*/
+
+  UpdateState();
 }
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
   // Chapter support
-  if (bLargeStep && GetChapterCount() > 1)
+  if (bLargeStep && CChaptersManager::getSingleton()->GetChapterCount() > 1)
   {
     if (bPlus)
-      SeekChapter(GetChapter() + 1);
+      CChaptersManager::getSingleton()->SeekChapter(
+        CChaptersManager::getSingleton()->GetChapter() + 1);
     else
-      SeekChapter(GetChapter() - 1);
+      CChaptersManager::getSingleton()->SeekChapter(
+        CChaptersManager::getSingleton()->GetChapter() - 1);
 
     return;
   }
@@ -497,7 +565,6 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
-  
   UpdateTime();
   SeekInMilliSec((double) seek);
 }
@@ -589,160 +656,38 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   switch(wParam)
   {
     case ID_PLAY_PLAY:
-      if (m_pMediaControl)
-	    m_pMediaControl->Run();
-	  break;
-	case ID_SEEK_TO:
+      Play();
+	    break;
+	  case ID_SEEK_TO:
       SeekInMilliSec((LPARAM)lParam);
       break;
     case ID_SEEK_FORWARDSMALL:
       Seek(true, false);
 	    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
 	    break;
-	case ID_SEEK_FORWARDLARGE:
+	  case ID_SEEK_FORWARDLARGE:
       Seek(true, true);
 	    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
 	    break;
     case ID_SEEK_BACKWARDSMALL:
       Seek(false,false);
-	  CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
-	  break;
-	case ID_SEEK_BACKWARDLARGE:
-	  Seek(false,true);
-	  CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
-	  break;
-	case ID_PLAY_PAUSE:
+	    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
+	    break;
+	  case ID_SEEK_BACKWARDLARGE:
+	    Seek(false,true);
+	    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
+	    break;
+	  case ID_PLAY_PAUSE:
       Pause();
-	  CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
-	  break;
-	case ID_PLAY_STOP:
-      OnPlayStop();
-	  CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
+	    CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
+	    break;
+	  case ID_PLAY_STOP:
+      Stop(true);
+	    CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
       break;
     case ID_STOP_DSPLAYER:
-      OnPlayStop();
-	  CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
+      Stop(true);
+	    CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
       break;
   }
-}
-
-void CDSGraph::SetAudioStream(int iStream)
-{
-  m_bChangingAudioStream = true; // Prevent DSPlayer to shutdown
-  IAMStreamSelect *stream = g_dsconfig.GetStreamSelector();
-  if (stream)
-  {
-    std::map<long, IAMStreamSelectInfos *> audioStreams = g_dsconfig.GetAudioStreams();
-
-    int i =0; long lIndex = 0;
-    for (std::map<long, IAMStreamSelectInfos *>::iterator it = audioStreams.begin();
-      it != audioStreams.end(); ++it, i++)
-    {
-      /* Disable all streams */
-      stream->Enable(it->first, 0);
-      it->second->flags = 0;
-      if (iStream == i)
-        lIndex = it->first;
-    }
-
-    if (SUCCEEDED(stream->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
-    {
-      audioStreams[lIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-      CLog::Log(LOGDEBUG, "%s Sucessfully selected audio stream", __FUNCTION__);
-    }
-  } else {
-
-    if (!m_pMediaControl || !m_pMediaSeeking)
-      return;
-
-    std::map<long, IAMStreamSelectInfos *> audioStreams = g_dsconfig.GetAudioStreams();
-
-    long disableIndex = 0, enableIndex = iStream;
-    for (std::map<long, IAMStreamSelectInfos *>::const_iterator it = audioStreams.begin();
-      it != audioStreams.end(); ++it)
-    {
-      if (it->second->flags == AMSTREAMSELECTINFO_ENABLED)
-      {
-        disableIndex = it->first;
-        break;
-      }
-    }
-
-    IPin *connectedToPin = NULL;
-    HRESULT hr = S_OK;
-
-    LONGLONG currentPos;
-    m_pMediaSeeking->GetCurrentPosition(&currentPos);
-    m_pMediaControl->Stop();
-
-    /* Disable filter */
-    IPin *oldAudioStreamPin = (IPin *)(audioStreams[disableIndex]->pObj);
-    connectedToPin = (IPin *)(audioStreams[disableIndex]->pUnk);
-    if (! connectedToPin)
-      hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
-
-    if (FAILED(hr))
-      goto done;
-
-    hr = m_pGraphBuilder->Disconnect(connectedToPin);
-    if (FAILED(hr))
-      goto done;
-    hr = m_pGraphBuilder->Disconnect(oldAudioStreamPin);
-    if (FAILED(hr))
-    {
-      /* Reconnect pin */
-      m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
-      goto done;
-    }
-
-    audioStreams[disableIndex]->flags = 0;
-
-    /* Enable filter */
-    IPin *newAudioStreamPin = (IPin *)(audioStreams[enableIndex]->pObj);
-    hr = m_pGraphBuilder->ConnectDirect(newAudioStreamPin, connectedToPin, NULL);
-    if (FAILED(hr))
-    {
-      /* Reconnect previous working pins */
-      m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
-      audioStreams[disableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-      goto done;
-    }
-
-    audioStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-
-done:
-    m_pMediaControl->Run();
-    this->SeekInMilliSec(DShowUtil::MFTimeToMsec(currentPos));
-    m_bChangingAudioStream = false;
-
-    if (SUCCEEDED(hr))
-      CLog::Log(LOGNOTICE, "%s Successfully changed audio stream", __FUNCTION__);
-    else
-      CLog::Log(LOGERROR, "%s Can't change audio stream", __FUNCTION__);
-  }
-
-}
-
-int CDSGraph::SeekChapter(int iChapter)
-{
-  if (GetChapterCount() > 0)
-  {
-    if (iChapter < 1)
-      iChapter = 1;
-    if (iChapter > GetChapterCount())
-      return 0;
-
-    // Seek to the chapter.
-    CLog::Log(LOGDEBUG, "%s Seeking to chapter %d", __FUNCTION__, iChapter);
-    SeekInMilliSec( g_dsconfig.GetChapters()[iChapter]->time );
-  }
-  else
-  {
-    // Do a regular big jump.
-    if (iChapter > GetChapter())
-      Seek(true, true);
-    else
-      Seek(false, true);
-  }
-  return 0;
 }

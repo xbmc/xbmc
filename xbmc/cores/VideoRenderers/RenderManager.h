@@ -120,9 +120,10 @@ public:
       return RES_INVALID;
   }
 
+  RENDERERTYPE GetRendererType() { return m_pRendererType; }
   float GetMaximumFPS();
-  inline bool Paused() { return m_bPauseDrawing; };
-  inline bool IsStarted() { return m_bIsStarted;}
+  inline bool Paused() { return m_bPauseDrawing; }
+  inline bool IsStarted() { return m_bIsStarted; }
   bool SupportsBrightness();
   bool SupportsContrast();
   bool SupportsGamma();

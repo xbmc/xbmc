@@ -55,7 +55,7 @@ enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
                   MOVIE_PLAYING   = 0x02,
                   MOVIE_STOPPED   = 0x03,
                   MOVIE_PAUSED    = 0x04 };
-class CDSPlayer;
+
 class CDSGraph
 {
 public:
@@ -70,7 +70,7 @@ public:
   bool InitializedOutputDevice();
 
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
-  virtual HRESULT HandleGraphEvent(CDSPlayer *player);
+  virtual HRESULT HandleGraphEvent();
   bool FileReachedEnd(){ return m_bReachedEnd; };
 
   virtual bool IsPaused() const;
@@ -81,6 +81,7 @@ public:
   virtual void SeekInMilliSec(double sec);
   virtual void Play();
   virtual void Pause();
+  virtual void Stop(bool rewind = false);
   virtual void UpdateTime();
   virtual void UpdateState();
   virtual void UpdateCurrentVideoInfo(CStdString currentFile);
@@ -90,32 +91,10 @@ public:
   virtual float GetPercentage();
 
 
-//Audio stream selection
-  virtual int  GetAudioStreamCount()  { return ::g_dsconfig.GetAudioStreamCount(); }
-  virtual int  GetAudioStream()       { return g_dsconfig.GetAudioStream(); }
-  virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { g_dsconfig.GetAudioStreamName(iStream,strStreamName); };
-  virtual void SetAudioStream(int iStream); // { g_dsconfig.SetAudioStream(iStream); };
-  bool         IsChangingAudioStream () { return m_bChangingAudioStream; }
-
-//Subtitles
-  virtual int  GetSubtitleCount()     { return g_dsconfig.GetSubtitleCount(); }
-  virtual int  GetSubtitle()          { return g_dsconfig.GetSubtitle(); }
-  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return g_dsconfig.GetSubtitleName(iStream, strStreamName); };
-  virtual void SetSubtitle(int iStream) { return g_dsconfig.SetSubtitle(iStream); };
-
-// Chapters
-  virtual int  GetChapterCount() { return g_dsconfig.GetChapterCount(); }
-  virtual int  GetChapter(){ return g_dsconfig.GetChapter(); }
-  virtual void GetChapterName(CStdString& strChapterName)      { g_dsconfig.GetChapterName(strChapterName); }
-  virtual int  SeekChapter(int iChapter);
-  void UpdateChapters( __int64 currentTime ) { g_dsconfig.UpdateChapters(currentTime); }
-
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
-
-  void OnPlayStop();
   void CloseFile();
-  
-  
+
+  HRESULT UnloadGraph();
 
 //USER ACTIONS
   void SetVolume(long nVolume);
@@ -123,9 +102,7 @@ public:
 //INFORMATION REQUESTED FOR THE GUI
   std::string GetGeneralInfo();
   std::string GetAudioInfo();
-  std::string GetVideoInfo();
-
-  
+  std::string GetVideoInfo();  
  
 protected:
 
@@ -136,14 +113,9 @@ protected:
   int m_currentSpeed;
   float m_fFrameRate;
   bool m_bChangingAudioStream;
-
-  CFile m_File;
-  
-  
+  CFile m_File;   
   DWORD_PTR g_userId;
-  CCritSec m_ObjectLock;
-
-  
+  CCritSec m_ObjectLock;  
 
   struct SPlayerState
   {
@@ -154,7 +126,7 @@ protected:
       time_total      = 0;
       player_state  = "";
     }
-	double timestamp;         // last time of update
+	  double timestamp;         // last time of update
 
     double time;              // current playback time
     double time_total;        // total playback time
@@ -162,6 +134,7 @@ protected:
 
     std::string player_state;  // full player state
   } m_State;
+
   struct SVideoInfo
   {
     void Clear()
@@ -187,7 +160,7 @@ protected:
     CStdString filter_source;
     CStdString filter_splitter;
     CStdString dxva_info;
-	GUID time_format;
+	  GUID time_format;
   } m_VideoInfo;
   
 private:

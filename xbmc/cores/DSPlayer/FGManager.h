@@ -144,6 +144,8 @@ public:
 
   IFilterGraph2* GetGraphBuilder2(){return m_pFG;};
   HRESULT QueryInterface(REFIID iid , void** ppv);
+
+  IBaseFilter * GetSplitter() { return m_CfgLoader->GetSplitter(); };
   //CUnknown interface
   //DECLARE_IUNKNOWN;
   //STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);

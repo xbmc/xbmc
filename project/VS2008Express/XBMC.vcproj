@@ -2199,6 +2199,22 @@
 				Name="DSPlayer"
 				>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\AudioStreamsManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\AudioStreamsManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\ChaptersManager.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\DSConfig.cpp"
 					>
 				</File>

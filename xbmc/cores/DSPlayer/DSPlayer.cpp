@@ -36,41 +36,40 @@
 #endif
 using namespace std;
 
+DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
+
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
 	    m_pDsGraph()
 {
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
-  m_bAbortRequest = false;
 }
 
 CDSPlayer::~CDSPlayer()
 {
-  m_bAbortRequest = true;
+  if (PlayerState != DSPLAYER_CLOSED)
+    CloseFile();
 
-  m_pDsGraph.CloseFile();
-
-  //g_renderManager.UnInit();
-  CLog::Log(LOGNOTICE, "DSPlayer: waiting for threads to exit");
-  // wait for the main thread to finish up
-  // since this main thread cleans up all other resources and threads
-  // we are done after the StopThread call
   StopThread();
 }
 
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 {
-  HRESULT hr;
-  if(ThreadHandle())
+  if(PlayerState != DSPLAYER_CLOSED)
     CloseFile();
+
+  PlayerState = DSPLAYER_LOADING;
+  HRESULT hr;
+
   //Creating the graph and querying every filter required for the playback
   ResetEvent(m_hReadyEvent);
   m_Filename = file.GetAsUrl();
   m_PlayerOptions = options;
   m_currentSpeed = 10000;
   m_currentRate = 1.0;
-  hr = m_pDsGraph.SetFile(file,m_PlayerOptions);
+
+  hr = m_pDsGraph.SetFile(file, m_PlayerOptions);
   if ( FAILED(hr) )
   {
     CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__,file.GetAsUrl().GetFileName().c_str());
@@ -83,19 +82,18 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 }
 bool CDSPlayer::CloseFile()
 {
-  // unpause the player
-  //SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
-  // set the abort request so that other threads can finish up
-  m_bAbortRequest = true;
+  if (PlayerState == DSPLAYER_CLOSED)
+    return true;
+
+  PlayerState = DSPLAYER_CLOSING;
+
   m_pDsGraph.CloseFile();
   g_renderManager.UnInit();
   
-//  CoFreeUnusedLibraries();
-  CLog::Log(LOGNOTICE, "CDSPlayer: finished waiting");
+  CLog::Log(LOGNOTICE, "CDSPlayer: finished waiting");  
+  
+  PlayerState = DSPLAYER_CLOSED;
 
-  m_callback.OnPlayBackEnded();
-
-  // DShowUtil::UnloadExternalObjects(); //TODO: Test that !
   return true;
 }
 
@@ -149,7 +147,7 @@ void CDSPlayer::OnStartup()
 
 void CDSPlayer::OnExit()
 {
-  try
+  /*try
   {
     m_pDsGraph.CloseFile();
    
@@ -157,11 +155,12 @@ void CDSPlayer::OnExit()
   catch (...)
   {
     CLog::Log(LOGERROR, "%s - Exception thrown when trying to close the graph", __FUNCTION__);
-  }
-	if (m_bAbortRequest)
-      m_callback.OnPlayBackStopped();
-    else
-      m_callback.OnPlayBackEnded();
+  }*/
+
+	if (PlayerState == DSPLAYER_CLOSING)
+    m_callback.OnPlayBackStopped();
+  else
+    m_callback.OnPlayBackEnded();
 
   m_bStop = true;
 }
@@ -179,16 +178,26 @@ void CDSPlayer::Process()
     pStartPosDone=false;
   
   SetEvent(m_hReadyEvent);
-  while (!m_bAbortRequest)
+  while (PlayerState != DSPLAYER_CLOSING &&
+    PlayerState != DSPLAYER_CLOSED)
   {
-    if (m_bAbortRequest)
+    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
       break;
+
     if (!pStartPosDone)
 	  {
       SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
       pStartPosDone = true;
 	  }
-	  m_pDsGraph.HandleGraphEvent(this);
+
+    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
+      break;
+
+	  m_pDsGraph.HandleGraphEvent();
+
+    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
+      break;
+
     //Handle fastforward stuff
 	  if (m_currentSpeed != 10000)
 	  {
@@ -203,18 +212,18 @@ void CDSPlayer::Process()
     {
 	    Sleep(250);
 	    m_pDsGraph.UpdateTime();
-      m_pDsGraph.UpdateChapters( m_pDsGraph.GetTime() );
+      CChaptersManager::getSingleton()->UpdateChapters();
 	  }
+
+    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
+      break;
+
     if (m_pDsGraph.FileReachedEnd())
     { 
       CLog::Log(LOGDEBUG,"%s Graph detected end of video file",__FUNCTION__);
       break;
     }
-  }
-  m_callback.OnPlayBackEnded();
-
-  //g_renderManager.UnInit();
-  
+  }  
 }
 
 void CDSPlayer::Stop()
@@ -225,17 +234,17 @@ void CDSPlayer::Stop()
 void CDSPlayer::Pause()
 {
   
-  if ( m_pDsGraph.IsPaused() )
+  if ( PlayerState == DSPLAYER_PAUSED )
   {
     m_currentSpeed = 10000;
-    m_callback.OnPlayBackResumed();
-    
+    m_callback.OnPlayBackResumed();    
   } 
   else
   {
     m_currentSpeed = 0;
     m_callback.OnPlayBackPaused();
   }
+
   SendMessage(g_hWnd,WM_COMMAND, ID_PLAY_PAUSE,0);
 }
 void CDSPlayer::ToFFRW(int iSpeed)
