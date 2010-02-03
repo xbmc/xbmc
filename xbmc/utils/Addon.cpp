@@ -33,6 +33,11 @@ using XFILE::CDirectory;
 namespace ADDON
 {
 
+/**********************************************************
+ * helper functions 
+ *
+ */
+
 const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 {
   switch (type)
@@ -103,16 +108,10 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
   switch (type)
   {
-    case ADDON::ADDON_PVRDLL:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24015);
-      return "pvrclient";
-    }
     case ADDON::ADDON_SCRAPER:
     {
       if (pretty)
-        return g_localizeStrings.Get(21416);
+        return g_localizeStrings.Get(24007);
       return "scraper";
     }
     case ADDON::ADDON_SCRAPER_LIBRARY:
@@ -122,31 +121,29 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     case ADDON::ADDON_SCREENSAVER:
     {
       if (pretty)
-        return g_localizeStrings.Get(24021);
+        return g_localizeStrings.Get(24008);
       return "screensaver";
     }
     case ADDON::ADDON_VIZ:
     {
       if (pretty)
-        return g_localizeStrings.Get(24013);
+        return g_localizeStrings.Get(24010);
       return "visualization";
     }
     case ADDON::ADDON_VIZ_LIBRARY:
     {
-      if (pretty)
-        return g_localizeStrings.Get(24013);
       return "visualization-library";
     }
     case ADDON::ADDON_PLUGIN:
     {
       if (pretty)
-        return g_localizeStrings.Get(24029);
+        return g_localizeStrings.Get(24005);
       return "plugin";
     }
     case ADDON::ADDON_SCRIPT:
     {
       if (pretty)
-        return g_localizeStrings.Get(24016);
+        return g_localizeStrings.Get(24009);
       return "script";
     }
     default:
@@ -168,6 +165,11 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("script")) return ADDON_SCRIPT;
   else return ADDON_UNKNOWN;
 }
+
+/**********************************************************
+ * AddonVersion
+ *
+ */
 
 bool AddonVersion::operator==(const AddonVersion &rhs) const
 {
@@ -202,9 +204,14 @@ bool AddonVersion::operator<=(const AddonVersion &rhs) const
 CStdString AddonVersion::Print() const
 {
   CStdString out;
-  out.Format("%s %s", g_localizeStrings.Get(24011), str); // "Version: <str>"
+  out.Format("%s %s", g_localizeStrings.Get(24051), str); // "Version: <str>"
   return CStdString(out);
 }
+
+/**********************************************************
+ * CAddon
+ *
+ */
 
 CAddon::CAddon(const AddonProps &props)
   : m_props(props)
@@ -498,6 +505,11 @@ CStdString CAddon::GetUserSettingsPath()
   CUtil::AddFileToFolder(Profile(), "settings.xml", path);
   return path;
 }
+
+/**********************************************************
+ * CAddonLibrary
+ *
+ */
 
 CAddonLibrary::CAddonLibrary(const AddonProps& props)
   : CAddon(props)

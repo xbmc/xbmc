@@ -53,7 +53,7 @@
         <width>740</width>
         <height>30</height>
         <font>font16caps</font>
-        <label>$LOCALIZE[24000]</label>
+        <label>$LOCALIZE[24001]</label>
         <align>left</align>
         <aligny>center</aligny>
         <textcolor>white</textcolor>

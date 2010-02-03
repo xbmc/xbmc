@@ -36,14 +36,6 @@ public:
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  bool IsConfirmed() { return m_confirmed; };
-
-  static bool ManageAddons(const ADDON::TYPE &type,
-                           const CONTENT_TYPE &content = CONTENT_NONE,
-                           const bool viewActive = true);
-
-  void SetType(const ADDON::TYPE &type);
-  void SetContent(const CONTENT_TYPE &content);
 
 protected:
   virtual void OnInitWindow();
@@ -54,15 +46,7 @@ protected:
   void ClearListItems();
   void Update();
   bool OnContextMenu(int iItem);
-  void OnGetAddons(const ADDON::TYPE &type);
 
-  ADDON::TYPE m_type;
-  CONTENT_TYPE m_content;
   CFileItemList* m_vecItems;
-
-  bool m_confirmed;
-  bool m_changed;
-  inline void SetActiveOnly(bool activeOnly) { m_getAddons = !activeOnly; };
-  bool m_getAddons;
 };
 

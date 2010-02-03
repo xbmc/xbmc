@@ -111,27 +111,25 @@ void CAddonStatusHandler::Process()
 {
   CSingleLock lock(m_critSection);
 
+  CStdString heading;
+  heading.Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
+
   /* AddOn lost connection to his backend (for ones that use Network) */
   if (m_status == STATUS_LOST_CONNECTION)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return;
 
-    CStdString heading;
-    /*heading.Format("%s: %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());*/
-
     pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24047);
-    pDialog->SetLine(2, 24048);
+    pDialog->SetLine(1, 24070);
+    pDialog->SetLine(2, 24073);
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (pDialog->IsConfirmed())
-    {
       CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
-    }
   }
   /* Request to restart the AddOn and data structures need updated */
   else if (m_status == STATUS_NEED_RESTART)
@@ -139,11 +137,8 @@ void CAddonStatusHandler::Process()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
-
     pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24049);
+    pDialog->SetLine(1, 24074);
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
@@ -157,12 +152,9 @@ void CAddonStatusHandler::Process()
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
 
-    CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
-
     pDialogYesNo->SetHeading(heading);
-    pDialogYesNo->SetLine(1, 24053);
-    pDialogYesNo->SetLine(2, 24043);
+    pDialogYesNo->SetLine(1, 24070);
+    pDialogYesNo->SetLine(2, 24072);
     pDialogYesNo->SetLine(3, m_message);
 
     //send message and wait for user input
@@ -171,52 +163,28 @@ void CAddonStatusHandler::Process()
 
     if (!pDialogYesNo->IsConfirmed()) return;
 
-    if (m_addon->Type() == ADDON_SKIN)
-    {
-      CLog::Log(LOGERROR, "ADDONS: Incompatible type (%s) encountered", TranslateType(m_addon->Type()).c_str());
-      return;
-    }
-
     if (!m_addon->HasSettings())
-    {
-      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->Name().c_str());
       return;
-    }
 
-    // Create the dialog
-    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
-
-    heading.Format("$LOCALIZE[24053]: %s %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
-    pDialog->SetHeading(heading);
     const AddonPtr addon(m_addon);
-    pDialog->SetAddon(addon);
-
-    pDialog->DoModal();
-
-    if (pDialog->IsConfirmed())
+    if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
     {
+      //todo doesn't dialogaddonsettings save these automatically? should do
       m_addon->SaveSettings();
       CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }
     else
-    {
       m_addon->LoadSettings();
-    }
   }
-  /* A unknown event is occurred */
+  /* A unknown event has occurred */
   else if (m_status == STATUS_UNKNOWN)
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    CStdString heading, name;
-    name = m_addon->Name();
-    int type = m_addon->Type();
-    heading.Format("%s: %s", g_localizeStrings.Get(24012 + type).c_str(), name.c_str());
-
     pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24057);
-    pDialog->SetLine(2, 24056);
+    pDialog->SetLine(1, 24070);
+    pDialog->SetLine(2, 24071);
     pDialog->SetLine(3, m_message);
 
     //send message and wait for user input

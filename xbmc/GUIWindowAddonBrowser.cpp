@@ -36,7 +36,6 @@
 
 #define CONTROL_ADDONSLIST      2
 #define CONTROL_HEADING_LABEL   411
-#define CONTROL_GETADDONS       415
 
 using namespace ADDON;
 
@@ -44,11 +43,6 @@ CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
   m_vecItems = new CFileItemList;
-  m_confirmed = false;
-  m_type = ADDON_SCRAPER;
-  m_content = CONTENT_MOVIES;
-  m_getAddons = false;
-  m_changed = false;
 }
 
 CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
@@ -96,21 +90,8 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         }
         if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
-          if(OnContextMenu(iItem))
-          { // something changed, disable cancel button
-            m_changed = true;
-          }
-          return true;
+          return OnContextMenu(iItem);
         }
-      }
-      else if (message.GetSenderId() == CONTROL_GETADDONS)
-      {
-        // check if user is allowed to open this window
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-          if (!g_passwordManager.IsMasterLockUnlocked(true))
-            return false;
-        OnGetAddons(m_type);
-        return true;
       }
     }
     break;
@@ -120,7 +101,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 
 void CGUIWindowAddonBrowser::ClearListItems()
 {
-  m_vecItems->Clear(); // will clean up everything
+  m_vecItems->Clear();
 }
 
 void CGUIWindowAddonBrowser::OnInitWindow()
@@ -189,108 +170,24 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
   CFileItemPtr pItem = (*m_vecItems)[iItem];
   CStdString strPath = pItem->m_strPath;
 
-  if (m_getAddons)
-  {
-    // get a pointer to the addon in question
-    AddonPtr addon;
-    TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
-    if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
-    {
-      CStdString disclaimer = pItem->GetProperty("Addon.Disclaimer");
-      if (!disclaimer.empty())
-      {
-         if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24058), pItem->GetProperty("Addon.Name"), disclaimer, g_localizeStrings.Get(24059)))
-           return;
-      }
-
-      // now enable this addon (will show up on parent dialog)
-      CAddonMgr::Get()->EnableAddon(addon);
-      m_confirmed = true;
-      Close(false);
-    }
-    else
-    {
-      // shouldn't happen as we just retrieved this uuid from g_settings
-      CLog::Log(LOGERROR, "GetAddons: Can't determine Addon by UUID");
-    }
-  }
-  else
-  {
-    // check if user is allowed to open this window
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-      if (!g_passwordManager.IsMasterLockUnlocked(true))
-        return;
-
-    AddonPtr addon;
-    TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
-    if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
-    {
-      if (addon->Disabled())
-      {
-        CAddonMgr::Get()->EnableAddon(addon);
-        Update();
-
-      }
-      else
-        CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    }
-  }
-}
-
-bool CGUIWindowAddonBrowser::ManageAddons(const ADDON::TYPE &type, const CONTENT_TYPE &content, const bool viewActive/*=true*/)
-{
-  /*// Create a new addonbrowser window
-  CGUIWindowAddonBrowser *browser = new CGUIWindowAddonBrowser();
-  if (!browser) return false;
-
-  // Add it to our window manager
-  g_windowManager.AddUniqueInstance(browser);
-
-  // determine the correct heading
-  CStdString heading;
-  if (!viewActive)
-    heading = g_localizeStrings.Get(24002); // "Available Add-ons"
-  else
-    heading = g_localizeStrings.Get(24060 + type); // Name is calculated by type! //TODO fix this
-
   // check if user is allowed to open this window
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-    heading = heading + " (" + g_localizeStrings.Get(20166) + ")";
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return;
 
-  // finalize the window and display
-  browser->SetHeading(heading);
-  browser->SetType(type);
-  browser->SetContent(content);
-  browser->SetActiveOnly(viewActive);
-  browser->DoModal();
-  bool confirmed = browser->IsConfirmed();
-
-  g_windowManager.Remove(browser->GetID());
-  delete browser;
-  return confirmed;*/
-  return true;
-}
-
-void CGUIWindowAddonBrowser::SetType(const ADDON::TYPE &type)
-{
-  m_type = type;
-}
-
-void CGUIWindowAddonBrowser::SetContent(const CONTENT_TYPE &content)
-{
-  m_content = content;
-}
-
-void CGUIWindowAddonBrowser::OnGetAddons(const ADDON::TYPE &type)
-{
-/*  // present dialog with available addons
-  if (ManageAddons(type, m_content, false))
+  AddonPtr addon;
+  TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
+  if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
   {
-    // need to update the list of installed addons
-    Update();
-    // we made changes
-    m_changed = true;
-  }*/
+    if (addon->Disabled())
+    {
+      CAddonMgr::Get()->EnableAddon(addon);
+      Update();
+
+    }
+    else
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+  }
 }
 
 bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
@@ -312,9 +209,9 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
   if (!CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
     return false;
 
-  int iSettingsLabel = 24008;
-  int iDisableLabel = 24009;
-  int iEnableLabel = 24010;
+  int iSettingsLabel = 24020;
+  int iDisableLabel = 24021;
+  int iEnableLabel = 24022;
 
   int btn_Disable = -1;
   int btn_Enable = -1;
@@ -327,7 +224,6 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
     btn_Disable = pMenu->AddButton(iDisableLabel);
     btn_Settings = pMenu->AddButton(iSettingsLabel);
   }
-
 
   pMenu->CenterWindow();
   pMenu->DoModal();

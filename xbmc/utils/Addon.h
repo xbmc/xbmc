@@ -108,6 +108,7 @@ public:
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id) const;
 
+  // properties
   const TYPE Type() const { return m_props.type; }
   AddonProps Props() const { return m_props; }
   const CStdString UUID() const { return m_props.uuid; }
