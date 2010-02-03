@@ -95,7 +95,9 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
 
+    m_Duration = 0.0;
     m_DropPictures = false;
+    m_DecodeStarted = false;
 
     CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
     return true;
