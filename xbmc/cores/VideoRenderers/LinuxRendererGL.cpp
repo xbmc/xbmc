@@ -48,7 +48,8 @@
 #endif
 
 //due to a bug on osx nvidia, using gltexsubimage2d with a pbo bound and a null pointer
-//screws up the alpha, an offset fixes this
+//screws up the alpha, an offset fixes this, there might still be a problem if stride + PBO_OFFSET
+//is a multiple of 128 and deinterlacing is on
 #define PBO_OFFSET 16
 
 using namespace Shaders;
@@ -1734,15 +1735,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.stride[1] = im.width >> im.cshift_x;
     im.stride[2] = im.width >> im.cshift_x;
 
-    //align stride, makes fast_memcpy faster
-    for (int i = 0; i < 3; i++)
-    {
-      im.stride[i] = ALIGN(im.stride[i], 16);
-      //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
-      if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
-        im.stride[i] += PBO_OFFSET;
-    }
-
     im.planesize[0] = im.stride[0] * im.height;
     im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
     im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
@@ -1756,7 +1748,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
         glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
         im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
-        memset(im.plane[i], 0, im.planesize[i] + PBO_OFFSET);
+        memset(im.plane[i], 0, im.planesize[i]);
       }
 
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -1951,15 +1943,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     im.stride[1] = im.width;
     im.stride[2] = 0;
 
-    //align stride, makes fast_memcpy faster
-    for (int i = 0; i < 2; i++)
-    {
-      im.stride[i] = ALIGN(im.stride[i], 16);
-      //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
-      if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
-        im.stride[i] += PBO_OFFSET;
-    }
-
     im.plane[0] = NULL;
     im.plane[1] = NULL;
     im.plane[2] = NULL;
@@ -1979,8 +1962,8 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
       {
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
         glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
-        memset(im.plane[i], 0, im.planesize[i] + PBO_OFFSET);
+        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+        memset(im.plane[i], 0, im.planesize[i]);
       }
 
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);

@@ -99,6 +99,8 @@ fi
 
 echo "Start building..."
 
+cd $WORKPATH
+
 # Execute hooks if env variable is defined
 if [ -n "$SDK_BUILDHOOKS" ]; then
 	for hook in $SDK_BUILDHOOKS; do

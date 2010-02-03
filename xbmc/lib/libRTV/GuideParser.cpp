@@ -167,7 +167,9 @@ extern int _daylight;
 #if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED > 1040) 
 extern long _timezone;
 #endif
+#ifndef _WIN32
 extern char *_tzname[2];
+#endif
 
 #define SHOWSTRUCTURESIZES  1           // this is for debugging...
 #undef SHOWSTRUCTURESIZES		        // ...uncomment this line for structure sizes to be shown
@@ -447,7 +449,7 @@ char * UnixTimeToString(time_t t)
     MoveMemory(szTimeZone,_tzname[0],1);		
     strcat(szTimeZone,"T");
    
-#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
+#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040) && !defined(_WIN32)
     struct timezone tz;
     gettimeofday(NULL, &tz);
     tzbias = tz.tz_minuteswest;

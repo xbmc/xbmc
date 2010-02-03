@@ -25,45 +25,76 @@
 #include <stdint.h>
 #include "guilib/StdString.h"
 
-#define PCM_FRONT_LEFT            0
-#define PCM_FRONT_RIGHT           1
-#define PCM_FRONT_CENTER          2
-#define PCM_LOW_FREQUENCY         3
-#define PCM_BACK_LEFT             4
-#define PCM_BACK_RIGHT            5
-#define PCM_FRONT_LEFT_OF_CENTER  6
-#define PCM_FRONT_RIGHT_OF_CENTER 7
-#define PCM_BACK_CENTER           8
-#define PCM_SIDE_LEFT             9
-#define PCM_SIDE_RIGHT            10
-#define PCM_TOP_CENTER            11
-#define PCM_TOP_FRONT_LEFT        12
-#define PCM_TOP_FRONT_CENTER      13
-#define PCM_TOP_FRONT_RIGHT       14
-#define PCM_TOP_BACK_LEFT         15
-#define PCM_TOP_BACK_CENTER       16
-#define PCM_TOP_BACK_RIGHT        17
+#define PCM_MAX_CH 18
+enum PCMChannels
+{
+  PCM_INVALID = -1,
+  PCM_FRONT_LEFT,
+  PCM_FRONT_RIGHT,
+  PCM_FRONT_CENTER,
+  PCM_LOW_FREQUENCY,
+  PCM_BACK_LEFT,
+  PCM_BACK_RIGHT,
+  PCM_FRONT_LEFT_OF_CENTER,
+  PCM_FRONT_RIGHT_OF_CENTER,
+  PCM_BACK_CENTER,
+  PCM_SIDE_LEFT,
+  PCM_SIDE_RIGHT,
+  PCM_TOP_FRONT_LEFT,
+  PCM_TOP_FRONT_RIGHT,
+  PCM_TOP_FRONT_CENTER,
+  PCM_TOP_CENTER,
+  PCM_TOP_BACK_LEFT,
+  PCM_TOP_BACK_RIGHT,
+  PCM_TOP_BACK_CENTER
+};
+
+#define PCM_MAX_LAYOUT 10
+enum PCMLayout
+{
+  PCM_LAYOUT_2_0 = 0,
+  PCM_LAYOUT_2_1,
+  PCM_LAYOUT_3_0,
+  PCM_LAYOUT_3_1,
+  PCM_LAYOUT_4_0,
+  PCM_LAYOUT_4_1,
+  PCM_LAYOUT_5_0,
+  PCM_LAYOUT_5_1,
+  PCM_LAYOUT_7_0,
+  PCM_LAYOUT_7_1
+};
+
+struct PCMMapInfo
+{
+  enum  PCMChannels channel;
+  float level;
+};
 
 class CPCMRemap
 {
 protected:
-  bool         m_inSet     , m_outSet;
-  unsigned int m_inChannels, m_outChannels;
-  unsigned int m_inSampleSize;
-  int8_t      *m_inMap     , *m_outMap;
-  int8_t      *m_chLookup;
+  bool              m_inSet, m_outSet;
+  enum PCMLayout    m_channelLayout;
+  unsigned int      m_inChannels, m_outChannels;
+  unsigned int      m_inSampleSize;
+  enum PCMChannels *m_inMap, *m_outMap, *m_layoutMap;
 
-  void BuildMap();
-  void DumpMap(CStdString info, int unsigned channels, int8_t *channelMap);
-  void Dispose();
+  bool              m_useable  [PCM_MAX_CH];
+  struct PCMMapInfo m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
+  int8_t            m_inLookup [PCM_MAX_CH];
+
+  struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, struct PCMMapInfo *tablePtr);
+  void               BuildMap();
+  void               DumpMap(CStdString info, int unsigned channels, enum PCMChannels *channelMap);
+  void               Dispose();
 public:
 
   CPCMRemap();
   ~CPCMRemap();
 
   void Reset();
-  void SetInputFormat (unsigned int channels, int8_t *channelMap, unsigned int sampleSize);
-  void SetOutputFormat(unsigned int channels, int8_t *channelMap);
+  enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize);
+  void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap);
   void Remap(void *data, void *out, unsigned int samples);
   bool CanRemap();
 };

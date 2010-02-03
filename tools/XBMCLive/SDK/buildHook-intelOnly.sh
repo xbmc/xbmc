@@ -12,9 +12,9 @@ if [ -f $WORKPATH/buildLive/Files/binary_grub/menu.lst ]; then
 fi
 
 # Modify grub.cfg
-if [ -f $WORKPATH/buildLive/Files/binary_grub/menu.lst ]; then
-	sed -i '/## BEGIN NVIDIA ##/,/## END NVIDIA ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
-	sed -i '/## BEGIN AMD ##/,/## END AMD ##/d' $WORKPATH/buildLive/Files/binary_grub/menu.lst
+if [ -f $WORKPATH/buildLive/Files/binary_grub/grub.cfg ]; then
+	sed -i '/## BEGIN NVIDIA ##/,/## END NVIDIA ##/d' $WORKPATH/buildLive/Files/binary_grub/grub.cfg
+	sed -i '/## BEGIN AMD ##/,/## END AMD ##/d' $WORKPATH/buildLive/Files/binary_grub/grub.cfg
 fi
 
 # Modify syslinux menu

@@ -57,7 +57,7 @@ const int wasapi_channel_mask[] =
   SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_SIDE_LEFT   | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY
 };
 
-const int wasapi_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
+const enum PCMChannels wasapi_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
 
 #define WASAPI_CHANNEL_MASK_COUNT 8
 #define WASAPI_TOTAL_CHANNELS 11
@@ -85,7 +85,7 @@ CWin32WASAPI::CWin32WASAPI() :
 {
 }
 
-bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
   //First check if the version of Windows we are running on even supports WASAPI.
   OSVERSIONINFO winVersion;
@@ -681,7 +681,7 @@ void CWin32WASAPI::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 }
 
 //***********************************************************************************************
-void CWin32WASAPI::BuildChannelMapping(int channels, int8_t* map)
+void CWin32WASAPI::BuildChannelMapping(int channels, enum PCMChannels* map)
 {
   bool usedChannels[WASAPI_TOTAL_CHANNELS];
 

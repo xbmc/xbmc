@@ -93,7 +93,7 @@ public:
   /*
    * returns the channel mapping
    */
-  virtual int8_t* GetChannelMap() = 0;
+  virtual enum PCMChannels* GetChannelMap() = 0;
 
   /*
    * returns the samplerate for the decoded audio stream

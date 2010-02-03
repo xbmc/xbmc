@@ -47,9 +47,11 @@ CALSADirectSound::CALSADirectSound()
   m_bIsAllocated = false;
 }
 
-bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  static int8_t ALSAChannelMap[8] =
+  enum PCMChannels *outLayout;
+
+  static enum PCMChannels ALSAChannelMap[8] =
   {
     PCM_FRONT_LEFT  , PCM_FRONT_RIGHT  ,
     PCM_BACK_LEFT   , PCM_BACK_RIGHT   ,
@@ -65,17 +67,22 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
 
   if (channelMap)
   {
+    /* set the input format, and get the channel layout so we know what we need to open */
+    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
     unsigned int outChannels = 0;
-    for(unsigned int ch = 0; ch < m_uiDataChannels; ++ch)
-      for(unsigned int map = 0; map < 8; ++map)
-        if (channelMap[ch] == ALSAChannelMap[map])
+    unsigned int ch = 0, map;
+    while(outLayout[ch] != PCM_INVALID)
+    {
+      for(map = 0; map < 8; ++map)
+        if (outLayout[ch] == ALSAChannelMap[map])
         {
           if (map > outChannels)
             outChannels = map;
           break;
         }
+      ++ch;
+    }
 
-    m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
     m_remap.SetOutputFormat(++outChannels, ALSAChannelMap);
     if (m_remap.CanRemap())
     {
@@ -155,26 +162,14 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     || deviceuse == "spdif")
       deviceuse = "plug:" + deviceuse;
 
-    if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
-    {
+    if(deviceuse == "default")
       switch(iChannels)
       {
-        case 8: deviceuse = "xbmc_71to2:'" + EscapeDevice(deviceuse) + "'"; break;
-        case 6: deviceuse = "xbmc_51to2:'" + EscapeDevice(deviceuse) + "'"; break;
-        case 5: deviceuse = "xbmc_50to2:'" + EscapeDevice(deviceuse) + "'"; break;
+        case 8: deviceuse = "surround71"; break;
+        case 6: deviceuse = "surround51"; break;
+        case 5: deviceuse = "surround50"; break;
+        case 4: deviceuse = "surround40"; break;
       }
-    }
-    else
-    {
-      if(deviceuse == "default")
-        switch(iChannels)
-        {
-          case 8: deviceuse = "surround71"; break;
-          case 6: deviceuse = "surround51"; break;
-          case 5: deviceuse = "surround50"; break;
-          case 4: deviceuse = "surround40"; break;
-        }
-    }
 
     if(deviceuse != device)
     {
