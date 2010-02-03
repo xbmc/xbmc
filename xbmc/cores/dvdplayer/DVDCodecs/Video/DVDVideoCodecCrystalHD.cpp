@@ -38,6 +38,7 @@
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
+  m_pts(0),
   m_DecodeStarted(false),
   m_DropPictures(false),
   m_Duration(0.0),
@@ -95,6 +96,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
 
+    m_pts = 0;
     m_Duration = 0.0;
     m_DropPictures = false;
     m_DecodeStarted = false;
@@ -135,7 +137,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
   if (pData)
   {
-    if ( m_Device->AddInput(pData, iSize, pts) )
+    if ( m_Device->AddInput(pData, iSize, m_pts) )
       pData = NULL;
     else
     {
@@ -186,6 +188,7 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   bool  ret;
   
   ret = m_Device->GetPicture(pDvdVideoPicture);
+  m_pts = pDvdVideoPicture->pts;
   m_Duration = pDvdVideoPicture->iDuration;
   return ret;
 }

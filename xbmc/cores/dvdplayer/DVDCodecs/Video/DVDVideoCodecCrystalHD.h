@@ -43,6 +43,7 @@ public:
 
 protected:
   CCrystalHD      *m_Device;
+  double          m_pts;
   bool            m_DecodeStarted;
   bool            m_DropPictures;
   double          m_Duration;
