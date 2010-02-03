@@ -377,6 +377,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
 
   if (restart || reportStatus != STATUS_OK)
   {
+    //FIXME
     //new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);  
   }
 
