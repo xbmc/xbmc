@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 01/26/2010-->
+<!--Date of translation: 02/01/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -122,6 +122,7 @@
   <string id="167">FTP 서버 사용</string>
   <string id="169">해상도</string>
   <string id="170">비디오에 맞게 화면 새로고침 비율 조정</string>
+  <string id="171">4:3 컨턴츠를 16:9 로 확장</string>
   <string id="172">개봉일</string>
   <string id="175">분위기</string>
   <string id="176">스타일</string>
@@ -228,6 +229,10 @@
   <string id="296">북마크 지우기</string>
   <string id="297">오디오 오프셋</string>
   <string id="298">북마크</string>
+  <string id="299">- AAC 지원 리시버</string>
+  <string id="300">- MP1 지원 리시버</string>
+  <string id="301">- MP2 지원 리시버</string>
+  <string id="302">- MP3 지원 리시버</string>
   <string id="303">지연</string>
   <string id="304">언어</string>
   <string id="305">사용함</string>
@@ -2019,4 +2024,7 @@
   <string id="33081">이 파일은 연결되었습니다, 재생하고 싶은 부분을 선택하세요.</string>
   <string id="33082">스크립트 경로</string>
   <string id="33083">사용자 지정 스크립트 버튼 사용</string>
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
 </strings>

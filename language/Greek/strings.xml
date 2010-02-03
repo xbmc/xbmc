@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 01/27/2010-->
+<!--Date of translation: 02/02/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 27218-->
+<!--Based on english strings version 227409-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -125,6 +125,7 @@
   <string id="168">Ενεργοποίηση συγχρονισμού ώρας από το Internet</string>
   <string id="169">Ανάλυση</string>
   <string id="170">Προσαρμογή του ρυθμού ανανέωσης</string>
+  <string id="171">Μεταβολή λόγου 4:3 σε 16:9</string>
   <string id="172">Ημερομηνία κυκλοφορίας</string>
   <string id="175">Διάθεση</string>
   <string id="176">Στυλ</string>
@@ -188,7 +189,7 @@
   <string id="251">Επιλογή καταλόγου προορισμού</string>
   <string id="252">Στέρεο έξοδος σ' όλα τα ηχεία</string>
   <string id="253">Αριθμός καναλιών</string>
-  <string id="254">- Δέκτης συμβατός με DTS</string>
+  <string id="254">- Δέκτης με ικανότητα αναπαραγωγής DTS</string>
   <string id="255">CDDB</string>
   <string id="256">Ανάκτηση πληροφοριών CD</string>
   <string id="257">Σφάλμα</string>
@@ -231,13 +232,17 @@
   <string id="296">Απαλοιφή</string>
   <string id="297">Καθυστέρηση ήχου</string>
   <string id="298">Σελιδοδείκτες</string>
+  <string id="299">- Δέκτης με ικανότητα αναπαραγωγής AAC </string>
+  <string id="300">- Δέκτης με ικανότητα αναπαραγωγής MP1</string>
+  <string id="301">- Δέκτης με ικανότητα αναπαραγωγής MP2 </string>
+  <string id="302">- Δέκτης με ικανότητα αναπαραγωγής MP3</string>
   <string id="303">Καθυστέρηση</string>
   <string id="304">Γλώσσα</string>
   <string id="305">Ενεργό/ή</string>
   <string id="306">Μη-διαστρωματωμένο</string>
-  <string id="307">- Αυτόματο postprocessing</string>
-  <string id="308">- Κάθετο φίλτρο deblocking</string>
-  <string id="309">- Οριζόντιο φίλτρο deblocking</string>
+  <string id="307">- Αυτόματη τελική-επεξεργασία</string>
+  <string id="308">- Κάθετο φίλτρο απεμπλοκής</string>
+  <string id="309">- Οριζόντιο φίλτρο απεμπλοκής</string>
   <string id="310">- Αυτόματη φωτεινότητα/αντίθεση</string>
   <string id="311">- Dering</string>
   <string id="312">(0=αυτόματα)</string>
@@ -288,7 +293,7 @@
   <string id="361">Παρουσίαση</string>
   <string id="362">Ποσοστό εξασθένισης της προφύλαξης οθόνης</string>
   <string id="363">Ταξιν.: Αρχείο</string>
-  <string id="364">- Δέκτης συμβατός με Dolby Digital (AC3)</string>
+  <string id="364">- Δέκτης με ικανότητα αναπαραγωγής Dolby Digital (AC3)</string>
   <string id="365">Ταξιν.: Όνομα</string>
   <string id="366">Ταξιν.: Έτος</string>
   <string id="367">Ταξιν.: Βαθμολογία</string>
@@ -2022,4 +2027,8 @@
   <string id="33081">Αυτό το αρχείο στοιβαγμένο, επιλέξτε το μέρος αυτού που επιθυμείτε να αναπαραχθεί.</string>
   <string id="33082">Διαδρομή για το script</string>
   <string id="33083">Ενεργοποίηση προσαρμοσμένου πλήκτρου script</string>
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
 </strings>
