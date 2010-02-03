@@ -38,7 +38,7 @@
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
-  m_decode_started(false),
+  m_DecodeStarted(false),
   m_DropPictures(false),
   m_Duration(0.0),
   m_pFormatName("")
@@ -116,24 +116,25 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
-  bool annexbfiltered = false;
 
+  // We are running a picture queue, picture frames are allocated
+  // in CrystalHD class if needed, then passed up. Need to return
+  // them back to CrystalHD class for re-queuing. This way we keep
+  // the memory alloc/free to a minimum and don't churn memory for
+  // each picture frame.
   m_Device->BusyListPop();
 
-  // in NULL is passed, DVDPlayer wants us to flush any internal picture frame.
+  // If NULL is passed, DVDPlayer wants us to flush any internal picture frame.
   // we don't have internal picture frames so just return.
   if (!pData)
     return VC_BUFFER;
 
-  // Handle Input
+  // Handle Input, add demuxer packet to input queue, we must accept it or
+  // it will be discarded as DVDPlayerVideo has no concept of "try again".
   if (pData)
   {
     if ( m_Device->AddInput(pData, iSize, pts) )
-    {
-      if (annexbfiltered)
-        free(pData);
       pData = NULL;
-    }
     else
     {
       CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
@@ -143,7 +144,9 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   if (m_Device->GetInputCount() < 2)
     ret |= VC_BUFFER;
 
-  // Fake a decoding delay of 1/2 the frame duration
+  // Fake a decoding delay of 1/2 the frame duration, this helps keep DVDPlayerVideo from
+  // draining the demuxer queue. DVDPlayerVideo expects one picture frame for each demuxer
+  // packet so we sleep a little here to give the decoder a chance to output a frame.
   if (!m_DropPictures)
   {
     if (m_Duration > 0.0)
@@ -152,14 +155,16 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
       Sleep(20);
   }
 
-  // Handle Output
-  if (m_decode_started && m_Device->GetReadyCount())
+  // Handle Output, we delay passing back VC_PICTURE on startup until we have a few
+  // decoded picture frames as DVDPlayerVideo might discard picture frames as it
+  // tries to sync with audio.
+  if (m_DecodeStarted && m_Device->GetReadyCount())
       ret |= VC_PICTURE;
   else
   {
     if (m_Device->GetReadyCount() > 4)
     {
-      m_decode_started = true;
+      m_DecodeStarted = true;
       ret |= VC_PICTURE;
     }
   }
@@ -169,7 +174,8 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
-  m_decode_started = false;
+  // Decoder flush, reset started flag and dump all input and output.
+  m_DecodeStarted = false;
   m_Device->Reset();
 }
 
