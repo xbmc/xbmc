@@ -169,7 +169,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else return ADDON_UNKNOWN;
 }
 
-Bool AddonVersion::operator==(const AddonVersion &rhs) const
+bool AddonVersion::operator==(const AddonVersion &rhs) const
 {
   return str.Equals(rhs.str);
 }
