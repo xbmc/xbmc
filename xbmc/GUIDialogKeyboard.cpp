@@ -720,7 +720,7 @@ void CGUIDialogKeyboard::OnIPAddress()
   }
   else
     start = utf8String.size();
-  if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, m_strHeading))
+  if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, g_localizeStrings.Get(14068)))
   {
     utf8String = utf8String.Left(start) + ip + utf8String.Mid(start + length);
     g_charsetConverter.utf8ToW(utf8String, m_strEdit);

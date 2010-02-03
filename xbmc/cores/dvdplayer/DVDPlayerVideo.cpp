@@ -1014,6 +1014,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     iFrameSleep = iFrameSleep * DVD_PLAYSPEED_NORMAL / abs(m_speed);
     iFrameDuration = iFrameDuration * DVD_PLAYSPEED_NORMAL / abs(m_speed);
   }
+  else
+  {
+    iClockSleep = 0;
+    iFrameSleep = 0;
+  }
 
   // dropping to a very low framerate is not correct (it should not happen at all)
   iClockSleep = min(iClockSleep, DVD_MSEC_TO_TIME(500));
