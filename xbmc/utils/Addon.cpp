@@ -78,6 +78,10 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
         return g_localizeStrings.Get(20360);
       return "episodes";
     }
+  case CONTENT_PROGRAMS:
+    {
+      return "programs";
+    }
   case CONTENT_NONE:
     {
       if (pretty)
@@ -100,6 +104,7 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
   else if (string.Equals("episodes")) return CONTENT_EPISODES;
   else if (string.Equals("musicvideos")) return CONTENT_MUSICVIDEOS;
   else if (string.Equals("plugin")) return CONTENT_PLUGIN;
+  else if (string.Equals("programs")) return CONTENT_PROGRAMS;
   else if (string.Equals("weather")) return CONTENT_WEATHER;
   else return CONTENT_NONE;
 }
