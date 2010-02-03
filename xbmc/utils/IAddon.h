@@ -96,6 +96,7 @@ namespace ADDON
     virtual CStdString GetSetting(const CStdString& key) const =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) const =0;
+    virtual ADDONDEPS GetDeps() =0;
     
   private:
     friend class CAddonMgr;
@@ -105,7 +106,6 @@ namespace ADDON
     virtual bool LoadStrings() =0;
     virtual void ClearStrings() =0;
     virtual void SetDeps(ADDONDEPS& deps) =0;
-    virtual ADDONDEPS GetDeps() =0;
   };
 };
 

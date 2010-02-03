@@ -162,25 +162,29 @@ bool CScraperParser::LoadFromXML()
           m_SearchStringEncoding = "UTF-8";
       }
 
-      // inject includes
-      const TiXmlElement* include = m_pRootElement->FirstChildElement("include");
-      while (include)
+      ADDON::ADDONDEPS deps = m_scraper->GetDeps();
+      ADDON::ADDONDEPS::iterator itr = deps.begin();
+      while (itr != deps.end())
       {
-        if (include->FirstChild())
+        AddonPtr dep;
+        if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER_LIBRARY, (*itr).first, dep))
         {
-          CStdString strFile = CUtil::AddFileToFolder(strPath,include->FirstChild()->Value());
-          TiXmlDocument doc;
-          if (doc.LoadFile(strFile))
+          itr++;
+          continue;
+        }
+        CStdString strFile = dep->Path();
+        strFile = CUtil::AddFileToFolder(strFile, dep->LibName());
+        TiXmlDocument doc;
+        if (doc.LoadFile(strFile))
+        {
+          const TiXmlNode* node = doc.RootElement()->FirstChild();
+          while (node)
           {
-            const TiXmlNode* node = doc.RootElement()->FirstChild();
-            while (node)
-            {
-               m_pRootElement->InsertEndChild(*node);
-               node = node->NextSibling();
-            }
+             m_pRootElement->InsertEndChild(*node);
+             node = node->NextSibling();
           }
         }
-        include = include->NextSiblingElement("include");
+        itr++;
       }
 
       return true;

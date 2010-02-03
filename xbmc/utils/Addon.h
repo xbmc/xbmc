@@ -126,6 +126,7 @@ public:
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
+  ADDONDEPS GetDeps() { return m_dependencies; }
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
@@ -151,7 +152,6 @@ private:
   virtual void ClearStrings();
 
   void SetDeps(ADDONDEPS& deps) { m_dependencies = deps; }
-  ADDONDEPS GetDeps() { return m_dependencies; }
   ADDONDEPS m_dependencies;
 
   void BuildLibName();
