@@ -6,7 +6,7 @@
   <library>iTunes.mvis</library>
   <version>1.0.0</version>
   <platforms>
-    <platform>apple</platform>
+    <platform>osx</platform>
   </platforms>
   <minversion>
     <xbmc>20000</xbmc>
