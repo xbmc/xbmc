@@ -116,7 +116,7 @@ void CGUIDialogLockSettings::CreateSettings()
     AddBool(6,20041,&m_bLockPrograms);
     AddBool(7,20042,&m_bLockFiles);
     AddBool(8,20043,&m_bLockSettings);
-    AddBool(9,23082,&m_bLockAddOnManager);
+    AddBool(9,24082,&m_bLockAddOnManager);
     EnableDetails(m_iLock != LOCK_MODE_EVERYONE);
   }
 }

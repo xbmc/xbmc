@@ -114,7 +114,7 @@
 						<icon>special://skin/backgrounds/weather.jpg</icon>
 					</item>
 					<item id="6">
-						<label>23000</label>
+						<label>24000</label>
 						<label2>31408</label2>
 						<onclick>ActivateWindow(AddonBrowser)</onclick>
 						<icon>special://skin/backgrounds/addons.jpg</icon>

@@ -118,11 +118,11 @@ void CAddonStatusHandler::Process()
     if (!pDialog) return;
 
     CStdString heading;
-    /*heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());*/
+    /*heading.Format("%s: %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());*/
 
     pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 23047);
-    pDialog->SetLine(2, 23048);
+    pDialog->SetLine(1, 24047);
+    pDialog->SetLine(2, 24048);
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
@@ -140,10 +140,10 @@ void CAddonStatusHandler::Process()
     if (!pDialog) return;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
+    heading.Format("%s: %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
 
     pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 23049);
+    pDialog->SetLine(1, 24049);
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
@@ -158,11 +158,11 @@ void CAddonStatusHandler::Process()
     if (!pDialogYesNo) return;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
+    heading.Format("%s: %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
 
     pDialogYesNo->SetHeading(heading);
-    pDialogYesNo->SetLine(1, 23053);
-    pDialogYesNo->SetLine(2, 23043);
+    pDialogYesNo->SetLine(1, 24053);
+    pDialogYesNo->SetLine(2, 24043);
     pDialogYesNo->SetLine(3, m_message);
 
     //send message and wait for user input
@@ -186,7 +186,7 @@ void CAddonStatusHandler::Process()
     // Create the dialog
     CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
-    heading.Format("$LOCALIZE[23053]: %s %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
+    heading.Format("$LOCALIZE[24053]: %s %s", g_localizeStrings.Get(24012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
     pDialog->SetHeading(heading);
     const AddonPtr addon(m_addon);
     pDialog->SetAddon(addon);
@@ -212,11 +212,11 @@ void CAddonStatusHandler::Process()
     CStdString heading, name;
     name = m_addon->Name();
     int type = m_addon->Type();
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + type).c_str(), name.c_str());
+    heading.Format("%s: %s", g_localizeStrings.Get(24012 + type).c_str(), name.c_str());
 
     pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 23057);
-    pDialog->SetLine(2, 23056);
+    pDialog->SetLine(1, 24057);
+    pDialog->SetLine(2, 24056);
     pDialog->SetLine(3, m_message);
 
     //send message and wait for user input

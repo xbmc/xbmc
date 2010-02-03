@@ -414,7 +414,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     bool yes(false);
     bool plugin = item->IsPlugin();
     if (plugin)
-      yes = CGUIDialogYesNo::ShowAndGetInput(23009, 23010, 23011, 0);
+      yes = CGUIDialogYesNo::ShowAndGetInput(24009, 24010, 24011, 0);
     else
       yes = CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0);
     if (yes)

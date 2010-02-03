@@ -106,7 +106,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     case ADDON::ADDON_PVRDLL:
     {
       if (pretty)
-        return g_localizeStrings.Get(23015);
+        return g_localizeStrings.Get(24015);
       return "pvrclient";
     }
     case ADDON::ADDON_SCRAPER:
@@ -122,31 +122,31 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     case ADDON::ADDON_SCREENSAVER:
     {
       if (pretty)
-        return g_localizeStrings.Get(23021);
+        return g_localizeStrings.Get(24021);
       return "screensaver";
     }
     case ADDON::ADDON_VIZ:
     {
       if (pretty)
-        return g_localizeStrings.Get(23013);
+        return g_localizeStrings.Get(24013);
       return "visualization";
     }
     case ADDON::ADDON_VIZ_LIBRARY:
     {
       if (pretty)
-        return g_localizeStrings.Get(23013);
+        return g_localizeStrings.Get(24013);
       return "visualization-library";
     }
     case ADDON::ADDON_PLUGIN:
     {
       if (pretty)
-        return g_localizeStrings.Get(23029);
+        return g_localizeStrings.Get(24029);
       return "plugin";
     }
     case ADDON::ADDON_SCRIPT:
     {
       if (pretty)
-        return g_localizeStrings.Get(23016);
+        return g_localizeStrings.Get(24016);
       return "script";
     }
     default:
@@ -202,7 +202,7 @@ bool AddonVersion::operator<=(const AddonVersion &rhs) const
 CStdString AddonVersion::Print() const
 {
   CStdString out;
-  out.Format("%s %s", g_localizeStrings.Get(23011), str); // "Version: <str>"
+  out.Format("%s %s", g_localizeStrings.Get(24011), str); // "Version: <str>"
   return CStdString(out);
 }
 

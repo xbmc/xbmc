@@ -199,7 +199,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
       CStdString disclaimer = pItem->GetProperty("Addon.Disclaimer");
       if (!disclaimer.empty())
       {
-         if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(23058), pItem->GetProperty("Addon.Name"), disclaimer, g_localizeStrings.Get(23059)))
+         if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24058), pItem->GetProperty("Addon.Name"), disclaimer, g_localizeStrings.Get(24059)))
            return;
       }
 
@@ -249,9 +249,9 @@ bool CGUIWindowAddonBrowser::ManageAddons(const ADDON::TYPE &type, const CONTENT
   // determine the correct heading
   CStdString heading;
   if (!viewActive)
-    heading = g_localizeStrings.Get(23002); // "Available Add-ons"
+    heading = g_localizeStrings.Get(24002); // "Available Add-ons"
   else
-    heading = g_localizeStrings.Get(23060 + type); // Name is calculated by type! //TODO fix this
+    heading = g_localizeStrings.Get(24060 + type); // Name is calculated by type! //TODO fix this
 
   // check if user is allowed to open this window
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
@@ -312,9 +312,9 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
   if (!CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
     return false;
 
-  int iSettingsLabel = 23008;
-  int iDisableLabel = 23009;
-  int iEnableLabel = 23010;
+  int iSettingsLabel = 24008;
+  int iDisableLabel = 24009;
+  int iEnableLabel = 24010;
 
   int btn_Disable = -1;
   int btn_Enable = -1;
