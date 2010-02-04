@@ -302,7 +302,7 @@ void CPCMRemap::BuildMap()
     float scale = 0;
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
     {
-      dst->level = dst->level / sqrt(counts[dst->channel]);
+      dst->level = dst->level / sqrt((float)counts[dst->channel]);
       scale     += dst->level;
     }
 
