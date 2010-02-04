@@ -31,7 +31,7 @@
 #include "Log.h"
 #include "URL.h"
 #include "AdvancedSettings.h"
-#include "AudioStreamsManager.h"
+#include "StreamsManager.h"
 
 #include <streams.h>
 #include "DShowUtil/DShowUtil.h"
@@ -102,9 +102,9 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
 
   // Audio streams
-  CAudioStreamsManager::getSingleton()->InitManager(this->m_pGraphBuilder->GetSplitter(),
+  CStreamsManager::getSingleton()->InitManager(this->m_pGraphBuilder->GetSplitter(),
     m_pGraphBuilder->GetGraphBuilder2(), this);
-  CAudioStreamsManager::getSingleton()->LoadAudioStreams();
+  CStreamsManager::getSingleton()->LoadStreams();
 
   // Chapters
   CChaptersManager::getSingleton()->InitManager(m_pGraphBuilder->GetSplitter(), this);
@@ -159,7 +159,7 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    if (CAudioStreamsManager::getSingleton()->IsChangingAudioStream())
+    if (CStreamsManager::getSingleton()->IsChangingAudioStream())
       return;
 
 	  Stop(true);
@@ -172,7 +172,7 @@ void CDSGraph::CloseFile()
     hr = m_pGraphBuilder->RemoveFromROT();
     UnloadGraph();
 
-    CAudioStreamsManager::Destroy();
+    CStreamsManager::Destroy();
     CChaptersManager::Destroy();
 
 	  SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance

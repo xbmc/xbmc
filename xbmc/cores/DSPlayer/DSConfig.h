@@ -29,6 +29,7 @@
 #include "Filters/IMpaDecFilter.h"
 #include "Filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
+#include "DSPropertyPage.h"
 
 class CDSConfig
 {
@@ -41,6 +42,7 @@ public:
 
 // Filters Property Pages
   virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages() { return m_pPropertiesFilters; };
+  void ShowPropertyPage(IBaseFilter *pBF);
 protected:
   bool LoadPropertiesPage(IBaseFilter *pBF);
   void CreatePropertiesXml();
@@ -58,6 +60,9 @@ private:
   IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
+
+  //current page
+  CDSPropertyPage*               m_pCurrentProperty;
 };
 
 extern class CDSConfig g_dsconfig;

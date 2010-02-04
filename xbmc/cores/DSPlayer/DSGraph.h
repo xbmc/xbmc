@@ -160,6 +160,7 @@ protected:
     CStdString filter_source;
     CStdString filter_splitter;
     CStdString dxva_info;
+
 	  GUID time_format;
   } m_VideoInfo;
   

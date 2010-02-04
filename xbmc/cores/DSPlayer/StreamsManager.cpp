@@ -1,21 +1,22 @@
 #include "pch.h"
-#include "AudioStreamsManager.h"
+#include "StreamsManager.h"
 
-CAudioStreamsManager *CAudioStreamsManager::m_pSingleton = NULL;
+CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
-CAudioStreamsManager *CAudioStreamsManager::getSingleton()
+CStreamsManager *CStreamsManager::getSingleton()
 {
-  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CAudioStreamsManager());
+  return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CStreamsManager());
 }
 
-CAudioStreamsManager::CAudioStreamsManager(void):
+CStreamsManager::CStreamsManager(void):
   m_pIAMStreamSelect(NULL),
   m_init(false),
   m_bChangingAudioStream(false)
 {
+  m_videoStream.Clear();
 }
 
-CAudioStreamsManager::~CAudioStreamsManager(void)
+CStreamsManager::~CStreamsManager(void)
 {
   for (std::map<long, SAudioStreamInfos *>::iterator it = m_audioStreams.begin();
     it != m_audioStreams.end(); ++it)
@@ -24,17 +25,17 @@ CAudioStreamsManager::~CAudioStreamsManager(void)
   SAFE_RELEASE(m_pIAMStreamSelect);
 }
 
-std::map<long, SAudioStreamInfos *> CAudioStreamsManager::Get()
+std::map<long, SAudioStreamInfos *> CStreamsManager::Get()
 {
   return m_audioStreams;
 }
 
-int CAudioStreamsManager::GetAudioStreamCount()
+int CStreamsManager::GetAudioStreamCount()
 {
   return m_audioStreams.size();
 }
 
-int CAudioStreamsManager::GetAudioStream()
+int CStreamsManager::GetAudioStream()
 {
   if (m_audioStreams.size() == 0)
     return -1;
@@ -50,7 +51,7 @@ int CAudioStreamsManager::GetAudioStream()
   return -1;
 }
 
-void CAudioStreamsManager::GetAudioStreamName(int iStream, CStdString &strStreamName)
+void CStreamsManager::GetAudioStreamName(int iStream, CStdString &strStreamName)
 {
   if (m_audioStreams.size() == 0)
     return;
@@ -66,7 +67,7 @@ void CAudioStreamsManager::GetAudioStreamName(int iStream, CStdString &strStream
   }
 }
 
-void CAudioStreamsManager::SetAudioStream(int iStream)
+void CStreamsManager::SetAudioStream(int iStream)
 {
   if (! m_init)
     return;
@@ -160,7 +161,7 @@ done:
   }
 }
 
-void CAudioStreamsManager::LoadAudioStreams()
+void CStreamsManager::LoadStreams()
 {
   if (! m_init)
     return;
@@ -189,21 +190,33 @@ void CAudioStreamsManager::LoadAudioStreams()
     /* Yes */
     CLog::Log(LOGDEBUG, "%s Get IAMStreamSelect interface from %s", __FUNCTION__, splitterName.c_str());
 
-    DWORD nStreams = 0, flags = 0;
+    DWORD nStreams = 0, flags = 0, group = 0;
     WCHAR* wname = NULL;
-    SAudioStreamInfos *infos = NULL;
+    SStreamInfos *infos = NULL;
+    LCID lcid;
+    IUnknown *pObj = NULL, *pUnk = NULL;
+    int j = 0;
 
     m_pIAMStreamSelect->Count(&nStreams);
 
     AM_MEDIA_TYPE * mediaType = NULL;
     for(unsigned int i = 0; i < nStreams; i++)
     {
-      infos = new SAudioStreamInfos();
-      infos->group = 0;  infos->lcid = 0; infos->pObj = 0; infos->pUnk = 0; infos->flags = 0;
+      m_pIAMStreamSelect->Info(i, &mediaType, &flags, &lcid, &group, &wname, &pObj, &pUnk);
 
-      m_pIAMStreamSelect->Info(i, &mediaType, &infos->flags, &infos->lcid, &infos->group, &wname, &infos->pObj, &infos->pUnk);
+      if (mediaType->majortype == MEDIATYPE_Video)
+        infos = &m_videoStream;
+      else if (mediaType->majortype == MEDIATYPE_Audio)
+        infos = new SAudioStreamInfos();
+      else
+        continue;
+
+      infos->Clear();
+
       g_charsetConverter.wToUTF8(wname, infos->name);
       CoTaskMemFree(wname);
+
+      infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = pObj; infos->pUnk = pUnk;
 
       /* Apply regex */
       for (std::vector<CRegExp *>::const_iterator it = regex.begin(); it != regex.end(); ++it)
@@ -215,18 +228,18 @@ void CAudioStreamsManager::LoadAudioStreams()
         }
       }
 
+      GetStreamInfos(mediaType, infos);
+
       if (mediaType->majortype == MEDIATYPE_Audio)
       {
         /* Audio stream */
-        m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i, infos) );
-        CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
+        if (infos->name.find_first_of("Undetermined") != std::string::npos )
+          infos->name.Format("A: Audio %02d", j + 1);
 
-      }/* else if (mediaType->majortype == MEDIATYPE_Subtitle)
-      {
-        // Embed subtitles
-        m_pEmbedSubtitles.insert( std::pair<long, IAMStreamSelectInfos *>(i, infos) );
-        CLog::Log(LOGNOTICE, "%s Embed subtitle found : %s", __FUNCTION__, infos->name.c_str());
-      }*/
+        m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i, reinterpret_cast<SAudioStreamInfos *>(infos)) );
+        CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
+        j++;
+      }
 
       DeleteMediaType(mediaType);
     }
@@ -238,8 +251,7 @@ void CAudioStreamsManager::LoadAudioStreams()
     int i = 0, j = 0;
     CStdStringW pinNameW;
     CStdString pinName;
-    SAudioStreamInfos *infos = NULL;
-    bool pinConnected = FALSE;
+    SStreamInfos *infos = NULL;
     bool audioPinAlreadyConnected = FALSE;//, subtitlePinAlreadyConnected = FALSE;
 
     int nIn = 0, nOut = 0, nInC = 0, nOutC = 0;
@@ -262,13 +274,14 @@ void CAudioStreamsManager::LoadAudioStreams()
           CLog::Log(LOGDEBUG, "%s \tOutput pin sub type : %s", __FUNCTION__, GuidNames[pMediaType->subtype]);
           CLog::Log(LOGDEBUG, "%s \tOutput pin format type : %s", __FUNCTION__, GuidNames[pMediaType->formattype]);
 
-          if (pMediaType->majortype != MEDIATYPE_Audio/* &&
-            pMediaType->majortype != MEDIATYPE_Subtitle*/)
+          if (pMediaType->majortype == MEDIATYPE_Video)
+            infos = &m_videoStream;
+          else if (pMediaType->majortype == MEDIATYPE_Audio)
+            infos = new SAudioStreamInfos();
+          else
             continue;
 
-          infos = new SAudioStreamInfos();
-          infos->group = 0;  infos->lcid = 0; infos->pObj = 0; infos->pUnk = 0; infos->flags = 0;
-          pinConnected = FALSE;
+          infos->Clear();
 
           infos->name = pinName;
 
@@ -282,60 +295,25 @@ void CAudioStreamsManager::LoadAudioStreams()
             }
           }
 
-          if (infos->name.Trim().Equals("Undetermined"))
-            infos->name.Format("Audio %02d", i + 1);
-
-          infos->pObj = pPin;
+          GetStreamInfos(pMediaType, infos);
 
           if (pMediaType->majortype == MEDIATYPE_Audio)
           {
-            /*if (S_OK == DShowUtil::IsPinConnected(pPin))
-            {
-              if (audioPinAlreadyConnected)
-              { // Prevent multiple audio stream at the same time
-                IPin *pin = NULL;
-                pPin->ConnectedTo(&pin);
-                m_pGraphBuilder->Disconnect(pPin);
-                m_pGraphBuilder->Disconnect(pin);
-                SAFE_RELEASE(pin);
-              } 
-              else 
-              {
-                infos->flags = AMSTREAMSELECTINFO_ENABLED;
-                audioPinAlreadyConnected = TRUE;
-              }
-            }*/
+            if (infos->name.Trim().Equals("Undetermined"))
+              infos->name.Format("Audio %02d", i + 1);
+
+            infos->pObj = pPin;
+
             pPin->ConnectedTo((IPin **)&infos->pUnk);
             if (i == 0)
-              infos->flags = AMSTREAMSELECTINFO_ENABLED;
+              infos->flags = AMSTREAMSELECTINFO_ENABLED;         
 
-            m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i, infos) );
+            m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i, reinterpret_cast<SAudioStreamInfos *>(infos)) );
             CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
+            
             i++;
-          }/* else {
+          }
 
-            if (SUCCEEDED(DShowUtil::IsPinConnected(pPin)))
-            {
-              if (subtitlePinAlreadyConnected)
-              { // Prevent multiple audio stream at the same time
-                IPin *pin = NULL;
-                pPin->ConnectedTo(&pin);
-                m_pGraphBuilder->Disconnect(pPin);
-                m_pGraphBuilder->Disconnect(pin);
-                SAFE_RELEASE(pin);
-              } 
-              else 
-              {
-                infos->flags = AMSTREAMSELECTINFO_ENABLED;
-                subtitlePinAlreadyConnected = TRUE;
-              }
-            }
-
-            m_pEmbedSubtitles.insert( std::pair<long, IAMStreamSelectInfos *>(j, infos) );
-            CLog::Log(LOGNOTICE, "%s Embed subtitle found : %s", __FUNCTION__, infos->name.c_str());
-            j++;
-
-          }*/
           break; // if the pin has multiple output type, get only the first one
         }
         EndEnumMediaTypes(pET, pMediaType)
@@ -352,7 +330,7 @@ void CAudioStreamsManager::LoadAudioStreams()
   }
 }
 
-bool CAudioStreamsManager::InitManager(IBaseFilter *Splitter, IFilterGraph2 *graphBuilder, CDSGraph *DSGraph)
+bool CStreamsManager::InitManager(IBaseFilter *Splitter, IFilterGraph2 *graphBuilder, CDSGraph *DSGraph)
 {
   m_pSplitter = Splitter;
   m_pGraphBuilder = graphBuilder;
@@ -362,13 +340,122 @@ bool CAudioStreamsManager::InitManager(IBaseFilter *Splitter, IFilterGraph2 *gra
   return true;
 }
 
-void CAudioStreamsManager::Destroy()
+void CStreamsManager::Destroy()
 {
   delete m_pSingleton;
   m_pSingleton = NULL;
 }
 
-bool CAudioStreamsManager::IsChangingAudioStream()
+bool CStreamsManager::IsChangingAudioStream()
 {
   return m_bChangingAudioStream;
+}
+
+int CStreamsManager::GetChannels()
+{
+  int i = InternalGetAudioStream();
+  return (i == -1) ? 0 : m_audioStreams[i]->channels;
+}
+
+int CStreamsManager::GetBitsPerSample()
+{
+  int i = InternalGetAudioStream();
+  return (i == -1) ? 0 : m_audioStreams[i]->bitrate;
+}
+
+int CStreamsManager::GetSampleRate()
+{
+  int i = InternalGetAudioStream();
+  return (i == -1) ? 0 : m_audioStreams[i]->samplerate;
+}
+
+void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s )
+{
+  if (pMediaType->majortype == MEDIATYPE_Audio)
+  {
+    SAudioStreamInfos *infos = reinterpret_cast<SAudioStreamInfos *>(s);
+    if (pMediaType->formattype == FORMAT_WaveFormatEx)
+    {
+      if (pMediaType->cbFormat >= sizeof(WAVEFORMATEX))
+      {
+        WAVEFORMATEX *f = reinterpret_cast<WAVEFORMATEX *>(pMediaType->pbFormat);
+        infos->channels = f->nChannels;
+        infos->samplerate = f->nSamplesPerSec;
+        infos->bitrate = f->nAvgBytesPerSec;
+        infos->codecname = infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag);
+      }
+    }
+  } else if (pMediaType->majortype == MEDIATYPE_Video)
+  {
+    SVideoStreamInfos *infos = reinterpret_cast<SVideoStreamInfos *>(s);
+
+    if (pMediaType->formattype == FORMAT_VideoInfo)
+    {
+      if (pMediaType->cbFormat >= sizeof(VIDEOINFOHEADER))
+      {
+        VIDEOINFOHEADER *v = reinterpret_cast<VIDEOINFOHEADER *>(pMediaType->pbFormat);
+        infos->width = v->bmiHeader.biWidth;
+        infos->height = v->bmiHeader.biHeight;
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression);
+      }
+    } else if (pMediaType->formattype == FORMAT_MPEG2Video)
+    {
+      if (pMediaType->cbFormat >= sizeof(MPEG2VIDEOINFO))
+      {
+        MPEG2VIDEOINFO *m = reinterpret_cast<MPEG2VIDEOINFO *>(pMediaType->pbFormat);
+        infos->width = m->hdr.bmiHeader.biWidth;
+        infos->height = m->hdr.bmiHeader.biHeight;
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression);
+      }
+    } else if (pMediaType->formattype == FORMAT_VideoInfo2)
+    {
+      if (pMediaType->cbFormat >= sizeof(VIDEOINFOHEADER2))
+      {
+        VIDEOINFOHEADER2 *v = reinterpret_cast<VIDEOINFOHEADER2 *>(pMediaType->pbFormat);
+        infos->width = v->bmiHeader.biWidth;
+        infos->height = v->bmiHeader.biHeight;
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression);
+      }
+    } else if (pMediaType->formattype == FORMAT_MPEGVideo)
+    {
+      if (pMediaType->cbFormat >= sizeof(MPEG1VIDEOINFO))
+      {
+        MPEG1VIDEOINFO *m = reinterpret_cast<MPEG1VIDEOINFO *>(pMediaType->pbFormat);
+        infos->width = m->hdr.bmiHeader.biWidth;
+        infos->height = m->hdr.bmiHeader.biHeight;
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression);
+      }
+    }
+  }
+}
+
+int CStreamsManager::InternalGetAudioStream()
+{
+  if (m_audioStreams.size() == 0)
+    return -1;
+
+  for (std::map<long, SAudioStreamInfos *>::const_iterator it = m_audioStreams.begin();
+    it != m_audioStreams.end(); ++it)
+  {
+    if ( (*it).second->flags == AMSTREAMSELECTINFO_ENABLED)
+      return it->first;
+  }
+
+  return -1;
+}
+
+int CStreamsManager::GetPictureWidth()
+{
+  return m_videoStream.width;
+}
+
+CStdString CStreamsManager::GetAudioCodecName()
+{
+  int i = InternalGetAudioStream();
+  return (i == -1) ? "" : m_audioStreams[i]->codecname;
+}
+
+CStdString CStreamsManager::GetVideoCodecName()
+{
+  return m_videoStream.codecname;
 }

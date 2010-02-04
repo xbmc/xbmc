@@ -29,6 +29,8 @@
 #include "FileSystem/SpecialProtocol.h"
 
 #include "GuiSettings.h"
+
+
 using namespace std;
 
 class CDSConfig g_dsconfig;
@@ -58,6 +60,10 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB, IBaseFilter * splitter)
   m_pGraphBuilder = pGB;
   m_pSplitter = splitter;
   pGB = NULL;
+
+  while (! m_pPropertiesFilters.empty())
+    m_pPropertiesFilters.pop_back();
+
   ConfigureFilters();
 
   return hr;
@@ -134,6 +140,12 @@ void CDSConfig::CreatePropertiesXml()
     pIntId++;
   }
   xmlDoc.SaveFile("special://temp//dslang.xml");
+}
+
+void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
+{
+  m_pCurrentProperty = new CDSPropertyPage(pBF);
+  m_pCurrentProperty->Initialize();
 }
 
 bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)

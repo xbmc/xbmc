@@ -233,7 +233,8 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
 
     IBaseFilter *pBF = g_dsconfig.GetFiltersWithPropertyPages()[filterId];
     HRESULT hr = S_OK;
-
+    g_dsconfig.ShowPropertyPage(pBF);
+    /*
     ISpecifyPropertyPages *pProp = NULL;
     IBaseFilter *cObjects[1]; cObjects[0] = pBF;
     CAUUID pPages;
@@ -253,7 +254,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
 	    SAFE_RELEASE(pProp);
       CoTaskMemFree(pPages.pElems);
       
-    } 
+    } */
   }
 }
 
