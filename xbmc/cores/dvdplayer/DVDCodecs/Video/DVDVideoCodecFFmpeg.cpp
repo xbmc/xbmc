@@ -120,6 +120,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
   m_dts = DVD_NOPTS_VALUE;
+  m_force_dts = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -361,8 +362,35 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
       return result;
   }
 
-  m_dts = dts;
-  m_pCodecContext->reordered_opaque = pts_dtoi(pts);
+  if (dts == DVD_NOPTS_VALUE && pts == DVD_NOPTS_VALUE)
+  {
+    // if invalid dts and pts, set DVD_NOPTS_VALUE and let
+    // DVDPlayerVideo figure out timing from duration.
+    m_pCodecContext->reordered_opaque = NULL;
+    m_dts = DVD_NOPTS_VALUE;
+  }
+  else
+  {
+    // always use pts for video content with re-ordered frames.
+    if(!m_force_dts && m_pCodecContext->has_b_frames && pts != DVD_NOPTS_VALUE)
+      m_pCodecContext->reordered_opaque = pts_dtoi(pts);
+    else
+    {
+      // if dts is invalid but pts is not, use pts.
+      if (dts == DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE)
+        m_pCodecContext->reordered_opaque = pts_dtoi(pts);
+      else
+      {
+        // not a clue so use dts, some avi's will toggle
+        // pts valid/invalid and mess up timing, so force
+        // dts for all packets if we ever drop into here.  
+        m_pCodecContext->reordered_opaque = NULL;
+        m_force_dts = true;
+        m_dts = dts;
+      }
+    }
+  }
+
   try
   {
     len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
@@ -520,7 +548,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if(frame->reordered_opaque)
     pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
-    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+    pDvdVideoPicture->pts = m_dts;
 
   if(m_pHardware)
     return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);

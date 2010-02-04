@@ -1075,7 +1075,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
     case BCM::BC_STS_SUCCESS:
       if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
       {
-        if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_timestamp))
+        if (procOut.PicInfo.timeStamp)
         {
           m_timestamp = procOut.PicInfo.timeStamp;
 

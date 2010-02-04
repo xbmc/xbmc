@@ -39,6 +39,7 @@
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
   m_pts(0),
+  m_force_dts(false),
   m_DecodeStarted(false),
   m_DropPictures(false),
   m_Duration(0.0),
@@ -95,6 +96,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     }
 
     m_pts = 0;
+    m_force_dts = false;
     // default duration to 23.976 fps, have to guess something.
     m_Duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
     m_DropPictures = false;
@@ -120,10 +122,32 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
 {
   int ret = 0;
 
-  if (pts != DVD_NOPTS_VALUE)
-    m_pts = pts;
+  if (dts == DVD_NOPTS_VALUE && pts == DVD_NOPTS_VALUE)
+  {
+    // if invalid dts and pts, set DVD_NOPTS_VALUE and let
+    // DVDPlayerVideo figure out timing from duration.
+    m_pts = DVD_NOPTS_VALUE;
+  }
   else
-    m_pts += m_Duration;
+  {
+    // always use pts for video content with re-ordered frames.
+    if(!m_force_dts && pts != DVD_NOPTS_VALUE)
+      m_pts = pts;
+    else
+    {
+      // if dts is invalid but pts is not, use pts.
+      if (dts == DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE)
+        m_pts = pts;
+      else
+      {
+        // not a clue so use dts, some avi's will toggle
+        // pts valid/invalid and mess up timing, so force
+        // dts for all packets if we ever drop into here.  
+        m_force_dts = true;
+        m_pts = dts;
+      }
+    }
+  }
 
   // We are running a picture queue, picture frames are allocated
   // in CrystalHD class if needed, then passed up. Need to return
