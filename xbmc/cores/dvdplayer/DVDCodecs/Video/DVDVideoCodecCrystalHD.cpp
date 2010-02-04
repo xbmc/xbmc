@@ -58,24 +58,22 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
   if ((requestedMethod == RENDER_METHOD_AUTO ||
        requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
-    CRYSTALHD_CODEC_TYPE codec_type;
-
     switch (hints.codec)
     {
       case CODEC_ID_MPEG2VIDEO:
-        codec_type = CRYSTALHD_CODEC_ID_MPEG2;
+        m_codec_type = CRYSTALHD_CODEC_ID_MPEG2;
         m_pFormatName = "bcm-mpeg2";
       break;
       case CODEC_ID_H264:
-        codec_type = CRYSTALHD_CODEC_ID_H264;
+        m_codec_type = CRYSTALHD_CODEC_ID_H264;
         m_pFormatName = "bcm-h264";
       break;
       case CODEC_ID_VC1:
-        codec_type = CRYSTALHD_CODEC_ID_VC1;
+        m_codec_type = CRYSTALHD_CODEC_ID_VC1;
         m_pFormatName = "bcm-vc1";
       break;
       case CODEC_ID_WMV3:
-        codec_type = CRYSTALHD_CODEC_ID_WMV3;
+        m_codec_type = CRYSTALHD_CODEC_ID_WMV3;
         m_pFormatName = "bcm-wmv3";
       break;
       default:
@@ -90,7 +88,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
 
-    if (m_Device && !m_Device->OpenDecoder(codec_type, hints.extrasize, hints.extradata))
+    if (m_Device && !m_Device->OpenDecoder(m_codec_type, hints.extrasize, hints.extradata))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
