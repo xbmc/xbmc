@@ -302,6 +302,7 @@ void CPCMRemap::BuildMap()
     float scale = 0;
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
     {
+      dst->copy  = counts[dst->channel] == 1;
       dst->level = dst->level / sqrt((float)counts[dst->channel]);
       scale     += dst->level;
     }
@@ -403,13 +404,26 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
     {
       struct PCMMapInfo *info;
       float value = 0;
-      for(info = m_lookupMap[m_outMap[ch]]; info->channel != PCM_INVALID; ++info)
+
+      info = m_lookupMap[m_outMap[ch]];
+      if (info->channel == PCM_INVALID) continue;
+
+      /* if it is a 1-1 map, we just copy the data to avoid rounding errors */
+      if (info->copy)
+      {
+        src = insample  + info->in_offset;
+        dst = outsample + ch * m_inSampleSize;
+        *(int16_t*)dst = *(int16_t*)src;
+        continue;
+      }
+
+      for(; info->channel != PCM_INVALID; ++info)
       {
         src    = insample + info->in_offset;
         value += (float)(*(int16_t*)src) * info->level;
       }
       dst = outsample + ch * m_inSampleSize;
-      *((int16_t*)dst) = (int16_t)((value > 0.0) ? floor(value + 0.5) : ceil(value - 0.5));
+      *(int16_t*)dst = (int16_t)((value > 0.0) ? floor(value + 0.5) : ceil(value - 0.5));
     }
 
     insample  += m_inStride;

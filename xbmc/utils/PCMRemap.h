@@ -71,6 +71,7 @@ struct PCMMapInfo
   float level;
   bool  ifExists;
   int   in_offset;
+  bool  copy;
 };
 
 class CPCMRemap
