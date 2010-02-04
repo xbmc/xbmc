@@ -65,7 +65,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiDataChannels = iChannels;
   m_remap.Reset();
 
-  if (channelMap)
+  if (!bPassthrough && channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
     outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
