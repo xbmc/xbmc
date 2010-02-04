@@ -473,7 +473,7 @@ void CDVDPlayerVideo::Process()
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
 
-      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
       // buffer packets so we can recover should decoder flush for some reason
       if(m_pVideoCodec->GetConvergeCount() > 0)
@@ -620,7 +620,7 @@ void CDVDPlayerVideo::Process()
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
+              iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
               break;
             }
 
@@ -660,7 +660,7 @@ void CDVDPlayerVideo::Process()
           break;
 
         // the decoder didn't need more data, flush the remaning buffer
-        iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
+        iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
       }
     }
 
