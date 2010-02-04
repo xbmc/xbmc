@@ -96,8 +96,8 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_FRONT_CENTER */
   {
-    {PCM_FRONT_LEFT           , 1.0},
-    {PCM_FRONT_RIGHT          , 1.0},
+    {PCM_FRONT_LEFT_OF_CENTER , 1.0},
+    {PCM_FRONT_RIGHT_OF_CENTER, 1.0},
     {PCM_INVALID}
   },
   /* PCM_LOW_FREQUENCY */
@@ -119,13 +119,13 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   /* PCM_FRONT_LEFT_OF_CENTER */
   {
     {PCM_FRONT_LEFT           , 1.0},
-    {PCM_FRONT_CENTER         , 1.0},
+    {PCM_FRONT_CENTER         , 1.0, true},
     {PCM_INVALID}
   },
   /* PCM_FRONT_RIGHT_OF_CENTER */
   {
     {PCM_FRONT_RIGHT          , 1.0},
-    {PCM_FRONT_CENTER         , 1.0},
+    {PCM_FRONT_CENTER         , 1.0, true},
     {PCM_INVALID}
   },
   /* PCM_BACK_CENTER */
@@ -206,7 +206,7 @@ void CPCMRemap::Dispose()
 }
 
 /* resolves the channels recursively and returns the new index of tablePtr */
-struct PCMMapInfo* CPCMRemap::ResolveChannel(enum PCMChannels channel, float level, struct PCMMapInfo *tablePtr)
+struct PCMMapInfo* CPCMRemap::ResolveChannel(enum PCMChannels channel, float level, bool ifExists, std::vector<enum PCMChannels> path, struct PCMMapInfo *tablePtr)
 {
   if (channel == PCM_INVALID) return tablePtr;
 
@@ -219,15 +219,31 @@ struct PCMMapInfo* CPCMRemap::ResolveChannel(enum PCMChannels channel, float lev
     ++tablePtr;
     tablePtr->channel = PCM_INVALID;
     return tablePtr;
-  }
+  } else
+    if (ifExists)
+      level /= 2;
 
-  /* loop through the downmix children and resolve them */
   struct PCMMapInfo *info;
+  std::vector<enum PCMChannels>::iterator itt;
+
   for(info = PCMDownmixTable[channel]; info->channel != PCM_INVALID; ++info)
   {
-    /* calculate adjust the level based on our level */
+    /* make sure we are not about to recurse into ourself */
+    bool found = false;
+    for(itt = path.begin(); itt != path.end(); ++itt)
+      if (*itt == info->channel)
+      {
+        found = true;
+        break;
+      }
+
+    if (found)
+      continue;
+
+    path.push_back(channel);
     float  l = (info->level * (level / 100)) * 100;
-    tablePtr = ResolveChannel(info->channel, l, tablePtr);
+    tablePtr = ResolveChannel(info->channel, l, info->ifExists, path, tablePtr);
+    path.pop_back();
   }
 
   return tablePtr;
@@ -260,10 +276,13 @@ void CPCMRemap::BuildMap()
 
   /* resolve all the channels */
   struct PCMMapInfo table[PCM_MAX_CH + 1], *info, *dst;
+  std::vector<enum PCMChannels> path;
   int counts[PCM_MAX_CH];
+
   memset(counts, 0, sizeof(counts));
   for(in_ch = 0; in_ch < m_inChannels; ++in_ch) {
-    ResolveChannel(m_inMap[in_ch], 1.0f, table);
+    memset(table, PCM_INVALID, sizeof(table));
+    ResolveChannel(m_inMap[in_ch], 1.0f, false, path, table);
     for(info = table; info->channel != PCM_INVALID; ++info)
     {
       /* find the end of the table */

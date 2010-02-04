@@ -23,6 +23,7 @@
  */
 
 #include <stdint.h>
+#include <vector>
 #include "guilib/StdString.h"
 
 #define PCM_MAX_CH 18
@@ -68,6 +69,7 @@ struct PCMMapInfo
 {
   enum  PCMChannels channel;
   float level;
+  bool  ifExists;
   int   in_offset;
 };
 
@@ -84,7 +86,7 @@ protected:
   int               m_inStride, m_outStride;
   struct PCMMapInfo m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
 
-  struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, struct PCMMapInfo *tablePtr);
+  struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, bool ifExists, std::vector<enum PCMChannels> path, struct PCMMapInfo *tablePtr);
   void               BuildMap();
   void               DumpMap(CStdString info, int unsigned channels, enum PCMChannels *channelMap);
   void               Dispose();
