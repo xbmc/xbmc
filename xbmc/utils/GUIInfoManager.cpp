@@ -1490,6 +1490,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
         if (viz)
         {
           strLabel = viz->GetPresetName(); 
+          CUtil::RemoveExtension(strLabel);
         }
       }
     }

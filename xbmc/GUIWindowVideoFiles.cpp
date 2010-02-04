@@ -401,29 +401,19 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::Scraper
 
   if (CGUIDialogContentSettings::Show(scraper, settings, bScan))
   {
-    if(settings.exclude)
+    if(settings.exclude || !scraper)
     {
       OnUnAssignContent(iItem,20375,20340,20341);
     }
-    //TODO remove
     else
-    {
-      m_database.Open();
-      m_database.SetScraperForPath(item->m_strPath,scraper,settings);
-      m_database.Close();
-    }
-    //TODO fix merge
-/* 
-    if (!info.strContent.IsEmpty()      && 
-        !info2.strContent.IsEmpty()     &&
-        !info.strContent.Equals("None") &&
-       (info2.strContent != info.strContent ||
-        !info.strPath.Equals(info2.strPath)))
     {
       if (OnUnAssignContent(iItem,20442,20443,20444))
         bScan = true;
     }
-*/
+
+    m_database.Open();
+    m_database.SetScraperForPath(item->m_strPath,scraper,settings);
+    m_database.Close();
 
     if (!settings.exclude && bScan)
     {

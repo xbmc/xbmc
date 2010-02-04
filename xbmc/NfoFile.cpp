@@ -120,6 +120,12 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info
   database.GetScraperForPath(strPath,selected);
   database.Close();
 
+  vector<ScraperPtr> vecScrapers;
+
+  // add selected scraper
+  if (selected)
+    vecScrapers.push_back(selected);
+
   /*if (g_guiSettings.GetBool("scrapers.langfallback"))
   {
     for (unsigned i=0;i<addons.size();++i)
@@ -143,21 +149,20 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info
       // add same language, multi-language and music scrapers
       // TODO addons language handling
     }
-  }
+  }*/
 
   // add default scraper
-  if (find(vecScrapers.begin(),vecScrapers.end(),strDefault) == vecScrapers.end())
-    vecScrapers.push_back(strDefault);
+  if ((selected && selected->Parent() != defaultScraper) || !selected) 
+    vecScrapers.push_back(defaultScraper);
 
   // search ..
-  //TODO
   int res = -1;
   for (unsigned int i=0;i<vecScrapers.size();++i)
     if ((res = Scrape(vecScrapers[i])) == 0 || res == 2)
       break;
 
   if (res == 2)
-    return ERROR_NFO;*/
+    return ERROR_NFO;
   if (bNfo)
     return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
 
