@@ -43,7 +43,7 @@ public:
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }
-  virtual const char* GetName()  { return "passthroughffmpeg"; }
+  virtual const char* GetName()  { return "PassthroughFFmpeg"; }
 
 private:
   int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize);

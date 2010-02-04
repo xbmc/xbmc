@@ -112,6 +112,8 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
+  BuildChannelMap();
+
   m_bOpenedCodec = true;
   m_iSampleFormat = SAMPLE_FMT_NONE;
   return true;
@@ -252,7 +254,7 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
   return 16;
 }
 
-enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
+void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
   int index = 0;
   if (m_pCodecContext->channel_layout && CH_FRONT_LEFT           ) m_channelMap[index++] = PCM_FRONT_LEFT           ;
@@ -311,8 +313,8 @@ enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
             m_channelMap[index++] = PCM_FRONT_LEFT;
             m_channelMap[index++] = PCM_FRONT_RIGHT;
             m_channelMap[index++] = PCM_FRONT_CENTER;
-            m_channelMap[index++] = PCM_SIDE_LEFT;
-            m_channelMap[index++] = PCM_SIDE_RIGHT;
+            m_channelMap[index++] = PCM_BACK_LEFT;
+            m_channelMap[index++] = PCM_BACK_RIGHT;
             break;
 
           case 6:
@@ -320,8 +322,8 @@ enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
             m_channelMap[index++] = PCM_FRONT_RIGHT;
             m_channelMap[index++] = PCM_FRONT_CENTER;
             m_channelMap[index++] = PCM_LOW_FREQUENCY;
-            m_channelMap[index++] = PCM_SIDE_LEFT;
-            m_channelMap[index++] = PCM_SIDE_RIGHT;
+            m_channelMap[index++] = PCM_BACK_LEFT;
+            m_channelMap[index++] = PCM_BACK_RIGHT;
             break;
 
           case 7:
@@ -351,13 +353,16 @@ enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
     }
 
     if (index == 0)
-    {
       CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::GetChannelMap - Unable to guess a channel layout, please report this to XBMC and submit a sample file");
-      return NULL;
-    }
-    return m_channelMap;
   }
 
+  //terminate the channel map
   m_channelMap[index] = PCM_INVALID;
+}
+
+enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
+{
+  if (m_channelMap[0] == PCM_INVALID)
+    return NULL;
   return m_channelMap;
 }
