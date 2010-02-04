@@ -30,9 +30,26 @@
 #include "WindowingFactory.h"
 #include "Settings.h"
 
-#pragma comment (lib,"dxva2.lib")
-
 using namespace DXVA;
+
+typedef HRESULT (__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
+static DXVA2CreateVideoServicePtr g_DXVA2CreateVideoService;
+
+static bool LoadDXVA()
+{
+  static CCriticalSection g_section;
+  static HMODULE          g_handle;
+
+  CSingleLock lock(g_section);
+  if(g_handle == NULL)
+    g_handle = LoadLibraryEx("dxva2.dll", NULL, 0);
+  if(g_handle == NULL)
+    return false;
+  g_DXVA2CreateVideoService = (DXVA2CreateVideoServicePtr)GetProcAddress(g_handle, "DXVA2CreateVideoService");
+  if(g_DXVA2CreateVideoService == NULL)
+    return false;
+  return true;
+}
 
 static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 { ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
@@ -188,6 +205,9 @@ do { \
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
+  if(!LoadDXVA())
+    return false;
+
   CSingleLock lock(m_section);
   Close();
 
@@ -197,7 +217,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     return false;
   }
 
-  CHECK(DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service))
+  CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service))
 
   UINT  input_count;
   GUID *input_list;
@@ -665,11 +685,14 @@ void CProcessor::Close()
 
 bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
 {
+  if(!LoadDXVA())
+    return false;
+
   CSingleLock lock(m_section);
   m_desc = dsc;
   m_size = size;
 
-  CHECK(DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoProcessorService, (void**)&m_service));
+  CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoProcessorService, (void**)&m_service));
 
   GUID*    guid_list;
   unsigned guid_count;
