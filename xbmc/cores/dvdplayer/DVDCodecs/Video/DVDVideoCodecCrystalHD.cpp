@@ -97,7 +97,8 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     }
 
     m_pts = 0;
-    m_Duration = 0.0;
+    // default duration to 23.976 fps, have to guess something.
+    m_Duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
     m_DropPictures = false;
     m_DecodeStarted = false;
 
@@ -120,6 +121,11 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
 {
   int ret = 0;
+
+  if (pts != DVD_NOPTS_VALUE)
+    m_pts = pts;
+  else
+    m_pts += m_Duration;
 
   // We are running a picture queue, picture frames are allocated
   // in CrystalHD class if needed, then passed up. Need to return
@@ -188,7 +194,6 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   bool  ret;
   
   ret = m_Device->GetPicture(pDvdVideoPicture);
-  m_pts = pDvdVideoPicture->pts;
   m_Duration = pDvdVideoPicture->iDuration;
   return ret;
 }
