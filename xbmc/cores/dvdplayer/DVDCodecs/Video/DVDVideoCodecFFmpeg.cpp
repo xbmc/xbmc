@@ -119,6 +119,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_bSoftware = false;
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
+  m_dts = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -360,6 +361,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
       return result;
   }
 
+  m_dts = dts;
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {

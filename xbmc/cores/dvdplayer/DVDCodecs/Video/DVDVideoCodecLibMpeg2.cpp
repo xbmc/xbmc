@@ -63,6 +63,7 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_irffpattern = 0;
   m_bFilm = false;
   m_bIs422 = false;
+  m_dts = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -223,6 +224,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
       return VC_ERROR;
     }
 
+    m_dts = dts;
     // libmpeg2 needs more data. Give it and parse the data again
     m_dll.mpeg2_buffer(m_pHandle, pData, pData + iSize);
     TagUnion u;

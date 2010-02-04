@@ -79,5 +79,6 @@ protected:
   bool              m_bSoftware;
   IHardwareDecoder *m_pHardware;
   int m_iLastKeyframe;
+  double m_dts;
 };
 
