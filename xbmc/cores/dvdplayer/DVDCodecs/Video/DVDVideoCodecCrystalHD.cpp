@@ -116,7 +116,7 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
   }
 }
 
-int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
+int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double pts)
 {
   int ret = 0;
 
