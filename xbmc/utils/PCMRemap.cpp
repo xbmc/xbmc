@@ -371,15 +371,15 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
     {
       struct PCMMapInfo *info;
       float value = 0;
-      int   div   = 0;
+      float div   = 0;
 
       for(info = m_lookupMap[m_outMap[ch]]; info->channel != PCM_INVALID; ++info)
       {
         src    = insample + m_inLookup[info->channel] * m_inSampleSize;
         value += (float)(*(int16_t*)src) * info->level;
-        ++div;
+        div   += info->level;
       }
-      value /= (float)div;
+      value /= div;
       dst = outsample + ch * m_inSampleSize;
       *((int16_t*)dst) = (int16_t)((value > 0.0) ? floor(value + 0.5) : ceil(value - 0.5));
     }
