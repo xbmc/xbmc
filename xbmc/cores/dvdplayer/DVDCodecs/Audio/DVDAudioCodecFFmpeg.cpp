@@ -112,8 +112,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
-  BuildChannelMap();
-
+  m_bMapBuilt = false;
   m_bOpenedCodec = true;
   m_iSampleFormat = SAMPLE_FMT_NONE;
   return true;
@@ -358,10 +357,12 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
 
   //terminate the channel map
   m_channelMap[index] = PCM_INVALID;
+  m_bMapBuilt = true;
 }
 
 enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
 {
+  if (!m_bMapBuilt) BuildChannelMap();
   if (m_channelMap[0] == PCM_INVALID)
     return NULL;
   return m_channelMap;

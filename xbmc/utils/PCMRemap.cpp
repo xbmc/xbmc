@@ -96,8 +96,8 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_FRONT_CENTER */
   {
-    {PCM_FRONT_LEFT           , 0.5},
-    {PCM_FRONT_RIGHT          , 0.5},
+    {PCM_FRONT_LEFT           , 1.0},
+    {PCM_FRONT_RIGHT          , 1.0},
     {PCM_INVALID}
   },
   /* PCM_LOW_FREQUENCY */
