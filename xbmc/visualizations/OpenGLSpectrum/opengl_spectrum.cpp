@@ -141,7 +141,7 @@ void draw_bars(void)
 //-----------------------------------------------------------------------------
 ADDON_STATUS Create(void* hdl, void* props)
 {
-  if (/*!hdl || */!props)
+  if (!props)
     return STATUS_UNKNOWN;
 
   return STATUS_NEED_SETTINGS;

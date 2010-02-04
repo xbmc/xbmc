@@ -94,11 +94,11 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->width = w;
   m_pInfo->height = h;
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-  m_pInfo->name = Name().c_str();
-  CStdString presets = _P(Path().c_str());
-  CStdString store = _P(Profile());
-  m_pInfo->presets = presets.c_str();
-  m_pInfo->datastore = store.c_str();
+
+  strncpy(m_pInfo->name, Name().c_str(), MAX_PATH);
+  strncpy(m_pInfo->presets, _P(Path()), MAX_PATH);
+  strncpy(m_pInfo->name, _P(Profile()), MAX_PATH);
+  m_pInfo->name[MAX_PATH-1] = m_pInfo->presets[MAX_PATH-1] = m_pInfo->datastore[MAX_PATH-1] = '\n';
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
@@ -353,7 +353,7 @@ bool CVisualisation::UpdateTrack()
   if (m_initialized)
   {
     // get the current album art filename
-    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+    m_AlbumThumb = _P(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
 
     // get the current track tag
     const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
@@ -378,7 +378,6 @@ bool CVisualisation::UpdateTrack()
 
 bool CVisualisation::GetPresetList(std::vector<CStdString> &vecpresets)
 {
-  vecpresets.clear();
   vecpresets = m_presets;
   return !m_presets.empty();
 }
@@ -436,92 +435,4 @@ CStdString CVisualisation::GetPresetName()
   else
     return "";
 }
-
-/*CStdString CVisualisation::GetFriendlyName(const char* strVisz,
-                                           const char* strSubModule)
-{
-  // should be of the format "moduleName (visName)"
-  return CStdString(strSubModule) + " (" + CStdString(strVisz) + ")";
-}
-
-CStdString CVisualisation::GetFriendlyName(const char* combinedName)
-{
-  CStdString moduleName;
-  CStdString visName  = combinedName;
-  int        colonPos = visName.ReverseFind(":");
-
-  if ( colonPos > 0 )
-  {
-    visName    = visName.Mid( colonPos + 1 );
-    moduleName = visName.Mid( 0, colonPos - 5 );  // remove .mvis
-
-    // should be of the format "moduleName (visName)"
-    return moduleName + " (" + visName + ")";
-  }
-  return visName.Left( visName.size() - 4 );
-}
-
-CStdString CVisualisation::GetCombinedName(const char* strVisz,
-                                           const char* strSubModule)
-{
-  // should be of the format "visName.mvis:moduleName"
-  return CStdString(strVisz) + ":" + CStdString(strSubModule);
-}
-
-CStdString CVisualisation::GetCombinedName(const char* friendlyName)
-{
-  CStdString moduleName;
-  CStdString fName  = friendlyName;
-
-  // convert from "module name (vis name)" to "vis name.mvis:module name"
-  int startPos = fName.ReverseFind(" (");
-
-  if ( startPos > 0 )
-  {
-    int endPos = fName.ReverseFind(")");
-    CStdString moduleName = fName.Left( startPos );
-    CStdString visName    = fName.Mid( startPos+2, endPos-startPos-2 );
-    return visName + ".mvis" + ":" + moduleName;
-  }
-  return fName + ".vis";
-}
-
-bool CVisualisation::IsValidVisualisation(const CStdString& strVisz)
-{
-  bool bRet = true;
-  CStdString strExtension;
-
-  if(strVisz.Equals("None"))
-    return true;
-
-  CUtil::GetExtension(strVisz, strExtension);
-  if (strExtension == ".mvis")
-    return true; // assume multivis are OK
-
-  if (strExtension != ".vis")
-    return false;
-
-#ifdef _LINUX
-  CStdString visPath(strVisz);
-  if(visPath.Find("/") == -1)
-  {
-    visPath.Format("%s%s", "special://xbmc/visualisations/", strVisz);
-    if(!XFILE::CFile::Exists(visPath))
-      visPath.Format("%s%s", "special://home/visualisations/", strVisz);
-  }
-  void *handle = dlopen( _P(visPath).c_str(), RTLD_LAZY );
-  if (!handle)
-    bRet = false;
-  else
-    dlclose(handle);
-#elif defined(HAS_DX)
-  if(strVisz.Right(11).CompareNoCase("win32dx.vis") != 0)
-    bRet = false;
-#elif defined(_WIN32)
-  if(strVisz.Right(9).CompareNoCase("win32.vis") != 0)
-    bRet = false;
-#endif
-
-  return bRet;
-}*/
 

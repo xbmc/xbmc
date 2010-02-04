@@ -56,10 +56,8 @@ public:
 
   ~DllSetting()
   {
-    if (id)
-      delete[] id;
-    if (label)
-      delete[] label;
+    delete[] id;
+    delete[] label;
     for (unsigned int i=0; i < entry.size(); i++)
       delete[] entry[i];
   }
@@ -103,10 +101,8 @@ public:
 
       if (vecSet[i].id && vecSet[i].label)
       {
-        (*sSet)[i]->id = (char*)malloc(strlen(vecSet[i].id)*sizeof(char*)+1);
-        strcpy((*sSet)[i]->id, vecSet[i].id);
-        (*sSet)[i]->label = (char*)malloc(strlen(vecSet[i].label)*sizeof(char*)+1);
-        strcpy((*sSet)[i]->id, vecSet[i].label);
+        (*sSet)[i]->id = strdup(vecSet[i].id);
+        (*sSet)[i]->label = strdup(vecSet[i].label);
         (*sSet)[i]->type = vecSet[i].type;
         (*sSet)[i]->current = vecSet[i].current;
         (*sSet)[i]->entry_elements = 0;
@@ -118,8 +114,7 @@ public:
           {
             if(strlen(vecSet[i].entry[j]) > 0)
             {
-              (*sSet)[i]->entry[j] = (char*)malloc(strlen(vecSet[i].entry[j])*sizeof(char*)+1);
-              strcpy((*sSet)[i]->entry[j], vecSet[i].entry[j]);
+              (*sSet)[i]->entry[j] = strdup(vecSet[i].entry[j]);
               (*sSet)[i]->entry_elements++;
             }
           }
@@ -161,21 +156,15 @@ public:
       {
         for(unsigned int j=0;j<(*sSet)[i]->entry_elements;j++)
         {
-          if((*sSet)[i]->entry[j])
-            free((*sSet)[i]->entry[j]);
+          free((*sSet)[i]->entry[j]);
         }
-        if((*sSet)[i]->entry)
-          free((*sSet)[i]->entry);
+        free((*sSet)[i]->entry);
       }
-      if((*sSet)[i]->id)
-        free((*sSet)[i]->id);
-      if((*sSet)[i]->label)
-        free((*sSet)[i]->label);
-      if((*sSet)[i])
-        free((*sSet)[i]);
+      free((*sSet)[i]->id);
+      free((*sSet)[i]->label);
+      free((*sSet)[i]);
     }
-    if(*sSet)
-      free(*sSet);
+    free(*sSet);
   }
 };
 

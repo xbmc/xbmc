@@ -43,9 +43,9 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    const char *name;
-    const char *presets;
-    const char *datastore;
+    char name[128];
+    char presets[128];
+    char datastore[128];
   };
 
   enum VIS_ACTION

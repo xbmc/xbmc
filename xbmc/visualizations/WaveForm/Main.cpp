@@ -48,7 +48,7 @@ struct Vertex_t
 //-----------------------------------------------------------------------------
 ADDON_STATUS Create(void* hdl, void* props)
 {
-  if (/*!hdl || */!props)
+  if (!props)
     return STATUS_UNKNOWN;
 
   VIS_PROPS* visProps = (VIS_PROPS*)props;
