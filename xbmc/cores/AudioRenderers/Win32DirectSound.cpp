@@ -92,7 +92,11 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   if(channelMap)
     BuildChannelMapping(iChannels, channelMap);
   else
+  {
     m_uiSpeakerMask = dsound_channel_mask[iChannels - 1];
+    for(int i = 0; i < iChannels; i++)
+      m_SpeakerOrder[i] = dsound_channel_order[i];
+  }
 
   m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
   m_remap.SetOutputFormat(iChannels, m_SpeakerOrder);

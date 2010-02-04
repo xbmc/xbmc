@@ -104,7 +104,11 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   if(channelMap)
     BuildChannelMapping(iChannels, channelMap);
   else
+  {
     m_uiSpeakerMask = wasapi_channel_mask[iChannels-1];
+    for(int i = 0; i < iChannels; i++)
+      m_SpeakerOrder[i] = wasapi_channel_order[i];
+  }
 
   m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
   m_remap.SetOutputFormat(iChannels, m_SpeakerOrder);
