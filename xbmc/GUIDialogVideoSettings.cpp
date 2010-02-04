@@ -28,6 +28,8 @@
 #include "GUISettings.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#include "WindowingFactory.h"
+#include "Application.h"
 #endif
 #include "VideoDatabase.h"
 #include "GUIDialogYesNo.h"
@@ -37,6 +39,7 @@
 using namespace std;
 #ifdef HAS_DX
 #include "cores/DSPlayer/DSConfig.h"
+#include "DShowUtil/DShowUtil.h"
 #include "CharsetConverter.h"
 #include "LocalizeStrings.h"
 #endif
@@ -71,7 +74,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTING_VDPAU_NOISE         19
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
 
-#define VIDEO_SETTINGS_DS_FILTERS         30
+#define VIDEO_SETTINGS_DS_FILTERS         0x20
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -148,24 +151,18 @@ void CGUIDialogVideoSettings::CreateSettings()
 #ifdef HAS_DX
   if ( g_renderManager.GetRendererType() == RENDERER_DSHOW )
   {
-    //AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
-    //g_dsconfig
-    FILTER_INFO pInf;
-    CStdString pStrFName;
-    std::vector<IBaseFilter *> pDsFilters;
-    pDsFilters = g_dsconfig.GetFiltersWithPropertyPages();
-    //g_localizeStrings.LoadBlock
-    for (std::vector<IBaseFilter*>::iterator it = pDsFilters.begin() ; it != pDsFilters.end(); it++)
-    {
-      (*it)->QueryFilterInfo(&pInf);
-      g_charsetConverter.wToUTF8(pInf.achName,pStrFName);
-      //Ici je ne suis pas sure de comment rajouter les titres en texte sans modifier 5000 affaires
-      //g_localizeStrings.
-      //AddButton(VIDEO_SETTINGS_DS_FILTERS,
-      //CGUIButtonControl *pControl = (CGUIButtonControl *)
-      
 
-    }
+    std::vector<IBaseFilter *> pDsFilters = g_dsconfig.GetFiltersWithPropertyPages();
+    int i = 0;
+
+    if (pDsFilters.size() != 0)
+      AddSeparator(8);
+
+    uint32_t offset = g_localizeStrings.LoadBlock("6000", "special://temp//dslang.xml", "");
+
+    for (std::vector<IBaseFilter*>::const_iterator it = pDsFilters.begin() ; it != pDsFilters.end(); it++, i++)
+      AddButton(VIDEO_SETTINGS_DS_FILTERS + i, offset + i);
+
   }
 #endif
 #ifdef HAVE_LIBVDPAU
@@ -229,6 +226,34 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.m_defaultVideoSettings = g_settings.m_currentVideoSettings;
       g_settings.Save();
     }
+  }
+  else if ( (setting.id & VIDEO_SETTINGS_DS_FILTERS) == VIDEO_SETTINGS_DS_FILTERS)
+  {
+    int filterId = setting.id - VIDEO_SETTINGS_DS_FILTERS;
+
+    IBaseFilter *pBF = g_dsconfig.GetFiltersWithPropertyPages()[filterId];
+    HRESULT hr = S_OK;
+
+    ISpecifyPropertyPages *pProp = NULL;
+    IBaseFilter *cObjects[1]; cObjects[0] = pBF;
+    CAUUID pPages;
+    CStdStringW Caption = "DSPlayer";
+    if ( SUCCEEDED( pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **) &pProp) ) )
+    {
+      
+      pProp->GetPages(&pPages);
+
+      g_application.m_pPlayer->Pause();
+
+      hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, Caption.c_str(),
+        1, (LPUNKNOWN *) &pBF, pPages.cElems, pPages.pElems, 0, 0, 0);
+
+      g_application.m_pPlayer->Pause();
+
+	    SAFE_RELEASE(pProp);
+      CoTaskMemFree(pPages.pElems);
+      
+    } 
   }
 }
 

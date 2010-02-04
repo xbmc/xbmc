@@ -91,6 +91,7 @@ bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
       CLog::Log(LOGNOTICE, "%s \"%s\" expose ISpecifyPropertyPages", __FUNCTION__, filterName.c_str());
     }
 	  SAFE_RELEASE(pProp);
+    CoTaskMemFree(pPages.pElems);
     return true;
     
   } 
@@ -103,30 +104,29 @@ void CDSConfig::CreatePropertiesXml()
   //verify we have at least one property page
   if (m_pPropertiesFilters.empty())
     return;
-  FILTER_INFO pInf;
+
   CStdString pStrName;
   CStdString pStrId;
-  int pIntId = 62000;
+  int pIntId = 0;
   TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("strings");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) 
     return;
   
-  for (std::vector<IBaseFilter*>::iterator it = m_pPropertiesFilters.begin() ; it != m_pPropertiesFilters.end(); it++)
+  for (std::vector<IBaseFilter*>::const_iterator it = m_pPropertiesFilters.begin() ; it != m_pPropertiesFilters.end(); it++)
   {
-    (*it)->QueryFilterInfo(&pInf);
-    g_charsetConverter.wToUTF8(pInf.achName,pStrName);
+    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(*it), pStrName);
     TiXmlElement newFilterElement("string");
     
     //Set the id of the lang
-    pStrId.Format("%i",pIntId);
-    newFilterElement.SetAttribute("id",pStrId.c_str());
+    pStrId.Format("%i", pIntId);
+    newFilterElement.SetAttribute("id", pStrId.c_str());
 
     //set the name of the filter in the element
     //newFilterElement.setValue(pStrName.c_str());
     TiXmlNode *pNewNode = pRoot->InsertEndChild(newFilterElement);
-    if (!pNewNode)
+    if (! pNewNode)
       break;
     
     TiXmlText value(pStrName.c_str());
