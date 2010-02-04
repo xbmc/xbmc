@@ -1452,17 +1452,17 @@ namespace VIDEO
       CLog::Log(LOGDEBUG,"Found matching %s NFO file: %s", type.c_str(), strNfoFile.c_str());
       if (result == CNfoFile::FULL_NFO)
       {
-     /*   if (content == CONTENT_TVSHOWS)
-          info->Path() = m_nfoReader.m_strScraper;*/
+        if (content == CONTENT_TVSHOWS)
+          m_info = m_nfoReader.m_info;
       }
       else if (result != CNfoFile::NO_NFO)
       {
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
-        CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_strScraper.c_str());
+        CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_info->Name().c_str());
         CLog::Log(LOGDEBUG,"-- nfo-url: %s", scrUrl.m_url[0].m_url.c_str());
         scrUrl.strId  = m_nfoReader.m_strImDbNr;
- /*       info->Path() = m_nfoReader.m_strScraper;*/
+        m_info = m_nfoReader.m_info;
         if (result == CNfoFile::COMBINED_NFO)
           m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       }

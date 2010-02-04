@@ -211,6 +211,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
             if (!scraper &&
               !(m_database.HasMovieInfo(item->m_strPath) ||
+                m_database.HasTvShowInfo(strDir)                           ||
                 m_database.HasEpisodeInfo(item->m_strPath)))
             {
               // hack

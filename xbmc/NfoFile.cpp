@@ -65,7 +65,6 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info
     return NO_NFO;
 
   CFileItemList items;
-  CStdString strScraperBasePath, strDefault, strSelected;
   bool bNfo=false;
 
   if(!CAddonMgr::Get()->HasAddons(ADDON_SCRAPER, m_content))
@@ -74,7 +73,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info
   AddonPtr addon;
   ScraperPtr defaultScraper;
   if (!CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, m_content))
-    return NO_NFO; //TODO check this is correct response
+    return NO_NFO;
   else
     defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
 
@@ -230,8 +229,6 @@ int CNfoFile::Scrape(const AddonPtr& addon, const CStdString& strURL /* = "" */)
   {
     return 1;
   }
-
-  m_strScraper = addon->Name(); 
 
   if (strURL.IsEmpty())
   {

@@ -112,7 +112,7 @@ void CMusicInfoScraper::FindAlbuminfo()
   }
 
   parser.m_param[0] = strHTML;
-  CStdString strXML = parser.Parse("GetAlbumSearchResults"/*,&m_scraper->settings*/);
+  CStdString strXML = parser.Parse("GetAlbumSearchResults");
   CLog::Log(LOGDEBUG,"scraper: GetAlbumSearchResults returns %s",strXML.c_str());
   if (strXML.IsEmpty())
   {
@@ -221,7 +221,7 @@ void CMusicInfoScraper::FindArtistinfo()
   }
 
   parser.m_param[0] = strHTML;
-  CStdString strXML = parser.Parse("GetArtistSearchResults"/*,&m_scraper->settings*/);
+  CStdString strXML = parser.Parse("GetArtistSearchResults");
   CLog::Log(LOGDEBUG,"scraper: GetArtistSearchResults returns %s",strXML.c_str());
   if (strXML.IsEmpty())
   {

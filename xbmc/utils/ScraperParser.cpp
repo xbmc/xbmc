@@ -162,18 +162,17 @@ bool CScraperParser::LoadFromXML()
           m_SearchStringEncoding = "UTF-8";
       }
 
-      ADDON::ADDONDEPS deps = m_scraper->GetDeps();
-      ADDON::ADDONDEPS::iterator itr = deps.begin();
+      ADDONDEPS deps = m_scraper->GetDeps();
+      ADDONDEPS::iterator itr = deps.begin();
       while (itr != deps.end())
       {
         AddonPtr dep;
-        if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER_LIBRARY, (*itr).first, dep))
+        if (!CAddonMgr::Get()->GetAddon(ADDON_SCRAPER_LIBRARY, (*itr).first, dep))
         {
           itr++;
           continue;
         }
-        CStdString strFile = dep->Path();
-        strFile = CUtil::AddFileToFolder(strFile, dep->LibName());
+        CStdString strFile = CUtil::AddFileToFolder(dep->Path(), dep->LibName());
         TiXmlDocument doc;
         if (doc.LoadFile(strFile))
         {

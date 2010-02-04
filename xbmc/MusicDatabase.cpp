@@ -61,10 +61,10 @@ using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
+using ADDON::AddonPtr;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
 #define MUSIC_DATABASE_VERSION        14
-using ADDON::AddonPtr;
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3

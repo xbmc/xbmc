@@ -28,7 +28,6 @@
 
 class TiXmlDocument;
 class CScraperUrl;
-class CScraperParser;
 
 namespace MUSIC_GRABBER
 {

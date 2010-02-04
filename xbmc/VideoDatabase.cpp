@@ -48,12 +48,7 @@ using namespace std;
 using namespace dbiplus;
 using namespace XFILE;
 using namespace VIDEO;
-
-using ADDON::CAddonMgr;
-using ADDON::CScraper;
-using ADDON::ScraperPtr;
-using ADDON::AddonPtr;
-using ADDON::TranslateContent;
+using namespace ADDON;
 
 #define VIDEO_DATABASE_VERSION 34
 #define VIDEO_DATABASE_OLD_VERSION 3.f
@@ -5676,7 +5671,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
               break;
           }
           strPath1 = strParent;
-        };
+        }
       }
     }
     m_pDS->close();

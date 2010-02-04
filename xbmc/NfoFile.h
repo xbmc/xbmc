@@ -70,7 +70,7 @@ public:
     return details.Load(doc.RootElement(),true);
   }
 
-  CStdString m_strScraper;
+  ADDON::ScraperPtr m_info;
   CStdString m_strImDbUrl;
   CStdString m_strImDbNr;
   void Close();
@@ -83,7 +83,6 @@ private:
   char* m_doc;
   char* m_headofdoc;
   int m_size;
-  ADDON::ScraperPtr m_info;
   CStdString m_strContent;
   CONTENT_TYPE m_content;
   bool DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");

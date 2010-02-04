@@ -846,7 +846,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicAlbumInfo album("nfo",scrUrl);
-      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_info->Name().c_str());
       CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
       //info->Path() = nfoReader.m_strScraper;
       scraper.SetScraperInfo(info);
@@ -1073,7 +1073,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicArtistInfo artist("nfo",scrUrl);
-      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_info->Name().c_str());
       CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
       //info->Path() = nfoReader.m_strScraper;
       scraper.SetScraperInfo(info);
