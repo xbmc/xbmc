@@ -68,6 +68,7 @@ struct PCMMapInfo
 {
   enum  PCMChannels channel;
   float level;
+  int   in_offset;
 };
 
 class CPCMRemap
@@ -80,8 +81,8 @@ protected:
   enum PCMChannels *m_inMap, *m_outMap, *m_layoutMap;
 
   bool              m_useable  [PCM_MAX_CH];
+  int               m_inStride, m_outStride;
   struct PCMMapInfo m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
-  int8_t            m_inLookup [PCM_MAX_CH];
 
   struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, struct PCMMapInfo *tablePtr);
   void               BuildMap();

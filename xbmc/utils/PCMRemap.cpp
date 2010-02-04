@@ -102,36 +102,36 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_LOW_FREQUENCY */
   {
-    {PCM_FRONT_LEFT           , 1.0},
-    {PCM_FRONT_RIGHT          , 1.0},
+    {PCM_FRONT_LEFT           , 3.5}, /* +10db (see A/52B 7.8 paragraph 2) */
+    {PCM_FRONT_RIGHT          , 3.5},
     {PCM_INVALID}
   },
   /* PCM_BACK_LEFT */
   {
-    {PCM_FRONT_LEFT           , 0.3},
+    {PCM_FRONT_LEFT           , 1.0},
     {PCM_INVALID}
   },
   /* PCM_BACK_RIGHT */
   {
-    {PCM_FRONT_RIGHT          , 0.3},
+    {PCM_FRONT_RIGHT          , 1.0},
     {PCM_INVALID}
   },
   /* PCM_FRONT_LEFT_OF_CENTER */
   {
-    {PCM_FRONT_LEFT           , 0.5},
-    {PCM_FRONT_CENTER         , 0.5},
+    {PCM_FRONT_LEFT           , 1.0},
+    {PCM_FRONT_CENTER         , 1.0},
     {PCM_INVALID}
   },
   /* PCM_FRONT_RIGHT_OF_CENTER */
   {
-    {PCM_FRONT_RIGHT          , 0.5},
-    {PCM_FRONT_CENTER         , 0.5},
+    {PCM_FRONT_RIGHT          , 1.0},
+    {PCM_FRONT_CENTER         , 1.0},
     {PCM_INVALID}
   },
   /* PCM_BACK_CENTER */
   {
-    {PCM_BACK_LEFT            , 0.5},
-    {PCM_BACK_RIGHT           , 0.5},
+    {PCM_BACK_LEFT            , 1.0},
+    {PCM_BACK_RIGHT           , 1.0},
     {PCM_INVALID}
   },
   /* PCM_SIDE_LEFT */
@@ -146,40 +146,40 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_TOP_FRONT_LEFT */
   {
-    {PCM_FRONT_LEFT           , 0.5},
+    {PCM_FRONT_LEFT           , 1.0},
     {PCM_INVALID}
   },
   /* PCM_TOP_FRONT_RIGHT */
   {
-    {PCM_FRONT_RIGHT          , 0.5},
+    {PCM_FRONT_RIGHT          , 1.0},
     {PCM_INVALID}
   },
   /* PCM_TOP_FRONT_CENTER */
   {
-    {PCM_TOP_FRONT_LEFT       , 0.5},
-    {PCM_TOP_FRONT_RIGHT      , 0.5},
+    {PCM_TOP_FRONT_LEFT       , 1.0},
+    {PCM_TOP_FRONT_RIGHT      , 1.0},
     {PCM_INVALID}
   },
   /* PCM_TOP_CENTER */
   {
-    {PCM_TOP_FRONT_LEFT       , 0.5},
-    {PCM_TOP_FRONT_RIGHT      , 0.5},
+    {PCM_TOP_FRONT_LEFT       , 1.0},
+    {PCM_TOP_FRONT_RIGHT      , 1.0},
     {PCM_INVALID}
   },
   /* PCM_TOP_BACK_LEFT */
   {
-    {PCM_BACK_LEFT            , 0.5},
+    {PCM_BACK_LEFT            , 1.0},
     {PCM_INVALID}
   },
   /* PCM_TOP_BACK_RIGHT */
   {
-    {PCM_BACK_LEFT            , 0.5},
+    {PCM_BACK_LEFT            , 1.0},
     {PCM_INVALID}
   },
   /* PCM_TOP_BACK_CENTER */
   {
-    {PCM_TOP_BACK_LEFT        , 0.5},
-    {PCM_TOP_BACK_RIGHT       , 0.5},
+    {PCM_TOP_BACK_LEFT        , 1.0},
+    {PCM_TOP_BACK_RIGHT       , 1.0},
     {PCM_INVALID}
   }
 };
@@ -225,7 +225,7 @@ struct PCMMapInfo* CPCMRemap::ResolveChannel(enum PCMChannels channel, float lev
   struct PCMMapInfo *info;
   for(info = PCMDownmixTable[channel]; info->channel != PCM_INVALID; ++info)
   {
-    /* calculate the level based on our full volume */
+    /* calculate adjust the level based on our level */
     float  l = (info->level * (level / 100)) * 100;
     tablePtr = ResolveChannel(info->channel, l, tablePtr);
   }
@@ -244,6 +244,9 @@ void CPCMRemap::BuildMap()
 
   unsigned int in_ch, out_ch;
 
+  m_inStride  = m_inSampleSize * m_inChannels ;
+  m_outStride = m_inSampleSize * m_outChannels;
+
   /* figure out what channels we have and can use */
   for(enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
   {
@@ -257,27 +260,37 @@ void CPCMRemap::BuildMap()
 
   /* resolve all the channels */
   struct PCMMapInfo table[PCM_MAX_CH + 1], *info, *dst;
+  int counts[PCM_MAX_CH];
+  memset(counts, 0, sizeof(counts));
   for(in_ch = 0; in_ch < m_inChannels; ++in_ch) {
     ResolveChannel(m_inMap[in_ch], 1.0f, table);
     for(info = table; info->channel != PCM_INVALID; ++info)
     {
-      /* get the table, find the end of the table */
-      for(dst = m_lookupMap[info->channel]; dst->channel != PCM_INVALID; ++dst) {}
+      /* find the end of the table */
+      for(dst = m_lookupMap[info->channel]; dst->channel != PCM_INVALID; ++dst);
 
-      /* append it to the table */
-      dst->channel = m_inMap[in_ch];
-      dst->level   = info->level;
-
-      /* terminate the table */
-      ++dst;
-      dst->channel = PCM_INVALID;
+      /* append it to the table and set its input offset */
+      dst->channel   = m_inMap[in_ch];
+      dst->in_offset = in_ch * 2;
+      dst->level     = info->level;
+      counts[dst->channel]++;
     }
   }
-  
-  /* build our reverse lookup table */
-  for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
-    m_inLookup[m_inMap[in_ch]] = in_ch;
 
+  /* fix and normalise the values */
+  for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
+  {
+    float scale = 0;
+    for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
+    {
+      dst->level = dst->level / sqrt(counts[dst->channel]);
+      scale     += dst->level;
+    }
+
+    for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
+      dst->level /= scale;
+  }
+  
   /* output the final map for debugging */
   for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
   {
@@ -371,21 +384,17 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
     {
       struct PCMMapInfo *info;
       float value = 0;
-      float div   = 0;
-
       for(info = m_lookupMap[m_outMap[ch]]; info->channel != PCM_INVALID; ++info)
       {
-        src    = insample + m_inLookup[info->channel] * m_inSampleSize;
+        src    = insample + info->in_offset;
         value += (float)(*(int16_t*)src) * info->level;
-        div   += info->level;
       }
-      value /= div;
       dst = outsample + ch * m_inSampleSize;
       *((int16_t*)dst) = (int16_t)((value > 0.0) ? floor(value + 0.5) : ceil(value - 0.5));
     }
 
-    insample  += m_inSampleSize * m_inChannels;
-    outsample += m_inSampleSize * m_outChannels;
+    insample  += m_inStride;
+    outsample += m_outStride;
   }
 }
 
