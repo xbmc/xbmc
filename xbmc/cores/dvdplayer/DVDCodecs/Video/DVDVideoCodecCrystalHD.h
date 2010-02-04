@@ -48,6 +48,7 @@ protected:
   bool            m_DropPictures;
   double          m_Duration;
   const char      *m_pFormatName;
+  CRYSTALHD_CODEC_TYPE m_codec_type;
 };
 
 #endif
