@@ -82,10 +82,6 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "H.264 MoComp, FGT",                                      &DXVA2_ModeH264_B, 0,            },
     { "H.264 motion compensation (MoComp), no FGT",             &DXVA2_ModeH264_A, 0,            },
 
-    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, CODEC_ID_H264 },
-    { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0,            },
-    { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0,            },
-
     { "Windows Media Video 8 MoComp",           &DXVA2_ModeWMV8_B, 0 },
     { "Windows Media Video 8 post processing",  &DXVA2_ModeWMV8_A, 0 },
 
@@ -99,8 +95,10 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B, 0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A, 0 },
 
-    { "Intel VC-1 VLD",       &DXVADDI_Intel_ModeVC1_E, CODEC_ID_VC1 },
-    { "Intel VC-1 VLD",       &DXVADDI_Intel_ModeVC1_E, CODEC_ID_WMV3 },
+    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, 0 },
+    { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
+    { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
+    { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 
     { NULL, NULL, 0 }
 };
