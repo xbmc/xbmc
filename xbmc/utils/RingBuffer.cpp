@@ -22,6 +22,7 @@
 #include "RingBuffer.h"
 #include <cstring>
 #include <cstdlib>
+#include <algorithm>
 
 /* Constructor */
 CRingBuffer::CRingBuffer()
