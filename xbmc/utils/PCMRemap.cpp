@@ -300,12 +300,17 @@ void CPCMRemap::BuildMap()
   for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
   {
     float scale = 0;
+    int count = 0;
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
     {
-      dst->copy  = counts[dst->channel] == 1;
+      dst->copy  = false;
       dst->level = dst->level / sqrt((float)counts[dst->channel]);
       scale     += dst->level;
+      ++count;
     }
+
+    if (count == 1)
+      m_lookupMap[m_outMap[out_ch]]->copy = true;
 
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
       dst->level /= scale;
