@@ -20,7 +20,6 @@
  */
 
 #include "GUIDialogBusy.h"
-#include "ApplicationRenderer.h"
 
 CGUIDialogBusy::CGUIDialogBusy(void)
 : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml")

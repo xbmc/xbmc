@@ -915,6 +915,14 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DVDVideoPPFFmpeg.h"
 							>
 						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h"
+							>
+						</File>
 						<Filter
 							Name="CrystlHD"
 							>
@@ -1051,14 +1059,6 @@
 								>
 							</File>
 						</Filter>
-						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h"
-							>
-						</File>
 					</Filter>
 					<Filter
 						Name="Overlay"
@@ -2320,14 +2320,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Application.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\ApplicationRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\ApplicationRenderer.h"
 				>
 			</File>
 			<File

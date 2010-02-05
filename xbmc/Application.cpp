@@ -71,7 +71,6 @@
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
-#include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
@@ -1628,8 +1627,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     }
 #endif
   }
-  //stop the busy renderer if it's running before we lock the graphiccontext or we could deadlock.
-  g_ApplicationRenderer.Stop();
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
 
@@ -1735,7 +1732,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   // leave the graphics lock
   lock.Leave();
-  g_ApplicationRenderer.Start();
 
   // restore windows
   if (currentWindow != WINDOW_INVALID)
@@ -1759,7 +1755,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
-  g_ApplicationRenderer.Stop();
   g_audioManager.Enable(false);
 
   g_windowManager.DeInitialize();
@@ -1932,12 +1927,6 @@ void CApplication::RenderNoPresent()
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
 
-  g_ApplicationRenderer.Render();
-
-}
-
-void CApplication::DoRender()
-{
   g_graphicsContext.Lock();
 
   //g_Windowing.BeginRender();
@@ -4253,13 +4242,6 @@ bool CApplication::NeedRenderFullScreen()
 }
 
 void CApplication::RenderFullScreen()
-{
-  MEASURE_FUNCTION;
-
-  g_ApplicationRenderer.Render(true);
-}
-
-void CApplication::DoRenderFullScreen()
 {
   MEASURE_FUNCTION;
 

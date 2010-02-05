@@ -86,7 +86,6 @@ public:
   virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
-  virtual void DoRender();
   virtual void RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
@@ -145,7 +144,6 @@ public:
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
   void RenderFullScreen();
-  void DoRenderFullScreen();
   bool NeedRenderFullScreen();
   bool IsPlaying() const;
   bool IsPaused() const;

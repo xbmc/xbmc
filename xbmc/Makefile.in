@@ -176,7 +176,6 @@ SRCS=Application.cpp \
      GUIDialogSmartPlaylistEditor.cpp \
      GUIDialogSmartPlaylistRule.cpp \
      SlideShowPicture.cpp \
-     ApplicationRenderer.cpp \
      GUIDialogBusy.cpp \
      GUIWindowStartup.cpp \
      UPnP.cpp \
