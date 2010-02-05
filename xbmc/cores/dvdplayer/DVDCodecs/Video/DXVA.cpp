@@ -112,19 +112,6 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
     return NULL;
 }
 
-static inline unsigned dxva2_align(unsigned value)
-{
-  // untill somebody gives me a sample where this is required
-  // i'd rather not do this alignment as it will mess with
-  // output not being cropped correctly
-#if 0
-  return (value + 15) & ~15;
-#else
-  return value;
-#endif
-}
-
-
 CDecoder::SVideoBuffer::SVideoBuffer()
 {
   surface = NULL;
@@ -416,8 +403,8 @@ bool CDecoder::OpenTarget(const GUID &guid)
 
 bool CDecoder::OpenDecoder(AVCodecContext *avctx)
 {
-  m_format.SampleWidth  = dxva2_align(avctx->width);
-  m_format.SampleHeight = dxva2_align(avctx->height);
+  m_format.SampleWidth  = avctx->width;
+  m_format.SampleHeight = avctx->height;
   m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
   m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
 
@@ -516,8 +503,8 @@ bool CDecoder::OpenDecoder(AVCodecContext *avctx)
   else
     m_context->surface_count = 2  + 1 + 1; // 2  ref + 1 decode + 1 libavcodec safety
 
-  CHECK(m_service->CreateSurface( m_format.SampleWidth
-                                , m_format.SampleHeight
+  CHECK(m_service->CreateSurface( (m_format.SampleWidth  + 15) & ~15
+                                , (m_format.SampleHeight + 15) & ~15
                                 , m_context->surface_count - 1
                                 , m_format.Format
                                 , D3DPOOL_DEFAULT
@@ -594,8 +581,8 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
-  if(dxva2_align(avctx->width)  != m_format.SampleWidth
-  || dxva2_align(avctx->height) != m_format.SampleHeight)
+  if(avctx->width  != m_format.SampleWidth
+  || avctx->height != m_format.SampleHeight)
   {
     Close();
     if(!Open(avctx, avctx->pix_fmt))
