@@ -347,7 +347,6 @@
 		E38E1F360D25F9FD00618676 /* APEv2Tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14620D25F9F900618676 /* APEv2Tag.cpp */; };
 		E38E1F370D25F9FD00618676 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14640D25F9F900618676 /* Application.cpp */; };
 		E38E1F380D25F9FD00618676 /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */; };
-		E38E1F390D25F9FD00618676 /* ApplicationRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14680D25F9F900618676 /* ApplicationRenderer.cpp */; };
 		E38E1F3B0D25F9FD00618676 /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146C0D25F9F900618676 /* AutoPtrHandle.cpp */; };
 		E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
 		E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14700D25F9F900618676 /* AutoSwitch.cpp */; };
@@ -1074,7 +1073,6 @@
 		F5A1C8BF0F6B06CF00A96ABD /* APEv2Tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14620D25F9F900618676 /* APEv2Tag.cpp */; };
 		F5A1C8C00F6B06CF00A96ABD /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14640D25F9F900618676 /* Application.cpp */; };
 		F5A1C8C10F6B06CF00A96ABD /* ApplicationMessenger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */; };
-		F5A1C8C20F6B06CF00A96ABD /* ApplicationRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14680D25F9F900618676 /* ApplicationRenderer.cpp */; };
 		F5A1C8C30F6B06CF00A96ABD /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146C0D25F9F900618676 /* AutoPtrHandle.cpp */; };
 		F5A1C8C40F6B06CF00A96ABD /* Autorun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E146E0D25F9F900618676 /* Autorun.cpp */; };
 		F5A1C8C50F6B06CF00A96ABD /* AutoSwitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14700D25F9F900618676 /* AutoSwitch.cpp */; };
@@ -2309,8 +2307,6 @@
 		E38E14650D25F9F900618676 /* Application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Application.h; sourceTree = "<group>"; };
 		E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationMessenger.cpp; sourceTree = "<group>"; };
 		E38E14670D25F9F900618676 /* ApplicationMessenger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationMessenger.h; sourceTree = "<group>"; };
-		E38E14680D25F9F900618676 /* ApplicationRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationRenderer.cpp; sourceTree = "<group>"; };
-		E38E14690D25F9F900618676 /* ApplicationRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationRenderer.h; sourceTree = "<group>"; };
 		E38E146C0D25F9F900618676 /* AutoPtrHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AutoPtrHandle.cpp; sourceTree = "<group>"; };
 		E38E146D0D25F9F900618676 /* AutoPtrHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPtrHandle.h; sourceTree = "<group>"; };
 		E38E146E0D25F9F900618676 /* Autorun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Autorun.cpp; sourceTree = "<group>"; };
@@ -4444,8 +4440,6 @@
 				E38E14650D25F9F900618676 /* Application.h */,
 				E38E14660D25F9F900618676 /* ApplicationMessenger.cpp */,
 				E38E14670D25F9F900618676 /* ApplicationMessenger.h */,
-				E38E14680D25F9F900618676 /* ApplicationRenderer.cpp */,
-				E38E14690D25F9F900618676 /* ApplicationRenderer.h */,
 				E38E146C0D25F9F900618676 /* AutoPtrHandle.cpp */,
 				E38E146D0D25F9F900618676 /* AutoPtrHandle.h */,
 				E38E146E0D25F9F900618676 /* Autorun.cpp */,
@@ -7275,7 +7269,6 @@
 				E38E1F360D25F9FD00618676 /* APEv2Tag.cpp in Sources */,
 				E38E1F370D25F9FD00618676 /* Application.cpp in Sources */,
 				E38E1F380D25F9FD00618676 /* ApplicationMessenger.cpp in Sources */,
-				E38E1F390D25F9FD00618676 /* ApplicationRenderer.cpp in Sources */,
 				E38E1F3B0D25F9FD00618676 /* AutoPtrHandle.cpp in Sources */,
 				E38E1F3C0D25F9FD00618676 /* Autorun.cpp in Sources */,
 				E38E1F3D0D25F9FD00618676 /* AutoSwitch.cpp in Sources */,
@@ -8134,7 +8127,6 @@
 				F5A1C8BF0F6B06CF00A96ABD /* APEv2Tag.cpp in Sources */,
 				F5A1C8C00F6B06CF00A96ABD /* Application.cpp in Sources */,
 				F5A1C8C10F6B06CF00A96ABD /* ApplicationMessenger.cpp in Sources */,
-				F5A1C8C20F6B06CF00A96ABD /* ApplicationRenderer.cpp in Sources */,
 				F5A1C8C30F6B06CF00A96ABD /* AutoPtrHandle.cpp in Sources */,
 				F5A1C8C40F6B06CF00A96ABD /* Autorun.cpp in Sources */,
 				F5A1C8C50F6B06CF00A96ABD /* AutoSwitch.cpp in Sources */,
