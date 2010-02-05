@@ -233,7 +233,7 @@ void CStreamsManager::LoadStreams()
       if (mediaType->majortype == MEDIATYPE_Audio)
       {
         /* Audio stream */
-        if (infos->name.find_first_of("Undetermined") != std::string::npos )
+        if (infos->name.find("Undetermined") != std::string::npos )
           infos->name.Format("A: Audio %02d", j + 1);
 
         m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i, reinterpret_cast<SAudioStreamInfos *>(infos)) );
@@ -447,6 +447,11 @@ int CStreamsManager::InternalGetAudioStream()
 int CStreamsManager::GetPictureWidth()
 {
   return m_videoStream.width;
+}
+
+int CStreamsManager::GetPictureHeight()
+{
+  return m_videoStream.height;
 }
 
 CStdString CStreamsManager::GetAudioCodecName()

@@ -134,7 +134,7 @@
     <rule filetypes="mpg" source="mpegsource" splitter="mpegsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     <rule filetypes="m2ts" source="mpegsource" splitter="mpegsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
 
-    <rule filetypes="mkv" source="mkvsource" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
+    <rule filetypes="mkv" source="mkvsource" splitter="mkvsplitter" videodec="mpcvideodec" audiodec="mpaaudiodec"/>
     
 	<!-- the WM ASF Reader is a source and a splitter -->
     <rule filetypes="wmv" source="wmasfreader" videodec="ffdvideodec" audiodec="wmaudiodecoder"/>

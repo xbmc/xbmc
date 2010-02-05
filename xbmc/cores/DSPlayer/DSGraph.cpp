@@ -74,7 +74,7 @@ CDSGraph::~CDSGraph()
 {
 }
 
-//This is alo creating the Graph
+//This is also creating the Graph
 HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 {
   if (CDSPlayer::PlayerState != DSPLAYER_LOADING)
@@ -175,6 +175,15 @@ void CDSGraph::CloseFile()
     CStreamsManager::Destroy();
     CChaptersManager::Destroy();
 
+    m_VideoInfo.Clear();
+    m_State.Clear();
+
+    m_PlaybackRate = 1;
+    m_currentSpeed = 0;
+    g_userId = 0xACDCACDC;
+    m_bReachedEnd = false;
+    m_bChangingAudioStream = false;
+
 	  SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
   } else
   {
@@ -214,10 +223,15 @@ void CDSGraph::UpdateTime()
 
 void CDSGraph::UpdateState()
 {
-  HRESULT hr;
-  LONGLONG Duration;
+  HRESULT hr = S_OK;
+  LONGLONG Duration = 0;
+
+  if (! m_pMediaSeeking || CDSPlayer::PlayerState == DSPLAYER_CLOSING
+                        || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+    return;
+
   hr = m_pMediaSeeking->GetTimeFormatA(&m_VideoInfo.time_format);
-  // Should we seek using IMediaSelection
+
   if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
   {
     if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
@@ -433,6 +447,7 @@ void CDSGraph::DoFFRW(int currentSpeed)
     hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
 	  m_State.time = double(earliest) / TIME_FORMAT_TO_MS;;
     m_pMediaControl->Run();
+    UpdateState();
     return;
   }
 
@@ -445,6 +460,7 @@ void CDSGraph::DoFFRW(int currentSpeed)
 
 		m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
     m_pMediaControl->Run();
+    UpdateState();
     return;
   }
   //seek to new moment in time
@@ -452,6 +468,7 @@ void CDSGraph::DoFFRW(int currentSpeed)
 	m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
   m_pMediaControl->StopWhenReady();
 
+  UpdateState();
 }
 
 HRESULT CDSGraph::UnloadGraph()
@@ -510,7 +527,7 @@ void CDSGraph::SeekInMilliSec(double sec)
   if( m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME )
     seekrequest = ( LONGLONG )( sec * TIME_FORMAT_TO_MS );
   else
-    seekrequest = sec;
+    seekrequest = (LONGLONG) sec;
 
   if ( seekrequest < 0 )
     seekrequest = 0;
@@ -596,40 +613,48 @@ float CDSGraph::GetPercentage()
   return GetTime() * 100 / (float)iTotalTime;
 }
 
-std::string CDSGraph::GetGeneralInfo()
+CStdString CDSGraph::GetGeneralInfo()
 {
-  std::string generalInfo;
-  generalInfo.append("Source Filter:");
-  generalInfo.append(m_VideoInfo.filter_source.c_str());
-  if (m_VideoInfo.filter_splitter.length() > 0)
-  {
-    generalInfo.append(" | ");
-    generalInfo.append(m_VideoInfo.filter_splitter.c_str());
-  }
+  CStdString generalInfo;
+
+  generalInfo = "Source Filter: " + m_VideoInfo.filter_source;
+
+  if (! m_VideoInfo.filter_splitter.empty())
+    generalInfo += " | Splitter: " + m_VideoInfo.filter_splitter;
+
   return generalInfo;
 }
 
-std::string CDSGraph::GetAudioInfo()
+CStdString CDSGraph::GetAudioInfo()
 {
-  std::string audioInfo;
-  audioInfo.append("Audio Decoder: ");
-  audioInfo.append(m_VideoInfo.filter_audio_dec.c_str());
-  audioInfo.append(" | Renderer: ");
-  audioInfo.append(m_VideoInfo.filter_audio_renderer.c_str());
-  return  audioInfo;
+  CStdString audioInfo;
+  CStreamsManager *c = CStreamsManager::getSingleton();
+
+  audioInfo.Format("Audio Decoder: %s (%s, %d Hz, %d Channels) | Renderer: %s",
+    m_VideoInfo.filter_audio_dec,
+    c->GetAudioCodecName(),
+    c->GetSampleRate(),
+    c->GetChannels(),
+    m_VideoInfo.filter_audio_renderer);
+    
+  return audioInfo;
 }
 
-std::string CDSGraph::GetVideoInfo()
+CStdString CDSGraph::GetVideoInfo()
 {
-  std::string videoInfo;
-  videoInfo.append("Video Decoder: ");
-  videoInfo.append(m_VideoInfo.filter_video_dec.c_str());
-  if ( m_VideoInfo.dxva_info.length()>0 )
-  {
-    videoInfo.append(" | ");
-    videoInfo.append(m_VideoInfo.dxva_info.c_str());
-  }
-  return  videoInfo;
+  CStdString videoInfo = "";
+  CStreamsManager *c = CStreamsManager::getSingleton();
+
+  videoInfo.Format("Video Decoder: %s (%s, %dx%d)",
+    m_VideoInfo.filter_video_dec,
+    c->GetVideoCodecName(),
+    c->GetPictureWidth(),
+    c->GetPictureHeight());
+
+  if ( ! m_VideoInfo.dxva_info.empty() )
+    videoInfo += " | " + m_VideoInfo.dxva_info;
+
+  return videoInfo;
 }
 
 bool CDSGraph::CanSeek()

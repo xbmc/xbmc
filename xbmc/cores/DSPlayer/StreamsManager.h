@@ -86,6 +86,7 @@ public:
   int GetSampleRate();
 
   int GetPictureWidth();
+  int GetPictureHeight();
 
   CStdString GetAudioCodecName();
   CStdString GetVideoCodecName();

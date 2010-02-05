@@ -100,9 +100,9 @@ public:
   void SetVolume(long nVolume);
 
 //INFORMATION REQUESTED FOR THE GUI
-  std::string GetGeneralInfo();
-  std::string GetAudioInfo();
-  std::string GetVideoInfo();  
+  CStdString GetGeneralInfo();
+  CStdString GetAudioInfo();
+  CStdString GetVideoInfo();  
  
 protected:
 
