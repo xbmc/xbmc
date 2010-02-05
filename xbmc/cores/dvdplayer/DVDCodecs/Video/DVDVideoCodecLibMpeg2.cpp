@@ -63,6 +63,7 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_irffpattern = 0;
   m_bFilm = false;
   m_bIs422 = false;
+  m_dts = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -226,10 +227,8 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
     // libmpeg2 needs more data. Give it and parse the data again
     m_dll.mpeg2_buffer(m_pHandle, pData, pData + iSize);
     TagUnion u;
-
-    // always use dts for mpeg2, if dts is not valid, it's set to DVD_NOPTS_VALUE
-    // and DVDPlayerVideo will figure it out from the duration.
-    u.pts = dts;
+    u.pts = pts;
+    m_dts = dts;
 
     m_dll.mpeg2_tag_picture(m_pHandle, u.tag.l, u.tag.u);
   }
@@ -430,6 +429,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
             u.tag.l = m_pInfo->display_picture->tag;
             u.tag.u = m_pInfo->display_picture->tag2;
             pBuffer->pts = u.pts;
+            pBuffer->dts = m_dts;
 
             // only return this if it's not first image or an I frame
             if(m_pCurrentBuffer || pBuffer->iFrameType == FRAME_TYPE_I || pBuffer->iFrameType == FRAME_TYPE_UNDEF )

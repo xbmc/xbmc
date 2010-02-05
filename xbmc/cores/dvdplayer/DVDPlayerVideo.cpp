@@ -548,9 +548,13 @@ void CDVDPlayerVideo::Process()
               m_iNrOfPicturesNotToSkip--;
             }
 
-            // if returned pts is DVD_NOPTS_VALUE, use pts calc'ed from duration.
-            if(picture.pts == DVD_NOPTS_VALUE)
+            // validate picture timing, 
+            // if both dts/pts invalid, use pts calulated from picture.iDuration
+            // if pts invalid use dts, else use picture.pts as passed
+            if (picture.dts == DVD_NOPTS_VALUE && picture.pts == DVD_NOPTS_VALUE)
               picture.pts = pts;
+            else if (picture.pts == DVD_NOPTS_VALUE)
+              picture.pts = picture.dts;
 
             /* use forced aspect if any */
             if( m_fForcedAspectRatio != 0.0f )

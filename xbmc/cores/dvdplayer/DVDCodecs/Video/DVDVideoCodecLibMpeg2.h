@@ -55,6 +55,7 @@ protected:
   bool m_bIs422;
 
   int m_hurry;
+  double m_dts;
   //The buffer of pictures we need
   DVDVideoPicture m_pVideoBuffer[3];
   DVDVideoPicture* m_pCurrentBuffer;

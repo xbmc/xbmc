@@ -362,34 +362,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
       return result;
   }
 
-  if (dts == DVD_NOPTS_VALUE && pts == DVD_NOPTS_VALUE)
-  {
-    // if invalid dts and pts, set DVD_NOPTS_VALUE and let
-    // DVDPlayerVideo figure out timing from duration.
-    m_pCodecContext->reordered_opaque = NULL;
-    m_dts = DVD_NOPTS_VALUE;
-  }
-  else
-  {
-    // always use pts for video content with re-ordered frames.
-    if(!m_force_dts && m_pCodecContext->has_b_frames && pts != DVD_NOPTS_VALUE)
-      m_pCodecContext->reordered_opaque = pts_dtoi(pts);
-    else
-    {
-      // if dts is invalid but pts is not, use pts.
-      if (dts == DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE)
-        m_pCodecContext->reordered_opaque = pts_dtoi(pts);
-      else
-      {
-        // not a clue so use dts, some avi's will toggle
-        // pts valid/invalid and mess up timing, so force
-        // dts for all packets if we ever drop into here.  
-        m_pCodecContext->reordered_opaque = NULL;
-        m_force_dts = true;
-        m_dts = dts;
-      }
-    }
-  }
+  m_dts = dts;
+  m_pCodecContext->reordered_opaque = pts_dtoi(pts);
 
   try
   {
@@ -545,10 +519,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
 
-  if(frame->reordered_opaque)
+  pDvdVideoPicture->dts = m_dts;
+  if (frame->reordered_opaque)
     pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
-    pDvdVideoPicture->pts = m_dts;
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
   if(m_pHardware)
     return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);

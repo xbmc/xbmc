@@ -38,6 +38,7 @@ namespace DXVA { class CProcessor; }
 struct DVDVideoPicture
 {
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
+  double dts;
 
   union
   {
