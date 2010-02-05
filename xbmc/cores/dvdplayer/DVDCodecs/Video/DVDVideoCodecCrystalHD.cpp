@@ -122,6 +122,19 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
 {
   int ret = 0;
 
+  // We are running a picture queue, picture frames are allocated
+  // in CrystalHD class if needed, then passed up. Need to return
+  // them back to CrystalHD class for re-queuing. This way we keep
+  // the memory alloc/free to a minimum and don't churn memory for
+  // each picture frame.
+  m_Device->BusyListPop();
+
+  // If NULL is passed, DVDPlayer wants us to flush any internal picture frame.
+  // we don't have internal picture frames so just return.
+  if (!pData)
+    return VC_BUFFER;
+
+  // qualify dts/pts
   if (dts == DVD_NOPTS_VALUE && pts == DVD_NOPTS_VALUE)
   {
     // if invalid dts and pts, set DVD_NOPTS_VALUE and let
@@ -149,29 +162,14 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
     }
   }
 
-  // We are running a picture queue, picture frames are allocated
-  // in CrystalHD class if needed, then passed up. Need to return
-  // them back to CrystalHD class for re-queuing. This way we keep
-  // the memory alloc/free to a minimum and don't churn memory for
-  // each picture frame.
-  m_Device->BusyListPop();
-
-  // If NULL is passed, DVDPlayer wants us to flush any internal picture frame.
-  // we don't have internal picture frames so just return.
-  if (!pData)
-    return VC_BUFFER;
-
   // Handle Input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
-  if (pData)
+  if ( m_Device->AddInput(pData, iSize, m_pts) )
+    pData = NULL;
+  else
   {
-    if ( m_Device->AddInput(pData, iSize, m_pts) )
-      pData = NULL;
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
-      Sleep(10);
-    }
+    CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
+    Sleep(10);
   }
   if (m_Device->GetInputCount() < 2)
     ret |= VC_BUFFER;
