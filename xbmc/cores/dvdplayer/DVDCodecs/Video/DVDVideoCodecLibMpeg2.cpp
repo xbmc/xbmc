@@ -430,6 +430,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
             u.tag.u = m_pInfo->display_picture->tag2;
             pBuffer->pts = u.pts;
             pBuffer->dts = m_dts;
+            m_dts = DVD_NOPTS_VALUE;
 
             // only return this if it's not first image or an I frame
             if(m_pCurrentBuffer || pBuffer->iFrameType == FRAME_TYPE_I || pBuffer->iFrameType == FRAME_TYPE_UNDEF )

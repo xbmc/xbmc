@@ -520,6 +520,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->color_range = 1;
 
   pDvdVideoPicture->dts = m_dts;
+  m_dts = DVD_NOPTS_VALUE;
   if (frame->reordered_opaque)
     pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
