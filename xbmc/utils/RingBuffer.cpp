@@ -120,8 +120,20 @@ bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
   EnterCriticalSection(&m_critSection);
   if (rBuf.getBuffer() == NULL)
     rBuf.Create(size);
+
+  bool bOk = size <= rBuf.getMaxWriteSize() && size <= getMaxReadSize();
+  if (bOk)
+  {
+    unsigned int chunksize = std::min(size, m_size - m_readPtr);
+    bOk = rBuf.WriteData(&getBuffer()[m_readPtr], chunksize);
+    if (bOk && chunksize < size)
+      bOk = rBuf.WriteData(&getBuffer()[0], size - chunksize);
+    if (bOk)
+      SkipBytes(size);
+  }
+
   LeaveCriticalSection(&m_critSection);
-  return ReadData(rBuf.getBuffer(), size);
+  return bOk;
 }
 
 /* Write data to ring buffer from buffer specified in 'buf'. Amount read in is
@@ -159,7 +171,22 @@ bool CRingBuffer::WriteData(char *buf, unsigned int size)
  */
 bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
 {
-  return WriteData(rBuf.getBuffer(), size);
+  EnterCriticalSection(&m_critSection);
+  if (m_buffer == NULL)
+    Create(size);
+
+  bool bOk = size <= rBuf.getMaxReadSize() && size <= getMaxWriteSize();
+  if (bOk)
+  {
+    unsigned int readpos = rBuf.getReadPtr();
+    unsigned int chunksize = std::min(size, rBuf.getSize() - readpos);
+    bOk = WriteData(&rBuf.getBuffer()[readpos], chunksize);
+    if (bOk && chunksize < size)
+      bOk = WriteData(&rBuf.getBuffer()[0], size - chunksize);
+  }
+
+  LeaveCriticalSection(&m_critSection);
+  return bOk;
 }
 
 /* Skip bytes in buffer to be read */
@@ -197,16 +224,13 @@ bool CRingBuffer::SkipBytes(int skipSize)
 /* Append all content from ring buffer 'rBuf' to this ring buffer */
 bool CRingBuffer::Append(CRingBuffer &rBuf)
 {
-  EnterCriticalSection(&m_critSection);
-  if (m_buffer == NULL)
-    Create(rBuf.getMaxReadSize());
-  LeaveCriticalSection(&m_critSection);
-  return WriteData(rBuf.getBuffer(), rBuf.getMaxReadSize());
+  return WriteData(rBuf, rBuf.getMaxReadSize());
 }
 
-/* A synonym for Append() */
+/* Copy all content from ring buffer 'rBuf' to this ring buffer overwriting any existing data */
 bool CRingBuffer::Copy(CRingBuffer &rBuf)
 {
+  Clear();
   return Append(rBuf);
 }
 
