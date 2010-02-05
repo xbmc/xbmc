@@ -31,8 +31,8 @@
 CConsoleDeviceKitPowerSyscall::CConsoleDeviceKitPowerSyscall()
 {
   m_CanPowerdown = ConsoleKitMethodCall("CanStop");
-  m_CanSuspend   = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_suspend");
-  m_CanHibernate = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_hibernate");
+  m_CanSuspend   = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_suspend").asBoolean();
+  m_CanHibernate = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_hibernate").asBoolean();
   m_CanReboot    = ConsoleKitMethodCall("CanRestart");
 }
 

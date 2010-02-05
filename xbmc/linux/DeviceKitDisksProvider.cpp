@@ -27,51 +27,52 @@
 
 void CDeviceKitDiskDeviceOldAPI::Update()
 {
-  m_isFileSystem = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "id-usage").Equals("filesystem");
+  CStdString str = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "id-usage").asString();
+  m_isFileSystem = str.Equals("filesystem");
 
   if (m_isFileSystem)
   {
-    PropertyMap properties;
-    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
+    CVariant properties = CDBusUtil::GetAll("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
 
-    m_UDI         = properties["id-uuid"];
-    m_Label       = properties["id-label"];
-    m_FileSystem  = properties["id-type"];
-    m_MountPath   = properties["device-mount-paths"];
-    m_isMounted   = properties["device-is-mounted"].Equals("true");
+    m_UDI         = properties["id-uuid"].asString();
+    m_Label       = properties["id-label"].asString();
+    m_FileSystem  = properties["id-type"].asString();
+    if (properties["device-mount-paths"].size() > 0)
+      m_MountPath   = properties["device-mount-paths"][0].asString();
+    m_isMounted   = properties["device-is-mounted"].asBoolean();
 
-    m_PartitionSizeGiB = (strtoull(properties["partition-size"].c_str(), NULL, 10) / 1024.0 / 1024.0 / 1024.0);
-    m_isPartition = properties["device-is-partition"].Equals("true");
-    m_isSystemInternal = properties["device-is-system-internal"].Equals("true");
+    m_PartitionSizeGiB = properties["partition-size"].asUnsignedInteger() / 1024.0 / 1024.0 / 1024.0;
+    m_isPartition = properties["device-is-partition"].asBoolean();
+    m_isSystemInternal = properties["device-is-system-internal"].asBoolean();
     if (m_isPartition)
-      m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["partition-slave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-removable");
+      m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["partition-slave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-removable").asBoolean();
     else
-      m_isRemovable = properties["device-is-removable"].Equals("true");
+      m_isRemovable = properties["device-is-removable"].asBoolean();
   }
 }
 
 void CDeviceKitDiskDeviceNewAPI::Update()
 {
-  m_isFileSystem = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "IdUsage").Equals("filesystem");
+  CStdString str = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "IdUsage").asString();
+  m_isFileSystem = str.Equals("filesystem");
   if (m_isFileSystem)
   {
-    PropertyMap properties;
-  
-    CDBusUtil::GetAll(properties, "org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
+    CVariant properties = CDBusUtil::GetAll("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device");
 
-    m_UDI         = properties["IdUuid"];
-    m_Label       = properties["IdLabel"];
-    m_FileSystem  = properties["IdType"];
-    m_MountPath   = properties["DeviceMountPaths"];
-    m_isMounted   = properties["DeviceIsMounted"].Equals("true");
+    m_UDI         = properties["IdUuid"].asString();
+    m_Label       = properties["IdLabel"].asString();
+    m_FileSystem  = properties["IdType"].asString();
+    if (properties["DeviceMountPaths"].size() > 0)
+      m_MountPath   = properties["DeviceMountPaths"][0].asString();
+    m_isMounted   = properties["DeviceIsMounted"].asBoolean();
 
-    m_PartitionSizeGiB = (strtoull(properties["PartitionSize"].c_str(), NULL, 10) / 1024.0 / 1024.0 / 1024.0);
-    m_isPartition = properties["DeviceIsPartition"].Equals("true");
-    m_isSystemInternal = properties["DeviceIsSystemInternal"].Equals("true");
+    m_PartitionSizeGiB = properties["PartitionSize"].asUnsignedInteger() / 1024.0 / 1024.0 / 1024.0;
+    m_isPartition = properties["DeviceIsPartition"].asBoolean();
+    m_isSystemInternal = properties["DeviceIsSystemInternal"].asBoolean();
     if (m_isPartition)
-      m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
+      m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable").asBoolean();
     else
-      m_isRemovable = properties["DeviceIsRemovable"].Equals("true");
+      m_isRemovable = properties["DeviceIsRemovable"].asBoolean();
   }
 }
 
@@ -209,7 +210,7 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 void CDeviceKitDisksProvider::Initialize()
 {
   CLog::Log(LOGDEBUG, "Selected DeviceKit.Disks as storage provider");
-  m_DaemonVersion = CDBusUtil::GetInt32("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "DaemonVersion");
+  m_DaemonVersion = atoi(CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "DaemonVersion").asString());
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DaemonVersion %i", m_DaemonVersion);
 
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");
