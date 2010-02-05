@@ -22,7 +22,6 @@
 
 #include "GUIDialogBoxBase.h"
 #include "Addon.h"
-#include "URL.h"
 
 class CGUIDialogAddonSettings : public CGUIDialogBoxBase
 {
@@ -31,9 +30,9 @@ public:
   virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
   static bool ShowAndGetInput(const ADDON::AddonPtr &addon);
-  bool IsConfirmed() { return !m_cancelled; }
-  void SetHeading(const CStdString &strHeading);
-  void SetAddon(const ADDON::AddonPtr& addon);
+
+protected:
+  virtual void OnInitWindow();
 
 private:
   void CreateControls();
@@ -47,8 +46,7 @@ private:
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   ADDON::AddonPtr m_addon;
   CStdString m_strHeading;
-  std::map<int, CStdString> m_controls;
   std::map<CStdString,CStdString> m_buttonValues;
-  bool m_cancelled;
+  bool m_changed;
 };
 

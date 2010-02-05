@@ -88,7 +88,7 @@ bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl*
 {
   CStdString uuid = UUID();
   if (Parent())
-  { // called from DialogAddonBrowser, so we are working with the master scraper settings
+  { // called from DialogContentSettings. We are working with the cloned scraper settings
     uuid = Parent()->UUID();
   }
 

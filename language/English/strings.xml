@@ -2110,6 +2110,7 @@
   <string id="24021">Disable Add-on</string>
   <string id="24022">Enable Add-on</string>
   <string id="24030">This Add-on can not be configured</string>
+  <string id="24031">Error loading settings</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
