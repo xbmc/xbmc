@@ -369,4 +369,3 @@ protected:
 };
 
 extern CApplication g_application;
-extern CStdString g_LoadErrorStr;

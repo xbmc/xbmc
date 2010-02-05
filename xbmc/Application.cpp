@@ -291,8 +291,6 @@ using namespace DBUSSERVER;
 
 #define MAX_FFWD_SPEED 5
 
-CStdString g_LoadErrorStr;
-
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
@@ -410,8 +408,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
 // This function does not return!
 void CApplication::FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork)
 {
-  // XBMC couldn't start for some reason...
-  // g_LoadErrorStr should contain the reason
   fprintf(stderr, "Fatal error encountered, aborting\n");
   fprintf(stderr, "Error log at %sxbmc.log\n", g_settings.m_logFolder.c_str());
   abort();
@@ -607,10 +603,7 @@ bool CApplication::Create()
 #endif
   g_powerManager.Initialize();
 
-  CLog::Log(LOGINFO, "Drives are mapped");
-
   CLog::Log(LOGNOTICE, "load settings...");
-  g_LoadErrorStr = "Unable to load settings";
   g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
   if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
     g_settings.m_iLastLoadedProfileIndex = 0;
@@ -719,7 +712,7 @@ bool CApplication::Create()
     strSkinPath = strSkinBase + DEFAULT_SKIN;
     if (!g_SkinInfo.Check(strSkinPath))
     {
-      g_LoadErrorStr.Format("No suitable skin version found.\nWe require at least version %5.4f \n", g_SkinInfo.GetMinVersion());
+      CLog::Log(LOGERROR, "No suitable skin version found. We require at least version %5.4f", g_SkinInfo.GetMinVersion());
       FatalErrorHandler(false, false, true);
     }
   }
