@@ -1489,7 +1489,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
         viz = (CVisualisation*)msg.GetPointer();
         if (viz)
         {
-          strLabel = viz->GetPresetName(); 
+          strLabel = viz->GetPresetName();
           CUtil::RemoveExtension(strLabel);
         }
       }
