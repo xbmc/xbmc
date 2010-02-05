@@ -1051,7 +1051,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += max(0.0, iSleepTime);
   m_FlipTimeStamp += iFrameDuration;
 
-  if (iClockSleep <= 0)
+  if (iClockSleep <= 0 && m_speed)
     m_iLateFrames++;
   else
     m_iLateFrames = 0;
