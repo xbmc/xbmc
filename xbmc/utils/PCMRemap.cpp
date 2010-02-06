@@ -102,8 +102,13 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_LOW_FREQUENCY */
   {
-    {PCM_FRONT_LEFT           , 3.5}, /* +10db (see A/52B 7.8 paragraph 2) */
-    {PCM_FRONT_RIGHT          , 3.5},
+    /*
+      A/52B 7.8 paragraph 2 recomends +10db
+      but due to horrible clipping when normalize
+      is disabled we set this to 1.0
+    */
+    {PCM_FRONT_LEFT           , 1.0},//3.5}, 
+    {PCM_FRONT_RIGHT          , 1.0},//3.5},
     {PCM_INVALID}
   },
   /* PCM_BACK_LEFT */
