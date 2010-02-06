@@ -30,6 +30,9 @@
 #include "PCMRemap.h"
 #include "utils/log.h"
 #include "GUISettings.h"
+#ifdef _WIN32
+#include "../win32/PlatformDefs.h"
+#endif
 
 static enum PCMChannels PCMLayoutMap[PCM_MAX_LAYOUT][PCM_MAX_CH + 1] =
 {
