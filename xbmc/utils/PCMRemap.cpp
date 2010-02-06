@@ -201,8 +201,6 @@ CPCMRemap::~CPCMRemap()
 
 void CPCMRemap::Dispose()
 {
-  memset(m_useable  , 0          , sizeof(m_useable  ));
-  memset(m_lookupMap, PCM_INVALID, sizeof(m_lookupMap));
 }
 
 /* resolves the channels recursively and returns the new index of tablePtr */
@@ -256,14 +254,16 @@ struct PCMMapInfo* CPCMRemap::ResolveChannel(enum PCMChannels channel, float lev
 void CPCMRemap::BuildMap()
 {
   if (!m_inSet || !m_outSet) return;
-  Dispose();
 
   unsigned int in_ch, out_ch;
 
   m_inStride  = m_inSampleSize * m_inChannels ;
   m_outStride = m_inSampleSize * m_outChannels;
 
+
+
   /* figure out what channels we have and can use */
+  memset(m_useable, 0, sizeof(m_useable));
   for(enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
   {
     for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
@@ -274,11 +274,17 @@ void CPCMRemap::BuildMap()
       }
   }
 
+  /* see if we need to normalize the levels */
+  bool normalize = g_guiSettings.GetBool("audiooutput.normalizelevels");
+  if (normalize)
+    CLog::Log(LOGDEBUG, "CPCMRemap: Volume level normalization is enabled");
+
   /* resolve all the channels */
   struct PCMMapInfo table[PCM_MAX_CH + 1], *info, *dst;
   std::vector<enum PCMChannels> path;
   int counts[PCM_MAX_CH];
 
+  memset(m_lookupMap, PCM_INVALID, sizeof(m_lookupMap));
   memset(counts, 0, sizeof(counts));
   for(in_ch = 0; in_ch < m_inChannels; ++in_ch) {
     memset(table, PCM_INVALID, sizeof(table));
@@ -296,7 +302,7 @@ void CPCMRemap::BuildMap()
     }
   }
 
-  /* fix and normalise the values */
+  /* convert the levels into RMS values */
   for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
   {
     float scale = 0;
@@ -309,11 +315,17 @@ void CPCMRemap::BuildMap()
       ++count;
     }
 
-    if (count == 1)
+    if (count == 1 && !normalize)
       m_lookupMap[m_outMap[out_ch]]->copy = true;
-
-    for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
-      dst->level /= scale;
+    
+    /* normalize the levels if it is turned on */
+    if (normalize)
+      for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
+      {
+        dst->level /= scale;
+        if (normalize)
+          dst->level -= (dst->level - m_deAmp[dst->channel]);
+      }
   }
   
   /* output the final map for debugging */
@@ -322,7 +334,7 @@ void CPCMRemap::BuildMap()
     CStdString s = "", f;
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
     {
-      f.Format("%s(%f) ",  PCMChannelName[dst->channel], dst->level);
+      f.Format("%s(%f%s) ",  PCMChannelName[dst->channel], dst->level, dst->copy ? "*" : "");
       s += f;
     }
     CLog::Log(LOGDEBUG, "CPCMRemap: %s = %s\n", PCMChannelName[m_outMap[out_ch]], s.c_str());
@@ -428,6 +440,9 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
         value += (float)(*(int16_t*)src) * info->level;
       }
       dst = outsample + ch * m_inSampleSize;
+      /* clamp the value to within 16bit range */
+           if (value >  32768) value =  32768;
+      else if (value < -32768) value = -32768;
       *(int16_t*)dst = (int16_t)((value > 0.0) ? floor(value + 0.5) : ceil(value - 0.5));
     }
 
