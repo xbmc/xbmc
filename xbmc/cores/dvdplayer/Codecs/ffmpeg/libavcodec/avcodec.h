@@ -27,7 +27,7 @@
  */
 
 #include <errno.h>
-#include "libavutil/avutil.h"
+#include "Codecs/ffmpeg/libavutil/avutil.h"
 
 #define LIBAVCODEC_VERSION_MAJOR 52
 #define LIBAVCODEC_VERSION_MINOR 20

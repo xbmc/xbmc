@@ -33,6 +33,8 @@
 struct DVDVideoPicture
 {  
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
+  double dts;
+
   BYTE* data[4];      // [4] = alpha channel, currently not used
   int iLineSize[4];   // [4] = alpha channel, currently not used
 
@@ -104,7 +106,7 @@ public:
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(BYTE* pData, int iSize, double pts) = 0;
+  virtual int Decode(BYTE* pData, int iSize, double dts, double pts) = 0;
   
  /*
    * Reset the decoder.

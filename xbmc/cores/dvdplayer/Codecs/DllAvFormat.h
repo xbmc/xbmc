@@ -12,7 +12,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#include "avformat.h"
+#include "Codecs/ffmpeg/libavformat/avformat.h"
 }
 
 typedef int64_t offset_t;

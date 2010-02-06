@@ -22,9 +22,9 @@
  */
 
 #include "DVDVideoCodec.h"
-#include "cores/ffmpeg/DllAvCodec.h"
-#include "cores/ffmpeg/DllAvFormat.h"
-#include "cores/ffmpeg/DllSwScale.h"
+#include "Codecs/DllAvCodec.h"
+#include "Codecs/DllAvFormat.h"
+#include "Codecs/DllSwScale.h"
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
@@ -33,7 +33,7 @@ public:
   virtual ~CDVDVideoCodecFFmpeg();
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);  
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize, double pts);
+  virtual int Decode(BYTE* pData, int iSize, double dts, double pts);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
@@ -60,5 +60,7 @@ protected:
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
   std::string m_name;
+  double m_dts;
+  bool m_force_dts;
 };
 

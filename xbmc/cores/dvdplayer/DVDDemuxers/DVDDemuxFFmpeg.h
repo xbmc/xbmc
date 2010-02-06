@@ -22,8 +22,8 @@
  */
 
 #include "DVDDemux.h"
-#include "cores/ffmpeg/DllAvFormat.h"
-#include "cores/ffmpeg/DllAvCodec.h"
+#include "Codecs/DllAvFormat.h"
+#include "Codecs/DllAvCodec.h"
 
 class CDVDDemuxFFmpeg;
 

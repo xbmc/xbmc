@@ -18,9 +18,9 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#include "avutil.h"
-#include "swscale.h"
-#include "rgb2rgb.h"
+#include "Codecs/ffmpeg/libavutil/avutil.h"
+#include "Codecs/ffmpeg/libswscale/swscale.h"
+#include "Codecs/ffmpeg/libswscale/rgb2rgb.h"
 }
 
 class DllSwScaleInterface

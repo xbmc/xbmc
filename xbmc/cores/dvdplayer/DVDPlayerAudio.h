@@ -171,6 +171,7 @@ protected:
   bool    m_started;
   double  m_duration; // last packets duration
 
+  bool OutputPacket(DVDAudioFrame &audioframe);
   double m_error;    //last average error
   int64_t m_errortime; //timestamp of last time we measured
   int64_t m_freq;

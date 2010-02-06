@@ -20,8 +20,8 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#include "avcodec.h"
-#include "audioconvert.h"
+#include "Codecs/ffmpeg/libavcodec/avcodec.h"
+#include "Codecs/ffmpeg/libavcodec/audioconvert.h"
 }
 
 class DllAvCodecInterface

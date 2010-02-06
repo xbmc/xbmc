@@ -23,7 +23,7 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 extern "C" {
-#include "../../ffmpeg/avcodec.h"
+#include "Codecs/ffmpeg/libavcodec/avcodec.h"
 }
 
 void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)

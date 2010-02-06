@@ -107,6 +107,7 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
+
   if (hint.fpsrate && hint.fpsscale)
   {
     m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
@@ -230,7 +231,7 @@ void CDVDPlayerVideo::Process()
   while (!m_bStop)
   {
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
-    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_iNrOfPicturesNotToSkip == 0 && m_started) ? 1 : 0;
+    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
 
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
@@ -387,7 +388,7 @@ void CDVDPlayerVideo::Process()
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
 
-      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->pts);
+      int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
       m_videoStats.AddSampleBytes(pPacket->iSize);
       // assume decoder dropped a picture if it didn't give us any
       // picture from a demux packet, this should be reasonable
@@ -398,10 +399,6 @@ void CDVDPlayerVideo::Process()
         m_iDroppedFrames++;
         iDropped++;
       }
-
-      // use dts if we have one
-      if(pPacket->dts != DVD_NOPTS_VALUE)
-        pts = pPacket->dts;
 
       // loop while no error
       while (!m_bStop)
@@ -445,9 +442,13 @@ void CDVDPlayerVideo::Process()
               m_iNrOfPicturesNotToSkip--;
             }
 
-            /* try to figure out a pts for this frame, always use dts if available */
-            if(picture.pts == DVD_NOPTS_VALUE || pPacket->dts != DVD_NOPTS_VALUE)
+            // validate picture timing, 
+            // if both dts/pts invalid, use pts calulated from picture.iDuration
+            // if pts invalid use dts, else use picture.pts as passed
+            if (picture.dts == DVD_NOPTS_VALUE && picture.pts == DVD_NOPTS_VALUE)
               picture.pts = pts;
+            else if (picture.pts == DVD_NOPTS_VALUE)
+              picture.pts = picture.dts;
 
             /* use forced aspect if any */
             if( m_fForcedAspectRatio != 0.0f )
@@ -476,15 +477,15 @@ void CDVDPlayerVideo::Process()
               picture.iDuration *= picture.iRepeatPicture + 1;
 
             int iResult;
-              try 
-              {
-                iResult = OutputPicture(&picture, pts);
-              }
-              catch (...)
-              {
-                CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
-                iResult = EOS_ABORT;
-              }
+            try 
+            {
+              iResult = OutputPicture(&picture, pts);
+            }
+            catch (...)
+            {
+              CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
+              iResult = EOS_ABORT;
+            }
 
 
 
@@ -503,7 +504,7 @@ void CDVDPlayerVideo::Process()
               //flushing the video codec things break for some reason
               //i think the decoder (libmpeg2 atleast) still has a pointer
               //to the data, and when the packet is freed that will fail.
-              iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
+              iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
               break;
             }
 
@@ -543,7 +544,7 @@ void CDVDPlayerVideo::Process()
           break;
 
         // the decoder didn't need more data, flush the remaning buffer
-        iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
+        iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE);
       }
     }
 
@@ -799,6 +800,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     iFrameSleep = iFrameSleep * DVD_PLAYSPEED_NORMAL / abs(m_speed);
     iFrameDuration = iFrameDuration * DVD_PLAYSPEED_NORMAL / abs(m_speed);
   }
+  else
+  {
+    iClockSleep = 0;
+    iFrameSleep = 0;
+  }
 
   // dropping to a very low framerate is not correct (it should not happen at all)
   iClockSleep = min(iClockSleep, DVD_MSEC_TO_TIME(500));
@@ -831,7 +837,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += max(0.0, iSleepTime);
   m_FlipTimeStamp += iFrameDuration;
 
-  if (iClockSleep <= 0)
+  if (iClockSleep <= 0 && m_speed)
     m_iLateFrames++;
   else
     m_iLateFrames = 0;
@@ -841,7 +847,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     //if we're calculating the framerate,
     //don't drop frames until we've calculated a stable framerate
-    result |= EOS_VERYLATE;
+    if (m_speed != DVD_PLAYSPEED_NORMAL)
+    {
+      result |= EOS_VERYLATE;
+    }
 
     //if we requested 5 drops in a row and we're still late, drop on output
     //this keeps a/v sync if the decoder can't drop, or we're still calculating the framerate

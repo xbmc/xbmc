@@ -527,8 +527,9 @@ void CDVDDemuxFFmpeg::Flush()
         m_pFormatContext->streams[i]->last_IP_pts = AV_NOPTS_VALUE;
       }
     }
-    m_iCurrentPts = DVD_NOPTS_VALUE;
   }
+  
+  m_iCurrentPts = DVD_NOPTS_VALUE;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -803,6 +804,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 
@@ -1120,6 +1123,8 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 

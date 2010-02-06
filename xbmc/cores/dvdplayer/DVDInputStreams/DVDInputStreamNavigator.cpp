@@ -1046,12 +1046,19 @@ bool CDVDInputStreamNavigator::SeekTime(int iTimeInMsec)
 
 bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
 {
+  bool enabled = IsSubtitleStreamEnabled();
+  int audio    = GetActiveAudioStream();
+  int subtitle = GetActiveSubtitleStream();
+
   if (m_dll.dvdnav_part_play(m_dvdnav, m_iTitle, iChapter) == DVDNAV_STATUS_ERR)
   {
     CLog::Log(LOGERROR, "dvdnav: dvdnav_part_play failed( %s )", m_dll.dvdnav_err_to_string(m_dvdnav));
     return false;
   }
   
+  SetActiveSubtitleStream(subtitle);
+  SetActiveAudioStream(audio);
+  EnableSubtitleStream(enabled);
   return true;
 }
 

@@ -470,7 +470,8 @@ void CDVDPlayerAudio::Process()
   CLog::Log(LOGNOTICE, "running thread: CDVDPlayerAudio::Process()");
 
   int result;
- 
+  bool packetadded(false);
+
   DVDAudioFrame audioframe;
   m_audioStats.Start();
 
@@ -505,6 +506,8 @@ void CDVDPlayerAudio::Process()
     if( audioframe.size == 0 )
       continue;
 
+    packetadded = true;
+
     // we have succesfully decoded an audio frame, setup renderer to match
     if (!m_dvdAudio.IsValidFormat(audioframe))
     {
@@ -533,7 +536,7 @@ void CDVDPlayerAudio::Process()
       m_droptime = 0.0;
 
       // add any packets play
-      m_dvdAudio.AddPackets(audioframe);
+      packetadded = OutputPacket(audioframe);
 
       // we are not running until something is cached in output device
       if(m_stalled && m_dvdAudio.GetCacheTime() > 0.0)
@@ -541,8 +544,13 @@ void CDVDPlayerAudio::Process()
     }
 
     // store the delay for this pts value so we can calculate the current playing
-    if(m_speed != DVD_PLAYSPEED_PAUSE)
-      m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+    if(packetadded)
+    {
+      if(m_speed == DVD_PLAYSPEED_PAUSE)
+        m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, 0);
+      else
+        m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+    }
 
     // signal to our parent that we have initialized
     if(m_started == false)
@@ -556,7 +564,8 @@ void CDVDPlayerAudio::Process()
 
     if( m_speed != DVD_PLAYSPEED_NORMAL )
       continue;
-    
+
+    if (packetadded)
       HandleSyncError(audioframe.duration);
   }
 }
@@ -611,6 +620,12 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuity - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
     }
   }
+}
+
+bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
+{
+  m_dvdAudio.AddPackets(audioframe);
+  return true;
 }
 
 void CDVDPlayerAudio::OnExit()
