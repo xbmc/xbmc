@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27287 -->
+<!--Based on english strings version 27413 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2182,4 +2182,23 @@
   <string id="33081">这是一个堆叠文件，请选择要播放的片段。</string>
   <string id="33082">脚本目录</string>
   <string id="33083">启用自定义脚本按钮</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">扬声器设置</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
 </strings>
