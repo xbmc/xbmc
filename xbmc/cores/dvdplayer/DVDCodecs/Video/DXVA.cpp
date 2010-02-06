@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include <windows.h>
 #include <d3d9.h>
 #include <Initguid.h>
@@ -880,3 +882,5 @@ long CProcessor::Release()
   if (count == 0) delete this;
   return count;
 }
+
+#endif
