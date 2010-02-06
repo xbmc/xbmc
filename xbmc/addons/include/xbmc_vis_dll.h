@@ -5,14 +5,9 @@
 #include "xbmc_vis_types.h"
 
 #include <ctype.h>
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#pragma comment (lib, "lib/xbox_dx8.lib" )
-#else
-#ifndef __APPLE__
+#if defined(_LINUX) && !defined(__APPLE__)
 #include <sys/sysinfo.h>
-#endif
-#ifdef WIN32
+#elif _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -20,7 +15,6 @@
 #endif
 #include <sys/stat.h>
 #include <errno.h>
-#endif
 
 int htoi(const char *str) /* Convert hex string to integer */
 {
