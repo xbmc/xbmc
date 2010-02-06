@@ -260,8 +260,6 @@ void CPCMRemap::BuildMap()
   m_inStride  = m_inSampleSize * m_inChannels ;
   m_outStride = m_inSampleSize * m_outChannels;
 
-
-
   /* figure out what channels we have and can use */
   memset(m_useable, 0, sizeof(m_useable));
   for(enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
@@ -321,11 +319,7 @@ void CPCMRemap::BuildMap()
     /* normalize the levels if it is turned on */
     if (normalize)
       for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
-      {
         dst->level /= scale;
-        if (normalize)
-          dst->level -= (dst->level - m_deAmp[dst->channel]);
-      }
   }
   
   /* output the final map for debugging */
