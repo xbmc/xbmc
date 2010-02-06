@@ -70,7 +70,14 @@ void CDeviceKitDiskDeviceNewAPI::Update()
     m_isPartition = properties["DeviceIsPartition"].asBoolean();
     m_isSystemInternal = properties["DeviceIsSystemInternal"].asBoolean();
     if (m_isPartition)
-      m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable").asBoolean();
+    {
+      CVariant isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
+
+      if ( !isRemovable.isNull() )
+        m_isRemovable = isRemovable.asBoolean();
+      else
+        m_isRemovable = false;
+    }
     else
       m_isRemovable = properties["DeviceIsRemovable"].asBoolean();
   }
