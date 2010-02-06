@@ -1561,6 +1561,11 @@ void reset_parser(struct h264_parser *parser)
   parser->prev_top_field_order_cnt = 0;
   parser->curr_pic_num = 0;
   parser->flag_mask = 0;
+  
+  if(parser->pic != NULL) { 
+    free_coded_picture(parser->pic); 
+    parser->pic = create_coded_picture(); 
+  } 
 }
 
 void free_parser(struct h264_parser *parser)
