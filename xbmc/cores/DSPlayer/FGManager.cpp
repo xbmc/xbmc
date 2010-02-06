@@ -84,7 +84,6 @@ CFGManager::~CFGManager()
 
   SAFE_RELEASE(m_pFM);
   SAFE_RELEASE(m_pFG);
-  SAFE_RELEASE(m_pUnkInner);
 }
 
 HRESULT CFGManager::QueryInterface(const IID &iid, void** ppv)
@@ -318,7 +317,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     // - intermediate filters with no output pins 
     // - input pins being on by the same filter, that would lead to circular graph
   }
-  else
+/*  else
   {
     // 1. Use IStreamBuilder
     IStreamBuilder* pSB = NULL;
@@ -333,9 +332,9 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
       pSB->Backout(pPinOut, m_pFG);
       SAFE_RELEASE(pSB);
     }
-  }
+  }*/
 
-  // 2. Try cached filters
+  /* 2. Try cached filters
   IGraphConfig* pGC = NULL;
   if (SUCCEEDED(m_pFG->QueryInterface(__uuidof(pGC),(void**)&pGC)))
   {
@@ -363,16 +362,16 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     }
     EndEnumCachedFilters(pEF, pBF)
     SAFE_RELEASE(pGC);
-  }
+  }*/
 
   // 3. Try filters in the graph
 
   {
-    std::list<IBaseFilter*> pBFs;
+    std::list<IBaseFilter*> pBFs; // Don't connect the audio and video renderer yet
     BeginEnumFilters(m_pFG, pEF, pBF)
     {
       if(pPinIn && (DShowUtil::IsStreamEnd(pBF) || DShowUtil::GetFilterFromPin(pPinIn) == pBF)
-      || DShowUtil::GetFilterFromPin(pPinOut) == pBF)
+      || DShowUtil::GetFilterFromPin(pPinOut) == pBF)// || pBF == m_CfgLoader->GetAudioRenderer() || pBF == m_CfgLoader->GetVideoRenderer())
         continue;
 
       // HACK: ffdshow - audio capture filter
@@ -403,7 +402,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 
   // 4. Look up filters in the registry
   
-  {
+  /*{
     CFGFilterList* fl = new CFGFilterList();
 
     std::vector<GUID> types;
@@ -509,7 +508,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 
       EXECUTE_ASSERT(SUCCEEDED(RemoveFilter(pBF)));
     }
-  }
+  }*/
   
   
   /*if(fDeadEnd)
@@ -553,7 +552,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   } else
     CLog::Log(LOGDEBUG, "%s Successfully loaded filters rules", __FUNCTION__);
 
-  hr = ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
+  ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
 
   //Get all custom interface
   //To verify
@@ -576,7 +575,7 @@ HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,
   *splitterInfo = m_CfgLoader->GetSplitterFilterInfo();
   *audioInfo = m_CfgLoader->GetAudioDecInfo();
   *videoInfo = m_CfgLoader->GetVideoDecInfo();
-  *audioRenderer = m_CfgLoader->GetAudioRenderer();
+  *audioRenderer = m_CfgLoader->GetAudioRendererInfo();
   return S_OK;
 }
 
@@ -674,13 +673,13 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
       }
       EndEnumMediaTypes(pEnum, pMediaType)
 
-      if ((mediaType == MEDIATYPE_Video) 
+      if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Video) 
           && m_videoPinConnected)
         continue;                               // A video pin is already connected, continue !
-      else if ((mediaType == MEDIATYPE_Audio)
+      else if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Audio)
           && m_audioPinConnected)
         continue;                               // An audio pin is already connected, continue !
-      else if (mediaType == MEDIATYPE_Subtitle)
+      else if (pBF == m_CfgLoader->GetSplitter() && mediaType == MEDIATYPE_Subtitle)
         continue;                               // We don't connect subtitle pin yet, continue !
 
       m_streampath.Append(pBF, pPin);
@@ -705,10 +704,10 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
       m_streampath.pop_back();
 
-      if ((mediaType == MEDIATYPE_Video) 
+      if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Video) 
           && SUCCEEDED(hr))
         m_videoPinConnected = true;
-      else if ((mediaType == MEDIATYPE_Audio)
+      else if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Audio)
           && SUCCEEDED(hr))
         m_audioPinConnected = true;
 

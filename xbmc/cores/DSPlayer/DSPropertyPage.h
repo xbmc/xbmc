@@ -23,6 +23,46 @@
 #include "utils/Thread.h"
 #include <streams.h>
 
+struct OLEPropertyFrame {
+  struct SDialog {
+    DLGTEMPLATE dlg;
+    WORD menu;
+    WORD wclass;
+    WORD caption;
+  } dialog;
+  IPropertyPageSite *pps;
+  IPropertyPage  *propPage;
+};
+
+class CDSPlayerPropertyPageSite: public IPropertyPageSite, public CUnknown
+{
+public:
+  DECLARE_IUNKNOWN
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,__deref_out void **ppv) { return E_NOTIMPL; }
+
+  HRESULT STDMETHODCALLTYPE OnStatusChange(
+    /* [in] */ DWORD dwFlags ) { return S_OK; };
+
+  HRESULT STDMETHODCALLTYPE GetLocaleID(
+    __RPC__out LCID *pLocaleID) { *pLocaleID = m_lcid; return S_OK; };
+
+  HRESULT STDMETHODCALLTYPE GetPageContainer( 
+    /* [out] */ __RPC__deref_out_opt IUnknown **ppUnk) { return E_NOTIMPL; };
+
+
+  HRESULT STDMETHODCALLTYPE TranslateAccelerator( 
+    /* [in] */ __RPC__in MSG *pMsg) { return E_NOTIMPL; };
+
+  CDSPlayerPropertyPageSite(LCID lcid):
+    CUnknown("DSPlayer Property Page", NULL),
+    m_lcid(lcid)
+  { }
+
+private:
+  LCID m_lcid;
+
+};
+
 class CDSPropertyPage : public CThread
 {
 public:

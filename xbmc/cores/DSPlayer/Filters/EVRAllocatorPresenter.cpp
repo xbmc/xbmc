@@ -287,12 +287,8 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   SAFE_RELEASE(m_pMediaType);
   // Deletable objectt
   SAFE_DELETE(m_pD3DPresentEngine);
-  if (m_pOuterEVR)
-    m_pOuterEVR->Release();
   SAFE_DELETE(m_pOuterEVR);
-  if (m_pMacrovisionKicker)
-    m_pMacrovisionKicker->Release();
-  SAFE_DELETE(m_pMacrovisionKicker);
+
   g_Windowing.Unregister(this);
   g_renderManager.UnInit();
 

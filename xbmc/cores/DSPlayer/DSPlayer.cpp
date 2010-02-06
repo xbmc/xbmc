@@ -88,9 +88,10 @@ bool CDSPlayer::CloseFile()
   PlayerState = DSPLAYER_CLOSING;
 
   m_pDsGraph.CloseFile();
-  g_renderManager.UnInit();
+  DShowUtil::UnloadExternalObjects();
   
-  CLog::Log(LOGNOTICE, "CDSPlayer: finished waiting");  
+  CLog::Log(LOGDEBUG, "%s External objects unloaded", __FUNCTION__);
+  CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);
   
   PlayerState = DSPLAYER_CLOSED;
 

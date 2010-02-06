@@ -21,8 +21,6 @@ CStreamsManager::~CStreamsManager(void)
   for (std::map<long, SAudioStreamInfos *>::iterator it = m_audioStreams.begin();
     it != m_audioStreams.end(); ++it)
     delete it->second;
-
-  SAFE_RELEASE(m_pIAMStreamSelect);
 }
 
 std::map<long, SAudioStreamInfos *> CStreamsManager::Get()
@@ -382,7 +380,27 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->channels = f->nChannels;
         infos->samplerate = f->nSamplesPerSec;
         infos->bitrate = f->nAvgBytesPerSec;
-        infos->codecname = infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag);
+        infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag);
+      }
+    } else if (pMediaType->formattype == FORMAT_VorbisFormat2)
+    {
+      if (pMediaType->cbFormat >= sizeof(VORBISFORMAT2))
+      {
+        VORBISFORMAT2 *v = reinterpret_cast<VORBISFORMAT2 *>(pMediaType->pbFormat);
+        infos->channels = v->Channels;
+        infos->samplerate = v->SamplesPerSec;
+        infos->bitrate = v->BitsPerSample;
+        infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0);
+      }
+    } else if (pMediaType->formattype == FORMAT_VorbisFormat)
+    {
+      if (pMediaType->cbFormat >= sizeof(VORBISFORMAT))
+      {
+        VORBISFORMAT *v = reinterpret_cast<VORBISFORMAT *>(pMediaType->pbFormat);
+        infos->channels = v->nChannels;
+        infos->samplerate = v->nSamplesPerSec;
+        infos->bitrate = v->nAvgBitsPerSec;
+        infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0);
       }
     }
   } else if (pMediaType->majortype == MEDIATYPE_Video)

@@ -44,14 +44,8 @@ CDSConfig::CDSConfig(void)
 
 CDSConfig::~CDSConfig(void)
 {
-  SAFE_RELEASE(m_pIMpaDecFilter);
-  SAFE_RELEASE(m_pIMpcDecFilter);
-
-  SAFE_RELEASE(m_pSplitter);
-
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
-
 }
 
 HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB, IBaseFilter * splitter)

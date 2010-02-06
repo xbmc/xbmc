@@ -184,9 +184,9 @@ void CDSGraph::CloseFile()
     m_bReachedEnd = false;
     m_bChangingAudioStream = false;
 
-	  SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
-  } else
-  {
+    SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
+
+  } else {
     CLog::Log(LOGDEBUG, "%s CloseFile called more than one time!", __FUNCTION__);
   }
 }
@@ -481,7 +481,6 @@ HRESULT CDSGraph::UnloadGraph()
   m_pGraphBuilder->GetGraphBuilder2()->EnumFilters(&pEnum);
 
   // Disconnect all the pins
-  int test = 0;
   while (S_OK == pEnum->Next(1, &pBF, 0))
   {
     hr = pBF->Stop();
@@ -507,8 +506,46 @@ HRESULT CDSGraph::UnloadGraph()
     SAFE_RELEASE(pBF);
     pEnum->Reset();
   }
-
   SAFE_RELEASE(pEnum);
+
+  int c = 0;
+  /* delete filters */
+  
+  do
+  {
+    c = m_pGraphBuilder->GetLoader()->GetSplitter()->Release();
+  } while (c != 0);
+
+  do
+  {
+    c = m_pGraphBuilder->GetLoader()->GetAudioDec()->Release();
+  } while (c != 0);
+
+  do 
+  {
+    c = m_pGraphBuilder->GetLoader()->GetVideoDec()->Release();
+  } while (c != 0);
+  
+  while (! m_pGraphBuilder->GetLoader()->GetExtras().empty())
+  {
+    do
+    {
+      c = m_pGraphBuilder->GetLoader()->GetExtras().back()->Release();
+    } while (c != 0);
+
+    m_pGraphBuilder->GetLoader()->GetExtras().pop_back();
+  }
+
+  do
+  {
+    c = m_pGraphBuilder->GetLoader()->GetAudioRenderer()->Release();
+  } while (c != 0);
+
+  do 
+  {
+    c = m_pGraphBuilder->GetLoader()->GetVideoRenderer()->Release();
+  } while (c != 0);
+
   return hr;
 }
 

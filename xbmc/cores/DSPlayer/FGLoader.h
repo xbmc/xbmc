@@ -44,21 +44,28 @@ public:
 
   HRESULT    LoadConfig(IFilterGraph2* fg,CStdString configFile);
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
-  HRESULT    InsertSourceFilter(const CFileItem& pFileItem,TiXmlElement *pRule);
-  HRESULT    InsertSplitter(TiXmlElement *pRule);
-  HRESULT    InsertAudioDecoder(TiXmlElement *pRule);
-  HRESULT    InsertVideoDecoder(TiXmlElement *pRule);
+  HRESULT    InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName);
+  HRESULT    InsertSplitter(const CStdString& filterName);
+  HRESULT    InsertAudioDecoder(const CStdString& filterName);
+  HRESULT    InsertVideoDecoder(const CStdString& filterName);
+  HRESULT    InsertExtraFilter(const CStdString& filterName);
   HRESULT    InsertAudioRenderer();
   HRESULT    InsertVideoRenderer();
   HRESULT    InsertAutoLoad();
   
   IBaseFilter* GetSplitter() { return m_SplitterF; };
+  IBaseFilter* GetSource() { return m_SourceF; }
+  IBaseFilter* GetVideoDec() { return m_VideoDecF; }
+  IBaseFilter* GetAudioDec() { return m_AudioDecF; }
+  std::vector<IBaseFilter*>& GetExtras() { return m_extraFilters; }
+  IBaseFilter* GetAudioRenderer() { return m_AudioRendererF; }
+  IBaseFilter* GetVideoRenderer() {return m_VideoRendererF; }
 
   CStdString GetVideoDecInfo(){return  m_pStrVideodec;};
   CStdString GetAudioDecInfo(){return  m_pStrAudiodec;};
   CStdString GetSourceFilterInfo(){return  m_pStrSource;};
   CStdString GetSplitterFilterInfo(){return  m_pStrSplitter;};
-  CStdString GetAudioRenderer(){return  m_pStrAudioRenderer;};
+  CStdString GetAudioRendererInfo(){return  m_pStrAudioRenderer;};
 protected:
   IFilterGraph2*            m_pGraphBuilder;
   CStdString                m_xbmcConfigFilePath;
@@ -69,8 +76,15 @@ protected:
   CStdString                m_pStrSplitter;
   std::list<CFGFilterFile*> m_configFilter;
   XFILE::CFile              m_File;
+
   IBaseFilter*              m_SourceF;
   IBaseFilter*              m_SplitterF;
+  IBaseFilter*              m_VideoDecF;
+  IBaseFilter*              m_AudioDecF;
+  std::vector<IBaseFilter *> m_extraFilters;
+  IBaseFilter*              m_AudioRendererF;
+  IBaseFilter*              m_VideoRendererF;
+
   DIRECTSHOW_RENDERER       m_CurrentRenderer;
   CFGFilterVideoRenderer*   m_pFGF;
 

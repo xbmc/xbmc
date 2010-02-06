@@ -15,7 +15,7 @@ CChaptersManager::~CChaptersManager(void)
     it != m_chapters.end(); ++it)
     delete it->second;
 
-  SAFE_RELEASE(m_pIAMExtendedSeeking);
+  //SAFE_RELEASE(m_pIAMExtendedSeeking);
 }
 
 CChaptersManager *CChaptersManager::getSingleton()

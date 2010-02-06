@@ -43,7 +43,7 @@ CEvrScheduler::CEvrScheduler() :
 
 CEvrScheduler::~CEvrScheduler()
 {
-  SAFE_RELEASE(m_pClock);
+  //SAFE_RELEASE(m_pClock);
 }
 
 

@@ -146,6 +146,8 @@ public:
   HRESULT QueryInterface(REFIID iid , void** ppv);
 
   IBaseFilter * GetSplitter() { return m_CfgLoader->GetSplitter(); };
+  CFGLoader* GetLoader() { return m_CfgLoader; }
+
   //CUnknown interface
   //DECLARE_IUNKNOWN;
   //STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
