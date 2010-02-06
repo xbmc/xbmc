@@ -399,7 +399,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(4, "audiooutput", 772);
-  si = 0;
+  si = 1;
 
   map<int,int> audiomode;
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
