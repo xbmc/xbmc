@@ -168,11 +168,12 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
     pData = NULL;
   else
   {
+    // Deep crap error, this should never happen unless we run away pulling demuxer pkts.
     CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
     Sleep(10);
   }
-  if (m_Device->GetInputCount() < 2)
-    ret |= VC_BUFFER;
+  // Always return VC_BUFFER
+  ret |= VC_BUFFER;
 
   // Fake a decoding delay of 1/2 the frame duration, this helps keep DVDPlayerVideo from
   // draining the demuxer queue. DVDPlayerVideo expects one picture frame for each demuxer
@@ -186,7 +187,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   }
 
   // Handle Output, we delay passing back VC_PICTURE on startup until we have a few
-  // decoded picture frames as DVDPlayerVideo might discard picture frames as it
+  // decoded picture frames as DVDPlayerVideo might discard picture frames when it
   // tries to sync with audio.
   if (m_DecodeStarted && m_Device->GetReadyCount())
       ret |= VC_PICTURE;
