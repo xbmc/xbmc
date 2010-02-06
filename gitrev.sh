@@ -1,7 +1,7 @@
 #!/bin/sh
 N=0
 R=""
-MAX=1
+MAX=50
 while [[ $N -le $MAX && "x$R" == "x" ]]
 do
   R=$(git log -1 --pretty=format:%b HEAD~$N | sed -e 's/.*@\([0-9]\+\) .*/\1/')
