@@ -19,6 +19,8 @@
  *
  */
 
+#define __STDC_LIMIT_MACROS
+
 #include <cstdlib>
 #include <string.h>
 #include <stdio.h>
@@ -443,10 +445,10 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
 
       //convert to signed int and clamp to 16 bit
       int outvalue = MathUtils::round_int(value);
-      if (outvalue > 32767)
-        outvalue = 32767;
-      else if (outvalue < -32768)
-        outvalue = -32768;
+      if (outvalue > INT16_MAX)
+        outvalue = INT16_MAX;
+      else if (outvalue < INT16_MIN)
+        outvalue = INT16_MIN;
 
       *(int16_t*)dst = outvalue;
     }
