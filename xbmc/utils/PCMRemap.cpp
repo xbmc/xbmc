@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "MathUtils.h"
 #include "PCMRemap.h"
 #include "utils/log.h"
 #include "GUISettings.h"
@@ -439,10 +440,15 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
         value += (float)(*(int16_t*)src) * info->level;
       }
       dst = outsample + ch * m_inSampleSize;
-      /* clamp the value to within 16bit range */
-           if (value >  32768) value =  32768;
-      else if (value < -32768) value = -32768;
-      *(int16_t*)dst = (int16_t)((value > 0.0) ? floor(value + 0.5) : ceil(value - 0.5));
+
+      //convert to signed int and clamp to 16 bit
+      int outvalue = MathUtils::round_int(value);
+      if (outvalue > 32767)
+        outvalue = 32767;
+      else if (outvalue < -32768)
+        outvalue = -32768;
+
+      *(int16_t*)dst = outvalue;
     }
 
     insample  += m_inStride;
