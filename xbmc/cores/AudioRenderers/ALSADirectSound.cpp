@@ -30,13 +30,6 @@
 
 using namespace std;
 
-static CStdString EscapeDevice(const CStdString& device)
-{
-  CStdString result(device);
-  result.Replace("'", "\\'");
-  return result;
-}
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
