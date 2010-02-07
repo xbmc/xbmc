@@ -46,9 +46,9 @@ public:
   virtual const char* GetName()  { return "PassthroughFFmpeg"; }
 
 private:
-  int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize);
-  int SyncAC3(BYTE* pData, int iSize);
-  int SyncDTS(BYTE* pData, int iSize);
+  int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize, int *fSize);
+  int SyncAC3(BYTE* pData, int iSize, int *fSize);
+  int SyncDTS(BYTE* pData, int iSize, int *fSize);
 
   DllAvFormat      m_dllAvFormat;
   DllAvUtil        m_dllAvUtil;
