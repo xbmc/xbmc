@@ -2490,7 +2490,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
   m_CurrentVideo.source = source;
   m_CurrentVideo.hint = hint;
   m_CurrentVideo.stream = (void*)pStream;
-  m_CurrentAudio.started = false;
+  m_CurrentVideo.started = false;
 
   /* use same priority for video thread as demuxing thread, as */
   /* otherwise demuxer will starve if video consumes the full cpu */
@@ -2725,7 +2725,7 @@ void CDVDPlayer::FlushBuffers(bool queued)
     m_CurrentAudio.started    = false;
     m_CurrentVideo.started    = false;
     m_CurrentSubtitle.started = false;
-    m_CurrentTeletext.started = false;    
+    m_CurrentTeletext.started = false;
   }
   m_CurrentAudio.inited = false;
   m_CurrentVideo.inited = false;
