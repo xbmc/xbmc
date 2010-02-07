@@ -116,7 +116,6 @@ XBPython::XBPython()
   m_bLogin            = false;
   m_nextid            = 0;
   m_mainThreadState   = NULL;
-  m_hEvent            = CreateEvent(NULL, false, false, (char*)"pythonEvent");
   m_globalEvent       = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
   m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
@@ -318,8 +317,6 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
-    if (CThread::IsCurrentThread(m_ThreadId))
-    {
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 
       if (!m_pDll || !python_load_dll(*m_pDll))
@@ -388,17 +385,6 @@ void XBPython::Initialize()
       PyEval_ReleaseLock();
 
       m_bInitialized = true;
-      PulseEvent(m_hEvent);
-    }
-    else
-    {
-      // only the main thread should initialize python.
-      m_iDllScriptCounter--;
-
-      lock.Leave();
-      WaitForSingleObject(m_hEvent, INFINITE);
-      lock.Enter();
-    }
   }
 }
 
@@ -454,9 +440,6 @@ void XBPython::FreeResources()
       Finalize();
     }
   }
-
-  if (m_hEvent)
-    CloseHandle(m_hEvent);
 }
 
 void XBPython::Process()
