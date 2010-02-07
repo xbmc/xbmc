@@ -23,8 +23,6 @@
 #ifndef AVCODEC_DXVA_H
 #define AVCODEC_DXVA_H
 
-#ifdef HAS_DX
-
 #include <stdint.h>
 
 #include <dxva2api.h>
@@ -67,5 +65,4 @@ struct dxva_context {
     unsigned report_id;
 };
 
-#endif
 #endif /* AVCODEC_DXVA_H */
