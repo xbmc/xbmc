@@ -327,8 +327,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   if (!m_singleList)
   {
-    ClearFileItems();
-
+    CFileItemList items;
     CStdString strParentPath;
     bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
@@ -345,8 +344,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
           pItem->m_strPath = strParentPath;
           pItem->m_bIsFolder = true;
           pItem->m_bIsShareOrDrive = false;
-          m_vecItems->Add(pItem);
-          m_strParentPath = strParentPath;
+          items.Add(pItem);
         }
       }
       else
@@ -357,12 +355,11 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
         pItem->m_strPath = "";
         pItem->m_bIsShareOrDrive = false;
         pItem->m_bIsFolder = true;
-        m_vecItems->Add(pItem);
-        m_strParentPath = "";
+        items.Add(pItem);
+        strParentPath = "";
       }
     //}
-    m_Directory->m_strPath = strDirectory;
-    if (!m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories))
+    if (!m_rootDir.GetDirectory(strDirectory, items,m_useFileDirectories))
     {
       CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", strDirectory.c_str());
 
@@ -373,6 +370,11 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       Update(strParentPath);
       return;
     }
+
+    ClearFileItems();
+    *m_vecItems = items;
+    m_Directory->m_strPath = strDirectory;
+    m_strParentPath = strParentPath;
   }
 
   // if we're getting the root source listing
