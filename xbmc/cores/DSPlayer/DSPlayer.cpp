@@ -200,16 +200,14 @@ void CDSPlayer::Process()
       break;
 
     //Handle fastforward stuff
-	  if (m_currentSpeed != 10000)
+    if (m_currentSpeed == 0)
+    {      
+      Sleep(250);
+    } else if (m_currentSpeed != 10000)
 	  {
 	    m_pDsGraph.DoFFRW(m_currentSpeed);
       Sleep(100);
-	  }
-	  else if (m_currentSpeed == 0)
-    {      
-      Sleep(250);
-    } 
-    else
+    } else
     {
 	    Sleep(250);
 	    m_pDsGraph.UpdateTime();

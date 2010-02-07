@@ -33,6 +33,7 @@ enum DIRECTSHOW_RENDERER
 {
     DIRECTSHOW_RENDERER_VMR9 = 1,
     DIRECTSHOW_RENDERER_EVR = 2,
+    DIRECTSHOW_RENDERER_UNDEF = 3
 };
 
 class CFGLoader : public CCritSec
@@ -52,6 +53,8 @@ public:
   HRESULT    InsertAudioRenderer();
   HRESULT    InsertVideoRenderer();
   HRESULT    InsertAutoLoad();
+
+  static DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
   
   IBaseFilter* GetSplitter() { return m_SplitterF; };
   IBaseFilter* GetSource() { return m_SourceF; }
@@ -85,7 +88,7 @@ protected:
   IBaseFilter*              m_AudioRendererF;
   IBaseFilter*              m_VideoRendererF;
 
-  DIRECTSHOW_RENDERER       m_CurrentRenderer;
+  static DIRECTSHOW_RENDERER m_CurrentRenderer;
   CFGFilterVideoRenderer*   m_pFGF;
 
 };

@@ -129,15 +129,6 @@ void CDSPropertyPage::Process()
     
     pProp->GetPages(&pPages);
 
-    /*hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, L"DSPlayer",
-                                1, (LPUNKNOWN *) &m_pBF, pPages.cElems, 
-                                pPages.pElems, 0, 0, 0);
-
-    if (SUCCEEDED(hr))
-      return;*/
-
-    /* OleCreatePropertyFrame only works if the filter is registered ! */
-
     OLEPropertyFrame *opf;
     PROPPAGEINFO pPageInfo;
     PROPSHEETHEADER propSheet;
@@ -151,8 +142,10 @@ void CDSPropertyPage::Process()
     
     propSheet.dwSize = sizeof(propSheet);
     propSheet.dwFlags = PSH_PROPTITLE;
-        
-    propSheet.pszCaption = "DSPlayer";
+    
+    CStdString filterName;
+    g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(m_pBF), filterName);
+    propSheet.pszCaption = filterName.c_str();
     
     hpsp = (HPROPSHEETPAGE *) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY,
                          pPages.cElems * sizeof(HPROPSHEETPAGE));
@@ -201,21 +194,36 @@ void CDSPropertyPage::Process()
       g_charsetConverter.wToUTF8(pPageInfo.pszTitle, strTitle);
       psp.pszTitle = strTitle.c_str();
       hpsp[propSheet.nPages++] = CreatePropertySheetPage(&psp);
+      CoTaskMemFree(pPageInfo.pszTitle);
+      if (pPageInfo.pszDocString)
+        CoTaskMemFree(pPageInfo.pszHelpFile);
     }
 
     hr = PropertySheet(&propSheet);
 
-    /*for(int page = 0; page < pPages.cElems; page++) {
+    for(int page = 0; page < pPages.cElems; page++) {
       if(opf[page].propPage) {
         opf[page].propPage->SetPageSite(NULL);
         opf[page].propPage->Release();
       }
-    }*/
+      if (opf[page].pps) {
+        opf[page].pps->Release();
+      }
+    }
     HeapFree(GetProcessHeap(), 0, hpsp);
     HeapFree(GetProcessHeap(), 0, opf);
     
     if(hr == -1)
-      CLog::Log(LOGERROR, "%s Failed to show property page (result: %X)", __FUNCTION__, hr);
+    {
+      CLog::Log(LOGDEBUG, "%s Failed to show property page. Trying old way", __FUNCTION__);
+
+      hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, DShowUtil::GetFilterName(m_pBF).c_str(),
+      1, (LPUNKNOWN *) &m_pBF, pPages.cElems, 
+      pPages.pElems, 0, 0, 0);
+
+      if (FAILED(hr))
+        CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X)", __FUNCTION__, hr);
+    }
     
     SAFE_RELEASE(pProp);
     CoTaskMemFree(pPages.pElems);  

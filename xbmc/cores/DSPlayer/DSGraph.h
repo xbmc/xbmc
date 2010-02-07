@@ -106,6 +106,8 @@ public:
  
 protected:
 
+  void WaitForRendererToShutDown();
+
   bool m_bAllowFullscreen;
   bool m_bReachedEnd;
   CStdString m_Filename;

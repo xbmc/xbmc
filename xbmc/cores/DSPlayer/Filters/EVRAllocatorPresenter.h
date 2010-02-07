@@ -83,7 +83,7 @@ public:
 //IDsRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
 
-  inline HRESULT CheckShutdown() const;
+  static inline HRESULT CheckShutdown();
   
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
@@ -258,7 +258,7 @@ protected:
 
 protected:
 
-  RENDER_STATE                m_RenderState;          // Rendering state.
+  static RENDER_STATE         m_RenderState;          // Rendering state.
   FrameStep                   m_FrameStep;            // Frame-stepping information.
 
   CCritSec                     m_ObjectLock;			// Serializes our public methods.  

@@ -45,6 +45,8 @@ bool CompareCFGFilterFileToString(CFGFilterFile * f, CStdString s)
   return f->GetXFilterName().Equals(s);
 }
 
+DIRECTSHOW_RENDERER CFGLoader::m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
+
 CFGLoader::CFGLoader():
   m_pGraphBuilder(NULL),
   m_SourceF(NULL),

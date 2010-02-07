@@ -217,8 +217,9 @@ MFVideoArea MakeArea(float x, float y, DWORD width, DWORD height)
   return area;
 }
 
+RENDER_STATE CEVRAllocatorPresenter::m_RenderState = RENDER_STATE_SHUTDOWN;
+
 CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
-  m_RenderState(RENDER_STATE_SHUTDOWN),
   m_pD3DPresentEngine(NULL),
   m_pClock(NULL),
   m_pMixer(NULL),
@@ -585,7 +586,7 @@ STDMETHODIMP CEVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, vo
   return hr;
 }
 
-inline HRESULT CEVRAllocatorPresenter::CheckShutdown() const
+inline HRESULT CEVRAllocatorPresenter::CheckShutdown()
 {
   if (m_RenderState == RENDER_STATE_SHUTDOWN)
   {

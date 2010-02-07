@@ -53,7 +53,7 @@ public:
 
   ~COuterVMR9()
   {
-    SAFE_RELEASE(m_pVMR);
+    // SAFE_RELEASE(m_pVMR);
   }
 
   DECLARE_IUNKNOWN;

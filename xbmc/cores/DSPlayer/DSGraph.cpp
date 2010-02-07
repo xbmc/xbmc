@@ -50,6 +50,7 @@ enum
 
 
 #include "win32exception.h"
+#include "Filters/EVRAllocatorPresenter.h"
 
 using namespace std;
 using namespace MediaInfoDLL;
@@ -419,8 +420,16 @@ void CDSGraph::Pause()
   else
   {
     if (m_pMediaControl)
-	    if ( SUCCEEDED( m_pMediaControl->Pause() ) )
+	    if ( m_pMediaControl->Pause() == S_FALSE )
+      {
+        /* the graph may need some time */
+        do 
+        {
+          m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
+        } while (m_State.current_filter_state != State_Paused);        
+        
 	      m_currentSpeed = 0;
+      }
 	}
 
   UpdateState();
@@ -478,12 +487,17 @@ HRESULT CDSGraph::UnloadGraph()
   IEnumFilters *pEnum = NULL;
   IBaseFilter *pBF = NULL;
 
+  //WaitForRendererToShutDown();
+
+  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(), pEF, pBF)
+    pBF->Stop();
+  EndEnumFilters(pEF, pBF)
+
   m_pGraphBuilder->GetGraphBuilder2()->EnumFilters(&pEnum);
 
   // Disconnect all the pins
   while (S_OK == pEnum->Next(1, &pBF, 0))
   {
-    hr = pBF->Stop();
     CStdString filterName;
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
 
@@ -493,6 +507,7 @@ HRESULT CDSGraph::UnloadGraph()
     }
     catch (...)
     {
+      throw;
       // ffdshow dxva decoder crash here, don't know why!
       hr = E_FAIL;
     }
@@ -510,6 +525,8 @@ HRESULT CDSGraph::UnloadGraph()
 
   int c = 0;
   /* delete filters */
+
+  CLog::Log(LOGDEBUG, "%s Deleting filters ...", __FUNCTION__);
   
   do
   {
@@ -545,6 +562,8 @@ HRESULT CDSGraph::UnloadGraph()
   {
     c = m_pGraphBuilder->GetLoader()->GetVideoRenderer()->Release();
   } while (c != 0);
+
+  CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
 
   return hr;
 }
@@ -751,5 +770,19 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
       Stop(true);
 	    CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
       break;
+  }
+}
+
+void CDSGraph::WaitForRendererToShutDown()
+{
+  if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_UNDEF)
+    return;
+
+  if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
+  {
+    while (CEVRAllocatorPresenter::CheckShutdown() != MF_E_SHUTDOWN)
+    {
+      Sleep(100);
+    }
   }
 }
