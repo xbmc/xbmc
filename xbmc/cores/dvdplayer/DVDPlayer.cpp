@@ -801,7 +801,13 @@ void CDVDPlayer::Process()
   SetEvent(m_hReadyEvent);
 
   // make sure all selected stream have data on startup
+  // Use full caching for Xbox since it sometimes experiences weird A/V desync
+  // at start
+#ifdef _XBOX  
+  SetCaching(CACHESTATE_FULL);
+#else
   SetCaching(CACHESTATE_INIT);
+#endif
 
   while (!m_bAbortRequest)
   {
