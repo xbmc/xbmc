@@ -64,6 +64,7 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_bFilm = false;
   m_bIs422 = false;
   m_dts = DVD_NOPTS_VALUE;
+  m_dts2 = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -477,6 +478,8 @@ void CDVDVideoCodecLibMpeg2::Reset()
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;
+  m_dts = DVD_NOPTS_VALUE;
+  m_dts2 = DVD_NOPTS_VALUE;
 }
 
 bool CDVDVideoCodecLibMpeg2::GetPicture(DVDVideoPicture* pDvdVideoPicture)
