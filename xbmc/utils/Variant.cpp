@@ -131,40 +131,40 @@ bool CVariant::isNull() const
   return m_type == VariantTypeNull;
 }
 
-int64_t CVariant::asInteger() const
+int64_t CVariant::asInteger(int64_t fallback) const
 {
   assert(isNull() || isInteger());
   if (isInteger())
     return m_data.integer;
   else
-    return 0;
+    return fallback;
 }
 
-uint64_t CVariant::asUnsignedInteger() const
+uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
 {
   assert(isNull() || isUnsignedInteger());
   if (isUnsignedInteger())
     return m_data.unsignedinteger;
   else
-    return 0u;
+    return fallback;
 }
 
-bool CVariant::asBoolean() const
+bool CVariant::asBoolean(bool fallback) const
 {
   assert(isNull() || isBoolean());
   if (isBoolean())
     return m_data.boolean;
   else
-    return false;
+    return fallback;
 }
 
-const char *CVariant::asString() const
+const char *CVariant::asString(const char *fallback) const
 {
   assert(isNull() || isString());
   if (isString())
     return m_data.string->c_str();
   else
-    return "";
+    return fallback;
 }
 
 CVariant &CVariant::operator[](string key)

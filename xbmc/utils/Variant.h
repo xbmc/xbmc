@@ -57,10 +57,10 @@ public:
   bool isObject() const;
   bool isNull() const;
 
-  int64_t asInteger() const;
-  uint64_t asUnsignedInteger() const;
-  bool asBoolean() const;
-  const char *asString() const;
+  int64_t asInteger(int64_t fallback = 0) const;
+  uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
+  bool asBoolean(bool fallback = false) const;
+  const char *asString(const char *fallback = "") const;
 
   CVariant &operator[](std::string key);
   CVariant &operator[](unsigned int position);
