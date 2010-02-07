@@ -133,26 +133,38 @@ bool CVariant::isNull() const
 
 int64_t CVariant::asInteger() const
 {
-  assert(isInteger());
-  return m_data.integer;
+  assert(isNull() || isInteger());
+  if (isInteger())
+    return m_data.integer;
+  else
+    return 0;
 }
 
 uint64_t CVariant::asUnsignedInteger() const
 {
-  assert(isUnsignedInteger());
-  return m_data.unsignedinteger;
+  assert(isNull() || isUnsignedInteger());
+  if (isUnsignedInteger())
+    return m_data.unsignedinteger;
+  else
+    return 0u;
 }
 
 bool CVariant::asBoolean() const
 {
-  assert(isBoolean());
-  return m_data.integer;
+  assert(isNull() || isBoolean());
+  if (isBoolean())
+    return m_data.boolean;
+  else
+    return false;
 }
 
 const char *CVariant::asString() const
 {
-  assert(isString());
-  return m_data.string->c_str();
+  assert(isNull() || isString());
+  if (isString())
+    return m_data.string->c_str();
+  else
+    return "";
 }
 
 CVariant &CVariant::operator[](string key)
