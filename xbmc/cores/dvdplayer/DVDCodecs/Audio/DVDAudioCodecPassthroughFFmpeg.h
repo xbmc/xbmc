@@ -60,6 +60,7 @@ private:
   unsigned char    m_bcBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   BYTE            *m_OutputBuffer;
   int              m_OutputSize;
+  bool             m_lostSync;
 
   static int _BCReadPacket(void *opaque, uint8_t *buf, int buf_size) { return ((CDVDAudioCodecPassthroughFFmpeg*)opaque)->BCReadPacket(buf, buf_size); }
   int BCReadPacket(uint8_t *buf, int buf_size);

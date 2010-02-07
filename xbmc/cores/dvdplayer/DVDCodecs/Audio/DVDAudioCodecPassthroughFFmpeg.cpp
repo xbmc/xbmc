@@ -175,6 +175,9 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     m_pStream->codec->codec_id    = hints.codec;
     m_pStream->codec->sample_rate = hints.samplerate;
     m_pStream->codec->channels    = hints.channels;
+
+    /* we will check the first packet's crc */
+    m_lostSync = true;
     return true;
   }
 
@@ -215,7 +218,11 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
     /* search for an ac3 sync word */
     if(pData[0] != 0x0b || pData[1] != 0x77)
       continue;
-    
+ 
+    /* dont do extensive testing if we have not lost sync */
+    if (!m_lostSync && skip == 0)
+      return 0;
+
     uint8_t fscod      = pData[4] >> 6;
     uint8_t frmsizecod = pData[4] & 0x3F;
     uint8_t bsid       = pData[5] >> 3;
@@ -251,10 +258,12 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
         continue;
 
     /* if we get here, we can sync */
+    m_lostSync = false;
     return skip;
   }
 
-  /* if we get here, the entire packet is invalid */
+  /* if we get here, the entire packet is invalid and we have lost sync */
+  m_lostSync = true;
   return iSize;
 }
 
@@ -270,6 +279,10 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize, int *fSize)
       pData[3] != 0x01
     ) continue;
 
+    /* dont do extensive testing if we have not lost sync */
+    if (!m_lostSync && skip == 0)
+      return 0;
+
     /* if it is not a termination frame, check the next 6 bits */
     if (pData[4] & 0x80 != 0 && pData[4] & 0x7C != 0x7C)
       continue;
@@ -279,9 +292,11 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize, int *fSize)
     if (*fSize < 95 || *fSize > 16383)
       continue;
 
+    m_lostSync = false;
     return skip;
   }
 
+  m_lostSync = true;
   return iSize;
 }
 
@@ -292,10 +307,7 @@ int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
   {
     int skip = (this->*m_pSyncFrame)(pData, iSize, &fSize);
     if (skip > 0)
-    {
-      CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Decode - Skipping %i bytes to re-sync", skip);
       return skip;
-    }
   }
 
   AVPacket pkt;
