@@ -335,6 +335,7 @@ int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)
 void CDVDAudioCodecPassthroughFFmpeg::Reset()
 {
   m_OutputSize = 0;
+  m_lostSync   = true;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetChannels()
