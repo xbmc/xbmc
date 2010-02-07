@@ -9,4 +9,6 @@
     <string id="30005">Verbindingstimeout (s)</string>
     <string id="30006">Importeer alleen TV kanalen uit groep</string>
     <string id="30007">Importeer alleen radio kanalen uit groep</string>
+    <string id="30008">Converteer hostnaam naar IP adres</string>
+    <string id="30009">EPG: Genre tekst inlezen (traag)</string>
 </strings>

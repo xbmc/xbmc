@@ -28,22 +28,21 @@
 #ifndef __LIN_SOCKET
 #define __LIN_SOCKET
 
-#if defined CONFIG_CT_LINUX || defined CONFIG_CT_LXRT || defined CONFIG_CT_RTAI
-	#include <sys/types.h> 	/* for socket,connect */
-	#include <sys/socket.h>	/* for socket,connect */
-	#include <sys/un.h>	/* for Unix socket */
-	#include <arpa/inet.h>	/* for inet_pton */
-	#include <netdb.h>	/* for gethostbyname */
-	#include <netinet/in.h>	/* for htons */
-	#include <unistd.h>	/* for read, write, close */
-	#include <string>	/* for std::string */
+#include <sys/types.h> 	/* for socket,connect */
+#include <sys/socket.h>	/* for socket,connect */
+#include <sys/un.h>	/* for Unix socket */
+#include <arpa/inet.h>	/* for inet_pton */
+#include <netdb.h>	/* for gethostbyname */
+#include <netinet/in.h>	/* for htons */
+#include <unistd.h>	/* for read, write, close */
+#include <string>	/* for std::string */
 
-	typedef int SOCKET;
-	typedef sockaddr SOCKADDR;
-	typedef sockaddr_in SOCKADDR_IN;
+typedef int SOCKET;
+typedef sockaddr SOCKADDR;
+typedef sockaddr_in SOCKADDR_IN;
 
-	#define INVALID_SOCKET -1
-	#define SOCKET_ERROR -1
-#endif /* CONFIG_CT_LINUX, LXRT, RTAI */
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
 #endif /* __LIN_SOCKET */
 

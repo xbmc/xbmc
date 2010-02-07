@@ -31,9 +31,6 @@
 
 #if defined __WINDOWS__ || defined _WINDOWS || defined WIN32
 
-#ifndef _WINSOCKAPI_
-#define _WINSOCKAPI_ //Needed here to prevent inclusion of <winsock.h> via the header below
-#endif
 #include "../../../addons/include/xbmc_pvr_types.h"
 #include "../../../addons/include/xbmc_addon_lib++.h"
 #include "../pvrclient-mediaportal_os.h"
@@ -47,7 +44,7 @@ using namespace std;
 
 Socket::Socket(const enum SocketFamily family, const enum SocketDomain domain, const enum SocketType type, const enum SocketProtocol protocol)
 {
-	_sd = 0;
+	_sd = INVALID_SOCKET;
 	_family = family;
 	_domain = domain;
 	_type = type;
@@ -59,7 +56,7 @@ Socket::Socket(const enum SocketFamily family, const enum SocketDomain domain, c
 Socket::Socket()
 {
 	// Default constructor, default settings
-	_sd = 0;
+	_sd = INVALID_SOCKET;
 	_family = af_inet;
 	_domain = pf_inet;
 	_type = sock_stream;
@@ -100,6 +97,7 @@ bool Socket::close()
 	if ( is_valid() )
 	{
 		closesocket(_sd);
+    _sd = INVALID_SOCKET;
 		WSACleanup();
 		return true;
 	}
@@ -111,10 +109,10 @@ bool Socket::create()
 
 	WORD wVersionRequested = MAKEWORD(2,2);
 
-	if ( !is_valid() )
-	{
-		return false;
-	}
+  if( is_valid() )
+  {
+    close();
+  }
 
 	// initialize winsock:
 	if(WSAStartup(MAKEWORD(2,2),&_wsaData) != 0)
@@ -127,7 +125,6 @@ bool Socket::create()
 	{
 		return false;
 	}
-
 
 	_sd = socket(_family, _type, _protocol );
 	//0 indicates that the default protocol for the type selected is to be used.
@@ -349,7 +346,6 @@ bool Socket::ReadResponse (int &code, vector<string> &lines)
     if(cont == ' ')
       break;
 
-    //TODO set 3 seconds timeout value??
     timeout.tv_sec  = RECEIVE_TIMEOUT;
     timeout.tv_usec = 0;
 
@@ -362,7 +358,7 @@ bool Socket::ReadResponse (int &code, vector<string> &lines)
     if(result < 0)
     {
       XBMC_log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - select failed");
-      lines.push_back("select failed");
+      lines.push_back("ERROR: select failed");
       code = 1; //error
       _sd = INVALID_SOCKET;
       return false;
@@ -376,7 +372,7 @@ bool Socket::ReadResponse (int &code, vector<string> &lines)
         continue;
       } else {
          XBMC_log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - timeout waiting for response. Failed after 10 retries.");
-         lines.push_back("failed after 10 retries");
+         lines.push_back("ERROR: failed after 10 retries");
          code = 1; //error
         _sd = INVALID_SOCKET;
          return false;
@@ -387,7 +383,7 @@ bool Socket::ReadResponse (int &code, vector<string> &lines)
     if(result < 0)
     {
       XBMC_log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - recv failed");
-      lines.push_back("recv failed");
+      lines.push_back("ERROR: recv failed");
       code = 1; //error
       _sd = INVALID_SOCKET;
       return false;
@@ -490,7 +486,7 @@ bool Socket::set_non_blocking ( const bool b )
 	else
 		iMode = 0;  // disable non_blocking
 
-	if (ioctlsocket(_sd,FIONBIO,&iMode) == -1)
+	if (ioctlsocket(_sd, FIONBIO, &iMode) == -1)
   {
     XBMC_log(LOG_ERROR, "Socket::set_non_blocking - Can't set socket condition to: %i", iMode);
     return false;

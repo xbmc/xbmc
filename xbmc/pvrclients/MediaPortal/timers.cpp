@@ -20,6 +20,8 @@
  */
 
 #include <vector>
+#include <stdio.h>
+
 using namespace std;
 
 #include "timers.h"
@@ -76,43 +78,49 @@ bool cTimer::ParseLine(const char *s)
 
     m_index = atoi(schedulefields[0].c_str());
 
-    count = sscanf(schedulefields[1].c_str(), "%d-%d-%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second);
+    count = sscanf(schedulefields[1].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
 
-    if(count > 0)
-    {
-      //timeinfo = *localtime ( &rawtime );
-      timeinfo.tm_hour = hour;
-      timeinfo.tm_min = minute;
-      timeinfo.tm_sec = second;
-      timeinfo.tm_year = year - 1900;
-      timeinfo.tm_mon = month - 1;
-      timeinfo.tm_mday = day;
-      // Make the other fields empty:
-      timeinfo.tm_isdst = 0;
-      timeinfo.tm_wday = 0;
-      timeinfo.tm_yday = 0;
+    if(count != 6)
+      return false;
 
-      m_starttime = mktime (&timeinfo) + m_UTCdiff; //m_StartTime should be localtime, MP TV returns UTC
-    }
+    //timeinfo = *localtime ( &rawtime );
+    timeinfo.tm_hour = hour;
+    timeinfo.tm_min = minute;
+    timeinfo.tm_sec = second;
+    timeinfo.tm_year = year - 1900;
+    timeinfo.tm_mon = month - 1;
+    timeinfo.tm_mday = day;
+    // Make the other fields empty:
+    timeinfo.tm_isdst = 0;
+    timeinfo.tm_wday = 0;
+    timeinfo.tm_yday = 0;
 
-    count = sscanf(schedulefields[2].c_str(), "%d-%d-%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second);
+    m_starttime = mktime (&timeinfo) + m_UTCdiff; //m_StartTime should be localtime, MP TV returns UTC
+    
+    if( m_starttime < 0)
+      return false;
 
-    if(count > 0)
-    {
-      //timeinfo2 = *localtime ( &rawtime );
-      timeinfo.tm_hour = hour;
-      timeinfo.tm_min = minute;
-      timeinfo.tm_sec = second;
-      timeinfo.tm_year = year - 1900;
-      timeinfo.tm_mon = month - 1;
-      timeinfo.tm_mday = day;
-      // Make the other fields empty:
-      timeinfo.tm_isdst = 0;
-      timeinfo.tm_wday = 0;
-      timeinfo.tm_yday = 0;
+    count = sscanf(schedulefields[2].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
 
-      m_stoptime = mktime (&timeinfo) + m_UTCdiff; //m_EndTime should be localtime, MP TV returns UTC
-    }
+    if( count != 6)
+      return false;
+
+    //timeinfo2 = *localtime ( &rawtime );
+    timeinfo.tm_hour = hour;
+    timeinfo.tm_min = minute;
+    timeinfo.tm_sec = second;
+    timeinfo.tm_year = year - 1900;
+    timeinfo.tm_mon = month - 1;
+    timeinfo.tm_mday = day;
+    // Make the other fields empty:
+    timeinfo.tm_isdst = 0;
+    timeinfo.tm_wday = 0;
+    timeinfo.tm_yday = 0;
+
+    m_stoptime = mktime (&timeinfo) + m_UTCdiff; //m_EndTime should be localtime, MP TV returns UTC
+
+    if( m_stoptime < 0)
+      return false;
 
     m_channel = atoi(schedulefields[3].c_str());
     m_title = schedulefields[5];

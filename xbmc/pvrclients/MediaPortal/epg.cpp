@@ -20,11 +20,13 @@
  */
 
 #include <vector>
+#include <stdio.h>
 
 using namespace std;
 
 #include "epg.h"
 #include "utils.h"
+#include "client.h"
 
 //Copied from PVREpg.h:
 //subtypes derived from English strings.xml and cPVREPGInfoTag::ConvertGenreIdToString
@@ -135,23 +137,26 @@ bool cEpg::ParseLine(string& data)
   int hour, minute, second;
   int count;
 
-  vector<string> epgfields;
-  
-  Tokenize(data, epgfields, "|");
-
-  if( epgfields.size() == 5 )
+  try
   {
-    XBMC_log(LOG_DEBUG, "%s: %s", epgfields[0].c_str(), epgfields[2].c_str());
-    // field 0 = start date + time
-    // field 1 = end   date + time
-    // field 2 = title
-    // field 3 = description
-    // field 4 = genre string
+    vector<string> epgfields;
+    
+    Tokenize(data, epgfields, "|");
 
-    count = sscanf(epgfields[0].c_str(), "%d-%d-%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second);
-
-    if(count > 0)
+    if( epgfields.size() == 5 )
     {
+      XBMC_log(LOG_DEBUG, "%s: %s", epgfields[0].c_str(), epgfields[2].c_str());
+      // field 0 = start date + time
+      // field 1 = end   date + time
+      // field 2 = title
+      // field 3 = description
+      // field 4 = genre string
+
+      count = sscanf(epgfields[0].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+
+      if( count != 6)
+        return false;
+
       timeinfo.tm_hour = hour;
       timeinfo.tm_min = minute;
       timeinfo.tm_sec = second;
@@ -164,12 +169,18 @@ bool cEpg::ParseLine(string& data)
       timeinfo.tm_yday = 0;
 
       m_StartTime = mktime (&timeinfo);// + m_UTCdiff; //m_StartTime should be localtime, MP TV returns UTC
-    }
 
-    count = sscanf(epgfields[1].c_str(), "%d-%d-%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second);
+      if(m_StartTime < 0)
+      {
+        XBMC_log(LOG_ERROR, "cEpg::ParseLine: Unable to convert start time '%s' into date+time", epgfields[0].c_str());
+        return false;
+      }
 
-    if(count > 0)
-    {
+      count = sscanf(epgfields[1].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+
+      if(count != 6)
+        return false;
+
       timeinfo.tm_hour = hour;
       timeinfo.tm_min = minute;
       timeinfo.tm_sec = second;
@@ -182,16 +193,27 @@ bool cEpg::ParseLine(string& data)
       timeinfo.tm_yday = 0;
 
       m_EndTime = mktime (&timeinfo);// + m_UTCdiff; //m_EndTime should be localtime, MP TV returns UTC
-    }
-    m_Duration  = m_EndTime - m_StartTime;
-    m_uid       = 0;
-    
-    m_title = epgfields[2];
-    m_description = epgfields[3];
-    m_shortText = epgfields[2];
-    SetGenre(epgfields[4], 0, 0);
 
-    return true;
+      if( m_EndTime < 0)
+      {
+        XBMC_log(LOG_ERROR, "cEpg::ParseLine: Unable to convert end time '%s' into date+time", epgfields[0].c_str());
+        return false;
+      }
+
+      m_Duration  = m_EndTime - m_StartTime;
+      m_uid       = 0;
+      
+      m_title = epgfields[2];
+      m_description = epgfields[3];
+      m_shortText = epgfields[2];
+      SetGenre(epgfields[4], 0, 0);
+
+      return true;
+    }
+  }
+  catch(std::exception &e)
+  {
+    XBMC_log(LOG_ERROR, "Exception '%s' during parse EPG data string.", e.what());
   }
 
   return false;
@@ -199,10 +221,14 @@ bool cEpg::ParseLine(string& data)
 
 void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
 {
+  //TODO: The xmltv plugin may return genre strings in local language
+  //      The only way to solve this at the XMBC side is to transfer the
+  //      genre string to XBMC or to let this plugin (or the TVServerXBMC
+  //      plugin) translate it into XBMC compatible (numbered) genre types
   m_genre = Genre;
   m_genre_subtype = 0;
 
-  if(m_genre.length() > 0) {
+  if(m_bReadGenre && m_genre.length() > 0) {
 
     if(m_genre.compare("news/current affairs (general)") == 0) {
       m_genre_type = EVCONTENTMASK_NEWSCURRENTAFFAIRS;
@@ -248,7 +274,7 @@ void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
     } else if (m_genre.compare("music/ballet/dance (general)") == 0) {
       m_genre_type = EVCONTENTMASK_MUSICBALLETDANCE;
     } else {
-      XBMC_log(LOG_DEBUG, "epg::setgenre: TODO mapping of MPTV's '%s' genre.", Genre);
+      //XBMC_log(LOG_DEBUG, "epg::setgenre: TODO mapping of MPTV's '%s' genre.", Genre.c_str());
       m_genre_type     = genreType;
       m_genre_subtype  = genreSubType;
     }

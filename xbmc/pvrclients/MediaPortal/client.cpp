@@ -34,18 +34,20 @@ int g_clientID          = -1;
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string m_sHostname = DEFAULT_HOST;
-int m_iPort             = DEFAULT_PORT;
-bool m_bOnlyFTA         = DEFAULT_FTA_ONLY;
-bool m_bRadioEnabled    = DEFAULT_RADIO;
-bool m_bCharsetConv     = DEFAULT_CHARCONV;
-int m_iConnectTimeout   = DEFAULT_TIMEOUT;
-bool m_bNoBadChannels   = DEFAULT_BADCHANNELS;
-bool m_bHandleMessages  = DEFAULT_HANDLE_MSG;
+std::string m_sHostname     = DEFAULT_HOST;
+int m_iPort                 = DEFAULT_PORT;
+bool m_bOnlyFTA             = DEFAULT_FTA_ONLY;
+bool m_bRadioEnabled        = DEFAULT_RADIO;
+bool m_bCharsetConv         = DEFAULT_CHARCONV;
+int m_iConnectTimeout       = DEFAULT_TIMEOUT;
+bool m_bNoBadChannels       = DEFAULT_BADCHANNELS;
+bool m_bHandleMessages      = DEFAULT_HANDLE_MSG;
 std::string g_szUserPath    = "";
 std::string g_szClientPath  = "";
 std::string g_sTVGroup      = "";
 std::string g_sRadioGroup   = "";
+bool m_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME;
+bool m_bReadGenre           = DEFAULT_READ_GENRE;
 
 extern "C" {
 
@@ -143,6 +145,22 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_sRadioGroup = buffer;
   }
 
+  /* Read setting "resolvertsphostname" from settings.xml */
+  if (!XBMC_get_setting("resolvertsphostname", &m_bResolveRTSPHostname))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'resolvertsphostname' setting, falling back to 'true' as default");
+    m_bRadioEnabled = DEFAULT_RESOLVE_RTSP_HOSTNAME;
+  }
+
+  /* Read setting "readgenre" from settings.xml */
+  if (!XBMC_get_setting("readgenre", &m_bReadGenre))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'resolvertsphostname' setting, falling back to 'true' as default");
+    m_bReadGenre = DEFAULT_READ_GENRE;
+  }
+
   /* Create connection to MediaPortal XBMC TV client */
   if (!g_client->Connect())
     curStatus = STATUS_LOST_CONNECTION;
@@ -219,33 +237,43 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "ftaonly")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'ftaonly' from %u to %u", m_bOnlyFTA, *(bool*) settingValue);
+    XBMC_log(LOG_INFO, "Changed setting 'ftaonly' from %u to %u", m_bOnlyFTA, *(bool*) settingValue);
     m_bOnlyFTA = *(bool*) settingValue;
   }
   else if (str == "useradio")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'useradio' from %u to %u", m_bRadioEnabled, *(bool*) settingValue);
+    XBMC_log(LOG_INFO, "Changed setting 'useradio' from %u to %u", m_bRadioEnabled, *(bool*) settingValue);
     m_bRadioEnabled = *(bool*) settingValue;
   }
   else if (str == "convertchar")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", m_bCharsetConv, *(bool*) settingValue);
+    XBMC_log(LOG_INFO, "Changed setting 'convertchar' from %u to %u", m_bCharsetConv, *(bool*) settingValue);
     m_bCharsetConv = *(bool*) settingValue;
   }
   else if (str == "timeout")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
+    XBMC_log(LOG_INFO, "Changed setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
     m_iConnectTimeout = *(int*) settingValue;
   }
   else if (str == "tvgroup")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'tvgroup' from %s to %s", g_sTVGroup.c_str(), (const char*) settingValue);
+    XBMC_log(LOG_INFO, "Changed setting 'tvgroup' from %s to %s", g_sTVGroup.c_str(), (const char*) settingValue);
     g_sTVGroup = (const char*) settingValue;
   }
   else if (str == "radiogroup")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'radiogroup' from %s to %s", g_sTVGroup.c_str(), (const char*) settingValue);
+    XBMC_log(LOG_INFO, "Changed setting 'radiogroup' from %s to %s", g_sTVGroup.c_str(), (const char*) settingValue);
     g_sTVGroup = (const char*) settingValue;
+  }
+  else if (str == "resolvertsphostname")
+  {
+    XBMC_log(LOG_INFO, "Changed setting 'resolvertsphostname' from %u to %u", m_bResolveRTSPHostname, *(bool*) settingValue);
+    m_bResolveRTSPHostname = *(bool*) settingValue;
+  }
+  else if (str == "readgenre")
+  {
+    XBMC_log(LOG_INFO, "Changed setting 'readgenre' from %u to %u",m_bReadGenre, *(bool*) settingValue);
+    m_bReadGenre = *(bool*) settingValue;
   }
 
   return STATUS_OK;
@@ -403,7 +431,7 @@ void CloseLiveStream()
   return g_client->CloseLiveStream();
 }
 
-int ReadLiveStream(BYTE* buf, int buf_size)
+int ReadLiveStream(unsigned char* buf, int buf_size)
 {
   return g_client->ReadLiveStream(buf, buf_size);
 }

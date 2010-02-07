@@ -448,6 +448,11 @@ bool CDVDPlayer::OpenInputStream()
   if (m_filename.compare(0, 6, "pvr://") == 0)
   {
     m_filename = XFILE::CPVRFile::TranslatePVRFilename(m_filename);
+    if(m_filename.length() == 0)
+    {
+      CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to translate [%s] into input stream", m_item.m_strPath.c_str());
+      return false;
+    }
   }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);

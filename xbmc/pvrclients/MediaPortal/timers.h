@@ -23,8 +23,9 @@
 #ifndef __TIMERS_H
 #define __TIMERS_H
 
-#include <stdlib.h>
 #include "../../addons/include/xbmc_pvr_lib++.h"
+#include <stdlib.h>
+#include <string>
 
 /*
 enum eTimerFlags { tfNone      = 0x0000,
@@ -55,7 +56,7 @@ public:
   const char* Title(void) const { return m_title.c_str(); }
   time_t StartTime(void) const;
   time_t StopTime(void) const;
-  bool cTimer::ParseLine(const char *s);
+  bool ParseLine(const char *s);
 };
 
 #endif //__TIMERS_H

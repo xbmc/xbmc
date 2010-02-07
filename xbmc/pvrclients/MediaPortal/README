@@ -1,0 +1,90 @@
+XBMC MediaPortal TV-client ('MPTV') PVR Add-on
+----------------------------------------------
+Supported platforms (pvrclient): Windows
+(Linux, OSX: work in progress)
+
+THIS IS A PRELIMINARY README AND IS SUBJECT TO CHANGE!!!
+
+Written by:                  Marcel Groothuis
+
+Project's homepage:          http://www.scintilla.utwente.nl/~marcelg/xbmc/
+
+Latest version available at: XBMC's pvr-testing2 branch
+
+The MediaPortal TV-Server plugin "TVServerXMBC", status updates, screenshots, 
+last-minute patches can be found at:
+
+http://www.scintilla.utwente.nl/~marcelg/xbmc/
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+any later version.
+See the file LICENSE.GPL for more information.
+
+----------------------------------------------
+General description:
+
+This is a PVR Add-on for XBMC to access/control the MediaPortal TV-Server
+backend from XBMC. It consists of two plugins: one for XBMC-PVR (1) and one for
+the MediaPortal TV Server (2).
+
+1. PVR client "XBMC_MPTV_win32.pvr" (for Windows):
+   This is the addon in this directory. After building the XBMC solution (and
+   the "pvrclient_mptv") this plugin file should be in addons\pvr\MediaPortal\
+
+The MediaPortal TV Server is written in C#, making it difficult for XBMC to
+control it directly. The TV Server connection of this AddOn depends on a
+special plugin at the TV Server side, called TVServerXBMC.
+
+
+2. TV Server plugin TVServerXBMC.dll/.exe (Windows only):
+   The TVServerXBMC plugin for the TV Server provides a socket interface to
+   XBMC to control the TV Server.
+   You can download it separately from:
+   http://www.scintilla.utwente.nl/~marcelg/xbmc
+   (It is not included by default in the XBMC pvr-testing2 branch, because it
+   will introduce a dependency on Visual C#.)
+   Please read the "readme.txt" file included in the TVServerXBMC zip files
+   for more information.
+
+----------------------------------------------
+Detailed instructions:
+
+(Preliminary...)
+
+1. Install MediaPortal & MediaPortal TV Server (1.1.0 beta1 or daily build 01-08-2010)
+   (for older versions, you will need to recompile the TVServerXBMC plugin from source)
+2. Use MediaPortal to make sure that the TV Server is working fine
+3. Download the TVServerXBMC plugin for the TV Server (see my website)
+4. Run the TVServerXBMC.exe (standalone version of the TV Server plugin) and
+   test it (see the readme.txt file included in the TVServerXBMC zip file).
+   Test for example the commands "ListTVChannels", "TimeshiftChannel"
+   (id is the first field returned by "ListTVChannels"). The "TimeshiftChannel"
+   command should return a URL like "rtsp://xxx.xxx.xxx.xx/stream2.0" on a
+   successful timeshift start. You can test this URL in VLC player. This should
+   work before proceeding to the next steps.
+5. Test the rtsp stream in XBMC (just use the standard 9.11)
+   Create a playlist file "rtsp-stream.m3u" with the rtsp:// URL as content and
+   start it from inside XBMC.
+   Example contents rtsp-stream.m3u:
+-----
+rtsp://192.168.2.5/steam2.0
+-----
+When this is all working fine, you can finally build XBMC-pvr-testing2:
+
+6. Build the XBMC solution in VC Express (pvr-testing2)
+  (check if XBMC_MPTV_win32.pvr was created succesfully in addons\pvr\MediaPortal)
+
+----------------------------------------------
+MediaPortal PVR-addon settings:
+
+TODO:
+Explain the meaning of the settings here.
+
+----------------------------------------------
+Links:
+
+MediaPortal:             http://www.team-mediaportal.com
+TVServer plugin:         http://www.scintilla.utwente.nl/~marcelg/xbmc
+

@@ -31,11 +31,15 @@
 
 #if _LINUX
 
-#include "Socket.h"
+#include "../Socket.h"
 
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>	//gethostbyname
+
+#include "../../../addons/include/xbmc_pvr_types.h"
+#include "../../../addons/include/xbmc_addon_lib++.h"
+#include "../pvrclient-mediaportal_os.h"
 
 using namespace std;
 
@@ -188,7 +192,7 @@ bool Socket::accept ( Socket& new_socket ) const
 }
 
 
-int Socket::send ( const std::string data ) const
+int Socket::send ( const std::string data )
 {
 	if ( !is_valid() )
 	{
@@ -207,7 +211,7 @@ int Socket::send ( const std::string data ) const
 }
 
 
-int Socket::send ( const char* data, unsigned int size ) const
+int Socket::send ( const char* data, unsigned int size )
 {
 	if ( !is_valid() )
 	{
@@ -356,7 +360,7 @@ bool Socket::connect ( const std::string host, const unsigned short port )
 }
 
 
-void Socket::set_non_blocking ( const bool b )
+bool Socket::set_non_blocking ( const bool b )
 {
 	int opts;
 
@@ -364,7 +368,7 @@ void Socket::set_non_blocking ( const bool b )
 
 	if ( opts < 0 )
 	{
-		return;
+		return false;
 	}
 
 	if ( b )
@@ -372,7 +376,12 @@ void Socket::set_non_blocking ( const bool b )
 	else
 		opts = ( opts & ~O_NONBLOCK );
 
-	fcntl (_sd , F_SETFL,opts);
+	if(fcntl (_sd , F_SETFL, opts) == -1)
+	{
+		return false;
+	} else {
+		return true;
+	}
 }
 
 

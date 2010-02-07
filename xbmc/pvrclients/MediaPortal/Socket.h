@@ -32,18 +32,18 @@
 #ifndef __SOCKET_H
 #define __SOCKET_H
 
-#define _WINSOCKAPI_ //Needed here to prevent inclusion of <winsock.h> via the header below
-
 //Include platform specific datatypes, header files, defines and constants:
 #if defined __WINDOWS__ || defined WIN32 || defined _WINDOWS
-	#include "windows/Socket.h"
+#include "windows/Socket.h"
 #elif defined _LINUX
-	#include "linux/Socket.h"
+#include "linux/Socket.h"
 #else
 	#error Socket support is not yet available on this platform!
 #endif
 
 using namespace std;
+
+#include <vector>
 
 #define MAXCONNECTIONS 1  ///< Maximum number of pending connections before "Connection refused"
 #define MAXRECV 1500      ///< Maximum packet size
@@ -263,6 +263,8 @@ class Socket
 
   bool ReadResponse (int &code, vector<string> &lines);
 
+	bool is_valid() const;
+
   private:
 
 	SOCKET _sd;                         ///< Socket Descriptor
@@ -277,7 +279,6 @@ class Socket
 		WSADATA _wsaData;         ///< Windows Socket data
 	#endif
 
-	bool is_valid() const;
 	void errormessage( int errornum, const char* functionname = NULL) const;
 
 //  protected:

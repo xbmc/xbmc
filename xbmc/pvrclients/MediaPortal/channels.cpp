@@ -22,6 +22,8 @@
 #include <vector>
 #include "channels.h"
 #include "utils.h"
+#include <stdlib.h>
+#include <string.h>
 
 cChannel::cChannel(const PVR_CHANNEL *Channel)
 {
@@ -57,7 +59,7 @@ bool cChannel::Parse(const std::string& data)
     uid = atoi(fields[0].c_str());
     external_id = atoi(fields[1].c_str());
     name = fields[2];
-    encrypted = (fields[3].c_str() == "1");
+    encrypted = (strncmp(fields[3].c_str(), "1", 1) == 0); 
     return true;
   } else {
     return false;

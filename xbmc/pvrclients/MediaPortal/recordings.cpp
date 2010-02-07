@@ -20,6 +20,8 @@
  */
 
 #include <vector>
+#include <stdio.h>
+
 using namespace std;
 
 #include "recordings.h"
@@ -50,62 +52,79 @@ bool cRecording::ParseLine(const std::string& data)
   int hour, minute, second;
   int count;
 
-  bool ok = true;
-
   vector<string> fields;
 
   Tokenize(data, fields, "|");
 
-  //[0] index / mediaportal recording id
-  //[1] start time
-  //[2] end time
-  //[3] channel name
-  //[4] title
-  //[5] description
-  //[6] stream_url
-  //[7] filename (we can bypass rtsp streaming when XBMC and the TV server are on the same machine)
-  //[8] lifetime (mediaportal keep until?) 
+  if( fields.size() == 9 )
+  {
+    //[0] index / mediaportal recording id
+    //[1] start time
+    //[2] end time
+    //[3] channel name
+    //[4] title
+    //[5] description
+    //[6] stream_url
+    //[7] filename (we can bypass rtsp streaming when XBMC and the TV server are on the same machine)
+    //[8] lifetime (mediaportal keep until?) 
 
-  m_Index = atoi(fields[0].c_str());
+    m_Index = atoi(fields[0].c_str());
 
-  count = sscanf(fields[1].c_str(), "%d-%d-%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second);
+    count = sscanf(fields[1].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
 
-  timeinfo.tm_hour = hour;
-  timeinfo.tm_min = minute;
-  timeinfo.tm_sec = second;
-  timeinfo.tm_year = year - 1900;
-  timeinfo.tm_mon = month - 1;
-  timeinfo.tm_mday = day;
-  // Make the other fields empty:
-  timeinfo.tm_isdst = 0;
-  timeinfo.tm_wday = 0;
-  timeinfo.tm_yday = 0;
+    if (count != 6)
+      return false;
 
-  m_StartTime = mktime (&timeinfo) + m_UTCdiff; //Start time in localtime
+    timeinfo.tm_hour = hour;
+    timeinfo.tm_min = minute;
+    timeinfo.tm_sec = second;
+    timeinfo.tm_year = year - 1900;
+    timeinfo.tm_mon = month - 1;
+    timeinfo.tm_mday = day;
+    // Make the other fields empty:
+    timeinfo.tm_isdst = 0;
+    timeinfo.tm_wday = 0;
+    timeinfo.tm_yday = 0;
 
-  count = sscanf(fields[2].c_str(), "%d-%d-%d %d:%d:%d", &day, &month, &year, &hour, &minute, &second);
+    m_StartTime = mktime (&timeinfo) + m_UTCdiff; //Start time in localtime
 
-  timeinfo.tm_hour = hour;
-  timeinfo.tm_min = minute;
-  timeinfo.tm_sec = second;
-  timeinfo.tm_year = year - 1900;
-  timeinfo.tm_mon = month - 1;
-  timeinfo.tm_mday = day;
-  // Make the other fields empty:
-  timeinfo.tm_isdst = 0;
-  timeinfo.tm_wday = 0;
-  timeinfo.tm_yday = 0;
+    if (m_StartTime < 0)
+      return false;
 
-  endtime = mktime (&timeinfo) + m_UTCdiff; //Start time in localtime
+    count = sscanf(fields[2].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
 
-  m_Duration = endtime - m_StartTime;
+    if (count != 6)
+      return false;
 
-  m_channelName = fields[3];
-  m_title = fields[4];
-  m_description = fields[5];
-  m_stream = fields[6];
-  m_fileName = fields[7];
-  m_lifetime = fields[8];
+    timeinfo.tm_hour = hour;
+    timeinfo.tm_min = minute;
+    timeinfo.tm_sec = second;
+    timeinfo.tm_year = year - 1900;
+    timeinfo.tm_mon = month - 1;
+    timeinfo.tm_mday = day;
+    // Make the other fields empty:
+    timeinfo.tm_isdst = 0;
+    timeinfo.tm_wday = 0;
+    timeinfo.tm_yday = 0;
 
-  return ok;
+    endtime = mktime (&timeinfo) + m_UTCdiff; //Start time in localtime
+
+    if (endtime < 0)
+      return false;
+
+    m_Duration = endtime - m_StartTime;
+
+    m_channelName = fields[3];
+    m_title = fields[4];
+    m_description = fields[5];
+    m_stream = fields[6];
+    m_fileName = fields[7];
+    m_lifetime = fields[8];
+
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

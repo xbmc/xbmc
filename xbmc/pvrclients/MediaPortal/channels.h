@@ -24,6 +24,7 @@
 #define __CHANNELS_H
 
 #include "../../addons/include/xbmc_pvr_lib++.h"
+#include <string>
 
 class cChannel
 {
