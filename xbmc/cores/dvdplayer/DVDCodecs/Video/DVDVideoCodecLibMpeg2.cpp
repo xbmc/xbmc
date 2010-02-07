@@ -276,6 +276,9 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
           if((m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
             m_dll.mpeg2_skip(m_pHandle, 1);
         }
+        m_dts2 = m_dts;
+        m_dts = DVD_NOPTS_VALUE;
+
         //Not too interesting really
         //we can do everything when we get a full picture instead. simplifies things.
 
@@ -429,8 +432,8 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
             u.tag.l = m_pInfo->display_picture->tag;
             u.tag.u = m_pInfo->display_picture->tag2;
             pBuffer->pts = u.pts;
-            pBuffer->dts = m_dts;
-            m_dts = DVD_NOPTS_VALUE;
+            pBuffer->dts = m_dts2;
+            m_dts2 = DVD_NOPTS_VALUE;
 
             // only return this if it's not first image or an I frame
             if(m_pCurrentBuffer || pBuffer->iFrameType == FRAME_TYPE_I || pBuffer->iFrameType == FRAME_TYPE_UNDEF )
