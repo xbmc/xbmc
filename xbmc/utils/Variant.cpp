@@ -223,7 +223,8 @@ void CVariant::push_back(CVariant variant)
     m_type = VariantTypeArray;
     m_data.array = new VariantArray();
   }
-  m_data.array->push_back(variant);
+  else if (isArray())
+    m_data.array->push_back(variant);
 }
 
 unsigned int CVariant::size() const
@@ -268,8 +269,8 @@ void CVariant::erase(std::string key)
     m_type = VariantTypeObject;
     m_data.map = new VariantMap();
   }
-  
-  m_data.map->erase(key);
+  else if (isObject())
+    m_data.map->erase(key);
 }
 
 void CVariant::erase(unsigned int position)
@@ -281,7 +282,7 @@ void CVariant::erase(unsigned int position)
     m_data.array = new VariantArray();
   }
 
-  if (position < size())
+  if (isArray() && position < size())
     m_data.array->erase(m_data.array->begin() + position);
 }
 
