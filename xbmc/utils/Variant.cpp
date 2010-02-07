@@ -34,6 +34,8 @@ CVariant::CVariant(VariantType type)
     m_data.array = new VariantArray();
   else if (isObject())
     m_data.map = new VariantMap();
+  else
+    memset(&m_data, 0, sizeof(m_data));
 }
 
 CVariant::CVariant(int integer)
