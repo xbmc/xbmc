@@ -646,7 +646,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
       }
     }
   }
-  CLog::Log(LOGINFO, "ADDON: Found %zu addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
+  CLog::Log(LOGINFO, "ADDON: Found %"PRIuS" addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
 }
 
 bool CAddonMgr::UpdateIfKnown(AddonPtr &addon)
