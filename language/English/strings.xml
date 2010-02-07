@@ -287,7 +287,7 @@
   <string id="343">Adjust framerate</string>
   <string id="344">Actors</string>
   <string id="345">Year</string>
-  <string id="346">Normalize Audio Levels</string>
+  <string id="346">Correct volume level on downmix</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>

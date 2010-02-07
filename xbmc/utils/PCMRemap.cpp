@@ -284,9 +284,8 @@ void CPCMRemap::BuildMap()
   }
 
   /* see if we need to normalize the levels */
-  bool normalize = g_guiSettings.GetBool("audiooutput.normalizelevels");
-  if (normalize)
-    CLog::Log(LOGDEBUG, "CPCMRemap: Volume level normalization is enabled");
+  bool dontnormalize = g_guiSettings.GetBool("audiooutput.dontnormalizelevels");
+  CLog::Log(LOGDEBUG, "CPCMRemap: Downmix normalization is %s", (dontnormalize ? "disabled" : "enabled"));
 
   /* resolve all the channels */
   struct PCMMapInfo table[PCM_MAX_CH + 1], *info, *dst;
@@ -324,11 +323,11 @@ void CPCMRemap::BuildMap()
       ++count;
     }
 
-    if (count == 1 && !normalize)
+    if (count == 1 && dontnormalize)
       m_lookupMap[m_outMap[out_ch]]->copy = true;
     
     /* normalize the levels if it is turned on */
-    if (normalize)
+    if (!dontnormalize)
       for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
         dst->level /= scale;
   }
