@@ -47,6 +47,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 
 XBPython g_pythonParser;
 
@@ -391,7 +392,7 @@ void XBPython::Initialize()
 /**
 * Should be called when a script is finished
 */
-void XBPython::Finalize()
+void XBPython::FinalizeScript()
 {
   CSingleLock lock(m_critSection);
   // for linux - we never release the library. its loaded and stays in memory.
@@ -399,7 +400,11 @@ void XBPython::Finalize()
     m_iDllScriptCounter--;
   else
     CLog::Log(LOGERROR, "Python script counter attempted to become negative");
-  if (m_iDllScriptCounter == 0 && m_bInitialized)
+  m_endtime = CTimeUtils::GetTimeMS();
+}
+void XBPython::Finalize()
+{
+  if (m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
 
@@ -437,7 +442,7 @@ void XBPython::FreeResources()
       delete it->pyThread;
       lock.Enter();
       it = m_vecPyList.erase(it);
-      Finalize();
+      FinalizeScript();
     }
   }
 }
@@ -494,10 +499,13 @@ void XBPython::Process()
       {
         delete it->pyThread;
         it = m_vecPyList.erase(it);
-        Finalize();
+        FinalizeScript();
       }
       else ++it;
     }
+
+    if(m_iDllScriptCounter == 0 && m_endtime + 10000 < CTimeUtils::GetTimeMS())
+      Finalize();
   }
 }
 

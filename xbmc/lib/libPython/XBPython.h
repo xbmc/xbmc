@@ -55,6 +55,7 @@ public:
   void UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
   void Initialize();
   void Finalize();
+  void FinalizeScript();
   void FreeResources();
   void Process();
 
@@ -105,6 +106,7 @@ private:
   HANDLE            m_hEvent;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
   HMODULE           m_hModule;
+  unsigned int      m_endtime;
 
   //Vector with list of threads used for running scripts
   PyList              m_vecPyList;
