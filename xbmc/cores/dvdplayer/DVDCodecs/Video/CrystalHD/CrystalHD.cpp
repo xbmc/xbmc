@@ -1519,11 +1519,6 @@ void CCrystalHD::CloseDecoder(void)
   CLog::Log(LOGDEBUG, "%s: codec closed", __MODULE_NAME__);
 }
 
-bool CCrystalHD::IsOpenforDecode(void)
-{
-  return m_Device && m_IsConfigured;
-}
-
 void CCrystalHD::Reset(void)
 {
   m_last_in_pts = DVD_NOPTS_VALUE;
@@ -1538,14 +1533,6 @@ void CCrystalHD::Reset(void)
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
-}
-
-unsigned int CCrystalHD::GetInputCount(void)
-{
-  if (m_pInputThread)
-    return m_pInputThread->GetInputCount();
-  else
-    return 0;
 }
 
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
