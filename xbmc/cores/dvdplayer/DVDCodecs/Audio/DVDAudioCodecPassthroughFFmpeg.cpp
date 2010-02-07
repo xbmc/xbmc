@@ -219,10 +219,6 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
     if(pData[0] != 0x0b || pData[1] != 0x77)
       continue;
  
-    /* dont do extensive testing if we have not lost sync */
-    if (!m_lostSync && skip == 0)
-      return 0;
-
     uint8_t fscod      = pData[4] >> 6;
     uint8_t frmsizecod = pData[4] & 0x3F;
     uint8_t bsid       = pData[5] >> 3;
@@ -235,7 +231,7 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
         AC3FSCod[fscod] != m_pStream->codec->sample_rate
     ) continue;
 
-    /* get the details we need to check crc1 */
+    /* get the details we need to check crc1 and framesize */
     uint16_t bitrate   = AC3Bitrates[frmsizecod >> 1];
     int      framesize = 0;
     switch(fscod)
@@ -246,6 +242,10 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
     }
 
     *fSize = framesize * 2;
+
+    /* dont do extensive testing if we have not lost sync */
+    if (!m_lostSync && skip == 0)
+      return 0;
 
     int crc_size;
     /* if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet) */
@@ -278,10 +278,6 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize, int *fSize)
       pData[2] != 0x80 ||
       pData[3] != 0x01
     ) continue;
-
-    /* dont do extensive testing if we have not lost sync */
-    if (!m_lostSync && skip == 0)
-      return 0;
 
     /* if it is not a termination frame, check the next 6 bits */
     if (pData[4] & 0x80 != 0 && pData[4] & 0x7C != 0x7C)
