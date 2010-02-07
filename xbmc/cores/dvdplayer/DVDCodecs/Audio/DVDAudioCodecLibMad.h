@@ -37,8 +37,8 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
+  virtual enum PCMChannels* GetChannelMap();
   virtual int GetChannels()        { return m_iSourceChannels; }
-  virtual enum PCMChannels* GetChannelMap()  { static enum PCMChannels map[2] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}; return map; }
   virtual int GetSampleRate()      { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample()   { return 16; }
   virtual const char* GetName()    { return "libmad"; }
