@@ -175,6 +175,9 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     m_pStream->codec->codec_id    = hints.codec;
     m_pStream->codec->sample_rate = hints.samplerate;
     m_pStream->codec->channels    = hints.channels;
+
+    /* we will check the first packet's crc */
+    m_lostSync = true;
     return true;
   }
 
@@ -207,19 +210,15 @@ int CDVDAudioCodecPassthroughFFmpeg::BCReadPacket(uint8_t *buf, int buf_size)
   return buf_size;
 }
 
-int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize)
+int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
 {
   int skip = 0;
-  while(iSize - skip > 6)
+  for(skip = 0; iSize - skip > 6; ++skip, ++pData)
   {
     /* search for an ac3 sync word */
-    if(pData[0] != 0x0b && pData[1] != 0x77)
-    {
-      ++skip;
-      ++pData;
+    if(pData[0] != 0x0b || pData[1] != 0x77)
       continue;
-    }
-    
+ 
     uint8_t fscod      = pData[4] >> 6;
     uint8_t frmsizecod = pData[4] & 0x3F;
     uint8_t bsid       = pData[5] >> 3;
@@ -229,14 +228,10 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize)
         fscod      ==   3 ||
         frmsizecod >   37 ||
         bsid       > 0x11 ||
-        AC3FSCod[fscod] != m_pStream->codec->sample_rate)
-    {
-      ++skip;
-      ++pData;
-      continue;
-    }
+        AC3FSCod[fscod] != m_pStream->codec->sample_rate
+    ) continue;
 
-    /* get the details we need to check crc1 */
+    /* get the details we need to check crc1 and framesize */
     uint16_t bitrate   = AC3Bitrates[frmsizecod >> 1];
     int      framesize = 0;
     switch(fscod)
@@ -246,6 +241,11 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize)
       case 2: framesize = bitrate * 4; break;
     }
 
+    *fSize = framesize * 2;
+
+    /* dont do extensive testing if we have not lost sync */
+    if (!m_lostSync && skip == 0)
+      return 0;
 
     int crc_size;
     /* if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet) */
@@ -255,64 +255,66 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize)
 
     if (crc_size <= iSize - skip)
       if(m_dllAvUtil.av_crc(m_dllAvUtil.av_crc_get_table(AV_CRC_16_ANSI), 0, &pData[2], crc_size * 2))
-      {
-        ++skip;
-        ++pData;
         continue;
-      }
 
     /* if we get here, we can sync */
+    m_lostSync = false;
     return skip;
   }
 
-  /* if we get here, the entire packet is invalid */
+  /* if we get here, the entire packet is invalid and we have lost sync */
+  m_lostSync = true;
   return iSize;
 }
 
-int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize)
+int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize, int *fSize)
 {
-  int skip = 0;
-  while(iSize - skip > 8)
+  int skip;
+  for(skip = 0; iSize - skip > 8; ++skip, ++pData)
   {
     if (
-      pData[0] != 0x7F &&
-      pData[1] != 0xFE &&
-      pData[2] != 0x80 &&
-      pData[3] != 0x01)
-    {
-      ++skip;
-      ++pData;
-      continue;
-    }
+      pData[0] != 0x7F ||
+      pData[1] != 0xFE ||
+      pData[2] != 0x80 ||
+      pData[3] != 0x01
+    ) continue;
 
+    /* if it is not a termination frame, check the next 6 bits */
+    if (pData[4] & 0x80 != 0 && pData[4] & 0x7C != 0x7C)
+      continue;
+
+    /* get and validate the framesize */
+    *fSize = ((pData[5] & 0x3) << 8 | pData[6]) << 4 | ((pData[7] & 0xF0) >> 4) + 1;
+    if (*fSize < 95 || *fSize > 16383)
+      continue;
+
+    m_lostSync = false;
     return skip;
   }
 
+  m_lostSync = true;
   return iSize;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
 {
-
+  int fSize = iSize;
   if (m_pSyncFrame)
   {
-    int skip = (this->*m_pSyncFrame)(pData, iSize);
+    int skip = (this->*m_pSyncFrame)(pData, iSize, &fSize);
     if (skip > 0)
-    {
-      CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Decode - Skipping %i bytes to re-sync", skip);
       return skip;
-    }
   }
 
   AVPacket pkt;
   m_dllAvCodec.av_init_packet(&pkt);
   pkt.data = pData;
-  pkt.size = iSize;
+  pkt.size = fSize;
 
   m_dllAvFormat.av_write_header (m_pFormat);
   m_dllAvFormat.av_write_frame  (m_pFormat, &pkt);
   m_dllAvFormat.av_write_trailer(m_pFormat);
-  return iSize;
+  return fSize;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)
@@ -333,6 +335,7 @@ int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)
 void CDVDAudioCodecPassthroughFFmpeg::Reset()
 {
   m_OutputSize = 0;
+  m_lostSync   = true;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetChannels()

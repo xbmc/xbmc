@@ -547,14 +547,7 @@ void CGUIWindowManager::UpdateModelessVisibility()
 
 void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 {
-  if (!g_application.IsCurrentThread())
-  {
-    // make sure graphics lock is not held
-    DWORD locks = ExitCriticalSection(g_graphicsContext);
-    g_application.getApplicationMessenger().WindowManagerProcess(renderOnly);
-    RestoreCriticalSection(g_graphicsContext, locks);
-  }
-  else
+  if (g_application.IsCurrentThread())
     Process_Internal(renderOnly);
 }
 

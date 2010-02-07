@@ -35,7 +35,7 @@ public:
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose(void);
-  virtual int  Decode(BYTE *pData, int iSize, double pts);
+  virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
@@ -43,10 +43,13 @@ public:
 
 protected:
   CCrystalHD      *m_Device;
+  double          m_pts;
+  bool            m_force_dts;
   bool            m_DecodeStarted;
   bool            m_DropPictures;
   double          m_Duration;
   const char      *m_pFormatName;
+  CRYSTALHD_CODEC_TYPE m_codec_type;
 };
 
 #endif

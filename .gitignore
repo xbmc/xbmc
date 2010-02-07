@@ -15,6 +15,7 @@ config.log
 *.l[oa]
 *.so
 *.so.*
+*.dylib
 *.lineno
 *.py[co]
 

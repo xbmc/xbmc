@@ -288,7 +288,7 @@ int CFTPParse::getDayOfWeek(int month, int date, int year)
     leap_year = 1;
 
   /* Now select a doomsday for the given month */
-  int mdday;
+  int mdday = 1;
   if (month == 1)
   {
     if (leap_year)

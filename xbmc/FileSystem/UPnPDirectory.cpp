@@ -87,8 +87,6 @@ CUPnPDirectory::GetFriendlyName(const char* url)
 bool
 CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-    CGUIDialogProgress* dlgProgress = NULL;
-
     CUPnP* upnp = CUPnP::GetInstance();
 
     /* upnp should never be cached, it has internal cache */
@@ -211,19 +209,6 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             }
         }
 #endif
-        // bring up dialog if object is not cached
-        if (!upnp->m_MediaBrowser->IsCached(uuid, object_id) && m_allowPrompting) {
-            dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-            if (dlgProgress) {
-                dlgProgress->ShowProgressBar(false);
-                dlgProgress->SetCanCancel(false);
-                dlgProgress->SetHeading(20334);
-                dlgProgress->SetLine(0, 194);
-                dlgProgress->SetLine(1, "");
-                dlgProgress->SetLine(2, "");
-                dlgProgress->StartModal();
-            }
-        }
 
         // if error, return now, the device could have gone away
         // this will make us go back to the sources list
@@ -339,11 +324,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
     }
 
 cleanup:
-    if (dlgProgress) dlgProgress->Close();
     return true;
 
 failure:
-    if (dlgProgress) dlgProgress->Close();
     return false;
 }
 }

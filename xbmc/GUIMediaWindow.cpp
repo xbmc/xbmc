@@ -612,11 +612,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
-  ClearFileItems();
-  m_vecItems->ClearProperties();
-  m_vecItems->SetThumbnailImage("");
-
-  if (!GetDirectory(strDirectory, *m_vecItems))
+  CFileItemList items;
+  if (!GetDirectory(strDirectory, items))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
     // if the directory is the same as the old directory, then we'll return
@@ -633,6 +630,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     Update(strParentPath);
     return false;
   }
+
+  ClearFileItems();
+  *m_vecItems = items;
 
   // if we're getting the root source listing
   // make sure the path history is clean
@@ -1279,7 +1279,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CURL plugin(m_vecItems->Get(itemNumber)->m_strPath);
       ADDON::AddonPtr addon;
       if (CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, plugin.GetHostName(), addon))
-        CGUIDialogAddonSettings::ShowAndGetInput(addon);
+        if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
+          Update(m_vecItems->m_strPath);
       return true;
     }
   case CONTEXT_BUTTON_USER1:

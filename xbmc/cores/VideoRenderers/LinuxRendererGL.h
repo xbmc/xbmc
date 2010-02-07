@@ -140,13 +140,9 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  typedef void (CLinuxRendererGL::*TextureFuncLoadPtr)(int index);
-  typedef void (CLinuxRendererGL::*TextureFuncDeletePtr)(int index);
-  typedef bool (CLinuxRendererGL::*TextureFuncCreatePtr)(int index, bool clear);
-
-  TextureFuncLoadPtr LoadTexturesFuncPtr;
-  TextureFuncDeletePtr DeleteTextureFuncPtr;
-  TextureFuncCreatePtr CreateTextureFuncPtr;
+  void (CLinuxRendererGL::*m_textureLoad)(int source);
+  void (CLinuxRendererGL::*m_textureDelete)(int index);
+  bool (CLinuxRendererGL::*m_textureCreate)(int index, bool clear);
 
   void LoadYV12Textures(int source);
   void DeleteYV12Texture(int index);

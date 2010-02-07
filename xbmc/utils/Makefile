@@ -68,7 +68,8 @@ SRCS=Addon.cpp \
      RingBuffer.cpp \
      Semaphore.cpp \
      FileOperationJob.cpp \
-     FileUtils.cpp
+     FileUtils.cpp \
+     Variant.cpp
 
 LIB=utils.a
 

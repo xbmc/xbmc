@@ -821,14 +821,18 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     case BCM::vdecRESOLUTION_1080p25 :
       m_framerate = 25.0;
     break;
+    case BCM::vdecRESOLUTION_1080p24:
+      m_framerate = 24.0;
+    break;
     case BCM::vdecRESOLUTION_1080p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_1080p0:
+      // 1080p0 is ambiguious, could be 23_976 or 29_97 fps, decoder
+      // just does not know. 1080p@23_976 is more common but this
+      // will mess up 1080p@29_97 playback. We really need to verify
+      // which framerate.
       m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p24:
-      m_framerate = 24.0;
     break;
     
     case BCM::vdecRESOLUTION_1080i29_97:
@@ -860,11 +864,11 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     case BCM::vdecRESOLUTION_720p29_97:
       m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_720p23_976:
-      m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
     case BCM::vdecRESOLUTION_720p24:
       m_framerate = 24.0;
+    break;
+    case BCM::vdecRESOLUTION_720p23_976:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p0:
       m_framerate = 24.0 * 1000.0 / 1001.0;
@@ -881,14 +885,14 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
       m_interlace = TRUE;
     break;
     
-    case BCM::vdecRESOLUTION_480p29_97:
-      m_framerate = 30.0 * 1000.0 / 1001.0;
-    break;
     case BCM::vdecRESOLUTION_480p0:
       m_framerate = 60.0;
     break;
     case BCM::vdecRESOLUTION_480p:
       m_framerate = 60.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_480p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
@@ -1075,7 +1079,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
     case BCM::BC_STS_SUCCESS:
       if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
       {
-        if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_timestamp))
+        if (procOut.PicInfo.timeStamp)
         {
           m_timestamp = procOut.PicInfo.timeStamp;
 
@@ -1515,11 +1519,6 @@ void CCrystalHD::CloseDecoder(void)
   CLog::Log(LOGDEBUG, "%s: codec closed", __MODULE_NAME__);
 }
 
-bool CCrystalHD::IsOpenforDecode(void)
-{
-  return m_Device && m_IsConfigured;
-}
-
 void CCrystalHD::Reset(void)
 {
   m_last_in_pts = DVD_NOPTS_VALUE;
@@ -1534,14 +1533,6 @@ void CCrystalHD::Reset(void)
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
-}
-
-unsigned int CCrystalHD::GetInputCount(void)
-{
-  if (m_pInputThread)
-    return m_pInputThread->GetInputCount();
-  else
-    return 0;
 }
 
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
@@ -1603,6 +1594,7 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   }
   */
 
+  pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
   pDvdVideoPicture->pts = m_last_out_pts;
   pDvdVideoPicture->iWidth = pBuffer->m_width;
   pDvdVideoPicture->iHeight = pBuffer->m_height;

@@ -597,7 +597,7 @@ CStdString CSysInfo::GetLinuxDistro()
     pipe = popen(cmd.c_str(), "r");
   }
 
-  CStdString result = "";
+  CStdString result = "Unknown";
   if (pipe)
   {
     char buffer[256] = {'\0'};
@@ -616,7 +616,7 @@ CStdString CSysInfo::GetUnameVersion()
 {
   CStdString result = "";
 
-  FILE* pipe = popen("uname -rs", "r");
+  FILE* pipe = popen("uname -rm", "r");
   if (pipe)
   {
     char buffer[256] = {'\0'};
@@ -643,12 +643,8 @@ CStdString CSysInfo::GetUserAgent()
   result += GetUnameVersion();
 #elif defined(_LINUX)
   result += "Linux; ";
-  CStdString distro = GetLinuxDistro();
-  if (distro != "")
-  {
-    result += distro;
-    result += "; ";
-  }
+  result += GetLinuxDistro();
+  result += "; ";
   result += GetUnameVersion();
 #endif
 #ifdef SVN_REV

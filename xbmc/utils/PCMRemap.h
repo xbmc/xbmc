@@ -23,6 +23,7 @@
  */
 
 #include <stdint.h>
+#include <vector>
 #include "guilib/StdString.h"
 
 #define PCM_MAX_CH 18
@@ -68,22 +69,25 @@ struct PCMMapInfo
 {
   enum  PCMChannels channel;
   float level;
+  bool  ifExists;
+  int   in_offset;
+  bool  copy;
 };
 
 class CPCMRemap
 {
 protected:
-  bool              m_inSet, m_outSet;
-  enum PCMLayout    m_channelLayout;
-  unsigned int      m_inChannels, m_outChannels;
-  unsigned int      m_inSampleSize;
-  enum PCMChannels *m_inMap, *m_outMap, *m_layoutMap;
+  bool               m_inSet, m_outSet;
+  enum PCMLayout     m_channelLayout;
+  unsigned int       m_inChannels, m_outChannels;
+  unsigned int       m_inSampleSize;
+  enum PCMChannels  *m_inMap, *m_outMap, *m_layoutMap;
 
-  bool              m_useable  [PCM_MAX_CH];
-  struct PCMMapInfo m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
-  int8_t            m_inLookup [PCM_MAX_CH];
+  bool               m_useable  [PCM_MAX_CH];
+  int                m_inStride, m_outStride;
+  struct PCMMapInfo  m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
 
-  struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, struct PCMMapInfo *tablePtr);
+  struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, bool ifExists, std::vector<enum PCMChannels> path, struct PCMMapInfo *tablePtr);
   void               BuildMap();
   void               DumpMap(CStdString info, int unsigned channels, enum PCMChannels *channelMap);
   void               Dispose();

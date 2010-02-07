@@ -38,6 +38,8 @@
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
+  m_pts(0),
+  m_force_dts(false),
   m_DecodeStarted(false),
   m_DropPictures(false),
   m_Duration(0.0),
@@ -57,24 +59,22 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
   if ((requestedMethod == RENDER_METHOD_AUTO ||
        requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
   {
-    CRYSTALHD_CODEC_TYPE codec_type;
-
     switch (hints.codec)
     {
       case CODEC_ID_MPEG2VIDEO:
-        codec_type = CRYSTALHD_CODEC_ID_MPEG2;
+        m_codec_type = CRYSTALHD_CODEC_ID_MPEG2;
         m_pFormatName = "bcm-mpeg2";
       break;
       case CODEC_ID_H264:
-        codec_type = CRYSTALHD_CODEC_ID_H264;
+        m_codec_type = CRYSTALHD_CODEC_ID_H264;
         m_pFormatName = "bcm-h264";
       break;
       case CODEC_ID_VC1:
-        codec_type = CRYSTALHD_CODEC_ID_VC1;
+        m_codec_type = CRYSTALHD_CODEC_ID_VC1;
         m_pFormatName = "bcm-vc1";
       break;
       case CODEC_ID_WMV3:
-        codec_type = CRYSTALHD_CODEC_ID_WMV3;
+        m_codec_type = CRYSTALHD_CODEC_ID_WMV3;
         m_pFormatName = "bcm-wmv3";
       break;
       default:
@@ -89,13 +89,16 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
 
-    if (m_Device && !m_Device->OpenDecoder(codec_type, hints.extrasize, hints.extradata))
+    if (m_Device && !m_Device->OpenDecoder(m_codec_type, hints.extrasize, hints.extradata))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
     }
 
-    m_Duration = 0.0;
+    m_pts = 0;
+    m_force_dts = false;
+    // default duration to 23.976 fps, have to guess something.
+    m_Duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
     m_DropPictures = false;
     m_DecodeStarted = false;
 
@@ -115,7 +118,7 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
   }
 }
 
-int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
+int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double pts)
 {
   int ret = 0;
 
@@ -131,20 +134,46 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   if (!pData)
     return VC_BUFFER;
 
-  // Handle Input, add demuxer packet to input queue, we must accept it or
-  // it will be discarded as DVDPlayerVideo has no concept of "try again".
-  if (pData)
+  // qualify dts/pts
+  if (dts == DVD_NOPTS_VALUE && pts == DVD_NOPTS_VALUE)
   {
-    if ( m_Device->AddInput(pData, iSize, pts) )
-      pData = NULL;
+    // if invalid dts and pts, set DVD_NOPTS_VALUE and let
+    // DVDPlayerVideo figure out timing from duration.
+    m_pts = DVD_NOPTS_VALUE;
+  }
+  else
+  {
+    // always use pts for video content with re-ordered frames.
+    if(!m_force_dts && pts != DVD_NOPTS_VALUE)
+      m_pts = pts;
     else
     {
-      CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
-      Sleep(10);
+      // if dts is invalid but pts is not, use pts.
+      if (dts == DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE)
+        m_pts = pts;
+      else
+      {
+        // not a clue so use dts, some avi's will toggle
+        // pts valid/invalid and mess up timing, so force
+        // dts for all packets if we ever drop into here.  
+        m_force_dts = true;
+        m_pts = dts;
+      }
     }
   }
-  if (m_Device->GetInputCount() < 2)
-    ret |= VC_BUFFER;
+
+  // Handle Input, add demuxer packet to input queue, we must accept it or
+  // it will be discarded as DVDPlayerVideo has no concept of "try again".
+  if ( m_Device->AddInput(pData, iSize, m_pts) )
+    pData = NULL;
+  else
+  {
+    // Deep crap error, this should never happen unless we run away pulling demuxer pkts.
+    CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
+    Sleep(10);
+  }
+  // Always return VC_BUFFER
+  ret |= VC_BUFFER;
 
   // Fake a decoding delay of 1/2 the frame duration, this helps keep DVDPlayerVideo from
   // draining the demuxer queue. DVDPlayerVideo expects one picture frame for each demuxer
@@ -158,7 +187,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double pts)
   }
 
   // Handle Output, we delay passing back VC_PICTURE on startup until we have a few
-  // decoded picture frames as DVDPlayerVideo might discard picture frames as it
+  // decoded picture frames as DVDPlayerVideo might discard picture frames when it
   // tries to sync with audio.
   if (m_DecodeStarted && m_Device->GetReadyCount())
       ret |= VC_PICTURE;

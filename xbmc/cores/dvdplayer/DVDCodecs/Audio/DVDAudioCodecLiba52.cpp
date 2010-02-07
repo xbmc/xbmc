@@ -110,7 +110,7 @@ void CDVDAudioCodecLiba52::Dispose()
 void CDVDAudioCodecLiba52::SetupChannels(int flags)
 {
   /* These are channel mappings that liba52 outputs */
-  static int8_t channelMaps[14][6] =
+  static enum PCMChannels channelMaps[14][6] =
   {
     /* Without LFE */
     {/* A52_MONO    */ PCM_FRONT_CENTER                                                                                          },

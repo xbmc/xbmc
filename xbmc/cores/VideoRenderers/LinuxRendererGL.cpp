@@ -116,9 +116,9 @@ CLinuxRendererGL::CLinuxRendererGL()
   memset(m_buffers, 0, sizeof(m_buffers));
 
   // default texture handlers to YUV
-  LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
-  CreateTextureFuncPtr = &CLinuxRendererGL::CreateYV12Texture;
-  DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteYV12Texture;
+  m_textureLoad   = &CLinuxRendererGL::LoadYV12Textures;
+  m_textureCreate = &CLinuxRendererGL::CreateYV12Texture;
+  m_textureDelete = &CLinuxRendererGL::DeleteYV12Texture;
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
@@ -180,7 +180,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     LoadShaders();
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
-      (this->*CreateTextureFuncPtr)(i, true);
+      (this->*m_textureCreate)(i, true);
     }
     m_bValidated = true;
     return true;
@@ -492,7 +492,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
   {
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-      (this->*CreateTextureFuncPtr)(i, true);
+      (this->*m_textureCreate)(i, true);
 
     im->flags = IMAGE_FLAG_READY;
   }
@@ -1131,16 +1131,16 @@ void CLinuxRendererGL::LoadShaders(int field)
   // Now that we now the render method, setup texture function handlers
   if (m_iFlags & CONF_FLAGS_FORMAT_NV12)
   {
-    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadNV12Textures;
-    CreateTextureFuncPtr = &CLinuxRendererGL::CreateNV12Texture;
-    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteNV12Texture;
+    m_textureLoad   = &CLinuxRendererGL::LoadNV12Textures;
+    m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
+    m_textureDelete = &CLinuxRendererGL::DeleteNV12Texture;
   }
   else
   {
     // setup default YV12 texture handlers
-    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
-    CreateTextureFuncPtr = &CLinuxRendererGL::CreateYV12Texture;
-    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteYV12Texture;
+    m_textureLoad   = &CLinuxRendererGL::LoadYV12Textures;
+    m_textureCreate = &CLinuxRendererGL::CreateYV12Texture;
+    m_textureDelete = &CLinuxRendererGL::DeleteYV12Texture;
   }
 }
 
@@ -1163,7 +1163,7 @@ void CLinuxRendererGL::UnInit()
 
   // YV12 textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
-    (this->*DeleteTextureFuncPtr)(i);
+    (this->*m_textureDelete)(i);
 
   // cleanup framebuffer object if it was in use
   m_fbo.Cleanup();
@@ -1198,7 +1198,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     m_currentField = FIELD_FULL;
 
   // call texture load function
-  (this->*LoadTexturesFuncPtr)(renderBuffer);
+  (this->*m_textureLoad)(renderBuffer);
 
   if (m_renderMethod & RENDER_GLSL)
   {

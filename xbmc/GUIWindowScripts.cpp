@@ -273,7 +273,8 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     ADDON::AddonPtr script;
     if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRIPT, m_vecItems->Get(itemNumber)->m_strPath, script))
     {
-      CGUIDialogAddonSettings::ShowAndGetInput(script);
+      if (CGUIDialogAddonSettings::ShowAndGetInput(script))
+        Update(m_vecItems->m_strPath);
     }
     return true;
   }

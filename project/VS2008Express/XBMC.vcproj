@@ -2311,14 +2311,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\ApplicationRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\ApplicationRenderer.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\CueDocument.cpp"
 				>
 			</File>

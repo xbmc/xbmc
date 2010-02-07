@@ -66,8 +66,6 @@ using namespace XFILE;
 
 class CSettings g_settings;
 
-extern CStdString g_LoadErrorStr;
-
 CSettings::CSettings(void)
 {
 }
@@ -494,7 +492,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
   const TiXmlElement *pElement = pRoot->FirstChildElement("resolutions");
   if (!pElement)
   {
-    g_LoadErrorStr.Format("%s Doesn't contain <resolutions>", strSettingsFile.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <resolutions>", strSettingsFile.c_str());
     return false;
   }
   const TiXmlElement *pResolution = pElement->FirstChildElement("resolution");
@@ -594,14 +592,14 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   if (!xmlDoc.LoadFile(strSettingsFile))
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (strcmpi(pRootElement->Value(), "settings") != 0)
   {
-    g_LoadErrorStr.Format("%s\nDoesn't contain <settings>", strSettingsFile.c_str());
+    CLog::Log(LOGERROR, "%s\nDoesn't contain <settings>", strSettingsFile.c_str());
     return false;
   }
 

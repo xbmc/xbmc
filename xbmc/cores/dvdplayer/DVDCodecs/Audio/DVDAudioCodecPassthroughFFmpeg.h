@@ -43,12 +43,12 @@ public:
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }
-  virtual const char* GetName()  { return "passthroughffmpeg"; }
+  virtual const char* GetName()  { return "PassthroughFFmpeg"; }
 
 private:
-  int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize);
-  int SyncAC3(BYTE* pData, int iSize);
-  int SyncDTS(BYTE* pData, int iSize);
+  int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize, int *fSize);
+  int SyncAC3(BYTE* pData, int iSize, int *fSize);
+  int SyncDTS(BYTE* pData, int iSize, int *fSize);
 
   DllAvFormat      m_dllAvFormat;
   DllAvUtil        m_dllAvUtil;
@@ -60,6 +60,7 @@ private:
   unsigned char    m_bcBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   BYTE            *m_OutputBuffer;
   int              m_OutputSize;
+  bool             m_lostSync;
 
   static int _BCReadPacket(void *opaque, uint8_t *buf, int buf_size) { return ((CDVDAudioCodecPassthroughFFmpeg*)opaque)->BCReadPacket(buf, buf_size); }
   int BCReadPacket(uint8_t *buf, int buf_size);
