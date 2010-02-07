@@ -615,6 +615,9 @@ bool CGUIWindowTV::OnAction(const CAction &action)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS && m_vecItems->m_strPath != "pvr://recordings/")
       GoParentFolder();
+    else
+      g_windowManager.PreviousWindow();
+
     return true;
   }
   return CGUIMediaWindow::OnAction(action);
