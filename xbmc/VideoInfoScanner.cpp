@@ -1035,7 +1035,7 @@ namespace VIDEO
           CUtil::GetDirectory(pItem->m_strPath, strPath);
           strImage = CUtil::AddFileToFolder(strPath,strImage);
         }
-        picture.DoCreateThumbnail(strImage,strThumb);
+        picture.CreateThumbnail(strImage,strThumb);
       }
       catch (...)
       {
@@ -1396,7 +1396,7 @@ namespace VIDEO
             if (reg.RegFind(strCheck.c_str()) > -1)
             {
               CPicture picture;
-              picture.DoCreateThumbnail(tbnItems[j]->m_strPath,items[i]->GetCachedSeasonThumb());
+              picture.CreateThumbnail(tbnItems[j]->m_strPath,items[i]->GetCachedSeasonThumb());
               bDownload=false;
               break;
             }
@@ -1424,7 +1424,7 @@ namespace VIDEO
         if (CFile::Exists(strLocal))
         {
           CPicture pic;
-          pic.DoCreateThumbnail(strLocal,strThumb);
+          pic.CreateThumbnail(strLocal,strThumb);
         }
         else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
           CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());

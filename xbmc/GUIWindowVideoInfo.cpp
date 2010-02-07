@@ -753,7 +753,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
     CPicture pic;
-    pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
+    pic.CreateThumbnail(localThumb, cachedLocalThumb);
     CFileItemPtr item(new CFileItem("thumb://Local", false));
     item->SetThumbnailImage(cachedLocalThumb);
     item->SetLabel(g_localizeStrings.Get(20017));
@@ -803,7 +803,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   else if (CFile::Exists(result))
   {
     CPicture pic;
-    pic.DoCreateThumbnail(result, cachedThumb);
+    pic.CreateThumbnail(result, cachedThumb);
   }
   else 
     result = "thumb://None";

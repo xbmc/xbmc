@@ -1193,7 +1193,7 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
     if (XFILE::CFile::Exists(localThumb))
     {
       CPicture pic;
-      pic.DoCreateThumbnail(localThumb, thumb);
+      pic.CreateThumbnail(localThumb, thumb);
     }
   }
   if (!XFILE::CFile::Exists(thumb) && artist && artist->thumbURL.m_url.size())

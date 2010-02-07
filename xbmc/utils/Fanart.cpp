@@ -152,19 +152,8 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
 
 bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination) const
 {
-  // Ideally we'd just call CPicture::CacheImage() directly, but for some
-  // reason curl doesn't seem to like downloading these for us
-  XFILE::CFileCurl http;
-
-  CStdString tempFile = "special://temp/fanart_download.jpg";
-  if (http.Download(url, tempFile))
-  { 
-    CPicture pic;
-    pic.CacheFanart(tempFile, destination);
-    XFILE::CFile::Delete(tempFile);
-    return true;
-  }
-  return false;
+  CPicture pic;
+  return pic.CacheFanart(url, destination);
 }
 
 bool CFanart::DownloadImage(const CStdString &strDestination) const

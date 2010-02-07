@@ -58,7 +58,7 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
     else
     {
       CPicture pic;
-      if(pic.DoCreateThumbnail(thumb, cachedThumb))
+      if(pic.CreateThumbnail(thumb, cachedThumb))
         pItem->SetThumbnailImage(cachedThumb);
       else
         pItem->SetThumbnailImage("");

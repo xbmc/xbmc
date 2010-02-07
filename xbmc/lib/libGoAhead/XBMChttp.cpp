@@ -1357,7 +1357,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     if (autoGetPictureThumbs && !item.HasThumbnail())
     {
       CPicture pic;
-      pic.DoCreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
+      pic.CreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
       item.SetCachedPictureThumb();
     }
     thumb = item.GetCachedPictureThumb();

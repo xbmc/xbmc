@@ -33,6 +33,14 @@ public:
   bool CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, int width, int height, const CStdString &thumb);
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
 
+  void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
+  bool CreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
+  bool CacheThumb(const CStdString& sourceUrl, const CStdString& destFileName);
+  bool CacheFanart(const CStdString& sourceUrl, const CStdString& destFileName);
+
+  // caches a skin image as a thumbnail image
+  bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
+
   ImageInfo GetInfo() const { return m_info; };
   unsigned int GetWidth() const { return m_info.width; };
   unsigned int GetHeight() const { return m_info.height; };
@@ -40,18 +48,11 @@ public:
   unsigned int GetOriginalHeight() const { return m_info.originalheight; };
   const EXIFINFO *GetExifInfo() const { return &m_info.exifInfo; };
 
-  void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
-  bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
-  bool CacheImage(const CStdString& sourceFileName, const CStdString& destFileName, int width, int height);
-  bool CacheThumb(const CStdString& sourceFileName, const CStdString& destFileName);
-  bool CacheFanart(const CStdString& sourceFileName, const CStdString& destFileName);
-
-  // caches a skin image as a thumbnail image
-  bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
-
 protected:
   
 private:
+  bool CacheImage(const CStdString& sourceUrl, const CStdString& destFileName, int width, int height);
+
   struct VERTEX
   {
     D3DXVECTOR4 p;

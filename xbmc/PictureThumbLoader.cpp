@@ -63,7 +63,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
         else
         {
           CPicture pic;
-          if(pic.DoCreateThumbnail(thumb, cachedThumb))
+          if(pic.CreateThumbnail(thumb, cachedThumb))
             pItem->SetThumbnailImage(cachedThumb);
           else
             pItem->SetThumbnailImage("");
@@ -80,7 +80,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   if ((pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList()) && !pItem->HasThumbnail())
   { // load the thumb from the image file
     CPicture pic;
-    pic.DoCreateThumbnail(pItem->m_strPath, pItem->GetCachedPictureThumb());
+    pic.CreateThumbnail(pItem->m_strPath, pItem->GetCachedPictureThumb());
   }
   // refill in the thumb to get it to update
   pItem->SetCachedPictureThumb();

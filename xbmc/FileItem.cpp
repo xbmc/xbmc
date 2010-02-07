@@ -2453,7 +2453,7 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   {
     CStdString cachedThumb(CUtil::GetCachedMusicThumb(m_strPath));
     CPicture pic;
-    pic.DoCreateThumbnail(thumb, cachedThumb);
+    pic.CreateThumbnail(thumb, cachedThumb);
   }
 
   SetCachedMusicThumb();
@@ -2674,7 +2674,7 @@ void CFileItem::SetUserVideoThumb()
   {
     CStdString cachedThumb(GetCachedVideoThumb());
     CPicture pic;
-    pic.DoCreateThumbnail(thumb, cachedThumb);
+    pic.CreateThumbnail(thumb, cachedThumb);
   }
   SetCachedVideoThumb();
 }
@@ -2934,7 +2934,7 @@ void CFileItem::SetUserProgramThumb()
   if (CFile::Exists(fileThumb))
   { // cache
     CPicture pic;
-    if (pic.DoCreateThumbnail(fileThumb, thumb))
+    if (pic.CreateThumbnail(fileThumb, thumb))
       SetThumbnailImage(thumb);
   }
   else if (IsXBE())
@@ -2947,7 +2947,7 @@ void CFileItem::SetUserProgramThumb()
     if (CFile::Exists(avalaunchIcon))
     {
       CPicture pic;
-      if (pic.DoCreateThumbnail(avalaunchIcon, thumb))
+      if (pic.CreateThumbnail(avalaunchIcon, thumb))
         SetThumbnailImage(thumb);
     }
     else if (CUtil::CacheXBEIcon(m_strPath, thumb))
@@ -2960,7 +2960,7 @@ void CFileItem::SetUserProgramThumb()
     if (CFile::Exists(folderThumb))
     {
       CPicture pic;
-      if (pic.DoCreateThumbnail(folderThumb, thumb))
+      if (pic.CreateThumbnail(folderThumb, thumb))
         SetThumbnailImage(thumb);
     }
   }

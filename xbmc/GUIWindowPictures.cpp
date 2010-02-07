@@ -544,7 +544,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     if (CFile::Exists(strTBN))
     {
       CPicture pic;
-      if (pic.DoCreateThumbnail(strTBN, pItem->GetCachedPictureThumb(),true))
+      if (pic.CreateThumbnail(strTBN, pItem->GetCachedPictureThumb(),true))
       {
         pItem->SetCachedPictureThumb();
         pItem->FillInDefaultIcon();
@@ -573,7 +573,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     if (CFile::Exists(thumb))
     {
       CPicture pic;
-      pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
+      pic.CreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
     }
     else if (!pItem->IsPlugin())
     {
@@ -625,7 +625,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
         CStdString folderThumb(pItem->GetCachedPictureThumb());
         items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
         CPicture pic;
-        pic.DoCreateThumbnail(items[0]->m_strPath, folderThumb);
+        pic.CreateThumbnail(items[0]->m_strPath, folderThumb);
       }
       else
       {

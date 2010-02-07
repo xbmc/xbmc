@@ -84,99 +84,126 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, 
   return pTexture;
 }
 
-bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
+bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFile, bool checkExistence /*= false*/)
 {
   // don't create the thumb if it already exists
-  if (checkExistence && CFile::Exists(strThumbFileName))
+  if (checkExistence && CFile::Exists(thumbFile))
     return true;
 
-  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
+  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", file.c_str(), thumbFile.c_str());
 
+  memset(&m_info, 0, sizeof(ImageInfo));
+  if (CUtil::IsInternetStream(file, true))
+  {
+    CFileCurl stream;
+    CStdString thumbData;
+    if (stream.Get(file, thumbData))
+      return CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(file), thumbFile);
+
+    return false;
+  }      
   // load our dll
   if (!m_dll.Load()) return false;
 
-  memset(&m_info, 0, sizeof(ImageInfo));
-  if (CUtil::IsInternetStream(strFileName, true))
+  if (!m_dll.CreateThumbnail(file.c_str(), thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
-    CFileCurl http;
-    CStdString thumbData;
-    if (http.Get(strFileName, thumbData))
-      return CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(strFileName), strThumbFileName);
-  }      
-  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
-  {
-    CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
+    CLog::Log(LOGERROR, "%s: Unable to create thumbfile %s from image %s", __FUNCTION__, thumbFile.c_str(), file.c_str());
     return false;
   }
   return true;
 }
 
-bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName, int width, int height)
+bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height)
 {
   if (width > 0 && height > 0)
   {
-    CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceFileName.c_str(), destFileName.c_str(), width, height);
+    CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceUrl.c_str(), destFile.c_str(), width, height);
     if (!m_dll.Load()) return false;
-    if (!m_dll.CreateThumbnail(sourceFileName.c_str(), destFileName.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+  
+    if (CUtil::IsInternetStream(sourceUrl, true))
     {
-      CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFileName.c_str(), sourceFileName.c_str());
+      CFileCurl stream;
+      CStdString tempFile = "special://temp/image_download.jpg";
+      if (stream.Download(sourceUrl, tempFile))
+      {
+        if (!m_dll.CreateThumbnail(tempFile.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+        {
+          CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
+          CFile::Delete(tempFile);
+          return false;
+        }
+        CFile::Delete(tempFile);
+        return true;
+      }
+      return false;
+    }
+    
+    if (!m_dll.CreateThumbnail(sourceUrl.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+    {
+      CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
       return false;
     }
     return true;
   }
   else
   {
-    CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str() );
-    return CFile::Cache(sourceFileName, destFileName);
+    CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceUrl.c_str(), destFile.c_str());
+    if (CUtil::IsInternetStream(sourceUrl, true))
+    {
+      CFileCurl stream;
+      return stream.Download(sourceUrl, destFile);
+    }
+    else
+    {
+      return CFile::Cache(sourceUrl, destFile);
+    }
   }
 }
 
-bool CPicture::CacheThumb(const CStdString& sourceFileName, const CStdString& destFileName)
+bool CPicture::CacheThumb(const CStdString& sourceUrl, const CStdString& destFile)
 {
-  return CacheImage(sourceFileName, destFileName, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
+  return CacheImage(sourceUrl, destFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
 }
 
-bool CPicture::CacheFanart(const CStdString& sourceFileName, const CStdString& destFileName)
+bool CPicture::CacheFanart(const CStdString& sourceUrl, const CStdString& destFile)
 {
   int height = g_advancedSettings.m_fanartHeight;
   // Assume 16:9 size
   int width = height * 16 / 9;
 
-  return CacheImage(sourceFileName, destFileName, width, height);
+  return CacheImage(sourceUrl, destFile, width, height);
 }
 
-bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
+bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSize, const CStdString& extension, const CStdString& thumbFile)
 {
-  CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
+  CLog::Log(LOGINFO, "Creating album thumb from memory: %s", thumbFile.c_str());
   if (!m_dll.Load()) return false;
-  if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExtension.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  if (!m_dll.CreateThumbnailFromMemory((BYTE *)buffer, bufSize, extension.c_str(), thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
-    CLog::Log(LOGERROR, "PICTURE::CreateAlbumThumbnailFromMemory: exception: memfile FileType: %s\n", strExtension.c_str());
+    CLog::Log(LOGERROR, "%s: exception with fileType: %s", __FUNCTION__, extension.c_str());
     return false;
   }
   return true;
 }
 
-void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
+void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb)
 { // we want to mold the thumbs together into one single one
   if (!m_dll.Load()) return;
-  CStdString strThumbnails[4];
+  CStdString cachedThumbs[4];
   const char *szThumbs[4];
   for (int i=0; i < 4; i++)
   {
-    if (strThumbs[i].IsEmpty())
-      strThumbnails[i] = "";
-    else
+    if (!thumbs[i].IsEmpty())
     {
-      CFileItem item(strThumbs[i], false);
-      strThumbnails[i] = item.GetCachedPictureThumb();
-      DoCreateThumbnail(strThumbs[i], strThumbnails[i], true);
+      CFileItem item(thumbs[i], false);
+      cachedThumbs[i] = item.GetCachedPictureThumb();
+      CreateThumbnail(thumbs[i], cachedThumbs[i], true);
     }
-    szThumbs[i] = strThumbnails[i].c_str();
+    szThumbs[i] = cachedThumbs[i].c_str();
   }
-  if (!m_dll.CreateFolderThumbnail(szThumbs, folderThumbnail.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  if (!m_dll.CreateFolderThumbnail(szThumbs, folderThumb.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
-    CLog::Log(LOGERROR, "PICTURE::CreateFolderThumb() failed for folder thumb %s", folderThumbnail.c_str());
+    CLog::Log(LOGERROR, "%s failed for folder thumb %s", __FUNCTION__, folderThumb.c_str());
   }
 }
 
@@ -249,3 +276,4 @@ bool CPicture::CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, i
   }
   return false;
 }
+

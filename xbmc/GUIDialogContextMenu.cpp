@@ -442,7 +442,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (XFILE::CFile::Exists(folderThumb))
       { // cache it
         CPicture pic;
-        if (pic.DoCreateThumbnail(folderThumb, item->GetCachedProgramThumb()))
+        if (pic.CreateThumbnail(folderThumb, item->GetCachedProgramThumb()))
         {
           CFileItemPtr local(new CFileItem("thumb://Local", false));
           local->SetThumbnailImage(item->GetCachedProgramThumb());

@@ -252,7 +252,7 @@ bool CScraperUrl::DownloadThumbnail(const CStdString &thumb, const CScraperUrl::
     try
     {
       CPicture picture;
-      return picture.DoCreateThumbnail(entry.m_url, thumb);
+      return picture.CreateThumbnail(entry.m_url, thumb);
     }
     catch (...)
     {

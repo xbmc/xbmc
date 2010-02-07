@@ -868,7 +868,7 @@ void CGUIWindowMusicNav::SetPluginThumb(int iItem, const VECSOURCES &sources)
       XFILE::CFile::Cache(picturePath, cachedThumb);
 
     if (picturePath.Equals("thumb://None") ||
-        picture.DoCreateThumbnail(picturePath, cachedThumb))
+        picture.CreateThumbnail(picturePath, cachedThumb))
     {
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
       g_windowManager.SendMessage(msg);
