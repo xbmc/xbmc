@@ -1288,7 +1288,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
-      CGUIDialogPluginSettings::ShowAndGetInput(url);
+      if(CGUIDialogPluginSettings::ShowAndGetInput(url))
+        Update(m_vecItems->m_strPath);
       return true;
     }
   case CONTEXT_BUTTON_DELETE_PLUGIN:
