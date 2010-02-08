@@ -40,6 +40,7 @@ extern "C"
   unsigned int __declspec(dllexport) GetSettings(StructSetting ***sSet);
   ADDON_STATUS __declspec(dllexport) SetSetting(const char *settingName, const void *settingValue);
   void __declspec(dllexport) Remove();
+  void __declspec(dllexport) FreeSettings();
 };
 
 #endif
