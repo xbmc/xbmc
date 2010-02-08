@@ -46,6 +46,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/StreamDetails.h"
+#include "GUIDialogBusy.h"
 
 using namespace std;
 
@@ -2392,7 +2393,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
   m_CurrentVideo.source = source;
   m_CurrentVideo.hint = hint;
   m_CurrentVideo.stream = (void*)pStream;
-  m_CurrentAudio.started = false;
+  m_CurrentVideo.started = false;
 
   /* use same priority for video thread as demuxing thread, as */
   /* otherwise demuxer will starve if video consumes the full cpu */

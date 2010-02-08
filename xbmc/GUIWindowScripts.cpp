@@ -228,7 +228,8 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
-    CGUIDialogPluginSettings::ShowAndGetInput(path);
+    if(CGUIDialogPluginSettings::ShowAndGetInput(path))
+      Update(m_vecItems->m_strPath);
     return true;
   }
   else if (button == CONTEXT_BUTTON_DELETE)

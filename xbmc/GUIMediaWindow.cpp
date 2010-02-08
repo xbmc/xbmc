@@ -1230,7 +1230,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
 
-  if (item->IsPlugin() && item->IsFileFolder())
+  if (item->IsPlugin() && item->m_bIsFolder)
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1269,7 +1269,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
-      CGUIDialogPluginSettings::ShowAndGetInput(url);
+      if(CGUIDialogPluginSettings::ShowAndGetInput(url))
+        Update(m_vecItems->m_strPath);
       return true;
     }
   case CONTEXT_BUTTON_DELETE_PLUGIN:

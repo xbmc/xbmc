@@ -40,7 +40,8 @@ public:
   //void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   void Add(CDVDOverlay* pSubtitle);
-  
+  void Sort();
+
   CDVDOverlay* Get(double iPts = 0LL); // get the first overlay in this fifo
 
   void Reset();

@@ -80,7 +80,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     if(pOverlay)
       AddText(tags, pOverlay, text, strlen(text));
   }
-
+  m_collection.Sort();
   if(pOverlay)
     pOverlay->Release();
 

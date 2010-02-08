@@ -402,7 +402,7 @@
   <string id="494">Algemene audio headroom</string>
   <string id="495">Video naar GUI resolutie upsamplen</string>
   <string id="496">Kalibratie</string>
-  <string id="497">Extenties mediabestanden verbergen</string>
+  <string id="497">Extenties mediabestanden tonen</string>
   <string id="498">Sorteer op:Type</string>
   <string id="499">Kan geen verbinding maken met allmusic.com</string>
   <string id="500">Albuminfo downloaden mislukt</string>
@@ -1020,7 +1020,7 @@
   <string id="13303">Lettertype voor skin</string>
   <string id="13304">Bi-directionale tekst omdraaien</string>
   <string id="13305">RSS-feeds inschakelen</string>
-  <string id="13306">Hoofdmap verbergen</string>
+  <string id="13306">Hoofdmap tonen</string>
   <string id="13307">Tracks weergeven als</string>
   <string id="13308">Wilt u XBMC opnieuw opstarten</string>
   <string id="13309">in plaats van alleen XBMC?</string>

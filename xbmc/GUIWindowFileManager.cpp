@@ -684,26 +684,9 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     {
       CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
-      CURL url(strFile);
-      if (url.GetProtocol() == "rar")
-      {
-        g_RarManager.SetWipeAtWill(false);
-        CStdString strOriginalCachePath = g_advancedSettings.m_cachePath;
-        CStdString strDestPath;
-        CUtil::GetDirectory(strDestFile,strDestPath);
-        g_advancedSettings.m_cachePath = strDestPath;
-        CLog::Log(LOGDEBUG, "CacheRarredFile: dest=%s, file=%s",strDestPath.c_str(), url.GetFileName().c_str());
-        bool bResult = g_RarManager.CacheRarredFile(strDestPath,url.GetHostName(),url.GetFileName(),0,strDestPath,-2);
-        g_advancedSettings.m_cachePath = strOriginalCachePath;
-        g_RarManager.SetWipeAtWill(true);
-        return bResult;
-      }
-      else
-      {
-        CAsyncFileCopy copier;
-        if (!copier.Copy(strFile, strDestFile, g_localizeStrings.Get(115)))
-          return false;
-      }
+      CAsyncFileCopy copier;
+      if (!copier.Copy(strFile, strDestFile, g_localizeStrings.Get(115)))
+        return false;
     }
     break;
 

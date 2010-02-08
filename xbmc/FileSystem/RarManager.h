@@ -38,7 +38,7 @@ class CFileItemList;
 #define EXFILE_OVERWRITE 1
 #define EXFILE_AUTODELETE 2
 #define EXFILE_UNIXPATH 4
-#define RAR_DEFAULT_CACHE "Z:\\"
+#define RAR_DEFAULT_CACHE "special://temp/"
 #define RAR_DEFAULT_PASSWORD ""
 
 class CFileInfo{
@@ -47,9 +47,9 @@ public:
   ~CFileInfo();
   CStdString m_strCachedPath;
   CStdString m_strPathInRar;
-  bool	m_bAutoDel;
+  bool  m_bAutoDel;
   int m_iUsed;
-  __int64 m_iOffset;
+  int64_t m_iOffset;
 
   bool m_bIsCanceled()
   {
@@ -69,28 +69,25 @@ class CRarManager
 public:
   CRarManager();
   ~CRarManager();
-  bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, 
-                       const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE, 
-                       const CStdString& strDir =RAR_DEFAULT_CACHE, const __int64 iSize=-1);
+  bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath,
+                       const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE,
+                       const CStdString& strDir =RAR_DEFAULT_CACHE, const int64_t iSize=-1);
   bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath,
                       const CStdString& strPathInRar = "");
-  bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath, 
+  bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath,
                      bool bMask=true, const CStdString& strPathInRar="");
   CFileInfo* GetFileInRar(const CStdString& strRarPath, const CStdString& strPathInRar);
   bool IsFileInRar(bool& bResult, const CStdString& strRarPath, const CStdString& strPathInRar);
   void ClearCache(bool force=false);
   void ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar);
   void ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
-  void SetWipeAtWill(bool bWipe) { m_bWipe = bWipe; }
 protected:
 
   bool ListArchive(const CStdString& strRarPath, ArchiveList_struct* &pArchiveList);
   std::map<CStdString, std::pair<ArchiveList_struct*,std::vector<CFileInfo> > > m_ExFiles;
   CCriticalSection m_CritSection;
 
-  __int64 CheckFreeSpace(const CStdString& strDrive);
-
-  bool m_bWipe;
+  int64_t CheckFreeSpace(const CStdString& strDrive);
 };
 
 extern CRarManager g_RarManager;

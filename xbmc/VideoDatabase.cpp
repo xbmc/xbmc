@@ -7017,7 +7017,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             CStdString strFanart;
             CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg", strFanart);
 
-              if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(strFanart), false))
+              if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(strFanart, false)))
               if (!CFile::Cache(item.GetCachedFanart(),strFanart))
                 CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), strFanart.c_str());
 
@@ -7665,5 +7665,34 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
   g_windowManager.SendThreadMessage(msg);
 }
 
+void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
+                               VIDEODB_CONTENT_TYPE type)
+{
+  if (NULL == m_pDB.get()) return;
+  if (NULL == m_pDS.get()) return;
 
+  CStdString strTable, strField;
+  if (type == VIDEODB_CONTENT_MOVIES)
+  {
+    strTable = "movies";
+    strField = "idMovie";
+  }
+  if (type == VIDEODB_CONTENT_TVSHOWS)
+  {
+    strTable = "tvshows";
+    strField = "idShow";
+  }
+  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+  {
+    strTable = "musicvideos";
+    strField = "idMVideo";
+  }
+
+  if (strTable.IsEmpty())
+    return;
+
+  CStdString strSQL = FormatSQL("update %s set c%02u='%s' where %s=%u",
+                                strTable.c_str(),field,strField.c_str(),id);
+  m_pDS->exec(strSQL.c_str());
+}
 

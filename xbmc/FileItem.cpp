@@ -1063,9 +1063,7 @@ const CStdString& CFileItem::GetContentType() const
       m_ref = "x-directory/normal";
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
-          || m_strPath.Left(8).Equals("https://")
-          || m_strPath.Left(7).Equals("upnp://")
-          || m_strPath.Left(6).Equals("mms://"))
+          || m_strPath.Left(8).Equals("https://"))
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
