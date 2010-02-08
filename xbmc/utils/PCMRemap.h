@@ -101,6 +101,9 @@ public:
   void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap);
   void Remap(void *data, void *out, unsigned int samples);
   bool CanRemap();
+  int  InBytesToFrames (int bytes );
+  int  FramesToOutBytes(int frames);
+  int  FramesToInBytes (int frames);
 };
 
 #endif

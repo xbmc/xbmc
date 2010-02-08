@@ -147,11 +147,13 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_SIDE_LEFT */
   {
+    {PCM_FRONT_LEFT           , 1.0},
     {PCM_BACK_LEFT            , 1.0},
     {PCM_INVALID}
   },
   /* PCM_SIDE_RIGHT */
   {
+    {PCM_FRONT_RIGHT          , 1.0},
     {PCM_BACK_RIGHT           , 1.0},
     {PCM_INVALID}
   },
@@ -323,8 +325,10 @@ void CPCMRemap::BuildMap()
       ++count;
     }
 
-    if (count == 1 && dontnormalize)
-      m_lookupMap[m_outMap[out_ch]]->copy = true;
+    /* if there is only 1 channel to mix, and the level is 1.0, then just copy the channel */
+    dst = m_lookupMap[m_outMap[out_ch]];
+    if (count == 1 && dst->level > 0.99 && dst->level < 1.01)
+      dst->copy = true;
     
     /* normalize the levels if it is turned on */
     if (!dontnormalize)
@@ -463,5 +467,20 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
 bool CPCMRemap::CanRemap()
 {
   return (m_inSet && m_outSet);
+}
+
+int CPCMRemap::InBytesToFrames(int bytes)
+{
+  return bytes / m_inSampleSize / m_inChannels;
+}
+
+int CPCMRemap::FramesToOutBytes(int frames)
+{
+  return frames * m_inSampleSize * m_outChannels;
+}
+
+int CPCMRemap::FramesToInBytes(int frames)
+{
+  return frames * m_inSampleSize * m_inChannels;
 }
 
