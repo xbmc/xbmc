@@ -65,7 +65,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
-using namespace DIRECTORY;
 
 class CSettings g_settings;
 

@@ -10,7 +10,6 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include <vector>
 
-using namespace DIRECTORY;
 using namespace XFILE;
 using namespace std;
 

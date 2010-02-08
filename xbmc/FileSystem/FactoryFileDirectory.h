@@ -24,7 +24,7 @@
 
 class CFileItem;
 
-namespace DIRECTORY
+namespace XFILE
 {
 class CFactoryFileDirectory
 {

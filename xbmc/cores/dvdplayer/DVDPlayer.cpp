@@ -69,6 +69,7 @@
 #include "MediaManager.h"
 #include "PVRManager.h"
 #include "FileSystem/PVRFile.h"
+#include "GUIDialogBusy.h"
 
 using namespace std;
 
@@ -269,13 +270,12 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_dvdPlayerVideo(&m_clock, &m_overlayContainer, m_messenger),
       m_dvdPlayerAudio(&m_clock, m_messenger),
       m_dvdPlayerSubtitle(&m_overlayContainer),
-      m_dvdPlayerTeletext()
+      m_dvdPlayerTeletext(),
+      m_ready(true)
 {
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
-
-  m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 
   InitializeCriticalSection(&m_critStreamSection);
 
@@ -288,8 +288,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_caching = CACHESTATE_DONE;
 
-  m_pDlgCache = NULL;
-
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.Init();
 #endif
@@ -299,7 +297,6 @@ CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
 
-  CloseHandle(m_hReadyEvent);
   DeleteCriticalSection(&m_critStreamSection);
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.DeInit();
@@ -317,12 +314,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     if(ThreadHandle())
       CloseFile();
 
-    // dialog must be opened in this thread
-    if (m_item.IsInternetStream())
-      m_pDlgCache = new CDlgCache(0   , g_localizeStrings.Get(10214), m_item.GetLabel());
-    else
-      m_pDlgCache = new CDlgCache(3000, ""                          , m_item.GetLabel());
-
     m_bAbortRequest = false;
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
@@ -334,9 +325,16 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_content  = file.GetContentType();
     m_filename = file.m_strPath;
 
-    ResetEvent(m_hReadyEvent);
+    m_ready.Reset();
     Create();
-    WaitForSingleObject(m_hReadyEvent, INFINITE);
+    if(!m_ready.WaitMSec(100))
+    {
+      CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      dialog->Show();
+      while(!m_ready.WaitMSec(1))
+        g_windowManager.Process(true);
+      dialog->Close();
+    }
 
     // Playback might have been stopped due to some error
     if (m_bStop || m_bAbortRequest)
@@ -347,12 +345,6 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Exception thrown on open", __FUNCTION__);
-    if (m_pDlgCache)
-    {
-      m_pDlgCache->Close();
-      m_pDlgCache = NULL;
-    }
-
     return false;
   }
 }
@@ -785,17 +777,11 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 
 void CDVDPlayer::Process()
 {
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
-
   if (!OpenInputStream())
   {
     m_bAbortRequest = true;
     return;
   }
-
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
 
   if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -815,9 +801,6 @@ void CDVDPlayer::Process()
     m_bAbortRequest = true;
     return;
   }
-
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
 
   // allow renderer to switch to fullscreen if requested
   m_dvdPlayerVideo.EnableFullscreen(m_PlayerOptions.fullscreen);
@@ -894,13 +877,7 @@ void CDVDPlayer::Process()
     m_callback.OnPlayBackStarted();
 
   // we are done initializing now, set the readyevent
-  SetEvent(m_hReadyEvent);
-
-  if (m_pDlgCache && m_pDlgCache->IsCanceled())
-    return;
-
-  if (m_pDlgCache)
-    m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
+  m_ready.Set();
 
   // make sure all selected stream have data on startup
   SetCaching(CACHESTATE_INIT);
@@ -973,24 +950,6 @@ void CDVDPlayer::Process()
       }
     }
 
-    // present the cache dialog until playback actually started
-    if (m_pDlgCache)
-    {
-      if (m_pDlgCache->IsCanceled())
-        return;
-
-      if (m_caching)
-      {
-        m_pDlgCache->ShowProgressBar(true);
-        m_pDlgCache->SetPercentage(GetCacheLevel());
-      }
-      else
-      {
-        m_pDlgCache->Close();
-        m_pDlgCache = NULL;
-      }
-    }
-
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
     ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
@@ -1006,6 +965,11 @@ void CDVDPlayer::Process()
       }
       continue;
     }
+
+    // always yield to players if they have data
+    if((m_dvdPlayerAudio.m_messageQueue.GetDataSize() > 0 || m_CurrentAudio.id < 0)
+    && (m_dvdPlayerVideo.m_messageQueue.GetDataSize() > 0 || m_CurrentVideo.id < 0))
+      Sleep(0);
 
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
@@ -1467,6 +1431,12 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   if( pPacket->dts == DVD_NOPTS_VALUE )
     return;
 
+#if 0
+  // these checks seem to cause more harm, than good
+  // looping stillframes are not common in normal files
+  // and a better fix for this behaviour would be to 
+  // correct the timestamps with some offset
+
   if (current.type == STREAM_VIDEO
   && m_CurrentAudio.dts != DVD_NOPTS_VALUE
   && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
@@ -1496,6 +1466,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
       return;
     }
   }
+#endif
 
   double mindts, maxdts;
   if(m_CurrentAudio.dts == DVD_NOPTS_VALUE)
@@ -1737,15 +1708,6 @@ void CDVDPlayer::OnExit()
 {
   g_dvdPerformanceCounter.DisableMainPerformance();
 
-  if (m_pDlgCache)
-  {
-    if(m_pDlgCache->IsCanceled())
-      m_bAbortRequest = true;
-
-    m_pDlgCache->Close();
-    m_pDlgCache = NULL;
-  }
-
   try
   {
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
@@ -1825,7 +1787,7 @@ void CDVDPlayer::OnExit()
   }
 
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
-  SetEvent(m_hReadyEvent);
+  m_ready.Set();
 }
 
 void CDVDPlayer::HandleMessages()
@@ -2104,7 +2066,7 @@ void CDVDPlayer::SetCaching(ECacheState state)
   }
 
   if(state == CACHESTATE_PLAY
-  || state == CACHESTATE_DONE)
+  ||(state == CACHESTATE_DONE && m_caching != CACHESTATE_PLAY))
   {
     m_clock.SetSpeed(m_playSpeed);
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
@@ -2183,12 +2145,12 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 #endif
 
-  if((bPlus && GetChapter() < GetChapterCount())
-  || (!bPlus && GetChapter() > 1))
+  if(((bPlus && GetChapter() < GetChapterCount())
+  || (!bPlus && GetChapter() > 1)) && bLargeStep)
   {
-    if(bPlus && GetChapter() < GetChapterCount())
+    if(bPlus)
       SeekChapter(GetChapter() + 1);
-    else if(!bPlus && GetChapter() > 1)
+    else
       SeekChapter(GetChapter() - 1);
     return;
   }

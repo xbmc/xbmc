@@ -1029,8 +1029,6 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
 {
   int64_t       Now;
   int           SleepTime;
-  int64_t       NextVblank;
-  bool          Late;
 
   CSingleLock SingleLock(m_CritSection);
 
@@ -1040,12 +1038,12 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
     {
       //calculate how long to sleep before we should have gotten a signal that a vblank happened
       Now = CurrentHostCounter();
-      NextVblank = TimeOfNextVblank();
+      int64_t NextVblank = TimeOfNextVblank();
       SleepTime = (int)((NextVblank - Now) * 1000 / m_SystemFrequency);
 
       int64_t CurrTime = m_CurrTime; //save current value of the clock
 
-      Late = false;
+      bool Late = false;
       if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
       {
         Late = true;

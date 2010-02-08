@@ -43,7 +43,7 @@
 #include "LocalizeStrings.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_AREA                    2
 #define CONTROL_DEFAULT_BUTTON          3
@@ -105,7 +105,7 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   m_url = url;
 
   // Load language strings temporarily
-  DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
+  XFILE::CPluginDirectory::LoadPluginStrings(url);
 
   // Create the dialog
   CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
@@ -246,9 +246,10 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           else
             shares = g_settings.GetSourcesFromType(source);
 
-          VECSOURCES localShares, networkShares;
+          VECSOURCES localShares;
           if (!shares)
           {
+            VECSOURCES networkShares;
             g_mediaManager.GetLocalDrives(localShares);
             if (!source || strcmpi(source, "local") != 0)
               g_mediaManager.GetNetworkLocations(networkShares);

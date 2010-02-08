@@ -72,7 +72,7 @@ protected:
   CGUIControl *GetFirstFocusableControl(int id);
 
   VECSOURCES m_shares;
-  DIRECTORY::CVirtualDirectory m_rootDir;
+  XFILE::CVirtualDirectory m_rootDir;
   CFileItemList* m_vecItems;
   CFileItem* m_Directory;
   CStdString m_strParentPath;

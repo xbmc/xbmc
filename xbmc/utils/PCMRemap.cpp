@@ -29,6 +29,11 @@
 CPCMRemap::CPCMRemap() :
   m_inSet   (false),
   m_outSet  (false),
+  m_inChannels  (0),
+  m_outChannels (0),
+  m_inSampleSize(0),
+  m_inMap   (NULL ),
+  m_outMap  (NULL ),
   m_chLookup(NULL )
 {
 }
@@ -40,11 +45,8 @@ CPCMRemap::~CPCMRemap()
 
 void CPCMRemap::Dispose()
 {
-  if (m_chLookup != NULL)
-  {
-    delete m_chLookup;
-    m_chLookup = NULL;
-  }
+  delete[] m_chLookup;
+  m_chLookup = NULL;
 }
 
 /*
@@ -58,6 +60,7 @@ void CPCMRemap::BuildMap()
   if (!m_inSet || !m_outSet) return;
   Dispose();
 
+  delete[] m_chLookup;
   m_chLookup = new int8_t[m_inChannels];
   for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
   {
@@ -87,6 +90,14 @@ void CPCMRemap::DumpMap(CStdString info, unsigned int channels, int8_t *channelM
     mapping += ((i == 0) ? "" : ",") + convert;
   }
   CLog::Log(LOGINFO, "CPCMRemap: %s channel map: %s\n", info.c_str(), mapping.c_str());
+}
+
+void CPCMRemap::Reset()
+{
+  m_inMap  = NULL;
+  m_outMap = NULL;
+  m_inSet  = false;
+  m_outSet = false;
 }
 
 /* sets the input format */

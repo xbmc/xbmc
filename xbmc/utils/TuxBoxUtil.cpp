@@ -170,7 +170,7 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
 }
 bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild)
 {
-  CStdString strItemName, strItemPath, strOptions, strPort;
+  CStdString strOptions, strPort;
   TiXmlElement *pRootElement =root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
@@ -205,12 +205,12 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
         pIt = pNode->FirstChild("name");
         if (pIt)
         {
-          strItemName = pIt->FirstChild()->Value();
+          CStdString strItemName = pIt->FirstChild()->Value();
 
           pIt = pNode->FirstChild("reference");
           if (pIt)
           {
-            strItemPath = pIt->FirstChild()->Value();
+            CStdString strItemPath = pIt->FirstChild()->Value();
             // add. bouquets to item list!
             CFileItemPtr pItem(new CFileItem);
             pItem->m_bIsFolder = true;
@@ -230,7 +230,7 @@ bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &
 }
 bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild)
 {
-  CStdString strItemName, strItemPath, strPort;
+  CStdString strPort;
   TiXmlElement *pRootElement = root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
@@ -263,9 +263,9 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
     {
       CFileItemPtr pItem(new CFileItem);
       pIt = pNode->FirstChildElement("e2servicereference");
-      strItemPath = pIt->FirstChild()->Value();
+      CStdString strItemPath = pIt->FirstChild()->Value();
       pIt = pNode->FirstChildElement("e2servicename");
-      strItemName = pIt->FirstChild()->Value();
+      CStdString strItemName = pIt->FirstChild()->Value();
       pItem->m_bIsFolder = true;
       pItem->SetLabel(strItemName);
       pItem->m_strPath = "tuxbox://"+url.GetHostName()+strPort+"/"+strItemName+"/";
@@ -277,7 +277,7 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
 }
 bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild)
 {
-  CStdString strItemName, strItemPath,strPort;
+  CStdString strPort;
   TiXmlElement *pRootElement =root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
@@ -312,7 +312,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
         pIt = pNode->FirstChild("name");
         if (pIt)
         {
-          strItemName = pIt->FirstChild()->Value();
+          CStdString strItemName = pIt->FirstChild()->Value();
 
           pIt = pNode->FirstChild("reference");
           if (strFilter.Equals(pIt->FirstChild()->Value()))
@@ -333,7 +333,7 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                   pIta = pIt->FirstChild("reference");
                   if (pIta)
                   {
-                    strItemPath = pIta->FirstChild()->Value();
+                    CStdString strItemPath = pIta->FirstChild()->Value();
                     // channel listing add. to item list!
                     CFileItemPtr pbItem(new CFileItem);
                     pbItem->m_bIsFolder = false;
@@ -361,7 +361,6 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
 }
 bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString& strFilter, CStdString& strChild)
 {
-  CStdString strItemName, strItemPath, strPort;
   TiXmlElement *pRootElement = root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
@@ -392,9 +391,9 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
       while(pIta)
       {
         pItb = pIta->FirstChildElement("e2servicereference");
-        strItemPath = pItb->FirstChild()->Value();
+        CStdString strItemPath = pItb->FirstChild()->Value();
         pItb = pIta->FirstChildElement("e2servicename");
-        strItemName = pItb->FirstChild()->Value();
+        CStdString strItemName = pItb->FirstChild()->Value();
         if(bqtName == url.GetShareName())
         {
           CFileItemPtr pbItem(new CFileItem);
@@ -653,7 +652,6 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   http.SetTimeout(20);
   if(http.Open(url))
   {
-    CStdString strTmp;
     int size_read = 0;
     int data_size = 0;
     int size_total = (int)http.GetLength();
@@ -661,6 +659,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
     if(size_total >0)
     {
       // read response from server into string buffer
+      CStdString strTmp;
       strTmp.reserve(size_total);
       char buffer[16384];
       while( (size_read = http.Read( buffer, sizeof(buffer)-1) ) > 0 )

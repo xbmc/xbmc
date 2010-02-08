@@ -33,7 +33,6 @@
 #include "utils/log.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 CShoutcastDirectory::CShoutcastDirectory(void)
 {

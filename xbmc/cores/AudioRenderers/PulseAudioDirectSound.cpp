@@ -205,30 +205,35 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   // Build the channel map, we dont need to use PCMRemap, pulse does it for us :)
   map.channels = iChannels;
-  for(int ch = 0; ch < iChannels; ++ch)
+  if (channelMap)
   {
-    switch(channelMap[ch])
+    for(int ch = 0; ch < iChannels; ++ch)
     {
-      case PCM_FRONT_LEFT           : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT           ; break;
-      case PCM_FRONT_RIGHT          : map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT          ; break;
-      case PCM_FRONT_CENTER         : map.map[ch] = PA_CHANNEL_POSITION_FRONT_CENTER         ; break;
-      case PCM_BACK_CENTER          : map.map[ch] = PA_CHANNEL_POSITION_REAR_CENTER          ; break;
-      case PCM_BACK_LEFT            : map.map[ch] = PA_CHANNEL_POSITION_REAR_LEFT            ; break;
-      case PCM_BACK_RIGHT           : map.map[ch] = PA_CHANNEL_POSITION_REAR_RIGHT           ; break;
-      case PCM_LOW_FREQUENCY        : map.map[ch] = PA_CHANNEL_POSITION_LFE                  ; break;
-      case PCM_FRONT_LEFT_OF_CENTER : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER ; break;
-      case PCM_FRONT_RIGHT_OF_CENTER: map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER; break;
-      case PCM_SIDE_LEFT            : map.map[ch] = PA_CHANNEL_POSITION_SIDE_LEFT            ; break;
-      case PCM_SIDE_RIGHT           : map.map[ch] = PA_CHANNEL_POSITION_SIDE_RIGHT           ; break;
-      case PCM_TOP_CENTER           : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
-      case PCM_TOP_FRONT_LEFT       : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_LEFT       ; break;
-      case PCM_TOP_FRONT_RIGHT      : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_RIGHT      ; break;
-      case PCM_TOP_FRONT_CENTER     : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
-      case PCM_TOP_BACK_LEFT        : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_LEFT        ; break;
-      case PCM_TOP_BACK_RIGHT       : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_RIGHT       ; break;
-      case PCM_TOP_BACK_CENTER      : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
+      switch(channelMap[ch])
+      {
+        case PCM_FRONT_LEFT           : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT           ; break;
+        case PCM_FRONT_RIGHT          : map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT          ; break;
+        case PCM_FRONT_CENTER         : map.map[ch] = PA_CHANNEL_POSITION_FRONT_CENTER         ; break;
+        case PCM_BACK_CENTER          : map.map[ch] = PA_CHANNEL_POSITION_REAR_CENTER          ; break;
+        case PCM_BACK_LEFT            : map.map[ch] = PA_CHANNEL_POSITION_REAR_LEFT            ; break;
+        case PCM_BACK_RIGHT           : map.map[ch] = PA_CHANNEL_POSITION_REAR_RIGHT           ; break;
+        case PCM_LOW_FREQUENCY        : map.map[ch] = PA_CHANNEL_POSITION_LFE                  ; break;
+        case PCM_FRONT_LEFT_OF_CENTER : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER ; break;
+        case PCM_FRONT_RIGHT_OF_CENTER: map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER; break;
+        case PCM_SIDE_LEFT            : map.map[ch] = PA_CHANNEL_POSITION_SIDE_LEFT            ; break;
+        case PCM_SIDE_RIGHT           : map.map[ch] = PA_CHANNEL_POSITION_SIDE_RIGHT           ; break;
+        case PCM_TOP_CENTER           : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
+        case PCM_TOP_FRONT_LEFT       : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_LEFT       ; break;
+        case PCM_TOP_FRONT_RIGHT      : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_RIGHT      ; break;
+        case PCM_TOP_FRONT_CENTER     : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
+        case PCM_TOP_BACK_LEFT        : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_LEFT        ; break;
+        case PCM_TOP_BACK_RIGHT       : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_RIGHT       ; break;
+        case PCM_TOP_BACK_CENTER      : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
+      }
     }
   }
+  else
+    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA); 
 
   pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
 

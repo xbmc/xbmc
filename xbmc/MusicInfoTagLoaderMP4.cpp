@@ -227,8 +227,7 @@ void CMusicInfoTagLoaderMP4::ParseTag( unsigned int metaKey, const char* pMetaDa
     {
       // This cover-art handling is pretty much what was in the old MP4 tag processing code..
       m_thumbSize = metaSize;
-      if (m_thumbData)
-        delete[] m_thumbData;
+      delete[] m_thumbData;
       m_thumbData = new BYTE[m_thumbSize];
       if (m_thumbData)
         memcpy(m_thumbData, pMetaData, metaSize);

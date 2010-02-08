@@ -74,7 +74,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 {
   CStdString strFile;
   if (CUtil::IsStack(strPath))
-    strFile = DIRECTORY::CStackDirectory::GetFirstStackedFile(strPath);
+    strFile = XFILE::CStackDirectory::GetFirstStackedFile(strPath);
   else
     strFile = strPath;
 
@@ -337,7 +337,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   {
     strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
     if (CUtil::IsStack(strFileNameAndPath))
-      strFileNameAndPath = DIRECTORY::CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
+      strFileNameAndPath = XFILE::CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
   }
   else
     return false;

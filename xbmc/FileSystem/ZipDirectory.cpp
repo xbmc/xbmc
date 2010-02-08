@@ -30,7 +30,7 @@
 #include <vector>
 
 using namespace std;
-namespace DIRECTORY
+namespace XFILE
 {
   CZipDirectory::CZipDirectory()
   {

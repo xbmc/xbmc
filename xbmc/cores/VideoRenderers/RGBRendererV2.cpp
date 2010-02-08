@@ -561,12 +561,9 @@ bool CRGBRendererV2::CreateLookupTextures(const YUVCOEF &coef, const YUVRANGE &r
     m_yuvcoef_last = coef;
     m_yuvrange_last = range;
   }
-  if(pBuff)
-    delete[] pBuff;
-  if(pErrorBuff)
-    delete[] pErrorBuff;
-  if(pBuffY)
-    delete[] pBuffY;
+  delete[] pBuff;
+  delete[] pErrorBuff;
+  delete[] pBuffY;
 
   return true;
 }

@@ -67,7 +67,7 @@ public:
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual void Close();
 
-  virtual int  Check() 
+  virtual int  Check(AVCodecContext* avctx) 
   { 
     if(CheckRecover(false))
       return VC_FLUSHED;

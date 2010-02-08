@@ -26,6 +26,10 @@ fi
 cd /root
 pushd .
 
+if [ ! -f crystalhd-HEAD.tar.gz ]; then
+	exit
+fi
+
 tar xvf crystalhd-HEAD.tar.gz
 
 # Make libraries
@@ -86,6 +90,10 @@ tar xvf /tmp/modules.tar
 rm /tmp/modules.tar
 popd
 
+pushd .
 # Prepare tar for real build
 cd Files
 tar cvf /tmp/crystalhd.tar *
+
+popd
+rm -rf ./Files

@@ -75,7 +75,7 @@
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 #include "PlayList.h"
@@ -281,7 +281,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
 #endif
@@ -474,7 +473,6 @@ void CApplication::Preflight()
 
 bool CApplication::Create()
 {
-  g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
@@ -630,6 +628,7 @@ bool CApplication::Create()
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize();
 #endif
+  g_powerManager.Initialize();
 
   CLog::Log(LOGINFO, "Drives are mapped");
 
@@ -639,6 +638,8 @@ bool CApplication::Create()
   if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
     g_settings.m_iLastLoadedProfileIndex = 0;
 
+  g_guiSettings.Initialize();  // Initialize default Settings - don't move
+  g_powerManager.SetDefaults();
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
@@ -1332,8 +1333,6 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
-  g_powerManager.Initialize();
-
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -1699,9 +1698,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   m_skinReloadTime = 0;
 
-  CStdString strHomePath;
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
 
   // save the current window details
@@ -3462,7 +3459,7 @@ void CApplication::Stop()
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
     g_RarManager.ClearCache(true);
 #endif
 
@@ -3680,7 +3677,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
     CFileItem item_new;
-    if (DIRECTORY::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+    if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
       return PlayFile(item_new, false);
     return false;
   }
@@ -5361,10 +5358,12 @@ void CApplication::UpdateLibraries()
   {
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
     VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
+    {
+      SScraperInfo info;
       scanner->StartScanning("",info,settings,false);
+    }
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

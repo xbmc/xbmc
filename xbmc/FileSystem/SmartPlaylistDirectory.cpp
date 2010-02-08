@@ -28,7 +28,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   CSmartPlaylistDirectory::CSmartPlaylistDirectory()
   {

@@ -39,7 +39,6 @@ extern "C"
 #include "cmyth/include/refmem/refmem.h"
 }
 
-using namespace DIRECTORY;
 using namespace XFILE;
 using namespace std;
 

@@ -48,7 +48,7 @@
 #include "Util.h"
 
 #include "FileSystem/PluginDirectory.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 #include "FileSystem/ZipManager.h"
@@ -87,7 +87,7 @@
 #include <vector>
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace MEDIA_DETECT;
 
 typedef struct
@@ -403,7 +403,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (CUtil::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
 #endif

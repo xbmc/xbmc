@@ -395,7 +395,7 @@ void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const CStdString &playlist)
     return;
   }
 
-  DIRECTORY::CPlaylistFileDirectory dir;
+  XFILE::CPlaylistFileDirectory dir;
   CFileItemList items;
   if (dir.GetDirectory(playlist, items))
   {

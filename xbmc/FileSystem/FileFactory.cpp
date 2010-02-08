@@ -37,7 +37,7 @@
 #include "FileSmb.h"
 #endif
 #endif
-#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
+#ifdef HAS_FILESYSTEM_CCX
 #include "FileXBMSP.h"
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -62,7 +62,7 @@
 #include "PVRFile.h"
 #endif
 #include "FileZip.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileRar.h"
 #endif
 #include "FileMusicDatabase.h"
@@ -97,7 +97,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   strProtocol.MakeLower();
 
   if (strProtocol == "zip") return new CFileZip();
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
   else if (strProtocol == "rar") return new CFileRar();
 #endif
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
@@ -134,7 +134,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "smb") return new CFileSMB();
 #endif
 #endif
-#if defined(HAS_CCXSTREAM) && defined(HAVE_XBMC_NONFREE)
+#ifdef HAS_FILESYSTEM_CCX
     else if (strProtocol == "xbms") return new CFileXBMSP();
 #endif
 #ifdef HAS_FILESYSTEM

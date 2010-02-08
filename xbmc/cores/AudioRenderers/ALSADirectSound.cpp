@@ -61,7 +61,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
 
   /* setup the channel mapping */
   m_uiDataChannels = iChannels;
-  m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+  m_remap.Reset();
 
   if (channelMap)
   {
@@ -75,6 +75,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
           break;
         }
 
+    m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
     m_remap.SetOutputFormat(++outChannels, ALSAChannelMap);
     if (m_remap.CanRemap())
     {
@@ -640,7 +641,6 @@ bool CALSADirectSound::SoundDeviceExists(const CStdString& device)
 {
   void **hints, **n;
   char *name;
-  CStdString strName;
   bool retval = false;
 
   if (snd_device_name_hint(-1, "pcm", &hints) == 0)
@@ -649,7 +649,7 @@ bool CALSADirectSound::SoundDeviceExists(const CStdString& device)
     {
       if ((name = snd_device_name_get_hint(*n, "NAME")) != NULL)
       {
-        strName = name;
+        CStdString strName = name;
         free(name);
         if (strName.find(device) != string::npos)
         {

@@ -556,19 +556,9 @@ void CDVDDemuxFFmpeg::Flush()
   g_demuxer = this;
 
   if (m_pFormatContext)
-  {
-    // reset any dts interpolation
-    for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
-    {
-      if(m_pFormatContext->streams[i])
-      {
-        m_pFormatContext->streams[i]->cur_dts = AV_NOPTS_VALUE;
-        m_pFormatContext->streams[i]->last_IP_duration = 0;
-        m_pFormatContext->streams[i]->last_IP_pts = AV_NOPTS_VALUE;
-      }
-    }
-    m_iCurrentPts = DVD_NOPTS_VALUE;
-  }
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+
+  m_iCurrentPts = DVD_NOPTS_VALUE;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -843,6 +833,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 
@@ -1054,7 +1046,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           std::string fileName = "special://temp/fonts/";
-          DIRECTORY::CDirectory::Create(fileName);
+          XFILE::CDirectory::Create(fileName);
           fileName += pStream->filename;
           XFILE::CFile file;
           if(pStream->codec->extradata && file.OpenForWrite(fileName))
@@ -1199,6 +1191,8 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 

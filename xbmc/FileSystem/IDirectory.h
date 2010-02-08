@@ -24,7 +24,7 @@
 
 class CFileItemList;
 
-namespace DIRECTORY
+namespace XFILE
 {
   enum DIR_CACHE_TYPE
   {

@@ -27,7 +27,7 @@
 #include "Key.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd)
     : CGUIControl(parentID, controlID, posX, posY, width, height),

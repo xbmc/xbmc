@@ -106,6 +106,7 @@ Configuration options:
   --disable-rdft           disable RDFT code
   --disable-vaapi          disable VAAPI code
   --disable-vdpau          disable VDPAU code
+  --disable-dxva2          disable DXVA2 code
   --enable-runtime-cpudetect detect cpu capabilities at runtime (bigger binary)
   --enable-hardcoded-tables use hardcoded tables instead of runtime generation
   --enable-memalign-hack   emulate memalign, interferes with memory debuggers
@@ -827,6 +828,7 @@ CONFIG_LIST="
     beos_netserver
     bzlib
     doc
+    dxva2
     fastdiv
     ffmpeg
     ffplay
@@ -1110,6 +1112,8 @@ h263_vaapi_hwaccel_deps="va_va_h"
 h263_vaapi_hwaccel_select="vaapi h263_decoder"
 h263p_encoder_select="h263_encoder"
 h264_decoder_select="golomb"
+h264_dxva2_hwaccel_deps="dxva2api_h"
+h264_dxva2_hwaccel_select="dxva2 h264_decoder"
 h264_vaapi_hwaccel_deps="va_va_h"
 h264_vaapi_hwaccel_select="vaapi"
 h264_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
@@ -1157,6 +1161,8 @@ theora_decoder_select="vp3_decoder"
 tiff_decoder_suggest="zlib"
 tiff_encoder_suggest="zlib"
 tscc_decoder_select="zlib"
+vc1_dxva2_hwaccel_deps="dxva2api_h"
+vc1_dxva2_hwaccel_select="dxva2 vc1_decoder"
 vc1_vaapi_hwaccel_deps="va_va_h"
 vc1_vaapi_hwaccel_select="vaapi vc1_decoder"
 vc1_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
@@ -1172,6 +1178,7 @@ wmav2_encoder_select="fft mdct"
 wmv1_encoder_select="h263_encoder"
 wmv2_encoder_select="h263_encoder"
 wmv3_decoder_select="vc1_decoder"
+wmv3_dxva2_hwaccel_select="vc1_dxva2_hwaccel"
 wmv3_vaapi_hwaccel_select="vc1_vaapi_hwaccel"
 wmv3_vdpau_decoder_select="vc1_vdpau_decoder"
 zlib_decoder_select="zlib"
@@ -2306,6 +2313,7 @@ check_func_headers windows.h VirtualAlloc
 
 check_header conio.h
 check_header dlfcn.h
+check_header dxva2api.h
 check_header malloc.h
 check_header poll.h
 check_header sys/mman.h

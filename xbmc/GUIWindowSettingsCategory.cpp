@@ -115,7 +115,7 @@
 #endif
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -669,30 +669,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("videoplayer.rendermethod"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-#ifdef HAS_XBOX_D3D
-      pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
-      pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
-      pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
-      pControl->AddLabel(g_localizeStrings.Get(21397), RENDER_HQ_RGB_SHADERV2);
-#else
-      pControl->AddLabel(g_localizeStrings.Get(13416), RENDER_METHOD_AUTO);
-      pControl->AddLabel(g_localizeStrings.Get(13417), RENDER_METHOD_ARB);
-      pControl->AddLabel(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL);
-      pControl->AddLabel(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE);
-#ifdef HAVE_LIBVDPAU
-      pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
-#endif
-#ifdef HAVE_LIBCRYSTALHD
-      if (CCrystalHD::GetInstance()->DevicePresent())
-        pControl->AddLabel(g_localizeStrings.Get(13425), RENDER_METHOD_CRYSTALHD);
-#endif
-#endif
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("network.enc"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -815,7 +791,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 #ifdef __APPLE__
     else if (strSetting.Equals("input.appleremotemode"))
     {
-      bool cancelled;
       int remoteMode = g_guiSettings.GetInt("input.appleremotemode");
 
       // if it's not disabled, start the event server or else apple remote won't work
@@ -828,6 +803,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       // if XBMC helper is running, prompt user before effecting change
       if ( g_xbmcHelper.IsRunning() && g_xbmcHelper.GetMode()!=remoteMode )
       {
+        bool cancelled;
         if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
         {
           // user declined, restore previous spinner state and appleremote mode
@@ -2188,7 +2164,11 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
     pControl->SetWidth(width);
     pSettingControl = new CButtonSettingControl((CGUIButtonControl *)pControl, iControlID, pSetting);
   }
-  if (!pControl) return;
+  if (!pControl)
+  {
+    delete pSettingControl;
+    return;
+  }
   pControl->SetID(iControlID++);
   pControl->SetVisible(true);
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(SETTINGS_GROUP_ID);
@@ -2592,7 +2572,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
         {
           map<string, string> subModules;
           map<string, string>::iterator iter;
-          string moduleName, path;
+          string moduleName;
           CStdString visName = pItem->GetLabel();
           visName = visName.Mid(0, visName.size() - 5);
 

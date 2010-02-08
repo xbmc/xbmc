@@ -94,7 +94,7 @@ protected:
   CStdString strCheckSharePath;
 
 
-  DIRECTORY::CVirtualDirectory m_rootDir;
+  XFILE::CVirtualDirectory m_rootDir;
   CFileItemList* m_vecItems[2];
   typedef std::vector <CFileItem*> ::iterator ivecItems;
   CFileItem* m_Directory[2];

@@ -38,7 +38,6 @@
 #include "utils/BitstreamStats.h"
 
 #include "Edl.h"
-#include "dlgcache.h"
 #include "FileItem.h"
 
 
@@ -339,8 +338,6 @@ protected:
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;
 
-  CDlgCache *m_pDlgCache;
-
   struct SPlayerState
   {
     void Clear()
@@ -384,7 +381,7 @@ protected:
     CDVDPlayer& m_player;
   };
 
-  HANDLE m_hReadyEvent;
+  CEvent m_ready;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;

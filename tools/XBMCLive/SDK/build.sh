@@ -70,14 +70,23 @@ rsync -r -l --exclude=.svn --exclude=$WORKDIR . $WORKDIR
 if ! which lh > /dev/null ; then
 	cd $WORKPATH/Tools
 	if [ ! -d live-helper ]; then
-		git clone git://live.debian.net/git/live-helper.git
-		if [ "$?" -ne "0" ]; then
-			exit 1
-		fi
+		if [ ! -f live-helper.tar ]; then
+			git clone git://live.debian.net/git/live-helper.git
+			if [ "$?" -ne "0" ]; then
+				exit 1
+			fi
 
-		# Fix for missing directory for karmic d-i, to be removed when fixed upstream!
-		cd live-helper/data/debian-cd
-		ln -s lenny karmic
+			# Fix for missing directory for karmic d-i, to be removed when fixed upstream!
+			pushd .
+			cd live-helper/data/debian-cd
+			ln -s lenny karmic
+			popd
+
+			# Saved, to avoid cloning for multiple builds
+			tar cvf live-helper.tar live-helper  > /dev/null 2>&1
+		else
+			tar xvf live-helper.tar  > /dev/null 2>&1
+		fi
 	fi
 
 	LH_HOMEDIR=$WORKPATH/Tools/live-helper
@@ -127,26 +136,26 @@ mkdir -p $WORKPATH/buildLive/Files/binary_local-udebs &> /dev/null
 mkdir -p $WORKPATH/buildLive/Files/chroot_local-includes/root &> /dev/null
 
 if ! ls $WORKPATH/buildDEBs/live-initramfs*.* > /dev/null 2>&1; then
-        echo "Files missing (1), exiting..."
+        echo "Files missing (live-initramfs), exiting..."
         exit 1
 fi
 cp $WORKPATH/buildDEBs/live-initramfs*.* $WORKPATH/buildLive/Files/chroot_local-packages
 
 if [ -z "$DONOTINCLUDEINSTALLER" ]; then
 	if ! ls $WORKPATH/buildDEBs/squashfs-udeb*.* > /dev/null 2>&1; then
-		echo "Files missing (2), exiting..."
+		echo "Files missing (squashfs-udeb), exiting..."
 		exit 1
 	fi
 	cp $WORKPATH/buildDEBs/squashfs-udeb*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
 	if ! ls $WORKPATH/buildDEBs/live-installer*.* > /dev/null 2>&1; then
-		echo "Files missing (3), exiting..."
+		echo "Files missing (live-installer), exiting..."
 		exit 1
 	fi
 	cp $WORKPATH/buildDEBs/live-installer*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
 	if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
-		echo "Files missing (4), exiting..."
+		echo "Files missing (xbmclive-installhelpers), exiting..."
 		exit 1
 	fi
 	cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
@@ -156,14 +165,14 @@ if [ -z "$DONOTBUILDRESTRICTEDDRIVERS" ]; then
 	mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
 
 	if ! ls $WORKPATH/buildBinaryDrivers/*.ext3 > /dev/null 2>&1; then
-		echo "Files missing (5), exiting..."
+		echo "Files missing (restrictedDrivers), exiting..."
 		exit 1
 	fi
 	cp $WORKPATH/buildBinaryDrivers/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
 fi
 
 if ! ls $WORKPATH/buildBinaryDrivers/crystalhd.tar > /dev/null 2>&1; then
-        echo "Files missing (6), exiting..."
+        echo "Files missing (crystalhd), exiting..."
         exit 1
 fi
 cp $WORKPATH/buildBinaryDrivers/crystalhd.tar $WORKPATH/buildLive/Files/chroot_local-includes/root

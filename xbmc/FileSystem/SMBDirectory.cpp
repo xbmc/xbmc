@@ -63,7 +63,7 @@ struct CachedDirEntry
   CStdString name;
 };
 
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace std;
 
 CSMBDirectory::CSMBDirectory(void)

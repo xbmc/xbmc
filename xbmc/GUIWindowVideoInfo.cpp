@@ -698,7 +698,6 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   if (result.Left(14) == "thumb://Remote")
   {
-    CStdString strFile;
     CFileItem chosen(result, false);
     CStdString thumb = chosen.GetCachedPictureThumb();
     if (CFile::Exists(thumb))
@@ -758,7 +757,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
   CUtil::WipeDir(strPath);
-  DIRECTORY::CDirectory::Create(strPath);
+  XFILE::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;

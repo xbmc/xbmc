@@ -47,6 +47,10 @@
 #include <GL/glx.h>
 #endif
 
+//due to a bug on osx nvidia, using gltexsubimage2d with a pbo bound and a null pointer
+//screws up the alpha, an offset fixes this
+#define PBO_OFFSET 16
+
 using namespace Shaders;
 
 static const GLubyte stipple_weave[] = {
@@ -1730,6 +1734,15 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.stride[1] = im.width >> im.cshift_x;
     im.stride[2] = im.width >> im.cshift_x;
 
+    //align stride, makes fast_memcpy faster
+    for (int i = 0; i < 3; i++)
+    {
+      im.stride[i] = ALIGN(im.stride[i], 16);
+      //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
+      if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
+        im.stride[i] += PBO_OFFSET;
+    }
+
     im.planesize[0] = im.stride[0] * im.height;
     im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
     im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
@@ -1741,8 +1754,9 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       for (int i = 0; i < 3; i++)
       {
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
-        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+        memset(im.plane[i], 0, im.planesize[i] + PBO_OFFSET);
       }
 
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -1822,11 +1836,11 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       }
       else
       {
-	GLint format;
-	if (p == 2) //V plane needs an alpha texture
-	  format = GL_ALPHA;
-	else
-	  format = GL_LUMINANCE;
+        GLint format;
+        if (p == 2) //V plane needs an alpha texture
+          format = GL_ALPHA;
+        else
+          format = GL_LUMINANCE;
 
         glTexImage2D(m_textureTarget, 0, format, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
       }
@@ -1937,6 +1951,15 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     im.stride[1] = im.width;
     im.stride[2] = 0;
 
+    //align stride, makes fast_memcpy faster
+    for (int i = 0; i < 2; i++)
+    {
+      im.stride[i] = ALIGN(im.stride[i], 16);
+      //stride + PBO_OFFSET can't be a multiple of 128 due to a bug on osx + nvidia + pixel buffer objects
+      if ((im.stride[i] + PBO_OFFSET) % 128 == 0) 
+        im.stride[i] += PBO_OFFSET;
+    }
+
     im.plane[0] = NULL;
     im.plane[1] = NULL;
     im.plane[2] = NULL;
@@ -1948,28 +1971,22 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
     // third plane is not used
     im.planesize[2] = 0;
 
-    if (glewIsSupported("GL_ARB_pixel_buffer_object") && g_guiSettings.GetBool("videoplayer.usepbo")
-        && !(m_renderMethod & RENDER_SW))
+    if (m_pboused)
     {
-      CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
-      m_pboused = true;
-
       glGenBuffersARB(2, pbo);
 
       for (int i = 0; i < 2; i++)
       {
         glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i], 0, GL_STREAM_DRAW_ARB);
+        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
         im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+        memset(im.plane[i], 0, im.planesize[i] + PBO_OFFSET);
       }
 
       glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
     }
     else
     {
-      CLog::Log(LOGNOTICE, "GL: Not using GL_ARB_pixel_buffer_object");
-      m_pboused = false;
-
       for (int i = 0; i < 2; i++)
         im.plane[i] = new BYTE[im.planesize[i]];
     }
@@ -2214,13 +2231,13 @@ void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
   bool pbo = false;
   for(int plane = 0; plane < MAX_PLANES; plane++)
   {
-    if(!buff.pbo[plane] || !buff.image.plane[plane])
+    if(!buff.pbo[plane] || buff.image.plane[plane] == (BYTE*)PBO_OFFSET)
       continue;
     pbo = true;
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
     glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
-    buff.image.plane[plane] = NULL;
+    buff.image.plane[plane] = (BYTE*)PBO_OFFSET;
   }
   if(pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -2231,13 +2248,13 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
   bool pbo = false;
   for(int plane = 0; plane < MAX_PLANES; plane++)
   {
-    if(!buff.pbo[plane] || buff.image.plane[plane])
+    if(!buff.pbo[plane] || buff.image.plane[plane] != (BYTE*)PBO_OFFSET)
       continue;
     pbo = true;
 
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
-    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.image.planesize[plane], NULL, GL_STREAM_DRAW_ARB);
-    buff.image.plane[plane] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.image.planesize[plane] + PBO_OFFSET, NULL, GL_STREAM_DRAW_ARB);
+    buff.image.plane[plane] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
   }
   if(pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);

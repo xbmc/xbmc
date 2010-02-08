@@ -26,7 +26,7 @@
 #include "FileItem.h"
 #include "utils/CharsetConverter.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 extern "C"
 {

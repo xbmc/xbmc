@@ -48,7 +48,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 #include "Favourites.h"
@@ -69,7 +69,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 
 #define ACTION_COPY                     1
@@ -122,10 +121,11 @@ CGUIWindowFileManager::~CGUIWindowFileManager(void)
 
 bool CGUIWindowFileManager::OnAction(const CAction &action)
 {
-  int item;
   int list = GetFocusedList();
   if (list >= 0 && list <= 1)
   {
+    int item;
+
     // the non-contextual menu can be called at any time
     if (action.actionId == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
     {

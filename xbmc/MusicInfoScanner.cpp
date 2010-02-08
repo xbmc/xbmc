@@ -52,7 +52,6 @@
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSIC_GRABBER;
 
 CMusicInfoScanner::CMusicInfoScanner()
@@ -564,11 +563,13 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
 
-      CMusicAlbumInfo albumInfo;
       bCanceled = false;
       if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
+      {
+        CMusicAlbumInfo albumInfo;
         if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
           m_albumsScanned.push_back(iAlbum);
+      }
     }
   }
   if (m_pObserver)
@@ -798,8 +799,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 {
   CAlbum album;
   VECSONGS songs;
-  DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
-  DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
+  XFILE::MUSICDATABASEDIRECTORY::CQueryParams params;
+  XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   bCanceled = false;
   m_musicDatabase.Open();
   if (m_musicDatabase.HasAlbumInfo(params.GetAlbumId()) && m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs))
@@ -1025,8 +1026,8 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
 
 bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog)
 {
-  DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
-  DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
+  XFILE::MUSICDATABASEDIRECTORY::CQueryParams params;
+  XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   bCanceled = false;
   CArtist artist;
   m_musicDatabase.Open();

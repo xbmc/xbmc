@@ -35,6 +35,7 @@ class TiXmlElement;
 #define RENDER_METHOD_SOFTWARE  3
 #define RENDER_METHOD_VDPAU     4
 #define RENDER_METHOD_CRYSTALHD 5
+#define RENDER_METHOD_DXVA      6
 #define RENDER_OVERLAYS         99   // to retain compatibility
 
 // Scaling options.
