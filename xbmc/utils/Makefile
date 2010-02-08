@@ -65,7 +65,8 @@ SRCS=AlarmClock.cpp \
      Semaphore.cpp \
      FileOperationJob.cpp \
      FileUtils.cpp \
-     Variant.cpp
+     Variant.cpp \
+     PCMLimiter.cpp
 
 LIB=utils.a
 
