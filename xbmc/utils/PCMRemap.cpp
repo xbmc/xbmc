@@ -269,6 +269,8 @@ void CPCMRemap::BuildMap()
   if (!m_inSet || !m_outSet) return;
 
   unsigned int in_ch, out_ch;
+  bool hasSide = false;
+  bool hasBack = false;
 
   m_inStride  = m_inSampleSize * m_inChannels ;
   m_outStride = m_inSampleSize * m_outChannels;
@@ -283,6 +285,32 @@ void CPCMRemap::BuildMap()
         m_useable[*chan] = true;
         break;
       }
+  }
+
+  /* see if our input has side/back channels */
+  for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
+    switch(m_inMap[in_ch])
+    {
+      case PCM_SIDE_LEFT:
+      case PCM_SIDE_RIGHT:
+        hasSide = true;
+        break;
+
+      case PCM_BACK_LEFT:
+      case PCM_BACK_RIGHT:
+        hasBack = true;
+        break;
+
+      default:;
+    }
+
+  /* if our input has side, and not back channels, and our output doesnt have side channels */
+  if (hasSide && !hasBack && (!m_useable[PCM_SIDE_LEFT] || !m_useable[PCM_SIDE_RIGHT]))
+  {
+    CLog::Log(LOGDEBUG, "CPCMRemap: Forcing side channel map to back channels");
+    for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
+           if (m_inMap[in_ch] == PCM_SIDE_LEFT ) m_inMap[in_ch] = PCM_BACK_LEFT;
+      else if (m_inMap[in_ch] == PCM_SIDE_RIGHT) m_inMap[in_ch] = PCM_BACK_RIGHT;   
   }
 
   /* see if we need to normalize the levels */
@@ -313,6 +341,9 @@ void CPCMRemap::BuildMap()
   }
 
   /* convert the levels into RMS values */
+  float loudest    = 0.0;
+  bool  hasLoudest = false;
+
   for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
   {
     float scale = 0;
@@ -333,15 +364,29 @@ void CPCMRemap::BuildMap()
     /* normalize the levels if it is turned on */
     if (!dontnormalize)
       for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
+      {
         dst->level /= scale;
+        /* find the loudest output level we have that is not 1-1 */
+        if (dst->level < 1.0 && loudest < dst->level)
+        {
+          loudest    = dst->level;
+          hasLoudest = true;
+        }
+      }
   }
   
-  /* output the final map for debugging */
+  /* adjust the channels that are too loud */
   for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
   {
     CStdString s = "", f;
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
     {
+      if (hasLoudest && dst->copy)
+      {
+        dst->level = loudest;
+        dst->copy  = false;
+      }
+
       f.Format("%s(%f%s) ",  PCMChannelName[dst->channel], dst->level, dst->copy ? "*" : "");
       s += f;
     }
@@ -366,8 +411,6 @@ void CPCMRemap::DumpMap(CStdString info, unsigned int channels, enum PCMChannels
 
 void CPCMRemap::Reset()
 {
-  m_inMap  = NULL;
-  m_outMap = NULL;
   m_inSet  = false;
   m_outSet = false;
   Dispose();
@@ -377,9 +420,10 @@ void CPCMRemap::Reset()
 enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize)
 {
   m_inChannels   = channels;
-  m_inMap        = channelMap;
   m_inSampleSize = sampleSize;
   m_inSet        = channelMap != NULL;
+  if (channelMap)
+    memcpy(m_inMap, channelMap, sizeof(enum PCMChannels) * channels);
 
   /* fix me later */
   assert(sampleSize == 2);
@@ -401,8 +445,9 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
 void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap)
 {
   m_outChannels   = channels;
-  m_outMap        = channelMap;
   m_outSet        = channelMap != NULL;
+  if (channelMap)
+    memcpy(m_outMap, channelMap, sizeof(enum PCMChannels) * channels);
 
   DumpMap("O", channels, channelMap);
   BuildMap();
