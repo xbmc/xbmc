@@ -112,7 +112,7 @@ static void decode_nal(uint8_t **ret, int *len_ret, uint8_t *buf, int buf_len)
 {
   // TODO: rework without copying
   uint8_t *end = &buf[buf_len];
-  uint8_t *pos = malloc(buf_len);
+  uint8_t *pos = (uint8_t*)malloc(buf_len);
 
   *ret = pos;
   while (buf < end) {
@@ -248,7 +248,7 @@ struct nal_unit* parse_nal_header(struct buf_reader *buf,
   struct nal_unit *nal = create_nal_unit();
 
   nal->nal_ref_idc = (buf->buf[0] >> 5) & 0x03;
-  nal->nal_unit_type = buf->buf[0] & 0x1f;
+  nal->nal_unit_type = (enum nal_unit_types)(buf->buf[0] & 0x1f);
 
   buf->cur_pos = buf->buf + 1;
   //printf("NAL: %d\n", nal->nal_unit_type);
@@ -326,7 +326,7 @@ void calculate_pic_order(struct h264_parser *parser, struct coded_picture *pic,
       parser->frame_num_offset = 0;
     }
 
-    const int max_poc_lsb = 1 << (sps->log2_max_pic_order_cnt_lsb_minus4 + 4);
+    const uint32_t max_poc_lsb = 1 << (sps->log2_max_pic_order_cnt_lsb_minus4 + 4);
 
     uint32_t pic_order_cnt_msb = 0;
 
@@ -406,11 +406,11 @@ void parse_scaling_list(struct buf_reader *buf, uint8_t *scaling_list,
   int next_scale = 8;
   int32_t delta_scale;
   uint8_t use_default_scaling_matrix_flag = 0;
-  int i;
+  unsigned int i;
 
   const uint8_t *zigzag = (length==64) ? zigzag_8x8 : zigzag_4x4;
 
-  for (i = 0; i < length; i++) {
+  for (i = 0; i < (unsigned int)length; i++) {
     if (next_scale != 0) {
       delta_scale = read_exp_golomb_s(buf);
       next_scale = (last_scale + delta_scale + 256) % 256;
@@ -436,7 +436,7 @@ void parse_scaling_list(struct buf_reader *buf, uint8_t *scaling_list,
       case 3:
       case 4:
       case 5: {
-        for(i = 0; i < sizeof(default_4x4_inter); i++) {
+        for(i = 0; i < (int)sizeof(default_4x4_inter); i++) {
           scaling_list[zigzag_4x4[i]] = default_4x4_inter[i];
         }
         //memcpy(scaling_list, default_4x4_inter, sizeof(default_4x4_inter));
@@ -462,7 +462,7 @@ void parse_scaling_list(struct buf_reader *buf, uint8_t *scaling_list,
 
 static void sps_scaling_list_fallback(struct seq_parameter_set_rbsp *sps, int i)
 {
-  int j;
+  unsigned int j;
   switch (i) {
     case 0: {
       for(j = 0; j < sizeof(default_4x4_intra); j++) {
@@ -871,7 +871,7 @@ void parse_hrd_parameters(struct buf_reader *buf, struct hrd_parameters *hrd)
   hrd->bit_rate_scale = read_bits(buf, 4);
   hrd->cpb_size_scale = read_bits(buf, 4);
 
-  int i;
+  unsigned int i;
   for (i = 0; i <= hrd->cpb_cnt_minus1; i++) {
     hrd->bit_rate_value_minus1[i] = read_exp_golomb(buf);
     hrd->cpb_size_value_minus1[i] = read_exp_golomb(buf);
@@ -895,7 +895,7 @@ uint8_t parse_pps(struct buf_reader *buf, struct pic_parameter_set_rbsp *pps)
   if (pps->num_slice_groups_minus1 > 0) {
     pps->slice_group_map_type = read_exp_golomb(buf);
     if (pps->slice_group_map_type == 0) {
-      int i_group;
+      unsigned int i_group;
       for (i_group = 0; i_group <= pps->num_slice_groups_minus1; i_group++) {
         if (i_group < 64)
           pps->run_length_minus1[i_group] = read_exp_golomb(buf);
@@ -912,10 +912,10 @@ uint8_t parse_pps(struct buf_reader *buf, struct pic_parameter_set_rbsp *pps)
     }
     else if (pps->slice_group_map_type == 6) {
       pps->pic_size_in_map_units_minus1 = read_exp_golomb(buf);
-      int i_group;
+      unsigned int i_group;
       for (i_group = 0; i_group <= pps->num_slice_groups_minus1; i_group++) {
         pps->slice_group_id[i_group] = read_bits(buf, ceil(log(
-            pps->num_slice_groups_minus1 + 1)));
+            (double)pps->num_slice_groups_minus1 + 1)));
       }
     }
   }
@@ -1203,7 +1203,7 @@ void parse_pred_weight_table(struct buf_reader *buf, struct slice_header *slc,
   if (ChromaArrayType != 0)
     slc->pred_weight_table.chroma_log2_weight_denom = read_exp_golomb(buf);
 
-  int i;
+  unsigned int i;
   for (i = 0; i <= slc->num_ref_idx_l0_active_minus1; i++) {
     uint8_t luma_weight_l0_flag = read_bits(buf, 1);
 
@@ -1527,7 +1527,7 @@ void parse_dec_ref_pic_marking(struct buf_reader *buf,
 
 struct h264_parser* init_parser()
 {
-  struct h264_parser *parser = calloc(1, sizeof(struct h264_parser));
+  struct h264_parser *parser = (struct h264_parser *)calloc(1, sizeof(struct h264_parser));
   parser->pic = create_coded_picture();
   parser->position = NON_VCL;
   parser->last_vcl_nal = NULL;
@@ -1585,7 +1585,7 @@ int parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_le
   bufr.len = inbuf_len;
 
   // FIXME: Might be broken!
-  struct nal_unit *nal = calloc(1, sizeof(struct nal_unit));
+  struct nal_unit *nal = (struct nal_unit *)calloc(1, sizeof(struct nal_unit));
 
 
   /* reserved */
@@ -1596,7 +1596,7 @@ int parse_codec_private(struct h264_parser *parser, uint8_t *inbuf, int inbuf_le
   read_bits(&bufr, 6);
 
   parser->nal_size_length = read_bits(&bufr, 2) + 1;
-  parser->nal_size_length_buf = calloc(1, parser->nal_size_length);
+  parser->nal_size_length_buf = (uint8_t *)calloc(1, parser->nal_size_length);
   read_bits(&bufr, 3);
   uint8_t sps_count = read_bits(&bufr, 5);
 
@@ -1749,7 +1749,7 @@ int parse_frame(struct h264_parser *parser, uint8_t *inbuf, int inbuf_len,
 #ifdef NOVDPAU
       uint8_t *p;
       *ret_len = parser->buf_len + parser->privatebuf_len;
-      *ret_buf = malloc(*ret_len);
+      *ret_buf = (uint8_t *)malloc(*ret_len);
       p = *ret_buf;
 
       //if(parser->pic->flag_mask & IDR_PIC) {
@@ -2038,7 +2038,7 @@ int seek_for_nal(uint8_t *buf, int buf_len, struct h264_parser *parser)
       next_nal = read_bits(&bufr, parser->nal_size_length*8)+parser->nal_size_length;
     }
 
-    if(next_nal > buf_len) {
+    if(next_nal > (uint32_t)buf_len) {
       parser->next_nal_position = next_nal;
       return -1;
     } else

@@ -40,6 +40,7 @@
 #include "tinyXML/tinyxml.h"
 #include "visualizations/Visualisation.h"
 #include "WindowingFactory.h"
+#include "PowerManager.h"
 
 using namespace std;
 
@@ -144,9 +145,22 @@ CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel, int iDa
     m_strFormat = "%i";
 }
 
+CSettingInt::CSettingInt(int iOrder, const char *strSetting, int iLabel,
+                         int iData, const map<int,int>& entries, int iControlType)
+  : CSetting(iOrder, strSetting, iLabel, iControlType),
+    m_entries(entries)
+{
+  m_iData = iData;
+  m_iMin = -1;
+  m_iMax = -1;
+  m_iStep = 1;
+  m_iLabelMin = -1;
+}
+
 void CSettingInt::FromString(const CStdString &strValue)
 {
-  SetData(atoi(strValue.c_str()));
+  int id = atoi(strValue.c_str());
+  SetData(id);
 }
 
 CStdString CSettingInt::ToString()
@@ -263,7 +277,12 @@ void CGUISettings::Initialize()
   AddBool(1, "musicplayer.autoplaynextitem", 489, true);
   AddBool(2, "musicplayer.queuebydefault", 14084, false);
   AddSeparator(3, "musicplayer.sep1");
-  AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
+  map<int,int> gain;
+  gain.insert(make_pair(351,REPLAY_GAIN_NONE));
+  gain.insert(make_pair(639,REPLAY_GAIN_TRACK));
+  gain.insert(make_pair(640,REPLAY_GAIN_ALBUM));
+
+  AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, gain, SPIN_CONTROL_TEXT);
   AddInt(0, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddInt(0, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddBool(0, "musicplayer.replaygainavoidclipping", 643, false);
@@ -299,8 +318,18 @@ void CGUISettings::Initialize()
   AddSeparator(3, "audiocds.sep1");
   AddPath(4,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddString(5, "audiocds.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
-  AddInt(6, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
-  AddInt(7, "audiocds.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
+  map<int,int> encoders;
+  encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
+  encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
+  encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
+  AddInt(6, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, encoders, SPIN_CONTROL_TEXT);
+
+  map<int,int> qualities;
+  qualities.insert(make_pair(604,CDDARIP_QUALITY_CBR));
+  qualities.insert(make_pair(601,CDDARIP_QUALITY_MEDIUM));
+  qualities.insert(make_pair(602,CDDARIP_QUALITY_STANDARD));
+  qualities.insert(make_pair(603,CDDARIP_QUALITY_EXTREME));
+  AddInt(7, "audiocds.quality", 622, CDDARIP_QUALITY_CBR, qualities, SPIN_CONTROL_TEXT);
   AddInt(8, "audiocds.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
 
 #ifdef HAS_KARAOKE
@@ -311,7 +340,10 @@ void CGUISettings::Initialize()
   AddSeparator(3, "karaoke.sep1");
   AddString(4, "karaoke.font", 22030, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(5, "karaoke.fontheight", 22031, 36, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
-  AddInt(6, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, KARAOKE_COLOR_START, 1, KARAOKE_COLOR_END, SPIN_CONTROL_TEXT);
+  map<int,int> colors;
+  for (int i = KARAOKE_COLOR_START; i <= KARAOKE_COLOR_END; i++)
+    colors.insert(make_pair(22040 + i, i));
+  AddInt(6, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, colors, SPIN_CONTROL_TEXT);
   AddString(7, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(8,"karaoke.sep2");
   AddString(10, "karaoke.export", 22038, "", BUTTON_CONTROL_STANDARD);
@@ -346,12 +378,16 @@ void CGUISettings::Initialize()
   AddBool(3, "videoscreen.blankdisplays", 13130, false);
   AddSeparator(4, "videoscreen.sep1");
 #endif
-#if defined(__APPLE__) || defined(_WIN32)
-  // OSX does not use a driver set vsync
-  AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
-#else
-  AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
+
+  map<int,int> vsync;
+#if defined(_LINUX) && !defined(__APPLE__)
+  vsync.insert(make_pair(13101,VSYNC_DRIVER));
 #endif
+  vsync.insert(make_pair(13106,VSYNC_DISABLED));
+  vsync.insert(make_pair(13107,VSYNC_VIDEO));
+  vsync.insert(make_pair(13108,VSYNC_ALWAYS));
+  AddInt(5, "videoscreen.vsync", 13105, DEFAULT_VSYNC, vsync, SPIN_CONTROL_TEXT);
+
   AddString(6, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
 #ifndef HAS_DX
   // Todo: Implement test pattern for DX
@@ -363,30 +399,43 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(4, "audiooutput", 772);
-  AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
+
+  map<int,int> audiomode;
+  audiomode.insert(make_pair(338,AUDIO_ANALOG));
+  audiomode.insert(make_pair(339,AUDIO_DIGITAL));
+  AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
+  AddBool(6, "audiooutput.aacpassthrough", 299, false);
+  AddBool(7, "audiooutput.mp1passthrough", 300, false);
+  AddBool(8, "audiooutput.mp2passthrough", 301, false);
+  AddBool(9, "audiooutput.mp3passthrough", 302, false);
 #ifdef __APPLE__
-  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddString(10, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
-  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+  AddBool(11, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
-  AddSeparator(6, "audiooutput.sep1");
-  AddString(7, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
-  AddString(8, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
-  AddSeparator(9, "audiooutput.sep2");
-  AddString(10, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
-  AddString(11, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
-  AddSeparator(12, "audiooutput.sep3");
-  AddBool(13, "audiooutput.downmixmultichannel", 548, true);
+  AddSeparator(10, "audiooutput.sep1");
+  AddString(11, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
+  AddString(12, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
+  AddSeparator(13, "audiooutput.sep2");
+  AddString(14, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
+  AddString(15, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
+  AddSeparator(16, "audiooutput.sep3");
+  AddBool(17, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32)
-  AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+  AddString(10, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(11, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   AddCategory(4, "input", 14094);
 #ifdef __APPLE__
-  AddInt(1, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_MULTIREMOTE, SPIN_CONTROL_TEXT);
+  map<int,int> remotemode;
+  remotemode.insert(make_pair(13610,APPLE_REMOTE_DISABLED));
+  remotemode.insert(make_pair(13611,APPLE_REMOTE_STANDARD));
+  remotemode.insert(make_pair(13612,APPLE_REMOTE_UNIVERSAL));
+  remotemode.insert(make_pair(13613,APPLE_REMOTE_MULTIREMOTE));
+  AddInt(1, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, remotemode, SPIN_CONTROL_TEXT);
   AddBool(2, "input.appleremotealwayson", 13602, false);
   AddInt(0, "input.appleremotesequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddSeparator(3, "input.sep1");
@@ -398,11 +447,26 @@ void CGUISettings::Initialize()
   // Note: Application.cpp might hide powersaving settings if not supported.
   AddInt(1, "powermanagement.displaysoff", 1450, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   AddInt(2, "powermanagement.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+
+  map<int,int> shutdown;
+  if (g_powerManager.CanPowerdown())
+    shutdown.insert(make_pair(13005,POWERSTATE_SHUTDOWN));
+
+  if (g_powerManager.CanHibernate())
+    shutdown.insert(make_pair(13010,POWERSTATE_HIBERNATE));
+
+  if (g_powerManager.CanSuspend())
+    shutdown.insert(make_pair(13011,POWERSTATE_SUSPEND));
+
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "powermanagement.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(3, "powermanagement.shutdownstate", 13008, 0, shutdown, SPIN_CONTROL_TEXT);
   else
-    AddInt(3, "powermanagement.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
+  {
+    shutdown.insert(make_pair(13009,POWERSTATE_QUIT));
+    shutdown.insert(make_pair(13014,POWERSTATE_MINIMIZE));
+    AddInt(3, "powermanagement.shutdownstate", 13008, POWERSTATE_QUIT, shutdown, SPIN_CONTROL_TEXT);
+  }
 
   AddCategory(4, "debug", 14092);
   AddBool(1, "debug.showloginfo", 20191, false);
@@ -446,7 +510,12 @@ void CGUISettings::Initialize()
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videoplayer", 14086);
-  AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
+
+  map<int,int> resume;
+  resume.insert(make_pair(106,RESUME_NO));
+  resume.insert(make_pair(107,RESUME_YES));
+  resume.insert(make_pair(12020,RESUME_ASK));
+  AddInt(1, "videoplayer.resumeautomatically", 12017, RESUME_ASK, resume, SPIN_CONTROL_TEXT);
   AddSeparator(2, "videoplayer.sep1");
 #if defined(_WIN32) && defined(HAS_DX)
   // No render methods other than AUTO on win32 DirectX
@@ -472,21 +541,22 @@ void CGUISettings::Initialize()
   AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
   AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
   AddInt(8, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
+  AddBool(9, "videoplayer.stretch43", 171, false);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #ifdef HAS_GL
-  AddSeparator(9, "videoplayer.sep1.5");
+  AddSeparator(10, "videoplayer.sep1.5");
   AddInt(0, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.vdpauUpscalingLevel", 13121, false);
-  AddBool(10, "videoplayer.vdpaustudiolevel", 13122, false);
+  AddBool(11, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
-  AddSeparator(11, "videoplayer.sep5");
-  AddBool(12, "videoplayer.teletextenabled", 23090, true);
+  AddSeparator(12, "videoplayer.sep5");
+  AddBool(13, "videoplayer.teletextenabled", 23090, true);
 
   AddCategory(5, "myvideos", 14081);
   AddBool(0, "myvideos.treatstackasfile", 20051, true);
@@ -834,6 +904,15 @@ void CGUISettings::AddInt(int iOrder, const char *strSetting, int iLabel, int iD
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
+void CGUISettings::AddInt(int iOrder, const char *strSetting,
+                          int iLabel, int iData, const map<int,int>& entries,
+                          int iControlType)
+{
+  CSettingInt* pSetting = new CSettingInt(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, entries, iControlType);
+  if (!pSetting) return ;
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+}
+
 void CGUISettings::AddHex(int iOrder, const char *strSetting, int iLabel, int iData, int iMin, int iStep, int iMax, int iControlType, const char *strFormat)
 {
   CSettingHex* pSetting = new CSettingHex(iOrder, CStdString(strSetting).ToLower(), iLabel, iData, iMin, iStep, iMax, iControlType, strFormat);
@@ -988,6 +1067,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "Using %s output", GetInt("audiooutput.mode") == AUDIO_ANALOG ? "analog" : "digital");
   CLog::Log(LOGINFO, "AC3 pass through is %s", GetBool("audiooutput.ac3passthrough") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "AAC pass through is %s", GetBool("audiooutput.aacpassthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP1 pass through is %s", GetBool("audiooutput.mp1passthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP2 pass through is %s", GetBool("audiooutput.mp2passthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "MP3 pass through is %s", GetBool("audiooutput.mp3passthrough") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__

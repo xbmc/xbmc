@@ -242,18 +242,6 @@ void CBaseRenderer::SetViewMode(int viewMode)
     viewMode = VIEW_MODE_NORMAL;
 
   g_settings.m_currentVideoSettings.m_ViewMode = viewMode;
-  if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
-  {
-    g_settings.m_fPixelRatio = 1.0;
-    g_settings.m_fZoomAmount = 1.0;
-    return;
-  }
-  if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
-  {
-    g_settings.m_fZoomAmount = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
-    g_settings.m_fPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
-    return;
-  }
 
   // get our calibrated full screen resolution
   RESOLUTION res = GetResolution();
@@ -311,7 +299,10 @@ void CBaseRenderer::SetViewMode(int viewMode)
       g_settings.m_fZoomAmount = newHeight / screenHeight;
     }
   }
-  else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
+  else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9 ||
+           (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL &&
+		    g_guiSettings.GetBool("videoplayer.stretch43") &&
+		    sourceFrameRatio >= 1.3 && sourceFrameRatio <= 1.35))
   { // stretch image to 16:9 ratio
     g_settings.m_fZoomAmount = 1.0;
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
@@ -325,7 +316,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
       g_settings.m_fPixelRatio = (screenWidth / screenHeight) * g_settings.m_ResInfo[res].fPixelRatio / sourceFrameRatio;
     }
   }
-  else // if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
+  else  if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
   { // zoom image so that the height is the original size
     g_settings.m_fPixelRatio = 1.0;
     // get the size of the media file
@@ -341,5 +332,15 @@ void CBaseRenderer::SetViewMode(int viewMode)
     }
     // now work out the zoom amount so that no zoom is done
     g_settings.m_fZoomAmount = (m_sourceHeight - g_settings.m_currentVideoSettings.m_CropTop - g_settings.m_currentVideoSettings.m_CropBottom) / newHeight;
+  }
+  else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
+  {
+    g_settings.m_fZoomAmount = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
+    g_settings.m_fPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
+  }
+  else // if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
+  {
+    g_settings.m_fPixelRatio = 1.0;
+    g_settings.m_fZoomAmount = 1.0;
   }
 }

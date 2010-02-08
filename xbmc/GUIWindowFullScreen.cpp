@@ -422,11 +422,47 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CFileItem item(g_application.CurrentFileItem());
       if (item.HasPVRChannelInfoTag())
         g_windowManager.ActivateWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
-      else
-        g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+      else if (item.HasVideoInfoTag())
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_VIDEO_PLAYLIST);
+      else if (item.HasMusicInfoTag())
+        g_windowManager.ActivateWindow(WINDOW_DIALOG_MUSIC_PLAYLIST);
     }
     return true;
     break;
+  case ACTION_ZOOM_IN:
+    {
+      g_settings.m_currentVideoSettings.m_CustomZoomAmount += 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  case ACTION_ZOOM_OUT:
+    {
+      g_settings.m_currentVideoSettings.m_CustomZoomAmount -= 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  case ACTION_INCREASE_PAR:
+    {
+      g_settings.m_currentVideoSettings.m_CustomPixelRatio += 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  case ACTION_DECREASE_PAR:
+    {
+      g_settings.m_currentVideoSettings.m_CustomPixelRatio -= 0.01f;
+      g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
+      g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
+    }
+    return true;
+    break;
+  default:
+      break;
   }
 
   return CGUIWindow::OnAction(action);

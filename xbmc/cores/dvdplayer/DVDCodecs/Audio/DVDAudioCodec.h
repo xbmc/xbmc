@@ -22,6 +22,7 @@
  */
 
 #include "system.h"
+#include "../../../../utils/PCMRemap.h"
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
@@ -88,6 +89,11 @@ public:
    * returns the nr of channels for the decoded audio stream
    */
   virtual int GetChannels() = 0;
+
+  /*
+   * returns the channel mapping
+   */
+  virtual int8_t* GetChannelMap() = 0;
 
   /*
    * returns the samplerate for the decoded audio stream

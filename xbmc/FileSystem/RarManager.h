@@ -81,7 +81,6 @@ public:
   void ClearCache(bool force=false);
   void ClearCachedFile(const CStdString& strRarPath, const CStdString& strPathInRar);
   void ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
-  void SetWipeAtWill(bool bWipe) { m_bWipe = bWipe; }
 protected:
 
   bool ListArchive(const CStdString& strRarPath, ArchiveList_struct* &pArchiveList);
@@ -89,8 +88,6 @@ protected:
   CCriticalSection m_CritSection;
 
   int64_t CheckFreeSpace(const CStdString& strDrive);
-
-  bool m_bWipe;
 };
 
 extern CRarManager g_RarManager;

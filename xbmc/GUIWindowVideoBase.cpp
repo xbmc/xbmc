@@ -58,6 +58,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/log.h"
+#include "utils/FileUtils.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"
@@ -1485,7 +1486,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
       return;
   }
 
-  CGUIWindowFileManager::DeleteItem(item.get());
+  CFileUtils::DeleteItem(item);
 }
 
 void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)

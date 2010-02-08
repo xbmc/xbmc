@@ -126,6 +126,7 @@
   <string id="168"></string>
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
+  <string id="171">Stretch 4:3 content to 16:9</string>
 
   <string id="172">Release date</string>
 
@@ -239,6 +240,10 @@
   <string id="296">Clear bookmarks</string>
   <string id="297">Audio offset</string>
   <string id="298">Bookmarks</string>
+  <string id="299">- AAC Capable Receiver</string>
+  <string id="300">- MP1 Capable Reciever</string>
+  <string id="301">- MP2 Capable Reciever</string>
+  <string id="302">- MP3 Capable Reciever</string>
   <string id="303">Delay</string>
   <string id="304">Language</string>
   <string id="305">Enabled</string>
@@ -2767,4 +2772,9 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
 </strings>

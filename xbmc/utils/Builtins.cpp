@@ -177,6 +177,7 @@ const BUILT_IN commands[] = {
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
+  { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -892,10 +893,8 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme==-1)
       g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
     else
-    {
-      strSkinTheme.Format("%s.xpr",vecTheme[iTheme]);
       g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
-    }
+
     // also set the default color theme
     CStdString colorTheme(strSkinTheme);
     CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
@@ -1273,6 +1272,10 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
+  }
+  else if (execute.Equals("wakeonlan"))
+  {
+    g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))

@@ -27,7 +27,6 @@
 #endif
 #include "GUIWindowScriptsInfo.h"
 #include "GUIWindowManager.h"
-#include "GUIWindowFileManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "ScriptSettings.h"
@@ -38,6 +37,7 @@
 #include "SpecialProtocol.h"
 #include "CocoaInterface.h"
 #endif
+#include "utils/FileUtils.h"
 
 using namespace XFILE;
 
@@ -271,8 +271,8 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     CStdString path;
     CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
-    CFileItem item2(path,true);
-    if (CGUIWindowFileManager::DeleteItem(&item2))
+    CFileItemPtr item2(new CFileItem(path,true));
+    if (CFileUtils::DeleteItem(item2))
       Update(m_vecItems->m_strPath);
 
     return true;

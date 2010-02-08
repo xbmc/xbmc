@@ -130,7 +130,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
             {
               if (ValueWithoutNamespace(pPropChild, "getcontentlength"))
               {
-                item.m_dwSize = atoi(pPropChild->ToElement()->GetText());
+                item.m_dwSize = strtoll(pPropChild->ToElement()->GetText(), NULL, 10);
               }
               else if (ValueWithoutNamespace(pPropChild, "getlastmodified"))
               {

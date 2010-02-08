@@ -30,7 +30,7 @@
 
 struct nal_buffer* create_nal_buffer(uint8_t max_size)
 {
-    struct nal_buffer *nal_buffer = calloc(1, sizeof(struct nal_buffer));
+    struct nal_buffer *nal_buffer = (struct nal_buffer *)calloc(1, sizeof(struct nal_buffer));
     nal_buffer->max_size = max_size;
 
     return nal_buffer;
@@ -45,9 +45,9 @@ void free_nal_buffer(struct nal_buffer *nal_buffer)
 
   if (nal) {
     do {
-      struct nal_unit *delete = nal;
+      struct nal_unit *del = nal;
       nal = nal->next;
-      release_nal_unit(delete);
+      release_nal_unit(del);
     } while(nal != NULL);
   }
 
@@ -175,7 +175,7 @@ struct nal_unit* nal_buffer_get_by_pps_id(struct nal_buffer *nal_buffer,
  */
 struct nal_unit* create_nal_unit()
 {
-  struct nal_unit *nal = calloc(1, sizeof(struct nal_unit));
+  struct nal_unit *nal = (struct nal_unit *)calloc(1, sizeof(struct nal_unit));
   nal->lock_counter = 1;
 
   return nal;

@@ -77,6 +77,8 @@ public:
   bool          m_interlace;
   double        m_framerate;
   uint64_t      m_timestamp;
+  unsigned int  m_color_range;
+  unsigned int  m_color_matrix;
   unsigned int  m_PictureNumber;
   DVDVideoPicture::EFormat m_format;
   unsigned char *m_y_buffer_ptr;

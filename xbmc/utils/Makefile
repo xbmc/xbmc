@@ -35,6 +35,7 @@ SRCS=Addon.cpp \
      Win32Exception.cpp \
      CPUInfo.cpp \
      PCMAmplifier.cpp \
+     PCMRemap.cpp \
      LabelFormatter.cpp \
      Network.cpp \
      BitstreamStats.cpp \
@@ -69,7 +70,9 @@ SRCS=Addon.cpp \
      AliasShortcutUtils.cpp \
      TextSearch.cpp \
      RingBuffer.cpp \
-     Semaphore.cpp
+     Semaphore.cpp \
+     FileOperationJob.cpp \
+     FileUtils.cpp
 
 LIB=utils.a
 

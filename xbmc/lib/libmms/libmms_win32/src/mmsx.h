@@ -55,11 +55,11 @@ int       mmsx_peek_header (mmsx_t *instance, char *data, int maxsize);
 
 mms_off_t mmsx_get_current_pos (mmsx_t *instance);
 
-uint32_t  mmsx_get_asf_header_len (mmsx_t *this);
+uint32_t  mmsx_get_asf_header_len (mmsx_t *instance);
 
-uint64_t  mmsx_get_asf_packet_len (mmsx_t *this);
+uint64_t  mmsx_get_asf_packet_len (mmsx_t *instance);
 
-int       mmsx_get_seekable (mmsx_t *this);
+int       mmsx_get_seekable (mmsx_t *instance);
 
 #ifdef __cplusplus
 }

@@ -41,7 +41,7 @@
 
 #define ReturnOnValidInitialize()          \
 {                                          \
-  if (audioSink->Initialize(pCallback, device, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough))  \
+  if (audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough))  \
     return audioSink;                      \
   else                                     \
   {                                        \
@@ -51,7 +51,7 @@
   }                                        \
 }\
 
-IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   IAudioRenderer* audioSink = NULL;
 
@@ -91,7 +91,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
 #endif
 
       audioSink = new CNullDirectSound();
-      audioSink->Initialize(pCallback, device, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
+      audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
       return audioSink;
     }
   }
@@ -119,7 +119,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
 #endif
 
   audioSink = new CNullDirectSound();
-  audioSink->Initialize(pCallback, device, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
+  audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
   return audioSink;
 }
 

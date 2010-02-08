@@ -360,15 +360,20 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
     strWorkingDir[iIndex+1] = '\0'; 
   } 
 
+  CStdStringW WstrExe, WstrParams, WstrWorkingDir;
+  g_charsetConverter.utf8ToW(strExe, WstrExe);
+  g_charsetConverter.utf8ToW(strParams, WstrParams);
+  g_charsetConverter.utf8ToW(strWorkingDir, WstrWorkingDir);
+
   bool ret;
-  SHELLEXECUTEINFO ShExecInfo = {0};
-  ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+  SHELLEXECUTEINFOW ShExecInfo = {0};
+  ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
   ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
   ShExecInfo.hwnd = NULL;
   ShExecInfo.lpVerb = NULL;
-  ShExecInfo.lpFile = strExe.c_str();
-  ShExecInfo.lpParameters = strParams.c_str();
-  ShExecInfo.lpDirectory = strWorkingDir.c_str();
+  ShExecInfo.lpFile = WstrExe.c_str();
+  ShExecInfo.lpParameters = WstrParams.c_str();
+  ShExecInfo.lpDirectory = WstrWorkingDir.c_str();
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;
 
@@ -376,7 +381,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
 
   LockSetForegroundWindow(LSFW_UNLOCK);
   ShowWindow(g_hWnd,SW_MINIMIZE);
-  ret = ShellExecuteEx(&ShExecInfo) == TRUE;
+  ret = ShellExecuteExW(&ShExecInfo) == TRUE;
   g_windowHelper.SetHANDLE(ShExecInfo.hProcess);
 
   // ShellExecute doesn't return the window of the started process

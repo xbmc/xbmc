@@ -23,6 +23,11 @@
 #ifndef CPB_H_
 #define CPB_H_
 
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "nal.h"
 
 enum picture_flags {
@@ -63,5 +68,10 @@ struct coded_picture
 
 struct coded_picture* create_coded_picture();
 void free_coded_picture(struct coded_picture *pic);
+
+/* Ends C function definitions when using C++ */
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CPB_H_ */

@@ -54,6 +54,42 @@ bool XBAudioConfig::GetDTSEnabled()
   return HasDigitalOutput();
 }
 
+void XBAudioConfig::SetAACEnabled(bool bEnable)
+{
+}
+
+bool XBAudioConfig::GetAACEnabled()
+{
+  return HasDigitalOutput();
+}
+
+void XBAudioConfig::SetMP1Enabled(bool bEnable)
+{
+}
+
+bool XBAudioConfig::GetMP1Enabled()
+{
+  return HasDigitalOutput();
+}
+
+void XBAudioConfig::SetMP2Enabled(bool bEnable)
+{
+}
+
+bool XBAudioConfig::GetMP2Enabled()
+{
+  return HasDigitalOutput();
+}
+
+void XBAudioConfig::SetMP3Enabled(bool bEnable)
+{
+}
+
+bool XBAudioConfig::GetMP3Enabled()
+{
+  return HasDigitalOutput();
+}
+
 bool XBAudioConfig::NeedsSave()
 {
   return false;

@@ -30,13 +30,12 @@
 #endif // _MSC_VER > 1000
 
 #include "IAudioRenderer.h"
-#include "Win32ChannelRemap.h"
 #include "utils/CriticalSection.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CWin32DirectSound : private CWin32ChannelRemap, public IAudioRenderer
+class CWin32DirectSound : public IAudioRenderer
 {
 public:
   virtual void UnRegisterAudioCallback();
@@ -46,7 +45,7 @@ public:
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
   CWin32DirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CWin32DirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -68,6 +67,7 @@ public:
 private:
   void UpdateCacheStatus();
   void CheckPlayStatus();
+  void BuildChannelMapping(int channels, int8_t* map);
 
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;
@@ -85,6 +85,9 @@ private:
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
   unsigned int m_AvgBytesPerSec;
+  unsigned int m_uiBytesPerFrame;
+  unsigned int m_uiSpeakerMask;
+  int8_t       m_SpeakerOrder[8];
 
   char * dserr2str(int err);
 
@@ -94,7 +97,6 @@ private:
   unsigned int m_LastCacheCheck;
   size_t m_PreCacheSize;
 
-  unsigned char* m_pChannelMap;
   CCriticalSection m_critSection;
 };
 
