@@ -149,7 +149,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_uiDataChannels = iChannels;
   enum PCMChannels* outLayout = NULL;
 
-  if (channelMap)
+  if (!bPassthrough && channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
     outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
