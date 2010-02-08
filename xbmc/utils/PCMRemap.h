@@ -93,6 +93,8 @@ protected:
   void               BuildMap();
   void               DumpMap(CStdString info, int unsigned channels, enum PCMChannels *channelMap);
   void               Dispose();
+  CStdString         PCMChannelStr(enum PCMChannels ename);
+  CStdString         PCMLayoutStr(enum PCMLayout ename);
 public:
 
   CPCMRemap();
