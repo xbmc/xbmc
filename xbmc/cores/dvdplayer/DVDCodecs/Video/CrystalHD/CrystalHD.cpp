@@ -160,6 +160,26 @@ const char* g_DtsStatusText[] = {
 	"BC_STS_CLK_NOCHG"
 };
 
+union pts_union
+{
+  double  pts_d;
+  int64_t pts_i;
+};
+
+static int64_t pts_dtoi(double pts)
+{
+  pts_union u;
+  u.pts_d = pts;
+  return u.pts_i;
+}
+
+static double pts_itod(int64_t pts)
+{
+  pts_union u;
+  u.pts_i = pts;
+  return u.pts_d;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 class CMPCDecodeBuffer
 {
@@ -249,6 +269,7 @@ public:
   void                Flush(void);
 
 protected:
+  void                DoFrameRateTracking(double timestamp);
   void                SetFrameRate(uint32_t resolution);
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
   void                CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
@@ -268,6 +289,9 @@ protected:
   unsigned int        m_color_range;
   unsigned int        m_color_matrix;
   int                 m_interlace;
+  bool                m_framerate_tracking;
+  uint64_t            m_framerate_cnt;
+  double              m_framerate_timestamp;
   double              m_framerate;
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
@@ -767,7 +791,11 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   m_dll(dll),
   m_Device(device),
   m_OutputTimeout(20),
-  m_interlace_buf(NULL)
+  m_interlace_buf(NULL),
+  m_framerate_tracking(false),
+  m_framerate_cnt(0),
+  m_framerate_timestamp(0.0),
+  m_framerate(0.0)
 {
 }
 
@@ -806,6 +834,41 @@ void CMPCOutputThread::Flush(void)
   }
 }
 
+void CMPCOutputThread::DoFrameRateTracking(double timestamp)
+{
+  if (timestamp != DVD_NOPTS_VALUE)
+  {
+    double duration;
+    duration = timestamp - m_framerate_timestamp;
+    if (duration > 0.0)
+    {
+      double framerate;
+
+      framerate = DVD_TIME_BASE / duration;
+      // qualify framerate, we don't care about absolute value, just
+      // want to to verify range. Timestamp could be borked so ignore
+      // anything that does not verify.
+      // 60, 59.94 -> 60
+      // 50, 49.95 -> 50
+      // 30, 29.97 -> 30
+      // 25, 24.975 -> 25
+      // 24, 23.976 -> 24
+      switch ((int)(0.5 + framerate))
+      {
+        case 60:
+        case 50:
+        case 30:
+        case 25:
+        case 24:
+          m_framerate_timestamp += duration;
+          m_framerate_cnt++;
+          m_framerate = DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
+        break;
+      }
+    }
+  }
+}
+
 void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 {
   m_interlace = FALSE;
@@ -828,10 +891,11 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_1080p0:
-      // 1080p0 is ambiguious, could be 23_976 or 29_97 fps, decoder
+      // 1080p0 is ambiguious, could be 23.976 or 29.97 fps, decoder
       // just does not know. 1080p@23_976 is more common but this
       // will mess up 1080p@29_97 playback. We really need to verify
-      // which framerate.
+      // which framerate with duration tracking.
+      m_framerate_tracking = true;
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     
@@ -871,6 +935,11 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p0:
+      // 720p0 is ambiguious, could be 23.976, 29.97 or 59.97 fps, decoder
+      // just does not know. 720p@23_976 is more common but this
+      // will mess up other playback. We really need to verify
+      // which framerate with duration tracking.
+      m_framerate_tracking = true;
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     
@@ -912,6 +981,7 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     break;
     
     default:
+      m_framerate_tracking = true;
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
   }
@@ -1082,6 +1152,9 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         if (procOut.PicInfo.timeStamp)
         {
           m_timestamp = procOut.PicInfo.timeStamp;
+
+          if (m_framerate_tracking)
+            DoFrameRateTracking(pts_itod(m_timestamp));
 
           // Get next output buffer from the free list
           pBuffer = m_FreeList.Pop();
@@ -1272,26 +1345,6 @@ void CMPCOutputThread::Process(void)
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-union pts_union
-{
-  double  pts_d;
-  int64_t pts_i;
-};
-
-static int64_t pts_dtoi(double pts)
-{
-  pts_union u;
-  u.pts_d = pts;
-  return u.pts_i;
-}
-
-static double pts_itod(int64_t pts)
-{
-  pts_union u;
-  u.pts_i = pts;
-  return u.pts_d;
-}
-
 CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
