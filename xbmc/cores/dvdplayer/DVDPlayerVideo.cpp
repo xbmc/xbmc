@@ -158,15 +158,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
 
   if (hint.fpsrate && hint.fpsscale)
-  {
     m_fFrameRate = (float)hint.fpsrate / hint.fpsscale;
-    m_autosync = 10;
-  }
   else
-  {
     m_fFrameRate = 25;
-    m_autosync = 1; // avoid using frame time as we don't know it accurate
-  }
 
   //if adjust refreshrate is used, or if sync playback to display is on,
   //we try to calculate the framerate from the pts', because the codec fps
@@ -182,15 +176,12 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_iDroppedRequest = 0;
   m_iLateFrames = 0;
-
-  if (hint.vfr)
-    m_autosync = 1;
+  m_autosync = 1;
 
   if( m_fFrameRate > 100 || m_fFrameRate < 5 )
   {
     CLog::Log(LOGERROR, "CDVDPlayerVideo::OpenStream - Invalid framerate %d, using forced 25fps and just trust timestamps", (int)m_fFrameRate);
     m_fFrameRate = 25;
-    m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
   // use aspect in stream if available
@@ -569,13 +560,6 @@ void CDVDPlayerVideo::Process()
             {
               if(mDeinterlace.Process(&picture))
                 mDeinterlace.GetPicture(&picture);
-            }
-            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE
-                  || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
-            {
-              /* if we are syncing frames, dvdplayer will be forced to play at a given framerate */
-              /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
-              picture.iFlags |= DVP_FLAG_NOAUTOSYNC;
             }
 
             /* if frame has a pts (usually originiating from demux packet), use that */
@@ -1025,17 +1009,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   iFrameSleep = min(iFrameSleep, DVD_MSEC_TO_TIME(500));
 
   if( m_stalled )
-  { // when we render a still, we can't sync to clock anyway
     iSleepTime = iFrameSleep;
-  }
   else
-  {
-    // try to decide on how to sync framerate
-    if( pPicture->iFlags & DVP_FLAG_NOAUTOSYNC )
-      iSleepTime = iClockSleep;
-    else
-      iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
-  }
+    iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep) / m_autosync;
 
 #ifdef PROFILE /* during profiling, try to play as fast as possible */
   iSleepTime = 0;
