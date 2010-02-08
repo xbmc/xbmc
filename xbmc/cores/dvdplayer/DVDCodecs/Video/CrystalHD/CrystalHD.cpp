@@ -1330,9 +1330,7 @@ void CMPCOutputThread::Process(void)
   // decoder is primed so now calls in DtsProcOutputXXCopy will block
   while (!m_bStop)
   {
-    // limit ready list to 20, makes no sense to pre-decode any more
-    if (m_ReadyList.Count() < 20)
-      GetDecoderOutput();
+    GetDecoderOutput();
 
     // we still sleep as decoder can output picture frames faster
     // than we can render them.
