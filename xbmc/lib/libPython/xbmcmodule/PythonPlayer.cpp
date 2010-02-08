@@ -60,6 +60,22 @@ void CPythonPlayer::OnPlayBackStopped()
   g_pythonParser.PulseGlobalEvent();
 }
 
+void CPythonPlayer::OnPlayBackPaused()
+{
+  // aquire lock?
+  Py_INCREF(pCallback);
+  Py_AddPendingCall(Py_XBMC_Event_OnPlayBackPaused, pCallback);
+  g_pythonParser.PulseGlobalEvent();
+}
+
+void CPythonPlayer::OnPlayBackResumed()
+{
+  // aquire lock?
+  Py_INCREF(pCallback);
+  Py_AddPendingCall(Py_XBMC_Event_OnPlayBackResumed, pCallback);
+  g_pythonParser.PulseGlobalEvent();
+}
+
 void CPythonPlayer::SetCallback(PyObject *object)
 {
   pCallback = object;
@@ -92,6 +108,26 @@ int Py_XBMC_Event_OnPlayBackEnded(void* playerObject)
 int Py_XBMC_Event_OnPlayBackStopped(void* playerObject)
 {
   if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackStopped", NULL );
+  Py_DECREF((PyObject*)playerObject);
+  return 0;
+}
+
+/*
+ * called from python library!
+ */
+int Py_XBMC_Event_OnPlayBackPaused(void* playerObject)
+{
+  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackPaused", NULL );
+  Py_DECREF((PyObject*)playerObject);
+  return 0;
+}
+
+/*
+ * called from python library!
+ */
+int Py_XBMC_Event_OnPlayBackResumed(void* playerObject)
+{
+  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackResumed", NULL );
   Py_DECREF((PyObject*)playerObject);
   return 0;
 }

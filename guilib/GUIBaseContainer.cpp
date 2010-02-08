@@ -769,13 +769,13 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
       if (updateItems && item->HasProperties()) 
       { // has info, so update it
         CStdString info = item->GetProperty("label");
-        if (!info.IsEmpty()) item->SetLabel(CGUIInfoLabel::GetLabel(info));
+        if (!info.IsEmpty()) item->SetLabel(CGUIInfoLabel::GetLabel(info, GetParentID()));
         info = item->GetProperty("label2");
-        if (!info.IsEmpty()) item->SetLabel2(CGUIInfoLabel::GetLabel(info));
+        if (!info.IsEmpty()) item->SetLabel2(CGUIInfoLabel::GetLabel(info, GetParentID()));
         info = item->GetProperty("icon");
-        if (!info.IsEmpty()) item->SetIconImage(CGUIInfoLabel::GetLabel(info, true));
+        if (!info.IsEmpty()) item->SetIconImage(CGUIInfoLabel::GetLabel(info, GetParentID(), true));
         info = item->GetProperty("thumb");
-        if (!info.IsEmpty()) item->SetThumbnailImage(CGUIInfoLabel::GetLabel(info, true));
+        if (!info.IsEmpty()) item->SetThumbnailImage(CGUIInfoLabel::GetLabel(info, GetParentID(), true));
       }
     }
     UpdateScrollByLetter();
@@ -945,16 +945,16 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         const char *id = item->Attribute("id");
         int visibleCondition = 0;
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
-        newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label)));
+        newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label, GetParentID())));
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
         for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
           (*it).Replace(",", ",,");
         StringUtils::JoinString(actions, " , ", newItem->m_strPath);
-        newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
-        newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));
-        newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, true));
+        newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2, GetParentID()));
+        newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, GetParentID(), true));
+        newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, GetParentID(), true));
         if (label.Find("$INFO") >= 0) newItem->SetProperty("label", label);
         if (label2.Find("$INFO") >= 0) newItem->SetProperty("label2", label2);
         if (icon.Find("$INFO") >= 0) newItem->SetProperty("icon", icon);
@@ -970,11 +970,11 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         thumb  = item->Attribute("thumb");  thumb  = CGUIControlFactory::FilterLabel(thumb);
         icon   = item->Attribute("icon");   icon   = CGUIControlFactory::FilterLabel(icon);
         const char *id = item->Attribute("id");
-        newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label)));
+        newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label, GetParentID())));
         newItem->m_strPath = item->FirstChild()->Value();
-        newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
-        newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));
-        newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, true));
+        newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2, GetParentID()));
+        newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, GetParentID(), true));
+        newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, GetParentID(), true));
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = 0;  // no visibility condition
       }

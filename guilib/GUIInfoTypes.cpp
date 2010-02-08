@@ -275,8 +275,8 @@ CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, co
   m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
 }
 
-CStdString CGUIInfoLabel::GetLabel(const CStdString &label, bool preferImage)
+CStdString CGUIInfoLabel::GetLabel(const CStdString &label, int contextWindow, bool preferImage)
 { // translate the label
   CGUIInfoLabel info(label, "");
-  return info.GetLabel(0, preferImage);
+  return info.GetLabel(contextWindow, preferImage);
 }

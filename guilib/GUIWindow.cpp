@@ -34,6 +34,7 @@
 #include "SkinInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 
@@ -42,7 +43,7 @@ using namespace std;
 CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
   SetID(id);
-  m_xmlFile = xmlFile;
+  SetProperty("xmlfile", xmlFile);
   m_idRange = 1;
   m_saveLastControl = false;
   m_lastControlID = 0;
@@ -67,8 +68,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   if (m_windowLoaded)
     return true;      // no point loading if it's already there
     
-  LARGE_INTEGER start;
-  QueryPerformanceCounter(&start);
+  int64_t start;
+  start = CurrentHostCounter();
 
   RESOLUTION resToUse = INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
@@ -86,10 +87,10 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
 
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
-  LARGE_INTEGER end, freq;
-  QueryPerformanceCounter(&end);
-  QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Load %s: %.2fms", m_xmlFile.c_str(), 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart);
+  int64_t end, freq;
+  end = CurrentHostCounter();
+  freq = CurrentHostFrequency();
+  CLog::Log(LOGDEBUG,"Load %s: %.2fms", GetProperty("xmlfile").c_str(), 1000.f * (end - start) / freq);
 
   return ret;
 }
@@ -511,7 +512,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", m_xmlFile.c_str());
+      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
       if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
       OnInitWindow();
       return true;
@@ -520,7 +521,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", m_xmlFile.c_str());
+      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
       OnDeinitWindow(message.GetParam1());
       // now free the window
       if (m_dynamicResourceAlloc) FreeResources();
@@ -630,12 +631,13 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
-  // load skin xml file
-  bool bHasPath=false; 
-  if (m_xmlFile.Find("\\") > -1 || m_xmlFile.Find("/") > -1 ) 
-    bHasPath = true; 
-  if (m_xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
-    Load(m_xmlFile,bHasPath);
+  // load skin xml fil
+  CStdString xmlFile = GetProperty("xmlfile");
+  bool bHasPath=false;
+  if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
+    bHasPath = true;
+  if (xmlFile.size() && (forceLoad || m_loadOnDemand || !m_windowLoaded))
+    Load(xmlFile,bHasPath);
 
   LARGE_INTEGER slend;
   QueryPerformanceCounter(&slend);
@@ -685,7 +687,7 @@ void CGUIWindow::ClearAll()
 
 bool CGUIWindow::Initialize()
 {
-  return Load(m_xmlFile);
+  return Load(GetProperty("xmlfile"));
 }
 
 void CGUIWindow::SetInitialVisibility()

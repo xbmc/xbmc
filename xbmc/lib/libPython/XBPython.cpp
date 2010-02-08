@@ -101,6 +101,34 @@ void XBPython::OnPlayBackStarted()
   }
 }
 
+// message all registered callbacks that we paused playing
+void XBPython::OnPlayBackPaused()
+{
+  if (m_bInitialized)
+  {
+    PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+    while (it != vecPlayerCallbackList.end())
+    {
+      ((IPlayerCallback*)(*it))->OnPlayBackPaused();
+      it++;
+    }
+  }
+}
+
+// message all registered callbacks that we resumed playing
+void XBPython::OnPlayBackResumed()
+{
+  if (m_bInitialized)
+  {
+    PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
+    while (it != vecPlayerCallbackList.end())
+    {
+      ((IPlayerCallback*)(*it))->OnPlayBackResumed();
+      it++;
+    }
+  }
+}
+
 // message all registered callbacks that user stopped playing
 void XBPython::OnPlayBackStopped()
 {

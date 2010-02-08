@@ -110,8 +110,7 @@ void CURL::Parse(const CStdString& strURL1)
   }
   else
   {
-    m_strProtocol = strURL.Left(iPos);
-    m_strProtocol.ToLower();
+    SetProtocol(strURL.Left(iPos));
     iPos += 3;
   }
 
@@ -425,7 +424,7 @@ const CStdString CURL::GetTranslatedProtocol() const
   
   if (m_strProtocol == "davs")
     return "https";
-    
+  
   return m_strProtocol;
 }
 

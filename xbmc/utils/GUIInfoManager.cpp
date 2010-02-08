@@ -2221,7 +2221,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
-          if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && CUtil::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2231,7 +2231,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
-          if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
+          if (window && CUtil::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;

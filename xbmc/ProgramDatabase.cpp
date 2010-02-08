@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "ProgramDatabase.h"
-#include "utils/fstrcmp.h"
 #include "Util.h"
 #include "xbox/xbeheader.h"
 #include "GUIWindowFileManager.h"

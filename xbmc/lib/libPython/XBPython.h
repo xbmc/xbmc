@@ -48,6 +48,8 @@ public:
   virtual ~XBPython();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
+  virtual void OnPlayBackPaused();
+  virtual void OnPlayBackResumed();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem() {};
   void  RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);

@@ -556,6 +556,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
       {
         CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
         FT_Done_Glyph(glyph);
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Failed to allocate new texture of height %u", newHeight);
         return false;
       }
       // correct texture sizes
@@ -584,6 +585,12 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
       }
       m_texture = newTexture;
     }
+  }
+
+  if(m_texture == NULL)
+  {
+    CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: no texture to cache character to");
+    return false;
   }
 
   // set the character in our table

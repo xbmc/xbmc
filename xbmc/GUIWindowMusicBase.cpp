@@ -599,7 +599,7 @@ void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
     dialog->DoModal(GetID());
     if (dialog->NeedsUpdate())
     { // update our file list
-      m_vecItems->RemoveDiscCache();
+      m_vecItems->RemoveDiscCache(GetID());
       Update(m_vecItems->m_strPath);
     }
   }
@@ -952,7 +952,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString playlist = item->IsPlayList() ? item->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
       // need to update
-      m_vecItems->RemoveDiscCache();
+      m_vecItems->RemoveDiscCache(GetID());
       return true;
     }
     
@@ -961,7 +961,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString playlist = item->IsSmartPlayList() ? item->m_strPath : m_vecItems->m_strPath; // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "music"))
       { // need to update
-        m_vecItems->RemoveDiscCache();
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       return true;
@@ -1008,7 +1008,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (CLastFmManager::GetInstance()->Unban(*item->GetMusicInfoTag()))
     {
       g_directoryCache.ClearDirectory(m_vecItems->m_strPath);
-      m_vecItems->RemoveDiscCache();
+      m_vecItems->RemoveDiscCache(GetID());
       Update(m_vecItems->m_strPath);
     }
     return true;
@@ -1016,7 +1016,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (CLastFmManager::GetInstance()->Unlove(*item->GetMusicInfoTag()))
     {
       g_directoryCache.ClearDirectory(m_vecItems->m_strPath);
-      m_vecItems->RemoveDiscCache();
+      m_vecItems->RemoveDiscCache(GetID());
       Update(m_vecItems->m_strPath);
     }
     return true;
@@ -1289,7 +1289,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
   // more than just our thumbnaias changed
   // TODO: Ideally this would only be done when needed - at the moment we appear to be
   //       doing this for every lookup, possibly twice (see ShowAlbumInfo)
-  m_vecItems->RemoveDiscCache();
+  m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->m_strPath);
 
   //  Do we have to autoswitch to the thumb control?

@@ -192,7 +192,7 @@ bool CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
     {
       CStdString strCurrHTML;
       XFILE::CFileCurl http;
-      if (!CScraperUrl::Get(pURL->m_url[i],strCurrHTML,http) || strCurrHTML.size() == 0)
+      if (!CScraperUrl::Get(pURL->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
         return false;
       strHTML.push_back(strCurrHTML);
     }

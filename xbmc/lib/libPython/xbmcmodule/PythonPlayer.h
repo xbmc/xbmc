@@ -28,6 +28,8 @@
 int Py_XBMC_Event_OnPlayBackStarted(void* arg);
 int Py_XBMC_Event_OnPlayBackEnded(void* arg);
 int Py_XBMC_Event_OnPlayBackStopped(void* arg);
+int Py_XBMC_Event_OnPlayBackPaused(void* arg);
+int Py_XBMC_Event_OnPlayBackResumed(void* arg);
 
 class CPythonPlayer : public IPlayerCallback
 {
@@ -35,8 +37,10 @@ public:
   CPythonPlayer();
   virtual ~CPythonPlayer(void);
   void    SetCallback(PyObject *object);
-  void    OnPlayBackStarted();
   void    OnPlayBackEnded();
+  void    OnPlayBackStarted();
+  void    OnPlayBackPaused();
+  void    OnPlayBackResumed();
   void    OnPlayBackStopped();
   void    OnQueueNextItem() {}; // unimplemented
 
