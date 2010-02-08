@@ -79,7 +79,7 @@ public:
   virtual int  GetSubtitle()          { return m_pDsGraph.GetSubtitle(); }
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pDsGraph.GetSubtitleName(iStream, strStreamName); };
   virtual void SetSubtitle(int iStream) { return m_pDsGraph.SetSubtitle(iStream); }; */
-
+  virtual bool AddSubtitle(const CStdString& strSubPath) { return g_dsconfig.SetSubtitlesFile(strSubPath); };
   // Chapters
 
   virtual int  GetChapterCount()                                { return CChaptersManager::getSingleton()->GetChapterCount(); }

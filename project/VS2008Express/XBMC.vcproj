@@ -2411,26 +2411,6 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="Subtitles"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibmpcSubs.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DsSubtitleManager.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DsSubtitleManager.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\mpcSubs.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Interfaces"
 					>
 					<File
@@ -2442,7 +2422,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDec.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecAudio.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h"
 						>
 					</File>
 					<File

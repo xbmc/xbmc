@@ -28,6 +28,7 @@
 #include "igraphbuilder2.h"
 #include "Filters/IMpaDecFilter.h"
 #include "Filters/IMPCVideoDecFilter.h"
+#include "Filters/IffdshowBase.h"
 #include "Filters/IffdshowDecVideo.h"
 #include "DSPropertyPage.h"
 
@@ -43,12 +44,13 @@ public:
 // Filters Property Pages
   virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages() { return m_pPropertiesFilters; };
   void ShowPropertyPage(IBaseFilter *pBF);
+  virtual bool SetSubtitlesFile(CStdString subFilePath);
 protected:
   bool LoadPropertiesPage(IBaseFilter *pBF);
   void CreatePropertiesXml();
   bool GetMpaDec(IBaseFilter* pBF);
   bool GetMpcVideoDec(IBaseFilter* pBF);
-  bool GetffdshowVideo(IBaseFilter* pBF);
+  bool GetffdshowFilters(IBaseFilter* pBF);
   void ConfigureFilters();
   CCritSec m_pLock;
   
@@ -57,6 +59,8 @@ private:
   IFilterGraph2*                 m_pGraphBuilder;
   IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
   IMpaDecFilter*                 m_pIMpaDecFilter;
+  IffdshowDecVideoA*             m_pIffdshowDecFilter;
+  IffdshowBaseA*                 m_pIffdshowBase;
   IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;

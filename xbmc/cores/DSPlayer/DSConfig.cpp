@@ -39,7 +39,9 @@ CDSConfig::CDSConfig(void)
   m_pGraphBuilder = NULL;
   m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
+  m_pIffdshowDecFilter = NULL;
   m_pSplitter = NULL;
+  m_pIffdshowBase = NULL;
 }
 
 CDSConfig::~CDSConfig(void)
@@ -69,6 +71,7 @@ void CDSConfig::ConfigureFilters()
   {
 	  GetMpcVideoDec(pBF);
 	  GetMpaDec(pBF);
+    GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);
   }
   EndEnumFilters(pEF, pBF)
@@ -165,6 +168,35 @@ bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
   }
 
   return true;
+}
+
+bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
+{
+  HRESULT hr;
+  if (!m_pIffdshowDecFilter)
+  {
+    hr = pBF->QueryInterface(IID_IffdshowDecVideoA, (void **) &m_pIffdshowDecFilter );
+  }
+  if (!m_pIffdshowBase)
+  {
+    hr = pBF->QueryInterface(IID_IffdshowBaseA,(void **) &m_pIffdshowBase );
+  }
+  return true;
+}
+
+bool CDSConfig::SetSubtitlesFile(CStdString subFilePath)
+{
+  if (m_pIffdshowBase)
+  {
+    CStdString newPath = CSpecialProtocol::TranslatePath(subFilePath);
+    //IDFF_subFilename 821
+    if (SUCCEEDED(m_pIffdshowBase->putParamStr(821,newPath.c_str())))
+    {
+      CLog::Log(LOGNOTICE,"%s using this file for subtitle %s",__FUNCTION__,newPath.c_str());
+      return true;
+      }
+  }
+  return false;
 }
 
 bool CDSConfig::GetMpaDec(IBaseFilter* pBF)

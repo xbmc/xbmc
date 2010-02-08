@@ -430,4 +430,19 @@ Section "-Check DirectX installation" SEC_DIRECTXCHECK
     MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "DirectX9 wasn't installed properly.$\nPlease download the DirectX End-User Runtimes from Microsoft and install it again."
 
 SectionEnd
+
+;--------------------------------
+;Dsplayer installation section
+
+Section "ffdshow rev 3255" SEC_FFDSHOW
+  SectionIn 1 2
+  
+  SetOutPath "$TEMP"
+  File "${xbmc_root}\Xbmc\ffdshow_rev3255_20100207.exe"
+  DetailPrint "Running ffdshow installation"
+  ExecWait '"$TEMP\ffdshow_rev3255_20100207.exe" /q' $VSRedistSetupError
+  DetailPrint "Finished ffdshow installation"
+ 
+  Delete "$TEMP\ffdshow_rev3255_20100207.exe"
+SectionEnd
 !endif

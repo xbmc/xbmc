@@ -560,7 +560,9 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 
   g_dsconfig.ConfigureFilters(m_pFG, m_CfgLoader->GetSplitter());
   //Apparently the graph dont start with wmv when you have unconnected filters
-  DShowUtil::RemoveUnconnectedFilters(m_pFG);
+  //And for debuging reason we wont remove it if the file is not a wmv
+  if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))
+    DShowUtil::RemoveUnconnectedFilters(m_pFG);
 
 #ifdef _DSPLAYER_DEBUG
   LogFilterGraph();

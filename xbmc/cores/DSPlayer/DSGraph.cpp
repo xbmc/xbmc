@@ -40,7 +40,6 @@
 
 #include "DshowUtil/MediaTypeEx.h"
 #include "MediaInfoDll/MediaInfoDLL.h"
-#include "Subtitles/DsSubtitleManager.h"
 
 #include "timeutils.h"
 enum 

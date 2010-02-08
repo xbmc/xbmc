@@ -31,8 +31,7 @@
 #include "utils/log.h"
 #include "FileSystem/File.h"
 #include "MathUtils.h"
-#include "DShowUtil/DShowUtil.h"
-#include "Subtitles/DsSubtitleManager.h"
+#include "DShowUtil/DShowUtil.h"h
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
   m_D3DVideoTexture(NULL),
@@ -207,9 +206,6 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
   m_pD3DDevice->SetTexture(0, NULL);
 
-  //Render Subtitles
-  //if (g_dllMpcSubs.Enabled())
-  //  g_dllMpcSubs.Render(0,0,(int)m_destRect.Width(),(int)m_destRect.Height());
   if (FAILED(hr))
     CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer"); 
 }

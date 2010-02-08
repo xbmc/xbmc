@@ -76,10 +76,14 @@
       <guid>{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}</guid>
 	  <osdname>MPC Video Decoder</osdname>
     </filter>
+    <!-- ffdshow cant be used with a path unless you put the current path of your ffdshow.ax-->
     <filter name="ffdvideodec" type="videodec">
-      <path>ffdshow.ax</path>
       <guid>{04FE9017-F873-410E-871E-AB91661A4EF7}</guid>
 	  <osdname>ffdshow Video Decoder</osdname>
+    </filter>
+    <filter name="ffdvideodxvadec" type="videodec">
+      <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
+	  <osdname>ffdshow Dxva Decoder</osdname>
     </filter>
     <filter name="mpeg2videodec" type="videodec">
       <path>Mpeg2DecFilter.ax</path>
@@ -95,9 +99,8 @@
 	  <osdname>Mpa Decoder</osdname>
     </filter>
     <filter name="ffdaudiodec" type="audiodec">
-      <path>ffdshow.ax</path>
       <guid>{0F40E1E5-4F79-4988-B1A9-CC98794E6B55}</guid>
-	  <osdname>ffdshow audio decoder</osdname>
+	    <osdname>ffdshow audio decoder</osdname>
     </filter>
     <filter name="wmaudiodecoder" type="audiodec">
       <guid>{94297043-BD82-4DFD-B0DE-8177739C6D20}</guid>
@@ -133,6 +136,10 @@
 		<guid>{E4DCD60C-F449-4C78-895B-1FE9F85C7EDD}</guid>
 		<osdname>DC-GraphicEQ</osdname>
 	</filter>
+    <filter name="ac3filter" type="extra">
+		<guid>{A753A1EC-973E-4718-AF8E-A3F554D45C44}</guid>
+		<osdname>AC3Filter</osdname>
+	</filter>
   </filters>
   <rules>
     <!-- For more filetype make a request in the forum thread  -->
@@ -140,38 +147,38 @@
     <rule filetype="avi">
 		<source>avisource</source>
 		<splitter>avisplitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>	
 	<rule filetype="ogm">
 		<source>oggsource</source>
 		<splitter>oggsplitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>	
     <rule filetype="flv">
 		<source>flvsource</source>
 		<splitter>flvsplitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>
 	<rule filetype="mp4">
 		<source>mp4source</source>
 		<splitter>mp4splitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>
 	<rule filetype="mov">
 		<source>mp4source</source>
 		<splitter>mp4splitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>
 	<rule filetype="m4v">
 		<source>mp4source</source>
 		<splitter>mp4splitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>
 	<rule filetype="m2v">
 		<source>mpegsource</source>
@@ -183,31 +190,32 @@
 		<source>mpegsource</source>
 		<splitter>mpegsplitter</splitter>
 		<video>mpeg2videodec</video>
-		<audio>mpaaudiodec</audio>
+		<audio>ffdaudiodec</audio>
 	</rule>
 	<rule filetype="mpeg">
 		<source>mpegsource</source>
 		<splitter>mpegsplitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>
 	<rule filetype="mpg">
 		<source>mpegsource</source>
 		<splitter>mpegsplitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>
 	<rule filetype="m2ts">
 		<source>mpegsource</source>
 		<splitter>mpegsplitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodec</video>
+		<audio>ffdaudiodec</audio>
 	</rule>
   <rule filetype="mkv">
 		<source>mkvsource</source>
 		<splitter>mkvsplitter</splitter>
-		<video>mpcvideodec</video>
-		<audio>mpaaudiodec</audio>
+		<video>ffdvideodxvadec</video>
+		<audio>ffdaudiodec</audio>
+		<!--<extra>ac3filter</extra>-->
 		<!--<extra>dcgraphiceq</extra>-->
 	</rule>
 	<rule filetype="wmv">
