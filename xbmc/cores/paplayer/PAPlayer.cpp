@@ -201,6 +201,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
           (m_currentFile->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
           (m_currentFile->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
         )
+        || g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") != CStdString::npos
       )
     )
     {

@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DX
+
 #include <windows.h>
 #include <d3d9.h>
 #include <Initguid.h>
@@ -30,9 +32,26 @@
 #include "WindowingFactory.h"
 #include "Settings.h"
 
-#pragma comment (lib,"dxva2.lib")
-
 using namespace DXVA;
+
+typedef HRESULT (__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
+static DXVA2CreateVideoServicePtr g_DXVA2CreateVideoService;
+
+static bool LoadDXVA()
+{
+  static CCriticalSection g_section;
+  static HMODULE          g_handle;
+
+  CSingleLock lock(g_section);
+  if(g_handle == NULL)
+    g_handle = LoadLibraryEx("dxva2.dll", NULL, 0);
+  if(g_handle == NULL)
+    return false;
+  g_DXVA2CreateVideoService = (DXVA2CreateVideoServicePtr)GetProcAddress(g_handle, "DXVA2CreateVideoService");
+  if(g_DXVA2CreateVideoService == NULL)
+    return false;
+  return true;
+}
 
 static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 { ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
@@ -65,10 +84,6 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "H.264 MoComp, FGT",                                      &DXVA2_ModeH264_B, 0,            },
     { "H.264 motion compensation (MoComp), no FGT",             &DXVA2_ModeH264_A, 0,            },
 
-    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, CODEC_ID_H264 },
-    { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0,            },
-    { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0,            },
-
     { "Windows Media Video 8 MoComp",           &DXVA2_ModeWMV8_B, 0 },
     { "Windows Media Video 8 post processing",  &DXVA2_ModeWMV8_A, 0 },
 
@@ -82,8 +97,10 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B, 0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A, 0 },
 
-    { "Intel VC-1 VLD",       &DXVADDI_Intel_ModeVC1_E, CODEC_ID_VC1 },
-    { "Intel VC-1 VLD",       &DXVADDI_Intel_ModeVC1_E, CODEC_ID_WMV3 },
+    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, 0 },
+    { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
+    { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
+    { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 
     { NULL, NULL, 0 }
 };
@@ -96,19 +113,6 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
     }
     return NULL;
 }
-
-static inline unsigned dxva2_align(unsigned value)
-{
-  // untill somebody gives me a sample where this is required
-  // i'd rather not do this alignment as it will mess with
-  // output not being cropped correctly
-#if 0
-  return (value + 15) & ~15;
-#else
-  return value;
-#endif
-}
-
 
 CDecoder::SVideoBuffer::SVideoBuffer()
 {
@@ -188,6 +192,9 @@ do { \
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
+  if(!LoadDXVA())
+    return false;
+
   CSingleLock lock(m_section);
   Close();
 
@@ -197,7 +204,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     return false;
   }
 
-  CHECK(DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service))
+  CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service))
 
   UINT  input_count;
   GUID *input_list;
@@ -398,8 +405,8 @@ bool CDecoder::OpenTarget(const GUID &guid)
 
 bool CDecoder::OpenDecoder(AVCodecContext *avctx)
 {
-  m_format.SampleWidth  = dxva2_align(avctx->width);
-  m_format.SampleHeight = dxva2_align(avctx->height);
+  m_format.SampleWidth  = avctx->width;
+  m_format.SampleHeight = avctx->height;
   m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
   m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
 
@@ -498,8 +505,8 @@ bool CDecoder::OpenDecoder(AVCodecContext *avctx)
   else
     m_context->surface_count = 2  + 1 + 1; // 2  ref + 1 decode + 1 libavcodec safety
 
-  CHECK(m_service->CreateSurface( m_format.SampleWidth
-                                , m_format.SampleHeight
+  CHECK(m_service->CreateSurface( (m_format.SampleWidth  + 15) & ~15
+                                , (m_format.SampleHeight + 15) & ~15
                                 , m_context->surface_count - 1
                                 , m_format.Format
                                 , D3DPOOL_DEFAULT
@@ -576,8 +583,8 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
-  if(dxva2_align(avctx->width)  != m_format.SampleWidth
-  || dxva2_align(avctx->height) != m_format.SampleHeight)
+  if(avctx->width  != m_format.SampleWidth
+  || avctx->height != m_format.SampleHeight)
   {
     Close();
     if(!Open(avctx, avctx->pix_fmt))
@@ -665,11 +672,14 @@ void CProcessor::Close()
 
 bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
 {
+  if(!LoadDXVA())
+    return false;
+
   CSingleLock lock(m_section);
   m_desc = dsc;
   m_size = size;
 
-  CHECK(DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoProcessorService, (void**)&m_service));
+  CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoProcessorService, (void**)&m_service));
 
   GUID*    guid_list;
   unsigned guid_count;
@@ -872,3 +882,5 @@ long CProcessor::Release()
   if (count == 0) delete this;
   return count;
 }
+
+#endif

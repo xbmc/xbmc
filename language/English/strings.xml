@@ -287,6 +287,7 @@
   <string id="343">Adjust framerate</string>
   <string id="344">Actors</string>
   <string id="345">Year</string>
+  <string id="346">Boost volume level on downmix</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
@@ -2779,5 +2780,17 @@
   <string id="34002">Wav</string>
   <string id="34003">DXVA</string>
 
+  <string id="34100">Speaker Configuration</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
 
 </strings>

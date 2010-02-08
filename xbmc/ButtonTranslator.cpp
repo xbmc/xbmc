@@ -36,8 +36,6 @@
 using namespace std;
 using namespace XFILE;
 
-extern CStdString g_LoadErrorStr;
-
 typedef struct
 {
   const char* name;
@@ -234,7 +232,7 @@ bool CButtonTranslator::Load()
 
   if (!success)
   {
-    g_LoadErrorStr.Format("Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
+    CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
     return false;
   }
 
@@ -324,7 +322,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
   if (!xmlDoc.LoadFile(lircmapPath))
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn
   }
 
@@ -332,7 +330,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
   CStdString strValue = pRoot->Value();
   if (strValue != REMOTEMAPTAG)
   {
-    g_LoadErrorStr.Format("%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
+    CLog::Log(LOGERROR, "%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
     return false;
   }
 

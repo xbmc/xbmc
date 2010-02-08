@@ -615,11 +615,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
-  ClearFileItems();
-  m_vecItems->ClearProperties();
-  m_vecItems->SetThumbnailImage("");
-
-  if (!GetDirectory(strDirectory, *m_vecItems))
+  CFileItemList items;
+  if (!GetDirectory(strDirectory, items))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
     // if the directory is the same as the old directory, then we'll return
@@ -636,6 +633,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     Update(strParentPath);
     return false;
   }
+
+  ClearFileItems();
+  *m_vecItems = items;
 
   // if we're getting the root source listing
   // make sure the path history is clean
@@ -1255,7 +1255,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
 
-  if (item->IsPlugin() && item->IsFileFolder())
+  if (item->IsPlugin() && item->m_bIsFolder)
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1294,7 +1294,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
-      CGUIDialogPluginSettings::ShowAndGetInput(url);
+      if(CGUIDialogPluginSettings::ShowAndGetInput(url))
+        Update(m_vecItems->m_strPath);
       return true;
     }
   case CONTEXT_BUTTON_DELETE_PLUGIN:

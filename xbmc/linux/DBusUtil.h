@@ -22,20 +22,16 @@
 #include "system.h"
 #ifdef HAS_DBUS
 #include "DBusMessage.h"
-#include <map>
+#include "Variant.h"
 
-typedef std::map<CStdString,  CStdString> PropertyMap;
-typedef std::pair<CStdString, CStdString> Property;
 class CDBusUtil
 {
 public:
-  static bool GetBoolean(const char *destination, const char *object, const char *interface, const char *property);
-  static int  GetInt32(const char *destination, const char *object, const char *interface, const char *property);
-  static void GetAll(PropertyMap& properties, const char *destination, const char *object, const char *interface);
+  static CVariant GetAll(const char *destination, const char *object, const char *interface);
 
-  static CStdString GetVariant(const char *destination, const char *object, const char *interface, const char *property, const char *fallback = "");
+  static CVariant GetVariant(const char *destination, const char *object, const char *interface, const char *property);
 private:
-  static CStdString ParseType(DBusMessageIter *itr);
-  static CStdString ParseVariant(DBusMessageIter *itr);
+  static CVariant ParseType(DBusMessageIter *itr);
+  static CVariant ParseVariant(DBusMessageIter *itr);
 };
 #endif

@@ -71,7 +71,6 @@
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
-#include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
@@ -300,21 +299,13 @@ using namespace DBUSSERVER;
 
 #if defined(_WIN32)
  #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
-  #if defined(HAS_FILESYSTEM)
-    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTVd_win32.lib")
-  #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
  #else
-  #ifdef HAS_FILESYSTEM
-    #pragma comment (lib,"../../xbmc/lib/libRTV/libRTV_win32.lib")
-  #endif
   #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
  #endif
 #endif
 
 #define MAX_FFWD_SPEED 5
-
-CStdString g_LoadErrorStr;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
@@ -433,8 +424,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
 // This function does not return!
 void CApplication::FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork)
 {
-  // XBMC couldn't start for some reason...
-  // g_LoadErrorStr should contain the reason
   fprintf(stderr, "Fatal error encountered, aborting\n");
   fprintf(stderr, "Error log at %sxbmc.log\n", g_settings.m_logFolder.c_str());
   abort();
@@ -523,11 +512,11 @@ bool CApplication::Create()
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X (%s). Built on %s (SVN:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, SVN_REV);
 #elif defined(_LINUX)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Linux (%s, %s). Built on %s (SVN:%s)", g_sysinfo.GetLinuxDistro().c_str(), g_sysinfo.GetUnameVersion().c_str(), __DATE__, SVN_REV);
 #elif defined(_WIN32)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s. Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
   CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
@@ -630,10 +619,7 @@ bool CApplication::Create()
 #endif
   g_powerManager.Initialize();
 
-  CLog::Log(LOGINFO, "Drives are mapped");
-
   CLog::Log(LOGNOTICE, "load settings...");
-  g_LoadErrorStr = "Unable to load settings";
   g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
   if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
     g_settings.m_iLastLoadedProfileIndex = 0;
@@ -742,7 +728,7 @@ bool CApplication::Create()
     strSkinPath = strSkinBase + DEFAULT_SKIN;
     if (!g_SkinInfo.Check(strSkinPath))
     {
-      g_LoadErrorStr.Format("No suitable skin version found.\nWe require at least version %5.4f \n", g_SkinInfo.GetMinVersion());
+      CLog::Log(LOGERROR, "No suitable skin version found. We require at least version %5.4f", g_SkinInfo.GetMinVersion());
       FatalErrorHandler(false, false, true);
     }
   }
@@ -1691,8 +1677,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
     }
 #endif
   }
-  //stop the busy renderer if it's running before we lock the graphiccontext or we could deadlock.
-  g_ApplicationRenderer.Stop();
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
 
@@ -1798,7 +1782,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   // leave the graphics lock
   lock.Leave();
-  g_ApplicationRenderer.Start();
 
   // restore windows
   if (currentWindow != WINDOW_INVALID)
@@ -1822,7 +1805,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
 void CApplication::UnloadSkin()
 {
-  g_ApplicationRenderer.Stop();
   g_audioManager.Enable(false);
 
   g_windowManager.DeInitialize();
@@ -1995,12 +1977,6 @@ void CApplication::RenderNoPresent()
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
 
-  g_ApplicationRenderer.Render();
-
-}
-
-void CApplication::DoRender()
-{
   g_graphicsContext.Lock();
 
   //g_Windowing.BeginRender();
@@ -4332,13 +4308,6 @@ bool CApplication::NeedRenderFullScreen()
 }
 
 void CApplication::RenderFullScreen()
-{
-  MEASURE_FUNCTION;
-
-  g_ApplicationRenderer.Render(true);
-}
-
-void CApplication::DoRenderFullScreen()
 {
   MEASURE_FUNCTION;
 

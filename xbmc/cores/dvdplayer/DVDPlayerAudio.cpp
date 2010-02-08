@@ -562,8 +562,13 @@ void CDVDPlayerAudio::Process()
     }
 
     // store the delay for this pts value so we can calculate the current playing
-    if(m_speed != DVD_PLAYSPEED_PAUSE && packetadded)
-      m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+    if(packetadded)
+    {
+      if(m_speed == DVD_PLAYSPEED_PAUSE)
+        m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, 0);
+      else
+        m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+    }
 
     // signal to our parent that we have initialized
     if(m_started == false)

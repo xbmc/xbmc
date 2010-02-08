@@ -103,7 +103,7 @@ void CDVDAudioCodecLibDts::Dispose()
 void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   /* These are channel mappings that libdts outputs */
-  static int8_t channelMaps[14][6] =
+  static enum PCMChannels channelMaps[14][6] =
   {
     /* Without LFE */
     {/* DTS_MONO    */ PCM_FRONT_CENTER                                                                                             },

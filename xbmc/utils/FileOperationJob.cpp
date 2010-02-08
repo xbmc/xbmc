@@ -180,7 +180,7 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
       break;
   }
 
-  if (base->ShouldCancel(current, 100.0))
+  if (base->ShouldCancel((unsigned)current, 100))
     return false;
 
   DataHolder data = {base, current, opWeight};
@@ -261,5 +261,5 @@ bool CFileOperationJob::CFileOperation::OnFileCallback(void* pContext, int iperc
   else
     data->base->m_avgSpeed.Format("%.1f Kb/s", avgSpeed / 1000.0f);
 
-  return !data->base->ShouldCancel(current, 100.0);
+  return !data->base->ShouldCancel((unsigned)current, 100);
 }

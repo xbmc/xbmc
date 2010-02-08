@@ -48,7 +48,6 @@
 typedef SOCKET socket_fd;
 #elif defined _WIN32
 #include <winsock2.h>
-#pragma comment(lib, "ws2_32.lib")
 typedef SOCKET socket_fd;
 #else
 #include <unistd.h>
@@ -221,9 +220,6 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 	struct sockaddr_in sin;  /* send address structure */
 	struct sockaddr_in sin2; /* receive address structure */
 
-  s1 = 0;
-  s2 = 0;
-
 	// Need to initialize Winsock on Win32
 #if defined(_WIN32) && !defined(_XBOX)
 	WSADATA wd;
@@ -232,6 +228,8 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 		goto error;
 	}
 #endif
+  s1 = 0;
+  s2 = 0;
 
 	// Set up the information for the UPNP port connection
 	sin.sin_family = AF_INET;

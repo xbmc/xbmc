@@ -47,7 +47,7 @@ const int dsound_channel_mask[] =
   SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY
 };
 
-const int dsound_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
+const enum PCMChannels dsound_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
 
 #define DSOUND_CHANNEL_MASK_COUNT 8
 #define DSOUND_TOTAL_CHANNELS 11
@@ -79,7 +79,7 @@ CWin32DirectSound::CWin32DirectSound() :
 {
 }
 
-bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
   if(iChannels > DSOUND_CHANNEL_MASK_COUNT)
   {
@@ -92,7 +92,11 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   if(channelMap)
     BuildChannelMapping(iChannels, channelMap);
   else
+  {
     m_uiSpeakerMask = dsound_channel_mask[iChannels - 1];
+    for(int i = 0; i < iChannels; i++)
+      m_SpeakerOrder[i] = dsound_channel_order[i];
+  }
 
   m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
   m_remap.SetOutputFormat(iChannels, m_SpeakerOrder);
@@ -584,7 +588,7 @@ char * CWin32DirectSound::dserr2str(int err)
 }
 
 //***********************************************************************************************
-void CWin32DirectSound::BuildChannelMapping(int channels, int8_t* map)
+void CWin32DirectSound::BuildChannelMapping(int channels, enum PCMChannels* map)
 {
   bool usedChannels[DSOUND_TOTAL_CHANNELS];
 

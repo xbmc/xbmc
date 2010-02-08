@@ -35,6 +35,5 @@ public:
   
   static DVDVideoPicture* ConvertToNV12Picture(DVDVideoPicture *pSrc);
   static bool CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
-
 };
 

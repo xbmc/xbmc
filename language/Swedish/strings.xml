@@ -2019,4 +2019,15 @@
   <string id="33081">Denna fil är sammanslagen, välj den del du vill spela.</string>
   <string id="33082">Sökväg till skript</string>
   <string id="33083">Aktivera egen skriptknapp</string>
+  <string id="34100">Högtalarkonfiguration</string> 
+  <string id="34101">2.0</string> 
+  <string id="34102">2.1</string> 
+  <string id="34103">3.0</string> 
+  <string id="34104">3.1</string> 
+  <string id="34105">4.0</string> 
+  <string id="34106">4.1</string> 
+  <string id="34107">5.0</string> 
+  <string id="34108">5.1</string> 
+  <string id="34109">7.0</string> 
+  <string id="34110">7.1</string> 
 </strings>

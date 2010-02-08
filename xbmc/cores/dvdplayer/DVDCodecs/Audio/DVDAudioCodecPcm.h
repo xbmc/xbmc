@@ -34,7 +34,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
-  virtual int8_t* GetChannelMap();
+  virtual enum PCMChannels* GetChannelMap();
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual const char* GetName()  { return "pcm"; }

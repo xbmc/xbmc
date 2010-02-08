@@ -42,6 +42,7 @@
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#include "utils/PCMRemap.h"
 
 using namespace std;
 
@@ -229,6 +230,7 @@ CGUISettings::CGUISettings(void)
 void CGUISettings::Initialize()
 {
   ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
+  int si;
 
   // Pictures settings
   AddGroup(0, 1);
@@ -400,33 +402,45 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(4, "audiooutput", 772);
+  si = 1;
 
   map<int,int> audiomode;
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
   audiomode.insert(make_pair(339,AUDIO_DIGITAL));
-  AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
-  AddBool(4, "audiooutput.ac3passthrough", 364, true);
-  AddBool(5, "audiooutput.dtspassthrough", 254, true);
-  AddBool(6, "audiooutput.aacpassthrough", 299, false);
-  AddBool(7, "audiooutput.mp1passthrough", 300, false);
-  AddBool(8, "audiooutput.mp2passthrough", 301, false);
-  AddBool(9, "audiooutput.mp3passthrough", 302, false);
+  AddInt(si++, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
+
+/* hide this from apple users until CoreAudio has been updated to support this */
+#ifndef __APPLE__
+  map<int,int> channelLayout;
+  for(int layout = 0; layout < PCM_MAX_LAYOUT; ++layout)
+    channelLayout.insert(make_pair(34101+layout, layout));
+  AddInt(si++, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+  AddBool(si++, "audiooutput.dontnormalizelevels", 346, true);
+#endif
+
+  AddBool(si++, "audiooutput.ac3passthrough", 364, true);
+  AddBool(si++, "audiooutput.dtspassthrough", 254, true);
+  AddBool(si++, "audiooutput.aacpassthrough", 299, false);
+  AddBool(si++, "audiooutput.mp1passthrough", 300, false);
+  AddBool(si++, "audiooutput.mp2passthrough", 301, false);
+  AddBool(si++, "audiooutput.mp3passthrough", 302, false);
+
 #ifdef __APPLE__
-  AddString(10, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
-  AddBool(11, "audiooutput.downmixmultichannel", 548, true);
+  AddString(si++, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  //AddString(si++, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+  AddBool(si++, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
-  AddSeparator(10, "audiooutput.sep1");
-  AddString(11, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
-  AddString(12, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
-  AddSeparator(13, "audiooutput.sep2");
-  AddString(14, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
-  AddString(15, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
-  AddSeparator(16, "audiooutput.sep3");
-  AddBool(17, "audiooutput.downmixmultichannel", 548, true);
+  AddSeparator(si++, "audiooutput.sep1");
+  AddString(si++, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
+  AddString(si++, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
+  AddSeparator(si++, "audiooutput.sep2");
+  AddString(si++, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
+  AddString(si++, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
+  AddSeparator(si++, "audiooutput.sep3");
+  //AddBool(si++, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32)
-  AddString(10, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  AddBool(11, "audiooutput.downmixmultichannel", 548, true);
+  AddString(si++, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  //AddBool(si++, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   AddCategory(4, "input", 14094);

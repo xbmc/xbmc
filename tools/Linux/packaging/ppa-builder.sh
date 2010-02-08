@@ -131,7 +131,7 @@ builddeb()
   else
     PKG_VERSION=1:${VERSION}-$1${MINOR}
   fi
-  dch -b -v $PKG_VERSION -D $1 -u $urgency "$CHNLG" 2>&1 
+  dch --force-distribution -b -v $PKG_VERSION -D $1 -u $urgency "$CHNLG" 2>&1 
   echo "$REVISION" > debian/svnrevision
   echo "Building the $1 debian package" 
   

@@ -790,6 +790,13 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
+  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  {
+    if(method == VS_INTERLACEMETHOD_NONE)
+      return true;
+    return false;
+  }
+
   if(method == VS_INTERLACEMETHOD_NONE
   || method == VS_INTERLACEMETHOD_AUTO
   || method == VS_INTERLACEMETHOD_DEINTERLACE)
@@ -800,6 +807,13 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
 bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
+  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  {
+    if(method == VS_SCALINGMETHOD_LINEAR)
+      return true;
+    return false;
+  }
+
   if(D3DSHADER_VERSION_MAJOR(m_deviceCaps.PixelShaderVersion) >= 3)
   {
     if(method == VS_SCALINGMETHOD_LINEAR

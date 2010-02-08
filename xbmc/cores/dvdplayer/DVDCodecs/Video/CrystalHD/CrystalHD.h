@@ -124,9 +124,7 @@ public:
 
   bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
   void CloseDecoder(void);
-  bool IsOpenforDecode(void);
   void Reset(void);
-  unsigned int GetInputCount(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
 
   int  GetReadyCount(void);
@@ -137,8 +135,6 @@ public:
 
 protected:
   void CheckCrystalHDLibraryPath(void);
-  void SetFrameRate(uint32_t resolution);
-  void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
 
   DllLibCrystalHD *m_dll;
   void          *m_Device;

@@ -29,9 +29,88 @@
 #include "DirectoryCache.h"
 #include "GUISettings.h"
 #include "utils/log.h"
+#include "Job.h"
+#include "JobManager.h"
+#include "Application.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogBusy.h"
+#include "SingleLock.h"
+#include "Util.h"
 
 using namespace std;
 using namespace XFILE;
+
+class CGetDirectory
+  : IJobCallback
+{
+private:
+  struct CGetJob
+    : CJob
+  {
+    CGetJob(IDirectory& imp
+          , const CStdString& dir
+          , CFileItemList& list)
+      : m_dir(dir)
+      , m_list(list)
+      , m_imp(imp)      
+    {}
+  public:
+    virtual bool DoWork()
+    {
+      m_list.m_strPath = m_dir;
+      return m_imp.GetDirectory(m_dir, m_list);
+    }
+    CStdString     m_dir;
+    CFileItemList& m_list;
+    IDirectory&    m_imp;
+  };
+
+public:
+
+  CGetDirectory(IDirectory& imp, const CStdString& dir)
+    : m_event(true)
+  {
+    m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, dir, m_list)
+                                           , this
+                                           , CJob::PRIORITY_HIGH);
+  }
+ ~CGetDirectory()
+  {
+    CJobManager::GetInstance().CancelJob(m_id);
+  }
+
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)
+  {
+    m_result = success;
+    m_event.Set();
+  }
+
+  bool Wait(unsigned int timeout)
+  {
+    return m_event.WaitMSec(timeout);
+  }
+
+  bool GetDirectory(CFileItemList& list)
+  {
+    m_event.Wait();
+    if(!m_result)
+    {
+      list.Clear();
+      return false;
+    }
+    list = m_list;
+    return true;
+  }
+
+  bool          m_result;
+  CFileItemList m_list;
+  CEvent        m_event;
+  unsigned int  m_id;
+};
+
+
+
+
 
 CDirectory::CDirectory()
 {}
@@ -39,7 +118,7 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_ONCE */, bool extFileInfo /* = true */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_ONCE */, bool extFileInfo /* = true */, bool allowThreads /* = true */)
 {
   try
   {
@@ -62,9 +141,50 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       pDirectory->SetUseFileDirectories(bUseFileDirectories);
       pDirectory->SetExtFileInfo(extFileInfo);
 
-      items.m_strPath = strPath;
+      bool result;
+      if (g_application.IsCurrentThread() && allowThreads && !CUtil::IsSpecial(strPath))
+      {
+        CSingleExit ex(g_graphicsContext);
 
-      if (!pDirectory->GetDirectory(strPath, items))
+        CGetDirectory get(*pDirectory, strPath);
+        if(!get.Wait(100))
+        {
+          CGUIDialogBusy* dialog = NULL;
+          while(!get.Wait(10))
+          {
+            CSingleLock lock(g_graphicsContext);
+            if(g_windowManager.IsWindowVisible(WINDOW_DIALOG_PROGRESS))
+            {
+              if(dialog)
+              {
+                dialog->Close();
+                dialog = NULL;
+              }
+              g_windowManager.Process(false);
+            }
+            else
+            {
+              if(dialog == NULL)
+              {
+                dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+                if(dialog)
+                  dialog->Show();
+              }
+              g_windowManager.Process(true);
+            }
+          }
+          if(dialog)
+            dialog->Close();
+        }
+        result = get.GetDirectory(items);
+      }
+      else
+      {
+        items.m_strPath = strPath;
+        result = pDirectory->GetDirectory(strPath, items);
+      }
+
+      if (!result)
       {
         CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
         return false;

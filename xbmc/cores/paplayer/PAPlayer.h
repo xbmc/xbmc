@@ -179,7 +179,7 @@ private:
 
   // format (this should be stored/retrieved from the audio device object probably)
   unsigned int     m_channelCount[2];
-  int8_t*          m_channelMap[2];
+  enum PCMChannels*m_channelMap[2];
   unsigned int     m_sampleRate[2];
   unsigned int     m_bitsPerSample[2];
   unsigned int     m_BytesPerSecond;

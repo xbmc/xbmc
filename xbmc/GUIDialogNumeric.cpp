@@ -499,7 +499,7 @@ void CGUIDialogNumeric::GetOutput(void *output)
 {
   if (!output) return;
   if (m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS || m_mode == INPUT_DATE)
-    *(SYSTEMTIME*)output = m_datetime;
+    memcpy(output, &m_datetime, sizeof(m_datetime));
   if (m_mode == INPUT_IP_ADDRESS)
   {
     CStdString *ipaddress = (CStdString *)output;
