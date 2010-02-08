@@ -40,13 +40,15 @@ CTextureInfo::CTextureInfo(const CStdString &file)
   filename = file;
 }
 
-void CTextureInfo::operator=(const CTextureInfo &right)
+CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
 {
   border = right.border;
   orientation = right.orientation;
   diffuse = right.diffuse;
   filename = right.filename;
   useLarge = right.useLarge;
+
+  return *this;
 }
 
 CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture)

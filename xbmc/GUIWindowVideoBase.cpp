@@ -36,7 +36,6 @@
 #include "Application.h"
 #include "NfoFile.h"
 #include "Picture.h"
-#include "utils/fstrcmp.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "FileSystem/ZipManager.h"
@@ -603,7 +602,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
           }
         }
       }
-      if (returncode == -1)
+      else if (returncode == -1 || !CVideoInfoScanner::DownloadFailed(pDlgProgress))
       {
         pDlgProgress->Close();
         return false;

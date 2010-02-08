@@ -105,7 +105,7 @@ public:
 
   void Initialize();
 
-  bool Load(bool& bXboxMediacenter, bool& bSettings);
+  bool Load();
   void Save() const;
   bool Reset();
 
@@ -276,6 +276,7 @@ public:
 
   bool LoadAddonsXML(const ADDON::TYPE& type, ADDON::VECADDONPROPS& addons);
   bool SaveAddonsXML(const ADDON::TYPE& type, const ADDON::VECADDONPROPS &addons);
+  void LoadSources();
   bool SaveSources();
 
   void LoadRSSFeeds();

@@ -102,19 +102,17 @@ namespace DIRECTORY
   {
     CStackDirectory stack;
     CFileItemList   files;
-    CStdString      File1,
-                    File2,
-                    strStackTitlePath,
-                    strStackTitle,
+    CStdString      strStackTitlePath,
                     strCommonDir        = CUtil::GetParentPath(strPath);
 
     stack.GetDirectory(strPath, files);
 
     if (files.Size() > 1)
     {
+      CStdString strStackTitle;
 
-      File1 = CUtil::GetFileName(files[0]->m_strPath);
-      File2 = CUtil::GetFileName(files[1]->m_strPath);
+      CStdString File1 = CUtil::GetFileName(files[0]->m_strPath);
+      CStdString File2 = CUtil::GetFileName(files[1]->m_strPath);
 
       std::vector<CRegExp>::iterator itRegExp = RegExps.begin();
       int offset = 0;

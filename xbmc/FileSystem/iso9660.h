@@ -204,7 +204,6 @@ protected:
   void FreeFileContext(HANDLE hFile);
   isofile* GetFileContext(HANDLE hFile);
   bool IsRockRidge(struct iso9660_Directory& isodir);
-  struct iso_dirtree* m_dirtree;
   struct iso9660info m_info;
   std::string m_strReturn;
 

@@ -218,7 +218,6 @@ bool CFileRar::Open(const CURL& url)
 bool CFileRar::Exists(const CURL& url)
 {
   InitFromUrl(url);
-  CStdString strPathInCache;
   bool bResult;
 
   if (!g_RarManager.IsFileInRar(bResult, m_strRarPath, m_strPathInRar))

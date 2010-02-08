@@ -1044,9 +1044,38 @@ bool CUtil::IsFTP(const CStdString& strFile)
 
   CURL url(strFile2);
 
-  return url.GetProtocol() == "ftp"  ||
-         url.GetProtocol() == "ftpx" ||
-         url.GetProtocol() == "ftps";
+  return url.GetTranslatedProtocol() == "ftp"  ||
+         url.GetTranslatedProtocol() == "ftps";
+}
+
+bool CUtil::IsInternetStream(const CStdString& strFile, bool bStrictCheck /* = false */)
+{
+  CURL url(strFile);
+  CStdString strProtocol = url.GetProtocol();
+  
+  if (strProtocol.IsEmpty())
+    return false;
+
+  // there's nothing to stop internet streams from being stacked
+  if (strProtocol == "stack")
+  {
+    CStdString strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+    return IsInternetStream(strFile2);
+  }
+
+  CStdString strProtocol2 = url.GetTranslatedProtocol();
+
+  // Special case these
+  if (strProtocol2 == "ftp" || strProtocol2 == "ftps" ||
+      strProtocol  == "dav" || strProtocol  == "davs")
+    return bStrictCheck;
+
+  if (strProtocol2 == "http" || strProtocol2 == "https" ||
+      strProtocol  == "rtp"  || strProtocol  == "udp"   ||
+      strProtocol  == "rtmp" || strProtocol  == "rtsp")
+    return true;
+
+  return false;
 }
 
 bool CUtil::IsDAAP(const CStdString& strFile)

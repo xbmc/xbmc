@@ -996,9 +996,12 @@ void CDVDPlayer::Process()
     ||  (!m_dvdPlayerVideo.AcceptsData() && m_CurrentVideo.id >= 0))
     {
       Sleep(10);
-      SetCaching(CACHESTATE_DONE);
-      SAFE_RELEASE(m_CurrentAudio.startsync);
-      SAFE_RELEASE(m_CurrentVideo.startsync);
+      if (m_caching != CACHESTATE_INIT)
+      {
+        SetCaching(CACHESTATE_DONE);
+        SAFE_RELEASE(m_CurrentAudio.startsync);
+        SAFE_RELEASE(m_CurrentVideo.startsync);
+      }
       continue;
     }
 
@@ -1086,6 +1089,10 @@ void CDVDPlayer::Process()
       m_CurrentVideo.inited    = false;
       m_CurrentSubtitle.inited = false;
       m_CurrentTeletext.inited = false;
+      m_CurrentAudio.started    = false;
+      m_CurrentVideo.started    = false;
+      m_CurrentSubtitle.started = false;
+      m_CurrentTeletext.started = false;
 
       // if we are caching, start playing it again
       SetCaching(CACHESTATE_DONE);
@@ -1350,6 +1357,11 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   if((current.type == STREAM_AUDIO && m_dvdPlayerAudio.IsStalled())
   || (current.type == STREAM_VIDEO && m_dvdPlayerVideo.IsStalled()))
   {
+    // don't start caching if it's only a single stream that has run dry
+    if(m_dvdPlayerAudio.m_messageQueue.GetLevel() > 50
+    || m_dvdPlayerVideo.m_messageQueue.GetLevel() > 50)
+      return false;
+
     if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP)
     || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
     || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
@@ -1466,7 +1478,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
       && (m_CurrentVideo.dts == pPacket->dts) )
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Detected looping stillframe");
-        SyncronizePlayers(SYNCSOURCE_VIDEO);
+        SynchronizePlayers(SYNCSOURCE_VIDEO);
         return;
       }
     }
@@ -1478,7 +1490,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
      && (pPacket->dts < m_CurrentAudio.dts + DVD_MSEC_TO_TIME(50)) )
     {
       CLog::Log(LOGDEBUG, "CDVDPlayer::CheckContinuity - Potential long duration frame");
-      SyncronizePlayers(SYNCSOURCE_VIDEO);
+      SynchronizePlayers(SYNCSOURCE_VIDEO);
       return;
     }
   }
@@ -1507,9 +1519,9 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
     CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - resync backword :%d, prev:%f, curr:%f, diff:%f"
                             , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
     if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
-      SyncronizePlayers(SYNCSOURCE_VIDEO);
+      SynchronizePlayers(SYNCSOURCE_VIDEO);
     else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
-      SyncronizePlayers(SYNCSOURCE_AUDIO);
+      SynchronizePlayers(SYNCSOURCE_AUDIO);
 
     m_CurrentAudio.inited = false;
     m_CurrentVideo.inited = false;
@@ -1524,7 +1536,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
                             , current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
     /* normally don't need to sync players since video player will keep playing at normal fps */
     /* after a discontinuity */
-    //SyncronizePlayers(dts, pts, MSGWAIT_ALL);
+    //SynchronizePlayers(dts, pts, MSGWAIT_ALL);
 
     m_CurrentAudio.inited = false;
     m_CurrentVideo.inited = false;
@@ -1653,7 +1665,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
 }
 
 
-void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
+void CDVDPlayer::SynchronizeDemuxer(DWORD timeout)
 {
   if(IsCurrentThread())
     return;
@@ -1666,7 +1678,7 @@ void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
   message->Release();
 }
 
-void CDVDPlayer::SyncronizePlayers(DWORD sources, double pts)
+void CDVDPlayer::SynchronizePlayers(DWORD sources, double pts)
 {
   /* if we are awaiting a start sync, we can't sync here or we could deadlock */
   if(m_CurrentAudio.startsync
@@ -1845,9 +1857,9 @@ void CDVDPlayer::HandleMessages()
           }
           FlushBuffers(!msg.GetFlush());
           if(msg.GetAccurate())
-            SyncronizePlayers(SYNCSOURCE_ALL, start);
+            SynchronizePlayers(SYNCSOURCE_ALL, start);
           else
-            SyncronizePlayers(SYNCSOURCE_ALL, DVD_NOPTS_VALUE);
+            SynchronizePlayers(SYNCSOURCE_ALL, DVD_NOPTS_VALUE);
         }
         else
           CLog::Log(LOGWARNING, "error while seeking");
@@ -1866,7 +1878,7 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
           FlushBuffers(false);
-          SyncronizePlayers(SYNCSOURCE_ALL, start);
+          SynchronizePlayers(SYNCSOURCE_ALL, start);
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
       }
@@ -2104,7 +2116,7 @@ void CDVDPlayer::SetPlaySpeed(int speed)
   m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SETSPEED, speed));
   m_dvdPlayerAudio.SetSpeed(speed);
   m_dvdPlayerVideo.SetSpeed(speed);
-  SyncronizeDemuxer(100);
+  SynchronizeDemuxer(100);
 }
 
 void CDVDPlayer::Pause()
@@ -2244,7 +2256,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
-  SyncronizeDemuxer(100);
+  SynchronizeDemuxer(100);
   m_callback.OnPlayBackSeek((int)seek);
 }
 
@@ -2268,7 +2280,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
      * Seeking is flushed and inaccurate, just like Seek()
      */
     m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false));
-    SyncronizeDemuxer(100);
+    SynchronizeDemuxer(100);
     return true;
   }
   return false;
@@ -2435,7 +2447,7 @@ void CDVDPlayer::GetAudioStreamName(int iStream, CStdString& strStreamName)
 void CDVDPlayer::SetAudioStream(int iStream)
 {
   m_messenger.Put(new CDVDMsgPlayerSetAudioStream(iStream));
-  SyncronizeDemuxer(100);
+  SynchronizeDemuxer(100);
 }
 
 TextCacheStruct_t* CDVDPlayer::GetTeletextCache()
@@ -2457,7 +2469,7 @@ void CDVDPlayer::LoadPage(int p, int sp, unsigned char* buffer)
 void CDVDPlayer::SeekTime(__int64 iTime)
 {
   m_messenger.Put(new CDVDMsgPlayerSeek((int)iTime, true, true, true));
-  SyncronizeDemuxer(100);
+  SynchronizeDemuxer(100);
   m_callback.OnPlayBackSeek((int)iTime);
 }
 
@@ -2519,7 +2531,7 @@ bool CDVDPlayer::OpenAudioStream(int iStream, int source)
     // this happens if a new cell has audio data, but previous didn't
     // and both have video data
 
-    SyncronizePlayers(SYNCSOURCE_AUDIO);
+    SynchronizePlayers(SYNCSOURCE_AUDIO);
   }
 
   CDVDStreamInfo hint(*pStream, true);
@@ -2817,7 +2829,7 @@ void CDVDPlayer::FlushBuffers(bool queued)
     m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::VIDEO_NOSKIP));
     m_dvdPlayerSubtitle.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
     m_dvdPlayerTeletext.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
-    SyncronizePlayers(SYNCSOURCE_ALL);
+    SynchronizePlayers(SYNCSOURCE_ALL);
   }
   else
   {
@@ -2838,6 +2850,10 @@ void CDVDPlayer::FlushBuffers(bool queued)
 
     // we should now wait for init cache
     SetCaching(CACHESTATE_INIT);
+    m_CurrentAudio.started    = false;
+    m_CurrentVideo.started    = false;
+    m_CurrentSubtitle.started = false;
+    m_CurrentTeletext.started = false;    
   }
   m_CurrentAudio.inited = false;
   m_CurrentVideo.inited = false;
@@ -3354,7 +3370,7 @@ int CDVDPlayer::SeekChapter(int iChapter)
 
     // Seek to the chapter.
     m_messenger.Put(new CDVDMsgPlayerSeekChapter(iChapter));
-    SyncronizeDemuxer(100);
+    SynchronizeDemuxer(100);
   }
   else
   {

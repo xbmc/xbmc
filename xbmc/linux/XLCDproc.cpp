@@ -256,7 +256,6 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   if (iLine < 0 || iLine >= (int)m_iRows)
     return;
 
-  CStdString cmd;
   CStdString strLineLong = strLine;
   strLineLong.Trim();
   StringToLCDCharSet(strLineLong);
@@ -270,6 +269,7 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
 
   if (strLineLong != m_strLine[iLine])
   {
+    CStdString cmd;
     int ln = iLine + 1;
 
     if (g_advancedSettings.m_lcdScrolldelay != 0)

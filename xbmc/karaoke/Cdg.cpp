@@ -293,7 +293,6 @@ void CCdg::TileBlock(bool IsXor)
   UINT col_offset = (tile->column & 0x3F) * 6;
   if (row_offset > HEIGHT - BORDERHEIGHT || col_offset > WIDTH - BORDERWIDTH)
     return ;
-  BYTE bTemp;
   BYTE mask[6] = {0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 
   switch (IsXor)
@@ -301,7 +300,7 @@ void CCdg::TileBlock(bool IsXor)
   case TRUE:
     for (int i = 0;i < 12;i++)
     {
-      bTemp = tile->tilePixels[i] & 0x3F;
+      BYTE bTemp = tile->tilePixels[i] & 0x3F;
       for (int j = 0; j < 6;j++)
       {
         if (bTemp & mask[j])  //pixel xored with color1
@@ -314,7 +313,7 @@ void CCdg::TileBlock(bool IsXor)
   case FALSE:
     for (int i = 0;i < 12;i++)
     {
-      bTemp = tile->tilePixels[i] & 0x3F;
+      BYTE bTemp = tile->tilePixels[i] & 0x3F;
       for (int j = 0; j < 6;j++)
       {
         if (bTemp & mask[j]) //pixel set to color1

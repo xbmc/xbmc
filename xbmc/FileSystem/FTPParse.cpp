@@ -68,7 +68,6 @@ void CFTPParse::setTime(string str)
   string month;
   string day;
   string year;
-  string time_of_day;
   string hour;
   string minute;
   string second;

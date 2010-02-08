@@ -639,8 +639,7 @@ bool CApplication::Create()
   if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
     g_settings.m_iLastLoadedProfileIndex = 0;
 
-  m_bAllSettingsLoaded = g_settings.Load(m_bXboxMediacenterLoaded, m_bSettingsLoaded);
-  if (!m_bAllSettingsLoaded)
+  if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
   update_emu_environ();//apply the GUI settings
@@ -1157,18 +1156,6 @@ bool CApplication::Initialize()
     CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
 
-  // initialize network
-  if (!m_bXboxMediacenterLoaded)
-  {
-    CLog::Log(LOGINFO, "using default network settings");
-    g_guiSettings.SetString("network.ipaddress", "192.168.0.100");
-    g_guiSettings.SetString("network.subnet", "255.255.255.0");
-    g_guiSettings.SetString("network.gateway", "192.168.0.1");
-    g_guiSettings.SetString("network.dns", "192.168.0.1");
-    g_guiSettings.SetBool("services.webserver", false);
-    g_guiSettings.SetBool("locale.timeserver", false);
-  }
-
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
@@ -1320,22 +1307,6 @@ bool CApplication::Initialize()
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
-
-  if (!m_bAllSettingsLoaded)
-  {
-    CLog::Log(LOGWARNING, "settings not correct, show dialog");
-    CStdString test;
-    CUtil::GetHomePath(test);
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
-    {
-      dialog->SetHeading(279);
-      dialog->SetLine(0, "Error while loading settings");
-      dialog->SetLine(1, test);
-      dialog->SetLine(2, "");;
-      dialog->DoModal();
-    }
-  }
 
   //  Show mute symbol
   if (g_settings.m_nVolumeLevel == VOLUME_MINIMUM)

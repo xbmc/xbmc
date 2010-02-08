@@ -120,7 +120,6 @@
   <string id="165">Skiva laddad</string>
   <string id="166">Skal</string>
   <string id="167">Aktivera FTP-server</string>
-  <string id="168">Aktivera tidssynkronisering via Internet</string>
   <string id="169">Upplösning</string>
   <string id="170">Justera uppdateringsfrekvens till att matcha video</string>
   <string id="172">Utgivningsdatum</string>
@@ -571,9 +570,7 @@
   <string id="726">Inställningar sparades inte. Fortsätt utan att spara?</string>
   <string id="727">Webbserver</string>
   <string id="728">FTP-server</string>
-  <string id="729">Tidsserver</string>
   <string id="730">- Port</string>
-  <string id="731">Tidsserverns adress</string>
   <string id="732">Spara &amp; ange</string>
   <string id="733">- Lösenord</string>
   <string id="734">Inget lösenord</string>
@@ -1579,8 +1576,8 @@
   <string id="20252">Fyller glasen (filmer)</string>
   <string id="20253">WebDAV-server (HTTP)</string>
   <string id="20254">WebDAV-server (HTTPS)</string>
-  <string id="20300">WebDAV-server (HTTP)</string>
-  <string id="20301">WebDAV-server (HTTPS)</string>
+  <string id="20300">Webserver katalog (HTTP)</string>
+  <string id="20301">Webserver katalog (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
   <string id="20303">Vill du hoppa över och fortsätta?</string>
   <string id="20304">RSS-flöde</string>
@@ -1722,6 +1719,9 @@
   <string id="20445">Fanart</string>
   <string id="20446">Lokalt lagrad information hittad.</string>
   <string id="20447">Ignorera och uppdatera från Internet?</string>
+  <string id="20448">Kunde inte ladda ner information</string>
+  <string id="20449">Servern är troligtvis inte tillgänglig.</string>
+  <string id="20450">Vill du fortsätta skanna?</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>

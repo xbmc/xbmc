@@ -6,7 +6,7 @@ SDK_BUILDHOOKS=""
 
 # getopt-parse.bash
 
-TEMP=$(getopt -o snp:ulkg --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea,grub2 -- "$@")
+TEMP=$(getopt -o snp:ulkgi --long xbmc-svn,nvidia-only,proxy:,usb-image,live-only,keep-workarea,grub2,intel-only -- "$@")
 eval set -- "$TEMP"
 
 while true
@@ -40,6 +40,11 @@ do
 	-g|--grub2)
 		echo "Enable option: Use grub2"
 		export SDK_BUILDHOOKS="$SDK_BUILDHOOKS ./grub2Hook.sh"
+		shift
+		;;
+	-i|--intel-only)
+		echo "Enable option: Intel support only"
+		export SDK_BUILDHOOKS="$SDK_BUILDHOOKS ./intelOnlyHook.sh"
 		shift
 		;;
 	-p|--proxy)

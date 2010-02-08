@@ -846,11 +846,12 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose)
+void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose,
+                                  bool waitResult)
 {
   ThreadMessage tMsg = {TMSG_GUI_DIALOG_CLOSE, forceClose ? 1 : 0};
   tMsg.lpVoid = dialog;
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, waitResult);
 }
 
 void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)

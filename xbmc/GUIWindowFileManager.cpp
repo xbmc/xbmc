@@ -723,6 +723,11 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         CFile::Rename(strFile, strDestFile);
       }
       else
+#else
+      if (CUtil::IsHD(strFile) && CUtil::IsHD(strDestFile))
+        CFile::Rename(strFile,strDestFile);
+      else
+#endif
       {
         CAsyncFileCopy copier;
         if (copier.Copy(strFile, strDestFile, g_localizeStrings.Get(116)))
@@ -732,9 +737,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
         else
           return false;
       }
-#else
-      CFile::Rename(strFile, strDestFile);
-#endif
     }
     break;
 

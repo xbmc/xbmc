@@ -258,7 +258,6 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
   unsigned int iDepth = vec.size();
 
   ArchiveList_struct* pIterator;
-  CStdString strMatch;
   CStdString strCompare = strPathInRar;
   if (!CUtil::HasSlashAtEnd(strCompare) && !strCompare.IsEmpty())
     strCompare += '/';

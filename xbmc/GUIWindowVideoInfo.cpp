@@ -300,7 +300,21 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       }
     }
     else if (type == VIDEODB_CONTENT_MOVIES)
+    {
       m_castList->SetContent("movies");
+      if (m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
+      {
+        m_movieItem->GetVideoInfoTag()->m_strTrailer = m_movieItem->FindTrailer();
+        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer)
+        {
+          CVideoDatabase database;
+          database.Open();
+          database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
+                             m_movieItem->GetVideoInfoTag()->m_iDbId,
+                             VIDEODB_ID_TRAILER,VIDEODB_CONTENT_MOVIES);
+        }
+      }
+    }
   }
   m_loader.LoadItem(m_movieItem.get());
 }

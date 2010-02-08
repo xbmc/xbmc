@@ -541,14 +541,12 @@ void CGUIEditControl::OnPasteClipboard()
     UpdateText();
   }
 #elif defined _WIN32
-  HGLOBAL   hglb;
-  LPTSTR    lptstr;
   if (OpenClipboard(g_hWnd))
   {
-    hglb = GetClipboardData(CF_TEXT);
+    HGLOBAL hglb = GetClipboardData(CF_TEXT);
     if (hglb != NULL)
     {
-      lptstr = (LPTSTR)GlobalLock(hglb);
+      LPTSTR lptstr = (LPTSTR)GlobalLock(hglb);
       if (lptstr != NULL)
       {
         m_text2 = (char*)lptstr;

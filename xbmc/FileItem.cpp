@@ -33,11 +33,9 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
-#include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
-#include "utils/fstrcmp.h"
 #include "VideoDatabase.h"
 #include "MusicDatabase.h"
 #include "SortFileItem.h"
@@ -57,7 +55,6 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
-#include "utils/TimeUtils.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
 #include "karaoke/karaokelyricsfactory.h"
@@ -822,29 +819,10 @@ bool CFileItem::IsLastFM() const
 
 bool CFileItem::IsInternetStream() const
 {
-  CURL url(m_strPath);
-  CStdString strProtocol = url.GetProtocol();
-  strProtocol.ToLower();
-
-  if (strProtocol.IsEmpty() || HasProperty("IsHTTPDirectory"))
+  if (HasProperty("IsHTTPDirectory"))
     return false;
 
-  // there's nothing to stop internet streams from being stacked
-  if (strProtocol == "stack")
-  {
-    CFileItem fileItem(CStackDirectory::GetFirstStackedFile(m_strPath), false);
-    return fileItem.IsInternetStream();
-  }
-
-  if (strProtocol == "shout" || strProtocol == "mms" ||
-      strProtocol == "http" || /*strProtocol == "ftp" ||*/
-      strProtocol == "rtsp" || strProtocol == "rtp" ||
-      strProtocol == "udp"  || strProtocol == "lastfm" ||
-      strProtocol == "rss"  ||
-      strProtocol == "https" || strProtocol == "rtmp")
-    return true;
-
-  return false;
+  return CUtil::IsInternetStream(m_strPath);
 }
 
 bool CFileItem::IsFileFolder() const

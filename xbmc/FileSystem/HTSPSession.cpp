@@ -48,6 +48,7 @@ CHTSPSession::CHTSPSession()
   , m_seq(0)
   , m_challenge(NULL)
   , m_challenge_len(0)
+  , m_protocol(0)
   , m_queue_size(1000)
 {
 }

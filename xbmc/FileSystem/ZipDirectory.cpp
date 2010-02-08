@@ -74,7 +74,6 @@ namespace DIRECTORY
     if (!g_ZipManager.GetZipList(strPath,entries))
       return false;
 
-    CStdString strSkip;
     vector<CStdString> baseTokens;
     if (!strPathInZip.IsEmpty())
       CUtil::Tokenize(strPathInZip,baseTokens,"/");

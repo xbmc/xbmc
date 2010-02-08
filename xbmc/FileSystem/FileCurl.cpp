@@ -57,8 +57,9 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
 
-  // unless this debug information becomes useful, we disable it.
-  return 0;
+  // Only shown cURL debug into with loglevel DEBUG_SAMBA or higher
+  if( g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_SAMBA )
+    return 0;
 
   CStdString strLine;
   strLine.append(output, size);
@@ -528,21 +529,11 @@ void CFileCurl::SetCorrectHeaders(CReadState* state)
 
 void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
-  if( url2.GetProtocol().Equals("ftpx") )
-    url2.SetProtocol("ftp");
-  else if( url2.GetProtocol().Equals("shout")
-       ||  url2.GetProtocol().Equals("daap")
-       ||  url2.GetProtocol().Equals("dav")
-       ||  url2.GetProtocol().Equals("tuxbox")
-       ||  url2.GetProtocol().Equals("lastfm")
-       ||  url2.GetProtocol().Equals("mms")
-       ||  url2.GetProtocol().Equals("rss"))
-    url2.SetProtocol("http");
-  else if (url2.GetProtocol().Equals("davs"))
-    url2.SetProtocol("https");
-
-  if( url2.GetProtocol().Equals("ftp")
-  ||  url2.GetProtocol().Equals("ftps") )
+  CStdString strProtocol = url2.GetTranslatedProtocol();
+  url2.SetProtocol(strProtocol);
+  
+  if( strProtocol.Equals("ftp")
+  ||  strProtocol.Equals("ftps") )
   {
     /* this is uggly, depending on from where   */
     /* we get the link it may or may not be     */
@@ -622,8 +613,8 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
     /* ftp has no options */
     url2.SetOptions("");
   }
-  else if( url2.GetProtocol().Equals("http")
-       ||  url2.GetProtocol().Equals("https"))
+  else if( strProtocol.Equals("http")
+       ||  strProtocol.Equals("https"))
   {
     if (g_guiSettings.GetBool("network.usehttpproxy") && m_proxy.IsEmpty())
     {
@@ -1010,14 +1001,13 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   // In case we are performing a stat() with no buffer (eg. called from ::exists()) we fail immediately
   if (!buffer)
   {
+    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
     if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
     {
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       return 0;
     }
     else
     {
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
       return -1;
     }
@@ -1161,11 +1151,12 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
             if (msg->data.result == CURLE_OK)
               return true;
 
-            CLog::Log(LOGDEBUG, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
+            CLog::Log(LOGWARNING, "%s: curl failed with code %i", __FUNCTION__, msg->data.result);
 
             // We need to check the data.result here as we don't want to retry on every error
             if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
-                  msg->data.result == CURLE_PARTIAL_FILE) &&
+                  msg->data.result == CURLE_PARTIAL_FILE       ||
+                  msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
               CURLresult=msg->data.result;
             else

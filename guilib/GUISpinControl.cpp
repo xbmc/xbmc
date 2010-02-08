@@ -358,7 +358,6 @@ void CGUISpinControl::Render()
 
   float posX = m_posX;
   CStdString text;
-  CStdStringW strTextUnicode;
 
   if (m_iType == SPIN_CONTROL_TYPE_INT)
   {

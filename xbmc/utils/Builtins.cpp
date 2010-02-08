@@ -302,7 +302,6 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     // get the parameters
     CStdString strWindow;
-    CStdString strPath;
     if (params.size())
     {
       strWindow = params[0];
@@ -725,11 +724,10 @@ int CBuiltins::Execute(const CStdString& execString)
     // playlist.playoffset(offset)
     // playlist.playoffset(music|video,offset)
     CStdString strPos = parameter;
-    CStdString strPlaylist;
     if (params.size() > 1)
     {
       // ignore any other parameters if present
-      strPlaylist = params[0];
+      CStdString strPlaylist = params[0];
       strPos = params[1];
 
       int iPlaylist = PLAYLIST_NONE;
@@ -867,12 +865,11 @@ int CBuiltins::Execute(const CStdString& execString)
 
     int iTheme = -1;
 
-    CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
-        strTmpTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+        CStdString strTmpTheme(g_guiSettings.GetString("lookandfeel.skintheme"));
         CUtil::RemoveExtension(strTmpTheme);
         if (vecTheme[i].Equals(strTmpTheme))
         {
@@ -1055,14 +1052,16 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      SScraperInfo info;
       VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
+        {
+          SScraperInfo info;
           CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
+        }
       }
     }
   }

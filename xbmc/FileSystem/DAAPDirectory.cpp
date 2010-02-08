@@ -60,9 +60,6 @@ CDAAPDirectory::~CDAAPDirectory(void)
 
 bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  int c;
-  //wchar_t wStrFile[1024]; // buffer for converting strings
-
   CURL url(strPath);
 
   CStdString strRoot = strPath;
@@ -94,8 +91,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     {
       CLog::Log(LOGDEBUG, "Getting songs from the database.  Have %i", m_currentSongItemCount);
       // Add each artist and album to an array
-      int c;
-      for (c = 0; c < m_currentSongItemCount; c++)
+      for (int c = 0; c < m_currentSongItemCount; c++)
       {
         AddToArtistAlbum(m_currentSongItems[c].songartist, m_currentSongItems[c].songalbum);
       }
@@ -104,7 +100,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     if (m_currLevel < 0) // root, so show playlists
     {
-      for (c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
+      for (int c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
       {
         CStdString strFile;
         //size_t strLen;
@@ -122,11 +118,9 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     }
     else if (m_currLevel == 0) // playlists, so show albums
     {
-      CStdString strFolder;
-      bool bFoundMatch;
-
       // find the playlist
-      bFoundMatch = false;
+      bool bFoundMatch = false;
+      int c;
       for (c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
       {
         if (m_thisHost->dbplaylists->playlists[c].itemname == m_selectedPlaylist)
