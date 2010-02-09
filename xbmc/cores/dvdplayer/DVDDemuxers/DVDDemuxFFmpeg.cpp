@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
@@ -554,8 +557,10 @@ void CDVDDemuxFFmpeg::Flush()
 {
   g_demuxer = this;
 
+#if (!defined USE_EXTERNAL_FFMPEG)
   if (m_pFormatContext)
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+#endif
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
 }
