@@ -41,47 +41,11 @@ static enum PCMChannels PCMLayoutMap[PCM_MAX_LAYOUT][PCM_MAX_CH + 1] =
   /* 3.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_INVALID},
   /* 3.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_INVALID},
   /* 4.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_INVALID},
-  /* 4.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_INVALID},
+  /* 4.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_LOW_FREQUENCY, PCM_INVALID},
   /* 5.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_INVALID},
   /* 5.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_LOW_FREQUENCY, PCM_INVALID},
   /* 7.0 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_INVALID},
   /* 7.1 */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_LOW_FREQUENCY, PCM_INVALID}
-};
-
-static const char* PCMChannelName[PCM_MAX_CH] =
-{
-  "FL",
-  "FR",
-  "CE",
-  "LFE",
-  "BL",
-  "BR",
-  "FLOC",
-  "FROC",
-  "BC",
-  "SL",
-  "SR",
-  "TFL",
-  "TFR",
-  "TFC",
-  "TC",
-  "TBL",
-  "TBR",
-  "TBC",
-};
-
-static const char* PCMLayoutName[PCM_MAX_LAYOUT] =
-{
-  "2.0",
-  "2.1",
-  "3.0",
-  "3.1",
-  "4.0",
-  "4.1",
-  "5.0",
-  "5.1",
-  "7.0",
-  "7.1"
 };
 
 /*
@@ -147,11 +111,13 @@ static struct PCMMapInfo PCMDownmixTable[PCM_MAX_CH][PCM_MAX_MIX] =
   },
   /* PCM_SIDE_LEFT */
   {
+    {PCM_FRONT_LEFT           , 1.0},
     {PCM_BACK_LEFT            , 1.0},
     {PCM_INVALID}
   },
   /* PCM_SIDE_RIGHT */
   {
+    {PCM_FRONT_RIGHT          , 1.0},
     {PCM_BACK_RIGHT           , 1.0},
     {PCM_INVALID}
   },
@@ -267,6 +233,8 @@ void CPCMRemap::BuildMap()
   if (!m_inSet || !m_outSet) return;
 
   unsigned int in_ch, out_ch;
+  bool hasSide = false;
+  bool hasBack = false;
 
   m_inStride  = m_inSampleSize * m_inChannels ;
   m_outStride = m_inSampleSize * m_outChannels;
@@ -281,6 +249,32 @@ void CPCMRemap::BuildMap()
         m_useable[*chan] = true;
         break;
       }
+  }
+
+  /* see if our input has side/back channels */
+  for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
+    switch(m_inMap[in_ch])
+    {
+      case PCM_SIDE_LEFT:
+      case PCM_SIDE_RIGHT:
+        hasSide = true;
+        break;
+
+      case PCM_BACK_LEFT:
+      case PCM_BACK_RIGHT:
+        hasBack = true;
+        break;
+
+      default:;
+    }
+
+  /* if our input has side, and not back channels, and our output doesnt have side channels */
+  if (hasSide && !hasBack && (!m_useable[PCM_SIDE_LEFT] || !m_useable[PCM_SIDE_RIGHT]))
+  {
+    CLog::Log(LOGDEBUG, "CPCMRemap: Forcing side channel map to back channels");
+    for(in_ch = 0; in_ch < m_inChannels; ++in_ch)
+           if (m_inMap[in_ch] == PCM_SIDE_LEFT ) m_inMap[in_ch] = PCM_BACK_LEFT;
+      else if (m_inMap[in_ch] == PCM_SIDE_RIGHT) m_inMap[in_ch] = PCM_BACK_RIGHT;   
   }
 
   /* see if we need to normalize the levels */
@@ -311,6 +305,9 @@ void CPCMRemap::BuildMap()
   }
 
   /* convert the levels into RMS values */
+  float loudest    = 0.0;
+  bool  hasLoudest = false;
+
   for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
   {
     float scale = 0;
@@ -323,25 +320,41 @@ void CPCMRemap::BuildMap()
       ++count;
     }
 
-    if (count == 1 && dontnormalize)
-      m_lookupMap[m_outMap[out_ch]]->copy = true;
+    /* if there is only 1 channel to mix, and the level is 1.0, then just copy the channel */
+    dst = m_lookupMap[m_outMap[out_ch]];
+    if (count == 1 && dst->level > 0.99 && dst->level < 1.01)
+      dst->copy = true;
     
     /* normalize the levels if it is turned on */
     if (!dontnormalize)
       for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
+      {
         dst->level /= scale;
+        /* find the loudest output level we have that is not 1-1 */
+        if (dst->level < 1.0 && loudest < dst->level)
+        {
+          loudest    = dst->level;
+          hasLoudest = true;
+        }
+      }
   }
   
-  /* output the final map for debugging */
+  /* adjust the channels that are too loud */
   for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
   {
     CStdString s = "", f;
     for(dst = m_lookupMap[m_outMap[out_ch]]; dst->channel != PCM_INVALID; ++dst)
     {
-      f.Format("%s(%f%s) ",  PCMChannelName[dst->channel], dst->level, dst->copy ? "*" : "");
+      if (hasLoudest && dst->copy)
+      {
+        dst->level = loudest;
+        dst->copy  = false;
+      }
+
+      f.Format("%s(%f%s) ",  PCMChannelStr(dst->channel).c_str(), dst->level, dst->copy ? "*" : "");
       s += f;
     }
-    CLog::Log(LOGDEBUG, "CPCMRemap: %s = %s\n", PCMChannelName[m_outMap[out_ch]], s.c_str());
+    CLog::Log(LOGDEBUG, "CPCMRemap: %s = %s\n", PCMChannelStr(m_outMap[out_ch]).c_str(), s.c_str());
   }
 }
 
@@ -353,17 +366,15 @@ void CPCMRemap::DumpMap(CStdString info, unsigned int channels, enum PCMChannels
     return;
   }
 
-  CStdString mapping = "";
+  CStdString mapping;
   for(unsigned int i = 0; i < channels; ++i)
-    mapping += ((i == 0) ? "" : ",") + (CStdString)PCMChannelName[channelMap[i]];
+    mapping += ((i == 0) ? "" : ",") + PCMChannelStr(channelMap[i]);
 
   CLog::Log(LOGINFO, "CPCMRemap: %s channel map: %s\n", info.c_str(), mapping.c_str());
 }
 
 void CPCMRemap::Reset()
 {
-  m_inMap  = NULL;
-  m_outMap = NULL;
   m_inSet  = false;
   m_outSet = false;
   Dispose();
@@ -373,9 +384,10 @@ void CPCMRemap::Reset()
 enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize)
 {
   m_inChannels   = channels;
-  m_inMap        = channelMap;
   m_inSampleSize = sampleSize;
   m_inSet        = channelMap != NULL;
+  if (channelMap)
+    memcpy(m_inMap, channelMap, sizeof(enum PCMChannels) * channels);
 
   /* fix me later */
   assert(sampleSize == 2);
@@ -384,7 +396,7 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
   m_channelLayout  = (enum PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout");
   if (m_channelLayout >= PCM_MAX_LAYOUT) m_channelLayout = PCM_LAYOUT_2_0;
 
-  CLog::Log(LOGINFO, "CPCMRemap: Channel Layout: %s\n", PCMLayoutName[m_channelLayout]);
+  CLog::Log(LOGINFO, "CPCMRemap: Channel Layout: %s\n", PCMLayoutStr(m_channelLayout).c_str());
   m_layoutMap      = PCMLayoutMap[m_channelLayout];
 
   DumpMap("I", channels, channelMap);
@@ -397,8 +409,9 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
 void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap)
 {
   m_outChannels   = channels;
-  m_outMap        = channelMap;
   m_outSet        = channelMap != NULL;
+  if (channelMap)
+    memcpy(m_outMap, channelMap, sizeof(enum PCMChannels) * channels);
 
   DumpMap("O", channels, channelMap);
   BuildMap();
@@ -463,5 +476,96 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
 bool CPCMRemap::CanRemap()
 {
   return (m_inSet && m_outSet);
+}
+
+int CPCMRemap::InBytesToFrames(int bytes)
+{
+  return bytes / m_inSampleSize / m_inChannels;
+}
+
+int CPCMRemap::FramesToOutBytes(int frames)
+{
+  return frames * m_inSampleSize * m_outChannels;
+}
+
+int CPCMRemap::FramesToInBytes(int frames)
+{
+  return frames * m_inSampleSize * m_inChannels;
+}
+
+CStdString CPCMRemap::PCMChannelStr(enum PCMChannels ename)
+{
+  static const char* PCMChannelName[] =
+  {
+    "FL",
+    "FR",
+    "CE",
+    "LFE",
+    "BL",
+    "BR",
+    "FLOC",
+    "FROC",
+    "BC",
+    "SL",
+    "SR",
+    "TFL",
+    "TFR",
+    "TFC",
+    "TC",
+    "TBL",
+    "TBR",
+    "TBC",
+  };
+
+  int namepos = (int)ename;
+  CStdString namestr;
+
+  if (namepos < 0 || namepos >= (int)(sizeof(PCMChannelName) / sizeof(const char*)))
+  {
+    namestr.Format("UNKNOWN CHANNEL:%i", namepos);
+  }
+  else
+  {
+    if (PCMChannelName[namepos])
+      namestr = PCMChannelName[namepos];
+    else
+      namestr.Format("CHANNEL %i IS NULL", namepos);
+  }
+
+  return namestr;
+}
+
+CStdString CPCMRemap::PCMLayoutStr(enum PCMLayout ename)
+{
+  static const char* PCMLayoutName[] =
+  {
+    "2.0",
+    "2.1",
+    "3.0",
+    "3.1",
+    "4.0",
+    "4.1",
+    "5.0",
+    "5.1",
+    "7.0",
+    "7.1"
+  };
+
+  int namepos = (int)ename;
+  CStdString namestr;
+
+  if (namepos < 0 || namepos >= (int)(sizeof(PCMLayoutName) / sizeof(const char*)))
+  {
+    namestr.Format("UNKNOWN LAYOUT:%i", namepos);
+  }
+  else
+  {
+    if (PCMLayoutName[namepos])
+      namestr = PCMLayoutName[namepos];
+    else
+      namestr.Format("LAYOUT %i IS NULL", namepos);
+  }
+
+  return namestr;
 }
 

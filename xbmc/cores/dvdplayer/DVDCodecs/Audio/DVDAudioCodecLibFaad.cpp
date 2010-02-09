@@ -105,21 +105,25 @@ bool CDVDAudioCodecLibFaad::SyncStream()
 
 enum PCMChannels* CDVDAudioCodecLibFaad::GetChannelMap()
 {
+  int index = 0;
   for(int i = 0; i < m_iSourceChannels; ++i)
-  {
     switch(m_frameInfo.channel_position[i])
     {
-      case FRONT_CHANNEL_CENTER: m_pChannelMap[i] = PCM_FRONT_CENTER ; break;
-      case FRONT_CHANNEL_LEFT  : m_pChannelMap[i] = PCM_FRONT_LEFT   ; break;
-      case FRONT_CHANNEL_RIGHT : m_pChannelMap[i] = PCM_FRONT_RIGHT  ; break;
-      case SIDE_CHANNEL_LEFT   : m_pChannelMap[i] = PCM_SIDE_LEFT    ; break;
-      case SIDE_CHANNEL_RIGHT  : m_pChannelMap[i] = PCM_SIDE_RIGHT   ; break;
-      case BACK_CHANNEL_LEFT   : m_pChannelMap[i] = PCM_BACK_LEFT    ; break;
-      case BACK_CHANNEL_RIGHT  : m_pChannelMap[i] = PCM_BACK_RIGHT   ; break;
-      case BACK_CHANNEL_CENTER : m_pChannelMap[i] = PCM_BACK_CENTER  ; break;
-      case LFE_CHANNEL         : m_pChannelMap[i] = PCM_LOW_FREQUENCY; break;
+      case FRONT_CHANNEL_CENTER: m_pChannelMap[index++] = PCM_FRONT_CENTER ; break;
+      case FRONT_CHANNEL_LEFT  : m_pChannelMap[index++] = PCM_FRONT_LEFT   ; break;
+      case FRONT_CHANNEL_RIGHT : m_pChannelMap[index++] = PCM_FRONT_RIGHT  ; break;
+      case SIDE_CHANNEL_LEFT   : m_pChannelMap[index++] = PCM_SIDE_LEFT    ; break;
+      case SIDE_CHANNEL_RIGHT  : m_pChannelMap[index++] = PCM_SIDE_RIGHT   ; break;
+      case BACK_CHANNEL_LEFT   : m_pChannelMap[index++] = PCM_BACK_LEFT    ; break;
+      case BACK_CHANNEL_RIGHT  : m_pChannelMap[index++] = PCM_BACK_RIGHT   ; break;
+      case BACK_CHANNEL_CENTER : m_pChannelMap[index++] = PCM_BACK_CENTER  ; break;
+      case LFE_CHANNEL         : m_pChannelMap[index++] = PCM_LOW_FREQUENCY; break;
     }
-  }
+
+  if (index < m_iSourceChannels)
+    return NULL;
+
+  assert(index == m_iSourceChannels);
   return m_pChannelMap;
 }
 

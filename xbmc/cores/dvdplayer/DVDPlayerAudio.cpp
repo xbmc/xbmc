@@ -356,7 +356,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (m_messageQueue.ReceivedAbortRequest()) return DECODE_FLAG_ABORT;
 
     CDVDMsg* pMsg;
-    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) && m_started ? 1 : 0;
+    int priority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
 
     int timeout;
     if(m_duration > 0)

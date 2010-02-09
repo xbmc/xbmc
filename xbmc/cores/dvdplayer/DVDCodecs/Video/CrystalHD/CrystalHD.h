@@ -127,6 +127,7 @@ public:
   void Reset(void);
   bool AddInput(unsigned char *pData, size_t size, double pts);
 
+  int  GetInputCount(void);
   int  GetReadyCount(void);
   void BusyListPop(void);
 

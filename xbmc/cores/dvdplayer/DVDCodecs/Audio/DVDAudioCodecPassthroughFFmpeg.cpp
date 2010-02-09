@@ -33,7 +33,7 @@
 
 /* Lookup tables */
 static const uint16_t AC3Bitrates[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
-static const uint16_t AC3FSCod   [] = {48000, 41000, 32000, 0};
+static const uint16_t AC3FSCod   [] = {48000, 44100, 32000, 0};
 
 CDVDAudioCodecPassthroughFFmpeg::CDVDAudioCodecPassthroughFFmpeg(void)
 {
@@ -280,11 +280,11 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize, int *fSize)
     ) continue;
 
     /* if it is not a termination frame, check the next 6 bits */
-    if (pData[4] & 0x80 != 0 && pData[4] & 0x7C != 0x7C)
+    if ((pData[4] & 0x80) != 0 && (pData[4] & 0x7C) != 0x7C)
       continue;
 
     /* get and validate the framesize */
-    *fSize = ((pData[5] & 0x3) << 8 | pData[6]) << 4 | ((pData[7] & 0xF0) >> 4) + 1;
+    *fSize = ((((pData[5] & 0x3) << 8 | pData[6]) << 4) | ((pData[7] & 0xF0) >> 4)) + 1;
     if (*fSize < 95 || *fSize > 16383)
       continue;
 

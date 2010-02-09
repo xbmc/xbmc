@@ -701,10 +701,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     FormatAndSort(items);
     SetupFanart(items);
     for (int i = 0; i < items.Size(); ++i)
-    {
-      m_musicdatabase.SetPropertiesForFileItem(*items[i]);
       AddItemToPlayList(items[i], queuedItems);
-    }
   }
   else
   {
@@ -742,7 +739,9 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       CFileItemPtr itemCheck = queuedItems.Get(pItem->m_strPath);
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
       { // add item
-        queuedItems.Add(pItem);
+        CFileItemPtr item(new CFileItem(*pItem));
+        m_musicdatabase.SetPropertiesForFileItem(*item);
+        queuedItems.Add(item);
       }
     }
   }

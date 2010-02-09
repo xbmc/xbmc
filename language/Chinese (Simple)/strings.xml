@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27501 -->
+<!--Based on english strings version 27556 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -289,7 +289,7 @@
   <string id="343">调整帧数</string>
   <string id="344">演员</string>
   <string id="345">年份</string>
-  <string id="346">规范音量</string>
+  <string id="346">增加声道缩减混音音量</string>
   <string id="350">程序</string>
   <string id="351">关</string>
   <string id="352">昏暗</string>
@@ -476,7 +476,7 @@
   <string id="545">音频输出设备</string>
   <string id="546">直通输出设备</string>
   <string id="547">此艺人没有传记</string>
-  <string id="548">多声道音频 Downmix 转换为立体声</string>
+  <string id="548">多声道音频声道缩减混音成立体声</string>
 
   <string id="550">排序：%s</string>
   <string id="551">名称</string>
