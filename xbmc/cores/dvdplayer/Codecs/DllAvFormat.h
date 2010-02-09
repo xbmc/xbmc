@@ -94,7 +94,7 @@ public:
   virtual void av_register_all() 
   { 
     CSingleLock lock(DllAvCodec::m_critSection);
-    ::av_register_all();
+    return ::av_register_all();
   } 
   virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
@@ -107,7 +107,11 @@ public:
   virtual int av_read_play(AVFormatContext *s) { return ::av_read_play(s); }
   virtual int av_read_pause(AVFormatContext *s) { return ::av_read_pause(s); }
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags) { return ::av_seek_frame(s, stream_index, timestamp, flags); }
-  virtual int av_find_stream_info(AVFormatContext *ic) { return ::av_find_stream_info(ic); }
+  virtual int av_find_stream_info(AVFormatContext *ic)
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return ::av_find_stream_info(ic);
+  }
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap) { return ::av_open_input_file(ic_ptr, filename, fmt, buf_size, ap); }
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
   virtual int av_open_input_stream(AVFormatContext **ic_ptr, ByteIOContext *pb, const char *filename, AVInputFormat *fmt, AVFormatParameters *ap) { return ::av_open_input_stream(ic_ptr, pb, filename, fmt, ap); }
