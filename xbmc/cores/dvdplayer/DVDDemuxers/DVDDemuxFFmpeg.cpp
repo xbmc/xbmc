@@ -441,7 +441,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   {
     /* too speed up live sources, only analyse very short */
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-      m_pFormatContext->max_analyze_duration = 500000;
+      m_pFormatContext->max_analyze_duration = 50000;
 
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);

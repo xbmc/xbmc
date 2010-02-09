@@ -1070,7 +1070,7 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
   if (data)
     intdata=*(int*)data;
 
-  if (!data || (intdata != ACTION_ZOOM_OUT && intdata != ACTION_ZOOM_IN && 
+  if (!data || (intdata != ACTION_ZOOM_OUT && intdata != ACTION_ZOOM_IN &&
                 intdata != ACTION_INCREASE_PAR && intdata != ACTION_DECREASE_PAR))
     slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
   else
