@@ -41,7 +41,7 @@
 #include "FileItem.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_AREA                    2
 #define CONTROL_DEFAULT_BUTTON          3

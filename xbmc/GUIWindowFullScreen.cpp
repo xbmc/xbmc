@@ -436,9 +436,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (item.HasPVRChannelInfoTag())
         g_windowManager.ActivateWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
       else if (item.HasVideoInfoTag())
-        g_windowManager.ActivateWindow(WINDOW_DIALOG_VIDEO_PLAYLIST);
+        g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
       else if (item.HasMusicInfoTag())
-        g_windowManager.ActivateWindow(WINDOW_DIALOG_MUSIC_PLAYLIST);
+        g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
     return true;
     break;

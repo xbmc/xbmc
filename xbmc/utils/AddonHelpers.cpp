@@ -52,7 +52,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 namespace ADDON
 {

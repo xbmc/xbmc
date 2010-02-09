@@ -1434,7 +1434,7 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
 #if 0
   // these checks seem to cause more harm, than good
   // looping stillframes are not common in normal files
-  // and a better fix for this behaviour would be to 
+  // and a better fix for this behaviour would be to
   // correct the timestamps with some offset
 
   if (current.type == STREAM_VIDEO

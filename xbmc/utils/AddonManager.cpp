@@ -43,7 +43,6 @@
 #include "pvrclients/PVRClient.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 namespace ADDON
 {

@@ -24,7 +24,7 @@
 
 class CPVRSession;
 
-namespace DIRECTORY {
+namespace XFILE {
 
 class CPVRDirectory
   : public IDirectory

@@ -298,10 +298,10 @@ void CAddon::SaveSettings(void)
   CUtil::RemoveSlashAtEnd(strRoot);
 
   // create the individual folders
-  if (!DIRECTORY::CDirectory::Exists(strRoot))
-    DIRECTORY::CDirectory::Create(strRoot);
-  if (!DIRECTORY::CDirectory::Exists(strAddon))
-    DIRECTORY::CDirectory::Create(strAddon);
+  if (!CDirectory::Exists(strRoot))
+    CDirectory::Create(strRoot);
+  if (!CDirectory::Exists(strAddon))
+    CDirectory::Create(strAddon);
 
   m_userXmlDoc.SaveFile(m_userSettingsPath);
 }
