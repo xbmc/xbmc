@@ -143,23 +143,8 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   }
   else
   {
-    // always use pts for video content with re-ordered frames.
-    if(!m_force_dts && pts != DVD_NOPTS_VALUE)
-      m_pts = pts;
-    else
-    {
-      // if dts is invalid but pts is not, use pts.
-      if (dts == DVD_NOPTS_VALUE && pts != DVD_NOPTS_VALUE)
-        m_pts = pts;
-      else
-      {
-        // not a clue so use dts, some avi's will toggle
-        // pts valid/invalid and mess up timing, so force
-        // dts for all packets if we ever drop into here.  
-        m_force_dts = true;
-        m_pts = dts;
-      }
-    }
+    // always use pts for video content as we might have re-ordered frames.
+    m_pts = pts;
   }
 
   // Handle Input, add demuxer packet to input queue, we must accept it or
