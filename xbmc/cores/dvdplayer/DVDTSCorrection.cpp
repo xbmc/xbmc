@@ -247,10 +247,11 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 
     if (!MatchDiff(diff, m_pattern[i]))
       return false;
-
-    //we save the pattern, in case it changes very slowly
-    m_pattern[i] = diff;
   }
+
+  //we save the pattern, in case it changes very slowly
+  for (unsigned int i = 0; i < m_pattern.size(); i++)
+    m_pattern[i] = pattern[(m_patternpos + i) % pattern.size()];
 
   return true;
 }
