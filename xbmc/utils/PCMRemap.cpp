@@ -495,7 +495,7 @@ int CPCMRemap::FramesToInBytes(int frames)
 
 CStdString CPCMRemap::PCMChannelStr(enum PCMChannels ename)
 {
-  static const char* PCMChannelName[] =
+  const char* PCMChannelName[] =
   {
     "FL",
     "FR",
@@ -514,30 +514,23 @@ CStdString CPCMRemap::PCMChannelStr(enum PCMChannels ename)
     "TC",
     "TBL",
     "TBR",
-    "TBC",
+    "TBC"
   };
 
   int namepos = (int)ename;
   CStdString namestr;
 
   if (namepos < 0 || namepos >= (int)(sizeof(PCMChannelName) / sizeof(const char*)))
-  {
     namestr.Format("UNKNOWN CHANNEL:%i", namepos);
-  }
   else
-  {
-    if (PCMChannelName[namepos])
-      namestr = PCMChannelName[namepos];
-    else
-      namestr.Format("CHANNEL %i IS NULL", namepos);
-  }
+    namestr = PCMChannelName[namepos];
 
   return namestr;
 }
 
 CStdString CPCMRemap::PCMLayoutStr(enum PCMLayout ename)
 {
-  static const char* PCMLayoutName[] =
+  const char* PCMLayoutName[] =
   {
     "2.0",
     "2.1",
@@ -555,16 +548,9 @@ CStdString CPCMRemap::PCMLayoutStr(enum PCMLayout ename)
   CStdString namestr;
 
   if (namepos < 0 || namepos >= (int)(sizeof(PCMLayoutName) / sizeof(const char*)))
-  {
     namestr.Format("UNKNOWN LAYOUT:%i", namepos);
-  }
   else
-  {
-    if (PCMLayoutName[namepos])
-      namestr = PCMLayoutName[namepos];
-    else
-      namestr.Format("LAYOUT %i IS NULL", namepos);
-  }
+    namestr = PCMLayoutName[namepos];
 
   return namestr;
 }
