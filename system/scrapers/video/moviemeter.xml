@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scraper framework="1.1" date="2010-11-01" name="MovieMeter.nl" content="movies" thumb="moviemeter.jpg" language="nl">
+	<include>common/imdb.xml</include>
+	<include>common/tmdb.xml</include>
+	<include>common/movieposterdb.xml</include>
+	<include>common/impa.xml</include>
+	<include>common/dtrailer.xml</include>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="\1" dest="3">
+			<expression></expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.theghost16.nl/MovieMeter/index.php?movie=\1$$4&lt;/url&gt;" dest="3">
+			<RegExp input="$$2" output="%20(\1)" dest="4">
+				<expression clear="yes">(.+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version='1.0' encoding='iso-8859-1' standalone='yes'?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;'\2'&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url&gt;http://www.theghost16.nl/MovieMeter/movie.php?id=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;a href=movie.php\?id=([0-9]*)&gt;*(.[^\(]*)\(([0-9]*)\)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<!-- Title!-->
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="8">
+				<expression noclean="1">Titel: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Year!-->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="8+">
+				<expression noclean="1">Jaar: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Runtime!-->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="8+">
+				<expression noclean="1">Filmduur: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Genre(s)!-->
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="8+">
+				<expression noclean="1">Genre\(s\): ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Plot!-->
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;&lt;outline&gt;\1&lt;/outline&gt;" dest="8+">
+				<expression noclean="1">Plot: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Plot!-->
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="8+">
+				<expression noclean="1">Regisseur\(s\): ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Plot!-->
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="8+">
+				<expression noclean="1" trim ="1">Rating: (.[^\(]*)\(([0-9,]+) votes\)</expression>
+			</RegExp>
+			<!-- Get the cast from IMDB.com-->
+			<RegExp input="$$1" output="&lt;url cache=&quot;tt\1-credits.html&quot; function=&quot;GetIMDBWriters&quot;&gt;http://www.imdb.com/title/tt\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">IMDB Id: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Get the writer of IMDB.com-->
+			<RegExp input="$$1" output="&lt;url cache=&quot;tt\1-cast.html&quot; function=&quot;GetIMDBCast&quot;&gt;http://www.imdb.com/title/tt\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">IMDB Id: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Get the studio from IMDB.com-->
+			<RegExp input="$$1" output="&lt;url cache=&quot;tt\1-studio.html&quot; function=&quot;GetIMDBStudio&quot;&gt;http://www.imdb.com/title/tt\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">IMDB Id: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Get thums from MoviePoster-->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;query=\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">IMDB Id: ([^&lt;]*)</expression>
+			</RegExp>
+			<!-- Get Fanart from TMDB -->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.imdb.com/title/tt\1&lt;/url&gt;" dest="8+">
+				<expression noclean="1">IMDB Id: ([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+	<GetIMDBStudio dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="6">
+				<expression repeat="yes">&quot;/company/[^/]*/&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetIMDBStudio>
+</scraper>

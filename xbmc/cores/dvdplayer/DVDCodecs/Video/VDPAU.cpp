@@ -1209,7 +1209,6 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   if(m_mixerstep)
   {
     picture->iRepeatPicture = -0.5;
-    picture->iFlags |= DVP_FLAG_NOAUTOSYNC;
     if(m_mixerstep > 1)
       picture->pts = DVD_NOPTS_VALUE;
   }

@@ -18,11 +18,13 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
     #include <libavformat/avformat.h>
-    #include <libavformat/riff.h>
   #else
     #include <ffmpeg/avformat.h>
-    #include <ffmpeg/riff.h>
   #endif
+  /* libavformat/riff.h is not a public header, so include it here */
+  #include <xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/riff.h>
+  /* av_read_frame_flush() is defined for us in DllAvFormat.c */
+  void av_read_frame_flush(AVFormatContext *s);
 #else
   #include "libavformat/avformat.h"
   #include "libavformat/riff.h"
@@ -42,9 +44,9 @@ public:
   virtual void av_close_input_file(AVFormatContext *s)=0;
   virtual void av_close_input_stream(AVFormatContext *s)=0;
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt)=0;
+  virtual void av_read_frame_flush(AVFormatContext *s)=0;
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
-  virtual void av_read_frame_flush(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
 #if (!defined USE_EXTERNAL_FFMPEG)
   virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
@@ -92,7 +94,7 @@ public:
   virtual void av_register_all() 
   { 
     CSingleLock lock(DllAvCodec::m_critSection);
-    ::av_register_all();
+    return ::av_register_all();
   } 
   virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
   virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
@@ -101,10 +103,15 @@ public:
   virtual void av_close_input_file(AVFormatContext *s) { ::av_close_input_file(s); }
   virtual void av_close_input_stream(AVFormatContext *s) { ::av_close_input_stream(s); }
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
+  virtual void av_read_frame_flush(AVFormatContext *s) { return ::av_read_frame_flush(s); }
   virtual int av_read_play(AVFormatContext *s) { return ::av_read_play(s); }
   virtual int av_read_pause(AVFormatContext *s) { return ::av_read_pause(s); }
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags) { return ::av_seek_frame(s, stream_index, timestamp, flags); }
-  virtual int av_find_stream_info(AVFormatContext *ic) { return ::av_find_stream_info(ic); }
+  virtual int av_find_stream_info(AVFormatContext *ic)
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return ::av_find_stream_info(ic);
+  }
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap) { return ::av_open_input_file(ic_ptr, filename, fmt, buf_size, ap); }
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
   virtual int av_open_input_stream(AVFormatContext **ic_ptr, ByteIOContext *pb, const char *filename, AVInputFormat *fmt, AVFormatParameters *ap) { return ::av_open_input_stream(ic_ptr, pb, filename, fmt, ap); }

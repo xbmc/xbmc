@@ -64,6 +64,7 @@ bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
       m_collection.Add(overlay);
     }
   }
+  m_collection.Sort();
   return true;
 }
 

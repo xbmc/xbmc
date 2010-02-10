@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,42 +20,34 @@
  *
  */
 
-#include "DVDCodecs/Overlay/DVDOverlay.h"
+#define CHUNKS 16
+#define DELAYTIME 0.005f
 
-typedef struct stListElement
+class CPCMLimiter
 {
-  CDVDOverlay* pOverlay;
-  struct stListElement* pNext;
+  public:
+    CPCMLimiter(int samplerate, int channels);
+    ~CPCMLimiter();
 
-} ListElement;
+    void   Run(float* insamples, float* outsamples, int frames);
+    void   SetRelease(float release) { m_release = release; }
+    double GetDelay() { return DELAYTIME; }
 
-class CDVDSubtitleLineCollection
-{
-public:
-  CDVDSubtitleLineCollection();
-  virtual ~CDVDSubtitleLineCollection();
+  private:
+    float* m_delaybuff;
+    int    m_delaybuffsize; //buffer size in frames
+    int    m_delaybuffpos;  //m_delaybuff is used as a ringbuffer
+    float  m_samplerate;
+    int    m_channels;
+    float  m_release; //release time in seconds
 
-  //void Lock()   { EnterCriticalSection(&m_critSection); }
-  //void Unlock() { LeaveCriticalSection(&m_critSection); }
+    int    m_chunknum;
+    int    m_chunkpos;
+    int    m_chunksize;
+    float  m_chunks[CHUNKS];
 
-  void Add(CDVDOverlay* pSubtitle);
-  void Sort();
-
-  CDVDOverlay* Get(double iPts = 0LL); // get the first overlay in this fifo
-
-  void Reset();
-
-  void Remove();
-  void Clear();
-  int GetSize() { return m_iSize; }
-
-private:
-  ListElement* m_pHead;
-  ListElement* m_pCurrent;
-  ListElement* m_pTail;
-
-  int m_iSize;
-  double m_fLastPts;
-  //CRITICAL_SECTION m_critSection;
+    float  m_peak;
+    float  m_atten;
+    float  m_attenlp;
+    float  m_delta;
 };
-

@@ -82,7 +82,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     if(pOverlay)
       TagConv.ConvertLine(pOverlay, text, strlen(text));
   }
-
+  m_collection.Sort();
   return true;
 }
 

@@ -24,7 +24,7 @@
 
 class CRingBuffer
 {
-  CRITICAL_SECTION m_critSection;
+  CCriticalSection m_critSection;
   char *m_buffer;
   unsigned int m_size;
   unsigned int m_readPtr;

@@ -1597,6 +1597,14 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
     return false;
 }
 
+int CCrystalHD::GetInputCount(void)
+{
+  if (m_pInputThread)
+    return m_pInputThread->GetInputCount();
+  else
+    return 0;
+}
+
 int CCrystalHD::GetReadyCount(void)
 {
   if (m_pOutputThread)

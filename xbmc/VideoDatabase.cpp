@@ -7035,7 +7035,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               CStdString strFanart;
               CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg", strFanart);
 
-              if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(strFanart), false))
+              if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(strFanart, false)))
                 if (!CFile::Cache(item.GetCachedFanart(),strFanart))
                   CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), strFanart.c_str());
 

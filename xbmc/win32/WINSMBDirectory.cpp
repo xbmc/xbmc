@@ -284,12 +284,10 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
            (dwType != RESOURCETYPE_PRINT))
         {
           CStdString strurl = "smb:";
-          CStdStringW strNameW = lpnrLocal[i].lpComment;
           CStdStringW strRemoteNameW = lpnrLocal[i].lpRemoteName;
           CStdString  strName,strRemoteName;
 
           g_charsetConverter.wToUTF8(strRemoteNameW,strRemoteName);
-          g_charsetConverter.wToUTF8(strNameW,strName);
           CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName.c_str());
 
           strurl.append(strRemoteName);
@@ -297,15 +295,12 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           CURL rooturl(strurl);
           rooturl.SetFileName("");
 
-          if(strName.empty())
-          {
-            if(!rooturl.GetShareName().empty())
-              strName = rooturl.GetShareName();
-            else
-              strName = rooturl.GetHostName();
+          if(!rooturl.GetShareName().empty())
+            strName = rooturl.GetShareName();
+          else
+            strName = rooturl.GetHostName();
 
-            strName.Replace("\\","");
-          }
+          strName.Replace("\\","");
           
           CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;
