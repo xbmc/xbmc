@@ -21,11 +21,14 @@
  *
  */
 
+#include <list>
 #include "system.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllAvCodec.h"
 
+#include "../DVDFactoryCodec.h"
 #include "DVDAudioCodec.h"
+#include "Encoders/IDVDAudioEncoder.h"
 
 class CDVDAudioCodecPassthroughFFmpeg : public CDVDAudioCodec
 {
@@ -44,11 +47,27 @@ public:
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }
   virtual const char* GetName()  { return "PassthroughFFmpeg"; }
-
+  virtual int GetBufferSize();
 private:
-  int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize, int *fSize);
-  int SyncAC3(BYTE* pData, int iSize, int *fSize);
-  int SyncDTS(BYTE* pData, int iSize, int *fSize);
+  bool m_bSupportsAC3Out;
+  bool m_bSupportsDTSOut;
+  bool m_bSupportsAACOut;
+  bool m_bSupportsMP1Out;
+  bool m_bSupportsMP2Out;
+  bool m_bSupportsMP3Out;
+
+  CDVDAudioCodec   *m_Codec        ;
+  IDVDAudioEncoder *m_Encoder      ;
+  bool              m_InitEncoder  ;
+  unsigned int      m_EncPacketSize;
+  BYTE             *m_DecodeBuffer ;
+  int               m_DecodeSize   ;
+  bool SupportsFormat(CDVDStreamInfo &hints);
+  bool SetupEncoder  (CDVDStreamInfo &hints);
+
+  unsigned int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncAC3(BYTE* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncDTS(BYTE* pData, unsigned int iSize, unsigned int *fSize);
 
   DllAvFormat      m_dllAvFormat;
   DllAvUtil        m_dllAvUtil;
@@ -57,11 +76,21 @@ private:
   AVFormatContext *m_pFormat;
   AVStream        *m_pStream;
 
-  unsigned char    m_bcBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
-  BYTE            *m_OutputBuffer;
-  int              m_OutputSize;
-  bool             m_lostSync;
+  typedef struct
+  {
+    int      size;
+    uint8_t *data;
+  } DataPacket;
 
+  unsigned char          m_BCBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+  int                    m_Consumed;
+  int                    m_OutputSize;
+  std::list<DataPacket*> m_OutputBuffer;
+  int                    m_BufferSize;
+  BYTE                  *m_Buffer;
+  bool                   m_LostSync;
+
+  void WriteFrame(uint8_t *pData, int iSize);
   static int _BCReadPacket(void *opaque, uint8_t *buf, int buf_size) { return ((CDVDAudioCodecPassthroughFFmpeg*)opaque)->BCReadPacket(buf, buf_size); }
   int BCReadPacket(uint8_t *buf, int buf_size);
 };

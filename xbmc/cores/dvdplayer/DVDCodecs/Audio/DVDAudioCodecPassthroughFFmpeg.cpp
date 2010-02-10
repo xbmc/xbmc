@@ -26,6 +26,8 @@
 #include "Settings.h"
 #include "utils/log.h"
 
+#include "Encoders/DVDAudioEncoderFFmpeg.h"
+
 //These values are forced to allow spdif out
 #define OUT_SAMPLESIZE 16
 #define OUT_CHANNELS   2
@@ -40,179 +42,260 @@ CDVDAudioCodecPassthroughFFmpeg::CDVDAudioCodecPassthroughFFmpeg(void)
   m_pFormat      = NULL;
   m_pStream      = NULL;
   m_pSyncFrame   = NULL;
-
+  m_Buffer       = NULL;
+  m_BufferSize   = 0;
   m_OutputSize   = 0;
-  m_OutputBuffer = (BYTE*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 16);
-  memset(m_OutputBuffer, 0, AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
+  m_Consumed     = 0;
+
+  m_Codec        = NULL;
+  m_Encoder      = NULL;
+  m_InitEncoder  = true;
+  
+  /* make enough room for at-least two audio frames */
+  m_DecodeSize   = 0;
+  m_DecodeBuffer = NULL;
 }
 
 CDVDAudioCodecPassthroughFFmpeg::~CDVDAudioCodecPassthroughFFmpeg(void)
 {
-  _aligned_free(m_OutputBuffer);
   Dispose();
+}
+
+bool CDVDAudioCodecPassthroughFFmpeg::SupportsFormat(CDVDStreamInfo &hints)
+{
+  m_pSyncFrame = NULL;
+
+       if (m_bSupportsAC3Out && hints.codec == CODEC_ID_AC3) m_pSyncFrame = &CDVDAudioCodecPassthroughFFmpeg::SyncAC3;
+  else if (m_bSupportsDTSOut && hints.codec == CODEC_ID_DTS) m_pSyncFrame = &CDVDAudioCodecPassthroughFFmpeg::SyncDTS;
+  else if (m_bSupportsAACOut && hints.codec == CODEC_ID_AAC);
+  else if (m_bSupportsMP1Out && hints.codec == CODEC_ID_MP1);
+  else if (m_bSupportsMP2Out && hints.codec == CODEC_ID_MP2);
+  else if (m_bSupportsMP3Out && hints.codec == CODEC_ID_MP3);
+  else return false;
+
+  return true;
+}
+
+bool CDVDAudioCodecPassthroughFFmpeg::SetupEncoder(CDVDStreamInfo &hints)
+{
+  /* there is no point encoding <= 2 channel sources, and we dont support anything but AC3 at the moment */
+  if (hints.channels <= 2 || !m_bSupportsAC3Out)
+    return false;
+
+  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughFFmpeg::SetupEncoder - Setting up encoder for on the fly transcode");
+
+  /* we need to decode the incoming audio data, so we can re-encode it as we need it */
+  CDVDStreamInfo h(hints);
+  m_Codec = CDVDFactoryCodec::CreateAudioCodec(h, false);
+  if (!m_Codec)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupEncoder - Unable to create a decoder for transcode");
+    return false;
+  }
+
+  /* create and setup the encoder */
+  m_Encoder     = new CDVDAudioEncoderFFmpeg();
+  m_InitEncoder = true;
+
+  /* adjust the hints according to the encorders output */
+  hints.codec    = m_Encoder->GetCodecID();
+  hints.bitrate  = m_Encoder->GetBitRate();
+  hints.channels = OUT_CHANNELS;
+
+  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughFFmpeg::SetupEncoder - Ready to transcode");
+  return true;
 }
 
 bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  bool bSupportsAC3Out = false;
-  bool bSupportsDTSOut = false;
-  bool bSupportsAACOut = false;
-  bool bSupportsMP1Out = false;
-  bool bSupportsMP2Out = false;
-  bool bSupportsMP3Out = false;
-
   // TODO - move this stuff somewhere else
   if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
   {
-    bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
-    bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
-    bSupportsAACOut = g_guiSettings.GetBool("audiooutput.aacpassthrough");
-    bSupportsMP1Out = g_guiSettings.GetBool("audiooutput.mp1passthrough");
-    bSupportsMP2Out = g_guiSettings.GetBool("audiooutput.mp2passthrough");
-    bSupportsMP3Out = g_guiSettings.GetBool("audiooutput.mp3passthrough");
+    m_bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
+    m_bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
+    m_bSupportsAACOut = g_guiSettings.GetBool("audiooutput.aacpassthrough");
+    m_bSupportsMP1Out = g_guiSettings.GetBool("audiooutput.mp1passthrough");
+    m_bSupportsMP2Out = g_guiSettings.GetBool("audiooutput.mp2passthrough");
+    m_bSupportsMP3Out = g_guiSettings.GetBool("audiooutput.mp3passthrough");
   }
+  else
+    return false;
 
-  //Samplerate cannot be checked here as we don't know it at this point in time.
-  //We should probably have a way to try to decode data so that we know what samplerate it is.
-  if ((hints.codec == CODEC_ID_AC3 && bSupportsAC3Out)
-   || (hints.codec == CODEC_ID_DTS && bSupportsDTSOut)
-   || (hints.codec == CODEC_ID_AAC && bSupportsAACOut)
-   || (hints.codec == CODEC_ID_MP1 && bSupportsMP1Out)
-   || (hints.codec == CODEC_ID_MP2 && bSupportsMP2Out)
-   || (hints.codec == CODEC_ID_MP3 && bSupportsMP3Out))
+  // TODO - this is only valid for video files, and should be moved somewhere else
+  if( hints.channels == 2 && g_settings.m_currentVideoSettings.m_OutputToAllSpeakers )
   {
-
-    // TODO - this is only valid for video files, and should be moved somewhere else
-    if( hints.channels == 2 && g_settings.m_currentVideoSettings.m_OutputToAllSpeakers )
-    {
-      CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Open - disabled passthrough due to video OTAS");
-      return false;
-    }
-
-    if (!m_dllAvFormat.Load() || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
-      return false;
-
-    /* get the muxer */
-    AVOutputFormat *outFormat;
-#if LIBAVFORMAT_VERSION_MAJOR < 53
-    outFormat = m_dllAvFormat.guess_format("spdif", NULL, NULL);
-#else
-    outFormat = m_dllAvFormat.av_guess_format("spdif", NULL, NULL);
-#endif
-    if (!outFormat)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to get the ffmpeg spdif muxer");
-      Dispose();
-      return false;
-    }
-
-    /* see if the muxer supports our codec (see spdif.c for supported formats) */
-    m_pSyncFrame = NULL;
-    switch(hints.codec) {
-      case CODEC_ID_AC3: m_pSyncFrame = &CDVDAudioCodecPassthroughFFmpeg::SyncAC3; break;
-      case CODEC_ID_DTS: m_pSyncFrame = &CDVDAudioCodecPassthroughFFmpeg::SyncDTS; break;
-      case CODEC_ID_MP1:
-      case CODEC_ID_MP2:
-      case CODEC_ID_MP3:
-      case CODEC_ID_AAC:
-        break;
-
-      default:
-        CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - ffmpeg SPDIF muxer does not support this codec");
-        Dispose();
-        return false;
-    }
-
-    /* allocate a the format context */
-    m_pFormat = m_dllAvFormat.avformat_alloc_context();
-    if (!m_pFormat)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to allocate AVFormat context");
-      Dispose();
-      return false;
-    }
-    m_pFormat->oformat = outFormat;
-
-    /* allocate a put_byte struct so we can grab the output */
-    m_pFormat->pb = m_dllAvFormat.av_alloc_put_byte(m_bcBuffer, AVCODEC_MAX_AUDIO_FRAME_SIZE, URL_RDONLY, this,  NULL, _BCReadPacket, NULL);
-    if (!m_pFormat->pb)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to allocate ByteIOContext");
-      Dispose();
-      return false;
-    }
-
-    /* this is streamed, no file, and ignore the index */
-    m_pFormat->pb->is_streamed   = 1;
-    m_pFormat->flags            |= AVFMT_NOFILE | AVFMT_FLAG_IGNIDX;
-    m_pFormat->bit_rate          = hints.bitrate;
-
-    /* setup the muxer */
-    AVFormatParameters params;
-    memset(&params, 0, sizeof(params));
-    params.channels    = hints.channels;
-    params.sample_rate = OUT_SAMPLERATE;
-    params.channel     = 0;
-    if (m_dllAvFormat.av_set_parameters(m_pFormat, &params) != 0)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to set the spdif muxer parameters");
-      Dispose();
-      return false;
-    }
-
-    /* add a stream to it */
-    m_pStream = m_dllAvFormat.av_new_stream(m_pFormat, 1);
-    if (!m_pStream)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to allocate AVStream context");
-      Dispose();
-      return false;
-    }
-
-    /* set the stream's parameters */
-    m_pStream->stream_copy        = 1;
-    m_pStream->codec->codec_type  = CODEC_TYPE_AUDIO;
-    m_pStream->codec->codec_id    = hints.codec;
-    m_pStream->codec->sample_rate = hints.samplerate;
-    m_pStream->codec->channels    = hints.channels;
-
-    /* we will check the first packet's crc */
-    m_lostSync = true;
-    return true;
+    CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Open - disabled passthrough due to video OTAS");
+    return false;
   }
 
-  return false;
+  // TODO - some soundcards do support other sample rates, but they are quite uncommon
+  if( hints.samplerate > 0 && hints.samplerate != 48000 )
+  {
+    CLog::Log(LOGINFO, "CDVDAudioCodecPassthrough::Open - disabled passthrough due to sample rate not being 48000");
+    return false;
+  }
+
+  /* see if the muxer supports our codec (see spdif.c for supported formats) */
+  if (!SupportsFormat(hints))
+  {
+    if (!SetupEncoder(hints) || !SupportsFormat(hints))
+    {
+      CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - FFmpeg SPDIF muxer does not support this codec");
+      Dispose();
+      return false;
+    }
+  }
+  else
+  {
+    m_Codec   = NULL;
+    m_Encoder = NULL;
+  }
+
+  if (!m_dllAvFormat.Load() || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+    return false;
+
+  /* get the muxer */
+  AVOutputFormat *outFormat;
+#if LIBAVFORMAT_VERSION_MAJOR < 53
+  outFormat = m_dllAvFormat.guess_format("spdif", NULL, NULL);
+#else
+  outFormat = m_dllAvFormat.av_guess_format("spdif", NULL, NULL);
+#endif
+  if (!outFormat)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to get the ffmpeg spdif muxer");
+    Dispose();
+    return false;
+  }
+
+  /* allocate a the format context */
+  m_pFormat = m_dllAvFormat.avformat_alloc_context();
+  if (!m_pFormat)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to allocate AVFormat context");
+    Dispose();
+    return false;
+  }
+  m_pFormat->oformat = outFormat;
+
+  /* allocate a put_byte struct so we can grab the output */
+  m_pFormat->pb = m_dllAvFormat.av_alloc_put_byte(m_BCBuffer, AVCODEC_MAX_AUDIO_FRAME_SIZE, URL_RDONLY, this,  NULL, _BCReadPacket, NULL);
+  if (!m_pFormat->pb)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to allocate ByteIOContext");
+    Dispose();
+    return false;
+  }
+
+  /* this is streamed, no file, and ignore the index */
+  m_pFormat->pb->is_streamed   = 1;
+  m_pFormat->flags            |= AVFMT_NOFILE | AVFMT_FLAG_IGNIDX;
+  m_pFormat->bit_rate          = hints.bitrate;
+
+  /* setup the muxer */
+  AVFormatParameters params;
+  memset(&params, 0, sizeof(params));
+  params.channels    = hints.channels;
+  params.sample_rate = hints.samplerate;
+  params.channel     = 0;
+  if (m_dllAvFormat.av_set_parameters(m_pFormat, &params) != 0)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to set the spdif muxer parameters");
+    Dispose();
+    return false;
+  }
+
+  /* add a stream to it */
+  m_pStream = m_dllAvFormat.av_new_stream(m_pFormat, 1);
+  if (!m_pStream)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Failed to allocate AVStream context");
+    Dispose();
+    return false;
+  }
+
+  /* set the stream's parameters */
+  m_pStream->stream_copy        = 1;
+  m_pStream->codec->codec_type  = CODEC_TYPE_AUDIO;
+  m_pStream->codec->codec_id    = hints.codec;
+  m_pStream->codec->sample_rate = hints.samplerate;
+  m_pStream->codec->sample_fmt  = SAMPLE_FMT_S16;
+  m_pStream->codec->channels    = hints.channels;
+  m_pStream->codec->bit_rate    = hints.bitrate;
+
+  /* we will check the first packet's crc */
+  m_LostSync = true;
+  return true;
 }
 
 void CDVDAudioCodecPassthroughFFmpeg::Dispose()
 {
-  if (m_pFormat) {
+  Reset();
+
+  if (m_DecodeBuffer)
+  {
+    _aligned_free(m_DecodeBuffer);
+    m_DecodeBuffer = NULL;
+  }
+
+  if (m_Encoder)
+  {
+    delete m_Encoder;
+    m_Encoder = NULL;
+  }
+
+  if (m_Codec)
+  {
+    delete m_Codec;
+    m_Codec   = NULL;
+  }
+
+  if (m_pFormat)
+  {
     if (m_pFormat->pb)
       m_dllAvUtil.av_freep(&m_pFormat->pb);
     m_dllAvUtil.av_freep(&m_pFormat);
 
     if (m_pStream)
       m_dllAvUtil.av_freep(&m_pStream);
-   }
+  }
+
+  if (m_Buffer)
+  {
+    delete[] m_Buffer;
+    m_Buffer = NULL;
+    m_BufferSize = 0;
+  }
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::BCReadPacket(uint8_t *buf, int buf_size)
 {
+  int s = buf_size;
+
 #if (LIBAVFORMAT_VERSION_INT > AV_VERSION_INT(52, 47, 0))
   /* to check see if the line "put_le16(s->pb, 0);" repeated 4 times in the end of the function "spdif_write_header" in spdif.c */
-  #pragma warning "Make sure upstream version still needs this workaround"
+  #pragma warning "Make sure upstream version still needs this workaround (issue #1735)"
 #endif
-  /* this is a hack to work around a bug in the SPDIF muxer */
-  m_OutputSize = buf_size - 8;
-  memcpy(m_OutputBuffer, buf + 8, m_OutputSize);
+  /* the +8 a hack to work around a bug in the SPDIF muxer */
+  s   -= 8;
+  buf += 8;
+
+  /* create a new packet and push it into our output buffer */
+  DataPacket *packet = new DataPacket();
+  packet->size       = s;
+  packet->data       = new uint8_t[s];
+  memcpy(packet->data, buf, s);
+
+  m_OutputBuffer.push_back(packet);
+  m_OutputSize += s;
 
   /* return how much we wrote to our buffer */
   return buf_size;
 }
 
-int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
+unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, unsigned int iSize, unsigned int *fSize)
 {
-  int skip = 0;
+  unsigned int skip = 0;
   for(skip = 0; iSize - skip > 6; ++skip, ++pData)
   {
     /* search for an ac3 sync word */
@@ -232,8 +315,8 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
     ) continue;
 
     /* get the details we need to check crc1 and framesize */
-    uint16_t bitrate   = AC3Bitrates[frmsizecod >> 1];
-    int      framesize = 0;
+    uint16_t     bitrate   = AC3Bitrates[frmsizecod >> 1];
+    unsigned int framesize = 0;
     switch(fscod)
     {
       case 0: framesize = bitrate * 2; break;
@@ -244,10 +327,10 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
     *fSize = framesize * 2;
 
     /* dont do extensive testing if we have not lost sync */
-    if (!m_lostSync && skip == 0)
+    if (!m_LostSync && skip == 0)
       return 0;
 
-    int crc_size;
+    unsigned int crc_size;
     /* if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet) */
     if (framesize <= iSize - skip)
          crc_size = framesize - 1;
@@ -258,18 +341,18 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, int iSize, int *fSize)
         continue;
 
     /* if we get here, we can sync */
-    m_lostSync = false;
+    m_LostSync = false;
     return skip;
   }
 
   /* if we get here, the entire packet is invalid and we have lost sync */
-  m_lostSync = true;
+  m_LostSync = true;
   return iSize;
 }
 
-int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize, int *fSize)
+unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, unsigned int iSize, unsigned int *fSize)
 {
-  int skip;
+  unsigned int skip;
   for(skip = 0; iSize - skip > 8; ++skip, ++pData)
   {
     if (
@@ -288,17 +371,88 @@ int CDVDAudioCodecPassthroughFFmpeg::SyncDTS(BYTE* pData, int iSize, int *fSize)
     if (*fSize < 95 || *fSize > 16383)
       continue;
 
-    m_lostSync = false;
+    m_LostSync = false;
     return skip;
   }
 
-  m_lostSync = true;
+  m_LostSync = true;
   return iSize;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
 {
-  int fSize = iSize;
+  unsigned int used, fSize;
+  used = fSize = iSize;
+
+  /* if we are transcoding */
+  if (m_Encoder)
+  {
+    uint8_t *decData;
+    uint8_t *encData;
+
+    used  = m_Codec->Decode (pData, iSize);
+    fSize = m_Codec->GetData(&decData);
+
+    /* we may not get any data for a few frames, this is expected */
+    if (fSize == 0)
+      return used;
+
+    /* now we have data, it is safe to initialize the encoder, as we should now have a channel map */
+    if (m_InitEncoder)
+    {
+      if (m_Encoder->Initialize(m_Codec->GetChannels(), m_Codec->GetChannelMap(), m_Codec->GetBitsPerSample(), m_Codec->GetSampleRate()))
+      {
+        m_InitEncoder   = false;
+        m_EncPacketSize = m_Encoder->GetPacketSize();
+        /* allocate enough room for two packets of data */
+        m_DecodeBuffer  = (uint8_t*)_aligned_malloc(m_EncPacketSize * 2, 16);
+        m_DecodeSize    = 0;
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Encode - Unable to initialize the encoder for transcode");
+        return -1;
+      }
+    }
+
+    unsigned int avail, eUsed, eCoded = 0;
+    avail = fSize + m_DecodeSize;
+
+    while(avail >= m_EncPacketSize)
+    {
+      /* append up to one packet of data to the buffer */
+      if (m_DecodeSize < m_EncPacketSize)
+      {
+        unsigned int copy = (fSize > m_EncPacketSize) ? m_EncPacketSize : fSize;
+        if (copy)
+        {
+          memcpy(m_DecodeBuffer + m_DecodeSize, decData, copy);
+          m_DecodeSize += copy;
+          decData      += copy;
+          fSize        -= copy;
+        }
+      }
+
+      /* encode the data and advance our data pointer */
+      eUsed  = m_Encoder->Encode(m_DecodeBuffer, m_EncPacketSize);
+      avail -= eUsed;
+
+      /* shift buffered data along with memmove as the data can overlap */
+      m_DecodeSize -= eUsed;
+      memmove(m_DecodeBuffer, m_DecodeBuffer + eUsed, m_DecodeSize);
+
+      /* output the frame of data */
+      while(eCoded = m_Encoder->GetData(&encData))
+        WriteFrame(encData, eCoded);
+    }
+
+    /* append any leftover data to the buffer */
+    memcpy(m_DecodeBuffer + m_DecodeSize, decData, fSize);
+    m_DecodeSize += fSize;
+
+    return used;
+  }
+
   if (m_pSyncFrame)
   {
     int skip = (this->*m_pSyncFrame)(pData, iSize, &fSize);
@@ -306,15 +460,21 @@ int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
       return skip;
   }
 
+  WriteFrame(pData, fSize);
+  return fSize;
+}
+
+void CDVDAudioCodecPassthroughFFmpeg::WriteFrame(uint8_t *pData, int iSize)
+{
   AVPacket pkt;
   m_dllAvCodec.av_init_packet(&pkt);
   pkt.data = pData;
-  pkt.size = fSize;
+  pkt.size = iSize;
 
+  m_Consumed += iSize;
   m_dllAvFormat.av_write_header (m_pFormat);
   m_dllAvFormat.av_write_frame  (m_pFormat, &pkt);
   m_dllAvFormat.av_write_trailer(m_pFormat);
-  return fSize;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)
@@ -322,10 +482,43 @@ int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)
   int size;
   if(m_OutputSize)
   {
-    *dst = m_OutputBuffer;
-    size = m_OutputSize;
+    /* check if the buffer is allocated */
+    if (m_Buffer)
+    {
+      /* only re-allocate the buffer it is too small */
+      if (m_BufferSize < m_OutputSize)
+      {
+        delete[] m_Buffer;
+        m_Buffer = new uint8_t[m_OutputSize];
+        m_BufferSize = m_OutputSize;
+      }
+    }
+    else
+    {
+      /* allocate the buffer */
+      m_Buffer     = new uint8_t[m_OutputSize];
+      m_BufferSize = m_OutputSize;
+    }
 
+    /* fill the buffer with the output data */
+    uint8_t *offset;
+    offset = m_Buffer = new uint8_t[m_OutputSize];
+    while(!m_OutputBuffer.empty())
+    {
+      DataPacket* packet = m_OutputBuffer.front();
+      m_OutputBuffer.pop_front();
+
+      memcpy(offset, packet->data, packet->size);
+      offset += packet->size;
+
+      delete[] packet->data;
+      delete   packet;
+    }
+    
+    *dst = m_Buffer;
+    size = m_OutputSize;
     m_OutputSize = 0;
+    m_Consumed   = 0;
     return size;
   }
   else
@@ -334,8 +527,21 @@ int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)
 
 void CDVDAudioCodecPassthroughFFmpeg::Reset()
 {
+  m_DecodeSize = 0;
+  m_LostSync   = true;
+
   m_OutputSize = 0;
-  m_lostSync   = true;
+  m_Consumed   = 0;
+  while(!m_OutputBuffer.empty())
+  {
+    DataPacket* packet = m_OutputBuffer.front();
+    m_OutputBuffer.pop_front();
+    delete[] packet->data;
+    delete   packet;
+  }
+
+  if (m_Encoder)
+    m_Encoder->Reset();
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetChannels()
@@ -347,11 +553,21 @@ int CDVDAudioCodecPassthroughFFmpeg::GetChannels()
 
 int CDVDAudioCodecPassthroughFFmpeg::GetSampleRate()
 {
-  return OUT_SAMPLERATE;
+  //return OUT_SAMPLERATE;
+  //not all cards support 44100hz output, we force 48000hz output
+  return m_pStream->codec->sample_rate;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetBitsPerSample()
 {
   return OUT_SAMPLESIZE;
+}
+
+int CDVDAudioCodecPassthroughFFmpeg::GetBufferSize()
+{
+  if (m_Codec)
+    return m_Codec->GetBufferSize();
+  else
+    return m_Consumed;
 }
 
