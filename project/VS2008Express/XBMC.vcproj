@@ -871,6 +871,22 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h"
 							>
 						</File>
+						<Filter
+							Name="Encoders"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\IDVDAudioEncoder.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="Video"
