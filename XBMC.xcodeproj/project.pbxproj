@@ -1828,6 +1828,8 @@
 		F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F245EC1112C9AB009126C6 /* FileUtils.cpp */; };
 		F5F24D4A1120994F009126C6 /* PCMLimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24D481120994F009126C6 /* PCMLimiter.cpp */; };
 		F5F24D4B1120994F009126C6 /* PCMLimiter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24D481120994F009126C6 /* PCMLimiter.cpp */; };
+		F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */; };
+		F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
@@ -3788,6 +3790,9 @@
 		F5F245ED1112C9AB009126C6 /* FileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtils.h; sourceTree = "<group>"; };
 		F5F24D481120994F009126C6 /* PCMLimiter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMLimiter.cpp; sourceTree = "<group>"; };
 		F5F24D491120994F009126C6 /* PCMLimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMLimiter.h; sourceTree = "<group>"; };
+		F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDAudioEncoderFFmpeg.cpp; path = Encoders/DVDAudioEncoderFFmpeg.cpp; sourceTree = "<group>"; };
+		F5F24E8411232488009126C6 /* IDVDAudioEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IDVDAudioEncoder.h; path = Encoders/IDVDAudioEncoder.h; sourceTree = "<group>"; };
+		F5F24E8511232488009126C6 /* DVDAudioEncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDAudioEncoderFFmpeg.h; path = Encoders/DVDAudioEncoderFFmpeg.h; sourceTree = "<group>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
@@ -5040,6 +5045,7 @@
 				F5F245D91112C6AC009126C6 /* DVDAudioCodecPassthroughFFmpeg.h */,
 				E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */,
 				E38E15160D25F9F900618676 /* DVDAudioCodecPcm.h */,
+				F5F24E801123242B009126C6 /* Encoders */,
 				E38E15170D25F9F900618676 /* liba52 */,
 				E38E15190D25F9F900618676 /* libdts */,
 				E38E151B0D25F9F900618676 /* libfaad */,
@@ -7050,6 +7056,16 @@
 			path = CrystalHD;
 			sourceTree = "<group>";
 		};
+		F5F24E801123242B009126C6 /* Encoders */ = {
+			isa = PBXGroup;
+			children = (
+				F5F24E8311232488009126C6 /* DVDAudioEncoderFFmpeg.cpp */,
+				F5F24E8511232488009126C6 /* DVDAudioEncoderFFmpeg.h */,
+				F5F24E8411232488009126C6 /* IDVDAudioEncoder.h */,
+			);
+			name = Encoders;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -8054,6 +8070,7 @@
 				F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
 				F5F24D4A1120994F009126C6 /* PCMLimiter.cpp in Sources */,
+				F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8908,6 +8925,7 @@
 				F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
 				F5F24D4B1120994F009126C6 /* PCMLimiter.cpp in Sources */,
+				F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
