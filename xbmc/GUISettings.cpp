@@ -1175,7 +1175,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       if (pChild)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
-        if ((*it).second->GetControlType() == SETTINGS_TYPE_PATH)
+        if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
           newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)
