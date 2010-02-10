@@ -212,21 +212,9 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   {
     if (g_settings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic)
     {
-      if( g_audioConfig.GetAC3Enabled() )
-      {
-        bAudioOnAllSpeakers = true;
-        m_bAC3EncoderActive = true;
-        spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
-      }
-      else
-      {
-        if (iChannels == 1)
-          spconfig = DSSPEAKER_MONO;
-        else
-        {
-          spconfig = DSSPEAKER_STEREO;
-        }
-      }
+      bAudioOnAllSpeakers = true;
+      m_bAC3EncoderActive = true;
+      spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
     }
     else
     {
