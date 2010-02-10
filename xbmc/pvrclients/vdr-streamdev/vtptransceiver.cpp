@@ -631,7 +631,26 @@ bool CVTPTransceiver::SetChannelDevice(unsigned int Channel)
 	return true;
 }
 
-bool CVTPTransceiver::SetRecordingIndex(unsigned int Recording, uint64_t *size, uint32_t *frames)
+bool CVTPTransceiver::SetRecordingIndex(unsigned int Recording)
+{
+  if (!CheckConnection()) return false;
+
+  CMD_LOCK;
+
+  string result;
+  int    code;
+  CStdString command;
+  command.Format("PLAY %d", Recording);
+  if (!SendCommand(command, code, result) || code != 220)
+  {
+    if (errno == 0)
+      XBMC_log(LOG_ERROR, "Couldn't open recording %d on %s:%d", Recording, g_szHostname.c_str(), g_iPort);
+    return false;
+  }
+  return true;
+}
+
+bool CVTPTransceiver::GetPlayingRecordingSize(uint64_t *size, uint32_t *frames)
 {
   vector<string> lines;
   int            code;
@@ -640,14 +659,8 @@ bool CVTPTransceiver::SetRecordingIndex(unsigned int Recording, uint64_t *size, 
 
   CMD_LOCK;
 
-  CStdString command;
-  command.Format("PLAY %d", Recording);
-  if (!SendCommand(command, code, lines) || code != 220)
-  {
-    if (errno == 0)
-      XBMC_log(LOG_ERROR, "Couldn't open recording %d on %s:%d", g_szHostname.c_str(), g_iPort, Recording);
+  if (!SendCommand("SIZE", code, lines) || code != 220)
     return false;
-  }
 
   vector<string>::iterator it = lines.begin();
   string& data(*it);
@@ -655,6 +668,29 @@ bool CVTPTransceiver::SetRecordingIndex(unsigned int Recording, uint64_t *size, 
   *size = atoll(data.c_str());
   *frames = atol(data.substr(data.find(" ") + 1).c_str());
   return true;
+}
+
+uint64_t CVTPTransceiver::SeekRecordingPosition(uint64_t position)
+{
+  vector<string> lines;
+  int            code;
+
+  if (!CheckConnection()) return 0;
+
+  CMD_LOCK;
+
+  CStdString command;
+  command.Format("SEEK %llu", position);
+  if (!SendCommand(command, code, lines) || code != 220)
+  {
+    if (errno == 0)
+      XBMC_log(LOG_ERROR, "Couldn't seek to position %llu on %s:%d", position, g_szHostname.c_str(), g_iPort);
+    return 0;
+  }
+
+  vector<string>::iterator it = lines.begin();
+  string& data(*it);
+  return atoll(data.c_str());;
 }
 
 CStdString CVTPTransceiver::GetBackendName()

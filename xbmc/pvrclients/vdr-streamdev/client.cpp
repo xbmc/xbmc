@@ -50,6 +50,9 @@ bool         g_bHandleMessages        = DEFAULT_HANDLE_MSG;   ///< Send VDR's OS
 uint64_t     m_currentPlayingRecordBytes;
 uint32_t     m_currentPlayingRecordFrames;
 uint64_t     m_currentPlayingRecordPosition;
+uint64_t     m_recordingTotalBytesReaded;
+bool         m_recordingFirstRead;
+cPoller     *m_recordingPoller        = NULL;
 char         m_noSignalStreamData[ 6 + 0xffff ];
 long         m_noSignalStreamSize     = 0;
 long         m_noSignalStreamReadPos  = 0;
@@ -939,7 +942,7 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
   if (!VTPTransceiver.CheckConnection())
     return false;
 
-  if (!VTPTransceiver.SetRecordingIndex(recinfo.index, &m_currentPlayingRecordBytes, &m_currentPlayingRecordFrames))
+  if (!VTPTransceiver.SetRecordingIndex(recinfo.index))
   {
     XBMC_log(LOG_ERROR, "Could't open recording %i", recinfo.index);
     return false;
@@ -947,11 +950,14 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 
   if (!VTPTransceiver.CreateDataConnection(siReplay))
   {
-    XBMC_log(LOG_ERROR, "Could't create connection to VDR for Live streaming");
+    XBMC_log(LOG_ERROR, "Could't create connection to VDR for recording streaming");
     return false;
   }
 
   m_currentPlayingRecordPosition = 0;
+  m_recordingTotalBytesReaded    = 0;
+  m_recordingPoller              = new cPoller(VTPTransceiver.DataSocket(siReplay));
+  m_recordingFirstRead           = true;
   return true;
 }
 
@@ -961,54 +967,32 @@ void CloseRecordedStream(void)
     XBMC_log(LOG_DEBUG, "CloseRecordedStream(): Control connection gone !");
 
   VTPTransceiver.CloseDataConnection(siReplay);
+
+  DELETENULL(m_recordingPoller);
 }
 
 int ReadRecordedStream(unsigned char* buf, int buf_size)
 {
-  if (m_currentPlayingRecordPosition + buf_size > m_currentPlayingRecordBytes || !VTPTransceiver.DataSocket(siReplay))
+  if (VTPTransceiver.DataSocket(siReplay) == INVALID_SOCKET)
     return 0;
 
-  if (VTPTransceiver.TransferRecordingToSocket(m_currentPlayingRecordPosition, buf_size) <= 0)
-    return 0;
-
-  fd_set         set_r, set_e;
-  struct timeval tv;
-  int            res;
-
-  tv.tv_sec = 3;
-  tv.tv_usec = 0;
-
-  FD_ZERO(&set_r);
-  FD_ZERO(&set_e);
-  FD_SET(VTPTransceiver.DataSocket(siReplay), &set_r);
-  FD_SET(VTPTransceiver.DataSocket(siReplay), &set_e);
-  res = __select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
-
-  if (res < 0)
+  int res = 0;
+  if (m_recordingFirstRead || m_recordingPoller->Poll(100))
   {
-    XBMC_log(LOG_ERROR, "ReadRecordedStream - select failed");
-    return 0;
-  }
-  if (res == 0)
-  {
-    XBMC_log(LOG_ERROR, "ReadRecordedStream - timeout waiting for data");
-    return 0;
-  }
-
-  res = __recv(VTPTransceiver.DataSocket(siReplay), (char*)buf, (size_t)buf_size, 0);
-
-  if (res < 0)
-  {
-    XBMC_log(LOG_ERROR, "ReadRecordedStream - failed");
-    return 0;
-  }
-  if (res == 0)
-  {
-    XBMC_log(LOG_ERROR, "ReadRecordedStream - eof");
-    return 0;
+    m_recordingFirstRead = false;
+    res = safe_read(VTPTransceiver.DataSocket(siReplay), buf, buf_size);
+    if (res < 0 && FATALERRNO)
+    {
+      if (errno == EOVERFLOW)
+        XBMC_log(LOG_ERROR, "driver buffer overflow");
+      else
+        XBMC_log(LOG_ERROR, "ERROR (%s,%d): %m", __FILE__, __LINE__);
+      return 0;
+    }
   }
 
   m_currentPlayingRecordPosition += res;
+  m_recordingTotalBytesReaded    += res;
   return res;
 }
 
@@ -1021,7 +1005,6 @@ long long SeekRecordedStream(long long pos, int whence)
 
   switch (whence)
   {
-
     case SEEK_SET:
       nextPos = pos;
       break;
@@ -1031,12 +1014,10 @@ long long SeekRecordedStream(long long pos, int whence)
       break;
 
     case SEEK_END:
-
       if (m_currentPlayingRecordBytes)
         nextPos = m_currentPlayingRecordBytes - pos;
       else
         return -1;
-
       break;
 
     case SEEK_POSSIBLE:
@@ -1050,11 +1031,24 @@ long long SeekRecordedStream(long long pos, int whence)
     return 0;
 
   m_currentPlayingRecordPosition = nextPos;
-  return m_currentPlayingRecordPosition;
+
+  /* The VDR streamdev seek command returns the amount which is sendet into the
+     network. */
+  uint64_t bytesToFlush = VTPTransceiver.SeekRecordingPosition(nextPos);
+  /* I don't like the following code, but have no better idea todo this.
+     It flush the already by VDR transmitted data from the TCP stack, so if XBMC
+     perform the next Data read the right stream position is on top of the Socket. */
+  while (m_recordingTotalBytesReaded < bytesToFlush)
+  {
+    unsigned char buffer[32768];
+    ReadRecordedStream(&*buffer, sizeof(buffer));
+  }
+  return nextPos;
 }
 
 long long LengthRecordedStream(void)
 {
+  VTPTransceiver.GetPlayingRecordingSize(&m_currentPlayingRecordBytes, &m_currentPlayingRecordFrames);
   return m_currentPlayingRecordBytes;
 }
 
@@ -1062,4 +1056,5 @@ const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
   return ""; // not implemented
 }
+
 } //end extern "C"

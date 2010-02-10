@@ -72,7 +72,9 @@ public:
   bool CloseDataConnection(eSocketId Id);
   SOCKET DataSocket(eSocketId Id) const { return m_DataSockets[Id]; }
   bool SetChannelDevice(unsigned int Channel);
-  bool SetRecordingIndex(unsigned int Recording, uint64_t *size, uint32_t *frames);
+  bool SetRecordingIndex(unsigned int Recording);
+  bool GetPlayingRecordingSize(uint64_t *size, uint32_t *frames);
+  uint64_t SeekRecordingPosition(uint64_t position);
   CStdString GetBackendName();
   CStdString GetBackendVersion();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);

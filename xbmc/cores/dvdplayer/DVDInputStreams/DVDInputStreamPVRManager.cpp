@@ -227,7 +227,7 @@ bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
 
 bool CDVDInputStreamPVRManager::NextStream()
 {
-  if(!m_pFile) return -1;
+  if(!m_pFile) return false;
 
   if (m_pOtherStream)
     return m_pOtherStream->NextStream();
