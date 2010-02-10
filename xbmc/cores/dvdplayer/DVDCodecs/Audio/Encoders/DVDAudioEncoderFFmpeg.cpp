@@ -130,7 +130,7 @@ unsigned int CDVDAudioEncoderFFmpeg::GetPacketSize()
 int CDVDAudioEncoderFFmpeg::Encode(uint8_t *data, int size)
 {
   /* remap the data and encode it in blocks */
-  if (size < m_NeededBytes)
+  if (size < (int)m_NeededBytes)
     return 0;
 
   uint8_t remapped[m_OutputBytes];
