@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -19,18 +19,10 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 
-THISDIR=$(pwd)
-WORKDIR=workarea
-export THISDIR
-export WORKDIR
+mkdir -p $WORKPATH/buildLive/Files/chroot_local-packages &> /dev/null
 
-#
-#
-#
-
-for hook in $(ls $THISDIR/build-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
-done
+if ! ls $WORKPATH/buildDEBs/live-initramfs*.* > /dev/null 2>&1; then
+        echo "Files missing (live-initramfs), exiting..."
+        exit 1
+fi
+cp $WORKPATH/buildDEBs/live-initramfs*.* $WORKPATH/buildLive/Files/chroot_local-packages

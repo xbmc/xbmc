@@ -52,7 +52,11 @@ rm $WORKPATH/buildLive/Files/chroot_local-hooks/01-holdKernel
 # Remove unneeded files
 rm $WORKPATH/buildLive/Files/binary_local-includes/live/*.module
 
-export DONOTBUILDRESTRICTEDDRIVERS=1
+# Remove unneeded files
+rm $WORKPATH/buildBinaryDrivers/build-NVIDIA.sh
+rm $WORKPATH/buildBinaryDrivers/build-AMD.sh
+
+rm $WORKPATH/copyFiles-restricted.sh
 
 # Modify menu.lst
 if [ -f $WORKPATH/buildLive/Files/binary_grub/menu.lst ]; then

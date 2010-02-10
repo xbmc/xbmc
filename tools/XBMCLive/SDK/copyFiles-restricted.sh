@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -19,18 +19,11 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 
-THISDIR=$(pwd)
-WORKDIR=workarea
-export THISDIR
-export WORKDIR
+mkdir -p $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers &> /dev/null
 
-#
-#
-#
+if ! ls $WORKPATH/buildBinaryDrivers/*.ext3 > /dev/null 2>&1; then
+	echo "Files missing (restrictedDrivers), exiting..."
+	exit 1
+fi
+cp $WORKPATH/buildBinaryDrivers/*.ext3 $WORKPATH/buildLive/Files/binary_local-includes/live/restrictedDrivers
 
-for hook in $(ls $THISDIR/build-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
-done

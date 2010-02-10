@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -20,17 +20,10 @@
 
 
 THISDIR=$(pwd)
-WORKDIR=workarea
-export THISDIR
-export WORKDIR
 
-#
-#
-#
-
-for hook in $(ls $THISDIR/build-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
-done
+if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
+	echo "Making live-initramfs..."
+	cd $THISDIR/live-initramfs-ubuntu
+	dpkg-buildpackage -rfakeroot -b -uc -us 
+	cd $THISDIR
+fi

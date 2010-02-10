@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -19,18 +19,22 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 
-THISDIR=$(pwd)
-WORKDIR=workarea
-export THISDIR
-export WORKDIR
+mkdir -p $WORKPATH/buildLive/Files/binary_local-udebs &> /dev/null
 
-#
-#
-#
+if ! ls $WORKPATH/buildDEBs/squashfs-udeb*.* > /dev/null 2>&1; then
+	echo "Files missing (squashfs-udeb), exiting..."
+	exit 1
+fi
+cp $WORKPATH/buildDEBs/squashfs-udeb*.* $WORKPATH/buildLive/Files/binary_local-udebs
 
-for hook in $(ls $THISDIR/build-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
-done
+if ! ls $WORKPATH/buildDEBs/live-installer*.* > /dev/null 2>&1; then
+	echo "Files missing (live-installer), exiting..."
+	exit 1
+fi
+cp $WORKPATH/buildDEBs/live-installer*.* $WORKPATH/buildLive/Files/binary_local-udebs
+
+if ! ls $WORKPATH/buildDEBs/xbmclive-installhelpers*.* > /dev/null 2>&1; then
+	echo "Files missing (xbmclive-installhelpers), exiting..."
+	exit 1
+fi
+cp $WORKPATH/buildDEBs/xbmclive-installhelpers*.* $WORKPATH/buildLive/Files/binary_local-udebs
