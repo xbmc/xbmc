@@ -238,34 +238,22 @@ void CDVDAudioCodecPassthroughFFmpeg::Dispose()
     m_DecodeBuffer = NULL;
   }
 
-  if (m_Encoder)
-  {
-    delete m_Encoder;
-    m_Encoder = NULL;
-  }
+  delete m_Encoder;
+  m_Encoder = NULL;
 
-  if (m_Codec)
-  {
-    delete m_Codec;
-    m_Codec   = NULL;
-  }
+  delete m_Codec;
+  m_Codec   = NULL;
 
   if (m_pFormat)
   {
-    if (m_pFormat->pb)
-      m_dllAvUtil.av_freep(&m_pFormat->pb);
+    m_dllAvUtil.av_freep(&m_pFormat->pb);
     m_dllAvUtil.av_freep(&m_pFormat);
-
-    if (m_pStream)
-      m_dllAvUtil.av_freep(&m_pStream);
+    m_dllAvUtil.av_freep(&m_pStream);
   }
 
-  if (m_Buffer)
-  {
-    delete[] m_Buffer;
-    m_Buffer = NULL;
-    m_BufferSize = 0;
-  }
+  delete[] m_Buffer;
+  m_Buffer = NULL;
+  m_BufferSize = 0;
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::BCReadPacket(uint8_t *buf, int buf_size)
@@ -502,7 +490,7 @@ int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)
 
     /* fill the buffer with the output data */
     uint8_t *offset;
-    offset = m_Buffer = new uint8_t[m_OutputSize];
+    offset = m_Buffer;
     while(!m_OutputBuffer.empty())
     {
       DataPacket* packet = m_OutputBuffer.front();

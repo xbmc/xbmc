@@ -32,8 +32,7 @@ CDVDAudioEncoderFFmpeg::CDVDAudioEncoderFFmpeg():
 CDVDAudioEncoderFFmpeg::~CDVDAudioEncoderFFmpeg()
 {
   Reset();
-  if (m_CodecCtx)
-    m_dllAvUtil.av_freep(&m_CodecCtx);
+  m_dllAvUtil.av_freep(&m_CodecCtx);
 }
 
 bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels *channelMap, unsigned int bitsPerSample, unsigned int sampleRate)

@@ -28,7 +28,8 @@
 
 #include "../DVDFactoryCodec.h"
 #include "DVDAudioCodec.h"
-#include "Encoders/IDVDAudioEncoder.h"
+
+class IDVDAudioEncoder;
 
 class CDVDAudioCodecPassthroughFFmpeg : public CDVDAudioCodec
 {
