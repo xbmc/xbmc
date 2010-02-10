@@ -471,6 +471,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\strverscmp.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp"
 				>
 			</File>
@@ -3570,14 +3574,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonBrowser.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIDialogAudioSubtitleSettings.cpp"
 					>
 				</File>
@@ -3870,6 +3866,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.cpp"
+				>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp"
 					>
 				</File>
@@ -3989,6 +3993,14 @@
 			<Filter
 				Name="Filesystem"
 				>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\AddonsDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\AddonsDirectory.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\ASAPFileDirectory.cpp"
 					>
