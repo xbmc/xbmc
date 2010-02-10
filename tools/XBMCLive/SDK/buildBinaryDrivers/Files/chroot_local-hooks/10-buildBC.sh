@@ -74,7 +74,7 @@ cd $modulesdir
 mkdir -p kernel/drivers/video/broadcom
 
 cp /tmp/crystalhd.ko kernel/drivers/video/broadcom
-depmod -a $kernelVersion
+depmod $kernelVersion
 tar cvf /tmp/modules.tar modules.* kernel/drivers/video/broadcom/*
 popd
 

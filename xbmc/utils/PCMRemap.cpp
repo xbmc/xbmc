@@ -239,16 +239,24 @@ void CPCMRemap::BuildMap()
   m_inStride  = m_inSampleSize * m_inChannels ;
   m_outStride = m_inSampleSize * m_outChannels;
 
-  /* figure out what channels we have and can use */
   memset(m_useable, 0, sizeof(m_useable));
-  for(enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
+  if (m_ignoreLayout)
   {
     for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
-      if (m_outMap[out_ch] == *chan)
-      {
-        m_useable[*chan] = true;
-        break;
-      }
+      m_useable[m_outMap[out_ch]] = true;
+  }
+  else
+  {
+    /* figure out what channels we have and can use */
+    for(enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
+    {
+      for(out_ch = 0; out_ch < m_outChannels; ++out_ch)
+        if (m_outMap[out_ch] == *chan)
+        {
+          m_useable[*chan] = true;
+          break;
+        }
+    }
   }
 
   /* see if our input has side/back channels */
@@ -286,10 +294,18 @@ void CPCMRemap::BuildMap()
   std::vector<enum PCMChannels> path;
   int counts[PCM_MAX_CH];
 
-  memset(m_lookupMap, PCM_INVALID, sizeof(m_lookupMap));
+  for (int i = 0; i < PCM_MAX_CH + 1; i++)
+  {
+    for (int j = 0; j < PCM_MAX_CH + 1; j++)
+      m_lookupMap[i][j].channel = PCM_INVALID;
+  }
+
   memset(counts, 0, sizeof(counts));
   for(in_ch = 0; in_ch < m_inChannels; ++in_ch) {
-    memset(table, PCM_INVALID, sizeof(table));
+
+    for (int i = 0; i < PCM_MAX_CH + 1; i++)
+      table[i].channel = PCM_INVALID;
+
     ResolveChannel(m_inMap[in_ch], 1.0f, false, path, table);
     for(info = table; info->channel != PCM_INVALID; ++info)
     {
@@ -406,10 +422,11 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
 }
 
 /* sets the output format supported by the audio renderer */
-void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap)
+void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap, bool ignoreLayout/* = false */)
 {
   m_outChannels   = channels;
   m_outSet        = channelMap != NULL;
+  m_ignoreLayout  = ignoreLayout;
   if (channelMap)
     memcpy(m_outMap, channelMap, sizeof(enum PCMChannels) * channels);
 

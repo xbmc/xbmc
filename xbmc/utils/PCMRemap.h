@@ -85,6 +85,7 @@ protected:
   enum PCMChannels   m_outMap[PCM_MAX_CH];
   enum PCMChannels  *m_layoutMap;
 
+  bool               m_ignoreLayout;
   bool               m_useable  [PCM_MAX_CH];
   int                m_inStride, m_outStride;
   struct PCMMapInfo  m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
@@ -102,7 +103,7 @@ public:
 
   void Reset();
   enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize);
-  void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap);
+  void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap, bool ignoreLayout = false);
   void Remap(void *data, void *out, unsigned int samples);
   bool CanRemap();
   int  InBytesToFrames (int bytes );

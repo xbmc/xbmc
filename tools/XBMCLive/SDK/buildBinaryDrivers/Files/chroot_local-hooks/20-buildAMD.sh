@@ -65,7 +65,7 @@ cd $modulesdir
 mkdir -p updates/dkms
 
 cp /tmp/fglrx.ko updates/dkms
-depmod -a $kernelVersion
+depmod $kernelVersion
 tar cvf /tmp/modules.tar modules.* updates
 rm updates/dkms/fglrx.ko
 popd

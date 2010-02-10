@@ -24,7 +24,9 @@ mv $WORKPATH/buildLive/mkConfig.live.sh $WORKPATH/buildLive/mkConfig.sh
 
 rm -rf $WORKPATH/buildLive/Files/binary_local-includes/install
 
-export DONOTINCLUDEINSTALLER=1
+rm $WORKPATH/copyFiles-installer.sh
+
+rm $WORKPATH/buildDEBs/build-installer.sh
 
 # Minimise flash memory writes
 #

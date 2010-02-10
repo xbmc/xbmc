@@ -5,6 +5,7 @@ uniform float     stepy;
 //nvidia's half is a 16 bit float and can bring some speed improvements
 //without affecting quality
 #ifndef __GLSL_CG_DATA_TYPES
+  #define half float
   #define half3 vec3
   #define half4 vec4
 #endif
@@ -47,6 +48,10 @@ void main()
 
   half4 linetaps   = weight(1.0 - xf);
   half4 columntaps = weight(1.0 - yf);
+
+  //make sure all taps added together is exactly 1.0, otherwise some (very small) distortion can occur
+  linetaps /= linetaps.r + linetaps.g + linetaps.b + linetaps.a;
+  columntaps /= columntaps.r + columntaps.g + columntaps.b + columntaps.a;
 
   float xstart = (-0.5 - xf) * stepx + gl_TexCoord[0].x;
   vec4 xpos = vec4(xstart, xstart + stepx, xstart + stepx * 2.0, xstart + stepx * 3.0);
