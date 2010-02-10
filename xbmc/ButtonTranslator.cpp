@@ -861,7 +861,6 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("pictures")) windowID = WINDOW_PICTURES;
   else if (strWindow.Equals("files") || strWindow.Equals("filemanager")) windowID = WINDOW_FILES;
   else if (strWindow.Equals("settings")) windowID = WINDOW_SETTINGS_MENU;
-  else if (strWindow.Equals("addonbrowser")) windowID = WINDOW_DIALOG_ADDON_BROWSER;
   else if (strWindow.Equals("music")) windowID = WINDOW_MUSIC;
   else if (strWindow.Equals("musicfiles")) windowID = WINDOW_MUSIC_FILES;
   else if (strWindow.Equals("musiclibrary")) windowID = WINDOW_MUSIC_NAV;
@@ -877,6 +876,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("pvrosdguide")) windowID = WINDOW_DIALOG_PVR_OSD_GUIDE;
   else if (strWindow.Equals("pvrosddirector")) windowID = WINDOW_DIALOG_PVR_OSD_DIRECTOR;
   else if (strWindow.Equals("pvrosdcutter")) windowID = WINDOW_DIALOG_PVR_OSD_CUTTER;
+  else if (strWindow.Equals("addonbrowser")) windowID = WINDOW_ADDON_BROWSER;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
   else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;

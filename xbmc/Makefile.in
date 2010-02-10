@@ -17,6 +17,7 @@ INCLUDES+=-Ilib/libcdio/libcdio/include
 SRCS=Application.cpp \
      CueDocument.cpp \
      GUISettings.cpp \
+     GUIWindowAddonBrowser.cpp \
      GUIWindowSettings.cpp \
      GUIWindowSettingsCategory.cpp \
      GUIWindowSettingsProfile.cpp \
@@ -115,7 +116,7 @@ SRCS=Application.cpp \
      Song.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
-     GUIDialogAddonBrowser.cpp \
+     GUIDialogAddonSettings.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
      GUIDialogBoxBase.cpp \
      GUIDialogButtonMenu.cpp \
@@ -200,7 +201,6 @@ SRCS=Application.cpp \
      GUILargeTextureManager.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
-     GUIDialogAddonSettings.cpp \
      GUIDialogPluginSettings.cpp \
      PluginSettings.cpp \
      GUIDialogAccessPoints.cpp \

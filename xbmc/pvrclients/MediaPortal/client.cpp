@@ -205,9 +205,9 @@ bool HasSettings()
   return true;
 }
 
-addon_settings_t GetSettings()
+unsigned int GetSettings(StructSetting ***sSet)
 {
-  return NULL;
+  return 0;
 }
 
 //-- SetSetting ---------------------------------------------------------------
@@ -295,6 +295,11 @@ void Remove()
     m_bCreated = false;
   }
   curStatus = STATUS_UNKNOWN;
+}
+
+void FreeSettings()
+{
+
 }
 
 /***********************************************************

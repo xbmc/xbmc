@@ -43,7 +43,7 @@
 #endif
 
 #include <string.h>
-#include "xbmc_addon_types.h"
+#include "xbmc_addon_dll.h"
 
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN

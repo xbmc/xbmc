@@ -14,7 +14,7 @@
 			<animation type="WindowClose" reversible="false">
 				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
 				<effect type="fade" start="100" end="0" time="300" />
-			</animation>			
+			</animation>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -42,19 +42,19 @@
 				<ondown>9000</ondown>
 				<pagecontrol>-</pagecontrol>
 				<scrolltime>300</scrolltime>
-				<itemlayout height="57" width="260">
+				<itemlayout height="54" width="260">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>260</width>
-						<height>58</height>
+						<height>55</height>
 						<texture border="5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
 						<posx>250</posx>
 						<posy>0</posy>
 						<width>380</width>
-						<height>58</height>
+						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>grey3</textcolor>
 						<align>right</align>
@@ -62,19 +62,19 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="57" width="260">
+				<focusedlayout height="54" width="260">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>260</width>
-						<height>58</height>
+						<height>55</height>
 						<texture border="5">MenuItemFO.png</texture>
 					</control>
 					<control type="label">
 						<posx>250</posx>
 						<posy>0</posy>
 						<width>380</width>
-						<height>58</height>
+						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
@@ -120,18 +120,24 @@
 						<icon>special://skin/backgrounds/weather.jpg</icon>
 					</item>
 					<item id="7">
+						<label>24001</label>
+						<label2>31409</label2>
+						<onclick>ActivateWindow(AddonBrowser)</onclick>
+						<icon>special://skin/backgrounds/addons.jpg</icon>
+					</item>
+					<item id="8">
 						<label>705</label>
 						<label2>31405</label2>
 						<onclick>ActivateWindow(NetworkSettings)</onclick>
 						<icon>special://skin/backgrounds/network.jpg</icon>
 					</item>
-					<item id="8">
+					<item id="9">
 						<label>13000</label>
 						<label2>31406</label2>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
 						<icon>special://skin/backgrounds/system.jpg</icon>
 					</item>
-					<item id="9">
+					<item id="10">
 						<label>166</label>
 						<label2>31407</label2>
 						<onclick>ActivateWindow(1111)</onclick>

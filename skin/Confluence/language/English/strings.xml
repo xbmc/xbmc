@@ -18,7 +18,7 @@
   <string id="31025">Items</string>
   <string id="31026">Misc Options</string>
   <string id="31027">Location</string>
- 
+
   <!-- View Type labels -->
   <string id="31028">Poster Wrap</string>
   <string id="31029">Fanart</string>
@@ -47,7 +47,7 @@
   <string id="31059">Current playlist</string>
   <string id="31060">This file is stacked, select the part you want to play from.</string>
   <string id="31061">Current Selected</string>
-  
+
   <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Home screen options</string>
@@ -149,7 +149,8 @@
   <string id="31405">[B]CONFIGURE NETWORK SETTINGS[/B][CR][CR]Setup control of XBMC via UPnP and HTTP · Configure file sharing[CR]Set internet access options</string>
   <string id="31406">[B]CONFIGURE SYSTEM SETTINGS[/B][CR][CR]Setup and calibrate displays · Configure audio output · Setup remote controls[CR]Set power saving options · Enable debugging · Setup master lock</string>
   <string id="31407">[B]CONFIGURE SKIN SETTINGS[/B][CR][CR]Setup the Confluence skin · Add and remove home menu items[CR]Change skin backgrounds</string>
-  <string id="31408">[B]CONFIGURE TV SETTINGS[/B][CR][CR]Manage PVR Addons · Change fullscreen info[CR]Manage EPG data settings</string>
+  <string id="31408">[B]CONFIGURE TV SETTINGS[/B][CR][CR]Change fullscreen info · Manage EPG data settings</string>
+  <string id="31409">[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings
 
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
 

@@ -21,11 +21,14 @@
  */
 
 #include "IAddon.h"
-#include "AddonManager.h"
-#include "StdString.h"
+#include "tinyXML/tinyxml.h"
+#include "Util.h"
+#include "URL.h"
 #include "LocalizeStrings.h"
+#include <ostream>
 
 class CURL;
+class TiXmlElement;
 
 namespace ADDON
 {
@@ -33,77 +36,140 @@ namespace ADDON
 // utils
 const CStdString    TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 const CONTENT_TYPE  TranslateContent(const CStdString &string);
-const CStdString    TranslateType(const TYPE &type);
+const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const TYPE          TranslateType(const CStdString &string);
+
+struct AddonVersion
+{
+public:
+  AddonVersion(const CStdString &str) : str(str) {}
+  bool operator==(const AddonVersion &rhs) const;
+  bool operator!=(const AddonVersion &rhs) const;
+  bool operator>(const AddonVersion &rhs) const;
+  bool operator>=(const AddonVersion &rhs) const;
+  bool operator<(const AddonVersion &rhs) const;
+  bool operator<=(const AddonVersion &rhs) const;
+  CStdString Print() const;
+  const CStdString str;
+};
+
+struct AddonProps
+{
+public:
+  AddonProps(CStdString &uuid, TYPE type, CStdString &versionstr)
+    : uuid(uuid)
+    , type(type)
+    , version(versionstr)
+  {}
+
+  AddonProps(const AddonPtr &addon)
+    : uuid(addon->UUID())
+    , type(addon->Type())
+    , version(addon->Version())
+  { if(addon->Parent()) parent = addon->Parent()->UUID(); }
+
+  bool operator=(const AddonProps &rhs)
+  { return (*this).uuid == rhs.uuid
+    && (*this).type == rhs.type
+    && (*this).version == rhs.version; }
+  const CStdString uuid;
+  const TYPE type;
+  const AddonVersion version;
+  CStdString name;
+  CStdString parent;
+  CStdString license;
+  CStdString summary;
+  CStdString description;
+  CStdString path;
+  CStdString libname;
+  CStdString author;
+  CStdString source;
+  CStdString icon;
+  CStdString disclaimer;
+  std::set<CONTENT_TYPE> contents;
+  int        stars;
+};
+typedef std::vector<struct AddonProps> VECADDONPROPS;
 
 class CAddon : public IAddon
 {
 public:
-  CAddon(const AddonProps &props);
+  CAddon(const AddonProps &addonprops);
   virtual ~CAddon() {}
-  virtual AddonPtr Clone() const;
+  virtual AddonPtr Clone(const AddonPtr& parent) const;
 
   // settings & language
   virtual bool HasSettings();
   virtual bool LoadSettings();
   virtual void SaveSettings();
   virtual void SaveFromDefault();
-  virtual void UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value);
+  virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
   virtual CStdString GetSetting(const CStdString& key) const;
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id) const;
 
-  /* Beginning of Add-on data fields (readed from info.xml) */
-  TYPE Type() const { return m_type; }
-  CStdString UUID() const { return m_guid; }
-  CStdString Parent() const { return m_guid_parent; }
-  CStdString Name() const { return m_strName; }
+  // properties
+  const TYPE Type() const { return m_props.type; }
+  AddonProps Props() const { return m_props; }
+  const CStdString UUID() const { return m_props.uuid; }
+  const AddonPtr Parent() const { return m_parent; }
+  const CStdString Name() const { return m_props.name; }
   bool Disabled() const { return m_disabled; }
-  CStdString Version() const { return m_strVersion; }
-  CStdString Summary() const { return m_summary; }
-  CStdString Description() const { return m_strDesc; }
-  CStdString Path() const { return m_strPath; }
-  CStdString Profile() const { return m_strProfile; }
-  CStdString LibName() const { return m_strLibName; }
-  CStdString Author() const { return m_strAuthor; }
-  CStdString Icon() const { return m_icon; }
-  int  Stars() const { return m_stars; }
-  CStdString Disclaimer() const { return m_disclaimer; }
-  bool Supports(const CONTENT_TYPE &content) const { return (m_content.count(content) == 1); }
+  const AddonVersion Version();
+  const CStdString Summary() const { return m_props.summary; }
+  const CStdString Description() const { return m_props.description; }
+  const CStdString Path() const { return m_props.path; }
+  const CStdString Profile() const { return m_strProfile; }
+  const CStdString LibName() const { return m_props.libname; }
+  const CStdString Author() const { return m_props.author; }
+  const CStdString Icon() const { return m_props.icon; }
+  const int Stars() const { return m_props.stars; }
+  const CStdString Disclaimer() const { return m_props.disclaimer; }
+  bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
+  ADDONDEPS GetDeps() { return m_dependencies; }
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
+  CAddon(const CAddon&, const AddonPtr&);
   bool LoadUserSettings();
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
   CStdString        m_userSettingsPath;
 
 private:
+  friend class AddonMgr;
+  AddonProps m_props;
+  const AddonPtr    m_parent;
   CStdString GetProfilePath();
   CStdString GetUserSettingsPath();
+
+  virtual bool IsAddonLibrary() { return false; }
+
   void Enable() { LoadStrings(); m_disabled = false; }
   void Disable() { m_disabled = true; ClearStrings();}
+
   virtual bool LoadStrings();
   virtual void ClearStrings();
 
-  TYPE              m_type;
-  std::set<CONTENT_TYPE> m_content;///< CONTENT_TYPE type identifier(s) this Add-on supports
-  CStdString        m_guid;        ///< Unique identifier for this addon, chosen by developer
-  CStdString        m_guid_parent; ///< Unique identifier of the parent for this child addon, chosen by developer
-  CStdString        m_strName;     ///< Name of the addon, can be chosen freely.
-  CStdString        m_strVersion;  ///< Version of the addon, must be in form
-  CStdString        m_summary;     ///< Short summary of addon
-  CStdString        m_strDesc;     ///< Description of addon
-  CStdString        m_strPath;     ///< Path to the addon
-  CStdString        m_strProfile;  ///< Path to the addon's datastore for this profile
-  CStdString        m_strLibName;  ///< Name of the library
-  CStdString        m_strAuthor;   ///< Author(s) of the addon
-  CStdString        m_icon;        ///< Path to icon for the addon, or blank by default
-  int               m_stars;       ///< Rating
-  CStdString        m_disclaimer;  ///< if exists, user needs to confirm before installation
-  bool              m_disabled;    ///< Is this addon disabled?
-  int               m_childs;      ///< How many child add-on's are present
+  void SetDeps(ADDONDEPS& deps) { m_dependencies = deps; }
+  ADDONDEPS m_dependencies;
+
+  void BuildLibName();
+  CStdString  m_strProfile;
+  CStdString  m_strLibName;
+  bool        m_disabled;
   CLocalizeStrings  m_strings;
+};
+
+class CAddonLibrary : public CAddon
+{
+public:
+  CAddonLibrary(const AddonProps &props);
+
+private:
+  virtual bool IsAddonLibrary() { return true; }
+  TYPE SetAddonType();
+  const TYPE m_addonType; // addon type this library enhances
 };
 
 }; /* namespace ADDON */

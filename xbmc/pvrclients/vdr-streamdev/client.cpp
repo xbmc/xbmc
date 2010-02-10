@@ -563,6 +563,11 @@ ADDON_STATUS Create(void* hdl, void* props)
   return m_CurStatus;
 }
 
+void Destroy()
+{
+
+}
+
 ADDON_STATUS GetStatus()
 {
   return m_CurStatus;
@@ -573,9 +578,9 @@ bool HasSettings()
   return true;
 }
 
-addon_settings_t GetSettings()
+unsigned int GetSettings(StructSetting ***sSet)
 {
-  return NULL;
+  return 0;
 }
 
 ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
@@ -651,6 +656,10 @@ void Remove()
   m_CurStatus = STATUS_UNKNOWN;
 }
 
+void FreeSettings()
+{
+
+}
 
 /***********************************************************
  * PVR Client AddOn specific public library functions

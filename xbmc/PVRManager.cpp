@@ -108,7 +108,7 @@ void CPVRManager::Start()
   m_LastChannel             = 0;
 
   /* Discover, load and create chosen Client add-on's. */
-  CAddonMgr::Get()->RegisterAddonCallback(ADDON_PVRDLL, this);
+  CAddonMgr::Get()->RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
@@ -152,11 +152,8 @@ void CPVRManager::Stop()
 bool CPVRManager::LoadClients()
 {
   /* Get all PVR Add on's */
-  if (!CAddonMgr::Get()->LoadAddonsXML(ADDON_PVRDLL))
-    return false;
-
   VECADDONS addons;
-  if (!CAddonMgr::Get()->GetAddons(ADDON_PVRDLL, addons, CONTENT_NONE, true, false))
+  if (!CAddonMgr::Get()->GetAddons(ADDON_PVRDLL, addons, CONTENT_NONE, true))
     return false;
 
   m_database.Open();
@@ -316,32 +313,6 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     default:
       break;
   }
-}
-
-/********************************************************************
- * CPVRManager SetSetting
- *
- * Send a setting value to the client driver
- ********************************************************************/
-ADDON_STATUS CPVRManager::SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)
-{
-  if (!addon)
-    return STATUS_UNKNOWN;
-
-  CLog::Log(LOGINFO, "PVR: set setting of clientName: %s, settingName: %s", addon->Name().c_str(), settingName);
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
-    {
-      if (m_clients[(*itr).first]->Name() == addon->Name())
-      {
-        return m_clients[(*itr).first]->SetSetting(settingName, settingValue);
-      }
-    }
-    itr++;
-  }
-  return STATUS_UNKNOWN;
 }
 
 /********************************************************************

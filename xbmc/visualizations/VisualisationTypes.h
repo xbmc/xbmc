@@ -26,6 +26,7 @@
 #ifndef __VISUALISATION_TYPES_H__
 #define __VISUALISATION_TYPES_H__
 
+#include "../addons/include/xbmc_addon_dll.h"
 #include <vector>
 
 extern "C"
@@ -134,17 +135,6 @@ extern "C"
     std::vector<const char *> entry;
   };
 
-  ////////////////////////////////
-  typedef struct
-  {
-  public:
-    int           type;
-    char*         name;
-    int           current;
-    char**        entry;
-    unsigned int  entry_elements;
-  } StructSetting;
-
   class VisUtils
   {
   public:
@@ -162,13 +152,13 @@ extern "C"
       {
         (*sSet)[i] = NULL;
         (*sSet)[i] = (StructSetting*)malloc(sizeof(StructSetting));
-        (*sSet)[i]->name = NULL;
+        (*sSet)[i]->label = NULL;
         uiElements++;
 
         if (vecSet[i].name)
         {
-          (*sSet)[i]->name = (char*)malloc(strlen(vecSet[i].name)*sizeof(char*)+1);
-          strcpy((*sSet)[i]->name, vecSet[i].name);
+          (*sSet)[i]->label = (char*)malloc(strlen(vecSet[i].name)*sizeof(char*)+1);
+          strcpy((*sSet)[i]->label, vecSet[i].name);
           (*sSet)[i]->type = vecSet[i].type;
           (*sSet)[i]->current = vecSet[i].current;
           (*sSet)[i]->entry_elements = 0;
@@ -199,7 +189,7 @@ extern "C"
       vecSet->clear();
       for(unsigned int i=0;i<iElements;i++)
       {
-        VisSetting vSet((VisSetting::SETTING_TYPE)(*sSet)[i]->type, (*sSet)[i]->name);
+        VisSetting vSet((VisSetting::SETTING_TYPE)(*sSet)[i]->type, (*sSet)[i]->label);
         if((*sSet)[i]->type == VisSetting::SPIN)
         {
           for(unsigned int j=0;j<(*sSet)[i]->entry_elements;j++)
@@ -229,8 +219,8 @@ extern "C"
           if((*sSet)[i]->entry)
             free((*sSet)[i]->entry);
         }
-        if((*sSet)[i]->name)
-          free((*sSet)[i]->name);
+        if((*sSet)[i]->label)
+          free((*sSet)[i]->label);
         if((*sSet)[i])
           free((*sSet)[i]);
       }

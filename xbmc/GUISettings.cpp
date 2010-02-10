@@ -545,7 +545,7 @@ void CGUISettings::Initialize()
 
 #ifdef HAS_DX
   // 13611 == Standard w/o CrystalHD but still using shaders so not really software
-  renderers.insert(make_pair(13611, RENDER_METHOD_SOFTWARE)); 
+  renderers.insert(make_pair(13611, RENDER_METHOD_SOFTWARE));
 #endif
 
 #ifdef HAS_GL
@@ -763,7 +763,6 @@ void CGUISettings::Initialize()
   AddGroup(8, 18000);
   AddCategory(8, "pvrmanager", 128);
   AddBool(1, "pvrmanager.enabled", 449  , false);
-  AddString(2, "pvrmanager.pvrsources", 18001, "", BUTTON_CONTROL_STANDARD);
   AddCategory(8,"pvrmenu", 18004);
   AddInt(1, "pvrmenu.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(2, "pvrmenu.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);

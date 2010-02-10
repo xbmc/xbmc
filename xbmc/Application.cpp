@@ -160,6 +160,7 @@
 #include "GUIWindowScripts.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
+#include "GUIWindowAddonBrowser.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIWindowSystemInfo.h"
 #include "GUIWindowScreensaver.h"
@@ -1131,6 +1132,8 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/scripts");
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/addons/pvr");
+    CDirectory::Create("special://xbmc/addons/libraries");
+    CDirectory::Create("special://xbmc/addons/libraries/pvr");
     CDirectory::Create("special://xbmc/plugins");
     CDirectory::Create("special://xbmc/plugins/music");
     CDirectory::Create("special://xbmc/plugins/video");
@@ -1174,6 +1177,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
+  g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
   g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
   g_windowManager.Add(new CGUIDialogKeyboard);           // window id = 103
@@ -3285,6 +3289,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_VIDEO_OVERLAY);
     g_windowManager.Delete(WINDOW_SCRIPTS_INFO);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
+    g_windowManager.Delete(WINDOW_ADDON_BROWSER);
 
     g_windowManager.Delete(WINDOW_HOME);
     g_windowManager.Delete(WINDOW_PROGRAMS);

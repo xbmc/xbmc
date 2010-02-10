@@ -314,6 +314,8 @@
 #define WINDOW_SCRIPTS                    10030
 #define WINDOW_SETTINGS_PROFILES          10034
 
+#define WINDOW_ADDON_BROWSER              10040
+
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
 #define WINDOW_DIALOG_KEYBOARD            10103
@@ -355,8 +357,6 @@
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_EPG_SCAN            10146
 #define WINDOW_DIALOG_PLUGIN_SETTINGS     10147
-
-#define WINDOW_DIALOG_ADDON_BROWSER       10160
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

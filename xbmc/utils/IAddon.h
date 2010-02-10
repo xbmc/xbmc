@@ -22,13 +22,13 @@
 #include "boost/shared_ptr.hpp"
 #include "StdString.h"
 #include <set>
-#include <list>
+#include <map>
 
 class TiXmlElement;
 
 typedef enum
 {
-  CONTENT_PLUGIN          = -2,
+  CONTENT_PLUGIN          = -2, //TODO ditch this, used in scraping code
   //TODO -1 is used as default in QueryParams.h
   CONTENT_NONE            = 0,
   CONTENT_MOVIES          = 1,
@@ -47,88 +47,65 @@ namespace ADDON
 {
   typedef enum
   {
-    ADDON_MULTITYPE         = 0,
-    ADDON_VIZ               = 1,
-    ADDON_SKIN              = 2,
-    ADDON_PVRDLL            = 3,
-    ADDON_SCRIPT            = 4,
-    ADDON_SCRAPER           = 5,
-    ADDON_SCREENSAVER       = 6,
-    ADDON_PLUGIN            = 7,
-    ADDON_DSP_AUDIO         = 8
+    ADDON_UNKNOWN,
+    ADDON_VIZ,
+    ADDON_VIZ_LIBRARY,
+    ADDON_SKIN,
+    ADDON_PVRDLL,
+    ADDON_SCRIPT,
+    ADDON_SCRAPER,
+    ADDON_SCRAPER_LIBRARY,
+    ADDON_SCREENSAVER,
+    ADDON_PLUGIN
   } TYPE;
 
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
 
   class CAddonMgr;
+  class AddonVersion;
+  typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
+  class AddonProps;
 
   class IAddon
   {
   public:
-    virtual AddonPtr Clone() const =0;
-    virtual TYPE Type() const =0;
-    virtual CStdString UUID() const =0;
-    virtual CStdString Parent() const =0;
-    virtual CStdString Name() const =0;
+    virtual AddonPtr Clone(const AddonPtr& self) const =0;
+    virtual const TYPE Type() const =0;
+    virtual AddonProps Props() const =0;
+    virtual const CStdString UUID() const =0;
+    virtual const AddonPtr Parent() const =0;
+    virtual const CStdString Name() const =0;
     virtual bool Disabled() const =0;
-    virtual CStdString Version() const =0;
-    virtual CStdString Summary() const =0;
-    virtual CStdString Description() const =0;
-    virtual CStdString Path() const =0;
-    virtual CStdString Profile() const =0;
-    virtual CStdString LibName() const =0;
-    virtual CStdString Author() const =0;
-    virtual CStdString Icon() const =0;
-    virtual int  Stars() const =0;
-    virtual CStdString Disclaimer() const =0;
+    virtual const AddonVersion Version() =0;
+    virtual const CStdString Summary() const =0;
+    virtual const CStdString Description() const =0;
+    virtual const CStdString Path() const =0;
+    virtual const CStdString Profile() const =0;
+    virtual const CStdString LibName() const =0;
+    virtual const CStdString Author() const =0;
+    virtual const CStdString Icon() const =0;
+    virtual const int  Stars() const =0;
+    virtual const CStdString Disclaimer() const =0;
     virtual bool Supports(const CONTENT_TYPE &content) const =0;
     virtual bool HasSettings() =0;
     virtual bool LoadSettings() =0;
     virtual void SaveSettings() =0;
     virtual void SaveFromDefault() =0;
-    virtual void UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value) =0;
+    virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "") =0;
     virtual CStdString GetSetting(const CStdString& key) const =0;
-    virtual TiXmlElement* GetSettingsXML()=0;
+    virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) const =0;
-
+    virtual ADDONDEPS GetDeps() =0;
+    
   private:
     friend class CAddonMgr;
+    virtual bool IsAddonLibrary() =0;
     virtual void Enable() =0;
     virtual void Disable() =0;
     virtual bool LoadStrings() =0;
     virtual void ClearStrings() =0;
-
+    virtual void SetDeps(ADDONDEPS& deps) =0;
   };
-
-  struct AddonProps
-  {
-  public:
-    AddonProps(CStdString uuid, ADDON::TYPE type) : uuid(uuid)
-                                      , type(type)
-    {}
-
-    AddonProps(const AddonPtr &addon) : uuid(addon->UUID())
-                                      , type(addon->Type())
-                                      , parent(addon->Parent())
-                                      , name(addon->Name())
-                                      , icon(addon->Icon())
-    {}
-    const CStdString uuid;
-    const ADDON::TYPE type;
-    std::set<CONTENT_TYPE> contents;
-    CStdString parent;
-    CStdString name;
-    CStdString version;
-    CStdString summary;
-    CStdString description;
-    CStdString path;
-    CStdString libname;
-    CStdString author;
-    CStdString icon;
-    int        stars;
-    CStdString disclaimer;
-  };
-  typedef std::list<struct AddonProps> VECADDONPROPS;
 };
 

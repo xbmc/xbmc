@@ -19,20 +19,24 @@
  *
  */
 
-#include "Application.h"
 #include "Addon.h"
+#include "AddonManager.h"
 #include "Settings.h"
-#include "FileSystem/Directory.h"
-#include "utils/log.h"
-#include "LocalizeStrings.h"
 #include "GUISettings.h"
-#include "Util.h"
+#include "StringUtils.h"
+#include "FileSystem/Directory.h"
+#include "log.h"
+#include <string.h>
 
-using namespace std;
-using namespace XFILE;
+using XFILE::CDirectory;
 
 namespace ADDON
 {
+
+/**********************************************************
+ * helper functions
+ *
+ */
 
 const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 {
@@ -74,6 +78,10 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
         return g_localizeStrings.Get(20360);
       return "episodes";
     }
+  case CONTENT_PROGRAMS:
+    {
+      return "programs";
+    }
   case CONTENT_NONE:
     {
       if (pretty)
@@ -89,107 +97,194 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
 
 const CONTENT_TYPE TranslateContent(const CStdString &string)
 {
-  if (string == "albums")
-    return CONTENT_ALBUMS;
-  else if (string == "artists")
-    return CONTENT_ARTISTS;
-  else if (string == "movies")
-    return CONTENT_MOVIES;
-  else if (string == "tvshows")
-    return CONTENT_TVSHOWS;
-  else if (string == "episoes")
-    return CONTENT_EPISODES;
-  else if (string == "musicvideos")
-    return CONTENT_MUSICVIDEOS;
-  else if (string == "plugin")
-    return CONTENT_PLUGIN;
-  else if (string == "weather")
-    return CONTENT_WEATHER;
-  else
-    return CONTENT_NONE;
+  if (string.Equals("albums")) return CONTENT_ALBUMS;
+  else if (string.Equals("artists")) return CONTENT_ARTISTS;
+  else if (string.Equals("movies")) return CONTENT_MOVIES;
+  else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
+  else if (string.Equals("episodes")) return CONTENT_EPISODES;
+  else if (string.Equals("musicvideos")) return CONTENT_MUSICVIDEOS;
+  else if (string.Equals("plugin")) return CONTENT_PLUGIN;
+  else if (string.Equals("programs")) return CONTENT_PROGRAMS;
+  else if (string.Equals("weather")) return CONTENT_WEATHER;
+  else return CONTENT_NONE;
 }
 
-const CStdString TranslateType(const ADDON::TYPE &type)
+const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
   switch (type)
   {
-    case ADDON::ADDON_PVRDLL:
-      return "pvrclient";
     case ADDON::ADDON_SCRAPER:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24007);
       return "scraper";
+    }
+    case ADDON::ADDON_SCRAPER_LIBRARY:
+    {
+      return "scraper-library";
+    }
     case ADDON::ADDON_SCREENSAVER:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24008);
       return "screensaver";
+    }
+    case ADDON::ADDON_PVRDLL:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24006);
+      return "pvrclient";
+    }
     case ADDON::ADDON_VIZ:
-      return "visualisation";
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24010);
+      return "visualization";
+    }
+    case ADDON::ADDON_VIZ_LIBRARY:
+    {
+      return "visualization-library";
+    }
     case ADDON::ADDON_PLUGIN:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24005);
       return "plugin";
+    }
+    case ADDON::ADDON_SCRIPT:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24009);
+      return "script";
+    }
     default:
+    {
       return "";
   }
+}
 }
 
 const ADDON::TYPE TranslateType(const CStdString &string)
 {
-  if (string == "pvrclient")
-    return ADDON_PVRDLL;
-  else if (string == "scraper")
-    return ADDON_SCRAPER;
-  else if (string == "screensaver")
-    return ADDON_SCREENSAVER;
-  else if (string == "visualisation")
-    return ADDON_VIZ;
-  else if (string == "plugin")
-    return ADDON_PLUGIN;
-  else if (string == "script")
-    return ADDON_SCRIPT;
-  else
-    return ADDON_MULTITYPE;
+  if (string.Equals("pvrclient")) return ADDON_PVRDLL;
+  else if (string.Equals("scraper")) return ADDON_SCRAPER;
+  else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
+  else if (string.Equals("screensaver")) return ADDON_SCREENSAVER;
+  else if (string.Equals("visualization")) return ADDON_VIZ;
+  else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
+  else if (string.Equals("plugin")) return ADDON_PLUGIN;
+  else if (string.Equals("script")) return ADDON_SCRIPT;
+  else return ADDON_UNKNOWN;
 }
+
+/**********************************************************
+ * AddonVersion
+ *
+ */
+
+bool AddonVersion::operator==(const AddonVersion &rhs) const
+{
+  return str.Equals(rhs.str);
+}
+
+bool AddonVersion::operator!=(const AddonVersion &rhs) const
+{
+  return !(*this == rhs);
+}
+
+bool AddonVersion::operator>(const AddonVersion &rhs) const
+{
+  return (strverscmp(str.c_str(), rhs.str.c_str()) > 0);
+}
+
+bool AddonVersion::operator>=(const AddonVersion &rhs) const
+{
+  return (*this == rhs) || (*this > rhs);
+}
+
+bool AddonVersion::operator<(const AddonVersion &rhs) const
+{
+  return (strverscmp(str.c_str(), rhs.str.c_str()) < 0);
+}
+
+bool AddonVersion::operator<=(const AddonVersion &rhs) const
+{
+  return (*this == rhs) || !(*this > rhs);
+}
+
+CStdString AddonVersion::Print() const
+{
+  CStdString out;
+  out.Format("%s %s", g_localizeStrings.Get(24051), str); // "Version: <str>"
+  return CStdString(out);
+}
+
+/**********************************************************
+ * CAddon
+ *
+ */
 
 CAddon::CAddon(const AddonProps &props)
-  : m_type(props.type)
-  , m_content(props.contents)
-  , m_guid(props.uuid)
-  , m_guid_parent(props.parent)
+  : m_props(props)
 {
-  m_strPath     = props.path;
-  m_strProfile  = GetProfilePath();
-  m_disabled    = true;
-  m_icon        = props.icon;
-  m_stars       = props.stars;
-  m_strVersion  = props.version;
-  m_strName     = props.name;
-  m_summary     = props.summary;
-  m_strDesc     = props.description;
-  m_disclaimer  = props.disclaimer;
-  m_strLibName  = props.libname;
+  if (props.libname.empty()) BuildLibName();
+  else m_strLibName = props.libname;
+  m_strProfile = GetProfilePath();
   m_userSettingsPath = GetUserSettingsPath();
+  m_disabled = true;
 }
 
-CAddon::CAddon(const CAddon &rhs)
-  : m_type(rhs.Type())
-  , m_content(rhs.m_content)
-  , m_guid(StringUtils::CreateUUID())
-  , m_guid_parent(rhs.UUID())
+CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
+  : m_props(rhs.Props())
+  , m_parent(parent)
 {
+  //m_uuid(StringUtils::CreateUUID())
   m_userXmlDoc  = rhs.m_userXmlDoc;
-  m_strPath     = rhs.Path();
   m_strProfile  = GetProfilePath();
   m_disabled    = false;
-  m_icon        = rhs.Icon();
-  m_stars       = rhs.Stars();
-  m_strVersion  = rhs.Version();
-  m_strName     = rhs.Name();
-  m_summary     = rhs.Summary();
-  m_strDesc     = rhs.Description();
-  m_disclaimer  = rhs.Disclaimer();
   m_strLibName  = rhs.LibName();
   m_userSettingsPath = GetUserSettingsPath();
 }
 
-AddonPtr CAddon::Clone() const
+AddonPtr CAddon::Clone(const AddonPtr &self) const
 {
-  return AddonPtr(new CAddon(*this));
+  return AddonPtr(new CAddon(*this, self));
+}
+
+const AddonVersion CAddon::Version()
+{
+  return m_props.version;
+}
+
+//TODO platform/path crap should be negotiated between the addon and
+// the handler for it's type
+void CAddon::BuildLibName()
+{
+  m_strLibName = "default";
+  CStdString ext;
+  switch (m_props.type)
+  {
+  case ADDON_SCRAPER:
+  case ADDON_SCRAPER_LIBRARY:
+    ext = ADDON_SCRAPER_EXT;
+    break;
+  case ADDON_SCREENSAVER:
+    ext = ADDON_SCREENSAVER_EXT;
+    break;
+  case ADDON_VIZ:
+    ext = ADDON_VIS_EXT;
+    break;
+  case ADDON_PLUGIN:
+    ext = ADDON_PYTHON_EXT;
+    break;
+  default:
+    m_strLibName.clear();
+    return;
+  }
+  // extensions are returned as *.ext
+  // so remove the asterisk
+  ext.erase(0,1);
+  m_strLibName.append(ext);
 }
 
 /*
@@ -201,8 +296,8 @@ bool CAddon::LoadStrings()
     return false;
 
   // Path where the language strings reside
-  CStdString pathToLanguageFile = m_strPath;
-  CStdString pathToFallbackLanguageFile = m_strPath;
+  CStdString pathToLanguageFile = m_props.path;
+  CStdString pathToFallbackLanguageFile = m_props.path;
   CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
   CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
   CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
@@ -232,7 +327,7 @@ CStdString CAddon::GetString(uint32_t id) const
 */
 bool CAddon::HasSettings()
 {
-  CStdString addonFileName = m_strPath;
+  CStdString addonFileName = m_props.path;
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
@@ -251,7 +346,7 @@ bool CAddon::HasSettings()
 
 bool CAddon::LoadSettings()
 {
-  CStdString addonFileName = m_strPath;
+  CStdString addonFileName = m_props.path;
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
@@ -313,7 +408,7 @@ void CAddon::SaveFromDefault()
     return;
   }
 
-  TiXmlElement *setting = GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = GetSettingsXML()->FirstChildElement("setting");
   while (setting)
   {
     CStdString id;
@@ -343,7 +438,10 @@ CStdString CAddon::GetSetting(const CStdString& key) const
     {
       const char *id = setting->Attribute("id");
       if (id && strcmpi(id, key) == 0)
-        return setting->Attribute("value");
+      {
+        CStdString text = setting->Attribute("value");
+        return text;
+      }
 
       setting = setting->NextSiblingElement("setting");
     }
@@ -367,9 +465,9 @@ CStdString CAddon::GetSetting(const CStdString& key) const
   return "";
 }
 
-void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value)
+void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const CStdString& type/* = "" */)
 {
-  if (key == "" || type == "") return;
+  if (key.empty()) return;
 
   // Try to find the setting and change its value
   if (!m_userXmlDoc.RootElement())
@@ -384,7 +482,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const 
     const char *storedtype = setting->Attribute("type");
     if (id && strcmpi(id, key) == 0)
     {
-      if (storedtype && strcmpi(storedtype, type) != 0)
+      if (!type.empty() && storedtype && strcmpi(storedtype, type) != 0)
         setting->SetAttribute("type", type.c_str());
 
       setting->SetAttribute("value", value.c_str());
@@ -397,7 +495,10 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& type, const 
   // Setting not found, add it
   TiXmlElement nodeSetting("setting");
   nodeSetting.SetAttribute("id", std::string(key.c_str())); //FIXME otherwise attribute value isn't updated
+  if (!type.empty())
   nodeSetting.SetAttribute("type", std::string(type.c_str()));
+  else
+    nodeSetting.SetAttribute("type", "text");
   nodeSetting.SetAttribute("value", std::string(value.c_str()));
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
@@ -419,6 +520,27 @@ CStdString CAddon::GetUserSettingsPath()
   CStdString path;
   CUtil::AddFileToFolder(Profile(), "settings.xml", path);
   return path;
+}
+
+/**********************************************************
+ * CAddonLibrary
+ *
+ */
+
+CAddonLibrary::CAddonLibrary(const AddonProps& props)
+  : CAddon(props)
+  , m_addonType(SetAddonType())
+{
+}
+
+TYPE CAddonLibrary::SetAddonType()
+{
+  if (Type() == ADDON_SCRAPER_LIBRARY)
+    return ADDON_SCRAPER;
+  else if (Type() == ADDON_VIZ_LIBRARY)
+    return ADDON_VIZ;
+  else
+    return ADDON_UNKNOWN;
 }
 
 } /* namespace ADDON */

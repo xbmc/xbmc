@@ -39,7 +39,7 @@ typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 typedef std::map< long, PVR_STREAMPROPS >       STREAMPROPS;
 
 class CPVRManager : IPVRClientCallback
-                  , public ADDON::IAddonCallback
+                  , public ADDON::IAddonMgrCallback
                   , private CThread
 {
 public:
@@ -58,8 +58,6 @@ public:
   /*--- Addon related functions ---*/
   bool RequestRestart(const ADDON::IAddon* addon, bool datachanged);
   bool RequestRemoval(const ADDON::IAddon* addon);
-  ADDON_STATUS SetSetting(const ADDON::IAddon* addon, const char *settingName, const void *settingValue);
-  virtual addon_settings* GetSettings(const ADDON::IAddon*) { return NULL; };
   void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /*--- GUIInfoManager functions ---*/

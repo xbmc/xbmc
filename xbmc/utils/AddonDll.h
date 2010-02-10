@@ -21,7 +21,6 @@
  */
 #include "Addon.h"
 #include "../DllAddon.h"
-//#include "../addons/include/libaddon.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
@@ -31,10 +30,9 @@
 
 using namespace XFILE;
 
-
 namespace ADDON
 {
-  template<class TheDll, typename TheStruct, typename Props>
+  template<class TheDll, typename TheStruct, typename TheProps>
   class CAddonDll : public CAddon
   {
   public:
@@ -57,13 +55,13 @@ namespace ADDON
   protected:
     bool LoadDll();
     TheStruct* m_pStruct;
-    Props*      m_pInfo;
+    TheProps*     m_pInfo;
     bool m_initialized;
 
   private:
     TheDll* m_pDll;
     virtual ADDON_STATUS TransferSettings();
-    TiXmlElement MakeSetting(addon_setting_t setting) const;
+    TiXmlElement MakeSetting(DllSetting& setting) const;
 
     static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
     static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
@@ -73,8 +71,8 @@ namespace ADDON
     static const char* AddOnGetUserDirectory(void *userData);
   };
 
-template<class TheDll, typename TheStruct, typename Props>
-CAddonDll<TheDll, TheStruct, Props>::CAddonDll(const AddonProps &props)
+template<class TheDll, typename TheStruct, typename TheProps>
+CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
   : CAddon(props)
 {
   m_pStruct     = NULL;
@@ -83,30 +81,29 @@ CAddonDll<TheDll, TheStruct, Props>::CAddonDll(const AddonProps &props)
   m_pInfo       = NULL;
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-CAddonDll<TheDll, TheStruct, Props>::~CAddonDll()
+template<class TheDll, typename TheStruct, typename TheProps>
+CAddonDll<TheDll, TheStruct, TheProps>::~CAddonDll()
 {
   if (m_initialized)
     Destroy();
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-AddonPtr CAddonDll<TheDll, TheStruct, Props>::Clone() const
+template<class TheDll, typename TheStruct, typename TheProps>
+AddonPtr CAddonDll<TheDll, TheStruct, TheProps>::Clone() const
 {
-  return AddonPtr(new CAddonDll<TheDll, TheStruct, Props>(*this));
+  return AddonPtr(new CAddonDll<TheDll, TheStruct, TheProps>(*this));
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-bool CAddonDll<TheDll, TheStruct, Props>::LoadDll()
+template<class TheDll, typename TheStruct, typename TheProps>
+bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
 {
-  /* Determine the path to the Dll */
   CStdString strFileName;
-  if (Parent().IsEmpty())
+  if (!Parent())
   {
     strFileName = Path() + LibName();
   }
   else
-  {
+  { //FIXME hack to load same Dll twice
     CStdString extension = CUtil::GetExtension(LibName());
     strFileName = "special://temp/" + LibName();
     CUtil::RemoveExtension(strFileName);
@@ -138,8 +135,8 @@ bool CAddonDll<TheDll, TheStruct, Props>::LoadDll()
   return (m_pStruct != NULL);
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-bool CAddonDll<TheDll, TheStruct, Props>::Create()
+template<class TheDll, typename TheStruct, typename TheProps>
+bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
 {
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
 
@@ -161,7 +158,7 @@ bool CAddonDll<TheDll, TheStruct, Props>::Create()
     m_initialized = false;
   }
   catch (ADDON_STATUS status)
-  {
+  { 
     if (status == STATUS_NEED_SETTINGS)
     { // catch request for settings in initalization
       if (TransferSettings() == STATUS_OK)
@@ -174,14 +171,14 @@ bool CAddonDll<TheDll, TheStruct, Props>::Create()
     }
 
     ///* Delete is performed by the calling class */
-    new CAddonStatusHandler(this, status, "", false);
+    //new CAddonStatusHandler(this, status, "", false);
   }
 
   return m_initialized;
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-void CAddonDll<TheDll, TheStruct, Props>::Destroy()
+template<class TheDll, typename TheStruct, typename TheProps>
+void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
   delete m_pStruct;
   m_pStruct = NULL;
@@ -191,13 +188,12 @@ void CAddonDll<TheDll, TheStruct, Props>::Destroy()
   CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-void CAddonDll<TheDll, TheStruct, Props>::Remove()
+template<class TheDll, typename TheStruct, typename TheProps>
+void CAddonDll<TheDll, TheStruct, TheProps>::Remove()
 {
   /* Unload library file */
   try
   {
-    m_pDll->Remove();
     m_pDll->Unload();
   }
   catch (std::exception &e)
@@ -206,8 +202,8 @@ void CAddonDll<TheDll, TheStruct, Props>::Remove()
   }
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-ADDON_STATUS CAddonDll<TheDll, TheStruct, Props>::GetStatus()
+template<class TheDll, typename TheStruct, typename TheProps>
+ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::GetStatus()
 {
   try
   {
@@ -221,8 +217,8 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, Props>::GetStatus()
   return STATUS_UNKNOWN;
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-bool CAddonDll<TheDll, TheStruct, Props>::HasSettings()
+template<class TheDll, typename TheStruct, typename TheProps>
+bool CAddonDll<TheDll, TheStruct, TheProps>::HasSettings()
 {
   if (!LoadDll())
     return false;
@@ -238,130 +234,105 @@ bool CAddonDll<TheDll, TheStruct, Props>::HasSettings()
   }
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-bool CAddonDll<TheDll, TheStruct, Props>::LoadSettings()
+template<class TheDll, typename TheStruct, typename TheProps>
+bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
 {
   if (!LoadDll())
     return false;
-//
-//  addon_settings_t settings = NULL;
-//  try
-//  {
-//    settings = m_pDll->GetSettings();
-//  }
-//  catch (std::exception &e)
-//  {
-//    CLog::Log(LOGERROR, "ADDON:: %s - exception '%s' during GetSettings occurred, contact Developer '%s' of this AddOn", Name().c_str(), e.what(), Author().c_str());
-//    return false;
-//  }
-//
-//  if (settings)
-//  {
-//    // regenerate XML doc
-//    m_addonXmlDoc.Clear();
-//    TiXmlElement node("settings");
-//    m_addonXmlDoc.InsertEndChild(node);
-//
-//    int count = addon_settings_get_count(settings);
-//    addon_setting_t setting;
-//    for (int i=0; i < count; i++)
-//    {
-//       setting = addon_settings_get_item(settings, i);
-//       if (!setting)
-//         return false;
-//
-//       m_addonXmlDoc.RootElement()->InsertEndChild(MakeSetting(setting));
-//       addon_release(setting);
-//    }
-//  }
-//  else
-//    return false;
-//
-  CStdString addonFileName = Path();
-  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
-  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
-  if (!m_addonXmlDoc.LoadFile(addonFileName))
+  StructSetting** sSet;
+  std::vector<DllSetting> vSet;
+  unsigned entries = 0;
+  try
   {
-    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    entries = m_pDll->GetSettings(&sSet);
+    DllUtils::StructToVec(entries, &sSet, &vSet);
+    m_pDll->FreeSettings();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "ADDON:: %s - exception '%s' during GetSettings occurred, contact Developer '%s' of this AddOn", Name().c_str(), e.what(), Author().c_str());
     return false;
   }
 
-  // Make sure that the addon XML has the settings element
-  TiXmlElement *setting = m_addonXmlDoc.RootElement();
-  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  if (vSet.size())
   {
-    CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", addonFileName.c_str());
-    return false;
+    // regenerate XML doc
+    m_addonXmlDoc.Clear();
+    TiXmlElement node("settings");
+    m_addonXmlDoc.InsertEndChild(node);
+
+    for (unsigned i=0; i < entries; i++)
+    {
+       DllSetting& setting = vSet[i];
+       m_addonXmlDoc.RootElement()->InsertEndChild(MakeSetting(setting));
+    }
   }
+  else
+    return CAddon::LoadSettings();
 
   return CAddon::LoadUserSettings();
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-TiXmlElement CAddonDll<TheDll, TheStruct, Props>::MakeSetting(addon_setting_t setting) const
+template<class TheDll, typename TheStruct, typename TheProps>
+TiXmlElement CAddonDll<TheDll, TheStruct, TheProps>::MakeSetting(DllSetting& setting) const
 {
   TiXmlElement node("setting");
-//  addon_setting_type_t type = addon_setting_type(setting);
-//  CStdString id = addon_setting_id(setting);
-//  CStdString label = addon_setting_label(setting);
-//  CStdString lvalues = addon_setting_lvalues(setting);
-//
-//  switch (type)
-//  {
-//  case SETTING_BOOL:
-//    {
-//      node.SetAttribute("id", id.c_str());
-//      node.SetAttribute("type", "bool");
-//      node.SetAttribute("label", label.c_str());
-//      break;
-//    }
-//  case SETTING_ENUM:
-//    {
-//      node.SetAttribute("id", id.c_str());
-//      node.SetAttribute("type", "enum");
-//      node.SetAttribute("label", label.c_str());
-//      node.SetAttribute("lvalues", lvalues.c_str());
-//      break;
-//    }
-//  default:
-//    break;
-//  }
+
+  switch (setting.type)
+  {
+    case DllSetting::CHECK:
+    {
+      node.SetAttribute("id", setting.id);
+      node.SetAttribute("type", "bool");
+      node.SetAttribute("label", setting.label);
+      break;
+    }
+    case DllSetting::SPIN:
+    {
+      node.SetAttribute("id", setting.id);
+      node.SetAttribute("type", "enum");
+      node.SetAttribute("label", setting.label);
+      //node.SetAttribute("lvalues", lvalues.c_str());
+      break;
+    }
+  default:
+    break;
+  }
 
   return node;
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-void CAddonDll<TheDll, TheStruct, Props>::SaveSettings()
+template<class TheDll, typename TheStruct, typename TheProps>
+void CAddonDll<TheDll, TheStruct, TheProps>::SaveSettings()
 {
   // must save first, as TransferSettings() reloads saved settings!
   CAddon::SaveSettings();
   TransferSettings();
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-void CAddonDll<TheDll, TheStruct, Props>::SaveFromDefault()
+template<class TheDll, typename TheStruct, typename TheProps>
+void CAddonDll<TheDll, TheStruct, TheProps>::SaveFromDefault()
 {
   CAddon::SaveFromDefault();
   TransferSettings();
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-CStdString CAddonDll<TheDll, TheStruct, Props>::GetSetting(const CStdString& key)
+template<class TheDll, typename TheStruct, typename TheProps>
+CStdString CAddonDll<TheDll, TheStruct, TheProps>::GetSetting(const CStdString& key)
 {
   return CAddon::GetSetting(key);
 }
 
-template<class TheDll, typename TheStruct, typename Props>
-ADDON_STATUS CAddonDll<TheDll, TheStruct, Props>::TransferSettings()
+template<class TheDll, typename TheStruct, typename TheProps>
+ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
 {
   bool restart = false;
   ADDON_STATUS reportStatus = STATUS_OK;
 
   CLog::Log(LOGDEBUG, "Calling TransferSettings for: %s", Name().c_str());
 
-  if (!LoadUserSettings())
-    return STATUS_MISSING_FILE;
+  LoadUserSettings();
 
   TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
   while (setting)
@@ -406,7 +377,8 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, Props>::TransferSettings()
 
   if (restart || reportStatus != STATUS_OK)
   {
-    new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
+    //FIXME
+    //new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);  
   }
 
   return STATUS_OK;

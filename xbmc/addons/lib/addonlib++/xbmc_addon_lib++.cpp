@@ -49,7 +49,7 @@ void XBMC_log(const addon_log_t loglevel, const char *format, ... )
   m_cb->AddOn.Log(m_cb->addonData, loglevel, buffer);
 }
 
-void XBMC_status_callback(const addon_status_t status, const char* msg)
+void XBMC_status_callback(const ADDON_STATUS status, const char* msg)
 {
   if (m_cb == NULL)
     return;

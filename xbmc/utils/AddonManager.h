@@ -19,15 +19,17 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#include "IAddon.h"
-#include "StringUtils.h"
+#include "Addon.h"
+#include "../addons/include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
-#include "utils/Thread.h"
-#include "utils/CriticalSection.h"
-#include "../addons/include/xbmc_addon_types.h"
+#include "Thread.h"
+#include "StdString.h"
+#include "DateTime.h"
+#include "DownloadQueue.h"
 #include <vector>
 #include <map>
+
+class CCriticalSection;
 
 namespace ADDON
 {
@@ -35,38 +37,28 @@ namespace ADDON
   typedef std::vector<AddonPtr>::iterator IVECADDONS;
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
 
-  const int        ADDON_DIRSCAN_FREQ         = 60;
+  const int        ADDON_DIRSCAN_FREQ         = 300;
+  const CStdString ADDON_XBMC_REPO_URL        = "http://mirrors.xbmc.org/addons/addons.xml";
   const CStdString ADDON_METAFILE             = "description.xml";
-  const CStdString ADDON_MULTITYPE_EXT        = "*.add";
-  const CStdString ADDON_VIZ_EXT              = "*.vis";
-  const CStdString ADDON_SKIN_EXT             = "*.skin";
-  const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
-  const CStdString ADDON_SCRIPT_EXT           = "*.py";
-  const CStdString ADDON_SCRAPER_EXT          = "*.xml|*.idl";
+  const CStdString ADDON_VIS_EXT              = "*.vis";
+  const CStdString ADDON_PYTHON_EXT           = "*.py";
+  const CStdString ADDON_SCRAPER_EXT          = "*.xml";
   const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
-  const CStdString ADDON_PLUGIN_PVR_EXT       = "*.py|*.plpvr";
-  const CStdString ADDON_PLUGIN_MUSIC_EXT     = "*.py|*.plmus";
-  const CStdString ADDON_PLUGIN_VIDEO_EXT     = "*.py|*.plvid";
-  const CStdString ADDON_PLUGIN_PROGRAM_EXT   = "*.py|*.plpro";
-  const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.py|*.plpic";
-  const CStdString ADDON_PLUGIN_WEATHER_EXT   = "*.py|*.plwea";
+  const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
   const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
   const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
   /**
   * Class - IAddonCallback
-  * Used to access Add-on internal functions
-  * The callback is handled from the parent class which
-  * handle this types of Add-on's, as example for PVR Clients
-  * it is CPVRManager
+  * This callback should be inherited by any class which manages
+  * specific addon types. Could be mostly used for Dll addon types to handle
+  * cleanup before restart/removal
   */
-  class IAddonCallback
+  class IAddonMgrCallback
   {
     public:
       virtual bool RequestRestart(const IAddon* addon, bool datachanged)=0;
       virtual bool RequestRemoval(const IAddon* addon)=0;
-      virtual ADDON_STATUS SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)=0;
-      virtual addon_settings_t GetSettings(const IAddon* addon)=0;
   };
 
   /**
@@ -79,7 +71,7 @@ namespace ADDON
   class CAddonStatusHandler : private CThread
   {
     public:
-      CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
+      CAddonStatusHandler(IAddon* const addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
       ~CAddonStatusHandler();
 
       /* Thread handling */
@@ -100,41 +92,60 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr
+  class CAddonMgr : public IDownloadQueueObserver
   {
   public:
     static CAddonMgr* Get();
     virtual ~CAddonMgr();
 
-    IAddonCallback* GetCallbackForType(TYPE type);
-    bool RegisterAddonCallback(TYPE type, IAddonCallback* cb);
-    void UnregisterAddonCallback(TYPE type);
+    IAddonMgrCallback* GetCallbackForType(TYPE type);
+    bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
+    void UnregisterAddonMgrCallback(TYPE type);
 
     /* Addon access */
+    bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
-    bool GetAddonFromPath(const CStdString &path, AddonPtr &addon);
-    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
-    bool GetAddons(const TYPE &type, VECADDONPROPS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
-    CStdString GetString(const CStdString &uuid, const int number);
+    bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
+   CStdString GetString(const CStdString &uuid, const int number);
 
     /* Addon operations */
     bool EnableAddon(AddonPtr &addon);
+    bool EnableAddon(const CStdString &uuid);
     bool DisableAddon(AddonPtr &addon);
-
-    bool SaveAddonsXML(const TYPE &type);
-    bool LoadAddonsXML(const TYPE &type);
-
-  protected:
-    void FindAddons(const TYPE &type, const bool refresh = false);
-    bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
+    bool DisableAddon(const CStdString &uuid);
+    bool Clone(const AddonPtr& parent, AddonPtr& child);
 
   private:
+    /* Addon Repositories */
+    virtual void OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult);
+    std::vector<TICKET> m_downloads;
+    VECADDONPROPS m_remoteAddons;
+    void UpdateRepos();
+    bool ParseRepoXML(const CStdString &path);
+
+    void FindAddons(const TYPE &type);
+    bool LoadAddonsXML(const TYPE &type);
+    bool SaveAddonsXML(const TYPE &type);
+    bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
+    bool DependenciesMet(AddonPtr &addon);
+    bool UpdateIfKnown(AddonPtr &addon);
+
+    /* addons.xml */
+    CStdString GetAddonsXMLFile() const;
+    bool GetAddonProps(const TYPE &type, VECADDONPROPS &addons);
+    bool LoadAddonsXML(const TYPE& type, VECADDONPROPS& addons);
+    bool SaveAddonsXML(const TYPE& type, const VECADDONPROPS &addons);
+    bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS &addons);
+    void GetAddons(const TiXmlElement* pRootElement, const TYPE &type, VECADDONPROPS &addons);
+    bool GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addon);
+
     CAddonMgr();
     static CAddonMgr* m_pInstance;
-
-    static std::map<TYPE, IAddonCallback*> m_managers;
+    static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
-    std::map<TYPE, CDateTime> m_lastScan;
+    std::map<TYPE, CDateTime> m_lastDirScan;
     std::map<CStdString, AddonPtr> m_uuidMap;
   };
 

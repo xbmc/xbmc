@@ -82,6 +82,15 @@
 			<height>2</height>
 			<texture>separator.png</texture>
 		</control>
+		<control type="label" id="7">
+			<description>Separator label</description>
+			<label></label>
+			<height>25</height>
+			<font>font12</font>
+			<align>center</align>
+			<aligny>bottom</aligny>
+			<textcolor>green</textcolor>
+		</control>
 		<control type="group" id="9001">
 			<control type="button" id="10">
 				<description>OK Button</description>

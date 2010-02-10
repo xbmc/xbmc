@@ -52,12 +52,13 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
-#include "GUIDialogAddonBrowser.h"
+#include "GUIDialogAddonSettings.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowPrograms.h"
+#include "AddonManager.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
 #ifdef HAS_WEB_SERVER
@@ -116,6 +117,7 @@
 
 using namespace std;
 using namespace XFILE;
+using namespace ADDON;
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -1942,19 +1944,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartPVRManager();
     else
       g_application.StopPVRManager();
-  }
-  else if (strSetting.Equals("pvrmanager.pvrsources"))
-  {
-    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PVRDLL, true))
-    { // save the new list
-      ADDON::CAddonMgr::Get()->SaveAddonsXML(ADDON::ADDON_PVRDLL);
-      g_application.StopPVRManager();
-      g_application.StartPVRManager();
-    }
-    else
-    { // reload the existing list
-      ADDON::CAddonMgr::Get()->LoadAddonsXML(ADDON::ADDON_PVRDLL);
-    }
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {

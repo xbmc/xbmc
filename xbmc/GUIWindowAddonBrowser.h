@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,49 +22,31 @@
  */
 
 #include "Addon.h"
-#include "GUIDialog.h"
+#include "GUIWindow.h"
 #include "GUIViewControl.h"
 
 class CFileItem;
 class CFileItemList;
 
-class CGUIDialogAddonBrowser : public CGUIDialog
+class CGUIWindowAddonBrowser :
+      public CGUIWindow
 {
 public:
-  CGUIDialogAddonBrowser(void);
-  virtual ~CGUIDialogAddonBrowser(void);
+  CGUIWindowAddonBrowser(void);
+  virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
-  bool IsConfirmed() { return m_confirmed; };
-  void SetHeading(const CStdString &heading);
-
-  static bool ShowAndGetAddons(const ADDON::TYPE &type, const bool activeOnly);
-
-  void SetAddonType(const ADDON::TYPE &type);
-  void SetContent(const CONTENT_TYPE &content);
-
-  virtual bool HasListItems() const { return true; };
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 
 protected:
+  virtual void OnInitWindow();
+  int GetSelectedItem();
+  bool SelectItem(int select);
   void OnClick(int iItem);
   void OnSort();
-  void ClearFileItems();
+  void ClearListItems();
   void Update();
   bool OnContextMenu(int iItem);
-  void OnGetAddons(const ADDON::TYPE &type);
 
-  ADDON::TYPE m_type;
-  CONTENT_TYPE m_content;
   CFileItemList* m_vecItems;
-
-  bool m_confirmed;
-  bool m_changed;
-  inline void SetAddNew(bool activeOnly) { m_getAddons = !activeOnly; };
-  bool m_getAddons;
-  CGUIViewControl m_viewControl;
 };
 

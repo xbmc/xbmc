@@ -23,7 +23,7 @@
 #ifndef LIBADDON_H
 #define LIBADDON_H
 
-#include "xbmc_addon_types.h"
+#include "xbmc_addon_dll.h"
 
 #ifdef __cplusplus
 extern "C" {

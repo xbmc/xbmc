@@ -158,7 +158,7 @@ void CAddonUtils::AddonStatusHandler(void *addonData, const ADDON_STATUS status,
   if (!addon)
     return;
 
-  new CAddonStatusHandler(addon, status, msg, true);
+//  new CAddonStatusHandler(addon, status, msg, true);
   return;
 }
 
@@ -895,8 +895,6 @@ CStdString CAddonUtils::GetAddonTypeName(TYPE type)
 {
   switch (type)
   {
-    case ADDON_MULTITYPE:
-      return "MULTITYPE";
     case ADDON_VIZ:
       return "VIZ";
     case ADDON_SKIN:
@@ -911,8 +909,6 @@ CStdString CAddonUtils::GetAddonTypeName(TYPE type)
       return "SCREENSAVER";
     case ADDON_PLUGIN:
       return "PLUGIN";
-    case ADDON_DSP_AUDIO:
-      return "DSP_AUDIO";
     default:
       return "unknown";
   }

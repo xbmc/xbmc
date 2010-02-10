@@ -41,26 +41,11 @@
 #endif
 #endif
 
-#include "addons/include/xbmc_addon_types.h"
+#include "addons/include/xbmc_addon_dll.h"
 #include "addons/include/xbmc_pvr_types.h"
 
-/* An individual setting */
-struct addon_setting {
-  addon_setting_type_t type;
-  char *id;
-  char *label;
-  char *enable;
-  char *lvalues;
-};
-
-/* A list of settings */
-struct addon_settings {
-  addon_setting_t *settings_list;
-  long settings_count;
-};
-
 typedef void (*AddOnLogCallback)(void *addonData, const addon_log_t loglevel, const char *msg);
-typedef void (*AddOnStatusCallback)(void *addonData, const addon_status, const char* msg);
+typedef void (*AddOnStatusCallback)(void *addonData, const ADDON_STATUS, const char* msg);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
 typedef void (*AddOnOpenSettings)(void *addonData);
 typedef char* (*AddOnGetAddonDirectory)(void *addonData);
