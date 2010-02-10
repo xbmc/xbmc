@@ -23,7 +23,16 @@ THISDIR=$(pwd)
 
 if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 	echo "Making live-initramfs..."
-	cd $THISDIR/live-initramfs-ubuntu
-	dpkg-buildpackage -rfakeroot -b -uc -us 
-	cd $THISDIR
+	if [ ! -f live-initramfs.tar ]; then
+		git clone git://live.debian.net/git/live-initramfs.git
+		if [ "$?" -ne "0" ]; then
+			exit 1
+		fi
+
+		cd $THISDIR/live-initramfs
+		dpkg-buildpackage -rfakeroot -b -uc -us 
+		cd $THISDIR
+	else
+		tar xvf live-initramfs.tar  > /dev/null 2>&1
+	fi
 fi
