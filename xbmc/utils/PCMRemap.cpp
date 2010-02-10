@@ -286,10 +286,18 @@ void CPCMRemap::BuildMap()
   std::vector<enum PCMChannels> path;
   int counts[PCM_MAX_CH];
 
-  memset(m_lookupMap, PCM_INVALID, sizeof(m_lookupMap));
+  for (int i = 0; i < PCM_MAX_CH + 1; i++)
+  {
+    for (int j = 0; j < PCM_MAX_CH + 1; j++)
+      m_lookupMap[i][j].channel = PCM_INVALID;
+  }
+
   memset(counts, 0, sizeof(counts));
   for(in_ch = 0; in_ch < m_inChannels; ++in_ch) {
-    memset(table, PCM_INVALID, sizeof(table));
+
+    for (int i = 0; i < PCM_MAX_CH + 1; i++)
+      table[i].channel = PCM_INVALID;
+
     ResolveChannel(m_inMap[in_ch], 1.0f, false, path, table);
     for(info = table; info->channel != PCM_INVALID; ++info)
     {
