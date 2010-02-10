@@ -95,7 +95,7 @@ cd $modulesdir
 mkdir -p updates/dkms
 
 cp /tmp/nvidia.ko updates/dkms
-depmod -a $kernelVersion
+depmod $kernelVersion
 tar cvf /tmp/modules.tar modules.* updates
 rm updates/dkms/nvidia.ko
 popd
