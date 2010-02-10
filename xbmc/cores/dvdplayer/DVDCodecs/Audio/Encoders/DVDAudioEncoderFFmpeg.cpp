@@ -133,9 +133,10 @@ int CDVDAudioEncoderFFmpeg::Encode(uint8_t *data, int size)
   if (size < (int)m_NeededBytes)
     return 0;
 
-  uint8_t remapped[m_OutputBytes];
+  uint8_t* remapped = new uint8_t[m_OutputBytes];
   m_Remap.Remap(data, remapped, m_NeededFrames);
   m_BufferSize = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer, FF_MIN_BUFFER_SIZE, (short*)remapped);
+  delete[] remapped;
   return m_NeededBytes;
 }
 
