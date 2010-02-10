@@ -372,6 +372,9 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
     }
     return true;
   }
+  if (item->IsMusicDb() && !item->m_bIsFolder)
+    m_musicdatabase.SetPropertiesForFileItem(*item);
+    
   return CGUIWindowMusicBase::OnClick(iItem);
 }
 
