@@ -26,7 +26,6 @@
 #include "paplayer/PAPlayer.h"
 #include "paplayer/DVDPlayerCodec.h"
 #include "GUIDialogContextMenu.h"
-#include "XBAudioConfig.h"
 #include "FileSystem/FileCurl.h"
 #include "utils/HttpHeader.h"
 #include "GUISettings.h"
@@ -167,8 +166,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding PAPlayer (%d)", EPC_PAPLAYER);
         vecCores.push_back(EPC_PAPLAYER);
       }
-      else if ((url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled())
-           ||  (url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled()))
+      else if (url.GetFileType().Equals("ac3") 
+            || url.GetFileType().Equals("dts"))
       {
         CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
         vecCores.push_back(EPC_DVDPLAYER);

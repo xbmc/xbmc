@@ -24,7 +24,6 @@
 #include <float.h>
 #include "Settings.h"
 #include "GUIDialogFileBrowser.h"
-#include "XBAudioConfig.h"
 #include "MediaManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
@@ -1063,8 +1062,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
-  if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
-    SetInt("audiooutput.mode", AUDIO_ANALOG);
   // FIXME: Check if the hardware supports it (if possible ;)
   //SetBool("audiooutput.ac3passthrough", g_audioConfig.GetAC3Enabled());
   //SetBool("audiooutput.dtspassthrough", g_audioConfig.GetDTSEnabled());

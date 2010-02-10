@@ -36,7 +36,6 @@
 #include "VideoDatabase.h"
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
-#include "XBAudioConfig.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -338,22 +337,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_delayedSetting = NULL;
-      // Hardware based stuff
-      // TODO: This should be done in a completely separate screen
-      // to give warning to the user that it writes to the EEPROM.
-      if ((g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL))
-      {
-        g_audioConfig.SetAC3Enabled(g_guiSettings.GetBool("audiooutput.ac3passthrough"));
-        g_audioConfig.SetDTSEnabled(g_guiSettings.GetBool("audiooutput.dtspassthrough"));
-        g_audioConfig.SetAACEnabled(g_guiSettings.GetBool("audiooutput.aacpassthrough"));
-        g_audioConfig.SetMP1Enabled(g_guiSettings.GetBool("audiooutput.mp1passthrough"));
-        g_audioConfig.SetMP2Enabled(g_guiSettings.GetBool("audiooutput.mp2passthrough"));
-        g_audioConfig.SetMP3Enabled(g_guiSettings.GetBool("audiooutput.mp3passthrough"));
-        if (g_audioConfig.NeedsSave())
-        { // should we perhaps show a dialog here?
-          g_audioConfig.Save();
-        }
-      }
 
       CheckForUpdates();
       CheckNetworkSettings();
