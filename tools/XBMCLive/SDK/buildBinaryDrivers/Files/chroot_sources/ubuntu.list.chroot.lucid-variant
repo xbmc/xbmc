@@ -1,0 +1,3 @@
+deb http://archive.ubuntu.com/ubuntu/ lucid-backports main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ lucid-updates main restricted universe multiverse
+ 

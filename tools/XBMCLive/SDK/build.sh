@@ -47,6 +47,11 @@ cleanup()
 trap 'cleanup' EXIT TERM INT
 
 
+if [ -z $DISTROCODENAME ]; then
+	# Get host codename by default
+	export DISTROCODENAME=$(cat /etc/lsb-release | grep CODENAME | cut -d= -f2)
+fi
+
 THISDIR=$(pwd)
 WORKDIR=workarea
 WORKPATH=$THISDIR/$WORKDIR
@@ -82,7 +87,9 @@ if ! which lh > /dev/null ; then
 			# Fix for missing directory for Ubuntu's d-i, to be removed when fixed upstream!
 			pushd .
 			cd live-helper/data/debian-cd
-			ln -s lenny karmic
+			if [ ! -h $DISTROCODENAME ]; then
+				ln -s lenny $DISTROCODENAME
+			fi
 			popd
 
 			# Saved, to avoid cloning for multiple builds
@@ -100,9 +107,22 @@ if ! which lh > /dev/null ; then
 	cd $THISDIR
 fi
 
-echo "Start building..."
+echo "Start building, using Ubuntu $DISTROCODENAME repositories ..."
+
 
 cd $WORKPATH
+
+# Put in place distro variants, remove other variants
+find ./  -name "*-variant" | \
+while read i; do
+#	if [[ $i =~ $DISTROCODENAME-variant ]]; then
+	if [ -n "$(echo $i | grep $DISTROCODENAME-variant)" ]; then
+		j=${i%%.$DISTROCODENAME-variant}
+		mv $i $j
+	else
+		rm $i
+	fi
+done
 
 # Execute hooks if env variable is defined
 if [ -n "$SDK_BUILDHOOKS" ]; then
