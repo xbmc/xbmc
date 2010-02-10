@@ -388,7 +388,18 @@ else
   # don't combine with mysqlclient check in apple section above, Linux needs
   # paths from mysql_config
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([faad],      [main],
+               [
+                 if test -f "/usr/lib/libfaad.so.2"; then
+                   FAAD_LIBRARY="libfaad.so.2"
+                   LIBS+=" /usr/lib/libfaad.so.2"
+                 else
+                   LIBS+=" -lfaad"
+                   FAAD_LIBRARY="libfaad.so.0"
+                 fi
+                 AC_DEFINE_UNQUOTED([FAAD_LIBRARY], ["$FAAD_LIBRARY"], [The faad library version to use])
+               ],
+               AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
