@@ -841,7 +841,6 @@
 		E38E23020D25F9FE00618676 /* VisualisationFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA30D25F9FD00618676 /* VisualisationFactory.cpp */; };
 		E38E23030D25F9FE00618676 /* VorbisTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */; };
 		E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
-		E38E23050D25F9FE00618676 /* XBAudioConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA90D25F9FD00618676 /* XBAudioConfig.cpp */; };
 		E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
 		E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238B0D2626E600618676 /* AudioToolbox.framework */; };
 		E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238C0D2626E600618676 /* AudioUnit.framework */; };
@@ -1567,7 +1566,6 @@
 		F5A1CAF00F6B06CF00A96ABD /* VisualisationFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA30D25F9FD00618676 /* VisualisationFactory.cpp */; };
 		F5A1CAF10F6B06CF00A96ABD /* VorbisTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */; };
 		F5A1CAF20F6B06CF00A96ABD /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
-		F5A1CAF30F6B06CF00A96ABD /* XBAudioConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA90D25F9FD00618676 /* XBAudioConfig.cpp */; };
 		F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
 		F5A1CAF80F6B06CF00A96ABD /* unpack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25770D263BF600618676 /* unpack.cpp */; };
 		F5A1CAF90F6B06CF00A96ABD /* rar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E257B0D263C4400618676 /* rar.cpp */; };
@@ -2813,7 +2811,6 @@
 		E38E17940D25F9FA00618676 /* ZipDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipDirectory.h; sourceTree = "<group>"; };
 		E38E17950D25F9FA00618676 /* ZipManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZipManager.cpp; sourceTree = "<group>"; };
 		E38E17960D25F9FA00618676 /* ZipManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipManager.h; sourceTree = "<group>"; };
-		E38E17970D25F9FA00618676 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		E38E17980D25F9FA00618676 /* FlacTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FlacTag.cpp; sourceTree = "<group>"; };
 		E38E17990D25F9FA00618676 /* FlacTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlacTag.h; sourceTree = "<group>"; };
 		E38E179A0D25F9FA00618676 /* GUIDialogAudioSubtitleSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAudioSubtitleSettings.cpp; sourceTree = "<group>"; };
@@ -3488,8 +3485,6 @@
 		E38E1EA60D25F9FD00618676 /* VorbisTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VorbisTag.h; sourceTree = "<group>"; };
 		E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBApplicationEx.cpp; sourceTree = "<group>"; };
 		E38E1EA80D25F9FD00618676 /* XBApplicationEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBApplicationEx.h; sourceTree = "<group>"; };
-		E38E1EA90D25F9FD00618676 /* XBAudioConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBAudioConfig.cpp; sourceTree = "<group>"; };
-		E38E1EAA0D25F9FD00618676 /* XBAudioConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAudioConfig.h; sourceTree = "<group>"; };
 		E38E1EAC0D25F9FD00618676 /* XBInputEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBInputEx.h; sourceTree = "<group>"; };
 		E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBIRRemote.h; sourceTree = "<group>"; };
 		E38E1ED10D25F9FD00618676 /* xbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmc.cpp; sourceTree = "<group>"; };
@@ -4816,8 +4811,6 @@
 				E38E1EA60D25F9FD00618676 /* VorbisTag.h */,
 				E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */,
 				E38E1EA80D25F9FD00618676 /* XBApplicationEx.h */,
-				E38E1EA90D25F9FD00618676 /* XBAudioConfig.cpp */,
-				E38E1EAA0D25F9FD00618676 /* XBAudioConfig.h */,
 				E38E1EAC0D25F9FD00618676 /* XBInputEx.h */,
 				E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */,
 				E38E1ED10D25F9FD00618676 /* xbmc.cpp */,
@@ -5569,7 +5562,6 @@
 				E38E17940D25F9FA00618676 /* ZipDirectory.h */,
 				E38E17950D25F9FA00618676 /* ZipManager.cpp */,
 				E38E17960D25F9FA00618676 /* ZipManager.h */,
-				E38E17970D25F9FA00618676 /* zlib.h */,
 			);
 			path = FileSystem;
 			sourceTree = "<group>";
@@ -7781,7 +7773,6 @@
 				E38E23020D25F9FE00618676 /* VisualisationFactory.cpp in Sources */,
 				E38E23030D25F9FE00618676 /* VorbisTag.cpp in Sources */,
 				E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */,
-				E38E23050D25F9FE00618676 /* XBAudioConfig.cpp in Sources */,
 				E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */,
 				E38E25780D263BF600618676 /* unpack.cpp in Sources */,
 				E38E257C0D263C4400618676 /* rar.cpp in Sources */,
@@ -8641,7 +8632,6 @@
 				F5A1CAF00F6B06CF00A96ABD /* VisualisationFactory.cpp in Sources */,
 				F5A1CAF10F6B06CF00A96ABD /* VorbisTag.cpp in Sources */,
 				F5A1CAF20F6B06CF00A96ABD /* XBApplicationEx.cpp in Sources */,
-				F5A1CAF30F6B06CF00A96ABD /* XBAudioConfig.cpp in Sources */,
 				F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */,
 				F5A1CAF80F6B06CF00A96ABD /* unpack.cpp in Sources */,
 				F5A1CAF90F6B06CF00A96ABD /* rar.cpp in Sources */,
