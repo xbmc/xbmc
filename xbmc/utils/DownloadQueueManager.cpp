@@ -41,7 +41,7 @@ VOID CDownloadQueueManager::Initialize()
 }
 
 
-TICKET CDownloadQueueManager::RequestContent(CStdString& aUrl, IDownloadQueueObserver* aObserver)
+TICKET CDownloadQueueManager::RequestContent(const CStdString& aUrl, IDownloadQueueObserver* aObserver)
 {
   EnterCriticalSection(&m_critical);
   TICKET ticket = GetNextDownloadQueue()->RequestContent(aUrl, aObserver);
@@ -49,7 +49,7 @@ TICKET CDownloadQueueManager::RequestContent(CStdString& aUrl, IDownloadQueueObs
   return ticket;
 }
 
-TICKET CDownloadQueueManager::RequestFile(CStdString& aUrl, CStdString& aFilePath, IDownloadQueueObserver* aObserver)
+TICKET CDownloadQueueManager::RequestFile(const CStdString& aUrl, const CStdString& aFilePath, IDownloadQueueObserver* aObserver)
 {
   EnterCriticalSection(&m_critical);
   TICKET ticket = GetNextDownloadQueue()->RequestFile(aUrl, aFilePath, aObserver);
@@ -57,7 +57,7 @@ TICKET CDownloadQueueManager::RequestFile(CStdString& aUrl, CStdString& aFilePat
   return ticket;
 }
 
-TICKET CDownloadQueueManager::RequestFile(CStdString& aUrl, IDownloadQueueObserver* aObserver)
+TICKET CDownloadQueueManager::RequestFile(const CStdString& aUrl, IDownloadQueueObserver* aObserver)
 {
   EnterCriticalSection(&m_critical);
   TICKET ticket = GetNextDownloadQueue()->RequestFile(aUrl, aObserver);

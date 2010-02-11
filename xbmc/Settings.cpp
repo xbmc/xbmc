@@ -1961,6 +1961,5 @@ void CSettings::CreateProfileFolders()
   }
   CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
-  CDirectory::Create("special://profile/visualisations");
 }
 

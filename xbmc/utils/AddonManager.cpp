@@ -35,18 +35,18 @@
 #include "SingleLock.h"
 #include "DownloadQueueManager.h"
 
-//#ifdef HAS_VISUALISATION
-//#include "../visualizations/DllVisualisation.h"
-//#include "../visualizations/Visualisation.h"
-//#endif
+#ifdef HAS_VISUALISATION
+#include "../visualizations/DllVisualisation.h"
+#include "../visualizations/Visualisation.h"
+#endif
 #ifdef HAS_PVRCLIENTS
 #include "../pvrclients/DllPVRClient.h"
 #include "../pvrclients/PVRClient.h"
 #endif
-//#ifdef HAS_SCREENSAVER
-//#include "../screensavers/DllScreenSaver.h"
-//#include "../screensavers/ScreenSaver.h"
-//#endif
+#ifdef HAS_SCREENSAVER
+#include "../screensavers/DllScreenSaver.h"
+#include "../screensavers/ScreenSaver.h"
+#endif
 //#ifdef HAS_SCRAPERS
 //#include "../Scraper.h"
 //#endif
@@ -256,7 +256,7 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
 
 void CAddonMgr::UpdateRepos()
 {
-//  m_downloads.push_back(g_DownloadManager.RequestFile(ADDON_XBMC_REPO_URL, this));
+  m_downloads.push_back(g_DownloadManager.RequestFile(ADDON_XBMC_REPO_URL, this));
 }
 
 bool CAddonMgr::ParseRepoXML(const CStdString &path)
@@ -329,6 +329,14 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 
 bool CAddonMgr::GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon)
 {
+  CDateTimeSpan span;
+  span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
+  if(!m_lastDirScan[type].IsValid() || (m_lastDirScan[type] + span) < CDateTime::GetCurrentDateTime())
+  {
+    m_lastDirScan[type] = CDateTime::GetCurrentDateTime();
+    LoadAddonsXML(type);
+  }
+
   if (m_addons.find(type) == m_addons.end())
     return false;
 
@@ -1010,18 +1018,18 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
 //      addon = temp;
 //      break;
 //    }
-//    case ADDON_VIZ:
-//    {
-//      AddonPtr temp(new CVisualisation(addonProps));
-//      addon = temp;
-//      break;
-//    }
-//    case ADDON_SCREENSAVER:
-//    {
-//      AddonPtr temp(new CScreenSaver(addonProps));
-//      addon = temp;
-//      break;
-//    }
+    case ADDON_VIZ:
+    {
+      AddonPtr temp(new CVisualisation(addonProps));
+      addon = temp;
+      break;
+    }
+    case ADDON_SCREENSAVER:
+    {
+      AddonPtr temp(new CScreenSaver(addonProps));
+      addon = temp;
+      break;
+    }
     case ADDON_PVRDLL:
     {
       AddonPtr temp(new CPVRClient(addonProps));

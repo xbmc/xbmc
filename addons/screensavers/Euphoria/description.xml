@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>F1179D67-0B7A-40f9-9EF6-27AD0E2C372B</uuid>
+  <type>screensaver</type>
+  <title>Euphoria</title>
+  <library>Euphoria.xbs</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>linux</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>OpenGL Screensaver</summary>
+  <description>Screensaver showing...</description>
+  <author>TEAMXBMC</author>
+</addoninfo>

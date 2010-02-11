@@ -256,7 +256,7 @@ void CGUISettings::Initialize()
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
-  AddString(5, "weather.plugin", 23030, "", SPIN_CONTROL_TEXT, true);
+  AddString(5, "weather.plugin", 24027, "", SPIN_CONTROL_TEXT, true);
   AddString(6, "weather.pluginsettings", 23031, "", BUTTON_CONTROL_STANDARD, true);
 
   // My Music Settings
@@ -1143,10 +1143,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-
-  // check if we load the right vis
-  if(!CVisualisation::IsValidVisualisation(g_guiSettings.GetString("musicplayer.visualisation")))
-    g_guiSettings.SetString("musicplayer.visualisation", DEFAULT_VISUALISATION);
 
 #if defined(_LINUX) && !defined(__APPLE__)
   CStdString timezone = GetString("locale.timezone");

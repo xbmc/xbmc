@@ -108,7 +108,7 @@ namespace ADDON
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
-   CStdString GetString(const CStdString &uuid, const int number);
+    CStdString GetString(const CStdString &uuid, const int number);
 
     /* Addon operations */
     bool EnableAddon(AddonPtr &addon);

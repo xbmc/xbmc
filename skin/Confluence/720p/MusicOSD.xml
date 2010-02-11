@@ -41,11 +41,11 @@
 					<texturefocus>OSDVizFO.png</texturefocus>
 					<texturenofocus>OSDVizNF.png</texturenofocus>
 					<onleft>700</onleft>
-					<onright>701</onright>
+					<onright>504</onright>
 					<onup>600</onup>
 					<ondown>600</ondown>
 				</control>
-				<control type="button" id="701">
+				<control type="button" id="504">
 					<posx>100</posx>
 					<posy>0</posy>
 					<width>45</width>
@@ -58,7 +58,6 @@
 					<onright>702</onright>
 					<onup>600</onup>
 					<ondown>600</ondown>
-					<onclick>ActivateWindow(121)</onclick>
 				</control>
 				<control type="button" id="702">
 					<posx>150</posx>
@@ -69,7 +68,7 @@
 					<font>-</font>
 					<texturefocus>OSDPreFO.png</texturefocus>
 					<texturenofocus>OSDPreNF.png</texturenofocus>
-					<onleft>701</onleft>
+					<onleft>504</onleft>
 					<onright>800</onright>
 					<onup>601</onup>
 					<ondown>601</ondown>
@@ -270,8 +269,8 @@
 					<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
 					<onleft>605</onleft>
 					<onright>601</onright>
-					<onup>701</onup>
-					<ondown>701</ondown>
+					<onup>504</onup>
+					<ondown>504</ondown>
 					<onclick>PlayerControl(Previous)</onclick>
 				</control>
 				<control type="button" id="601">

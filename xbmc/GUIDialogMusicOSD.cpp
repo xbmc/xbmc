@@ -25,10 +25,15 @@
 #include "GUIWindowManager.h"
 #include "MouseStat.h"
 #include "GUIUserMessages.h"
+#include "GUIDialogAddonSettings.h"
+#include "utils/AddonManager.h"
+
+using namespace ADDON;
 
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
 #define CONTROL_VIS_CHOOSER      503
+#define CONTROL_VIS_SETTINGS     504
 
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
@@ -55,8 +60,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         if (msg.GetParam1() == 0)
           g_guiSettings.SetString("musicplayer.visualisation", "None");
         else
-          g_guiSettings.SetString("musicplayer.visualisation",
-                                  CVisualisation::GetCombinedName( strLabel ));
+          g_guiSettings.SetString("musicplayer.visualisation", strLabel);
         // hide the control and reset focus
         SET_CONTROL_HIDDEN(CONTROL_VIS_CHOOSER);
         SET_CONTROL_FOCUS(CONTROL_VIS_BUTTON, 0);
@@ -75,6 +79,14 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       {
         CGUIMessage msg(GUI_MSG_VISUALISATION_ACTION, 0, 0, ACTION_VIS_PRESET_LOCK);
         g_windowManager.SendMessage(msg);
+      }
+      else if (iControl == CONTROL_VIS_SETTINGS)
+      {
+        AddonPtr addon;
+        if (!CAddonMgr::Get()->GetAddon(ADDON_VIZ, g_guiSettings.GetString("musicplayer.visualisation"), addon))
+          return false;
+
+        CGUIDialogAddonSettings::ShowAndGetInput(addon);
       }
       return true;
     }
@@ -99,7 +111,7 @@ void CGUIDialogMusicOSD::Render()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (g_Mouse.IsActive() || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS)
+    if (g_Mouse.IsActive() || g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
       SetAutoClose(100); // enough for 10fps
   }

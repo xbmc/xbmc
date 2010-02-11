@@ -2746,7 +2746,6 @@
   <string id="23076">Audio DSP's verwalten</string>
   <string id="23080">Externe Bildschirmschoner verwalten</string>
   <string id="23081">Diese Erweiterung hat keine Einstellungen</string>
-  <string id="23082">Verwaltung von Erweiterungen sperren</string>
   <string id="23083">Erweiterung nochmal verwenden</string>
   <string id="23090">Videotext aktivtieren</string>
   <string id="23091">Teletext nicht verfügbar</string>
@@ -2793,9 +2792,8 @@
   <string id="24073">Konnte nicht verbinden</string>
   <string id="24074">Benötigt Neustart</string>
   <string id="24080">Versuchen wieder zu verbinden?</string>
-  <string id="24089">AErweiterung startet neu</string>
-
-  <string id="24090">Lock Add-on manager</string>
+  <string id="24089">Erweiterung startet neu</string>
+  <string id="24090">Verwaltung von Erweiterungen sperren</string>
 
   <string id="29800">Datenbankmodus</string>
   <string id="29801">QWERTY Tastatur</string>

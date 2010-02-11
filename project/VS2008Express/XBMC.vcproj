@@ -3798,10 +3798,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogVisualisationSettings.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIDialogVisualisationSettings.h"
 					>
 				</File>

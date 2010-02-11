@@ -39,7 +39,6 @@
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
-#include "visualizations/VisualisationFactory.h"
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
@@ -100,7 +99,6 @@
 #include <map>
 #include "ScraperSettings.h"
 #include "ScriptSettings.h"
-#include "GUIDialogAddonSettings.h"
 #include "GUIDialogPluginSettings.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
@@ -1262,7 +1260,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (pControl->GetValue() == 0)
       pSettingString->SetData("None");
     else
-      pSettingString->SetData( CVisualisation::GetCombinedName( pControl->GetCurrentLabel() ) );
+      pSettingString->SetData(pControl->GetCurrentLabel());
   }
   else if (strSetting.Equals("debug.showloginfo"))
   {
@@ -1759,7 +1757,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else if (iValue == 4)
       strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow
     else
-      strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
+      strScreenSaver = pControl->GetCurrentLabel();
     pSettingString->SetData(strScreenSaver);
   }
   else if (strSetting.Equals("screensaver.preview"))
@@ -2520,59 +2518,21 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     g_windowManager.SendMessage(msg);
   }
   vector<CStdString> vecVis;
-  //find visz....
-  CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/visualisations/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/visualisations/", items);
+  VECADDONS addons;
 
-  CVisualisationFactory visFactory;
-  CStdString strExtension;
-  for (int i = 0; i < items.Size(); ++i)
+  CAddonMgr::Get()->GetAddons(ADDON_VIZ, addons);
+  if (!addons.empty())
   {
-    CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
+    for (unsigned int i = 0; i < addons.size(); i++)
     {
-      const char *visPath = (const char*)pItem->m_strPath;
-
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".vis")  // normal visualisation
-      {
-        if(!CVisualisation::IsValidVisualisation(pItem->m_strPath))
-          continue;
-        CStdString strLabel = pItem->GetLabel();
-        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );
-      }
-      else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
-      {
-        CVisualisation* vis = visFactory.LoadVisualisation( visPath );
-        if ( vis )
-        {
-          map<string, string> subModules;
-          map<string, string>::iterator iter;
-          string moduleName;
-          CStdString visName = pItem->GetLabel();
-          visName = visName.Mid(0, visName.size() - 5);
-
-          // get list of sub modules from the visualisation
-          vis->GetSubModules( subModules );
-
-          for ( iter=subModules.begin() ; iter!=subModules.end() ; iter++ )
-          {
-            // each pair of the map is of the format 'module name' => 'module path'
-            moduleName = iter->first;
-            vecVis.push_back( CVisualisation::GetFriendlyName( visName.c_str(), moduleName.c_str() ).c_str() );
-            CLog::Log(LOGDEBUG, "Module %s for visualisation %s", moduleName.c_str(), visPath);
-          }
-          delete vis;
-        }
-      }
+      const AddonPtr addon = addons.at(i);
+      vecVis.push_back(addon->Name());
     }
   }
 
   CStdString strDefaultVis = pSettingString->GetData();
   if (!strDefaultVis.Equals("None"))
-    strDefaultVis = CVisualisation::GetFriendlyName( strDefaultVis );
+    strDefaultVis = strDefaultVis;
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
 
@@ -2672,43 +2632,21 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(108), 3); // PictureSlideShow
   pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
 
-  //find screensavers ....
-  CFileItemList items;
-  CDirectory::GetDirectory( "special://xbmc/screensavers/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/screensavers/", items);
-
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
-  for (int i = 0; i < items.Size(); ++i)
+  VECADDONS addons;
+
+  CAddonMgr::Get()->GetAddons(ADDON_SCREENSAVER, addons);
+  if (!addons.empty())
   {
-    CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
+    for (unsigned int i = 0; i < addons.size(); i++)
     {
-      CStdString strExtension;
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".xbs")
-      {
-#ifdef _LINUX
-        void *handle = dlopen(_P(pItem->m_strPath).c_str(), RTLD_LAZY);
-        if (!handle)
-        {
-          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", pItem->m_strPath.c_str(), dlerror());
-          continue;
-        }
-        dlclose(handle);
-#endif
-        CStdString strLabel = pItem->GetLabel();
-        vecScr.push_back(strLabel.Mid(0, strLabel.size() - 4));
-      }
+      const AddonPtr addon = addons.at(i);
+      vecScr.push_back(addon->Name());
     }
   }
 
   CStdString strDefaultScr = pSettingString->GetData();
-  CStdString strExtension;
-  CUtil::GetExtension(strDefaultScr, strExtension);
-  if (strExtension == ".xbs")
-    strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
   for (int i = 0; i < (int) vecScr.size(); ++i)

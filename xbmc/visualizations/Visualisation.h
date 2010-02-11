@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,70 +18,89 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-// Visualisation.h: interface for the CVisualisation class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_Visualisation_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)
-#define AFX_Visualisation_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+
 #include "Key.h"
 #include "DllVisualisation.h"
+#include "AddonDll.h"
+#include "cores/IAudioCallback.h"
 
 #include <map>
+#include <list>
 #include <memory>
 
-class CVisualisation
+#define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
+#define MAX_AUDIO_BUFFERS 16
+
+class CCriticalSection;
+class AddonCB;
+
+class CAudioBuffer
 {
 public:
-  enum VIS_ACTION { VIS_ACTION_NONE = 0,
-                    VIS_ACTION_NEXT_PRESET,
-                    VIS_ACTION_PREV_PRESET,
-                    VIS_ACTION_LOAD_PRESET,
-                    VIS_ACTION_RANDOM_PRESET,
-                    VIS_ACTION_LOCK_PRESET,
-                    VIS_ACTION_RATE_PRESET_PLUS,
-                    VIS_ACTION_RATE_PRESET_MINUS,
-                    VIS_ACTION_UPDATE_ALBUMART,
-                    VIS_ACTION_UPDATE_TRACK
-  };
-  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll,
-                 const CStdString& strVisualisationName, const CStdString& strSubModuleName);
-  ~CVisualisation();
+  CAudioBuffer(int iSize);
+  virtual ~CAudioBuffer();
+  const short* Get() const;
+  void Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample);
+private:
+  CAudioBuffer();
+  short* m_pBuffer;
+  int m_iLen;
+};
 
-  void Create(int posx, int posy, int width, int height);
+class CVisualisation : public ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>
+                     , public IAudioCallback
+{
+public:
+  CVisualisation(const ADDON::AddonProps &props) : ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
+  virtual ~CVisualisation() {};
+  virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
+  virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
+  bool Create(int x, int y, int w, int h);
+  void Destroy();
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
   void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
   void Stop();
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
-  void GetSettings(std::vector<VisSetting> **vecSettings);
-  void UpdateSetting(int num, std::vector<VisSetting> **vecSettings);
-  void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
-  void GetCurrentPreset(char **pPreset, bool *locked);
+  bool UpdateTrack();
   int  GetSubModules(std::map<std::string, std::string>& subModules);
   bool IsLocked();
-  char *GetPreset();
+  unsigned GetPreset();
+  CStdString GetPresetName();
+  bool GetPresetList(std::vector<CStdString>& vecpresets);
 
-  // some helper functions
-  static CStdString GetFriendlyName(const char* strVisz, const char* strSubModule);
-  static CStdString GetFriendlyName(const char* combinedName);
-  static CStdString GetCombinedName(const char* strVisz, const char* strSubModule);
-  static CStdString GetCombinedName(const char* friendlyName);
-  static bool IsValidVisualisation(const CStdString& strVisz);
+private:
+  void CreateBuffers();
+  void ClearBuffers();
 
-protected:
-  std::auto_ptr<struct Visualisation> m_pVisz;
-  std::auto_ptr<DllVisualisation> m_pDll;
-  CStdString m_strVisualisationName;
-  CStdString m_strSubModuleName;
+  bool GetPresets();
 
-  std::vector<VisSetting> m_vecSettings;
+  AddonCB *m_callbacks;
+
+  // attributes of the viewport we render to
+  int m_xPos;
+  int m_yPos;
+  int m_width;
+  int m_height;
+
+  // cached preset list
+  std::vector<CStdString> m_presets;
+
+  // audio properties
+  int m_iChannels;
+  int m_iSamplesPerSec;
+  int m_iBitsPerSample;
+  std::list<CAudioBuffer*> m_vecBuffers;
+  int m_iNumBuffers;        // Number of Audio buffers
+  bool m_bWantsFreq;
+  float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data
+  bool m_bCalculate_Freq;       // True if the vis wants freq data
+
+  // track information
+  CStdString m_AlbumThumb;
+
+  CCriticalSection m_critSection;
 };
 
-
-#endif // !defined(AFX_Visualisation_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)

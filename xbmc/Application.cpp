@@ -173,7 +173,6 @@
 
 // Dialog includes
 #include "GUIDialogMusicOSD.h"
-#include "GUIDialogVisualisationSettings.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowScriptsInfo.h"
 #include "GUIDialogNetworkSetup.h"
@@ -809,9 +808,11 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/visualizations");
+    CDirectory::Create("special://home/addons/screensavers");
     CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/visualisations");
-    CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
     CDirectory::Create("special://home/plugins");
@@ -922,9 +923,11 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/visualizations");
+    CDirectory::Create("special://home/addons/screensavers");
     CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/visualisations");
-    CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
     CDirectory::Create("special://home/plugins");
@@ -1019,9 +1022,11 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/visualizations");
+    CDirectory::Create("special://home/addons/screensavers");
     CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/visualisations");
-    CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
     CDirectory::Create("special://home/plugins");
@@ -1132,8 +1137,8 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/scripts");
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/addons/pvr");
-    CDirectory::Create("special://xbmc/addons/libraries");
-    CDirectory::Create("special://xbmc/addons/libraries/pvr");
+    CDirectory::Create("special://xbmc/addons/visualizations");
+    CDirectory::Create("special://xbmc/addons/screensavers");
     CDirectory::Create("special://xbmc/plugins");
     CDirectory::Create("special://xbmc/plugins/music");
     CDirectory::Create("special://xbmc/plugins/video");
@@ -1141,7 +1146,6 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/plugins/programs");
     CDirectory::Create("special://xbmc/plugins/weather");
     CDirectory::Create("special://xbmc/language");
-    CDirectory::Create("special://xbmc/visualisations");
     CDirectory::Create("special://xbmc/sounds");
     CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
@@ -1197,7 +1201,6 @@ bool CApplication::Initialize()
 #endif
   g_windowManager.Add(new CGUIDialogSlider);             // window id = 145
   g_windowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
-  g_windowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   g_windowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
   g_windowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
   g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
@@ -3230,7 +3233,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
     g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
-    g_windowManager.Delete(WINDOW_DIALOG_VIS_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
     g_windowManager.Delete(WINDOW_DIALOG_SELECT);
     g_windowManager.Delete(WINDOW_DIALOG_OK);

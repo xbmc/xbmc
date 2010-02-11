@@ -438,10 +438,7 @@ CStdString CAddon::GetSetting(const CStdString& key) const
     {
       const char *id = setting->Attribute("id");
       if (id && strcmpi(id, key) == 0)
-      {
-        CStdString text = setting->Attribute("value");
-        return text;
-      }
+        return setting->Attribute("value");
 
       setting = setting->NextSiblingElement("setting");
     }

@@ -22,8 +22,8 @@
  */
 
 #include "GUIDialog.h"
-#include "visualizations/Visualisation.h"
 
+class CVisualisation;
 class CFileItemList;
 
 class CGUIDialogVisualisationPresetList :
@@ -36,8 +36,9 @@ public:
   virtual void Render();
 
 protected:
-  void SetVisualisation(CVisualisation *pVisualisation);
-  CVisualisation *m_pVisualisation;
+  void SetVisualisation(CVisualisation *addon);
+  void Update();
+  CVisualisation* m_viz;
   CFileItemList* m_vecPresets;
-  int m_currentPreset;
+  unsigned m_currentPreset;
 };

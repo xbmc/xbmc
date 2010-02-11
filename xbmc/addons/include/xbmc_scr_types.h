@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,13 +19,29 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "Visualisation.h"
 
-class CVisualisationFactory
+#ifndef __SCREENSAVER_TYPES_H__
+#define __SCREENSAVER_TYPES_H__
+
+extern "C"
 {
-public:
-  CVisualisationFactory();
-  virtual ~CVisualisationFactory();
-  CVisualisation* LoadVisualisation(const CStdString& strVisz) const;
-  CVisualisation* LoadVisualisation(const CStdString& strVisz, const CStdString& strSubModule) const;
-};
+  struct SCR_PROPS
+  {
+    void *device;
+    int x;
+    int y;
+    int width;
+    int height;
+    float pixelRatio;
+    const char *name;
+  };
+
+  struct ScreenSaver
+  {
+    void (__cdecl* Start) ();
+    void (__cdecl* Render) ();
+    void (__cdecl* Stop) ();
+  };
+}
+
+#endif // __SCREENSAVER_TYPES_H__
