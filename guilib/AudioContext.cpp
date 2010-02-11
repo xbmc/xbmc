@@ -223,10 +223,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
       else if (iChannels == 2)
         spconfig = DSSPEAKER_STEREO;
       else
-      {
         spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
-        m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
-      }
     }
   }
   else // We don't want to use the Dolby Digital Encoder output. Downmix to surround instead.
