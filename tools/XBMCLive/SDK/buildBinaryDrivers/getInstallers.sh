@@ -111,7 +111,7 @@ getBCDriversSources()
 		exit 1
 	fi
 
-	mv crystalhd-HEAD.tar.gz Files/chroot_local-includes/root
+	cp crystalhd-HEAD.tar.gz Files/chroot_local-includes/root
 }
 
 getNVIDIAInstaller()
