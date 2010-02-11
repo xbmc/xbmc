@@ -246,7 +246,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>18192</label>
+								<label>19043</label>
 								<visible>ListItem.IsRecording</visible>
 							</control>
 							<control type="image">
@@ -357,7 +357,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>18192</label>
+								<label>19043</label>
 								<visible>ListItem.IsRecording</visible>
 							</control>
 							<control type="image">
@@ -447,7 +447,7 @@
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>18099</label>
+						<label>19148</label>
 					</control>
 					<control type="label">
 						<description>Title</description>
@@ -580,7 +580,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>18192</label>
+								<label>19043</label>
 								<visible>ListItem.IsRecording</visible>
 							</control>
 							<control type="image">
@@ -710,7 +710,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>18192</label>
+								<label>19043</label>
 								<visible>ListItem.IsRecording</visible>
 							</control>
 							<control type="image">
@@ -1138,7 +1138,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18111</label>
+						<label>19516</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1157,7 +1157,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18110</label>
+						<label>19500</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1176,7 +1176,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18122</label>
+						<label>19549</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1195,7 +1195,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18112</label>
+						<label>19532</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1215,7 +1215,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18113</label>
+						<label>19548</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1234,7 +1234,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18114</label>
+						<label>19564</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1253,7 +1253,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18120</label>
+						<label>19628</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1272,7 +1272,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18115</label>
+						<label>19580</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1292,7 +1292,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18116</label>
+						<label>19596</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1311,7 +1311,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18118</label>
+						<label>19644</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1330,7 +1330,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18121</label>
+						<label>19612</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1349,7 +1349,7 @@
 						<width>225</width>
 						<height>15</height>
 						<font>font10</font>
-						<label>18119</label>
+						<label>19499</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1579,7 +1579,7 @@
 					<scroll>false</scroll>
 					<align>right</align>
 					<aligny>center</aligny>
-					<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[18065] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
+					<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
 					<include>Window_OpenClose_Animation</include>		
 				</control>
 			</control>
@@ -1805,7 +1805,7 @@
 					<scroll>false</scroll>
 					<align>right</align>
 					<aligny>center</aligny>
-					<label>([COLOR=blue]$INFO[Container(12).NumItems][/COLOR]) $LOCALIZE[18065] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(12).CurrentPage]/$INFO[Container(12).NumPages][/COLOR])</label>
+					<label>([COLOR=blue]$INFO[Container(12).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(12).CurrentPage]/$INFO[Container(12).NumPages][/COLOR])</label>
 					<include>Window_OpenClose_Animation</include>		
 				</control>
 			</control>
@@ -1956,7 +1956,7 @@
 					<scroll>false</scroll>
 					<align>right</align>
 					<aligny>center</aligny>
-					<label>([COLOR=blue]$INFO[Container(13).NumItems][/COLOR]) $LOCALIZE[18066] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(13).CurrentPage]/$INFO[Container(13).NumPages][/COLOR])</label>
+					<label>([COLOR=blue]$INFO[Container(13).NumItems][/COLOR]) $LOCALIZE[19163] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(13).CurrentPage]/$INFO[Container(13).NumPages][/COLOR])</label>
 					<include>Window_OpenClose_Animation</include>		
 				</control>
 				<control type="group">
@@ -2268,7 +2268,7 @@
 					<scroll>false</scroll>
 					<align>right</align>
 					<aligny>center</aligny>
-					<label>([COLOR=blue]$INFO[Container(14).NumItems][/COLOR]) $LOCALIZE[18054] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(14).CurrentPage]/$INFO[Container(14).NumPages][/COLOR])</label>
+					<label>([COLOR=blue]$INFO[Container(14).NumItems][/COLOR]) $LOCALIZE[19040] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(14).CurrentPage]/$INFO[Container(14).NumPages][/COLOR])</label>
 					<include>Window_OpenClose_Animation</include>		
 				</control>
 			</control>
@@ -2304,7 +2304,7 @@
 						<shadowcolor>black</shadowcolor>
 						<align>center</align>
 						<aligny>center</aligny>
-						<label>18099</label>
+						<label>19148</label>
 					</control>
 					<control type="label">
 						<description>Title</description>
@@ -2437,7 +2437,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>18192</label>
+								<label>19043</label>
 								<visible>ListItem.IsRecording</visible>
 							</control>
 							<control type="image">
@@ -2567,7 +2567,7 @@
 								<aligny>center</aligny>
 								<textcolor>grey2</textcolor>
 								<selectedcolor>selected</selectedcolor>
-								<label>18192</label>
+								<label>19043</label>
 								<visible>ListItem.IsRecording</visible>
 							</control>
 							<control type="image">
@@ -2672,7 +2672,7 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<include>ButtonCommonValues</include>
-					<label>18051</label>
+					<label>19023</label>
 					<onleft>11</onleft>
 					<onright>11</onright>
 					<onup>611</onup>
@@ -2683,7 +2683,7 @@
 					<posx>0</posx>
 					<posy>40</posy>
 					<include>ButtonCommonValues</include>
-					<label>18052</label>
+					<label>19024</label>
 					<onleft>12</onleft>
 					<onright>12</onright>
 					<onup>32</onup>
@@ -2694,7 +2694,7 @@
 					<posx>0</posx>
 					<posy>80</posy>
 					<include>ButtonCommonValues</include>
-					<label>18050</label>
+					<label>19029</label>
 					<onleft>10</onleft>
 					<onright>10</onright>
 					<onup>33</onup>
@@ -2705,7 +2705,7 @@
 					<posx>0</posx>
 					<posy>120</posy>
 					<include>ButtonCommonValues</include>
-					<label>18066</label>
+					<label>19163</label>
 					<onleft>13</onleft>
 					<onright>13</onright>
 					<onup>31</onup>
@@ -2716,7 +2716,7 @@
 					<posx>0</posx>
 					<posy>160</posy>
 					<include>ButtonCommonValues</include>
-					<label>18054</label>
+					<label>19040</label>
 					<onleft>14</onleft>
 					<onright>14</onright>
 					<onup>34</onup>

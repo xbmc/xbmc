@@ -394,7 +394,7 @@
 					</focusedlayout>
 					<content>
 						<item id="1">
-							<label>18000</label>
+							<label>19180</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/tv.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>

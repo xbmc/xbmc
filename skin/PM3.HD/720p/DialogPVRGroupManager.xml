@@ -33,7 +33,7 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font18</font>
-			<label>18126</label>
+			<label>19143</label>
 			<textcolor>white</textcolor>
 		</control>
 		<control type="button">
@@ -79,7 +79,7 @@
                 <width>430</width>
                 <height>35</height>
                 <font>font12</font>
-                <label>18127</label>
+                <label>19144</label>
                 <align>center</align>
                 <aligny>center</aligny>
                 <textcolor>white</textcolor>
@@ -225,7 +225,7 @@
                 <width>430</width>
                 <height>35</height>
                 <font>font12</font>
-                <label>18128</label>
+                <label>19145</label>
                 <align>center</align>
                 <aligny>center</aligny>
                 <textcolor>white</textcolor>
@@ -371,7 +371,7 @@
                 <width>680</width>
                 <height>35</height>
                 <font>font12</font>
-                <label>18129</label>
+                <label>19146</label>
                 <align>center</align>
                 <aligny>center</aligny>
                 <textcolor>white</textcolor>

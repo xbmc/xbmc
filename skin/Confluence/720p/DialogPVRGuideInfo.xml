@@ -48,7 +48,7 @@
 					<width>630</width>
 					<height>30</height>
 					<font>font30_title</font>
-					<label>18163</label>
+					<label>19047</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>
@@ -128,7 +128,7 @@
 						<aligny>center</aligny>
 						<font>font13_title</font>
 						<textcolor>blue</textcolor>
-						<label>$LOCALIZE[18099]:</label>
+						<label>$LOCALIZE[19148]:</label>
 					</control>
 					<control type="fadelabel">
 						<description>Channel Value</description>
@@ -251,7 +251,7 @@
 					<control type="button" id="5">
 						<description>Switch to Channel</description>
 						<include>ButtonInfoDialogsCommonValues</include>
-						<label>18058</label>
+						<label>19165</label>
 					</control>
 					<control type="button" id="6">
 						<description>Record</description>

@@ -66,12 +66,12 @@ bool CPVRDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     items.Add(item);
 
     item.reset(new CFileItem(base + "/timers/", true));
-    item->SetLabel(g_localizeStrings.Get(18054));
+    item->SetLabel(g_localizeStrings.Get(19040));
     item->SetLabelPreformated(true);
     items.Add(item);
 
     item.reset(new CFileItem(base + "/guide/", true));
-    item->SetLabel(g_localizeStrings.Get(18050));
+    item->SetLabel(g_localizeStrings.Get(19029));
     item->SetLabelPreformated(true);
     items.Add(item);
 

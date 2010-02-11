@@ -32,7 +32,7 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font18</font>
-			<label>18163</label>
+			<label>19047</label>
 			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="image">
@@ -113,7 +113,7 @@
 				<aligny>center</aligny>
 				<font>font12</font>
 				<textcolor>grey2</textcolor>
-				<label>$LOCALIZE[18075]:</label>
+				<label>$LOCALIZE[19161]:</label>
 			</control>
 			<control type="fadelabel">
 				<description>Channel Value</description>
@@ -125,7 +125,7 @@
 				<aligny>center</aligny>
 				<font>font12</font>
 				<textcolor>white</textcolor>
-				<label fallback="161">$LOCALIZE[18075]: $INFO[ListItem.ChannelNumber]</label>
+				<label fallback="161">$LOCALIZE[19161]: $INFO[ListItem.ChannelNumber]</label>
 				<info>ListItem.ChannelName</info>
 			</control>
 			<control type="label">
@@ -293,7 +293,7 @@
 				<posy>440</posy>
 				<width>200</width>
 				<height>32</height>
-				<label>18058</label>
+				<label>19165</label>
 				<font>font13</font>
 				<align>center</align>
 				<texturenofocus border="3">button-nofocus.png</texturenofocus>

@@ -50,7 +50,7 @@
 				<width>760</width>
 				<height>30</height>
 				<font>font13_title</font>
-				<label>$LOCALIZE[18050] - $INFO[VideoPlayer.ChannelName]</label>
+				<label>$LOCALIZE[19029] - $INFO[VideoPlayer.ChannelName]</label>
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>

@@ -170,7 +170,7 @@
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<textcolor>white</textcolor>
-				<label>$LOCALIZE[18060] ($INFO[Container(15).CurrentPage]/$INFO[Container(15).NumPages])</label>
+				<label>$LOCALIZE[31024] ($INFO[Container(15).CurrentPage]/$INFO[Container(15).NumPages])</label>
 			</control>
 			</control>
 			<control type="group">
@@ -343,7 +343,7 @@
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<textcolor>white</textcolor>
-				<label>$LOCALIZE[18060] ($INFO[Container(16).CurrentPage]/$INFO[Container(16).NumPages])</label>
+				<label>$LOCALIZE[31024] ($INFO[Container(16).CurrentPage]/$INFO[Container(16).NumPages])</label>
 			</control>
 			</control>
 			<control type="group">
@@ -938,7 +938,7 @@
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<textcolor>white</textcolor>
-				<label>$INFO[Container(11).NumItems] $LOCALIZE[18065] - $LOCALIZE[18060] ($INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages])</label>
+				<label>$INFO[Container(11).NumItems] $LOCALIZE[19019] - $LOCALIZE[31024] ($INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages])</label>
 			</control>
 			<include>ScrollOffsetLabel</include>
 		</control>
@@ -1156,7 +1156,7 @@
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<textcolor>white</textcolor>
-				<label>$INFO[Container(12).NumItems] $LOCALIZE[18065] - $LOCALIZE[18060] ($INFO[Container(12).CurrentPage]/$INFO[Container(12).NumPages])</label>
+				<label>$INFO[Container(12).NumItems] $LOCALIZE[19019] - $LOCALIZE[31024] ($INFO[Container(12).CurrentPage]/$INFO[Container(12).NumPages])</label>
 			</control>
 			<include>ScrollOffsetLabel</include>
 		</control>
@@ -1628,7 +1628,7 @@
             <posx>0</posx>
             <posy>0</posy>
             <include>ButtonCommonValues</include>
-            <label>18050</label>
+            <label>19029</label>
             <onleft>10</onleft>
             <onright>10</onright>
             <onup>36</onup>
@@ -1639,7 +1639,7 @@
             <posx>0</posx>
             <posy>45</posy>
             <include>ButtonCommonValues</include>
-            <label>18051</label>
+            <label>19023</label>
             <onleft>11</onleft>
             <onright>11</onright>
             <onup>31</onup>
@@ -1650,7 +1650,7 @@
             <posx>0</posx>
             <posy>90</posy>
             <include>ButtonCommonValues</include>
-            <label>18052</label>
+            <label>19024</label>
             <onleft>12</onleft>
             <onright>12</onright>
             <onup>32</onup>
@@ -1661,7 +1661,7 @@
             <posx>0</posx>
             <posy>135</posy>
             <include>ButtonCommonValues</include>
-            <label>18066</label>
+            <label>19163</label>
             <onleft>75</onleft>
             <onright>13</onright>
             <onup>33</onup>
@@ -1686,7 +1686,7 @@
             <posx>0</posx>
             <posy>0</posy>
             <include>ButtonCommonValues</include>
-            <label>18051</label>
+            <label>19023</label>
             <onleft>11</onleft>
             <onright>11</onright>
             <onup>36</onup>
@@ -1697,7 +1697,7 @@
             <posx>0</posx>
             <posy>45</posy>
             <include>ButtonCommonValues</include>
-            <label>18052</label>
+            <label>19024</label>
             <onleft>12</onleft>
             <onright>12</onright>
             <onup>32</onup>
@@ -1708,7 +1708,7 @@
             <posx>0</posx>
             <posy>90</posy>
             <include>ButtonCommonValues</include>
-            <label>18050</label>
+            <label>19029</label>
             <onleft>10</onleft>
             <onright>10</onright>
             <onup>33</onup>
@@ -1719,7 +1719,7 @@
             <posx>0</posx>
             <posy>135</posy>
             <include>ButtonCommonValues</include>
-            <label>18066</label>
+            <label>19163</label>
             <onleft>75</onleft>
             <onright>13</onright>
             <onup>31</onup>
@@ -1742,7 +1742,7 @@
 					<posx>0</posx>
 					<posy>180</posy>
 					<include>ButtonCommonValues</include>
-					<label>18054</label>
+					<label>19040</label>
 					<onleft>14</onleft>
 					<onright>14</onright>
 					<onup>34</onup>
@@ -1764,7 +1764,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18111</label>
+						<label>19516</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1783,7 +1783,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18110</label>
+						<label>19500</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1802,7 +1802,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18122</label>
+						<label>19549</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1821,7 +1821,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18112</label>
+						<label>19532</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1840,7 +1840,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18113</label>
+						<label>19548</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1859,7 +1859,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18114</label>
+						<label>19564</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1878,7 +1878,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18120</label>
+						<label>19503</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1897,7 +1897,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18115</label>
+						<label>19580</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1916,7 +1916,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18116</label>
+						<label>19596</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1935,7 +1935,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18118</label>
+						<label>19644</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1954,7 +1954,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18121</label>
+						<label>19612</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>
@@ -1973,7 +1973,7 @@
 						<width>280</width>
 						<height>35</height>
 						<font>font10</font>
-						<label>18119</label>
+						<label>19499</label>
 						<align>left</align>
 						<aligny>center</aligny>
 						<textcolor>white</textcolor>

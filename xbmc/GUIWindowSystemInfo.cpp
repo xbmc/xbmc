@@ -162,18 +162,18 @@ void CGUIWindowSystemInfo::Render()
   }
   else if(m_section == CONTROL_BT_PVR)
   {
-    SET_CONTROL_LABEL(40,g_localizeStrings.Get(18030));
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(19166));
     int i = 2;
 
-    SetControlLabel(i++, "%s %s", 18208, PVR_BACKEND_NUMBER);
+    SetControlLabel(i++, "%s %s", 19120, PVR_BACKEND_NUMBER);
     i++; // empty line
-    SetControlLabel(i++, "%s %s", 18200, PVR_BACKEND_NAME);
-    SetControlLabel(i++, "%s %s", 18201, PVR_BACKEND_VERSION);
-    SetControlLabel(i++, "%s %s", 18202, PVR_BACKEND_HOST);
-    SetControlLabel(i++, "%s %s", 18203, PVR_BACKEND_DISKSPACE);
-    SetControlLabel(i++, "%s %s", 18204, PVR_BACKEND_CHANNELS);
-    SetControlLabel(i++, "%s %s", 18205, PVR_BACKEND_RECORDINGS);
-    SetControlLabel(i++, "%s %s", 18206, PVR_BACKEND_TIMERS);
+    SetControlLabel(i++, "%s %s", 19113, PVR_BACKEND_NAME);
+    SetControlLabel(i++, "%s %s", 19114, PVR_BACKEND_VERSION);
+    SetControlLabel(i++, "%s %s", 19115, PVR_BACKEND_HOST);
+    SetControlLabel(i++, "%s %s", 19116, PVR_BACKEND_DISKSPACE);
+    SetControlLabel(i++, "%s %s", 19117, PVR_BACKEND_CHANNELS);
+    SetControlLabel(i++, "%s %s", 19118, PVR_BACKEND_RECORDINGS);
+    SetControlLabel(i++, "%s %s", 19119, PVR_BACKEND_TIMERS);
   }
   SET_CONTROL_LABEL(52, "XBMC "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled : "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
 

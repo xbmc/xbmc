@@ -49,7 +49,7 @@
 				<width>760</width>
 				<height>30</height>
 				<font>font13_title</font>
-				<label>$LOCALIZE[18051]</label>
+				<label>$LOCALIZE[19023]</label>
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
@@ -194,7 +194,7 @@
 				<scroll>false</scroll>
 				<align>right</align>
 				<aligny>center</aligny>
-				<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[18065] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
+				<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
 				<include>Window_OpenClose_Animation</include>		
 			</control>
 		</control>

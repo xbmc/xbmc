@@ -256,7 +256,7 @@ void CGUISettings::Initialize()
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
-  AddString(5, "weather.plugin", 24027, "", SPIN_CONTROL_TEXT, true);
+  AddString(5, "weather.plugin", 23030, "", SPIN_CONTROL_TEXT, true);
   AddString(6, "weather.pluginsettings", 23031, "", BUTTON_CONTROL_STANDARD, true);
 
   // My Music Settings
@@ -759,19 +759,19 @@ void CGUISettings::Initialize()
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 
   // tv settings (access over TV menu from home window)
-  AddGroup(8, 18000);
+  AddGroup(8, 19180);
   AddCategory(8, "pvrmanager", 128);
   AddBool(1, "pvrmanager.enabled", 449  , false);
-  AddCategory(8,"pvrmenu", 18004);
-  AddInt(1, "pvrmenu.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  AddInt(2, "pvrmenu.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(4, "pvrmenu.infoswitch", 18010, true);
-  AddBool(5, "pvrmenu.infotimeout", 18011, true);
-  AddInt(6, "pvrmenu.infotime", 18009, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddBool(7, "pvrmenu.hidevideolength", 18024, true);
+  AddCategory(8,"pvrmenu", 19181);
+  AddInt(1, "pvrmenu.daystodisplay", 19182, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(2, "pvrmenu.lingertime", 19183, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(4, "pvrmenu.infoswitch", 19178, true);
+  AddBool(5, "pvrmenu.infotimeout", 19179, true);
+  AddInt(6, "pvrmenu.infotime", 19184, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(7, "pvrmenu.hidevideolength", 19169, true);
   AddSeparator(8, "pvrmenu.sep1");
   AddString(9, "pvrmenu.iconpath", 19018, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddString(10, "pvrmenu.searchicons", 18033, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "pvrmenu.searchicons", 19167, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(11, "pvrmenu.sep2");
   AddInt(12, "pvrmenu.defaultguideview", 19065, GUIDE_VIEW_CHANNEL, GUIDE_VIEW_CHANNEL, 1, GUIDE_VIEW_TIMELINE, SPIN_CONTROL_TEXT);
 
@@ -780,20 +780,20 @@ void CGUISettings::Initialize()
   AddInt(2, "pvrepg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(3, "pvrepg.ignoredbforclient", 19072, false);
 
-  AddCategory(8,"pvrplayback", 18023);
-  AddBool(1, "pvrplayback.switchautoclose", 18034, true);
-  AddBool(2, "pvrplayback.playminimized", 18026, true);
-  AddInt(3, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddCategory(8,"pvrplayback", 19177);
+  AddBool(1, "pvrplayback.switchautoclose", 19168, true);
+  AddBool(2, "pvrplayback.playminimized", 19171, true);
+  AddInt(3, "pvrplayback.scantime", 19170, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddInt(4, "pvrplayback.channelentrytimeout", 19073, 1000, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
   AddSeparator(5, "pvrplayback.sep1");
   AddBool(6, "pvrplayback.signalquality", 19037, false);
 
-  AddCategory(8,"pvrrecord", 18017);
-  AddInt(1, "pvrrecord.instantrecordtime", 18018, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(2, "pvrrecord.defaultpriority", 18019, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
-  AddInt(3, "pvrrecord.defaultlifetime", 18020, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  AddInt(4, "pvrrecord.marginstart", 18021, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddInt(5, "pvrrecord.marginstop", 18022, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddCategory(8,"pvrrecord", 19043);
+  AddInt(1, "pvrrecord.instantrecordtime", 19172, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(2, "pvrrecord.defaultpriority", 19173, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
+  AddInt(3, "pvrrecord.defaultlifetime", 19174, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(4, "pvrrecord.marginstart", 19175, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(5, "pvrrecord.marginstop", 19176, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
 }
 
 CGUISettings::~CGUISettings(void)

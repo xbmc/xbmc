@@ -30,7 +30,7 @@
 			<width>700</width>
 			<height>30</height>
 			<font>font13_title</font>
-			<label>$LOCALIZE[18139]</label>
+			<label>$LOCALIZE[19142]</label>
 			<align>center</align>
 			<aligny>center</aligny>
 			<textcolor>white</textcolor>
@@ -60,7 +60,7 @@
 			<width>320</width>
 			<height>40</height>
 			<font>font12caps</font>
-			<label>$LOCALIZE[18140]</label>
+			<label>$LOCALIZE[19133]</label>
 			<align>left</align>
 			<aligny>center</aligny>
 			<textcolor>blue</textcolor>
@@ -119,7 +119,7 @@
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<align>left</align>
 				<aligny>center</aligny>
-				<label>18141</label>
+				<label>19134</label>
 				<onleft>12</onleft>
 				<onright>12</onright>
 				<onup>9</onup>
@@ -139,7 +139,7 @@
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<align>left</align>
 				<aligny>center</aligny>
-				<label>18142</label>
+				<label>19135</label>
 				<onleft>13</onleft>
 				<onright>13</onright>
 				<onup>10</onup>
@@ -157,7 +157,7 @@
 				<shadowcolor>black</shadowcolor>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18147</label>
+				<label>19128</label>
 				<onright>16</onright>
 				<onleft>16</onleft>
 				<onup>11</onup>
@@ -175,7 +175,7 @@
 				<shadowcolor>black</shadowcolor>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18148</label>
+				<label>19129</label>
 				<onright>17</onright>
 				<onleft>17</onleft>
 				<onup>14</onup>
@@ -190,7 +190,7 @@
 				<font>font12</font>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18152</label>
+				<label>515</label>
 				<onright>19</onright>
 				<onleft>19</onleft>
 				<onup>15</onup>
@@ -211,7 +211,7 @@
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
-				<label>18149</label>
+				<label>19132</label>
 				<onleft>21</onleft>
 				<onright>21</onright>
 				<onup>18</onup>
@@ -232,7 +232,7 @@
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
-				<label>18154</label>
+				<label>19123</label>
 				<onleft>23</onleft>
 				<onright>23</onright>
 				<onup>20</onup>
@@ -253,7 +253,7 @@
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
-				<label>18156</label>
+				<label>19123</label>
 				<onleft>27</onleft>
 				<onright>27</onright>
 				<onup>22</onup>
@@ -272,7 +272,7 @@
 				<font>font12</font>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18143</label>
+				<label>19130</label>
 				<onright>10</onright>
 				<onleft>10</onleft>
 				<onup>9</onup>
@@ -287,7 +287,7 @@
 				<font>font12</font>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18144</label>
+				<label>19131</label>
 				<onright>11</onright>
 				<onleft>11</onleft>
 				<onup>12</onup>
@@ -305,7 +305,7 @@
 				<shadowcolor>black</shadowcolor>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18145</label>
+				<label>19126</label>
 				<onright>14</onright>
 				<onleft>14</onleft>
 				<onup>13</onup>
@@ -323,7 +323,7 @@
 				<shadowcolor>black</shadowcolor>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18146</label>
+				<label>19127</label>
 				<onright>15</onright>
 				<onleft>15</onleft>
 				<onup>16</onup>
@@ -344,7 +344,7 @@
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
-				<label>18160</label>
+				<label>19121</label>
 				<onright>18</onright>
 				<onleft>18</onleft>
 				<onup>17</onup>
@@ -359,7 +359,7 @@
 				<font>font12</font>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18129</label>
+				<label>19146</label>
 				<onright>20</onright>
 				<onleft>20</onleft>
 				<onup>19</onup>
@@ -374,7 +374,7 @@
 				<font>font12</font>
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
-				<label>18099</label>
+				<label>19148</label>
 				<onleft>22</onleft>
 				<onright>22</onright>
 				<onup>21</onup>
@@ -395,7 +395,7 @@
 				<texturefocus border="5">button-focus.png</texturefocus>
 				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<pulseonselect>no</pulseonselect>
-				<label>18159</label>
+				<label>19124</label>
 				<onleft>24</onleft>
 				<onright>24</onright>
 				<onup>23</onup>

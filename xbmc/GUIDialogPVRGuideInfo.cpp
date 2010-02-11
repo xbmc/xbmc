@@ -89,7 +89,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CGUIDialogOK::ShowAndGetInput(18100,18107,0,0);
+            CGUIDialogOK::ShowAndGetInput(19033,19067,0,0);
           }
         }
         Close();
@@ -111,7 +111,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
           {
             if (!g_application.PlayFile(*channelslist[m_progItem->GetEPGInfoTag()->ChannelNumber()-1]))
             {
-              CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
+              CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
               return false;
             }
             return true;
@@ -145,14 +145,14 @@ void CGUIDialogPVRGuideInfo::Update()
       if (tag->Start() < CDateTime::GetCurrentDateTime())
         SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264);
       else
-        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 18416);
+        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19061);
     }
     else
     {
       if (tag->Start() < CDateTime::GetCurrentDateTime())
-        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 18414);
+        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19059);
       else
-        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 18415);
+        SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060);
     }
   }
   else

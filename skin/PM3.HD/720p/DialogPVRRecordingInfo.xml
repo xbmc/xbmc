@@ -32,7 +32,7 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font18</font>
-			<label>$LOCALIZE[18073]</label>
+			<label>$LOCALIZE[19053]</label>
 			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="image">
@@ -113,7 +113,7 @@
 				<aligny>center</aligny>
 				<font>font12</font>
 				<textcolor>grey2</textcolor>
-				<label>$LOCALIZE[18075]:</label>
+				<label>$LOCALIZE[19161]:</label>
 			</control>
 			<control type="fadelabel">
 				<description>Channel Value</description>

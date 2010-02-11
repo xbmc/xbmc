@@ -33,7 +33,7 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font18</font>
-			<label>$LOCALIZE[18050] - $INFO[VideoPlayer.Album]</label>
+			<label>$LOCALIZE[19029] - $INFO[VideoPlayer.Album]</label>
 			<textcolor>white</textcolor>
 		</control>
 		<control type="button">

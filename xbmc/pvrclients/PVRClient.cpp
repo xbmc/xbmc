@@ -888,41 +888,41 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   if (!tag.IsRepeating())
   {
     summary.Format("%s %s %s %s %s", tag.Start().GetAsLocalizedDate()
-                   , g_localizeStrings.Get(18078)
+                   , g_localizeStrings.Get(19159)
                    , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(18079)
+                   , g_localizeStrings.Get(19160)
                    , tag.Stop().GetAsLocalizedTime("", false));
   }
   else if (tag.FirstDay() != NULL)
   {
     summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(18080) : "__"
-                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(18081) : "__"
-                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(18082) : "__"
-                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(18083) : "__"
-                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(18084) : "__"
-                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(18085) : "__"
-                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(18086) : "__"
-                   , g_localizeStrings.Get(18087)
+                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(19149) : "__"
+                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(19150) : "__"
+                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(19151) : "__"
+                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(19152) : "__"
+                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(19153) : "__"
+                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(19154) : "__"
+                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(19155) : "__"
+                   , g_localizeStrings.Get(19156)
                    , tag.FirstDay().GetAsLocalizedDate(false)
-                   , g_localizeStrings.Get(18078)
+                   , g_localizeStrings.Get(19159)
                    , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(18079)
+                   , g_localizeStrings.Get(19160)
                    , tag.Stop().GetAsLocalizedTime("", false));
   }
   else
   {
     summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(18080) : "__"
-                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(18081) : "__"
-                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(18082) : "__"
-                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(18083) : "__"
-                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(18084) : "__"
-                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(18085) : "__"
-                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(18086) : "__"
-                   , g_localizeStrings.Get(18078)
+                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(19149) : "__"
+                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(19150) : "__"
+                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(19151) : "__"
+                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(19152) : "__"
+                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(19153) : "__"
+                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(19154) : "__"
+                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(19155) : "__"
+                   , g_localizeStrings.Get(19159)
                    , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(18079)
+                   , g_localizeStrings.Get(19160)
                    , tag.Stop().GetAsLocalizedTime("", false));
   }
   tag.SetSummary(summary);

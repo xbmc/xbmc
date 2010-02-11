@@ -1047,7 +1047,7 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 
       if (!cPVRTimers::AddTimer(*item))
       {
-        CGUIDialogOK::ShowAndGetInput(18100,0,18053,0);
+        CGUIDialogOK::ShowAndGetInput(19033,0,19164,0);
         return false;
       }
 
@@ -1651,7 +1651,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 
   if (iChannel > channels->size()+1)
   {
-    CGUIDialogOK::ShowAndGetInput(18100,18105,0,0);
+    CGUIDialogOK::ShowAndGetInput(19033,19136,0,0);
     return false;
   }
 
@@ -1665,7 +1665,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   /* Perform Channelswitch */
   if (!m_clients[tag->ClientID()]->SwitchChannel(*tag))
   {
-    CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
+    CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
     LeaveCriticalSection(&m_critSection);
     return false;
   }

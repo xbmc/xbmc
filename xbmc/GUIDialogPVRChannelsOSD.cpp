@@ -143,7 +143,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
   if (!g_application.PlayFile(*pItem))
   {
-    CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
+    CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
   }
 }
 

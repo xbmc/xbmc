@@ -303,7 +303,7 @@
 						<posy>0</posy>
 						<width>45</width>
 						<height>45</height>
-						<label>18065</label>
+						<label>19019</label>
 						<font>-</font>
 						<texturefocus>OSDChannelListFO.png</texturefocus>
 						<texturenofocus>OSDChannelListNF.png</texturenofocus>
@@ -320,7 +320,7 @@
 						<posy>0</posy>
 						<width>45</width>
 						<height>45</height>
-						<label>$LOCALIZE[18050]$INFO[VideoPlayer.ChannelName, - ]</label>
+						<label>$LOCALIZE[19029]$INFO[VideoPlayer.ChannelName, - ]</label>
 						<font>-</font>
 						<texturefocus>OSDepgFO.png</texturefocus>
 						<texturenofocus>OSDepgNF.png</texturenofocus>

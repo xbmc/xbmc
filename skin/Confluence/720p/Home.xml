@@ -191,7 +191,7 @@
 					<posy>15</posy>
 					<height>25</height>
 					<width>400</width>
-					<label>$LOCALIZE[18088]</label>
+					<label>$LOCALIZE[19157]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
@@ -229,7 +229,7 @@
 					<posy>95</posy>
 					<height>25</height>
 					<width>440</width>
-					<label>$INFO[PVR.NextRecordingDateTime,$LOCALIZE[18145] - ]</label>
+					<label>$INFO[PVR.NextRecordingDateTime,$LOCALIZE[19126] - ]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>
@@ -251,7 +251,7 @@
 					<posy>15</posy>
 					<height>25</height>
 					<width>390</width>
-					<label>$LOCALIZE[18089]</label>
+					<label>$LOCALIZE[19158]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
@@ -289,7 +289,7 @@
 					<posy>95</posy>
 					<height>25</height>
 					<width>440</width>
-					<label>$INFO[PVR.NowRecordingDateTime,$LOCALIZE[18145] - ]</label>
+					<label>$INFO[PVR.NowRecordingDateTime,$LOCALIZE[19126] - ]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>

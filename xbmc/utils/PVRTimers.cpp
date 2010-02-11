@@ -139,9 +139,9 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
 
   /* Generate summary string */
   m_Summary.Format("%s %s %s %s %s", m_StartTime.GetAsLocalizedDate()
-                   , g_localizeStrings.Get(18078)
+                   , g_localizeStrings.Get(19159)
                    , m_StartTime.GetAsLocalizedTime("",false)
-                   , g_localizeStrings.Get(18079)
+                   , g_localizeStrings.Get(19160)
                    , m_StopTime.GetAsLocalizedTime("",false));
 
   m_strFileNameAndPath = "pvr://timers/new"; /* Unused only for reference */
@@ -222,9 +222,9 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
 
   /* Generate summary string */
   m_Summary.Format("%s %s %s %s %s", m_StartTime.GetAsLocalizedDate()
-                   , g_localizeStrings.Get(18078)
+                   , g_localizeStrings.Get(19159)
                    , m_StartTime.GetAsLocalizedTime("",false)
-                   , g_localizeStrings.Get(18079)
+                   , g_localizeStrings.Get(19160)
                    , m_StopTime.GetAsLocalizedTime("",false));
 
   m_strFileNameAndPath = "pvr://timers/new"; /* Unused only for reference */
@@ -352,11 +352,11 @@ void cPVRTimerInfoTag::Reset()
 const CStdString cPVRTimerInfoTag::GetStatus() const
 {
   if (m_strFileNameAndPath == "pvr://timers/add.timer")
-    return g_localizeStrings.Get(18057);
+    return g_localizeStrings.Get(19026);
   else if (!m_Active)
     return g_localizeStrings.Get(13106);
   else if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
-    return g_localizeStrings.Get(18069);
+    return g_localizeStrings.Get(19162);
   else
     return g_localizeStrings.Get(305);
 }
@@ -395,7 +395,7 @@ bool cPVRTimerInfoTag::Delete(bool force) const
 
     if (err == PVR_ERROR_RECORDING_RUNNING)
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(122,0,18162,0))
+      if (CGUIDialogYesNo::ShowAndGetInput(122,0,19122,0))
         err = clients->find(m_clientID)->second->DeleteTimer(*this, true);
     }
 
@@ -462,15 +462,15 @@ bool cPVRTimerInfoTag::Update() const
 void cPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
 {
   if (err == PVR_ERROR_SERVER_ERROR)
-    CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
+    CGUIDialogOK::ShowAndGetInput(19033,19111,19110,0); /* print info dialog "Server error!" */
   else if (err == PVR_ERROR_NOT_SYNC)
-    CGUIDialogOK::ShowAndGetInput(18100,18800,18803,0); /* print info dialog "Timers not in sync!" */
+    CGUIDialogOK::ShowAndGetInput(19033,19112,19110,0); /* print info dialog "Timers not in sync!" */
   else if (err == PVR_ERROR_NOT_SAVED)
-    CGUIDialogOK::ShowAndGetInput(18100,18806,18803,0); /* print info dialog "Couldn't delete timer!" */
+    CGUIDialogOK::ShowAndGetInput(19033,19109,19110,0); /* print info dialog "Couldn't delete timer!" */
   else if (err == PVR_ERROR_ALREADY_PRESENT)
-    CGUIDialogOK::ShowAndGetInput(18100,18806,0,18814); /* print info dialog */
+    CGUIDialogOK::ShowAndGetInput(19033,19109,0,19067); /* print info dialog */
   else
-    CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
+    CGUIDialogOK::ShowAndGetInput(19033,19147,19110,0); /* print info dialog "Unknown error!" */
 
   return;
 }

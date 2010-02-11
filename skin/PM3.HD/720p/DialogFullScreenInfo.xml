@@ -773,7 +773,7 @@
 				<posy>100</posy>
 				<width>280</width>
 				<height>25</height>
-				<label>$LOCALIZE[18099]: $INFO[VideoPlayer.ChannelNumber]</label>
+				<label>$LOCALIZE[19148]: $INFO[VideoPlayer.ChannelNumber]</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font14</font>
@@ -792,7 +792,7 @@
 				<posy>140</posy>
 				<width>500</width>
 				<height>25</height>
-				<label>$LOCALIZE[18132]: $INFO[VideoPlayer.ChannelGroup]</label>
+				<label>$LOCALIZE[19141]: $INFO[VideoPlayer.ChannelGroup]</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font11</font>
@@ -804,7 +804,7 @@
 				<posy>140</posy>
 				<width>500</width>
 				<height>25</height>
-				<label>$LOCALIZE[18102]: $INFO[VideoPlayer.NextTitle]</label>
+				<label>$LOCALIZE[19031]: $INFO[VideoPlayer.NextTitle]</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font11</font>

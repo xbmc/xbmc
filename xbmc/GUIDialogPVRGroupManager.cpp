@@ -92,7 +92,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
       else if (iControl == BUTTON_NEWGROUP)
       {
         CStdString strDescription = "";
-        if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(18130), false))
+        if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(19139), false))
         {
           if (strDescription != "")
           {
@@ -138,7 +138,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
       }
       else if (iControl == BUTTON_RENAMEGROUP && m_channelGroupItems->GetFileCount() != 0)
       {
-        if (CGUIDialogKeyboard::ShowAndGetInput(m_CurrentGroupName, g_localizeStrings.Get(18130), false))
+        if (CGUIDialogKeyboard::ShowAndGetInput(m_CurrentGroupName, g_localizeStrings.Get(19139), false))
         {
           if (m_CurrentGroupName != "")
           {
@@ -159,7 +159,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
         {
           if (m_channelGroupItems->GetFileCount() == 0)
           {
-            CGUIDialogOK::ShowAndGetInput(18100,18135,0,18136);
+            CGUIDialogOK::ShowAndGetInput(19033,19137,0,19138);
           }
           else if (m_channelLeftItems->GetFileCount() > 0)
           {

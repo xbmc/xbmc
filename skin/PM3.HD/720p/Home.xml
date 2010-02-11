@@ -425,7 +425,7 @@
 					<posy>5</posy>
 					<height>30</height>
 					<width>500</width>
-					<label>[B]$LOCALIZE[18088][/B]</label>
+					<label>[B]$LOCALIZE[19157][/B]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>
@@ -504,7 +504,7 @@
 					<posy>5</posy>
 					<height>30</height>
 					<width>500</width>
-					<label>[B]$LOCALIZE[18089][/B]</label>
+					<label>[B]$LOCALIZE[19158][/B]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12</font>
@@ -639,7 +639,7 @@
 			</focusedlayout>
 			<content>
 				<item id="1">
-					<label>18000</label>
+					<label>19180</label>
 					<onclick>ActivateWindow(TV)</onclick>
 					<icon>special://skin/backgrounds/tv.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>

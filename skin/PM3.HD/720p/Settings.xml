@@ -120,7 +120,7 @@
 						<posy>0</posy>
 						<height>250</height>
 						<width>235</width>
-						<label>[B]$LOCALIZE[18000][/B]</label>
+						<label>[B]$LOCALIZE[19180][/B]</label>
 						<align>center</align>
 						<aligny>-</aligny>
 						<textcolor>grey2</textcolor>

@@ -111,7 +111,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   strncpy(m_pInfo->name, Name().c_str(), PROPS_MAX_PATH);
   strncpy(m_pInfo->presets, _P(Path()), PROPS_MAX_PATH);
   strncpy(m_pInfo->datastore, _P(Profile()), PROPS_MAX_PATH);
-  m_pInfo->name[PROPS_MAX_PATH-1] = m_pInfo->presets[PROPS_MAX_PATH-1] = m_pInfo->datastore[PROPS_MAX_PATH-1] = '\n';
+  m_pInfo->name[PROPS_MAX_PATH-1] = m_pInfo->presets[PROPS_MAX_PATH-1] = m_pInfo->datastore[PROPS_MAX_PATH-1] = '\0';
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
