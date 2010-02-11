@@ -277,7 +277,7 @@ LIBMISC = $(top_builddir)/lib/libmisc.a
 @DLOPEN_TRUE@LIBLTDL_CPPFLAGS = -I$(top_builddir)/libltdl
 AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. -I$(top_srcdir)/lib $(X_CPPFLAGS)
 AM_LDFLAGS = 
-AM_CXXFLAGS = -Wall -funroll-loops
+AM_CXXFLAGS =
 AM_ETAGSFLAGS = --extra=fq
 rs_solarwinds_SOURCES = $(COMMON) $(COLOR) $(VECTOR) solarwinds.cc \
 	solarwinds.hh wind.cc wind.hh

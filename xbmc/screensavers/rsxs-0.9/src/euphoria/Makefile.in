@@ -290,7 +290,7 @@ LIBMISC = $(top_builddir)/lib/libmisc.a
 AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. \
 	-I$(top_srcdir)/lib $(X_CPPFLAGS) $(IMAGE_CPPFLAGS)
 AM_LDFLAGS = $(IMAGE_LDFLAGS)
-AM_CXXFLAGS = -Wall -funroll-loops $(IMAGE_CXXFLAGS)
+AM_CXXFLAGS = $(IMAGE_CXXFLAGS)
 AM_ETAGSFLAGS = --extra=fq
 rs_euphoria_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) euphoria.cc \
 	euphoria.hh wisp.cc wisp.hh

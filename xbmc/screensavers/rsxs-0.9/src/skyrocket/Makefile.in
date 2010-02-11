@@ -310,7 +310,7 @@ AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. \
 	-I$(top_srcdir)/lib $(X_CPPFLAGS) $(LIBLTDL_CPPFLAGS) \
 	$(IMAGE_CPPFLAGS) $(SOUND_CPPFLAGS)
 AM_LDFLAGS = $(IMAGE_LDFLAGS) $(SOUND_LDFLAGS)
-AM_CXXFLAGS = -Wall -funroll-loops $(IMAGE_CXXFLAGS) $(SOUND_CXXFLAGS)
+AM_CXXFLAGS = $(IMAGE_CXXFLAGS) $(SOUND_CXXFLAGS)
 AM_ETAGSFLAGS = --extra=fq
 rs_skyrocket_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) $(SOUND) $(DLOPEN) \
 	bee.cc bee.hh bigmama.cc bigmama.hh bomb.cc bomb.hh explosion.cc \
