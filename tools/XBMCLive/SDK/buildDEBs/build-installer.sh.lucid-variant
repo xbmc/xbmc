@@ -1,5 +1,24 @@
 #!/bin/bash
 
+#      Copyright (C) 2005-2008 Team XBMC
+#      http://www.xbmc.org
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with XBMC; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+
+
 if ! ls xbmclive-installhelpers_*.udeb > /dev/null 2>&1 ; then
 	echo "Making xbmclive-installhelpers..."
 	cd $THISDIR/xbmclive-installhelpers
@@ -7,15 +26,27 @@ if ! ls xbmclive-installhelpers_*.udeb > /dev/null 2>&1 ; then
 	cd $THISDIR
 fi
 
-# Retrieve live_installer from Ubuntu's repositories
-# TODO identify & retrieve the latest!
-TODO(){
 if ! ls live-installer*.udeb > /dev/null 2>&1 ; then
+	# Retrieve live_installer from Ubuntu's repositories
 	echo "Retrieving live_installer udebs..."
-	wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer_13_i386.udeb"
-	if [ "$?" -ne "0" ] || [ ! -f live-installer_13_i386.udeb ] ; then
+
+	packagesListURL="http://archive.ubuntu.com/ubuntu/dists/lucid/universe/debian-installer/binary-i386/Packages.gz"
+
+	tmpFile=$(mktemp -q)
+	curl -x "" -s -f -o $tmpFile $packagesListURL
+	if [ "$?" -ne "0" ]; then
+		echo "Installer packages list not found, exiting..."
+		exit 1
+	fi
+
+	relativePath=$(gzip -dc $tmpFile | grep live-installer | grep Filename | cut -d' ' -f2)
+	rm $tmpFile
+
+	packageURL="http://archive.ubuntu.com/ubuntu/$relativePath"
+
+	wget -q $packageURL
+	if [ "$?" -ne "0" ] || [ ! ls live-installer*.udeb > /dev/null 2>&1 ] ; then
 		echo "Needed package (1) not found, exiting..."
 		exit 1
 	fi
 fi
-}
