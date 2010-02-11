@@ -130,7 +130,7 @@
 #include <winbase.h>
 #endif
 
-#if defined(__unix__) && !defined(__FreeBSD__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__FreeBSD__)
 #include <netinet/in.h>
 #endif
 
@@ -150,7 +150,7 @@
 #include <AvailabilityMacros.h>
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 typedef unsigned char BYTE;
 typedef unsigned long long DWORD64;
 typedef unsigned long DWORD;
@@ -470,7 +470,7 @@ char * UnixTimeToString(time_t t)
 // UNIX Functions
 //-------------------------------------------------------------------------
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 char * UnixTimeToString(time_t t)
 {
     static char sbuf[17];
@@ -809,7 +809,7 @@ void ConvertCodepage(char *szString)
         // Windows (Console) specific translations         
 #endif
         
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
         // UNIX specific translations         
 #endif
         
