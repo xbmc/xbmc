@@ -1254,9 +1254,12 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
-      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --extra-cflags="$CLAGS $DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --enable-static \
       --disable-shared \
+      --disable-strip \
+      --disable-opts \
       --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
@@ -1356,10 +1359,12 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       --disable-debugging \
       --with-pic
   else
-    CFLAGS=-O3 \
     ./configure \
+      CPPFLAGS="$CPPFLAGS" \
+      CFLAGS="$CFLAGS -fPIC" \ 
+      CXXFLAGS="$CXXFLAGS -fPIC" \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --disable-static \
-      --disable-debugging \
       --with-pic
   fi
 ], [0])
@@ -1372,7 +1377,7 @@ set -x
     rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
       -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
       -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
-      -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${_libdir}" \
+      -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
       -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
 set +x
   fi
@@ -1381,10 +1386,13 @@ set +x
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
   if test "$host_vendor" != "apple" ; then
     ./configure  \
+        CPPFLAGS="$CPPFLAGS" \
+        CFLAGS="$CFLAGS -fPIC" \ 
+        CXXFLAGS="$CXXFLAGS -fPIC" \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --disable-shared \
       --enable-static \
       --with-pic
-
   fi
 ], [$BUILD_GOOM])
 
