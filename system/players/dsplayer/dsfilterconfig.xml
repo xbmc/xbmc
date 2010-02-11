@@ -90,6 +90,10 @@
       <guid>{39F498AF-1A09-4275-B193-673B0BA3D478}</guid>
 	  <osdname>mpeg2 Video Decoder</osdname>
     </filter>
+	<filter name="ffdshow_dxva" type="videodec">
+	  <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
+	  <osdname>FFDShow DXVA Decoder</osdname>
+	</filter>
 
 
     <!-- Audio decoders-->
@@ -213,10 +217,12 @@
   <rule filetype="mkv">
 		<source>mkvsource</source>
 		<splitter>mkvsplitter</splitter>
-		<video>ffdvideodxvadec</video>
+		<video>ffdvideodec</video>
+		<dxva>ffdvideodxvadec</dxva>
 		<audio>ffdaudiodec</audio>
 		<!--<extra>ac3filter</extra>-->
-		<!--<extra>dcgraphiceq</extra>-->
+		<!--<extra>dcgraphiceq</extra>
+		<extra>ffdvideodec</extra>-->
 	</rule>
 	<rule filetype="wmv">
 		<source>wmasfreader</source>
