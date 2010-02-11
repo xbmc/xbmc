@@ -39,6 +39,7 @@
 
 /* GUI Messages includes */
 #include "GUIDialogOK.h"
+#include "GUIDialogProgress.h"
 
 #define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
 #define TIMERCHECKDELTA       300 // seconds before checking for changes inside timers list
@@ -839,6 +840,61 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
 /*************************************************************/
 /** GENERAL FUNCTIONS                                       **/
 /*************************************************************/
+
+/********************************************************************
+ * CPVRManager ResetDatabase
+ *
+ * Set the TV Database to it's initial state and delete all the data
+ ********************************************************************/
+void CPVRManager::ResetDatabase()
+{
+  CLog::Log(LOGINFO,"PVR: TV Database is now set to it's initial state");
+
+   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+   pDlgProgress->SetLine(0, "");
+   pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
+   pDlgProgress->SetLine(2, "");
+   pDlgProgress->StartModal();
+   pDlgProgress->Progress();
+
+  if (m_currentPlayingRecording || m_currentPlayingChannel)
+  {
+    CLog::Log(LOGINFO,"PVR: Is playing data, stopping playback");
+    g_application.StopPlaying();
+  }
+  pDlgProgress->SetPercentage(10);
+
+  Stop();
+  pDlgProgress->SetPercentage(20);
+
+  m_database.Open();
+  m_database.EraseEPG();
+  pDlgProgress->SetPercentage(30);
+
+  m_database.EraseChannelLinkageMap();
+  pDlgProgress->SetPercentage(40);
+
+  m_database.EraseChannelGroups();
+  pDlgProgress->SetPercentage(50);
+
+  m_database.EraseRadioChannelGroups();
+  pDlgProgress->SetPercentage(60);
+
+  m_database.EraseChannels();
+  pDlgProgress->SetPercentage(70);
+
+  m_database.EraseChannelSettings();
+  pDlgProgress->SetPercentage(80);
+
+  m_database.EraseClients();
+  pDlgProgress->SetPercentage(90);
+
+  m_database.Close();
+  CLog::Log(LOGINFO,"PVR: TV Database reset finished, starting PVR Subsystem again");
+  Start();
+  pDlgProgress->SetPercentage(100);
+  pDlgProgress->Close();
+}
 
 /********************************************************************
  * CPVRManager IsPlayingTV

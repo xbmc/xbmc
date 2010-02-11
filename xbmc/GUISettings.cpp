@@ -762,6 +762,7 @@ void CGUISettings::Initialize()
   AddGroup(8, 19180);
   AddCategory(8, "pvrmanager", 128);
   AddBool(1, "pvrmanager.enabled", 449  , false);
+  AddString(2, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
   AddCategory(8,"pvrmenu", 19181);
   AddInt(1, "pvrmenu.daystodisplay", 19182, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(2, "pvrmenu.lingertime", 19183, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);

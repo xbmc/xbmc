@@ -259,6 +259,28 @@ bool CTVDatabase::UpdateLastChannel(const cPVRChannelInfoTag &info)
   }
 }
 
+bool CTVDatabase::EraseClients()
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("delete from Clients");
+    m_pDS->exec(strSQL.c_str());
+    strSQL=FormatSQL("delete from LastChannel");
+    m_pDS->exec(strSQL.c_str());
+    strSQL=FormatSQL("delete from LastEPGScan");
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
+  }
+}
+
 long CTVDatabase::AddClient(const CStdString &client, const CStdString &guid)
 {
   try
@@ -285,9 +307,6 @@ long CTVDatabase::AddClient(const CStdString &client, const CStdString &guid)
 
   return -1;
 }
-
-
-
 
 long CTVDatabase::GetClientId(const CStdString& guid)
 {
@@ -318,9 +337,6 @@ long CTVDatabase::GetClientId(const CStdString& guid)
 
   return -1;
 }
-
-
-
 
 bool CTVDatabase::EraseEPG()
 {
@@ -1427,6 +1443,25 @@ long CTVDatabase::GetRadioChannelGroupId(const CStdString &groupname)
     CLog::Log(LOGERROR, "%s unable to get GroupId (%s)", __FUNCTION__, SQL.c_str());
   }
   return -1;
+}
+
+bool CTVDatabase::EraseChannelSettings()
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("delete from ChannelSettings");
+
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
+  }
 }
 
 bool CTVDatabase::GetChannelSettings(unsigned int channelID, CVideoSettings &settings)

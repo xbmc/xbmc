@@ -33,13 +33,12 @@ public:
   CTVDatabase(void);
   virtual ~CTVDatabase(void);
 
+  bool EraseClients();
   long AddClient(const CStdString &client, const CStdString &guid);
   CDateTime GetLastEPGScanTime();
   bool UpdateLastEPGScan(const CDateTime lastScan);
   int GetLastChannel();
   bool UpdateLastChannel(const cPVRChannelInfoTag &info);
-
-
 
   /* Database Epg handling */
   bool EraseEPG();
@@ -88,6 +87,7 @@ public:
   bool SetRadioChannelGroupSortOrder(unsigned int GroupId, int sortOrder);
 
   /* Database channel settings storage */
+  bool EraseChannelSettings();
   bool GetChannelSettings(unsigned int channelID, CVideoSettings &settings);
   bool SetChannelSettings(unsigned int channelID, const CVideoSettings &settings);
 

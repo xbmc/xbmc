@@ -67,6 +67,7 @@ public:
   bool TranslateBoolInfo(DWORD dwInfo);
 
   /*--- General functions ---*/
+  void ResetDatabase();
   bool IsPlayingTV();
   bool IsPlayingRadio();
   bool IsPlayingRecording();

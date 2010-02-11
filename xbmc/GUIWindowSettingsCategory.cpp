@@ -84,6 +84,7 @@
 #include "FileSystem/Directory.h"
 #include "utils/ScraperParser.h"
 #include "utils/PVRChannels.h"
+#include "PVRManager.h"
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
@@ -2056,6 +2057,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("pvrmenu.searchicons"))
   {
     cPVRChannels::SearchMissingChannelIcons();
+  }
+  else if (strSetting.Equals("pvrmanager.resetdb"))
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
+      g_PVRManager.ResetDatabase();
   }
 
   UpdateSettings();
