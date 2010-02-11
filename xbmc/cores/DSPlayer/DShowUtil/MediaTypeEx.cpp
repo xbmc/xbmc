@@ -178,7 +178,7 @@ CStdString CMediaTypeEx::ToString(IPin* pPin)
 	return str;
 }
 
-CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompression)
+CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompression, DWORD* fourcc)
 {
 	CStdString str;
   
@@ -234,6 +234,9 @@ CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompress
     } else {
       str = it->second;
     }
+
+    if (fourcc)
+      *fourcc = MAKEFOURCC(b[3], b[2], b[1], b[0]);
   }
 
 	return str;

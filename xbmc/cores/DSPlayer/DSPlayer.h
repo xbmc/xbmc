@@ -75,10 +75,13 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { CStreamsManager::getSingleton()->GetAudioStreamName(iStream,strStreamName); };
   virtual void SetAudioStream(int iStream) { CStreamsManager::getSingleton()->SetAudioStream(iStream); };
 
-/*  virtual int  GetSubtitleCount()     { return m_pDsGraph.GetSubtitleCount(); }
-  virtual int  GetSubtitle()          { return m_pDsGraph.GetSubtitle(); }
-  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { return m_pDsGraph.GetSubtitleName(iStream, strStreamName); };
-  virtual void SetSubtitle(int iStream) { return m_pDsGraph.SetSubtitle(iStream); }; */
+  virtual int  GetSubtitleCount()     { return CStreamsManager::getSingleton()->GetSubtitleCount(); }
+  virtual int  GetSubtitle()          { return CStreamsManager::getSingleton()->GetSubtitle(); }
+  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { CStreamsManager::getSingleton()->GetSubtitleName(iStream, strStreamName); }
+  virtual void SetSubtitle(int iStream) { CStreamsManager::getSingleton()->SetSubtitle(iStream); }
+  virtual bool GetSubtitleVisible() { return CStreamsManager::getSingleton()->GetSubtitleVisible(); }
+  virtual void SetSubtitleVisible( bool bVisible ) { CStreamsManager::getSingleton()->SetSubtitleVisible(bVisible); }
+
   virtual bool AddSubtitle(const CStdString& strSubPath) { return g_dsconfig.SetSubtitlesFile(strSubPath); };
   // Chapters
 

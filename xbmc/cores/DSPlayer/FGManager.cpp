@@ -57,7 +57,8 @@ using namespace std;
 CFGManager::CFGManager():
   m_dwRegister(0),
   m_audioPinConnected(false),
-  m_videoPinConnected(false)
+  m_videoPinConnected(false),
+  m_subtitlePinConnected(false)
 {
   HRESULT hr;
   hr = CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_ALL, IID_IUnknown,(void**) &m_pUnkInner);
@@ -558,7 +559,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   //To verify
   //m_pDsConfig = new CDSConfig();
 
-  g_dsconfig.ConfigureFilters(m_pFG, m_CfgLoader->GetSplitter());
+  g_dsconfig.ConfigureFilters(m_pFG);
   //Apparently the graph dont start with wmv when you have unconnected filters
   //And for debuging reason we wont remove it if the file is not a wmv
   if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))
@@ -658,9 +659,10 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
   /* Only the video pin and one audio pin can be connected
   if the filter is the splitter */
-  if (pBF == m_CfgLoader->GetSplitter()
+  if (pBF == CFGLoader::GetSplitter()
     && m_audioPinConnected
-    && m_videoPinConnected)
+    && m_videoPinConnected
+    && m_subtitlePinConnected)
     return S_OK;
 
   BeginEnumPins(pBF, pEP, pPin)
@@ -675,14 +677,15 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
       }
       EndEnumMediaTypes(pEnum, pMediaType)
 
-      if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Video) 
+      if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Video) 
           && m_videoPinConnected)
         continue;                               // A video pin is already connected, continue !
-      else if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Audio)
+      else if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Audio)
           && m_audioPinConnected)
         continue;                               // An audio pin is already connected, continue !
-      else if (pBF == m_CfgLoader->GetSplitter() && mediaType == MEDIATYPE_Subtitle)
-        continue;                               // We don't connect subtitle pin yet, continue !
+      else if (pBF == CFGLoader::GetSplitter() && mediaType == MEDIATYPE_Subtitle
+          && m_subtitlePinConnected)
+        continue;                               // We don't connect subtitle pin yet, continue !*/
 
       m_streampath.Append(pBF, pPin);
 
@@ -706,12 +709,15 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
       m_streampath.pop_back();
 
-      if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Video) 
+      if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Video) 
           && SUCCEEDED(hr))
         m_videoPinConnected = true;
-      else if (pBF == m_CfgLoader->GetSplitter() && (mediaType == MEDIATYPE_Audio)
+      else if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Audio)
           && SUCCEEDED(hr))
         m_audioPinConnected = true;
+      else if (pBF == CFGLoader::GetSplitter() && mediaType == MEDIATYPE_Subtitle
+          && SUCCEEDED(hr))
+        m_subtitlePinConnected = true;
 
       if(SUCCEEDED(hr) && pPinIn)
       {

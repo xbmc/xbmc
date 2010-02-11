@@ -199,15 +199,15 @@ void CDSPropertyPage::Process()
         CoTaskMemFree(pPageInfo.pszHelpFile);
     }
 
+    //g_guiSettings.GetBool("videoscreen.fakefullscreen")
+    /* Impossible d'afficher les prop si l'on est en fullscreen, on doit repasser en windowed avant ! */
+
     hr = PropertySheet(&propSheet);
 
     for(int page = 0; page < pPages.cElems; page++) {
       if(opf[page].propPage) {
         opf[page].propPage->SetPageSite(NULL);
         opf[page].propPage->Release();
-      }
-      if (opf[page].pps) {
-        opf[page].pps->Release();
       }
     }
     HeapFree(GetProcessHeap(), 0, hpsp);

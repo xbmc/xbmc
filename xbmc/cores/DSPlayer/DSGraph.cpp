@@ -102,8 +102,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
 
   // Audio streams
-  CStreamsManager::getSingleton()->InitManager(this->m_pGraphBuilder->GetSplitter(),
-    m_pGraphBuilder->GetGraphBuilder2(), this);
+  CStreamsManager::getSingleton()->InitManager(m_pGraphBuilder->GetGraphBuilder2(), this);
   CStreamsManager::getSingleton()->LoadStreams();
 
   // Chapters
@@ -159,7 +158,7 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    if (CStreamsManager::getSingleton()->IsChangingAudioStream())
+    if (CStreamsManager::getSingleton()->IsChangingStream())
       return;
 
 	  Stop(true);
@@ -367,8 +366,16 @@ void CDSGraph::Stop(bool rewind)
   if (rewind && m_pMediaSeeking)
     m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
 
-  if (m_pMediaControl && m_State.current_filter_state != State_Stopped)
-    m_pMediaControl->Stop();
+  if (m_pMediaControl)
+  {
+    if (m_pMediaControl->Stop() == S_FALSE)
+    {
+      do 
+      {
+        m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
+      } while (m_State.current_filter_state != State_Stopped);    
+    }
+  }
 
   UpdateState();
 

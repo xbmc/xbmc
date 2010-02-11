@@ -37,6 +37,7 @@
 
 #include <ks.h>
 #include <Codecapi.h>
+#include "streamsmanager.h"
 
 using namespace std;
 
@@ -49,11 +50,15 @@ DIRECTSHOW_RENDERER CFGLoader::m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
 
 CFGLoader::CFGLoader():
   m_pGraphBuilder(NULL),
-  m_SourceF(NULL),
-  m_SplitterF(NULL),
   m_pFGF(NULL)
 {
-
+  m_SourceF = NULL;
+  m_SplitterF = NULL;
+  m_VideoDecF = NULL;
+  m_AudioDecF = NULL;
+  m_AudioRendererF = NULL;
+  m_VideoRendererF = NULL;
+  m_UsingDXVADecoder = false;
 }
 
 CFGLoader::~CFGLoader()
@@ -480,7 +485,44 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
       CLog::Log(LOGNOTICE, "%s The source filter is also the splitter filter", __FUNCTION__);
     }
 
-    pSubTags = pRules->FirstChildElement("video");
+    /* Ok, the splitter is added to the graph. We need to detect the video stream codec in order to choose
+    if we use or not the dxva filter */
+
+    IBaseFilter *pBF = m_SplitterF;
+    bool fourccfinded = false;
+    BeginEnumPins(pBF, pEP, pPin)
+    {
+      if (fourccfinded)
+        break;
+
+      BeginEnumMediaTypes(pPin, pEMT, pMT)
+      {
+        if (pMT->majortype != MEDIATYPE_Video)
+          break; // Next pin
+
+        SVideoStreamInfos s;
+        s.Clear();
+
+        CStreamsManager::getSingleton()->GetStreamInfos(pMT, &s);
+
+        fourccfinded = true;
+        if (s.fourcc == 'H264' || s.fourcc == 'AVC1')
+          m_UsingDXVADecoder = true;
+
+        break;
+      }
+      EndEnumMediaTypes(pEMT, pMT)
+    }
+    EndEnumPins(pEP, pBF)
+
+    if (m_UsingDXVADecoder)
+    {
+      pSubTags = pRules->FirstChildElement("dxva");
+      if (! pSubTags)
+        pSubTags = pRules->FirstChildElement("video");
+    } else
+      pSubTags = pRules->FirstChildElement("video");
+
     filterName = pSubTags->GetText();
     if (FAILED(InsertVideoDecoder(filterName)))
     {
@@ -515,7 +557,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   return S_OK;
 }
 
-HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg,CStdString configFile)
+HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg, CStdString configFile)
 {
 
   m_pGraphBuilder = fg;
@@ -653,3 +695,12 @@ HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg,CStdString configFile)
   //  pFilters = pFilters->NextSiblingElement();
   //}//end while
 }
+
+IBaseFilter*              CFGLoader::m_SourceF = NULL;
+IBaseFilter*              CFGLoader::m_SplitterF = NULL;
+IBaseFilter*              CFGLoader::m_VideoDecF = NULL;
+IBaseFilter*              CFGLoader::m_AudioDecF = NULL;
+std::vector<IBaseFilter *> CFGLoader::m_extraFilters;
+IBaseFilter*              CFGLoader::m_AudioRendererF = NULL;
+IBaseFilter*              CFGLoader::m_VideoRendererF = NULL;
+bool                      CFGLoader::m_UsingDXVADecoder = false;

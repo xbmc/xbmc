@@ -361,7 +361,7 @@ HRESULT D3DPresentEngine::InitializeD3D()
 {
   HRESULT hr = S_OK;
     
-  hr = pfDXVA2CreateDirect3DDeviceManager9(&m_DeviceResetToken,&m_pDeviceManager);
+  hr = pfDXVA2CreateDirect3DDeviceManager9(&m_DeviceResetToken, &m_pDeviceManager);
 
   if (SUCCEEDED(hr))
   {
@@ -369,6 +369,7 @@ HRESULT D3DPresentEngine::InitializeD3D()
 
     hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
   }
+
   IDirectXVideoDecoderService* pDecoderService = NULL;
   HANDLE hDevice;
   hr = m_pDeviceManager->OpenDeviceHandle(&hDevice);

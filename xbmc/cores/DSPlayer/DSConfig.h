@@ -37,7 +37,7 @@ class CDSConfig
 public:
   CDSConfig(void);
   virtual ~CDSConfig(void);
-  virtual HRESULT ConfigureFilters(IFilterGraph2* pGB, IBaseFilter * splitter);
+  virtual HRESULT ConfigureFilters(IFilterGraph2* pGB);
 
   CStdString GetDxvaMode()  { return m_pStdDxva; };
 

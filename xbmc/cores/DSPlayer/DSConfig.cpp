@@ -29,6 +29,7 @@
 #include "FileSystem/SpecialProtocol.h"
 
 #include "GuiSettings.h"
+#include "FGLoader.h"
 
 
 using namespace std;
@@ -50,11 +51,10 @@ CDSConfig::~CDSConfig(void)
     m_pPropertiesFilters.pop_back();
 }
 
-HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB, IBaseFilter * splitter)
+HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
 {
   HRESULT hr = S_OK;
   m_pGraphBuilder = pGB;
-  m_pSplitter = splitter;
   pGB = NULL;
 
   while (! m_pPropertiesFilters.empty())
@@ -80,6 +80,9 @@ void CDSConfig::ConfigureFilters()
 
 bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
 {
+  if (pBF == CFGLoader::GetAudioRenderer() || pBF == CFGLoader::GetVideoRenderer() )
+    return false;
+
   ISpecifyPropertyPages *pProp = NULL;
   CAUUID pPages;
   if ( SUCCEEDED( pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **) &pProp) ) )

@@ -21,11 +21,21 @@ CStreamsManager::~CStreamsManager(void)
   for (std::map<long, SAudioStreamInfos *>::iterator it = m_audioStreams.begin();
     it != m_audioStreams.end(); ++it)
     delete it->second;
+
+  for (std::map<long, SSubtitleStreamInfos *>::iterator it = m_subtitleStreams.begin();
+    it != m_subtitleStreams.end(); ++it)
+    delete it->second;
+
 }
 
-std::map<long, SAudioStreamInfos *> CStreamsManager::Get()
+std::map<long, SAudioStreamInfos *> CStreamsManager::GetAudios()
 {
   return m_audioStreams;
+}
+
+std::map<long, SSubtitleStreamInfos *> CStreamsManager::GetSubtitles()
+{
+  return m_subtitleStreams;
 }
 
 int CStreamsManager::GetAudioStreamCount()
@@ -75,15 +85,19 @@ void CStreamsManager::SetAudioStream(int iStream)
   if (m_pIAMStreamSelect)
   {
 
-    int i =0; long lIndex = 0;
+    int i = 0; long lIndex = -1;
     for (std::map<long, SAudioStreamInfos *>::iterator it = m_audioStreams.begin();
       it != m_audioStreams.end(); ++it, i++)
     {
-      /* Disable all streams */
-      m_pIAMStreamSelect->Enable(it->first, 0);
-      it->second->flags = 0;
       if (iStream == i)
         lIndex = it->first;
+      if (it->second->flags == AMSTREAMSELECTENABLE_ENABLE)
+      {
+        m_pIAMStreamSelect->Enable(it->first, 0);
+        it->second->flags = 0;
+        if (lIndex != -1)
+          break;
+      }
     }
 
     if (SUCCEEDED(m_pIAMStreamSelect->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
@@ -107,9 +121,6 @@ void CStreamsManager::SetAudioStream(int iStream)
     IPin *connectedToPin = NULL;
     HRESULT hr = S_OK;
 
-    //LONGLONG currentPos;
-    //m_pMediaSeeking->GetCurrentPosition(&currentPos);
-    //m_pMediaControl->Stop();
     m_pGraph->Stop(); // Current position is kept by the graph
 
     /* Disable filter */
@@ -148,7 +159,6 @@ void CStreamsManager::SetAudioStream(int iStream)
     m_audioStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
 
 done:
-    //m_pGraph->SeekInMilliSec(DShowUtil::MFTimeToMsec(currentPos));
     m_pGraph->Play();
     m_bChangingAudioStream = false;
 
@@ -206,6 +216,8 @@ void CStreamsManager::LoadStreams()
         infos = &m_videoStream;
       else if (mediaType->majortype == MEDIATYPE_Audio)
         infos = new SAudioStreamInfos();
+      else if (mediaType->majortype == MEDIATYPE_Subtitle)
+        infos = new SSubtitleStreamInfos();
       else
         continue;
 
@@ -232,11 +244,14 @@ void CStreamsManager::LoadStreams()
       {
         /* Audio stream */
         if (infos->name.find("Undetermined") != std::string::npos )
-          infos->name.Format("A: Audio %02d", j + 1);
+          infos->name.Format("A: Audio %02d", i + 1);
 
-        m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i, reinterpret_cast<SAudioStreamInfos *>(infos)) );
+        m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i++, reinterpret_cast<SAudioStreamInfos *>(infos)) );
         CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
-        j++;
+      } else if (mediaType->majortype == MEDIATYPE_Subtitle)
+      {
+        m_subtitleStreams.insert( std::pair<long, SSubtitleStreamInfos *>(j++, reinterpret_cast<SSubtitleStreamInfos *>(infos)) );
+        CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->name.c_str());
       }
 
       DeleteMediaType(mediaType);
@@ -276,6 +291,8 @@ void CStreamsManager::LoadStreams()
             infos = &m_videoStream;
           else if (pMediaType->majortype == MEDIATYPE_Audio)
             infos = new SAudioStreamInfos();
+          else if (pMediaType->majortype == MEDIATYPE_Subtitle)
+            infos = new SSubtitleStreamInfos();
           else
             continue;
 
@@ -295,21 +312,27 @@ void CStreamsManager::LoadStreams()
 
           GetStreamInfos(pMediaType, infos);
 
+          infos->pObj = pPin;
+          pPin->ConnectedTo((IPin **)&infos->pUnk);
+
           if (pMediaType->majortype == MEDIATYPE_Audio)
           {
             if (infos->name.Trim().Equals("Undetermined"))
               infos->name.Format("Audio %02d", i + 1);
 
-            infos->pObj = pPin;
-
-            pPin->ConnectedTo((IPin **)&infos->pUnk);
             if (i == 0)
               infos->flags = AMSTREAMSELECTINFO_ENABLED;         
 
-            m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i, reinterpret_cast<SAudioStreamInfos *>(infos)) );
+            m_audioStreams.insert( std::pair<long, SAudioStreamInfos *>(i++, reinterpret_cast<SAudioStreamInfos *>(infos)) );
             CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
             
-            i++;
+          } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
+          {
+            if (j == 0)
+              infos->flags = AMSTREAMSELECTINFO_ENABLED;
+
+            m_subtitleStreams.insert( std::pair<long, SSubtitleStreamInfos *>(j++, reinterpret_cast<SSubtitleStreamInfos *>(infos)) );
+            CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->name.c_str());
           }
 
           break; // if the pin has multiple output type, get only the first one
@@ -328,11 +351,12 @@ void CStreamsManager::LoadStreams()
   }
 }
 
-bool CStreamsManager::InitManager(IBaseFilter *Splitter, IFilterGraph2 *graphBuilder, CDSGraph *DSGraph)
+bool CStreamsManager::InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph)
 {
-  m_pSplitter = Splitter;
+  m_pSplitter = CFGLoader::GetSplitter();
   m_pGraphBuilder = graphBuilder;
   m_pGraph = DSGraph;
+  m_bSubtitlesVisible = false;
   m_init = true;
 
   return true;
@@ -344,7 +368,7 @@ void CStreamsManager::Destroy()
   m_pSingleton = NULL;
 }
 
-bool CStreamsManager::IsChangingAudioStream()
+bool CStreamsManager::IsChangingStream()
 {
   return m_bChangingAudioStream;
 }
@@ -414,7 +438,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         VIDEOINFOHEADER *v = reinterpret_cast<VIDEOINFOHEADER *>(pMediaType->pbFormat);
         infos->width = v->bmiHeader.biWidth;
         infos->height = v->bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression);
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc);
       }
     } else if (pMediaType->formattype == FORMAT_MPEG2Video)
     {
@@ -423,7 +447,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         MPEG2VIDEOINFO *m = reinterpret_cast<MPEG2VIDEOINFO *>(pMediaType->pbFormat);
         infos->width = m->hdr.bmiHeader.biWidth;
         infos->height = m->hdr.bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression);
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc);
       }
     } else if (pMediaType->formattype == FORMAT_VideoInfo2)
     {
@@ -432,7 +456,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         VIDEOINFOHEADER2 *v = reinterpret_cast<VIDEOINFOHEADER2 *>(pMediaType->pbFormat);
         infos->width = v->bmiHeader.biWidth;
         infos->height = v->bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression);
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc);
       }
     } else if (pMediaType->formattype == FORMAT_MPEGVideo)
     {
@@ -441,7 +465,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         MPEG1VIDEOINFO *m = reinterpret_cast<MPEG1VIDEOINFO *>(pMediaType->pbFormat);
         infos->width = m->hdr.bmiHeader.biWidth;
         infos->height = m->hdr.bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression);
+        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc);
       }
     }
   }
@@ -481,4 +505,163 @@ CStdString CStreamsManager::GetAudioCodecName()
 CStdString CStreamsManager::GetVideoCodecName()
 {
   return m_videoStream.codecname;
+}
+
+int CStreamsManager::GetSubtitleCount()
+{
+  return m_subtitleStreams.size();
+}
+
+int CStreamsManager::GetSubtitle()
+{
+  if (m_subtitleStreams.size() == 0)
+    return -1;
+
+  int i = 0;
+  for (std::map<long, SSubtitleStreamInfos *>::const_iterator it = m_subtitleStreams.begin();
+    it != m_subtitleStreams.end(); ++it, i++)
+  {
+    if ( (*it).second->flags == AMSTREAMSELECTINFO_ENABLED)
+      return i;
+  }
+
+  return -1;
+}
+
+void CStreamsManager::GetSubtitleName( int iStream, CStdString &strStreamName )
+{
+  if (m_subtitleStreams.size() == 0)
+    return;
+
+  int i = 0;
+  for (std::map<long, SSubtitleStreamInfos *>::const_iterator it = m_subtitleStreams.begin();
+    it != m_subtitleStreams.end(); ++it, i++)
+  {
+    if (i == iStream)
+    {
+      strStreamName = (*it).second->name;
+    }
+  }
+}
+
+void CStreamsManager::SetSubtitle( int iStream )
+{
+  if (! m_init)
+    return;
+
+  m_bChangingAudioStream = true;
+
+  if (m_pIAMStreamSelect)
+  {
+
+    int i = 0; long lIndex = -1;
+    for (std::map<long, SSubtitleStreamInfos *>::iterator it = m_subtitleStreams.begin();
+      it != m_subtitleStreams.end(); ++it, i++)
+    {
+      if (iStream == i)
+        lIndex = it->first;
+      if (it->second->flags == AMSTREAMSELECTENABLE_ENABLE)
+      {
+        m_pIAMStreamSelect->Enable(it->first, 0);
+        it->second->flags = 0;
+        if (lIndex != -1)
+          break;
+      }
+    }
+
+    if (SUCCEEDED(m_pIAMStreamSelect->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
+    {
+      m_audioStreams[lIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+      CLog::Log(LOGDEBUG, "%s Sucessfully selected subtitle stream", __FUNCTION__);
+    }
+  } else {
+
+    long disableIndex = 0, enableIndex = iStream;
+    for (std::map<long, SSubtitleStreamInfos *>::const_iterator it = m_subtitleStreams.begin();
+      it != m_subtitleStreams.end(); ++it)
+    {
+      if (it->second->flags == AMSTREAMSELECTINFO_ENABLED)
+      {
+        disableIndex = it->first;
+        break;
+      }
+    }
+
+    IPin *connectedToPin = NULL;
+    HRESULT hr = S_OK;
+
+    m_pGraph->Stop(); // Current position is kept by the graph
+
+    /* Disable filter */
+    IPin *oldAudioStreamPin = (IPin *)(m_subtitleStreams[disableIndex]->pObj);
+    connectedToPin = (IPin *)(m_subtitleStreams[disableIndex]->pUnk);
+    if (! connectedToPin)
+      hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
+
+    m_subtitleStreams[enableIndex]->pUnk = connectedToPin;
+
+    if (FAILED(hr))
+      goto done;
+
+    hr = m_pGraphBuilder->Disconnect(connectedToPin);
+    if (FAILED(hr))
+      goto done;
+    hr = m_pGraphBuilder->Disconnect(oldAudioStreamPin);
+    if (FAILED(hr))
+    {
+      /* Reconnect pin */
+      m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
+      goto done;
+    }
+
+    m_subtitleStreams[disableIndex]->flags = 0;
+
+    /*if (! m_bSubtitlesVisible)
+    {
+      // If subtitles aren't visible, only disconnect the subtitle track,
+      // and don't connect the new one. We change the flag for the xbmc gui
+      m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+
+      goto done;
+    }*/
+
+    /* Enable filter */
+    IPin *newAudioStreamPin = (IPin *)(m_subtitleStreams[enableIndex]->pObj);
+    hr = m_pGraphBuilder->ConnectDirect(newAudioStreamPin, connectedToPin, NULL);
+    if (FAILED(hr))
+    {
+      /* Reconnect previous working pins */
+      m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
+      m_subtitleStreams[disableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+      goto done;
+    }
+
+    m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+
+done:
+    m_pGraph->Play();
+    m_bChangingAudioStream = false;
+
+    if (SUCCEEDED(hr))
+      CLog::Log(LOGNOTICE, "%s Successfully changed subtitle stream", __FUNCTION__);
+    else
+      CLog::Log(LOGERROR, "%s Can't change subtitle stream", __FUNCTION__);
+  }
+}
+
+void CStreamsManager::SetStreamInternal( int iStream, SStreamInfos *s )
+{
+  
+}
+
+bool CStreamsManager::GetSubtitleVisible()
+{
+  return m_bSubtitlesVisible;
+}
+
+void CStreamsManager::SetSubtitleVisible( bool bVisible )
+{
+  m_bSubtitlesVisible = bVisible;
+ 
+  // SetSubtitle(GetSubtitle());
 }

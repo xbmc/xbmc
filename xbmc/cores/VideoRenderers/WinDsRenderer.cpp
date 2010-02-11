@@ -31,7 +31,8 @@
 #include "utils/log.h"
 #include "FileSystem/File.h"
 #include "MathUtils.h"
-#include "DShowUtil/DShowUtil.h"h
+#include "DShowUtil/DShowUtil.h"
+
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
   m_D3DVideoTexture(NULL),

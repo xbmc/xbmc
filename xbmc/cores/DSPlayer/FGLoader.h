@@ -56,13 +56,14 @@ public:
 
   static DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
   
-  IBaseFilter* GetSplitter() { return m_SplitterF; };
-  IBaseFilter* GetSource() { return m_SourceF; }
-  IBaseFilter* GetVideoDec() { return m_VideoDecF; }
-  IBaseFilter* GetAudioDec() { return m_AudioDecF; }
-  std::vector<IBaseFilter*>& GetExtras() { return m_extraFilters; }
-  IBaseFilter* GetAudioRenderer() { return m_AudioRendererF; }
-  IBaseFilter* GetVideoRenderer() {return m_VideoRendererF; }
+  static IBaseFilter* GetSplitter() { return m_SplitterF; };
+  static IBaseFilter* GetSource() { return m_SourceF; }
+  static IBaseFilter* GetVideoDec() { return m_VideoDecF; }
+  static IBaseFilter* GetAudioDec() { return m_AudioDecF; }
+  static std::vector<IBaseFilter*>& GetExtras() { return m_extraFilters; }
+  static IBaseFilter* GetAudioRenderer() { return m_AudioRendererF; }
+  static IBaseFilter* GetVideoRenderer() {return m_VideoRendererF; }
+  static bool         IsUsingDXVADecoder() { return m_UsingDXVADecoder; }
 
   CStdString GetVideoDecInfo(){return  m_pStrVideodec;};
   CStdString GetAudioDecInfo(){return  m_pStrAudiodec;};
@@ -80,13 +81,14 @@ protected:
   std::list<CFGFilterFile*> m_configFilter;
   XFILE::CFile              m_File;
 
-  IBaseFilter*              m_SourceF;
-  IBaseFilter*              m_SplitterF;
-  IBaseFilter*              m_VideoDecF;
-  IBaseFilter*              m_AudioDecF;
-  std::vector<IBaseFilter *> m_extraFilters;
-  IBaseFilter*              m_AudioRendererF;
-  IBaseFilter*              m_VideoRendererF;
+  static IBaseFilter*              m_SourceF;
+  static IBaseFilter*              m_SplitterF;
+  static IBaseFilter*              m_VideoDecF;
+  static IBaseFilter*              m_AudioDecF;
+  static std::vector<IBaseFilter *> m_extraFilters;
+  static IBaseFilter*              m_AudioRendererF;
+  static IBaseFilter*              m_VideoRendererF;
+  static bool                      m_UsingDXVADecoder;
 
   static DIRECTSHOW_RENDERER m_CurrentRenderer;
   CFGFilterVideoRenderer*   m_pFGF;

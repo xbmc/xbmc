@@ -55,6 +55,7 @@ struct SVideoStreamInfos: SStreamInfos
 {
   unsigned int width;
   unsigned int height;
+  DWORD fourcc;
 
   virtual void Clear()
   {
@@ -62,6 +63,19 @@ struct SVideoStreamInfos: SStreamInfos
 
     width = 0;
     height = 0;
+    fourcc = 0;
+  }
+};
+
+struct SSubtitleStreamInfos: SStreamInfos
+{
+  CStdString encoding;
+
+  virtual void Clear()
+  {
+    SStreamInfos::Clear();
+
+    encoding = "";
   }
 };
 
@@ -72,14 +86,24 @@ public:
   static CStreamsManager *getSingleton();
   static void Destroy();
 
-  std::map<long, SAudioStreamInfos *> Get();
+  std::map<long, SAudioStreamInfos *> GetAudios();
+  std::map<long, SSubtitleStreamInfos *> GetSubtitles();
+
   int  GetAudioStreamCount();
   int  GetAudioStream();
   void GetAudioStreamName(int iStream, CStdString &strStreamName);
   void SetAudioStream(int iStream);
+  bool IsChangingStream();
+
+  int  GetSubtitleCount();
+  int  GetSubtitle();
+  void GetSubtitleName(int iStream, CStdString &strStreamName);
+  void SetSubtitle(int iStream);
+  bool GetSubtitleVisible();
+  void SetSubtitleVisible( bool bVisible );
+  
   void LoadStreams();
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
-  bool IsChangingAudioStream();
 
   int GetChannels();
   int GetBitsPerSample();
@@ -91,23 +115,28 @@ public:
   CStdString GetAudioCodecName();
   CStdString GetVideoCodecName();
 
-  bool InitManager(IBaseFilter *Splitter, IFilterGraph2 *graphBuilder, CDSGraph *DSGraph);
+  bool InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph);
+
+  void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
 
 private:
   CStreamsManager(void);
   ~CStreamsManager(void);
 
-  void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
+  void SetStreamInternal(int iStream, SStreamInfos * s);
   int InternalGetAudioStream();
 
   std::map<long, SAudioStreamInfos *> m_audioStreams;
+  std::map<long, SSubtitleStreamInfos *> m_subtitleStreams;
   IAMStreamSelect *m_pIAMStreamSelect;
-  IBaseFilter* m_pSplitter;
+
   IFilterGraph2* m_pGraphBuilder;
   CDSGraph* m_pGraph;
+  IBaseFilter* m_pSplitter;
 
   bool m_init;
   bool m_bChangingAudioStream;
+  bool m_bSubtitlesVisible;
 
   SVideoStreamInfos m_videoStream;
 
