@@ -2,7 +2,7 @@ ARCH=@ARCH@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations
 OBJS=Main.o
 SLIB=../../../visualisations/ProjectM.vis
-CXXFLAGS=-O3 -g -fPIC
+CXXFLAGS=-fPIC
 DIRS=libprojectM
 
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -19,7 +19,7 @@ libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
 else
 $(SLIB): $(OBJS) libprojectM/libprojectM.so
-	$(CXX) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared $(CFLAGS) -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
 	cp -rfT libprojectM/presets ../../../visualisations/projectM
 
 libprojectM/libprojectM.so: 
