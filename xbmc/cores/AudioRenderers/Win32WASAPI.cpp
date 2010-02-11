@@ -603,7 +603,7 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
 
     CStdStringW strRawDevName(varName.pwszVal);
     CStdString strDevName;
-    g_charsetConverter.ucs2CharsetToStringCharset(strRawDevName, strDevName);
+    g_charsetConverter.wToUTF8(strRawDevName, strDevName);
 
     vAudioSinks.push_back(AudioSink(CStdString("WASAPI: ").append(strDevName), CStdString("wasapi:").append(strDevName)));
 
