@@ -94,7 +94,7 @@ loadpng (char *file_name, int *w, int *h, unsigned int ***buf)
 		png_set_palette_to_rgb (png_ptr);
 
 	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-		png_set_gray_1_2_4_to_8 (png_ptr);
+		png_set_expand_gray_1_2_4_to_8 (png_ptr);
 	else if (color_type == PNG_COLOR_TYPE_GRAY ||
 					 color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
 			png_set_gray_to_rgb (png_ptr);
