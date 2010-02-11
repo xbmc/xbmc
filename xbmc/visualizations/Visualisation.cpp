@@ -95,9 +95,9 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->height = h;
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
 
-  strncpy(m_pInfo->name, Name().c_str(), MAX_PATH);
-  strncpy(m_pInfo->presets, _P(Path()), MAX_PATH);
-  strncpy(m_pInfo->name, _P(Profile()), MAX_PATH);
+  strncpy(m_pInfo->name, Name().c_str(), PROPS_MAX_PATH);
+  strncpy(m_pInfo->presets, _P(Path()), PROPS_MAX_PATH);
+  strncpy(m_pInfo->datastore, _P(Profile()), PROPS_MAX_PATH);
   m_pInfo->name[MAX_PATH-1] = m_pInfo->presets[MAX_PATH-1] = m_pInfo->datastore[MAX_PATH-1] = '\n';
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
