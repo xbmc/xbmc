@@ -78,9 +78,9 @@ ln -s libglx.so.1 libglx.so
 popd
 
 # Assuming only one kernel is installed!
-modulesdir=/lib/modules/$(ls /lib/modules)
+kernelVersion=$(ls /lib/modules)
+modulesdir=/lib/modules/$kernelVersion
 
-kernelVersion=$(basename $modulesdir)
 apt-get install linux-headers-$kernelVersion
 
 pushd .

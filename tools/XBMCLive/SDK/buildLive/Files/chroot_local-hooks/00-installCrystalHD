@@ -29,6 +29,4 @@ tar xvf /root/crystalhd.tar > /dev/null
 rm /root/crystalhd.tar
 
 # Assuming only one kernel is installed!
-kernelVersion=/lib/modules/$(ls /lib/modules)
-
-depmod $kernelVersion
+depmod $(ls /lib/modules)
