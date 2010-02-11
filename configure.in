@@ -400,7 +400,6 @@ else
                    LIBS="$ARCH_FIX -lfaad"
                    FAAD_LIBRARY="libfaad.so.0"
                  fi
-                 AC_DEFINE([HAVE_LIBFAAD], [1], ["Define if you are linking to libfaad"])
                  AC_DEFINE_UNQUOTED([FAAD_LIBRARY], ["$FAAD_LIBRARY"], [The faad library version to use])
                ],
                AC_MSG_ERROR($missing_library))
