@@ -388,13 +388,16 @@ else
   # don't combine with mysqlclient check in apple section above, Linux needs
   # paths from mysql_config
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
+
+  #this is to work around an issue with arch appending the library overriding our explicit detection
+  ARCH_FIX="$LIBS"
   AC_CHECK_LIB([faad],      [main],
                [
                  if test -f "/usr/lib/libfaad.so.2"; then
                    FAAD_LIBRARY="libfaad.so.2"
-                   LIBS+=" /usr/lib/libfaad.so.2"
+                   LIBS="$ARCH_FIX /usr/lib/libfaad.so.2"
                  else
-                   LIBS+=" -lfaad"
+                   LIBS="$ARCH_FIX -lfaad"
                    FAAD_LIBRARY="libfaad.so.0"
                  fi
                  AC_DEFINE([HAVE_LIBFAAD], [1], ["Define if you are linking to libfaad"])
