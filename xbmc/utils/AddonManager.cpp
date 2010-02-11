@@ -327,6 +327,14 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 
 bool CAddonMgr::GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon)
 {
+  CDateTimeSpan span;
+  span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
+  if(!m_lastDirScan[type].IsValid() || (m_lastDirScan[type] + span) < CDateTime::GetCurrentDateTime())
+  {
+    m_lastDirScan[type] = CDateTime::GetCurrentDateTime();
+    LoadAddonsXML(type);
+  }
+
   if (m_addons.find(type) == m_addons.end())
     return false;
 
