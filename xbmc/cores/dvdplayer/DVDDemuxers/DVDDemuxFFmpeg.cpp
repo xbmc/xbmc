@@ -434,9 +434,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // we need to know if this is matroska later
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
 
-  // in combination with libdvdnav seek, av_find_stream_info wont work
-  // so we do this for files only
-  if (streaminfo)
+  if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     /* too speed up live sources, only analyse very short */
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
@@ -448,7 +446,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
+      if (!streaminfo || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }
