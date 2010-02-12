@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27556 -->
+<!--Based on english strings version 27668 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -127,10 +127,10 @@
   <string id="168"></string>
   <string id="169">分辨率</string>
   <string id="170">调整显示器刷新率适应视频</string>
-  <string id="171">把 4:3 节目拉伸到 16:9</string>
-
+  <string id="171"></string>
 
   <string id="172">发行时间</string>
+  <string id="173">将 4:3 视频显示为</string>
 
   <string id="175">音调</string>
   <string id="176">风格</string>
