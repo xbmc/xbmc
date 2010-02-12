@@ -95,8 +95,8 @@ void rtv_from_u32(unsigned char ** pp, u32 v)
 
 void rtv_from_u64(unsigned char ** pp, u64 v)
 {
-    rtv_from_u32(pp, (u32)((v & 0xffffffff00000000) >> 32));
-    rtv_from_u32(pp, (u32)((v & 0x00000000ffffffff)      ));
+    rtv_from_u32(pp, (u32)((v & 0xffffffff00000000LL) >> 32));
+    rtv_from_u32(pp, (u32)((v & 0x00000000ffffffffLL)      ));
 }
 
 void rtv_from_buf_len(unsigned char ** pp, unsigned char * b, size_t l)

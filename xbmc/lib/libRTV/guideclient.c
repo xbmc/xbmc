@@ -51,28 +51,28 @@ static void get_snapshot_callback(unsigned char * buf, size_t len, void * vd)
 
         /* First line: error code */
         cur = buf;
-        end = strchr(cur, '\n');
+        end = (unsigned char*)strchr((char*)cur, '\n');
         if (end) *end = '\0';
-        data->status = strtoul(cur, NULL, 16);
+        data->status = strtoul((char*)cur, NULL, 16);
         if (!end) return;
         do {
             cur = end + 1;
             if (*cur == '#') {
-                end = strchr(cur, '\0');
+                end = (unsigned char*)strchr((char*)cur, '\0');
                 len -= (end - buf);
                 buf_data_start = end;
                 break;
             }
-            end = strchr(cur, '\n');
+            end = (unsigned char*)strchr((char*)cur, '\n');
             if (!end) return;
             *end = '\0';
-            equal = strchr(cur, '=');
+            equal = (unsigned char*)strchr((char*)cur, '=');
             if (!equal) return;
-            if (strncmp(cur, "guide_file_name=", equal-cur+1) == 0) {
-                data->timestamp = malloc(strlen(equal+1)+1);
-                strcpy(data->timestamp, equal+1);
-            } else if (strncmp(cur, "FileLength=", equal-cur+1) == 0) {
-                data->filesize = strtoul(equal+1, NULL, 0);
+            if (strncmp((char*)cur, "guide_file_name=", (int)(equal-cur+1)) == 0) {
+                data->timestamp = malloc(strlen((const char*)(equal+1))+1);
+                strcpy((char*)data->timestamp, (const char*)(equal+1));
+            } else if (strncmp((char*)cur, "FileLength=", (int)(equal-cur+1)) == 0) {
+                data->filesize = strtoul((char*)equal+1, NULL, 0);
                 data->buf = malloc(data->filesize);
             } /* also "RemoteFileName", but we don't expose it */
         } while (1);
@@ -118,8 +118,8 @@ unsigned long guide_client_get_snapshot(unsigned char ** presult,
 
     hc_free(hc);
 
-    *ptimestamp = data.timestamp;
-    *presult    = data.buf;
+    *ptimestamp = (unsigned char*)data.timestamp;
+    *presult    = (unsigned char*)data.buf;
     *psize      = data.filesize;
 
 exit:
