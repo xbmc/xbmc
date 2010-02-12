@@ -225,7 +225,7 @@ CStdString cPVRChannelInfoTag::NowTitle(void) const
   if (m_Epg == NULL)
     return g_localizeStrings.Get(19055);
 
-  if (m_epgNow == NULL || m_epgNow->End() < CDateTime::GetCurrentDateTime())
+  if (!m_Epg->IsUpdateRunning() && (m_epgNow == NULL || m_epgNow->End() < CDateTime::GetCurrentDateTime()))
   {
     m_epgNow  = m_Epg->GetInfoTagNow();
     m_epgNext = m_Epg->GetInfoTagNext();
@@ -255,8 +255,14 @@ CStdString cPVRChannelInfoTag::NowPlot(void) const
 
 CDateTime cPVRChannelInfoTag::NowStartTime(void) const
 {
-  if (m_epgNow == NULL)
+  if (m_Epg == NULL || m_epgNow == NULL)
     return CDateTime::GetCurrentDateTime();
+
+  if (!m_Epg->IsUpdateRunning() && m_epgNow->End() < CDateTime::GetCurrentDateTime())
+  {
+    m_epgNow  = m_Epg->GetInfoTagNow();
+    m_epgNext = m_Epg->GetInfoTagNext();
+  }
 
   return m_epgNow->Start();
 }
@@ -345,7 +351,7 @@ CDateTime cPVRChannelInfoTag::NextEndTime(void) const
   if (m_epgNow == NULL || m_epgNext == NULL || m_Epg == NULL)
     return CDateTime::GetCurrentDateTime()+CDateTimeSpan(0,2,0,0);
 
-  if (m_epgNow->End() < CDateTime::GetCurrentDateTime())
+  if (!m_Epg->IsUpdateRunning() && m_epgNow->End() < CDateTime::GetCurrentDateTime())
   {
     m_epgNow  = m_Epg->GetInfoTagNow();
     m_epgNext = m_Epg->GetInfoTagNext();

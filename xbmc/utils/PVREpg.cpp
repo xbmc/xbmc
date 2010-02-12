@@ -303,8 +303,9 @@ struct sortEPGbyDate
 
 cPVREpg::cPVREpg(long ChannelID)
 {
-  m_channelID = ChannelID;
-  m_Channel = cPVRChannels::GetByChannelIDFromAll(ChannelID);
+  m_channelID       = ChannelID;
+  m_Channel         = cPVRChannels::GetByChannelIDFromAll(ChannelID);
+  m_bUpdateRunning  = false;
 }
 
 cPVREPGInfoTag *cPVREpg::AddInfoTag(cPVREPGInfoTag *Tag)
@@ -829,6 +830,9 @@ void cPVREpgs::Update(bool Scan)
         if (p)
         {
           bool ret = false;
+
+          p->SetUpdate(true);
+
           if (Scan)
           {
             time_t start;
@@ -942,6 +946,7 @@ void cPVREpgs::Update(bool Scan)
             }
           }
         }
+        p->SetUpdate(false);
       }
     }
 
@@ -953,6 +958,9 @@ void cPVREpgs::Update(bool Scan)
         if (p)
         {
           bool ret = false;
+
+          p->SetUpdate(true);
+
           if (Scan)
           {
             time_t start;
@@ -1066,6 +1074,7 @@ void cPVREpgs::Update(bool Scan)
             }
           }
         }
+        p->SetUpdate(false);
       }
     }
 
@@ -1149,7 +1158,7 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
     {
       for (unsigned int i = 0; i < PVRRecordings.size(); i++)
       {
-        for (unsigned int j = 0; j < results->Size(); j++)
+        for (int j = 0; j < results->Size(); j++)
         {
           const cPVREPGInfoTag *epgentry = results->Get(j)->GetEPGInfoTag();
           if (epgentry)
@@ -1172,7 +1181,7 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
     {
       for (unsigned int i = 0; i < PVRTimers.size(); i++)
       {
-        for (unsigned int j = 0; j < results->Size(); j++)
+        for (int j = 0; j < results->Size(); j++)
         {
           const cPVREPGInfoTag *epgentry = results->Get(j)->GetEPGInfoTag();
           if (epgentry)

@@ -63,6 +63,7 @@ private:
   long m_channelID;
   const cPVRChannelInfoTag *m_Channel;
   std::vector<cPVREPGInfoTag*> m_tags;
+  bool m_bUpdateRunning;
 
 public:
   cPVREpg(long ChannelID);
@@ -79,6 +80,8 @@ public:
   const cPVREPGInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
   const cPVREPGInfoTag *GetInfoTagAround(CDateTime Time) const;
   CDateTime GetLastEPGDate();
+  bool IsUpdateRunning() const { return m_bUpdateRunning; }
+  void SetUpdate(bool OnOff) { m_bUpdateRunning = OnOff; }
 
   static bool Add(const PVR_PROGINFO *data, cPVREpg *Epg);
   static bool AddDB(const PVR_PROGINFO *data, cPVREpg *Epg);
