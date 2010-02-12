@@ -16,6 +16,8 @@
     </control>
 
 <!-- Right hand backgrounds -->
+
+
     <control type="group" id="200">
       <visible>!Player.HasVideo</visible>
 
@@ -1041,7 +1043,20 @@
       </control>
     </control>
 
+		<!------------------------------------------------------------------->
+    <control type="largeimage">
+	 		<include>HomeBackgroundFade</include>
+			<info>Container(300).ListItem.Property(fanart_image)</info>
+	    <posx>0</posx>
+	    <posy>0</posy>
+	    <width>1280</width>
+	    <height>720</height>
+			<visible>true</visible>
+    </control>
+		<!------------------------------------------------------------------->
+
 <!-- Behind Menu Backgrounds -->
+
     <control type="group" id="201">
       <visible>!Player.HasVideo</visible>
 
@@ -1129,7 +1144,7 @@
           </control>
         </control>
       </control>
-      
+
       <control type="group" id="241">
         <description>App Store Background Image</description>
         <include>HomeAppStoreBGVisible</include>
@@ -1605,14 +1620,14 @@
             <label> $LOCALIZE[31111] </label>
             <label2> $LOCALIZE[31011] </label2>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,movietitles,return)</onclick>
-            <visible>!Skin.HasSetting(HideMovies)</visible>
+            <visible>false</visible>
           </item>
           <item id="8">
             <description>My TV Shows Button</description>
             <label> $LOCALIZE[31008] </label>
             <label2> $LOCALIZE[31011] </label2>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowtitles,return)</onclick>
-            <visible>!Skin.HasSetting(HideTVShows)</visible>
+            <visible>false</visible>
           </item>
           <item id="2">
             <description>My Music Button</description>
