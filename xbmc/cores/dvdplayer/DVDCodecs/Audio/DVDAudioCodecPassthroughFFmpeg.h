@@ -62,7 +62,7 @@ private:
   bool              m_InitEncoder  ;
   unsigned int      m_EncPacketSize;
   BYTE             *m_DecodeBuffer ;
-  int               m_DecodeSize   ;
+  unsigned int      m_DecodeSize   ;
   bool SupportsFormat(CDVDStreamInfo &hints);
   bool SetupEncoder  (CDVDStreamInfo &hints);
 

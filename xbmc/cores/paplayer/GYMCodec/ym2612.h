@@ -15,7 +15,7 @@ extern "C" {
 #define INLINE              __inline
 
 typedef struct slot__ {
-	int *DT;	// paramètre detune
+	unsigned int *DT;	// paramètre detune
 	int MUL;	// paramètre "multiple de fréquence"
 	int TL;		// Total Level = volume lorsque l'enveloppe est au plus haut
 	int TLL;	// Total Level ajusted
@@ -24,10 +24,10 @@ typedef struct slot__ {
 	int KSR;	// Key Scale Rate = cette valeur est calculée par rapport à la fréquence actuelle, elle va influer
 				// sur les différents paramètres de l'enveloppe comme l'attaque, le decay ...  comme dans la réalité !
 	int SEG;	// Type enveloppe SSG
-	int *AR;	// Attack Rate (table pointeur) = Taux d'attaque (AR[KSR])
-	int *DR;	// Decay Rate (table pointeur) = Taux pour la régression (DR[KSR])
-	int *SR;	// Sustin Rate (table pointeur) = Taux pour le maintien (SR[KSR])
-	int *RR;	// Release Rate (table pointeur) = Taux pour le relâchement (RR[KSR])
+	unsigned int *AR;	// Attack Rate (table pointeur) = Taux d'attaque (AR[KSR])
+	unsigned int *DR;	// Decay Rate (table pointeur) = Taux pour la régression (DR[KSR])
+	unsigned int *SR;	// Sustin Rate (table pointeur) = Taux pour le maintien (SR[KSR])
+	unsigned int *RR;	// Release Rate (table pointeur) = Taux pour le relâchement (RR[KSR])
 	int Fcnt;	// Frequency Count = compteur-fréquence pour déterminer l'amplitude actuelle (SIN[Finc >> 16])
 	int Finc;	// frequency step = pas d'incrémentation du compteur-fréquence
 				// plus le pas est grand, plus la fréquence est aïgu (ou haute)

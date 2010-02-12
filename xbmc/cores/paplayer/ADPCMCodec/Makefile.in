@@ -1,7 +1,7 @@
 ARCH=@ARCH@
 OBJS=uXboxAdpcmDecoder.o ADPCMDll.o
-CFLAGS +=-D_LINUX -fPIC -O2
-CXXFLAGS += -D_LINUX -fPIC -O2
+CFLAGS +=-D_LINUX -fPIC
+CXXFLAGS += -D_LINUX -fPIC
 
 SLIB=../../../../system/players/paplayer/adpcm-@ARCH@.so
 
@@ -11,7 +11,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CC) -shared -o $@ *.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+	$(CC) $(CFLAGS) -shared -o $@ *.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 endif
 
 include ../../../../Makefile.include

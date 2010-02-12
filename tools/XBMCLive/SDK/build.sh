@@ -84,19 +84,18 @@ if ! which lh > /dev/null ; then
 				exit 1
 			fi
 
-			# Fix for missing directory for Ubuntu's d-i, to be removed when fixed upstream!
-			pushd .
-			cd live-helper/data/debian-cd
-			if [ ! -h $DISTROCODENAME ]; then
-				ln -s lenny $DISTROCODENAME
-			fi
-			popd
-
 			# Saved, to avoid cloning for multiple builds
 			tar cvf live-helper.tar live-helper  > /dev/null 2>&1
 		else
 			tar xvf live-helper.tar  > /dev/null 2>&1
 		fi
+
+		# Fix for missing directory for Ubuntu's d-i, to be removed when fixed upstream!
+		cd live-helper/data/debian-cd
+		if [ ! -h $DISTROCODENAME ]; then
+			ln -s lenny $DISTROCODENAME
+		fi
+		cd $WORKPATH/Tools
 	fi
 
 	LH_HOMEDIR=$WORKPATH/Tools/live-helper

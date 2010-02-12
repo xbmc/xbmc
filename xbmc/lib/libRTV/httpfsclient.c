@@ -89,7 +89,7 @@ static int make_httpfs_url(char * dst, size_t size,
 
         strcpy(d, "__Q_=");
         d += strlen(d);
-        rtv_encrypt(argbuf, argl, ctext, sizeof ctext, &ctextlen, 1);
+        rtv_encrypt(argbuf, argl, (char*)ctext, sizeof ctext, &ctextlen, 1);
         for (i = 0; i < ctextlen; i++)
             d += sprintf(d, "%02x", ctext[i]);
     } else {
@@ -180,7 +180,7 @@ unsigned long hfs_do_simple(char ** presult, const char * address,
         return http_status;
     }
 
-    tmp = hc_read_all(hc);
+    tmp = (char*)hc_read_all(hc);
     hc_free(hc);
 
     e = strchr(tmp, '\n');
@@ -224,10 +224,10 @@ static void hfs_callback(unsigned char * buf, size_t len, void * vd)
         data->firsttime = 0;
 
         /* First line: error code */
-        e = strchr(buf, '\n');
+        e = (unsigned char*)strchr((char*)buf, '\n');
         if (e)
             *e = '\0';
-        data->status = strtoul(buf, NULL, 16);
+        data->status = strtoul((char*)buf, NULL, 16);
 
         e++;
         len -= (e - buf);
@@ -318,7 +318,7 @@ unsigned long hfs_do_post_simple(char ** presult, const char * address,
         return http_status;
     }
     
-    tmp = hc_read_all(hc);
+    tmp = (char*)hc_read_all(hc);
     hc_free(hc);
 
     e = strchr(tmp, '\n');
@@ -350,10 +350,10 @@ static void hfs_callback2(unsigned char * buf, size_t len, void * vd)
         data->firsttime = 0;
 
         /* First line: error code */
-        e = strchr(buf, '\n');
+        e = (unsigned char*)strchr((char*)buf, '\n');
         if (e)
             *e = '\0';
-        data->status = strtoul(buf, NULL, 16);
+        data->status = strtoul((char*)buf, NULL, 16);
 
         e++;
         len -= (e - buf);

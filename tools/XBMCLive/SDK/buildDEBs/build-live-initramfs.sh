@@ -29,10 +29,13 @@ if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 			exit 1
 		fi
 
-		cd $THISDIR/live-initramfs
-		dpkg-buildpackage -rfakeroot -b -uc -us 
-		cd $THISDIR
+		# Saved, to avoid cloning for multiple builds
+		tar cvf live-initramfs.tar live-initramfs  > /dev/null 2>&1
 	else
 		tar xvf live-initramfs.tar  > /dev/null 2>&1
 	fi
+
+	cd $THISDIR/live-initramfs
+	dpkg-buildpackage -rfakeroot -b -uc -us 
+	cd $THISDIR
 fi

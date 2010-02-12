@@ -52,9 +52,9 @@ mv crystalhd/linux_lib/libcrystalhd/libcrystalhd.so* ./Files/usr/lib
 pushd .
 
 # Assuming only one kernel is installed!
-modulesdir=/lib/modules/$(ls /lib/modules)
+kernelVersion=$(ls /lib/modules)
+modulesdir=/lib/modules/$kernelVersion
 
-kernelVersion=$(basename $modulesdir)
 apt-get -y install linux-headers-$kernelVersion
 
 # Make kernel module

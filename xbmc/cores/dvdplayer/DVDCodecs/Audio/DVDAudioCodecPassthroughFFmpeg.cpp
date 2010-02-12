@@ -258,6 +258,9 @@ void CDVDAudioCodecPassthroughFFmpeg::Dispose()
 
 int CDVDAudioCodecPassthroughFFmpeg::BCReadPacket(uint8_t *buf, int buf_size)
 {
+  if (buf_size == 0)
+    return 0;
+
   int s = buf_size;
 
 #if (LIBAVFORMAT_VERSION_INT > AV_VERSION_INT(52, 47, 0))
@@ -430,7 +433,7 @@ int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
       memmove(m_DecodeBuffer, m_DecodeBuffer + eUsed, m_DecodeSize);
 
       /* output the frame of data */
-      while(eCoded = m_Encoder->GetData(&encData))
+      while((eCoded = m_Encoder->GetData(&encData)))
         WriteFrame(encData, eCoded);
     }
 
@@ -460,9 +463,23 @@ void CDVDAudioCodecPassthroughFFmpeg::WriteFrame(uint8_t *pData, int iSize)
   pkt.size = iSize;
 
   m_Consumed += iSize;
-  m_dllAvFormat.av_write_header (m_pFormat);
-  m_dllAvFormat.av_write_frame  (m_pFormat, &pkt);
-  m_dllAvFormat.av_write_trailer(m_pFormat);
+  if (m_dllAvFormat.av_write_header(m_pFormat) != 0)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::WriteFrame - Failed to write the frame header");
+    return;
+  }
+
+  if (m_dllAvFormat.av_write_frame(m_pFormat, &pkt) < 0)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::WriteFrame - Failed to write the frame data");
+    return;
+  }
+
+  if (m_dllAvFormat.av_write_trailer(m_pFormat) != 0)
+  {
+    CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::WriteFrame - Failed to write the frame trailer");
+    return;
+  }
 }
 
 int CDVDAudioCodecPassthroughFFmpeg::GetData(BYTE** dst)

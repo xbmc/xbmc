@@ -1,8 +1,8 @@
 ARCH=@ARCH@
 AS=nasm
 OBJS=SPC700.o APU.o DSP.o SNESAPU.o
-CFLAGS +=-D_LINUX -fPIC -I../../ -O2
-CXXFLAGS +=-D_LINUX -fPIC -I../../ -O2
+CFLAGS +=-D_LINUX -fPIC -I../..
+CXXFLAGS +=-D_LINUX -fPIC -I../..
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common
 	CXXFLAGS+=-fno-common
@@ -25,7 +25,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CC) -shared -o $@ $(OBJS) \
+	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) \
 		`cat ../../../../DllLoader/exports/wrapper.def` ../../../../DllLoader/exports/wrapper.o
 endif
 
