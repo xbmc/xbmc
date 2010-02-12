@@ -304,7 +304,7 @@ namespace PYXBMC
 
   // Player_IsPlaying
   PyDoc_STRVAR(isPlaying__doc__,
-    "isPlayingAudio() -- returns True is xbmc is playing a file.");
+    "isPlaying() -- returns True is xbmc is playing a file.");
 
   PyObject* Player_IsPlaying(PyObject *self, PyObject *args)
   {
@@ -470,12 +470,15 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
+    if (g_application.m_pPlayer)
+    {
     int nStream = g_application.m_pPlayer->GetSubtitleCount();
 
     g_settings.m_currentVideoSettings.m_SubtitleOn = true;
     g_application.m_pPlayer->SetSubtitleVisible(true);
     g_application.m_pPlayer->AddSubtitle(cLine);
     g_application.m_pPlayer->SetSubtitle(nStream);
+    }
     
     Py_INCREF(Py_None);
     return Py_None;

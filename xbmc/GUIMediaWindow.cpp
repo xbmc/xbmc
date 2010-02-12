@@ -51,6 +51,8 @@
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "FactoryFileDirectory.h"
+#include "utils/log.h"
+#include "utils/FileUtils.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -137,7 +139,7 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PARENT_DIR)
+  if (action.actionId == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       g_windowManager.PreviousWindow();
@@ -146,14 +148,14 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
   }
 
   // the non-contextual menu can be called at any time
-  if (action.id == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.actionId == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {
     OnPopupMenu(-1);
     return true;
@@ -163,7 +165,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   
   // live filtering
-  if (action.id == ACTION_FILTER_CLEAR)
+  if (action.actionId == ACTION_FILTER_CLEAR)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
     message.SetStringParam("");
@@ -171,17 +173,17 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.id == ACTION_BACKSPACE)
+  if (action.actionId == ACTION_BACKSPACE)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
     OnMessage(message);
     return true;
   }
 
-  if (action.id >= ACTION_FILTER_SMS2 && action.id <= ACTION_FILTER_SMS9)
+  if (action.actionId >= ACTION_FILTER_SMS2 && action.actionId <= ACTION_FILTER_SMS9)
   {
     CStdString filter;
-    filter.Format("%i", (int)(action.id - ACTION_FILTER_SMS2 + 2));
+    filter.Format("%i", (int)(action.actionId - ACTION_FILTER_SMS2 + 2));
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);
@@ -345,7 +347,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (IsActive())
         {
           if((message.GetStringParam() == m_vecItems->m_strPath) ||
-             (m_vecItems->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam())))
+             (m_vecItems->IsMultiPath() && XFILE::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam())))
           {
             Update(m_vecItems->m_strPath);
           }
@@ -608,11 +610,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 
   m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
 
-  ClearFileItems();
-  m_vecItems->ClearProperties();
-  m_vecItems->SetThumbnailImage("");
-
-  if (!GetDirectory(strDirectory, *m_vecItems))
+  CFileItemList items;
+  if (!GetDirectory(strDirectory, items))
   {
     CLog::Log(LOGERROR,"CGUIMediaWindow::GetDirectory(%s) failed", strDirectory.c_str());
     // if the directory is the same as the old directory, then we'll return
@@ -629,6 +628,9 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     Update(strParentPath);
     return false;
   }
+
+  ClearFileItems();
+  *m_vecItems = items;
 
   // if we're getting the root source listing
   // make sure the path history is clean
@@ -732,8 +734,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
   if (!pItem->m_bIsFolder && pItem->IsFileFolder())
   {
-    DIRECTORY::IFileDirectory *pFileDirectory = NULL;
-    pFileDirectory = DIRECTORY::CFactoryFileDirectory::Create(pItem->m_strPath, pItem.get(), "");
+    XFILE::IFileDirectory *pFileDirectory = NULL;
+    pFileDirectory = XFILE::CFactoryFileDirectory::Create(pItem->m_strPath, pItem.get(), "");
     if(pFileDirectory)
       pItem->m_bIsFolder = true;
     else if(pItem->m_bIsFolder)
@@ -782,7 +784,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
   }
   else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
   {
-    return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
+    return XFILE::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
   }
   else
   {
@@ -1121,16 +1123,16 @@ void CGUIMediaWindow::UpdateFileList()
 void CGUIMediaWindow::OnDeleteItem(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size()) return;
-  CFileItem item(*m_vecItems->Get(iItem));
+  CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item.IsPlayList())
-    item.m_bIsFolder = false;
+  if (item->IsPlayList())
+    item->m_bIsFolder = false;
 
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE && g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
-  if (!CGUIWindowFileManager::DeleteItem(&item))
+  if (!CFileUtils::DeleteItem(item))
     return;
   m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->m_strPath);
@@ -1145,7 +1147,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
-  if (!CGUIWindowFileManager::RenameFile(m_vecItems->Get(iItem)->m_strPath))
+  if (!CFileUtils::RenameFile(m_vecItems->Get(iItem)->m_strPath))
     return;
   m_vecItems->RemoveDiscCache(GetID());
   Update(m_vecItems->m_strPath);
@@ -1247,7 +1249,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
 
-  if (item->IsPlugin() && item->IsFileFolder())
+  if (item->IsPlugin() && item->m_bIsFolder)
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1286,7 +1288,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
       CURL url(m_vecItems->Get(itemNumber)->m_strPath);
-      CGUIDialogPluginSettings::ShowAndGetInput(url);
+      if(CGUIDialogPluginSettings::ShowAndGetInput(url))
+        Update(m_vecItems->m_strPath);
       return true;
     }
   case CONTEXT_BUTTON_DELETE_PLUGIN:
@@ -1294,8 +1297,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CStdString path;
       CUtil::GetDirectory(m_vecItems->Get(itemNumber)->m_strPath,path);
       path.Replace("plugin://","special://home/plugins/");
-      CFileItem item2(path,true);
-      if (CGUIWindowFileManager::DeleteItem(&item2))
+      CFileItemPtr item2(new CFileItem(path,true));
+      if (CFileUtils::DeleteItem(item2))
         Update(m_vecItems->m_strPath);
 
       return true;

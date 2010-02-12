@@ -29,9 +29,9 @@
 #include "StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "XMLUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 CDAVDirectory::CDAVDirectory(void) {}
 CDAVDirectory::~CDAVDirectory(void) {}
@@ -129,7 +129,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
             {
               if (ValueWithoutNamespace(pPropChild, "getcontentlength"))
               {
-                item.m_dwSize = atoi(pPropChild->ToElement()->GetText());
+                item.m_dwSize = strtoll(pPropChild->ToElement()->GetText(), NULL, 10);
               }
               else if (ValueWithoutNamespace(pPropChild, "getlastmodified"))
               {
@@ -230,6 +230,10 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
           CUtil::AddSlashAtEnd(pItem->m_strPath);
         
+        // Add back protocol options
+        if (!url2.GetProtocolOptions().IsEmpty())
+          pItem->m_strPath = pItem->m_strPath + "|" + url2.GetProtocolOptions();
+
         if (!pItem->m_strPath.Equals(strPath))
           items.Add(pItem);
         }

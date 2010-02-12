@@ -71,12 +71,13 @@
 #include "SkinInfo.h"
 #include "MediaManager.h"
 #include "TimeUtils.h"
+#include "SingleLock.h"
+#include "log.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;

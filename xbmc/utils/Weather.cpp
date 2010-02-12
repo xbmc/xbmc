@@ -19,9 +19,15 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#include "system.h"
 #include "Weather.h"
 #include "FileSystem/ZipManager.h"
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/FileCurl.h"
 #include "XMLUtils.h"
 #include "Temperature.h"
@@ -39,9 +45,10 @@
 #include "FileSystem/Directory.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
+#include "log.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_BTNREFRESH  2
 #define CONTROL_SELECTLOCATION 3
@@ -86,16 +93,16 @@ FIXME'S
 */
 
 // USE THESE FOR ZIP
-//#define WEATHER_BASE_PATH "special://temp/weather/"
-//#define WEATHER_USE_ZIP 1
-//#define WEATHER_USE_RAR 0
-//#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.zip"
+#define WEATHER_BASE_PATH "special://temp/weather/"
+#define WEATHER_USE_ZIP 1
+#define WEATHER_USE_RAR 0
+#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.zip"
 
 // OR THESE FOR RAR
-#define WEATHER_BASE_PATH "special://temp/weather/"
-#define WEATHER_USE_ZIP 0
-#define WEATHER_USE_RAR 1
-#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.rar"
+//#define WEATHER_BASE_PATH "special://temp/weather/"
+//#define WEATHER_USE_ZIP 0
+//#define WEATHER_USE_RAR 1
+//#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.rar"
 
 CWeather g_weatherManager;
 
@@ -128,8 +135,10 @@ bool CWeatherJob::DoWork()
       CDirectory::Create(WEATHER_BASE_PATH);
       if (WEATHER_USE_ZIP)
         g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+#ifdef HAS_FILESYSTEM_RAR
       else if (WEATHER_USE_RAR)
         g_RarManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
+#endif
       m_imagesOkay = true;
     }
     LoadWeather(xml);
@@ -267,7 +276,6 @@ int CWeatherJob::ConvertSpeed(int curSpeed)
 
 bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 {
-  int iTmpInt;
   CStdString iTmpStr;
   SYSTEMTIME time;
 
@@ -328,6 +336,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
     GetString(pElement, "t", m_info.currentConditions, "");   //current condition
     LocalizeOverview(m_info.currentConditions);
 
+    int iTmpInt;
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
     CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
     m_info.currentTemperature.Format("%2.0f", temp.ToLocale());
@@ -399,7 +408,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 
         GetString(pOneDayElement, "low", iTmpStr, "");
         if (iTmpStr == "N/A")
-          m_info.forecast[i].m_high = "";
+          m_info.forecast[i].m_low = "";
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));

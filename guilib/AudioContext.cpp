@@ -24,7 +24,6 @@
 #include "GUIAudioManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
-#include "XBAudioConfig.h"
 #ifdef _WIN32
 #include "WINDirectSound.h"
 #endif
@@ -212,8 +211,6 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   {
     if (g_settings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic)
     {
-      if( g_audioConfig.GetAC3Enabled() )
-      {
         bAudioOnAllSpeakers = true;
         m_bAC3EncoderActive = true;
         spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
@@ -222,25 +219,12 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
       {
         if (iChannels == 1)
           spconfig = DSSPEAKER_MONO;
-        else
-        {
-          spconfig = DSSPEAKER_STEREO;
-        }
-      }
-    }
-    else
-    {
-      if (iChannels == 1)
-        spconfig = DSSPEAKER_MONO;
       else if (iChannels == 2)
         spconfig = DSSPEAKER_STEREO;
       else
-      {
         spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
-        m_bAC3EncoderActive = g_audioConfig.GetAC3Enabled();
       }
     }
-  }
   else // We don't want to use the Dolby Digital Encoder output. Downmix to surround instead.
   {
     if (iChannels == 1)

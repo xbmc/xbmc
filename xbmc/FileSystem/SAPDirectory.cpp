@@ -467,7 +467,7 @@ void CSAPSessions::Process()
   m_socket = INVALID_SOCKET;
 }
 
-namespace DIRECTORY
+namespace XFILE
 {
 
   CSAPDirectory::CSAPDirectory(void)

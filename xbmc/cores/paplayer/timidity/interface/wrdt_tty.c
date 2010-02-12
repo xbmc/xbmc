@@ -292,7 +292,7 @@ static void wrdt_apply(int cmd, int wrd_argc, int wrd_args[])
 	  fillbuf[0]=0x1b;
 	  fillbuf[1]='7';
 	  fillbuf[2]=0;
-	  printf(fillbuf);
+	  printf("%s", fillbuf);
 
 	  /* 0-7: normal, 8-16: reverse */
 	  if(wrd_args[4] <= 7)
@@ -308,7 +308,7 @@ static void wrdt_apply(int cmd, int wrd_argc, int wrd_args[])
 	  fillbuf[0]=0x1b;
 	  fillbuf[1]='8';
 	  fillbuf[2]=0;
-	  printf(fillbuf);
+	  printf("%s", fillbuf);
 	  printf("\033[%dm",txtclr_preserve);
 	  fflush(stdout);
 	}

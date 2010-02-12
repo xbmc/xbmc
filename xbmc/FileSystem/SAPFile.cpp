@@ -26,7 +26,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

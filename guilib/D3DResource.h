@@ -27,6 +27,8 @@
 class ID3DResource
 {
 public:
+  virtual ~ID3DResource() {};
+
   virtual void OnDestroyDevice()=0;
   virtual void OnCreateDevice()=0;
   virtual void OnLostDevice() {};

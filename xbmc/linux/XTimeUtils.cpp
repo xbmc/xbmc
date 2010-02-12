@@ -27,8 +27,10 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/times.h>
+#include <sched.h>
 
 #ifdef __APPLE__
+#include "utils/Atomics.h"
 #include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
 #endif
@@ -45,6 +47,14 @@
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
 {
+#if _POSIX_PRIORITY_SCHEDULING
+  if(dwMilliSeconds == 0)
+  {
+    sched_yield();
+    return;
+  }
+#endif
+
   struct timespec req;
   req.tv_sec = dwMilliSeconds / 1000;
   req.tv_nsec = (dwMilliSeconds % 1000) * 1000000;
@@ -82,6 +92,9 @@ BOOL FileTimeToLocalFileTime(const FILETIME* lpFileTime, LPFILETIME lpLocalFileT
 BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTime)
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
+#ifdef __APPLE__
+  static long timegm_lock = 0;
+#endif
 
   struct tm sysTime = {};
   sysTime.tm_year = lpSystemTime->wYear - 1900;
@@ -98,6 +111,9 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
     sysTime.tm_yday++;
 
+#ifdef __APPLE__
+  CAtomicSpinLock lock(timegm_lock);
+#endif
   time_t t = timegm(&sysTime);
 
   LARGE_INTEGER result;

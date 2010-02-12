@@ -23,7 +23,7 @@
 
 #include "IDirectory.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CSpecialProtocolDirectory : public IDirectory
   {

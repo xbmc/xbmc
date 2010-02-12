@@ -28,6 +28,7 @@
 #include "paplayer/PAPlayer.h"
 #include "ExternalPlayer/ExternalPlayer.h"
 #include "DSPlayer/DSPlayer.h"
+#include "utils/log.h"
 
 class CPlayerCoreConfig
 {

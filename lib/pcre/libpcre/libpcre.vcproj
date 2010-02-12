@@ -235,6 +235,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\pcrecpp.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\pcreposix.c"
 				>
 			</File>

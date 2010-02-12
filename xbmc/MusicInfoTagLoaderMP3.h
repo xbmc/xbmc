@@ -40,7 +40,6 @@ public:
   };
   virtual ~CVBRMP3SeekHelper()
   {
-    if (m_SeekOffset)
       delete[] m_SeekOffset;
   };
 
@@ -81,7 +80,7 @@ public:
   void SetOffsets(int iSeekOffsets, const float *offsets)
   {
     m_iSeekOffsets = iSeekOffsets;
-    if (m_SeekOffset) delete[] m_SeekOffset;
+    delete[] m_SeekOffset;
     m_SeekOffset = NULL;
     if (m_iSeekOffsets <= 0)
       return;

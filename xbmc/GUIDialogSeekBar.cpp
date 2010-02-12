@@ -47,7 +47,7 @@ CGUIDialogSeekBar::~CGUIDialogSeekBar(void)
 
 bool CGUIDialogSeekBar::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_ANALOG_SEEK_FORWARD || action.id == ACTION_ANALOG_SEEK_BACK)
+  if (action.actionId == ACTION_ANALOG_SEEK_FORWARD || action.actionId == ACTION_ANALOG_SEEK_BACK)
   {
     if (!m_bRequireSeek)
     { // start of seeking
@@ -72,7 +72,7 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
       else
         speed /= g_infoManager.GetFPS();
 
-      if (action.id == ACTION_ANALOG_SEEK_FORWARD)
+      if (action.actionId == ACTION_ANALOG_SEEK_FORWARD)
         m_fSeekPercentage += action.amount1 * action.amount1 * speed;
       else
         m_fSeekPercentage -= action.amount1 * action.amount1 * speed;

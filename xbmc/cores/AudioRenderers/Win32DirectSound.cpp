@@ -47,7 +47,10 @@ const int dsound_channel_mask[] =
   SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY
 };
 
+const enum PCMChannels dsound_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
+
 #define DSOUND_CHANNEL_MASK_COUNT 8
+#define DSOUND_TOTAL_CHANNELS 11
 
 static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)
 {
@@ -72,18 +75,31 @@ CWin32DirectSound::CWin32DirectSound() :
   m_dwChunkSize(0),
   m_dwBufferLen(0),
   m_PreCacheSize(0),
-  m_LastCacheCheck(0),
-  m_pChannelMap(NULL)
+  m_LastCacheCheck(0)
 {
 }
 
-bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
+bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bAudioPassthrough)
 {
   if(iChannels > DSOUND_CHANNEL_MASK_COUNT)
   {
     CLog::Log(LOGERROR, __FUNCTION__": Unsupported number of channels. %i specified while max is %i", iChannels, DSOUND_CHANNEL_MASK_COUNT);
     return false;
   }
+
+  //If there is a listing of required channels, build the speaker mask and mapping from that.
+  //Otherwise, use the default.
+  if(channelMap)
+    BuildChannelMapping(iChannels, channelMap);
+  else
+  {
+    m_uiSpeakerMask = dsound_channel_mask[iChannels - 1];
+    for(int i = 0; i < iChannels; i++)
+      m_SpeakerOrder[i] = dsound_channel_order[i];
+  }
+
+  m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+  m_remap.SetOutputFormat(iChannels, m_SpeakerOrder);
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
@@ -120,7 +136,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   } 
   else
   {
-    wfxex.dwChannelMask          = dsound_channel_mask[iChannels - 1];
+    wfxex.dwChannelMask          = m_uiSpeakerMask;
 
     if (iChannels > 2)
       wfxex.Format.wFormatTag    = WAVE_FORMAT_EXTENSIBLE;
@@ -136,6 +152,8 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
+
+  m_uiBytesPerFrame = wfxex.Format.nBlockAlign;
 
   // unsure if these are the right values
   m_dwChunkSize = wfxex.Format.nBlockAlign * 3096;
@@ -184,9 +202,6 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
     }
   }
   CLog::Log(LOGDEBUG, __FUNCTION__": secondary buffer created");
-
-  // Set up channel mapping
-  SetChannelMap(iChannels, uiBitsPerSample, bAudioPassthrough, strAudioCodec);
 
   m_pBuffer->Stop();
   
@@ -327,12 +342,20 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
       break;
     }
 
-    // Write data into the buffer
-    MapDataIntoBuffer(pBuffer, size, (unsigned char*)start);
+    // Remap the data to the correct channels into the buffer
+    if (m_remap.CanRemap())
+      m_remap.Remap((void*)pBuffer, start, size / m_uiBytesPerFrame);
+    else
+      memcpy(start, pBuffer, size);
+
     m_BufferOffset += size;
     if (startWrap) // Write-region wraps to beginning of buffer
     {
-      MapDataIntoBuffer(pBuffer + size, sizeWrap, (unsigned char*)startWrap);
+      // Remap the data to the correct channels into the buffer
+      if (m_remap.CanRemap())
+        m_remap.Remap((void*)(pBuffer + size), startWrap, sizeWrap / m_uiBytesPerFrame);
+      else
+        memcpy(startWrap, pBuffer + size, sizeWrap);
       m_BufferOffset = sizeWrap;
     }
     
@@ -562,3 +585,76 @@ char * CWin32DirectSound::dserr2str(int err)
     default: return "unknown";
   }
 }
+
+//***********************************************************************************************
+void CWin32DirectSound::BuildChannelMapping(int channels, enum PCMChannels* map)
+{
+  bool usedChannels[DSOUND_TOTAL_CHANNELS];
+
+  memset(usedChannels, false, sizeof(usedChannels));
+
+  m_uiSpeakerMask = 0;
+
+  //Build the speaker mask and note which are used.
+  for(int i = 0; i < channels; i++)
+  {
+    switch(map[i])
+    {
+    case PCM_FRONT_LEFT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_LEFT;
+      break;
+    case PCM_FRONT_RIGHT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_RIGHT;
+      break;
+    case PCM_FRONT_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_CENTER;
+      break;
+    case PCM_LOW_FREQUENCY:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_LOW_FREQUENCY;
+      break;
+    case PCM_BACK_LEFT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_BACK_LEFT;
+      break;
+    case PCM_BACK_RIGHT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_BACK_RIGHT;
+      break;
+    case PCM_FRONT_LEFT_OF_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_LEFT_OF_CENTER;
+      break;
+    case PCM_FRONT_RIGHT_OF_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_FRONT_RIGHT_OF_CENTER;
+      break;
+    case PCM_BACK_CENTER:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_BACK_CENTER;
+      break;
+    case PCM_SIDE_LEFT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_SIDE_LEFT;
+      break;
+    case PCM_SIDE_RIGHT:
+      usedChannels[map[i]] = true;
+      m_uiSpeakerMask |= SPEAKER_SIDE_RIGHT;
+      break;
+    }
+  }
+
+  //Assemble a compacted channel set.
+  for(int i = 0, j = 0; i < DSOUND_TOTAL_CHANNELS; i++)
+  {
+    if(usedChannels[i])
+    {
+      m_SpeakerOrder[j] = dsound_channel_order[i];
+      j++;
+    }
+  }
+}
+

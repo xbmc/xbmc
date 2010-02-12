@@ -36,8 +36,6 @@
 using namespace std;
 using namespace XFILE;
 
-extern CStdString g_LoadErrorStr;
-
 typedef struct
 {
   const char* name;
@@ -189,7 +187,9 @@ static const ActionMapping actions[] =
         {"red"               , ACTION_TELETEXT_RED},
         {"green"             , ACTION_TELETEXT_GREEN},
         {"yellow"            , ACTION_TELETEXT_YELLOW},
-        {"blue"              , ACTION_TELETEXT_BLUE}};
+        {"blue"              , ACTION_TELETEXT_BLUE},
+        {"increasepar"       , ACTION_INCREASE_PAR},
+        {"decreasepar"       , ACTION_DECREASE_PAR}};
 
 CButtonTranslator& CButtonTranslator::GetInstance()
 {
@@ -219,10 +219,10 @@ bool CButtonTranslator::Load()
   bool success = false;
 
   for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex) {
-    if( DIRECTORY::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
+    if( XFILE::CDirectory::Exists(DIRS_TO_CHECK[dirIndex]) )
     {
       CFileItemList files;
-      DIRECTORY::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
+      XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
       //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
       files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
@@ -232,7 +232,7 @@ bool CButtonTranslator::Load()
 
   if (!success)
   {
-    g_LoadErrorStr.Format("Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
+    CLog::Log(LOGERROR, "Error loading keymaps from: %s or %s or %s", DIRS_TO_CHECK[0], DIRS_TO_CHECK[1], DIRS_TO_CHECK[2]);
     return false;
   }
 
@@ -322,7 +322,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
   CLog::Log(LOGINFO, "Loading %s", lircmapPath.c_str());
   if (!xmlDoc.LoadFile(lircmapPath))
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn
   }
 
@@ -330,7 +330,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
   CStdString strValue = pRoot->Value();
   if (strValue != REMOTEMAPTAG)
   {
-    g_LoadErrorStr.Format("%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
+    CLog::Log(LOGERROR, "%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
     return false;
   }
 
@@ -636,7 +636,7 @@ void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action, 
   if (actionID == 0 && fallback)
     actionID = GetActionCode( -1, key, strAction);
   // Now fill our action structure
-  action.id = actionID;
+  action.actionId = actionID;
   action.strAction = strAction;
   action.amount1 = 1; // digital button (could change this for repeat acceleration)
   action.amount2 = 0;
@@ -939,6 +939,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("karaokelargeselector")) windowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
   else if (strWindow.Equals("sliderdialog")) windowID = WINDOW_DIALOG_SLIDER;
   else if (strWindow.Equals("songinformation")) windowID = WINDOW_DIALOG_SONG_INFO;
+  else if (strWindow.Equals("busydialog")) windowID = WINDOW_DIALOG_BUSY;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

@@ -103,6 +103,9 @@ public:
    // Return true if there's at least one interface which is connected
    bool IsConnected(void);
 
+   // Return true if the magic packet was send
+   bool WakeOnLan(char *mac);
+
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void) = 0;
    virtual void SetNameServers(std::vector<CStdString> nameServers) = 0;

@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
+#include "utils/log.h"
 
 #include <sstream>
 
@@ -132,7 +133,8 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
     if (szFunction)
     {
       CScraperUrl scrURL(xurl);
-      LoadSettingsXML(strScraper,szFunction,&scrURL);
+      if (!LoadSettingsXML(strScraper,szFunction,&scrURL))
+        return false;
     }
     xurl = xurl->NextSiblingElement("url");
   }

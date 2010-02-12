@@ -26,7 +26,7 @@
 #include "URL.h"
 #include "FileItem.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   CRarDirectory::CRarDirectory()
   {
@@ -66,7 +66,7 @@ namespace DIRECTORY
           continue;
         CUtil::AddFileToFolder(strSlashPath,items[iEntry]->m_strPath+strOptions,items[iEntry]->m_strPath);
         items[iEntry]->m_iDriveType = 0;
-        //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
+        //CLog::Log(LOGDEBUG, "RarXFILE::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
       }
       return( true);
     }

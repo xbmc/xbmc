@@ -26,6 +26,7 @@
 #include "WindowingFactory.h" //d3d device and d3d interface
 
 #include "application.h"
+#include "file.h"
 #include "DSRenderer.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
@@ -34,9 +35,7 @@
 #include "util.h"
 
 CDsRenderer::CDsRenderer()
-: CUnknown(NAME("CDsRenderer"), NULL),
-m_CurrentSubtitle(STREAM_SUBTITLE),
-m_dsPlayerSubtitle(&m_overlayContainer)
+: CUnknown(NAME("CDsRenderer"), NULL)
 {
   m_nCurSurface = 0;
   g_renderManager.PreInit(true);
@@ -47,40 +46,6 @@ CDsRenderer::~CDsRenderer()
 {
   g_renderManager.UnInit();
   g_Windowing.Unregister(this);
-}
-
-void CDsRenderer::AddSubtitleStream()
-{
-
-}
-
-bool CDsRenderer::AddSubtitleFile(const std::string& filename)
-{
-  std::string ext = CUtil::GetExtension(filename);
-  if(ext == ".idx")
-  {
-    CDVDDemuxVobsub v;
-    if(!v.Open(filename))
-      return false;
-
-    m_SelectionStreams.Update(NULL, &v);
-    return true;
-  }
-  if(ext == ".sub")
-  {
-    CStdString strReplace;
-    CUtil::ReplaceExtension(filename,".idx",strReplace);
-    if (XFILE::CFile::Exists(strReplace))
-      return false;
-  }
-  SelectionStream s;
-  s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
-  s.type     = STREAM_SUBTITLE;
-  s.id       = 0;
-  s.filename = filename;
-  s.name     = CUtil::GetFileName(filename);
-  m_SelectionStreams.Update(s);
-  return true;
 }
 
 UINT CDsRenderer::GetAdapter(IDirect3D9* pD3D)

@@ -32,7 +32,7 @@
 #include "LocalizeStrings.h"
 #include "Key.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items)
 {

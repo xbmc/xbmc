@@ -14,7 +14,7 @@
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
-namespace DIRECTORY {
+namespace XFILE {
   class CVirtualDirectory;
 }
 
@@ -52,7 +52,7 @@ private:
 	char		currentDir[1024];
 	CFileItemList* webDirItems;
 	int			catalogItemCounter;
-	DIRECTORY::CVirtualDirectory *directory;
+	XFILE::CVirtualDirectory *directory;
 	CFileItem*	currentMediaItem;
 };
 

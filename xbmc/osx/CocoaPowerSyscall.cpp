@@ -19,13 +19,13 @@
  *
  */
  
+#ifdef __APPLE__
 // defined in PlatformDefs.h but I don't want to include that here
 typedef unsigned char   BYTE;
 
 #include "Log.h"
 #include "SystemInfo.h"
 #include "CocoaPowerSyscall.h"
-#ifdef __APPLE__
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
 #include "CocoaInterface.h"
@@ -36,27 +36,36 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
 
 bool CCocoaPowerSyscall::Powerdown()
 {
-  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
   if (g_sysinfo.IsAppleTV())
   {
-    // The ATV prefered method is via command-line
+    // The ATV prefered method is via command-line, others don't seem to work
     system("echo frontrow | sudo -S shutdown -h now");
+    return true;
   }
   else
   {
-    // The OSX prefered method is via AppleScript
-    Cocoa_DoAppleScript("tell application \"System Events\" to shut down");
+    CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
+    //sending shutdown event to system
+    OSErr error = SendAppleEventToSystemProcess(kAEShutDown);
+    if (error == noErr)
+      CLog::Log(LOGINFO, "Computer is going to shutdown!");
+    else
+      CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
+    return (error == noErr);
   }
-  return true;
 }
 
 bool CCocoaPowerSyscall::Suspend()
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Suspend");
-  // The OSX prefered method is via AppleScript
-  Cocoa_DoAppleScript("tell application \"System Events\" to sleep");
 
-  return true;
+  //sending sleep event to system
+  OSErr error = SendAppleEventToSystemProcess(kAESleep);
+  if (error == noErr)
+    CLog::Log(LOGINFO, "Computer is going to sleep!");
+  else
+    CLog::Log(LOGINFO, "Computer wouldn't sleep!");
+  return (error == noErr);
 }
 
 bool CCocoaPowerSyscall::Hibernate()
@@ -69,17 +78,22 @@ bool CCocoaPowerSyscall::Hibernate()
 bool CCocoaPowerSyscall::Reboot()
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Reboot");
+
   if (g_sysinfo.IsAppleTV())
   {
-    // The ATV prefered method is via command-line
+    // The ATV prefered method is via command-line, others don't seem to work
     system("echo frontrow | sudo -S reboot");
+    return true;
   }
   else
   {
-    // The OSX prefered method is via AppleScript
-    Cocoa_DoAppleScript("tell application \"System Events\" to reboot");
+    OSErr error = SendAppleEventToSystemProcess(kAERestart);
+    if (error == noErr)
+      CLog::Log(LOGINFO, "Computer is going to restart!");
+    else
+      CLog::Log(LOGINFO, "Computer wouldn't restart!");
+    return (error == noErr);
   }
-  return true;
 }
 
 bool CCocoaPowerSyscall::CanPowerdown()

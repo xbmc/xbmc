@@ -37,7 +37,7 @@ CGUIListContainer::~CGUIListContainer(void)
 
 bool CGUIListContainer::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_PAGE_UP:
     {

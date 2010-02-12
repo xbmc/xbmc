@@ -31,7 +31,7 @@
 
 namespace XFILE
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   class CFileRarExtractThread : public CThread
   {
   public:
@@ -94,7 +94,7 @@ namespace XFILE
     bool m_bOpen;
     bool m_bSeekable;
     CFile m_File; // for packed source
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
     Archive* m_pArc;
     CommandData* m_pCmd;
     CmdExtract* m_pExtract;

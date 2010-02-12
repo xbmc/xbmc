@@ -188,7 +188,7 @@ void CScrobbler::SetPassword(const CStdString& strPass)
 {
   if (strPass.IsEmpty())
     return;
-  XBMC::MD5 md5state;
+  XBMC::XBMC_MD5 md5state;
   md5state.append(strPass);
   md5state.getDigest(m_strPasswordHash);
   m_strPasswordHash.ToLower();
@@ -399,7 +399,7 @@ bool CScrobbler::SaveJournal()
 
 bool CScrobbler::DoHandshake(time_t now)
 {
-  XBMC::MD5         authToken;
+  XBMC::XBMC_MD5    authToken;
   CStdString        strAuthToken;
   CStdString        strTimeStamp;
   CStdString        strResponse;

@@ -37,6 +37,7 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
+  virtual enum PCMChannels* GetChannelMap();
   virtual int GetChannels()      { return m_iSourceChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBitsPerSample() { return 16; }

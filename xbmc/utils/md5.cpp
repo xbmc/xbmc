@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,31 +21,38 @@
 
 #include "md5.h"
 
-static void MD5Init (MD5_CTX *mdContext);
-static void MD5Update (MD5_CTX *mdContext, unsigned char *inBuf, unsigned int inLen);
-static void MD5Final (unsigned char digest[16], MD5_CTX *mdContext);
+typedef unsigned char md5byte;
 
-XBMC::MD5::MD5(void)
+static void MD5Init(struct MD5Context *context);
+static void MD5Update(struct MD5Context *context, md5byte const *buf, unsigned len);
+static void MD5Final(unsigned char digest[16], struct MD5Context *context);
+static void MD5Transform(uint32_t buf[4], uint32_t const in[16]);
+
+
+XBMC::XBMC_MD5::XBMC_MD5(void)
 {
   MD5Init(&m_ctx);
 }
 
-void XBMC::MD5::append(unsigned char *inBuf, unsigned int inLen)
+XBMC::XBMC_MD5::~XBMC_MD5(void)
+{}
+
+void XBMC::XBMC_MD5::append(const void *inBuf, size_t inLen)
 {
-  MD5Update(&m_ctx, inBuf, inLen);
+  MD5Update(&m_ctx, (md5byte*)inBuf, inLen);
 }
 
-void XBMC::MD5::append(const CStdString& str)
+void XBMC::XBMC_MD5::append(const CStdString& str)
 {
   append((unsigned char*) str.c_str(), (unsigned int) str.length());
 }
 
-void XBMC::MD5::getDigest(unsigned char digest[16])
+void XBMC::XBMC_MD5::getDigest(unsigned char digest[16])
 {
   MD5Final(digest, &m_ctx);
 }
 
-void XBMC::MD5::getDigest(CStdString& digest)
+void XBMC::XBMC_MD5::getDigest(CStdString& digest)
 {
   unsigned char szBuf[16] = {'\0'};
   getDigest(szBuf);
@@ -56,260 +63,238 @@ void XBMC::MD5::getDigest(CStdString& digest)
       szBuf[15]);
 }
 
-/*
- **********************************************************************
- ** md5.c                                                            **
- ** RSA Data Security, Inc. MD5 Message Digest Algorithm             **
- ** Created: 2/17/90 RLR                                             **
- ** Revised: 1/91 SRD,AJ,BSK,JT Reference C Version                  **
- **********************************************************************
- */
 
 /*
- **********************************************************************
- ** Copyright (C) 1990, RSA Data Security, Inc. All rights reserved. **
- **                                                                  **
- ** License to copy and use this software is granted provided that   **
- ** it is identified as the "RSA Data Security, Inc. MD5 Message     **
- ** Digest Algorithm" in all material mentioning or referencing this **
- ** software or this function.                                       **
- **                                                                  **
- ** License is also granted to make and use derivative works         **
- ** provided that such works are identified as "derived from the RSA **
- ** Data Security, Inc. MD5 Message Digest Algorithm" in all         **
- ** material mentioning or referencing the derived work.             **
- **                                                                  **
- ** RSA Data Security, Inc. makes no representations concerning      **
- ** either the merchantability of this software or the suitability   **
- ** of this software for any particular purpose.  It is provided "as **
- ** is" without express or implied warranty of any kind.             **
- **                                                                  **
- ** These notices must be retained in any copies of any part of this **
- ** documentation and/or software.                                   **
- **********************************************************************
+ * This code implements the MD5 message-digest algorithm.
+ * The algorithm is due to Ron Rivest.  This code was
+ * written by Colin Plumb in 1993, no copyright is claimed.
+ * This code is in the public domain; do with it what you wish.
+ *
+ * Equivalent code is available from RSA Data Security, Inc.
+ * This code has been tested against that, and is equivalent,
+ * except that you don't need to include two pages of legalese
+ * with every copy.
+ *
+ * To compute the message digest of a chunk of bytes, declare an
+ * MD5Context structure, pass it to MD5Init, call MD5Update as
+ * needed on buffers full of bytes, and then call MD5Final, which
+ * will fill a supplied 16-byte array with the digest.
+ *
+ * Changed so as no longer to depend on Colin Plumb's `usual.h' header
+ * definitions; now uses stuff from dpkg's config.h.
+ *  - Ian Jackson <ian@chiark.greenend.org.uk>.
+ * Still in the public domain.
  */
 
-/* forward declaration */
-static void Transform (UINT4* buf, UINT4* in);
+#include "md5.h"
 
-static unsigned char PADDING[64] = {
-  0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+#include <sys/types.h>		/* for stupid systems */
+#include <string.h>		/* for memcpy() */
 
-/* F, G and H are basic MD5 functions: selection, majority, parity */
-#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
-#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
-#define H(x, y, z) ((x) ^ (y) ^ (z))
-#define I(x, y, z) ((y) ^ ((x) | (~z)))
-
-/* ROTATE_LEFT rotates x left n bits */
-#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
-
-/* FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4 */
-/* Rotation is separate from addition to prevent recomputation */
-#define FF(a, b, c, d, x, s, ac) \
-  {(a) += F ((b), (c), (d)) + (x) + (UINT4)(ac); \
-   (a) = ROTATE_LEFT ((a), (s)); \
-   (a) += (b); \
-  }
-#define GG(a, b, c, d, x, s, ac) \
-  {(a) += G ((b), (c), (d)) + (x) + (UINT4)(ac); \
-   (a) = ROTATE_LEFT ((a), (s)); \
-   (a) += (b); \
-  }
-#define HH(a, b, c, d, x, s, ac) \
-  {(a) += H ((b), (c), (d)) + (x) + (UINT4)(ac); \
-   (a) = ROTATE_LEFT ((a), (s)); \
-   (a) += (b); \
-  }
-#define II(a, b, c, d, x, s, ac) \
-  {(a) += I ((b), (c), (d)) + (x) + (UINT4)(ac); \
-   (a) = ROTATE_LEFT ((a), (s)); \
-   (a) += (b); \
-  }
-
-static void MD5Init (MD5_CTX *mdContext)
+#ifdef WORDS_BIGENDIAN
+void
+byteSwap(uint32_t *buf, unsigned words)
 {
-  mdContext->i[0] = mdContext->i[1] = (UINT4)0;
+	md5byte *p = (md5byte *)buf;
 
-  /* Load magic initialization constants.
-   */
-  mdContext->buf[0] = (UINT4)0x67452301;
-  mdContext->buf[1] = (UINT4)0xefcdab89;
-  mdContext->buf[2] = (UINT4)0x98badcfe;
-  mdContext->buf[3] = (UINT4)0x10325476;
+	do {
+		*buf++ = (uint32_t)((unsigned)p[3] << 8 | p[2]) << 16 |
+			((unsigned)p[1] << 8 | p[0]);
+		p += 4;
+	} while (--words);
+  }
+#else
+#define byteSwap(buf,words)
+#endif
+
+/*
+ * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
+ * initialization constants.
+ */
+static void
+MD5Init(struct MD5Context *ctx)
+{
+	ctx->buf[0] = 0x67452301;
+	ctx->buf[1] = 0xefcdab89;
+	ctx->buf[2] = 0x98badcfe;
+	ctx->buf[3] = 0x10325476;
+
+	ctx->bytes[0] = 0;
+	ctx->bytes[1] = 0;
 }
 
-static void MD5Update (MD5_CTX *mdContext, unsigned char *inBuf, unsigned int inLen)
+/*
+ * Update context to reflect the concatenation of another buffer full
+ * of bytes.
+ */
+static void
+MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len)
 {
-  UINT4 in[16];
-  int mdi;
-  unsigned int i, ii;
+	uint32_t t;
 
-  /* compute number of bytes mod 64 */
-  mdi = (int)((mdContext->i[0] >> 3) & 0x3F);
+	/* Update byte count */
 
-  /* update number of bits */
-  if ((mdContext->i[0] + ((UINT4)inLen << 3)) < mdContext->i[0])
-    mdContext->i[1]++;
-  mdContext->i[0] += ((UINT4)inLen << 3);
-  mdContext->i[1] += ((UINT4)inLen >> 29);
+	t = ctx->bytes[0];
+	if ((ctx->bytes[0] = t + len) < t)
+		ctx->bytes[1]++;	/* Carry from low to high */
 
-  while (inLen--) {
-    /* add new character to buffer, increment mdi */
-    mdContext->in[mdi++] = *inBuf++;
+	t = 64 - (t & 0x3f);	/* Space available in ctx->in (at least 1) */
+	if (t > len) {
+		memcpy((md5byte *)ctx->in + 64 - t, buf, len);
+		return;
+	}
+	/* First chunk is an odd size */
+	memcpy((md5byte *)ctx->in + 64 - t, buf, t);
+	byteSwap(ctx->in, 16);
+	MD5Transform(ctx->buf, ctx->in);
+	buf += t;
+	len -= t;
 
-    /* transform if necessary */
-    if (mdi == 0x40) {
-      for (i = 0, ii = 0; i < 16; i++, ii += 4)
-        in[i] = (((UINT4)mdContext->in[ii+3]) << 24) |
-                (((UINT4)mdContext->in[ii+2]) << 16) |
-                (((UINT4)mdContext->in[ii+1]) << 8) |
-                ((UINT4)mdContext->in[ii]);
-      Transform (mdContext->buf, in);
-      mdi = 0;
+	/* Process data in 64-byte chunks */
+	while (len >= 64) {
+		memcpy(ctx->in, buf, 64);
+		byteSwap(ctx->in, 16);
+		MD5Transform(ctx->buf, ctx->in);
+		buf += 64;
+		len -= 64;
     }
+
+	/* Handle any remaining bytes of data. */
+	memcpy(ctx->in, buf, len);
   }
-}
 
-static void MD5Final (unsigned char digest[16], MD5_CTX *mdContext)
-{
-  UINT4 in[16];
-  int mdi;
-  unsigned int i, ii;
-  unsigned int padLen;
-
-  /* save number of bits */
-  in[14] = mdContext->i[0];
-  in[15] = mdContext->i[1];
-
-  /* compute number of bytes mod 64 */
-  mdi = (int)((mdContext->i[0] >> 3) & 0x3F);
-
-  /* pad out to 56 mod 64 */
-  padLen = (mdi < 56) ? (56 - mdi) : (120 - mdi);
-  MD5Update (mdContext, PADDING, padLen);
-
-  /* append length in bits and transform */
-  for (i = 0, ii = 0; i < 14; i++, ii += 4)
-    in[i] = (((UINT4)mdContext->in[ii+3]) << 24) |
-            (((UINT4)mdContext->in[ii+2]) << 16) |
-            (((UINT4)mdContext->in[ii+1]) << 8) |
-            ((UINT4)mdContext->in[ii]);
-  Transform (mdContext->buf, in);
-
-  /* store buffer in digest */
-  for (i = 0, ii = 0; i < 4; i++, ii += 4) {
-    digest[ii] = (unsigned char)(mdContext->buf[i] & 0xFF);
-    digest[ii+1] =
-      (unsigned char)((mdContext->buf[i] >> 8) & 0xFF);
-    digest[ii+2] =
-      (unsigned char)((mdContext->buf[i] >> 16) & 0xFF);
-    digest[ii+3] =
-      (unsigned char)((mdContext->buf[i] >> 24) & 0xFF);
-  }
-}
-
-/* Basic MD5 step. Transform buf based on in.
+/*
+ * Final wrapup - pad to 64-byte boundary with the bit pattern
+ * 1 0* (64-bit count of bits processed, MSB-first)
  */
-static void Transform (UINT4* buf, UINT4* in)
+static void
+MD5Final(md5byte digest[16], struct MD5Context *ctx)
 {
-  UINT4 a = buf[0], b = buf[1], c = buf[2], d = buf[3];
+	int count = ctx->bytes[0] & 0x3f;	/* Number of bytes in ctx->in */
+	md5byte *p = (md5byte *)ctx->in + count;
 
-  /* Round 1 */
-#define S11 7
-#define S12 12
-#define S13 17
-#define S14 22
-  FF (a, b, c, d, in[ 0], S11, 0xd76aa478); /* 1 */
-  FF (d, a, b, c, in[ 1], S12, 0xe8c7b756); /* 2 */
-  FF (c, d, a, b, in[ 2], S13, 0x242070db); /* 3 */
-  FF (b, c, d, a, in[ 3], S14, 0xc1bdceee); /* 4 */
-  FF (a, b, c, d, in[ 4], S11, 0xf57c0faf); /* 5 */
-  FF (d, a, b, c, in[ 5], S12, 0x4787c62a); /* 6 */
-  FF (c, d, a, b, in[ 6], S13, 0xa8304613); /* 7 */
-  FF (b, c, d, a, in[ 7], S14, 0xfd469501); /* 8 */
-  FF (a, b, c, d, in[ 8], S11, 0x698098d8); /* 9 */
-  FF (d, a, b, c, in[ 9], S12, 0x8b44f7af); /* 10 */
-  FF (c, d, a, b, in[10], S13, 0xffff5bb1); /* 11 */
-  FF (b, c, d, a, in[11], S14, 0x895cd7be); /* 12 */
-  FF (a, b, c, d, in[12], S11, 0x6b901122); /* 13 */
-  FF (d, a, b, c, in[13], S12, 0xfd987193); /* 14 */
-  FF (c, d, a, b, in[14], S13, 0xa679438e); /* 15 */
-  FF (b, c, d, a, in[15], S14, 0x49b40821); /* 16 */
+	/* Set the first char of padding to 0x80.  There is always room. */
+	*p++ = 0x80;
 
-  /* Round 2 */
-#define S21 5
-#define S22 9
-#define S23 14
-#define S24 20
-  GG (a, b, c, d, in[ 1], S21, 0xf61e2562); /* 17 */
-  GG (d, a, b, c, in[ 6], S22, 0xc040b340); /* 18 */
-  GG (c, d, a, b, in[11], S23, 0x265e5a51); /* 19 */
-  GG (b, c, d, a, in[ 0], S24, 0xe9b6c7aa); /* 20 */
-  GG (a, b, c, d, in[ 5], S21, 0xd62f105d); /* 21 */
-  GG (d, a, b, c, in[10], S22,  0x2441453); /* 22 */
-  GG (c, d, a, b, in[15], S23, 0xd8a1e681); /* 23 */
-  GG (b, c, d, a, in[ 4], S24, 0xe7d3fbc8); /* 24 */
-  GG (a, b, c, d, in[ 9], S21, 0x21e1cde6); /* 25 */
-  GG (d, a, b, c, in[14], S22, 0xc33707d6); /* 26 */
-  GG (c, d, a, b, in[ 3], S23, 0xf4d50d87); /* 27 */
-  GG (b, c, d, a, in[ 8], S24, 0x455a14ed); /* 28 */
-  GG (a, b, c, d, in[13], S21, 0xa9e3e905); /* 29 */
-  GG (d, a, b, c, in[ 2], S22, 0xfcefa3f8); /* 30 */
-  GG (c, d, a, b, in[ 7], S23, 0x676f02d9); /* 31 */
-  GG (b, c, d, a, in[12], S24, 0x8d2a4c8a); /* 32 */
+	/* Bytes of padding needed to make 56 bytes (-8..55) */
+	count = 56 - 1 - count;
 
-  /* Round 3 */
-#define S31 4
-#define S32 11
-#define S33 16
-#define S34 23
-  HH (a, b, c, d, in[ 5], S31, 0xfffa3942); /* 33 */
-  HH (d, a, b, c, in[ 8], S32, 0x8771f681); /* 34 */
-  HH (c, d, a, b, in[11], S33, 0x6d9d6122); /* 35 */
-  HH (b, c, d, a, in[14], S34, 0xfde5380c); /* 36 */
-  HH (a, b, c, d, in[ 1], S31, 0xa4beea44); /* 37 */
-  HH (d, a, b, c, in[ 4], S32, 0x4bdecfa9); /* 38 */
-  HH (c, d, a, b, in[ 7], S33, 0xf6bb4b60); /* 39 */
-  HH (b, c, d, a, in[10], S34, 0xbebfbc70); /* 40 */
-  HH (a, b, c, d, in[13], S31, 0x289b7ec6); /* 41 */
-  HH (d, a, b, c, in[ 0], S32, 0xeaa127fa); /* 42 */
-  HH (c, d, a, b, in[ 3], S33, 0xd4ef3085); /* 43 */
-  HH (b, c, d, a, in[ 6], S34,  0x4881d05); /* 44 */
-  HH (a, b, c, d, in[ 9], S31, 0xd9d4d039); /* 45 */
-  HH (d, a, b, c, in[12], S32, 0xe6db99e5); /* 46 */
-  HH (c, d, a, b, in[15], S33, 0x1fa27cf8); /* 47 */
-  HH (b, c, d, a, in[ 2], S34, 0xc4ac5665); /* 48 */
+	if (count < 0) {	/* Padding forces an extra block */
+		memset(p, 0, count + 8);
+		byteSwap(ctx->in, 16);
+		MD5Transform(ctx->buf, ctx->in);
+		p = (md5byte *)ctx->in;
+		count = 56;
+	}
+	memset(p, 0, count);
+	byteSwap(ctx->in, 14);
 
-  /* Round 4 */
-#define S41 6
-#define S42 10
-#define S43 15
-#define S44 21
-  II ( a, b, c, d, in[ 0], S41, 0xf4292244); /* 49 */
-  II ( d, a, b, c, in[ 7], S42, 0x432aff97); /* 50 */
-  II ( c, d, a, b, in[14], S43, 0xab9423a7); /* 51 */
-  II ( b, c, d, a, in[ 5], S44, 0xfc93a039); /* 52 */
-  II ( a, b, c, d, in[12], S41, 0x655b59c3); /* 53 */
-  II ( d, a, b, c, in[ 3], S42, 0x8f0ccc92); /* 54 */
-  II ( c, d, a, b, in[10], S43, 0xffeff47d); /* 55 */
-  II ( b, c, d, a, in[ 1], S44, 0x85845dd1); /* 56 */
-  II ( a, b, c, d, in[ 8], S41, 0x6fa87e4f); /* 57 */
-  II ( d, a, b, c, in[15], S42, 0xfe2ce6e0); /* 58 */
-  II ( c, d, a, b, in[ 6], S43, 0xa3014314); /* 59 */
-  II ( b, c, d, a, in[13], S44, 0x4e0811a1); /* 60 */
-  II ( a, b, c, d, in[ 4], S41, 0xf7537e82); /* 61 */
-  II ( d, a, b, c, in[11], S42, 0xbd3af235); /* 62 */
-  II ( c, d, a, b, in[ 2], S43, 0x2ad7d2bb); /* 63 */
-  II ( b, c, d, a, in[ 9], S44, 0xeb86d391); /* 64 */
+	/* Append length in bits and transform */
+	ctx->in[14] = ctx->bytes[0] << 3;
+	ctx->in[15] = ctx->bytes[1] << 3 | ctx->bytes[0] >> 29;
+	MD5Transform(ctx->buf, ctx->in);
+
+	byteSwap(ctx->buf, 4);
+	memcpy(digest, ctx->buf, 16);
+	memset(ctx, 0, sizeof(*ctx));	/* In case it's sensitive */
+  }
+
+#ifndef ASM_MD5
+
+/* The four core functions - F1 is optimized somewhat */
+
+/* #define F1(x, y, z) (x & y | ~x & z) */
+#define F1(x, y, z) (z ^ (x & (y ^ z)))
+#define F2(x, y, z) F1(z, x, y)
+#define F3(x, y, z) (x ^ y ^ z)
+#define F4(x, y, z) (y ^ (x | ~z))
+
+/* This is the central step in the MD5 algorithm. */
+#define MD5STEP(f,w,x,y,z,in,s) \
+	 (w += f(x,y,z) + in, w = (w<<s | w>>(32-s)) + x)
+
+/*
+ * The core of the MD5 algorithm, this alters an existing MD5 hash to
+ * reflect the addition of 16 longwords of new data.  MD5Update blocks
+ * the data and converts bytes into longwords for this routine.
+ */
+static void
+MD5Transform(uint32_t buf[4], uint32_t const in[16])
+{
+	register uint32_t a, b, c, d;
+
+	a = buf[0];
+	b = buf[1];
+	c = buf[2];
+	d = buf[3];
+
+	MD5STEP(F1, a, b, c, d, in[0] + 0xd76aa478, 7);
+	MD5STEP(F1, d, a, b, c, in[1] + 0xe8c7b756, 12);
+	MD5STEP(F1, c, d, a, b, in[2] + 0x242070db, 17);
+	MD5STEP(F1, b, c, d, a, in[3] + 0xc1bdceee, 22);
+	MD5STEP(F1, a, b, c, d, in[4] + 0xf57c0faf, 7);
+	MD5STEP(F1, d, a, b, c, in[5] + 0x4787c62a, 12);
+	MD5STEP(F1, c, d, a, b, in[6] + 0xa8304613, 17);
+	MD5STEP(F1, b, c, d, a, in[7] + 0xfd469501, 22);
+	MD5STEP(F1, a, b, c, d, in[8] + 0x698098d8, 7);
+	MD5STEP(F1, d, a, b, c, in[9] + 0x8b44f7af, 12);
+	MD5STEP(F1, c, d, a, b, in[10] + 0xffff5bb1, 17);
+	MD5STEP(F1, b, c, d, a, in[11] + 0x895cd7be, 22);
+	MD5STEP(F1, a, b, c, d, in[12] + 0x6b901122, 7);
+	MD5STEP(F1, d, a, b, c, in[13] + 0xfd987193, 12);
+	MD5STEP(F1, c, d, a, b, in[14] + 0xa679438e, 17);
+	MD5STEP(F1, b, c, d, a, in[15] + 0x49b40821, 22);
+
+	MD5STEP(F2, a, b, c, d, in[1] + 0xf61e2562, 5);
+	MD5STEP(F2, d, a, b, c, in[6] + 0xc040b340, 9);
+	MD5STEP(F2, c, d, a, b, in[11] + 0x265e5a51, 14);
+	MD5STEP(F2, b, c, d, a, in[0] + 0xe9b6c7aa, 20);
+	MD5STEP(F2, a, b, c, d, in[5] + 0xd62f105d, 5);
+	MD5STEP(F2, d, a, b, c, in[10] + 0x02441453, 9);
+	MD5STEP(F2, c, d, a, b, in[15] + 0xd8a1e681, 14);
+	MD5STEP(F2, b, c, d, a, in[4] + 0xe7d3fbc8, 20);
+	MD5STEP(F2, a, b, c, d, in[9] + 0x21e1cde6, 5);
+	MD5STEP(F2, d, a, b, c, in[14] + 0xc33707d6, 9);
+	MD5STEP(F2, c, d, a, b, in[3] + 0xf4d50d87, 14);
+	MD5STEP(F2, b, c, d, a, in[8] + 0x455a14ed, 20);
+	MD5STEP(F2, a, b, c, d, in[13] + 0xa9e3e905, 5);
+	MD5STEP(F2, d, a, b, c, in[2] + 0xfcefa3f8, 9);
+	MD5STEP(F2, c, d, a, b, in[7] + 0x676f02d9, 14);
+	MD5STEP(F2, b, c, d, a, in[12] + 0x8d2a4c8a, 20);
+
+	MD5STEP(F3, a, b, c, d, in[5] + 0xfffa3942, 4);
+	MD5STEP(F3, d, a, b, c, in[8] + 0x8771f681, 11);
+	MD5STEP(F3, c, d, a, b, in[11] + 0x6d9d6122, 16);
+	MD5STEP(F3, b, c, d, a, in[14] + 0xfde5380c, 23);
+	MD5STEP(F3, a, b, c, d, in[1] + 0xa4beea44, 4);
+	MD5STEP(F3, d, a, b, c, in[4] + 0x4bdecfa9, 11);
+	MD5STEP(F3, c, d, a, b, in[7] + 0xf6bb4b60, 16);
+	MD5STEP(F3, b, c, d, a, in[10] + 0xbebfbc70, 23);
+	MD5STEP(F3, a, b, c, d, in[13] + 0x289b7ec6, 4);
+	MD5STEP(F3, d, a, b, c, in[0] + 0xeaa127fa, 11);
+	MD5STEP(F3, c, d, a, b, in[3] + 0xd4ef3085, 16);
+	MD5STEP(F3, b, c, d, a, in[6] + 0x04881d05, 23);
+	MD5STEP(F3, a, b, c, d, in[9] + 0xd9d4d039, 4);
+	MD5STEP(F3, d, a, b, c, in[12] + 0xe6db99e5, 11);
+	MD5STEP(F3, c, d, a, b, in[15] + 0x1fa27cf8, 16);
+	MD5STEP(F3, b, c, d, a, in[2] + 0xc4ac5665, 23);
+
+	MD5STEP(F4, a, b, c, d, in[0] + 0xf4292244, 6);
+	MD5STEP(F4, d, a, b, c, in[7] + 0x432aff97, 10);
+	MD5STEP(F4, c, d, a, b, in[14] + 0xab9423a7, 15);
+	MD5STEP(F4, b, c, d, a, in[5] + 0xfc93a039, 21);
+	MD5STEP(F4, a, b, c, d, in[12] + 0x655b59c3, 6);
+	MD5STEP(F4, d, a, b, c, in[3] + 0x8f0ccc92, 10);
+	MD5STEP(F4, c, d, a, b, in[10] + 0xffeff47d, 15);
+	MD5STEP(F4, b, c, d, a, in[1] + 0x85845dd1, 21);
+	MD5STEP(F4, a, b, c, d, in[8] + 0x6fa87e4f, 6);
+	MD5STEP(F4, d, a, b, c, in[15] + 0xfe2ce6e0, 10);
+	MD5STEP(F4, c, d, a, b, in[6] + 0xa3014314, 15);
+	MD5STEP(F4, b, c, d, a, in[13] + 0x4e0811a1, 21);
+	MD5STEP(F4, a, b, c, d, in[4] + 0xf7537e82, 6);
+	MD5STEP(F4, d, a, b, c, in[11] + 0xbd3af235, 10);
+	MD5STEP(F4, c, d, a, b, in[2] + 0x2ad7d2bb, 15);
+	MD5STEP(F4, b, c, d, a, in[9] + 0xeb86d391, 21);
 
   buf[0] += a;
   buf[1] += b;
@@ -317,3 +302,4 @@ static void Transform (UINT4* buf, UINT4* in)
   buf[3] += d;
 }
 
+#endif

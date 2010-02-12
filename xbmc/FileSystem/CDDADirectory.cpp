@@ -30,7 +30,6 @@
 #include "MediaManager.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MEDIA_DETECT;
 
 CCDDADirectory::CCDDADirectory(void)

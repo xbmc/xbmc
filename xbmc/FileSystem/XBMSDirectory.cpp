@@ -26,7 +26,7 @@
 #include "FileItem.h"
 #include "utils/CharsetConverter.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 extern "C"
 {
@@ -121,11 +121,11 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
                                             strPassword.c_str() );
   }
   CStdString strFileName = url.GetFileName();
-  CStdString strDir, strFile;
+  CStdString strDir;
   strDir = "";
   if (cc_xstream_client_setcwd(conn, "/") == CC_XSTREAM_CLIENT_OK)
   {
-    strFile = url.GetFileName();
+    CStdString strFile = url.GetFileName();
     for (int i = 0; i < (int)strFile.size(); ++i)
     {
       if (strFile[i] == '/' || strFile[i] == '\\')

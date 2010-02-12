@@ -90,8 +90,8 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
 
 bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
 {
-  CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.id);
-  switch(action.id)
+  CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.actionId);
+  switch(action.actionId)
   {
     case REMOTE_0:
     case REMOTE_1:
@@ -103,7 +103,7 @@ bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      OnButtonNumeric( action.id - REMOTE_0 );
+      OnButtonNumeric( action.actionId - REMOTE_0 );
       return true;
 
     case ACTION_SELECT_ITEM:

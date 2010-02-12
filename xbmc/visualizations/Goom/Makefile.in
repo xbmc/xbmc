@@ -2,7 +2,7 @@ ARCH=@ARCH@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations -Igoom2k4-0/src
 OBJS=Main.o
 SLIB=../../../visualisations/Goom.vis
-CXXFLAGS=-g -O3 -fPIC
+CXXFLAGS=-fPIC
 DIRS=goom2k4-0
 
 $(SLIB): $(OBJS) goom2k4-0/src/.libs/libgoom2.a

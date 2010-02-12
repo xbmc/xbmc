@@ -51,7 +51,7 @@ public:
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
   CALSADirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CALSADirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -88,6 +88,7 @@ private:
   unsigned int m_uiBufferSize;
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
+  unsigned int m_uiDataChannels;
   unsigned int m_uiChannels;
 
   bool m_bPassthrough;

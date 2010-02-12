@@ -25,7 +25,7 @@
 #include "IFileDirectory.h"
 #include "FileItem.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CRSSDirectory : public IFileDirectory
   {

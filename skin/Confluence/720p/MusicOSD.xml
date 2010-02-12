@@ -322,7 +322,6 @@
 					<onright>604</onright>
 					<onup>801</onup>
 					<ondown>801</ondown>
-					<onclick>down</onclick>
 					<onclick>PlayerControl(Stop)</onclick>
 					<visible>LastFM.RadioPlaying</visible>
 				</control>

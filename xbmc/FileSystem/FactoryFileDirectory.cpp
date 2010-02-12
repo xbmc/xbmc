@@ -20,6 +20,9 @@
  */
 
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "Util.h"
 #include "FactoryFileDirectory.h"
@@ -31,7 +34,9 @@
 #include "RSSDirectory.h"
 #include "cores/paplayer/ASAPCodec.h"
 #endif
+#ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
+#endif
 #include "ZipDirectory.h"
 #include "SmartPlaylistDirectory.h"
 #include "SmartPlaylist.h"
@@ -39,14 +44,12 @@
 #include "PlayListFactory.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
-#include "FileSystem/RarManager.h"
 #include "FileSystem/ZipManager.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "FileItem.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace std;
 
@@ -176,9 +179,14 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
       *pItem = *items[0];
     }
     else
-    { // compressed or more than one file -> create a rar dir
+    {
+#ifdef HAS_FILESYSTEM_RAR
+      // compressed or more than one file -> create a rar dir
       pItem->m_strPath = strUrl;
       return new CRarDirectory;
+#else
+      return NULL;
+#endif
     }
     return NULL;
   }

@@ -563,7 +563,7 @@ CStdString CGUITextureManager::GetTexturePath(const CStdString &textureName, boo
       path = CUtil::AddFileToFolder(path, textureName);
       if (directory)
       {
-        if (DIRECTORY::CDirectory::Exists(path))
+        if (XFILE::CDirectory::Exists(path))
           return path;
       }
       else

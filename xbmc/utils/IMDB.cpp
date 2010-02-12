@@ -33,6 +33,7 @@
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
+#include "log.h"
 
 using namespace HTML;
 using namespace std;
@@ -146,10 +147,11 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     xurl = xurl->NextSiblingElement("url");
   }
 
-  TiXmlElement *movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
+  TiXmlElement *movie = docHandle.FirstChild("results").Element();
   if (!movie)
     return 0;
 
+  movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
   while (movie)
   {
     // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
@@ -163,7 +165,6 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
       }
     }
 
-    CScraperUrl url;
     TiXmlNode *title = movie->FirstChild("title");
     TiXmlElement *link = movie->FirstChildElement("url");
     TiXmlNode *year = movie->FirstChild("year");
@@ -171,6 +172,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     TiXmlNode* language = movie->FirstChild("language");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
+      CScraperUrl url;
       url.strTitle = title->FirstChild()->Value();
       while (link && link->FirstChild())
       {

@@ -56,7 +56,6 @@
 
 using namespace std;
 using namespace MUSIC_INFO;
-using namespace DIRECTORY;
 using namespace XFILE;
 
 extern CGUIInfoManager g_infoManager;
@@ -702,8 +701,6 @@ CUPnPServer::Build(CFileItemPtr                  item,
 {
     PLT_MediaObject* object = NULL;
     NPT_String       path = item->m_strPath.c_str();
-    NPT_String       share_name;
-    NPT_String       file_path;
 
     //HACK: temporary disabling count as it thrashes HDD
     with_count = false;
@@ -731,12 +728,11 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
     } else {
         // db path handling
-
+        NPT_String file_path, share_name;
         file_path = item->m_strPath;
         share_name = "";
 
         if (path.StartsWith("musicdb://")) {
-            CStdString label;
             if (path == "musicdb://" ) {
                 item->SetLabel("Music Library");
                 item->SetLabelPreformated(true);
@@ -749,6 +745,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                 if (item->GetLabel().IsEmpty()) {
                     /* if no label try to grab it from node type */
+                    CStdString label;
                     if (CMusicDatabaseDirectory::GetLabel((const char*)path, label)) {
                         item->SetLabel(label);
                         item->SetLabelPreformated(true);
@@ -756,14 +753,13 @@ CUPnPServer::Build(CFileItemPtr                  item,
                 }
             }
         } else if (file_path.StartsWith("videodb://")) {
-            CStdString label;
             if (path == "videodb://" ) {
                 item->SetLabel("Video Library");
                 item->SetLabelPreformated(true);
             } else {
                 if (!item->HasVideoInfoTag()) {
-                    DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
-                    DIRECTORY::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
+                    XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;
+                    XFILE::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo((const char*)path, params);
 
                     CVideoDatabase db;
                     if (!db.Open() ) return NULL;
@@ -784,6 +780,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
 
                 // try to grab it from the folder
                 if (item->GetLabel().IsEmpty()) {
+                    CStdString label;
                     if (CVideoDatabaseDirectory::GetLabel((const char*)path, label)) {
                         item->SetLabel(label);
                         item->SetLabelPreformated(true);
@@ -865,7 +862,6 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     NPT_String                     didl;
     NPT_Reference<PLT_MediaObject> object;
     NPT_String                     id = TranslateWMPObjectId(object_id);
-    CMediaSource                   share;
     vector<CStdString>             paths;
     CFileItemPtr                   item;
 
@@ -1728,7 +1724,6 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
             }
         }
 
-        NPT_String proto, mask, content, extra;
         if (res && res->m_ProtocolInfo.IsValid()) {
             item.SetContentType((const char*)res->m_ProtocolInfo.GetContentType());
         }

@@ -192,7 +192,6 @@
 					<onright>604</onright>
 					<onup>703</onup>
 					<ondown>703</ondown>
-					<onclick>down</onclick>
 					<onclick>PlayerControl(Stop)</onclick>
 				</control>
 				<control type="button" id="604">

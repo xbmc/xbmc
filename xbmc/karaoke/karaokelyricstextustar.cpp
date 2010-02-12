@@ -111,7 +111,7 @@ bool CKaraokeLyricsTextUStar::isValidFile(const CStdString & lyricsFile)
 bool CKaraokeLyricsTextUStar::Load()
 {
   // Header parameters
-  CStdString coverimage, bgimage, lang;
+  CStdString coverimage, bgimage;
   int bpm = 0, startoffsetms = 0;
   bool relative = false;
 

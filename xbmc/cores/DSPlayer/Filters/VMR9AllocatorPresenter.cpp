@@ -27,7 +27,6 @@
 #include "WindowingFactory.h" //d3d device and d3d interface
 #include "VMR9AllocatorPresenter.h"
 #include "application.h"
-#include "ApplicationRenderer.h"
 #include "utils/log.h"
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"

@@ -23,20 +23,24 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
+    #include <libavutil/crc.h>
     #if (defined AVPACKET_IN_AVFORMAT)
       #include <libavformat/avformat.h>
     #endif
   #elif (defined HAVE_FFMPEG_AVCODEC_H)
     #include <ffmpeg/avcodec.h>
+    #include <ffmpeg/crc.h>
     #if (defined AVPACKET_IN_AVFORMAT)
       #include <ffmpeg/avformat.h>
     #endif
   #endif
   /* We'll just inlude this header in our project for now */
-  #include "libavcodec/audioconvert.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavcodec/audioconvert.h"
+  #include "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavutil/crc.h"
 #else
   #include "libavcodec/avcodec.h"
   #include "libavcodec/audioconvert.h"
+  #include "libavutil/crc.h"
 #endif
 }
 
@@ -50,12 +54,14 @@ public:
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec)=0;
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
+  virtual AVCodec *avcodec_find_encoder(enum CodecID id)=0;
   virtual int avcodec_close_dont_call(AVCodecContext *avctx)=0;
   virtual AVFrame *avcodec_alloc_frame(void)=0;
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, PixelFormat pix_fmt, int width, int height)=0;
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size)=0;
   virtual int avcodec_decode_audio2(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, uint8_t *buf, int buf_size)=0;
   virtual int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, const uint8_t *buf, int buf_size)=0;
+  virtual int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size, const short *samples)=0;
   virtual int avpicture_get_size(PixelFormat pix_fmt, int width, int height)=0;
   virtual AVCodecContext *avcodec_alloc_context(void)=0;
   virtual void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)=0;
@@ -83,6 +89,7 @@ public:
                                      void * const out[6], const int out_stride[6],
                                const void * const  in[6], const int  in_stride[6], int len)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
+  virtual void av_init_packet(AVPacket *pkt)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -106,6 +113,7 @@ public:
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec) { *(int *)0x0 = 0; return 0; } 
   virtual int avcodec_close_dont_call(AVCodecContext *avctx) { *(int *)0x0 = 0; return 0; } 
   virtual AVCodec *avcodec_find_decoder(enum CodecID id) { return ::avcodec_find_decoder(id); }
+  virtual AVCodec *avcodec_find_encoder(enum CodecID id) { return ::avcodec_find_encoder(id); }
   virtual int avcodec_close(AVCodecContext *avctx) 
   {
     CSingleLock lock(DllAvCodec::m_critSection);
@@ -116,6 +124,7 @@ public:
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size) { return ::avcodec_decode_video(avctx, picture, got_picture_ptr, buf, buf_size); }
   virtual int avcodec_decode_audio2(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, uint8_t *buf, int buf_size) { return ::avcodec_decode_audio2(avctx, samples, frame_size_ptr, buf, buf_size); }
   virtual int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, const uint8_t *buf, int buf_size) { return ::avcodec_decode_subtitle(avctx, sub, got_sub_ptr, buf, buf_size); } 
+  virtual int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size, const short *samples) { return ::avcodec_encode_audio(avctx, buf, buf_size, samples); }
   virtual int avpicture_get_size(PixelFormat pix_fmt, int width, int height) { return ::avpicture_get_size(pix_fmt, width, height); }
   virtual AVCodecContext *avcodec_alloc_context() { return ::avcodec_alloc_context(); }
   virtual void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode) { ::avcodec_string(buf, buf_size, enc, encode); }
@@ -151,6 +160,7 @@ public:
           { return ::av_audio_convert(ctx, out, out_stride, in, in_stride, len); }
 
   virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
+  virtual void av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
 
   
   // DLL faking.
@@ -171,6 +181,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_audio2, AVCodecContext*, int16_t*, int*, uint8_t*, int)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_subtitle, AVCodecContext*, AVSubtitle*, int*, const uint8_t *, int)
+  DEFINE_FUNC_ALIGNED4(int, __cdecl, avcodec_encode_audio, AVCodecContext*, uint8_t*, int, const short*)
   DEFINE_FUNC_ALIGNED0(AVCodecContext*, __cdecl, avcodec_alloc_context)
   DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
   DEFINE_FUNC_ALIGNED8(int, __cdecl, av_parser_parse, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t)
@@ -180,16 +191,19 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD5(int, avcodec_decode_video, (AVCodecContext* p1, AVFrame *p2, int *p3, uint8_t *p4, int p5))
   DEFINE_METHOD5(int, avcodec_decode_audio2, (AVCodecContext* p1, int16_t *p2, int *p3, uint8_t *p4, int p5))
   DEFINE_METHOD5(int, avcodec_decode_subtitle, (AVCodecContext* p1, AVSubtitle *p2, int *p3, const uint8_t *p4, int p5))
+  DEFINE_METHOD4(int, avcodec_encode_audio, (AVCodecContext* p1, uint8_t *p2, int p3, const short *p4))
   DEFINE_METHOD0(AVCodecContext*, avcodec_alloc_context)
   DEFINE_METHOD1(AVCodecParserContext*, av_parser_init, (int p1))
   DEFINE_METHOD8(int, av_parser_parse, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8))
 #endif
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
+  DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
 
   LOAD_SYMBOLS();
 
   DEFINE_METHOD0(void, avcodec_register_all_dont_call)
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
+  DEFINE_METHOD1(AVCodec*, avcodec_find_encoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close_dont_call, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
   DEFINE_METHOD5(int, avpicture_fill, (AVPicture *p1, uint8_t *p2, PixelFormat p3, int p4, int p5))
@@ -220,12 +234,14 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
     RESOLVE_METHOD_RENAME(avcodec_close,avcodec_close_dont_call)
     RESOLVE_METHOD(avcodec_find_decoder)
+    RESOLVE_METHOD(avcodec_find_encoder)
     RESOLVE_METHOD(avcodec_alloc_frame)
     RESOLVE_METHOD_RENAME(avcodec_register_all, avcodec_register_all_dont_call)
     RESOLVE_METHOD(avpicture_fill)
     RESOLVE_METHOD(avcodec_decode_video)
     RESOLVE_METHOD(avcodec_decode_audio2)
     RESOLVE_METHOD(avcodec_decode_subtitle)
+    RESOLVE_METHOD(avcodec_encode_audio)
     RESOLVE_METHOD(avpicture_get_size)
     RESOLVE_METHOD(avcodec_alloc_context)
     RESOLVE_METHOD(avcodec_string)
@@ -247,6 +263,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_audio_convert_free)
     RESOLVE_METHOD(av_audio_convert)
     RESOLVE_METHOD(av_dup_packet)
+    RESOLVE_METHOD(av_init_packet)
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;
@@ -283,6 +300,8 @@ public:
   virtual void av_free(void *ptr)=0;
   virtual void av_freep(void *ptr)=0;
   virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding)=0;
+  virtual const AVCRC* av_crc_get_table(AVCRCId crc_id)=0;
+  virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -300,6 +319,8 @@ public:
    virtual void av_free(void *ptr) { ::av_free(ptr); }
    virtual void av_freep(void *ptr) { ::av_freep(ptr); }
    virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding d) { return ::av_rescale_rnd(a, b, c, d); }
+   virtual const AVCRC* av_crc_get_table(AVCRCId crc_id) { return ::av_crc_get_table(crc_id); }
+   virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length) { return ::av_crc(ctx, crc, buffer, length); }
    
    // DLL faking.
    virtual bool ResolveExports() { return true; }
@@ -325,6 +346,9 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD1(void, av_free, (void *p1))
   DEFINE_METHOD1(void, av_freep, (void *p1))
   DEFINE_METHOD4(int64_t, av_rescale_rnd, (int64_t p1, int64_t p2, int64_t p3, enum AVRounding p4));
+  DEFINE_METHOD1(const AVCRC*, av_crc_get_table, (AVCRCId p1))
+  DEFINE_METHOD4(uint32_t, av_crc, (const AVCRC *p1, uint32_t p2, const uint8_t *p3, size_t p4));
+
   public:
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(av_log_set_callback)
@@ -334,6 +358,8 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_free)
     RESOLVE_METHOD(av_freep)
     RESOLVE_METHOD(av_rescale_rnd)
+    RESOLVE_METHOD(av_crc_get_table)
+    RESOLVE_METHOD(av_crc)
   END_METHOD_RESOLVE()
 };
 

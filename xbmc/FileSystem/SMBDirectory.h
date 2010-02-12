@@ -24,7 +24,7 @@
 #include "FileSmb.h"
 #include "MediaSource.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 class CSMBDirectory : public IDirectory
 {

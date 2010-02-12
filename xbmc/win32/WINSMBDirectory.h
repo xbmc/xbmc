@@ -24,7 +24,7 @@
 #include "IDirectory.h"
 #include "URL.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 class CWINSMBDirectory : public IDirectory

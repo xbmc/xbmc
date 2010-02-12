@@ -16,7 +16,7 @@
 			<posy>40</posy>
 			<label>-</label>
 			<align>left</align>
-			<font>font11</font>
+			<font>font12</font>
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="label" id="11">
@@ -25,7 +25,7 @@
 			<posy>70</posy>
 			<label>-</label>
 			<align>left</align>
-			<font>font11</font>
+			<font>font12</font>
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="label" id="12">
@@ -34,7 +34,7 @@
 			<posy>100</posy>
 			<label>-</label>
 			<align>left</align>
-			<font>font11</font>
+			<font>font12</font>
 			<include>VisibleFadeEffect</include>
 		</control>
 	</controls>

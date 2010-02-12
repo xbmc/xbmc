@@ -62,7 +62,6 @@
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 #define HAS_FILESYSTEM_MMS
-#define HAS_CCXSTREAM
 
 /**********************
  * Non-free Components
@@ -70,10 +69,12 @@
 
 #if defined(_LINUX) || defined(__APPLE__)
   #if defined(HAVE_XBMC_NONFREE)
-    #define HAS_RAR
+    #define HAS_FILESYSTEM_RAR
+    #define HAS_FILESYSTEM_CCX
   #endif
 #else
-  #define HAS_RAR
+  #define HAS_FILESYSTEM_RAR
+  #define HAS_FILESYSTEM_CCX
 #endif
 
 /*****************

@@ -197,13 +197,13 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
 {
-  if (action.id >= KEY_ASCII)
+  if (action.actionId >= KEY_ASCII)
   {
-    OnJumpLetter((char)(action.id & 0xff));
+    OnJumpLetter((char)(action.actionId & 0xff));
     return true;
   }
 
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
@@ -212,15 +212,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     {
       if (!HasFocus()) return false;
       if (action.holdTime > HOLD_TIME_START &&
-        ((m_orientation == VERTICAL && (action.id == ACTION_MOVE_UP || action.id == ACTION_MOVE_DOWN)) ||
-         (m_orientation == HORIZONTAL && (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_RIGHT))))
+        ((m_orientation == VERTICAL && (action.actionId == ACTION_MOVE_UP || action.actionId == ACTION_MOVE_DOWN)) ||
+         (m_orientation == HORIZONTAL && (action.actionId == ACTION_MOVE_LEFT || action.actionId == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
         float speed = std::min(1.0f, (float)(action.holdTime - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int itemsPerFrame = 1;
         if (m_lastHoldTime) // number of rows/10 items/second max speed
           itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (CTimeUtils::GetFrameTime() - m_lastHoldTime)));
         m_lastHoldTime = CTimeUtils::GetFrameTime();
-        if (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_UP)
+        if (action.actionId == ACTION_MOVE_LEFT || action.actionId == ACTION_MOVE_UP)
           while (itemsPerFrame--) MoveUp(false);
         else
           while (itemsPerFrame--) MoveDown(false);
@@ -264,15 +264,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_JUMP_SMS8:
   case ACTION_JUMP_SMS9:
     {
-      OnJumpSMS(action.id - ACTION_JUMP_SMS2 + 2);
+      OnJumpSMS(action.actionId - ACTION_JUMP_SMS2 + 2);
       return true;
     }
     break;
 
   default:
-    if (action.id)
+    if (action.actionId)
     {
-      return OnClick(action.id);
+      return OnClick(action.actionId);
     }
   }
   return false;

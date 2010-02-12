@@ -63,7 +63,7 @@ CGUIWindowMusicPlaylistEditor::~CGUIWindowMusicPlaylistEditor(void)
 
 bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.actionId == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
   { // don't go to parent folder unless we're on the list in question
     g_windowManager.PreviousWindow();
     return true;
@@ -395,7 +395,7 @@ void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const CStdString &playlist)
     return;
   }
 
-  DIRECTORY::CPlaylistFileDirectory dir;
+  XFILE::CPlaylistFileDirectory dir;
   CFileItemList items;
   if (dir.GetDirectory(playlist, items))
   {

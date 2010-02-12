@@ -38,7 +38,6 @@
 #include "utils/BitstreamStats.h"
 
 #include "Edl.h"
-#include "dlgcache.h"
 #include "FileItem.h"
 
 
@@ -262,8 +261,8 @@ protected:
   void HandlePlaySpeed();
   bool IsInMenu() const;
 
-  void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
-  void SyncronizeDemuxer(DWORD timeout);
+  void SynchronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
+  void SynchronizeDemuxer(DWORD timeout);
   void CheckAutoSceneSkip();
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);
@@ -338,8 +337,6 @@ protected:
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;
 
-  CDlgCache *m_pDlgCache;
-
   struct SPlayerState
   {
     void Clear()
@@ -383,7 +380,7 @@ protected:
     CDVDPlayer& m_player;
   };
 
-  HANDLE m_hReadyEvent;
+  CEvent m_ready;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;

@@ -275,6 +275,9 @@
 #define ACTION_TELETEXT_YELLOW        217 //    "       "      "    "     "       "
 #define ACTION_TELETEXT_BLUE          218 //    "       "      "    "     "       "
 
+#define ACTION_INCREASE_PAR           219
+#define ACTION_DECREASE_PAR           220
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -397,15 +400,8 @@
 class CAction
 {
 public:
-  CAction()
-  {
-    id = 0;
-    amount1 = amount2 = repeat = 0;
-    buttonCode = 0;
-    unicode = 0;
-    holdTime = 0;
-  };
-  int          id;
+  CAction():actionId(0),amount1(0), amount2(amount1), repeat(0), buttonCode(0), unicode(0), holdTime(0){};
+  int          actionId;
   float        amount1;
   float        amount2;
   float        repeat;

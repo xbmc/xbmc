@@ -66,7 +66,7 @@ namespace PYXBMC
     
     if (pyAction)
     {
-      pyAction->id = action.id;
+      pyAction->id = action.actionId;
       pyAction->buttonCode = action.buttonCode;
       pyAction->fAmount1 = action.amount1;
       pyAction->fAmount2 = action.amount2;
@@ -171,7 +171,7 @@ namespace PYXBMC
     "Action class.\n"
     "\n"
     "For backwards compatibility reasons the == operator is extended so that it"
-    "can compare an action with other actions and action.id with numbers"
+    "can compare an action with other actions and action.actionId with numbers"
     "  example: (action == ACTION_MOVE_LEFT)"
     "");
 

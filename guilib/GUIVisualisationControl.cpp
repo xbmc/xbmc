@@ -11,6 +11,7 @@
 #include "utils/SingleLock.h"
 #include "utils/GUIInfoManager.h"
 #include "GUISettings.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -140,7 +141,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     return;
 
   CVisualisationFactory factory;
-  CStdString strVisz, strModule;
+  CStdString strVisz;
   m_currentVis = g_guiSettings.GetString("musicplayer.visualisation");
 
   if (m_currentVis.Equals("None"))
@@ -151,7 +152,7 @@ void CGUIVisualisationControl::LoadVisualisation()
     int colonPos = m_currentVis.ReverseFind(":");
     if ( colonPos > 0 )
     {
-      strModule = m_currentVis.Mid( colonPos+1 );
+      CStdString strModule = m_currentVis.Mid( colonPos+1 );
       strVisz = m_currentVis.Mid( 0, colonPos );
       m_pVisualisation = factory.LoadVisualisation(strVisz, strModule);
     }
@@ -351,17 +352,17 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
   if (!m_pVisualisation) return false;
   enum CVisualisation::VIS_ACTION visAction = CVisualisation::VIS_ACTION_NONE;
-  if (action.id == ACTION_VIS_PRESET_NEXT)
+  if (action.actionId == ACTION_VIS_PRESET_NEXT)
     visAction = CVisualisation::VIS_ACTION_NEXT_PRESET;
-  else if (action.id == ACTION_VIS_PRESET_PREV)
+  else if (action.actionId == ACTION_VIS_PRESET_PREV)
     visAction = CVisualisation::VIS_ACTION_PREV_PRESET;
-  else if (action.id == ACTION_VIS_PRESET_LOCK)
+  else if (action.actionId == ACTION_VIS_PRESET_LOCK)
     visAction = CVisualisation::VIS_ACTION_LOCK_PRESET;
-  else if (action.id == ACTION_VIS_PRESET_RANDOM)
+  else if (action.actionId == ACTION_VIS_PRESET_RANDOM)
     visAction = CVisualisation::VIS_ACTION_RANDOM_PRESET;
-  else if (action.id == ACTION_VIS_RATE_PRESET_PLUS)
+  else if (action.actionId == ACTION_VIS_RATE_PRESET_PLUS)
     visAction = CVisualisation::VIS_ACTION_RATE_PRESET_PLUS;
-  else if (action.id == ACTION_VIS_RATE_PRESET_MINUS)
+  else if (action.actionId == ACTION_VIS_RATE_PRESET_MINUS)
     visAction = CVisualisation::VIS_ACTION_RATE_PRESET_MINUS;
 
   return m_pVisualisation->OnAction(visAction);
@@ -374,7 +375,7 @@ bool CGUIVisualisationControl::UpdateTrack()
   if ( m_pVisualisation )
   {
     // get the current album art filename
-    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+    m_AlbumThumb = _P(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
 
     // get the current track tag
     const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
@@ -407,7 +408,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
   else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)
   {
     CAction action;
-    action.id = message.GetParam1();
+    action.actionId = message.GetParam1();
     return OnAction(action);
   }
   else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)

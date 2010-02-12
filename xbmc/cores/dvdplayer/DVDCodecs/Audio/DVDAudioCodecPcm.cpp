@@ -293,6 +293,23 @@ int CDVDAudioCodecPcm::GetChannels()
   return m_iOutputChannels;
 }
 
+enum PCMChannels* CDVDAudioCodecPcm::GetChannelMap()
+{
+  static enum PCMChannels map[8][8] =
+  {
+    /* MONO   */ {PCM_FRONT_CENTER                                                                                                                                                    },
+    /* STEREO */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT                                                                                                                                     },
+    /* 3.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER                                                                                                                   },
+    /* 4.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT   , PCM_BACK_RIGHT                                                                                                   },
+    /* 5.0    */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT                                                                                },
+    /* 5.1    */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT                                                                },
+    /* 7.0 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_BACK_LEFT    , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                                },
+    /* 7.1 ?  */ {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT , PCM_BACK_RIGHT, PCM_SIDE_LEFT , PCM_SIDE_RIGHT                                }
+  };
+
+  return map[m_iOutputChannels - 1];
+}
+
 int CDVDAudioCodecPcm::GetSampleRate()
 {
   return m_iSourceSampleRate;

@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
@@ -45,7 +48,7 @@
 #include "SMBDirectory.h"
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#if defined(HAS_FILESYSTEM_CCX)
 #include "XBMSDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -54,7 +57,6 @@
 #include "PluginDirectory.h"
 #ifdef HAS_FILESYSTEM
 #include "ISO9660Directory.h"
-#include "XBMSDirectory.h"
 #ifdef HAS_FILESYSTEM_RTV
 #include "RTVDirectory.h"
 #endif
@@ -76,7 +78,9 @@
 #endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
+#ifdef HAS_FILESYSTEM_RAR
 #include "RarDirectory.h"
+#endif
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
 #include "CMythDirectory.h"
@@ -87,7 +91,7 @@
 #include "ZeroconfDirectory.h"
 #endif
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 /*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
@@ -116,7 +120,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   if (strProtocol == "plugin") return new CPluginDirectory();
   if (strProtocol == "zip") return new CZipDirectory();
+#ifdef HAS_FILESYSTEM_RAR
   if (strProtocol == "rar") return new CRarDirectory();
+#endif
   if (strProtocol == "virtualpath") return new CVirtualPathDirectory();
   if (strProtocol == "multipath") return new CMultiPathDirectory();
   if (strProtocol == "stack") return new CStackDirectory();
@@ -143,7 +149,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "smb") return new CSMBDirectory();
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#ifdef HAS_FILESYSTEM_CCX
     if (strProtocol == "xbms") return new CXBMSDirectory();
 #endif
 #ifdef HAS_FILESYSTEM

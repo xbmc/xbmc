@@ -165,15 +165,11 @@ void CGUIFontTTFBase::RemoveReference()
 
 void CGUIFontTTFBase::ClearCharacterCache()
 {
-  if (m_texture)
-  {
     delete(m_texture);
-  }
 
   DeleteHardwareTexture();
 
   m_texture = NULL;
-  if (m_char)
     delete[] m_char;
   m_char = new Character[CHAR_CHUNK];
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -187,11 +183,8 @@ void CGUIFontTTFBase::ClearCharacterCache()
 
 void CGUIFontTTFBase::Clear()
 {
-  if (m_texture)
     delete(m_texture);
-
   m_texture = NULL;
-  if (m_char)
     delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
   m_char = NULL;
@@ -246,11 +239,8 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   m_height = height;
 
-  if (m_texture)
     delete(m_texture);
-
   m_texture = NULL;
-  if (m_char)
     delete[] m_char;
   m_char = NULL;
 
@@ -563,10 +553,17 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
       if(newTexture == NULL)
       {
         FT_Done_Glyph(glyph);
+        CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Failed to allocate new texture of height %u", newHeight);
         return false;
       }
       m_texture = newTexture;
     }
+  }
+
+  if(m_texture == NULL)
+  {
+    CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: no texture to cache character to");
+    return false;
   }
 
   // set the character in our table

@@ -456,7 +456,7 @@ bool CGUIWindowManager::OnAction(const CAction &action)
     }
     // music or video overlay are handled as a special case, as they're modeless, but we allow
     // clicking on them with the mouse.
-    if (action.id == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
+    if (action.actionId == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
                                        dialog->GetID() == WINDOW_MUSIC_OVERLAY))
     {
       if (dialog->OnAction(action))
@@ -547,14 +547,7 @@ void CGUIWindowManager::UpdateModelessVisibility()
 
 void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 {
-  if (!g_application.IsCurrentThread())
-  {
-    // make sure graphics lock is not held
-    DWORD locks = ExitCriticalSection(g_graphicsContext);
-    g_application.getApplicationMessenger().WindowManagerProcess(renderOnly);
-    RestoreCriticalSection(g_graphicsContext, locks);
-  }
-  else
+  if (g_application.IsCurrentThread())
     Process_Internal(renderOnly);
 }
 

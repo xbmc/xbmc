@@ -68,7 +68,6 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
   else
   {
     // use presets (VBR)
-    CStdString strSettings;
     int preset;
     switch (g_guiSettings.GetInt("audiocds.quality"))
     {

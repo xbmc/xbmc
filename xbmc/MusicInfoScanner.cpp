@@ -45,13 +45,13 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSIC_GRABBER;
 
 CMusicInfoScanner::CMusicInfoScanner()
@@ -563,12 +563,14 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
 
-      CMusicAlbumInfo albumInfo;
       bCanceled = false;
       if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
+      {
+        CMusicAlbumInfo albumInfo;
         if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
           m_albumsScanned.push_back(iAlbum);
     }
+  }
   }
   if (m_pObserver)
     m_pObserver->OnStateChanged(READING_MUSIC_INFO);
@@ -775,7 +777,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 {
   // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
   if (0 == items.Size()) return 0;
-  XBMC::MD5 md5state;
+  XBMC::XBMC_MD5 md5state;
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -797,8 +799,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 {
   CAlbum album;
   VECSONGS songs;
-  DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
-  DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
+  XFILE::MUSICDATABASEDIRECTORY::CQueryParams params;
+  XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   bCanceled = false;
   m_musicDatabase.Open();
   if (m_musicDatabase.HasAlbumInfo(params.GetAlbumId()) && m_musicDatabase.GetAlbumInfo(params.GetAlbumId(),album,&songs))
@@ -1024,8 +1026,8 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
 
 bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, bool& bCanceled, CGUIDialogProgress* pDialog)
 {
-  DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams params;
-  DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
+  XFILE::MUSICDATABASEDIRECTORY::CQueryParams params;
+  XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(strPath, params);
   bCanceled = false;
   CArtist artist;
   m_musicDatabase.Open();

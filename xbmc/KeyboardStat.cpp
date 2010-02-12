@@ -496,6 +496,7 @@ CKeyboardStat::CKeyboardStat()
 
   Reset();
   m_lastKey = XBMCK_UNKNOWN;
+  m_lastKeyTime = 0;
   m_keyHoldTime = 0;
   m_bEvdev = true;
 }

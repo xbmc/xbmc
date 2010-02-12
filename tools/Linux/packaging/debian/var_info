@@ -21,7 +21,7 @@ BUILD_DEPENDS="debhelper (>= 7.0.50), python-support, cmake,
  nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev,"
 
 if [ $(lsb_release -is) = "Ubuntu" ]; then
-    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev,"
+    BUILD_DEPENDS="$BUILD_DEPENDS libfaac-dev, libcrystalhd-dev,"
 fi
 
 case "$1" in

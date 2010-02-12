@@ -78,7 +78,7 @@ bool CWINFileSMB::Open(const CURL& url)
     if(GetLastError() == ERROR_FILE_NOT_FOUND)
       return false;
 
-    DIRECTORY::CWINSMBDirectory smb;
+    XFILE::CWINSMBDirectory smb;
     smb.ConnectToShare(url);
     m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
     if (!m_hFile.isValid())
@@ -108,7 +108,7 @@ bool CWINFileSMB::Exists(const CURL& url)
   if(errno == ENOENT)
     return false;
 
-  DIRECTORY::CWINSMBDirectory smb;
+  XFILE::CWINSMBDirectory smb;
   if(smb.ConnectToShare(url) == false)
     return false;
 
@@ -141,7 +141,7 @@ int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   if(errno == ENOENT)
     return -1;
 
-  DIRECTORY::CWINSMBDirectory smb;
+  XFILE::CWINSMBDirectory smb;
   if(smb.ConnectToShare(url) == false)
     return -1;
 
@@ -163,7 +163,7 @@ bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
     if(GetLastError() == ERROR_FILE_NOT_FOUND)
       return false;
 
-    DIRECTORY::CWINSMBDirectory smb;
+    XFILE::CWINSMBDirectory smb;
     smb.ConnectToShare(url);
     m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
     if (!m_hFile.isValid())

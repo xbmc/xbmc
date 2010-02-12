@@ -33,7 +33,6 @@
 #include "URL.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////
@@ -422,9 +421,9 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
   {
     if (strFileName.IsEmpty()) return false;
 
-    bool bPathInCache;
     if (bUseCache)
     {
+      bool bPathInCache;
     if (g_directoryCache.FileExists(strFileName, bPathInCache) )
       return true;
     if (bPathInCache)

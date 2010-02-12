@@ -61,7 +61,6 @@ class CFileItemList;
 #endif
 
 class CWebServer;
-class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
@@ -87,7 +86,6 @@ public:
   virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
-  virtual void DoRender();
   virtual void RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
@@ -146,7 +144,6 @@ public:
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
   void RenderFullScreen();
-  void DoRenderFullScreen();
   bool NeedRenderFullScreen();
   bool IsPlaying() const;
   bool IsPaused() const;
@@ -221,7 +218,6 @@ public:
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
-  CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;
   IPlayer* m_pPlayer;
 
@@ -300,7 +296,6 @@ protected:
   CSplash* m_splash;
   ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   PLAYERCOREID m_eCurrentPlayer;
-  bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
@@ -372,4 +367,3 @@ protected:
 };
 
 extern CApplication g_application;
-extern CStdString g_LoadErrorStr;

@@ -131,6 +131,7 @@ set EXE= "..\VS2008Express\XBMC\%buildconfig%\XBMC.exe"
   md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
+  Echo CVS>>exclude.txt
   Echo .so>>exclude.txt
   Echo Thumbs.db>>exclude.txt
   Echo Desktop.ini>>exclude.txt
@@ -171,7 +172,7 @@ set EXE= "..\VS2008Express\XBMC\%buildconfig%\XBMC.exe"
   rem xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   if %target%==gl (
     xcopy ..\..\visualisations\*_win32.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
-    xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+    xcopy ..\..\xbmc\visualizations\XBMCProjectM\libprojectM\presets BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   ) else (
     xcopy ..\..\visualisations\*_win32dx.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
     xcopy ..\..\visualisations\Milkdrop BUILD_WIN32\Xbmc\visualisations\Milkdrop /Q /I /Y /EXCLUDE:exclude.txt > NUL

@@ -23,15 +23,8 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 
-#include "CrystalHD.h"
+#include "CrystalHD/CrystalHD.h"
 #include "DVDVideoCodec.h"
-
-typedef struct H264BSFContext {
-    uint8_t  length_size;
-    uint8_t  first_idr;
-    uint8_t *sps_pps_data;
-    uint32_t size;
-} H264BSFContext;
 
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
 {
@@ -42,28 +35,21 @@ public:
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose(void);
-  virtual int  Decode(BYTE *pData, int iSize, double pts);
+  virtual int  Decode(BYTE *pData, int iSize, double dts, double pts);
   virtual void Reset(void);
   virtual bool GetPicture(DVDVideoPicture *pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
-  bool init_h264_mp4toannexb_filter(CDVDStreamInfo &hints);
-  void alloc_and_copy(uint8_t **poutbuf,     int *poutbuf_size,
-                const uint8_t *sps_pps, uint32_t sps_pps_size,
-                const uint8_t *in,      uint32_t in_size);
-  bool h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
- 
-  bool            m_annexbfiltering;
-  uint8_t         *m_sps_pps_data;
-  uint32_t        m_sps_pps_size;
-  H264BSFContext  m_sps_pps_context;
-
   CCrystalHD      *m_Device;
-  int             m_DecodeReturn;
+  double          m_pts;
+  bool            m_force_dts;
+  bool            m_DecodeStarted;
   bool            m_DropPictures;
+  double          m_Duration;
   const char      *m_pFormatName;
+  CRYSTALHD_CODEC_TYPE m_codec_type;
 };
 
 #endif

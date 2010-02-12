@@ -339,7 +339,7 @@ bool CDSPlayer::OnAction(const CAction &action)
     } \
   } while(false)
 
-  switch(action.id)
+  switch(action.actionId)
   {
     case ACTION_NEXT_ITEM:
     case ACTION_PAGE_UP:

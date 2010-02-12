@@ -17,7 +17,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CC) -fPIC -shared -o $@ $(OBJS) `cat ../../../DllLoader/exports/wrapper.def` ../../../DllLoader/exports/wrapper.o
+	$(CC) $(CFLAGS) -shared -o $@ $(OBJS) `cat ../../../DllLoader/exports/wrapper.def` ../../../DllLoader/exports/wrapper.o
 endif
 
 include ../../../../../Makefile.include

@@ -123,11 +123,13 @@
   <string id="165">Disc present</string>
   <string id="166">Skin</string>
   <string id="167">Enable FTP server</string>
-  <string id="168">Enable Internet time synchronization</string>
+  <string id="168"></string>
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
+  <string id="171"></string>
 
   <string id="172">Release date</string>
+  <string id="173">Display 4:3 videos as</string>
 
   <string id="175">Moods</string>
   <string id="176">Styles</string>
@@ -239,6 +241,10 @@
   <string id="296">Clear bookmarks</string>
   <string id="297">Audio offset</string>
   <string id="298">Bookmarks</string>
+  <string id="299">- AAC Capable Receiver</string>
+  <string id="300">- MP1 Capable Reciever</string>
+  <string id="301">- MP2 Capable Reciever</string>
+  <string id="302">- MP3 Capable Reciever</string>
   <string id="303">Delay</string>
   <string id="304">Language</string>
   <string id="305">Enabled</string>
@@ -282,6 +288,7 @@
   <string id="343">Adjust framerate</string>
   <string id="344">Actors</string>
   <string id="345">Year</string>
+  <string id="346">Boost volume level on downmix</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
@@ -596,9 +603,9 @@
   <string id="726">Changes not saved. Continue without saving?</string>
   <string id="727">Web server</string>
   <string id="728">FTP server</string>
-  <string id="729">Internet time</string>
+  <string id="729"></string>
   <string id="730">- Port</string>
-  <string id="731">Time server host</string>
+  <string id="731"></string>
   <string id="732">Save &amp; apply</string>
   <string id="733">- Password</string>
   <string id="734">No pass</string>
@@ -1488,13 +1495,15 @@
   <string id="16307">Bicubic (software)</string>
   <string id="16308">Lanczos (software)</string>
   <string id="16309">Sinc (software)</string>
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16310">Temporal</string>
+  <string id="16311">Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimized</string>
   <string id="16316">Auto</string>
+  <string id="16317">Temporal (Half)</string>
+  <string id="16318">Temporal/Spatial (Half)</string>
 
   <string id="17500">Display sleep timeout</string>
 
@@ -1849,6 +1858,9 @@
   <string id="20445">Fanart</string>
   <string id="20446">Locally stored information found.</string>
   <string id="20447">Ignore and refresh from internet?</string>
+  <string id="20448">Could not download information</string>
+  <string id="20449">Server is most likely unavailable.</string>
+  <string id="20450">Would you like to continue scanning?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2171,9 +2183,29 @@
   <string id="33081">This file is stacked, select the part you want to play from.</string>
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
-  
-  <string id="33100">DsPlayer</string>
-  <string id="33101">Use VMR9 instead of EVR Renderer</string>
-  <string id="33102">Use EVR instead of VMR9 Renderer</string>
-  <string id="33103">Audio Renderer</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">Speaker Configuration</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+
+  <!-- 35000-35100 reserved for directshow-->
+  <string id="35000">DsPlayer</string>
+  <string id="35001">Use VMR9 instead of EVR Renderer</string>
+  <string id="35002">Use EVR instead of VMR9 Renderer</string>
+  <string id="35003">Audio Renderer</string>
 </strings>

@@ -216,11 +216,24 @@ dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
 timemapdone:
 
 
-  for(cell_nr = first_cell_nr; (cell_nr <= last_cell_nr) && !found; cell_nr ++) {
+  for(cell_nr = first_cell_nr; cell_nr <= last_cell_nr; cell_nr ++) {
     cell =  &(state->pgc->cell_playback[cell_nr-1]);
 
     if(cell->block_type == BLOCK_TYPE_ANGLE_BLOCK && cell->block_mode != BLOCK_MODE_FIRST_CELL)
       continue;
+
+    if(found) {
+
+      length = cell->last_sector - cell->first_sector + 1;
+      if (target >= length) {
+        target -= length;
+      } else {
+        /* convert the target sector from Cell-relative to absolute physical sector */
+        target += cell->first_sector;
+        break;
+      }
+
+    } else {
 
     length = dvdnav_convert_time(&cell->playback_time);
     if (time >= length) {
@@ -238,6 +251,7 @@ timemapdone:
       found = 1;
       break;
     }
+  }
   }
 
   if(found) {
@@ -296,7 +310,7 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
     return DVDNAV_STATUS_ERR;
   }
 #ifdef LOG_DEBUG
-  fprintf(MSG_OUT, "libdvdnav: seeking to offset=%lu pos=%u length=%u\n", offset, target, length);
+  fprintf(MSG_OUT, "libdvdnav: seeking to offset=%llu pos=%u length=%u\n", offset, target, length);
   fprintf(MSG_OUT, "libdvdnav: Before cellN=%u blockN=%u\n", state->cellN, state->blockN);
 #endif
 

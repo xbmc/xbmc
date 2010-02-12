@@ -18,8 +18,6 @@ using namespace std;
 #include "event.h"
 #include "D3DResource.h"
 #include "utils/CriticalSection.h"
-#include "dvdplayer/DVDPlayer.h"
-#include "dvdplayer/DVDPlayerSubtitle.h"
 
 
 #define DS_NBR_3D_SURFACE 3
@@ -37,10 +35,7 @@ public:
   DECLARE_IUNKNOWN;
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer) { return E_NOTIMPL; };
-  STDMETHODIMP RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface);
-  void AddSubtitleStream();
-  bool AddSubtitleFile(const std::string& filename);
-  
+  STDMETHODIMP RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface);  
 protected:
   HRESULT CreateSurfaces(D3DFORMAT Format = D3DFMT_X8R8G8B8);
   void DeleteSurfaces();
@@ -58,12 +53,6 @@ protected:
   //Current video information
   int                                     m_iVideoWidth;
   int                                     m_iVideoHeight;
-
-  CDVDPlayerSubtitle m_dsPlayerSubtitle; // subtitle part
-  CDVDOverlayContainer m_overlayContainer;
-  CCurrentStream m_CurrentSubtitle;
-  CSelectionStreams m_SelectionStreams;
-  CDVDDemux* m_pSubtitleDemuxer;
 };
 
 #endif // _DSRENDERER_H

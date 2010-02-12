@@ -37,7 +37,7 @@
 
 
 using namespace AUTOPTR;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CWINSMBDirectory::CWINSMBDirectory(void)
 {
@@ -218,7 +218,6 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   DWORD cbBuffer = 16384;     // 16K is a good size
   LPNETRESOURCEW lpnrLocal;   // pointer to enumerated structures
   DWORD cEntries = -1;        // enumerate all possible entries
-  DWORD i;
   //
   // Call the WNetOpenEnum function to begin the enumeration.
   //
@@ -275,7 +274,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
     //
     if (dwResultEnum == NO_ERROR) 
     {
-      for (i = 0; i < cEntries; i++) 
+      for (DWORD i = 0; i < cEntries; i++) 
       {
         DWORD dwDisplayType = lpnrLocal[i].dwDisplayType;
         DWORD dwType = lpnrLocal[i].dwType;
@@ -285,12 +284,10 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
            (dwType != RESOURCETYPE_PRINT))
         {
           CStdString strurl = "smb:";
-          CStdStringW strNameW = lpnrLocal[i].lpComment;
           CStdStringW strRemoteNameW = lpnrLocal[i].lpRemoteName;
           CStdString  strName,strRemoteName;
 
           g_charsetConverter.wToUTF8(strRemoteNameW,strRemoteName);
-          g_charsetConverter.wToUTF8(strNameW,strName);
           CLog::Log(LOGDEBUG,"Found Server/Share: %s", strRemoteName.c_str());
 
           strurl.append(strRemoteName);
@@ -298,15 +295,12 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           CURL rooturl(strurl);
           rooturl.SetFileName("");
 
-          if(strName.empty())
-          {
             if(!rooturl.GetShareName().empty())
               strName = rooturl.GetShareName();
             else
               strName = rooturl.GetHostName();
 
             strName.Replace("\\","");
-          }
           
           CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;

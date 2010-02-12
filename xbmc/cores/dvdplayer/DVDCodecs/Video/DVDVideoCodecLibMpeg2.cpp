@@ -63,6 +63,8 @@ CDVDVideoCodecLibMpeg2::CDVDVideoCodecLibMpeg2()
   m_irffpattern = 0;
   m_bFilm = false;
   m_bIs422 = false;
+  m_dts = DVD_NOPTS_VALUE;
+  m_dts2 = DVD_NOPTS_VALUE;
 }
 
 CDVDVideoCodecLibMpeg2::~CDVDVideoCodecLibMpeg2()
@@ -208,7 +210,7 @@ void CDVDVideoCodecLibMpeg2::SetDropState(bool bDrop)
   m_hurry = bDrop ? 1 : 0;
 }
 
-int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
+int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   int iState = 0;
   if (!m_pHandle) return VC_ERROR;
@@ -227,6 +229,8 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
     m_dll.mpeg2_buffer(m_pHandle, pData, pData + iSize);
     TagUnion u;
     u.pts = pts;
+    m_dts = dts;
+
     m_dll.mpeg2_tag_picture(m_pHandle, u.tag.l, u.tag.u);
   }
 
@@ -273,6 +277,9 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
           if((m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
             m_dll.mpeg2_skip(m_pHandle, 1);
         }
+        m_dts2 = m_dts;
+        m_dts = DVD_NOPTS_VALUE;
+
         //Not too interesting really
         //we can do everything when we get a full picture instead. simplifies things.
 
@@ -425,10 +432,9 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
             TagUnion u;
             u.tag.l = m_pInfo->display_picture->tag;
             u.tag.u = m_pInfo->display_picture->tag2;
-            if(u.tag.l || u.tag.u)
               pBuffer->pts = u.pts;
-            else
-              pBuffer->pts = DVD_NOPTS_VALUE;
+            pBuffer->dts = m_dts2;
+            m_dts2 = DVD_NOPTS_VALUE;
 
             // only return this if it's not first image or an I frame
             if(m_pCurrentBuffer || pBuffer->iFrameType == FRAME_TYPE_I || pBuffer->iFrameType == FRAME_TYPE_UNDEF )
@@ -472,6 +478,8 @@ void CDVDVideoCodecLibMpeg2::Reset()
 
   ReleaseBuffer(NULL);
   m_pCurrentBuffer = NULL;
+  m_dts = DVD_NOPTS_VALUE;
+  m_dts2 = DVD_NOPTS_VALUE;
 }
 
 bool CDVDVideoCodecLibMpeg2::GetPicture(DVDVideoPicture* pDvdVideoPicture)

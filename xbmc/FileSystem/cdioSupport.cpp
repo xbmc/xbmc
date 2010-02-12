@@ -245,6 +245,9 @@ CCdIoSupport::CCdIoSupport()
   m_nFs = 0;
   m_nUDFVerMinor = 0;
   m_nUDFVerMajor = 0;
+  m_nDataStart = 0;
+  m_nMsOffset = 0;
+  m_nStartTrack = 0;
 }
 
 CCdIoSupport::~CCdIoSupport()

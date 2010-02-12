@@ -35,7 +35,7 @@
 #endif
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CGUIAudioManager g_audioManager;
 
@@ -174,7 +174,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 
   CSingleLock lock(m_cs);
 
-  actionSoundMap::iterator it=m_actionSoundMap.find(action.id);
+  actionSoundMap::iterator it=m_actionSoundMap.find(action.actionId);
   if (it==m_actionSoundMap.end())
     return;
 

@@ -37,7 +37,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSIC_INFO;
 
 // HACK until we make this threadable - specify 1 thread only for now
@@ -89,8 +88,8 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   if (pItem->IsMusicDb())
   {
     // set the artist / album properties
-    DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams param;
-    DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
+    XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
+    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
     CArtist artist;
     CMusicDatabase database;
     database.Open();
@@ -107,10 +106,10 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   CLog::Log(LOGDEBUG, "Loading additional tag info for file %s", path.c_str());
 
   // we load up the actual tag for this file
-  CMusicInfoTag tag;
   auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(path));
   if (NULL != pLoader.get())
   {
+    CMusicInfoTag tag;
     pLoader->Load(path, tag);
     // then we set the fields from the file tags to the item
     pItem->SetProperty("lyrics", tag.GetLyrics());
@@ -160,8 +159,8 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
   }
   else if (pItem->IsMusicDb())
   { // a music db item that doesn't have tag loaded - grab details from the database
-    DIRECTORY::MUSICDATABASEDIRECTORY::CQueryParams param;
-    DIRECTORY::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
+    XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
+    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->m_strPath,param);
     CSong song;
     if (m_musicDatabase.GetSongById(param.GetSongId(), song))
     {

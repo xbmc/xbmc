@@ -40,9 +40,7 @@ CArchive::CArchive(CFile* pFile, int mode)
 CArchive::~CArchive()
 {
   FlushBuffer();
-  if (m_pBuffer != NULL)
     delete[] m_pBuffer;
-
   m_BufferPos = 0;
 }
 

@@ -300,7 +300,21 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       }
     }
     else if (type == VIDEODB_CONTENT_MOVIES)
+    {
       m_castList->SetContent("movies");
+      if (m_movieItem->GetVideoInfoTag()->m_strTrailer.IsEmpty())
+      {
+        m_movieItem->GetVideoInfoTag()->m_strTrailer = m_movieItem->FindTrailer();
+        if (!m_movieItem->GetVideoInfoTag()->m_strTrailer)
+        {
+          CVideoDatabase database;
+          database.Open();
+          database.SetDetail(m_movieItem->GetVideoInfoTag()->m_strTrailer,
+                             m_movieItem->GetVideoInfoTag()->m_iDbId,
+                             VIDEODB_ID_TRAILER,VIDEODB_CONTENT_MOVIES);
+  }
+      }
+    }
   }
   m_loader.LoadItem(m_movieItem.get());
 }
@@ -684,7 +698,6 @@ void CGUIWindowVideoInfo::OnGetThumb()
 
   if (result.Left(14) == "thumb://Remote")
   {
-    CStdString strFile;
     CFileItem chosen(result, false);
     CStdString thumb = chosen.GetCachedPictureThumb();
     if (CFile::Exists(thumb))
@@ -744,7 +757,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
   CUtil::WipeDir(strPath);
-  DIRECTORY::CDirectory::Create(strPath);
+  XFILE::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;

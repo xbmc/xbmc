@@ -103,19 +103,19 @@ void CGUIDialogKeyboard::OnInitWindow()
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
   bool handled(true);
-  if (action.id == ACTION_BACKSPACE)
+  if (action.actionId == ACTION_BACKSPACE)
   {
     Backspace();
   }
-  else if (action.id == ACTION_ENTER)
+  else if (action.actionId == ACTION_ENTER)
   {
     OnOK();
   }
-  else if (action.id == ACTION_CURSOR_LEFT)
+  else if (action.actionId == ACTION_CURSOR_LEFT)
   {
     MoveCursor( -1);
   }
-  else if (action.id == ACTION_CURSOR_RIGHT)
+  else if (action.actionId == ACTION_CURSOR_RIGHT)
   {
     if ((unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
     { // add a space
@@ -124,21 +124,21 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else
       MoveCursor(1);
   }
-  else if (action.id == ACTION_SHIFT)
+  else if (action.actionId == ACTION_SHIFT)
   {
     OnShift();
   }
-  else if (action.id == ACTION_SYMBOLS)
+  else if (action.actionId == ACTION_SYMBOLS)
   {
     OnSymbols();
   }
-  else if (action.id >= REMOTE_0 && action.id <= REMOTE_9)
+  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
   {
-    OnRemoteNumberClick(action.id);
+    OnRemoteNumberClick(action.actionId);
   }
-  else if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
+  else if (action.actionId >= KEY_VKEY && action.actionId < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    uint8_t b = action.id & 0xFF;
+    uint8_t b = action.actionId & 0xFF;
     if (b == 0x24) // home
     {
       MoveCursor(-GetCursorPos());
@@ -170,9 +170,9 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
   }
-  else if (action.id >= KEY_ASCII)
+  else if (action.actionId >= KEY_ASCII)
   { // input from the keyboard
-    //char ch = action.id & 0xFF;
+    //char ch = action.actionId & 0xFF;
     switch (action.unicode)
     {
     case 13:  // enter
@@ -597,7 +597,7 @@ bool CGUIDialogKeyboard::ShowAndVerifyNewPassword(CStdString& newPassword, const
   // check the password
   if (checkInput == userInput)
   {
-    XBMC::MD5 md5state;
+    XBMC::XBMC_MD5 md5state;
     md5state.append(userInput);
     md5state.getDigest(newPassword);
     newPassword.ToLower();
@@ -639,7 +639,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
       return 0;
 
     CStdString md5pword2;
-    XBMC::MD5 md5state;
+    XBMC::XBMC_MD5 md5state;
     md5state.append(strUserInput);
     md5state.getDigest(md5pword2);
     if (strPassword.Equals(md5pword2))
@@ -650,7 +650,7 @@ int CGUIDialogKeyboard::ShowAndVerifyPassword(CStdString& strPassword, const CSt
   {
     if (!strUserInput.IsEmpty())
     {
-      XBMC::MD5 md5state;
+      XBMC::XBMC_MD5 md5state;
       md5state.append(strUserInput);
       md5state.getDigest(strPassword);
       strPassword.ToLower();
@@ -720,7 +720,7 @@ void CGUIDialogKeyboard::OnIPAddress()
   }
   else
     start = utf8String.size();
-  if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, m_strHeading))
+  if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, g_localizeStrings.Get(14068)))
   {
     utf8String = utf8String.Left(start) + ip + utf8String.Mid(start + length);
     g_charsetConverter.utf8ToW(utf8String, m_strEdit);

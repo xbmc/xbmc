@@ -21,6 +21,9 @@
  *
  */
 
+#include "system.h"
+#ifdef USE_LIBA52_DECODER
+
 #include "DVDAudioCodec.h"
 #include "DllLiba52.h"
 
@@ -41,6 +44,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels()      { return m_iOutputChannels; }
+  virtual enum PCMChannels *GetChannelMap() { return m_pChannelMap; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
   virtual int GetBufferSize()    { return m_inputSize; }
   virtual int GetBitsPerSample() { return 16; }
@@ -64,7 +68,7 @@ protected:
 
   int m_iOutputFlags;
   int m_iOutputChannels;
-  unsigned int m_iOutputMapping;
+  enum PCMChannels *m_pChannelMap;
 
   DllLiba52 m_dll;
 
@@ -76,4 +80,4 @@ protected:
   BYTE m_inputBuffer[4096] XBMC_ALIGN_INT;
   int  m_inputSize;
 };
-
+#endif

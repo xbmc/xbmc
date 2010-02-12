@@ -35,14 +35,13 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
-#include "FileSystem/RarManager.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3

@@ -29,14 +29,13 @@
 
 #include "IAudioRenderer.h"
 #include "utils/CriticalSection.h"
-#include "Win32ChannelRemap.h"
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CWin32WASAPI : private CWin32ChannelRemap, public IAudioRenderer
+class CWin32WASAPI : public IAudioRenderer
 {
 public:
   CWin32WASAPI();
@@ -47,7 +46,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
   virtual unsigned int GetSpace();
@@ -69,6 +68,7 @@ private:
   void AddDataToBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut);
   void UpdateCacheStatus();
   void CheckPlayStatus();
+  void BuildChannelMapping(int channels, enum PCMChannels* map);
 
   IMMDevice* m_pDevice;
   IAudioClient* m_pAudioClient;
@@ -85,6 +85,8 @@ private:
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
   unsigned int m_uiAvgBytesPerSec;
+  unsigned int m_uiSpeakerMask;
+  enum PCMChannels m_SpeakerOrder[8];
 
   static bool m_bIsAllocated;
   bool m_bPlaying;

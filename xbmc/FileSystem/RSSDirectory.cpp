@@ -32,7 +32,6 @@
 #include "URL.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace std;
 using namespace MUSIC_INFO;
 

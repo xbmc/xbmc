@@ -54,6 +54,19 @@ static float studioCSC[3][4] =
     { 1.0f, 1.85556000f,        0.0f,-0.92780000f}
 };
 
+static struct SInterlaceMapping
+{
+  const EINTERLACEMETHOD     method;
+  const VdpVideoMixerFeature feature;
+} g_interlace_mapping[] = 
+{ {VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
+, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF        , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL}
+, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL}
+, {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF, VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL}
+, {VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE} 
+, {VS_INTERLACEMETHOD_NONE                       , (VdpVideoMixerFeature)-1}
+};
+
 #define CHECK_VDPAU_RETURN(vdp, value) \
         do { \
           if(CheckStatus(vdp, __LINE__)) \
@@ -82,7 +95,8 @@ CVDPAU::CVDPAU()
   if (!glXReleaseTexImageEXT)
     glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
-  totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
+  totalAvailableOutputSurfaces = 0;
+  outputSurface = presentSurface = VDP_INVALID_HANDLE;
   vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
@@ -90,7 +104,6 @@ CVDPAU::CVDPAU()
   tmpBrightness  = 0;
   tmpContrast    = 0;
   max_references = 0;
-  upscalingAvailable=false;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
     outputSurfaces[i] = VDP_INVALID_HANDLE;
@@ -308,6 +321,23 @@ void CVDPAU::BindPixmap()
 {
   if (m_glPixmap)
   {
+    if(presentSurface != VDP_INVALID_HANDLE)
+    {
+      VdpPresentationQueueStatus status;
+      VdpTime time;
+      VdpStatus vdp_st;
+      vdp_st = vdp_presentation_queue_query_surface_status(
+                    vdp_flip_queue, presentSurface, &status, &time);
+      CheckStatus(vdp_st, __LINE__);
+      while(status != VDP_PRESENTATION_QUEUE_STATUS_VISIBLE && vdp_st == VDP_STATUS_OK)
+      {
+        Sleep(1);
+        vdp_st = vdp_presentation_queue_query_surface_status(
+                      vdp_flip_queue, presentSurface, &status, &time);
+        CheckStatus(vdp_st, __LINE__);
+      }
+    }
+    
     glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
   }
@@ -344,7 +374,9 @@ bool CVDPAU::CheckRecover(bool force)
 bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 {
   if ((format >= PIX_FMT_VDPAU_H264) && (format <= PIX_FMT_VDPAU_VC1)) return true;
+#if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL)
   if (format == PIX_FMT_VDPAU_MPEG4) return true;
+#endif
   else return false;
 }
 
@@ -370,39 +402,19 @@ void CVDPAU::CheckFeatures()
     tmpContrast = 0;
     tmpNoiseReduction = 0;
     tmpSharpness = 0;
-    int featuresCount = 0;
-    VdpVideoMixerFeature features[6];
-
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
-    features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
-
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (upscalingAvailable)
-    {
-      CLog::Log(LOGNOTICE,"(VDPAU) enabling VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1");
-      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1;
-    }
-#endif
 
     VdpStatus vdp_st = VDP_STATUS_ERROR;
     vdp_st = vdp_video_mixer_create(vdp_device,
-                                    featuresCount,
-                                    features,
+                                    m_feature_count,
+                                    m_features,
                                     ARSIZE(parameters),
                                     parameters,
                                     parameter_values,
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (upscalingAvailable)
-    {
+
       SetHWUpscaling();
     }
-#endif
-  }
 
   if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness ||
       tmpContrast   != g_settings.m_currentVideoSettings.m_Contrast)
@@ -421,12 +433,35 @@ void CVDPAU::CheckFeatures()
     tmpSharpness = g_settings.m_currentVideoSettings.m_Sharpness;
     SetSharpness();
   }
-
   if (tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
   {
     tmpDeint = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     SetDeinterlacing();
   }
+}
+
+bool CVDPAU::Supports(VdpVideoMixerFeature feature)
+{
+  for(int i = 0; i < m_feature_count; i++)
+  {
+    if(m_features[i] == feature)
+      return true;
+  }
+  return false;
+}
+
+bool CVDPAU::Supports(EINTERLACEMETHOD method)
+{
+  if(method == VS_INTERLACEMETHOD_VDPAU_BOB
+  || method == VS_INTERLACEMETHOD_AUTO)
+    return true;
+
+  for(SInterlaceMapping* p = g_interlace_mapping; p->method != VS_INTERLACEMETHOD_NONE; p++)
+  {
+    if(p->method == method)
+      return Supports(p->feature);
+  }
+  return false;
 }
 
 void CVDPAU::SetColor()
@@ -459,6 +494,9 @@ void CVDPAU::SetColor()
 
 void CVDPAU::SetNoiseReduction()
 {
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION))
+    return;
+
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
@@ -481,6 +519,9 @@ void CVDPAU::SetNoiseReduction()
 
 void CVDPAU::SetSharpness()
 {
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_SHARPNESS))
+    return;
+  
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_SHARPNESS };
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
@@ -504,6 +545,9 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
+    return;
+
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
   VdpStatus vdp_st;
   VdpBool enabled[]={1};
@@ -514,38 +558,42 @@ void CVDPAU::SetHWUpscaling()
 
 void CVDPAU::SetDeinterlacing()
 {
+  VdpStatus vdp_st;
+  EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
                                      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
 
-  VdpStatus vdp_st;
-
-  if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_AUTO
-  ||  g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_VDPAU)
+  if (method == VS_INTERLACEMETHOD_AUTO)
   {
     VdpBool enabled[]={1,1,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_RENDER_BLEND)
+  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
   {
     VdpBool enabled[]={1,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
   }
-  else if (g_settings.m_currentVideoSettings.m_InterlaceMethod == VS_INTERLACEMETHOD_INVERSE_TELECINE)
+  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
+       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
+  {
+    VdpBool enabled[]={0,1,0};
+    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+  }
+  else if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
   {
     VdpBool enabled[]={0,0,1};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    CheckStatus(vdp_st, __LINE__);
   }
   else
   {
     VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+  }
     CheckStatus(vdp_st, __LINE__);
   }
-}
 
 void CVDPAU::InitVDPAUProcs()
 {
@@ -683,6 +731,8 @@ void CVDPAU::FiniVDPAUOutput()
   CheckStatus(vdp_st, __LINE__);
   vdp_flip_target = VDP_INVALID_HANDLE;
 
+  outputSurface = presentSurface = VDP_INVALID_HANDLE;
+
   for (int i = 0; i < totalAvailableOutputSurfaces; i++) 
   {
     vdp_st = vdp_output_surface_destroy(outputSurfaces[i]);
@@ -731,7 +781,8 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
       vdp_decoder_profile = VDP_DECODER_PROFILE_VC1_ADVANCED;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
       break;
-#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
+#if (defined PIX_FMT_VDPAU_MPEG4_IN_AVUTIL) && \
+    (defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP)
     case PIX_FMT_VDPAU_MPEG4:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG4_PART2_ASP;
       vdp_chroma_type     = VDP_CHROMA_TYPE_420;
@@ -809,11 +860,6 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
-#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-  vdp_st = vdp_video_mixer_query_feature_support(vdp_device, VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1, &upscalingAvailable);
-  CLog::Log(LOGNOTICE,"VDPAU HQ upscaling: %i",upscalingAvailable);
-#endif
-
   vdpauConfigured = true;
   return true;
 }
@@ -836,6 +882,35 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
                 max_level, max_macroblocks, max_width, max_height);
     }
   }
+  CLog::Log(LOGNOTICE,"------------------------------------");
+  m_feature_count = 0;
+#define CHECK_SUPPORT(feature)  \
+  do { \
+    VdpBool supported; \
+    if(vdp_video_mixer_query_feature_support(vdp_device, feature, &supported) == VDP_STATUS_OK && supported) { \
+      CLog::Log(LOGNOTICE, "Mixer feature: "#feature);  \
+      m_features[m_feature_count++] = feature; \
+    } \
+  } while(false)
+
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_SHARPNESS);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE);
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8);
+  CHECK_SUPPORT(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L9);
+#endif
+#undef CHECK_SUPPORT
+
 }
 
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
@@ -865,15 +940,9 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     }
   }
 
-  int tries = 0;
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (render == NULL)
   {
-    while(vdp_st != VDP_STATUS_OK && tries < NUM_VIDEO_SURFACES_MAX_TRIES)
-    {
-      tries++;
-      CLog::Log(LOGNOTICE, " (VDPAU) Didnt find a Video Surface Available (Total: %i). Creating a new one. TRY #%i",
-                          vdp->m_videoSurfaces.size(), tries);
       // create a new surface
       VdpDecoderProfile profile;
       ReadFormatOf(avctx->pix_fmt, profile, vdp->vdp_chroma_type);
@@ -884,12 +953,14 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
                                              avctx->height,
                                              &render->surface);
       vdp->CheckStatus(vdp_st, __LINE__);
-      if (vdp_st == VDP_STATUS_OK)
+    if (vdp_st != VDP_STATUS_OK)
+    {
+      free(render);
+      CLog::Log(LOGERROR, "CVDPAU::FFGetBuffer - No Video surface available could be created");
+      return -1;
+    }
         vdp->m_videoSurfaces.push_back(render);
     }
-    if (vdp_st != VDP_STATUS_OK)
-      CLog::Log(LOGNOTICE, " (VDPAU) No Video surface available could be created.... continuing with an invalid handler");
-  }
 
   if (render == NULL)
     return -1;
@@ -1012,6 +1083,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = OutHeight;
   }
   
+  EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+
   if(pFrame)
   { // we have a new frame from decoder
 
@@ -1024,31 +1097,50 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     past[0] = past[1];
     past[1] = current;
     current = render->surface;
-    m_mixerstep = 0;
   
-    EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
-    ||  method == VS_INTERLACEMETHOD_VDPAU
-    ||  method == VS_INTERLACEMETHOD_RENDER_BLEND
-    ||  method == VS_INTERLACEMETHOD_INVERSE_TELECINE )
+    ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+    ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE )
     {
+      if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+      || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+      || avctx->hurry_up)
+        m_mixerstep = 0;
+      else
+        m_mixerstep = 1;
+
       if(pFrame->top_field_first)
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
       else
         m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
     }
     else
+    {
+      m_mixerstep  = 0;
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+    }
 
   }
-  else
+  else if(m_mixerstep == 1)
   { // no new frame given, output second field of old frame
-    m_mixerstep = 1;
 
+    if(avctx->hurry_up)
+      return VC_BUFFER;
+
+    m_mixerstep = 2;
     if(m_mixerfield == VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD)
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
     else
       m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CVDPAU::Decode - invalid mixer state reached");
+    return VC_BUFFER;
   }
 
   VdpVideoSurface past_surfaces[2] = { VDP_INVALID_HANDLE, VDP_INVALID_HANDLE };
@@ -1062,7 +1154,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   }
   else
   {
-    if(m_mixerstep == 0)
+    if(m_mixerstep == 1)
     { // first field
       past_surfaces[1] = past[1];
       past_surfaces[0] = past[1];
@@ -1102,7 +1194,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     return VC_BUFFER | VC_PICTURE;
   else
   {
-    if (m_mixerstep == 0 && !avctx->hurry_up)
+    if(m_mixerstep == 1)
       return VC_PICTURE;
     else
       return VC_BUFFER | VC_PICTURE;
@@ -1114,11 +1206,10 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   picture->format = DVDVideoPicture::FMT_VDPAU;
   picture->iFlags = 0;
 
-  if(m_mixerfield != VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
+  if(m_mixerstep)
   {
     picture->iRepeatPicture = -0.5;
-    picture->iFlags |= DVP_FLAG_NOAUTOSYNC;
-    if(m_mixerstep > 0)
+    if(m_mixerstep > 1)
       picture->pts = DVD_NOPTS_VALUE;
   }
   return true;
@@ -1128,27 +1219,14 @@ void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
+  presentSurface = outputSurface;
 
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
-                                          outputSurface,
+                                          presentSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-
-  VdpPresentationQueueStatus status;
-  VdpTime time;
-  vdp_st = vdp_presentation_queue_query_surface_status(
-                vdp_flip_queue, outputSurface, &status, &time);
-  CheckStatus(vdp_st, __LINE__);
-
-  while(status != VDP_PRESENTATION_QUEUE_STATUS_VISIBLE && vdp_st == VDP_STATUS_OK)
-  {
-    Sleep(1);
-    vdp_st = vdp_presentation_queue_query_surface_status(
-                  vdp_flip_queue, outputSurface, &status, &time);
-    CheckStatus(vdp_st, __LINE__);
-}
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)

@@ -41,7 +41,6 @@
 #include "utils/TimeUtils.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 void xb_smbc_log(const char* msg)
 {

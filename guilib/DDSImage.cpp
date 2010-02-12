@@ -53,7 +53,6 @@ CDDSImage::CDDSImage(unsigned int width, unsigned int height, unsigned int forma
 
 CDDSImage::~CDDSImage()
 {
-  if (m_data)
     delete[] m_data;
 }
 

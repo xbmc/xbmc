@@ -53,7 +53,7 @@ CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
 
 bool CGUIDialogNetworkSetup::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
     m_confirmed = false;
   return CGUIDialog::OnAction(action);
 }
@@ -188,12 +188,13 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
   // set defaults for the port
   if (m_protocol == NET_PROTOCOL_FTP)
     m_port = "21";
-  if (m_protocol == NET_PROTOCOL_HTTP || m_protocol == NET_PROTOCOL_RSS)
+  else if (m_protocol == NET_PROTOCOL_HTTP || 
+	   m_protocol == NET_PROTOCOL_RSS || 
+	   m_protocol == NET_PROTOCOL_TUXBOX || 
+	   m_protocol == NET_PROTOCOL_DAV)
     m_port = "80";
-  if (m_protocol == NET_PROTOCOL_HTTPS || m_protocol == NET_PROTOCOL_DAVS)
+  else if (m_protocol == NET_PROTOCOL_HTTPS || m_protocol == NET_PROTOCOL_DAVS)
     m_port = "443";
-  if (m_protocol == NET_PROTOCOL_TUXBOX || NET_PROTOCOL_DAV)
-    m_port = "80";
   else if (m_protocol == NET_PROTOCOL_XBMSP)
     m_port = "1400";
   else if (m_protocol == NET_PROTOCOL_DAAP)
@@ -247,6 +248,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_FTP ||
                                                    m_protocol == NET_PROTOCOL_HTTP ||
                                                    m_protocol == NET_PROTOCOL_HTTPS ||
+                                                   m_protocol == NET_PROTOCOL_DAV ||
+                                                   m_protocol == NET_PROTOCOL_DAVS ||
                                                    m_protocol == NET_PROTOCOL_TUXBOX ||
                                                    m_protocol == NET_PROTOCOL_RSS ||
                                                    m_protocol == NET_PROTOCOL_DAAP);

@@ -140,7 +140,7 @@ public:
 
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
-  void Close(CGUIDialog *pDialog, bool forceClose);
+  void Close(CGUIDialog *pDialog, bool forceClose, bool waitResult=true);
   void WindowManagerProcess(bool renderOnly = false); // will call g_windowManager.Process on the rendering thread
   void Render(); // will call g_windowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
