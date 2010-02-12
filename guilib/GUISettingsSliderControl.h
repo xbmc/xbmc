@@ -66,9 +66,12 @@ public:
   virtual float GetYPosition() const { return m_buttonControl.GetYPosition();};
   virtual CStdString GetDescription() const;
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
+
 protected:
   virtual void UpdateColors();
+  
+private:
   CGUIButtonControl m_buttonControl;
-  CGUITextLayout m_textLayout;
+  CGUILabel m_label;
 };
 #endif

@@ -42,6 +42,7 @@
 #include "PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #include "utils/PCMRemap.h"
+#include "GUIFont.h" // for FONT_STYLE_* definitions
 
 using namespace std;
 

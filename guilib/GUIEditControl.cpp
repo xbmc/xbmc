@@ -45,28 +45,29 @@ CGUIEditControl::CGUIEditControl(int parentID, int controlID, float posX, float 
                                  const CLabelInfo& labelInfo, const std::string &text)
     : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
-  ControlType = GUICONTROL_EDIT;
-  m_textOffset = 0;
-  m_textWidth = width;
-  m_cursorPos = 0;
-  m_cursorBlink = 0;
-  m_inputHeading = 0;
-  m_inputType = INPUT_TYPE_TEXT;
-  m_smsLastKey = 0;
-  m_smsKeyIndex = 0;
+  DefaultConstructor();
   SetLabel(text);
 }
 
-CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
-    : CGUIButtonControl(button)
+void CGUIEditControl::DefaultConstructor()
 {
   ControlType = GUICONTROL_EDIT;
   m_textOffset = 0;
   m_textWidth = GetWidth();
   m_cursorPos = 0;
   m_cursorBlink = 0;
+  m_inputHeading = 0;
+  m_inputType = INPUT_TYPE_TEXT;
   m_smsLastKey = 0;
   m_smsKeyIndex = 0;
+  m_label.SetAlign(m_label.GetLabelInfo().align & XBFONT_CENTER_Y); // left align
+  m_label2.GetLabelInfo().offsetX = 0;
+}
+
+CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
+    : CGUIButtonControl(button)
+{
+  DefaultConstructor();
 }
 
 CGUIEditControl::~CGUIEditControl(void)
@@ -311,23 +312,21 @@ void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, int heading
 
 void CGUIEditControl::RecalcLabelPosition()
 {
-  if (!m_label.font) return;
-
   // ensure that our cursor is within our width
   ValidateCursor();
 
   CStdStringW text = GetDisplayedText();
-  m_textWidth = m_textLayout2.GetTextWidth(text + L'|');
-  float beforeCursorWidth = m_textLayout2.GetTextWidth(text.Left(m_cursorPos));
-  float afterCursorWidth = m_textLayout2.GetTextWidth(text.Left(m_cursorPos) + L'|');
-  float leftTextWidth = m_textLayout.GetTextWidth();
-  float maxTextWidth = m_width - m_label.offsetX*2;
+  m_textWidth = m_label.CalcTextWidth(text + L'|');
+  float beforeCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos));
+  float afterCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos) + L'|');
+  float leftTextWidth = m_label.GetRenderRect().Width();
+  float maxTextWidth = m_label.GetMaxRect().Width();
   if (leftTextWidth > 0)
     maxTextWidth -= leftTextWidth + spaceWidth;
 
   // if skinner forgot to set height :p
-  if (m_height == 0)
-    m_height = 2*m_label.font->GetTextHeight(1);
+  if (m_height == 0 && m_label.GetLabelInfo().font)
+    m_height = m_label.GetLabelInfo().font->GetTextHeight(1);
 
   if (m_textWidth > maxTextWidth)
   { // we render taking up the full width, so make sure our cursor position is
@@ -358,58 +357,45 @@ void CGUIEditControl::RenderText()
 
   if (m_bInvalidated)
   {
-    m_textLayout.Update(m_info.GetLabel(GetParentID()));
+    m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+    m_label.SetText(m_info.GetLabel(GetParentID()));
     RecalcLabelPosition();
   }
 
-  float leftTextWidth = m_textLayout.GetTextWidth();
-  float maxTextWidth = m_width - m_label.offsetX * 2;
+
+  float posX = m_label.GetMaxRect().x1;
+  float maxTextWidth = m_label.GetMaxRect().Width();
 
   // start by rendering the normal text
-  float posX = m_posX + m_label.offsetX;
-  float posY = m_posY;
-  uint32_t align = m_label.align & XBFONT_CENTER_Y;
-
-  if (m_label.align & XBFONT_CENTER_Y)
-    posY += m_height*0.5f;
-
+  float leftTextWidth = m_label.GetRenderRect().Width();
   if (leftTextWidth > 0)
   {
     // render the text on the left
-    if (IsDisabled())
-      m_textLayout.Render(posX, posY, m_label.angle, m_label.disabledColor, m_label.shadowColor, align, leftTextWidth, true);
-    else if (HasFocus() && m_label.focusedColor)
-      m_textLayout.Render(posX, posY, m_label.angle, m_label.focusedColor, m_label.shadowColor, align, leftTextWidth);
-    else
-      m_textLayout.Render(posX, posY, m_label.angle, m_label.textColor, m_label.shadowColor, align, leftTextWidth);
-
+    m_label.SetColor(GetTextColor());
+    m_label.Render();
+    
     posX += leftTextWidth + spaceWidth;
     maxTextWidth -= leftTextWidth + spaceWidth;
   }
 
   if (g_graphicsContext.SetClipRegion(posX, m_posY, maxTextWidth, m_height))
   {
-    if (m_textWidth < maxTextWidth)
+    uint32_t align = m_label.GetLabelInfo().align & XBFONT_CENTER_Y; // start aligned left
+    if (m_label2.GetTextWidth() < maxTextWidth)
     { // align text as our text fits
       if (leftTextWidth > 0)
       { // right align as we have 2 labels
-        posX = m_posX + m_width - m_label.offsetX;
         align |= XBFONT_RIGHT;
       }
       else
       { // align by whatever the skinner requests
-        if (m_label.align & XBFONT_CENTER_X)
-          posX += 0.5f*maxTextWidth;
-        if (m_label.align & XBFONT_RIGHT)
-          posX += maxTextWidth;
-        align |= (m_label.align & 3);
+        align |= (m_label.GetLabelInfo().align & 3);
       }
     }
     CStdStringW text = GetDisplayedText();
-    // let's render it ourselves
+    // add the cursor if we're focused
     if (HasFocus())
-    { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
-      // virtual keyboard only)
+    {
       CStdStringW col;
       if ((m_focusCounter % 64) > 32)
         col = L"|";
@@ -418,15 +404,11 @@ void CGUIEditControl::RenderText()
       text.Insert(m_cursorPos, col);
     }
 
-    m_textLayout2.SetText(text);
-
-    if (IsDisabled())
-      m_textLayout2.Render(posX + m_textOffset, posY, m_label.angle, m_label.disabledColor, m_label.shadowColor, align, m_textWidth, true);
-    else if (HasFocus() && m_label.focusedColor)
-      m_textLayout2.Render(posX + m_textOffset, posY, m_label.angle, m_label.focusedColor, m_label.shadowColor, align, m_textWidth);
-    else
-      m_textLayout2.Render(posX + m_textOffset, posY, m_label.angle, m_label.textColor, m_label.shadowColor, align, m_textWidth);
-
+    m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
+    m_label2.SetTextW(text);
+    m_label2.SetAlign(align);
+    m_label2.SetColor(GetTextColor());
+    m_label2.Render();
     g_graphicsContext.RestoreClipRegion();
   }
 }
