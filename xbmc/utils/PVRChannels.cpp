@@ -114,6 +114,12 @@ void cPVRChannelInfoTag::Reset()
   m_strStreamURL          = "";
 }
 
+void cPVRChannelInfoTag::ResetChannelEPGLinks()
+{
+  m_epgNow  = NULL;
+  m_epgNext = NULL;
+}
+
 void cPVRChannelInfoTag::UpdateRunningEvents()
 {
   if (m_Epg == NULL)
@@ -902,6 +908,14 @@ void cPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
     at(Number-1).SetIcon(Icon);
     database->UpdateDBChannel(at(Number-1));
     database->Close();
+  }
+}
+
+void cPVRChannels::ResetChannelEPGLinks()
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    at(i).ResetChannelEPGLinks();
   }
 }
 

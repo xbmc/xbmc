@@ -79,6 +79,8 @@ public:
   cPVRChannelInfoTag() { Reset(); };
   void Reset();
        ///< Set the tag to it's initial values.
+  void ResetChannelEPGLinks();
+       ///< Clear the EPG links
   bool IsEmpty() const;
        ///< True if no required data is present inside the tag.
 
@@ -231,6 +233,7 @@ public:
   CStdString GetNameForChannel(unsigned int Number);
   CStdString GetChannelIcon(unsigned int Number);
   void SetChannelIcon(unsigned int Number, CStdString Icon);
+  void ResetChannelEPGLinks();
   void Clear();
 
   static int GetNumChannelsFromAll();

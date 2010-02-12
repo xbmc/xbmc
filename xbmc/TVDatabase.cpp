@@ -496,7 +496,7 @@ bool CTVDatabase::UpdateEPGEntry(const cPVREPGInfoTag &info)
 
       if (GetEPGDataEnd(info.ChannelID()) > info.End())
       {
-        CLog::Log(LOGINFO, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelName().c_str());
+        CLog::Log(LOGNOTICE, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelName().c_str());
         EraseChannelEPGAfterTime(info.ChannelID(), info.End());
       }
       return true;
