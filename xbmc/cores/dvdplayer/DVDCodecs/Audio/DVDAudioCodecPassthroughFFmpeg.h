@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,21 +22,16 @@
  */
 
 #include "system.h"
-#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
+#include "Codecs/DllAvFormat.h"
+#include "Codecs/DllAvCodec.h"
 
 #include "DVDAudioCodec.h"
-#ifdef USE_LIBA52_DECODER
-  #include "DllLiba52.h"
-#endif
-#ifdef USE_LIBDTS_DECODER
-  #include "DllLibDts.h"
-#endif
 
-class CDVDAudioCodecPassthrough : public CDVDAudioCodec
+class CDVDAudioCodecPassthroughFFmpeg : public CDVDAudioCodec
 {
 public:
-  CDVDAudioCodecPassthrough();
-  virtual ~CDVDAudioCodecPassthrough();
+  CDVDAudioCodecPassthroughFFmpeg();
+  virtual ~CDVDAudioCodecPassthroughFFmpeg();
 
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
@@ -44,43 +39,30 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
-  virtual int8_t *GetChannelMap() { static uint8_t map[2] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}; return map; }
+  virtual enum PCMChannels *GetChannelMap() { static enum PCMChannels map[2] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}; return map; }
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }
-  virtual const char* GetName()  { return "passthrough"; }
+  virtual const char* GetName()  { return "PassthroughFFmpeg"; }
 
 private:
-  int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
+  int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize, int *fSize);
+  int SyncAC3(BYTE* pData, int iSize, int *fSize);
+  int SyncDTS(BYTE* pData, int iSize, int *fSize);
 
-#ifdef USE_LIBA52_DECODER
-  DllLiba52    m_dllA52;
-  a52_state_t* m_pStateA52;
-  int PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pOut);
-#endif
+  DllAvFormat      m_dllAvFormat;
+  DllAvUtil        m_dllAvUtil;
+  DllAvCodec       m_dllAvCodec;
 
-#ifdef USE_LIBDTS_DECODER
-  DllLibDts    m_dllDTS;
-  dts_state_t* m_pStateDTS;
-  int PaddDTSData( BYTE* pData, int iDataSize, BYTE* pOut);
-#endif
+  AVFormatContext *m_pFormat;
+  AVStream        *m_pStream;
 
-  BYTE *m_OutputBuffer;
-  int   m_OutputSize;
-  BYTE *m_InputBuffer;
-  int   m_InputSize;
+  unsigned char    m_bcBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+  BYTE            *m_OutputBuffer;
+  int              m_OutputSize;
+  bool             m_lostSync;
 
-  int m_iFrameSize;
-
-  int m_iSamplesPerFrame;
-  int m_iSampleRate;
-
-  int     m_Codec;
-  bool    m_Synced;
-
-  int m_iSourceFlags;
-  int m_iSourceSampleRate;
-  int m_iSourceBitrate;
+  static int _BCReadPacket(void *opaque, uint8_t *buf, int buf_size) { return ((CDVDAudioCodecPassthroughFFmpeg*)opaque)->BCReadPacket(buf, buf_size); }
+  int BCReadPacket(uint8_t *buf, int buf_size);
 };
 
-#endif

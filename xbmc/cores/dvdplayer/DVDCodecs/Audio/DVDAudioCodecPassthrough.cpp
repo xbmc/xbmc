@@ -231,7 +231,7 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 #endif
   }
 
-    return false;
+  return false;
 }
 
 void CDVDAudioCodecPassthrough::Dispose()
@@ -380,8 +380,8 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
   if(m_Codec == CODEC_ID_DTS)
   {
     m_OutputSize = PaddDTSData(frame, framesize, m_OutputBuffer);
-  return len;
-}
+    return len;
+  }
 #endif
 }
 

@@ -61,8 +61,8 @@ static int resample_int16(sample_t * in, int16_t *out, unsigned int channels)
       {
         *p = convert( ((int32_t*)in)[i + (ch << 8)] );
         ++p;
+      }
     }
-}
     return p - out; 
 }
 
@@ -138,7 +138,7 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   switch (m_iSourceFlags &~ A52_LFE)
   {
     case A52_MONO   : m_pChannelMap = channelMaps[chOffset + 0]; channels = 1; break;
-      case A52_CHANNEL:
+    case A52_CHANNEL:
     case A52_DOLBY  :
     case A52_STEREO : m_pChannelMap = channelMaps[chOffset + 1]; channels = 2; break;
     case A52_3F     : m_pChannelMap = channelMaps[chOffset + 2]; channels = 3; break;
@@ -147,7 +147,7 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
     case A52_2F2R   : m_pChannelMap = channelMaps[chOffset + 5]; channels = 4; break;
     case A52_3F2R   : m_pChannelMap = channelMaps[chOffset + 6]; channels = 5; break;
     default         : m_pChannelMap = NULL;                                    break;
-    }
+  }
 
   if(flags & A52_LFE) ++channels;
 
@@ -166,9 +166,9 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   {
     m_iOutputChannels = 2;
     m_pChannelMap     = channelMaps[1];
-    m_iOutputFlags = A52_STEREO;
+    m_iOutputFlags    = A52_STEREO;
     if (m_iSourceChannels > 2)
-      m_Gain = pow(2.0f, g_advancedSettings.m_ac3Gain/6.0f); // Hack for downmix attenuation
+      m_Gain = pow(2.0f, g_advancedSettings.m_ac3Gain / 6.0f); // Hack for downmix attenuation
   }
 
   /* adjust level should always be set, to keep samples in proper range */

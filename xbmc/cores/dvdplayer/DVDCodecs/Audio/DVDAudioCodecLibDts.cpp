@@ -51,15 +51,15 @@ static int resample_int16(sample_t * in, int16_t *out, unsigned int channels)
     unsigned int i, ch;
     int16_t *p = out;
     for(i = 0; i < 256; ++i)
-  {
+    {
       for(ch = 0; ch < channels; ++ch)
       {
         *p = convert( ((int32_t*)in)[i + (ch << 8)] );
         ++p;
       }
-      }
+    }
     return p - out; 
-      }
+}
 
 CDVDAudioCodecLibDts::CDVDAudioCodecLibDts() : CDVDAudioCodec()
 {
@@ -123,7 +123,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
     {/* DTS_3F2R    */ PCM_FRONT_CENTER, PCM_FRONT_LEFT   , PCM_FRONT_RIGHT  , PCM_SIDE_LEFT  , PCM_SIDE_RIGHT   , PCM_LOW_FREQUENCY},
   };
 
-  m_iSourceFlags    = flags;
+  m_iSourceFlags = flags;
 
   // setup channel map
   int channels = 0;
@@ -149,7 +149,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
     CLog::Log(LOGINFO, "%s - Number of channels changed in stream from %d to %d, data might be truncated", __FUNCTION__, m_iOutputChannels, channels);
 
   m_iSourceChannels = channels;
-    m_iOutputChannels = m_iSourceChannels;
+  m_iOutputChannels = m_iSourceChannels;
   m_iOutputFlags    = m_iSourceFlags;
 
   // If we can't support multichannel output downmix
@@ -157,7 +157,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
   {
     m_iOutputChannels = 2;
     m_pChannelMap     = channelMaps[1];
-    m_iOutputFlags = DTS_STEREO;
+    m_iOutputFlags    = DTS_STEREO;
   }
 
   /* adjust level should always be set, to keep samples in proper range */

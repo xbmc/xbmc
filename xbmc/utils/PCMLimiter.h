@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,24 +20,34 @@
  *
  */
 
-#include "utils/PCMRemap.h"
-#include "DVDStreamInfo.h"
+#define CHUNKS 16
+#define DELAYTIME 0.005f
 
-class IDVDAudioEncoder
+class CPCMLimiter
 {
-public:
-  IDVDAudioEncoder() {};
-  virtual ~IDVDAudioEncoder() {};
-  virtual bool Initialize(unsigned int channels, enum PCMChannels *channelMap, unsigned int bitsPerSample, unsigned int sampleRate) = 0;
-  virtual void Reset() = 0;
+  public:
+    CPCMLimiter(int samplerate, int channels);
+    ~CPCMLimiter();
 
-  /* returns this DSPs output format */
-  virtual unsigned int GetBitRate   () = 0;
-  virtual CodecID      GetCodecID   () = 0;
-  virtual unsigned int GetPacketSize() = 0;
+    void   Run(float* insamples, float* outsamples, int frames);
+    void   SetRelease(float release) { m_release = release; }
+    double GetDelay() { return DELAYTIME; }
 
-  /* add/get packets to/from the DSP */
-  virtual int Encode (uint8_t *data, int size) = 0;
-  virtual int GetData(uint8_t **data) = 0;
+  private:
+    float* m_delaybuff;
+    int    m_delaybuffsize; //buffer size in frames
+    int    m_delaybuffpos;  //m_delaybuff is used as a ringbuffer
+    float  m_samplerate;
+    int    m_channels;
+    float  m_release; //release time in seconds
+
+    int    m_chunknum;
+    int    m_chunkpos;
+    int    m_chunksize;
+    float  m_chunks[CHUNKS];
+
+    float  m_peak;
+    float  m_atten;
+    float  m_attenlp;
+    float  m_delta;
 };
-

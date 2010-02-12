@@ -252,7 +252,7 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
     // modify some stuff here
     pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
 #ifdef __APPLE__
-    pConfiguration->downMatrix = g_guiSettings.GetBool("audiooutput.downmixmultichannel") ? 1 : 0;
+    pConfiguration->downMatrix   = g_guiSettings.GetBool("audiooutput.downmixmultichannel") ? 1 : 0;
 #else
     pConfiguration->downMatrix   = 0;
 #endif

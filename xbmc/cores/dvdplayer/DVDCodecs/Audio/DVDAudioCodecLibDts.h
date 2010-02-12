@@ -37,12 +37,12 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual int GetChannels()      { return m_iOutputChannels; }
+  virtual int GetChannels()        { return m_iOutputChannels; }
   virtual enum PCMChannels *GetChannelMap() { return m_pChannelMap; }
-  virtual int GetSampleRate()    { return m_iSourceSampleRate; }
-  virtual int GetBufferSize()    { return m_inputSize; }
-  virtual int GetBitsPerSample() { return 16; }
-  virtual const char* GetName()  { return "libdts"; }
+  virtual int GetSampleRate()      { return m_iSourceSampleRate; }
+  virtual int GetBufferSize()      { return m_inputSize; }
+  virtual int GetBitsPerSample()   { return 16; }
+  virtual const char* GetName()    { return "libdts"; }
 
 protected:
   void SetDefault();
@@ -73,6 +73,6 @@ protected:
 
   BYTE m_inputBuffer[4096];
   int  m_inputSize;
-  };
+};
 
 #endif
