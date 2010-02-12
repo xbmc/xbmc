@@ -490,7 +490,7 @@ endif
 
 install-arch:
 	@# Arch dependent files
-	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
+	@find system visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
