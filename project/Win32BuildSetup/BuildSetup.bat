@@ -226,7 +226,6 @@ IF %target%==dx SET buildconfig=Release (DirectX)
 	  set DIETEXT=Failed to create %XBMC_SETUPFILE%.
 	  goto DIE
   )
-  del BUILD_WIN32\Xbmc\userdata\sources.xml > NUL
   ECHO ------------------------------------------------------------
   ECHO Done!
   ECHO Setup is located at %CD%\%XBMC_SETUPFILE%
