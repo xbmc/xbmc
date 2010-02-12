@@ -135,37 +135,63 @@ fi
 #
 # Build needed packages
 #
-cd $WORKPATH/buildDEBs
-./build.sh
-if [ "$?" -ne "0" ]; then
-	exit 1
+if [ -f $WORKPATH/buildDEBs/build.sh ]; then
+	echo ""
+	echo "------------------------"
+	echo "Build needed packages..."
+	echo "------------------------"
+	echo ""
+
+	cd $WORKPATH/buildDEBs
+	./build.sh
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
+	cd $THISDIR
 fi
-cd $THISDIR
 
 #
 # Build binary drivers
 #
-cd $WORKPATH/buildBinaryDrivers
-./build.sh
-if [ "$?" -ne "0" ]; then
-	exit 1
+if [ -f $WORKPATH/buildBinaryDrivers/build.sh ]; then
+	echo ""
+	echo "-----------------------"
+	echo "Build binary drivers..."
+	echo "-----------------------"
+	echo ""
+
+	cd $WORKPATH/buildBinaryDrivers
+	./build.sh
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
+	cd $THISDIR
 fi
-cd $THISDIR
 
 #
 # Copy all needed files in place for the real build
 #
 
-for hook in $(ls $WORKPATH/copyFiles-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
-done
+filesToRun=$(ls $WORKPATH/copyFiles-*.sh 2> /dev/null)
+if [ -n "$filesToRun" ]; then
+	for hook in $filesToRun; do
+		$hook
+		if [ "$?" -ne "0" ]; then
+			exit 1
+		fi
+	done
+fi
 
 #
 # Perform XBMCLive image build
 #
+
+echo ""
+echo "-------------------------------"
+echo "Perform XBMCLive image build..."
+echo "-------------------------------"
+echo ""
+
 cd $WORKPATH/buildLive
 ./build.sh
 cd $THISDIR

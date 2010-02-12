@@ -28,9 +28,14 @@ export WORKDIR
 #
 #
 
-for hook in $(ls $THISDIR/build-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
-done
+
+filesToRun=$(ls $THISDIR/build-*.sh 2> /dev/null)
+if [ -n "$filesToRun" ]; then
+	for hook in $filesToRun; do
+		$hook
+		if [ "$?" -ne "0" ]; then
+			exit 1
+		fi
+	done
+fi
+

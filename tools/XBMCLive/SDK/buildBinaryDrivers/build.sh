@@ -52,12 +52,15 @@ fi
 #
 #
 
-for hook in $(ls $THISDIR/build-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
-done
+filesToRun=$(ls build-*.sh 2> /dev/null)
+if [ -n "$filesToRun" ]; then
+	for hook in $filesToRun; do
+		$hook
+		if [ "$?" -ne "0" ]; then
+			exit 1
+		fi
+	done
+fi
 
 # Clean any previous run
 rm -rf *.ext3 &> /dev/null
@@ -74,4 +77,4 @@ build
 
 # Get files from chroot
 cp $WORKDIR/chroot/tmp/*.ext3 . &> /dev/null
-cp $WORKDIR/chroot/tmp/crystalhd.tar .
+cp $WORKDIR/chroot/tmp/crystalhd.tar . &> /dev/null
