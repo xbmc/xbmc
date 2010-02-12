@@ -2166,8 +2166,6 @@ int CXbmcHttp::xbmcSetKeyRepeat(int numParas, CStdString paras[])
 int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
 {
   bool showingSlideshow=(g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
-  CFileItem &fileItem = g_application.CurrentFileItem();
-  bool playingAudioSlide = !fileItem.m_strPath.IsEmpty() && showingSlideshow;
 
   switch(theAction)
   {
