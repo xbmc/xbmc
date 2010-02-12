@@ -250,11 +250,11 @@ void CBaseRenderer::SetViewMode(int viewMode)
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
 
-  bool is43 = (sourceFrameRatio >= 1.3 && sourceFrameRatio <= 1.35);
+  bool is43 = (sourceFrameRatio < 8.f/(3.f*sqrt(3.f)) &&
+              g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL);
 
   if ( g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM ||
-      (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL &&
-       is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_ZOOM))
+       (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_ZOOM))
   { // zoom image so no black bars
     g_settings.m_fPixelRatio = 1.0;
     // calculate the desired output ratio
@@ -286,8 +286,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     }
   }
   else if ( g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9 ||
-           (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL &&
-            is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_STRETCH_14x9))
+           (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_STRETCH_14x9))
   { // stretch image to 14:9 ratio
     // now we need to set g_settings.m_fPixelRatio so that
     // outputFrameRatio = 14:9.
@@ -305,9 +304,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
       g_settings.m_fZoomAmount = newHeight / screenHeight;
     }
   }
-  else if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9 ||
-           (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL &&
-            is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_STRETCH_16x9))
+  else if ( g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9 ||
+           (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_STRETCH_16x9))
   { // stretch image to 16:9 ratio
     g_settings.m_fZoomAmount = 1.0;
     if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
