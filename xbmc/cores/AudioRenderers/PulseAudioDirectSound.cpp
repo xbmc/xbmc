@@ -143,11 +143,27 @@ CPulseAudioDirectSound::CPulseAudioDirectSound()
 {
 }
 
-bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
+  m_remap.Reset();
+  m_uiDataChannels = iChannels;
+  enum PCMChannels* outLayout = NULL;
+
+  if (!bPassthrough && channelMap)
+  {
+    /* set the input format, and get the channel layout so we know what we need to open */
+    outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    enum PCMChannels *channel;
+    iChannels = 0;
+    for(channel = outLayout; *channel != PCM_INVALID; ++channel)
+      ++iChannels;
+
+    m_remap.SetOutputFormat(iChannels, outLayout);
+    if (m_uiDataChannels != (unsigned int)iChannels)
+      CLog::Log(LOGDEBUG, "CPulseAudioDirectSound::CPulseAudioDirectSound - Requested channels changed from %i to %i", m_uiDataChannels, iChannels);
+  }
+
   CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - device: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", device.c_str());
-  if (iChannels == 0)
-    iChannels = 2;
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
@@ -205,10 +221,38 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     return false;
   }
 
-  if (strstr(strAudioCodec, "DMO") || strstr(strAudioCodec, "FLAC") || strstr(strAudioCodec, "PCM"))
-    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_WAVEEX);
+  // Build the channel map, we dont need to use PCMRemap, pulse does it for us :)
+  map.channels = iChannels;
+  if (outLayout)
+  {
+    for(int ch = 0; ch < iChannels; ++ch)
+    {
+      switch(outLayout[ch])
+      {
+        case PCM_INVALID              : break;
+        case PCM_FRONT_LEFT           : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT           ; break;
+        case PCM_FRONT_RIGHT          : map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT          ; break;
+        case PCM_FRONT_CENTER         : map.map[ch] = PA_CHANNEL_POSITION_FRONT_CENTER         ; break;
+        case PCM_BACK_CENTER          : map.map[ch] = PA_CHANNEL_POSITION_REAR_CENTER          ; break;
+        case PCM_BACK_LEFT            : map.map[ch] = PA_CHANNEL_POSITION_REAR_LEFT            ; break;
+        case PCM_BACK_RIGHT           : map.map[ch] = PA_CHANNEL_POSITION_REAR_RIGHT           ; break;
+        case PCM_LOW_FREQUENCY        : map.map[ch] = PA_CHANNEL_POSITION_LFE                  ; break;
+        case PCM_FRONT_LEFT_OF_CENTER : map.map[ch] = PA_CHANNEL_POSITION_FRONT_LEFT_OF_CENTER ; break;
+        case PCM_FRONT_RIGHT_OF_CENTER: map.map[ch] = PA_CHANNEL_POSITION_FRONT_RIGHT_OF_CENTER; break;
+        case PCM_SIDE_LEFT            : map.map[ch] = PA_CHANNEL_POSITION_SIDE_LEFT            ; break;
+        case PCM_SIDE_RIGHT           : map.map[ch] = PA_CHANNEL_POSITION_SIDE_RIGHT           ; break;
+        case PCM_TOP_CENTER           : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
+        case PCM_TOP_FRONT_LEFT       : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_LEFT       ; break;
+        case PCM_TOP_FRONT_RIGHT      : map.map[ch] = PA_CHANNEL_POSITION_TOP_FRONT_RIGHT      ; break;
+        case PCM_TOP_FRONT_CENTER     : map.map[ch] = PA_CHANNEL_POSITION_TOP_CENTER           ; break;
+        case PCM_TOP_BACK_LEFT        : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_LEFT        ; break;
+        case PCM_TOP_BACK_RIGHT       : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_RIGHT       ; break;
+        case PCM_TOP_BACK_CENTER      : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
+      }
+    }
+  }
   else
-    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA);
+    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA); 
 
   pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
 
@@ -466,9 +510,18 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
     return len;
 
   pa_threaded_mainloop_lock(m_MainLoop);
-  int length = std::min((int)GetSpace(), (int)len);
+  int length = std::min((int)GetSpace(), (int)((len / m_uiDataChannels) * m_uiChannels));
+  int rtn;
 
-  int rtn = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
+  if (m_remap.CanRemap())
+  {
+    /* remap the data to the correct channels */
+    uint8_t outData[length];
+    m_remap.Remap((void *)data, outData, length / (m_uiBitsPerSample / 8) / m_uiChannels);
+    rtn = pa_stream_write(m_Stream, outData, length, NULL, 0, PA_SEEK_RELATIVE);
+  }
+  else
+    rtn = pa_stream_write(m_Stream, data, length, NULL, 0, PA_SEEK_RELATIVE);
 
 
   if (rtn < length && m_bRecentlyFlushed)
@@ -479,7 +532,7 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
   if (m_bAutoResume)
     m_bAutoResume = !Resume();
 
-  return length - rtn;
+  return ((length - rtn) / m_uiChannels) * m_uiDataChannels;
 }
 
 float CPulseAudioDirectSound::GetCacheTime()
@@ -515,7 +568,7 @@ float CPulseAudioDirectSound::GetDelay()
 
 unsigned int CPulseAudioDirectSound::GetChunkLen()
 {
-  return m_dwPacketSize;
+  return (m_dwPacketSize / m_uiChannels) * m_uiDataChannels;
 }
 
 int CPulseAudioDirectSound::SetPlaySpeed(int iSpeed)

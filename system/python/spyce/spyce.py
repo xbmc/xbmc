@@ -415,18 +415,18 @@ class spyceWrapper:
     self._response = self._request = None
     self._responseCallback = {}
     self._moduleCallback = {}
-  def _startModule(self, name, file=None, as=None, force=0):
+  def _startModule(self, name, file=None, name_as=None, force=0):
     "Initialise module for current request."
-    if as==None: as=name
-    if force or not self._codeenv.has_key(as):
+    if name_as==None: name_as=name
+    if force or not self._codeenv.has_key(name_as):
       modclass = getServer().loadModule(name, file, self._spycecode.getFilename())
       mod = modclass(self._api)
-      self.setModule(as, mod, 0)
+      self.setModule(name_as, mod, 0)
       if DEBUG_ERROR:
-        sys.stderr.write(as+'.start\n')
+        sys.stderr.write(name_as+'.start\n')
       mod.start()
-      self._modstarted.append((as, mod))
-    else: mod = self._codeenv[as]
+      self._modstarted.append((name_as, mod))
+    else: mod = self._codeenv[name_as]
     return mod
   # spyce processing
   def spyceInit(self, request, response):
@@ -459,10 +459,10 @@ class spyceWrapper:
       exec '_spyce_finish()' in { '_spyce_finish': self.destroy }
       # explicit modules
       self._modstarted.reverse()
-      for as, mod in self._modstarted:
+      for name_as, mod in self._modstarted:
         try: 
           if DEBUG_ERROR:
-            sys.stderr.write(as+'.finish\n')
+            sys.stderr.write(name_as+'.finish\n')
           mod.finish(theError)
         except spyceException.spyceDone: pass
         except spyceException.spyceRedirect, e:
@@ -473,10 +473,10 @@ class spyceWrapper:
       finishError = None
       # default modules
       self._modstarteddefault.reverse()
-      for as, mod in self._modstarteddefault:
+      for name_as, mod in self._modstarteddefault:
         try: 
           if DEBUG_ERROR:
-            sys.stderr.write(as+'.finish\n')
+            sys.stderr.write(name_as+'.finish\n')
           mod.finish(theError)
         except: finishError = 1
       self._request = None

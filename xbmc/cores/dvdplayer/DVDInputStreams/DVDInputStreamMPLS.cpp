@@ -33,7 +33,7 @@ extern "C"
 #include <vector>
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CDVDInputStreamMPLS::CDVDInputStreamMPLS() :
   CDVDInputStream(DVDSTREAM_TYPE_MPLS)

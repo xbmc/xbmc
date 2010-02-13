@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<scraper framework="1.1" date="2010-02-06" name="Daum TV" content="tvshows" thumb="daum.png" language="ko">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;배역 더보기&quot; type=&quot;bool&quot; id=&quot;EnableMoreCast&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetSettings>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://movie.daum.net/tv/detail/main.do?tvProgramId=\1&lt;/url&gt;" dest="3">
+			<expression>movie\.daum\.net[^\?]*\?tvProgramId=(\d+)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://movie.daum.net/search.do?type=tv&amp;q=\1&lt;/url&gt;" dest="3">
+			<expression></expression>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="1">
+		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="1">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://movie.daum.net/tv/detail/main.do?tvProgramId=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="4">
+				<expression repeat="yes">class="fl srch"&gt;&lt;a href="http://movie.daum.net/tv/detail/main.do\?tvProgramId=(\d+)"[^&gt;]*&gt;([^"]*)&lt;/a&gt;\s*\((\d*)\)&lt;/span&gt;[^\(]*"fs13"&gt;([^"]*)&lt;/span</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="7">
+		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="7">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;" dest="4">
+				<expression trim="1,2" clear="yes">class="title_kor"\s*&gt;([^&lt;]+)&lt;/strong&gt;[^\(]*\((\d*)\).*?"title_AKA"\s*&gt;\s*&lt;/em&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1(\3)&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;" dest="4+">
+				<expression trim="1,2,3">class="title_kor"\s*&gt;([^&lt;]+)&lt;/strong&gt;[^\(]*\((\d*)\).*?"title_AKA"\s*&gt;\s*&lt;span class="eng"&gt;([^&lt;]+)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;director&gt;\1\2&lt;/director&gt;&lt;credits&gt;\3\4&lt;/credits&gt;" dest="4+">
+				<expression>&lt;strong&gt;요약정보&lt;/strong&gt;.*&lt;strong&gt;제작&lt;/strong&gt;.*?&lt;a href=[^&gt;]*&gt;([^\(]*)\(연출\)([^&lt;]*)[^\|]*\|\s*&lt;/span&gt;\s*&lt;a href=[^&gt;]*&gt;([^\(]*)\(극본\)([^&lt;]*?)\s*&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="4+">
+				<expression>&lt;strong&gt;방영정보&lt;/strong&gt;.*?&lt;strong&gt;([^&lt;]*)&lt;/strong&gt;</expression>
+			</RegExp>
+			<RegExp conditional="!EnableMoreCast" input="$$1" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb&gt;\1&lt;/thumb&gt;&lt;/actor&gt;" dest="4+">
+				<expression repeat="yes">"cast_text"&gt;&lt;img [^&gt;]*src="([^"]*)"[^&gt;]*&gt;&lt;a href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;[^\(]*\(([^\)]*) 역\)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp conditional="EnableMoreCast" input="$$1" output="&lt;url function=&quot;GetDaumTvCast&quot; cache=&quot;daum-tvcast-$$2.htm&quot;&gt;\1&lt;/url&gt;" dest="4+">
+				<expression>&lt;a class="tab3" href="([^"]*)"</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4+">
+				<RegExp input="$$1" output="\1" dest="5">
+					<expression>&lt;h3&gt;소개&lt;/h3&gt;.*?&lt;div class="txt"&gt;(.*?)&lt;/div&gt;</expression>
+				</RegExp>
+				<expression>(\S.*\S)</expression>	<!-- trim doesn't remove [\t\n] -->
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="4+">
+				<expression>&lt;p class="poster"&gt;&lt;a [^&lt;]*&lt;img src="([^"]*)"</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
+				<RegExp input="$$1" output="\1" dest="5">
+					<expression noclean="1">&lt;strong&gt;방영정보&lt;/strong&gt;(.*)&lt;strong&gt;요약정보&lt;/strong&gt;</expression>
+				</RegExp>
+				<expression>&lt;span&gt;(\d{4}-\d{1,2}-\d{1,2})</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
+				<expression>"star_big [^"]+"&gt;.*?&gt;네티즌별점&lt;.*?&lt;em&gt;([\d\.]+)&lt;/em&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
+				<expression>&lt;h4&gt;네티즌 평점&lt;/h4&gt;&lt;/a&gt;\s*&lt;span class="fs11 fc3"&gt;\((\d+) 참여\)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetEpisodePages&quot; cache=&quot;daum-tvep-$$2.htm&quot;&gt;http://movie.daum.net/tv/detail/episode.do?tvProgramId=$$2&lt;/url&gt;" dest="4+">
+				<expression/>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+	<GetEpisodeList dest="4">
+		<RegExp input="$$5" output="&lt;episodeguide&gt;\1&lt;/episodeguide&gt;" dest="4">
+			<RegExp input="$$2" output="daum-tvep-\1.htm" dest="9">
+				<expression>tvProgramId=(\d+)</expression>
+			</RegExp>
+			<RegExp input="$$2" output="daum-tvep-\1-\2.htm" dest="9">
+				<expression>tvProgramId=(\d+)&amp;page=(\d+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;episode&gt;&lt;title&gt;제\1회&lt;/title&gt;&lt;url cache=&quot;$$9&quot;&gt;$$2&amp;ep=\1&lt;/url&gt;&lt;epnum&gt;\1&lt;/epnum&gt;&lt;season&gt;0&lt;/season&gt;&lt;aired&gt;\2&lt;/aired&gt;&lt;/episode&gt;" dest="5">
+				<expression repeat="yes">&lt;h5 class="fs12 em"&gt;\s*제(\d+)회\D*(\d+\.\d+\.\d+)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetEpisodeList>
+	<GetEpisodeDetails dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$3" output="\1" dest="9">
+				<expression>&amp;ep=(\d+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;제$$9회&lt;/title&gt;&lt;aired&gt;\1&lt;/aired&gt;&lt;plot&gt;\2&lt;/plot&gt;" dest="5">
+				<expression trim="1,2">&lt;h5 class="fs12 em"&gt;\s*제$$9회([^\)]*\)).*?&lt;/h5&gt;\s*&lt;p class="txt"&gt;\s*(.*?)&lt;/p&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetEpisodeDetails>
+	<GetEpisodePages dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;&lt;episodeguide&gt;\1&lt;/episodeguide&gt;&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url cache=&quot;daum-tvep-\1.htm&quot;&gt;http://movie.daum.net/tv/detail/episode.do?tvProgramId=\1&lt;/url&gt;" dest="5">
+				<expression>href="http://movie.daum.net/tv/detail/episode.do\?tvProgramId=(\d+)"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url cache=&quot;daum-tvep-\1-\2.htm&quot;&gt;http://movie.daum.net/tv/detail/episode.do?tvProgramId=\1&amp;page=\2&lt;/url&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href="\?tvProgramId=(\d+)&amp;page=(\d+)"&gt;\d+&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetEpisodePages>
+	<GetDaumTvCast dest="4">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="5">
+				<expression noclean="1">&lt;h5\s*&gt;\s*출연&lt;/h5&gt;(.*)&lt;h5\s*&gt;\s*제작진</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;thumb&gt;\1&lt;/thumb&gt;&lt;/actor&gt;" dest="6">
+				<expression clear="yes" repeat="yes">&lt;img src="([^"]*)"[^&gt;]*&gt;&lt;/a&gt;&lt;/span&gt;\s*&lt;span class="name"[^&gt;]*&gt;&lt;a href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/span&gt;\s*&lt;span class="etcs"&gt;\s*([^&lt;]*) 역\s*&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;thumb&gt;\1&lt;/thumb&gt;&lt;/actor&gt;" dest="6+">
+				<expression repeat="yes">&lt;img src="([^"]*)"[^&gt;]*&gt;&lt;/a&gt;&lt;/span&gt;\s*&lt;span class="name"[^&gt;]*&gt;&lt;a href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/span&gt;\s*&lt;span class="aka fc4"&gt;&lt;span class="eng"&gt;\(([^\)]*)\)&lt;/span&gt;&lt;/span&gt;\s*&lt;span class="etcs"&gt;\s*([^&lt;]*) 역\s*&lt;/span&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDaumTvCast>
+</scraper>

@@ -55,7 +55,7 @@ JSON_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer *t
     return FailedToExecute;
 
   CAction action;
-  action.id = ACTION_STOP;
+  action.actionId = ACTION_STOP;
   g_application.getApplicationMessenger().SendAction(action);
   return ACK;
 }
@@ -66,7 +66,7 @@ JSON_STATUS CPlayerOperations::SkipPrevious(const CStdString &method, ITransport
     return FailedToExecute;
 
   CAction action;
-  action.id = ACTION_PREV_ITEM;
+  action.actionId = ACTION_PREV_ITEM;
   g_application.getApplicationMessenger().SendAction(action);
   return ACK;
 }
@@ -77,7 +77,7 @@ JSON_STATUS CPlayerOperations::SkipNext(const CStdString &method, ITransportLaye
     return FailedToExecute;
 
   CAction action;
-  action.id = ACTION_NEXT_ITEM;
+  action.actionId = ACTION_NEXT_ITEM;
   g_application.getApplicationMessenger().SendAction(action);
   return ACK;
 }
@@ -124,7 +124,7 @@ JSON_STATUS CPlayerOperations::Rewind(const CStdString &method, ITransportLayer 
     return FailedToExecute;
 
   CAction action;
-  action.id = ACTION_PLAYER_REWIND;
+  action.actionId = ACTION_PLAYER_REWIND;
   g_application.getApplicationMessenger().SendAction(action);
   return ACK;
 }
@@ -135,7 +135,7 @@ JSON_STATUS CPlayerOperations::Forward(const CStdString &method, ITransportLayer
     return FailedToExecute;
 
   CAction action;
-  action.id = ACTION_PLAYER_FORWARD;
+  action.actionId = ACTION_PLAYER_FORWARD;
   g_application.getApplicationMessenger().SendAction(action);
   return ACK;
 }

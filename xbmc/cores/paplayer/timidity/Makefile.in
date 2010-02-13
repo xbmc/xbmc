@@ -1,6 +1,6 @@
 ARCH=@ARCH@
 
-CFLAGS+=-D_LINUX -fPIC -O2 -DHAVE_GETTIMEOFDAY -I. -Itimidity -Ilibarc -Iutils
+CFLAGS+=-D_LINUX -fPIC -DHAVE_GETTIMEOFDAY -I. -Itimidity -Ilibarc -Iutils
 ifeq ($(ARCH), powerpc-osx)
 	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
 endif
@@ -57,7 +57,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CXX) -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -Wl,--version-script=exports.def
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -Wl,--version-script=exports.def
 endif
  
 include ../../../../Makefile.include

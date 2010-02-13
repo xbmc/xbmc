@@ -32,30 +32,6 @@ namespace Shaders {
     GLint m_hStepY;
   };
 
-
-  class BicubicFilterShader : public BaseVideoFilterShader
-  {
-  public:
-    BicubicFilterShader(float B=-1.0f, float C=-1.0f);
-    void OnCompiledAndLinked();
-    bool OnEnabled();
-    void Free();
-
-  protected:
-    float MitchellNetravali(float x, float B, float C);
-    bool CreateKernels(int size, float B, float C);
-
-    // kernel textures
-    GLuint m_kernelTex1;
-
-    // shader handles to kernel textures
-    GLint m_hKernTex;
-
-    // cubic interpolations parameters
-    float m_B;
-    float m_C;
-  };
-
   class ConvolutionFilterShader : public BaseVideoFilterShader
   {
   public:

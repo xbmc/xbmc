@@ -48,6 +48,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -58,7 +59,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 using namespace std;
 using namespace MUSIC_GRABBER;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 
@@ -96,6 +96,7 @@ CXbmcHttp::CXbmcHttp()
   lastKey = temp;
   lastThumbFn="";
   lastPlayingInfo="";
+  lastSlideInfo="";
   repeatKeyRate=0;
   MarkTime=0;
   pUdpBroadcast=NULL;
@@ -1273,56 +1274,71 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
 }
 
 int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
-//paras: filename_to_save_thumb, filename_if_nothing_playing, only_return_info_if_changed
+//paras: filename_to_save_thumb, filename_if_nothing_playing, only_return_info_if_changed,
+//       extendedVersion, filename_to_save_slide_thumb, filename_if_no_slide_playing
 {
-  CStdString output="", tmp="", tag="", thumbFn="", thumbNothingPlaying="", thumb="";
-  bool justChange=false, changed=false;
+  CStdString output="", tmp="", tag="", thumbFn="", thumbNothingPlaying="", thumb="", thumbSlideFn="";
+  bool justChange=false, changed=false, extended=false, slideChanged=false;
   if (numParas>0)
     thumbFn=paras[0];
   if (numParas>1)
     thumbNothingPlaying=paras[1];
   if (numParas>2)
     justChange=paras[2].ToLower()=="true";
+  if (numParas>3)
+    extended=paras[3].ToLower()=="true";
+  if (numParas>4)
+    thumbSlideFn=paras[4];
+  if (!extended)
+     thumbSlideFn=thumbFn;
+  CStdString prefix="";
+  if (extended)
+	  prefix="Slide";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  CStdString slideOutput="";
   if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
   {
     const CFileItemPtr slide = pSlideShow->GetCurrentSlide();
-    output=openTag+"Filename:"+slide->m_strPath;
-    if (lastPlayingInfo!=output)
+    slideOutput=openTag+prefix+"Filename:"+slide->m_strPath;
+    if (lastSlideInfo!=slideOutput)
     {
-      changed=true;
-      lastPlayingInfo=output;
+      slideChanged=true;
+      lastSlideInfo=slideOutput;
     }
-    if (justChange && !changed)
-      return SetResponse(openTag+"Changed:False");
-    output+=closeTag+openTag+"Type:Picture" ;
-    CStdString resolution = "0x0";
-    if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
-      resolution = slide->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
-    output+=closeTag+openTag+"Resolution:" + resolution;
-    CFileItem item(*slide);
-    item.SetCachedPictureThumb();
-    if (autoGetPictureThumbs && !item.HasThumbnail())
-    {
-      CPicture::CreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
-      item.SetCachedPictureThumb();
-    }
-    thumb = item.GetCachedPictureThumb();
-    if (!item.HasThumbnail())
-    {
-      thumb = "[None] " + thumb;
-      copyThumb("DefaultPicture.png",thumbFn);
-    }
-    else
-      copyThumb(thumb,thumbFn);
-    output+=closeTag+openTag+"Thumb:"+thumb;
-    if (changed)
-      output+=closeTag+openTag+"Changed:True";
-    else  
-      output+=closeTag+openTag+"Changed:False";
-    return SetResponse(output);
+    if (!justChange || slideChanged)
+	{
+		slideOutput+=closeTag+openTag+prefix+"Type:Picture" ;
+		CStdString resolution = "0x0";
+		if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
+		  resolution = slide->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
+		slideOutput+=closeTag+openTag+prefix+"Resolution:" + resolution;
+		CFileItem item(*slide);
+		item.SetCachedPictureThumb();
+		if (autoGetPictureThumbs && !item.HasThumbnail())
+		{
+		  CPicture::CreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
+		  item.SetCachedPictureThumb();
+		}
+		thumb = item.GetCachedPictureThumb();
+		if (!item.HasThumbnail())
+		{
+		  thumb = "[None] " + thumb;
+		  copyThumb("DefaultPicture.png",thumbSlideFn);
+		}
+		else
+		  copyThumb(thumb,thumbSlideFn);
+		slideOutput+=closeTag+openTag+"Thumb:"+thumb;
+	}
+	if (slideChanged)
+	  slideOutput+=closeTag+openTag+prefix+"Changed:True";
+	else  
+	  slideOutput+=closeTag+openTag+prefix+"Changed:False";
+	if (!extended)
+	  if (justChange && !slideChanged)
+	    return SetResponse(openTag+"Changed:False");
+	  else
+		return SetResponse(slideOutput);
   }
-
   CFileItem &fileItem = g_application.CurrentFileItem();
   if (fileItem.m_strPath.IsEmpty())
   {
@@ -1332,10 +1348,13 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
       changed=true;
       lastPlayingInfo=output;
     }
-    if (justChange && !changed)
+    if (justChange && !changed && !slideChanged)
       return SetResponse(openTag+"Changed:False");
     copyThumb(thumbNothingPlaying,thumbFn);
-    return SetResponse(output);
+	if (extended && slideOutput!="")
+	  return SetResponse(slideOutput+closeTag+output);
+    else
+      return SetResponse(output);
   }
   else
   {
@@ -1348,7 +1367,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     else
       output+=closeTag+openTag+"PlayStatus:Stopped";
     if (g_application.IsPlayingVideo())
-    { // Video information
+    { // Video information (don't need to worry about the slide stuff since video and slideshow don't mix!)
       tmp.Format("%i",g_playlistPlayer.GetCurrentSong());
       output+=closeTag+openTag+"VideoNo:"+tmp;  // current item # in playlist
       output+=closeTag+openTag+"Type"+tag+":Video" ;
@@ -1442,8 +1461,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         changed=true;
         lastPlayingInfo=output;
       }
-      if (justChange && !changed)
-      return SetResponse(openTag+"Changed:False");
+      if (justChange && !changed && !slideChanged)
+        return SetResponse(openTag+"Changed:False");
       //if still here, continue collecting info
       if (tagVal && !tagVal->GetGenre().IsEmpty())
         output+=closeTag+openTag+"Genre"+tag+":"+tagVal->GetGenre();
@@ -1468,10 +1487,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     }
     output+=closeTag+openTag+"Time:"+g_infoManager.GetCurrentPlayTime();
     output+=closeTag+openTag+"Duration:";
-    if (g_application.IsPlayingVideo())
-      output += g_infoManager.GetDuration();
-    else
-      output += g_infoManager.GetDuration();
+    output += g_infoManager.GetDuration();
     tmp.Format("%i",(int)g_application.GetPercentage());
     output+=closeTag+openTag+"Percentage:"+tmp;
     // file size
@@ -1487,7 +1503,10 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     else  
       output+=closeTag+openTag+"Changed:False";
   }
-  return SetResponse(output);
+  if (extended && slideOutput!="")
+    return SetResponse(slideOutput+closeTag+output);
+  else
+    return SetResponse(output);
 }
 
 int CXbmcHttp::xbmcGetMusicLabel(int numParas, CStdString paras[])
@@ -2109,11 +2128,12 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
   switch(theAction)
   {
   case 1:
-    if (showingSlideshow) {
+  case 8:
+    if (showingSlideshow && theAction!=8) {
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.id = ACTION_PAUSE;
+        action.actionId = ACTION_PAUSE;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2122,25 +2142,26 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     return SetResponse(openTag+"OK");
     break;
   case 2:
-    if (showingSlideshow) {
+  case 9:
+    if (showingSlideshow && theAction!=9) {
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.id = ACTION_STOP;
+        action.actionId = ACTION_STOP;
         pSlideShow->OnAction(action);    
       }
     }
     else
-      //g_application.StopPlaying();
       g_application.getApplicationMessenger().MediaStop();
     return SetResponse(openTag+"OK");
     break;
   case 3:
-    if (showingSlideshow) {
+  case 10:
+    if (showingSlideshow && theAction!=10) {
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.id = ACTION_NEXT_PICTURE;
+        action.actionId = ACTION_NEXT_PICTURE;
         pSlideShow->OnAction(action);
       }
     }
@@ -2149,11 +2170,12 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
     return SetResponse(openTag+"OK");
     break;
   case 4:
-    if (showingSlideshow) {
+  case 11:
+    if (showingSlideshow && theAction!=11) {
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.id = ACTION_PREV_PICTURE;
+        action.actionId = ACTION_PREV_PICTURE;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2167,7 +2189,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.id = ACTION_ROTATE_PICTURE;
+        action.actionId = ACTION_ROTATE_PICTURE;
         pSlideShow->OnAction(action);  
         return SetResponse(openTag+"OK");
       }
@@ -2184,7 +2206,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       if (pSlideShow) {
         if (numParas>1) {
           CAction action;
-          action.id = ACTION_ANALOG_MOVE;
+          action.actionId = ACTION_ANALOG_MOVE;
           action.amount1=(float) atof(paras[0]);
           action.amount2=(float) atof(paras[1]);
           pSlideShow->OnAction(action);    
@@ -2207,7 +2229,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
         if (numParas>0)
         {
           CAction action;
-          action.id = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
+          action.actionId = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
           pSlideShow->OnAction(action);    
           return SetResponse(openTag+"OK");
         }
@@ -2964,7 +2986,7 @@ int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
   else
   {
     CAction action;
-    action.id = atoi(paras[0]);
+    action.actionId = atoi(paras[0]);
     action.amount1 = 1; // digital button (could change this for repeat acceleration)
     g_application.OnAction(action);
     return SetResponse(openTag+"OK");
@@ -3123,6 +3145,10 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "rotate")                   retVal = xbmcAction(numParas, paras,5);
       else if (command == "move")                     retVal = xbmcAction(numParas, paras,6);
       else if (command == "zoom")                     retVal = xbmcAction(numParas, paras,7);
+	  else if (command == "pauseexslide")             retVal = xbmcAction(numParas, paras,8);
+      else if (command == "stopexslide")              retVal = xbmcAction(numParas, paras,9);
+      else if (command == "playnextexslide")          retVal = xbmcAction(numParas, paras,10);
+      else if (command == "playprevexslide")          retVal = xbmcAction(numParas, paras,11);
       else if (command == "restart")                  retVal = xbmcExit(1);
       else if (command == "shutdown")                 retVal = xbmcExit(2);
       else if (command == "exit")                     retVal = xbmcExit(3);

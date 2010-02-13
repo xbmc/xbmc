@@ -4196,6 +4196,18 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     return 0;
 }
 
+int ff_h264_get_slice_type(H264Context *h)
+{
+    switch (h->slice_type) {
+    case FF_P_TYPE:  return 0;
+    case FF_B_TYPE:  return 1;
+    case FF_I_TYPE:  return 2;
+    case FF_SP_TYPE: return 3;
+    case FF_SI_TYPE: return 4;
+    default:         return -1;
+    }
+}
+
 /**
  *
  */
@@ -7429,6 +7441,8 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
         decode_scaling_matrices(h, sps, NULL, 1, sps->scaling_matrix4, sps->scaling_matrix8);
     }else{
         sps->chroma_format_idc= 1;
+        sps->bit_depth_luma   = 8;
+        sps->bit_depth_chroma = 8;
     }
 
     sps->log2_max_frame_num= get_ue_golomb(&s->gb) + 4;

@@ -113,6 +113,7 @@
       <button id="5">Pause</button>
       <button id="6">Stop</button>
       <button id="7">OSD</button>
+      <button id="8">Fullscreen</button>
       <button id="9">Rewind</button>
       <button id="10">FastForward</button>
     </joystick>

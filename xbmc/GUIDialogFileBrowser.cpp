@@ -42,9 +42,9 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -79,7 +79,7 @@ CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
 
 bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PARENT_DIR)
+  if (action.actionId == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       Close();
@@ -87,7 +87,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
       GoParentFolder();
     return true;
   }
-  if ((action.id == ACTION_CONTEXT_MENU || action.id == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
+  if ((action.actionId == ACTION_CONTEXT_MENU || action.actionId == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
   {
     int iItem = m_viewControl.GetSelectedItem();
     if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems->Size()-1))
@@ -280,7 +280,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
         if (IsActive())
         {
           if((message.GetStringParam() == m_Directory->m_strPath) ||
-             (m_Directory->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_Directory->m_strPath, message.GetStringParam())))
+             (m_Directory->IsMultiPath() && XFILE::CMultiPathDirectory::HasPath(m_Directory->m_strPath, message.GetStringParam())))
           {
             int iItem = m_viewControl.GetSelectedItem();
             Update(m_Directory->m_strPath);
@@ -327,42 +327,10 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
 
   if (!m_singleList)
   {
-    ClearFileItems();
-
+    CFileItemList items;
     CStdString strParentPath;
-    bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
-    // check if current directory is a root share
-/*    if (g_guiSettings.GetBool("filelists.showparentdiritems"))
-    {*/
-      if ( !m_rootDir.IsSource(strDirectory))
-      {
-        // no, do we got a parent dir?
-        if (bParentExists)
-        {
-          // yes
-          CFileItemPtr pItem(new CFileItem(".."));
-          pItem->m_strPath = strParentPath;
-          pItem->m_bIsFolder = true;
-          pItem->m_bIsShareOrDrive = false;
-          m_vecItems->Add(pItem);
-          m_strParentPath = strParentPath;
-        }
-      }
-      else
-      {
-        // yes, this is the root of a share
-        // add parent path to the virtual directory
-        CFileItemPtr pItem(new CFileItem(".."));
-        pItem->m_strPath = "";
-        pItem->m_bIsShareOrDrive = false;
-        pItem->m_bIsFolder = true;
-        m_vecItems->Add(pItem);
-        m_strParentPath = "";
-      }
-    //}
-    m_Directory->m_strPath = strDirectory;
-    if (!m_rootDir.GetDirectory(strDirectory, *m_vecItems,m_useFileDirectories))
+    if (!m_rootDir.GetDirectory(strDirectory, items,m_useFileDirectories))
     {
       CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", strDirectory.c_str());
 
@@ -373,6 +341,35 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       Update(strParentPath);
       return;
     }
+
+    // check if current directory is a root share
+    if (!m_rootDir.IsSource(strDirectory))
+    {
+      if (CUtil::GetParentPath(strDirectory, strParentPath))
+      {
+        CFileItemPtr pItem(new CFileItem(".."));
+        pItem->m_strPath = strParentPath;
+        pItem->m_bIsFolder = true;
+        pItem->m_bIsShareOrDrive = false;
+        items.AddFront(pItem, 0);
+      }
+    }
+    else
+    {
+      // yes, this is the root of a share
+      // add parent path to the virtual directory
+      CFileItemPtr pItem(new CFileItem(".."));
+      pItem->m_strPath = "";
+      pItem->m_bIsShareOrDrive = false;
+      pItem->m_bIsFolder = true;
+      items.AddFront(pItem, 0);
+      strParentPath = "";
+    }
+
+    ClearFileItems();
+    *m_vecItems = items;
+    m_Directory->m_strPath = strDirectory;
+    m_strParentPath = strParentPath;
   }
 
   // if we're getting the root source listing

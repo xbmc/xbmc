@@ -33,9 +33,9 @@ public:
   CGUIDialogPluginSettings(void);
   virtual ~CGUIDialogPluginSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static void ShowAndGetInput(CURL& url);
-  static void ShowAndGetInput(SScraperInfo& info);
-  static void ShowAndGetInput(CStdString& path);
+  static bool ShowAndGetInput(CURL& url);
+  static bool ShowAndGetInput(SScraperInfo& info);
+  static bool ShowAndGetInput(CStdString& path);
 
 protected:
   virtual void OnInitWindow();

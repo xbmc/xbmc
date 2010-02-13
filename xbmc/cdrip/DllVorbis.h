@@ -24,11 +24,11 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBVORBIS)
+#if (defined WIN32)
+  #include "cdrip/oggvorbis/vorbisenc.h"
+#else
   #include <vorbis/vorbisenc.h>
   #include "utils/log.h"
-#else
-  #include "cdrip/oggvorbis/vorbisenc.h"
 #endif
 #include "DynamicDll.h"
 
@@ -54,7 +54,7 @@ public:
   virtual ~DllVorbisInterface() {}
 };
 
-#if (defined USE_EXTERNAL_LIBVORBIS)
+#if (!defined WIN32)
 
 class DllVorbis : public DllDynamic, DllVorbisInterface
 {

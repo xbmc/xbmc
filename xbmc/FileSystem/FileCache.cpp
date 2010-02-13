@@ -27,6 +27,7 @@
 
 #include "CacheMemBuffer.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;

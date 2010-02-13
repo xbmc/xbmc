@@ -76,13 +76,7 @@
 				</control>
 			</control>
 		</control>
-		<control type="image">
-			<posx>26r</posx>
-			<posy>0</posy>
-			<width>846</width>
-			<height>720</height>
-			<texture flipx="true">HomeBlade.png</texture>
-		</control>
+		<include>SideBladeRight</include>
 		<include>Clock</include>
 	</controls>
 </window>

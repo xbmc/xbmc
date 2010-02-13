@@ -130,7 +130,7 @@
 #include <winbase.h>
 #endif
 
-#if defined(__unix__) && !defined(__FreeBSD__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__FreeBSD__)
 #include <netinet/in.h>
 #endif
 
@@ -150,7 +150,7 @@
 #include <AvailabilityMacros.h>
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 typedef unsigned char BYTE;
 typedef unsigned long long DWORD64;
 typedef unsigned long DWORD;
@@ -167,7 +167,9 @@ extern int _daylight;
 #if defined(__APPLE__) && (MAC_OS_X_VERSION_MAX_ALLOWED > 1040) 
 extern long _timezone;
 #endif
+#ifndef _WIN32
 extern char *_tzname[2];
+#endif
 
 #define SHOWSTRUCTURESIZES  1           // this is for debugging...
 #undef SHOWSTRUCTURESIZES		        // ...uncomment this line for structure sizes to be shown
@@ -447,7 +449,7 @@ char * UnixTimeToString(time_t t)
     MoveMemory(szTimeZone,_tzname[0],1);		
     strcat(szTimeZone,"T");
    
-#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
+#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040) && !defined(_WIN32)
     struct timezone tz;
     gettimeofday(NULL, &tz);
     tzbias = tz.tz_minuteswest;
@@ -468,7 +470,7 @@ char * UnixTimeToString(time_t t)
 // UNIX Functions
 //-------------------------------------------------------------------------
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 char * UnixTimeToString(time_t t)
 {
     static char sbuf[17];
@@ -807,7 +809,7 @@ void ConvertCodepage(char *szString)
         // Windows (Console) specific translations         
 #endif
         
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
         // UNIX specific translations         
 #endif
         

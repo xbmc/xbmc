@@ -71,12 +71,13 @@
 #include "SkinInfo.h"
 #include "MediaManager.h"
 #include "TimeUtils.h"
+#include "SingleLock.h"
+#include "log.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
@@ -224,6 +225,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
     else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
+    else if (strTest.Equals("player.folderpath")) ret = PLAYER_PATH;
+    else if (strTest.Equals("player.filenameandpath")) ret = PLAYER_FILEPATH;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -1047,6 +1050,26 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel = GetDuration(TIME_FORMAT_HH_MM);
     break;
+  case PLAYER_PATH:
+  case PLAYER_FILEPATH:
+     if (m_currentFile)
+     {
+       if (m_currentFile->HasMusicInfoTag())
+         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
+       else if (m_currentFile->HasVideoInfoTag())
+         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
+       if (strLabel.IsEmpty())
+         strLabel = m_currentFile->m_strPath;
+     }
+     if (info == PLAYER_PATH)
+     {
+       // do this twice since we want the path outside the archive if this
+       // is to be of use.
+       if (CUtil::IsInArchive(strLabel))
+         strLabel = CUtil::GetParentPath(strLabel);
+       strLabel = CUtil::GetParentPath(strLabel);
+     }
+     break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:

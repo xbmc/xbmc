@@ -24,7 +24,7 @@
 #include "MusicFileDirectory.h"
 #include "cores/paplayer/DllASAP.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CASAPFileDirectory : public CMusicFileDirectory
   {

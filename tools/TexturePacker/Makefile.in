@@ -21,4 +21,4 @@ all: $(TARGET)
 include ../../Makefile.include
 
 $(TARGET): $(OBJS)
-	$(CXX) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+	$(CXX) $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)

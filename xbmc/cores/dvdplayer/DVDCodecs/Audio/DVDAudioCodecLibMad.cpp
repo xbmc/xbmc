@@ -243,3 +243,14 @@ void CDVDAudioCodecLibMad::Reset()
     m_iInputBufferSize = 0;
   }
 }
+
+enum PCMChannels* CDVDAudioCodecLibMad::GetChannelMap()
+{
+  static enum PCMChannels map[2][2] = {
+    {PCM_FRONT_CENTER},
+    {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}
+  };
+
+  return map[m_iSourceChannels - 1];
+}
+

@@ -24,7 +24,7 @@
 #include "tinyXML/tinyxml.h"
 #include "FileItem.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CDAVDirectory : public IDirectory
   {

@@ -128,9 +128,9 @@ CCPUInfo::CCPUInfo(void)
       if (strncmp(buffer, "processor", strlen("processor"))==0)
       {
         char *needle = strstr(buffer, ":");
-        CoreInfo core;
         if (needle)
         {
+          CoreInfo core;
           core.m_id = atoi(needle+2);
           nCurrId = core.m_id;
           m_cores[core.m_id] = core;

@@ -22,7 +22,7 @@
 
 #include "MusicFileDirectory.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CNSFFileDirectory : public CMusicFileDirectory
   {

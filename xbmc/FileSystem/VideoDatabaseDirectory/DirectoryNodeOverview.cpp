@@ -26,7 +26,7 @@
 #include "FileItem.h"
 #include "LocalizeStrings.h"
 
-using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
+using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace std;
 
 CDirectoryNodeOverview::CDirectoryNodeOverview(const CStdString& strName, CDirectoryNode* pParent)

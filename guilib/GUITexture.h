@@ -73,7 +73,7 @@ class CTextureInfo
 public:
   CTextureInfo();
   CTextureInfo(const CStdString &file);
-  void operator=(const CTextureInfo &right);
+  CTextureInfo& operator=(const CTextureInfo &right);
   bool       useLarge;
   CRect      border;      // scaled  - unneeded if we get rid of scale on load
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)

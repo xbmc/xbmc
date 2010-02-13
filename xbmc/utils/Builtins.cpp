@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "AlarmClock.h"
 #include "Application.h"
 #include "Autorun.h"
@@ -45,7 +48,9 @@
 #include "Util.h"
 
 #include "FileSystem/PluginDirectory.h"
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
+#endif
 #include "FileSystem/ZipManager.h"
 
 #include "GUIWindowManager.h"
@@ -77,7 +82,7 @@
 #include <vector>
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace MEDIA_DETECT;
 
 typedef struct
@@ -167,6 +172,7 @@ const BUILT_IN commands[] = {
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
+  { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -292,7 +298,6 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     // get the parameters
     CStdString strWindow;
-    CStdString strPath;
     if (params.size())
     {
       strWindow = params[0];
@@ -393,8 +398,10 @@ int CBuiltins::Execute(const CStdString& execString)
 
     if (CUtil::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
+#ifdef HAS_FILESYSTEM_RAR
     else if (CUtil::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);
+#endif
     else
       CLog::Log(LOGERROR, "XBMC.Extract, No archive given");
   }
@@ -554,13 +561,13 @@ int CBuiltins::Execute(const CStdString& execString)
     else if (parameter.Equals("next"))
     {
       CAction action;
-      action.id = ACTION_NEXT_ITEM;
+      action.actionId = ACTION_NEXT_ITEM;
       g_application.OnAction(action);
     }
     else if (parameter.Equals("previous"))
     {
       CAction action;
-      action.id = ACTION_PREV_ITEM;
+      action.actionId = ACTION_PREV_ITEM;
       g_application.OnAction(action);
     }
     else if (parameter.Equals("bigskipbackward"))
@@ -590,7 +597,7 @@ int CBuiltins::Execute(const CStdString& execString)
         CAction action;
         action.amount1 = action.amount2 = action.repeat = 0.0;
         action.buttonCode = 0;
-        action.id = ACTION_SHOW_VIDEOMENU;
+        action.actionId = ACTION_SHOW_VIDEOMENU;
         g_application.m_pPlayer->OnAction(action);
       }
     }
@@ -697,7 +704,7 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
     CAction action;
-    action.id = ACTION_PLAYER_PLAY;
+    action.actionId = ACTION_PLAYER_PLAY;
     g_application.OnAction(action);
   }
   else if (execute.Equals("mute"))
@@ -713,11 +720,10 @@ int CBuiltins::Execute(const CStdString& execString)
     // playlist.playoffset(offset)
     // playlist.playoffset(music|video,offset)
     CStdString strPos = parameter;
-    CStdString strPlaylist;
     if (params.size() > 1)
     {
       // ignore any other parameters if present
-      strPlaylist = params[0];
+      CStdString strPlaylist = params[0];
       strPos = params[1];
 
       int iPlaylist = PLAYLIST_NONE;
@@ -855,12 +861,11 @@ int CBuiltins::Execute(const CStdString& execString)
 
     int iTheme = -1;
 
-    CStdString strTmpTheme;
     // find current theme
     if (!g_guiSettings.GetString("lookandfeel.skintheme").Equals("skindefault"))
       for (unsigned int i=0;i<vecTheme.size();++i)
       {
-        strTmpTheme = g_guiSettings.GetString("lookandfeel.skintheme");
+        CStdString strTmpTheme(g_guiSettings.GetString("lookandfeel.skintheme"));
         CUtil::RemoveExtension(strTmpTheme);
         if (vecTheme[i].Equals(strTmpTheme))
         {
@@ -883,10 +888,8 @@ int CBuiltins::Execute(const CStdString& execString)
     if (iTheme==-1)
       g_guiSettings.SetString("lookandfeel.skintheme","skindefault");
     else
-    {
-      strSkinTheme.Format("%s.xpr",vecTheme[iTheme]);
       g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
-    }
+
     // also set the default color theme
     CStdString colorTheme(strSkinTheme);
     CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
@@ -1043,14 +1046,16 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      SScraperInfo info;
       VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
+        {
+          SScraperInfo info;
           CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
+        }
       }
     }
   }
@@ -1103,23 +1108,23 @@ int CBuiltins::Execute(const CStdString& execString)
     if (cancelled)
       return -1;
 
-    if (singleFile)
-    {
-      if (params.size() > 3)
-        overwrite = params[3].Equals("true");
-      else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
-    }
-
-    if (cancelled)
-      return -1;
-
     if (thumbs && params[0].Equals("video"))
     {
       if (params.size() > 4)
         actorThumbs = params[4].Equals("true");
       else
         actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (singleFile)
+    {
+      if (params.size() > 3)
+        overwrite = params[3].Equals("true");
+      else
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     }
 
     if (cancelled)
@@ -1251,7 +1256,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
       CAction action;
-      action.id = actionID;
+      action.actionId = actionID;
       action.amount1 = 1.0f;
       int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindowString(params[1].c_str()) : WINDOW_INVALID;
       g_application.getApplicationMessenger().SendAction(action, windowID);
@@ -1262,6 +1267,10 @@ int CBuiltins::Execute(const CStdString& execString)
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
+  }
+  else if (execute.Equals("wakeonlan"))
+  {
+    g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))

@@ -48,17 +48,28 @@
 #ifdef HAVE_LIBVDPAU
 #include "VDPAU.h"
 #endif
+#ifdef HAS_DX
+#include "DXVA.h"
+#endif
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )
 {
   CDVDVideoCodecFFmpeg* ctx  = (CDVDVideoCodecFFmpeg*)avctx->opaque;
 
+  if(!ctx->IsHardwareAllowed())
+    return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
+
+#if defined(HAVE_LIBVDPAU) || defined(HAS_DX)
+  int method = g_guiSettings.GetInt("videoplayer.rendermethod");
+#endif
+
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
-    if(CVDPAU::IsVDPAUFormat(*cur) && ctx->IsHardwareAllowed())
+    if(CVDPAU::IsVDPAUFormat(*cur) 
+    && (method == RENDER_METHOD_VDPAU || method == RENDER_METHOD_AUTO))
     {
       if(ctx->GetHardware() == NULL)
       {
@@ -73,6 +84,20 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       }
       return *cur;
     }
+#endif
+#ifdef HAS_DX
+  if(DXVA::CDecoder::Supports(*cur)
+  && method == RENDER_METHOD_DXVA)
+  {
+    DXVA::CDecoder* dec = new DXVA::CDecoder();
+    if(dec->Open(avctx, *cur))
+    {
+      ctx->SetHardware(dec);
+      return *cur;
+    }
+    else
+      delete dec;
+  }
 #endif
     cur++;
   }
@@ -94,6 +119,8 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_bSoftware = false;
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
+  m_dts = DVD_NOPTS_VALUE;
+  m_force_dts = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -310,7 +337,7 @@ static double pts_itod(int64_t pts)
   return u.pts_d;
 }
 
-int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
+int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   int iGotPicture = 0, len = 0;
 
@@ -324,17 +351,20 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   {
     int result;
     if(pData)
-      result = m_pHardware->Check();
+      result = m_pHardware->Check(m_pCodecContext);
     else
       result = m_pHardware->Decode(m_pCodecContext, NULL);
-    
-    if((result & VC_PICTURE) 
-    || (result & VC_BUFFER)
-    || (result & VC_FLUSHED))
+
+    if(result & VC_FLUSHED)
+      Reset();
+
+    if(result)
       return result;
   }
 
+  m_dts = dts;
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
+
   try
   {
     len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
@@ -427,10 +457,16 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
+  int result;
   if(m_pHardware)
-    return m_pHardware->Decode(m_pCodecContext, m_pFrame);
+    result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
   else
-    return VC_PICTURE | VC_BUFFER;
+    result = VC_PICTURE | VC_BUFFER;
+
+  if(result & VC_FLUSHED)
+    Reset();
+
+  return result;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
@@ -476,6 +512,23 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (!frame)
     return false;
 
+  pDvdVideoPicture->iRepeatPicture = 0.5 * frame->repeat_pict;
+  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
+  pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
+  pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+  if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
+    pDvdVideoPicture->color_range = 1;
+
+  pDvdVideoPicture->dts = m_dts;
+  m_dts = DVD_NOPTS_VALUE;
+  if (frame->reordered_opaque)
+    pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
+  else
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
+  if(m_pHardware)
+    return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
+
   if(m_pConvertFrame)
   {
     for (int i = 0; i < 4; i++)
@@ -490,25 +543,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     for (int i = 0; i < 4; i++)
       pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   }
-  pDvdVideoPicture->iRepeatPicture = 0.5 * frame->repeat_pict;
-  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
-  pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+
   pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;
-  if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
-    pDvdVideoPicture->color_range = 1;
-
-  if(frame->reordered_opaque)
-    pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
-  else
-    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-
   pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
-  if(m_pHardware)
-    return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
-  else
-    return true;
+  return true;
 }
 
 /*

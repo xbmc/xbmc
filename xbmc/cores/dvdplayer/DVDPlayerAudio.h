@@ -54,6 +54,7 @@ typedef struct stDVDAudioFrame
   unsigned int size;
 
   int channels;
+  enum PCMChannels *channel_map;
   int bits_per_sample;
   int sample_rate;
   bool passthrough;

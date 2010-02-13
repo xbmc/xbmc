@@ -68,7 +68,6 @@ enum RenderMethod
   RENDER_SW=0x04,
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
-  RENDER_NV12=0x20
 };
 
 enum RenderQuality
@@ -141,13 +140,9 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  typedef void (CLinuxRendererGL::*TextureFuncLoadPtr)(int index);
-  typedef void (CLinuxRendererGL::*TextureFuncDeletePtr)(int index);
-  typedef bool (CLinuxRendererGL::*TextureFuncCreatePtr)(int index, bool clear);
-
-  TextureFuncLoadPtr LoadTexturesFuncPtr;
-  TextureFuncDeletePtr DeleteTextureFuncPtr;
-  TextureFuncCreatePtr CreateTextureFuncPtr;
+  void (CLinuxRendererGL::*m_textureLoad)(int source);
+  void (CLinuxRendererGL::*m_textureDelete)(int index);
+  bool (CLinuxRendererGL::*m_textureCreate)(int index, bool clear);
 
   void LoadYV12Textures(int source);
   void DeleteYV12Texture(int index);
@@ -165,7 +160,6 @@ protected:
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
-  void RenderNV12(int renderBuffer, int field);       // render using NV12 texture format
 
   CFrameBufferObject m_fbo;
 

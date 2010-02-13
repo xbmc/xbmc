@@ -108,7 +108,7 @@ JSON_STATUS CSlideshowOperations::Rotate(const CStdString &method, ITransportLay
 JSON_STATUS CSlideshowOperations::SendAction(int actionID)
 {
   CAction action;
-  action.id = actionID;
+  action.actionId = actionID;
   g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
 
   return ACK;

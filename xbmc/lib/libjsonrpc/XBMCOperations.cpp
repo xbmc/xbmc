@@ -49,7 +49,7 @@ JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer
 JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   CAction action;
-  action.id = ACTION_MUTE;
+  action.actionId = ACTION_MUTE;
   g_application.getApplicationMessenger().SendAction(action);
   return GetVolume(method, transport, client, parameterObject, result);
 }

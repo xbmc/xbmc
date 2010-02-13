@@ -138,7 +138,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 
 bool CGUIDialogProgress::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_CLOSE_DIALOG || action.actionId == ACTION_PREVIOUS_MENU)
   {
     if (m_bCanCancel)
     {

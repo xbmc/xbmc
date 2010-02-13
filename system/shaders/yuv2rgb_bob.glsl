@@ -36,7 +36,7 @@ void main()
 
   yuv.rgba = vec4( texture2D(m_sampY, offsetY).r
                  , texture2D(m_sampU, offsetU).r
-                 , texture2D(m_sampV, offsetV).r
+                 , texture2D(m_sampV, offsetV).a
                  , 1.0);
   rgb   = m_yuvmat * yuv;
   rgb.a = gl_Color.a;

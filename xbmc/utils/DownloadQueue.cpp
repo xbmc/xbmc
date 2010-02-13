@@ -21,6 +21,8 @@
 
 #include "DownloadQueue.h"
 #include "Util.h"
+#include "log.h"
+
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 

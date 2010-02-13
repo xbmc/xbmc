@@ -27,7 +27,7 @@
 #include "Settings.h"
 #include "FileSystem/Directory.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)
 {

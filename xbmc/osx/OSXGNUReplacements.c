@@ -93,7 +93,7 @@ int gethostbyname_r(const char *name, struct hostent *ret, char *buf,
 
     /* here nbytes is the number of bytes required in buffer */
     /* as a terminator must be there, the minimum value is ph->h_length */
-    if (nbytes > buflen) {
+    if (nbytes > (int)buflen) {
       *result = NULL;
       pthread_mutex_unlock(&gethostbyname_r_mutex); /* end critical area */
       return ERANGE; /* not enough space in buf!! */

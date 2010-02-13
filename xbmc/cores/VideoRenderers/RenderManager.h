@@ -82,6 +82,15 @@ public:
   unsigned int PreInit();
   void UnInit();
 
+#ifdef HAS_DX
+  void AddProcessor(DXVA::CProcessor* processor, int64_t id)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(processor, id);
+  }
+#endif
+
   void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);

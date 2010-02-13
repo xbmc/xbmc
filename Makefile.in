@@ -14,6 +14,7 @@ BIN_DIRS=	\
 	xbmc/cores/dvdplayer/DVDCodecs/Audio \
 	xbmc/cores/dvdplayer/DVDCodecs/Overlay \
 	xbmc/cores/dvdplayer/DVDCodecs/Video \
+	xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD \
 	xbmc/cores/dvdplayer/DVDDemuxers/ \
 	xbmc/cores/dvdplayer/DVDInputStreams/ \
 	xbmc/cores/dvdplayer/DVDSubtitles/ \
@@ -50,7 +51,8 @@ BIN_DIRS=	\
 	xbmc/utils \
 	xbmc/settings \
 	xbmc/linux \
-	xbmc/osx
+	xbmc/osx \
+	xbmc/posix
 
 EC_DIRS= \
 	tools/EventClients
@@ -71,13 +73,10 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/NSFCodec \
 	xbmc/cores/paplayer/timidity \
 	xbmc/cores/paplayer/SIDCodec \
-	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
-	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
-	xbmc/cores/paplayer/MACDll
 
 ifeq (@USE_ASAP_CODEC@,1)
 PAPCODEC_DIRS+= \
@@ -86,7 +85,6 @@ endif
 
 ifeq ($(findstring osx,$(ARCH)),osx)
 PAPCODEC_DIRS+= \
-	xbmc/cores/paplayer/vorbisfile \
 	xbmc/cores/paplayer/FLACCodec
 endif
 
@@ -95,7 +93,10 @@ LIB_DIRS=\
 	xbmc/lib/libexif \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
-	xbmc/lib/libPython/linux
+	xbmc/lib/libapetag \
+	xbmc/lib/libPython/linux \
+	lib/libmodplug \
+	lib/xbmc-dll-symbols
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -185,6 +186,8 @@ xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
 xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video
+xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.a: force
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD
 xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDDemuxers
 xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a: force
@@ -263,6 +266,12 @@ xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
 xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
+xbmc/lib/libapetag/.libs/libapetag.a: force
+	$(MAKE) -C xbmc/lib/libapetag
+lib/libmodplug/src/.libs/libmodplug.a: force
+	$(MAKE) -C lib/libmodplug
+lib/xbmc-dll-symbols/dll-symbols.a: force
+	$(MAKE) -C lib/xbmc-dll-symbols
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -309,26 +318,18 @@ papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C xbmc/cores/paplayer/FLACCodec
-	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
 endif
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 	$(MAKE) -C xbmc/cores/paplayer/timidity
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 ifeq (@USE_ASAP_CODEC@,1)
   ifneq ($(findstring osx,$(ARCH)), osx)
 	  $(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
   endif
 endif
-ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
-	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
-endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifeq ($(findstring powerpc,$(ARCH)),)
-	$(MAKE) -C xbmc/cores/paplayer/MACDll
-endif
 ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
@@ -344,6 +345,8 @@ xcode_depends: \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
+	xbmc/lib/libapetag/.libs/libapetag.a \
+	lib/libmodplug/src/.libs/libmodplug.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
@@ -374,6 +377,7 @@ OBJSXBMC=	\
 	xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
 	xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
 	xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
+	xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.a \
 	xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
 	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
 	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
@@ -391,19 +395,21 @@ OBJSXBMC=	\
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
-	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
   xbmc/lib/libjsonrpc/libjsonrpc.a \
   xbmc/lib/libjsoncpp/libjsoncpp.a \
   xbmc/lib/libhttpapi/libhttpapi.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
+	xbmc/lib/libapetag/.libs/libapetag.a \
+	lib/libmodplug/src/.libs/libmodplug.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/visualizations/visualization.a
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
+	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/UnrarXLib/UnrarXLib.a
 endif
 
@@ -425,6 +431,8 @@ else
 OBJSXBMC += \
 	xbmc/posix/posix.a
 endif
+
+OBJSXBMC += lib/xbmc-dll-symbols/dll-symbols.a
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)

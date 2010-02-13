@@ -32,7 +32,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 
 CMusicDatabaseDirectory::CMusicDatabaseDirectory(void)

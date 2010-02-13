@@ -57,6 +57,24 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
+void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
+{
+  if(!m_stream) return;
+  if(!m_description.empty())
+    strInfo = m_description;
+  else
+    CDemuxStream::GetStreamName(strInfo);
+}
+
+void CDemuxStreamSubtitleFFmpeg::GetStreamName(std::string& strInfo)
+{
+  if(!m_stream) return;
+  if(!m_description.empty())
+    strInfo = m_description;
+  else
+    CDemuxStream::GetStreamName(strInfo);
+}
+
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
@@ -416,9 +434,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // we need to know if this is matroska later
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
 
-  // in combination with libdvdnav seek, av_find_stream_info wont work
-  // so we do this for files only
-  if (streaminfo)
+  if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     /* too speed up live sources, only analyse very short */
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
@@ -430,7 +446,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
+      if (!streaminfo || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }
@@ -537,19 +553,9 @@ void CDVDDemuxFFmpeg::Flush()
   g_demuxer = this;
 
   if (m_pFormatContext)
-  {
-    // reset any dts interpolation
-    for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
-    {
-      if(m_pFormatContext->streams[i])
-      {
-        m_pFormatContext->streams[i]->cur_dts = AV_NOPTS_VALUE;
-        m_pFormatContext->streams[i]->last_IP_duration = 0;
-        m_pFormatContext->streams[i]->last_IP_pts = AV_NOPTS_VALUE;
-      }
-    }
-    m_iCurrentPts = DVD_NOPTS_VALUE;
-  }
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+
+  m_iCurrentPts = DVD_NOPTS_VALUE;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -824,6 +830,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 
@@ -966,6 +974,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iBlockAlign = pStream->codec->block_align;
         st->iBitRate = pStream->codec->bit_rate;
         st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
+	
+        if(m_bMatroska && m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0))
+          st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0)->value;	
+
         break;
       }
     case CODEC_TYPE_VIDEO:
@@ -1015,10 +1027,14 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         else
 #endif
         {
-          CDemuxStreamSubtitle* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
+          CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
           m_streams[iId] = st;
           if(pStream->codec)
             st->identifier = pStream->codec->sub_id;
+	    
+          if(m_bMatroska && m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0))
+            st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0)->value;
+	
           break;
         }
       }
@@ -1027,7 +1043,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           std::string fileName = "special://temp/fonts/";
-          DIRECTORY::CDirectory::Create(fileName);
+          XFILE::CDirectory::Create(fileName);
           fileName += pStream->filename;
           XFILE::CFile file;
           if(pStream->codec->extradata && file.OpenForWrite(fileName))
@@ -1172,6 +1188,8 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 

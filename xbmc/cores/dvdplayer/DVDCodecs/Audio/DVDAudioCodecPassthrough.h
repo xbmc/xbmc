@@ -21,9 +21,16 @@
  *
  */
 
+#include "system.h"
+#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
+
 #include "DVDAudioCodec.h"
-#include "DllLiba52.h"
-#include "DllLibDts.h"
+#ifdef USE_LIBA52_DECODER
+  #include "DllLiba52.h"
+#endif
+#ifdef USE_LIBDTS_DECODER
+  #include "DllLibDts.h"
+#endif
 
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {
@@ -37,6 +44,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
+  virtual int8_t *GetChannelMap() { static uint8_t map[2] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}; return map; }
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }
@@ -45,14 +53,22 @@ public:
 private:
   int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
 
+#ifdef USE_LIBA52_DECODER
+  DllLiba52    m_dllA52;
+  a52_state_t* m_pStateA52;
   int PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pOut);
+#endif
+
+#ifdef USE_LIBDTS_DECODER
+  DllLibDts    m_dllDTS;
+  dts_state_t* m_pStateDTS;
   int PaddDTSData( BYTE* pData, int iDataSize, BYTE* pOut);
+#endif
 
-  BYTE m_OutputBuffer[131072];
-  int  m_OutputSize;
-
-  BYTE m_InputBuffer[4096];
-  int  m_InputSize;
+  BYTE *m_OutputBuffer;
+  int   m_OutputSize;
+  BYTE *m_InputBuffer;
+  int   m_InputSize;
 
   int m_iFrameSize;
 
@@ -65,10 +81,6 @@ private:
   int m_iSourceFlags;
   int m_iSourceSampleRate;
   int m_iSourceBitrate;
-
-  DllLibDts m_dllDTS;
-  DllLiba52 m_dllA52;
-
-  dts_state_t* m_pStateDTS;
-  a52_state_t* m_pStateA52;
 };
+
+#endif

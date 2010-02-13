@@ -39,7 +39,6 @@ extern "C"
 #include "cmyth/include/refmem/refmem.h"
 }
 
-using namespace DIRECTORY;
 using namespace XFILE;
 using namespace std;
 
@@ -113,7 +112,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
     cmyth_channel_t channel = m_dll->chanlist_get_item(list, i);
     if (channel)
     {
-      CStdString name, path, icon;
+      CStdString name, icon;
 
       if (!m_dll->channel_visible(channel))
       {
@@ -139,6 +138,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
       else
       {
         CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
+        CStdString path;
         path.Format("guide/%d/", num);
         url.SetFileName(path);
         CFileItemPtr item(new CFileItem(url.Get(), true));
@@ -484,10 +484,9 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   for (unsigned i = 0; i < channels.size(); i++)
   {
     cmyth_proginfo_t program = channels[i];
-    CStdString num, progname, channame, icon, sign;
 
-    num   = GetValue(m_dll->proginfo_chanstr (program));
-    icon  = GetValue(m_dll->proginfo_chanicon(program));
+    CStdString num   = GetValue(m_dll->proginfo_chanstr (program));
+    CStdString icon  = GetValue(m_dll->proginfo_chanicon(program));
 
     url.SetFileName("channels/" + num + ".ts");
     CFileItemPtr item(new CFileItem(url.Get(), false));

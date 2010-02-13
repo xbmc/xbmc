@@ -499,7 +499,6 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   if (result.Left(14).Equals("thumb://Remote"))
   {
-    CStdString strFile;
     CFileItem chosen(result, false);
     CStdString thumb = chosen.GetCachedPictureThumb();
     if (CFile::Exists(thumb))
@@ -550,7 +549,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
   CUtil::WipeDir(strPath);
-  DIRECTORY::CDirectory::Create(strPath);
+  XFILE::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_artist.fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;
@@ -651,10 +650,9 @@ void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
   if (idAlbum != -1)
   {
     CAlbum album;
-    CStdString strPath;
-
     if (database.GetAlbumInfo(idAlbum,album,&album.songs))
     {
+      CStdString strPath;
       database.GetAlbumPath(idAlbum,strPath);
       SetAlbum(album,strPath);
       Update();

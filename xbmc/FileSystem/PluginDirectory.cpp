@@ -37,7 +37,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace std;
 
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
@@ -75,8 +75,6 @@ void CPluginDirectory::removeHandle(int handle)
 bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
   CURL url(strPath);
-
-  CStdString fileName;
 
   // path is special://home/plugins/<path from here>
   CStdString pathToScript = "special://home/plugins/";

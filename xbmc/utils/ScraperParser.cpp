@@ -40,7 +40,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 CScraperParser::CScraperParser()
 {
@@ -71,6 +70,7 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
     if (parser.m_document)
     {
       m_strFile = parser.m_strFile;
+      m_persistence = parser.m_persistence;
       m_document = new TiXmlDocument(*parser.m_document);
       LoadFromXML();
     }
@@ -510,18 +510,29 @@ void CScraperParser::ClearBuffers()
 
 void CScraperParser::ClearCache()
 {
-  // wipe cache
   CStdString strCachePath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers",strCachePath);
+
+  // create scraper cache dir if needed
+  if (!CDirectory::Exists(strCachePath))
+    CDirectory::Create(strCachePath);
+
   strCachePath = CUtil::AddFileToFolder(strCachePath,CUtil::GetFileName(m_strFile));
-  CFileItemList items;
-  CDirectory::GetDirectory(strCachePath,items);
-  for (int i=0;i<items.Size();++i)
+  CUtil::AddSlashAtEnd(strCachePath);
+
+  if (CDirectory::Exists(strCachePath))
   {
-    if (items[i]->m_dateTime+m_persistence <= CDateTime::GetUTCDateTime())
-      CFile::Delete(items[i]->m_strPath);
+    CFileItemList items;
+    CDirectory::GetDirectory(strCachePath,items);
+    for (int i=0;i<items.Size();++i)
+    {
+      // wipe cache
+      if (items[i]->m_dateTime+m_persistence <= CDateTime::GetUTCDateTime())
+        CFile::Delete(items[i]->m_strPath);
+    }
   }
-  CDirectory::Create(strCachePath);
+  else
+    CDirectory::Create(strCachePath);
 }
 
 void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)

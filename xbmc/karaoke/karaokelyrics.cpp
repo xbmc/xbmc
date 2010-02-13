@@ -66,12 +66,12 @@ void CKaraokeLyrics::initData( const CStdString & songPath )
 
   // Get song ID if available
   m_idSong = 0;
-  CSong song;
   CMusicDatabase musicdatabase;
 
   // Get song-specific delay from the database
   if ( g_advancedSettings.m_karaokeKeepDelay && musicdatabase.Open() )
   {
+    CSong song;
     if ( musicdatabase.GetSongByFileName( songPath, song) )
     {
       m_idSong = song.idSong;

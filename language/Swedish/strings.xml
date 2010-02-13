@@ -120,9 +120,9 @@
   <string id="165">Skiva laddad</string>
   <string id="166">Skal</string>
   <string id="167">Aktivera FTP-server</string>
-  <string id="168">Aktivera tidssynkronisering via Internet</string>
   <string id="169">Upplösning</string>
   <string id="170">Justera uppdateringsfrekvens till att matcha video</string>
+  <string id="171">Sträck 4:3 innehåll till 16:9</string>
   <string id="172">Utgivningsdatum</string>
   <string id="175">Sinnesstämning</string>
   <string id="176">Stilar</string>
@@ -229,6 +229,10 @@
   <string id="296">Ta bort bokmärken</string>
   <string id="297">Ljudkompensering</string>
   <string id="298">Bokmärken</string>
+  <string id="299">- AAC-kapabel förstärkare</string>
+  <string id="300">- MP1-kapabel förstärkare</string>
+  <string id="301">- MP2-kapabel förstärkare</string>
+  <string id="302">- MP3-kapabel förstärkare</string>
   <string id="303">Fördröjning</string>
   <string id="304">Språk</string>
   <string id="305">Aktiverad</string>
@@ -571,9 +575,7 @@
   <string id="726">Inställningar sparades inte. Fortsätt utan att spara?</string>
   <string id="727">Webbserver</string>
   <string id="728">FTP-server</string>
-  <string id="729">Tidsserver</string>
   <string id="730">- Port</string>
-  <string id="731">Tidsserverns adress</string>
   <string id="732">Spara &amp; ange</string>
   <string id="733">- Lösenord</string>
   <string id="734">Inget lösenord</string>
@@ -1381,13 +1383,15 @@
   <string id="16307">Bicubic (mjukvara)</string>
   <string id="16308">Lanczos (mjukvara)</string>
   <string id="16309">Sinc (mjukvara)</string>
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16310">Temporal</string>
+  <string id="16311">Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimerad</string>
   <string id="16316">Auto</string>
+  <string id="16317">Temporal (Halv)</string>
+  <string id="16318">Temporal/Spatial (Halv)</string>
   <string id="17500">Visa insommningstimeout</string>
   <string id="19000">Byt till kanal</string>
   <string id="20000">Mapp för sparad musik</string>
@@ -1577,8 +1581,8 @@
   <string id="20252">Fyller glasen (filmer)</string>
   <string id="20253">WebDAV-server (HTTP)</string>
   <string id="20254">WebDAV-server (HTTPS)</string>
-  <string id="20300">WebDAV-server (HTTP)</string>
-  <string id="20301">WebDAV-server (HTTPS)</string>
+  <string id="20300">Webserver katalog (HTTP)</string>
+  <string id="20301">Webserver katalog (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
   <string id="20303">Vill du hoppa över och fortsätta?</string>
   <string id="20304">RSS-flöde</string>
@@ -1720,6 +1724,9 @@
   <string id="20445">Fanart</string>
   <string id="20446">Lokalt lagrad information hittad.</string>
   <string id="20447">Ignorera och uppdatera från Internet?</string>
+  <string id="20448">Kunde inte ladda ner information</string>
+  <string id="20449">Servern är troligtvis inte tillgänglig.</string>
+  <string id="20450">Vill du fortsätta skanna?</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox-klient</string>
   <string id="21332">VARNING: Vald TuxBox-enhet är i inspelningsläge!</string>
@@ -2012,4 +2019,15 @@
   <string id="33081">Denna fil är sammanslagen, välj den del du vill spela.</string>
   <string id="33082">Sökväg till skript</string>
   <string id="33083">Aktivera egen skriptknapp</string>
+  <string id="34100">Högtalarkonfiguration</string> 
+  <string id="34101">2.0</string> 
+  <string id="34102">2.1</string> 
+  <string id="34103">3.0</string> 
+  <string id="34104">3.1</string> 
+  <string id="34105">4.0</string> 
+  <string id="34106">4.1</string> 
+  <string id="34107">5.0</string> 
+  <string id="34108">5.1</string> 
+  <string id="34109">7.0</string> 
+  <string id="34110">7.1</string> 
 </strings>

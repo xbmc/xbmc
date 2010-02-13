@@ -32,7 +32,7 @@
 class CURL;
 class CFileItemList;
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 class CPluginDirectory : public IDirectory

@@ -49,7 +49,7 @@ private:
 
   char m_errormsg[512];
   WavpackContext* m_Handle;
-  #if (defined USE_EXTERNAL_LIBWAVPACK)
+  #if (!defined WIN32)
   WavpackStreamReader m_Callbacks;
   #else
   stream_reader m_Callbacks;

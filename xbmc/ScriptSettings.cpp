@@ -94,12 +94,12 @@ bool CScriptSettings::Save(void)
   CUtil::RemoveSlashAtEnd(strRoot);
 
   // create the individual folders
-  if (!DIRECTORY::CDirectory::Exists(strRoot))
-    DIRECTORY::CDirectory::Create(strRoot);
-  if (!DIRECTORY::CDirectory::Exists(strType))
-    DIRECTORY::CDirectory::Create(strType);
-  if (!DIRECTORY::CDirectory::Exists(strScript))
-    DIRECTORY::CDirectory::Create(strScript);
+  if (!XFILE::CDirectory::Exists(strRoot))
+    XFILE::CDirectory::Create(strRoot);
+  if (!XFILE::CDirectory::Exists(strType))
+    XFILE::CDirectory::Create(strType);
+  if (!XFILE::CDirectory::Exists(strScript))
+    XFILE::CDirectory::Create(strScript);
 
   return m_userXmlDoc.SaveFile(m_userFileName);
 }

@@ -33,11 +33,9 @@
 #include "FileSystem/MultiPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
-#include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "CueDocument.h"
-#include "utils/fstrcmp.h"
 #include "VideoDatabase.h"
 #include "MusicDatabase.h"
 #include "SortFileItem.h"
@@ -53,13 +51,12 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
-#include "utils/TimeUtils.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "karaoke/karaokelyricsfactory.h"
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
 
@@ -597,35 +594,15 @@ bool CFileItem::IsLastFM() const
 
 bool CFileItem::IsInternetStream() const
 {
-  CURL url(m_strPath);
-  CStdString strProtocol = url.GetProtocol();
-  strProtocol.ToLower();
-
-  if (strProtocol.IsEmpty() || HasProperty("IsHTTPDirectory"))
+  if (HasProperty("IsHTTPDirectory"))
     return false;
 
-  // there's nothing to stop internet streams from being stacked
-  if (strProtocol == "stack")
-  {
-    CFileItem fileItem(CStackDirectory::GetFirstStackedFile(m_strPath), false);
-    return fileItem.IsInternetStream();
-  }
-
-  if (strProtocol == "shout" || strProtocol == "mms" ||
-      strProtocol == "http" || /*strProtocol == "ftp" ||*/
-      strProtocol == "rtsp" || strProtocol == "rtp" ||
-      strProtocol == "udp"  || strProtocol == "lastfm" ||
-      strProtocol == "rss"  ||
-      strProtocol == "https" || strProtocol == "rtmp")
-    return true;
-
-  return false;
+  return CUtil::IsInternetStream(m_strPath);
 }
 
 bool CFileItem::IsFileFolder() const
 {
   return (
-   (IsPlugin() && m_bIsFolder) ||
     IsSmartPlayList() ||
    (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
     IsZIP() ||
@@ -1091,8 +1068,7 @@ const CStdString& CFileItem::GetContentType() const
       m_ref = "x-directory/normal";
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
-          || m_strPath.Left(8).Equals("https://")
-          || m_strPath.Left(7).Equals("upnp://"))
+          || m_strPath.Left(8).Equals("https://"))
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
@@ -2018,6 +1994,7 @@ void CFileItemList::Stack()
             if (CFile::Exists(path))
               dvdPath = path;
           }
+#ifdef HAS_LIBBDNAV
           if (dvdPath.IsEmpty())
           {
             CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
@@ -2029,6 +2006,7 @@ void CFileItemList::Stack()
               dvdPath.Replace("00000.mpls","main.mpls");
             }
           }
+#endif
           if (!dvdPath.IsEmpty())
           {
             // NOTE: should this be done for the CD# folders too?
@@ -2223,13 +2201,15 @@ void CFileItemList::Stack()
       if (stack.size() > 1)
       {
         // have a stack, remove the items and add the stacked item
-        CStackDirectory dir;
         // dont actually stack a multipart rar set, just remove all items but the first
         CStdString stackPath;
         if (Get(stack[0])->IsRAR())
           stackPath = Get(stack[0])->m_strPath;
         else
+        {
+          CStackDirectory dir;
           stackPath = dir.ConstructStackPath(*this, stack);
+        }
         item1->m_strPath = stackPath;
         // clean up list
         for (unsigned k = 1; k < stack.size(); k++)

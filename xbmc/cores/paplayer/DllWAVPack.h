@@ -24,7 +24,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBWAVPACK)
+#if (!defined WIN32)
   #include <wavpack/wavpack.h>
 #else
   #include "WavPackCodec/wavpack.h"
@@ -32,7 +32,7 @@
 #include "DynamicDll.h"
 #include "utils/log.h"
 
-#if (defined USE_EXTERNAL_LIBWAVPACK)
+#if (!defined WIN32)
 
 class DllWavPackInterface
 {

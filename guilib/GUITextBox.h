@@ -31,6 +31,7 @@
 
 #include "GUITextLayout.h"
 #include "GUIControl.h"
+#include "GUILabel.h"
 
 /*!
  \ingroup controls

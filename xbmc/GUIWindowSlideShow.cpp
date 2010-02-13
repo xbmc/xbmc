@@ -43,7 +43,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
@@ -458,7 +458,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     return true;
   }
 
-  switch (action.id)
+  switch (action.actionId)
   {
   case ACTION_SHOW_CODEC:
     {
@@ -541,7 +541,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_ZOOM_LEVEL_7:
   case ACTION_ZOOM_LEVEL_8:
   case ACTION_ZOOM_LEVEL_9:
-    Zoom((action.id - ACTION_ZOOM_LEVEL_NORMAL) + 1);
+    Zoom((action.actionId - ACTION_ZOOM_LEVEL_NORMAL) + 1);
     break;
   case ACTION_ANALOG_MOVE:
     Move(action.amount1*PICTURE_MOVE_AMOUNT_ANALOG, -action.amount2*PICTURE_MOVE_AMOUNT_ANALOG);

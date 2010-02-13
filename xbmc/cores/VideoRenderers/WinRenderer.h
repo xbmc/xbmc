@@ -73,6 +73,8 @@
 
 class CBaseTexture;
 
+namespace DXVA { class CProcessor; }
+
 struct DRAWRECT
 {
   float left;
@@ -115,6 +117,7 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
+  virtual void         AddProcessor(DXVA::CProcessor* processor, int64_t id);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -146,6 +149,7 @@ protected:
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(CD3DEffect &effect, DWORD flags);
+  void RenderProcessor(DWORD flags);
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
@@ -170,6 +174,24 @@ protected:
   // We will them copy in into the device when rendering from main thread
   YUVVIDEOBUFFERS m_YUVVideoTexture;
   YUVMEMORYBUFFERS m_YUVMemoryTexture;
+
+  struct SProcessImage
+  {
+    SProcessImage()
+    {
+      proc = NULL;
+      id   = 0;
+    }
+
+   ~SProcessImage()
+    {
+      Clear();
+    }
+    void Clear();
+
+    DXVA::CProcessor* proc;
+    int64_t           id;
+  } m_Processor[NUM_BUFFERS];
 
   CD3DTexture m_HQKernelTexture;
   CD3DEffect  m_YUV2RGBEffect;

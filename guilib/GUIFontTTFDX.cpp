@@ -156,7 +156,7 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 
     SAFE_RELEASE(pTarget);
     SAFE_RELEASE(pSource);
-    delete m_texture;
+    SAFE_DELETE(m_texture);
   }
 
   return pNewTexture;

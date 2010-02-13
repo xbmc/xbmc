@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 26891 -->
+<!--Based on english strings version 27668 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -124,11 +124,13 @@
   <string id="165">当前光盘</string>
   <string id="166">皮肤</string>
   <string id="167">启用 FTP 服务器</string>
-  <string id="168">启用网络时间同步</string>
+  <string id="168"></string>
   <string id="169">分辨率</string>
   <string id="170">调整显示器刷新率适应视频</string>
+  <string id="171"></string>
 
   <string id="172">发行时间</string>
+  <string id="173">将 4:3 视频显示为</string>
 
   <string id="175">音调</string>
   <string id="176">风格</string>
@@ -240,6 +242,10 @@
   <string id="296">清除书签</string>
   <string id="297">声音延迟</string>
   <string id="298">书签</string>
+  <string id="299">- AAC 数字音效</string>
+  <string id="300">- MP1 数字音效</string>
+  <string id="301">- MP2 数字音效</string>
+  <string id="302">- MP3 数字音效</string>
   <string id="303">延迟</string>
   <string id="304">语言</string>
   <string id="305">开启</string>
@@ -283,6 +289,7 @@
   <string id="343">调整帧数</string>
   <string id="344">演员</string>
   <string id="345">年份</string>
+  <string id="346">增加声道缩减混音音量</string>
   <string id="350">程序</string>
   <string id="351">关</string>
   <string id="352">昏暗</string>
@@ -469,7 +476,7 @@
   <string id="545">音频输出设备</string>
   <string id="546">直通输出设备</string>
   <string id="547">此艺人没有传记</string>
-  <string id="548">多声道音频 Downmix 转换为立体声</string>
+  <string id="548">多声道音频声道缩减混音成立体声</string>
 
   <string id="550">排序：%s</string>
   <string id="551">名称</string>
@@ -597,9 +604,9 @@
   <string id="726">修改未保存，继续且不保存吗？</string>
   <string id="727">Web 服务器</string>
   <string id="728">FTP 服务器</string>
-  <string id="729">互联网时间</string>
+  <string id="729"></string>
   <string id="730">- 端口</string>
-  <string id="731">网络校时服务器地址</string>
+  <string id="731"></string>
   <string id="732">保存和应用</string>
   <string id="733">- 密码</string>
   <string id="734">无密码</string>
@@ -1488,13 +1495,15 @@
   <string id="16307">双三次（软件）</string>
   <string id="16308">Lanczos（软件）</string>
   <string id="16309">正弦（软件）</string>
-  <string id="16310">（VDPAU）时间平滑</string>
-  <string id="16311">（VDPAU）时间/空间平滑</string>
+  <string id="16310">时间平滑</string>
+  <string id="16311">时间/空间平滑</string>
   <string id="16312">（VDPAU）降噪</string>
   <string id="16313">（VDPAU）锐化</string>
   <string id="16314">帧率逆转换</string>
   <string id="16315">Lanczos3优化</string>
   <string id="16316">自动</string>
+  <string id="16317">时间平滑（半速）</string>
+  <string id="16318">时间/空间平滑（半速）</string>
 
   <string id="17500">显示睡眠时间</string>
 
@@ -1849,6 +1858,9 @@
   <string id="20445">同人画</string>
   <string id="20446">发现本地存储的信息。</string>
   <string id="20447">忽略并从互联网刷新吗？</string>
+  <string id="20448">无法下载信息</string>
+  <string id="20449">服务器不可用。</string>
+  <string id="20450">要继续扫描吗？</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2171,4 +2183,23 @@
   <string id="33081">这是一个堆叠文件，请选择要播放的片段。</string>
   <string id="33082">脚本目录</string>
   <string id="33083">启用自定义脚本按钮</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">扬声器设置</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
 </strings>

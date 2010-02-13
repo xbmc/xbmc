@@ -43,7 +43,7 @@
 #include "LocalizeStrings.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_AREA                    2
 #define CONTROL_DEFAULT_BUTTON          3
@@ -74,7 +74,10 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
       bool bCloseDialog = false;
 
       if (iControl == ID_BUTTON_OK)
+      {
+        m_bConfirmed = true;
         SaveSettings();
+      }
       else if (iControl == ID_BUTTON_DEFAULT)
         SetDefaults();
       else
@@ -82,7 +85,6 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 
       if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL || bCloseDialog)
       {
-        m_bConfirmed = true;
         Close();
         return true;
       }
@@ -97,15 +99,16 @@ void CGUIDialogPluginSettings::OnInitWindow()
   FreeControls();
   CreateControls();
   CGUIDialogBoxBase::OnInitWindow();
+  m_bConfirmed = false;
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
+bool CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 {
   m_url = url;
 
   // Load language strings temporarily
-  DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
+  XFILE::CPluginDirectory::LoadPluginStrings(url);
 
   // Create the dialog
   CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
@@ -120,14 +123,17 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
 
   pDialog->DoModal();
 
-  settings = pDialog->m_settings;
-  settings.Save();
+  if(pDialog->m_bConfirmed)
+  {
+    settings = pDialog->m_settings;
+    settings.Save();
+  }
 
-  return;
+  return pDialog->m_bConfirmed;
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
+bool CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
 {
   // Create the dialog
   CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
@@ -136,13 +142,14 @@ void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
   pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
 
   pDialog->DoModal();
-  info.settings.LoadUserXML(static_cast<CScraperSettings&>(pDialog->m_settings).GetSettings());
+  if(pDialog->m_bConfirmed)
+    info.settings.LoadUserXML(static_cast<CScraperSettings&>(pDialog->m_settings).GetSettings());
 
-  return;
+  return pDialog->m_bConfirmed;
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogPluginSettings::ShowAndGetInput(CStdString& path)
+bool CGUIDialogPluginSettings::ShowAndGetInput(CStdString& path)
 {
   CUtil::RemoveSlashAtEnd(path);
   m_url = CURL(path);
@@ -174,10 +181,13 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CStdString& path)
 
   pDialog->DoModal();
 
-  settings = pDialog->m_settings;
-  settings.Save();
+  if(pDialog->m_bConfirmed)
+  {
+    settings = pDialog->m_settings;
+    settings.Save();
+  }
 
-  return;
+  return pDialog->m_bConfirmed;
 }
 
 bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
@@ -246,9 +256,10 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           else
             shares = g_settings.GetSourcesFromType(source);
 
-          VECSOURCES localShares, networkShares;
+          VECSOURCES localShares;
           if (!shares)
           {
+            VECSOURCES networkShares;
             g_mediaManager.GetLocalDrives(localShares);
             if (!source || strcmpi(source, "local") != 0)
               g_mediaManager.GetNetworkLocations(networkShares);
@@ -350,7 +361,10 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          value = m_buttonValues[id];
+          if (strcmpi(type, "folder") == 0)
+            value.Format("%s", ((CGUIButtonControl*) control)->GetLabel2().c_str());	  
+          else  
+            value = m_buttonValues[id];
           break;
         case CGUIControl::GUICONTROL_RADIO:
           value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";

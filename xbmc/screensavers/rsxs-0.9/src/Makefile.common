@@ -18,7 +18,7 @@ endif DLOPEN
 
 AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. -I$(top_srcdir)/lib $(X_CPPFLAGS) -D_LINUX -DXBMC
 AM_LDFLAGS =
-AM_CXXFLAGS = -Wall -funroll-loops
+AM_CXXFLAGS =
 
 AM_ETAGSFLAGS = --extra=fq
 

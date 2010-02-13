@@ -36,7 +36,7 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define CONTROL_PROFILES 2
 #define CONTROL_LASTLOADED_PROFILE 3
@@ -55,7 +55,7 @@ CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
 
 bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 {
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;

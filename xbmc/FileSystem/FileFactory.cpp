@@ -20,6 +20,9 @@
  */
 
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "FileFactory.h"
 #include "FileHD.h"
@@ -34,7 +37,7 @@
 #include "FileSmb.h"
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#ifdef HAS_FILESYSTEM_CCX
 #include "FileXBMSP.h"
 #endif
 #ifdef HAS_FILESYSTEM_CDDA
@@ -56,7 +59,9 @@
 #include "VTPFile.h"
 #endif
 #include "FileZip.h"
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileRar.h"
+#endif
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
@@ -89,7 +94,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   strProtocol.MakeLower();
 
   if (strProtocol == "zip") return new CFileZip();
+#ifdef HAS_FILESYSTEM_RAR
   else if (strProtocol == "rar") return new CFileRar();
+#endif
   else if (strProtocol == "musicdb") return new CFileMusicDatabase();
   else if (strProtocol == "special") return new CFileSpecialProtocol();
   else if (strProtocol == "multipath") return new CMultiPathFile();
@@ -124,7 +131,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "smb") return new CFileSMB();
 #endif
 #endif
-#ifdef HAS_CCXSTREAM
+#ifdef HAS_FILESYSTEM_CCX
     else if (strProtocol == "xbms") return new CFileXBMSP();
 #endif
 #ifdef HAS_FILESYSTEM

@@ -47,8 +47,7 @@
 #include <Xtl.h>
 typedef SOCKET socket_fd;
 #elif defined _WIN32
-#include <winsock2.h>
-#pragma comment(lib, "ws2_32.lib")
+#include <WS2tcpip.h>
 typedef SOCKET socket_fd;
 #else
 #include <unistd.h>
@@ -141,7 +140,7 @@ int rtv_get_guide_xml(unsigned char ** result, const char * address)
 		return 0;
 	}
 
-	rtv_parse_guide(*result, lresult, gsize);
+	rtv_parse_guide((char*)*result, (char*)lresult, gsize);
 
 	if (lresult)
 		free (lresult);
@@ -221,9 +220,6 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 	struct sockaddr_in sin;  /* send address structure */
 	struct sockaddr_in sin2; /* receive address structure */
 
-  s1 = 0;
-  s2 = 0;
-
 	// Need to initialize Winsock on Win32
 #if defined(_WIN32) && !defined(_XBOX)
 	WSADATA wd;
@@ -232,6 +228,8 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 		goto error;
 	}
 #endif
+  s1 = 0;
+  s2 = 0;
 
 	// Set up the information for the UPNP port connection
 	sin.sin_family = AF_INET;
@@ -242,7 +240,7 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 #if defined(_XBOX) || defined(_WIN32)
 	sin.sin_addr.S_un.S_addr = htonl(INADDR_BROADCAST);
 #else
-	inet_aton("239.255.255.250",&sin.sin_addr.s_addr);
+	inet_aton("239.255.255.250",(struct in_addr*)&sin.sin_addr.s_addr);
 #endif
 
 	if ((s1 = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
@@ -273,7 +271,7 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 	while (select((int) s1 + 1, &fds1, NULL, NULL, &tv))
 	{
 		len = sizeof(struct sockaddr);
-		r = recvfrom(s1, msg, sizeof(msg), 0, (struct sockaddr *)&sin2, &len);
+		r = recvfrom(s1, msg, sizeof(msg), 0, (struct sockaddr *)&sin2, (socklen_t*)&len);
 		if (r < 0)
 		{
 			//fprintf(stderr, "recvfrom error: %d\n", errno);

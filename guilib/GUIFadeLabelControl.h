@@ -30,7 +30,7 @@
  */
 
 #include "GUIControl.h"
-#include "GUITextLayout.h"
+#include "GUILabel.h"
 
 /*!
  \ingroup controls

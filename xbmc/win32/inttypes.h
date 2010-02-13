@@ -151,6 +151,9 @@ typedef struct {
 #define PRIxPTR     "Ix"
 #define PRIXPTR     "IX"
 
+#define PRIdS       "Id"
+#define PRIuS       "Iu"
+
 // The fscanf macros for signed integers are:
 #define SCNd8       "d"
 #define SCNi8       "i"

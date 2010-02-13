@@ -3,7 +3,7 @@ rm -r .libs
 make distclean
 
 ./configure \
---extra-cflags="-fno-common -I../libfaad2/include" \
+--extra-cflags="-fno-common -I../libfaad2/include -Iinclude" \
 --extra-ldflags="-L../../../../../system/players/dvdplayer" \
 --enable-shared \
 --enable-memalign-hack \
@@ -17,7 +17,10 @@ make distclean
 --disable-muxers \
 --disable-encoders \
 --disable-ipv6 \
---disable-debug && 
+--disable-debug \
+--enable-muxer=spdif \
+--enable-encoder=ac3 \
+--enable-encoder=aac &&
  
 make -j3 && 
 mkdir .libs &&
@@ -28,3 +31,4 @@ cp .libs/avformat-52.dll ../../../../../system/players/dvdplayer/
 cp .libs/avutil-50.dll ../../../../../system/players/dvdplayer/
 cp .libs/postproc-51.dll ../../../../../system/players/dvdplayer/
 cp .libs/swscale-0.6.1.dll ../../../../../system/players/dvdplayer/
+

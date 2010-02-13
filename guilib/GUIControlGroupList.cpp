@@ -23,6 +23,7 @@
 #include "Key.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIControlProfiler.h"
+#include "GUIFont.h" // for XBFONT_* definitions
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, unsigned int scrollTime)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)

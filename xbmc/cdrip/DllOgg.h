@@ -24,11 +24,11 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBOGG)
+#if (defined WIN32)
+  #include "oggvorbis/ogg.h"
+#else
   #include <ogg/ogg.h>
   #include "utils/log.h"
-#else
-  #include "oggvorbis/ogg.h"
 #endif
 #include "DynamicDll.h"
 
@@ -44,7 +44,7 @@ public:
   virtual ~DllOggInterface() {}
 };
 
-#if (defined USE_EXTERNAL_LIBOGG)
+#if (!defined WIN32)
 
 class DllOgg : public DllDynamic, DllOggInterface
 {

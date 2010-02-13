@@ -23,7 +23,6 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "Util.h"
-#include "lib/zlib/zlib.h"
 #include "URL.h"
 #include "ZipManager.h"
 #include "FileItem.h"
@@ -31,7 +30,7 @@
 #include <vector>
 
 using namespace std;
-namespace DIRECTORY
+namespace XFILE
 {
   CZipDirectory::CZipDirectory()
   {
@@ -74,7 +73,6 @@ namespace DIRECTORY
     if (!g_ZipManager.GetZipList(strPath,entries))
       return false;
 
-    CStdString strSkip;
     vector<CStdString> baseTokens;
     if (!strPathInZip.IsEmpty())
       CUtil::Tokenize(strPathInZip,baseTokens,"/");

@@ -16,6 +16,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "GUITextLayout.h"
+#include "GUIFont.h"
 #include "karaokelyricstext.h"
 #include "Util.h"
 #include "FileSystem/File.h"

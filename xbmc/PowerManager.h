@@ -47,6 +47,7 @@ public:
   virtual ~CPowerManager();
 
   virtual void Initialize();
+  void SetDefaults();
 
   virtual bool Powerdown();
   virtual bool Suspend();

@@ -36,6 +36,7 @@
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "utils/TimeUtils.h"
+#include "log.h"
 #ifdef _WIN32
 #include "dwmapi.h"
 #endif
@@ -576,9 +577,27 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
 #if defined(_LINUX) && !defined(__APPLE__)
 CStdString CSysInfo::GetLinuxDistro()
 {
-  CStdString result = "";
+  static const char* release_file[] = { "/etc/debian_version",
+                                        "/etc/SuSE-release",
+                                        "/etc/mandrake-release",
+                                        "/etc/fedora-release",
+                                        "/etc/redhat-release",
+                                        "/etc/gentoo-release",
+                                        "/etc/slackware-version",
+                                        "/etc/arch-release",
+                                        NULL };
 
   FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d | cut -f2", "r");
+  
+  for (int i = 0; !pipe && release_file[i]; i++)
+  {
+    CStdString cmd = "cat ";
+    cmd += release_file[i];
+
+    pipe = popen(cmd.c_str(), "r");
+  }
+
+  CStdString result = "Unknown";
   if (pipe)
   {
     char buffer[256] = {'\0'};
@@ -588,7 +607,6 @@ CStdString CSysInfo::GetLinuxDistro()
       CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
     pclose(pipe);
   }
-
   return result.Trim();
 }
 #endif
@@ -598,7 +616,7 @@ CStdString CSysInfo::GetUnameVersion()
 {
   CStdString result = "";
 
-  FILE* pipe = popen("uname -rs", "r");
+  FILE* pipe = popen("uname -rm", "r");
   if (pipe)
   {
     char buffer[256] = {'\0'};
@@ -625,12 +643,8 @@ CStdString CSysInfo::GetUserAgent()
   result += GetUnameVersion();
 #elif defined(_LINUX)
   result += "Linux; ";
-  CStdString distro = GetLinuxDistro();
-  if (distro != "")
-  {
-    result += distro;
-    result += "; ";
-  }
+  result += GetLinuxDistro();
+  result += "; ";
   result += GetUnameVersion();
 #endif
 #ifdef SVN_REV

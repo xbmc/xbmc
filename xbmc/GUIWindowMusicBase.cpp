@@ -58,10 +58,10 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
@@ -86,7 +86,7 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.id == ACTION_PREVIOUS_MENU)
+  if (action.actionId == ACTION_PREVIOUS_MENU)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && !musicScan->IsDialogRunning())
@@ -96,7 +96,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     }
   }
 
-  if (action.id == ACTION_SHOW_PLAYLIST)
+  if (action.actionId == ACTION_SHOW_PLAYLIST)
   {
     g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
@@ -749,7 +749,9 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       CFileItemPtr itemCheck = queuedItems.Get(pItem->m_strPath);
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
       { // add item
-        queuedItems.Add(pItem);
+        CFileItemPtr item(new CFileItem(*pItem));
+        m_musicdatabase.SetPropertiesForFileItem(*item);
+        queuedItems.Add(item);
       }
     }
   }
@@ -1247,7 +1249,6 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
   // sending a blank thumb to the skin.)
   if (g_application.IsPlayingAudio())
   {
-    CStdString strSongFolder;
     const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
     if (tag)
     {

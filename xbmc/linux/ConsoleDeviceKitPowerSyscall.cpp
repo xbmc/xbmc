@@ -31,8 +31,23 @@
 CConsoleDeviceKitPowerSyscall::CConsoleDeviceKitPowerSyscall()
 {
   m_CanPowerdown = ConsoleKitMethodCall("CanStop");
-  m_CanSuspend   = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_suspend");
-  m_CanHibernate = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_hibernate");
+
+  // If "the name org.freedesktop.DeviceKit.Power was not provided by any .service files",
+  // GetVariant() would return NULL, and asBoolean() would crash.
+  CVariant canSuspend = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_suspend");
+
+  if ( !canSuspend.isNull() )
+    m_CanSuspend = canSuspend.asBoolean();
+  else
+    m_CanSuspend = false;
+
+  CVariant canHibernate = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power",    "org.freedesktop.DeviceKit.Power", "can_hibernate");
+
+  if ( !canHibernate.isNull() )
+    m_CanHibernate = canHibernate.asBoolean();
+  else
+    m_CanHibernate = false;
+
   m_CanReboot    = ConsoleKitMethodCall("CanRestart");
 }
 
@@ -117,7 +132,7 @@ bool CConsoleDeviceKitPowerSyscall::ConsoleKitMethodCall(const char *method)
   DBusMessage *reply = message.SendSystem();
   if (reply)
   {
-    bool boolean = false;
+    dbus_bool_t boolean = FALSE;
 
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_BOOLEAN, &boolean, DBUS_TYPE_INVALID))
       return boolean;

@@ -51,7 +51,10 @@ public:
     : m_parent(parent)
     , m_stream(stream)
   {}
+  std::string m_description;
+
   virtual void GetStreamInfo(std::string& strInfo);
+  virtual void GetStreamName(std::string& strInfo);
 };
 
 class CDemuxStreamSubtitleFFmpeg
@@ -64,7 +67,11 @@ public:
     : m_parent(parent)
     , m_stream(stream)
   {}
+  std::string m_description;
+
   virtual void GetStreamInfo(std::string& strInfo);
+  virtual void GetStreamName(std::string& strInfo);
+
 };
 
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg

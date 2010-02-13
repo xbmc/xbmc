@@ -52,11 +52,12 @@ int CMusicInfoTagLoaderAAC::ReadDuration(const CStdString& strFileName)
     int tagOffset = ReadID3Length(file);
 
     if ((duration = ReadMP4Duration(file, tagOffset, 0)))
-      ;
+    {}
     else if ((duration = ReadADTSDuration(file, tagOffset)))
-      ;
+    {}
     else if ((duration = ReadADIFDuration(file, tagOffset)))
-      ;
+    {}
+    
     file.Close();
   }
 

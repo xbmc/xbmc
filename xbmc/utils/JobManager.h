@@ -61,6 +61,7 @@ class CJobQueue: public IJobCallback
     CJobPointer(CJob *job)
     {
       m_job = job;
+      m_id = 0;
     };
     void CancelJob();
     void FreeJob()

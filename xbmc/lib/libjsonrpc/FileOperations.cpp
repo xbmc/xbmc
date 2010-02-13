@@ -27,7 +27,7 @@
 #include "AdvancedSettings.h"
 #include "../Util.h"
 
-using namespace DIRECTORY;
+using namespace XFILE;
 using namespace Json;
 using namespace JSONRPC;
 

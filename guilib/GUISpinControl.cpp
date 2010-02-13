@@ -34,7 +34,7 @@ CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float 
     , m_imgspinDown(posX, posY, width, height, textureDown)
     , m_imgspinUpFocus(posX, posY, width, height, textureUpFocus)
     , m_imgspinDownFocus(posX, posY, width, height, textureDownFocus)
-    , m_textLayout(labelInfo.font, false)
+    , m_label(posX, posY, width, height, labelInfo)
 {
   m_bReverse = false;
   m_iStart = 0;
@@ -43,8 +43,7 @@ CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float 
   m_fEnd = 1.0f;
   m_fInterval = 0.1f;
   m_iValue = 0;
-  m_label = labelInfo;
-  m_label.align |= XBFONT_CENTER_Y;
+  m_label.GetLabelInfo().align |= XBFONT_CENTER_Y;
   m_fValue = 0.0;
   m_iType = iType;
   m_iSelect = SPIN_BUTTON_DOWN;
@@ -63,7 +62,7 @@ CGUISpinControl::~CGUISpinControl(void)
 
 bool CGUISpinControl::OnAction(const CAction &action)
 {
-  switch (action.id)
+  switch (action.actionId)
   {
   case REMOTE_0:
   case REMOTE_1:
@@ -81,7 +80,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
         m_iTypedPos = 0;
         strcpy(m_szTyped, "");
       }
-      int iNumber = action.id - REMOTE_0;
+      int iNumber = action.actionId - REMOTE_0;
 
       m_szTyped[m_iTypedPos] = iNumber + '0';
       m_iTypedPos++;
@@ -166,7 +165,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
     break;
   }
 /*  static float m_fSmoothScrollOffset = 0.0f;
-  if (action.id == ACTION_SCROLL_UP)
+  if (action.actionId == ACTION_SCROLL_UP)
   {
     m_fSmoothScrollOffset += action.amount1 * action.amount1;
     bool handled = false;
@@ -356,9 +355,7 @@ void CGUISpinControl::Render()
     strcpy(m_szTyped, "");
   }
 
-  float posX = m_posX;
   CStdString text;
-  CStdStringW strTextUnicode;
 
   if (m_iType == SPIN_CONTROL_TYPE_INT)
   {
@@ -408,18 +405,18 @@ void CGUISpinControl::Render()
 
   }
 
-  m_textLayout.Update(text);
-  // Calculate the size of our text (for use in HitTest)
-  float fTextWidth = 0;
-  float fTextHeight = 0;
-  m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
+  m_label.SetText(text);
+
+  const float space = 5;
+  float textWidth = m_label.GetTextWidth() + 2 * m_label.GetLabelInfo().offsetX;
   // Position the arrows
-  if ( !(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)) )
+  bool arrowsOnRight = m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X);
+  if (!arrowsOnRight)
   {
-    m_imgspinUpFocus.SetPosition(fTextWidth + 5 + posX + m_imgspinDown.GetWidth(), m_posY);
-    m_imgspinUp.SetPosition(fTextWidth + 5 + posX + m_imgspinDown.GetWidth(), m_posY);
-    m_imgspinDownFocus.SetPosition(fTextWidth + 5 + posX, m_posY);
-    m_imgspinDown.SetPosition(fTextWidth + 5 + posX, m_posY);
+    m_imgspinDownFocus.SetPosition(m_posX + textWidth + space, m_posY);
+    m_imgspinDown.SetPosition(m_posX + textWidth + space, m_posY);
+    m_imgspinUpFocus.SetPosition(m_posX + textWidth + space + m_imgspinDown.GetWidth(), m_posY);
+    m_imgspinUp.SetPosition(m_posX + textWidth + space + m_imgspinDown.GetWidth(), m_posY);
   }
 
   if ( HasFocus() )
@@ -440,29 +437,29 @@ void CGUISpinControl::Render()
     m_imgspinDown.Render();
   }
 
-  if (m_label.font)
+  if (m_label.GetLabelInfo().font)
   {
-    float fPosY;
-    if (m_label.align & XBFONT_CENTER_Y)
-      fPosY = m_posY + m_height * 0.5f;
+    if (arrowsOnRight)
+      m_label.SetMaxRect(m_posX - space - textWidth, m_posY, textWidth, m_height);
     else
-      fPosY = m_posY + m_label.offsetY;
+      m_label.SetMaxRect(m_posX + m_imgspinDown.GetWidth() + m_imgspinUp.GetWidth() + space, m_posY, textWidth, m_height);
 
-    float fPosX = m_posX + m_label.offsetX - 3;
-    if (IsDisabled())
-      m_textLayout.Render(fPosX, fPosY, 0, m_label.disabledColor, m_label.shadowColor, m_label.align, 0, true);
-    else if (HasFocus() && m_label.focusedColor)
-      m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
-    else
-      m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
+    m_label.SetColor(GetTextColor());
+    m_label.Render();
 
     // set our hit rectangle for MouseOver events
-    if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
-      m_hitRect.SetRect(fPosX, fPosY, fPosX + fTextWidth, fPosY + fTextHeight);
-    else
-      m_hitRect.SetRect(fPosX - fTextWidth, fPosY, fPosX, fPosY + fTextHeight);
+    m_hitRect = m_label.GetRenderRect();
   }
   CGUIControl::Render();
+}
+
+CGUILabel::COLOR CGUISpinControl::GetTextColor() const
+{
+  if (IsDisabled())
+    return CGUILabel::COLOR_DISABLED;
+  else if (HasFocus())
+    return CGUILabel::COLOR_FOCUSED;
+  return CGUILabel::COLOR_TEXT;
 }
 
 void CGUISpinControl::SetRange(int iStart, int iEnd)

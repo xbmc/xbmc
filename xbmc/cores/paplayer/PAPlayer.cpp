@@ -32,6 +32,7 @@
 #include "MusicInfoTag.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
 #include "../../utils/TimeUtils.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
@@ -70,6 +71,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   for (int i=0; i<2; i++)
   {
     m_channelCount[i]   = 0;
+    m_channelMap[i]     = NULL;
     m_sampleRate[i]     = 0;
     m_bitsPerSample[i]  = 0;
 
@@ -199,6 +201,7 @@ void PAPlayer::UpdateCrossFadingTime(const CFileItem& file)
           (m_currentFile->GetMusicInfoTag()->GetDiscNumber() == file.GetMusicInfoTag()->GetDiscNumber()) &&
           (m_currentFile->GetMusicInfoTag()->GetTrackNumber() == file.GetMusicInfoTag()->GetTrackNumber() - 1)
         )
+        || g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") != CStdString::npos
       )
     )
     {
@@ -369,10 +372,11 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
     m_bitsPerSample[num]  = 16;
     m_sampleRate[num]     = outputSampleRate;
     m_channelCount[num]   = channels;
+    m_channelMap[num]     = NULL;
     m_BytesPerSecond      = (m_bitsPerSample[num] / 8)* outputSampleRate * channels;
 
     /* Open the device */
-    m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, m_channelCount[num], m_sampleRate[num], m_bitsPerSample[num], false, codec.c_str(), true, false);
+    m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, m_channelCount[num], m_channelMap[num], m_sampleRate[num], m_bitsPerSample[num], false, codec.c_str(), true, false);
 
     if (!m_pAudioDecoder[num]) return false;
 

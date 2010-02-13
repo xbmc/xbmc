@@ -1,0 +1,13 @@
+Testcases in this directory require zzuf and socat.
+
+zzuf is used to randomly mess with the TCP connection between the CURL
+clients and the MHD server.  The goal is to expose problems in MHD's
+error handling (by introducing random syntax errors).  socat is
+used to listen on port 11081 and forward the randomzied stream to
+port 11080 where MHD is waiting.
+
+As a result, the testcases in this directory do NOT check that
+whatever CURL returns is what was expected -- random modifications to
+the TCP stream can have random effects ;-).  Testcases "fail" if the
+code crashes or hangs indefinitely.
+

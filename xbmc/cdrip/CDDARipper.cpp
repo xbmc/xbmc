@@ -316,7 +316,7 @@ bool CCDDARipper::RipCD()
 
   // get cd cdda contents
   CFileItemList vecItems;
-  DIRECTORY::CCDDADirectory directory;
+  XFILE::CCDDADirectory directory;
   directory.GetDirectory("cdda://local/", vecItems);
 
   //  Get cddb info

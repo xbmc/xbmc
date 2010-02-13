@@ -360,15 +360,20 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
     strWorkingDir[iIndex+1] = '\0'; 
   } 
 
+  CStdStringW WstrExe, WstrParams, WstrWorkingDir;
+  g_charsetConverter.utf8ToW(strExe, WstrExe);
+  g_charsetConverter.utf8ToW(strParams, WstrParams);
+  g_charsetConverter.utf8ToW(strWorkingDir, WstrWorkingDir);
+
   bool ret;
-  SHELLEXECUTEINFO ShExecInfo = {0};
-  ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+  SHELLEXECUTEINFOW ShExecInfo = {0};
+  ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
   ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
   ShExecInfo.hwnd = NULL;
   ShExecInfo.lpVerb = NULL;
-  ShExecInfo.lpFile = strExe.c_str();
-  ShExecInfo.lpParameters = strParams.c_str();
-  ShExecInfo.lpDirectory = strWorkingDir.c_str();
+  ShExecInfo.lpFile = WstrExe.c_str();
+  ShExecInfo.lpParameters = WstrParams.c_str();
+  ShExecInfo.lpDirectory = WstrWorkingDir.c_str();
   ShExecInfo.nShow = SW_SHOW;
   ShExecInfo.hInstApp = NULL;
 
@@ -376,7 +381,7 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
 
   LockSetForegroundWindow(LSFW_UNLOCK);
   ShowWindow(g_hWnd,SW_MINIMIZE);
-  ret = ShellExecuteEx(&ShExecInfo) == TRUE;
+  ret = ShellExecuteExW(&ShExecInfo) == TRUE;
   g_windowHelper.SetHANDLE(ShExecInfo.hProcess);
 
   // ShellExecute doesn't return the window of the started process
@@ -396,7 +401,6 @@ bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScript
 
 std::vector<CStdString> CWIN32Util::GetDiskUsage()
 {
-  CStdString strRet;
   vector<CStdString> result;
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
@@ -405,6 +409,8 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
   if( dwStrLength != 0 )
   {
+    CStdString strRet;
+    
     dwStrLength+= 1;
     pcBuffer= new char [dwStrLength];
     GetLogicalDriveStrings( dwStrLength, pcBuffer );
@@ -774,21 +780,22 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 
 void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType)
 {
-  CMediaSource share;
   WCHAR* pcBuffer= NULL;
   DWORD dwStrLength= GetLogicalDriveStringsW( 0, pcBuffer );
   if( dwStrLength != 0 )
   {
+    CMediaSource share;
+    
     dwStrLength+= 1;
     pcBuffer= new WCHAR [dwStrLength];
     GetLogicalDriveStringsW( dwStrLength, pcBuffer );
 
-    UINT uDriveType;
-    int iPos= 0, nResult;
+    int iPos= 0, nResult= 0;
     WCHAR cVolumeName[100];
     do{
       cVolumeName[0]= L'\0';
-      uDriveType= GetDriveTypeW( pcBuffer + iPos  );
+      
+      UINT uDriveType= GetDriveTypeW( pcBuffer + iPos  );
       if(uDriveType != DRIVE_REMOVABLE)
         nResult= GetVolumeInformationW( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
       share.strPath= share.strName= "";
@@ -851,8 +858,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       }
       iPos += (wcslen( pcBuffer + iPos) + 1 );
     } while( wcslen( pcBuffer + iPos ) > 0 );
-    if( pcBuffer != NULL)
-      delete[] pcBuffer;
+    delete[] pcBuffer;
   }
 }
 
