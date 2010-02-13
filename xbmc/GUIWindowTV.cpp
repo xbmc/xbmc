@@ -299,7 +299,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CFileItem *item = new CFileItem(newtimer);
 
             if (cPVRTimers::AddTimer(*item))
-              cPVREpgs::SetVariableData(m_vecItems);
+              PVREpgs.SetVariableData(m_vecItems);
           }
           else
           {
@@ -593,7 +593,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CFileItem *item = new CFileItem(newtimer);
 
             if (cPVRTimers::AddTimer(*item))
-              cPVREpgs::SetVariableData(m_vecItems);
+              PVREpgs.SetVariableData(m_vecItems);
           }
           else
             CGUIDialogOK::ShowAndGetInput(19033,19034,0,0);
@@ -1198,7 +1198,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
               CFileItem *item = new CFileItem(newtimer);
 
               if (cPVRTimers::AddTimer(*item))
-                cPVREpgs::SetVariableData(m_vecItems);
+                PVREpgs.SetVariableData(m_vecItems);
             }
           }
         }
@@ -1231,7 +1231,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
                   (timerlist[i]->GetPVRTimerInfoTag()->IsRepeating() != true))
               {
                 if (cPVRTimers::DeleteTimer(*timerlist[i]))
-                  cPVREpgs::SetVariableData(m_vecItems);
+                  PVREpgs.SetVariableData(m_vecItems);
               }
             }
           }
@@ -1366,37 +1366,32 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
 
     /* inform dialog about the file item */
     pDlgInfo->SetProgInfo(item);
-    cPVREpgs::SetVariableData(m_vecItems);
+    PVREpgs.SetVariableData(m_vecItems);
 
     /* Open dialog window */
     pDlgInfo->DoModal();
   }
   else if (item->IsPVRChannel())
   {
-    cPVREpgsLock EpgsLock;
-    cPVREpgs *s = (cPVREpgs *)cPVREpgs::EPGs(EpgsLock);
-    if (s)
+    const cPVREPGInfoTag *epgnow = PVREpgs.GetEPG(item->GetPVRChannelInfoTag(), true)->GetInfoTagNow();
+    if (!epgnow)
     {
-      const cPVREPGInfoTag *epgnow = s->GetEPG(item->GetPVRChannelInfoTag(), true)->GetInfoTagNow();
-      if (!epgnow)
-      {
-        CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
-        return;
-      }
-
-      CFileItem *itemNow  = new CFileItem(*epgnow);
-
-      /* Load programme info dialog */
-      CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-      if (!pDlgInfo)
-        return;
-
-      /* inform dialog about the file item */
-      pDlgInfo->SetProgInfo(itemNow);
-
-      /* Open dialog window */
-      pDlgInfo->DoModal();
+      CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
+      return;
     }
+
+    CFileItem *itemNow  = new CFileItem(*epgnow);
+
+    /* Load programme info dialog */
+    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
+    if (!pDlgInfo)
+      return;
+
+    /* inform dialog about the file item */
+    pDlgInfo->SetProgInfo(itemNow);
+
+    /* Open dialog window */
+    pDlgInfo->DoModal();
   }
   else
     CLog::Log(LOGERROR, "CGUIWindowTV: Can't open programme info dialog, no epg or channel info tag!");
@@ -1512,7 +1507,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, strChannel);
 
-    if (cPVREpgs::GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying) == 0)
+    if (PVREpgs.GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/" + strChannel + "/empty.epg", false));
@@ -1531,7 +1526,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19030));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-    if (cPVREpgs::GetEPGNow(m_vecItems, RadioPlaying) == 0)
+    if (PVREpgs.GetEPGNow(m_vecItems, RadioPlaying) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -1550,7 +1545,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19031));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-    if (cPVREpgs::GetEPGNext(m_vecItems, RadioPlaying) == 0)
+    if (PVREpgs.GetEPGNext(m_vecItems, RadioPlaying) == 0)
     {
       CFileItemPtr item;
       item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -1565,7 +1560,7 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_LABEL(CONTROL_BTNGUIDE, g_localizeStrings.Get(19029) + ": " + g_localizeStrings.Get(19032));
     SET_CONTROL_LABEL(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-    if (cPVREpgs::GetEPGAll(m_vecItems, RadioPlaying) > 0)
+    if (PVREpgs.GetEPGAll(m_vecItems, RadioPlaying) > 0)
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
       CDateTime m_gridStart = now - CDateTimeSpan(0, 0, 0, (now.GetMinute() % 30) * 60 + now.GetSecond()) - CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0);
@@ -1693,7 +1688,7 @@ void CGUIWindowTV::UpdateSearch()
       dlgProgress->Progress();
     }
 
-    cPVREpgs::GetEPGSearch(m_vecItems, m_searchfilter);
+    PVREpgs.GetEPGSearch(m_vecItems, m_searchfilter);
     if (dlgProgress)
       dlgProgress->Close();
 

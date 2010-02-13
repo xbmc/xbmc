@@ -1797,6 +1797,10 @@
   <string id="19184">Anzeigedauer für Kanalinfo</string>
   <string id="19185">TV Datenbank zurücksetzten</string>
   <string id="19186">Alle Daten in der Datenbank werden gelöscht</string>
+  <string id="19187">EPG Daten löschen und neu einlesen</string>
+  <string id="19188">Alle EPG Daten werden gelöscht</string>
+  <string id="19189">Nach Start letzten Kanal wiedergeben</string>
+  <string id="19190">Minimiert</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>

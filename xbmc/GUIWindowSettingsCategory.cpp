@@ -717,6 +717,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(19032), GUIDE_VIEW_TIMELINE);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("pvrplayback.startlast"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(106), START_LAST_CHANNEL_OFF);
+      pControl->AddLabel(g_localizeStrings.Get(19190), START_LAST_CHANNEL_MIN);
+      pControl->AddLabel(g_localizeStrings.Get(107), START_LAST_CHANNEL_ON);
+      pControl->SetValue(pSettingInt->GetData());
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -2062,6 +2071,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19186, 750, 0))
       g_PVRManager.ResetDatabase();
+  }
+  else if (strSetting.Equals("pvrepg.resetepg"))
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
+      g_PVRManager.ResetEPG();
   }
 
   UpdateSettings();

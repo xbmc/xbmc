@@ -155,25 +155,19 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
   CFileItemPtr pItem = m_vecItems->Get(item);
   if (pItem && pItem->IsPVRChannel())
   {
-    /* Lock first the EPG storage to make sure no one other change it */
-    cPVREpgsLock EpgsLock;
-    cPVREpgs *s = (cPVREpgs *)cPVREpgs::EPGs(EpgsLock);
-    if (s)
-    {
-      /* Get the current running show on this channel from the EPG storage */
-      const cPVREPGInfoTag *epgnow = s->GetEPG(pItem->GetPVRChannelInfoTag(), true)->GetInfoTagNow();
-      CFileItem *itemNow  = new CFileItem(*epgnow);
+    /* Get the current running show on this channel from the EPG storage */
+    const cPVREPGInfoTag *epgnow = PVREpgs.GetEPG(pItem->GetPVRChannelInfoTag(), true)->GetInfoTagNow();
+    CFileItem *itemNow  = new CFileItem(*epgnow);
 
-      /* Load programme info dialog */
-      CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
-      if (!pDlgInfo)
-        return;
+    /* Load programme info dialog */
+    CGUIDialogPVRGuideInfo* pDlgInfo = (CGUIDialogPVRGuideInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
+    if (!pDlgInfo)
+      return;
 
-      /* inform dialog about the file item and open dialog window */
-      pDlgInfo->SetProgInfo(itemNow);
-      pDlgInfo->DoModal();
-      delete itemNow; /* delete previuosly created FileItem */
-    }
+    /* inform dialog about the file item and open dialog window */
+    pDlgInfo->SetProgInfo(itemNow);
+    pDlgInfo->DoModal();
+    delete itemNow; /* delete previuosly created FileItem */
   }
 
   return;

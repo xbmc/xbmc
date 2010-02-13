@@ -770,7 +770,7 @@ void CGUISettings::Initialize()
   AddBool(1, "pvrmanager.enabled", 449  , false);
   AddString(2, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
   AddCategory(8,"pvrmenu", 19181);
-  AddInt(1, "pvrmenu.daystodisplay", 19182, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(1, "pvrmenu.daystodisplay", 19182, 2, 1, 1, 14, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(2, "pvrmenu.lingertime", 19183, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(4, "pvrmenu.infoswitch", 19178, true);
   AddBool(5, "pvrmenu.infotimeout", 19179, true);
@@ -786,6 +786,7 @@ void CGUISettings::Initialize()
   AddInt(1, "pvrepg.epgscan", 19070, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
   AddInt(2, "pvrepg.epgupdate", 19071, 120, 15, 15, 480, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddBool(3, "pvrepg.ignoredbforclient", 19072, false);
+  AddString(4, "pvrepg.resetepg", 19187, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(8,"pvrplayback", 19177);
   AddBool(1, "pvrplayback.switchautoclose", 19168, true);
@@ -794,6 +795,7 @@ void CGUISettings::Initialize()
   AddInt(4, "pvrplayback.channelentrytimeout", 19073, 1000, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
   AddSeparator(5, "pvrplayback.sep1");
   AddBool(6, "pvrplayback.signalquality", 19037, false);
+  AddInt(7, "pvrplayback.startlast", 19189, START_LAST_CHANNEL_OFF, START_LAST_CHANNEL_OFF, 1, START_LAST_CHANNEL_ON, SPIN_CONTROL_TEXT);
 
   AddCategory(8,"pvrrecord", 19043);
   AddInt(1, "pvrrecord.instantrecordtime", 19172, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);

@@ -127,6 +127,10 @@ class TiXmlElement;
 #define GUIDE_VIEW_NEXT             2
 #define GUIDE_VIEW_TIMELINE         3
 
+#define START_LAST_CHANNEL_OFF      0
+#define START_LAST_CHANNEL_MIN      1
+#define START_LAST_CHANNEL_ON       2
+
 #define SETTINGS_TYPE_BOOL      1
 #define SETTINGS_TYPE_FLOAT     2
 #define SETTINGS_TYPE_INT       3
@@ -276,11 +280,11 @@ public:
   virtual CStdString ToString();
 
   void SetData(int iData)
-  { 
+  {
     m_iData = iData;
     if (m_entries.empty())
     {
-      if (m_iData < m_iMin) m_iData = m_iMin; 
+      if (m_iData < m_iMin) m_iData = m_iMin;
       if (m_iData > m_iMax) m_iData = m_iMax;
     }
   }

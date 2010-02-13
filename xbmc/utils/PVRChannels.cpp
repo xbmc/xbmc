@@ -223,7 +223,11 @@ CStdString cPVRChannelInfoTag::EncryptionName() const
 CStdString cPVRChannelInfoTag::NowTitle(void) const
 {
   if (m_Epg == NULL)
-    return g_localizeStrings.Get(19055);
+  {
+    m_Epg = PVREpgs.GetEPG(m_iIdChannel);
+    if (!m_Epg)
+      return g_localizeStrings.Get(19055);
+  }
 
   if (!m_Epg->IsUpdateRunning() && (m_epgNow == NULL || m_epgNow->End() < CDateTime::GetCurrentDateTime()))
   {
@@ -770,7 +774,7 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
   database->Close();
 
   /* Synchronize channel epg containers */
-  cPVREpgs::AssignChangedChannelTags(m_bRadio);
+  PVREpgs.AssignChangedChannelTags(m_bRadio);
 
   /* Synchronize channel numbers inside timers */
   for (unsigned int i = 0; i < PVRTimers.size(); i++)
@@ -825,7 +829,7 @@ void cPVRChannels::HideChannel(unsigned int number)
   else
   {
     at(number-1).SetHidden(true);
-    cPVREpgs::ClearChannel(at(number-1).ChannelID());
+    PVREpgs.ClearChannel(at(number-1).ChannelID());
     database->Open();
     database->UpdateDBChannel(at(number-1));
     m_iHiddenChannels = database->GetNumHiddenChannels();
@@ -1134,6 +1138,7 @@ bool cPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
     }
     return true;
   }
+
   return false;
 }
 

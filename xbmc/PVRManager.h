@@ -68,6 +68,7 @@ public:
 
   /*--- General functions ---*/
   void ResetDatabase();
+  void ResetEPG();
   bool IsPlayingTV();
   bool IsPlayingRadio();
   bool IsPlayingRecording();
@@ -123,6 +124,7 @@ private:
   STREAMPROPS         m_streamProps;
   CTVDatabase         m_database;
   CRITICAL_SECTION    m_critSection;
+  bool                m_bFirstStart;            /* Is set if this is first startup of PVRManager */
 
   /*--- GUIInfoManager information data ---*/
   DWORD               m_infoToggleStart;        /* Time to toogle pvr infos like in System info */

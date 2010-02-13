@@ -177,51 +177,38 @@ public:
   CStdString ConvertGenreIdToString(int ID, int subID) const;
 };
 
-
-class cPVREpgsLock
-{
-private:
-  int m_locked;
-  bool m_WriteLock;
-public:
-  cPVREpgsLock(bool WriteLock = false);
-  ~cPVREpgsLock();
-  bool Locked(void);
-};
-
-
 class cPVREpgs : public std::vector<cPVREpg*>
 {
   friend class cPVREpg;
-  friend class cPVREpgsLock;
 
 private:
-  CRITICAL_SECTION m_critSection;
-  int m_locked;
+  CCriticalSection m_critSection;
 
-  static unsigned int m_lastCleanup;
-  static cPVREpgs m_epgs;
+  int m_lastCleanup;
 
 public:
+  cPVREpgs(void);
+
   cPVREpg *AddEPG(long ChannelID);
   const cPVREpg *GetEPG(long ChannelID) const;
   const cPVREpg *GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMissing = false) const;
   void Add(cPVREpg *entry);
 
-  static const cPVREpgs *EPGs(cPVREpgsLock &PVREpgsLock);
-  static void Cleanup(bool force = false);
-  static bool ClearAll(void);
-  static bool ClearChannel(long ChannelID);
-  static void Load();
-  static void Unload();
-  static void Update(bool Scan = false);
-  static int GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter);
-  static int GetEPGAll(CFileItemList* results, bool radio = false);
-  static int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
-  static int GetEPGNow(CFileItemList* results, bool radio = false);
-  static int GetEPGNext(CFileItemList* results, bool radio = false);
-  static CDateTime GetFirstEPGDate(bool radio = false);
-  static CDateTime GetLastEPGDate(bool radio = false);
-  static void SetVariableData(CFileItemList* results);
-  static void AssignChangedChannelTags(bool radio = false);
+  void Cleanup(bool force = false);
+  bool ClearAll(void);
+  bool ClearChannel(long ChannelID);
+  void Load();
+  void Unload();
+  void Update(bool Scan = false);
+  int GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter);
+  int GetEPGAll(CFileItemList* results, bool radio = false);
+  int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
+  int GetEPGNow(CFileItemList* results, bool radio = false);
+  int GetEPGNext(CFileItemList* results, bool radio = false);
+  CDateTime GetFirstEPGDate(bool radio = false);
+  CDateTime GetLastEPGDate(bool radio = false);
+  void SetVariableData(CFileItemList* results);
+  void AssignChangedChannelTags(bool radio = false);
 };
+
+extern cPVREpgs PVREpgs;

@@ -63,6 +63,7 @@ using namespace ADDON;
 CPVRManager::CPVRManager()
 {
   InitializeCriticalSection(&m_critSection);
+  m_bFirstStart = true;
   CLog::Log(LOGDEBUG,"PVR: created");
 }
 
@@ -403,6 +404,39 @@ void CPVRManager::Process()
   /* Load the Radio Channel group lists */
   PVRChannelGroupsRadio.Load(true);
 
+  /* Continue last watched channel after first startup */
+  if (m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
+  {
+    CLog::Log(LOGNOTICE,"PVR: Try to continue last channel");
+    m_bFirstStart = false;
+
+    m_database.Open();
+    int lastChannel = m_database.GetLastChannel();
+    if (lastChannel > 0)
+    {
+      cPVRChannelInfoTag *tag = cPVRChannels::GetByChannelIDFromAll(lastChannel);
+      if (tag)
+      {
+        cPVRChannels *channels;
+        if (!tag->IsRadio())
+          channels = &PVRChannelsTV;
+        else
+          channels = &PVRChannelsRadio;
+
+        if (g_guiSettings.GetInt("pvrplayback.startlast") == START_LAST_CHANNEL_MIN)
+          g_settings.m_bStartVideoWindowed = true;
+
+        if (g_application.PlayFile(CFileItem(channels->at(tag->Number()-1))))
+          CLog::Log(LOGNOTICE,"PVR: Continue playback of channel '%s'", tag->Name().c_str());
+        else
+          CLog::Log(LOGERROR,"PVR: Channel '%s' can't continued", tag->Name().c_str());
+      }
+      else
+        CLog::Log(LOGERROR,"PVR: Can't find channel (ID=%i) for continue on startup", lastChannel);
+    }
+    m_database.Close();
+  }
+
   /* Get Timers from Backends */
   PVRTimers.Load();
 
@@ -410,7 +444,7 @@ void CPVRManager::Process()
   PVRRecordings.Load();
 
   /* Get Epg's from Backend */
-  cPVREpgs::Load();
+  PVREpgs.Load();
 
   int Now = CTimeUtils::GetTimeMS()/1000;
   m_LastTVChannelCheck     = Now;
@@ -457,19 +491,19 @@ void CPVRManager::Process()
     /* Check for new or updated EPG entries */
     if (Now - m_LastEPGScan > g_guiSettings.GetInt("pvrepg.epgscan")*60*60) // don't do this too often
     {
-      cPVREpgs::Update(true);
+      PVREpgs.Update(true);
       m_LastEPGScan   = Now;
       m_LastEPGUpdate = Now;  // Data is also updated during scan
     }
     else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
     {
-      cPVREpgs::Update(false);
+      PVREpgs.Update(false);
       m_LastEPGUpdate = Now;
     }
     else
     {
       /* Cleanup EPG Data */
-      cPVREpgs::Cleanup();
+      PVREpgs.Cleanup();
     }
 
     EnterCriticalSection(&m_critSection);
@@ -489,7 +523,7 @@ void CPVRManager::Process()
     g_application.StopPlaying();
 
   /* Remove Epg's from Memory */
-  cPVREpgs::Unload();
+  PVREpgs.Unload();
 
   /* Remove recordings from Memory */
   PVRRecordings.Unload();
@@ -848,7 +882,7 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
  ********************************************************************/
 void CPVRManager::ResetDatabase()
 {
-  CLog::Log(LOGINFO,"PVR: TV Database is now set to it's initial state");
+  CLog::Log(LOGNOTICE,"PVR: TV Database is now set to it's initial state");
 
    CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
    pDlgProgress->SetLine(0, "");
@@ -859,7 +893,7 @@ void CPVRManager::ResetDatabase()
 
   if (m_currentPlayingRecording || m_currentPlayingChannel)
   {
-    CLog::Log(LOGINFO,"PVR: Is playing data, stopping playback");
+    CLog::Log(LOGNOTICE,"PVR: Is playing data, stopping playback");
     g_application.StopPlaying();
   }
   pDlgProgress->SetPercentage(10);
@@ -890,7 +924,41 @@ void CPVRManager::ResetDatabase()
   pDlgProgress->SetPercentage(90);
 
   m_database.Close();
-  CLog::Log(LOGINFO,"PVR: TV Database reset finished, starting PVR Subsystem again");
+  CLog::Log(LOGNOTICE,"PVR: TV Database reset finished, starting PVR Subsystem again");
+  Start();
+  pDlgProgress->SetPercentage(100);
+  pDlgProgress->Close();
+}
+
+void CPVRManager::ResetEPG()
+{
+  CLog::Log(LOGNOTICE,"PVR: EPG is being erased");
+
+  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  pDlgProgress->SetLine(0, "");
+  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
+  pDlgProgress->SetLine(2, "");
+  pDlgProgress->StartModal();
+  pDlgProgress->Progress();
+
+  if (m_currentPlayingRecording || m_currentPlayingChannel)
+  {
+    CLog::Log(LOGNOTICE,"PVR: Is playing data, stopping playback");
+    g_application.StopPlaying();
+  }
+  pDlgProgress->SetPercentage(10);
+
+  Stop();
+  pDlgProgress->SetPercentage(30);
+
+  m_database.Open();
+  pDlgProgress->SetPercentage(50);
+
+  m_database.EraseEPG();
+  pDlgProgress->SetPercentage(70);
+
+  m_database.Close();
+  CLog::Log(LOGNOTICE,"PVR: EPG reset finished, starting PVR Subsystem again");
   Start();
   pDlgProgress->SetPercentage(100);
   pDlgProgress->Close();
@@ -1919,7 +1987,7 @@ int CPVRManager::GetStartTime()
     return 0;
 
   cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
-  if (tag->NowEndTime() < CDateTime::GetCurrentDateTime())
+  if (tag->NowEndTime() < CDateTime::GetCurrentDateTime() || tag->NowTitle() == g_localizeStrings.Get(19055))
   {
     EnterCriticalSection(&m_critSection);
 

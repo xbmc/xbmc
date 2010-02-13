@@ -104,7 +104,7 @@ void CGUIDialogPVRGuideOSD::Update()
   bool RadioPlaying;
   int CurrentChannel;
   g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
-  cPVREpgs::GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying);
+  PVREpgs.GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying);
 
   m_viewControl.SetItems(*m_vecItems);
   g_graphicsContext.Unlock();
