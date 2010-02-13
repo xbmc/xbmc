@@ -43,7 +43,7 @@ public:
   bool Stop();
   bool IsStarted();
   void SetCredentials(const CStdString &username, const CStdString &password);
-  virtual bool Download(const char *path, Json::Value &result);
+  virtual bool Download(const char *path, Json::Value *result);
   virtual int GetCapabilities();
 private:
   static int AskForAuthentication (struct MHD_Connection *connection);

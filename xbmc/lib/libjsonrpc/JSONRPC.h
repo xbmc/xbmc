@@ -29,7 +29,7 @@
 #include <iostream>
 #include "ITransportLayer.h"
 #include "IAnnouncer.h"
-#include "../libjsoncpp/json.h"
+#include "json/json.h"
 
 namespace JSONRPC
 {

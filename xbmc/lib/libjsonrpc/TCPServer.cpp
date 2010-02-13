@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include "JSONRPC.h"
-#include "../libjsoncpp/json.h"
+#include "json/json.h"
 #include "AnnouncementManager.h"
 #include "log.h"
 #include "SingleLock.h"
@@ -116,7 +116,7 @@ void CTCPServer::Process()
   Deinitialize();
 }
 
-bool CTCPServer::Download(const char *path, Json::Value &result)
+bool CTCPServer::Download(const char *path, Json::Value *result)
 {
   return false;
 }
