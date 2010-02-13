@@ -78,9 +78,9 @@ ln -s libglx.so.1 libglx.so
 popd
 
 # Assuming only one kernel is installed!
-modulesdir=/lib/modules/$(ls /lib/modules)
+kernelVersion=$(ls /lib/modules)
+modulesdir=/lib/modules/$kernelVersion
 
-kernelVersion=$(basename $modulesdir)
 apt-get install linux-headers-$kernelVersion
 
 pushd .
@@ -95,7 +95,7 @@ cd $modulesdir
 mkdir -p updates/dkms
 
 cp /tmp/nvidia.ko updates/dkms
-depmod -a $kernelVersion
+depmod $kernelVersion
 tar cvf /tmp/modules.tar modules.* updates
 rm updates/dkms/nvidia.ko
 popd

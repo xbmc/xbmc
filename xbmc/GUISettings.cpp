@@ -24,7 +24,6 @@
 #include <float.h>
 #include "Settings.h"
 #include "GUIDialogFileBrowser.h"
-#include "XBAudioConfig.h"
 #include "MediaManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
@@ -43,6 +42,7 @@
 #include "PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #include "utils/PCMRemap.h"
+#include "GUIFont.h" // for FONT_STYLE_* definitions
 
 using namespace std;
 
@@ -581,7 +581,13 @@ void CGUISettings::Initialize()
   AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
   AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
   AddInt(8, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
-  AddBool(9, "videoplayer.stretch43", 171, false);
+
+  map<int,int> stretch;
+  stretch.insert(make_pair(630,VIEW_MODE_NORMAL));
+  stretch.insert(make_pair(633,VIEW_MODE_STRETCH_14x9));
+  stretch.insert(make_pair(634,VIEW_MODE_STRETCH_16x9));
+  stretch.insert(make_pair(631,VIEW_MODE_ZOOM));
+  AddInt(9, "videoplayer.stretch43", 173, VIEW_MODE_NORMAL, stretch, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
@@ -1060,8 +1066,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");
-  if (GetInt("audiooutput.mode") == AUDIO_DIGITAL && !g_audioConfig.HasDigitalOutput())
-    SetInt("audiooutput.mode", AUDIO_ANALOG);
   // FIXME: Check if the hardware supports it (if possible ;)
   //SetBool("audiooutput.ac3passthrough", g_audioConfig.GetAC3Enabled());
   //SetBool("audiooutput.dtspassthrough", g_audioConfig.GetDTSEnabled());
@@ -1171,7 +1175,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       if (pChild)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
-        if ((*it).second->GetControlType() == SETTINGS_TYPE_PATH)
+        if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
           newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)

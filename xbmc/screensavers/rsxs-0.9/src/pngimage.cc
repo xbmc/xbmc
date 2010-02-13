@@ -65,7 +65,7 @@ void PNG::load(FILE* in, bool fullColor) {
 			(png_get_color_type(png, pngInfo) == PNG_COLOR_TYPE_GRAY) &&
 			png_get_bit_depth(png, pngInfo) < 8
 		)
-			png_set_gray_1_2_4_to_8(png);
+			png_set_expand_gray_1_2_4_to_8(png);
 		if (png_get_valid(png, pngInfo, PNG_INFO_tRNS))
 			png_set_tRNS_to_alpha(png);
 		if (fullColor)

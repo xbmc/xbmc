@@ -25,15 +25,15 @@
 
 CGUIListLabel::CGUIListLabel(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
-    , m_textLayout(labelInfo.font, false)
-    , m_scrollInfo(50, 0, scrollSpeed)
-    , m_renderRect()
+    , m_label(posX, posY, width, height, labelInfo, alwaysScroll ? CGUILabel::OVER_FLOW_SCROLL : CGUILabel::OVER_FLOW_TRUNCATE, scrollSpeed)
 {
-  m_selected = false;
-  m_scrolling = m_alwaysScroll = alwaysScroll;
-  m_label = labelInfo;
   m_info = info;
-  m_textWidth = width;
+  m_alwaysScroll = alwaysScroll;
+  // TODO: Remove this "correction"
+  if (labelInfo.align & XBFONT_RIGHT)
+    m_label.SetMaxRect(m_posX - m_width, m_posY, m_width, m_height);
+  else if (labelInfo.align & XBFONT_CENTER_X)
+    m_label.SetMaxRect(m_posX - m_width*0.5f, m_posY, m_width, m_height);
   if (m_info.IsConstant())
     SetLabel(m_info.GetLabel(m_parentID, true));
   ControlType = GUICONTROL_LISTLABEL;
@@ -45,14 +45,12 @@ CGUIListLabel::~CGUIListLabel(void)
 
 void CGUIListLabel::SetScrolling(bool scrolling)
 {
-  m_scrolling = m_alwaysScroll ? true : scrolling;
-  if (!m_scrolling)
-    m_scrollInfo.Reset();
+  m_label.SetScrolling(scrolling || m_alwaysScroll);
 }
 
 void CGUIListLabel::SetSelected(bool selected)
 {
-  m_selected = selected;
+  m_label.SetColor(selected ? CGUILabel::COLOR_SELECTED : CGUILabel::COLOR_TEXT);
 }
 
 void CGUIListLabel::SetFocus(bool focus)
@@ -70,27 +68,7 @@ void CGUIListLabel::UpdateColors()
 
 void CGUIListLabel::Render()
 {
-  color_t color = m_selected ? m_label.selectedColor : m_label.textColor;
-  bool needsToScroll = (m_renderRect.Width() + 0.5f < m_textWidth); // 0.5f to deal with floating point rounding issues
-  if (m_scrolling && needsToScroll)
-    m_textLayout.RenderScrolling(m_renderRect.x1, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, 0, m_renderRect.Width(), m_scrollInfo);
-  else
-  {
-    float posX = m_renderRect.x1;
-    uint32_t align = 0;
-    if (!needsToScroll)
-    { // hack for right and centered multiline text, as GUITextLayout::Render() treats posX as the right hand
-      // or center edge of the text (see GUIFontTTF::DrawTextInternal), and this has already been taken care of
-      // in SetLabel(), but we wish to still pass the horizontal alignment info through (so that multiline text
-      // is aligned correctly), so we must undo the SetLabel() changes for horizontal alignment.
-      if (m_label.align & XBFONT_RIGHT)
-        posX += m_renderRect.Width();
-      else if (m_label.align & XBFONT_CENTER_X)
-        posX += m_renderRect.Width() * 0.5f;
-      align = m_label.align & ~XBFONT_CENTER_Y;  // ignore vertical alignment
-    }
-    m_textLayout.Render(posX, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, align, m_renderRect.Width());
-  }
+  m_label.Render();
   CGUIControl::Render();
 }
 
@@ -105,26 +83,13 @@ void CGUIListLabel::UpdateInfo(const CGUIListItem *item)
     SetLabel(m_info.GetLabel(m_parentID, true));
 }
 
+void CGUIListLabel::SetInvalid()
+{
+  m_label.SetInvalid();
+  CGUIControl::SetInvalid();
+}
+
 void CGUIListLabel::SetLabel(const CStdString &label)
 {
-  if (m_textLayout.Update(label, 0, m_bInvalidated))
-  { // needed an update - reset scrolling
-    m_scrollInfo.Reset();
-    // recalculate our text layout
-    float width, height;
-    m_textLayout.GetTextExtent(m_textWidth, height);
-    width = std::min(m_textWidth, m_width);
-    if (m_label.align & XBFONT_CENTER_Y)
-      m_renderRect.y1 = m_posY + (m_height - height) * 0.5f;
-    else
-      m_renderRect.y1 = m_posY;
-    if (m_label.align & XBFONT_RIGHT)
-      m_renderRect.x1 = m_posX - width;
-    else if (m_label.align & XBFONT_CENTER_X)
-      m_renderRect.x1 = m_posX - width * 0.5f;
-    else
-      m_renderRect.x1 = m_posX;
-    m_renderRect.x2 = m_renderRect.x1 + width;
-    m_renderRect.y2 = m_renderRect.y1 + height;
-  }
+  m_label.SetText(label);
 }

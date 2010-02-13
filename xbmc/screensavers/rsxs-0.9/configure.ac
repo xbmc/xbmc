@@ -16,12 +16,12 @@ AC_GNU_SOURCE
 LT_AC_PROG_SED
 AC_LANG(C++)
 AC_PROG_CXX
-CXXFLAGS=`echo $CXXFLAGS | sed -e s,-O2,-O3,`
+#CXXFLAGS=`echo $CXXFLAGS | sed -e s,-O2,-O3,`
 AC_PROG_CXXCPP
 
-if test x"$GXX" = x"yes"; then
-	CXXFLAGS=`echo $CXXFLAGS -Wall`
-fi
+#if test x"$GXX" = x"yes"; then
+#	CXXFLAGS=`echo $CXXFLAGS -Wall`
+#fi
 
 AC_PROG_CC
 AM_PROG_CC_C_O

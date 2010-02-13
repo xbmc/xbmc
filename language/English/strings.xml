@@ -126,9 +126,10 @@
   <string id="168"></string>
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
-  <string id="171">Stretch 4:3 content to 16:9</string>
+  <string id="171"></string>
 
   <string id="172">Release date</string>
+  <string id="173">Display 4:3 videos as</string>
 
   <string id="175">Moods</string>
   <string id="176">Styles</string>

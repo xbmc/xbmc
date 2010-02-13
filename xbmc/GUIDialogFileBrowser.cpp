@@ -329,36 +329,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   {
     CFileItemList items;
     CStdString strParentPath;
-    bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
 
-    // check if current directory is a root share
-/*    if (g_guiSettings.GetBool("filelists.showparentdiritems"))
-    {*/
-      if ( !m_rootDir.IsSource(strDirectory))
-      {
-        // no, do we got a parent dir?
-        if (bParentExists)
-        {
-          // yes
-          CFileItemPtr pItem(new CFileItem(".."));
-          pItem->m_strPath = strParentPath;
-          pItem->m_bIsFolder = true;
-          pItem->m_bIsShareOrDrive = false;
-          items.Add(pItem);
-        }
-      }
-      else
-      {
-        // yes, this is the root of a share
-        // add parent path to the virtual directory
-        CFileItemPtr pItem(new CFileItem(".."));
-        pItem->m_strPath = "";
-        pItem->m_bIsShareOrDrive = false;
-        pItem->m_bIsFolder = true;
-        items.Add(pItem);
-        strParentPath = "";
-      }
-    //}
     if (!m_rootDir.GetDirectory(strDirectory, items,m_useFileDirectories))
     {
       CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", strDirectory.c_str());
@@ -369,6 +340,30 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       m_history.RemoveParentPath();
       Update(strParentPath);
       return;
+    }
+
+    // check if current directory is a root share
+    if (!m_rootDir.IsSource(strDirectory))
+    {
+      if (CUtil::GetParentPath(strDirectory, strParentPath))
+      {
+        CFileItemPtr pItem(new CFileItem(".."));
+        pItem->m_strPath = strParentPath;
+        pItem->m_bIsFolder = true;
+        pItem->m_bIsShareOrDrive = false;
+        items.AddFront(pItem, 0);
+      }
+    }
+    else
+    {
+      // yes, this is the root of a share
+      // add parent path to the virtual directory
+      CFileItemPtr pItem(new CFileItem(".."));
+      pItem->m_strPath = "";
+      pItem->m_bIsShareOrDrive = false;
+      pItem->m_bIsFolder = true;
+      items.AddFront(pItem, 0);
+      strParentPath = "";
     }
 
     ClearFileItems();

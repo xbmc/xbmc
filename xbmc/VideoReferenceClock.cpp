@@ -819,7 +819,7 @@ void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
 
   if (RefreshRate != m_RefreshRate)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", RefreshRate);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %f hertz, rounding to %i hertz", fps, RefreshRate);
     m_RefreshRate = RefreshRate;
   }
   m_LastRefreshTime = m_CurrTime;

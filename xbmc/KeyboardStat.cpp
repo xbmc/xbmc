@@ -556,6 +556,7 @@ void CKeyboardStat::Reset()
 void CKeyboardStat::ResetState()
 {
   Reset();
+  XBMC_ModState = XBMCKMOD_NONE;
 }
 
 unsigned int CKeyboardStat::KeyHeld() const

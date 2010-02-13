@@ -1,7 +1,7 @@
 SRCS=crypt.c guideclient.c GuideParser.c httpclient.c httpfsclient.c interface.c md5.c netclient.c rtv.c sleep.c
 
-CFLAGS += -D_LINUX -D__unix__
-CXXFLAGS += -D_LINUX -D__unix__
+CFLAGS += -D_LINUX
+CXXFLAGS += -D_LINUX
 
 LIB= librtv-@ARCH@.a
 

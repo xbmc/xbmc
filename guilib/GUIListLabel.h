@@ -27,7 +27,7 @@
  */
 
 #include "GUIControl.h"
-#include "GUITextLayout.h"
+#include "GUILabel.h"
 
 /*!
  \ingroup controls
@@ -45,26 +45,20 @@ public:
   virtual bool CanFocus() const { return false; };
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
   virtual void SetFocus(bool focus);
+  virtual void SetInvalid();
 
-  const CRect &GetRenderRect() const { return m_renderRect; };
-  void SetRenderRect(const CRect &rect) { m_renderRect = rect; };
+  const CRect &GetRenderRect() const { return m_label.GetRenderRect(); };
+  void SetRenderRect(const CRect &rect) { m_label.SetRenderRect(rect); };
   void SetLabel(const CStdString &label);
   void SetSelected(bool selected);
   void SetScrolling(bool scrolling);
 
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
+  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
 
 protected:
   virtual void UpdateColors();
 
-  CLabelInfo  m_label;
-  CGUITextLayout m_textLayout;
-  CGUIInfoLabel  m_info;
-  float       m_textWidth;
-
-  bool        m_scrolling;
-  bool        m_alwaysScroll;
-  bool        m_selected;
-  CScrollInfo m_scrollInfo;
-  CRect       m_renderRect;   // render location
+  CGUILabel     m_label;
+  CGUIInfoLabel m_info;
+  bool          m_alwaysScroll;
 };

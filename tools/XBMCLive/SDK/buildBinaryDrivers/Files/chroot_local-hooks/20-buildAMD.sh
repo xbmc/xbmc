@@ -47,9 +47,9 @@ dpkg-deb -x xorg-driver-fglrx-*.deb Files
 cd ./Files
 
 # Assuming only one kernel is installed!
-modulesdir=/lib/modules/$(ls /lib/modules)
+kernelVersion=$(ls /lib/modules)
+modulesdir=/lib/modules/$kernelVersion
 
-kernelVersion=$(basename $modulesdir)
 apt-get -y install linux-headers-$kernelVersion
 
 pushd .
@@ -65,7 +65,7 @@ cd $modulesdir
 mkdir -p updates/dkms
 
 cp /tmp/fglrx.ko updates/dkms
-depmod -a $kernelVersion
+depmod $kernelVersion
 tar cvf /tmp/modules.tar modules.* updates
 rm updates/dkms/fglrx.ko
 popd

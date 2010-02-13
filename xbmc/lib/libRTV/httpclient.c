@@ -181,15 +181,15 @@ int hc_send_request(struct hc * hc)
     for (h = hc->req_headers; h; h = h->next)
         l += sprintf(buffer+l, "%s: %s\r\n", h->tag, h->value);
     l += sprintf(buffer+l, "\r\n");
-    nc_write(hc->nc, buffer, l);
+    nc_write(hc->nc, (unsigned char*)buffer, l);
 
-    if (nc_read_line(hc->nc, buffer, sizeof buffer) <= 0) {
+    if (nc_read_line(hc->nc, (unsigned char*)buffer, sizeof buffer) <= 0) {
         perror("ERROR: hc_send_request nc_read_line");
         return -1;
     }
     
     hc->status = strdup(buffer);
-    while (nc_read_line(hc->nc, buffer, sizeof buffer) > 0) {
+    while (nc_read_line(hc->nc, (unsigned char*)buffer, sizeof buffer) > 0) {
         char * e;
         e = strchr(buffer, ':');
         if (e) {
@@ -229,21 +229,21 @@ int hc_post_request(struct hc * hc,
     for (h = hc->req_headers; h; h = h->next)
         l += sprintf(buffer+l, "%s: %s\r\n", h->tag, h->value);
     l += sprintf(buffer+l, "\r\n");
-    nc_write(hc->nc, buffer, l);
+    nc_write(hc->nc, (unsigned char*)buffer, l);
 
-    while ((l = callback(buffer, sizeof buffer, v)) != 0) {
+    while ((l = callback((unsigned char*)buffer, sizeof buffer, v)) != 0) {
         int r;
-        r = nc_write(hc->nc, buffer, l);
+        r = nc_write(hc->nc, (unsigned char*)buffer, l);
 //      fprintf(stderr, "%d\n", r);
         
     }
   
-    if (nc_read_line(hc->nc, buffer, sizeof buffer) <= 0) {
+    if (nc_read_line(hc->nc, (unsigned char*)buffer, sizeof buffer) <= 0) {
         perror("ERROR: hc_post_request nc_read_line");
         return -1;
     }
     hc->status = strdup(buffer);
-    while (nc_read_line(hc->nc, buffer, sizeof buffer) > 0) {
+    while (nc_read_line(hc->nc, (unsigned char*)buffer, sizeof buffer) > 0) {
         char * e;
         e = strchr(buffer, ':');
         if (e) {
@@ -303,7 +303,7 @@ extern int hc_read_pieces(struct hc * hc,
         if (chunked) {
             char lenstr[32];
 
-            nc_read_line(hc->nc, lenstr, sizeof lenstr);
+            nc_read_line(hc->nc, (unsigned char*)lenstr, sizeof lenstr);
             len = strtoul(lenstr, NULL, 16);
         } else {
             if (cl) {
@@ -316,11 +316,11 @@ extern int hc_read_pieces(struct hc * hc,
         }
         if (len) {
             buf = malloc(len+1);
-            len_read = nc_read(hc->nc, buf, len);
+            len_read = nc_read(hc->nc, (unsigned char*)buf, len);
             if (len_read < len)
                 done = 1;
             buf[len_read] = '\0';
-            callback(buf, len_read, v);
+            callback((unsigned char*)buf, len_read, v);
             if (cl) {
                 octets_to_go -= len_read;
                 if (octets_to_go == 0 && !chunked) {
@@ -338,7 +338,7 @@ extern int hc_read_pieces(struct hc * hc,
                only allowed to send them if it's happy with us
                discarding them. (2616 3.7b).  The Replay doesn't use
                trailers anyway */
-            while (nc_read_line(hc->nc, linebuf, sizeof linebuf) > 0)
+            while (nc_read_line(hc->nc, (unsigned char*)linebuf, sizeof linebuf) > 0)
                 ;
         }
     }
@@ -365,7 +365,7 @@ static void read_all_callback(unsigned char * buf, size_t len, void * vd)
     struct chunk * chunk;
 
     chunk = malloc(sizeof *chunk);
-    chunk->buf = buf;
+    chunk->buf = (char*)buf;
     chunk->len = len;
     chunk->next = NULL;
     
@@ -443,7 +443,7 @@ extern int hc_read_pieces_len(struct hc * hc,
             char lenstr[32];
 			
 			if (!hc->curr_chunk_len) {
-				nc_read_line(hc->nc, lenstr, sizeof lenstr);
+				nc_read_line(hc->nc, (unsigned char*)lenstr, sizeof lenstr);
 				hc->curr_chunk_len = strtoul(lenstr, NULL, 16);
 			}
 			if (len_to_read > hc->curr_chunk_len) {
@@ -462,11 +462,11 @@ extern int hc_read_pieces_len(struct hc * hc,
         }
         if (len) {
             buf = malloc(len+1);
-            len_read = nc_read(hc->nc, buf, len);
+            len_read = nc_read(hc->nc, (unsigned char*)buf, len);
             if (len_read <= len)
                 done = 1;
             buf[len_read] = '\0';
-            callback(buf, len_read, v);
+            callback((unsigned char*)buf, len_read, v);
             if (cl) {
                 octets_to_go -= len_read;
                 if (octets_to_go == 0 && !chunked) {
@@ -485,7 +485,7 @@ extern int hc_read_pieces_len(struct hc * hc,
                only allowed to send them if it's happy with us
                discarding them. (2616 3.7b).  The Replay doesn't use
                trailers anyway */
-            while (nc_read_line(hc->nc, linebuf, sizeof linebuf) > 0)
+            while (nc_read_line(hc->nc, (unsigned char*)linebuf, sizeof linebuf) > 0)
                 ;
         }
     }

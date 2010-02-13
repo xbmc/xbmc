@@ -23,7 +23,11 @@
 
 
 #include "IFile.h"
+#ifdef _WIN32
 #include "lib/zlib/zlib.h"
+#else
+#include <zlib.h>
+#endif
 #include "utils/log.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"

@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
+#include "Application.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 
@@ -158,7 +159,7 @@ void CGUIDialogVideoScan::OnFinished()
 
   if (!g_guiSettings.GetBool("videolibrary.backgroundupdate"))
   {
-    Close();
+    g_application.getApplicationMessenger().Close(this,false,false);
   }
 }
 
