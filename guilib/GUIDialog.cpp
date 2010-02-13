@@ -59,7 +59,6 @@ void CGUIDialog::OnWindowLoaded()
         {
           float spacing = (pLabel->GetXPosition() - pBase->GetXPosition()) * 2;
           pLabel->SetWidth(pBase->GetWidth() - spacing);
-          pLabel->SetTruncate(true);
         }
       }
     }

@@ -434,6 +434,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUILabel.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUILabelControl.cpp"
 				>
 			</File>
@@ -837,6 +841,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIInfoTypes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUILabel.h"
 				>
 			</File>
 			<File

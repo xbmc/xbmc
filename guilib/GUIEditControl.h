@@ -85,6 +85,7 @@ protected:
   void UpdateText(bool sendUpdate = true);
   void OnPasteClipboard();
   void OnSMSCharacter(unsigned int key);
+  void DefaultConstructor();  
 
   CStdStringW m_text2;
   CStdString  m_text;

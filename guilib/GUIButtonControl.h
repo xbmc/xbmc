@@ -30,7 +30,7 @@
  */
 
 #include "GUITexture.h"
-#include "GUITextLayout.h"
+#include "GUILabel.h"
 #include "GUIControl.h"
 
 /*!
@@ -62,7 +62,7 @@ public:
   const std::vector<CGUIActionDescriptor> &GetClickActions() const { return m_clickActions; };
   void SetFocusActions(const std::vector<CGUIActionDescriptor>& focusActions) { m_focusActions = focusActions; };
   void SetUnFocusActions(const std::vector<CGUIActionDescriptor>& unfocusActions) { m_unfocusActions = unfocusActions; };
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
+  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
   virtual CStdString GetLabel() const { return GetDescription(); };
   virtual CStdString GetLabel2() const;
   void SetSelected(bool bSelected);
@@ -72,7 +72,6 @@ public:
   void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor);
   void PythonSetDisabledColor(color_t disabledColor);
 
-  void RAMSetTextColor(color_t textColor);
   void SettingsCategorySetTextAlign(uint32_t align);
 
   virtual void OnClick();
@@ -84,6 +83,7 @@ protected:
   void OnFocus();
   void OnUnFocus();
   virtual void RenderText();
+  CGUILabel::COLOR GetTextColor() const;
 
   CGUITexture m_imgFocus;
   CGUITexture m_imgNoFocus;
@@ -92,9 +92,8 @@ protected:
 
   CGUIInfoLabel  m_info;
   CGUIInfoLabel  m_info2;
-  CLabelInfo m_label;
-  CGUITextLayout m_textLayout;
-  CGUITextLayout m_textLayout2;
+  CGUILabel      m_label;
+  CGUILabel      m_label2;
 
   std::vector<CGUIActionDescriptor> m_clickActions;
   std::vector<CGUIActionDescriptor> m_focusActions;

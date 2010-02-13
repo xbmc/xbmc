@@ -31,6 +31,7 @@
 #include "WindowingFactory.h"
 #include <dbt.h>
 #include "LocalizeStrings.h"
+#include "KeyboardStat.h"
 
 #ifdef _WIN32
 
@@ -342,6 +343,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
       CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
+      if (!g_application.m_AppFocused)
+        g_Keyboard.ResetState();//lost focus, unstick any keys
       g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       break;
     case WM_SYSKEYDOWN:

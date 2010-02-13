@@ -150,18 +150,23 @@ size_t CFileCurl::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   if (maxWriteable)
   {
     if (!m_buffer.WriteData(buffer, maxWriteable))
-      CLog::Log(LOGERROR, "Unable to write to buffer - what's up?");
-    amount -= maxWriteable;
-    buffer += maxWriteable;
+    {
+      CLog::Log(LOGERROR, "%s - Unable to write to buffer with %i bytes - what's up?", __FUNCTION__, maxWriteable);
+    }
+    else
+    {
+      amount -= maxWriteable;
+      buffer += maxWriteable;
+    }
   }
   if (amount)
   {
-    CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount);
+//    CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount);
 
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
     {
-      CLog::Log(LOGDEBUG, "%s - Failed to grow overflow buffer", __FUNCTION__);
+      CLog::Log(LOGWARNING, "%s - Failed to grow overflow buffer from %i bytes to %i bytes", __FUNCTION__, m_overflowSize, amount + m_overflowSize);
       return 0;
     }
     memcpy(m_overflowBuffer + m_overflowSize, buffer, amount);

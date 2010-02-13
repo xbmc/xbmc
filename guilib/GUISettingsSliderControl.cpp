@@ -24,8 +24,9 @@
 CGUISettingsSliderControl::CGUISettingsSliderControl(int parentID, int controlID, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType)
     : CGUISliderControl(parentID, controlID, posX, posY, sliderWidth, sliderHeight, backGroundTexture, nibTexture,nibTextureFocus, iType)
     , m_buttonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
-    , m_textLayout(labelInfo.font, false)
+    , m_label(posX, posY, width, height, labelInfo)
 {
+  m_label.SetAlign(XBFONT_CENTER_Y | XBFONT_RIGHT);  
   ControlType = GUICONTROL_SETTINGS_SLIDER;
 }
 
@@ -45,14 +46,10 @@ void CGUISettingsSliderControl::Render()
   CGUISliderControl::Render();
 
   // now render our text
-  m_textLayout.Update(CGUISliderControl::GetDescription());
-
-  float posX = m_posX - m_buttonControl.GetLabelInfo().offsetX;
-  float posY = GetYPosition() + GetHeight() * 0.5f;
-  if (HasFocus() && m_buttonControl.GetLabelInfo().focusedColor)
-    m_textLayout.Render(posX, posY, 0, m_buttonControl.GetLabelInfo().focusedColor, m_buttonControl.GetLabelInfo().shadowColor, XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
-  else
-    m_textLayout.Render(posX, posY, 0, m_buttonControl.GetLabelInfo().textColor, m_buttonControl.GetLabelInfo().shadowColor, XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
+  m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_posY, m_posX - m_buttonControl.GetXPosition(), m_height);
+  m_label.SetText(CGUISliderControl::GetDescription());
+  m_label.SetColor(HasFocus() ? CGUILabel::COLOR_FOCUSED : CGUILabel::COLOR_TEXT);
+  m_label.Render();
 }
 
 bool CGUISettingsSliderControl::OnAction(const CAction &action)

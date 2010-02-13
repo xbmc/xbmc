@@ -1113,23 +1113,23 @@ int CBuiltins::Execute(const CStdString& execString)
     if (cancelled)
       return -1;
 
-    if (singleFile)
-    {
-      if (params.size() > 3)
-        overwrite = params[3].Equals("true");
-      else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
-    }
-
-    if (cancelled)
-      return -1;
-
     if (thumbs && params[0].Equals("video"))
     {
       if (params.size() > 4)
         actorThumbs = params[4].Equals("true");
       else
         actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (singleFile)
+    {
+      if (params.size() > 3)
+        overwrite = params[3].Equals("true");
+      else
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     }
 
     if (cancelled)

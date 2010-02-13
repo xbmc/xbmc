@@ -47,7 +47,7 @@
 #include <Xtl.h>
 typedef SOCKET socket_fd;
 #elif defined _WIN32
-#include <winsock2.h>
+#include <WS2tcpip.h>
 typedef SOCKET socket_fd;
 #else
 #include <unistd.h>

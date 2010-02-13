@@ -26,6 +26,7 @@
 
 class CGUIListItem;
 class CFileItem;
+class CLabelInfo;
 
 class CGUIListItemLayout
 {
