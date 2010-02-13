@@ -608,15 +608,6 @@ bool CApplication::Create()
     return false;
   }
 
-  // Create the Mouse and Keyboard devices
-  g_Mouse.Initialize();
-  g_Keyboard.Initialize();
-#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  g_RemoteControl.Initialize();
-#endif
-#ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
-#endif
   g_powerManager.Initialize();
 
   CLog::Log(LOGNOTICE, "load settings...");
@@ -630,6 +621,17 @@ bool CApplication::Create()
     FatalErrorHandler(true, true, true);
 
   update_emu_environ();//apply the GUI settings
+
+  // Create the Mouse, Keyboard, Remote, and Joystick devices
+  // Initialize after loading settings to get joystick deadzone setting
+  g_Mouse.Initialize();
+  g_Keyboard.Initialize();
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  g_RemoteControl.Initialize();
+#endif
+#ifdef HAS_SDL_JOYSTICK
+  g_Joystick.Initialize();
+#endif
 
 #ifdef __APPLE__
   // Configure and possible manually start the helper.
