@@ -27,8 +27,6 @@
 #define __VISUALISATION_TYPES_H__
 #include <cstddef>
 
-#define PROPS_MAX_PATH 128
-
 extern "C"
 {
   struct VIS_INFO
@@ -46,13 +44,13 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    char name[PROPS_MAX_PATH];
-    char presets[PROPS_MAX_PATH];
-    char datastore[PROPS_MAX_PATH];
+    const char *name;
+    const char *presets;
+    const char *profile;
   };
 
   enum VIS_ACTION
-  { 
+  {
     VIS_ACTION_NONE = 0,
     VIS_ACTION_NEXT_PRESET,
     VIS_ACTION_PREV_PRESET,

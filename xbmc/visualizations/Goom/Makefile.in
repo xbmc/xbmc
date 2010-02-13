@@ -1,7 +1,8 @@
 ARCH=@ARCH@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations -Igoom2k4-0/src
 OBJS=Main.o
-SLIB=../../../visualisations/Goom.vis
+SLIB=../../../addons/visualizations/Goom/Goom.vis
+DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 DIRS=goom2k4-0
 

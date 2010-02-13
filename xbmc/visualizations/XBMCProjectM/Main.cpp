@@ -81,7 +81,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_uiVisElements = 0;
 
   strcpy(g_visName, visprops->name);
-  g_configFile = string(visprops->datastore) + string("/projectm.conf");
+  g_configFile = string(visprops->profile) + string("/projectm.conf");
   std::string presetsDir = string(visprops->presets) + string("/resources/presets.zip/");
 
   g_configPM.meshX = gx;

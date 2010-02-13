@@ -108,10 +108,9 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->height = h;
   m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
 
-  strncpy(m_pInfo->name, Name().c_str(), PROPS_MAX_PATH);
-  strncpy(m_pInfo->presets, _P(Path()), PROPS_MAX_PATH);
-  strncpy(m_pInfo->datastore, _P(Profile()), PROPS_MAX_PATH);
-  m_pInfo->name[PROPS_MAX_PATH-1] = m_pInfo->presets[PROPS_MAX_PATH-1] = m_pInfo->datastore[PROPS_MAX_PATH-1] = '\0';
+  m_pInfo->name = strdup(Name().c_str());
+  m_pInfo->presets = strdup(_P(Path()).c_str());
+  m_pInfo->profile = strdup(_P(Profile()).c_str());
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
@@ -175,10 +174,11 @@ void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, fl
   {
     try
     {
-      m_pStruct->AudioData(const_cast<short*>(pAudioData), iAudioDataLength, pFreqData, iFreqDataLength);
+      m_pStruct->AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
     }
     catch (std::exception e)
     {
+      CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
     }
   }
 }
@@ -312,25 +312,11 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
     }
 
     // Transfer data to our visualisation
-    try
-    {
-      m_pStruct->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
-    }
+    AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
   }
   else
   { // Transfer data to our visualisation
-    try
-    {
-      m_pStruct->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
-    }
+    AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
   }
   return ;
 }
