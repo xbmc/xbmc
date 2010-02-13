@@ -325,8 +325,10 @@ else
   AC_CHECK_LIB([SDL_gfx], [main])
 fi
 
-if test "$use_webserver" = "yes"; then
-  AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
+if test "$host_vendor" != "apple" ; then
+  if test "$use_webserver" = "yes"; then
+    AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
+  fi
 fi
 
 
