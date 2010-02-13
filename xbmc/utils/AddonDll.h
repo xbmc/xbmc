@@ -21,6 +21,7 @@
  */
 #include "Addon.h"
 #include "../DllAddon.h"
+#include "AddonManager.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
@@ -170,8 +171,8 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
     }
 
-    ///* Delete is performed by the calling class */
-    //new CAddonStatusHandler(this, status, "", false);
+    /* Delete is performed by the calling class */
+    new CAddonStatusHandler(this, status, "", false);
   }
 
   return m_initialized;

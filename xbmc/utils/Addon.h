@@ -72,9 +72,9 @@ public:
   { return (*this).uuid == rhs.uuid
     && (*this).type == rhs.type
     && (*this).version == rhs.version; }
-  const CStdString uuid;
-  const TYPE type;
-  const AddonVersion version;
+  CStdString uuid;
+  TYPE type;
+  AddonVersion version;
   CStdString name;
   CStdString parent;
   CStdString license;
