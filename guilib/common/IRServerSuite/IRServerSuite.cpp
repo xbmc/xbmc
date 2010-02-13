@@ -85,9 +85,9 @@ void CRemoteControl::Process()
   int iTries = 1;
   DWORD iMsRetryDelay = 5000;
   DWORD time = CTimeUtils::GetTimeMS() - iMsRetryDelay;
-  // try to connect 6 times @ a 5 second interval (30 seconds)
+  // try to connect 60 times @ a 5 second interval (5 minutes)
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
-  while (!m_bStop && iTries <= 6)
+  while (!m_bStop && iTries <= 60)
   {
     if (CTimeUtils::GetTimeMS() - time >= iMsRetryDelay)
     {
@@ -96,7 +96,7 @@ void CRemoteControl::Process()
         break;
       iTries++;
     }
-    Sleep(10);
+    Sleep(1000);
   }
 }
 
