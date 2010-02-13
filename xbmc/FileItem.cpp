@@ -1994,6 +1994,7 @@ void CFileItemList::Stack()
             if (CFile::Exists(path))
               dvdPath = path;
           }
+#ifdef HAS_LIBBDNAV
           if (dvdPath.IsEmpty())
           {
             CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
@@ -2005,6 +2006,7 @@ void CFileItemList::Stack()
               dvdPath.Replace("00000.mpls","main.mpls");
             }
           }
+#endif
           if (!dvdPath.IsEmpty())
           {
             // NOTE: should this be done for the CD# folders too?
