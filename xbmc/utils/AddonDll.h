@@ -21,6 +21,7 @@
  */
 #include "Addon.h"
 #include "../DllAddon.h"
+#include "AddonManager.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
@@ -158,7 +159,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
     m_initialized = false;
   }
   catch (ADDON_STATUS status)
-  { 
+  {
     if (status == STATUS_NEED_SETTINGS)
     { // catch request for settings in initalization
       if (TransferSettings() == STATUS_OK)
@@ -170,8 +171,8 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
     }
 
-    ///* Delete is performed by the calling class */
-    //new CAddonStatusHandler(this, status, "", false);
+    /* Delete is performed by the calling class */
+    new CAddonStatusHandler(this, status, "", false);
   }
 
   return m_initialized;
@@ -378,7 +379,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
   if (restart || reportStatus != STATUS_OK)
   {
     //FIXME
-    //new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);  
+    //new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
   }
 
   return STATUS_OK;

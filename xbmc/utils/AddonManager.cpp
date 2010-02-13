@@ -79,18 +79,16 @@ CAddonStatusHandler::CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CSt
   if (sameThread)
   {
     Process();
-    delete this;
   }
   else
   {
     CStdString ThreadName;
     ThreadName.Format("Addon Status: %s", m_addon->Name().c_str());
 
-    Create(false, THREAD_MINSTACKSIZE);
+    Create(true, THREAD_MINSTACKSIZE);
     SetName(ThreadName.c_str());
     SetPriority(-15);
   }
-  return;
 }
 
 CAddonStatusHandler::~CAddonStatusHandler()
@@ -104,7 +102,6 @@ void CAddonStatusHandler::OnStartup()
 
 void CAddonStatusHandler::OnExit()
 {
-  delete this;
 }
 
 void CAddonStatusHandler::Process()
@@ -191,8 +188,6 @@ void CAddonStatusHandler::Process()
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
   }
-
-  return;
 }
 
 
@@ -425,22 +420,6 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
   CLog::Log(LOGINFO,"ADDON: Enabled %s: %s : %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Version().Print().c_str());
   SaveAddonsXML(addon->Type());
   return true;
-  /*const TYPE type = addon->Type();
-
-  if (m_addons.find(type) == m_addons.end())
-    return false;
-
-  for (IVECADDONS itr = m_addons[type].begin(); itr != m_addons[type].end(); itr++)
-  {
-    if (addon->UUID() == (*itr)->UUID())
-    {
-      CUtil::CreateDirectoryEx(addon->Profile());
-      addon->Enable();
-      CLog::Log(LOGINFO,"ADDON: Enabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
-      SaveAddonsXML(type);
-      return true;
-    }
-  }*/
 }
 
 bool CAddonMgr::DisableAddon(const CStdString &uuid)
