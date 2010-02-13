@@ -203,7 +203,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
 
   if(nErr < 0 && deviceuse != device)
   {
-    CLog::Log(LOGERROR, "%s - failed to open custom device %s, retry with default %s", __FUNCTION__, deviceuse.c_str(), device.c_str());
+    CLog::Log(LOGERROR, "%s - failed to open custom device %s (error:%s), retry with default %s", __FUNCTION__, deviceuse.c_str(), snd_strerror(nErr), device.c_str());
     if(m_pPlayHandle)
     {
       snd_pcm_close(m_pPlayHandle);
