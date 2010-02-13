@@ -124,10 +124,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   {
     delete m_pDll;
     m_pDll = NULL;
-    //TODO report the problem and disable this addon
-    //m_callbacks->AddOn.ReportStatus(this, STATUS_UNKNOWN, "Can't load Dll");
-    // can't disable internally, must be done by addonmanager
-    /*m_disabled = true;*/
+    new CAddonStatusHandler(this, STATUS_UNKNOWN, "Can't load Dll", false);
     return false;
   }
   m_pStruct = (TheStruct*)malloc(sizeof(TheStruct));
@@ -160,19 +157,19 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   }
   catch (ADDON_STATUS status)
   { 
+    m_initialized = false;
     if (status == STATUS_NEED_SETTINGS)
     { // catch request for settings in initalization
       if (TransferSettings() == STATUS_OK)
         m_initialized = true;
+      else
+        new CAddonStatusHandler(this, status, "", false);
     }
     else
     { // Addon failed initialization
-      m_initialized = false;
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
+      new CAddonStatusHandler(this, status, "", false);
     }
-
-    /* Delete is performed by the calling class */
-    new CAddonStatusHandler(this, status, "", false);
   }
 
   return m_initialized;
