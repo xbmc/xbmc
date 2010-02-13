@@ -155,14 +155,13 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size)
 {
 #ifdef HAS_JSONRPC
-  char jsoncall[*upload_data_size + 1];
-  memcpy(jsoncall, upload_data, *upload_data_size);
-  jsoncall[*upload_data_size] = '\0';
+  CStdString jsoncall;
+  jsoncall.assign(upload_data, *upload_data_size);
   if (*upload_data_size > 204800)
     CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
   else
-    CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall);
-  printf("%s\n", jsoncall);
+    CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall.c_str());
+  printf("%s\n", jsoncall.c_str());
   CHTTPClient client;
   CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall, server, &client);
 
