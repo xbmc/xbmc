@@ -58,7 +58,9 @@ void CGUIPanelContainer::Render()
   FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + cacheAfter + m_itemsPerPage + 1, 0));
 
   g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  float pos = (m_orientation == VERTICAL) ? m_posY : m_posX;
+  float posX = m_posX + m_renderOffset.x;
+  float posY = m_posY + m_renderOffset.y;
+  float pos = (m_orientation == VERTICAL) ? posY : posX;
   float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
   pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
   end += cacheAfter * m_layout->Size(m_orientation);
@@ -86,9 +88,9 @@ void CGUIPanelContainer::Render()
       else
       {
         if (m_orientation == VERTICAL)
-          RenderItem(m_posX + col * m_layout->Size(HORIZONTAL), pos, item.get(), false);
+          RenderItem(posX + col * m_layout->Size(HORIZONTAL), pos, item.get(), false);
         else
-          RenderItem(pos, m_posY + col * m_layout->Size(VERTICAL), item.get(), false);
+          RenderItem(pos, posY + col * m_layout->Size(VERTICAL), item.get(), false);
       }
     }
     // increment our position
@@ -105,9 +107,9 @@ void CGUIPanelContainer::Render()
   if (focusedItem)
   {
     if (m_orientation == VERTICAL)
-      RenderItem(m_posX + focusedCol * m_layout->Size(HORIZONTAL), focusedPos, focusedItem.get(), true);
+      RenderItem(posX + focusedCol * m_layout->Size(HORIZONTAL), focusedPos, focusedItem.get(), true);
     else
-      RenderItem(focusedPos, m_posY + focusedCol * m_layout->Size(VERTICAL), focusedItem.get(), true);
+      RenderItem(focusedPos, posY + focusedCol * m_layout->Size(VERTICAL), focusedItem.get(), true);
   }
 
   g_graphicsContext.RestoreClipRegion();

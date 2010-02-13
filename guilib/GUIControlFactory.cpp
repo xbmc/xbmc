@@ -619,6 +619,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float textureWidth = 80;
   float itemWidthBig = 150;
   float itemHeightBig = 150;
+  CPoint offset;
 
   float spaceBetweenItems = 2;
   bool bHasPath = false;
@@ -720,6 +721,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   GetDimension(pControlNode, "width", width, minWidth);
   GetFloat(pControlNode, "height", height);
+  GetFloat(pControlNode, "offsetx", offset.x);
+  GetFloat(pControlNode, "offsety", offset.y);
 
   // adjust width and height accordingly for groups.  Groups should
   // take the width/height of the parent (adjusted for positioning)
@@ -1256,6 +1259,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIListContainer *)control)->SetPageControl(pageControl);
+    ((CGUIListContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "wraplist")
   {
@@ -1264,6 +1268,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
+    ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "fixedlist")
   {
@@ -1272,6 +1277,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
+    ((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "panel")
   {
@@ -1280,6 +1286,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
+    ((CGUIPanelContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "textbox")
   {

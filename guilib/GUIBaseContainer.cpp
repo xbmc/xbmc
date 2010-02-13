@@ -86,7 +86,9 @@ void CGUIBaseContainer::Render()
     FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
 
   g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  float pos = (m_orientation == VERTICAL) ? m_posY : m_posX;
+  float posX = m_posX + m_renderOffset.x;
+  float posY = m_posY + m_renderOffset.y;
+  float pos = (m_orientation == VERTICAL) ? posY : posX;
   float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
 
   // we offset our draw position to take into account scrolling and whether or not our focused
@@ -118,9 +120,9 @@ void CGUIBaseContainer::Render()
       else
       {
         if (m_orientation == VERTICAL)
-          RenderItem(m_posX, pos, item.get(), false);
+          RenderItem(posX, pos, item.get(), false);
         else
-          RenderItem(pos, m_posY, item.get(), false);
+          RenderItem(pos, posY, item.get(), false);
       }
     }
     // increment our position
@@ -131,9 +133,9 @@ void CGUIBaseContainer::Render()
   if (focusedItem)
   {
     if (m_orientation == VERTICAL)
-      RenderItem(m_posX, focusedPos, focusedItem.get(), true);
+      RenderItem(posX, focusedPos, focusedItem.get(), true);
     else
-      RenderItem(focusedPos, m_posY, focusedItem.get(), true);
+      RenderItem(focusedPos, posY, focusedItem.get(), true);
   }
 
   g_graphicsContext.RestoreClipRegion();
@@ -893,6 +895,11 @@ void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
   UpdateVisibility();
+}
+
+void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)
+{
+  m_renderOffset = offset;
 }
 
 void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
