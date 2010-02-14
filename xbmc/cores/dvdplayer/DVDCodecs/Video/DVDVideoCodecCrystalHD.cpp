@@ -38,8 +38,6 @@
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
-  m_pts(0),
-  m_force_dts(false),
   m_DecodeStarted(false),
   m_DropPictures(false),
   m_Duration(0.0),
@@ -95,8 +93,6 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
 
-    m_pts = 0;
-    m_force_dts = false;
     // default duration to 23.976 fps, have to guess something.
     m_Duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
     m_DropPictures = false;
@@ -129,39 +125,39 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   // each picture frame.
   m_Device->BusyListPop();
 
-  // If NULL is passed, DVDPlayer wants us to flush any internal picture frame.
-  // we don't have internal picture frames so just return.
+  // If NULL is passed, DVDPlayer wants to process any queued picture frames.
   if (!pData)
-    return VC_BUFFER;
+  {
+    // Always return VC_PICTURE if we have one ready.
+    if (m_Device->GetReadyCount() > 0)
+      ret |= VC_PICTURE;
 
-  // qualify dts/pts
-  if (dts == DVD_NOPTS_VALUE && pts == DVD_NOPTS_VALUE)
-  {
-    // if invalid dts and pts, set DVD_NOPTS_VALUE and let
-    // DVDPlayerVideo figure out timing from duration.
-    m_pts = DVD_NOPTS_VALUE;
-  }
-  else
-  {
-    // always use pts for video content as we might have re-ordered frames.
-    m_pts = pts;
+    // Returning VC_BUFFER only breaks out of DVDPlayerVideo's picture process loop
+    // which it then grabs another demuxer packet and calls this routine again.
+    // We only do this if the ready picture count drops to below 4 or
+    // risk draining vqueue which then will cause DVDPlayer thrashing. 
+    if ((m_Device->GetInputCount() < 2) && (m_Device->GetReadyCount() < 6))
+      ret |= VC_BUFFER;
+
+    // if no picture ready and input is full, we must wait
+    if(!(ret & VC_PICTURE) && !(ret & VC_BUFFER))
+      m_Device->WaitInput(100);
+      
+    fprintf(stdout, "GetInputCount(%d), GetReadyCount(%d)\n", m_Device->GetInputCount(), m_Device->GetReadyCount());
+
+    return ret;
   }
 
   // Handle Input, add demuxer packet to input queue, we must accept it or
   // it will be discarded as DVDPlayerVideo has no concept of "try again".
-  if ( m_Device->AddInput(pData, iSize, m_pts) )
-  {
-    // always wait for input to be consumed, one less thing to worry about
-    //while (m_Device->GetInputCount())
-    //  Sleep(1);
-  }
-  else
+  if ( !m_Device->AddInput(pData, iSize, dts, pts) )
   {
     // Deep crap error, this should never happen unless we run away pulling demuxer pkts.
     CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
     Sleep(10);
   }
 
+#if 1
   // Fake a decoding delay of 1/2 the frame duration, this helps keep DVDPlayerVideo from
   // draining the demuxer queue. DVDPlayerVideo expects one picture frame for each demuxer
   // packet so we sleep a little here to give the decoder a chance to output a frame.
@@ -172,12 +168,18 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
     else
       Sleep(20);
   }
+#endif
 
   // Handle Output, we delay passing back VC_PICTURE on startup until we have a few
   // decoded picture frames as DVDPlayerVideo might discard picture frames when it
   // tries to sync with audio.
-  if (m_DecodeStarted && m_Device->GetReadyCount())
+  if (m_DecodeStarted)
+  {
+    if (m_Device->GetReadyCount() > 0)
       ret |= VC_PICTURE;
+    if (m_Device->GetInputCount() < 2 && (m_Device->GetReadyCount() < 4))
+      ret |= VC_BUFFER;
+  }
   else
   {
     if (m_Device->GetReadyCount() > 4)
@@ -185,9 +187,9 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
       m_DecodeStarted = true;
       ret |= VC_PICTURE;
     }
+    if (m_Device->GetInputCount() < 2)
+      ret |= VC_BUFFER;
   }
-  if (m_Device->GetInputCount() < 2)
-    ret |= VC_BUFFER;
 
   return ret;
 }
@@ -205,6 +207,7 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   
   ret = m_Device->GetPicture(pDvdVideoPicture);
   m_Duration = pDvdVideoPicture->iDuration;
+  pDvdVideoPicture->iDuration = 0;
   return ret;
 }
 
