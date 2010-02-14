@@ -37,16 +37,15 @@ using namespace JSONRPC;
 using namespace Json;
 using namespace std;
 
-
 Command CJSONRPC::m_commands[] = {
 // JSON-RPC
-  { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   Response,     ReadData,        "Enumerates all actions and descriptions" },
+  { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   Response,     ReadData,        "Enumerates all actions and descriptions. Parameter example {\"getdescriptions\": true, \"getpermissions\": true, \"filterbytransport\": true }. All parameters optional" },
   { "JSONRPC.Version",                  CJSONRPC::Version,                      Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
   { "JSONRPC.Permission",               CJSONRPC::Permission,                   Response,     ReadData,        "Retrieve the clients permissions" },
   { "JSONRPC.Ping",                     CJSONRPC::Ping,                         Response,     ReadData,        "Ping responder" },
   { "JSONRPC.GetAnnouncementFlags",     CJSONRPC::GetAnnouncementFlags,         Announcing,   ReadData,        "Get announcement flags" },
-  { "JSONRPC.SetAnnouncementFlags",     CJSONRPC::SetAnnouncementFlags,         Announcing,   ControlAnnounce, "Change the announcement flags" },
-  { "JSONRPC.Announce",                 CJSONRPC::Announce,                     Response,     ReadData,        "Announce to other connected clients" },
+  { "JSONRPC.SetAnnouncementFlags",     CJSONRPC::SetAnnouncementFlags,         Announcing,   ControlAnnounce, "Change the announcement flags. Parameter example {\"playback\": true, \"gui\": false }" },
+  { "JSONRPC.Announce",                 CJSONRPC::Announce,                     Response,     ReadData,        "Announce to other connected clients. Parameter example {\"sender\": \"foo\", \"message\": \"bar\", \"data\": \"somedata\" }. data is optional" },
 
 // Player
   { "Player.GetActivePlayers",          CPlayerOperations::GetActivePlayers,    Response,     ReadData,        "Returns all active players IDs"},
@@ -68,7 +67,7 @@ Command CJSONRPC::m_commands[] = {
   { "MusicPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
   { "MusicPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
   { "MusicPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
-  { "MusicPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time" },
+  { "MusicPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
 
   { "MusicPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
 
@@ -91,7 +90,7 @@ Command CJSONRPC::m_commands[] = {
   { "VideoPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
   { "VideoPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
   { "VideoPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
-  { "VideoPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time" },
+  { "VideoPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
 
   { "VideoPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
 
@@ -108,14 +107,14 @@ Command CJSONRPC::m_commands[] = {
 
   { "Slideshow.ZoomOut",                CPicturePlayerOperations::ZoomOut,      Response,     ControlPlayback, "Zoom out once" },
   { "Slideshow.ZoomIn",                 CPicturePlayerOperations::ZoomIn,       Response,     ControlPlayback, "Zoom in once" },
-  { "Slideshow.Zoom",                   CPicturePlayerOperations::Zoom,         Response,     ControlPlayback, "Zooms current picture" },
+  { "Slideshow.Zoom",                   CPicturePlayerOperations::Zoom,         Response,     ControlPlayback, "Zooms current picture. Parameter integer of zoom level" },
   { "Slideshow.Rotate",                 CPicturePlayerOperations::Rotate,       Response,     ControlPlayback, "Rotates current picture" },
 
 // Playlist
-  { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,         "Retrieve items in the playlist" },
-  { "Playlist.Add",                     CPlaylistOperations::Add,               Response,     ControlPlayback,  "Add items to the playlist" },
-  { "Playlist.Remove",                  CPlaylistOperations::Remove,            Response,     ControlPlayback,  "Remove items in the playlist" },
-  { "Playlist.Swap",                    CPlaylistOperations::Swap,              Response,     ControlPlayback,  "Swap items in the playlist" },
+  { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,         "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
+  { "Playlist.Add",                     CPlaylistOperations::Add,               Response,     ControlPlayback,  "Add items to the playlist. Parameter example {\"playlist\": \"music\", \"file\": \"/foo/bar.mp3\" }. playlist optional." },
+  { "Playlist.Remove",                  CPlaylistOperations::Remove,            Response,     ControlPlayback,  "Remove items in the playlist. Parameter example {\"playlist\": \"music\", \"item\": 0 }. playlist optional." },
+  { "Playlist.Swap",                    CPlaylistOperations::Swap,              Response,     ControlPlayback,  "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
   { "Playlist.Shuffle",                 CPlaylistOperations::Shuffle,           Response,     ControlPlayback,  "Shuffle playlist" },
 
 // File
@@ -156,13 +155,13 @@ Command CJSONRPC::m_commands[] = {
 
 // XBMC Operations
   { "XBMC.GetVolume",                   CXBMCOperations::GetVolume,             Response,     ReadData,        "Retrieve the current volume" },
-  { "XBMC.SetVolume",                   CXBMCOperations::SetVolume,             Response,     ControlPlayback, "Set volume" },
+  { "XBMC.SetVolume",                   CXBMCOperations::SetVolume,             Response,     ControlPlayback, "Set volume. Parameter integer between 0 amd 100" },
   { "XBMC.ToggleMute",                  CXBMCOperations::ToggleMute,            Response,     ControlPlayback, "Toggle mute" },
 
   { "XBMC.Play",                        CXBMCOperations::Play,                  Response,     ControlPlayback, "Starts playback" },
-  { "XBMC.StartSlideshow",              CXBMCOperations::StartSlideshow,        Response,     ControlPlayback, "Starts slideshow" },
+  { "XBMC.StartSlideshow",              CXBMCOperations::StartSlideshow,        Response,     ControlPlayback, "Starts slideshow. Parameter example {\"directory\": \"/foo/\", \"random\": true, \"recursive\": true} or just string to recursively and random run directory" },
 
-  { "XBMC.Log",                         CXBMCOperations::Log,                   Response,     Logging,         "Logs a line in the xbmc.log" },
+  { "XBMC.Log",                         CXBMCOperations::Log,                   Response,     Logging,         "Logs a line in the xbmc.log. Parameter example {\"message\": \"foo\", \"level\": \"info\"} or just a string to log message with level debug" },
 
   { "XBMC.Quit",                        CXBMCOperations::Quit,                  Response,     ControlPower,    "Quit xbmc" }
 };
