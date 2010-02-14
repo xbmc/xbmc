@@ -3630,6 +3630,8 @@ const BUILT_IN commands[] = {
   { "SetFocus",                   true,   "Change current focus to a different control id" }, 
   { "BackupSystemInfo",           false,  "Backup System Informations to local hdd" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
+  { "CleanLibrary",               true,   "Clean the video library" },
+  { "ExportLibrary",              true,   "Export the video/music library" },
   { "PageDown",                   true,   "Send a page down event to the pagecontrol with given id" },
   { "PageUp",                     true,   "Send a page up event to the pagecontrol with given id" },
   { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
@@ -4634,6 +4636,103 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           scanner->StopScanning();
         else
           CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
+      }
+    }
+  }
+  else if (execute.Equals("cleanlibrary"))
+  {
+    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    if (scanner)
+    {
+      if (!scanner->IsScanning())
+      {
+         CVideoDatabase videodatabase;
+         videodatabase.Open();
+         videodatabase.CleanDatabase();
+         videodatabase.Close();
+      }
+      else
+        CLog::Log(LOGERROR, "XBMC.CleanLibrary is not possible while scanning for media info");
+    }
+  }
+  else if (execute.Equals("exportlibrary"))
+  {
+    int iHeading = 647;
+    if (params[0].Equals("music"))
+      iHeading = 20196;
+    CStdString path;
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+    bool singleFile;
+    bool thumbs=false;
+    bool actorThumbs=false;
+    bool overwrite=false;
+    bool cancelled=false;
+
+    if (params.size() > 1)
+      singleFile = params[1].Equals("true");
+    else
+      singleFile = CGUIDialogYesNo::ShowAndGetInput(iHeading,20426,20427,-1,20428,20429,cancelled);
+
+    if (cancelled)
+        return -1;
+
+    if (singleFile)
+    {
+      if (params.size() > 2)
+        thumbs = params[2].Equals("true");
+      else
+        thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (thumbs && params[0].Equals("video"))
+    {
+      if (params.size() > 4)
+        actorThumbs = params[4].Equals("true");
+      else
+        actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (singleFile)
+    {
+      if (params.size() > 3)
+        overwrite = params[3].Equals("true");
+      else
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (params.size() > 2)
+      path=params[2];
+    if (singleFile || !path.IsEmpty() ||
+        CGUIDialogFileBrowser::ShowAndGetDirectory(shares,
+          g_localizeStrings.Get(661), path, true))
+    {
+      if (params[0].Equals("video"))
+      {
+        if (CUtil::HasSlashAtEnd(path))
+          CUtil::AddFileToFolder(path, "videodb.xml", path);
+        CVideoDatabase videodatabase;
+        videodatabase.Open();
+        videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
+        videodatabase.Close();
+      }
+      else
+      {
+        if (CUtil::HasSlashAtEnd(path))
+          CUtil::AddFileToFolder(path, "musicdb.xml", path);
+        CMusicDatabase musicdatabase;
+        musicdatabase.Open();
+        musicdatabase.ExportToXML(path, singleFile, thumbs, overwrite);
+        musicdatabase.Close();
       }
     }
   }
