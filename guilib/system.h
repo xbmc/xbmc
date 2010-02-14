@@ -44,7 +44,12 @@
 #define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
+
+#ifdef HAVE_LIBMICROHTTPD
+#define HAS_WEBSERVER
 #define HAS_WEB_INTERFACE
+#endif
+
 #define HAS_JSONRPC
 #define HAS_HTTPAPI
 

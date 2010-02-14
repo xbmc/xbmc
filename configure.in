@@ -953,10 +953,7 @@ fi
 
 if test "$use_webserver" = "yes"; then
   final_message="$final_message\n  Webserver:\tYes"
-  HAVE_XBMC_NONFREE=1
-  AC_DEFINE([HAS_WEB_SERVER], [1], [Define to 1 to enable webserver.])
 else
-  HAS_WEB_SERVER=0
   final_message="$final_message\n  Webserver:\tNo"
 fi
 
