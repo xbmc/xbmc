@@ -531,19 +531,20 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (result == CNfoFile::ERROR_NFO)
     ignoreNfo = true;
   else
-  if (bHasInfo && result != CNfoFile::NO_NFO)
+  if (result != CNfoFile::NO_NFO)
   {
-    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+    if (!bHasInfo || !CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+    {
       hasDetails = true;
+      if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+        scanner.m_IMDB.SetScraperInfo(info);
+    }
     else
     {
       ignoreNfo = true;
       scrUrl.Clear();
     }
   }
-  
-  if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-    scanner.m_IMDB.SetScraperInfo(info);
 
   // Get the correct movie title
   CStdString movieName = item->GetMovieName(settings.parent_name);
@@ -553,7 +554,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   bool needsRefresh(false);
   do
   {
-    // 4. if we don't have a url, or need to refresh the search
+    // 4. if we don't have an url, or need to refresh the search
     //    then do the web search
     IMDB_MOVIELIST movielist;
     if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
