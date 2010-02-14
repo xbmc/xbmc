@@ -6866,6 +6866,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="jsoncpp"
+				>
+				<File
+					RelativePath="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_reader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_value.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_writer.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
