@@ -50,6 +50,7 @@ enum
 
 #include "win32exception.h"
 #include "Filters/EVRAllocatorPresenter.h"
+#include "DSConfig.h"
 
 using namespace std;
 using namespace MediaInfoDLL;
@@ -68,6 +69,7 @@ CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
   m_pBasicAudio = NULL;
   m_bReachedEnd = false;
   m_bChangingAudioStream = false;
+  g_dsconfig.pGraph = this;
 }
 
 CDSGraph::~CDSGraph()
@@ -533,41 +535,64 @@ HRESULT CDSGraph::UnloadGraph()
   /* delete filters */
 
   CLog::Log(LOGDEBUG, "%s Deleting filters ...", __FUNCTION__);
-  
-  do
-  {
-    c = m_pGraphBuilder->GetLoader()->GetSplitter()->Release();
-  } while (c != 0);
 
-  do
-  {
-    c = m_pGraphBuilder->GetLoader()->GetAudioDec()->Release();
-  } while (c != 0);
-
-  do 
-  {
-    c = m_pGraphBuilder->GetLoader()->GetVideoDec()->Release();
-  } while (c != 0);
-  
-  while (! m_pGraphBuilder->GetLoader()->GetExtras().empty())
+  /*if (CFGLoader::GetSource())
   {
     do
     {
-      c = m_pGraphBuilder->GetLoader()->GetExtras().back()->Release();
+      c = CFGLoader::GetSource()->Release();
+    } while (c != 0);
+  }*/
+  
+  if (CFGLoader::GetSplitter())
+  {
+    do
+    {
+      c = CFGLoader::GetSplitter()->Release();
+    } while (c != 0);
+  }
+
+  if (CFGLoader::GetAudioDec())
+  {
+    do
+    {
+      c = CFGLoader::GetAudioDec()->Release();
+    } while (c != 0);
+  }
+
+  if (CFGLoader::GetVideoDec())
+  {
+    do 
+    {
+      c = CFGLoader::GetVideoDec()->Release();
+    } while (c != 0);
+  }
+  
+  while (! CFGLoader::GetExtras().empty())
+  {
+    do
+    {
+      c = CFGLoader::GetExtras().back()->Release();
     } while (c != 0);
 
     m_pGraphBuilder->GetLoader()->GetExtras().pop_back();
   }
 
-  do
+  if (CFGLoader::GetAudioRenderer())
   {
-    c = m_pGraphBuilder->GetLoader()->GetAudioRenderer()->Release();
-  } while (c != 0);
+    do
+    {
+      c = CFGLoader::GetAudioRenderer()->Release();
+    } while (c != 0);
+  }
 
-  do 
+  if (CFGLoader::GetVideoRenderer())
   {
-    c = m_pGraphBuilder->GetLoader()->GetVideoRenderer()->Release();
-  } while (c != 0);
+    do 
+    {
+      c = CFGLoader::GetVideoRenderer()->Release();
+    } while (c != 0);
+  }
 
   CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
 
@@ -677,12 +702,18 @@ float CDSGraph::GetPercentage()
 
 CStdString CDSGraph::GetGeneralInfo()
 {
-  CStdString generalInfo;
+  CStdString generalInfo = "";
 
+  if (! m_VideoInfo.filter_source.empty() )
   generalInfo = "Source Filter: " + m_VideoInfo.filter_source;
 
   if (! m_VideoInfo.filter_splitter.empty())
-    generalInfo += " | Splitter: " + m_VideoInfo.filter_splitter;
+  {
+    if (generalInfo.empty())
+      generalInfo = "Splitter: " + m_VideoInfo.filter_splitter;
+    else
+      generalInfo += " | Splitter: " + m_VideoInfo.filter_splitter;
+  }
 
   return generalInfo;
 }

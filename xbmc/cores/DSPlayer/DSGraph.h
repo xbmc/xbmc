@@ -56,6 +56,8 @@ enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
                   MOVIE_STOPPED   = 0x03,
                   MOVIE_PAUSED    = 0x04 };
 
+class CFGManager;
+
 class CDSGraph
 {
 public:

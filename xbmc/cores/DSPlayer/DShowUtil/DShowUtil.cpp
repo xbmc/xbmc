@@ -676,43 +676,24 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
   while (!mts.empty())
     mts.pop_back();
 
+  bool fFound = false;
   BeginEnumMediaTypes(pPin, pEM, pmt)
   {
-    bool fFound = false;
-  
-    for (std::list<CMediaType>::iterator it = mts.begin() ; it != mts.end(); it++)
+    fFound = false;
+    for (std::list<CMediaType>::const_iterator it = mts.begin();
+      it != mts.end(); ++it)
     {
       if((*it).majortype == pmt->majortype && (*it).subtype == pmt->subtype)
+      {
         fFound = true;
-      if (!fFound)
-      {
-        mts.push_back(CMediaType(*pmt));
-      }
-      if (fFound)
-      {
-        DeleteMediaType(pmt);
-        SAFE_RELEASE(pEM);
         break;
       }
     }
+
+    if (!fFound)
+      mts.push_back(CMediaType(*pmt));
   }
-  EndEnumMediaTypes(pEM, pmt)
-    /*POSITION pos = mts.GetHeadPosition();
-    while(!fFound && pos)
-    {
-      CMediaType& mt = mts.GetNext(pos);
-      if(mt.majortype == pmt->majortype && mt.subtype == pmt->subtype)
-        fFound = true;
-    }
-
-    if(!fFound)
-    {
-      mts.AddTail(CMediaType(*pmt));
-    }
-    EndEnumMediaTypes(pmt)
-    */
-
-  
+  EndEnumMediaTypes(pEM, pmt)  
 }
 
 int Eval_Exception(int n_except)

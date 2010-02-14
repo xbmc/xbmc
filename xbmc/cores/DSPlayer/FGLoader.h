@@ -38,6 +38,8 @@ enum DIRECTSHOW_RENDERER
 
 class CFGLoader : public CCritSec
 {
+private:
+  HRESULT   InsertFilter(const CStdString& filterName, IBaseFilter** ppBF, CStdString& strBFName);
 public:
   CFGLoader();
   virtual ~CFGLoader();
@@ -46,10 +48,7 @@ public:
   HRESULT    LoadConfig(IFilterGraph2* fg,CStdString configFile);
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
   HRESULT    InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName);
-  HRESULT    InsertSplitter(const CStdString& filterName);
-  HRESULT    InsertAudioDecoder(const CStdString& filterName);
-  HRESULT    InsertVideoDecoder(const CStdString& filterName);
-  HRESULT    InsertExtraFilter(const CStdString& filterName);
+  HRESULT    InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName);
   HRESULT    InsertAudioRenderer();
   HRESULT    InsertVideoRenderer();
   HRESULT    InsertAutoLoad();

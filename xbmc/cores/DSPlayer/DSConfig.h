@@ -31,6 +31,10 @@
 #include "Filters/IffdshowBase.h"
 #include "Filters/IffdshowDecVideo.h"
 #include "DSPropertyPage.h"
+#include "DSGraph.h"
+
+class CDSGraph;
+class CDSPropertyPage;
 
 class CDSConfig
 {
@@ -45,6 +49,8 @@ public:
   virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages() { return m_pPropertiesFilters; };
   void ShowPropertyPage(IBaseFilter *pBF);
   virtual bool SetSubtitlesFile(CStdString subFilePath);
+
+  CDSGraph * pGraph;
 protected:
   bool LoadPropertiesPage(IBaseFilter *pBF);
   void CreatePropertiesXml();

@@ -46,6 +46,8 @@
 //XML CONFIG HEADERS
 #include "tinyXML/tinyxml.h"
 #include "XMLUtils.h"
+#include "GUIDialogOK.h"
+#include "GUIWindowManager.h"
 //END XML CONFIG HEADERS
 
 using namespace std;
@@ -553,13 +555,65 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   } else
     CLog::Log(LOGDEBUG, "%s Successfully loaded filters rules", __FUNCTION__);
 
-  ConnectFilter(m_CfgLoader->GetSplitter(), NULL);
+  hr = ConnectFilter(CFGLoader::GetSplitter(), NULL);
 
-  //Get all custom interface
-  //To verify
-  //m_pDsConfig = new CDSConfig();
+  if (hr != S_OK)
+  {
+    IBaseFilter *pBF = CFGLoader::GetSplitter();
+    int nVideoPin = 0, nAudioPin = 0;
+    int nConnectedVideoPin = 0, nConnectedAudioPin = 0;
+    bool videoError = false, audioError = false;
+    CStdString strError = "";
+    BeginEnumPins(pBF, pEP, pPin)
+    {
+      BeginEnumMediaTypes(pPin, pEMT, pMT)
+      {
+        if (pMT->majortype == MEDIATYPE_Video)
+        {
+          nVideoPin++;
+          if (DShowUtil::IsPinConnected(pPin) == S_OK)
+            nConnectedVideoPin++;
+        }
+        if (pMT->majortype == MEDIATYPE_Audio)
+        {
+          nAudioPin++;
+          if (DShowUtil::IsPinConnected(pPin) == S_OK)
+            nConnectedAudioPin++;
+        }
+        break;
+      }
+      EndEnumMediaTypes(pEMT, pMT)
+    }
+    EndEnumPins(pEP, pBF)
+
+    videoError = (nVideoPin >= 1 && nConnectedVideoPin == 0); // No error if no video stream
+    audioError = (nAudioPin >= 1 && nConnectedAudioPin == 0); // No error if no audio stream
+    if (videoError && audioError)
+      strError = "Error in both audio and video rendering chain.";
+    else if (videoError)
+      strError = "Error in the video rendering chain.";
+    else if (audioError)
+      strError = "Error in the audio rendering chain.";
+
+    if (! strError.empty())
+    {
+      CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dialog)
+      {
+        CLog::Log(LOGERROR, "%s Audio / Video error \n %s \n Ensure that the audio/video stream is supported by your selected decoder and ensure that the decoder is properly configured.", __FUNCTION__, strError.c_str());
+        dialog->SetHeading("Audio / Video error");
+        dialog->SetLine(0, "Error in the rendering chain. See the log for");
+        dialog->SetLine(1, "more details or see XBMC Wiki - 'DSPlayer codecs'");
+        dialog->SetLine(2, "section for more informations.");
+        dialog->DoModal();
+
+        return E_FAIL;
+      }
+    }
+  }
 
   g_dsconfig.ConfigureFilters(m_pFG);
+
   //Apparently the graph dont start with wmv when you have unconnected filters
   //And for debuging reason we wont remove it if the file is not a wmv
   if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))

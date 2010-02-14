@@ -22,17 +22,7 @@
  */
 #include "utils/Thread.h"
 #include <streams.h>
-
-struct OLEPropertyFrame {
-  struct SDialog {
-    DLGTEMPLATE dlg;
-    WORD menu;
-    WORD wclass;
-    WORD caption;
-  } dialog;
-  IPropertyPageSite *pps;
-  IPropertyPage  *propPage;
-};
+#include "DSGraph.h"
 
 class CDSPlayerPropertyPageSite: public IPropertyPageSite, public CUnknown
 {
@@ -41,7 +31,27 @@ public:
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,__deref_out void **ppv) { return E_NOTIMPL; }
 
   HRESULT STDMETHODCALLTYPE OnStatusChange(
-    /* [in] */ DWORD dwFlags ) { return S_OK; };
+    /* [in] */ DWORD dwFlags ) {
+
+      if (hwnd == (HWND)NULL)
+        return E_UNEXPECTED;
+      
+      switch ( dwFlags )
+      {
+        case PROPPAGESTATUS_DIRTY:
+          /* dirty */
+          SendMessage(GetParent(hwnd), PSM_CHANGED, (WPARAM)(hwnd), 0);
+          break;
+        case PROPPAGESTATUS_VALIDATE:
+          /* validate */
+          SendMessage(GetParent(hwnd), PSM_UNCHANGED, (WPARAM)(hwnd), 0);
+          break;
+        default:
+          return E_INVALIDARG;
+      }
+      
+      return S_OK;
+  };
 
   HRESULT STDMETHODCALLTYPE GetLocaleID(
     __RPC__out LCID *pLocaleID) { *pLocaleID = m_lcid; return S_OK; };
@@ -55,18 +65,34 @@ public:
 
   CDSPlayerPropertyPageSite(LCID lcid):
     CUnknown("DSPlayer Property Page", NULL),
-    m_lcid(lcid)
+    m_lcid(lcid),
+    hwnd(0)
   { }
+
+  HWND hwnd;
 
 private:
   LCID m_lcid;
 
 };
 
+struct OLEPropertyFrame {
+  struct SDialog {
+    DLGTEMPLATE dlg;
+    WORD menu;
+    WORD wclass;
+    WORD caption;
+  } dialog;
+  CDSPlayerPropertyPageSite *pps;
+  IPropertyPage  *propPage;
+};
+
+class CDSGraph;
+
 class CDSPropertyPage : public CThread
 {
 public:
-  CDSPropertyPage(IBaseFilter* pBF);
+  CDSPropertyPage(CDSGraph *graph, IBaseFilter* pBF);
   virtual ~CDSPropertyPage();
 
   virtual bool Initialize();
@@ -74,4 +100,5 @@ protected:
   virtual void OnExit();
   virtual void Process();
   IBaseFilter* m_pBF;
+  CDSGraph *m_pGraph;
 };

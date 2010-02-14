@@ -30,6 +30,10 @@
 #include "DShowUtil/DShowUtil.h"
 #include "WindowingFactory.h"
 #include "CharsetConverter.h"
+#include "GraphicContext.h"
+#include "GUISettings.h"
+#include "Application.h"
+#include "Settings.h"
 
 LONG GdiGetCharDimensions(HDC hdc, LPTEXTMETRICW lptm, LONG *height)
 {
@@ -48,8 +52,9 @@ LONG GdiGetCharDimensions(HDC hdc, LPTEXTMETRICW lptm, LONG *height)
 }
 
 
-CDSPropertyPage::CDSPropertyPage(IBaseFilter* pBF)
-: m_pBF(pBF)
+CDSPropertyPage::CDSPropertyPage(CDSGraph* graph, IBaseFilter* pBF)
+: m_pBF(pBF),
+  m_pGraph(graph)
 {
 }
 
@@ -76,6 +81,7 @@ static INT_PTR CALLBACK prop_sheet_proc(HWND hwnd, UINT msg, WPARAM wparam,
         PROPSHEETPAGE *psp = (PROPSHEETPAGE *)lparam; 
         OLEPropertyFrame *opf = (OLEPropertyFrame *)psp->lParam;
 
+        opf->pps->hwnd = hwnd;
         ZeroMemory(&rect, sizeof(rect));
         GetClientRect(hwnd, &rect);
         result = opf->propPage->Activate(hwnd, &rect, TRUE);
@@ -85,6 +91,7 @@ static INT_PTR CALLBACK prop_sheet_proc(HWND hwnd, UINT msg, WPARAM wparam,
                 SetWindowLongPtr(hwnd, DWLP_USER, (LONG)opf);
             }
         }
+        BringWindowToTop(hwnd);
         break;
       }
     case WM_DESTROY:
@@ -142,6 +149,7 @@ void CDSPropertyPage::Process()
     
     propSheet.dwSize = sizeof(propSheet);
     propSheet.dwFlags = PSH_PROPTITLE;
+    propSheet.hwndParent = g_Windowing.GetHwnd();
     
     CStdString filterName;
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(m_pBF), filterName);
@@ -166,7 +174,7 @@ void CDSPropertyPage::Process()
 
     for(int page = 0; page < pPages.cElems;  page++)
     {
-      opf[page].pps = new CDSPlayerPropertyPageSite(0);
+      opf[page].pps = new CDSPlayerPropertyPageSite(LANG_NEUTRAL);
       hr = DShowUtil::LoadExternalPropertyPage(m_pBF, pPages.pElems[page], &opf[page].propPage);
       if (FAILED(hr))
         continue;
@@ -199,10 +207,29 @@ void CDSPropertyPage::Process()
         CoTaskMemFree(pPageInfo.pszHelpFile);
     }
 
-    //g_guiSettings.GetBool("videoscreen.fakefullscreen")
-    /* Impossible d'afficher les prop si l'on est en fullscreen, on doit repasser en windowed avant ! */
+    /*bool wasFullScreen = false;
+    if (g_graphicsContext.IsFullScreenRoot() && !g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    {
+      // True fullscreen, we can't show prop page
+      
+      //g_graphicsContext.SetFullScreenVideo();
+      
+      wasFullScreen = true;
+      g_guiSettings.SetBool("videoscreen.fakefullscreen", true);
+      m_pGraph->Stop();
+      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+      //m_pGraph->Play();
+    }*/
 
     hr = PropertySheet(&propSheet);
+
+    /*if (wasFullScreen)
+    {
+      g_guiSettings.SetBool("videoscreen.fakefullscreen", false);
+      m_pGraph->Stop();
+      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+      m_pGraph->Play();
+    }*/
 
     for(int page = 0; page < pPages.cElems; page++) {
       if(opf[page].propPage) {

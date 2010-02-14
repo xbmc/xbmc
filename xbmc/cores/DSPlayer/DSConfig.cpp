@@ -43,6 +43,7 @@ CDSConfig::CDSConfig(void)
   m_pIffdshowDecFilter = NULL;
   m_pSplitter = NULL;
   m_pIffdshowBase = NULL;
+  pGraph = NULL;
 }
 
 CDSConfig::~CDSConfig(void)
@@ -144,7 +145,7 @@ void CDSConfig::CreatePropertiesXml()
 
 void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
 {
-  m_pCurrentProperty = new CDSPropertyPage(pBF);
+  m_pCurrentProperty = new CDSPropertyPage(g_dsconfig.pGraph, pBF);
   m_pCurrentProperty->Initialize();
 }
 

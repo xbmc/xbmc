@@ -129,6 +129,8 @@ void CStreamsManager::SetAudioStream(int iStream)
     if (! connectedToPin)
       hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
 
+    m_audioStreams[enableIndex]->pUnk = connectedToPin;
+
     if (FAILED(hr))
       goto done;
 

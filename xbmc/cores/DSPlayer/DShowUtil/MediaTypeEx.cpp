@@ -211,6 +211,9 @@ CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompress
 		names['SVQ3'] = _T("SVQ3");
 		names['SVQ1'] = _T("SVQ1");
 		names['H263'] = _T("H263");
+    names['WVC1'] = _T("WMV 9 Advanced Profile (VC1)");
+    names['WMV3'] = _T("WMV 9 (VC1)");
+    names['CCV1'] = _T("MPEG4 Video (H264)");
 		// names[''] = _T("");
 	}
 
