@@ -666,12 +666,6 @@ config.log
 /xbmc/lib/cximage-6.0/zlib/zconf.h
 /xbmc/lib/cximage-6.0/zlib/Makefile
 
-# /xbmc/lib/libGoAhead/
-/xbmc/lib/libGoAhead/Makefile.depend
-/xbmc/lib/libGoAhead/Makefile
-
-# /xbmc/lib/libGoAhead/src/
-
 /skin/Confluence/media/Textures.xbt
 /skin/PM3.HD/media/Textures.xbt
 
