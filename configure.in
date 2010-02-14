@@ -315,6 +315,9 @@ if test "$host_vendor" != "apple" ; then
   if test "$use_webserver" = "yes"; then
     AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
   fi
+else
+  use_webserver="no"
+  AC_MSG_RESULT(Webserver disabled)
 fi
 
 

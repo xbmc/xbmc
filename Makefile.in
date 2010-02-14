@@ -353,9 +353,9 @@ xcode_depends: \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
-  xbmc/lib/libjsonrpc/libjsonrpc.a \
-  lib/jsoncpp/jsoncpp/src/lib_json.a \
-  xbmc/lib/libhttpapi/libhttpapi.a
+	xbmc/lib/libjsonrpc/libjsonrpc.a \
+	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
+	xbmc/lib/libhttpapi/libhttpapi.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -395,9 +395,9 @@ OBJSXBMC=	\
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
-  xbmc/lib/libjsonrpc/libjsonrpc.a \
-  lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
-  xbmc/lib/libhttpapi/libhttpapi.a \
+	xbmc/lib/libjsonrpc/libjsonrpc.a \
+	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
+	xbmc/lib/libhttpapi/libhttpapi.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
