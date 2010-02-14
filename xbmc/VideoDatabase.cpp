@@ -5092,6 +5092,12 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           // matching title? append information
           if (jItem->GetVideoInfoTag()->m_strTitle.Equals(strTitle))
           {
+            if (jItem->GetVideoInfoTag()->m_strPremiered != 
+                pItem->GetVideoInfoTag()->m_strPremiered)
+            {
+              j++;
+              continue;
+            }
             bStacked = true;
 
             // increment episode counts
