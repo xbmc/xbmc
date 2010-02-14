@@ -3,6 +3,8 @@
 autoreconf -vif
 autoreconf -vif xbmc/lib/libass
 autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
+autoreconf -vif xbmc/screensavers/rsxs-0.9/
+autoreconf -vif lib/libmodplug/
 
 echo "Please (re)run configure..."
 
