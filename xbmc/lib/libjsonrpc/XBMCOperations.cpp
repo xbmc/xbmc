@@ -94,7 +94,7 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
 JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (parameterObject.isString())
-    CLog::Log(LOGDEBUG, parameterObject.asString().c_str());
+    CLog::Log(LOGDEBUG, "%s", parameterObject.asString().c_str());
   else if (parameterObject.isObject() && parameterObject.isMember("message") && parameterObject["message"].isString())
   {
     if (parameterObject.isMember("level") && !parameterObject["level"].isString())
@@ -103,7 +103,7 @@ JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *tran
     CStdString strlevel = parameterObject.get("level", "debug").asString();
     int level = ParseLogLevel(strlevel.ToLower().c_str());
 
-    CLog::Log(level, parameterObject["message"].asString().c_str());
+    CLog::Log(level, "%s", parameterObject["message"].asString().c_str());
   }
   else
     return InvalidParams;
@@ -134,5 +134,7 @@ int CXBMCOperations::ParseLogLevel(const char *level)
   else if (strcmp(level, "fatal") == 0)
     return LOGFATAL;
   else if (strcmp(level, "none") == 0)
+    return LOGNONE;
+  else
     return LOGNONE;
 }

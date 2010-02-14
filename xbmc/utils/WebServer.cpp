@@ -245,7 +245,7 @@ void CWebServer::StringToBase64(const char *input, CStdString &output)
   size_t length = strlen (input);
   output = "";
 
-  for (int i = 0; i < length; i += 3)
+  for (unsigned int i = 0; i < length; i += 3)
   {
     l = (((unsigned long) input[i]) << 16)
       | (((i + 1) < length) ? (((unsigned long) input[i + 1]) << 8) : 0)

@@ -41,7 +41,7 @@ JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLa
   CFileItemList items;
   if (playlist)
   {
-    for (unsigned int i = 0; i < playlist->size(); i++)
+    for (int i = 0; i < playlist->size(); i++)
       items.Add((*playlist)[i]);
 
     CStdString name = playlist->GetName();

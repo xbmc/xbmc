@@ -1334,10 +1334,12 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
 	else  
 	  slideOutput+=closeTag+openTag+prefix+"Changed:False";
 	if (!extended)
+	{
 	  if (justChange && !slideChanged)
 	    return SetResponse(openTag+"Changed:False");
 	  else
-		return SetResponse(slideOutput);
+	    return SetResponse(slideOutput);
+        }
   }
   CFileItem &fileItem = g_application.CurrentFileItem();
   if (fileItem.m_strPath.IsEmpty())
