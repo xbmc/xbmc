@@ -1874,7 +1874,10 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strParentPath);
 
-    SetHistoryForPath(strParentPath);
+    if (pSelItem->IsVideoDb() && g_settings.m_bMyVideoNavFlatten)
+      SetHistoryForPath("");
+    else
+      SetHistoryForPath(strParentPath);
 
     strPath = pSelItem->m_strPath;
     CURL url(strPath);
@@ -1898,7 +1901,10 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strPath);
 
-    SetHistoryForPath(strPath);
+    if (pSelItem->IsVideoDb() && g_settings.m_bMyVideoNavFlatten)
+      SetHistoryForPath("");
+    else
+      SetHistoryForPath(strPath);
 
     for (int i = 0; i < (int)m_vecItems->Size(); i++)
     {
