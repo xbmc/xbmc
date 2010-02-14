@@ -111,11 +111,11 @@ Command CJSONRPC::m_commands[] = {
   { "PicturePlayer.Rotate",             CPicturePlayerOperations::Rotate,       Response,     ControlPlayback, "Rotates current picture" },
 
 // Playlist
-  { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,         "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
-  { "Playlist.Add",                     CPlaylistOperations::Add,               Response,     ControlPlayback,  "Add items to the playlist. Parameter example {\"playlist\": \"music\", \"file\": \"/foo/bar.mp3\" }. playlist optional." },
-  { "Playlist.Remove",                  CPlaylistOperations::Remove,            Response,     ControlPlayback,  "Remove items in the playlist. Parameter example {\"playlist\": \"music\", \"item\": 0 }. playlist optional." },
-  { "Playlist.Swap",                    CPlaylistOperations::Swap,              Response,     ControlPlayback,  "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
-  { "Playlist.Shuffle",                 CPlaylistOperations::Shuffle,           Response,     ControlPlayback,  "Shuffle playlist" },
+  { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,        "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
+  { "Playlist.Add",                     CPlaylistOperations::Add,               Response,     ControlPlayback, "Add items to the playlist. Parameter example {\"playlist\": \"music\", \"file\": \"/foo/bar.mp3\" }. playlist optional." },
+  { "Playlist.Remove",                  CPlaylistOperations::Remove,            Response,     ControlPlayback, "Remove items in the playlist. Parameter example {\"playlist\": \"music\", \"item\": 0 }. playlist optional." },
+  { "Playlist.Swap",                    CPlaylistOperations::Swap,              Response,     ControlPlayback, "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
+  { "Playlist.Shuffle",                 CPlaylistOperations::Shuffle,           Response,     ControlPlayback, "Shuffle playlist" },
 
 // File
   { "Files.GetShares",                  CFileOperations::GetRootDirectory,      Response,     ReadData,        "Get the root directory of the media windows" },
