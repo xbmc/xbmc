@@ -412,6 +412,11 @@
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </Settings>
+  <AddonBrowser>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </AddonBrowser>
   <MyPicturesSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>
