@@ -530,7 +530,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (result == CNfoFile::ERROR_NFO)
     ignoreNfo = true;
   else
-  if (result != CNfoFile::NO_NFO)
+  if (bHasInfo && result != CNfoFile::NO_NFO)
   {
     if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
       hasDetails = true;
@@ -1871,7 +1871,10 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strParentPath);
 
-    SetHistoryForPath(strParentPath);
+    if (pSelItem->IsVideoDb() && g_stSettings.m_bMyVideoNavFlatten)
+      SetHistoryForPath("");
+    else
+      SetHistoryForPath(strParentPath);
 
     strPath = pSelItem->m_strPath;
     CURL url(strPath);
@@ -1895,7 +1898,10 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strPath);
 
-    SetHistoryForPath(strPath);
+    if (pSelItem->IsVideoDb() && g_stSettings.m_bMyVideoNavFlatten)
+      SetHistoryForPath("");
+    else
+      SetHistoryForPath(strPath);
 
     for (int i = 0; i < (int)m_vecItems->Size(); i++)
     {

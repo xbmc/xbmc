@@ -2650,8 +2650,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   vector<CStdString> vecExtensionsCached;
   strExtensionCached = "";
 
-  ClearSubtitles();
-
   CFileItem item(strMovie, false);
   if (item.IsInternetStream()) return ;
   if (item.IsHDHomeRun()) return ;
@@ -2702,7 +2700,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     CStdString strPath2;
     GetParentPath(strPath,strPath2);
     strLookInPaths.push_back(strPath2);
-  } 
+  }
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -2775,7 +2773,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           unsigned int iPos = strMovie.substr(0,6)=="rar://"?1:0;
           iPos = strMovie.substr(0,6)=="zip://"?1:0;
           if ((step != iPos) || (strFileNameNoExtNoCase+".rar").Equals(strItem) || (strFileNameNoExtNoCase+".zip").Equals(strItem))
-            CacheRarSubtitles( vecExtensionsCached, items[j]->m_strPath, strFileNameNoExtNoCase);
+            CacheRarSubtitles(items[j]->m_strPath, strFileNameNoExtNoCase);
         }
         else
         {
@@ -2800,14 +2798,8 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
             {
               strLExt = strItem.Right(strItem.size() - fnl);
               strDest.Format("special://temp/subtitle%s", strLExt);
-              if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strLExt) == vecExtensionsCached.end())
-              {
-                if (CFile::Cache(items[j]->m_strPath, strDest, pCallback, NULL))
-                {
-                  vecExtensionsCached.push_back(strLExt);
-                  CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
-                }
-              }
+              if (CFile::Cache(items[j]->m_strPath, strDest, pCallback, NULL))
+                CLog::Log(LOGINFO, " cached subtitle %s->%s\n", strItem.c_str(), strDest.c_str());
             }
           }
         }
@@ -2818,14 +2810,27 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
   CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - nextTimer));
 
-  // construct string of added exts?
+  // build the vector with extensions
+  CFileItemList items;
+  CDirectory::GetDirectory("special://temp/", items,".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|.ass|.idx|.ifo|.rar|.zip",false);
+  for (int i=0;i<items.Size();++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+ 
+    CStdString filename = GetFileName(items[i]->m_strPath);
+    vecExtensionsCached.push_back(filename.Right(filename.size()-8));
+  }
+
+  // construct string of added exts
   for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
 
   CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
 }
 
-bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
+bool CUtil::CacheRarSubtitles(const CStdString& strRarPath, 
+                              const CStdString& strCompare)
 {
   bool bFoundSubs = false;
   CFileItemList ItemList;
@@ -2850,9 +2855,6 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
     CStdString strPathInRar = ItemList[it]->m_strPath;
     CStdString strExt = CUtil::GetExtension(strPathInRar);
 
-    if (find(vecExtensionsCached.begin(),vecExtensionsCached.end(),strExt) != vecExtensionsCached.end())
-      continue;
-
     CLog::Log(LOGDEBUG, "CacheRarSubs:: Found file %s", strPathInRar.c_str());
     // always check any embedded rar archives
     // checking for embedded rars, I moved this outside the sub_ext[] loop. We only need to check this once for each file.
@@ -2864,7 +2866,7 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
         CUtil::CreateArchivePath(strRarInRar, "rar", strRarPath, strPathInRar);
       else
         CUtil::CreateArchivePath(strRarInRar, "zip", strRarPath, strPathInRar);
-      CacheRarSubtitles(vecExtensionsCached,strRarInRar,strCompare, strExtExt);
+      CacheRarSubtitles(strRarInRar,strCompare);
     }
     // done checking if this is a rar-in-rar
 
@@ -2884,11 +2886,10 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
             strSourceUrl = strPathInRar;
 
           CStdString strDestFile;
-          strDestFile.Format("special://temp/subtitle%s%s", sub_exts[iPos],strExtExt.c_str());
+          strDestFile.Format("special://temp/subtitle%s", sub_exts[iPos]);
 
           if (CFile::Cache(strSourceUrl,strDestFile))
           {
-            vecExtensionsCached.push_back(CStdString(sub_exts[iPos]));
             CLog::Log(LOGINFO, " cached subtitle %s->%s", strPathInRar.c_str(), strDestFile.c_str());
             bFoundSubs = true;
             break;

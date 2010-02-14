@@ -39,6 +39,24 @@ void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
+void CDemuxStreamAudioFFmpeg::GetStreamName(std::string& strInfo)
+{
+  if(!m_stream) return;
+  if(!m_description.empty())
+    strInfo = m_description;
+  else
+    CDemuxStream::GetStreamName(strInfo);
+}
+
+void CDemuxStreamSubtitleFFmpeg::GetStreamName(std::string& strInfo)
+{
+  if(!m_stream) return;
+  if(!m_description.empty())
+    strInfo = m_description;
+  else
+    CDemuxStream::GetStreamName(strInfo);
+}
+
 void CDemuxStreamVideoFFmpeg::GetStreamInfo(std::string& strInfo)
 {
   if(!m_stream) return;
@@ -937,6 +955,10 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iBlockAlign = pStream->codec->block_align;
         st->iBitRate = pStream->codec->bit_rate;
         st->iBitsPerSample = pStream->codec->bits_per_coded_sample;
+	
+        if(m_bMatroska && m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0))
+          st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0)->value;	
+
         break;
       }
     case CODEC_TYPE_VIDEO:
@@ -975,11 +997,17 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_SUBTITLE:
       {
-        CDemuxStreamSubtitle* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
-        m_streams[iId] = st;
-        if(pStream->codec)
-          st->identifier = pStream->codec->sub_id;
-        break;
+        {
+          CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
+          m_streams[iId] = st;
+          if(pStream->codec)
+            st->identifier = pStream->codec->sub_id;
+	    
+          if(m_bMatroska && m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0))
+            st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0)->value;
+	
+          break;
+        }
       }
     case CODEC_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.

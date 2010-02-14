@@ -142,9 +142,17 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	if (info_ptr->num_trans!=0){ //palette transparency
 		if (info_ptr->num_trans==1){
 			if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE){
+#if PNG_LIBPNG_VER > 10399
+				info.nBkgndIndex = info_ptr->trans_color.index;
+#else
 				info.nBkgndIndex = info_ptr->trans_values.index;
+#endif
 			} else{
+#if PNG_LIBPNG_VER > 10399
+				info.nBkgndIndex = info_ptr->trans_color.gray>>nshift;
+#else
 				info.nBkgndIndex = info_ptr->trans_values.gray>>nshift;
+#endif
 			}
 		}
 		if (info_ptr->num_trans>1){
@@ -152,7 +160,11 @@ bool CxImagePNG::Decode(CxFile *hFile)
 			if (pal){
 				DWORD ip;
 				for (ip=0;ip<min(head.biClrUsed,(unsigned long)info_ptr->num_trans);ip++)
+#if PNG_LIBPNG_VER > 10399
+					pal[ip].rgbReserved=info_ptr->trans_alpha[ip];
+#else
 					pal[ip].rgbReserved=info_ptr->trans[ip];
+#endif
 				for (ip=info_ptr->num_trans;ip<head.biClrUsed;ip++){
 					pal[ip].rgbReserved=255;
 				}
@@ -166,9 +178,15 @@ bool CxImagePNG::Decode(CxFile *hFile)
 		int num_trans;
 		png_color_16 *image_background;
 		if (png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, &image_background)){
+#if PNG_LIBPNG_VER > 10399
+			info.nBkgndColor.rgbRed   = (BYTE)(info_ptr->trans_color.red>>nshift);
+			info.nBkgndColor.rgbGreen = (BYTE)(info_ptr->trans_color.green>>nshift);
+			info.nBkgndColor.rgbBlue  = (BYTE)(info_ptr->trans_color.blue>>nshift);
+#else
 			info.nBkgndColor.rgbRed   = (BYTE)(info_ptr->trans_values.red>>nshift);
 			info.nBkgndColor.rgbGreen = (BYTE)(info_ptr->trans_values.green>>nshift);
 			info.nBkgndColor.rgbBlue  = (BYTE)(info_ptr->trans_values.blue>>nshift);
+#endif
 			info.nBkgndColor.rgbReserved = 0;
 			info.nBkgndIndex = 0;
 		}
@@ -417,12 +435,21 @@ bool CxImagePNG::Encode(CxFile *hFile)
 	if (info.nBkgndIndex >= 0){
 		info_ptr->num_trans = 1;
 		info_ptr->valid |= PNG_INFO_tRNS;
+#if PNG_LIBPNG_VER > 10399
+		info_ptr->trans_alpha = trans;
+		info_ptr->trans_color.index = (BYTE)info.nBkgndIndex;
+		info_ptr->trans_color.red   = tc.rgbRed;
+		info_ptr->trans_color.green = tc.rgbGreen;
+		info_ptr->trans_color.blue  = tc.rgbBlue;
+		info_ptr->trans_color.gray  = info_ptr->trans_color.index;
+#else
 		info_ptr->trans = trans;
 		info_ptr->trans_values.index = (BYTE)info.nBkgndIndex;
 		info_ptr->trans_values.red   = tc.rgbRed;
 		info_ptr->trans_values.green = tc.rgbGreen;
 		info_ptr->trans_values.blue  = tc.rgbBlue;
 		info_ptr->trans_values.gray  = info_ptr->trans_values.index;
+#endif
 
 		// the transparency indexes start from 0 for non grayscale palette
 		if (!bGrayScale && head.biClrUsed && info.nBkgndIndex)
@@ -443,7 +470,11 @@ bool CxImagePNG::Encode(CxFile *hFile)
 				trans[ip]=GetPaletteColor((BYTE)ip).rgbReserved;
 			info_ptr->num_trans = (WORD)nc;
 			info_ptr->valid |= PNG_INFO_tRNS;
+#if PNG_LIBPNG_VER > 10399
+			info_ptr->trans_alpha = trans;
+#else
 			info_ptr->trans = trans;
+#endif
 		}
 
 		// copy the palette colors

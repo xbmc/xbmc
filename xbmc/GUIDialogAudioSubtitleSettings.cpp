@@ -364,9 +364,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
               strFileNameNoExtNoCase.ToLower();
               CUtil::GetDirectory(strPath,strDir);
               CDirectory::GetDirectory(strDir,items,".rar|.zip",false);
-              vector<CStdString> vecExts;
               for (int i=0;i<items.Size();++i)
-                CUtil::CacheRarSubtitles(vecExts,items[i]->m_strPath,strFileNameNoExtNoCase,".keep");
+                CUtil::CacheRarSubtitles(items[i]->m_strPath,strFileNameNoExtNoCase);
             }
             g_stSettings.m_currentVideoSettings.m_SubtitleCached = false;
             g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;

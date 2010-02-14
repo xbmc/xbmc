@@ -88,7 +88,7 @@
 				<expression repeat="yes">&lt;a href=&quot;/List\?certificates=[^&quot;]*&quot;&gt;([^&lt;]*)&lt;/a&gt;[^&lt;]*(&lt;i&gt;([^&lt;]*)&lt;/i&gt;)?</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
-				<expression>&lt;h5&gt;Tagline:&lt;/h5&gt;([^&lt;]*)</expression>
+				<expression>&lt;h5&gt;Tagline:&lt;/h5&gt;\n&lt;div class="info-content"&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
 				<expression trim="1">&lt;h5&gt;Runtime:&lt;/h5&gt;[^0-9]*([^&lt;]*)</expression>

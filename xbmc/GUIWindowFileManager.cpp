@@ -448,6 +448,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   m_vecItems[iList]->Append(items);
   m_vecItems[iList]->m_strPath = items.m_strPath;
 
+  CStdString strParentPath;
   if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || g_guiSettings.GetBool("filelists.showaddsourcebuttons")))
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
@@ -458,7 +459,18 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
-  
+  else if (g_guiSettings.GetBool("filelists.showparentdiritems"))
+  {
+    CUtil::GetParentPath(strDirectory, strParentPath);
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    m_vecItems[iList]->AddFront(pItem, 0);
+  }
+
+  m_strParentPath[iList] = strParentPath;
+
   if (strDirectory.IsEmpty())
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
@@ -1105,42 +1117,6 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 
 bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items)
 {
-  CStdString strParentPath;
-  bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
-
-  // check if current directory is a root share
-  if ( !m_rootDir.IsSource(strDirectory) )
-  {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      if (g_guiSettings.GetBool("filelists.showparentdiritems"))
-      {
-        CFileItemPtr pItem(new CFileItem(".."));
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        items.Add(pItem);
-      }
-      m_strParentPath[iList] = strParentPath;
-    }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    if (g_guiSettings.GetBool("filelists.showparentdiritems"))
-    {
-      CFileItemPtr pItem(new CFileItem(".."));
-      pItem->m_strPath = "";
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-      items.Add(pItem);
-    }
-    m_strParentPath[iList] = "";
-  }
-
   bool bResult = m_rootDir.GetDirectory(strDirectory,items,false);
   if (strDirectory.IsEmpty() && items.Size() == 0)
   {

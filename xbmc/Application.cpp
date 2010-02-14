@@ -3754,6 +3754,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
+   
+    if (item.IsVideo())
+      CUtil::ClearSubtitles();
   }
 
   if (item.IsPlayList())
@@ -5196,6 +5199,8 @@ void CApplication::Restart(bool bSamePosition)
 
   if( !m_pPlayer )
     return ;
+
+  SaveFileState();
 
   // do we want to return to the current position in the file
   if (false == bSamePosition)

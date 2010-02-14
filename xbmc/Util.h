@@ -176,7 +176,7 @@ public:
 
   static void RemoveIllegalChars( CStdString& strText);
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);
-  static bool CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt="");
+  static bool CacheRarSubtitles(const CStdString& strRarPath, const CStdString& strCompare);
   static void ClearSubtitles();
   static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
