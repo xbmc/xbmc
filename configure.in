@@ -188,6 +188,11 @@ AC_ARG_ENABLE([asap-codec],
                 [enable ASAP ADPCM support])],
               [use_asap=$enableval],
               [use_asap=no])
+AC_ARG_ENABLE([webserver],
+              [AS_HELP_STRING([--disable-webserver],
+                [disable webserver])],
+              [use_webserver=$enableval],
+              [use_webserver=yes])
 AC_ARG_ENABLE([libdts],
               [AS_HELP_STRING([--enable-libdts],
                 [enable deprecated libdts support])],
@@ -304,6 +309,12 @@ if test "$use_gl" = "yes"; then
 else
   AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
   AC_CHECK_LIB([SDL_gfx], [main])
+fi
+
+if test "$host_vendor" != "apple" ; then
+  if test "$use_webserver" = "yes"; then
+    AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
+  fi
 fi
 
 
@@ -937,6 +948,15 @@ else
   final_message="$final_message\n  ASAP Codec:\tNo"
 fi
 
+if test "$use_webserver" = "yes"; then
+  final_message="$final_message\n  Webserver:\tYes"
+  HAVE_XBMC_NONFREE=1
+  AC_DEFINE([HAS_WEB_SERVER], [1], [Define to 1 to enable webserver.])
+else
+  HAS_WEB_SERVER=0
+  final_message="$final_message\n  Webserver:\tNo"
+fi
+
 if test "$use_libdts" = "yes"; then
   USE_LIBDTS_DECODER=1
   AC_DEFINE([USE_LIBDTS_DECODER], [1], [Define to 1 to enable deprecated libdts support])
@@ -1021,7 +1041,9 @@ OUTPUT_FILES="Makefile \
              xbmc/lib/libexif/Makefile \
              xbmc/lib/libXDAAP/Makefile \
              xbmc/lib/libhdhomerun/Makefile \
-             xbmc/lib/libGoAhead/Makefile \
+             xbmc/lib/libhttpapi/Makefile \
+             lib/jsoncpp/jsoncpp/src/lib_json/Makefile \
+             xbmc/lib/libjsonrpc/Makefile \
              xbmc/lib/libshout/Makefile \
              xbmc/lib/libsquish/Makefile \
              xbmc/lib/libid3tag/Makefile \

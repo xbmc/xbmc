@@ -31,9 +31,6 @@
 #include "lib/libPython/XBPython.h"
 #endif
 #include "GUIWindowSlideShow.h"
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#endif
 #include "utils/Builtins.h"
 #include "utils/Network.h"
 #include "utils/log.h"
@@ -57,6 +54,10 @@
 #include "SingleLock.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowDialog.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowXMLDialog.h"
+
+#ifdef HAS_HTTPAPI
+#include "lib/libhttpapi/XBMChttp.h"
+#endif
 
 using namespace std;
 
@@ -421,7 +422,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_HTTPAPI:
     {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
       if (!m_pXbmcHttp)
       {
         CSectionLoader::Load("LIBHTTP");

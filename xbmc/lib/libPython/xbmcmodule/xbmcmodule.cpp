@@ -46,7 +46,8 @@
 #include "infotagvideo.h"
 #include "infotagmusic.h"
 #ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
+#include "lib/libhttpapi/XBMChttp.h"
+#include "lib/libhttpapi/HttpApi.h"
 #endif
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
@@ -284,6 +285,7 @@ namespace PYXBMC
     return Py_None;
   }
 
+#ifdef HAS_HTTPAPI
   // executehttpapi() method
   PyDoc_STRVAR(executeHttpApi__doc__,
     "executehttpapi(httpcommand) -- Execute an HTTP API command.\n"
@@ -302,21 +304,16 @@ namespace PYXBMC
     CStdString ret;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
-    {
-      CSectionLoader::Load("LIBHTTP");
       m_pXbmcHttp = new CXbmcHttp();
-    }
-    if (!pXbmcHttpShim)
-    {
-      pXbmcHttpShim = new CXbmcHttpShim();
-      if (!pXbmcHttpShim)
-        return NULL;
-    }
-    ret=pXbmcHttpShim->xbmcExternalCall(cLine);
+
+    CStdString method = cLine, parameter;
+
+    ret = CHttpApi::MethodCall(method, parameter);
 
     return PyString_FromString(ret.c_str());
 #endif
   }
+#endif
 
   // sleep() method
   PyDoc_STRVAR(sleep__doc__,
@@ -870,7 +867,9 @@ namespace PYXBMC
     {(char*)"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
     //{(char*)"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
 
+#ifdef HAS_HTTPAPI
     {(char*)"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
+#endif
     {(char*)"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
     {(char*)"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
     {(char*)"getCondVisibility", (PyCFunction)XBMC_GetCondVisibility, METH_VARARGS, getCondVisibility__doc__},

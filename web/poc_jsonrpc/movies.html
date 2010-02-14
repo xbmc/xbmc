@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>XBMC - Movies</title>
+<link type="text/css" rel="stylesheet" href="basic.css">
+<script type="text/javascript" src="json.js"> // FOR browsers which doesn't have it included
+</script>
+<script type="text/javascript">
+function PlayMovie(movieid)
+{
+  alert("Not implemented");
+}
+</script>
+</head>
+<body>
+<h1>Movies</h1>
+
+<script type="text/javascript">
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+var send = { "jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "id": 1 }
+http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"fields\": [\"title\", \"plot\"] }, \"id\": 1}");
+
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+var array = result["movies"];
+
+document.write("<table class=\"Movies\"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>");
+var odd = false;
+for (var property in array) {
+  var item = array[property];
+  var row = "even";
+  if (odd)
+    row = "odd";
+
+  document.write("<tr class=\"" + row + "\"><td class=\"cover\">");
+  if (item["thumbnail"])
+    document.write("<img src=thumb/" + item["thumbnail"] + ".jpg alt=\"" + item["title"] + "\" height=200 onclick=\"PlayMovie(" + item["movieid"] + ")\"></img>");
+  document.write("</td><td>");
+
+  document.write("<table class\"Info\"><tr><td class=\"Title\">");
+    document.write("<h1>" + item["title"] + "</h1>");
+  document.write("</td></tr><tr><td class=\"Plot\">");
+  if (item["plot"])
+    document.write(item["plot"]);
+  document.write("</td></tr></table>");
+
+
+  document.write("</td></tr>");
+  odd = !odd;
+}
+document.write("</tbody></table>");
+</script>
+</body>
+</html>

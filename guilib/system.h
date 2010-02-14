@@ -44,7 +44,9 @@
 #define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
-#define HAS_WEB_SERVER
+#define HAS_WEB_INTERFACE
+#define HAS_JSONRPC
+#define HAS_HTTPAPI
 
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC

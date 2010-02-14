@@ -58,9 +58,6 @@
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/WebServer.h"
-#endif
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
 #include "GUIFontManager.h"
@@ -471,35 +468,13 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("services.webserverusername"))
-    {
 #ifdef HAS_WEB_SERVER
-      // get password from the webserver if it's running (and update our settings)
-      if (g_application.m_pWebServer)
-      {
-        ((CSettingString *)GetSetting(strSetting)->GetSetting())->SetData(g_application.m_pWebServer->GetUserName());
-        g_settings.Save();
-      }
-#endif
-    }
-    else if (strSetting.Equals("services.webserverpassword"))
-    {
-#ifdef HAS_WEB_SERVER
-      // get password from the webserver if it's running (and update our settings)
-      if (g_application.m_pWebServer)
-      {
-        ((CSettingString *)GetSetting(strSetting)->GetSetting())->SetData(g_application.m_pWebServer->GetPassword());
-        g_settings.Save();
-      }
-#endif
-    }
     else if (strSetting.Equals("services.webserverport"))
     {
-#ifdef HAS_WEB_SERVER
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
-#endif
     }
+#endif
     else if (strSetting.Equals("services.esport"))
     {
 #ifdef HAS_EVENT_SERVER
@@ -883,6 +858,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("musicplayer.crossfade") > 0 &&
                                          g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") == CStdString::npos);
     }
+#ifdef HAS_WEB_SERVER
     else if (strSetting.Equals("services.webserverusername"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
@@ -900,6 +876,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
+#endif
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
 #ifdef _LINUX
@@ -1440,25 +1417,20 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_lcd->Initialize();
   }
 #endif
-  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport") ||
-            strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
+#ifdef HAS_WEB_SERVER
+  else if ( strSetting.Equals("services.webserver") || strSetting.Equals("services.webserverport"))
   {
     if (strSetting.Equals("services.webserverport"))
       ValidatePortNumber(pSettingControl, "8080", "80");
-#ifdef HAS_WEB_SERVER
     g_application.StopWebServer(true);
     if (g_guiSettings.GetBool("services.webserver"))
-    {
       g_application.StartWebServer();
-      if (g_application.m_pWebServer) {
-        if (strSetting.Equals("services.webserverusername"))
-          g_application.m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
-        else
-          g_application.m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());
-      }
-    }
-#endif
   }
+  else if (strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
+  {
+    g_application.m_WebServer.SetCredentials(g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
+  }
+#endif
   else if (strSetting.Equals("services.zeroconf"))
   {
 #ifdef HAS_ZEROCONF
@@ -1857,6 +1829,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+    if (g_guiSettings.GetBool("services.esenabled"))
+      g_application.StartJSONRPCServer();
+    else
+      g_application.StopJSONRPCServer(false);
   }
   else if (strSetting.Equals("services.esport"))
   {
@@ -1886,6 +1862,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+    if (g_guiSettings.GetBool("services.esenabled"))
+      g_application.StartJSONRPCServer();
+    else
+      g_application.StopJSONRPCServer(false);
   }
   else if (strSetting.Equals("services.esinitialdelay") ||
            strSetting.Equals("services.escontinuousdelay"))

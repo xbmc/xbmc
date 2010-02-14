@@ -31,7 +31,8 @@ BIN_DIRS=	\
 	xbmc/lib/cmyth/libcmyth \
 	xbmc/lib/cmyth/librefmem \
 	xbmc/lib/libhts \
-	xbmc/lib/libGoAhead \
+  xbmc/lib/libjsonrpc \
+  xbmc/lib/libhttpapi \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
 	xbmc/lib/libRTMP \
@@ -236,8 +237,12 @@ xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXBMS
 xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
-xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
-	$(MAKE) -C xbmc/lib/libGoAhead
+lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a: force
+	$(MAKE) -C lib/jsoncpp/jsoncpp/src/lib_json
+xbmc/lib/libjsonrpc/libjsonrpc.a: force
+	$(MAKE) -C xbmc/lib/libjsonrpc
+xbmc/lib/libhttpapi/libhttpapi.a: force
+	$(MAKE) -C xbmc/lib/libhttpapi
 xbmc/lib/sqLite/sqllite.a: force
 	$(MAKE) -C xbmc/lib/sqLite
 xbmc/lib/UnrarXLib/UnrarXLib.a: force
@@ -348,7 +353,9 @@ xcode_depends: \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a
+  xbmc/lib/libjsonrpc/libjsonrpc.a \
+  lib/jsoncpp/jsoncpp/src/lib_json.a \
+  xbmc/lib/libhttpapi/libhttpapi.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -388,7 +395,9 @@ OBJSXBMC=	\
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
+  xbmc/lib/libjsonrpc/libjsonrpc.a \
+  lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
+  xbmc/lib/libhttpapi/libhttpapi.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
@@ -501,7 +510,7 @@ install-livedatas:
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
-	@cp -r web/Project_Mayhem_III/* $(prefix)/share/xbmc/web
+	@cp -r web/poc_jsonrpc/* $(prefix)/share/xbmc/web
 	@find $(prefix)/share/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:

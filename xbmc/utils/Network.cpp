@@ -283,6 +283,9 @@ void CNetwork::StartServices()
 #ifdef HAS_DBUS_SERVER
   g_application.StartDbusServer();
 #endif
+#ifdef HAS_JSONRPC
+  g_application.StartJSONRPCServer();
+#endif
 #ifdef HAS_ZEROCONF
   g_application.StartZeroconf();
 #endif
@@ -319,5 +322,8 @@ void CNetwork::StopServices(bool bWait)
 #endif
 #ifdef HAS_DBUS_SERVER
   g_application.StopDbusServer(bWait);
+#endif
+#ifdef HAS_JSONRPC
+    g_application.StopJSONRPCServer(bWait);
 #endif
 }
