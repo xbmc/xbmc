@@ -20,7 +20,7 @@
  *
  */
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
 #include <features.h>
 #endif
 //#include "system.h"
