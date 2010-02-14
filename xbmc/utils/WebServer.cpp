@@ -164,7 +164,6 @@ int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, c
     CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
   else
     CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall.c_str());
-  printf("%s\n", jsoncall.c_str());
   CHTTPClient client;
   CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall, server, &client);
 
