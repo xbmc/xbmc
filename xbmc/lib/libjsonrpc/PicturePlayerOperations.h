@@ -25,7 +25,7 @@
 
 namespace JSONRPC
 {
-  class CSlideshowOperations
+  class CPicturePlayerOperations
   {
   public:
     static JSON_STATUS PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);

@@ -21,7 +21,8 @@
 
 #include "JSONRPC.h"
 #include "PlayerOperations.h"
-#include "SlideshowOperations.h"
+#include "AVPlayerOperations.h"
+#include "PicturePlayerOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
 #include "MusicLibrary.h"
@@ -51,64 +52,64 @@ Command CJSONRPC::m_commands[] = {
   { "Player.GetActivePlayers",          CPlayerOperations::GetActivePlayers,    Response,     ReadData,        "Returns all active players IDs"},
 
 // Music player
-  { "MusicPlayer.PlayPause",            CPlayerOperations::PlayPause,           Response,     ControlPlayback, "Pauses or unpause playback" },
-  { "MusicPlayer.Stop",                 CPlayerOperations::Stop,                Response,     ControlPlayback, "Stops playback" },
-  { "MusicPlayer.SkipPrevious",         CPlayerOperations::SkipPrevious,        Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "MusicPlayer.SkipNext",             CPlayerOperations::SkipNext,            Response,     ControlPlayback, "Skips to next item on the playlist" },
+  { "MusicPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "MusicPlayer.Stop",                 CAVPlayerOperations::Stop,              Response,     ControlPlayback, "Stops playback" },
+  { "MusicPlayer.SkipPrevious",         CAVPlayerOperations::SkipPrevious,      Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "MusicPlayer.SkipNext",             CAVPlayerOperations::SkipNext,          Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "MusicPlayer.BigSkipBackward",      CPlayerOperations::BigSkipBackward,     Response,     ControlPlayback, "" },
-  { "MusicPlayer.BigSkipForward",       CPlayerOperations::BigSkipForward,      Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipBackward",    CPlayerOperations::SmallSkipBackward,   Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipForward",     CPlayerOperations::SmallSkipForward,    Response,     ControlPlayback, "" },
+  { "MusicPlayer.BigSkipBackward",      CAVPlayerOperations::BigSkipBackward,   Response,     ControlPlayback, "" },
+  { "MusicPlayer.BigSkipForward",       CAVPlayerOperations::BigSkipForward,    Response,     ControlPlayback, "" },
+  { "MusicPlayer.SmallSkipBackward",    CAVPlayerOperations::SmallSkipBackward, Response,     ControlPlayback, "" },
+  { "MusicPlayer.SmallSkipForward",     CAVPlayerOperations::SmallSkipForward,  Response,     ControlPlayback, "" },
 
-  { "MusicPlayer.Rewind",               CPlayerOperations::Rewind,              Response,     ControlPlayback, "Rewind current playback" },
-  { "MusicPlayer.Forward",              CPlayerOperations::Forward,             Response,     ControlPlayback, "Forward current playback" },
+  { "MusicPlayer.Rewind",               CAVPlayerOperations::Rewind,            Response,     ControlPlayback, "Rewind current playback" },
+  { "MusicPlayer.Forward",              CAVPlayerOperations::Forward,           Response,     ControlPlayback, "Forward current playback" },
 
-  { "MusicPlayer.GetTime",              CPlayerOperations::GetTime,             Response,     ReadData,        "Retrieve time" },
-  { "MusicPlayer.GetTimeMS",            CPlayerOperations::GetTimeMS,           Response,     ReadData,        "Retrieve time in MS" },
-  { "MusicPlayer.GetPercentage",        CPlayerOperations::GetPercentage,       Response,     ReadData,        "Retrieve percentage" },
-  { "MusicPlayer.SeekTime",             CPlayerOperations::SeekTime,            Response,     ControlPlayback, "Seek to a specific time" },
+  { "MusicPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
+  { "MusicPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
+  { "MusicPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
+  { "MusicPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time" },
 
-  { "MusicPlayer.GetPlaylist",          CPlayerOperations::GetPlaylist,         Response,     ReadData,        "Retrieve active playlist" },
+  { "MusicPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
 
-  { "MusicPlayer.Record",               CPlayerOperations::Record,              Response,     ControlPlayback, "" },
+  { "MusicPlayer.Record",               CAVPlayerOperations::Record,            Response,     ControlPlayback, "" },
 
 // Video player
-  { "VideoPlayer.PlayPause",            CPlayerOperations::PlayPause,           Response,     ControlPlayback, "Pauses or unpause playback" },
-  { "VideoPlayer.Stop",                 CPlayerOperations::Stop,                Response,     ControlPlayback, "Stops playback" },
-  { "VideoPlayer.SkipPrevious",         CPlayerOperations::SkipPrevious,        Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "VideoPlayer.SkipNext",             CPlayerOperations::SkipNext,            Response,     ControlPlayback, "Skips to next item on the playlist" },
+  { "VideoPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "VideoPlayer.Stop",                 CAVPlayerOperations::Stop,              Response,     ControlPlayback, "Stops playback" },
+  { "VideoPlayer.SkipPrevious",         CAVPlayerOperations::SkipPrevious,      Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "VideoPlayer.SkipNext",             CAVPlayerOperations::SkipNext,          Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "VideoPlayer.BigSkipBackward",      CPlayerOperations::BigSkipBackward,     Response,     ControlPlayback, "" },
-  { "VideoPlayer.BigSkipForward",       CPlayerOperations::BigSkipForward,      Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipBackward",    CPlayerOperations::SmallSkipBackward,   Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipForward",     CPlayerOperations::SmallSkipForward,    Response,     ControlPlayback, "" },
+  { "VideoPlayer.BigSkipBackward",      CAVPlayerOperations::BigSkipBackward,   Response,     ControlPlayback, "" },
+  { "VideoPlayer.BigSkipForward",       CAVPlayerOperations::BigSkipForward,    Response,     ControlPlayback, "" },
+  { "VideoPlayer.SmallSkipBackward",    CAVPlayerOperations::SmallSkipBackward, Response,     ControlPlayback, "" },
+  { "VideoPlayer.SmallSkipForward",     CAVPlayerOperations::SmallSkipForward,  Response,     ControlPlayback, "" },
 
-  { "VideoPlayer.Rewind",               CPlayerOperations::Rewind,              Response,     ControlPlayback, "Rewind current playback" },
-  { "VideoPlayer.Forward",              CPlayerOperations::Forward,             Response,     ControlPlayback, "Forward current playback" },
+  { "VideoPlayer.Rewind",               CAVPlayerOperations::Rewind,            Response,     ControlPlayback, "Rewind current playback" },
+  { "VideoPlayer.Forward",              CAVPlayerOperations::Forward,           Response,     ControlPlayback, "Forward current playback" },
 
-  { "VideoPlayer.GetTime",              CPlayerOperations::GetTime,             Response,     ReadData,        "Retrieve time" },
-  { "VideoPlayer.GetTimeMS",            CPlayerOperations::GetTimeMS,           Response,     ReadData,        "Retrieve time in MS" },
-  { "VideoPlayer.GetPercentage",        CPlayerOperations::GetPercentage,       Response,     ReadData,        "Retrieve percentage" },
-  { "VideoPlayer.SeekTime",             CPlayerOperations::SeekTime,            Response,     ControlPlayback, "Seek to a specific time" },
+  { "VideoPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
+  { "VideoPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
+  { "VideoPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
+  { "VideoPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time" },
 
-  { "VideoPlayer.GetPlaylist",          CPlayerOperations::GetPlaylist,         Response,     ReadData,        "Retrieve active playlist" },
+  { "VideoPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
 
 // Slideshow player
-  { "Slideshow.PlayPause",              CSlideshowOperations::PlayPause,        Response,     ControlPlayback, "Pauses or unpause slideshow" },
-  { "Slideshow.Stop",                   CSlideshowOperations::Stop,             Response,     ControlPlayback, "Stops slideshow" },
-  { "Slideshow.SkipPrevious",           CSlideshowOperations::SkipPrevious,     Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
-  { "Slideshow.SkipNext",               CSlideshowOperations::SkipNext,         Response,     ControlPlayback, "Skips to next picture in the slideshow" },
+  { "Slideshow.PlayPause",              CPicturePlayerOperations::PlayPause,    Response,     ControlPlayback, "Pauses or unpause slideshow" },
+  { "Slideshow.Stop",                   CPicturePlayerOperations::Stop,         Response,     ControlPlayback, "Stops slideshow" },
+  { "Slideshow.SkipPrevious",           CPicturePlayerOperations::SkipPrevious, Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
+  { "Slideshow.SkipNext",               CPicturePlayerOperations::SkipNext,     Response,     ControlPlayback, "Skips to next picture in the slideshow" },
 
-  { "Slideshow.MoveLeft",               CSlideshowOperations::MoveLeft,         Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
-  { "Slideshow.MoveRight",              CSlideshowOperations::MoveRight,        Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
-  { "Slideshow.MoveDown",               CSlideshowOperations::MoveDown,         Response,     ControlPlayback, "If picture is zoomed move viewport down" },
-  { "Slideshow.MoveUp",                 CSlideshowOperations::MoveUp,           Response,     ControlPlayback, "If picture is zoomed move viewport up" },
+  { "Slideshow.MoveLeft",               CPicturePlayerOperations::MoveLeft,     Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
+  { "Slideshow.MoveRight",              CPicturePlayerOperations::MoveRight,    Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
+  { "Slideshow.MoveDown",               CPicturePlayerOperations::MoveDown,     Response,     ControlPlayback, "If picture is zoomed move viewport down" },
+  { "Slideshow.MoveUp",                 CPicturePlayerOperations::MoveUp,       Response,     ControlPlayback, "If picture is zoomed move viewport up" },
 
-  { "Slideshow.ZoomOut",                CSlideshowOperations::ZoomOut,          Response,     ControlPlayback, "Zoom out once" },
-  { "Slideshow.ZoomIn",                 CSlideshowOperations::ZoomIn,           Response,     ControlPlayback, "Zoom in once" },
-  { "Slideshow.Zoom",                   CSlideshowOperations::Zoom,             Response,     ControlPlayback, "Zooms current picture" },
-  { "Slideshow.Rotate",                 CSlideshowOperations::Rotate,           Response,     ControlPlayback, "Rotates current picture" },
+  { "Slideshow.ZoomOut",                CPicturePlayerOperations::ZoomOut,      Response,     ControlPlayback, "Zoom out once" },
+  { "Slideshow.ZoomIn",                 CPicturePlayerOperations::ZoomIn,       Response,     ControlPlayback, "Zoom in once" },
+  { "Slideshow.Zoom",                   CPicturePlayerOperations::Zoom,         Response,     ControlPlayback, "Zooms current picture" },
+  { "Slideshow.Rotate",                 CPicturePlayerOperations::Rotate,       Response,     ControlPlayback, "Rotates current picture" },
 
 // Playlist
   { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,         "Retrieve items in the playlist" },

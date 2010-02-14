@@ -25,7 +25,7 @@
 
 namespace JSONRPC
 {
-  class CPlayerOperations
+  class CAVPlayerOperations
   {
   public:
     static JSON_STATUS GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);

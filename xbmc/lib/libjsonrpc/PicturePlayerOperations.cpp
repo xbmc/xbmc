@@ -19,7 +19,7 @@
  *
  */
 
-#include "SlideshowOperations.h"
+#include "PicturePlayerOperations.h"
 #include "Application.h"
 #include "Key.h"
 
@@ -27,57 +27,57 @@ using namespace Json;
 using namespace JSONRPC;
 
 
-JSON_STATUS CSlideshowOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_PAUSE);
 }
 
-JSON_STATUS CSlideshowOperations::Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_STOP);
 }
 
-JSON_STATUS CSlideshowOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_PREV_PICTURE);
 }
 
-JSON_STATUS CSlideshowOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_NEXT_PICTURE);
 }
 
-JSON_STATUS CSlideshowOperations::MoveLeft(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::MoveLeft(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_MOVE_LEFT);
 }
 
-JSON_STATUS CSlideshowOperations::MoveRight(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::MoveRight(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_MOVE_RIGHT);
 }
 
-JSON_STATUS CSlideshowOperations::MoveDown(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::MoveDown(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_MOVE_DOWN);
 }
 
-JSON_STATUS CSlideshowOperations::MoveUp(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::MoveUp(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_MOVE_UP);
 }
 
-JSON_STATUS CSlideshowOperations::ZoomOut(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::ZoomOut(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_ZOOM_OUT);
 }
 
-JSON_STATUS CSlideshowOperations::ZoomIn(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::ZoomIn(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_ZOOM_IN);
 }
 
-JSON_STATUS CSlideshowOperations::Zoom(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::Zoom(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!(parameterObject.isInt() || parameterObject.isNull()))
     return InvalidParams;
@@ -89,7 +89,7 @@ JSON_STATUS CSlideshowOperations::Zoom(const CStdString &method, ITransportLayer
   return SendAction(ACTION_ZOOM_LEVEL_NORMAL + (zoom - 1));
 }
 
-JSON_STATUS CSlideshowOperations::Rotate(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPicturePlayerOperations::Rotate(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   return SendAction(ACTION_ROTATE_PICTURE);
 }
@@ -105,7 +105,7 @@ JSON_STATUS CSlideshowOperations::Rotate(const CStdString &method, ITransportLay
           pSlideShow->OnAction(action);    
 }*/
 
-JSON_STATUS CSlideshowOperations::SendAction(int actionID)
+JSON_STATUS CPicturePlayerOperations::SendAction(int actionID)
 {
   CAction action;
   action.actionId = actionID;
