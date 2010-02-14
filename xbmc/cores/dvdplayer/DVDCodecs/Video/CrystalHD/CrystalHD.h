@@ -108,7 +108,7 @@ typedef uint32_t CRYSTALHD_CODEC_TYPE;
 #define CRYSTALHD_FIELD_EVEN        0x01
 #define CRYSTALHD_FIELD_ODD         0x02
 
-typedef struct _CHD_TIMESTAMP
+typedef struct CHD_TIMESTAMP
 {
   double dts;
   double pts;
