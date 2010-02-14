@@ -218,7 +218,10 @@ bool CWebServer::Start(const char *ip, int port)
     // To stream perfectly we should probably have MHD_USE_THREAD_PER_CONNECTION instead of MHD_USE_SELECT_INTERNALLY as it provides multiple clients concurrently
     m_daemon = MHD_start_daemon(MHD_USE_SELECT_INTERNALLY | MHD_USE_IPv6, port, NULL, NULL, &CWebServer::AnswerToConnection, this, MHD_OPTION_END);
     m_running = m_daemon != NULL;
-    CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
+    if (m_running)
+      CLog::Log(LOGNOTICE, "WebServer: Started the webserver");
+    else
+      CLog::Log(LOGERROR, "WebServer: Failed to start the webserver");
   }
   return m_running;
 }
