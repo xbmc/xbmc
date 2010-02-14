@@ -28,16 +28,6 @@
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CAVPlayerOperations::GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
-{
-  if (g_application.IsPlayingVideo())
-    result["players"].append("video");
-  else if (g_application.IsPlayingAudio())
-    result["players"].append("music");
-
-  return OK;
-}
-
 JSON_STATUS CAVPlayerOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))

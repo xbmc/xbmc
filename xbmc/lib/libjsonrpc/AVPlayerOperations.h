@@ -28,7 +28,6 @@ namespace JSONRPC
   class CAVPlayerOperations
   {
   public:
-    static JSON_STATUS GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
     static JSON_STATUS SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
