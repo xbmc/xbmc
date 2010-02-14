@@ -29,6 +29,7 @@
 using namespace Json;
 using namespace JSONRPC;
 using namespace PLAYLIST;
+using namespace std;
 
 JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
@@ -158,13 +159,25 @@ JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportL
   return ACK;
 }
 
+int CPlaylistOperations::PlaylistFromString(const string &id)
+{
+  CStdString tempID = id;
+  tempID = tempID.ToLower();
+  if (tempID.Equals("video"))
+    return PLAYLIST_VIDEO;
+  else if (tempID.Equals("music"))
+    return PLAYLIST_MUSIC;
+  else
+    return PLAYLIST_NONE;
+}
+
 bool CPlaylistOperations::GetPlaylist(const Value& parameterObject, CPlayList **playlist, bool &current)
 {
   const Value id = (parameterObject.isObject() && parameterObject.isMember("playlist")) ? parameterObject["playlist"] : Value(nullValue);
   int nbr;
-  if (id.isNull() || id.isInt())
+  if (id.isNull() || id.isString())
   {
-    nbr = id.isNull() ? g_playlistPlayer.GetCurrentPlaylist() : id.asInt();
+    nbr = id.isNull() ? g_playlistPlayer.GetCurrentPlaylist() : PlaylistFromString(id.asString());
     *playlist = &g_playlistPlayer.GetPlaylist(nbr);
 
     current = g_playlistPlayer.GetCurrentPlaylist() == nbr;
