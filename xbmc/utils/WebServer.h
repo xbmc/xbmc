@@ -24,8 +24,12 @@
 #ifdef HAS_WEB_SERVER
 #include "StdString.h"
 #include <sys/types.h>
+#ifndef _WIN32
 #include <sys/select.h>
 #include <sys/socket.h>
+#else
+#include <WS2tcpip.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

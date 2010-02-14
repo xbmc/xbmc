@@ -27,6 +27,9 @@
 #include "../Util.h"
 #include "log.h"
 #include "SingleLock.h"
+#ifdef _WIN32
+#pragma comment(lib, "../../lib/libmicrohttpd_win32/lib/libmicrohttpd.dll.a")
+#endif
 
 using namespace XFILE;
 using namespace std;
