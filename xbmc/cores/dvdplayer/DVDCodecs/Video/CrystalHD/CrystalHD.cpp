@@ -28,7 +28,7 @@
 
   // default Broadcom registy bits (setup when installing a CrystalHD card)
   #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
-  #define BC_REG_PRODUCT    "CrystalHD" // 70010 ?
+  #define BC_REG_PRODUCT    "CrystalHD" // 70012/70015
   #define BC_BCM_DLL        "bcmDIL.dll"
   #define BC_REG_INST_PATH  "InstallPath"
 #endif
@@ -50,13 +50,13 @@ extern "C"
 
 namespace BCM
 {
-#if defined(WIN32)
-  typedef void		*HANDLE;
-#else
-  #ifndef __LINUX_USER__
-    #define __LINUX_USER__
+  #if defined(WIN32)
+    typedef void		*HANDLE;
+  #else
+    #ifndef __LINUX_USER__
+      #define __LINUX_USER__
+    #endif
   #endif
-#endif
 
   #include <libcrystalhd/bc_dts_types.h>
   #include <libcrystalhd/bc_dts_defs.h>
@@ -198,10 +198,8 @@ public:
 protected:
   size_t m_Size;
   unsigned char* m_pBuffer;
-  unsigned int m_Id;
   uint64_t m_Pts;
 };
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 #define USE_FFMPEG_ANNEXB
@@ -1142,7 +1140,7 @@ void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
     d = pBuffer->m_uv_buffer_ptr;
     for (int y = 0; y < h/2; y++, s += stride, d += w)
       fast_memcpy(d, s, w);
-    }
+  }
 }
 
 bool CMPCOutputThread::GetDecoderOutput(void)
@@ -1330,7 +1328,6 @@ void CMPCOutputThread::Process(void)
   BCM::BC_DTS_STATUS decoder_status;
 
   m_PictureNumber = 0;
-
 
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
 
