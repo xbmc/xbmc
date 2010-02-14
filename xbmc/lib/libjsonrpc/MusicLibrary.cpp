@@ -124,9 +124,9 @@ JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, ITransportLayer
     if (!songInfo.strComment.IsEmpty())
       result["comment"] = songInfo.strComment.c_str();
 
-    if (!songInfo.iTrack > 0)
+    if (songInfo.iTrack > 0)
       result["track"] = songInfo.iTrack;
-    if (!songInfo.iDuration > 0)
+    if (songInfo.iDuration > 0)
       result["duration"] = songInfo.iDuration;
 
     result["rating"]      = songInfo.rating;
