@@ -52,7 +52,6 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
 void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, const char *data)
 {
   CLog::Log(LOGDEBUG, "CAnnouncementManager - Announcment: %s from %s", message, sender);
-  printf("CAnnouncementManager - Announcment: %s from %s\n", message, sender);
   CSingleLock lock (m_critSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
     m_announcers[i]->Announce(flag, sender, message, data);
