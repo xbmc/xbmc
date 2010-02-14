@@ -31,6 +31,8 @@ using namespace JSONRPC;
 
 JSON_STATUS CPlayerOperations::GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
 {
+  result["players"] = arrayValue;
+
   if (g_application.IsPlayingVideo())
     result["players"].append("video");
   else if (g_application.IsPlayingAudio())
