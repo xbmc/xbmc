@@ -895,7 +895,6 @@
 		E38E25C00D263DC100618676 /* DVDFactoryDemuxer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		E38E25C30D263DE200618676 /* DVDDemuxFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		E38F12C20D29FF200035C331 /* FileShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38F12C10D29FF200035C331 /* FileShoutcast.cpp */; };
-		E38F12EA0D2A17B30035C331 /* libGoAhead-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38F12E90D2A17B30035C331 /* libGoAhead-x86-osx.a */; };
 		E3A4780A0D29029A00F3C3A6 /* dlgcache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478090D29029A00F3C3A6 /* dlgcache.cpp */; };
 		E3A478160D29030100F3C3A6 /* GUIMultiSelectText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */; };
 		E3A4781A0D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */; };
@@ -1729,7 +1728,6 @@
 		F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */; };
 		F5A1CC080F6B209400A96ABD /* libxdaap-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */; };
 		F5A1CC0A0F6B20B700A96ABD /* libshout-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC090F6B20B700A96ABD /* libshout-powerpc-osx.a */; };
-		F5A1CC0C0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC0B0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a */; };
 		F5A1CC0E0F6B214800A96ABD /* libSDL-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */; };
 		F5A1CC140F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */; };
 		F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
@@ -1738,6 +1736,14 @@
 		F5A2BD610F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
 		F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
 		F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
+		F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F0112893330059D6AA /* libjsoncpp.a */; };
+		F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F0112893330059D6AA /* libjsoncpp.a */; };
+		F5A7A6F4112893440059D6AA /* libjsonrpc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F3112893440059D6AA /* libjsonrpc.a */; };
+		F5A7A6F5112893440059D6AA /* libjsonrpc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F3112893440059D6AA /* libjsonrpc.a */; };
+		F5A7A6F71128934C0059D6AA /* libhttpapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F61128934C0059D6AA /* libhttpapi.a */; };
+		F5A7A6F81128934D0059D6AA /* libhttpapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F61128934C0059D6AA /* libhttpapi.a */; };
+		F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
+		F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
@@ -3697,6 +3703,11 @@
 		F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-powerpc-osx.a"; path = "lib/libSDL-OSX/libSDL_mixer-powerpc-osx.a"; sourceTree = "<group>"; };
 		F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "posix-realtime-stub.c"; sourceTree = "<group>"; };
 		F5A7A6201127980A0059D6AA /* posix-realtime-stub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "posix-realtime-stub.h"; sourceTree = "<group>"; };
+		F5A7A6F0112893330059D6AA /* libjsoncpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsoncpp.a; path = lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a; sourceTree = "<group>"; };
+		F5A7A6F3112893440059D6AA /* libjsonrpc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjsonrpc.a; path = xbmc/lib/libjsonrpc/libjsonrpc.a; sourceTree = "<group>"; };
+		F5A7A6F61128934C0059D6AA /* libhttpapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttpapi.a; path = xbmc/lib/libhttpapi/libhttpapi.a; sourceTree = "<group>"; };
+		F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnnouncementManager.cpp; sourceTree = "<group>"; };
+		F5A7A701112893E50059D6AA /* AnnouncementManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementManager.h; sourceTree = "<group>"; };
 		F5A9D3071097C9370050490F /* AliasShortcutUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AliasShortcutUtils.h; sourceTree = "<group>"; };
 		F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AliasShortcutUtils.cpp; sourceTree = "<group>"; };
 		F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /opt/local/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
@@ -3838,7 +3849,6 @@
 				E38E25360D26365C00618676 /* ApplicationServices.framework in Frameworks */,
 				E38E25690D2639F100618676 /* libxdaap-x86-osx.a in Frameworks */,
 				E38E256D0D263A1C00618676 /* librtv-x86-osx.a in Frameworks */,
-				E38F12EA0D2A17B30035C331 /* libGoAhead-x86-osx.a in Frameworks */,
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
 				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
 				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
@@ -3874,6 +3884,9 @@
 				F5F241D5110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
 				F5F241D8110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
 				E49070F4110E7E76003865FD /* libvorbisenc.dylib in Frameworks */,
+				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
+				F5A7A6F4112893440059D6AA /* libjsonrpc.a in Frameworks */,
+				F5A7A6F71128934C0059D6AA /* libhttpapi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3910,7 +3923,6 @@
 				F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */,
 				F5A1CC080F6B209400A96ABD /* libxdaap-powerpc-osx.a in Frameworks */,
 				F5A1CC0A0F6B20B700A96ABD /* libshout-powerpc-osx.a in Frameworks */,
-				F5A1CC0C0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a in Frameworks */,
 				F5A1CC0E0F6B214800A96ABD /* libSDL-powerpc-osx.a in Frameworks */,
 				F5A1CC140F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a in Frameworks */,
 				F5EA08850F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
@@ -3933,6 +3945,9 @@
 				F5F241D6110BFCD6009126C6 /* libmpeg2.dylib in Frameworks */,
 				F5F241D9110BFCF4009126C6 /* libwavpack.dylib in Frameworks */,
 				E49070F5110E7E76003865FD /* libvorbisenc.dylib in Frameworks */,
+				F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */,
+				F5A7A6F5112893440059D6AA /* libjsonrpc.a in Frameworks */,
+				F5A7A6F81128934D0059D6AA /* libhttpapi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6610,6 +6625,8 @@
 				E38E1E240D25F9FD00618676 /* AlarmClock.h */,
 				F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */,
 				F5A9D3071097C9370050490F /* AliasShortcutUtils.h */,
+				F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */,
+				F5A7A701112893E50059D6AA /* AnnouncementManager.h */,
 				F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */,
 				F5F8E1EE0E42807A00A8E96F /* ArabicShaping.h */,
 				E38E1E250D25F9FD00618676 /* Archive.cpp */,
@@ -6831,6 +6848,9 @@
 				60CF88C010CB4A16000921B6 /* librefmem.a */,
 				F5DC888A110A654000EE1B15 /* libapetag.a */,
 				F5DC888D110A655000EE1B15 /* libmodplug.a */,
+				F5A7A6F61128934C0059D6AA /* libhttpapi.a */,
+				F5A7A6F3112893440059D6AA /* libjsonrpc.a */,
+				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
 				F5A1C86A0F6B048000A96ABD /* x86 */,
 				F5A1C8690F6B047D00A96ABD /* ppc */,
 			);
@@ -8072,6 +8092,7 @@
 				F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 				7C644FC7112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
+				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8928,6 +8949,7 @@
 				F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
 				7C644FC8112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */,
+				F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8986,6 +9008,7 @@
 					xbmc/lib/libRTMP,
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
+					lib/jsoncpp/jsoncpp/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9012,7 +9035,13 @@
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9066,6 +9095,7 @@
 					xbmc/lib/libRTMP,
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
+					lib/jsoncpp/jsoncpp/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9092,7 +9122,13 @@
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9202,6 +9238,7 @@
 					xbmc/lib/libRTMP,
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
+					lib/jsoncpp/jsoncpp/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9229,7 +9266,13 @@
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9284,6 +9327,7 @@
 					xbmc/lib/libRTMP,
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
+					lib/jsoncpp/jsoncpp/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9311,7 +9355,13 @@
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
