@@ -24,10 +24,9 @@
 #include <limits>
 
 CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow, int scrollSpeed)
-    : m_maxRect(posX, posY, posX + width, posY + height)
-    , m_textLayout(labelInfo.font, overflow == OVER_FLOW_WRAP, height)
+    : m_textLayout(labelInfo.font, overflow == OVER_FLOW_WRAP, height)
     , m_scrollInfo(50, 0, scrollSpeed)
-    , m_renderRect()
+    , m_maxRect(posX, posY, posX + width, posY + height)
 {
   m_selected = false;
   m_overflowType = overflow;
@@ -64,6 +63,8 @@ color_t CGUILabel::GetColor() const
       return m_label.disabledColor;
     case COLOR_FOCUSED:
       return m_label.focusedColor ? m_label.focusedColor : m_label.textColor;
+    default:
+      break;
   }
   return m_label.textColor;
 }
