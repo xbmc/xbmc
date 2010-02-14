@@ -90,7 +90,6 @@ void CTCPServer::Process()
           nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
           if (nread > 0)
           {
-            printf("recieved %d bytes from client %d (%*s)\n", nread, socket, nread, buffer);
             m_connections[i].PushBuffer(this, buffer, nread);
           }
           if (nread <= 0)
@@ -144,8 +143,6 @@ void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char
 
   StyledWriter writer;
   string str = writer.write(root);
-
-  printf("Announce %s\n", str.c_str());
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {

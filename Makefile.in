@@ -31,8 +31,8 @@ BIN_DIRS=	\
 	xbmc/lib/cmyth/libcmyth \
 	xbmc/lib/cmyth/librefmem \
 	xbmc/lib/libhts \
-  xbmc/lib/libjsonrpc \
-  xbmc/lib/libhttpapi \
+	xbmc/lib/libjsonrpc \
+	xbmc/lib/libhttpapi \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
 	xbmc/lib/libRTMP \
