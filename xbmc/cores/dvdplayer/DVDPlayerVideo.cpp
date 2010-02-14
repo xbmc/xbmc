@@ -596,7 +596,7 @@ void CDVDPlayerVideo::Process()
             }
 
             // guess next frame pts. iDuration is always valid
-            if (m_speed != 0 )
+            if (m_speed != 0)
               pts += picture.iDuration * m_speed / abs(m_speed);
 
             if( iResult & EOS_ABORT )
