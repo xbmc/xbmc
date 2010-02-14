@@ -20,7 +20,9 @@
  *
  */
 
+#ifdef _LINUX
 #include <features.h>
+#endif
 //#include "system.h"
 #include "StdString.h"
 #include <map>

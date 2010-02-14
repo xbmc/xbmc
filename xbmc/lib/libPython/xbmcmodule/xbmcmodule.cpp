@@ -311,6 +311,8 @@ namespace PYXBMC
     ret = CHttpApi::MethodCall(method, parameter);
 
     return PyString_FromString(ret.c_str());
+#else
+    return NULL;
 #endif
   }
 #endif

@@ -288,14 +288,6 @@ using namespace ANNOUNCEMENT;
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
 
-#if defined(_WIN32)
- #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
- #else
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
- #endif
-#endif
-
 #define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;

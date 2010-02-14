@@ -1,8 +1,12 @@
 #pragma once
+#ifdef _WIN32
+#include "WS2tcpip.h"
+#else
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#endif
 #include <string>
 #include <vector>
 #include "IAnnouncer.h"

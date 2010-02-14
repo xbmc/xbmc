@@ -8,6 +8,12 @@
 #include "log.h"
 #include "SingleLock.h"
 
+#ifdef _WIN32
+extern "C" int inet_pton(int af, const char *src, void *dst);
+#define close closesocket
+#define SHUT_RDWR SD_BOTH
+#endif
+
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
 using namespace std;
@@ -81,7 +87,7 @@ void CTCPServer::Process()
         {
           char buffer[RECEIVEBUFFER] = {};
           int  nread = 0;
-          nread = recv(socket, &buffer, RECEIVEBUFFER, 0);
+          nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
           if (nread > 0)
           {
             printf("recieved %d bytes from client %d (%*s)\n", nread, socket, nread, buffer);
