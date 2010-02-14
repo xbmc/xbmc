@@ -94,21 +94,21 @@ Command CJSONRPC::m_commands[] = {
 
   { "VideoPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
 
-// Slideshow player
-  { "Slideshow.PlayPause",              CPicturePlayerOperations::PlayPause,    Response,     ControlPlayback, "Pauses or unpause slideshow" },
-  { "Slideshow.Stop",                   CPicturePlayerOperations::Stop,         Response,     ControlPlayback, "Stops slideshow" },
-  { "Slideshow.SkipPrevious",           CPicturePlayerOperations::SkipPrevious, Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
-  { "Slideshow.SkipNext",               CPicturePlayerOperations::SkipNext,     Response,     ControlPlayback, "Skips to next picture in the slideshow" },
+// Picture player
+  { "PicturePlayer.PlayPause",          CPicturePlayerOperations::PlayPause,    Response,     ControlPlayback, "Pauses or unpause slideshow" },
+  { "PicturePlayer.Stop",               CPicturePlayerOperations::Stop,         Response,     ControlPlayback, "Stops slideshow" },
+  { "PicturePlayer.SkipPrevious",       CPicturePlayerOperations::SkipPrevious, Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
+  { "PicturePlayer.SkipNext",           CPicturePlayerOperations::SkipNext,     Response,     ControlPlayback, "Skips to next picture in the slideshow" },
 
-  { "Slideshow.MoveLeft",               CPicturePlayerOperations::MoveLeft,     Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
-  { "Slideshow.MoveRight",              CPicturePlayerOperations::MoveRight,    Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
-  { "Slideshow.MoveDown",               CPicturePlayerOperations::MoveDown,     Response,     ControlPlayback, "If picture is zoomed move viewport down" },
-  { "Slideshow.MoveUp",                 CPicturePlayerOperations::MoveUp,       Response,     ControlPlayback, "If picture is zoomed move viewport up" },
+  { "PicturePlayer.MoveLeft",           CPicturePlayerOperations::MoveLeft,     Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
+  { "PicturePlayer.MoveRight",          CPicturePlayerOperations::MoveRight,    Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
+  { "PicturePlayer.MoveDown",           CPicturePlayerOperations::MoveDown,     Response,     ControlPlayback, "If picture is zoomed move viewport down" },
+  { "PicturePlayer.MoveUp",             CPicturePlayerOperations::MoveUp,       Response,     ControlPlayback, "If picture is zoomed move viewport up" },
 
-  { "Slideshow.ZoomOut",                CPicturePlayerOperations::ZoomOut,      Response,     ControlPlayback, "Zoom out once" },
-  { "Slideshow.ZoomIn",                 CPicturePlayerOperations::ZoomIn,       Response,     ControlPlayback, "Zoom in once" },
-  { "Slideshow.Zoom",                   CPicturePlayerOperations::Zoom,         Response,     ControlPlayback, "Zooms current picture. Parameter integer of zoom level" },
-  { "Slideshow.Rotate",                 CPicturePlayerOperations::Rotate,       Response,     ControlPlayback, "Rotates current picture" },
+  { "PicturePlayer.ZoomOut",            CPicturePlayerOperations::ZoomOut,      Response,     ControlPlayback, "Zoom out once" },
+  { "PicturePlayer.ZoomIn",             CPicturePlayerOperations::ZoomIn,       Response,     ControlPlayback, "Zoom in once" },
+  { "PicturePlayer.Zoom",               CPicturePlayerOperations::Zoom,         Response,     ControlPlayback, "Zooms current picture. Parameter integer of zoom level" },
+  { "PicturePlayer.Rotate",             CPicturePlayerOperations::Rotate,       Response,     ControlPlayback, "Rotates current picture" },
 
 // Playlist
   { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,         "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
