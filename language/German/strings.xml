@@ -1628,7 +1628,7 @@
   <string id="19015">Verschlüsselung</string>
   <string id="19016">Server %i - %s</string>
   <string id="19017">TV Aufnahmen</string>
-  <string id="19018">Standartordner für TV Thumbnails</string>
+  <string id="19018">Standardordner für TV Thumbnails</string>
   <string id="19019">Kanäle</string>
   <string id="19020">TV</string>
   <string id="19021">Radio</string>
@@ -1675,7 +1675,7 @@
   <string id="19062">Nach Kanal</string>
   <string id="19063">Gehe zum Anfang</string>
   <string id="19064">Gehe zum Ende</string>
-  <string id="19065">Standart Programmanzeige</string>
+  <string id="19065">Standard Programmanzeige</string>
   <string id="19066">Lade Aufnahmeinformationen von den PVR-Klienten</string>
   <string id="19067">Es ist bereits ein Timer vorhanden</string>
   <string id="19068">Konnte Aufnahme nicht löschen!</string>
@@ -1783,8 +1783,8 @@
   <string id="19170">Suchüberlauf vor Kanalwiedergabe</string>
   <string id="19171">Wiedergabe minimiert starten</string>
   <string id="19172">Dauer der Direktaufzeichnung</string>
-  <string id="19173">Standart-Priorität</string>
-  <string id="19174">Standart-Lebensdauer</string>
+  <string id="19173">Standard-Priorität</string>
+  <string id="19174">Standard-Lebensdauer</string>
   <string id="19175">Vorlauf zum Timer-Beginn</string>
   <string id="19176">Nachlauf am Timer-Ende</string>
   <string id="19177">Wiedergabe</string>

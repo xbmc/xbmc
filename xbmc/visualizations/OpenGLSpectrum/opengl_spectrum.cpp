@@ -184,6 +184,14 @@ ADDON_STATUS Create(void* hdl, void* props)
   return STATUS_OK;
 }
 
+//-- Destroy -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Destroy()
+{
+}
+
 //-- Render -------------------------------------------------------------------
 // Called once per frame. Do all rendering here.
 //-----------------------------------------------------------------------------

@@ -51,6 +51,7 @@ void CGUIVisualisationControl::FreeVisualisation()
     m_addon->Stop();
     g_graphicsContext.ApplyStateBlock();
     m_addon->Destroy();
+    m_currentVis = "";
   }
   CLog::Log(LOGDEBUG, "FreeVisualisation() done");
 }

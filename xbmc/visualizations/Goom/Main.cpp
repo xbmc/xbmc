@@ -91,6 +91,32 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   return STATUS_OK;
 }
 
+//-- Destroy -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Destroy()
+{
+  if ( g_goom )
+  {
+    goom_close( g_goom );
+    g_goom = NULL;
+  }
+  if ( g_goom_buffer )
+  {
+    free( g_goom_buffer );
+    g_goom_buffer = NULL;
+  }
+}
+
+//-- Remove -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Remove()
+{
+}
+
 //-- Start --------------------------------------------------------------------
 // Called when a new soundtrack is played
 //-----------------------------------------------------------------------------
@@ -107,19 +133,10 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-----------------------------------------------------------------------------
 extern "C" void Stop()
 {
-  if ( g_goom )
-  {
-    goom_close( g_goom );
-    g_goom = NULL;
-  }
-  if ( g_goom_buffer )
-  {
-    free( g_goom_buffer );
-    g_goom_buffer = NULL;
-  }
   if (g_texid)
   {
     glDeleteTextures( 1, &g_texid );
+    g_texid = 0;
   }
 }
 
@@ -229,14 +246,6 @@ extern "C" unsigned GetPreset()
 extern "C" bool IsLocked()
 {
   return false;
-}
-
-//-- Remove -------------------------------------------------------------------
-// Do everything before unload of this add-on
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-extern "C" void Remove()
-{
 }
 
 //-- HasSettings --------------------------------------------------------------

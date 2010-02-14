@@ -178,6 +178,8 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
+  m_pDll->Destroy();
+
   delete m_pStruct;
   m_pStruct = NULL;
   delete m_pDll;

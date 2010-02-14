@@ -206,6 +206,15 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   return STATUS_OK;
 }
 
+extern "C" void Destroy()
+{
+  if (globalPM)
+  {
+    delete globalPM;
+    globalPM = NULL;
+  }
+}
+
 //-- Start --------------------------------------------------------------------
 // Called when a new soundtrack is played
 //-----------------------------------------------------------------------------

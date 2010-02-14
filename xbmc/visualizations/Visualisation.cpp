@@ -142,6 +142,11 @@ bool CVisualisation::Create(int x, int y, int w, int h)
 
 void CVisualisation::Destroy()
 {
+  m_initialized = false;
+
+  /* Tell the client to destroy */
+  CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Destroy();
+
   /* Release Callback table in memory */
   delete m_callbacks;
   m_callbacks = NULL;
