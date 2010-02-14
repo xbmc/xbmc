@@ -120,9 +120,9 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     }
 #ifdef HAS_WEB_INTERFACE
     else if (strURL.Equals("/"))
-      strURL = "special://home/web/index.html";
+      strURL = "special://xbmc/web/index.html";
     else
-      strURL.Format("special://home/web%s", strURL.c_str());
+      strURL.Format("special://xbmc/web%s", strURL.c_str());
 #endif
     CFile *file = new CFile();
     if (file->Open(strURL))
