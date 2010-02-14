@@ -6391,6 +6391,8 @@ fi
 # Cut-down version of AC_LIB_LTDL. We don't want the option to install
 # libltdl, or to use dlpreopen (we don't want libtool at all).
 # Also, we can use gnulib's *_ONCE macros.
+LT_PATH_LD
+LTSUGAR_VERSION
 ac_header_dirent=no
 for ac_hdr in dirent.h sys/ndir.h sys/dir.h ndir.h; do
   as_ac_Header=`$as_echo "ac_cv_header_dirent_$ac_hdr" | $as_tr_sh`
@@ -6955,7 +6957,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 6958 "configure"' > conftest.$ac_ext
+    echo '#line 6960 "configure"' > conftest.$ac_ext
     if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7933,7 +7935,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7936 "configure"
+#line 7938 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -8278,6 +8280,10 @@ done
 
 
 
+	# Some of the below macros have dependencies that are m4_require'd.
+	# aclocal doesn't resolve those automatically, so we need to call
+	# LT_PATH_LD and LTSUGAR_VERSION to pull in libtool.m4 and ltsugar.m4
+	# where the required dependencies are m4_defun'd.
 
 
   :
