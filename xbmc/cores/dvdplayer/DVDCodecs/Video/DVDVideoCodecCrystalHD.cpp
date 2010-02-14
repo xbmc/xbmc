@@ -143,8 +143,6 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
     if(!(ret & VC_PICTURE) && !(ret & VC_BUFFER))
       m_Device->WaitInput(100);
       
-    fprintf(stdout, "GetInputCount(%d), GetReadyCount(%d)\n", m_Device->GetInputCount(), m_Device->GetReadyCount());
-
     return ret;
   }
 
