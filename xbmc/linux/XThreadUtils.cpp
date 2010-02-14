@@ -78,6 +78,7 @@ HANDLE WINAPI CreateThread(
   pthread_attr_destroy(&attr);
 
 #ifdef __APPLE__
+/*
   // we've now created the thread and started it
   // now set the priority of the thread to the nominated priority and make the thread fixed
   int32_t result;
@@ -94,6 +95,7 @@ HANDLE WINAPI CreateThread(
   // change from default SCHED_OTHER to SCHED_RR
   policy = SCHED_RR;
   result = pthread_setschedparam(h->m_hThread, policy, &param );
+*/
 #endif
 
   if (h && lpThreadId)
@@ -234,6 +236,7 @@ BOOL WINAPI GetThreadTimes (
 BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority)
 {
 #if defined(__APPLE__)
+/*
   struct sched_param sched;
   int rtn, policy;
 
@@ -247,7 +250,7 @@ BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority)
     sched.sched_priority = max;
 
   rtn = pthread_setschedparam(hThread->m_hThread, policy, &sched);
-
+*/
   return true;
 #else
   return true;
