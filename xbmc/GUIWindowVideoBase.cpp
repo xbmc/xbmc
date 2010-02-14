@@ -531,7 +531,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (result == CNfoFile::ERROR_NFO)
     ignoreNfo = true;
   else
-  if (result != CNfoFile::NO_NFO)
+  if (bHasInfo && result != CNfoFile::NO_NFO)
   {
     if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
       hasDetails = true;
