@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -872,22 +872,6 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\DVDAudioCodecPcm.h"
 							>
 						</File>
-					<Filter
-							Name="Encoders"
-						>
-						<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.cpp"
-							>
-						</File>
-						<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\DVDAudioEncoderFFmpeg.h"
-							>
-						</File>
-						<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Audio\Encoders\IDVDAudioEncoder.h"
-								>
-							</File>
-						</Filter>
 					</Filter>
 					<Filter
 						Name="Video"
@@ -1075,7 +1059,7 @@
 								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\nal.h"
 								>
 							</File>
-					</Filter>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="Overlay"
@@ -2430,6 +2414,18 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
 						>
 					</File>
@@ -2458,7 +2454,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\smartptr.h"
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h"
 						>
 					</File>
 					<File
