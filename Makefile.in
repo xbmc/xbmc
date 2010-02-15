@@ -269,6 +269,8 @@ xbmc/lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C xbmc/lib/libapetag
 lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
+system/players/paplayer/libmodplug-$(ARCH).so: lib/libmodplug/src/.libs/libmodplug.a
+	ld -bundle -flat_namespace -undefined suppress -o $@ 
 lib/xbmc-dll-symbols/dll-symbols.a: force
 	$(MAKE) -C lib/xbmc-dll-symbols
 lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a: force
@@ -347,7 +349,7 @@ xcode_depends: \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	lib/libmodplug/src/.libs/libmodplug.a \
+	system/players/paplayer/libmodplug-$(ARCH).so \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
@@ -404,7 +406,6 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	lib/libmodplug/src/.libs/libmodplug.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/visualizations/visualization.a

@@ -1481,7 +1481,7 @@ XB_CONFIG_MODULE([lib/libmodplug], [
     CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
   else
-    ./configure --with-pic --enable-static
+    true
   fi
 ], [0])
 
