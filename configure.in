@@ -339,7 +339,6 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([wavpack],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
                   [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))
@@ -403,6 +402,7 @@ else
   fi
   # don't combine with mysqlclient check in apple section above, Linux needs
   # paths from mysql_config
+  AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
