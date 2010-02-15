@@ -480,7 +480,7 @@ int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
   }
 
   /* if we are muxing into ADTS (AAC) */
-  int adts_used;
+  int adts_used = 0;
   if (m_ADTS.m_pFormat)
   {
     adts_used = iSize;
