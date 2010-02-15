@@ -316,8 +316,9 @@ if test "$host_vendor" != "apple" ; then
     AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
   fi
 else
-  use_webserver="no"
-  AC_MSG_RESULT(Webserver disabled)
+  if test "$use_webserver" = "yes"; then
+    AC_DEFINE([HAVE_LIBMICROHTTPD], [1],)
+  fi
 fi
 
 
@@ -1479,6 +1480,16 @@ XB_CONFIG_MODULE([lib/libmodplug], [
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
   else
     ./configure --with-pic --enable-static
+  fi
+], [0])
+
+XB_CONFIG_MODULE([lib/libmicrohttpd], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
+  else
+    true
   fi
 ], [0])
 

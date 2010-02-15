@@ -271,6 +271,8 @@ lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
 lib/xbmc-dll-symbols/dll-symbols.a: force
 	$(MAKE) -C lib/xbmc-dll-symbols
+lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a: force
+	$(MAKE) -C lib/libmicrohttpd
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -355,7 +357,8 @@ xcode_depends: \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libjsonrpc/libjsonrpc.a \
 	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
-	xbmc/lib/libhttpapi/libhttpapi.a
+	xbmc/lib/libhttpapi/libhttpapi.a \
+	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -425,7 +428,8 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \
 	xbmc/osx/osx.a \
 	lib/libSDL-OSX/libSDL-@ARCH@.a \
-	lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
+	lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
+	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a
 else
 OBJSXBMC += \
 	xbmc/posix/posix.a

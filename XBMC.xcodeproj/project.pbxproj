@@ -1744,6 +1744,10 @@
 		F5A7A6F81128934D0059D6AA /* libhttpapi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A6F61128934C0059D6AA /* libhttpapi.a */; };
 		F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
+		F5A7A8131128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */; };
+		F5A7A8141128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */; };
+		F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
+		F5A7A85C112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
@@ -3706,6 +3710,9 @@
 		F5A7A6F61128934C0059D6AA /* libhttpapi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhttpapi.a; path = xbmc/lib/libhttpapi/libhttpapi.a; sourceTree = "<group>"; };
 		F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnnouncementManager.cpp; sourceTree = "<group>"; };
 		F5A7A701112893E50059D6AA /* AnnouncementManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementManager.h; sourceTree = "<group>"; };
+		F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmicrohttpd.a; path = lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a; sourceTree = "<group>"; };
+		F5A7A859112908F00059D6AA /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
+		F5A7A85A112908F00059D6AA /* WebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServer.h; sourceTree = "<group>"; };
 		F5A9D3071097C9370050490F /* AliasShortcutUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AliasShortcutUtils.h; sourceTree = "<group>"; };
 		F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AliasShortcutUtils.cpp; sourceTree = "<group>"; };
 		F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /opt/local/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
@@ -3885,6 +3892,7 @@
 				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F4112893440059D6AA /* libjsonrpc.a in Frameworks */,
 				F5A7A6F71128934C0059D6AA /* libhttpapi.a in Frameworks */,
+				F5A7A8131128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3946,6 +3954,7 @@
 				F5A7A6F2112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F5112893440059D6AA /* libjsonrpc.a in Frameworks */,
 				F5A7A6F81128934D0059D6AA /* libhttpapi.a in Frameworks */,
+				F5A7A8141128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6755,6 +6764,8 @@
 				E38E1E8C0D25F9FD00618676 /* UdpClient.h */,
 				E38E1E8D0D25F9FD00618676 /* Weather.cpp */,
 				E38E1E8E0D25F9FD00618676 /* Weather.h */,
+				F5A7A859112908F00059D6AA /* WebServer.cpp */,
+				F5A7A85A112908F00059D6AA /* WebServer.h */,
 				E38E1E8F0D25F9FD00618676 /* Win32Exception.cpp */,
 				E38E1E900D25F9FD00618676 /* Win32Exception.h */,
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
@@ -6849,6 +6860,7 @@
 				F5A7A6F61128934C0059D6AA /* libhttpapi.a */,
 				F5A7A6F3112893440059D6AA /* libjsonrpc.a */,
 				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
+				F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */,
 				F5A1C86A0F6B048000A96ABD /* x86 */,
 				F5A1C8690F6B047D00A96ABD /* ppc */,
 			);
@@ -8089,6 +8101,7 @@
 				7C644FC7112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
+				F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8946,6 +8959,7 @@
 				7C644FC8112367A60012D34D /* GUILabel.cpp in Sources */,
 				F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
+				F5A7A85C112908F00059D6AA /* WebServer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9005,6 +9019,7 @@
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
+					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9034,10 +9049,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9092,6 +9109,7 @@
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
+					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9121,10 +9139,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9235,6 +9255,7 @@
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
+					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9265,10 +9286,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9324,6 +9347,7 @@
 					xbmc/lib/libportaudio,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
+					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
 					/opt/local/include,
 					/opt/local/include/freetype2,
@@ -9354,10 +9378,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
