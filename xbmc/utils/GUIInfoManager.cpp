@@ -163,7 +163,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
   // trim whitespace, and convert to lowercase
   CStdString strTest = strCondition;
-  strTest.ToLower();
   strTest.TrimLeft(" \t\r\n");
   strTest.TrimRight(" \t\r\n");
   if (strTest.IsEmpty()) return 0;
@@ -173,6 +172,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   if(bNegate)
     strTest.Delete(0, 1);
+  CStdString original(strTest);
+  strTest.ToLower();
 
   CStdString strCategory = strTest.Left(strTest.Find("."));
 
@@ -431,7 +432,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     if (info2 > 0)
       return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, -info2));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+    int compareString = ConditionalStringParameter(label);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
   else if (strTest.Left(19).Equals("integergreaterthan("))
@@ -445,7 +448,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(10, pos-10));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+    int compareString = ConditionalStringParameter(label);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, info, compareString));
   }
   else if (strCategory.Equals("lcd"))
