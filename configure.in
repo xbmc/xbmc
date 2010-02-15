@@ -339,6 +339,7 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([wavpack],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MAD],        [mad],
                   [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))

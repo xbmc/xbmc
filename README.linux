@@ -53,7 +53,7 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
  libmpeg2-4-dev, libass-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libtiff4-dev, libiso9660-dev, libssl-dev,
- libmicrohttpd-dev
+ libmicrohttpd-dev, libmodplug-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache
