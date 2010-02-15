@@ -94,6 +94,8 @@
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
 #define HAVE_LIBCRYSTALHD
+#define HAS_WEB_SERVER
+#define HAS_WEB_INTERFACE
 #endif
 
 /*****************
