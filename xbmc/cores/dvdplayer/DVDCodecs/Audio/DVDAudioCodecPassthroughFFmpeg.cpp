@@ -137,15 +137,18 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   }
 
   /* set the stream's parameters */
-  muxer.m_pStream->stream_copy           = 0;
-  muxer.m_pStream->codec->codec_type     = CODEC_TYPE_AUDIO;
-  muxer.m_pStream->codec->codec_id       = hints.codec;
-  muxer.m_pStream->codec->sample_rate    = hints.samplerate;
-  muxer.m_pStream->codec->sample_fmt     = SAMPLE_FMT_S16;
-  muxer.m_pStream->codec->channels       = hints.channels;
-  muxer.m_pStream->codec->bit_rate       = hints.bitrate;
-  muxer.m_pStream->codec->extradata      = (uint8_t*)hints.extradata;
-  muxer.m_pStream->codec->extradata_size = hints.extrasize;
+  muxer.m_pStream->stream_copy           = 1;
+
+  AVCodecContext *codec = muxer.m_pStream->codec;
+  codec->codec_type     = CODEC_TYPE_AUDIO;
+  codec->codec_id       = hints.codec;
+  codec->sample_rate    = hints.samplerate;
+  codec->sample_fmt     = SAMPLE_FMT_S16;
+  codec->channels       = hints.channels;
+  codec->bit_rate       = hints.bitrate;
+  codec->extradata      = new uint8_t[hints.extrasize];
+  codec->extradata_size = hints.extrasize;
+  memcpy(codec->extradata, hints.extradata, hints.extrasize);
 
   muxer.m_WroteHeader = m_dllAvFormat.av_write_header(muxer.m_pFormat) == 0;
   if (!muxer.m_WroteHeader)
@@ -258,6 +261,7 @@ void CDVDAudioCodecPassthroughFFmpeg::DisposeMuxer(Muxer &muxer)
     if (muxer.m_WroteHeader)
       m_dllAvFormat.av_write_trailer(muxer.m_pFormat);
     muxer.m_WroteHeader = false;
+    delete[] muxer.m_pStream->codec;
     m_dllAvUtil.av_freep(&muxer.m_pFormat->pb);
     m_dllAvUtil.av_freep(&muxer.m_pFormat);
     m_dllAvUtil.av_freep(&muxer.m_pStream);
