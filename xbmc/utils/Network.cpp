@@ -34,12 +34,13 @@
 using namespace std;
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
-bool in_ether (char *bufp, unsigned char *addr)
+bool in_ether (const char *bufp, unsigned char *addr)
 {
   if (strlen(bufp) != 17)
     return false;
 
-  char c, *orig;
+  char c;
+  const char *orig;
   unsigned char *ptr = addr;
   unsigned val;
 
@@ -209,7 +210,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
   }
 }
 
-bool CNetwork::WakeOnLan(char* mac)
+bool CNetwork::WakeOnLan(const char* mac)
 {
   int i, j, packet;
   unsigned char ethaddr[8];
