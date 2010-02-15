@@ -1857,6 +1857,8 @@
   <string id="20443">Do you want to refresh info for all</string>
   <string id="20444">items within this path?</string>
   <string id="20445">Fanart</string>
+  <string id="20446">Locally stored information found.</string>
+  <string id="20447">Ignore and refresh from internet?</string>
   <string id="20448">Could not download information</string>
   <string id="20449">Server is most likely unavailable.</string>
   <string id="20450">Would you like to continue scanning?</string>

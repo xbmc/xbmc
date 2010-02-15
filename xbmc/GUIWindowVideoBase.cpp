@@ -527,14 +527,14 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
 
   bool ignoreNfo(false);
-  CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-  if (result == CNfoFile::ERROR_NFO)
+  CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+  if (nfoResult == CNfoFile::ERROR_NFO)
     ignoreNfo = true;
   else
-  if (result != CNfoFile::NO_NFO)
+  if (nfoResult != CNfoFile::NO_NFO)
   {
     hasDetails = true;
-    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+    if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO)
       scanner.m_IMDB.SetScraperInfo(info);
   }
 
@@ -724,11 +724,17 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         needsRefresh = pDlgInfo->NeedRefresh();
         if (needsRefresh)
         {
-          ignoreNfo = true;
-          info = info2;
-          hasDetails = false;
           bHasInfo = true;
-          scrUrl.Clear();
+          if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO)
+          {
+            if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+            {
+              hasDetails = false;
+              ignoreNfo = true;
+              scrUrl.Clear();
+              info = info2;
+            }
+          }
         }
         listNeedsUpdating = true;
       }
