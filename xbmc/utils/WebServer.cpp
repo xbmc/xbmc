@@ -196,7 +196,11 @@ int CWebServer::HttpApi(struct MHD_Connection *connection)
   return MHD_NO;
 }
 
+#if (MHD_VERSION >= 0x00040001)
 int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
+#else   //libmicrohttpd < 0.4.0
+int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
+#endif
 {
   CFile *file = (CFile *)cls;
   file->Seek(pos);

@@ -57,7 +57,11 @@ private:
                         const char *version, const char *upload_data,
                         size_t *upload_data_size, void **con_cls);
 
+#if (MHD_VERSION >= 0x00040001)
   static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
+#else   //libmicrohttpd < 0.4.0
+  static int ContentReaderCallback (void *cls, size_t pos, char *buf, int max);
+#endif
   static void ContentReaderFreeCallback (void *cls);
   static int JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size);
   static int HttpApi(struct MHD_Connection *connection);
