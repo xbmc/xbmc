@@ -829,17 +829,47 @@ LAME Ain't an Mp3 Encoder
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-GoAhead WebServer
-<http://www.goahead.com/products/webserver/default.aspx>
+GNU libmicrohttpd
+<http://www.gnu.org/software/libmicrohttpd/>
 
-    Copyright © GoAhead Software Inc., 1995-2000. All Rights Reserved.
+    (C) 2006, 2007, 2008, 2009 Christian Grothoff (and other contributing authors)
 
-    This software is distributed under the GoAhead Open Source License
-    Agreement.
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
 
-    A copy of this license may be downloaded from
-    http://www.goahead.com/pdf/opensourcewebserver.pdf and under the section
-    "License: GoAhead Open Source License".
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+libmodplug
+<http://modplug-xmms.sourceforge.net>
+
+    Copyright 2002-2003 Kenton Varda <temporal@gauge3d.org>,
+                        Olivier Lapicque <olivierl@jps.net>,
+                        Colin DeVilbiss <crdevilb@mtu.edu>,
+                        Markus Fick <marf@gmx.net>,
+                        Adam Goode <adam@evdebs.org>
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 Python Programming Language
 <http://www.python.org/>
@@ -2612,289 +2642,6 @@ Legal Terms
 
 
 --- end of FTL ---
-
-License: GoAhead Open Source License
-
-License Agreement
-
-THIS LICENSE ALLOWS ONLY THE LIMITED USE OF GO AHEAD SOFTWARE,
-INC. PROPRIETARY CODE.  PLEASE CAREFULLY READ THIS AGREEMENT AS IT
-PERTAINS TO THIS LICENSE, YOU CERTIFY THAT YOU WILL USE THE SOFTWARE
-ONLY IN THE MANNER PERMITTED HEREIN.
-
-1. Definitions.
-
-1.1 "Documentation" means any documentation GoAhead includes with the
-    Original Code.
-
-1.2 "GoAhead" means Go Ahead Software, Inc.
-
-1.3 "Intellectual Property Rights" means all rights, whether now existing
-    or hereinafter acquired, in and to trade secrets, patents, copyrights,
-    trademarks, know-how, as well as moral rights and similar rights of any
-    type under the laws of any governmental authority, domestic or foreign,
-    including rights in and to all applications and registrations relating
-    to any of the foregoing.
-
-1.4 "License" or "Agreement" means this document.
-
-1.5 "Modifications" means any addition to or deletion from the substance
-    or structure of either the Original Code or any previous Modifications.
-
-1.6 "Original Code" means the Source Code to GoAhead�s proprietary
-    computer software entitled GoAhead WebServer.
-
-1.7 "Response Header" means the first portion of the response message
-    output by the GoAhead WebServer, containing but not limited to, header
-    fields for date, content-type, server identification and cache control.
-
-1.8 "Server Identification Field" means the field in the Response Header
-    which contains the text "Server: GoAhead-Webs".
-
-1.9 "You" means an individual or a legal entity exercising rights under,
-    and complying with all of the terms of, this license or a future version
-    of this license. For legal entities, "You" includes any entity which
-    controls, is controlled by, or is under common control with You. For
-    purposes of this definition, "control" means (a) the power, direct or
-    indirect, to cause the direction or management of such entity, whether
-    by contract or otherwise, or (b) ownership of fifty percent (50%) or
-    more of the outstanding shares or beneficial ownership of such entity.
-
-2. Source Code License.
-
-2.1 Limited Source Code Grant.
-
-GoAhead hereby grants You a world-wide, royalty-free, non-exclusive
-license, subject to third party intellectual property claims, to use,
-reproduce, modify, copy and distribute the Original Code.
-
-2.2 Binary Code.
-
-GoAhead hereby grants You a world-wide, royalty-free, non-exclusive
-license to copy and distribute the binary code versions of the Original
-Code together with Your Modifications.
-
-2.3 License Back to GoAhead.
-
-You hereby grant in both source code and binary code to GoAhead a
-world-wide, royalty-free, non-exclusive license to copy, modify, display,
-use and sublicense any Modifications You make that are distributed or
-planned for distribution.  Within 30 days of either such event, You
-agree to ship to GoAhead a file containing the Modifications (in a media
-to be determined by the parties), including any programmers� notes and
-other programmers� materials. Additionally, You will provide to GoAhead
-a complete description of the product, the product code or model number,
-the date on which the product is initially shipped, and a contact name,
-phone number and e-mail address for future correspondence. GoAhead will
-keep confidential all data specifically marked as such.
-
-2.4 Restrictions on Use.
-
-You may sublicense Modifications to third parties such as subcontractors
-or OEM's provided that You enter into license agreements with such third
-parties that bind such third parties to all the obligations under this
-Agreement applicable to you and that are otherwise substantially similar
-in scope and application to this Agreement.
-
-3. Term.
-
-This Agreement and license are effective from the time You accept the
-terms of this Agreement until this Agreement is terminated. You may
-terminate this Agreement at any time by uninstalling or destroying
-all copies of the Original Code including any and all binary versions
-and removing any Modifications to the Original Code existing in any
-products. This Agreement will terminate immediately and without further
-notice if You fail to comply with any provision of this Agreement. All
-restrictions on use, and all other provisions that may reasonably
-be interpreted to survive termination of this Agreement, will survive
-termination of this Agreement for any reason. Upon termination, You agree
-to uninstall or destroy all copies of the Original Code, Modifications,
-and Documentation.
-
-4. Trademarks and Brand.
-
-4.1 License and Use.
-
-GoAhead hereby grants to You a limited world-wide, royalty-free,
-non-exclusive license to use the GoAhead trade names, trademarks, logos,
-service marks and product designations posted in Exhibit A (collectively,
-the "GoAhead Marks") in connection with the activities by You under this
-Agreement. Additionally, GoAhead grants You a license under the terms
-above to such GoAhead trademarks as shall be identified at a URL (the
-"URL") provided by GoAhead. The use by You of GoAhead Marks shall be in
-accordance with GoAhead�s trademark policies regarding trademark usage
-as established at the web site designated by the URL, or as otherwise
-communicated to You by GoAhead at its sole discretion. You understand and
-agree that any use of GoAhead Marks in connection with this Agreement
-shall not create any right, title or interest in or to such GoAhead
-Marks and that all such use and goodwill associated with GoAhead Marks
-will inure to the benefit of GoAhead.
-
-4.2 Promotion by You of GoAhead WebServer Mark.
-
-In consideration for the licenses granted by GoAhead to You herein, You
-agree to notify GoAhead when You incorporate the GoAhead WebServer in
-Your product and to inform GoAhead when such product begins to ship. You
-agree to promote the Original Code by prominently and visibly displaying
-a graphic of the GoAhead WebServer mark on the initial web page of Your
-product that is displayed each time a user connects to it. You also agree
-that GoAhead may identify your company as a user of the GoAhead WebServer
-in conjunction with its own marketing efforts. You may further promote
-the Original Code by displaying the GoAhead WebServer mark in marketing
-and promotional materials such as the home page of your web site or web
-pages promoting the product.
-
-4.3 Placement of Copyright Notice by You.
-
-You agree to include copies of the following notice (the "Notice")
-regarding proprietary rights in all copies of the products that You
-distribute, as follows: (i) embedded in the object code; and (ii) on
-the title pages of all documentation. Furthermore, You agree to use
-commercially reasonable efforts to cause any licensees of your products
-to embed the Notice in object code and on the title pages or relevant
-documentation. The Notice is as follows: Copyright (c) 20xx GoAhead
-Software, Inc. All Rights Reserved. Unless GoAhead otherwise instructs,
-the year 20xx is to be replaced with the year during which the release of
-the Original Code containing the notice is issued by GoAhead. If this year
-is not supplied with Documentation, GoAhead will supply it upon request.
-
-4.4 No Modifications to Server Identification Field.
-
-You agree not to remove or modify the Server identification Field
-contained in the Response Header as defined in Section 1.6 and 1.7.
-
-5. Warranty Disclaimers.
-
-THE ORIGINAL CODE, THE DOCUMENTATION AND THE MEDIA UPON WHICH THE ORIGINAL
-CODE IS RECORDED (IF ANY) ARE PROVIDED "AS IS" AND WITHOUT WARRANTIES OF
-ANY KIND, EXPRESS, STATUTORY OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE.
-
-The entire risk as to the quality and performance of the Original Code
-(including any Modifications You make) and the Documentation is with
-You. Should the Original Code or the Documentation prove defective,
-You (and not GoAhead or its distributors, licensors or dealers) assume
-the entire cost of all necessary servicing or repair. GoAhead does not
-warrant that the functions contained in the Original Code will meet your
-requirements or operate in the combination that You may select for use,
-that the operation of the Original Code will be uninterrupted or error
-free, or that defects in the Original Code will be corrected. No oral
-or written statement by GoAhead or by a representative of GoAhead shall
-create a warranty or increase the scope of this warranty.
-
-GOAHEAD DOES NOT WARRANT THE ORIGINAL CODE AGAINST INFRINGEMENT OR THE
-LIKE WITH RESPECT TO ANY COPYRIGHT, PATENT, TRADE SECRET, TRADEMARK
-OR OTHER PROPRIETARY RIGHT OF ANY THIRD PARTY AND DOES NOT WARRANT
-THAT THE ORIGINAL CODE DOES NOT INCLUDE ANY VIRUS, SOFTWARE ROUTINE
-OR OTHER SOFTWARE DESIGNED TO PERMIT UNAUTHORIZED ACCESS, TO DISABLE,
-ERASE OR OTHERWISE HARM SOFTWARE, HARDWARE OR DATA, OR TO PERFORM ANY
-OTHER SUCH ACTIONS.
-
-Any warranties that by law survive the foregoing disclaimers shall
-terminate ninety (90) days from the date You received the Original Code.
-
-6. Limitation of Liability.
-
-YOUR SOLE REMEDIES AND GOAHEAD'S ENTIRE LIABILITY ARE SET FORTH ABOVE. IN
-NO EVENT WILL GOAHEAD OR ITS DISTRIBUTORS OR DEALERS BE LIABLE FOR
-DIRECT, INDIRECT, INCIDENTAL OR CONSEQUENTIAL DAMAGES RESULTING FROM
-THE USE OF THE ORIGINAL CODE, THE INABILITY TO USE THE ORIGINAL CODE,
-OR ANY DEFECT IN THE ORIGINAL CODE, INCLUDING ANY LOST PROFITS, EVEN IF
-THEY HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-You agree that GoAhead and its distributors and dealers will not be
-LIABLE for defense or indemnity with respect to any claim against You
-by any third party arising from your possession or use of the Original
-Code or the Documentation.
-
-In no event will GoAhead�s total liability to You for all damages, losses,
-and causes of action (whether in contract, tort, including negligence,
-or otherwise) exceed the amount You paid for this product.
-
-SOME STATES DO NOT ALLOW LIMITATIONS ON HOW LONG AN IMPLIED WARRANTY
-LASTS, AND SOME STATES DO NOT ALLOW THE EXCLUSION OR LIMITATION
-OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THE ABOVE LIMITATIONS OR
-EXCLUSIONS MAY NOT APPLY TO YOU. THIS WARRANTY GIVES YOU SPECIFIC LEGAL
-RIGHTS AND YOU MAY ALSO HAVE OTHER RIGHTS WHICH VARY FROM STATE TO STATE.
-
-7. Indemnification by You.
-
-You agree to indemnify and hold GoAhead harmless against any and all
-claims, losses, damages and costs (including legal expenses and reasonable
-counsel fees) arising out of any claim of a third party with respect to
-the contents of the Your products, and any intellectual property rights
-or other rights or interests related thereto.
-
-8. High Risk Activities.
-
-The Original Code is not fault-tolerant and is not designed , manufactured
-or intended for use or resale as online control equipment in hazardous
-environments requiring fail-safe performance, such as in the operation
-of nuclear facilities, aircraft navigation or communication systems,
-air traffic control, direct life support machines or weapons systems,
-in which the failure of the Original Code could lead directly to death,
-personal injury, or severe physical or environmental damage.  GoAhead and
-its suppliers specifically disclaim any express or implied warranty of
-fitness for any high risk uses listed above.
-
-9. Government Restricted Rights.
-
-For units of the Department of Defense, use, duplication, or disclosure
-by the Government is subject to restrictions as set forth in subparagraph
-(c)(1)(ii) of the Rights in Technical Data and Computer Software clause
-at DFARS 252.227-7013. Contractor/manufacturer is GoAhead Software,
-Inc., 10900 N.E. 8th Street, Suite 750, Bellevue, Washington 98004.
-
-If the Commercial Computer Software Restricted rights clause at FAR
-52.227-19 or its successors apply, the Software and Documentation
-constitute restricted computer software as defined in that clause and
-the Government shall not have the license for published software set
-forth in subparagraph (c)(3) of that clause.
-
-The Original Code (i) was developed at private expense, and no part of it
-was developed with governmental funds; (ii) is a trade secret of GoAhead
-(or its licensor(s)) for all purposes of the Freedom of Information Act;
-(iii) is "restricted computer software" subject to limited utilization as
-provided in the contract between the vendor and the governmental entity;
-and (iv) in all respects is proprietary data belonging solely to GoAhead
-(or its licensor(s)).
-
-10. Governing Law and Interpretation.
-
-This Agreement shall be interpreted under and governed by the laws of the
-State of Washington, without regard to its rules governing the conflict of
-laws. If any provision of this Agreement is held illegal or unenforceable
-by a court or tribunal of competent jurisdiction, the remaining provisions
-of this Agreement shall remain in effect and the invalid provision deemed
-modified to the least degree necessary to remedy such invalidity.
-
-11. Entire Agreement.
-
-This Agreement is the complete agreement between GoAhead and You and
-supersedes all prior agreements, oral or written, with respect to the
-subject matter hereof.
-
-If You have any questions concerning this Agreement, You may write to
-GoAhead Software, Inc., 10900 N.E. 8th Street, Suite 750, Bellevue,
-Washington 98004 or send e-mail to info@goahead.com.
-
-BY CLICKING ON THE "Register" BUTTON ON THE REGISTRATION FORM, YOU
-ACCEPT AND AGREE TO BE BOUND BY ALL OF THE TERMS AND CONDITIONS SET
-FORTH IN THIS AGREEMENT. IF YOU DO NOT WISH TO ACCEPT THIS LICENSE OR
-YOU DO NOT QUALIFY FOR A LICENSE BASED ON THE TERMS SET FORTH ABOVE,
-YOU MUST NOT CLICK THE "Register" BUTTON.
-
-Exhibit A
-
-GoAhead Trademarks, Logos, and Product Designation Information
-
-
-
-
-01/28/00
-
--- End of GoAhead Open Source License --
 
 License: PSF License for Python 2.4
 
