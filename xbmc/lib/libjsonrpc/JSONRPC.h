@@ -45,7 +45,7 @@ namespace JSONRPC
   };
 
   /* The method call needs to be perfectly threadsafe
-     The method will only be called if parameterObject contains data as specified. So if method doesn't support parameters it won't be called with parameters and vice versa.
+     The method will only be called if the caller has the correct permissions. The method will need to check parameters for bad parametervalues.
   */
   typedef JSON_STATUS (*MethodCall) (const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
 
