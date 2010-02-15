@@ -16,7 +16,7 @@
 		<include condition="Skin.HasSetting(homepageHideRecentlyAdded)">HomeRecentlyAddedInfo</include>
 		<!-- weather Info -->
 		<control type="group">
-			<posx>490r</posx>
+			<posx>520r</posx>
 			<posy>0</posy>
 			<animation effect="slide" start="0,0" end="-60,0" delay="0" time="300" condition="Window.IsVisible(MuteBug)">conditional</animation>
 			<animation effect="slide" start="0,0" end="550,0" delay="0" time="300">WindowClose</animation>
@@ -1240,7 +1240,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>360r</posx>
+			<posx>390r</posx>
 			<posy>0</posy>
 			<animation effect="slide" start="0,0" end="-60,0" delay="0" time="300" condition="Window.IsVisible(MuteBug)">conditional</animation>
 			<animation effect="slide" start="0,0" end="420,0" delay="0" time="300">WindowClose</animation>

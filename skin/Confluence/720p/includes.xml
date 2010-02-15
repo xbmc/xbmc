@@ -289,7 +289,7 @@
 			<align>left</align>
 			<aligny>center</aligny>
 			<font>font12</font>
-			<textcolor>grey2</textcolor>
+			<textcolor>grey</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>Player.HasMedia</visible>
 			<include>VisibleFadeEffect</include>
@@ -302,7 +302,7 @@
 			<width>500</width>
 			<height>20</height>
 			<font>font12</font>
-			<textcolor>grey2</textcolor>
+			<textcolor>grey</textcolor>
 			<scroll>false</scroll>
 			<align>right</align>
 			<aligny>center</aligny>

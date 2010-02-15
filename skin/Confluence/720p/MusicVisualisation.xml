@@ -333,7 +333,8 @@
 				<posy>260r</posy>
 				<width>300</width>
 				<height>230</height>
-				<texture>$INFO[MusicPlayer.cover]</texture>
+				<fadetime>200</fadetime>
+				<texture background="true">$INFO[MusicPlayer.cover]</texture>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<bordertexture border="8">ThumbShadow.png</bordertexture>
 				<bordersize>8</bordersize>
@@ -344,7 +345,8 @@
 				<posy>38r</posy>
 				<width>284</width>
 				<height>214</height>
-				<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[MusicPlayer.cover]</texture>
+				<fadetime>200</fadetime>
+				<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[MusicPlayer.cover]</texture>
 				<aspectratio aligny="top">keep</aspectratio>
 			</control>
 		</control>
