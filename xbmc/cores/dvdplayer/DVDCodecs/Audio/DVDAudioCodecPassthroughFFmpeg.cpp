@@ -371,7 +371,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     return false;
 
 #if (LIBAVFORMAT_VERSION_INT > AV_VERSION_INT(52, 47, 0))
-  #pragma warning "Make sure upstream FFmpge still needs this workaround (issue #1735)"
+  #pragma warning "Make sure upstream FFmpeg still needs this workaround (issue #1735)"
 #endif
   Reset();
 
@@ -420,7 +420,7 @@ int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
       return used;
 
     /* now we have data, it is safe to initialize the encoder, as we should now have a channel map */
-    if (m_Codec && m_InitEncoder)
+    if (m_InitEncoder)
     {
       if (m_Encoder->Initialize(m_Codec->GetChannels(), m_Codec->GetChannelMap(), m_Codec->GetBitsPerSample(), m_Codec->GetSampleRate()))
       {
