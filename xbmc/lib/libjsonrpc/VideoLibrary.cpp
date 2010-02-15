@@ -26,7 +26,7 @@
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -45,7 +45,7 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -64,7 +64,7 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -84,7 +84,7 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -105,7 +105,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetMusicVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetMusicVideoAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
 /*  CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -122,7 +122,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideoAlbums(const CStdString &method, ITransp
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -143,7 +143,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetMovieInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetMovieInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!parameterObject.isObject() || !parameterObject.isMember("movieid") || parameterObject.get("movieid", -1).asInt() < 0 || !parameterObject.isMember("fields"))
     return InvalidParams;
@@ -163,7 +163,7 @@ JSON_STATUS CVideoLibrary::GetMovieInfo(const CStdString &method, ITransportLaye
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetTVShowInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetTVShowInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
 /*  if (!parameterObject.isMember("tvshowid") || parameterObject.get("tvshowid", -1).asInt() < 0 || !parameterObject.isMember("fields"))
     return InvalidParams;
@@ -183,7 +183,7 @@ JSON_STATUS CVideoLibrary::GetTVShowInfo(const CStdString &method, ITransportLay
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetEpisodeInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetEpisodeInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
 /*  if (!parameterObject.has<long>("episodeid") || parameterObject.get<long>("episodeid") < 0 || !parameterObject.has<Array>("fields"))
   if (!parameterObject.isMember("episodeid") || parameterObject.get("episodeid", -1).asInt() < 0 || !parameterObject.isMember("fields"))
@@ -204,7 +204,7 @@ JSON_STATUS CVideoLibrary::GetEpisodeInfo(const CStdString &method, ITransportLa
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::GetMusicVideoInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CVideoLibrary::GetMusicVideoInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
 /*  if (!parameterObject.has<long>("musicvideoid") || parameterObject.get<long>("musicvideoid") < 0 || !parameterObject.has<Array>("fields"))
     return InvalidParams;

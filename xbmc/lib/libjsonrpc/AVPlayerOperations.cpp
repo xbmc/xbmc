@@ -28,7 +28,7 @@
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CAVPlayerOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -39,7 +39,7 @@ JSON_STATUS CAVPlayerOperations::PlayPause(const CStdString &method, ITransportL
   return OK;
 }
 
-JSON_STATUS CAVPlayerOperations::Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -50,7 +50,7 @@ JSON_STATUS CAVPlayerOperations::Stop(const CStdString &method, ITransportLayer 
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -61,7 +61,7 @@ JSON_STATUS CAVPlayerOperations::SkipPrevious(const CStdString &method, ITranspo
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -72,7 +72,7 @@ JSON_STATUS CAVPlayerOperations::SkipNext(const CStdString &method, ITransportLa
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::BigSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::BigSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -81,7 +81,7 @@ JSON_STATUS CAVPlayerOperations::BigSkipBackward(const CStdString &method, ITran
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::BigSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::BigSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -90,7 +90,7 @@ JSON_STATUS CAVPlayerOperations::BigSkipForward(const CStdString &method, ITrans
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::SmallSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::SmallSkipBackward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -99,7 +99,7 @@ JSON_STATUS CAVPlayerOperations::SmallSkipBackward(const CStdString &method, ITr
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::SmallSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::SmallSkipForward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -108,7 +108,7 @@ JSON_STATUS CAVPlayerOperations::SmallSkipForward(const CStdString &method, ITra
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::Rewind(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::Rewind(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -119,7 +119,7 @@ JSON_STATUS CAVPlayerOperations::Rewind(const CStdString &method, ITransportLaye
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::Forward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::Forward(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
@@ -130,7 +130,7 @@ JSON_STATUS CAVPlayerOperations::Forward(const CStdString &method, ITransportLay
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CAVPlayerOperations::Record(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!IsCorrectPlayer(method))
     return FailedToExecute;

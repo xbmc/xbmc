@@ -29,14 +29,14 @@
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   Value val = g_application.GetVolume();
   result.swap(val);
   return OK;
 }
 
-JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!parameterObject.isInt())
     return InvalidParams;
@@ -46,7 +46,7 @@ JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer
   return GetVolume(method, transport, client, parameterObject, result);
 }
 
-JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CAction action;
   action.actionId = ACTION_MUTE;
@@ -54,7 +54,7 @@ JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLaye
   return GetVolume(method, transport, client, parameterObject, result);
 }
 
-JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!parameterObject.isString())
     return InvalidParams;
@@ -63,7 +63,7 @@ JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *tra
   return ACK;
 }
 
-JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CStdString exec = "slideShow(";
 
@@ -91,7 +91,7 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
   return ACK;
 }
 
-JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (parameterObject.isString())
     CLog::Log(LOGDEBUG, "%s", parameterObject.asString().c_str());
@@ -111,7 +111,7 @@ JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *tran
   return ACK;
 }
 
-JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   g_application.getApplicationMessenger().Quit();
   return ACK;

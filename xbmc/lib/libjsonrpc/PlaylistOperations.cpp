@@ -31,7 +31,7 @@ using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace std;
 
-JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value& parameterObject, Value &result)
+JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CPlayList *playlist = NULL;
   bool current;
@@ -57,7 +57,7 @@ JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLa
   return OK;
 }
 
-JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!parameterObject.isMember("file"))
     return InvalidParams;
@@ -80,7 +80,7 @@ JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!parameterObject.isMember("item"))
     return InvalidParams;
@@ -101,7 +101,7 @@ JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLaye
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!parameterObject.isMember("item1") && !parameterObject.isMember("item2"))
     return InvalidParams;
@@ -120,7 +120,7 @@ JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer 
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CPlayList *playlist = NULL;
   bool current;
@@ -133,7 +133,7 @@ JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CPlayList *playlist = NULL;
   bool current;
@@ -146,7 +146,7 @@ JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLay
   return ACK;
 }
 
-JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   CPlayList *playlist = NULL;
   bool current;
@@ -171,7 +171,7 @@ int CPlaylistOperations::PlaylistFromString(const string &id)
     return PLAYLIST_NONE;
 }
 
-bool CPlaylistOperations::GetPlaylist(const Value& parameterObject, CPlayList **playlist, bool &current)
+bool CPlaylistOperations::GetPlaylist(const Value &parameterObject, CPlayList **playlist, bool &current)
 {
   const Value id = (parameterObject.isObject() && parameterObject.isMember("playlist")) ? parameterObject["playlist"] : Value(nullValue);
   int nbr;
@@ -190,5 +190,5 @@ bool CPlaylistOperations::GetPlaylist(const Value& parameterObject, CPlayList **
 void CPlaylistOperations::NotifyAll()
 {
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendThreadMessage( msg );
+  g_windowManager.SendThreadMessage(msg);
 }

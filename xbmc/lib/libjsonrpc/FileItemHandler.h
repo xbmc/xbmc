@@ -31,9 +31,9 @@ namespace JSONRPC
   class CFileItemHandler
   {
   protected:
-    static void FillVideoDetails(const CVideoInfoTag *videoInfo, const Json::Value& parameterObject, Json::Value &result);
-    static void FillMusicDetails(const MUSIC_INFO::CMusicInfoTag *musicInfo, const Json::Value& parameterObject, Json::Value &result);
-    static void HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Json::Value& parameterObject, Json::Value &result);
+    static void FillVideoDetails(const CVideoInfoTag *videoInfo, const Json::Value &parameterObject, Json::Value &result);
+    static void FillMusicDetails(const MUSIC_INFO::CMusicInfoTag *musicInfo, const Json::Value &parameterObject, Json::Value &result);
+    static void HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Json::Value &parameterObject, Json::Value &result);
   private:
     static bool ParseSortMethods(const CStdString &method, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder);
     static void Sort(CFileItemList &items, const Json::Value& parameterObject);

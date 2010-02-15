@@ -26,7 +26,7 @@ using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
 
-void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value& parameterObject, Value &result)
+void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Value &parameterObject, Value &result)
 {
   if (videoInfo->IsEmpty())
     return;
@@ -57,7 +57,7 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Va
   }
 }
 
-void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value& parameterObject, Value &result)
+void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value &parameterObject, Value &result)
 {
   if (!musicInfo->GetTitle().IsEmpty())
     result["title"] =  musicInfo->GetTitle().c_str();
@@ -125,7 +125,7 @@ void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Va
   }
 }
 
-void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Value& parameterObject, Value &result)
+void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Value &parameterObject, Value &result)
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
 
@@ -250,7 +250,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdStri
   return true;
 }
 
-void CFileItemHandler::Sort(CFileItemList &items, const Value& parameterObject)
+void CFileItemHandler::Sort(CFileItemList &items, const Value &parameterObject)
 {
   if (parameterObject.isMember("sortmethod") && parameterObject.isMember("sortorder"))
   {
