@@ -20,10 +20,6 @@
  *
  */
 
-#if defined(_LINUX) && !defined(__APPLE__)
-#include <features.h>
-#endif
-//#include "system.h"
 #include "StdString.h"
 #include <map>
 #include <stdio.h>
