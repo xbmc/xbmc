@@ -533,17 +533,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   else
   if (result != CNfoFile::NO_NFO)
   {
-    if (!bHasInfo || !CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
-    {
-      hasDetails = true;
-      if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-        scanner.m_IMDB.SetScraperInfo(info);
-    }
-    else
-    {
-      ignoreNfo = true;
-      scrUrl.Clear();
-    }
+    hasDetails = true;
+    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+      scanner.m_IMDB.SetScraperInfo(info);
   }
 
   // Get the correct movie title
@@ -574,8 +566,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
-      int returncode=0;
-      if (!hasDetails && (returncode=scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress)) > 0)
+      int returncode = scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress);
+      if (returncode > 0)
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -730,6 +722,14 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         pDlgInfo->DoModal();
         item->SetThumbnailImage(pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
+        if (needsRefresh)
+        {
+          ignoreNfo = true;
+          info = info2;
+          hasDetails = false;
+          bHasInfo = true;
+          scrUrl.Clear();
+        }
         listNeedsUpdating = true;
       }
       else
