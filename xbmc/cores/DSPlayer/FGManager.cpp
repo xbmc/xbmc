@@ -1068,33 +1068,3 @@ void CFGManager::InitManager()
   else
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());
 }
-
-//
-//   CFGManagerPlayer
-//
-
-/*HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF)
-{
-  HRESULT hr;
-
-  if(FAILED(hr = __super::CreateFilter(pFGF, ppBF)))
-    return hr;
-  return hr;
-}*/
-
-/*STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt)
-{
-  CAutoLock cAutoLock(this);
-
-  if(DShowUtil::GetCLSID(pPinOut) == CLSID_MPEG2Demultiplexer)
-  {
-    IMediaSeeking* pMS = NULL;
-    pPinOut->QueryInterface(__uuidof(IMediaSeeking),(void**)&pMS);
-    REFERENCE_TIME rtDur = 0;
-    if(!pMS || FAILED(pMS->GetDuration(&rtDur)) || rtDur <= 0)
-       return E_FAIL;
-    SAFE_RELEASE(pMS);
-  }
-
-  return __super::ConnectDirect(pPinOut, pPinIn, pmt);
-}*/
