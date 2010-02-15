@@ -741,6 +741,7 @@ config.log
 /xbmc/lib/libPython/Python/pyconfig.hbak
 /xbmc/lib/libPython/Python/python
 /xbmc/lib/libPython/Python/python.exe
+/xbmc/lib/libPython/Python/Mac/Python/
 
 /xbmc/lib/libapetag/Makefile
 /xbmc/lib/libapetag/libtool
@@ -835,4 +836,9 @@ config.log
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
 /xbmc/FileSystem/Makefile
+
+/lib/jsoncpp/jsoncpp/src/lib_json/Makefile
+
+/xbmc/lib/libhttpapi/Makefile
+/xbmc/lib/libjsonrpc/Makefile
 
