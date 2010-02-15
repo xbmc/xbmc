@@ -3207,7 +3207,7 @@ int CDVDPlayer::SeekChapter(int iChapter)
   else
   {
     // Do a regular big jump.
-    if (iChapter > GetChapter())
+    if (GetChapter() > 0 && iChapter > GetChapter())
       Seek(true, true);
     else
       Seek(false, true);
