@@ -1,3 +1,4 @@
+
 # global patterns
 config.cache
 config.status
@@ -788,6 +789,10 @@ config.log
 /xbmc/lib/libid3tag/libid3tag/stamp-h1
 /xbmc/lib/libid3tag/libid3tag/msvc++/Makefile
 
+/xbmc/lib/libhttpapi/Makefile
+
+/xbmc/lib/libjsonrpc/Makefile
+
 /xbmc/screensavers/Makefile
 
 /xbmc/screensavers/rsxs-0.9/Makefile
@@ -839,6 +844,23 @@ config.log
 
 /lib/jsoncpp/jsoncpp/src/lib_json/Makefile
 
-/xbmc/lib/libhttpapi/Makefile
-/xbmc/lib/libjsonrpc/Makefile
+/lib/libmicrohttpd/MHD_config.h
+/lib/libmicrohttpd/Makefile
+/lib/libmicrohttpd/contrib/Makefile
+/lib/libmicrohttpd/doc/Makefile
+/lib/libmicrohttpd/libtool
+/lib/libmicrohttpd/m4/Makefile
+/lib/libmicrohttpd/src/Makefile
+/lib/libmicrohttpd/src/daemon/Makefile
+/lib/libmicrohttpd/src/daemon/https/Makefile
+/lib/libmicrohttpd/src/daemon/https/lgl/Makefile
+/lib/libmicrohttpd/src/daemon/https/minitasn1/Makefile
+/lib/libmicrohttpd/src/daemon/https/tls/Makefile
+/lib/libmicrohttpd/src/daemon/https/x509/Makefile
+/lib/libmicrohttpd/src/examples/Makefile
+/lib/libmicrohttpd/src/include/Makefile
+/lib/libmicrohttpd/src/testcurl/Makefile
+/lib/libmicrohttpd/src/testcurl/https/Makefile
+/lib/libmicrohttpd/src/testzzuf/Makefile
+/lib/libmicrohttpd/stamp-h1
 
