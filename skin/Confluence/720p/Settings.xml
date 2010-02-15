@@ -33,7 +33,7 @@
 			</control>
 			<control type="list" id="9000">
 				<posx>10</posx>
-				<posy>90</posy>
+				<posy>82</posy>
 				<width>260</width>
 				<height>541</height>
 				<onleft>9000</onleft>
