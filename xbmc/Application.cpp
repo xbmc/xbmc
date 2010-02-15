@@ -1313,7 +1313,7 @@ void CApplication::StartWebServer()
       m_WebServer.SetCredentials(g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
 
       // publish web frontend and API services
-#ifdef HAS_WEBINTERFACE
+#ifdef HAS_WEB_INTERFACE
       CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
 #endif
 #ifdef HAS_HTTPAPI
