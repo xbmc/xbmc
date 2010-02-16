@@ -746,29 +746,29 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
 
       // if XBMC helper is running, prompt user before effecting change
-      if ( g_xbmcHelper.IsRunning() && g_xbmcHelper.GetMode()!=remoteMode )
+      if ( XBMCHelper::GetInstance().IsRunning() && XBMCHelper::GetInstance().GetMode()!=remoteMode )
       {
         bool cancelled;
         if (!CGUIDialogYesNo::ShowAndGetInput(13144, 13145, 13146, 13147, -1, -1, cancelled, 10000))
         {
           // user declined, restore previous spinner state and appleremote mode
           CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-          g_guiSettings.SetInt("input.appleremotemode", g_xbmcHelper.GetMode());
-          pControl->SetValue(g_xbmcHelper.GetMode());
+          g_guiSettings.SetInt("input.appleremotemode", XBMCHelper::GetInstance().GetMode());
+          pControl->SetValue(XBMCHelper::GetInstance().GetMode());
         }
         else
         {
           // reload configuration
-          g_xbmcHelper.Configure();
+          XBMCHelper::GetInstance().Configure();
         }
       }
       else
       {
         // set new configuration.
-        g_xbmcHelper.Configure();
+        XBMCHelper::GetInstance().Configure();
       }
 
-      if (g_xbmcHelper.ErrorStarting() == true)
+      if (XBMCHelper::GetInstance().ErrorStarting() == true)
       {
         // inform user about error
         CGUIDialogOK::ShowAndGetInput(13620, 13621, 20022, 20022);
@@ -1843,7 +1843,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartEventServer();
 #ifdef __APPLE__
     //reconfigure XBMCHelper for port changes
-    g_xbmcHelper.Configure();
+    XBMCHelper::GetInstance().Configure();
 #endif
 #endif
   }

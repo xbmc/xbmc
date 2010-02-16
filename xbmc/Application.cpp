@@ -613,7 +613,7 @@ bool CApplication::Create()
 
 #ifdef __APPLE__
   // Configure and possible manually start the helper.
-  g_xbmcHelper.Configure();
+  XBMCHelper::GetInstance().Configure();
 #endif
 
   // update the window resolution
@@ -1275,7 +1275,7 @@ bool CApplication::Initialize()
   m_slowTimer.StartZero();
 
 #ifdef __APPLE__
-  g_xbmcHelper.CaptureAllInput();
+  XBMCHelper::GetInstance().CaptureAllInput();
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
   CCrystalHD::GetInstance();
@@ -3363,7 +3363,7 @@ void CApplication::Stop()
     //Sleep(5000);
 
 #ifdef __APPLE__
-    g_xbmcHelper.ReleaseAllInput();
+    XBMCHelper::GetInstance().ReleaseAllInput();
 #endif
 
     if (m_pPlayer)
@@ -3400,8 +3400,8 @@ void CApplication::Stop()
     UnloadSkin();
 
 #ifdef __APPLE__
-    if (g_xbmcHelper.IsAlwaysOn() == false)
-      g_xbmcHelper.Stop();
+    if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
+      XBMCHelper::GetInstance().Stop();
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
