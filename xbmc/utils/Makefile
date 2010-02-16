@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../../lib/jsoncpp/jsoncpp/include
 
 SRCS=Addon.cpp \
      AddonManager.cpp \
@@ -70,8 +70,10 @@ SRCS=Addon.cpp \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
      TextSearch.cpp \
-     RingBuffer.cpp \
+     WebServer.cpp \
+     AnnouncementManager.cpp \
      Semaphore.cpp \
+     RingBuffer.cpp \
      FileOperationJob.cpp \
      FileUtils.cpp \
      Variant.cpp \

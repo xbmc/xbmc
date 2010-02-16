@@ -321,7 +321,7 @@ int RTMP_LIB::AMFObject::Encode(char * pBuffer, int nSize) const
     int nRes = m_properties[i].Encode(pBuffer, nSize);
     if (nRes == -1)
     {
-      CLog::Log(LOGERROR,"AMFObject::Encode - failed to encode property in index %d", i);
+      CLog::Log(LOGERROR,"AMFObject::Encode - failed to encode property in index %d", (int)i);
     }
     else
     {

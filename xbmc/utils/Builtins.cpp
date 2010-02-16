@@ -70,11 +70,6 @@
 #include "lib/libPython/XBPython.h"
 #endif
 
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#include "lib/libGoAhead/WebServer.h"
-#endif
-
 #if defined(__APPLE__)
 #include "FileSystem/SpecialProtocol.h"
 #include "CocoaInterface.h"
@@ -610,7 +605,7 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_WEB_SERVER_BROADCAST
         if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
 #endif

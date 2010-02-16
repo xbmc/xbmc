@@ -16,7 +16,8 @@ SRCS = \
 	ZeroconfBrowserOSX.cpp \
 	WinSystemOSX.mm \
 	WinSystemOSXGL.mm \
-	SemaphoreDarwin.cpp
+	SemaphoreDarwin.cpp \
+	posix-realtime-stub.c
 	
 LIB=osx.a
 

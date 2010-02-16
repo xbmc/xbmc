@@ -38,7 +38,7 @@
 		</RegExp>
 	</GetTMDBId>
 	<GetSearchResults dest="8">
-		<RegExp input="$$3" output="&lt;results&gt;\1&lt;/result&gt;" dest="8">
+		<RegExp input="$$3" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;url cache=&quot;tmdb-\2.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3">
 				<expression repeat="yes">&lt;movie&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;id&gt;([^&lt;]*)&lt;/id&gt;.*?&lt;/movie&gt;</expression>
 			</RegExp>

@@ -2720,6 +2720,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       strDir.Format("%ld/", idArtist);
       pItem->m_strPath=strBaseDir + strDir;
       pItem->m_bIsFolder=true;
+      pItem->GetMusicInfoTag()->SetDatabaseId(idArtist);
       if (CFile::Exists(pItem->GetCachedArtistThumb()))
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       pItem->SetIconImage("DefaultArtist.png");

@@ -219,8 +219,6 @@ void CJoystick::Update(SDL_Event& joyEvent)
   bool ignore = false; // not used for now
   bool axis = false;
 
-  printf("JoystickEvent %i\n", joyEvent.type);
-
   switch(joyEvent.type)
   {
   case SDL_JOYBUTTONDOWN:

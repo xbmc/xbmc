@@ -117,19 +117,23 @@
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#include "lib/libGoAhead/WebServer.h"
-#endif
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
 #endif
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
 #endif
+#ifdef HAS_HTTPAPI
+#include "lib/libhttpapi/XBMChttp.h"
+#endif
+#ifdef HAS_JSONRPC
+#include "lib/libjsonrpc/JSONRPC.h"
+#include "lib/libjsonrpc/TCPServer.h"
+#endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #endif
+#include "utils/AnnouncementManager.h"
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -292,18 +296,14 @@ using namespace EVENTSERVER;
 #ifdef HAS_DBUS_SERVER
 using namespace DBUSSERVER;
 #endif
+#ifdef HAS_JSONRPC
+using namespace JSONRPC;
+#endif
+using namespace ANNOUNCEMENT;
 
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
-
-#if defined(_WIN32)
- #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32d.lib") // SECTIONNAME=LIBHTTP
- #else
-  #pragma comment (lib,"../../xbmc/lib/libGoAhead/goahead_win32.lib")
- #endif
-#endif
 
 #define MAX_FFWD_SPEED 5
 
@@ -311,11 +311,6 @@ using namespace DBUSSERVER;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
-#ifdef HAS_WEB_SERVER
-  m_pWebServer = NULL;
-  m_pXbmcHttp = NULL;
-  m_prevMedia="";
-#endif
   m_pPlayer = NULL;
   m_bScreenSave = false;
   m_dpms = NULL;
@@ -1353,21 +1348,27 @@ void CApplication::StartWebServer()
 #endif
     CSectionLoader::Load("LIBHTTP");
     if (m_network.GetFirstConnectedInterface())
+      m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort/*, "special://xbmc/web", false*/);
+
+    if (m_WebServer.IsStarted())
     {
-       m_pWebServer = new CWebServer();
-       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort, "special://xbmc/web", false);
-    }
-    if (m_pWebServer)
-    {
-      m_pWebServer->SetUserName(g_guiSettings.GetString("services.webserverusername").c_str());
-      m_pWebServer->SetPassword(g_guiSettings.GetString("services.webserverpassword").c_str());
+      m_WebServer.SetCredentials(g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword"));
 
       // publish web frontend and API services
+#ifdef HAS_WEB_INTERFACE
       CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+#endif
+#ifdef HAS_HTTPAPI
       CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+#endif
+#ifdef HAS_JSONRPC
+      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort);
+#endif
     }
-    if (m_pWebServer && m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+#ifdef HAS_HTTPAPI
+    if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
+#endif
   }
 #endif
 }
@@ -1375,24 +1376,41 @@ void CApplication::StartWebServer()
 void CApplication::StopWebServer(bool bWait)
 {
 #ifdef HAS_WEB_SERVER
-  if (m_pWebServer)
+//  if (m_WebServer.IsStarted())
   {
     if (!bWait)
     {
       CLog::Log(LOGNOTICE, "Webserver: Stopping...");
-      m_pWebServer->Stop(false);
+      m_WebServer.Stop();
     }
     else
     {
-      m_pWebServer->Stop(true);
-      delete m_pWebServer;
-      m_pWebServer = NULL;
       CSectionLoader::Unload("LIBHTTP");
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
       CZeroconf::GetInstance()->RemoveService("services.webserver");
+      CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
       CZeroconf::GetInstance()->RemoveService("services.webapi");
     }
   }
+#endif
+}
+
+void CApplication::StartJSONRPCServer()
+{
+#ifdef HAS_JSONRPC
+  if (g_guiSettings.GetBool("services.esenabled"))
+  {
+    CTCPServer::StartServer(9090, g_guiSettings.GetBool("services.esallinterfaces"));
+    CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", 9090);
+  }
+#endif
+}
+
+void CApplication::StopJSONRPCServer(bool bWait)
+{
+#ifdef HAS_JSONRPC
+  CTCPServer::StopServer(bWait);
+  CZeroconf::GetInstance()->RemoveService("servers.jsonrpc");
 #endif
 }
 
@@ -2299,6 +2317,7 @@ bool CApplication::OnKey(CKey& key)
   if (WakeUpScreenSaverAndDPMS() && !processKey)
   {
     g_Keyboard.Reset();
+    CLog::Log(LOGDEBUG, "%s: %i pressed, screen saver/dpms woken up", __FUNCTION__, (int) key.GetButtonCode());
     return true;
   }
 
@@ -2312,6 +2331,9 @@ bool CApplication::OnKey(CKey& key)
     CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
     g_Keyboard.Reset();
+
+    if (!key.IsAnalogButton())
+      CLog::Log(LOGDEBUG, "%s: %i pressed, trying fullscreen info action %i", __FUNCTION__, (int) key.GetButtonCode(), action.actionId);
 
     if (OnAction(action))
       return true;
@@ -2406,6 +2428,8 @@ bool CApplication::OnKey(CKey& key)
 
       g_Keyboard.Reset();
 
+      CLog::Log(LOGDEBUG, "%s: %i pressed, trying keyboard action %i", __FUNCTION__, (int) key.GetButtonCode(), action.actionId);
+
       if (OnAction(action))
         return true;
       // failed to handle the keyboard action, drop down through to standard action
@@ -2434,7 +2458,7 @@ bool CApplication::OnKey(CKey& key)
 
 bool CApplication::OnAction(CAction &action)
 {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world about this action
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=2)
   {
@@ -2959,7 +2983,7 @@ bool CApplication::ProcessMouse()
 
 void  CApplication::CheckForTitleChange()
 {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     if (IsPlayingVideo())
@@ -2998,7 +3022,7 @@ void  CApplication::CheckForTitleChange()
 
 bool CApplication::ProcessHTTPApiButtons()
 {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   if (m_pXbmcHttp)
   {
     // copy key from webserver, and reset it in case we're called again before
@@ -3374,7 +3398,7 @@ void CApplication::Stop()
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
     if (m_pXbmcHttp)
     {
       if (g_settings.m_HttpApiBroadcastLevel >= 1)
@@ -3383,6 +3407,7 @@ void CApplication::Stop()
       m_pXbmcHttp->shuttingDown = true;
     }
 #endif
+    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
 
     if( m_bSystemScreenSaverEnable )
       g_Windowing.EnableSystemScreenSaver(true);
@@ -3654,6 +3679,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
+   
+    if (item.IsVideo())
+      CUtil::ClearSubtitles();
   }
 
   if (item.IsPlayList())
@@ -3906,11 +3934,14 @@ void CApplication::OnPlayBackEnded()
   g_pythonParser.OnPlayBackEnded();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackEnded");
+
   if (IsPlayingAudio())
   {
     CLastfmScrobbler::GetInstance()->SubmitQueue();
@@ -3934,11 +3965,13 @@ void CApplication::OnPlayBackStarted()
   g_pythonParser.OnPlayBackStarted();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted");
 
   CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
 
@@ -3954,11 +3987,14 @@ void CApplication::OnQueueNextItem()
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "QueueNextItem");
+
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
   if(IsPlayingAudio())
@@ -3982,11 +4018,14 @@ void CApplication::OnPlayBackStopped()
   g_pythonParser.OnPlayBackStopped();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStopped");
+
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
@@ -4002,11 +4041,13 @@ void CApplication::OnPlayBackPaused()
   g_pythonParser.OnPlayBackPaused();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused");
 
   CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
 }
@@ -4017,11 +4058,13 @@ void CApplication::OnPlayBackResumed()
   g_pythonParser.OnPlayBackResumed();
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed");
 
   CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
 }
@@ -4032,7 +4075,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
   {
@@ -4041,6 +4084,8 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
     getApplicationMessenger().HttpApi(tmp);
   }
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
 
   CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
 }
@@ -4051,7 +4096,7 @@ void CApplication::OnPlayBackSeek(int iTime)
   g_pythonParser.OnPlayBackSeek(iTime);
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
   {
@@ -4060,6 +4105,8 @@ void CApplication::OnPlayBackSeek(int iTime)
     getApplicationMessenger().HttpApi(tmp);
   }
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
@@ -4070,7 +4117,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
   g_pythonParser.OnPlayBackSeekChapter(iChapter);
 #endif
 
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
   {
@@ -4079,6 +4126,8 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
     getApplicationMessenger().HttpApi(tmp);
   }
 #endif
+
+  CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
 
   CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
@@ -4994,6 +5043,8 @@ void CApplication::Restart(bool bSamePosition)
 
   if( !m_pPlayer )
     return ;
+
+  SaveFileState();
 
   // do we want to return to the current position in the file
   if (false == bSamePosition)

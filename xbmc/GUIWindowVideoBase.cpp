@@ -527,23 +527,16 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   }
 
   bool ignoreNfo(false);
-  CNfoFile::NFOResult result = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-  if (result == CNfoFile::ERROR_NFO)
+  CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+  if (nfoResult == CNfoFile::ERROR_NFO)
     ignoreNfo = true;
   else
-  if (result != CNfoFile::NO_NFO)
+  if (nfoResult != CNfoFile::NO_NFO)
   {
-    if (!CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
-      hasDetails = true;
-    else
-    {
-      ignoreNfo = true;
-      scrUrl.Clear();
-    }
+    hasDetails = true;
+    if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO)
+      scanner.m_IMDB.SetScraperInfo(info);
   }
-  
-  if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-    scanner.m_IMDB.SetScraperInfo(info);
 
   // Get the correct movie title
   CStdString movieName = item->GetMovieName(settings.parent_name);
@@ -553,7 +546,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   bool needsRefresh(false);
   do
   {
-    // 4. if we don't have a url, or need to refresh the search
+    // 4. if we don't have an url, or need to refresh the search
     //    then do the web search
     IMDB_MOVIELIST movielist;
     if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
@@ -573,8 +566,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
-      int returncode=0;
-      if (!hasDetails && (returncode=scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress)) > 0)
+      int returncode = scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress);
+      if (returncode > 0)
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -729,6 +722,20 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         pDlgInfo->DoModal();
         item->SetThumbnailImage(pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
+        if (needsRefresh)
+        {
+          bHasInfo = true;
+          if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO)
+          {
+            if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+            {
+              hasDetails = false;
+              ignoreNfo = true;
+              scrUrl.Clear();
+              info = info2;
+            }
+          }
+        }
         listNeedsUpdating = true;
       }
       else
@@ -1874,7 +1881,10 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strParentPath);
 
-    SetHistoryForPath(strParentPath);
+    if (pSelItem->IsVideoDb() && g_settings.m_bMyVideoNavFlatten)
+      SetHistoryForPath("");
+    else
+      SetHistoryForPath(strParentPath);
 
     strPath = pSelItem->m_strPath;
     CURL url(strPath);
@@ -1898,7 +1908,10 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strPath);
 
-    SetHistoryForPath(strPath);
+    if (pSelItem->IsVideoDb() && g_settings.m_bMyVideoNavFlatten)
+      SetHistoryForPath("");
+    else
+      SetHistoryForPath(strPath);
 
     for (int i = 0; i < (int)m_vecItems->Size(); i++)
     {

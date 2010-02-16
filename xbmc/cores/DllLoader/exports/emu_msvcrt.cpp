@@ -130,7 +130,7 @@ extern "C" void __stdcall init_emu_environ()
 #else
   dll_putenv("OS=unknown");
 #endif
-  dll_putenv("PYTHONPATH=special://xbmc/system/python/python24.zlib;special://xbmc/system/python/DLLs;special://xbmc/system/python/Lib;special://xbmc/system/python/spyce");
+  dll_putenv("PYTHONPATH=special://xbmc/system/python/python24.zlib;special://xbmc/system/python/DLLs;special://xbmc/system/python/Lib");
   dll_putenv("PYTHONHOME=special://xbmc/system/python");
   dll_putenv("PATH=.;special://xbmc;special://xbmc/system/python");
   //dll_putenv("PYTHONCASEOK=1");
