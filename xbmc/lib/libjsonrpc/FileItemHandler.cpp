@@ -31,9 +31,6 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Va
   if (videoInfo->IsEmpty())
     return;
 
-  if (!videoInfo->m_strTitle.IsEmpty())
-    result["title"] = videoInfo->m_strTitle.c_str();
-
   if (!videoInfo->m_strFileNameAndPath.IsEmpty())
     result["file"] = videoInfo->m_strFileNameAndPath.c_str();
 
@@ -59,15 +56,9 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Va
 
 void CFileItemHandler::FillMusicDetails(const CMusicInfoTag *musicInfo, const Value &parameterObject, Value &result)
 {
-  if (!musicInfo->GetTitle().IsEmpty())
-    result["title"] =  musicInfo->GetTitle().c_str();
-  else if (!musicInfo->GetAlbum().IsEmpty())
-    result["album"] =  musicInfo->GetAlbum().c_str();
-  else if (!musicInfo->GetArtist().IsEmpty())
-    result["artist"] =  musicInfo->GetArtist().c_str();
-
   if (!musicInfo->GetURL().IsEmpty())
     result["file"] =  musicInfo->GetURL().c_str();
+
   const Json::Value fields = parameterObject.isMember("fields") && parameterObject["fields"].isArray() ? parameterObject["fields"] : Value(arrayValue);
 
   for (unsigned int i = 0; i < fields.size(); i++)
@@ -163,6 +154,8 @@ void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname
 
     if (!item->HasVideoInfoTag() && !item->HasMusicInfoTag() && !object.isMember("file"))
       object["file"] = item->m_strPath.c_str();
+
+    object["label"] = item->GetLabel().c_str();
 
     if (resultname)
       result[resultname].append(object);
