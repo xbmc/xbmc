@@ -30,6 +30,7 @@
 #include "SystemOperations.h"
 #include "XBMCOperations.h"
 #include "AnnouncementManager.h"
+#include "log.h"
 #include <string.h>
 
 using namespace ANNOUNCEMENT;
@@ -286,7 +287,10 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
     errorCode = InternalMethodCall(method, inputroot, result, transport, client);
   }
   else
+  {
+    CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", inputString.c_str());
     errorCode = ParseError;
+  }
 
   outputroot["jsonrpc"] = "2.0";
   outputroot["id"] = inputroot.get("id", 0);
