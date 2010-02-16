@@ -5,7 +5,6 @@ TOC
 4. How to compile
 5. How to run
 6. Uninstalling
-8. Endword
 
 -----------------------------------------------------------------------------
 1. Introduction
@@ -28,7 +27,7 @@ You will have to grab the source code of course. First install the subversion
 package provided by your distribution. Then from a terminal, type:
 
    $ cd $HOME
-   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc
+   $ svn checkout http://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc
 
 -----------------------------------------------------------------------------
 3. Installing the required libraries and headers
@@ -137,12 +136,6 @@ should also run "rm -rf ~/.xbmc".
 
 NOTE: If you have rerun configure with a different prefix, you will either need
 to rerun configure with the correct prefix for this step to work correctly.
-
------------------------------------------------------------------------------
-7. Endword
------------------------------------------------------------------------------
-
-Have fun!
 
 EOF
 
