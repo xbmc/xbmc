@@ -548,7 +548,7 @@ void CStreamsManager::GetSubtitleName( int iStream, CStdString &strStreamName )
 
 void CStreamsManager::SetSubtitle( int iStream )
 {
-  if (! m_init)
+  if (! m_init || m_subtitleStreams.empty())
     return;
 
   m_bChangingAudioStream = true;

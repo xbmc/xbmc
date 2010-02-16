@@ -56,14 +56,23 @@ CDSPropertyPage::CDSPropertyPage(CDSGraph* graph, IBaseFilter* pBF)
 : m_pBF(pBF),
   m_pGraph(graph)
 {
+
 }
 
 CDSPropertyPage::~CDSPropertyPage()
 {
 }
 
-bool CDSPropertyPage::Initialize()
+bool CDSPropertyPage::Initialize(bool CurrentlyUsingFakeFS)
 {
+  m_bCurrentlyUsingFakeFS = CurrentlyUsingFakeFS;
+  if (!m_bCurrentlyUsingFakeFS)
+  {  
+    g_guiSettings.SetBool("videoscreen.fakefullscreen", true);
+    m_pGraph->Stop();
+    g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+  }
+      //m_pGraph->Play();
   Create(true); // autodelete = true
   return true;
 }
@@ -220,26 +229,10 @@ void CDSPropertyPage::Process()
       g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
       //m_pGraph->Play();
     }*/
-
+    if (!m_bCurrentlyUsingFakeFS)
+      m_pGraph->Play();
     hr = PropertySheet(&propSheet);
 
-    /*if (wasFullScreen)
-    {
-      g_guiSettings.SetBool("videoscreen.fakefullscreen", false);
-      m_pGraph->Stop();
-      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
-      m_pGraph->Play();
-    }*/
-
-    for(int page = 0; page < pPages.cElems; page++) {
-      if(opf[page].propPage) {
-        opf[page].propPage->SetPageSite(NULL);
-        opf[page].propPage->Release();
-      }
-    }
-    HeapFree(GetProcessHeap(), 0, hpsp);
-    HeapFree(GetProcessHeap(), 0, opf);
-    
     if(hr == -1)
     {
       CLog::Log(LOGDEBUG, "%s Failed to show property page. Trying old way", __FUNCTION__);
@@ -251,6 +244,26 @@ void CDSPropertyPage::Process()
       if (FAILED(hr))
         CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X)", __FUNCTION__, hr);
     }
+
+
+    if (!m_bCurrentlyUsingFakeFS)
+    {
+      g_guiSettings.SetBool("videoscreen.fakefullscreen", false);
+      m_pGraph->Stop();
+      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+      m_pGraph->Play();
+    }
+
+    for(int page = 0; page < pPages.cElems; page++) {
+      if(opf[page].propPage) {
+        opf[page].propPage->SetPageSite(NULL);
+        opf[page].propPage->Release();
+      }
+    }
+    HeapFree(GetProcessHeap(), 0, hpsp);
+    HeapFree(GetProcessHeap(), 0, opf);
+    
+    
     
     SAFE_RELEASE(pProp);
     CoTaskMemFree(pPages.pElems);  

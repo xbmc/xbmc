@@ -139,12 +139,12 @@ void CWinDsRenderer::PaintVideoTexture(CD3DTexture* videoTexture,IDirect3DSurfac
 void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
 {
   LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
-  m_pD3DDevice->SetPixelShader( NULL );
+  //m_pD3DDevice->SetPixelShader( NULL );
   CSingleLock lock(g_graphicsContext);
   
   // set scissors if we are not in fullscreen video
-  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
+  //if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+//    g_graphicsContext.ClipToViewWindow();
 
   HRESULT hr;
   D3DSURFACE_DESC desc;
@@ -205,10 +205,11 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
   hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
   hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
-  m_pD3DDevice->SetTexture(0, NULL);
-
   if (FAILED(hr))
-    CLog::Log(LOGDEBUG,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer"); 
+    CLog::Log(LOGERROR,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer"); 
+  m_pD3DDevice->SetTexture(0, NULL);
+  m_pD3DDevice->SetPixelShader( NULL );
+  
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)

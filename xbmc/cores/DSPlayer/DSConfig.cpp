@@ -23,7 +23,7 @@
 #include "Utils/log.h"
 #include "DShowUtil/DShowUtil.h"
 #include "CharsetConverter.h"
-
+#include "Filters/ffdshow_constants.h"
 //Required for the gui buttons
 #include "XMLUtils.h"
 #include "FileSystem/SpecialProtocol.h"
@@ -57,7 +57,10 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
   HRESULT hr = S_OK;
   m_pGraphBuilder = pGB;
   pGB = NULL;
-
+  m_pIMpcDecFilter = NULL;
+  m_pIMpaDecFilter = NULL;
+  m_pIffdshowDecFilter = NULL;
+  m_pIffdshowBase = NULL;
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 
@@ -146,7 +149,20 @@ void CDSConfig::CreatePropertiesXml()
 void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
 {
   m_pCurrentProperty = new CDSPropertyPage(g_dsconfig.pGraph, pBF);
-  m_pCurrentProperty->Initialize();
+  m_pCurrentProperty->Initialize(true);
+  return;
+  //this is not working yet, calling the switch to fake fullscreen is reseting the video renderer
+  //A better handling of the video resolution change by the video renderers is needed
+  if (g_graphicsContext.IsFullScreenRoot() && !g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+  {
+    //True fullscreen cant handle those proprety page
+    m_pCurrentProperty->Initialize(false);
+    //g_graphicsContext.SetFullScreenVideo();
+  }
+  else
+  {
+    m_pCurrentProperty->Initialize(true);
+  }
 }
 
 bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
@@ -192,13 +208,17 @@ bool CDSConfig::SetSubtitlesFile(CStdString subFilePath)
 {
   if (m_pIffdshowBase)
   {
+    pGraph->Stop();
+    HRESULT hr;
     CStdString newPath = CSpecialProtocol::TranslatePath(subFilePath);
     //IDFF_subFilename 821
-    if (SUCCEEDED(m_pIffdshowBase->putParamStr(821,newPath.c_str())))
+    if (SUCCEEDED(m_pIffdshowBase->putParamStr(IDFF_subFilename,newPath.c_str())))
     {
       CLog::Log(LOGNOTICE,"%s using this file for subtitle %s",__FUNCTION__,newPath.c_str());
+      pGraph->Play();
       return true;
-      }
+    }
+    
   }
   return false;
 }

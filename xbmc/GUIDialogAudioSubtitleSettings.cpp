@@ -278,7 +278,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
       strPath = g_application.CurrentFileItem().m_strPath;
 
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
-    if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
+    if ((g_application.GetCurrentPlayer() == EPC_DVDPLAYER))// || (g_application.GetCurrentPlayer() == EPC_DSPLAYER))//Would it be the same thing for dsplayer??
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
     VECSOURCES shares(g_settings.m_videoSources);
     if (g_settings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
@@ -364,6 +364,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
           g_settings.m_currentVideoSettings.m_SubtitleOn = true;
           g_application.m_pPlayer->SetSubtitleVisible(true);
           g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.browsed"+strExt);
+          //TODO Put it back when external subtitles is integrated this way
           g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
         }
 

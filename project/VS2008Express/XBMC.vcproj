@@ -2462,6 +2462,26 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\pointers.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\regkey.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.cpp"
 						>
 					</File>

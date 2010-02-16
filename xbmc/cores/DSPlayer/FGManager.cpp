@@ -43,6 +43,7 @@
 #include "Filters/IMpaDecFilter.h"
 #include "Log.h"
 #include "FileSystem/SpecialProtocol.h"
+
 //XML CONFIG HEADERS
 #include "tinyXML/tinyxml.h"
 #include "XMLUtils.h"
@@ -50,6 +51,9 @@
 #include "GUIWindowManager.h"
 //END XML CONFIG HEADERS
 
+//Headers and definition for windows registry
+#include "DShowUtil/RegKey.h"
+#define FFDSHOW_REGDXVA "Software\\Gnu\\ffdshow_dxva"
 using namespace std;
 
 //
@@ -1068,3 +1072,23 @@ void CFGManager::InitManager()
   else
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());
 }
+
+void CFGManager::UpdateRegistry()
+{
+  HKEY hKey;
+  CStdString strRegKey;
+  strRegKey.Format("%s\\default",FFDSHOW_REGDXVA);
+  RegKey ffReg(HKEY_CURRENT_USER ,strRegKey.c_str() ,false);
+  if (!ffReg.hasValue("dec_DXVA_H264"))
+  {
+    CLog::Log(LOGERROR, "%s: ffdshow appear to not be installed or your version is too hold to handle dxva", __FUNCTION__);
+  }
+  else
+  {
+    //Adding dxva config to ffdshow just in case its off
+    ffReg.setValue("dec_DXVA_H264",DWORD(1));
+    ffReg.setValue("dec_DXVA_VC1",DWORD(1));
+    //Needed to process subtitles
+    ffReg.setValue("dec_dxva_postProcessingMode",DWORD(1));
+  }
+}a

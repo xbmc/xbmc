@@ -95,10 +95,12 @@ public:
   CDSPropertyPage(CDSGraph *graph, IBaseFilter* pBF);
   virtual ~CDSPropertyPage();
 
-  virtual bool Initialize();
+  virtual bool Initialize(bool CurrentlyUsingFakeFS);
 protected:
   virtual void OnExit();
   virtual void Process();
   IBaseFilter* m_pBF;
   CDSGraph *m_pGraph;
+private:
+  bool m_bCurrentlyUsingFakeFS;
 };

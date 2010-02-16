@@ -125,6 +125,7 @@ public:
 	CFGManager();
 	virtual ~CFGManager();
   void InitManager();
+  void UpdateRegistry();
 #ifdef _DSPLAYER_DEBUG
   void LogFilterGraph(void);
 #endif
