@@ -435,11 +435,11 @@ Section "ffdshow rev 3255" SEC_FFDSHOW
   SectionIn 1 2
   
   SetOutPath "$TEMP"
-  File "${xbmc_root}\Xbmc\ffdshow_rev3255_20100207.exe"
+  File "${xbmc_root}\Xbmc\ffdshow_rev3268_20100214.exe"
   DetailPrint "Running ffdshow installation"
-  ExecWait '"$TEMP\ffdshow_rev3255_20100207.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\ffdshow_rev3268_20100214.exe" /q' $VSRedistSetupError
   DetailPrint "Finished ffdshow installation"
  
-  Delete "$TEMP\ffdshow_rev3255_20100207.exe"
+  Delete "$TEMP\ffdshow_rev3268_20100214.exe"
 SectionEnd
 !endif

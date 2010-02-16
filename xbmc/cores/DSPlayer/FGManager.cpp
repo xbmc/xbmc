@@ -1075,7 +1075,6 @@ void CFGManager::InitManager()
 
 void CFGManager::UpdateRegistry()
 {
-  HKEY hKey;
   CStdString strRegKey;
   strRegKey.Format("%s\\default",FFDSHOW_REGDXVA);
   RegKey ffReg(HKEY_CURRENT_USER ,strRegKey.c_str() ,false);
@@ -1091,4 +1090,4 @@ void CFGManager::UpdateRegistry()
     //Needed to process subtitles
     ffReg.setValue("dec_dxva_postProcessingMode",DWORD(1));
   }
-}a
+}

@@ -2586,6 +2586,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h"
 						>
 					</File>

@@ -663,6 +663,7 @@ bool CStreamsManager::GetSubtitleVisible()
 
 void CStreamsManager::SetSubtitleVisible( bool bVisible )
 {
+  g_dsconfig.ShowHideSubtitles(bVisible);
   m_bSubtitlesVisible = bVisible;
  
   // SetSubtitle(GetSubtitle());

@@ -123,15 +123,11 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   
 
   SetVolume(g_settings.m_nVolumeLevel);
-
-  //bool ok;
-  //ok = g_dllMpcSubs.Load(); //return true if loaded
-  //ok = g_dllMpcSubs.LoadSubtitles(m_Filename.c_str(),m_pGraphBuilder,"H:\\Downloads\\Two.and.a.Half.Men.S07E11.Warning.Its.Dirty.HDTV.XviD-FQM.srt");
-  //g_dllMpcSubs.EnableSubtitle(true);
-  //g_dllMpcSubs.GetSubtitlesList();
+  //Hide subtitles in ffdshow
+  g_dsconfig.ShowHideSubtitles(0);
 
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
-
+  
   Play();
   
   /*  if (hr == S_FALSE)

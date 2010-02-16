@@ -43,6 +43,7 @@ CDSConfig::CDSConfig(void)
   m_pIffdshowDecFilter = NULL;
   m_pSplitter = NULL;
   m_pIffdshowBase = NULL;
+  m_pIffdshowDecoder = NULL;
   pGraph = NULL;
 }
 
@@ -61,6 +62,7 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
   m_pIMpaDecFilter = NULL;
   m_pIffdshowDecFilter = NULL;
   m_pIffdshowBase = NULL;
+  m_pIffdshowDecoder = NULL;
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 
@@ -201,6 +203,9 @@ bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
   {
     hr = pBF->QueryInterface(IID_IffdshowBaseA,(void **) &m_pIffdshowBase );
   }
+  if (!m_pIffdshowDecoder)
+    hr = pBF->QueryInterface(IID_IffDecoder, (void **) &m_pIffdshowDecoder );
+    
   return true;
 }
 
@@ -223,6 +228,16 @@ bool CDSConfig::SetSubtitlesFile(CStdString subFilePath)
   return false;
 }
 
+void CDSConfig::ShowHideSubtitles(BOOL show)
+{
+  HRESULT hr;
+  if (m_pIffdshowDecoder)
+  {
+    //pGraph->Stop();
+    hr = m_pIffdshowDecoder->compat_putParam(IDFF_isSubtitles,show);
+    //pGraph->Play();
+  }
+}
 bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
 {
   if (m_pIMpaDecFilter)

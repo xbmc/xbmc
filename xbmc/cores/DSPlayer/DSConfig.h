@@ -28,6 +28,7 @@
 #include "igraphbuilder2.h"
 #include "Filters/IMpaDecFilter.h"
 #include "Filters/IMPCVideoDecFilter.h"
+#include "Filters/IffDecoder.h"
 #include "Filters/IffdshowBase.h"
 #include "Filters/IffdshowDecVideo.h"
 #include "DSPropertyPage.h"
@@ -49,6 +50,7 @@ public:
   virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages() { return m_pPropertiesFilters; };
   void ShowPropertyPage(IBaseFilter *pBF);
   virtual bool SetSubtitlesFile(CStdString subFilePath);
+  void ShowHideSubtitles(BOOL show);
 
   CDSGraph * pGraph;
 protected:
@@ -67,6 +69,7 @@ private:
   IMpaDecFilter*                 m_pIMpaDecFilter;
   IffdshowDecVideoA*             m_pIffdshowDecFilter;
   IffdshowBaseA*                 m_pIffdshowBase;
+  IffDecoder*                 m_pIffdshowDecoder;
   IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
