@@ -56,6 +56,8 @@ protected:
   void  EnableVSync(bool enable);
   bool  SwitchToVideoMode(int width, int height, double refreshrate);
   void  GetVideoModes(void);
+  bool  FlushBuffer(void);
+
   void* m_glContext;
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;

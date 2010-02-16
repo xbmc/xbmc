@@ -35,9 +35,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
-#import <Carbon/Carbon.h>
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/gl.h>
+#import <Carbon/Carbon.h>   // ShowMenuBar, HideMenuBar
 
 
 #define MAX_DISPLAYS 32
@@ -817,6 +815,13 @@ void CWinSystemOSX::GetVideoModes(void)
         refreshrate = 150.0;      // Divisible by 25Hz and 30Hz to minimise AV sync waiting
     }
   }
+}
+
+bool CWinSystemOSX::FlushBuffer(void)
+{
+  [ (NSOpenGLContext*)m_glContext flushBuffer ];
+
+  return true;
 }
 
 void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
