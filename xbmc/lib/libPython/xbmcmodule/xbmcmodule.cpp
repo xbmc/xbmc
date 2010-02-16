@@ -269,7 +269,7 @@ namespace PYXBMC
     "\n"
     "function       : string - builtin function to execute.\n"
     "\n"
-    "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
+    "List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions \n"
     "\n"
     "example:\n"
     "  - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')\n");
@@ -292,7 +292,7 @@ namespace PYXBMC
     "\n"
     "httpcommand    : string - http command to execute.\n"
     "\n"
-    "List of commands - http://xbmc.org/wiki/?title=WebServerHTTP-API#The_Commands \n"
+    "List of commands - http://wiki.xbmc.org/?title=WebServerHTTP-API#The_Commands \n"
     "\n"
     "example:\n"
     "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
@@ -513,7 +513,7 @@ namespace PYXBMC
     "\n"
     "infotag        : string - infoTag for value you want returned.\n"
     "\n"
-    "List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels \n"
+    "List of InfoTags - http://wiki.xbmc.org/?title=InfoLabels \n"
     "\n"
     "example:\n"
     "  - label = xbmc.getInfoLabel('Weather.Conditions')\n");
@@ -534,7 +534,7 @@ namespace PYXBMC
     "\n"
     "infotag        : string - infotag for value you want returned.\n"
     "\n"
-    "List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels \n"
+    "List of InfoTags - http://wiki.xbmc.org/?title=InfoLabels \n"
     "\n"
     "example:\n"
     "  - filename = xbmc.getInfoImage('Weather.Conditions')\n");
@@ -599,7 +599,7 @@ namespace PYXBMC
     "\n"
     "condition      : string - condition to check.\n"
     "\n"
-    "List of Conditions - http://xbmc.org/wiki/?title=List_of_Boolean_Conditions \n"
+    "List of Conditions - http://wiki.xbmc.org/?title=List_of_Boolean_Conditions \n"
     "\n"
     "*Note, You can combine two (or more) of the above settings by using \"+\" as an AND operator,\n"
     "\"|\" as an OR operator, \"!\" as a NOT operator, and \"[\" and \"]\" to bracket expressions.\n"

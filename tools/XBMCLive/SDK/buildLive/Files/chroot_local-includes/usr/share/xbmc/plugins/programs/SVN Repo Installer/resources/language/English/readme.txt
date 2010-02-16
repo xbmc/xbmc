@@ -64,8 +64,8 @@ CREDITS:
 
  Project Homepage: http://code.google.com/p/xbmc-addons/
 
- Forum: http://xbmc.org/forum/
+ Forum: http://forum.xbmc.org
 
- XBMC Homepage: http://xbmc.org/
+ XBMC Homepage: http://xbmc.org
 
 enjoy!

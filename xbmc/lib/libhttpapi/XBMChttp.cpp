@@ -3116,7 +3116,7 @@ int CXbmcHttp::xbmcHelp()
   output+="<p><b>Syntax 1: http://xbox/xbmcCmds/xbmcHttp?command=</b>command<b>&ampparameter=</b>first_parameter<b>;</b>second_parameter<b>;...</b></p>";
   output+="<p><b>Syntax 2: http://xbox/xbmcCmds/xbmcHttp?command=</b>command<b>(</b>first_parameter<b>;</b>second_parameter<b>;...</b><b>)</b></p>";
   output+="<p>Note the use of the semi colon to separate multiple parameters.</p><p>The commands are case insensitive.</p>";
-  output+= "<p>The full documentation can be found here: <a  href=\"http://xbmc.org/wiki/index.php?title=WebServerHTTP-API\">http://xbmc.org/wiki/index.php?title=WebServerHTTP-API</a></p>";
+  output+= "<p>The full documentation can be found here: <a  href=\"http://wiki.xbmc.org/index.php?title=WebServerHTTP-API\">http://wiki.xbmc.org/index.php?title=WebServerHTTP-API</a></p>";
   return SetResponse(output);
 }
 
