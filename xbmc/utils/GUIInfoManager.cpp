@@ -915,6 +915,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
+  else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -3627,6 +3628,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetMusicInfoTag()->GetTitle();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
+    break;
+  case LISTITEM_ORIGINALTITLE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strOriginalTitle;
     break;
   case LISTITEM_TRACKNUMBER:
     {
