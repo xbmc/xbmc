@@ -297,24 +297,38 @@ namespace PYXBMC
     "example:\n"
     "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
 
-   PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
+  PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
-#ifdef HAS_WEB_SERVER
     char *cLine = NULL;
-    CStdString ret;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
       m_pXbmcHttp = new CXbmcHttp();
 
-    CStdString method = cLine, parameter;
+    CStdString method = cLine;
 
-    ret = CHttpApi::MethodCall(method, parameter);
+    int open, close;
+    CStdString parameter="", cmd=cLine, execute;
+    open = cmd.Find("(");
+    if (open>0)
+    {
+      close=cmd.length();
+      while (close>open && cmd.Mid(close,1)!=")")
+        close--;
+      if (close>open)
+      {
+        parameter = cmd.Mid(open + 1, close - open - 1);
+        parameter.Replace(",",";");
+        execute = cmd.Left(open);
+      }
+      else //open bracket but no close
+        return PyString_FromString("");
+    }
+    else //no parameters
+      execute = cmd;
 
-    return PyString_FromString(ret.c_str());
-#else
-    return NULL;
-#endif
-  }
+    CUtil::URLDecode(parameter);
+    return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
+	}
 #endif
 
   // sleep() method
