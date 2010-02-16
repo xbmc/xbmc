@@ -64,8 +64,9 @@ In this case you will have to manually compile the latest version.
 On 8.04 and older versions, libmodplug is outdated and thus XBMC will not compile properly.
 In this case you will have to manually compile the latest version. Luckly the source is
 already in the xbcm source code tree.
+   # apt-get remove libmodplug-dev
    # cd lib/libmodplug
-   # ./configure --prefix=/usr
+   # ./configure
    # make
    # sudo make install
 
