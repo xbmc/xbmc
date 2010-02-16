@@ -21,13 +21,13 @@
  */
 
 #include "SemaphoreDarwin.h"
+#include "TimeUtils.h"
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <unistd.h>
 #include <cerrno>
 #include <climits>
 #include <cstdio>
-#include <CoreVideo/CVHostTime.h>
 
 #define SEM_NAME_LEN (NAME_MAX-4)
 
@@ -37,7 +37,7 @@ CSemaphoreDarwin::CSemaphoreDarwin(uint32_t initialCount)
   m_szName            = new char[SEM_NAME_LEN];     
 
   snprintf(m_szName, SEM_NAME_LEN, "/xbmc-sem-%d-%" PRIu64,
-      getpid(), CVGetCurrentHostTime());
+      getpid(), CurrentHostCounter());
 
   m_pSem = sem_open(m_szName, O_CREAT, 0600, initialCount);
 }
@@ -56,14 +56,14 @@ bool CSemaphoreDarwin::Wait()
 
 SEM_GRAB CSemaphoreDarwin::TimedWait(uint32_t millis)
 {
-  uint64_t end = CVGetCurrentHostTime() + (millis * 1000000LL);
+  int64_t end = CurrentHostCounter() + (millis * 1000000LL);
   do {
     if (0 == sem_trywait(m_pSem))
       return SEM_GRAB_SUCCESS;
     if (errno != EAGAIN)
       return SEM_GRAB_FAILED;
     usleep(1000);
-  } while (CVGetCurrentHostTime() < end);
+  } while (CurrentHostCounter() < end);
 
   return SEM_GRAB_TIMEOUT;
 }

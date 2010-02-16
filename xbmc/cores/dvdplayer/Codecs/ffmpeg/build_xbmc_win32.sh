@@ -19,6 +19,7 @@ make distclean
 --disable-ipv6 \
 --disable-debug \
 --enable-muxer=spdif \
+--enable-muxer=adts \
 --enable-encoder=ac3 \
 --enable-encoder=aac &&
  

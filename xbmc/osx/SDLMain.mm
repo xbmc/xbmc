@@ -307,12 +307,12 @@ static void setupWindowMenu(void)
     // We're going to manually manage the screensaver.
     setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
-    /* Hand off to main application code */
+    // Hand off to main application code
     gCalledAppMainline = TRUE;
-    int status = SDL_main(gArgc, gArgv);
 
-    /* We're done, thank you for playing */
-    exit(status);
+    // stop the main loop so we return to main (below) and can
+    // call SDL_main there.
+    [NSApp stop:nil];
 }
 
 - (void) applicationWillTerminate: (NSNotification *) note
@@ -471,9 +471,14 @@ int main(int argc, char *argv[])
     /* Create SDLMain and make it the app delegate */
     sdlMain = [[SDLMain alloc] init];
     [NSApp setDelegate:sdlMain];
-    
+
     /* Start the main event loop */
     [NSApp run];
+
+    // call SDLMain which calls our real main (xbmc.cpp)
+    // we never return from here as quiting xbmc will call exit().
+    // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
+    SDL_main(gArgc, gArgv);
     
     [sdlMain release];
     [pool release];

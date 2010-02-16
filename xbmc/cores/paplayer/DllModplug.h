@@ -27,7 +27,11 @@
 #include "DynamicDll.h"
 #include "utils/log.h"
 
+#ifdef __linux__
+#include <libmodplug/modplug.h>
+#else
 #include "lib/libmodplug/src/modplug.h"
+#endif
 
 class DllModplugInterface
 {
@@ -65,70 +69,64 @@ public:
 
 class DllModplug : public DllDynamic, DllModplugInterface
 {
-public:
-  virtual ~DllModplug() {}
-  virtual ModPlugFile* ModPlug_Load(const void* data, int size)
-    { return ::ModPlug_Load(data, size); }
-  virtual void ModPlug_Unload(ModPlugFile* file)
-    { return ::ModPlug_Unload(file); }
-  virtual int  ModPlug_Read(ModPlugFile* file, void* buffer, int size)
-    { return ::ModPlug_Read(file, buffer, size); }
-  virtual const char* ModPlug_GetName(ModPlugFile* file)
-    { return ::ModPlug_GetName(file); }
-  virtual int ModPlug_GetLength(ModPlugFile* file)
-    { return ::ModPlug_GetLength(file); }
-  virtual void ModPlug_Seek(ModPlugFile* file, int millisecond)
-    { return ::ModPlug_Seek(file, millisecond); }
-  virtual void ModPlug_GetSettings(ModPlug_Settings* settings)
-    { return ::ModPlug_GetSettings(settings); }
-  virtual void ModPlug_SetSettings(const ModPlug_Settings* settings)
-    { return ::ModPlug_SetSettings(settings); }
-  virtual unsigned int ModPlug_GetMasterVolume(ModPlugFile* file)
-    { return ::ModPlug_GetMasterVolume(file); }
-  virtual void ModPlug_SetMasterVolume(ModPlugFile* file,unsigned int cvol)
-    { return ::ModPlug_SetMasterVolume(file, cvol); }
-  virtual int ModPlug_GetCurrentSpeed(ModPlugFile* file)
-    { return ::ModPlug_GetCurrentSpeed(file); }
-  virtual int ModPlug_GetCurrentTempo(ModPlugFile* file)
-    { return ::ModPlug_GetCurrentTempo(file); }
-  virtual int ModPlug_GetCurrentOrder(ModPlugFile* file)
-    { return ::ModPlug_GetCurrentOrder(file); }
-  virtual int ModPlug_GetCurrentPattern(ModPlugFile* file)
-    { return ::ModPlug_GetCurrentPattern(file); }
-  virtual int ModPlug_GetCurrentRow(ModPlugFile* file)
-    { return ::ModPlug_GetCurrentRow(file); }
-  virtual int ModPlug_GetPlayingChannels(ModPlugFile* file)
-    { return ::ModPlug_GetPlayingChannels(file); }
-  virtual void ModPlug_SeekOrder(ModPlugFile* file,int order)
-    { return ::ModPlug_SeekOrder(file, order); }
-  virtual int ModPlug_GetModuleType(ModPlugFile* file)
-    { return ::ModPlug_GetModuleType(file); }
-  virtual char* ModPlug_GetMessage(ModPlugFile* file)
-    { return ::ModPlug_GetMessage(file); }
-  virtual unsigned int ModPlug_NumInstruments(ModPlugFile* file)
-    { return ::ModPlug_NumInstruments(file); }
-  virtual unsigned int ModPlug_NumSamples(ModPlugFile* file)
-    { return ::ModPlug_NumSamples(file); }
-  virtual unsigned int ModPlug_NumPatterns(ModPlugFile* file)
-    { return ::ModPlug_NumPatterns(file); }
-  virtual unsigned int ModPlug_NumChannels(ModPlugFile* file)
-    { return ::ModPlug_NumChannels(file); }
-  virtual unsigned int ModPlug_SampleName(ModPlugFile* file, unsigned int qual, char* buff)
-    { return ::ModPlug_SampleName(file, qual, buff); }
-  virtual unsigned int ModPlug_InstrumentName(ModPlugFile* file, unsigned int qual, char* buff)
-    { return ::ModPlug_InstrumentName(file, qual, buff); }
-  virtual ModPlugNote* ModPlug_GetPattern(ModPlugFile* file, int pattern, unsigned int* numrows)
-    { return ::ModPlug_GetPattern(file, pattern, numrows); }
-  virtual void ModPlug_InitMixerCallback(ModPlugFile* file,ModPlugMixerProc proc)
-    { return ::ModPlug_InitMixerCallback(file, proc); }
-  virtual void ModPlug_UnloadMixerCallback(ModPlugFile* file)
-    { return ::ModPlug_UnloadMixerCallback(file); }
-
-  // DLL faking.
-  virtual bool ResolveExports() { return true; }
-  virtual bool Load() {
-    CLog::Log(LOGDEBUG, "DllModplug: Using libmodplug library");
-    return true;
-  }
-  virtual void Unload() {}
+  DECLARE_DLL_WRAPPER(DllModplug, DLL_PATH_MODPLUG_CODEC)
+  DEFINE_METHOD2(ModPlugFile*,  ModPlug_Load,                 (const void* p1, int p2))
+  DEFINE_METHOD1(void,          ModPlug_Unload,               (ModPlugFile* p1))
+  DEFINE_METHOD3(int,           ModPlug_Read,                 (ModPlugFile* p1, void* p2, int p3))
+  DEFINE_METHOD1(const char*,   ModPlug_GetName,              (ModPlugFile* p1))
+  DEFINE_METHOD1(int,           ModPlug_GetLength,            (ModPlugFile* p1))
+  DEFINE_METHOD2(void,          ModPlug_Seek,                 (ModPlugFile* p1, int p2))
+  DEFINE_METHOD1(void,          ModPlug_GetSettings,          (ModPlug_Settings* p1))
+  DEFINE_METHOD1(void,          ModPlug_SetSettings,          (const ModPlug_Settings* p1))
+  DEFINE_METHOD1(unsigned int,  ModPlug_GetMasterVolume,      (ModPlugFile* p1))
+  DEFINE_METHOD2(void,          ModPlug_SetMasterVolume,      (ModPlugFile* p1, unsigned int p2))
+  DEFINE_METHOD1(int,           ModPlug_GetCurrentSpeed,      (ModPlugFile* p1))
+  DEFINE_METHOD1(int,           ModPlug_GetCurrentTempo,      (ModPlugFile* p1))
+  DEFINE_METHOD1(int,           ModPlug_GetCurrentOrder,      (ModPlugFile* p1))
+  DEFINE_METHOD1(int,           ModPlug_GetCurrentPattern,    (ModPlugFile* p1))
+  DEFINE_METHOD1(int,           ModPlug_GetCurrentRow,        (ModPlugFile* p1))
+  DEFINE_METHOD1(int,           ModPlug_GetPlayingChannels,   (ModPlugFile* p1))
+  DEFINE_METHOD2(void,          ModPlug_SeekOrder,            (ModPlugFile* p1, int p2))
+  DEFINE_METHOD1(int,           ModPlug_GetModuleType,        (ModPlugFile* p1))
+  DEFINE_METHOD1(char*,         ModPlug_GetMessage,           (ModPlugFile* p1))
+  DEFINE_METHOD1(unsigned int,  ModPlug_NumInstruments,       (ModPlugFile* p1))
+  DEFINE_METHOD1(unsigned int,  ModPlug_NumSamples,           (ModPlugFile* p1))
+  DEFINE_METHOD1(unsigned int,  ModPlug_NumPatterns,          (ModPlugFile* p1))
+  DEFINE_METHOD1(unsigned int,  ModPlug_NumChannels,          (ModPlugFile* p1))
+  DEFINE_METHOD3(unsigned int,  ModPlug_SampleName,           (ModPlugFile* p1, unsigned int p2, char* p3))
+  DEFINE_METHOD3(unsigned int,  ModPlug_InstrumentName,       (ModPlugFile* p1, unsigned int p2, char* p3))
+  DEFINE_METHOD3(ModPlugNote*,  ModPlug_GetPattern,           (ModPlugFile* p1, int p2, unsigned int* p3))
+  DEFINE_METHOD2(void,          ModPlug_InitMixerCallback,    (ModPlugFile* p1, ModPlugMixerProc p2))
+  DEFINE_METHOD1(void,          ModPlug_UnloadMixerCallback,  (ModPlugFile* p1))
+  BEGIN_METHOD_RESOLVE()
+    RESOLVE_METHOD(ModPlug_Load)
+    RESOLVE_METHOD(ModPlug_Unload)
+    RESOLVE_METHOD(ModPlug_Read)
+    RESOLVE_METHOD(ModPlug_GetName)
+    RESOLVE_METHOD(ModPlug_GetLength)
+    RESOLVE_METHOD(ModPlug_Seek)
+    RESOLVE_METHOD(ModPlug_GetSettings)
+    RESOLVE_METHOD(ModPlug_SetSettings)
+    RESOLVE_METHOD(ModPlug_GetMasterVolume)
+    RESOLVE_METHOD(ModPlug_SetMasterVolume)
+    RESOLVE_METHOD(ModPlug_GetCurrentSpeed)
+    RESOLVE_METHOD(ModPlug_GetCurrentTempo)
+    RESOLVE_METHOD(ModPlug_GetCurrentOrder)
+    RESOLVE_METHOD(ModPlug_GetCurrentPattern)
+    RESOLVE_METHOD(ModPlug_GetCurrentRow)
+    RESOLVE_METHOD(ModPlug_GetPlayingChannels)
+    RESOLVE_METHOD(ModPlug_SeekOrder)
+    RESOLVE_METHOD(ModPlug_GetModuleType)
+    RESOLVE_METHOD(ModPlug_GetMessage)
+    RESOLVE_METHOD(ModPlug_NumInstruments)
+    RESOLVE_METHOD(ModPlug_NumSamples)
+    RESOLVE_METHOD(ModPlug_NumPatterns)
+    RESOLVE_METHOD(ModPlug_NumChannels)
+    RESOLVE_METHOD(ModPlug_SampleName)
+    RESOLVE_METHOD(ModPlug_InstrumentName)
+    RESOLVE_METHOD(ModPlug_GetPattern)
+    RESOLVE_METHOD(ModPlug_InitMixerCallback)
+    RESOLVE_METHOD(ModPlug_UnloadMixerCallback)
+  END_METHOD_RESOLVE()
 };
+

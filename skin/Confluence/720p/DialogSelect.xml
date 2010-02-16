@@ -145,8 +145,8 @@
 			<align>right</align>
 			<aligny>center</aligny>
 			<scroll>true</scroll>
-			<textcolor>blue</textcolor>
-			<label>($INFO[Container(3).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages])</label>
+			<textcolor>grey</textcolor>
+			<label>([COLOR=blue]$INFO[Container(3).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages][/COLOR])</label>
 		</control>
 		<control type="button" id="5">
 			<description>Manual button</description>

@@ -103,9 +103,9 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
   {
     if (i->first.Left(5).Equals("info:"))
     {
-      // prefer images in general
-      CStdString info(CGUIInfoLabel::GetLabel(i->second, contextWindow, true));
+      // prefer images if it's not label or label2
       CStdString prop(i->first.Mid(5));
+      CStdString info(CGUIInfoLabel::GetLabel(i->second, contextWindow, !prop.Left(5).Equals("label")));
       if (prop.Equals("label"))
         SetLabel(info);
       else if (prop.Equals("label2"))

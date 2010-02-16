@@ -189,9 +189,9 @@
 			<height>30</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<textcolor>blue</textcolor>
+			<textcolor>grey</textcolor>
 			<font>font12</font>
-			<label>($INFO[Container(100).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(100).CurrentPage]/$INFO[Container(100).NumPages])</label>
+			<label>([COLOR=blue]$INFO[Container(100).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(100).CurrentPage]/$INFO[Container(100).NumPages][/COLOR])</label>
 			<visible>!Control.IsVisible(451)</visible>
 		</control>
 	</controls>

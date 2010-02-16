@@ -45,8 +45,10 @@ CGUIDialogKaraokeSongSelector::~CGUIDialogKaraokeSongSelector(void)
 
 void CGUIDialogKaraokeSongSelector::OnButtonNumeric( unsigned int code, bool reset_autotimer )
 {
+  
   // Add the number
   m_selectedNumber = m_selectedNumber * 10 + code;
+  CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnButtonNumeric %d / %d" , code, m_selectedNumber);
 
   // If overflow (a typical way to delete the old number is add zeros), handle it
   if ( m_selectedNumber >= MAX_SONG_ID )
@@ -94,16 +96,51 @@ bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
   switch(action.actionId)
   {
     case REMOTE_0:
+      OnButtonNumeric( 0 );
+      return true;
+
     case REMOTE_1:
+      OnButtonNumeric( 1 );
+      return true;
+
     case REMOTE_2:
+    case ACTION_JUMP_SMS2:
+      OnButtonNumeric( 2 );
+      return true;
+
     case REMOTE_3:
+    case ACTION_JUMP_SMS3:
+      OnButtonNumeric( 3 );
+      return true;
+
     case REMOTE_4:
+    case ACTION_JUMP_SMS4:
+      OnButtonNumeric( 4 );
+      return true;
+
     case REMOTE_5:
+    case ACTION_JUMP_SMS5:
+      OnButtonNumeric( 5 );
+      return true;
+
     case REMOTE_6:
+    case ACTION_JUMP_SMS6:
+      OnButtonNumeric( 6 );
+      return true;
+
     case REMOTE_7:
+    case ACTION_JUMP_SMS7:
+      OnButtonNumeric( 7 );
+      return true;
+
     case REMOTE_8:
+    case ACTION_JUMP_SMS8:
+      OnButtonNumeric( 8 );
+      return true;
+
     case REMOTE_9:
-      OnButtonNumeric( action.actionId - REMOTE_0 );
+    case ACTION_JUMP_SMS9:
+      OnButtonNumeric( 9 );
       return true;
 
     case ACTION_SELECT_ITEM:

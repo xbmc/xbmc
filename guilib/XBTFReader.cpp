@@ -28,9 +28,19 @@
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
 
-#define READ_STR(str, size, file) fread(str, size, 1, file)
-#define READ_U32(i, file) fread(&i, 4, 1, file); i = Endian_SwapLE32(i);
-#define READ_U64(i, file) fread(&i, 8, 1, file); i = Endian_SwapLE64(i);
+#define READ_STR(str, size, file) \
+  if (!fread(str, size, 1, file)) \
+    return false;
+
+#define READ_U32(i, file) \
+  if (!fread(&i, 4, 1, file)) \
+    return false; \
+  i = Endian_SwapLE32(i);
+
+#define READ_U64(i, file) \
+  if (!fread(&i, 8, 1, file)) \
+    return false; \
+  i = Endian_SwapLE64(i);
 
 CXBTFReader::CXBTFReader()
 {

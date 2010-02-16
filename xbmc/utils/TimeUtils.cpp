@@ -21,8 +21,8 @@
 
 #include "TimeUtils.h"
 #ifdef __APPLE__
-#include <mach/mach_time.h>
-#include <CoreVideo/CVHostTime.h>
+#include <time.h>
+#include "posix-realtime-stub.h"
 #elif defined(_LINUX)
 #include <time.h>
 #elif defined(_WIN32)
@@ -31,9 +31,7 @@
 
 int64_t CurrentHostCounter(void)
 {
-#if defined(__APPLE__)
-  return( (int64_t)CVGetCurrentHostTime() );
-#elif defined(_LINUX)
+#if defined(_LINUX)
   struct timespec now;
   clock_gettime(CLOCK_MONOTONIC, &now);
   return( ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec );
@@ -46,10 +44,7 @@ int64_t CurrentHostCounter(void)
 
 int64_t CurrentHostFrequency(void)
 {
-#if defined(__APPLE__)
-  // needed for 10.5.8 on ppc
-  return( (int64_t)CVGetHostClockFrequency() );
-#elif defined(_LINUX)
+#if defined(_LINUX)
   return( (int64_t)1000000000L );
 #else
   LARGE_INTEGER Frequency;
@@ -75,13 +70,10 @@ unsigned int CTimeUtils::GetTimeMS()
 #ifdef _LINUX
           uint64_t now_time;
   static  uint64_t start_time = 0;
-#if defined(__APPLE__)
-  now_time = CVGetCurrentHostTime() * 1000 / CVGetHostClockFrequency();
-#else
   struct timespec ts = {};
   clock_gettime(CLOCK_MONOTONIC, &ts);
   now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-#endif
+
   if (start_time == 0)
     start_time = now_time;
   return (now_time - start_time);

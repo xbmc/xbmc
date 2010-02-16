@@ -267,7 +267,7 @@ htsp_tcp_read_line(socket_t fd, char *buf, const size_t bufsize, htsbuf_queue_t 
       continue;
     }
     
-    if(len >= bufsize - 1)
+    if(len >= (int)bufsize - 1)
       return -1;
 
     htsbuf_read(spill, buf, len);
@@ -288,11 +288,11 @@ htsp_tcp_read_data(socket_t fd, char *buf, const size_t bufsize, htsbuf_queue_t 
 {
   int x, tot = htsbuf_read(spill, buf, bufsize);
 
-  if(tot == bufsize)
+  if(tot == (int)bufsize)
     return 0;
 
   x = recv(fd, buf + tot, bufsize - tot, MSG_WAITALL);
-  if(x != bufsize - tot)
+  if(x != (int)bufsize - tot)
     return -1;
 
   return 0;
@@ -308,7 +308,7 @@ htsp_tcp_read(socket_t fd, void *buf, size_t len)
 
   if(x == -1)
     return errno;
-  if(x != len)
+  if(x != (int)len)
     return ECONNRESET;
   return 0;
 
@@ -329,7 +329,7 @@ htsp_tcp_read_timeout(socket_t fd, void *buf, size_t len, int timeout)
   fds.events = POLLIN;
   fds.revents = 0;
 
-  while(tot != len) {
+  while(tot != (int)len) {
 
     x = poll(&fds, 1, timeout);
     if(x == 0)

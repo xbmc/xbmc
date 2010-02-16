@@ -5107,6 +5107,12 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           // matching title? append information
           if (jItem->GetVideoInfoTag()->m_strTitle.Equals(strTitle))
           {
+            if (jItem->GetVideoInfoTag()->m_strPremiered != 
+                pItem->GetVideoInfoTag()->m_strPremiered)
+            {
+              j++;
+              continue;
+            }
             bStacked = true;
 
             // increment episode counts
@@ -6258,13 +6264,18 @@ void CVideoDatabase::GetMoviesByName(const CStdString& strSearch, CFileItemList&
           continue;
         }
 
+      int movieId = m_pDS->fv("movie.idMovie").get_asInt();
+      CStdString strSQL2 = FormatSQL("select idSet from setlinkmovie where idMovie=%i",movieId); 
+      m_pDS2->query(strSQL2.c_str());
       CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
-      CStdString strDir;
-      strDir.Format("1/2/%ld",m_pDS->fv("movie.idMovie").get_asInt());
+      if (m_pDS2->eof())
+        pItem->m_strPath.Format("videodb://1/2/%i",movieId);
+      else
+        pItem->m_strPath.Format("videodb://1/7/%i/%i",m_pDS2->fv(0).get_asInt(),movieId);
 
-      pItem->m_strPath="videodb://"+ strDir;
       pItem->m_bIsFolder=false;
       items.Add(pItem);
+      m_pDS2->close();
       m_pDS->next();
     }
     m_pDS->close();

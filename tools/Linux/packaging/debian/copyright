@@ -144,49 +144,6 @@ CString Class
     billion dollar satellite explode in orbit. If you redistribute it in any
     form, I'd appreciate it if you would leave this notice here.
 
-Spyce - Server-side Python-based dynamic HTML generation
-<http://spyce.sourceforge.net/>
-
-    Copyright © 2002-03 Rimon Barr. All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice and
-    this LICENCE in its entirety including the disclaimer. The LICENCE of this
-    product may only be modified by the Copyright holder.
-
-    2. Redistributions in binary form must reproduce the above copyright notice
-    and this LICENCE in its entirety including the disclaimer in the
-    documentation and/or other materials provided with the distribution.
-
-    3. The end-user documentation included with the redistribution, if any, must
-    include the following acknowledgment: "This product uses Spyce, Copyright
-    Rimon Barr." Alternately, this acknowledgment may appear in the software
-    itself, wherever such third-party acknowledgments normally appear. The
-    documentation must also provide a instructions on how to receive an original
-    Spyce distribution, preferably a link to the website
-    http://spyce.sourceforge.net.
-
-    4. The names "Spyce", or "Rimon Barr" must not be used to endorse or promote
-    products derived from this software without prior written permission. For
-    written permission, please contact rimon-AT-acm.org.
-
-    5. Products derived from this software may not be called "Spyce", nor may
-    "Spyce" appear in their names, without prior written permission of the
-    Copyright holder.
-
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-    FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RIMON
-    BARR OR HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-    OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-    WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-    OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-    ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 Mach-O library symbol mapping Ruby Scripts
 
     Copyright © 2008 Elan Feingold (elan at bluemandrill dot com)
