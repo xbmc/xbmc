@@ -1331,24 +1331,18 @@ void CApplication::StartWebServer()
 #endif
 }
 
-void CApplication::StopWebServer(bool bWait)
+void CApplication::StopWebServer(bool /*bWait*/)
 {
 #ifdef HAS_WEB_SERVER
-//  if (m_WebServer.IsStarted())
+  if (m_WebServer.IsStarted())
   {
-    if (!bWait)
-    {
-      CLog::Log(LOGNOTICE, "Webserver: Stopping...");
-      m_WebServer.Stop();
-    }
-    else
-    {
-      CSectionLoader::Unload("LIBHTTP");
-      CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-      CZeroconf::GetInstance()->RemoveService("services.webserver");
-      CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
-      CZeroconf::GetInstance()->RemoveService("services.webapi");
-    }
+    CSectionLoader::Unload("LIBHTTP");
+    CLog::Log(LOGNOTICE, "Webserver: Stopping...");
+    m_WebServer.Stop();
+    CLog::Log(LOGNOTICE, "Webserver: Stopped...");
+    CZeroconf::GetInstance()->RemoveService("services.webserver");
+    CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
+    CZeroconf::GetInstance()->RemoveService("services.webapi");
   }
 #endif
 }
