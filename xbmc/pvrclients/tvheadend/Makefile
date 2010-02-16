@@ -10,7 +10,7 @@
 DESTDIR ?=
 PREFIX  ?= /usr/local
 ADDONDIR = $(PREFIX)/share/xbmc/addons
-LIBS     = -lXBMC_addon -lXBMC_pvr
+LIBS     = -L../../../lib/libXBMC_addon -lXBMC_addon -L../../../lib/libXBMC_pvr -lXBMC_pvr
 INCLUDES = -I. -I../../linux -I../../ -I../../../guilib -I../../../include -I../../../xbmc/utils
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 INCLUDES +=  -I/opt/local/include

@@ -15,5 +15,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 else
 	$(CXX) $(CFLAGS) -shared -g -o $(SLIB) $(OBJS)
 endif
+	@ln -sf $(SLIB) libXBMC_gui.so.0
+	@ln -sf $(SLIB) libXBMC_gui.so
 
 include ../../Makefile.include

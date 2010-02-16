@@ -9,10 +9,10 @@ SLIB=../../../addons/visualizations/GLSpectrum/opengl_spectrum.vis
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) $(CXXFLAGS) -bundle -shared -flat_namespace -undefined suppress -o $@ $(OBJS) -lXBMC_addon
+	$(CXX) $(CXXFLAGS) -bundle -shared -flat_namespace -undefined suppress -o $@ $(OBJS) -L../../../lib/libXBMC_addon -lXBMC_addon
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(CXXFLAGS) -shared -g -o $(SLIB) $(OBJS) -lXBMC_addon
+	$(CXX) $(CXXFLAGS) -shared -g -o $(SLIB) $(OBJS) -L../../../lib/libXBMC_addon -lXBMC_addon
 endif
 
 include ../../../Makefile.include

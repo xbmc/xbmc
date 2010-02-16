@@ -508,18 +508,11 @@ endif
 
 install-libraries:
 	@echo "Copying XBMC addon helper libraries to $(libdir)"
-	@install -D lib/libXBMC_addon/libXBMC_addon.so.0.0.1 $(libdir)
-	@ln -sf libXBMC_addon.so.0.0.1 $(libdir)/libXBMC_addon.so.0
-	@ln -sf libXBMC_addon.so.0.0.1 $(libdir)/libXBMC_addon.so
-	@install -D lib/libXBMC_gui/libXBMC_gui.so.0.0.1 $(libdir)
-	@ln -sf libXBMC_gui.so.0.0.1 $(libdir)/libXBMC_gui.so.0
-	@ln -sf libXBMC_gui.so.0.0.1 $(libdir)/libXBMC_gui.so
-	@install -D lib/libXBMC_pvr/libXBMC_pvr.so.0.0.1 $(libdir)
-	@ln -sf libXBMC_pvr.so.0.0.1 $(libdir)/libXBMC_pvr.so.0
-	@ln -sf libXBMC_pvr.so.0.0.1 $(libdir)/libXBMC_pvr.so
-	@install -D lib/libXBMC_vis/libXBMC_vis.so.0.0.1 $(libdir)
-	@ln -sf libXBMC_vis.so.0.0.1 $(libdir)/libXBMC_vis.so.0
-	@ln -sf libXBMC_vis.so.0.0.1 $(libdir)/libXBMC_vis.so
+	@mkdir -p $(libdir)
+	@cp -P lib/libXBMC_addon/libXBMC_addon.so* $(libdir)
+	@cp -P lib/libXBMC_gui/libXBMC_gui.so* $(libdir)
+	@cp -P lib/libXBMC_pvr/libXBMC_pvr.so* $(libdir)
+	@cp -P lib/libXBMC_vis/libXBMC_vis.so* $(libdir)
 
 install-headers:
 	@echo "Copying XBMC addon helper headers to $(prefix)/include/xbmc"

@@ -1067,6 +1067,7 @@ OUTPUT_FILES="Makefile \
              xbmc/visualizations/OpenGLSpectrum/Makefile \
              xbmc/visualizations/WaveForm/Makefile \
              xbmc/visualizations/iTunes/Makefile \
+             xbmc/pvrclients/vdr-streamdev/Makefile \
              xbmc/FileSystem/Makefile \
              lib/libXBMC_addon/Makefile \
              lib/libXBMC_gui/Makefile \
