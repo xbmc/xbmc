@@ -19,6 +19,7 @@
  *
  */
 #include "Variant.h"
+#include "PlatformDefs.h"
 #include <string.h>
 #include <assert.h>
 
@@ -301,10 +302,10 @@ void CVariant::internaldebug()
   switch (m_type)
   {
   case VariantTypeInteger:
-    printf("int: %lld", m_data.integer);
+    printf("int: %"PRIu64"", m_data.integer);
     break;
   case VariantTypeUnsignedInteger:
-    printf("uint: %lld", m_data.unsignedinteger);
+    printf("uint: %"PRIu64"", m_data.unsignedinteger);
     break;
   case VariantTypeBoolean:
     printf("bool: %s", m_data.boolean ? "true" : "false");

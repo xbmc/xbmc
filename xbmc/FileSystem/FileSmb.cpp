@@ -633,7 +633,7 @@ int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
 #ifdef _LINUX
   smb.SetActivityTime();
 #endif
-  INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
+  int64_t pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 
   if ( pos < 0 )
   {

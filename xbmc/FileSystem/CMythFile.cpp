@@ -309,7 +309,7 @@ bool CCMythFile::Open(const CURL& url)
     if(!SetupRecording(url))
       return false;
 
-    CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
+    CLog::Log(LOGDEBUG, "%s - file: size %"PRIu64", start %"PRIu64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
   }
   else if (path.Left(9) == "channels/")
   {
