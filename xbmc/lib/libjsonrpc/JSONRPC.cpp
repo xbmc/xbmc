@@ -25,6 +25,7 @@
 #include "PicturePlayerOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
+#include "GUIOperations.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
@@ -145,6 +146,9 @@ Command CJSONRPC::m_commands[] = {
   { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"plot\"] }" },
   { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "Parameter example { \"episodeinfo\": 0, \"fields\": [\"plot\"] }" },
   { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "Parameter example { \"musicvideoid\": 0, \"fields\": [\"plot\"] }" },
+
+// GUI Operations
+  { "GUI.GetLocalizedString",           CGUIOperations::GetLocalizedString,     Response,     ReadData,        "" },
 
 // System operations
   { "System.Shutdown",                  CSystemOperations::Shutdown,            Response,     ControlPower,    "" },
