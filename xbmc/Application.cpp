@@ -1304,7 +1304,6 @@ void CApplication::StartWebServer()
         return;
     }
 #endif
-    CSectionLoader::Load("LIBHTTP");
     if (m_network.GetFirstConnectedInterface())
       m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort/*, "special://xbmc/web", false*/);
 
@@ -1331,18 +1330,21 @@ void CApplication::StartWebServer()
 #endif
 }
 
-void CApplication::StopWebServer(bool /*bWait*/)
+void CApplication::StopWebServer()
 {
 #ifdef HAS_WEB_SERVER
   if (m_WebServer.IsStarted())
   {
-    CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopping...");
     m_WebServer.Stop();
-    CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-    CZeroconf::GetInstance()->RemoveService("services.webserver");
-    CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
-    CZeroconf::GetInstance()->RemoveService("services.webapi");
+    if(! m_WebServer.IsStarted() )
+    {
+      CLog::Log(LOGNOTICE, "Webserver: Stopped...");
+      CZeroconf::GetInstance()->RemoveService("services.webserver");
+      CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
+      CZeroconf::GetInstance()->RemoveService("services.webapi");
+    } else
+      CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
   }
 #endif
 }

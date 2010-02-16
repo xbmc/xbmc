@@ -308,6 +308,9 @@ void CNetwork::StopServices(bool bWait)
 #ifdef HAS_ZEROCONF
     g_application.StopZeroconf();
 #endif
+#ifdef HAS_WEB_SERVER
+    g_application.StopWebServer();
+#endif    
     CLastfmScrobbler::GetInstance()->Term();
     CLibrefmScrobbler::GetInstance()->Term();
     // smb.Deinit(); if any file is open over samba this will break.
@@ -315,9 +318,6 @@ void CNetwork::StopServices(bool bWait)
     g_rssManager.Stop();
   }
 
-#ifdef HAS_WEB_SERVER
-  g_application.StopWebServer(bWait);
-#endif
 #ifdef HAS_EVENT_SERVER
   g_application.StopEventServer(bWait, false);
 #endif

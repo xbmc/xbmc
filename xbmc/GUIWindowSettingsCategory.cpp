@@ -1422,7 +1422,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (strSetting.Equals("services.webserverport"))
       ValidatePortNumber(pSettingControl, "8080", "80");
-    g_application.StopWebServer(true);
+    g_application.StopWebServer();
     if (g_guiSettings.GetBool("services.webserver"))
       g_application.StartWebServer();
   }
