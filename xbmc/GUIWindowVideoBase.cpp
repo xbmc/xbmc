@@ -483,8 +483,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   {
     if (content == CONTENT_NONE) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
-    if (content == CONTENT_PLUGIN) // disable refresh+get thumb button
-      movieDetails.m_strIMDBNumber = "xxplugin";
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
@@ -503,22 +501,23 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
     return false;
   }
 
-  // 2. Look for a nfo File to get the search URL
   CScraperUrl scrUrl;
   bool hasDetails(false);
+
+  m_database.Open();
+  // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
   ADDON::AddonPtr addon;
   ADDON::ScraperPtr info;
   CVideoInfoScanner scanner;
 
-  m_database.Open();
   if (!m_database.GetScraperForPath(item->m_strPath,info,settings))
   {
     if (!ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, content))
       return false;
   }
-  if(addon)
-    info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+
+  info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
   if (!info)
     return false;
 
@@ -728,7 +727,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
               hasDetails = false;
               ignoreNfo = true;
               scrUrl.Clear();
-              info = info2;
+              //FIXME info = info2;
             }
           }
         }
