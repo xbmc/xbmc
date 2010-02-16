@@ -51,7 +51,7 @@ extern "C"
 
 #ifdef HAS_GL
 #ifndef D3DCOLOR_RGBA
-#define D3DCOLOR_RGBA(r,g,b,a) (r||(g<<8)||(b<<16)||(a<<24))
+#define D3DCOLOR_RGBA(r,g,b,a) (r|(g<<8)|(b<<16)|(a<<24))
 #endif
 #endif
 
