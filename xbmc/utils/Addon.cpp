@@ -33,7 +33,7 @@ using XFILE::CDirectory;
 namespace ADDON
 {
 
-/**********************************************************
+/**
  * helper functions 
  *
  */
@@ -171,7 +171,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else return ADDON_UNKNOWN;
 }
 
-/**********************************************************
+/**
  * AddonVersion
  *
  */
@@ -213,7 +213,7 @@ CStdString AddonVersion::Print() const
   return CStdString(out);
 }
 
-/**********************************************************
+/**
  * CAddon
  *
  */
@@ -282,9 +282,9 @@ void CAddon::BuildLibName()
   m_strLibName.append(ext);
 }
 
-/*
-* Language File Handling
-*/
+/**
+ * Language File Handling
+ */
 bool CAddon::LoadStrings()
 {
   if (!HasSettings())
@@ -317,9 +317,9 @@ CStdString CAddon::GetString(uint32_t id) const
   return m_strings.Get(id);
 }
 
-/*
-* Settings Handling
-*/
+/**
+ * Settings Handling
+ */
 bool CAddon::HasSettings()
 {
   CStdString addonFileName = m_props.path;
@@ -513,7 +513,7 @@ CStdString CAddon::GetUserSettingsPath()
   return path;
 }
 
-/**********************************************************
+/**
  * CAddonLibrary
  *
  */

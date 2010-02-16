@@ -97,7 +97,7 @@ namespace ADDON
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) const =0;
     virtual ADDONDEPS GetDeps() =0;
-    
+
   private:
     friend class CAddonMgr;
     virtual bool IsAddonLibrary() =0;

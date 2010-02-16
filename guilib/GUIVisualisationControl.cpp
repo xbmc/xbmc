@@ -107,7 +107,7 @@ void CGUIVisualisationControl::Render()
     CGUIControl::Render();
     return;
   }
-  
+
   if (m_bInitialized)
   {
     // set the viewport - note: We currently don't have any control over how

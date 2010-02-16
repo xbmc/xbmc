@@ -425,9 +425,9 @@ bool CAddonMgr::DisableAddon(const CStdString &uuid)
   AddonPtr addon = m_uuidMap[uuid];
   if (!addon)
     return false;
-
   return DisableAddon(addon);
 }
+
 bool CAddonMgr::DisableAddon(AddonPtr &addon)
 {
   const TYPE type = addon->Type();
@@ -488,8 +488,6 @@ bool CAddonMgr::LoadAddonsXML(const TYPE &type)
     }
     ++itr;
   }
-
-
   return true;
 }
 
@@ -604,7 +602,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
     }
 
     if (!DependenciesMet(addon))
-    { // store any addons with unresolved deps for now
+    {
       unresolved.push_back(addon);
       continue;
     }

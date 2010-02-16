@@ -301,7 +301,7 @@ void CGUIWindowWeather::CallPlugin()
     AddonPtr addon;
     if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, g_guiSettings.GetString("weather.plugin"), addon))
       return;
-    
+
     // create the full path to the plugin
     CStdString plugin = addon->Path() + addon->LibName();
 

@@ -114,7 +114,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   if (globalPM)
     delete globalPM;
 
-  try 
+  try
   {
     globalPM = new projectM(g_configFile);
   }
@@ -150,7 +150,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   DllSetting shuffleMode(DllSetting::CHECK, "shuffle", "30005");
   shuffleMode.current = globalPM->isShuffleEnabled();
   g_vecSettings.push_back(shuffleMode);
-  
+
   DllSetting smoothPresetDuration(DllSetting::SPIN, "smooth_duration", "30006");
   for (int i=0; i < 50; i++)
   {
@@ -160,7 +160,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   }
   smoothPresetDuration.current = (int)(g_configPM.smoothPresetDuration);
   g_vecSettings.push_back(smoothPresetDuration);
-  
+
   DllSetting presetDuration(DllSetting::SPIN, "preset_duration", "30007");
   for (int i=0; i < 50; i++)
   {
