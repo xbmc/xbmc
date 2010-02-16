@@ -142,9 +142,15 @@ void CGUIListGroup::EnlargeWidth(float difference)
     CGUIControl *child = *it;
     if (child->GetID() >= 1 && child->GetID() <= 14)
     {
-      child->SetWidth(child->GetWidth() + difference);
       if (child->GetID() == 1) // label
+      {
+        child->SetWidth(child->GetWidth() + difference - 10);
         child->SetVisible(child->GetWidth() > 10); ///
+      }
+      else
+      {
+        child->SetWidth(child->GetWidth() + difference);
+      }
     }
   }
   SetInvalid();
@@ -158,9 +164,15 @@ void CGUIListGroup::EnlargeHeight(float difference)
     CGUIControl *child = *it;
     if (child->GetID() >= 1 && child->GetID() <= 14)
     {
-      child->SetHeight(child->GetHeight() + difference);
       if (child->GetID() == 1) // label
+      {
+        child->SetHeight(child->GetHeight() + difference - 10);
         child->SetVisible(child->GetHeight() > 10); ///
+      }
+      else
+      {
+        child->SetHeight(child->GetHeight() + difference);
+      }
     }
   }
   SetInvalid();

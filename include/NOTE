@@ -1,0 +1,22 @@
+NOTE:
+
+This directory contains independent Headers to build Add-on's
+without the whole XBMC source tree. The Add-on itself can add
+this headers to his source tree without dependencies to any
+XBMC related classes or functions.
+
+Also this headers are never changed without a API Version
+change.
+
+libXBMC_addon.h                Addon General Helper functions, to use in all types of addons
+libXBMC_gui.h                  GUI depended Helper functions, to use in all types of addons
+libXBMC_pvr.h                  PVR depended Helper functions, limited to use in PVR addons
+libXBMC_vis.h                  Visualization depended Helper functions, limited to use in Visualization addons
+xbmc_addon_dll.h               Addon Major API function defination (Must be only included in top source file of addon)
+xbmc_addon_types.h             Addon specific data structures and defines
+xbmc_pvr_dll.h                 PVR Major API function defination (Must be only included in top source file of addon)
+xbmc_pvr_types.h               Specific data structures and defines for PVR addons
+xbmc_scr_dll.h                 Screensaver  Major API function defination (Must be only included in top source file of addon)
+xbmc_scr_types.h               Specific data structures and defines for screensavers
+xbmc_vis_dll.h                 Visualization Major API function defination (Must be only included in top source file of addon)
+xbmc_vis_types.h               Specific data structures and defines for visualizations

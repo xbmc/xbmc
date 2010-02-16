@@ -37,8 +37,8 @@
 #include <fcntl.h>
 #include <netdb.h>	//gethostbyname
 
-#include "../../../addons/include/xbmc_pvr_types.h"
-#include "../../../addons/include/xbmc_addon_lib++.h"
+#include "../../../../include/xbmc_pvr_types.h"
+#include "../../../../include/libXBMC_addon.h"
 #include "../pvrclient-mediaportal_os.h"
 
 using namespace std;

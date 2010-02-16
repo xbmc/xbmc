@@ -77,8 +77,6 @@ private:
 
   bool GetPresets();
 
-  AddonCB *m_callbacks;
-
   // attributes of the viewport we render to
   int m_xPos;
   int m_yPos;

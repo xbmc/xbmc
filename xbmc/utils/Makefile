@@ -1,7 +1,6 @@
 INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix
 
 SRCS=Addon.cpp \
-     AddonHelpers.cpp \
      AddonManager.cpp \
      AlarmClock.cpp \
      Archive.cpp \

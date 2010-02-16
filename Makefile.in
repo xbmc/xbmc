@@ -28,10 +28,7 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
-	xbmc/addons/lib/addonlib \
-	xbmc/addons/lib/addonlib++ \
-	xbmc/addons/lib/pvrlib \
-	xbmc/addons/lib/pvrlib++ \
+	xbmc/addons \
 	xbmc/lib/cmyth/libcmyth \
 	xbmc/lib/cmyth/librefmem \
 	xbmc/lib/libhts \
@@ -117,8 +114,10 @@ PVR_DIRS=\
 	xbmc/pvrclients/tvheadend
 
 LIBADDON_DIRS=\
-	xbmc/addons/lib/addonlib++ \
-	xbmc/addons/lib/pvrlib++ \
+	lib/libXBMC_addon \
+	lib/libXBMC_gui  \
+	lib/libXBMC_pvr \
+	lib/libXBMC_vis \
 
 CONFLUENCE_MEDIA=skin/Confluence/media
 PM3HD_MEDIA=skin/PM3.HD/media
@@ -177,6 +176,8 @@ guilib/tinyXML/tinyxml.a: force
 	$(MAKE) -C guilib/tinyXML
 xbmc/xbmc.a: force
 	$(MAKE) -C xbmc
+xbmc/addons/AddonHelpers.a: force
+	$(MAKE) -C xbmc/addons
 xbmc/cdrip/cdrip.a: force
 	$(MAKE) -C xbmc/cdrip
 xbmc/cores/cores.a: force
@@ -303,8 +304,10 @@ pvrclients: exports
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libaddon: exports
-	$(MAKE) -C xbmc/addons/lib/addonlib++
-	$(MAKE) -C xbmc/addons/lib/pvrlib++
+	$(MAKE) -C lib/libXBMC_addon
+	$(MAKE) -C lib/libXBMC_gui
+	$(MAKE) -C lib/libXBMC_pvr
+	$(MAKE) -C lib/libXBMC_vis
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
@@ -417,7 +420,8 @@ OBJSXBMC=	\
 	xbmc/pvrclients/pvrclient.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/visualizations/visualization.a
+	xbmc/visualizations/visualization.a \
+	xbmc/addons/AddonHelpers.a \
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
@@ -479,7 +483,7 @@ install-bin: xbmc.bin # developement convenience target
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
-install: install-binaries install-arch install-datas install-web
+install: install-binaries install-libraries install-headers install-arch install-datas install-web
 
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
@@ -488,9 +492,29 @@ install-binaries: install-scripts
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
+install-libraries:
+	@echo "Copying XBMC addon helper libraries to $(libdir)"
+	@install -D lib/libXBMC_addon/libXBMC_addon.so.0.0.1 $(libdir)
+	@ln -sf libXBMC_addon.so.0.0.1 $(libdir)/libXBMC_addon.so.0
+	@ln -sf libXBMC_addon.so.0.0.1 $(libdir)/libXBMC_addon.so
+	@install -D lib/libXBMC_gui/libXBMC_gui.so.0.0.1 $(libdir)
+	@ln -sf libXBMC_gui.so.0.0.1 $(libdir)/libXBMC_gui.so.0
+	@ln -sf libXBMC_gui.so.0.0.1 $(libdir)/libXBMC_gui.so
+	@install -D lib/libXBMC_pvr/libXBMC_pvr.so.0.0.1 $(libdir)
+	@ln -sf libXBMC_pvr.so.0.0.1 $(libdir)/libXBMC_pvr.so.0
+	@ln -sf libXBMC_pvr.so.0.0.1 $(libdir)/libXBMC_pvr.so
+	@install -D lib/libXBMC_vis/libXBMC_vis.so.0.0.1 $(libdir)
+	@ln -sf libXBMC_vis.so.0.0.1 $(libdir)/libXBMC_vis.so.0
+	@ln -sf libXBMC_vis.so.0.0.1 $(libdir)/libXBMC_vis.so
+
+install-headers:
+	@echo "Copying XBMC addon helper headers to $(prefix)/include/xbmc"
+	@install -d $(prefix)/include/xbmc
+	@install -D -m 0644 include/* $(prefix)/include/xbmc
+
 install-arch:
 	@# Arch dependent files
-	@find system -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
@@ -531,6 +555,7 @@ uninstall:
 	@rm -rf $(prefix)/share/xbmc $(prefix)/bin/xbmc
 	@rm -rf $(prefix)/bin/xbmc-standalone
 	@rm -rf $(prefix)/share/xsessions/XBMC.desktop
+	@rm -rf $(libdir)/libXBMC_*
 	@echo "Done!"
 
 reallyclean:

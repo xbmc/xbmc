@@ -46,6 +46,7 @@ public:
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
   virtual void SetFocus(bool focus);
   virtual void SetInvalid();
+  virtual void SetWidth(float width);
 
   const CRect &GetRenderRect() const { return m_label.GetRenderRect(); };
   void SetRenderRect(const CRect &rect) { m_label.SetRenderRect(rect); };

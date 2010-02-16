@@ -21,7 +21,7 @@
  */
 
 #include "../DllAddon.h"
-#include "../addons/include/xbmc_vis_types.h"
+#include "../include/xbmc_vis_types.h"
 
 class DllVisualisation : public DllAddon<Visualisation, VIS_PROPS>
 {

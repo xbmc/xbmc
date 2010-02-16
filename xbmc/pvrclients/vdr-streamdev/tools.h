@@ -22,8 +22,8 @@
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
-#include "../../addons/include/xbmc_addon_lib++.h"
-#include "../../addons/include/xbmc_pvr_lib++.h"
+#include "libXBMC_addon.h"
+#include "libXBMC_pvr.h"
 #include "pvrclient-vdr_os.h"
 #include <errno.h>
 #include <fcntl.h>

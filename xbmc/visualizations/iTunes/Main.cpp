@@ -23,7 +23,7 @@
   iTunes Visualization Wrapper for XBMC
 */
 
-#include "xbmc_vis.h"
+#include "xbmc_vis_dll.h"
 #include <GL/glew.h>
 #include <string>
 #include "itunes_vis.h"

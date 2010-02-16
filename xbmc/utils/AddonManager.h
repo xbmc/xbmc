@@ -20,7 +20,7 @@
  *
  */
 #include "Addon.h"
-#include "../addons/include/xbmc_addon_dll.h"
+#include "../../include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
 #include "Thread.h"
 #include "StdString.h"

@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../addons/include
+INCLUDES=-I. -I../../../include
 OBJS=Main.o
 SLIB=../../../addons/visualizations/ProjectM/projectM.vis
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
@@ -20,7 +20,7 @@ libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
 else
 $(SLIB): $(OBJS) libprojectM/libprojectM.so
-	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) ../../addons/include/xbmc_addon_lib++.a `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) -lXBMC_addon `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
 	zip -qj ../../../addons/visualizations/ProjectM/resources/presets.zip libprojectM/presets/*
 
 libprojectM/libprojectM.so: 

@@ -26,8 +26,8 @@
 //#include <string>
 #include "StdString.h"
 #include "pvrclient-mediaportal.h"
-#include "../../addons/include/xbmc_addon_lib++.h"
-#include "../../addons/include/xbmc_pvr_lib++.h"
+#include "../../../include/libXBMC_addon.h"
+#include "../../../include/libXBMC_pvr.h"
 
 #define DEFAULT_HOST                  "127.0.0.1"
 #define DEFAULT_PORT                  9596

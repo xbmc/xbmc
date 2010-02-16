@@ -24,9 +24,9 @@
 #define CLIENT_H
 
 #include <string>
-#include "addons/include/xbmc_addon_lib++.h"
-#include "addons/include/xbmc_pvr_lib++.h"
-#include "addons/include/xbmc_pvr_dll.h"
+#include "libXBMC_addon.h"
+#include "libXBMC_pvr.h"
+#include "xbmc_pvr_dll.h"
 
 #define DEFAULT_HOST        "127.0.0.1"
 #define DEFAULT_PORT        9982

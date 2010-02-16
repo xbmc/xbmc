@@ -20,7 +20,7 @@
  */
 
 #include "client.h"
-#include "../../addons/include/xbmc_pvr_dll.h"
+#include "../../../include/xbmc_pvr_dll.h"
 #include "pvrclient-mediaportal.h"
 
 using namespace std;

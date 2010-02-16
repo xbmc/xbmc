@@ -21,7 +21,7 @@
 */
 
 #include "DynamicDll.h"
-#include "addons/include/xbmc_addon_cpp_dll.h"
+#include "include/xbmc_addon_types.h"
 
 template <typename TheStruct, typename Props>
 class DllAddonInterface

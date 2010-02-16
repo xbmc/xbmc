@@ -22,6 +22,7 @@
 #include "Addon.h"
 #include "../DllAddon.h"
 #include "AddonManager.h"
+#include "../addons/AddonHelpers_local.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
@@ -55,8 +56,9 @@ namespace ADDON
 
   protected:
     bool LoadDll();
-    TheStruct* m_pStruct;
-    TheProps*     m_pInfo;
+    TheStruct*      m_pStruct;
+    TheProps*       m_pInfo;
+    CAddonHelpers*  m_pHelpers;
     bool m_initialized;
 
   private:
@@ -141,11 +143,15 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   if (!LoadDll())
     return false;
 
+  /* Allocate the helper function class to allow crosstalk over
+     helper libraries */
+  m_pHelpers = new CAddonHelpers(this);
+
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
   try
   {
-    ADDON_STATUS status = m_pDll->Create(NULL, m_pInfo);
+    ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
     if (status != STATUS_OK)
       throw status;
     m_initialized = true;
@@ -184,6 +190,8 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   m_pStruct = NULL;
   delete m_pDll;
   m_pDll = NULL;
+  delete m_pHelpers;
+  m_pHelpers = NULL;
   m_initialized = false;
   CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
 }

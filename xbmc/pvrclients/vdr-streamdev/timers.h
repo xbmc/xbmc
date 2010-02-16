@@ -27,7 +27,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "StdString.h"
-#include "../../addons/include/xbmc_pvr_lib++.h"
+#include "libXBMC_pvr.h"
 
 enum eTimerFlags { tfNone      = 0x0000,
                    tfActive    = 0x0001,

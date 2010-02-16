@@ -28,8 +28,8 @@
  */
 
 
-#include "../../addons/include/xbmc_vis_dll.h"
-#include "../../addons/include/xbmc_addon_lib++.h"
+#include "xbmc_vis_dll.h"
+#include "libXBMC_addon.h"
 #include <string.h>
 #include <math.h>
 #include <GL/glew.h>
@@ -144,12 +144,12 @@ ADDON_STATUS Create(void* hdl, void* props)
 {
   int temp;
 
-  if (!props)
+  if (!props || !hdl)
     return STATUS_UNKNOWN;
 
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
-  XBMC_register_me(visprops->hdl);
+  XBMC_register_me(hdl);
 
   /* Read setting "mode" from settings.xml */
   if (XBMC_get_setting("mode", &temp))

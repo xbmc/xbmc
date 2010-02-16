@@ -23,7 +23,7 @@
 #include "tools.h"
 #include "vtptransceiver.h"
 #include "ringbuffer.h"
-#include "../../addons/include/xbmc_pvr_dll.h"
+#include "xbmc_pvr_dll.h"
 
 using namespace std;
 
@@ -285,19 +285,19 @@ bool cDataResp::VDRToXBMCCommand(char *Cmd)
 
 bool cDataResp::CallBackMODT(const char *Option)
 {
-  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
+//  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
   return true;
 }
 
 bool cDataResp::CallBackDELT(const char *Option)
 {
-  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
+//  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
   return true;
 }
 
 bool cDataResp::CallBackADDT(const char *Option)
 {
-  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
+//  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
   return true;
 }
 
@@ -308,7 +308,7 @@ bool cDataResp::CallBackSMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-    PVR_event_callback(PVR_EVENT_MSG_STATUS, text.c_str());
+//    PVR_event_callback(PVR_EVENT_MSG_STATUS, text.c_str());
     return true;
   }
   else
@@ -325,7 +325,7 @@ bool cDataResp::CallBackIMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-    PVR_event_callback(PVR_EVENT_MSG_INFO, text.c_str());
+//    PVR_event_callback(PVR_EVENT_MSG_INFO, text.c_str());
     return true;
   }
   else
@@ -342,7 +342,7 @@ bool cDataResp::CallBackWMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-    PVR_event_callback(PVR_EVENT_MSG_WARNING, text.c_str());
+//    PVR_event_callback(PVR_EVENT_MSG_WARNING, text.c_str());
     return true;
   }
   else
@@ -359,7 +359,7 @@ bool cDataResp::CallBackEMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-    PVR_event_callback(PVR_EVENT_MSG_ERROR, text.c_str());
+//    PVR_event_callback(PVR_EVENT_MSG_ERROR, text.c_str());
     return true;
   }
   else
@@ -450,8 +450,8 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   PVR_PROPS* pvrprops = (PVR_PROPS*)props;
 
-  XBMC_register_me(pvrprops->hdl);
-  PVR_register_me(pvrprops->hdl);
+  XBMC_register_me(hdl);
+  PVR_register_me(hdl);
 
   //XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
 

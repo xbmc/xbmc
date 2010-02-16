@@ -32,7 +32,6 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/File.h"
 #endif
-#include "../utils/AddonHelpers.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -89,19 +88,7 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
 
 bool CVisualisation::Create(int x, int y, int w, int h)
 {
-  /* Allocate the callback table to save all the pointers
-     to the helper callback functions */
-  m_callbacks = new AddonCB;
-
-  /* PVR Helper functions */
-  m_callbacks->userData     = this;
-  m_callbacks->addonData    = (CAddon*) this;
-
-  /* Write XBMC Global Add-on function addresses to callback table */
-  CAddonUtils::CreateAddOnCallbacks(m_callbacks);
-
   m_pInfo = new VIS_PROPS;
-  m_pInfo->hdl = m_callbacks;
   m_pInfo->x = x;
   m_pInfo->y = y;
   m_pInfo->width = w;
@@ -146,10 +133,6 @@ void CVisualisation::Destroy()
 
   /* Tell the client to destroy */
   CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Destroy();
-
-  /* Release Callback table in memory */
-  delete m_callbacks;
-  m_callbacks = NULL;
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName)

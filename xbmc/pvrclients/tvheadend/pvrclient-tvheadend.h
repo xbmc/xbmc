@@ -30,9 +30,8 @@
 
 #include <list>
 #include "FileSystem/HTSPDirectory.h"
-#include "addons/include/xbmc_pvr_types.h"
-#include "addons/include/xbmc_pvr_lib++.h"
-#include "addons/include/xbmc_addon_lib++.h"
+#include "libXBMC_addon.h"
+#include "libXBMC_pvr.h"
 
 extern "C" {
 #include "lib/libhts/htsmsg.h"

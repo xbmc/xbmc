@@ -35,8 +35,7 @@ d4rk@xbmc.org
 */
 
 #include "xbmc_vis_dll.h"
-#include "xbmc_addon_cpp_dll.h"
-#include "xbmc_addon_lib++.h"
+#include "libXBMC_addon.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
@@ -70,12 +69,12 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   int tmp;
   bool tmp2;
 
-  if (!props)
+  if (!props || !hdl)
     return STATUS_UNKNOWN;
 
   VIS_PROPS* visprops = (VIS_PROPS*)props;
 
-  XBMC_register_me(visprops->hdl);
+  XBMC_register_me(hdl);
 
   g_vecSettings.clear();
   g_uiVisElements = 0;

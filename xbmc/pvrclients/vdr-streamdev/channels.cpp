@@ -29,7 +29,7 @@
 #include "pvrclient-vdr_os.h"
 #include "channels.h"
 #include "client.h"
-#include "../../addons/include/xbmc_addon_lib++.h"
+#include "libXBMC_addon.h"
 
 using namespace std;
 

@@ -27,7 +27,6 @@
 #include "../utils/PVRRecordings.h"
 #include "../utils/AddonDll.h"
 #include "DllPVRClient.h"
-#include "../addons/lib/addon_local.h"
 
 class IPVRClientCallback
 {
@@ -61,6 +60,7 @@ public:
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
   PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
   int GetTimeCorrection() { return m_iTimeCorrection; }
+  int GetClientID() { return m_pInfo->clientID; }
 
   /* TV Guide */
   PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end, bool toDB = false);
@@ -108,7 +108,6 @@ public:
 protected:
   bool                  m_ReadyToUse;
   IPVRClientCallback   *m_manager;
-  AddonCB              *m_callbacks;
   CStdString            m_hostName;
   CCriticalSection      m_critSection;
   int                   m_iTimeCorrection;
@@ -117,11 +116,6 @@ private:
   void WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag);
   void WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
   void WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag);
-  static void PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry);
-  static void PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *channel);
-  static void PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
-  static void PVRTransferRecordingEntry(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
-  static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

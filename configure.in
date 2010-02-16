@@ -681,6 +681,11 @@ if test "$HAVE_UNZIP" = "no" ; then
   AC_MSG_ERROR($missing_program)
 fi
 
+AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
+if test "$HAVE_ZIP" = "no" ; then
+  AC_MSG_ERROR($missing_program)
+fi
+
 if test "$ARCH" != "x86_64-linux"; then
   AC_CHECK_PROG(HAVE_NASM,nasm,"yes","no",)
   if test "$HAVE_NASM" = "no" ; then
@@ -1039,6 +1044,10 @@ OUTPUT_FILES="Makefile \
              xbmc/visualizations/WaveForm/Makefile \
              xbmc/visualizations/iTunes/Makefile \
              xbmc/FileSystem/Makefile \
+             lib/libXBMC_addon/Makefile \
+             lib/libXBMC_gui/Makefile \
+             lib/libXBMC_pvr/Makefile \
+             lib/libXBMC_vis/Makefile \
              tools/Linux/xbmc.sh \
              tools/TexturePacker/Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"

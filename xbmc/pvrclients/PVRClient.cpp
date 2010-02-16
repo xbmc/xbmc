@@ -45,7 +45,6 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "../utils/log.h"
-#include "../utils/AddonHelpers.h"
 
 using namespace std;
 using namespace ADDON;
@@ -69,27 +68,8 @@ bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
 
   m_manager = pvrCB;
 
-  /* Allocate the callback table to save all the pointers
-     to the helper callback functions */
-  m_callbacks = new AddonCB;
-
-  /* PVR Helper functions */
-  m_callbacks->userData     = this;
-  m_callbacks->addonData    = (CAddon*) this;
-
-  /* Write XBMC Global Add-on function addresses to callback table */
-  CAddonUtils::CreateAddOnCallbacks(m_callbacks);
-
-  /* Write XBMC PVR specific Add-on function addresses to callback table */
-  m_callbacks->PVR.EventCallback          = PVREventCallback;
-  m_callbacks->PVR.TransferEpgEntry       = PVRTransferEpgEntry;
-  m_callbacks->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
-  m_callbacks->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
-  m_callbacks->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
-
   m_pInfo           = new PVR_PROPS;
   m_pInfo->clientID = clientID;
-  m_pInfo->hdl      = m_callbacks;
   CStdString userpath = _P(Profile());
   m_pInfo->userpath = userpath.c_str();
   CStdString clientpath = _P(Path());
@@ -147,11 +127,7 @@ void CPVRClient::Destroy()
     m_ReadyToUse = false;
 
     /* Tell the client to destroy */
-    CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>::Remove();
-
-    /* Release Callback table in memory */
-    delete m_callbacks;
-    m_callbacks = NULL;
+    CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>::Destroy();
   }
   catch (std::exception &e)
   {
@@ -336,6 +312,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cP
         end -= m_iTimeCorrection;
       PVR_CHANNEL tag;
       PVRHANDLE_STRUCT handle;
+      handle.CALLER_ADDRESS = this;
       handle.DATA_ADDRESS = (cPVREpg*) epg;
       handle.DATA_IDENTIFIER = toDB ? 1 : 0;
       WriteClientChannelInfo(channelinfo, tag);
@@ -357,26 +334,6 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cP
   return ret;
 }
 
-void CPVRClient::PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
-{
-  CPVRClient* client = (CPVRClient*) userData;
-  if (client == NULL || handle == NULL || epgentry == NULL)
-  {
-    CLog::Log(LOGERROR, "PVR: PVRTransferEpgEntry is called with NULL-Pointer!!!");
-    return;
-  }
-
-  cPVREpg *xbmcEpg = (cPVREpg*) handle->DATA_ADDRESS;
-  PVR_PROGINFO *epgentry2 = (PVR_PROGINFO*) epgentry;
-  epgentry2->starttime += client->m_iTimeCorrection;
-  epgentry2->endtime   += client->m_iTimeCorrection;
-  if (handle->DATA_IDENTIFIER == 1)
-    cPVREpg::AddDB(epgentry2, xbmcEpg);
-  else
-    cPVREpg::Add(epgentry2, xbmcEpg);
-
-  return;
-}
 
 /**********************************************************
  * Channels PVR Functions
@@ -411,6 +368,7 @@ PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
     try
     {
       PVRHANDLE_STRUCT handle;
+      handle.CALLER_ADDRESS = this;
       handle.DATA_ADDRESS = (cPVRChannels*) &channels;
       ret = m_pStruct->RequestChannelList(&handle, radio);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -428,37 +386,6 @@ PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
     }
   }
   return ret;
-}
-
-void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *channel)
-{
-  CPVRClient* client = (CPVRClient*) userData;
-  if (client == NULL || handle == NULL || channel == NULL)
-  {
-    CLog::Log(LOGERROR, "PVR: PVRTransferChannelEntry is called with NULL-Pointer!!!");
-    return;
-  }
-
-  cPVRChannels *xbmcChannels = (cPVRChannels*) handle->DATA_ADDRESS;
-  cPVRChannelInfoTag tag;
-
-  tag.SetChannelID(-1);
-  tag.SetNumber(-1);
-  tag.SetClientNumber(channel->number);
-  tag.SetGroupID(0);
-  tag.SetClientID(client->m_pInfo->clientID);
-  tag.SetUniqueID(channel->uid);
-  tag.SetName(channel->name);
-  tag.SetClientName(channel->callsign);
-  tag.SetIcon(channel->iconpath);
-  tag.SetEncryptionSystem(channel->encryption);
-  tag.SetRadio(channel->radio);
-  tag.SetHidden(channel->hide);
-  tag.SetRecording(channel->recording);
-  tag.SetStreamURL(channel->stream_url);
-
-  xbmcChannels->push_back(tag);
-  return;
 }
 
 PVR_ERROR CPVRClient::GetChannelSettings(cPVRChannelInfoTag *result)
@@ -663,6 +590,7 @@ PVR_ERROR CPVRClient::GetAllRecordings(cPVRRecordings *results)
     try
     {
       PVRHANDLE_STRUCT handle;
+      handle.CALLER_ADDRESS = this;
       handle.DATA_ADDRESS = (cPVRRecordings*) results;
       ret = m_pStruct->RequestRecordingsList(&handle);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -680,36 +608,6 @@ PVR_ERROR CPVRClient::GetAllRecordings(cPVRRecordings *results)
     }
   }
   return ret;
-}
-
-void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
-{
-  CPVRClient* client = (CPVRClient*) userData;
-  if (client == NULL || handle == NULL || recording == NULL)
-  {
-    CLog::Log(LOGERROR, "PVR: PVRTransferRecordingEntry is called with NULL-Pointer!!!");
-    return;
-  }
-
-  cPVRRecordings *xbmcRecordings = (cPVRRecordings*) handle->DATA_ADDRESS;
-
-  cPVRRecordingInfoTag tag;
-
-  tag.SetClientIndex(recording->index);
-  tag.SetClientID(client->m_pInfo->clientID);
-  tag.SetTitle(recording->title);
-  tag.SetRecordingTime(recording->recording_time);
-  tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
-  tag.SetPriority(recording->priority);
-  tag.SetLifetime(recording->lifetime);
-  tag.SetDirectory(recording->directory);
-  tag.SetPlot(recording->description);
-  tag.SetPlotOutline(recording->subtitle);
-  tag.SetStreamURL(recording->stream_url);
-  tag.SetChannelName(recording->channel_name);
-
-  xbmcRecordings->push_back(tag);
-  return;
 }
 
 PVR_ERROR CPVRClient::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
@@ -826,6 +724,7 @@ PVR_ERROR CPVRClient::GetAllTimers(cPVRTimers *results)
     try
     {
       PVRHANDLE_STRUCT handle;
+      handle.CALLER_ADDRESS = this;
       handle.DATA_ADDRESS = (cPVRTimers*) results;
       ret = m_pStruct->RequestTimerList(&handle);
       if (ret != PVR_ERROR_NO_ERROR)
@@ -843,92 +742,6 @@ PVR_ERROR CPVRClient::GetAllTimers(cPVRTimers *results)
     }
   }
   return ret;
-}
-
-void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer)
-{
-  CPVRClient* client = (CPVRClient*) userData;
-  if (client == NULL || handle == NULL || timer == NULL)
-  {
-    CLog::Log(LOGERROR, "PVR: PVRTransferTimerEntry is called with NULL-Pointer!!!");
-    return;
-  }
-
-  cPVRTimers *xbmcTimers     = (cPVRTimers*) handle->DATA_ADDRESS;
-  cPVRChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_pInfo->clientID);
-
-  if (channel == NULL)
-  {
-    CLog::Log(LOGERROR, "PVR: PVRTransferTimerEntry is called with not present channel");
-    return;
-  }
-
-  cPVRTimerInfoTag tag;
-  tag.SetClientID(client->m_pInfo->clientID);
-  tag.SetClientIndex(timer->index);
-  tag.SetActive(timer->active);
-  tag.SetTitle(timer->title);
-  tag.SetDir(timer->directory);
-  tag.SetClientNumber(timer->channelNum);
-  tag.SetStart((time_t) (timer->starttime+client->m_iTimeCorrection));
-  tag.SetStop((time_t) (timer->endtime+client->m_iTimeCorrection));
-  tag.SetFirstDay((time_t) (timer->firstday+client->m_iTimeCorrection));
-  tag.SetPriority(timer->priority);
-  tag.SetLifetime(timer->lifetime);
-  tag.SetRecording(timer->recording);
-  tag.SetRepeating(timer->repeat);
-  tag.SetWeekdays(timer->repeatflags);
-  tag.SetNumber(channel->Number());
-  tag.SetRadio(channel->IsRadio());
-  CStdString path;
-  path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());
-  tag.SetPath(path);
-
-  CStdString summary;
-  if (!tag.IsRepeating())
-  {
-    summary.Format("%s %s %s %s %s", tag.Start().GetAsLocalizedDate()
-                   , g_localizeStrings.Get(19159)
-                   , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(19160)
-                   , tag.Stop().GetAsLocalizedTime("", false));
-  }
-  else if (tag.FirstDay() != NULL)
-  {
-    summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(19149) : "__"
-                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(19150) : "__"
-                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(19151) : "__"
-                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(19152) : "__"
-                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(19153) : "__"
-                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(19154) : "__"
-                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(19155) : "__"
-                   , g_localizeStrings.Get(19156)
-                   , tag.FirstDay().GetAsLocalizedDate(false)
-                   , g_localizeStrings.Get(19159)
-                   , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(19160)
-                   , tag.Stop().GetAsLocalizedTime("", false));
-  }
-  else
-  {
-    summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(19149) : "__"
-                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(19150) : "__"
-                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(19151) : "__"
-                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(19152) : "__"
-                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(19153) : "__"
-                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(19154) : "__"
-                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(19155) : "__"
-                   , g_localizeStrings.Get(19159)
-                   , tag.Start().GetAsLocalizedTime("", false)
-                   , g_localizeStrings.Get(19160)
-                   , tag.Stop().GetAsLocalizedTime("", false));
-  }
-  tag.SetSummary(summary);
-
-  xbmcTimers->push_back(tag);
-  return;
 }
 
 PVR_ERROR CPVRClient::AddTimer(const cPVRTimerInfoTag &timerinfo)
@@ -1283,20 +1096,4 @@ ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *setting
 //    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     return STATUS_UNKNOWN;
 //  }
-}
-
-
-/**********************************************************
- * Client specific Callbacks
- * Are independent and can be different for every type of
- * AddOn
- */
-
-void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg)
-{
-  CPVRClient* client=(CPVRClient*) userData;
-  if (!client)
-    return;
-
-  client->m_manager->OnClientMessage(client->m_pInfo->clientID, pvrevent, msg);
 }

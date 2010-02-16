@@ -24,8 +24,8 @@
 #define __EPG_H
 
 #include <stdlib.h>
-#include "../../addons/include/xbmc_pvr_lib++.h"
-#include "../../addons/include/xbmc_addon_lib++.h"
+#include "../../../include/libXBMC_addon.h"
+#include "../../../include/libXBMC_pvr.h"
 
 class cEpg
 {

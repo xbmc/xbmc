@@ -21,7 +21,6 @@
  */
 
 #include "Addon.h"
-#include "../addons/lib/addon_local.h"
 
 namespace ADDON
 {
