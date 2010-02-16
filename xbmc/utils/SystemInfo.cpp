@@ -295,6 +295,22 @@ bool CSysInfo::IsAeroDisabled()
   return false;
 }
 
+bool CSysInfo::IsVistaOrHigher()
+{
+#ifdef _WIN32
+  OSVERSIONINFOEX osvi;
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+
+  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  {
+    if (osvi.dwMajorVersion >= 6)
+      return true; 
+  }
+#endif
+  return false;
+}
+
 CStdString CSysInfo::GetKernelVersion()
 {
 #if defined (_LINUX)

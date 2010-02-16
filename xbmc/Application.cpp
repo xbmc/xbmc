@@ -613,7 +613,7 @@ bool CApplication::Create()
 
 #ifdef __APPLE__
   // Configure and possible manually start the helper.
-  g_xbmcHelper.Configure();
+  XBMCHelper::GetInstance().Configure();
 #endif
 
   // update the window resolution
@@ -1271,7 +1271,7 @@ bool CApplication::Initialize()
   m_slowTimer.StartZero();
 
 #ifdef __APPLE__
-  g_xbmcHelper.CaptureAllInput();
+  XBMCHelper::GetInstance().CaptureAllInput();
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
   CCrystalHD::GetInstance();
@@ -1300,7 +1300,6 @@ void CApplication::StartWebServer()
         return;
     }
 #endif
-    CSectionLoader::Load("LIBHTTP");
     if (m_network.GetFirstConnectedInterface())
       m_WebServer.Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort/*, "special://xbmc/web", false*/);
 
@@ -1327,24 +1326,21 @@ void CApplication::StartWebServer()
 #endif
 }
 
-void CApplication::StopWebServer(bool bWait)
+void CApplication::StopWebServer()
 {
 #ifdef HAS_WEB_SERVER
-//  if (m_WebServer.IsStarted())
+  if (m_WebServer.IsStarted())
   {
-    if (!bWait)
+    CLog::Log(LOGNOTICE, "Webserver: Stopping...");
+    m_WebServer.Stop();
+    if(! m_WebServer.IsStarted() )
     {
-      CLog::Log(LOGNOTICE, "Webserver: Stopping...");
-      m_WebServer.Stop();
-    }
-    else
-    {
-      CSectionLoader::Unload("LIBHTTP");
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
       CZeroconf::GetInstance()->RemoveService("services.webserver");
       CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
       CZeroconf::GetInstance()->RemoveService("services.webapi");
-    }
+    } else
+      CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
   }
 #endif
 }
@@ -3362,7 +3358,7 @@ void CApplication::Stop()
     //Sleep(5000);
 
 #ifdef __APPLE__
-    g_xbmcHelper.ReleaseAllInput();
+    XBMCHelper::GetInstance().ReleaseAllInput();
 #endif
 
     if (m_pPlayer)
@@ -3399,8 +3395,8 @@ void CApplication::Stop()
     UnloadSkin();
 
 #ifdef __APPLE__
-    if (g_xbmcHelper.IsAlwaysOn() == false)
-      g_xbmcHelper.Stop();
+    if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
+      XBMCHelper::GetInstance().Stop();
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)

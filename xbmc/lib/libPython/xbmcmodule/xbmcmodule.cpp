@@ -269,7 +269,7 @@ namespace PYXBMC
     "\n"
     "function       : string - builtin function to execute.\n"
     "\n"
-    "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
+    "List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions \n"
     "\n"
     "example:\n"
     "  - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')\n");
@@ -292,29 +292,43 @@ namespace PYXBMC
     "\n"
     "httpcommand    : string - http command to execute.\n"
     "\n"
-    "List of commands - http://xbmc.org/wiki/?title=WebServerHTTP-API#The_Commands \n"
+    "List of commands - http://wiki.xbmc.org/?title=WebServerHTTP-API#The_Commands \n"
     "\n"
     "example:\n"
     "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
 
-   PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
+  PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
-#ifdef HAS_WEB_SERVER
     char *cLine = NULL;
-    CStdString ret;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
       m_pXbmcHttp = new CXbmcHttp();
 
-    CStdString method = cLine, parameter;
+    CStdString method = cLine;
 
-    ret = CHttpApi::MethodCall(method, parameter);
+    int open, close;
+    CStdString parameter="", cmd=cLine, execute;
+    open = cmd.Find("(");
+    if (open>0)
+    {
+      close=cmd.length();
+      while (close>open && cmd.Mid(close,1)!=")")
+        close--;
+      if (close>open)
+      {
+        parameter = cmd.Mid(open + 1, close - open - 1);
+        parameter.Replace(",",";");
+        execute = cmd.Left(open);
+      }
+      else //open bracket but no close
+        return PyString_FromString("");
+    }
+    else //no parameters
+      execute = cmd;
 
-    return PyString_FromString(ret.c_str());
-#else
-    return NULL;
-#endif
-  }
+    CUtil::URLDecode(parameter);
+    return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
+	}
 #endif
 
   // sleep() method
@@ -499,7 +513,7 @@ namespace PYXBMC
     "\n"
     "infotag        : string - infoTag for value you want returned.\n"
     "\n"
-    "List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels \n"
+    "List of InfoTags - http://wiki.xbmc.org/?title=InfoLabels \n"
     "\n"
     "example:\n"
     "  - label = xbmc.getInfoLabel('Weather.Conditions')\n");
@@ -520,7 +534,7 @@ namespace PYXBMC
     "\n"
     "infotag        : string - infotag for value you want returned.\n"
     "\n"
-    "List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels \n"
+    "List of InfoTags - http://wiki.xbmc.org/?title=InfoLabels \n"
     "\n"
     "example:\n"
     "  - filename = xbmc.getInfoImage('Weather.Conditions')\n");
@@ -585,7 +599,7 @@ namespace PYXBMC
     "\n"
     "condition      : string - condition to check.\n"
     "\n"
-    "List of Conditions - http://xbmc.org/wiki/?title=List_of_Boolean_Conditions \n"
+    "List of Conditions - http://wiki.xbmc.org/?title=List_of_Boolean_Conditions \n"
     "\n"
     "*Note, You can combine two (or more) of the above settings by using \"+\" as an AND operator,\n"
     "\"|\" as an OR operator, \"!\" as a NOT operator, and \"[\" and \"]\" to bracket expressions.\n"

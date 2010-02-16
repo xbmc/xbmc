@@ -30,6 +30,7 @@
 #define DLL_PATH_WMA_CODEC     "special://xbmc/system/players/paplayer/wma.dll"
 #define DLL_PATH_YM_CODEC      "special://xbmc/system/players/paplayer/stsoundlibrary.dll"
 #define DLL_PATH_SHN_CODEC     "special://xbmc/system/players/paplayer/libshnplay.dll"
+#define DLL_PATH_MODPLUG_CODEC "special://xbmc/system/players/paplayer/libmodplug.dll"
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "special://xbmc/system/players/dvdplayer/libass.dll"

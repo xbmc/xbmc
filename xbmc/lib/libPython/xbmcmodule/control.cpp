@@ -178,7 +178,7 @@ namespace PYXBMC
     "visible          : string - Visible condition.\n"
     "allowHiddenFocus : bool - True=gains focus even if hidden.\n"
     "\n"
-    "List of Conditions - http://xbmc.org/wiki/index.php?title=List_of_Boolean_Conditions \n"
+    "List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions \n"
     "\n"
     "example:\n"
     "  - self.button.setVisibleCondition('[Control.IsVisible(41) + !Control.IsVisible(12)]', True)\n");
@@ -208,7 +208,7 @@ namespace PYXBMC
     "\n"
     "enable           : string - Enable condition.\n"
     "\n"
-    "List of Conditions - http://xbmc.org/wiki/index.php?title=List_of_Boolean_Conditions \n"
+    "List of Conditions - http://wiki.xbmc.org/index.php?title=List_of_Boolean_Conditions \n"
     "\n"
     "example:\n"
     "  - self.button.setEnableCondition('System.InternetState')\n");
@@ -238,7 +238,7 @@ namespace PYXBMC
     "  - event        : string - The event to animate.\n"
     "  - attr         : string - The whole attribute string separated by spaces.\n"
     "\n"
-    "Animating your skin - http://xbmc.org/wiki/?title=Animating_Your_Skin \n"
+    "Animating your skin - http://wiki.xbmc.org/?title=Animating_Your_Skin \n"
     "\n"
     "example:\n"
     "  - self.button.setAnimations([('focus', 'effect=zoom end=90,247,220,56 time=0',)])\n");

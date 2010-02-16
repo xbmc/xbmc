@@ -15,7 +15,7 @@ Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
          xbmc-skin-confluence (= ${binary:Version}) |
          xbmc-skin-pm3-hd (= ${binary:Version}),
-         xbmc-web-pm3 (= ${binary:Version}),
+         xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
 Description: XBMC Media Center (full metapackage)
@@ -68,7 +68,7 @@ Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
          xbmc-skin-confluence (= ${binary:Version}) |
          xbmc-skin-pm3-hd (= ${binary:Version}),
-         xbmc-web-pm3 (= ${binary:Version}),
+         xbmc-web (= ${binary:Version}),
          ${misc:Depends}
 Suggests: xbmc-third-parties
 Description: XBMC Media Center (standalone program)
@@ -251,11 +251,11 @@ Description: XBMC Media Center (PM3 HD skin)
  This package contains the XBMC PM3 HD Skin package (aka Project Mahem III
  High Definition).
 
-Package: xbmc-web-pm3
+Package: xbmc-web
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
          ${misc:Depends}
-Description: XBMC Media Center (Project Mahem III web skin)
+Description: XBMC Media Center (POC web frontend)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
  open source software media-player and entertainment hub for all your digital
  media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
@@ -273,58 +273,8 @@ Description: XBMC Media Center (Project Mahem III web skin)
  theater. Once installed, your computer will become a fully functional
  multimedia jukebox.
  .
- This package contains the PM3 (aka Project Mahem III) Skin for the XBMC web
+ This package contains the new POC web frontend for the XBMC web
  server.
-
-Package: xbmc-web-pm
-Architecture: all
-Depends: xbmc-data (= ${binary:Version}),
-         ${misc:Depends}
-Conflicts: xbmc-web-pm3
-Description: XBMC Media Center (Project Mahem web skin)
- XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
- open source software media-player and entertainment hub for all your digital
- media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
- and Microsoft Windows, as well as the original Xbox game console. Created in
- 2003 by a group of like minded programmers, XBMC is a non-profit project run
- and developed by volunteers located around the world. More than 50 software
- developers have contributed to XBMC, and 100-plus translators have worked to
- expand its reach, making it available in more than 30 languages.
- .
- While XBMC functions very well as a standard media player application for
- your computer, it has been designed to be the perfect companion for your
- HTPC. Supporting an almost endless range of remote controls, and combined
- with its beautiful interface and powerful skinning engine, XBMC feels very
- natural to use from the couch and is the ideal solution for your home
- theater. Once installed, your computer will become a fully functional
- multimedia jukebox.
- .
- This package contains the PM (aka Project Mahem) Skin for the XBMC web
- server.
-
-Package: xbmc-web-iphone-tlrobinson
-Architecture: all
-Depends: xbmc-data (= ${binary:Version}),
-         ${misc:Depends}
-Description: XBMC Media Center (Iphone web skin)
- XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
- open source software media-player and entertainment hub for all your digital
- media. XBMC is available for Linux, Mac OS X (Leopard, Tiger and Apple TV)
- and Microsoft Windows, as well as the original Xbox game console. Created in
- 2003 by a group of like minded programmers, XBMC is a non-profit project run
- and developed by volunteers located around the world. More than 50 software
- developers have contributed to XBMC, and 100-plus translators have worked to
- expand its reach, making it available in more than 30 languages.
- .
- While XBMC functions very well as a standard media player application for
- your computer, it has been designed to be the perfect companion for your
- HTPC. Supporting an almost endless range of remote controls, and combined
- with its beautiful interface and powerful skinning engine, XBMC feels very
- natural to use from the couch and is the ideal solution for your home
- theater. Once installed, your computer will become a fully functional
- multimedia jukebox.
- .
- This package contains the Iphone skin for the XBMC Webserver.
 
 Package: xbmc-eventclients-common
 Architecture: all

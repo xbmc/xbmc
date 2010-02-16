@@ -39,6 +39,7 @@ IMAGES= \
 	ButtonMenuShutdownNF.png \
 	ButtonMenuSleepFO.png \
 	ButtonMenuSleepNF.png \
+	busy.png \
 	CalibrateBottomRight.png \
 	CalibratePixelRatio.png \
 	CalibrateSubtitles.png \
@@ -117,10 +118,29 @@ IMAGES= \
 	flagging/audio/8.png \
 	flagging/audio/aac.png \
 	flagging/audio/ac3.png \
+	flagging/audio/aifc.png \
+	flagging/audio/aiff.png \
+	flagging/audio/aif.png \
+	flagging/audio/ape.png \
+	flagging/audio/avc.png \
+	flagging/audio/cdda.png \
 	flagging/audio/dolbydigital.png \
 	flagging/audio/dts.png \
+	flagging/audio/flac.png \
+	flagging/audio/mp1.png \
+	flagging/audio/mp2.png \
 	flagging/audio/mp3.png \
+	flagging/audio/ogg.png \
+	flagging/audio/truehd.png \
+	flagging/audio/wma.png \
 	flagging/audio/wmapro.png \
+	flagging/audio/wmav2.png \
+	flagging/ratings/mpaa_general.png \
+	flagging/ratings/mpaa_nc17.png \
+	flagging/ratings/mpaa_notrated.png \
+	flagging/ratings/mpaa_pg.png \
+	flagging/ratings/mpaa_pg13.png \
+	flagging/ratings/mpaa_restricted.png \
 	flagging/video/1080.png \
 	flagging/video/480.png \
 	flagging/video/540.png \
@@ -131,6 +151,7 @@ IMAGES= \
 	flagging/video/h264.png \
 	flagging/video/hddvd.png \
 	flagging/video/mpeg1video.png \
+	flagging/video/mpeg2video.png \
 	flagging/video/sd.png \
 	flagging/video/wvc1.png \
 	flagging/video/xvid.png \
@@ -244,6 +265,8 @@ IMAGES= \
 	OSDSeekRewind.png \
 	OSDStopFO.png \
 	OSDStopNF.png \
+	OSDSubtitlesNF.png \
+	OSDSubtitlesFO.png \
 	OSDVideoFO.png \
 	OSDVideoNF.png \
 	OSDVizFO.png \

@@ -117,22 +117,18 @@ void CZeroconf::Stop()
 
 CZeroconf*  CZeroconf::GetInstance()
 {
+  CAtomicSpinLock lock(sm_singleton_guard);
   if(!smp_instance)
   {
-    //use double checked locking
-    CAtomicSpinLock lock(sm_singleton_guard);
-    if(!smp_instance)
-    {
 #ifndef HAS_ZEROCONF
-      smp_instance = new CZeroconfDummy;
+    smp_instance = new CZeroconfDummy;
 #else
 #ifdef __APPLE__
-      smp_instance = new CZeroconfOSX;
+    smp_instance = new CZeroconfOSX;
 #elif defined(_LINUX)
-      smp_instance  = new CZeroconfAvahi;
+    smp_instance  = new CZeroconfAvahi;
 #endif
 #endif
-    }
   }
   assert(smp_instance);
   return smp_instance;

@@ -27,8 +27,6 @@
 #include "WinSystemOSXGL.h"
 #undef BOOL
 
-#import <Cocoa/Cocoa.h>
-
 CWinSystemOSXGL g_Windowing;
 
 CWinSystemOSXGL::CWinSystemOSXGL()
@@ -40,10 +38,8 @@ CWinSystemOSXGL::~CWinSystemOSXGL()
 }
 
 bool CWinSystemOSXGL::PresentRenderImpl()
-{    
-  [ (NSOpenGLContext*)m_glContext flushBuffer ];
-    
-  return true;
+{
+  return FlushBuffer();
 }
 
 void CWinSystemOSXGL::SetVSyncImpl(bool enable)

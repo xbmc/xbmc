@@ -131,6 +131,7 @@
 					<description>current feels like label</description>
 					<posx>170</posx>
 					<posy>400</posy>
+					<width>170</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>right</align>
@@ -143,6 +144,7 @@
 					<description>current dew label</description>
 					<posx>170</posx>
 					<posy>430</posy>
+					<width>170</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>right</align>
@@ -155,6 +157,7 @@
 					<description>current humidity label</description>
 					<posx>170</posx>
 					<posy>460</posy>
+					<width>170</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>right</align>
@@ -167,6 +170,7 @@
 					<description>current UV Index label</description>
 					<posx>170</posx>
 					<posy>490</posy>
+					<width>170</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>right</align>
@@ -179,6 +183,7 @@
 					<description>current Wind label</description>
 					<posx>170</posx>
 					<posy>520</posy>
+					<width>170</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>right</align>
@@ -191,6 +196,7 @@
 					<description>current feels like Value</description>
 					<posx>185</posx>
 					<posy>400</posy>
+					<width>300</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>left</align>
@@ -203,6 +209,7 @@
 					<description>current dew Value</description>
 					<posx>185</posx>
 					<posy>430</posy>
+					<width>300</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>left</align>
@@ -215,6 +222,7 @@
 					<description>current humidity Value</description>
 					<posx>185</posx>
 					<posy>460</posy>
+					<width>300</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>left</align>
@@ -227,6 +235,7 @@
 					<description>current UV Index Value</description>
 					<posx>185</posx>
 					<posy>490</posy>
+					<width>300</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>left</align>
@@ -239,6 +248,7 @@
 					<description>current Wind Value</description>
 					<posx>185</posx>
 					<posy>520</posy>
+					<width>300</width>
 					<height>35</height>
 					<font>font13</font>
 					<align>left</align>

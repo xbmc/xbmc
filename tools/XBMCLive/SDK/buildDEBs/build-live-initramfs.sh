@@ -39,7 +39,7 @@ if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 	# (Ugly) Patch to allow FAT boot disk to be mounted RW
 	#	discussions is in progress with upstream developer
 	#
-	sed -i -e "/\"\${devname}\" \${mountpoint}/s/-o ro,noatime /-o rw,noatime,umask=000 /" $THISDIR/live-initramfs/scripts/live
+	sed -i -e "/\"\${devname}\" \${mountpoint}/s/-o ro,noatime /\$([ "\$fstype" = \"vfat\" ] \&\& echo \"-o rw,noatime,umask=000\" \|\| echo \"-o ro,noatime\") /" $THISDIR/live-initramfs/scripts/live
 
 	cd $THISDIR/live-initramfs
 	dpkg-buildpackage -rfakeroot -b -uc -us 
