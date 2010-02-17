@@ -202,7 +202,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
   squish::u8 *buffer = new squish::u8[(size_t)frame.GetPackedSize()];
   if (buffer == NULL)
   {
-    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %llu bytes)", name.c_str(), frame.GetPackedSize());
+    CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %"PRIu64" bytes)", name.c_str(), frame.GetPackedSize());
     return false;
   }
 
@@ -220,7 +220,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
     squish::u8 *unpacked = new squish::u8[(size_t)frame.GetUnpackedSize()];
     if (unpacked == NULL)
     {
-      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %llu bytes)", name.c_str(), frame.GetUnpackedSize());
+      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %"PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());
       delete[] buffer;
       return false;
     }
@@ -242,7 +242,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
     squish::u8 *decoded = new squish::u8[frame.GetWidth() * frame.GetHeight() * 4];
     if (decoded == NULL)
     {
-      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %llu bytes)", name.c_str(), frame.GetUnpackedSize());
+      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %"PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());
       delete[] buffer;
       return false;
     }

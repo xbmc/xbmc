@@ -25,11 +25,13 @@
 #include "PicturePlayerOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
+#include "GUIOperations.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
 #include "XBMCOperations.h"
 #include "AnnouncementManager.h"
+#include "log.h"
 #include <string.h>
 
 using namespace ANNOUNCEMENT;
@@ -144,6 +146,9 @@ Command CJSONRPC::m_commands[] = {
   { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"plot\"] }" },
   { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "Parameter example { \"episodeinfo\": 0, \"fields\": [\"plot\"] }" },
   { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "Parameter example { \"musicvideoid\": 0, \"fields\": [\"plot\"] }" },
+
+// GUI Operations
+  { "GUI.GetLocalizedString",           CGUIOperations::GetLocalizedString,     Response,     ReadData,        "" },
 
 // System operations
   { "System.Shutdown",                  CSystemOperations::Shutdown,            Response,     ControlPower,    "" },
@@ -286,7 +291,10 @@ CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *
     errorCode = InternalMethodCall(method, inputroot, result, transport, client);
   }
   else
+  {
+    CLog::Log(LOGERROR, "JSONRPC: Failed to parse '%s'\n", inputString.c_str());
     errorCode = ParseError;
+  }
 
   outputroot["jsonrpc"] = "2.0";
   outputroot["id"] = inputroot.get("id", 0);

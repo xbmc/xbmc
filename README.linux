@@ -64,7 +64,7 @@ use ccache
 For this, you need to specify the PPA in your apt sources. Please find them on
 the forum.
 
-http://xbmc.org/forum/showthread.php?t=33327
+http://forum.xbmc.org/showthread.php?t=33327
 
 Update apt:
    $ sudo apt-get update

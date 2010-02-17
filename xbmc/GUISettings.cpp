@@ -564,7 +564,8 @@ void CGUISettings::Initialize()
 #endif
 
 #ifdef HAS_DX
-  renderers.insert(make_pair(34003, RENDER_METHOD_DXVA));
+  if(g_sysinfo.IsVistaOrHigher())
+    renderers.insert(make_pair(34003, RENDER_METHOD_DXVA));
 #endif
   AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 

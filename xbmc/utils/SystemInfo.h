@@ -102,6 +102,7 @@ public:
   bool HasInternet() const;
   bool IsAppleTV();
   bool IsAeroDisabled();
+  bool IsVistaOrHigher();
   static CStdString GetKernelVersion();
   CStdString GetXBVerInfo();
   bool GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed);

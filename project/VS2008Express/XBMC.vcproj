@@ -7090,6 +7090,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\lib\libjsonrpc\GUIOperations.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libjsonrpc\GUIOperations.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libjsonrpc\IClient.h"
 					>
 				</File>

@@ -998,6 +998,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("isrecording")) return LISTITEM_ISRECORDING;
   else if (info.Equals("isencrypted")) return LISTITEM_ISENCRYPTED;
   else if (info.Equals("parentalrating")) return LISTITEM_PARENTALRATING;
+  else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -3865,6 +3866,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetPVRTimerInfoTag()->Title();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
+    break;
+  case LISTITEM_ORIGINALTITLE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strOriginalTitle;
     break;
   case LISTITEM_TRACKNUMBER:
     {

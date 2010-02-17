@@ -83,14 +83,8 @@ override_dh_auto_install:
 override_dh_install:
 	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
 		-XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
-	# XBMC WEB PM
-	dh_install -pxbmc-web-pm ../../web/Project_Mayhem \
-		usr/share/xbmc/web
-	# XBMC WEB PM3
-	dh_install -pxbmc-web-pm3 ../../web/Project_Mayhem_III \
-		usr/share/xbmc/web
-	# XBMC WEB Iphone
-	dh_install -pxbmc-web-iphone-tlrobinson ../../web/xbmciphone/iphone \
+	# XBMC WEB POC
+	dh_install -pxbmc-web ../../web/poc_jsonrpc \
 		usr/share/xbmc/web
 
 override_dh_link:
@@ -113,5 +107,3 @@ override_dh_makeshlibs:
 
 override_dh_installdocs:
 	dh_installdocs
-	dh_installdocs -pxbmc-web-iphone-tlrobinson \
-		$(CURDIR)/web/xbmciphone/README
