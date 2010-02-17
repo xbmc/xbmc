@@ -364,7 +364,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
           g_settings.m_currentVideoSettings.m_SubtitleOn = true;
           g_application.m_pPlayer->SetSubtitleVisible(true);
           g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.browsed"+strExt);
-          //TODO Put it back when external subtitles is integrated this way
           g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
         }
 

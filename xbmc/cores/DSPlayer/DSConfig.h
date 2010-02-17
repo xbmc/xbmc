@@ -37,42 +37,91 @@
 class CDSGraph;
 class CDSPropertyPage;
 
+/**
+ * Configure filters
+ */
 class CDSConfig
 {
 public:
+  /// Constructor
   CDSConfig(void);
+  /// Destructor
   virtual ~CDSConfig(void);
+  /**
+   * Configure the filters in the graph
+   * @param[in] pGB Pointer to the graph interface
+   * @return A HRESULT code
+   */
   virtual HRESULT ConfigureFilters(IFilterGraph2* pGB);
+  /**
+   * Retrieve a string containing the current DXVA mode
+   * @return A CStdString containing the current DXVA mode
+   */
+  CStdString GetDxvaMode(void)  { return m_pStdDxva; };
 
-  CStdString GetDxvaMode()  { return m_pStdDxva; };
-
-// Filters Property Pages
-  virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages() { return m_pPropertiesFilters; };
+  /**
+   * Get a list of filters with a property page
+   * @return The list of filters with a property page
+   */
+  virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages(void) { return m_pPropertiesFilters; };
+  /**
+   * Show the property page for the filter
+   * @param[in] pBF Filter whose showing prroperty page
+   */
   void ShowPropertyPage(IBaseFilter *pBF);
-
-  //Subtitles
-  virtual bool SetSubtitlesFile(CStdString subFilePath);
+  /**
+   * Set the subtitle file path
+   * @param[in] subFilePath Subtitle file path
+   * @return True if the subtitle has been set, false else
+   */
+  bool SetSubtitlesFile(const CStdString& subFilePath);
   virtual void ShowHideSubtitles(BOOL show);
   virtual void SetSubTitleDelay(float fValue = 0.0f);
-  CDSGraph * pGraph;
+  
+  /// Pointer to a CDSGraph instance
+  CDSGraph *          pGraph;
+  IffdshowBaseA*      pIffdshowBase;
+  IffdshowDecVideoA*  pIffdshowDecFilter;
+  IffDecoder*         pIffdshowDecoder;
 
 protected:
+  /**
+   * If the filter expose a property page, add it to m_pPropertiesFilters
+   * @param[in] pBF The filter to test
+   * @return True if the filter expose a property page, false else*/
   bool LoadPropertiesPage(IBaseFilter *pBF);
-  void CreatePropertiesXml();
+  /**
+   * Load configuration from the MP Audio Decoder
+   * @param[in] pBF Try to load the configuration from this filter
+   * @return True if the filter is a MP Audio Decoder, false else
+   */
   bool GetMpaDec(IBaseFilter* pBF);
+  /**
+   * Load configuration from the MPC Video Decoder
+   * @param[in] pBF Try to load the configuration from this filter
+   * @return True if the filter is a MPC Video Decoder, false else
+   */
   bool GetMpcVideoDec(IBaseFilter* pBF);
+  /**
+   * Load configuration from FFDShow
+   * @param[in] pBF Try to load the configuration from this filter
+   * @return True if the filter is FFDShow, false else
+   */
   bool GetffdshowFilters(IBaseFilter* pBF);
-  void ConfigureFilters();
-  CCritSec m_pLock;
+  /**
+   * Configure the filters from the graph
+   */
+  void ConfigureFilters(void);
   
 private:
+  void CreatePropertiesXml();
+
+  CCritSec m_pLock;
+
   //Direct Show Filters
   IFilterGraph2*                 m_pGraphBuilder;
   IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
   IMpaDecFilter*                 m_pIMpaDecFilter;
-  IffdshowDecVideoA*             m_pIffdshowDecFilter;
-  IffdshowBaseA*                 m_pIffdshowBase;
-  IffDecoder*                 m_pIffdshowDecoder;
   IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;

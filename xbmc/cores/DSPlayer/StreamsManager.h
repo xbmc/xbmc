@@ -7,6 +7,7 @@
 #include <dmodshow.h>
 #include <D3d9.h>
 #include "DShowUtil/MediaTypeEx.h"
+#include "Filters/ffdshow_constants.h"
 
 #include "DSGraph.h"
 #include "log.h"
@@ -15,16 +16,18 @@
 
 struct SStreamInfos
 {
+  unsigned int IAMStreamSelect_Index;
   CStdString name;
   CStdString codecname;
   DWORD flags;
-  IUnknown *pObj; // Output pin of the splitter
-  IUnknown *pUnk; // Input pin of the filter
+  IUnknown *pObj; ///< Output pin of the splitter
+  IUnknown *pUnk; ///< Input pin of the filter
   LCID  lcid;
   DWORD group;
 
   virtual void Clear()
   {
+    IAMStreamSelect_Index = 0;
     flags = 0;
     pObj = 0;
     pUnk = 0;
@@ -70,12 +73,26 @@ struct SVideoStreamInfos: SStreamInfos
 struct SSubtitleStreamInfos: SStreamInfos
 {
   CStdString encoding;
+  bool external;
 
   virtual void Clear()
   {
     SStreamInfos::Clear();
 
     encoding = "";
+    external = false;
+  }
+};
+
+struct SExternalSubtitleInfos: SSubtitleStreamInfos
+{
+  CStdString path;
+
+  virtual void Clear()
+  {
+    SSubtitleStreamInfos::Clear();
+
+    path = "";
   }
 };
 
@@ -86,8 +103,8 @@ public:
   static CStreamsManager *getSingleton();
   static void Destroy();
 
-  std::map<long, SAudioStreamInfos *> GetAudios();
-  std::map<long, SSubtitleStreamInfos *> GetSubtitles();
+  std::vector<SAudioStreamInfos *> GetAudios();
+  std::vector<SSubtitleStreamInfos *> GetSubtitles();
 
   int  GetAudioStreamCount();
   int  GetAudioStream();
@@ -101,6 +118,9 @@ public:
   void SetSubtitle(int iStream);
   bool GetSubtitleVisible();
   void SetSubtitleVisible( bool bVisible );
+  void SetSubtitleDelay(float fValue = 0.0f);
+  float GetSubtitleDelay(void);
+  bool AddSubtitle(const CStdString& subFilePath);
   
   void LoadStreams();
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
@@ -124,10 +144,10 @@ private:
   ~CStreamsManager(void);
 
   void SetStreamInternal(int iStream, SStreamInfos * s);
-  int InternalGetAudioStream();
+  void UnconnectSubtitlePins(void);
 
-  std::map<long, SAudioStreamInfos *> m_audioStreams;
-  std::map<long, SSubtitleStreamInfos *> m_subtitleStreams;
+  std::vector<SAudioStreamInfos *> m_audioStreams;
+  std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
   IAMStreamSelect *m_pIAMStreamSelect;
 
   IFilterGraph2* m_pGraphBuilder;
@@ -139,6 +159,7 @@ private:
   bool m_bSubtitlesVisible;
 
   SVideoStreamInfos m_videoStream;
+  bool m_bSubtitlesUnconnected;
 
+  IPin* m_SubtitleInputPin;
 };
-

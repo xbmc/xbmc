@@ -40,10 +40,10 @@ CDSConfig::CDSConfig(void)
   m_pGraphBuilder = NULL;
   m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
-  m_pIffdshowDecFilter = NULL;
+  pIffdshowDecFilter = NULL;
   m_pSplitter = NULL;
-  m_pIffdshowBase = NULL;
-  m_pIffdshowDecoder = NULL;
+  pIffdshowBase = NULL;
+  pIffdshowDecoder = NULL;
   pGraph = NULL;
 }
 
@@ -60,9 +60,9 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
   pGB = NULL;
   m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
-  m_pIffdshowDecFilter = NULL;
-  m_pIffdshowBase = NULL;
-  m_pIffdshowDecoder = NULL;
+  pIffdshowDecFilter = NULL;
+  pIffdshowBase = NULL;
+  pIffdshowDecoder = NULL;
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 
@@ -195,30 +195,31 @@ bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
 {
   HRESULT hr;
-  if (!m_pIffdshowDecFilter)
+  if (!pIffdshowDecFilter)
   {
-    hr = pBF->QueryInterface(IID_IffdshowDecVideoA, (void **) &m_pIffdshowDecFilter );
+    hr = pBF->QueryInterface(IID_IffdshowDecVideoA, (void **) &pIffdshowDecFilter );
   }
-  if (!m_pIffdshowBase)
+  if (!pIffdshowBase)
   {
-    hr = pBF->QueryInterface(IID_IffdshowBaseA,(void **) &m_pIffdshowBase );
+    hr = pBF->QueryInterface(IID_IffdshowBaseA,(void **) &pIffdshowBase );
   }
-  if (!m_pIffdshowDecoder)
-    hr = pBF->QueryInterface(IID_IffDecoder, (void **) &m_pIffdshowDecoder );
+  if (!pIffdshowDecoder)
+    hr = pBF->QueryInterface(IID_IffDecoder, (void **) &pIffdshowDecoder );
     
   return true;
 }
 
-bool CDSConfig::SetSubtitlesFile(CStdString subFilePath)
+bool CDSConfig::SetSubtitlesFile(const CStdString& subFilePath)
 {
-  if (m_pIffdshowBase)
+  if (pIffdshowBase)
   {
     pGraph->Stop();
     HRESULT hr;
     CStdString newPath = CSpecialProtocol::TranslatePath(subFilePath);
     //IDFF_subFilename 821
-    if (SUCCEEDED(m_pIffdshowBase->putParamStr(IDFF_subFilename,newPath.c_str())))
+    if (SUCCEEDED(pIffdshowBase->putParamStr(IDFF_subFilename,newPath.c_str())))
     {
+      ShowHideSubtitles(1);
       CLog::Log(LOGNOTICE,"%s using this file for subtitle %s",__FUNCTION__,newPath.c_str());
       pGraph->Play();
       return true;
@@ -231,18 +232,13 @@ bool CDSConfig::SetSubtitlesFile(CStdString subFilePath)
 void CDSConfig::ShowHideSubtitles(BOOL show)
 {
   //IffdshowDec work but not IffdshowBaseA
-  if (m_pIffdshowDecoder)
-    m_pIffdshowDecoder->compat_putParam(IDFF_isSubtitles,show);
+  if (pIffdshowDecoder)
+    pIffdshowDecoder->compat_putParam(IDFF_isSubtitles,show);
 }
 
 void CDSConfig::SetSubTitleDelay(float fValue)
 {
-  int delaysub;
-  //1000 is a millisec
-  //1000000 is the dvdplayer DVD_TIME_BASE
-  delaysub = -fValue * 1000;
-  if (m_pIffdshowDecoder)
-    m_pIffdshowDecoder->compat_putParam(IDFF_subDelay,delaysub);
+  
 }
 
 bool CDSConfig::GetMpaDec(IBaseFilter* pBF)

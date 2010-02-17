@@ -32,11 +32,13 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "StreamsManager.h"
-
 #include <streams.h>
 #include "DShowUtil/DShowUtil.h"
 #include "FgManager.h"
 #include "qnetwork.h"
+
+//used to get the same cachces subtitles on start of file
+#include "DVDSubtitles/DVDFactorySubtitle.h"
 
 #include "DshowUtil/MediaTypeEx.h"
 #include "MediaInfoDll/MediaInfoDLL.h"
@@ -125,23 +127,29 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   SetVolume(g_settings.m_nVolumeLevel);
   //Hide subtitles in ffdshow
   g_dsconfig.ShowHideSubtitles(0);
+  
+  //Get cached subs
+  std::vector<std::string> filenames;
+  std::string strTmpFle;
+  strTmpFle.append(file.GetAsUrl().GetFileName().c_str());
+  CDVDFactorySubtitle::GetSubtitles(filenames, strTmpFle);
+  //TODO add addsubtitles stream from external file in the stream manager
+  //for(unsigned int i=0;i<filenames.size();i++)
+  //  g_dsconfig.SetSubtitlesFile(filenames[i]);
+  //For an unknown reason the subtitles are not working for the whole playback if we are using this
+
+  g_settings.m_currentVideoSettings.m_SubtitleCached = true;
+  g_dsconfig.SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+
+  //still need to be added
+  //SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
+  
+  
+  
 
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
   
   Play();
-  
-  /*  if (hr == S_FALSE)
-  {
-    hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
-    if (hr == VFW_S_STATE_INTERMEDIATE)
-    {
-      while (hr != S_OK)
-      {
-        hr = m_pMediaControl->Run();
-        hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
-      }
-    }
-  }*/
 
 
   m_currentSpeed = 10000;
