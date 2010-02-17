@@ -1039,10 +1039,15 @@ void CGUIWindowMusicNav::OnFinalizeFileItems(CFileItemList &items)
 
 void CGUIWindowMusicNav::AddSearchFolder()
 {
-  if (m_guiState.get())
+  // we use a general viewstate (and not our member) here as our
+  // current viewstate may be specific to some other folder, and
+  // we know we're in the root here
+  CFileItemList items;
+  CGUIViewState* viewState = CGUIViewState::GetViewState(GetID(), items);
+  if (viewState)
   {
     // add our remove the musicsearch source
-    VECSOURCES &sources = m_guiState->GetSources();
+    VECSOURCES &sources = viewState->GetSources();
     bool haveSearchSource = false;
     bool needSearchSource = !GetProperty("search").IsEmpty() || !m_searchWithEdit; // we always need it if we don't have the edit control
     for (IVECSOURCES it = sources.begin(); it != sources.end(); ++it)
@@ -1068,5 +1073,6 @@ void CGUIWindowMusicNav::AddSearchFolder()
       sources.push_back(share);
     }
     m_rootDir.SetSources(sources);
+    delete viewState;
   }
 }
