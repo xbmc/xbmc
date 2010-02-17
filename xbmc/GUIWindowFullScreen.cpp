@@ -886,7 +886,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float x = maxWidth * 0.5f + g_settings.m_ResInfo[res].Overscan.left;
       float y = g_settings.m_ResInfo[res].iSubtitles - textHeight;
 
-      m_subsLayout->RenderOutline(x, y, 0, 0xFF000000, 3, XBFONT_CENTER_X, maxWidth);
+      int outline = g_guiSettings.GetInt("subtitles.height") >> 3;
+      if (outline<3) outline = 3;
+      m_subsLayout->RenderOutline(x, y, 0, 0xFF000000, outline, XBFONT_CENTER_X, maxWidth);
     }
   }
 }
