@@ -45,7 +45,7 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
 #include "lib/libhttpapi/XBMChttp.h"
 #include "lib/libhttpapi/HttpApi.h"
 #endif
@@ -303,7 +303,6 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
       m_pXbmcHttp = new CXbmcHttp();
-
     CStdString method = cLine;
 
     int open, close;
