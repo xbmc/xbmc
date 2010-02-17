@@ -390,18 +390,18 @@ bool CGUIWindowVideoFiles::OnUnAssignContent(int iItem, int label1, int label2, 
   return false;
 }
 
-void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& scraper, SScanSettings& settings)
+void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& info, SScanSettings& settings)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
   bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(item->m_strPath,scraper,settings,iFound);
+    m_database.GetScraperForPath(item->m_strPath,info,settings,iFound);
   }
 
-  if (CGUIDialogContentSettings::Show(scraper, settings, bScan))
+  if (CGUIDialogContentSettings::Show(info, settings, bScan))
   {
-    if(settings.exclude || !scraper)
+    if(settings.exclude || !info)
     {
       OnUnAssignContent(iItem,20375,20340,20341);
     }
@@ -412,13 +412,13 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::Scraper
     }
 
     m_database.Open();
-    m_database.SetScraperForPath(item->m_strPath,scraper,settings);
+    m_database.SetScraperForPath(item->m_strPath,info,settings);
     m_database.Close();
 
     if (!settings.exclude && bScan)
     {
-      GetScraperForItem(item.get(),scraper,settings);
-      OnScan(item->m_strPath,settings);
+      GetScraperForItem(item.get(),info,settings);
+      OnScan(item->m_strPath,info,settings);
     }
   }
 }

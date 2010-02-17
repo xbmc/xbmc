@@ -5307,7 +5307,7 @@ void CApplication::UpdateLibraries()
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",settings,false);
+      scanner->StartScanning("",ADDON::ScraperPtr(),settings,false);
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

@@ -67,9 +67,6 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info
   CFileItemList items;
   bool bNfo=false;
 
-  if(!CAddonMgr::Get()->HasAddons(ADDON_SCRAPER, m_content))
-    return NO_NFO;
-
   AddonPtr addon;
   ScraperPtr defaultScraper;
   if (!CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, m_content))
@@ -217,13 +214,12 @@ bool CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const C
   return true;
 }
 
-int CNfoFile::Scrape(const AddonPtr& addon, const CStdString& strURL /* = "" */)
+int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = "" */)
 {
   CScraperParser parser;
-  ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
   if (!parser.Load(scraper))
     return 0;
-  if (scraper->Content() != m_content &&
+  if (scraper->Supports(m_content) &&
       !(m_content == CONTENT_ARTISTS && scraper->Content() == CONTENT_ALBUMS))
       // artists are scraped by album content scrapers
   {

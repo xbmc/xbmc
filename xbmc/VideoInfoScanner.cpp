@@ -45,6 +45,7 @@
 
 using namespace std;
 using namespace XFILE;
+using namespace ADDON;
 
 namespace VIDEO
 {
@@ -136,10 +137,11 @@ namespace VIDEO
     }
   }
 
-  void CVideoInfoScanner::Start(const CStdString& strDirectory, const SScanSettings& settings, bool bUpdateAll)
+  void CVideoInfoScanner::Start(const CStdString& strDirectory, const ScraperPtr& info, const SScanSettings& settings, bool bUpdateAll)
   {
     m_strStartDir = strDirectory;
     m_bUpdateAll = bUpdateAll;
+    m_info = info;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
 
@@ -304,7 +306,7 @@ namespace VIDEO
       }
     }
 
-    CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]", ADDON::TranslateContent(m_info->Content()).c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
+    CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]", TranslateContent(m_info->Content()).c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
 
     if (!bSkip)
     {
@@ -364,7 +366,7 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::ScraperPtr& scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ScraperPtr& scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
     m_IMDB.SetScraperInfo(scraper);
 
@@ -399,7 +401,7 @@ namespace VIDEO
       CFileItemPtr pItem = items[i];
 
       // we do this since we may have a override per dir
-      ADDON::ScraperPtr info2;
+      ScraperPtr info2;
       if (pItem->m_bIsFolder)
         m_database.GetScraperForPath(pItem->m_strPath,info2);
       else
@@ -531,19 +533,19 @@ namespace VIDEO
           CScraperUrl scrUrl;
           // handle .nfo files
           if (!ignoreNfo)
-            result = CheckForNFOFile(pItem.get(),bDirNames,info2->Content(),scrUrl);
+            result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
           if (result == CNfoFile::ERROR_NFO)
             continue;
           if (info2->Content() == CONTENT_TVSHOWS && result != CNfoFile::NO_NFO)
           { //FIXME this comment doesn't match second comment
             // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
-            ADDON::ScraperPtr temp;
+            ScraperPtr temp;
             SScanSettings settings;
             if (m_database.GetScraperForPath(pItem->m_strPath,temp,settings))
             {
               if (temp->Parent())
               { // as we are working with a new clone, default scraper settings are saved
-                temp = boost::dynamic_pointer_cast<ADDON::CScraper>(temp->Parent());
+                temp = boost::dynamic_pointer_cast<CScraper>(temp->Parent());
                 m_database.SetScraperForPath(pItem->m_strPath,temp,settings);
               }
             }
@@ -555,7 +557,7 @@ namespace VIDEO
             if (m_pObserver)
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-            long lResult = AddMovieAndGetThumb(pItem.get(), ADDON::TranslateContent(info2->Content()), *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
+            long lResult = AddMovieAndGetThumb(pItem.get(), TranslateContent(info2->Content()), *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
             if (bRefresh && scraper->Content() == CONTENT_TVSHOWS && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2->Content() == CONTENT_TVSHOWS)
@@ -955,7 +957,7 @@ namespace VIDEO
     CLog::Log(LOGDEBUG,"Adding new item to %s:%s", strContent.c_str(), pItem->m_strPath.c_str());
     long lResult=-1;
 
-    CONTENT_TYPE content = ADDON::TranslateContent(strContent);
+    CONTENT_TYPE content = TranslateContent(strContent);
     // add to all movies in the stacked set
     if (content == CONTENT_MOVIES)
     {
@@ -1116,9 +1118,9 @@ namespace VIDEO
 
       // handle .nfo files
       CScraperUrl scrUrl;
-      ADDON::ScraperPtr info(m_IMDB.GetScraperInfo());
+      ScraperPtr info(m_IMDB.GetScraperInfo());
       item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
-      CNfoFile::NFOResult result = CheckForNFOFile(&item,false,info->Content(),scrUrl);
+      CNfoFile::NFOResult result = CheckForNFOFile(&item,false,info,scrUrl);
       if (result == CNfoFile::FULL_NFO)
       {
         m_nfoReader.GetDetails(episodeDetails);
@@ -1294,7 +1296,7 @@ namespace VIDEO
     return nfoFile;
   }
 
-  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr& scraper, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool combined)
+  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool combined)
   {
     CVideoInfoTag movieDetails;
     m_IMDB.SetScraperInfo(scraper);
@@ -1308,7 +1310,7 @@ namespace VIDEO
       if (m_pObserver && url.strTitle.IsEmpty())
         m_pObserver->OnSetTitle(movieDetails.m_strTitle);
 
-      return AddMovieAndGetThumb(pItem, ADDON::TranslateContent(scraper->Content()), movieDetails, -1, bUseDirNames);
+      return AddMovieAndGetThumb(pItem, TranslateContent(scraper->Content()), movieDetails, -1, bUseDirNames);
     }
     return -1;
   }
@@ -1418,21 +1420,19 @@ namespace VIDEO
     }
   }
 
-  CNfoFile::NFOResult CVideoInfoScanner::CheckForNFOFile(CFileItem* pItem, bool bGrabAny, const CONTENT_TYPE& content, CScraperUrl& scrUrl)
+  CNfoFile::NFOResult CVideoInfoScanner::CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ScraperPtr& info, CScraperUrl& scrUrl)
   {
     CStdString strNfoFile;
-    if (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS || (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder))
+    if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS
+        || (info->Content() == CONTENT_TVSHOWS && !pItem->m_bIsFolder))
       strNfoFile = GetnfoFile(pItem,bGrabAny);
-    if (content == CONTENT_TVSHOWS && pItem->m_bIsFolder)
+    if (info->Content() == CONTENT_TVSHOWS && pItem->m_bIsFolder)
       CUtil::AddFileToFolder(pItem->m_strPath,"tvshow.nfo",strNfoFile);
 
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     if (!strNfoFile.IsEmpty() && CFile::Exists(strNfoFile))
     {
-      CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfoFile.c_str());
-      result = m_nfoReader.Create(strNfoFile,content,pItem->GetVideoInfoTag()->m_iEpisode);
-      if (result == CNfoFile::NO_NFO)
-        return result;
+      result = m_nfoReader.Create(strNfoFile,info,pItem->GetVideoInfoTag()->m_iEpisode);
 
       CStdString type;
       switch(result)
@@ -1452,17 +1452,17 @@ namespace VIDEO
       CLog::Log(LOGDEBUG,"Found matching %s NFO file: %s", type.c_str(), strNfoFile.c_str());
       if (result == CNfoFile::FULL_NFO)
       {
-        if (content == CONTENT_TVSHOWS)
-          m_info = m_nfoReader.m_info;
+        if (info->Content() == CONTENT_TVSHOWS)
+          info = m_nfoReader.GetScraperInfo();
       }
       else if (result != CNfoFile::NO_NFO)
       {
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
-        CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_info->Name().c_str());
+        CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.GetScraperInfo()->Name().c_str());
         CLog::Log(LOGDEBUG,"-- nfo-url: %s", scrUrl.m_url[0].m_url.c_str());
         scrUrl.strId  = m_nfoReader.m_strImDbNr;
-        m_info = m_nfoReader.m_info;
+        info = m_nfoReader.GetScraperInfo();
         if (result == CNfoFile::COMBINED_NFO)
           m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       }

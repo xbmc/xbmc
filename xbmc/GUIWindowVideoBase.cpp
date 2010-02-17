@@ -70,6 +70,7 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace VIDEO;
+using namespace ADDON;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -264,7 +265,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_IMDB)
       {
-        OnManualIMDB();
+        OnManualScrape();
       }
     }
     break;
@@ -352,7 +353,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     }
   }
 
-  bool modified = ShowIMDB(&item, scraper->Content());
+  bool modified = ShowIMDB(&item, scraper);
   if (modified && scraper->Content() != CONTENT_PLUGIN &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
@@ -384,7 +385,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
+bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 {
   /*
   CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
@@ -397,6 +398,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   CGUIWindowVideoInfo* pDlgInfo = (CGUIWindowVideoInfo*)g_windowManager.GetWindow(WINDOW_VIDEO_INFO);
+
+  CVideoInfoScanner scanner;
+  scanner.m_IMDB.SetScraperInfo(info2);
+  ScraperPtr info(info2); // use this as nfo might change it..
 
   if (!pDlgProgress) return false;
   if (!pDlgSelect) return false;
@@ -411,7 +416,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   movieDetails.Reset();
   m_database.Open(); // since we can be called from the music library
 
-  if (content == CONTENT_MOVIES)
+  if (info->Content() == CONTENT_MOVIES)
   {
     if (m_database.HasMovieInfo(item->m_strPath))
     {
@@ -419,7 +424,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
       m_database.GetMovieInfo(item->m_strPath, movieDetails);
     }
   }
-  if (content == CONTENT_TVSHOWS)
+  if (info->Content() == CONTENT_TVSHOWS)
   {
     if (item->m_bIsFolder)
     {
@@ -460,7 +465,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
       }
     }
   }
-  if (content == CONTENT_MUSICVIDEOS)
+  if (info->Content() == CONTENT_MUSICVIDEOS)
   {
     if (m_database.HasMusicVideoInfo(item->m_strPath))
     {
@@ -468,12 +473,12 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
       m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
     }
   }
-  if (content == CONTENT_PLUGIN)
+  if (info->Content() == CONTENT_PLUGIN)
   {
     if (!item->HasVideoInfoTag())
       return false;
     movieDetails = *item->GetVideoInfoTag();
-    movieDetails.m_strIMDBNumber = "xx" + ADDON::TranslateContent(content); // disable refresh+get thumb button
+    movieDetails.m_strIMDBNumber = "xx" + ADDON::TranslateContent(info->Content()); // disable refresh+get thumb button
 
     bHasInfo = true;
   }
@@ -481,7 +486,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   m_database.Close();
   if (bHasInfo)
   {
-    if (content == CONTENT_NONE) // disable refresh button
+    if (info->Content() == CONTENT_NONE) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
@@ -508,12 +513,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
   ADDON::AddonPtr addon;
-  ADDON::ScraperPtr info;
-  CVideoInfoScanner scanner;
 
   if (!m_database.GetScraperForPath(item->m_strPath,info,settings))
   {
-    if (!ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, content))
+    if (!ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, info->Content()))
       return false;
   }
 
@@ -522,7 +525,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
     return false;
 
   bool ignoreNfo(false);
-  CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info->Content(),scrUrl);
+  CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
   if (nfoResult == CNfoFile::ERROR_NFO)
     ignoreNfo = true;
   else
@@ -727,7 +730,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
               hasDetails = false;
               ignoreNfo = true;
               scrUrl.Clear();
-              //FIXME info = info2;
+              info = info2;
             }
           }
         }
@@ -763,8 +766,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   return listNeedsUpdating;
 }
 
-void CGUIWindowVideoBase::OnManualIMDB()
+void CGUIWindowVideoBase::OnManualScrape()
 {
+  // NOTE! this only works for movies 
+  // previous OnManualIMDB only worked for IMDb, so not a regression!
+  // if we were tracking current content type this would work for all content
   CStdString strInput;
   if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16009), false))
     return;
@@ -773,11 +779,21 @@ void CGUIWindowVideoBase::OnManualIMDB()
   item.m_strPath = "special://temp/";
   CFile::Delete(item.GetCachedVideoThumb().c_str());
 
-  ADDON::AddonPtr addon;
-  if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, "IMDb", addon))
+  ScraperPtr scraper;
+  m_database.Open();
+  if (!m_database.GetScraperForPath(m_vecItems->m_strPath, scraper))
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, CONTENT_MOVIES))
+    {
+      scraper = boost::dynamic_pointer_cast<CScraper>(addon);
+    }
+  }
+
+  if (!scraper)
     return;
 
-  ShowIMDB(&item,CONTENT_MOVIES);
+  ShowIMDB(&item,scraper);
 
   return;
 }
@@ -1264,7 +1280,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (item->m_bIsFolder)
       {
         m_database.SetPathHash(strPath,""); // to force scan
-        OnScan(strPath,settings);
+        OnScan(strPath,info,settings);
       }
       else
         OnInfo(item.get(),info);
@@ -1945,9 +1961,9 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   return found;
 }
 
-void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const SScanSettings& settings)
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const ScraperPtr& info, const SScanSettings& settings)
 {
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog)
-    pDialog->StartScanning(strPath,settings,false);
+    pDialog->StartScanning(strPath,info,settings,false);
 }

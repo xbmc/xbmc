@@ -1602,7 +1602,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
       VIDEO::SScanSettings settings;
-      OnScan("",settings);
+      OnScan("",ADDON::ScraperPtr(),settings);
       return true;
     }
   case CONTEXT_BUTTON_UNLINK_MOVIE:

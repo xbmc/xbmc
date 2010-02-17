@@ -1066,7 +1066,7 @@ int CBuiltins::Execute(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",settings);
+          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",ADDON::ScraperPtr(),settings);
       }
     }
   }
