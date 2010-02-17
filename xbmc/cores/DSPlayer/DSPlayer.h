@@ -83,6 +83,7 @@ public:
   virtual void SetSubtitleVisible( bool bVisible ) { CStreamsManager::getSingleton()->SetSubtitleVisible(bVisible); }
 
   virtual bool AddSubtitle(const CStdString& strSubPath) { return g_dsconfig.SetSubtitlesFile(strSubPath); };
+  virtual void SetSubTitleDelay(float fValue = 0.0f) { g_dsconfig.SetSubTitleDelay(fValue); };
   // Chapters
 
   virtual int  GetChapterCount()                                { return CChaptersManager::getSingleton()->GetChapterCount(); }

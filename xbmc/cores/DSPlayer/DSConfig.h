@@ -49,10 +49,13 @@ public:
 // Filters Property Pages
   virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages() { return m_pPropertiesFilters; };
   void ShowPropertyPage(IBaseFilter *pBF);
-  virtual bool SetSubtitlesFile(CStdString subFilePath);
-  void ShowHideSubtitles(BOOL show);
 
+  //Subtitles
+  virtual bool SetSubtitlesFile(CStdString subFilePath);
+  virtual void ShowHideSubtitles(BOOL show);
+  virtual void SetSubTitleDelay(float fValue = 0.0f);
   CDSGraph * pGraph;
+
 protected:
   bool LoadPropertiesPage(IBaseFilter *pBF);
   void CreatePropertiesXml();

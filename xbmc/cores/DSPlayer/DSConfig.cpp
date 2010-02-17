@@ -230,14 +230,21 @@ bool CDSConfig::SetSubtitlesFile(CStdString subFilePath)
 
 void CDSConfig::ShowHideSubtitles(BOOL show)
 {
-  HRESULT hr;
+  //IffdshowDec work but not IffdshowBaseA
   if (m_pIffdshowDecoder)
-  {
-    //pGraph->Stop();
-    hr = m_pIffdshowDecoder->compat_putParam(IDFF_isSubtitles,show);
-    //pGraph->Play();
-  }
+    m_pIffdshowDecoder->compat_putParam(IDFF_isSubtitles,show);
 }
+
+void CDSConfig::SetSubTitleDelay(float fValue)
+{
+  int delaysub;
+  //1000 is a millisec
+  //1000000 is the dvdplayer DVD_TIME_BASE
+  delaysub = -fValue * 1000;
+  if (m_pIffdshowDecoder)
+    m_pIffdshowDecoder->compat_putParam(IDFF_subDelay,delaysub);
+}
+
 bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
 {
   if (m_pIMpaDecFilter)
