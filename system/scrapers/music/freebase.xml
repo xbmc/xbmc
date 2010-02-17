@@ -80,7 +80,7 @@
 		</RegExp>
 	</GetAlbumReview>
 	<CreateArtistSearchUrl dest="3">
-		<RegExp input="$$1" output="http://www.freebase.com/api/service/search?query=\1&type=/music/artist&indent=1" dest="3">
+		<RegExp input="$$1" output="http://www.freebase.com/api/service/search?query=\1&amp;type=/music/artist&amp;indent=1" dest="3">
 			<expression/>
 		</RegExp>
 	</CreateArtistSearchUrl>
