@@ -567,7 +567,7 @@ void CGUISettings::Initialize()
   AddInt(3, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 
 #ifdef HAS_GL
-  AddBool(4, "videoplayer.usepbo", 13424, false);
+  AddBool(4, "videoplayer.usepbo", 13424, true);
 #endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
