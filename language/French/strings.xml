@@ -2249,8 +2249,9 @@
   <string id="33082">Chemin du script</string>
   <string id="33083">Activer le bouton de script personnalisé</string>
   
-  <string id="33100">DsPlayer</string>
-  <string id="33101">Utiliser VMR9 au lieu d'EVR</string>
-  <string id="33102">Utiliser EVR au lieu de VMR9</string>
-  <string id="33103">Audio Renderer</string>
+  <!-- 35000-35100 reserved for directshow-->
+  <string id="35000">DsPlayer</string>
+  <string id="35001">Utiliser VMR9 au lieu d'EVR</string>
+  <string id="35002">Utiliser EVR au lieu de VMR9</string>
+  <string id="35003">Audio Renderer</string>
 </strings>

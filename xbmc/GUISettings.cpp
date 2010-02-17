@@ -644,11 +644,11 @@ void CGUISettings::Initialize()
   AddBool(5, "scrapers.langfallback", 21416, false);
 #ifdef HAS_DX
   //Dsplayer
-  AddCategory(5,"dsplayer",33100);
+  AddCategory(5,"dsplayer",35000);
   //If vista or higher non default is vmr9
-  AddBool(1, "dsplayer.forcenondefaultrenderer", g_sysinfo.IsVistaOrHigher() ? 33101 : 33102 , false);
+  AddBool(1, "dsplayer.forcenondefaultrenderer", g_sysinfo.IsVistaOrHigher() ? 35001 : 35002 , false);
   AddSeparator(2,"dsplayer.sep1");
-  AddString(3, "dsplayer.audiorenderer", 33103, "Default", SPIN_CONTROL_TEXT);
+  AddString(3, "dsplayer.audiorenderer", 35003, "Default", SPIN_CONTROL_TEXT);
 
 #endif
   // network settings
