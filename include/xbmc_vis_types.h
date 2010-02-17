@@ -38,7 +38,6 @@ extern "C"
 
   struct VIS_PROPS
   {
-    ADDON_HANDLE hdl;
     void *device;
     int x;
     int y;

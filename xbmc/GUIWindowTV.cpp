@@ -102,6 +102,8 @@ CGUIWindowTV::CGUIWindowTV(void) : CGUIMediaWindow(WINDOW_TV, "MyTV.xml")
   m_guideGrid                     = NULL;
   m_iSortOrder_SEARCH             = SORT_ORDER_ASC;
   m_iSortMethod_SEARCH            = SORT_METHOD_DATE;
+  m_iSortOrder_TIMERS             = SORT_ORDER_ASC;
+  m_iSortMethod_TIMERS            = SORT_METHOD_DATE;
 }
 
 CGUIWindowTV::~CGUIWindowTV()
@@ -772,6 +774,11 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     {
       /* If yes show only "New Timer" on context menu */
       buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* NEW TIMER */
+      if (m_vecItems->Size() > 1)
+      {
+        buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);     /* Sort by Name */
+        buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);     /* Sort by Date */
+      }
     }
     else
     {
@@ -781,6 +788,8 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_ACTIVATE, 19058);        /* ON/OFF */
       buttons.Add(CONTEXT_BUTTON_RENAME, 118);            /* Rename Timer */
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* Delete Timer */
+      buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* Sort by Name */
+      buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* Sort by Date */
     }
   }
   else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
@@ -843,9 +852,9 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       }
 
       buttons.Add(CONTEXT_BUTTON_INFO, 658);              /* Epg info button */
-      buttons.Add(CONTEXT_BUTTON_USER1, 19062);           /* Sort by channel */
-      buttons.Add(CONTEXT_BUTTON_USER2, 103);             /* Sort by Name */
-      buttons.Add(CONTEXT_BUTTON_USER3, 104);             /* Sort by Date */
+      buttons.Add(CONTEXT_BUTTON_SORTBY_CHANNEL, 19062);  /* Sort by channel */
+      buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* Sort by Name */
+      buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* Sort by Date */
       buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);           /* Clear search results */
     }
   }
@@ -1274,7 +1283,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     UpdateFileList();
     return true;
   }
-  else if (button == CONTEXT_BUTTON_USER1)
+  else if (button == CONTEXT_BUTTON_SORTBY_CHANNEL)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
@@ -1290,9 +1299,22 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       UpdateSearch();
     }
   }
-  else if (button == CONTEXT_BUTTON_USER2)
+  else if (button == CONTEXT_BUTTON_SORTBY_NAME)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
+    {
+      if (m_iSortMethod_TIMERS != SORT_METHOD_LABEL)
+      {
+        m_iSortMethod_TIMERS = SORT_METHOD_LABEL;
+        m_iSortOrder_TIMERS  = SORT_ORDER_ASC;
+      }
+      else
+      {
+        m_iSortOrder_TIMERS = m_iSortOrder_TIMERS == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      }
+      UpdateTimers();
+    }
+    else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
       if (m_iSortMethod_SEARCH != SORT_METHOD_LABEL)
       {
@@ -1306,9 +1328,22 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       UpdateSearch();
     }
   }
-  else if (button == CONTEXT_BUTTON_USER3)
+  else if (button == CONTEXT_BUTTON_SORTBY_DATE)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
+    if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
+    {
+      if (m_iSortMethod_TIMERS != SORT_METHOD_DATE)
+      {
+        m_iSortMethod_TIMERS = SORT_METHOD_DATE;
+        m_iSortOrder_TIMERS  = SORT_ORDER_ASC;
+      }
+      else
+      {
+        m_iSortOrder_TIMERS = m_iSortOrder_TIMERS == SORT_ORDER_ASC ? SORT_ORDER_DESC : SORT_ORDER_ASC;
+      }
+      UpdateTimers();
+    }
+    else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
     {
       if (m_iSortMethod_SEARCH != SORT_METHOD_DATE)
       {
@@ -1664,6 +1699,8 @@ void CGUIWindowTV::UpdateTimers()
   m_viewControl.SetCurrentView(CONTROL_LIST_TIMERS);
   m_vecItems->m_strPath = "pvr://timers/";
   Update(m_vecItems->m_strPath);
+  m_vecItems->Sort(m_iSortMethod_TIMERS, m_iSortOrder_TIMERS);
+  m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(m_iSelected_TIMERS);
 
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, g_localizeStrings.Get(19025));

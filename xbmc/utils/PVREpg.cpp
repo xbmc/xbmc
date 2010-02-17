@@ -514,28 +514,22 @@ cPVREpgs PVREpgs;
 
 cPVREpgs::cPVREpgs(void)
 {
-  m_lastCleanup = 0;
 }
 
-void cPVREpgs::Cleanup(bool force)
+void cPVREpgs::Cleanup()
 {
-  unsigned int now = CTimeUtils::GetTimeMS();
-  if (now - m_lastCleanup > 10*60*1000 || force) // 10 minutes
+  CLog::Log(LOGINFO, "PVR: cleaning up epg data");
+
+  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
   {
-    CLog::Log(LOGNOTICE, "PVR: cleaning up epg data");
+    cPVREpg *Epg = (cPVREpg *) GetEPG(&PVRChannelsTV[i], true);
+    Epg->Cleanup(CDateTime::GetCurrentDateTime());
+  }
 
-    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-    {
-      cPVREpg *Epg = (cPVREpg *) GetEPG(&PVRChannelsTV[i], true);
-      Epg->Cleanup(CDateTime::GetCurrentDateTime());
-    }
-
-    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-    {
-      cPVREpg *Epg = (cPVREpg *) GetEPG(&PVRChannelsRadio[i], true);
-      Epg->Cleanup(CDateTime::GetCurrentDateTime());
-    }
-    m_lastCleanup = now;
+  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+  {
+    cPVREpg *Epg = (cPVREpg *) GetEPG(&PVRChannelsRadio[i], true);
+    Epg->Cleanup(CDateTime::GetCurrentDateTime());
   }
 }
 

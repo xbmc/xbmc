@@ -60,6 +60,19 @@ void XBMC_log(const addon_log_t loglevel, const char *format, ... )
   m_cb->AddOn.Log(m_cb->addonData, loglevel, buffer);
 }
 
+void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
+{
+  if (m_cb == NULL)
+    return;
+
+  char buffer[16384];
+  va_list args;
+  va_start (args, format);
+  vsprintf (buffer, format, args);
+  va_end (args);
+  m_cb->AddOn.QueueNotification(m_cb->addonData, type, buffer);
+}
+
 void XBMC_unknown_to_utf8(string &str)
 {
   if (m_cb == NULL)

@@ -34,14 +34,14 @@ CAddonHelpers::CAddonHelpers(CAddon* addon)
   m_callbacks   = new AddonCB;
   m_helperAddon = new CAddonHelpers_Addon(addon, m_callbacks);
   m_helperGUI   = new CAddonHelpers_GUI(addon, m_callbacks);
- // if (addon->Type() == ADDON_PVRDLL)
+  if (addon->Type() == ADDON_PVRDLL)
     m_helperPVR = new CAddonHelpers_PVR(addon, m_callbacks);
-  //else
-  //  m_helperPVR = NULL;
- // if (addon->Type() == ADDON_VIZ)
+  else
+    m_helperPVR = NULL;
+  if (addon->Type() == ADDON_VIZ)
     m_helperVis = new CAddonHelpers_Vis(addon, m_callbacks);
-  //else
- //   m_helperVis = NULL;
+  else
+    m_helperVis = NULL;
 
   m_callbacks->addonData = this;
 }

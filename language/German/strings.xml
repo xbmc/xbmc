@@ -1723,14 +1723,14 @@
   <string id="19110">Erneut versuchen...</string>
   <string id="19111">Server Fehler!</string>
   <string id="19112">Timers nicht synchron!</string>
-  <string id="19113">Backend:</string>
-  <string id="19114">Version:</string>
-  <string id="19115">Addresse:</string>
-  <string id="19116">Festplattengröße:</string>
-  <string id="19117">Kanäle:</string>
-  <string id="19118">Aufnahmen:</string>
-  <string id="19119">Timers:</string>
-  <string id="19120">Klientnummer:</string>
+
+  <string id="19114">Version</string>
+  <string id="19115">Addresse</string>
+  <string id="19116">Festplattengröße</string>
+
+
+
+  <string id="19120">Klientnummer</string>
   <string id="19121">Keine Wiederholungen</string>
   <string id="19122">Timer zeichnet auf - trotzdem löschen?</string>
   <string id="19123">Nur frei empfangbare Kanäle</string>
@@ -1801,6 +1801,7 @@
   <string id="19188">Alle EPG Daten werden gelöscht</string>
   <string id="19189">Nach Start letzten Kanal wiedergeben</string>
   <string id="19190">Minimiert</string>
+  <string id="19191">PVR-Service</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>

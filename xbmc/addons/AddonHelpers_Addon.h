@@ -35,6 +35,7 @@ public:
 
   /* General Functions */
   static void AddOnLog(void *addonData, const addon_log_t loglevel, const char *msg);
+  static void QueueNotification(void *addonData, const queue_msg_t type, const char *msg);
   static bool GetAddonSetting(void *addonData, const char* settingName, void *settingValue);
   static char* UnknownToUTF8(const char *sourceDest);
 

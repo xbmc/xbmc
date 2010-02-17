@@ -521,7 +521,7 @@ install-headers:
 
 install-arch:
 	@# Arch dependent files
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
@@ -536,7 +536,7 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media scripts sounds userdata addons system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find language media scripts sounds userdata addons system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*\.pvr|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex '.*/\.svn/.*|^skin/[^/]*/media/.*[^x][^b][^t]' -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 	@# Icons and links

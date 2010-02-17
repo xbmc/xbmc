@@ -44,6 +44,7 @@
 #define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
 #define TIMERCHECKDELTA       300 // seconds before checking for changes inside timers list
 #define RECORDINGCHECKDELTA   450 // seconds before checking for changes inside recordings list
+#define EPGCLEANUPCHECKDELTA  900 // seconds before checking for changes inside recordings list
 
 using namespace std;
 using namespace XFILE;
@@ -107,13 +108,15 @@ void CPVRManager::Start()
   m_PreviousChannelIndex    = 0;
   m_infoToggleStart         = NULL;
   m_infoToggleCurrent       = 0;
+  m_recordingToggleStart    = NULL;
+  m_recordingToggleCurrent  = 0;
   m_LastChannel             = 0;
 
   /* Discover, load and create chosen Client add-on's. */
   CAddonMgr::Get()->RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   if (!LoadClients())
   {
-    CLog::Log(LOGERROR, "PVR: couldn't load clients");
+    CLog::Log(LOGERROR, "PVR: couldn't load any clients");
     return;
   }
 
@@ -136,13 +139,8 @@ void CPVRManager::Stop()
   CLog::Log(LOGNOTICE, "PVR: PVRManager stoping");
   StopThread();
 
-//  for (unsigned int i = 0; i < m_clients.size(); i++)
-//  {
-//    delete m_clients[i];
-//  }
   m_clients.clear();
   m_clientsProps.clear();
-
   return;
 }
 
@@ -165,9 +163,6 @@ bool CPVRManager::LoadClients()
   {
     const AddonPtr clientAddon = addons.at(i);
 
-    if (clientAddon->Disabled()) // ignore disabled addons
-      continue;
-
     /* Add client to TV-Database to identify different backend types,
      * if client is already added his id is given.
      */
@@ -178,7 +173,7 @@ bool CPVRManager::LoadClients()
       continue;
     }
 
-    /* Load the Client library's and inside them into Client list if
+    /* Load the Client libraries, and inside them into client list if
      * success. Client initialization is also performed during loading.
      */
     boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(clientAddon);
@@ -253,26 +248,6 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
   {
     case PVR_EVENT_UNKNOWN:
       CLog::Log(LOGDEBUG, "%s - PVR: client_%ld unknown event : %s", __FUNCTION__, clientID, msg);
-      break;
-
-    case PVR_EVENT_MSG_STATUS:
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtStatus, clientName, msg, 3000, false);
-      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Status Message : %s", __FUNCTION__, clientID, msg);
-      break;
-
-    case PVR_EVENT_MSG_INFO:
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, clientName, msg, 3000, false);
-      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Info Message : %s", __FUNCTION__, clientID, msg);
-      break;
-
-    case PVR_EVENT_MSG_WARNING:
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtWarning, clientName, msg, 3000, false);
-      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Warning Message : %s", __FUNCTION__, clientID, msg);
-      break;
-
-    case PVR_EVENT_MSG_ERROR:
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtError, clientName, msg, 3000, true);
-      CLog::Log(LOGDEBUG, "%s - PVR: client_%ld Error Message : %s", __FUNCTION__, clientID, msg);
       break;
 
     case PVR_EVENT_TIMERS_CHANGE:
@@ -447,6 +422,7 @@ void CPVRManager::Process()
   PVREpgs.Load();
 
   int Now = CTimeUtils::GetTimeMS()/1000;
+  int LastEPGCleanup       = Now;
   m_LastTVChannelCheck     = Now;
   m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
   m_LastRecordingsCheck    = Now;
@@ -494,16 +470,19 @@ void CPVRManager::Process()
       PVREpgs.Update(true);
       m_LastEPGScan   = Now;
       m_LastEPGUpdate = Now;  // Data is also updated during scan
+      LastEPGCleanup  = Now;
     }
     else if (Now - m_LastEPGUpdate > g_guiSettings.GetInt("pvrepg.epgupdate")*60) // don't do this too often
     {
       PVREpgs.Update(false);
       m_LastEPGUpdate = Now;
+      LastEPGCleanup  = Now;
     }
-    else
+    else if (Now - LastEPGCleanup > EPGCLEANUPCHECKDELTA) // don't do this too often
     {
       /* Cleanup EPG Data */
       PVREpgs.Cleanup();
+      LastEPGCleanup = Now;
     }
 
     EnterCriticalSection(&m_critSection);
@@ -556,52 +535,47 @@ void CPVRManager::Process()
  ********************************************************************/
 void CPVRManager::SyncInfo()
 {
+  EnterCriticalSection(&m_critSection);
+
   PVRRecordings.GetNumRecordings() > 0 ? m_hasRecordings = true : m_hasRecordings = false;
   PVRTimers.GetNumTimers()         > 0 ? m_hasTimers     = true : m_hasTimers = false;
   m_isRecording = false;
+  cPVRTimerInfoTag *nextTimer = NULL;
+
+  m_nowRecordingTitle.clear();
+  m_nowRecordingChannel.clear();
+  m_nowRecordingDateTime.clear();
+  m_nextRecordingTitle.clear();
+  m_nextRecordingChannel.clear();
+  m_nextRecordingDateTime.clear();
 
   if (m_hasTimers)
   {
-    cPVRTimerInfoTag *nextRec = PVRTimers.GetNextActiveTimer();
-    if (nextRec)
+    for (unsigned int i = 0; i < PVRTimers.size(); ++i)
     {
-      m_nextRecordingTitle    = nextRec->Title();
-      m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextRec->Number());
-      m_nextRecordingDateTime = nextRec->Start().GetAsLocalizedDateTime(false, false);
-
-      if (nextRec->IsRecording() == true)
+      if (PVRTimers[i].Active() && (PVRTimers[i].Start() < CDateTime::GetCurrentDateTime() && PVRTimers[i].Stop() > CDateTime::GetCurrentDateTime()))
       {
+        m_nowRecordingTitle.push_back(PVRTimers[i].Title());
+        m_nowRecordingChannel.push_back(PVRChannelsTV.GetNameForChannel(PVRTimers[i].Number()));
+        m_nowRecordingDateTime.push_back(PVRTimers[i].Start().GetAsLocalizedDateTime(false, false));
         m_isRecording = true;
-        CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
       }
-      else
+      else if (PVRTimers[i].Active())
       {
-        m_isRecording = false;
+        if (!nextTimer || nextTimer->Start() > PVRTimers[i].Start())
+          nextTimer = &PVRTimers[i];
       }
     }
-    else
+
+    if (nextTimer)
     {
-      /* We have timers but nothing is active, this is why we set it to false here */
-      m_hasTimers = false;
+      m_nextRecordingTitle    = nextTimer->Title();
+      m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextTimer->Number());
+      m_nextRecordingDateTime = nextTimer->Start().GetAsLocalizedDateTime(false, false);
     }
   }
 
-  if (m_isRecording)
-  {
-    m_nowRecordingTitle = m_nextRecordingTitle;
-    m_nowRecordingDateTime = m_nextRecordingDateTime;
-    m_nowRecordingChannel = m_nextRecordingChannel;
-    CLog::Log(LOGDEBUG, "%s - PVR: data of active recording is used: '%s', '%s', '%s'", __FUNCTION__,
-                        m_nowRecordingTitle.c_str(),
-                        m_nextRecordingDateTime.c_str(),
-                        m_nextRecordingChannel.c_str());
-  }
-  else
-  {
-    m_nowRecordingTitle.clear();
-    m_nowRecordingDateTime.clear();
-    m_nowRecordingChannel.clear();
-  }
+  LeaveCriticalSection(&m_critSection);
 }
 
 /********************************************************************
@@ -612,9 +586,49 @@ void CPVRManager::SyncInfo()
 #define INFO_TOGGLE_TIME    1500
 const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
 {
-  if      (dwInfo == PVR_NOW_RECORDING_TITLE)     return m_nowRecordingTitle;
-  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   return m_nowRecordingChannel;
-  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  return m_nowRecordingDateTime;
+  if      (dwInfo == PVR_NOW_RECORDING_TITLE)
+  {
+    if (m_recordingToggleStart == 0)
+    {
+      SyncInfo();
+      m_recordingToggleStart = CTimeUtils::GetTimeMS();
+      m_recordingToggleCurrent = 0;
+    }
+    else
+    {
+      if (CTimeUtils::GetTimeMS() - m_recordingToggleStart > INFO_TOGGLE_TIME)
+      {
+        SyncInfo();
+        if (m_nowRecordingTitle.size() > 0)
+        {
+          m_recordingToggleCurrent++;
+          if (m_recordingToggleCurrent > m_nowRecordingTitle.size()-1)
+            m_recordingToggleCurrent = 0;
+
+          m_recordingToggleStart = CTimeUtils::GetTimeMS();
+        }
+      }
+    }
+
+    if (m_nowRecordingTitle.size() > 0)
+      return m_nowRecordingTitle[m_recordingToggleCurrent];
+    else
+      return "";
+  }
+  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)
+  {
+    if (m_nowRecordingChannel.size() > 0)
+      return m_nowRecordingChannel[m_recordingToggleCurrent];
+    else
+      return "";
+  }
+  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)
+  {
+    if (m_nowRecordingDateTime.size() > 0)
+      return m_nowRecordingDateTime[m_recordingToggleCurrent];
+    else
+      return "";
+  }
   else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_nextRecordingTitle;
   else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  return m_nextRecordingChannel;
   else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_nextRecordingDateTime;
@@ -697,7 +711,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
 
     static CStdString backendClients;
     if (m_clients.size() > 0)
-      backendClients.Format("%u %s %u",m_infoToggleCurrent+1 ,g_localizeStrings.Get(20163), m_clients.size());
+      backendClients.Format("%u %s %u", m_infoToggleCurrent+1, g_localizeStrings.Get(20163), m_clients.size());
     else
       backendClients = g_localizeStrings.Get(14023);
 

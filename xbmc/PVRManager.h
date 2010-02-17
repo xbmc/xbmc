@@ -129,13 +129,15 @@ private:
   /*--- GUIInfoManager information data ---*/
   DWORD               m_infoToggleStart;        /* Time to toogle pvr infos like in System info */
   unsigned int        m_infoToggleCurrent;      /* The current item showed by the GUIInfoManager */
+  DWORD               m_recordingToggleStart;   /* Time to toogle currently running pvr recordings */
+  unsigned int        m_recordingToggleCurrent; /* The current item showed by the GUIInfoManager */
 
   CStdString          m_nextRecordingDateTime;
   CStdString          m_nextRecordingChannel;
   CStdString          m_nextRecordingTitle;
-  CStdString          m_nowRecordingDateTime;
-  CStdString          m_nowRecordingChannel;
-  CStdString          m_nowRecordingTitle;
+  std::vector<CStdString> m_nowRecordingDateTime;
+  std::vector<CStdString> m_nowRecordingChannel;
+  std::vector<CStdString> m_nowRecordingTitle;
   CStdString          m_backendName;
   CStdString          m_backendVersion;
   CStdString          m_backendHost;

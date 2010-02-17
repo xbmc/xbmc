@@ -30,6 +30,8 @@ extern "C"
 {
   // Functions that your PVR client must implement, also you must implement the functions from
   // xbmc_addon_dll.h
+
+  /** PVR General Functions **/
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
   PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* pProps);
   const char* GetBackendName();
@@ -37,30 +39,46 @@ extern "C"
   const char* GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
   PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
+  PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook);
 
+  /** PVR EPG Functions **/
   PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
-  int GetNumBouquets();
-  int GetNumChannels();
-  int GetNumRecordings();
-  int GetNumTimers();
-  PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio);
-//  PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result);
-//  PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo);
-//  PVR_ERROR AddChannel(const cPVRChannelInfoTag &info);
-//  PVR_ERROR DeleteChannel(unsigned int number);
-//  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
-//  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
 
+  /** PVR Bouquets Functions **/
+  int GetNumBouquets();
+  PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio);
+
+  /** PVR Channel Functions **/
+  int GetNumChannels();
+  PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio);
+  PVR_ERROR DeleteChannel(unsigned int number);
+  PVR_ERROR RenameChannel(unsigned int number, const char *newname);
+  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
+  PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo);
+  PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo);
+
+  /** PVR Recording Functions **/
+  int GetNumRecordings();
   PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
   PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname);
 
+  /** PVR Recording cut marks Functions **/
+  bool HaveCutmarks();
+  PVR_ERROR RequestCutMarksList(PVRHANDLE handle);
+  PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark);
+  PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark);
+  PVR_ERROR StartCut();
+
+  /** PVR Timer Functions **/
+  int GetNumTimers();
   PVR_ERROR RequestTimerList(PVRHANDLE handle);
   PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
   PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force);
   PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname);
   PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
 
+  /** PVR Live Stream Functions **/
   bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
   void CloseLiveStream();
   int ReadLiveStream(unsigned char* buf, int buf_size);
@@ -70,6 +88,12 @@ extern "C"
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
 
+  /** PVR Secondary Stream Functions **/
+  bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo);
+  void CloseSecondaryStream();
+  int ReadSecondaryStream(unsigned char* buf, int buf_size);
+
+  /** PVR Recording Stream Functions **/
   bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
   void CloseRecordedStream(void);
   int ReadRecordedStream(unsigned char* buf, int buf_size);
@@ -87,21 +111,27 @@ extern "C"
     pClient->GetBackendVersion      = GetBackendVersion;
     pClient->GetDriveSpace          = GetDriveSpace;
     pClient->GetBackendTime         = GetBackendTime;
+    pClient->MenuHook               = MenuHook;
     pClient->GetNumBouquets         = GetNumBouquets;
+    pClient->RequestBouquetsList    = RequestBouquetsList;
     pClient->GetNumChannels         = GetNumChannels;
     pClient->GetNumRecordings       = GetNumRecordings;
     pClient->GetNumTimers           = GetNumTimers;
     pClient->RequestEPGForChannel   = RequestEPGForChannel;
     pClient->RequestChannelList     = RequestChannelList;
-//    pClient->GetChannelSettings     = GetChannelSettings;
-//    pClient->UpdateChannelSettings  = UpdateChannelSettings;
-//    pClient->AddChannel             = AddChannel;
-//    pClient->DeleteChannel          = DeleteChannel;
-//    pClient->RenameChannel          = RenameChannel;
-//    pClient->MoveChannel            = MoveChannel;
+    pClient->DeleteChannel          = DeleteChannel;
+    pClient->RenameChannel          = RenameChannel;
+    pClient->MoveChannel            = MoveChannel;
+    pClient->DialogChannelSettings  = DialogChannelSettings;
+    pClient->DialogAddChannel       = DialogAddChannel;
     pClient->RequestRecordingsList  = RequestRecordingsList;
     pClient->DeleteRecording        = DeleteRecording;
     pClient->RenameRecording        = RenameRecording;
+    pClient->HaveCutmarks           = HaveCutmarks;
+    pClient->RequestCutMarksList    = RequestCutMarksList;
+    pClient->AddCutMark             = AddCutMark;
+    pClient->DeleteCutMark          = DeleteCutMark;
+    pClient->StartCut               = StartCut;
     pClient->RequestTimerList       = RequestTimerList;
     pClient->AddTimer               = AddTimer;
     pClient->DeleteTimer            = DeleteTimer;
@@ -115,6 +145,9 @@ extern "C"
     pClient->GetCurrentClientChannel= GetCurrentClientChannel;
     pClient->SwitchChannel          = SwitchChannel;
     pClient->SignalQuality          = SignalQuality;
+    pClient->OpenSecondaryStream    = OpenSecondaryStream;
+    pClient->CloseSecondaryStream   = CloseSecondaryStream;
+    pClient->ReadSecondaryStream    = ReadSecondaryStream;
     pClient->OpenRecordedStream     = OpenRecordedStream;
     pClient->CloseRecordedStream    = CloseRecordedStream;
     pClient->ReadRecordedStream     = ReadRecordedStream;

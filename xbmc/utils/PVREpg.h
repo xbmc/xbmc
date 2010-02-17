@@ -184,8 +184,6 @@ class cPVREpgs : public std::vector<cPVREpg*>
 private:
   CCriticalSection m_critSection;
 
-  int m_lastCleanup;
-
 public:
   cPVREpgs(void);
 
@@ -194,7 +192,7 @@ public:
   const cPVREpg *GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMissing = false) const;
   void Add(cPVREpg *entry);
 
-  void Cleanup(bool force = false);
+  void Cleanup(void);
   bool ClearAll(void);
   bool ClearChannel(long ChannelID);
   void Load();

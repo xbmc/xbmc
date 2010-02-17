@@ -308,7 +308,7 @@ bool cDataResp::CallBackSMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-//    PVR_event_callback(PVR_EVENT_MSG_STATUS, text.c_str());
+    XBMC_queue_notification(QUEUE_STATUS, text.c_str());
     return true;
   }
   else
@@ -325,7 +325,7 @@ bool cDataResp::CallBackIMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-//    PVR_event_callback(PVR_EVENT_MSG_INFO, text.c_str());
+    XBMC_queue_notification(QUEUE_INFO, text.c_str());
     return true;
   }
   else
@@ -342,7 +342,7 @@ bool cDataResp::CallBackWMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-//    PVR_event_callback(PVR_EVENT_MSG_WARNING, text.c_str());
+    XBMC_queue_notification(QUEUE_WARNING, text.c_str());
     return true;
   }
   else
@@ -359,7 +359,7 @@ bool cDataResp::CallBackEMSG(const char *Option)
     CStdString text = Option;
     if (g_bCharsetConv)
       XBMC_unknown_to_utf8(text);
-//    PVR_event_callback(PVR_EVENT_MSG_ERROR, text.c_str());
+    XBMC_queue_notification(QUEUE_ERROR, text.c_str());
     return true;
   }
   else
@@ -661,6 +661,7 @@ void FreeSettings()
 
 }
 
+
 /***********************************************************
  * PVR Client AddOn specific public library functions
  ***********************************************************/
@@ -717,15 +718,36 @@ PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
   return VTPTransceiver.GetBackendTime(localTime, gmtOffset);
 }
 
-int GetNumBouquets()
+PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)
 {
-  return 0;
+  return PVR_ERROR_NOT_IMPLEMENTED;
 }
+
+/*******************************************/
+/** PVR EPG Functions                     **/
 
 PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
   return VTPTransceiver.RequestEPGForChannel(channel, handle, start, end);
 }
+
+
+/*******************************************/
+/** PVR Bouquets Functions                **/
+
+int GetNumBouquets()
+{
+  return 0;
+}
+
+PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+
+/*******************************************/
+/** PVR Channel Functions                 **/
 
 int GetNumChannels()
 {
@@ -736,6 +758,35 @@ PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
   return VTPTransceiver.RequestChannelList(handle, radio);
 }
+
+PVR_ERROR DeleteChannel(unsigned int number)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR RenameChannel(unsigned int number, const char *newname)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+
+/*******************************************/
+/** PVR Recording Functions               **/
 
 int GetNumRecordings(void)
 {
@@ -756,6 +807,39 @@ PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
 {
   return VTPTransceiver.RenameRecording(recinfo, newname);
 }
+
+
+/*******************************************/
+/** PVR Recording cut marks Functions     **/
+
+bool HaveCutmarks()
+{
+  return false;
+}
+
+PVR_ERROR RequestCutMarksList(PVRHANDLE handle)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR StartCut()
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+
+/*******************************************/
+/** PVR Timer Functions                   **/
 
 int GetNumTimers(void)
 {
@@ -786,6 +870,10 @@ PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
 {
   return VTPTransceiver.UpdateTimer(timerinfo);
 }
+
+
+/*******************************************/
+/** PVR Live Stream Functions             **/
 
 bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
@@ -874,9 +962,9 @@ int ReadLiveStream(unsigned char* buf, int buf_size)
         continue; /* Continue here to read NoSignal stream */
       }
 
-      if (read_timeouts > 30)
+      if (read_timeouts > 20)
       {
-        XBMC_log(LOG_INFO, "No data in 3 seconds, queuing no signal image");
+        XBMC_log(LOG_INFO, "No data in 2 seconds, queuing no signal image");
         read_timeouts = 0;
         return writeNoSignalStream(buf, buf_size);
       }
@@ -945,6 +1033,29 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 {
   return VTPTransceiver.SignalQuality(qualityinfo, m_iCurrentChannel);
 }
+
+
+/*******************************************/
+/** PVR Secondary Stream Functions        **/
+
+bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo)
+{
+  return false;
+}
+
+void CloseSecondaryStream()
+{
+
+}
+
+int ReadSecondaryStream(unsigned char* buf, int buf_size)
+{
+  return 0;
+}
+
+
+/*******************************************/
+/** PVR Recording Stream Functions        **/
 
 bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {

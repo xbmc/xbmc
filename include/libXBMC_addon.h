@@ -194,7 +194,15 @@ typedef enum addon_log {
   LOG_ERROR
 } addon_log_t;
 
+typedef enum queue_msg {
+  QUEUE_STATUS,
+  QUEUE_INFO,
+  QUEUE_WARNING,
+  QUEUE_ERROR
+} queue_msg_t;
+
 void XBMC_register_me(ADDON_HANDLE hdl);
 bool XBMC_get_setting(std::string settingName, void *settingValue);
 void XBMC_log(const addon_log_t loglevel, const char *format, ... );
+void XBMC_queue_notification(const queue_msg_t type, const char *format, ... );
 void XBMC_unknown_to_utf8(std::string &str);

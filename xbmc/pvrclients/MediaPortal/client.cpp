@@ -61,13 +61,13 @@ extern "C" {
 //-----------------------------------------------------------------------------
 ADDON_STATUS Create(void* hdl, void* props)
 {
-  if (!props)
+  if (!hdl || !props)
     return STATUS_UNKNOWN;
 
   PVR_PROPS* pvrprops = (PVR_PROPS*)props;
 
-  XBMC_register_me(pvrprops->hdl);
-  PVR_register_me(pvrprops->hdl);
+  XBMC_register_me(hdl);
+  PVR_register_me(hdl);
 
   XBMC_log(LOG_DEBUG, "Creating MediaPortal PVR-Client");
 
@@ -356,15 +356,37 @@ PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
   return g_client->GetMPTVTime(localTime, gmtOffset);
 }
 
-int GetNumBouquets()
+PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)
 {
-  return 0;
+  return PVR_ERROR_NOT_IMPLEMENTED;
 }
+
+
+/*******************************************/
+/** PVR EPG Functions                     **/
 
 PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
   return g_client->RequestEPGForChannel(channel, handle, start, end);
 }
+
+
+/*******************************************/
+/** PVR Bouquets Functions                **/
+
+int GetNumBouquets()
+{
+  return 0;
+}
+
+PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+
+/*******************************************/
+/** PVR Channel Functions                 **/
 
 int GetNumChannels()
 {
@@ -375,6 +397,35 @@ PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
   return g_client->RequestChannelList(handle, radio);
 }
+
+PVR_ERROR DeleteChannel(unsigned int number)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR RenameChannel(unsigned int number, const char *newname)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+
+/*******************************************/
+/** PVR Recording Functions               **/
 
 int GetNumRecordings(void)
 {
@@ -395,6 +446,38 @@ PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
 {
   return g_client->RenameRecording(recinfo, newname);
 }
+
+
+/*******************************************/
+/** PVR Recording cut marks Functions     **/
+
+bool HaveCutmarks()
+{
+  return false;
+}
+
+PVR_ERROR RequestCutMarksList(PVRHANDLE handle)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark)
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR StartCut()
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+/*******************************************/
+/** PVR Timer Functions                   **/
 
 int GetNumTimers(void)
 {
@@ -425,6 +508,10 @@ PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
 {
   return g_client->UpdateTimer(timerinfo);
 }
+
+
+/*******************************************/
+/** PVR Live Stream Functions             **/
 
 bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
@@ -465,6 +552,29 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 {
   return g_client->SignalQuality(qualityinfo);
 }
+
+
+/*******************************************/
+/** PVR Secondary Stream Functions        **/
+
+bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo)
+{
+  return false;
+}
+
+void CloseSecondaryStream()
+{
+
+}
+
+int ReadSecondaryStream(unsigned char* buf, int buf_size)
+{
+  return 0;
+}
+
+
+/*******************************************/
+/** PVR Recording Stream Functions        **/
 
 bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {

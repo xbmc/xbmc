@@ -25,6 +25,7 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "utils/PVREpg.h"
+#include "utils/PVRTimers.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -144,6 +145,8 @@ void SSortFileItem::ByDate(CFileItemPtr &item)
   CStdString label;
   if (item->IsEPG())
     label.Format("%s %s", item->GetEPGInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
+  else if (item->IsPVRTimer())
+    label.Format("%s %s", item->GetPVRTimerInfoTag()->Start().GetAsDBDateTime().c_str(), item->GetLabel().c_str());
   else
     label.Format("%s %s", item->m_dateTime.GetAsDBDateTime().c_str(), item->GetLabel().c_str());
 

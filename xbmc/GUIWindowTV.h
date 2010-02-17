@@ -72,6 +72,8 @@ private:
   int m_iSelected_TIMERS;
   int m_iSelected_SEARCH;
 
+  SORT_ORDER m_iSortOrder_TIMERS;
+  SORT_METHOD m_iSortMethod_TIMERS;
   SORT_ORDER m_iSortOrder_SEARCH;
   SORT_METHOD m_iSortMethod_SEARCH;
 

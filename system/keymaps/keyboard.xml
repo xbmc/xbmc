@@ -119,6 +119,13 @@
       <backspace>Backspace</backspace>
     </keyboard>
   </VirtualKeyboard>
+  <MyTV>
+    <keyboard>
+      <delete>Delete</delete>
+      <m>Move</m>
+      <r>Rename</r>
+    </keyboard>
+  </MyTV>
   <MyFiles>
     <keyboard>
       <space>Highlight</space>

@@ -96,7 +96,6 @@ extern "C" {
   struct PVR_PROPS
   {
     int clientID;
-    ADDON_HANDLE hdl;
     const char *userpath;
     const char *clientpath;
   };
@@ -127,10 +126,6 @@ extern "C" {
     PVR_EVENT_RECORDINGS_CHANGE    = 2,
     PVR_EVENT_CHANNELS_CHANGE      = 3,
     PVR_EVENT_TIMERS_CHANGE        = 4,
-    PVR_EVENT_MSG_STATUS           = 5,
-    PVR_EVENT_MSG_INFO             = 6,
-    PVR_EVENT_MSG_WARNING          = 7,
-    PVR_EVENT_MSG_ERROR            = 8,
   } PVR_EVENT;
 
 #if PRAGMA_PACK
@@ -216,11 +211,6 @@ extern "C" {
   * Used to signify an individual broadcast, whether it is also a recording, timer etc.
   */
   typedef struct PVR_PROGINFO {
-//    int           bouquet;
-//    int           recording;
-//    int           rec_status;
-//    int           event_flags;
-
     unsigned int  uid;
     int           channum;
     const char   *title;
@@ -288,6 +278,31 @@ extern "C" {
     double        dolby_bitrate;
   } ATTRIBUTE_PACKED PVR_SIGNALQUALITY;
 
+  /**
+   * PVR Addon menu hook element, are available in the context
+   * menus of the TV window, to perfrom a addon related action.
+   */
+  typedef struct PVR_MENUHOOK {
+    int           hook_id;                /* An identifier to know what hook is called back to the addon */
+    int           string_id;              /* The id to a name for this item inside the language files */
+  } ATTRIBUTE_PACKED PVR_MENUHOOK;
+
+  /**
+   * PVR Recordings cut mark element.
+   */
+  typedef enum {
+    CUT         = 0,
+    MUTE        = 1,
+    SCENE       = 2,
+    COMM_BREAK  = 3
+  } CUT_MARK_ACTION;
+
+  typedef struct PVR_CUT_MARK {
+    long long       start;                /* Start position in milliseconds */
+    long long       stop;                 /* Stop position in milliseconds */
+    CUT_MARK_ACTION action;               /* the action to be performed */
+  } ATTRIBUTE_PACKED PVR_CUT_MARK;
+
 #if PRAGMA_PACK
 #pragma pack()
 #endif
@@ -305,28 +320,37 @@ extern "C" {
     const char* (__cdecl* GetConnectionString)();
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
     PVR_ERROR (__cdecl* GetBackendTime)(time_t *localTime, int *gmtOffset);
+    PVR_ERROR (__cdecl* DialogChannelScan)();
+    PVR_ERROR (__cdecl* MenuHook)(const PVR_MENUHOOK &menuhook);
 
     /** PVR EPG Functions **/
     PVR_ERROR (__cdecl* RequestEPGForChannel)(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
 
     /** PVR Bouquets Functions **/
     int (__cdecl* GetNumBouquets)();
+    PVR_ERROR (__cdecl* RequestBouquetsList)(PVRHANDLE handle, int radio);
 
     /** PVR Channel Functions **/
     int (__cdecl* GetNumChannels)();
     PVR_ERROR (__cdecl* RequestChannelList)(PVRHANDLE handle, int radio);
-//    PVR_ERROR (__cdecl* GetChannelSettings)(cPVRChannelInfoTag *result);
-//    PVR_ERROR (__cdecl* UpdateChannelSettings)(const cPVRChannelInfoTag &chaninfo);
-//    PVR_ERROR (__cdecl* AddChannel)(const PVR_CHANNEL &info);
-//    PVR_ERROR (__cdecl* DeleteChannel)(unsigned int number);
-//    PVR_ERROR (__cdecl* RenameChannel)(unsigned int number, CStdString &newname);
-//    PVR_ERROR (__cdecl* MoveChannel)(unsigned int number, unsigned int newnumber);
+    PVR_ERROR (__cdecl* DeleteChannel)(unsigned int number);
+    PVR_ERROR (__cdecl* RenameChannel)(unsigned int number, const char *newname);
+    PVR_ERROR (__cdecl* MoveChannel)(unsigned int number, unsigned int newnumber);
+    PVR_ERROR (__cdecl* DialogChannelSettings)(const PVR_CHANNEL &channelinfo);
+    PVR_ERROR (__cdecl* DialogAddChannel)(const PVR_CHANNEL &channelinfo);
 
     /** PVR Recording Functions **/
     int (__cdecl* GetNumRecordings)();
     PVR_ERROR (__cdecl* RequestRecordingsList)(PVRHANDLE handle);
     PVR_ERROR (__cdecl* DeleteRecording)(const PVR_RECORDINGINFO &recinfo);
     PVR_ERROR (__cdecl* RenameRecording)(const PVR_RECORDINGINFO &recinfo, const char *newname);
+
+    /** PVR Recording cut marks Functions **/
+    bool (__cdecl* HaveCutmarks)();
+    PVR_ERROR (__cdecl* RequestCutMarksList)(PVRHANDLE handle);
+    PVR_ERROR (__cdecl* AddCutMark)(const PVR_CUT_MARK &cutmark);
+    PVR_ERROR (__cdecl* DeleteCutMark)(const PVR_CUT_MARK &cutmark);
+    PVR_ERROR (__cdecl* StartCut)();
 
     /** PVR Timer Functions **/
     int (__cdecl* GetNumTimers)();
@@ -345,8 +369,12 @@ extern "C" {
     int (__cdecl* GetCurrentClientChannel)();
     bool (__cdecl* SwitchChannel)(const PVR_CHANNEL &channelinfo);
     PVR_ERROR (__cdecl* SignalQuality)(PVR_SIGNALQUALITY &qualityinfo);
-    /** PVR Live Stream Function for the MediaPortal PVR addon **/
     const char* (__cdecl* GetLiveStreamURL)(const PVR_CHANNEL &channelinfo);
+
+    /** PVR Secondary Stream Functions **/
+    bool (__cdecl* OpenSecondaryStream)(const PVR_CHANNEL &channelinfo);
+    void (__cdecl* CloseSecondaryStream)();
+    int (__cdecl* ReadSecondaryStream)(unsigned char* buf, int buf_size);
 
     /** PVR Recording Stream Functions **/
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDINGINFO &recinfo);

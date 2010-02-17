@@ -355,7 +355,7 @@ const CStdString cPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(19026);
   else if (!m_Active)
     return g_localizeStrings.Get(13106);
-  else if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
+  else if (m_Active && (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime()))
     return g_localizeStrings.Get(19162);
   else
     return g_localizeStrings.Get(305);
@@ -593,7 +593,7 @@ cPVRTimerInfoTag *cPVRTimers::GetNextActiveTimer(void)
   cPVRTimerInfoTag *t0 = NULL;
   for (unsigned int i = 0; i < size(); i++)
   {
-    if ((at(i).Active()) && (!t0 || at(i).Stop() > CDateTime::GetCurrentDateTime() && at(i).Compare(*t0) < 0))
+    if ((at(i).Active()) && (!t0 || (at(i).Stop() > CDateTime::GetCurrentDateTime() && at(i).Compare(*t0) < 0)))
     {
       t0 = &at(i);
     }

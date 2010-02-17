@@ -27,11 +27,13 @@
 #include "../include/xbmc_pvr_types.h"
 
 typedef void (*AddOnLogCallback)(void *addonData, const addon_log_t loglevel, const char *msg);
+typedef void (*AddOnQueueNotification)(void *addonData, const queue_msg_t type, const char *msg);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
 
 typedef struct CB_AddOn
 {
   AddOnLogCallback       Log;
+  AddOnQueueNotification QueueNotification;
   AddOnGetSetting        GetSetting;
 } CB_AddOn;
 

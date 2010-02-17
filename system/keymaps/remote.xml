@@ -92,6 +92,11 @@
       <hash>XBMC.ActivateWindow(Settings)</hash>
     </remote>
   </Home>
+  <MyTV>
+    <remote>
+    <clear>Delete</clear>
+    </remote>
+  </MyTV>
   <MyFiles>
     <remote>
       <clear>Delete</clear>

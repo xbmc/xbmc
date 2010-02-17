@@ -26,48 +26,8 @@
 #include "xbmc_addon_dll.h"
 #include "xbmc_vis_types.h"
 
-#include <ctype.h>
-#if defined(_LINUX) && !defined(__APPLE__)
-#include <sys/sysinfo.h>
-#elif _WIN32
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-#endif
-#include <sys/stat.h>
-#include <errno.h>
-
-int htoi(const char *str) /* Convert hex string to integer */
-{
-  unsigned int digit, number = 0;
-  while (*str)
-  {
-    if (isdigit(*str))
-      digit = *str - '0';
-    else
-      digit = tolower(*str)-'a'+10;
-    number<<=4;
-    number+=digit;
-    str++;
-  }
-  return number;
-}
-
 extern "C"
 {
-  // exports for d3d hacks
-#ifndef HAS_SDL_OPENGL
-  void d3dSetTextureStageState( int x, DWORD dwY, DWORD dwZ);
-  void d3dSetRenderState(DWORD dwY, DWORD dwZ);
-#endif
-
-#ifdef HAS_SDL_OPENGL
-#ifndef D3DCOLOR_RGBA
-#define D3DCOLOR_RGBA(r,g,b,a) (r||(g<<8)||(b<<16)||(a<<24))
-#endif
-#endif
-
   // Functions that your visualisation must implement
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
   void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
