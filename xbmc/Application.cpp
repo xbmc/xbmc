@@ -2272,7 +2272,7 @@ bool CApplication::OnKey(CKey& key)
     g_Keyboard.Reset();
 
     if (!key.IsAnalogButton())
-      CLog::Log(LOGDEBUG, "%s: %i pressed, trying fullscreen info action %i", __FUNCTION__, (int) key.GetButtonCode(), action.actionId);
+      CLog::Log(LOGDEBUG, "%s: %i pressed, trying fullscreen info action %s", __FUNCTION__, (int) key.GetButtonCode(), action.strAction.c_str());
 
     if (OnAction(action))
       return true;
@@ -2385,7 +2385,7 @@ bool CApplication::OnKey(CKey& key)
       CButtonTranslator::GetInstance().GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.actionId);
+    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %s", __FUNCTION__, (int) key.GetButtonCode(), action.strAction.c_str());
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
