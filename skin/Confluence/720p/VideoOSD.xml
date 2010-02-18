@@ -207,7 +207,6 @@
 						<onright>604</onright>
 						<onup>703</onup>
 						<ondown>703</ondown>
-						<onclick>down</onclick>
 						<onclick>PlayerControl(Stop)</onclick>
 						<visible>!VideoPlayer.Content(LiveTV)</visible>
 					</control>
@@ -405,7 +404,6 @@
 						<onright>604</onright>
 						<onup>700</onup>
 						<ondown>700</ondown>
-						<onclick>down</onclick>
 						<onclick>PlayerControl(Stop)</onclick>
 						<visible>VideoPlayer.Content(LiveTV)</visible>
 					</control>
