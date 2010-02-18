@@ -101,7 +101,7 @@ if ! which lh > /dev/null ; then
 	LH_HOMEDIR=$WORKPATH/Tools/live-helper
 
 	export LH_BASE="${LH_HOMEDIR}"
-	export PATH="${LH_BASE}/helpers:${PATH}"
+	export PATH="${PATH}:${LH_BASE}/helpers"
 
 	cd $THISDIR
 fi
