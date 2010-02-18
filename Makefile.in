@@ -514,9 +514,13 @@ install-libraries:
 	@echo "Copying XBMC addon helper libraries to $(libdir)"
 	@mkdir -p $(libdir)
 	@cp -P lib/libXBMC_addon/libXBMC_addon.so* $(libdir)
+	@cp -P lib/libXBMC_addon/libXBMC_addon.a $(libdir)
 	@cp -P lib/libXBMC_gui/libXBMC_gui.so* $(libdir)
+	@cp -P lib/libXBMC_gui/libXBMC_gui.a $(libdir)
 	@cp -P lib/libXBMC_pvr/libXBMC_pvr.so* $(libdir)
+	@cp -P lib/libXBMC_pvr/libXBMC_pvr.a $(libdir)
 	@cp -P lib/libXBMC_vis/libXBMC_vis.so* $(libdir)
+	@cp -P lib/libXBMC_vis/libXBMC_vis.a $(libdir)
 
 install-headers:
 	@echo "Copying XBMC addon helper headers to $(prefix)/include/xbmc"
@@ -567,6 +571,7 @@ uninstall:
 	@rm -rf $(prefix)/bin/xbmc-standalone
 	@rm -rf $(prefix)/share/xsessions/XBMC.desktop
 	@rm -rf $(libdir)/libXBMC_*
+	@rm -rf $(prefix)/include/xbmc
 	@echo "Done!"
 
 reallyclean:
@@ -621,6 +626,4 @@ clean-libaddons:
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-pvrclients clean-screensavers clean-visualisations clean-pvrclients
-
-
+	clean-pvrclients clean-screensavers clean-visualisations clean-libaddons

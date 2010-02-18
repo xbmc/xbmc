@@ -34,6 +34,8 @@
 #define DEFAULT_HANDLE_MSG    true
 #define DEFAULT_PRIORITY      99
 #define DEFAULT_TIMEOUT       3
+#define DEFAULT_USE_REC_DIR   false
+#define DEFAULT_REC_DIR       ""
 
 extern bool         g_bCreated;           ///< Shows that the Create function was successfully called
 extern int          g_iClientID;          ///< The PVR client ID used by XBMC for this driver
@@ -50,5 +52,7 @@ extern bool         g_bRadioEnabled;      ///< Send also Radio channels list to 
 extern bool         g_bCharsetConv;       ///< Convert VDR's incoming strings to UTF8 character set
 extern bool         g_bNoBadChannels;     ///< Ignore channels without a PID, APID and DPID
 extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to XBMC OSD
+extern bool         g_bUseRecordingsDir;  ///< Use a normal directory if true for recordings
+extern CStdString   g_szRecordingsDir;    ///< The path to the recordings directory
 
 #endif /* CLIENT_H */

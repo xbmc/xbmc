@@ -25,12 +25,14 @@
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
 #include "pvrclient-vdr_os.h"
+#include "StdString.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 #ifdef __APPLE__
 #include <sys/stat.h>
@@ -96,6 +98,8 @@ bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int numdigits(int n);
 bool IsNumber(const char *s);
+CStdString AddDirectory(const char *DirName, const char *FileName);
+char *ReadLink(const char *FileName); ///< returns a new string allocated on the heap, which the caller must delete (or NULL in case of an error)
 
 class cTimeMs
 {
@@ -169,6 +173,34 @@ public:
   ssize_t Read(void *Data, size_t Size);
   ssize_t Write(const void *Data, size_t Size);
   static cUnbufferedFile *Create(const char *FileName, int Flags, mode_t Mode = DEFFILEMODE);
+};
+
+class cReadDir
+{
+private:
+  DIR *directory;
+  struct dirent *result;
+  union // according to "The GNU C Library Reference Manual"
+  {
+    struct dirent d;
+    char b[offsetof(struct dirent, d_name) + NAME_MAX + 1];
+  } u;
+public:
+  cReadDir(const char *Directory);
+  ~cReadDir();
+  bool Ok(void) { return directory != NULL; }
+  struct dirent *Next(void);
+};
+
+class cReadLine
+{
+private:
+  size_t size;
+  char *buffer;
+public:
+  cReadLine(void);
+  ~cReadLine();
+  char *Read(FILE *f);
 };
 
 inline int CompareStrings(const void *a, const void *b)

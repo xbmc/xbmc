@@ -217,6 +217,28 @@ bool IsNumber(const char *s)
   return true;
 }
 
+CStdString AddDirectory(const char *DirName, const char *FileName)
+{
+  CStdString ret;
+  ret.Format("%s/%s", DirName && *DirName ? DirName : ".", FileName);
+  return ret;
+}
+
+char *ReadLink(const char *FileName)
+{
+  if (!FileName)
+    return NULL;
+  char *TargetName = canonicalize_file_name(FileName);
+  if (!TargetName)
+  {
+    if (errno == ENOENT) // file doesn't exist
+      TargetName = strdup(FileName);
+    else // some other error occurred
+      XBMC_log(LOG_ERROR, "ERROR (%s,%d,s): %m", __FILE__, __LINE__, FileName);
+  }
+  return TargetName;
+}
+
 
 // --- cTimeMs ---------------------------------------------------------------
 
@@ -636,4 +658,53 @@ cUnbufferedFile *cUnbufferedFile::Create(const char *FileName, int Flags, mode_t
      File = NULL;
      }
   return File;
+}
+
+// --- cReadDir --------------------------------------------------------------
+
+cReadDir::cReadDir(const char *Directory)
+{
+  directory = opendir(Directory);
+}
+
+cReadDir::~cReadDir()
+{
+  if (directory)
+    closedir(directory);
+}
+
+struct dirent *cReadDir::Next(void)
+{
+  return directory && readdir_r(directory, &u.d, &result) == 0 ? result : NULL;
+}
+
+// --- cReadLine -------------------------------------------------------------
+
+cReadLine::cReadLine(void)
+{
+  size = 0;
+  buffer = NULL;
+}
+
+cReadLine::~cReadLine()
+{
+  free(buffer);
+}
+
+char *cReadLine::Read(FILE *f)
+{
+  int n = getline(&buffer, &size, f);
+  if (n > 0) {
+     n--;
+     if (buffer[n] == '\n') {
+        buffer[n] = 0;
+        if (n > 0) {
+           n--;
+           if (buffer[n] == '\r')
+              buffer[n] = 0;
+           }
+        }
+     return buffer;
+     }
+  return NULL;
 }

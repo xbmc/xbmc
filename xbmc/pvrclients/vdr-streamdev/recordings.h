@@ -29,16 +29,29 @@
 #include "tools.h"
 
 #define DEFAULTFRAMESPERSECOND 25.0
-#define MAXPRIORITY 99
-#define MAXLIFETIME 99
+#define MAXPRIORITY       99
+#define MAXLIFETIME       99
+#define RECEXT            ".rec"
+#define DELEXT            ".del"
+#define DATAFORMATPES     "%4d-%02d-%02d.%02d%*c%02d.%02d.%02d" RECEXT
+#define NAMEFORMATPES     "%s/%s/" "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
+#define DATAFORMATTS      "%4d-%02d-%02d.%02d.%02d.%d-%d" RECEXT
+#define NAMEFORMATTS      "%s/%s/" DATAFORMATTS
+#define RESUMEFILESUFFIX  "/resume%s%s"
+#define SUMMARYFILESUFFIX "/summary.vdr"
+#define INFOFILESUFFIX    "/info"
+#define MARKSFILESUFFIX   "/marks"
 
 class cRecording
 {
 private:
   int m_Index;
+  int m_resume;
+  int m_fileSizeMB;
   char *m_channelName;
   char *m_fileName;
   char *m_directory;
+  CStdString m_stream_url;
   double m_framesPerSecond;
   int m_priority;
   int m_lifetime;
@@ -48,12 +61,16 @@ private:
   int m_Duration;
   unsigned int m_TableID;
   unsigned int m_Version;
+  bool m_isPesRecording;
+  bool m_deleted;
   char *m_title;             // Title of this event
   char *m_shortText;         // Short description of this event (typically the episode name in case of a series)
   char *m_description;       // Description of this event
   time_t m_vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
+  bool Read(FILE *f);
 
 public:
+  cRecording(const char *FileName);
   cRecording(const PVR_RECORDINGINFO *Recording);
   cRecording();
   virtual ~cRecording();
@@ -75,6 +92,7 @@ public:
   const char *Description(void) const { return m_description; }
   const char *FileName(void) const { return m_fileName; }
   const char *Directory(void) const { return m_directory; }
+  const char *StreamURL(void) const { return m_stream_url.c_str(); }
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);

@@ -25,6 +25,9 @@
 
 #include "StdString.h"
 #include "recordings.h"
+#include "client.h"
+
+#define RESUME_NOT_INITIALIZED (-2)
 
 cRecording::cRecording()
 {
@@ -45,11 +48,95 @@ cRecording::cRecording()
   m_Version         = 0xFF;
   m_vps             = 0;
   m_Index           = -1;
+  m_isPesRecording  = false;
+  m_resume          = RESUME_NOT_INITIALIZED;
+  m_fileSizeMB      = -1; // unknown
+  m_deleted         = false;
 }
 
 cRecording::cRecording(const PVR_RECORDINGINFO *Recording)
 {
 
+}
+
+cRecording::cRecording(const char *FileName)
+{
+  m_channelName     = NULL;
+  m_aux             = NULL;
+  m_title           = NULL;
+  m_shortText       = NULL;
+  m_description     = NULL;
+  m_fileName        = NULL;
+  m_directory       = NULL;
+  m_resume          = RESUME_NOT_INITIALIZED;
+  m_fileSizeMB      = -1; // unknown
+  m_priority        = MAXPRIORITY;
+  m_lifetime        = MAXLIFETIME;
+  m_isPesRecording  = false;
+  m_framesPerSecond = DEFAULTFRAMESPERSECOND;
+  m_deleted         = false;
+
+  FileName = m_fileName = strdup(FileName);
+  if (*(m_fileName + strlen(m_fileName) - 1) == '/')
+     *(m_fileName + strlen(m_fileName) - 1) = 0;
+  FileName += g_szRecordingsDir.length() + 1;
+  const char *p = strrchr(FileName, '/');
+  if (p)
+  {
+    time_t now = time(NULL);
+    struct tm tm_r;
+    struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
+    t.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
+    int channel;
+    int instanceId;
+    if (7 == sscanf(p + 1, DATAFORMATTS, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &channel, &instanceId)
+        || 7 == sscanf(p + 1, DATAFORMATPES, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &m_priority, &m_lifetime))
+    {
+      t.tm_year -= 1900;
+      t.tm_mon--;
+      t.tm_sec = 0;
+      m_StartTime = mktime(&t);
+      char *path = MALLOC(char, p - FileName + 1);
+      strncpy(path, FileName, p - FileName);
+      path[p - FileName] = 0;
+
+      /* Make some default title based upon directory names */
+      p = strrchr(path, '/');
+      if (p)
+        m_title = strcpyrealloc(m_title, p + 1);
+      else
+        m_title = strcpyrealloc(m_title, path);
+
+      m_directory = MALLOC(char, strlen(path) - strlen(m_title) + 1);
+      strncpy(m_directory, path, strlen(path) - strlen(m_title));
+      m_directory[strlen(path) - strlen(m_title)] = 0;
+
+      if (g_bCharsetConv)
+      {
+        CStdString str_result = m_directory;
+        XBMC_unknown_to_utf8(str_result);
+        m_directory = strcpyrealloc(m_directory, str_result.c_str());
+      }
+
+      m_isPesRecording = instanceId < 0;
+      m_stream_url.Format("%s/%s", m_fileName, m_isPesRecording ? "*.vdr" : "*.ts");
+      free(path);
+    }
+    else
+      return;
+    // read info file:
+    CStdString InfoFileName;
+    InfoFileName.Format("%s%s", m_fileName, m_isPesRecording ? INFOFILESUFFIX ".vdr" : INFOFILESUFFIX);
+    FILE *f = fopen(InfoFileName.c_str(), "r");
+    if (f)
+    {
+      if (!Read(f))
+        XBMC_log(LOG_ERROR, "EPG data problem in file %s", InfoFileName.c_str());
+      fclose(f);
+    }
+    else if (errno != ENOENT)
+      XBMC_log(LOG_ERROR, "ERROR (%s,%d,s): %m", __FILE__, __LINE__, InfoFileName.c_str());
+  }
 }
 
 cRecording::~cRecording()
@@ -61,6 +148,23 @@ cRecording::~cRecording()
   free(m_description);
   free(m_fileName);
   free(m_directory);
+}
+
+bool cRecording::Read(FILE *f)
+{
+  cReadLine ReadLine;
+  char *s;
+  int line = 0;
+  while ((s = ReadLine.Read(f)) != NULL)
+  {
+    ++line;
+    CStdString str_result = s;
+    if (g_bCharsetConv)
+      XBMC_unknown_to_utf8(str_result);
+    if (!ParseLine(str_result.c_str()))
+      return false;
+  }
+  return true;
 }
 
 bool cRecording::ParseLine(const char *s)
@@ -93,7 +197,8 @@ bool cRecording::ParseLine(const char *s)
         unsigned int TableID = 0;
         unsigned int Version = 0xFF;
         int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
-        if (n >= 3 && n <= 5) {
+        if (n >= 3 && n <= 5)
+        {
           m_EventID   = EventID;
           m_StartTime = StartTime;
           m_Duration  = Duration;

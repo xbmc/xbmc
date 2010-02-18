@@ -45,6 +45,8 @@ bool         g_bRadioEnabled          = DEFAULT_RADIO;        ///< Send also Rad
 bool         g_bCharsetConv           = DEFAULT_CHARCONV;     ///< Convert VDR's incoming strings to UTF8 character set
 bool         g_bNoBadChannels         = DEFAULT_BADCHANNELS;  ///< Ignore channels without a PID, APID and DPID
 bool         g_bHandleMessages        = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
+bool         g_bUseRecordingsDir      = DEFAULT_USE_REC_DIR;  ///< Use a normal directory if true for recordings
+CStdString   g_szRecordingsDir        = DEFAULT_REC_DIR;      ///< The path to the recordings directory
 
 /* Client member variables */
 uint64_t     m_currentPlayingRecordBytes;
@@ -539,6 +541,32 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_bHandleMessages = DEFAULT_HANDLE_MSG;
   }
 
+  /* Read setting "ignorechannels" from settings.xml */
+  if (!XBMC_get_setting("usedirectory", &g_bUseRecordingsDir))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'usedirectory' setting, falling back to 'false' as default");
+    g_bUseRecordingsDir = DEFAULT_USE_REC_DIR;
+  }
+
+  if (g_bUseRecordingsDir)
+  {
+    /* Read setting "recordingdir" from settings.xml */
+    buffer = (char*) malloc (2048);
+    buffer[0] = 0; /* Set the end of string */
+
+    if (XBMC_get_setting("recordingdir", buffer))
+      g_szRecordingsDir = buffer;
+    else
+    {
+      /* If setting is unknown fallback to defaults */
+      XBMC_log(LOG_ERROR, "Couldn't get 'recordingdir' setting, directory not set");
+      g_szRecordingsDir = DEFAULT_REC_DIR;
+      g_bUseRecordingsDir = false;
+    }
+    free (buffer);
+  }
+
   /* Create connection to streamdev-server */
   if (!VTPTransceiver.CheckConnection())
   {
@@ -638,6 +666,16 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   {
     XBMC_log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", g_bHandleMessages, *(bool*) settingValue);
     g_bHandleMessages = *(bool*) settingValue;
+  }
+  else if (str == "usedirectory")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'usedirectory' from %u to %u", g_bUseRecordingsDir, *(bool*) settingValue);
+    g_bUseRecordingsDir = *(bool*) settingValue;
+  }
+  else if (str == "recordingdir")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'recordingdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
+    g_bUseRecordingsDir = (const char*) settingValue;
   }
 
   return STATUS_OK;

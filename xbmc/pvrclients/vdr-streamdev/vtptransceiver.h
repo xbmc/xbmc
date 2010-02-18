@@ -49,6 +49,7 @@ private:
 	SOCKET m_DataSockets[si_Count];
 	SOCKET m_VTPSocket;
 	cMutex m_Mutex;
+	int    m_recIndex;
 
   struct sockaddr_in m_LocalAddr;
   struct sockaddr_in m_RemoteAddr;
@@ -58,6 +59,7 @@ private:
   bool Connect(const std::string &host, int port);
   void Close();
   bool IsConnected(SOCKET socket, fd_set *rd, fd_set *wr, fd_set *ex);
+  void ScanVideoDir(PVRHANDLE handle, const char *DirName, bool Deleted = false, int LinkLevel = 0);
 
 public:
   CVTPTransceiver();

@@ -31,6 +31,7 @@
 #include "FileSystem/File.h"
 #include "Picture.h"
 #include "MediaManager.h"
+#include "FileSystem/StackDirectory.h"
 
 /* Dialog windows includes */
 #include "GUIDialogFileBrowser.h"
@@ -1801,13 +1802,75 @@ bool CGUIWindowTV::PlayFile(CFileItem *item, bool playMinimized)
       g_settings.m_bStartVideoWindowed = true;
     }
   }
-  if (!g_application.PlayFile(*item))
+
+  if (item->m_strPath.Left(17) == "pvr://recordings/")
   {
-    if (item->m_strPath.Left(17) == "pvr://recordings/")
+    /* For recordings we check here for a available stream URL */
+    CStdString stream = item->GetPVRRecordingInfoTag()->StreamURL();
+    if (stream != "")
+    {
+      /* Isolate the folder from the filename */
+      size_t found = stream.find_last_of("/");
+      if (found == CStdString::npos)
+        found = stream.find_last_of("\\");
+
+      if (found != CStdString::npos)
+      {
+        /* Check here for asterix at the begin of the filename */
+        if (stream[found+1] == '*')
+        {
+          /* Create a "stack://" url with all files matching the extension */
+          CStdString ext = CUtil::GetExtension(stream);
+          CStdString dir = stream.substr(0, found).c_str();
+
+          CFileItemList items;
+          CDirectory::GetDirectory(dir, items);
+          items.Sort(SORT_METHOD_FILE ,SORT_ORDER_ASC);
+
+          vector<int> stack;
+          for (int i = 0; i < items.Size(); ++i)
+          {
+            if (CUtil::GetExtension(items[i]->m_strPath) == ext)
+              stack.push_back(i);
+          }
+
+          if (stack.size() > 0)
+          {
+            /* If we have a stack change the path of the item to it */
+            CStackDirectory dir;
+            CStdString stackPath = dir.ConstructStackPath(items, stack);
+            item->m_strPath = stackPath;
+          }
+        }
+        else
+        {
+          /* If no asterix is present play only the given stream URL */
+          item->m_strPath = stream;
+        }
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "CGUIWindowTV: Can't open recording, no valid filename!");
+        CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
+        return false;
+      }
+    }
+
+    if (!g_application.PlayFile(*item, false))
+    {
       CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
-    else
-      CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
-    return false;
+      return false;
+    }
   }
+  else
+  {
+    /* Play Live TV */
+    if (!g_application.PlayFile(*item, false))
+    {
+      CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
+      return false;
+    }
+  }
+
   return true;
 }

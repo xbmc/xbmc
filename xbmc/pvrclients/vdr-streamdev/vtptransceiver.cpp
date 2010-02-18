@@ -33,7 +33,8 @@
 #include "client.h"
 
 //#define DEBUG_VTP
-#define MINLOGREPEAT 10 //don't log connect failures too often (seconds)
+#define MINLOGREPEAT    10 //don't log connect failures too often (seconds)
+#define MAX_LINK_LEVEL  6
 
 using namespace std;
 
@@ -917,63 +918,133 @@ int CVTPTransceiver::GetNumRecordings(void)
   return atol(data.c_str());
 }
 
+void CVTPTransceiver::ScanVideoDir(PVRHANDLE handle, const char *DirName, bool Deleted, int LinkLevel)
+{
+  cReadDir d(DirName);
+  struct dirent *e;
+  while ((e = d.Next()) != NULL)
+  {
+    if (strcmp(e->d_name, ".") && strcmp(e->d_name, ".."))
+    {
+      char *buffer = strdup(AddDirectory(DirName, e->d_name));
+      struct stat st;
+      if (stat(buffer, &st) == 0)
+      {
+        int Link = 0;
+        if (S_ISLNK(st.st_mode))
+        {
+          if (LinkLevel > MAX_LINK_LEVEL)
+          {
+            XBMC_log(LOG_ERROR, "max link level exceeded - not scanning %s", buffer);
+            continue;
+          }
+          Link = 1;
+          char *old = buffer;
+          buffer = ReadLink(old);
+          free(old);
+          if (!buffer)
+            continue;
+          if (stat(buffer, &st) != 0)
+          {
+            free(buffer);
+            continue;
+          }
+        }
+        if (S_ISDIR(st.st_mode))
+        {
+          if (endswith(buffer, Deleted ? DELEXT : RECEXT))
+          {
+            cRecording recording(buffer);
+
+            PVR_RECORDINGINFO tag;
+            tag.index           = m_recIndex++;
+            tag.channel_name    = recording.ChannelName();
+            tag.lifetime        = recording.Lifetime();
+            tag.priority        = recording.Priority();
+            tag.recording_time  = recording.StartTime();
+            tag.duration        = recording.Duration();
+            tag.subtitle        = recording.ShortText();
+            tag.description     = recording.Description();
+            tag.title           = recording.Title();
+            tag.directory       = recording.Directory();
+            tag.stream_url      = recording.StreamURL();
+
+            PVR_transfer_recording_entry(handle, &tag);
+          }
+          else
+            ScanVideoDir(handle, buffer, Deleted, LinkLevel + Link);
+        }
+      }
+      free(buffer);
+    }
+  }
+}
+
 PVR_ERROR CVTPTransceiver::RequestRecordingsList(PVRHANDLE handle)
 {
-  vector<string> linesShort;
-  int            code;
-
-  if (!CheckConnection()) return PVR_ERROR_SERVER_ERROR;
-
-  CMD_LOCK;
-
-  if (!SendCommand("LSTR", code, linesShort))
-    return PVR_ERROR_SERVER_ERROR;
-
-  for (vector<string>::iterator it = linesShort.begin(); it != linesShort.end(); it++)
+  if (g_bUseRecordingsDir && g_szRecordingsDir != "")
   {
-    string& data(*it);
-    CStdString str_result = data;
+    m_recIndex = 1;
+    ScanVideoDir(handle, g_szRecordingsDir.c_str());
+  }
+  else
+  {
+    vector<string> linesShort;
+    int            code;
 
-    /* Convert to UTF8 string format */
-    if (g_bCharsetConv)
-      XBMC_unknown_to_utf8(str_result);
+    if (!CheckConnection()) return PVR_ERROR_SERVER_ERROR;
 
-    cRecording recording;
-    if (recording.ParseEntryLine(str_result.c_str()))
+    CMD_LOCK;
+
+    if (!SendCommand("LSTR", code, linesShort))
+      return PVR_ERROR_SERVER_ERROR;
+
+    for (vector<string>::iterator it = linesShort.begin(); it != linesShort.end(); it++)
     {
-      vector<string> linesDetails;
+      string& data(*it);
+      CStdString str_result = data;
 
-      CStdString command;
-      command.Format("LSTR %i", recording.Index());
-      if (!SendCommand(command, code, linesDetails))
-        continue;
+      /* Convert to UTF8 string format */
+      if (g_bCharsetConv)
+        XBMC_unknown_to_utf8(str_result);
 
-      for (vector<string>::iterator it2 = linesDetails.begin(); it2 != linesDetails.end(); it2++)
+      cRecording recording;
+      if (recording.ParseEntryLine(str_result.c_str()))
       {
-        string& data2(*it2);
-        CStdString str_details = data2;
+        vector<string> linesDetails;
 
-        /* Convert to UTF8 string format */
-        if (g_bCharsetConv)
-          XBMC_unknown_to_utf8(str_details);
+        CStdString command;
+        command.Format("LSTR %i", recording.Index());
+        if (!SendCommand(command, code, linesDetails))
+          continue;
 
-        recording.ParseLine(str_details.c_str());
+        for (vector<string>::iterator it2 = linesDetails.begin(); it2 != linesDetails.end(); it2++)
+        {
+          string& data2(*it2);
+          CStdString str_details = data2;
+
+          /* Convert to UTF8 string format */
+          if (g_bCharsetConv)
+            XBMC_unknown_to_utf8(str_details);
+
+          recording.ParseLine(str_details.c_str());
+        }
+
+        PVR_RECORDINGINFO tag;
+        tag.index           = recording.Index();
+        tag.channel_name    = recording.ChannelName();
+        tag.lifetime        = recording.Lifetime();
+        tag.priority        = recording.Priority();
+        tag.recording_time  = recording.StartTime();
+        tag.duration        = recording.Duration();
+        tag.subtitle        = recording.ShortText();
+        tag.description     = recording.Description();
+        tag.stream_url      = "";
+        tag.title           = recording.FileName();
+        tag.directory       = recording.Directory();
+
+        PVR_transfer_recording_entry(handle, &tag);
       }
-
-      PVR_RECORDINGINFO tag;
-      tag.index           = recording.Index();
-      tag.channel_name    = recording.ChannelName();
-      tag.lifetime        = recording.Lifetime();
-      tag.priority        = recording.Priority();
-      tag.recording_time  = recording.StartTime();
-      tag.duration        = recording.Duration();
-      tag.subtitle        = recording.ShortText();
-      tag.description     = recording.Description();
-      tag.stream_url      = "";
-      tag.title           = recording.FileName();
-      tag.directory       = recording.Directory();
-
-      PVR_transfer_recording_entry(handle, &tag);
     }
   }
 

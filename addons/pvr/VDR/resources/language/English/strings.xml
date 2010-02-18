@@ -10,4 +10,6 @@
     <string id="30006">Ignore Channels without VPID and APID</string>
     <string id="30007">Allow VDR Messages</string>
     <string id="30008">Priority</string>
+    <string id="30009">Read recordings from directory</string>
+    <string id="30010">VDR recordings directory</string>
 </strings>

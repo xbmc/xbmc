@@ -3,19 +3,35 @@ LIBDIR=@libdir@
 INCLUDES=-I. -I../../include -I../../xbmc/addons
 DEFINES+=
 CXXFLAGS=-fPIC
-OBJS=libXBMC_addon.o
+LIBNAME=libXBMC_addon
+OBJS=$(LIBNAME).o
 
-SLIB=libXBMC_addon.so.0.0.1
+LIB_SHARED=$(LIBNAME).so.0.0.1
+LIB_STATIC=$(LIBNAME).a
 
-$(SLIB): $(OBJS)
+all: $(LIB_SHARED) $(LIB_STATIC)
+
+$(LIB_SHARED): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(SLIB) $(OBJS)
+	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(LIB_SHARED) $(OBJS)
 	../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(CFLAGS) -shared -g -o $(SLIB) $(OBJS)
+	$(CXX) $(CFLAGS) -shared -g -o $(LIB_SHARED) $(OBJS)
 endif
-	@ln -sf $(SLIB) libXBMC_addon.so.0
-	@ln -sf $(SLIB) libXBMC_addon.so
+	@ln -sf $(LIB_SHARED) $(LIBNAME).so.0
+	@ln -sf $(LIB_SHARED) $(LIBNAME).so
+
+$(LIB_STATIC): $(OBJS)
+	$(AR) cq $@ $(OBJS)
+
+CLEAN_FILES = \
+	$(LIBNAME).so.0.0.1 \
+	$(LIBNAME).so.0 \
+	$(LIBNAME).so \
+	$(LIBNAME).a \
+
+DISTCLEAN_FILES= \
+	Makefile \
 
 include ../../Makefile.include
