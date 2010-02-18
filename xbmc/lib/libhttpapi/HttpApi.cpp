@@ -8,9 +8,6 @@
 
 CStdString CHttpApi::MethodCall(CStdString &command, CStdString &parameter)
 {
-  command = command.ToLower();
-  parameter = parameter.ToLower();
-
   if (parameter.IsEmpty())
     checkForFunctionTypeParas(command, parameter);
 
