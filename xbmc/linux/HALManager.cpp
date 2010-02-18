@@ -295,6 +295,7 @@ bool CHALManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);
+      device->HalIgnore   = libhal_device_get_property_bool(g_HalManager.m_Context, udi, "volume.ignore", NULL);
       ApproveDevice(device);
 
       libhal_drive_free(tempDrive);
@@ -617,6 +618,9 @@ bool CHALManager::ApproveDevice(CStorageDevice *device)
 
   // Ignore some mountpoints, unless a weird setup these should never contain anything usefull for an enduser.
   if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0 || strcmp(device->MountPoint, "/mnt/") == 0 || strcmp(device->MountPoint, "/home/") == 0)
+    approve = false;
+
+  if (device->HalIgnore)
     approve = false;
 
   device->Approved = approve;

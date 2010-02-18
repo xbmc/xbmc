@@ -39,7 +39,7 @@
 		</RegExp>
 	</GetByIMDBId>
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="http://api.bing.com/xml.aspx?AppId=16E50AB9947899C41433EB944C60174737855036&Sources=web&xmltype=attributebased&Query=site:ofdb.de/film+\1$$4&web.count=50" dest="3">
+		<RegExp input="$$1" output="http://api.bing.com/xml.aspx?AppId=16E50AB9947899C41433EB944C60174737855036&amp;Sources=web&amp;xmltype=attributebased&amp;Query=site:ofdb.de/film+\1$$4&amp;web.count=50" dest="3">
 			<RegExp input="$$2" output="%20\1" dest="4+">
 				<expression clear="yes">(.+)</expression>
 			</RegExp>

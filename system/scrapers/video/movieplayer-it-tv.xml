@@ -1,8 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Movieplayer.it scraper by KoTiX -->
 <!-- A great Thanks Sipontino for the original version of this scraper and his help teaching me the RegExp -->
 <!-- to the XBMC team for the Greatest Mediacenter app in the world and for their hard work. -->
-
-<?xml version="1.0" encoding="utf-8"?>
 <scraper name="movieplayer.it" date="2009-12-15" content="tvshows" framework="1.0" thumb="movieplayer-it.jpg" language="it">
 
 	<GetSettings dest="3">

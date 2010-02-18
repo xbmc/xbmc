@@ -90,10 +90,17 @@ bool CWebServer::IsAuthenticated (CWebServer *server, struct MHD_Connection *con
   return server->m_Credentials64Encoded.Equals(headervalue + strlen(strbase));
 }
 
+#if (MHD_VERSION >= 0x00040001)
 int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                       const char *url, const char *method,
                       const char *version, const char *upload_data,
                       size_t *upload_data_size, void **con_cls)
+#else
+int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
+                      const char *url, const char *method,
+                      const char *version, const char *upload_data,
+                      unsigned int *upload_data_size, void **con_cls)
+#endif
 {
   CWebServer *server = (CWebServer *)cls;
 
@@ -155,7 +162,11 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   return MHD_NO;
 }
 
+#if (MHD_VERSION >= 0x00040001)
 int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size)
+#else
+int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, unsigned int *upload_data_size)
+#endif
 {
 #ifdef HAS_JSONRPC
   CStdString jsoncall;
