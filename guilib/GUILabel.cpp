@@ -91,6 +91,8 @@ void CGUILabel::Render()
         posX += m_renderRect.Width() * 0.5f;
       align = m_label.align & ~XBFONT_CENTER_Y;  // ignore vertical alignment
     }
+    else
+      align |= XBFONT_TRUNCATED;
     m_textLayout.Render(posX, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, align, m_renderRect.Width(), renderSolid);
   }
 }
