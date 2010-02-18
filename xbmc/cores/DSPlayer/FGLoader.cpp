@@ -38,6 +38,7 @@
 #include <ks.h>
 #include <Codecapi.h>
 #include "streamsmanager.h"
+#include "FilterCoreFactory/FilterSelectionRule.h"
 
 using namespace std;
 
@@ -371,7 +372,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   m_SplitterF = NULL;
 
   CStdString extension = pFileItem.GetAsUrl().GetFileType();
-  CStdString filterName;
+  //CStdString filterName;
   bool extensionNotFound = true;
 
   for (pRules; pRules; pRules = pRules->NextSiblingElement())
@@ -395,22 +396,41 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     InsertAudioRenderer(); // First added, last connected
     InsertVideoRenderer();
 
-    TiXmlElement* pSubTags = pRules->FirstChildElement("source");
-    filterName = pSubTags->GetText();
+    CFilterSelectionRule *c = NULL;
+    std::vector<CStdString> filters;
 
-    if (FAILED(InsertSourceFilter(pFileItem, filterName)))
+    c = new CFilterSelectionRule(pRules->FirstChildElement("source"), "source");
+    c->GetFilters(pFileItem, filters);
+    delete c;
+
+    if (filters.empty())
+    {
+      //TODO: Error message
+      return E_FAIL;
+    }
+
+    if (FAILED(InsertSourceFilter(pFileItem, filters[0])))
 	  {
 		  return E_FAIL;
-	  }		  
+	  }
+
+    filters.clear();
 
     if (! m_SplitterF)
     {
-      pSubTags = pRules->FirstChildElement("splitter");
-      filterName = pSubTags->GetText();
-      if (FAILED(InsertSplitter(pFileItem, filterName)))
+      c = new CFilterSelectionRule(pRules->FirstChildElement("splitter"), "splitter");
+      c->GetFilters(pFileItem, filters);
+      delete c;
+
+      if (filters.empty())
+        return E_FAIL; //TODO: Error message
+      
+      if (FAILED(InsertSplitter(pFileItem, filters[0])))
       {
         return E_FAIL;
       }
+
+      filters.clear();
     }
 
     /* Ok, the splitter is added to the graph. We need to detect the video stream codec in order to choose
@@ -452,34 +472,46 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     }
     EndEnumPins(pEP, pBF)
 
-    if (m_UsingDXVADecoder)
-    {
-      pSubTags = pRules->FirstChildElement("dxva");
-      if (! pSubTags)
-        pSubTags = pRules->FirstChildElement("video");
-    } else
-      pSubTags = pRules->FirstChildElement("video");
+    c = new CFilterSelectionRule(pRules->FirstChildElement("video"), "video");
+    c->GetFilters(pFileItem, filters, m_UsingDXVADecoder);
+    delete c;
 
-    filterName = pSubTags->GetText();
-    if (FAILED(InsertFilter(filterName, &m_VideoDecF, m_pStrVideodec)))
+    if (filters.empty())
+      return E_FAIL; //TODO: Error message
+
+    if (FAILED(InsertFilter(filters[0], &m_VideoDecF, m_pStrVideodec)))
     {
       return E_FAIL;
     }
 
-    pSubTags = pRules->FirstChildElement("audio");
-    filterName = pSubTags->GetText();
-    if (FAILED(InsertFilter(filterName, &m_AudioDecF, m_pStrAudiodec)))
+    filters.clear();
+
+    c = new CFilterSelectionRule(pRules->FirstChildElement("audio"), "audio");
+    c->GetFilters(pFileItem, filters);
+    delete c;
+
+    if (filters.empty())
+      return E_FAIL;
+
+    if (FAILED(InsertFilter(filters[0], &m_AudioDecF, m_pStrAudiodec)))
     {
       return E_FAIL;
     }
+
+    filters.clear();
 
     CStdString extraName = "";
-    pSubTags = pRules->FirstChildElement("extra");
+    TiXmlElement *pSubTags = pRules->FirstChildElement("extra");
     for (pSubTags; pSubTags; pSubTags = pSubTags->NextSiblingElement())
     {
-      filterName = pSubTags->GetText();
-      if (SUCCEEDED(InsertFilter(filterName, &pBF, extraName)))
+      c = new CFilterSelectionRule(pSubTags, "extra");
+      c->GetFilters(pFileItem, filters, m_UsingDXVADecoder);
+      delete c;
+
+      if (SUCCEEDED(InsertFilter(filters[0], &pBF, extraName)))
         m_extraFilters.push_back(pBF);
+
+      filters.clear();
     }
 
     break;

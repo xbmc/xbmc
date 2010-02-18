@@ -72,6 +72,7 @@ CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
   m_bReachedEnd = false;
   m_bChangingAudioStream = false;
   g_dsconfig.pGraph = this;
+  m_Filename = "";
 }
 
 CDSGraph::~CDSGraph()
@@ -83,10 +84,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 {
   if (CDSPlayer::PlayerState != DSPLAYER_LOADING)
     return E_FAIL;
-
   HRESULT hr;
 
   m_VideoInfo.Clear();
+  m_Filename = file.GetAsUrl().GetFileName();
 
   m_pGraphBuilder = new CFGManager();
   m_pGraphBuilder->InitManager();
@@ -98,14 +99,17 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   if (FAILED(hr))
+  {
+    m_Filename = "";
     return hr;
+  }
 
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaSeeking),(void **)&m_pMediaSeeking);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaControl),(void **)&m_pMediaControl);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaEvent),(void **)&m_pMediaEvent);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
 
-  // Audio streams
+  // Audio & subtitle streams
   CStreamsManager::getSingleton()->InitManager(m_pGraphBuilder->GetGraphBuilder2(), this);
   CStreamsManager::getSingleton()->LoadStreams();
 
@@ -118,28 +122,20 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   tmestamp = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s Timestamp before loading video info with mediainfo.dll %I64d",__FUNCTION__,tmestamp);
   
-  UpdateCurrentVideoInfo(file.GetAsUrl().GetFileName());
+  UpdateCurrentVideoInfo();
   
   tmestamp = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s Timestamp after loading video info with mediainfo.dll  %I64d",__FUNCTION__,tmestamp);
   
 
   SetVolume(g_settings.m_nVolumeLevel);
-  //Hide subtitles in ffdshow
-  g_dsconfig.ShowHideSubtitles(0);
   
   //Get cached subs
-  std::vector<std::string> filenames;
-  std::string strTmpFle;
-  strTmpFle.append(file.GetAsUrl().GetFileName().c_str());
-  CDVDFactorySubtitle::GetSubtitles(filenames, strTmpFle);
+  
   //TODO add addsubtitles stream from external file in the stream manager
   //for(unsigned int i=0;i<filenames.size();i++)
   //  g_dsconfig.SetSubtitlesFile(filenames[i]);
   //For an unknown reason the subtitles are not working for the whole playback if we are using this
-
-  g_settings.m_currentVideoSettings.m_SubtitleCached = true;
-  g_dsconfig.SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
 
   //still need to be added
   //SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
@@ -161,6 +157,7 @@ void CDSGraph::CloseFile()
 {
   CAutoLock lock(&m_ObjectLock);
   HRESULT hr;
+  m_Filename = "";
 
   if (m_pGraphBuilder)
   {
@@ -274,31 +271,13 @@ void CDSGraph::UpdateState()
       break;
   }
 }
-void CDSGraph::UpdateCurrentVideoInfo(CStdString currentFile)
+void CDSGraph::UpdateCurrentVideoInfo()
 {
   
   m_VideoInfo.dxva_info = g_dsconfig.GetDxvaMode();
-  m_pGraphBuilder->GetFileInfo(&m_VideoInfo.filter_source,&m_VideoInfo.filter_splitter,&m_VideoInfo.filter_audio_dec,&m_VideoInfo.filter_video_dec,&m_VideoInfo.filter_audio_renderer);
-  
-  
-  /*MediaInfo MI;
-  MI.Open(currentFile.c_str());
-  MI.Option(_T("Complete"));
-  m_VideoInfo.codec_video.AppendFormat("Codec video:%s",MI.Get(Stream_Video,0,_T("CodecID/Hint")).c_str());
-  m_VideoInfo.codec_video.AppendFormat("@%i Kbps",((int)MI.Get(Stream_Video,0,_T("BitRate")).c_str()) / 1024);
-  m_VideoInfo.codec_video.AppendFormat(" Res:%sx%s @ %s",MI.Get(Stream_Video,0,_T("Width")).c_str(),
-                                                         MI.Get(Stream_Video,0,_T("Height")).c_str(),
-                                                         MI.Get(Stream_Video,0,_T("FrameRate/String")).c_str());
-  CLog::Log(LOGDEBUG,"%s",m_VideoInfo.codec_video.c_str());
-  m_VideoInfo.codec_audio.AppendFormat("Codec audio:%s",MI.Get(Stream_Audio,0,_T("CodecID/Hint")).c_str());
-  m_VideoInfo.codec_audio.AppendFormat("@%i Kbps,",((int)MI.Get(Stream_Audio,0,_T("BitRate")).c_str()) / 1024);
-  m_VideoInfo.codec_audio.AppendFormat(" %s chn, %s, %s",MI.Get(Stream_Audio,0,_T("Channel(s)")).c_str(),
-                                                         MI.Get(Stream_Audio,0,_T("Resolution/String")).c_str(),
-                                                         MI.Get(Stream_Audio,0,_T("SamplingRate/String")).c_str());
-  CLog::Log(LOGDEBUG,"%s",m_VideoInfo.codec_audio.c_str());*/
-//Codec:XviD@1196 Kbps Res:624x352 @ 23.976 fps
-//Codec:MP3@1195 Kbps, 2 chn, 16 bits, 48.0 KHz
-//need too fix the audio kbps
+  m_pGraphBuilder->GetFileInfo(&m_VideoInfo.filter_source,
+    &m_VideoInfo.filter_splitter, &m_VideoInfo.filter_audio_dec,
+    &m_VideoInfo.filter_video_dec, &m_VideoInfo.filter_audio_renderer);
 }
 
 
@@ -359,11 +338,11 @@ void CDSGraph::SetVolume(long nVolume)
   if (m_pBasicAudio)
     m_pBasicAudio->put_Volume(nVolume);
 }
-void CDSGraph::SetDynamicRangeCompression(long drc)
+/*void CDSGraph::SetDynamicRangeCompression(long drc)
 {
   if (m_pBasicAudio)
     m_pBasicAudio->put_Volume(drc);
-}
+}*/
 
 void CDSGraph::Stop(bool rewind)
 {
@@ -756,21 +735,10 @@ CStdString CDSGraph::GetVideoInfo()
 
 bool CDSGraph::CanSeek()
 {
-//Its not doing any error
-  HRESULT hr;
-  DWORD seekcaps;//AM_SEEKING_SEEKING_CAPABILITIES 
-  seekcaps = AM_SEEKING_CanSeekForwards;
+  DWORD seekcaps = AM_SEEKING_CanSeekForwards;
   seekcaps |= AM_SEEKING_CanSeekBackwards;
   seekcaps |= AM_SEEKING_CanSeekAbsolute;
-  hr = m_pMediaSeeking->CheckCapabilities(&seekcaps);
-  if (SUCCEEDED(hr))
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return SUCCEEDED(m_pMediaSeeking->CheckCapabilities(&seekcaps));  
 }
 
 void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
@@ -814,7 +782,7 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   }
 }
 
-void CDSGraph::WaitForRendererToShutDown()
+/*void CDSGraph::WaitForRendererToShutDown()
 {
   if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_UNDEF)
     return;
@@ -826,4 +794,4 @@ void CDSGraph::WaitForRendererToShutDown()
       Sleep(100);
     }
   }
-}
+}*/

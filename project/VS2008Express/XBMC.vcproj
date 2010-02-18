@@ -2626,6 +2626,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="FilterCoreFactory"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

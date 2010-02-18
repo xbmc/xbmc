@@ -47,9 +47,9 @@
 using namespace XFILE;
 
 #define WM_GRAPHEVENT	WM_USER + 13
-
 #define TIME_FORMAT_TO_MS 10000      // 10 ^ 4
 
+/** Video state mode */
 enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
                   MOVIE_OPENED    = 0x01,
                   MOVIE_PLAYING   = 0x02,
@@ -58,57 +58,110 @@ enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
 
 class CFGManager;
 
+/** @brief Graph management helper
+ *
+ * Provide function for playing, pausing, stopping, handling the graph
+ */
 class CDSGraph
 {
 public:
   CDSGraph();
   virtual ~CDSGraph();
-  void Update(bool bPauseDrawing)                               { g_renderManager.Update(bPauseDrawing); }
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect)            { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+
+  /** Determine if the graph can seek
+   * @return True is the graph can seek, false else
+   * @remarks If True, it means that the graph can seek forward, backward and absolute
+   */
   virtual bool CanSeek();
-  float GetAspectRatio()                                        { return g_renderManager.GetAspectRatio(); }
-  void SetDynamicRangeCompression(long drc);
+  //void SetDynamicRangeCompression(long drc);
   
   bool InitializedOutputDevice();
 
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
   virtual HRESULT HandleGraphEvent();
+  /** @return True if the file reached end, false else */
   bool FileReachedEnd(){ return m_bReachedEnd; };
 
+  /** @return True if the graph is paused, false else */
   virtual bool IsPaused() const;
+  /** @return Current play speed */
   virtual double GetPlaySpeed() { return m_currentSpeed; };
 
+  /** Perform a Fast Forward
+   * @param[in] currentSpeed Fast Forward speed
+   */
   virtual void DoFFRW(int currentSpeed);
+  /** Performs a Seek
+   * @param[in] bPlus If true, performs a positive seek. If false, performs a negative seek
+   * @param[in] bLargeStep If true, performs a large seek
+   */
   virtual void Seek(bool bPlus, bool bLargeStep);
+  /** Performs a Seek
+   * @param[in] sec Time to seek (in millisecond)
+   */
   virtual void SeekInMilliSec(double sec);
+  /// Play the graph
   virtual void Play();
+  /// Pause the graph
   virtual void Pause();
+  /** Stop the graph
+   * @param[in] rewind If true, the graph is rewinded
+   */
   virtual void Stop(bool rewind = false);
+  /// Update current playing time
   virtual void UpdateTime();
+  /// Update current player state
   virtual void UpdateState();
-  virtual void UpdateCurrentVideoInfo(CStdString currentFile);
+  /// Update current video informations (filters name)
+  virtual void UpdateCurrentVideoInfo();
+  /// @return Current playing time
   virtual __int64 GetTime();
+  /// @return Total playing time in second (media length)
   virtual int GetTotalTime();
+  /// @return Total playing time in millisecond (media length)
   __int64 GetTotalTimeInMsec();
+  /// @return Current position in percent
   virtual float GetPercentage();
 
-
+  /** Create the graph and open the file
+   * @param[in] file File to play
+   * @param[in] options Playing options
+   * @return An HRESULT code
+   */
   HRESULT SetFile(const CFileItem& file, const CPlayerOptions &options);
+  /** Close the file, clean the graph and free resources */
   void CloseFile();
 
-  HRESULT UnloadGraph();
+  /// @return Path of the current playing file, or an empty string if there's no playing file
+  CStdString GetCurrentFile(void) { return m_Filename; }
 
-//USER ACTIONS
+  /** Sets the volume (amplitude) of the audio signal 
+   * @param[in] nVolume The volume level in 1/100ths dB Valid values range from -10,000 (silence) to 0 (full volume) 0 = 0 dB -10000 = -100 dB
+   */
   void SetVolume(long nVolume);
 
-//INFORMATION REQUESTED FOR THE GUI
+  /// @return General informations about filters
   CStdString GetGeneralInfo();
+  /// @return Informations about the current audio track
   CStdString GetAudioInfo();
+  /// @return Informations about the current video track
   CStdString GetVideoInfo();  
  
 protected:
 
-  void WaitForRendererToShutDown();
+  /** Unload the graph and release all the filters
+   * @return A HRESULT code
+   */
+  HRESULT UnloadGraph();
+  //void WaitForRendererToShutDown();
+  
+private:
+  //Direct Show Filters
+  CFGManager*                     m_pGraphBuilder;
+  IMediaControl*                  m_pMediaControl;  
+  IMediaEventEx*                  m_pMediaEvent;
+  IMediaSeeking*                  m_pMediaSeeking;
+  IBasicAudio*                    m_pBasicAudio;
 
   bool m_bAllowFullscreen;
   bool m_bReachedEnd;
@@ -119,7 +172,7 @@ protected:
   bool m_bChangingAudioStream;
   CFile m_File;   
   DWORD_PTR g_userId;
-  CCritSec m_ObjectLock;  
+  CCritSec m_ObjectLock;
 
   struct SPlayerState
   {
@@ -130,7 +183,7 @@ protected:
       time_total      = 0;
       player_state  = "";
     }
-	  double timestamp;         // last time of update
+    double timestamp;         // last time of update
 
     double time;              // current playback time
     double time_total;        // total playback time
@@ -146,13 +199,13 @@ protected:
       time_total    = 0;
       codec_video   = "";
       codec_audio   = "";
-	    dxva_info     = "";
+      dxva_info     = "";
       filter_audio_dec = "";
       filter_audio_renderer = "";
       filter_video_dec = "";
       filter_source = "";
       filter_splitter = "";
-	    time_format   = GUID_NULL;
+      time_format   = GUID_NULL;
     }
     double time_total;        // total playback time
     CStdString codec_video;
@@ -165,14 +218,6 @@ protected:
     CStdString filter_splitter;
     CStdString dxva_info;
 
-	  GUID time_format;
+    GUID time_format;
   } m_VideoInfo;
-  
-private:
-  //Direct Show Filters
-  CFGManager*                     m_pGraphBuilder;
-  IMediaControl*                  m_pMediaControl;  
-  IMediaEventEx*                  m_pMediaEvent;
-  IMediaSeeking*                  m_pMediaSeeking;
-  IBasicAudio*                    m_pBasicAudio;
 };

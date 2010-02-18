@@ -69,20 +69,20 @@ public:
    * @param[in] pBF Filter whose showing prroperty page
    */
   void ShowPropertyPage(IBaseFilter *pBF);
-  /**
-   * Set the subtitle file path
-   * @param[in] subFilePath Subtitle file path
-   * @return True if the subtitle has been set, false else
-   */
-  bool SetSubtitlesFile(const CStdString& subFilePath);
-  virtual void ShowHideSubtitles(BOOL show);
-  virtual void SetSubTitleDelay(float fValue = 0.0f);
   
   /// Pointer to a CDSGraph instance
   CDSGraph *          pGraph;
+  /** @defgroup FFDShow FFDShow related interface
+   * Variable related to the FFDShow filter
+   * @remarks All variables are NULL if the current filter isn't FFDShow
+   * @{ */
+  /// Pointer to a IffdshowBaseA interface
   IffdshowBaseA*      pIffdshowBase;
+  /// Pointer to a IffdshowDecVideoA interface
   IffdshowDecVideoA*  pIffdshowDecFilter;
+  /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
+  /** @} */
 
 protected:
   /**
@@ -115,7 +115,6 @@ protected:
   
 private:
   void CreatePropertiesXml();
-
   CCritSec m_pLock;
 
   //Direct Show Filters

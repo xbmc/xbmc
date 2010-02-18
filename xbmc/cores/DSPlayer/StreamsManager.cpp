@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "StreamsManager.h"
 #include "SpecialProtocol.h"
+#include "DVDSubtitles\DVDFactorySubtitle.h"
+#include "Settings.h"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -332,7 +334,7 @@ void CStreamsManager::LoadStreams()
           } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
           {
             if (infos->name.find("Undetermined") != std::string::npos )
-              infos->name.Format("Subtitle %02d", i + 1);
+              infos->name.Format("Subtitle %02d", j + 1);
 
             if (j == 0)
               infos->flags = AMSTREAMSELECTINFO_ENABLED;
@@ -356,6 +358,25 @@ void CStreamsManager::LoadStreams()
     delete regex.back();
     regex.pop_back();
   }
+
+  /* We're done, internal audio & subtitles stream are loaded.
+     We load external subtitle file */
+
+  std::vector<std::string> subtitles;
+  CDVDFactorySubtitle::GetSubtitles(subtitles, m_pGraph->GetCurrentFile());
+
+  SExternalSubtitleInfos *s = NULL;
+  std::vector<std::string>::const_iterator it = subtitles.begin();
+  int i = 1;
+  for (; it != subtitles.end(); ++it, i++)
+  {
+    s = new SExternalSubtitleInfos(); s->Clear();
+
+    s->external = true; s->path = (*it);
+    s->name.Format("External sub %02d", i);
+
+    m_subtitleStreams.push_back(s);
+  }
 }
 
 bool CStreamsManager::InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph)
@@ -363,8 +384,11 @@ bool CStreamsManager::InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph
   m_pSplitter = CFGLoader::GetSplitter();
   m_pGraphBuilder = graphBuilder;
   m_pGraph = DSGraph;
-  m_bSubtitlesVisible = false;
+  m_bSubtitlesVisible = g_settings.m_currentVideoSettings.m_SubtitleOn;
   m_init = true;
+
+  SetSubtitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+  g_settings.m_currentVideoSettings.m_SubtitleCached = true;
 
   return true;
 }
@@ -550,6 +574,7 @@ void CStreamsManager::SetSubtitle( int iStream )
     /* External subtitle */
     if (! m_bSubtitlesUnconnected)
       UnconnectSubtitlePins();
+
     SExternalSubtitleInfos *s = reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[iStream]);
 
     if (SUCCEEDED(g_dsconfig.pIffdshowBase->putParamStr(IDFF_subFilename, s->path.c_str())))
@@ -557,7 +582,9 @@ void CStreamsManager::SetSubtitle( int iStream )
 
     s->flags = AMSTREAMSELECTINFO_ENABLED;
 
-    goto done;
+    m_bChangingAudioStream = false;
+
+    return;
   }
 
   if (m_pIAMStreamSelect)
@@ -583,8 +610,8 @@ void CStreamsManager::SetSubtitle( int iStream )
       // If subtitles aren't visible, only disconnect the subtitle track,
       // and don't connect the new one. We change the flag for the xbmc gui
       m_subtitleStreams[iStream]->flags = AMSTREAMSELECTINFO_ENABLED;
-
-      goto done;
+      m_bChangingAudioStream = false;
+      return;
     }
 
     if (SUCCEEDED(m_pIAMStreamSelect->Enable(lIndex, AMSTREAMSELECTENABLE_ENABLE)))
@@ -604,15 +631,21 @@ void CStreamsManager::SetSubtitle( int iStream )
     stopped = true;
 
     IPin *oldAudioStreamPin = NULL;
-    /* Disable filter */
+    
+    /* Disconnect pins */
     if (! m_subtitleStreams[disableIndex]->external)
     {
+      // Embed subtitle
+
       oldAudioStreamPin = (IPin *)(m_subtitleStreams[disableIndex]->pObj);
       connectedToPin = (IPin *)(m_subtitleStreams[disableIndex]->pUnk);
       if (! connectedToPin)
         hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
 
       m_subtitleStreams[enableIndex]->pUnk = connectedToPin;
+      /* We need to store the pin the current subtitle is connected on.
+      If we switch from an external subtitle to an internal subtitle,
+      pUnk is set to NULL, so, we don't know where connect the pin! */
       m_SubtitleInputPin = connectedToPin;
 
       if (FAILED(hr))
@@ -628,7 +661,9 @@ void CStreamsManager::SetSubtitle( int iStream )
         m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
         goto done;
       }
+
     } else {
+      /* The subtitle to disable is an external subtitle */
       SExternalSubtitleInfos *s = reinterpret_cast<SExternalSubtitleInfos*>(m_subtitleStreams[disableIndex]);
       subtitlePath = s->path;
 
@@ -640,15 +675,23 @@ void CStreamsManager::SetSubtitle( int iStream )
 
     if (! m_bSubtitlesVisible)
     {
-      // If subtitles aren't visible, only disconnect the subtitle track,
-      // and don't connect the new one. We change the flag for the xbmc gui
+      // If subtitles aren't visible, don't connect pins. Only change the flag
+      // for the xbmc gui
       m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
 
       goto done;
     }
 
     /* Enable filter */
-    IPin *newAudioStreamPin = (IPin *)(m_subtitleStreams[enableIndex]->pObj);
+    IPin *newAudioStreamPin = (IPin *)(m_subtitleStreams[enableIndex]->pObj);    
+    if (connectedToPin == NULL)
+    {
+      /* connectedToPin is NULL if we switch from an external to an internal
+      subtitle. Use the internal stored value. */
+      connectedToPin = m_SubtitleInputPin;
+      m_subtitleStreams[enableIndex]->pUnk = connectedToPin;
+    }
+
     
     if (connectedToPin == NULL)
     {
@@ -704,7 +747,7 @@ void CStreamsManager::SetSubtitleVisible( bool bVisible )
 
   int i = GetSubtitle();
   if (i >= 0)
-    SetSubtitle(GetSubtitle());
+    SetSubtitle(i);
 }
 
 bool CStreamsManager::AddSubtitle(const CStdString& subFilePath)

@@ -63,7 +63,7 @@ public:
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage()                                 { return m_pDsGraph.GetPercentage(); }
   virtual void SetVolume(long nVolume)                          { m_pDsGraph.SetVolume(nVolume); }
-  virtual void SetDynamicRangeCompression(long drc)             { m_pDsGraph.SetDynamicRangeCompression(drc); }
+  //virtual void SetDynamicRangeCompression(long drc)             { m_pDsGraph.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo(CStdString& strGeneralInfo);
@@ -92,9 +92,9 @@ public:
   virtual void GetChapterName(CStdString& strChapterName)       { CChaptersManager::getSingleton()->GetChapterName(strChapterName); }
   virtual int  SeekChapter(int iChapter)                        { return CChaptersManager::getSingleton()->SeekChapter(iChapter); }
 
-  void Update(bool bPauseDrawing)                               { m_pDsGraph.Update(bPauseDrawing); }
-  void GetVideoRect(CRect& SrcRect, CRect& DestRect)            { m_pDsGraph.GetVideoRect(SrcRect, DestRect); }
-  virtual void GetVideoAspectRatio(float& fAR)                  { fAR = m_pDsGraph.GetAspectRatio(); }
+  void Update(bool bPauseDrawing)                               { g_renderManager.Update(bPauseDrawing); }
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect)            { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+  virtual void GetVideoAspectRatio(float& fAR)                  { fAR = g_renderManager.GetAspectRatio(); }
 
   virtual int GetChannels()                                     { return CStreamsManager::getSingleton()->GetChannels();  };
   virtual int GetBitsPerSample()                                { return CStreamsManager::getSingleton()->GetBitsPerSample(); };

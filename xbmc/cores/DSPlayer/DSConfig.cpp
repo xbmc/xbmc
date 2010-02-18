@@ -209,38 +209,6 @@ bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
   return true;
 }
 
-bool CDSConfig::SetSubtitlesFile(const CStdString& subFilePath)
-{
-  if (pIffdshowBase)
-  {
-    pGraph->Stop();
-    HRESULT hr;
-    CStdString newPath = CSpecialProtocol::TranslatePath(subFilePath);
-    //IDFF_subFilename 821
-    if (SUCCEEDED(pIffdshowBase->putParamStr(IDFF_subFilename,newPath.c_str())))
-    {
-      ShowHideSubtitles(1);
-      CLog::Log(LOGNOTICE,"%s using this file for subtitle %s",__FUNCTION__,newPath.c_str());
-      pGraph->Play();
-      return true;
-    }
-    
-  }
-  return false;
-}
-
-void CDSConfig::ShowHideSubtitles(BOOL show)
-{
-  //IffdshowDec work but not IffdshowBaseA
-  if (pIffdshowDecoder)
-    pIffdshowDecoder->compat_putParam(IDFF_isSubtitles,show);
-}
-
-void CDSConfig::SetSubTitleDelay(float fValue)
-{
-  
-}
-
 bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
 {
   if (m_pIMpaDecFilter)

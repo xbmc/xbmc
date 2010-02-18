@@ -73,6 +73,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   if ( FAILED(hr) )
   {
     CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__,file.GetAsUrl().GetFileName().c_str());
+    PlayerState = DSPLAYER_CLOSED;
     return false;
   }
   
