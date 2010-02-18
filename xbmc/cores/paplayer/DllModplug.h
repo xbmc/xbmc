@@ -62,7 +62,6 @@ public:
   virtual unsigned int ModPlug_NumChannels(ModPlugFile* file)=0;
   virtual unsigned int ModPlug_SampleName(ModPlugFile* file, unsigned int qual, char* buff)=0;
   virtual unsigned int ModPlug_InstrumentName(ModPlugFile* file, unsigned int qual, char* buff)=0;
-  virtual ModPlugNote* ModPlug_GetPattern(ModPlugFile* file, int pattern, unsigned int* numrows)=0;
   virtual void ModPlug_InitMixerCallback(ModPlugFile* file,ModPlugMixerProc proc)=0;
   virtual void ModPlug_UnloadMixerCallback(ModPlugFile* file)=0;
 };
@@ -95,7 +94,6 @@ class DllModplug : public DllDynamic, DllModplugInterface
   DEFINE_METHOD1(unsigned int,  ModPlug_NumChannels,          (ModPlugFile* p1))
   DEFINE_METHOD3(unsigned int,  ModPlug_SampleName,           (ModPlugFile* p1, unsigned int p2, char* p3))
   DEFINE_METHOD3(unsigned int,  ModPlug_InstrumentName,       (ModPlugFile* p1, unsigned int p2, char* p3))
-  DEFINE_METHOD3(ModPlugNote*,  ModPlug_GetPattern,           (ModPlugFile* p1, int p2, unsigned int* p3))
   DEFINE_METHOD2(void,          ModPlug_InitMixerCallback,    (ModPlugFile* p1, ModPlugMixerProc p2))
   DEFINE_METHOD1(void,          ModPlug_UnloadMixerCallback,  (ModPlugFile* p1))
   BEGIN_METHOD_RESOLVE()
@@ -124,7 +122,6 @@ class DllModplug : public DllDynamic, DllModplugInterface
     RESOLVE_METHOD(ModPlug_NumChannels)
     RESOLVE_METHOD(ModPlug_SampleName)
     RESOLVE_METHOD(ModPlug_InstrumentName)
-    RESOLVE_METHOD(ModPlug_GetPattern)
     RESOLVE_METHOD(ModPlug_InitMixerCallback)
     RESOLVE_METHOD(ModPlug_UnloadMixerCallback)
   END_METHOD_RESOLVE()
