@@ -941,7 +941,7 @@ void CGUIWindowFullScreen::ShowSlider(int action, int label, float value, float 
 {
   m_sliderAction = action;
   if (modal)
-    CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(label), value, min, delta, max, this, NULL);
+    CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(label), value, min, delta, max, this);
   else
     CGUIDialogSlider::Display(label, value, min, delta, max, this);
 }

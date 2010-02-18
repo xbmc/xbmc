@@ -109,7 +109,7 @@ void CGUIDialogSlider::ShowAndGetInput(const CStdString &label, float value, flo
   slider->DoModal();
 }
 
-void CGUIDialogSlider::Display(int label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
+void CGUIDialogSlider::Display(int label, float value, float min, float delta, float max, ISliderCallback *callback)
 {
   // grab the slider dialog
   CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
@@ -119,6 +119,6 @@ void CGUIDialogSlider::Display(int label, float value, float min, float delta, f
   // set the label and value
   slider->Initialize();
   slider->SetAutoClose(1000);
-  slider->SetSlider(g_localizeStrings.Get(label), value, min, delta, max, callback, callbackData);
+  slider->SetSlider(g_localizeStrings.Get(label), value, min, delta, max, callback, NULL);
   slider->Show();
 }
