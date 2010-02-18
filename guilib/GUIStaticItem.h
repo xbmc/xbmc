@@ -26,6 +26,7 @@
  \brief
  */
 
+#include "GUIInfoTypes.h"
 #include "../xbmc/FileItem.h"
 
 class TiXmlElement;
@@ -66,6 +67,9 @@ public:
    \param contextWindow window context to use for any info labels
    */
   void UpdateProperties(int contextWindow);
+private:
+  typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
+  InfoVector m_info;
 };
 
 typedef boost::shared_ptr<CGUIStaticItem> CGUIStaticItemPtr;
