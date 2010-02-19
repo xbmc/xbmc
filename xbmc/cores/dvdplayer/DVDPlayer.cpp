@@ -3013,25 +3013,23 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
       case ACTION_MOUSE:
         {
-          // check the action
-          CAction action2 = action;
-          action2.buttonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
-          action2.amount1 = g_Mouse.GetLocation().x;
-          action2.amount2 = g_Mouse.GetLocation().y;
-
+          // TODO: This is not strictly correct, as we process the action in the dvdplayer thread,
+          //       by which time g_Mouse.bClick may no longer be true. Instead, we need to differentiate
+          //       an actual click message from a simple move message at the app level rather than at
+          //       the CGUIWindow level
+          bool mouseClick = g_Mouse.bClick[MOUSE_LEFT_BUTTON];
           CRect rs, rd;
           GetVideoRect(rs, rd);
-          if (action2.amount1 < rd.x1 || action2.amount1 > rd.x2 ||
-              action2.amount2 < rd.y1 || action2.amount2 > rd.y2)
+          CPoint pt(action.amount1, action.amount2);
+          if (!rd.PtInRect(pt))
             return false; // out of bounds
-          THREAD_ACTION(action2);
+          THREAD_ACTION(action);
           // convert to video coords...
-          CPoint pt(action2.amount1, action2.amount2);
           pt -= CPoint(rd.x1, rd.y1);
           pt.x *= rs.Width() / rd.Width();
           pt.y *= rs.Height() / rd.Height();
           pt += CPoint(rs.x1, rs.y1);
-          if (action2.buttonCode)
+          if (mouseClick)
             return pStream->OnMouseClick(pt);
           return pStream->OnMouseMove(pt);
         }
