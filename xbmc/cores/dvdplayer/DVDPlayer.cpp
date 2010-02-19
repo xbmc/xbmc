@@ -3011,13 +3011,9 @@ bool CDVDPlayer::OnAction(const CAction &action)
         }
         break;
 
-      case ACTION_MOUSE:
+      case ACTION_MOUSE_MOVE:
+      case ACTION_MOUSE_LEFT_CLICK:
         {
-          // TODO: This is not strictly correct, as we process the action in the dvdplayer thread,
-          //       by which time g_Mouse.bClick may no longer be true. Instead, we need to differentiate
-          //       an actual click message from a simple move message at the app level rather than at
-          //       the CGUIWindow level
-          bool mouseClick = g_Mouse.bClick[MOUSE_LEFT_BUTTON];
           CRect rs, rd;
           GetVideoRect(rs, rd);
           CPoint pt(action.GetAmount(), action.GetAmount(1));
@@ -3029,7 +3025,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
           pt.x *= rs.Width() / rd.Width();
           pt.y *= rs.Height() / rd.Height();
           pt += CPoint(rs.x1, rs.y1);
-          if (mouseClick)
+          if (action.GetID() == ACTION_MOUSE_LEFT_CLICK)
             return pStream->OnMouseClick(pt);
           return pStream->OnMouseMove(pt);
         }

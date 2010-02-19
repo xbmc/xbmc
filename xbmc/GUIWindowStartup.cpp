@@ -33,7 +33,7 @@ CGUIWindowStartup::~CGUIWindowStartup(void)
 
 bool CGUIWindowStartup::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_MOUSE)
+  if (!action.IsMouse())
     return true;
   return CGUIWindow::OnAction(action);
 }

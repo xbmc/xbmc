@@ -456,8 +456,8 @@ bool CGUIWindowManager::OnAction(const CAction &action)
     }
     // music or video overlay are handled as a special case, as they're modeless, but we allow
     // clicking on them with the mouse.
-    if (action.GetID() == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
-                                       dialog->GetID() == WINDOW_MUSIC_OVERLAY))
+    if (action.IsMouse() && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
+                             dialog->GetID() == WINDOW_MUSIC_OVERLAY))
     {
       if (dialog->OnAction(action))
         return true;

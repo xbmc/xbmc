@@ -179,7 +179,7 @@
 #define ACTION_VOLUME_DOWN          89
 #define ACTION_MUTE                 91
 
-#define ACTION_MOUSE                90
+#define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100
 #define ACTION_MOUSE_RIGHT_CLICK      101
 #define ACTION_MOUSE_MIDDLE_CLICK     102
@@ -187,6 +187,8 @@
 #define ACTION_MOUSE_WHEEL_UP         104
 #define ACTION_MOUSE_WHEEL_DOWN       105
 #define ACTION_MOUSE_DRAG             106
+#define ACTION_MOUSE_MOVE             107
+#define ACTION_MOUSE_END              109
 
 #define ACTION_BACKSPACE          110
 #define ACTION_SCROLL_UP          111
@@ -402,12 +404,18 @@ class CAction
 {
 public:
   CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY);
   CAction(int actionID, const CStdString &name, const CKey &key);
 
   /*! \brief Identifier of the action
    \return id of the action
    */
   int GetID() const { return m_id; };
+
+  /*! \brief Is this an action from the mouse
+   \return true if this is a mouse action, false otherwise
+   */
+  bool IsMouse() const { return (m_id >= ACTION_MOUSE_START && m_id <= ACTION_MOUSE_END); };
 
   /*! \brief Human-readable name of the action
    \return name of the action
@@ -444,7 +452,7 @@ private:
   int          m_id;
   CStdString   m_name;
 
-  static const unsigned int max_amounts = 2; // Must be at least 2.
+  static const unsigned int max_amounts = 4; // Must be at least 4.
   float        m_amount[max_amounts];
 
   float        m_repeat;

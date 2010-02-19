@@ -2881,8 +2881,23 @@ bool CApplication::ProcessMouse()
   if (WakeUpScreenSaverAndDPMS())
     return true;
 
-  // call OnAction with ACTION_MOUSE
-  CAction action(ACTION_MOUSE, m_guiPointer.GetXPosition(), m_guiPointer.GetYPosition());
+  int actionID = ACTION_MOUSE_MOVE;
+  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_LEFT_CLICK;
+  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
+    actionID = ACTION_MOUSE_RIGHT_CLICK;
+  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
+    actionID = ACTION_MOUSE_MIDDLE_CLICK;
+  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_DOUBLE_CLICK;
+  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_DRAG;
+  else if (g_Mouse.GetWheel() > 0)
+    actionID = ACTION_MOUSE_WHEEL_UP;
+  else if (g_Mouse.GetWheel() < 0)
+    actionID = ACTION_MOUSE_WHEEL_DOWN;
+
+  CAction action(actionID, (unsigned int)g_Mouse.bHold[MOUSE_LEFT_BUTTON], g_Mouse.GetLocation().x, g_Mouse.GetLocation().y, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y);
   return g_windowManager.OnAction(action);
 }
 
@@ -2939,11 +2954,16 @@ bool CApplication::ProcessHTTPApiButtons()
       if (keyHttp.GetButtonCode() == KEY_VMOUSE) //virtual mouse
       {
         g_Mouse.SetLocation(CPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
-        if (keyHttp.GetLeftTrigger()!=0)
-          g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
-        if (keyHttp.GetRightTrigger()!=0)
-          g_Mouse.bDoubleClick[keyHttp.GetRightTrigger()-1]=true;
-        CAction action(ACTION_MOUSE, keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY());
+        int actionID = ACTION_MOUSE_MOVE;
+        if (keyHttp.GetLeftTrigger() == 1)
+          actionID = ACTION_MOUSE_LEFT_CLICK;
+        else if (keyHttp.GetLeftTrigger() == 2)
+          actionID = ACTION_MOUSE_RIGHT_CLICK;
+        else if (keyHttp.GetLeftTrigger() == 3)
+          actionID = ACTION_MOUSE_MIDDLE_CLICK;
+        else if (keyHttp.GetRightTrigger() == 1)
+          actionID = ACTION_MOUSE_DOUBLE_CLICK;
+        CAction action(actionID, keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY());
         g_windowManager.OnAction(action);
       }
       else
@@ -3036,7 +3056,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     if (es->GetMousePos(pos.x, pos.y) && g_Mouse.IsEnabled())
     {
       g_Mouse.SetLocation(pos, true);
-      return g_windowManager.OnAction(CAction(ACTION_MOUSE, pos.x, pos.y));
+      return g_windowManager.OnAction(CAction(ACTION_MOUSE_MOVE, pos.x, pos.y));
     }
   }
 #endif

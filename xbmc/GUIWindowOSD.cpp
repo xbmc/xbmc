@@ -57,7 +57,7 @@ void CGUIWindowOSD::Render()
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
   // keyboard or controller movement should prevent autoclosing
-  if (action.GetID() != ACTION_MOUSE && m_autoClosing)
+  if (!action.IsMouse() && m_autoClosing)
     SetAutoClose(3000);
 
   if (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM)
