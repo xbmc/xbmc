@@ -119,8 +119,8 @@ fi
 # TODO identify & retrieve the latest!
 if ! ls live-installer*.udeb > /dev/null 2>&1 ; then
 	echo "Retrieving live_installer udebs..."
-	wget -q "http://ftp.uk.debian.org/debian/pool/main/l/live-installer/live-installer_13_i386.udeb"
-	if [ "$?" -ne "0" ] || [ ! -f live-installer_13_i386.udeb ] ; then
+	wget -q "http://ftp.debian.org/debian/pool/main/l/live-installer/live-installer_15_i386.udeb"
+	if [ "$?" -ne "0" ] || [ ! -f live-installer_15_i386.udeb ] ; then
 		echo "Needed package (1) not found, exiting..."
 		exit 1
 	fi
