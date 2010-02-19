@@ -21,7 +21,6 @@
 
 #include "MouseStat.h"
 #include "Key.h"
-#include "GraphicContext.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -276,36 +275,4 @@ CAction CMouseStat::GetAction() const
     actionID = ACTION_MOUSE_WHEEL_DOWN;
 
   return CAction(actionID, (unsigned int)bHold[MOUSE_LEFT_BUTTON], (float)m_mouseState.x, (float)m_mouseState.y, (float)m_mouseState.dx, (float)m_mouseState.dy);
-}
-
-CPoint CMouseStat::GetLocation() const
-{
-  return CPoint((float)m_mouseState.x, (float)m_mouseState.y);
-}
-
-void CMouseStat::SetLocation(const CPoint &point, bool activate)
-{
-  m_mouseState.x = (int)point.x;
-  m_mouseState.y = (int)point.y;
-  SetActive();
-}
-
-CPoint CMouseStat::GetLastMove() const
-{
-  return CPoint(m_mouseState.dx, m_mouseState.dy);
-}
-
-char CMouseStat::GetWheel() const
-{
-  return m_mouseState.dz;
-}
-
-void CMouseStat::UpdateMouseWheel(char dir)
-{
-  m_mouseState.dz = dir;
-  SetActive();
-}
-
-void CMouseStat::Acquire()
-{
 }
