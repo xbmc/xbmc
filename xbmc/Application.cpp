@@ -2884,24 +2884,7 @@ bool CApplication::ProcessMouse()
   if (WakeUpScreenSaverAndDPMS())
     return true;
 
-  int actionID = ACTION_MOUSE_MOVE;
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
-    actionID = ACTION_MOUSE_LEFT_CLICK;
-  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
-    actionID = ACTION_MOUSE_RIGHT_CLICK;
-  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
-    actionID = ACTION_MOUSE_MIDDLE_CLICK;
-  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
-    actionID = ACTION_MOUSE_DOUBLE_CLICK;
-  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON])
-    actionID = ACTION_MOUSE_DRAG;
-  else if (g_Mouse.GetWheel() > 0)
-    actionID = ACTION_MOUSE_WHEEL_UP;
-  else if (g_Mouse.GetWheel() < 0)
-    actionID = ACTION_MOUSE_WHEEL_DOWN;
-
-  CAction action(actionID, (unsigned int)g_Mouse.bHold[MOUSE_LEFT_BUTTON], g_Mouse.GetLocation().x, g_Mouse.GetLocation().y, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y);
-  return OnAction(action);
+  return OnAction(g_Mouse.GetAction());
 }
 
 void  CApplication::CheckForTitleChange()

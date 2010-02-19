@@ -257,6 +257,27 @@ bool CMouseStat::MovedPastThreshold() const
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
+CAction CMouseStat::GetAction() const
+{
+  int actionID = ACTION_MOUSE_MOVE;
+  if (bClick[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_LEFT_CLICK;
+  else if (bClick[MOUSE_RIGHT_BUTTON])
+    actionID = ACTION_MOUSE_RIGHT_CLICK;
+  else if (bClick[MOUSE_MIDDLE_BUTTON])
+    actionID = ACTION_MOUSE_MIDDLE_CLICK;
+  else if (bDoubleClick[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_DOUBLE_CLICK;
+  else if (bHold[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_DRAG;
+  else if (m_mouseState.dz > 0)
+    actionID = ACTION_MOUSE_WHEEL_UP;
+  else if (m_mouseState.dz < 0)
+    actionID = ACTION_MOUSE_WHEEL_DOWN;
+
+  return CAction(actionID, (unsigned int)bHold[MOUSE_LEFT_BUTTON], (float)m_mouseState.x, (float)m_mouseState.y, (float)m_mouseState.dx, (float)m_mouseState.dy);
+}
+
 CPoint CMouseStat::GetLocation() const
 {
   return CPoint((float)m_mouseState.x, (float)m_mouseState.y);

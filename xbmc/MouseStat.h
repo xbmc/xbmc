@@ -59,6 +59,7 @@ struct MouseState
 };
 
 class CGUIControl;
+class CAction;
 
 class CMouseStat
 {
@@ -78,6 +79,7 @@ public:
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
+  CAction GetAction() const;
   CPoint GetLocation() const;
   void SetLocation(const CPoint &point, bool activate=false);
   CPoint GetLastMove() const;
@@ -172,8 +174,6 @@ private:
   SDL_Cursor *m_hiddenCursor;
 #endif
 
-public:
-  // public access variables to button clicks etc.
   bool bClick[5];
   bool bDoubleClick[5];
   int  bHold[5];
