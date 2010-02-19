@@ -927,6 +927,8 @@ void CGUIWindowMusicNav::OnSearchUpdate()
 {
   CStdString search(GetProperty("search"));
   CUtil::URLEncode(search);
+  // send using a thread message as we may be called from Render, and this function may re-call
+  // the render loop (slow dir fetch pops up busy dialog)
   if (!search.IsEmpty())
   {
     m_history.ClearPathHistory();
