@@ -195,11 +195,6 @@ void CGUIDialogVisualisationSettings::AddSetting(VisSetting &setting, float widt
     delete pControl;
 }
 
-void CGUIDialogVisualisationSettings::Render()
-{
-  CGUIDialog::Render();
-}
-
 void CGUIDialogVisualisationSettings::SetVisualisation(CVisualisation *pVisualisation)
 {
   m_pVisualisation = pVisualisation;

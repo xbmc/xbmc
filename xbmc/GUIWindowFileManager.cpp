@@ -834,11 +834,6 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   Update(iList, strPath);
 }
 
-void CGUIWindowFileManager::Render()
-{
-  CGUIWindow::Render();
-}
-
 bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
 {
   if (m_dlgProgress)
