@@ -46,6 +46,7 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
 {
   CStdStringA strUTF8;
   strUTF8.assign(line, len);
+  strUTF8.Replace("\r", "");
   strUTF8.Replace("\n", "");
 
   int pos = 0;
@@ -102,6 +103,22 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
             tagOptionValue.erase(0, 1);
             tempColorTag += "FF";
           }
+          else if( tagOptionValue.size() == 6 )
+          {
+            bool bHex = true;
+            for( int i=0 ; i<6 ; i++ )
+            {
+              char temp = tagOptionValue[i];
+              if( !(('0' <= temp && temp <= '9') ||
+                ('a' <= temp && temp <= 'f') ||
+                ('A' <= temp && temp <= 'F') ))
+              {
+                bHex = false;
+                break;
+              }
+            }
+            if( bHex ) tempColorTag += "FF";
+          }
           tempColorTag += tagOptionValue;
           tempColorTag += "]";
           strUTF8.insert(pos, tempColorTag);
@@ -109,10 +126,22 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
         }
       }
     }
+    else if (fullTag == "<br>")
+    {
+      if( !strUTF8.IsEmpty() )
+      {
+        strUTF8.Insert(pos, "\n");
+        pos += 1;
+      }
+    }
   }
 
   if (strUTF8.IsEmpty())
     return;
+
+  if( strUTF8[strUTF8.size()-1] == '\n' )
+    strUTF8.Delete(strUTF8.size()-1);
+
   // add a new text element to our container
   pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
 }
