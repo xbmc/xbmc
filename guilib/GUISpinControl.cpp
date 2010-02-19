@@ -410,7 +410,7 @@ void CGUISpinControl::Render()
   const float space = 5;
   float textWidth = m_label.GetTextWidth() + 2 * m_label.GetLabelInfo().offsetX;
   // Position the arrows
-  bool arrowsOnRight = m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X);
+  bool arrowsOnRight(0 != (m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X)));
   if (!arrowsOnRight)
   {
     m_imgspinDownFocus.SetPosition(m_posX + textWidth + space, m_posY);
