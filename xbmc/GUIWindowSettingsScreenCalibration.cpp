@@ -370,8 +370,10 @@ void CGUIWindowSettingsScreenCalibration::Render()
   SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
   SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
 
+  // we set that we need scaling here to render so that anything else on screen scales correctly
   m_needsScaling = true;
   CGUIWindow::Render();
+  m_needsScaling = false;
   g_graphicsContext.SetRenderingResolution(m_coordsRes, false);
 
   SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
@@ -387,14 +389,4 @@ void CGUIWindowSettingsScreenCalibration::Render()
       control->Render();
   }
 
-}
-
-bool CGUIWindowSettingsScreenCalibration::OnMouseAction()
-{
-  // we don't want mouse scaling on this window
-  bool saveScaling = m_needsScaling;
-  m_needsScaling = false;
-  bool ret = CGUIWindow::OnMouseAction();
-  m_needsScaling = saveScaling;
-  return ret;
 }

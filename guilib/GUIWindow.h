@@ -200,7 +200,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
-  virtual bool OnMouseAction();
+  bool OnMouseAction();
   virtual bool RenderAnimation(unsigned int time);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
 

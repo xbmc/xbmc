@@ -29,5 +29,5 @@ class CGUIWindowStartup :
 public:
   CGUIWindowStartup(void);
   virtual ~CGUIWindowStartup(void);
-  virtual bool OnMouseAction() { return true; }; // dummy implementation that ignores mouse on startup
+  virtual bool OnAction(const CAction &action);
 };
