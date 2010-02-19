@@ -2229,7 +2229,7 @@ void CApplication::RenderMemoryStatus()
 // If not already processed, this routine handles global keypresses.  It returns
 // true if the key has been processed, false otherwise.
 
-bool CApplication::OnKey(CKey& key)
+bool CApplication::OnKey(const CKey& key)
 {
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetActive(false);

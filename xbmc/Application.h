@@ -154,7 +154,7 @@ public:
   bool IsPlayingVideo() const;
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
-  bool OnKey(CKey& key);
+  bool OnKey(const CKey& key);
   bool OnAction(const CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
