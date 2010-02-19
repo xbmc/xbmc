@@ -929,13 +929,15 @@ void CGUIWindowMusicNav::OnSearchUpdate()
   CUtil::URLEncode(search);
   if (!search.IsEmpty())
   {
-    CStdString path = "musicsearch://" + search + "/";
     m_history.ClearPathHistory();
-    Update(path);
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    message.SetStringParam("musicsearch://" + search + "/");
+    g_windowManager.SendThreadMessage(message, GetID());
   }
   else if (m_vecItems->IsVirtualDirectoryRoot())
   {
-    Update("");
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    g_windowManager.SendThreadMessage(message, GetID());
   }
 }
 
