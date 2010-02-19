@@ -712,20 +712,27 @@ bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
 
     if (volume->FileSystem.Equals("vfat"))
     {
-      temporaryString.Format("uid=%u", getuid());
-      s = temporaryString.c_str();
-      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-    }
-    s = "sync";
-    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-
-    if (volume->FileSystem.Equals("vfat"))
-    {
       int mask = umask (0);
       temporaryString.Format("umask=%#o", mask);
       s = temporaryString.c_str();
       dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      temporaryString.Format("uid=%u", getuid());
+      s = temporaryString.c_str();
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      s = "shortname=mixed";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      s = "utf8";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      // 'sync' option will slow down transfer speed significantly for FAT filesystems. We prefer 'flush' instead.
+      s = "flush";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
     }
+    else
+    {
+      s = "sync";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+    }
+
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)
