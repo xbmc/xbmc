@@ -155,7 +155,7 @@ public:
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
-  bool OnAction(CAction &action);
+  bool OnAction(const CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
   // Checks whether the screensaver and / or DPMS should become active.

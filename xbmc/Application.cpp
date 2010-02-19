@@ -2311,7 +2311,6 @@ bool CApplication::OnKey(CKey& key)
     }
     if (useKeyboard)
     {
-      int actionID = 0;
       if (g_guiSettings.GetBool("input.remoteaskeyboard"))
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
@@ -2378,7 +2377,7 @@ bool CApplication::OnKey(CKey& key)
   return OnAction(action);
 }
 
-bool CApplication::OnAction(CAction &action)
+bool CApplication::OnAction(const CAction &action)
 {
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world about this action, ignoring mouse moves
