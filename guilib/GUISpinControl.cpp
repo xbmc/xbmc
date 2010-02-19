@@ -871,12 +871,14 @@ bool CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event
       MoveDown();
     return true;
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    if (event.m_wheel > 0)
-      MoveUp();
-    else
-      MoveDown();
+    MoveUp();
+    return true;
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    MoveDown();
     return true;
   }
   return false;

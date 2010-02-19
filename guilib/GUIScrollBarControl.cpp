@@ -286,9 +286,13 @@ bool CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
     SetFromPosition(point);
     return true;
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    Move(-event.m_wheel);
+    Move(-1);
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    Move(1);
     return true;
   }
   return false;

@@ -902,12 +902,15 @@ bool CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
       OnAction(CAction(ACTION_SELECT_ITEM));
       return true;
     }
-    else if (event.m_id == ACTION_MOUSE_WHEEL)
+    else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
     {
-      if (event.m_wheel > 0)
-        m_bScrollDown = true;
-      else
-        m_bScrollUp = true;
+      m_bScrollDown = true;
+      m_fScrollSpeed = SCROLL_SPEED;
+      return true;
+    }
+    else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+    {
+      m_bScrollUp = true;
       m_fScrollSpeed = SCROLL_SPEED;
       return true;
     }

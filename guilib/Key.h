@@ -184,8 +184,9 @@
 #define ACTION_MOUSE_RIGHT_CLICK      101
 #define ACTION_MOUSE_MIDDLE_CLICK     102
 #define ACTION_MOUSE_DOUBLE_CLICK     103
-#define ACTION_MOUSE_WHEEL            104
-#define ACTION_MOUSE_DRAG             105
+#define ACTION_MOUSE_WHEEL_UP         104
+#define ACTION_MOUSE_WHEEL_DOWN       105
+#define ACTION_MOUSE_DRAG             106
 
 #define ACTION_BACKSPACE          110
 #define ACTION_SCROLL_UP          111

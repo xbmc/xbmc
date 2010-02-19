@@ -552,9 +552,14 @@ bool CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
       return true;
     }
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    Scroll(-event.m_wheel);
+    Scroll(-1);
+    return true;
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    Scroll(1);
     return true;
   }
   return false;

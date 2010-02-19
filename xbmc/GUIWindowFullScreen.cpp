@@ -604,10 +604,13 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
   { // no control found to absorb this click - pause video
     return g_application.OnAction(CAction(ACTION_PAUSE));
   }
-  if (event.m_id == ACTION_MOUSE_WHEEL)
-  { // Mouse wheel
-    CAction action(event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK, 0.5f * abs(event.m_wheel));
-    return g_application.OnAction(action);
+  if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  {
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
+  }
+  if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
   }
   if (event.m_id || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD

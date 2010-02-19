@@ -382,8 +382,10 @@ bool CGUIWindow::OnMouseAction()
     event = CMouseEvent(ACTION_MOUSE_DOUBLE_CLICK);
   else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON])
     event = CMouseEvent(ACTION_MOUSE_DRAG, g_Mouse.bHold[MOUSE_LEFT_BUTTON], 0, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y);
-  else if (g_Mouse.GetWheel())
-    event = CMouseEvent(ACTION_MOUSE_WHEEL, 0, g_Mouse.GetWheel());
+  else if (g_Mouse.GetWheel() > 0)
+    event = CMouseEvent(ACTION_MOUSE_WHEEL_UP);
+  else if (g_Mouse.GetWheel() < 0)
+    event = CMouseEvent(ACTION_MOUSE_WHEEL_DOWN);
 
   if (m_exclusiveMouseControl)
   {

@@ -370,12 +370,14 @@ bool CGUISelectButtonControl::OnMouseEvent(const CPoint &point, const CMouseEven
       CGUIButtonControl::OnMouseEvent(point, event);
     return true;
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    if (event.m_wheel > 0)
-      OnLeft();
-    else
-      OnRight();
+    OnLeft();
+    return true;
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    OnRight();
     return true;
   }
   return false;
