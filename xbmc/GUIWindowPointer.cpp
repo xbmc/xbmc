@@ -27,38 +27,28 @@
 CGUIWindowPointer::CGUIWindowPointer(void)
     : CGUIWindow(105, "Pointer.xml")
 {
-  m_dwPointer = 0;
+  m_pointer = 0;
   m_loadOnDemand = false;
   m_needsScaling = false;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)
-{}
-
-void CGUIWindowPointer::Move(int x, int y)
 {
-  float posX = m_posX + x;
-  float posY = m_posY + y;
-  if (posX < 0) posX = 0;
-  if (posY < 0) posY = 0;
-  if (posX > g_graphicsContext.GetWidth()) posX = (float)g_graphicsContext.GetWidth();
-  if (posY > g_graphicsContext.GetHeight()) posY = (float)g_graphicsContext.GetHeight();
-  SetPosition(posX, posY);
 }
 
-void CGUIWindowPointer::SetPointer(DWORD dwPointer)
+void CGUIWindowPointer::SetPointer(int pointer)
 {
-  if (m_dwPointer == dwPointer) return ;
+  if (m_pointer == pointer) return;
   // set the new pointer visible
-  CGUIControl *pControl = (CGUIControl *)GetControl(dwPointer);
+  CGUIControl *pControl = (CGUIControl *)GetControl(pointer);
   if (pControl)
   {
     pControl->SetVisible(true);
     // disable the old pointer
-    pControl = (CGUIControl *)GetControl(m_dwPointer);
+    pControl = (CGUIControl *)GetControl(m_pointer);
     if (pControl) pControl->SetVisible(false);
     // set pointer to the new one
-    m_dwPointer = dwPointer;
+    m_pointer = pointer;
   }
 }
 
@@ -71,7 +61,7 @@ void CGUIWindowPointer::OnWindowLoaded()
   }
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
-  m_dwPointer = 0;
+  m_pointer = 0;
 }
 
 void CGUIWindowPointer::Render()
