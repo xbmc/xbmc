@@ -116,11 +116,13 @@ if ! ls xbmclive-installhelpers_*.udeb > /dev/null 2>&1 ; then
 fi
 
 # Retrieve live_installer from Debian's repositories
-# TODO identify & retrieve the latest!
 if ! ls live-installer*.udeb > /dev/null 2>&1 ; then
 	echo "Retrieving live_installer udebs..."
-	wget -q "http://ftp.debian.org/debian/pool/main/l/live-installer/live-installer_15_i386.udeb"
-	if [ "$?" -ne "0" ] || [ ! -f live-installer_15_i386.udeb ] ; then
+
+	latestPackage=$(curl -x "" -s -f http://ftp.debian.org/debian/pool/main/l/live-installer/ | grep -o 'live[^"]*_i386.udeb' | sort -r -k2 -t_ -n | head -n 1)
+	echo " -  Latest package: $latestPackage"
+	wget -q "http://ftp.debian.org/debian/pool/main/l/live-installer/$latestPackage"
+	if [ "$?" -ne "0" ] || [ ! -f $latestPackage ] ; then
 		echo "Needed package (1) not found, exiting..."
 		exit 1
 	fi
