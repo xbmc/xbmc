@@ -899,9 +899,7 @@ bool CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
         m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
       else
         m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
-      CAction action;
-      action.actionId = ACTION_SELECT_ITEM;
-      OnAction(action);
+      OnAction(CAction(ACTION_SELECT_ITEM));
       return true;
     }
     else if (event.m_id == ACTION_MOUSE_WHEEL)

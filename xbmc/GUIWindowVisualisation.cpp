@@ -209,16 +209,12 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
-    CAction action;
-    action.actionId = ACTION_SHOW_GUI;
-    OnAction(action);
+    OnAction(CAction(ACTION_SHOW_GUI));
     return true;
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // no control found to absorb this click - toggle the track INFO
-    CAction action;
-    action.actionId = ACTION_PAUSE;
-    return g_application.OnAction(action);
+    return g_application.OnAction(CAction(ACTION_PAUSE));
   }
   if (event.m_id || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD

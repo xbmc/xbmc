@@ -44,9 +44,7 @@ JSON_STATUS CAVPlayerOperations::Stop(const CStdString &method, ITransportLayer 
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  CAction action;
-  action.actionId = ACTION_STOP;
-  g_application.getApplicationMessenger().SendAction(action);
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP));
   return ACK;
 }
 
@@ -55,9 +53,7 @@ JSON_STATUS CAVPlayerOperations::SkipPrevious(const CStdString &method, ITranspo
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  CAction action;
-  action.actionId = ACTION_PREV_ITEM;
-  g_application.getApplicationMessenger().SendAction(action);
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_PREV_ITEM));
   return ACK;
 }
 
@@ -66,9 +62,7 @@ JSON_STATUS CAVPlayerOperations::SkipNext(const CStdString &method, ITransportLa
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  CAction action;
-  action.actionId = ACTION_NEXT_ITEM;
-  g_application.getApplicationMessenger().SendAction(action);
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_NEXT_ITEM));
   return ACK;
 }
 
@@ -113,9 +107,7 @@ JSON_STATUS CAVPlayerOperations::Rewind(const CStdString &method, ITransportLaye
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  CAction action;
-  action.actionId = ACTION_PLAYER_REWIND;
-  g_application.getApplicationMessenger().SendAction(action);
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_PLAYER_REWIND));
   return ACK;
 }
 
@@ -124,9 +116,7 @@ JSON_STATUS CAVPlayerOperations::Forward(const CStdString &method, ITransportLay
   if (!IsCorrectPlayer(method))
     return FailedToExecute;
 
-  CAction action;
-  action.actionId = ACTION_PLAYER_FORWARD;
-  g_application.getApplicationMessenger().SendAction(action);
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_PLAYER_FORWARD));
   return ACK;
 }
 

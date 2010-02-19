@@ -163,3 +163,57 @@ unsigned int CKey::GetHeld() const
   return m_held;
 }
 
+CAction::CAction(int actionID, float _amount1 /* = 1.0f */, float _amount2 /* = 0.0f */, const CStdString &name /* = "" */)
+{
+  actionId = actionID;
+  amount1 = _amount1;
+  amount2 = _amount2;
+  strAction = name;
+  repeat = 0;
+  buttonCode = 0;
+  unicode = 0;
+  holdTime = 0;
+}
+
+CAction::CAction(int actionID, const CStdString &name, const CKey &key)
+{
+  actionId = actionID;
+  strAction = name;
+  amount1 = 1; // digital button (could change this for repeat acceleration)
+  amount2 = 0;
+  repeat = key.GetRepeat();
+  buttonCode = key.GetButtonCode();
+  unicode = 0;
+  holdTime = key.GetHeld();
+  // get the action amounts of the analog buttons
+  if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
+    amount1 = (float)key.GetLeftTrigger() / 255.0f;
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+    amount1 = (float)key.GetRightTrigger() / 255.0f;
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
+  {
+    amount1 = key.GetLeftThumbX();
+    amount2 = key.GetLeftThumbY();
+  }
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK)
+  {
+    amount1 = key.GetRightThumbX();
+    amount2 = key.GetRightThumbY();
+  }
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP)
+    amount1 = key.GetLeftThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+    amount1 = -key.GetLeftThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
+    amount1 = -key.GetLeftThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+    amount1 = key.GetLeftThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
+    amount1 = key.GetRightThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+    amount1 = -key.GetRightThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
+    amount1 = -key.GetRightThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+    amount1 = key.GetRightThumbX();
+}

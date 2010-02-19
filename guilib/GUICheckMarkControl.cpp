@@ -151,9 +151,7 @@ bool CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMouseEvent &
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
-    CAction action;
-    action.actionId = ACTION_SELECT_ITEM;
-    OnAction(action);
+    OnAction(CAction(ACTION_SELECT_ITEM));
     return true;
   }
   return false;

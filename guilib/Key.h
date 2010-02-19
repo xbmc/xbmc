@@ -393,14 +393,17 @@
 #define ICON_TYPE_WEATHER       107
 #define ICON_TYPE_SETTINGS      109
 
+class CKey;
+
 /*!
   \ingroup actionkeys
-  \brief
+  \brief class encapsulating information regarding a particular user action to be sent to windows and controls
   */
 class CAction
 {
 public:
-  CAction():actionId(0),amount1(0), amount2(amount1), repeat(0), buttonCode(0), unicode(0), holdTime(0){};
+  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
+  CAction(int actionID, const CStdString &name, const CKey &key);
   int          actionId;
   float        amount1;
   float        amount2;

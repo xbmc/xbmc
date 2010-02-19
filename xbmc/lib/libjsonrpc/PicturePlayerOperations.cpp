@@ -107,9 +107,7 @@ JSON_STATUS CPicturePlayerOperations::Rotate(const CStdString &method, ITranspor
 
 JSON_STATUS CPicturePlayerOperations::SendAction(int actionID)
 {
-  CAction action;
-  action.actionId = actionID;
-  g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
+  g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_SLIDESHOW);
 
   return ACK;
 }

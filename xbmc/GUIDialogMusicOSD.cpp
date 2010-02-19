@@ -67,9 +67,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         SET_CONTROL_VISIBLE(CONTROL_VIS_CHOOSER);
         SET_CONTROL_FOCUS(CONTROL_VIS_CHOOSER, 0);
         // fire off an event that we've pressed this button...
-        CAction action;
-        action.actionId = ACTION_SELECT_ITEM;
-        OnAction(action);
+        OnAction(CAction(ACTION_SELECT_ITEM));
       }
       else if (iControl == CONTROL_LOCK_BUTTON)
       {
@@ -127,9 +125,7 @@ bool CGUIDialogMusicOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause
-    CAction action;
-    action.actionId = ACTION_PAUSE;
-    return g_application.OnAction(action);
+    return g_application.OnAction(CAction(ACTION_PAUSE));
   }
   return CGUIDialog::OnMouseEvent(point, event);
 }

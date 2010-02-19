@@ -636,49 +636,7 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   if (actionID == 0 && fallback)
     actionID = GetActionCode( -1, key, strAction);
   // Now fill our action structure
-  CAction action;
-  action.actionId = actionID;
-  action.strAction = strAction;
-  action.amount1 = 1; // digital button (could change this for repeat acceleration)
-  action.amount2 = 0;
-  action.repeat = key.GetRepeat();
-  action.buttonCode = key.GetButtonCode();
-  action.holdTime = key.GetHeld();
-  // get the action amounts of the analog buttons
-  if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
-  {
-    action.amount1 = (float)key.GetLeftTrigger() / 255.0f;
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
-  {
-    action.amount1 = (float)key.GetRightTrigger() / 255.0f;
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
-  {
-    action.amount1 = key.GetLeftThumbX();
-    action.amount2 = key.GetLeftThumbY();
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK)
-  {
-    action.amount1 = key.GetRightThumbX();
-    action.amount2 = key.GetRightThumbY();
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP)
-    action.amount1 = key.GetLeftThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
-    action.amount1 = -key.GetLeftThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
-    action.amount1 = -key.GetLeftThumbX();
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
-    action.amount1 = key.GetLeftThumbX();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
-    action.amount1 = key.GetRightThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
-    action.amount1 = -key.GetRightThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
-    action.amount1 = -key.GetRightThumbX();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
-    action.amount1 = key.GetRightThumbX();
+  CAction action(actionID, strAction, key);
   return action;
 }
 

@@ -404,9 +404,7 @@ bool CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go to previous menu
-    CAction action;
-    action.actionId = ACTION_PREVIOUS_MENU;
-    return OnAction(action);
+    return OnAction(CAction(ACTION_PREVIOUS_MENU));
   }
   return false;
 }

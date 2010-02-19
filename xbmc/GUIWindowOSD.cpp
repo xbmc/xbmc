@@ -74,17 +74,12 @@ bool CGUIWindowOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_WHEEL)
   { // Mouse wheel
-    int wheel = abs(event.m_wheel);
-    CAction action;
-    action.amount1 = 0.5f * (float)wheel;
-    action.actionId = event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    CAction action(event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK, 0.5f * abs(event.m_wheel));
     return g_application.OnAction(action);
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause
-    CAction action;
-    action.actionId = ACTION_PAUSE;
-    return g_application.OnAction(action);
+    return g_application.OnAction(CAction(ACTION_PAUSE));
   }
 
   return CGUIDialog::OnMouseEvent(point, event);

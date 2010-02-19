@@ -251,9 +251,7 @@ bool CGUIMultiSelectTextControl::OnMouseEvent(const CPoint &point, const CMouseE
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
     m_selectedItem = GetItemFromPoint(point);
-    CAction action;
-    action.actionId = ACTION_SELECT_ITEM;
-    OnAction(action);
+    OnAction(CAction(ACTION_SELECT_ITEM));
     return true;
   }
   return false;

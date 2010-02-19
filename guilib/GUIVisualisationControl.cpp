@@ -407,9 +407,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
   }
   else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)
   {
-    CAction action;
-    action.actionId = message.GetParam1();
-    return OnAction(action);
+    return OnAction(CAction(message.GetParam1()));
   }
   else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)
   {
