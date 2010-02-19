@@ -2236,14 +2236,13 @@ bool CApplication::OnKey(CKey& key)
 {
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetActive(false);
-  CAction action;
 
   // get the current active window
   int iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
 
   // this will be checked for certain keycodes that need
   // special handling if the screensaver is active
-  CButtonTranslator::GetInstance().GetAction(iWin, key, action);
+  CAction action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
   // a key has been pressed.
   // reset Idle Timer
@@ -2267,7 +2266,7 @@ bool CApplication::OnKey(CKey& key)
   }
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
   { // fullscreen info dialog - special case
-    CButtonTranslator::GetInstance().GetAction(iWin, key, action);
+    action = CButtonTranslator::GetInstance().GetAction(iWin, key);
 
     g_Keyboard.Reset();
 
@@ -2286,12 +2285,12 @@ bool CApplication::OnKey(CKey& key)
     if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
     {
       // if player is in some sort of menu, (ie DVDMENU) map buttons differently
-      CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key, action);
+      action = CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key);
     }
     else
     {
       // no then use the fullscreen window section of keymap.xml to map key->action
-      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
+      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
     }
   }
   else
@@ -2320,7 +2319,7 @@ bool CApplication::OnKey(CKey& key)
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
         // and send those rather than actual keyboard presses.  Only for navigation-type commands though
-        CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action);
+        action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key);
         if (!(action.actionId == ACTION_MOVE_LEFT ||
               action.actionId == ACTION_MOVE_RIGHT ||
               action.actionId == ACTION_MOVE_UP ||
@@ -2331,7 +2330,7 @@ bool CApplication::OnKey(CKey& key)
               action.actionId == ACTION_CLOSE_DIALOG))
         {
           // the action isn't plain navigation - check for a keyboard-specific keymap
-          CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action, false);
+          action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
           if (!(action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9) ||
                 action.actionId == ACTION_BACKSPACE ||
                 action.actionId == ACTION_SHIFT ||
@@ -2376,13 +2375,10 @@ bool CApplication::OnKey(CKey& key)
     if (key.GetFromHttpApi())
     {
       if (key.GetButtonCode() != KEY_INVALID)
-      {
-        action.actionId = key.GetButtonCode();
-        CButtonTranslator::GetInstance().GetAction(iWin, key, action);
-      }
+        action = CButtonTranslator::GetInstance().GetAction(iWin, key);
     }
     else
-      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
+      action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %s", __FUNCTION__, (int) key.GetButtonCode(), action.strAction.c_str());
