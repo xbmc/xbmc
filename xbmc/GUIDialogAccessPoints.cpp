@@ -43,7 +43,7 @@ CGUIDialogAccessPoints::~CGUIDialogAccessPoints(void)
 
 bool CGUIDialogAccessPoints::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ACCESS_POINTS);
     OnMessage(msg);

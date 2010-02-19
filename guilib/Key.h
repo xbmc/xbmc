@@ -404,14 +404,54 @@ class CAction
 public:
   CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
   CAction(int actionID, const CStdString &name, const CKey &key);
-  int          actionId;
-  float        amount1;
-  float        amount2;
-  float        repeat;
-  unsigned int buttonCode;
-  CStdString   strAction;
-  wchar_t      unicode; // new feature, does not fit into id like ASCII, wouldn't be good design either!? Will be set whenever ASCII is set into id (for backwards compatibility)
-  unsigned int holdTime; ///< Time the key has been held down (in ms)
+
+  /*! \brief Identifier of the action
+   \return id of the action
+   */
+  int GetID() const { return m_id; };
+
+  /*! \brief Human-readable name of the action
+   \return name of the action
+   */
+  const CStdString &GetName() const { return m_name; };
+
+  /*! \brief Get an amount associated with this action
+   \param zero-based index of amount to retrieve, defaults to 0
+   \return an amount associated with this action
+   */
+  float GetAmount(unsigned int index = 0) const { return (index < max_amounts) ? m_amount[index] : 0; };
+
+  /*! \brief Unicode value associated with this action
+   \return unicode value associated with this action, for keyboard input.
+   */
+  wchar_t GetUnicode() const { return m_unicode; };
+
+  /*! \brief Time in ms that the key has been held
+   \return time that the key has been held down in ms.
+   */
+  unsigned int GetHoldTime() const { return m_holdTime; };
+
+  /*! \brief Time since last repeat in ms
+   \return time since last repeat in ms. Returns 0 if unknown.
+   */
+  float GetRepeat() const { return m_repeat; };
+
+  /*! \brief Button code that triggered this action
+   \return button code
+   */
+  unsigned int GetButtonCode() const { return m_buttonCode; };
+
+private:
+  int          m_id;
+  CStdString   m_name;
+
+  static const unsigned int max_amounts = 2; // Must be at least 2.
+  float        m_amount[max_amounts];
+
+  float        m_repeat;
+  unsigned int m_holdTime;
+  unsigned int m_buttonCode;
+  wchar_t      m_unicode;
 };
 
 /*!

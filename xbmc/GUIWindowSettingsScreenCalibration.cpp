@@ -57,7 +57,7 @@ CGUIWindowSettingsScreenCalibration::~CGUIWindowSettingsScreenCalibration(void)
 
 bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_PREVIOUS_MENU:
     {

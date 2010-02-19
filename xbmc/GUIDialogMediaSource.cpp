@@ -61,7 +61,7 @@ CGUIDialogMediaSource::~CGUIDialogMediaSource()
 
 bool CGUIDialogMediaSource::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     m_confirmed = false;
   }

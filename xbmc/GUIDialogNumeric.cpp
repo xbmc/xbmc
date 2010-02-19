@@ -55,34 +55,34 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_CLOSE_DIALOG || action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU)
     OnCancel();
-  else if (action.actionId == ACTION_NEXT_ITEM)
+  else if (action.GetID() == ACTION_NEXT_ITEM)
     OnNext();
-  else if (action.actionId == ACTION_PREV_ITEM)
+  else if (action.GetID() == ACTION_PREV_ITEM)
     OnPrevious();
-  else if (action.actionId == ACTION_BACKSPACE)
+  else if (action.GetID() == ACTION_BACKSPACE)
     OnBackSpace();
-  else if (action.actionId == ACTION_ENTER)
+  else if (action.GetID() == ACTION_ENTER)
     OnOK();
-  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
-    OnNumber(action.actionId - REMOTE_0);
-  else if (action.actionId >= KEY_VKEY && action.actionId < KEY_ASCII)
+  else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
+    OnNumber(action.GetID() - REMOTE_0);
+  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    BYTE b = action.actionId & 0xFF;
+    BYTE b = action.GetID() & 0xFF;
     if (b == 0x25) OnPrevious();     // left
     else if (b == 0x27) OnNext();  // right
     else if (b == 0x0D) OnOK();         // enter
     else if (b == 0x08) OnBackSpace();    // backspace
     else if (b == 0x1B) OnCancel();        // escape
   }
-  else if (action.actionId >= KEY_ASCII) // FIXME make it KEY_UNICODE
+  else if (action.GetID() >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
-    if (action.unicode == 10 || action.unicode == 13) OnOK(); // enter
-    else if (action.unicode == 8) OnBackSpace(); // backspace
-    else if (action.unicode == 27) OnCancel(); // escape
-    else if (action.unicode >= 48 && action.unicode < 58)  // number
-      OnNumber(action.unicode - 48);
+    if (action.GetUnicode() == 10 || action.GetUnicode() == 13) OnOK(); // enter
+    else if (action.GetUnicode() == 8) OnBackSpace(); // backspace
+    else if (action.GetUnicode() == 27) OnCancel(); // escape
+    else if (action.GetUnicode() >= 48 && action.GetUnicode() < 58)  // number
+      OnNumber(action.GetUnicode() - 48);
   }
   else
     return CGUIDialog::OnAction(action);

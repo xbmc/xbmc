@@ -189,7 +189,7 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
 {
   if (!m_bShowSelect)
   {
-    if (action.actionId == ACTION_SELECT_ITEM)
+    if (action.GetID() == ACTION_SELECT_ITEM)
     {
       // Enter selection mode
       m_bShowSelect = true;
@@ -205,7 +205,7 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
   }
   else
   {
-    if (action.actionId == ACTION_SELECT_ITEM)
+    if (action.GetID() == ACTION_SELECT_ITEM)
     {
       // User has selected an item, disable selection mode...
       m_bShowSelect = false;
@@ -215,7 +215,7 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
       SendWindowMessage(message);
       return true;
     }
-    if (action.actionId == ACTION_MOVE_UP || action.actionId == ACTION_MOVE_DOWN )
+    if (action.GetID() == ACTION_MOVE_UP || action.GetID() == ACTION_MOVE_DOWN )
     {
       // Disable selection mode when moving up or down
       m_bShowSelect = false;

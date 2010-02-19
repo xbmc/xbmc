@@ -336,7 +336,7 @@ void CGUIWindow::Close(bool forceClose)
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_MOUSE)
+  if (action.GetID() == ACTION_MOUSE)
     return OnMouseAction();
 
   CGUIControl *focusedControl = GetFocusedControl();

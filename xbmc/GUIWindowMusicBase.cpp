@@ -86,7 +86,7 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && !musicScan->IsDialogRunning())
@@ -96,7 +96,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     }
   }
 
-  if (action.actionId == ACTION_SHOW_PLAYLIST)
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;

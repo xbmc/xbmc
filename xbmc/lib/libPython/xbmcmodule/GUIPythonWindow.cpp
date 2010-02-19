@@ -59,7 +59,7 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
   // workaround - for scripts which try to access the active control (focused) when there is none.
   // for example - the case when the mouse enters the screen.
   CGUIControl *pControl = GetFocusedControl();
-  if (action.actionId == ACTION_MOUSE && !pControl)
+  if (action.GetID() == ACTION_MOUSE && !pControl)
      return ret;
 
   if(pCallbackWindow)

@@ -137,7 +137,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 {
   // don't allow any built in actions to act here.
   // this forces only navigation type actions to be performed.
-  if (action.actionId == ACTION_BUILT_IN_FUNCTION)
+  if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
     return true;  // pretend we handled it
   return CGUIWindow::OnAction(action);
 }

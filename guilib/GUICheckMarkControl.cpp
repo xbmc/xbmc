@@ -85,10 +85,10 @@ CGUILabel::COLOR CGUICheckMarkControl::GetTextColor() const
 
 bool CGUICheckMarkControl::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
-    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.actionId);
+    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.GetID());
     SendWindowMessage(msg);
     return true;
   }

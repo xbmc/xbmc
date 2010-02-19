@@ -2917,7 +2917,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     if( m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pStream->GetTotalButtons() == 0 )
     {
-      switch(action.actionId)
+      switch(action.GetID())
       {
         case ACTION_NEXT_ITEM:
         case ACTION_MOVE_RIGHT:
@@ -2935,7 +2935,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
 
 
-    switch (action.actionId)
+    switch (action.GetID())
     {
 /* this code is disabled to allow switching playlist items (dvdimage "stacks") */
 #if 0
@@ -2973,7 +2973,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     if (pStream->IsInMenu())
     {
-      switch (action.actionId)
+      switch (action.GetID())
       {
       case ACTION_PREVIOUS_MENU:
         {
@@ -3020,7 +3020,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
           bool mouseClick = g_Mouse.bClick[MOUSE_LEFT_BUTTON];
           CRect rs, rd;
           GetVideoRect(rs, rd);
-          CPoint pt(action.amount1, action.amount2);
+          CPoint pt(action.GetAmount(), action.GetAmount(1));
           if (!rd.PtInRect(pt))
             return false; // out of bounds
           THREAD_ACTION(action);
@@ -3057,7 +3057,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           THREAD_ACTION(action);
           // Offset from key codes back to button number
-          int button = action.actionId - REMOTE_0;
+          int button = action.GetID() - REMOTE_0;
           CLog::Log(LOGDEBUG, " - button pressed %d", button);
           pStream->SelectButton(button);
         }
@@ -3072,7 +3072,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
   if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
   {
-    switch (action.actionId)
+    switch (action.GetID())
     {
       case ACTION_NEXT_ITEM:
       case ACTION_PAGE_UP:
@@ -3091,7 +3091,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_CHANNEL_SWITCH:
       {
         // Offset from key codes back to button number
-        int channel = action.amount1;
+        int channel = action.GetAmount();
         m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
         g_infoManager.SetDisplayAfterSeek();
         return true;
@@ -3100,7 +3100,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  switch (action.actionId)
+  switch (action.GetID())
   {
     case ACTION_NEXT_ITEM:
     case ACTION_PAGE_UP:

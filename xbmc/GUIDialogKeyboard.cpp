@@ -103,19 +103,19 @@ void CGUIDialogKeyboard::OnInitWindow()
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
   bool handled(true);
-  if (action.actionId == ACTION_BACKSPACE)
+  if (action.GetID() == ACTION_BACKSPACE)
   {
     Backspace();
   }
-  else if (action.actionId == ACTION_ENTER)
+  else if (action.GetID() == ACTION_ENTER)
   {
     OnOK();
   }
-  else if (action.actionId == ACTION_CURSOR_LEFT)
+  else if (action.GetID() == ACTION_CURSOR_LEFT)
   {
     MoveCursor( -1);
   }
-  else if (action.actionId == ACTION_CURSOR_RIGHT)
+  else if (action.GetID() == ACTION_CURSOR_RIGHT)
   {
     if ((unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
     { // add a space
@@ -124,21 +124,21 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else
       MoveCursor(1);
   }
-  else if (action.actionId == ACTION_SHIFT)
+  else if (action.GetID() == ACTION_SHIFT)
   {
     OnShift();
   }
-  else if (action.actionId == ACTION_SYMBOLS)
+  else if (action.GetID() == ACTION_SYMBOLS)
   {
     OnSymbols();
   }
-  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
+  else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
   {
-    OnRemoteNumberClick(action.actionId);
+    OnRemoteNumberClick(action.GetID());
   }
-  else if (action.actionId >= KEY_VKEY && action.actionId < KEY_ASCII)
+  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    uint8_t b = action.actionId & 0xFF;
+    uint8_t b = action.GetID() & 0xFF;
     if (b == 0x24) // home
     {
       MoveCursor(-GetCursorPos());
@@ -170,10 +170,10 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
   }
-  else if (action.actionId >= KEY_ASCII)
+  else if (action.GetID() >= KEY_ASCII)
   { // input from the keyboard
-    //char ch = action.actionId & 0xFF;
-    switch (action.unicode)
+    //char ch = action.GetID() & 0xFF;
+    switch (action.GetUnicode())
     {
     case 13:  // enter
     case 10:  // enter
@@ -186,7 +186,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       Close();
       break;
     default:  //use character input
-      Character(action.unicode);
+      Character(action.GetUnicode());
       break;
     }
   }

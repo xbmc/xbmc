@@ -57,10 +57,10 @@ void CGUIWindowOSD::Render()
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
   // keyboard or controller movement should prevent autoclosing
-  if (action.actionId != ACTION_MOUSE && m_autoClosing)
+  if (action.GetID() != ACTION_MOUSE && m_autoClosing)
     SetAutoClose(3000);
 
-  if (action.actionId == ACTION_NEXT_ITEM || action.actionId == ACTION_PREV_ITEM)
+  if (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM)
   {
     // these could indicate next chapter if video supports it
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))

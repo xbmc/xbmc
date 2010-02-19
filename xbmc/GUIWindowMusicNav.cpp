@@ -297,7 +297,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::OnAction(const CAction& action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
@@ -305,7 +305,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
       return true;
     }
   }
-  if (action.actionId == ACTION_SCAN_ITEM)
+  if (action.GetID() == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
     CMusicDatabaseDirectory dir;

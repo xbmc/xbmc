@@ -53,7 +53,7 @@ CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_SHOW_INFO:
     {
@@ -119,10 +119,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
     case ACTION_ANALOG_FORWARD:
     // calculate the speed based on the amount the button is held down
-    if (action.amount1)
+    if (action.GetAmount())
     {
       float AVDelay = g_application.m_CdgParser.GetAVDelay();
-      g_application.m_CdgParser.SetAVDelay(AVDelay - action.amount1 / 4.0f);
+      g_application.m_CdgParser.SetAVDelay(AVDelay - action.GetAmount() / 4.0f);
       return true;
     }
     break;*/

@@ -226,7 +226,7 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowVideoFiles::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_TOGGLE_WATCHED)
+  if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
 

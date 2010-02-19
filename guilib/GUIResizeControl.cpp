@@ -84,16 +84,16 @@ void CGUIResizeControl::Render()
 
 bool CGUIResizeControl::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
     SendWindowMessage(message);
     return true;
   }
-  if (action.actionId == ACTION_ANALOG_MOVE)
+  if (action.GetID() == ACTION_ANALOG_MOVE)
   {
-    Resize(m_fAnalogSpeed*action.amount1, -m_fAnalogSpeed*action.amount2);
+    Resize(m_fAnalogSpeed*action.GetAmount(), -m_fAnalogSpeed*action.GetAmount(1));
     return true;
   }
   return CGUIControl::OnAction(action);
