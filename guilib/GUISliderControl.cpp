@@ -328,7 +328,7 @@ bool CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
     SetFromPosition(point);
     return true;
   }
-  else if (event.m_id == ACTION_MOUSE_CLICK && m_guiBackground.HitTest(point))
+  else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
   {
     SetFromPosition(point);
     return true;

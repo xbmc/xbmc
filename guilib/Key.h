@@ -180,8 +180,6 @@
 #define ACTION_MUTE                 91
 
 #define ACTION_MOUSE                90
-
-#define ACTION_MOUSE_CLICK            100
 #define ACTION_MOUSE_LEFT_CLICK       100
 #define ACTION_MOUSE_RIGHT_CLICK      101
 #define ACTION_MOUSE_MIDDLE_CLICK     102

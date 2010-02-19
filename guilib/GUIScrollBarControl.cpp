@@ -281,7 +281,7 @@ bool CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
     SetFromPosition(point);
     return true;
   }
-  else if (event.m_id == ACTION_MOUSE_CLICK && m_guiBackground.HitTest(point))
+  else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
   {
     SetFromPosition(point);
     return true;
