@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27668 -->
+<!--Based on english strings version 27853 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -350,7 +350,6 @@
   <string id="407">风向</string>
   <string id="408">风速</string>
   <string id="409">默认</string> 
-  
   <string id="410">访问天气服务</string>
   <string id="411">取得天气数据：</string>
   <string id="412">不能获得天气数据</string>
@@ -359,6 +358,8 @@
   <string id="415">下载缩略图...</string>
   <string id="416">不可用</string>
   <string id="417">显示：大图标</string>
+  <string id="418">低</string>
+  <string id="419">高</string>
 
   <string id="422">删除专辑信息</string>
   <string id="423">删除 CD 信息</string>

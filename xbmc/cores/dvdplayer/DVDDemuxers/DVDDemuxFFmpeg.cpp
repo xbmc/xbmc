@@ -413,8 +413,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
   }
   
-  // we need to know if this is matroska later
+  // we need to know if this is matroska or avi later
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
+  m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
 
   // in combination with libdvdnav seek, av_find_stream_info wont work
   // so we do this for files only
@@ -720,6 +721,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         // we need to get duration slightly different for matroska embedded text subtitels
         if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
             pkt.duration = pkt.convergence_duration;
+
+        if(m_bAVI && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        {
+          // AVI's always have borked pts, specially if m_pFormatContext->flags includes
+          // AVFMT_FLAG_GENPTS so always use dts
+          pkt.pts = AV_NOPTS_VALUE;
+        }
 
         // copy contents into our own packet
         pPacket->iSize = pkt.size;

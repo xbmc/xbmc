@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="EUC-KR"?>
 <scraper framework="1.1" date="2010-01-28" name="NAVER" content="movies" thumb="naver.png" language="ko">
 	<include>common/tmdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;¡÷ø¨πËøÏ/∞¢∫ª/¡¶¿€ªÁø° ¥Î«— ªÛºº¡§∫∏&quot; type=&quot;bool&quot; id=&quot;EnableDetail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Ï£ºÏó∞Î∞∞Ïö∞/Í∞ÅÎ≥∏/Ï†úÏûëÏÇ¨Ïóê ÎåÄÌïú ÏÉÅÏÑ∏Ï†ïÎ≥¥&quot; type=&quot;bool&quot; id=&quot;EnableDetail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;∆˜Ω∫≈Õ&quot; type=&quot;bool&quot; id=&quot;EnableThumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Ìè¨Ïä§ÌÑ∞&quot; type=&quot;bool&quot; id=&quot;EnableThumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;∆Ú¡° ≈ı«•¿⁄ºˆ&quot; type=&quot;bool&quot; id=&quot;EnableVoteNum&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;ÌèâÏ†ê Ìà¨ÌëúÏûêÏàò&quot; type=&quot;bool&quot; id=&quot;EnableVoteNum&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;∆“æ∆∆Æ(∞Ì»≠¡˙)&quot; type=&quot;bool&quot; id=&quot;EnableFanArt&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Ìå¨ÏïÑÌä∏(Í≥†ÌôîÏßà)&quot; type=&quot;bool&quot; id=&quot;EnableFanArt&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
@@ -157,7 +157,7 @@
 			</RegExp>
 			<!-- writer !-->
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">&lt;h6&gt;∞¢∫ª&lt;/h6&gt;(.*)id=&quot;staff_2&quot;</expression>
+				<expression noclean="1">&lt;h6&gt;Í∞ÅÎ≥∏&lt;/h6&gt;(.*)id=&quot;staff_2&quot;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="9+">
 				<expression noclean="1" repeat="yes">&lt;a href=&quot;/movie/bi/pi/basic.nhn\?code=[0-9]*&quot;&gt;(.[^&lt;]*)&lt;/a&gt;</expression>

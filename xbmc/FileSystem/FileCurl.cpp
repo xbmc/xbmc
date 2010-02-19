@@ -870,7 +870,39 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
 
 bool CFileCurl::Exists(const CURL& url)
 {
-  return Stat(url, NULL) == 0;
+  // if file is already running, get info from it
+  if( m_opened )
+  {
+    CLog::Log(LOGWARNING, "%s - Exist called on open file", __FUNCTION__);
+    return true;
+  }
+
+  CURL url2(url);
+  ParseAndCorrectUrl(url2);
+
+  ASSERT(m_state->m_easyHandle == NULL);
+  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
+
+  SetCommonOptions(m_state);
+  SetRequestHeaders(m_state);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
+
+  if(url2.GetProtocol() == "ftp")
+  {
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+  }
+
+  CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+  g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+  
+  if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
+    return true;
+  
+  errno = ENOENT;
+  return false;
 }
 
 
@@ -964,8 +996,11 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   if( m_opened )
   {
     CLog::Log(LOGWARNING, "%s - Stat called on open file", __FUNCTION__);
-    buffer->st_size = GetLength();
-    buffer->st_mode = _S_IFREG;
+    if (buffer)
+    {
+      buffer->st_size = GetLength();
+      buffer->st_mode = _S_IFREG;
+    }
     return 0;
   }
 
@@ -988,21 +1023,6 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
-
-  // In case we are performing a stat() with no buffer (eg. called from ::exists()) we fail immediately
-  if (!buffer)
-  {
-    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-    if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
-    {
-      return 0;
-    }
-    else
-    {
-      errno = ENOENT;
-      return -1;
-    }
-  }
 
   if(result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR )
   {
@@ -1046,6 +1066,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCorrectHeaders(m_state);
 
+  if(buffer)
+  {
     char content[255];
     if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
     {
@@ -1055,13 +1077,13 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     }
     else
     {
-      buffer->st_size = (__int64)length;
+      buffer->st_size = (int64_t)length;
       if(strstr(content, "text/html")) //consider html files directories
         buffer->st_mode = _S_IFDIR;
       else
         buffer->st_mode = _S_IFREG;
     }
-
+  }
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
   return 0;
 }
