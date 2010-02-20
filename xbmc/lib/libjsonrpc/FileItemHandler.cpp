@@ -44,13 +44,31 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Va
 
     if (field.Equals("genre") && !videoInfo->m_strGenre.IsEmpty())
       result["genre"] = videoInfo->m_strGenre.c_str();
+    if (field.Equals("director") && !videoInfo->m_strDirector.IsEmpty())
+      result["director"] = videoInfo->m_strDirector.c_str();
+    if (field.Equals("trailer") && !videoInfo->m_strTrailer.IsEmpty())
+      result["trailer"] = videoInfo->m_strTrailer.c_str();
     if (field.Equals("tagline") && !videoInfo->m_strTagLine.IsEmpty())
       result["tagline"] = videoInfo->m_strTagLine.c_str();
     if (field.Equals("plot") && !videoInfo->m_strPlot.IsEmpty())
       result["plot"] = videoInfo->m_strPlot.c_str();
+    if (field.Equals("plotoutline") && !videoInfo->m_strPlotOutline.IsEmpty())
+      result["plotoutline"] = videoInfo->m_strPlotOutline.c_str();
+    if (field.Equals("title") && !videoInfo->m_strTitle.IsEmpty())
+      result["title"] = videoInfo->m_strTitle.c_str();
+    if (field.Equals("originaltitle") && !videoInfo->m_strOriginalTitle.IsEmpty())
+      result["originaltitle"] = videoInfo->m_strOriginalTitle.c_str();
+    if (field.Equals("lastplayed") && !videoInfo->m_lastPlayed.IsEmpty())
+      result["lastplayed"] = videoInfo->m_lastPlayed.c_str();
 
     if (field.Equals("runtime") && !videoInfo->m_strRuntime.IsEmpty())
       result["runtime"] = videoInfo->m_strRuntime.c_str();
+    if (field.Equals("year") && videoInfo->m_iYear > 0)
+      result["year"] = videoInfo->m_iYear;
+    if (field.Equals("playcount") && videoInfo->m_playCount > 0)
+      result["playcount"] = videoInfo->m_playCount;
+    if (field.Equals("rating"))
+      result["rating"] = (double)videoInfo->m_fRating;
   }
 }
 
