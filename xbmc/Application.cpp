@@ -1920,37 +1920,33 @@ void CApplication::RenderNoPresent()
   else if (vsync_mode != VSYNC_DRIVER)
     g_Windowing.SetVSync(false);
 
-  // dont show GUI when playing full screen video
-  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
-  {
-    if (m_bPresentFrame)
-      g_renderManager.Present();
-    else
-      g_renderManager.RenderUpdate(true, 0, 255);
-
-    if (NeedRenderFullScreen())
-      RenderFullScreen();
-    RenderMemoryStatus();
-
-    ResetScreenSaver();
-    g_infoManager.ResetCache();
-    return;
-  }
-
 // DXMERGE: This may have been important?
 //  g_graphicsContext.AcquireCurrentContext();
 
   g_graphicsContext.Lock();
 
-  //g_Windowing.BeginRender();
-
   g_windowManager.UpdateModelessVisibility();
 
-  // draw GUI
-  g_graphicsContext.Clear();
-  //SWATHWIDTH of 4 improves fillrates (performance investigator)
-  g_windowManager.Render();
+  // dont show GUI when playing full screen video
+  if (g_graphicsContext.IsFullScreenVideo())
+  {
+    if (m_bPresentFrame && IsPlaying() && !IsPaused())
+      g_renderManager.Present();
+    else
+      g_renderManager.RenderUpdate(true);
 
+    // close window overlays
+    CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
+    if (overlay) overlay->Close(true);
+    overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
+    if (overlay) overlay->Close(true);
+
+    ResetScreenSaver();
+  }
+  else
+    g_graphicsContext.Clear();
+
+  g_windowManager.Render();
 
   // if we're recording an audio stream then show blinking REC
   if (!g_graphicsContext.IsFullScreenVideo())
@@ -1975,26 +1971,14 @@ void CApplication::RenderNoPresent()
 
   // Render the mouse pointer
   if (g_Mouse.IsActive())
-  {
     m_guiPointer.Render();
-  }
 
-  {
-    // reset image scaling and effect states
-    g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+  // reset image scaling and effect states
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
 
-    // If we have the remote codes enabled, then show them
-    if (g_advancedSettings.m_displayRemoteCodes)
-    {
-      // TODO ?
-    }
-
-    RenderMemoryStatus();
-  }
-
+  RenderMemoryStatus();
   RenderScreenSaver();
 
-  //g_Windowing.EndRender();
   g_TextureManager.FreeUnusedTextures();
 
   g_graphicsContext.Unlock();

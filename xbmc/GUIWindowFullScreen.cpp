@@ -630,9 +630,6 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
 // as player thread will handle rendering, and call this itself.
 void CGUIWindowFullScreen::Render()
 {
-#ifdef HAS_VIDEO_PLAYBACK
-  g_renderManager.RenderUpdate(true);
-#endif
   // win32 video rendering uses this path all the time (it doesn't render from the player directly)
   // so at this point we should renderfullscreen info as well.
   if (NeedRenderFullScreen())
