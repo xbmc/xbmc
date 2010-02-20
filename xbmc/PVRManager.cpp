@@ -1671,12 +1671,6 @@ int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
   return bytesReaded;
 }
 
-/********************************************************************
- * CPVRManager LengthStream
- *
- * Return the length in bytes of the current stream readed from
- * PVR Client or NULL if internal timeshift is used.
- ********************************************************************/
 int64_t CPVRManager::LengthStream(void)
 {
   int64_t streamLength = 0;
@@ -1696,15 +1690,6 @@ int64_t CPVRManager::LengthStream(void)
   return streamLength;
 }
 
-/********************************************************************
- * CPVRManager SeekStream
- *
- * Perform a file seek to the PVR Client if a recording is played or
- * if a channel is played and the client support timeshift.
- * Seeking is not performed for if own internal timeshift is used.
- *
- * Returns the new position after seek or < 0 if seek was failed
- ********************************************************************/
 int64_t CPVRManager::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
 {
   int64_t streamNewPos = 0;
@@ -1743,12 +1728,6 @@ int64_t CPVRManager::GetStreamPosition()
   return streamPos;
 }
 
-/********************************************************************
- * CPVRManager UpdateItem
- *
- * Update the current running file: It is called during a channel
- * change to refresh the global file item.
- ********************************************************************/
 bool CPVRManager::UpdateItem(CFileItem& item)
 {
   /* Don't update if a recording is played */
@@ -1796,13 +1775,6 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   return false;
 }
 
-/********************************************************************
- * CPVRManager ChannelSwitch
- *
- * It switch to the channel passed to this function
- *
- * Returns true if switch was succesfull
- ********************************************************************/
 bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = false*/)
 {
   if (!m_currentPlayingChannel)
@@ -1825,7 +1797,8 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = fals
   const cPVRChannelInfoTag* tag = &channels->at(iChannel-1);
 
   /* Store current settings inside Database */
-  SaveCurrentChannelSettings();
+  if (isPreviewed)
+    SaveCurrentChannelSettings();
 
   /* Perform Channelswitch */
   if (!m_clients[tag->ClientID()]->SwitchChannel(*tag))
@@ -1855,16 +1828,6 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = fals
   return true;
 }
 
-/********************************************************************
- * CPVRManager ChannelUp
- *
- * It switch to the next channel and return the new channel to
- * the pointer passed by this function, if preview is true no client
- * channel switch is performed, only the data of the new channel is
- * loaded.
- *
- * Returns true if switch was succesfull
- ********************************************************************/
 bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
 {
    if (m_currentPlayingChannel)
@@ -1878,7 +1841,8 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
     EnterCriticalSection(&m_critSection);
 
     /* Store current settings inside Database */
-    SaveCurrentChannelSettings();
+    if (!preview)
+      SaveCurrentChannelSettings();
 
     unsigned int currentTVChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->Number();
     const cPVRChannelInfoTag* tag;
@@ -1928,16 +1892,6 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
   return false;
 }
 
-/********************************************************************
- * CPVRManager ChannelDown
- *
- * It switch to the previous channel and return the new channel to
- * the pointer passed by this function, if preview is true no client
- * channel switch is performed, only the data of the new channel is
- * loaded.
- *
- * Returns true if switch was succesfull
- ********************************************************************/
 bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/)
 {
   if (m_currentPlayingChannel)
@@ -1951,7 +1905,8 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
     EnterCriticalSection(&m_critSection);
 
     /* Store current settings inside Database */
-    SaveCurrentChannelSettings();
+    if (!preview)
+      SaveCurrentChannelSettings();
 
     int currentTVChannel = m_currentPlayingChannel->GetPVRChannelInfoTag()->Number();
     const cPVRChannelInfoTag* tag;
@@ -2000,38 +1955,24 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
   return false;
 }
 
-/********************************************************************
- * CPVRManager GetTotalTime
- *
- * Returns the duration of the current program.
- ********************************************************************/
 int CPVRManager::GetTotalTime()
 {
   if (!m_currentPlayingChannel)
-    return 0;
+    return m_currentPlayingChannel->GetPVRChannelInfoTag()->NowDuration() * 1000;
 
-  int duration = 1;
-
-  if (m_currentPlayingChannel)
-    duration = m_currentPlayingChannel->GetPVRChannelInfoTag()->NowDuration() * 1000;
-
-   /* Use 1 instead of 0 to prevent divide by NULL floating point exception */
-  if (duration <= 0)
-    duration = 1;
-
-  return duration;
+  return 0;
 }
 
-/********************************************************************
- * CPVRManager GetStartTime
- *
- * Returns the start time of the current playing program.
- ********************************************************************/
 int CPVRManager::GetStartTime()
 {
+  /* If it is called without a opened TV channel return with NULL */
   if (!m_currentPlayingChannel)
     return 0;
 
+  /* GetStartTime() is frequently called by DVDPlayer during playback of Live TV, so we
+   * check here if the end of the current running event is reached, if yes update the
+   * playing file item with the newest EPG data of the now running event.
+   */
   cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetPVRChannelInfoTag();
   if (tag->NowEndTime() < CDateTime::GetCurrentDateTime() || tag->NowTitle() == g_localizeStrings.Get(19055))
   {
@@ -2046,6 +1987,9 @@ int CPVRManager::GetStartTime()
     LeaveCriticalSection(&m_critSection);
   }
 
+  /* Calculate here the position we have of the running live TV event.
+   * "position in ms" = ("current local time" - "event start local time") * 1000
+   */
   CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->NowStartTime();
   return time.GetDays()    * 1000 * 60 * 60 * 24
        + time.GetHours()   * 1000 * 60 * 60

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -100,14 +100,73 @@ public:
   CStdString GetLiveStreamURL(const cPVRChannelInfoTag* tag);
   void CloseStream();
   int ReadStream(void* lpBuf, int64_t uiBufSize);
-  int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
-  int64_t GetStreamPosition(void);
+
+  /*! \brief Return the filesize of the current running stream.
+   Limited to recordings playback at the moment.
+   \return the size of the actual running stream
+   */
   int64_t LengthStream(void);
+
+  /*! \brief Seek to a position inside stream
+   It is currently limited to playback of recordings, no live tv seek is possible.
+   \param pos the position to seek to
+   \param whence how we want to seek ("new position=pos", or "new position=pos+actual postion" or "new position=filesize-pos
+   \return the new position inside stream
+   */
+  int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
+
+  /*! \brief Get the current playing position in stream
+   \return the current position inside stream
+   */
+  int64_t GetStreamPosition(void);
+
+  /*! \brief Update the current running channel
+   It is called during a channel  change to refresh the global file item.
+   \param item the file item with the current running item
+   \return true if success
+   */
   bool UpdateItem(CFileItem& item);
+
+  /*! \brief Switch to a channel by the given number
+   Used only for live TV channels
+   \param channel the channel number to switch
+   \param isPreviewed true if it was previously selected by Channel>Up/Down< and fast zapping is enabled
+   \return true if success
+   */
   bool ChannelSwitch(unsigned int channel, bool isPreviewed = false);
+
+  /*! \brief Switch to the next channel in list
+   It switch to the next channel and return the new channel to
+   the pointer passed by this function, if preview is true no client
+   channel switch is performed, only the data of the new channel is
+   loaded, is used to show new event information in fast channel zapping.
+   \param newchannel pointer to store the new selected channel number
+   \param preview if set the channel is only switched inside XBMC without client action
+   \return true if success
+   */
   bool ChannelUp(unsigned int *newchannel, bool preview = false);
+
+  /*! \brief Switch the to previous channel in list
+   It switch to the previous channel and return the new channel to
+   the pointer passed by this function, if preview is true no client
+   channel switch is performed, only the data of the new channel is
+   loaded, is used to show new event information in fast channel zapping.
+   \param newchannel pointer to store the new selected channel number
+   \param preview if set the channel is only switched inside XBMC without client action
+   \return true if success
+   */
   bool ChannelDown(unsigned int *newchannel, bool preview = false);
+
+  /*! \brief Returns the duration of the current playing channel
+   Used only for live TV channels
+   \return duration in milliseconds or NULL if no channel is playing.
+   */
   int GetTotalTime();
+
+  /*! \brief Returns the current position from 0 in milliseconds
+   Used only for live TV channels
+   \return position in milliseconds or NULL if no channel is playing.
+   */
   int GetStartTime();
 
 protected:
