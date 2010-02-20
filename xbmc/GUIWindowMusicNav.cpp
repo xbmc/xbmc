@@ -927,19 +927,15 @@ void CGUIWindowMusicNav::OnSearchUpdate()
 {
   CStdString search(GetProperty("search"));
   CUtil::URLEncode(search);
-  // send using a thread message as we may be called from Render, and this function may re-call
-  // the render loop (slow dir fetch pops up busy dialog)
   if (!search.IsEmpty())
   {
+    CStdString path = "musicsearch://" + search + "/";
     m_history.ClearPathHistory();
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-    message.SetStringParam("musicsearch://" + search + "/");
-    g_windowManager.SendThreadMessage(message, GetID());
+    Update(path);
   }
   else if (m_vecItems->IsVirtualDirectoryRoot())
   {
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-    g_windowManager.SendThreadMessage(message, GetID());
+    Update("");
   }
 }
 
