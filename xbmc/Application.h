@@ -146,8 +146,6 @@ public:
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
-  void RenderFullScreen();
-  bool NeedRenderFullScreen();
   bool IsPlaying() const;
   bool IsPaused() const;
   bool IsPlayingAudio() const;

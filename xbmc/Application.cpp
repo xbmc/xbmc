@@ -4213,50 +4213,6 @@ void CApplication::StopPlaying()
   }
 }
 
-bool CApplication::NeedRenderFullScreen()
-{
-  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-  {
-    g_windowManager.UpdateModelessVisibility();
-
-    if (g_windowManager.HasDialogOnScreen()) return true;
-    if (g_Mouse.IsActive()) return true;
-
-    CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-    if (!pFSWin)
-      return false;
-    return pFSWin->NeedRenderFullScreen();
-  }
-  return false;
-}
-
-void CApplication::RenderFullScreen()
-{
-  MEASURE_FUNCTION;
-
-  if (g_graphicsContext.IsFullScreenVideo())
-  {
-    // make sure our overlays are closed
-    CGUIDialog *overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_VIDEO_OVERLAY);
-    if (overlay) overlay->Close(true);
-    overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
-    if (overlay) overlay->Close(true);
-
-    CGUIWindowFullScreen *pFSWin = (CGUIWindowFullScreen *)g_windowManager.GetWindow(WINDOW_FULLSCREEN_VIDEO);
-    if (!pFSWin)
-      return ;
-    pFSWin->RenderFullScreen();
-
-    if (g_windowManager.HasDialogOnScreen())
-      g_windowManager.RenderDialogs();
-    // Render the mouse pointer, if visible...
-    if (g_Mouse.IsActive())
-      g_application.m_guiPointer.Render();
-
-    g_TextureManager.FreeUnusedTextures();
-  }
-}
-
 void CApplication::ResetScreenSaver()
 {
   // reset our timers
