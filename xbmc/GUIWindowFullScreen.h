@@ -37,10 +37,9 @@ public:
   virtual void FreeResources(bool forceUnLoad = false);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual void FrameMove();
   virtual void Render();
   virtual void OnWindowLoaded();
-  void RenderFullScreen();
-  bool NeedRenderFullScreen();
   void ChangetheTimeCode(int remote);
 
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
@@ -70,7 +69,6 @@ private:
   unsigned int m_dwShowViewModeTimeout;
 
   bool m_bShowCurrentTime;
-  bool m_bLastRender;
 
   bool m_timeCodeShow;
   unsigned int m_timeCodeTimeout;
