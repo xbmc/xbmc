@@ -475,19 +475,7 @@ bool CGUIWindowManager::OnAction(const CAction &action)
 
 void CGUIWindowManager::Render()
 {
-  if (!g_application.IsCurrentThread())
-  {
-    // make sure graphics lock is not held
-    int nCount = ExitCriticalSection(g_graphicsContext);
-    g_application.getApplicationMessenger().Render();
-    RestoreCriticalSection(g_graphicsContext, nCount);
-  }
-  else
-    Render_Internal();
-}
-
-void CGUIWindowManager::Render_Internal()
-{
+  assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
@@ -559,13 +547,7 @@ void CGUIWindowManager::UpdateModelessVisibility()
 
 void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 {
-  if (g_application.IsCurrentThread())
-    Process_Internal(renderOnly);
-}
-
-void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
-{
-  if (m_pCallback)
+  if (g_application.IsCurrentThread() && m_pCallback)
   {
     if (!renderOnly)
     {

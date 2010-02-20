@@ -547,14 +547,6 @@ case TMSG_POWERDOWN:
       }
       break;
 
-    case TMSG_GUI_WIN_MANAGER_PROCESS:
-      g_windowManager.Process_Internal(0 != pMsg->dwParam1);
-      break;
-
-    case TMSG_GUI_WIN_MANAGER_RENDER:
-      g_windowManager.Render_Internal();
-      break;
-
     case TMSG_GUI_ACTION:
       {
         if (pMsg->lpVoid)
@@ -859,19 +851,6 @@ void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
   tMsg.params = params;
-  SendMessage(tMsg, true);
-}
-
-void CApplicationMessenger::WindowManagerProcess(bool renderOnly)
-{
-  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_PROCESS};
-  tMsg.dwParam1 = (DWORD)renderOnly;
-  SendMessage(tMsg, true);
-}
-
-void CApplicationMessenger::Render()
-{
-  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_RENDER};
   SendMessage(tMsg, true);
 }
 
