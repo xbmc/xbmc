@@ -351,7 +351,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);
 }
 
-void CGUIWindowSettingsScreenCalibration::Render()
+void CGUIWindowSettingsScreenCalibration::FrameMove()
 {
   //  g_Windowing.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_iControl = GetFocusedControlID();
@@ -364,7 +364,11 @@ void CGUIWindowSettingsScreenCalibration::Render()
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, "");
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, "");
   }
+  CGUIWindow::FrameMove();
+}
 
+void CGUIWindowSettingsScreenCalibration::Render()
+{
   SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
   SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
   SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);

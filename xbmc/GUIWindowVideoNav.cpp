@@ -838,13 +838,13 @@ void CGUIWindowVideoNav::DisplayEmptyDatabaseMessage(bool bDisplay)
   m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
 
-void CGUIWindowVideoNav::Render()
+void CGUIWindowVideoNav::FrameMove()
 {
   if (m_bDisplayEmptyDatabaseMessage)
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
   else
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
-  CGUIWindowVideoBase::Render();
+  CGUIWindowVideoBase::FrameMove();
 }
 
 void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)

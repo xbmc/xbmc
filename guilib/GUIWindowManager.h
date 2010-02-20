@@ -68,6 +68,13 @@ public:
   bool OnAction(const CAction &action);
 
   void Render();
+
+  /*! \brief Per-frame updating of the current window and any dialogs
+   FrameMove is called every frame to update the current window and any dialogs
+   on screen. It should only be called from the application thread.
+   */
+  void FrameMove();
+  
   void RenderDialogs();
   CGUIWindow* GetWindow(int id) const;
   void Process(bool renderOnly = false);

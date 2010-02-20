@@ -494,6 +494,18 @@ void CGUIWindowManager::Render_Internal()
     pWindow->Render();
 }
 
+void CGUIWindowManager::FrameMove()
+{
+  assert(g_application.IsCurrentThread());
+  CSingleLock lock(g_graphicsContext);
+  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+  if (pWindow)
+    pWindow->FrameMove();
+  // update any dialogs
+  for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+    (*it)->FrameMove();
+}
+
 bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
 {
   return first->GetRenderOrder() < second->GetRenderOrder();

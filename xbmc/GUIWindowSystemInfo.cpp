@@ -89,7 +89,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowSystemInfo::Render()
+void CGUIWindowSystemInfo::FrameMove()
 {
   ResetLabels();
   int i = 2;
@@ -159,7 +159,7 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
   }
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }
 
 void CGUIWindowSystemInfo::ResetLabels()

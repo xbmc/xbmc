@@ -229,7 +229,7 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
   return false;
 }
 
-void CGUIWindowVisualisation::Render()
+void CGUIWindowVisualisation::FrameMove()
 {
   g_application.ResetScreenSaver();
   // check for a tag change
@@ -256,5 +256,5 @@ void CGUIWindowVisualisation::Render()
     if (!m_lockedTimer && !m_bShowPreset)
       g_infoManager.SetShowCodec(false);
   }
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }

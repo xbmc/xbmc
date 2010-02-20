@@ -142,7 +142,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   return CGUIWindow::OnAction(action);
 }
 
-void CGUIWindowLoginScreen::Render()
+void CGUIWindowLoginScreen::FrameMove()
 {
   if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
@@ -150,7 +150,7 @@ void CGUIWindowLoginScreen::Render()
   CStdString strLabel;
   strLabel.Format(g_localizeStrings.Get(20114),m_iSelectedItem+1,g_settings.m_vecProfiles.size());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }
 
 void CGUIWindowLoginScreen::OnInitWindow()

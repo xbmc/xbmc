@@ -40,7 +40,7 @@ void CGUIWindowOSD::OnWindowLoaded()
   m_bRelativeCoords = true;
 }
 
-void CGUIWindowOSD::Render()
+void CGUIWindowOSD::FrameMove()
 {
   if (m_autoClosing)
   {
@@ -51,7 +51,7 @@ void CGUIWindowOSD::Render()
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
       SetAutoClose(100); // enough for 10fps
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 bool CGUIWindowOSD::OnAction(const CAction &action)

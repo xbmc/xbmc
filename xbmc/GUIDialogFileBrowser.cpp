@@ -442,7 +442,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     m_thumbLoader.Load(*m_vecItems);
 }
 
-void CGUIDialogFileBrowser::Render()
+void CGUIDialogFileBrowser::FrameMove()
 {
   int item = m_viewControl.GetSelectedItem();
   if (item >= 0)
@@ -489,7 +489,7 @@ void CGUIDialogFileBrowser::Render()
       CONTROL_DISABLE(CONTROL_FLIP);
     }
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogFileBrowser::OnClick(int iItem)

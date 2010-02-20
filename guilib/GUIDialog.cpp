@@ -227,6 +227,13 @@ bool CGUIDialog::RenderAnimation(unsigned int time)
   return m_bRunning;
 }
 
+void CGUIDialog::FrameMove()
+{
+  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_dialogClosing)
+    Close();
+  CGUIWindow::FrameMove();
+}
+
 void CGUIDialog::Render()
 {
   CGUIWindow::Render();
@@ -237,11 +244,6 @@ void CGUIDialog::Render()
   if (m_dialogClosing && !CGUIWindow::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
   {
     Close(true);
-  }
-
-  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_dialogClosing)
-  {
-    Close();
   }
 }
 

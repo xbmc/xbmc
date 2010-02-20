@@ -32,7 +32,7 @@ public:
   CGUIDialogPictureInfo(void);
   virtual ~CGUIDialogPictureInfo(void);
   void SetPicture(CFileItem *item);
-  virtual void Render();
+  virtual void FrameMove();
 
 protected:
   virtual void OnInitWindow();

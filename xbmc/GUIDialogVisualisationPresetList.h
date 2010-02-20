@@ -33,7 +33,7 @@ public:
   CGUIDialogVisualisationPresetList(void);
   virtual ~CGUIDialogVisualisationPresetList(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void Render();
+  virtual void FrameMove();
 
 protected:
   void SetVisualisation(CVisualisation *pVisualisation);

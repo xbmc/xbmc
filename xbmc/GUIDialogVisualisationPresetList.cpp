@@ -94,7 +94,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogVisualisationPresetList::Render()
+void CGUIDialogVisualisationPresetList::FrameMove()
 {
   char **presets = NULL;
   int numPresets = 0;
@@ -108,7 +108,7 @@ void CGUIDialogVisualisationPresetList::Render()
     m_currentPreset = currentPreset;
     m_vecPresets->Get(m_currentPreset)->Select(true);
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisualisation)

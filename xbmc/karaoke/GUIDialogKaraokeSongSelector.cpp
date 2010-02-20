@@ -182,12 +182,12 @@ void CGUIDialogKaraokeSongSelector::UpdateData()
   m_updateData = false;
 }
 
-void CGUIDialogKaraokeSongSelector::Render()
+void CGUIDialogKaraokeSongSelector::FrameMove()
 {
   if ( m_updateData )
     UpdateData();
 
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 

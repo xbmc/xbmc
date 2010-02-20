@@ -2103,7 +2103,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   }
 }
 
-void CGUIWindowSettingsCategory::Render()
+void CGUIWindowSettingsCategory::FrameMove()
 {
   // update realtime changeable stuff
   UpdateRealTimeSettings();
@@ -2115,7 +2115,11 @@ void CGUIWindowSettingsCategory::Render()
     g_windowManager.SendThreadMessage(message, GetID());
     m_delayedTimer.Stop();
   }
+  CGUIWindow::FrameMove();
+}
 
+void CGUIWindowSettingsCategory::Render()
+{
   // update alpha status of current button
   bool bAlphaFaded = false;
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);

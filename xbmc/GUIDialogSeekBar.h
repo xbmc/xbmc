@@ -31,7 +31,7 @@ public:
   virtual ~CGUIDialogSeekBar(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
   void ResetTimer();
   float GetPercentage() {return m_fSeekPercentage;};
   CStdString GetSeekTimeLabel(TIME_FORMAT format = TIME_FORMAT_GUESS);
