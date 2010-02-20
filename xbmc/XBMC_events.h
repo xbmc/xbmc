@@ -248,5 +248,6 @@ typedef union XBMC_Event {
 #define ID_VOLUME_MUTE                  909
 #define ID_STOP_DSPLAYER                910
 #define ID_SEEK_TO                      911
+#define ID_DS_HIDE_SUB                  912
 
 #endif /* _XBMC_events_h */

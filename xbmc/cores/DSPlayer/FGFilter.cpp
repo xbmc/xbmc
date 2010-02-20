@@ -541,8 +541,6 @@ void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool aut
   {
     for(std::list<filter_t>::iterator it = m_filters.begin() ;it != m_filters.end() ; it++)
     {
-      
-
       if(group != (*it).group) continue;
 
       if(CFGFilterRegistry* f2r = dynamic_cast<CFGFilterRegistry*>((*it).pFGF))

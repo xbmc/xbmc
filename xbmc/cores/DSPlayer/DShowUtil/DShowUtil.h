@@ -62,6 +62,7 @@ public:
   static HRESULT IsPinConnected(IPin* pPin);
   static long MFTimeToMsec(const LONGLONG& time);
   static CStdString GetFilterPath(CStdString pClsid);
+  static CStdString GetFilterPath(CLSID pClsid);
   static CStdStringW AnsiToUTF16(const CStdString strFrom);
   static int CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& nOutC);
   static bool IsSplitter(IBaseFilter* pBF, bool fCountConnectedOnly = false);

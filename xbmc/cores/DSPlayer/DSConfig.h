@@ -70,6 +70,8 @@ public:
    */
   void ShowPropertyPage(IBaseFilter *pBF);
   
+  bool LoadffdshowSubtitles(CStdString filePath);
+
   /// Pointer to a CDSGraph instance
   CDSGraph *          pGraph;
   /** @defgroup FFDShow FFDShow related interface
@@ -108,6 +110,7 @@ protected:
    * @return True if the filter is FFDShow, false else
    */
   bool GetffdshowFilters(IBaseFilter* pBF);
+
   /**
    * Configure the filters from the graph
    */

@@ -117,15 +117,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   CChaptersManager::getSingleton()->InitManager(m_pGraphBuilder->GetSplitter(), this);
   if (!CChaptersManager::getSingleton()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
-
-  LONGLONG tmestamp;
-  tmestamp = CTimeUtils::GetTimeMS();
-  CLog::Log(LOGDEBUG,"%s Timestamp before loading video info with mediainfo.dll %I64d",__FUNCTION__,tmestamp);
   
   UpdateCurrentVideoInfo();
   
-  tmestamp = CTimeUtils::GetTimeMS();
-  CLog::Log(LOGDEBUG,"%s Timestamp after loading video info with mediainfo.dll  %I64d",__FUNCTION__,tmestamp);
+
   
 
   SetVolume(g_settings.m_nVolumeLevel);
@@ -134,7 +129,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   
   //TODO add addsubtitles stream from external file in the stream manager
   //for(unsigned int i=0;i<filenames.size();i++)
-  //  g_dsconfig.SetSubtitlesFile(filenames[i]);
+  //CStreamsManager::AddSubtitle(CStdString(filenames[i]));
   //For an unknown reason the subtitles are not working for the whole playback if we are using this
 
   //still need to be added

@@ -54,6 +54,13 @@ LONG DShowUtil::MFTimeToMsec(const LONGLONG& time)
   return (LONG)(time / (10000000 / 1000));
 }
 
+CStdString DShowUtil::GetFilterPath(CLSID pClsid)
+{
+  CStdString strGuidD;
+  strGuidD = CStringFromGUID(pClsid);
+  return GetFilterPath(strGuidD);
+}
+
 CStdString DShowUtil::GetFilterPath(CStdString pClsid)
 {
 

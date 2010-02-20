@@ -170,25 +170,38 @@ void CDSPlayer::Process()
 {
   m_callback.OnPlayBackStarted();
 
-  bool pStartPosDone = true;
+  bool pStartPosDone = false;
   // allow renderer to switch to fullscreen if requested
   //m_pDsGraph.EnableFullscreen(true);
   // make sure application know our info
   //UpdateApplication(0);
   //UpdatePlayState(0);
-  if (m_PlayerOptions.starttime>0)
-    pStartPosDone=false;
+  
   
   SetEvent(m_hReadyEvent);
-  while (PlayerState != DSPLAYER_CLOSING &&
-    PlayerState != DSPLAYER_CLOSED)
+  while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
     if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
       break;
 
+    //The graph need to be started to handle those stuff
     if (!pStartPosDone)
 	  {
-      SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
+      
+      if (m_PlayerOptions.starttime>0)
+      {
+        SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
+      }
+      //SendMessage(g_hWnd,WM_COMMAND, ID_DS_HIDE_SUB ,0);
+      //In case ffdshow has the subtitles filter enabled
+      if ( CStreamsManager::getSingleton()->GetSubtitleCount() == 0 )
+        CStreamsManager::getSingleton()->SetSubtitleVisible(false);
+      else
+      {
+        //If there more than one we will load the first one in the list
+        CStreamsManager::getSingleton()->SetSubtitle(0);
+        CStreamsManager::getSingleton()->SetSubtitleVisible(true);
+      }
       pStartPosDone = true;
 	  }
 
@@ -204,11 +217,13 @@ void CDSPlayer::Process()
     if (m_currentSpeed == 0)
     {      
       Sleep(250);
-    } else if (m_currentSpeed != 10000)
+    } 
+    else if (m_currentSpeed != 10000)
 	  {
 	    m_pDsGraph.DoFFRW(m_currentSpeed);
       Sleep(100);
-    } else
+    } 
+    else
     {
 	    Sleep(250);
 	    m_pDsGraph.UpdateTime();

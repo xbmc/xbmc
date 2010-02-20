@@ -260,7 +260,9 @@ void CStreamsManager::LoadStreams()
 
       DeleteMediaType(mediaType);
     }
-  } else {
+  } 
+  else 
+  {
     /* No */  
   
     // Enumerate output pins
@@ -366,15 +368,17 @@ void CStreamsManager::LoadStreams()
   CDVDFactorySubtitle::GetSubtitles(subtitles, m_pGraph->GetCurrentFile());
 
   SExternalSubtitleInfos *s = NULL;
-  std::vector<std::string>::const_iterator it = subtitles.begin();
+  
   int i = 1;
-  for (; it != subtitles.end(); ++it, i++)
+  for (std::vector<std::string>::const_iterator it = subtitles.begin(); it != subtitles.end(); it++)
   {
     s = new SExternalSubtitleInfos(); s->Clear();
 
-    s->external = true; s->path = (*it);
-    s->name.Format("External sub %02d", i);
+    s->external = true; 
+    s->path = CSpecialProtocol::TranslatePath((*it));
 
+    s->name.Format("External sub %02d", i);
+    i++;
     m_subtitleStreams.push_back(s);
   }
 }
@@ -569,7 +573,7 @@ void CStreamsManager::SetSubtitle( int iStream )
   bool stopped = false;
   CStdString subtitlePath = "";
 
-  if (m_subtitleStreams[iStream]->external && g_dsconfig.pIffdshowBase)
+  if (m_subtitleStreams[iStream]->external)
   {
     /* External subtitle */
     if (! m_bSubtitlesUnconnected)
@@ -577,7 +581,7 @@ void CStreamsManager::SetSubtitle( int iStream )
 
     SExternalSubtitleInfos *s = reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[iStream]);
 
-    if (SUCCEEDED(g_dsconfig.pIffdshowBase->putParamStr(IDFF_subFilename, s->path.c_str())))
+    if (g_dsconfig.LoadffdshowSubtitles(s->path))
       CLog::Log(LOGNOTICE,"%s using this file for subtitle %s", __FUNCTION__, s->path.c_str());
 
     s->flags = AMSTREAMSELECTINFO_ENABLED;

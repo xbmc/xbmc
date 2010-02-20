@@ -681,7 +681,8 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, IBaseFilter** ppBF
     CLog::Log(LOGERROR, "%s Filter \"%s\" isn't loaded. Please check dsfilterconfig.xml", __FUNCTION__, filterName.c_str());
     return E_FAIL;
 
-  } else
+  } 
+  else
   {
     if(SUCCEEDED(hr = (*it)->Create(ppBF)))
     {
@@ -690,7 +691,8 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, IBaseFilter** ppBF
         CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, strBFName.c_str());
       else
         CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, strBFName.c_str());
-    } else
+    } 
+    else
     {
       CLog::Log(LOGERROR,"%s Failed to create filter \"%s\"", __FUNCTION__, filterName.c_str());
     }

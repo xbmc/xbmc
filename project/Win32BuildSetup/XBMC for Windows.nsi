@@ -431,7 +431,7 @@ SectionEnd
 ;--------------------------------
 ;Dsplayer installation section
 
-Section "ffdshow rev 3255" SEC_FFDSHOW
+Section "ffdshow rev 3268" SEC_FFDSHOW
   SectionIn 1 2
   
   SetOutPath "$TEMP"

@@ -205,11 +205,21 @@ bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
   }
   if (!pIffdshowDecoder)
     hr = pBF->QueryInterface(IID_IffDecoder, (void **) &pIffdshowDecoder );
+  
+  return true;
+}
+
+bool CDSConfig::LoadffdshowSubtitles(CStdString filePath)
+{
   if (pIffdshowDecoder)
   {
-    
+    //pIffdshowBase->putParamStr(IDFF_subFilename,filePath.c_str());
+    if (SUCCEEDED(pIffdshowDecoder->compat_putParamStr(IDFF_subFilename,filePath.c_str())))
+      return true;
+    return false;
   }
-  return true;
+  else
+    return false;
 }
 
 bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
