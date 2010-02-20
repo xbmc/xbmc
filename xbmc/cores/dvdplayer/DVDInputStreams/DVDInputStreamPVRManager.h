@@ -70,6 +70,14 @@ public:
   /* overloaded is streamtype to support m_pOtherStream */
   bool            IsStreamType(DVDStreamType type) const;
 
+  /*! \brief Get the input format from the Backend
+   If it is empty ffmpeg scanning the stream to find the right input format.
+   See "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
+   list of the input formats.
+   \return The name of the input format
+   */
+  CStdString      GetInputFormat();
+
   /* returns m_pOtherStream */
   CDVDInputStream* GetOtherStream();
 

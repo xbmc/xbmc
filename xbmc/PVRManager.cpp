@@ -1067,6 +1067,14 @@ CFileItem *CPVRManager::GetCurrentPlayingItem()
     return NULL;
 }
 
+CStdString CPVRManager::GetCurrentInputFormat()
+{
+  if (m_currentPlayingChannel)
+    return m_currentPlayingChannel->GetPVRChannelInfoTag()->InputFormat();
+
+  return "";
+}
+
 /********************************************************************
  * CPVRManager GetCurrentChannel
  *
@@ -1830,7 +1838,6 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = fals
   /* Update the Playing channel data and the current epg data if it was not previewed */
   if (!isPreviewed)
   {
-    fprintf(stderr,"<<<<<<<<\n");
     delete m_currentPlayingChannel;
     m_currentPlayingChannel = new CFileItem(*tag);
   }

@@ -27,9 +27,9 @@ using namespace std;
 
 using namespace dbiplus;
 
-#define TV_DATABASE_VERSION 5
-#define TV_DATABASE_OLD_VERSION 3
-#define TV_DATABASE_NAME "MyTV1.db"
+#define TV_DATABASE_VERSION 4
+#define TV_DATABASE_OLD_VERSION 3.f
+#define TV_DATABASE_NAME "MyTV4.db"
 
 CTVDatabase::CTVDatabase(void)
 {
@@ -70,7 +70,7 @@ bool CTVDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE Channels (idChannel integer primary key, Name text, Number integer, ClientName text, "
                 "ClientNumber integer, idClient integer, UniqueId integer, IconPath text, GroupID integer, countWatched integer, "
                 "timeWatched integer, lastTimeWatched datetime, encryption integer, radio bool, hide bool, grabEpg bool, EpgGrabber text, "
-                "lastGrabTime datetime, Virtual bool, strStreamURL text)\n");
+                "lastGrabTime datetime, Virtual bool, strInputFormat text, strStreamURL text)\n");
 
     CLog::Log(LOGINFO, "TV-Database: Creating ChannelLinkageMap table");
     m_pDS->exec("CREATE TABLE ChannelLinkageMap (idMapping integer primary key, idPortalChannel integer, idLinkedChannel integer)\n");
@@ -104,11 +104,7 @@ bool CTVDatabase::UpdateOldVersion(int iVersion)
 
   try
   {
-    if (iVersion < 5)
-    {
-      CLog::Log(LOGINFO, "TV-Database: Creating LastEPGScan table");
-      m_pDS->exec("CREATE TABLE LastEPGScan (idScan integer primary key, ScanTime datetime)\n");
-    }
+
   }
   catch (...)
   {
@@ -734,12 +730,12 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
     {
       CStdString SQL = FormatSQL("insert into Channels (idChannel, idClient, Number, Name, ClientName, "
                                  "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, "
-                                 "grabEpg, EpgGrabber, hide, Virtual, strStreamURL) "
-                                 "values (NULL, '%i', '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%s')\n",
+                                 "grabEpg, EpgGrabber, hide, Virtual, strInputFormat, strStreamURL) "
+                                 "values (NULL, '%i', '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%s', '%s')\n",
                                  info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                                  info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
                                  info.EncryptionSystem(), info.m_radio, info.m_grabEpg, info.m_grabber.c_str(),
-                                 info.m_hide, info.m_bIsVirtual, info.m_strStreamURL.c_str());
+                                 info.m_hide, info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)m_pDS->lastinsertid();
@@ -807,11 +803,11 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
       // update the item
       SQL = FormatSQL("update Channels set idClient=%i,Number=%i,Name='%s',ClientName='%s',"
                       "ClientNumber=%i,UniqueId=%i,IconPath='%s',GroupID=%i,encryption=%i,radio=%i,"
-                      "hide=%i,grabEpg=%i,EpgGrabber='%s',Virtual=%i,strStreamURL='%s' where idChannel=%i",
+                      "hide=%i,grabEpg=%i,EpgGrabber='%s',Virtual=%i,strInputFormat='%s',strStreamURL='%s' where idChannel=%i",
                       info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                       info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
                       info.EncryptionSystem(), info.m_radio, info.m_hide, info.m_grabEpg, info.m_grabber.c_str(),
-                      info.m_bIsVirtual, info.m_strStreamURL.c_str(), channelId);
+                      info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str(), channelId);
 
       m_pDS->exec(SQL.c_str());
       return channelId;
@@ -821,12 +817,12 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
       m_pDS->close();
       SQL = FormatSQL("insert into Channels (idChannel, idClient, Number, Name, ClientName, "
                       "ClientNumber, UniqueId, IconPath, GroupID, encryption, radio, "
-                      "grabEpg, EpgGrabber, hide, Virtual, strStreamURL) "
-                      "values (NULL, '%i', '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%s')\n",
+                      "grabEpg, EpgGrabber, hide, Virtual, strInputFormat, strStreamURL) "
+                      "values (NULL, '%i', '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s', '%i', '%i', '%s', '%s')\n",
                       info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
                       info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
                       info.EncryptionSystem(), info.m_radio, info.m_grabEpg, info.m_grabber.c_str(),
-                      info.m_hide, info.m_bIsVirtual, info.m_strStreamURL.c_str());
+                      info.m_hide, info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)m_pDS->lastinsertid();
@@ -946,6 +942,7 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
       channel.m_hide                = m_pDS->fv("hide").get_asBool();
       channel.m_grabEpg             = m_pDS->fv("grabEpg").get_asBool();
       channel.m_grabber             = m_pDS->fv("EpgGrabber").get_asString();
+      channel.m_strInputFormat      = m_pDS->fv("strInputFormat").get_asString();
       channel.m_strStreamURL        = m_pDS->fv("strStreamURL").get_asString();
       channel.m_countWatched        = m_pDS->fv("countWatched").get_asInt();
       channel.m_secondsWatched      = m_pDS->fv("timeWatched").get_asInt();

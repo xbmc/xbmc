@@ -38,8 +38,10 @@
 #include "Util.h"
 #include "URL.h"
 #include "FileSystem/File.h"
+#include "MusicInfoTag.h"
 
 using namespace XFILE;
+using namespace MUSIC_INFO;
 
 
 // --- cPVRChannelInfoTag ---------------------------------------------------------
@@ -653,7 +655,7 @@ void cPVRChannels::SearchAndSetChannelIcons(bool writeDB)
     /// TODO
 
 
-    CLog::Log(LOGNOTICE,"PVR: No channel icon found for %s, use '%s' or '%08d' with extension 'tbn', 'jpg' or 'png'", at(i).Name().c_str(), at(i).ClientName().c_str(), at(i).UniqueID());
+    CLog::Log(LOGNOTICE,"PVR: No channel icon found for %s, use '%s' or '%08li' with extension 'tbn', 'jpg' or 'png'", at(i).Name().c_str(), at(i).ClientName().c_str(), at(i).UniqueID());
   }
 
   database->Close();
@@ -667,19 +669,19 @@ void cPVRChannels::ReNumberAndCheck(void)
   {
     if (at(i).ClientNumber() <= 0)
     {
-      CLog::Log(LOGERROR, "PVR: Channel '%s' from client '%i' is invalid, removing from list", at(i).Name().c_str(), at(i).ClientID());
+      CLog::Log(LOGERROR, "PVR: Channel '%s' from client '%ld' is invalid, removing from list", at(i).Name().c_str(), at(i).ClientID());
       erase(begin()+i);
       i--;
       break;
     }
 
     if (at(i).UniqueID() <= 0)
-      CLog::Log(LOGNOTICE, "PVR: Channel '%s' from client '%i' have no unique ID. Contact PVR Client developer.", at(i).Name().c_str(), at(i).ClientID());
+      CLog::Log(LOGNOTICE, "PVR: Channel '%s' from client '%ld' have no unique ID. Contact PVR Client developer.", at(i).Name().c_str(), at(i).ClientID());
 
     if (at(i).Name().IsEmpty())
     {
       CStdString name;
-      CLog::Log(LOGERROR, "PVR: Client channel '%i' from client '%i' have no channel name", at(i).ClientNumber(), at(i).ClientID());
+      CLog::Log(LOGERROR, "PVR: Client channel '%i' from client '%ld' have no channel name", at(i).ClientNumber(), at(i).ClientID());
       name.Format(g_localizeStrings.Get(19085), at(i).ClientNumber());
       at(i).SetName(name);
     }
@@ -755,7 +757,7 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
 
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).Number() != i+1)
+    if (at(i).Number() != (int) i+1)
     {
       CStdString path;
       at(i).SetNumber(i+1);
@@ -793,7 +795,7 @@ void cPVRChannels::HideChannel(unsigned int number)
 
   for (unsigned int i = 0; i < PVRTimers.size(); i++)
   {
-    if ((PVRTimers[i].Number() == number) && (PVRTimers[i].IsRadio() == m_bRadio))
+    if ((PVRTimers[i].Number() == (int) number) && (PVRTimers[i].IsRadio() == m_bRadio))
     {
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (!pDialog)
@@ -812,7 +814,7 @@ void cPVRChannels::HideChannel(unsigned int number)
     }
   }
 
-  if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) && (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag()->Number() == number))
+  if ((g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) && (g_PVRManager.GetCurrentPlayingItem()->GetPVRChannelInfoTag()->Number() == (int) number))
   {
     CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
     return;
@@ -1133,6 +1135,19 @@ bool cPVRChannels::GetDirectory(const CStdString& strPath, CFileItemList &items)
           continue;
 
         CFileItemPtr channel(new CFileItem(PVRChannelsRadio[i]));
+        CMusicInfoTag* musictag = channel->GetMusicInfoTag();
+        if (musictag)
+        {
+          musictag->SetURL(PVRChannelsRadio[i].Path());
+          musictag->SetTitle(PVRChannelsRadio[i].NowTitle());
+          musictag->SetArtist(PVRChannelsRadio[i].Name());
+          musictag->SetAlbumArtist(PVRChannelsRadio[i].Name());
+          musictag->SetGenre(PVRChannelsRadio[i].NowGenre());
+          musictag->SetDuration(PVRChannelsRadio[i].NowDuration());
+          musictag->SetLoaded(true);
+          musictag->SetComment("");
+          musictag->SetLyrics("");
+        }
         items.Add(channel);
       }
     }

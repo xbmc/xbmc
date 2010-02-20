@@ -38,6 +38,7 @@
 #include "DVDInputStreams/DVDInputStreamMMS.h"
 #endif
 #include "DVDInputStreams/DVDInputStreamRTMP.h"
+#include "DVDInputStreams/DVDInputStreamPVRManager.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
@@ -280,7 +281,22 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   bool streaminfo = true; /* set to true if we want to look for streams before playback*/
 
-  if( m_pInput->GetContent().length() > 0 )
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
+    CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInput);
+    CStdString format = pStream->GetInputFormat();
+    if (!format.IsEmpty())
+    {
+      CLog::Log(LOGDEBUG, "Open, forcing input format '%s' for PVR Channel", format.c_str());
+      iformat = m_dllAvFormat.av_find_input_format(format.c_str());
+    }
+
+    /* these are likely pure streams, and as such we don't */
+    /* want to try to look for streaminfo before playback */
+    if( iformat )
+      streaminfo = false;
+  }
+  else if( m_pInput->GetContent().length() > 0 )
   {
     std::string content = m_pInput->GetContent();
 

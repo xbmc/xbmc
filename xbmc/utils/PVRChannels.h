@@ -45,35 +45,36 @@ private:
   mutable const cPVREPGInfoTag *m_epgNext;
 
   /* XBMC related channel data */
-  int                 m_iIdChannel;           ///> Database number
-  int                 m_iChannelNum;          ///> Channel number for channels on XBMC
-  int                 m_iGroupID;             ///> Channel group identfier
-  int                 m_encryptionSystem;     ///> Encryption System, 0 for FreeToAir, -1 unknown
-  bool                m_radio;                ///> Radio channel
-  bool                m_hide;                 ///> Channel is hide inside filelists
-  bool                m_isRecording;          ///> True if channel is currently recording
-  bool                m_grabEpg;              ///> Load EPG if set to true
-  CStdString          m_grabber;              ///> The EPG grabber name (client for backend reading)
-  CStdString          m_IconPath;             ///> Path to the logo image
-  CStdString          m_strChannel;           ///> Channel name
-  int                 m_countWatched;         ///> The count how much this channel was selected
-  long                m_secondsWatched;       ///> How many seconds this channel was watched
-  CDateTime           m_lastTimeWatched;      ///> The Date where this channel was selected last time
-  bool                m_bIsVirtual;           ///> Is a user defined virtual channel if true
+  int                 m_iIdChannel;           /**< \brief Database number */
+  int                 m_iChannelNum;          /**< \brief Channel number for channels on XBMC */
+  int                 m_iGroupID;             /**< \brief Channel group identfier */
+  int                 m_encryptionSystem;     /**< \brief Encryption System, 0 for FreeToAir, -1 unknown */
+  bool                m_radio;                /**< \brief Radio channel */
+  bool                m_hide;                 /**< \brief Channel is hide inside filelists */
+  bool                m_isRecording;          /**< \brief True if channel is currently recording */
+  bool                m_grabEpg;              /**< \brief Load EPG if set to true */
+  CStdString          m_grabber;              /**< \brief The EPG grabber name (client for backend reading) */
+  CStdString          m_IconPath;             /**< \brief Path to the logo image */
+  CStdString          m_strChannel;           /**< \brief Channel name */
+  int                 m_countWatched;         /**< \brief The count how much this channel was selected */
+  long                m_secondsWatched;       /**< \brief How many seconds this channel was watched */
+  CDateTime           m_lastTimeWatched;      /**< \brief The Date where this channel was selected last time */
+  bool                m_bIsVirtual;           /**< \brief Is a user defined virtual channel if true */
 
-  long                m_iPortalMasterChannel; ///> If it is a Portal Slave channel here is the master channel id or 0 for master, -1 for no portal
-  std::vector<long>   m_PortalChannels;       ///> Stores the slave portal channels if this is a master
+  long                m_iPortalMasterChannel; /**< \brief If it is a Portal Slave channel here is the master channel id or 0 for master, -1 for no portal */
+  std::vector<long>   m_PortalChannels;       /**< \brief Stores the slave portal channels if this is a master */
 
   /* Client related channel data */
-  long                m_iIdUnique;            ///> Unique Id for this channel
-  int                 m_clientID;             ///> Id of client channel come from
-  int                 m_iClientNum;           ///> Channel number on client
-  CStdString          m_strClientName;        ///> Channel name on client
+  long                m_iIdUnique;            /**< \brief Unique Id for this channel */
+  int                 m_clientID;             /**< \brief Id of client channel come from */
+  int                 m_iClientNum;           /**< \brief Channel number on client */
+  CStdString          m_strClientName;        /**< \brief Channel name on client */
 
-  CStdString          m_strStreamURL;         ///> URL of the stream, if empty use Client to read stream
-  CStdString          m_strFileNameAndPath;   ///> Filename for PVRManager to open and read stream
+  CStdString          m_strInputFormat;       /**< \brief The stream input type based upon ffmpeg/libavformat/allformats.c */
+  CStdString          m_strStreamURL;         /**< \brief URL of the stream, if empty use Client to read stream */
+  CStdString          m_strFileNameAndPath;   /**< \brief Filename for PVRManager to open and read stream */
 
-  std::vector<long>   m_linkedChannels;       ///> Channels linked to this channel
+  std::vector<long>   m_linkedChannels;       /**< \brief Channels linked to this channel */
 
 public:
   cPVRChannelInfoTag() { Reset(); };
@@ -181,8 +182,20 @@ public:
   int GetPortalChannels(CFileItemList* results);
        ///< Returns a File Item list with all portal channels
 
+  /*! \brief Get the input format from the Backend
+   If it is empty ffmpeg scanning the stream to find the right input format.
+   See "xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/allformats.c" for a
+   list of the input formats.
+   \return The name of the input format
+   */
+  CStdString InputFormat(void) const { return m_strInputFormat; }
 
-  /* EPG information for now playing event */
+  /*! \brief Set the input format of the Backend this channel belongs to
+   \param format The name of the input format
+   */
+  void SetInputFormat(CStdString format) { m_strInputFormat = format; }
+
+  /*! \name EPG information for now playing event */
   CStdString NowTitle() const;
   CStdString NowPlotOutline() const;
   CStdString NowPlot() const;
@@ -193,7 +206,7 @@ public:
   CStdString NowGenre(void) const;
   int        NowParentalRating() const;
 
-  /* EPG information for next playing event */
+  /*! \name EPG information for next playing event */
   CStdString NextTitle() const;
   CStdString NextPlotOutline() const;
   CStdString NextPlot() const;
@@ -203,6 +216,7 @@ public:
   CStdString NextGenre(void) const;
   int        NextParentalRating() const;
 
+  /*! \name Linked channel functions, used for portal mode */
   void ClearChannelLinkage() { m_linkedChannels.erase(m_linkedChannels.begin(), m_linkedChannels.end()); }
   void AddChannelLinkage(long LinkedChannel) { m_linkedChannels.push_back(LinkedChannel); }
 };

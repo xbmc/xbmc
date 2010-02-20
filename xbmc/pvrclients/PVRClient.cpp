@@ -878,6 +878,7 @@ void CPVRClient::WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, P
   tag.multifeed         = false;
   tag.multifeed_master  = 0;
   tag.multifeed_number  = 0;
+  tag.input_format      = channelinfo.InputFormat();
   tag.stream_url        = channelinfo.StreamURL();
   return;
 }

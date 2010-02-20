@@ -95,6 +95,7 @@ void CAddonHelpers_PVR::PVRTransferChannelEntry(void *addonData, const PVRHANDLE
   tag.SetRadio(channel->radio);
   tag.SetHidden(channel->hide);
   tag.SetRecording(channel->recording);
+  tag.SetInputFormat(channel->input_format);
   tag.SetStreamURL(channel->stream_url);
 
   xbmcChannels->push_back(tag);

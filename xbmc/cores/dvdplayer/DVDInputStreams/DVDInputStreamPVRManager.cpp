@@ -262,3 +262,11 @@ bool CDVDInputStreamPVRManager::Record(bool bOnOff)
     return m_pRecordable->Record(bOnOff);
   return false;
 }
+
+CStdString CDVDInputStreamPVRManager::GetInputFormat()
+{
+  if (m_pOtherStream)
+    return "";
+  else
+    return g_PVRManager.GetCurrentInputFormat();
+}

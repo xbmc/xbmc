@@ -76,6 +76,12 @@ public:
   PVR_STREAMPROPS *GetCurrentStreamProps();
   PVR_SERVERPROPS *GetClientProps(int clientID) { return &m_clientsProps[clientID]; }
   CFileItem *GetCurrentPlayingItem();
+
+  /*! \brief Get the input format name of the current playing channel
+   \return the name of the input format or empty if unknown
+   */
+  CStdString GetCurrentInputFormat();
+
   bool GetCurrentChannel(int *number, bool *radio);
   bool HaveActiveClients();
   int GetPreviousChannel();
