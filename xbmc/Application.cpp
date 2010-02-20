@@ -2292,6 +2292,7 @@ bool CApplication::OnKey(const CKey& key)
     }
     if (useKeyboard)
     {
+      action = CAction(0); // reset our action
       if (g_guiSettings.GetBool("input.remoteaskeyboard"))
       {
         // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
