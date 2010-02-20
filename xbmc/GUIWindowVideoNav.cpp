@@ -1108,7 +1108,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
     filter = true;
   }
 
-  if (filter && !GetProperty("filter").IsEmpty())
+  if (filter || !GetProperty("filter").IsEmpty())
     FilterItems(items);
 }
 
