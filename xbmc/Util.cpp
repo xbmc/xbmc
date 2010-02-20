@@ -3651,7 +3651,9 @@ const BUILT_IN commands[] = {
   { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
-  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" }
+  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
+  { "PlayWith",                   true,   "Play the selected item with the specified core" },
+  { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" }
 };
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
@@ -4855,6 +4857,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
+  }
+  else if (execute.Equals("wakeonlan"))
+  {
+    g_network.WakeOnLan((char*)params[0].c_str());
   }
   else
     return -1;

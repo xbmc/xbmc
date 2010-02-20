@@ -53,6 +53,9 @@ public:
   /* waits for network to finish init */
   bool WaitForSetup(DWORD timeout);
   
+  // Return true if the magic packet was send
+  bool WakeOnLan(char *mac); 
+  
   bool CheckNetwork(int count);
   bool SetupNetwork();
   bool IsEthernetConnected();
