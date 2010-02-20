@@ -125,10 +125,18 @@ CStdString CGUISpinControlEx::GetDescription() const
   return strLabel;
 }
 
-void CGUISpinControlEx::SettingsCategorySetSpinTextColor(const CGUIInfoColor &color)
+void CGUISpinControlEx::SetItemInvalid(bool invalid)
 {
-  m_label.GetLabelInfo().textColor = color;
-  m_label.GetLabelInfo().focusedColor = color;
+  if (invalid)
+  {
+    m_label.GetLabelInfo().textColor = m_buttonControl.GetLabelInfo().disabledColor;
+    m_label.GetLabelInfo().focusedColor = m_buttonControl.GetLabelInfo().disabledColor;
+  }
+  else
+  {
+    m_label.GetLabelInfo().textColor = m_buttonControl.GetLabelInfo().textColor;
+    m_label.GetLabelInfo().focusedColor = m_buttonControl.GetLabelInfo().focusedColor;
+  }
 }
 
 void CGUISpinControlEx::SetSpinPosition(float spinPosX)

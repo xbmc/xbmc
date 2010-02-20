@@ -1554,7 +1554,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_SkinInfo.Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
-      pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().textColor);
+      pControl->SetItemInvalid(false);
       if (strSkin != ".svn" && strSkin != g_guiSettings.GetString("lookandfeel.skin"))
       {
         m_strNewSkin = strSkin;
@@ -1571,7 +1571,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
       m_strNewSkin.Empty();
       g_application.CancelDelayLoadSkin();
-      pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().disabledColor);
+      pControl->SetItemInvalid(true);
     }
   }
   else if (strSetting.Equals("lookandfeel.soundskin"))
