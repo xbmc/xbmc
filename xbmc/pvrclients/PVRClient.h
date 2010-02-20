@@ -68,12 +68,6 @@ public:
   /* Channels */
   int GetNumChannels();
   PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio);
-  PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result);
-  PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo);
-  PVR_ERROR AddChannel(const cPVRChannelInfoTag &info);
-  PVR_ERROR DeleteChannel(unsigned int number);
-  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
-  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
 
   /* Recordings */
   int GetNumRecordings(void);
@@ -91,9 +85,10 @@ public:
 
   bool OpenLiveStream(const cPVRChannelInfoTag &channelinfo);
   void CloseLiveStream();
-  int ReadLiveStream(BYTE* buf, int buf_size);
-  __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
-  __int64 LengthLiveStream(void);
+  int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
+  int64_t SeekLiveStream(int64_t iFilePosition, int iWhence = SEEK_SET);
+  int64_t PositionLiveStream(void);
+  int64_t LengthLiveStream(void);
   int GetCurrentClientChannel();
   bool SwitchChannel(const cPVRChannelInfoTag &channelinfo);
   bool SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
@@ -101,9 +96,10 @@ public:
 
   bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
   void CloseRecordedStream(void);
-  int ReadRecordedStream(BYTE* buf, int buf_size);
-  __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
-  __int64 LengthRecordedStream(void);
+  int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
+  int64_t SeekRecordedStream(int64_t iFilePosition, int iWhence = SEEK_SET);
+  int64_t PositionRecordedStream(void);
+  int64_t LengthRecordedStream(void);
 
 protected:
   bool                  m_ReadyToUse;

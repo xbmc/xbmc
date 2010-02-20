@@ -388,175 +388,6 @@ PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
   return ret;
 }
 
-PVR_ERROR CPVRClient::GetChannelSettings(cPVRChannelInfoTag *result)
-{
-  CSingleLock lock(m_critSection);
-
-  PVR_ERROR ret = PVR_ERROR_UNKOWN;
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-//      ret = m_pStruct->GetChannelSettings(result);
-      if (ret != PVR_ERROR_NO_ERROR)
-        throw ret;
-
-      return PVR_ERROR_NO_ERROR;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetChannelSettings occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    }
-    catch (PVR_ERROR ret)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after GetChannelSettings", Name().c_str(), m_hostName.c_str(), ret);
-    }
-  }
-  return ret;
-}
-
-PVR_ERROR CPVRClient::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
-{
-  CSingleLock lock(m_critSection);
-
-  PVR_ERROR ret = PVR_ERROR_UNKOWN;
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-//      ret = m_pStruct->UpdateChannelSettings(chaninfo);
-      if (ret != PVR_ERROR_NO_ERROR)
-        throw ret;
-
-      return PVR_ERROR_NO_ERROR;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during UpdateChannelSettings occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    }
-    catch (PVR_ERROR ret)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after UpdateChannelSettings", Name().c_str(), m_hostName.c_str(), ret);
-    }
-  }
-  return ret;
-}
-
-PVR_ERROR CPVRClient::AddChannel(const cPVRChannelInfoTag &info)
-{
-  CSingleLock lock(m_critSection);
-
-  PVR_ERROR ret = PVR_ERROR_UNKOWN;
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-//      ret = m_pStruct->AddChannel(info);
-      if (ret != PVR_ERROR_NO_ERROR)
-        throw ret;
-
-      return PVR_ERROR_NO_ERROR;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during AddChannel occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    }
-    catch (PVR_ERROR ret)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after AddChannel", Name().c_str(), m_hostName.c_str(), ret);
-    }
-  }
-  return ret;
-}
-
-PVR_ERROR CPVRClient::DeleteChannel(unsigned int number)
-{
-  CSingleLock lock(m_critSection);
-
-  PVR_ERROR ret = PVR_ERROR_UNKOWN;
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-//      ret = m_pStruct->DeleteChannel(number);
-      if (ret != PVR_ERROR_NO_ERROR)
-        throw ret;
-
-      return PVR_ERROR_NO_ERROR;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during DeleteChannel occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    }
-    catch (PVR_ERROR ret)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after DeleteChannel", Name().c_str(), m_hostName.c_str(), ret);
-    }
-  }
-  return ret;
-}
-
-PVR_ERROR CPVRClient::RenameChannel(unsigned int number, CStdString &newname)
-{
-  CSingleLock lock(m_critSection);
-
-  PVR_ERROR ret = PVR_ERROR_UNKOWN;
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-//      ret = m_pStruct->RenameChannel(number, newname);
-      if (ret != PVR_ERROR_NO_ERROR)
-        throw ret;
-
-      return PVR_ERROR_NO_ERROR;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during RenameChannel occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    }
-    catch (PVR_ERROR ret)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after RenameChannel", Name().c_str(), m_hostName.c_str(), ret);
-    }
-  }
-  return ret;
-}
-
-PVR_ERROR CPVRClient::MoveChannel(unsigned int number, unsigned int newnumber)
-{
-  CSingleLock lock(m_critSection);
-
-  PVR_ERROR ret = PVR_ERROR_UNKOWN;
-
-  if (m_ReadyToUse)
-  {
-    try
-    {
-//      ret = m_pStruct->MoveChannel(number, newnumber);
-      if (ret != PVR_ERROR_NO_ERROR)
-        throw ret;
-
-      return PVR_ERROR_NO_ERROR;
-    }
-    catch (std::exception &e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during MoveChannel occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
-    }
-    catch (PVR_ERROR ret)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after MoveChannel", Name().c_str(), m_hostName.c_str(), ret);
-    }
-  }
-  return ret;
-}
-
-
 /**********************************************************
  * Recordings PVR Functions
  */
@@ -948,17 +779,22 @@ void CPVRClient::CloseLiveStream()
   return;
 }
 
-int CPVRClient::ReadLiveStream(BYTE* buf, int buf_size)
+int CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize)
 {
-  return m_pStruct->ReadLiveStream(buf, buf_size);
+  return m_pStruct->ReadLiveStream((unsigned char *)lpBuf, uiBufSize);
 }
 
-__int64 CPVRClient::SeekLiveStream(__int64 pos, int whence)
+int64_t CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
 {
-  return m_pStruct->SeekLiveStream(pos, whence);
+  return m_pStruct->SeekLiveStream(iFilePosition, iWhence);
 }
 
-__int64 CPVRClient::LengthLiveStream(void)
+int64_t CPVRClient::PositionLiveStream()
+{
+  return m_pStruct->PositionLiveStream();
+}
+
+int64_t CPVRClient::LengthLiveStream(void)
 {
   return m_pStruct->LengthLiveStream();
 }
@@ -1062,17 +898,22 @@ void CPVRClient::CloseRecordedStream(void)
   return m_pStruct->CloseRecordedStream();
 }
 
-int CPVRClient::ReadRecordedStream(BYTE* buf, int buf_size)
+int CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize)
 {
-  return m_pStruct->ReadRecordedStream(buf, buf_size);
+  return m_pStruct->ReadRecordedStream((unsigned char *)lpBuf, uiBufSize);
 }
 
-__int64 CPVRClient::SeekRecordedStream(__int64 pos, int whence)
+int64_t CPVRClient::SeekRecordedStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
 {
-  return m_pStruct->SeekRecordedStream(pos, whence);
+  return m_pStruct->SeekRecordedStream(iFilePosition, iWhence);
 }
 
-__int64 CPVRClient::LengthRecordedStream(void)
+int64_t CPVRClient::PositionRecordedStream()
+{
+  return m_pStruct->PositionRecordedStream();
+}
+
+int64_t CPVRClient::LengthRecordedStream(void)
 {
   return m_pStruct->LengthRecordedStream();
 }

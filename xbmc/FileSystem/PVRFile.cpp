@@ -143,6 +143,11 @@ int64_t CPVRFile::Seek(int64_t pos, int whence)
   return 0;
 }
 
+int64_t CPVRFile::GetPosition()
+{
+  return g_PVRManager.GetStreamPosition();
+}
+
 int CPVRFile::GetTotalTime()
 {
   return g_PVRManager.GetTotalTime();
@@ -203,7 +208,7 @@ bool CPVRFile::PrevChannel(bool preview/* = false*/)
   }
 }
 
-bool CPVRFile::SelectChannel(unsigned int channel)
+bool CPVRFile::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
 {
   if (m_isPlayRecording)
   {
@@ -214,7 +219,7 @@ bool CPVRFile::SelectChannel(unsigned int channel)
     return true;
   }
 
-  if (g_PVRManager.ChannelSwitch(channel))
+  if (g_PVRManager.ChannelSwitch(channel, isPreviewed))
   {
     m_playingItem = channel;
     return true;
@@ -262,10 +267,8 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
         }
       }
     }
-    return FileName;
   }
-  else
-    return "";
+  return FileName;
 }
 
 bool CPVRFile::CanRecord()

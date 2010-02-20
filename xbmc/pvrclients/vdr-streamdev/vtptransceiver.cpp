@@ -892,6 +892,7 @@ PVR_ERROR CVTPTransceiver::RequestChannelList(PVRHANDLE handle, bool radio)
     tag.recording   = false;
     tag.bouquet     = 0;
     tag.multifeed   = false;
+    tag.input_format = "mpegts";
     tag.stream_url  = "";
 
     if (radio == tag.radio)

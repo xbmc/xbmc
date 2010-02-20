@@ -39,7 +39,7 @@ public:
   virtual ~CPVRFile();
   virtual bool          Open(const CURL& url);
   virtual int64_t       Seek(int64_t pos, int whence=SEEK_SET);
-  virtual int64_t       GetPosition()                                  { return -1; }
+  virtual int64_t       GetPosition();
   virtual int64_t       GetLength();
   virtual int           Stat(const CURL& url, struct __stat64* buffer) { return -1; }
   virtual void          Close();
@@ -55,7 +55,7 @@ public:
 
   virtual bool           NextChannel(bool preview = false);
   virtual bool           PrevChannel(bool preview = false);
-  virtual bool           SelectChannel(unsigned int channel);
+  virtual bool           SelectChannel(unsigned int channel, bool isPreviewed = false);
 
   virtual int            GetTotalTime();
   virtual int            GetStartTime();

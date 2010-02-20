@@ -30,7 +30,7 @@ public:
   virtual ~ILiveTVInterface() {}
   virtual bool           NextChannel(bool preview = false) = 0;
   virtual bool           PrevChannel(bool preview = false) = 0;
-  virtual bool           SelectChannel(unsigned int channel) = 0;
+  virtual bool           SelectChannel(unsigned int channel, bool isPreviewed = false) = 0;
 
   virtual int            GetTotalTime() = 0;
   virtual int            GetStartTime() = 0;

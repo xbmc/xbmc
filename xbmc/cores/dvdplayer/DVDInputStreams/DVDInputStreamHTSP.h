@@ -44,7 +44,7 @@ public:
 
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
-  bool            SelectChannel(unsigned int channel);
+  bool            SelectChannel(unsigned int channel, bool isPreviewed = false);
   int             GetSelectedChannel() {return -1; }
   bool            UpdateItem(CFileItem& item);
 

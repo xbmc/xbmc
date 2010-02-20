@@ -83,12 +83,14 @@ extern "C"
   void CloseLiveStream();
   int ReadLiveStream(unsigned char* buf, int buf_size);
   long long SeekLiveStream(long long pos, int whence=SEEK_SET);
+  long long PositionLiveStream(void);
   long long LengthLiveStream(void);
   int GetCurrentClientChannel();
   bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo);
 
   /** PVR Secondary Stream Functions **/
+  bool SwapLiveTVSecondaryStream();
   bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo);
   void CloseSecondaryStream();
   int ReadSecondaryStream(unsigned char* buf, int buf_size);
@@ -98,6 +100,7 @@ extern "C"
   void CloseRecordedStream(void);
   int ReadRecordedStream(unsigned char* buf, int buf_size);
   long long SeekRecordedStream(long long pos, int whence=SEEK_SET);
+  long long PositionRecordedStream(void);
   long long LengthRecordedStream(void);
   const char* GetLiveStreamURL(const PVR_CHANNEL &channelinfo);
 
@@ -141,10 +144,12 @@ extern "C"
     pClient->CloseLiveStream        = CloseLiveStream;
     pClient->ReadLiveStream         = ReadLiveStream;
     pClient->SeekLiveStream         = SeekLiveStream;
+    pClient->PositionLiveStream     = PositionLiveStream;
     pClient->LengthLiveStream       = LengthLiveStream;
     pClient->GetCurrentClientChannel= GetCurrentClientChannel;
     pClient->SwitchChannel          = SwitchChannel;
     pClient->SignalQuality          = SignalQuality;
+    pClient->SwapLiveTVSecondaryStream  = SwapLiveTVSecondaryStream;
     pClient->OpenSecondaryStream    = OpenSecondaryStream;
     pClient->CloseSecondaryStream   = CloseSecondaryStream;
     pClient->ReadSecondaryStream    = ReadSecondaryStream;
@@ -152,6 +157,7 @@ extern "C"
     pClient->CloseRecordedStream    = CloseRecordedStream;
     pClient->ReadRecordedStream     = ReadRecordedStream;
     pClient->SeekRecordedStream     = SeekRecordedStream;
+    pClient->PositionRecordedStream = PositionRecordedStream;
     pClient->LengthRecordedStream   = LengthRecordedStream;
     pClient->GetLiveStreamURL       = GetLiveStreamURL;
   };

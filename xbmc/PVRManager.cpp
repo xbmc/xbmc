@@ -1628,7 +1628,7 @@ void CPVRManager::CloseStream()
  *
  * The amount of readed bytes is returned.
  ********************************************************************/
-int CPVRManager::ReadStream(BYTE* buf, int buf_size)
+int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
 {
   EnterCriticalSection(&m_critSection);
 
@@ -1651,12 +1651,12 @@ int CPVRManager::ReadStream(BYTE* buf, int buf_size)
   /* Process LiveTV Reading */
   if (m_currentPlayingChannel)
   {
-    bytesReaded = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadLiveStream(buf, buf_size);
+    bytesReaded = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->ReadLiveStream(lpBuf, uiBufSize);
   }
   /* Process Recording Reading */
   else if (m_currentPlayingRecording)
   {
-    bytesReaded = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ReadRecordedStream(buf, buf_size);
+    bytesReaded = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->ReadRecordedStream(lpBuf, uiBufSize);
   }
 
   LeaveCriticalSection(&m_critSection);
@@ -1669,9 +1669,9 @@ int CPVRManager::ReadStream(BYTE* buf, int buf_size)
  * Return the length in bytes of the current stream readed from
  * PVR Client or NULL if internal timeshift is used.
  ********************************************************************/
-__int64 CPVRManager::LengthStream(void)
+int64_t CPVRManager::LengthStream(void)
 {
-  __int64 streamLength = 0;
+  int64_t streamLength = 0;
 
   EnterCriticalSection(&m_critSection);
 
@@ -1697,9 +1697,9 @@ __int64 CPVRManager::LengthStream(void)
  *
  * Returns the new position after seek or < 0 if seek was failed
  ********************************************************************/
-__int64 CPVRManager::SeekStream(__int64 pos, int whence)
+int64_t CPVRManager::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
 {
-  __int64 streamNewPos = 0;
+  int64_t streamNewPos = 0;
 
   EnterCriticalSection(&m_critSection);
 
@@ -1709,11 +1709,30 @@ __int64 CPVRManager::SeekStream(__int64 pos, int whence)
   }
   else if (m_currentPlayingRecording)
   {
-    streamNewPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->SeekRecordedStream(pos, whence);
+    streamNewPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->SeekRecordedStream(iFilePosition, iWhence);
   }
 
   LeaveCriticalSection(&m_critSection);
   return streamNewPos;
+}
+
+int64_t CPVRManager::GetStreamPosition()
+{
+  int64_t streamPos = 0;
+
+  EnterCriticalSection(&m_critSection);
+
+  if (m_currentPlayingChannel)
+  {
+    streamPos = 0;
+  }
+  else if (m_currentPlayingRecording)
+  {
+    streamPos = m_clients[m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID()]->PositionRecordedStream();
+  }
+
+  LeaveCriticalSection(&m_critSection);
+  return streamPos;
 }
 
 /********************************************************************
@@ -1776,7 +1795,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
  *
  * Returns true if switch was succesfull
  ********************************************************************/
-bool CPVRManager::ChannelSwitch(unsigned int iChannel)
+bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = false*/)
 {
   if (!m_currentPlayingChannel)
     return false;
@@ -1808,10 +1827,16 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
     return false;
   }
 
-  /* Update the Playing channel data and the current epg data */
-  delete m_currentPlayingChannel;
-  m_currentPlayingChannel = new CFileItem(*tag);
-  m_scanStart             = CTimeUtils::GetTimeMS();
+  /* Update the Playing channel data and the current epg data if it was not previewed */
+  if (!isPreviewed)
+  {
+    fprintf(stderr,"<<<<<<<<\n");
+    delete m_currentPlayingChannel;
+    m_currentPlayingChannel = new CFileItem(*tag);
+  }
+
+  /* Reset the Audio/Video detection counter */
+  m_scanStart = CTimeUtils::GetTimeMS();
 
   /* Load now the new channel settings from Database */
   LoadCurrentChannelSettings();

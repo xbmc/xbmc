@@ -484,6 +484,11 @@ long long SeekLiveStream(long long pos, int whence)
   return -1;
 }
 
+long long PositionLiveStream(void)
+{
+  return -1;
+}
+
 long long LengthLiveStream(void)
 {
   printf("%s\n", __PRETTY_FUNCTION__);
@@ -511,6 +516,11 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 
 /*******************************************/
 /** PVR Secondary Stream Functions        **/
+
+bool SwapLiveTVSecondaryStream()
+{
+  return false;
+}
 
 bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo)
 {
@@ -553,6 +563,11 @@ long long SeekRecordedStream(long long pos, int whence)
 {
   printf("%s\n", __PRETTY_FUNCTION__);
   return PVR_ERROR_SERVER_ERROR; // TODO g_client->SeekRecordedStream(pos, whence);
+}
+
+long long PositionRecordedStream(void)
+{
+  return -1;
 }
 
 long long LengthRecordedStream(void)

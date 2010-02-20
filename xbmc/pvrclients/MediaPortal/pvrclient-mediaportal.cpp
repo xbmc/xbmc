@@ -472,6 +472,7 @@ PVR_ERROR cPVRClientMediaPortal::RequestChannelList(PVRHANDLE handle, int radio)
       tag.recording = false;
       tag.bouquet = 0;
       tag.multifeed = false;
+      tag.input_format = "";
 
       if(radio)
         tag.stream_url = "pvr://stream/radio/%i.ts"; //stream.c_str();

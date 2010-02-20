@@ -64,7 +64,7 @@ public:
 
   virtual bool           NextChannel(bool preview = false);
   virtual bool           PrevChannel(bool preview = false);
-  virtual bool           SelectChannel(unsigned int channel);
+  virtual bool           SelectChannel(unsigned int channel, bool isPreviewed = false);
 
   virtual int            GetTotalTime();
   virtual int            GetStartTime();

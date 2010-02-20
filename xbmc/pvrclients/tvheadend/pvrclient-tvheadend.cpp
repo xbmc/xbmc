@@ -19,7 +19,7 @@
  *
  */
 
-#define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64 
+#define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
 #define DVD_TIME_BASE 1000000
 
 #include "pvrclient-tvheadend.h"
@@ -29,7 +29,7 @@ const size_t CIRCULAR_BUFFER_SIZE = 1024 * 1024;
 /************************************************************/
 /** Class interface */
 
-cPVRClientTvheadend::cPVRClientTvheadend() 
+cPVRClientTvheadend::cPVRClientTvheadend()
 {
   m_pSession = NULL;
 }
@@ -39,7 +39,7 @@ cPVRClientTvheadend::~cPVRClientTvheadend() {
 }
 
 /* connect functions */
-bool cPVRClientTvheadend::Connect(std::string sHostname, int iPort) 
+bool cPVRClientTvheadend::Connect(std::string sHostname, int iPort)
 {
   m_url.SetHostName(sHostname);
   m_url.SetPort(iPort);
@@ -51,16 +51,16 @@ bool cPVRClientTvheadend::Connect(std::string sHostname, int iPort)
   if (!(m_pSession = CHTSPDirectorySession::Acquire(m_url)))  //if (!m_cSession.Connect(m_sHostname, m_iPort))
     return false;
 
-  return true; 
+  return true;
 }
 
-void cPVRClientTvheadend::Disconnect() 
+void cPVRClientTvheadend::Disconnect()
 {
   CHTSPDirectorySession::Release(m_pSession);
   m_pSession = NULL;
 }
 
-PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio) 
+PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
 {
   if (!IsConnected())
     return PVR_ERROR_SERVER_ERROR;
@@ -68,7 +68,7 @@ PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
   SChannels channels = m_pSession->GetChannels();
   STags     tags     = m_pSession->GetTags();
 
-  for(STags::iterator tit = tags.begin(); tit != tags.end(); tit++) 
+  for(STags::iterator tit = tags.begin(); tit != tags.end(); tit++)
   {
     STag& t = tit->second;
     PVR_BOUQUET bou;
@@ -79,7 +79,7 @@ PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
     for(SChannels::iterator it = channels.begin(); it != channels.end(); it++) {
       SChannel& channel = it->second;
 
-      if (channel.MemberOf(t.id)) 
+      if (channel.MemberOf(t.id))
       {
         PVR_CHANNEL tag;
         memset(&tag, 0 , sizeof(tag));
@@ -87,16 +87,17 @@ PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
         tag.number      = channel.id;//num;
         tag.name        = channel.name.c_str();
         tag.callsign    = channel.name.c_str();
+        tag.input_format = "";
 
         char url[128];
-        sprintf(url, "htsp://%s:%d/tags/0/%d.ts", 
+        sprintf(url, "htsp://%s:%d/tags/0/%d.ts",
             m_url.GetHostName().c_str(), m_url.GetPort(), channel.id);
         tag.stream_url  = url;
         tag.bouquet     = t.id;
-    
-        XBMC_log(LOG_DEBUG, "%s - %s", 
+
+        XBMC_log(LOG_DEBUG, "%s - %s",
             __PRETTY_FUNCTION__, channel.name.c_str());
-      
+
         PVR_transfer_channel_entry(handle, &tag);
       }
     }
@@ -118,7 +119,7 @@ PVR_ERROR cPVRClientTvheadend::RequestEPGForChannel(PVRHANDLE handle, const PVR_
 
     SEvent event;
     event.id = channels[channel.uid].event;
-    
+
     printf("channel.uid %d, channel.id %d, event.id %d\n", channel.uid, channels[channel.uid].id, event.id);
 
     if (event.id == 0)
@@ -129,9 +130,9 @@ PVR_ERROR cPVRClientTvheadend::RequestEPGForChannel(PVRHANDLE handle, const PVR_
       bool success = m_pSession->GetEvent(event, event.id);
 
       if (success){
-//        XBMC_log(LOG_DEBUG, "%s - uid %d, title %s, desc %s, start %d, stop %d", 
+//        XBMC_log(LOG_DEBUG, "%s - uid %d, title %s, desc %s, start %d, stop %d",
 //            __PRETTY_FUNCTION__, event.id, event.title.c_str(), event.descs.c_str(), event.start, event.stop);
-//        printf("%s - uid %d, title %s, desc %s, start %d, stop %d\n", 
+//        printf("%s - uid %d, title %s, desc %s, start %d, stop %d\n",
 //            __PRETTY_FUNCTION__, event.id, event.title.c_str(), event.descs.c_str(), event.start, event.stop);
 
         PVR_PROGINFO broadcast;
@@ -146,7 +147,7 @@ PVR_ERROR cPVRClientTvheadend::RequestEPGForChannel(PVRHANDLE handle, const PVR_
         broadcast.endtime         = event.stop;
         broadcast.genre_type      = event.content;
         broadcast.genre_sub_type  = 0;
-        PVR_transfer_epg_entry(handle, &broadcast);        
+        PVR_transfer_epg_entry(handle, &broadcast);
 
         event.id = event.next;
         stop = event.stop;
@@ -157,7 +158,7 @@ PVR_ERROR cPVRClientTvheadend::RequestEPGForChannel(PVRHANDLE handle, const PVR_
 
     return PVR_ERROR_NO_ERROR;
   }
-  
+
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -187,10 +188,10 @@ PVR_ERROR cPVRClientTvheadend::GetStreamProperties(PVR_STREAMPROPS *props) {
 #if 0
   props->nstreams = sl.size();
 
-  std::list<htsp_stream_t>::iterator it; 
+  std::list<htsp_stream_t>::iterator it;
   int i;
 
-  for (i = 0, it = sl.begin(); it != sl.end(); ++i, ++it) 
+  for (i = 0, it = sl.begin(); it != sl.end(); ++i, ++it)
   {
     props->stream[i].id         = it->id;
     props->stream[i].physid     = it->physid;
@@ -208,16 +209,16 @@ bool cPVRClientTvheadend::SwitchChannel(const PVR_CHANNEL &channelinfo)
 
 /************************************************************/
 /** Live stream handling */
-bool cPVRClientTvheadend::OpenLiveStream(const PVR_CHANNEL &channelinfo) 
+bool cPVRClientTvheadend::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
   return true;
 }
 
-void cPVRClientTvheadend::CloseLiveStream() 
+void cPVRClientTvheadend::CloseLiveStream()
 {
 }
 
-int cPVRClientTvheadend::ReadLiveStream(unsigned char* buf, int buf_size) 
+int cPVRClientTvheadend::ReadLiveStream(unsigned char* buf, int buf_size)
 {
   return -1;
 }

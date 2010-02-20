@@ -224,7 +224,7 @@ bool CDVDInputStreamHTSP::PrevChannel(bool preview/* = false*/)
     return SetChannel(circ->id);
 }
 
-bool CDVDInputStreamHTSP::SelectChannel(unsigned int channel)
+bool CDVDInputStreamHTSP::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
 {
   return SetChannel(channel);
 }

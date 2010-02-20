@@ -53,7 +53,7 @@ public:
 
   virtual bool    NextStream();
 
-  bool            SelectChannel(unsigned int iChannel);
+  bool            SelectChannel(unsigned int iChannel, bool isPreviewed = false);
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
   int             GetSelectedChannel();
@@ -66,9 +66,9 @@ public:
   bool            Record(bool bOnOff);
 
   bool            UpdateItem(CFileItem& item);
-  
+
   /* overloaded is streamtype to support m_pOtherStream */
-  bool            IsStreamType(DVDStreamType type) const; 
+  bool            IsStreamType(DVDStreamType type) const;
 
   /* returns m_pOtherStream */
   CDVDInputStream* GetOtherStream();
@@ -83,16 +83,16 @@ protected:
 };
 
 
-inline bool CDVDInputStreamPVRManager::IsStreamType(DVDStreamType type) const 
-{ 
-  if (m_pOtherStream) 
-    return m_pOtherStream->IsStreamType(type); 
-  
-  return m_streamType == type; 
+inline bool CDVDInputStreamPVRManager::IsStreamType(DVDStreamType type) const
+{
+  if (m_pOtherStream)
+    return m_pOtherStream->IsStreamType(type);
+
+  return m_streamType == type;
 }
 
-inline CDVDInputStream* CDVDInputStreamPVRManager::GetOtherStream() 
-{ 
-  return m_pOtherStream; 
+inline CDVDInputStream* CDVDInputStreamPVRManager::GetOtherStream()
+{
+  return m_pOtherStream;
 };
 

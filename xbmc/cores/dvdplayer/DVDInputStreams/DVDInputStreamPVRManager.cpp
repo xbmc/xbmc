@@ -203,10 +203,10 @@ bool CDVDInputStreamPVRManager::PrevChannel(bool preview/* = false*/)
   return false;
 }
 
-bool CDVDInputStreamPVRManager::SelectChannel(unsigned int channel)
+bool CDVDInputStreamPVRManager::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
 {
   if (m_pLiveTV)
-    return m_pLiveTV->SelectChannel(channel);
+    return m_pLiveTV->SelectChannel(channel, isPreviewed);
   return false;
 }
 

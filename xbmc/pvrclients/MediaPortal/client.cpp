@@ -533,6 +533,11 @@ long long SeekLiveStream(long long pos, int whence)
   return -1;
 }
 
+long long PositionLiveStream(void)
+{
+  return -1;
+}
+
 long long LengthLiveStream(void)
 {
   return -1;
@@ -556,6 +561,11 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 
 /*******************************************/
 /** PVR Secondary Stream Functions        **/
+
+bool SwapLiveTVSecondaryStream()
+{
+  return false;
+}
 
 bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo)
 {
@@ -594,6 +604,11 @@ int ReadRecordedStream(unsigned char* buf, int buf_size)
 long long SeekRecordedStream(long long pos, int whence)
 {
   return g_client->SeekRecordedStream(pos, whence);
+}
+
+long long PositionRecordedStream(void)
+{
+  return -1;
 }
 
 long long LengthRecordedStream(void)
