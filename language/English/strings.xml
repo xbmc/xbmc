@@ -2208,4 +2208,5 @@
   <string id="35001">Use VMR9 instead of EVR Renderer</string>
   <string id="35002">Use EVR instead of VMR9 Renderer</string>
   <string id="35003">Audio Renderer</string>
+  <string id="35004">Set all stable formats to libavcodec (ffdshow)</string>
 </strings>

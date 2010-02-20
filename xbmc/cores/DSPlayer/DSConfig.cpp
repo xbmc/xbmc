@@ -205,7 +205,10 @@ bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
   }
   if (!pIffdshowDecoder)
     hr = pBF->QueryInterface(IID_IffDecoder, (void **) &pIffdshowDecoder );
+  if (pIffdshowDecoder)
+  {
     
+  }
   return true;
 }
 

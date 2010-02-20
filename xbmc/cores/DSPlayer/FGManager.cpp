@@ -49,11 +49,12 @@
 #include "XMLUtils.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
 //END XML CONFIG HEADERS
 
 //Headers and definition for windows registry
 #include "DShowUtil/RegKey.h"
-#define FFDSHOW_REGDXVA "Software\\Gnu\\ffdshow_dxva"
+
 using namespace std;
 
 //
@@ -589,7 +590,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
       EndEnumMediaTypes(pEMT, pMT)
     }
     EndEnumPins(pEP, pBF)
-
+    
     videoError = (nVideoPin >= 1 && nConnectedVideoPin == 0); // No error if no video stream
     audioError = (nAudioPin >= 1 && nConnectedAudioPin == 0); // No error if no audio stream
     if (videoError && audioError)
@@ -1076,7 +1077,7 @@ void CFGManager::InitManager()
 void CFGManager::UpdateRegistry()
 {
   CStdString strRegKey;
-  strRegKey.Format("%s\\default",FFDSHOW_REGDXVA);
+  strRegKey.Format("Software\\Gnu\\ffdshow_dxva\\default");
   RegKey ffReg(HKEY_CURRENT_USER ,strRegKey.c_str() ,false);
   if (!ffReg.hasValue("dec_DXVA_H264"))
   {

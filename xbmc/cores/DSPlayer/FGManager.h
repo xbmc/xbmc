@@ -126,6 +126,7 @@ public:
 	virtual ~CFGManager();
   void InitManager();
   void UpdateRegistry();
+  void ForceStableCodecs();
 #ifdef _DSPLAYER_DEBUG
   void LogFilterGraph(void);
 #endif

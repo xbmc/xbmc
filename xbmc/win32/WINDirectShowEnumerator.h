@@ -37,7 +37,7 @@ public:
   virtual ~CDirectShowEnumerator(void);
 
   std::vector<DSFilterInfo> GetAudioRenderers();
-  
+  void ForceStableCodecs();
 
 private:
 

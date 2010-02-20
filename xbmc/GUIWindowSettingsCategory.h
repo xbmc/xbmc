@@ -66,7 +66,9 @@ protected:
   void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
+#ifdef HAS_DX
   void FillInDirectShowAudioRenderers(CSetting* pSetting);
+#endif
   void FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected);
 
   virtual void SetupControls();

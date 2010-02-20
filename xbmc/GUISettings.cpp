@@ -649,7 +649,8 @@ void CGUISettings::Initialize()
   AddBool(1, "dsplayer.forcenondefaultrenderer", g_sysinfo.IsVistaOrHigher() ? 35001 : 35002 , false);
   AddSeparator(2,"dsplayer.sep1");
   AddString(3, "dsplayer.audiorenderer", 35003, "Default", SPIN_CONTROL_TEXT);
-
+  AddSeparator(4,"dsplayer.sep2");
+  AddString(5,"dsplayer.ffdshowstablecodec", 35004, "", BUTTON_CONTROL_STANDARD);
 #endif
   // network settings
   AddGroup(6, 705);
