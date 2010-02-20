@@ -389,7 +389,7 @@ void CGUIEditControl::RenderText()
       }
       else
       { // align by whatever the skinner requests
-        align |= (m_label.GetLabelInfo().align & 3);
+        align |= (m_label2.GetLabelInfo().align & 3);
       }
     }
     CStdStringW text = GetDisplayedText();
