@@ -489,8 +489,10 @@ void CGUIWindowManager::FrameMove()
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
     pWindow->FrameMove();
-  // update any dialogs
-  for (iDialog it = m_activeDialogs.begin(); it != m_activeDialogs.end(); ++it)
+  // update any dialogs - we take a copy of the vector as some dialogs may close themselves
+  // during this call
+  vector<CGUIWindow *> dialogs = m_activeDialogs;
+  for (iDialog it = dialogs.begin(); it != dialogs.end(); ++it)
     (*it)->FrameMove();
 }
 
