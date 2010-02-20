@@ -68,7 +68,7 @@ public:
   bool OnAction(const CAction &action);
 
   /*! \brief Rendering of the current window
-   Render is called every frame to draw the current window.
+   Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
    */
   void Render();
@@ -79,7 +79,6 @@ public:
    */
   void FrameMove();
   
-  void RenderDialogs();
   CGUIWindow* GetWindow(int id) const;
   void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);

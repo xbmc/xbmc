@@ -1966,9 +1966,6 @@ void CApplication::RenderNoPresent()
     }
   }
 
-  // Now render any dialogs
-  g_windowManager.RenderDialogs();
-
   // Render the mouse pointer
   if (g_Mouse.IsActive())
     m_guiPointer.Render();
