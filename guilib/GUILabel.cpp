@@ -79,6 +79,7 @@ void CGUILabel::Render()
   else
   {
     float posX = m_renderRect.x1;
+    float posY = m_renderRect.y1;
     uint32_t align = 0;
     if (!overFlows)
     { // hack for right and centered multiline text, as GUITextLayout::Render() treats posX as the right hand
@@ -89,11 +90,13 @@ void CGUILabel::Render()
         posX += m_renderRect.Width();
       else if (m_label.align & XBFONT_CENTER_X)
         posX += m_renderRect.Width() * 0.5f;
-      align = m_label.align & ~XBFONT_CENTER_Y;  // ignore vertical alignment
+      if (m_label.align & XBFONT_CENTER_Y) // need to pass a centered Y so that <angle> will rotate around the correct point.
+        posY += m_renderRect.Height() * 0.5f;
+      align = m_label.align;
     }
     else
       align |= XBFONT_TRUNCATED;
-    m_textLayout.Render(posX, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, align, m_renderRect.Width(), renderSolid);
+    m_textLayout.Render(posX, posY, m_label.angle, color, m_label.shadowColor, align, m_renderRect.Width(), renderSolid);
   }
 }
 
