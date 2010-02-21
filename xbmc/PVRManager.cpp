@@ -1434,43 +1434,16 @@ void CPVRManager::ResetQualityData()
   m_qualityInfo.dolby_bitrate = 0;
 }
 
-/********************************************************************
- * CPVRManager GetPlayingGroup
- *
- * Get the current playing group ID, used to load the right channel
- * lists
- ********************************************************************/
 int CPVRManager::GetPlayingGroup()
 {
   return m_CurrentGroupID;
 }
 
-/********************************************************************
- * CPVRManager TriggerRecordingsUpdate
- *
- * Trigger a Recordings Update
- ********************************************************************/
 void CPVRManager::TriggerRecordingsUpdate(bool force)
 {
   m_LastRecordingsCheck = CTimeUtils::GetTimeMS()/1000-RECORDINGCHECKDELTA + (force ? 0 : 5);
 }
 
-
-/*************************************************************/
-/** PVR CLIENT INPUT STREAM                                 **/
-/**                                                         **/
-/** PVR Client internal input stream access, is used if     **/
-/** inside PVR_SERVERPROPS the HandleInputStream is true    **/
-/*************************************************************/
-
-/********************************************************************
- * CPVRManager OpenLiveStream
- *
- * Open a Channel by the channel number. Number can be a TV or Radio
- * channel and is defined by the "bool radio" flag.
- *
- * Returns true if opening was succesfull
- ********************************************************************/
 bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
 {
   if (tag == NULL)
@@ -1510,21 +1483,12 @@ bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)
   return true;
 }
 
-/********************************************************************
- * CPVRManager OpenRecordedStream
- *
- * Open a recording by a index number passed to this function.
- *
- * Returns true if opening was succesfull
- ********************************************************************/
 bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
 {
   if (tag == NULL)
     return false;
 
   EnterCriticalSection(&m_critSection);
-
-  bool ret = false;
 
   /* Check if a channel or recording is already opened and clear it if yes */
   if (m_currentPlayingChannel)
@@ -1539,25 +1503,12 @@ bool CPVRManager::OpenRecordedStream(const cPVRRecordingInfoTag* tag)
   m_playingClientName       = m_clients[tag->ClientID()]->GetBackendName() + ":" + m_clients[tag->ClientID()]->GetConnectionString();
 
   /* Open the recording stream on the Client */
-  if (tag->StreamURL().IsEmpty())
-  {
-    if (m_clientsProps[tag->ClientID()].HandleInputStream)
-      ret = m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
-  }
-  else
-    ret = true;
+  bool ret = m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
 
   LeaveCriticalSection(&m_critSection);
   return ret;
 }
 
-/********************************************************************
- * CPVRManager GetLiveStreamURL
- *
- * Returns a during runtime generated stream URL from the PVR Client.
- * Backends like Mediaportal generates the URL for the RTSP streams
- * during opening.
- ********************************************************************/
 CStdString CPVRManager::GetLiveStreamURL(const cPVRChannelInfoTag* tag)
 {
   CStdString stream_url;
@@ -1591,11 +1542,6 @@ CStdString CPVRManager::GetLiveStreamURL(const cPVRChannelInfoTag* tag)
   return stream_url;
 }
 
-/********************************************************************
- * CPVRManager CloseStream
- *
- * Close the stream on the PVR Client.
- ********************************************************************/
 void CPVRManager::CloseStream()
 {
   EnterCriticalSection(&m_critSection);
@@ -1632,14 +1578,6 @@ void CPVRManager::CloseStream()
   return;
 }
 
-/********************************************************************
- * CPVRManager ReadStream
- *
- * Read the stream to the buffer pointer passed defined by "buf" and
- * a maximum site passed with "buf_size".
- *
- * The amount of readed bytes is returned.
- ********************************************************************/
 int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
 {
   EnterCriticalSection(&m_critSection);

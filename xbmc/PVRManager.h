@@ -91,14 +91,50 @@ public:
   bool IsRecordingOnPlayingChannel();
   bool StartRecordingOnPlayingChannel(bool bOnOff);
   void SetPlayingGroup(int GroupId);
+
+  /*! \brief Get the current playing group ID, used to load the
+    right channel lists
+   \return current playing group identifier
+   */
   int GetPlayingGroup();
+
+  /*! \brief Trigger a recordings list update
+   */
   void TriggerRecordingsUpdate(bool force=true);
 
-  /*--- Stream reading functions ---*/
+
+  /*! \name Stream reading functions
+   PVR Client internal input stream access, is used if
+   inside PVR_SERVERPROPS the HandleInputStream is true
+   */
+
+  /*! \brief Open the Channel stream on the given channel info tag
+   \return true if opening was succesfull
+   */
   bool OpenLiveStream(const cPVRChannelInfoTag* tag);
+
+  /*! \brief Open a recording by a index number passed to this function.
+   \return true if opening was succesfull
+   */
   bool OpenRecordedStream(const cPVRRecordingInfoTag* tag);
+
+  /*! \brief Returns runtime generated stream URL
+   Returns a during runtime generated stream URL from the PVR Client.
+   Backends like Mediaportal generates the URL for the RTSP streams
+   during opening.
+   \return Stream URL
+   */
   CStdString GetLiveStreamURL(const cPVRChannelInfoTag* tag);
+
+  /*! \brief Close the stream on the PVR Client.
+   */
   void CloseStream();
+
+  /*! \brief Read the stream
+   Read the stream to the buffer pointer passed defined by "buf" and
+   a maximum site passed with "buf_size".
+   \return the amount of readed bytes is returned
+   */
   int ReadStream(void* lpBuf, int64_t uiBufSize);
 
   /*! \brief Return the filesize of the current running stream.
