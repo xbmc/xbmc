@@ -74,12 +74,12 @@ protected:
    */
   void OnFilterItems(const CStdString &filter);
 
-  /* \brief Filter the item list 
-   \param items CFileItemList to filter
+  /* \brief Retrieve the filtered item list
    \param filter filter to apply
+   \param items CFileItemList to filter
    \sa OnFilterItems
    */
-  virtual void FilterItems(CFileItemList &items, const CStdString &filter);
+  void GetFilteredItems(const CStdString &filter, CFileItemList &items);
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection(CStdString& strPath, int iDriveType);

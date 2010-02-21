@@ -765,7 +765,12 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 {
   m_unfilteredItems->Append(items);
   
-  FilterItems(items, GetProperty("filter"));
+  CStdString filter(GetProperty("filter"));
+  if (!filter.IsEmpty())
+  {
+    items.ClearItems();
+    GetFilteredItems(filter, items);
+  }
 }
 
 // \brief With this function you can react on a users click in the list/thumb panel.
@@ -1421,8 +1426,14 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   
   m_viewControl.Clear();
   
-  FilterItems(*m_vecItems, filter);
-  SetProperty("filter", filter);
+  CFileItemList items;
+  GetFilteredItems(filter, items);
+  if (filter.IsEmpty() || items.GetObjectCount() > 0)
+  {
+    m_vecItems->ClearItems();
+    m_vecItems->Append(items);
+    SetProperty("filter", filter);
+  }
   
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);
@@ -1430,13 +1441,8 @@ void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
   UpdateButtons();
 }
 
-void CGUIMediaWindow::FilterItems(CFileItemList &items, const CStdString &filter)
+void CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &items)
 {
-  if (items.IsVirtualDirectoryRoot())
-    return;
-  
-  items.ClearItems(); // clear the items only - we want to keep content etc.
-
   CStdString trimmedFilter(filter);
   trimmedFilter.TrimLeft().ToLower();
   
