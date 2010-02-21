@@ -1032,19 +1032,6 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
     GoParentFolder();
 }
 
-void CGUIWindowVideoNav::FilterItems(CFileItemList &items, const CStdString &filter)
-{
-  // it doesn't really make much sense to filter the "overview" listings
-  CVideoDatabaseDirectory dir;
-  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-  if (node == NODE_TYPE_MOVIES_OVERVIEW    ||
-      node == NODE_TYPE_TVSHOWS_OVERVIEW   ||
-      node == NODE_TYPE_MUSICVIDEOS_OVERVIEW)
-    return;
-
-  return CGUIWindowVideoBase::FilterItems(items, filter);
-}
-
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item;
