@@ -45,6 +45,7 @@ public:
   virtual void ModPlug_Seek(ModPlugFile* file, int millisecond)=0;
   virtual void ModPlug_GetSettings(ModPlug_Settings* settings)=0;
   virtual void ModPlug_SetSettings(const ModPlug_Settings* settings)=0;
+/*  These don't exist in libmodplug under Ubuntu 8.04 (Hardy), libmodplug does not have versioning but we don't use them anyway
   virtual unsigned int ModPlug_GetMasterVolume(ModPlugFile* file)=0;
   virtual void ModPlug_SetMasterVolume(ModPlugFile* file,unsigned int cvol)=0;
   virtual int ModPlug_GetCurrentSpeed(ModPlugFile* file)=0;
@@ -62,6 +63,7 @@ public:
   virtual unsigned int ModPlug_NumChannels(ModPlugFile* file)=0;
   virtual unsigned int ModPlug_SampleName(ModPlugFile* file, unsigned int qual, char* buff)=0;
   virtual unsigned int ModPlug_InstrumentName(ModPlugFile* file, unsigned int qual, char* buff)=0;
+*/
 };
 
 class DllModplug : public DllDynamic, DllModplugInterface
@@ -75,6 +77,7 @@ class DllModplug : public DllDynamic, DllModplugInterface
   DEFINE_METHOD2(void,          ModPlug_Seek,                 (ModPlugFile* p1, int p2))
   DEFINE_METHOD1(void,          ModPlug_GetSettings,          (ModPlug_Settings* p1))
   DEFINE_METHOD1(void,          ModPlug_SetSettings,          (const ModPlug_Settings* p1))
+/*
   DEFINE_METHOD1(unsigned int,  ModPlug_GetMasterVolume,      (ModPlugFile* p1))
   DEFINE_METHOD2(void,          ModPlug_SetMasterVolume,      (ModPlugFile* p1, unsigned int p2))
   DEFINE_METHOD1(int,           ModPlug_GetCurrentSpeed,      (ModPlugFile* p1))
@@ -92,6 +95,7 @@ class DllModplug : public DllDynamic, DllModplugInterface
   DEFINE_METHOD1(unsigned int,  ModPlug_NumChannels,          (ModPlugFile* p1))
   DEFINE_METHOD3(unsigned int,  ModPlug_SampleName,           (ModPlugFile* p1, unsigned int p2, char* p3))
   DEFINE_METHOD3(unsigned int,  ModPlug_InstrumentName,       (ModPlugFile* p1, unsigned int p2, char* p3))
+*/
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(ModPlug_Load)
     RESOLVE_METHOD(ModPlug_Unload)
@@ -101,6 +105,7 @@ class DllModplug : public DllDynamic, DllModplugInterface
     RESOLVE_METHOD(ModPlug_Seek)
     RESOLVE_METHOD(ModPlug_GetSettings)
     RESOLVE_METHOD(ModPlug_SetSettings)
+/*
     RESOLVE_METHOD(ModPlug_GetMasterVolume)
     RESOLVE_METHOD(ModPlug_SetMasterVolume)
     RESOLVE_METHOD(ModPlug_GetCurrentSpeed)
@@ -118,6 +123,7 @@ class DllModplug : public DllDynamic, DllModplugInterface
     RESOLVE_METHOD(ModPlug_NumChannels)
     RESOLVE_METHOD(ModPlug_SampleName)
     RESOLVE_METHOD(ModPlug_InstrumentName)
+*/
   END_METHOD_RESOLVE()
 };
 
