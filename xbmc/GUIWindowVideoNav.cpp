@@ -1096,19 +1096,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
 {
   m_unfilteredItems->Append(items);
 
-  CVideoDatabaseDirectory dir;
-  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-
-  bool filter = false;
-  if (node == NODE_TYPE_TITLE_MOVIES
-  ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-  { // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
-    filter = true;
-  }
-
-  if (filter || !GetProperty("filter").IsEmpty())
+  if (!GetProperty("filter").IsEmpty())
     FilterItems(items);
 }
 
@@ -1139,9 +1127,6 @@ void CGUIWindowVideoNav::OnFilterItems()
 void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
 {
   CVideoDatabaseDirectory dir;
-  CQueryParams params;
-  dir.GetQueryParams(items.m_strPath,params);
-
   NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
   // todo: why aren't we filtering every view consistently?
   if (m_vecItems->IsVirtualDirectoryRoot() ||
@@ -1157,14 +1142,12 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   bool numericMatch = StringUtils::IsNaturalNumber(filter);
 
   items.ClearItems(); // clear the items only - we want to keep content etc.
-  items.SetFastLookup(true);
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItemPtr item = m_unfilteredItems->Get(i);
     if (item->IsParentFolder() || filter.IsEmpty())
     {
-      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
-        items.Add(item);
+      items.Add(item);
       continue;
     }
     // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
@@ -1185,12 +1168,8 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
 
     size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
     if (pos != CStdString::npos)
-    {
-      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
-        items.Add(item);
-    }
+      items.Add(item);
   }
-  items.SetFastLookup(false);
 }
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
