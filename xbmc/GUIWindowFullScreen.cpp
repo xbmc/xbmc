@@ -375,6 +375,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_application.CurrentFileItem().IsLiveTV())
       {
         int channelNr = -1;
+        int currentChannelNr;
+        g_PVRManager.GetCurrentChannel(&currentChannelNr, NULL);
 
         if (action.GetID() == REMOTE_0)
         {
@@ -389,7 +391,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
             channelNr = atoi(strChannel.c_str());
         }
 
-        if (channelNr > 0)
+        if (channelNr > 0 && channelNr != currentChannelNr)
           OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)channelNr));
       }
       else

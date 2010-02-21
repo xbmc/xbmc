@@ -1084,14 +1084,18 @@ bool CPVRManager::GetCurrentChannel(int *number, bool *radio)
 {
   if (m_currentPlayingChannel)
   {
-    *number = m_currentPlayingChannel->GetPVRChannelInfoTag()->Number();
-    *radio  = m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio();
+    if (number)
+      *number = m_currentPlayingChannel->GetPVRChannelInfoTag()->Number();
+    if (radio)
+      *radio  = m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio();
     return true;
   }
   else
   {
-    *number = 1;
-    *radio  = false;
+    if (number)
+      *number = 1;
+    if (radio)
+      *radio  = false;
     return false;
   }
 }
