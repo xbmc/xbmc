@@ -64,8 +64,21 @@ protected:
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);
 
-  virtual void ClearFileItems();
+  void ClearFileItems();
   virtual void SortItems(CFileItemList &items);
+
+  /* \brief Called on response to a GUI_MSG_FILTER_ITEMS message
+   Filters the current list with the set filter using FilterItems()
+   \sa FilterItems
+   */
+  void OnFilterItems();
+
+  /* \brief Filter the item list 
+   \param items CFileItemList to filter
+   \param filter filter to apply
+   \sa OnFilterItems
+   */
+  virtual void FilterItems(CFileItemList &items, const CStdString &filter);
 
   // check for a disc or connection
   virtual bool HaveDiscOrConnection(CStdString& strPath, int iDriveType);
@@ -87,6 +100,7 @@ protected:
 
   // current path and history
   CFileItemList* m_vecItems;
+  CFileItemList* m_unfilteredItems;        ///< \brief items prior to filtering using FilterItems()
   CDirectoryHistory m_history;
   std::auto_ptr<CGUIViewState> m_guiState;
 
