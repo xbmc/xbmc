@@ -1961,7 +1961,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
 
 int CPVRManager::GetTotalTime()
 {
-  if (!m_currentPlayingChannel)
+  if (m_currentPlayingChannel)
     return m_currentPlayingChannel->GetPVRChannelInfoTag()->NowDuration() * 1000;
 
   return 0;

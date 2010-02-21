@@ -170,6 +170,11 @@ public:
   bool IsEncrypted(void) const { return m_Epg->ChannelTag()->IsEncrypted(); }
   bool IsRadio(void) const { return m_Epg->ChannelTag()->IsRadio(); }
 
+  /*! \brief Get the cPVRChannelInfoTag class associated to this epg entry
+   \return the pointer to the info tag
+   */
+  const cPVRChannelInfoTag *ChannelTag(void) const { return m_Epg->ChannelTag(); }
+
   /* Scheduled recording related Data */
   void SetTimer(const cPVRTimerInfoTag *Timer) { m_Timer = Timer; }
   const cPVRTimerInfoTag *Timer(void) const { return m_Timer; }

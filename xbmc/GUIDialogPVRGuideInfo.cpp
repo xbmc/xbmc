@@ -98,25 +98,19 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTN_SWITCH)
       {
         Close();
+
+        cPVRChannels *channels;
+        if (!m_progItem->GetEPGInfoTag()->IsRadio())
+          channels = &PVRChannelsTV;
+        else
+          channels = &PVRChannelsRadio;
+
+        if (!g_application.PlayFile(CFileItem(channels->at(m_progItem->GetEPGInfoTag()->ChannelNumber()-1))))
         {
-          CFileItemList channelslist;
-          int ret_channels;
-
-          if (!m_progItem->GetEPGInfoTag()->IsRadio())
-            ret_channels = PVRChannelsTV.GetChannels(&channelslist, -1);
-          else
-            ret_channels = PVRChannelsRadio.GetChannels(&channelslist, -1);
-
-          if (ret_channels > 0)
-          {
-            if (!g_application.PlayFile(*channelslist[m_progItem->GetEPGInfoTag()->ChannelNumber()-1]))
-            {
-              CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
-              return false;
-            }
-            return true;
-          }
+          CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
+          return false;
         }
+        return true;
       }
     }
   }

@@ -74,7 +74,7 @@
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[VideoPlayer.VideoResolution,flagging/video/,.png]</texture>
 					</control>
-					
+
 					<control type="image">
 						<description>Common Codec Image</description>
 						<width>80</width>
@@ -92,7 +92,7 @@
 						<texture>flagging/video/divx.png</texture>
 						<visible>substring(VideoPlayer.VideoCodec,divx) | substring(VideoPlayer.VideoCodec,div3) |substring(VideoPlayer.VideoCodec,div4) | substring(VideoPlayer.VideoCodec,div5)</visible>
 					</control>
-					
+
 					<control type="image">
 						<description>Dolby Digital Image</description>
 						<width>80</width>
@@ -110,7 +110,7 @@
 						<!-- Don't show if I want the Dolby Digital Logo -->
 						<visible>![substring(VideoPlayer.AudioCodec,ac3) + substring(VideoPlayer.AudioChannels,6)]</visible>
 					</control>
-					
+
 					<control type="image">
 						<description>Audio Channels Image</description>
 						<width>60</width>
@@ -233,7 +233,7 @@
 					<posy>110</posy>
 					<width>300</width>
 					<height>20</height>
-					<label>$INFO[Player.Chapter,[COLOR=blue]$LOCALIZE[31509]:[/COLOR] ]$INFO[VideoPlayer.Group]</label>
+					<label>$INFO[VideoPlayer.ChannelGroup,[COLOR=blue]$LOCALIZE[31509]:[/COLOR] ]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
@@ -274,7 +274,7 @@
 					<posy>150</posy>
 					<width>890</width>
 					<height>20</height>
-					<label>[COLOR=blue]$LOCALIZE[209] :[/COLOR] $INFO[VideoPlayer.NextTitle]</label>
+					<label>[COLOR=blue]$LOCALIZE[19113] :[/COLOR] $INFO[VideoPlayer.NextTitle]</label>
 					<align>right</align>
 					<aligny>center</aligny>
 					<font>font12_title</font>
