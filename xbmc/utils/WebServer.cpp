@@ -31,6 +31,8 @@
 #pragma comment(lib, "../../lib/libmicrohttpd_win32/lib/libmicrohttpd.dll.lib")
 #endif
 
+#define MAX_STRING_POST_SIZE 20000
+
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
@@ -49,7 +51,7 @@ int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *
   arguments->insert( pair<CStdString,CStdString>(key,value) );
 
   return MHD_YES; 
-} 
+}
 
 int CWebServer::AskForAuthentication (struct MHD_Connection *connection)
 {
@@ -112,7 +114,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   CStdString strURL = url;
 
   if (strURL.Equals("/jsonrpc") && strcmp (method, "POST") == 0)
-    return JSONRPC(server, connection, upload_data, upload_data_size);
+    return JSONRPC(server, con_cls, connection, upload_data, upload_data_size);
 
   if (strcmp(method, "GET") == 0)
   {
@@ -163,27 +165,52 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 }
 
 #if (MHD_VERSION >= 0x00040001)
-int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size)
+int CWebServer::JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size)
 #else
-int CWebServer::JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, unsigned int *upload_data_size)
+int CWebServer::JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, unsigned int *upload_data_size)
 #endif
 {
 #ifdef HAS_JSONRPC
-  CStdString jsoncall;
-  jsoncall.assign(upload_data, *upload_data_size);
-  if (*upload_data_size > 204800)
-    CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
+  if ((*con_cls) == NULL)
+  {
+    *con_cls = new CStdString();
+
+    return MHD_YES;
+  }
+  if (*upload_data_size) 
+  {
+    CStdString *post = (CStdString *)(*con_cls);
+    if (*upload_data_size + post->size() > MAX_STRING_POST_SIZE)
+    {
+      CLog::Log(LOGERROR, "WebServer: Stopped uploading post since it exceeded size limitations");
+      return MHD_NO;
+    }
+    else
+    {
+      post->append(upload_data, *upload_data_size);
+      *upload_data_size = 0;
+      return MHD_YES;
+    }
+  }
   else
-    CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall.c_str());
-  CHTTPClient client;
-  CStdString jsonresponse = CJSONRPC::MethodCall(jsoncall, server, &client);
+  {
+    CStdString *jsoncall = (CStdString *)(*con_cls);
 
-  struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
-  int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
-  MHD_add_response_header(response, "Content-Type", "application/json");
-  MHD_destroy_response(response);
+    if (jsoncall->size() > 204800)
+      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
+    else
+      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall->c_str());
+    CHTTPClient client;
+    CStdString jsonresponse = CJSONRPC::MethodCall(*jsoncall, server, &client);
 
-  return ret;
+    struct MHD_Response *response = MHD_create_response_from_data(jsonresponse.length(), (void *) jsonresponse.c_str(), MHD_NO, MHD_YES);
+    int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+    MHD_add_response_header(response, "Content-Type", "application/json");
+    MHD_destroy_response(response);
+
+    delete jsoncall;
+    return ret;
+  }
 #else
   return MHD_NO;
 #endif
