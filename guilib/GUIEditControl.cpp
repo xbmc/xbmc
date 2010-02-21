@@ -320,7 +320,7 @@ void CGUIEditControl::RecalcLabelPosition()
   float beforeCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos));
   float afterCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos) + L'|');
   float leftTextWidth = m_label.GetRenderRect().Width();
-  float maxTextWidth = m_label.GetMaxRect().Width();
+  float maxTextWidth = m_label.GetMaxWidth();
   if (leftTextWidth > 0)
     maxTextWidth -= leftTextWidth + spaceWidth;
 
@@ -363,8 +363,8 @@ void CGUIEditControl::RenderText()
   }
 
 
-  float posX = m_label.GetMaxRect().x1;
-  float maxTextWidth = m_label.GetMaxRect().Width();
+  float posX = m_label.GetRenderRect().x1;
+  float maxTextWidth = m_label.GetMaxWidth();
 
   // start by rendering the normal text
   float leftTextWidth = m_label.GetRenderRect().Width();

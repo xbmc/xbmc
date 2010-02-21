@@ -92,9 +92,8 @@ public:
   void Render();
   
   /*! \brief Set the maximal extent of the label
-   Sets the maximal size and positioning that the label may render in. Note that any offsets will be computed and applied immediately
-   so that subsequent calls to GetMaxRect() may not return the same values.
-   \sa GetMaxRect
+   Sets the maximal size and positioning that the label may render in.  Note that <textwidth> can override
+   this, and <textoffsetx> and <textoffsety> may also allow the label to be moved outside this rectangle.
    */
   void SetMaxRect(float x, float y, float w, float h);
 
@@ -153,12 +152,12 @@ public:
    */
   float GetTextWidth() const { return m_textLayout.GetTextWidth(); };
   
-  /*! \brief Returns the maximal text rect that this label can render into
-   \return CRect containing the maximal rectangle that this label can render into.  May differ from
-           the sizing given in SetMaxRect as offsets have been applied.
+  /*! \brief Returns the maximal width that this label can render into
+   \return Maximal width that this label can render into. Note that this may differ from the
+           amount given in SetMaxRect as offsets and text width overrides have been taken into account.
    \sa SetMaxRect
    */
-  const CRect &GetMaxRect() const { return m_maxRect; };
+  float GetMaxWidth() const;
   
   /*! \brief Calculates the width of some text
    \param text CStdStringW of text whose width we want
