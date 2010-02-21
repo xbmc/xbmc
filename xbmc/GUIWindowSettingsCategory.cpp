@@ -164,7 +164,7 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 
 bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU || action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
   {
     g_settings.Save();
     if (m_iWindowBeforeJump!=WINDOW_INVALID)
@@ -1582,7 +1582,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_SkinInfo.Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
-      pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().textColor);
+      pControl->SetItemInvalid(false);
       if (strSkin != ".svn" && strSkin != g_guiSettings.GetString("lookandfeel.skin"))
       {
         m_strNewSkin = strSkin;
@@ -1599,7 +1599,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
       m_strNewSkin.Empty();
       g_application.CancelDelayLoadSkin();
-      pControl->SettingsCategorySetSpinTextColor(pControl->GetButtonLabelInfo().disabledColor);
+      pControl->SetItemInvalid(true);
     }
   }
   else if (strSetting.Equals("lookandfeel.soundskin"))
@@ -2156,7 +2156,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   }
 }
 
-void CGUIWindowSettingsCategory::Render()
+void CGUIWindowSettingsCategory::FrameMove()
 {
   // update realtime changeable stuff
   UpdateRealTimeSettings();
@@ -2168,7 +2168,11 @@ void CGUIWindowSettingsCategory::Render()
     g_windowManager.SendThreadMessage(message, GetID());
     m_delayedTimer.Stop();
   }
+  CGUIWindow::FrameMove();
+}
 
+void CGUIWindowSettingsCategory::Render()
+{
   // update alpha status of current button
   bool bAlphaFaded = false;
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);

@@ -107,7 +107,7 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation* vis)
   }
 }
 
-void CGUIDialogVisualisationPresetList::Render()
+void CGUIDialogVisualisationPresetList::FrameMove()
 {
   //FIXME we shouldn't have to check preset each frame
   // a viz callback could push GUI_MSG_VISUALISATION_UPDATED
@@ -116,12 +116,12 @@ void CGUIDialogVisualisationPresetList::Render()
     unsigned preset = m_viz->GetPreset();
     if (preset != m_currentPreset)
     {
-    m_vecPresets->Get(m_currentPreset)->Select(false);
+      m_vecPresets->Get(m_currentPreset)->Select(false);
       m_currentPreset = preset;
-    m_vecPresets->Get(m_currentPreset)->Select(true);
+      m_vecPresets->Get(m_currentPreset)->Select(true);
+    }
   }
-  }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogVisualisationPresetList::Update()

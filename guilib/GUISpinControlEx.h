@@ -56,7 +56,6 @@ public:
   const CStdString GetCurrentLabel() const;
   void SetText(const std::string & aLabel) {m_buttonControl.SetLabel(aLabel);};
   virtual void SetVisible(bool bVisible);
-  const CLabelInfo& GetButtonLabelInfo() { return m_buttonControl.GetLabelInfo(); };
   virtual void SetEnabled(bool bEnable);
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual float GetYPosition() const { return m_buttonControl.GetYPosition();};
@@ -64,7 +63,7 @@ public:
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
   void SetSpinPosition(float spinPosX);
 
-  void SettingsCategorySetSpinTextColor(const CGUIInfoColor &color);
+  void SetItemInvalid(bool invalid);
 protected:
   virtual void UpdateColors();
   CGUIButtonControl m_buttonControl;

@@ -37,7 +37,7 @@ CGUIWindowTestPattern::~CGUIWindowTestPattern(void)
 
 bool CGUIWindowTestPattern::OnAction(const CAction &action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_PREVIOUS_MENU:
     {

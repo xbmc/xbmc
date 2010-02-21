@@ -51,12 +51,12 @@ CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
 
 bool CGUIWindowAddonBrowser::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
   }
-  else if (action.actionId == ACTION_CONTEXT_MENU || action.actionId == ACTION_MOUSE_RIGHT_CLICK)
+  else if (action.GetID() == ACTION_CONTEXT_MENU || action.GetID() == ACTION_MOUSE_RIGHT_CLICK)
   {
     int iItem = GetSelectedItem();
     return OnContextMenu(iItem);

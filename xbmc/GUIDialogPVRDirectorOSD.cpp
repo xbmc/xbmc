@@ -43,7 +43,7 @@ CGUIDialogPVRDirectorOSD::~CGUIDialogPVRDirectorOSD()
 
 bool CGUIDialogPVRDirectorOSD::OnAction(const CAction& action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU || action.actionId == ACTION_CLOSE_DIALOG)
+  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_CLOSE_DIALOG)
   {
     Close();
     return true;

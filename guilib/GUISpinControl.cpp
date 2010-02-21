@@ -62,7 +62,7 @@ CGUISpinControl::~CGUISpinControl(void)
 
 bool CGUISpinControl::OnAction(const CAction &action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case REMOTE_0:
   case REMOTE_1:
@@ -80,7 +80,7 @@ bool CGUISpinControl::OnAction(const CAction &action)
         m_iTypedPos = 0;
         strcpy(m_szTyped, "");
       }
-      int iNumber = action.actionId - REMOTE_0;
+      int iNumber = action.GetID() - REMOTE_0;
 
       m_szTyped[m_iTypedPos] = iNumber + '0';
       m_iTypedPos++;
@@ -165,9 +165,9 @@ bool CGUISpinControl::OnAction(const CAction &action)
     break;
   }
 /*  static float m_fSmoothScrollOffset = 0.0f;
-  if (action.actionId == ACTION_SCROLL_UP)
+  if (action.GetID() == ACTION_SCROLL_UP)
   {
-    m_fSmoothScrollOffset += action.amount1 * action.amount1;
+    m_fSmoothScrollOffset += action.GetAmount() * action.GetAmount();
     bool handled = false;
     while (m_fSmoothScrollOffset > 0.4)
     {
@@ -410,7 +410,7 @@ void CGUISpinControl::Render()
   const float space = 5;
   float textWidth = m_label.GetTextWidth() + 2 * m_label.GetLabelInfo().offsetX;
   // Position the arrows
-  bool arrowsOnRight = m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X);
+  bool arrowsOnRight(0 != (m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X)));
   if (!arrowsOnRight)
   {
     m_imgspinDownFocus.SetPosition(m_posX + textWidth + space, m_posY);
@@ -871,12 +871,14 @@ bool CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event
       MoveDown();
     return true;
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
-    if (event.m_wheel > 0)
-      MoveUp();
-    else
-      MoveDown();
+    MoveUp();
+    return true;
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    MoveDown();
     return true;
   }
   return false;

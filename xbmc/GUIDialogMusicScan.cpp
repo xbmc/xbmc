@@ -67,12 +67,12 @@ bool CGUIDialogMusicScan::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogMusicScan::Render()
+void CGUIDialogMusicScan::FrameMove()
 {
   if (m_bRunning)
     UpdateState();
 
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogMusicScan::OnDirectoryChanged(const CStdString& strDirectory)

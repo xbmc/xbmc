@@ -139,7 +139,7 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       g_windowManager.PreviousWindow();
@@ -148,14 +148,14 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
   }
 
   // the non-contextual menu can be called at any time
-  if (action.actionId == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.GetID() == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {
     OnPopupMenu(-1);
     return true;
@@ -165,7 +165,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
 
   // live filtering
-  if (action.actionId == ACTION_FILTER_CLEAR)
+  if (action.GetID() == ACTION_FILTER_CLEAR)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
     message.SetStringParam("");
@@ -173,17 +173,17 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.actionId == ACTION_BACKSPACE)
+  if (action.GetID() == ACTION_BACKSPACE)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
     OnMessage(message);
     return true;
   }
 
-  if (action.actionId >= ACTION_FILTER_SMS2 && action.actionId <= ACTION_FILTER_SMS9)
+  if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9)
   {
     CStdString filter;
-    filter.Format("%i", (int)(action.actionId - ACTION_FILTER_SMS2 + 2));
+    filter.Format("%i", (int)(action.GetID() - ACTION_FILTER_SMS2 + 2));
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);

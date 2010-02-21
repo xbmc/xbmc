@@ -211,23 +211,23 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     // Playlist has no parent dirs
     return true;
   }
-  if (action.actionId == ACTION_SHOW_PLAYLIST)
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     g_windowManager.ChangeActiveWindow(WINDOW_MUSIC);
     return true;
   }
-  if ((action.actionId == ACTION_MOVE_ITEM_UP) || (action.actionId == ACTION_MOVE_ITEM_DOWN))
+  if ((action.GetID() == ACTION_MOVE_ITEM_UP) || (action.GetID() == ACTION_MOVE_ITEM_DOWN))
   {
     int iItem = -1;
     int iFocusedControl = GetFocusedControlID();
     if (m_viewControl.HasControl(iFocusedControl))
       iItem = m_viewControl.GetSelectedItem();
-    OnMove(iItem, action.actionId);
+    OnMove(iItem, action.GetID());
     return true;
   }
   return CGUIWindowMusicBase::OnAction(action);

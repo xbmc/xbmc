@@ -37,7 +37,6 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
   m_bSelected = false;
   m_alpha = 255;
   m_focusCounter = 0;
-  m_label2.SetAlign(XBFONT_RIGHT | (labelInfo.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
   ControlType = GUICONTROL_BUTTON;
 }
 
@@ -108,6 +107,7 @@ void CGUIButtonControl::RenderText()
   {
     m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
     m_label2.SetText(label2);
+    m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
 
     // TODO: call a function to compute the "best" render rect from these two
     CRect leftLabel(m_label.GetRenderRect());
@@ -122,7 +122,7 @@ void CGUIButtonControl::RenderText()
 
 bool CGUIButtonControl::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     OnClick();
     return true;
@@ -228,9 +228,7 @@ bool CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
-    CAction action;
-    action.actionId = ACTION_SELECT_ITEM;
-    OnAction(action);
+    OnAction(CAction(ACTION_SELECT_ITEM));
     return true;
   }
   return false;

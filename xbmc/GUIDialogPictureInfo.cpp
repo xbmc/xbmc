@@ -53,7 +53,7 @@ void CGUIDialogPictureInfo::OnInitWindow()
 
 bool CGUIDialogPictureInfo::OnAction(const CAction& action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
     // if we're running from slideshow mode, drop the "next picture" and "previous picture" actions through.
     case ACTION_NEXT_PICTURE:
@@ -70,14 +70,14 @@ bool CGUIDialogPictureInfo::OnAction(const CAction& action)
   return CGUIDialog::OnAction(action);
 }
 
-void CGUIDialogPictureInfo::Render()
+void CGUIDialogPictureInfo::FrameMove()
 {
   if (g_infoManager.GetCurrentSlide().m_strPath != m_currentPicture)
   {
     UpdatePictureInfo();
     m_currentPicture = g_infoManager.GetCurrentSlide().m_strPath;
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogPictureInfo::UpdatePictureInfo()

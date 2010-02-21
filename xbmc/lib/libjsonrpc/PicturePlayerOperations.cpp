@@ -100,16 +100,14 @@ JSON_STATUS CPicturePlayerOperations::Rotate(const CStdString &method, ITranspor
       if (pSlideShow) {
           CAction action;
           action.id = ACTION_ANALOG_MOVE;
-          action.amount1=(float) atof(paras[0]);
-          action.amount2=(float) atof(paras[1]);
+          action.GetAmount()=(float) atof(paras[0]);
+          action.GetAmount(1)=(float) atof(paras[1]);
           pSlideShow->OnAction(action);    
 }*/
 
 JSON_STATUS CPicturePlayerOperations::SendAction(int actionID)
 {
-  CAction action;
-  action.actionId = actionID;
-  g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
+  g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_SLIDESHOW);
 
   return ACK;
 }

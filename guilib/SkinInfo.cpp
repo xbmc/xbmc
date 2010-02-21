@@ -146,7 +146,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       // get the skin zoom parameter. it's how much skin should be enlarged to get rid of overscan
       pChild = pRootElement->FirstChild("zoom");
       if (pChild && pChild->FirstChild())
-        m_skinzoom = atof(pChild->FirstChild()->Value());
+        m_skinzoom = (float)atof(pChild->FirstChild()->Value());
       else
         m_skinzoom = 1.0f;
 
@@ -191,7 +191,7 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
       if (pChild)
       {
         float parsedVersion;
-        parsedVersion = atof(pChild->FirstChild()->Value());
+        parsedVersion = (float)atof(pChild->FirstChild()->Value());
         bVersionOK = parsedVersion >= SKIN_MIN_VERSION;
 
         CLog::Log(LOGINFO, "Skin version is: %s (%f)", pChild->FirstChild()->Value(), parsedVersion);

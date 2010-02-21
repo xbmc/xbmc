@@ -57,7 +57,7 @@ CGUIWindowSettingsScreenCalibration::~CGUIWindowSettingsScreenCalibration(void)
 
 bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_PREVIOUS_MENU:
     {
@@ -351,7 +351,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);
 }
 
-void CGUIWindowSettingsScreenCalibration::Render()
+void CGUIWindowSettingsScreenCalibration::FrameMove()
 {
   //  g_Windowing.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   m_iControl = GetFocusedControlID();
@@ -364,14 +364,20 @@ void CGUIWindowSettingsScreenCalibration::Render()
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, "");
     SET_CONTROL_LABEL(CONTROL_LABEL_ROW2, "");
   }
+  CGUIWindow::FrameMove();
+}
 
+void CGUIWindowSettingsScreenCalibration::Render()
+{
   SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
   SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
   SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
   SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
 
+  // we set that we need scaling here to render so that anything else on screen scales correctly
   m_needsScaling = true;
   CGUIWindow::Render();
+  m_needsScaling = false;
   g_graphicsContext.SetRenderingResolution(m_coordsRes, false);
 
   SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
@@ -387,14 +393,4 @@ void CGUIWindowSettingsScreenCalibration::Render()
       control->Render();
   }
 
-}
-
-bool CGUIWindowSettingsScreenCalibration::OnMouseAction()
-{
-  // we don't want mouse scaling on this window
-  bool saveScaling = m_needsScaling;
-  m_needsScaling = false;
-  bool ret = CGUIWindow::OnMouseAction();
-  m_needsScaling = saveScaling;
-  return ret;
 }

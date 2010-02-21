@@ -179,15 +179,16 @@
 #define ACTION_VOLUME_DOWN          89
 #define ACTION_MUTE                 91
 
-#define ACTION_MOUSE                90
-
-#define ACTION_MOUSE_CLICK            100
+#define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100
 #define ACTION_MOUSE_RIGHT_CLICK      101
 #define ACTION_MOUSE_MIDDLE_CLICK     102
 #define ACTION_MOUSE_DOUBLE_CLICK     103
-#define ACTION_MOUSE_WHEEL            104
-#define ACTION_MOUSE_DRAG             105
+#define ACTION_MOUSE_WHEEL_UP         104
+#define ACTION_MOUSE_WHEEL_DOWN       105
+#define ACTION_MOUSE_DRAG             106
+#define ACTION_MOUSE_MOVE             107
+#define ACTION_MOUSE_END              109
 
 #define ACTION_BACKSPACE          110
 #define ACTION_SCROLL_UP          111
@@ -414,22 +415,72 @@
 #define ICON_TYPE_WEATHER       107
 #define ICON_TYPE_SETTINGS      109
 
+class CKey;
+
 /*!
   \ingroup actionkeys
-  \brief
+  \brief class encapsulating information regarding a particular user action to be sent to windows and controls
   */
 class CAction
 {
 public:
-  CAction():actionId(0),amount1(0), amount2(amount1), repeat(0), buttonCode(0), unicode(0), holdTime(0){};
-  int          actionId;
-  float        amount1;
-  float        amount2;
-  float        repeat;
-  unsigned int buttonCode;
-  CStdString   strAction;
-  wchar_t      unicode; // new feature, does not fit into id like ASCII, wouldn't be good design either!? Will be set whenever ASCII is set into id (for backwards compatibility)
-  unsigned int holdTime; ///< Time the key has been held down (in ms)
+  CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
+  CAction(int actionID, wchar_t unicode);
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY);
+  CAction(int actionID, const CStdString &name, const CKey &key);
+
+  /*! \brief Identifier of the action
+   \return id of the action
+   */
+  int GetID() const { return m_id; };
+
+  /*! \brief Is this an action from the mouse
+   \return true if this is a mouse action, false otherwise
+   */
+  bool IsMouse() const { return (m_id >= ACTION_MOUSE_START && m_id <= ACTION_MOUSE_END); };
+
+  /*! \brief Human-readable name of the action
+   \return name of the action
+   */
+  const CStdString &GetName() const { return m_name; };
+
+  /*! \brief Get an amount associated with this action
+   \param zero-based index of amount to retrieve, defaults to 0
+   \return an amount associated with this action
+   */
+  float GetAmount(unsigned int index = 0) const { return (index < max_amounts) ? m_amount[index] : 0; };
+
+  /*! \brief Unicode value associated with this action
+   \return unicode value associated with this action, for keyboard input.
+   */
+  wchar_t GetUnicode() const { return m_unicode; };
+
+  /*! \brief Time in ms that the key has been held
+   \return time that the key has been held down in ms.
+   */
+  unsigned int GetHoldTime() const { return m_holdTime; };
+
+  /*! \brief Time since last repeat in ms
+   \return time since last repeat in ms. Returns 0 if unknown.
+   */
+  float GetRepeat() const { return m_repeat; };
+
+  /*! \brief Button code that triggered this action
+   \return button code
+   */
+  unsigned int GetButtonCode() const { return m_buttonCode; };
+
+private:
+  int          m_id;
+  CStdString   m_name;
+
+  static const unsigned int max_amounts = 4; // Must be at least 4.
+  float        m_amount[max_amounts];
+
+  float        m_repeat;
+  unsigned int m_holdTime;
+  unsigned int m_buttonCode;
+  wchar_t      m_unicode;
 };
 
 /*!
@@ -439,18 +490,16 @@ public:
 class CMouseEvent
 {
 public:
-  CMouseEvent(int actionID, int state = 0, char wheel = 0, float offsetX = 0, float offsetY = 0)
+  CMouseEvent(int actionID, int state = 0, float offsetX = 0, float offsetY = 0)
   {
     m_id = actionID;
     m_state = state;
-    m_wheel = wheel;
     m_offsetX = offsetX;
     m_offsetY = offsetY;
   };
 
   int    m_id;
   int    m_state;
-  char   m_wheel;
   float  m_offsetX;
   float  m_offsetY;
 };

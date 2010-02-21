@@ -422,7 +422,7 @@ float CGUIControlGroupList::GetAlignOffset() const
 
 bool CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (event.m_id == ACTION_MOUSE_WHEEL)
+  if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     // find the current control and move to the next or previous
     float offset = 0;
@@ -431,12 +431,12 @@ bool CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &
       CGUIControl *control = *it;
       if (!control->IsVisible()) continue;
       float nextOffset = offset + Size(control) + m_itemGap;
-      if (event.m_wheel < 0 && nextOffset > m_offset) // past our current offset
+      if (event.m_id == ACTION_MOUSE_WHEEL_DOWN && nextOffset > m_offset) // past our current offset
       {
         ScrollTo(nextOffset);
         return true;
       }
-      else if (event.m_wheel > 0 && nextOffset >= m_offset) // at least at our current offset
+      else if (event.m_id == ACTION_MOUSE_WHEEL_UP && nextOffset >= m_offset) // at least at our current offset
       {
         ScrollTo(offset);
         return true;

@@ -92,7 +92,7 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB &&
         m_vecItems->m_strPath == m_startDirectory)
@@ -101,7 +101,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
       return true;
     }
   }
-  if (action.actionId == ACTION_TOGGLE_WATCHED)
+  if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
     if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
@@ -838,13 +838,13 @@ void CGUIWindowVideoNav::DisplayEmptyDatabaseMessage(bool bDisplay)
   m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
 
-void CGUIWindowVideoNav::Render()
+void CGUIWindowVideoNav::FrameMove()
 {
   if (m_bDisplayEmptyDatabaseMessage)
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
   else
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
-  CGUIWindowVideoBase::Render();
+  CGUIWindowVideoBase::FrameMove();
 }
 
 void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
@@ -1108,7 +1108,7 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
     filter = true;
   }
 
-  if (filter && !GetProperty("filter").IsEmpty())
+  if (filter || !GetProperty("filter").IsEmpty())
     FilterItems(items);
 }
 

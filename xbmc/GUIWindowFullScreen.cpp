@@ -197,7 +197,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
     return true;
 
-  switch (action.actionId)
+  switch (action.GetID())
   {
 
   case ACTION_SHOW_GUI:
@@ -293,7 +293,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
 
-    ShowSlider(action.actionId, 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
+    ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
                                       -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
                                        g_advancedSettings.m_videoSubsDelayRange);
     return true;
@@ -305,19 +305,19 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
 
-    ShowSlider(action.actionId, 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
+    ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
                                       -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
                                        g_advancedSettings.m_videoSubsDelayRange);
     return true;
     break;
   case ACTION_SUBTITLE_DELAY:
-    ShowSlider(action.actionId, 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
+    ShowSlider(action.GetID(), 22006, g_settings.m_currentVideoSettings.m_SubtitleDelay,
                                       -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
                                        g_advancedSettings.m_videoSubsDelayRange, true);
     return true;
     break;
   case ACTION_AUDIO_DELAY:
-    ShowSlider(action.actionId, 297, g_settings.m_currentVideoSettings.m_AudioDelay,
+    ShowSlider(action.GetID(), 297, g_settings.m_currentVideoSettings.m_AudioDelay,
                                     -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
                                      g_advancedSettings.m_videoAudioDelayRange, true);
     return true;
@@ -329,7 +329,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
 
-    ShowSlider(action.actionId, 297, g_settings.m_currentVideoSettings.m_AudioDelay,
+    ShowSlider(action.GetID(), 297, g_settings.m_currentVideoSettings.m_AudioDelay,
                                     -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
                                      g_advancedSettings.m_videoAudioDelayRange);
     return true;
@@ -341,7 +341,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
 
-    ShowSlider(action.actionId, 297, g_settings.m_currentVideoSettings.m_AudioDelay,
+    ShowSlider(action.GetID(), 297, g_settings.m_currentVideoSettings.m_AudioDelay,
                                     -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
                                      g_advancedSettings.m_videoAudioDelayRange);
     return true;
@@ -376,7 +376,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       {
         int channelNr = -1;
 
-        if (action.actionId == REMOTE_0)
+        if (action.GetID() == REMOTE_0)
         {
           channelNr = g_PVRManager.GetPreviousChannel();
         }
@@ -384,22 +384,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         {
           int autoCloseTime = g_guiSettings.GetBool("pvrplayback.switchautoclose") ? 1500 : 0;
           CStdString strChannel;
-          strChannel.Format("%i", action.actionId - REMOTE_0);
+          strChannel.Format("%i", action.GetID() - REMOTE_0);
           if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000), autoCloseTime) || autoCloseTime)
             channelNr = atoi(strChannel.c_str());
         }
 
         if (channelNr > 0)
-        {
-          CAction action;
-          action.actionId = ACTION_CHANNEL_SWITCH;
-          action.amount1 = (float)channelNr;
-          OnAction(action);
-        }
+          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float)channelNr));
       }
       else
       {
-        ChangetheTimeCode(action.actionId);
+        ChangetheTimeCode(action.GetID());
       }
       return true;
     }
@@ -449,7 +444,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_settings.m_currentVideoSettings.m_CustomZoomAmount = 2.f;
       g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
       g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
-      ShowSlider(action.actionId, 216, g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
+      ShowSlider(action.GetID(), 216, g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
     }
     return true;
     break;
@@ -460,7 +455,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_settings.m_currentVideoSettings.m_CustomZoomAmount = 0.5f;
       g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
       g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
-      ShowSlider(action.actionId, 216, g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
+      ShowSlider(action.GetID(), 216, g_settings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
     }
     return true;
     break;
@@ -471,7 +466,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_settings.m_currentVideoSettings.m_CustomZoomAmount = 2.f;
       g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
       g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
-      ShowSlider(action.actionId, 217, g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
+      ShowSlider(action.GetID(), 217, g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
     }
     return true;
     break;
@@ -482,7 +477,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_settings.m_currentVideoSettings.m_CustomPixelRatio = 0.5f;
       g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
       g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
-      ShowSlider(action.actionId, 217, g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
+      ShowSlider(action.GetID(), 217, g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
     }
     return true;
     break;
@@ -539,7 +534,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         g_windowManager.PreviousWindow();
         return true;
       }
-      m_bLastRender = false;
       g_infoManager.SetShowInfo(false);
       g_infoManager.SetShowCodec(false);
       m_bShowCurrentTime = false;
@@ -660,10 +654,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         if (iNewGroup != g_PVRManager.GetPlayingGroup())
         {
           g_PVRManager.SetPlayingGroup(iNewGroup);
-          CAction action;
-          action.actionId = ACTION_CHANNEL_SWITCH;
-          action.amount1 = groups->GetFirstChannelForGroupID(iNewGroup);
-          OnAction(action);
+          OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(iNewGroup)));
         }
 
         // hide the control and reset focus
@@ -687,9 +678,7 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
-    CAction action;
-    action.actionId = ACTION_SHOW_GUI;
-    OnAction(action);
+    OnAction(CAction(ACTION_SHOW_GUI));
     return true;
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
@@ -697,19 +686,15 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
     CFileItem item(g_application.CurrentFileItem());
     // Do not allow Pause on LiveTV channel
     if (!item.HasPVRChannelInfoTag())
-    {
-      CAction action;
-      action.actionId = ACTION_PAUSE;
-      return g_application.OnAction(action);
-    }
+      return g_application.OnAction(CAction(ACTION_PAUSE));
   }
-  if (event.m_id == ACTION_MOUSE_WHEEL)
-  { // Mouse wheel
-    int wheel = abs(event.m_wheel);
-    CAction action;
-    action.amount1 = 0.5f * (float)wheel;
-    action.actionId = event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
-    return g_application.OnAction(action);
+  if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  {
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
+  }
+  if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
   }
   if (event.m_id || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD
@@ -724,58 +709,14 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
   return false;
 }
 
-// Override of Render() - RenderFullScreen() is where the action takes place
-// this is called from the rendermanager, normally we won't come this way
-// as player thread will handle rendering, and call this itself.
-void CGUIWindowFullScreen::Render()
-{
-#ifdef HAS_VIDEO_PLAYBACK
-  g_renderManager.RenderUpdate(true);
-#endif
-  // win32 video rendering uses this path all the time (it doesn't render from the player directly)
-  // so at this point we should renderfullscreen info as well.
-  if (NeedRenderFullScreen())
-    RenderFullScreen();
-}
-
-bool CGUIWindowFullScreen::NeedRenderFullScreen()
-{
-  CSingleLock lock (g_graphicsContext);
-  if (g_application.m_pPlayer)
-  {
-    if (g_application.m_pPlayer->IsPaused() ) return true;
-    if (g_application.m_pPlayer->IsCaching() ) return true;
-    if (!g_application.m_pPlayer->IsPlaying() ) return true;
-  }
-  if (g_application.GetPlaySpeed() != 1) return true;
-  if (m_timeCodeShow) return true;
-  if (m_bShowCurrentTime) return true;
-  if (g_infoManager.GetBool(PLAYER_SHOWCODEC)) return true;
-  if (g_infoManager.GetBool(PLAYER_SHOWINFO)) return true;
-  if (IsAnimating(ANIM_TYPE_HIDDEN)) return true; // for the above info conditions
-  if (m_bShowViewModeInfo) return true;
-  if (m_bShowCurrentTime) return true;
-  if (g_infoManager.GetDisplayAfterSeek()) return true;
-  if (g_infoManager.GetBool(PLAYER_SEEKBAR, GetID())) return true;
-  if (CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
-    return true;
-  if (m_bLastRender)
-  {
-    m_bLastRender = false;
-  }
-
-  return false;
-}
-
-void CGUIWindowFullScreen::RenderFullScreen()
+void CGUIWindowFullScreen::FrameMove()
 {
   if (g_application.GetPlaySpeed() != 1)
     g_infoManager.SetDisplayAfterSeek();
   if (m_bShowCurrentTime)
     g_infoManager.SetDisplayAfterSeek();
 
-  m_bLastRender = true;
-  if (!g_application.m_pPlayer) return ;
+  if (!g_application.m_pPlayer) return;
 
   if( g_application.m_pPlayer->IsCaching() )
   {
@@ -881,8 +822,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
     }
   }
 
-  RenderTTFSubtitles();
-
   if (m_timeCodeShow && m_timeCodePosition != 0)
   {
     if ( (CTimeUtils::GetTimeMS() - m_timeCodeTimeout) >= 2500)
@@ -937,6 +876,11 @@ void CGUIWindowFullScreen::RenderFullScreen()
     SET_CONTROL_HIDDEN(BLUE_BAR);
     SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
   }
+}
+
+void CGUIWindowFullScreen::Render()
+{
+  RenderTTFSubtitles();
   CGUIWindow::Render();
 }
 
@@ -1030,12 +974,10 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
   {
     if(bLargeStep)
     {
-      CAction action;
       if(bPlus)
-        action.actionId = ACTION_NEXT_ITEM;
+        OnAction(CAction(ACTION_NEXT_ITEM));
       else
-        action.actionId = ACTION_PREV_ITEM;
-      OnAction(action);
+        OnAction(CAction(ACTION_PREV_ITEM));
       return;
     }
     else if(!bLargeStep)
@@ -1142,9 +1084,7 @@ void CGUIWindowFullScreen::ChangetheTVGroup(bool next)
     SET_CONTROL_FOCUS(CONTROL_GROUP_CHOOSER, 0);
 
     // fire off an event that we've pressed this button...
-    CAction action;
-    action.actionId = ACTION_SELECT_ITEM;
-    OnAction(action);
+    OnAction(CAction(ACTION_SELECT_ITEM));
 
     m_bGroupSelectShow = true;
   }

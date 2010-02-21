@@ -609,12 +609,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowTV::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
   }
-  else if (action.actionId == ACTION_PARENT_DIR)
+  else if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS && m_vecItems->m_strPath != "pvr://recordings/")
       GoParentFolder();

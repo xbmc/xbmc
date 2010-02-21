@@ -455,8 +455,8 @@ bool CGUIWindowManager::OnAction(const CAction &action)
     }
     // music or video overlay are handled as a special case, as they're modeless, but we allow
     // clicking on them with the mouse.
-    if (action.actionId == ACTION_MOUSE && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
-                                       dialog->GetID() == WINDOW_MUSIC_OVERLAY))
+    if (action.IsMouse() && (dialog->GetID() == WINDOW_VIDEO_OVERLAY ||
+                             dialog->GetID() == WINDOW_MUSIC_OVERLAY))
     {
       if (dialog->OnAction(action))
         return true;
@@ -472,45 +472,42 @@ bool CGUIWindowManager::OnAction(const CAction &action)
   return false;
 }
 
-void CGUIWindowManager::Render()
-{
-  if (!g_application.IsCurrentThread())
-  {
-    // make sure graphics lock is not held
-    int nCount = ExitCriticalSection(g_graphicsContext);
-    g_application.getApplicationMessenger().Render();
-    RestoreCriticalSection(g_graphicsContext, nCount);
-  }
-  else
-    Render_Internal();
-}
-
-void CGUIWindowManager::Render_Internal()
-{
-  CSingleLock lock(g_graphicsContext);
-  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-  if (pWindow)
-    pWindow->Render();
-}
-
 bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
 {
   return first->GetRenderOrder() < second->GetRenderOrder();
 }
 
-void CGUIWindowManager::RenderDialogs()
+void CGUIWindowManager::Render()
 {
+  assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
-  // find the window with the lowest render order
+  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+  if (pWindow)
+    pWindow->Render();
+
+  // we render the dialogs based on their render order.
   vector<CGUIWindow *> renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
-
-  // iterate through and render if they're running
+  
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
       (*it)->Render();
   }
+}
+
+void CGUIWindowManager::FrameMove()
+{
+  assert(g_application.IsCurrentThread());
+  CSingleLock lock(g_graphicsContext);
+  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+  if (pWindow)
+    pWindow->FrameMove();
+  // update any dialogs - we take a copy of the vector as some dialogs may close themselves
+  // during this call
+  vector<CGUIWindow *> dialogs = m_activeDialogs;
+  for (iDialog it = dialogs.begin(); it != dialogs.end(); ++it)
+    (*it)->FrameMove();
 }
 
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const
@@ -546,13 +543,7 @@ void CGUIWindowManager::UpdateModelessVisibility()
 
 void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 {
-  if (g_application.IsCurrentThread())
-    Process_Internal(renderOnly);
-}
-
-void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
-{
-  if (m_pCallback)
+  if (g_application.IsCurrentThread() && m_pCallback)
   {
     if (!renderOnly)
     {

@@ -560,15 +560,11 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Equals("next"))
     {
-      CAction action;
-      action.actionId = ACTION_NEXT_ITEM;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_NEXT_ITEM));
     }
     else if (parameter.Equals("previous"))
     {
-      CAction action;
-      action.actionId = ACTION_PREV_ITEM;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_PREV_ITEM));
     }
     else if (parameter.Equals("bigskipbackward"))
     {
@@ -593,13 +589,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else if( parameter.Equals("showvideomenu") )
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer )
-      {
-        CAction action;
-        action.amount1 = action.amount2 = action.repeat = 0.0;
-        action.buttonCode = 0;
-        action.actionId = ACTION_SHOW_VIDEOMENU;
-        g_application.m_pPlayer->OnAction(action);
-      }
+        g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
     }
     else if( parameter.Equals("record") )
     {
@@ -703,9 +693,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("playwith"))
   {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
-    CAction action;
-    action.actionId = ACTION_PLAYER_PLAY;
-    g_application.OnAction(action);
+    g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
   }
   else if (execute.Equals("mute"))
   {
@@ -1255,11 +1243,8 @@ int CBuiltins::Execute(const CStdString& execString)
     int actionID;
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
-      CAction action;
-      action.actionId = actionID;
-      action.amount1 = 1.0f;
       int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindowString(params[1].c_str()) : WINDOW_INVALID;
-      g_application.getApplicationMessenger().SendAction(action, windowID);
+      g_application.getApplicationMessenger().SendAction(CAction(actionID), windowID);
     }
   }
   else if (execute.Equals("setproperty") && params.size() == 2)

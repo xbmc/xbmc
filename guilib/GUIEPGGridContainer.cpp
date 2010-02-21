@@ -70,7 +70,7 @@ CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 
 bool CGUIEPGGridContainer::OnAction(const CAction &action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
@@ -118,9 +118,9 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
   case ACTION_TELETEXT_GREEN:
   case ACTION_SCROLL_UP: // left horizontal scrolling
     {
-      int blocksToJump = action.actionId == ACTION_TELETEXT_RED ? m_blocksPerPage/2 : m_blocksPerPage/4;
+      int blocksToJump = action.GetID() == ACTION_TELETEXT_RED ? m_blocksPerPage/2 : m_blocksPerPage/4;
 
-      m_analogScrollCount += action.amount1 * action.amount1;
+      m_analogScrollCount += action.GetAmount() * action.GetAmount();
       bool handled = false;
 
       while (m_analogScrollCount > 0.4)
@@ -147,9 +147,9 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
   case ACTION_TELETEXT_YELLOW:
   case ACTION_SCROLL_DOWN: // right horizontal scrolling
     {
-      int blocksToJump = action.actionId == ACTION_TELETEXT_BLUE ? m_blocksPerPage/2 : m_blocksPerPage/4;
+      int blocksToJump = action.GetID() == ACTION_TELETEXT_BLUE ? m_blocksPerPage/2 : m_blocksPerPage/4;
 
-      m_analogScrollCount += action.amount1 * action.amount1;
+      m_analogScrollCount += action.GetAmount() * action.GetAmount();
       bool handled = false;
 
       while (m_analogScrollCount > 0.4)
@@ -174,9 +174,9 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
 
   default:
 
-    if (action.actionId)
+    if (action.GetID())
     {
-      return OnClick(action.actionId);
+      return OnClick(action.GetID());
     }
   }
 
@@ -1012,7 +1012,7 @@ bool CGUIEPGGridContainer::OnMouseClick(int dwButton, const CPoint &point)
 {
   if (SelectItemFromPoint(point - CPoint(m_gridPosX, m_posY + m_rulerHeight)))
   { // send click message to window
-    OnClick(ACTION_MOUSE_CLICK + dwButton);
+    OnClick(ACTION_MOUSE_LEFT_CLICK + dwButton);
     return true;
   }
 

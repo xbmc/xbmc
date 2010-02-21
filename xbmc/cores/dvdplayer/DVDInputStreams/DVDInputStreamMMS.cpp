@@ -90,6 +90,7 @@ bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
     return true;
     
   free(m_mms);
+  m_mms = NULL;
   return false;
 #else
   m_mms = mmsx_connect((mms_io_t*)mms_get_default_io_impl(),NULL,strFile,2000*1000); // TODO: what to do with bandwidth?

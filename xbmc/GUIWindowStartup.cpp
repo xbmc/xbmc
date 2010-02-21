@@ -31,3 +31,9 @@ CGUIWindowStartup::~CGUIWindowStartup(void)
 {
 }
 
+bool CGUIWindowStartup::OnAction(const CAction &action)
+{
+  if (!action.IsMouse())
+    return true;
+  return CGUIWindow::OnAction(action);
+}
