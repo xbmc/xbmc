@@ -68,10 +68,11 @@ protected:
   virtual void SortItems(CFileItemList &items);
 
   /* \brief Called on response to a GUI_MSG_FILTER_ITEMS message
-   Filters the current list with the set filter using FilterItems()
+   Filters the current list with the given filter using FilterItems()
+   \param filter the filter to use.
    \sa FilterItems
    */
-  void OnFilterItems();
+  void OnFilterItems(const CStdString &filter);
 
   /* \brief Filter the item list 
    \param items CFileItemList to filter

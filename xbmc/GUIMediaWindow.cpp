@@ -258,8 +258,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         { // filter updated
           CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
           OnMessage(selected);
-          SetProperty("filter", selected.GetLabel());
-          OnFilterItems();
+          OnFilterItems(selected.GetLabel());
           return true;
         }
         if (GetProperty("filter").IsEmpty())
@@ -269,10 +268,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           SetProperty("filter", filter);
         }
         else
-        {
-          SetProperty("filter", "");
-          OnFilterItems();
-        }
+          OnFilterItems("");
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -394,8 +390,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         }
         else
           filter = message.GetStringParam();
-        SetProperty("filter", filter);
-        OnFilterItems();
+        OnFilterItems(filter);
         return true;
       }
       else
@@ -1417,7 +1412,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   return true;
 }
 
-void CGUIMediaWindow::OnFilterItems()
+void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
 {
   CStdString currentItem;
   int item = m_viewControl.GetSelectedItem();
@@ -1426,7 +1421,8 @@ void CGUIMediaWindow::OnFilterItems()
   
   m_viewControl.Clear();
   
-  FilterItems(*m_vecItems, GetProperty("filter"));
+  FilterItems(*m_vecItems, filter);
+  SetProperty("filter", filter);
   
   // and update our view control + buttons
   m_viewControl.SetItems(*m_vecItems);
