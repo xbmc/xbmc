@@ -993,8 +993,7 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
   for (int i = 0; i < m_unfilteredItems->Size(); i++)
   {
     CFileItemPtr item = m_unfilteredItems->Get(i);
-    if (item->IsParentFolder() || filter.IsEmpty() ||
-        CMusicDatabaseDirectory::IsAllItem(item->m_strPath))
+    if (item->IsParentFolder() || filter.IsEmpty())
     {
       items.Add(item);
       continue;
