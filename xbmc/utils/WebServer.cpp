@@ -196,8 +196,8 @@ int CWebServer::JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connectio
   {
     CStdString *jsoncall = (CStdString *)(*con_cls);
 
-    if (jsoncall->size() > 204800)
-      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is bigger than 200KiB, skipping logging it");
+    if (jsoncall->size() > 2000)
+      CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call wich is longer than 2000 characters, skipping logging it");
     else
       CLog::Log(LOGINFO, "JSONRPC: Recieved a jsonrpc call - %s", jsoncall->c_str());
     CHTTPClient client;
