@@ -32,6 +32,12 @@ character itself should NOT be typed as part of the command.
 
 Two methods exist to install the required Ubuntu packages:
 
+[NOTICE] For supported old Ubuntu versions, some packages might be outdated.
+         For those, you can either compile them manually, or use our backports
+         available from our official PPA:
+
+         http://launchpad.net/~team-xbmc/+archive/ppa
+
 --------------------------------------------------------------------
 3.1. Copy and paste the following line corresponding to your system
 --------------------------------------------------------------------
@@ -50,7 +56,7 @@ In this case you will have to manually compile the latest version.
    # sudo make install
 
 On 8.04 and older versions, libmms is outdated and thus XBMC will not compile properly.
-In this case you will have to manually compile the latest version.
+In this case you will have to manually compile the latest version. See the previous [NOTICE].
    # wget "http://launchpad.net/libmms/trunk/0.5/+download/libmms-0.5.tar.gz"
    # tar zxvf libmms-0.5.tar.gz
    # cd libmms-0.5
@@ -62,9 +68,21 @@ In this case you will have to manually compile the latest version.
 3.2. Use a single command to get all build dependencies
 --------------------------------------------------------------
 
-For this, you need to specify the PPA in your apt sources. Please find them on the forum
+You can get all build dependencies used for building the packages on the PPA. For this, you 
+need to specify the PPA in your apt sources. Please find the documentation on how to add a
+PPA to your system here: 
 
-http://forum.xbmc.org/showthread.php?t=33327
+   http://launchpad.net/+help/soyuz/ppa-sources-list.html
+
+The PPA used for XBMC (developpement version) is located on the following page:
+
+   http://launchpad.net/~team-xbmc-svn/+archive/ppa
+
+[Note 1] Click on "Technical details about this PPA" to display the sources.list entries.
+
+[Note 2] If you are using a distribution that has outdated libraries, do not forget to use 
+         the following ppa:
+         http://launchpad.net/~team-xbmc/+archive/ppa
 
 Update apt:
    # sudo apt-get update
