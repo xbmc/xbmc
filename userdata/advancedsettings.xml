@@ -1,0 +1,36 @@
+<advancedsettings>
+
+<audio>
+  <defaultplayer>paplayer</defaultplayer>
+</audio>
+
+<video>
+  <defaultplayer>mplayer</defaultplayer>
+</video>
+
+<cache>
+    <harddisk>256</harddisk>
+</cache>
+
+<cacheaudio>
+    <dvdrom>256</dvdrom>
+    <internet>256</internet>
+    <lan>256</lan>
+</cacheaudio>
+
+<cachedvd>
+    <dvdrom>2048</dvdrom>
+    <lan>2048</lan>
+</cachedvd>
+
+<cacheunknown>
+    <internet>2048</internet>
+</cacheunknown>
+
+<cachevideo>
+    <dvdrom>1024</dvdrom>
+    <internet>1024</internet>
+    <lan>1024</lan>
+</cachevideo> 
+    
+</advancedsettings>
