@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
-<scraper framework="1.1" date="2009-07-28" name="Cinefacts.de" content="movies" thumb="cinefacts.png" language="de">
+<scraper framework="1.1" date="2010-02-22" name="Cinefacts.de" content="movies" thumb="cinefacts.png" language="de">
 	<include>common/tmdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -9,17 +9,21 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
-	
-        <CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.cinefacts.de/kino/\2.html&lt;/url&gt;" dest="3">
+			<expression clear="yes" noclean="1">(cinefacts.de/kino/)(.*).html</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
 		<RegExp input="$$1" output="http://www.cinefacts.de/suche/suche.php?name=\1" dest="3">
 			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3 (\4)&lt;/title&gt;&lt;url cache=&quot;film.xml&quot; &gt;http://www.cinefacts.de/kino/\1/\2/filmdetails.html&lt;/url&gt;&lt;/entity&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3 (\4)&lt;/title&gt;&lt;url cache=&quot;\1.xml&quot; &gt;http://www.cinefacts.de/kino/\1/\2/filmdetails.html&lt;/url&gt;&lt;/entity&gt;" dest="5">
 				<expression repeat="yes">&gt;&lt;a href=&quot;/kino/([0-9]*)/(.[^\/]*)/filmdetails.html&quot;&gt;[^&lt;]*&lt;b title=&quot;([^&quot;]*)&quot; class=&quot;headline&quot;&gt;[^&lt;]+&lt;/b&gt;&lt;/a&gt;&lt;br&gt;[^&lt;]+&lt;br&gt;+[^0-9]+([^&lt;]*)</expression>
-		</RegExp>
+			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
@@ -40,7 +44,6 @@
 			<RegExp input="$$4" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<expression repeat="yes" noclean="1" trim="1">&gt;*[ A-Za-z]([^&lt;&gt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-                              
 			<!--Director Film-->
 			<RegExp input="$$1" output="\1" dest="7+">
 				<expression noclean="1">Regie:([^:]*)Buch:</expression>
@@ -83,9 +86,9 @@
 				<expression repeat="yes" >&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
 			<!--Poster URL-->
-		        <RegExp input="$$1" output="&lt;url function=&quot;GetThumbnailLink&quot;&gt;http://www.cinefacts.de/kino/film/\1/\2/plakate.html&lt;/url&gt;" dest="5+">
-   			        <expression repeat ="yes">&lt;a href=&quot;/kino/film/([0-9]*)/([^\/]*)/plakate.html&quot;&gt;</expression>
-    			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetThumbnailLink&quot;&gt;http://www.cinefacts.de/kino/film/\1/\2/plakate.html&lt;/url&gt;" dest="5+">
+				<expression repeat ="yes">&lt;a href=&quot;/kino/film/([0-9]*)/([^\/]*)/plakate.html&quot;&gt;</expression>
+			</RegExp>
 			<!--IMDB URL-->
 			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
 				<RegExp input="$$1" output="&quot;\2&quot;+\1+||+&quot;\2&quot;" dest="7">
@@ -100,19 +103,19 @@
 		</RegExp>
 	</GetDetails>
 	<!--Thumbnail-->
-        <GetThumbnailLink dest="5">
-              <RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
-         	    <RegExp input="$$1" output="&lt;url function=&quot;GetThumbnail&quot;&gt;http://www.cinefacts.de/kino/film/\1&lt;/url&gt;" dest="2+">
-			<expression repeat="yes" noclean="1">&lt;a href=&quot;/kino/film/([^&quot;]+)&quot;&gt;[^&lt;]*&lt;img</expression>
-                    </RegExp>
-                    <expression noclean="1"/>
-               </RegExp>
-        </GetThumbnailLink>
+	<GetThumbnailLink dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetThumbnail&quot;&gt;http://www.cinefacts.de/kino/film/\1&lt;/url&gt;" dest="2+">
+				<expression repeat="yes" noclean="1">&lt;a href=&quot;/kino/film/([^&quot;]+)&quot;&gt;[^&lt;]*&lt;img</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetThumbnailLink>
 	<GetThumbnail dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb&gt;http://www.cinefacts.de/kino/plakat/\1&lt;/thumb&gt;" dest="2+">
-		       		<expression>src=&quot;/kino/plakat/([^&quot;]*)&quot;</expression>
-	               	</RegExp>
+				<expression>src=&quot;/kino/plakat/([^&quot;]*)&quot;</expression>
+			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetThumbnail>
