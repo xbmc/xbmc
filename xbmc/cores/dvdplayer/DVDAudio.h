@@ -44,6 +44,7 @@ extern "C" {
 }
 #endif
 typedef struct stDVDAudioFrame DVDAudioFrame;
+typedef struct stDVDAudioFormat DVDAudioFormat;
 
 class CSingleLock;
 
@@ -60,10 +61,10 @@ public:
   void SetDynamicRangeCompression(long drc);
   void Pause();
   void Resume();
-  bool Create(const DVDAudioFrame &audioframe, CodecID codec);
-  bool IsValidFormat(const DVDAudioFrame &audioframe);
+  bool Create(const DVDAudioFormat &format, CodecID codec);
+  bool IsValidFormat(const DVDAudioFormat& format);
   void Destroy();
-  DWORD AddPackets(const DVDAudioFrame &audioframe);
+  DWORD AddPackets(const unsigned char* data, unsigned int len);
   double GetDelay(); // returns the time it takes to play a packet if we add one at this time
   double GetCacheTime();  // returns total amount of data cached in audio output at this time
   double GetCacheTotal(); // returns total amount the audio device can buffer
@@ -75,10 +76,10 @@ public:
 
   IAudioRenderer* m_pAudioDecoder;
 protected:
-  DWORD AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock);
+  DWORD AddPacketsRenderer(const unsigned char* data, DWORD len, CSingleLock &lock);
   IAudioCallback* m_pCallback;
-  BYTE* m_pBuffer; // should be [m_dwPacketSize]
-  DWORD m_iBufferSize;
+  BYTE* m_pOverflowBuffer; // should be [m_dwPacketSize]
+  DWORD m_iOverflowBufferSize;
   DWORD m_dwPacketSize;
   CCriticalSection m_critSection;
 

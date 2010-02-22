@@ -63,7 +63,12 @@ bool CDVDAudioCodecLibFaad::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       return false;
 
     m_iSourceSampleRate = samplerate;
+#ifdef __APPLE__
+    // TODO: Remove this when downmixing is done in xbmc
+    m_iSourceChannels = g_guiSettings.GetBool("audiooutput.downmixmultichannel") ? 2 : channels;
+#else
     m_iSourceChannels = channels;
+#endif
     m_iSourceBitrate = 0;
 
     m_bInitializedDecoder = true;
@@ -160,7 +165,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
         CLog::Log(LOGERROR, "CDVDAudioCodecLibFaad() : unable to init faad");
         m_InputBufferSize = 0;
 
-        // faac leeks when faacDecInit is called multiple times on same handle
+        // faac leaks when faacDecInit is called multiple times on same handle
         CloseDecoder();
         if(!OpenDecoder())
           return -1;
@@ -180,8 +185,8 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
   if (!m_bInitializedDecoder)
     return iBytesToCopy;
 
-  m_DecodedData = (short*)m_dll.faacDecDecode(m_pHandle, &m_frameInfo, m_InputBuffer, m_InputBufferSize);
-  m_DecodedDataSize = m_frameInfo.samples * sizeof(short);
+  m_DecodedData = (float*)m_dll.faacDecDecode(m_pHandle, &m_frameInfo, m_InputBuffer, m_InputBufferSize);
+  m_DecodedDataSize = m_frameInfo.samples * sizeof(float);
 
   if (m_frameInfo.error)
   {
@@ -204,9 +209,9 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
   return iBytesToCopy;
 }
 
-int CDVDAudioCodecLibFaad::GetData(BYTE** dst)
+int CDVDAudioCodecLibFaad::GetData(float** dst)
 {
-  *dst = (BYTE*)m_DecodedData;
+  *dst = m_DecodedData;
   return m_DecodedDataSize;
 }
 
@@ -249,9 +254,10 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
     faacDecConfigurationPtr pConfiguration;
     pConfiguration = m_dll.faacDecGetCurrentConfiguration(m_pHandle);
 
-    // modify some stuff here
-    pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
+    // Configure the decoder
+    pConfiguration->outputFormat = FAAD_FMT_FLOAT;
 #ifdef __APPLE__
+    // TODO: Remove this when downmixing is done in xbmc
     pConfiguration->downMatrix   = g_guiSettings.GetBool("audiooutput.downmixmultichannel") ? 1 : 0;
 #else
     pConfiguration->downMatrix   = 0;

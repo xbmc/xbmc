@@ -31,12 +31,11 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
-  virtual int GetData(BYTE** dst);
+  virtual int GetData(float** dst);
   virtual void Reset();
   virtual int GetChannels();
   virtual enum PCMChannels* GetChannelMap();
   virtual int GetSampleRate();
-  virtual int GetBitsPerSample();
   virtual const char* GetName()  { return "pcm"; }
 
 protected:
@@ -45,7 +44,7 @@ protected:
   BYTE m_inputBuffer[4096];
   BYTE* m_pInputBuffer;
 
-  short m_decodedData[131072]; // could be a bit to big
+  float m_decodedData[131072]; // could be a bit to big
   int m_decodedDataSize;
 
   CodecID m_codecID;

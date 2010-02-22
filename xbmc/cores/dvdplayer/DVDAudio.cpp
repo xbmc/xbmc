@@ -35,9 +35,9 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
 {
   m_pAudioDecoder = NULL;
   m_pCallback = NULL;
-  m_iBufferSize = 0;
+  m_iOverflowBufferSize = 0;
   m_dwPacketSize = 0;
-  m_pBuffer = NULL;
+  m_pOverflowBuffer = NULL;
   m_iSpeed = 0;
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
@@ -53,7 +53,7 @@ CDVDAudio::~CDVDAudio()
     m_pAudioDecoder->Deinitialize();
     delete m_pAudioDecoder;
   }
-  if (m_pBuffer) delete[] m_pBuffer;
+  delete[] m_pOverflowBuffer;
 }
 
 void CDVDAudio::RegisterAudioCallback(IAudioCallback* pCallback)
@@ -70,11 +70,8 @@ void CDVDAudio::UnRegisterAudioCallback()
   m_pCallback = NULL;
 }
 
-bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
+bool CDVDAudio::Create(const DVDAudioFormat &format, CodecID codec)
 {
-  CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
-
-  // if passthrough isset do something else
   CSingleLock lock (m_critSection);
 
   const char* codecstring="";
@@ -92,21 +89,49 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
   else
     codecstring = "PCM";
 
-  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, codecstring, false, audioframe.passthrough);
-
-  if (!m_pAudioDecoder) return false;
-
-  m_iChannels = audioframe.channels;
-  m_iBitrate = audioframe.sample_rate;
-  m_iBitsPerSample = audioframe.bits_per_sample;
-  m_bPassthrough = audioframe.passthrough;
-
+  switch (format.streamType)
+  {
+    case DVDAudioStreamType_PCM:
+    {
+      // Set bit-depth based on sample format
+      int bitsPerSample = 0;
+      if (format.pcm.sampleType == DVDAudioPCMSampleType_S16LE)
+        bitsPerSample = 16;
+      else 
+        return false; // Unsupported sample type
+      
+      // Create audio renderer
+      CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i", codec, format.pcm.channels, format.bitrate);
+      m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, format.pcm.channels, format.pcm.channel_map,  format.bitrate / format.pcm.channels /bitsPerSample, bitsPerSample, false, codecstring, false, false);
+      if (!m_pAudioDecoder) 
+        return false;
+      m_iBitsPerSample =  bitsPerSample;
+      m_bPassthrough = false;
+      m_iChannels = format.pcm.channels;
+      break;
+    }
+    case DVDAudioStreamType_Encoded:
+      CLog::Log(LOGNOTICE, "Creating passthrough audio device with codec id: %i bit rate: %i", codec, format.bitrate);
+      m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, 0, NULL, 48000, 0, false, codecstring, false, true); // TODO: Need better way to set sample/bit rate
+      if (!m_pAudioDecoder) 
+        return false;
+      m_iBitsPerSample = 0;
+      m_bPassthrough = true;
+      break;
+    default:
+      CLog::Log(LOGERROR, "Invalid DVDAudioOutputFormat specified. codec: %i format: %i", codec, format.encoded.encodingType);
+      return false; // Unknown format
+  }
+  
+  m_iBitrate = format.bitrate;
+  
   m_dwPacketSize = m_pAudioDecoder->GetChunkLen();
-  if (m_pBuffer) delete[] m_pBuffer;
-  m_pBuffer = new BYTE[m_dwPacketSize];
-
+  if (m_pOverflowBuffer) 
+    delete[] m_pOverflowBuffer;
+  m_pOverflowBuffer = new BYTE[m_dwPacketSize];
+  
   if(m_pCallback && !m_bPassthrough)
-    m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
+    m_pCallback->OnInitialize(m_iChannels, m_iBitrate / m_iChannels / m_iBitsPerSample, m_iBitsPerSample);
 
   return true;
 }
@@ -122,11 +147,12 @@ void CDVDAudio::Destroy()
     delete m_pAudioDecoder;
   }
 
-  if (m_pBuffer) delete[] m_pBuffer;
-  m_pBuffer = NULL;
+  delete[] m_pOverflowBuffer;
+  m_pOverflowBuffer = NULL;
+  
   m_dwPacketSize = 0;
   m_pAudioDecoder = NULL;
-  m_iBufferSize = 0;
+  m_iOverflowBufferSize = 0;
   m_iChannels = 0;
   m_iBitrate = 0;
   m_iBitsPerSample = 0;
@@ -140,7 +166,7 @@ void CDVDAudio::SetSpeed(int iSpeed)
 
 }
 
-DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
+DWORD CDVDAudio::AddPacketsRenderer(const unsigned char* data, DWORD len, CSingleLock &lock)
 {
   //Since we write same data size each time, we can drop full chunks to simulate a specific playback speed
   //m_iSpeedStep = (m_iSpeedStep+1) % m_iSpeed;
@@ -151,13 +177,12 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
   if(!m_pAudioDecoder)
     return 0;
 
-  DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
-  if(!bps)
+  if(!m_iBitrate)
     return 0;
 
   //Calculate a timeout when this definitely should be done
   double timeout;
-  timeout  = DVD_SEC_TO_TIME(m_pAudioDecoder->GetDelay() + (double)len / bps);
+  timeout  = DVD_SEC_TO_TIME(m_pAudioDecoder->GetDelay() + (double)len / m_iBitrate);
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += CDVDClock::GetAbsoluteClock();
 
@@ -185,12 +210,12 @@ DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock 
   return total - len;
 }
 
-DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
+// TODO: Need a cleaner and more flexible mechanism to pass in data
+//   audioframe should only use float data, so we may need another structure
+//   that can carry multiple data types
+DWORD CDVDAudio::AddPackets(const unsigned char* data, unsigned int len)
 {
   CSingleLock lock (m_critSection);
-
-  unsigned char* data = audioframe.data;
-  DWORD len = audioframe.size;
 
   DWORD total = len;
   DWORD copied;
@@ -199,26 +224,26 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   if(m_pCallback && !m_bPassthrough)
     m_pCallback->OnAudioData(data, len);
 
-  if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
+  if (m_iOverflowBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
-    copied = std::min(m_dwPacketSize - m_iBufferSize, len); // Smaller of either the data provided or the leftover data
+    copied = std::min(m_dwPacketSize - m_iOverflowBufferSize, len); // Smaller of either the data provided or the leftover data
 
-    memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
+    memcpy(m_pOverflowBuffer + m_iOverflowBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
     data += copied; // Move forward in caller's data
     len -= copied; // Decrease amount of data available from caller
-    m_iBufferSize += copied; // Increase amount of data available in buffer
+    m_iOverflowBufferSize += copied; // Increase amount of data available in buffer
 
-    if(m_iBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
+    if(m_iOverflowBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
       return copied;
 
-    if(AddPacketsRenderer(m_pBuffer, m_iBufferSize, lock) != m_iBufferSize)
+    if(AddPacketsRenderer(m_pOverflowBuffer, m_iOverflowBufferSize, lock) != m_iOverflowBufferSize)
     {
-      m_iBufferSize = 0;
+      m_iOverflowBufferSize = 0;
       CLog::Log(LOGERROR, "%s - failed to add leftover bytes to render", __FUNCTION__);
       return copied;
     }
 
-    m_iBufferSize = 0;
+    m_iOverflowBufferSize = 0;
     if (!len)
       return copied; // We used up all the caller's data
   }
@@ -233,10 +258,10 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
     if(len > m_dwPacketSize)
       CLog::Log(LOGERROR, "%s - More bytes left than can be stored in buffer", __FUNCTION__);
 
-    m_iBufferSize = std::min(len, m_dwPacketSize);
-    memcpy(m_pBuffer, data, m_iBufferSize);
-    len  -= m_iBufferSize;
-    data += m_iBufferSize;
+    m_iOverflowBufferSize = std::min(len, m_dwPacketSize);
+    memcpy(m_pOverflowBuffer, data, m_iOverflowBufferSize);
+    len  -= m_iOverflowBufferSize;
+    data += m_iOverflowBufferSize;
   }
   return total - len;
 }
@@ -247,19 +272,19 @@ void CDVDAudio::Finish()
   if (!m_pAudioDecoder)
     return;
 
-  DWORD silence = m_dwPacketSize - m_iBufferSize % m_dwPacketSize;
+  DWORD silence = m_dwPacketSize - m_iOverflowBufferSize % m_dwPacketSize;
 
-  if(silence > 0 && m_iBufferSize > 0)
+  if(silence > 0 && m_iOverflowBufferSize > 0)
   {
-    CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iBufferSize, m_dwPacketSize);
-    memset(m_pBuffer+m_iBufferSize, 0, silence);
-    m_iBufferSize += silence;
+    CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iOverflowBufferSize, m_dwPacketSize);
+    memset(m_pOverflowBuffer+m_iOverflowBufferSize, 0, silence);
+    m_iOverflowBufferSize += silence;
   }
 
-  if(AddPacketsRenderer(m_pBuffer, m_iBufferSize, lock) != m_iBufferSize)
-    CLog::Log(LOGERROR, "CDVDAudio::Drain - failed to play the final %d bytes", m_iBufferSize);
+  if(AddPacketsRenderer(m_pOverflowBuffer, m_iOverflowBufferSize, lock) != m_iOverflowBufferSize)
+    CLog::Log(LOGERROR, "CDVDAudio::Drain - failed to play the final %d bytes", m_iOverflowBufferSize);
 
-  m_iBufferSize = 0;
+  m_iOverflowBufferSize = 0;
 }
 
 void CDVDAudio::Drain()
@@ -302,9 +327,8 @@ double CDVDAudio::GetDelay()
   if(m_pAudioDecoder)
     delay = m_pAudioDecoder->GetDelay();
 
-  DWORD bps = m_iChannels * m_iBitrate * (m_iBitsPerSample>>3);
-  if(m_iBufferSize && bps)
-    delay += (double)m_iBufferSize / bps;
+  if(m_iOverflowBufferSize && m_iBitrate)
+    delay += (double)m_iOverflowBufferSize / m_iBitrate;
 
   return delay * DVD_TIME_BASE;
 }
@@ -318,20 +342,21 @@ void CDVDAudio::Flush()
     m_pAudioDecoder->Stop();
     m_pAudioDecoder->Resume();
   }
-  m_iBufferSize = 0;
+  m_iOverflowBufferSize = 0;
 }
 
-bool CDVDAudio::IsValidFormat(const DVDAudioFrame &audioframe)
+bool CDVDAudio::IsValidFormat(const DVDAudioFormat& format)
 {
   if(!m_pAudioDecoder)
     return false;
-
-  if(audioframe.passthrough != m_bPassthrough)
+  
+  if((format.streamType == DVDAudioStreamType_Encoded) && !m_bPassthrough)
     return false;
 
-  if(audioframe.channels != m_iChannels
-  || audioframe.sample_rate != m_iBitrate
-  || audioframe.bits_per_sample != m_iBitsPerSample)
+  if (format.bitrate != (unsigned int)m_iBitrate)
+    return false;
+
+  if(format.pcm.channels != m_iChannels)
     return false;
 
   return true;

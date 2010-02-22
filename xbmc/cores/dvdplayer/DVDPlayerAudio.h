@@ -29,6 +29,8 @@
 #include "DVDStreamInfo.h"
 #include "BitstreamStats.h"
 #include "DVDPlayerAudioResampler.h"
+#include "DVDAudioTypes.h"
+#include "utils/PCMSampleConverter.h"
 
 #include <list>
 #include <queue>
@@ -45,20 +47,6 @@ enum CodecID;
 #define DECODE_FLAG_ERROR   4
 #define DECODE_FLAG_ABORT   8
 #define DECODE_FLAG_TIMEOUT 16
-
-typedef struct stDVDAudioFrame
-{
-  BYTE* data;
-  double pts;
-  double duration;
-  unsigned int size;
-
-  int channels;
-  enum PCMChannels *channel_map;
-  int bits_per_sample;
-  int sample_rate;
-  bool passthrough;
-} DVDAudioFrame;
 
 class CPTSOutputQueue
 {
@@ -87,6 +75,91 @@ public:
   void   Flush();
 };
 
+/////////////////////////
+// Temprorary wrapper classes to standardize the interface to decoders/parsers
+// TODO: Convert decoders
+class CDVDAudioPacketHandler
+{
+public:
+  CDVDAudioPacketHandler(CDVDStreamInfo& hints);
+  
+  virtual bool Init(void* pData, unsigned int size) {return false;}
+  virtual unsigned int AddPacket(void* pData, unsigned int size) {return 0;}
+  virtual bool GetFrame(DVDAudioFrame& frame) {return false;}
+  virtual void Close() {}
+  virtual void Reset() {}
+  virtual unsigned int GetCacheSize() {return 0;}
+  
+  CDVDStreamInfo& GetStreamInfo() {return m_StreamInfo;}
+  DVDAudioFormat& GetOutputFormat(){return m_OutputFormat;}
+protected:
+  CDVDStreamInfo m_StreamInfo;
+  DVDAudioFormat m_OutputFormat;
+};
+
+// Wraps a CDVDAudioCodec with standardized handler interface
+class CDVDAudioDecodePacketHandler : public CDVDAudioPacketHandler
+{
+public:
+  CDVDAudioDecodePacketHandler(CDVDStreamInfo& hints, CDVDAudioCodec* pDecoder);
+  ~CDVDAudioDecodePacketHandler();
+  bool Init(void* pData, unsigned int size);
+  unsigned int AddPacket(void* pData, unsigned int size);
+  bool GetFrame(DVDAudioFrame& frame);
+  void Close();
+  void Reset();
+  unsigned int GetCacheSize();
+protected:
+  CDVDAudioCodec* m_pDecoder;
+};
+
+// Parses incoming packets, but does not modify them
+class CDVDAudioPassthroughParser : public CDVDAudioPacketHandler
+{
+public:
+  CDVDAudioPassthroughParser(CDVDStreamInfo& hints);
+  ~CDVDAudioPassthroughParser();
+  bool Init(void* pData, unsigned int size);
+  unsigned int AddPacket(void* pData, unsigned int size);
+  bool GetFrame(DVDAudioFrame& frame);
+  void Close();
+protected:
+  void* m_pCurrentFrame;
+  unsigned int m_CurrentFrameSize;
+};
+
+/////////////////////////////////
+
+class CDVDAudioPostProc
+{
+public:
+  CDVDAudioPostProc(DVDAudioFormat inFormat, DVDAudioFormat outFormat);
+  virtual bool Init() {return false;}
+  virtual bool AddFrame(DVDAudioFrame& frame) {return false;}
+  virtual bool GetFrame(DVDAudioFrame& frame) {return false;}
+  virtual void Close() {}
+  virtual void Reset() {}
+protected:
+  DVDAudioFormat m_InputFormat;
+  DVDAudioFormat m_OutputFormat;
+};
+
+///////////////////////////////
+
+class CDVDAudioPacketizerSPDIF : public CDVDAudioPostProc
+{
+public:
+  CDVDAudioPacketizerSPDIF(DVDAudioFormat inFormat, DVDAudioFormat outFormat);
+  ~CDVDAudioPacketizerSPDIF();
+  bool Init();
+  bool AddFrame(DVDAudioFrame& frame);
+  bool GetFrame(DVDAudioFrame& frame);
+  void Close();
+protected:
+};
+
+/////////////////////////
+
 class CDVDPlayerAudio : public CThread
 {
 public:
@@ -114,7 +187,7 @@ public:
   int GetAudioBitrate();
 
   // holds stream information for current playing stream
-  CDVDStreamInfo m_streaminfo;
+  CDVDStreamInfo m_nextstream;
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
@@ -133,8 +206,9 @@ protected:
 
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
-  // tries to open a decoder for the given data.
-  bool OpenDecoder(CDVDStreamInfo &hint, BYTE* buffer = NULL, unsigned int size = 0);
+  bool OpenAudioPath(CDVDStreamInfo &hint, BYTE* pData = NULL, unsigned int size = 0);
+  void CloseAudioPath();
+  void ResetAudioPath();
 
   double m_audioClock;
 
@@ -168,9 +242,16 @@ protected:
 
   CDVDAudio m_dvdAudio; // audio output device
   CDVDClock* m_pClock; // dvd master clock
-  CDVDAudioCodec* m_pAudioCodec; // audio codec
   BitstreamStats m_audioStats;
 
+  // TODO: Use structure for this?
+  CDVDAudioPacketHandler* m_pInputHandler;
+  CDVDAudioPostProc* m_pPostProc;
+  CPCMSampleConverter* m_pConverter;
+
+  DVDAudioFormat m_InputFormat;
+  DVDAudioFormat m_OutputFormat;
+  
   int     m_speed;
   double  m_droptime;
   bool    m_stalled;
@@ -179,7 +260,8 @@ protected:
 
   CDVDPlayerResampler m_resampler;
 
-  bool OutputPacket(DVDAudioFrame &audioframe);
+  // TODO: Find a better way to handle duplicated frames
+  bool OutputFrame(DVDAudioFrame &audioframe, int dupCount = 0);
 
   //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
   int    m_synctype;

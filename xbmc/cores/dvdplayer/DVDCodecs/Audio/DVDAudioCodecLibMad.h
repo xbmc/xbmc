@@ -35,12 +35,11 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
-  virtual int GetData(BYTE** dst);
+  virtual int GetData(float** dst);
   virtual void Reset();
   virtual enum PCMChannels* GetChannelMap();
   virtual int GetChannels()        { return m_iSourceChannels; }
   virtual int GetSampleRate()      { return m_iSourceSampleRate; }
-  virtual int GetBitsPerSample()   { return 16; }
   virtual const char* GetName()    { return "libmad"; }
   virtual int GetBufferSize()      { return m_iInputBufferSize; }
 
@@ -56,7 +55,7 @@ private:
   struct mad_stream m_stream;
   struct mad_frame m_frame;
 
-  BYTE m_decodedData[MAD_DECODED_SIZE];
+  float m_decodedData[MAD_DECODED_SIZE];
   int  m_iDecodedDataSize;
 
   BYTE m_inputBuffer[MAD_INPUT_SIZE];

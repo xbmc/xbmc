@@ -68,25 +68,31 @@ static int ulaw2linear(unsigned char	u_val)
 	return ((u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS));
 }
 
+const float conversion_scale_signed[] = {0.0f,128.0f,32768.0f,8388608.0,2147483648.0f};
+const float conversion_scale_unsigned[] = {0.0f,255.0f,65535.0f,16777215.0f,4294967295.0f};
+
 /**
- * \brief convert samples to 16 bit
- * \param bps byte per sample for the source format, must be >= 2
+ * \brief convert samples to float
+ * \param bps byte per sample for the source format
  * \param le 0 for big-, 1 for little-endian
  * \param us 0 for signed, 1 for unsigned input
  * \param src input samples
  * \param samples output samples
  * \param src_len number of bytes in src
- */
-static inline void decode_to16(int bps, int le, int us, BYTE **src, short **samples, int src_len)
+ */static inline void decode_tofloat(int bps, int le, int us, BYTE **src, float **samples, int src_len)
 {
-    register int n = src_len / bps;
-    if (le) *src += bps - 2;
-    for(;n>0;n--) {
-        *(*samples)++ = ((*src)[le] << 8 | (*src)[1 - le]) - (us?0x8000:0);
-        *src += bps;
-    }
-    if (le) *src -= bps - 2;
+  register int n = src_len / bps; // input sample count
+  if (le) 
+    *src += bps - 2;
+  for(;n>0;n--) 
+  {
+    *(*samples)++ = (((*src)[le] << 8 | (*src)[1 - le]) - (us?0x8000:0))/(us?conversion_scale_unsigned[bps]:conversion_scale_signed[bps]);
+    *src += bps;
+  }
+  if (le) 
+    *src -= bps - 2;
 }
+
 
 const BYTE ff_reverse[256] =
     {
@@ -163,10 +169,10 @@ void CDVDAudioCodecPcm::Dispose()
 int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
 {
     int n;
-    short *samples;
+    float *samples;
     BYTE *src;
 
-    samples = (short*)m_decodedData;
+    samples = m_decodedData;
     src = pData;
     int buf_size = iSize;
 
@@ -176,79 +182,63 @@ int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
     switch (m_codecID)
     {
     case CODEC_ID_PCM_S32LE:
-        decode_to16(4, 1, 0, &src, &samples, buf_size);
+        decode_tofloat(4, 1, 0, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_S32BE:
-        decode_to16(4, 0, 0, &src, &samples, buf_size);
+        decode_tofloat(4, 0, 0, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_U32LE:
-        decode_to16(4, 1, 1, &src, &samples, buf_size);
+        decode_tofloat(4, 1, 1, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_U32BE:
-        decode_to16(4, 0, 1, &src, &samples, buf_size);
+        decode_tofloat(4, 0, 1, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_S24LE:
-        decode_to16(3, 1, 0, &src, &samples, buf_size);
+        decode_tofloat(3, 1, 0, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_S24BE:
-        decode_to16(3, 0, 0, &src, &samples, buf_size);
+        decode_tofloat(3, 0, 0, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_U24LE:
-        decode_to16(3, 1, 1, &src, &samples, buf_size);
+        decode_tofloat(3, 1, 1, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_U24BE:
-        decode_to16(3, 0, 1, &src, &samples, buf_size);
-        break;
-    case CODEC_ID_PCM_S24DAUD:
-        n = buf_size / 3;
-        for(;n>0;n--) {
-          uint32_t v = src[0] << 16 | src[1] << 8 | src[2];
-          v >>= 4; // sync flags are here
-          *samples++ = ff_reverse[(v >> 8) & 0xff] +
-                       (ff_reverse[v & 0xff] << 8);
-          src += 3;
-        }
+        decode_tofloat(3, 0, 1, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_S16LE:
-        n = buf_size >> 1;
-        for(;n>0;n--) {
-            *samples++ = src[0] | (src[1] << 8);
-            src += 2;
-        }
+        decode_tofloat(2, 1, 0, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_S16BE:
-        n = buf_size >> 1;
-        for(;n>0;n--) {
-            *samples++ = (src[0] << 8) | src[1];
-            src += 2;
-        }
+        decode_tofloat(2, 0, 0, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_U16LE:
-        n = buf_size >> 1;
-        for(;n>0;n--) {
-            *samples++ = (src[0] | (src[1] << 8)) - 0x8000;
-            src += 2;
-        }
+        decode_tofloat(2, 1, 1, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_U16BE:
-        n = buf_size >> 1;
-        for(;n>0;n--) {
-            *samples++ = ((src[0] << 8) | src[1]) - 0x8000;
-            src += 2;
-        }
+        decode_tofloat(2, 0, 1, &src, &samples, buf_size);
         break;
     case CODEC_ID_PCM_S8:
         n = buf_size;
         for(;n>0;n--) {
-            *samples++ = src[0] << 8;
+            *samples++ = (float)src[0]/128.0f;
             src++;
         }
         break;
     case CODEC_ID_PCM_U8:
         n = buf_size;
         for(;n>0;n--) {
-            *samples++ = ((int)src[0] - 128) << 8;
+            *samples++ = ((float)src[0] - 128.0f)/128.0f;
             src++;
+        }
+        break;
+      case CODEC_ID_PCM_S24DAUD:
+        n = buf_size / 3;
+        for(;n>0;n--) {
+          uint32_t v = src[0] << 16 | src[1] << 8 | src[2];
+          v >>= 4; // sync flags are here
+          *samples++ = ff_reverse[(v >> 8) & 0xff] +
+          (ff_reverse[v & 0xff] << 8);
+          src += 3;
         }
         break;
     case CODEC_ID_PCM_ALAW:
@@ -263,13 +253,13 @@ int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
         return -1;
     }
 
-    m_decodedDataSize = (BYTE*)samples - (BYTE*)m_decodedData;
+    m_decodedDataSize = samples - m_decodedData;
     return iSize;
 }
 
-int CDVDAudioCodecPcm::GetData(BYTE** dst)
+int CDVDAudioCodecPcm::GetData(float** dst)
 {
-  *dst = (BYTE*)m_decodedData;
+  *dst = m_decodedData;
   return m_decodedDataSize;
 }
 
@@ -313,9 +303,4 @@ enum PCMChannels* CDVDAudioCodecPcm::GetChannelMap()
 int CDVDAudioCodecPcm::GetSampleRate()
 {
   return m_iSourceSampleRate;
-}
-
-int CDVDAudioCodecPcm::GetBitsPerSample()
-{
-  return 16;
 }

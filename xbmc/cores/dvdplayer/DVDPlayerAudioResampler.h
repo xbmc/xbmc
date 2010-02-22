@@ -41,6 +41,8 @@ class CDVDPlayerResampler
 
     void Add(DVDAudioFrame &audioframe, double pts);       //add audioframes and resample
     bool Retrieve(DVDAudioFrame &audioframe, double &pts); //get audioframes fromt the samplebuffer
+    void AddFloat(DVDAudioFrame &audioframe, double pts);       //add audioframes and resample
+    bool RetrieveFloat(DVDAudioFrame &audioframe, double &pts); //get audioframes fromt the samplebuffer
     void SetRatio(double ratio);                           //ratio higher than 1.0 means more output samples than input
     void Flush();                                          //clear samplebuffer
     void SetQuality(int quality);

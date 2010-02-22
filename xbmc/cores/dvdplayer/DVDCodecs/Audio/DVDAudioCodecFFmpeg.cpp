@@ -30,11 +30,11 @@
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {
   m_iBufferSize1 = 0;
-  m_pBuffer1     = (BYTE*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 16);
+  m_pBuffer1     = (float*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 16);
   memset(m_pBuffer1, 0, AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
 
   m_iBufferSize2 = 0;
-  m_pBuffer2     = (BYTE*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 16);
+  m_pBuffer2     = (float*)_aligned_malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE, 16);
   memset(m_pBuffer2, 0, AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
 
   m_iBuffered = 0;
@@ -77,11 +77,11 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->channels = hints.channels;
   m_pCodecContext->sample_rate = hints.samplerate;
   m_pCodecContext->block_align = hints.blockalign;
-  m_pCodecContext->bit_rate = hints.bitrate;
+  
+  // TODO: Who should be setting this? It indicated the size of the data, not necessarily the valid bits
   m_pCodecContext->bits_per_coded_sample = hints.bitspersample;
-
   if(m_pCodecContext->bits_per_coded_sample == 0)
-    m_pCodecContext->bits_per_coded_sample = 16;
+    m_pCodecContext->bits_per_coded_sample = 16; // TODO: Set this properly
 
 /* for now, only set the requested layout for non-apple architecture */
 #ifdef __APPLE__
@@ -114,7 +114,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_iMapChannels = -1;
   m_bOpenedCodec = true;
-  m_iSampleFormat = SAMPLE_FMT_NONE;
+  
   return true;
 }
 
@@ -171,36 +171,29 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
   else
     m_iBuffered = 0;
 
-  if(m_pCodecContext->sample_fmt != SAMPLE_FMT_S16 && m_iBufferSize1 > 0)
+  // If sample format providd by ffmpeg does not match our desired format, convert it
+  if(m_pCodecContext->sample_fmt != SAMPLE_FMT_FLT && m_iBufferSize1 > 0)
   {
-    if(m_pConvert && m_pCodecContext->sample_fmt != m_iSampleFormat)
-    {
-      m_dllAvCodec.av_audio_convert_free(m_pConvert);
-      m_pConvert = NULL;
-    }
+    // Create a new converter, if necessary
+    if(!m_pConvert)
+      m_pConvert = m_dllAvCodec.av_audio_convert_alloc(SAMPLE_FMT_FLT, 1, m_pCodecContext->sample_fmt, 1, NULL, 0);
 
     if(!m_pConvert)
     {
-      m_iSampleFormat = m_pCodecContext->sample_fmt;
-      m_pConvert = m_dllAvCodec.av_audio_convert_alloc(SAMPLE_FMT_S16, 1, m_pCodecContext->sample_fmt, 1, NULL, 0);
-    }
-
-    if(!m_pConvert)
-    {
-      CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to convert %d to SAMPLE_FMT_S16", m_pCodecContext->sample_fmt);
+      CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to create converter for %d to SAMPLE_FMT_FLT", m_pCodecContext->sample_fmt);
       m_iBufferSize1 = 0;
       m_iBufferSize2 = 0;
       return iBytesUsed;
     }
 
-    const void *ibuf[6] = { m_pBuffer1 };
-    void       *obuf[6] = { m_pBuffer2 };
-    int         istr[6] = { m_dllAvCodec.av_get_bits_per_sample_format(m_pCodecContext->sample_fmt)/8 };
-    int         ostr[6] = { 2 };
-    int         len     = m_iBufferSize1 / istr[0];
+    const void *ibuf[MAX_DECODE_CHANS] = { m_pBuffer1 };
+    void       *obuf[MAX_DECODE_CHANS] = { m_pBuffer2 };
+    int         istr[MAX_DECODE_CHANS] = { m_dllAvCodec.av_get_bits_per_sample_format(m_pCodecContext->sample_fmt)/8 }; // Bytes per sample, in
+    int         ostr[MAX_DECODE_CHANS] = { sizeof(float) }; // Bytes per sample, out
+    int         len     = m_iBufferSize1 / istr[0]; // Number of samples
     if(m_dllAvCodec.av_audio_convert(m_pConvert, obuf, ostr, ibuf, istr, len) < 0)
     {
-      CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to convert %d to SAMPLE_FMT_S16", (int)m_pCodecContext->sample_fmt);
+      CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::Decode - Unable to convert %d to SAMPLE_FMT_FLT", (int)m_pCodecContext->sample_fmt);
       m_iBufferSize1 = 0;
       m_iBufferSize2 = 0;
       return iBytesUsed;
@@ -213,18 +206,19 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
   return iBytesUsed;
 }
 
-int CDVDAudioCodecFFmpeg::GetData(BYTE** dst)
+int CDVDAudioCodecFFmpeg::GetData(float** dst)
 {
   if(m_iBufferSize1)
   {
     *dst = m_pBuffer1;
     return m_iBufferSize1;
   }
-  if(m_iBufferSize2)
+  else if(m_iBufferSize2)
   {
     *dst = m_pBuffer2;
     return m_iBufferSize2;
   }
+  
   return 0;
 }
 
@@ -246,11 +240,6 @@ int CDVDAudioCodecFFmpeg::GetSampleRate()
 {
   if (m_pCodecContext) return m_pCodecContext->sample_rate;
   return 0;
-}
-
-int CDVDAudioCodecFFmpeg::GetBitsPerSample()
-{
-  return 16;
 }
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
@@ -278,7 +267,7 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   /* if there is less channels in the map then advertised, we need to fix it */
   if (index < m_pCodecContext->channels)
   {
-    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg did not repot the channel layout properly, trying to guess");
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg did not report the channel layout properly, trying to guess");
 
     index = 0;
     switch(m_pCodecContext->codec_id)

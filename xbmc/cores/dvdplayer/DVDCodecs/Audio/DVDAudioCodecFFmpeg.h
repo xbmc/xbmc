@@ -25,6 +25,8 @@
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
 
+#define MAX_DECODE_CHANS 8
+
 class CDVDAudioCodecFFmpeg : public CDVDAudioCodec
 {
 public:
@@ -33,26 +35,25 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
-  virtual int GetData(BYTE** dst);
+  virtual int GetData(float** dst);
   virtual void Reset();
   virtual int GetChannels();
   virtual enum PCMChannels *GetChannelMap();
   virtual int GetSampleRate();
-  virtual int GetBitsPerSample();
   virtual const char* GetName() { return "FFmpeg"; }
   virtual int GetBufferSize() { return m_iBuffered; }
 
 protected:
   AVCodecContext* m_pCodecContext;
   AVAudioConvert* m_pConvert;;
-  enum SampleFormat m_iSampleFormat;
+  //enum SampleFormat m_iSampleFormat;
   enum PCMChannels m_channelMap[PCM_MAX_CH + 1];
   int  m_iMapChannels;
 
-  BYTE *m_pBuffer1;
+  float *m_pBuffer1;
   int   m_iBufferSize1;
 
-  BYTE *m_pBuffer2;
+  float *m_pBuffer2;
   int   m_iBufferSize2;
 
   bool m_bOpenedCodec;

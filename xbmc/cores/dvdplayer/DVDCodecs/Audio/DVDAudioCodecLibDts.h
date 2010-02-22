@@ -35,13 +35,12 @@ public:
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize);
-  virtual int GetData(BYTE** dst);
+  virtual int GetData(float** dst);
   virtual void Reset();
   virtual int GetChannels()        { return m_iOutputChannels; }
   virtual enum PCMChannels *GetChannelMap() { return m_pChannelMap; }
   virtual int GetSampleRate()      { return m_iSourceSampleRate; }
   virtual int GetBufferSize()      { return m_inputSize; }
-  virtual int GetBitsPerSample()   { return 16; }
   virtual const char* GetName()    { return "libdts"; }
 
 protected:
@@ -68,7 +67,7 @@ protected:
 
   DllLibDts m_dll;
 
-  BYTE m_decodedData[131072]; // could be a bit to big
+  float m_decodedData[131072]; // could be a bit too big
   int  m_decodedSize;
 
   BYTE m_inputBuffer[4096];

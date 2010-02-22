@@ -148,8 +148,8 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     int nSize = 256;
     ReadPCM(dummy, nSize, &nSize);
 
-    // We always ask ffmpeg to return s16le
-    m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
+    // TODO: Enable high-resolution output
+    m_BitsPerSample = 16;
     m_SampleRate = m_pAudioCodec->GetSampleRate();
     m_Channels = m_pAudioCodec->GetChannels();
 
@@ -260,7 +260,8 @@ int DVDPlayerCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   m_audioPos += decodeLen;
 
-  m_nDecodedLen = m_pAudioCodec->GetData(&m_decoded);
+  // TODO: Fix this...it will crash
+  //m_nDecodedLen = m_pAudioCodec->GetData(&m_decoded);
 
   *actualsize = (m_nDecodedLen <= size) ? m_nDecodedLen : size;
   if (*actualsize > 0)

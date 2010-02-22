@@ -43,10 +43,6 @@
 #include "Audio/DVDAudioCodecLibFaad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
-#if defined(USE_LIB52_DECODER) || defined(USE_LIBDTS_DECODER)
-  #include "Audio/DVDAudioCodecPassthrough.h"
-#endif
-#include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
@@ -177,21 +173,10 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool passthrough /* = true */)
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint)
 {
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
-
-  if (passthrough)
-  {
-#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
-    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
-    if( pCodec ) return pCodec;
-#endif
-
-    pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
-    if ( pCodec ) return pCodec;
-  }
 
   switch (hint.codec)
   {
@@ -247,16 +232,6 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
       if( pCodec ) return pCodec;
       break;
     }
-#if 0
-  //case CODEC_ID_LPCM_S16BE:
-  //case CODEC_ID_LPCM_S20BE:
-  case CODEC_ID_LPCM_S24BE:
-    {
-      pCodec = OpenCodec( new CDVDAudioCodecLPcm(), hint, options );
-      if( pCodec ) return pCodec;
-      break;
-    }
-#endif
   default:
     {
       pCodec = NULL;

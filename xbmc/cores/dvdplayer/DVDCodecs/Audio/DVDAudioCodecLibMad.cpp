@@ -22,21 +22,6 @@
 #include "DVDAudioCodecLibMad.h"
 #include "DVDStreamInfo.h"
 
-static inline signed int scale(mad_fixed_t sample)
-{
-  /* round */
-  sample += (1L << (MAD_F_FRACBITS - 16));
-
-  /* clip */
-  if (sample >= MAD_F_ONE)
-    sample = MAD_F_ONE - 1;
-  else if (sample < -MAD_F_ONE)
-    sample = -MAD_F_ONE;
-
-  /* quantize */
-  return sample >> (MAD_F_FRACBITS + 1 - 16);
-}
-
 CDVDAudioCodecLibMad::CDVDAudioCodecLibMad() : CDVDAudioCodec()
 {
   m_bInitialized = false;
@@ -102,8 +87,6 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
   // copy data into our buffer for decoding
   memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesUsed);
   m_iInputBufferSize += iBytesUsed;
-
-
 
   if (m_bInitialized)
   {
@@ -178,26 +161,26 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
           unsigned int nchannels, nsamples;
 	        mad_fixed_t const* left_ch, *right_ch;
 	        struct mad_pcm* pcm = &m_synth.pcm;
-	        unsigned __int16* output = (unsigned __int16*)(m_decodedData + m_iDecodedDataSize);
+	        float* output = m_decodedData + m_iDecodedDataSize;
 
           nchannels = pcm->channels;
           nsamples  = pcm->length;
 	        left_ch   = pcm->samples[0];
 	        right_ch  = pcm->samples[1];
 
-          int iSize = nsamples * 2;
-          if (nchannels == 2) iSize += nsamples * 2;
+          int iSize = nsamples * sizeof(float);
+          if (nchannels == 2) iSize += nsamples * sizeof(float);
 
           if (iSize < (MAD_DECODED_SIZE - m_iDecodedDataSize))
           {
 	          while (nsamples--)
 	          {
-	            // output sample(s) in 16-bit signed little-endian PCM
-	            *output++ = scale(*left_ch++);
+	            // output sample(s) in float format
+	            *output++ = (float)mad_f_todouble(*left_ch++);
         	
 	            if (nchannels == 2)
 	            {
-	              *output++ = scale(*right_ch++);
+	              *output++ = (float)mad_f_todouble(*right_ch++);
 	            }
 	          }
 	
@@ -216,7 +199,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
   return 0;
 }
 
-int CDVDAudioCodecLibMad::GetData(BYTE** dst)
+int CDVDAudioCodecLibMad::GetData(float** dst)
 {
   *dst = m_decodedData;
   return m_iDecodedDataSize;

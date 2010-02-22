@@ -78,8 +78,10 @@ public:
    * returns nr of bytes used or -1 on error
    * the data is valid until the next Decode call
    */
-  virtual int GetData(BYTE** dst) = 0;
-
+  // TODO: Deprecate
+  //virtual int GetData(BYTE** dst) = 0;
+  virtual int GetData(float** dst) = 0;  
+  
   /*
    * resets the decoder
    */
@@ -103,20 +105,22 @@ public:
   /*
    * returns the bitspersample for the decoded audio stream (eg 16 bits)
    */
-  virtual int GetBitsPerSample() = 0;
+  //TODO: remove - deprecated
+  //virtual int GetBitsPerSample() = 0;
 
   /*
    * returns if the codec requests to use passtrough
    */
-  virtual bool NeedPassthrough() { return false; }
+  // TODO: Remove - 'decodes' are by their nature not passthrough
+  //virtual bool NeedPassthrough() { return false; }
 
   /*
-   * should return codecs name
+   * returns codecs name
    */
   virtual const char* GetName() = 0;
 
   /*
-   * should return amount of data decoded has buffered in preparation for next audio frame
+   * returns amount of data decoded has buffered in preparation for next audio frame
    */
   virtual int GetBufferSize() { return 0; }
 };

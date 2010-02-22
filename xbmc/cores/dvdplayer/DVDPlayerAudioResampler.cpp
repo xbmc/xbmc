@@ -47,11 +47,9 @@ CDVDPlayerResampler::~CDVDPlayerResampler()
 void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
 {
   //check if nr of channels changed so we can allocate new buffers if necessary
-  CheckResampleBuffers(audioframe.channels);
+  CheckResampleBuffers(audioframe.format.pcm.channels);
 
-  //value to divide samples by to get them into -1.0:1.0 range
-  float scale = (float)(1 << (audioframe.bits_per_sample - 1));
-  int   nrframes = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
+  int   nrframes = audioframe.size / audioframe.format.pcm.channels / sizeof(float);
 
   //resize sample buffer if necessary
   //we want the buffer to be large enough to hold the current frames in it,
@@ -67,12 +65,7 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   //intput buffer is a block of data at the end of the buffer
   m_converterdata.data_in = m_converterdata.data_out + m_converterdata.output_frames * m_nrchannels;
 
-  //add samples to the resample input buffer
-  int16_t* inputptr  = (int16_t*)audioframe.data;
-  float*   outputptr = m_converterdata.data_in;
-
-  for (int i = 0; i < nrframes * m_nrchannels; i++)
-    *outputptr++ = (float)*inputptr++ / scale;
+  memcpy(m_converterdata.data_in, audioframe.data, nrframes * m_nrchannels * sizeof(float));
 
   //resample
   m_converterdata.src_ratio = m_ratio;
@@ -90,11 +83,9 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
 bool CDVDPlayerResampler::Retrieve(DVDAudioFrame &audioframe, double &pts)
 {
   //check if nr of channels changed so we can allocate new buffers if necessary
-  CheckResampleBuffers(audioframe.channels);
+  CheckResampleBuffers(audioframe.format.pcm.channels);
 
-  //value to divide samples by to get them into -1.0:1.0 range
-  float scale = (float)(1 << (audioframe.bits_per_sample - 1));
-  int   nrframes = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
+  int   nrframes = audioframe.size / audioframe.format.pcm.channels / sizeof(float);
 
   //if we don't have enough in the samplebuffer, return false
   if (nrframes > m_bufferfill)
@@ -106,12 +97,67 @@ bool CDVDPlayerResampler::Retrieve(DVDAudioFrame &audioframe, double &pts)
   pts = m_ptsbuffer[0];
 
   //add from samplebuffer to audioframe
-  float*   inputptr  = m_buffer;
-  int16_t* outputptr = (int16_t*)audioframe.data;
+  memcpy(audioframe.data, m_buffer, nrframes * m_nrchannels * sizeof(float));
 
-  for (int i = 0; i < nrframes * m_nrchannels; i++)
-    *outputptr++ = MathUtils::round_int(Clamp(*inputptr++ * scale, scale * -1.0f, scale - 1.0f));
+  m_bufferfill -= nrframes;
 
+  //shift old data to the beginning of the buffer
+  memmove(m_buffer, m_buffer + (nrframes * m_nrchannels), m_bufferfill * m_nrchannels * sizeof(float));
+  memmove(m_ptsbuffer, m_ptsbuffer + nrframes, m_bufferfill * sizeof(double));
+
+  return true;
+}
+
+void CDVDPlayerResampler::AddFloat(DVDAudioFrame &audioframe, double pts)
+{
+  //check if nr of channels changed so we can allocate new buffers if necessary
+  CheckResampleBuffers(audioframe.format.pcm.channels);
+
+  int nrframes = audioframe.size / audioframe.format.pcm.channels / sizeof(float);
+
+  //resize sample buffer if necessary
+  //we want the buffer to be large enough to hold the current frames in it,
+  //and the maximum number of frames libsamplerate might generate, times 2 for safety
+  ResizeSampleBuffer(m_bufferfill + nrframes * MathUtils::round_int(m_ratio + 0.5) * 2);
+
+  //assign samplebuffers
+  m_converterdata.input_frames = nrframes;
+  m_converterdata.output_frames = m_buffersize - m_bufferfill;
+  //output buffer starts at the place where the buffer doesn't hold samples
+  m_converterdata.data_out = m_buffer + m_bufferfill * m_nrchannels;
+  //intput buffer is the audioframe 
+  m_converterdata.data_in = (float*)audioframe.data;
+
+  //resample
+  m_converterdata.src_ratio = m_ratio;
+  src_set_ratio(m_converter, m_ratio);
+  src_process(m_converter, &m_converterdata);
+
+  //calculate a pts for each sample
+  for (int i = 0; i < m_converterdata.output_frames_gen; i++)
+  {
+    m_ptsbuffer[m_bufferfill] = pts + i * (audioframe.duration / (double)m_converterdata.output_frames_gen);
+    m_bufferfill++;
+  }
+}
+
+bool CDVDPlayerResampler::RetrieveFloat(DVDAudioFrame &audioframe, double &pts)
+{
+  //check if nr of channels changed so we can allocate new buffers if necessary
+  CheckResampleBuffers(audioframe.format.pcm.channels);
+
+  int nrframes = audioframe.size / audioframe.format.pcm.channels / sizeof(float);
+
+  //if we don't have enough in the samplebuffer, return false
+  if (nrframes > m_bufferfill)
+    return false;
+
+  //use the pts of the first fresh value in the samplebuffer
+  pts = m_ptsbuffer[0];
+  //copy audio data into audioframe
+  memcpy(audioframe.data, m_buffer, nrframes * m_nrchannels * sizeof(float));
+
+  //subtract frames we copied
   m_bufferfill -= nrframes;
 
   //shift old data to the beginning of the buffer
