@@ -17,7 +17,8 @@ SRCS = \
 	WinSystemOSX.mm \
 	WinSystemOSXGL.mm \
 	SemaphoreDarwin.cpp \
-	posix-realtime-stub.c
+	posix-realtime-stub.c \
+	strverscmp.cpp
 	
 LIB=osx.a
 

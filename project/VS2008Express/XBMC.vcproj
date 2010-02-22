@@ -46,7 +46,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -143,7 +143,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -239,7 +239,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -336,7 +336,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -464,10 +464,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\PlatformInclude.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\win32\stdbool.h"
 				>
 			</File>
 			<File
@@ -1214,10 +1210,6 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxHTSP.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPacket.h"
 						>
 					</File>
 					<File
@@ -2121,14 +2113,6 @@
 					RelativePath="..\..\xbmc\visualizations\Visualisation.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="VideoRenderers"
@@ -2251,14 +2235,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.h"
 					>
 				</File>
 				<File
@@ -3558,6 +3534,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\TVDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\VideoDatabase.cpp"
 					>
 				</File>
@@ -3746,6 +3730,94 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogSeekBar.cpp"
 					>
 				</File>
@@ -3810,10 +3882,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogVisualisationSettings.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIDialogVolumeBar.cpp"
 					>
 				</File>
@@ -3863,22 +3931,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStateTV.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStateTV.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.cpp"
-				>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.h"
 					>
 				</File>
 				<File
@@ -5383,166 +5435,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="PVR"
-				>
-				<File
-					RelativePath="..\..\xbmc\pvrclients\DllPVRClient.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowTV.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowTV.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVRChannels.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVRChannels.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\pvrclients\PVRClient.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\pvrclients\PVRClient.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVREpg.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVREpg.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PVRManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PVRManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVRRecordings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVRRecordings.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVRTimers.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PVRTimers.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\TVDatabase.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\TVDatabase.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Windowing"
 				>
 				<Filter
@@ -5699,76 +5591,76 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="AddonFramework"
+				Name="PVR"
 				>
 				<File
-					RelativePath="..\..\xbmc\utils\Addon.cpp"
+					RelativePath="..\..\xbmc\pvrclients\DllPVRClient.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\Addon.h"
+					RelativePath="..\..\xbmc\GUIViewStateTV.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AddonDll.h"
+					RelativePath="..\..\xbmc\GUIViewStateTV.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AddonHelpers.cpp"
+					RelativePath="..\..\xbmc\GUIWindowTV.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AddonHelpers.h"
+					RelativePath="..\..\xbmc\GUIWindowTV.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
+					RelativePath="..\..\xbmc\utils\PVRChannels.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.h"
+					RelativePath="..\..\xbmc\utils\PVRChannels.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\DllAddon.h"
+					RelativePath="..\..\xbmc\pvrclients\PVRClient.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
+					RelativePath="..\..\xbmc\pvrclients\PVRClient.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
+					RelativePath="..\..\xbmc\utils\PVREpg.cpp"
 					>
 				</File>
-				<Filter
-					Name="Addons"
+				<File
+					RelativePath="..\..\xbmc\utils\PVREpg.h"
 					>
-					<File
-						RelativePath="..\..\xbmc\addons\include\xbmc_addon_dll.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\addons\include\xbmc_addon_lib++.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\addons\include\xbmc_addon_types.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\addons\include\xbmc_pvr_dll.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\addons\include\xbmc_pvr_lib++.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\addons\include\xbmc_pvr_types.h"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRRecordings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRRecordings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRTimers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRTimers.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -7194,6 +7086,94 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Addon"
+			>
+			<File
+				RelativePath="..\..\xbmc\utils\Addon.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\Addon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\AddonDll.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_Addon.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_Addon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_GUI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_GUI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_local.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_local.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_PVR.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_PVR.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_Vis.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\addons\AddonHelpers_Vis.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\AddonManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\AddonManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\DllAddon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIWindowAddonBrowser.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIWindowAddonBrowser.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\IAddon.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

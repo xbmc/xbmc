@@ -41,16 +41,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmms", "..\..\xbmc\lib\li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glib", "..\..\xbmc\lib\libmms\glib-2.20.4\build\win32\vs9\glib.vcproj", "{12BCA020-EABF-429E-876A-A476BC9C10C0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "addonlib++", "..\..\xbmc\addons\lib\addonlib++\project\VS2008Express\addonlib++.vcproj", "{D450FE9A-CE56-4496-B4AB-379094E642F2}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrlib++", "..\..\xbmc\addons\lib\pvrlib++\project\VS2008Express\pvrlib++.vcproj", "{5D7D9876-7553-4136-9C43-42DB5725361C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvclient_vdr", "..\..\xbmc\pvrclients\vdr-streamdev\project\VS2008Express\XBMC_VDR.vcproj", "{838CDE27-AFDF-449F-9981-A78903C9C71E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5D7D9876-7553-4136-9C43-42DB5725361C} = {5D7D9876-7553-4136-9C43-42DB5725361C}
-		{D450FE9A-CE56-4496-B4AB-379094E642F2} = {D450FE9A-CE56-4496-B4AB-379094E642F2}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "..\..\lib\freetype\builds\win32\vc2008\freetype.vcproj", "{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libass_dll", "..\..\xbmc\lib\libass\libass_win32\libass_win32_vs2008.vcproj", "{BA5B08FC-2ECB-4571-9F25-F8054522FC65}"
@@ -117,12 +107,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcdio", "..\..\lib\libcdio\libcdio.vcproj", "{E465056A-C6F3-45EE-B791-CAF8E0CE629D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visDirectxSpectrum", "..\..\xbmc\visualizations\DirectXSpectrum\directx_spectrum.vcproj", "{0D91724A-E6F6-4708-AF47-9F88BBE2114C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_mptv", "..\..\xbmc\pvrclients\MediaPortal\project\VS2008Express\XBMC_MPTV.vcproj", "{74C9642E-1988-48DC-8404-11717C355378}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5D7D9876-7553-4136-9C43-42DB5725361C} = {5D7D9876-7553-4136-9C43-42DB5725361C}
-		{D450FE9A-CE56-4496-B4AB-379094E642F2} = {D450FE9A-CE56-4496-B4AB-379094E642F2}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodplug_2008", "..\..\lib\libmodplug\libmodplug_2008.vcproj", "{C15B374E-7126-48FF-B618-A375D7B17FCF}"
 EndProject
@@ -194,30 +178,6 @@ Global
 		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{12BCA020-EABF-429E-876A-A476BC9C10C0}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{D450FE9A-CE56-4496-B4AB-379094E642F2}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{5D7D9876-7553-4136-9C43-42DB5725361C}.Release (OpenGL)|Win32.Build.0 = Release|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{838CDE27-AFDF-449F-9981-A78903C9C71E}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug (DirectX)|Win32.ActiveCfg = Debug Multithreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug (DirectX)|Win32.Build.0 = Debug Multithreaded|Win32
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}.Debug (OpenGL)|Win32.ActiveCfg = Debug Multithreaded|Win32
@@ -422,14 +382,6 @@ Global
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (DirectX)|Win32.ActiveCfg = Release (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (DirectX)|Win32.Build.0 = Release (DirectX)|Win32
 		{0D91724A-E6F6-4708-AF47-9F88BBE2114C}.Release (OpenGL)|Win32.ActiveCfg = Release (DirectX)|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Release (DirectX)|Win32.Build.0 = Release|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
-		{74C9642E-1988-48DC-8404-11717C355378}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
 		{C15B374E-7126-48FF-B618-A375D7B17FCF}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
