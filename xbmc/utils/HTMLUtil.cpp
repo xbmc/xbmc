@@ -100,7 +100,7 @@ void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdSt
   }
 }
 
-void CHTMLUtil::RemoveTags(CStdString& strHTML)
+void CHTMLUtil::ConvertAndRemoveTags(CStdString& strHTML)
 {
   int iNested = 0;
   CStdString strReturn = "";
@@ -117,14 +117,9 @@ void CHTMLUtil::RemoveTags(CStdString& strHTML)
     }
   }
 
-  strReturn.Replace("&mdash;", "--");
-  strReturn.Replace("&#160;", " ");
-  strReturn.Replace("&ndash;", "-");
-  strReturn.Replace("&oacute;", "ó");
-  strReturn.Replace("&nbsp;", "");
-  strReturn.Replace("&rsquo;", "'");
-
-  strHTML = strReturn;
+  CStdString strText;
+  ConvertHTMLToAnsi(strReturn, strText);
+  strHTML = strText;
 }
 
 void CHTMLUtil::ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped)
@@ -193,6 +188,7 @@ void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped
         else if (strcmp(szKey, "gt") == 0) szAnsi[iAnsiPos++] = (char)0x3E;
         else if (strcmp(szKey, "trade") == 0) szAnsi[iAnsiPos++] = (char)0x99;
         else if (strcmp(szKey, "nbsp") == 0) szAnsi[iAnsiPos++] = ' ';
+        else if (strcmp(szKey, "#160") == 0) szAnsi[iAnsiPos++] = ' ';
         else if (strcmp(szKey, "iexcl") == 0) szAnsi[iAnsiPos++] = (char)0xA1;
         else if (strcmp(szKey, "cent") == 0) szAnsi[iAnsiPos++] = (char)0xA2;
         else if (strcmp(szKey, "pound") == 0) szAnsi[iAnsiPos++] = (char)0xA3;
@@ -288,6 +284,9 @@ void CHTMLUtil::ConvertHTMLToAnsi(const CStdString& strHTML, string& strStripped
         else if (strcmp(szKey, "yacute") == 0) szAnsi[iAnsiPos++] = (char)0xFD;
         else if (strcmp(szKey, "thorn") == 0) szAnsi[iAnsiPos++] = (char)0xFE;
         else if (strcmp(szKey, "yuml") == 0) szAnsi[iAnsiPos++] = (char)0xFF;
+        else if (strcmp(szKey, "rsquo") == 0) szAnsi[iAnsiPos++] = (char)0x92;
+        else if (strcmp(szKey, "ndash") == 0) szAnsi[iAnsiPos++] = (char)0x96;
+        else if (strcmp(szKey, "mdash") == 0) szAnsi[iAnsiPos++] = (char)0x97;
         else
         {
           // its not an ampersand code, so just copy the contents
