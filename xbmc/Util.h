@@ -161,7 +161,6 @@ public:
   static void CreateShortcut(CFileItem* pItem);
   static void GetFatXQualifiedPath(CStdString& strFileNameAndPath);
   static bool ShortenFileName(CStdString& strFileNameAndPath);
-  static CStdString ValidatePath(const CStdString &path); ///< return a validated path, with correct directory separators.
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsXBMS(const CStdString& strFile);
@@ -221,6 +220,7 @@ public:
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
+  static CStdString ValidatePath(const CStdString &path); ///< return a validated path, with correct directory separators.
   
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);

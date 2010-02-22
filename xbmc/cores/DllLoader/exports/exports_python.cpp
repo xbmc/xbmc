@@ -69,7 +69,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 extern "C"
 {
-
 static char xbp_cw_dir[MAX_PATH] = "";
 
 char* xbp_getcwd(char *buf, int size)
@@ -95,7 +94,7 @@ char* xbp__tempnam(const char *dir, const char *prefix)
   CORRECT_SEP_STR(p);
   char* res = _tempnam(p, prefix);
   free(p);
-  return res;
+    return strdup(res);
 }
 
 int xbp_unlink(const char *filename)
@@ -159,11 +158,7 @@ int xbp_mkdir(const char *dirname)
 {
   char* p = strdup(dirname);
   CORRECT_SEP_STR(p);
-#ifndef _LINUX
   int res = mkdir(_P(p).c_str());
-#else
-  int res = mkdir(_P(p).c_str(), 0755);
-#endif
   free(p);
   return res;
 }
@@ -178,6 +173,7 @@ int xbp_open(const char *filename, int oflag, int pmode)
 
 FILE* xbp_fopen(const char *filename, const char *mode)
 {
+  //convert '/' to '\\'
   char cName[1024];
   char* p;
 
