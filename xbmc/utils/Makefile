@@ -33,6 +33,7 @@ SRCS=AlarmClock.cpp \
      CPUInfo.cpp \
      PCMAmplifier.cpp \
      PCMRemap.cpp \
+     PCMSampleConverter.cpp \
      LabelFormatter.cpp \
      Network.cpp \
      BitstreamStats.cpp \

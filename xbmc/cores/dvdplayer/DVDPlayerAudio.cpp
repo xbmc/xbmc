@@ -225,11 +225,50 @@ CDVDAudioPassthroughParser::~CDVDAudioPassthroughParser()
 
 bool CDVDAudioPassthroughParser::Init(void* pData, unsigned int size)
 {
+  if (!pData || !size)
+    return false; // Nothing to probe
+  
+  unsigned char* pFrame = (unsigned char*)pData;
   //TODO: Parse packet header to determine format
+  // Try to parse the probe data passed in. If we don't find what we need, we will have to fall-back to the hints
+  switch (m_StreamInfo.codec)
+  {
+    case CODEC_ID_AAC:
+      // TODO: Not every AAC frame contains stream info, but look for it anyway
+      m_OutputFormat.bitrate = m_StreamInfo.bitrate;      
+      m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_AAC;
+      break;
+    case CODEC_ID_AC3:
+    {
+      // [0-1] Sync Word (0x0B77), [2-3] CRC1, [4] Sample Rate / Frame Size
+      char sr = pFrame[4] & 0xC0 >> 6;
+      char fs = pFrame[4] & 0x30;
+      m_OutputFormat.bitrate = 448000; // TODO: Read from stream...
+      m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_AC3;
+      break;
+    }
+    case CODEC_ID_DTS:
+      // [0-3] Sync Word, [4-9] Frame Info
+      m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_DTS;
+      m_OutputFormat.bitrate = 448000; // TODO: Read from stream...
+      break;
+    case CODEC_ID_MP1:
+      m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_MP1;
+      return false; // Not a supported passthrough format (yet)
+      break;
+    case CODEC_ID_MP2:
+      m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_MP2;
+      return false; // Not a supported passthrough format (yet)
+      break;
+    case CODEC_ID_MP3:
+      m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_MP3;
+      return false; // Not a supported passthrough format (yet)
+      break;
+    default:
+      return false; // Not a supported passthrough format
+  }
   
   m_OutputFormat.streamType = DVDAudioStreamType_Encoded;
-  m_OutputFormat.bitrate = 448000; // TODO: Read from stream...
-  m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_IEC958;  // TODO: Set from m_StreamInfo.codec or parsing
   m_OutputFormat.encoded.containedType = DVDAudioEncodingType_Raw;
   
   return true;
@@ -476,7 +515,7 @@ bool CDVDPlayerAudio::OpenAudioPath(CDVDStreamInfo &hints, BYTE* pData /*= NULL*
       // if successful, we are ready to go...
       if (m_dvdAudio.Create(m_OutputFormat, m_pInputHandler->GetStreamInfo().codec))
       {
-        // TODO: Move this to the right place
+        // TODO: Move this to the right place (post-proc container)
         // Create format converter
         m_pConverter = new CPCMSampleConverter();
         if (m_pConverter->Initialize(m_InputFormat, m_OutputFormat))
@@ -1025,12 +1064,9 @@ bool CDVDPlayerAudio::OutputFrame(DVDAudioFrame &audioframe, int dupCount /*= 0*
       
       outFrame.format = m_OutputFormat;
       outFrame.pts = audioframe.pts;
-      outFrame.duration = audioframe.duration;
-      // TODO: Maintain output buffer properly...
-      static unsigned short outBuf[16 * 1024];
-      outFrame.data = outBuf;
-      outFrame.size = audioframe.size * m_pConverter->GetConversionFactor();
       m_pConverter->GetFrame(outFrame);
+      // TODO: Validate frame
+      outFrame.duration = audioframe.duration;
       break;
     }
     case DVDAudioStreamType_Encoded: // Passthrough

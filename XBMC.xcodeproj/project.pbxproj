@@ -244,6 +244,8 @@
 		83A72B940FBC8DFF00171871 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
 		83DFCC09112B873700694923 /* PCMSampleConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DFCC08112B873700694923 /* PCMSampleConverter.cpp */; };
+		83DFCE9511321B8600694923 /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83DFCE9411321B8600694923 /* libmicrohttpd.a */; };
+		83DFCE9A11321BC000694923 /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DFCE9911321BC000694923 /* WebServer.cpp */; };
 		83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		83E0B24A0F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
@@ -2110,6 +2112,9 @@
 		83DFCC07112B873700694923 /* PCMSampleConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMSampleConverter.h; sourceTree = "<group>"; };
 		83DFCC08112B873700694923 /* PCMSampleConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMSampleConverter.cpp; sourceTree = "<group>"; };
 		83DFCC21112B8B5000694923 /* DVDAudioTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioTypes.h; sourceTree = "<group>"; };
+		83DFCE9411321B8600694923 /* libmicrohttpd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmicrohttpd.a; path = lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a; sourceTree = "<group>"; };
+		83DFCE9811321BC000694923 /* WebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServer.h; sourceTree = "<group>"; };
+		83DFCE9911321BC000694923 /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
 		83E0B2470F7C95FF0091643F /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
 		83E0B2480F7C95FF0091643F /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		880DBE360DC2077000E26B71 /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.osx; sourceTree = "<group>"; };
@@ -3543,7 +3548,6 @@
 		E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFactoryDemuxer.cpp; sourceTree = "<group>"; };
 		E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxFFmpeg.cpp; sourceTree = "<group>"; };
 		E38F12C10D29FF200035C331 /* FileShoutcast.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileShoutcast.cpp; sourceTree = "<group>"; };
-		E38F12E90D2A17B30035C331 /* libGoAhead-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGoAhead-x86-osx.a"; path = "xbmc/lib/libGoAhead/libGoAhead-x86-osx.a"; sourceTree = "<group>"; };
 		E3A478090D29029A00F3C3A6 /* dlgcache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dlgcache.cpp; sourceTree = "<group>"; };
 		E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIMultiSelectText.cpp; sourceTree = "<group>"; };
 		E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAccessPoints.cpp; sourceTree = "<group>"; };
@@ -3879,6 +3883,7 @@
 				F5A7A6F1112893330059D6AA /* libjsoncpp.a in Frameworks */,
 				F5A7A6F4112893440059D6AA /* libjsonrpc.a in Frameworks */,
 				F5A7A6F71128934C0059D6AA /* libhttpapi.a in Frameworks */,
+				83DFCE9511321B8600694923 /* libmicrohttpd.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6744,6 +6749,8 @@
 				E38E1E8C0D25F9FD00618676 /* UdpClient.h */,
 				E38E1E8D0D25F9FD00618676 /* Weather.cpp */,
 				E38E1E8E0D25F9FD00618676 /* Weather.h */,
+				83DFCE9811321BC000694923 /* WebServer.h */,
+				83DFCE9911321BC000694923 /* WebServer.cpp */,
 				E38E1E8F0D25F9FD00618676 /* Win32Exception.cpp */,
 				E38E1E900D25F9FD00618676 /* Win32Exception.h */,
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
@@ -6840,6 +6847,7 @@
 				F5A7A6F61128934C0059D6AA /* libhttpapi.a */,
 				F5A7A6F3112893440059D6AA /* libjsonrpc.a */,
 				F5A7A6F0112893330059D6AA /* libjsoncpp.a */,
+				83DFCE9411321B8600694923 /* libmicrohttpd.a */,
 				F5A1C86A0F6B048000A96ABD /* x86 */,
 				F5A1C8690F6B047D00A96ABD /* ppc */,
 			);
@@ -6913,7 +6921,6 @@
 				F5DC8816110A4B8900EE1B15 /* libxbms-x86-osx.a */,
 				E38E25680D2639F100618676 /* libxdaap-x86-osx.a */,
 				E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */,
-				E38F12E90D2A17B30035C331 /* libGoAhead-x86-osx.a */,
 				810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */,
 				810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */,
 			);
@@ -8080,6 +8087,7 @@
 				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				83DFCC09112B873700694923 /* PCMSampleConverter.cpp in Sources */,
+				83DFCE9A11321BC000694923 /* WebServer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9022,10 +9030,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
@@ -9109,10 +9119,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",

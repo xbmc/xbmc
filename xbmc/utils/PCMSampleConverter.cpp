@@ -39,7 +39,7 @@ CPCMSampleConverter::~CPCMSampleConverter()
 bool CPCMSampleConverter::Initialize(DVDAudioFormat& inFormat, DVDAudioFormat& outFormat)
 {
   if (inFormat.streamType != DVDAudioStreamType_PCM || outFormat.streamType != DVDAudioStreamType_PCM)
-    return false; // Only converting samples here...?
+    return false; // Only converting samples here...
   
   m_InputFormat = inFormat;
   m_OutputFormat = outFormat;
@@ -67,7 +67,7 @@ void CPCMSampleConverter::InitBuffer(unsigned int minSize, bool copyExisting /*=
 bool CPCMSampleConverter::AddFrame(DVDAudioFrame& frame)
 {
   // TODO: Compare frame format to input format
-  // TODO: Ensure requested size is frame-aligned
+  // TODO: Ensure requested size is frame-aligned?
 
   unsigned int bytesNeeded = frame.size * GetConversionFactor();
   if (m_BufferSize - m_BufferOffset < bytesNeeded)
@@ -93,13 +93,12 @@ bool CPCMSampleConverter::AddFrame(DVDAudioFrame& frame)
 
 bool CPCMSampleConverter::GetFrame(DVDAudioFrame& frame)
 {
-  // TODO: Compare frame format to output format
+  // TODO: Only return frame-aligned data?
   
-  if (m_BufferOffset < frame.size)
-    return false; //Not enough data
+  frame.size = m_BufferOffset;
+  frame.data = m_pBuffer;
   
-  memcpy(frame.data, m_pBuffer, frame.size);
-  m_BufferOffset -= frame.size;
+  m_BufferOffset = 0;
   
   return true;
 }
