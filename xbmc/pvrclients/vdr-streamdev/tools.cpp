@@ -24,6 +24,9 @@
  */
 
 #include "tools.h"
+#ifdef __APPLE__
+# include "getline.h"
+#endif
 
 ssize_t safe_read(int filedes, void *buffer, size_t size)
 {
@@ -226,6 +229,9 @@ CStdString AddDirectory(const char *DirName, const char *FileName)
 
 char *ReadLink(const char *FileName)
 {
+#if defined(__APPLE__) || defined(__WINDOWS__)
+  return NULL;
+#else
   if (!FileName)
     return NULL;
   char *TargetName = canonicalize_file_name(FileName);
@@ -237,6 +243,7 @@ char *ReadLink(const char *FileName)
       XBMC_log(LOG_ERROR, "ERROR (%s,%d,s): %m", __FILE__, __LINE__, FileName);
   }
   return TargetName;
+#endif
 }
 
 

@@ -27,6 +27,8 @@
 # define __USE_FILE_OFFSET64	1
 #endif
 
+#include "getline.h"
+
 typedef int ssize_t;
 typedef int mode_t;
 typedef int bool_t;
@@ -46,8 +48,22 @@ typedef uint64_t ino_t;
 typedef long off_t;
 #endif
 
+#define NAME_MAX         255   /* # chars in a file name */
+#define MAXPATHLEN       255
 #define INT64_MAX _I64_MAX
 #define INT64_MIN _I64_MIN
+
+#ifndef S_ISLNK
+# define S_ISLNK(x) 0
+#endif
+
+#ifndef S_ISREG
+#define S_ISREG(x) (((x) & S_IFMT) == S_IFREG)
+#endif
+
+#ifndef S_ISDIR
+#define S_ISDIR(x) (((x) & S_IFMT) == S_IFDIR)
+#endif
 
 /* Some tricks for MS Compilers */
 #define THREADLOCAL __declspec(thread)
@@ -55,7 +71,6 @@ typedef long off_t;
 #ifndef DEFFILEMODE
 #define DEFFILEMODE 0
 #endif
-
 
 #define alloca _alloca
 #define chdir _chdir

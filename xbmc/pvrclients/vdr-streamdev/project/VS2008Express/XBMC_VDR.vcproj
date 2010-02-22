@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\addons\include;.;..\..\pthread_win32"
+				AdditionalIncludeDirectories="..\..\..\..\..\include;.;..\..\pthread_win32;..\..\windows;..\..\"
 				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
+				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib ..\..\..\..\..\include\libXBMC_addonD.lib ..\..\..\..\..\include\libXBMC_pvrD.lib"
 				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				IgnoreAllDefaultLibraries="false"
@@ -126,7 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\addons\include;.;..\..\pthread_win32"
+				AdditionalIncludeDirectories="..\..\..\..\..\include;.;..\..\pthread_win32;..\..\windows;..\..\"
 				PreprocessorDefinitions="_WIN32;NDEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="0"
@@ -148,7 +148,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
+				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib ..\..\..\..\..\include\libXBMC_addon.lib ..\..\..\..\..\include\libXBMC_pvr.lib"
 				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libc;libcmt"
@@ -202,11 +202,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\windows\dirent.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\epg.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\pvrclient-vdr_os_windows.cpp"
+				RelativePath="..\..\getline.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\windows\pvrclient-vdr_os_windows.cpp"
 				>
 			</File>
 			<File
@@ -252,7 +260,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\windows\dirent.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\epg.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\getline.h"
 				>
 			</File>
 			<File
@@ -260,11 +276,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\pvrclient-vdr_os_posix.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\pvrclient-vdr_os_windows.h"
+				RelativePath="..\..\windows\pvrclient-vdr_os_windows.h"
 				>
 			</File>
 			<File

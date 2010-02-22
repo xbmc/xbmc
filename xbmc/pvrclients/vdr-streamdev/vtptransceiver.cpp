@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include "vtptransceiver.h"
 #include "select.h"

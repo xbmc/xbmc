@@ -28,9 +28,9 @@
 #endif
 
 #if defined(__WINDOWS__)
-#include "pvrclient-vdr_os_windows.h"
+#include "windows/pvrclient-vdr_os_windows.h"
 #else
-#include "pvrclient-vdr_os_posix.h"
+#include "linux/pvrclient-vdr_os_posix.h"
 #endif
 
 #if !defined(TRUE)
