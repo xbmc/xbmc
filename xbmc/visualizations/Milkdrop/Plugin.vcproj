@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="..\..\..\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,8 +64,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
+				AdditionalDependencies="D3dx9.lib ..\..\..\include\libXBMC_addonD.lib"
+				OutputFile="..\..\..\addons\visualizations\Milkdrop\MilkDrop_win32dx.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Plugin.pdb"
@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="..\..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="1"
@@ -143,8 +143,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
+				AdditionalDependencies="D3dx9.lib ..\..\..\include\libXBMC_addon.lib"
+				OutputFile="..\..\..\addons\visualizations\Milkdrop\MilkDrop_win32dx.vis"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetName).pdb"
@@ -192,10 +192,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\xbmc_vis.h"
-				>
-			</File>
-			<File
 				RelativePath=".\XmlDocument.cpp"
 				>
 			</File>
@@ -232,6 +228,10 @@
 				</File>
 				<File
 					RelativePath=".\vis_milkdrop\support.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\include\xbmc_vis_types.h"
 					>
 				</File>
 			</Filter>

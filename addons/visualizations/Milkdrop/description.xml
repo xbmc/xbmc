@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>1585af1b-0647-4b0e-a560-042f678e7d37</uuid>
+  <type>visualization</type>
+  <title>Milkdrop</title>
+  <library>-</library>
+  <librarywin32>MilkDrop_win32dx.vis</librarywin32>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>windows</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>MilkDrop music visualizer</summary>
+  <description>Visualisation showing different styles based upon presets</description>
+  <author>TEAMXBMC</author>
+</addoninfo>
