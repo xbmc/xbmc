@@ -16,8 +16,8 @@
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.videobuster.de/titledtl.php/\1?tab=details&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes">class=&quot;cover_img&quot;&gt;&lt;a href=&quot;/titledtl.php/([^&quot;]*)&quot;.*?class=&quot;cover&quot; title=&quot;([^&quot;]+)&quot; /&gt;</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.videobuster.de\1.html?tab=details&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;div class=&quot;name&quot;&gt;&lt;a href=&quot;(.*?).html.*?&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
