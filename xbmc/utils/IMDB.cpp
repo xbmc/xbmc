@@ -435,6 +435,8 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
   // set chaining to true here as this is called by our scrapers
   movieDetails.Load(details, true);
 
+  CHTMLUtil::RemoveTags(movieDetails.m_strPlot);
+
   return true;
 }
 
