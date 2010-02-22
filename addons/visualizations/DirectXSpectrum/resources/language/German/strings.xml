@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Modus</string>
+    <string id="30001">Ausgefüllt</string>
+    <string id="30002">Drahtgeflecht</string>
+    <string id="30003">Punkte</string>
+    <string id="30004">Balkenhöhe</string>
+    <string id="30005">Klein</string>
+    <string id="30006">Standard</string>
+    <string id="30007">Groß</string>
+    <string id="30008">Sehr groß</string>
+    <string id="30009">Geschwindigkeit</string>
+    <string id="30010">Sehr langsam</string>
+    <string id="30011">Langsam</string>
+    <string id="30012">Standard</string>
+    <string id="30013">Schnell</string>
+    <string id="30014">Sehr schnell</string>
+</strings>
