@@ -27,6 +27,7 @@
 
 #include "../DllLoader.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "Util.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -35,7 +36,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #endif
 
 // file io functions
-#ifndef _LINUX
 #define CORRECT_SEP_STR(str) \
   if (strstr(str, "://") == NULL) \
   { \
@@ -63,12 +63,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
     for (int pos = 0; pos < iSize_##str; pos++) \
       if (str[pos] == '\\') str[pos] = '/'; \
   }
-#else
-
-#define CORRECT_SEP_STR(str)
-#define CORRECT_SEP_WSTR(str)
-
-#endif
 
 #include "../dll_tracker_file.h"
 #include "emu_msvcrt.h"
@@ -176,33 +170,31 @@ int xbp_mkdir(const char *dirname)
 
 int xbp_open(const char *filename, int oflag, int pmode)
 {
-  char* p = strdup(filename);
-  CORRECT_SEP_STR(p);
-  int res = open(_P(p).c_str(), oflag, pmode);
-  free(p);
+  CStdString strPath = CUtil::ValidatePath(_P(filename));
+  
+  int res = open(strPath.c_str(), oflag, pmode);
   return res;
 }
 
 FILE* xbp_fopen(const char *filename, const char *mode)
 {
-  //convert '/' to '\\'
   char cName[1024];
   char* p;
-  
-  strcpy(cName, filename);
-  CORRECT_SEP_STR(cName);
+
+  CStdString strPath = CUtil::ValidatePath(_P(filename));
+  strcpy(cName, strPath.c_str());
   
   //for each "\\..\\" remove the directory before it
   while(p = strstr(cName, "\\..\\"))
   {
-  	char* file = p + 3;
-  	*p = '\0';
-  	*strrchr(cName, '\\') = '\0';
-  	strcat(cName, file);
+    char* file = p + 3;
+    *p = '\0';
+    *strrchr(cName, '\\') = '\0';
+    strcat(cName, file);
   }
 
   // don't use emulated files, they do not work in python yet
-  return fopen_utf8(_P(cName).c_str(), mode);
+  return fopen_utf8(cName, mode);
 }
 
 int xbp_fclose(FILE* stream)

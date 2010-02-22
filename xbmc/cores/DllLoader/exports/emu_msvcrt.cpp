@@ -123,7 +123,7 @@ extern "C" void __stdcall init_emu_environ()
   //dll_putenv("THREADDEBUG=1");
   //dll_putenv("PYTHONMALLOCSTATS=1");
   //dll_putenv("PYTHONY2K=1");
-  dll_putenv("TEMP=Z:\\temp"); // for python tempdir
+  dll_putenv("TEMP=special://temp/temp"); // for python tempdir
 }
 
 extern "C" void __stdcall update_emu_environ()
@@ -423,9 +423,9 @@ extern "C"
     // or the python DLLs have malformed slashes on Win32 & Xbox
     // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
+      bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(CURL::ValidatePath(str));
+      bResult = pFile->Open(CUtil::ValidatePath(str));
     
     if (bResult)
     {
@@ -616,7 +616,7 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst(_P(CURL::ValidatePath(str)), data);
+      return _findfirst(CUtil::ValidatePath(_P(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -1485,7 +1485,7 @@ extern "C"
   {
     if (!dir) return -1;
     // Make sure the slashes are correct & translate the path
-    return mkdir(_P(CURL::ValidatePath(dir)).c_str());
+    return mkdir( CUtil::ValidatePath(_P(dir)).c_str() );
   }
 
   char* dll_getcwd(char *buffer, int maxlen)

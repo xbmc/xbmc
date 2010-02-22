@@ -161,6 +161,7 @@ public:
   static void CreateShortcut(CFileItem* pItem);
   static void GetFatXQualifiedPath(CStdString& strFileNameAndPath);
   static bool ShortenFileName(CStdString& strFileNameAndPath);
+  static CStdString ValidatePath(const CStdString &path); ///< return a validated path, with correct directory separators.
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsXBMS(const CStdString& strFile);
@@ -191,7 +192,7 @@ public:
   static void RemoveSlashAtEnd(CStdString& strFolder);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
-    const CStdString& strFilePathInArchive, const CStdString& strPwd="");
+  const CStdString& strFilePathInArchive, const CStdString& strPwd="");
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);

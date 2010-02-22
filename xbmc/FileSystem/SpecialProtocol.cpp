@@ -151,7 +151,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   }
 
   // Validate the final path, just in case
-  return CURL::ValidatePath(translatedPath);
+  return CUtil::ValidatePath(translatedPath);
 }
 
 CStdString CSpecialProtocol::TranslatePathConvertCase(const CStdString& path)

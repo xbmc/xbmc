@@ -100,7 +100,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_cddbAddress = "freedb.freedb.org";
   m_usePCDVDROM = false;
   m_noDVDROM = false;
-  m_cachePath = "Z:\\";
+  m_cachePath = "special://temp/";
   m_displayRemoteCodes = false;
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
