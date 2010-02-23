@@ -663,11 +663,6 @@ CStdString CSysInfo::GetUserAgent()
   result += "; ";
   result += GetUnameVersion();
 #endif
-#ifdef SVN_REV
-  CStdString strRevision;
-  strRevision.Format("; SVN r%s", SVN_REV);
-  result += strRevision;
-#endif
   result += "; http://www.xbmc.org)";
 
   return result;
