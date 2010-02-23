@@ -172,7 +172,7 @@ void CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
   if (rect.Intersect(label2.m_renderRect).IsEmpty())
     return; // nothing to do (though it could potentially encroach on the min_space requirement)
   
-  static const float min_space = 5;
+  static const float min_space = 10;
   // overlap vertically and horizontally - check alignment
   CGUILabel &left = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label1 : label2;
   CGUILabel &right = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label2 : label1;
