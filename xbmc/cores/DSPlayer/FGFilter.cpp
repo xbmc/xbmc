@@ -281,14 +281,7 @@ HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF)
       m_clsid = DShowUtil::GetCLSID(*ppBF);
   }
   else if(m_clsid != GUID_NULL)
-  {
-    IBaseFilter* pBF;
-    if(FAILED(CoCreateInstance(m_clsid,NULL,CLSCTX_ALL,__uuidof(pBF), (void**)&pBF)))
-      return E_FAIL;
-    *ppBF = pBF;
-    pBF = NULL;
-    hr = S_OK;
-  }
+    hr = CoCreateInstance(m_clsid, NULL, CLSCTX_ALL, IID_IBaseFilter, (void**)ppBF);
 
   return hr;
 };

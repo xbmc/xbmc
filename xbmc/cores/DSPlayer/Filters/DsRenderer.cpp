@@ -44,8 +44,9 @@ CDsRenderer::CDsRenderer()
 
 CDsRenderer::~CDsRenderer()
 {
-  g_renderManager.UnInit();
+  DeleteSurfaces();
   g_Windowing.Unregister(this);
+  g_renderManager.UnInit();
 }
 
 UINT CDsRenderer::GetAdapter(IDirect3D9* pD3D)

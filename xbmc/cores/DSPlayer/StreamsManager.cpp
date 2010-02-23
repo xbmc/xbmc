@@ -163,13 +163,14 @@ void CStreamsManager::SetAudioStream(int iStream)
 
 done:
     m_pGraph->Play();
-    m_bChangingAudioStream = false;
 
     if (SUCCEEDED(hr))
       CLog::Log(LOGNOTICE, "%s Successfully changed audio stream", __FUNCTION__);
     else
       CLog::Log(LOGERROR, "%s Can't change audio stream", __FUNCTION__);
   }
+
+  m_bChangingAudioStream = false;
 }
 
 void CStreamsManager::LoadStreams()
@@ -483,6 +484,11 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->width = m->hdr.bmiHeader.biWidth;
         infos->height = m->hdr.bmiHeader.biHeight;
         infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc);
+        if (infos->fourcc == 0)
+        {
+          infos->fourcc = 'MPG2';
+          infos->codecname = "MPEG2 Video";
+        }
       }
     } else if (pMediaType->formattype == FORMAT_VideoInfo2)
     {
@@ -587,7 +593,6 @@ void CStreamsManager::SetSubtitle( int iStream )
     s->flags = AMSTREAMSELECTINFO_ENABLED;
 
     m_bChangingAudioStream = false;
-
     return;
   }
 
@@ -726,13 +731,13 @@ done:
     if (stopped)
       m_pGraph->Play();
 
-    m_bChangingAudioStream = false;
-
     if (SUCCEEDED(hr))
       CLog::Log(LOGNOTICE, "%s Successfully changed subtitle stream", __FUNCTION__);
     else
       CLog::Log(LOGERROR, "%s Can't change subtitle stream", __FUNCTION__);
   }
+
+  m_bChangingAudioStream = false;
 }
 
 bool CStreamsManager::GetSubtitleVisible()

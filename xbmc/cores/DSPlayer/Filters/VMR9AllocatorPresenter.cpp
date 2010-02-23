@@ -351,7 +351,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 
   //To do implement the texture surface on the present image
   //if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
-  //lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
+  //  lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
+
   if (lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
     CLog::Log(LOGDEBUG,"VMR9AllocFlag_3DRenderTarget");
   if (lpAllocInfo->dwFlags & VMR9AllocFlag_DXVATarget)

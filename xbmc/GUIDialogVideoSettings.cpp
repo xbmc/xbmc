@@ -238,28 +238,12 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
 
     IBaseFilter *pBF = g_dsconfig.GetFiltersWithPropertyPages()[filterId];
     HRESULT hr = S_OK;
+    //Showing the property page for this filter
     g_dsconfig.ShowPropertyPage(pBF);
-    /*
-    ISpecifyPropertyPages *pProp = NULL;
-    IBaseFilter *cObjects[1]; cObjects[0] = pBF;
-    CAUUID pPages;
-    CStdStringW Caption = "DSPlayer";
-    if ( SUCCEEDED( pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **) &pProp) ) )
-    {
-      
-      pProp->GetPages(&pPages);
-
-      g_application.m_pPlayer->Pause();
-
-      hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, Caption.c_str(),
-        1, (LPUNKNOWN *) &pBF, pPages.cElems, pPages.pElems, 0, 0, 0);
-
-      g_application.m_pPlayer->Pause();
-
-	    SAFE_RELEASE(pProp);
-      CoTaskMemFree(pPages.pElems);
-      
-    } */
+    //TODO Need to hide the xbmc gui
+    
+    
+    
   }
 }
 

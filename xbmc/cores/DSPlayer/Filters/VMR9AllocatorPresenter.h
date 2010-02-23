@@ -51,11 +51,6 @@ public:
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
 
-  STDMETHODIMP_(void) SetPosition(RECT w, RECT v) {} ;
-  STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
-  STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
-  
-  
   virtual void OnLostDevice();
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();

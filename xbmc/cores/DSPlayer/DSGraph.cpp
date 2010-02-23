@@ -475,10 +475,6 @@ HRESULT CDSGraph::UnloadGraph()
 
   //WaitForRendererToShutDown();
 
-  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(), pEF, pBF)
-    pBF->Stop();
-  EndEnumFilters(pEF, pBF)
-
   m_pGraphBuilder->GetGraphBuilder2()->EnumFilters(&pEnum);
 
   // Disconnect all the pins
@@ -497,8 +493,6 @@ HRESULT CDSGraph::UnloadGraph()
       // ffdshow dxva decoder crash here, don't know why!
       hr = E_FAIL;
     }
-
-    pBF->JoinFilterGraph(NULL, NULL); // Notify the filter we remove it from the graph
 
     if (SUCCEEDED(hr))
       CLog::Log(LOGNOTICE, "%s Successfully removed \"%s\" from the graph", __FUNCTION__, filterName.c_str());

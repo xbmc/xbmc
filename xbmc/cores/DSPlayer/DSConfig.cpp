@@ -45,6 +45,7 @@ CDSConfig::CDSConfig(void)
   pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
   pGraph = NULL;
+  pGraph = NULL;
 }
 
 CDSConfig::~CDSConfig(void)

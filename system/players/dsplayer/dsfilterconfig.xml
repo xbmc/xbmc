@@ -1,7 +1,7 @@
 <dsfilterconfig>
   <filters>    
-  <!-- You dont need a path if your filter is registered -->
-  <!-- Sources -->
+    <!-- You dont need a path if your filter is registered -->
+    <!-- Sources -->
   
     <filter name="wmasfreader" type="source">
       <guid>{187463A0-5BB7-11D3-ACBE-0080C75E246E}</guid>
@@ -37,6 +37,10 @@
       <guid>{6D3688CE-3E9D-42F4-92CA-8A11119D25CD}</guid>
       <osdname>Ogg Source</osdname>
     </filter>
+    <filter name="realsource" type="source">
+      <guid>{765035B3-5944-4A94-806B-20EE3415F26F}</guid>
+      <osdname>RealAlternative Source</osdname>
+    </filter>
 
     <!-- splitters -->
     <filter name="avisplitter" type="splitter">
@@ -69,6 +73,10 @@
       <guid>{9FF48807-E133-40AA-826F-9B2959E5232D}</guid>
       <osdname>Ogg Splitter</osdname>
     </filter>
+    <filter name="realsplitter" type="splitter">
+      <guid>{E21BE468-5C18-43EB-B0CC-DB93A847D769}</guid>
+      <osdname>RealAlternative Splitter</osdname>
+    </filter>
 
     <!-- Video decoders-->
     <filter name="mpcvideodec" type="videodec">
@@ -94,7 +102,10 @@
       <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
       <osdname>FFDShow DXVA Decoder</osdname>
     </filter>
-
+    <filter name="realvideodec" type="videodec">
+      <guid>{238D0F23-5DC9-45A6-9BE2-666160C324DD}</guid>
+      <osdname>RealAlternative Video Decoder</osdname>
+    </filter>    
 
     <!-- Audio decoders-->
     <filter name="mpaaudiodec" type="audiodec">
@@ -117,6 +128,10 @@
     <filter name="haali" type="source">
       <guid>{55DA30FC-F16B-49FC-BAA5-AE59FC65F82D}</guid>
       <osdname>Haali Media Splitter</osdname>
+    </filter>
+    <filter name="realaudiodec" type="audiodec">
+      <guid>{941A4793-A705-4312-8DFC-C11CA05F397E}</guid>
+      <osdname>RealAlternative Audio Decoder</osdname>
     </filter>
     
     <!-- Audio Stream Switcher-->
@@ -186,7 +201,7 @@
     <rule filetype="ts">
       <source filter="mpegsource" />
       <splitter filter="mpegsplitter" />
-      <video filter="mpeg2videodec" />
+      <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
     <rule filetype="mpeg">
@@ -224,6 +239,14 @@
       <splitter filter="wmasfreader" />
       <video filter="ffdvideodec" />
       <audio filter="wmaudiodecoder" />
+    </rule>
+    
+    <!-- You need Real Alternative in order to read real media files -->
+    <rule filetype="rmvb">
+      <source filter="realsource" />
+      <splitter filter="realsplitter" />
+      <video filter="realvideodec" />
+      <audio filter="realaudiodec" />
     </rule>
   </rules>
 </dsfilterconfig>

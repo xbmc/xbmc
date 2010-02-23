@@ -1077,6 +1077,7 @@ void CFGManager::InitManager()
 
 void CFGManager::UpdateRegistry()
 {
+  return;
   CStdString strRegKey;
   strRegKey.Format("Software\\Gnu\\ffdshow_dxva\\default");
   RegKey ffReg(HKEY_CURRENT_USER ,"Software\\Gnu\\ffdshow" ,true);
