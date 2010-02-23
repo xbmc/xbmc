@@ -188,6 +188,8 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIButtonControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
+  m_label.SetInvalid();
+  m_label2.SetInvalid();
   m_imgFocus.SetInvalid();
   m_imgNoFocus.SetInvalid();
 }

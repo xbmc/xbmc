@@ -280,7 +280,7 @@ void CGUISelectButtonControl::AllocResources()
 
 void CGUISelectButtonControl::SetInvalid()
 {
-  CGUIControl::SetInvalid();
+  CGUIButtonControl::SetInvalid();
   m_imgBackground.SetInvalid();
   m_imgLeft.SetInvalid();
   m_imgLeftFocus.SetInvalid();

@@ -341,6 +341,7 @@ void CGUISpinControl::DynamicResourceAlloc(bool bOnOff)
 void CGUISpinControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
+  m_label.SetInvalid();
   m_imgspinUp.SetInvalid();
   m_imgspinUpFocus.SetInvalid();
   m_imgspinDown.SetInvalid();
