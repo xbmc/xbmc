@@ -65,6 +65,7 @@ public:
 
   void SetItemInvalid(bool invalid);
 protected:
+  virtual void RenderText(float posX, float width);
   virtual void UpdateColors();
   CGUIButtonControl m_buttonControl;
   float m_spinPosX;

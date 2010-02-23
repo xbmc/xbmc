@@ -441,17 +441,21 @@ void CGUISpinControl::Render()
   if (m_label.GetLabelInfo().font)
   {
     if (arrowsOnRight)
-      m_label.SetMaxRect(m_posX - space - textWidth, m_posY, textWidth, m_height);
+      RenderText(m_posX - space - textWidth, textWidth);
     else
-      m_label.SetMaxRect(m_posX + m_imgspinDown.GetWidth() + m_imgspinUp.GetWidth() + space, m_posY, textWidth, m_height);
-
-    m_label.SetColor(GetTextColor());
-    m_label.Render();
+      RenderText(m_posX + m_imgspinDown.GetWidth() + m_imgspinUp.GetWidth() + space, textWidth);
 
     // set our hit rectangle for MouseOver events
     m_hitRect = m_label.GetRenderRect();
   }
   CGUIControl::Render();
+}
+
+void CGUISpinControl::RenderText(float posX, float width)
+{
+  m_label.SetMaxRect(posX, m_posY, width, m_height);
+  m_label.SetColor(GetTextColor());
+  m_label.Render();
 }
 
 CGUILabel::COLOR CGUISpinControl::GetTextColor() const
