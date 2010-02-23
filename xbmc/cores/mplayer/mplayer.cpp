@@ -871,7 +871,6 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
     // cache (remote) subtitles to HD
     if (!bFileOnInternet && bIsVideo && !bIsDVD && g_stSettings.m_currentVideoSettings.m_SubtitleOn && !initoptions.identify)
     {
-
       m_dlgCache->SetMessage("Caching subtitles...");
       CUtil::CacheSubtitles(strFile, _SubtitleExtension, m_dlgCache);
       
@@ -886,7 +885,11 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
       g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
     }
     else
+    {
       CUtil::ClearSubtitles();
+      g_stSettings.m_currentVideoSettings.m_SubtitleCached = false;
+    }
+    
     m_iPTS = 0;
     m_bPaused = false;
 

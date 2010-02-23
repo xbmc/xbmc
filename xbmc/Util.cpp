@@ -2629,6 +2629,9 @@ static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
+  // Clear any subtitles first
+  ClearSubtitles();
+
   DWORD startTimer = timeGetTime();
   CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
