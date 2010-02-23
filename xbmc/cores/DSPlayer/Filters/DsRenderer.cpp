@@ -97,7 +97,7 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
       hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
     }
   }
-  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[0],NULL,0);
+  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[0],NULL,D3DCOLOR_COLORVALUE(0,0,0,255));
   return hr;
 }
 

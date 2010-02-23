@@ -488,13 +488,8 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
     return E_FAIL;
   }
 
-  IUnknown* pRenderer = NULL;
-  if(SUCCEEDED(hr = pCAP->CreateRenderer(&pRenderer)))
+  if(SUCCEEDED(hr = pCAP->CreateRenderer((IUnknown **) ppBF)))
   {
-    IBaseFilter* pBF;
-    pBF = (IBaseFilter*)pRenderer;
-    *ppBF = pBF;
-    pBF = NULL;
     CLog::Log(LOGDEBUG, "%s Allocator presenter successfully created", __FUNCTION__);
   }
   if(!*ppBF) hr = E_FAIL;

@@ -164,7 +164,6 @@ private:
   long m_refCount;
   
   COuterEVR *m_pOuterEVR;
-  CMacrovisionKicker *m_pMacrovisionKicker;
   bool m_fUseInternalTimer;
   bool m_bNeedNewDevice;
 

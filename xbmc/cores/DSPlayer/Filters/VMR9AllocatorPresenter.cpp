@@ -384,7 +384,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 
   for( int i = 0; i < DS_NBR_3D_SURFACE-1; ++i ) 
   {
-    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[i], NULL, 0);
+    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[i], NULL, D3DCOLOR_COLORVALUE(0,0,0,255));
     if (SUCCEEDED(hr))
       break;
   }

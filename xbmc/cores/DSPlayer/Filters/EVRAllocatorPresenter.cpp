@@ -272,6 +272,7 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
   pfAvSetMmThreadCharacteristicsW    = hLib ? (PTR_AvSetMmThreadCharacteristicsW)  GetProcAddress (hLib, "AvSetMmThreadCharacteristicsW") : NULL;
   pfAvSetMmThreadPriority        = hLib ? (PTR_AvSetMmThreadPriority)      GetProcAddress (hLib, "AvSetMmThreadPriority") : NULL;
   pfAvRevertMmThreadCharacteristics  = hLib ? (PTR_AvRevertMmThreadCharacteristics)  GetProcAddress (hLib, "AvRevertMmThreadCharacteristics") : NULL;
+
   g_Windowing.Register(this);
   g_renderManager.PreInit(true);
 }
@@ -286,7 +287,7 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   SAFE_RELEASE(m_pMixer);
   SAFE_RELEASE(m_pMediaEventSink);
   SAFE_RELEASE(m_pMediaType);
-  // Deletable objectt
+  // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
   SAFE_DELETE(m_pOuterEVR);
 
@@ -302,18 +303,23 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   CheckPointer(ppRenderer, E_POINTER);
   *ppRenderer = NULL;
   HRESULT hr = E_FAIL;
+
   do
   {
-    m_pMacrovisionKicker  = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
+    CMacrovisionKicker *m_pMacrovisionKicker = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL); // Auto delete when removing from the graph
     IUnknown* pUnk = (IUnknown *)(INonDelegatingUnknown *) m_pMacrovisionKicker;
+
     COuterEVR *pOuterEVR = new COuterEVR(NAME("COuterEVR"), pUnk, hr, this);
+    
     if (FAILED (hr))
     {
       CLog::Log(LOGERROR,"%s Failed creating outer enchanced video renderer",__FUNCTION__);
       break;
     }
+
     m_pOuterEVR = pOuterEVR;
-    m_pMacrovisionKicker->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuterEVR);
+    
+    m_pMacrovisionKicker->SetInner((IUnknown*)(INonDelegatingUnknown*) m_pOuterEVR);
     IBaseFilter* pBF;
     hr = pUnk->QueryInterface(__uuidof(IBaseFilter),(void**)&pBF );
     if (FAILED (hr))
@@ -324,7 +330,13 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     IMFVideoPresenter*    pVP;
     IMFVideoRenderer*    pMFVR;
     IMFGetService* pMFGS;
-    pBF->QueryInterface(__uuidof(IMFGetService),(void**)&pMFGS );
+
+    hr = pBF->QueryInterface(__uuidof(IMFGetService), (void**)&pMFGS );
+    if (FAILED(hr))
+    {
+      pBF->Release();
+      break;
+    }
     
     hr = pMFGS->GetService (MR_VIDEO_RENDER_SERVICE, IID_IMFVideoRenderer, (void**)&pMFVR);
     if(SUCCEEDED(hr)) 
@@ -332,17 +344,26 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     if(SUCCEEDED(hr)) 
       hr = pMFVR->InitializeRenderer (NULL, pVP);
 
+    pMFVR->Release();
+    pVP->Release();
+
     //something related with no crash in vista
     IPin* pPin = DShowUtil::GetFirstPin(pBF);
     IMemInputPin* pMemInputPin;
-    pPin->QueryInterface(__uuidof(IMemInputPin),(void**)&pMemInputPin);
+
+    pPin->QueryInterface(__uuidof(IMemInputPin), (void**)&pMemInputPin);
+    
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
+
+    pMemInputPin->Release();
+    pPin->Release();
+
     if(FAILED(hr))
       *ppRenderer = NULL;
     else
     {
       *ppRenderer = pBF;
-      pBF = NULL;
+      pBF->Release();
     }
   } while (0);
 
@@ -1147,50 +1168,37 @@ HRESULT CEVRAllocatorPresenter::GetCurrentMediaType(IMFVideoMediaType** ppMediaT
 STDMETHODIMP CEVRAllocatorPresenter::InitServicePointers(/* [in] */ __in  IMFTopologyServiceLookup *pLookup)
 {
   CheckPointer(pLookup, E_POINTER);
-
-  HRESULT             hr = S_OK;
-  DWORD               dwObjects = 0;
-
   CAutoLock lock(&m_ObjectLock);
+
+  HRESULT             hr;
+  DWORD               dwObjects = 1;
 
   // Do not allow initializing when playing or paused.
   if (IsActive())
-    CHECK_HR(hr = MF_E_INVALIDREQUEST);
-  dwObjects = 1;
+    return MF_E_INVALIDREQUEST;
   
   CLog::Log(LOGDEBUG,"%s getting mixer, render eventsink and renderclock",__FUNCTION__);
 
-  SAFE_RELEASE(m_pClock);
-  SAFE_RELEASE(m_pMixer);
-  SAFE_RELEASE(m_pMediaEventSink);
-
-  hr = pLookup->LookupService (MF_SERVICE_LOOKUP_GLOBAL, 0, MR_VIDEO_RENDER_SERVICE,
-                               __uuidof (IMFClock ), (void**)&m_pClock, &dwObjects);
-
-  dwObjects = 1;
   hr = pLookup->LookupService (MF_SERVICE_LOOKUP_GLOBAL, 0, MR_VIDEO_MIXER_SERVICE,
-                               __uuidof (IMFTransform), (void**)&m_pMixer, &dwObjects);
-// Make sure that we can work with this mixer.
-  CHECK_HR(ConfigureMixer(m_pMixer));
+    __uuidof (IMFTransform), (void**)&m_pMixer, &dwObjects);
 
-  dwObjects = 1;
   hr = pLookup->LookupService (MF_SERVICE_LOOKUP_GLOBAL, 0, MR_VIDEO_RENDER_SERVICE,
-                               __uuidof (IMediaEventSink ), (void**)&m_pMediaEventSink, &dwObjects);
+    __uuidof (IMediaEventSink ), (void**)&m_pMediaEventSink, &dwObjects);
 
-  
+  hr = pLookup->LookupService (MF_SERVICE_LOOKUP_GLOBAL, 0, MR_VIDEO_RENDER_SERVICE,
+    __uuidof (IMFClock ), (void**)&m_pClock, &dwObjects);  
 
 
   // Successfully initialized. Set the state to "stopped."
   m_RenderState = RENDER_STATE_STOPPED;
 
 done:
-  return hr;
+  return S_OK;
 }
 
 STDMETHODIMP CEVRAllocatorPresenter::ReleaseServicePointers()
 {
   CLog::Log(LOGDEBUG,"%s releasing mixer, render eventsink and renderclock",__FUNCTION__);
-  HRESULT hr = S_OK;
 
   // Enter the shut-down state.
   {
@@ -1210,7 +1218,7 @@ STDMETHODIMP CEVRAllocatorPresenter::ReleaseServicePointers()
   SAFE_RELEASE(m_pMediaEventSink);
   
   CLog::Log(LOGDEBUG,"%s Mixer released", __FUNCTION__);
-  return hr;
+  return S_OK;
 }
 
 // IMFVideoDeviceID

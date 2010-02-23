@@ -386,7 +386,7 @@ void CStreamsManager::LoadStreams()
 
 bool CStreamsManager::InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph)
 {
-  m_pSplitter = CFGLoader::GetSplitter();
+  m_pSplitter = CFGLoader::Filters.Splitter.pBF;
   m_pGraphBuilder = graphBuilder;
   m_pGraph = DSGraph;
   m_bSubtitlesVisible = g_settings.m_currentVideoSettings.m_SubtitleOn;

@@ -42,7 +42,7 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
 
   m_pVideoTexture = new CD3DTexture();
 
-  hr = InitializeD3D();
+  hr = InitializeDXVA();
 }
 
 
@@ -352,12 +352,12 @@ done:
 
 
 //-----------------------------------------------------------------------------
-// InitializeD3D
+// InitializeDXVA
 // 
 // Initializes Direct3D and the Direct3D device manager.
 //-----------------------------------------------------------------------------
 
-HRESULT D3DPresentEngine::InitializeD3D()
+HRESULT D3DPresentEngine::InitializeDXVA()
 {
   HRESULT hr = S_OK;
     
@@ -372,13 +372,14 @@ HRESULT D3DPresentEngine::InitializeD3D()
 
   IDirectXVideoDecoderService* pDecoderService = NULL;
   HANDLE hDevice;
-  hr = m_pDeviceManager->OpenDeviceHandle(&hDevice);
-  hr = m_pDeviceManager->GetVideoService(hDevice,__uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService);
-  if (SUCCEEDED(hr))
+  if (SUCCEEDED (m_pDeviceManager->OpenDeviceHandle(&hDevice)) &&
+    SUCCEEDED (m_pDeviceManager->GetVideoService (hDevice, __uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService)))
   {
     HookDirectXVideoDecoderService (pDecoderService);
     m_pDeviceManager->CloseDeviceHandle (hDevice);
   }
+  pDecoderService->Release();
+
   return hr;
 }
 

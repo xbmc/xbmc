@@ -55,12 +55,7 @@ CFGLoader::CFGLoader():
   m_pGraphBuilder(NULL),
   m_pFGF(NULL)
 {
-  m_SourceF = NULL;
-  m_SplitterF = NULL;
-  m_VideoDecF = NULL;
-  m_AudioDecF = NULL;
-  m_AudioRendererF = NULL;
-  m_VideoRendererF = NULL;
+  Filters.Clear();
   m_UsingDXVADecoder = false;
 }
 
@@ -86,32 +81,32 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 {
 
   HRESULT hr = E_FAIL;
-  m_SourceF = NULL;
 
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
+    Filters.PlayingArchive = true;
     CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
 	  if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
 	  {
-	    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &m_SourceF, &hr);
+	    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &Filters.Source.pBF, &hr);
 
-	    if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(m_SourceF, L"XBMC File Source")))
+	    if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(Filters.Source.pBF, L"XBMC File Source")))
 	    {
 		    CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
 	    } else {
 		    CLog::Log(LOGERROR, "%s Failted to add xbmc source filter to the graph", __FUNCTION__);
 	    }
 
-	    m_pStrSource = "XBMC File Source";
+	    Filters.Source.osdname = "XBMC File Source";
 	    return hr;
     } else {
       CLog::Log(LOGERROR, "%s Failed to open \"%s\" with source filter!", __FUNCTION__, pFileItem.m_strPath.c_str());
       return E_FAIL;
     }
   } else {  
-    if (SUCCEEDED(hr = InsertFilter(filterName, &m_SourceF, m_pStrSource)))
+    if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Source)))
     {
-      m_SplitterF = m_SourceF;
+      Filters.Splitter.pBF = Filters.Source.pBF;
       CStdString pWinFilePath = pFileItem.m_strPath;
       if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
         pWinFilePath.Replace("smb://", "\\\\");
@@ -119,7 +114,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       pWinFilePath.Replace("/", "\\");
 
       IFileSourceFilter *pFS = NULL;
-	    m_SplitterF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
+	    Filters.Splitter.pBF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
       
       CStdStringW strFileW;    
       g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
@@ -135,11 +130,11 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 }
 HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName)
 {
-  HRESULT hr = InsertFilter(filterName, &m_SplitterF, m_pStrSplitter);
+  HRESULT hr = InsertFilter(filterName, Filters.Splitter);
 
   if (SUCCEEDED(hr))
   {
-    if (SUCCEEDED(hr = ConnectFilters(m_pGraphBuilder, m_SourceF, m_SplitterF)))
+    if (SUCCEEDED(hr = ConnectFilters(m_pGraphBuilder, Filters.Source.pBF, Filters.Splitter.pBF)))
       CLog::Log(LOGNOTICE, "%s Successfully connected the source to the spillter", __FUNCTION__);
     else
       CLog::Log(LOGERROR, "%s Failed to connect the source to the spliter", __FUNCTION__);
@@ -245,21 +240,25 @@ HRESULT CFGLoader::InsertAudioRenderer()
     currentName.Format("Default DirectSound Device");
   }
 
-  m_pStrAudioRenderer = currentName;
   pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
-  hr = pFGF->Create(&m_AudioRendererF);
+  hr = pFGF->Create(&Filters.AudioRenderer.pBF);
   delete pFGF;
+
   if (FAILED(hr))
   {
     CLog::Log(LOGERROR, "%s Failed to create the audio renderer (%X)", __FUNCTION__, hr);
     return hr;
   }
-  hr = m_pGraphBuilder->AddFilter(m_AudioRendererF, DShowUtil::AnsiToUTF16(currentName));
+
+  Filters.AudioRenderer.osdname = currentName;
+  Filters.AudioRenderer.guid = DShowUtil::GUIDFromCString(currentGuid);
+
+  hr = m_pGraphBuilder->AddFilter(Filters.AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
 
   if (SUCCEEDED(hr))
-    CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrAudioRenderer.c_str());
+    CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, Filters.AudioRenderer.osdname.c_str());
   else
-    CLog::Log(LOGNOTICE, "%s Failed to add \"%s\" to the graph (result: %X)", __FUNCTION__, m_pStrAudioRenderer.c_str(), hr);
+    CLog::Log(LOGNOTICE, "%s Failed to add \"%s\" to the graph (result: %X)", __FUNCTION__, Filters.AudioRenderer.osdname.c_str(), hr);
 
   return hr;
 }
@@ -286,11 +285,19 @@ HRESULT CFGLoader::InsertVideoRenderer()
 
   // Renderers
   if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
+  {
     m_pFGF = new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR");
+    Filters.VideoRenderer.osdname = _T("XBMC EVR");
+  }
   else
+  {
     m_pFGF = new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)");
-  hr = m_pFGF->Create(&m_VideoRendererF);
-  hr = m_pGraphBuilder->AddFilter(m_VideoRendererF, m_pFGF->GetName());
+    Filters.VideoRenderer.osdname = _T("XBMC VMR9 (Renderless)");
+  }
+
+  
+  hr = m_pFGF->Create(&Filters.VideoRenderer.pBF);
+  hr = m_pGraphBuilder->AddFilter(Filters.VideoRenderer.pBF, m_pFGF->GetName());
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGDEBUG, "%s Allocator presenter successfully added to the graph (Renderer: %d)",  __FUNCTION__, m_CurrentRenderer);
@@ -377,7 +384,6 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   
   TiXmlElement *pRules = graphConfigRoot->FirstChildElement("rules");
   pRules = pRules->FirstChildElement("rule");
-  m_SplitterF = NULL;
 
   CStdString extension = pFileItem.GetAsUrl().GetFileType();
   //CStdString filterName;
@@ -424,7 +430,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
     filters.clear();
 
-    if (! m_SplitterF)
+    if (! Filters.Splitter.pBF)
     {
       c = new CFilterSelectionRule(pRules->FirstChildElement("splitter"), "splitter");
       c->GetFilters(pFileItem, filters);
@@ -444,7 +450,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     /* Ok, the splitter is added to the graph. We need to detect the video stream codec in order to choose
     if we use or not the dxva filter */
 
-    IBaseFilter *pBF = m_SplitterF;
+    IBaseFilter *pBF = Filters.Splitter.pBF;
     bool fourccfinded = false;
     BeginEnumPins(pBF, pEP, pPin)
     {
@@ -483,7 +489,6 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     EndEnumPins(pEP, pBF)
 
     // Insert extra first because first added, last connected!
-    CStdString extraName = "";
     TiXmlElement *pSubTags = pRules->FirstChildElement("extra");
     for (pSubTags; pSubTags; pSubTags = pSubTags->NextSiblingElement())
     {
@@ -491,8 +496,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
       c->GetFilters(pFileItem, filters, m_UsingDXVADecoder);
       delete c;
 
-      if (SUCCEEDED(InsertFilter(filters[0], &pBF, extraName)))
-        m_extraFilters.push_back(pBF);
+      SFilterInfos f;
+      if (SUCCEEDED(InsertFilter(filters[0], f)))
+        Filters.Extras.push_back(f);
 
       filters.clear();
     }
@@ -504,7 +510,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     if (filters.empty())
       return E_FAIL; //TODO: Error message
 
-    if (FAILED(InsertFilter(filters[0], &m_VideoDecF, m_pStrVideodec)))
+    if (FAILED(InsertFilter(filters[0], Filters.Video)))
     {
       return E_FAIL;
     }
@@ -518,7 +524,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     if (filters.empty())
       return E_FAIL;
 
-    if (FAILED(InsertFilter(filters[0], &m_AudioDecF, m_pStrAudiodec)))
+    if (FAILED(InsertFilter(filters[0], Filters.Audio)))
     {
       return E_FAIL;
     }
@@ -689,10 +695,10 @@ HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg, CStdString configFile)
   //}//end while
 }
 
-HRESULT CFGLoader::InsertFilter(const CStdString& filterName, IBaseFilter** ppBF, CStdString& strBFName)
+HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
 {
   HRESULT hr = S_OK;
-  *ppBF = NULL;
+  f.pBF = NULL;
   
   list<CFGFilterFile *>::const_iterator it = std::find_if(m_configFilter.begin(),
     m_configFilter.end(),
@@ -706,13 +712,15 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, IBaseFilter** ppBF
   } 
   else
   {
-    if(SUCCEEDED(hr = (*it)->Create(ppBF)))
+    if(SUCCEEDED(hr = (*it)->Create(&f.pBF)))
     {
-      g_charsetConverter.wToUTF8((*it)->GetName(), strBFName);
-      if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(*ppBF, (*it)->GetName().c_str())))
-        CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, strBFName.c_str());
+      g_charsetConverter.wToUTF8((*it)->GetName(), f.osdname);
+      if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(f.pBF, (*it)->GetName().c_str())))
+        CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
       else
-        CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, strBFName.c_str());
+        CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
+
+      f.guid = (*it)->GetCLSID();
     } 
     else
     {
@@ -723,11 +731,5 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, IBaseFilter** ppBF
   return hr;
 }
 
-IBaseFilter*              CFGLoader::m_SourceF = NULL;
-IBaseFilter*              CFGLoader::m_SplitterF = NULL;
-IBaseFilter*              CFGLoader::m_VideoDecF = NULL;
-IBaseFilter*              CFGLoader::m_AudioDecF = NULL;
-std::vector<IBaseFilter *> CFGLoader::m_extraFilters;
-IBaseFilter*              CFGLoader::m_AudioRendererF = NULL;
-IBaseFilter*              CFGLoader::m_VideoRendererF = NULL;
 bool                      CFGLoader::m_UsingDXVADecoder = false;
+SFilters                  CFGLoader::Filters;

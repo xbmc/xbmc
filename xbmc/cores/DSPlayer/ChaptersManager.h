@@ -54,11 +54,10 @@ public:
    */
   bool LoadChapters(void);
   /** Initialize the chapter's manager
-   * @param[in] Splitter Pointer to the splitter interface
    * @param[in] Graph Pointer to a CDSGraph instance
    * @return True if the manager is initialized, false else
    */
-  bool InitManager(IBaseFilter *Splitter, CDSGraph *Graph);
+  bool InitManager(CDSGraph *Graph);
 
 private:
   /// Constructor
@@ -72,8 +71,6 @@ private:
   long m_currentChapter;
   /// Pointer to the IAMExtendedSeeking interface
   IAMExtendedSeeking* m_pIAMExtendedSeeking;
-  /// Splitter
-  IBaseFilter* m_pSplitter;
   /// CDSGraph instance
   CDSGraph *m_pGraph;
 

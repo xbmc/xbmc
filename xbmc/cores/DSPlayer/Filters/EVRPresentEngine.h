@@ -73,7 +73,7 @@ private:
   HMODULE	pDXVA2HLib;
   HMODULE	pEVRHLib;
 protected:
-	HRESULT InitializeD3D();
+	HRESULT InitializeDXVA();
   HRESULT GetSwapChainPresentParameters(IMFMediaType *pType, D3DPRESENT_PARAMETERS* pPP);
 	HRESULT CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample,int surfaceIndex);
 

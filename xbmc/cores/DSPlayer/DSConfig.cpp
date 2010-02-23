@@ -87,7 +87,7 @@ void CDSConfig::ConfigureFilters()
 
 bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
 {
-  if (pBF == CFGLoader::GetAudioRenderer() || pBF == CFGLoader::GetVideoRenderer() )
+  if ((pBF == CFGLoader::Filters.AudioRenderer.pBF && CFGLoader::Filters.AudioRenderer.guid != CLSID_ReClock) || pBF == CFGLoader::Filters.VideoRenderer.pBF )
     return false;
 
   ISpecifyPropertyPages *pProp = NULL;

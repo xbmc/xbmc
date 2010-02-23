@@ -59,15 +59,14 @@ void CChaptersManager::UpdateChapters()
 
 bool CChaptersManager::LoadChapters()
 {
-  if (! m_pSplitter)
+  if (! CFGLoader::Filters.Splitter.pBF)
     return false;
 
-  CStdString splitterName;
-  g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(m_pSplitter), splitterName);
+  CStdString splitterName = CFGLoader::Filters.Splitter.osdname;
 
   CLog::Log(LOGDEBUG, "%s Looking for chapters in \"%s\"", __FUNCTION__, splitterName.c_str());
 
-  if (SUCCEEDED(m_pSplitter->QueryInterface(IID_IAMExtendedSeeking, (void **) &m_pIAMExtendedSeeking)))
+  if (SUCCEEDED(CFGLoader::Filters.Splitter.pBF->QueryInterface(IID_IAMExtendedSeeking, (void **) &m_pIAMExtendedSeeking)))
   {
     long chaptersCount = -1;
     m_pIAMExtendedSeeking->get_MarkerCount(&chaptersCount);
@@ -135,11 +134,9 @@ int CChaptersManager::SeekChapter(int iChapter)
   return 0;
 }
 
-bool CChaptersManager::InitManager(IBaseFilter *Splitter, CDSGraph *Graph)
+bool CChaptersManager::InitManager(CDSGraph *Graph)
 {
-  m_pSplitter = Splitter;
   m_pGraph = Graph;
-
   m_init = true;
 
   return true;

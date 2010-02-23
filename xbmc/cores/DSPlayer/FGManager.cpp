@@ -561,11 +561,11 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   } else
     CLog::Log(LOGDEBUG, "%s Successfully loaded filters rules", __FUNCTION__);
 
-  hr = ConnectFilter(CFGLoader::GetSplitter(), NULL);
+  hr = ConnectFilter(CFGLoader::Filters.Splitter.pBF , NULL);
 
   if (hr != S_OK)
   {
-    IBaseFilter *pBF = CFGLoader::GetSplitter();
+    IBaseFilter *pBF = CFGLoader::Filters.Splitter.pBF;
     int nVideoPin = 0, nAudioPin = 0;
     int nConnectedVideoPin = 0, nConnectedAudioPin = 0;
     bool videoError = false, audioError = false;
@@ -632,13 +632,14 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   return hr;  
 }
 
-HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer)
+HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo, CStdString* splitterInfo, CStdString* audioInfo,
+                                CStdString* videoInfo, CStdString* audioRenderer)
 {
-  *sourceInfo = m_CfgLoader->GetSourceFilterInfo();
-  *splitterInfo = m_CfgLoader->GetSplitterFilterInfo();
-  *audioInfo = m_CfgLoader->GetAudioDecInfo();
-  *videoInfo = m_CfgLoader->GetVideoDecInfo();
-  *audioRenderer = m_CfgLoader->GetAudioRendererInfo();
+  *sourceInfo = CFGLoader::Filters.Source.osdname;
+  *splitterInfo = CFGLoader::Filters.Splitter.osdname;
+  *audioInfo = CFGLoader::Filters.Audio.osdname;
+  *videoInfo = CFGLoader::Filters.Video.osdname;
+  *audioRenderer = CFGLoader::Filters.AudioRenderer.osdname;
   return S_OK;
 }
 
@@ -719,7 +720,7 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
   /* Only the video pin and one audio pin can be connected
   if the filter is the splitter */
-  if (pBF == CFGLoader::GetSplitter()
+  if (pBF == CFGLoader::Filters.Splitter.pBF
     && m_audioPinConnected
     && m_videoPinConnected
     && m_subtitlePinConnected)
@@ -737,13 +738,13 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
       }
       EndEnumMediaTypes(pEnum, pMediaType)
 
-      if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Video) 
+      if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Video) 
           && m_videoPinConnected)
         continue;                               // A video pin is already connected, continue !
-      else if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Audio)
+      else if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Audio)
           && m_audioPinConnected)
         continue;                               // An audio pin is already connected, continue !
-      else if (pBF == CFGLoader::GetSplitter() && mediaType == MEDIATYPE_Subtitle
+      else if (pBF == CFGLoader::Filters.Splitter.pBF && mediaType == MEDIATYPE_Subtitle
           && m_subtitlePinConnected)
         continue;                               // We don't connect subtitle pin yet, continue !*/
 
@@ -769,13 +770,13 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
       m_streampath.pop_back();
 
-      if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Video) 
+      if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Video) 
           && SUCCEEDED(hr))
         m_videoPinConnected = true;
-      else if (pBF == CFGLoader::GetSplitter() && (mediaType == MEDIATYPE_Audio)
+      else if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Audio)
           && SUCCEEDED(hr))
         m_audioPinConnected = true;
-      else if (pBF == CFGLoader::GetSplitter() && mediaType == MEDIATYPE_Subtitle
+      else if (pBF == CFGLoader::Filters.Splitter.pBF && mediaType == MEDIATYPE_Subtitle
           && SUCCEEDED(hr))
         m_subtitlePinConnected = true;
 

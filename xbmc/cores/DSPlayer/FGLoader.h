@@ -36,14 +36,66 @@ enum DIRECTSHOW_RENDERER
     DIRECTSHOW_RENDERER_UNDEF = 3
 };
 
+struct SFilterInfos
+{
+  SFilterInfos()
+  {
+    Clear();
+  }
+  
+  void Clear()
+  {
+    pBF = NULL;
+    osdname = "";
+    guid = GUID_NULL;
+  }
+
+  IBaseFilter *pBF;
+  CStdString osdname;
+  GUID guid;
+};
+
+struct SFilters
+{
+  SFilterInfos Source;
+  SFilterInfos Splitter;
+  SFilterInfos Video;
+  SFilterInfos Audio;
+  SFilterInfos AudioRenderer;
+  SFilterInfos VideoRenderer;
+  std::vector<SFilterInfos> Extras;
+
+  bool PlayingArchive;
+
+  void Clear()
+  {
+    PlayingArchive = false;
+    Source.Clear();
+    Splitter.Clear();
+    Video.Clear();
+    AudioRenderer.Clear();
+    Audio.Clear();
+    VideoRenderer.Clear();
+    for (std::vector<SFilterInfos>::iterator it = Extras.begin();
+      it != Extras.end(); ++it)
+      (*it).Clear();
+  }
+
+  SFilters()
+  {
+    Clear();
+  }
+};
+
 class CFGLoader : public CCritSec
 {
 private:
-  HRESULT   InsertFilter(const CStdString& filterName, IBaseFilter** ppBF, CStdString& strBFName);
+  HRESULT   InsertFilter(const CStdString& filterName, SFilterInfos& f);
 public:
   CFGLoader();
   virtual ~CFGLoader();
 
+  static SFilters Filters;
 
   HRESULT    LoadConfig(IFilterGraph2* fg,CStdString configFile);
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
@@ -54,40 +106,15 @@ public:
   HRESULT    InsertAutoLoad();
 
   static DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
-  
-  static IBaseFilter* GetSplitter() { return m_SplitterF; };
-  static IBaseFilter* GetSource() { return m_SourceF; }
-  static IBaseFilter* GetVideoDec() { return m_VideoDecF; }
-  static IBaseFilter* GetAudioDec() { return m_AudioDecF; }
-  static std::vector<IBaseFilter*>& GetExtras() { return m_extraFilters; }
-  static IBaseFilter* GetAudioRenderer() { return m_AudioRendererF; }
-  static IBaseFilter* GetVideoRenderer() {return m_VideoRendererF; }
   static bool         IsUsingDXVADecoder() { return m_UsingDXVADecoder; }
 
-  CStdString GetVideoDecInfo(){return  m_pStrVideodec;};
-  CStdString GetAudioDecInfo(){return  m_pStrAudiodec;};
-  CStdString GetSourceFilterInfo(){return  m_pStrSource;};
-  CStdString GetSplitterFilterInfo(){return  m_pStrSplitter;};
-  CStdString GetAudioRendererInfo(){return  m_pStrAudioRenderer;};
 protected:
   IFilterGraph2*            m_pGraphBuilder;
   CStdString                m_xbmcConfigFilePath;
-  CStdString                m_pStrVideodec;
-  CStdString                m_pStrAudiodec;
-  CStdString                m_pStrAudioRenderer;
-  CStdString                m_pStrSource;
-  CStdString                m_pStrSplitter;
   std::list<CFGFilterFile*> m_configFilter;
   XFILE::CFile              m_File;
 
-  static IBaseFilter*              m_SourceF;
-  static IBaseFilter*              m_SplitterF;
-  static IBaseFilter*              m_VideoDecF;
-  static IBaseFilter*              m_AudioDecF;
-  static std::vector<IBaseFilter *> m_extraFilters;
-  static IBaseFilter*              m_AudioRendererF;
-  static IBaseFilter*              m_VideoRendererF;
-  static bool                      m_UsingDXVADecoder;
+  static bool               m_UsingDXVADecoder;
 
   static DIRECTSHOW_RENDERER m_CurrentRenderer;
   CFGFilterVideoRenderer*   m_pFGF;

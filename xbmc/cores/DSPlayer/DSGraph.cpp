@@ -114,7 +114,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   CStreamsManager::getSingleton()->LoadStreams();
 
   // Chapters
-  CChaptersManager::getSingleton()->InitManager(m_pGraphBuilder->GetSplitter(), this);
+  CChaptersManager::getSingleton()->InitManager(this);
   if (!CChaptersManager::getSingleton()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
   
@@ -516,53 +516,53 @@ HRESULT CDSGraph::UnloadGraph()
     } while (c != 0);
   }*/
   
-  if (CFGLoader::GetSplitter())
+  if (CFGLoader::Filters.Splitter.pBF)
   {
     do
     {
-      c = CFGLoader::GetSplitter()->Release();
+      c = CFGLoader::Filters.Splitter.pBF->Release();
     } while (c != 0);
   }
 
-  if (CFGLoader::GetAudioDec())
+  if (CFGLoader::Filters.AudioRenderer.pBF)
   {
     do
     {
-      c = CFGLoader::GetAudioDec()->Release();
+      c = CFGLoader::Filters.AudioRenderer.pBF->Release();
     } while (c != 0);
   }
 
-  if (CFGLoader::GetVideoDec())
+  if (CFGLoader::Filters.VideoRenderer.pBF)
   {
     do 
     {
-      c = CFGLoader::GetVideoDec()->Release();
+      c =CFGLoader::Filters.VideoRenderer.pBF->Release();
     } while (c != 0);
   }
   
-  while (! CFGLoader::GetExtras().empty())
+  while (! CFGLoader::Filters.Extras.empty())
   {
     do
     {
-      c = CFGLoader::GetExtras().back()->Release();
+      c = CFGLoader::Filters.Extras.back().pBF->Release();
     } while (c != 0);
 
-    m_pGraphBuilder->GetLoader()->GetExtras().pop_back();
+    CFGLoader::Filters.Extras.pop_back();
   }
 
-  if (CFGLoader::GetAudioRenderer())
+  if (CFGLoader::Filters.Audio.pBF)
   {
     do
     {
-      c = CFGLoader::GetAudioRenderer()->Release();
+      c = CFGLoader::Filters.Audio.pBF->Release();
     } while (c != 0);
   }
 
-  if (CFGLoader::GetVideoRenderer())
+  if (CFGLoader::Filters.Video.pBF)
   {
     do 
     {
-      c = CFGLoader::GetVideoRenderer()->Release();
+      c = CFGLoader::Filters.Video.pBF->Release();
     } while (c != 0);
   }
 
@@ -686,6 +686,11 @@ CStdString CDSGraph::GetGeneralInfo()
     else
       generalInfo += " | Splitter: " + m_VideoInfo.filter_splitter;
   }
+
+  if (generalInfo.empty())
+    generalInfo = "Video renderer: " + CFGLoader::Filters.VideoRenderer.osdname;
+  else
+    generalInfo += " | Video renderer: " + CFGLoader::Filters.VideoRenderer.osdname;
 
   return generalInfo;
 }
