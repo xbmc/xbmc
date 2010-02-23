@@ -255,13 +255,13 @@ protected:
   void SetCaching(ECacheState state);
 
   __int64 GetTotalTimeInMsec();
-  void FlushBuffers(bool queued);
+  void FlushBuffers(bool queued, double startpts = DVD_NOPTS_VALUE);
 
   void HandleMessages();
   void HandlePlaySpeed();
   bool IsInMenu() const;
 
-  void SynchronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
+  void SynchronizePlayers(DWORD sources);
   void SynchronizeDemuxer(DWORD timeout);
   void CheckAutoSceneSkip();
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
