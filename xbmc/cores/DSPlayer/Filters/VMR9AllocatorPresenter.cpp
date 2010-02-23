@@ -352,17 +352,11 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   //To do implement the texture surface on the present image
   //if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
   //  lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
-
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
-    CLog::Log(LOGDEBUG,"VMR9AllocFlag_3DRenderTarget");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_DXVATarget)
-    CLog::Log(LOGDEBUG,"VMR9AllocFlag_DXVATarget");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_OffscreenSurface) 
-    CLog::Log(LOGDEBUG,"VMR9AllocFlag_OffscreenSurface");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_RGBDynamicSwitch) 
-    CLog::Log(LOGDEBUG,"VMR9AllocFlag_RGBDynamicSwitch");
-  if (lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface )
-    CLog::Log(LOGDEBUG,"VMR9AllocFlag_TextureSurface");
+  CLog::Log(LOGDEBUG,"%s setting flag VMR9AllocFlag_3DRenderTarget and VMR9AllocFlag_TextureSurface",__FUNCTION__);
+  lpAllocInfo->dwFlags = VMR9AllocFlag_TextureSurface |VMR9AllocFlag_3DRenderTarget;
+  //without that format the allocate surface helper always fails for no known reason
+  CLog::Log(LOGDEBUG,"%s setting vmr9 format to D3DFMT_UNKNOWN",__FUNCTION__);
+  lpAllocInfo->Format = D3DFMT_UNKNOWN;
   
   if (*lpNumBuffers == 1)
 	{
@@ -383,7 +377,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
   m_iVideoHeight = lpAllocInfo->dwHeight;
 
   //INITIALIZE VIDEO SURFACE THERE
-  hr = CreateSurfaces();
+  hr = CreateSurfaces(D3DFMT_A8R8G8B8);
 
   if ( FAILED( hr ) )
     return hr;
@@ -703,7 +697,12 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   {
     // When using VMR9AllocFlag_TextureSurface
     // Didnt got it working yet
-    SAFE_RELEASE(pTexture);
+    m_pVideoSurface[m_nCurSurface] = lpPresInfo->lpSurf;
+    if (m_pVideoTexture[m_nCurSurface])
+    {
+      m_pVideoTexture[m_nCurSurface]->Set(pTexture);
+    }
+    
   }
   else
   {

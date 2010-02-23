@@ -49,6 +49,16 @@ public:
   bool GetSurfaceLevel(UINT level, LPDIRECT3DSURFACE9 *surface);
 
   LPDIRECT3DTEXTURE9 Get() const { return m_texture; };
+  bool Set(LPDIRECT3DTEXTURE9 texture) 
+  { 
+    if (texture) 
+    {
+      m_texture = texture;
+      return true;
+    }
+    else
+      return false;
+  };
 
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
