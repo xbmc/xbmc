@@ -168,6 +168,29 @@ public:
 
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   CLabelInfo &GetLabelInfo() { return m_label; };
+
+  /*! \brief Check a left aligned and right aligned label for overlap and cut the labels off so that no overlap occurs
+   
+   If a left-aligned label occupies some of the same space on screen as a right-aligned label, then we may be able to
+   correct for this by restricting the width of one or both of them. This routine checks two labels to see whether they
+   satisfy this assumption and, if so, adjusts the render rect of both labels so that they no longer do so.  The order
+   of the two labels is not important, but we do assume that the left-aligned label is also the left-most on screen, and
+   that the right-aligned label is the right most on-screen, so that they overlap due to the fact that one or both of
+   the labels are longer than anticipated.  In the following diagram, [R...[R  R] refers to the maximal allowed and
+   actual space occupied by the right label.  Similarly, [L   L]...L] refers to the maximal and actual space occupied
+   by the left label.  | refers to the central cutting point, i.e. the point that would divide the maximal allowed
+   overlap perfectly in two.  There are 3 scenarios to consider:
+   
+   cut
+   [L       [R...[R  L].|..........L]         R]     left label ends to the left of the cut -> just crop the left label.
+   [L       [R.....[R   |      L]..L]         R]     both left and right labels occupy more than the cut allows, so crop both.
+   [L       [R..........|.[R   L]..L]         R]     right label ends to the right of the cut -> just crop the right label.
+   
+   \param label1 First label to check
+   \param label2 Second label to check
+   */
+  static void CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
+  
 protected:
   color_t GetColor() const;
   
