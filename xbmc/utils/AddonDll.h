@@ -186,12 +186,12 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
   m_pDll->Destroy();
 
+  delete m_pHelpers;
+  m_pHelpers = NULL;
   delete m_pStruct;
   m_pStruct = NULL;
   delete m_pDll;
   m_pDll = NULL;
-  delete m_pHelpers;
-  m_pHelpers = NULL;
   m_initialized = false;
   CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
 }

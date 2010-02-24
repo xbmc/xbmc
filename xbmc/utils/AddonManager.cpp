@@ -657,17 +657,8 @@ bool CAddonMgr::UpdateIfKnown(AddonPtr &addon)
         //TODO choose most recent version if varying
         m_addons[addon->Type()][i] = addon;
         CStdString uuid = addon->UUID();
-        AddonPtr addon = m_uuidMap[uuid];
-        if (!addon)
-        {
-          m_uuidMap.insert(std::make_pair(addon->UUID(), addon));
-        }
-        else if (addon->Disabled())
-        {
-          m_uuidMap.erase(uuid);
-          m_uuidMap.insert(std::make_pair(addon->UUID(), addon));
-        }
-
+        m_uuidMap.erase(uuid);
+        m_uuidMap.insert(std::make_pair(addon->UUID(), addon));
         return true;
       }
     }

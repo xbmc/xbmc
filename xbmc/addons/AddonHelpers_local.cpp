@@ -48,8 +48,6 @@ CAddonHelpers::CAddonHelpers(CAddon* addon)
 
 CAddonHelpers::~CAddonHelpers()
 {
-  delete m_callbacks;
-  m_callbacks = NULL;
   delete m_helperAddon;
   m_helperAddon = NULL;
   delete m_helperGUI;
@@ -58,6 +56,8 @@ CAddonHelpers::~CAddonHelpers()
   m_helperPVR = NULL;
   delete m_helperVis;
   m_helperVis = NULL;
+  delete m_callbacks;
+  m_callbacks = NULL;
 }
 
 }; /* namespace ADDON */

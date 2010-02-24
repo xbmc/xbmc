@@ -58,8 +58,6 @@ CPVRClient::CPVRClient(const ADDON::AddonProps& props) : ADDON::CAddonDll<DllPVR
 
 CPVRClient::~CPVRClient()
 {
-  /* tell the AddOn to deinitialize */
-  Destroy();
 }
 
 bool CPVRClient::Create(long clientID, IPVRClientCallback *pvrCB)
