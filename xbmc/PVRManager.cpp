@@ -898,12 +898,14 @@ void CPVRManager::ResetDatabase()
 {
   CLog::Log(LOGNOTICE,"PVR: TV Database is now set to it's initial state");
 
-   CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-   pDlgProgress->SetLine(0, "");
-   pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
-   pDlgProgress->SetLine(2, "");
-   pDlgProgress->StartModal();
-   pDlgProgress->Progress();
+  CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  pDlgProgress->SetLine(0, "");
+  pDlgProgress->SetLine(1, g_localizeStrings.Get(19186));
+  pDlgProgress->SetLine(2, "");
+  pDlgProgress->StartModal();
+  pDlgProgress->Progress();
+
+  PVREpgs.InihibitUpdate(true);
 
   if (m_currentPlayingRecording || m_currentPlayingChannel)
   {
@@ -954,6 +956,8 @@ void CPVRManager::ResetEPG()
   pDlgProgress->SetLine(2, "");
   pDlgProgress->StartModal();
   pDlgProgress->Progress();
+
+  PVREpgs.InihibitUpdate(true);
 
   if (m_currentPlayingRecording || m_currentPlayingChannel)
   {

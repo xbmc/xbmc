@@ -575,6 +575,7 @@ void cPVREpgs::Load()
   CLIENTMAP   *clients  = g_PVRManager.Clients();
   CTVDatabase *database = g_PVRManager.GetTVDatabase();
   bool completeNew      = true;
+  m_bInihibitUpdate     = true;
 
   CLog::Log(LOGINFO, "PVR: Starting EPG load for %i channels", channelcount);
 
@@ -724,6 +725,7 @@ void cPVREpgs::Load()
 
   database->Close();
   scanner->Close();
+  m_bInihibitUpdate = false;
 
   CLog::Log(LOGINFO, "PVR: EPG load finished after %li.%li seconds", (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
 
@@ -735,6 +737,8 @@ void cPVREpgs::Unload()
   CSingleLock lock(m_critSection);
 
   CLog::Log(LOGINFO, "PVR: Unloading EPG information");
+
+  m_bInihibitUpdate = true;
 
   for (unsigned int i = 0; i < size(); i++)
   {
@@ -763,6 +767,9 @@ void cPVREpgs::Update(bool Scan)
   int lingertime    = g_guiSettings.GetInt("pvrmenu.lingertime")*60;
   int daysToLoad    = g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
 
+  if (m_bInihibitUpdate)
+    return;
+
   if (Scan)
     CLog::Log(LOGNOTICE, "PVR: Starting EPG scan for %i channels", channelcount);
   else
@@ -780,6 +787,9 @@ void cPVREpgs::Update(bool Scan)
 
   for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
   {
+    if (m_bInihibitUpdate)
+      return;
+
     CSingleLock lock(m_critSection);
 
     if (PVRChannelsTV[i].GrabEpg())
@@ -910,6 +920,9 @@ void cPVREpgs::Update(bool Scan)
 
   for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
   {
+    if (m_bInihibitUpdate)
+      return;
+
     CSingleLock lock(m_critSection);
 
     if (PVRChannelsRadio[i].GrabEpg())

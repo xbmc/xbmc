@@ -188,6 +188,7 @@ class cPVREpgs : public std::vector<cPVREpg*>
 
 private:
   CCriticalSection m_critSection;
+  bool  m_bInihibitUpdate;
 
 public:
   cPVREpgs(void);
@@ -203,6 +204,7 @@ public:
   void Load();
   void Unload();
   void Update(bool Scan = false);
+  void InihibitUpdate(bool yesNo) { m_bInihibitUpdate = yesNo; }
   int GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter);
   int GetEPGAll(CFileItemList* results, bool radio = false);
   int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
