@@ -211,7 +211,7 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 	char upnpFile[32];
 	char * p1, * p2;
 	char msg[2048];
-	char opt;
+	int opt;
 	int r, len, numRTV;
 	SOCKET s1, s2;
 	struct timeval tv;
@@ -250,7 +250,7 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
 	}
 
 	opt = 1;
-	if ((setsockopt(s1, SOL_SOCKET, SO_BROADCAST, &opt, sizeof(opt))) == -1) {
+	if ((setsockopt(s1, SOL_SOCKET, SO_BROADCAST, (const void*)&opt, sizeof(opt))) < 0) {
 		goto error;
 	}
 
