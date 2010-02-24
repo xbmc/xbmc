@@ -384,9 +384,9 @@ public:
   int GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
 
   // searching functions
-  void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
+  void GetMoviesByActor(const CStdString& strActor, CFileItemList& items);
+  void GetTvShowsByActor(const CStdString& strActor, CFileItemList& items);
+  void GetEpisodesByActor(const CStdString& strActor, CFileItemList& items);
 
   void GetMusicVideosByArtist(const CStdString& strArtist, CFileItemList& items);
   void GetMusicVideosByAlbum(const CStdString& strAlbum, CFileItemList& items);
