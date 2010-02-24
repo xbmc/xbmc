@@ -20,6 +20,7 @@
  */
 
 #include "SamiTagConvertor.h"
+#include "DVDSubtitleStream.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "utils/RegExp.h"
 
@@ -42,7 +43,7 @@ bool SamiTagConvertor::Init()
   return true;
 }
 
-void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len)
+void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len, const char* lang)
 {
   CStdStringA strUTF8;
   strUTF8.assign(line, len);
@@ -50,6 +51,7 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
   strUTF8.Replace("\n", "");
 
   int pos = 0;
+  int del_start = 0;
   while ((pos=m_tags->RegFind(strUTF8.c_str(), pos)) >= 0)
   {
     // Parse Tags
@@ -126,6 +128,43 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
         }
       }
     }
+    else if (lang && (fullTag.Left(3) == "<p "))
+    {
+      int pos2 = 3;
+      while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
+      {
+        CStdString tagOptionName = m_tagOptions->GetMatch(1);
+        CStdString tagOptionValue = m_tagOptions->GetMatch(2);
+        pos2 += tagOptionName.length() + tagOptionValue.length();
+        if (tagOptionName == "class")
+        {
+          if (tag_flag[3])
+          {
+            strUTF8.erase(del_start, pos - del_start);
+            pos = del_start;
+          }
+          if (!tagOptionValue.Compare(lang))
+          {
+            tag_flag[3] = false;
+          }
+          else
+          {
+            tag_flag[3] = true;
+            del_start = pos;
+          }
+          break;
+        }
+      }
+    }
+    else if (fullTag == "</p>")
+    {
+      if (tag_flag[3])
+      {
+        strUTF8.erase(del_start, pos - del_start);
+        pos = del_start;
+        tag_flag[3] = false;
+      }
+    }
     else if (fullTag == "<br>")
     {
       if( !strUTF8.IsEmpty() )
@@ -135,6 +174,9 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
       }
     }
   }
+
+  if(tag_flag[3])
+    strUTF8.erase(del_start);
 
   if (strUTF8.IsEmpty())
     return;
@@ -163,4 +205,46 @@ void SamiTagConvertor::CloseTag(CDVDOverlayText* pOverlay)
     pOverlay->AddElement(new CDVDOverlayText::CElementText("[/COLOR]"));
     tag_flag[2] = false;
   }
+  tag_flag[3] = false;
 }
+
+void SamiTagConvertor::LoadHead(CDVDSubtitleStream* samiStream)
+{
+  char line[1024];
+  bool inSTYLE = false;
+  CRegExp reg(true);
+  if (!reg.RegComp("\\.([a-z]+)[ \t]*\\{[ \t]*name:([^;]*?);[ \t]*lang:([^;]*?);[ \t]*SAMIType:([^;]*?);[ \t]*\\}"))
+    return;
+
+  while (samiStream->ReadLine(line, sizeof(line)))
+  {
+    if (!strncmp(line, "<BODY>", 6))
+      break;
+    if (inSTYLE)
+    {
+      if (!strncmp(line, "</STYLE>", 8))
+        break;
+      else
+      {
+        if (reg.RegFind(line) > -1)
+        {
+          SLangclass lc;
+          lc.ID = reg.GetMatch(1);
+          lc.Name = reg.GetMatch(2);
+          lc.Lang = reg.GetMatch(3);
+          lc.SAMIType = reg.GetMatch(4);
+          lc.Name.Trim();
+          lc.Lang.Trim();
+          lc.SAMIType.Trim();
+          m_Langclass.push_back(lc);
+        }
+      }
+    }
+    else
+    {
+      if (!strncmp(line, "<STYLE TYPE=\"text/css\">", 23))
+        inSTYLE = true;
+    }
+  }
+}
+

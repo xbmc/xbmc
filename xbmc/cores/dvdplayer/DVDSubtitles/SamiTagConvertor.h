@@ -23,6 +23,7 @@
 #include <stdio.h>
 
 class CDVDOverlayText;
+class CDVDSubtitleStream;
 class CRegExp;
 
 class SamiTagConvertor
@@ -32,17 +33,30 @@ public:
   {
     m_tags = NULL;
     m_tagOptions = NULL;
-    tag_flag[0] = false;
-    tag_flag[1] = false;
-    tag_flag[2] = false;
+    tag_flag[0] = false; //bold tag
+    tag_flag[1] = false; //italic tag
+    tag_flag[2] = false; //color tag
+    tag_flag[3] = false; //set to true when classID != lang
   }
   virtual ~SamiTagConvertor();
   bool Init();
-  void ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len);
+  void ConvertLine(CDVDOverlayText* pOverlay, const char* line, int len, const char* lang = NULL);
   void CloseTag(CDVDOverlayText* pOverlay);
+  void LoadHead(CDVDSubtitleStream* samiStream);
+
+  typedef struct
+  {
+    CStdString ID;
+    CStdString Name;
+    CStdString Lang;
+    CStdString SAMIType;
+  } SLangclass;
+
+  std::vector<SLangclass> m_Langclass;
 
 private:
   CRegExp *m_tags;
   CRegExp *m_tagOptions;
-  bool tag_flag[3];
+  bool tag_flag[4];
 };
+
