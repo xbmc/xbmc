@@ -2598,30 +2598,18 @@ void CUtil::RemoveIllegalChars( CStdString& strText)
 void CUtil::ClearSubtitles()
 {
   //delete cached subs
-  WIN32_FIND_DATA wfd;
-#ifndef _LINUX
-  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*.*"), &wfd));
-#else
-  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*"), &wfd));
-#endif
-  if (hFind.isValid())
+  CFileItemList items;
+  CDirectory::GetDirectory("special://temp/",items);
+  for( int i=0;i<items.Size();++i)
   {
-    do
+    if (!items[i]->m_bIsFolder)
     {
-      if (wfd.cFileName[0] != 0)
+      if ( items[i]->m_strPath.Find("subtitle") >= 0 || items[i]->m_strPath.Find("vobsub_queue") >= 0 )
       {
-        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-        {
-          CStdString strFile;
-          strFile.Format("special://temp/%s", wfd.cFileName);
-          if (strFile.Find("subtitle") >= 0 )
-              CFile::Delete(strFile);
-          else if (strFile.Find("vobsub_queue") >= 0 )
-            CFile::Delete(strFile);
-          }
-        }
+        CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->m_strPath.c_str());
+        CFile::Delete(items[i]->m_strPath);
       }
-    while (FindNextFile((HANDLE)hFind, &wfd));
+    }
   }
 }
 
@@ -2629,9 +2617,6 @@ static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
-  // Clear any subtitles first
-  ClearSubtitles();
-
   DWORD startTimer = timeGetTime();
   CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
