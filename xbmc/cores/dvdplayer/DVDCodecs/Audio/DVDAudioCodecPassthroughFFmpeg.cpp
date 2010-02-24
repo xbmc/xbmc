@@ -343,8 +343,10 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     return false;
   }
 
-  if (!m_dllAvFormat.Load() || !m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load())
     return false;
+
+  m_dllAvFormat.av_register_all();
 
   /* see if the muxer supports our codec (see spdif.c for supported formats) */
   if (!SupportsFormat(hints))

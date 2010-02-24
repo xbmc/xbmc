@@ -704,7 +704,7 @@ namespace PYXBMC
     "\n"
     "path           : string or unicode - Path to format\n"
     "\n"
-    "*Note, Only useful if you are coding for both Linux and the Xbox.\n"
+    "*Note, Only useful if you are coding for both Linux and Windows/Xbox.\n"
     "       e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'\n"
     "       on Linux. Would return 'special://masterprofile/script_data' on the Xbox.\n"
     "\n"
@@ -732,6 +732,29 @@ namespace PYXBMC
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
+  }
+
+  // validatePath function
+  PyDoc_STRVAR(validatePath__doc__,
+    "validatePath(path) -- Returns the validated path.\n"
+    "\n"
+    "path           : string or unicode - Path to format\n"
+    "\n"
+    "*Note, Only useful if you are coding for both Linux and Windows/Xbox for fixing slash problems.\n"
+    "       e.g. Corrects 'Z://something' -> 'Z:\\something'\n"
+    "\n"
+    "example:\n"
+    "  - fpath = xbmc.validatePath(somepath)\n");
+
+  PyObject* XBMC_ValidatePath(PyObject *self, PyObject *args)
+  {
+    PyObject *pObjectText;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
+
+    CStdString strText;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
+
+    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText).c_str());
   }
 
   // getRegion function

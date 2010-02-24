@@ -26,6 +26,7 @@
 #include "DVDStreamInfo.h"
 #include "StdString.h"
 #include "SamiTagConvertor.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -51,9 +52,28 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   if (!reg.RegComp("<SYNC START=([0-9]+)>"))
     return false;
 
+  CStdString strFileName;
+  CStdString strClassID;
+  strFileName = CUtil::GetFileName(m_filename);
+
   SamiTagConvertor TagConv;
   if (!TagConv.Init())
     return false;
+  TagConv.LoadHead(m_pStream);
+  if (TagConv.m_Langclass.size() >= 2)
+  {
+    for (unsigned int i = 0; i < TagConv.m_Langclass.size(); i++)
+    {
+      if (strFileName.Find(TagConv.m_Langclass[i].Name, 9) == 9)
+      {
+        strClassID = TagConv.m_Langclass[i].ID.ToLower();
+        break;
+      }
+    }
+  }
+  const char *lang = NULL;
+  if (!strClassID.IsEmpty())
+    lang = strClassID.c_str();
 
   CDVDOverlayText* pOverlay = NULL;
   while (m_pStream->ReadLine(line, sizeof(line)))
@@ -65,7 +85,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       CStdString start = reg.GetMatch(1);
       if(pOverlay)
       {
-        TagConv.ConvertLine(pOverlay, text, pos);
+        TagConv.ConvertLine(pOverlay, text, pos, lang);
         pOverlay->iPTSStopTime  = (double)atoi(start.c_str()) * DVD_TIME_BASE / 1000;
         pOverlay->Release();
         TagConv.CloseTag(pOverlay);
@@ -80,7 +100,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       text += pos + reg.GetFindLen();
     }
     if(pOverlay)
-      TagConv.ConvertLine(pOverlay, text, strlen(text));
+      TagConv.ConvertLine(pOverlay, text, strlen(text), lang);
   }
   m_collection.Sort();
   return true;

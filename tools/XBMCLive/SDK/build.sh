@@ -47,9 +47,9 @@ cleanup()
 trap 'cleanup' EXIT TERM INT
 
 
-if [ -z $DISTROCODENAME ]; then
+if [ -z $VARIANTNAME ]; then
 	# Get host codename by default
-	export DISTROCODENAME=$(cat /etc/lsb-release | grep CODENAME | cut -d= -f2)
+	export VARIANTNAME=$(cat /etc/lsb-release | grep CODENAME | cut -d= -f2)
 fi
 
 THISDIR=$(pwd)
@@ -92,8 +92,8 @@ if ! which lh > /dev/null ; then
 
 		# Fix for missing directory for Ubuntu's d-i, to be removed when fixed upstream!
 		cd live-helper/data/debian-cd
-		if [ ! -h $DISTROCODENAME ]; then
-			ln -s lenny $DISTROCODENAME
+		if [ ! -h $VARIANTNAME ]; then
+			ln -s lenny $VARIANTNAME
 		fi
 		cd $WORKPATH/Tools
 	fi
@@ -106,7 +106,7 @@ if ! which lh > /dev/null ; then
 	cd $THISDIR
 fi
 
-echo "Start building, using Ubuntu $DISTROCODENAME repositories ..."
+echo "Start building variant $VARIANTNAME ..."
 
 
 cd $WORKPATH
@@ -114,9 +114,9 @@ cd $WORKPATH
 # Put in place distro variants, remove other variants
 find ./  -name "*-variant" | \
 while read i; do
-#	if [[ $i =~ $DISTROCODENAME-variant ]]; then
-	if [ -n "$(echo $i | grep $DISTROCODENAME-variant)" ]; then
-		j=${i%%.$DISTROCODENAME-variant}
+#	if [[ $i =~ $VARIANTNAME-variant ]]; then
+	if [ -n "$(echo $i | grep $VARIANTNAME-variant)" ]; then
+		j=${i%%.$VARIANTNAME-variant}
 		mv $i $j
 	else
 		rm $i

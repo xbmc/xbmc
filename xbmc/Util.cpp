@@ -94,6 +94,8 @@
 #include "utils/log.h"
 #include "Picture.h"
 #include "JobManager.h"
+#include "cores/dvdplayer/DVDSubtitles/SamiTagConvertor.h"
+#include "cores/dvdplayer/DVDSubtitles/DVDSubtitleStream.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1348,30 +1350,17 @@ void CUtil::RemoveTempFiles()
 void CUtil::ClearSubtitles()
 {
   //delete cached subs
-  WIN32_FIND_DATA wfd;
-#ifndef _LINUX
-  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*.*"), &wfd));
-#else
-  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*"), &wfd));
-#endif
-  if (hFind.isValid())
+  CFileItemList items;
+  CDirectory::GetDirectory("special://temp/",items);
+  for( int i=0;i<items.Size();++i)
   {
-    do
+    if (!items[i]->m_bIsFolder)
     {
-      if (wfd.cFileName[0] != 0)
-      {
-        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-        {
-          CStdString strFile;
-          strFile.Format("special://temp/%s", wfd.cFileName);
-          if (strFile.Find("subtitle") >= 0 )
-            CFile::Delete(strFile);
-          else if (strFile.Find("vobsub_queue") >= 0 )
-            CFile::Delete(strFile);
-        }
-      }
+      if (items[i]->m_strPath.Find("subtitle") >= 0 )
+        CFile::Delete(items[i]->m_strPath);
+      else if (items[i]->m_strPath.Find("vobsub_queue") >= 0 )
+        CFile::Delete(items[i]->m_strPath);
     }
-    while (FindNextFile((HANDLE)hFind, &wfd));
   }
 }
 
@@ -1567,14 +1556,38 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   {
     if (items[i]->m_bIsFolder)
       continue;
- 
+
     CStdString filename = GetFileName(items[i]->m_strPath);
-    vecExtensionsCached.push_back(filename.Right(filename.size()-8));
+    strLExt = filename.Right(filename.size()-8);
+    vecExtensionsCached.push_back(strLExt);
+    if (CUtil::GetExtension(filename).Equals(".smi"))
+    {
+      //Cache multi-language sami subtitle
+      CDVDSubtitleStream* pStream = new CDVDSubtitleStream();
+      if(pStream->Open(items[i]->m_strPath))
+      {
+        SamiTagConvertor TagConv;
+        TagConv.LoadHead(pStream);
+        if (TagConv.m_Langclass.size() >= 2)
+        {
+          for (unsigned int k = 0; k < TagConv.m_Langclass.size(); k++)
+          {
+            strDest.Format("special://temp/subtitle.%s%s", TagConv.m_Langclass[k].Name, strLExt);
+            if (CFile::Cache(items[i]->m_strPath, strDest, pCallback, NULL))
+              CLog::Log(LOGINFO, " cached subtitle %s->%s\n", filename.c_str(), strDest.c_str());
+            CStdString strTemp;
+            strTemp.Format(".%s%s", TagConv.m_Langclass[k].Name, strLExt);
+            vecExtensionsCached.push_back(strTemp);
+          }
+        }
+      }
+      delete pStream;
+    }
   }
 
   // construct string of added exts
   for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
-    strExtensionCached += *it+" ";
+    strExtensionCached += *it+"|";
 
   CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - startTimer));
 }
@@ -2259,6 +2272,49 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   GetDirectory(strPathAndFile,strPath);
   CStdString strFileName = GetFileName(strPathAndFile);
   return strPath + MakeLegalFileName(strFileName, LegalType);
+}
+
+CStdString CUtil::ValidatePath(const CStdString &path)
+{
+  CStdString result = path;
+
+  // Don't do any stuff on URLs containing %-characters as we may screw up
+  // URL-encoded (embedded) filenames (like with zip:// & rar://)
+  if (path.Find("://") >= 0 && path.Find('%') >= 0)
+    return result;
+
+  // check the path for incorrect slashes
+#ifdef _WIN32
+  if (CUtil::IsDOSPath(path))
+  {
+    result.Replace('/', '\\');
+    // Fixup for double back slashes (but ignore the \\ of unc-paths)
+    for (int x=1; x<result.GetLength()-1; x++)
+    {
+      if (result[x] == '\\' && result[x+1] == '\\')
+        result.Delete(x);
+    }
+  }
+  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+  {
+    result.Replace('\\', '/');
+    // Fixup for double forward slashes(/) but don't touch the :// of URLs
+    for (int x=1; x<result.GetLength()-1; x++)
+    {
+      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
+        result.Delete(x);
+    }
+  }
+#else
+  result.Replace('\\', '/');
+  // Fixup for double forward slashes(/) but don't touch the :// of URLs
+  for (int x=1; x<result.GetLength()-1; x++)
+  {
+    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
+      result.Delete(x);
+  }
+#endif
+  return result;
 }
 
 bool CUtil::IsUsingTTFSubtitles()

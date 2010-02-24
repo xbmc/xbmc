@@ -1348,18 +1348,10 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
 
 bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
 {
-  if(current.startsync)
+  if(current.startpts != DVD_NOPTS_VALUE
+  && current.dts      != DVD_NOPTS_VALUE)
   {
-    if ((current.startpts < current.dts && current.dts != DVD_NOPTS_VALUE)
-    ||  (current.startpts == DVD_NOPTS_VALUE))
-    {
-      SendPlayerMessage(current.startsync, source);
-
-      current.startpts = DVD_NOPTS_VALUE;
-      current.startsync = NULL;
-    }
-    else if((current.startpts - current.dts) > DVD_SEC_TO_TIME(20)
-         &&  current.dts != DVD_NOPTS_VALUE)
+    if((current.startpts - current.dts) > DVD_SEC_TO_TIME(20))
     {
       CLog::Log(LOGDEBUG, "%s - too far to decode before finishing seek", __FUNCTION__);
       if(m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
@@ -1371,15 +1363,24 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
       if(m_CurrentTeletext.startpts != DVD_NOPTS_VALUE)
         m_CurrentTeletext.startpts = current.dts;
     }
+
+    if(current.startpts <= current.dts)
+      current.startpts = DVD_NOPTS_VALUE;
   }
 
   // await start sync to be finished
-  if(current.startsync)
+  if(current.startpts != DVD_NOPTS_VALUE)
   {
     CLog::Log(LOGDEBUG, "%s - dropping packet type:%d dts:%f to get to start point at %f", __FUNCTION__, source,  current.dts, current.startpts);
     return true;
   }
 
+  // send of the sync message if any
+  if(current.startsync)
+  {
+    SendPlayerMessage(current.startsync, source);
+    current.startsync = NULL;
+  }
 
   //If this is the first packet after a discontinuity, send it as a resync
   if (current.inited == false && current.dts != DVD_NOPTS_VALUE)
@@ -1653,7 +1654,7 @@ void CDVDPlayer::SynchronizeDemuxer(DWORD timeout)
   message->Release();
 }
 
-void CDVDPlayer::SynchronizePlayers(DWORD sources, double pts)
+void CDVDPlayer::SynchronizePlayers(DWORD sources)
 {
   /* if we are awaiting a start sync, we can't sync here or we could deadlock */
   if(m_CurrentAudio.startsync
@@ -1670,26 +1671,15 @@ void CDVDPlayer::SynchronizePlayers(DWORD sources, double pts)
 
   CDVDMsgGeneralSynchronize* message = new CDVDMsgGeneralSynchronize(timeout, sources);
   if (m_CurrentAudio.id >= 0)
-  {
-    m_CurrentAudio.dts = DVD_NOPTS_VALUE;
-    m_CurrentAudio.startpts  = pts;
     m_CurrentAudio.startsync = message->Acquire();
-  }
+
   if (m_CurrentVideo.id >= 0)
-  {
-    m_CurrentVideo.dts = DVD_NOPTS_VALUE;
-    m_CurrentVideo.startpts  = pts;
     m_CurrentVideo.startsync = message->Acquire();
-  }
 /* TODO - we have to rewrite the sync class, to not require
           all other players waiting for subtitle, should only
           be the oposite way
   if (m_CurrentSubtitle.id >= 0)
-  {
-    m_CurrentSubtitle.dts = DVD_NOPTS_VALUE;
-    m_CurrentSubtitle.startpts  = pts;
     m_CurrentSubtitle.startsync = message->Acquire();
-  }
 */
   message->Release();
 }
@@ -1821,11 +1811,7 @@ void CDVDPlayer::HandleMessages()
             if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
               CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
           }
-          FlushBuffers(!msg.GetFlush());
-          if(msg.GetAccurate())
-            SynchronizePlayers(SYNCSOURCE_ALL, start);
-          else
-            SynchronizePlayers(SYNCSOURCE_ALL, DVD_NOPTS_VALUE);
+          FlushBuffers(!msg.GetFlush(), msg.GetAccurate() ? start : DVD_NOPTS_VALUE);
         }
         else
           CLog::Log(LOGWARNING, "error while seeking");
@@ -1843,8 +1829,7 @@ void CDVDPlayer::HandleMessages()
         // This should always be the case.
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
-          FlushBuffers(false);
-          SynchronizePlayers(SYNCSOURCE_ALL, start);
+          FlushBuffers(false, start);
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
       }
@@ -2790,8 +2775,24 @@ bool CDVDPlayer::CloseTeletextStream(bool bWaitForBuffers)
   return true;
 }
 
-void CDVDPlayer::FlushBuffers(bool queued)
+void CDVDPlayer::FlushBuffers(bool queued, double startpts)
 {
+  m_CurrentAudio.inited      = false;
+  m_CurrentAudio.dts         = DVD_NOPTS_VALUE;
+  m_CurrentAudio.startpts    = startpts;
+
+  m_CurrentVideo.inited      = false;
+  m_CurrentVideo.dts         = DVD_NOPTS_VALUE;
+  m_CurrentVideo.startpts    = startpts;
+
+  m_CurrentSubtitle.inited   = false;
+  m_CurrentSubtitle.dts      = DVD_NOPTS_VALUE;
+  m_CurrentSubtitle.startpts = startpts;
+
+  m_CurrentTeletext.inited   = false;
+  m_CurrentTeletext.dts      = DVD_NOPTS_VALUE;
+  m_CurrentTeletext.startpts = startpts;
+
   if(queued)
   {
     m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::GENERAL_RESET));
@@ -2825,10 +2826,6 @@ void CDVDPlayer::FlushBuffers(bool queued)
     m_CurrentSubtitle.started = false;
     m_CurrentTeletext.started = false;
   }
-  m_CurrentAudio.inited = false;
-  m_CurrentVideo.inited = false;
-  m_CurrentSubtitle.inited = false;
-  m_CurrentTeletext.inited = false;
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is

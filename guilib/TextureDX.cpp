@@ -97,6 +97,7 @@ void CDXTexture::LoadToGPU()
     unsigned char *src = m_pixels;
     unsigned int dstPitch = lr.Pitch;
     unsigned int srcPitch = GetPitch();
+    unsigned int minPitch = std::min(srcPitch, dstPitch);
 
     unsigned int rows = GetRows();
     if (srcPitch == dstPitch)
@@ -107,7 +108,7 @@ void CDXTexture::LoadToGPU()
     {
       for (unsigned int y = 0; y < rows; y++)
       {
-        memcpy(dst, src, std::min(srcPitch, dstPitch));
+        memcpy(dst, src, minPitch);
         src += srcPitch;
         dst += dstPitch;
       }

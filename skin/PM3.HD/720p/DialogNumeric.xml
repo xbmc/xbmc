@@ -111,6 +111,7 @@
 				<posy>0</posy>
 				<width>48</width>
 				<height>98</height>
+				<textwidth>94</textwidth>
 				<font>font10</font>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -231,6 +232,7 @@
 				<posy>100</posy>
 				<width>48</width>
 				<height>98</height>
+				<textwidth>94</textwidth>
 				<font>font10</font>
 				<align>center</align>
 				<aligny>center</aligny>

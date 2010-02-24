@@ -27,7 +27,6 @@
 
 #include "RegExp.h"
 #include "HTMLUtil.h"
-#include "CharsetConverter.h"
 #include "ScraperSettings.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
@@ -448,7 +447,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
-      HTML::CHTMLUtil::RemoveTags(strConverted);
+      HTML::CHTMLUtil::ConvertAndRemoveTags(strConverted);
       const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
       strDirty.erase(i,i2-i+11);
       strDirty.Insert(i,szTrimmed);

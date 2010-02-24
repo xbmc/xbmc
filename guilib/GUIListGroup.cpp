@@ -99,36 +99,10 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
   {
     if (m_children[i]->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL && m_children[i]->IsVisible())
     {
-      CGUIListLabel &label1 = *(CGUIListLabel *)m_children[i];
-      CRect rect1(label1.GetRenderRect());
       for (unsigned int j = i + 1; j < m_children.size(); j++)
       {
         if (m_children[j]->GetControlType() == CGUIControl::GUICONTROL_LISTLABEL && m_children[j]->IsVisible())
-        { // ok, now check if they overlap
-          CGUIListLabel &label2 = *(CGUIListLabel *)m_children[j];
-          if (!rect1.Intersect(label2.GetRenderRect()).IsEmpty())
-          { // overlap vertically and horizontally - check alignment
-            CGUIListLabel &left = label1.GetRenderRect().x1 < label2.GetRenderRect().x1 ? label1 : label2;
-            CGUIListLabel &right = label1.GetRenderRect().x1 < label2.GetRenderRect().x1 ? label2 : label1;
-            if ((left.GetLabelInfo().align & 3) == 0 && right.GetLabelInfo().align & XBFONT_RIGHT)
-            {
-              float chopPoint = (left.GetXPosition() + left.GetWidth() + right.GetXPosition() - right.GetWidth()) * 0.5f;
-// [1       [2...[2  1].|..........1]         2]
-// [1       [2.....[2   |      1]..1]         2]
-// [1       [2..........|.[2   1]..1]         2]
-              CRect leftRect(left.GetRenderRect());
-              CRect rightRect(right.GetRenderRect());
-              if (rightRect.x1 > chopPoint)
-                chopPoint = rightRect.x1 - 5;
-              else if (leftRect.x2 < chopPoint)
-                chopPoint = leftRect.x2 + 5;
-              leftRect.x2 = chopPoint - 5;
-              rightRect.x1 = chopPoint + 5;
-              left.SetRenderRect(leftRect);
-              right.SetRenderRect(rightRect);
-            }
-          }
-        }
+          CGUIListLabel::CheckAndCorrectOverlap(*(CGUIListLabel *)m_children[i], *(CGUIListLabel *)m_children[j]);
       }
     }
   }
