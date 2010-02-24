@@ -811,7 +811,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     return false;
   }
 
-  bool all;
+  bool all = true;
   std::set<CStdString> platforms;
   do
   {
@@ -830,25 +830,25 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
 #if defined(_LINUX)
     if (!platforms.count("linux"))
     {
-      CLog::Log(LOGERROR, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());
       return false;
     }
 #elif defined(_WIN32)
     if (!platforms.count("windows"))
     {
-      CLog::Log(LOGERROR, "ADDON: %s is not supported under Windows, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows, ignoring", strPath.c_str());
       return false;
     }
 #elif defined(__APPLE__)
     if (!platforms.count("osx"))
     {
-      CLog::Log(LOGERROR, "ADDON: %s is not supported under OSX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under OSX, ignoring", strPath.c_str());
       return false;
     }
 #elif defined(_XBOX)
     if (!platforms.count("xbox"))
     {
-      CLog::Log(LOGERROR, "ADDON: %s is not supported under XBOX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under XBOX, ignoring", strPath.c_str());
       return false;
     }
 #endif
