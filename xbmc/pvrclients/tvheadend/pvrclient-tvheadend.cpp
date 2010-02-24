@@ -65,10 +65,13 @@ PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
   if (!IsConnected())
     return PVR_ERROR_SERVER_ERROR;
 
+  if (radio)
+    return PVR_ERROR_NO_ERROR;
+
   SChannels channels = m_pSession->GetChannels();
   STags     tags     = m_pSession->GetTags();
 
-  for(STags::iterator tit = tags.begin(); tit != tags.end(); tit++)
+  for(STags::iterator tit = tags.begin(); tit != tags.end(); ++tit)
   {
     STag& t = tit->second;
     PVR_BOUQUET bou;
@@ -76,7 +79,7 @@ PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
     bou.Category = "";
     bou.Number = t.id;
 
-    for(SChannels::iterator it = channels.begin(); it != channels.end(); it++) {
+    for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it) {
       SChannel& channel = it->second;
 
       if (channel.MemberOf(t.id))

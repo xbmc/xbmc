@@ -284,7 +284,7 @@ void CHTSPDirectorySession::Process()
       CHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelRemove"))
       CHTSPSession::ParseChannelRemove(msg, m_channels);
-    if     (strstr(method, "tagAdd"))
+    else if(strstr(method, "tagAdd"))
       CHTSPSession::ParseTagUpdate(msg, m_tags);
     else if(strstr(method, "tagUpdate"))
       CHTSPSession::ParseTagUpdate(msg, m_tags);
