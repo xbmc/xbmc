@@ -60,6 +60,7 @@ class cPVRClientTvheadend {
     /* General handling */
     const char* GetBackendName();
     const char* GetBackendVersion();
+    PVR_ERROR   GetBackendTime(time_t *localTime, int *gmtOffset);
     const char* GetConnectionString();
     
     /* Channel handling */

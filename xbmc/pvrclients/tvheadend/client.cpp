@@ -289,10 +289,7 @@ PVR_ERROR GetDriveSpace(long long *total, long long *used)
 PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 {
   printf("%s\n", __PRETTY_FUNCTION__);
-
-  *localTime = time(NULL);
-  *gmtOffset = 1;
-  return PVR_ERROR_NO_ERROR; // TODO g_client->GetTvheadendTime(localTime, gmtOffset);
+  return g_client->GetBackendTime(localTime, gmtOffset);
 }
 
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)

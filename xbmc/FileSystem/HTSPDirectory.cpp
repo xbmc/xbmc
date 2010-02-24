@@ -247,6 +247,29 @@ bool CHTSPDirectorySession::GetEvent(SEvent& event, uint32_t id)
   return true;
 }
 
+bool CHTSPDirectorySession::GetTime(time_t *localTime, int *gmtOffset)
+{
+  CLog::Log(LOGDEBUG, "CHTSPSession::GetTime()");
+
+  htsmsg_t *msg = htsmsg_create_map();
+  htsmsg_add_str(msg, "method", "getSysTime");
+  if ((msg = ReadResult(msg)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CHTSPSession::GetTime - failed to get sysTime");
+    return false;
+  }
+
+  unsigned int secs;
+  if (htsmsg_get_u32(msg, "time", &secs) != 0)
+    return false;
+
+  if (htsmsg_get_s32(msg, "timezone", gmtOffset) != 0)
+    return false;
+
+  *localTime = secs;
+  return true;
+}
+
 void CHTSPDirectorySession::Process()
 {
   CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Starting");

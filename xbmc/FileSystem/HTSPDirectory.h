@@ -36,6 +36,7 @@ namespace HTSP
   {
     public:
       bool                    GetEvent(SEvent& event, uint32_t id);
+      bool                    GetTime(time_t *localTime, int *gmtOffset);
       SChannels               GetChannels();
       SChannels               GetChannels(int tag);
       SChannels               GetChannels(STag &tag);
@@ -46,6 +47,7 @@ namespace HTSP
       static CHTSPDirectorySession* Acquire(const CURL& url);
       static void                   Release(CHTSPDirectorySession* &session);
       static void                   CheckIdle(DWORD idle = 60000);
+
 
     protected:
        CHTSPDirectorySession();

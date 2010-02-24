@@ -60,6 +60,13 @@ void cPVRClientTvheadend::Disconnect()
   m_pSession = NULL;
 }
 
+PVR_ERROR cPVRClientTvheadend::GetBackendTime(time_t *localTime, int *gmtOffset)
+{
+  if (!IsConnected() || !m_pSession->GetTime(localTime, gmtOffset))
+    return PVR_ERROR_SERVER_ERROR;
+  return PVR_ERROR_NO_ERROR;
+}
+
 PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
 {
   if (!IsConnected())
