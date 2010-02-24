@@ -1342,10 +1342,11 @@ void CUtil::ClearSubtitles()
   {
     if (!items[i]->m_bIsFolder)
     {
-      if (items[i]->m_strPath.Find("subtitle") >= 0 )
+      if ( items[i]->m_strPath.Find("subtitle") >= 0 || items[i]->m_strPath.Find("vobsub_queue") >= 0 )
+      {
+        CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->m_strPath.c_str());
         CFile::Delete(items[i]->m_strPath);
-      else if (items[i]->m_strPath.Find("vobsub_queue") >= 0 )
-        CFile::Delete(items[i]->m_strPath);
+      }
     }
   }
 }
@@ -1416,7 +1417,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // checking if any of the common subdirs exist ..
-  CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
+  CLog::Log(LOGDEBUG,"%s: Checking for common subdirs...", __FUNCTION__);
 
   vector<CStdString> token;
   Tokenize(strPath,token,"/\\");
