@@ -316,7 +316,7 @@ int rtv_discovery(struct RTV ** result, unsigned long msTimeout)
           r = 0;
           do {
             p1+=r;
-            r = recv(s2, p1, p2-p1, MSG_PEEK);
+            r = recv(s2, p1, p2-p1, 0);
           } while(r>0 && (p2-p1) > 0);
           msg[sizeof(msg)-1] = 0;
 
