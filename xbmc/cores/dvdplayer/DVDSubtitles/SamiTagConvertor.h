@@ -21,6 +21,12 @@
  *
  */
 #include <stdio.h>
+#include "StdString.h"
+
+#define FLAG_BOLD   0
+#define FLAG_ITALIC 1
+#define FLAG_COLOR  2
+#define FLAG_LANGUAGE   3
 
 class CDVDOverlayText;
 class CDVDSubtitleStream;
@@ -33,10 +39,10 @@ public:
   {
     m_tags = NULL;
     m_tagOptions = NULL;
-    tag_flag[0] = false; //bold tag
-    tag_flag[1] = false; //italic tag
-    tag_flag[2] = false; //color tag
-    tag_flag[3] = false; //set to true when classID != lang
+    tag_flag[FLAG_BOLD] = false;
+    tag_flag[FLAG_ITALIC] = false;
+    tag_flag[FLAG_COLOR] = false;
+    tag_flag[FLAG_LANGUAGE] = false; //set to true when classID != lang
   }
   virtual ~SamiTagConvertor();
   bool Init();

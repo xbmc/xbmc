@@ -60,31 +60,31 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
     strUTF8.erase(pos, fullTag.length());
     if (fullTag == "<b>")
     {
-      tag_flag[0] = true;
+      tag_flag[FLAG_BOLD] = true;
       strUTF8.insert(pos, "[B]");
       pos += 3;
     }
-    else if (fullTag == "</b>" && tag_flag[0])
+    else if (fullTag == "</b>" && tag_flag[FLAG_BOLD])
     {
-      tag_flag[0] = false;
+      tag_flag[FLAG_BOLD] = false;
       strUTF8.insert(pos, "[/B]");
       pos += 4;
     }
     else if (fullTag == "<i>")
     {
-      tag_flag[1] = true;
+      tag_flag[FLAG_ITALIC] = true;
       strUTF8.insert(pos, "[I]");
       pos += 3;
     }
-    else if (fullTag == "</i>" && tag_flag[1])
+    else if (fullTag == "</i>" && tag_flag[FLAG_ITALIC])
     {
-      tag_flag[1] = false;
+      tag_flag[FLAG_ITALIC] = false;
       strUTF8.insert(pos, "[/I]");
       pos += 4;
     }
-    else if (fullTag == "</font>" && tag_flag[2])
+    else if (fullTag == "</font>" && tag_flag[FLAG_COLOR])
     {
-      tag_flag[2] = false;
+      tag_flag[FLAG_COLOR] = false;
       strUTF8.insert(pos, "[/COLOR]");
       pos += 8;
     }
@@ -98,7 +98,7 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
         pos2 += tagOptionName.length() + tagOptionValue.length();
         if (tagOptionName == "color")
         {
-          tag_flag[2] = true;
+          tag_flag[FLAG_COLOR] = true;
           CStdString tempColorTag = "[COLOR ";
           if (tagOptionValue[0] == '#')
           {
@@ -138,44 +138,38 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
         pos2 += tagOptionName.length() + tagOptionValue.length();
         if (tagOptionName == "class")
         {
-          if (tag_flag[3])
+          if (tag_flag[FLAG_LANGUAGE])
           {
             strUTF8.erase(del_start, pos - del_start);
             pos = del_start;
           }
           if (!tagOptionValue.Compare(lang))
           {
-            tag_flag[3] = false;
+            tag_flag[FLAG_LANGUAGE] = false;
           }
           else
           {
-            tag_flag[3] = true;
+            tag_flag[FLAG_LANGUAGE] = true;
             del_start = pos;
           }
           break;
         }
       }
     }
-    else if (fullTag == "</p>")
+    else if (fullTag == "</p>" && tag_flag[FLAG_LANGUAGE])
     {
-      if (tag_flag[3])
-      {
-        strUTF8.erase(del_start, pos - del_start);
-        pos = del_start;
-        tag_flag[3] = false;
-      }
+      strUTF8.erase(del_start, pos - del_start);
+      pos = del_start;
+      tag_flag[FLAG_LANGUAGE] = false;
     }
-    else if (fullTag == "<br>")
+    else if (fullTag == "<br>" && !strUTF8.IsEmpty())
     {
-      if( !strUTF8.IsEmpty() )
-      {
-        strUTF8.Insert(pos, "\n");
-        pos += 1;
-      }
+      strUTF8.Insert(pos, "\n");
+      pos += 1;
     }
   }
 
-  if(tag_flag[3])
+  if(tag_flag[FLAG_LANGUAGE])
     strUTF8.erase(del_start);
 
   if (strUTF8.IsEmpty())
@@ -190,22 +184,22 @@ void SamiTagConvertor::ConvertLine(CDVDOverlayText* pOverlay, const char* line, 
 
 void SamiTagConvertor::CloseTag(CDVDOverlayText* pOverlay)
 {
-  if (tag_flag[0])
+  if (tag_flag[FLAG_BOLD])
   {
     pOverlay->AddElement(new CDVDOverlayText::CElementText("[/B]"));
-    tag_flag[0] = false;
+    tag_flag[FLAG_BOLD] = false;
   }
-  if (tag_flag[1])
+  if (tag_flag[FLAG_ITALIC])
   {
     pOverlay->AddElement(new CDVDOverlayText::CElementText("[/I]"));
-    tag_flag[1] = false;
+    tag_flag[FLAG_ITALIC] = false;
   }
-  if (tag_flag[2])
+  if (tag_flag[FLAG_COLOR])
   {
     pOverlay->AddElement(new CDVDOverlayText::CElementText("[/COLOR]"));
-    tag_flag[2] = false;
+    tag_flag[FLAG_COLOR] = false;
   }
-  tag_flag[3] = false;
+  tag_flag[FLAG_LANGUAGE] = false;
 }
 
 void SamiTagConvertor::LoadHead(CDVDSubtitleStream* samiStream)
