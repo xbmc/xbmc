@@ -240,12 +240,18 @@
 		83530F0D10C5CE95003E7A75 /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83530F0C10C5CE95003E7A75 /* PlayerCoreFactory.cpp */; };
 		8359620D10C671E300D08A50 /* Edl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA1107747CD00F859CF /* Edl.cpp */; };
 		8359623B10C6721600D08A50 /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
+		836E68B3112EBD37009A6296 /* AddonHelpers_Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836E68A9112EBD37009A6296 /* AddonHelpers_Addon.cpp */; };
+		836E68B4112EBD37009A6296 /* AddonHelpers_GUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836E68AB112EBD37009A6296 /* AddonHelpers_GUI.cpp */; };
+		836E68B5112EBD37009A6296 /* AddonHelpers_local.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836E68AD112EBD37009A6296 /* AddonHelpers_local.cpp */; };
+		836E68B6112EBD37009A6296 /* AddonHelpers_PVR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836E68AF112EBD37009A6296 /* AddonHelpers_PVR.cpp */; };
+		836E68B7112EBD37009A6296 /* AddonHelpers_Vis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836E68B1112EBD37009A6296 /* AddonHelpers_Vis.cpp */; };
+		836E68BA112EBD4B009A6296 /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836E68B8112EBD4B009A6296 /* GUIWindowAddonBrowser.cpp */; };
+		836E68F7112EC231009A6296 /* AddonsDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836E68F5112EC231009A6296 /* AddonsDirectory.cpp */; };
 		83A72B910FBC8DB000171871 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
 		83A72B940FBC8DFF00171871 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
 		83C3EDB810D51013003C8F06 /* PluginSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C3EDB610D51013003C8F06 /* PluginSettings.cpp */; };
 		83C3EDD810D514C7003C8F06 /* GUIDialogPluginSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C3EDD610D514C7003C8F06 /* GUIDialogPluginSettings.cpp */; };
-		83CDDF3710C13CFF000F608B /* GUIDialogAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF3310C13CFF000F608B /* GUIDialogAddonBrowser.cpp */; };
 		83CDDF3810C13CFF000F608B /* GUIDialogAddonSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF3510C13CFF000F608B /* GUIDialogAddonSettings.cpp */; };
 		83CDDF5110C13D4A000F608B /* GUIDialogPVRChannelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF3B10C13D4A000F608B /* GUIDialogPVRChannelManager.cpp */; };
 		83CDDF5210C13D4A000F608B /* GUIDialogPVRChannelsOSD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF3D10C13D4A000F608B /* GUIDialogPVRChannelsOSD.cpp */; };
@@ -259,7 +265,6 @@
 		83CDDF5A10C13D4A000F608B /* GUIDialogPVRTimerSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF4D10C13D4A000F608B /* GUIDialogPVRTimerSettings.cpp */; };
 		83CDDF5B10C13D4A000F608B /* GUIDialogPVRUpdateProgressBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF4F10C13D4A000F608B /* GUIDialogPVRUpdateProgressBar.cpp */; };
 		83CDDF6E10C13DEE000F608B /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF6010C13DEE000F608B /* Addon.cpp */; };
-		83CDDF6F10C13DEE000F608B /* AddonHelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF6210C13DEE000F608B /* AddonHelpers.cpp */; };
 		83CDDF7010C13DEE000F608B /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF6410C13DEE000F608B /* AddonManager.cpp */; };
 		83CDDF7110C13DEE000F608B /* PVRChannels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF6610C13DEE000F608B /* PVRChannels.cpp */; };
 		83CDDF7210C13DEE000F608B /* PVREpg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83CDDF6810C13DEE000F608B /* PVREpg.cpp */; };
@@ -624,7 +629,6 @@
 		E38E209E0D25F9FD00618676 /* GUIDialogVideoScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */; };
 		E38E209F0D25F9FD00618676 /* GUIDialogVideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E40D25F9FA00618676 /* GUIDialogVideoSettings.cpp */; };
 		E38E20A00D25F9FD00618676 /* GUIDialogVisualisationPresetList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */; };
-		E38E20A10D25F9FD00618676 /* GUIDialogVisualisationSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E80D25F9FA00618676 /* GUIDialogVisualisationSettings.cpp */; };
 		E38E20A20D25F9FD00618676 /* GUIDialogVolumeBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EA0D25F9FA00618676 /* GUIDialogVolumeBar.cpp */; };
 		E38E20A30D25F9FD00618676 /* GUIDialogYesNo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EC0D25F9FA00618676 /* GUIDialogYesNo.cpp */; };
 		E38E20A40D25F9FD00618676 /* GUILargeTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EE0D25F9FA00618676 /* GUILargeTextureManager.cpp */; };
@@ -807,7 +811,6 @@
 		E38E22AE0D25F9FE00618676 /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF10D25F9FD00618676 /* Profile.cpp */; };
 		E38E22AF0D25F9FE00618676 /* ProgramDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */; };
 		E38E22B10D25F9FE00618676 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */; };
-		E38E22B20D25F9FE00618676 /* ScreenSaverFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFC0D25F9FD00618676 /* ScreenSaverFactory.cpp */; };
 		E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
 		E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		E38E22B50D25F9FE00618676 /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E030D25F9FD00618676 /* Settings.cpp */; };
@@ -869,7 +872,6 @@
 		E38E22FE0D25F9FE00618676 /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E990D25F9FD00618676 /* ViewDatabase.cpp */; };
 		E38E22FF0D25F9FE00618676 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E9D0D25F9FD00618676 /* fft.cpp */; };
 		E38E23010D25F9FE00618676 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA10D25F9FD00618676 /* Visualisation.cpp */; };
-		E38E23020D25F9FE00618676 /* VisualisationFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA30D25F9FD00618676 /* VisualisationFactory.cpp */; };
 		E38E23030D25F9FE00618676 /* VorbisTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */; };
 		E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
 		E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
@@ -963,8 +965,6 @@
 		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
 		E4DC97570FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
-		E4E6F1ED1112E88700B2CA6D /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E6F1EC1112E88700B2CA6D /* libwavpack.dylib */; };
-		E4E6F1EE1112E88700B2CA6D /* libwavpack.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E6F1EC1112E88700B2CA6D /* libwavpack.dylib */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
@@ -1347,7 +1347,6 @@
 		F5A1C9C80F6B06CF00A96ABD /* GUIDialogVideoScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */; };
 		F5A1C9C90F6B06CF00A96ABD /* GUIDialogVideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E40D25F9FA00618676 /* GUIDialogVideoSettings.cpp */; };
 		F5A1C9CA0F6B06CF00A96ABD /* GUIDialogVisualisationPresetList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */; };
-		F5A1C9CB0F6B06CF00A96ABD /* GUIDialogVisualisationSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17E80D25F9FA00618676 /* GUIDialogVisualisationSettings.cpp */; };
 		F5A1C9CC0F6B06CF00A96ABD /* GUIDialogVolumeBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EA0D25F9FA00618676 /* GUIDialogVolumeBar.cpp */; };
 		F5A1C9CD0F6B06CF00A96ABD /* GUIDialogYesNo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EC0D25F9FA00618676 /* GUIDialogYesNo.cpp */; };
 		F5A1C9CE0F6B06CF00A96ABD /* GUILargeTextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17EE0D25F9FA00618676 /* GUILargeTextureManager.cpp */; };
@@ -1530,7 +1529,6 @@
 		F5A1CAAC0F6B06CF00A96ABD /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF10D25F9FD00618676 /* Profile.cpp */; };
 		F5A1CAAD0F6B06CF00A96ABD /* ProgramDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */; };
 		F5A1CAAE0F6B06CF00A96ABD /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */; };
-		F5A1CAAF0F6B06CF00A96ABD /* ScreenSaverFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFC0D25F9FD00618676 /* ScreenSaverFactory.cpp */; };
 		F5A1CAB00F6B06CF00A96ABD /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
 		F5A1CAB10F6B06CF00A96ABD /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		F5A1CAB20F6B06CF00A96ABD /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E030D25F9FD00618676 /* Settings.cpp */; };
@@ -1592,7 +1590,6 @@
 		F5A1CAED0F6B06CF00A96ABD /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E990D25F9FD00618676 /* ViewDatabase.cpp */; };
 		F5A1CAEE0F6B06CF00A96ABD /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E9D0D25F9FD00618676 /* fft.cpp */; };
 		F5A1CAEF0F6B06CF00A96ABD /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA10D25F9FD00618676 /* Visualisation.cpp */; };
-		F5A1CAF00F6B06CF00A96ABD /* VisualisationFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA30D25F9FD00618676 /* VisualisationFactory.cpp */; };
 		F5A1CAF10F6B06CF00A96ABD /* VorbisTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */; };
 		F5A1CAF20F6B06CF00A96ABD /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
 		F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
@@ -2141,6 +2138,23 @@
 		83530EFB10C5CBEB003E7A75 /* GUIViewStateTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIViewStateTV.cpp; path = xbmc/GUIViewStateTV.cpp; sourceTree = SOURCE_ROOT; };
 		83530EFC10C5CBEB003E7A75 /* GUIViewStateTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIViewStateTV.h; path = xbmc/GUIViewStateTV.h; sourceTree = SOURCE_ROOT; };
 		83530F0C10C5CE95003E7A75 /* PlayerCoreFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PlayerCoreFactory.cpp; path = cores/playercorefactory/PlayerCoreFactory.cpp; sourceTree = "<group>"; };
+		836E68A9112EBD37009A6296 /* AddonHelpers_Addon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonHelpers_Addon.cpp; path = addons/AddonHelpers_Addon.cpp; sourceTree = "<group>"; };
+		836E68AA112EBD37009A6296 /* AddonHelpers_Addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonHelpers_Addon.h; path = addons/AddonHelpers_Addon.h; sourceTree = "<group>"; };
+		836E68AB112EBD37009A6296 /* AddonHelpers_GUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonHelpers_GUI.cpp; path = addons/AddonHelpers_GUI.cpp; sourceTree = "<group>"; };
+		836E68AC112EBD37009A6296 /* AddonHelpers_GUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonHelpers_GUI.h; path = addons/AddonHelpers_GUI.h; sourceTree = "<group>"; };
+		836E68AD112EBD37009A6296 /* AddonHelpers_local.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonHelpers_local.cpp; path = addons/AddonHelpers_local.cpp; sourceTree = "<group>"; };
+		836E68AE112EBD37009A6296 /* AddonHelpers_local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonHelpers_local.h; path = addons/AddonHelpers_local.h; sourceTree = "<group>"; };
+		836E68AF112EBD37009A6296 /* AddonHelpers_PVR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonHelpers_PVR.cpp; path = addons/AddonHelpers_PVR.cpp; sourceTree = "<group>"; };
+		836E68B0112EBD37009A6296 /* AddonHelpers_PVR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonHelpers_PVR.h; path = addons/AddonHelpers_PVR.h; sourceTree = "<group>"; };
+		836E68B1112EBD37009A6296 /* AddonHelpers_Vis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonHelpers_Vis.cpp; path = addons/AddonHelpers_Vis.cpp; sourceTree = "<group>"; };
+		836E68B2112EBD37009A6296 /* AddonHelpers_Vis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonHelpers_Vis.h; path = addons/AddonHelpers_Vis.h; sourceTree = "<group>"; };
+		836E68B8112EBD4B009A6296 /* GUIWindowAddonBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowAddonBrowser.cpp; sourceTree = "<group>"; };
+		836E68B9112EBD4B009A6296 /* GUIWindowAddonBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowAddonBrowser.h; sourceTree = "<group>"; };
+		836E68D1112EBFD2009A6296 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Visualisation.h; path = xbmc/visualizations/Visualisation.h; sourceTree = SOURCE_ROOT; };
+		836E68ED112EC197009A6296 /* AddonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonDll.h; path = xbmc/utils/AddonDll.h; sourceTree = SOURCE_ROOT; };
+		836E68F0112EC1C4009A6296 /* DllPVRClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DllPVRClient.h; path = xbmc/pvrclients/DllPVRClient.h; sourceTree = SOURCE_ROOT; };
+		836E68F5112EC231009A6296 /* AddonsDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonsDirectory.cpp; path = xbmc/FileSystem/AddonsDirectory.cpp; sourceTree = SOURCE_ROOT; };
+		836E68F6112EC231009A6296 /* AddonsDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonsDirectory.h; path = xbmc/FileSystem/AddonsDirectory.h; sourceTree = SOURCE_ROOT; };
 		83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
 		83A72B8F0FBC8DB000171871 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83A72B900FBC8DB000171871 /* IAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAudioRenderer.h; path = AudioRenderers/IAudioRenderer.h; sourceTree = "<group>"; };
@@ -2153,8 +2167,6 @@
 		83C3EDD610D514C7003C8F06 /* GUIDialogPluginSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogPluginSettings.cpp; path = xbmc/GUIDialogPluginSettings.cpp; sourceTree = SOURCE_ROOT; };
 		83C3EDD710D514C7003C8F06 /* GUIDialogPluginSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogPluginSettings.h; path = xbmc/GUIDialogPluginSettings.h; sourceTree = SOURCE_ROOT; };
 		83CDDF3210C13CFF000F608B /* GUIDialogAccessPoints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogAccessPoints.h; path = xbmc/GUIDialogAccessPoints.h; sourceTree = SOURCE_ROOT; };
-		83CDDF3310C13CFF000F608B /* GUIDialogAddonBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogAddonBrowser.cpp; path = xbmc/GUIDialogAddonBrowser.cpp; sourceTree = SOURCE_ROOT; };
-		83CDDF3410C13CFF000F608B /* GUIDialogAddonBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogAddonBrowser.h; path = xbmc/GUIDialogAddonBrowser.h; sourceTree = SOURCE_ROOT; };
 		83CDDF3510C13CFF000F608B /* GUIDialogAddonSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogAddonSettings.cpp; path = xbmc/GUIDialogAddonSettings.cpp; sourceTree = SOURCE_ROOT; };
 		83CDDF3610C13CFF000F608B /* GUIDialogAddonSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogAddonSettings.h; path = xbmc/GUIDialogAddonSettings.h; sourceTree = SOURCE_ROOT; };
 		83CDDF3B10C13D4A000F608B /* GUIDialogPVRChannelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogPVRChannelManager.cpp; path = xbmc/GUIDialogPVRChannelManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -2181,8 +2193,6 @@
 		83CDDF5010C13D4A000F608B /* GUIDialogPVRUpdateProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogPVRUpdateProgressBar.h; path = xbmc/GUIDialogPVRUpdateProgressBar.h; sourceTree = SOURCE_ROOT; };
 		83CDDF6010C13DEE000F608B /* Addon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon.cpp; path = xbmc/utils/Addon.cpp; sourceTree = SOURCE_ROOT; };
 		83CDDF6110C13DEE000F608B /* Addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon.h; path = xbmc/utils/Addon.h; sourceTree = SOURCE_ROOT; };
-		83CDDF6210C13DEE000F608B /* AddonHelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonHelpers.cpp; path = xbmc/utils/AddonHelpers.cpp; sourceTree = SOURCE_ROOT; };
-		83CDDF6310C13DEE000F608B /* AddonHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonHelpers.h; path = xbmc/utils/AddonHelpers.h; sourceTree = SOURCE_ROOT; };
 		83CDDF6410C13DEE000F608B /* AddonManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonManager.cpp; path = xbmc/utils/AddonManager.cpp; sourceTree = SOURCE_ROOT; };
 		83CDDF6510C13DEE000F608B /* AddonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonManager.h; path = xbmc/utils/AddonManager.h; sourceTree = SOURCE_ROOT; };
 		83CDDF6610C13DEE000F608B /* PVRChannels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PVRChannels.cpp; path = xbmc/utils/PVRChannels.cpp; sourceTree = SOURCE_ROOT; };
@@ -2989,8 +2999,6 @@
 		E38E17E50D25F9FA00618676 /* GUIDialogVideoSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVideoSettings.h; sourceTree = "<group>"; };
 		E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVisualisationPresetList.cpp; sourceTree = "<group>"; };
 		E38E17E70D25F9FA00618676 /* GUIDialogVisualisationPresetList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVisualisationPresetList.h; sourceTree = "<group>"; };
-		E38E17E80D25F9FA00618676 /* GUIDialogVisualisationSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVisualisationSettings.cpp; sourceTree = "<group>"; };
-		E38E17E90D25F9FA00618676 /* GUIDialogVisualisationSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVisualisationSettings.h; sourceTree = "<group>"; };
 		E38E17EA0D25F9FA00618676 /* GUIDialogVolumeBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogVolumeBar.cpp; sourceTree = "<group>"; };
 		E38E17EB0D25F9FA00618676 /* GUIDialogVolumeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogVolumeBar.h; sourceTree = "<group>"; };
 		E38E17EC0D25F9FA00618676 /* GUIDialogYesNo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogYesNo.cpp; sourceTree = "<group>"; };
@@ -3097,10 +3105,6 @@
 		E38E18830D25F9FA00618676 /* libexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libexif.h; sourceTree = "<group>"; };
 		E38E19530D25F9FB00618676 /* includes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = includes.h; sourceTree = "<group>"; };
 		E38E195E0D25F9FB00618676 /* SpyceModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpyceModule.h; sourceTree = "<group>"; };
-		E38E19640D25F9FB00618676 /* WebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServer.h; sourceTree = "<group>"; };
-		E38E19680D25F9FB00618676 /* XBMCConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCConfiguration.h; sourceTree = "<group>"; };
-		E38E196A0D25F9FB00618676 /* XBMChttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMChttp.h; sourceTree = "<group>"; };
-		E38E196C0D25F9FB00618676 /* XBMCweb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCweb.h; sourceTree = "<group>"; };
 		E38E196E0D25F9FB00618676 /* hdhomerun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun.h; sourceTree = "<group>"; };
 		E38E196F0D25F9FB00618676 /* hdhomerun_channelscan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channelscan.h; sourceTree = "<group>"; };
 		E38E19700D25F9FB00618676 /* hdhomerun_control.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_control.h; sourceTree = "<group>"; };
@@ -3457,8 +3461,6 @@
 		E38E1DF70D25F9FD00618676 /* DllScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllScreenSaver.h; sourceTree = "<group>"; };
 		E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScreenSaver.cpp; sourceTree = "<group>"; };
 		E38E1DFB0D25F9FD00618676 /* ScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenSaver.h; sourceTree = "<group>"; };
-		E38E1DFC0D25F9FD00618676 /* ScreenSaverFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScreenSaverFactory.cpp; sourceTree = "<group>"; };
-		E38E1DFD0D25F9FD00618676 /* ScreenSaverFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenSaverFactory.h; sourceTree = "<group>"; };
 		E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SectionLoader.cpp; sourceTree = "<group>"; };
 		E38E1DFF0D25F9FD00618676 /* SectionLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionLoader.h; sourceTree = "<group>"; };
 		E38E1E010D25F9FD00618676 /* VideoSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoSettings.cpp; sourceTree = "<group>"; };
@@ -3584,9 +3586,6 @@
 		E38E1E9D0D25F9FD00618676 /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
 		E38E1E9E0D25F9FD00618676 /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
 		E38E1EA10D25F9FD00618676 /* Visualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualisation.cpp; sourceTree = "<group>"; };
-		E38E1EA20D25F9FD00618676 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualisation.h; sourceTree = "<group>"; };
-		E38E1EA30D25F9FD00618676 /* VisualisationFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VisualisationFactory.cpp; sourceTree = "<group>"; };
-		E38E1EA40D25F9FD00618676 /* VisualisationFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualisationFactory.h; sourceTree = "<group>"; };
 		E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VorbisTag.cpp; sourceTree = "<group>"; };
 		E38E1EA60D25F9FD00618676 /* VorbisTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VorbisTag.h; sourceTree = "<group>"; };
 		E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBApplicationEx.cpp; sourceTree = "<group>"; };
@@ -3690,7 +3689,6 @@
 		E4DF6CD90EFF85EB00C28243 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E4DF6CDA0EFF85EB00C28243 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		E4DF6CDC0EFF861200C28243 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.txt; path = xbmc/lib/libUPnP/Neptune/README.txt; sourceTree = SOURCE_ROOT; };
-		E4E6F1EC1112E88700B2CA6D /* libwavpack.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwavpack.dylib; path = /opt/local/lib/libwavpack.dylib; sourceTree = "<absolute>"; };
 		E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXbmcFile.cpp; sourceTree = "<group>"; };
 		F50629780E57B9680066625A /* MultiPathFile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MultiPathFile.cpp; sourceTree = "<group>"; };
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
@@ -4145,6 +4143,7 @@
 				E38E138C0D25F9F900618676 /* AnimatedGif.cpp */,
 				E38E138D0D25F9F900618676 /* AnimatedGif.h */,
 				E38E13A90D25F9F900618676 /* DirectXGraphics.cpp */,
+				836E68ED112EC197009A6296 /* AddonDll.h */,
 				E38E13AA0D25F9F900618676 /* DirectXGraphics.h */,
 				F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */,
 				F56A08DE0F4D3C20003F9F87 /* GUITexture.h */,
@@ -4537,9 +4536,21 @@
 				7C779E24104A57E500F444C4 /* ViewState.h */,
 				7C779E25104A57E500F444C4 /* WindowingFactory.h */,
 				7C779E26104A57E500F444C4 /* WinEvents.h */,
+				836E68B8112EBD4B009A6296 /* GUIWindowAddonBrowser.cpp */,
+				836E68B9112EBD4B009A6296 /* GUIWindowAddonBrowser.h */,
 				7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */,
 				7C779E28104A57E500F444C4 /* WinEventsSDL.h */,
 				7C779E29104A57E500F444C4 /* WinSystem.cpp */,
+				836E68A9112EBD37009A6296 /* AddonHelpers_Addon.cpp */,
+				836E68AA112EBD37009A6296 /* AddonHelpers_Addon.h */,
+				836E68AB112EBD37009A6296 /* AddonHelpers_GUI.cpp */,
+				836E68AC112EBD37009A6296 /* AddonHelpers_GUI.h */,
+				836E68AD112EBD37009A6296 /* AddonHelpers_local.cpp */,
+				836E68AE112EBD37009A6296 /* AddonHelpers_local.h */,
+				836E68AF112EBD37009A6296 /* AddonHelpers_PVR.cpp */,
+				836E68B0112EBD37009A6296 /* AddonHelpers_PVR.h */,
+				836E68B1112EBD37009A6296 /* AddonHelpers_Vis.cpp */,
+				836E68B2112EBD37009A6296 /* AddonHelpers_Vis.h */,
 				7C779E2A104A57E500F444C4 /* WinSystem.h */,
 				7C779E2F104A57E500F444C4 /* XBMC_events.h */,
 				7C779E30104A57E500F444C4 /* XBMC_keyboard.h */,
@@ -4680,8 +4691,6 @@
 				E38E17E50D25F9FA00618676 /* GUIDialogVideoSettings.h */,
 				E38E17E60D25F9FA00618676 /* GUIDialogVisualisationPresetList.cpp */,
 				E38E17E70D25F9FA00618676 /* GUIDialogVisualisationPresetList.h */,
-				E38E17E80D25F9FA00618676 /* GUIDialogVisualisationSettings.cpp */,
-				E38E17E90D25F9FA00618676 /* GUIDialogVisualisationSettings.h */,
 				E38E17EA0D25F9FA00618676 /* GUIDialogVolumeBar.cpp */,
 				E38E17EB0D25F9FA00618676 /* GUIDialogVolumeBar.h */,
 				E38E17EC0D25F9FA00618676 /* GUIDialogYesNo.cpp */,
@@ -5381,8 +5390,6 @@
 				83CDDF7A10C14A09000F608B /* TextSearch.cpp */,
 				83CDDF7B10C14A09000F608B /* TextSearch.h */,
 				83CDDF3210C13CFF000F608B /* GUIDialogAccessPoints.h */,
-				83CDDF3310C13CFF000F608B /* GUIDialogAddonBrowser.cpp */,
-				83CDDF3410C13CFF000F608B /* GUIDialogAddonBrowser.h */,
 				83CDDF3510C13CFF000F608B /* GUIDialogAddonSettings.cpp */,
 				83CDDF3610C13CFF000F608B /* GUIDialogAddonSettings.h */,
 				E38E15D80D25F9FA00618676 /* AC3CDDACodec.h */,
@@ -5390,8 +5397,6 @@
 				83CDDF7810C149F2000F608B /* PVRManager.h */,
 				83CDDF6010C13DEE000F608B /* Addon.cpp */,
 				83CDDF6110C13DEE000F608B /* Addon.h */,
-				83CDDF6210C13DEE000F608B /* AddonHelpers.cpp */,
-				83CDDF6310C13DEE000F608B /* AddonHelpers.h */,
 				83CDDF6410C13DEE000F608B /* AddonManager.cpp */,
 				83CDDF6510C13DEE000F608B /* AddonManager.h */,
 				83CDDF6610C13DEE000F608B /* PVRChannels.cpp */,
@@ -5557,6 +5562,7 @@
 				F592568610FBF2E100D2C91D /* ConvolutionKernels.h */,
 				F592568710FBF2E100D2C91D /* ConvolutionKernels.cpp */,
 				E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */,
+				836E68D1112EBFD2009A6296 /* Visualisation.h */,
 				E38E16700D25F9FA00618676 /* VideoFilterShader.h */,
 				E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */,
 				E38E16720D25F9FA00618676 /* YUV2RGBShader.h */,
@@ -5901,10 +5907,6 @@
 			children = (
 				E38E19530D25F9FB00618676 /* includes.h */,
 				E38E195E0D25F9FB00618676 /* SpyceModule.h */,
-				E38E19640D25F9FB00618676 /* WebServer.h */,
-				E38E19680D25F9FB00618676 /* XBMCConfiguration.h */,
-				E38E196A0D25F9FB00618676 /* XBMChttp.h */,
-				E38E196C0D25F9FB00618676 /* XBMCweb.h */,
 			);
 			path = libGoAhead;
 			sourceTree = "<group>";
@@ -5960,7 +5962,10 @@
 			children = (
 				E354EF030D99EDC900B55311 /* controlradiobutton.cpp */,
 				E38E257E0D263CE000618676 /* action.cpp */,
+				836E68F0112EC1C4009A6296 /* DllPVRClient.h */,
 				E38E19DC0D25F9FB00618676 /* action.h */,
+				836E68F5112EC231009A6296 /* AddonsDirectory.cpp */,
+				836E68F6112EC231009A6296 /* AddonsDirectory.h */,
 				E38E257F0D263CE000618676 /* control.cpp */,
 				E38E19DE0D25F9FB00618676 /* control.h */,
 				E38E25800D263CE000618676 /* controlbutton.cpp */,
@@ -6766,8 +6771,6 @@
 				E38E1DF70D25F9FD00618676 /* DllScreenSaver.h */,
 				E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */,
 				E38E1DFB0D25F9FD00618676 /* ScreenSaver.h */,
-				E38E1DFC0D25F9FD00618676 /* ScreenSaverFactory.cpp */,
-				E38E1DFD0D25F9FD00618676 /* ScreenSaverFactory.h */,
 			);
 			path = screensavers;
 			sourceTree = "<group>";
@@ -6938,9 +6941,6 @@
 				E38E1E9D0D25F9FD00618676 /* fft.cpp */,
 				E38E1E9E0D25F9FD00618676 /* fft.h */,
 				E38E1EA10D25F9FD00618676 /* Visualisation.cpp */,
-				E38E1EA20D25F9FD00618676 /* Visualisation.h */,
-				E38E1EA30D25F9FD00618676 /* VisualisationFactory.cpp */,
-				E38E1EA40D25F9FD00618676 /* VisualisationFactory.h */,
 			);
 			path = visualizations;
 			sourceTree = "<group>";
@@ -7396,7 +7396,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/music\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/pictures\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/video\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/screensavers\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/scripts\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/osx\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/skin\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/skin/PM3.HD/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/PM3.HD\"\n${SYNC} \"$SRCROOT/skin/Confluence/backgrounds\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/Confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/screensavers\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/web/poc_jsonrpc/\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\nif [ -e \"$SRCROOT/visualisations/ProjectM.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/projectM\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/\"\n\t${SYNC} \"$SRCROOT/visualisations/ProjectM.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/ProjectM.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/opengl_spectrum.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/opengl_spectrum.vis\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/opengl_spectrum.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/Waveform.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Waveform.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Waveform.vis\"\nfi\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/music\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/pictures\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/video\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/screensavers\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/scripts\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/osx\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/skin\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/skin/PM3.HD/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/PM3.HD\"\n${SYNC} \"$SRCROOT/skin/Confluence/backgrounds\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/Confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/screensavers\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/web/poc_jsonrpc/\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\nif [ -e \"$SRCROOT/visualisations/ProjectM.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/projectM\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/\"\n\t${SYNC} \"$SRCROOT/visualisations/ProjectM.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/ProjectM.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/opengl_spectrum.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/opengl_spectrum.vis\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/opengl_spectrum.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/Waveform.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Waveform.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Waveform.vis\"\nfi\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -7722,7 +7722,6 @@
 				E38E209E0D25F9FD00618676 /* GUIDialogVideoScan.cpp in Sources */,
 				E38E209F0D25F9FD00618676 /* GUIDialogVideoSettings.cpp in Sources */,
 				E38E20A00D25F9FD00618676 /* GUIDialogVisualisationPresetList.cpp in Sources */,
-				E38E20A10D25F9FD00618676 /* GUIDialogVisualisationSettings.cpp in Sources */,
 				E38E20A20D25F9FD00618676 /* GUIDialogVolumeBar.cpp in Sources */,
 				E38E20A30D25F9FD00618676 /* GUIDialogYesNo.cpp in Sources */,
 				E38E20A40D25F9FD00618676 /* GUILargeTextureManager.cpp in Sources */,
@@ -7905,7 +7904,6 @@
 				E38E22AE0D25F9FE00618676 /* Profile.cpp in Sources */,
 				E38E22AF0D25F9FE00618676 /* ProgramDatabase.cpp in Sources */,
 				E38E22B10D25F9FE00618676 /* ScreenSaver.cpp in Sources */,
-				E38E22B20D25F9FE00618676 /* ScreenSaverFactory.cpp in Sources */,
 				E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */,
 				E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */,
 				E38E22B50D25F9FE00618676 /* Settings.cpp in Sources */,
@@ -7967,7 +7965,6 @@
 				E38E22FE0D25F9FE00618676 /* ViewDatabase.cpp in Sources */,
 				E38E22FF0D25F9FE00618676 /* fft.cpp in Sources */,
 				E38E23010D25F9FE00618676 /* Visualisation.cpp in Sources */,
-				E38E23020D25F9FE00618676 /* VisualisationFactory.cpp in Sources */,
 				E38E23030D25F9FE00618676 /* VorbisTag.cpp in Sources */,
 				E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */,
 				E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */,
@@ -8234,7 +8231,6 @@
 				E4A249F71095C880003D74C6 /* AutorunMediaJob.cpp in Sources */,
 				F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */,
 				431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */,
-				83CDDF3710C13CFF000F608B /* GUIDialogAddonBrowser.cpp in Sources */,
 				83CDDF3810C13CFF000F608B /* GUIDialogAddonSettings.cpp in Sources */,
 				83CDDF5110C13D4A000F608B /* GUIDialogPVRChannelManager.cpp in Sources */,
 				83CDDF5210C13D4A000F608B /* GUIDialogPVRChannelsOSD.cpp in Sources */,
@@ -8248,7 +8244,6 @@
 				83CDDF5A10C13D4A000F608B /* GUIDialogPVRTimerSettings.cpp in Sources */,
 				83CDDF5B10C13D4A000F608B /* GUIDialogPVRUpdateProgressBar.cpp in Sources */,
 				83CDDF6E10C13DEE000F608B /* Addon.cpp in Sources */,
-				83CDDF6F10C13DEE000F608B /* AddonHelpers.cpp in Sources */,
 				83CDDF7010C13DEE000F608B /* AddonManager.cpp in Sources */,
 				83CDDF7110C13DEE000F608B /* PVRChannels.cpp in Sources */,
 				83CDDF7210C13DEE000F608B /* PVREpg.cpp in Sources */,
@@ -8294,6 +8289,13 @@
 				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */,
+				836E68B3112EBD37009A6296 /* AddonHelpers_Addon.cpp in Sources */,
+				836E68B4112EBD37009A6296 /* AddonHelpers_GUI.cpp in Sources */,
+				836E68B5112EBD37009A6296 /* AddonHelpers_local.cpp in Sources */,
+				836E68B6112EBD37009A6296 /* AddonHelpers_PVR.cpp in Sources */,
+				836E68B7112EBD37009A6296 /* AddonHelpers_Vis.cpp in Sources */,
+				836E68BA112EBD4B009A6296 /* GUIWindowAddonBrowser.cpp in Sources */,
+				836E68F7112EC231009A6296 /* AddonsDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8613,7 +8615,6 @@
 				F5A1C9C80F6B06CF00A96ABD /* GUIDialogVideoScan.cpp in Sources */,
 				F5A1C9C90F6B06CF00A96ABD /* GUIDialogVideoSettings.cpp in Sources */,
 				F5A1C9CA0F6B06CF00A96ABD /* GUIDialogVisualisationPresetList.cpp in Sources */,
-				F5A1C9CB0F6B06CF00A96ABD /* GUIDialogVisualisationSettings.cpp in Sources */,
 				F5A1C9CC0F6B06CF00A96ABD /* GUIDialogVolumeBar.cpp in Sources */,
 				F5A1C9CD0F6B06CF00A96ABD /* GUIDialogYesNo.cpp in Sources */,
 				F5A1C9CE0F6B06CF00A96ABD /* GUILargeTextureManager.cpp in Sources */,
@@ -8796,7 +8797,6 @@
 				F5A1CAAC0F6B06CF00A96ABD /* Profile.cpp in Sources */,
 				F5A1CAAD0F6B06CF00A96ABD /* ProgramDatabase.cpp in Sources */,
 				F5A1CAAE0F6B06CF00A96ABD /* ScreenSaver.cpp in Sources */,
-				F5A1CAAF0F6B06CF00A96ABD /* ScreenSaverFactory.cpp in Sources */,
 				F5A1CAB00F6B06CF00A96ABD /* SectionLoader.cpp in Sources */,
 				F5A1CAB10F6B06CF00A96ABD /* VideoSettings.cpp in Sources */,
 				F5A1CAB20F6B06CF00A96ABD /* Settings.cpp in Sources */,
@@ -8858,7 +8858,6 @@
 				F5A1CAED0F6B06CF00A96ABD /* ViewDatabase.cpp in Sources */,
 				F5A1CAEE0F6B06CF00A96ABD /* fft.cpp in Sources */,
 				F5A1CAEF0F6B06CF00A96ABD /* Visualisation.cpp in Sources */,
-				F5A1CAF00F6B06CF00A96ABD /* VisualisationFactory.cpp in Sources */,
 				F5A1CAF10F6B06CF00A96ABD /* VorbisTag.cpp in Sources */,
 				F5A1CAF20F6B06CF00A96ABD /* XBApplicationEx.cpp in Sources */,
 				F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */,

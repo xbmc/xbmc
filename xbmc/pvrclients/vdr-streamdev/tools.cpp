@@ -229,13 +229,14 @@ CStdString AddDirectory(const char *DirName, const char *FileName)
 
 char *ReadLink(const char *FileName)
 {
-#if defined(__APPLE__) || defined(__WINDOWS__)
+#if defined(__WINDOWS__)
   return NULL;
 #else
   if (!FileName)
     return NULL;
-  char *TargetName = canonicalize_file_name(FileName);
-  if (!TargetName)
+  char *TargetName = NULL;
+  char *res = realpath(FileName, TargetName);
+  if (!res)
   {
     if (errno == ENOENT) // file doesn't exist
       TargetName = strdup(FileName);

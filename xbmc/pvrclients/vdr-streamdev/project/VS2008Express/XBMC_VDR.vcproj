@@ -210,7 +210,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\getline.cpp"
+				RelativePath="..\..\windows\getline.cpp"
 				>
 			</File>
 			<File
@@ -268,7 +268,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\getline.h"
+				RelativePath="..\..\windows\getline.h"
 				>
 			</File>
 			<File

@@ -32,9 +32,6 @@ endif
 -include Make.config
 
 OBJS = client.o vtptransceiver.o timers.o channels.o recordings.o epg.o tools.o thread.o ringbuffer.o select.o
-ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
-OBJS += getline.o
-endif
 
 all: pvrVDR
 

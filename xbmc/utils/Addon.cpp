@@ -27,6 +27,9 @@
 #include "FileSystem/Directory.h"
 #include "log.h"
 #include <string.h>
+#ifdef __APPLE__
+#include <osx/OSXGNUReplacements.h>
+#endif
 
 using XFILE::CDirectory;
 

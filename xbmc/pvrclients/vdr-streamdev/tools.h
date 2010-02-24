@@ -36,6 +36,7 @@
 
 #ifdef __APPLE__
 #include <sys/stat.h>
+#include <osx/OSXGNUReplacements.h>
 #endif
 
 #define TS_SYNC_BYTE          0x47
