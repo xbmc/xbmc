@@ -212,11 +212,11 @@ void SamiTagConvertor::LoadHead(CDVDSubtitleStream* samiStream)
 
   while (samiStream->ReadLine(line, sizeof(line)))
   {
-    if (!strncmp(line, "<BODY>", 6))
+    if (!strnicmp(line, "<BODY>", 6))
       break;
     if (inSTYLE)
     {
-      if (!strncmp(line, "</STYLE>", 8))
+      if (!strnicmp(line, "</STYLE>", 8))
         break;
       else
       {
@@ -236,7 +236,7 @@ void SamiTagConvertor::LoadHead(CDVDSubtitleStream* samiStream)
     }
     else
     {
-      if (!strncmp(line, "<STYLE TYPE=\"text/css\">", 23))
+      if (!strnicmp(line, "<STYLE TYPE=\"text/css\">", 23))
         inSTYLE = true;
     }
   }
