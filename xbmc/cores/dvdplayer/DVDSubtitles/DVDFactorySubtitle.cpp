@@ -49,7 +49,7 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& s
 
   while (iStart < iSize)
   {
-    int iEnd = strExtensionCached.Find(" ", iStart);
+    int iEnd = strExtensionCached.Find("|", iStart);
     std::string strExtension = strExtensionCached.substr(iStart, iEnd-iStart);
     iStart = iEnd + 1;
 
