@@ -162,6 +162,7 @@ private:
   IMediaEventEx*                  m_pMediaEvent;
   IMediaSeeking*                  m_pMediaSeeking;
   IBasicAudio*                    m_pBasicAudio;
+  IQualProp*                      m_pQualProp;
 
   bool m_bAllowFullscreen;
   bool m_bReachedEnd;
@@ -173,7 +174,8 @@ private:
   CFile m_File;   
   DWORD_PTR g_userId;
   CCritSec m_ObjectLock;
-
+  CStdString m_pStrCurrentFrameRate;
+  int        m_iCurrentFrameRefreshCycle;
   struct SPlayerState
   {
     void Clear()

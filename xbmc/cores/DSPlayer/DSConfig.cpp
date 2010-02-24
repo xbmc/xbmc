@@ -46,6 +46,7 @@ CDSConfig::CDSConfig(void)
   pIffdshowDecoder = NULL;
   pGraph = NULL;
   pGraph = NULL;
+  pQualProp = NULL;
 }
 
 CDSConfig::~CDSConfig(void)
@@ -64,6 +65,7 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
   pIffdshowDecFilter = NULL;
   pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
+  pQualProp = NULL;
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 
@@ -80,6 +82,8 @@ void CDSConfig::ConfigureFilters()
 	  GetMpaDec(pBF);
     GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);
+    if (!pQualProp)
+      pBF->QueryInterface(IID_IQualProp, (void **) &pQualProp);
   }
   EndEnumFilters(pEF, pBF)
   CreatePropertiesXml();

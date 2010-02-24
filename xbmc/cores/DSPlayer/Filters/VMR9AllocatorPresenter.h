@@ -76,6 +76,7 @@ private:
   int                                 m_pCurSurface;
   CMacrovisionKicker *                m_pMacrovisionKicker;
   COuterVMR9 *                        m_pOuterVMR9;
+  
 };
 
 #endif // _DXALLOCATORPRESENTER_H

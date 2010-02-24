@@ -62,6 +62,7 @@ CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
   
   m_PlaybackRate = 1;
   m_currentSpeed = 0;
+  m_iCurrentFrameRefreshCycle = 0;
   g_userId = 0xACDCACDC;
   m_State.Clear();
   m_VideoInfo.Clear();
@@ -69,6 +70,7 @@ CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
   m_pMediaEvent = NULL;
   m_pMediaSeeking = NULL;
   m_pBasicAudio = NULL;
+  m_pQualProp = NULL;
   m_bReachedEnd = false;
   m_bChangingAudioStream = false;
   g_dsconfig.pGraph = this;
@@ -135,8 +137,11 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //still need to be added
   //SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   
-  
-  
+  if (g_dsconfig.pQualProp)
+  {
+    m_pQualProp = g_dsconfig.pQualProp;
+    
+  }
 
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
   
@@ -206,16 +211,28 @@ void CDSGraph::UpdateTime()
 // Should we return a media position
   if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
   {
-  if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-    m_State.time = double(Position) / TIME_FORMAT_TO_MS;
+    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
+      m_State.time = double(Position) / TIME_FORMAT_TO_MS;
   }
   else
   {
-  if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-    m_State.time = double(Position);
+    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
+      m_State.time = double(Position);
   }
+
   if ( m_State.time == m_State.time_total )
     m_bReachedEnd = true;
+  //with the Current frame refresh cycle at 5 the framerate is requested every 1000ms
+  if ((m_pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
+  {
+    int avgRate;
+    float avgFRate;
+    g_dsconfig.pQualProp->get_AvgFrameRate(&avgRate);
+    avgFRate = (float)avgRate/100;
+    m_pStrCurrentFrameRate.Format(" Avg FrameRate: %4.2f",avgFRate);
+    m_iCurrentFrameRefreshCycle = 5;
+  }
+  m_iCurrentFrameRefreshCycle--;
 }
 
 void CDSGraph::UpdateState()
@@ -714,12 +731,12 @@ CStdString CDSGraph::GetVideoInfo()
 {
   CStdString videoInfo = "";
   CStreamsManager *c = CStreamsManager::getSingleton();
-
-  videoInfo.Format("Video Decoder: %s (%s, %dx%d)",
+  videoInfo.Format("Video Decoder: %s (%s, %dx%d)%s",
     m_VideoInfo.filter_video_dec,
     c->GetVideoCodecName(),
     c->GetPictureWidth(),
-    c->GetPictureHeight());
+    c->GetPictureHeight(),
+    m_pStrCurrentFrameRate.c_str());
 
   if ( ! m_VideoInfo.dxva_info.empty() )
     videoInfo += " | " + m_VideoInfo.dxva_info;

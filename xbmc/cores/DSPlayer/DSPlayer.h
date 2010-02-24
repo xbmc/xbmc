@@ -24,6 +24,7 @@
 #include "Intsafe.h"
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
+#include "SingleLock.h"
 #include "StdString.h"
 #include "StringUtils.h"
 #include "DSGraph.h"
@@ -111,10 +112,11 @@ public:
 //CDSPlayer
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam) { m_pDsGraph.ProcessDsWmCommand(wParam, lParam); }
   virtual HRESULT HandleGraphEvent()                            { return m_pDsGraph.HandleGraphEvent(); }
+  virtual void HandleStart();
   virtual void Stop();
 
   static DSPLAYER_STATE PlayerState;
-
+  CCriticalSection m_StateSection;
 protected:
   virtual void OnStartup();
   virtual void OnExit();

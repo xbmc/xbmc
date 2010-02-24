@@ -85,7 +85,7 @@ public:
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
   /** @} */
-
+  IQualProp*          pQualProp;
 protected:
   /**
    * If the filter expose a property page, add it to m_pPropertiesFilters
@@ -127,7 +127,6 @@ private:
   IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
-
   //current page
   CDSPropertyPage*               m_pCurrentProperty;
 };

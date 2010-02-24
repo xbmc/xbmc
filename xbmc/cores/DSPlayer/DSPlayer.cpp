@@ -117,7 +117,7 @@ bool CDSPlayer::HasAudio() const
 //TO DO EVERY INFO FOR THE GUI
 void CDSPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
-  
+  CSingleLock lock(m_StateSection);
   strAudioInfo = m_pDsGraph.GetAudioInfo();
   //"CDSPlayer:GetAudioInfo";
   //this is the function from dvdplayeraudio
@@ -128,6 +128,7 @@ void CDSPlayer::GetAudioInfo(CStdString& strAudioInfo)
 
 void CDSPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {	
+  CSingleLock lock(m_StateSection);
   strVideoInfo = m_pDsGraph.GetVideoInfo();
   //strVideoInfo.Format("D(%s) P(%s)", m_pDsGraph.GetPlayerInfo().c_str());
 }
@@ -167,6 +168,23 @@ void CDSPlayer::OnExit()
 
   m_bStop = true;
 }
+
+void CDSPlayer::HandleStart()
+{
+  if (m_PlayerOptions.starttime>0)
+    SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
+  //SendMessage(g_hWnd,WM_COMMAND, ID_DS_HIDE_SUB ,0);
+  //In case ffdshow has the subtitles filter enabled
+  if ( CStreamsManager::getSingleton()->GetSubtitleCount() == 0 )
+    CStreamsManager::getSingleton()->SetSubtitleVisible(false);
+  else
+  {
+    //If there more than one we will load the first one in the list
+    CStreamsManager::getSingleton()->SetSubtitle(0);
+    CStreamsManager::getSingleton()->SetSubtitleVisible(true);
+  }
+}
+
 void CDSPlayer::Process()
 {
   m_callback.OnPlayBackStarted();
@@ -187,24 +205,11 @@ void CDSPlayer::Process()
 
     //The graph need to be started to handle those stuff
     if (!pStartPosDone)
-	  {
-      
-      if (m_PlayerOptions.starttime>0)
-      {
-        SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
-      }
-      //SendMessage(g_hWnd,WM_COMMAND, ID_DS_HIDE_SUB ,0);
-      //In case ffdshow has the subtitles filter enabled
-      if ( CStreamsManager::getSingleton()->GetSubtitleCount() == 0 )
-        CStreamsManager::getSingleton()->SetSubtitleVisible(false);
-      else
-      {
-        //If there more than one we will load the first one in the list
-        CStreamsManager::getSingleton()->SetSubtitle(0);
-        CStreamsManager::getSingleton()->SetSubtitleVisible(true);
-      }
+    {
+      HandleStart();
       pStartPosDone = true;
 	  }
+
 
     if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
       break;
@@ -213,7 +218,7 @@ void CDSPlayer::Process()
 
     if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
       break;
-
+    
     //Handle fastforward stuff
     if (m_currentSpeed == 0)
     {      
