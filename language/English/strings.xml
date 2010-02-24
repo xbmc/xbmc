@@ -1949,7 +1949,7 @@
   <string id="21432">Edit smart playlist</string>
   <string id="21433">Name of the playlist</string>
   <string id="21434">Find items where</string>
-  <string id="21435">- Edit</string>
+  <string id="21435">Edit</string>
   <string id="21436">%i items</string>
   <string id="21437">New smart playlist...</string>
   <string id="21438">%c Drive</string>
@@ -1964,6 +1964,7 @@
   <string id="21447">Audio language</string>
   <string id="21448">Subtitle language</string>
   <string id="21449">Remote control sends keyboard presses</string>
+  <string id="21450">- Edit</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
