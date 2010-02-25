@@ -2879,8 +2879,12 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
       }
     }
     castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
-    m_pDS2->close();
     details.m_strPictureURL.Parse();
+    strSQL=FormatSQL("select * from bookmark join episode on episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i and bookmark.type=%i", VIDEODB_ID_EPISODE_BOOKMARK,details.m_iDbId,CBookmark::EPISODE);
+    m_pDS2->query(strSQL.c_str());
+    if (!m_pDS2->eof())
+      details.m_fEpBookmark = m_pDS2->fv("bookmark.timeInSeconds").get_asFloat();
+    m_pDS2->close();
   }
   return details;
 }
@@ -7242,7 +7246,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
 
         // now save the episodes from this show
-        sql = FormatSQL("select * from episodeview where idShow=%i",tvshow.m_iDbId);
+        sql = FormatSQL("select * from episodeview where idShow=%i order by strFileName, idEpisode",tvshow.m_iDbId);
         pDS->query(sql.c_str());
 
         while (!pDS->eof())
@@ -7252,6 +7256,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             episode.Save(pMain, "episodedetails", !singleFiles);
           else
             episode.Save(pMain->LastChild(), "episodedetails", !singleFiles);
+          pDS->next();
+          while (singleFiles && !pDS->eof() &&
+                 episode.m_iFileId == pDS->fv("idFile").get_asInt())
+          {
+            episode = GetDetailsForEpisode(pDS, true);
+            episode.Save(pMain, "episodedetails", !singleFiles);
+            pDS->next();
+          }
 
           // reset old skip state
           bool bSkip = false;
@@ -7300,7 +7312,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               }
             }
           }
-          pDS->next();
         }
       }
       pDS->close();

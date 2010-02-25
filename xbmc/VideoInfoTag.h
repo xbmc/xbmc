@@ -92,6 +92,7 @@ public:
   int m_iSpecialSortEpisode;
   int m_iTrack;
   float m_fRating;
+  float m_fEpBookmark;
   int m_iBookmarkId;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;

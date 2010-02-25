@@ -1011,6 +1011,15 @@ namespace VIDEO
         // episode then add, which breaks multi-episode files.
         int idEpisode = m_database.AddEpisode(idShow, pItem->m_strPath);
         lResult = m_database.SetDetailsForEpisode(pItem->m_strPath, movieDetails, idShow, idEpisode);
+        if (movieDetails.m_fEpBookmark > 0)
+        {
+          movieDetails.m_strFileNameAndPath = pItem->m_strPath;
+          CBookmark bookmark;
+          bookmark.timeInSeconds = movieDetails.m_fEpBookmark;
+          bookmark.seasonNumber = movieDetails.m_iSeason;
+          bookmark.episodeNumber = movieDetails.m_iEpisode;
+          m_database.AddBookMarkForEpisode(movieDetails,bookmark);
+        }
       }
     }
     else if (content.Equals("musicvideos"))
