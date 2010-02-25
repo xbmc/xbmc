@@ -24,7 +24,11 @@
 
 #include <stdio.h>
 #include "dataset.h"
+#ifdef _WIN32
+#include "../../../lib/libmysql_win32/include/mysql.h"
+#else
 #include "mysql/mysql.h"
+#endif
 
 namespace dbiplus {
 /***************** Class MysqlDatabase definition ******************

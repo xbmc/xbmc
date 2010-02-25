@@ -26,7 +26,12 @@
 #include "mysqldataset.h"
 #include "utils/log.h"
 #include "system.h" // for GetLastError()
+#ifdef _WIN32
+#include "../../../lib/libmysql_win32/include/errmsg.h"
+#pragma comment(lib, "../../lib/libmysql_win32/lib/mysqlclient.lib")
+#else
 #include "mysql/errmsg.h"
+#endif
 
 
 #define MYSQL_OK        0

@@ -6614,6 +6614,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\lib\sqLite\mysqldataset.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\sqLite\mysqldataset.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\sqLite\qry_dat.cpp"
 					>
 				</File>
