@@ -59,7 +59,7 @@ protected:
   virtual const char *GetDefaultDBName() const=0;
 
   bool m_bOpen;
-  bool m_compressible; ///< \brief whether this database is compressible (defaults to false)
+  bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
   std::auto_ptr<dbiplus::Database> m_pDB;
   std::auto_ptr<dbiplus::Dataset> m_pDS;

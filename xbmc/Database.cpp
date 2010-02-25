@@ -103,14 +103,13 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
     return true;
   }
 
-  m_compressible = false;
+  m_sqlite = true;
   
-  bool fallback = true;
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
     if ( ! (dbSettings.host.IsEmpty() || dbSettings.user.IsEmpty() || dbSettings.pass.IsEmpty()) )
-      fallback = false;
+      m_sqlite = false;
     else
       CLog::Log(LOGINFO, "essential mysql database information is missing (eg. host, user, pass)");
   }
@@ -120,7 +119,7 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
     dbSettings.name = GetDefaultDBName();
 
   // always safely fallback to sqlite3
-  if (fallback)
+  if (m_sqlite)
   {
     dbSettings.type = "sqlite3";
     dbSettings.host = _P(g_settings.GetDatabaseFolder());
@@ -173,6 +172,18 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
   if (!m_pDB->exists())
   {
     CreateTables();
+    if (m_sqlite)
+    {
+      //  Modern file systems have a cluster/block size of 4k.
+      //  To gain better performance when performing write
+      //  operations to the database, set the page size of the
+      //  database file to 4k.
+      //  This needs to be done before any table is created.
+      m_pDS->exec("PRAGMA page_size=4096\n");
+
+      //  Also set the memory cache size to 16k
+      m_pDS->exec("PRAGMA default_cache_size=4096\n");
+    }
   }
 
   // Mark our db as open here to make our destructor to properly close the file handle
@@ -206,20 +217,9 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
   // sqlite3 post connection operations
   if (dbSettings.type.Equals("sqlite3"))
   {
-    //  Modern file systems have a cluster/block size of 4k.
-    //  To gain better performance when performing write
-    //  operations to the database, set the page size of the
-    //  database file to 4k.
-    //  This needs to be done before any table is created.
-    m_pDS->exec("PRAGMA page_size=4096\n");
-
-    //  Also set the memory cache size to 16k
-    m_pDS->exec("PRAGMA default_cache_size=4096\n");
-
     m_pDS->exec("PRAGMA cache_size=4096\n");
     m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
     m_pDS->exec("PRAGMA count_changes='OFF'\n");
-    m_compressible = true;
   }
 
   m_iRefCount++;
@@ -255,7 +255,7 @@ void CDatabase::Close()
 
 bool CDatabase::Compress(bool bForce /* =true */)
 {
-  if (!m_compressible)
+  if (!m_sqlite)
     return true;
 
   try
