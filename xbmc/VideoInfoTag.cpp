@@ -148,15 +148,20 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
 
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
-  XMLUtils::SetString(movie, "genre", m_strGenre);
-  XMLUtils::SetString(movie, "set", m_strSet);
-  XMLUtils::SetString(movie, "credits", m_strWritingCredits);
-  XMLUtils::SetString(movie, "director", m_strDirector);
+  XMLUtils::SetAdditiveString(movie, "genre",
+                          g_advancedSettings.m_videoItemSeparator, m_strGenre);
+  XMLUtils::SetAdditiveString(movie, "set",
+                          g_advancedSettings.m_videoItemSeparator, m_strSet);
+  XMLUtils::SetAdditiveString(movie, "credits",
+                          g_advancedSettings.m_videoItemSeparator, m_strWritingCredits);
+  XMLUtils::SetAdditiveString(movie, "director",
+                          g_advancedSettings.m_videoItemSeparator, m_strDirector);
   XMLUtils::SetString(movie, "premiered", m_strPremiered);
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
-  XMLUtils::SetString(movie, "studio", m_strStudio);
+  XMLUtils::SetAdditiveString(movie, "studio",
+                          g_advancedSettings.m_videoItemSeparator, m_strStudio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
   if (m_streamDetails.HasItems())
@@ -210,7 +215,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     TiXmlText th(it->thumbUrl.GetFirstThumb().m_url);
     thumbNode->InsertEndChild(th);
   }
-  XMLUtils::SetString(movie, "artist", m_strArtist);
+  XMLUtils::SetAdditiveString(movie, "artist",
+                         g_advancedSettings.m_videoItemSeparator, m_strArtist);
 
   return true;
 }
