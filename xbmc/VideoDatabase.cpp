@@ -6957,6 +6957,9 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
+      // strip paths to make them relative
+      if (movie.m_strTrailer.Mid(0,movie.m_strPath.size()).Equals(movie.m_strPath))
+        movie.m_strTrailer = movie.m_strTrailer.Mid(movie.m_strPath.size());
       movie.Save(pMain, "movie", !singleFiles);
 
       // reset old skip state
