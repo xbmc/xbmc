@@ -978,7 +978,26 @@ namespace VIDEO
       CStdString strTrailer = pItem->FindTrailer();
       if (!strTrailer.IsEmpty())
         movieDetails.m_strTrailer = strTrailer;
-      m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      int idMovie=m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      // setup links to shows if the linked shows are in the db
+      if (!movieDetails.m_strShowLink.IsEmpty())
+      {
+        CStdStringArray list;
+        StringUtils::SplitString(movieDetails.m_strShowLink,
+                                 g_advancedSettings.m_videoItemSeparator,list);
+        for (unsigned int i=0;i<list.size();++i)
+        {
+          CFileItemList items;
+          m_database.GetTvShowsByName(list[i],items);
+          if (items.Size())
+            m_database.LinkMovieToTvshow(idMovie,items[0]->GetVideoInfoTag()->m_iDbId,false);
+          else
+            CLog::Log(LOGDEBUG,"failed to link movie %s to show %s",
+                      movieDetails.m_strTitle.c_str(),list[i].c_str());
+        }
+      }
     }
     else if (content.Equals("tvshows"))
     {

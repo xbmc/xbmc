@@ -667,14 +667,14 @@ bool CVideoDatabase::GetLinksToTvShow(int idMovie, vector<int>& ids)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=FormatSQL("select * from movielinktvshow where idMovie=%i", idMovie);
-    m_pDS->query(strSQL.c_str());
-    while (!m_pDS->eof())
+    m_pDS2->query(strSQL.c_str());
+    while (!m_pDS2->eof())
     {
-      ids.push_back(m_pDS->fv(1).get_asInt());
-      m_pDS->next();
+      ids.push_back(m_pDS2->fv(1).get_asInt());
+      m_pDS2->next();
     }
 
-    m_pDS->close();
+    m_pDS2->close();
     return true;
   }
   catch (...)
@@ -1672,7 +1672,7 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details)
+int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details)
 {
   try
   {
@@ -1694,7 +1694,7 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     if (idMovie < 0)
     {
       CommitTransaction();
-      return;
+      return idMovie;
     }
 
     vector<int> vecDirectors;
@@ -1755,11 +1755,13 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     sql += FormatSQL(" where idMovie=%i", idMovie);
     m_pDS->exec(sql.c_str());
     CommitTransaction();
+    return idMovie;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
+  return -1;
 }
 
 int CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details)
@@ -2771,6 +2773,23 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
       details.m_strSet += setName;
       m_pDS2->next();
     }
+
+    // create tvshowlink string
+    vector<int> links;
+    GetLinksToTvShow(idMovie,links);
+    for (unsigned int i=0;i<links.size();++i)
+    {
+      strSQL = FormatSQL("select c%02d from tvshow where idShow=%i",
+                         VIDEODB_ID_TV_TITLE,links[i]);
+      m_pDS2->query(strSQL.c_str());
+      if (!m_pDS2->eof())
+      {
+        if (!details.m_strShowLink.IsEmpty())
+          details.m_strShowLink += g_advancedSettings.m_videoItemSeparator;
+        details.m_strShowLink += m_pDS2->fv(0).get_asString();
+      }
+    }
+    m_pDS2->close();
   }
   return details;
 }
@@ -6215,6 +6234,7 @@ void CVideoDatabase::GetTvShowsByName(const CStdString& strSearch, CFileItemList
 
       pItem->m_strPath="videodb://"+ strDir;
       pItem->m_bIsFolder=true;
+      pItem->GetVideoInfoTag()->m_iDbId = m_pDS->fv("tvshow.idshow").get_asInt();
       items.Add(pItem);
       m_pDS->next();
     }

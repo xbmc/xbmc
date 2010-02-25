@@ -333,7 +333,7 @@ public:
 
   void GetEpisodesByFile(const CStdString& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
 
-  void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
+  int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idShow, int idEpisode=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);

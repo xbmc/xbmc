@@ -72,6 +72,7 @@ void CVideoInfoTag::Reset()
   m_fanart.m_xml = "";
   m_strRuntime = "";
   m_lastPlayed = "";
+  m_strShowLink = "";
   m_streamDetails.Reset();
   m_playCount = 0;
 }
@@ -217,6 +218,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
   XMLUtils::SetAdditiveString(movie, "artist",
                          g_advancedSettings.m_videoItemSeparator, m_strArtist);
+  XMLUtils::SetAdditiveString(movie, "showlink",
+                         g_advancedSettings.m_videoItemSeparator, m_strShowLink);
 
   return true;
 }
@@ -292,6 +295,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iBookmarkId;
     ar << m_iTrack;
     ar << m_streamDetails;
+    ar << m_strShowLink;
   }
   else
   {
@@ -354,6 +358,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
     ar >> m_streamDetails;
+    ar >> m_strShowLink;
   }
 }
 
@@ -427,6 +432,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
   XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
   XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
+  XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.m_videoItemSeparator,m_strShowLink);
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");
