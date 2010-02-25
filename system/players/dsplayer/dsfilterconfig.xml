@@ -156,73 +156,73 @@
   <rules>
     <!-- For more filetype make a request in the forum thread  -->
     <!-- Iso extension will be added soon-->
-    <rule filetype="avi">
+    <rule filetypes="avi">
       <source filter="avisource" />
       <splitter filter="avisplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>  
-    <rule filetype="ogm">
+    <rule filetypes="ogm">
       <source filter="oggsource" />
       <splitter filter="oggsplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>  
-      <rule filetype="flv">
+      <rule filetypes="flv">
       <source filter="flvsource" />
       <splitter filter="flvsplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="mp4">
+    <rule filetypes="mp4">
       <source filter="mp4source" />
       <splitter filter="mp4splitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="mov">
+    <rule filetypes="mov">
       <source filter="mp4source" />
       <splitter filter="mp4splitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="m4v">
+    <rule filetypes="m4v">
       <source filter="mp4source" />
       <splitter filter="mp4splitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="m2v">
+    <rule filetypes="m2v">
       <source filter="mpegsource" />
       <splitter filter="mpegsplitter" />
       <video filter="mpeg2videodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="ts">
+    <rule filetypes="ts">
       <source filter="mpegsource" />
       <splitter filter="mpegsplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="mpeg">
+    <rule filetypes="mpeg">
       <source filter="mpegsource" />
       <splitter filter="mpegsplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="mpg">
+    <rule filetypes="mpg">
       <source filter="mpegsource" />
       <splitter filter="mpegsplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="m2ts">
+    <rule filetypes="m2ts">
       <source filter="mpegsource" />
       <splitter filter="mpegsplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetype="mkv">
+    <rule filetypes="mkv">
       <source filter="mkvsource" />
       <splitter filter="mkvsplitter" />
       <video>
@@ -230,11 +230,12 @@
         <video filter="ffdvideodec" />
       </video>
       <audio filter="ffdaudiodec" />
-      <!-- <extra filter="ac3filter" />
-      <extra filter="dcgraphiceq" />
-      <extra filter="ffdvideodec" /> -->
+      <!--<extra>
+        <extra filter="ac3filter" />
+        <extra filter="dcgraphiceq" />
+      </extra>-->
     </rule>
-    <rule filetype="wmv">
+    <rule filetypes="wmv">
       <source filter="wmasfreader" />
       <splitter filter="wmasfreader" />
       <video filter="ffdvideodec" />
@@ -242,7 +243,7 @@
     </rule>
     
     <!-- You need Real Alternative in order to read real media files -->
-    <rule filetype="rmvb">
+    <rule filetypes="rmvb">
       <source filter="realsource" />
       <splitter filter="realsplitter" />
       <video filter="realvideodec" />

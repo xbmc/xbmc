@@ -226,10 +226,8 @@ void CDSGraph::UpdateTime()
   if ((m_pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
   {
     int avgRate;
-    float avgFRate;
     g_dsconfig.pQualProp->get_AvgFrameRate(&avgRate);
-    avgFRate = (float)avgRate/100;
-    m_pStrCurrentFrameRate.Format(" Avg FrameRate: %4.2f",avgFRate);
+    m_pStrCurrentFrameRate.Format(" Avg FrameRate: %4.2f",(float)avgRate/100);
     m_iCurrentFrameRefreshCycle = 5;
   }
   m_iCurrentFrameRefreshCycle--;

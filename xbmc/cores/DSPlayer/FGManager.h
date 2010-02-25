@@ -113,7 +113,7 @@ protected:
   STDMETHODIMP RenderEx(IPin* pPinOut, DWORD dwFlags, DWORD* pvContext) { return E_NOTIMPL; };
 
 	
-
+  HRESULT RemoveUnconnectedFilters();
 	// IGraphBuilderDeadEnd
 
 	STDMETHODIMP_(size_t) GetCount();

@@ -243,24 +243,22 @@ bool DShowUtil::IsAudioWaveRenderer(IBaseFilter* pBF)
 }
 
 
-HRESULT DShowUtil::RemoveUnconnectedFilters(IGraphBuilder *pGraph)
+HRESULT DShowUtil::RemoveUnconnectedFilters(IFilterGraph2 *pGraph)
 {
-if (pGraph == NULL)
-    {
-        return E_POINTER;
-    }
+  if (!pGraph)
+    return E_POINTER;
 
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
 
-    IEnumFilters *pEnum = NULL;
-    IBaseFilter *pFilter = NULL;
-    IPin *pPin = NULL;
+  IEnumFilters *pEnum = NULL;
+  IBaseFilter *pFilter = NULL;
+  IPin *pPin = NULL;
 
-    CHECK_HR(hr = pGraph->EnumFilters(&pEnum));
+  CHECK_HR(hr = pGraph->EnumFilters(&pEnum));
 
-    // Go through the list of filters in the graph.
-    while (S_OK == pEnum->Next(1, &pFilter, NULL))
-    {
+  // Go through the list of filters in the graph.
+  while (S_OK == pEnum->Next(1, &pFilter, NULL))
+  {
         // Find a connected pin on this filter.
         HRESULT hr2 = FindMatchingPin(pFilter, MatchPinConnection(TRUE), &pPin);
         if (SUCCEEDED(hr2))

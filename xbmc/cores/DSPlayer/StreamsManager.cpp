@@ -36,6 +36,8 @@ CStreamsManager::~CStreamsManager(void)
     m_subtitleStreams.pop_back();
   }
 
+  CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
+
 }
 
 std::vector<SAudioStreamInfos *> CStreamsManager::GetAudios()

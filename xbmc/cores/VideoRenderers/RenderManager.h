@@ -77,7 +77,7 @@ public:
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
-      m_pRenderer->PaintVideoTexture(videoTexture,videoSurface);
+      m_pRenderer->PaintVideoTexture(videoTexture, videoSurface);
   }
 #endif
 

@@ -28,6 +28,9 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "charsetconverter.h"
+#include "XMLUtils.h"
+#include "File.h"
+#include "SpecialProtocol.h"
 //
 // CFGFilter
 //
@@ -415,15 +418,59 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
 // CFGFilterFile
 //
 
-CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name, UINT64 merit,CStdString filtername,CStdString filetype)
+CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name, UINT64 merit, CStdString internalName, CStdString filetype)
   : CFGFilter(clsid, name, merit)
   , m_path(path)
   , m_xFileType(filetype)
-  , m_xFilterName(filtername)
+  , m_internalName(internalName)
   , m_hInst(NULL)
   , m_autoload(false)
 {
 }
+
+CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
+{
+  bool m_filterFound = true;
+
+  m_internalName = pFilter->Attribute("name");
+  m_xFileType = pFilter->Attribute("type"); // Currently not used
+
+  CStdString guid = "";
+  XMLUtils::GetString(pFilter, "guid", guid);
+  const CLSID clsid = DShowUtil::GUIDFromCString(guid);
+
+  CStdString osdname = "";
+  XMLUtils::GetString(pFilter, "osdname", osdname);
+
+  m_path = "";
+  if (!XMLUtils::GetString(pFilter, "path", m_path) || m_path.empty())
+  {
+    m_filterFound = false;
+  } else {
+    if (!XFILE::CFile::Exists(m_path))
+    {
+      // The file doesn't exist, maybe it's a relative path ?
+      m_path.Format("special://xbmc/system/players/dsplayer/%s", m_path.c_str()); //TODO: And what if we use a xml in UserData?!
+      if (! XFILE::CFile::Exists(m_path))
+      {
+        m_filterFound = false;
+      } else
+        m_path = _P(m_path);
+    }
+  }
+
+  if (! m_filterFound)
+  {
+    // Look in the registry
+    m_path = DShowUtil::GetFilterPath(clsid);
+  }
+
+  // Call super constructor
+  m_clsid = clsid;
+  m_name = osdname;
+  m_merit.val = MERIT64_ABOVE_DSHOW + 2;
+}
+
 HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
 {
   CheckPointer(ppBF, E_POINTER);
@@ -457,6 +504,7 @@ CFGFilterVideoRenderer::CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW n
 
 CFGFilterVideoRenderer::~CFGFilterVideoRenderer()
 {
+  CLog::Log(LOGDEBUG, "%s Releasing video renderer ...", __FUNCTION__);
 	if (pCAP)
 	{
 		if (m_clsid == __uuidof(CVMR9AllocatorPresenter))

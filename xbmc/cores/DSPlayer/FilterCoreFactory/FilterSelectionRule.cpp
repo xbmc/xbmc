@@ -15,6 +15,9 @@ CFilterSelectionRule::~CFilterSelectionRule()
 
 void CFilterSelectionRule::Initialize(TiXmlElement* pRule, const CStdString &nodeName)
 {
+  if (! pRule)
+    return;
+
   m_name = pRule->Attribute("name");
   if (!m_name || m_name.IsEmpty())
     m_name = "un-named";

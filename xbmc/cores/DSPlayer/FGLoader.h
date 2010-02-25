@@ -97,7 +97,8 @@ public:
 
   static SFilters Filters;
 
-  HRESULT    LoadConfig(IFilterGraph2* fg,CStdString configFile);
+  HRESULT    LoadConfig(IFilterGraph2* fg);
+  bool       LoadFilterCoreFactorySettings(const CStdString& item, bool clear);
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
   HRESULT    InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName);
   HRESULT    InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName);
@@ -111,7 +112,6 @@ public:
 protected:
   IFilterGraph2*            m_pGraphBuilder;
   CStdString                m_xbmcConfigFilePath;
-  std::list<CFGFilterFile*> m_configFilter;
   XFILE::CFile              m_File;
 
   static bool               m_UsingDXVADecoder;

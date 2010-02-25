@@ -23,6 +23,7 @@
 
 #include "streams.h"
 #include <list>
+#include "tinyXML\tinyxml.h"
 #define MERIT64(merit) (((UINT64)(merit))<<16)
 #define MERIT64_DO_NOT_USE MERIT64(MERIT_DO_NOT_USE)
 #define MERIT64_DO_USE MERIT64(MERIT_DO_NOT_USE+1)
@@ -41,6 +42,7 @@ protected:
 
 public:
 	CFGFilter(const CLSID& clsid, CStdString name = L"", UINT64 merit = MERIT64_DO_USE);
+  CFGFilter() {};
 	virtual ~CFGFilter() {};
 
 	CLSID GetCLSID() {return m_clsid;}
@@ -102,15 +104,16 @@ class CFGFilterFile : public CFGFilter
 protected:
   CStdString m_path;
   CStdString m_xFileType;
-  CStdString m_xFilterName;
+  CStdString m_internalName;
   HINSTANCE m_hInst;
   bool      m_autoload;
 public:
-  CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE,CStdString filtername = "",CStdString filetype = "");
+  CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE, CStdString filtername = "", CStdString filetype = "");
+  CFGFilterFile(TiXmlElement *pFilter);
 
   HRESULT Create(IBaseFilter** ppBF);
   CStdString GetXFileType() { return m_xFileType; };
-  CStdString GetXFilterName() { return m_xFilterName; };
+  CStdString GetInternalName() { return m_internalName; };
   bool GetAutoLoad() { return m_autoload; };
   void SetAutoLoad(bool autoload);
   

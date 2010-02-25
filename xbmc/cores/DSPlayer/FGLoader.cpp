@@ -41,12 +41,14 @@
 #include "FilterCoreFactory/FilterSelectionRule.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
+#include "filtercorefactory/filtercorefactory.h"
+#include "Settings.h"
 
 using namespace std;
 
 bool CompareCFGFilterFileToString(CFGFilterFile * f, CStdString s)
 {
-  return f->GetXFilterName().Equals(s);
+  return f->GetInternalName().Equals(s);
 }
 
 DIRECTSHOW_RENDERER CFGLoader::m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
@@ -62,19 +64,12 @@ CFGLoader::CFGLoader():
 CFGLoader::~CFGLoader()
 {
   CAutoLock cAutoLock(this);
-  while(!m_configFilter.empty())
-  {
-    if (m_configFilter.back())
-      delete m_configFilter.back();
-    m_configFilter.pop_back();
-  }
-
-  m_configFilter.clear();
-
+  
+  CFilterCoreFactory::Destroy();
   SAFE_DELETE(m_pFGF);
+
+  CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
 }
-
-
 
 
 HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName)
@@ -107,6 +102,9 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Source)))
     {
       Filters.Splitter.pBF = Filters.Source.pBF;
+      Filters.Splitter.osdname = Filters.Source.osdname;
+      Filters.Splitter.guid = Filters.Source.guid;
+
       CStdString pWinFilePath = pFileItem.m_strPath;
       if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
         pWinFilePath.Replace("smb://", "\\\\");
@@ -308,11 +306,11 @@ HRESULT CFGLoader::InsertVideoRenderer()
   return hr; 
 }
 
-HRESULT CFGLoader::InsertAutoLoad()
+/*HRESULT CFGLoader::InsertAutoLoad()
 {
   HRESULT hr = S_OK;
   IBaseFilter* ppBF;
-  for (list<CFGFilterFile*>::iterator it = m_configFilter.begin(); it != m_configFilter.end(); it++)
+  for (list<CFGFilterFile*>::iterator it = CFilterCoreFactory::GetFiltersList().begin(); it != m_configFilter.end(); it++)
   { 
     if ( (*it)->GetAutoLoad() )
     {
@@ -323,14 +321,14 @@ HRESULT CFGLoader::InsertAutoLoad()
 	    }
 	    else
 	    {
-        CLog::Log(LOGDEBUG,"DSPlayer %s Failed to create the auto loading filter called %s",__FUNCTION__,(*it)->GetXFilterName().c_str());
+        CLog::Log(LOGDEBUG,"DSPlayer %s Failed to create the auto loading filter called %s",__FUNCTION__,(*it)->GetInternalName().c_str());
       }
     }
   }  
   SAFE_RELEASE(ppBF);
   CLog::Log(LOGDEBUG,"DSPlayer %s Is done adding the autoloading filters",__FUNCTION__);
   return hr;
-}
+}*/
 
 /*
 HRESULT CFGLoader::InsertExtraFilter( const CStdString& filterName )
@@ -374,180 +372,115 @@ HRESULT CFGLoader::InsertExtraFilter( const CStdString& filterName )
 
 HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 {
-  //Load the rules from the xml
-  TiXmlDocument graphConfigXml;
-  if (!graphConfigXml.LoadFile(m_xbmcConfigFilePath))
-    return E_FAIL;
-  TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
-  if ( !graphConfigRoot)
-    return E_FAIL;
-  
-  TiXmlElement *pRules = graphConfigRoot->FirstChildElement("rules");
-  pRules = pRules->FirstChildElement("rule");
-
-  CStdString extension = pFileItem.GetAsUrl().GetFileType();
-  //CStdString filterName;
-  bool extensionNotFound = true;
-
-  for (pRules; pRules; pRules = pRules->NextSiblingElement())
+   
+  if (! CFilterCoreFactory::SomethingMatch(pFileItem))
   {
-    if (! pRules->Attribute("filetype"))
-      continue;
 
-    if (! ((CStdString)pRules->Attribute("filetype")).Equals(extension) )
-      continue;
-
-    extensionNotFound = false;
-
-    /* Check validity */
-    if (! pRules->FirstChild("source") ||
-      ! pRules->FirstChild("splitter") ||
-      ! pRules->FirstChild("video") ||
-      ! pRules->FirstChild("audio"))
-    {
-      return E_FAIL;
-    }
-    InsertAudioRenderer(); // First added, last connected
-    InsertVideoRenderer();
-
-    CFilterSelectionRule *c = NULL;
-    std::vector<CStdString> filters;
-
-    c = new CFilterSelectionRule(pRules->FirstChildElement("source"), "source");
-    c->GetFilters(pFileItem, filters);
-    delete c;
-
-    if (filters.empty())
-    {
-      //TODO: Error message
-      return E_FAIL;
-    }
-
-    if (FAILED(InsertSourceFilter(pFileItem, filters[0])))
-	  {
-		  return E_FAIL;
-	  }
-
-    filters.clear();
-
-    if (! Filters.Splitter.pBF)
-    {
-      c = new CFilterSelectionRule(pRules->FirstChildElement("splitter"), "splitter");
-      c->GetFilters(pFileItem, filters);
-      delete c;
-
-      if (filters.empty())
-        return E_FAIL; //TODO: Error message
-      
-      if (FAILED(InsertSplitter(pFileItem, filters[0])))
-      {
-        return E_FAIL;
-      }
-
-      filters.clear();
-    }
-
-    /* Ok, the splitter is added to the graph. We need to detect the video stream codec in order to choose
-    if we use or not the dxva filter */
-
-    IBaseFilter *pBF = Filters.Splitter.pBF;
-    bool fourccfinded = false;
-    BeginEnumPins(pBF, pEP, pPin)
-    {
-      if (fourccfinded)
-        break;
-
-      BeginEnumMediaTypes(pPin, pEMT, pMT)
-      {
-        if (pMT->majortype != MEDIATYPE_Video)
-          break; // Next pin
-
-        SVideoStreamInfos s;
-        s.Clear();
-
-        CStreamsManager::getSingleton()->GetStreamInfos(pMT, &s);
-
-        CLog::Log(LOGINFO, "Video stream fourcc : %4.4hs", &s.fourcc);
-
-        fourccfinded = true;
-        // CCV1 is a fake fourcc code generated by Haali in order to trick the Microsoft h264
-        // decoder included in Windows 7. ffdshow handle that fourcc well, but it may not be
-        // the case for others decoders
-        if (s.fourcc == 'H264' || s.fourcc == 'AVC1' || s.fourcc == 'WVC1'
-          || s.fourcc == 'WMV3' || s.fourcc == 'WMVA' || s.fourcc == 'CCV1')
-          m_UsingDXVADecoder = true;
-
-        if (s.fourcc == 'CCV1')
-        {
-          CLog::Log(LOGINFO, "Haali Media Splitter is configured for using a fake fourcc code 'CCV1'. If you've got an error message, be sure your video decoder handle that fourcc well.");
-        }
-
-        break;
-      }
-      EndEnumMediaTypes(pEMT, pMT)
-    }
-    EndEnumPins(pEP, pBF)
-
-    // Insert extra first because first added, last connected!
-    TiXmlElement *pSubTags = pRules->FirstChildElement("extra");
-    for (pSubTags; pSubTags; pSubTags = pSubTags->NextSiblingElement())
-    {
-      c = new CFilterSelectionRule(pSubTags, "extra");
-      c->GetFilters(pFileItem, filters, m_UsingDXVADecoder);
-      delete c;
-
-      SFilterInfos f;
-      if (SUCCEEDED(InsertFilter(filters[0], f)))
-        Filters.Extras.push_back(f);
-
-      filters.clear();
-    }
-
-    c = new CFilterSelectionRule(pRules->FirstChildElement("video"), "video");
-    c->GetFilters(pFileItem, filters, m_UsingDXVADecoder);
-    delete c;
-
-    if (filters.empty())
-      return E_FAIL; //TODO: Error message
-
-    if (FAILED(InsertFilter(filters[0], Filters.Video)))
-    {
-      return E_FAIL;
-    }
-
-    filters.clear();
-
-    c = new CFilterSelectionRule(pRules->FirstChildElement("audio"), "audio");
-    c->GetFilters(pFileItem, filters, m_UsingDXVADecoder);
-    delete c;
-
-    if (filters.empty())
-      return E_FAIL;
-
-    if (FAILED(InsertFilter(filters[0], Filters.Audio)))
-    {
-      return E_FAIL;
-    }
-
-    filters.clear();
-
-    break;
-  }
-
-  if (extensionNotFound)
-  {
-    CLog::Log(LOGERROR, "%s Extension \"%s\" not found. Please check dsfilterconfig.xml", __FUNCTION__, extension.c_str());
+    CLog::Log(LOGERROR, "%s Extension \"%s\" not found. Please check dsfilterconfig.xml", __FUNCTION__, CURL(pFileItem.m_strPath).GetFileType().c_str());
     CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (dialog)
     {
       dialog->SetHeading("Extension not found");
       dialog->SetLine(0, "Impossible to play the media file : the media");
-      dialog->SetLine(1, "extension \"" + extension + "\" isn't");
+      dialog->SetLine(1, "extension \"" + CURL(pFileItem.m_strPath).GetFileType() + "\" isn't");
       dialog->SetLine(2, "declared in dsfilterconfig.xml.");
       dialog->DoModal();
+    }
+    return E_FAIL;
+  }
 
+  InsertAudioRenderer(); // First added, last connected
+  InsertVideoRenderer();
+
+  CStdString filter = "";
+
+  if (! CFilterCoreFactory::GetSourceFilter(pFileItem, filter))
+    return E_FAIL;
+
+  if (FAILED(InsertSourceFilter(pFileItem, filter)))
+  {
+	  return E_FAIL;
+  }
+
+  if (! Filters.Splitter.pBF)
+  {
+    if (! CFilterCoreFactory::GetSourceFilter(pFileItem, filter))
+      return E_FAIL;
+    
+    if (FAILED(InsertSplitter(pFileItem, filter)))
+    {
       return E_FAIL;
     }
+  }
+
+  /* Ok, the splitter is added to the graph. We need to detect the video stream codec in order to choose
+  if we use or not the dxva filter */
+
+  IBaseFilter *pBF = Filters.Splitter.pBF;
+  bool fourccfinded = false;
+  BeginEnumPins(pBF, pEP, pPin)
+  {
+    if (fourccfinded)
+      break;
+
+    BeginEnumMediaTypes(pPin, pEMT, pMT)
+    {
+      if (pMT->majortype != MEDIATYPE_Video)
+        break; // Next pin
+
+      SVideoStreamInfos s;
+      s.Clear();
+
+      CStreamsManager::getSingleton()->GetStreamInfos(pMT, &s);
+
+      CLog::Log(LOGINFO, "Video stream fourcc : %4.4hs", &s.fourcc);
+
+      fourccfinded = true;
+      // CCV1 is a fake fourcc code generated by Haali in order to trick the Microsoft h264
+      // decoder included in Windows 7. ffdshow handle that fourcc well, but it may not be
+      // the case for others decoders
+      if (s.fourcc == 'H264' || s.fourcc == 'AVC1' || s.fourcc == 'WVC1'
+        || s.fourcc == 'WMV3' || s.fourcc == 'WMVA' || s.fourcc == 'CCV1')
+        m_UsingDXVADecoder = true;
+
+      if (s.fourcc == 'CCV1')
+      {
+        CLog::Log(LOGINFO, "Haali Media Splitter is configured for using a fake fourcc code 'CCV1'. If you've got an error message, be sure your video decoder handle that fourcc well.");
+      }
+
+      break;
+    }
+    EndEnumMediaTypes(pEMT, pMT)
+  }
+  EndEnumPins(pEP, pBF)
+
+  std::vector<CStdString> extras;
+  if (! CFilterCoreFactory::GetExtraFilters(pFileItem, extras, m_UsingDXVADecoder))
+    return E_FAIL;
+
+  // Insert extra first because first added, last connected!
+  for (int i = 0; i < extras.size(); i++)
+  {
+    SFilterInfos f;
+    if (SUCCEEDED(InsertFilter(extras[i], f)))
+      Filters.Extras.push_back(f);
+
+  }
+  extras.clear();
+
+  if (! CFilterCoreFactory::GetVideoFilter(pFileItem, filter, m_UsingDXVADecoder))
+    return E_FAIL;
+
+  if (FAILED(InsertFilter(filter, Filters.Video)))
+  {
+    return E_FAIL;
+  }
+
+  if (! CFilterCoreFactory::GetAudioFilter(pFileItem, filter, m_UsingDXVADecoder))
+    return E_FAIL;
+
+  if (FAILED(InsertFilter(filter, Filters.Audio)))
+  {
     return E_FAIL;
   }
 
@@ -556,143 +489,15 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   return S_OK;
 }
 
-HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg, CStdString configFile)
+HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg)
 {
 
   m_pGraphBuilder = fg;
-  fg = NULL;
-  HRESULT hr = S_OK;
-  m_xbmcConfigFilePath = configFile;
 
-  if (!CFile::Exists(configFile))
-    return false;
+  LoadFilterCoreFactorySettings(g_settings.GetUserDataItem("dsfilterconfig.xml"), true);
+  LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/dsfilterconfig.xml", false);
 
-  TiXmlDocument graphConfigXml;
-  if (!graphConfigXml.LoadFile(configFile))
-    return false;
-
-  TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
-  if ( !graphConfigRoot)
-    return false;
-
-  CStdString strFPath, strFGuid, strFAutoLoad, strFileType;
-  CStdString strTmpFilterName, strTmpFilterType,strTmpOsdName;
-  CStdStringW strTmpOsdNameW;
-
-  CFGFilterFile* pFGF;
-  TiXmlElement *pFilters = graphConfigRoot->FirstChildElement("filters");
-  pFilters = pFilters->FirstChildElement("filter");
-  bool p_bGotThisFilter;
-
-  while (pFilters)
-  {
-    strTmpFilterName = pFilters->Attribute("name");
-    strTmpFilterType = pFilters->Attribute("type");
-    XMLUtils::GetString(pFilters,"osdname",strTmpOsdName);
-    g_charsetConverter.subtitleCharsetToW(strTmpOsdName,strTmpOsdNameW);
-    p_bGotThisFilter = false;
-    //first look if we got the path in the config file
-    if (XMLUtils::GetString(pFilters, "path" , strFPath))
-	  {
-		  CStdString strPath2;
-      XMLUtils::GetString(pFilters,"guid",strFGuid);
-		  XMLUtils::GetString(pFilters,"filetype",strFileType);
-		  strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
-
-      //First verify if we have the full path or just the name of the file
-		  if (!CFile::Exists(strFPath))
-      {
-        if (CFile::Exists(strPath2))
-        {
-		      strFPath = _P(strPath2);
-          p_bGotThisFilter = true;
-        }
-      }
-      else
-        p_bGotThisFilter = true;      
-
-		  if (p_bGotThisFilter)
-		    pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
-	  }
-
-	  if (! p_bGotThisFilter)
-	  {
-      XMLUtils::GetString(pFilters,"guid",strFGuid);
-      XMLUtils::GetString(pFilters,"filetype",strFileType);
-	    strFPath = DShowUtil::GetFilterPath(strFGuid);
-	    pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
-	  }
-
-    if (XMLUtils::GetString(pFilters,"alwaysload",strFAutoLoad))
-	  {
-      if ( ( strFAutoLoad.Equals("1",false) ) || ( strFAutoLoad.Equals("true",false) ) )
-        pFGF->SetAutoLoad(true);
-    }
- 
-    if (pFGF)
-      m_configFilter.push_back(pFGF);
-
-    pFilters = pFilters->NextSiblingElement();
-
-  }
-  
-  return true;
-  //end while
-
-  //m_pGraphBuilder = fg;
-  //fg = NULL;
-  //HRESULT hr = S_OK;
-  //m_xbmcConfigFilePath = configFile;
-  //if (!CFile::Exists(configFile))
-  //  return false;
-  //TiXmlDocument graphConfigXml;
-  //if (!graphConfigXml.LoadFile(configFile))
-  //  return false;
-  //TiXmlElement* graphConfigRoot = graphConfigXml.RootElement();
-  //if ( !graphConfigRoot)
-  //  return false;
-  //CStdString strFPath, strFGuid, strFAutoLoad, strFileType;
-  //CStdString strTmpFilterName, strTmpFilterType,strTmpOsdName;
-  //CStdStringW strTmpOsdNameW;
-
-  //CFGFilterFile* pFGF;
-  //TiXmlElement *pFilters = graphConfigRoot->FirstChildElement("filters");
-  //pFilters = pFilters->FirstChildElement("filter");
-  //while (pFilters)
-  //{
-  //  strTmpFilterName = pFilters->Attribute("name");
-  //  strTmpFilterType = pFilters->Attribute("type");
-  //  XMLUtils::GetString(pFilters,"osdname",strTmpOsdName);
-  //  g_charsetConverter.subtitleCharsetToW(strTmpOsdName,strTmpOsdNameW);
-  //  if (XMLUtils::GetString(pFilters,"path",strFPath) && !strFPath.empty())
-	 // {
-		//  CStdString strPath2;
-		//  strPath2.Format("special://xbmc/system/players/dsplayer/%s", strFPath.c_str());
-		//  if (!CFile::Exists(strFPath) && CFile::Exists(strPath2))
-		//    strFPath = _P(strPath2);
-
-		//  XMLUtils::GetString(pFilters,"guid",strFGuid);
-		//  XMLUtils::GetString(pFilters,"filetype",strFileType);
-		//  pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
-	 // }
-	 // else
-	 // {
-  //    XMLUtils::GetString(pFilters,"guid",strFGuid);
-  //    XMLUtils::GetString(pFilters,"filetype",strFileType);
-	 //   strFPath = DShowUtil::GetFilterPath(strFGuid);
-	 //   pFGF = new CFGFilterFile(DShowUtil::GUIDFromCString(strFGuid),strFPath,strTmpOsdNameW.c_str(),MERIT64_ABOVE_DSHOW+2,strTmpFilterName,strFileType);
-	 // }
-  //  if (XMLUtils::GetString(pFilters,"alwaysload",strFAutoLoad))
-	 // {
-  //    if ( ( strFAutoLoad.Equals("1",false) ) || ( strFAutoLoad.Equals("true",false) ) )
-  //      pFGF->SetAutoLoad(true);
-  //  }
- 
-  //  if (pFGF)
-  //    m_configFilter.push_back(pFGF);
-
-  //  pFilters = pFilters->NextSiblingElement();
-  //}//end while
+  return S_OK;
 }
 
 HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
@@ -700,13 +505,21 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   HRESULT hr = S_OK;
   f.pBF = NULL;
   
-  list<CFGFilterFile *>::const_iterator it = std::find_if(m_configFilter.begin(),
-    m_configFilter.end(),
+  std::vector<CFGFilterFile *>::const_iterator it = std::find_if(CFilterCoreFactory::m_Filters.begin(),
+    CFilterCoreFactory::m_Filters.end(),
     std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filterName) );
 
-  if (it == m_configFilter.end())
+  if (it == CFilterCoreFactory::m_Filters.end())
   {
     CLog::Log(LOGERROR, "%s Filter \"%s\" isn't loaded. Please check dsfilterconfig.xml", __FUNCTION__, filterName.c_str());
+    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dialog)
+    {
+      dialog->SetHeading("Filter not found");
+      dialog->SetLine(0, "The filter \"" + filterName + "\" isn't loaded.");
+      dialog->SetLine(1, "Please check your dsfilterconfig.xml.");
+      dialog->DoModal();
+    }
     return E_FAIL;
 
   } 
@@ -729,6 +542,25 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   }
 
   return hr;
+}
+
+bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, bool clear )
+{
+  CLog::Log(LOGNOTICE, "Loading filter core factory settings from %s.", fileStr.c_str());
+  if (!CFile::Exists(fileStr))
+  { // tell the user it doesn't exist
+    CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", fileStr.c_str());
+    return false;
+  }
+
+  TiXmlDocument filterCoreFactoryXML;
+  if (!filterCoreFactoryXML.LoadFile(fileStr))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", fileStr.c_str(), filterCoreFactoryXML.ErrorRow(), filterCoreFactoryXML.ErrorDesc());
+    return false;
+  }
+
+  return CFilterCoreFactory::LoadConfiguration(filterCoreFactoryXML.RootElement(), clear);
 }
 
 bool                      CFGLoader::m_UsingDXVADecoder = false;

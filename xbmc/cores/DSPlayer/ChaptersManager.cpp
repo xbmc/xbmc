@@ -15,6 +15,8 @@ CChaptersManager::~CChaptersManager(void)
     it != m_chapters.end(); ++it)
     delete it->second;
 
+  CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
+
   //SAFE_RELEASE(m_pIAMExtendedSeeking);
 }
 

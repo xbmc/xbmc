@@ -199,14 +199,14 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
   hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
   hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
   hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  //hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
   hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
   hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
   hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
   hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
   if (FAILED(hr))
-    CLog::Log(LOGERROR,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer"); 
+    CLog::Log(LOGERROR,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer");
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
   

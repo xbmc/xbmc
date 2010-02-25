@@ -75,7 +75,7 @@ public:
   static bool IsVideoRenderer(IBaseFilter* pBF);
   static bool IsAudioWaveRenderer(IBaseFilter* pBF);
   static std::vector<IMoniker*> GetAudioRenderersGuid();
-  static HRESULT RemoveUnconnectedFilters(IGraphBuilder *pGraph);
+  static HRESULT RemoveUnconnectedFilters(IFilterGraph2 *pGraph);
   static IBaseFilter* GetUpStreamFilter(IBaseFilter* pBF, IPin* pInputPin = NULL);
   static IPin* GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin = NULL);
   static IPin* GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir = PINDIR_INPUT);
@@ -172,6 +172,7 @@ public:
   ~CFilterInfo() {if(pGraph) pGraph->Release();}
 };
 
+/* BeginEnumFilters */
 #define BeginEnumFilters(pFilterGraph, pEnumFilters, pBaseFilter) \
   {IEnumFilters* pEnumFilters; \
   if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
@@ -182,7 +183,9 @@ public:
 #define EndEnumFilters(pEnumFilters, pBaseFilter) \
     } \
     SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumFilters); }}
+/* EndEnumFilters */
 
+/* BeginEnumCachedFilters */
 #define BeginEnumCachedFilters(pGraphConfig, pEnumFilters, pBaseFilter) \
   {IEnumFilters* pEnumFilters; \
   if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
@@ -191,7 +194,9 @@ public:
     { \
 
 #define EndEnumCachedFilters(pEnumFilters, pBaseFilter) } SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumFilters); }}
-//error in enumpins
+/* EndEnumCachedFilters */
+
+/** BeginEnumPins **/
 #define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
   {IEnumPins* pEnumPins; \
   if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
@@ -200,7 +205,9 @@ public:
     { \
 
 #define EndEnumPins(pEnumPins, pBaseFilter) } SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumPins); }}
+/** EndEnumPins **/
 
+/* BeginEnumMediaTypes */
 #define BeginEnumMediaTypes(pPin, pEnumMediaTypes, pMediaType) \
   {IEnumMediaTypes* pEnumMediaTypes; \
   if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
@@ -210,6 +217,7 @@ public:
     { \
 
 #define EndEnumMediaTypes(pEnumMediaTypes, pMediaType) } SAFE_RELEASE(pEnumMediaTypes); if(pMediaType) DeleteMediaType(pMediaType); }}
+/* EndEnumMediaTypes */
 
 #define BeginEnumSysDev(clsid, pMoniker) \
   {ICreateDevEnum* pDevEnum4$##clsid; \

@@ -88,10 +88,13 @@ CFGManager::~CFGManager()
   }
   while(!m_override.empty()) 
     m_override.pop_back();
+
   SAFE_DELETE(m_CfgLoader);
 
   SAFE_RELEASE(m_pFM);
   SAFE_RELEASE(m_pFG);
+
+  CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
 }
 
 HRESULT CFGManager::QueryInterface(const IID &iid, void** ppv)
@@ -247,13 +250,12 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
   g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBFIn), filterNameIn);
   g_charsetConverter.wToUTF8(DShowUtil::GetPinName(pPinIn), pinNameIn);
 
-  CLog::Log(LOGDEBUG, "%s Trying to connect %s.%s pin to %s.%s", __FUNCTION__, filterNameOut.c_str(), pinNameOut.c_str(), filterNameIn.c_str(), pinNameIn.c_str());
-
-  if (SUCCEEDED(hr))
-  {
-    CLog::Log(LOGDEBUG, "%s Succeeded !", __FUNCTION__);
-  } else
-    CLog::Log(LOGDEBUG, "%s Failed !", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s: %s connecting %s.%s pin to %s.%s", __FUNCTION__, 
+                                                                    (SUCCEEDED(hr) ? "Succeeded": "Failed"),
+                                                                    filterNameOut.c_str(), 
+                                                                    pinNameOut.c_str(), 
+                                                                    filterNameIn.c_str(), 
+                                                                    pinNameIn.c_str());
 #endif
 
   return hr;
@@ -542,10 +544,8 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 }
 
 STDMETHODIMP CFGManager::Render(IPin* pPinOut)
-{return E_NOTIMPL;
-  /*CAutoLock cAutoLock(this);
-
-  return RenderEx(pPinOut, 0, NULL);*/
+{
+  return m_pFG->Render(pPinOut);
 }
 
 HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
@@ -594,6 +594,30 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
     
     videoError = (nVideoPin >= 1 && nConnectedVideoPin == 0); // No error if no video stream
     audioError = (nAudioPin >= 1 && nConnectedAudioPin == 0); // No error if no audio stream
+    //Work around to fix the audio pipeline
+    //I think this should be the best way to render a pin if there an error the audio stream
+    //The only problem is the graph is getting locked after that
+    if (0)//(audioError)
+    {
+      IBaseFilter *pBF = CFGLoader::Filters.Splitter.pBF;
+
+      BeginEnumPins(pBF, pEP, pPin)
+      {
+        BeginEnumMediaTypes(pPin, pEMT, pMT)
+        {
+          if (pMT->majortype == MEDIATYPE_Audio)
+          {
+            if (SUCCEEDED(Render(pPin)))
+            {
+              audioError = false;
+            }
+          }
+        }
+        EndEnumMediaTypes(pEMT, pMT)
+      }
+      EndEnumPins(pEP, pBF)
+    }
+
     if (videoError && audioError)
       strError = "Error in both audio and video rendering chain.";
     else if (videoError)
@@ -608,7 +632,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
       {
         CLog::Log(LOGERROR, "%s Audio / Video error \n %s \n Ensure that the audio/video stream is supported by your selected decoder and ensure that the decoder is properly configured.", __FUNCTION__, strError.c_str());
         dialog->SetHeading("Audio / Video error");
-        dialog->SetLine(0, "Error in the rendering chain. See the log for");
+        dialog->SetLine(0, strError.c_str());
         dialog->SetLine(1, "more details or see XBMC Wiki - 'DSPlayer codecs'");
         dialog->SetLine(2, "section for more informations.");
         dialog->DoModal();
@@ -618,18 +642,57 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
     }
   }
 
-  g_dsconfig.ConfigureFilters(m_pFG);
+  
 
   //Apparently the graph dont start with wmv when you have unconnected filters
   //And for debuging reason we wont remove it if the file is not a wmv
-  if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))
-    DShowUtil::RemoveUnconnectedFilters(m_pFG);
+  //if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))
+    //RemoveUnconnectedFilters();
 
+  g_dsconfig.ConfigureFilters(m_pFG);
 #ifdef _DSPLAYER_DEBUG
   LogFilterGraph();
 #endif
 
   return hr;  
+}
+
+HRESULT CFGManager::RemoveUnconnectedFilters()
+{
+  HRESULT hr = S_OK;
+
+  IEnumFilters *pEnum = NULL;
+  IBaseFilter *pFilter = NULL;
+  IPin *pPin = NULL;
+
+  
+  CHECK_HR(hr = m_pFG->EnumFilters(&pEnum));
+
+  // Go through the list of filters in the graph.
+  while (S_OK == pEnum->Next(1, &pFilter, NULL))
+  {
+        // Find a connected pin on this filter.
+        HRESULT hr2 = FindMatchingPin(pFilter, MatchPinConnection(TRUE), &pPin);
+        if (SUCCEEDED(hr2))
+        {
+            // If it's connected, don't remove the filter.
+            SAFE_RELEASE(pPin);
+            continue;
+        }
+        assert(pPin == NULL);
+        hr = m_pFG->RemoveFilter(pFilter);
+        CHECK_HR(hr);
+
+        // The previous call made the enumerator stale. 
+        pEnum->Reset(); 
+        SAFE_RELEASE(pFilter);
+    }
+
+done:
+    SAFE_RELEASE(pEnum);
+    SAFE_RELEASE(pFilter);
+    SAFE_RELEASE(pPin);
+    return hr;
 }
 
 HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo, CStdString* splitterInfo, CStdString* audioInfo,
@@ -1070,7 +1133,7 @@ void CFGManager::InitManager()
   //Load the config for the xml
   m_CfgLoader = new CFGLoader();
 
-  if (SUCCEEDED(m_CfgLoader->LoadConfig(m_pFG, fileconfigtmp)))
+  if (SUCCEEDED(m_CfgLoader->LoadConfig(m_pFG)))
     CLog::Log(LOGNOTICE,"Successfully loaded %s",fileconfigtmp.c_str());
   else
     CLog::Log(LOGERROR,"Failed loading %s",fileconfigtmp.c_str());

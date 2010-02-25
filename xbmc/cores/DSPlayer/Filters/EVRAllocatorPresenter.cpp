@@ -183,7 +183,6 @@ HRESULT STDMETHODCALLTYPE COuterEVR::GetState( DWORD dwMilliSecsTimeout, __out  
 
 COuterEVR::~COuterEVR()
 {
-  SAFE_RELEASE(m_pEVR);
 }
 
 // Default frame rate.
@@ -279,6 +278,7 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
 {
+  CLog::Log(LOGDEBUG, "%s Releasing EVR Allocator ressources", __FUNCTION__);
   // Release resources
   ReleaseResources();
 
@@ -287,6 +287,7 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   SAFE_RELEASE(m_pMixer);
   SAFE_RELEASE(m_pMediaEventSink);
   SAFE_RELEASE(m_pMediaType);
+
   // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
   SAFE_DELETE(m_pOuterEVR);
