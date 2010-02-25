@@ -213,6 +213,8 @@
 		7C779E55104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
 		7C779E56104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */; };
 		7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
+		7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
+		7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
@@ -2074,6 +2076,8 @@
 		7C779E51104A58F900F444C4 /* GUIWindowTestPatternGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPatternGL.h; sourceTree = "<group>"; };
 		7C779E52104A58F900F444C4 /* KeyboardStat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardStat.cpp; sourceTree = "<group>"; };
 		7C779E53104A58F900F444C4 /* KeyboardStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardStat.h; sourceTree = "<group>"; };
+		7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mysqldataset.cpp; sourceTree = "<group>"; };
+		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
@@ -6433,6 +6437,8 @@
 		E38E1CD60D25F9FC00618676 /* sqLite */ = {
 			isa = PBXGroup;
 			children = (
+				7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */,
+				7C7B2B2F1134F36400713D6D /* mysqldataset.h */,
 				E38E1CD70D25F9FC00618676 /* dataset.cpp */,
 				E38E1CD80D25F9FC00618676 /* dataset.h */,
 				E38E1CDF0D25F9FC00618676 /* qry_dat.cpp */,
@@ -8102,6 +8108,7 @@
 				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */,
+				7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8960,6 +8967,7 @@
 				F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85C112908F00059D6AA /* WebServer.cpp in Sources */,
+				7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,6 +21,8 @@
 
 #include "ViewDatabase.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
+#include "Settings.h"
 #include "ViewState.h"
 #include "utils/log.h"
 #ifdef _LINUX
@@ -30,7 +32,6 @@
 //********************************************************************************************************************************
 CViewDatabase::CViewDatabase(void)
 {
-  m_strDatabaseFile = VIEW_DATABASE_NAME;
 }
 
 //********************************************************************************************************************************
@@ -40,6 +41,11 @@ CViewDatabase::~CViewDatabase(void)
 }
 
 //********************************************************************************************************************************
+bool CViewDatabase::Open()
+{
+  return CDatabase::Open();
+}
+
 bool CViewDatabase::CreateTables()
 {
   try

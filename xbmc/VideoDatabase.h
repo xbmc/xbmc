@@ -298,6 +298,7 @@ public:
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
+  virtual bool Open();
   virtual bool CommitTransaction();
 
   int AddMovie(const CStdString& strFilenameAndPath);
@@ -522,6 +523,7 @@ private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
   virtual int GetMinVersion() const { return 34; };
+  const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);

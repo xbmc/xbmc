@@ -32,7 +32,6 @@ using namespace XFILE;
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
 {
-  m_strDatabaseFile=PROGRAM_DATABASE_NAME;
 }
 
 //********************************************************************************************************************************
@@ -42,6 +41,11 @@ CProgramDatabase::~CProgramDatabase(void)
 }
 
 //********************************************************************************************************************************
+bool CProgramDatabase::Open()
+{
+  return CDatabase::Open();
+}
+
 bool CProgramDatabase::CreateTables()
 {
 

@@ -60,7 +60,6 @@ using namespace AUTOPTR;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 
-#define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
 
@@ -70,12 +69,16 @@ using namespace CDDB;
 
 CMusicDatabase::CMusicDatabase(void)
 {
-  m_strDatabaseFile=MUSIC_DATABASE_NAME;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
 {
   EmptyCache();
+}
+
+bool CMusicDatabase::Open()
+{
+  return CDatabase::Open(g_advancedSettings.m_databaseMusic);
 }
 
 bool CMusicDatabase::CreateTables()

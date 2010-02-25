@@ -711,6 +711,29 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
 
+  TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
+  if (pDatabase)
+  {
+    CLog::Log(LOGWARNING, "VIDEO database configuration is experimental.");
+    XMLUtils::GetString(pDatabase, "type", m_databaseVideo.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseVideo.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseVideo.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseVideo.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseVideo.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseVideo.name);
+  }
+
+  pDatabase = pRootElement->FirstChildElement("musicdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseMusic.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseMusic.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseMusic.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+  }
+
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 

@@ -30,8 +30,6 @@ typedef std::vector<CStdString> VECPROGRAMPATHS;
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
-#define PROGRAM_DATABASE_NAME "MyPrograms6.db"
-
 class CFileItem;
 
 class CProgramDatabase : public CDatabase
@@ -39,6 +37,8 @@ class CProgramDatabase : public CDatabase
 public:
   CProgramDatabase(void);
   virtual ~CProgramDatabase(void);
+  virtual bool Open();
+
   bool AddTrainer(int iTitleId, const CStdString& strText);
   bool RemoveTrainer(const CStdString& strText);
   bool GetTrainers(unsigned int iTitleId, std::vector<CStdString>& vecTrainers);
@@ -66,6 +66,7 @@ protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
   virtual int GetMinVersion() const { return 3; };
+  const char *GetDefaultDBName() const { return "MyPrograms6"; };
 
   FILETIME TimeStampToLocalTime( uint64_t timeStamp );
 };

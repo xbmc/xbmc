@@ -32,6 +32,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
@@ -47,8 +48,6 @@ using namespace std;
 using namespace dbiplus;
 using namespace XFILE;
 using namespace VIDEO;
-
-#define VIDEO_DATABASE_NAME "MyVideos34.db"
 
 #define VIDEO_DATABASE_VIEW_TVSHOW "select tvshow.*,path.strPath as strPath," \
                                    "counts.totalcount as totalCount,counts.watchedcount as watchedCount," \
@@ -66,7 +65,6 @@ using namespace VIDEO;
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
-  m_strDatabaseFile=VIDEO_DATABASE_NAME;
 }
 
 //********************************************************************************************************************************
@@ -74,6 +72,11 @@ CVideoDatabase::~CVideoDatabase(void)
 {}
 
 //********************************************************************************************************************************
+bool CVideoDatabase::Open()
+{
+  return CDatabase::Open(g_advancedSettings.m_databaseVideo);
+}
+
 bool CVideoDatabase::CreateTables()
 {
   /* indexes should be added on any columns that are used in in  */
