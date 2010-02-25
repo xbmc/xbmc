@@ -48,8 +48,6 @@ using namespace dbiplus;
 using namespace XFILE;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 34
-#define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
 #define VIDEO_DATABASE_VIEW_TVSHOW "select tvshow.*,path.strPath as strPath," \
@@ -68,8 +66,6 @@ using namespace VIDEO;
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
-  m_preV2version=VIDEO_DATABASE_OLD_VERSION;
-  m_version = VIDEO_DATABASE_VERSION;
   m_strDatabaseFile=VIDEO_DATABASE_NAME;
 }
 

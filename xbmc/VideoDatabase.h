@@ -521,6 +521,7 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
+  virtual int GetMinVersion() const { return 34; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);

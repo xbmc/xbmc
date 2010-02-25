@@ -60,8 +60,6 @@ using namespace AUTOPTR;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 
-#define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        14
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
@@ -72,8 +70,6 @@ using namespace CDDB;
 
 CMusicDatabase::CMusicDatabase(void)
 {
-  m_preV2version=MUSIC_DATABASE_OLD_VERSION;
-  m_version=MUSIC_DATABASE_VERSION;
   m_strDatabaseFile=MUSIC_DATABASE_NAME;
 }
 

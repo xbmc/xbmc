@@ -48,13 +48,11 @@ protected:
   uint32_t ComputeCRC(const CStdString &text);
 
   virtual bool CreateTables();
-  virtual bool UpdateOldVersion(int version);
+  virtual bool UpdateOldVersion(int version) { return true; };
+
+  virtual int GetMinVersion() const=0;
 
   bool m_bOpen;
-  int m_version;
-//#ifdef PRE_2_1_DATABASE_COMPATIBILITY
-  float m_preV2version;
-//#endif
   CStdString m_strDatabaseFile;
   std::auto_ptr<dbiplus::Database> m_pDB;
   std::auto_ptr<dbiplus::Dataset> m_pDS;

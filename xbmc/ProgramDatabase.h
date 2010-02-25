@@ -65,6 +65,7 @@ public:
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
+  virtual int GetMinVersion() const { return 3; };
 
   FILETIME TimeStampToLocalTime( uint64_t timeStamp );
 };
