@@ -120,6 +120,7 @@ class CAdvancedSettings
     int m_lcdAddress3;
     int m_lcdAddress4;
     bool m_lcdHeartbeat;
+    bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;
     CStdString m_lcdHostName;
 

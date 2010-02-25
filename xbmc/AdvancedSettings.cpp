@@ -110,6 +110,7 @@ void CAdvancedSettings::Initialize()
   m_lcdAddress3 = 0x14;
   m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
+  m_lcdDimOnScreenSave = false;
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
@@ -455,6 +456,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "address3", m_lcdAddress3, 0, 0x100);
     XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
+    XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
     XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }

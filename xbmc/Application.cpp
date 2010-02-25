@@ -4232,6 +4232,13 @@ void CApplication::ResetScreenSaverTimer()
 
 bool CApplication::WakeUpScreenSaverAndDPMS()
 {
+
+#ifdef HAS_LCD
+    // turn on lcd backlight
+    if (g_lcd && g_advancedSettings.m_lcdDimOnScreenSave)
+      g_lcd->SetBackLight(1);
+#endif
+
   // First reset DPMS, if active
   if (m_dpmsIsActive)
   {
@@ -4348,6 +4355,12 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
   // Get Screensaver Mode
   m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
+
+#ifdef HAS_LCD
+  // turn off lcd backlight if requested
+  if (g_lcd && g_advancedSettings.m_lcdDimOnScreenSave)
+    g_lcd->SetBackLight(0);
+#endif
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
