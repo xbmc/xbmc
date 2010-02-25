@@ -102,7 +102,7 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
   {
     const CGUIInfoLabel &info = i->first;
     const CStdString &name = i->second;
-    bool preferTexture = strnicmp("label", name.c_str(), 5) == 0;
+    bool preferTexture = strnicmp("label", name.c_str(), 5) != 0;
     CStdString value(info.GetLabel(contextWindow, preferTexture));
     if (name.Equals("label"))
       SetLabel(value);
