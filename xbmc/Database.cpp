@@ -37,6 +37,7 @@ CDatabase::CDatabase(void)
 {
   m_bOpen = false;
   m_iRefCount = 0;
+  m_sqlite = true;
 }
 
 CDatabase::~CDatabase(void)
@@ -171,8 +172,7 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
   // test if db already exists, if not we need to create the tables
   if (!m_pDB->exists())
   {
-    CreateTables();
-    if (m_sqlite)
+    if (dbSettings.type.Equals("sqlite3"))
     {
       //  Modern file systems have a cluster/block size of 4k.
       //  To gain better performance when performing write
@@ -184,6 +184,7 @@ bool CDatabase::Open(DatabaseSettings &dbSettings)
       //  Also set the memory cache size to 16k
       m_pDS->exec("PRAGMA default_cache_size=4096\n");
     }
+    CreateTables();
   }
 
   // Mark our db as open here to make our destructor to properly close the file handle
