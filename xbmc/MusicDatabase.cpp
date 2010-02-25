@@ -1372,7 +1372,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
+    strSQL.Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -1406,7 +1406,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
