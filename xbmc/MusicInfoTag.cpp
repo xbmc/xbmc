@@ -21,6 +21,8 @@
 
 #include "MusicInfoTag.h"
 #include "Album.h"
+#include "StringUtils.h"
+#include "AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
 
@@ -426,4 +428,34 @@ void CMusicInfoTag::Clear()
   m_rating = '0';
   m_iDbId = -1;
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
+}
+
+void CMusicInfoTag::AppendArtist(const CStdString &value)
+{
+  if (!m_strArtist.IsEmpty())
+    return SetArtist(value);
+  std::vector<CStdString> values;
+  StringUtils::SplitString(m_strArtist, g_advancedSettings.m_musicItemSeparator, values);
+  if (std::find(values.begin(), values.end(), value) != values.end())
+    m_strArtist += g_advancedSettings.m_musicItemSeparator + value;
+}
+
+void CMusicInfoTag::AppendAlbumArtist(const CStdString &value)
+{
+  if (m_strAlbumArtist.IsEmpty())
+    return SetAlbumArtist(value);
+  std::vector<CStdString> values;
+  StringUtils::SplitString(m_strAlbumArtist, g_advancedSettings.m_musicItemSeparator, values);
+  if (std::find(values.begin(), values.end(), value) != values.end())
+    m_strAlbumArtist += g_advancedSettings.m_musicItemSeparator + value;
+}
+
+void CMusicInfoTag::AppendGenre(const CStdString &value)
+{
+  if (m_strGenre.IsEmpty())
+    return SetGenre(value);
+  std::vector<CStdString> values;
+  StringUtils::SplitString(m_strGenre, g_advancedSettings.m_musicItemSeparator, values);
+  if (std::find(values.begin(), values.end(), value) != values.end())
+    m_strGenre += g_advancedSettings.m_musicItemSeparator + value;
 }
