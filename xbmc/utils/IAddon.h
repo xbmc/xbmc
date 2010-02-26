@@ -38,9 +38,7 @@ typedef enum
   CONTENT_ALBUMS          = 6,
   CONTENT_ARTISTS         = 7,
   CONTENT_PROGRAMS        = 8,
-  CONTENT_PVR             = 9,
-  CONTENT_PICTURES        = 10,
-  CONTENT_WEATHER         = 11
+  CONTENT_PICTURES        = 9
 } CONTENT_TYPE;
 
 namespace ADDON

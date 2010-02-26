@@ -56,13 +56,13 @@ ADDON_STATUS Create(void* hdl, void* visProps)
   VIS_PROPS* props = (VIS_PROPS*) visProps;
 
   g_vis_name = props->name;
+  g_sub_module = props->submodule;
 
   /* copy window dimensions */
   g_window_width  = g_tex_width  = props->width;
   g_window_height = g_tex_height = props->height;
   g_window_xpos   = props->x;
   g_window_ypos   = props->y
-  g_sub_module    = props->submodule;
 
   /* create texture buffer */
   g_tex_buffer_size = g_tex_width * g_tex_height * 4;

@@ -79,6 +79,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using ADDON::CVisualisation;
 
 CGUIInfoManager g_infoManager;
 

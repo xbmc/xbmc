@@ -19,57 +19,27 @@ using namespace ADDON;
 CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
-  m_bInitialized = false;
-  m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
 }
 
 CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationControl &from)
 : CGUIControl(from)
 {
-  m_bInitialized = false;
-  m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
 }
 
-CGUIVisualisationControl::~CGUIVisualisationControl(void)
+void CGUIVisualisationControl::LoadVisualisation(AddonPtr &viz)
 {
-}
-
-void CGUIVisualisationControl::FreeVisualisation()
-{
-  if (!m_bInitialized) return;
-  m_bInitialized = false;
-  // tell our app that we're going
-  CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);
-  g_windowManager.SendMessage(msg);
-
-  CLog::Log(LOGDEBUG, "FreeVisualisation() started");
-  if (m_addon)
-  {
-    g_graphicsContext.CaptureStateBlock();
-    m_addon->Stop();
-    g_graphicsContext.ApplyStateBlock();
-    m_addon->Destroy();
-  }
-  CLog::Log(LOGDEBUG, "FreeVisualisation() done");
-}
-
-void CGUIVisualisationControl::LoadVisualisation()
-{
-  m_bInitialized = false;
-
-  AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(ADDON_VIZ, g_guiSettings.GetString("musicplayer.visualisation"), addon))
-      return;
-
-  m_addon = boost::dynamic_pointer_cast<CVisualisation>(addon);
-  m_currentVis = m_addon->Name();
-
+  // check addon good to go
+  // lock render thread
+  // swap vizcontrolptrs
+  // unlock
+  // when return all references to old addon must be removed
+  m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
   if (!m_addon)
     return;
 
-  g_graphicsContext.CaptureStateBlock();
+  g_graphicsContext.CaptureStateBlock(); //TODO need to lock here?
   float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
   float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
   float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
@@ -83,7 +53,6 @@ void CGUIVisualisationControl::LoadVisualisation()
   {
     g_graphicsContext.ApplyStateBlock();
     VerifyGLState();
-    m_bInitialized = true;
   }
 
   // tell our app that we're back
@@ -94,70 +63,33 @@ void CGUIVisualisationControl::LoadVisualisation()
 
 void CGUIVisualisationControl::UpdateVisibility(const CGUIListItem *item)
 {
+  // if made invisible, start timer, only free addonptr after
+  // some period, configurable by window class
   CGUIControl::UpdateVisibility(item);
-  if (!IsVisible() && m_bInitialized)
-    FreeVisualisation();
+  if (!IsVisible())
+    FreeResources();
 }
 
 void CGUIVisualisationControl::Render()
 {
-  if (!m_addon || !m_currentVis.Equals(g_guiSettings.GetString("musicplayer.visualisation")))
-  { // check if we need to load
-    LoadVisualisation();
-    CGUIControl::Render();
-    return;
-  }
-
-  if (m_bInitialized)
+  CSingleLock lock(m_rendering);
+  if (m_addon)
   {
     // set the viewport - note: We currently don't have any control over how
     // the visualisation renders, so the best we can do is attempt to define
     // a viewport??
     g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
-    try
-    {
-      g_graphicsContext.CaptureStateBlock();
-      m_addon->Render();
-      g_graphicsContext.ApplyStateBlock();
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "Exception in Visualisation::Render()");
-    }
-    // clear the viewport
+    g_graphicsContext.CaptureStateBlock();
+    m_addon->Render();
+    g_graphicsContext.ApplyStateBlock();
     g_graphicsContext.RestoreViewPort();
   }
+  /* else
+  {
+  render error message
+  }*/
 
   CGUIControl::Render();
-}
-
-bool CGUIVisualisationControl::OnAction(const CAction &action)
-{
-  if (!m_addon) return false;
-  VIS_ACTION visAction = VIS_ACTION_NONE;
-  if (action.actionId == ACTION_VIS_PRESET_NEXT)
-    visAction = VIS_ACTION_NEXT_PRESET;
-  else if (action.actionId == ACTION_VIS_PRESET_PREV)
-    visAction = VIS_ACTION_PREV_PRESET;
-  else if (action.actionId == ACTION_VIS_PRESET_LOCK)
-    visAction = VIS_ACTION_LOCK_PRESET;
-  else if (action.actionId == ACTION_VIS_PRESET_RANDOM)
-    visAction = VIS_ACTION_RANDOM_PRESET;
-  else if (action.actionId == ACTION_VIS_RATE_PRESET_PLUS)
-    visAction = VIS_ACTION_RATE_PRESET_PLUS;
-  else if (action.actionId == ACTION_VIS_RATE_PRESET_MINUS)
-    visAction = VIS_ACTION_RATE_PRESET_MINUS;
-
-  return m_addon->OnAction(visAction);
-}
-
-bool CGUIVisualisationControl::UpdateTrack()
-{
-  if (m_addon)
-  {
-    return m_addon->UpdateTrack();
-  }
-  return false;
 }
 
 bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
@@ -167,28 +99,26 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
     message.SetPointer(m_addon.get());
     return true;
   }
-  else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)
-  {
-    CAction action;
-    action.actionId = message.GetParam1();
-    return OnAction(action);
-  }
-  else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)
-  {
-    if (IsVisible() && m_addon && m_addon->UpdateTrack()) return true;
-  }
+  /*else if (message.GetMessage() == GUI_MSG_UPDATE_ADDON)
+    LoadVisualisation(message.GetAddon());*/
   return CGUIControl::OnMessage(message);
 }
 
 void CGUIVisualisationControl::FreeResources()
 {
-  FreeVisualisation();
-  CGUIControl::FreeResources();
-}
+  if (!m_addon) return;
 
-bool CGUIVisualisationControl::CanFocus() const
-{ // unfocusable
-  return false;
+  // tell our app that we're going
+  CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);
+  g_windowManager.SendMessage(msg);
+  CLog::Log(LOGDEBUG, "FreeVisualisation() started");
+
+  g_graphicsContext.CaptureStateBlock(); //TODO locking
+  m_addon->Stop();
+  g_graphicsContext.ApplyStateBlock();
+
+  CGUIControl::FreeResources();
+  CLog::Log(LOGDEBUG, "FreeVisualisation() done");
 }
 
 bool CGUIVisualisationControl::CanFocusFromPoint(const CPoint &point) const

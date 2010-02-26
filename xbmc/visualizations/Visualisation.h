@@ -22,7 +22,7 @@
 
 #include "Key.h"
 #include "DllVisualisation.h"
-#include "AddonDll.h"
+#include "utils/AddonDll.h"
 #include "cores/IAudioCallback.h"
 
 #include <map>
@@ -47,56 +47,61 @@ private:
   int m_iLen;
 };
 
-class CVisualisation : public ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>
-                     , public IAudioCallback
+namespace ADDON
 {
-public:
-  CVisualisation(const ADDON::AddonProps &props) : ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
-  virtual ~CVisualisation() {};
-  virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
-  virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
-  bool Create(int x, int y, int w, int h);
-  void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
-  void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
-  void Render();
-  void Stop();
-  void GetInfo(VIS_INFO *info);
-  bool OnAction(VIS_ACTION action, void *param = NULL);
-  bool UpdateTrack();
-  int  GetSubModules(std::map<std::string, std::string>& subModules);
-  bool IsLocked();
-  unsigned GetPreset();
-  CStdString GetPresetName();
-  bool GetPresetList(std::vector<CStdString>& vecpresets);
+  class CVisualisation : public CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>
+                       , public IAudioCallback
+  {
+  public:
+    CVisualisation(const ADDON::AddonProps &props) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
+    virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
+    virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
+    bool Create(int x, int y, int w, int h);
+    void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
+    void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+    void Render();
+    void Stop();
+    void GetInfo(VIS_INFO *info);
+    bool OnAction(VIS_ACTION action, void *param = NULL);
+    bool UpdateTrack();
+    bool HasSubModules() { return !m_submodules.empty(); }
+    bool IsLocked();
+    unsigned GetPreset();
+    CStdString GetPresetName();
+    bool GetPresetList(std::vector<CStdString>& vecpresets);
+    bool GetSubModuleList(std::vector<CStdString>& vecmodules);
+    static CStdString GetFriendlyName(const CStdString& vis, const CStdString& module);
 
-private:
-  void CreateBuffers();
-  void ClearBuffers();
+  private:
+    void CreateBuffers();
+    void ClearBuffers();
 
-  bool GetPresets();
+    bool GetPresets();
+    bool GetSubModules();
 
-  // attributes of the viewport we render to
-  int m_xPos;
-  int m_yPos;
-  int m_width;
-  int m_height;
+    // attributes of the viewport we render to
+    int m_xPos;
+    int m_yPos;
+    int m_width;
+    int m_height;
 
-  // cached preset list
-  std::vector<CStdString> m_presets;
+    // cached preset list
+    std::vector<CStdString> m_presets;
+    // cached submodule list
+    std::vector<CStdString> m_submodules;
+    int m_currentModule;
 
-  // audio properties
-  int m_iChannels;
-  int m_iSamplesPerSec;
-  int m_iBitsPerSample;
-  std::list<CAudioBuffer*> m_vecBuffers;
-  int m_iNumBuffers;        // Number of Audio buffers
-  bool m_bWantsFreq;
-  float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data
-  bool m_bCalculate_Freq;       // True if the vis wants freq data
+    // audio properties
+    int m_iChannels;
+    int m_iSamplesPerSec;
+    int m_iBitsPerSample;
+    std::list<CAudioBuffer*> m_vecBuffers;
+    int m_iNumBuffers;        // Number of Audio buffers
+    bool m_bWantsFreq;
+    float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data
+    bool m_bCalculate_Freq;       // True if the vis wants freq data
 
-  // track information
-  CStdString m_AlbumThumb;
-
-  CCriticalSection m_critSection;
-};
-
+    // track information
+    CStdString m_AlbumThumb;
+  };
+}

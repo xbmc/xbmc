@@ -381,7 +381,7 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &scraper, const CONTENT_TY
   case CONTENT_ALBUMS:
   case CONTENT_ARTISTS:
     {
-      defaultScraper = g_guiSettings.GetString("musiclibrary.defaultscraper");
+      defaultScraper = g_guiSettings.GetString("musiclibrary.scraper");
       break;
     }
   default:

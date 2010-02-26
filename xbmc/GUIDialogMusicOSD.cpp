@@ -30,6 +30,8 @@
 #define CONTROL_LOCK_BUTTON      501
 #define CONTROL_VIS_CHOOSER      503
 
+using ADDON::CVisualisation;
+
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {

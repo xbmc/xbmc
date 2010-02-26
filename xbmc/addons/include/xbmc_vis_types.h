@@ -46,6 +46,7 @@ extern "C"
     const char *name;
     const char *presets;
     const char *profile;
+    const char *submodule;
   };
 
   enum VIS_ACTION
@@ -104,6 +105,7 @@ extern "C"
     int (__cdecl* HasPresets)();
     unsigned int (__cdecl *GetPresets)(char ***presets);
     unsigned int (__cdecl *GetPreset)();
+    unsigned int (__cdecl *GetSubModules)(char ***modules);
     bool (__cdecl* IsLocked)();
   };
 }

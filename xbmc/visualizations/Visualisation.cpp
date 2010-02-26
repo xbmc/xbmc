@@ -115,6 +115,7 @@ bool CVisualisation::Create(int x, int y, int w, int h)
     m_initialized = true;
 
     GetPresets();
+    GetSubModules();
 
     CreateBuffers();
     if (g_application.m_pPlayer)
@@ -172,8 +173,9 @@ void CVisualisation::Render()
     try
     {
       m_pStruct->Render();
-    } catch (std::exception e)
+    } catch (...)
     {
+
     }
   }
   g_graphicsContext.EndPaint();
@@ -393,6 +395,46 @@ bool CVisualisation::GetPresets()
     }
   }
   return (!m_presets.empty());
+}
+
+bool CVisualisation::GetSubModuleList(std::vector<CStdString> &vecmodules)
+{
+  vecmodules = m_submodules;
+  return !m_submodules.empty();
+}
+
+bool CVisualisation::GetSubModules()
+{
+  m_submodules.clear();
+  char **modules = NULL;
+  unsigned int entries = 0;
+  try
+  {
+    entries = m_pStruct->GetSubModules(&modules);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Exception in Visualisation::GetSubModules()");
+    return false;
+  }
+  if (modules && entries > 0)
+  {
+    for (unsigned i=0; i < entries; i++)
+    {
+      if (modules[i])
+      {
+        m_submodules.push_back(modules[i]);
+      }
+    }
+  }
+  return (!m_submodules.empty());
+}
+
+CStdString CVisualisation::GetFriendlyName(const CStdString& strVisz,
+                                           const CStdString& strSubModule)
+{
+  // should be of the format "moduleName (visName)"
+  return CStdString(strSubModule + " (" + strVisz + ")");
 }
 
 bool CVisualisation::IsLocked()

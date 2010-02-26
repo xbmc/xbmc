@@ -21,6 +21,7 @@
 
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
+#include "visualizations/Visualisation.h"
 #include "Application.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
@@ -32,6 +33,7 @@
 #include "AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
+using ADDON::CVisualisation;
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -47,14 +49,21 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
   m_bShowPreset = false;
 }
 
-CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
-{
-}
-
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
+  VIS_ACTION visAction = VIS_ACTION_NONE;
   switch (action.actionId)
   {
+  case ACTION_VIS_PRESET_NEXT:
+    visAction = VIS_ACTION_NEXT_PRESET; break;
+  case ACTION_VIS_PRESET_PREV:
+    visAction = VIS_ACTION_PREV_PRESET; break;
+  case ACTION_VIS_PRESET_RANDOM:
+    visAction = VIS_ACTION_RANDOM_PRESET; break;
+  case ACTION_VIS_RATE_PRESET_PLUS:
+    visAction = VIS_ACTION_RATE_PRESET_PLUS; break;
+  case ACTION_VIS_RATE_PRESET_MINUS:
+    visAction = VIS_ACTION_RATE_PRESET_MINUS; break;
   case ACTION_SHOW_INFO:
     {
       if (!m_initTimer || g_settings.m_bMyMusicSongThumbInVis)
@@ -114,10 +123,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     }
     break;*/
   }
-  // default action is to send to the visualisation first
-  CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-  if (pVisControl && pVisControl->OnAction(action))
-    return true;
+
+  if (visAction != VIS_ACTION_NONE && m_addon)
+    return m_addon->OnAction(visAction);
+
   return CGUIWindow::OnAction(action);
 }
 
@@ -125,20 +134,23 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_PLAYBACK_STARTED:
-    {
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        return pVisControl->OnMessage(message);
-    }
   case GUI_MSG_GET_VISUALISATION:
-  case GUI_MSG_VISUALISATION_ACTION:
     {
       CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
       if (pVisControl)
         return pVisControl->OnMessage(message);
     }
     break;
+  case GUI_MSG_VISUALISATION_ACTION:
+  {
+    CAction action;
+    action.actionId = message.GetParam1();
+    return OnAction(action);
+  }
+  case GUI_MSG_PLAYBACK_STARTED:
+  {
+    if (IsActive() && m_addon && m_addon->UpdateTrack()) return true;
+  }
   case GUI_MSG_WINDOW_DEINIT:
     {
       if (IsActive()) // save any changed settings from the OSD
@@ -182,6 +194,15 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+bool CGUIWindowVisualisation::UpdateTrack()
+{
+  if (m_addon)
+  {
+    return m_addon->UpdateTrack();
+  }
+  return false;
+}
+
 bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
@@ -212,7 +233,7 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
 
 void CGUIWindowVisualisation::Render()
 {
-  g_application.ResetScreenSaver();
+  g_application.ResetScreenSaver(); //why here?
   // check for a tag change
   const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
   if (tag && *tag != m_tag)

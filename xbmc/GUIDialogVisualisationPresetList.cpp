@@ -31,6 +31,8 @@
 #define CONTROL_PRESETS_LABEL  3
 #define CONTROL_NONE_AVAILABLE 4
 
+using ADDON::CVisualisation;
+
 CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
     : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "VisualisationPresetList.xml")
 {

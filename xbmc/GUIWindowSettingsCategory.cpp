@@ -56,6 +56,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowPrograms.h"
+#include "visualizations/Visualisation.h"
 #include "AddonManager.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
@@ -672,10 +673,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("weather.plugin"))
+    else if (strSetting.Equals("weather.script"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin"));
+      FillInWeatherScripts(pControl, g_guiSettings.GetString("weather.script"));
     }
   }
 
@@ -1021,13 +1022,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(CWeather::GetAreaCity(pSetting->GetData()));
     }
-    else if (strSetting.Equals("weather.plugin"))
+    else if (strSetting.Equals("weather.script"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
       if (pControl->GetCurrentLabel().Equals(g_localizeStrings.Get(13611)))
-        g_guiSettings.SetString("weather.plugin", "");
+        g_guiSettings.SetString("weather.script", "");
       else
-        g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
+        g_guiSettings.SetString("weather.script", pControl->GetCurrentLabel());
     }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
@@ -1088,7 +1089,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(enabled);
       }
     }
-    else if (strSetting.Equals("weather.pluginsettings"))
+    else if (strSetting.Equals("weather.scriptsettings"))
     {
       //// Create our base path
       //CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
@@ -1137,13 +1138,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_weatherManager.Refresh();
     }
   }
-  else if (strSetting.Equals("weather.plugin"))
+  else if (strSetting.Equals("weather.script"))
   {
     g_weatherManager.Refresh();
   }
-  else if (strSetting.Equals("weather.pluginsettings"))
+  else if (strSetting.Equals("weather.scriptsettings"))
   {
-    CStdString name = g_guiSettings.GetString("weather.plugin");
+    CStdString name = g_guiSettings.GetString("weather.script");
     AddonPtr addon;
     if (CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, name, addon))
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
@@ -2452,7 +2453,20 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     for (unsigned int i = 0; i < addons.size(); i++)
     {
       const AddonPtr addon = addons.at(i);
-      vecVis.push_back(addon->Name());
+      boost::shared_ptr<CVisualisation> vis = boost::dynamic_pointer_cast<CVisualisation>(addon);
+      if (vis->HasSubModules())
+      {
+        vector<CStdString> modules;
+        if (!vis->GetSubModuleList(modules))
+          continue;
+        else
+        {
+          for (unsigned i=0; i<modules.size(); i++)
+            vecVis.push_back(CVisualisation::GetFriendlyName(addon->Name(), modules[i]));
+        }
+      }
+      else
+        vecVis.push_back(addon->Name());
     }
   }
 
@@ -2899,8 +2913,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
     CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MOVIES);
   else if (content == CONTENT_TVSHOWS || content == CONTENT_EPISODES)
     CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_TVSHOWS);
-  else if (content == CONTENT_PVR)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_PVR);
   else if (content == CONTENT_MUSICVIDEOS)
     CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSICVIDEOS);
   else if (content == CONTENT_PROGRAMS)
@@ -2927,8 +2939,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
         g_guiSettings.SetString("scrapers.tvshowdefault", (*it)->Name());
       else if (content == CONTENT_MUSICVIDEOS)
         g_guiSettings.SetString("scrapers.musicvideodefault", (*it)->Name());
-      else if (content == CONTENT_PVR)
-        g_guiSettings.SetString("pvr.defaultscraper", (*it)->Name());
       else if (content == CONTENT_PROGRAMS)
         g_guiSettings.SetString("programfiles.defaultscraper", (*it)->Name());
       k = j;
@@ -3063,7 +3073,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 #endif
 }
 
-void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
+void CGUIWindowSettingsCategory::FillInWeatherScripts(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {
   VECADDONS addons;
   int j=0;
@@ -3072,8 +3082,8 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
   // add our disable option
   pControl->AddLabel(g_localizeStrings.Get(13611), j++);
 
-  //find weather plugins....
-  CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
+  //find weather scripts....
+  CAddonMgr::Get()->GetAddons(ADDON_SCRIPT, addons);
   if (!addons.empty())
   {
     for (unsigned int i = 0; i < addons.size(); i++)
