@@ -1714,12 +1714,10 @@ void CDVDPlayer::OnExit()
 void CDVDPlayer::HandleMessages()
 {
   CDVDMsg* pMsg;
+  LockStreams();
 
-  MsgQueueReturnCode ret = m_messenger.Get(&pMsg, 0);
-
-  while (ret == MSGQ_OK)
+  while (m_messenger.Get(&pMsg, 0) == MSGQ_OK)
   {
-    LockStreams();
 
     try
     {
@@ -1939,11 +1937,10 @@ void CDVDPlayer::HandleMessages()
       CLog::Log(LOGERROR, "%s - Exception thrown when handling message", __FUNCTION__);
     }
 
-    UnlockStreams();
-
     pMsg->Release();
-    ret = m_messenger.Get(&pMsg, 0);
   }
+  UnlockStreams();
+
 }
 
 void CDVDPlayer::SetCaching(ECacheState state)
