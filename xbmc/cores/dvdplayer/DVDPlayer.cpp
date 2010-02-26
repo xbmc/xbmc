@@ -1723,7 +1723,8 @@ void CDVDPlayer::HandleMessages()
 
     try
     {
-      if (pMsg->IsType(CDVDMsg::PLAYER_SEEK))
+      if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
+                                             && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
       {
         CPlayerSeek m_pause(this);
 
@@ -1748,7 +1749,8 @@ void CDVDPlayer::HandleMessages()
         // set flag to indicate we have finished a seeking request
         g_infoManager.m_performingSeek = false;
       }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER))
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
+                                                          && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
       {
         CPlayerSeek m_pause(this);
 
@@ -1898,7 +1900,7 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) ||
                pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
-               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
+              (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0))
       {
         CPlayerSeek m_pause(this);
 
