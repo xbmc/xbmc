@@ -63,9 +63,6 @@ using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using ADDON::AddonPtr;
 
-#define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        14
-#define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
 
@@ -75,14 +72,16 @@ using namespace CDDB;
 
 CMusicDatabase::CMusicDatabase(void)
 {
-  m_preV2version=MUSIC_DATABASE_OLD_VERSION;
-  m_version=MUSIC_DATABASE_VERSION;
-  m_strDatabaseFile=MUSIC_DATABASE_NAME;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
 {
   EmptyCache();
+}
+
+bool CMusicDatabase::Open()
+{
+  return CDatabase::Open(g_advancedSettings.m_databaseMusic);
 }
 
 bool CMusicDatabase::CreateTables()
@@ -93,21 +92,21 @@ bool CMusicDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create artist table");
-    m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist text)\n");
+    m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist varchar(256))\n");
     CLog::Log(LOGINFO, "create album table");
-    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)\n");
+    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum varchar(256), idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)\n");
     CLog::Log(LOGINFO, "create genre table");
-    m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
+    m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre varchar(256))\n");
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strHash text)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strHash text)\n");
     CLog::Log(LOGINFO, "create song table");
-    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed text default NULL, rating char default '0', comment text)\n");
+    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
     CLog::Log(LOGINFO, "create albuminfo table");
     m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strThemes text, strReview text, strImage text, strLabel text, strType text, iRating integer)\n");
     CLog::Log(LOGINFO, "create albuminfosong table");
     m_pDS->exec("CREATE TABLE albuminfosong ( idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
     CLog::Log(LOGINFO, "create thumb table");
-    m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb text)\n");
+    m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb varchar(256))\n");
     CLog::Log(LOGINFO, "create artistnfo table");
     m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text, strFanart text)\n");
     CLog::Log(LOGINFO, "create content table");
@@ -183,7 +182,7 @@ bool CMusicDatabase::CreateTables()
                 "left outer join artist on album.idArtist=artist.idArtist "
                 "left outer join genre on album.idGenre=genre.idGenre "
                 "left outer join thumb on album.idThumb=thumb.idThumb "
-                "left outer join albuminfo on album.idAlbum=albumInfo.idAlbum");
+                "left outer join albuminfo on album.idAlbum=albuminfo.idAlbum");
 
     // Add 'Karaoke' genre
     AddGenre( "Karaoke" );
@@ -1376,7 +1375,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
+    strSQL.Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -1410,7 +1409,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1972,7 +1971,7 @@ bool CMusicDatabase::CleanupPaths()
     // but we must keep all paths that have been scanned that may contain songs in subpaths
 
     // first create a temporary table of song paths
-    m_pDS->exec("CREATE TEMPORARY TABLE songpaths (idPath integer, strPath)\n");
+    m_pDS->exec("CREATE TEMPORARY TABLE songpaths (idPath integer, strPath varchar(512))\n");
     m_pDS->exec("INSERT INTO songpaths select idPath,strPath from path where idPath in (select idPath from song)\n");
 
     // grab all paths that aren't immediately connected with a song

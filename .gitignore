@@ -1,5 +1,10 @@
-
 # global patterns
+
+# commonly used editors
+# vim
+*.swp
+
+# generated files etc
 config.cache
 config.status
 config.log

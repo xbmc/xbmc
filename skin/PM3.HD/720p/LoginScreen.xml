@@ -96,8 +96,9 @@
 				</focusedlayout>
 			</control>
 			<control type="label">
-				<posx>640</posx>
+				<posx>0</posx>
 				<posy>540</posy>
+				<width>1280</width>
 				<height>30</height>
 				<font>font18</font>
 				<textcolor>white</textcolor>
@@ -107,8 +108,9 @@
 				<label>[B]$INFO[ListItem.label][/B]</label>
 			</control>
 			<control type="label">
-				<posx>640</posx>
+				<posx>0</posx>
 				<posy>580</posy>
+				<width>1280</width>
 				<height>30</height>
 				<font>font12</font>
 				<textcolor>white</textcolor>

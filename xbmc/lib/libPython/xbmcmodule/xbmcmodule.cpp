@@ -45,7 +45,7 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
 #include "lib/libhttpapi/XBMChttp.h"
 #include "lib/libhttpapi/HttpApi.h"
 #endif
@@ -303,7 +303,6 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
       m_pXbmcHttp = new CXbmcHttp();
-
     CStdString method = cLine;
 
     int open, close;
@@ -705,7 +704,7 @@ namespace PYXBMC
     "\n"
     "path           : string or unicode - Path to format\n"
     "\n"
-    "*Note, Only useful if you are coding for both Linux and the Xbox.\n"
+    "*Note, Only useful if you are coding for both Linux and Windows/Xbox.\n"
     "       e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'\n"
     "       on Linux. Would return 'special://masterprofile/script_data' on the Xbox.\n"
     "\n"
@@ -733,6 +732,29 @@ namespace PYXBMC
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
+  }
+
+  // validatePath function
+  PyDoc_STRVAR(validatePath__doc__,
+    "validatePath(path) -- Returns the validated path.\n"
+    "\n"
+    "path           : string or unicode - Path to format\n"
+    "\n"
+    "*Note, Only useful if you are coding for both Linux and Windows/Xbox for fixing slash problems.\n"
+    "       e.g. Corrects 'Z://something' -> 'Z:\\something'\n"
+    "\n"
+    "example:\n"
+    "  - fpath = xbmc.validatePath(somepath)\n");
+
+  PyObject* XBMC_ValidatePath(PyObject *self, PyObject *args)
+  {
+    PyObject *pObjectText;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
+
+    CStdString strText;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
+
+    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText).c_str());
   }
 
   // getRegion function
@@ -898,6 +920,7 @@ namespace PYXBMC
 
     {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS|METH_KEYWORDS, makeLegalFilename__doc__},
     {(char*)"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
+    {(char*)"validatePath", (PyCFunction)XBMC_ValidatePath, METH_VARARGS, validatePath__doc__},
 
     {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
     {(char*)"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},

@@ -59,7 +59,7 @@ CGUIWindowScripts::~CGUIWindowScripts()
 
 bool CGUIWindowScripts::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SHOW_INFO)
+  if (action.GetID() == ACTION_SHOW_INFO)
   {
     OnInfo();
     return true;
@@ -168,7 +168,7 @@ void CGUIWindowScripts::OnInfo()
   if (pDlgInfo) pDlgInfo->DoModal();
 }
 
-void CGUIWindowScripts::Render()
+void CGUIWindowScripts::FrameMove()
 {
 #ifdef HAS_PYTHON
   // update control_list / control_thumbs if one or more scripts have stopped / started
@@ -181,7 +181,7 @@ void CGUIWindowScripts::Render()
   }
 #endif
 
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }
 
 bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemList& items)

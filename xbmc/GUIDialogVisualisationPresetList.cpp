@@ -99,17 +99,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation* vis)
-{
-  m_viz = NULL;
-  if (vis)
-  {
-    m_viz = vis;
-    Update();
-  }
-}
-
-void CGUIDialogVisualisationPresetList::Render()
+void CGUIDialogVisualisationPresetList::FrameMove()
 {
   //FIXME we shouldn't have to check preset each frame
   // a viz callback could push GUI_MSG_VISUALISATION_UPDATED
@@ -123,7 +113,7 @@ void CGUIDialogVisualisationPresetList::Render()
       m_vecPresets->Get(m_currentPreset)->Select(true);
     }
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogVisualisationPresetList::Update()

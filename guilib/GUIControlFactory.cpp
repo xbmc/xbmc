@@ -459,6 +459,28 @@ void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const CStdS
     infoLabel = labels[0];
 }
 
+bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel)
+{
+  if (!element || !element->FirstChild())
+    return false;
+
+  CStdString label = element->FirstChild()->Value();
+  if (label.IsEmpty() || label == "-")
+    return false;
+
+  CStdString fallback = element->Attribute("fallback");
+  if (StringUtils::IsNaturalNumber(label))
+    label = g_localizeStrings.Get(atoi(label));
+  else // we assume the skin xml's aren't encoded as UTF-8
+    g_charsetConverter.unknownToUTF8(label);
+  if (StringUtils::IsNaturalNumber(fallback))
+    fallback = g_localizeStrings.Get(atoi(fallback));
+  else
+    g_charsetConverter.unknownToUTF8(fallback);
+  infoLabel.SetLabel(label, fallback);
+  return true;
+}
+
 void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels)
 {
   // we can have the following infolabels:
@@ -477,23 +499,9 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   const TiXmlElement *labelNode = pControlNode->FirstChildElement(labelTag);
   while (labelNode)
   {
-    if (labelNode->FirstChild())
-    {
-      CStdString label = labelNode->FirstChild()->Value();
-      CStdString fallback = labelNode->Attribute("fallback");
-      if (label.size() && label[0] != '-')
-      {
-        if (StringUtils::IsNaturalNumber(label))
-          label = g_localizeStrings.Get(atoi(label));
-        else // we assume the skin xml's aren't encoded as UTF-8
-          g_charsetConverter.unknownToUTF8(label);
-        if (StringUtils::IsNaturalNumber(fallback))
-          fallback = g_localizeStrings.Get(atoi(fallback));
-        else
-          g_charsetConverter.unknownToUTF8(fallback);
-        infoLabels.push_back(CGUIInfoLabel(label, fallback));
-      }
-    }
+    CGUIInfoLabel label;
+    if (GetInfoLabelFromElement(labelNode, label))
+      infoLabels.push_back(label);
     labelNode = labelNode->NextSiblingElement(labelTag);
   }
   const TiXmlNode *infoNode = pControlNode->FirstChild("info");

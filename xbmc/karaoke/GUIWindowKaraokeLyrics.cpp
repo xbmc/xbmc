@@ -54,7 +54,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
   CGUIDialogKaraokeSongSelectorSmall * songSelector = (CGUIDialogKaraokeSongSelectorSmall *)
                                       g_windowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
 
-  switch(action.actionId)
+  switch(action.GetID())
   {
     case REMOTE_0:
     case REMOTE_1:
@@ -68,7 +68,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
     case REMOTE_9:
       // Offset from key codes back to button number
       if ( songSelector && !songSelector->IsActive() )
-        songSelector->DoModal( action.actionId - REMOTE_0 );
+        songSelector->DoModal( action.GetID() - REMOTE_0 );
       break;
 
     case ACTION_SUBTITLE_DELAY_MIN:

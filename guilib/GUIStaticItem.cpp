@@ -33,11 +33,11 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
   const TiXmlNode *click = item->FirstChild("onclick");
   if (click && click->FirstChild())
   {
-    CStdString label, label2, thumb, icon;
-    XMLUtils::GetString(item, "label", label);   label  = CGUIControlFactory::FilterLabel(label);
-    XMLUtils::GetString(item, "label2", label2); label2 = CGUIControlFactory::FilterLabel(label2);
-    XMLUtils::GetString(item, "thumb", thumb);   thumb  = CGUIControlFactory::FilterLabel(thumb);
-    XMLUtils::GetString(item, "icon", icon);     icon   = CGUIControlFactory::FilterLabel(icon);
+    CGUIInfoLabel label, label2, thumb, icon;
+    CGUIControlFactory::GetInfoLabel(item, "label", label);
+    CGUIControlFactory::GetInfoLabel(item, "label2", label2);
+    CGUIControlFactory::GetInfoLabel(item, "thumb", thumb);
+    CGUIControlFactory::GetInfoLabel(item, "icon", icon);
     const char *id = item->Attribute("id");
     int visibleCondition = 0;
     CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
@@ -53,14 +53,14 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
       }
       m_strPath += (*it).m_action;
     }
-    SetLabel(CGUIInfoLabel::GetLabel(label, parentID));
-    SetLabel2(CGUIInfoLabel::GetLabel(label2, parentID));
-    SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, parentID, true));
-    SetIconImage(CGUIInfoLabel::GetLabel(icon, parentID, true));
-    if (label.Find("$INFO") >= 0) SetProperty("info:label", label);
-    if (label2.Find("$INFO") >= 0) SetProperty("info:label2", label2);
-    if (icon.Find("$INFO") >= 0) SetProperty("info:icon", icon);
-    if (thumb.Find("$INFO") >= 0) SetProperty("info:thumb", thumb);
+    SetLabel(label.GetLabel(parentID));
+    SetLabel2(label2.GetLabel(parentID));
+    SetThumbnailImage(thumb.GetLabel(parentID, true));
+    SetIconImage(icon.GetLabel(parentID, true));
+    if (!label.IsConstant())  m_info.push_back(make_pair(label, "label"));
+    if (!label2.IsConstant()) m_info.push_back(make_pair(label2, "label2"));
+    if (!thumb.IsConstant())  m_info.push_back(make_pair(thumb, "thumb"));
+    if (!icon.IsConstant())   m_info.push_back(make_pair(icon, "icon"));
     m_iprogramCount = id ? atoi(id) : 0;
     m_idepth = visibleCondition;
     // add any properties
@@ -68,13 +68,12 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     while (property)
     {
       CStdString name = property->Attribute("name");
-      CStdString value = property->FirstChild() ? property->FirstChild()->Value() : "";
-      if (!name.IsEmpty() && !value.IsEmpty())
+      CGUIInfoLabel prop;
+      if (!name.IsEmpty() && CGUIControlFactory::GetInfoLabelFromElement(property, prop))
       {
-        value = CGUIControlFactory::FilterLabel(value);
-        SetProperty(name, CGUIInfoLabel::GetLabel(value, parentID));
-        if (value.Find("$INFO") >= 0)
-          SetProperty("info:" + name, value);
+        SetProperty(name, prop.GetLabel(parentID, true));
+        if (!prop.IsConstant())
+          m_info.push_back(make_pair(prop, name));
       }
       property = property->NextSiblingElement("property");
     }
@@ -99,23 +98,21 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     
 void CGUIStaticItem::UpdateProperties(int contextWindow)
 {
-  for (PropertyMap::const_iterator i = m_mapProperties.begin(); i != m_mapProperties.end(); i++)
+  for (InfoVector::const_iterator i = m_info.begin(); i != m_info.end(); i++)
   {
-    if (i->first.Left(5).Equals("info:"))
-    {
-      // prefer images if it's not label or label2
-      CStdString prop(i->first.Mid(5));
-      CStdString info(CGUIInfoLabel::GetLabel(i->second, contextWindow, !prop.Left(5).Equals("label")));
-      if (prop.Equals("label"))
-        SetLabel(info);
-      else if (prop.Equals("label2"))
-        SetLabel2(info);
-      else if (prop.Equals("thumb"))
-        SetThumbnailImage(info);
-      else if (prop.Equals("icon"))
-        SetIconImage(info);
-      else
-        SetProperty(prop, info);
-    }
+    const CGUIInfoLabel &info = i->first;
+    const CStdString &name = i->second;
+    bool preferTexture = strnicmp("label", name.c_str(), 5) != 0;
+    CStdString value(info.GetLabel(contextWindow, preferTexture));
+    if (name.Equals("label"))
+      SetLabel(value);
+    else if (name.Equals("label2"))
+      SetLabel2(value);
+    else if (name.Equals("thumb"))
+      SetThumbnailImage(value);
+    else if (name.Equals("icon"))
+      SetIconImage(value);
+    else
+      SetProperty(name, value);
   }
 }

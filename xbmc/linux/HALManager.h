@@ -53,6 +53,7 @@ public:
   bool Mounted;
   bool Approved;
   bool HotPlugged;
+  bool HalIgnore;
   CStdString MountPoint;
   CStdString Label;
   CStdString UUID;

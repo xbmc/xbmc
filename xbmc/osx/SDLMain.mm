@@ -25,17 +25,17 @@
 #import "WindowingFactory.h"
 #undef BOOL
 
-/* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
- but the method still is there and works. To avoid warnings, we declare
- it ourselves here. */
+// For some reaon, Apple removed setAppleMenu from the headers in 10.4,
+// but the method still is there and works. To avoid warnings, we declare
+// it ourselves here.
 @interface NSApplication(SDL_Missing_Methods)
 - (void)setAppleMenu:(NSMenu *)menu;
 @end
 
-/* Use this flag to determine whether we use CPS (docking) or not */
+// Use this flag to determine whether we use CPS (docking) or not
 #define		SDL_USE_CPS		1
 #ifdef SDL_USE_CPS
-/* Portions of CPS.h */
+// Portions of CPS.h
 typedef struct CPSProcessSerNum
 {
 	UInt32		lo;
@@ -59,7 +59,7 @@ static NSString *getApplicationName(void)
     NSDictionary *dict;
     NSString *appName = 0;
 
-    /* Determine the application name */
+    // Determine the application name
     dict = (NSDictionary *)CFBundleGetInfoDictionary(CFBundleGetMainBundle());
     if (dict)
         appName = [dict objectForKey: @"CFBundleName"];
@@ -69,9 +69,9 @@ static NSString *getApplicationName(void)
 
     return appName;
 }
-static void setApplicationMenu(void)
+static void setupApplicationMenu(void)
 {
-    /* warning: this code is very odd */
+    // warning: this code is very odd
     NSMenu *appleMenu;
     NSMenuItem *menuItem;
     NSString *title;
@@ -80,7 +80,7 @@ static void setApplicationMenu(void)
     appName = getApplicationName();
     appleMenu = [[NSMenu alloc] initWithTitle:@""];
     
-    /* Add menu items */
+    // Add menu items
     title = [@"About " stringByAppendingString:appName];
     [appleMenu addItemWithTitle:title action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
 
@@ -100,20 +100,20 @@ static void setApplicationMenu(void)
     [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
 
     
-    /* Put menu into the menubar */
+    // Put menu into the menubar
     menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
     [menuItem setSubmenu:appleMenu];
     [[NSApp mainMenu] addItem:menuItem];
 
-    /* Tell the application object that this is now the application menu */
+    // Tell the application object that this is now the application menu
     [NSApp setAppleMenu:appleMenu];
 
-    /* Finally give up our references to the objects */
+    // Finally give up our references to the objects
     [appleMenu release];
     [menuItem release];
 }
 
-/* Create a window menu */
+// Create a window menu
 static void setupWindowMenu(void)
 {
     NSMenu      *windowMenu;
@@ -122,38 +122,38 @@ static void setupWindowMenu(void)
 
     windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
     
-    /* "Full/Windowed Toggle" item */
+    // "Full/Windowed Toggle" item
     menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle" action:@selector(fullScreenToggle:) keyEquivalent:@"f"];
     [windowMenu addItem:menuItem];
     [menuItem release];
 
-    /* "Full/Windowed Toggle" item */
+    // "Full/Windowed Toggle" item
     menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top" action:@selector(floatOnTopToggle:) keyEquivalent:@"t"];
     [windowMenu addItem:menuItem];
     [menuItem release];
 
-    /* "Minimize" item */
+    // "Minimize" item
     menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize" action:@selector(performMiniaturize:) keyEquivalent:@"m"];
     [windowMenu addItem:menuItem];
     [menuItem release];
     
-    /* Put menu into the menubar */
+    // Put menu into the menubar
     windowMenuItem = [[NSMenuItem alloc] initWithTitle:@"Window" action:nil keyEquivalent:@""];
     [windowMenuItem setSubmenu:windowMenu];
     [[NSApp mainMenu] addItem:windowMenuItem];
     
-    /* Tell the application object that this is now the window menu */
+    // Tell the application object that this is now the window menu
     [NSApp setWindowsMenu:windowMenu];
 
-    /* Finally give up our references to the objects */
+    // Finally give up our references to the objects
     [windowMenu release];
     [windowMenuItem release];
 }
 
-@interface SDLApplication : NSApplication
+@interface XBMCApplication : NSApplication
 @end
 
-@implementation SDLApplication
+@implementation XBMCApplication
 
 // Called before the internal event loop has started running.
 - (void) finishLaunching
@@ -168,7 +168,7 @@ static void setupWindowMenu(void)
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    /* Post a SDL_QUIT event */
+    // Post a SDL_QUIT event
     SDL_Event event;
     event.type = SDL_QUIT;
     SDL_PushEvent(&event);
@@ -198,10 +198,87 @@ static void setupWindowMenu(void)
     [sender setState:NSOnState];
   }
 }
+
 @end
 
 // The main class of the application, the application's delegate
-@implementation SDLMain
+@implementation XBMCDelegate
+
+// Set the working directory to the .app's parent directory
+- (void) setupWorkingDirectory:(BOOL)shouldChdir
+{
+    if (shouldChdir)
+    {
+        char parentdir[MAXPATHLEN];
+        CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+        CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
+        if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN)) {
+            assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
+		}
+		CFRelease(url);
+		CFRelease(url2);
+	}
+
+}
+
+- (void) applicationWillTerminate: (NSNotification *) note
+{
+}
+
+- (void) applicationWillResignActive:(NSNotification *) note
+{
+}
+
+- (void) applicationWillBecomeActive:(NSNotification *) note
+{
+}
+
+// Called after the internal event loop has started running.
+- (void) applicationDidFinishLaunching: (NSNotification *) note
+{
+    // Set the working directory to the .app's parent directory
+    [self setupWorkingDirectory:gFinderLaunch];
+
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(workspaceDidWakeNotification:)
+      name:NSWorkspaceDidWakeNotification
+      object:nil];
+      
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(workspaceWillSleepNotification:)
+      name:NSWorkspaceWillSleepNotification
+      object:nil];
+      
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(deviceDidMountNotification:)
+      name:NSWorkspaceDidMountNotification
+      object:nil];
+
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(deviceDidUnMountNotification:)
+      name:NSWorkspaceDidUnmountNotification
+      object:nil];
+		
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(windowDidMoveNotification:)
+      name:NSWindowDidMoveNotification
+      object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(windowDidReSizeNotification:)
+      name:NSWindowDidResizeNotification
+      object:nil];
+      
+    // We're going to manually manage the screensaver.
+    setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
+
+    // Hand off to main application code
+    gCalledAppMainline = TRUE;
+
+    // stop the main loop so we return to main (below) and can
+    // call SDL_main there.
+    [NSApp stop:nil];
+}
 
 /*
  * Catch document open requests...this lets us notice files when the app
@@ -225,10 +302,12 @@ static void setupWindowMenu(void)
     char *arg;
     char **newargv;
 
-    if (!gFinderLaunch)  /* MacOS is passing command line args. */
+    // MacOS is passing command line args.
+    if (!gFinderLaunch)
         return FALSE;
 
-    if (gCalledAppMainline)  /* app has started, ignore this document. */
+    // app has started, ignore this document.
+    if (gCalledAppMainline)
         return FALSE;
 
     temparg = [filename UTF8String];
@@ -251,83 +330,7 @@ static void setupWindowMenu(void)
     return TRUE;
 }
 
-/* Set the working directory to the .app's parent directory */
-- (void) setupWorkingDirectory:(BOOL)shouldChdir
-{
-    if (shouldChdir)
-    {
-        char parentdir[MAXPATHLEN];
-        CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-        CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-        if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN)) {
-            assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
-		}
-		CFRelease(url);
-		CFRelease(url2);
-	}
-
-}
-
-// Called after the internal event loop has started running.
-- (void) applicationDidFinishLaunching: (NSNotification *) note
-{
-    /* Set the working directory to the .app's parent directory */
-    [self setupWorkingDirectory:gFinderLaunch];
-
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
-      selector:@selector(workspaceDidWake:)
-      name:NSWorkspaceDidWakeNotification
-      object:nil];
-      
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
-      selector:@selector(workspaceWillSleep:)
-      name:NSWorkspaceWillSleepNotification
-      object:nil];
-      
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
-      selector:@selector(deviceDidMount:)
-      name:NSWorkspaceDidMountNotification
-      object:nil];
-
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
-      selector:@selector(deviceDidUnMount:)
-      name:NSWorkspaceDidUnmountNotification
-      object:nil];
-		
-    [[NSNotificationCenter defaultCenter] addObserver:self
-      selector:@selector(windowDidMove:)
-      name:NSWindowDidMoveNotification
-      object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-      selector:@selector(windowDidReSize:)
-      name:NSWindowDidResizeNotification
-      object:nil];
-      
-    // We're going to manually manage the screensaver.
-    setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
-
-    // Hand off to main application code
-    gCalledAppMainline = TRUE;
-
-    // stop the main loop so we return to main (below) and can
-    // call SDL_main there.
-    [NSApp stop:nil];
-}
-
-- (void) applicationWillTerminate: (NSNotification *) note
-{
-}
-
-- (void) applicationWillResignActive:(NSNotification *) note
-{
-}
-
-- (void) applicationWillBecomeActive:(NSNotification *) note
-{
-}
-
-- (void) workspaceDidWake:(NSNotification *) note
+- (void) workspaceDidWakeNotification:(NSNotification *) note
 {
   if (g_Windowing.IsFullScreen())
   {
@@ -363,20 +366,11 @@ static void setupWindowMenu(void)
   }
 }
 
-- (void) workspaceWillSleep:(NSNotification *) note
+- (void) workspaceWillSleepNotification:(NSNotification *) note
 {
 }
 
-- (void) deviceDidMount:(NSNotification *) note 
-{
-  // calling into c++ code, need to use autorelease pools
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-  CDarwinStorageProvider::SetEvent();
-  [pool release];
-}
-
-- (void) deviceDidUnMount:(NSNotification *) note 
+- (void) deviceDidMountNotification:(NSNotification *) note 
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -385,12 +379,21 @@ static void setupWindowMenu(void)
   [pool release];
 }
 
-- (void) windowDidMove:(NSNotification*) note
+- (void) deviceDidUnMountNotification:(NSNotification *) note 
+{
+  // calling into c++ code, need to use autorelease pools
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+  CDarwinStorageProvider::SetEvent();
+  [pool release];
+}
+
+- (void) windowDidMoveNotification:(NSNotification*) note
 {
   Cocoa_CVDisplayLinkUpdate();
 }
 
-- (void) windowDidReSize:(NSNotification*) note
+- (void) windowDidReSizeNotification:(NSNotification*) note
 {
   /* 
   // SDL_PushEvent is not working but
@@ -421,7 +424,7 @@ static void setupWindowMenu(void)
 int main(int argc, char *argv[])
 {
     NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-    SDLMain				*sdlMain;
+    XBMCDelegate			*xbmc_delegate;
 
     // Block SIGPIPE
     // SIGPIPE repeatably kills us, turn it off
@@ -449,8 +452,8 @@ int main(int argc, char *argv[])
         gFinderLaunch = NO;
     }
 
-    /* Ensure the application object is initialised */
-    [SDLApplication sharedApplication];
+    // Ensure the application object is initialised
+    [XBMCApplication sharedApplication];
     
 #ifdef SDL_USE_CPS
     {
@@ -459,28 +462,28 @@ int main(int argc, char *argv[])
         if (!CPSGetCurrentProcess(&PSN))
             if (!CPSEnableForegroundOperation(&PSN,0x03,0x3C,0x2C,0x1103))
                 if (!CPSSetFrontProcess(&PSN))
-                    [SDLApplication sharedApplication];
+                    [XBMCApplication sharedApplication];
     }
-#endif /* SDL_USE_CPS */
+#endif
 
-    /* Set up the menubar */
+    // Set up the menubars
     [NSApp setMainMenu:[[NSMenu alloc] init]];
-    setApplicationMenu();
+    setupApplicationMenu();
     setupWindowMenu();
 
-    /* Create SDLMain and make it the app delegate */
-    sdlMain = [[SDLMain alloc] init];
-    [NSApp setDelegate:sdlMain];
+    // Create XBMCDelegate and make it the app delegate
+    xbmc_delegate = [[XBMCDelegate alloc] init];
+    [NSApp setDelegate:xbmc_delegate];
 
-    /* Start the main event loop */
+    // Start the main event loop
     [NSApp run];
 
-    // call SDLMain which calls our real main (xbmc.cpp)
-    // we never return from here as quiting xbmc will call exit().
+    // call SDL_main which calls our real main in xbmc.cpp
+    // we never return from here as quiting xbmc will call exit() directly.
     // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
     SDL_main(gArgc, gArgv);
     
-    [sdlMain release];
+    [xbmc_delegate release];
     [pool release];
     return 0;
 }

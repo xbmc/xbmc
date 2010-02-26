@@ -79,7 +79,7 @@ CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
 
 bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       Close();
@@ -87,7 +87,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
       GoParentFolder();
     return true;
   }
-  if ((action.actionId == ACTION_CONTEXT_MENU || action.actionId == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
+  if ((action.GetID() == ACTION_CONTEXT_MENU || action.GetID() == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
   {
     int iItem = m_viewControl.GetSelectedItem();
     if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems->Size()-1))
@@ -442,7 +442,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     m_thumbLoader.Load(*m_vecItems);
 }
 
-void CGUIDialogFileBrowser::Render()
+void CGUIDialogFileBrowser::FrameMove()
 {
   int item = m_viewControl.GetSelectedItem();
   if (item >= 0)
@@ -489,7 +489,7 @@ void CGUIDialogFileBrowser::Render()
       CONTROL_DISABLE(CONTROL_FLIP);
     }
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogFileBrowser::OnClick(int iItem)

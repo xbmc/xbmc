@@ -402,9 +402,9 @@ extern "C"
     // or the python DLLs have malformed slashes on Win32 & Xbox
     // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
+      bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(CURL::ValidatePath(str));
+      bResult = pFile->Open(CUtil::ValidatePath(str));
 
     if (bResult)
     {
@@ -694,7 +694,7 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst64i32(_P(CURL::ValidatePath(str)), data);
+      return _findfirst64i32(CUtil::ValidatePath(_P(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -822,7 +822,7 @@ extern "C"
     CURL url(_P(file));
     if (url.IsLocal())
     { // Make sure the slashes are correct & translate the path
-      return opendir(CURL::ValidatePath(file));
+      return opendir(CUtil::ValidatePath(file));
     }
 
     // locate next free directory
@@ -1739,7 +1739,7 @@ extern "C"
     if (!dir) return -1;
 
     // Make sure the slashes are correct & translate the path
-    CStdString strPath = _P(CURL::ValidatePath(dir));
+    CStdString strPath = CUtil::ValidatePath(_P(dir));
 #ifndef _LINUX
     CStdStringW strWPath;
     g_charsetConverter.utf8ToW(strPath, strWPath, false);

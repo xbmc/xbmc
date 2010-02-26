@@ -143,7 +143,7 @@ public:
   static void RemoveSlashAtEnd(CStdString& strFolder);
   static void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   static void CreateArchivePath(CStdString& strUrlPath, const CStdString& strType, const CStdString& strArchivePath,
-    const CStdString& strFilePathInArchive, const CStdString& strPwd="");
+  const CStdString& strFilePathInArchive, const CStdString& strPwd="");
   static bool ThumbExists(const CStdString& strFileName, bool bAddCache = false);
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
@@ -167,7 +167,8 @@ public:
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
-
+  static CStdString ValidatePath(const CStdString &path); ///< return a validated path, with correct directory separators.
+  
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);

@@ -77,7 +77,7 @@ bool CImageLoader::DoWork()
       delete m_texture;
       m_texture = NULL;
     }
-    else
+    else if (CTimeUtils::GetTimeMS() - start > 100)
       CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, m_path.c_str());
   }
 

@@ -391,7 +391,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
 }
 
-void CGUIDialogAudioSubtitleSettings::Render()
+void CGUIDialogAudioSubtitleSettings::FrameMove()
 {
   m_volume = g_settings.m_nVolumeLevel * 0.01f;
   UpdateSetting(AUDIO_SETTINGS_VOLUME);
@@ -402,7 +402,7 @@ void CGUIDialogAudioSubtitleSettings::Render()
     UpdateSetting(SUBTITLE_SETTINGS_ENABLE);
     UpdateSetting(SUBTITLE_SETTINGS_DELAY);
   }
-  CGUIDialogSettings::Render();
+  CGUIDialogSettings::FrameMove();
 }
 
 CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)

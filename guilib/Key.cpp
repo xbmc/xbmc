@@ -163,3 +163,86 @@ unsigned int CKey::GetHeld() const
   return m_held;
 }
 
+CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const CStdString &name /* = "" */)
+{
+  m_id = actionID;
+  m_amount[0] = amount1;
+  m_amount[1] = amount2;
+  for (unsigned int i = 2; i < max_amounts; i++)
+    m_amount[i] = 0;  
+  m_name = name;
+  m_repeat = 0;
+  m_buttonCode = 0;
+  m_unicode = 0;
+  m_holdTime = 0;
+}
+
+CAction::CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY)
+{
+  m_id = actionID;
+  m_amount[0] = posX;
+  m_amount[1] = posY;
+  m_amount[2] = offsetX;
+  m_amount[3] = offsetY;
+  for (unsigned int i = 4; i < max_amounts; i++)
+    m_amount[i] = 0;  
+  m_repeat = 0;
+  m_buttonCode = 0;
+  m_unicode = 0;
+  m_holdTime = state;
+}
+
+CAction::CAction(int actionID, wchar_t unicode)
+{
+  m_id = actionID;
+  for (unsigned int i = 0; i < max_amounts; i++)
+    m_amount[i] = 0;  
+  m_repeat = 0;
+  m_buttonCode = 0;
+  m_unicode = unicode;
+  m_holdTime = 0;
+}
+
+CAction::CAction(int actionID, const CStdString &name, const CKey &key)
+{
+  m_id = actionID;
+  m_name = name;
+  m_amount[0] = 1; // digital button (could change this for repeat acceleration)
+  for (unsigned int i = 1; i < max_amounts; i++)
+    m_amount[i] = 0;
+  m_repeat = key.GetRepeat();
+  m_buttonCode = key.GetButtonCode();
+  m_unicode = 0;
+  m_holdTime = key.GetHeld();
+  // get the action amounts of the analog buttons
+  if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
+    m_amount[0] = (float)key.GetLeftTrigger() / 255.0f;
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
+    m_amount[0] = (float)key.GetRightTrigger() / 255.0f;
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
+  {
+    m_amount[0] = key.GetLeftThumbX();
+    m_amount[1] = key.GetLeftThumbY();
+  }
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK)
+  {
+    m_amount[0] = key.GetRightThumbX();
+    m_amount[1] = key.GetRightThumbY();
+  }
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP)
+    m_amount[0] = key.GetLeftThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
+    m_amount[0] = -key.GetLeftThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
+    m_amount[0] = -key.GetLeftThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
+    m_amount[0] = key.GetLeftThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
+    m_amount[0] = key.GetRightThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
+    m_amount[0] = -key.GetRightThumbY();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
+    m_amount[0] = -key.GetRightThumbX();
+  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
+    m_amount[0] = key.GetRightThumbX();
+}

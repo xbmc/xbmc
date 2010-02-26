@@ -79,6 +79,7 @@ public:
 
   virtual void UpdateColors();
 protected:
+  friend class CGUISpinControlEx;
   virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   void OnFocus();
   void OnUnFocus();

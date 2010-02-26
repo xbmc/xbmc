@@ -78,7 +78,7 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekBackward = -2;
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
-  m_videoBlackBarColour = 1;
+  m_videoBlackBarColour = 0;
   m_videoPPFFmpegType = "linblenddeint";
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
@@ -110,6 +110,7 @@ void CAdvancedSettings::Initialize()
   m_lcdAddress3 = 0x14;
   m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
+  m_lcdDimOnScreenSave = false;
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
@@ -455,6 +456,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "address3", m_lcdAddress3, 0, 0x100);
     XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
+    XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
     XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
@@ -710,6 +712,29 @@ bool CAdvancedSettings::Load()
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
+
+  TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
+  if (pDatabase)
+  {
+    CLog::Log(LOGWARNING, "VIDEO database configuration is experimental.");
+    XMLUtils::GetString(pDatabase, "type", m_databaseVideo.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseVideo.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseVideo.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseVideo.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseVideo.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseVideo.name);
+  }
+
+  pDatabase = pRootElement->FirstChildElement("musicdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseMusic.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseMusic.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseMusic.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+  }
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in

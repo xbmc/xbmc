@@ -335,7 +335,6 @@ bool CEventServer::ExecuteNextAction()
   EnterCriticalSection(&m_critSection);
 
   CEventAction actionEvent;
-  CAction action;
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
 
   while (iter != m_clients.end())
@@ -351,13 +350,13 @@ bool CEventServer::ExecuteNextAction()
         break;
 
       case AT_BUTTON:
-        CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), action.actionId);
-        action.strAction = actionEvent.actionName;
-        action.repeat  = 0.0f;
-        action.amount1 = 1.0f;
-        action.amount2 = 1.0f;
-        g_audioManager.PlayActionSound(action);
-        g_application.OnAction(action);
+        {
+          int actionID;
+          CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), actionID);
+          CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
+          g_audioManager.PlayActionSound(action);
+          g_application.OnAction(action);
+        }
         break;
       }
       return true;

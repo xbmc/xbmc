@@ -22,20 +22,24 @@
  */
 
 #include "StdString.h"
+#include "lib/sqLite/mysqldataset.h"
 #include "lib/sqLite/sqlitedataset.h"
 
 #include <memory>
+
+struct DatabaseSettings; // forward
 
 class CDatabase
 {
 public:
   CDatabase(void);
   virtual ~CDatabase(void);
-  bool Open();
   bool IsOpen();
   void Close();
   bool Compress(bool bForce=true);
   void Interupt();
+
+  bool Open(DatabaseSettings &db);
 
   void BeginTransaction();
   virtual bool CommitTransaction();
@@ -47,15 +51,16 @@ protected:
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   uint32_t ComputeCRC(const CStdString &text);
 
+  virtual bool Open();
   virtual bool CreateTables();
-  virtual bool UpdateOldVersion(int version);
+  virtual bool UpdateOldVersion(int version) { return true; };
+
+  virtual int GetMinVersion() const=0;
+  virtual const char *GetDefaultDBName() const=0;
 
   bool m_bOpen;
-  int m_version;
-//#ifdef PRE_2_1_DATABASE_COMPATIBILITY
-  float m_preV2version;
-//#endif
-  CStdString m_strDatabaseFile;
+  bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
+
   std::auto_ptr<dbiplus::Database> m_pDB;
   std::auto_ptr<dbiplus::Dataset> m_pDS;
   std::auto_ptr<dbiplus::Dataset> m_pDS2;

@@ -146,16 +146,14 @@ public:
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
-  void RenderFullScreen();
-  bool NeedRenderFullScreen();
   bool IsPlaying() const;
   bool IsPaused() const;
   bool IsPlayingAudio() const;
   bool IsPlayingVideo() const;
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
-  bool OnKey(CKey& key);
-  bool OnAction(CAction &action);
+  bool OnKey(const CKey& key);
+  bool OnAction(const CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
   // Checks whether the screensaver and / or DPMS should become active.

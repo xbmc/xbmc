@@ -79,6 +79,7 @@ void CGUILabel::Render()
   else
   {
     float posX = m_renderRect.x1;
+    float posY = m_renderRect.y1;
     uint32_t align = 0;
     if (!overFlows)
     { // hack for right and centered multiline text, as GUITextLayout::Render() treats posX as the right hand
@@ -89,9 +90,13 @@ void CGUILabel::Render()
         posX += m_renderRect.Width();
       else if (m_label.align & XBFONT_CENTER_X)
         posX += m_renderRect.Width() * 0.5f;
-      align = m_label.align & ~XBFONT_CENTER_Y;  // ignore vertical alignment
+      if (m_label.align & XBFONT_CENTER_Y) // need to pass a centered Y so that <angle> will rotate around the correct point.
+        posY += m_renderRect.Height() * 0.5f;
+      align = m_label.align;
     }
-    m_textLayout.Render(posX, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, align, m_renderRect.Width(), renderSolid);
+    else
+      align |= XBFONT_TRUNCATED;
+    m_textLayout.Render(posX, posY, m_label.angle, color, m_label.shadowColor, align, m_renderRect.Width(), renderSolid);
   }
 }
 
@@ -107,7 +112,7 @@ void CGUILabel::UpdateColors()
 
 void CGUILabel::SetMaxRect(float x, float y, float w, float h)
 {
-  m_maxRect.SetRect(x + m_label.offsetX, y + m_label.offsetY, x + w - m_label.offsetX, y + h - m_label.offsetY);
+  m_maxRect.SetRect(x, y, x + w, y + h);
   UpdateRenderRect();
 }
 
@@ -140,17 +145,48 @@ void CGUILabel::UpdateRenderRect()
   // recalculate our text layout
   float width, height;
   m_textLayout.GetTextExtent(width, height);
-  width = std::min(width, m_maxRect.Width());
+  width = std::min(width, GetMaxWidth());
   if (m_label.align & XBFONT_CENTER_Y)
     m_renderRect.y1 = m_maxRect.y1 + (m_maxRect.Height() - height) * 0.5f;
   else
-    m_renderRect.y1 = m_maxRect.y1;
+    m_renderRect.y1 = m_maxRect.y1 + m_label.offsetY;
   if (m_label.align & XBFONT_RIGHT)
-    m_renderRect.x1 = m_maxRect.x2 - width;
+    m_renderRect.x1 = m_maxRect.x2 - width - m_label.offsetX;
   else if (m_label.align & XBFONT_CENTER_X)
     m_renderRect.x1 = m_maxRect.x1 + (m_maxRect.Width() - width) * 0.5f;
   else
-    m_renderRect.x1 = m_maxRect.x1;
+    m_renderRect.x1 = m_maxRect.x1 + m_label.offsetX;
   m_renderRect.x2 = m_renderRect.x1 + width;
   m_renderRect.y2 = m_renderRect.y1 + height;
+}
+
+float CGUILabel::GetMaxWidth() const
+{
+  if (m_label.width) return m_label.width;
+  return m_maxRect.Width() - 2*m_label.offsetX;
+}
+
+void CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
+{
+  CRect rect(label1.m_renderRect);
+  if (rect.Intersect(label2.m_renderRect).IsEmpty())
+    return; // nothing to do (though it could potentially encroach on the min_space requirement)
+  
+  static const float min_space = 10;
+  // overlap vertically and horizontally - check alignment
+  CGUILabel &left = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label1 : label2;
+  CGUILabel &right = label1.m_renderRect.x1 <= label2.m_renderRect.x1 ? label2 : label1;
+  if ((left.m_label.align & 3) == 0 && right.m_label.align & XBFONT_RIGHT)
+  {
+    float chopPoint = (left.m_maxRect.x1 + left.GetMaxWidth() + right.m_maxRect.x2 - right.GetMaxWidth()) * 0.5f;
+    // [1       [2...[2  1].|..........1]         2]
+    // [1       [2.....[2   |      1]..1]         2]
+    // [1       [2..........|.[2   1]..1]         2]
+    if (right.m_renderRect.x1 > chopPoint)
+      chopPoint = right.m_renderRect.x1 - min_space;
+    else if (left.m_renderRect.x2 < chopPoint)
+      chopPoint = left.m_renderRect.x2 + min_space;
+    left.m_renderRect.x2 = chopPoint - min_space;
+    right.m_renderRect.x1 = chopPoint + min_space;
+  }
 }

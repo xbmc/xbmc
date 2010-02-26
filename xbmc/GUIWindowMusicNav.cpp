@@ -75,13 +75,11 @@ CGUIWindowMusicNav::CGUIWindowMusicNav(void)
   m_vecItems->m_strPath = "?";
   m_bDisplayEmptyDatabaseMessage = false;
   m_thumbLoader.SetObserver(this);
-  m_unfilteredItems = new CFileItemList;
   m_searchWithEdit = false;
 }
 
 CGUIWindowMusicNav::~CGUIWindowMusicNav(void)
 {
-  delete m_unfilteredItems;
 }
 
 bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
@@ -216,29 +214,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         OnManualAlbumInfo();
         return true;
       }
-      else if (iControl == CONTROL_BTN_FILTER)
-      {
-        if (GetControl(iControl)->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-        { // filter updated
-          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
-          OnMessage(selected);
-          SetProperty("filter", selected.GetLabel());
-          OnFilterItems();
-          return true;
-        }
-        if (GetProperty("filter").IsEmpty())
-        {
-          CStdString filter = GetProperty("filter");
-          CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
-          SetProperty("filter", filter);
-        }
-        else
-        {
-          SetProperty("filter", "");
-          OnFilterItems();
-        }
-        return true;
-      }
       else if (iControl == CONTROL_SEARCH)
       {
         if (m_searchWithEdit)
@@ -268,22 +243,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_NOTIFY_ALL:
     {
-      if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
-      {
-        CStdString filter(GetProperty("filter"));
-        if (message.GetParam2() == 1) // append
-          filter += message.GetStringParam();
-        else if (message.GetParam2() == 2)
-        { // delete
-          if (filter.size())
-            filter = filter.Left(filter.size() - 1);
-        }
-        else
-          filter = message.GetStringParam();
-        SetProperty("filter", filter);
-        OnFilterItems();
-        return true;
-      }
       if (message.GetParam1() == GUI_MSG_SEARCH_UPDATE && IsActive())
       {
         // search updated - reset timer
@@ -297,7 +256,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::OnAction(const CAction& action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
@@ -305,7 +264,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
       return true;
     }
   }
-  if (action.actionId == ACTION_SCAN_ITEM)
+  if (action.GetID() == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
     CMusicDatabaseDirectory dir;
@@ -438,9 +397,6 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   else if (items.IsPlayList())
     items.SetContent("songs");
 
-  // clear the filter
-  SetProperty("filter", "");
-
   return bResult;
 }
 
@@ -492,11 +448,6 @@ void CGUIWindowMusicNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
-
-//#ifdef PRE_SKIN_VERSION_3
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").IsEmpty());
-  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter"));
-//#endif
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
@@ -517,7 +468,6 @@ void CGUIWindowMusicNav::OnWindowLoaded()
   const CGUIControl *control = GetControl(CONTROL_SEARCH);
   m_searchWithEdit = (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT);
 
-  SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindowMusicBase::OnWindowLoaded();
 
   if (m_searchWithEdit)
@@ -944,7 +894,7 @@ void CGUIWindowMusicNav::OnSearchUpdate()
   }
 }
 
-void CGUIWindowMusicNav::Render()
+void CGUIWindowMusicNav::FrameMove()
 {
   static const int search_timeout = 2000;
   // update our searching
@@ -957,73 +907,7 @@ void CGUIWindowMusicNav::Render()
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
   else
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
-  CGUIWindowMusicBase::Render();
-}
-
-void CGUIWindowMusicNav::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems->Clear();
-  m_unfilteredItems->Clear();
-}
-
-void CGUIWindowMusicNav::OnFilterItems()
-{
-  CStdString currentItem;
-  int item = m_viewControl.GetSelectedItem();
-  if (item >= 0)
-    currentItem = m_vecItems->Get(item)->m_strPath;
-
-  m_viewControl.Clear();
-
-  FilterItems(*m_vecItems);
-
-  // and update our view control + buttons
-  m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(currentItem);
-  UpdateButtons();
-}
-
-void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
-{
-  if (m_vecItems->IsVirtualDirectoryRoot())
-    return;
-
-  items.ClearItems();
-
-  CStdString filter(GetProperty("filter"));
-  filter.TrimLeft().ToLower();
-  bool numericMatch = StringUtils::IsNaturalNumber(filter);
-
-  for (int i = 0; i < m_unfilteredItems->Size(); i++)
-  {
-    CFileItemPtr item = m_unfilteredItems->Get(i);
-    if (item->IsParentFolder() || filter.IsEmpty() ||
-        CMusicDatabaseDirectory::IsAllItem(item->m_strPath))
-    {
-      items.Add(item);
-      continue;
-    }
-    // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
-    // though that isn't practical.  Perhaps a better idea would be to just grab the info that we should filter on based on
-    // where we are in the library tree.
-    // Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
-    // but it's re-enabled on the way back out.
-    CStdString match;
-/*    if (item->GetFocusedLayout())
-      match = item->GetFocusedLayout()->GetAllText();
-    else if (item->GetLayout())
-      match = item->GetLayout()->GetAllText();
-    else*/
-    match = item->GetLabel();
-
-    if (numericMatch)
-      StringUtils::WordToDigits(match);
-    size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
-
-    if (pos != CStdString::npos)
-      items.Add(item);
-  }
+  CGUIWindowMusicBase::FrameMove();
 }
 
 void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
@@ -1033,21 +917,17 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
   SetupFanart(items);
 }
 
-void CGUIWindowMusicNav::OnFinalizeFileItems(CFileItemList &items)
-{
-  CGUIMediaWindow::OnFinalizeFileItems(items);
-  m_unfilteredItems->Append(items);
-  // now filter as necessary
-  if (!GetProperty("filter").IsEmpty())
-    FilterItems(items);
-}
-
 void CGUIWindowMusicNav::AddSearchFolder()
 {
-  if (m_guiState.get())
+  // we use a general viewstate (and not our member) here as our
+  // current viewstate may be specific to some other folder, and
+  // we know we're in the root here
+  CFileItemList items;
+  CGUIViewState* viewState = CGUIViewState::GetViewState(GetID(), items);
+  if (viewState)
   {
     // add our remove the musicsearch source
-    VECSOURCES &sources = m_guiState->GetSources();
+    VECSOURCES &sources = viewState->GetSources();
     bool haveSearchSource = false;
     bool needSearchSource = !GetProperty("search").IsEmpty() || !m_searchWithEdit; // we always need it if we don't have the edit control
     for (IVECSOURCES it = sources.begin(); it != sources.end(); ++it)
@@ -1073,5 +953,6 @@ void CGUIWindowMusicNav::AddSearchFolder()
       sources.push_back(share);
     }
     m_rootDir.SetSources(sources);
+    delete viewState;
   }
 }

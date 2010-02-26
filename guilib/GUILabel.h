@@ -92,9 +92,8 @@ public:
   void Render();
   
   /*! \brief Set the maximal extent of the label
-   Sets the maximal size and positioning that the label may render in. Note that any offsets will be computed and applied immediately
-   so that subsequent calls to GetMaxRect() may not return the same values.
-   \sa GetMaxRect
+   Sets the maximal size and positioning that the label may render in.  Note that <textwidth> can override
+   this, and <textoffsetx> and <textoffsety> may also allow the label to be moved outside this rectangle.
    */
   void SetMaxRect(float x, float y, float w, float h);
 
@@ -153,12 +152,12 @@ public:
    */
   float GetTextWidth() const { return m_textLayout.GetTextWidth(); };
   
-  /*! \brief Returns the maximal text rect that this label can render into
-   \return CRect containing the maximal rectangle that this label can render into.  May differ from
-           the sizing given in SetMaxRect as offsets have been applied.
+  /*! \brief Returns the maximal width that this label can render into
+   \return Maximal width that this label can render into. Note that this may differ from the
+           amount given in SetMaxRect as offsets and text width overrides have been taken into account.
    \sa SetMaxRect
    */
-  const CRect &GetMaxRect() const { return m_maxRect; };
+  float GetMaxWidth() const;
   
   /*! \brief Calculates the width of some text
    \param text CStdStringW of text whose width we want
@@ -169,6 +168,29 @@ public:
 
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   CLabelInfo &GetLabelInfo() { return m_label; };
+
+  /*! \brief Check a left aligned and right aligned label for overlap and cut the labels off so that no overlap occurs
+   
+   If a left-aligned label occupies some of the same space on screen as a right-aligned label, then we may be able to
+   correct for this by restricting the width of one or both of them. This routine checks two labels to see whether they
+   satisfy this assumption and, if so, adjusts the render rect of both labels so that they no longer do so.  The order
+   of the two labels is not important, but we do assume that the left-aligned label is also the left-most on screen, and
+   that the right-aligned label is the right most on-screen, so that they overlap due to the fact that one or both of
+   the labels are longer than anticipated.  In the following diagram, [R...[R  R] refers to the maximal allowed and
+   actual space occupied by the right label.  Similarly, [L   L]...L] refers to the maximal and actual space occupied
+   by the left label.  | refers to the central cutting point, i.e. the point that would divide the maximal allowed
+   overlap perfectly in two.  There are 3 scenarios to consider:
+   
+   cut
+   [L       [R...[R  L].|..........L]         R]     left label ends to the left of the cut -> just crop the left label.
+   [L       [R.....[R   |      L]..L]         R]     both left and right labels occupy more than the cut allows, so crop both.
+   [L       [R..........|.[R   L]..L]         R]     right label ends to the right of the cut -> just crop the right label.
+   
+   \param label1 First label to check
+   \param label2 Second label to check
+   */
+  static void CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
+  
 protected:
   color_t GetColor() const;
   

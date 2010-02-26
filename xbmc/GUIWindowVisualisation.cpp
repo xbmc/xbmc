@@ -52,7 +52,7 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
   VIS_ACTION visAction = VIS_ACTION_NONE;
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_VIS_PRESET_NEXT:
     visAction = VIS_ACTION_NEXT_PRESET; break;
@@ -115,10 +115,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
     case ACTION_ANALOG_FORWARD:
     // calculate the speed based on the amount the button is held down
-    if (action.amount1)
+    if (action.GetAmount())
     {
       float AVDelay = g_application.m_CdgParser.GetAVDelay();
-      g_application.m_CdgParser.SetAVDelay(AVDelay - action.amount1 / 4.0f);
+      g_application.m_CdgParser.SetAVDelay(AVDelay - action.GetAmount() / 4.0f);
       return true;
     }
     break;*/
@@ -207,18 +207,14 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
-    CAction action;
-    action.actionId = ACTION_SHOW_GUI;
-    OnAction(action);
+    OnAction(CAction(ACTION_SHOW_GUI));
     return true;
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // no control found to absorb this click - toggle the track INFO
-    CAction action;
-    action.actionId = ACTION_PAUSE;
-    return g_application.OnAction(action);
+    return g_application.OnAction(CAction(ACTION_PAUSE));
   }
-  if (event.m_id || event.m_offsetX || event.m_offsetY)
+  if (event.m_id != ACTION_MOUSE_MOVE || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD
     CGUIDialog *pOSD = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_OSD);
     if (pOSD)
@@ -231,7 +227,7 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
   return false;
 }
 
-void CGUIWindowVisualisation::Render()
+void CGUIWindowVisualisation::FrameMove()
 {
   g_application.ResetScreenSaver(); //why here?
   // check for a tag change
@@ -258,5 +254,5 @@ void CGUIWindowVisualisation::Render()
     if (!m_lockedTimer && !m_bShowPreset)
       g_infoManager.SetShowCodec(false);
   }
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }

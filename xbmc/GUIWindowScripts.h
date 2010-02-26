@@ -30,7 +30,7 @@ public:
   virtual ~CGUIWindowScripts(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
 
 protected:
   virtual bool Update(const CStdString &strDirectory);

@@ -39,7 +39,6 @@
 #include "utils/TimeUtils.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
-#include "MouseStat.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -336,8 +335,8 @@ void CGUIWindow::Close(bool forceClose)
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_MOUSE)
-    return OnMouseAction();
+  if (action.IsMouse())
+    return OnMouseAction(action);
 
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
@@ -364,27 +363,14 @@ CPoint CGUIWindow::GetPosition() const
 }
 
 // OnMouseAction - called by OnAction()
-bool CGUIWindow::OnMouseAction()
+bool CGUIWindow::OnMouseAction(const CAction &action)
 {
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
-  CPoint mousePoint(g_Mouse.GetLocation());
+  CPoint mousePoint(action.GetAmount(0), action.GetAmount(1));
   g_graphicsContext.InvertFinalCoords(mousePoint.x, mousePoint.y);
 
   // create the mouse event
-  CMouseEvent event(0, 0, 0, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y); // mouse move only
-  if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
-    event = CMouseEvent(ACTION_MOUSE_LEFT_CLICK);
-  else if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
-    event = CMouseEvent(ACTION_MOUSE_RIGHT_CLICK);
-  else if (g_Mouse.bClick[MOUSE_MIDDLE_BUTTON])
-    event = CMouseEvent(ACTION_MOUSE_MIDDLE_CLICK);
-  else if (g_Mouse.bDoubleClick[MOUSE_LEFT_BUTTON])
-    event = CMouseEvent(ACTION_MOUSE_DOUBLE_CLICK);
-  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON])
-    event = CMouseEvent(ACTION_MOUSE_DRAG, g_Mouse.bHold[MOUSE_LEFT_BUTTON], 0, g_Mouse.GetLastMove().x, g_Mouse.GetLastMove().y);
-  else if (g_Mouse.GetWheel())
-    event = CMouseEvent(ACTION_MOUSE_WHEEL, 0, g_Mouse.GetWheel());
-
+  CMouseEvent event(action.GetID(), action.GetHoldTime(), action.GetAmount(2), action.GetAmount(3));
   if (m_exclusiveMouseControl)
   {
     CGUIControl *child = (CGUIControl *)GetControl(m_exclusiveMouseControl);
@@ -404,9 +390,7 @@ bool CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go to previous menu
-    CAction action;
-    action.actionId = ACTION_PREVIOUS_MENU;
-    return OnAction(action);
+    return OnAction(CAction(ACTION_PREVIOUS_MENU));
   }
   return false;
 }

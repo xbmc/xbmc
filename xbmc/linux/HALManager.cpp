@@ -295,6 +295,7 @@ bool CHALManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);
+      device->HalIgnore   = libhal_device_get_property_bool(g_HalManager.m_Context, udi, "volume.ignore", NULL);
       ApproveDevice(device);
 
       libhal_drive_free(tempDrive);
@@ -619,6 +620,9 @@ bool CHALManager::ApproveDevice(CStorageDevice *device)
   if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0 || strcmp(device->MountPoint, "/mnt/") == 0 || strcmp(device->MountPoint, "/home/") == 0)
     approve = false;
 
+  if (device->HalIgnore)
+    approve = false;
+
   device->Approved = approve;
   return approve;
 }
@@ -708,20 +712,27 @@ bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
 
     if (volume->FileSystem.Equals("vfat"))
     {
-      temporaryString.Format("uid=%u", getuid());
-      s = temporaryString.c_str();
-      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-    }
-    s = "sync";
-    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-
-    if (volume->FileSystem.Equals("vfat"))
-    {
       int mask = umask (0);
       temporaryString.Format("umask=%#o", mask);
       s = temporaryString.c_str();
       dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      temporaryString.Format("uid=%u", getuid());
+      s = temporaryString.c_str();
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      s = "shortname=mixed";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      s = "utf8";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      // 'sync' option will slow down transfer speed significantly for FAT filesystems. We prefer 'flush' instead.
+      s = "flush";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
     }
+    else
+    {
+      s = "sync";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+    }
+
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)

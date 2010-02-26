@@ -352,7 +352,7 @@ bool CScrobbler::LoadJournal()
     m_vecSubmissionQueue.push_back(entry);
   }
 
-  CLog::Log(LOGDEBUG, "%s: Journal loaded with %d entries.", m_strLogPrefix.c_str(),
+  CLog::Log(LOGDEBUG, "%s: Journal loaded with %"PRIuS" entries.", m_strLogPrefix.c_str(),
       m_vecSubmissionQueue.size());
   return !m_vecSubmissionQueue.empty();
 }

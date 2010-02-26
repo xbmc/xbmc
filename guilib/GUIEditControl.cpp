@@ -98,7 +98,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  if (action.actionId == ACTION_BACKSPACE)
+  if (action.GetID() == ACTION_BACKSPACE)
   {
     // backspace
     if (m_cursorPos)
@@ -108,7 +108,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     }
     return true;
   }
-  else if (action.actionId == ACTION_MOVE_LEFT)
+  else if (action.GetID() == ACTION_MOVE_LEFT)
   {
     if (m_cursorPos > 0)
     {
@@ -117,7 +117,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.actionId == ACTION_MOVE_RIGHT)
+  else if (action.GetID() == ACTION_MOVE_RIGHT)
   {
     if ((unsigned int) m_cursorPos < m_text2.size())
     {
@@ -126,14 +126,14 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.actionId == ACTION_PASTE)
+  else if (action.GetID() == ACTION_PASTE)
   {
     OnPasteClipboard();
   }
-  else if (action.actionId >= KEY_VKEY && action.actionId < KEY_ASCII)
+  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
-    BYTE b = action.actionId & 0xFF;
+    BYTE b = action.GetID() & 0xFF;
     if (b == 0x24) // home
     {
       m_cursorPos = 0;
@@ -177,10 +177,10 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.actionId >= KEY_ASCII)
+  else if (action.GetID() >= KEY_ASCII)
   {
     // input from the keyboard
-    switch (action.unicode)
+    switch (action.GetUnicode())
     {
     case '\t':
       break;
@@ -206,22 +206,22 @@ bool CGUIEditControl::OnAction(const CAction &action)
       }
     default:
       {
-        m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.unicode);
+        m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
         break;
       }
     }
     UpdateText();
     return true;
   }
-  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
+  else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
   { // input from the remote
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
-      m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.actionId - REMOTE_0));
+      m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.GetID() - REMOTE_0));
       UpdateText();
     }
     else
-      OnSMSCharacter(action.actionId - REMOTE_0);
+      OnSMSCharacter(action.GetID() - REMOTE_0);
     return true;
   }
   return CGUIButtonControl::OnAction(action);
@@ -320,7 +320,7 @@ void CGUIEditControl::RecalcLabelPosition()
   float beforeCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos));
   float afterCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos) + L'|');
   float leftTextWidth = m_label.GetRenderRect().Width();
-  float maxTextWidth = m_label.GetMaxRect().Width();
+  float maxTextWidth = m_label.GetMaxWidth();
   if (leftTextWidth > 0)
     maxTextWidth -= leftTextWidth + spaceWidth;
 
@@ -363,8 +363,8 @@ void CGUIEditControl::RenderText()
   }
 
 
-  float posX = m_label.GetMaxRect().x1;
-  float maxTextWidth = m_label.GetMaxRect().Width();
+  float posX = m_label.GetRenderRect().x1;
+  float maxTextWidth = m_label.GetMaxWidth();
 
   // start by rendering the normal text
   float leftTextWidth = m_label.GetRenderRect().Width();
@@ -389,7 +389,7 @@ void CGUIEditControl::RenderText()
       }
       else
       { // align by whatever the skinner requests
-        align |= (m_label.GetLabelInfo().align & 3);
+        align |= (m_label2.GetLabelInfo().align & 3);
       }
     }
     CStdStringW text = GetDisplayedText();

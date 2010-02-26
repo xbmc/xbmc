@@ -365,7 +365,7 @@ int CJoystick::GetAxisWithMaxAmount()
       axis = i;
     }
   }
-  SetAxisActive((bool)maxAmount);
+  SetAxisActive(0 != maxAmount);
   return axis;
 }
 

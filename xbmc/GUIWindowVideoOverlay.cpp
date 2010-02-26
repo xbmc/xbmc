@@ -42,14 +42,14 @@ CGUIWindowVideoOverlay::CGUIWindowVideoOverlay()
 CGUIWindowVideoOverlay::~CGUIWindowVideoOverlay()
 {}
 
-void CGUIWindowVideoOverlay::Render()
+void CGUIWindowVideoOverlay::FrameMove()
 {
   if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
   { // close immediately
     Close(true);
     return;
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 bool CGUIWindowVideoOverlay::OnMouseEvent(const CPoint &point, const CMouseEvent &event)

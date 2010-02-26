@@ -458,7 +458,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     return true;
   }
 
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_SHOW_CODEC:
     {
@@ -541,10 +541,10 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_ZOOM_LEVEL_7:
   case ACTION_ZOOM_LEVEL_8:
   case ACTION_ZOOM_LEVEL_9:
-    Zoom((action.actionId - ACTION_ZOOM_LEVEL_NORMAL) + 1);
+    Zoom((action.GetID() - ACTION_ZOOM_LEVEL_NORMAL) + 1);
     break;
   case ACTION_ANALOG_MOVE:
-    Move(action.amount1*PICTURE_MOVE_AMOUNT_ANALOG, -action.amount2*PICTURE_MOVE_AMOUNT_ANALOG);
+    Move(action.GetAmount()*PICTURE_MOVE_AMOUNT_ANALOG, -action.GetAmount(1)*PICTURE_MOVE_AMOUNT_ANALOG);
     break;
   default:
     return CGUIWindow::OnAction(action);

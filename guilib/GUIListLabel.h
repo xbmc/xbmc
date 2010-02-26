@@ -47,14 +47,15 @@ public:
   virtual void SetFocus(bool focus);
   virtual void SetInvalid();
 
-  const CRect &GetRenderRect() const { return m_label.GetRenderRect(); };
-  void SetRenderRect(const CRect &rect) { m_label.SetRenderRect(rect); };
   void SetLabel(const CStdString &label);
   void SetSelected(bool selected);
   void SetScrolling(bool scrolling);
 
-  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
-
+  static void CheckAndCorrectOverlap(CGUIListLabel &label1, CGUIListLabel &label2)
+  {
+    CGUILabel::CheckAndCorrectOverlap(label1.m_label, label2.m_label);
+  }
+  
 protected:
   virtual void UpdateColors();
 

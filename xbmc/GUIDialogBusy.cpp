@@ -49,13 +49,3 @@ bool CGUIDialogBusy::OnMessage(CGUIMessage& message)
   }
   return CGUIDialog::OnMessage(message);
 }
-
-void CGUIDialogBusy::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-}
-
-void CGUIDialogBusy::Render()
-{
-  CGUIDialog::Render();
-}

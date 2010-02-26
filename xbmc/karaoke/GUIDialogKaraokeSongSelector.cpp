@@ -92,8 +92,8 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
 
 bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
 {
-  CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.actionId);
-  switch(action.actionId)
+  CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.GetID());
+  switch(action.GetID())
   {
     case REMOTE_0:
       OnButtonNumeric( 0 );
@@ -182,12 +182,12 @@ void CGUIDialogKaraokeSongSelector::UpdateData()
   m_updateData = false;
 }
 
-void CGUIDialogKaraokeSongSelector::Render()
+void CGUIDialogKaraokeSongSelector::FrameMove()
 {
   if ( m_updateData )
     UpdateData();
 
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 

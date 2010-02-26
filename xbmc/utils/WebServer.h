@@ -56,18 +56,23 @@ public:
 private:
   static int AskForAuthentication (struct MHD_Connection *connection);
   static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
+
+#if (MHD_VERSION >= 0x00040001)
+  static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
+  static int JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size);
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
                         size_t *upload_data_size, void **con_cls);
-
-#if (MHD_VERSION >= 0x00040001)
-  static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
 #else   //libmicrohttpd < 0.4.0
   static int ContentReaderCallback (void *cls, size_t pos, char *buf, int max);
+  static int JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, unsigned int *upload_data_size);
+  static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
+                        const char *url, const char *method,
+                        const char *version, const char *upload_data,
+                        unsigned int *upload_data_size, void **con_cls);
 #endif
   static void ContentReaderFreeCallback (void *cls);
-  static int JSONRPC(CWebServer *server, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size);
   static int HttpApi(struct MHD_Connection *connection);
 
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);

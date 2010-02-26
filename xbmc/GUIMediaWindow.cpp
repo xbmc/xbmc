@@ -54,10 +54,13 @@
 #include "FactoryFileDirectory.h"
 #include "utils/log.h"
 #include "utils/FileUtils.h"
+#include "GUIEditControl.h"
+#include "GUIDialogKeyboard.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
+#define CONTROL_BTN_FILTER        19
 
 #define CONTROL_LABELFILES        12
 
@@ -68,6 +71,7 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_vecItems = new CFileItemList;
+  m_unfilteredItems = new CFileItemList;
   m_vecItems->m_strPath = "?";
   m_iLastControl = -1;
   m_iSelectedItem = -1;
@@ -78,6 +82,7 @@ CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
 CGUIMediaWindow::~CGUIMediaWindow()
 {
   delete m_vecItems;
+  delete m_unfilteredItems;
 }
 
 #define CONTROL_VIEW_START        50
@@ -119,6 +124,7 @@ void CGUIMediaWindow::LoadAdditionalTags(TiXmlElement *root)
 
 void CGUIMediaWindow::OnWindowLoaded()
 {
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
   CGUIWindow::OnWindowLoaded();
   SetupShares();
 }
@@ -141,7 +147,7 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       g_windowManager.PreviousWindow();
@@ -150,14 +156,14 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
   }
 
   // the non-contextual menu can be called at any time
-  if (action.actionId == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.GetID() == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {
     OnPopupMenu(-1);
     return true;
@@ -167,7 +173,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
 
   // live filtering
-  if (action.actionId == ACTION_FILTER_CLEAR)
+  if (action.GetID() == ACTION_FILTER_CLEAR)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
     message.SetStringParam("");
@@ -175,17 +181,17 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.actionId == ACTION_BACKSPACE)
+  if (action.GetID() == ACTION_BACKSPACE)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
     OnMessage(message);
     return true;
   }
 
-  if (action.actionId >= ACTION_FILTER_SMS2 && action.actionId <= ACTION_FILTER_SMS9)
+  if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9)
   {
     CStdString filter;
-    filter.Format("%i", (int)(action.actionId - ACTION_FILTER_SMS2 + 2));
+    filter.Format("%i", (int)(action.GetID() - ACTION_FILTER_SMS2 + 2));
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);
@@ -246,6 +252,25 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (m_guiState.get())
           m_guiState->SetNextSortMethod();
         UpdateFileList();
+        return true;
+      }
+      else if (iControl == CONTROL_BTN_FILTER)
+      {
+        if (GetControl(iControl)->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+        { // filter updated
+          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
+          OnMessage(selected);
+          OnFilterItems(selected.GetLabel());
+          return true;
+        }
+        if (GetProperty("filter").IsEmpty())
+        {
+          CStdString filter = GetProperty("filter");
+          CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
+          SetProperty("filter", filter);
+        }
+        else
+          OnFilterItems("");
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -355,6 +380,21 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           }
         }
       }
+      else if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
+      {
+        CStdString filter(GetProperty("filter"));
+        if (message.GetParam2() == 1) // append
+          filter += message.GetStringParam();
+        else if (message.GetParam2() == 2)
+        { // delete
+          if (filter.size())
+            filter = filter.Left(filter.size() - 1);
+        }
+        else
+          filter = message.GetStringParam();
+        OnFilterItems(filter);
+        return true;
+      }
       else
         return CGUIWindow::OnMessage(message);
 
@@ -460,12 +500,18 @@ void CGUIMediaWindow::UpdateButtons()
   CStdString items;
   items.Format("%i %s", m_vecItems->GetObjectCount(), g_localizeStrings.Get(127).c_str());
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
+
+  //#ifdef PRE_SKIN_VERSION_3
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").IsEmpty());
+  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter"));
+  //#endif
 }
 
 void CGUIMediaWindow::ClearFileItems()
 {
   m_viewControl.Clear();
   m_vecItems->Clear(); // will clean up everything
+  m_unfilteredItems->Clear();
 }
 
 // \brief Sorts Fileitems based on the sort method and sort oder provided by guiViewState
@@ -588,6 +634,8 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     }
   }
 
+  // clear the filter
+  SetProperty("filter", "");
   return true;
 }
 
@@ -717,7 +765,14 @@ void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
 // to modify the fileitems. Eg. to modify the item label
 void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 {
-
+  m_unfilteredItems->Append(items);
+  
+  CStdString filter(GetProperty("filter"));
+  if (!filter.IsEmpty())
+  {
+    items.ClearItems();
+    GetFilteredItems(filter, items);
+  }
 }
 
 // \brief With this function you can react on a users click in the list/thumb panel.
@@ -1342,5 +1397,68 @@ bool CGUIMediaWindow::WaitForNetwork() const
   return true;
 }
 
+void CGUIMediaWindow::OnFilterItems(const CStdString &filter)
+{
+  CStdString currentItem;
+  int item = m_viewControl.GetSelectedItem();
+  if (item >= 0)
+    currentItem = m_vecItems->Get(item)->m_strPath;
+  
+  m_viewControl.Clear();
+  
+  CFileItemList items;
+  GetFilteredItems(filter, items);
+  if (filter.IsEmpty() || items.GetObjectCount() > 0)
+  {
+    m_vecItems->ClearItems();
+    m_vecItems->Append(items);
+    SetProperty("filter", filter);
+  }
+  
+  // and update our view control + buttons
+  m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(currentItem);
+  UpdateButtons();
+}
 
-
+void CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &items)
+{
+  CStdString trimmedFilter(filter);
+  trimmedFilter.TrimLeft().ToLower();
+  
+  if (trimmedFilter.IsEmpty())
+  {
+    items.Append(*m_unfilteredItems);
+    return;
+  }
+  
+  bool numericMatch = StringUtils::IsNaturalNumber(trimmedFilter);
+  for (int i = 0; i < m_unfilteredItems->Size(); i++)
+  {
+    CFileItemPtr item = m_unfilteredItems->Get(i);
+    if (item->IsParentFolder())
+    {
+      items.Add(item);
+      continue;
+    }
+    // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
+    // though that isn't practical.  Perhaps a better idea would be to just grab the info that we should filter on based on
+    // where we are in the library tree.
+    // Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
+    // but it's re-enabled on the way back out.
+    CStdString match;
+    /*    if (item->GetFocusedLayout())
+     match = item->GetFocusedLayout()->GetAllText();
+     else if (item->GetLayout())
+     match = item->GetLayout()->GetAllText();
+     else*/
+    match = item->GetLabel(); // Filter label only for now
+    
+    if (numericMatch)
+      StringUtils::WordToDigits(match);
+    
+    size_t pos = StringUtils::FindWords(match.c_str(), trimmedFilter.c_str());
+    if (pos != CStdString::npos)
+      items.Add(item);
+  }
+}

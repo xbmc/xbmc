@@ -68,9 +68,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         SET_CONTROL_VISIBLE(CONTROL_VIS_CHOOSER);
         SET_CONTROL_FOCUS(CONTROL_VIS_CHOOSER, 0);
         // fire off an event that we've pressed this button...
-        CAction action;
-        action.actionId = ACTION_SELECT_ITEM;
-        OnAction(action);
+        OnAction(CAction(ACTION_SELECT_ITEM));
       }
       else if (iControl == CONTROL_LOCK_BUTTON)
       {
@@ -95,7 +93,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogMusicOSD::Render()
+void CGUIDialogMusicOSD::FrameMove()
 {
   if (m_autoClosing)
   {
@@ -104,7 +102,7 @@ void CGUIDialogMusicOSD::Render()
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST))
       SetAutoClose(100); // enough for 10fps
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogMusicOSD::OnInitWindow()
@@ -119,7 +117,7 @@ void CGUIDialogMusicOSD::OnInitWindow()
 bool CGUIDialogMusicOSD::OnAction(const CAction &action)
 {
   // keyboard or controller movement should prevent autoclosing
-  if (action.actionId != ACTION_MOUSE && m_autoClosing)
+  if (!action.IsMouse() && m_autoClosing)
     SetAutoClose(3000);
   return CGUIDialog::OnAction(action);
 }
@@ -128,9 +126,7 @@ bool CGUIDialogMusicOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause
-    CAction action;
-    action.actionId = ACTION_PAUSE;
-    return g_application.OnAction(action);
+    return g_application.OnAction(CAction(ACTION_PAUSE));
   }
   return CGUIDialog::OnMouseEvent(point, event);
 }

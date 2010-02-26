@@ -965,7 +965,26 @@ namespace VIDEO
       CStdString strTrailer = pItem->FindTrailer();
       if (!strTrailer.IsEmpty())
         movieDetails.m_strTrailer = strTrailer;
-      m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      int idMovie=m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      // setup links to shows if the linked shows are in the db
+      if (!movieDetails.m_strShowLink.IsEmpty())
+      {
+        CStdStringArray list;
+        StringUtils::SplitString(movieDetails.m_strShowLink,
+                                 g_advancedSettings.m_videoItemSeparator,list);
+        for (unsigned int i=0;i<list.size();++i)
+        {
+          CFileItemList items;
+          m_database.GetTvShowsByName(list[i],items);
+          if (items.Size())
+            m_database.LinkMovieToTvshow(idMovie,items[0]->GetVideoInfoTag()->m_iDbId,false);
+          else
+            CLog::Log(LOGDEBUG,"failed to link movie %s to show %s",
+                      movieDetails.m_strTitle.c_str(),list[i].c_str());
+        }
+      }
     }
     else if (content == CONTENT_TVSHOWS)
     {
@@ -979,6 +998,15 @@ namespace VIDEO
         // episode then add, which breaks multi-episode files.
         int idEpisode = m_database.AddEpisode(idShow, pItem->m_strPath);
         lResult = m_database.SetDetailsForEpisode(pItem->m_strPath, movieDetails, idShow, idEpisode);
+        if (movieDetails.m_fEpBookmark > 0)
+        {
+          movieDetails.m_strFileNameAndPath = pItem->m_strPath;
+          CBookmark bookmark;
+          bookmark.timeInSeconds = movieDetails.m_fEpBookmark;
+          bookmark.seasonNumber = movieDetails.m_iSeason;
+          bookmark.episodeNumber = movieDetails.m_iEpisode;
+          m_database.AddBookMarkForEpisode(movieDetails,bookmark);
+        }
       }
     }
     else if (content == CONTENT_MUSICVIDEOS)

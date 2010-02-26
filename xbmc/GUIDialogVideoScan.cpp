@@ -70,12 +70,12 @@ bool CGUIDialogVideoScan::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogVideoScan::Render()
+void CGUIDialogVideoScan::FrameMove()
 {
   if (m_bRunning)
     UpdateState();
 
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogVideoScan::OnDirectoryChanged(const CStdString& strDirectory)

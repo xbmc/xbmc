@@ -298,6 +298,7 @@ public:
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
+  virtual bool Open();
   virtual bool CommitTransaction();
 
   int AddMovie(const CStdString& strFilenameAndPath);
@@ -332,7 +333,7 @@ public:
 
   void GetEpisodesByFile(const CStdString& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
 
-  void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
+  int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idShow, int idEpisode=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
@@ -385,9 +386,9 @@ public:
   int GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
 
   // searching functions
-  void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
+  void GetMoviesByActor(const CStdString& strActor, CFileItemList& items);
+  void GetTvShowsByActor(const CStdString& strActor, CFileItemList& items);
+  void GetEpisodesByActor(const CStdString& strActor, CFileItemList& items);
 
   void GetMusicVideosByArtist(const CStdString& strArtist, CFileItemList& items);
   void GetMusicVideosByAlbum(const CStdString& strAlbum, CFileItemList& items);
@@ -522,6 +523,8 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
+  virtual int GetMinVersion() const { return 34; };
+  const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);

@@ -37,7 +37,7 @@ protected:
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
 
   void OnButtonNumeric( unsigned int code, bool reset_autotimer = true ); // 0x00 - 0x09
   void OnButtonSelect(); // Song is selected

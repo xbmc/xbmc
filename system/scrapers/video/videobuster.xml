@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<scraper framework="1.1" date="2010-02-22" name="Video Buster" content="movies" thumb="videobuster.png" language="de">
+	<include>common/tmdb.xml</include>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.videobuster.de/titledtl.php/\2.html?tab=details&lt;/url&gt;"  dest="3">
+			<expression clear="yes" noclean="1">(videobuster.de/titledtl.php/)(.*).html</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.videobuster.de/titlesearch.php?tab_search_content=movies&amp;search_title=\1$$4&lt;/url&gt;" dest="3">
+			<RegExp input="$$2" output="&amp;search_year_from=\1" dest="4+">
+				<expression clear="yes">(.+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.videobuster.de\1.html?tab=details&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;div class=&quot;name&quot;&gt;&lt;a href=&quot;(.*?).html.*?&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<!-- Title -->
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression trim="1">&lt;h1 style=&quot;margin-left:8px;&quot;>([^&lt;]*)&lt;/h1&gt;</expression>
+			</RegExp>
+			<!-- Original Title -->
+			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5+">
+				<expression trim="1">Originaltitel:&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;([^&lt;]*)&lt;/div&gt;</expression>
+			</RegExp>
+			<!-- Year -->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression trim="1">Produktion:&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;.*?([0-9]*)&lt;/div&gt;</expression>
+			</RegExp>
+			<!-- MPAA -->
+			<RegExp input="$$1" output="&lt;mpaa&gt;ab \1&lt;/mpaa&gt;" dest="5+">
+				<expression>FSK ab ([0-9]*)</expression>
+			</RegExp>
+			<!-- Directors-->
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression repeat="yes">class=&quot;director_link&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- Actors -->
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">class=&quot;actor_link&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- Studio -->
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression trim="1">Studio:&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;([^&lt;]*)&lt;/div&gt;</expression>
+			</RegExp>			
+			<!-- Runtime -->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1 Minuten&lt;/runtime&gt;" dest="5+">
+				<expression trim="1">Laufzeit ca. ([0-9]*) Minuten</expression>
+			</RegExp>
+			<!-- Rating -->
+			<RegExp input="$$1" output="&lt;rating max=&quot;5&quot;&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="5+">
+				<expression trim="1">Gesamtwertung: ([0-9.]+) Sterne  bei ([0-9]*) Bewertungen</expression>
+			</RegExp>
+			<!-- Genre Film -->
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">/genrelist.php/.*?&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- Tagline -->
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
+				<expression trim="1">&lt;p style='margin-left:9px'&gt;([^&lt;]*)&lt;/p&gt;</expression>
+			</RegExp>
+			<!-- Plot -->
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression trim="1">&lt;div class=&quot;txt movie_description&quot;&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<!-- Trailer -->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://www.videobuster.de\1&lt;/url&gt;" dest="5+">
+				<expression>&lt;a href=&quot;([^&quot;]*)&quot; class=&quot;&quot;&gt;&lt;div class=&quot;tab&quot;&gt;([0-9]+) Trailer&lt;/div&gt;</expression>
+			</RegExp>
+			<!-- Posters -->
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1/w400/\2&quot;&gt;\1/w700/\2&lt;/thumb&gt;" dest="5+">
+				<expression>src=&quot;(http://gfx.videobuster.de/archive/resized)/w100/([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<!-- Fanart -->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com+releaseinfo+\1+\2&lt;/url&gt;" dest="5+">
+				<expression trim="1" encode="1">&lt;h1 style=&quot;margin-left:8px;&quot;>([^&lt;]*)&lt;/h1&gt;.*?Produktion:&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;.*?([0-9]*)&lt;/div&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDetails>	
+	<!-- Trailer -->
+	<GetTrailer dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5+">
+			<expression noclean="1">mpMovieUrl = &quot;([^&quot;]*)&quot;</expression>
+		</RegExp>
+		<expression noclean="1"/>
+	</GetTrailer>
+</scraper>

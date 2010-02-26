@@ -40,7 +40,7 @@ void CGUIWindowOSD::OnWindowLoaded()
   m_bRelativeCoords = true;
 }
 
-void CGUIWindowOSD::Render()
+void CGUIWindowOSD::FrameMove()
 {
   if (m_autoClosing)
   {
@@ -51,16 +51,16 @@ void CGUIWindowOSD::Render()
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
       SetAutoClose(100); // enough for 10fps
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
   // keyboard or controller movement should prevent autoclosing
-  if (action.actionId != ACTION_MOUSE && m_autoClosing)
+  if (!action.IsMouse() && m_autoClosing)
     SetAutoClose(3000);
 
-  if (action.actionId == ACTION_NEXT_ITEM || action.actionId == ACTION_PREV_ITEM)
+  if (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM)
   {
     // these could indicate next chapter if video supports it
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
@@ -72,19 +72,17 @@ bool CGUIWindowOSD::OnAction(const CAction &action)
 
 bool CGUIWindowOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (event.m_id == ACTION_MOUSE_WHEEL)
-  { // Mouse wheel
-    int wheel = abs(event.m_wheel);
-    CAction action;
-    action.amount1 = 0.5f * (float)wheel;
-    action.actionId = event.m_wheel > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
-    return g_application.OnAction(action);
+  if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  {
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
+  }
+  if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause
-    CAction action;
-    action.actionId = ACTION_PAUSE;
-    return g_application.OnAction(action);
+    return g_application.OnAction(CAction(ACTION_PAUSE));
   }
 
   return CGUIDialog::OnMouseEvent(point, event);

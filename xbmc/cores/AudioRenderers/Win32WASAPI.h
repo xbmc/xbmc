@@ -29,6 +29,7 @@
 
 #include "IAudioRenderer.h"
 #include "utils/CriticalSection.h"
+#include "utils/PCMAmplifier.h"
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
 
@@ -80,8 +81,10 @@ private:
   float m_fVolAdjustFactor;
 
   unsigned int m_uiChunkSize;
+  unsigned int m_uiSrcChunkSize;
   unsigned int m_uiBufferLen;
   unsigned int m_uiBytesPerFrame;
+  unsigned int m_uiBytesPerSrcFrame;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
   unsigned int m_uiAvgBytesPerSec;
@@ -98,6 +101,7 @@ private:
   unsigned int m_LastCacheCheck;
   size_t m_PreCacheSize;
 
+  CPCMAmplifier m_pcmAmplifier;
   CCriticalSection m_critSection;
 };
 

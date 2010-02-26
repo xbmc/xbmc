@@ -33,7 +33,7 @@ CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
 
 bool CGUIWindowScriptsInfo::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SHOW_INFO)
+  if (action.GetID() == ACTION_SHOW_INFO)
   {
     // erase debug screen
     strInfo = "";

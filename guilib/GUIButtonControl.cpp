@@ -37,7 +37,6 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
   m_bSelected = false;
   m_alpha = 255;
   m_focusCounter = 0;
-  m_label2.SetAlign(XBFONT_RIGHT | (labelInfo.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
   ControlType = GUICONTROL_BUTTON;
 }
 
@@ -101,6 +100,7 @@ void CGUIButtonControl::RenderText()
 {
   m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
   m_label.SetText(m_info.GetLabel(m_parentID));
+  m_label.SetScrolling(HasFocus());
 
   // render the second label if it exists
   CStdString label2(m_info2.GetLabel(m_parentID));
@@ -108,10 +108,10 @@ void CGUIButtonControl::RenderText()
   {
     m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
     m_label2.SetText(label2);
+    m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
+    m_label2.SetScrolling(HasFocus());
 
-    // TODO: call a function to compute the "best" render rect from these two
-    CRect leftLabel(m_label.GetRenderRect());
-    CRect rightLabel(m_label2.GetRenderRect());
+    CGUILabel::CheckAndCorrectOverlap(m_label, m_label2);
 
     m_label2.SetColor(GetTextColor());
     m_label2.Render();
@@ -122,7 +122,7 @@ void CGUIButtonControl::RenderText()
 
 bool CGUIButtonControl::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     OnClick();
     return true;
@@ -188,6 +188,8 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIButtonControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
+  m_label.SetInvalid();
+  m_label2.SetInvalid();
   m_imgFocus.SetInvalid();
   m_imgNoFocus.SetInvalid();
 }
@@ -228,9 +230,7 @@ bool CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
-    CAction action;
-    action.actionId = ACTION_SELECT_ITEM;
-    OnAction(action);
+    OnAction(CAction(ACTION_SELECT_ITEM));
     return true;
   }
   return false;

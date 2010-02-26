@@ -125,14 +125,31 @@ CStdString CGUISpinControlEx::GetDescription() const
   return strLabel;
 }
 
-void CGUISpinControlEx::SettingsCategorySetSpinTextColor(const CGUIInfoColor &color)
+void CGUISpinControlEx::SetItemInvalid(bool invalid)
 {
-  m_label.GetLabelInfo().textColor = color;
-  m_label.GetLabelInfo().focusedColor = color;
+  if (invalid)
+  {
+    m_label.GetLabelInfo().textColor = m_buttonControl.GetLabelInfo().disabledColor;
+    m_label.GetLabelInfo().focusedColor = m_buttonControl.GetLabelInfo().disabledColor;
+  }
+  else
+  {
+    m_label.GetLabelInfo().textColor = m_buttonControl.GetLabelInfo().textColor;
+    m_label.GetLabelInfo().focusedColor = m_buttonControl.GetLabelInfo().focusedColor;
+  }
 }
 
 void CGUISpinControlEx::SetSpinPosition(float spinPosX)
 {
   m_spinPosX = spinPosX;
   SetPosition(m_buttonControl.GetXPosition(), m_buttonControl.GetYPosition());
+}
+
+void CGUISpinControlEx::RenderText(float posX, float width)
+{
+  const float spaceWidth = 10;
+  // check our limits from the button control
+  float x = std::max(m_buttonControl.m_label.GetRenderRect().x2 + spaceWidth, posX);
+  m_label.SetScrolling(HasFocus());
+  CGUISpinControl::RenderText(x, width + posX - x);
 }
