@@ -617,8 +617,6 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
       EndEnumPins
     }
 
-    
-
     if ( videoError || audioError)
     {
       CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);

@@ -31,6 +31,10 @@
 #include "XMLUtils.h"
 #include "File.h"
 #include "SpecialProtocol.h"
+
+#include "Dmodshow.h"
+#include "Dmoreg.h"
+#pragma comment(lib, "Dmoguids.lib")
 //
 // CFGFilter
 //
@@ -419,12 +423,12 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
 //
 
 CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name, UINT64 merit, CStdString internalName, CStdString filetype)
-  : CFGFilter(clsid, name, merit)
-  , m_path(path)
-  , m_xFileType(filetype)
-  , m_internalName(internalName)
-  , m_hInst(NULL)
-  , m_autoload(false)
+  : CFGFilter(clsid, name, merit),
+    m_path(path),
+    m_xFileType(filetype),
+    m_internalName(internalName),
+    m_hInst(NULL),
+    m_autoload(false)
 {
 }
 
@@ -441,6 +445,17 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
 
   CStdString osdname = "";
   XMLUtils::GetString(pFilter, "osdname", osdname);
+
+  //This is needed for a correct insertion of dmo filters into a graph
+  if (!XMLUtils::GetBoolean(pFilter,"isdmo",m_isDMO))
+    m_isDMO = false;
+  CStdString strDmoGuid;
+
+  if (XMLUtils::GetString(pFilter,"guid_category_dmo",strDmoGuid))
+  {
+    const CLSID dmoclsid = DShowUtil::GUIDFromCString(strDmoGuid);
+    m_catDMO = dmoclsid;
+  }
 
   m_path = "";
   if (!XMLUtils::GetString(pFilter, "path", m_path) || m_path.empty())
@@ -476,8 +491,32 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
   CheckPointer(ppBF, E_POINTER);
 
   HRESULT hr = E_FAIL;
+  if ( (m_isDMO) && (m_catDMO != GUID_NULL))
+  {
+    IBaseFilter *pBFDmo = NULL;
+    IDMOWrapperFilter *pDMOWrapper = NULL;
+    
+    hr = CoCreateInstance(CLSID_DMOWrapperFilter, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)&pBFDmo);
+    if (SUCCEEDED(hr))
+    {
+      if (SUCCEEDED(pBFDmo->QueryInterface(IID_IDMOWrapperFilter,(void**) &pDMOWrapper)))
+        hr = pDMOWrapper->Init(m_clsid,m_catDMO);
+      *ppBF = pBFDmo;
+      pBFDmo->AddRef();
+      pBFDmo = NULL;
+      pDMOWrapper->Release();
+      //DMOCATEGORY_AUDIO_DECODER
+      //WMAudio Decoder DMO
+      //{2EEB4ADF-4578-4D10-BCA7-BB955F56320A}
 
-  hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
+      //DMOCATEGORY_VIDEO_DECODER
+      //WMVideo Decoder DMO
+      //{82D353DF-90BD-4382-8BC2-3F6192B76E34}
+
+    }
+  }
+  else
+    hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
 
   if (FAILED(hr))
 	  CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());

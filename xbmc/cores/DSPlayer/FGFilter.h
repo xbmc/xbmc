@@ -106,7 +106,9 @@ protected:
   CStdString m_xFileType;
   CStdString m_internalName;
   HINSTANCE m_hInst;
-  bool      m_autoload;
+  bool m_isDMO;
+  CLSID m_catDMO;
+  bool m_autoload;
 public:
   CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE, CStdString filtername = "", CStdString filetype = "");
   CFGFilterFile(TiXmlElement *pFilter);

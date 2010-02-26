@@ -84,7 +84,6 @@
       <guid>{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}</guid>
       <osdname>MPC Video Decoder</osdname>
     </filter>
-    <!-- ffdshow cant be used with a path unless you put the current path of your ffdshow.ax-->
     <filter name="ffdvideodec" type="videodec">
       <guid>{04FE9017-F873-410E-871E-AB91661A4EF7}</guid>
       <osdname>ffdshow Video Decoder</osdname>
@@ -92,6 +91,13 @@
     <filter name="ffdvideodxvadec" type="videodec">
       <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
       <osdname>ffdshow Dxva Decoder</osdname>
+    </filter>
+    <!-- The wmvideodecoder is a dmo filter-->
+    <filter name="wmvideodecoder" type="videodec">
+      <guid>{82D353DF-90BD-4382-8BC2-3F6192B76E34}</guid>
+      <osdname>WMVideo Decoder</osdname>
+      <isdmo>true</isdmo>
+      <guid_category_dmo>{4a69b442-28be-4991-969c-b500adf5d8a8}</guid_category_dmo>
     </filter>
     <filter name="mpeg2videodec" type="videodec">
       <path>Mpeg2DecFilter.ax</path>
@@ -117,9 +123,13 @@
       <guid>{0F40E1E5-4F79-4988-B1A9-CC98794E6B55}</guid>
       <osdname>ffdshow audio decoder</osdname>
     </filter>
+    <!-- a dmo filter need a guid that indicate in which category he is locate0d-->
+    <!-- guid_category_DMO is the category of this current  -->
     <filter name="wmaudiodecoder" type="audiodec">
-      <guid>{94297043-BD82-4DFD-B0DE-8177739C6D20}</guid>
+      <guid>{2EEB4ADF-4578-4D10-BCA7-BB955F56320A}</guid>
       <osdname>WMAudio Decoder</osdname>
+      <isdmo>true</isdmo>
+      <guid_category_dmo>{57f2db8b-e6bb-4513-9d43-dcd2a6593125}</guid_category_dmo>
     </filter>
     <filter name="broadcomvideodecoder" type="videodec">
       <guid>{2DE1D17E-46B1-42A8-9AEC-E20E80D9B1A9}</guid>
@@ -238,7 +248,7 @@
     <rule filetypes="wmv">
       <source filter="wmasfreader" />
       <splitter filter="wmasfreader" />
-      <video filter="ffdvideodec" />
+      <video filter="wmvideodecoder" />
       <audio filter="wmaudiodecoder" />
     </rule>
     
