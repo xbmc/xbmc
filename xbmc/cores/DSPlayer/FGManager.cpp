@@ -569,7 +569,6 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
     int nVideoPin = 0, nAudioPin = 0;
     int nConnectedVideoPin = 0, nConnectedAudioPin = 0;
     bool videoError = false, audioError = false;
-    CStdString strError = "";
     BeginEnumPins(pBF, pEP, pPin)
     {
       BeginEnumMediaTypes(pPin, pEMT, pMT)
@@ -588,16 +587,16 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
         }
         break;
       }
-      EndEnumMediaTypes(pEMT, pMT)
+      EndEnumMediaTypes(pMT)
     }
-    EndEnumPins(pEP, pBF)
+    EndEnumPins
     
     videoError = (nVideoPin >= 1 && nConnectedVideoPin == 0); // No error if no video stream
     audioError = (nAudioPin >= 1 && nConnectedAudioPin == 0); // No error if no audio stream
     //Work around to fix the audio pipeline
     //I think this should be the best way to render a pin if there an error the audio stream
     //The only problem is the graph is getting locked after that
-    if (0)//(audioError)
+    if (audioError)//
     {
       IBaseFilter *pBF = CFGLoader::Filters.Splitter.pBF;
 
@@ -613,23 +612,26 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
             }
           }
         }
-        EndEnumMediaTypes(pEMT, pMT)
+        EndEnumMediaTypes(pMT)
       }
-      EndEnumPins(pEP, pBF)
+      EndEnumPins
     }
 
-    if (videoError && audioError)
-      strError = "Error in both audio and video rendering chain.";
-    else if (videoError)
-      strError = "Error in the video rendering chain.";
-    else if (audioError)
-      strError = "Error in the audio rendering chain.";
+    
 
-    if (! strError.empty())
+    if ( videoError || audioError)
     {
       CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
       if (dialog)
       {
+        CStdString strError;
+        
+        if (videoError && audioError)
+          strError = CStdString("Error in both audio and video rendering chain.");
+        else if (videoError)
+          strError = CStdString("Error in the video rendering chain.");
+        else if (audioError)
+          strError = CStdString("Error in the audio rendering chain.");
         CLog::Log(LOGERROR, "%s Audio / Video error \n %s \n Ensure that the audio/video stream is supported by your selected decoder and ensure that the decoder is properly configured.", __FUNCTION__, strError.c_str());
         dialog->SetHeading("Audio / Video error");
         dialog->SetLine(0, strError.c_str());
@@ -644,10 +646,9 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 
   
 
-  //Apparently the graph dont start with wmv when you have unconnected filters
-  //And for debuging reason we wont remove it if the file is not a wmv
-  //if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))
-    //RemoveUnconnectedFilters();
+  //Apparently the graph dont start with unconnected filters in the graph for wmv files
+  if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))
+    RemoveUnconnectedFilters(m_pFG);
 
   g_dsconfig.ConfigureFilters(m_pFG);
 #ifdef _DSPLAYER_DEBUG
@@ -655,44 +656,6 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 #endif
 
   return hr;  
-}
-
-HRESULT CFGManager::RemoveUnconnectedFilters()
-{
-  HRESULT hr = S_OK;
-
-  IEnumFilters *pEnum = NULL;
-  IBaseFilter *pFilter = NULL;
-  IPin *pPin = NULL;
-
-  
-  CHECK_HR(hr = m_pFG->EnumFilters(&pEnum));
-
-  // Go through the list of filters in the graph.
-  while (S_OK == pEnum->Next(1, &pFilter, NULL))
-  {
-        // Find a connected pin on this filter.
-        HRESULT hr2 = FindMatchingPin(pFilter, MatchPinConnection(TRUE), &pPin);
-        if (SUCCEEDED(hr2))
-        {
-            // If it's connected, don't remove the filter.
-            SAFE_RELEASE(pPin);
-            continue;
-        }
-        assert(pPin == NULL);
-        hr = m_pFG->RemoveFilter(pFilter);
-        CHECK_HR(hr);
-
-        // The previous call made the enumerator stale. 
-        pEnum->Reset(); 
-        SAFE_RELEASE(pFilter);
-    }
-
-done:
-    SAFE_RELEASE(pEnum);
-    SAFE_RELEASE(pFilter);
-    SAFE_RELEASE(pPin);
-    return hr;
 }
 
 HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo, CStdString* splitterInfo, CStdString* audioInfo,
@@ -799,7 +762,7 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
       {
         mediaType = pMediaType->majortype;
       }
-      EndEnumMediaTypes(pEnum, pMediaType)
+      EndEnumMediaTypes(pMediaType)
 
       if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Video) 
           && m_videoPinConnected)
@@ -851,7 +814,7 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
       }
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
 
   return 
     nRendered == nTotal ? (nRendered > 0 ? S_OK : S_FALSE) :
@@ -880,7 +843,7 @@ HRESULT CFGManager::ConnectFilter(IPin* pPinOut, IBaseFilter* pBF)
       return hr;
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
 
   return VFW_E_CANNOT_CONNECT;
 }
@@ -906,7 +869,7 @@ HRESULT CFGManager::ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const A
       return hr;
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
 
   return VFW_E_CANNOT_CONNECT;
 }
@@ -923,7 +886,7 @@ HRESULT CFGManager::NukeDownstream(IUnknown* pUnk)
     {
       NukeDownstream(pPin);
     }
-    EndEnumPins(pEP, pPin)
+    EndEnumPins
   }
   else if (SUCCEEDED(pUnk->QueryInterface(__uuidof(pPin),(void**)&pPin)))
   {

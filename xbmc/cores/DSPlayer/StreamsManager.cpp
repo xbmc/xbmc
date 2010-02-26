@@ -351,10 +351,10 @@ void CStreamsManager::LoadStreams()
 
           break; // if the pin has multiple output type, get only the first one
         }
-        EndEnumMediaTypes(pET, pMediaType)
+        EndEnumMediaTypes(pMediaType)
       }
     }
-    EndEnumPins(pEP, pPin)
+    EndEnumPins
   }
 
   /* Delete regex */

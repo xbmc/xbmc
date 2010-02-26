@@ -173,9 +173,12 @@ typedef struct {
 #include <edevdefs.h>   // External device control interface defines
 #include <audevcod.h>   // audio filter device error event codes
 
-#else
-    #ifdef DEBUG
-    #pragma message("STREAMS.H included TWICE")
-    #endif
+
+//We cant add the #include "streams.h" in the precompiled headers without having major compile problem
+//So this compile warning cant really be fixed so we will just ignore it
+//#else
+//  #ifdef DEBUG
+//  #pragma message("STREAMS.H included TWICE")
+//#endif
 #endif // __STREAMS__
 

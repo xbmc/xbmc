@@ -85,6 +85,7 @@ public:
   static IBaseFilter* FindFilter(LPCWSTR clsid, IFilterGraph* pFG);
   static IBaseFilter* FindFilter(const CLSID& clsid, IFilterGraph* pFG);
   static IPin* FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MEDIA_TYPE* pRequestedMT);
+  static IPin* FindPinMajor(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MEDIA_TYPE* pRequestedMT);
   static CStdStringW GetFilterName(IBaseFilter* pBF);
   static CStdStringW GetPinName(IPin* pPin);
   static IFilterGraph* GetGraphFromFilter(IBaseFilter* pBF);
@@ -152,6 +153,38 @@ REFERENCE_TIME StringToReftime(LPCTSTR strVal);
   static DWORD  YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
 };
 
+//this class coming from ffdshow tryout
+class TsearchInterfaceInGraph
+{
+// IFilterGraph::EnumFilters can freeze if it is called from streaming thread.
+// This class is work around for it.
+// Create a thread to execute IFilterGraph::EnumFilters and if it seems to be freezing, skip it.
+// So return value is not always correct. Check waitSucceeded().
+// In case of freezes, the thread is likely to return until next sample is delivered.
+private:
+ IFilterGraph *graph;
+ IID iid;
+ IUnknown *dest;
+ HANDLE hThread;
+ DWORD waitResult;
+ static unsigned int __stdcall searchFilterInterfaceThreadEntry(void *self);
+ bool (*searchInterfaceFunc)(IFilterGraph *graph,const IID &iid,IUnknown **dest);
+public:
+ TsearchInterfaceInGraph(IFilterGraph *Igraph,const IID &Iiid,bool (*IsearchInterfaceFunc)(IFilterGraph *graph,const IID &iid,IUnknown **dest)):
+   graph(Igraph),
+   iid(Iiid),
+   hThread(NULL),
+   searchInterfaceFunc(IsearchInterfaceFunc)
+  {
+  }
+ ~TsearchInterfaceInGraph();
+ bool getResult(IUnknown* *Idest);
+ bool waitSucceeded(void)
+  {
+   return waitResult == WAIT_OBJECT_0;
+  }
+};
+
 class DShowVideoInfo
 {
 public:
@@ -200,11 +233,11 @@ public:
 #define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
   {IEnumPins* pEnumPins; \
   if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
-  { IPin* pPin = NULL; \
-    for(; S_OK == pEnumPins->Next(1, &pPin, 0); pPin->Release(), pPin = NULL) \
+  { \
+    for(IPin* pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin->Release(), pPin = NULL) \
     { \
 
-#define EndEnumPins(pEnumPins, pBaseFilter) } SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumPins); }}
+#define EndEnumPins }}}
 /** EndEnumPins **/
 
 /* BeginEnumMediaTypes */
@@ -216,7 +249,7 @@ public:
     for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
     { \
 
-#define EndEnumMediaTypes(pEnumMediaTypes, pMediaType) } SAFE_RELEASE(pEnumMediaTypes); if(pMediaType) DeleteMediaType(pMediaType); }}
+#define EndEnumMediaTypes(pMediaType) } if(pMediaType) DeleteMediaType(pMediaType); }}
 /* EndEnumMediaTypes */
 
 #define BeginEnumSysDev(clsid, pMoniker) \

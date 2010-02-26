@@ -10,6 +10,8 @@
 #include "log.h"
 
 #include "oaidl.H"
+//_beginthreadex
+#include <process.h>
 
 bool DShowUtil::GuidVectItterCompare(GuidListIter it, std::vector<GUID>::const_reference vect)
 {
@@ -137,7 +139,7 @@ int DShowUtil::CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& 
       else if(dir == PINDIR_OUTPUT) {nOut++; if(pPinConnectedTo) nOutC++;}
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
 
   return(nIn+nOut);
 }
@@ -199,7 +201,7 @@ bool DShowUtil::IsVideoRenderer(IBaseFilter* pBF)
       return(!!(mt.majortype == MEDIATYPE_Video));
         /*&& (mt.formattype == FORMAT_VideoInfo || mt.formattype == FORMAT_VideoInfo2));*/
     }
-    EndEnumPins(pEP, pPin)
+    EndEnumPins
   }
 
   CLSID clsid;
@@ -230,7 +232,7 @@ bool DShowUtil::IsAudioWaveRenderer(IBaseFilter* pBF)
       return(!!(mt.majortype == MEDIATYPE_Audio)
         /*&& mt.formattype == FORMAT_WaveFormatEx*/);
     }
-    EndEnumPins(pEP, pPin)
+    EndEnumPins
   }
 
   CLSID clsid;
@@ -304,7 +306,7 @@ IPin* DShowUtil::GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin)
       return(pRet);
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
 
   return(NULL);
 }
@@ -325,7 +327,7 @@ IPin* DShowUtil::GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir)
       return(pRet);
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
 
   return(NULL);
 }
@@ -347,7 +349,7 @@ IPin* DShowUtil::GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)
       return(pRet);
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
 
   return(NULL);
 }
@@ -400,13 +402,42 @@ IPin* DShowUtil::FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MED
           return (pPin);
         }
       }
-      EndEnumMediaTypes(pEM, pmt)
+      EndEnumMediaTypes(pmt)
     }
   }
-  EndEnumPins(pEP, pPin)
+  EndEnumPins
   return NULL;
 }
 
+IPin* DShowUtil::FindPinMajor(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MEDIA_TYPE* pRequestedMT)
+{
+  PIN_DIRECTION  pindir;
+  BeginEnumPins(pBF, pEP, pPin)
+  {
+    IPin*    pFellow;
+
+    if (SUCCEEDED (pPin->QueryDirection(&pindir)) &&
+      pindir == direction &&
+      pPin->ConnectedTo(&pFellow) == VFW_E_NOT_CONNECTED)
+    {
+      BeginEnumMediaTypes(pPin, pEM, pmt)
+      {
+        if (pmt->majortype == pRequestedMT->majortype)
+        {
+          IPin* pRet = pPin;
+          pPin = NULL;
+          pRet->Release();
+          DeleteMediaType(pmt);
+          SAFE_RELEASE(pEM);
+          return (pPin);
+        }
+      }
+      EndEnumMediaTypes(pmt)
+    }
+  }
+  EndEnumPins
+  return NULL;
+}
 
 CStdStringW DShowUtil::GetFilterName(IBaseFilter* pBF)
 {
@@ -670,7 +701,7 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::vector<GUID>& types)
         types.push_back(pmt->subtype);
       }
   }
-  EndEnumMediaTypes(pEM, pmt)
+  EndEnumMediaTypes(pmt)
 }
 
 void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
@@ -695,7 +726,7 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
     if (!fFound)
       mts.push_back(CMediaType(*pmt));
   }
-  EndEnumMediaTypes(pEM, pmt)  
+  EndEnumMediaTypes(pmt)  
 }
 
 int Eval_Exception(int n_except)
@@ -1174,7 +1205,7 @@ IBaseFilter* DShowUtil::AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuild
         return(pBF);
       }
     }
-    EndEnumPins(pEP, pPinTo)
+    EndEnumPins
 
     pGB->RemoveFilter(pBF);
   }
@@ -2239,7 +2270,7 @@ std::list<CStdString> sl;
         //sl.AddTail(mt.ToString() + CStdString(L" [" + DShowUtil::GetPinName(pPin) + L"]"));
       }
     }
-    EndEnumPins(pEP, pPin)
+    EndEnumPins
   }
   EndEnumFilters(pEF, pBF)
   
@@ -2406,4 +2437,45 @@ DWORD YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb)
   double bp = Y + 2*(Cb-128)*(1.0-Rec709_Kb);
 
   return D3DCOLOR_ARGB (A, (BYTE)fabs(rp), (BYTE)fabs(gp), (BYTE)fabs(bp));
+}
+
+//==================================== TsearchInterfaceInGraph ========================================
+unsigned int __stdcall TsearchInterfaceInGraph::searchFilterInterfaceThreadEntry(void *self0)
+{
+ TsearchInterfaceInGraph *self = (TsearchInterfaceInGraph*)self0;
+ return (unsigned int)self->searchInterfaceFunc(self->graph,self->iid,&(self->dest));
+}
+
+bool TsearchInterfaceInGraph::getResult(IUnknown* *Idest)
+{
+ if (!hThread)
+  {
+   hThread = (HANDLE)_beginthreadex(NULL,0,searchFilterInterfaceThreadEntry,this,0,NULL);
+  }
+ if (hThread)
+  {
+   waitResult = WaitForSingleObject(hThread, 100);
+   if (waitResult == WAIT_OBJECT_0)
+    {
+     DWORD retval;
+     if (GetExitCodeThread(hThread, &retval) && retval)
+      {
+       *Idest=dest;
+       CloseHandle(hThread);
+       hThread = NULL;
+       return true;
+      }
+    }
+  }
+ return false;
+}
+
+TsearchInterfaceInGraph::~TsearchInterfaceInGraph()
+{
+ if (hThread)
+  {
+   WaitForSingleObject(hThread, INFINITE);
+   CloseHandle(hThread);
+   hThread = NULL;
+  }
 }

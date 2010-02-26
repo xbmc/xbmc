@@ -102,7 +102,8 @@ bool CChaptersManager::LoadChapters()
     m_currentChapter = 1;
 
     return true;
-  } else
+  } 
+  else
   {
     CLog::Log(LOGERROR, "%s The splitter \"%s\" doesn't support chapters", __FUNCTION__, splitterName.c_str());
     return false;
@@ -136,10 +137,8 @@ int CChaptersManager::SeekChapter(int iChapter)
   return 0;
 }
 
-bool CChaptersManager::InitManager(CDSGraph *Graph)
+void CChaptersManager::InitManager(CDSGraph *Graph)
 {
   m_pGraph = Graph;
   m_init = true;
-
-  return true;
 }

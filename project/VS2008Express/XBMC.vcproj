@@ -2402,63 +2402,7 @@
 					Name="Helpers"
 					>
 					<File
-						RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\MediaInfoDLL\MediaInfoDLL.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h"
 						>
 					</File>
 					<File
@@ -2586,34 +2530,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDec.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecAudio.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
 						>
 					</File>
@@ -2625,16 +2541,108 @@
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h"
 						>
 					</File>
+					<Filter
+						Name="ffdshow"
+						>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDec.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecAudio.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="FilterCoreFactory"
 					>
+					<File
+						RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
+						>
+					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="DShowUtil"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DShowUtil.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h"
 						>
 					</File>
 				</Filter>

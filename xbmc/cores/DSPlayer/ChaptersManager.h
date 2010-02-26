@@ -57,7 +57,7 @@ public:
    * @param[in] Graph Pointer to a CDSGraph instance
    * @return True if the manager is initialized, false else
    */
-  bool InitManager(CDSGraph *Graph);
+  void InitManager(CDSGraph *Graph);
 
 private:
   /// Constructor

@@ -450,9 +450,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
       break;
     }
-    EndEnumMediaTypes(pEMT, pMT)
+    EndEnumMediaTypes(pMT)
   }
-  EndEnumPins(pEP, pBF)
+  EndEnumPins
 
   std::vector<CStdString> extras;
   if (! CFilterCoreFactory::GetExtraFilters(pFileItem, extras, m_UsingDXVADecoder))
