@@ -780,6 +780,7 @@ CSettingsCategory* CGUISettings::AddCategory(int groupID, const char *strSetting
     if (settingsGroups[i]->GetGroupID() == groupID)
       return settingsGroups[i]->AddCategory(CStdString(strSetting).ToLower(), labelID);
   }
+  return NULL;
 }
 
 CSettingsGroup *CGUISettings::GetGroup(int groupID)
