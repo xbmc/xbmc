@@ -78,7 +78,7 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekBackward = -2;
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
-  m_videoBlackBarColour = 1;
+  m_videoBlackBarColour = 0;
   m_videoPPFFmpegType = "linblenddeint";
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
