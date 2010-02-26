@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 28110 -->
+<!--Based on english strings version 28135 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1847,7 +1847,7 @@
   <string id="20433">提取缩略图和媒体标识</string>
   <string id="20434">影片集</string>
   <string id="20435">设置影片集缩略图</string>
-  <string id="20436">导出演员缩略图</string>
+  <string id="20436">导出演员缩略图？</string>
   <string id="20437">选择同人画</string>
   <string id="20438">本地同人画</string>
   <string id="20439">无同人画</string>
