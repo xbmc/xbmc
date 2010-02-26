@@ -248,10 +248,16 @@ bool CDVDAudioPassthroughParser::Init(void* pData, unsigned int size)
       break;
     }
     case CODEC_ID_DTS:
+    {
       // [0-3] Sync Word, [4-9] Frame Info
+      // TODO: Check sync word to determine format
+      unsigned char blocks = pFrame[5] >> 2 | (0x1 & pFrame[4]) << 6;
+      unsigned short frameSize = (((short)pFrame[5] & 0x3) << 12 ) | ((short)pFrame[6] << 4) | (pFrame[7] >> 4);
+      unsigned char rate = pFrame[9] >> 5 | ((pFrame[8] & 0x3) << 3);
       m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_DTS;
       m_OutputFormat.bitrate = 448000; // TODO: Read from stream...
       break;
+    }
     case CODEC_ID_MP1:
       m_OutputFormat.encoded.encodingType = DVDAudioEncodingType_MP1;
       return false; // Not a supported passthrough format (yet)
