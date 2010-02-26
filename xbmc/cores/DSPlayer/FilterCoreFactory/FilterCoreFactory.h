@@ -3,6 +3,8 @@
 #include "FilterSelectionRule.h"
 #include "tinyXML\tinyxml.h"
 #include "globalfilterselectionrule.h"
+#include "GUIDialogOK.h"
+#include "GUIWindowManager.h"
 
 class CFilterCoreFactory
 {
@@ -12,9 +14,12 @@ public:
   static bool LoadConfiguration(TiXmlElement* pConfig, bool clear);
   static bool GetSourceFilter(const CFileItem& pFileItem, CStdString& filter);
   static bool GetSplitterFilter(const CFileItem& pFileItem, CStdString& filter);
+  static bool GetAudioRendererFilter(const CFileItem& pFileItem, CStdString& filter, SStreamInfos* s = NULL);
   static bool GetVideoFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
-  static bool GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false);
+  static bool GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false, SStreamInfos* s = NULL);
   static bool GetExtraFilters(const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva = false);
+
+  static CFGFilterFile* GetFilterFromName(const CStdString& filter, bool showError = true);
 
   static bool SomethingMatch( const CFileItem& pFileItem)
   {
@@ -41,135 +46,11 @@ public:
   }
 
 private:
+  static bool CompareCFGFilterFileToString(CFGFilterFile * f, CStdString s)
+  {
+    return f->GetInternalName().Equals(s);
+  }
   static CGlobalFilterSelectionRule* GetGlobalFilterSelectionRule(const CFileItem& pFileItem);
 
   static std::vector<CGlobalFilterSelectionRule *> m_selecRules;
 };
-
-bool CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear )
-{
-  if (clear)
-  {
-    Destroy();
-  }
-
-  if (!pConfig || strcmpi(pConfig->Value(), "dsfilterconfig") != 0)
-  {
-    CLog::Log(LOGERROR, "Error loading configuration, no <dsfilterconfig> node");
-    return false;
-  }
-
-  /* Parse filters declaration */
-
-  TiXmlElement *pFilters = pConfig->FirstChildElement("filters");
-  if (pFilters)
-  {
-    TiXmlElement *pFilter = pFilters->FirstChildElement("filter");
-    while (pFilter)
-    {
-      m_Filters.push_back(new CFGFilterFile(pFilter));
-      pFilter = pFilter->NextSiblingElement("filter");
-    }
-  }
-
-  /* Parse selection rules */
-  TiXmlElement *pRules = pConfig->FirstChildElement("rules");
-  if (pRules)
-  {
-    TiXmlElement *pRule = pRules->FirstChildElement("rule");
-    while (pRule)
-    {
-      m_selecRules.push_back(new CGlobalFilterSelectionRule(pRule));
-      pRule = pRule->NextSiblingElement("rule");
-    }
-  }
-
-  return true;
-}
-
-CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( const CFileItem& pFileItem )
-{
-  for (int i = 0; i < m_selecRules.size(); i++)
-  {
-    if (m_selecRules[i]->Match(pFileItem))
-      return m_selecRules[i];
-  }
-
-  return NULL;
-}
-
-bool CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdString& filter )
-{
-  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
-    return false;
-
-  std::vector<CStdString> foo;
-  pRule->GetSourceFilters(pFileItem, foo);
-
-  if (foo.empty())
-    return false;
-
-  filter = foo[0];
-  return true;
-}
-
-bool CFilterCoreFactory::GetSplitterFilter( const CFileItem& pFileItem, CStdString& filter )
-{
-  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
-    return false;
-
-  std::vector<CStdString> foo;
-  pRule->GetSplitterFilters(pFileItem, foo);
-
-  if (foo.empty())
-    return false;
-
-  filter = foo[0];
-  return true;
-}
-
-bool CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/ )
-{
-  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
-    return false;
-
-  std::vector<CStdString> foo;
-  pRule->GetAudioFilters(pFileItem, foo, dxva);
-
-  if (foo.empty())
-    return false;
-
-  filter = foo[0];
-  return true;;
-}
-
-bool CFilterCoreFactory::GetVideoFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/ )
-{
-  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
-    return false;
-
-  std::vector<CStdString> foo;
-  pRule->GetVideoFilters(pFileItem, foo, dxva);
-
-  if (foo.empty())
-    return false; //Todo: Error message
-
-  filter = foo[0];
-  return true;
-}
-
-bool CFilterCoreFactory::GetExtraFilters( const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva /*= false*/ )
-{
-  CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
-  if (! pRule)
-    return false;
-
-  pRule->GetExtraFilters(pFileItem, filters, dxva);
-  return true;
-}
-std::vector<CGlobalFilterSelectionRule *> CFilterCoreFactory::m_selecRules;
-std::vector<CFGFilterFile *> CFilterCoreFactory::m_Filters;

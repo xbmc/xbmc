@@ -2586,11 +2586,23 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterCoreFactory.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\GlobalFilterSelectionRule.h"
 						>
 					</File>
 				</Filter>

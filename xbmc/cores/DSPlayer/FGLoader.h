@@ -102,7 +102,7 @@ public:
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
   HRESULT    InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName);
   HRESULT    InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName);
-  HRESULT    InsertAudioRenderer();
+  HRESULT    InsertAudioRenderer(const CStdString& filterName);
   HRESULT    InsertVideoRenderer();
   HRESULT    InsertAutoLoad();
 

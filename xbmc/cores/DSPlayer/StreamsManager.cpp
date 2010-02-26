@@ -3,6 +3,9 @@
 #include "SpecialProtocol.h"
 #include "DVDSubtitles\DVDFactorySubtitle.h"
 #include "Settings.h"
+#include "filtercorefactory\filtercorefactory.h"
+#include "DSPlayer.h"
+#include "FGFilter.h"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -126,13 +129,100 @@ void CStreamsManager::SetAudioStream(int iStream)
 
     m_pGraph->Stop(); // Current position is kept by the graph
 
-    /* Disable filter */
-    IPin *oldAudioStreamPin = (IPin *)(m_audioStreams[disableIndex]->pObj);
-    connectedToPin = (IPin *)(m_audioStreams[disableIndex]->pUnk);
+    IPin *newAudioStreamPin = (IPin *)(m_audioStreams[enableIndex]->pObj); // Splitter pin
+
+    IPin *oldAudioStreamPin = (IPin *)(m_audioStreams[disableIndex]->pObj); // Splitter pin
+    connectedToPin = (IPin *)(m_audioStreams[disableIndex]->pUnk); // Audio dec pin
     if (! connectedToPin)
       hr = oldAudioStreamPin->ConnectedTo(&connectedToPin);
-
+    
     m_audioStreams[enableIndex]->pUnk = connectedToPin;
+
+    std::list<CMediaType> mediaTypes;
+    DShowUtil::ExtractMediaTypes(newAudioStreamPin, mediaTypes);
+
+    if (! mediaTypes.empty())
+    {
+      CStdString filter = "";
+      SAudioStreamInfos audioStreamInfos;
+      GetStreamInfos(&mediaTypes.front(), &audioStreamInfos);
+
+      if (SUCCEEDED(CFilterCoreFactory::GetAudioFilter(CDSPlayer::currentFileItem, filter, CFGLoader::IsUsingDXVADecoder(), &audioStreamInfos)))
+      {
+        CFGFilterFile *f;
+        if (! (f = CFilterCoreFactory::GetFilterFromName(filter, false)))
+        {
+          CLog::Log(LOGERROR, "%s The filter corresponding to the new rule doesn't exist. Don't change the graph.", __FUNCTION__);
+          goto standardway;
+        }
+        else
+        {
+          if (CFGLoader::Filters.Audio.guid == f->GetCLSID())
+            goto standardway; // Same filter
+
+          IBaseFilter* audioDecoder = CFGLoader::Filters.Audio.pBF;
+
+          // Where this audio decoder is connected ?
+          IPin *audioDecoderOutputPin = DShowUtil::GetFirstPin(audioDecoder, PINDIR_OUTPUT); // first output pin of audio decoder
+          IPin *audioDecoderConnectedToPin = NULL;
+          hr = audioDecoderOutputPin->ConnectedTo(&audioDecoderConnectedToPin);
+
+          if (! audioDecoderConnectedToPin)
+            goto standardway;
+
+          audioDecoderOutputPin = NULL;
+
+          // Create the new audio decoder
+          IBaseFilter *newAudioDecoder = NULL;
+          if (FAILED(f->Create(&newAudioDecoder)))
+            goto standardway;
+
+          // Change references
+          CFGLoader::Filters.Audio.pBF = newAudioDecoder;
+          CFGLoader::Filters.Audio.guid = f->GetCLSID();
+          g_charsetConverter.wToUTF8(f->GetName(), CFGLoader::Filters.Audio.osdname);
+
+          // Remove the old decoder from the graph
+          hr = m_pGraphBuilder->RemoveFilter(audioDecoder);
+          if (SUCCEEDED(hr))
+            CLog::Log(LOGDEBUG, "%s Removed old audio decoder from the graph", __FUNCTION__);
+
+          // Delete filter
+          int c = 0;
+          do 
+          {
+            c = audioDecoder->Release();
+          } while (c != 0);
+
+          // Add the new one
+          if (FAILED(hr = m_pGraphBuilder->AddFilter(newAudioDecoder, f->GetName())))
+          {
+            CLog::Log(LOGERROR, "%s Failed to add the new audio decoder. No more sound!", __FUNCTION__);
+            goto done;
+          }
+
+          // Make connections
+          IPin *pin = NULL;
+          pin = DShowUtil::GetFirstPin(newAudioDecoder);
+          hr = m_pGraphBuilder->ConnectDirect(newAudioStreamPin, pin, NULL);
+
+          pin = DShowUtil::GetFirstPin(newAudioDecoder, PINDIR_OUTPUT);
+          hr = m_pGraphBuilder->ConnectDirect(pin, audioDecoderConnectedToPin, NULL);
+
+          m_audioStreams[disableIndex]->flags = 0;
+          m_audioStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
+
+          CLog::Log(LOGINFO, "%s New audio decoder inserted because of rules configuration.", __FUNCTION__);
+
+          // Connections done, run the graph!
+          goto done;
+        }
+
+      }
+    }
+
+    /* Disable filter */
+standardway:
 
     if (FAILED(hr))
       goto done;
@@ -151,7 +241,6 @@ void CStreamsManager::SetAudioStream(int iStream)
     m_audioStreams[disableIndex]->flags = 0;
 
     /* Enable filter */
-    IPin *newAudioStreamPin = (IPin *)(m_audioStreams[enableIndex]->pObj);
     hr = m_pGraphBuilder->ConnectDirect(newAudioStreamPin, connectedToPin, NULL);
     if (FAILED(hr))
     {
@@ -227,7 +316,6 @@ void CStreamsManager::LoadStreams()
       else
         continue;
 
-      infos->Clear();
       infos->IAMStreamSelect_Index = i;
 
       g_charsetConverter.wToUTF8(wname, infos->name);
@@ -304,8 +392,6 @@ void CStreamsManager::LoadStreams()
             infos = new SSubtitleStreamInfos();
           else
             continue;
-
-          infos->Clear();
 
           infos->name = pinName;
 

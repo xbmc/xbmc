@@ -21,6 +21,7 @@ public:
     delete m_pAudio;
     delete m_pVideo;
     delete m_pExtras;
+    delete m_pAudioRenderer;
 
     CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
   }
@@ -49,14 +50,19 @@ public:
     m_pSplitter->GetFilters(item, vecCores);
   }
 
+  void GetAudioRendererFilters(const CFileItem& item, std::vector<CStdString> &vecCores, SStreamInfos* s = NULL)
+  {
+    m_pAudioRenderer->GetFilters(item, vecCores, false, s);
+  }
+
   void GetVideoFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false)
   {
     m_pVideo->GetFilters(item, vecCores, dxva);
   }
 
-  void GetAudioFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false)
+  void GetAudioFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false, SStreamInfos* s = NULL)
   {
-    m_pAudio->GetFilters(item, vecCores, dxva);
+    m_pAudio->GetFilters(item, vecCores, dxva, s);
   }
 
   void GetExtraFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva = false)
@@ -73,6 +79,7 @@ private:
   CFilterSelectionRule * m_pVideo;
   CFilterSelectionRule * m_pAudio;
   CFilterSelectionRule * m_pExtras;
+  CFilterSelectionRule * m_pAudioRenderer;
 
   int GetTristate(const char* szValue) const
   {
@@ -115,6 +122,10 @@ private:
     // Video rules
     m_pVideo = new CFilterSelectionRule(pRule->FirstChildElement("video"), "video");
 
+    // Extra rules
     m_pExtras = new CFilterSelectionRule(pRule->FirstChildElement("extra"), "extra");
+
+    // Audio renderer rules
+    m_pAudioRenderer = new CFilterSelectionRule(pRule->FirstChildElement("audiorenderer"), "audiorenderer");
   }
 };

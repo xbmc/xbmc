@@ -38,18 +38,12 @@
 #include <ks.h>
 #include <Codecapi.h>
 #include "streamsmanager.h"
-#include "FilterCoreFactory/FilterSelectionRule.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
 #include "filtercorefactory/filtercorefactory.h"
 #include "Settings.h"
 
 using namespace std;
-
-bool CompareCFGFilterFileToString(CFGFilterFile * f, CStdString s)
-{
-  return f->GetInternalName().Equals(s);
-}
 
 DIRECTSHOW_RENDERER CFGLoader::m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
 
@@ -211,15 +205,23 @@ HRESULT CFGLoader::InsertVideoDecoder(const CStdString& filterName)
   return S_OK;
 }*/
 
-HRESULT CFGLoader::InsertAudioRenderer()
+HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
 {
   HRESULT hr = S_OK;
   CFGFilterRegistry* pFGF;
-  CStdString currentGuid,currentName;
+  CStdString currentGuid, currentName;
+
+  if (! filterName.empty())
+  {
+    if (SUCCEEDED(InsertFilter(filterName, Filters.AudioRenderer)))
+      return S_OK;
+    else
+      CLog::Log(LOGERROR, "%s Failed to insert custom audio renderer, fallback to default", __FUNCTION__);
+  }
 
   CDirectShowEnumerator p_dsound;
   std::vector<DSFilterInfo> deviceList = p_dsound.GetAudioRenderers();
-  
+
   //see if there a config first 
   for (std::vector<DSFilterInfo>::const_iterator iter = deviceList.begin();
     iter != deviceList.end(); ++iter)
@@ -389,10 +391,11 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     return E_FAIL;
   }
 
-  InsertAudioRenderer(); // First added, last connected
-  InsertVideoRenderer();
-
   CStdString filter = "";
+
+  CFilterCoreFactory::GetAudioRendererFilter(pFileItem, filter);
+  InsertAudioRenderer(filter); // First added, last connected
+  InsertVideoRenderer();
 
   if (! CFilterCoreFactory::GetSourceFilter(pFileItem, filter))
     return E_FAIL;
@@ -504,41 +507,24 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
 {
   HRESULT hr = S_OK;
   f.pBF = NULL;
-  
-  std::vector<CFGFilterFile *>::const_iterator it = std::find_if(CFilterCoreFactory::m_Filters.begin(),
-    CFilterCoreFactory::m_Filters.end(),
-    std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filterName) );
 
-  if (it == CFilterCoreFactory::m_Filters.end())
-  {
-    CLog::Log(LOGERROR, "%s Filter \"%s\" isn't loaded. Please check dsfilterconfig.xml", __FUNCTION__, filterName.c_str());
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
-    {
-      dialog->SetHeading("Filter not found");
-      dialog->SetLine(0, "The filter \"" + filterName + "\" isn't loaded.");
-      dialog->SetLine(1, "Please check your dsfilterconfig.xml.");
-      dialog->DoModal();
-    }
+  CFGFilterFile *filter = NULL;
+  if (! (filter = CFilterCoreFactory::GetFilterFromName(filterName)))
     return E_FAIL;
 
+  if(SUCCEEDED(hr = filter->Create(&f.pBF)))
+  {
+    g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);
+    if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(f.pBF, filter->GetName().c_str())))
+      CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
+    else
+      CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
+
+    f.guid = filter->GetCLSID();
   } 
   else
   {
-    if(SUCCEEDED(hr = (*it)->Create(&f.pBF)))
-    {
-      g_charsetConverter.wToUTF8((*it)->GetName(), f.osdname);
-      if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(f.pBF, (*it)->GetName().c_str())))
-        CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
-      else
-        CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
-
-      f.guid = (*it)->GetCLSID();
-    } 
-    else
-    {
-      CLog::Log(LOGERROR,"%s Failed to create filter \"%s\"", __FUNCTION__, filterName.c_str());
-    }
+    CLog::Log(LOGERROR,"%s Failed to create filter \"%s\"", __FUNCTION__, filterName.c_str());
   }
 
   return hr;

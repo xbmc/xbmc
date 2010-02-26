@@ -37,6 +37,7 @@
 using namespace std;
 
 DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
+CFileItem CDSPlayer::currentFileItem;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -64,6 +65,8 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 
   PlayerState = DSPLAYER_LOADING;
   HRESULT hr;
+
+  currentFileItem = file;
 
   //Creating the graph and querying every filter required for the playback
   ResetEvent(m_hReadyEvent);

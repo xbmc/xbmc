@@ -14,6 +14,11 @@
 #include "CharsetConverter.h"
 #include "RegExp.h"
 
+enum SStreamType
+{
+  AUDIO, VIDEO, SUBTITLE, EXTERNAL_SUBTITLE
+};
+
 struct SStreamInfos
 {
   unsigned int IAMStreamSelect_Index;
@@ -24,6 +29,7 @@ struct SStreamInfos
   IUnknown *pUnk; ///< Input pin of the filter
   LCID  lcid;
   DWORD group;
+  SStreamType type;
 
   virtual void Clear()
   {
@@ -52,6 +58,12 @@ struct SAudioStreamInfos: SStreamInfos
     bitrate = 0;
     samplerate = 0;
   }
+
+  SAudioStreamInfos()
+  {
+    Clear();
+    type = AUDIO;
+  }
 };
 
 struct SVideoStreamInfos: SStreamInfos
@@ -68,6 +80,12 @@ struct SVideoStreamInfos: SStreamInfos
     height = 0;
     fourcc = 0;
   }
+
+  SVideoStreamInfos()
+  {
+    Clear();
+    type = VIDEO;
+  }
 };
 
 struct SSubtitleStreamInfos: SStreamInfos
@@ -82,6 +100,12 @@ struct SSubtitleStreamInfos: SStreamInfos
     encoding = "";
     external = false;
   }
+
+  SSubtitleStreamInfos()
+  {
+    Clear();
+    type = SUBTITLE;
+  }
 };
 
 struct SExternalSubtitleInfos: SSubtitleStreamInfos
@@ -93,6 +117,12 @@ struct SExternalSubtitleInfos: SSubtitleStreamInfos
     SSubtitleStreamInfos::Clear();
 
     path = "";
+  }
+
+  SExternalSubtitleInfos()
+  {
+    Clear();
+    type = EXTERNAL_SUBTITLE;
   }
 };
 
