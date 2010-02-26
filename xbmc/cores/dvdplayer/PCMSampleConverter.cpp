@@ -19,6 +19,10 @@
  *
  */
 
+#ifdef _LINUX
+  #include <limits.h>
+  #include <string.h>
+#endif
 
 #include "PCMSampleConverter.h"
 

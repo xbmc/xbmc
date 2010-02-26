@@ -30,7 +30,7 @@
 #include "BitstreamStats.h"
 #include "DVDPlayerAudioResampler.h"
 #include "DVDAudioTypes.h"
-#include "utils/PCMSampleConverter.h"
+#include "PCMSampleConverter.h"
 
 #include <list>
 #include <queue>
