@@ -66,19 +66,19 @@ public:
   void SetLyrics(const CStdString& lyrics);
   void SetRating(char rating);
 
-  /*! \brief append a unique artist to the artist list
+  /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
    \param value artist to add.
    */
   void AppendArtist(const CStdString &artist);
 
-  /*! \brief append a unique album artist to the artist list
+  /*! \brief Append a unique album artist to the artist list
    Checks if we have this album artist already added, and if not adds it to the songs album artist list.
    \param albumArtist album artist to add.
    */
   void AppendAlbumArtist(const CStdString &albumArtist);
 
-  /*! \brief append a unique genre to the genre list
+  /*! \brief Append a unique genre to the genre list
    Checks if we have this genre already added, and if not adds it to the songs genre list.
    \param genre genre to add.
    */
@@ -88,6 +88,12 @@ public:
 
   void Clear();
 protected:
+  /*! \brief Trim whitespace off the given string
+   \param value string to trim
+   \return trimmed value, with spaces removed from left and right, as well as carriage returns from the right.
+   */
+  CStdString Trim(const CStdString &value) const;
+
   CStdString m_strURL;
   CStdString m_strTitle;
   CStdString m_strArtist;

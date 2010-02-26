@@ -172,47 +172,27 @@ void CMusicInfoTag::SetURL(const CStdString& strURL)
 
 void CMusicInfoTag::SetTitle(const CStdString& strTitle)
 {
-  m_strTitle = strTitle;
-  m_strTitle.TrimLeft(" ");
-  m_strTitle.TrimRight(" ");
-  m_strTitle.TrimRight("\n");
-  m_strTitle.TrimRight("\r");
+  m_strTitle = Trim(strTitle);
 }
 
 void CMusicInfoTag::SetArtist(const CStdString& strArtist)
 {
-  m_strArtist = strArtist;
-  m_strArtist.TrimLeft(" ");
-  m_strArtist.TrimRight(" ");
-  m_strArtist.TrimRight("\n");
-  m_strArtist.TrimRight("\r");
+  m_strArtist = Trim(strArtist);
 }
 
 void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
 {
-  m_strAlbum = strAlbum;
-  m_strAlbum.TrimLeft(" ");
-  m_strAlbum.TrimRight(" ");
-  m_strAlbum.TrimRight("\n");
-  m_strAlbum.TrimRight("\r");
+  m_strAlbum = Trim(strAlbum);
 }
 
 void CMusicInfoTag::SetAlbumArtist(const CStdString& strAlbumArtist)
 {
-  m_strAlbumArtist = strAlbumArtist;
-  m_strAlbumArtist.TrimLeft(" ");
-  m_strAlbumArtist.TrimRight(" ");
-  m_strAlbumArtist.TrimRight("\n");
-  m_strAlbumArtist.TrimRight("\r");
+  m_strAlbumArtist = Trim(strAlbumArtist);
 }
 
 void CMusicInfoTag::SetGenre(const CStdString& strGenre)
 {
-  m_strGenre = strGenre;
-  m_strGenre.TrimLeft(" ");
-  m_strGenre.TrimRight(" ");
-  m_strGenre.TrimRight("\n");
-  m_strGenre.TrimRight("\r");
+  m_strGenre = Trim(strGenre);
 }
 
 void CMusicInfoTag::SetYear(int year)
@@ -430,32 +410,43 @@ void CMusicInfoTag::Clear()
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
 }
 
-void CMusicInfoTag::AppendArtist(const CStdString &value)
+void CMusicInfoTag::AppendArtist(const CStdString &artist)
 {
   if (!m_strArtist.IsEmpty())
-    return SetArtist(value);
+    return SetArtist(artist);
   std::vector<CStdString> values;
+  CStdString value(Trim(artist));
   StringUtils::SplitString(m_strArtist, g_advancedSettings.m_musicItemSeparator, values);
   if (std::find(values.begin(), values.end(), value) != values.end())
     m_strArtist += g_advancedSettings.m_musicItemSeparator + value;
 }
 
-void CMusicInfoTag::AppendAlbumArtist(const CStdString &value)
+void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
 {
   if (m_strAlbumArtist.IsEmpty())
-    return SetAlbumArtist(value);
+    return SetAlbumArtist(albumArtist);
   std::vector<CStdString> values;
+  CStdString value(Trim(albumArtist));
   StringUtils::SplitString(m_strAlbumArtist, g_advancedSettings.m_musicItemSeparator, values);
   if (std::find(values.begin(), values.end(), value) != values.end())
     m_strAlbumArtist += g_advancedSettings.m_musicItemSeparator + value;
 }
 
-void CMusicInfoTag::AppendGenre(const CStdString &value)
+void CMusicInfoTag::AppendGenre(const CStdString &genre)
 {
   if (m_strGenre.IsEmpty())
-    return SetGenre(value);
+    return SetGenre(genre);
   std::vector<CStdString> values;
+  CStdString value(Trim(genre));
   StringUtils::SplitString(m_strGenre, g_advancedSettings.m_musicItemSeparator, values);
   if (std::find(values.begin(), values.end(), value) != values.end())
     m_strGenre += g_advancedSettings.m_musicItemSeparator + value;
+}
+
+CStdString CMusicInfoTag::Trim(const CStdString &value) const
+{
+  CStdString trimmedValue(value);
+  trimmedValue.TrimLeft(' ');
+  trimmedValue.TrimRight(" \n\r");
+  return trimmedValue;
 }
