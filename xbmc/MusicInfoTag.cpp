@@ -412,7 +412,7 @@ void CMusicInfoTag::Clear()
 
 void CMusicInfoTag::AppendArtist(const CStdString &artist)
 {
-  if (!m_strArtist.IsEmpty())
+  if (m_strArtist.IsEmpty())
     return SetArtist(artist);
   std::vector<CStdString> values;
   CStdString value(Trim(artist));
