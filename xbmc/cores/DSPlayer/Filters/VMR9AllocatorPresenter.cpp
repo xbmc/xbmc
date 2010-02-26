@@ -31,7 +31,6 @@
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"
 #include "GuiSettings.h"
-#include "dxerr.h"
 
 class COuterVMR9
   : public CUnknown

@@ -30,8 +30,15 @@
 #include "DSRenderer.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
-#include "dxerr.h"
-#include "cores/dvdplayer/DVDDemuxers/DVDDemuxVobsub.h"
+#if (D3DX_SDK_VERSION >= 42) //aug 2009 sdk and up there is no dxerr9 anymore
+  #include <Dxerr.h>
+#else
+  #include <dxerr9.h>
+  #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+  #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
+#endif
+
+
 #include "util.h"
 
 CDsRenderer::CDsRenderer()
