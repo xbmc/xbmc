@@ -7380,12 +7380,10 @@ void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite 
     CStdString strThumb = item.GetCachedActorThumb();
     if (CFile::Exists(strThumb))
     {
-      CStdString thumbFile = iter->strName;
-      thumbFile.Replace(" ","_");
-      thumbFile += ".tbn";
-      if (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strDir,thumbFile)))
-        if (!CFile::Cache(strThumb,CUtil::AddFileToFolder(strDir,thumbFile)))
-          CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", __FUNCTION__, strThumb.c_str(), CUtil::AddFileToFolder(strDir,thumbFile).c_str());
+      CStdString thumbFile(GetSafeThumbFile(strDir, iter->strName));
+      if (overwrite || !CFile::Exists(thumbFile))
+        if (!CFile::Cache(strThumb, thumbFile))
+          CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", __FUNCTION__, strThumb.c_str(), thumbFile.c_str());
     }
   }
 }
@@ -7710,3 +7708,10 @@ void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
   m_pDS->exec(strSQL.c_str());
 }
 
+CStdString CVideoDatabase::GetSafeThumbFile(const CStdString &dir, const CStdString &name) const
+{
+  CStdString safeThumb(name);
+  safeThumb.Replace(' ', '_');
+  safeThumb += ".tbn";
+  return CUtil::AddFileToFolder(dir, safeThumb);
+}
