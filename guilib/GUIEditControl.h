@@ -104,6 +104,7 @@ protected:
 
   int m_inputHeading;
   INPUT_TYPE m_inputType;
+  bool m_isMD5;
 
   std::vector<CGUIActionDescriptor> m_textChangeActions;
 

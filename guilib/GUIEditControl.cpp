@@ -63,6 +63,7 @@ void CGUIEditControl::DefaultConstructor()
   m_smsKeyIndex = 0;
   m_label.SetAlign(m_label.GetLabelInfo().align & XBFONT_CENTER_Y); // left align
   m_label2.GetLabelInfo().offsetX = 0;
+  m_isMD5 = false;
 }
 
 CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
@@ -453,6 +454,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
   g_charsetConverter.utf8ToW(text, newText);
   if (newText != m_text2)
   {
+    m_isMD5 = m_inputType == INPUT_TYPE_PASSWORD_MD5;
     m_text2 = newText;
     m_cursorPos = m_text2.size();
     SetInvalid();
@@ -463,23 +465,19 @@ CStdString CGUIEditControl::GetLabel2() const
 {
   CStdString text;
   g_charsetConverter.wToUTF8(m_text2, text);
-  if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !XBMC::XBMC_MD5::IsValidMD5(text))
+  if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !m_isMD5)
     return XBMC::XBMC_MD5::GetMD5(text);
   return text;
 }
 
 bool CGUIEditControl::ClearMD5()
 {
-  if (m_inputType != INPUT_TYPE_PASSWORD_MD5)
-    return false;
-  
-  CStdString utf8;
-  g_charsetConverter.wToUTF8(m_text2, utf8);
-  if (!XBMC::XBMC_MD5::IsValidMD5(utf8))
+  if (m_inputType != INPUT_TYPE_PASSWORD_MD5 || !m_isMD5)
     return false;
   
   m_text2.Empty();
   m_cursorPos = 0;
+  m_isMD5 = false;
   return true;
 }
 
