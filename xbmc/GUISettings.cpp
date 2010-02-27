@@ -305,11 +305,11 @@ void CGUISettings::Initialize()
   AddBool(scr, "scrobbler.lastfmsubmit", 15201, false);
   AddBool(scr, "scrobbler.lastfmsubmitradio", 15250, false);
   AddString(scr,"scrobbler.lastfmusername", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
-  AddString(scr,"scrobbler.lastfmpassword", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddString(scr,"scrobbler.lastfmpassword", 15203, "", EDIT_CONTROL_MD5_INPUT, false, 15203);
   AddSeparator(scr, "scrobbler.sep1");
   AddBool(scr, "scrobbler.librefmsubmit", 15217, false);
   AddString(scr, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
-  AddString(scr, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15219);
+  AddString(scr, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_MD5_INPUT, false, 15219);
 
   CSettingsCategory* acd = AddCategory(3, "audiocds", 620);
   AddBool(acd, "audiocds.autorun", 14085, false);

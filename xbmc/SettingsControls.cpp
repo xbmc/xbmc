@@ -181,6 +181,8 @@ CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, int id, CSettin
   if (heading < 0) heading = 0;
   if (pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT)
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, heading);
+  else if (pSetting->GetControlType() == EDIT_CONTROL_MD5_INPUT)
+    m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD_MD5, heading);    
   else if (pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
     m_pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_IPADDRESS, heading);
   else if (pSetting->GetControlType() == EDIT_CONTROL_NUMBER_INPUT)
@@ -205,7 +207,8 @@ bool CEditSettingControl::OnClick()
 
 void CEditSettingControl::Update()
 {
-  m_pEdit->SetLabel2(((CSettingString *)m_pSetting)->GetData());
+  if (!m_needsUpdate)
+    m_pEdit->SetLabel2(((CSettingString *)m_pSetting)->GetData());
 }
 
 bool CEditSettingControl::IsValidIPAddress(const CStdString &strIP)

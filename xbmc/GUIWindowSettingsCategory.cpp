@@ -2068,6 +2068,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   }
   else if (pSetting->GetControlType() == EDIT_CONTROL_INPUT ||
            pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT ||
+           pSetting->GetControlType() == EDIT_CONTROL_MD5_INPUT ||
            pSetting->GetControlType() == EDIT_CONTROL_NUMBER_INPUT ||
            pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
   {
