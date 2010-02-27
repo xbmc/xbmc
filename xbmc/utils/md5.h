@@ -47,13 +47,7 @@ namespace XBMC
      \return MD5 digest
      */
     static CStdString GetMD5(const CStdString &text);
-    
-    /*! \brief Check whether a given string might be an MD5 digest
-     \param digest text to check for validity
-     \return true if this text could be an MD5 digest
-     */
-    static bool IsValidMD5(const CStdString &digest);
-  private:
+private:
     MD5Context m_ctx;
   };
 }
