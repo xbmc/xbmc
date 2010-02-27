@@ -99,7 +99,8 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
     CLog::Log(LOGDEBUG, "%s - Adjusting detected frame rate by half assuming 1080i (interlaced): %.3f",
               __FUNCTION__, fFrameRate);
     fFramesPerSecond = fFrameRate / 2;
-  } else // Assume everything else is not interlaced, e.g. 720p.
+  }
+  else // Assume everything else is not interlaced, e.g. 720p.
     fFramesPerSecond = fFrameRate;
 
   bool bFound = false;
