@@ -130,24 +130,6 @@ CStdString CCMythSession::GetValue(char *str)
   return result;
 }
 
-CDateTime CCMythSession::GetLocalTime(time_t time)
-{
-  // TODO: Should this method or something similar be added to one of the *Utils classes?
-  CDateTime result;
-
-  tm *local = localtime(&time); // Conversion to local time
-  /*
-   * Microsoft implementation of localtime returns NULL if on or before epoch.
-   * http://msdn.microsoft.com/en-us/library/bf12f0hc(VS.80).aspx
-   */
-  if (local)
-    result = *local;
-  else
-    result = time; // Use the original time as close enough.
-
-  return result;
-}
-
 bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 {
   if (!info)
