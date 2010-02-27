@@ -32,6 +32,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "DirectoryCache.h"
+#include "TimeUtils.h"
 
 extern "C"
 {
@@ -189,7 +190,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
       CStdString subtitle     = program[i].subtitle; // e.g. The Pirate Special
       CDateTime localstart;
       if (program[i].starttime)
-        localstart = m_session->GetLocalTime(program[i].starttime);
+        localstart = CTimeUtils::GetLocalTime(program[i].starttime);
       item->m_strTitle.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), title); // e.g. 20:30 - Mythbusters
       if (!subtitle.IsEmpty())
         item->m_strTitle     += " - \"" + subtitle + "\""; // e.g. 20:30 - Mythbusters - "The Pirate Special"
