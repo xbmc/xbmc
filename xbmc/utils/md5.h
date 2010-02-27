@@ -41,7 +41,18 @@ namespace XBMC
     void append(const CStdString& str);
     void getDigest(unsigned char digest[16]);
     void getDigest(CStdString& digest);
-
+    
+    /*! \brief Get the MD5 digest of the given text
+     \param text text to compute the MD5 for
+     \return MD5 digest
+     */
+    static CStdString GetMD5(const CStdString &text);
+    
+    /*! \brief Check whether a given string might be an MD5 digest
+     \param digest text to check for validity
+     \return true if this text could be an MD5 digest
+     */
+    static bool IsValidMD5(const CStdString &digest);
   private:
     MD5Context m_ctx;
   };

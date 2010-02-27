@@ -63,6 +63,26 @@ void XBMC::XBMC_MD5::getDigest(CStdString& digest)
       szBuf[15]);
 }
 
+CStdString XBMC::XBMC_MD5::GetMD5(const CStdString &text)
+{
+  if (text.IsEmpty())
+    return "";
+  XBMC_MD5 state;
+  CStdString digest;
+  state.append(text);
+  state.getDigest(digest);
+  return digest;
+}
+
+bool XBMC::XBMC_MD5::IsValidMD5(const CStdString &digest)
+{
+  if (digest.GetLength() != 32)
+    return false; // not long enough
+  for (unsigned int i = 0; i < 32; i++)
+    if (!isxdigit(digest[i]))
+      return false;
+  return true;
+}
 
 /*
  * This code implements the MD5 message-digest algorithm.
