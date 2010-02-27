@@ -26,6 +26,7 @@
 #include "GUIDialogNumeric.h"
 #include "LocalizeStrings.h"
 #include "DateTime.h"
+#include "utils/md5.h"
 
 #ifdef __APPLE__
 #include "CocoaInterface.h"
@@ -103,7 +104,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
     // backspace
     if (m_cursorPos)
     {
-      m_text2.erase(--m_cursorPos, 1);
+      if (!ClearMD5())
+        m_text2.erase(--m_cursorPos, 1);
       UpdateText();
     }
     return true;
@@ -128,6 +130,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   }
   else if (action.GetID() == ACTION_PASTE)
   {
+    ClearMD5();
     OnPasteClipboard();
   }
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
@@ -162,7 +165,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       if (m_cursorPos < m_text2.length())
       { // delete
-        m_text2.erase(m_cursorPos, 1);
+        if (!ClearMD5())
+          m_text2.erase(m_cursorPos, 1);
         UpdateText();
         return true;
       }
@@ -171,7 +175,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       if (m_cursorPos > 0)
       { // backspace
-        m_text2.erase(--m_cursorPos, 1);
+        if (!ClearMD5())
+          m_text2.erase(--m_cursorPos, 1);
         UpdateText();
       }
       return true;
@@ -200,12 +205,14 @@ bool CGUIEditControl::OnAction(const CAction &action)
         // backspace
         if (m_cursorPos)
         {
-          m_text2.erase(--m_cursorPos, 1);
+          if (!ClearMD5())
+            m_text2.erase(--m_cursorPos, 1);
         }
         break;
       }
     default:
       {
+        ClearMD5();
         m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
         break;
       }
@@ -215,6 +222,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   }
   else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
   { // input from the remote
+    ClearMD5();
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
       m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.GetID() - REMOTE_0));
@@ -271,9 +279,12 @@ void CGUIEditControl::OnClick()
     case INPUT_TYPE_FILTER:
       textChanged = CGUIDialogKeyboard::ShowAndGetFilter(utf8, false);
       break;
+    case INPUT_TYPE_PASSWORD_MD5:
+      utf8 = ""; // TODO: Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
+      // fallthrough
     case INPUT_TYPE_TEXT:
     default:
-      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD);
+      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5);
       break;
   }
   if (textChanged)
@@ -415,7 +426,7 @@ void CGUIEditControl::RenderText()
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
 {
-  if (m_inputType == INPUT_TYPE_PASSWORD)
+  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5)
   {
     CStdStringW text;
     text.append(m_text2.size(), L'*');
@@ -452,7 +463,24 @@ CStdString CGUIEditControl::GetLabel2() const
 {
   CStdString text;
   g_charsetConverter.wToUTF8(m_text2, text);
+  if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !XBMC::XBMC_MD5::IsValidMD5(text))
+    return XBMC::XBMC_MD5::GetMD5(text);
   return text;
+}
+
+bool CGUIEditControl::ClearMD5()
+{
+  if (m_inputType != INPUT_TYPE_PASSWORD_MD5)
+    return false;
+  
+  CStdString utf8;
+  g_charsetConverter.wToUTF8(m_text2, utf8);
+  if (!XBMC::XBMC_MD5::IsValidMD5(utf8))
+    return false;
+  
+  m_text2.Empty();
+  m_cursorPos = 0;
+  return true;
 }
 
 unsigned int CGUIEditControl::GetCursorPosition() const
