@@ -538,5 +538,5 @@ private:
    \param name movie, show name, or actor to get a safe thumbnail name for
    \return safe thumbnail file based on this title
    */
-  CStdString CVideoDatabase::GetSafeThumbFile(const CStdString &dir, const CStdString &name) const;
+  CStdString GetSafeThumbFile(const CStdString &dir, const CStdString &name) const;
 };
