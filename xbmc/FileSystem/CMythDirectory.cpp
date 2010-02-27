@@ -293,39 +293,18 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       }
 
       CFileItemPtr item(new CFileItem(url.Get(), false));
-      m_session->UpdateItem(*item, program);
-      /*
-       * TODO: Refactor UpdateItem so it doesn't change the path of a program that is currently
-       * recording if it wasn't opened through Live TV.
-       */
-      item->m_strPath = url.Get(); // Overwrite potentially incorrect change to path if recording
-
-      url.SetFileName("files/" + path + ".png");
-      item->SetThumbnailImage(url.Get());
+      m_session->SetFileItemMetaData(*item, program);
 
       /*
-       * Don't adjust the name for MOVIES as additional information in the name will affect any scraper lookup.
-       */
-      if (type != MOVIES)
-      {
-        if (m_dll->proginfo_rec_status(program) == RS_RECORDING)
-        {
-          name += " (Recording)";
-          item->SetThumbnailImage("");
-        }
-        else
-          name += " (" + item->m_dateTime.GetAsLocalizedDateTime() + ")";
-      }
-
-      item->SetLabel(name);
-      /*
-       * Set the label as preformated for MOVIES so any scraper lookup will use
-       * the label rather than the filename. Don't set as preformated for other
-       * filter types as this prevents the display of the title changing
-       * depending on what the list is being sorted by.
+       * If MOVIES, set the label and specify as pre-formatted so any scraper lookup will use the
+       * label rather than the filename. Don't set as pre-formatted for any other types as this
+       * prevents the display of the title changing depending on what the list is being sorted by.
        */
       if (type == MOVIES)
+      {
+        item->SetLabel(item->m_strTitle);
         item->SetLabelPreformated(true);
+      }
 
       items.Add(item);
       m_dll->ref_release(program);
@@ -333,17 +312,18 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
   }
 
   /*
-   * Only add sort by name for the Movies and All Recordings directories. For TV Shows they all have
-   * the same name, so only date is useful.
+   * Don't sort by name for TV_SHOWS as they all have the same name, so only date sort is useful.
+   * Since the subtitle has been added to the TV Show name, the video sort title sort is used so
+   * the subtitle doesn't influence the sort order and they are sorted by date.
    */
   if (type != TV_SHOWS)
   {
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%K", "%J"));
     else
-      items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+      items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551 /* Name */, LABEL_MASKS("%K", "%J"));
   }
-  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%Z", "%J", "%L", "%J"));
+  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
 
   m_dll->ref_release(list);
   return true;
