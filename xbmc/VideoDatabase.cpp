@@ -6978,59 +6978,61 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
       }
 
-      if (CUtil::IsWritable(movie.m_strFileNameAndPath))
+      CFileItem item(movie.m_strFileNameAndPath,false);
+      if (singleFiles && CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles)
+        if (!item.Exists(false))
         {
-          CFileItem item(movie.m_strFileNameAndPath,false);
-          if (!item.Exists(false))
-            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
-          else
-          {
-            CStdString nfoFile;
-            CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          bSkip = true;
+        }
+        else
+        {
+          CStdString nfoFile;
+          CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
-            if (overwrite || !CFile::Exists(nfoFile, false))
+          if (overwrite || !CFile::Exists(nfoFile, false))
+          {
+            if(!xmlDoc.SaveFile(nfoFile))
             {
-              if(!xmlDoc.SaveFile(nfoFile))
+              CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
               {
-                CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
+                if (progress)
                 {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
+                  progress->Close();
+                  m_pDS->close();
+                  return;
                 }
               }
             }
-
-            xmlDoc.Clear();
-            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-            xmlDoc.InsertEndChild(decl);
-
-            if (images && !bSkip)
-            {
-              CStdString cachedThumb(GetCachedThumb(item));
-              if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile(), false)))
-                if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
-                  CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
-
-              CStdString strFanart;
-              CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg", strFanart);
-
-              if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(strFanart, false)))
-                if (!CFile::Cache(item.GetCachedFanart(),strFanart))
-                  CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), strFanart.c_str());
-
-              if (actorThumbs)
-                ExportActorThumbs(movie, overwrite);
-            }
           }
+
+          xmlDoc.Clear();
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
         }
+      }
+
+      if (images && !bSkip)
+      {
+        CStdString cachedThumb(GetCachedThumb(item));
+        CStdString savedThumb(item.GetTBNFile());
+        if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(savedThumb, false)))
+          if (!CFile::Cache(cachedThumb, savedThumb))
+            CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
+        
+        CStdString cachedFanart(item.GetCachedFanart());
+        CStdString savedFanart;
+        CUtil::ReplaceExtension(savedThumb, "-fanart.jpg", savedFanart);
+        
+        if (CFile::Exists(cachedFanart, false))
+          if (!CFile::Cache(cachedFanart, savedFanart))
+            CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, cachedFanart.c_str(), savedFanart.c_str());
+        
+        if (actorThumbs)
+          ExportActorThumbs(movie, overwrite);
       }
       m_pDS->next();
       current++;
@@ -7066,50 +7068,49 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
       }
 
-      if (CUtil::IsWritable(movie.m_strFileNameAndPath))
+      CFileItem item(movie.m_strFileNameAndPath,false);
+      if (CUtil::IsWritable(movie.m_strFileNameAndPath) && singleFiles)
       {
-        if (singleFiles)
+        if (!item.Exists(false))
         {
-          CFileItem item(movie.m_strFileNameAndPath,false);
-          if (!item.Exists(false))
-            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
-          else
-          {
-            CStdString nfoFile;
-            CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          bSkip = true;
+        }
+        else
+        {
+          CStdString nfoFile;
+          CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
 
-            if (overwrite || !CFile::Exists(nfoFile, false))
+          if (overwrite || !CFile::Exists(nfoFile, false))
+          {
+            if(!xmlDoc.SaveFile(nfoFile))
             {
-              if(!xmlDoc.SaveFile(nfoFile))
+              CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
               {
-                CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
+                if (progress)
                 {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
+                  progress->Close();
+                  m_pDS->close();
+                  return;
                 }
               }
             }
-
-            xmlDoc.Clear();
-            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-            xmlDoc.InsertEndChild(decl);
-
-            if (images && !bSkip)
-            {
-              CStdString cachedThumb(GetCachedThumb(item));
-              if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile(), false)))
-                if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
-                  CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
-
-            }
           }
+
+          xmlDoc.Clear();
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
         }
+      }
+      if (images && !bSkip)
+      {
+        CStdString cachedThumb(GetCachedThumb(item));
+        CStdString savedThumb(item.GetTBNFile());
+        if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(savedThumb, false)))
+          if (!CFile::Cache(cachedThumb, savedThumb))
+            CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
       }
       m_pDS->next();
       current++;
