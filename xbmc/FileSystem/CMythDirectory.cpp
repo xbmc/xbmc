@@ -101,7 +101,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
   cmyth_chanlist_t list = m_dll->mysql_get_chanlist(db);
   if (!list)
   {
-    CLog::Log(LOGERROR, "%s - unable to get list of channels with url %s", __FUNCTION__, base.c_str());
+    CLog::Log(LOGERROR, "%s - Unable to get list of channels: %s", __FUNCTION__, base.c_str());
     return false;
   }
   CURL url(base);
@@ -112,51 +112,45 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
     cmyth_channel_t channel = m_dll->chanlist_get_item(list, i);
     if (channel)
     {
-      CStdString name, icon;
-
       if (!m_dll->channel_visible(channel))
       {
         m_dll->ref_release(channel);
         continue;
       }
-      int num = m_dll->channel_channum(channel);
-      char* str;
-      if ((str = m_dll->channel_name(channel)))
-      {
-        name.Format("%d - %s", num, str);
-        m_dll->ref_release(str);
-      }
-      else
-        name.Format("%d");
 
-      icon = GetValue(m_dll->channel_icon(channel));
+      int channum = m_dll->channel_channum(channel); // e.g. 3
+      CStdString name = GetValue(m_dll->channel_name(channel)); // e.g. TV3
+      if (channum <= 0)
+      {
+        CLog::Log(LOGDEBUG, "%s - Skipping channel number %d as <= 0: %s", __FUNCTION__, channum, name.c_str());
+        m_dll->ref_release(channel);
+        continue;
+      }
 
-      if (num <= 0)
+      CLog::Log(LOGDEBUG, "%s - Adding channel number %d: %s", __FUNCTION__, channum, name.c_str());
+
+      CStdString number;
+      number.Format("%d", channum); // CStdString easier for string manipulation than int.
+      url.SetFileName("guide/" + number);
+      CFileItemPtr item(new CFileItem(url.Get(), true));
+      item->m_strTitle = number;
+      if (!name.IsEmpty())
+        item->m_strTitle += " - " + name; // e.g. 3 - TV3
+
+      CStdString icon = GetValue(m_dll->channel_icon(channel));
+      if (!icon.IsEmpty())
       {
-        CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s' - Skipped", __FUNCTION__, name.c_str(), icon.c_str());
+        url.SetFileName("files/channels/" + CUtil::GetFileName(icon)); // e.g. files/channels/tv3.jpg
+        item->SetThumbnailImage(url.Get());
       }
-      else
-      {
-        CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
-        CStdString path;
-        path.Format("guide/%d/", num);
-        url.SetFileName(path);
-        CFileItemPtr item(new CFileItem(url.Get(), true));
-        item->SetLabel(name);
-        item->SetLabelPreformated(true);
-        if (icon.length() > 0)
-        {
-          url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
-          item->SetThumbnailImage(url.Get());
-        }
-        items.Add(item);
-      }
+
+      items.Add(item);
+
       m_dll->ref_release(channel);
     }
   }
 
-  // Sort by name only. Labels are preformated.
-  items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+  items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%K", ""));
 
   m_dll->ref_release(list);
   return true;
