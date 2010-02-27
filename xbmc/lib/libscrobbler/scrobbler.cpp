@@ -188,9 +188,10 @@ void CScrobbler::SetPassword(const CStdString& strPass)
 {
   if (strPass.IsEmpty())
     return;
-  XBMC::XBMC_MD5 md5state;
-  md5state.append(strPass);
-  md5state.getDigest(m_strPasswordHash);
+  if (XBMC::XBMC_MD5::IsValidMD5(strPass))
+    m_strPasswordHash = strPass;
+  else
+    m_strPasswordHash = XBMC::XBMC_MD5::GetMD5(strPass);
   m_strPasswordHash.ToLower();
   m_bBadAuth = false;
 }

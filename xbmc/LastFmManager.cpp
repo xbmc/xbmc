@@ -662,9 +662,10 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
 {
-  XBMC::XBMC_MD5 md5state;
-  md5state.append(bufferToHash);
-  md5state.getDigest(hash);
+  if (XBMC::XBMC_MD5::IsValidMD5(bufferToHash))
+    hash = bufferToHash;
+  else
+    hash = XBMC::XBMC_MD5::GetMD5(bufferToHash);
   hash.ToLower();
 }
 
