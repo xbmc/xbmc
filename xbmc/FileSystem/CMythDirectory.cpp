@@ -488,33 +488,27 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   {
     CFileItemPtr item;
 
-    item.reset(new CFileItem(base + "/channels/", true));
-    item->SetLabel(g_localizeStrings.Get(22018)); // Live channels
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    item.reset(new CFileItem(base + "/guide/", true));
-    item->SetLabel(g_localizeStrings.Get(22020)); // Guide
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
-    item.reset(new CFileItem(base + "/movies/", true));
-    item->SetLabel(g_localizeStrings.Get(20342)); // Movies
-    item->SetLabelPreformated(true);
-    items.Add(item);
-
     item.reset(new CFileItem(base + "/recordings/", true));
     item->SetLabel(g_localizeStrings.Get(22015)); // All recordings
-    item->SetLabelPreformated(true);
     items.Add(item);
 
     item.reset(new CFileItem(base + "/tvshows/", true));
     item->SetLabel(g_localizeStrings.Get(20343)); // TV shows
-    item->SetLabelPreformated(true);
     items.Add(item);
 
-    // Sort by name only. Labels are preformated.
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+    item.reset(new CFileItem(base + "/movies/", true));
+    item->SetLabel(g_localizeStrings.Get(20342)); // Movies
+    items.Add(item);
+
+    item.reset(new CFileItem(base + "/channels/", true));
+    item->SetLabel(g_localizeStrings.Get(22018)); // Live channels
+    items.Add(item);
+
+    item.reset(new CFileItem(base + "/guide/", true));
+    item->SetLabel(g_localizeStrings.Get(22020)); // Guide
+    items.Add(item);
+
+    items.AddSortMethod(SORT_METHOD_NONE, 564 /* Type */, LABEL_MASKS("", "", "%L", "")); // No sorting, as added to list.
 
     /*
      * Clear the directory cache so the cached sub-folders are guaranteed to be accurate.
