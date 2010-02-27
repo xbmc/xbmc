@@ -1817,7 +1817,7 @@ void CFileItemList::FilterCueItems()
                   StringUtils::SplitString(g_settings.m_musicExtensions, "|", extensions);
                   for (unsigned int i = 0; i < extensions.size(); i++)
                   {
-                    CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
+                    strMediaFile = CUtil::ReplaceExtension(pItem->m_strPath, extensions[i]);
                     CFileItem item(strMediaFile, false);
                     if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
                     {
@@ -2553,7 +2553,7 @@ CStdString CFileItem::GetTBNFile() const
     if (m_bIsFolder && !IsFileFolder())
       thumbFile = strFile + ".tbn"; // folder, so just add ".tbn"
     else
-      CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+      thumbFile = CUtil::ReplaceExtension(strFile, ".tbn");
     url.SetFileName(thumbFile);
     thumbFile = url.Get();
   }
@@ -2733,8 +2733,7 @@ CStdString CFileItem::GetLocalFanart() const
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    CStdString strTBNFile = item.GetTBNFile();
-    CUtil::ReplaceExtension(strTBNFile, "-fanart",strTBNFile);
+    CStdString strTBNFile(CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart"));
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
@@ -2766,7 +2765,7 @@ CStdString CFileItem::GetLocalFanart() const
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
-  CUtil::ReplaceExtension(strFile, "-fanart",strFile);
+  strFile = CUtil::ReplaceExtension(strFile, "-fanart");
   fanarts.push_back(CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())
@@ -3103,8 +3102,7 @@ CStdString CFileItem::FindTrailer() const
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    CStdString strTBNFile = item.GetTBNFile();
-    CUtil::ReplaceExtension(strTBNFile, "-trailer",strTBNFile);
+    CStdString strTBNFile(CUtil::ReplaceExtension(item.GetTBNFile(), "-trailer"));
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))

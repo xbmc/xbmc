@@ -153,8 +153,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString edlFilename;
-  CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
+  CStdString edlFilename(CUtil::ReplaceExtension(strMovie, ".edl"));
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -235,8 +234,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  CStdString comskipFilename;
-  CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
+  CStdString comskipFilename(CUtil::ReplaceExtension(strMovie, ".txt"));
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -321,8 +319,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
    */
 
   Clear();
-  CStdString videoReDoFilename;
-  CUtil::ReplaceExtension(strMovie, ".Vprj", videoReDoFilename);
+  CStdString videoReDoFilename(CUtil::ReplaceExtension(strMovie, ".Vprj"));
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -408,8 +405,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename;
-  CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml", beyondTVFilename);
+  CStdString beyondTVFilename(CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 

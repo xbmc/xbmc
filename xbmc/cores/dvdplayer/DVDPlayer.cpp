@@ -3246,8 +3246,7 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
   }
   if(ext == ".sub")
   {
-    CStdString strReplace;
-    CUtil::ReplaceExtension(filename,".idx",strReplace);
+    CStdString strReplace(CUtil::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return false;
   }

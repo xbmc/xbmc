@@ -6988,8 +6988,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
         else
         {
-          CStdString nfoFile;
-          CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -7024,8 +7023,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
         
         CStdString cachedFanart(item.GetCachedFanart());
-        CStdString savedFanart;
-        CUtil::ReplaceExtension(savedThumb, "-fanart.jpg", savedFanart);
+        CStdString savedFanart(CUtil::ReplaceExtension(savedThumb, "-fanart.jpg"));
         
         if (CFile::Exists(cachedFanart, false))
           if (!CFile::Cache(cachedFanart, savedFanart))
@@ -7078,8 +7076,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
         else
         {
-          CStdString nfoFile;
-          CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -7279,8 +7276,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, episode.m_strFileNameAndPath.c_str());
             else
             {
-              CStdString nfoFile;
-              CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+              CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
               if (overwrite || !CFile::Exists(nfoFile, false))
               {

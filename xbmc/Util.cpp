@@ -707,17 +707,16 @@ void CUtil::GetHomePath(CStdString& strPath)
   }
 }
 
-void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
+CStdString CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
 {
   if(strFile.Find("://") >= 0)
   {
     CURL url(strFile);
-    ReplaceExtension(url.GetFileName(), strNewExtension, strChangedFile);
-    url.SetFileName(strChangedFile);
-    strChangedFile = url.Get();
-    return;
+    url.SetFileName(ReplaceExtension(url.GetFileName(), strNewExtension));
+    return url.Get();
   }
 
+  CStdString strChangedFile;
   CStdString strExtension;
   GetExtension(strFile, strExtension);
   if ( strExtension.size() )
@@ -730,6 +729,7 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
     strChangedFile = strFile;
     strChangedFile += strNewExtension;
   }
+  return strChangedFile;
 }
 
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
@@ -1385,11 +1385,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   vector<CStdString> strLookInPaths;
 
   CStdString strFileName;
-  CStdString strFileNameNoExt;
   CStdString strPath;
 
   CUtil::Split(strMovie, strPath, strFileName);
-  ReplaceExtension(strFileName, "", strFileNameNoExt);
+  CStdString strFileNameNoExt(ReplaceExtension(strFileName, ""));
   strLookInPaths.push_back(strPath);
 
   if (!g_settings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
