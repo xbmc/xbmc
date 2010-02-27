@@ -375,7 +375,6 @@ bool CCMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &it
 
       CFileItemPtr item(new CFileItem(base + "/" + title + "/", true));
       item->SetLabel(title);
-      item->SetLabelPreformated(true);
 
       items.Add(item);
       m_dll->ref_release(program);
@@ -383,11 +382,10 @@ bool CCMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &it
 
   }
 
-  // Sort by name only. Labels are preformated.
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("", "", "%L", ""));
   else
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%L", ""));
 
   m_dll->ref_release(list);
   return true;
