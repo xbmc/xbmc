@@ -143,8 +143,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_VISUALISATION_ACTION:
   {
-    CAction action;
-    action.actionId = message.GetParam1();
+    CAction action(message.GetParam1());
     return OnAction(action);
   }
   case GUI_MSG_PLAYBACK_STARTED:

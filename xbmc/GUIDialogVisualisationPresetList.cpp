@@ -99,6 +99,16 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
+void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation* vis)
+{
+  m_viz = NULL;
+  if (vis)
+  {
+    m_viz = vis;
+    Update();
+  }
+}
+
 void CGUIDialogVisualisationPresetList::FrameMove()
 {
   //FIXME we shouldn't have to check preset each frame
