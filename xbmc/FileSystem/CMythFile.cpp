@@ -21,6 +21,7 @@
 
 #include "CMythFile.h"
 #include "DateTime.h"
+#include "FileItem.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
 #include "URL.h"
@@ -534,10 +535,22 @@ bool CCMythFile::SkipNext()
 
 bool CCMythFile::UpdateItem(CFileItem& item)
 {
-  if(!m_program || !m_session)
+  /*
+   * UpdateItem should only return true if a LiveTV item has changed via a channel change, or the
+   * program being aired on the current channel has changed requiring the UI to update the currently
+   * playing information.
+   *
+   * Check by comparing the current title with the new title.
+   */
+  if (!m_recorder)
     return false;
 
-  return m_session->UpdateItem(item, m_program);
+  if (!m_program || !m_session)
+    return false;
+
+  CStdString title = item.m_strTitle;
+  m_session->SetFileItemMetaData(item, m_program);
+  return title != item.m_strTitle;
 }
 
 int CCMythFile::GetTotalTime()
