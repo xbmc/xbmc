@@ -196,8 +196,6 @@ bool DShowUtil::IsVideoRenderer(IBaseFilter* pBF)
         continue;
 
       FreeMediaType(mt);
-      SAFE_RELEASE(pPin);
-      SAFE_RELEASE(pEP);
       return(!!(mt.majortype == MEDIATYPE_Video));
         /*&& (mt.formattype == FORMAT_VideoInfo || mt.formattype == FORMAT_VideoInfo2));*/
     }
@@ -228,7 +226,6 @@ bool DShowUtil::IsAudioWaveRenderer(IBaseFilter* pBF)
         continue;
 
       FreeMediaType(mt);
-      SAFE_RELEASE(pPin);
       return(!!(mt.majortype == MEDIATYPE_Audio)
         /*&& mt.formattype == FORMAT_WaveFormatEx*/);
     }
@@ -313,7 +310,8 @@ IPin* DShowUtil::GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin)
 
 IPin* DShowUtil::GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir)
 {
-  if(!pBF) return(NULL);
+  if(!pBF) 
+    return(NULL);
 
   BeginEnumPins(pBF, pEP, pPin)
   {
@@ -322,7 +320,6 @@ IPin* DShowUtil::GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir)
     if(dir == dir2)
     {
       IPin* pRet = pPin;
-      pPin = NULL;
       pRet->Release();
       return(pRet);
     }
@@ -374,7 +371,7 @@ IBaseFilter* DShowUtil::FindFilter(const CLSID& clsid, IFilterGraph* pFG)
       return(pRet);
     }
   }
-  EndEnumFilters(pEF, pBF)
+  EndEnumFilters
 
   return NULL;
 }
@@ -398,7 +395,6 @@ IPin* DShowUtil::FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MED
           pPin = NULL;
           pRet->Release();
           DeleteMediaType(pmt);
-          SAFE_RELEASE(pEM);
           return (pPin);
         }
       }
@@ -428,7 +424,6 @@ IPin* DShowUtil::FindPinMajor(IBaseFilter* pBF, PIN_DIRECTION direction, const A
           pPin = NULL;
           pRet->Release();
           DeleteMediaType(pmt);
-          SAFE_RELEASE(pEM);
           return (pPin);
         }
       }
@@ -521,7 +516,7 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     pFilters.push_back(pBF);
     BeginEnumFilters(pGB, pEnum, pBF2) 
       pFilters.push_back(pBF2); 
-    EndEnumFilters(pEnum, pBF2)
+    EndEnumFilters
 
     if(FAILED(pGB->AddFilter(pBF, CStdStringW(var.bstrVal))))
       break;
@@ -539,7 +534,7 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
             pEnum->Reset();
         }
       }
-    EndEnumFilters(pEnum, pBF2)
+    EndEnumFilters
 
     pPinTo = GetFirstPin(pBF, PINDIR_INPUT);
     if(!pPinTo)
@@ -557,6 +552,7 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
     }
 
     BeginEnumFilters(pGB, pEnum, pBF2) 
+    {
       for (std::list<IBaseFilter*>::iterator it = pFilters.begin() ; it != pFilters.end(); it++)
       {
         if (*it == pBF2)
@@ -568,7 +564,8 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
       
       //if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
       //  pEnum->Reset();
-    EndEnumFilters(pEnum, pBF2)
+    }
+    EndEnumFilters
 
     pRet = GetFirstPin(pBF, PINDIR_OUTPUT);
     if(!pRet)
@@ -1200,8 +1197,6 @@ IBaseFilter* DShowUtil::AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuild
 
       if(SUCCEEDED(pGB->ConnectDirect(pPin, pPinTo, NULL)))
       {
-        SAFE_RELEASE(pPinTo);
-        SAFE_RELEASE(pEP);
         return(pBF);
       }
     }
@@ -2272,7 +2267,7 @@ std::list<CStdString> sl;
     }
     EndEnumPins
   }
-  EndEnumFilters(pEF, pBF)
+  EndEnumFilters
   
   CStdString text;// = Implode(sl, '\n');
   //text.Replace(_T("\n"), _T("\r\n"));

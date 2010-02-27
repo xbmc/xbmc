@@ -15,6 +15,7 @@
 //#include "text.h" Removed until i changed the catllist
 #include <vector>
 #include <list>
+#include "DShowUtil/SmartPtr.h"
 
 #ifndef ASSERT
 #define ASSERT assert
@@ -207,47 +208,45 @@ public:
 
 /* BeginEnumFilters */
 #define BeginEnumFilters(pFilterGraph, pEnumFilters, pBaseFilter) \
-  {IEnumFilters* pEnumFilters; \
-  if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
-  { IBaseFilter* pBaseFilter = NULL; \
-    for(; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter->Release(), pBaseFilter = NULL) \
-    { \
+	{SmartPtr<IEnumFilters> pEnumFilters; \
+	if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
+	{ \
+		for(SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+		{ \
 
-#define EndEnumFilters(pEnumFilters, pBaseFilter) \
-    } \
-    SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumFilters); }}
+#define EndEnumFilters }}}
 /* EndEnumFilters */
 
 /* BeginEnumCachedFilters */
 #define BeginEnumCachedFilters(pGraphConfig, pEnumFilters, pBaseFilter) \
-  {IEnumFilters* pEnumFilters; \
-  if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
-  { IBaseFilter* pBaseFilter= NULL;\
-    for(; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter->Release(), pBaseFilter = NULL) \
-    { \
+	{SmartPtr<IEnumFilters> pEnumFilters; \
+	if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
+	{ \
+		for(SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+		{ \
 
-#define EndEnumCachedFilters(pEnumFilters, pBaseFilter) } SAFE_RELEASE(pBaseFilter); SAFE_RELEASE(pEnumFilters); }}
+#define EndEnumCachedFilters }}}
 /* EndEnumCachedFilters */
 
 /** BeginEnumPins **/
 #define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
-  {IEnumPins* pEnumPins; \
-  if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
-  { \
-    for(IPin* pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin->Release(), pPin = NULL) \
-    { \
+	{IEnumPins* pEnumPins; \
+	if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
+	{ \
+		for(IPin* pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin->Release(), pPin = NULL) \
+		{ \
 
 #define EndEnumPins }}}
 /** EndEnumPins **/
 
 /* BeginEnumMediaTypes */
 #define BeginEnumMediaTypes(pPin, pEnumMediaTypes, pMediaType) \
-  {IEnumMediaTypes* pEnumMediaTypes; \
-  if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
-  { \
-    AM_MEDIA_TYPE* pMediaType = NULL; \
-    for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
-    { \
+	{SmartPtr<IEnumMediaTypes> pEnumMediaTypes; \
+	if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
+	{ \
+		AM_MEDIA_TYPE* pMediaType = NULL; \
+		for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
+		{ \
 
 #define EndEnumMediaTypes(pMediaType) } if(pMediaType) DeleteMediaType(pMediaType); }}
 /* EndEnumMediaTypes */

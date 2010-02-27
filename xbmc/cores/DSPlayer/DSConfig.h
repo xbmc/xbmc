@@ -47,6 +47,11 @@ public:
   CDSConfig(void);
   /// Destructor
   virtual ~CDSConfig(void);
+
+  /**
+   * Clear every interfaces
+   */
+  virtual void ClearConfig();
   /**
    * Configure the filters in the graph
    * @param[in] pGB Pointer to the graph interface

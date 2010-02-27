@@ -287,12 +287,12 @@ HRESULT CFGLoader::InsertVideoRenderer()
   if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
   {
     m_pFGF = new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR");
-    Filters.VideoRenderer.osdname = _T("XBMC EVR");
+    Filters.VideoRenderer.osdname = _T("Enhanced Video Renderer");
   }
   else
   {
-    m_pFGF = new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9 (Renderless)");
-    Filters.VideoRenderer.osdname = _T("XBMC VMR9 (Renderless)");
+    m_pFGF = new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9");
+    Filters.VideoRenderer.osdname = _T("VMR9 (Renderless)");
   }
 
   
@@ -307,70 +307,6 @@ HRESULT CFGLoader::InsertVideoRenderer()
 
   return hr; 
 }
-
-/*HRESULT CFGLoader::InsertAutoLoad()
-{
-  HRESULT hr = S_OK;
-  IBaseFilter* ppBF;
-  for (list<CFGFilterFile*>::iterator it = CFilterCoreFactory::GetFiltersList().begin(); it != m_configFilter.end(); it++)
-  { 
-    if ( (*it)->GetAutoLoad() )
-    {
-      if (SUCCEEDED((*it)->Create(&ppBF)))
-	    {
-        m_pGraphBuilder->AddFilter(ppBF,(*it)->GetName().c_str());
-        ppBF = NULL;
-	    }
-	    else
-	    {
-        CLog::Log(LOGDEBUG,"DSPlayer %s Failed to create the auto loading filter called %s",__FUNCTION__,(*it)->GetInternalName().c_str());
-      }
-    }
-  }  
-  SAFE_RELEASE(ppBF);
-  CLog::Log(LOGDEBUG,"DSPlayer %s Is done adding the autoloading filters",__FUNCTION__);
-  return hr;
-}*/
-
-/*
-HRESULT CFGLoader::InsertExtraFilter( const CStdString& filterName )
-{
-  IBaseFilter* ppBF = NULL;
-  CStdString extraName;
-
-  list<CFGFilterFile *>::const_iterator it = std::find_if(m_configFilter.begin(),
-    m_configFilter.end(),
-    std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filterName) );
-
-  if (it == m_configFilter.end())
-  {
-
-    CLog::Log(LOGERROR, "%s Filter \"%s\" isn't loaded. Please check dsfilterconfig.xml", __FUNCTION__, filterName.c_str());
-    return E_FAIL;
-
-  } else {
-
-    g_charsetConverter.wToUTF8((*it)->GetName(), extraName);
-    if(SUCCEEDED((*it)->Create(&ppBF)))
-    {
-      if (SUCCEEDED(m_pGraphBuilder->AddFilter(ppBF,(*it)->GetName().c_str())))
-      {
-        CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, extraName.c_str());
-      } else {
-        CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, extraName.c_str());
-        return E_FAIL;
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR,"%s Failed to create extra filter \"%s\"", __FUNCTION__, extraName.c_str());
-      return E_FAIL;
-    }
-  }
-  m_extraFilters.push_back(ppBF);
-  return S_OK;
-}
-*/
 
 HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 {

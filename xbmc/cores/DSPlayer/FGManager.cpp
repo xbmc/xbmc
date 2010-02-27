@@ -108,14 +108,10 @@ HRESULT CFGManager::QueryInterface(const IID &iid, void** ppv)
   {
     hr = pBF->QueryInterface(iid, ppv);
     if (SUCCEEDED(hr))
-    {
-      SAFE_RELEASE(pBF);
-      SAFE_RELEASE(pEF);
       break;
-    }
 
   }
-  EndEnumFilters(pEF, pBF)
+  EndEnumFilters
   
   return hr;
 }
@@ -390,7 +386,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
         continue;
       pBFs.push_back(pBF);
     }
-    EndEnumFilters(pEF, pBF)
+    EndEnumFilters
 
     IBaseFilter* pBF;
     for (list<IBaseFilter*>::iterator it = pBFs.begin() ; it != pBFs.end(); it++)
@@ -805,11 +801,7 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
         m_subtitlePinConnected = true;
 
       if(SUCCEEDED(hr) && pPinIn)
-      {
-        SAFE_RELEASE(pEP);
-        SAFE_RELEASE(pPin);
         return S_OK;
-      }
     }
   }
   EndEnumPins
@@ -836,8 +828,8 @@ HRESULT CFGManager::ConnectFilter(IPin* pPinOut, IBaseFilter* pBF)
     && SUCCEEDED(hr = pPin->QueryDirection(&dir)) && dir == PINDIR_INPUT
     && SUCCEEDED(hr = Connect(pPinOut, pPin)))
     {
-      SAFE_RELEASE(pEP);
-      SAFE_RELEASE(pPin);
+      
+      
       return hr;
     }
   }
@@ -862,8 +854,6 @@ HRESULT CFGManager::ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const A
     && SUCCEEDED(hr = pPin->QueryDirection(&dir)) && dir == PINDIR_INPUT
     && SUCCEEDED(hr = ConnectDirect(pPinOut, pPin, pmt)))
     {
-      SAFE_RELEASE(pEP);
-      SAFE_RELEASE(pPin);
       return hr;
     }
   }
@@ -996,7 +986,7 @@ void CFGManager::LogFilterGraph(void)
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), buffer);
     CLog::Log(LOGDEBUG, "%s", buffer.c_str());
   }
-  EndEnumFilters(pEF, pBF)
+  EndEnumFilters
   CLog::Log(LOGDEBUG, "End of filters listing");
 }
 #endif

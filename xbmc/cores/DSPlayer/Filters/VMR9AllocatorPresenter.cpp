@@ -597,8 +597,9 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     SAFE_RELEASE(pAMVA);
     SAFE_RELEASE(pMemInputPin);
     
-    IVMRFilterConfig9* pConfig = NULL;
-    pBF->QueryInterface(__uuidof(IVMRFilterConfig9), (void**)&pConfig);
+    IVMRFilterConfig9* pConfig;
+    //HRESULT hr;
+    hr = pBF->QueryInterface(__uuidof(IVMRFilterConfig9), (void**)&pConfig);
     if(!pConfig)
       break;
 

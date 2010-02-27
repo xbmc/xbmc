@@ -30,7 +30,7 @@
 
 #include "GuiSettings.h"
 #include "FGLoader.h"
-
+#include "Filters/VMR9AllocatorPresenter.h"
 
 using namespace std;
 
@@ -54,7 +54,19 @@ CDSConfig::~CDSConfig(void)
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 }
-
+void CDSConfig::ClearConfig()
+{
+  m_pGraphBuilder = NULL;
+  m_pIMpcDecFilter = NULL;
+  m_pIMpaDecFilter = NULL;
+  pIffdshowDecFilter = NULL;
+  pIffdshowBase = NULL;
+  pIffdshowDecoder = NULL;
+  pQualProp = NULL;
+  pGraph = NULL;
+  while (! m_pPropertiesFilters.empty())
+    m_pPropertiesFilters.pop_back();
+}
 HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
 {
   HRESULT hr = S_OK;
@@ -69,6 +81,12 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 
+  IBaseFilter *pBF = NULL;
+  if (SUCCEEDED(m_pGraphBuilder->FindFilterByName(L"Xbmc VMR9", &pBF)))
+  {
+    pBF->QueryInterface(IID_IQualProp,(void **) &pQualProp);
+  }
+  SAFE_RELEASE(pBF);
   ConfigureFilters();
 
   return hr;
@@ -82,10 +100,8 @@ void CDSConfig::ConfigureFilters()
 	  GetMpaDec(pBF);
     GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);
-    if (!pQualProp)
-      pBF->QueryInterface(IID_IQualProp, (void **) &pQualProp);
   }
-  EndEnumFilters(pEF, pBF)
+  EndEnumFilters
   CreatePropertiesXml();
 }
 

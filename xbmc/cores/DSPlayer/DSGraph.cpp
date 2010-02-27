@@ -90,7 +90,9 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_VideoInfo.Clear();
   m_Filename = file.GetAsUrl().GetFileName();
-
+  
+  //Reset the g_dsconfig for not getting unwanted interface from last file into the player
+  g_dsconfig.ClearConfig();
   m_pGraphBuilder = new CFGManager();
   m_pGraphBuilder->InitManager();
 
@@ -393,12 +395,10 @@ void CDSGraph::Stop(bool rewind)
         CoTaskMemFree(pFN);
         DeleteMediaType(&mt);
       }
-      SAFE_RELEASE(pEF);
-      SAFE_RELEASE(pBF);
       break;
     }
   }
-  EndEnumFilters(pEF, pBF)
+  EndEnumFilters
 }
 
 void CDSGraph::Play()

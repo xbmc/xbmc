@@ -2418,6 +2418,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartptr.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"
 						>
 					</File>
