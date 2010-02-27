@@ -167,13 +167,12 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
 
   time_t now;
   time(&now);
-  // this sets how many seconds of EPG from now we should grab
-  time_t end = now + (1 * 24 * 60 * 60);
+  time_t end = now + (24 * 60 * 60); // How many seconds of EPG from now we should grab, 24 hours in seconds
 
   cmyth_program_t *program = NULL;
-
+  // TODO: See if there is a way to just get the entries for the chosen channel rather than ALL
   int count = m_dll->mysql_get_guide(database, &program, now, end);
-  CLog::Log(LOGDEBUG, "%s - %i entries of guide data", __FUNCTION__, count);
+  CLog::Log(LOGDEBUG, "%s - %i entries in guide data", __FUNCTION__, count);
   if (count <= 0)
     return false;
 
@@ -181,62 +180,51 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
   {
     if (program[i].channum == channelNumber)
     {
-      CStdString path;
-      path.Format("%s%s", base.c_str(), program[i].title);
+      CFileItemPtr item(new CFileItem("", false)); // No path for guide entries
 
-      CDateTime starttime(program[i].starttime);
-      CDateTime endtime(program[i].endtime);
-
+      /*
+       * Set the FileItem meta data.
+       */
+      CStdString title        = program[i].title; // e.g. Mythbusters
+      CStdString subtitle     = program[i].subtitle; // e.g. The Pirate Special
       CDateTime localstart;
       if (program[i].starttime)
-      {
-        tm *local = localtime(&program[i].starttime); // Conversion to local time
-        /*
-         * Microsoft implementation of localtime returns NULL if on or before epoch.
-         * (http://msdn.microsoft.com/en-us/library/bf12f0hc(VS.80).aspx)
-         */
-        if (local)
-          localstart = *local;
-        else
-          localstart = program[i].starttime; // Use the actual start time as close enough.
-      }
-      CStdString title;
-      title.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), program[i].title);
+        localstart = m_session->GetLocalTime(program[i].starttime);
+      item->m_strTitle.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), title); // e.g. 20:30 - Mythbusters
+      if (!subtitle.IsEmpty())
+        item->m_strTitle     += " - \"" + subtitle + "\""; // e.g. 20:30 - Mythbusters - "The Pirate Special"
+      item->m_dateTime        = localstart;
 
-      CFileItemPtr item(new CFileItem(title, false));
-      item->SetLabel(title);
-      item->m_dateTime = localstart;
+      /*
+       * Set the VideoInfoTag meta data so it matches the FileItem meta data where possible.
+       */
+      CVideoInfoTag* tag      = item->GetVideoInfoTag();
+      tag->m_strTitle         = title;
+      if (!subtitle.IsEmpty())
+        tag->m_strTitle      += " - \"" + subtitle + "\""; // e.g. Mythbusters - "The Pirate Special"
+      tag->m_strShowTitle     = title;
+      tag->m_strOriginalTitle = title;
+      tag->m_strPlotOutline   = subtitle;
+      tag->m_strPlot          = program[i].description;
+      // TODO: Strip out the subtitle from the description if it is present at the start?
+      // TODO: Do we need to add the subtitle to the start of the plot if not already as it used to? Seems strange, should be handled by skin?
+      tag->m_strGenre         = program[i].category; // e.g. Sports
+      tag->m_strAlbum         = program[i].callsign; // e.g. TV3
 
-      CVideoInfoTag* tag = item->GetVideoInfoTag();
+      CDateTime start(program[i].starttime);
+      CDateTime end(program[i].endtime);
+      CDateTimeSpan runtime = end - start;
+      StringUtils::SecondsToTimeString(runtime.GetSeconds() +
+                                       runtime.GetMinutes() * 60 +
+                                       runtime.GetHours() * 3600, tag->m_strRuntime);
+      tag->m_iSeason          = 0; // So XBMC treats the content as an episode and displays tag information.
+      tag->m_iEpisode         = 0;
 
-      tag->m_strAlbum       = program[i].callsign;
-      tag->m_strShowTitle   = program[i].title;
-      tag->m_strPlotOutline = program[i].subtitle;
-      tag->m_strPlot        = program[i].description;
-      tag->m_strGenre       = program[i].category;
-
-      if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
-        tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
-      tag->m_strOriginalTitle = tag->m_strShowTitle;
-
-      tag->m_strTitle = tag->m_strAlbum;
-      if (tag->m_strShowTitle.length() > 0)
-        tag->m_strTitle += " : " + tag->m_strShowTitle;
-
-      CDateTimeSpan runtime = endtime - starttime;
-      StringUtils::SecondsToTimeString( runtime.GetSeconds()
-                                      + runtime.GetMinutes() * 60
-                                      + runtime.GetHours() * 3600, tag->m_strRuntime);
-
-      tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
-      tag->m_iEpisode = 0;
-      tag->m_strStatus = program[i].rec_status;
       items.Add(item);
     }
   }
 
-  // Sort by date only.
-  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%L", "%J", "%L", ""));
+  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
 
   m_dll->ref_release(program);
   return true;
