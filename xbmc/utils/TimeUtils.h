@@ -22,6 +22,7 @@
  */
 
 #include <stdint.h>
+#include "DateTime.h"
 
 int64_t CurrentHostCounter(void);
 int64_t CurrentHostFrequency(void);
@@ -32,6 +33,8 @@ public:
   static void UpdateFrameTime();      ///< update the frame time.  Not threadsafe
   static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
   static unsigned int GetTimeMS();
+  static CDateTime GetLocalTime(time_t time);
+
 private:
   static unsigned int frameTime;
 };

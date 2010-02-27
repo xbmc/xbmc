@@ -82,3 +82,19 @@ unsigned int CTimeUtils::GetTimeMS()
 #endif
 }
 
+CDateTime CTimeUtils::GetLocalTime(time_t time)
+{
+  CDateTime result;
+
+  tm *local = localtime(&time); // Conversion to local time
+  /*
+   * Microsoft implementation of localtime returns NULL if on or before epoch.
+   * http://msdn.microsoft.com/en-us/library/bf12f0hc(VS.80).aspx
+   */
+  if (local)
+    result = *local;
+  else
+    result = time; // Use the original time as close enough.
+
+  return result;
+}
