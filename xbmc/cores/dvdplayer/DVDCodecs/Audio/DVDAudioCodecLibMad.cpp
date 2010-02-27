@@ -50,9 +50,9 @@ bool CDVDAudioCodecLibMad::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_iDecodedDataSize = 0;
 
-  m_iSourceSampleRate = 0;
-  m_iSourceChannels = 0;
-  m_iSourceBitrate = 0;
+  m_iSourceSampleRate = hints.samplerate;
+  m_iSourceChannels = hints.channels;
+  m_iSourceBitrate = hints.bitrate;
 
   m_iInputBufferSize = 0;
 
