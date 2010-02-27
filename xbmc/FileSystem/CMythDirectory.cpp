@@ -446,38 +446,23 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   {
     cmyth_proginfo_t program = channels[i];
 
-    CStdString num   = GetValue(m_dll->proginfo_chanstr (program));
-    CStdString icon  = GetValue(m_dll->proginfo_chanicon(program));
-
-    url.SetFileName("channels/" + num + ".ts");
+    url.SetFileName("channels/" + GetValue(m_dll->proginfo_chanstr(program)) + ".ts"); // e.g. 3.ts
     CFileItemPtr item(new CFileItem(url.Get(), false));
-    m_session->UpdateItem(*item, program);
-
-    item->SetLabel(GetValue(m_dll->proginfo_chansign(program)));
-
-    if (icon.length() > 0)
-    {
-      url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
-      item->SetThumbnailImage(url.Get());
-    }
-
-    /* hack to get sorting working properly when sorting by show title */
-    if (item->GetVideoInfoTag()->m_strShowTitle.IsEmpty())
-      item->GetVideoInfoTag()->m_strShowTitle = " ";
+    m_session->SetFileItemMetaData(*item, program);
 
     items.Add(item);
     m_dll->ref_release(program);
   }
 
-  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%K[ - %Z]", "%B", "%L", ""));
-  else
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%K[ - %Z]", "%B", "%L", ""));
+  items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%K", "%B"));
 
+  /*
+   * Video sort title is set to the channel number.
+   */
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 20364 /* TV show */, LABEL_MASKS("%Z[ - %B]", "%K", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 556 /* Title */, LABEL_MASKS("%K", "%B"));
   else
-    items.AddSortMethod(SORT_METHOD_LABEL, 20364 /* TV show */, LABEL_MASKS("%Z[ - %B]", "%K", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 556 /* Title */, LABEL_MASKS("%K", "%B"));
 
   return true;
 }
