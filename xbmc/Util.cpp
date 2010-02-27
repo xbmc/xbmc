@@ -1529,7 +1529,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           }
         }
       }
-
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
@@ -2077,17 +2076,6 @@ void CUtil::TakeScreenshot()
     {
       CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
     }
-  }
-}
-
-void CUtil::ClearCache()
-{
-  for (int i = 0; i < 16; i++)
-  {
-    CStdString strHex, folder;
-    strHex.Format("%x", i);
-    CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, folder);
-    g_directoryCache.ClearDirectory(folder);
   }
 }
 

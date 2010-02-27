@@ -608,7 +608,6 @@ namespace VIDEO
             {
               if (m_pObserver && !url.strTitle.IsEmpty())
                 m_pObserver->OnSetTitle(url.strTitle);
-              CUtil::ClearCache();
               long lResult=1;
               lResult=GetIMDBDetails(pItem.get(), url, info2,bDirNames&&info2.strContent.Equals("movies"),NULL,result==CNfoFile::COMBINED_NFO);
               if (info2.strContent.Equals("tvshows"))

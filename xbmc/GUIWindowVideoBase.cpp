@@ -404,7 +404,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (!pDlgProgress) return false;
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
-  CUtil::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
