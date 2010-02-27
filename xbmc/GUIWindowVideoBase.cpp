@@ -405,7 +405,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (!pDlgProgress) return false;
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
-  CUtil::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
@@ -1562,34 +1561,38 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
   }
 
   CVideoDatabase database;
-  database.Open();
-  CFileItemList items;
-  if (item->m_bIsFolder)
+  if (database.Open())
   {
-    CVideoDatabaseDirectory dir;
-    CStdString strPath = item->m_strPath;
-    if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
-      strPath += "-1/";
-    dir.GetDirectory(strPath,items);
-  }
-  else
-    items.Add(item);
-
-  for (int i=0;i<items.Size();++i)
-  {
-    CFileItemPtr pItem=items[i];
-    if (pItem->IsVideoDb())
+    CFileItemList items;
+    if (item->m_bIsFolder)
     {
-      if (pItem->HasVideoInfoTag() &&
-          (( mark && pItem->GetVideoInfoTag()->m_playCount) ||
-           (!mark && !(pItem->GetVideoInfoTag()->m_playCount))))
-        continue;
+      CVideoDatabaseDirectory dir;
+      CStdString strPath = item->m_strPath;
+      if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
+        strPath += "-1/";
+      dir.GetDirectory(strPath,items);
     }
-
-    if (mark)
-      database.MarkAsWatched(*pItem);
     else
-      database.MarkAsUnWatched(*pItem);
+      items.Add(item);
+
+    for (int i=0;i<items.Size();++i)
+    {
+      CFileItemPtr pItem=items[i];
+      if (pItem->IsVideoDb())
+      {
+        if (pItem->HasVideoInfoTag() &&
+            (( mark && pItem->GetVideoInfoTag()->m_playCount) ||
+             (!mark && !(pItem->GetVideoInfoTag()->m_playCount))))
+          continue;
+      }
+
+      if (mark)
+        database.MarkAsWatched(*pItem);
+      else
+        database.MarkAsUnWatched(*pItem);
+    }
+    
+    database.Close(); 
   }
 }
 

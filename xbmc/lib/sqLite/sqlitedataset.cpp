@@ -167,26 +167,63 @@ const char *SqliteDatabase::getErrorMsg() {
 }
 
 int SqliteDatabase::connect() {
-  try {
+  if (host.empty() || db.empty())
+    return DB_CONNECTION_NONE;
+  
+  string db_fullpath;
+  // hostname is the relative folder to the database, ensure it's slash terminated
+  if (host[host.length()-1] != '/' && host[host.length()-1] != '\\')
+    db_fullpath = host + "/";
+  else
+    db_fullpath = host;
+
+  // db is the filename for the database, ensure it's not slash prefixed
+  if (db[0] == '/' || db[0] == '\\')
+    db_fullpath += db.substr(1);
+  else
+    db_fullpath += db;
+
+  // ensure the fully qualified path has slashes in the correct direction
+  if ( (db_fullpath[1] == ':') && isalpha(db_fullpath[0]))
+  {
+    size_t pos = 0;
+    while ( (pos = db_fullpath.find("/", pos)) != string::npos )
+      db_fullpath.replace(pos++, 1, "\\");
+  }
+  else
+  {
+    size_t pos = 0;
+    while ( (pos = db_fullpath.find("\\", pos)) != string::npos )
+      db_fullpath.replace(pos++, 1, "/");
+  }
+
+  // ensure the ".db" extension is appended to the end
+  if ( db_fullpath.find(".db") != (db_fullpath.length()-3) )
+    db_fullpath += ".db";
+
+  try
+  {
+
     disconnect();
-    if (sqlite3_open(db.c_str(),&conn/*,NULL*/)==SQLITE_OK) {
-      //cout << "Connected!\n";
-      sqlite3_busy_handler(conn, busy_callback,NULL);
+    if (sqlite3_open(db_fullpath.c_str(), &conn)==SQLITE_OK)
+    {
+      sqlite3_busy_handler(conn, busy_callback, NULL);
       char* err=NULL;
-      if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK) {
+      if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK)
+      {
         throw DbErrors(getErrorMsg());
       }
       active = true;
       return DB_CONNECTION_OK;
     }
-    CLog::Log(LOGERROR, "unable to open database:%s (%u)",
-              db.c_str(), GetLastError());
+
+    CLog::Log(LOGERROR, "unable to open database:%s (%u)", db_fullpath.c_str(), GetLastError());
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
     CLog::Log(LOGERROR, "unable to open database:%s (%u)",
-              db.c_str(), GetLastError());
+              db_fullpath.c_str(), GetLastError());
   }
   return DB_CONNECTION_NONE;
 }

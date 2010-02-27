@@ -812,14 +812,10 @@ void CDVDPlayer::Process()
   m_EdlAutoSkipMarkers.Clear();
   float fFramesPerSecond;
   if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
-    fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
-  else
   {
-    fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
-    CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
-              __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
+    fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+    m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond, m_CurrentVideo.hint.height);
   }
-  m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond);
 
   /*
    * Check to see if the demuxer should start at something other than time 0. This will be the case
@@ -1785,16 +1781,15 @@ void CDVDPlayer::OnExit()
 void CDVDPlayer::HandleMessages()
 {
   CDVDMsg* pMsg;
+  LockStreams();
 
-  MsgQueueReturnCode ret = m_messenger.Get(&pMsg, 0);
-
-  while (ret == MSGQ_OK)
+  while (m_messenger.Get(&pMsg, 0) == MSGQ_OK)
   {
-    LockStreams();
 
     try
     {
-      if (pMsg->IsType(CDVDMsg::PLAYER_SEEK))
+      if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
+                                             && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
       {
         CPlayerSeek m_pause(this);
 
@@ -1819,7 +1814,8 @@ void CDVDPlayer::HandleMessages()
         // set flag to indicate we have finished a seeking request
         g_infoManager.m_performingSeek = false;
       }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER))
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
+                                                          && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
       {
         CPlayerSeek m_pause(this);
 
@@ -1968,7 +1964,7 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
         CPlayerSeek m_pause(this);
 
@@ -2035,11 +2031,10 @@ void CDVDPlayer::HandleMessages()
       CLog::Log(LOGERROR, "%s - Exception thrown when handling message", __FUNCTION__);
     }
 
-    UnlockStreams();
-
     pMsg->Release();
-    ret = m_messenger.Get(&pMsg, 0);
   }
+  UnlockStreams();
+
 }
 
 void CDVDPlayer::SetCaching(ECacheState state)
@@ -3389,8 +3384,7 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
   }
   if(ext == ".sub")
   {
-    CStdString strReplace;
-    CUtil::ReplaceExtension(filename,".idx",strReplace);
+    CStdString strReplace(CUtil::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return false;
   }

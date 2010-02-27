@@ -81,7 +81,7 @@ public:
   static void RunShortcut(const char* szPath);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetHomePath(CStdString& strPath);
-  static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
+  static CStdString ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension);
   static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static bool HasSlashAtEnd(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
@@ -155,7 +155,6 @@ public:
   static void TakeScreenshot();
   static void TakeScreenshot(const CStdString &filename, bool sync);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
-  static void ClearCache();
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);

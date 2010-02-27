@@ -48,7 +48,7 @@ public:
     Action action;
   };
 
-  bool ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond, const int iHeight);
   void Clear();
 
   bool HasCut();

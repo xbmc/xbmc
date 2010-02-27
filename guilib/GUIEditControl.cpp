@@ -26,6 +26,7 @@
 #include "GUIDialogNumeric.h"
 #include "LocalizeStrings.h"
 #include "DateTime.h"
+#include "utils/md5.h"
 
 #ifdef __APPLE__
 #include "CocoaInterface.h"
@@ -62,6 +63,7 @@ void CGUIEditControl::DefaultConstructor()
   m_smsKeyIndex = 0;
   m_label.SetAlign(m_label.GetLabelInfo().align & XBFONT_CENTER_Y); // left align
   m_label2.GetLabelInfo().offsetX = 0;
+  m_isMD5 = false;
 }
 
 CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
@@ -103,7 +105,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
     // backspace
     if (m_cursorPos)
     {
-      m_text2.erase(--m_cursorPos, 1);
+      if (!ClearMD5())
+        m_text2.erase(--m_cursorPos, 1);
       UpdateText();
     }
     return true;
@@ -128,6 +131,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   }
   else if (action.GetID() == ACTION_PASTE)
   {
+    ClearMD5();
     OnPasteClipboard();
   }
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
@@ -162,7 +166,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       if (m_cursorPos < m_text2.length())
       { // delete
-        m_text2.erase(m_cursorPos, 1);
+        if (!ClearMD5())
+          m_text2.erase(m_cursorPos, 1);
         UpdateText();
         return true;
       }
@@ -171,7 +176,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       if (m_cursorPos > 0)
       { // backspace
-        m_text2.erase(--m_cursorPos, 1);
+        if (!ClearMD5())
+          m_text2.erase(--m_cursorPos, 1);
         UpdateText();
       }
       return true;
@@ -200,12 +206,14 @@ bool CGUIEditControl::OnAction(const CAction &action)
         // backspace
         if (m_cursorPos)
         {
-          m_text2.erase(--m_cursorPos, 1);
+          if (!ClearMD5())
+            m_text2.erase(--m_cursorPos, 1);
         }
         break;
       }
     default:
       {
+        ClearMD5();
         m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
         break;
       }
@@ -215,6 +223,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   }
   else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
   { // input from the remote
+    ClearMD5();
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
       m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.GetID() - REMOTE_0));
@@ -285,9 +294,12 @@ void CGUIEditControl::OnClick()
     case INPUT_TYPE_FILTER:
       textChanged = CGUIDialogKeyboard::ShowAndGetFilter(utf8, false);
       break;
+    case INPUT_TYPE_PASSWORD_MD5:
+      utf8 = ""; // TODO: Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
+      // fallthrough
     case INPUT_TYPE_TEXT:
     default:
-      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD);
+      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5);
       break;
   }
   if (textChanged)
@@ -429,7 +441,7 @@ void CGUIEditControl::RenderText()
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
 {
-  if (m_inputType == INPUT_TYPE_PASSWORD)
+  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5)
   {
     CStdStringW text;
     text.append(m_text2.size(), L'*');
@@ -456,6 +468,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
   g_charsetConverter.utf8ToW(text, newText);
   if (newText != m_text2)
   {
+    m_isMD5 = m_inputType == INPUT_TYPE_PASSWORD_MD5;
     m_text2 = newText;
     m_cursorPos = m_text2.size();
     SetInvalid();
@@ -466,7 +479,20 @@ CStdString CGUIEditControl::GetLabel2() const
 {
   CStdString text;
   g_charsetConverter.wToUTF8(m_text2, text);
+  if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !m_isMD5)
+    return XBMC::XBMC_MD5::GetMD5(text);
   return text;
+}
+
+bool CGUIEditControl::ClearMD5()
+{
+  if (m_inputType != INPUT_TYPE_PASSWORD_MD5 || !m_isMD5)
+    return false;
+  
+  m_text2.Empty();
+  m_cursorPos = 0;
+  m_isMD5 = false;
+  return true;
 }
 
 unsigned int CGUIEditControl::GetCursorPosition() const

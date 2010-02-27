@@ -832,7 +832,7 @@
 							<aligny>center</aligny>
 							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.ChannelName]</label>
 						</control>
 					</channellayout>
 					<focusedchannellayout height="52" width="220">
@@ -860,7 +860,7 @@
 							<aligny>center</aligny>
 							<selectedcolor>selected</selectedcolor>
 							<align>left</align>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.ChannelName]</label>
 						</control>
 					</focusedchannellayout>
 					<itemlayout height="52" width="40">

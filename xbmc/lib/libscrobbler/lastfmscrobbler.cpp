@@ -66,7 +66,7 @@ void CLastfmScrobbler::RemoveInstance()
 void CLastfmScrobbler::LoadCredentials()
 {
   SetUsername(g_guiSettings.GetString("scrobbler.lastfmusername"));
-  SetPassword(g_guiSettings.GetString("scrobbler.lastfmpassword"));
+  SetPassword(g_guiSettings.GetString("scrobbler.lastfmpass"));
 }
 
 CStdString CLastfmScrobbler::GetJournalFileName()
@@ -101,7 +101,7 @@ void CLastfmScrobbler::NotifyUser(int error)
 bool CLastfmScrobbler::CanScrobble()
 {
   return (!g_guiSettings.GetString("scrobbler.lastfmusername").IsEmpty()  &&
-          !g_guiSettings.GetString("scrobbler.lastfmpassword").IsEmpty()  &&
+          !g_guiSettings.GetString("scrobbler.lastfmpass").IsEmpty()  &&
          (g_guiSettings.GetBool("scrobbler.lastfmsubmit") ||
           g_guiSettings.GetBool("scrobbler.lastfmsubmitradio")));
 }

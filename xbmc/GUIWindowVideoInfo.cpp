@@ -509,7 +509,9 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   for (int i = 0; i < movies.Size(); ++i)
   {
     CStdString label;
-    label.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i]->GetVideoInfoTag()->m_strTitle);
+    label.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i]->GetVideoInfoTag()->m_strShowTitle);
+    if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
+      label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
     movies[i]->SetLabel(label);
     items.Add(movies[i]);
   }
@@ -519,7 +521,7 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   for (int i = 0; i < movies.Size(); ++i)
   {
     CStdString label;
-    label.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i]->GetVideoInfoTag()->m_strTitle);
+    label.Format("[%s] %s (%s)", g_localizeStrings.Get(20359), movies[i]->GetVideoInfoTag()->m_strTitle, movies[i]->GetVideoInfoTag()->m_strShowTitle);
     movies[i]->SetLabel(label);
     items.Add(movies[i]);
   }
@@ -529,7 +531,9 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   for (int i = 0; i < movies.Size(); ++i)
   {
     CStdString label;
-    label.Format("[%s] %s", g_localizeStrings.Get(20391), movies[i]->GetVideoInfoTag()->m_strTitle);
+    label.Format("[%s] %s - %s", g_localizeStrings.Get(20391), movies[i]->GetVideoInfoTag()->m_strArtist, movies[i]->GetVideoInfoTag()->m_strTitle);
+    if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
+      label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
     movies[i]->SetLabel(label);
     items.Add(movies[i]);
   }

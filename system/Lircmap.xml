@@ -28,7 +28,7 @@
 		<info>More</info>
 		<skipplus>Skip</skipplus>
 		<skipminus>Replay</skipminus>
-		<display>Teletext</display>
+		<display>Aspect</display>
 		<start>Home</start>
 		<record>Record</record>
 		<volumeplus>VolUp</volumeplus>
@@ -57,6 +57,7 @@
 		<green>Green</green>
 		<yellow>Yellow</yellow>
 		<blue>Blue</blue>
+                <teletext>Teletext</teletext>
 	</remote>
 	
 	<remote device="XboxDVDDongle">

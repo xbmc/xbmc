@@ -66,7 +66,7 @@ void CLibrefmScrobbler::RemoveInstance()
 void CLibrefmScrobbler::LoadCredentials()
 {
   SetUsername(g_guiSettings.GetString("scrobbler.librefmusername"));
-  SetPassword(g_guiSettings.GetString("scrobbler.librefmpassword"));
+  SetPassword(g_guiSettings.GetString("scrobbler.librefmpass"));
 }
 
 CStdString CLibrefmScrobbler::GetJournalFileName()
@@ -101,7 +101,7 @@ void CLibrefmScrobbler::NotifyUser(int error)
 bool CLibrefmScrobbler::CanScrobble()
 {
   return (!g_guiSettings.GetString("scrobbler.librefmusername").IsEmpty()  &&
-          !g_guiSettings.GetString("scrobbler.librefmpassword").IsEmpty()  &&
+          !g_guiSettings.GetString("scrobbler.librefmpass").IsEmpty()  &&
          g_guiSettings.GetBool("scrobbler.librefmsubmit"));
 }
 

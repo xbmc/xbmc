@@ -1,5 +1,5 @@
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib
-SRCS=dataset.cpp qry_dat.cpp sqlitedataset.cpp
+SRCS=dataset.cpp qry_dat.cpp sqlitedataset.cpp mysqldataset.cpp
 LIB=sqllite.a
 
 include ../../../Makefile.include

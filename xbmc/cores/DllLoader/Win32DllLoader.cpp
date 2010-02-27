@@ -181,18 +181,8 @@ bool Win32DllLoader::Load()
 
   CStdString strFileName = GetFileName();
   CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
-  //int flags = RTLD_LAZY;
-  //if (m_bGlobal) flags |= RTLD_GLOBAL;
-  //m_soHandle = dlopen(strFileName.c_str(), flags);
 
-  // make sure we set working directory
-  CStdString path;
-  CUtil::GetParentPath(strFileName, path);
-  char currentPath[MAX_PATH];
-  GetCurrentDirectory(MAX_PATH, currentPath);
-  SetCurrentDirectory(_P(path).c_str());
-  m_dllHandle = LoadLibrary(_P(strFileName).c_str());
-  SetCurrentDirectory(currentPath);
+  m_dllHandle = LoadLibraryEx(_P(strFileName).c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
     CLog::Log(LOGERROR, "%s: Unable to load %s (%d)", __FUNCTION__, strFileName.c_str(), GetLastError());

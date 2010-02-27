@@ -45,21 +45,20 @@ const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_PCM, WAVE_FORMAT_PCM, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 
-const int wasapi_channel_mask[] = 
+const enum PCMChannels wasapi_default_channel_layout[][8] = 
 {
-  SPEAKER_FRONT_CENTER,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_LOW_FREQUENCY,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT   | SPEAKER_LOW_FREQUENCY,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_SIDE_LEFT    | SPEAKER_SIDE_RIGHT     | SPEAKER_LOW_FREQUENCY,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_SIDE_LEFT    | SPEAKER_SIDE_RIGHT     | SPEAKER_BACK_CENTER | SPEAKER_LOW_FREQUENCY,
-  SPEAKER_FRONT_LEFT   | SPEAKER_FRONT_RIGHT  | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT    | SPEAKER_BACK_RIGHT     | SPEAKER_SIDE_LEFT   | SPEAKER_SIDE_RIGHT | SPEAKER_LOW_FREQUENCY
+  {PCM_FRONT_CENTER},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_LOW_FREQUENCY},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_CENTER, PCM_BACK_LEFT, PCM_BACK_RIGHT},
+  {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_SIDE_LEFT, PCM_SIDE_RIGHT}
 };
 
 const enum PCMChannels wasapi_channel_order[] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT, PCM_FRONT_CENTER, PCM_LOW_FREQUENCY, PCM_BACK_LEFT, PCM_BACK_RIGHT, PCM_FRONT_LEFT_OF_CENTER, PCM_FRONT_RIGHT_OF_CENTER, PCM_BACK_CENTER, PCM_SIDE_LEFT, PCM_SIDE_RIGHT};
 
-#define WASAPI_CHANNEL_MASK_COUNT 8
 #define WASAPI_TOTAL_CHANNELS 11
 
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason, __VA_ARGS__); goto failed;}
@@ -76,6 +75,7 @@ CWin32WASAPI::CWin32WASAPI() :
   m_uiAvgBytesPerSec(0),
   m_CacheLen(0),
   m_uiChunkSize(0),
+  m_uiSrcChunkSize(0),
   m_uiBufferLen(0),
   m_PreCacheSize(0),
   m_LastCacheCheck(0),
@@ -99,20 +99,6 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     return false;
   }
 
-  //If there is a listing of required channels, build the speaker mask and mapping from that.
-  //Otherwise, use the default.
-  if(channelMap)
-    BuildChannelMapping(iChannels, channelMap);
-  else
-  {
-    m_uiSpeakerMask = wasapi_channel_mask[iChannels-1];
-    for(int i = 0; i < iChannels; i++)
-      m_SpeakerOrder[i] = wasapi_channel_order[i];
-  }
-
-  m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
-  m_remap.SetOutputFormat(iChannels, m_SpeakerOrder);
-
   //Only one exclusive stream may be initialized at one time.
   if(m_bIsAllocated)
   {
@@ -120,13 +106,36 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     return false;
   }
 
-  //Make sure we support the correct number of channels.
-  if(iChannels > WASAPI_CHANNEL_MASK_COUNT)
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Unsupported number of channels. %i specified while max is %i", iChannels, WASAPI_CHANNEL_MASK_COUNT);
-    return false;
-  }
+  int layoutChannels = 0;
 
+  if(!bAudioPassthrough)
+  {
+    //If no channel map is specified, use the default.
+    if(!channelMap)
+      channelMap = (PCMChannels *)wasapi_default_channel_layout[iChannels - 1];
+
+    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+
+    for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)
+        ++layoutChannels;
+
+    //Expand monural to stereo as most devices don't seem to like 1 channel PCM streams.
+    //Stereo sources should be sent explicitly as two channels so that the external hardware
+    //can apply ProLogic/5CH Stereo/etc processing on it.
+    if(iChannels <= 2)
+    {
+      BuildChannelMapping(2, (PCMChannels *)wasapi_default_channel_layout[1]);
+
+      layoutChannels = 2;
+      m_remap.SetOutputFormat(2, m_SpeakerOrder, false);
+    }
+    else //Do the standard remapping.
+    {
+      BuildChannelMapping(layoutChannels, outLayout);
+      m_remap.SetOutputFormat(layoutChannels, m_SpeakerOrder, false);
+    }
+  }
+  
   m_bPlaying = false;
   m_bPause = false;
   m_bMuting = false;
@@ -135,14 +144,14 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   m_bPassthrough = bAudioPassthrough;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
-  m_fVolAdjustFactor = 1.0f - ((float)m_nCurrentVolume / -6000.0f);
+  m_pcmAmplifier.SetVolume(m_nCurrentVolume);
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
   //fill waveformatex
   ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
   wfxex.Format.cbSize          =  sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
-  wfxex.Format.nChannels       = iChannels;
+  wfxex.Format.nChannels       = layoutChannels;
   wfxex.Format.nSamplesPerSec  = uiSamplesPerSec;
   if (bAudioPassthrough == true) 
   {
@@ -157,16 +166,17 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     wfxex.dwChannelMask          = m_uiSpeakerMask;
     wfxex.Format.wFormatTag      = WAVE_FORMAT_EXTENSIBLE;
     wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_PCM;
-    wfxex.Format.wBitsPerSample  = uiBitsPerSample == 24 ? 32 : uiBitsPerSample;
+    wfxex.Format.wBitsPerSample  = uiBitsPerSample;
   }
 
-  wfxex.Samples.wValidBitsPerSample = wfxex.Format.wBitsPerSample;
+  wfxex.Samples.wValidBitsPerSample = uiBitsPerSample == 32 ? 24 : uiBitsPerSample;
   wfxex.Format.nBlockAlign       = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
   wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
   m_uiAvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
   m_uiBytesPerFrame = wfxex.Format.nBlockAlign;
+  m_uiBytesPerSrcFrame = bAudioPassthrough ? m_uiBytesPerFrame : iChannels * wfxex.Format.wBitsPerSample >> 3;
 
   IMMDeviceEnumerator* pEnumerator = NULL;
   IMMDeviceCollection* pEnumDevices = NULL;
@@ -257,6 +267,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   //Chunk sizes are 1/4 the buffer size.
   //WASAPI chunk sizes need to be evenly divisable into the buffer size or pops and clicks will result.
   m_uiChunkSize = m_uiBufferLen / 4;
+  m_uiSrcChunkSize = (m_uiChunkSize / m_uiBytesPerFrame) * m_uiBytesPerSrcFrame;
 
   if(bIsMusic)
     m_PreCacheSize = m_uiBufferLen / 2; //Start music only when the buffer is half filled.
@@ -401,7 +412,7 @@ bool CWin32WASAPI::SetCurrentVolume(long nVolume)
     return false;
 
   m_nCurrentVolume = nVolume;
-  m_fVolAdjustFactor = 1.0f - ((float)nVolume / -6000.0f);
+  m_pcmAmplifier.SetVolume(m_nCurrentVolume);
   return true;
 }
 
@@ -415,11 +426,16 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
   DWORD dwFlags = m_bMuting ? AUDCLNT_BUFFERFLAGS_SILENT : 0;
 
-  unsigned int uiBytesToWrite;
+  unsigned int uiBytesToWrite, uiSrcBytesToWrite;
   BYTE* pBuffer = NULL;
 
-  uiBytesToWrite = std::min(GetSpace(), len);
+  UpdateCacheStatus();
+
+  uiBytesToWrite  = std::min(m_uiBufferLen - m_CacheLen, (len / m_uiBytesPerSrcFrame) * m_uiBytesPerFrame);
   uiBytesToWrite /= m_uiChunkSize;
+
+  uiSrcBytesToWrite = uiBytesToWrite * m_uiSrcChunkSize;
+
   uiBytesToWrite *= m_uiChunkSize;
 
   if(uiBytesToWrite == 0)
@@ -429,7 +445,11 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
   m_pRenderClient->GetBuffer(uiBytesToWrite/m_uiBytesPerFrame, &pBuffer);
 
   // Write data into the buffer
-  AddDataToBuffer((unsigned char*)data, uiBytesToWrite, pBuffer);
+  AddDataToBuffer((unsigned char*)data, uiSrcBytesToWrite, pBuffer);
+
+  //Adjust the volume if necessary.
+  if(!m_bPassthrough)
+    m_pcmAmplifier.DeAmplify((short*)data, uiBytesToWrite / 2);
 
   // Release the buffer
   m_pRenderClient->ReleaseBuffer(uiBytesToWrite/m_uiBytesPerFrame, dwFlags);
@@ -438,7 +458,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
   CheckPlayStatus();
 
-  return uiBytesToWrite; // Bytes used
+  return uiSrcBytesToWrite; // Bytes used
 }
 
 void CWin32WASAPI::UpdateCacheStatus()
@@ -472,7 +492,7 @@ unsigned int CWin32WASAPI::GetSpace()
   // Make sure we know how much data is in the cache
   UpdateCacheStatus();
 
-  return m_uiBufferLen - m_CacheLen;
+  return ((m_uiBufferLen - m_CacheLen) / m_uiBytesPerFrame) * m_uiBytesPerSrcFrame;
 }
 
 //***********************************************************************************************
@@ -517,7 +537,7 @@ float CWin32WASAPI::GetCacheTotal()
 //***********************************************************************************************
 unsigned int CWin32WASAPI::GetChunkLen()
 {
-  return m_uiChunkSize;
+  return m_uiSrcChunkSize;
 }
 
 //***********************************************************************************************
@@ -650,30 +670,9 @@ void CWin32WASAPI::WaitCompletion()
 //***********************************************************************************************
 void CWin32WASAPI::AddDataToBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut)
 {
-  // Adjust the volume if necessary.
-  if(m_nCurrentVolume != 0 && !m_bPassthrough) 
-  { 
-    if(m_uiBitsPerSample == 16)
-    {
-      short* pOutSample = (short*)pData; 
-      for(unsigned int i = 0; i < len >> 1; i++) 
-      { 
-        pOutSample[i] = (short)(((float)pOutSample[i] * m_fVolAdjustFactor) + 0.5f); 
-      }
-    }
-    else if(m_uiBitsPerSample == 32)
-    {
-      int* pOutSample = (int*)pData; 
-      for(unsigned int i = 0; i < len >> 1; i++) 
-      { 
-        pOutSample[i] = (int)(((float)pOutSample[i] * m_fVolAdjustFactor) + 0.5f); 
-      }
-    }
-  }
-
   // Remap the data to the correct channels
-  if (m_remap.CanRemap())
-    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerFrame);
+  if(m_remap.CanRemap() && !m_bPassthrough)
+    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame);
   else
     memcpy(pOut, pData, len);
 }
@@ -692,6 +691,9 @@ void CWin32WASAPI::BuildChannelMapping(int channels, enum PCMChannels* map)
   memset(usedChannels, false, sizeof(usedChannels));
 
   m_uiSpeakerMask = 0;
+
+  if(!map)
+    map = (PCMChannels *)wasapi_default_channel_layout[channels - 1];
 
   //Build the speaker mask and note which are used.
   for(int i = 0; i < channels; i++)
@@ -755,4 +757,3 @@ void CWin32WASAPI::BuildChannelMapping(int channels, enum PCMChannels* map)
     }
   }
 }
-

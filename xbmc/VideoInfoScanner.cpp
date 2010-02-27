@@ -574,7 +574,7 @@ namespace VIDEO
             if (m_pObserver)
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-            long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
+            long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
             if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2.strContent.Equals("tvshows"))
@@ -608,9 +608,14 @@ namespace VIDEO
             {
               if (m_pObserver && !url.strTitle.IsEmpty())
                 m_pObserver->OnSetTitle(url.strTitle);
-              CUtil::ClearCache();
               long lResult=1;
-              lResult=GetIMDBDetails(pItem.get(), url, info2,bDirNames&&info2.strContent.Equals("movies"),NULL,result==CNfoFile::COMBINED_NFO);
+
+	      // force thumb and fanart
+	      bool bForce(false);
+              if (result==CNfoFile::NO_NFO || result==CNfoFile::ERROR_NFO)
+                bForce = true;
+
+              lResult=GetIMDBDetails(pItem.get(), url, info2,bDirNames&&info2.strContent.Equals("movies"),NULL,result==CNfoFile::COMBINED_NFO,bForce);
               if (info2.strContent.Equals("tvshows"))
               {
                 if (!bRefresh)
@@ -961,7 +966,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -978,7 +983,26 @@ namespace VIDEO
       CStdString strTrailer = pItem->FindTrailer();
       if (!strTrailer.IsEmpty())
         movieDetails.m_strTrailer = strTrailer;
-      m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      int idMovie=m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      // setup links to shows if the linked shows are in the db
+      if (!movieDetails.m_strShowLink.IsEmpty())
+      {
+        CStdStringArray list;
+        StringUtils::SplitString(movieDetails.m_strShowLink,
+                                 g_advancedSettings.m_videoItemSeparator,list);
+        for (unsigned int i=0;i<list.size();++i)
+        {
+          CFileItemList items;
+          m_database.GetTvShowsByName(list[i],items);
+          if (items.Size())
+            m_database.LinkMovieToTvshow(idMovie,items[0]->GetVideoInfoTag()->m_iDbId,false);
+          else
+            CLog::Log(LOGDEBUG,"failed to link movie %s to show %s",
+                      movieDetails.m_strTitle.c_str(),list[i].c_str());
+        }
+      }
     }
     else if (content.Equals("tvshows"))
     {
@@ -992,6 +1016,15 @@ namespace VIDEO
         // episode then add, which breaks multi-episode files.
         int idEpisode = m_database.AddEpisode(idShow, pItem->m_strPath);
         lResult = m_database.SetDetailsForEpisode(pItem->m_strPath, movieDetails, idShow, idEpisode);
+        if (movieDetails.m_fEpBookmark > 0)
+        {
+          movieDetails.m_strFileNameAndPath = pItem->m_strPath;
+          CBookmark bookmark;
+          bookmark.timeInSeconds = movieDetails.m_fEpBookmark;
+          bookmark.seasonNumber = movieDetails.m_iSeason;
+          bookmark.episodeNumber = movieDetails.m_iEpisode;
+          m_database.AddBookMarkForEpisode(movieDetails,bookmark);
+        }
       }
     }
     else if (content.Equals("musicvideos"))
@@ -999,14 +1032,14 @@ namespace VIDEO
       m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
     // get & save fanart image
-    if (!pItem->CacheLocalFanart())
+    if (!pItem->CacheLocalFanart() || bRefresh)
     {
       if (!movieDetails.m_fanart.m_xml.IsEmpty() && !movieDetails.m_fanart.DownloadImage(pItem->GetCachedFanart()))
         CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
     }
 
     CStdString strUserThumb = pItem->GetUserVideoThumb();
-    if (bApplyToDir && strUserThumb.IsEmpty())
+    if (bApplyToDir && (strUserThumb.IsEmpty() || bRefresh))
     {
       CStdString strParent;
       CUtil::GetParentPath(pItem->m_strPath,strParent);
@@ -1025,7 +1058,7 @@ namespace VIDEO
     }
 
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0 && strUserThumb.IsEmpty())
+    if (strImage.size() > 0 && (strUserThumb.IsEmpty() || bRefresh))
     {
       if (pDialog)
       {
@@ -1232,7 +1265,7 @@ namespace VIDEO
         nfoFile = item->m_strPath;
       // no, create .nfo file
       else
-        CUtil::ReplaceExtension(item->m_strPath, ".nfo", nfoFile);
+        nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
 
       // test file existence
       if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
@@ -1309,7 +1342,7 @@ namespace VIDEO
     return nfoFile;
   }
 
-  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool combined)
+  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool bCombined, bool bRefresh)
   {
     CVideoInfoTag movieDetails;
     m_IMDB.SetScraperInfo(info);
@@ -1317,13 +1350,13 @@ namespace VIDEO
 
     if ( m_IMDB.GetDetails(url, movieDetails, pDialog) )
     {
-      if (combined)
+      if (bCombined)
         m_nfoReader.GetDetails(movieDetails);
 
       if (m_pObserver && url.strTitle.IsEmpty())
         m_pObserver->OnSetTitle(movieDetails.m_strTitle);
 
-      return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
+      return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames, bRefresh);
     }
     return -1;
   }
