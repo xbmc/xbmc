@@ -33,6 +33,11 @@ public:
   CTVDatabase(void);
   virtual ~CTVDatabase(void);
 
+  virtual bool Open();
+
+  virtual int GetMinVersion() const { return 4; };
+  const char *GetDefaultDBName() const { return "MyTV4.db"; };
+
   bool EraseClients();
   long AddClient(const CStdString &client, const CStdString &guid);
   CDateTime GetLastEPGScanTime();

@@ -1069,6 +1069,7 @@ PVR_ERROR CVTPTransceiver::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
   if (code != 215)
     return PVR_ERROR_NOT_SYNC;
 
+  command.Format("DELR %i", recinfo.index);
   if (!SendCommand(command, code, lines))
     return PVR_ERROR_SERVER_ERROR;
   if (code != 250)

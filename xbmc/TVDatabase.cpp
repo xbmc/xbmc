@@ -27,19 +27,17 @@ using namespace std;
 
 using namespace dbiplus;
 
-#define TV_DATABASE_VERSION 4
-#define TV_DATABASE_OLD_VERSION 3.f
-#define TV_DATABASE_NAME "MyTV4.db"
-
 CTVDatabase::CTVDatabase(void)
 {
-  m_preV2version      = TV_DATABASE_OLD_VERSION;
-  m_version           = TV_DATABASE_VERSION;
-  m_strDatabaseFile   = TV_DATABASE_NAME;
 }
 
 CTVDatabase::~CTVDatabase(void)
 {
+}
+
+bool CTVDatabase::Open()
+{
+  return CDatabase::Open();
 }
 
 bool CTVDatabase::CreateTables()

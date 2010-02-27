@@ -312,13 +312,13 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       }
       else if (iAction == ACTION_PLAY)
       {
-        CStdString filename;
+        cPVRChannels *channels;
         if (!pItem->GetEPGInfoTag()->IsRadio())
-          filename.Format("pvr://channels/tv/all/%i.pvr", pItem->GetEPGInfoTag()->ChannelNumber());
+          channels = &PVRChannelsTV;
         else
-          filename.Format("pvr://channels/radio/all/%i.pvr", pItem->GetEPGInfoTag()->ChannelNumber());
+          channels = &PVRChannelsRadio;
 
-        if (!g_application.PlayFile(CFileItem(cPVRChannels::GetByPath(filename))))
+        if (!g_application.PlayFile(CFileItem(channels->at(pItem->GetEPGInfoTag()->ChannelNumber()-1))))
         {
           CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
           return false;
@@ -340,7 +340,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       CFileItemPtr pItem = m_vecItems->Get(iItem);
 
       /* Process actions */
-      if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+      if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_PLAY)
       {
         /* Check if "Add channel..." entry is pressed by OK, if yes
            create a new channel and open settings dialog, otherwise
@@ -422,7 +422,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
         return OnClick(iItem);
 
       /* Process actions */
-      if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+      if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_PLAY)
       {
         /* Open recording with Player and return */
         return PlayFile(pItem.get(), false);
@@ -887,13 +887,13 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
     {
-      CStdString filename;
+      cPVRChannels *channels;
       if (!pItem->GetEPGInfoTag()->IsRadio())
-        filename.Format("pvr://channels/tv/all/%i.pvr", pItem->GetEPGInfoTag()->ChannelNumber());
+        channels = &PVRChannelsTV;
       else
-        filename.Format("pvr://channels/radio/all/%i.pvr", pItem->GetEPGInfoTag()->ChannelNumber());
+        channels = &PVRChannelsRadio;
 
-      if (!g_application.PlayFile(CFileItem(cPVRChannels::GetByPath(filename))))
+      if (!g_application.PlayFile(CFileItem(channels->at(pItem->GetEPGInfoTag()->ChannelNumber()-1))))
       {
         CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
         return false;

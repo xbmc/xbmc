@@ -107,7 +107,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 
         if (!g_application.PlayFile(CFileItem(channels->at(m_progItem->GetEPGInfoTag()->ChannelNumber()-1))))
         {
-          CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
+          CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
           return false;
         }
         return true;
