@@ -1286,7 +1286,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (strType == "epggrid")
   {
-    control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, scrollTime, timeBlocks, rulerUnit);
+    control = new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, timeBlocks, rulerUnit);
     ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
 //    ((CGUIEPGGridContainer *)control)->LoadContent(pControlNode); ///
   }

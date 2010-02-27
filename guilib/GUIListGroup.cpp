@@ -140,7 +140,7 @@ void CGUIListGroup::EnlargeHeight(float difference)
     {
       if (child->GetID() == 1) // label
       {
-        child->SetHeight(child->GetHeight() + difference - 10);
+        child->SetHeight(child->GetHeight() + difference);
         child->SetVisible(child->GetHeight() > 10); ///
       }
       else

@@ -29,11 +29,18 @@
 #define MAXCHANNELS 500
 #define MAXBLOCKS   1152 //! !!_FOUR_!! days of 5 minute blocks
 
+struct GridItemsPtr
+{
+  CGUIListItemPtr item;
+  float width;
+  float height;
+};
+
 class CGUIEPGGridContainer : public CGUIControl
 {
 public:
-  CGUIEPGGridContainer(int dwParentID, int dwControlId, float posX, float posY,
-                       float width, float height, int scrollTime, int minutesPerPage,
+  CGUIEPGGridContainer(int parentID, int controlID, float posX, float posY, float width, float height,
+                       ORIENTATION orientation, int scrollTime, int preloadItems, int minutesPerPage,
                        int rulerUnit);
   virtual ~CGUIEPGGridContainer(void);
   virtual CGUIEPGGridContainer *Clone() const { return new CGUIEPGGridContainer(*this); };
@@ -50,10 +57,9 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
 
-  CStdString GetDescription() const;
+  virtual CStdString GetDescription() const;
   const int GetNumChannels()   { return m_channels; };
   virtual int GetSelectedItem() const;
-  CFileItemPtr GetSelectedItemPtr() const;
   const int GetSelectedChannel() { return m_channelCursor + m_channelOffset; }
 
   void DoRender(unsigned int currentTime);
@@ -64,6 +70,15 @@ public:
   virtual bool IsContainer() const { return true; };
   CGUIListItemPtr GetListItem(int offset) const;
 
+  virtual int  CorrectOffset(int offset, int cursor) const;
+
+  /*! \brief Set the offset of the first item in the container from the container's position
+   Useful for lists/panels where the focused item may be larger than the non-focused items and thus
+   normally cut off from the clipping window defined by the container's position + size.
+   \param offset CPoint holding the offset in skin coordinates.
+   */
+  void SetRenderOffset(const CPoint &offset);
+
   void GoToBegin();
   void GoToEnd();
   void SetStartEnd(CDateTime start, CDateTime end);
@@ -72,68 +87,41 @@ protected:
   bool OnClick(int actionID);
   bool SelectItemFromPoint(const CPoint &point);
 
-  void UpdateRuler();
   void UpdateItems();
-  void UpdateChannels();
-
-  void RenderRuler(float horzDrawOffset, int blockOffset);
-  void RenderChannels(float posY, int chanOffset); //! render the column of channels
-  void RenderItems(float horzDrawOffset, float posY, int chanOffset, int blockOffset); //! render the grid of items
-
-  void RenderChannel(float posX, float posY, CGUIListItem *item, bool focused); //! render an individual channel layout
-  void RenderItem(float posX, float posY, CGUIListItem *item, bool focused); //! render an individual gridItem layout
 
   void SetChannel(int channel);
   void SetBlock(int block);
-  void VerticalScroll(int amount);
-  void HorizontalScroll(int amount);
+  void ChannelScroll(int amount);
+  void ProgrammesScroll(int amount);
   void ValidateOffset();
   void UpdateLayout(bool refreshAllItems = false);
   void CalculateLayout();
-  void GenerateItemLayout(int row, int itemSize, int block);
   void Reset();
 
-  CGUIListItemPtr GetItem(const int &channel);
-  CGUIListItemPtr GetNextItem(const int &channel);
-  CGUIListItemPtr GetPrevItem(const int &channel);
-  CGUIListItemPtr GetClosestItem(const int &channel);
+  GridItemsPtr *GetItem(const int &channel);
+  GridItemsPtr *GetNextItem(const int &channel);
+  GridItemsPtr *GetPrevItem(const int &channel);
+  GridItemsPtr *GetClosestItem(const int &channel);
 
-  int  GetItemSize(CGUIListItemPtr item);
+  int  GetItemSize(GridItemsPtr *item);
   int  GetBlock(const CGUIListItemPtr &item, const int &channel);
   int  GetRealBlock(const CGUIListItemPtr &item, const int &channel);
   void MoveToRow(int row);
-  void FreeMemory(int keepStart, int keepEnd);
-  void GetCurrentLayouts();
+  bool MoveChannel(bool direction);
+  bool MoveProgrammes(bool direction);
 
   CGUIListItemLayout *GetFocusedLayout() const;
 
   void ScrollToBlockOffset(int offset);
   void ScrollToChannelOffset(int offset);
+  void UpdateScrollOffset();
+  void RenderChannelItem(float posX, float posY, CGUIListItem *item, bool focused);
+  void RenderProgrammeItem(float posX, float posY, float width, float height, CGUIListItem *item, bool focused);
+  void GetCurrentLayouts();
 
-private:
-  int   m_rulerUnit; //! number of blocks that makes up one element of the ruler
-  int   m_channels;
-  int   m_channelsPerPage;
-  int   m_channelCursor;
-  int   m_channelOffset;
-  int   m_blocks;
-  int   m_blocksPerPage;
-  int   m_blockCursor;
-  int   m_blockOffset;
+  CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
 
-  float m_channelPosY; //! Y position of first channel row
-  float m_gridPosX; //! X position of first grid item
-  float m_gridWidth;
-  float m_gridHeight;
-  float m_rulerHeight; //! height of the scrolling timeline above the grid items
-  float m_rulerWidth; //! width of each element of the ruler
-  float m_channelHeight;  //! height of each channel row (& every grid item)
-  float m_channelWidth; //! width of the channel item
-  float m_blockSize; //! a block's width in pixels
-  float m_analogScrollCount;
-
-  CDateTime m_gridStart;
-  CDateTime m_gridEnd;
+  ORIENTATION m_orientation;
 
   struct ItemsPtr
   {
@@ -141,41 +129,87 @@ private:
     long stop;
   };
   std::vector< ItemsPtr > m_epgItemsPtr;
-  std::vector< CGUIListItemPtr > m_rulerItems;
   std::vector< CGUIListItemPtr > m_channelItems;
-  std::vector< CFileItemPtr > m_items;
-  typedef std::vector<CFileItemPtr> ::iterator iItems;
-  CFileItemList* m_FileItems;
-  CGUIListItemPtr m_channel;
+  std::vector< CGUIListItemPtr > m_rulerItems;
+  std::vector< CGUIListItemPtr > m_programmeItems;
+  typedef std::vector<CGUIListItemPtr> ::iterator iItems;
 
-  CFileItemPtr m_gridIndex[MAXCHANNELS][MAXBLOCKS];
-  std::vector< std::vector< CGUIListItemPtr > > m_gridItems;
-  typedef std::vector< std::vector< CGUIListItemPtr > >::iterator iChannels;
-  typedef std::vector< CGUIListItemPtr >::iterator iShows;
-  CGUIListItemPtr  m_item;
+  std::vector<CGUIListItemLayout> m_channelLayouts;
+  std::vector<CGUIListItemLayout> m_focusedChannelLayouts;
+  std::vector<CGUIListItemLayout> m_focusedProgrammeLayouts;
+  std::vector<CGUIListItemLayout> m_programmeLayouts;
+  std::vector<CGUIListItemLayout> m_rulerLayouts;
+
+  CGUIListItemLayout *m_channelLayout;
+  CGUIListItemLayout *m_focusedChannelLayout;
+  CGUIListItemLayout *m_programmeLayout;
+  CGUIListItemLayout *m_focusedProgrammeLayout;
+  CGUIListItemLayout *m_rulerLayout;
+
+  bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
+                    // us to make sure we don't tell the infomanager that we've been moving when
+                    // the "movement" was simply due to the list being repopulated (thus cursor position
+                    // changing around)
+
+  void FreeChannelMemory(int keepStart, int keepEnd);
+  void FreeProgrammeMemory(int keepStart, int keepEnd);
+  void FreeRulerMemory(int keepStart, int keepEnd);
+
+  void GetChannelCacheOffsets(int &cacheBefore, int &cacheAfter);
+  void GetProgrammeCacheOffsets(int &cacheBefore, int &cacheAfter);
+  void GetRulerCacheOffsets(int &cacheBefore, int &cacheAfter);
+
+private:
+  int   m_rulerUnit; //! number of blocks that makes up one element of the ruler
+  int   m_channels;
+  int   m_channelsPerPage;
+  int   m_ProgrammesPerPage;
+  int   m_channelCursor;
+  int   m_channelOffset;
+  int   m_blocks;
+  int   m_blocksPerPage;
+  int   m_blockCursor;
+  int   m_blockOffset;
+  int   m_cacheChannelItems;
+  int   m_cacheProgrammeItems;
+  int   m_cacheRulerItems;
+
+  float m_rulerPosX;      //! X position of first ruler item
+  float m_rulerPosY;      //! Y position of first ruler item
+  float m_rulerHeight;    //! height of the scrolling timeline above the ruler items
+  float m_rulerWidth;     //! width of each element of the ruler
+  float m_channelPosX;    //! Y position of first channel row
+  float m_channelPosY;    //! Y position of first channel row
+  float m_channelHeight;  //! height of each channel row (& every grid item)
+  float m_channelWidth;   //! width of the channel item
+  float m_gridPosX;       //! X position of first grid item
+  float m_gridPosY;       //! Y position of first grid item
+  float m_gridWidth;
+  float m_gridHeight;
+  float m_blockSize;      //! a block's width in pixels
+  float m_analogScrollCount;
+
+  CDateTime m_gridStart;
+  CDateTime m_gridEnd;
+
+  GridItemsPtr m_gridIndex[MAXCHANNELS][MAXBLOCKS];
+  GridItemsPtr *m_item;
   CGUIListItem *m_lastItem;
   CGUIListItem *m_lastChannel;
 
   unsigned int m_renderTime;
 
-  CGUIListItemLayout *m_rulerLayout;
-  CGUIListItemLayout *m_channelLayout;
-  CGUIListItemLayout *m_focusedChannelLayout;
-  CGUIListItemLayout *m_layout;
-  CGUIListItemLayout *m_focusedLayout;
-
   int   m_scrollTime;
   bool  m_channelWrapAround;
   bool  m_gridWrapAround; //! only when no more data available should this be true
 
-  int m_horzScrollLastTime;
-  float m_horzScrollSpeed;
-  float m_horzScrollOffset;
+  int m_programmeScrollLastTime;
+  float m_programmeScrollSpeed;
+  float m_programmeScrollOffset;
 
-  int m_vertScrollLastTime;
-  float m_vertScrollSpeed;
-  float m_vertScrollOffset;
+  int m_channelScrollLastTime;
+  float m_channelScrollSpeed;
+  float m_channelScrollOffset;
 
   CStdString m_label;
-  bool m_wasReset;
 };
