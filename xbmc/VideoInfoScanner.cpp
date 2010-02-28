@@ -615,7 +615,11 @@ namespace VIDEO
               if (result==CNfoFile::NO_NFO || result==CNfoFile::ERROR_NFO)
                 bForce = true;
 
-              lResult=GetIMDBDetails(pItem.get(), url, info2,bDirNames&&info2.strContent.Equals("movies"),NULL,result==CNfoFile::COMBINED_NFO,bForce);
+              if (pDlgProgress)
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2.strContent.Equals("movies"), pDlgProgress, result == CNfoFile::COMBINED_NFO, bForce);
+              else
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2.strContent.Equals("movies"), NULL, result == CNfoFile::COMBINED_NFO, bForce);
+
               if (info2.strContent.Equals("tvshows"))
               {
                 if (!bRefresh)
@@ -1355,6 +1359,12 @@ namespace VIDEO
 
       if (m_pObserver && url.strTitle.IsEmpty())
         m_pObserver->OnSetTitle(movieDetails.m_strTitle);
+
+      if (pDialog)
+      {
+        pDialog->SetLine(1, movieDetails.m_strTitle);
+        pDialog->Progress();
+      }
 
       return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames, bRefresh);
     }
