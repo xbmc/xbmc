@@ -30,7 +30,7 @@
 using namespace XFILE;
 using namespace std;
 
-CSFTPSession::CSFTPSession(string host, string username, string password)
+CSFTPSession::CSFTPSession(const CStdString &host, const CStdString &username, const CStdString &password)
 {
   CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s' with user '%s'", host.c_str(), username.c_str());
   CSingleLock lock(m_critSect);
@@ -46,7 +46,7 @@ CSFTPSession::~CSFTPSession()
   Disconnect();
 }
 
-SFTP_FILE *CSFTPSession::CreateFileHande(string file)
+SFTP_FILE *CSFTPSession::CreateFileHande(const CStdString &file)
 {
   if (m_connected)
   {
@@ -73,7 +73,7 @@ void CSFTPSession::CloseFileHandle(SFTP_FILE *handle)
   sftp_close(handle);
 }
 
-bool CSFTPSession::GetDirectory(string base, string folder, CFileItemList &items)
+bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder, CFileItemList &items)
 {
   if (m_connected)
   {
@@ -245,7 +245,7 @@ bool CSFTPSession::VerifyKnownHost(ssh_session *session)
   return false;
 }
 
-bool CSFTPSession::Connect(string host, string username, string password)
+bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, const CStdString &password)
 {
   m_connected     = false;
   m_session       = NULL;
@@ -345,12 +345,12 @@ void CSFTPSession::Disconnect()
 }
 
 CCriticalSection CSFTPSessionManager::m_critSect;
-map<string, CSFTPSessionPtr> CSFTPSessionManager::sessions;
+map<CStdString, CSFTPSessionPtr> CSFTPSessionManager::sessions;
 
-CSFTPSessionPtr CSFTPSessionManager::CreateSession(string host, string username, string password)
+CSFTPSessionPtr CSFTPSessionManager::CreateSession(const CStdString &host, const CStdString &username, const CStdString &password)
 {
   CSingleLock lock(m_critSect);
-  string key = username + ":" + password + "@" + host;
+  CStdString key = username + ":" + password + "@" + host;
   CSFTPSessionPtr ptr = sessions[key];
   if (ptr == NULL)
   {
@@ -364,7 +364,7 @@ CSFTPSessionPtr CSFTPSessionManager::CreateSession(string host, string username,
 void CSFTPSessionManager::ClearOutIdleSessions()
 {
   CSingleLock lock(m_critSect);
-  for(map<string, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end(); ++iter)
+  for(map<CStdString, CSFTPSessionPtr>::iterator iter = sessions.begin(); iter != sessions.end(); ++iter)
   {
     if (iter->second->IsIdle())
       sessions.erase(iter);

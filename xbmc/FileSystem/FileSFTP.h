@@ -37,12 +37,12 @@
 class CSFTPSession
 {
 public:
-  CSFTPSession(std::string host, std::string username, std::string password);
+  CSFTPSession(const CStdString &host, const CStdString &username, const CStdString &password);
   virtual ~CSFTPSession();
 
-  SFTP_FILE *CreateFileHande(std::string file);
+  SFTP_FILE *CreateFileHande(const CStdString &file);
   void CloseFileHandle(SFTP_FILE *handle);
-  bool GetDirectory(std::string base, std::string folder, CFileItemList &items);
+  bool GetDirectory(const CStdString &base, const CStdString &folder, CFileItemList &items);
   bool Exists(const char *path);
   int Stat(const char *path, struct __stat64* buffer);
   void Seek(SFTP_FILE *handle, u64 position);
@@ -51,7 +51,7 @@ public:
   bool IsIdle();
 private:
   bool VerifyKnownHost(ssh_session *session);
-  bool Connect(std::string host, std::string username, std::string password);
+  bool Connect(const CStdString &host, const CStdString &username, const CStdString &password);
   void Disconnect();
   CCriticalSection m_critSect;
 
@@ -66,12 +66,12 @@ typedef boost::shared_ptr<CSFTPSession> CSFTPSessionPtr;
 class CSFTPSessionManager
 {
 public:
-  static CSFTPSessionPtr CreateSession(std::string host, std::string username, std::string password);
+  static CSFTPSessionPtr CreateSession(const CStdString &host, const CStdString &username, const CStdString &password);
   static void ClearOutIdleSessions();
   static void DisconnectAllSessions();
 private:
   static CCriticalSection m_critSect;
-  static std::map<std::string, CSFTPSessionPtr> sessions;
+  static std::map<CStdString, CSFTPSessionPtr> sessions;
 };
 
 namespace XFILE
@@ -92,7 +92,7 @@ namespace XFILE
     virtual int64_t GetPosition();
 
   private:
-    std::string m_file;
+    CStdString m_file;
     CSFTPSessionPtr m_session;
     SFTP_FILE *m_sftp_handle;
   };
