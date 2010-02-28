@@ -162,7 +162,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   if (!m_DropPictures)
   {
     if (m_Duration > 0.0)
-      Sleep(m_Duration/2000.0);
+      Sleep((DWORD)(m_Duration/2000.0));
     else
       Sleep(20);
   }
