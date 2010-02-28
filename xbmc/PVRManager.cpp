@@ -982,11 +982,6 @@ void CPVRManager::ResetEPG()
   pDlgProgress->Close();
 }
 
-/********************************************************************
- * CPVRManager IsPlayingTV
- *
- * Returns true if a TV channel is playing
- ********************************************************************/
 bool CPVRManager::IsPlayingTV()
 {
   if (!m_currentPlayingChannel)
@@ -995,11 +990,6 @@ bool CPVRManager::IsPlayingTV()
   return !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio();
 }
 
-/********************************************************************
- * CPVRManager IsPlayingRadio
- *
- * Returns true if a radio channel is playing
- ********************************************************************/
 bool CPVRManager::IsPlayingRadio()
 {
   if (!m_currentPlayingChannel)
@@ -1008,11 +998,6 @@ bool CPVRManager::IsPlayingRadio()
   return m_currentPlayingChannel->GetPVRChannelInfoTag()->IsRadio();
 }
 
-/********************************************************************
- * CPVRManager IsPlayingRecording
- *
- * Returns true if a recording is playing
- ********************************************************************/
 bool CPVRManager::IsPlayingRecording()
 {
   if (m_currentPlayingRecording)
@@ -1021,12 +1006,6 @@ bool CPVRManager::IsPlayingRecording()
     return true;
 }
 
-/********************************************************************
- * CPVRManager GetCurrentClientProps
- *
- * Returns the properties of the current playing client or NULL if
- * if no stream is playing
- ********************************************************************/
 PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
 {
   if (m_currentPlayingChannel)
@@ -1037,12 +1016,6 @@ PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
     return NULL;
 }
 
-/********************************************************************
- * CPVRManager GetCurrentStreamProps
- *
- * Returns the properties of the current playing stream or NULL if
- * if no stream is playing
- ********************************************************************/
 PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProps()
 {
   if (m_currentPlayingChannel)
@@ -1056,11 +1029,6 @@ PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProps()
     return NULL;
 }
 
-/********************************************************************
- * CPVRManager GetCurrentPlayingItem
- *
- * Returns the current playing file item
- ********************************************************************/
 CFileItem *CPVRManager::GetCurrentPlayingItem()
 {
   if (m_currentPlayingChannel)
@@ -1079,11 +1047,6 @@ CStdString CPVRManager::GetCurrentInputFormat()
   return "";
 }
 
-/********************************************************************
- * CPVRManager GetCurrentChannel
- *
- * Returns the current playing channel number
- ********************************************************************/
 bool CPVRManager::GetCurrentChannel(int *number, bool *radio)
 {
   if (m_currentPlayingChannel)
@@ -1104,11 +1067,6 @@ bool CPVRManager::GetCurrentChannel(int *number, bool *radio)
   }
 }
 
-/********************************************************************
- * CPVRManager HaveActiveClients
- *
- * Returns true if a minimum one client is active
- ********************************************************************/
 bool CPVRManager::HaveActiveClients()
 {
   if (m_clients.empty())
@@ -1125,11 +1083,6 @@ bool CPVRManager::HaveActiveClients()
   return ready > 0 ? true : false;
 }
 
-/********************************************************************
- * CPVRManager GetPreviousChannel
- *
- * Returns the previous selected channel or -1
- ********************************************************************/
 int CPVRManager::GetPreviousChannel()
 {
   if (m_currentPlayingChannel == NULL)

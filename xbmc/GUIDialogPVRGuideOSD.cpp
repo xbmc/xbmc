@@ -54,6 +54,11 @@ bool CGUIDialogPVRGuideOSD::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
+      if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
+      {
+        Close();
+        return true;
+      }
       CGUIWindow::OnMessage(message);
       Update();
       return true;

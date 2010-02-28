@@ -301,7 +301,13 @@ TiXmlElement CAddonDll<TheDll, TheStruct, TheProps>::MakeSetting(DllSetting& set
       node.SetAttribute("id", setting.id);
       node.SetAttribute("type", "enum");
       node.SetAttribute("label", setting.label);
-      //node.SetAttribute("lvalues", lvalues.c_str());
+      CStdString values;
+      for (unsigned int i = 0; i < setting.entry.size(); i++)
+      {
+        values.append(setting.entry[i]);
+        values.append("|");
+      }
+      node.SetAttribute("values", values.c_str());
       break;
     }
   default:

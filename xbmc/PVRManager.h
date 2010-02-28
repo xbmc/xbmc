@@ -46,35 +46,69 @@ public:
   CPVRManager();
   ~CPVRManager();
 
-  /*--- Startup functions ---*/
+  /*! \name Startup functions
+   */
   void Start();
   void Stop();
 
-  /*--- External Client access functions ---*/
+  /*! \name External Client access functions
+   */
   unsigned long GetFirstClientID();
   CLIENTMAP* Clients() { return &m_clients; }
   CTVDatabase *GetTVDatabase() { return &m_database; }
 
-  /*--- Addon related functions ---*/
+  /*! \name Addon related functions
+   */
   bool RequestRestart(const ADDON::IAddon* addon, bool datachanged);
   bool RequestRemoval(const ADDON::IAddon* addon);
   void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 
-  /*--- GUIInfoManager functions ---*/
+  /*! \name GUIInfoManager functions
+   */
   void SyncInfo();
   const char* TranslateCharInfo(DWORD dwInfo);
   int TranslateIntInfo(DWORD dwInfo);
   bool TranslateBoolInfo(DWORD dwInfo);
 
-  /*--- General functions ---*/
+  /*! \name General functions
+   */
   void ResetDatabase();
   void ResetEPG();
+
+  /*! \brief Returns if a TV channel is playing
+   \return true during TV playback
+   */
   bool IsPlayingTV();
+
+  /*! \brief Returns if a radio channel is playing
+   \return true during radio playback
+   */
   bool IsPlayingRadio();
+
+  /*! \brief Returns if a recording is playing over the client
+   \return true during recording playback
+   */
   bool IsPlayingRecording();
+
+  /*! \brief Returns the properties of the current playing client
+   \return pointer to properties (NULL if no stream is playing)
+   */
   PVR_SERVERPROPS *GetCurrentClientProps();
-  PVR_STREAMPROPS *GetCurrentStreamProps();
+
+  /*! \brief Returns the properties of the given client identifier
+   \param clientID The identifier of the client
+   \return pointer to properties (NULL if no stream is playing)
+   */
   PVR_SERVERPROPS *GetClientProps(int clientID) { return &m_clientsProps[clientID]; }
+
+  /*! \brief Returns the properties of the current playing stream content
+   \return pointer to properties (NULL if no stream is playing)
+   */
+  PVR_STREAMPROPS *GetCurrentStreamProps();
+
+  /*! \brief Returns the current playing file item
+   \return pointer to file item class (NULL if no stream is playing)
+   */
   CFileItem *GetCurrentPlayingItem();
 
   /*! \brief Get the input format name of the current playing channel
@@ -82,8 +116,21 @@ public:
    */
   CStdString GetCurrentInputFormat();
 
+  /*! \brief Returns the current playing channel number
+   \param number Address to integer value to write playing channel number
+   \param radio Address to boolean value to set it true if it is a radio channel
+   \return true if channel is playing
+   */
   bool GetCurrentChannel(int *number, bool *radio);
+
+   /*! \brief Returns if a minimum one client is active
+   \return true if minimum one client is started
+   */
   bool HaveActiveClients();
+
+  /*! \brief Returns the previous selected channel
+   \return the number of the previous channel or -1 if no channel was selected before
+   */
   int GetPreviousChannel();
   bool CanInstantRecording();
   bool HasTimer() { return m_hasTimers;  }
