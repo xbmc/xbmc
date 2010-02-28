@@ -120,67 +120,6 @@ CStdString CCMythSession::GetValue(char *str)
   return result;
 }
 
-bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
-{
-  if (!info)
-    return false;
-
-  CVideoInfoTag* tag = item.GetVideoInfoTag();
-
-  tag->m_strAlbum       = GetValue(m_dll->proginfo_chansign(info));
-  tag->m_strShowTitle   = GetValue(m_dll->proginfo_title(info));
-  tag->m_strPlotOutline = GetValue(m_dll->proginfo_subtitle(info));
-  tag->m_strPlot        = GetValue(m_dll->proginfo_description(info));
-  tag->m_strGenre       = GetValue(m_dll->proginfo_category(info));
-
-  if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
-    tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
-
-  tag->m_strOriginalTitle = tag->m_strShowTitle;
-
-  tag->m_strTitle = tag->m_strAlbum;
-  if (tag->m_strShowTitle.length() > 0)
-    tag->m_strTitle += " : " + tag->m_strShowTitle;
-
-  CDateTimeSpan span = GetValue(m_dll->proginfo_rec_end(info)) - GetValue(m_dll->proginfo_rec_start(info));
-  StringUtils::SecondsToTimeString(span.GetSeconds() +
-                                   span.GetMinutes() * 60 +
-                                   span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
-
-  tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
-  tag->m_iEpisode = 0;
-
-  item.m_strTitle = GetValue(m_dll->proginfo_chanstr(info));
-  item.m_dateTime = GetValue(m_dll->proginfo_rec_start(info));
-  item.m_dwSize   = m_dll->proginfo_length(info);
-
-  if (m_dll->proginfo_rec_status(info) == RS_RECORDING)
-  {
-    tag->m_strStatus = "livetv";
-
-    CStdString temp;
-
-    temp = GetValue(m_dll->proginfo_chanicon(info));
-    if (temp.length() > 0)
-    {
-      CURL url(item.m_strPath);
-      url.SetFileName("files/channels/" + temp);
-      item.SetThumbnailImage(url.Get());
-    }
-
-    temp = GetValue(m_dll->proginfo_chanstr(info));
-    if (temp.length() > 0)
-    {
-      CURL url(item.m_strPath);
-      url.SetFileName("channels/" + temp + ".ts");
-      item.m_strPath = url.Get();
-    }
-    item.SetCachedVideoThumb();
-  }
-
-  return true;
-}
-
 void CCMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program)
 {
   if (!program)
