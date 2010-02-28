@@ -592,7 +592,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
     //Work around to fix the audio pipeline
     //I think this should be the best way to render a pin if there an error the audio stream
     //The only problem is the graph is getting locked after that
-    if (audioError)//
+    if (audioError)
     {
       IBaseFilter *pBF = CFGLoader::Filters.Splitter.pBF;
 
@@ -612,7 +612,45 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
       }
       EndEnumPins
     }
+    if (videoError)
+    {
+      //Video renderer cant be changed so we have to force the connection from 
+      //the splitter to the video renderer and nothing else
+      IBaseFilter *pBFS = CFGLoader::Filters.Splitter.pBF;
 
+      BeginEnumPins(pBFS, pEP, pPin)
+      {
+        BeginEnumMediaTypes(pPin, pEMT, pMT)
+        {
+          if (pMT->majortype == MEDIATYPE_Video)
+          {
+            if (SUCCEEDED(Render(pPin)))
+            {
+              videoError = false;
+              //Ok got it
+            }
+          }
+        }
+        EndEnumMediaTypes(pMT)
+      }
+      EndEnumPins
+      if (!videoError)
+      {
+        IBaseFilter *pBFV = CFGLoader::Filters.VideoRenderer.pBF;
+        IPin *pPinV = DShowUtil::GetFirstPin(pBFV,PINDIR_INPUT);
+        if (SUCCEEDED(DShowUtil::IsPinConnected(pPinV)))
+        {
+          CLog::Log(LOGINFO,"The video filters encountered an error so dsplayer changed the filters currently used.");
+        }
+        else
+          videoError = true;
+        pBFV = NULL;
+        pPinV = NULL;
+      }
+      
+      
+      
+    }
     if ( videoError || audioError)
     {
       CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -641,8 +679,8 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   
 
   //Apparently the graph dont start with unconnected filters in the graph for wmv files
-  if (pFileItem.GetAsUrl().GetFileType().Equals("wmv",false))
-    RemoveUnconnectedFilters(m_pFG);
+  //And its also going to be needed for error in the filters set by the user are not getting connected
+  RemoveUnconnectedFilters(m_pFG);
 
   g_dsconfig.ConfigureFilters(m_pFG);
 #ifdef _DSPLAYER_DEBUG
