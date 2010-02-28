@@ -45,6 +45,7 @@ vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
 vdpau_disabled="== VDPAU support manually disabled. =="
 crystalhd_not_found="== Could not find libldil. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
+ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -345,6 +346,7 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([wavpack],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ssh],         [main],, AC_MSG_RESULT($ssh_not_found))
 PKG_CHECK_MODULES([MAD],        [mad],
                   [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))

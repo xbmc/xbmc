@@ -90,6 +90,9 @@
 #ifdef HAS_ZEROCONF
 #include "ZeroconfDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_SFTP
+#include "SFTPDirectory.h"
+#endif
 
 using namespace XFILE;
 
@@ -142,6 +145,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
     if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
     if (strProtocol == "dav" || strProtocol == "davs") return new CDAVDirectory();
+#ifdef HAS_FILESYSTEM_SFTP
+    if (strProtocol == "sftp" || strProtocol == "ssh") return new CSFTPDirectory();
+#endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
     if (strProtocol == "smb") return new CWINSMBDirectory();

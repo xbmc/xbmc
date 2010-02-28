@@ -27,6 +27,7 @@ SRCS=ASAPFileDirectory.cpp \
      FileCDDA.cpp \
      File.cpp \
      FileCurl.cpp \
+     FileSFTP.cpp \
      FileDAAP.cpp \
      FileFactory.cpp \
      FileFileReader.cpp \
@@ -86,6 +87,7 @@ SRCS=ASAPFileDirectory.cpp \
      VTPSession.cpp \
      VTPFile.cpp \
      ZeroconfDirectory.cpp \
+     SFTPDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
 

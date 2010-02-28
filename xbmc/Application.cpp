@@ -99,6 +99,9 @@
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "FileSystem/SMBDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_SFTP
+#include "FileSystem/FileSFTP.h"
+#endif
 #include "PartyModeManager.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
@@ -3336,6 +3339,10 @@ void CApplication::Stop()
     g_RarManager.ClearCache(true);
 #endif
 
+#ifdef HAS_FILESYSTEM_SFTP
+    CSFTPSessionManager::DisconnectAllSessions();
+#endif
+
     CLog::Log(LOGNOTICE, "unload skin");
     UnloadSkin();
 
@@ -4804,6 +4811,10 @@ void CApplication::ProcessSlow()
 
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
   smb.CheckIfIdle();
+#endif
+
+#ifdef HAS_FILESYSTEM_SFTP
+  CSFTPSessionManager::ClearOutIdleSessions();
 #endif
 
   g_mediaManager.ProcessEvents();

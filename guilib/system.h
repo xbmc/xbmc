@@ -50,6 +50,10 @@
 #define HAS_WEB_INTERFACE
 #endif
 
+#ifdef HAVE_LIBSSH
+#define HAS_FILESYSTEM_SFTP
+#endif
+
 #define HAS_JSONRPC
 #define HAS_HTTPAPI
 

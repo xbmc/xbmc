@@ -62,6 +62,9 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "FileRar.h"
 #endif
+#ifdef HAS_FILESYSTEM_SFTP
+#include "FileSFTP.h"
+#endif
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
@@ -118,6 +121,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     ||  strProtocol == "ftpx"
     ||  strProtocol == "ftps"
     ||  strProtocol == "rss") return new CFileCurl();
+#ifdef HAS_FILESYSTEM_SFTP
+    else if (strProtocol == "sftp" || strProtocol == "ssh") return new CFileSFTP();
+#endif
     else if (strProtocol == "shout") return new CFileShoutcast();
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
