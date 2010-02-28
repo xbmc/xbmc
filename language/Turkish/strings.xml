@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 05/01/2010-->
-<!--Based on English strings revision 26731-->
+<!--Date of translation: 26/02/2010-->
+<!--Based on English strings revision 28135-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -129,11 +129,13 @@
   <string id="165">Disk var</string>
   <string id="166">Dış Görünüm</string>
   <string id="167">FTP sunucusunu etkinleştir</string>
-  <string id="168">İnternet saat senkronizasyonunu etkinleştir</string>
+  <string id="168"></string>
   <string id="169">Çözünürlük</string>
   <string id="170">Görüntü tazeleme oranını videoyla eşleşecek şekilde ayarla</string>
+  <string id="171"></string>
 
   <string id="172">Çıkış tarihi</string>
+  <string id="173">Display 4:3 videos as</string>
 
   <string id="175">Nitelik</string>
   <string id="176">Stiller</string>
@@ -202,7 +204,7 @@
   <string id="251">Hedef klasörü seç</string>
   <string id="252">Bütün kolonlara stereo ses ver</string>
   <string id="253">Kanal sayısı</string>
-  <string id="254">- DTS Destekli Alıcı</string>
+  <string id="254">- DTS destekli alıcı</string>
   <string id="255">CDDB</string>
   <string id="256">CD bilgileri getiriliyor</string>
   <string id="257">Hata</string>
@@ -245,6 +247,10 @@
   <string id="296">Yer işaretlerini temizle</string>
   <string id="297">Ses gecikmesi</string>
   <string id="298">Yer İşaretleri</string>
+  <string id="299">- AAC destekli alıcı</string>
+  <string id="300">- MP1 destekli alıcı</string>
+  <string id="301">- MP2 destekli alıcı</string>
+  <string id="302">- MP3 destekli alıcı</string>
   <string id="303">Geciktirme</string>
   <string id="304">Dil</string>
   <string id="305">Aktif</string>
@@ -288,6 +294,7 @@
   <string id="343">Kare hızını ayarla</string>
   <string id="344">Aktörler</string>
   <string id="345">Yıl</string>
+  <string id="346">Downmix yaparken ses seviyesini yükselt</string>
   <string id="350">Programlar</string>
   <string id="351">Kapalı</string>
   <string id="352">Karart</string>
@@ -341,14 +348,13 @@
   <string id="400">Hava</string>
   <string id="401">Hava sıcaklığı</string>
   <string id="402">Hissedilen sıcaklık</string>
-  <string id="403">UV Değeri</string>
+  <string id="403">UV değeri</string>
   <string id="404">Rüzgar</string>
   <string id="405">Donma noktası</string>
   <string id="406">Nem oranı</string>
-  <string id="407">ondan</string>
-  <string id="408">ile</string>
+  <string id="407"></string>
+  <string id="408"></string>
   <string id="409">Varsayılanlar</string>
-
   <string id="410">Hava Durumu hizmetine erişiliyor</string>
   <string id="411">Hava Durumu bilgileri alınıyor:</string>
   <string id="412">Hava Durumu bilgileri alınamıyor</string>
@@ -357,6 +363,8 @@
   <string id="415">Küçük resim indiriliyor...</string>
   <string id="416">Kullanılamaz</string>
   <string id="417">Görünüm: Büyük simgeler</string>
+  <string id="418">Düşük</string>
+  <string id="419">Yüksek</string>
 
   <string id="422">Albüm bilgisini sil</string>
   <string id="423">CD bilgisini sil</string>
@@ -602,9 +610,9 @@
   <string id="726">Değişiklikler kaydedilmedi. Kaydetmeden çıkmak istiyor musunuz?</string>
   <string id="727">Web sunucusu</string>
   <string id="728">FTP sunucusu</string>
-  <string id="729">İnternet zamanı</string>
+  <string id="729"></string>
   <string id="730">- Port</string>
-  <string id="731">Saat sunucu makinesi</string>
+  <string id="731"></string>
   <string id="732">Kaydet ve uygula</string>
   <string id="733">- Parola</string>
   <string id="734">Parola yok</string>
@@ -638,10 +646,10 @@
   <string id="763">Açık yeşil</string>
   <string id="764">Turkuaz</string>
   <string id="765">Çiyan</string>
-  <string id="766">Ayrıldı</string>
-  <string id="767">Ayrıldı</string>
-  <string id="768">Ayrıldı</string>
-  <string id="769">Ayrıldı</string>
+  <string id="766">Açık gri</string>
+  <string id="767">Gri</string>
+  <!-- strings 768 and 769 reserved for more subtitle colors -->
+
   <string id="770">Hata %i: paylaşım bulunamıyor</string>
   <string id="771">- Otomatik FATX limitleyici</string>
   <string id="772">Ses çıkışı</string>
@@ -1491,16 +1499,19 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-
   <string id="16307">Bicubic (yazılım)</string>
   <string id="16308">Lanczos (yazılım)</string>
   <string id="16309">Sinc (yazılım)</string>
-
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16310">Temporal</string>
+  <string id="16311">Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
+  <string id="16315">Lanczos3 iyileştirilmiş</string>
+  <string id="16316">Otomatik</string>
+  <string id="16317">Temporal (Yarım)</string>
+  <string id="16318">Temporal/Spatial (Yarım)</string>
+
   <string id="17500">Görüntü uyku zaman aşımı</string>
 
   <string id="19000">Kanal değiştir</string>
@@ -1539,7 +1550,7 @@
   <string id="20038">Müzik penceresini kilitle</string>
   <string id="20039">Video penceresini kilitle</string>
   <string id="20040">Resim penceresini kilitle</string>
-  <string id="20041">Programlar, kayıtlar ve betikler penceresini kilitle</string>
+  <string id="20041">Programlar ve betikler penceresini kilitle</string>
   <string id="20042">Dosya yöneticisini kilitle</string>
   <string id="20043">Ayarları kilitle</string>
   <string id="20044">Yeniden başlat</string>
@@ -1852,8 +1863,11 @@
   <string id="20443">Bu yolun içindeki tüm öğelerin bilgilerini</string>
   <string id="20444">yenilemek istiyor musunuz?</string>
   <string id="20445">Fanart</string>
-  <string id="20446">NFO-dosyası bulundu.</string>
-  <string id="20447">İnternet'ten yenilensin mi?</string>
+  <string id="20446">Yerel olarak depolanan bilgi bulundu.</string>
+  <string id="20447">Yoksayıp internetten yenilensin mi?</string>
+  <string id="20448">Bilgi indirilemiyor</string>
+  <string id="20449">Sunucu büyük olasılıkla kullanılamaz.</string>
+  <string id="20450">Taramaya devam etmek istiyor musunuz?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>
@@ -1890,7 +1904,7 @@
   <string id="21381">Yeni çalma listesinin adını girin</string>
   <string id="21382">Dosya listesindeki "Kaynak ekle" tuşunu göster</string>
   <string id="21383">Kaydırma çubuklarını etkinleştir</string>
-  <string id="21384">Make watched filtering a toggle in video library</string>
+  <string id="21384">Video kitaplığında seyredilmiş filtresini aç/kapat</string>
   <string id="21385">Aç</string>
   <string id="21386">Akustik yönetim düzeyi</string>
   <string id="21387">Hızlı</string>
@@ -1941,7 +1955,7 @@
   <string id="21432">Akıllı çalma listesini düzenle</string>
   <string id="21433">Çalma listesinin adı</string>
   <string id="21434">Ögeleri bulun</string>
-  <string id="21435">- Düzenle</string>
+  <string id="21435">Düzenle</string>
   <string id="21436">%i ögeleri</string>
   <string id="21437">Yeni akıllı çalma listesi...</string>
   <string id="21438">%c Sürücüsü</string>
@@ -1956,6 +1970,7 @@
   <string id="21447">Ses dili</string>
   <string id="21448">Altyazı dili</string>
   <string id="21449">Remote control sends keyboard presses</string>
+  <string id="21450">- Düzenle</string>
 
   <string id="21800">Dosya adı</string>
   <string id="21801">Dosya yolu</string>
@@ -2084,6 +2099,8 @@
   <string id="23050">Teletext'i Etkinleştir</string>
   <string id="23051">Bölüm %i</string>
   <string id="23052">%i bayt arabelleğe alındı</string>
+  <string id="23053">Durduruluyor</string>
+  <string id="23054">Çalışıyor</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Harici Oynatıcı Etkin</string>
@@ -2174,4 +2191,24 @@
   <string id="33081">Bu dosya yığınlandı, oynatmak istediğiniz bölümü seçin.</string>
   <string id="33082">Betik yolu</string>
   <string id="33083">Özel betik tuşunu etkinleştir</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">Hoparlör Yapılandırma</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+
 </strings>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: TigerHeart [ua]-->
 <!--Email: admin@irt.pl.ua-->
@@ -7,7 +7,7 @@
 <!--Based on english strings version 21081-->
 <strings>
   <string id="0">Программы</string>
-  <string id="1">Фотографии</string>
+  <string id="1">Фото</string>
   <string id="2">Музыка</string>
   <string id="3">Видео</string>
   <string id="4">TV Guide</string>
@@ -89,7 +89,7 @@
   <string id="154">Накопители</string>
   <string id="155">лоток DVD привода</string>
   <string id="156">Свободно</string>
-  <string id="157">Видеокарта</string>
+  <string id="157">Видео</string>
   <string id="158">Свободно памяти</string>
   <string id="159">Нет соединения</string>
   <string id="160">свободно</string>
@@ -98,12 +98,13 @@
   <string id="163">Чтение</string>
   <string id="164">Нет диска в приводе</string>
   <string id="165">Диск в приводе</string>
-  <string id="166">Оформление (skin)</string>
+  <string id="166">Оформление</string>
   <string id="167">Включить FTP-сервер</string>
   <string id="168">Включить синхронизацию времени через Internet</string>
   <string id="169">Разрешение экрана</string>
   <string id="170">Настроить частоту обновления экрана</string>
   <string id="172">Дата выпуска</string>
+  <string id="173">Отображение видео формата 4:3</string>
   <string id="175">Настроение</string>
   <string id="176">Стили</string>
   <string id="179">Песня</string>
@@ -213,6 +214,10 @@
   <string id="296">Очистить закладки</string>
   <string id="297">Смещение звука</string>
   <string id="298">Закладки</string>
+  <string id="299">- AAC совместимый ресивер</string>
+  <string id="300">- MP1 совместимый ресивер</string>
+  <string id="301">- MP2 совместимый ресивер</string>
+  <string id="302">- MP3 совместимый ресивер</string>
   <string id="303">Задержка</string>
   <string id="304">Язык</string>
   <string id="305">Включено</string>
@@ -255,6 +260,7 @@
   <string id="343">Настроить частоту кадров</string>
   <string id="344">Актеры</string>
   <string id="345">Год</string>
+  <string id="346">Повышать громкость при микшировании (downmix)</string> 
   <string id="350">Программы</string>
   <string id="351">отключено</string>
   <string id="352">Затемнение</string>
@@ -262,7 +268,7 @@
   <string id="354">Следы 'Матрицы'</string>
   <string id="355">Включать заставку через</string>
   <string id="356">Режим заставки</string>
-  <string id="357">Завершити роботу через</string>
+  <string id="357">Завершить работу через</string>
   <string id="358">Все альбомы</string>
   <string id="359">Свежие альбомы</string>
   <string id="360">Заставка</string>
@@ -493,11 +499,11 @@
   <string id="624">Добавить номер трека</string>
   <string id="625">Все песни </string>
   <string id="629">Режим просмотра</string>
-  <string id="630">Нормальный</string>
-  <string id="631">Увеличенный</string>
-  <string id="632">Растянутый 4:3</string>
-  <string id="633">Растянутый 14:9</string>
-  <string id="634">Растянутый 16:9</string>
+  <string id="630">Нормально</string>
+  <string id="631">Увеличенно</string>
+  <string id="632">Растянуто 4:3</string>
+  <string id="633">Растянуто 14:9</string>
+  <string id="634">Растянуто 16:9</string>
   <string id="635">Оригинальный размер</string>
   <string id="636">Особый</string>
   <string id="637">Replay Gain</string>
@@ -586,7 +592,7 @@
   <string id="769">зарезервировано</string>
   <string id="770">Ошибка %i: ресурс недоступен</string>
   <string id="771">- соблюдать ограничения файловой системы FATx</string>
-  <string id="772">Аудиооборудование</string>
+  <string id="772">Аудио</string>
   <string id="773">Поиск</string>
   <string id="774">Папка для слайдшоу</string>
   <string id="775">Сетевой интерфейс</string>
@@ -609,6 +615,7 @@
   <string id="795">Задержка начального повтора (ms)</string>
   <string id="796">Задержка последующих повторов (ms)</string>
   <string id="797">Максимальное количество клиентов</string>
+  <string id="798">Интернет</string> 
   <string id="1000">Посмотреть заставку</string>
   <string id="1001">Невозможно подключиться</string>
   <string id="1002">XBMC не может подключиться к сети.</string>
@@ -722,7 +729,7 @@
   <string id="1417">Зерна</string>
   <string id="1418">Грозы</string>
   <string id="1419">Грозовые ливни</string>
-  <string id="1450">Использовать энергосбережение во время простоя</string>
+  <string id="1450">Использовать энергосбережение</string>
   <string id="2050">Длительность</string>
   <string id="4501">Тип LCD-экрана</string>
   <string id="10000">Основной</string>
@@ -938,7 +945,7 @@
   <string id="13275">Жесткий диск</string>
   <string id="13276">Привод DVD</string>
   <string id="13277">Накопители</string>
-  <string id="13278">Общее</string>
+  <string id="13278">По умолчанию</string>
   <string id="13279">Сеть</string>
   <string id="13280">Видео</string>
   <string id="13281">Оборудование</string>
@@ -1062,16 +1069,16 @@
   <string id="13411">Минимальная скорость вентиляторов</string>
   <string id="13412">- новости RSS содержат текст справа-налево</string>
   <string id="13413">Загрузка</string>
-  <string id="13414">Не показывать исполнителей, которые появляются только в сборниках</string>
+  <string id="13414">Не показывать исполнителей в сборниках</string>
   <string id="13415">Метод обработки</string>
   <string id="13416">Автоопределение</string>
   <string id="13417">Основные шейдеры (ARB)</string>
   <string id="13418">Дополнительные шейдеры (GLSL)</string>
   <string id="13419">Программный</string>
   <string id="13420">Удалить безопасно</string>
-  <string id="13500">Метод синхронизации A/V</string>
+  <string id="13500">Синхронизация A/V</string>
   <string id="13501">по частоте звука</string>
-  <string id="13502">по частоте видео (пропускать / дублировать звук)</string>
+  <string id="13502">по частоте видео (пропускать звук)</string>
   <string id="13503">по частоте видео (преобразовывать звук)</string>
   <string id="13504">Максимальная величина преобразования (%)</string>
   <string id="13505">Качество преобразования</string>
@@ -1107,9 +1114,9 @@
   <string id="14016">хотя бы один файл и эскиз</string>
   <string id="14017">процентное соотношение эскизов</string>
   <string id="14018">Настройки просмотра</string>
-  <string id="14019">Первая местность</string>
-  <string id="14020">Вторая местность</string>
-  <string id="14021">Третья местность</string>
+  <string id="14019">Первый регион</string>
+  <string id="14020">Второй регион</string>
+  <string id="14021">Третий регион</string>
   <string id="14022">Медиатека</string>
   <string id="14023">Без ТВ</string>
   <string id="14024">Впишите ближайший большой город</string>
@@ -1164,6 +1171,17 @@
   <string id="14078">- цвет</string>
   <string id="14079">Страна в часовом поясе</string>
   <string id="14080">Часовой пояс</string>
+  <string id="14081">Списки файлов</string>
+  <string id="14083">Использовать полноэкранное окно</string> 
+  <string id="14084">Помещать песни в очередь при выборе</string>  
+  <string id="14086">Воспроизведение</string>
+  <string id="14087">DVD диски</string>
+  <string id="14088">Проигрывать DVD автоматически</string>
+  <string id="14089">Шрифт для субтитров</string>  
+  <string id="14090">Регион</string>
+  <string id="14092">Режим отладки</string>
+  <string id="14094">Устройства ввода</string> 
+  <string id="14095">Питание</string> 
   <string id="15015">Убрать</string>
   <string id="15016">Игры</string>
   <string id="15019">Добавить</string>
@@ -1484,7 +1502,7 @@
   <string id="20188">Резервное копирование BIOS</string>
   <string id="20189">Включить автоматическую прокрутку для сюжетов и обзоров</string>
   <string id="20190">Дополнительно</string>
-  <string id="20191">Включить протоколирование (для отладки)</string>
+  <string id="20191">Включить протоколирование</string>
   <string id="20192">Искать данные об альбоме при добавлении в медиатеку</string>
   <string id="20193">Искать данные об исполнителе при добавлении в медиатеку</string>
   <string id="20194">Стандартный инфо-ресурс</string>
@@ -1649,7 +1667,7 @@
   <string id="21370">Звуки интерфейса во время проигрывания</string>
   <string id="21371">Эскизы</string>
   <string id="21372">Установить регион DVD-проигрывателя</string>
-  <string id="21373">Видеооборудование</string>
+  <string id="21373">Видео</string>
   <string id="21374">Соотношение сторон видео</string>
   <string id="21375">Normal</string>
   <string id="21376">Letterbox</string>
@@ -1658,7 +1676,7 @@
   <string id="21379">Включить 720p</string>
   <string id="21380">Включить 1080i</string>
   <string id="21381">Введите имя нового плейлиста</string>
-  <string id="21382">Отключить пункт 'Добавить источник' в списках файлов</string>
+  <string id="21382">Влючить пункт 'Добавить источник' в списках файлов</string>
   <string id="21383">Включить полосы прокрутки</string>
   <string id="21384">Отмечать галочкой просмотренное видео в медиатеке</string>
   <string id="21385">Открыть</string>
@@ -1716,6 +1734,7 @@
   <string id="21440">Домашняя папка</string>
   <string id="21441">Количество просмотров</string>
   <string id="21442">Название эпизода</string>
+  <string id="21449">Пульт ДУ посылает сигналы нажатия клавиш клавиатуры</string>
   <string id="21800">Имя файла</string>
   <string id="21801">Путь к файлу</string>
   <string id="21802">Размер файла</string>
@@ -1810,6 +1829,8 @@
   <string id="22018">Каналы прямой трансляции</string>
   <string id="22019">Записи по имени</string>
   <string id="22020">Руководство</string>
+  <string id="22021">Ошибка в ракурсе при минимизации черных полос</string>
+  <string id="22022">Показывать видео файлы в списке</string>
   <string id="22030">Шрифт</string>
   <string id="22031">- размер</string>
   <string id="22032">- цвет</string>
@@ -1908,6 +1929,22 @@
   <string id="33080">Не нравится</string>
   <string id="33081">Этом файл состоит из нескольких, выберите часть для проигрывания.</string>
   <string id="33082">Путь к скрипту</string>
-  <string id="33083">Enable custom script button</string>
+  <string id="33083">Дополнительная кнопка для скрипта</string>
   
+ <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">Конфигурация аудиосистемы</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
 </strings>

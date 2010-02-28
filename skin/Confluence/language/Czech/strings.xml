@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: ezechiel1917-->
-<!--Date of translation: 30/11/2009-->
+<!--Date of translation: 10/02/2009-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Změnit</string>
   <string id="31001">Milovat</string>
   <string id="31002">Nesnášet</string>
   <string id="31003">Napájení</string>
+  <string id="31004">Pracuji...</string>
+  <string id="31005">Skrýt INFO</string>
 
   <string id="31007">Pluginy</string>
 
@@ -46,13 +48,14 @@
   <string id="31058">Hudební soubory systému</string>
   <string id="31059">Aktuální seznam stop</string>
   <string id="31060">Tento soubor se skládá z více částí. Vyberte tu, od které chcete spustit přehrávání.</string>
+  <string id="31061">Aktuálně vybraný</string>
   
   <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Informace na Úvodní obrazovce</string>
   <string id="31102">Pozadí</string>
   <string id="31103">Zobrazovat "POZASTAVENO" při prezentaci obrázků</string>
-  <string id="31104"></string>
+  <string id="31104">Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]</string>
   <string id="31105">Zobrazovat názvy médií při vyhledávání na pozadí</string>
   <string id="31106">Různé</string>
   <string id="31107"></string>
@@ -75,9 +78,14 @@
   <string id="31124">Zobrazovat na pozadí právě přehrávané video</string>
   <string id="31125">Zobrazovat na pozadí vizualizaci</string>
 
-  <string id="31126">Zobrazovat OSD tlačítko pro zobrazení textu skladby</string>
+  <string id="31126">Aktivovat OSD tlačítko pro zobrazení textu skladby</string>
   <string id="31127">CESTA KE SKRIPTU S TEXTY SKLADEB</string>
   <string id="31128">Texty skladeb</string>
+  <string id="31129">Aktivovat OSD tlačítko pro stažení titulků</string>
+  <string id="31130">CESTA KE SKRIPTU S TITULKY</string>
+
+  <string id="31140">Hudební OSD</string>
+  <string id="31141">Video OSD</string>
 
   <!-- Script labels -->
   <string id="31200">Zástupci</string>
@@ -123,17 +131,26 @@
   <string id="31327">Rozlišení</string>
   <string id="31328">Nejnovější položky</string>
   <string id="31329">[B]ČASOVAČ BYL NASTAVEN![/B] [COLOR=grey2] - SYSTÉM SE AUTOMATICKY VYPNE ZA[/COLOR]</string>
+  <string id="31330">Pro přehrání upoutávky[CR][CR]stiskněte tlačítko</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pozastavit</string>
+  <string id="31352">Zastavit</string>
+  <string id="31353">Přetočit vpřed</string>
+  <string id="31354">Přetočit zpět</string>
+  <string id="31355">Nabídka filmu</string>
+  <string id="31356">Stáhnout titulky</string>
+  <string id="31357"></string>
 
   <!-- Description Labels  -->
-  <string id="31400">[B]MOŽNOSTI PROSTŘEDÍ[/B][CR][CR]Změna vzhledu · Výběr jazyka a regionu · Možnosti zobrazení souborů[CR]Nastavení spořiče obrazovky</string>
+  <string id="31400">[B]MOŽNOSTI PROSTŘEDÍ[/B][CR][CR]Změna vzhledu · Výběr jazyka a oblasti · Možnosti zobrazení souborů[CR]Nastavení spořiče obrazovky</string>
   <string id="31401">[B]MOŽNOSTI VIDEA[/B][CR][CR]Správa knihovny videí · Možnosti přehrávání videa · Možnosti zobrazení video souborů[CR]Nastavení fontu titulků</string>
   <string id="31402">[B]MOŽNOSTI HUDBY[/B][CR][CR]Správa knihovny hudby · Možnosti přehrávání hudby · Možnosti zobrazení hudeb. souborů[CR]Služby pro odesílání informací o přehrávaných skladbách · Nastavení karaoke</string>
   <string id="31403">[B]MOŽNOSTI OBRÁZKŮ[/B][CR][CR]Možnosti zobrazení obrázků · Konfigurace prezentace</string>
   <string id="31404">[B]MOŽNOSTI POČASÍ[/B][CR][CR]Nastavení oblastí pro předpověď počasí</string>
   <string id="31405">[B]MOŽNOSTI SÍTĚ[/B][CR][CR]Možnosti ovládání XBMC přes UPnP a HTTP · Nastavení sdílení médií[CR]Nastavení přístupu na internet</string>
-  <string id="31406">[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavení a kalibrace displeje · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Možnosti úsporného režimu · Logování debug informací · Konfigurace rodičovského zámku</string>
+  <string id="31406">[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavení a kalibrace obrazovky · Konfigurace výstupu zvuku · Nastavení dálkového ovládání[CR]Možnosti úsporného režimu · Ukládání informací o ladění · Konfigurace rodičovského zámku</string>
   <string id="31407">[B]MOŽNOSTI VZHLEDU[/B][CR][CR]Přizpůsobení vzhledu Confluence · Správa sekcí na úvodní obrazovce[CR]Nastavení pozadí vzhledu</string>
 
-  <string id="31420">[B][COLOR=white]Nebyla zjištěna přítomnost optického disku v mechanice.[/COLOR][/B][CR][CR]Vložte prosím disk do mechaniky a opakujte akci znovu</string>
   <string id="31421">Uživatelské přihlášení[CR]Vyberte profil</string>
 </strings>
