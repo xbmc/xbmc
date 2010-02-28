@@ -3536,7 +3536,9 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
   // check if the filename is a legal FATX one.
   if (LegalType == LEGAL_FATX) 
   {
-    CUtil::GetFatXQualifiedPath(result);
+    GetFatXQualifiedPath(result);
+    result.TrimRight(".");
+    result.TrimRight(" ");
   }
 
   return result;
@@ -3572,7 +3574,7 @@ CStdString CUtil::ValidatePath(const CStdString &path)
         result.Delete(x);
     }
 #ifdef _XBOX    
-    CUtil::GetFatXQualifiedPath(result);
+    GetFatXQualifiedPath(result);
 #endif    
   }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
