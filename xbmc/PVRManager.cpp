@@ -121,8 +121,10 @@ void CPVRManager::Start()
     return;
   }
 
-  /* Create the supervisor thread again */
+  /* Create the supervisor thread to do all background activities */
   Create();
+  SetName("XBMC PVR Supervisor");
+  SetPriority(-15);
   CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", (unsigned int) m_clients.size());
   return;
 }
@@ -952,10 +954,8 @@ void CPVRManager::StartChannelScan()
     CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
   }
 
-  /* Create the supervisor thread to do all background activities */
+  /* Create the supervisor thread again */
   Create();
-  SetName("XBMC PVR Supervisor");
-  SetPriority(-15);
   CLog::Log(LOGNOTICE, "PVR: Channel scan finished after %li.%li seconds", (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
 }
 
