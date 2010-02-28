@@ -1750,6 +1750,10 @@
 		F5A7A8141128F4DA0059D6AA /* libmicrohttpd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */; };
 		F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
 		F5A7A85C112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
+		F5A7B376113AFB5F0059D6AA /* FileSFTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B374113AFB5F0059D6AA /* FileSFTP.cpp */; };
+		F5A7B377113AFB5F0059D6AA /* FileSFTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B374113AFB5F0059D6AA /* FileSFTP.cpp */; };
+		F5A7B37E113AFB900059D6AA /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
+		F5A7B37F113AFB900059D6AA /* SFTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */; };
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
@@ -3717,6 +3721,10 @@
 		F5A7A8121128F4DA0059D6AA /* libmicrohttpd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmicrohttpd.a; path = lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a; sourceTree = "<group>"; };
 		F5A7A859112908F00059D6AA /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
 		F5A7A85A112908F00059D6AA /* WebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServer.h; sourceTree = "<group>"; };
+		F5A7B374113AFB5F0059D6AA /* FileSFTP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSFTP.cpp; sourceTree = "<group>"; };
+		F5A7B375113AFB5F0059D6AA /* FileSFTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSFTP.h; sourceTree = "<group>"; };
+		F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SFTPDirectory.cpp; sourceTree = "<group>"; };
+		F5A7B37D113AFB900059D6AA /* SFTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFTPDirectory.h; sourceTree = "<group>"; };
 		F5A9D3071097C9370050490F /* AliasShortcutUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AliasShortcutUtils.h; sourceTree = "<group>"; };
 		F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AliasShortcutUtils.cpp; sourceTree = "<group>"; };
 		F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /opt/local/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
@@ -5498,6 +5506,8 @@
 				E38E16D50D25F9FA00618676 /* FileRar.h */,
 				E38E16D60D25F9FA00618676 /* FileRTV.cpp */,
 				E38E16D70D25F9FA00618676 /* FileRTV.h */,
+				F5A7B374113AFB5F0059D6AA /* FileSFTP.cpp */,
+				F5A7B375113AFB5F0059D6AA /* FileSFTP.h */,
 				E38E16DB0D25F9FA00618676 /* FileSmb.h */,
 				F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */,
 				F584E1280F257BD800DB26A5 /* FileSpecialProtocol.h */,
@@ -5561,6 +5571,8 @@
 				E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */,
 				E4DC97530FFE5BA8008E0C07 /* SAPFile.h */,
 				E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */,
+				F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */,
+				F5A7B37D113AFB900059D6AA /* SFTPDirectory.h */,
 				E38E174D0D25F9FA00618676 /* ShoutcastDirectory.cpp */,
 				E38E174E0D25F9FA00618676 /* ShoutcastDirectory.h */,
 				E38E174F0D25F9FA00618676 /* ShoutcastRipFile.cpp */,
@@ -8109,6 +8121,8 @@
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */,
 				7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */,
+				F5A7B376113AFB5F0059D6AA /* FileSFTP.cpp in Sources */,
+				F5A7B37E113AFB900059D6AA /* SFTPDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8968,6 +8982,8 @@
 				F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85C112908F00059D6AA /* WebServer.cpp in Sources */,
 				7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */,
+				F5A7B377113AFB5F0059D6AA /* FileSFTP.cpp in Sources */,
+				F5A7B37F113AFB900059D6AA /* SFTPDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
