@@ -120,6 +120,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_pHardware = NULL;
   m_iLastKeyframe = 0;
   m_dts = DVD_NOPTS_VALUE;
+  m_started = false;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -390,7 +391,10 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     return VC_BUFFER;
 
   if(m_pFrame->key_frame)
+  {
+    m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
+  }
 
   if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P
@@ -472,6 +476,7 @@ void CDVDVideoCodecFFmpeg::Reset()
 {
   try {
 
+  m_started = false;
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
   m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
 
@@ -524,6 +529,9 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
+  if(!m_started)
+    pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
 
   if(m_pHardware)
     return m_pHardware->GetPicture(m_pCodecContext, m_pFrame, pDvdVideoPicture);
