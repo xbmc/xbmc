@@ -947,16 +947,19 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
-    if (!m_fbo.Initialize())
+    if ((m_renderMethod & RENDER_GLSL))
     {
-      CLog::Log(LOGERROR, "GL: Error initializing FBO");
-      break;
-    }
+      if (!m_fbo.Initialize())
+      {
+        CLog::Log(LOGERROR, "GL: Error initializing FBO");
+        break;
+      }
 
-    if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
-    {
-      CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
-      break;
+      if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+      {
+        CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+        break;
+      }
     }
 
     m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
@@ -1229,6 +1232,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 #ifdef HAVE_LIBVDPAU
   else if (m_renderMethod & RENDER_VDPAU)
   {
+    UpdateVideoFilter();
     RenderVDPAU(renderBuffer, m_currentField);
   }
 #endif
@@ -1543,8 +1547,21 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   // Try some clamping or wrapping
   glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
   glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  if (m_pVideoFilterShader)
+  {
+    glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    m_pVideoFilterShader->SetSourceTexture(0);
+    m_pVideoFilterShader->SetWidth(m_sourceWidth);
+    m_pVideoFilterShader->SetHeight(m_sourceHeight);
+    m_pVideoFilterShader->Enable();
+  }
+  else
+  {
+    glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  }
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   VerifyGLState();
@@ -1571,6 +1588,9 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
     glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
     g_VDPAU->ReleasePixmap();
   }
+
+  if (m_pVideoFilterShader)
+    m_pVideoFilterShader->Disable();
 
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
@@ -2206,7 +2226,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LANCZOS3_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
-    if (glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL))
+    if ((glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL)) || m_renderMethod & RENDER_VDPAU)
       return true;
   }
  

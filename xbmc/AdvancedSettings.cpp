@@ -87,6 +87,7 @@ void CAdvancedSettings::Initialize()
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
+  m_videoVDPAUScaling = false;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -401,6 +402,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
     XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
+    XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

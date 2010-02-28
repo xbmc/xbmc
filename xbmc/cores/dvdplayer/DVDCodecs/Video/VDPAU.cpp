@@ -30,6 +30,7 @@
 #include "DVDClock.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "AdvancedSettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 CVDPAU*          g_VDPAU=NULL;
@@ -109,6 +110,8 @@ CVDPAU::CVDPAU()
     outputSurfaces[i] = VDP_INVALID_HANDLE;
 
   videoMixer = VDP_INVALID_HANDLE;
+
+  upScale = g_advancedSettings.m_videoVDPAUScaling;
 }
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
@@ -284,8 +287,27 @@ bool CVDPAU::MakePixmapGL()
 
 bool CVDPAU::MakePixmap(int width, int height)
 {
-  OutWidth = g_graphicsContext.GetWidth();
-  OutHeight = g_graphicsContext.GetHeight();
+  //pick the smallest dimensions, so we downscale with vdpau and upscale with opengl when appropriate
+  //this requires the least amount of gpu memory bandwidth
+  if (g_graphicsContext.GetWidth() < width || g_graphicsContext.GetHeight() < height || upScale)
+  {
+    //scale width to desktop size if the aspect ratio is the same or bigger than the desktop
+    if (height * g_graphicsContext.GetWidth() / width <= g_graphicsContext.GetHeight())
+    {
+      OutWidth = g_graphicsContext.GetWidth();
+      OutHeight = height * g_graphicsContext.GetWidth() / width;
+    }
+    else //scale height to the desktop size if the aspect ratio is smaller than the desktop
+    {
+      OutHeight = g_graphicsContext.GetHeight();
+      OutWidth = width * g_graphicsContext.GetHeight() / height;
+    }
+  }
+  else
+  { //let opengl scale
+    OutWidth = width;
+    OutHeight = height;
+  }
 
   CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
 
@@ -545,7 +567,7 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1) || !upScale)
     return;
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
