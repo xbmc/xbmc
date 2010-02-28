@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "CMythSession.h"
+#include "MythSession.h"
 #include "DateTime.h"
 
 namespace XFILE
@@ -34,12 +34,12 @@ enum FilterType
   ALL
 };
 
-class CCMythDirectory
+class CMythDirectory
   : public IDirectory
 {
 public:
-  CCMythDirectory();
-  virtual ~CCMythDirectory();
+  CMythDirectory();
+  virtual ~CMythDirectory();
 
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
@@ -62,7 +62,7 @@ private:
   bool IsMovie(const cmyth_proginfo_t program);
   bool IsTvShow(const cmyth_proginfo_t program);
 
-  XFILE::CCMythSession* m_session;
+  XFILE::CMythSession*  m_session;
   DllLibCMyth*          m_dll;
   cmyth_database_t      m_database;
   cmyth_recorder_t      m_recorder;

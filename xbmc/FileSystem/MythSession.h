@@ -40,12 +40,12 @@ class CURL;
 namespace XFILE
 {
 
-class CCMythSession
+class CMythSession
   : private CThread
 {
 public:
-  static CCMythSession* AquireSession(const CURL& url);
-  static void           ReleaseSession(CCMythSession*);
+  static CMythSession*  AquireSession(const CURL& url);
+  static void           ReleaseSession(CMythSession*);
   static void           CheckIdle();
 
   class IEventListener
@@ -66,8 +66,8 @@ public:
   CStdString       GetValue(char* str);
 
 private:
-  CCMythSession(const CURL& url);
-  ~CCMythSession();
+  CMythSession(const CURL& url);
+  ~CMythSession();
 
   virtual void Process();
 
@@ -87,7 +87,7 @@ private:
   unsigned int     m_timestamp;
 
   static CCriticalSection            m_section_session;
-  static std::vector<CCMythSession*> m_sessions;
+  static std::vector<CMythSession*>  m_sessions;
 };
 
 }

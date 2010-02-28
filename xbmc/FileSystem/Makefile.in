@@ -14,9 +14,6 @@ SRCS=ASAPFileDirectory.cpp \
      CDDADirectory.cpp \
      cddb.cpp \
      cdioSupport.cpp \
-     CMythDirectory.cpp \
-     CMythFile.cpp \
-     CMythSession.cpp \
      DAAPDirectory.cpp \
      DAVDirectory.cpp \
      DirectoryCache.cpp \
@@ -60,6 +57,9 @@ SRCS=ASAPFileDirectory.cpp \
      MusicDatabaseDirectory.cpp \
      MusicFileDirectory.cpp \
      MusicSearchDirectory.cpp \
+     MythDirectory.cpp \
+     MythFile.cpp \
+     MythSession.cpp \
      NptXbmcFile.cpp \
      NSFFileDirectory.cpp \
      OGGFileDirectory.cpp \

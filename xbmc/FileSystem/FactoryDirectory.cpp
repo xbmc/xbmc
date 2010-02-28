@@ -83,7 +83,7 @@
 #endif
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
-#include "CMythDirectory.h"
+#include "MythDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
@@ -164,8 +164,8 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "upnp") return new CUPnPDirectory();
 #endif
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
-    if (strProtocol == "myth") return new CCMythDirectory();
-    if (strProtocol == "cmyth") return new CCMythDirectory();
+    if (strProtocol == "myth") return new CMythDirectory();
+    if (strProtocol == "cmyth") return new CMythDirectory();
     if (strProtocol == "rss") return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
     if (strProtocol == "sap") return new CSAPDirectory();

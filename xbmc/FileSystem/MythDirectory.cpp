@@ -19,8 +19,8 @@
  *
  */
 
-#include "CMythDirectory.h"
-#include "CMythSession.h"
+#include "MythDirectory.h"
+#include "MythSession.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
 #include "VideoInfoTag.h"
@@ -43,7 +43,7 @@ extern "C"
 using namespace XFILE;
 using namespace std;
 
-CCMythDirectory::CCMythDirectory()
+CMythDirectory::CMythDirectory()
 {
   m_session  = NULL;
   m_dll      = NULL;
@@ -51,12 +51,12 @@ CCMythDirectory::CCMythDirectory()
   m_recorder = NULL;
 }
 
-CCMythDirectory::~CCMythDirectory()
+CMythDirectory::~CMythDirectory()
 {
   Release();
 }
 
-DIR_CACHE_TYPE CCMythDirectory::GetCacheType(const CStdString& strPath) const
+DIR_CACHE_TYPE CMythDirectory::GetCacheType(const CStdString& strPath) const
 {
   CURL url(strPath);
   CStdString fileName = url.GetFileName();
@@ -78,7 +78,7 @@ DIR_CACHE_TYPE CCMythDirectory::GetCacheType(const CStdString& strPath) const
   return DIR_CACHE_ONCE;
 }
 
-void CCMythDirectory::Release()
+void CMythDirectory::Release()
 {
   if (m_recorder)
   {
@@ -87,13 +87,13 @@ void CCMythDirectory::Release()
   }
   if (m_session)
   {
-    CCMythSession::ReleaseSession(m_session);
+    CMythSession::ReleaseSession(m_session);
     m_session = NULL;
   }
   m_dll = NULL;
 }
 
-bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
+bool CMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
 {
   cmyth_database_t db = m_session->GetDatabase();
   if (!db)
@@ -157,7 +157,7 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
   return true;
 }
 
-bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &items, int channelNumber)
+bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &items, int channelNumber)
 {
   cmyth_database_t database = m_session->GetDatabase();
   if (!database)
@@ -231,7 +231,7 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
   return true;
 }
 
-bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type,
+bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type,
                                     const CStdString& filter)
 {
   cmyth_conn_t control = m_session->GetControl();
@@ -333,7 +333,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
 /**
  * \brief Gets a list of folders for recorded TV shows
  */
-bool CCMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &items)
+bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &items)
 {
   cmyth_conn_t control = m_session->GetControl();
   if (!control)
@@ -391,7 +391,7 @@ bool CCMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &it
   return true;
 }
 
-bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
+bool CMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
 {
   cmyth_conn_t control = m_session->GetControl();
   if (!control)
@@ -467,9 +467,9 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   return true;
 }
 
-bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+bool CMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  m_session = CCMythSession::AquireSession(strPath);
+  m_session = CMythSession::AquireSession(strPath);
   if (!m_session)
     return false;
 
@@ -534,7 +534,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   return false;
 }
 
-bool CCMythDirectory::IsVisible(const cmyth_proginfo_t program)
+bool CMythDirectory::IsVisible(const cmyth_proginfo_t program)
 {
   CStdString group = GetValue(m_dll->proginfo_recgroup(program));
   /*
@@ -545,7 +545,7 @@ bool CCMythDirectory::IsVisible(const cmyth_proginfo_t program)
   return !(group.Equals("LiveTV") || group.Equals("Deleted"));
 }
 
-bool CCMythDirectory::IsMovie(const cmyth_proginfo_t program)
+bool CMythDirectory::IsMovie(const cmyth_proginfo_t program)
 {
   /*
    * The mythconverg.recordedprogram.programid field (if it exists) is a combination key where the first 2 characters map
@@ -571,7 +571,7 @@ bool CCMythDirectory::IsMovie(const cmyth_proginfo_t program)
     return GetValue(m_dll->proginfo_programid(program)).Left(2) == "MV";
 }
 
-bool CCMythDirectory::IsTvShow(const cmyth_proginfo_t program)
+bool CMythDirectory::IsTvShow(const cmyth_proginfo_t program)
 {
   /*
    * There isn't enough information exposed by libcmyth to distinguish between an episode in a series and a
@@ -585,7 +585,7 @@ bool CCMythDirectory::IsTvShow(const cmyth_proginfo_t program)
   return GetValue(m_dll->proginfo_programid(program)).Left(2) != "MV";
 }
 
-bool CCMythDirectory::SupportsFileOperations(const CStdString& strPath)
+bool CMythDirectory::SupportsFileOperations(const CStdString& strPath)
 {
   CURL url(strPath);
   CStdString filename = url.GetFileName();
@@ -599,7 +599,7 @@ bool CCMythDirectory::SupportsFileOperations(const CStdString& strPath)
         (filename.Left(8)  == "tvshows/" && CUtil::GetExtension(filename) != "");
 }
 
-bool CCMythDirectory::IsLiveTV(const CStdString& strPath)
+bool CMythDirectory::IsLiveTV(const CStdString& strPath)
 {
   CURL url(strPath);
   return url.GetFileName().Left(9) == "channels/";
