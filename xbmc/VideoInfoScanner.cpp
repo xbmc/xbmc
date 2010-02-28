@@ -1504,8 +1504,10 @@ namespace VIDEO
       {
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
-        CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_strScraper.c_str());
-        CLog::Log(LOGDEBUG,"-- nfo-url: %s", scrUrl.m_url[0].m_url.c_str());
+
+        CLog::Log(LOGDEBUG, "scraper: Fetching url '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
+          scrUrl.m_url[0].m_url.c_str(), info.strTitle.c_str(), info.strPath.c_str(), info.strContent.c_str(), info.strLanguage.c_str(), info.strDate.c_str(), info.strFramework.c_str());
+
         scrUrl.strId  = m_nfoReader.m_strImDbNr;
         info.strPath = m_nfoReader.m_strScraper;
         if (result == CNfoFile::COMBINED_NFO)
