@@ -431,6 +431,8 @@ class CDateTime;
 #define CONTROL_HAS_FOCUS           30000
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
+// Version string MUST NOT contain spaces.  It is used
+// in the HTTP request user agent.
 #ifdef SVN_REV
 #define VERSION_STRING "r"SVN_REV
 #else

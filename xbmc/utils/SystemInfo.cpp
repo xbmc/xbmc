@@ -1803,20 +1803,17 @@ CStdString CSysInfo::GetUserAgent()
 #if defined(_WIN32PC)
   result += "Windows; ";
   result += GetKernelVersion();
-#elif defined(__APPLE__)
-  result += "Mac OS X; ";
-  result += GetUnameVersion();
-#elif defined(_LINUX)
-  result += "Linux; ";
-  CStdString distro = GetLinuxDistro();
-  if (distro != "")
-  {
-    result += distro;
-    result += "; ";
-  }
-  result += GetUnameVersion();
+#else
+  result += "Xbox; ";
+  result += GetKernelVersion();
+#endif
+#ifdef SVN_REV
+  CStdString strRevision;
+  strRevision.Format("; SVN r%s", SVN_REV);
+  result += strRevision;
 #endif
   result += "; http://www.xbmc.org)";
-  
+
+
   return result;
 }
