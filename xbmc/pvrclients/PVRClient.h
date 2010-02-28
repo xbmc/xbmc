@@ -28,6 +28,8 @@
 #include "../utils/AddonDll.h"
 #include "DllPVRClient.h"
 
+typedef std::vector<PVR_MENUHOOK> PVR_MENUHOOKS;
+
 class IPVRClientCallback
 {
 public:
@@ -62,6 +64,9 @@ public:
   PVR_ERROR StartChannelScan();
   int GetTimeCorrection() { return m_iTimeCorrection; }
   int GetClientID() { return m_pInfo->clientID; }
+  bool HaveMenuHooks() { return m_menuhooks.size() > 0; }
+  PVR_MENUHOOKS *GetMenuHooks() { return &m_menuhooks; }
+  void CallMenuHook(const PVR_MENUHOOK &hook);
 
   /* TV Guide */
   PVR_ERROR GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, time_t start, time_t end, bool toDB = false);
@@ -108,6 +113,7 @@ protected:
   CStdString            m_hostName;
   CCriticalSection      m_critSection;
   int                   m_iTimeCorrection;
+  PVR_MENUHOOKS         m_menuhooks;
 
 private:
   void WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag);

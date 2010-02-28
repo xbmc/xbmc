@@ -38,6 +38,7 @@ public:
   static void PVRTransferChannelEntry(void *addonData, const PVRHANDLE handle, const PVR_CHANNEL *channel);
   static void PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
   static void PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
+  static void PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook);
 
 private:
   CAddon* m_addon;

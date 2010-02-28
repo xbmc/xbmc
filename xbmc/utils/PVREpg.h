@@ -169,6 +169,7 @@ public:
   long GroupID(void) const { return m_Epg->ChannelTag()->GroupID(); }
   bool IsEncrypted(void) const { return m_Epg->ChannelTag()->IsEncrypted(); }
   bool IsRadio(void) const { return m_Epg->ChannelTag()->IsRadio(); }
+  bool ClientID(void) const { return m_Epg->ChannelTag()->ClientID(); }
 
   /*! \brief Get the cPVRChannelInfoTag class associated to this epg entry
    \return the pointer to the info tag

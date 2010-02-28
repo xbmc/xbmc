@@ -1081,6 +1081,16 @@ PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
     return NULL;
 }
 
+long CPVRManager::GetCurrentPlayingClientID()
+{
+  if (m_currentPlayingChannel)
+    return m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID();
+  else if (m_currentPlayingRecording)
+    return m_currentPlayingRecording->GetPVRRecordingInfoTag()->ClientID();
+  else
+    return -1;
+}
+
 PVR_STREAMPROPS *CPVRManager::GetCurrentStreamProps()
 {
   if (m_currentPlayingChannel)
@@ -1146,6 +1156,42 @@ bool CPVRManager::HaveActiveClients()
     itr++;
   }
   return ready > 0 ? true : false;
+}
+
+bool CPVRManager::HaveMenuHooks(long clientID)
+{
+  if (clientID < 0)
+    clientID = GetCurrentPlayingClientID();
+  if (clientID < 0)
+    return false;
+  return m_clients[clientID]->HaveMenuHooks();
+}
+
+void CPVRManager::ProcessMenuHooks(long clientID)
+{
+  if (m_clients[clientID]->HaveMenuHooks())
+  {
+    PVR_MENUHOOKS *hooks = m_clients[clientID]->GetMenuHooks();
+    std::vector<long> hookIDs;
+
+    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+
+    pDialog->Reset();
+    pDialog->SetHeading(19196);
+
+    for (unsigned int i = 0; i < hooks->size(); i++)
+    {
+      pDialog->Add(m_clients[clientID]->GetString(hooks->at(i).string_id));
+    }
+
+    pDialog->DoModal();
+
+    int selection = pDialog->GetSelectedLabel();
+    if (selection >= 0)
+    {
+      m_clients[clientID]->CallMenuHook(hooks->at(selection));
+    }
+  }
 }
 
 int CPVRManager::GetPreviousChannel()

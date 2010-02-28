@@ -28,3 +28,4 @@ void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry
 void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan);
 void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer);
 void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
+void PVR_add_menu_hook(PVR_MENUHOOK *hook);

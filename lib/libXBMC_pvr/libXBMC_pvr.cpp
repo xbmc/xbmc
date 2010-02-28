@@ -67,3 +67,11 @@ void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINF
 
   m_pvr_cb->PVR.TransferRecordingEntry(m_pvr_cb->addonData, handle, recording);
 }
+
+void PVR_add_menu_hook(PVR_MENUHOOK *hook)
+{
+  if (m_pvr_cb == NULL)
+    return;
+
+  m_pvr_cb->PVR.AddMenuHook(m_pvr_cb->addonData, hook);
+}

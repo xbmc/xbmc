@@ -40,6 +40,7 @@ CAddonHelpers_PVR::CAddonHelpers_PVR(CAddon* addon, AddonCB* cbTable)
   cbTable->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
   cbTable->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
   cbTable->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
+  cbTable->PVR.AddMenuHook            = PVRAddMenuHook;
 };
 
 CAddonHelpers_PVR::~CAddonHelpers_PVR()
@@ -218,6 +219,25 @@ void CAddonHelpers_PVR::PVRTransferTimerEntry(void *addonData, const PVRHANDLE h
 
   xbmcTimers->push_back(tag);
   return;
+}
+
+void CAddonHelpers_PVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
+{
+  CAddonHelpers* addon = (CAddonHelpers*) addonData;
+  if (addon == NULL || hook == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRAddMenuHook is called with NULL-Pointer!!!");
+    return;
+  }
+
+  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
+  CPVRClient* client  = (CPVRClient*) addonHelper->m_addon;
+  PVR_MENUHOOKS *hooks = client->GetMenuHooks();
+
+  PVR_MENUHOOK hookInt;
+  hookInt.hook_id   = hook->hook_id;
+  hookInt.string_id = hook->string_id;
+  hooks->push_back(hookInt);
 }
 
 }; /* namespace ADDON */

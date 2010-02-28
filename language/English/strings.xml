@@ -1707,7 +1707,9 @@
   <string id="19191">PVR service</string>
   <string id="19192">No Server support channel scanning</string>
   <string id="19193">Channel scan can't be started</string>
-  <string id="19193">Continue?</string>
+  <string id="19194">Continue?</string>
+  <string id="19195">Client actions</string>
+  <string id="19196">PVR client specific actions</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

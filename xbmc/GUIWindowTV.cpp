@@ -743,6 +743,9 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
         buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 19050 : 19051);  /* SHOW HIDDEN CHANNELS */
 
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+
+      if (g_PVRManager.HaveMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID()))
+        buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
     }
   }
   else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)           /* Add recordings context buttons */
@@ -791,6 +794,8 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);            /* Delete Timer */
       buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* Sort by Name */
       buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* Sort by Date */
+      if (g_PVRManager.HaveMenuHooks(pItem->GetPVRTimerInfoTag()->ClientID()))
+        buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);    /* PVR client specific action */
     }
   }
   else if (m_iCurrSubTVWindow == TV_WINDOW_TV_PROGRAM)
@@ -829,6 +834,8 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_BEGIN, 19063);          /* Go to begin */
       buttons.Add(CONTEXT_BUTTON_END, 19064);            /* Go to end */
     }
+    if (g_PVRManager.HaveMenuHooks(pItem->GetEPGInfoTag()->ClientID()))
+      buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
   }
   else if (m_iCurrSubTVWindow == TV_WINDOW_SEARCH)
   {
@@ -857,6 +864,8 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* Sort by Name */
       buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* Sort by Date */
       buttons.Add(CONTEXT_BUTTON_CLEAR, 20375);           /* Clear search results */
+      if (g_PVRManager.HaveMenuHooks(pItem->GetEPGInfoTag()->ClientID()))
+        buttons.Add(CONTEXT_BUTTON_MENU_HOOKS, 19195);        /* PVR client specific action */
     }
   }
 }
@@ -1385,6 +1394,25 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     SET_CONTROL_FOCUS(CONTROL_BTNSEARCH, 0);
     UpdateSearch();
     SET_CONTROL_FOCUS(CONTROL_LIST_SEARCH, 0);
+  }
+  else if (button == CONTEXT_BUTTON_MENU_HOOKS)
+  {
+    if (pItem->IsEPG())
+    {
+      g_PVRManager.ProcessMenuHooks(pItem->GetEPGInfoTag()->ClientID());
+    }
+    else if (pItem->IsPVRChannel())
+    {
+      g_PVRManager.ProcessMenuHooks(pItem->GetPVRChannelInfoTag()->ClientID());
+    }
+    else if (pItem->IsPVRRecording())
+    {
+      g_PVRManager.ProcessMenuHooks(pItem->GetPVRRecordingInfoTag()->ClientID());
+    }
+    else if (pItem->IsPVRTimer())
+    {
+      g_PVRManager.ProcessMenuHooks(pItem->GetPVRTimerInfoTag()->ClientID());
+    }
   }
 
   return CGUIMediaWindow::OnContextButton(itemNumber, button);

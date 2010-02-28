@@ -108,6 +108,11 @@ public:
    */
   PVR_SERVERPROPS *GetCurrentClientProps();
 
+  /*! \brief Return the current playing client identifier
+   \return the identifier or -1 if no playing item ist present
+   */
+  long GetCurrentPlayingClientID();
+
   /*! \brief Returns the properties of the given client identifier
    \param clientID The identifier of the client
    \return pointer to properties (NULL if no stream is playing)
@@ -140,6 +145,17 @@ public:
    \return true if minimum one client is started
    */
   bool HaveActiveClients();
+
+   /*! \brief Returns the presence of PVR specific Menu entries
+   \param clientID identifier of the client to ask or < 0 for playing channel
+   \return true if menu hooks are present
+   */
+  bool HaveMenuHooks(long clientID);
+
+   /*! \brief Open selection and progress pvr actions
+   \param clientID identifier to process
+   */
+  void ProcessMenuHooks(long clientID);
 
   /*! \brief Returns the previous selected channel
    \return the number of the previous channel or -1 if no channel was selected before
@@ -296,8 +312,8 @@ protected:
 private:
   /*--- Handling functions ---*/
   bool LoadClients();
-  void GetClientProperties();                   /* call GetClientProperties(long clientID) for each client connected */
-  void GetClientProperties(long clientID);      /* request the PVR_SERVERPROPS struct from each client */
+  void GetClientProperties();                   /*! \brief call GetClientProperties(long clientID) for each client connected */
+  void GetClientProperties(long clientID);      /*! \brief request the PVR_SERVERPROPS struct from each client */
   void SaveCurrentChannelSettings();            /*! \brief Write the current Video and Audio settings of
                                                  playing channel to the TV Database */
   void LoadCurrentChannelSettings();            /*! \brief Read and set the Video and Audio settings of

@@ -126,6 +126,7 @@ void CPVRClient::Destroy()
 
     /* Tell the client to destroy */
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>::Destroy();
+    m_menuhooks.clear();
   }
   catch (std::exception &e)
   {
@@ -307,6 +308,23 @@ PVR_ERROR CPVRClient::StartChannelScan()
     }
   }
   return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      m_pStruct->MenuHook(hook);
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during CallMenuHook occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+    }
+  }
 }
 
 /**********************************************************

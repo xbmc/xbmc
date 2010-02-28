@@ -48,6 +48,7 @@ typedef void (*PVRTransferEpgEntry)(void *userData, const PVRHANDLE handle, cons
 typedef void (*PVRTransferChannelEntry)(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *chan);
 typedef void (*PVRTransferTimerEntry)(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
 typedef void (*PVRTransferRecordingEntry)(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
+typedef void (*PVRAddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
 
 typedef struct CB_PVR
 {
@@ -55,6 +56,7 @@ typedef struct CB_PVR
   PVRTransferChannelEntry   TransferChannelEntry;
   PVRTransferTimerEntry     TransferTimerEntry;
   PVRTransferRecordingEntry TransferRecordingEntry;
+  PVRAddMenuHook            AddMenuHook;
 
 } CB_PVR;
 
