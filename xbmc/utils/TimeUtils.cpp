@@ -20,6 +20,8 @@
  */
 
 #include "TimeUtils.h"
+#include "DateTime.h"
+
 #ifdef __APPLE__
 #include <time.h>
 #include "posix-realtime-stub.h"

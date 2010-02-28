@@ -22,7 +22,9 @@
  */
 
 #include <stdint.h>
-#include "DateTime.h"
+#include <time.h>
+
+class CDateTime;
 
 int64_t CurrentHostCounter(void);
 int64_t CurrentHostFrequency(void);
