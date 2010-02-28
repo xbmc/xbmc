@@ -164,14 +164,10 @@ protected:
   #define FIELD_EVEN 2
 
   // YV12 decoder textures
-  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  // Since DX is single threaded, we will render all video into system memory
-  // We will them copy in into the device when rendering from main thread
-  YUVMEMORYBUFFERS m_YUVMemoryTexture;
-
   struct SVideoPlane
   {
-    CD3DTexture   texture;
+    CD3DTexture    texture;
+    D3DLOCKED_RECT rect;
   };
 
   struct SVideoBuffer
@@ -183,10 +179,13 @@ protected:
     }
    ~SVideoBuffer()
     {
-      ClearProcessor();
+      Clear();
     }
 
-    void ClearProcessor();
+    void StartDecode();
+    void StartRender();
+
+    void Clear();
 
     DXVA::CProcessor* proc;
     int64_t           id;

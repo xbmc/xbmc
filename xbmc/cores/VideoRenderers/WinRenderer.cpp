@@ -74,8 +74,6 @@ static float yuv_coef_smtp240m[4][4] =
 
 CWinRenderer::CWinRenderer()
 {
-  memset(m_YUVMemoryTexture, 0, sizeof(m_YUVMemoryTexture));
-
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
 
@@ -151,7 +149,7 @@ void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id)
   if(source < 0)
     return;
   SVideoBuffer& buf = m_VideoBuffers[source];
-  buf.ClearProcessor();
+  SAFE_RELEASE(buf.proc);
   buf.proc = processor->Acquire();
   buf.id   = id;
 }
@@ -165,7 +163,7 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if( source < 0 )
     return -1;
 
-  YUVMEMORYPLANES &planes = m_YUVMemoryTexture[source];
+  SVideoBuffer &buf = m_VideoBuffers[source];
 
   image->cshift_x = 1;
   image->cshift_y = 1;
@@ -173,16 +171,10 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   image->width = m_sourceWidth;
   image->flags = 0;
 
-  D3DLOCKED_RECT rect;
   for(int i=0;i<3;i++)
   {
-    rect.pBits = planes[i];
-    if(i == 0)
-      rect.Pitch = m_sourceWidth;
-    else
-      rect.Pitch = m_sourceWidth / 2;
-    image->stride[i] = rect.Pitch;
-    image->plane[i] = (BYTE*)rect.pBits;
+    image->stride[i] = buf.planes[i].rect.Pitch;
+    image->plane[i]  = (BYTE*)buf.planes[i].rect.pBits;
   }
 
   return source;
@@ -208,9 +200,6 @@ void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (!m_bConfigured) return;
   ManageTextures();
 
-  if (!m_YUVMemoryTexture[m_iYV12RenderBuffer][0])
-    return ;
-
   CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
@@ -231,12 +220,14 @@ void CWinRenderer::FlipPage(int source)
   if(source == AUTOSOURCE)
     source = NextYV12Texture();
 
+  m_VideoBuffers[m_iYV12RenderBuffer].StartDecode();
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = 0;
 
-  m_VideoBuffers[source].ClearProcessor();
+  m_VideoBuffers[m_iYV12RenderBuffer].StartRender();
 
 #ifdef MP_DIRECTRENDERING
   __asm wbinvd
@@ -344,10 +335,7 @@ void CWinRenderer::UnInit()
   m_bFilterInitialized = false;
 
   for(int i = 0; i < NUM_BUFFERS; i++)
-  {
     DeleteYV12Texture(i);
-    m_VideoBuffers[i].ClearProcessor();
-  }
 
   m_NumYV12Buffers = 0;
 }
@@ -510,30 +498,6 @@ void CWinRenderer::RenderLowMem(CD3DEffect &effect, DWORD flags)
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
   {
     g_graphicsContext.ClipToViewWindow();
-  }
-
-  // copy memory textures to video textures
-  D3DLOCKED_RECT rect;
-  LPDIRECT3DSURFACE9 videoSurface;
-  D3DSURFACE_DESC desc;
-  for(unsigned int i = 0; i < 3; i++)
-  {
-    BYTE* src = (BYTE *)m_YUVMemoryTexture[index][i];
-    buf.planes[i].texture.GetSurfaceLevel(0, &videoSurface);
-    videoSurface->GetDesc(&desc);
-    if(videoSurface->LockRect(&rect, NULL, 0) == D3D_OK)
-    {
-      if (rect.Pitch == desc.Width)
-      {
-        memcpy((BYTE *)rect.pBits, src, desc.Height * desc.Width);
-      }
-      else for(unsigned int j = 0; j < desc.Height; j++)
-      {
-        memcpy((BYTE *)rect.pBits + (j * rect.Pitch), src + (j * desc.Width), rect.Pitch);
-      }
-      videoSurface->UnlockRect();
-    }
-    SAFE_RELEASE(videoSurface);
   }
 
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
@@ -732,35 +696,16 @@ void CWinRenderer::DeleteYV12Texture(int index)
 {
   CSingleLock lock(g_graphicsContext);
   SVideoBuffer &buf = m_VideoBuffers[index];
-  YUVMEMORYPLANES &memoryPlanes = m_YUVMemoryTexture[index];
-
-  buf.planes[0].texture.Release();
-  buf.planes[1].texture.Release();
-  buf.planes[2].texture.Release();
-
-  SAFE_DELETE_ARRAY(memoryPlanes[0]);
-  SAFE_DELETE_ARRAY(memoryPlanes[1]);
-  SAFE_DELETE_ARRAY(memoryPlanes[2]);
-
+  buf.Clear();
   m_NumYV12Buffers = 0;
 }
 
 void CWinRenderer::ClearYV12Texture(int index)
 {
-  YUVMEMORYPLANES &planes = m_YUVMemoryTexture[index];
-  D3DLOCKED_RECT rect;
-
-  rect.pBits = planes[0];
-  rect.Pitch = m_sourceWidth;
-  memset(rect.pBits, 0,   rect.Pitch * m_sourceHeight);
-
-  rect.pBits = planes[1];
-  rect.Pitch = m_sourceWidth / 2;
-  memset(rect.pBits, 128, rect.Pitch * m_sourceHeight>>1);
-
-  rect.pBits = planes[2];
-  rect.Pitch = m_sourceWidth / 2;
-  memset(rect.pBits, 128, rect.Pitch * m_sourceHeight>>1);
+  SVideoBuffer &buf = m_VideoBuffers[index];
+  memset(buf.planes[0].rect.pBits, 0,   buf.planes[0].rect.Pitch * m_sourceHeight);
+  memset(buf.planes[1].rect.pBits, 128, buf.planes[1].rect.Pitch * m_sourceHeight>>1);
+  memset(buf.planes[2].rect.pBits, 128, buf.planes[2].rect.Pitch * m_sourceHeight>>1);
 }
 
 bool CWinRenderer::CreateYV12Texture(int index)
@@ -777,16 +722,13 @@ bool CWinRenderer::CreateYV12Texture(int index)
     return false;
   }
 
-  if (
-    NULL == (m_YUVMemoryTexture[index][0] = new BYTE[m_sourceWidth * m_sourceHeight]) ||
-    NULL == (m_YUVMemoryTexture[index][1] = new BYTE[m_sourceWidth / 2 * m_sourceHeight / 2]) ||
-    NULL == (m_YUVMemoryTexture[index][2] = new BYTE[m_sourceWidth / 2* m_sourceHeight / 2]))
-  {
-    CLog::Log(LOGERROR, "Unable to create YV12 memory texture %i", index);
-    return false;
-  }
+  buf.StartDecode();
 
   ClearYV12Texture(index);
+
+  if(index == m_iYV12RenderBuffer)
+    buf.StartRender();
+
   CLog::Log(LOGDEBUG, "created yv12 texture %i", index);
   return true;
 }
@@ -844,12 +786,40 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
   return false;
 }
 
-void CWinRenderer::SVideoBuffer::ClearProcessor()
+void CWinRenderer::SVideoBuffer::Clear()
 {
   SAFE_RELEASE(proc);
   id = 0;
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    planes[i].texture.Release();
+    memset(&planes[i].rect, 0, sizeof(planes[i].rect));
+  }
 }
 
+void CWinRenderer::SVideoBuffer::StartRender()
+{
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    if(planes[i].rect.pBits)
+      planes[i].texture.UnlockRect(0);
+    memset(&planes[i].rect, 0, sizeof(planes[i].rect));
+  }
+}
+
+void CWinRenderer::SVideoBuffer::StartDecode()
+{
+  SAFE_RELEASE(proc);
+  id = 0;
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    if(planes[i].texture.LockRect(0, &planes[i].rect, NULL, 0) == false)
+    {
+      memset(&planes[i].rect, 0, sizeof(planes[i].rect));
+      CLog::Log(LOGERROR, "CWinRenderer::SVideoBuffer::StartDecode - failed to lock texture into memory");
+    }
+  }
+}
 
 CPixelShaderRenderer::CPixelShaderRenderer()
     : CWinRenderer()
