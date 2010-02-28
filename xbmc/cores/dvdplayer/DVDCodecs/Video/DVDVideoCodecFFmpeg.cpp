@@ -365,15 +365,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   m_dts = dts;
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
 
-  try
-  {
-    len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
-  }
-  catch (win32_exception e)
-  {
-    CLog::Log(LOGERROR, "%s::avcodec_decode_video", __FUNCTION__);
-    return VC_ERROR;
-  }
+  len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
 
   if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 1)
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;
@@ -474,8 +466,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 
 void CDVDVideoCodecFFmpeg::Reset()
 {
-  try {
-
   m_started = false;
   m_iLastKeyframe = m_pCodecContext->has_b_frames;
   m_dllAvCodec.avcodec_flush_buffers(m_pCodecContext);
@@ -485,10 +475,6 @@ void CDVDVideoCodecFFmpeg::Reset()
     delete[] m_pConvertFrame->data[0];
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
-  }
-
-  } catch (win32_exception e) {
-    e.writelog(__FUNCTION__);
   }
 }
 
