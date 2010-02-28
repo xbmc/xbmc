@@ -152,9 +152,7 @@ protected:
 
   bool m_bConfigured;
 
-  typedef CD3DTexture             YUVVIDEOPLANES[MAX_PLANES];
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
-  typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
 
   #define PLANE_Y 0
@@ -169,26 +167,33 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   // Since DX is single threaded, we will render all video into system memory
   // We will them copy in into the device when rendering from main thread
-  YUVVIDEOBUFFERS m_YUVVideoTexture;
   YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
-  struct SProcessImage
+  struct SVideoPlane
   {
-    SProcessImage()
+    CD3DTexture   texture;
+  };
+
+  struct SVideoBuffer
+  {
+    SVideoBuffer()
     {
       proc = NULL;
       id   = 0;
     }
-
-   ~SProcessImage()
+   ~SVideoBuffer()
     {
-      Clear();
+      ClearProcessor();
     }
-    void Clear();
+
+    void ClearProcessor();
 
     DXVA::CProcessor* proc;
     int64_t           id;
-  } m_Processor[NUM_BUFFERS];
+    SVideoPlane       planes[MAX_PLANES];
+  };
+
+  SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
 
   CD3DTexture m_HQKernelTexture;
   CD3DEffect  m_YUV2RGBEffect;
