@@ -35,6 +35,7 @@ class CGUIWindowVisualisation :
 public:
   CGUIWindowVisualisation(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnWindowLoaded();
   virtual bool OnAction(const CAction &action);
   virtual void FrameMove();
 protected:

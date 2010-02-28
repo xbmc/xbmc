@@ -33,7 +33,7 @@
 #include "AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
-using ADDON::CVisualisation;
+using namespace ADDON;
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -136,9 +136,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_GET_VISUALISATION:
     {
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        return pVisControl->OnMessage(message);
+      if (m_addon)
+        message.SetPointer(m_addon.get());
+      return m_addon;
     }
     break;
   case GUI_MSG_VISUALISATION_ACTION:
@@ -148,7 +148,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   }
   case GUI_MSG_PLAYBACK_STARTED:
   {
-    if (IsActive() && m_addon && m_addon->UpdateTrack()) return true;
+    if (IsActive() && m_addon)
+    {
+      m_addon->UpdateTrack();
+    }
   }
   case GUI_MSG_WINDOW_DEINIT:
     {
@@ -171,6 +174,12 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
+      AddonPtr viz;
+      CAddonMgr::Get()->GetDefault(ADDON_VIZ, viz);
+      m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
+      if (!m_addon)
+        return false;
+
       // hide or show the preset button(s)
       g_infoManager.SetShowCodec(m_bShowPreset);
       g_infoManager.SetShowInfo(true);  // always show the info initially.
@@ -191,6 +200,16 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     }
   }
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowVisualisation::OnWindowLoaded()
+{
+  if (m_addon)
+  {
+    CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+    if (pVisControl)
+      pVisControl->LoadVisualisation(m_addon);
+  }
 }
 
 bool CGUIWindowVisualisation::UpdateTrack()

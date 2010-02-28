@@ -55,12 +55,15 @@ namespace ADDON
 
   protected:
     bool LoadDll();
+    void HandleException(std::exception &e, const char* context);
+    bool Initialized() { return m_initialized; }
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
-    bool m_initialized;
 
   private:
     TheDll* m_pDll;
+    bool m_initialized;
+
     virtual ADDON_STATUS TransferSettings();
     TiXmlElement MakeSetting(DllSetting& setting) const;
 
@@ -137,12 +140,11 @@ template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
 {
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - %s", Name().c_str());
+  m_initialized = false;
 
   if (!LoadDll())
     return false;
 
-  /* Call Create to make connections, initializing data or whatever is
-     needed to become the AddOn running */
   try
   {
     ADDON_STATUS status = m_pDll->Create(NULL, m_pInfo);
@@ -152,12 +154,10 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "ADDON: Dll %s - exception '%s' during Create occurred, contact Developer '%s' of this AddOn", Name().c_str(), e.what(), Author().c_str());
-    m_initialized = false;
+    HandleException(e, "m_pDll->Create");
   }
   catch (ADDON_STATUS status)
   { 
-    m_initialized = false;
     if (status == STATUS_NEED_SETTINGS)
     { // catch request for settings in initalization
       if (TransferSettings() == STATUS_OK)
@@ -196,7 +196,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Remove()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "ADDON: %s - exception '%s' during Remove occurred, contact Developer '%s' of this AddOn", Name().c_str(), e.what(), Author().c_str());
+    HandleException(e, "m_pDll->Unload");
   }
 }
 
@@ -209,8 +209,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::GetStatus()
   }
   catch (std::exception &e)
   {
-    m_initialized = false;
-    CLog::Log(LOGERROR, "ADDON: %s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", Name().c_str(), e.what(), Author().c_str());
+    HandleException(e, "m_pDll->GetStatus()");
   }
   return STATUS_UNKNOWN;
 }
@@ -227,7 +226,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::HasSettings()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "ADDON:: %s - exception '%s' during HasSettings occurred, contact Developer '%s' of this AddOn", Name().c_str(), e.what(), Author().c_str());
+    HandleException(e, "m_pDll->HasSettings()");
     return false;
   }
 }
@@ -249,7 +248,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "ADDON:: %s - exception '%s' during GetSettings occurred, contact Developer '%s' of this AddOn", Name().c_str(), e.what(), Author().c_str());
+    HandleException(e, "m_pDll->GetSettings()");
     return false;
   }
 
@@ -386,6 +385,14 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
   }
 
   return STATUS_OK;
+}
+
+template<class TheDll, typename TheStruct, typename TheProps>
+void CAddonDll<TheDll, TheStruct, TheProps>::HandleException(std::exception &e, const char* context)
+{
+  m_initialized = false;
+  m_pDll->Unload();
+  CLog::Log(LOGERROR, "ADDON: Dll %s, throws an exception '%s' during %s. Contact developer '%s' with bug reports", Name().c_str(), e.what(), context, Author().c_str());
 }
 
 }; /* namespace ADDON */

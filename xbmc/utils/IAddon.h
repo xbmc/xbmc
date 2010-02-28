@@ -59,6 +59,8 @@ namespace ADDON
 
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
+  class CVisualisation;
+  typedef boost::shared_ptr<CVisualisation> VizPtr;
 
   class CAddonMgr;
   class AddonVersion;

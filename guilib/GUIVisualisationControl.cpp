@@ -28,18 +28,13 @@ CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationContro
   ControlType = GUICONTROL_VISUALISATION;
 }
 
-void CGUIVisualisationControl::LoadVisualisation(AddonPtr &viz)
+void CGUIVisualisationControl::LoadVisualisation(VizPtr &viz)
 {
-  // check addon good to go
-  // lock render thread
-  // swap vizcontrolptrs
-  // unlock
-  // when return all references to old addon must be removed
-  m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
-  if (!m_addon)
+  if (!viz)
     return;
 
-  g_graphicsContext.CaptureStateBlock(); //TODO need to lock here?
+  CSingleLock lock(m_rendering);
+  g_graphicsContext.CaptureStateBlock();
   float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
   float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
   float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
@@ -49,10 +44,11 @@ void CGUIVisualisationControl::LoadVisualisation(AddonPtr &viz)
   if (x + w > g_graphicsContext.GetWidth()) w = g_graphicsContext.GetWidth() - x;
   if (y + h > g_graphicsContext.GetHeight()) h = g_graphicsContext.GetHeight() - y;
 
-  if (m_addon->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f)))
+  if (viz->Create((int)(x+0.5f), (int)(y+0.5f), (int)(w+0.5f), (int)(h+0.5f)))
   {
     g_graphicsContext.ApplyStateBlock();
     VerifyGLState();
+    m_addon = viz;
   }
 
   // tell our app that we're back
@@ -84,24 +80,8 @@ void CGUIVisualisationControl::Render()
     g_graphicsContext.ApplyStateBlock();
     g_graphicsContext.RestoreViewPort();
   }
-  /* else
-  {
-  render error message
-  }*/
 
   CGUIControl::Render();
-}
-
-bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
-{
-  if (message.GetMessage() == GUI_MSG_GET_VISUALISATION)
-  {
-    message.SetPointer(m_addon.get());
-    return true;
-  }
-  /*else if (message.GetMessage() == GUI_MSG_UPDATE_ADDON)
-    LoadVisualisation(message.GetAddon());*/
-  return CGUIControl::OnMessage(message);
 }
 
 void CGUIVisualisationControl::FreeResources()

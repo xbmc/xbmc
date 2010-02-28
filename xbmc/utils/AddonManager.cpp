@@ -353,41 +353,45 @@ bool CAddonMgr::GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addo
   return false;
 }
 
-//TODO handle all 'default' cases here, not just scrapers?
-bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &scraper, const CONTENT_TYPE &content)
+//TODO handle all 'default' cases here, not just scrapers & vizs
+bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content)
 {
-  // for now, only handle scrapers
-  if (type != ADDON_SCRAPER)
+  if (type != ADDON_SCRAPER && type != ADDON_VIZ)
     return false;
 
-  CStdString defaultScraper;
-  switch (content)
+  CStdString setting;
+  if (type == ADDON_VIZ)
+    setting = g_guiSettings.GetString("musicplayer.visualisation");
+  else
   {
-  case CONTENT_MOVIES:
+    switch (content)
     {
-      defaultScraper = g_guiSettings.GetString("scrapers.moviedefault");
-      break;
+    case CONTENT_MOVIES:
+      {
+        setting = g_guiSettings.GetString("scrapers.moviedefault");
+        break;
+      }
+    case CONTENT_TVSHOWS:
+      {
+        setting = g_guiSettings.GetString("scrapers.tvshowdefault");
+        break;
+      }
+    case CONTENT_MUSICVIDEOS:
+      {
+        setting = g_guiSettings.GetString("scrapers.musicvideodefault");
+        break;
+      }
+    case CONTENT_ALBUMS:
+    case CONTENT_ARTISTS:
+      {
+        setting = g_guiSettings.GetString("musiclibrary.scraper");
+        break;
+      }
+    default:
+      return false;
     }
-  case CONTENT_TVSHOWS:
-    {
-      defaultScraper = g_guiSettings.GetString("scrapers.tvshowdefault");
-      break;
-    }
-  case CONTENT_MUSICVIDEOS:
-    {
-      defaultScraper = g_guiSettings.GetString("scrapers.musicvideodefault");
-      break;
-    }
-  case CONTENT_ALBUMS:
-  case CONTENT_ARTISTS:
-    {
-      defaultScraper = g_guiSettings.GetString("musiclibrary.scraper");
-      break;
-    }
-  default:
-    return false;
   }
-  return GetAddon(ADDON_SCRAPER, defaultScraper, scraper);
+  return GetAddon(type, setting, addon);
 }
 
 CStdString CAddonMgr::GetString(const CStdString &uuid, const int number)

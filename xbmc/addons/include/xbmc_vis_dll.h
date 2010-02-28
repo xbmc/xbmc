@@ -15,6 +15,7 @@ extern "C"
   void GetInfo(VIS_INFO* pInfo);
   unsigned int GetPresets(char ***presets);
   unsigned GetPreset();
+  unsigned int GetSubModules(char ***presets);
   bool IsLocked();
 
   // function to export the above structure to XBMC
@@ -28,6 +29,7 @@ extern "C"
     pVisz->GetInfo = GetInfo;
     pVisz->GetPresets = GetPresets;
     pVisz->GetPreset = GetPreset;
+    pVisz->GetSubModules = GetSubModules;
     pVisz->IsLocked = IsLocked;
   };
 };

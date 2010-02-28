@@ -23,11 +23,6 @@
 #include "GUIControl.h"
 #include "IAddon.h"
 
-namespace ADDON
-{
-  class CVisualisation;
-}
-
 class CGUIVisualisationControl : public CGUIControl
 {
 public:
@@ -38,12 +33,11 @@ public:
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void FreeResources();
-  virtual bool OnMessage(CGUIMessage& message);
   virtual bool CanFocus() const { return false; }
   virtual bool CanFocusFromPoint(const CPoint &point) const;
+  void LoadVisualisation(ADDON::VizPtr &addon);
 
 private:
-  void LoadVisualisation(ADDON::AddonPtr &addon); 
   CCriticalSection m_rendering;
-  boost::shared_ptr<ADDON::CVisualisation> m_addon;
+  ADDON::VizPtr m_addon;
 };
