@@ -235,8 +235,8 @@
 		7CDAEA8F1001EBA70040B25F /* PltIconsData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA8B1001EBA70040B25F /* PltIconsData.cpp */; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; };
-		810C9FA90D67D1FB0095F5DD /* CMythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* CMythDirectory.cpp */; };
-		810C9FAA0D67D1FB0095F5DD /* CMythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* CMythFile.cpp */; };
+		810C9FA90D67D1FB0095F5DD /* MythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */; };
+		810C9FAA0D67D1FB0095F5DD /* MythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* MythFile.cpp */; };
 		810CA01C0D68A6E20095F5DD /* libshout-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */; };
 		815EE62D0E176F75009FBE3C /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62A0E176F75009FBE3C /* AMFObject.cpp */; };
 		815EE62E0E176F75009FBE3C /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62B0E176F75009FBE3C /* rtmp.cpp */; };
@@ -901,7 +901,7 @@
 		E3A478160D29030100F3C3A6 /* GUIMultiSelectText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */; };
 		E3A4781A0D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */; };
 		E3B53E7C0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B53E7A0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp */; };
-		E3BBB7990D7EA78A00CAAFD3 /* CMythSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */; };
+		E3BBB7990D7EA78A00CAAFD3 /* MythSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BBB7980D7EA78A00CAAFD3 /* MythSession.cpp */; };
 		E3BBB7A20D7EA8B200CAAFD3 /* libpcre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.dylib */; };
 		E3D87AEB0D3182F4000CF031 /* XCriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */; };
 		E3DAAF8C0D6E1B0500F17647 /* FileSmb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */; };
@@ -1614,11 +1614,11 @@
 		F5A1CB230F6B06CF00A96ABD /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		F5A1CB240F6B06CF00A96ABD /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		F5A1CB250F6B06CF00A96ABD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; };
-		F5A1CB3C0F6B06CF00A96ABD /* CMythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* CMythDirectory.cpp */; };
-		F5A1CB3D0F6B06CF00A96ABD /* CMythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* CMythFile.cpp */; };
+		F5A1CB3C0F6B06CF00A96ABD /* MythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */; };
+		F5A1CB3D0F6B06CF00A96ABD /* MythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* MythFile.cpp */; };
 		F5A1CB3E0F6B06CF00A96ABD /* FileSmb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */; };
 		F5A1CB3F0F6B06CF00A96ABD /* SMBDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */; };
-		F5A1CB410F6B06CF00A96ABD /* CMythSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */; };
+		F5A1CB410F6B06CF00A96ABD /* MythSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BBB7980D7EA78A00CAAFD3 /* MythSession.cpp */; };
 		F5A1CB420F6B06CF00A96ABD /* EventPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E91FFA0D8C61DF002BF43D /* EventPacket.cpp */; };
 		F5A1CB430F6B06CF00A96ABD /* EventServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E91FFB0D8C61DF002BF43D /* EventServer.cpp */; };
 		F5A1CB440F6B06CF00A96ABD /* Socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E91FFC0D8C61DF002BF43D /* Socket.cpp */; };
@@ -2102,10 +2102,10 @@
 		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
 		810C9F610D67BD2F0095F5DD /* PltMediaConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PltMediaConnect.h; path = MediaConnect/PltMediaConnect.h; sourceTree = "<group>"; };
-		810C9FA50D67D1FB0095F5DD /* CMythDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythDirectory.cpp; sourceTree = "<group>"; };
-		810C9FA60D67D1FB0095F5DD /* CMythDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMythDirectory.h; sourceTree = "<group>"; };
-		810C9FA70D67D1FB0095F5DD /* CMythFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythFile.cpp; sourceTree = "<group>"; };
-		810C9FA80D67D1FB0095F5DD /* CMythFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMythFile.h; sourceTree = "<group>"; };
+		810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MythDirectory.cpp; sourceTree = "<group>"; };
+		810C9FA60D67D1FB0095F5DD /* MythDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MythDirectory.h; sourceTree = "<group>"; };
+		810C9FA70D67D1FB0095F5DD /* MythFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MythFile.cpp; sourceTree = "<group>"; };
+		810C9FA80D67D1FB0095F5DD /* MythFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MythFile.h; sourceTree = "<group>"; };
 		810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-x86-osx.a"; path = "lib/libSDL-OSX/libSDL-x86-osx.a"; sourceTree = "<group>"; };
 		810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-x86-osx.a"; path = "lib/libSDL-OSX/libSDL_mixer-x86-osx.a"; sourceTree = "<group>"; };
 		815EE62A0E176F75009FBE3C /* AMFObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AMFObject.cpp; path = libRTMP/AMFObject.cpp; sourceTree = "<group>"; };
@@ -3562,7 +3562,7 @@
 		E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAccessPoints.cpp; sourceTree = "<group>"; };
 		E3B53E7A0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserMicroDVD.cpp; sourceTree = "<group>"; };
 		E3B53E7B0D97B08100021A96 /* DVDSubtitleParserMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMicroDVD.h; sourceTree = "<group>"; };
-		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
+		E3BBB7980D7EA78A00CAAFD3 /* MythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MythSession.cpp; sourceTree = "<group>"; };
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.dylib; path = /opt/local/lib/libpcre.dylib; sourceTree = "<absolute>"; };
 		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = /opt/local/lib/samba3/libsmbclient.dylib; sourceTree = "<absolute>"; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
@@ -5436,13 +5436,13 @@
 				88ACB01A0DCF40800083CFDF /* ASAPFileDirectory.h */,
 				880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */,
 				880DBE540DC224A100E26B71 /* MusicFileDirectory.h */,
-				E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */,
+				E3BBB7980D7EA78A00CAAFD3 /* MythSession.cpp */,
 				E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */,
 				E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */,
-				810C9FA50D67D1FB0095F5DD /* CMythDirectory.cpp */,
-				810C9FA60D67D1FB0095F5DD /* CMythDirectory.h */,
-				810C9FA70D67D1FB0095F5DD /* CMythFile.cpp */,
-				810C9FA80D67D1FB0095F5DD /* CMythFile.h */,
+				810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */,
+				810C9FA60D67D1FB0095F5DD /* MythDirectory.h */,
+				810C9FA70D67D1FB0095F5DD /* MythFile.cpp */,
+				810C9FA80D67D1FB0095F5DD /* MythFile.h */,
 				E38F12C10D29FF200035C331 /* FileShoutcast.cpp */,
 				E38E16970D25F9FA00618676 /* CacheMemBuffer.cpp */,
 				E38E16980D25F9FA00618676 /* CacheMemBuffer.h */,
@@ -7860,11 +7860,11 @@
 				E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */,
 				E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */,
 				810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */,
-				810C9FA90D67D1FB0095F5DD /* CMythDirectory.cpp in Sources */,
-				810C9FAA0D67D1FB0095F5DD /* CMythFile.cpp in Sources */,
+				810C9FA90D67D1FB0095F5DD /* MythDirectory.cpp in Sources */,
+				810C9FAA0D67D1FB0095F5DD /* MythFile.cpp in Sources */,
 				E3DAAF8C0D6E1B0500F17647 /* FileSmb.cpp in Sources */,
 				E3DAAF8D0D6E1B0500F17647 /* SMBDirectory.cpp in Sources */,
-				E3BBB7990D7EA78A00CAAFD3 /* CMythSession.cpp in Sources */,
+				E3BBB7990D7EA78A00CAAFD3 /* MythSession.cpp in Sources */,
 				E3E91FFD0D8C61DF002BF43D /* EventPacket.cpp in Sources */,
 				E3E91FFE0D8C61DF002BF43D /* EventServer.cpp in Sources */,
 				E3E91FFF0D8C61DF002BF43D /* Socket.cpp in Sources */,
@@ -8724,11 +8724,11 @@
 				F5A1CB230F6B06CF00A96ABD /* DVDDemuxVobsub.cpp in Sources */,
 				F5A1CB240F6B06CF00A96ABD /* DVDInputStreamTV.cpp in Sources */,
 				F5A1CB250F6B06CF00A96ABD /* PltMediaConnect.cpp in Sources */,
-				F5A1CB3C0F6B06CF00A96ABD /* CMythDirectory.cpp in Sources */,
-				F5A1CB3D0F6B06CF00A96ABD /* CMythFile.cpp in Sources */,
+				F5A1CB3C0F6B06CF00A96ABD /* MythDirectory.cpp in Sources */,
+				F5A1CB3D0F6B06CF00A96ABD /* MythFile.cpp in Sources */,
 				F5A1CB3E0F6B06CF00A96ABD /* FileSmb.cpp in Sources */,
 				F5A1CB3F0F6B06CF00A96ABD /* SMBDirectory.cpp in Sources */,
-				F5A1CB410F6B06CF00A96ABD /* CMythSession.cpp in Sources */,
+				F5A1CB410F6B06CF00A96ABD /* MythSession.cpp in Sources */,
 				F5A1CB420F6B06CF00A96ABD /* EventPacket.cpp in Sources */,
 				F5A1CB430F6B06CF00A96ABD /* EventServer.cpp in Sources */,
 				F5A1CB440F6B06CF00A96ABD /* Socket.cpp in Sources */,
