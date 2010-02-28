@@ -126,9 +126,6 @@ public:
   virtual void         OnClose(); // called from main GUI thread
 
   // Feature support
-  virtual bool SupportsBrightness() { return false; }
-  virtual bool SupportsContrast() { return false; }
-  virtual bool SupportsGamma() { return false; }
   virtual bool SupportsMultiPassRendering() { return false; }
 
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);

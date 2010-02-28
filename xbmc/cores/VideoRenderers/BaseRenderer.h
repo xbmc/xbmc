@@ -40,6 +40,15 @@ typedef struct YV12Image
   unsigned cshift_y;
 } YV12Image;
 
+enum ERENDERFEATURE
+{
+  RENDERFEATURE_GAMMA,
+  RENDERFEATURE_BRIGHTNESS,
+  RENDERFEATURE_CONTRAST,
+  RENDERFEATURE_NOISE,
+  RENDERFEATURE_SHARPNESS,
+};
+
 class CBaseRenderer
 {
 public:

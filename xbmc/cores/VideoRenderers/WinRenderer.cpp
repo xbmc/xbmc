@@ -805,6 +805,17 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
   return false;
 }
 
+bool CWinRenderer::Supports(ERENDERFEATURE feature)
+{
+  if(feature == RENDERFEATURE_BRIGHTNESS)
+    return true;
+  
+  if(feature == RENDERFEATURE_CONTRAST)
+    return true;
+
+  return false;
+}
+
 bool CWinRenderer::Supports(ESCALINGMETHOD method)
 {
   if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)

@@ -2120,30 +2120,43 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
   }
 }
 
-bool CLinuxRendererGL::SupportsBrightness()
+bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 {
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
-    return true;
-#endif
-  return (m_renderMethod & RENDER_GLSL)
-      || (m_renderMethod & RENDER_ARB)
-      || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
-}
+  if(feature == RENDERFEATURE_BRIGHTNESS)
+  {
+    if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+      return true;
 
-bool CLinuxRendererGL::SupportsContrast()
-{
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
-    return true;
-#endif
-  return (m_renderMethod & RENDER_GLSL)
-      || (m_renderMethod & RENDER_ARB)
-      || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
-}
+    return (m_renderMethod & RENDER_GLSL)
+        || (m_renderMethod & RENDER_ARB)
+        || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
+  }
+  
+  if(feature == RENDERFEATURE_CONTRAST)
+  {
+    if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+      return true;
 
-bool CLinuxRendererGL::SupportsGamma()
-{
+    return (m_renderMethod & RENDER_GLSL)
+        || (m_renderMethod & RENDER_ARB)
+        || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
+  }
+
+  if(feature == RENDERFEATURE_GAMMA)
+    return false;
+  
+  if(feature == RENDERFEATURE_NOISE)
+  {
+    if(m_renderMethod & RENDER_VDPAU)
+      return true;
+  }
+
+  if(feature == RENDERFEATURE_SHARPNESS)
+  {
+    if(m_renderMethod & RENDER_VDPAU)
+      return true;
+  }
+
   return false;
 }
 

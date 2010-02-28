@@ -124,10 +124,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
 
-  // TODO:DIRECTX - implement these
-  virtual bool         SupportsBrightness() { return true; }
-  virtual bool         SupportsContrast() { return true; }
-  virtual bool         SupportsGamma() { return false; }
+  virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
