@@ -12,7 +12,7 @@ DESTDIR ?=
 PREFIX  ?= /usr/local
 ADDONDIR = $(PREFIX)/share/xbmc/addons
 #LIBS     = -L../../../lib/libXBMC_addon -lXBMC_addon -L../../../lib/libXBMC_pvr -lXBMC_pvr
-LIBS     = ../../../lib/libXBMC_pvr/libXBMC_pvr.a ../../../lib/libXBMC_addon/libXBMC_addon.a
+LIBS     = ../../../lib/libXBMC_pvr/libXBMC_pvr.a ../../../lib/libXBMC_addon/libXBMC_addon.a ../../../lib/libXBMC_gui/libXBMC_gui.a
 INCLUDES = -I. -I../../linux -I../../ -I ../../../include
 DEFINES += -D_LINUX -fPIC
 LIBDIR   = ../../../addons/pvr/VDR
@@ -31,7 +31,7 @@ endif
 
 -include Make.config
 
-OBJS = client.o vtptransceiver.o timers.o channels.o recordings.o epg.o tools.o thread.o ringbuffer.o select.o
+OBJS = channelscan.o client.o vtptransceiver.o timers.o channels.o recordings.o epg.o tools.o thread.o ringbuffer.o select.o
 
 all: pvrVDR
 

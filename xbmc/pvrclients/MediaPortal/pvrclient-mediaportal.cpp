@@ -75,6 +75,7 @@ PVR_ERROR cPVRClientMediaPortal::GetProperties(PVR_SERVERPROPS *props)
   props->SupportBouquets           = false;
   props->HandleInputStream         = true;
   props->HandleDemuxing            = false;
+  props->SupportChannelScan        = false;
 
   return PVR_ERROR_NO_ERROR;
 }

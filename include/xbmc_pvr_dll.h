@@ -39,6 +39,7 @@ extern "C"
   const char* GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
   PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
+  PVR_ERROR DialogChannelScan();
   PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook);
 
   /** PVR EPG Functions **/
@@ -114,6 +115,7 @@ extern "C"
     pClient->GetBackendVersion      = GetBackendVersion;
     pClient->GetDriveSpace          = GetDriveSpace;
     pClient->GetBackendTime         = GetBackendTime;
+    pClient->DialogChannelScan      = DialogChannelScan;
     pClient->MenuHook               = MenuHook;
     pClient->GetNumBouquets         = GetNumBouquets;
     pClient->RequestBouquetsList    = RequestBouquetsList;

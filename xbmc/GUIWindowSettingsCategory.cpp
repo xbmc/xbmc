@@ -2056,6 +2056,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19188, 750, 0))
       g_PVRManager.ResetEPG();
   }
+  else if (strSetting.Equals("pvrmanager.channelscan"))
+  {
+    if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
+      g_PVRManager.StartChannelScan();
+  }
 
   UpdateSettings();
 }

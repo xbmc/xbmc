@@ -1727,9 +1727,9 @@
   <string id="19114">Version</string>
   <string id="19115">Addresse</string>
   <string id="19116">Festplattengröße</string>
-
-
-
+  <string id="19117">Kanäle suchen</string>
+  <string id="19118">TV ist während der Kanalsuche nicht möglich!</string>
+  <string id="19119">Auf welchem Server soll gesucht werden?</string>
   <string id="19120">Klientnummer</string>
   <string id="19121">Keine Wiederholungen</string>
   <string id="19122">Timer zeichnet auf - trotzdem löschen?</string>
@@ -1802,6 +1802,9 @@
   <string id="19189">Nach Start letzten Kanal wiedergeben</string>
   <string id="19190">Minimiert</string>
   <string id="19191">PVR-Service</string>
+  <string id="19192">Keiner der PVR-Server unterstützt die Kanalsuche</string>
+  <string id="19193">Kanalsuche konnte nicht durchgeführt werden</string>
+  <string id="19194">Fortfahren?</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>

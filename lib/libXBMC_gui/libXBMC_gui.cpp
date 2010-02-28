@@ -19,4 +19,22 @@
  *
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string>
 #include "libXBMC_gui.h"
+#include "AddonHelpers_local.h"
+
+using namespace std;
+
+AddonCB *m_gui_cb = NULL;
+
+void GUI_register_me(ADDON_HANDLE hdl)
+{
+  if (!hdl)
+    fprintf(stderr, "libXBMC_gui-ERROR: GUI_register_me is called with NULL handle !!!\n");
+  else
+    m_gui_cb = (AddonCB*) hdl;
+  return;
+}

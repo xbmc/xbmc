@@ -168,6 +168,7 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
     props->SupportChannelSettings    = false;
     props->SupportDirector           = false;
     props->SupportBouquets           = false;
+    props->SupportChannelScan        = false;
   }
   return PVR_ERROR_UNKOWN;
 }
@@ -287,6 +288,24 @@ PVR_ERROR CPVRClient::GetBackendTime(time_t *localTime, int *gmtOffset)
   }
   *localTime = 0;
   *gmtOffset = 0;
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
+PVR_ERROR CPVRClient::StartChannelScan()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pStruct->DialogChannelScan();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during StartChannelScan occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
+    }
+  }
   return PVR_ERROR_NOT_IMPLEMENTED;
 }
 

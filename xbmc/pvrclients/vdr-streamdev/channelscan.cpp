@@ -1,7 +1,6 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
- *      http://www.xbmc.org
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,6 +19,19 @@
  *
  */
 
-#include "xbmc_addon_types.h"
+#include "channelscan.h"
 
-void GUI_register_me(ADDON_HANDLE hdl);
+cVDRChannelScan::cVDRChannelScan()
+{
+
+}
+
+cVDRChannelScan::~cVDRChannelScan()
+{
+
+}
+
+void cVDRChannelScan::Start()
+{
+
+}

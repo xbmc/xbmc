@@ -767,6 +767,7 @@ void CGUISettings::Initialize()
   AddGroup(8, 19180);
   CSettingsCategory* pvr = AddCategory(8, "pvrmanager", 128);
   AddBool(pvr, "pvrmanager.enabled", 449  , false);
+  AddString(pvr, "pvrmanager.channelscan", 19117, "", BUTTON_CONTROL_STANDARD);
   AddString(pvr, "pvrmanager.resetdb", 19185, "", BUTTON_CONTROL_STANDARD);
 
   CSettingsCategory* pvrm = AddCategory(8, "pvrmenu", 19181);

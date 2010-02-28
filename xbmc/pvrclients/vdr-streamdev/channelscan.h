@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,6 +20,14 @@
  *
  */
 
-#include "xbmc_addon_types.h"
+class cVDRChannelScan
+{
+public:
+  cVDRChannelScan();
+  ~cVDRChannelScan();
 
-void GUI_register_me(ADDON_HANDLE hdl);
+  void Start();
+  bool Possible() { return true; }
+
+
+};

@@ -292,6 +292,11 @@ PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
   return g_client->GetBackendTime(localTime, gmtOffset);
 }
 
+PVR_ERROR DialogChannelScan()
+{
+  return PVR_ERROR_NOT_IMPLEMENTED;
+}
+
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)
 {
   return PVR_ERROR_NOT_IMPLEMENTED;

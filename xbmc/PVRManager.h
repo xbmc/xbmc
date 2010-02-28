@@ -72,7 +72,20 @@ public:
 
   /*! \name General functions
    */
+
+  /*! \brief Open a selection Dialog and start a channelscan on
+   selected Client.
+   */
+  void StartChannelScan();
+
+  /*! \brief Set the TV Database to it's initial state and delete all
+   the data inside.
+   */
   void ResetDatabase();
+
+  /*! \brief Set the EPG data inside TV Database to it's initial state
+   and reload it from Clients.
+   */
   void ResetEPG();
 
   /*! \brief Returns if a TV channel is playing
@@ -132,11 +145,36 @@ public:
    \return the number of the previous channel or -1 if no channel was selected before
    */
   int GetPreviousChannel();
+
+  /*! \brief Get the possibility to start a recording of the current playing
+   channel.
+   \return true if a recording can be started
+   */
   bool CanInstantRecording();
-  bool HasTimer() { return m_hasTimers;  }
+
+  /*! \brief Get the presence of timers.
+   \return true if timers are present
+   */
+  bool HasTimer() { return m_hasTimers; }
+
+  /*! \brief Get the presence of a running recording.
+   \return true if a recording is running
+   */
   bool IsRecording() { return m_isRecording; }
+
+  /*! \brief Get the presence of a running recording on current playing channel.
+   \return true if a recording is running
+   */
   bool IsRecordingOnPlayingChannel();
+
+  /*! \brief Start a instant recording on playing channel
+   \return true if it success
+   */
   bool StartRecordingOnPlayingChannel(bool bOnOff);
+
+  /*! \brief Set the current playing group ID, used to load the right channel
+   lists.
+   */
   void SetPlayingGroup(int GroupId);
 
   /*! \brief Get the current playing group ID, used to load the
@@ -260,9 +298,11 @@ private:
   bool LoadClients();
   void GetClientProperties();                   /* call GetClientProperties(long clientID) for each client connected */
   void GetClientProperties(long clientID);      /* request the PVR_SERVERPROPS struct from each client */
-  void SaveCurrentChannelSettings();
-  void LoadCurrentChannelSettings();
-  void ResetQualityData();
+  void SaveCurrentChannelSettings();            /*! \brief Write the current Video and Audio settings of
+                                                 playing channel to the TV Database */
+  void LoadCurrentChannelSettings();            /*! \brief Read and set the Video and Audio settings of
+                                                 playing channel from the TV Database */
+  void ResetQualityData();                      /*! \brief Reset the Signal Quality data structure to initial values */
 
   /*--- General PVRManager data ---*/
   CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */

@@ -117,7 +117,8 @@ extern "C" {
     PVR_ERROR_NOT_DELETED          = -6,
     PVR_ERROR_NOT_SAVED            = -7,
     PVR_ERROR_RECORDING_RUNNING    = -8,
-    PVR_ERROR_ALREADY_PRESENT      = -9
+    PVR_ERROR_ALREADY_PRESENT      = -9,
+    PVR_ERROR_NOT_POSSIBLE         = -10,
   } PVR_ERROR;
 
   /*! \brief PVR Client Event Codes
@@ -149,6 +150,7 @@ extern "C" {
     bool SupportTimers;                 /**< \brief Client support creation and editing of timers */
     bool SupportDirector;               /**< \brief Client provide information about multifeed channels, like Sky Select */
     bool SupportBouquets;               /**< \brief Client support Bouqets */
+    bool SupportChannelScan;            /**< \brief Client support Channelscan */
     bool HandleInputStream;             /**< \brief Input stream is handled by the client if set, can be false for http */
     bool HandleDemuxing;                /**< \brief Demux of stream is handled by the client, as example TVFrontend (htsp protocol) */
   } ATTRIBUTE_PACKED PVR_SERVERPROPS;

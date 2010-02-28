@@ -59,6 +59,7 @@ public:
   const std::string GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
   PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset);
+  PVR_ERROR StartChannelScan();
   int GetTimeCorrection() { return m_iTimeCorrection; }
   int GetClientID() { return m_pInfo->clientID; }
 

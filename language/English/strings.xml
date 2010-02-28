@@ -1630,9 +1630,9 @@
   <string id="19114">Version</string>
   <string id="19115">Address</string>
   <string id="19116">Disksize</string>
-
-
-
+  <string id="19117">Search for Channels</string>
+  <string id="19118">TV specific action are during search not possible!</string>
+  <string id="19119">On which server you want to search?</string>
   <string id="19120">Client number</string>
   <string id="19121">Avoid Repeats</string>
   <string id="19122">Timer still recording - really delete?</string>
@@ -1705,6 +1705,9 @@
   <string id="19189">Continue last channel after startup</string>
   <string id="19190">Minimized</string>
   <string id="19191">PVR service</string>
+  <string id="19192">No Server support channel scanning</string>
+  <string id="19193">Channel scan can't be started</string>
+  <string id="19193">Continue?</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

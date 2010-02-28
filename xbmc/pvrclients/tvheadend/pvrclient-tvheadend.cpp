@@ -188,6 +188,7 @@ PVR_ERROR cPVRClientTvheadend::GetProperties(PVR_SERVERPROPS *props) {
   props->SupportBouquets           = true;
   props->HandleInputStream         = true;
   props->HandleDemuxing            = true;
+  props->SupportChannelScan        = false;
 
   return PVR_ERROR_NO_ERROR;
 }

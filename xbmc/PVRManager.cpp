@@ -40,6 +40,7 @@
 /* GUI Messages includes */
 #include "GUIDialogOK.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogSelect.h"
 
 #define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
 #define TIMERCHECKDELTA       300 // seconds before checking for changes inside timers list
@@ -120,11 +121,8 @@ void CPVRManager::Start()
     return;
   }
 
-  /* Create the supervisor thread to do all background activities */
+  /* Create the supervisor thread again */
   Create();
-  SetName("XBMC PVR Supervisor");
-  SetPriority(-15);
-
   CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", (unsigned int) m_clients.size());
   return;
 }
@@ -889,11 +887,78 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
 /** GENERAL FUNCTIONS                                       **/
 /*************************************************************/
 
-/********************************************************************
- * CPVRManager ResetDatabase
- *
- * Set the TV Database to it's initial state and delete all the data
- ********************************************************************/
+void CPVRManager::StartChannelScan()
+{
+  std::vector<long> clients;
+  long scanningClientID = -1;
+
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
+  {
+    if (m_clients[(*itr).first]->ReadyToUse() && GetClientProps(m_clients[(*itr).first]->GetID())->SupportChannelScan)
+    {
+      clients.push_back(m_clients[(*itr).first]->GetID());
+    }
+    itr++;
+  }
+
+  if (clients.size() > 1)
+  {
+    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+
+    pDialog->Reset();
+    pDialog->SetHeading(19119);
+
+    for (unsigned int i = 0; i < clients.size(); i++)
+    {
+      pDialog->Add(m_clients[clients[i]]->GetBackendName() + ":" + m_clients[clients[i]]->GetConnectionString());
+    }
+
+    pDialog->DoModal();
+
+    int selection = pDialog->GetSelectedLabel();
+    if (selection >= 0)
+    {
+      scanningClientID = clients[selection];
+    }
+
+  }
+  else if (clients.size() == 1)
+  {
+    scanningClientID = clients[0];
+  }
+
+  if (scanningClientID < 0)
+  {
+    CGUIDialogOK::ShowAndGetInput(19033,0,19192,0);
+    return;
+  }
+
+  CLog::Log(LOGNOTICE,"PVR: Starting to scan for channels on client %s:%s", m_clients[scanningClientID]->GetBackendName().c_str(), m_clients[scanningClientID]->GetConnectionString().c_str());
+  long perfCnt = CTimeUtils::GetTimeMS();
+
+  PVREpgs.InihibitUpdate(true);
+
+  if (m_currentPlayingRecording || m_currentPlayingChannel)
+  {
+    CLog::Log(LOGNOTICE,"PVR: Is playing data, stopping playback");
+    g_application.StopPlaying();
+  }
+  /* Stop the supervisor thread */
+  StopThread();
+
+  if (m_clients[scanningClientID]->StartChannelScan() != PVR_ERROR_NO_ERROR)
+  {
+    CGUIDialogOK::ShowAndGetInput(19111,0,19193,0);
+  }
+
+  /* Create the supervisor thread to do all background activities */
+  Create();
+  SetName("XBMC PVR Supervisor");
+  SetPriority(-15);
+  CLog::Log(LOGNOTICE, "PVR: Channel scan finished after %li.%li seconds", (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
+}
+
 void CPVRManager::ResetDatabase()
 {
   CLog::Log(LOGNOTICE,"PVR: TV Database is now set to it's initial state");
@@ -1096,11 +1161,6 @@ int CPVRManager::GetPreviousChannel()
   return m_PreviousChannel[m_PreviousChannelIndex ^= 1];
 }
 
-/********************************************************************
- * CPVRManager CanInstantRecording
- *
- * Returns true if we can start a instant recording on playing channel
- ********************************************************************/
 bool CPVRManager::CanInstantRecording()
 {
   if (!m_currentPlayingChannel)
@@ -1113,11 +1173,6 @@ bool CPVRManager::CanInstantRecording()
     return false;
 }
 
-/********************************************************************
- * CPVRManager IsRecordingOnPlayingChannel
- *
- * Returns true if a instant recording on playing channel is running
- ********************************************************************/
 bool CPVRManager::IsRecordingOnPlayingChannel()
 {
   if (!m_currentPlayingChannel)
@@ -1127,11 +1182,6 @@ bool CPVRManager::IsRecordingOnPlayingChannel()
   return tag->IsRecording();
 }
 
-/********************************************************************
- * CPVRManager StartRecordingOnPlayingChannel
- *
- * Start a instant recording on playing channel
- ********************************************************************/
 bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
 {
   if (!m_currentPlayingChannel)
@@ -1184,12 +1234,6 @@ bool CPVRManager::StartRecordingOnPlayingChannel(bool bOnOff)
   return false;
 }
 
-/********************************************************************
- * CPVRManager SaveCurrentChannelSettings
- *
- * Write the current Video and Audio settings of playing channel
- * to the TV Database
- ********************************************************************/
 void CPVRManager::SaveCurrentChannelSettings()
 {
   if (m_currentPlayingChannel)
@@ -1204,12 +1248,6 @@ void CPVRManager::SaveCurrentChannelSettings()
   }
 }
 
-/********************************************************************
- * CPVRManager LoadCurrentChannelSettings
- *
- * Read and set the Video and Audio settings of playing channel
- * from the TV Database
- ********************************************************************/
 void CPVRManager::LoadCurrentChannelSettings()
 {
   if (m_currentPlayingChannel)
@@ -1354,22 +1392,11 @@ void CPVRManager::LoadCurrentChannelSettings()
   }
 }
 
-/********************************************************************
- * CPVRManager SetPlayingGroup
- *
- * Set the current playing group ID, used to load the right channel
- * lists
- ********************************************************************/
 void CPVRManager::SetPlayingGroup(int GroupId)
 {
   m_CurrentGroupID = GroupId;
 }
 
-/********************************************************************
- * CPVRManager ResetQualityData
- *
- * Reset the Signal Quality data structure to initial values
- ********************************************************************/
 void CPVRManager::ResetQualityData()
 {
   if (g_guiSettings.GetBool("pvrplayback.signalquality"))

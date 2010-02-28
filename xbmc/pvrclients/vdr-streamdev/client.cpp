@@ -22,6 +22,7 @@
 #include "client.h"
 #include "tools.h"
 #include "vtptransceiver.h"
+#include "channelscan.h"
 #include "ringbuffer.h"
 #include "xbmc_pvr_dll.h"
 
@@ -454,6 +455,7 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   XBMC_register_me(hdl);
   PVR_register_me(hdl);
+  GUI_register_me(hdl);
 
   //XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
 
@@ -718,6 +720,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   props->SupportBouquets           = false;
   props->HandleInputStream         = true;
   props->HandleDemuxing            = false;
+  props->SupportChannelScan        = false;
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -754,6 +757,17 @@ PVR_ERROR GetDriveSpace(long long *total, long long *used)
 PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 {
   return VTPTransceiver.GetBackendTime(localTime, gmtOffset);
+}
+
+PVR_ERROR DialogChannelScan()
+{
+  cVDRChannelScan *VDRChannelScan = new cVDRChannelScan;
+  if (VDRChannelScan->Possible())
+  {
+
+    return PVR_ERROR_NO_ERROR;
+  }
+  return PVR_ERROR_NOT_POSSIBLE;
 }
 
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)
