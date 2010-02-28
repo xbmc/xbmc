@@ -303,7 +303,15 @@ bool CMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items,
        */
       if (type == MOVIES)
       {
-        item->SetLabel(item->m_strTitle);
+        /*
+         * Adding the production year, if available, to the label for Movies to aid in scraper
+         * lookups.
+         */
+        CStdString label(item->m_strTitle);
+        CStdString prodyear = GetValue(m_dll->proginfo_prodyear(program));
+        if (!prodyear.IsEmpty())
+          label += " (" + prodyear + ")";
+        item->SetLabel(label);
         item->SetLabelPreformated(true);
       }
 
