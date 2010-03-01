@@ -35,6 +35,7 @@
 #include <cmyth/cmyth.h>
 #include <time.h>
 #include <mysql/mysql.h>
+#include <stdint.h>
 
 #ifdef _MSC_VER
 #pragma warning(disable:4267)
