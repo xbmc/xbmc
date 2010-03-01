@@ -533,10 +533,10 @@ private:
   bool GetStackedTvShowList(int idShow, CStdString& strIn);
   void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
 
-  /*! \brief Get a safe thumb filename from a given string
-   \param dir directory to use for the thumb file
-   \param name movie, show name, or actor to get a safe thumbnail name for
-   \return safe thumbnail file based on this title
+  /*! \brief Get a safe filename from a given string
+   \param dir directory to use for the file
+   \param name movie, show name, or actor to get a safe filename for
+   \return safe filename based on this title
    */
-  CStdString GetSafeThumbFile(const CStdString &dir, const CStdString &name) const;
+  CStdString GetSafeFile(const CStdString &dir, const CStdString &name) const;
 };
