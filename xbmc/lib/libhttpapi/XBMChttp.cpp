@@ -3174,6 +3174,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getguistatus")             retVal = xbmcGetGUIStatus();
       else if (command == "execbuiltin")              retVal = xbmcExecBuiltIn(numParas, paras);
       else if (command == "config")                   retVal = xbmcConfig(numParas, paras);
+	  else if (command == "stsetting")                retVal = xbmcSTSetting(numParas, paras);
       else if (command == "help")                     retVal = xbmcHelp();
       else if (command == "getsysteminfo")            retVal = xbmcGetSystemInfo(numParas, paras);
       else if (command == "getsysteminfobyname")      retVal = xbmcGetSystemInfoByName(numParas, paras);
