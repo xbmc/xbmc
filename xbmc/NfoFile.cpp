@@ -227,7 +227,7 @@ int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = ""
   }
 
   // init and clear cache
-  m_parser.ClearCache();
+  parser.ClearCache();
 
   if (strURL.IsEmpty())
   {

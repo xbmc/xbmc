@@ -557,7 +557,7 @@ namespace VIDEO
             if (m_pObserver)
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-            long lResult = AddMovieAndGetThumb(pItem.get(), TranslateContent(info2->Content()), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
+            long lResult = AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
             if (bRefresh && scraper->Content() == CONTENT_TVSHOWS && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2->Content() == CONTENT_TVSHOWS)
@@ -598,9 +598,9 @@ namespace VIDEO
                 bForce = true;
 
               if (pDlgProgress)
-                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2.strContent.Equals("movies"), pDlgProgress, result == CNfoFile::COMBINED_NFO, bForce);
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2->Content() == CONTENT_MOVIES, pDlgProgress, result == CNfoFile::COMBINED_NFO, bForce);
               else
-                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2.strContent.Equals("movies"), NULL, result == CNfoFile::COMBINED_NFO, bForce);
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2->Content() == CONTENT_MOVIES, NULL, result == CNfoFile::COMBINED_NFO, bForce);
 
               if (info2->Content() == CONTENT_TVSHOWS)
               {
@@ -958,7 +958,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddMovie(CFileItem *pItem, const CStdString &strContent, CVideoInfoTag &movieDetails, int idShow)
+  long CVideoInfoScanner::AddMovie(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -966,10 +966,9 @@ namespace VIDEO
       CLog::Log(LOGERROR, "%s - failed to open database", __FUNCTION__);
       return -1;
     }
-    CLog::Log(LOGDEBUG,"Adding new item to %s:%s", strContent.c_str(), pItem->m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"Adding new item to %s:%s", TranslateContent(content).c_str(), pItem->m_strPath.c_str());
     long lResult=-1;
 
-    CONTENT_TYPE content = TranslateContent(strContent);
     // add to all movies in the stacked set
     if (content == CONTENT_MOVIES)
     {
@@ -1028,7 +1027,7 @@ namespace VIDEO
     return lResult;
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
   {
     long lResult = AddMovie(pItem, content, movieDetails, idShow);
     // get & save fanart image
@@ -1176,7 +1175,7 @@ namespace VIDEO
           strTitle.Format("%s - %ix%i - %s",strShowTitle.c_str(),episodeDetails.m_iSeason,episodeDetails.m_iEpisode,episodeDetails.m_strTitle.c_str());
           m_pObserver->OnSetTitle(strTitle);
         }
-        AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
+        AddMovieAndGetThumb(&item,CONTENT_TVSHOWS,episodeDetails,idShow);
         continue;
       }
 
@@ -1225,7 +1224,7 @@ namespace VIDEO
         }
         CFileItem item;
         item.m_strPath = file->strPath;
-        AddMovieAndGetThumb(&item,"tvshows",episodeDetails,idShow);
+        AddMovieAndGetThumb(&item,CONTENT_TVSHOWS,episodeDetails,idShow);
       }
     }
     if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
@@ -1342,7 +1341,7 @@ namespace VIDEO
     return nfoFile;
   }
 
-  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool bCombined, bool bRefresh)
+  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool bCombined, bool bRefresh)
   {
     CVideoInfoTag movieDetails;
     m_IMDB.SetScraperInfo(scraper);
@@ -1362,7 +1361,7 @@ namespace VIDEO
         pDialog->Progress();
       }
 
-      return AddMovieAndGetThumb(pItem, TranslateContent(scraper->Content()), movieDetails, -1, bUseDirNames, bRefresh);
+      return AddMovieAndGetThumb(pItem, scraper->Content(), movieDetails, -1, bUseDirNames, bRefresh);
     }
     return -1;
   }
@@ -1513,9 +1512,9 @@ namespace VIDEO
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
 
-        AddonPtr info(m_nfoReader.GetScraperInfo());
+        ScraperPtr info(m_nfoReader.GetScraperInfo());
         CLog::Log(LOGDEBUG, "scraper: Fetching url '%s' using %s scraper (content: '%s')",
-          scrUrl.m_url[0].m_url.c_str(), info->Name(), TranslateContent(info->Content()).c_str());
+          scrUrl.m_url[0].m_url.c_str(), info->Name().c_str(), TranslateContent(info->Content()).c_str());
 
         scrUrl.strId  = m_nfoReader.m_strImDbNr;
         info = m_nfoReader.GetScraperInfo();
