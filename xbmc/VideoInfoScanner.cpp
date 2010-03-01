@@ -850,7 +850,13 @@ namespace VIDEO
 
     SEpisode myEpisode;
     myEpisode.strPath = item->m_strPath;
-    if (strlen(season) > 0 && strlen(episode) == 0)
+    if (strlen(season) == 0 && strlen(episode) > 0) 
+    { // no season specified -> assume season 1 
+      myEpisode.iSeason = 1; 
+      myEpisode.iEpisode = atoi(episode); 
+ 	    CLog::Log(LOGDEBUG,"found episode without season %s (e%i) [%s]",strLabel.c_str(),myEpisode.iEpisode,regexp.c_str()); 
+ 	  } 
+ 	  else if (strlen(season) > 0 && strlen(episode) == 0)
     { // no episode specification -> assume season 1
       myEpisode.iSeason = 1;
       myEpisode.iEpisode = atoi(season);
