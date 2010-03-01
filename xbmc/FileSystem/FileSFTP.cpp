@@ -118,6 +118,10 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
 
           CFileItemPtr pItem(new CFileItem);
           pItem->SetLabel(attributes->name);
+          pItem->SetLabelPreformated(true);
+
+          if (attributes->name[0] == '.')
+            pItem->SetProperty("file:hidden", true);
 
           if (attributes->type & SSH_FILEXFER_TYPE_DIRECTORY)
           {
