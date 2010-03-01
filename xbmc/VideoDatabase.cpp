@@ -717,6 +717,14 @@ int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
   return -1;
 }
 
+int CVideoDatabase::GetFileId(const CFileItem &item)
+{
+  CStdString path = item.m_strPath;
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+  return GetFileId(path);
+}
+
 //********************************************************************************************************************************
 int CVideoDatabase::GetMovieId(const CStdString& strFilenameAndPath)
 {
@@ -3712,11 +3720,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  // first grab the video's id
-  CStdString path = item.m_strPath;
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  int id = GetFileId(path);
+  int id = GetFileId(item);
   if (id < 0)
     return -1;  // not in db
 
@@ -3768,11 +3772,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
-  // first grab the video's id
-  CStdString path = item.m_strPath;
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  int id = GetFileId(path);
+  int id = GetFileId(item);
   if (id < 0)
     return;  // not in db
 

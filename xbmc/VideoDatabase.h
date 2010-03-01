@@ -492,6 +492,13 @@ protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
 
+  /*! \brief Get the id of this fileitem
+   Works for both videodb:// items and normal fileitems
+   \param item CFileItem to grab the fileid of
+   \return id of the file, -1 if it is not in the db
+   */
+  int GetFileId(const CFileItem &item);
+
   int AddPath(const CStdString& strPath);
   int AddGenre(const CStdString& strGenre1);
   int AddActor(const CStdString& strActor, const CStdString& strThumb);
