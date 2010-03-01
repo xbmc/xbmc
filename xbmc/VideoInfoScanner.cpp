@@ -1414,10 +1414,11 @@ namespace VIDEO
     return count;
   }
 
-  void CVideoInfoScanner::FetchSeasonThumbs(int idTvShow)
+  void CVideoInfoScanner::FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck, bool download, bool overwrite)
   {
     CVideoInfoTag movie;
     m_database.GetTvShowInfo("",movie,idTvShow);
+    CStdString showDir(folderToCheck.IsEmpty() ? movie.m_strPath : folderToCheck);
     CFileItemList items;
     CStdString strPath;
     strPath.Format("videodb://2/2/%i/",idTvShow);
@@ -1427,15 +1428,15 @@ namespace VIDEO
     pItem->m_strPath.Format("%s/-1/",strPath.c_str());
     pItem->GetVideoInfoTag()->m_iSeason = -1;
     pItem->GetVideoInfoTag()->m_strPath = movie.m_strPath;
-    if (!XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
+    if (overwrite || !XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
       items.Add(pItem);
 
     // used for checking for a season[ ._-](number).tbn
     CFileItemList tbnItems;
-    CDirectory::GetDirectory(movie.m_strPath,tbnItems,".tbn");
+    CDirectory::GetDirectory(showDir,tbnItems,".tbn");
     for (int i=0;i<items.Size();++i)
     {
-      if (!items[i]->HasThumbnail())
+      if (overwrite || !items[i]->HasThumbnail())
       {
         CStdString strExpression;
         int iSeason = items[i]->GetVideoInfoTag()->m_iSeason;
@@ -1445,7 +1446,7 @@ namespace VIDEO
           strExpression = "season-specials.tbn";
         else
           strExpression.Format("season[ ._-]?(0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
-        bool bDownload=true;
+        bool bDownload = download;
         CRegExp reg;
         if (reg.RegComp(strExpression.c_str()))
         {
