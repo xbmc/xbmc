@@ -3798,27 +3798,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item, int count, const CStdS
 
 void CVideoDatabase::MarkAsUnWatched(const CFileItem &item)
 {
-  // unlike MarkAsWatched, we assume the file is in the videodb and has it's tag info available
-  try
-  {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-
-    CStdString path = item.m_strPath;
-    if (item.IsVideoDb())
-      path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-    int id = GetFileId(path);
-    if (id < 0)
-      return;  // not in db
-
-    // NOTE: We clear to NULL here as then the episode counting works much more nicely
-    CStdString strSQL = FormatSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
-    m_pDS->exec(strSQL.c_str());
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
+  MarkAsWatched(item, 0);
 }
 
 void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType)
