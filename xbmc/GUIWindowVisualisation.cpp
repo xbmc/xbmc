@@ -208,7 +208,7 @@ void CGUIWindowVisualisation::OnWindowLoaded()
   {
     CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
     if (pVisControl)
-      pVisControl->LoadVisualisation(m_addon);
+      pVisControl->LoadAddon(m_addon);
   }
 }
 

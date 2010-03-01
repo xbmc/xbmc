@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,14 +20,24 @@
  *
  */
 
-#include "GUIRenderingControl.h"
+#include "GUIControl.h"
+#include "IAddon.h"
 
-class CGUIVisualisationControl : public CGUIRenderingControl
+class CGUIRenderingControl : public CGUIControl
 {
 public:
-  CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height);
-  CGUIVisualisationControl(const CGUIVisualisationControl &from);
-  virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); }; //TODO check for naughties
-  virtual void FreeResources();
+  CGUIRenderingControl(int parentID, int controlID, float posX, float posY, float width, float height);
+  CGUIRenderingControl(const CGUIRenderingControl &from);
+  virtual CGUIRenderingControl *Clone() const { return new CGUIRenderingControl(*this); }; //TODO check for naughties
+
   virtual void Render();
+  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
+  virtual void FreeResources();
+  virtual bool CanFocus() const { return false; }
+  virtual bool CanFocusFromPoint(const CPoint &point) const;
+  void LoadAddon(const ADDON::AddonPtr &addon);
+
+protected:
+  CCriticalSection m_rendering;
+  ADDON::VizPtr m_addon;
 };
