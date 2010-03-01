@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -82,7 +82,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
-				DelayLoadDLLs="dwmapi.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -176,7 +176,7 @@
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
-				DelayLoadDLLs="dwmapi.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -275,7 +275,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
-				DelayLoadDLLs="dwmapi.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -370,7 +370,7 @@
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
-				DelayLoadDLLs="dwmapi.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -464,6 +464,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\PlatformInclude.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\Win32DelayedDllLoad.cpp"
 				>
 			</File>
 			<File

@@ -8,6 +8,7 @@
 #define DLL_PATH_LIBCMYTH      "special://xbmc/system/libcmyth.dll"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmc/system/hdhomerun.dll"
 #define DLL_PATH_LIBCURL       "special://xbmc/system/libcurl.dll"
+#define DLL_PATH_LIBMICROHTTP  "special://xbmc/system/webserver/libmicrohttpd-5.dll"
 
 /* paplayer */
 #define DLL_PATH_AC3_CODEC     "special://xbmc/system/players/paplayer/ac3codec.dll"
