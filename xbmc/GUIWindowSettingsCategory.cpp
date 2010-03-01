@@ -1312,10 +1312,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("videolibrary.import"))
   {
-    CStdString path(g_settings.GetDatabaseFolder());
+    CStdString path;
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "videodb.xml", g_localizeStrings.Get(651) , path))
+    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(651) , path))
     {
       CVideoDatabase videodatabase;
       videodatabase.Open();

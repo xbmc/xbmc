@@ -459,7 +459,7 @@ public:
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
   void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool overwrite=false);
-  void ImportFromXML(const CStdString &xmlFile);
+  void ImportFromXML(const CStdString &path);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;
 

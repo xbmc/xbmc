@@ -7464,7 +7464,7 @@ bool CVideoDatabase::ExportSkipEntry(const CStdString &nfoFile)
   return bSkip;
 }
 
-void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
+void CVideoDatabase::ImportFromXML(const CStdString &path)
 {
   CGUIDialogProgress *progress=NULL;
   try
@@ -7473,7 +7473,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     if (NULL == m_pDS.get()) return;
 
     TiXmlDocument xmlDoc;
-    if (!xmlDoc.LoadFile(xmlFile))
+    if (!xmlDoc.LoadFile(CUtil::AddFileToFolder(path, "videodb.xml")))
       return;
 
     TiXmlElement *root = xmlDoc.RootElement();
@@ -7504,12 +7504,10 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       movie = movie->NextSiblingElement();
     }
 
-    CStdString exportRoot;
-    CUtil::GetParentPath(xmlFile, exportRoot);
-    CStdString actorsDir(CUtil::AddFileToFolder(exportRoot, "actors"));
-    CStdString moviesDir(CUtil::AddFileToFolder(exportRoot, "movies"));
-    CStdString musicvideosDir(CUtil::AddFileToFolder(exportRoot, "musicvideos"));
-    CStdString tvshowsDir(CUtil::AddFileToFolder(exportRoot, "tvshows"));
+    CStdString actorsDir(CUtil::AddFileToFolder(path, "actors"));
+    CStdString moviesDir(CUtil::AddFileToFolder(path, "movies"));
+    CStdString musicvideosDir(CUtil::AddFileToFolder(path, "musicvideos"));
+    CStdString tvshowsDir(CUtil::AddFileToFolder(path, "tvshows"));
     CVideoInfoScanner scanner;
     set<CStdString> actors;
     movie = root->FirstChildElement();
