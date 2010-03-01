@@ -1293,7 +1293,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
      thumbSlideFn=thumbFn;
   CStdString prefix="";
   if (extended)
-	  prefix="Slide";
+    prefix="Slide";
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   CStdString slideOutput="";
   if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW && pSlideShow)
@@ -1306,39 +1306,39 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
       lastSlideInfo=slideOutput;
     }
     if (!justChange || slideChanged)
-	{
-		slideOutput+=closeTag+openTag+prefix+"Type:Picture" ;
-		CStdString resolution = "0x0";
-		if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
-		  resolution = slide->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
-		slideOutput+=closeTag+openTag+prefix+"Resolution:" + resolution;
-		CFileItem item(*slide);
-		item.SetCachedPictureThumb();
-		if (autoGetPictureThumbs && !item.HasThumbnail())
-		{
-		  CPicture::CreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
-		  item.SetCachedPictureThumb();
-		}
-		thumb = item.GetCachedPictureThumb();
-		if (!item.HasThumbnail())
-		{
-		  thumb = "[None] " + thumb;
-		  copyThumb("DefaultPicture.png",thumbSlideFn);
-		}
-		else
-		  copyThumb(thumb,thumbSlideFn);
-		slideOutput+=closeTag+openTag+"Thumb:"+thumb;
-	}
-	if (slideChanged)
-	  slideOutput+=closeTag+openTag+prefix+"Changed:True";
-	else  
-	  slideOutput+=closeTag+openTag+prefix+"Changed:False";
-	if (!extended)
-	{
-	  if (justChange && !slideChanged)
-	    return SetResponse(openTag+"Changed:False");
-	  else
-	    return SetResponse(slideOutput);
+    {
+      slideOutput+=closeTag+openTag+prefix+"Type:Picture" ;
+      CStdString resolution = "0x0";
+      if (slide && slide->HasPictureInfoTag() && slide->GetPictureInfoTag()->Loaded())
+        resolution = slide->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
+      slideOutput+=closeTag+openTag+prefix+"Resolution:" + resolution;
+      CFileItem item(*slide);
+      item.SetCachedPictureThumb();
+      if (autoGetPictureThumbs && !item.HasThumbnail())
+      {
+        CPicture::CreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
+        item.SetCachedPictureThumb();
+      }
+      thumb = item.GetCachedPictureThumb();
+      if (!item.HasThumbnail())
+      {
+        thumb = "[None] " + thumb;
+        copyThumb("DefaultPicture.png",thumbSlideFn);
+      }
+      else
+        copyThumb(thumb,thumbSlideFn);
+      slideOutput+=closeTag+openTag+"Thumb:"+thumb;
+    }
+    if (slideChanged)
+      slideOutput+=closeTag+openTag+prefix+"Changed:True";
+    else  
+      slideOutput+=closeTag+openTag+prefix+"Changed:False";
+    if (!extended)
+    {
+      if (justChange && !slideChanged)
+        return SetResponse(openTag+"Changed:False");
+      else
+        return SetResponse(slideOutput);
         }
   }
   CFileItem &fileItem = g_application.CurrentFileItem();
@@ -1353,8 +1353,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     if (justChange && !changed && !slideChanged)
       return SetResponse(openTag+"Changed:False");
     copyThumb(thumbNothingPlaying,thumbFn);
-	if (extended && slideOutput!="")
-	  return SetResponse(slideOutput+closeTag+output);
+    if (extended && slideOutput!="")
+      return SetResponse(slideOutput+closeTag+output);
     else
       return SetResponse(output);
   }
@@ -2788,10 +2788,10 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
   {
     if (!pUdpBroadcast)
       pUdpBroadcast = new CUdpBroadcast();
-	CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+    CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     CStdString msg;
-	if ((g_settings.m_HttpApiBroadcastLevel & 128)==128)
-	   message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+    if ((g_settings.m_HttpApiBroadcastLevel & 128)==128)
+      message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
     return pUdpBroadcast->broadcast(msg, g_settings.m_HttpApiBroadcastPort);
   }
@@ -2825,7 +2825,7 @@ int CXbmcHttp::xbmcSetBroadcast(int numParas, CStdString paras[])
   {
     g_settings.m_HttpApiBroadcastLevel=atoi(paras[0]);
     if (g_settings.m_HttpApiBroadcastLevel==128)
-	g_settings.m_HttpApiBroadcastLevel=0;
+      g_settings.m_HttpApiBroadcastLevel=0;
     if (numParas>1)
       g_settings.m_HttpApiBroadcastPort=atoi(paras[1]);
     return SetResponse(openTag+"OK");
@@ -3122,7 +3122,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "rotate")                   retVal = xbmcAction(numParas, paras,5);
       else if (command == "move")                     retVal = xbmcAction(numParas, paras,6);
       else if (command == "zoom")                     retVal = xbmcAction(numParas, paras,7);
-	  else if (command == "pauseexslide")             retVal = xbmcAction(numParas, paras,8);
+      else if (command == "pauseexslide")             retVal = xbmcAction(numParas, paras,8);
       else if (command == "stopexslide")              retVal = xbmcAction(numParas, paras,9);
       else if (command == "playnextexslide")          retVal = xbmcAction(numParas, paras,10);
       else if (command == "playprevexslide")          retVal = xbmcAction(numParas, paras,11);
@@ -3174,7 +3174,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getguistatus")             retVal = xbmcGetGUIStatus();
       else if (command == "execbuiltin")              retVal = xbmcExecBuiltIn(numParas, paras);
       else if (command == "config")                   retVal = xbmcConfig(numParas, paras);
-	  else if (command == "stsetting")                retVal = xbmcSTSetting(numParas, paras);
+      else if (command == "stsetting")                retVal = xbmcSTSetting(numParas, paras);
       else if (command == "help")                     retVal = xbmcHelp();
       else if (command == "getsysteminfo")            retVal = xbmcGetSystemInfo(numParas, paras);
       else if (command == "getsysteminfobyname")      retVal = xbmcGetSystemInfoByName(numParas, paras);
