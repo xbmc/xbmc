@@ -7513,7 +7513,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddMovieAndGetThumb(&item,"movies",info,-1,false);
+        scanner.AddMovie(&item,"movies",info);
         MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
         current++;
       }
@@ -7521,7 +7521,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddMovieAndGetThumb(&item,"musicvideos",info,-1,false);
+        scanner.AddMovie(&item,"musicvideos",info);
         MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
         current++;
       }
@@ -7533,7 +7533,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         CUtil::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
         CFileItem item(info);
-        int showID = scanner.AddMovieAndGetThumb(&item,"tvshows",info,-1,false);
+        int showID = scanner.AddMovie(&item,"tvshows",info);
         current++;
         // now load the episodes
         TiXmlElement *episode = movie->FirstChildElement("episodedetails");
@@ -7543,7 +7543,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           CVideoInfoTag info;
           info.Load(episode);
           CFileItem item(info);
-          scanner.AddMovieAndGetThumb(&item,"tvshows",info,showID,false);
+          scanner.AddMovie(&item,"tvshows",info,showID);
           MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
           episode = episode->NextSiblingElement("episodedetails");
         }

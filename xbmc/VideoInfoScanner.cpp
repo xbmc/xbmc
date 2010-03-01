@@ -976,7 +976,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovie(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -1041,6 +1041,12 @@ namespace VIDEO
     {
       m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
+    return lResult;
+  }
+
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
+  {
+    long lResult = AddMovie(pItem, content, movieDetails, idShow);
     // get & save fanart image
     if (!pItem->CacheLocalFanart() || bRefresh)
     {
