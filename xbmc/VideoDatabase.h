@@ -305,15 +305,29 @@ public:
   int AddEpisode(int idShow, const CStdString& strFilenameAndPath);
 
   // editing functions
-  /*! \brief Mark the current item as watched
-   Increments the play count for the current item, or sets the playcount to a given value
+  /*! \brief Set the playcount of an item
+   Sets the playcount and last played date to a given value
    \param item CFileItem to set the playcount for
-   \param count The playcount to set. If non-negative, we set this, else we increment the count (the default)
+   \param count The playcount to set.
    \param date The date the file was last watched. If empty, we use the current date time (the default)
+   \sa GetPlayCount, IncrementPlayCount
    */
-  void MarkAsWatched(const CFileItem &item, int count = -1, const CStdString &lastWatched = "");
-  void MarkAsUnWatched(const CFileItem &item);
-  int GetPlayCount(int id);
+  void SetPlayCount(const CFileItem &item, int count, const CStdString &lastWatched = "");
+
+  /*! \brief Increment the playcount of an item
+   Increments the playcount and updates the last played date
+   \param item CFileItem to increment the playcount for
+   \sa GetPlayCount, SetPlayCount
+   */
+  void IncrementPlayCount(const CFileItem &item);
+
+  /*! \brief Get the playcount of an item
+   \param item CFileItem to get the playcount for
+   \return the playcount of the item, or -1 on error
+   \sa SetPlayCount, IncrementPlayCount
+   */
+  int GetPlayCount(const CFileItem &item);
+
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);

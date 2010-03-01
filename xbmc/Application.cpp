@@ -4071,7 +4071,7 @@ void CApplication::SaveFileState()
             CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, progressTrackingFile.c_str());
 
             // consider this item as played
-            videodatabase.MarkAsWatched(*m_progressTrackingItem);
+            videodatabase.IncrementPlayCount(*m_progressTrackingItem);
             CUtil::DeleteVideoDatabaseDirectoryCache();
             CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
             g_windowManager.SendMessage(message);
