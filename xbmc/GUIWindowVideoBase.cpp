@@ -1539,10 +1539,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
           continue;
       }
 
-      if (mark)
-        database.MarkAsWatched(*pItem);
-      else
-        database.MarkAsUnWatched(*pItem);
+      database.SetPlayCount(*pItem, mark ? 1 : 0);
     }
     
     database.Close(); 

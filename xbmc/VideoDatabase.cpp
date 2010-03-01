@@ -719,6 +719,14 @@ int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
   return -1;
 }
 
+int CVideoDatabase::GetFileId(const CFileItem &item)
+{
+  CStdString path = item.m_strPath;
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+  return GetFileId(path);
+}
+
 //********************************************************************************************************************************
 int CVideoDatabase::GetMovieId(const CStdString& strFilenameAndPath)
 {
@@ -3725,8 +3733,12 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
   return true;
 }
 
-int CVideoDatabase::GetPlayCount(int id)
+int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
+  int id = GetFileId(item);
+  if (id < 0)
+    return -1;  // not in db
+
   try
   {
     // error!
@@ -3773,13 +3785,9 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   }
 }
 
-void CVideoDatabase::MarkAsWatched(const CFileItem &item, int count, const CStdString &date)
+void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
-  // first grab the video's id
-  CStdString path = item.m_strPath;
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  int id = GetFileId(path);
+  int id = GetFileId(item);
   if (id < 0)
     return;  // not in db
 
@@ -3788,9 +3796,6 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item, int count, const CStdS
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-
-    if (count < 0)
-      count = GetPlayCount(id) + 1;
 
     CStdString strSQL;
     if (count)
@@ -3811,9 +3816,9 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item, int count, const CStdS
   }
 }
 
-void CVideoDatabase::MarkAsUnWatched(const CFileItem &item)
+void CVideoDatabase::IncrementPlayCount(const CFileItem &item)
 {
-  MarkAsWatched(item, 0);
+  SetPlayCount(item, GetPlayCount(item) + 1);
 }
 
 void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType)
@@ -7569,7 +7574,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         info.Load(movie);
         CFileItem item(info);
         scanner.AddMovie(&item,CONTENT_MOVIES,info);
-        MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+        SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString file(GetSafeFile(moviesDir, info.m_strTitle));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
         CFile::Cache(file + "-fanart.jpg", item.GetCachedFanart());
@@ -7582,7 +7587,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         info.Load(movie);
         CFileItem item(info);
         scanner.AddMovie(&item,CONTENT_MUSICVIDEOS,info);
-        MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+        SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString file(GetSafeFile(musicvideosDir, info.m_strArtist + "." + info.m_strTitle));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
         current++;
@@ -7611,7 +7616,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           info.Load(episode);
           CFileItem item(info);
           scanner.AddMovie(&item,CONTENT_TVSHOWS,info,showID);
-          MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+          SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
           CStdString file;
           file.Format("s%02ie%02i.tbn", info.m_iSeason, info.m_iEpisode);
           CFile::Cache(CUtil::AddFileToFolder(showDir, file), item.GetCachedVideoThumb());

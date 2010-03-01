@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <stdint.h>
 #include <cmyth_local.h>
 
 /*

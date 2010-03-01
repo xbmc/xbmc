@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stdint.h>
 #ifndef _MSC_VER
 #include <sys/socket.h>
 #endif
