@@ -7514,6 +7514,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         info.Load(movie);
         CFileItem item(info);
         scanner.AddMovieAndGetThumb(&item,"movies",info,-1,false);
+        MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
         current++;
       }
       else if (strnicmp(movie->Value(), "musicvideo", 10) == 0)
@@ -7521,6 +7522,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         info.Load(movie);
         CFileItem item(info);
         scanner.AddMovieAndGetThumb(&item,"musicvideos",info,-1,false);
+        MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
         current++;
       }
       else if (strnicmp(movie->Value(), "tvshow", 6) == 0)
@@ -7542,6 +7544,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           info.Load(episode);
           CFileItem item(info);
           scanner.AddMovieAndGetThumb(&item,"tvshows",info,showID,false);
+          MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
