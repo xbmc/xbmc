@@ -449,9 +449,10 @@ public:
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
 
   int AddFile(const CStdString& strFileName);
-  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
+  void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
+  void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;

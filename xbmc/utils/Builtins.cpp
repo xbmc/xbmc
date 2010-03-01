@@ -1123,8 +1123,6 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       if (params[0].Equals("video"))
       {
-        if (CUtil::HasSlashAtEnd(path))
-          CUtil::AddFileToFolder(path, "videodb.xml", path);
         CVideoDatabase videodatabase;
         videodatabase.Open();
         videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
