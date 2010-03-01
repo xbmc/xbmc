@@ -609,7 +609,7 @@ bool CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMouseEvent &
   }
   if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_BACK, 0.5f));
   }
   if (event.m_id || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD
