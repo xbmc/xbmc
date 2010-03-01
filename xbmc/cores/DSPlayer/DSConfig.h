@@ -108,7 +108,7 @@ protected:
    * @param[in] pBF Try to load the configuration from this filter
    * @return True if the filter is a MPC Video Decoder, false else
    */
-  bool GetMpcVideoDec(IBaseFilter* pBF);
+  void GetDxvaGuid();
   /**
    * Load configuration from FFDShow
    * @param[in] pBF Try to load the configuration from this filter
@@ -131,6 +131,8 @@ private:
   IMpaDecFilter*                 m_pIMpaDecFilter;
   IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
+  GUID                           m_pGuidDxva;
+  std::list<AM_MEDIA_TYPE *>     m_pMediaType;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
   //current page
   CDSPropertyPage*               m_pCurrentProperty;

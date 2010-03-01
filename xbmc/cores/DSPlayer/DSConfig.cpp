@@ -47,6 +47,7 @@ CDSConfig::CDSConfig(void)
   pGraph = NULL;
   pGraph = NULL;
   pQualProp = NULL;
+  m_pGuidDxva = GUID_NULL;
 }
 
 CDSConfig::~CDSConfig(void)
@@ -64,6 +65,8 @@ void CDSConfig::ClearConfig()
   pIffdshowDecoder = NULL;
   pQualProp = NULL;
   pGraph = NULL;
+  m_pStdDxva.Format("");
+  m_pGuidDxva = GUID_NULL;
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 }
@@ -78,6 +81,8 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
   pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
   pQualProp = NULL;
+  m_pStdDxva = DShowUtil::GetDXVAMode(&m_pGuidDxva);
+
   while (! m_pPropertiesFilters.empty())
     m_pPropertiesFilters.pop_back();
 
@@ -94,14 +99,15 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
 
 void CDSConfig::ConfigureFilters()
 {
+  GetDxvaGuid();
   BeginEnumFilters(m_pGraphBuilder, pEF, pBF)
   {
-	  GetMpcVideoDec(pBF);
 	  GetMpaDec(pBF);
     GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);
   }
   EndEnumFilters
+
   CreatePropertiesXml();
 }
 
@@ -157,7 +163,6 @@ void CDSConfig::CreatePropertiesXml()
     newFilterElement.SetAttribute("id", pStrId.c_str());
 
     //set the name of the filter in the element
-    //newFilterElement.setValue(pStrName.c_str());
     TiXmlNode *pNewNode = pRoot->InsertEndChild(newFilterElement);
     if (! pNewNode)
       break;
@@ -188,29 +193,28 @@ void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
   }
 }
 
-bool CDSConfig::GetMpcVideoDec(IBaseFilter* pBF)
+void CDSConfig::GetDxvaGuid()
 {
-  if (m_pIMpcDecFilter)
-    return false;
-  pBF->QueryInterface(__uuidof(m_pIMpcDecFilter), (void **)&m_pIMpcDecFilter);
-  if (!m_pIMpcDecFilter)
-    return false;
-  m_pStdDxva.Format("");
-  if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
+  //Get the subtype of the pin this is actually the guid used for dxva description
+  IBaseFilter* pBFV = CFGLoader::Filters.VideoRenderer.pBF;
+  GUID dxvaGuid = GUID_NULL;
+  IPin *pPin = NULL;
+  pPin = DShowUtil::GetFirstPin(pBFV);
+  
+  if (pPin)
   {
-    m_pStdDxva = CStdString("");
-    CLog::Log(LOGERROR,"%s DXVA WILL NEVER WORK WITH NON DEFAULT RENDERER ON",__FUNCTION__);
+    AM_MEDIA_TYPE pMT;
+    HRESULT hr = pPin->ConnectionMediaType(&pMT);
+    dxvaGuid = pMT.subtype;
+    FreeMediaType(pMT);
+      //
+    //g_dsconfig.SetDxvaGuid(dxvaGuid);
   }
-  else
-  {
-    if ( m_pIMpcDecFilter )
-    {
-      m_pStdDxva = DShowUtil::GetDXVAMode(m_pIMpcDecFilter->GetDXVADecoderGuid());
-      CLog::Log(LOGDEBUG,"Got IMPCVideoDecFilter");
-    }
-  }
-
-  return true;
+  m_pGuidDxva = dxvaGuid;
+  m_pStdDxva = DShowUtil::GetDXVAMode(&dxvaGuid);
+  SAFE_RELEASE(pBFV);
+  
+      
 }
 
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
