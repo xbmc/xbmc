@@ -3758,7 +3758,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   }
 }
 
-void CVideoDatabase::MarkAsWatched(const CFileItem &item)
+void CVideoDatabase::MarkAsWatched(const CFileItem &item, int count, const CStdString &date)
 {
   // first grab the video's id
   CStdString path = item.m_strPath;
@@ -3774,14 +3774,21 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    int count = GetPlayCount(id);
-    // hmm... what should be done upon an error getting the playcount?
-    if (count > -1)
+    if (count < 0)
+      count = GetPlayCount(id) + 1;
+
+    CStdString strSQL;
+    if (count)
     {
-      count++;
-      CStdString strSQL = FormatSQL("update files set playCount=%i,lastPlayed=CURRENT_TIMESTAMP where idFile=%i", count, id);
-      m_pDS->exec(strSQL.c_str());
+      if (date.IsEmpty())
+        strSQL = FormatSQL("update files set playCount=%i,lastPlayed=CURRENT_TIMESTAMP where idFile=%i", count, id);
+      else
+        strSQL = FormatSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", count, date.c_str(), id);
     }
+    else
+      strSQL = FormatSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
+
+    m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {

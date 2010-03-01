@@ -305,7 +305,13 @@ public:
   int AddEpisode(int idShow, const CStdString& strFilenameAndPath);
 
   // editing functions
-  void MarkAsWatched(const CFileItem &item);
+  /*! \brief Mark the current item as watched
+   Increments the play count for the current item, or sets the playcount to a given value
+   \param item CFileItem to set the playcount for
+   \param count The playcount to set. If non-negative, we set this, else we increment the count (the default)
+   \param date The date the file was last watched. If empty, we use the current date time (the default)
+   */
+  void MarkAsWatched(const CFileItem &item, int count = -1, const CStdString &lastWatched = "");
   void MarkAsUnWatched(const CFileItem &item);
   int GetPlayCount(int id);
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
