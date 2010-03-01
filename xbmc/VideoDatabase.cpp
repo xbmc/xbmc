@@ -3773,7 +3773,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
   }
 }
 
-void CVideoDatabase::MarkAsWatched(const CFileItem &item)
+void CVideoDatabase::MarkAsWatched(const CFileItem &item, int count, const CStdString &date)
 {
   // first grab the video's id
   CStdString path = item.m_strPath;
@@ -3789,14 +3789,21 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
-    int count = GetPlayCount(id);
-    // hmm... what should be done upon an error getting the playcount?
-    if (count > -1)
+    if (count < 0)
+      count = GetPlayCount(id) + 1;
+
+    CStdString strSQL;
+    if (count)
     {
-      count++;
-      CStdString strSQL = FormatSQL("update files set playCount=%i,lastPlayed=CURRENT_TIMESTAMP where idFile=%i", count, id);
-      m_pDS->exec(strSQL.c_str());
+      if (date.IsEmpty())
+        strSQL = FormatSQL("update files set playCount=%i,lastPlayed=CURRENT_TIMESTAMP where idFile=%i", count, id);
+      else
+        strSQL = FormatSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", count, date.c_str(), id);
     }
+    else
+      strSQL = FormatSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
+
+    m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
@@ -3806,27 +3813,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 
 void CVideoDatabase::MarkAsUnWatched(const CFileItem &item)
 {
-  // unlike MarkAsWatched, we assume the file is in the videodb and has it's tag info available
-  try
-  {
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-
-    CStdString path = item.m_strPath;
-    if (item.IsVideoDb())
-      path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-    int id = GetFileId(path);
-    if (id < 0)
-      return;  // not in db
-
-    // NOTE: We clear to NULL here as then the episode counting works much more nicely
-    CStdString strSQL = FormatSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
-    m_pDS->exec(strSQL.c_str());
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
+  MarkAsWatched(item, 0);
 }
 
 void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType)
@@ -6951,10 +6938,8 @@ void CVideoDatabase::DumpToDummyFiles(const CStdString &path)
   }
 }
 
-void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* = false */, bool images /* = false */, bool actorThumbs /* false */, bool overwrite /*=false*/)
+void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = false */, bool images /* = false */, bool actorThumbs /* false */, bool overwrite /*=false*/)
 {
-  if (CFile::Exists(xmlFile) && !overwrite && !singleFiles) return;
-
   CGUIDialogProgress *progress=NULL;
   try
   {
@@ -6970,6 +6955,26 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     auto_ptr<Dataset> pDS2;
     pDS2.reset(m_pDB->CreateDataset());
     if (NULL == pDS2.get()) return;
+
+    // if we're exporting to a single folder, we export thumbs as well
+    CStdString exportRoot = CUtil::AddFileToFolder(path, "xbmc_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate());
+    CStdString xmlFile = CUtil::AddFileToFolder(exportRoot, "videodb.xml");
+    CStdString actorsDir = CUtil::AddFileToFolder(exportRoot, "actors");
+    CStdString moviesDir = CUtil::AddFileToFolder(exportRoot, "movies");
+    CStdString musicvideosDir = CUtil::AddFileToFolder(exportRoot, "musicvideos");
+    CStdString tvshowsDir = CUtil::AddFileToFolder(exportRoot, "tvshows");
+    if (!singleFiles)
+    {
+      images = true;
+      overwrite = false;
+      actorThumbs = true;
+      CDirectory::Remove(exportRoot);
+      CDirectory::Create(exportRoot);
+      CDirectory::Create(actorsDir);
+      CDirectory::Create(moviesDir);
+      CDirectory::Create(musicvideosDir);
+      CDirectory::Create(tvshowsDir);
+    }
 
     progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     // find all movies
@@ -7028,58 +7033,66 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
       }
 
-      if (CUtil::IsWritable(movie.m_strFileNameAndPath))
+      CFileItem item(movie.m_strFileNameAndPath,false);
+      CFileItem saveItem(item);
+      if (!singleFiles)
+        saveItem = CFileItem(GetSafeFile(moviesDir, movie.m_strTitle) + ".avi", false);
+      if (singleFiles && CUtil::IsWritable(movie.m_strFileNameAndPath))
       {
-        if (singleFiles)
+        if (!item.Exists(false))
         {
-          CFileItem item(movie.m_strFileNameAndPath,false);
-          if (!item.Exists(false))
-            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
-          else
-          {
-            CStdString nfoFile;
-            CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          bSkip = true;
+        }
+        else
+        {
+          CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
-            if (overwrite || !CFile::Exists(nfoFile, false))
+          if (overwrite || !CFile::Exists(nfoFile, false))
+          {
+            if(!xmlDoc.SaveFile(nfoFile))
             {
-              if(!xmlDoc.SaveFile(nfoFile))
+              CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
               {
-                CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
+                if (progress)
                 {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
+                  progress->Close();
+                  m_pDS->close();
+                  return;
                 }
               }
             }
-
-            xmlDoc.Clear();
-            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-            xmlDoc.InsertEndChild(decl);
-
-            if (images && !bSkip)
-            {
-              CStdString cachedThumb(GetCachedThumb(item));
-              if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile(), false)))
-                if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
-                  CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
-
-              CStdString strFanart;
-              CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg", strFanart);
-
-              if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(strFanart, false)))
-                if (!CFile::Cache(item.GetCachedFanart(),strFanart))
-                  CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), strFanart.c_str());
-
-              if (actorThumbs)
-                ExportActorThumbs(movie, overwrite);
-            }
           }
+
+          xmlDoc.Clear();
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
+        }
+      }
+
+      if (images && !bSkip)
+      {
+        CStdString cachedThumb(GetCachedThumb(item));
+        CStdString savedThumb(saveItem.GetTBNFile());
+        if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(savedThumb, false)))
+          if (!CFile::Cache(cachedThumb, savedThumb))
+            CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
+        
+        CStdString cachedFanart(item.GetCachedFanart());
+        CStdString savedFanart(CUtil::ReplaceExtension(savedThumb, "-fanart.jpg"));
+        
+        if (CFile::Exists(cachedFanart, false))
+          if (!CFile::Cache(cachedFanart, savedFanart))
+            CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, cachedFanart.c_str(), savedFanart.c_str());
+        
+        if (actorThumbs)
+        {
+          if (singleFiles)
+            ExportActorThumbs(movie, overwrite);
+          else
+            ExportActorThumbs(actorsDir, movie, overwrite);
         }
       }
       m_pDS->next();
@@ -7116,50 +7129,51 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         }
       }
 
-      if (CUtil::IsWritable(movie.m_strFileNameAndPath))
+      CFileItem item(movie.m_strFileNameAndPath,false);
+      CFileItem saveItem(item);
+      if (!singleFiles)
+        saveItem = CFileItem(GetSafeFile(musicvideosDir, movie.m_strArtist + "." + movie.m_strTitle) + ".avi", false);
+      if (CUtil::IsWritable(movie.m_strFileNameAndPath) && singleFiles)
       {
-        if (singleFiles)
+        if (!item.Exists(false))
         {
-          CFileItem item(movie.m_strFileNameAndPath,false);
-          if (!item.Exists(false))
-            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
-          else
-          {
-            CStdString nfoFile;
-            CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
+          bSkip = true;
+        }
+        else
+        {
+          CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
-            if (overwrite || !CFile::Exists(nfoFile, false))
+          if (overwrite || !CFile::Exists(nfoFile, false))
+          {
+            if(!xmlDoc.SaveFile(nfoFile))
             {
-              if(!xmlDoc.SaveFile(nfoFile))
+              CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
               {
-                CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                bSkip = ExportSkipEntry(nfoFile);
-                if (!bSkip)
+                if (progress)
                 {
-                  if (progress)
-                  {
-                    progress->Close();
-                    m_pDS->close();
-                    return;
-                  }
+                  progress->Close();
+                  m_pDS->close();
+                  return;
                 }
               }
             }
-
-            xmlDoc.Clear();
-            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-            xmlDoc.InsertEndChild(decl);
-
-            if (images && !bSkip)
-            {
-              CStdString cachedThumb(GetCachedThumb(item));
-              if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile(), false)))
-                if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
-                  CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
-
-            }
           }
+
+          xmlDoc.Clear();
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
         }
+      }
+      if (images && !bSkip)
+      {
+        CStdString cachedThumb(GetCachedThumb(item));
+        CStdString savedThumb(saveItem.GetTBNFile());
+        if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(savedThumb, false)))
+          if (!CFile::Cache(cachedThumb, savedThumb))
+            CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
       }
       m_pDS->next();
       current++;
@@ -7195,23 +7209,174 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       }
 
 
-      if (CUtil::IsWritable(tvshow.m_strPath))
+      CFileItem item(tvshow.m_strPath, true);
+      CFileItem saveItem(item);
+      if (!singleFiles)
       {
+        saveItem = CFileItem(GetSafeFile(tvshowsDir, tvshow.m_strShowTitle), true);
+        CDirectory::Create(item.m_strPath);
+      }
+      if (singleFiles && CUtil::IsWritable(tvshow.m_strPath))
+      {
+        if (!item.Exists(false))
+        {
+          CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, tvshow.m_strPath.c_str());
+          bSkip = true;
+        }
+        else
+        {
+          CStdString nfoFile;
+          CUtil::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
+
+          if (overwrite || !CFile::Exists(nfoFile, false))
+          {
+            if(!xmlDoc.SaveFile(nfoFile))
+            {
+              CLog::Log(LOGERROR, "%s: TVShow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
+            }
+          }
+
+          xmlDoc.Clear();
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
+        }
+      }
+      if (images && !bSkip)
+      {
+        CStdString cachedThumb(GetCachedThumb(item));
+        CStdString savedThumb(saveItem.GetFolderThumb());
+        if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(savedThumb, false)))
+          if (!CFile::Cache(cachedThumb, savedThumb))
+            CLog::Log(LOGERROR, "%s: TVShow thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
+
+        CStdString cachedFanart(item.GetCachedFanart());
+        CStdString savedFanart(saveItem.GetFolderThumb("fanart.jpg"));
+        if (CFile::Exists(cachedFanart, false) && (overwrite || !CFile::Exists(savedFanart, false)))
+          if (!CFile::Cache(cachedFanart, savedFanart))
+            CLog::Log(LOGERROR, "%s: TVShow fanart export failed! ('%s' -> '%s')", __FUNCTION__, cachedFanart.c_str(), savedFanart.c_str());
+
+        if (actorThumbs)
+        {
+          if (singleFiles)
+            ExportActorThumbs(tvshow, overwrite);
+          else
+            ExportActorThumbs(actorsDir, tvshow, overwrite);
+        }
+
+        // now get all available seasons from this show
+        sql = FormatSQL("select distinct(c%02d) from episodeview where idShow=%i", VIDEODB_ID_EPISODE_SEASON, tvshow.m_iDbId);
+        pDS2->query(sql.c_str());
+
+        CFileItemList items;
+        CStdString strDatabasePath;
+        strDatabasePath.Format("videodb://2/2/%i/",tvshow.m_iDbId);
+
+        // add "All Seasons" to list
+        CFileItemPtr pItem;
+        pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));
+        pItem->GetVideoInfoTag()->m_iSeason = -1;
+        pItem->GetVideoInfoTag()->m_strPath = tvshow.m_strPath;
+        items.Add(pItem);
+
+        // loop through available season
+        while (!pDS2->eof())
+        {
+          int iSeason = pDS2->fv(0).get_asInt();
+          CStdString strLabel;
+          if (iSeason == 0)
+            strLabel = g_localizeStrings.Get(20381);
+          else
+            strLabel.Format(g_localizeStrings.Get(20358),iSeason);
+          CFileItemPtr pItem(new CFileItem(strLabel));
+          pItem->GetVideoInfoTag()->m_strTitle = strLabel;
+          pItem->GetVideoInfoTag()->m_iSeason = iSeason;
+          pItem->GetVideoInfoTag()->m_strPath = tvshow.m_strPath;
+          items.Add(pItem);
+          pDS2->next();
+        }
+        pDS2->close();
+
+        // export season thumbs
+        for (int i=0;i<items.Size();++i)
+        {
+          CStdString strSeasonThumb, strParent;
+          int iSeason = items[i]->GetVideoInfoTag()->m_iSeason;
+          if (iSeason == -1)
+            strSeasonThumb = "season-all.tbn";
+          else if (iSeason == 0)
+            strSeasonThumb = "season-specials.tbn";
+          else
+            strSeasonThumb.Format("season%02i.tbn",iSeason);
+          CUtil::GetParentPath(saveItem.GetFolderThumb(), strParent);
+          
+          CStdString cachedThumb(items[i]->GetCachedSeasonThumb());
+          CStdString savedThumb(CUtil::AddFileToFolder(strParent, strSeasonThumb));
+
+          if (CFile::Exists(cachedThumb, false) && (overwrite || !CFile::Exists(savedThumb, false)))
+            if (!CFile::Cache(cachedThumb, savedThumb))
+              CLog::Log(LOGERROR, "%s: TVShow season thumb export failed ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
+        }
+      }
+      
+      // now save the episodes from this show
+      sql = FormatSQL("select * from episodeview where idShow=%i order by strFileName, idEpisode",tvshow.m_iDbId);
+      pDS->query(sql.c_str());
+      CStdString showDir(saveItem.m_strPath);
+
+      while (!pDS->eof())
+      {
+        CVideoInfoTag episode = GetDetailsForEpisode(pDS, true);
+        if (singleFiles)
+          episode.Save(pMain, "episodedetails", !singleFiles);
+        else
+          episode.Save(pMain->LastChild(), "episodedetails", !singleFiles);
+        pDS->next();
+        // multi-episode files need dumping to the same XML
+        while (singleFiles && !pDS->eof() &&
+               episode.m_iFileId == pDS->fv("idFile").get_asInt())
+        {
+          episode = GetDetailsForEpisode(pDS, true);
+          episode.Save(pMain, "episodedetails", !singleFiles);
+          pDS->next();
+        }
+
+        // reset old skip state
+        bool bSkip = false;
+
+        CFileItem item(episode.m_strFileNameAndPath, false);
+        CFileItem saveItem(item);
+        if (!singleFiles)
+        {
+          CStdString epName;
+          epName.Format("s%02ie%02i.avi", episode.m_iSeason, episode.m_iEpisode);
+          saveItem = CFileItem(CUtil::AddFileToFolder(showDir, epName), false);
+        }
         if (singleFiles)
         {
-          CFileItem item(tvshow.m_strPath, true);
           if (!item.Exists(false))
-            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, tvshow.m_strPath.c_str());
+          {
+            CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, episode.m_strFileNameAndPath.c_str());
+            bSkip = true;
+          }
           else
           {
-            CStdString nfoFile;
-            CUtil::AddFileToFolder(tvshow.m_strPath, "tvshow.nfo", nfoFile);
+            CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
             if (overwrite || !CFile::Exists(nfoFile, false))
             {
               if(!xmlDoc.SaveFile(nfoFile))
               {
-                CLog::Log(LOGERROR, "%s: TVShow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+                CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
                 bSkip = ExportSkipEntry(nfoFile);
                 if (!bSkip)
                 {
@@ -7228,143 +7393,19 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             xmlDoc.Clear();
             TiXmlDeclaration decl("1.0", "UTF-8", "yes");
             xmlDoc.InsertEndChild(decl);
-
-            if (images && !bSkip)
-            {
-              CStdString cachedThumb(GetCachedThumb(item));
-              if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetFolderThumb(), false)))
-                if (!CFile::Cache(cachedThumb,item.GetFolderThumb()))
-                  CLog::Log(LOGERROR, "%s: TVShow thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetFolderThumb().c_str());
-
-              if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(item.GetFolderThumb("fanart.jpg"), false)))
-                if (!CFile::Cache(item.GetCachedFanart(),item.GetFolderThumb("fanart.jpg")))
-                  CLog::Log(LOGERROR, "%s: TVShow fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), item.GetFolderThumb("fanart.jpg").c_str());
-
-              if (actorThumbs)
-                ExportActorThumbs(tvshow, overwrite);
-
-              // now get all available seasons from this show
-              sql = FormatSQL("select distinct(c%02d) from episodeview where idShow=%i", VIDEODB_ID_EPISODE_SEASON, tvshow.m_iDbId);
-              pDS2->query(sql.c_str());
-
-              CFileItemList items;
-              CStdString strDatabasePath;
-              strDatabasePath.Format("videodb://2/2/%i/",tvshow.m_iDbId);
-
-              // add "All Seasons" to list
-              CFileItemPtr pItem;
-              pItem.reset(new CFileItem(g_localizeStrings.Get(20366)));
-              pItem->GetVideoInfoTag()->m_iSeason = -1;
-              pItem->GetVideoInfoTag()->m_strPath = tvshow.m_strPath;
-              items.Add(pItem);
-
-              // loop through available season
-              while (!pDS2->eof())
-              {
-                int iSeason = pDS2->fv(0).get_asInt();
-                CStdString strLabel;
-                if (iSeason == 0)
-                  strLabel = g_localizeStrings.Get(20381);
-                else
-                  strLabel.Format(g_localizeStrings.Get(20358),iSeason);
-                CFileItemPtr pItem(new CFileItem(strLabel));
-                pItem->GetVideoInfoTag()->m_strTitle = strLabel;
-                pItem->GetVideoInfoTag()->m_iSeason = iSeason;
-                pItem->GetVideoInfoTag()->m_strPath = tvshow.m_strPath;
-                items.Add(pItem);
-                pDS2->next();
-              }
-              pDS2->close();
-
-              // export season thumbs
-              for (int i=0;i<items.Size();++i)
-              {
-                CStdString strSeasonThumb, strParent, strDest;
-                int iSeason = items[i]->GetVideoInfoTag()->m_iSeason;
-                if (iSeason == -1)
-                  strSeasonThumb = "season-all.tbn";
-                else if (iSeason == 0)
-                  strSeasonThumb = "season-specials.tbn";
-                else
-                  strSeasonThumb.Format("season%02i.tbn",iSeason);
-                CUtil::GetParentPath(item.GetFolderThumb(), strParent);
-                CUtil::AddFileToFolder(strParent, strSeasonThumb, strDest);
-
-                if (CFile::Exists(items[i]->GetCachedSeasonThumb(), false) && (overwrite || !CFile::Exists(strDest, false)))
-                  if (!CFile::Cache(items[i]->GetCachedSeasonThumb(),strDest))
-                    CLog::Log(LOGERROR, "%s: TVShow season thumb export failed! ('%s' -> '%s')", __FUNCTION__, items[i]->GetCachedSeasonThumb().c_str(), strDest.c_str());
-              }
-            }
           }
         }
 
-        // now save the episodes from this show
-        sql = FormatSQL("select * from episodeview where idShow=%i order by strFileName, idEpisode",tvshow.m_iDbId);
-        pDS->query(sql.c_str());
-
-        while (!pDS->eof())
+        if (images && !bSkip)
         {
-          CVideoInfoTag episode = GetDetailsForEpisode(pDS, true);
-          if (singleFiles)
-            episode.Save(pMain, "episodedetails", !singleFiles);
-          else
-            episode.Save(pMain->LastChild(), "episodedetails", !singleFiles);
-          pDS->next();
-          while (singleFiles && !pDS->eof() &&
-                 episode.m_iFileId == pDS->fv("idFile").get_asInt())
-          {
-            episode = GetDetailsForEpisode(pDS, true);
-            episode.Save(pMain, "episodedetails", !singleFiles);
-            pDS->next();
-          }
+          CStdString cachedThumb(GetCachedThumb(item));
+          CStdString savedThumb(saveItem.GetTBNFile());
+          if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(savedThumb, false)))
+            if (!CFile::Cache(cachedThumb, savedThumb))
+              CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), savedThumb.c_str());
 
-          // reset old skip state
-          bool bSkip = false;
-
-          if (singleFiles)
-          {
-            CFileItem item(episode.m_strFileNameAndPath,false);
-            if (!item.Exists(false))
-              CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, episode.m_strFileNameAndPath.c_str());
-            else
-            {
-              CStdString nfoFile;
-              CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
-
-              if (overwrite || !CFile::Exists(nfoFile, false))
-              {
-                if(!xmlDoc.SaveFile(nfoFile))
-                {
-                  CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
-                  bSkip = ExportSkipEntry(nfoFile);
-                  if (!bSkip)
-                  {
-                    if (progress)
-                    {
-                      progress->Close();
-                      m_pDS->close();
-                      return;
-                    }
-                  }
-                }
-              }
-
-              xmlDoc.Clear();
-              TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-              xmlDoc.InsertEndChild(decl);
-
-              if (images && !bSkip)
-              {
-                CStdString cachedThumb(GetCachedThumb(item));
-                if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile(), false)))
-                  if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
-                    CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
-
-                if (actorThumbs)
-                  ExportActorThumbs(episode, overwrite);
-              }
-            }
-          }
+          if (actorThumbs)
+            ExportActorThumbs(episode, overwrite);
         }
       }
       pDS->close();
@@ -7421,7 +7462,11 @@ void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite 
     CDirectory::Create(strDir);
     CFile::SetHidden(strDir, true);
   }
+  ExportActorThumbs(strDir, tag, overwrite);
+}
 
+void CVideoDatabase::ExportActorThumbs(const CStdString &strDir, const CVideoInfoTag &tag, bool overwrite /*=false*/)
+{
   for (CVideoInfoTag::iCast iter = tag.m_cast.begin();iter != tag.m_cast.end();++iter)
   {
     CFileItem item;
@@ -7429,12 +7474,10 @@ void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite 
     CStdString strThumb = item.GetCachedActorThumb();
     if (CFile::Exists(strThumb))
     {
-      CStdString thumbFile = iter->strName;
-      thumbFile.Replace(" ","_");
-      thumbFile += ".tbn";
-      if (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strDir,thumbFile)))
-        if (!CFile::Cache(strThumb,CUtil::AddFileToFolder(strDir,thumbFile)))
-          CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", __FUNCTION__, strThumb.c_str(), CUtil::AddFileToFolder(strDir,thumbFile).c_str());
+      CStdString thumbFile(GetSafeFile(strDir, iter->strName) + ".tbn");
+      if (overwrite || !CFile::Exists(thumbFile))
+        if (!CFile::Cache(strThumb, thumbFile))
+          CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", __FUNCTION__, strThumb.c_str(), thumbFile.c_str());
     }
   }
 }
@@ -7471,7 +7514,7 @@ bool CVideoDatabase::ExportSkipEntry(const CStdString &nfoFile)
   return bSkip;
 }
 
-void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
+void CVideoDatabase::ImportFromXML(const CStdString &path)
 {
   CGUIDialogProgress *progress=NULL;
   try
@@ -7480,7 +7523,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     if (NULL == m_pDS.get()) return;
 
     TiXmlDocument xmlDoc;
-    if (!xmlDoc.LoadFile(xmlFile))
+    if (!xmlDoc.LoadFile(CUtil::AddFileToFolder(path, "videodb.xml")))
       return;
 
     TiXmlElement *root = xmlDoc.RootElement();
@@ -7511,7 +7554,12 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       movie = movie->NextSiblingElement();
     }
 
+    CStdString actorsDir(CUtil::AddFileToFolder(path, "actors"));
+    CStdString moviesDir(CUtil::AddFileToFolder(path, "movies"));
+    CStdString musicvideosDir(CUtil::AddFileToFolder(path, "musicvideos"));
+    CStdString tvshowsDir(CUtil::AddFileToFolder(path, "tvshows"));
     CVideoInfoScanner scanner;
+    set<CStdString> actors;
     movie = root->FirstChildElement();
     while (movie)
     {
@@ -7520,14 +7568,23 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddMovieAndGetThumb(&item,"movies",info,-1,false);
+        scanner.AddMovie(&item,"movies",info);
+        MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+        CStdString file(GetSafeFile(moviesDir, info.m_strTitle));
+        CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
+        CFile::Cache(file + "-fanart.jpg", item.GetCachedFanart());
+        for (CVideoInfoTag::iCast i = info.m_cast.begin(); i != info.m_cast.end(); ++i)
+          actors.insert(i->strName);
         current++;
       }
       else if (strnicmp(movie->Value(), "musicvideo", 10) == 0)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddMovieAndGetThumb(&item,"musicvideos",info,-1,false);
+        scanner.AddMovie(&item,"musicvideos",info);
+        MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+        CStdString file(GetSafeFile(musicvideosDir, info.m_strArtist + "." + info.m_strTitle));
+        CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
         current++;
       }
       else if (strnicmp(movie->Value(), "tvshow", 6) == 0)
@@ -7538,8 +7595,13 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         CUtil::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
         CFileItem item(info);
-        int showID = scanner.AddMovieAndGetThumb(&item,"tvshows",info,-1,false);
+        int showID = scanner.AddMovie(&item,"tvshows",info);
         current++;
+        CStdString showDir(GetSafeFile(tvshowsDir, info.m_strTitle));
+        CFile::Cache(CUtil::AddFileToFolder(showDir, "folder.jpg"), item.GetCachedVideoThumb());
+        CFile::Cache(CUtil::AddFileToFolder(showDir, "fanart.jpg"), item.GetCachedFanart());
+        for (CVideoInfoTag::iCast i = info.m_cast.begin(); i != info.m_cast.end(); ++i)
+          actors.insert(i->strName);
         // now load the episodes
         TiXmlElement *episode = movie->FirstChildElement("episodedetails");
         while (episode)
@@ -7548,9 +7610,17 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           CVideoInfoTag info;
           info.Load(episode);
           CFileItem item(info);
-          scanner.AddMovieAndGetThumb(&item,"tvshows",info,showID,false);
+          scanner.AddMovie(&item,"tvshows",info,showID);
+          MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+          CStdString file;
+          file.Format("s%02ie%02i.tbn", info.m_iSeason, info.m_iEpisode);
+          CFile::Cache(CUtil::AddFileToFolder(showDir, file), item.GetCachedVideoThumb());
+          for (CVideoInfoTag::iCast i = info.m_cast.begin(); i != info.m_cast.end(); ++i)
+            actors.insert(i->strName);
           episode = episode->NextSiblingElement("episodedetails");
         }
+        // and fetch season thumbs
+        scanner.FetchSeasonThumbs(showID, showDir, false, true);
       }
       else if (strnicmp(movie->Value(), "paths", 5) == 0)
       {
@@ -7598,6 +7668,15 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           return;
         }
       }
+    }
+    // cache any actor thumbs
+    for (set<CStdString>::iterator i = actors.begin(); i != actors.end(); i++)
+    {
+      CFileItem item;
+      item.SetLabel(*i);
+      CStdString savedThumb(GetSafeFile(actorsDir, *i) + ".tbn");
+      CStdString cachedThumb = item.GetCachedActorThumb();
+      CFile::Cache(savedThumb, cachedThumb);
     }
   }
   catch (...)
@@ -7777,3 +7856,9 @@ void CVideoDatabase::SetDetail(const CStdString& strDetail, int id, int field,
   m_pDS->exec(strSQL.c_str());
 }
 
+CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &name) const
+{
+  CStdString safeThumb(name);
+  safeThumb.Replace(' ', '_');
+  return CUtil::AddFileToFolder(dir, safeThumb);
+}

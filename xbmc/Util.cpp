@@ -49,7 +49,7 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
-#include "FileSystem/CMythDirectory.h"
+#include "FileSystem/MythDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
 #endif
@@ -707,17 +707,16 @@ void CUtil::GetHomePath(CStdString& strPath)
   }
 }
 
-void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
+CStdString CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
 {
   if(strFile.Find("://") >= 0)
   {
     CURL url(strFile);
-    ReplaceExtension(url.GetFileName(), strNewExtension, strChangedFile);
-    url.SetFileName(strChangedFile);
-    strChangedFile = url.Get();
-    return;
+    url.SetFileName(ReplaceExtension(url.GetFileName(), strNewExtension));
+    return url.Get();
   }
 
+  CStdString strChangedFile;
   CStdString strExtension;
   GetExtension(strFile, strExtension);
   if ( strExtension.size() )
@@ -730,6 +729,7 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
     strChangedFile = strFile;
     strChangedFile += strNewExtension;
   }
+  return strChangedFile;
 }
 
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
@@ -1117,7 +1117,7 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
   if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
     return true;
 
-  if (IsMythTV(strFile) && CCMythDirectory::IsLiveTV(strFile))
+  if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;
@@ -1385,11 +1385,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   vector<CStdString> strLookInPaths;
 
   CStdString strFileName;
-  CStdString strFileNameNoExt;
   CStdString strPath;
 
   CUtil::Split(strMovie, strPath, strFileName);
-  ReplaceExtension(strFileName, "", strFileNameNoExt);
+  CStdString strFileNameNoExt(ReplaceExtension(strFileName, ""));
   strLookInPaths.push_back(strPath);
 
   if (!g_settings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
@@ -1530,7 +1529,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           }
         }
       }
-
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
@@ -2078,17 +2076,6 @@ void CUtil::TakeScreenshot()
     {
       CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
     }
-  }
-}
-
-void CUtil::ClearCache()
-{
-  for (int i = 0; i < 16; i++)
-  {
-    CStdString strHex, folder;
-    strHex.Format("%x", i);
-    CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, folder);
-    g_directoryCache.ClearDirectory(folder);
   }
 }
 
@@ -2912,7 +2899,7 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
      * it hits the directory cache on the way through, which has the Live Channels and Guide
      * items cached.
      */
-    return CCMythDirectory::SupportsFileOperations(strPath);
+    return CMythDirectory::SupportsFileOperations(strPath);
   }
   if (IsStack(strPath))
   {

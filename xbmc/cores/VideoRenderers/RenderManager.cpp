@@ -397,30 +397,6 @@ float CXBMCRenderManager::GetMaximumFPS()
   return fps;
 }
 
-bool CXBMCRenderManager::SupportsBrightness()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsBrightness();
-  return false;
-}
-
-bool CXBMCRenderManager::SupportsContrast()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsContrast();
-  return false;
-}
-
-bool CXBMCRenderManager::SupportsGamma()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsGamma();
-  return false;
-}
-
 void CXBMCRenderManager::Present()
 {
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);

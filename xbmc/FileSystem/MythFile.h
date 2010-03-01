@@ -22,7 +22,7 @@
 
 #include "IFile.h"
 #include "ILiveTV.h"
-#include "CMythSession.h"
+#include "MythSession.h"
 #include "DateTime.h"
 #include "VideoInfoTag.h"
 
@@ -38,15 +38,15 @@ namespace XFILE
 {
 
 
-class CCMythFile
+class CMythFile
   : public  IFile
   ,         ILiveTVInterface
   ,         IRecordable
-  , private CCMythSession::IEventListener
+  , private CMythSession::IEventListener
 {
 public:
-  CCMythFile();
-  virtual ~CCMythFile();
+  CMythFile();
+  virtual ~CMythFile();
   virtual bool          Open(const CURL& url);
   virtual int64_t       Seek(int64_t pos, int whence=SEEK_SET);
   virtual int64_t       GetPosition();
@@ -93,7 +93,7 @@ protected:
   CStdString GetValue(char* str) { return m_session->GetValue(str); }
   CDateTime  GetValue(const cmyth_timestamp_t t) { return m_session->GetValue(t); }
 
-  CCMythSession*    m_session;
+  CMythSession*     m_session;
   DllLibCMyth*      m_dll;
   cmyth_conn_t      m_control;
   cmyth_database_t  m_database;

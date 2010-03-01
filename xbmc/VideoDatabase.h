@@ -305,7 +305,13 @@ public:
   int AddEpisode(int idShow, const CStdString& strFilenameAndPath);
 
   // editing functions
-  void MarkAsWatched(const CFileItem &item);
+  /*! \brief Mark the current item as watched
+   Increments the play count for the current item, or sets the playcount to a given value
+   \param item CFileItem to set the playcount for
+   \param count The playcount to set. If non-negative, we set this, else we increment the count (the default)
+   \param date The date the file was last watched. If empty, we use the current date time (the default)
+   */
+  void MarkAsWatched(const CFileItem &item, int count = -1, const CStdString &lastWatched = "");
   void MarkAsUnWatched(const CFileItem &item);
   int GetPlayCount(int id);
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
@@ -450,10 +456,11 @@ public:
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
 
   int AddFile(const CStdString& strFileName);
-  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
+  void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
-  void ImportFromXML(const CStdString &xmlFile);
+  void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool overwrite=false);
+  void ImportFromXML(const CStdString &path);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;
 
@@ -533,4 +540,11 @@ private:
 
   bool GetStackedTvShowList(int idShow, CStdString& strIn);
   void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
+
+  /*! \brief Get a safe filename from a given string
+   \param dir directory to use for the file
+   \param name movie, show name, or actor to get a safe filename for
+   \return safe filename based on this title
+   */
+  CStdString GetSafeFile(const CStdString &dir, const CStdString &name) const;
 };

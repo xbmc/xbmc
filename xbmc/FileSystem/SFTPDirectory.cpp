@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,23 +19,25 @@
  *
  */
 
-#include <stdint.h>
-#include <time.h>
+#include "SFTPDirectory.h"
+#ifdef HAS_FILESYSTEM_SFTP
+#include "URL.h"
 
-class CDateTime;
+using namespace XFILE;
 
-int64_t CurrentHostCounter(void);
-int64_t CurrentHostFrequency(void);
-
-class CTimeUtils
+CSFTPDirectory::CSFTPDirectory(void)
 {
-public:
-  static void UpdateFrameTime();      ///< update the frame time.  Not threadsafe
-  static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
-  static unsigned int GetTimeMS();
-  static CDateTime GetLocalTime(time_t time);
+}
 
-private:
-  static unsigned int frameTime;
-};
+CSFTPDirectory::~CSFTPDirectory(void)
+{
+}
 
+bool CSFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+  CURL url(strPath);
+
+  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url.GetHostName().c_str(), url.GetUserName().c_str(), url.GetPassWord().c_str());
+  return session->GetDirectory(url.GetWithoutFilename().c_str(), url.GetFileName().c_str(), items);
+}
+#endif

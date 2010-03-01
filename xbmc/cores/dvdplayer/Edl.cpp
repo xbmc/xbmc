@@ -23,7 +23,7 @@
 #include "StringUtils.h"
 #include "Util.h"
 #include "FileSystem/File.h"
-#include "FileSystem/CMythFile.h"
+#include "FileSystem/MythFile.h"
 #include "AdvancedSettings.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
@@ -64,8 +64,45 @@ void CEdl::Clear()
   m_iTotalCutTime = 0;
 }
 
-bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameRate, const int iHeight)
 {
+  /*
+   * The frame rate hints returned from ffmpeg for the video stream do not appear to take into
+   * account whether the content is interlaced. This affects the calculation to time offsets based
+   * on frames per second as most commercial detection programs use full frames, which need two
+   * interlaced fields to calculate a single frame so the actual frame rate is half.
+   *
+   * Adjust the frame rate using the detected frame rate or height to determine typical interlaced
+   * content (obtained from http://en.wikipedia.org/wiki/Frame_rate)
+   */
+  float fFramesPerSecond;
+  if (fFrameRate == 59.940) // NTSC or 60i content
+  {
+    CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 59.940 to 29.97 assuming NTSC or 60i (interlaced)",
+              __FUNCTION__);
+    fFramesPerSecond = 29.97;
+  }
+  else if (fFrameRate == 47.952) // 24p -> NTSC conversion
+  {
+    CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 47.952 to 23.976 assuming 24p -> NTSC conversion (interlaced)",
+              __FUNCTION__);
+    fFramesPerSecond = 23.976;
+  }
+  else if (iHeight == 576) // PAL. Can't used fps check of 50.0 as this is valid for 720p
+  {
+    CLog::Log(LOGDEBUG, "%s - Setting frames per second to 25.0 assuming PAL (interlaced)",
+               __FUNCTION__);
+    fFramesPerSecond = 25.0;
+  }
+  else if (iHeight == 1080) // Don't know of any 1080p content being broadcast so assume 1080i
+  {
+    CLog::Log(LOGDEBUG, "%s - Adjusting detected frame rate by half assuming 1080i (interlaced): %.3f",
+              __FUNCTION__, fFrameRate);
+    fFramesPerSecond = fFrameRate / 2;
+  }
+  else // Assume everything else is not interlaced, e.g. 720p.
+    fFramesPerSecond = fFrameRate;
+
   bool bFound = false;
 
   /*
@@ -75,8 +112,8 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrames
   if (CUtil::IsHD(strMovie)
   ||  CUtil::IsSmb(strMovie))
   {
-    CLog::Log(LOGDEBUG, "%s - checking for any edit decision lists (EDL) on local drive or remote share for: %s", __FUNCTION__,
-              strMovie.c_str());
+    CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
+              __FUNCTION__, strMovie.c_str());
 
     /*
      * Read any available file format until a valid EDL related file is found.
@@ -99,7 +136,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrames
   else if (CUtil::IsMythTV(strMovie)
   &&      !CUtil::IsLiveTV(strMovie))
   {
-    CLog::Log(LOGDEBUG, "%s - checking for any commercial breaks within MythTV for: %s", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "%s - Checking for commercial breaks within MythTV for: %s", __FUNCTION__,
               strMovie.c_str());
     bFound = ReadMythCommBreaks(strMovie, fFramesPerSecond);
   }
@@ -116,8 +153,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString edlFilename;
-  CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
+  CStdString edlFilename(CUtil::ReplaceExtension(strMovie, ".edl"));
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -198,8 +234,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  CStdString comskipFilename;
-  CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
+  CStdString comskipFilename(CUtil::ReplaceExtension(strMovie, ".txt"));
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -284,8 +319,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
    */
 
   Clear();
-  CStdString videoReDoFilename;
-  CUtil::ReplaceExtension(strMovie, ".Vprj", videoReDoFilename);
+  CStdString videoReDoFilename(CUtil::ReplaceExtension(strMovie, ".Vprj"));
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -371,8 +405,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename;
-  CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml", beyondTVFilename);
+  CStdString beyondTVFilename(CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -750,7 +783,7 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
   /*
    * Exists() sets up all the internal bits needed for GetCommBreakList().
    */
-  CCMythFile mythFile;
+  CMythFile mythFile;
   CURL url(strMovie);
   if (!mythFile.Exists(url))
     return false;

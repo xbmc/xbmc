@@ -24,6 +24,7 @@
 #include "DynamicDll.h"
 #include "utils/log.h"
 extern "C" {
+#undef strcasecmp
 #include "lib/libapetag/apetaglib.h"
 }
 

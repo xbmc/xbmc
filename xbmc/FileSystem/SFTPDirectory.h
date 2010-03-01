@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,23 +20,22 @@
  *
  */
 
-#include <stdint.h>
-#include <time.h>
+#include "system.h"
+#ifdef HAS_FILESYSTEM_SFTP
+#include "IDirectory.h"
+#include "FileSFTP.h"
 
-class CDateTime;
+class CURL;
+class TiXmlElement;
 
-int64_t CurrentHostCounter(void);
-int64_t CurrentHostFrequency(void);
-
-class CTimeUtils
+namespace XFILE
 {
-public:
-  static void UpdateFrameTime();      ///< update the frame time.  Not threadsafe
-  static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
-  static unsigned int GetTimeMS();
-  static CDateTime GetLocalTime(time_t time);
-
-private:
-  static unsigned int frameTime;
-};
-
+  class CSFTPDirectory : public IDirectory
+  {
+  public:
+    CSFTPDirectory(void);
+    virtual ~CSFTPDirectory(void);
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  };
+}
+#endif

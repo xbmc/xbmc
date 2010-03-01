@@ -121,9 +121,15 @@ public:
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
-  bool SupportsBrightness();
-  bool SupportsContrast();
-  bool SupportsGamma();
+
+  bool Supports(ERENDERFEATURE feature)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(feature);
+    else
+      return false;
+  }
 
   bool Supports(EINTERLACEMETHOD method)
   {

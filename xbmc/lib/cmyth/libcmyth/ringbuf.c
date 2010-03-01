@@ -548,13 +548,13 @@ cmyth_ringbuf_seek(cmyth_recorder_t rec,
 	pthread_mutex_lock(&mutex);
 
 	snprintf(msg, sizeof(msg),
-		 "QUERY_RECORDER %u[]:[]SEEK_RINGBUF[]:[]%ld[]:[]%ld[]:[]%d[]:[]%ld[]:[]%ld",
+		 "QUERY_RECORDER %u[]:[]SEEK_RINGBUF[]:[]%d[]:[]%d[]:[]%d[]:[]%d[]:[]%d",
 		 rec->rec_id,
-		 (long)(offset >> 32),
-		 (long)(offset & 0xffffffff),
+		 (int32_t)(offset >> 32),
+		 (int32_t)(offset & 0xffffffff),
 		 whence,
-		 (long)(ring->file_pos >> 32),
-		 (long)(ring->file_pos & 0xffffffff));
+		 (int32_t)(ring->file_pos >> 32),
+		 (int32_t)(ring->file_pos & 0xffffffff));
 
 	if ((err = cmyth_send_message(rec->rec_conn, msg)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,

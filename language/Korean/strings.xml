@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 02/01/2010-->
+<!--Date of translation: 02/16/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -122,8 +122,8 @@
   <string id="167">FTP 서버 사용</string>
   <string id="169">해상도</string>
   <string id="170">비디오에 맞게 화면 새로고침 비율 조정</string>
-  <string id="171">4:3 컨턴츠를 16:9 로 확장</string>
   <string id="172">개봉일</string>
+  <string id="173">4:3 비디오를 다음으로 표시:</string>
   <string id="175">분위기</string>
   <string id="176">스타일</string>
   <string id="179">노래</string>
@@ -276,6 +276,7 @@
   <string id="343">프레임레이트 조정 </string>
   <string id="344">배우</string>
   <string id="345">연도</string>
+  <string id="346">다운믹스의 음량 수준을 증폭</string>
   <string id="350">프로그램</string>
   <string id="351">사용안함</string>
   <string id="352">흐림</string>
@@ -344,6 +345,8 @@
   <string id="415">미리보기 다운로드중...</string>
   <string id="416">사용할수 없음</string>
   <string id="417">보기: 큰 아이콘</string>
+  <string id="418">낮은</string>
+  <string id="419">높은</string>
   <string id="422">앨범 정보 삭제</string>
   <string id="423">CD 정보 삭제</string>
   <string id="424">선택</string>
@@ -2027,4 +2030,16 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+  <string id="34100">스피커 설정</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
 </strings>

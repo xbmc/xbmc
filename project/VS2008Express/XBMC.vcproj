@@ -4002,27 +4002,27 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\CMythDirectory.cpp"
+					RelativePath="..\..\xbmc\FileSystem\MythDirectory.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\CMythDirectory.h"
+					RelativePath="..\..\xbmc\FileSystem\MythDirectory.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\CMythFile.cpp"
+					RelativePath="..\..\xbmc\FileSystem\MythFile.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\CMythFile.h"
+					RelativePath="..\..\xbmc\FileSystem\MythFile.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\CMythSession.cpp"
+					RelativePath="..\..\xbmc\FileSystem\MythSession.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\CMythSession.h"
+					RelativePath="..\..\xbmc\FileSystem\MythSession.h"
 					>
 				</File>
 				<File

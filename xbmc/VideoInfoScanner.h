@@ -78,23 +78,32 @@ namespace VIDEO
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
     bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
     bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
-    long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
+    long AddMovie(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow = -1);
+    long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
     bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
-    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr& scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::ScraperPtr& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
+    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr& scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
     CIMDB m_IMDB;
+    /*! \brief Fetch thumbs for seasons for a given show
+     Fetches and caches local season thumbs of the form season##.tbn and season-all.tbn for the current show,
+     and downloads online thumbs if they don't exist.
+     \param idTvShow database id of the tvshow.
+     \param folderToCheck folder to check for local thumbs, if other than the show folder.  Defaults to empty.
+     \param download whether we should download thumbs that don't exist.  Defaults to true.
+     \param overwrite whether to overwrite currently cached thumbs.  Defaults to false.
+     */
+    void FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck = "", bool download = true, bool overwrite = false);
   protected:
     virtual void Process();
     bool DoScan(const CStdString& strDirectory, SScanSettings settings);
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
-    void FetchSeasonThumbs(int idTvShow);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
 
   protected:

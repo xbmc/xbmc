@@ -118,6 +118,7 @@ public:
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
+  bool       upScale;
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;

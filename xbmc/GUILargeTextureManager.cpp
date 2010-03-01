@@ -67,7 +67,7 @@ bool CImageLoader::DoWork()
       if (baseFolder1.Equals(m_path.Left(baseFolder1.GetLength())) ||
           baseFolder2.Equals(m_path.Left(baseFolder2.GetLength())))
       { // switch to dds
-        CUtil::ReplaceExtension(m_path, ".dds", loadPath);
+        loadPath = CUtil::ReplaceExtension(m_path, ".dds");
       }
     }
     m_texture = new CTexture();

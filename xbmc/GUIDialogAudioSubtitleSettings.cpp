@@ -310,19 +310,19 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
             CStdString strPath3;
             if (strExt.CompareNoCase(".idx") == 0)
             {
-              CUtil::ReplaceExtension(strPath,".sub",strPath2);
+              strPath2 = CUtil::ReplaceExtension(strPath,".sub");
               strPath3 = "special://temp/subtitle.sub";
             }
             else
             {
-              CUtil::ReplaceExtension(strPath,".idx",strPath2);
+              strPath2 = CUtil::ReplaceExtension(strPath,".idx");
               if (!CFile::Exists(strPath2) && (CUtil::IsInRAR(strPath2) || CUtil::IsInZIP(strPath2)))
               {
                 CStdString strFileName = CUtil::GetFileName(strPath);
                 CUtil::GetDirectory(strPath,strPath3);
                 CUtil::GetParentPath(strPath3,strPath2);
                 CUtil::AddFileToFolder(strPath2,strFileName,strPath2);
-                CUtil::ReplaceExtension(strPath2,".idx",strPath2);
+                strPath2 = CUtil::ReplaceExtension(strPath2,".idx");
               }
               strPath3 = "special://temp/subtitle.idx";
             }
@@ -333,7 +333,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
               CFileItemList items;
               CStdString strDir,strFileNameNoExtNoCase;
               CUtil::Split(strPath,strDir,strPath3);
-              CUtil::ReplaceExtension(strPath3,".",strFileNameNoExtNoCase);
+              strFileNameNoExtNoCase = CUtil::ReplaceExtension(strPath3,".");
               strFileNameNoExtNoCase.ToLower();
               CUtil::GetDirectory(strPath,strDir);
               CDirectory::GetDirectory(strDir,items,".rar|.zip",false);

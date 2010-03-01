@@ -80,6 +80,6 @@ protected:
   IHardwareDecoder *m_pHardware;
   int m_iLastKeyframe;
   double m_dts;
-  bool m_force_dts;
+  bool   m_started;
 };
 

@@ -880,10 +880,7 @@ int CBuiltins::Execute(const CStdString& execString)
       g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
 
     // also set the default color theme
-    CStdString colorTheme(strSkinTheme);
-    CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
-
-    g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
+    g_guiSettings.SetString("lookandfeel.skincolors", CUtil::ReplaceExtension(strSkinTheme, ".xml"));
 
     g_application.DelayLoadSkin();
   }
@@ -1137,8 +1134,6 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       if (params[0].Equals("video"))
       {
-        if (CUtil::HasSlashAtEnd(path))
-          CUtil::AddFileToFolder(path, "videodb.xml", path);
         CVideoDatabase videodatabase;
         videodatabase.Open();
         videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);

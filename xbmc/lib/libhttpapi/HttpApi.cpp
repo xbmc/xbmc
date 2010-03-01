@@ -6,6 +6,13 @@
 
 #define MAX_PARAS 20
 
+CStdString CHttpApi::WebMethodCall(CStdString &command, CStdString &parameter)
+{
+  CStdString response = MethodCall(command, parameter);
+  response.Format("%s%s%s", m_pXbmcHttp->incWebHeader ? "<html>" : "", response.c_str(), m_pXbmcHttp->incWebFooter ? "</html>" : "");
+  return response;
+}
+
 CStdString CHttpApi::MethodCall(CStdString &command, CStdString &parameter)
 {
   if (parameter.IsEmpty())
@@ -28,7 +35,8 @@ CStdString CHttpApi::MethodCall(CStdString &command, CStdString &parameter)
     CLog::Log(LOGDEBUG, "HttpApi: waiting %d", cnt);
     Sleep(100);
   }
-  return response;
+
+  return m_pXbmcHttp->userHeader + response + m_pXbmcHttp->userFooter;
 }
 
 bool CHttpApi::checkForFunctionTypeParas(CStdString &cmd, CStdString &paras)

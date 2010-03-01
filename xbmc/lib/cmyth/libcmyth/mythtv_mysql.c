@@ -171,6 +171,21 @@ cmyth_db_get_connection(cmyth_database_t db)
        					__FUNCTION__);
        return NULL;
     }
+
+    /*
+     * mythbackend stores any multi-byte characters using utf8 encoding within latin1 database
+     * columns. The MySQL connection needs to be told to use a utf8 character set when reading the
+     * database columns or any multi-byte characters will be treated as 2 or 3 subsequent latin1
+     * characters with nonsense values.
+     *
+     * http://www.mythtv.org/wiki/Fixing_Corrupt_Database_Encoding#Note_on_MythTV_0.21-fixes_and_below_character_encoding
+     * http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
+     */
+    if(mysql_query(db->mysql,"SET NAMES utf8;")) {
+      cmyth_dbg(CMYTH_DBG_ERROR, "%s: mysql_query() failed: %s\n", __FUNCTION__, mysql_error(db->mysql));
+      return -1;
+    }
+
     return db->mysql;
 }
 

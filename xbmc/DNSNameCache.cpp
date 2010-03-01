@@ -51,7 +51,6 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
 #ifndef _WIN32
   // perform netbios lookup (win32 is handling this via gethostbyname)
   char nmb_ip[100];
-  char nmb_host[100];
   char line[200];
 
   CStdString cmd = "nmblookup " + strHostName;
@@ -60,8 +59,11 @@ bool CDNSNameCache::Lookup(const CStdString& strHostName, CStdString& strIpAddre
   {
     while (fgets(line, sizeof line, fp))
     {
-      if (sscanf(line, "%s %s<00>", nmb_ip, nmb_host) == 2)
-        strIpAddress = nmb_ip;
+      if (sscanf(line, "%s *<00>\n", nmb_ip))
+      {
+        if (inet_addr(nmb_ip) != INADDR_NONE)
+          strIpAddress = nmb_ip;
+      }
     }
   }
   pclose(fp);

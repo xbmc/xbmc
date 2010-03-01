@@ -55,8 +55,10 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+    return false;
 
+  m_dllAvCodec.avcodec_register_all();
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   m_dllAvCodec.avcodec_get_context_defaults(m_pCodecContext);
 

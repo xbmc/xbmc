@@ -44,8 +44,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
 {
   tag.SetURL(strFileName);
   // first, does the module have a .mdz?
-  CStdString strMDZ;
-  CUtil::ReplaceExtension(strFileName,".mdz",strMDZ);
+  CStdString strMDZ(CUtil::ReplaceExtension(strFileName,".mdz"));
   if (CFile::Exists(strMDZ))
   {
     if (!getFile(strMDZ,strMDZ))
