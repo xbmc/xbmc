@@ -4,7 +4,6 @@
 #include "Application.h"
 #include "utils/AddonManager.h"
 #include "utils/log.h"
-#include "visualizations/Visualisation.h"
 
 using namespace std;
 using namespace ADDON;

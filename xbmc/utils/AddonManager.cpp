@@ -815,7 +815,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     return false;
   }
 
-  bool all = true;
+  bool all(false);
   std::set<CStdString> platforms;
   do
   {
@@ -831,7 +831,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
 
   if (!all)
   {
-#if defined(_LINUX)
+#if defined(_LINUX) && !defined(__APPLE__)
     if (!platforms.count("linux"))
     {
       CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());

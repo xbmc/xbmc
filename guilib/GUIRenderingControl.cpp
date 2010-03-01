@@ -1,13 +1,7 @@
-#include "GUIVisualisationControl.h"
-#include "GUIWindowManager.h"
+#include "GUIRenderingControl.h"
 #include "GUIUserMessages.h"
 #include "visualizations/Visualisation.h"
-#include "utils/AddonManager.h"
-#include "Util.h"
-#include "utils/log.h"
 #include "utils/SingleLock.h"
-#include "GUISettings.h"
-#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 using namespace ADDON;
