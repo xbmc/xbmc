@@ -7504,7 +7504,14 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       movie = movie->NextSiblingElement();
     }
 
+    CStdString exportRoot;
+    CUtil::GetParentPath(xmlFile, exportRoot);
+    CStdString actorsDir(CUtil::AddFileToFolder(exportRoot, "actors"));
+    CStdString moviesDir(CUtil::AddFileToFolder(exportRoot, "movies"));
+    CStdString musicvideosDir(CUtil::AddFileToFolder(exportRoot, "musicvideos"));
+    CStdString tvshowsDir(CUtil::AddFileToFolder(exportRoot, "tvshows"));
     CVideoInfoScanner scanner;
+    set<CStdString> actors;
     movie = root->FirstChildElement();
     while (movie)
     {
@@ -7515,6 +7522,11 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         CFileItem item(info);
         scanner.AddMovie(&item,"movies",info);
         MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+        CStdString file(GetSafeFile(moviesDir, info.m_strTitle));
+        CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
+        CFile::Cache(file + "-fanart.jpg", item.GetCachedFanart());
+        for (CVideoInfoTag::iCast i = info.m_cast.begin(); i != info.m_cast.end(); ++i)
+          actors.insert(i->strName);
         current++;
       }
       else if (strnicmp(movie->Value(), "musicvideo", 10) == 0)
@@ -7523,6 +7535,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         CFileItem item(info);
         scanner.AddMovie(&item,"musicvideos",info);
         MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+        CStdString file(GetSafeFile(musicvideosDir, info.m_strArtist + "." + info.m_strTitle));
+        CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
         current++;
       }
       else if (strnicmp(movie->Value(), "tvshow", 6) == 0)
@@ -7535,6 +7549,11 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         CFileItem item(info);
         int showID = scanner.AddMovie(&item,"tvshows",info);
         current++;
+        CStdString showDir(GetSafeFile(tvshowsDir, info.m_strTitle));
+        CFile::Cache(CUtil::AddFileToFolder(showDir, "folder.jpg"), item.GetCachedVideoThumb());
+        CFile::Cache(CUtil::AddFileToFolder(showDir, "fanart.jpg"), item.GetCachedFanart());
+        for (CVideoInfoTag::iCast i = info.m_cast.begin(); i != info.m_cast.end(); ++i)
+          actors.insert(i->strName);
         // now load the episodes
         TiXmlElement *episode = movie->FirstChildElement("episodedetails");
         while (episode)
@@ -7545,8 +7564,15 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           CFileItem item(info);
           scanner.AddMovie(&item,"tvshows",info,showID);
           MarkAsWatched(item, info.m_playCount, info.m_lastPlayed);
+          CStdString file;
+          file.Format("s%02ie%02i.tbn", info.m_iSeason, info.m_iEpisode);
+          CFile::Cache(CUtil::AddFileToFolder(showDir, file), item.GetCachedVideoThumb());
+          for (CVideoInfoTag::iCast i = info.m_cast.begin(); i != info.m_cast.end(); ++i)
+            actors.insert(i->strName);
           episode = episode->NextSiblingElement("episodedetails");
         }
+        // and fetch season thumbs
+        scanner.FetchSeasonThumbs(showID, showDir, false, true);
       }
       else if (strnicmp(movie->Value(), "paths", 5) == 0)
       {
@@ -7578,6 +7604,15 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           return;
         }
       }
+    }
+    // cache any actor thumbs
+    for (set<CStdString>::iterator i = actors.begin(); i != actors.end(); i++)
+    {
+      CFileItem item;
+      item.SetLabel(*i);
+      CStdString savedThumb(GetSafeFile(actorsDir, *i) + ".tbn");
+      CStdString cachedThumb = item.GetCachedActorThumb();
+      CFile::Cache(savedThumb, cachedThumb);
     }
   }
   catch (...)
