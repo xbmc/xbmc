@@ -447,13 +447,13 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 	pthread_mutex_lock(&mutex);
 
 	snprintf(msg, sizeof(msg),
-		 "QUERY_FILETRANSFER %ld[]:[]SEEK[]:[]%ld[]:[]%ld[]:[]%d[]:[]%ld[]:[]%ld",
+		 "QUERY_FILETRANSFER %ld[]:[]SEEK[]:[]%d[]:[]%d[]:[]%d[]:[]%d[]:[]%d",
 		 file->file_id,
-		 (long)(offset >> 32),
-		 (long)(offset & 0xffffffff),
+		 (int32_t)(offset >> 32),
+		 (int32_t)(offset & 0xffffffff),
 		 whence,
-		 (long)(file->file_pos >> 32),
-		 (long)(file->file_pos & 0xffffffff));
+		 (int32_t)(file->file_pos >> 32),
+		 (int32_t)(file->file_pos & 0xffffffff));
 
 	if ((err = cmyth_send_message(file->file_control, msg)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
