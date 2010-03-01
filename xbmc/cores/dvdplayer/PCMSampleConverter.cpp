@@ -19,7 +19,7 @@
  *
  */
 
-#ifdef _LINUX
+#if defined(_LINUX) &! defined(__APPLE__)
   #include <limits.h>
   #include <string.h>
 #endif
