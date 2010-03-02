@@ -125,7 +125,6 @@ IMAGES= \
 	DefaultXboxDVD.png \
 	DefaultIconError.png \
 	DefaultIconInfo.png \
-	DefaultIconStatus.png \
 	DefaultIconWarning.png \
 	DialogBack.png \
 	DialogFront.png \

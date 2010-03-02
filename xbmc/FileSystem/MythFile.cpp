@@ -633,17 +633,17 @@ bool CMythFile::ChangeChannel(int direction, const CStdString &channel)
   return true;
 }
 
-bool CMythFile::NextChannel()
+bool CMythFile::NextChannel(bool preview)
 {
   return ChangeChannel(CHANNEL_DIRECTION_UP, "");
 }
 
-bool CMythFile::PrevChannel()
+bool CMythFile::PrevChannel(bool preview)
 {
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }
 
-bool CMythFile::SelectChannel(unsigned int channel)
+bool CMythFile::SelectChannel(unsigned int channel, bool isPreviewed)
 {
   return ChangeChannel(CHANNEL_DIRECTION_SAME,""+channel);
 }

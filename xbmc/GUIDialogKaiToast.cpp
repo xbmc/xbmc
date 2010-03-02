@@ -141,8 +141,7 @@ bool CGUIDialogKaiToast::DoWork()
     }
 
     //  Play the window specific init sound for each notification queued
-    if (toast.withSound)
-      g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+    SetSound(toast.withSound);
 
     ResetTimer();
     return true;

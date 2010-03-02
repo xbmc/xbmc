@@ -98,7 +98,7 @@ void CAddonHelpers_Addon::QueueNotification(void *addonData, const queue_msg_t t
     switch (type)
     {
       case QUEUE_WARNING:
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtWarning, addonHelper->m_addon->Name(), msg, 3000, false);
+        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtWarning, addonHelper->m_addon->Name(), msg, 3000, true);
         CLog::Log(LOGDEBUG, "%s: %s-%s - Warning Message : %s", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str(), msg);
         break;
 
