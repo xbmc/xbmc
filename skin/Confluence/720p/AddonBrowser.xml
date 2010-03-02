@@ -1,4 +1,4 @@
-﻿<window id="40">
+<window id="40">
 	<defaultcontrol always="true">2</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
@@ -21,6 +21,23 @@
 				<width>1100</width>
 				<height>640</height>
 				<texture border="20">DialogBack.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>980</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>1</onleft>
+				<onright>1</onright>
+				<onup>1</onup>
+				<ondown>1</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="image">
 				<description>LOGO</description>
@@ -60,10 +77,10 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="list" id="2">
-				<posx>283</posx>
+				<posx>290</posx>
 				<posy>70</posy>
 				<width>750</width>
-				<height>540</height>
+				<height>530</height>
 				<onup>2</onup>
 				<ondown>2</ondown>
 				<onleft>53</onleft>
@@ -71,204 +88,149 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<itemlayout height="75" width="750">
-					<control type="group">
-						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>750</width>
-							<height>75</height>
-							<aspectratio>stretch</aspectratio>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
-							<width>90</width>
-							<height>66</height>
-							<texture>$INFO[ListItem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>2</posy>
-							<width>450</width>
-							<height>28</height>
-							<font>font13</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>25</posy>
-							<width>450</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey2</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Addon.Summary)]</label>
-						</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>750</width>
+						<height>75</height>
+						<aspectratio>stretch</aspectratio>
+						<texture border="5">MenuItemNF.png</texture>
 					</control>
-					<control type="group">
-						<visible>$INFO[ListItem.Property(Addon.Disabled)]</visible>
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>750</width>
-							<height>75</height>
-							<aspectratio>stretch</aspectratio>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
-							<width>90</width>
-							<height>66</height>
-							<texture>$INFO[ListItem.Icon]</texture>
-						</control>
-						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
-							<width>90</width>
-							<height>66</height>
-							<texture>Fanart-Diffuse.png</texture>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>2</posy>
-							<width>450</width>
-							<height>28</height>
-							<font>font13</font>
-							<textcolor>grey3</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>25</posy>
-							<width>450</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey3</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Addon.Summary)]</label>
-						</control>
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>750</width>
-							<height>75</height>
-							<texture>black-back2.png</texture>
-						</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>2</posy>
+						<width>90</width>
+						<height>66</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="label">
+						<posx>100</posx>
+						<posy>2</posy>
+						<width>625</width>
+						<height>28</height>
+						<font>font13</font>
+						<textcolor>selected</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)] - [COLOR=blue]([/COLOR]$LOCALIZE[305][COLOR=blue])[/COLOR]</label>
+						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
+					</control>
+					<control type="label">
+						<posx>100</posx>
+						<posy>2</posy>
+						<width>625</width>
+						<height>28</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
+						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
+					</control>
+					<control type="label">
+						<posx>100</posx>
+						<posy>25</posy>
+						<width>625</width>
+						<height>25</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Property(Addon.Summary)]</label>
+					</control>
+					<control type="image">
+						<posx>725</posx>
+						<posy>25</posy>
+						<width>24</width>
+						<height>24</height>
+						<texture>radiobutton-nofocus.png</texture>
+						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
+					</control>
+					<control type="image">
+						<posx>725</posx>
+						<posy>25</posy>
+						<width>24</width>
+						<height>24</height>
+						<texture>radiobutton-focus.png</texture>
+						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="75" width="750">
-					<control type="group">
-						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>750</width>
-							<height>75</height>
-							<aspectratio>stretch</aspectratio>
-							<texture border="5">button-focus.png</texture>
-						</control>
-						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
-							<width>90</width>
-							<height>66</height>
-							<texture>$INFO[ListItem.Icon]</texture>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>2</posy>
-							<width>450</width>
-							<height>28</height>
-							<font>font13</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>25</posy>
-							<width>450</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<selectedcolor>selected</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Addon.Summary)]</label>
-						</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>750</width>
+						<height>75</height>
+						<aspectratio>stretch</aspectratio>
+						<texture border="5">MenuItemFO.png</texture>
 					</control>
-					<control type="group">
-						<visible>$INFO[ListItem.Property(Addon.Disabled)]</visible>
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>750</width>
-							<height>75</height>
-							<aspectratio>stretch</aspectratio>
-							<texture border="5">button-focus.png</texture>
-						</control>
-						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
-							<width>90</width>
-							<height>66</height>
-							<texture>$INFO[ListItem.Icon]</texture>
-						</control>
-						<control type="image">
-							<posx>10</posx>
-							<posy>2</posy>
-							<width>90</width>
-							<height>66</height>
-							<texture>Fanart-Diffuse.png</texture>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>2</posy>
-							<width>450</width>
-							<height>28</height>
-							<font>font13</font>
-							<textcolor>grey3</textcolor>
-							<selectedcolor>grey3</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
-						</control>
-						<control type="label">
-							<posx>110</posx>
-							<posy>25</posy>
-							<width>450</width>
-							<height>25</height>
-							<font>font12</font>
-							<textcolor>grey3</textcolor>
-							<selectedcolor>grey3</selectedcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Property(Addon.Summary)]</label>
-						</control>
-						<control type="image">
-							<posx>0</posx>
-							<posy>0</posy>
-							<width>750</width>
-							<height>75</height>
-							<texture>black-back2.png</texture>
-							<visible>$INFO[ListItem.Property(Addon.Disabled)]</visible>
-						</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>2</posy>
+						<width>90</width>
+						<height>66</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="label">
+						<posx>100</posx>
+						<posy>2</posy>
+						<width>625</width>
+						<height>28</height>
+						<font>font13</font>
+						<textcolor>selected</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)] - [COLOR=blue]([/COLOR]$LOCALIZE[305][COLOR=blue])[/COLOR]</label>
+						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
+					</control>
+					<control type="label">
+						<posx>100</posx>
+						<posy>2</posy>
+						<width>625</width>
+						<height>28</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
+						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
+					</control>
+					<control type="label">
+						<posx>100</posx>
+						<posy>25</posy>
+						<width>625</width>
+						<height>25</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Property(Addon.Summary)]</label>
+					</control>
+					<control type="image">
+						<posx>725</posx>
+						<posy>25</posy>
+						<width>24</width>
+						<height>24</height>
+						<texture>radiobutton-nofocus.png</texture>
+						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
+					</control>
+					<control type="image">
+						<posx>725</posx>
+						<posy>25</posy>
+						<width>24</width>
+						<height>24</height>
+						<texture>radiobutton-focus.png</texture>
+						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
 					</control>
 				</focusedlayout>
 			</control>
