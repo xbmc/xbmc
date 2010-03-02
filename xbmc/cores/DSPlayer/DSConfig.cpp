@@ -200,7 +200,6 @@ void CDSConfig::GetDxvaGuid()
   GUID dxvaGuid = GUID_NULL;
   IPin *pPin = NULL;
   pPin = DShowUtil::GetFirstPin(pBFV);
-  
   if (pPin)
   {
     AM_MEDIA_TYPE pMT;
@@ -211,10 +210,11 @@ void CDSConfig::GetDxvaGuid()
     //g_dsconfig.SetDxvaGuid(dxvaGuid);
   }
   m_pGuidDxva = dxvaGuid;
-  m_pStdDxva = DShowUtil::GetDXVAMode(&dxvaGuid);
-  SAFE_RELEASE(pBFV);
-  
-      
+  if (dxvaGuid == GUID_NULL)
+    m_pStdDxva.Format("");
+  else
+    m_pStdDxva = DShowUtil::GetDXVAMode(&dxvaGuid);
+  SAFE_RELEASE(pBFV);    
 }
 
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
