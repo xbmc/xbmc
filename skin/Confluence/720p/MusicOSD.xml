@@ -41,11 +41,11 @@
 					<texturefocus>OSDVizFO.png</texturefocus>
 					<texturenofocus>OSDVizNF.png</texturenofocus>
 					<onleft>700</onleft>
-					<onright>504</onright>
+					<onright>701</onright>
 					<onup>600</onup>
 					<ondown>600</ondown>
 				</control>
-				<control type="button" id="504">
+				<control type="button" id="701">
 					<posx>100</posx>
 					<posy>0</posy>
 					<width>45</width>
@@ -58,6 +58,7 @@
 					<onright>702</onright>
 					<onup>600</onup>
 					<ondown>600</ondown>
+					<onclick>ActivateWindow(140)</onclick>
 				</control>
 				<control type="button" id="702">
 					<posx>150</posx>
@@ -68,7 +69,7 @@
 					<font>-</font>
 					<texturefocus>OSDPreFO.png</texturefocus>
 					<texturenofocus>OSDPreNF.png</texturenofocus>
-					<onleft>504</onleft>
+					<onleft>701</onleft>
 					<onright>800</onright>
 					<onup>601</onup>
 					<ondown>601</ondown>
@@ -269,8 +270,8 @@
 					<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
 					<onleft>605</onleft>
 					<onright>601</onright>
-					<onup>504</onup>
-					<ondown>504</ondown>
+					<onup>701</onup>
+					<ondown>701</ondown>
 					<onclick>PlayerControl(Previous)</onclick>
 				</control>
 				<control type="button" id="601">
@@ -357,6 +358,7 @@
 					<onright>604</onright>
 					<onup>703</onup>
 					<ondown>703</ondown>
+					<onclick>down</onclick>
 					<onclick>PlayerControl(Stop)</onclick>
 					<visible>!LastFM.RadioPlaying</visible>
 				</control>

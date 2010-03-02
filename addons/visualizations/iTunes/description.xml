@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>57675d11-0ae3-11df-8a39-0800200c9a66</uuid>
+  <type>visualization</type>
+  <title>iTunes Visualization</title>
+  <library>iTunes.mvis</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>osx</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>iTunes Visualization Wrapper</summary>
+  <description>Some description</description>
+  <author>TEAMXBMC</author>
+</addoninfo>
