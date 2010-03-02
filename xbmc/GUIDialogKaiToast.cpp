@@ -29,10 +29,9 @@
 #define POPUP_ICON                400
 #define POPUP_CAPTION_TEXT        401
 #define POPUP_NOTIFICATION_BUTTON 402
-#define POPUP_ICON_STATUS         403
-#define POPUP_ICON_INFO           404
-#define POPUP_ICON_WARNING        405
-#define POPUP_ICON_ERROR          406
+#define POPUP_ICON_INFO           403
+#define POPUP_ICON_WARNING        404
+#define POPUP_ICON_ERROR          405
 
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
@@ -78,9 +77,7 @@ void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString&
   CStdString strImage = "";
   CGUIImage *image    = NULL;
 
-  if (eType == mtStatus)
-    image = (CGUIImage *)GetControl(POPUP_ICON_STATUS);
-  else if (eType == mtInfo)
+  if (eType == mtInfo)
     image = (CGUIImage *)GetControl(POPUP_ICON_INFO);
   else if (eType == mtWarning)
     image = (CGUIImage *)GetControl(POPUP_ICON_WARNING);

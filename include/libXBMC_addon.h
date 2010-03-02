@@ -195,7 +195,6 @@ typedef enum addon_log {
 } addon_log_t;
 
 typedef enum queue_msg {
-  QUEUE_STATUS,
   QUEUE_INFO,
   QUEUE_WARNING,
   QUEUE_ERROR

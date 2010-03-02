@@ -275,8 +275,7 @@ bool cDataResp::VDRToXBMCCommand(char *Cmd)
 	else if (strcasecmp(Cmd, "ADDT") == 0) return CallBackADDT(param);
 */
 
-	if (strcasecmp(Cmd, "SMSG") == 0) return CallBackSMSG(param);
-	else if (strcasecmp(Cmd, "IMSG") == 0) return CallBackIMSG(param);
+	if (strcasecmp(Cmd, "IMSG") == 0) return CallBackIMSG(param);
 	else if (strcasecmp(Cmd, "WMSG") == 0) return CallBackWMSG(param);
 	else if (strcasecmp(Cmd, "EMSG") == 0) return CallBackEMSG(param);
 	else
@@ -302,23 +301,6 @@ bool cDataResp::CallBackADDT(const char *Option)
 {
 //  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
   return true;
-}
-
-bool cDataResp::CallBackSMSG(const char *Option)
-{
-  if (*Option)
-  {
-    CStdString text = Option;
-    if (g_bCharsetConv)
-      XBMC_unknown_to_utf8(text);
-    XBMC_queue_notification(QUEUE_STATUS, text.c_str());
-    return true;
-  }
-  else
-  {
-    XBMC_log(LOG_ERROR, "CallBackSMSG - missing option");
-    return false;
-  }
 }
 
 bool cDataResp::CallBackIMSG(const char *Option)

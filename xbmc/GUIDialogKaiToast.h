@@ -43,7 +43,7 @@ public:
     bool withSound;
   };
 
-  enum eMessageType { mtStatus = 0, mtInfo, mtWarning, mtError };
+  enum eMessageType { mtInfo = 0, mtWarning, mtError };
 
   void QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true);
   void QueueNotification(const CStdString& aCaption, const CStdString& aDescription);
