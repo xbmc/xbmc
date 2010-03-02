@@ -1608,7 +1608,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(WeatherScript_Path,Plugin,Weather)</onclick>
+							<onclick>Skin.SetFile(WeatherScript_Path,Script)</onclick>
 							<visible>Skin.HasSetting(WeatherScript_Enable)</visible>
 						</control>
 
