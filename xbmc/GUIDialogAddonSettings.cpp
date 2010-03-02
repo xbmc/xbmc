@@ -101,14 +101,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 void CGUIDialogAddonSettings::OnInitWindow()
 {
   FreeControls();
-  if (!m_addon)
-  { //we're looking for viz settings //FIXME
-    if (CAddonMgr::Get()->GetDefault(ADDON_VIZ, m_addon))
-    {
-      m_strHeading.Format("$LOCALIZE[10004] - %s", m_addon->Name().c_str()); // "Settings - AddonName"
-      m_addon->LoadSettings();
-    }
-  }
   CreateControls();
   CGUIDialogBoxBase::OnInitWindow();
 }
