@@ -593,14 +593,11 @@ namespace VIDEO
                 m_pObserver->OnSetTitle(url.strTitle);
               long lResult=1;
               // force thumb and fanart
-              bool bForce(false);
-              if (result==CNfoFile::NO_NFO || result==CNfoFile::ERROR_NFO)
-                bForce = true;
 
               if (pDlgProgress)
-                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2->Content() == CONTENT_MOVIES, pDlgProgress, result == CNfoFile::COMBINED_NFO, bForce);
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2->Content() == CONTENT_MOVIES, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
               else
-                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2->Content() == CONTENT_MOVIES, NULL, result == CNfoFile::COMBINED_NFO, bForce);
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2->Content() == CONTENT_MOVIES, NULL, result == CNfoFile::COMBINED_NFO, ignoreNfo);
 
               if (info2->Content() == CONTENT_TVSHOWS)
               {
