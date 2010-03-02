@@ -58,7 +58,7 @@
 					<onright>702</onright>
 					<onup>600</onup>
 					<ondown>600</ondown>
-					<onclick>ActivateWindow(121)</onclick>
+					<onclick>ActivateWindow(140)</onclick>
 				</control>
 				<control type="button" id="702">
 					<posx>150</posx>

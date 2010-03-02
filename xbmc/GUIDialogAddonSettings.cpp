@@ -22,6 +22,7 @@
 #include "GUIDialogAddonSettings.h"
 #include "FileSystem/PluginDirectory.h"
 #include "utils/IAddon.h"
+#include "utils/AddonManager.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogOK.h"
@@ -100,6 +101,14 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 void CGUIDialogAddonSettings::OnInitWindow()
 {
   FreeControls();
+  if (!m_addon)
+  { //we're looking for viz settings //FIXME
+    if (CAddonMgr::Get()->GetDefault(ADDON_VIZ, m_addon))
+    {
+      m_strHeading.Format("$LOCALIZE[10004] - %s", m_addon->Name().c_str()); // "Settings - AddonName"
+      m_addon->LoadSettings();
+    }
+  }
   CreateControls();
   CGUIDialogBoxBase::OnInitWindow();
 }
@@ -362,7 +371,7 @@ void CGUIDialogAddonSettings::CreateControls()
   CGUIImage *pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
   CGUILabelControl *pOriginalLabel = (CGUILabelControl *)GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR);
 
-  if (!pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage)
+  if (!m_addon || !pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage)
     return;
 
   pOriginalSpin->SetVisible(false);
@@ -671,6 +680,9 @@ bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strConditi
 // Go over all the settings and set their default values
 void CGUIDialogAddonSettings::SetDefaults()
 {
+  if(!m_addon)
+    return;
+
   int controlId = CONTROL_START_CONTROL;
   const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
   while (setting)
