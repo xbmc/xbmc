@@ -1950,7 +1950,9 @@ void CDVDPlayer::SetCaching(ECacheState state)
   {
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
     m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
   }
 
   if(state == CACHESTATE_PLAY

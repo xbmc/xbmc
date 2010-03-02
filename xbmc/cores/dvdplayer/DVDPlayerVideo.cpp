@@ -426,6 +426,11 @@ void CDVDPlayerVideo::Process()
       if(m_speed == DVD_PLAYSPEED_PAUSE)
         m_iNrOfPicturesNotToSkip = 0;
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
+    {
+      if(m_started)
+        m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
+    }
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {

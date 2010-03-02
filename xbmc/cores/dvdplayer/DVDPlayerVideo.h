@@ -56,7 +56,7 @@ public:
   // just waiting for packetqueue should be enough for video
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
-  void SendMessage(CDVDMsg* pMsg)                   { m_messageQueue.Put(pMsg); }
+  void SendMessage(CDVDMsg* pMsg, int priority = 0) { m_messageQueue.Put(pMsg, priority); }
 
 #ifdef HAS_VIDEO_PLAYBACK
   void Update(bool bPauseDrawing)                   { g_renderManager.Update(bPauseDrawing); }
