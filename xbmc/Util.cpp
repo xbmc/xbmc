@@ -746,7 +746,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
 bool CUtil::IsRemote(const CStdString& strFile)
 {
-  if (IsCDDA(strFile) || IsISO9660(strFile) || IsPlugin(strFile))
+  if (IsCDDA(strFile) || IsISO9660(strFile))
     return false;
 
   if (IsSpecial(strFile))
@@ -987,7 +987,7 @@ bool CUtil::IsSpecial(const CStdString& strFile)
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
+  return !url.GetProtocol().IsEmpty() && StringUtils::ValidateUUID(url.GetHostName());
 }
 
 bool CUtil::IsPluginRoot(const CStdString& strFile)

@@ -59,11 +59,13 @@ namespace ADDON
 
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
+  class CVisualisation;
+  typedef boost::shared_ptr<CVisualisation> VizPtr;
 
   class CAddonMgr;
-  class AddonVersion;
+  struct AddonVersion;
   typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
-  class AddonProps;
+  struct AddonProps;
 
   class IAddon
   {
@@ -95,7 +97,7 @@ namespace ADDON
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) const =0;
     virtual ADDONDEPS GetDeps() =0;
-    
+
   private:
     friend class CAddonMgr;
     virtual bool IsAddonLibrary() =0;

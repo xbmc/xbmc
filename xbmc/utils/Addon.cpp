@@ -25,19 +25,19 @@
 #include "GUISettings.h"
 #include "StringUtils.h"
 #include "FileSystem/Directory.h"
+#ifdef __APPLE__
+#include "../osx/OSXGNUReplacements.h"
+#endif
 #include "log.h"
 #include <string.h>
-#ifdef __APPLE__
-#include <osx/OSXGNUReplacements.h>
-#endif
 
 using XFILE::CDirectory;
 
 namespace ADDON
 {
 
-/**********************************************************
- * helper functions
+/**
+ * helper functions 
  *
  */
 
@@ -131,12 +131,6 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
         return g_localizeStrings.Get(24008);
       return "screensaver";
     }
-    case ADDON::ADDON_PVRDLL:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24006);
-      return "pvrclient";
-    }
     case ADDON::ADDON_VIZ:
     {
       if (pretty)
@@ -162,8 +156,8 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     default:
     {
       return "";
+    }
   }
-}
 }
 
 const ADDON::TYPE TranslateType(const CStdString &string)
@@ -179,7 +173,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else return ADDON_UNKNOWN;
 }
 
-/**********************************************************
+/**
  * AddonVersion
  *
  */
@@ -221,7 +215,7 @@ CStdString AddonVersion::Print() const
   return CStdString(out);
 }
 
-/**********************************************************
+/**
  * CAddon
  *
  */
@@ -232,8 +226,8 @@ CAddon::CAddon(const AddonProps &props)
 {
   if (props.libname.empty()) BuildLibName();
   else m_strLibName = props.libname;
-  m_strProfile = GetProfilePath();
-  m_userSettingsPath = GetUserSettingsPath();
+  BuildProfilePath();
+  CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_disabled = true;
 }
 
@@ -243,8 +237,8 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
 {
   m_props.uuid = StringUtils::CreateUUID();
   m_userXmlDoc  = rhs.m_userXmlDoc;
-  m_strProfile  = GetProfilePath();
-  m_userSettingsPath = GetUserSettingsPath();
+  BuildProfilePath();
+  CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_strLibName  = rhs.LibName();
   m_disabled    = false;
 }
@@ -290,7 +284,7 @@ void CAddon::BuildLibName()
   m_strLibName.append(ext);
 }
 
-/*
+/**
  * Language File Handling
  */
 bool CAddon::LoadStrings()
@@ -325,9 +319,9 @@ CStdString CAddon::GetString(uint32_t id) const
   return m_strings.Get(id);
 }
 
-/*
-* Settings Handling
-*/
+/**
+ * Settings Handling
+ */
 bool CAddon::HasSettings()
 {
   CStdString addonFileName = m_props.path;
@@ -488,7 +482,6 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
       setting->SetAttribute("value", value.c_str());
       return;
     }
-
     setting = setting->NextSiblingElement("setting");
   }
 
@@ -496,7 +489,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
   TiXmlElement nodeSetting("setting");
   nodeSetting.SetAttribute("id", std::string(key.c_str())); //FIXME otherwise attribute value isn't updated
   if (!type.empty())
-  nodeSetting.SetAttribute("type", std::string(type.c_str()));
+    nodeSetting.SetAttribute("type", std::string(type.c_str()));
   else
     nodeSetting.SetAttribute("type", "text");
   nodeSetting.SetAttribute("value", std::string(value.c_str()));
@@ -508,21 +501,12 @@ TiXmlElement* CAddon::GetSettingsXML()
   return m_addonXmlDoc.RootElement();
 }
 
-CStdString CAddon::GetProfilePath()
+void CAddon::BuildProfilePath()
 {
-  CStdString profile;
-  profile.Format("special://profile/addon_data/%s/", UUID().c_str());
-  return profile;
+  m_profile.Format("special://profile/addon_data/%s/", UUID().c_str());
 }
 
-CStdString CAddon::GetUserSettingsPath()
-{
-  CStdString path;
-  CUtil::AddFileToFolder(Profile(), "settings.xml", path);
-  return path;
-}
-
-/**********************************************************
+/**
  * CAddonLibrary
  *
  */

@@ -831,11 +831,6 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videofiles")) windowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("videolibrary")) windowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) windowID = WINDOW_VIDEO_PLAYLIST;
-  else if (strWindow.Equals("tv")) windowID = WINDOW_TV;
-  else if (strWindow.Equals("pvrosdchannels")) windowID = WINDOW_DIALOG_PVR_OSD_CHANNELS;
-  else if (strWindow.Equals("pvrosdguide")) windowID = WINDOW_DIALOG_PVR_OSD_GUIDE;
-  else if (strWindow.Equals("pvrosddirector")) windowID = WINDOW_DIALOG_PVR_OSD_DIRECTOR;
-  else if (strWindow.Equals("pvrosdcutter")) windowID = WINDOW_DIALOG_PVR_OSD_CUTTER;
   else if (strWindow.Equals("addonbrowser")) windowID = WINDOW_ADDON_BROWSER;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
@@ -848,7 +843,6 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("musicsettings")) windowID = WINDOW_SETTINGS_MYMUSIC;
   else if (strWindow.Equals("systemsettings")) windowID = WINDOW_SETTINGS_SYSTEM;
   else if (strWindow.Equals("videossettings")) windowID = WINDOW_SETTINGS_MYVIDEOS;
-  else if (strWindow.Equals("tvsettings")) windowID = WINDOW_SETTINGS_MYTV;
   else if (strWindow.Equals("networksettings")) windowID = WINDOW_SETTINGS_NETWORK;
   else if (strWindow.Equals("appearancesettings")) windowID = WINDOW_SETTINGS_APPEARANCE;
   else if (strWindow.Equals("scripts")) windowID = WINDOW_SCRIPTS;
@@ -899,9 +893,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("musicoverlay")) windowID = WINDOW_MUSIC_OVERLAY;
   else if (strWindow.Equals("videooverlay")) windowID = WINDOW_VIDEO_OVERLAY;
   else if (strWindow.Equals("pictureinfo")) windowID = WINDOW_DIALOG_PICTURE_INFO;
-  else if (strWindow.Equals("pluginsettings")) windowID = WINDOW_DIALOG_PLUGIN_SETTINGS;
   else if (strWindow.Equals("addonsettings") || strWindow.Equals("visualisationsettings")) windowID = WINDOW_DIALOG_ADDON_SETTINGS;
-  else if (strWindow.Equals("pluginsettings")) windowID = WINDOW_DIALOG_PLUGIN_SETTINGS;
   else if (strWindow.Equals("fullscreeninfo")) windowID = WINDOW_DIALOG_FULLSCREEN_INFO;
   else if (strWindow.Equals("karaokeselector")) windowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
   else if (strWindow.Equals("karaokelargeselector")) windowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
@@ -1002,15 +994,13 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("pageminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
   else if (strButton.Equals("mute")) buttonCode = XINPUT_IR_REMOTE_MUTE;
   else if (strButton.Equals("recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;   // same as title
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
   else if (strButton.Equals("livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
   else if (strButton.Equals("star")) buttonCode = XINPUT_IR_REMOTE_STAR;
   else if (strButton.Equals("hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
   else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
   else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
   else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
-  else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
   else if (strButton.Equals("red")) buttonCode = XINPUT_IR_REMOTE_RED;
   else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;

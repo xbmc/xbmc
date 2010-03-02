@@ -28,8 +28,7 @@
  */
 
 
-#include "xbmc_vis_dll.h"
-#include "libXBMC_addon.h"
+#include "../../addons/include/xbmc_vis_dll.h"
 #include <string.h>
 #include <math.h>
 #include <GL/glew.h>
@@ -142,54 +141,10 @@ void draw_bars(void)
 //-----------------------------------------------------------------------------
 ADDON_STATUS Create(void* hdl, void* props)
 {
-  int temp;
-
-  if (!props || !hdl)
+  if (!props)
     return STATUS_UNKNOWN;
 
-  VIS_PROPS* visprops = (VIS_PROPS*)props;
-
-  XBMC_register_me(hdl);
-
-  /* Read setting "mode" from settings.xml */
-  if (XBMC_get_setting("mode", &temp))
-    SetSetting("mode", &temp);
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'mode' setting, falling back to 'Filled' as default");
-    g_mode = GL_FILL;
-  }
-
-  /* Read setting "size" from settings.xml */
-  if (XBMC_get_setting("bar_height", &temp))
-    SetSetting("bar_height", &temp);
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'bar_height' setting, falling back to 'Big' as default");
-    scale = 0.5f / log(256.f);
-  }
-
-  /* Read setting "speed" from settings.xml */
-  if (!XBMC_get_setting("speed", &temp))
-    SetSetting("speed", &temp);
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'speed' setting, falling back to 'Fast' as default");
-    hSpeed = 0.1f;
-  }
-
-  return STATUS_OK;
-}
-
-//-- Destroy -------------------------------------------------------------------
-// Do everything before unload of this add-on
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-extern "C" void Destroy()
-{
+  return STATUS_NEED_SETTINGS;
 }
 
 //-- Render -------------------------------------------------------------------
@@ -307,7 +262,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***names)
 {
   return 0; // this vis supports 0 sub modules
 }
@@ -417,7 +372,7 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
     }
     return STATUS_OK;
   }
-  else if (strcmp(strSetting, "bar_height")==0)
+  else if (strcmp(strSetting, "size")==0)
   {
     switch (*(int*) value)
     {
@@ -472,7 +427,6 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
     return STATUS_OK;
   }
 
-  XBMC_log(LOG_ERROR, "Unknown setting transfered '%s'", strSetting);
   return STATUS_UNKNOWN;
 }
 

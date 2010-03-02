@@ -490,6 +490,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUIRenderingControl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIRenderingControl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUIResizeControl.cpp"
 				>
 			</File>

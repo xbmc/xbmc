@@ -24,6 +24,7 @@ SRCS=Application.cpp \
      GUIWindowSettingsCategory.cpp \
      GUIWindowSettingsProfile.cpp \
      GUIWindowSettingsScreenCalibration.cpp \
+     Scraper.cpp \
      Settings.cpp \
      SettingsControls.cpp \
      GUIDialogMusicScan.cpp \
@@ -201,10 +202,7 @@ SRCS=Application.cpp \
      GUILargeTextureManager.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
-     GUIDialogPluginSettings.cpp \
-     PluginSettings.cpp \
      GUIDialogAccessPoints.cpp \
-     ScraperSettings.cpp \
      Artist.cpp \
      Album.cpp \
      MediaSource.cpp \
@@ -221,7 +219,6 @@ SRCS=Application.cpp \
      DPMSSupport.cpp \
      PVRManager.cpp \
      TVDatabase.cpp \
-     ScriptSettings.cpp \
      GUIWindowTestPatternGL.cpp \
      RenderSystem.cpp \
      RenderSystemGL.cpp \

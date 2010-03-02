@@ -192,9 +192,6 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
 
 bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
 {
-  if (m_vecItems->Size() == 0)
-    return false;
-
   // check if user is allowed to open this window
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))

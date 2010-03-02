@@ -2555,15 +2555,12 @@
   <string id="22042">weiß/blau</string>
   <string id="22043">schwarz/weiß</string>
 
-  <string id="23030">Wetter-Plugin</string>
-  <string id="23031">- Plugin Einstellungen</string>
-
+  <string id="23049">Videotext nicht verfügbar</string>
+  <string id="23050">Videotext aktivieren</string>
+  <string id="23051">Teil</string>
   <string id="23052">Zwischenspeichern - %i Bytes</string>
   <string id="23053">Fehlende Einstellungen</string>
   <string id="23054">Falsche Einstellungen</string>
-
-  <string id="23090">Videotext aktivtieren</string>
-  <string id="23091">Teletext nicht verfügbar</string>
 
   <string id="23100">Externer Player ist aktiv</string>
   <string id="23101">Drücke OK um den Player zu beenden</string>

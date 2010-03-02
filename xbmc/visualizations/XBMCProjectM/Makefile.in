@@ -1,9 +1,7 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../../include
+INCLUDES=-I. -I../../addons/include
 OBJS=Main.o
 SLIB=../../../addons/visualizations/ProjectM/projectM.vis
-#LIBS     = -L../../../lib/libXBMC_addon -lXBMC_addon
-LIBS     = ../../../lib/libXBMC_addon/libXBMC_addon.a
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 DIRS=libprojectM
@@ -14,7 +12,7 @@ CXXFLAGS+=-fno-common
 $(SLIB): $(OBJS) libprojectM/libprojectM.dylib
 	$(CXX) -bundle -shared -undefined suppress -flat_namespace $(CFLAGS) -o $(SLIB) \
 		./libprojectM/CMakeFiles/projectM.dir/*.o \
-		$(OBJS) $(LIBS)
+		$(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	rsync -lptgoDv --cvs-exclude libprojectM/presets/* ../../../visualisations/projectM
 
@@ -22,9 +20,8 @@ libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
 else
 $(SLIB): $(OBJS) libprojectM/libprojectM.so
-	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) $(LIBS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
-	cp -rfT libprojectM/presets ../../../addons/visualizations/ProjectM/presets
-#	zip -qj ../../../addons/visualizations/ProjectM/resources/presets.zip libprojectM/presets/*
+	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	cp -rfT libprojectM/presets ../../../visualisations/projectM
 
 libprojectM/libprojectM.so: 
 	$(MAKE) -C libprojectM

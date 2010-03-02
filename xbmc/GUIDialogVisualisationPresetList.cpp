@@ -31,6 +31,8 @@
 #define CONTROL_PRESETS_LABEL  3
 #define CONTROL_NONE_AVAILABLE 4
 
+using ADDON::CVisualisation;
+
 CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
     : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "VisualisationPresetList.xml")
 {
@@ -72,7 +74,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-      SetVisualisation((CVisualisation *)msg.GetPointer());
+        SetVisualisation((CVisualisation*)msg.GetPointer());
       }
       return true;
     }
@@ -90,7 +92,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
     {
       if (message.GetPointer())
       {
-        SetVisualisation((CVisualisation *)message.GetPointer());
+        SetVisualisation((CVisualisation*)message.GetPointer());
       }
     }
   }

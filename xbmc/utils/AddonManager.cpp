@@ -48,7 +48,7 @@
 #include "../screensavers/ScreenSaver.h"
 #endif
 //#ifdef HAS_SCRAPERS
-//#include "../Scraper.h"
+#include "../Scraper.h"
 //#endif
 
 
@@ -287,8 +287,6 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
     addons.insert(addons.end(), temp.begin(), temp.end());
   if (CAddonMgr::Get()->GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get()->GetAddons(ADDON_PVRDLL, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
   return !addons.empty();
 }
 
@@ -355,41 +353,45 @@ bool CAddonMgr::GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addo
   return false;
 }
 
-//TODO handle all 'default' cases here, not just scrapers?
-bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &scraper, const CONTENT_TYPE &content)
+//TODO handle all 'default' cases here, not just scrapers & vizs
+bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content)
 {
-  // for now, only handle scrapers
-  if (type != ADDON_SCRAPER)
+  if (type != ADDON_SCRAPER && type != ADDON_VIZ)
     return false;
 
-  CStdString defaultScraper;
-  switch (content)
+  CStdString setting;
+  if (type == ADDON_VIZ)
+    setting = g_guiSettings.GetString("musicplayer.visualisation");
+  else
   {
-  case CONTENT_MOVIES:
+    switch (content)
     {
-      defaultScraper = g_guiSettings.GetString("scrapers.moviedefault");
-      break;
+    case CONTENT_MOVIES:
+      {
+        setting = g_guiSettings.GetString("scrapers.moviedefault");
+        break;
+      }
+    case CONTENT_TVSHOWS:
+      {
+        setting = g_guiSettings.GetString("scrapers.tvshowdefault");
+        break;
+      }
+    case CONTENT_MUSICVIDEOS:
+      {
+        setting = g_guiSettings.GetString("scrapers.musicvideodefault");
+        break;
+      }
+    case CONTENT_ALBUMS:
+    case CONTENT_ARTISTS:
+      {
+        setting = g_guiSettings.GetString("musiclibrary.scraper");
+        break;
+      }
+    default:
+      return false;
     }
-  case CONTENT_TVSHOWS:
-    {
-      defaultScraper = g_guiSettings.GetString("scrapers.tvshowdefault");
-      break;
-    }
-  case CONTENT_MUSICVIDEOS:
-    {
-      defaultScraper = g_guiSettings.GetString("scrapers.musicvideodefault");
-      break;
-    }
-  case CONTENT_ALBUMS:
-  case CONTENT_ARTISTS:
-    {
-      defaultScraper = g_guiSettings.GetString("musiclibrary.scraper");
-      break;
-    }
-  default:
-    return false;
   }
-  return GetAddon(ADDON_SCRAPER, defaultScraper, scraper);
+  return GetAddon(type, setting, addon);
 }
 
 CStdString CAddonMgr::GetString(const CStdString &uuid, const int number)
@@ -427,9 +429,9 @@ bool CAddonMgr::DisableAddon(const CStdString &uuid)
   AddonPtr addon = m_uuidMap[uuid];
   if (!addon)
     return false;
-
   return DisableAddon(addon);
 }
+
 bool CAddonMgr::DisableAddon(AddonPtr &addon)
 {
   const TYPE type = addon->Type();
@@ -490,8 +492,6 @@ bool CAddonMgr::LoadAddonsXML(const TYPE &type)
     }
     ++itr;
   }
-
-
   return true;
 }
 
@@ -536,13 +536,6 @@ void CAddonMgr::FindAddons(const TYPE &type)
       if (!isHome)
         CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
       CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
-      break;
-    }
-  case ADDON_PVRDLL:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/pvr", items, ADDON_PVRDLL_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
       break;
     }
   case ADDON_SCRAPER:
@@ -613,7 +606,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
     }
 
     if (!DependenciesMet(addon))
-    { // store any addons with unresolved deps for now
+    {
       unresolved.push_back(addon);
       continue;
     }
@@ -822,7 +815,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     return false;
   }
 
-  bool all = false;
+  bool all(false);
   std::set<CStdString> platforms;
   do
   {
@@ -838,7 +831,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
 
   if (!all)
   {
-#if defined(_LINUX)
+#if defined(_LINUX) && !defined(__APPLE__)
     if (!platforms.count("linux"))
     {
       CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());
@@ -991,12 +984,12 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
       addon = temp;
       break;
     }
-//    case ADDON_SCRAPER:
-//    {
-//      AddonPtr temp(new CScraper(addonProps));
-//      addon = temp;
-//      break;
-//    }
+    case ADDON_SCRAPER:
+    {
+      AddonPtr temp(new CScraper(addonProps));
+      addon = temp;
+      break;
+    }
     case ADDON_VIZ:
     {
       AddonPtr temp(new CVisualisation(addonProps));
@@ -1006,12 +999,6 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     case ADDON_SCREENSAVER:
     {
       AddonPtr temp(new CScreenSaver(addonProps));
-      addon = temp;
-      break;
-    }
-    case ADDON_PVRDLL:
-    {
-      AddonPtr temp(new CPVRClient(addonProps));
       addon = temp;
       break;
     }

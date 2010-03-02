@@ -35,7 +35,7 @@ d4rk@xbmc.org
 */
 
 #include "xbmc_vis_dll.h"
-#include "libXBMC_addon.h"
+#include "xbmc_addon_cpp_dll.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
@@ -60,29 +60,23 @@ std::vector<DllSetting> g_vecSettings;
 StructSetting** g_structSettings;
 unsigned int g_uiVisElements;
 
-
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 extern "C" ADDON_STATUS Create(void* hdl, void* props)
 {
-  int tmp;
-  bool tmp2;
-
-  if (!props || !hdl)
+  if (!props)
     return STATUS_UNKNOWN;
-
-  VIS_PROPS* visprops = (VIS_PROPS*)props;
-
-  XBMC_register_me(hdl);
 
   g_vecSettings.clear();
   g_uiVisElements = 0;
 
+
+  VIS_PROPS* visprops = (VIS_PROPS*)props;
+
   strcpy(g_visName, visprops->name);
   g_configFile = string(visprops->profile) + string("/projectm.conf");
-  //std::string presetsDir = string(visprops->presets) + string("/resources/presets.zip/");
-  std::string presetsDir = string(visprops->presets) + string("/presets/");
+  std::string presetsDir = "special://xbmc/addons/visualizations/ProjectM/resources/presets.zip/";
 
   g_configPM.meshX = gx;
   g_configPM.meshY = gy;
@@ -130,22 +124,6 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
     return STATUS_UNKNOWN;
   }
 
-  if (XBMC_get_setting("renderquality", &tmp))
-    SetSetting("renderquality", &tmp);
-
-  if (XBMC_get_setting("shufflemode", &tmp2))
-    SetSetting("shufflemode", &tmp2);
-
-  if (XBMC_get_setting("smoothpresetduration", &tmp))
-    SetSetting("smoothpresetduration", &tmp);
-
-  if (XBMC_get_setting("presetduration", &tmp))
-    SetSetting("presetduration", &tmp);
-
-  if (XBMC_get_setting("beatsensitivity", &tmp))
-    SetSetting("beatsensitivity", &tmp);
-
-/*
   DllSetting quality(DllSetting::SPIN, "quality", "30000");
   quality.AddEntry("30001");
   quality.AddEntry("30002");
@@ -202,17 +180,8 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   }
   beatSensitivity.current = (int)(g_configPM.beatSensitivity * 5 - 1);
   g_vecSettings.push_back(beatSensitivity);
-  */
-  return STATUS_OK;
-}
 
-extern "C" void Destroy()
-{
-  if (globalPM)
-  {
-    delete globalPM;
-    globalPM = NULL;
-  }
+  return STATUS_NEED_SETTINGS;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -410,7 +379,6 @@ extern "C" void FreeSettings()
 //-- UpdateSetting ------------------------------------------------------------
 // Handle setting change request from XBMC
 //-----------------------------------------------------------------------------
-
 extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
 {
   if (!id || !value)
@@ -446,11 +414,6 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
     g_configPM.presetDuration = *(int*)value;
   else if (strcmp(id, "beat_sens")==0)
     g_configPM.beatSensitivity = *(int*)value;
-  else
-  {
-    XBMC_log(LOG_ERROR, "Unknown setting transfered '%s'", id);
-    return STATUS_UNKNOWN;
-  }
 
   return STATUS_OK;
 }
@@ -458,7 +421,7 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***names)
 {
   return 0; // this vis supports 0 sub modules
 }

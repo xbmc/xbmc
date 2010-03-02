@@ -22,6 +22,7 @@
 #include "GUIDialogAddonSettings.h"
 #include "FileSystem/PluginDirectory.h"
 #include "utils/IAddon.h"
+#include "utils/AddonManager.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogOK.h"
@@ -34,6 +35,7 @@
 #include "GUIImage.h"
 #include "FileSystem/Directory.h"
 #include "VideoInfoScanner.h"
+#include "Scraper.h"
 #include "GUIWindowManager.h"
 #include "Application.h"
 #include "GUIDialogKeyboard.h"
@@ -74,8 +76,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 
       if (iControl == ID_BUTTON_OK)
       {
-//        if (m_changed)
-        m_changed = true;
         SaveSettings();
         Close();
         return true;
@@ -87,7 +87,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 
       if (iControl == ID_BUTTON_CANCEL || bCloseDialog)
       {
-        m_changed = false;
         Close();
         return true;
       }
@@ -110,7 +109,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
   if (!addon)
     return false;
 
-  bool changed(false);
+  bool ret(false);
   if (addon->HasSettings())
   { 
     // Create the dialog
@@ -129,12 +128,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
       pDialog->m_changed = false;
       pDialog->m_addon = addon;
       pDialog->DoModal();
-
-      if (pDialog->m_changed)
-      {
-        changed = true;
-        addon->SaveSettings();
-      }
+      ret = true;
     }
     else
     { // couldn't load settings, inform user
@@ -146,7 +140,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
     CGUIDialogOK::ShowAndGetInput(24000,0,24030,0);
   }
 
-  return changed;
+  return ret;
 }
 
 bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
@@ -297,7 +291,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
 }
 
 // Go over all the settings and set their values according to the values of the GUI components
-bool CGUIDialogAddonSettings::SaveSettings(void)
+void CGUIDialogAddonSettings::SaveSettings(void)
 {
   // Retrieve all the values from the GUI components and put them in the model
   int controlId = CONTROL_START_CONTROL;
@@ -340,7 +334,7 @@ bool CGUIDialogAddonSettings::SaveSettings(void)
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
-  return true;
+  m_addon->SaveSettings();
 }
 
 void CGUIDialogAddonSettings::FreeControls()
@@ -362,7 +356,7 @@ void CGUIDialogAddonSettings::CreateControls()
   CGUIImage *pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
   CGUILabelControl *pOriginalLabel = (CGUILabelControl *)GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR);
 
-  if (!pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage)
+  if (!m_addon || !pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage)
     return;
 
   pOriginalSpin->SetVisible(false);
@@ -402,11 +396,10 @@ void CGUIDialogAddonSettings::CreateControls()
     CStdString label;
     if (setting->Attribute("label") && atoi(setting->Attribute("label")) > 0)
     {
-/*      if (m_addon->Parent())
+      if (m_addon->Parent())
         label.Format("$ADDON[%s %s]", m_addon->Parent()->UUID().c_str(), setting->Attribute("label"));
       else
-        label.Format("$ADDON[%s %s]", m_addon->UUID().c_str(), setting->Attribute("label"));*/
-      label = m_addon->GetString(atoi(setting->Attribute("label")));
+        label.Format("$ADDON[%s %s]", m_addon->UUID().c_str(), setting->Attribute("label"));
     }
     else
       label = setting->Attribute("label");
@@ -672,6 +665,9 @@ bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strConditi
 // Go over all the settings and set their default values
 void CGUIDialogAddonSettings::SetDefaults()
 {
+  if(!m_addon)
+    return;
+
   int controlId = CONTROL_START_CONTROL;
   const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
   while (setting)

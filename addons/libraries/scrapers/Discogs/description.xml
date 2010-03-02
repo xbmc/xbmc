@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>182db4b0-25ae-11df-8a39-0800200c9a66</uuid>
+  <type>scraper-library</type>
+  <title>Discogs</title>
+  <library>discogs.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>28000</xbmc>
+  </minversion>
+  <summary>Discogs Scraper Library</summary>
+  <description>some description</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>albums</content>
+  </supportedcontent>
+</addoninfo>

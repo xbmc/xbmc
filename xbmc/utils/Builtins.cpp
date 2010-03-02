@@ -28,6 +28,7 @@
 #include "Builtins.h"
 #include "ButtonTranslator.h"
 #include "FileItem.h"
+#include "GUIDialogAddonSettings.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogMusicScan.h"
@@ -37,6 +38,8 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
+#include "Addon.h" // for TranslateType, TranslateContent
+#include "AddonManager.h"
 #include "LastFmManager.h"
 #include "LCD.h"
 #include "log.h"
@@ -84,6 +87,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace MEDIA_DETECT;
+using namespace ADDON;
 
 typedef struct
 {
@@ -173,6 +177,7 @@ const BUILT_IN commands[] = {
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
+  { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -267,13 +272,13 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       g_passwordManager.bMasterUser = false;
       g_passwordManager.LockSources(true);
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
     }
     else if (g_passwordManager.IsMasterLockUnlocked(true))
     {
       g_passwordManager.LockSources(false);
       g_passwordManager.bMasterUser = true;
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
     }
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -927,30 +932,43 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (execute.Equals("skin.setfile"))
     {
+      // Note. can only browse one addon type from here
+      // if browsing for addons, required param[1] is addontype string, with optional param[2]
+      // as contenttype string see IAddon.h & ADDON::TranslateXX
       CStdString strMask = (params.size() > 1) ? params[1] : "";
-      if (strMask.Find(".py") > -1)
+      strMask.ToLower();
+      ADDON::TYPE type;
+      if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
       {
-        CMediaSource source;
-        source.strPath = "special://home/scripts/";
-        source.strName = g_localizeStrings.Get(247);
-        localShares.push_back(source);
+        CURL url;
+        url.SetProtocol("addons");
+        url.SetHostName(strMask);
+        localShares.clear();
+        CStdString content = (params.size() > 2) ? params[2] : "";
+        content.ToLower();
+        url.SetPassword(content);
+        CStdString replace;
+        if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), "", TranslateType(type, true), replace, true, true))
+          g_settings.SetSkinString(string, replace);
       }
-
-      if (params.size() > 2)
+      else 
       {
-        value = params[2];
-        CUtil::AddSlashAtEnd(value);
-        bool bIsSource;
-        if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        if (params.size() > 2)
         {
-          CMediaSource share;
-          share.strName = g_localizeStrings.Get(13278);
-          share.strPath = value;
-          localShares.push_back(share);
+          value = params[2];
+          CUtil::AddSlashAtEnd(value);
+          bool bIsSource;
+          if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+          {
+            CMediaSource share;
+            share.strName = g_localizeStrings.Get(13278);
+            share.strPath = value;
+            localShares.push_back(share);
+          }
         }
+        if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
+          g_settings.SetSkinString(string, value);
       }
-      if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
-        g_settings.SetSkinString(string, value);
     }
     else // execute.Equals("skin.setpath"))
     {
@@ -1037,10 +1055,7 @@ int CBuiltins::Execute(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-        {
-          SScraperInfo info;
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
-        }
+          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",ScraperPtr(),settings);
       }
     }
   }
@@ -1251,6 +1266,12 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("wakeonlan"))
   {
     g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
+  }
+  else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetDefault(TranslateType(params[0]), addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))

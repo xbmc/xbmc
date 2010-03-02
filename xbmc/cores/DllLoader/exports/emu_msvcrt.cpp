@@ -1428,7 +1428,7 @@ extern "C"
         pFile->Write(tmp2, len);
         return len;
       }
-      else if (!IS_STD_STREAM(stream))
+      else if (!IS_STD_STREAM(stream) && IS_VALID_STREAM(stream))
       {
         // it might be something else than a file, or the file is not emulated
         // let the operating system handle it

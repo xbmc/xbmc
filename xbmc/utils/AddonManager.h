@@ -20,7 +20,7 @@
  *
  */
 #include "Addon.h"
-#include "../../include/xbmc_addon_dll.h"
+#include "../addons/include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
 #include "Thread.h"
 #include "StdString.h"
@@ -38,13 +38,12 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
 
   const int        ADDON_DIRSCAN_FREQ         = 300;
-  const CStdString ADDON_XBMC_REPO_URL        = "http://mirrors.xbmc.org/addons/addons.xml";
+  const CStdString ADDON_XBMC_REPO_URL        = "";
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
   const CStdString ADDON_PYTHON_EXT           = "*.py";
   const CStdString ADDON_SCRAPER_EXT          = "*.xml";
   const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
-  const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
   const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
   const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
@@ -108,7 +107,7 @@ namespace ADDON
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
-    CStdString GetString(const CStdString &uuid, const int number);
+   CStdString GetString(const CStdString &uuid, const int number);
 
     /* Addon operations */
     bool EnableAddon(AddonPtr &addon);

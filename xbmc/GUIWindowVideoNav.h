@@ -38,7 +38,7 @@ public:
   virtual void FrameMove();
 
   virtual void OnPrepareFileItems(CFileItemList &items);
-  virtual void OnInfo(CFileItem* pItem, const SScraperInfo&info);
+  virtual void OnInfo(CFileItem* pItem, ADDON::ScraperPtr &info);
   static bool CanDelete(const CStdString& strPath);
   static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 

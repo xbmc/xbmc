@@ -25,6 +25,7 @@
 #include "SortFileItem.h"
 #include "GUIBaseContainer.h"
 #include "MediaSource.h"
+#include "utils/IAddon.h"
 
 class CViewState; // forward
 class CFileItemList;
@@ -62,7 +63,7 @@ public:
   virtual VECSOURCES& GetSources();
 
 protected:
-  CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
+  CGUIViewState(const CFileItemList& items, const CONTENT_TYPE& content = CONTENT_NONE);  // no direct object creation, use GetViewState()
   virtual void SaveViewState()=0;
   virtual void SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState = NULL);
   void LoadViewState(const CStdString &path, int windowID);
@@ -73,6 +74,7 @@ protected:
   const CFileItemList& m_items;
 
   static VECSOURCES m_sources;
+  CONTENT_TYPE m_content;
 
   int m_currentViewAsControl;
 

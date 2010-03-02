@@ -28,11 +28,10 @@
  */
 
 
+#include "../../addons/include/xbmc_vis_dll.h"
 #include <math.h>
 #include <D3D9.h>
 #include <d3dx9math.h>
-#include "xbmc_vis_dll.h"
-#include "libXBMC_addon.h"
 
 #define NUM_BANDS 16
 
@@ -159,58 +158,17 @@ void draw_bars(void)
 
 //-- Create -------------------------------------------------------------------
 // Called on load. Addon should fully initalize or return error status
-//-----------------------------------------------------------------------------
-ADDON_STATUS Create(void* hdl, void* props)
-{
-  int temp;
-
-  if (!props || !hdl)
-    return STATUS_UNKNOWN;
-
-  VIS_PROPS* visprops = (VIS_PROPS*)props;
-  g_device = (LPDIRECT3DDEVICE9) visprops->device;
-
-  XBMC_register_me(hdl);
-
-  /* Read setting "mode" from settings.xml */
-  if (XBMC_get_setting("mode", &temp))
-    SetSetting("mode", &temp);
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'mode' setting, falling back to 'Filled' as default");
-    g_mode = D3DFILL_SOLID;
-  }
-
-  /* Read setting "size" from settings.xml */
-  if (XBMC_get_setting("bar_height", &temp))
-    SetSetting("bar_height", &temp);
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'bar_height' setting, falling back to 'Big' as default");
-    scale = 0.5f / log(256.f);
-  }
-
-  /* Read setting "speed" from settings.xml */
-  if (!XBMC_get_setting("speed", &temp))
-    SetSetting("speed", &temp);
-  else
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'speed' setting, falling back to 'Fast' as default");
-    hSpeed = 0.1f;
-  }
-
-  return STATUS_OK;
-}
-
-//-- Destroy -------------------------------------------------------------------
-// Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Destroy()
+ADDON_STATUS Create(void* hdl, void* visProps)
 {
+  if (!visProps)
+    return STATUS_UNKNOWN;
+
+  VIS_PROPS* props = (VIS_PROPS*) visProps;
+  g_device = (LPDIRECT3DDEVICE9) props->device;
+
+  return STATUS_NEED_SETTINGS;
 }
 
 //-- Render -------------------------------------------------------------------
@@ -336,7 +294,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***names)
 {
   return 0; // this vis supports 0 sub modules
 }
@@ -418,6 +376,7 @@ extern "C" void FreeSettings()
 {
 }
 
+//-- SetSetting ---------------------------------------------------------------
 // Set a specific Setting value (called from XBMC)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
@@ -426,56 +385,41 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
   if (!strSetting || !value)
     return STATUS_UNKNOWN;
 
-  if (strcmp(strSetting, "mode")==0)
+  if (strcmp(strSetting, "size")==0)
   {
     switch (*(int*) value)
     {
-      case 1:
-        g_mode = D3DFILL_WIREFRAME;
-        break;
+    case 0:
+      scale = 1.0f / log(256.0f);
+      break;
 
-      case 2:
-        g_mode = D3DFILL_POINT;
-        break;
-
-      case 0:
-      default:
-        g_mode = D3DFILL_SOLID;
-        break;
-    }
-    return STATUS_OK;
-  }
-  else if (strcmp(strSetting, "bar_height")==0)
-  {
-    switch (*(int*) value)
-    {
     case 1:
-      scale = 2.f / log(256.f);
+      scale = 2.0f / log(256.0f);
       break;
 
     case 2:
-      scale = 3.f / log(256.f);
+      scale = 3.0f / log(256.0f);
       break;
 
     case 3:
-      scale = 0.5f / log(256.f);
+      scale = 0.5f / log(256.0f);
       break;
 
     case 4:
-      scale = 0.33f / log(256.f);
-      break;
-
-    case 0:
-    default:
-      scale = 1.f / log(256.f);
+      scale = 0.33f / log(256.0f);
       break;
     }
     return STATUS_OK;
   }
+
   else if (strcmp(strSetting, "speed")==0)
   {
     switch (*(int*) value)
     {
+    case 0:
+      hSpeed = 0.05f;
+      break;
+
     case 1:
       hSpeed = 0.025f;
       break;
@@ -485,21 +429,34 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
       break;
 
     case 3:
-      hSpeed = 0.1f;
+      hSpeed = 0.10f;
       break;
 
     case 4:
-      hSpeed = 0.2f;
-      break;
-
-    case 0:
-    default:
-      hSpeed = 0.05f;
+      hSpeed = 0.20f;
       break;
     }
     return STATUS_OK;
   }
 
-  XBMC_log(LOG_ERROR, "Unknown setting transfered '%s'", strSetting);
+  else if (strcmp(strSetting, "mode")==0)
+  {
+    switch (*(int*) value)
+    {
+    case 0:
+      g_mode = D3DFILL_SOLID;
+      break;
+
+    case 1:
+      g_mode = D3DFILL_WIREFRAME;
+      break;
+
+    case 2:
+      g_mode = D3DFILL_POINT;
+      break;
+    }
+    return STATUS_OK;
+  }
   return STATUS_UNKNOWN;
 }
+

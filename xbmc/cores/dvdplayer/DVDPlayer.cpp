@@ -1258,8 +1258,8 @@ void CDVDPlayer::HandlePlaySpeed()
   if(m_caching == CACHESTATE_INIT)
   {
     // if all enabled streams have been inited we are done
-    if((m_CurrentVideo.id < 0 || (m_CurrentVideo.inited && m_CurrentVideo.started))
-    && (m_CurrentAudio.id < 0 || (m_CurrentAudio.inited && m_CurrentAudio.started)))
+    if((m_CurrentVideo.id < 0 || m_CurrentVideo.started)
+    && (m_CurrentAudio.id < 0 || m_CurrentAudio.started))
       SetCaching(CACHESTATE_PLAY);
   }
   if(m_caching == CACHESTATE_PLAY)
@@ -1791,9 +1791,12 @@ void CDVDPlayer::HandleMessages()
       if (pMsg->IsType(CDVDMsg::PLAYER_SEEK) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
                                              && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
       {
-        CPlayerSeek m_pause(this);
-
         CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
+
+        g_infoManager.SetDisplayAfterSeek(100000);
+        if(msg.GetFlush())
+          SetCaching(CACHESTATE_INIT);
+
         double start = DVD_NOPTS_VALUE;
 
         int time = msg.GetRestore() ? (int)m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
@@ -1812,12 +1815,14 @@ void CDVDPlayer::HandleMessages()
           CLog::Log(LOGWARNING, "error while seeking");
 
         // set flag to indicate we have finished a seeking request
+        g_infoManager.SetDisplayAfterSeek();
         g_infoManager.m_performingSeek = false;
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SEEK_CHAPTER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK)         == 0
                                                           && m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
       {
-        CPlayerSeek m_pause(this);
+        g_infoManager.SetDisplayAfterSeek(100000);
+        SetCaching(CACHESTATE_INIT);
 
         CDVDMsgPlayerSeekChapter &msg(*((CDVDMsgPlayerSeekChapter*)pMsg));
         double start = DVD_NOPTS_VALUE;
@@ -1828,6 +1833,8 @@ void CDVDPlayer::HandleMessages()
           FlushBuffers(false, start);
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
+
+        g_infoManager.SetDisplayAfterSeek();
       }
       else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
       {
@@ -1898,7 +1905,8 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_STATE))
       {
-        CPlayerSeek m_pause(this);
+        g_infoManager.SetDisplayAfterSeek(100000);
+        SetCaching(CACHESTATE_INIT);
 
         CDVDMsgPlayerSetState* pMsgPlayerSetState = (CDVDMsgPlayerSetState*)pMsg;
 
@@ -1910,6 +1918,8 @@ void CDVDPlayer::HandleMessages()
           m_dvd.iDVDStillStartTime = 0;
           m_dvd.iDVDStillTime = 0;
         }
+
+        g_infoManager.SetDisplayAfterSeek();
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_RECORD))
       {
@@ -1966,8 +1976,6 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
-        CPlayerSeek m_pause(this);
-
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
@@ -1984,6 +1992,8 @@ void CDVDPlayer::HandleMessages()
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input)
         {
+          g_infoManager.SetDisplayAfterSeek(100000);
+
           bool result;
           bool fastSwitch = g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0;
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
@@ -2012,6 +2022,8 @@ void CDVDPlayer::HandleMessages()
               SAFE_DELETE(m_pDemuxer);
             }
           }
+
+          g_infoManager.SetDisplayAfterSeek();
         }
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
@@ -2048,7 +2060,9 @@ void CDVDPlayer::SetCaching(ECacheState state)
   {
     m_clock.SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_dvdPlayerAudio.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
     m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
   }
 
   if(state == CACHESTATE_PLAY
@@ -2205,7 +2219,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     }
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, false, false, restore));
   SynchronizeDemuxer(100);
   m_callback.OnPlayBackSeek((int)seek);
 }
@@ -3583,16 +3597,4 @@ CStdString CDVDPlayer::GetPlayingTitle()
     return ttcache->line30;
 
   return "";
-}
-
-CDVDPlayer::CPlayerSeek::CPlayerSeek(CDVDPlayer* player)
-      : m_player(*player)
-{
-  g_infoManager.SetDisplayAfterSeek(100000);
-  m_player.SetCaching(CACHESTATE_INIT);
-}
-
-CDVDPlayer::CPlayerSeek::~CPlayerSeek()
-{
-  g_infoManager.SetDisplayAfterSeek();
 }

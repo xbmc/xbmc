@@ -74,16 +74,16 @@ void CGUIDialogKaiToast::OnWindowLoaded()
 
 void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/)
 {
-  CStdString strImage = "";
   CGUIImage *image    = NULL;
 
-  if (eType == mtInfo)
+  if (eType == Info)
     image = (CGUIImage *)GetControl(POPUP_ICON_INFO);
-  else if (eType == mtWarning)
+  else if (eType == Warning)
     image = (CGUIImage *)GetControl(POPUP_ICON_WARNING);
-  else if (eType == mtError)
+  else if (eType == Error)
     image = (CGUIImage *)GetControl(POPUP_ICON_ERROR);
 
+  CStdString strImage;
   if (image)
     strImage = image->GetFileName();
 

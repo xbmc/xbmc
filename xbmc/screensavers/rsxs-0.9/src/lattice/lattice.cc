@@ -796,7 +796,7 @@ void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
 
 #define _LINUX
-#include "../../../../../include/xbmc_scr_dll.h"
+#include "../../../addons/include/xbmc_scr_dll.h"
 
 extern "C" {
 
@@ -814,8 +814,19 @@ ADDON_STATUS Create(void* hdl, void* props)
   return STATUS_OK;
 }
 
-void Destroy()
+void Start()
 {
+  Hack::start();
+}
+
+void Render()
+{
+  Hack::tick();
+}
+
+void Stop()
+{
+  Hack::stop();
 }
 
 ADDON_STATUS GetStatus()
@@ -838,27 +849,16 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   return STATUS_OK;
 }
 
-void Remove()
-{
-}
-
 void FreeSettings()
 {
 }
 
-void Start()
+void GetInfo(SCR_INFO *info)
 {
-  Hack::start();
 }
 
-void Render()
+void Remove()
 {
-  Hack::tick();
-}
-
-void Stop()
-{
-  Hack::stop();
 }
 
 }

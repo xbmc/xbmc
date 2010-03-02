@@ -22,7 +22,9 @@
  */
 
 #include "GUIDialogSettings.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
+#include "utils/AddonManager.h"
+#include <vector>
 
 namespace VIDEO
 {
@@ -35,38 +37,41 @@ class CGUIDialogContentSettings : public CGUIDialogSettings
 public:
   CGUIDialogContentSettings(void);
   virtual ~CGUIDialogContentSettings(void);
-  virtual bool OnMessage(CGUIMessage &message);
+  virtual bool OnMessage(CGUIMessage& message);
 
-  static bool Show(SScraperInfo& scraper, bool& bRunScan, int iLabel=-1);
-  static bool Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel=-1);
-  static bool ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
+  static bool Show(ADDON::ScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
+  static bool Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
+  static bool ShowForDirectory(const CStdString& strDirectory, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:
+  virtual void OnOkay();
   virtual void OnCancel();
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings();
+  void FillContentTypes();
+  void FillContentTypes(const CONTENT_TYPE& content);
+  void AddContentType(const CONTENT_TYPE& content);
   void FillListControl();
-  void OnSettingChanged(unsigned int setting);
-  virtual void OnSettingChanged(SettingInfo &setting);
-  SScraperInfo FindDefault(const CStdString& strType, const CStdString& strDefault);
-  static CStdString GetScraperDirectory(const SScraperInfo& scraper);
+  virtual void OnSettingChanged(SettingInfo& setting);
 
   bool m_bNeedSave;
 
+  bool m_bShowScanSettings;
   bool m_bRunScan;
   bool m_bScanRecursive;
   bool m_bUseDirNames;
   bool m_bSingleItem;
   bool m_bExclude;
-  bool m_bUpdate;
-  std::map<CStdString,std::vector<SScraperInfo> > m_scrapers; // key = content type
+  bool m_bNoUpdate;
+  std::map<CONTENT_TYPE, ADDON::VECADDONS> m_scrapers;
   CFileItemList* m_vecItems;
 
-  SScraperInfo m_info;
-  CScraperSettings m_scraperSettings; // needed so we have a basis
-  CStdString m_strContentType; // used for artist/albums
+  CStdString m_strContentType;
+  ADDON::AddonPtr m_scraper;
+  CStdString m_defaultScraper;
+  CONTENT_TYPE m_content;
+  CONTENT_TYPE m_origContent;
 };
-

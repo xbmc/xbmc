@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,35 +20,14 @@
  *
  */
 
-#include "GUIControl.h"
+#include "GUIRenderingControl.h"
 
-#include <list>
-
-// forward definitions
-class CVisualisation;
-
-class CGUIVisualisationControl : public CGUIControl
+class CGUIVisualisationControl : public CGUIRenderingControl
 {
 public:
   CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIVisualisationControl(const CGUIVisualisationControl &from);
-  virtual ~CGUIVisualisationControl(void);
-  virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); };
-
-  virtual void Render();
-  virtual void UpdateVisibility(const CGUIListItem *item = NULL);
+  virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); }; //TODO check for naughties
   virtual void FreeResources();
-  virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool CanFocus() const;
-  virtual bool CanFocusFromPoint(const CPoint &point) const;
-
-private:
-  void FreeVisualisation();
-  void LoadVisualisation();
-  bool UpdateTrack();
-  CStdString      m_currentVis;
-  bool m_bInitialized;
-  CCriticalSection m_critSection;
-  boost::shared_ptr<CVisualisation> m_addon;
+  virtual void Render();
 };

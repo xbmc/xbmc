@@ -1,7 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I.. -I../../linux -I../../../include -I../../ -I ../../../guilib
-#LIBS     = -L../../../lib/libXBMC_addon -lXBMC_addon
-LIBS     = ../../../lib/libXBMC_addon/libXBMC_addon.a
+INCLUDES=-I. -I.. -I../../linux -I../../addons/include -I../../ -I ../../../guilib
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 OBJS=opengl_spectrum.o
@@ -11,10 +9,10 @@ SLIB=../../../addons/visualizations/GLSpectrum/opengl_spectrum.vis
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) $(CXXFLAGS) -bundle -shared -flat_namespace -undefined suppress -o $@ $(OBJS) $(LIBS)
+	$(CXX) $(CXXFLAGS) -bundle -shared -flat_namespace -undefined suppress -o $@ $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(CXXFLAGS) -shared -g -o $(SLIB) $(OBJS) $(LIBS)
+	$(CXX) $(CXXFLAGS) -shared -g -o $(SLIB) $(OBJS)
 endif
 
 include ../../../Makefile.include

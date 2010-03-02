@@ -1,7 +1,7 @@
 // Waveform.vis
 // A simple visualisation example by MrC
 
-#include "xbmc_vis_dll.h"
+#include "../../addons/include/xbmc_vis_dll.h"
 #include <stdio.h>
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
@@ -53,7 +53,7 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   VIS_PROPS* visProps = (VIS_PROPS*)props;
 
-#ifndef HAS_SDL_OPENGL
+#ifndef HAS_SDL_OPENGL  
   g_device = (LPDIRECT3DDEVICE9)visProps->device;
 #else
   g_device = visProps->device;
@@ -66,14 +66,6 @@ ADDON_STATUS Create(void* hdl, void* props)
   g_viewport.MaxZ = 1;
 
   return STATUS_OK;
-}
-
-//-- Destroy -------------------------------------------------------------------
-// Do everything before unload of this add-on
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-extern "C" void Destroy()
-{
 }
 
 //-- Start --------------------------------------------------------------------
@@ -139,7 +131,7 @@ extern "C" void Render()
     verts[i].x = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
     verts[i].y = g_viewport.Y + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
     verts[i].z = 1.0;
-    verts[i].w = 1;
+    verts[i].w = 1;    
 #ifdef HAS_SDL_OPENGL
     glVertex2f(verts[i].x, verts[i].y);
 #endif
@@ -228,7 +220,7 @@ extern "C" bool IsLocked()
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***names)
 {
   return 0; // this vis supports 0 sub modules
 }

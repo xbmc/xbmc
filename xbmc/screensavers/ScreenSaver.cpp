@@ -45,27 +45,31 @@ bool CScreenSaver::CreateScreenSaver()
   m_pInfo->name       = Name().c_str();
 
   if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create())
-  {
-    m_initialized = true;
     return true;
-  }
+
   return false;
 }
 
 void CScreenSaver::Start()
 {
   // notify screen saver that they should start
-  if (m_initialized) m_pStruct->Start();
+  if (Initialized()) m_pStruct->Start();
 }
 
 void CScreenSaver::Render()
 {
   // ask screensaver to render itself
-  if (m_initialized) m_pStruct->Render();
+  if (Initialized()) m_pStruct->Render();
 }
 
 void CScreenSaver::Stop()
 {
   // ask screensaver to cleanup
-  if (m_initialized) m_pStruct->Stop();
+  if (Initialized()) m_pStruct->Stop();
+}
+
+void CScreenSaver::GetInfo(SCR_INFO *info)
+{
+  // get info from screensaver
+  if (Initialized()) m_pStruct->GetInfo(info);
 }

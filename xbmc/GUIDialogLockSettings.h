@@ -58,6 +58,7 @@ protected:
   bool m_bLockSettings;
   bool m_bLockAddOnManager;
   bool *m_saveUserDetails;
+  bool m_bLockAddOnManager;
 };
 
 

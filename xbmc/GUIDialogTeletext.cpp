@@ -66,7 +66,7 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
     if (!g_application.m_pPlayer->GetTeletextCache())
     {
       Close();
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, g_localizeStrings.Get(23091), "", 1500, false);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);
       return true;
     }
   }

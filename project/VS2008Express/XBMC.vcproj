@@ -2362,14 +2362,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIDialogPluginSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogPluginSettings.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUISettings.cpp"
 					>
 				</File>
@@ -2414,27 +2406,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\PluginSettings.cpp"
+					RelativePath="..\..\xbmc\Scraper.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\PluginSettings.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\ScraperSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\ScraperSettings.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\ScriptSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\ScriptSettings.h"
+					RelativePath="..\..\xbmc\Scraper.h"
 					>
 				</File>
 				<File
@@ -2885,6 +2861,26 @@
 			<Filter
 				Name="Utils"
 				>
+				<File
+					RelativePath="..\..\xbmc\utils\Addon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Addon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonDll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonManager.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\AlarmClock.cpp"
 					>
@@ -3582,6 +3578,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogAudioSubtitleSettings.cpp"
 					>
 				</File>
@@ -3943,6 +3947,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.h"
 					>
 				</File>
 				<File

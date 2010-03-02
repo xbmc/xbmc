@@ -40,6 +40,7 @@ SRCS=AnimatedGif.cpp \
      GUIProgressControl.cpp \
      GUIRadioButtonControl.cpp \
      GUIResizeControl.cpp \
+     GUIRenderingControl.cpp \
      GUIRSSControl.cpp \
      GUIScrollBarControl.cpp \
      GUISelectButtonControl.cpp \

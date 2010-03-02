@@ -33,7 +33,7 @@
 
 using namespace XFILE;
 
-CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items, CONTENT_PROGRAMS)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty
@@ -68,16 +68,7 @@ CStdString CGUIViewStateWindowPrograms::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
 {
-  // plugins share
-  if (CPluginDirectory::HasPlugins("programs"))
-  {
-    CMediaSource share;
-    share.strName = g_localizeStrings.Get(1043); // Program Plugins
-    share.strPath = "plugin://programs/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultProgramPlugins.png");
-    share.m_ignore= true;
-    AddOrReplace(g_settings.m_programSources,share);
-  }
+  AddOrReplace(g_settings.m_programSources,CGUIViewState::GetSources());
   return g_settings.m_programSources;
 }
 

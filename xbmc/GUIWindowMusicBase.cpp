@@ -431,13 +431,8 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
     return;
   }
 
-  // find album info
-  SScraperInfo scraper;
-  if (!m_musicdatabase.GetScraperForPath(path,scraper))
-    return;
-
   CMusicArtistInfo info;
-  if (FindArtistInfo(artist.strArtist, info, scraper, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
+  if (FindArtistInfo(artist.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {
     // download the album info
     if ( info.Loaded() )
@@ -529,13 +524,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
     return;
   }
 
-  // find album info
-  SScraperInfo scraper;
-  if (!m_musicdatabase.GetScraperForPath(path,scraper))
-    return;
-
   CMusicAlbumInfo info;
-  if (FindAlbumInfo(album.strAlbum, album.strArtist, info, scraper, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
+  if (FindAlbumInfo(album.strAlbum, album.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {
     // download the album info
     if ( info.Loaded() )
@@ -779,7 +769,7 @@ void CGUIWindowMusicBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection)
 {
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
@@ -830,7 +820,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   return true;
 }
 
-bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, ALLOW_SELECTION allowSelection)
 {
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)

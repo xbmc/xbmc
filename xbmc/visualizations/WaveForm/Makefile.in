@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../../include
+INCLUDES=-I. -I../../addons/include
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 OBJS=Main.o

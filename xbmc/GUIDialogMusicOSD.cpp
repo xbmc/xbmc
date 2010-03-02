@@ -35,6 +35,8 @@ using namespace ADDON;
 #define CONTROL_VIS_CHOOSER      503
 #define CONTROL_VIS_SETTINGS     504
 
+using ADDON::CVisualisation;
+
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {

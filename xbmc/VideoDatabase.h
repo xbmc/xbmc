@@ -21,12 +21,12 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
+#include "Scraper.h"
 #include "Bookmark.h"
 
 #include <memory>
 #include <set>
 
-struct SScraperInfo;
 class CFileItem;
 class CFileItemList;
 class CVideoSettings;
@@ -389,11 +389,12 @@ public:
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
 
   // scraper settings
-  void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
+  void SetScraperForPath(const CStdString& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
+  CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);

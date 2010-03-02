@@ -94,6 +94,9 @@ IMAGES= \
 	DefaultFolderBack.png \
 	DefaultFolder.png \
 	DefaultHardDisk.png \
+	DefaultIconError.png \
+	DefaultIconInfo.png \
+	DefaultIconWarning.png \
 	DefaultMovies.png \
 	DefaultMusicAlbums.png \
 	DefaultMusicArtists.png \

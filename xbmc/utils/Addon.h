@@ -119,7 +119,7 @@ public:
   const CStdString Summary() const { return m_props.summary; }
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
-  const CStdString Profile() const { return m_strProfile; }
+  const CStdString Profile() const { return m_profile; }
   const CStdString LibName() const { return m_props.libname; }
   const CStdString Author() const { return m_props.author; }
   const CStdString Icon() const { return m_props.icon; }
@@ -140,8 +140,7 @@ private:
   friend class AddonMgr;
   AddonProps m_props;
   const AddonPtr    m_parent;
-  CStdString GetProfilePath();
-  CStdString GetUserSettingsPath();
+  void BuildProfilePath();
 
   virtual bool IsAddonLibrary() { return false; }
 
@@ -155,7 +154,7 @@ private:
   ADDONDEPS m_dependencies;
 
   void BuildLibName();
-  CStdString  m_strProfile;
+  CStdString  m_profile;
   CStdString  m_strLibName;
   bool        m_disabled;
   CLocalizeStrings  m_strings;
