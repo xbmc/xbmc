@@ -25,6 +25,9 @@
 #include "GUISettings.h"
 #include "StringUtils.h"
 #include "FileSystem/Directory.h"
+#ifdef __APPLE__
+#include "../osx/OSXGNUReplacements.h"
+#endif
 #include "log.h"
 #include <string.h>
 
