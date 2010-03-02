@@ -53,7 +53,7 @@
     }
 #endif
 
-static DMAP_INT8 readBigEndian_INT8(const void *buf, size_t size)
+DMAP_INT8 readBigEndian_INT8(const void *buf, size_t size)
 {
     /* really int8 will never need alignment, but for constancy.. */
     FIXUP_ALIGNMENT(DMAP_INT8);
@@ -61,42 +61,42 @@ static DMAP_INT8 readBigEndian_INT8(const void *buf, size_t size)
     return *(DMAP_INT8*)buf;
 }
 
-static DMAP_UINT8 readBigEndian_UINT8(const void *buf, size_t size)
+DMAP_UINT8 readBigEndian_UINT8(const void *buf, size_t size)
 {
     FIXUP_ALIGNMENT(DMAP_UINT8);
 
     return *(DMAP_UINT8*)buf;
 }
 
-static DMAP_INT16 readBigEndian_INT16(const void *buf, size_t size)
+DMAP_INT16 readBigEndian_INT16(const void *buf, size_t size)
 {
     FIXUP_ALIGNMENT(DMAP_INT16);
 
     return __Swap16(*(DMAP_INT16*)buf);
 }
 
-static DMAP_UINT16 readBigEndian_UINT16(const void *buf, size_t size)
+DMAP_UINT16 readBigEndian_UINT16(const void *buf, size_t size)
 {
     FIXUP_ALIGNMENT(DMAP_UINT16);
 
     return __Swap16(*(DMAP_UINT16*)buf);
 }
 
-static DMAP_INT32 readBigEndian_INT32(const void *buf, size_t size)
+DMAP_INT32 readBigEndian_INT32(const void *buf, size_t size)
 {
     FIXUP_ALIGNMENT(DMAP_INT32);
 
     return __Swap32(*(DMAP_INT32*)buf);
 }
 
-static DMAP_UINT32 readBigEndian_UINT32(const void *buf, size_t size)
+DMAP_UINT32 readBigEndian_UINT32(const void *buf, size_t size)
 {
     FIXUP_ALIGNMENT(DMAP_UINT32);
 
     return __Swap32(*(DMAP_UINT32*)buf);
 }
 
-static DMAP_INT64 readBigEndian_INT64(const void *buf, size_t size)
+DMAP_INT64 readBigEndian_INT64(const void *buf, size_t size)
 {
     DMAP_INT64 val;
     FIXUP_ALIGNMENT(DMAP_INT64);
@@ -106,7 +106,7 @@ static DMAP_INT64 readBigEndian_INT64(const void *buf, size_t size)
     return val;
 }
 
-static DMAP_UINT64 readBigEndian_UINT64(const void *buf, size_t size)
+DMAP_UINT64 readBigEndian_UINT64(const void *buf, size_t size)
 {
     DMAP_INT64 val;
     FIXUP_ALIGNMENT(DMAP_UINT64);
@@ -116,7 +116,7 @@ static DMAP_UINT64 readBigEndian_UINT64(const void *buf, size_t size)
     return val;
 }
 
-static dmap_contentCodeFOURCC read_fourcc(const void *buf, size_t size)
+dmap_contentCodeFOURCC read_fourcc(const void *buf, size_t size)
 {
     const char *c = (char*)buf;
     if (size != sizeof(dmap_contentCodeFOURCC))
@@ -124,7 +124,7 @@ static dmap_contentCodeFOURCC read_fourcc(const void *buf, size_t size)
     return MAKEFOURCC(c[0], c[1], c[2], c[3]);
 }
 
-static DMAP_VERSION read_version(const void *buf, size_t size)
+DMAP_VERSION read_version(const void *buf, size_t size)
 {
     DMAP_VERSION v;
     if (size != sizeof(DMAP_VERSION))
@@ -135,7 +135,7 @@ static DMAP_VERSION read_version(const void *buf, size_t size)
     return v;
 }
 
-static char* read_string_withalloc(const void *buf, size_t size)
+char* read_string_withalloc(const void *buf, size_t size)
 {
     char *str = (char*)malloc(size + 1);
     strncpy(str, (char*)buf, size);
