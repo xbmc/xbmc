@@ -623,12 +623,12 @@ retry:
         return -1;
 
     if (CONFIG_MPEG4_VDPAU_DECODER && (s->avctx->codec->capabilities & CODEC_CAP_HWACCEL_VDPAU)) {
-        ff_vdpau_mpeg4_decode_picture(s, buf, buf_size);
+        ff_vdpau_mpeg4_decode_picture(s, s->gb.buffer, s->gb.buffer_end - s->gb.buffer);
         goto frame_end;
     }
 
     if (avctx->hwaccel) {
-        if (avctx->hwaccel->start_frame(avctx, buf, buf_size) < 0)
+        if (avctx->hwaccel->start_frame(avctx, s->gb.buffer, s->gb.buffer_end - s->gb.buffer) < 0)
             return -1;
     }
 
@@ -667,6 +667,7 @@ retry:
             s->error_status_table[s->mb_num-1]= AC_ERROR|DC_ERROR|MV_ERROR;
         }
 
+frame_end:
     /* divx 5.01+ bistream reorder stuff */
     if(s->codec_id==CODEC_ID_MPEG4 && s->bitstream_buffer_size==0 && s->divx_packed){
         int current_pos= get_bits_count(&s->gb)>>3;
@@ -701,7 +702,6 @@ retry:
 intrax8_decoded:
     ff_er_frame_end(s);
 
-frame_end:
     if (avctx->hwaccel) {
         if (avctx->hwaccel->end_frame(avctx) < 0)
             return -1;
