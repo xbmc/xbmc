@@ -167,7 +167,19 @@
 						<width>750</width>
 						<height>75</height>
 						<aspectratio>stretch</aspectratio>
+						<texture border="5">MenuItemNF.png</texture>
+						<visible>!Control.HasFocus(2)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>750</width>
+						<height>75</height>
+						<aspectratio>stretch</aspectratio>
 						<texture border="5">MenuItemFO.png</texture>
+						<visible>Control.HasFocus(2)</visible>
+						<include>VisibleFadeEffect</include>
 					</control>
 					<control type="image">
 						<posx>0</posx>
