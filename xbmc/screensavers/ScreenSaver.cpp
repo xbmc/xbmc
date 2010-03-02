@@ -18,7 +18,37 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "ScreenSaver.h" 
+#include "ScreenSaver.h"
+#include "Settings.h"
+#include "WindowingFactory.h"
+
+using namespace ADDON;
+
+bool CScreenSaver::CreateScreenSaver()
+{
+ // pass it the screen width,height
+ // and the name of the screensaver
+  int iWidth = g_graphicsContext.GetWidth();
+  int iHeight = g_graphicsContext.GetHeight();
+
+  m_pInfo = new SCR_PROPS;
+#ifdef HAS_DX
+  m_pInfo->device     = g_Windowing.Get3DDevice();
+#else
+  m_pInfo->device     = NULL;
+#endif
+  m_pInfo->x          = 0;
+  m_pInfo->y          = 0;
+  m_pInfo->width      = iWidth;
+  m_pInfo->height     = iHeight;
+  m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
+  m_pInfo->name       = Name().c_str();
+
+  if (CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>::Create())
+    return true;
+
+  return false;
+}
 
 void CScreenSaver::Start()
 {
@@ -37,7 +67,6 @@ void CScreenSaver::Stop()
   // ask screensaver to cleanup
   if (Initialized()) m_pStruct->Stop();
 }
-
 
 void CScreenSaver::GetInfo(SCR_INFO *info)
 {

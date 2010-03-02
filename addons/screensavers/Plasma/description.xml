@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <!-- guid: unique identifier of this addon 	!-->
+  <uuid>F20BE86C-7EA9-4b79-BE92-9BF3311EC092</uuid>
+  <type>screensaver</type>
+  <title>Plasma</title>
+  <library>Plasma.xbs</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>linux</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>OpenGL Screensaver</summary>
+  <description>Screensaver showing...</description>
+  <author>TEAMXBMC</author>
+</addoninfo>

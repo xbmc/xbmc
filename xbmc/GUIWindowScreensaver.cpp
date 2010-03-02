@@ -32,10 +32,6 @@
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(WINDOW_SCREENSAVER, "")
 {
-#ifdef HAS_SCREENSAVER
-  m_pScreenSaver = NULL;
-  m_addon.reset();
-#endif
 }
 
 CGUIWindowScreensaver::~CGUIWindowScreensaver(void)
@@ -47,7 +43,7 @@ void CGUIWindowScreensaver::Render()
   CSingleLock lock (m_critSection);
 
 #ifdef HAS_SCREENSAVER
-  if (m_pScreenSaver)
+  if (m_addon)
   {
     if (m_bInitialized)
     {
@@ -56,7 +52,7 @@ void CGUIWindowScreensaver::Render()
         //some screensavers seem to be depending on xbmc clearing the screen
         //       g_Windowing.Get3DDevice()->Clear( 0L, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L );
         g_graphicsContext.CaptureStateBlock();
-        m_pScreenSaver->Render();
+        m_addon->Render();
         g_graphicsContext.ApplyStateBlock();
       }
       catch (...)
@@ -69,7 +65,7 @@ void CGUIWindowScreensaver::Render()
     {
       try
       {
-        m_pScreenSaver->Start();
+        m_addon->Start();
         m_bInitialized = true;
       }
       catch (...)
@@ -104,15 +100,13 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
     {
       CSingleLock lock (m_critSection);
 #ifdef HAS_SCREENSAVER
-      if (m_pScreenSaver)
+      if (m_addon)
       {
         CLog::Log(LOGDEBUG, "SCREENSAVER: - Stopping - %s", m_addon->Name().c_str());
-        m_pScreenSaver->Stop();
-        delete m_pScreenSaver;
-
+        m_addon->Stop();
         g_graphicsContext.ApplyStateBlock();
+        m_addon->Destroy();
       }
-      m_pScreenSaver = NULL;
 #endif
       m_bInitialized = false;
 
@@ -131,10 +125,9 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       CSingleLock lock (m_critSection);
 
 #ifdef HAS_SCREENSAVER
-      if (m_pScreenSaver)
+      if (m_addon)
       {
-        m_pScreenSaver->Stop();
-        delete m_pScreenSaver;
+        m_addon->Stop();
         g_graphicsContext.ApplyStateBlock();
       }
       m_bInitialized = false;
@@ -144,17 +137,14 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       ADDON::AddonPtr addon;
       if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCREENSAVER, g_guiSettings.GetString("screensaver.mode"), addon))
         return false;
+
       m_addon = boost::dynamic_pointer_cast<CScreenSaver>(addon);
 
       if (!m_addon)
         return false;
 
-      m_pScreenSaver = NULL; //TODO addonmanager loader /*factory.LoadScreenSaver(m_addon);*/
-      if (m_pScreenSaver)
-      {
-        g_graphicsContext.CaptureStateBlock();
-        m_addon->Create();
-      }
+      g_graphicsContext.CaptureStateBlock();
+      m_addon->CreateScreenSaver();
 #endif
       // setup a z-buffer
 //      RESOLUTION res = g_graphicsContext.GetVideoResolution();

@@ -30,6 +30,7 @@ public:
   virtual ~CScreenSaver() {}
 
   // Things that MUST be supplied by the child classes
+  bool CreateScreenSaver();
   void Start();
   void Render();
   void Stop();

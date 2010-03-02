@@ -97,6 +97,9 @@ LIB_DIRS=\
 	lib/libmodplug \
 	lib/xbmc-dll-symbols
 
+SS_DIRS=\
+	xbmc/screensavers/rsxs-0.9/xbmc
+
 VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
 	xbmc/visualizations/WaveForm \
@@ -292,6 +295,8 @@ ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(AR
 	$(MAKE) -C xbmc/visualizations/Goom
 endif
 endif
+screensavers: exports
+	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule

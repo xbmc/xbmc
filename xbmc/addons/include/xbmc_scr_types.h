@@ -38,7 +38,7 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    char *name;
+    const char *name;
   };
 
   struct ScreenSaver
