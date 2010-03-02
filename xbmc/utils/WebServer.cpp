@@ -222,7 +222,7 @@ int CWebServer::HttpApi(struct MHD_Connection *connection)
   map<CStdString, CStdString> arguments;
   if (MHD_get_connection_values(connection, MHD_GET_ARGUMENT_KIND, FillArgumentMap, &arguments) > 0)
   {
-    CStdString httpapiresponse = CHttpApi::MethodCall(arguments["command"], arguments["parameter"]);
+    CStdString httpapiresponse = CHttpApi::WebMethodCall(arguments["command"], arguments["parameter"]);
 
     struct MHD_Response *response = MHD_create_response_from_data(httpapiresponse.length(), (void *) httpapiresponse.c_str(), MHD_NO, MHD_YES);
     int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);

@@ -82,7 +82,7 @@ bool CGUIWindowOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
   }
   if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f));
+    return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_BACK, 0.5f));
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause

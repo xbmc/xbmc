@@ -65,13 +65,16 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "FileRar.h"
 #endif
+#ifdef HAS_FILESYSTEM_SFTP
+#include "FileSFTP.h"
+#endif
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
 #include "../utils/Network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
-#include "CMythFile.h"
+#include "MythFile.h"
 #include "Application.h"
 #include "URL.h"
 
@@ -121,12 +124,15 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     ||  strProtocol == "ftpx"
     ||  strProtocol == "ftps"
     ||  strProtocol == "rss") return new CFileCurl();
+#ifdef HAS_FILESYSTEM_SFTP
+    else if (strProtocol == "sftp" || strProtocol == "ssh") return new CFileSFTP();
+#endif
     else if (strProtocol == "shout") return new CFileShoutcast();
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
     else if (strProtocol == "hdhomerun") return new CFileHomeRun();
-    else if (strProtocol == "myth") return new CCMythFile();
-    else if (strProtocol == "cmyth") return new CCMythFile();
+    else if (strProtocol == "myth") return new CMythFile();
+    else if (strProtocol == "cmyth") return new CMythFile();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
     else if (strProtocol == "smb") return new CWINFileSMB();
@@ -145,8 +151,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "daap") return new CFileDAAP();
 #endif
 #endif
-    else if (strProtocol == "myth") return new CCMythFile();
-    else if (strProtocol == "cmyth") return new CCMythFile();
+    else if (strProtocol == "myth") return new CMythFile();
+    else if (strProtocol == "cmyth") return new CMythFile();
 #ifdef HAS_FILESYSTEM_SAP
     else if (strProtocol == "sap") return new CSAPFile();
 #endif

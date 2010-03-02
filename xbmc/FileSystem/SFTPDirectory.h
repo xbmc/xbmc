@@ -1,5 +1,6 @@
+#pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,21 +20,22 @@
  *
  */
 
-#include "GUIWindowStartup.h"
-#include "Key.h"
+#include "system.h"
+#ifdef HAS_FILESYSTEM_SFTP
+#include "IDirectory.h"
+#include "FileSFTP.h"
 
-CGUIWindowStartup::CGUIWindowStartup(void)
-    : CGUIWindow(WINDOW_STARTUP, "Startup.xml")
-{
-}
+class CURL;
+class TiXmlElement;
 
-CGUIWindowStartup::~CGUIWindowStartup(void)
+namespace XFILE
 {
+  class CSFTPDirectory : public IDirectory
+  {
+  public:
+    CSFTPDirectory(void);
+    virtual ~CSFTPDirectory(void);
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  };
 }
-
-bool CGUIWindowStartup::OnAction(const CAction &action)
-{
-  if (action.IsMouse())
-    return true;
-  return CGUIWindow::OnAction(action);
-}
+#endif

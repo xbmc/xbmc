@@ -50,7 +50,7 @@
 #ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
-#include "FileSystem/CMythDirectory.h"
+#include "FileSystem/MythDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
 #endif
@@ -1126,7 +1126,7 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
   if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
     return true;
 
-  if (IsMythTV(strFile) && CCMythDirectory::IsLiveTV(strFile))
+  if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;
@@ -2917,7 +2917,7 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
      * it hits the directory cache on the way through, which has the Live Channels and Guide
      * items cached.
      */
-    return CCMythDirectory::SupportsFileOperations(strPath);
+    return CMythDirectory::SupportsFileOperations(strPath);
   }
   if (IsStack(strPath))
   {

@@ -87,6 +87,7 @@ void CAdvancedSettings::Initialize()
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
+  m_videoVDPAUScaling = false;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -157,7 +158,7 @@ void CAdvancedSettings::Initialize()
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-\\(]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
@@ -404,6 +405,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
     XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
+    XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

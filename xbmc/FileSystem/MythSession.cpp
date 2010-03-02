@@ -20,7 +20,7 @@
  */
 
 #include "DllLibCMyth.h"
-#include "CMythSession.h"
+#include "MythSession.h"
 #include "VideoInfoTag.h"
 #include "AdvancedSettings.h"
 #include "DateTime.h"
@@ -46,17 +46,17 @@ using namespace std;
 #define MYTH_DEFAULT_PASSWORD "mythtv"
 #define MYTH_DEFAULT_DATABASE "mythconverg"
 
-CCriticalSection       CCMythSession::m_section_session;
-vector<CCMythSession*> CCMythSession::m_sessions;
+CCriticalSection       CMythSession::m_section_session;
+vector<CMythSession*>  CMythSession::m_sessions;
 
-void CCMythSession::CheckIdle()
+void CMythSession::CheckIdle()
 {
   CSingleLock lock(m_section_session);
 
-  vector<CCMythSession*>::iterator it;
+  vector<CMythSession*>::iterator it;
   for (it = m_sessions.begin(); it != m_sessions.end(); )
   {
-    CCMythSession* session = *it;
+    CMythSession* session = *it;
     if (session->m_timestamp + 5000 < CTimeUtils::GetTimeMS())
     {
       CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
@@ -70,24 +70,24 @@ void CCMythSession::CheckIdle()
   }
 }
 
-CCMythSession* CCMythSession::AquireSession(const CURL& url)
+CMythSession* CMythSession::AquireSession(const CURL& url)
 {
   CSingleLock lock(m_section_session);
 
-  vector<CCMythSession*>::iterator it;
+  vector<CMythSession*>::iterator it;
   for (it = m_sessions.begin(); it != m_sessions.end(); it++)
   {
-    CCMythSession* session = *it;
+    CMythSession* session = *it;
     if (session->CanSupport(url))
     {
       m_sessions.erase(it);
       return session;
     }
   }
-  return new CCMythSession(url);
+  return new CMythSession(url);
 }
 
-void CCMythSession::ReleaseSession(CCMythSession* session)
+void CMythSession::ReleaseSession(CMythSession* session)
 {
   session->SetListener(NULL);
   session->m_timestamp = CTimeUtils::GetTimeMS();
@@ -95,30 +95,20 @@ void CCMythSession::ReleaseSession(CCMythSession* session)
   m_sessions.push_back(session);
 }
 
-CDateTime CCMythSession::GetValue(cmyth_timestamp_t t)
+CDateTime CMythSession::GetValue(cmyth_timestamp_t t)
 {
   CDateTime result;
   if (t)
   {
     time_t time = m_dll->timestamp_to_unixtime(t); // Returns NULL if error
     if (time)
-    {
-      tm *local = localtime(&time); // Conversion to local time
-      /*
-       * Microsoft implementation of localtime returns NULL if on or before epoch.
-       * (http://msdn.microsoft.com/en-us/library/bf12f0hc(VS.80).aspx)
-       */
-      if (local)
-        result = *local;
-      else
-        result = time; // Use the original time as close enough.
-    }
+      result = CTimeUtils::GetLocalTime(time);
     m_dll->ref_release(t);
   }
   return result;
 }
 
-CStdString CCMythSession::GetValue(char *str)
+CStdString CMythSession::GetValue(char *str)
 {
   CStdString result;
   if (str)
@@ -130,78 +120,7 @@ CStdString CCMythSession::GetValue(char *str)
   return result;
 }
 
-int CCMythSession::GetValue(int integer)
-{
-  int result;
-  if(integer)
-  {
-    result = integer;
-  }
-  return result;
-}
-
-bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
-{
-  if (!info)
-    return false;
-
-  CVideoInfoTag* tag = item.GetVideoInfoTag();
-
-  tag->m_strAlbum       = GetValue(m_dll->proginfo_chansign(info));
-  tag->m_strShowTitle   = GetValue(m_dll->proginfo_title(info));
-  tag->m_strPlotOutline = GetValue(m_dll->proginfo_subtitle(info));
-  tag->m_strPlot        = GetValue(m_dll->proginfo_description(info));
-  tag->m_strGenre       = GetValue(m_dll->proginfo_category(info));
-
-  if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
-    tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
-
-  tag->m_strOriginalTitle = tag->m_strShowTitle;
-
-  tag->m_strTitle = tag->m_strAlbum;
-  if (tag->m_strShowTitle.length() > 0)
-    tag->m_strTitle += " : " + tag->m_strShowTitle;
-
-  CDateTimeSpan span = GetValue(m_dll->proginfo_rec_end(info)) - GetValue(m_dll->proginfo_rec_start(info));
-  StringUtils::SecondsToTimeString(span.GetSeconds() +
-                                   span.GetMinutes() * 60 +
-                                   span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
-
-  tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
-  tag->m_iEpisode = 0;
-
-  item.m_strTitle = GetValue(m_dll->proginfo_chanstr(info));
-  item.m_dateTime = GetValue(m_dll->proginfo_rec_start(info));
-  item.m_dwSize   = m_dll->proginfo_length(info);
-
-  if (m_dll->proginfo_rec_status(info) == RS_RECORDING)
-  {
-    tag->m_strStatus = "livetv";
-
-    CStdString temp;
-
-    temp = GetValue(m_dll->proginfo_chanicon(info));
-    if (temp.length() > 0)
-    {
-      CURL url(item.m_strPath);
-      url.SetFileName("files/channels/" + temp);
-      item.SetThumbnailImage(url.Get());
-    }
-
-    temp = GetValue(m_dll->proginfo_chanstr(info));
-    if (temp.length() > 0)
-    {
-      CURL url(item.m_strPath);
-      url.SetFileName("channels/" + temp + ".ts");
-      item.m_strPath = url.Get();
-    }
-    item.SetCachedVideoThumb();
-  }
-
-  return true;
-}
-
-void CCMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program)
+void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program)
 {
   if (!program)
     return;
@@ -311,7 +230,7 @@ void CCMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t progra
   }
 }
 
-CCMythSession::CCMythSession(const CURL& url)
+CMythSession::CMythSession(const CURL& url)
 {
   m_control   = NULL;
   m_event     = NULL;
@@ -334,14 +253,13 @@ CCMythSession::CCMythSession(const CURL& url)
   }
 }
 
-CCMythSession::~CCMythSession()
+CMythSession::~CMythSession()
 {
   Disconnect();
   delete m_dll;
-  CLog::Log(LOGDEBUG, "CCMythSession destroyed");
 }
 
-bool CCMythSession::CanSupport(const CURL& url)
+bool CMythSession::CanSupport(const CURL& url)
 {
   if (m_hostname != url.GetHostName())
     return false;
@@ -358,7 +276,7 @@ bool CCMythSession::CanSupport(const CURL& url)
   return true;
 }
 
-void CCMythSession::Process()
+void CMythSession::Process()
 {
   char buf[128];
   int  next;
@@ -415,7 +333,7 @@ void CCMythSession::Process()
   }
 }
 
-void CCMythSession::Disconnect()
+void CMythSession::Disconnect()
 {
   if (!m_dll || !m_dll->IsLoaded())
     return;
@@ -430,7 +348,7 @@ void CCMythSession::Disconnect()
     m_dll->ref_release(m_database);
 }
 
-cmyth_conn_t CCMythSession::GetControl()
+cmyth_conn_t CMythSession::GetControl()
 {
   if (!m_control)
   {
@@ -444,7 +362,7 @@ cmyth_conn_t CCMythSession::GetControl()
   return m_control;
 }
 
-cmyth_database_t CCMythSession::GetDatabase()
+cmyth_database_t CMythSession::GetDatabase()
 {
   if (!m_database)
   {
@@ -459,7 +377,7 @@ cmyth_database_t CCMythSession::GetDatabase()
   return m_database;
 }
 
-bool CCMythSession::SetListener(IEventListener *listener)
+bool CMythSession::SetListener(IEventListener *listener)
 {
   if (!m_event && listener)
   {
@@ -480,7 +398,7 @@ bool CCMythSession::SetListener(IEventListener *listener)
   return true;
 }
 
-DllLibCMyth* CCMythSession::GetLibrary()
+DllLibCMyth* CMythSession::GetLibrary()
 {
   if (m_dll->IsLoaded())
     return m_dll;

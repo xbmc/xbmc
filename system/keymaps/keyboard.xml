@@ -89,8 +89,8 @@
       <volume_down>VolumeDown</volume_down>
       <next_track>SkipNext</next_track>
       <prev_track>SkipPrevious</prev_track>
-      <launch_mail/>
-      <key id='61620'/>      <!-- same as above, launch_mail, but using button code (based on vkey id) -->
+      <launch_mail></launch_mail>
+      <key id='61620'></key>      <!-- same as above, launch_mail, but using button code (based on vkey id) -->
       <home>FirstPage</home>
       <end>LastPage</end>
       <key id='65446'>ParentDir</key>

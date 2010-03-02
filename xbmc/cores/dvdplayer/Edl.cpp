@@ -23,7 +23,7 @@
 #include "StringUtils.h"
 #include "Util.h"
 #include "FileSystem/File.h"
-#include "FileSystem/CMythFile.h"
+#include "FileSystem/MythFile.h"
 #include "AdvancedSettings.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
@@ -783,7 +783,7 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
   /*
    * Exists() sets up all the internal bits needed for GetCommBreakList().
    */
-  CCMythFile mythFile;
+  CMythFile mythFile;
   CURL url(strMovie);
   if (!mythFile.Exists(url))
     return false;

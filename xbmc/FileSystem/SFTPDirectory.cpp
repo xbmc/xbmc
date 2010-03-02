@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,21 +19,25 @@
  *
  */
 
-#include "GUIWindowStartup.h"
-#include "Key.h"
+#include "SFTPDirectory.h"
+#ifdef HAS_FILESYSTEM_SFTP
+#include "URL.h"
 
-CGUIWindowStartup::CGUIWindowStartup(void)
-    : CGUIWindow(WINDOW_STARTUP, "Startup.xml")
+using namespace XFILE;
+
+CSFTPDirectory::CSFTPDirectory(void)
 {
 }
 
-CGUIWindowStartup::~CGUIWindowStartup(void)
+CSFTPDirectory::~CSFTPDirectory(void)
 {
 }
 
-bool CGUIWindowStartup::OnAction(const CAction &action)
+bool CSFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  if (action.IsMouse())
-    return true;
-  return CGUIWindow::OnAction(action);
+  CURL url(strPath);
+
+  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url.GetHostName().c_str(), url.GetUserName().c_str(), url.GetPassWord().c_str());
+  return session->GetDirectory(url.GetWithoutFilename().c_str(), url.GetFileName().c_str(), items);
 }
+#endif

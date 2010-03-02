@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 29/12/2009-->
-<!--Turkish strings based on English strings revision 26163-->
+<!--Date of translation: 12/02/2010-->
+<!--Turkish strings based on English strings revision 26808-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -22,11 +22,11 @@
   <string id="31025">Nesne</string>
   <string id="31026">Çeşitli Ayarlar</string>
   <string id="31027">Yer</string>
-  
+
   <!-- View Type labels -->
   <string id="31028">Poster</string>
   <string id="31029">Fanart</string>
-  <string id="31030">Tam Liste</string>
+  <string id="31030">Tam liste</string>
   <string id="31031">Küçük Resimler</string>
   <string id="31032">Kayan Resim</string>
 
@@ -50,6 +50,7 @@
   <string id="31058">Sistem müzik dosyaları</string>
   <string id="31059">Geçerli çalma listesi</string>
   <string id="31060">Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin.</string>
+  <string id="31061">Seçilen Geçerli Parça</string>
 
   <!-- Skin Settings labels -->
   <string id="31100"></string>

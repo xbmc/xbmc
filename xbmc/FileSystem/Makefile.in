@@ -15,9 +15,6 @@ SRCS=AddonsDirectory.cpp \
      CDDADirectory.cpp \
      cddb.cpp \
      cdioSupport.cpp \
-     CMythDirectory.cpp \
-     CMythFile.cpp \
-     CMythSession.cpp \
      DAAPDirectory.cpp \
      DAVDirectory.cpp \
      DirectoryCache.cpp \
@@ -31,6 +28,7 @@ SRCS=AddonsDirectory.cpp \
      FileCDDA.cpp \
      File.cpp \
      FileCurl.cpp \
+     FileSFTP.cpp \
      FileDAAP.cpp \
      FileFactory.cpp \
      FileFileReader.cpp \
@@ -61,6 +59,9 @@ SRCS=AddonsDirectory.cpp \
      MusicDatabaseDirectory.cpp \
      MusicFileDirectory.cpp \
      MusicSearchDirectory.cpp \
+     MythDirectory.cpp \
+     MythFile.cpp \
+     MythSession.cpp \
      NptXbmcFile.cpp \
      NSFFileDirectory.cpp \
      OGGFileDirectory.cpp \
@@ -89,6 +90,7 @@ SRCS=AddonsDirectory.cpp \
      VTPSession.cpp \
      VTPFile.cpp \
      ZeroconfDirectory.cpp \
+     SFTPDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
 

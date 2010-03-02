@@ -138,19 +138,16 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.SupportsBrightness())
+  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_settings.m_currentVideoSettings.m_Brightness, 0, 1, 100, FormatInteger);
-  if (g_renderManager.SupportsContrast())
+  if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_settings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
-  if (g_renderManager.SupportsGamma())
+  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
-#ifdef HAVE_LIBVDPAU
-  CSharedLock lock(g_renderManager.GetSection());
-  if (g_VDPAU) {
+  if (g_renderManager.Supports(RENDERFEATURE_NOISE))
     AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_settings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_settings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f, FormatFloat);
-  }
-#endif
 #endif
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);

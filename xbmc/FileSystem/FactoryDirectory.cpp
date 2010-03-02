@@ -89,12 +89,15 @@
 #endif
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
-#include "CMythDirectory.h"
+#include "MythDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
 #ifdef HAS_ZEROCONF
 #include "ZeroconfDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_SFTP
+#include "SFTPDirectory.h"
 #endif
 
 using namespace XFILE;
@@ -150,6 +153,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
     if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
     if (strProtocol == "dav" || strProtocol == "davs") return new CDAVDirectory();
+#ifdef HAS_FILESYSTEM_SFTP
+    if (strProtocol == "sftp" || strProtocol == "ssh") return new CSFTPDirectory();
+#endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
     if (strProtocol == "smb") return new CWINSMBDirectory();
@@ -172,8 +178,8 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "upnp") return new CUPnPDirectory();
 #endif
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
-    if (strProtocol == "myth") return new CCMythDirectory();
-    if (strProtocol == "cmyth") return new CCMythDirectory();
+    if (strProtocol == "myth") return new CMythDirectory();
+    if (strProtocol == "cmyth") return new CMythDirectory();
     if (strProtocol == "rss") return new CRSSDirectory();
 #ifdef HAS_FILESYSTEM_SAP
     if (strProtocol == "sap") return new CSAPDirectory();

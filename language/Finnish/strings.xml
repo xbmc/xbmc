@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 12/1/2009 -->
-<!--Finnish strings based on English strings revision 26739-->
+<!--Date of translation: 26/2/2010 -->
+<!--Finnish strings based on English strings revision 28135 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -126,11 +126,13 @@
   <string id="165">Levy asetettu</string>
   <string id="166">Ulkoasu</string>
   <string id="167">FTP-palvelin käytössä</string>
-  <string id="168">Kellonajan päivitys internetistä</string>
+  <string id="168"></string>
   <string id="169">Näytön resoluutio</string>
   <string id="170">Säädä näytön päivitysnopeus elokuvaan sopivaksi</string>
 
+
   <string id="172">Julkaistu</string>
+  <string id="173">4:3 videoiden näyttömuoto</string>
 
   <string id="175">Musiikkityyli</string>
   <string id="176">Tyylilaji</string>
@@ -199,7 +201,7 @@
   <string id="251">Valitse kohdehakemisto</string>
   <string id="252">Syötä stereoääni kaikille kaiuttimille</string>
   <string id="253">Kanavien määrä</string>
-  <string id="254">DTS-yhteensopiva vastaanotin</string>
+  <string id="254">- DTS yhteensopiva vastaanotin</string>
   <string id="255">CD-tietokanta</string>
   <string id="256">Noudetaan CD-tietoja</string>
   <string id="257">Virhe</string>
@@ -242,7 +244,11 @@
   <string id="296">Poista kirjanmerkit</string>
   <string id="297">Äänen ajoitus</string>
   <string id="298">Kirjanmerkit</string>
-  <string id="303">Tekstityksen viive</string>
+  <string id="299">- AAC yhteensopiva vastaanotin</string>
+  <string id="300">- MP1 yhteensopiva vastaanotin</string>
+  <string id="301">- MP2 yhteensopiva vastaanotin</string>
+  <string id="302">- MP3 yhteensopiva vastaanotin</string>
+  <string id="303">Viive</string>
   <string id="304">Kieli</string>
   <string id="305">Käytössä</string>
   <string id="306">Lomittamaton</string>
@@ -285,6 +291,7 @@
   <string id="343">Sovita kuvataajuus</string>
   <string id="344">Näyttelijät</string>
   <string id="345">Vuosi</string>
+  <string id="346">Lisää äänenvoimakkuutta äänikanavia yhdistettäessä</string>
   <string id="350">Ohjelmat</string>
   <string id="351">Ei käytössä</string>
   <string id="352">Himmeä</string>
@@ -299,7 +306,7 @@
   <string id="361">Kaikkien kuvaesitys</string>
   <string id="362">Näytönsäästäjän läpinäkyvyys</string>
   <string id="363">Järjestä: Tiedostonimi</string>
-  <string id="364">AC3-yhteensopiva vastaanotin</string>
+  <string id="364">- Dolby Digital (AC3) yhteensopiva vastaanotin</string>
   <string id="365">Järjestä: Nimi</string>
   <string id="366">Järjestä: Vuosi</string>
   <string id="367">Järjestä: Arvosana</string>
@@ -326,9 +333,9 @@
   <string id="388">aamulla</string>
   <string id="389">sadekuuro</string>
   <string id="390">lumipyryä</string>
-  <string id="391">Alin</string>
-  <string id="392">kohtalaista</string>
-  <string id="393">Ylin</string>
+  <string id="391">matala</string>
+  <string id="392">keskimääräinen</string>
+  <string id="393">korkea</string>
   <string id="394">sumua</string>
   <string id="395">usvaa</string>
   <string id="396">Valitse sijainti</string>
@@ -345,7 +352,6 @@
   <string id="407">Suunta</string>
   <string id="408">Nopeus</string>
   <string id="409">Oletukset</string>
-
   <string id="410">Yhdistetään sääpalveluun</string>
   <string id="411">Noudetaan säätiedot:</string>
   <string id="412">Säätietoja ei saatu</string>
@@ -354,6 +360,8 @@
   <string id="415">Ladataan pienoiskuvaa...</string>
   <string id="416">Ei saatavilla</string>
   <string id="417">Näytä: Suuret kuvak.</string>
+  <string id="418">Alin</string>
+  <string id="419">Ylin</string>
 
   <string id="422">Poista albumin tiedot</string>
   <string id="423">Poista CD-tiedot</string>
@@ -448,7 +456,7 @@
   <string id="522">Poista sijainti</string>
   <string id="523">Vaihda mediavalikkoa</string>
   <string id="524">Valitse toistolista</string>
-  <string id="525">Uusi toistolista</string>
+  <string id="525">Uusi toistolista...</string>
   <string id="526">Lisää toistolistalle</string>
   <string id="527">Lisää kirjastoon</string>
   <string id="528">Anna nimi</string>
@@ -579,7 +587,7 @@
   <string id="705">Verkko</string>
   <string id="706">- Palvelin</string>
 
-  <string id="708">Internet yhteys HTTP-välipalvelimen kautta</string>
+  <string id="708">Internet-yhteys HTTP-välipalvelimen kautta</string>
 
   <string id="711">Internet-asetukset</string>
   <string id="712">Portti ei kelpaa. Arvon on oltava 1 ja 65535 välillä.</string>
@@ -599,9 +607,9 @@
   <string id="726">Muutoksia ei ole tallennettu. Poistutaanko tallentamatta?</string>
   <string id="727">Web-palvelin</string>
   <string id="728">FTP-palvelin</string>
-  <string id="729">Internet-aika</string>
+  <string id="729"></string>
   <string id="730">- Portti</string>
-  <string id="731">Aikapalvelin</string>
+  <string id="731"></string>
   <string id="732">Tallenna ja ota käyttöön</string>
   <string id="733">- Salasana</string>
   <string id="734">Ei salasanaa</string>
@@ -637,6 +645,8 @@
   <string id="765">Sinivihreä</string>
   <string id="766">Vaaleanharmaa</string>
   <string id="767">Harmaa</string>
+ <!-- strings 768 and 769 reserved for more subtitle colors -->
+
   <string id="770">Virhe %i: sijaintia ei ole saatavilla</string>
   <string id="771">Automaattinen FATX-rajoitus</string>
   <string id="772">Äänilähtö</string>
@@ -861,8 +871,8 @@
   <string id="10517">Nyt kuunnellaan - Musiikki</string>
 
   <string id="10522">Nyt katsellaan - Videot</string>
-  <string id="10523">Albumin tiedot</string>
-  <string id="10524">Elokuvan tiedot</string>
+  <string id="10523">Albumitiedot</string>
+  <string id="10524">Elokuvatiedot</string>
 
   <string id="12000">Valitse dialogi</string>
   <string id="12001">Musiikki/Tiedot</string>
@@ -1490,12 +1500,16 @@
   <string id="16307">Bicubic (ohjelmallinen)</string>
   <string id="16308">Lanczos (ohjelmallinen)</string>
   <string id="16309">Sinc (ohjelmallinen)</string>
-
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16310">Temporal</string>
+  <string id="16311">Temporal/Spatial</string>
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
+  <string id="16315">Lanczos3 optimized</string>
+  <string id="16316">Automaattinen</string>
+  <string id="16317">Temporal (Half)</string> 
+  <string id="16318">Temporal/Spatial (Half)</string> 
+
   <string id="17500">Näytön pimennyksen viive</string>
 
   <string id="19000">Vaihda kanavalle</string>
@@ -1837,7 +1851,7 @@
   <string id="20433">Pura pienoiskuvat ja videotiedot</string>
   <string id="20434">Setit</string>
   <string id="20435">Aseta elokuvasetin pienoiskuva</string>
-  <string id="20436">Vie ohjaajan pienoiskuvat</string>
+  <string id="20436">Viedäänkö ohjaajan pienoiskuvat?</string>
   <string id="20437">Valitse fanitaide</string>
   <string id="20438">Paikallinen fanitaide</string>
   <string id="20439">Ei fanitaidetta</string>
@@ -1847,6 +1861,11 @@
   <string id="20443">Päivitetäänkö valitun polun</string>
   <string id="20444">kaikkien kohteiden tiedot?</string>
   <string id="20445">Fanitaide</string>
+  <string id="20446">Löytyi paikallisesti tallennettuja tietoja.</string> 
+  <string id="20447">Korvataanko ne internetistä päivitetyillä tiedoilla?</string>
+  <string id="20448">Tietoja ei voida ladata</string>
+  <string id="20449">Palvelin ei ole saatavilla</string>
+  <string id="20450">Haluatko jatkaa hakua?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1934,7 +1953,7 @@
   <string id="21432">Muokkaa älykästä toistolistaa</string>
   <string id="21433">Toistolistan nimi</string>
   <string id="21434">Etsi sopivat kohteet</string>
-  <string id="21435">- Muokkaa</string>
+  <string id="21435">Muokkaa</string>
   <string id="21436">%i kohdetta</string>
   <string id="21437">Älykäs toistolista...</string>
   <string id="21438">%c asema</string>
@@ -1949,6 +1968,7 @@
   <string id="21447">Äänen kieli</string>
   <string id="21448">Tekstityskieli</string>
   <string id="21449">Kauko-ohjain lähettää näppäimistön painallukset</string>
+  <string id="21450">Muokkaa</string>
 
   <string id="21800">Tiedoston nimi</string>
   <string id="21801">Tiedoston polku</string>
@@ -2023,7 +2043,7 @@
   <string id="21895">Teemat</string>
   <string id="21896">Lopettanut</string>
   <string id="21897">Kuollut</string>
-  <string id="21898">Aktiiviset vuodet</string>
+  <string id="21898">Aktiivinen</string>
   <string id="21899">Nimi</string>
   <string id="21900">Syntynyt/perustettu</string>
 
@@ -2169,4 +2189,24 @@
   <string id="33081">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa</string>
   <string id="33082">Polku</string>
   <string id="33083">Skriptin omavalintainen painike käytössä</string>
+
+  <!-- :) -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">Kaiutinjärjestelmä</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+
 </strings>

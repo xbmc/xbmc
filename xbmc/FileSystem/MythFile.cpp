@@ -19,8 +19,9 @@
  *
  */
 
-#include "CMythFile.h"
+#include "MythFile.h"
 #include "DateTime.h"
+#include "FileItem.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
 #include "URL.h"
@@ -42,13 +43,13 @@ static void prog_update_callback(cmyth_proginfo_t prog)
   CLog::Log(LOGDEBUG, "%s - prog_update_callback", __FUNCTION__);
 }
 
-void CCMythFile::OnEvent(int event, const string& data)
+void CMythFile::OnEvent(int event, const string& data)
 {
   CSingleLock lock(m_section);
   m_events.push(make_pair(event, data));
 }
 
-bool CCMythFile::HandleEvents()
+bool CMythFile::HandleEvents()
 {
   CSingleLock lock(m_section);
 
@@ -81,10 +82,10 @@ bool CCMythFile::HandleEvents()
   return true;
 }
 
-bool CCMythFile::SetupConnection(const CURL& url, bool control, bool event, bool database)
+bool CMythFile::SetupConnection(const CURL& url, bool control, bool event, bool database)
 {
   if(!m_session)
-    m_session =  CCMythSession::AquireSession(url);
+    m_session =  CMythSession::AquireSession(url);
 
   if(!m_session)
     return false;
@@ -117,7 +118,7 @@ bool CCMythFile::SetupConnection(const CURL& url, bool control, bool event, bool
   return true;
 }
 
-bool CCMythFile::SetupRecording(const CURL& url)
+bool CMythFile::SetupRecording(const CURL& url)
 {
   if (url.GetFileName().Left(11) != "recordings/" &&
       url.GetFileName().Left(7)  != "movies/" &&
@@ -185,7 +186,7 @@ bool CCMythFile::SetupRecording(const CURL& url)
   return true;
 }
 
-bool CCMythFile::SetupLiveTV(const CURL& url)
+bool CMythFile::SetupLiveTV(const CURL& url)
 {
   if (url.GetFileName().Left(9) != "channels/")
     return false;
@@ -270,7 +271,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   return true;
 }
 
-bool CCMythFile::SetupFile(const CURL& url)
+bool CMythFile::SetupFile(const CURL& url)
 {
   if (url.GetFileName().Left(6) != "files/")
     return false;
@@ -296,7 +297,7 @@ bool CCMythFile::SetupFile(const CURL& url)
   return true;
 }
 
-bool CCMythFile::Open(const CURL& url)
+bool CMythFile::Open(const CURL& url)
 {
   Close();
 
@@ -339,7 +340,7 @@ bool CCMythFile::Open(const CURL& url)
 }
 
 
-void CCMythFile::Close()
+void CMythFile::Close()
 {
   if(!m_dll)
     return;
@@ -368,12 +369,12 @@ void CCMythFile::Close()
   if(m_session)
   {
     m_session->SetListener(NULL);
-    CCMythSession::ReleaseSession(m_session);
+    CMythSession::ReleaseSession(m_session);
     m_session = NULL;
   }
 }
 
-CCMythFile::CCMythFile()
+CMythFile::CMythFile()
 {
   m_dll         = NULL;
   m_starttime   = NULL;
@@ -387,12 +388,12 @@ CCMythFile::CCMythFile()
   m_recording   = false;
 }
 
-CCMythFile::~CCMythFile()
+CMythFile::~CMythFile()
 {
   Close();
 }
 
-bool CCMythFile::Exists(const CURL& url)
+bool CMythFile::Exists(const CURL& url)
 {
   CStdString path(url.GetFileName());
 
@@ -425,7 +426,7 @@ bool CCMythFile::Exists(const CURL& url)
   return false;
 }
 
-bool CCMythFile::Delete(const CURL& url)
+bool CMythFile::Delete(const CURL& url)
 {
   CStdString path(url.GetFileName());
 
@@ -461,7 +462,7 @@ bool CCMythFile::Delete(const CURL& url)
   return false;
 }
 
-int64_t CCMythFile::Seek(int64_t pos, int whence)
+int64_t CMythFile::Seek(int64_t pos, int whence)
 {
   CLog::Log(LOGDEBUG, "%s - seek to pos %"PRId64", whence %d", __FUNCTION__, pos, whence);
 
@@ -484,7 +485,7 @@ int64_t CCMythFile::Seek(int64_t pos, int whence)
   return result;
 }
 
-int64_t CCMythFile::GetPosition()
+int64_t CMythFile::GetPosition()
 {
   if(m_recorder)
     return m_dll->livetv_seek(m_recorder, 0, SEEK_CUR);
@@ -493,14 +494,14 @@ int64_t CCMythFile::GetPosition()
   return -1;
 }
 
-int64_t CCMythFile::GetLength()
+int64_t CMythFile::GetLength()
 {
   if(m_file)
     return m_dll->file_length(m_file);
   return -1;
 }
 
-unsigned int CCMythFile::Read(void* buffer, int64_t size)
+unsigned int CMythFile::Read(void* buffer, int64_t size)
 {
   /* check for any events */
   HandleEvents();
@@ -523,7 +524,7 @@ unsigned int CCMythFile::Read(void* buffer, int64_t size)
   return ret;
 }
 
-bool CCMythFile::SkipNext()
+bool CMythFile::SkipNext()
 {
   HandleEvents();
   if(m_recorder)
@@ -532,15 +533,27 @@ bool CCMythFile::SkipNext()
   return false;
 }
 
-bool CCMythFile::UpdateItem(CFileItem& item)
+bool CMythFile::UpdateItem(CFileItem& item)
 {
-  if(!m_program || !m_session)
+  /*
+   * UpdateItem should only return true if a LiveTV item has changed via a channel change, or the
+   * program being aired on the current channel has changed requiring the UI to update the currently
+   * playing information.
+   *
+   * Check by comparing the current title with the new title.
+   */
+  if (!m_recorder)
     return false;
 
-  return m_session->UpdateItem(item, m_program);
+  if (!m_program || !m_session)
+    return false;
+
+  CStdString title = item.m_strTitle;
+  m_session->SetFileItemMetaData(item, m_program);
+  return title != item.m_strTitle;
 }
 
-int CCMythFile::GetTotalTime()
+int CMythFile::GetTotalTime()
 {
   if(m_recorder && m_timestamp + 5000 < CTimeUtils::GetTimeMS())
   {
@@ -556,7 +569,7 @@ int CCMythFile::GetTotalTime()
   return -1;
 }
 
-int CCMythFile::GetStartTime()
+int CMythFile::GetStartTime()
 {
   if(m_program && m_recorder && m_starttime)
   {
@@ -571,7 +584,7 @@ int CCMythFile::GetStartTime()
   return 0;
 }
 
-bool CCMythFile::ChangeChannel(int direction, const CStdString &channel)
+bool CMythFile::ChangeChannel(int direction, const CStdString &channel)
 {
   CLog::Log(LOGDEBUG, "%s - channel change started", __FUNCTION__);
 
@@ -620,22 +633,22 @@ bool CCMythFile::ChangeChannel(int direction, const CStdString &channel)
   return true;
 }
 
-bool CCMythFile::NextChannel(bool preview/* = false*/)
+bool CMythFile::NextChannel()
 {
   return ChangeChannel(CHANNEL_DIRECTION_UP, "");
 }
 
-bool CCMythFile::PrevChannel(bool preview/* = false*/)
+bool CMythFile::PrevChannel()
 {
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }
 
-bool CCMythFile::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
+bool CMythFile::SelectChannel(unsigned int channel)
 {
   return ChangeChannel(CHANNEL_DIRECTION_SAME,""+channel);
 }
 
-bool CCMythFile::CanRecord()
+bool CMythFile::CanRecord()
 {
   if(m_recorder || m_recording)
     return true;
@@ -643,12 +656,12 @@ bool CCMythFile::CanRecord()
   return false;
 }
 
-bool CCMythFile::IsRecording()
+bool CMythFile::IsRecording()
 {
   return m_recording;
 }
 
-bool CCMythFile::Record(bool bOnOff)
+bool CMythFile::Record(bool bOnOff)
 {
   if(m_recorder)
   {
@@ -684,7 +697,7 @@ bool CCMythFile::Record(bool bOnOff)
   return false;
 }
 
-bool CCMythFile::GetCommBreakList(cmyth_commbreaklist_t& commbreaklist)
+bool CMythFile::GetCommBreakList(cmyth_commbreaklist_t& commbreaklist)
 {
   if (m_program)
   {
