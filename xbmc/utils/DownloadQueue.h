@@ -52,9 +52,9 @@ public:
   CDownloadQueue();
   virtual ~CDownloadQueue(void);
 
-  TICKET RequestContent(CStdString& aUrl, IDownloadQueueObserver* aObserver);
-  TICKET RequestFile(CStdString& aUrl, IDownloadQueueObserver* aObserver);
-  TICKET RequestFile(CStdString& aUrl, CStdString& aFilePath, IDownloadQueueObserver* aObserver);
+  TICKET RequestContent(const CStdString& aUrl, IDownloadQueueObserver* aObserver);
+  TICKET RequestFile(const CStdString& aUrl, IDownloadQueueObserver* aObserver);
+  TICKET RequestFile(const CStdString& aUrl, const CStdString& aFilePath, IDownloadQueueObserver* aObserver);
   void CancelRequests(IDownloadQueueObserver* aObserver);
 
   VOID Flush();

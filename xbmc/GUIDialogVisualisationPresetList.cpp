@@ -20,9 +20,9 @@
  */
 
 #include "GUIDialogVisualisationPresetList.h"
+#include "visualizations/Visualisation.h"
 #include "GUIWindowManager.h"
 #include "GUIListContainer.h"
-#include "GUISettings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
@@ -30,6 +30,8 @@
 #define CONTROL_LIST           2
 #define CONTROL_PRESETS_LABEL  3
 #define CONTROL_NONE_AVAILABLE 4
+
+using ADDON::CVisualisation;
 
 CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
     : CGUIDialog(WINDOW_DIALOG_VIS_PRESET_LIST, "VisualisationPresetList.xml")
@@ -57,8 +59,8 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
         if (pList)
         {
           int iItem = pList->GetSelectedItem();
-          if (m_pVisualisation)
-            m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOAD_PRESET, (void *)&iItem);
+          if (m_viz)
+            m_viz->OnAction(VIS_ACTION_LOAD_PRESET, (void *)&iItem);
         }
         return true;
       }
@@ -70,68 +72,76 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
 
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
       g_windowManager.SendMessage(msg);
-      SetVisualisation((CVisualisation *)msg.GetPointer());
+      if (msg.GetPointer())
+      {
+        SetVisualisation((CVisualisation*)msg.GetPointer());
+      }
       return true;
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
-      m_pVisualisation = NULL;
+      m_viz = NULL;
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg);
-      m_vecPresets->Clear();
+      Update();
     }
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
       if (message.GetPointer())
       {
-        SetVisualisation((CVisualisation *)message.GetPointer());
+        SetVisualisation((CVisualisation*)message.GetPointer());
       }
     }
   }
   return CGUIDialog::OnMessage(message);
 }
 
+void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation* vis)
+{
+  m_viz = NULL;
+  if (vis)
+  {
+    m_viz = vis;
+    Update();
+  }
+}
+
 void CGUIDialogVisualisationPresetList::FrameMove()
 {
-  char **presets = NULL;
-  int numPresets = 0;
-  int currentPreset = 0;
-  bool locked = false;
-  if (m_pVisualisation)
-    m_pVisualisation->GetPresets(&presets, &currentPreset, &numPresets, &locked);
-  if (currentPreset != m_currentPreset)
-  { // current preset changed...
-    m_vecPresets->Get(m_currentPreset)->Select(false);
-    m_currentPreset = currentPreset;
-    m_vecPresets->Get(m_currentPreset)->Select(true);
+  //FIXME we shouldn't have to check preset each frame
+  // a viz callback could push GUI_MSG_VISUALISATION_UPDATED
+  if (m_viz)
+  {
+    unsigned preset = m_viz->GetPreset();
+    if (preset != m_currentPreset)
+    {
+      m_vecPresets->Get(m_currentPreset)->Select(false);
+      m_currentPreset = preset;
+      m_vecPresets->Get(m_currentPreset)->Select(true);
+    }
   }
   CGUIDialog::FrameMove();
 }
 
-void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisualisation)
+void CGUIDialogVisualisationPresetList::Update()
 {
-  m_pVisualisation = pVisualisation;
   m_vecPresets->Clear();
-  if (m_pVisualisation)
+  CStdString strHeading;
+  if (m_viz)
   {
+    strHeading.Format(g_localizeStrings.Get(13407).c_str(), m_viz->Name().c_str());
+
     //clear filelist
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
     OnMessage(msg);
-    char **presets = NULL;
-    int numPresets = 0;
-    m_currentPreset = 0;
-    bool locked = false;
-    m_pVisualisation->GetPresets(&presets, &m_currentPreset, &numPresets, &locked);
-    if (presets)
+    std::vector<CStdString> presets;
+    if (m_viz->GetPresetList(presets))
     {
-      //clear filelist
-      CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
-      OnMessage(msg2);
-      m_vecPresets->Clear();
-      for (int i = 0; i < numPresets; i++)
+      m_currentPreset = m_viz->GetPreset();
+      for (unsigned i = 0; i < presets.size(); i++)
       {
         CFileItemPtr pItem(new CFileItem(presets[i]));
         if (i == m_currentPreset)
@@ -144,16 +154,10 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
       OnMessage(msg);
     }
   }
-  // update our settings label
-  CStdString strVis = g_guiSettings.GetString("musicplayer.visualisation");
-  if (strVis != "None" && strVis.size() > 4)
-  { // make it look pretty
-    strVis = strVis.Left(strVis.size() - 4);
-    strVis[0] = toupper(strVis[0]);
-  }
-  CStdString strSettings;
-  strSettings.Format(g_localizeStrings.Get(13407).c_str(), strVis.c_str());
-  SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, strSettings);
+
+  // update our dialog's label
+  SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, strHeading);
+
   // if there is no presets, add a label saying so
   if (m_vecPresets->Size() == 0)
   {

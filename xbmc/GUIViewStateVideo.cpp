@@ -87,15 +87,7 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
-  // plugins share
-  if (CPluginDirectory::HasPlugins("video") && g_advancedSettings.m_bVirtualShares)
-  {
-    CMediaSource share;
-    share.strName = g_localizeStrings.Get(1037);
-    share.strPath = "plugin://video/";
-    share.m_ignore = true;
-    AddOrReplace(g_settings.m_videoSources,share);
-  }
+  AddOrReplace(g_settings.m_videoSources, CGUIViewState::GetSources());
   return g_settings.m_videoSources;
 }
 
@@ -395,15 +387,6 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
-  // plugins share
-  if (CPluginDirectory::HasPlugins("video") && g_advancedSettings.m_bVirtualShares)
-  {
-    share.strName = g_localizeStrings.Get(1037);
-    share.strPath = "plugin://video/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlugins.png");
-    m_sources.push_back(share);
-  }
-
   return CGUIViewStateWindowVideo::GetSources();
 }
 
@@ -453,7 +436,8 @@ VECSOURCES& CGUIViewStateWindowVideoPlaylist::GetSources()
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
-  return CGUIViewStateWindowVideo::GetSources();
+  // no plugins in playlist window
+  return m_sources;
 }
 
 

@@ -34,7 +34,7 @@
 
 using namespace XFILE;
 
-CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items, CONTENT_PICTURES)
 {
   if (items.IsVirtualDirectoryRoot())
   {
@@ -80,16 +80,7 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
-  // plugins share
-  if (CPluginDirectory::HasPlugins("pictures") && g_advancedSettings.m_bVirtualShares)
-  {
-    CMediaSource share;
-    share.strName = g_localizeStrings.Get(1039); // Picture Plugins
-    share.strPath = "plugin://pictures/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultPicturePlugins.png");
-    share.m_ignore = true;
-    AddOrReplace(g_settings.m_pictureSources,share);
-  }
+  AddOrReplace(g_settings.m_pictureSources, CGUIViewState::GetSources());
   return g_settings.m_pictureSources;
 }
 

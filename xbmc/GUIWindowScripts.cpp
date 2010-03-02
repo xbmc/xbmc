@@ -29,8 +29,8 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#include "ScriptSettings.h"
-#include "GUIDialogPluginSettings.h"
+#include "utils/AddonManager.h"
+#include "GUIDialogAddonSettings.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #if defined(__APPLE__)
@@ -74,7 +74,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       if (m_vecItems->m_strPath == "?")
-        m_vecItems->m_strPath = g_settings.GetScriptsFolder();
+        m_vecItems->m_strPath = "special://scripts/";
       return CGUIMediaWindow::OnMessage(message);
     }
     break;
@@ -245,8 +245,14 @@ void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &butto
   {
     CStdString path, filename;
     CUtil::Split(item->m_strPath, path, filename);
-    if (CScriptSettings::SettingsExist(path))
-      buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
+    ADDON::AddonPtr script;
+    if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRIPT, item->m_strPath, script))
+    {
+      if (script->HasSettings())
+      {
+        buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
+      }
+    }
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
@@ -264,8 +270,12 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
-    if(CGUIDialogPluginSettings::ShowAndGetInput(path))
-      Update(m_vecItems->m_strPath);
+    ADDON::AddonPtr script;
+    if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRIPT, m_vecItems->Get(itemNumber)->m_strPath, script))
+    {
+      if (CGUIDialogAddonSettings::ShowAndGetInput(script))
+        Update(m_vecItems->m_strPath);
+    }
     return true;
   }
   else if (button == CONTEXT_BUTTON_DELETE)

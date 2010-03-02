@@ -31,7 +31,7 @@ public:
   virtual ~CGUIDialogLockSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
   static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader=20091);
-  static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel=20091,bool bConditional=false, bool bDetails=true);
+  static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, bool& bLockAddOnManager, int iButtonLabel=20091,bool bConditional=false, bool bDetails=true);
   static bool ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL, bool *saveUserDetails);
 protected:
   virtual void OnCancel();
@@ -57,6 +57,7 @@ protected:
   bool m_bLockFiles;
   bool m_bLockSettings;
   bool *m_saveUserDetails;
+  bool m_bLockAddOnManager;
 };
 
 

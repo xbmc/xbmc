@@ -21,7 +21,7 @@
  */
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "NfoFile.h"
 #include "IMDB.h"
 #include "DateTime.h"
@@ -32,10 +32,12 @@ namespace VIDEO
 {
   typedef struct SScanSettings
   {
+    SScanSettings() { parent_name = parent_name_root = noupdate = exclude = false; recurse = -1;}
     bool parent_name;       /* use the parent dirname as name of lookup */
     bool parent_name_root;  /* use the name of directory where scan started as name for files in that dir */
     int  recurse;           /* recurse into sub folders (indicate levels) */
     bool noupdate;          /* exclude from update library function */
+    bool exclude;           /* exclude this path from scraping */
   } SScanSettings;
 
   typedef struct SEpisode
@@ -68,7 +70,7 @@ namespace VIDEO
   public:
     CVideoInfoScanner();
     virtual ~CVideoInfoScanner();
-    void Start(const CStdString& strDirectory, const SScraperInfo& info, const SScanSettings& settings, bool bUpdateAll);
+    void Start(const CStdString& strDirectory, const ADDON::ScraperPtr& info, const SScanSettings& settings, bool bUpdateAll);
     bool IsScanning();
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
@@ -76,16 +78,16 @@ namespace VIDEO
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
     bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
     bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
-    long AddMovie(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow = -1);
-    long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
+    long AddMovie(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow = -1);
+    long AddMovieAndGetThumb(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
     bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
-    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
+    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::ScraperPtr &info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
-    CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CScraperUrl& scrUrl);
+    CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
     CIMDB m_IMDB;
     /*! \brief Fetch thumbs for seasons for a given show
      Fetches and caches local season thumbs of the form season##.tbn and season-all.tbn for the current show,
@@ -114,7 +116,7 @@ namespace VIDEO
     bool m_bClean;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
-    SScraperInfo m_info;
+    ADDON::ScraperPtr m_info;
     std::map<CStdString,SScanSettings> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
     std::vector<int> m_pathsToClean;

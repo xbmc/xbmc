@@ -21,7 +21,7 @@
 
 #include "MusicAlbumInfo.h"
 #include "ScraperParser.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "XMLUtils.h"
 #include "HTMLTable.h"
 #include "HTMLUtil.h"
@@ -122,10 +122,10 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
 }
 
 
-bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
+bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
-  if (!m_parser.Load("special://xbmc/system/scrapers/music/" + info.strPath))
+  if (!m_parser.Load(scraper))
     return false;
 
   bool bChained=true;
@@ -148,7 +148,7 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, con
   for (unsigned int i=0;i<strHTML.size();++i)
     m_parser.m_param[i] = strHTML[i];
 
-  CStdString strXML = m_parser.Parse(strFunction,&info.settings);
+  CStdString strXML = m_parser.Parse(strFunction);
   CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
   if (strXML.IsEmpty())
   {
@@ -179,7 +179,7 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, con
     if (szFunction)
     {
       CScraperUrl scrURL(xurl);
-      Load(http,info,szFunction,&scrURL);
+      Load(http,scraper,szFunction,&scrURL);
     }
     xurl = xurl->NextSiblingElement("url");
   }

@@ -19,12 +19,10 @@
  *
  */
 #include "system.h"
-// Visualisation.cpp: implementation of the CVisualisation class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "Visualisation.h"
-#include "visualizations/VisualisationTypes.h"
+#include "fft.h"
+#include "utils/GUIInfoManager.h"
+#include "Application.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "WindowingFactory.h"
@@ -37,49 +35,112 @@
 
 using namespace std;
 using namespace MUSIC_INFO;
+using namespace ADDON;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll,
-                               const CStdString& strVisualisationName, 
-                               const CStdString& strSubModuleName)
-    : m_pVisz(pVisz)
-    , m_pDll(pDll)
-    , m_strVisualisationName(strVisualisationName)
-    , m_strSubModuleName(strSubModuleName)
-{}
-
-CVisualisation::~CVisualisation()
+CAudioBuffer::CAudioBuffer(int iSize)
 {
+  m_iLen = iSize;
+  m_pBuffer = new short[iSize];
 }
 
-void CVisualisation::Create(int posx, int posy, int width, int height)
+CAudioBuffer::~CAudioBuffer()
 {
-  // allow vis. to create internal things needed
-  // pass it the location,width,height
-  // and the name of the visualisation.
-  char szTmp[129];
-  sprintf(szTmp, "create:%ix%i at %ix%i %s\n", width, height, posx, posy, m_strVisualisationName.c_str());
-  OutputDebugString(szTmp);
+  delete [] m_pBuffer;
+}
 
-  float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-#ifdef HAS_DX
-  // TODO LINUX this is obviously not good, but until we have visualization sorted out, this will have to do
-  m_pVisz->Create (g_Windowing.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(),
-                   pixelRatio, m_strSubModuleName=="" ? NULL : m_strSubModuleName.c_str() );
-#else
-  m_pVisz->Create (0, posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio,
-                   m_strSubModuleName=="" ? NULL : m_strSubModuleName.c_str() );
-#endif
+const short* CAudioBuffer::Get() const
+{
+  return m_pBuffer;
+}
+
+void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
+{
+  if (iSize<0)
+  {
+    return;
+  }
+
+  if (iBitsPerSample == 16)
+  {
+    iSize /= 2;
+    for (int i = 0; i < iSize && i < m_iLen; i++)
+    { // 16 bit -> convert to short directly
+      m_pBuffer[i] = ((short *)psBuffer)[i];
+    }
+  }
+  else if (iBitsPerSample == 8)
+  {
+    for (int i = 0; i < iSize && i < m_iLen; i++)
+    { // 8 bit -> convert to signed short by multiplying by 256
+      m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
+    }
+  }
+  else // assume 24 bit data
+  {
+    iSize /= 3;
+    for (int i = 0; i < iSize && i < m_iLen; i++)
+    { // 24 bit -> ignore least significant byte and convert to signed short
+      m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
+    }
+  }
+  for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
+}
+
+bool CVisualisation::Create(int x, int y, int w, int h)
+{
+  m_pInfo = new VIS_PROPS;
+  m_pInfo->x = x;
+  m_pInfo->y = y;
+  m_pInfo->width = w;
+  m_pInfo->height = h;
+  m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
+
+  m_pInfo->name = strdup(Name().c_str());
+  m_pInfo->presets = strdup(_P(Path()).c_str());
+  m_pInfo->profile = strdup(_P(Profile()).c_str());
+
+  if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
+  {
+    // Start the visualisation
+    CStdString strFile = CUtil::GetFileName(g_application.CurrentFile());
+    CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
+    try
+    {
+      m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
+    }
+    catch (std::exception e)
+    {
+      HandleException(e, "m_pStruct->Start() (CVisualisation::Create)");
+      return false;
+    }
+
+    GetPresets();
+    GetSubModules();
+    CreateBuffers();
+
+    if (g_application.m_pPlayer)
+      g_application.m_pPlayer->RegisterAudioCallback(this);
+
+    return true;
+  }
+  return false;
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName)
 {
   // notify visz. that new song has been started
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
-  m_pVisz->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+  if (Initialized())
+  {
+    try
+    {
+      m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+    }
+    catch (std::exception e)
+    {
+      HandleException(e, "m_pStruct->Start (CVisualisation::Start)");
+    }
+  }
 }
 
 void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
@@ -89,235 +150,333 @@ void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, fl
   // iAudioDataLength = length of audiodata array
   // pFreqData = fft-ed audio data
   // iFreqDataLength = length of pFreqData
-  m_pVisz->AudioData(const_cast<short*>(pAudioData), iAudioDataLength, pFreqData, iFreqDataLength);
+  if (Initialized())
+  {
+    try
+    {
+      m_pStruct->AudioData(pAudioData, iAudioDataLength, pFreqData, iFreqDataLength);
+    }
+    catch (std::exception e)
+    {
+      HandleException(e, "m_pStruct->AudioData (CVisualisation::AudioData)");
+    }
+  }
 }
 
 void CVisualisation::Render()
 {
   // ask visz. to render itself
   g_graphicsContext.BeginPaint();
-  m_pVisz->Render();
+  if (Initialized())
+  {
+    try
+    {
+      m_pStruct->Render();
+    }
+    catch (std::exception e)
+    {
+      HandleException(e, "m_pStruct->Render (CVisualisation::Render)");
+    }
+  }
   g_graphicsContext.EndPaint();
 }
 
 void CVisualisation::Stop()
 {
-  // ask visz. to cleanup
-  m_pVisz->Stop();
+  if (g_application.m_pPlayer) g_application.m_pPlayer->UnRegisterAudioCallback();
+  if (Initialized())
+  {
+    try
+    {
+      m_pStruct->Stop();
+    }
+    catch (std::exception e)
+    {
+      HandleException(e, "m_pStruct->Stop (CVisualisation::Stop)");
+    }
+  }
 }
-
 
 void CVisualisation::GetInfo(VIS_INFO *info)
 {
-  // get info from vis
-  m_pVisz->GetInfo(info);
+  if (Initialized())
+  {
+    try
+    {
+      m_pStruct->GetInfo(info);
+    }
+    catch (std::exception e)
+    {
+      HandleException(e, "m_pStruct->GetInfo (CVisualisation::GetInfo)");
+    }
+  }
 }
 
 bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 {
+  if (!Initialized())
+    return false;
+
   // see if vis wants to handle the input
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
-  if (action != VIS_ACTION_NONE && m_pVisz->OnAction)
+  try
   {
-    // if this is a VIS_ACTION_UPDATE_TRACK action, copy relevant
-    // tags from CMusicInfoTag to VisTag
-    if ( action == VIS_ACTION_UPDATE_TRACK && param )
+    if (action != VIS_ACTION_NONE && m_pStruct->OnAction)
     {
-      const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-      VisTrack track;
+      // if this is a VIS_ACTION_UPDATE_TRACK action, copy relevant
+      // tags from CMusicInfoTag to VisTag
+      if ( action == VIS_ACTION_UPDATE_TRACK && param )
+      {
+        const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
+        VisTrack track;
+        track.title       = tag->GetTitle().c_str();
+        track.artist      = tag->GetArtist().c_str();
+        track.album       = tag->GetAlbum().c_str();
+        track.albumArtist = tag->GetAlbumArtist().c_str();
+        track.genre       = tag->GetGenre().c_str();
+        track.comment     = tag->GetComment().c_str();
+        track.lyrics      = tag->GetLyrics().c_str();
+        track.trackNumber = tag->GetTrackNumber();
+        track.discNumber  = tag->GetDiscNumber();
+        track.duration    = tag->GetDuration();
+        track.year        = tag->GetYear();
+        track.rating      = tag->GetRating();
 
-      track.title       = tag->GetTitle().c_str();
-      track.artist      = tag->GetArtist().c_str();
-      track.album       = tag->GetAlbum().c_str();
-      track.albumArtist = tag->GetAlbumArtist().c_str();
-      track.genre       = tag->GetGenre().c_str();
-      track.comment     = tag->GetComment().c_str();
-      track.lyrics      = tag->GetLyrics().c_str();
-      track.trackNumber = tag->GetTrackNumber();
-      track.discNumber  = tag->GetDiscNumber();
-      track.duration    = tag->GetDuration();
-      track.year        = tag->GetYear();
-      track.rating      = tag->GetRating();
-
-      return m_pVisz->OnAction((int)action, (void*)(&track));
+        return m_pStruct->OnAction(action, &track);
+      }
+      return m_pStruct->OnAction((int)action, param);
     }
-    return m_pVisz->OnAction((int)action, param);
+  }
+  catch (std::exception e)
+  {
+    HandleException(e, "m_pStruct->OnAction (CVisualisation::OnAction)");
   }
   return false;
 }
 
-
-void CVisualisation::GetSettings(vector<VisSetting> **vecSettings)
+void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
 {
-  if (vecSettings) *vecSettings = NULL;
-  if (m_pVisz->GetSettings)
-  {
-    unsigned int iEntries;
-    StructSetting** sSet;
-    iEntries = m_pVisz->GetSettings(&sSet);
-    VisUtils::StructToVec(iEntries, &sSet, &m_vecSettings);
-    if(m_pVisz->FreeSettings)
-      m_pVisz->FreeSettings();
-  }
-  *vecSettings = &m_vecSettings;
+  if (!m_pStruct)
+    return ;
+  CLog::Log(LOGDEBUG, "OnInitialize() started");
+
+  m_iChannels = iChannels;
+  m_iSamplesPerSec = iSamplesPerSec;
+  m_iBitsPerSample = iBitsPerSample;
+  UpdateTrack();
+
+  CLog::Log(LOGDEBUG, "OnInitialize() done");
 }
 
-void CVisualisation::UpdateSetting(int num, vector<VisSetting> **vecSettings)
+void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
 {
-  if (m_pVisz->UpdateSetting)
-  {
-    unsigned int iEntries;
-    StructSetting** sSet;
-    iEntries = VisUtils::VecToStruct(m_vecSettings, &sSet);
-    m_pVisz->UpdateSetting(num, &sSet);
-    VisUtils::FreeStruct(iEntries, &sSet);
-  }
-}
+  if (!m_pStruct)
+    return ;
+  if (Initialized())
 
-void CVisualisation::GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
-{
-  if (m_pVisz->GetPresets)
-    m_pVisz->GetPresets(pPresets, currentPreset, numPresets, locked);
-}
+  // FIXME: iAudioDataLength should never be less than 0
+  if (iAudioDataLength<0)
+    return;
 
-int CVisualisation::GetSubModules(map<string, string>& subModules)
-{
-  if (m_pVisz->GetSubModules)
+  // Save our audio data in the buffers
+  auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
+  pBuffer->Set(pAudioData, iAudioDataLength, m_iBitsPerSample);
+  m_vecBuffers.push_back( pBuffer.release() );
+
+  if ( (int)m_vecBuffers.size() < m_iNumBuffers) return ;
+
+  auto_ptr<CAudioBuffer> ptrAudioBuffer ( m_vecBuffers.front() );
+  m_vecBuffers.pop_front();
+  // Fourier transform the data if the vis wants it...
+  if (m_bWantsFreq)
   {
-    char **names, **paths;
-    int count = m_pVisz->GetSubModules(&names, &paths);
-    if ( count > 0 )
+    // Convert to floats
+    const short* psAudioData = ptrAudioBuffer->Get();
+    for (int i = 0; i < 2*AUDIO_BUFFER_SIZE; i++)
     {
-      while ( count > 0 )
+      m_fFreq[i] = (float)psAudioData[i];
+    }
+
+    // FFT the data
+    twochanwithwindow(m_fFreq, AUDIO_BUFFER_SIZE);
+
+    // Normalize the data
+    float fMinData = (float)AUDIO_BUFFER_SIZE * AUDIO_BUFFER_SIZE * 3 / 8 * 0.5 * 0.5; // 3/8 for the Hann window, 0.5 as minimum amplitude
+    float fInvMinData = 1.0f/fMinData;
+    for (int i = 0; i < AUDIO_BUFFER_SIZE + 2; i++)
+    {
+      m_fFreq[i] *= fInvMinData;
+    }
+
+    // Transfer data to our visualisation
+    AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+  }
+  else
+  { // Transfer data to our visualisation
+    AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+  }
+  return ;
+}
+
+void CVisualisation::CreateBuffers()
+{
+  ClearBuffers();
+
+  // Get the number of buffers from the current vis
+  VIS_INFO info;
+  m_pStruct->GetInfo(&info);
+  m_iNumBuffers = info.iSyncDelay + 1;
+  m_bWantsFreq = (info.bWantsFreq != 0);
+  if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
+    m_iNumBuffers = MAX_AUDIO_BUFFERS;
+  if (m_iNumBuffers < 1)
+    m_iNumBuffers = 1;
+}
+
+void CVisualisation::ClearBuffers()
+{
+  m_bWantsFreq = false;
+  m_iNumBuffers = 0;
+
+  while (m_vecBuffers.size() > 0)
+  {
+    CAudioBuffer* pAudioBuffer = m_vecBuffers.front();
+    delete pAudioBuffer;
+    m_vecBuffers.pop_front();
+  }
+  for (int j = 0; j < AUDIO_BUFFER_SIZE*2; j++)
+  {
+    m_fFreq[j] = 0.0f;
+  }
+}
+
+bool CVisualisation::UpdateTrack()
+{
+  bool handled;
+  if (Initialized())
+  {
+    // get the current album art filename
+    m_AlbumThumb = _P(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
+
+    // get the current track tag
+    const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+
+    if (m_AlbumThumb == "DefaultAlbumCover.png")
+      m_AlbumThumb = "";
+    else
+      CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
+
+    // inform the visualisation of the current album art
+    if ( m_pStruct->OnAction( VIS_ACTION_UPDATE_ALBUMART,
+      (void*)( m_AlbumThumb.c_str() ) ) )
+      handled = true;
+
+    // inform the visualisation of the current track's tag information
+    if ( tag && m_pStruct->OnAction( VIS_ACTION_UPDATE_TRACK,
+      (void*)tag ) )
+      handled = true;
+  }
+  return handled;
+}
+
+bool CVisualisation::GetPresetList(std::vector<CStdString> &vecpresets)
+{
+  vecpresets = m_presets;
+  return !m_presets.empty();
+}
+
+bool CVisualisation::GetPresets()
+{
+  m_presets.clear();
+  char **presets = NULL;
+  unsigned int entries = 0;
+  try
+  {
+    entries = m_pStruct->GetPresets(&presets);
+  }
+  catch (std::exception e)
+  {
+    HandleException(e, "m_pStruct->OnAction (CVisualisation::GetPresets)");
+    return false;
+  }
+  if (presets && entries > 0)
+  {
+    for (unsigned i=0; i < entries; i++)
+    {
+      if (presets[i])
       {
-	count--;
-	subModules[ string( names[count] ) ] = string( paths[count] );
-	free( names[count] );
-	free( paths[count] );
+        m_presets.push_back(presets[i]);
       }
-      free( names );
-      free( paths );
-      return subModules.size();
     }
   }
-  return 0;
+  return (!m_presets.empty());
 }
 
-void CVisualisation::GetCurrentPreset(char **pPreset, bool *locked)
+bool CVisualisation::GetSubModuleList(std::vector<CStdString> &vecmodules)
 {
-  if (pPreset && locked && m_pVisz->GetPresets)
+  vecmodules = m_submodules;
+  return !m_submodules.empty();
+}
+
+bool CVisualisation::GetSubModules()
+{
+  m_submodules.clear();
+  char **modules = NULL;
+  unsigned int entries = 0;
+  try
   {
-    char **presets = NULL;
-    int currentPreset = 0;
-    int numPresets = 0;
-    *locked = false;
-    m_pVisz->GetPresets(&presets, &currentPreset, &numPresets, locked);
-    if (presets && currentPreset < numPresets)
-      *pPreset = presets[currentPreset];
+    entries = m_pStruct->GetSubModules(&modules);
   }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Exception in Visualisation::GetSubModules()");
+    return false;
+  }
+  if (modules && entries > 0)
+  {
+    for (unsigned i=0; i < entries; i++)
+    {
+      if (modules[i])
+      {
+        m_submodules.push_back(modules[i]);
+      }
+    }
+  }
+  return (!m_submodules.empty());
+}
+
+CStdString CVisualisation::GetFriendlyName(const CStdString& strVisz,
+                                           const CStdString& strSubModule)
+{
+  // should be of the format "moduleName (visName)"
+  return CStdString(strSubModule + " (" + strVisz + ")");
 }
 
 bool CVisualisation::IsLocked()
 {
-  char *preset;
-  bool locked = false;
-  GetCurrentPreset(&preset, &locked);
-  return locked;
+  return false;
 }
 
-char *CVisualisation::GetPreset()
+unsigned CVisualisation::GetPreset()
 {
-  char *preset = NULL;
-  bool locked = false;
-  GetCurrentPreset(&preset, &locked);
-  return preset;
-}
-
-CStdString CVisualisation::GetFriendlyName(const char* strVisz,
-                                           const char* strSubModule)
-{
-  // should be of the format "moduleName (visName)"
-  return CStdString(strSubModule) + " (" + CStdString(strVisz) + ")";
-}
-
-CStdString CVisualisation::GetFriendlyName(const char* combinedName)
-{
-  CStdString moduleName;
-  CStdString visName  = combinedName;
-  int        colonPos = visName.ReverseFind(":");
-
-  if ( colonPos > 0 )
+  unsigned index = 0;
+  try
   {
-    visName    = visName.Mid( colonPos + 1 );
-    moduleName = visName.Mid( 0, colonPos - 5 );  // remove .mvis
-
-    // should be of the format "moduleName (visName)"
-    return moduleName + " (" + visName + ")";
+    index = m_pStruct->GetPreset();
   }
-  return visName.Left( visName.size() - 4 );
-}
-
-CStdString CVisualisation::GetCombinedName(const char* strVisz,
-                                           const char* strSubModule)
-{
-  // should be of the format "visName.mvis:moduleName"
-  return CStdString(strVisz) + ":" + CStdString(strSubModule);
-}
-
-CStdString CVisualisation::GetCombinedName(const char* friendlyName)
-{
-  CStdString moduleName;
-  CStdString fName  = friendlyName;
-
-  // convert from "module name (vis name)" to "vis name.mvis:module name"
-  int startPos = fName.ReverseFind(" (");
-
-  if ( startPos > 0 )
+  catch(...)
   {
-    int endPos = fName.ReverseFind(")");
-    CStdString moduleName = fName.Left( startPos );
-    CStdString visName    = fName.Mid( startPos+2, endPos-startPos-2 );
-    return visName + ".mvis" + ":" + moduleName;
+    return 0;
   }
-  return fName + ".vis";
+  return index;
 }
 
-bool CVisualisation::IsValidVisualisation(const CStdString& strVisz)
+CStdString CVisualisation::GetPresetName()
 {
-  bool bRet = true;
-  CStdString strExtension;
-
-  if(strVisz.Equals("None"))
-    return true;
-
-  CUtil::GetExtension(strVisz, strExtension);
-  if (strExtension == ".mvis")
-    return true; // assume multivis are OK
-
-  if (strExtension != ".vis")
-    return false;
-
-#ifdef _LINUX
-  CStdString visPath(strVisz);
-  if(visPath.Find("/") == -1)
-  {
-    visPath.Format("%s%s", "special://xbmc/visualisations/", strVisz);
-    if(!XFILE::CFile::Exists(visPath))
-      visPath.Format("%s%s", "special://home/visualisations/", strVisz);
-  }
-  void *handle = dlopen( _P(visPath).c_str(), RTLD_LAZY );
-  if (!handle)
-    bRet = false;
+  if (!m_presets.empty())
+    return m_presets[GetPreset()];
   else
-    dlclose(handle);
-#elif defined(HAS_DX)
-  if(strVisz.Right(11).CompareNoCase("win32dx.vis") != 0)
-    bRet = false;
-#elif defined(_WIN32)
-  if(strVisz.Right(9).CompareNoCase("win32.vis") != 0)
-    bRet = false;
-#endif
-
-  return bRet;
+    return "";
 }
+

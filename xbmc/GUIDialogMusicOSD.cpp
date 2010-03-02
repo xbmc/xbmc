@@ -30,6 +30,8 @@
 #define CONTROL_LOCK_BUTTON      501
 #define CONTROL_VIS_CHOOSER      503
 
+using ADDON::CVisualisation;
+
 CGUIDialogMusicOSD::CGUIDialogMusicOSD(void)
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OSD, "MusicOSD.xml")
 {
@@ -55,8 +57,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         if (msg.GetParam1() == 0)
           g_guiSettings.SetString("musicplayer.visualisation", "None");
         else
-          g_guiSettings.SetString("musicplayer.visualisation",
-                                  CVisualisation::GetCombinedName( strLabel ));
+          g_guiSettings.SetString("musicplayer.visualisation", strLabel);
         // hide the control and reset focus
         SET_CONTROL_HIDDEN(CONTROL_VIS_CHOOSER);
         SET_CONTROL_FOCUS(CONTROL_VIS_BUTTON, 0);

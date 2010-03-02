@@ -21,6 +21,7 @@
 
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
+#include "visualizations/Visualisation.h"
 #include "Application.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
@@ -32,6 +33,7 @@
 #include "AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
+using namespace ADDON;
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
@@ -47,14 +49,21 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
   m_bShowPreset = false;
 }
 
-CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
-{
-}
-
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
+  VIS_ACTION visAction = VIS_ACTION_NONE;
   switch (action.GetID())
   {
+  case ACTION_VIS_PRESET_NEXT:
+    visAction = VIS_ACTION_NEXT_PRESET; break;
+  case ACTION_VIS_PRESET_PREV:
+    visAction = VIS_ACTION_PREV_PRESET; break;
+  case ACTION_VIS_PRESET_RANDOM:
+    visAction = VIS_ACTION_RANDOM_PRESET; break;
+  case ACTION_VIS_RATE_PRESET_PLUS:
+    visAction = VIS_ACTION_RATE_PRESET_PLUS; break;
+  case ACTION_VIS_RATE_PRESET_MINUS:
+    visAction = VIS_ACTION_RATE_PRESET_MINUS; break;
   case ACTION_SHOW_INFO:
     {
       if (!m_initTimer || g_settings.m_bMyMusicSongThumbInVis)
@@ -73,19 +82,6 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
   case ACTION_VIS_PRESET_LOCK:
     { // show the locked icon + fall through so that the vis handles the locking
-      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
-      if (msg.GetPointer())
-      {
-        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
-        char** pPresets=NULL;
-        int currpreset=0, numpresets=0;
-        bool locked;
-
-        pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);
-        if (numpresets == 1 || !pPresets)
-          return true;
-      }
       if (!m_bShowPreset)
       {
         m_lockedTimer = START_FADE_LENGTH;
@@ -127,10 +123,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     }
     break;*/
   }
-  // default action is to send to the visualisation first
-  CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-  if (pVisControl && pVisControl->OnAction(action))
-    return true;
+
+  if (visAction != VIS_ACTION_NONE && m_addon)
+    return m_addon->OnAction(visAction);
+
   return CGUIWindow::OnAction(action);
 }
 
@@ -138,30 +134,25 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_PLAYBACK_STARTED:
-    {
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        return pVisControl->OnMessage(message);
-    }
-    break;
   case GUI_MSG_GET_VISUALISATION:
     {
-//      message.SetControlID(CONTROL_VIS);
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        message.SetPointer(pVisControl->GetVisualisation());
-      return true;
+      if (m_addon)
+        message.SetPointer(m_addon.get());
+      return m_addon;
     }
     break;
   case GUI_MSG_VISUALISATION_ACTION:
+  {
+    CAction action(message.GetParam1());
+    return OnAction(action);
+  }
+  case GUI_MSG_PLAYBACK_STARTED:
+  {
+    if (IsActive() && m_addon)
     {
-      // message.SetControlID(CONTROL_VIS);
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        return pVisControl->OnMessage(message);
+      m_addon->UpdateTrack();
     }
-    break;
+  }
   case GUI_MSG_WINDOW_DEINIT:
     {
       if (IsActive()) // save any changed settings from the OSD
@@ -183,6 +174,12 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return true;
       }
 
+      AddonPtr viz;
+      CAddonMgr::Get()->GetDefault(ADDON_VIZ, viz);
+      m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
+      if (!m_addon)
+        return false;
+
       // hide or show the preset button(s)
       g_infoManager.SetShowCodec(m_bShowPreset);
       g_infoManager.SetShowInfo(true);  // always show the info initially.
@@ -203,6 +200,25 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     }
   }
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowVisualisation::OnWindowLoaded()
+{
+  if (m_addon)
+  {
+    CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+    if (pVisControl)
+      pVisControl->LoadAddon(m_addon);
+  }
+}
+
+bool CGUIWindowVisualisation::UpdateTrack()
+{
+  if (m_addon)
+  {
+    return m_addon->UpdateTrack();
+  }
+  return false;
 }
 
 bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
@@ -231,7 +247,7 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
 
 void CGUIWindowVisualisation::FrameMove()
 {
-  g_application.ResetScreenSaver();
+  g_application.ResetScreenSaver(); //why here?
   // check for a tag change
   const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
   if (tag && *tag != m_tag)

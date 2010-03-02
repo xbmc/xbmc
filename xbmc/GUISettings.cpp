@@ -253,8 +253,7 @@ void CGUISettings::Initialize()
   AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(wea, "weather.sep1");
-  AddString(wea, "weather.plugin", 23000, "", SPIN_CONTROL_TEXT, true);
-  AddString(wea, "weather.pluginsettings", 23001, "", BUTTON_CONTROL_STANDARD, true);
+  AddString(wea, "weather.plugin", 24027, "", SPIN_CONTROL_TEXT, true);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -264,7 +263,6 @@ void CGUISettings::Initialize()
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
   AddString(ml, "musiclibrary.scraper", 20194, "allmusic.xml", SPIN_CONTROL_TEXT);
-  AddString(ml, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -1118,10 +1116,6 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-
-  // check if we load the right vis
-  if(!CVisualisation::IsValidVisualisation(g_guiSettings.GetString("musicplayer.visualisation")))
-    g_guiSettings.SetString("musicplayer.visualisation", DEFAULT_VISUALISATION);
 
 #if defined(_LINUX) && !defined(__APPLE__)
   CStdString timezone = GetString("locale.timezone");

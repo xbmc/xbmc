@@ -57,16 +57,6 @@ CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int p
   m_item = item;
 }
 
-CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CVisualisation* vis)
-{
-  m_message = msg;
-  m_senderID = senderID;
-  m_controlID = controlID;
-  m_param1 = param1;
-  m_param2 = param2;
-  m_pointer = vis;
-}
-
 CGUIMessage::CGUIMessage(const CGUIMessage& msg)
 {
   *this = msg;

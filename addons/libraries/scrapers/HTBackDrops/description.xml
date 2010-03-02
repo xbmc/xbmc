@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>20a6cd29-50f3-41c5-bd96-c9f967138365</uuid>
+  <type>scraper-library</type>
+  <title>HTBackdrops</title>
+  <library>htbackdrops.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>HTBackdrops Scraper Library</summary>
+  <description>some description</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>movies</content>
+  </supportedcontent>
+</addoninfo>

@@ -28,6 +28,7 @@
 #include "Picture.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "utils/MusicInfoScraper.h"
+#include "utils/AddonManager.h"
 #include "MusicDatabase.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowSlideShow.h"
@@ -61,6 +62,7 @@ using namespace MUSIC_GRABBER;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
+using namespace ADDON;
 
 #define XML_MAX_INNERTEXT_SIZE 256
 #define MAX_PARAS 20
@@ -2250,9 +2252,14 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   CStdString albums="", album, artist="", tmp;
   double relevance;
   bool rel = false;
-  SScraperInfo info;
-  info.strContent = "albums";
-  info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+  AddonPtr addon;
+  if (!CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, CONTENT_ALBUMS))
+    return -1;
+  ScraperPtr info = boost::dynamic_pointer_cast<CScraper>(addon);
+  if (!info)
+    return -1;
+  info->m_pathContent = CONTENT_ALBUMS;
+
   CMusicInfoScraper scraper(info); 
 
   if (numParas<1)
@@ -2318,7 +2325,7 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
     {
       CMusicAlbumInfo musicInfo;//("", "") ;
       XFILE::CFileCurl http;
-      SScraperInfo info; // TODO - WTF is this code supposed to do?
+      ScraperPtr info; // TODO - WTF is this code supposed to do?
       if (musicInfo.Load(http,info))
       {
         if (musicInfo.GetAlbum().thumbURL.m_url.size() > 0)

@@ -88,6 +88,7 @@ typedef unsigned long ThreadIdentifier;
 #define strtoll(p, e, b) _strtoi64(p, e, b)
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
+extern "C" int strverscmp (const char *s1, const char *s2);
 
 #endif // _WIN32
 

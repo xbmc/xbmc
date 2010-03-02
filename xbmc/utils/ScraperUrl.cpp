@@ -174,7 +174,7 @@ const CScraperUrl::SUrlEntry CScraperUrl::GetSeasonThumb(int season) const
   return result;
 }
 
-bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl& http, const CStdString& cacheContext1)
+bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CFileCurl& http, const CStdString& cacheContext1)
 {
   CURL url(scrURL.m_url);
   http.SetReferer(scrURL.m_spoof);

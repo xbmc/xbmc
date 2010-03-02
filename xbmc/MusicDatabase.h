@@ -25,8 +25,7 @@
 #pragma once
 #include "Database.h"
 #include "Album.h"
-
-struct SScraperInfo;
+#include "Scraper.h"
 
 class CArtist;
 class CFileItem;
@@ -189,8 +188,8 @@ public:
   int GetVariousArtistsAlbumsCount();
 
   bool SetSongRating(const CStdString &filePath, char rating);
-  bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
+  bool SetScraperForPath(const CStdString& strPath, const ADDON::ScraperPtr& info);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info);
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);

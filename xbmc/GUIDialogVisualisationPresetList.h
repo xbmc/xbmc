@@ -22,8 +22,11 @@
  */
 
 #include "GUIDialog.h"
-#include "visualizations/Visualisation.h"
 
+namespace ADDON
+{
+  class CVisualisation;
+}
 class CFileItemList;
 
 class CGUIDialogVisualisationPresetList :
@@ -36,8 +39,9 @@ public:
   virtual void FrameMove();
 
 protected:
-  void SetVisualisation(CVisualisation *pVisualisation);
-  CVisualisation *m_pVisualisation;
+  void SetVisualisation(ADDON::CVisualisation *addon);
+  void Update();
+  ADDON::CVisualisation* m_viz; //TODO get rid
   CFileItemList* m_vecPresets;
-  int m_currentPreset;
+  unsigned m_currentPreset;
 };

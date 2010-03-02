@@ -33,6 +33,8 @@
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "utils/PasswordManager.h"
+#include "utils/RegExp.h"
+#include "GUIPassword.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
@@ -1063,6 +1065,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     profile.setWriteSources(bHas);
 
     bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockaddonmanager", bHas);
+    profile.setAddonManagerLocked(bHas);
+
+    bHas = false;
     XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
     profile.setSettingsLocked(bHas);
 
@@ -1139,6 +1145,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
       XMLUtils::SetBoolean(pNode,"lockpictures",m_vecProfiles[iProfile].picturesLocked());
       XMLUtils::SetBoolean(pNode,"lockprograms",m_vecProfiles[iProfile].programsLocked());
       XMLUtils::SetBoolean(pNode,"locksettings",m_vecProfiles[iProfile].settingsLocked());
+      XMLUtils::SetBoolean(pNode,"lockaddonmanager",m_vecProfiles[iProfile].addonmanagerLocked());
       XMLUtils::SetBoolean(pNode,"lockfiles",m_vecProfiles[iProfile].filesLocked());
     }
 
@@ -1952,6 +1959,7 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
   }
+  CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
-  CDirectory::Create("special://profile/visualisations");
 }
+

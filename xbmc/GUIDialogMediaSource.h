@@ -61,7 +61,7 @@ protected:
   CStdString m_name;
   CFileItemList* m_paths;
   bool m_confirmed;
-  SScraperInfo m_info;
+  ADDON::ScraperPtr m_info;
   bool m_bRunScan;
   bool m_bNameChanged;
 

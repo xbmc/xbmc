@@ -22,6 +22,7 @@
 #include "GUIInfoTypes.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/AddonManager.h"
 #include "utils/log.h"
 #include "LocalizeStrings.h"
 #include "GUIColorManager.h"
@@ -29,6 +30,7 @@
 #include "StringUtils.h"
 
 using namespace std;
+using ADDON::CAddonMgr;
 
 CGUIInfoBool::CGUIInfoBool(bool value)
 {
@@ -221,12 +223,41 @@ CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
   return work;
 }
 
+CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
+{
+  CStdString work(label);
+  // Replace all $ADDON[uuid number] with the real string
+  int pos1 = work.Find("$ADDON[");
+  while (pos1 >= 0)
+  {
+    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 7);
+    if (pos2 > pos1)
+    {
+      CStdString left = work.Left(pos1);
+      CStdString right = work.Mid(pos2 + 1);
+      CStdString uuid = work.substr(pos1+7, 36);
+      int stringid = atoi(work.substr(pos1+7+36+1, 5).c_str());
+      CStdString replace = CAddonMgr::Get()->GetString(uuid, stringid);
+      work = left + replace + right;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      return "";
+    }
+    pos1 = work.Find("$ADDON[", pos1);
+  }
+  return work;
+}
+
 void CGUIInfoLabel::Parse(const CStdString &label)
 {
   m_info.clear();
   // Step 1: Replace all $LOCALIZE[number] with the real string
   CStdString work = ReplaceLocalize(label);
-  // Step 2: Find all $INFO[info,prefix,postfix] blocks
+  // Step 2: Replace all $ADDON[uuid number] with the real string
+  work = ReplaceAddonStrings(work);
+  // Step 3: Find all $INFO[info,prefix,postfix] blocks
   int pos1 = work.Find("$INFO[");
   while (pos1 >= 0)
   {

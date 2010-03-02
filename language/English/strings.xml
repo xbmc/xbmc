@@ -1933,6 +1933,7 @@
   <string id="21416">Enable fallback based on scraper language</string>
   <string id="21417">- Settings</string>
   <string id="21418">Multilingual</string>
+  <string id="21419">No scrapers present</string>
 
   <string id="21420">Value to match</string>
   <string id="21421">Smart playlist rule</string>
@@ -2087,9 +2088,6 @@
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
 
-  <string id="23000">Weather plugin</string>
-  <string id="23001">- Plugin settings</string>
-
   <string id="23050">Activate Teletext</string>
   <string id="23051">Part %i</string>
   <string id="23052">Buffering %i bytes</string>
@@ -2101,6 +2099,38 @@
   <string id="23101">Click OK to terminate the player</string>
 
   <string id="23104">Click OK when playback has ended</string>
+
+  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <string id="24000">Add-on</string>
+  <string id="24001">Add-ons</string>
+
+  <string id="24005">Plugin</string>
+  <string id="24007">Scraper</string>
+  <string id="24008">Screensaver</string>
+  <string id="24009">Script</string>
+  <string id="24010">Visualization</string>
+
+  <string id="24020">Configure Add-on</string>
+  <string id="24021">Disable Add-on</string>
+  <string id="24022">Enable Add-on</string>
+  <string id="24030">This Add-on can not be configured</string>
+  <string id="24031">Error loading settings</string>
+
+  <string id="24050">Available Add-ons</string>
+  <string id="24051">Version:</string>
+  <string id="24052">Disclaimer:</string>
+  <string id="24053">License:</string>
+  <string id="24059">Would you like to install this Add-on?</string>
+
+  <string id="24070">Add-on can not used</string>
+  <string id="24071">An unknown error has occurred</string>
+  <string id="24072">Settings required</string>
+  <string id="24073">Could not connect</string>
+  <string id="24074">Needs to restart</string>
+  <string id="24080">Try to reconnect?</string>
+  <string id="24089">Add-on restarts</string>
+
+  <string id="24090">Lock Add-on manager</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

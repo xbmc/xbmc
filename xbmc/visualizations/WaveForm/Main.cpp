@@ -1,15 +1,14 @@
 // Waveform.vis
 // A simple visualisation example by MrC
 
-#include "../../../visualisations/xbmc_vis.h"
-#ifdef _WIN32
+#include "../../addons/include/xbmc_vis_dll.h"
+#include <stdio.h>
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #else
+#ifdef _WIN32
 #include <D3D9.h>
 #endif
-#else
-#include "../../../guilib/system.h"
 #endif
 
 char g_visName[512];
@@ -29,9 +28,7 @@ typedef struct {
   int MinZ;
   int MaxZ;
 } D3DVIEWPORT9;
-#ifdef _WIN32
 typedef unsigned long D3DCOLOR;
-#endif
 #endif
 
 D3DVIEWPORT9  g_viewport;
@@ -47,25 +44,28 @@ struct Vertex_t
 #endif
 
 //-- Create -------------------------------------------------------------------
-// Called once when the visualisation is created by XBMC. Do any setup here.
+// Called on load. Addon should fully initalize or return error status
 //-----------------------------------------------------------------------------
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+ADDON_STATUS Create(void* hdl, void* props)
 {
-  //printf("Creating Waveform\n");
-  strcpy(g_visName, szVisualisationName);
-  m_uiVisElements = 0;
+  if (!props)
+    return STATUS_UNKNOWN;
+
+  VIS_PROPS* visProps = (VIS_PROPS*)props;
+
 #ifndef HAS_SDL_OPENGL  
-  g_device = (LPDIRECT3DDEVICE9)pd3dDevice;
+  g_device = (LPDIRECT3DDEVICE9)visProps->device;
 #else
-  g_device = pd3dDevice;
+  g_device = visProps->device;
 #endif
-  g_viewport.X = iPosX;
-  g_viewport.Y = iPosY;
-  g_viewport.Width = iWidth;
-  g_viewport.Height = iHeight;
+  g_viewport.X = visProps->x;
+  g_viewport.Y = visProps->y;
+  g_viewport.Width = visProps->width;
+  g_viewport.Height = visProps->height;
   g_viewport.MinZ = 0;
   g_viewport.MaxZ = 1;
+
+  return STATUS_OK;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -87,7 +87,7 @@ extern "C" void Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   // Convert the audio data into a floating -1 to +1 range
   int ipos=0;
@@ -187,7 +187,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-extern "C" bool OnAction(long flags, void *param)
+extern "C" bool OnAction(long flags, const void *param)
 {
   bool ret = false;
   return ret;
@@ -196,37 +196,85 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
-{
-
-}
-
-//-- GetSettings --------------------------------------------------------------
-// Return the settings for XBMC to display
-//-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
+extern "C" unsigned int GetPresets(char ***presets)
 {
   return 0;
 }
 
-extern "C" void FreeSettings()
+//-- GetPreset ----------------------------------------------------------------
+// Return the index of the current playing preset
+//-----------------------------------------------------------------------------
+extern "C" unsigned GetPreset()
 {
-  return;
+  return 0;
 }
 
-
-//-- UpdateSetting ------------------------------------------------------------
-// Handle setting change request from XBMC
+//-- IsLocked -----------------------------------------------------------------
+// Returns true if this add-on use settings
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+extern "C" bool IsLocked()
 {
-
+  return false;
 }
 
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***names)
 {
   return 0; // this vis supports 0 sub modules
 }
+
+//-- Remove -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Remove()
+{
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" bool HasSettings()
+{
+  return false;
+}
+
+//-- GetStatus ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
+}
+
+//-- GetSettings --------------------------------------------------------------
+// Return the settings for XBMC to display
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" unsigned int GetSettings(StructSetting ***sSet)
+{
+  return 0;
+}
+
+//-- FreeSettings --------------------------------------------------------------
+// Free the settings struct passed from XBMC
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+
+extern "C" void FreeSettings()
+{
+}
+
+//-- SetSetting ---------------------------------------------------------------
+// Set a specific Setting value (called from XBMC)
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
+{
+  return STATUS_OK;
+}
+

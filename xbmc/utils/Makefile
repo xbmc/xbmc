@@ -1,10 +1,14 @@
 INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../../lib/jsoncpp/jsoncpp/include
 
-SRCS=AlarmClock.cpp \
+SRCS=Addon.cpp \
+     AddonManager.cpp \
+     AlarmClock.cpp \
      Archive.cpp \
      Builtins.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \
+     DownloadQueue.cpp \
+     DownloadQueueManager.cpp \
      Event.cpp \
      fstrcmp.cpp \
      GUIInfoManager.cpp \

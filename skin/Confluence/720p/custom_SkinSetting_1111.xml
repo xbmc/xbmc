@@ -1363,7 +1363,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton1_Path,.py)</onclick>
+							<onclick>Skin.SetFile(HomeScriptButton1_Path,Script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton1)</visible>
 						</control>
 
@@ -1402,7 +1402,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton2_Path,.py)</onclick>
+							<onclick>Skin.SetFile(HomeScriptButton2_Path,Script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton2)</visible>
 						</control>
 
@@ -1441,7 +1441,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton3_Path,.py)</onclick>
+							<onclick>Skin.SetFile(HomeScriptButton3_Path,Script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton3)</visible>
 						</control>
 
@@ -1480,7 +1480,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton4_Path,.py)</onclick>
+							<onclick>Skin.SetFile(HomeScriptButton4_Path,Script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton4)</visible>
 						</control>
 
@@ -1519,7 +1519,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton5_Path,.py)</onclick>
+							<onclick>Skin.SetFile(HomeScriptButton5_Path,Script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton5)</visible>
 						</control>
 
@@ -1558,7 +1558,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton6_Path,.py)</onclick>
+							<onclick>Skin.SetFile(HomeScriptButton6_Path,Script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton6)</visible>
 						</control>
 
@@ -1608,7 +1608,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(WeatherScript_Path,.py)</onclick>
+							<onclick>Skin.SetFile(WeatherScript_Path,Plugin,Weather)</onclick>
 							<visible>Skin.HasSetting(WeatherScript_Enable)</visible>
 						</control>
 
@@ -1645,7 +1645,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(LyricScript_Path,.py)</onclick>
+							<onclick>Skin.SetFile(LyricScript_Path,Script)</onclick>
 							<visible>Skin.HasSetting(LyricScript_Enable)</visible>
 						</control>
 
@@ -1682,7 +1682,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(SubtitleScript_Path,.py)</onclick>
+							<onclick>Skin.SetFile(SubtitleScript_Path,Script)</onclick>
 							<visible>Skin.HasSetting(SubtitleDownload_Enable)</visible>
 						</control>
 					</control>

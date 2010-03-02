@@ -42,7 +42,9 @@ public:
   bool canWriteDatabases() const { return _bCanWrite; }
   bool hasSources() const { return _bSources; }
   bool canWriteSources() const { return _bCanWriteSources; }
+  bool hasAddons() const { return _bAddons; }
   bool settingsLocked() const { return _bLockSettings; }
+  bool addonmanagerLocked() const { return _bLockAddonManager; }
   bool musicLocked() const { return _bLockMusic; }
   bool videoLocked() const { return _bLockVideo; }
   bool picturesLocked() const { return _bLockPictures; }
@@ -61,6 +63,7 @@ public:
   void setSources(bool bHas) { _bSources = bHas; }
   void setWriteSources(bool bCan) { _bCanWriteSources = bCan; }
 
+  void setAddonManagerLocked(bool bLocked) { _bLockAddonManager = bLocked; }
   void setSettingsLocked(bool bLocked) { _bLockSettings = bLocked; }
   void setFilesLocked(bool bLocked) { _bLockFiles = bLocked; }
   void setMusicLocked(bool bLocked) { _bLockMusic = bLocked; }
@@ -76,10 +79,12 @@ public:
   bool _bCanWrite;
   bool _bSources;
   bool _bCanWriteSources;
+  bool _bAddons;
 
   // lock stuff
   LockType _iLockMode;
   CStdString _strLockCode;
+  bool _bLockAddonManager;
   bool _bLockSettings;
   bool _bLockMusic;
   bool _bLockVideo;
