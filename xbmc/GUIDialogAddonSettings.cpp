@@ -76,8 +76,7 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 
       if (iControl == ID_BUTTON_OK)
       {
-        if (m_changed)
-          SaveSettings();
+        SaveSettings();
         Close();
         return true;
       }
@@ -88,7 +87,6 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 
       if (iControl == ID_BUTTON_CANCEL || bCloseDialog)
       {
-        m_changed = false;
         Close();
         return true;
       }
@@ -111,7 +109,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
   if (!addon)
     return false;
 
-  bool changed(false);
+  bool ret(false);
   if (addon->HasSettings())
   { 
     // Create the dialog
@@ -130,12 +128,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
       pDialog->m_changed = false;
       pDialog->m_addon = addon;
       pDialog->DoModal();
-
-      if (pDialog->m_changed)
-      {
-        changed = true;
-        addon->SaveSettings();
-      }
+      ret = true;
     }
     else
     { // couldn't load settings, inform user
@@ -147,7 +140,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
     CGUIDialogOK::ShowAndGetInput(24000,0,24030,0);
   }
 
-  return changed;
+  return ret;
 }
 
 bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
@@ -298,7 +291,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
 }
 
 // Go over all the settings and set their values according to the values of the GUI components
-bool CGUIDialogAddonSettings::SaveSettings(void)
+void CGUIDialogAddonSettings::SaveSettings(void)
 {
   // Retrieve all the values from the GUI components and put them in the model
   int controlId = CONTROL_START_CONTROL;
@@ -341,7 +334,7 @@ bool CGUIDialogAddonSettings::SaveSettings(void)
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
-  return true;
+  m_addon->SaveSettings();
 }
 
 void CGUIDialogAddonSettings::FreeControls()

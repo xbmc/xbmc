@@ -41,7 +41,7 @@ private:
   void SetDefaults();
   bool GetCondition(const CStdString &condition, const int controlId);
 
-  bool SaveSettings(void);
+  void SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   ADDON::AddonPtr m_addon;
