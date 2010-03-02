@@ -33,7 +33,7 @@
 			</control>
 			<control type="list" id="9000">
 				<posx>10</posx>
-				<posy>90</posy>
+				<posy>82</posy>
 				<width>260</width>
 				<height>541</height>
 				<onleft>9000</onleft>
@@ -42,19 +42,19 @@
 				<ondown>9000</ondown>
 				<pagecontrol>-</pagecontrol>
 				<scrolltime>300</scrolltime>
-				<itemlayout height="60" width="260">
+				<itemlayout height="54" width="260">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>260</width>
-						<height>61</height>
+						<height>55</height>
 						<texture border="5">MenuItemNF.png</texture>
 					</control>
 					<control type="label">
 						<posx>250</posx>
 						<posy>0</posy>
 						<width>380</width>
-						<height>61</height>
+						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>grey3</textcolor>
 						<align>right</align>
@@ -62,19 +62,19 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="60" width="260">
+				<focusedlayout height="54" width="260">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>260</width>
-						<height>61</height>
+						<height>55</height>
 						<texture border="5">MenuItemFO.png</texture>
 					</control>
 					<control type="label">
 						<posx>250</posx>
 						<posy>0</posy>
 						<width>380</width>
-						<height>61</height>
+						<height>55</height>
 						<font>font24_title</font>
 						<textcolor>white</textcolor>
 						<align>right</align>
