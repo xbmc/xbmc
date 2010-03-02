@@ -430,7 +430,7 @@ void CWinRenderer::UpdateVideoFilter()
     if(!LoadEffect(m_YUV2RGBHQScalerEffect, effectString))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
-      g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_bUseHQScaler = false;
       return;
     }
@@ -438,7 +438,7 @@ void CWinRenderer::UpdateVideoFilter()
     if(!m_HQKernelTexture.Create(256, 1, 1, 0, D3DFMT_A16B16G16R16F, D3DPOOL_MANAGED))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
-      g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_YUV2RGBHQScalerEffect.Release();
       m_bUseHQScaler = false;
       return;

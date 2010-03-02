@@ -85,13 +85,13 @@ void CLibrefmScrobbler::NotifyUser(int error)
       strText = g_localizeStrings.Get(15206);
       m_bBadAuth = true;
       strAudioScrobbler = g_localizeStrings.Get(15220);  // Libre.fm
-      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
       break;
     case SCROBBLER_USER_ERROR_BANNED:
       strText = g_localizeStrings.Get(15205);
       m_bBanned = true;
       strAudioScrobbler = g_localizeStrings.Get(15220);  // Libre.fm
-      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
       break;
     default:
       break;

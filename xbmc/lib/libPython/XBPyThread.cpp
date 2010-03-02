@@ -290,7 +290,7 @@ void XBPyThread::Process()
         }
 
         desc.Format(g_localizeStrings.Get(2100), script);
-        pDlgToast->QueueNotification(g_localizeStrings.Get(257), desc);
+        pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
       }
     }
     Py_XDECREF(exc_type);

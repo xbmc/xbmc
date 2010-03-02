@@ -56,6 +56,8 @@ public:
   virtual bool IsAnimating(ANIMATION_TYPE animType);
 
   void SetAutoClose(unsigned int timeoutMs);
+  void SetSound(bool OnOff) { m_enableSound = OnOff; };
+
 protected:
   virtual bool RenderAnimation(unsigned int time);
   virtual void SetDefaults();
@@ -70,6 +72,7 @@ protected:
   bool m_bModal;
   bool m_dialogClosing;
   bool m_autoClosing;
+  bool m_enableSound;
   unsigned int m_showStartTime;
   unsigned int m_showDuration;
 };

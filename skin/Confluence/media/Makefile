@@ -67,6 +67,9 @@ IMAGES= \
 	DefaultFolder.png \
 	DefaultFolderBack.png \
 	DefaultHardDisk.png \
+	DefaultIconError.png \
+	DefaultIconInfo.png \
+	DefaultIconWarning.png \
 	DefaultMovies.png \
 	DefaultMusicAlbums.png \
 	DefaultMusicArtists.png \

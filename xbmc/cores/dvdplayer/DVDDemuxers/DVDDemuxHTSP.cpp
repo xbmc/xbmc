@@ -323,7 +323,7 @@ void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStatus - %s", status);
-    g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, "TVHeadend Status", status, TOAST_DISPLAY_TIME, false);
   }
 }
 

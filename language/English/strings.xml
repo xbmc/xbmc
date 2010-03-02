@@ -780,7 +780,7 @@
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
-  
+
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
   <string id="1398">Freezing</string>
@@ -895,7 +895,7 @@
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
   <string id="12023">Validating existing trainers...</string>
-  
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -2088,6 +2088,7 @@
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
 
+  <string id="23049">Teletext not available</string>
   <string id="23050">Activate Teletext</string>
   <string id="23051">Part %i</string>
   <string id="23052">Buffering %i bytes</string>

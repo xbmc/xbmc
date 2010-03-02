@@ -251,8 +251,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_settings.m_currentVideoSettings.m_SubtitleOn = !g_settings.m_currentVideoSettings.m_SubtitleOn;
       g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
       int label = g_settings.m_currentVideoSettings.m_SubtitleOn?305:1223;
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(287),
-                                                          g_localizeStrings.Get(label));
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287),
+                                                                                      g_localizeStrings.Get(label), TOAST_DISPLAY_TIME, false);
     }
     return true;
     break;
@@ -279,7 +279,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
       CStdString sub;
       g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(287),sub);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, TOAST_DISPLAY_TIME, false);
       return true;
     }
     return true;
@@ -356,7 +356,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
       CStdString aud;
       g_application.m_pPlayer->GetAudioStreamName(g_settings.m_currentVideoSettings.m_AudioStream,aud);
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(460),aud);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(460), aud, TOAST_DISPLAY_TIME, false);
       return true;
     }
     break;

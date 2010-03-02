@@ -29,6 +29,9 @@
 #define POPUP_ICON                400
 #define POPUP_CAPTION_TEXT        401
 #define POPUP_NOTIFICATION_BUTTON 402
+#define POPUP_ICON_INFO           403
+#define POPUP_ICON_WARNING        404
+#define POPUP_ICON_ERROR          405
 
 CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 : CGUIDialog(WINDOW_DIALOG_KAI_TOAST, "DialogKaiToast.xml")
@@ -69,12 +72,30 @@ void CGUIDialogKaiToast::OnWindowLoaded()
     m_defaultIcon = image->GetFileName();
 }
 
+void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/)
+{
+  CGUIImage *image    = NULL;
+
+  if (eType == Info)
+    image = (CGUIImage *)GetControl(POPUP_ICON_INFO);
+  else if (eType == Warning)
+    image = (CGUIImage *)GetControl(POPUP_ICON_WARNING);
+  else if (eType == Error)
+    image = (CGUIImage *)GetControl(POPUP_ICON_ERROR);
+
+  CStdString strImage;
+  if (image)
+    strImage = image->GetFileName();
+
+  QueueNotification(strImage, aCaption, aDescription, displayTime, withSound);
+}
+
 void CGUIDialogKaiToast::QueueNotification(const CStdString& aCaption, const CStdString& aDescription)
 {
   QueueNotification("", aCaption, aDescription);
 }
 
-void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/)
+void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const CStdString& aCaption, const CStdString& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/)
 {
   CSingleLock lock(m_critical);
 
@@ -83,6 +104,7 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const C
   toast.caption = aCaption;
   toast.description = aDescription;
   toast.displayTime = displayTime > TOAST_MESSAGE_TIME + 500 ? displayTime : TOAST_MESSAGE_TIME + 500;
+  toast.withSound = withSound;
 
   m_notifications.push(toast);
 }
@@ -119,7 +141,7 @@ bool CGUIDialogKaiToast::DoWork()
     }
 
     //  Play the window specific init sound for each notification queued
-    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+    SetSound(toast.withSound);
 
     ResetTimer();
     return true;
