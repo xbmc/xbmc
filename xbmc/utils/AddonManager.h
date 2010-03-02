@@ -38,7 +38,7 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
 
   const int        ADDON_DIRSCAN_FREQ         = 300;
-  const CStdString ADDON_XBMC_REPO_URL        = "http://mirrors.xbmc.org/addons/addons.xml";
+  const CStdString ADDON_XBMC_REPO_URL        = "";
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
   const CStdString ADDON_PYTHON_EXT           = "*.py";
