@@ -183,7 +183,7 @@ cmyth_db_get_connection(cmyth_database_t db)
      */
     if(mysql_query(db->mysql,"SET NAMES utf8;")) {
       cmyth_dbg(CMYTH_DBG_ERROR, "%s: mysql_query() failed: %s\n", __FUNCTION__, mysql_error(db->mysql));
-      return -1;
+      return NULL;
     }
 
     return db->mysql;

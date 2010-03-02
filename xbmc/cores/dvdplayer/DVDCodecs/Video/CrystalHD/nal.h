@@ -19,14 +19,15 @@
  *
  * nal.h: H264 NAL structures
  */
-#define NOVDPAU
 
 #ifndef NAL_H_
 #define NAL_H_
-#include <stdint.h>
+
 #ifndef NOVDPAU
-#include <vdpau/vdpau.h>
+#define NOVDPAU
 #endif
+
+#include <stdint.h>
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
