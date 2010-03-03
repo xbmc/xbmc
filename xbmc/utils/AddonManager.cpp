@@ -599,6 +599,15 @@ void CAddonMgr::FindAddons(const TYPE &type)
       continue;
     }
 
+    // refuse to store addons with missing library
+    CStdString library(addon->Path());
+    CUtil::AddFileToFolder(library, addon->LibName(), library);
+    if (!CFile::Exists(library))
+    {
+      CLog::Log(LOGDEBUG, "ADDON: Missing library file %s, bypassing package", library.c_str());
+      continue;
+    }
+
     // check for/cache icon thumbnail
     //TODO cache one thumb per addon id instead
     CFileItem item2(addon->Path());
