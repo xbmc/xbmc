@@ -930,7 +930,6 @@ void CDVDPlayer::Process()
       if (CTimeUtils::GetTimeMS() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
       {
         m_ChannelEntryTimeOut = 0;
-        CPlayerSeek m_pause(this);
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         int channel = pStream->GetSelectedChannel();
         if(channel > 0 && pStream->SelectChannel(channel, true))
@@ -1976,26 +1975,31 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
+        g_infoManager.SetDisplayAfterSeek(100000);
+
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
+
           FlushBuffers(false);
           CloseAudioStream(true);
           CloseVideoStream(true);
           SAFE_DELETE(m_pDemuxer);
         }
+
+        g_infoManager.SetDisplayAfterSeek();
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
       {
-        CPlayerSeek m_pause(this);
-
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input)
         {
-          g_infoManager.SetDisplayAfterSeek(100000);
-
           bool result;
           bool fastSwitch = g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0;
+
+          if (!fastSwitch)
+            g_infoManager.SetDisplayAfterSeek(100000);
+
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
             result = input->NextChannel(fastSwitch);
           else
@@ -2022,8 +2026,8 @@ void CDVDPlayer::HandleMessages()
               SAFE_DELETE(m_pDemuxer);
             }
           }
-
-          g_infoManager.SetDisplayAfterSeek();
+          if (!fastSwitch)
+            g_infoManager.SetDisplayAfterSeek(100000);
         }
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
