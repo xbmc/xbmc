@@ -176,6 +176,7 @@ void CAddonStatusHandler::Process()
   /* A unknown event has occurred */
   else if (m_status == STATUS_UNKNOWN)
   {
+    CAddonMgr::Get()->DisableAddon(m_addon->UUID());
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
@@ -242,6 +243,12 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
 
 bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
 {
+  if (m_addons.empty())
+  {
+    VECADDONS add;
+    GetAllAddons(add,false);
+  }
+
   if (content == CONTENT_NONE)
     return (m_addons.find(type) != m_addons.end());
 
@@ -635,7 +642,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
       }
     }
   }
-  CLog::Log(LOGINFO, "ADDON: Found %"PRIuS" addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
+  CLog::Log(LOGINFO, "ADDON: Found %"PRIuS" addons of type %s", m_addons.find(type) == m_addons.end() ? 0: m_addons[type].size(), TranslateType(type).c_str());
 }
 
 bool CAddonMgr::UpdateIfKnown(AddonPtr &addon)

@@ -254,10 +254,10 @@
 			<height>78</height>
 			<texturefocus>osd_button_vizsettingsFO.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
-			<usealttexture>Window.IsActive(121)</usealttexture>
+			<usealttexture>Window.IsActive(AddonSettings)</usealttexture>
 			<alttexturefocus>osd_button_vizsettingsSELNF.png</alttexturefocus>
 			<alttexturenofocus>-</alttexturenofocus>
-			<onclick>XBMC.ActivateWindow(121)</onclick>
+			<onclick>Addon.Default.OpenSettings(visualization)</onclick>
 			<label>-</label>
 			<font>-</font>
 			<onleft>210</onleft>

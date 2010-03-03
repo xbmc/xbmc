@@ -89,6 +89,8 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_window_xpos = visprops->x;
   g_window_ypos = visprops->y;
 
+printf("<<<<<<22\n");
+
   return STATUS_OK;
 }
 

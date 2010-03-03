@@ -290,58 +290,70 @@
 				<posx>0</posx>
 				<posy>130</posy>
 				<control type="button" id="19">
-					<description>Profiles button</description>
+					<description>Addons button</description>
 					<posx>0</posx>
 					<posy>0</posy>
 					<include>ButtonCommonValues</include>
-					<label>13200</label>
-					<onclick>ActivateWindow(Profiles)</onclick>
+					<label>24001</label>
+					<onclick>ActivateWindow(AddonBrowser)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
 					<onup>611</onup>
 					<ondown>20</ondown>
 				</control>
 				<control type="button" id="20">
-					<description>Filemanager button</description>
+					<description>Profiles button</description>
 					<posx>0</posx>
 					<posy>45</posy>
 					<include>ButtonCommonValues</include>
-					<label>7</label>
-					<onclick>ActivateWindow(FileManager)</onclick>
+					<label>13200</label>
+					<onclick>ActivateWindow(Profiles)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
 					<onup>19</onup>
 					<ondown>21</ondown>
 				</control>
 				<control type="button" id="21">
-					<description>Skin Settings button</description>
+					<description>Filemanager button</description>
 					<posx>0</posx>
 					<posy>90</posy>
+					<include>ButtonCommonValues</include>
+					<label>7</label>
+					<onclick>ActivateWindow(FileManager)</onclick>
+					<onleft>5</onleft>
+					<onright>2</onright>
+					<onup>20</onup>
+					<ondown>22</ondown>
+				</control>
+				<control type="button" id="22">
+					<description>Skin Settings button</description>
+					<posx>0</posx>
+					<posy>135</posy>
 					<include>ButtonCommonValues</include>
 					<label>20077</label>
 					<onclick>ActivateWindow(1111)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
-					<onup>20</onup>
-					<ondown>22</ondown>
+					<onup>21</onup>
+					<ondown>23</ondown>
 					<pulseonselect>no</pulseonselect>
 					<visible>true</visible>
 				</control>
-				<control type="button" id="22">
+				<control type="button" id="23">
 					<description>About XBMC button</description>
 					<posx>0</posx>
-					<posy>135</posy>
+					<posy>180</posy>
 					<include>ButtonCommonValues</include>
 					<label>482</label>
 					<onclick>ActivateWindow(1112)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
-					<onup>21</onup>
+					<onup>22</onup>
 					<ondown>610</ondown>
 				</control>
 				<control type="button" id="610">
 					<description>Fake Button to fix Player Controls Navigation</description>
-					<onup>22</onup>
+					<onup>23</onup>
 					<ondown>603</ondown>
 					<visible>false</visible>
 				</control>

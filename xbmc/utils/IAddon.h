@@ -47,14 +47,14 @@ namespace ADDON
   {
     ADDON_UNKNOWN,
     ADDON_VIZ,
-    ADDON_VIZ_LIBRARY,
     ADDON_SKIN,
     ADDON_PVRDLL,
     ADDON_SCRIPT,
     ADDON_SCRAPER,
-    ADDON_SCRAPER_LIBRARY,
     ADDON_SCREENSAVER,
-    ADDON_PLUGIN
+    ADDON_PLUGIN,
+    ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
+    ADDON_SCRAPER_LIBRARY
   } TYPE;
 
   class IAddon;

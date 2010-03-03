@@ -1347,11 +1347,8 @@ void CMPCOutputThread::Process(void)
   // decoder is primed so now calls in DtsProcOutputXXCopy will block
   while (!m_bStop)
   {
-    GetDecoderOutput();
-
-    // we still sleep as decoder can output picture frames faster
-    // than we can render them.
-    Sleep(1);
+    if (!GetDecoderOutput())
+      Sleep(1);
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
