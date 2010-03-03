@@ -25,7 +25,7 @@
  */
 
 #include "DateTime.h"
-#include "../../include/xbmc_pvr_types.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class CFileItem;
 class cPVREPGInfoTag;

@@ -29,7 +29,7 @@
 #include "settings/VideoSettings.h"
 #include "utils/Thread.h"
 #include "DateTime.h"
-#include "../../include/xbmc_pvr_types.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class cPVRRecordingInfoTag : public CVideoInfoTag
 {

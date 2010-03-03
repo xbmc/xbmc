@@ -23,7 +23,7 @@
 #include "DateTime.h"
 #include "utils/Thread.h"
 #include "utils/PVRChannels.h"
-#include "../../include/xbmc_pvr_types.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class cPVREPGInfoTag;
 class cPVRChannelInfoTag;

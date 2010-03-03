@@ -27,7 +27,7 @@
 #include "VideoInfoTag.h"
 #include "DateTime.h"
 #include "FileItem.h"
-#include "../../include/xbmc_pvr_types.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class cPVREpg;
 
