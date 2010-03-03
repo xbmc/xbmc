@@ -229,7 +229,7 @@ extern "C" void Stop()
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Remove()
+extern "C" void Destroy()
 {
 }
 
