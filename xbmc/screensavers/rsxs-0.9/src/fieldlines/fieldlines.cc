@@ -333,6 +333,10 @@ void Stop()
   Hack::stop();
 }
 
+void Destroy()
+{
+}
+
 ADDON_STATUS GetStatus()
 {
   return STATUS_OK;

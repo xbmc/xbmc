@@ -287,6 +287,10 @@ void Stop()
   delete Common::resources;
 }
 
+void Destroy()
+{
+}
+
 ADDON_STATUS GetStatus()
 {
   return STATUS_OK;

@@ -115,16 +115,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample,
 //-----------------------------------------------------------------------------
 extern "C" void Stop()
 {
-  if ( g_tex_id )
-  {
-    glDeleteTextures( 1, &g_tex_id );
-  }
-  ivis_close( g_plugin );
-  free( g_tex_buffer );
-  g_tex_buffer = NULL;
-  g_tex_buffer_size = 0;
-  g_plugin = NULL;
-  g_new_audio = false;
 }
 
 //-- Audiodata ----------------------------------------------------------------
@@ -303,11 +293,29 @@ extern "C" int GetSubModules(char ***names, char ***paths)
   return ivis_get_visualisations( names, paths );
 }
 
-//-- Remove -------------------------------------------------------------------
+//-- Stop ---------------------------------------------------------------------
+// This dll must stop all runtime activities
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Stop()
+{
+  if ( g_tex_id )
+  {
+    glDeleteTextures( 1, &g_tex_id );
+  }
+  ivis_close( g_plugin );
+  free( g_tex_buffer );
+  g_tex_buffer = NULL;
+  g_tex_buffer_size = 0;
+  g_plugin = NULL;
+  g_new_audio = false;
+}
+
+//-- Destroy-------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Remove()
+extern "C" void Destroy()
 {
 }
 

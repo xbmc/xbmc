@@ -34,12 +34,12 @@ extern "C"
   } StructSetting;
 
   ADDON_STATUS __declspec(dllexport) Create(void *callbacks, void* props);
+  void __declspec(dllexport) Stop();
   void __declspec(dllexport) Destroy();
   ADDON_STATUS __declspec(dllexport) GetStatus();
   bool __declspec(dllexport) HasSettings();
   unsigned int __declspec(dllexport) GetSettings(StructSetting ***sSet);
   ADDON_STATUS __declspec(dllexport) SetSetting(const char *settingName, const void *settingValue);
-  void __declspec(dllexport) Remove();
   void __declspec(dllexport) FreeSettings();
 };
 

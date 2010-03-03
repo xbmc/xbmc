@@ -76,14 +76,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
   //printf("Got Start Command\n");
 }
 
-//-- Stop ---------------------------------------------------------------------
-// Called when the visualisation is closed by XBMC
-//-----------------------------------------------------------------------------
-extern "C" void Stop()
-{
-  //printf("Got Stop Command\n");
-}
-
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
@@ -225,7 +217,15 @@ extern "C" unsigned int GetSubModules(char ***names)
   return 0; // this vis supports 0 sub modules
 }
 
-//-- Remove -------------------------------------------------------------------
+//-- Stop ---------------------------------------------------------------------
+// This dll must stop all runtime activities
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Stop()
+{
+}
+
+//-- Detroy -------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------

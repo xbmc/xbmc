@@ -239,11 +239,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
   z_angle = 0.0f;
 }
 
-extern "C" void Stop()
-{
-
-}
-
 extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
@@ -332,11 +327,19 @@ extern "C" bool IsLocked()
   return false;
 }
 
-//-- Remove -------------------------------------------------------------------
+//-- Stop ---------------------------------------------------------------------
+// This dll must stop all runtime activities
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Stop()
+{
+}
+
+//-- Destroy ------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Remove()
+extern "C" void Destroy()
 {
 }
 
