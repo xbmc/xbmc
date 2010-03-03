@@ -166,7 +166,7 @@ bool CPVRManager::LoadClients()
     /* Add client to TV-Database to identify different backend types,
      * if client is already added his id is given.
      */
-    long clientID = m_database.AddClient(clientAddon->Name(), clientAddon->UUID());
+    long clientID = m_database.AddClient(clientAddon->Name(), clientAddon->ID());
     if (clientID == -1)
     {
       CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to to TV Database", clientAddon->Name().c_str());
@@ -302,15 +302,15 @@ bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
   if (!addon)
     return false;
 
-  CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+  CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->ID().c_str());
   CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
+    if (m_clients[(*itr).first]->ID() == addon->ID())
     {
       if (m_clients[(*itr).first]->Name() == addon->Name())
       {
-        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->ID().c_str());
         StopThread();
         m_clients[(*itr).first]->ReCreate();
         Create();
@@ -331,15 +331,15 @@ bool CPVRManager::RequestRemoval(const IAddon* addon)
   if (!addon)
     return false;
 
-  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->ID().c_str());
   CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
-    if (m_clients[(*itr).first]->UUID() == addon->UUID())
+    if (m_clients[(*itr).first]->ID() == addon->ID())
     {
       if (m_clients[(*itr).first]->Name() == addon->Name())
       {
-        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
+        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->ID().c_str());
         StopThread();
 
         m_clients[(*itr).first]->Destroy();
