@@ -102,10 +102,10 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 #ifdef HAS_SCREENSAVER
       if (m_addon)
       {
-        CLog::Log(LOGDEBUG, "SCREENSAVER: - Stopping - %s", m_addon->Name().c_str());
         m_addon->Stop();
         g_graphicsContext.ApplyStateBlock();
         m_addon->Destroy();
+        m_addon.reset();
       }
 #endif
       m_bInitialized = false;
@@ -125,11 +125,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       CSingleLock lock (m_critSection);
 
 #ifdef HAS_SCREENSAVER
-      if (m_addon)
-      {
-        m_addon->Stop();
-        g_graphicsContext.ApplyStateBlock();
-      }
+      assert(!m_addon);
       m_bInitialized = false;
 
       m_addon.reset();

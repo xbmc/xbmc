@@ -181,7 +181,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
   /* Inform dll to stop all activities */
   try
   {
-    m_pDll->Stop();
+    if (m_pDll) m_pDll->Stop();
   }
   catch (std::exception &e)
   {
