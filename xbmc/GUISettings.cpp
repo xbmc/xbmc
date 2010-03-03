@@ -471,13 +471,10 @@ void CGUISettings::Initialize()
 
 #ifdef HAS_EVENT_SERVER
   AddSeparator(8,"services.sep1");
-  AddBool(9,  "services.esenabled",         791, true);
+  AddBool(9,  "services.esenabled",         794, true);
   AddString(0,"services.esport",            792, "9777", EDIT_CONTROL_NUMBER_INPUT, false, 792);
   AddInt(0,   "services.esportrange",       793, 10, 1, 1, 100, SPIN_CONTROL_INT);
   AddInt(0,   "services.esmaxclients",      797, 20, 1, 1, 100, SPIN_CONTROL_INT);
-#ifndef _XBOX
-  AddBool(10,  "services.esallinterfaces",   794, false);
-#endif
   AddInt(0,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(0,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
