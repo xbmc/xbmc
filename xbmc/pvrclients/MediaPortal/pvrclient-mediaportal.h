@@ -34,7 +34,7 @@
 
 /* Master defines for client control */
 #define _WINSOCKAPI_ //Needed here to prevent inclusion of <winsock.h> via the header below
-#include "../../../include/xbmc_pvr_types.h"
+#include "../../addons/include/xbmc_pvr_types.h"
 
 /* Local includes */
 #include "Socket.h"

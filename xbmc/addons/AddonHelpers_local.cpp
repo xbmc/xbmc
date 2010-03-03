@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+/*
 #include "Addon.h"
 #include "AddonHelpers_local.h"
 #include "AddonHelpers_Addon.h"
@@ -60,4 +60,4 @@ CAddonHelpers::~CAddonHelpers()
   m_callbacks = NULL;
 }
 
-}; /* namespace ADDON */
+};*/ /* namespace ADDON */

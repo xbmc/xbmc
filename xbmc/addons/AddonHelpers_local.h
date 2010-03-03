@@ -19,12 +19,12 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+/*
 #include "../include/libXBMC_addon.h"
 #include "../include/libXBMC_gui.h"
 #include "../include/libXBMC_pvr.h"
 #include "../include/libXBMC_vis.h"
-#include "../include/xbmc_pvr_types.h"
+#include "include/xbmc_pvr_types.h"
 
 typedef void (*AddOnLogCallback)(void *addonData, const addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const queue_msg_t type, const char *msg);
@@ -98,4 +98,4 @@ private:
   CAddonHelpers_Vis   *m_helperVis;
 };
 
-}; /* namespace ADDON */
+};*/ /* namespace ADDON */

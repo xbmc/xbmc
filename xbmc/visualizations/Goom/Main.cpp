@@ -28,14 +28,15 @@ Goom Visualization Interface for XBMC
 */
 
 
-#include "xbmc_vis_dll.h"
-#include "libXBMC_addon.h"
+#include "../../addons/include/xbmc_vis_dll.h"
+#include <stdio.h>
+#include <string.h>
+#include <string>
 extern "C" {
 #include "goom.h"
 }
 #include "goom_config.h"
 #include <GL/glew.h>
-#include <string>
 
 extern int  preset_index;
 char        g_visName[512];
@@ -91,12 +92,13 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   return STATUS_OK;
 }
 
-//-- Destroy -------------------------------------------------------------------
+//-- Remove -------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Destroy()
+extern "C" void Remove()
 {
+  printf("<<<<<<\n");
   if ( g_goom )
   {
     goom_close( g_goom );
@@ -107,14 +109,6 @@ extern "C" void Destroy()
     free( g_goom_buffer );
     g_goom_buffer = NULL;
   }
-}
-
-//-- Remove -------------------------------------------------------------------
-// Do everything before unload of this add-on
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-extern "C" void Remove()
-{
 }
 
 //-- Start --------------------------------------------------------------------
@@ -248,6 +242,14 @@ extern "C" bool IsLocked()
   return false;
 }
 
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" unsigned int GetSubModules(char ***names)
+{
+  return 0; // this vis supports 0 sub modules
+}
+
 //-- HasSettings --------------------------------------------------------------
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
@@ -282,7 +284,6 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
 
 extern "C" void FreeSettings()
 {
-
 }
 
 //-- SetSetting ---------------------------------------------------------------
@@ -292,12 +293,4 @@ extern "C" void FreeSettings()
 extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
 {
   return STATUS_OK;
-}
-
-//-- GetSubModules ------------------------------------------------------------
-// Return any sub modules supported by this vis
-//-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
-{
-  return 0; // this vis supports 0 sub modules
 }

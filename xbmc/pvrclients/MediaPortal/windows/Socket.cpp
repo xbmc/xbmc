@@ -31,8 +31,8 @@
 
 #if defined __WINDOWS__ || defined _WINDOWS || defined WIN32
 
-#include "../../../../include/xbmc_pvr_types.h"
-#include "../../../../include/libXBMC_addon.h"
+#include "../../../addons/include/xbmc_pvr_types.h"
+#include "../../../addons/include/libXBMC_addon.h"
 #include "../pvrclient-mediaportal_os.h"
 
 #include "../Socket.h"

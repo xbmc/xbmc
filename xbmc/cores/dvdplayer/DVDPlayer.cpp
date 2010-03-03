@@ -1978,7 +1978,7 @@ void CDVDPlayer::HandleMessages()
         g_infoManager.SetDisplayAfterSeek(100000);
 
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value))
+        if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value), g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0)
         {
 
           FlushBuffers(false);

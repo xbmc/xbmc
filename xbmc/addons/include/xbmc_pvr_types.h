@@ -31,24 +31,7 @@
 #ifndef __PVRCLIENT_TYPES_H__
 #define __PVRCLIENT_TYPES_H__
 
-#define XBMC_PVRDLL_API 1
-
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
-#ifndef _LINUX
-#include <windows.h>
-#else
-#undef __cdecl
-#define __cdecl
-#undef __declspec
-#define __declspec(x)
-#include <time.h>
-#endif
-#endif
-
 #include <string.h>
-#include "xbmc_addon_types.h"
 
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN

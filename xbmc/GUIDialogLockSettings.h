@@ -56,7 +56,6 @@ protected:
   bool m_bLockPrograms;
   bool m_bLockFiles;
   bool m_bLockSettings;
-  bool m_bLockAddOnManager;
   bool *m_saveUserDetails;
   bool m_bLockAddOnManager;
 };
