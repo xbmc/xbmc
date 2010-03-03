@@ -2121,7 +2121,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     }
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, false, false, restore));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SynchronizeDemuxer(100);
   m_callback.OnPlayBackSeek((int)seek);
 }
