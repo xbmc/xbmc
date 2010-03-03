@@ -45,7 +45,6 @@ extern "C"
   {
     void (__cdecl* Start) ();
     void (__cdecl* Render) ();
-    void (__cdecl* Stop) ();
     void (__cdecl* GetInfo)(SCR_INFO *info);
   };
 }

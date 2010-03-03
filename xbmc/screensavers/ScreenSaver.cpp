@@ -62,12 +62,6 @@ void CScreenSaver::Render()
   if (Initialized()) m_pStruct->Render();
 }
 
-void CScreenSaver::Stop()
-{
-  // ask screensaver to cleanup
-  if (Initialized()) m_pStruct->Stop();
-}
-
 void CScreenSaver::GetInfo(SCR_INFO *info)
 {
   // get info from screensaver

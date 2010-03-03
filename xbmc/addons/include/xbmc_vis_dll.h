@@ -10,7 +10,6 @@ extern "C"
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
   void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
-  void Stop();
   bool OnAction(long action, const void *param);
   void GetInfo(VIS_INFO* pInfo);
   unsigned int GetPresets(char ***presets);
@@ -24,7 +23,6 @@ extern "C"
     pVisz->Start = Start;
     pVisz->AudioData = AudioData;
     pVisz->Render = Render;
-    pVisz->Stop = Stop;
     pVisz->OnAction = OnAction;
     pVisz->GetInfo = GetInfo;
     pVisz->GetPresets = GetPresets;

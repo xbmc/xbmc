@@ -32,7 +32,6 @@ extern "C"
   // Functions that your visualisation must implement
   void Start();
   void Render();
-  void Stop();
   void GetInfo(SCR_INFO* pInfo);
 
   // function to export the above structure to XBMC
@@ -40,7 +39,6 @@ extern "C"
   {
     pScr->Start = Start;
     pScr->Render = Render;
-    pScr->Stop = Stop;
     pScr->GetInfo = GetInfo;
   };
 };

@@ -99,7 +99,6 @@ extern "C"
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
     void (__cdecl* AudioData)(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void (__cdecl* Render) ();
-    void (__cdecl* Stop)();
     void (__cdecl* GetInfo)(VIS_INFO *info);
     bool (__cdecl* OnAction)(long flags, const void *param);
     int (__cdecl* HasPresets)();

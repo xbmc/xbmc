@@ -50,11 +50,10 @@ namespace ADDON
     virtual CStdString GetSetting(const CStdString& key);
 
     bool Create();
-    virtual void Stop() =0;
+    virtual void Stop();
     void Destroy();
 
   protected:
-    bool LoadDll();
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
     TheStruct* m_pStruct;
@@ -63,6 +62,7 @@ namespace ADDON
   private:
     TheDll* m_pDll;
     bool m_initialized;
+    bool LoadDll();
 
     virtual ADDON_STATUS TransferSettings();
     TiXmlElement MakeSetting(DllSetting& setting) const;
@@ -176,11 +176,30 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
+void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
+{
+  /* Inform dll to stop all activities */
+  try
+  {
+    m_pDll->Stop();
+  }
+  catch (std::exception &e)
+  {
+    HandleException(e, "m_pDll->Stop");
+  }
+  CLog::Log(LOGINFO, "ADDON: Dll Stopped - %s", Name().c_str());
+}
+
+template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
+  if (Initialized())
+    Stop();
+
   /* Unload library file */
   try
   {
+    m_pDll->Destroy();
     m_pDll->Unload();
   }
   catch (std::exception &e)

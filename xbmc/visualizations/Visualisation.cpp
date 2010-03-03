@@ -186,14 +186,7 @@ void CVisualisation::Stop()
   if (g_application.m_pPlayer) g_application.m_pPlayer->UnRegisterAudioCallback();
   if (Initialized())
   {
-    try
-    {
-      m_pStruct->Stop();
-    }
-    catch (std::exception e)
-    {
-      HandleException(e, "m_pStruct->Stop (CVisualisation::Stop)");
-    }
+    Stop();
   }
 }
 

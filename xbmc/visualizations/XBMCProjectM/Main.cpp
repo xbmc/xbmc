@@ -192,29 +192,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
   //printf("Got Start Command\n");
 }
 
-//-- Stop ---------------------------------------------------------------------
-// Called when the visualisation is closed by XBMC
-//-----------------------------------------------------------------------------
-extern "C" void Stop()
-{
-  if (globalPM)
-  {
-    projectM::writeConfig(g_configFile,globalPM->settings());
-    delete globalPM;
-    globalPM = NULL;
-  }
-  if (g_presets)
-  {
-    for (unsigned i = 0; i <g_numPresets; i++)
-    {
-      free(g_presets[i]);
-    }
-    free(g_presets);
-    g_presets = NULL;
-  }
-  g_numPresets = 0;
-}
-
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
@@ -330,11 +307,35 @@ extern "C" bool IsLocked()
     return false;
 }
 
-//-- Remove -------------------------------------------------------------------
+//-- Stop ---------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Remove()
+extern "C" void Stop()
+{
+  if (globalPM)
+  {
+    projectM::writeConfig(g_configFile,globalPM->settings());
+    delete globalPM;
+    globalPM = NULL;
+  }
+  if (g_presets)
+  {
+    for (unsigned i = 0; i <g_numPresets; i++)
+    {
+      free(g_presets[i]);
+    }
+    free(g_presets);
+    g_presets = NULL;
+  }
+  g_numPresets = 0;
+}
+
+//-- Destroy-------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Destroy()
 {
 }
 
