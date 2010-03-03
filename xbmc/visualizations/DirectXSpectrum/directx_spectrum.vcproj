@@ -63,8 +63,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="d3dx9.lib"
-				OutputFile="../../../visualisations/Spectrum_win32dx.vis"
-				LinkIncremental="2"
+				OutputFile="../../../addons/visualizations/DXSpectrum/Spectrum_win32dx.vis"
+				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Spectrum_win32dx.pdb"
 				SubSystem="2"
@@ -141,9 +141,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib ws2_32.lib d3dx9.lib"
-				OutputFile="../../../visualisations/Spectrum_win32dx.vis"
+				OutputFile="../../../addons/visualizations/DXSpectrum/Spectrum_win32dx.vis"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/Spectrum_win32dx.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -187,18 +188,6 @@
 				RelativePath=".\directx_spectrum.cpp"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFC}"
-			>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD02}"
-			>
 		</Filter>
 	</Files>
 	<Globals>
