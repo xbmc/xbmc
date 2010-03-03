@@ -36,6 +36,7 @@ namespace ADDON
   typedef std::vector<AddonPtr> VECADDONS;
   typedef std::vector<AddonPtr>::iterator IVECADDONS;
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
+  typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
 
   const int        ADDON_DIRSCAN_FREQ         = 300;
   const CStdString ADDON_XBMC_REPO_URL        = "";

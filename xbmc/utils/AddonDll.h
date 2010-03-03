@@ -41,7 +41,6 @@ namespace ADDON
     virtual ~CAddonDll();
     AddonPtr Clone() const;
     virtual ADDON_STATUS GetStatus();
-    virtual void Remove();
 
     // addon settings
     virtual bool HasSettings();
@@ -51,6 +50,7 @@ namespace ADDON
     virtual CStdString GetSetting(const CStdString& key);
 
     bool Create();
+    virtual void Stop() =0;
     void Destroy();
 
   protected:
@@ -178,17 +178,6 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
-  delete m_pStruct;
-  m_pStruct = NULL;
-  delete m_pDll;
-  m_pDll = NULL;
-  m_initialized = false;
-  CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-void CAddonDll<TheDll, TheStruct, TheProps>::Remove()
-{
   /* Unload library file */
   try
   {
@@ -198,6 +187,12 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Remove()
   {
     HandleException(e, "m_pDll->Unload");
   }
+  delete m_pStruct;
+  m_pStruct = NULL;
+  delete m_pDll;
+  m_pDll = NULL;
+  m_initialized = false;
+  CLog::Log(LOGINFO, "ADDON: Dll Destroyed - %s", Name().c_str());
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
