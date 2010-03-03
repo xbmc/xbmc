@@ -752,7 +752,8 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     return false;
   }
   id = element->GetText();
-  if (!StringUtils::ValidateUUID(id))
+  //FIXME since we no longer required uuids, should we bother validating anything?
+  if (id.IsEmpty())
   {
     CLog::Log(LOGERROR, "ADDON: %s has invalid <id> element, ignoring", strPath.c_str());
     return false;

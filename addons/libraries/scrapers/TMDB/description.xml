@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>52f01b59-f059-4950-a133-dbd778fa9b23</id>
+  <id>com.tmdb.scraper.common</id>
   <type>scraper-library</type>
   <title>TMDB</title>
   <library>tmdb.xml</library>

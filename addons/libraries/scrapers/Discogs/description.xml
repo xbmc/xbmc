@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>182db4b0-25ae-11df-8a39-0800200c9a66</id>
+  <id>com.discogs.scraper.common</id>
   <type>scraper-library</type>
   <title>Discogs</title>
   <library>discogs.xml</library>

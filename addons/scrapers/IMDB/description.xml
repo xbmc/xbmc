@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>2F2B9322-10BC-46f2-AC4C-72B2E8DD9694</id>
+  <id>com.imdb.scraper</id>
   <type>scraper</type>
   <title>IMDb</title>
   <library>imdb.xml</library>
