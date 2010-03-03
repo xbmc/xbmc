@@ -353,7 +353,7 @@ VECSOURCES& CGUIViewState::GetSources()
     CMediaSource plugin;
     CURL path;
     path.SetProtocol(ADDON::TranslateContent(m_content));
-    path.SetHostName(addons[i]->UUID());
+    path.SetHostName(addons[i]->ID());
     plugin.strPath = path.Get();
     plugin.strName = addons[i]->Name();
     plugin.m_strThumbnailImage = addons[i]->Icon(); //FIXME cache by UUID

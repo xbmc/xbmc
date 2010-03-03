@@ -140,9 +140,9 @@ void CGUIWindowAddonBrowser::Update()
   for (unsigned i=0; i < addons.size(); i++)
   {
     AddonPtr addon = addons[i];
-    CFileItemPtr pItem(new CFileItem(addon->UUID(), false));
+    CFileItemPtr pItem(new CFileItem(addon->ID(), false));
     pItem->SetLabel(addon->Name());
-    pItem->SetProperty("Addon.UUID", addon->UUID());
+    pItem->SetProperty("Addon.ID", addon->ID());
     pItem->SetProperty("Addon.Type", TranslateType(addon->Type()));
     pItem->SetProperty("Addon.Disabled", addon->Disabled());
     pItem->SetProperty("Addon.Name", addon->Name());
@@ -177,7 +177,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
 
   AddonPtr addon;
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
-  if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
+  if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.ID"), addon))
   {
     if (addon->Disabled())
     {
@@ -206,7 +206,7 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
 
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.UUID"), addon))
+  if (!CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.ID"), addon))
     return false;
 
   int iSettingsLabel = 24020;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>2F2B9322-10BC-46f2-AC4C-72B2E8DD9694</uuid>
+  <id>2F2B9322-10BC-46f2-AC4C-72B2E8DD9694</id>
   <type>scraper</type>
   <title>IMDb</title>
   <library>imdb.xml</library>

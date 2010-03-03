@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>F0B735CA-F693-48e6-99DA-B3A66AE56E88</uuid>
+  <id>F0B735CA-F693-48e6-99DA-B3A66AE56E88</id>
   <type>scraper</type>
   <title>Amazon UK</title>
   <library>amazonuk.xml</library>

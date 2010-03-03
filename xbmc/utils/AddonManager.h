@@ -108,13 +108,13 @@ namespace ADDON
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
-   CStdString GetString(const CStdString &uuid, const int number);
+   CStdString GetString(const CStdString &id, const int number);
 
     /* Addon operations */
     bool EnableAddon(AddonPtr &addon);
-    bool EnableAddon(const CStdString &uuid);
+    bool EnableAddon(const CStdString &id);
     bool DisableAddon(AddonPtr &addon);
-    bool DisableAddon(const CStdString &uuid);
+    bool DisableAddon(const CStdString &id);
     bool Clone(const AddonPtr& parent, AddonPtr& child);
 
   private:
@@ -146,7 +146,7 @@ namespace ADDON
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
     std::map<TYPE, CDateTime> m_lastDirScan;
-    std::map<CStdString, AddonPtr> m_uuidMap;
+    std::map<CStdString, AddonPtr> m_idMap;
   };
 
 }; /* namespace ADDON */

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>20a6cd29-50f3-41c5-bd96-c9f967138365</uuid>
+  <id>20a6cd29-50f3-41c5-bd96-c9f967138365</id>
   <type>scraper-library</type>
   <title>HTBackdrops</title>
   <library>htbackdrops.xml</library>

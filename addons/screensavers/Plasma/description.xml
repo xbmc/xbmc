@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <!-- guid: unique identifier of this addon 	!-->
-  <uuid>F20BE86C-7EA9-4b79-BE92-9BF3311EC092</uuid>
+  <id>F20BE86C-7EA9-4b79-BE92-9BF3311EC092</id>
   <type>screensaver</type>
   <title>Plasma</title>
   <library>Plasma.xbs</library>

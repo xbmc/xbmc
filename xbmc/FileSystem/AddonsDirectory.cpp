@@ -64,7 +64,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
   for (unsigned i=0; i < addons.size(); i++)
   {
     AddonPtr addon = addons[i];
-    path.SetFileName(addon->UUID());
+    path.SetFileName(addon->ID());
     CFileItemPtr pItem(new CFileItem(path.Get(), false));
     pItem->SetLabel(addon->Name());
     pItem->SetLabel2(addon->Summary());

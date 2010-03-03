@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>3cfce449-2e54-4a40-86cc-a6d2199c73b3</uuid>
+  <id>3cfce449-2e54-4a40-86cc-a6d2199c73b3</id>
   <type>scraper-library</type>
   <title>IMPA</title>
   <library>impa.xml</library>

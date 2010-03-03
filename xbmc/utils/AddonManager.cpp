@@ -71,7 +71,7 @@ CAddonStatusHandler::CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CSt
   if (m_addon == NULL)
     return;
 
-  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientGUID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->UUID().c_str(), sameThread ? "yes" : "no");
+  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
 
   m_status  = status;
   m_message = message;
@@ -176,7 +176,7 @@ void CAddonStatusHandler::Process()
   /* A unknown event has occurred */
   else if (m_status == STATUS_UNKNOWN)
   {
-    CAddonMgr::Get()->DisableAddon(m_addon->UUID());
+    CAddonMgr::Get()->DisableAddon(m_addon->ID());
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
@@ -340,16 +340,18 @@ bool CAddonMgr::GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addo
   if (m_addons.find(type) == m_addons.end())
     return false;
 
-  bool isUUID = StringUtils::ValidateUUID(str);
+  if (m_idMap[str])
+  {
+    addon = m_idMap[str];
+    return true;
+  }
 
   VECADDONS &addons = m_addons[type];
   IVECADDONS adnItr = addons.begin();
   while (adnItr != addons.end())
   {
     //FIXME scrapers were previously registered by filename
-    if ( (isUUID && (*adnItr)->UUID() == str)
-      || (!isUUID && (*adnItr)->Name() == str)
-      || (type == ADDON_SCRAPER && (*adnItr)->LibName() == str))
+    if ((*adnItr)->Name() == str || (type == ADDON_SCRAPER && (*adnItr)->LibName() == str))
     {
       addon = (*adnItr);
       return true;
@@ -401,21 +403,21 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE
   return GetAddon(type, setting, addon);
 }
 
-CStdString CAddonMgr::GetString(const CStdString &uuid, const int number)
+CStdString CAddonMgr::GetString(const CStdString &id, const int number)
 {
-  AddonPtr addon = m_uuidMap[uuid];
+  AddonPtr addon = m_idMap[id];
   if (addon)
     return addon->GetString(number);
 
   return "";
 }
 
-bool CAddonMgr::EnableAddon(const CStdString &uuid)
+bool CAddonMgr::EnableAddon(const CStdString &id)
 {
-  AddonPtr addon = m_uuidMap[uuid];
+  AddonPtr addon = m_idMap[id];
   if (!addon)
   {
-    CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", uuid.c_str());
+    CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", id.c_str());
     return false;
   }
 
@@ -431,9 +433,9 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
   return true;
 }
 
-bool CAddonMgr::DisableAddon(const CStdString &uuid)
+bool CAddonMgr::DisableAddon(const CStdString &id)
 {
-  AddonPtr addon = m_uuidMap[uuid];
+  AddonPtr addon = m_idMap[id];
   if (!addon)
     return false;
   return DisableAddon(addon);
@@ -480,7 +482,7 @@ bool CAddonMgr::LoadAddonsXML(const TYPE &type)
   while (itr != props.end())
   {
     AddonPtr addon;
-    if (itr->parent.empty() && GetAddon(type, itr->uuid, addon))
+    if (itr->parent.empty() && GetAddon(type, itr->id, addon))
     {
       EnableAddon(addon);
     }
@@ -598,7 +600,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
     }
 
     // check for/cache icon thumbnail
-    //TODO cache one thumb per addon uuid instead
+    //TODO cache one thumb per addon id instead
     CFileItem item2(addon->Path());
     CUtil::AddFileToFolder(addon->Path(), addon->LibName(), item2.m_strPath);
     item2.m_bIsFolder = false;
@@ -625,7 +627,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
       {
         assert(addon->Type() == type);
         m_addons[type].push_back(addon);
-        m_uuidMap.insert(std::make_pair(addon->UUID(), addon));
+        m_idMap.insert(std::make_pair(addon->ID(), addon));
       }
     }
   }
@@ -638,7 +640,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
       if (!UpdateIfKnown(addon))
       {
         m_addons[type].push_back(addon);
-        m_uuidMap.insert(std::make_pair(addon->UUID(), addon));
+        m_idMap.insert(std::make_pair(addon->ID(), addon));
       }
     }
   }
@@ -651,14 +653,14 @@ bool CAddonMgr::UpdateIfKnown(AddonPtr &addon)
   {
     for (unsigned i = 0; i < m_addons[addon->Type()].size(); i++)
     {
-      if (m_addons[addon->Type()][i]->UUID() == addon->UUID())
+      if (m_addons[addon->Type()][i]->ID() == addon->ID())
       {
         //TODO inform any manager first, and request removal
         //TODO choose most recent version if varying
         m_addons[addon->Type()][i] = addon;
-        CStdString uuid = addon->UUID();
-        m_uuidMap.erase(uuid);
-        m_uuidMap.insert(std::make_pair(addon->UUID(), addon));
+        CStdString id = addon->ID();
+        m_idMap.erase(id);
+        m_idMap.insert(std::make_pair(addon->ID(), addon));
         return true;
       }
     }
@@ -677,13 +679,13 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
   ADDONDEPS::iterator itr = deps.begin();
   while (itr != deps.end())
   {
-    CStdString uuid;
-    uuid = (*itr).first;
+    CStdString id;
+    id = (*itr).first;
     AddonVersion min = (*itr).second.first;
     AddonVersion max = (*itr).second.second;
-    if (m_uuidMap.count(uuid))
+    if (m_idMap.count(id))
     {
-      AddonPtr dep = m_uuidMap[uuid];
+      AddonPtr dep = m_idMap[id];
       // we're guaranteed to have at least max OR min here
       if (!min.str.IsEmpty() && !max.str.IsEmpty())
         return (dep->Version() >= min && dep->Version() <= max);
@@ -694,7 +696,7 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
     }
     for (unsigned i=0; i < m_remoteAddons.size(); i++)
     {
-      if (m_remoteAddons[i].uuid == uuid)
+      if (m_remoteAddons[i].id == id)
       {
         if(m_remoteAddons[i].version >= min && m_remoteAddons[i].version <= max)
         {
@@ -729,7 +731,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
   }
 
   /* Steps required to meet package requirements
-  * 1. uuid exists and is valid
+  * 1. id exists and is valid
   * 2. type exists and is valid
   * 3. version exists
   * 4. a license is specified
@@ -740,29 +742,35 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
   * NOTE: addon dependencies are handled in ::FindAddons()
   */
 
-  /* Read uuid */
-  CStdString uuid;
-  element = xmlDoc.RootElement()->FirstChildElement("uuid");
+  /* Validate id */
+  CStdString id;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("id");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s does not contain the <uuid> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", strPath.c_str());
     return false;
   }
-  uuid = element->GetText();
+  id = element->GetText();
+  if (!StringUtils::ValidateUUID(id))
+  {
+    CLog::Log(LOGERROR, "ADDON: %s has invalid <id> element, ignoring", strPath.c_str());
+    return false;
+  }
 
   /* Validate type */
+  TYPE type;
+  element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("type");
-  TYPE type = TranslateType(element->GetText());
+  if (!element)
+  {
+    CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", strPath.c_str());
+    return false;
+  }
+  type = TranslateType(element->GetText());
   if (type != reqType)
   {
     CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", strPath.c_str(), type);
-    return false;
-  }
-
-  /* Validate uuid */
-  if (!StringUtils::ValidateUUID(uuid))
-  {
-    CLog::Log(LOGERROR, "ADDON: %s has invalid <uuid> element, ignoring", strPath.c_str());
     return false;
   }
 
@@ -796,8 +804,8 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     return false;
   }
 
-  /* Path, UUID & Version are valid */
-  AddonProps addonProps(uuid, type, version);
+  /* Path, ID & Version are valid */
+  AddonProps addonProps(id, type, version);
   addonProps.name = name;
   addonProps.path = path;
   addonProps.icon = CUtil::AddFileToFolder(path, "default.tbn");
@@ -966,13 +974,13 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
       {
         CStdString min = element->Attribute("minversion");
         CStdString max = element->Attribute("maxversion");
-        CStdString uuid = element->GetText();
-        if (!uuid || (!min && ! max))
+        CStdString id = element->GetText();
+        if (!id || (!min && ! max))
         {
           CLog::Log(LOGDEBUG, "ADDON: %s malformed <dependency> element, will ignore this dependency", strPath.c_str());
           continue;
         }
-        deps.insert(std::make_pair(uuid, std::make_pair(AddonVersion(min), AddonVersion(max))));
+        deps.insert(std::make_pair(id, std::make_pair(AddonVersion(min), AddonVersion(max))));
         element = element->NextSiblingElement("dependency");
       } while (element != NULL);
     }
@@ -1085,9 +1093,9 @@ bool CAddonMgr::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS
     while (itr != addons.end())
     {
       TiXmlElement element("addon");
-      XMLUtils::SetString(&element, "uuid", itr->uuid);
+      XMLUtils::SetString(&element, "id", itr->id);
       if (!itr->parent.IsEmpty())
-        XMLUtils::SetString(&element, "parentuuid", itr->parent);
+        XMLUtils::SetString(&element, "parentid", itr->parent);
       sectionNode->InsertEndChild(element);
       ++itr;
     }
@@ -1161,19 +1169,19 @@ void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const TYPE &type, VE
 
 bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
 {
-  // uuid
-  const TiXmlNode *pNodePath = node->FirstChild("uuid");
-  CStdString uuid;
+  // id
+  const TiXmlNode *pNodePath = node->FirstChild("id");
+  CStdString id;
   if (pNodePath && pNodePath->FirstChild())
   {
-    uuid = pNodePath->FirstChild()->Value();
+    id = pNodePath->FirstChild()->Value();
   }
   else
     return false;
 
   // this AddonProps doesn't need a valid version
   CStdString version;
-  AddonProps props(uuid, type, version);
+  AddonProps props(id, type, version);
 
   // name if present
   const TiXmlNode *pNodeName = node->FirstChild("name");
@@ -1183,11 +1191,11 @@ bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS 
     props.name = pNodeName->FirstChild()->Value();
   }
 
-  // parent uuid if present
-  const TiXmlNode *pNodeChildGUID = node->FirstChild("parentuuid");
-  if (pNodeChildGUID && pNodeChildGUID->FirstChild())
+  // parent id if present
+  const TiXmlNode *pNodeChildID = node->FirstChild("parentid");
+  if (pNodeChildID && pNodeChildID->FirstChild())
   {
-    props.parent = pNodeChildGUID->FirstChild()->Value();
+    props.parent = pNodeChildID->FirstChild()->Value();
   }
 
   // get custom thumbnail

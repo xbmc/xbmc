@@ -235,7 +235,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   : m_props(rhs.Props())
   , m_parent(parent)
 {
-  m_props.uuid = StringUtils::CreateUUID();
+  m_props.id = StringUtils::CreateUUID();
   m_userXmlDoc  = rhs.m_userXmlDoc;
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
@@ -503,7 +503,7 @@ TiXmlElement* CAddon::GetSettingsXML()
 
 void CAddon::BuildProfilePath()
 {
-  m_profile.Format("special://profile/addon_data/%s/", UUID().c_str());
+  m_profile.Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
 /**

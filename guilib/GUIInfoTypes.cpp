@@ -226,7 +226,7 @@ CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
 CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
 {
   CStdString work(label);
-  // Replace all $ADDON[uuid number] with the real string
+  // Replace all $ADDON[id number] with the real string
   int pos1 = work.Find("$ADDON[");
   while (pos1 >= 0)
   {
@@ -235,9 +235,9 @@ CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
     {
       CStdString left = work.Left(pos1);
       CStdString right = work.Mid(pos2 + 1);
-      CStdString uuid = work.substr(pos1+7, 36);
+      CStdString id = work.substr(pos1+7, 36);
       int stringid = atoi(work.substr(pos1+7+36+1, 5).c_str());
-      CStdString replace = CAddonMgr::Get()->GetString(uuid, stringid);
+      CStdString replace = CAddonMgr::Get()->GetString(id, stringid);
       work = left + replace + right;
     }
     else
@@ -255,7 +255,7 @@ void CGUIInfoLabel::Parse(const CStdString &label)
   m_info.clear();
   // Step 1: Replace all $LOCALIZE[number] with the real string
   CStdString work = ReplaceLocalize(label);
-  // Step 2: Replace all $ADDON[uuid number] with the real string
+  // Step 2: Replace all $ADDON[id number] with the real string
   work = ReplaceAddonStrings(work);
   // Step 3: Find all $INFO[info,prefix,postfix] blocks
   int pos1 = work.Find("$INFO[");

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>56e2e02c-1b76-4c91-87bb-0e90b1cb7c72</uuid>
+  <id>56e2e02c-1b76-4c91-87bb-0e90b1cb7c72</id>
   <type>scraper-library</type>
   <title>LastFM</title>
   <library>lastfm.xml</library>
