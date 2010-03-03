@@ -1,10 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <scraper framework="1.1" date="2010-02-24" name="IMDb.com" content="movies" thumb="imdb.png" language="en">
-	<include>common/imdb.xml</include>
-	<include>common/tmdb.xml</include>
-	<include>common/movieposterdb.xml</include>
-	<include>common/impa.xml</include>
-	<include>common/dtrailer.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable full cast credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">

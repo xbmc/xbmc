@@ -14,6 +14,13 @@
   <summary>IMDB Movie Scraper</summary>
   <description>Download Movie information from www.imdb.com</description>
   <author>TEAMXBMC</author>
+  <dependencies>
+    <dependency minversion="1.0.0" maxversion="">com.imdb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">com.tmdb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">com.movieposterdb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">com.impa.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">com.dtrailer.scraper.common</dependency>
+  </dependencies>
   <supportedcontent>
     <content>movies</content>
   </supportedcontent>
