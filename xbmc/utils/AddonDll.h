@@ -111,7 +111,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     CStdString extension = CUtil::GetExtension(LibName());
     strFileName = "special://temp/" + LibName();
     CUtil::RemoveExtension(strFileName);
-    strFileName += "-" + UUID() + extension;
+    strFileName += "-" + ID() + extension;
 
     if (!CFile::Exists(strFileName))
       CFile::Cache(Path() + LibName(), strFileName);
@@ -193,9 +193,6 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
-  if (Initialized())
-    Stop();
-
   /* Unload library file */
   try
   {

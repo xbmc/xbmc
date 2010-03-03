@@ -89,18 +89,15 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
   g_window_xpos = visprops->x;
   g_window_ypos = visprops->y;
 
-printf("<<<<<<22\n");
-
   return STATUS_OK;
 }
 
-//-- Remove -------------------------------------------------------------------
+//-- Destroy -------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Remove()
+extern "C" void Destroy()
 {
-  printf("<<<<<<\n");
   if ( g_goom )
   {
     goom_close( g_goom );

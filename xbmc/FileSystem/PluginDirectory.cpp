@@ -445,7 +445,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CONTENT_TYPE &type, CFileItemLi
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
     CStdString path("plugin://");
-    path.append((*it)->UUID());
+    path.append((*it)->ID());
 
     CFileItemPtr newItem(new CFileItem(path,true));
     newItem->SetLabel((*it)->Name());

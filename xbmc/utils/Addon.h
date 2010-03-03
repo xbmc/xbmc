@@ -56,23 +56,23 @@ public:
 struct AddonProps
 {
 public:
-  AddonProps(CStdString &uuid, TYPE type, CStdString &versionstr)
-    : uuid(uuid)
+  AddonProps(CStdString &id, TYPE type, CStdString &versionstr)
+    : id(id)
     , type(type)
     , version(versionstr)
   {}
 
   AddonProps(const AddonPtr &addon)
-    : uuid(addon->UUID())
+    : id(addon->ID())
     , type(addon->Type())
     , version(addon->Version())
-  { if(addon->Parent()) parent = addon->Parent()->UUID(); }
+  { if(addon->Parent()) parent = addon->Parent()->ID(); }
 
   bool operator=(const AddonProps &rhs)
-  { return (*this).uuid == rhs.uuid
+  { return (*this).id == rhs.id
     && (*this).type == rhs.type
     && (*this).version == rhs.version; }
-  CStdString uuid;
+  CStdString id;
   TYPE type;
   AddonVersion version;
   CStdString name;
@@ -111,7 +111,7 @@ public:
   // properties
   const TYPE Type() const { return m_props.type; }
   AddonProps Props() const { return m_props; }
-  const CStdString UUID() const { return m_props.uuid; }
+  const CStdString ID() const { return m_props.id; }
   const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
   bool Disabled() const { return m_disabled; }

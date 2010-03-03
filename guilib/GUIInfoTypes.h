@@ -90,7 +90,7 @@ public:
   static CStdString ReplaceLocalize(const CStdString &label);
 
   /*!
-   \brief Replaces instances of $ADDON[uuid number] with the appropriate localized addon string
+   \brief Replaces instances of $ADDON[id number] with the appropriate localized addon string
    \param label text to replace
    \return text with any localized strings filled in.
    */

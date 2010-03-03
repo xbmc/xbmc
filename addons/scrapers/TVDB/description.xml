@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>com.impa.scraper.common</id>
-  <type>scraper-library</type>
-  <title>IMPA</title>
-  <library>impa.xml</library>
+  <id>com.tvdb.scraper</id>
+  <type>scraper</type>
+  <title>TVDB</title>
+  <library>tvdb.xml</library>
   <version>1.0.0</version>
   <platforms>
     <platform>all</platform>
@@ -11,10 +11,12 @@
   <minversion>
     <xbmc>20000</xbmc>
   </minversion>
-  <summary>IMPA Scraper Library</summary>
-  <description>some description</description>
+  <summary>TV show scraper</summary>
+  <description>blah</description>
   <author>TEAMXBMC</author>
+  <dependencies>
+  </dependencies>
   <supportedcontent>
-    <content>movies</content>
+    <content>tvshows</content>
   </supportedcontent>
 </addoninfo>

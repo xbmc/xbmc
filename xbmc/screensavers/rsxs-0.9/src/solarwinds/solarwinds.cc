@@ -266,13 +266,13 @@ ADDON_STATUS Create(void* hdl, void* props)
   Common::width = scrprops->width;
   Common::height = scrprops->height;
   Common::aspectRatio = float(Common::width) / float(Common::height);
+  Common::resources = new ResourceManager;
 
   return STATUS_OK;
 }
 
 void Start()
 {
-  Common::resources = new ResourceManager;
   Hack::start();
 }
 
@@ -284,11 +284,11 @@ void Render()
 void Stop()
 {
   Hack::stop();
-  delete Common::resources;
 }
 
 void Destroy()
 {
+  delete Common::resources;
 }
 
 ADDON_STATUS GetStatus()

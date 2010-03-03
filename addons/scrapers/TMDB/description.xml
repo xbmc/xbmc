@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>com.tmdb.scraper.common</id>
-  <type>scraper-library</type>
+  <id>org.themoviedb.scraper</id>
+  <type>scraper</type>
   <title>TMDB</title>
   <library>tmdb.xml</library>
   <version>1.0.0</version>
@@ -11,9 +11,13 @@
   <minversion>
     <xbmc>20000</xbmc>
   </minversion>
-  <summary>TMDB Scraper Library</summary>
-  <description>some description</description>
+  <summary>TMDB Movie Scraper</summary>
+  <description>Download movie information</description>
   <author>TEAMXBMC</author>
+  <dependencies>
+    <dependency minversion="1.0.0" maxversion="">org.themoviedb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">com.dtrailer.scraper.common</dependency>
+  </dependencies>
   <supportedcontent>
     <content>movies</content>
   </supportedcontent>

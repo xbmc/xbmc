@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>552AE88E-FCB2-4909-AE56-DA6FC8895FC6</uuid>
+  <id>552AE88E-FCB2-4909-AE56-DA6FC8895FC6</id>
   <type>visualization</type>
   <title>Goom</title>
   <library>Goom.vis</library>
@@ -11,7 +11,7 @@
     <platform>linux</platform>
   </platforms>
   <minversion>
-    <xbmc>20000</xbmc>
+    <xbmc>28344</xbmc>
   </minversion>
   <summary>Visualization</summary>
   <description>Goom visual effects generator</description>

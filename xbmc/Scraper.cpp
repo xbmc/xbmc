@@ -86,15 +86,15 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
-  CStdString uuid = UUID();
+  CStdString id = ID();
   if (Parent())
   { // called from DialogContentSettings. We are working with the cloned scraper settings
-    uuid = Parent()->UUID();
+    id = Parent()->ID();
   }
 
   // load our scraper xml
   CScraperParser parser;
-  if (!parser.Load(uuid))
+  if (!parser.Load(id))
     return false;
 
   if (!parser.HasFunction(strFunction))
