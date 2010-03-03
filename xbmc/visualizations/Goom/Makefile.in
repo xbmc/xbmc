@@ -1,7 +1,8 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations -Igoom2k4-0/src
+INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -Igoom2k4-0/src
 OBJS=Main.o
-SLIB=../../../visualisations/Goom.vis
+SLIB=Goom/Goom.vis
+DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 DIRS=goom2k4-0
 
@@ -15,6 +16,8 @@ else
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o
 endif
+	@find Goom -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*\.pvr|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" ../../../addons/visualizations/"{}" \; -printf " -- %-75.75f\r"
+	@find Goom -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis\.vis" -iregex ".*\.vis" -exec install -D "{}" ../../../addons/visualizations/"{}" \; -printf " -- %-75.75f\r"
 
 goom2k4-0/src/.libs/libgoom2.a:
 	$(MAKE) -C goom2k4-0
