@@ -191,7 +191,7 @@ void CVisualisation::Stop()
   if (g_application.m_pPlayer) g_application.m_pPlayer->UnRegisterAudioCallback();
   if (Initialized())
   {
-    Stop();
+    CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Stop();
   }
 }
 
