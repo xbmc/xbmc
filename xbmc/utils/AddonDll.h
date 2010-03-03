@@ -193,9 +193,6 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
 {
-  if (Initialized())
-    Stop();
-
   /* Unload library file */
   try
   {
