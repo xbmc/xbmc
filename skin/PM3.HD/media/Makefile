@@ -151,6 +151,7 @@ IMAGES= \
 	home-playmedia.png \
 	home-power-focus.gif \
 	home-power.png \
+	icon_addons.png \
 	icon_appearence.png \
 	icon_music.png \
 	icon_network.png \
