@@ -30,7 +30,7 @@ class CVMR9AllocatorPresenter  : public CDsRenderer,
 {
 public:
   CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error);
-  virtual ~CVMR9AllocatorPresenter();
+  
 
   // IVMRSurfaceAllocator9
   virtual STDMETHODIMP InitializeDevice(DWORD_PTR dwUserID, VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers);

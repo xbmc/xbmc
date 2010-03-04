@@ -229,7 +229,7 @@ void CDSGraph::UpdateTime()
   {
     int avgRate;
     g_dsconfig.pQualProp->get_AvgFrameRate(&avgRate);
-    m_pStrCurrentFrameRate.Format(" Avg FrameRate: %4.2f",(float)avgRate/100);
+    m_pStrCurrentFrameRate.Format(" Real Fps: %4.2f",(float)avgRate/100);
     m_iCurrentFrameRefreshCycle = 5;
   }
   m_iCurrentFrameRefreshCycle--;

@@ -42,7 +42,6 @@
 #include "GUIWindowManager.h"
 #include "filtercorefactory/filtercorefactory.h"
 #include "Settings.h"
-
 using namespace std;
 
 DIRECTSHOW_RENDERER CFGLoader::m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
@@ -70,7 +69,42 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 {
 
   HRESULT hr = E_FAIL;
-
+  
+  if (pFileItem.IsInternetStream())
+  {
+    //CLSID_URLReader for httpstream
+  //IAMOpenProgress will be need for requesting status of stream
+    IFileSourceFilter *pSourceUrl = NULL;
+    IUnknown *pUnk = NULL;
+    IBaseFilter *pBFSrc = NULL;
+    hr = CoCreateInstance(CLSID_URLReader,NULL, CLSCTX_ALL, IID_IUnknown,(void**) &pUnk);
+    pUnk->QueryInterface(IID_IBaseFilter,(void**)&Filters.Source.pBF);
+    if (Filters.Source.pBF)
+    {
+      hr = m_pGraphBuilder->AddFilter(Filters.Source.pBF, L"URLReader");
+      Filters.Source.osdname.Format("URLReader");
+      CStdStringW strUrlW;
+      g_charsetConverter.utf8ToW(pFileItem.m_strPath,strUrlW);
+      hr = pUnk->QueryInterface(IID_IFileSourceFilter,(void**) &pSourceUrl);
+      if (SUCCEEDED(hr))
+        hr = pSourceUrl->Load(strUrlW.c_str(), NULL);
+      //if(FAILED(hr) || !(pSourceUrl = pUnk) || FAILED(hr = pSourceUrl->Load(strUrlW.c_str(), NULL)))
+      if(FAILED(hr))
+      {
+        SAFE_RELEASE(pSourceUrl);
+        
+        m_pGraphBuilder->RemoveFilter(pBFSrc);
+      }
+      else
+      {
+        CLog::Log(LOGNOTICE, "%s Successfully added url source filter to the graph", __FUNCTION__);
+        return hr;
+      }
+    
+    }
+    //NULL, CLSCTX_ALL, IID_IUnknown,(void**) &m_pUnkInner);
+    
+  }
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
     Filters.PlayingArchive = true;
@@ -80,19 +114,21 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 	    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &Filters.Source.pBF, &hr);
 
 	    if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(Filters.Source.pBF, L"XBMC File Source")))
-	    {
 		    CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
-	    } else {
+      else
 		    CLog::Log(LOGERROR, "%s Failted to add xbmc source filter to the graph", __FUNCTION__);
-	    }
 
 	    Filters.Source.osdname = "XBMC File Source";
 	    return hr;
-    } else {
+    } 
+    else 
+    {
       CLog::Log(LOGERROR, "%s Failed to open \"%s\" with source filter!", __FUNCTION__, pFileItem.m_strPath.c_str());
       return E_FAIL;
     }
-  } else {  
+  } 
+  else 
+  {  
     if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Source)))
     {
       Filters.Splitter.pBF = Filters.Source.pBF;
@@ -129,7 +165,23 @@ HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& 
     if (SUCCEEDED(hr = ConnectFilters(m_pGraphBuilder, Filters.Source.pBF, Filters.Splitter.pBF)))
       CLog::Log(LOGNOTICE, "%s Successfully connected the source to the spillter", __FUNCTION__);
     else
+    {
       CLog::Log(LOGERROR, "%s Failed to connect the source to the spliter", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s Trying to just render the source output pin", __FUNCTION__);
+      BeginEnumPins(Filters.Source.pBF,pEP,pPin)
+      {
+        if (!DShowUtil::IsPinConnected(pPin))
+        {
+          hr = m_pGraphBuilder->Render(pPin);
+        }
+      }
+      EndEnumPins
+      if (FAILED(hr))
+      {
+        CLog::Log(LOGERROR, "%s Failed the just rendering the output pin", __FUNCTION__);
+      }
+
+    }
   }
   
   return hr;
@@ -343,7 +395,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
   if (! Filters.Splitter.pBF)
   {
-    if (! CFilterCoreFactory::GetSourceFilter(pFileItem, filter))
+    if (! CFilterCoreFactory::GetSplitterFilter(pFileItem, filter))
       return E_FAIL;
     
     if (FAILED(InsertSplitter(pFileItem, filter)))

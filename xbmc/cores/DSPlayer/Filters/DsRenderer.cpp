@@ -52,6 +52,7 @@ CDsRenderer::CDsRenderer()
 CDsRenderer::~CDsRenderer()
 {
   DeleteSurfaces();
+  //vm9 unload current surface??
   g_Windowing.Unregister(this);
   g_renderManager.UnInit();
 }

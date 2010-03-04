@@ -65,7 +65,8 @@ namespace PYXBMC
 
     if (playerCore == EPC_DVDPLAYER ||
         playerCore == EPC_MPLAYER ||
-        playerCore == EPC_PAPLAYER)
+        playerCore == EPC_PAPLAYER ||
+        playerCore == EPC_DSPLAYER)
     {
       self->playerCore = (EPLAYERCORES)playerCore;
     }

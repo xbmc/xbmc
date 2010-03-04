@@ -84,9 +84,9 @@ public:
    * @remarks All variables are NULL if the current filter isn't FFDShow
    * @{ */
   /// Pointer to a IffdshowBaseA interface
-  IffdshowBaseA*      pIffdshowBase;
+  //IffdshowBaseA*      pIffdshowBase;
   /// Pointer to a IffdshowDecVideoA interface
-  IffdshowDecVideoA*  pIffdshowDecFilter;
+  //IffdshowDecVideoA*  pIffdshowDecFilter;
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
   /** @} */

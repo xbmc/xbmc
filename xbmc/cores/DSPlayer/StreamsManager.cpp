@@ -465,11 +465,12 @@ void CStreamsManager::LoadStreams()
 
     s->external = true; 
     s->path = CSpecialProtocol::TranslatePath((*it));
-
-    s->name.Format("External sub %02d", i);
+    s->name = CUtil::GetFileName(s->path);
+    //s->name.Format("External sub %02d", i);
     i++;
     m_subtitleStreams.push_back(s);
   }
+  g_settings.m_currentVideoSettings.m_SubtitleCached = true;
 }
 
 bool CStreamsManager::InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph)
@@ -759,13 +760,16 @@ void CStreamsManager::SetSubtitle( int iStream )
         goto done;
       }
 
-    } else {
+    } 
+    else 
+    {
       /* The subtitle to disable is an external subtitle */
       SExternalSubtitleInfos *s = reinterpret_cast<SExternalSubtitleInfos*>(m_subtitleStreams[disableIndex]);
       subtitlePath = s->path;
 
-      if (g_dsconfig.pIffdshowBase)
-        g_dsconfig.pIffdshowBase->putParamStr(IDFF_subFilename, NULL);
+      
+      if (g_dsconfig.pIffdshowDecoder)
+        g_dsconfig.pIffdshowDecoder->compat_putParam(IDFF_isSubtitles, false);
     }
 
     m_subtitleStreams[disableIndex]->flags = 0;
@@ -804,8 +808,7 @@ void CStreamsManager::SetSubtitle( int iStream )
         m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
       else
       {
-        if (g_dsconfig.pIffdshowBase)
-          g_dsconfig.pIffdshowBase->putParamStr(IDFF_subFilename, subtitlePath.c_str());
+        g_dsconfig.LoadffdshowSubtitles(subtitlePath.c_str());
       }
 
       m_subtitleStreams[disableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
@@ -835,21 +838,21 @@ bool CStreamsManager::GetSubtitleVisible()
 
 void CStreamsManager::SetSubtitleVisible( bool bVisible )
 {
-  //int i = GetSubtitle();
+  
   if (g_dsconfig.pIffdshowDecoder)
   {
     g_dsconfig.pIffdshowDecoder->compat_putParam(IDFF_isSubtitles, bVisible); // Show or not subtitles
   }
   m_bSubtitlesVisible = bVisible;
 
-  int i = GetSubtitle();
-  if (i >= 0)
-    SetSubtitle(i);
+  //int i = GetSubtitle();
+  //if (i >= 0)
+  //  SetSubtitle(i);
 }
 
 bool CStreamsManager::AddSubtitle(const CStdString& subFilePath)
 {
-  if (g_dsconfig.pIffdshowBase) // We're currently using ffdshow for subtitles
+  if (g_dsconfig.pIffdshowDecoder) // We're currently using ffdshow for subtitles
   {    
     CStdString newPath = CSpecialProtocol::TranslatePath(subFilePath);
     SExternalSubtitleInfos *s = new SExternalSubtitleInfos();

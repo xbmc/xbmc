@@ -39,6 +39,7 @@ public:
 protected:
   HRESULT CreateSurfaces(D3DFORMAT Format = D3DFMT_X8R8G8B8);
   void DeleteSurfaces();
+  void UnloadCurrentRenderer();
   UINT    GetAdapter(IDirect3D9 *pD3D);
   CCritSec                                m_RenderLock;
   //d3d stuff

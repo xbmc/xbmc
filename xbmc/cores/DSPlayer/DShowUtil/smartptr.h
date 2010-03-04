@@ -9,6 +9,22 @@
 // Desc: Tests two COM pointers for equality.
 ///////////////////////////////////////////////////////////////////////
 
+__declspec(nothrow) IUnknown* __stdcall AtlComPtrAssign(_Inout_opt_ _Deref_post_opt_valid_  IUnknown** pp, _In_opt_ IUnknown* lp);
+//(IUnknown*) AtlComPtrAssign(_Inout_opt_ _Deref_post_opt_valid_  IUnknown** pp, _In_opt_ IUnknown* lp);
+
+inline __declspec(nothrow) IUnknown* __stdcall AtlComPtrAssign(_Inout_opt_ _Deref_post_opt_valid_  IUnknown** pp, _In_opt_ IUnknown* lp)
+{
+	if (pp == NULL)
+		return NULL;
+		
+	if (lp != NULL)
+		lp->AddRef();
+	if (*pp)
+		(*pp)->Release();
+	*pp = lp;
+	return lp;
+}
+
 template <class T1, class T2>
 bool AreComObjectsEqual(T1 *p1, T2 *p2)
 {
@@ -47,7 +63,7 @@ bool AreComObjectsEqual(T1 *p1, T2 *p2)
 // object, so we want to dis-allow calling AddRef or Release 
 // directly. The operator-> returns a _NoAddRefOrRelease pointer
 // instead of returning the raw COM pointer. (This behavior is the
-// same as ATL's CComPtr class.)
+// same as ATL's SmartPtr class.)
 template <class T>
 class _NoAddRefOrRelease : public T
 {
@@ -94,11 +110,18 @@ public:
             m_ptr->Release();
         }
     }
-
+    T* operator=(_In_opt_ T* lp) throw()
+	  {
+        if(*this!=lp)
+        {
+    		return static_cast<T*>(AtlComPtrAssign((IUnknown**)&m_ptr, lp));
+        }
+        return *this;
+	  }
     // Assignment
     SmartPtr& operator=(const SmartPtr& sptr)
     {
-        // Don't do anything if we are assigned to ourselves.
+        
         if (!AreComObjectsEqual(m_ptr, sptr.m_ptr))
         {
             if (m_ptr)
@@ -140,7 +163,12 @@ public:
     {
         return m_ptr->QueryInterface(__uuidof(Q), (void**)ppQ);
     }
-
+ 
+    HRESULT CreateInstance(REFCLSID clsid, LPUNKNOWN pUnkOuter = NULL,DWORD dwClsContext = CLSCTX_ALL)
+    {
+	  ASSERT(m_ptr == NULL);
+      return CoCreateInstance(clsid,pUnkOuter, dwClsContext, __uuidof(T),(void **)&m_ptr);
+    }
     // safe Release() method
     ULONG Release()
     {
@@ -178,7 +206,8 @@ public:
     // equality operator
     bool operator==(T *ptr) const
     {
-        return AreComObjectsEqual(m_ptr, ptr);
+      return m_ptr == ptr;
+        //return AreComObjectsEqual(m_ptr, ptr);
     }
 
     // inequality operator
@@ -187,6 +216,6 @@ public:
         return !operator==(ptr);
     }
 
-private:
+//private:
     T *m_ptr;
 };

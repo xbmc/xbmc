@@ -31,6 +31,7 @@
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"
 #include "GuiSettings.h"
+#include "DShowUtil/SmartPtr.h"
 
 class COuterVMR9
   : public CUnknown
@@ -38,7 +39,7 @@ class COuterVMR9
   , public IBasicVideo2
   , public IVMRWindowlessControl
 {
-  IUnknown* m_pVMR;
+  SmartPtr<IUnknown> m_pVMR;
   CVMR9AllocatorPresenter *m_pAllocatorPresenter;
 
 public:
@@ -51,7 +52,7 @@ public:
 
   ~COuterVMR9()
   {
-    // SAFE_RELEASE(m_pVMR);
+    m_pVMR = NULL;
   }
 
   DECLARE_IUNKNOWN;
@@ -305,15 +306,6 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
 {
   hr = S_OK;
   m_bNeedNewDevice = false;
-}
-
-CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
-{
-  DeleteVmrSurfaces();
-  DeleteSurfaces();
-
-  SAFE_DELETE(m_pMacrovisionKicker);
-  SAFE_DELETE(m_pOuterVMR9);
 }
 
 void CVMR9AllocatorPresenter::DeleteVmrSurfaces()

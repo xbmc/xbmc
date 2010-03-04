@@ -40,9 +40,9 @@ CDSConfig::CDSConfig(void)
   m_pGraphBuilder = NULL;
   m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
-  pIffdshowDecFilter = NULL;
+  //pIffdshowDecFilter = NULL;
   m_pSplitter = NULL;
-  pIffdshowBase = NULL;
+  //pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
   pGraph = NULL;
   pGraph = NULL;
@@ -60,8 +60,8 @@ void CDSConfig::ClearConfig()
   m_pGraphBuilder = NULL;
   m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
-  pIffdshowDecFilter = NULL;
-  pIffdshowBase = NULL;
+  //pIffdshowDecFilter = NULL;
+  //pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
   pQualProp = NULL;
   pGraph = NULL;
@@ -77,8 +77,8 @@ HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
   pGB = NULL;
   m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
-  pIffdshowDecFilter = NULL;
-  pIffdshowBase = NULL;
+  //pIffdshowDecFilter = NULL;
+  //pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
   pQualProp = NULL;
   m_pStdDxva = DShowUtil::GetDXVAMode(&m_pGuidDxva);
@@ -206,8 +206,6 @@ void CDSConfig::GetDxvaGuid()
     HRESULT hr = pPin->ConnectionMediaType(&pMT);
     dxvaGuid = pMT.subtype;
     FreeMediaType(pMT);
-      //
-    //g_dsconfig.SetDxvaGuid(dxvaGuid);
   }
   m_pGuidDxva = dxvaGuid;
   if (dxvaGuid == GUID_NULL)
@@ -220,14 +218,14 @@ void CDSConfig::GetDxvaGuid()
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
 {
   HRESULT hr;
-  if (!pIffdshowDecFilter)
+  /*if (!pIffdshowDecFilter)
   {
     hr = pBF->QueryInterface(IID_IffdshowDecVideoA, (void **) &pIffdshowDecFilter );
   }
   if (!pIffdshowBase)
   {
     hr = pBF->QueryInterface(IID_IffdshowBaseA,(void **) &pIffdshowBase );
-  }
+  }*/
   if (!pIffdshowDecoder)
     hr = pBF->QueryInterface(IID_IffDecoder, (void **) &pIffdshowDecoder );
   
@@ -238,7 +236,6 @@ bool CDSConfig::LoadffdshowSubtitles(CStdString filePath)
 {
   if (pIffdshowDecoder)
   {
-    //pIffdshowBase->putParamStr(IDFF_subFilename,filePath.c_str());
     if (SUCCEEDED(pIffdshowDecoder->compat_putParamStr(IDFF_subFilename,filePath.c_str())))
       return true;
     return false;
