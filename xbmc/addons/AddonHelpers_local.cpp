@@ -34,6 +34,7 @@ CAddonHelpers::CAddonHelpers(CAddon* addon)
   m_addon       = addon;
   m_callbacks   = new AddonCB;
   m_helperAddon = NULL;
+  m_helperPVR   = NULL;
 
   m_callbacks->libBasePath           = strdup(_P("special://xbmc/addons/libraries"));
   m_callbacks->addonData             = this;
