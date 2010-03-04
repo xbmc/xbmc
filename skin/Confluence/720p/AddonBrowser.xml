@@ -39,6 +39,18 @@
 				<ondown>1</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
+			<control type="grouplist" id="3">
+				<description>button area</description>
+				<posx>10</posx>
+				<posy>90</posy>
+				<width>260</width>
+				<height>481</height>
+				<itemgap>-1</itemgap>
+				<onleft>60</onleft>
+				<onright>2</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+			</control>
 			<control type="image">
 				<description>LOGO</description>
 				<posx>30</posx>
@@ -263,6 +275,22 @@
 			</control>
 		</control>
 		<include>BehindDialogFadeOut</include>
+
+		<control type="button" id="10">
+			<description>Default Category Button</description>
+			<height>60</height>
+			<width>260</width>
+			<textoffsetx>20</textoffsetx>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>font13_title</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<pulseonselect>false</pulseonselect>
+		</control>
+
 		<control type="group">
 			<posx>60</posx>
 			<posy>0</posy>
@@ -280,32 +308,6 @@
 				<posx>220</posx>
 				<label>$LOCALIZE[5]</label>
 			</control>
-		</control>
-		<control type="grouplist" id="3">
-			<description>button area</description>
-			<posx>10</posx>
-			<posy>190</posy>
-			<width>260</width>
-			<height>481</height>
-			<itemgap>-1</itemgap>
-			<onleft>60</onleft>
-			<onright>2</onright>
-			<onup>3</onup>
-			<ondown>3</ondown>
-		</control>
-		<control type="button" id="10">
-			<description>Default Category Button</description>
-			<height>60</height>
-			<width>260</width>
-			<textoffsetx>20</textoffsetx>
-			<align>right</align>
-			<aligny>center</aligny>
-			<font>font13_title</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">MenuItemFO.png</texturefocus>
-			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-			<pulseonselect>false</pulseonselect>
 		</control>
 		<include>WindowTitleHomeButton</include>
 		<include>Clock</include>
