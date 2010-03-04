@@ -9,11 +9,25 @@
 #include <mferror.h>
 
 #include "EvrHelper.h"
+#include "DShowUtil/smartptr.h"
+#include "Thread.h"
+
 struct SchedulerCallback;
 
-
-class CEvrScheduler
+enum ScheduleEvent
 {
+  eNone = 0,
+  eTerminate =    WM_USER,
+  eSchedule =     WM_USER + 1,
+  eFlush =        WM_USER + 2
+};
+
+
+class CEvrScheduler: public CThread
+{
+protected:
+  virtual void Process();
+  virtual void OnStartup();
 public:
   CEvrScheduler();
   virtual ~CEvrScheduler();
@@ -38,21 +52,15 @@ public:
   HRESULT ProcessSample(IMFSample *pSample, LONG *plNextSleep);
   HRESULT Flush();
 
-  // ThreadProc for the scheduler thread.
-  static DWORD WINAPI SchedulerThreadProc(LPVOID lpParameter);
-
 private: 
     // non-static version of SchedulerThreadProc.
-  DWORD SchedulerThreadProcPrivate();
   CCritSec m_SampleQueueLock;
   
 private:
-	ThreadSafeQueue<IMFSample>	m_ScheduledSamples;		// Samples waiting to be presented.
-  IMFClock            *m_pClock;  // Presentation clock. Can be NULL.
+  ThreadSafeQueue<IMFSample>  m_ScheduledSamples;    // Samples waiting to be presented.
+  Com::SmartPtr<IMFClock>           m_pClock;  // Presentation clock. Can be NULL.
   SchedulerCallback   *m_pCB;     // Weak reference; do not delete.
 
-  DWORD               m_dwThreadID;
-  HANDLE              m_hSchedulerThread;
   HANDLE              m_hThreadReadyEvent;
   HANDLE              m_hFlushEvent;
 
@@ -60,6 +68,7 @@ private:
   MFTIME              m_PerFrameInterval;     // Duration of each frame.
   LONGLONG            m_PerFrame_1_4th;       // 1/4th of the frame duration.
   MFTIME              m_LastSampleTime;       // Most recent sample time.
+  ScheduleEvent       m_currentEvent; 
 };
 
 

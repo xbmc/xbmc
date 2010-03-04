@@ -24,6 +24,7 @@ class CEVRAllocatorPresenter;
 class D3DPresentEngine : public SchedulerCallback
 {
 public:
+  Com::SmartPtr<IDirect3DDeviceManager9> m_pDeviceManager;        // Direct3D device manager.
 
     // State of the Direct3D device.
   enum DeviceState
@@ -61,34 +62,34 @@ public:
 
   UINT    RefreshRate() const { return m_DisplayMode.RefreshRate; }
 
-	HRESULT RegisterCallback(IEVRPresenterCallback *pCallback);
+  HRESULT RegisterCallback(IEVRPresenterCallback *pCallback);
 
-	HRESULT SetBufferCount(int bufferCount);
+  HRESULT SetBufferCount(int bufferCount);
   int GetVideoWidth(){return m_iVideoWidth;};
   int GetVideoHeight(){return m_iVideoHeight;};
   HRESULT ResetD3dDevice();
 private:
   PTR_MFCreateVideoSampleFromSurface    pfMFCreateVideoSampleFromSurface;
   PTR_DXVA2CreateDirect3DDeviceManager9  pfDXVA2CreateDirect3DDeviceManager9;
-  HMODULE	pDXVA2HLib;
-  HMODULE	pEVRHLib;
+  HMODULE  pDXVA2HLib;
+  HMODULE  pEVRHLib;
 protected:
-	HRESULT InitializeDXVA();
+  HRESULT InitializeDXVA();
   HRESULT GetSwapChainPresentParameters(IMFMediaType *pType, D3DPRESENT_PARAMETERS* pPP);
-	HRESULT CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample,int surfaceIndex);
+  HRESULT CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample,int surfaceIndex);
 
-	// A derived class can override these handlers to allocate any additional D3D resources.
-	virtual HRESULT OnCreateVideoSamples(D3DPRESENT_PARAMETERS& pp) { return S_OK; }
-	virtual void	OnReleaseResources() { }
+  // A derived class can override these handlers to allocate any additional D3D resources.
+  virtual HRESULT OnCreateVideoSamples(D3DPRESENT_PARAMETERS& pp) { return S_OK; }
+  virtual void  OnReleaseResources() { }
 
 protected:
   
-	IEVRPresenterCallback		*m_pCallback;
+  Com::SmartPtr<IEVRPresenterCallback>  m_pCallback;
   UINT                     m_DeviceResetToken;     // Reset token for the D3D device manager.
-	int							         m_bufferCount;
+  int                       m_bufferCount;
   UINT32                   m_iVideoHeight;
   UINT32                   m_iVideoWidth;
-	RECT						         m_rcDestRect;           // Destination rectangle.
+  RECT                     m_rcDestRect;           // Destination rectangle.
   D3DDISPLAYMODE              m_DisplayMode;          // Adapter's display mode.
 
   CEVRAllocatorPresenter     * m_pAllocatorPresenter;
@@ -97,11 +98,10 @@ protected:
 
     // COM interfaces
   bool                         m_bNeedNewDevice;
-  IDirect3DDeviceManager9     *m_pDeviceManager;        // Direct3D device manager.
-	
+  
   CD3DTexture                 *m_pVideoTexture;
-  IDirect3DSurface9           *m_pVideoSurface;
-  IDirect3DTexture9           *m_pInternalVideoTexture[7];
-  IDirect3DSurface9           *m_pInternalVideoSurface[7];
+  IDirect3DSurface9  *m_pVideoSurface;
+  IDirect3DTexture9  *m_pInternalVideoTexture[7];
+  IDirect3DSurface9  *m_pInternalVideoSurface[7];
 
 };

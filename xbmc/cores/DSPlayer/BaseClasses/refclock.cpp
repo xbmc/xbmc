@@ -61,7 +61,7 @@ CBaseReferenceClock::~CBaseReferenceClock()
         EXECUTE_ASSERT( CloseHandle(m_hThread) );
         m_hThread = 0;
         EXECUTE_ASSERT( CloseHandle(m_pSchedule->GetEvent()) );
-	delete m_pSchedule;
+  delete m_pSchedule;
     }
 }
 

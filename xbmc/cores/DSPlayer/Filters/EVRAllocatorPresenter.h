@@ -61,14 +61,15 @@ class COuterEVR;
 class CMacrovisionKicker;
 
 [uuid("7612B889-0929-4363-9BA3-580D735AA0F6")]
-class CEVRAllocatorPresenter : public IDsRenderer,
+class CEVRAllocatorPresenter : public CUnknown,
+                               public IDsRenderer,
                                public IMFVideoDeviceID,
                                public IMFVideoPresenter,
                                public IMFGetService,
                                public IMFTopologyServiceLookupClient,
                                public IMFVideoDisplayControl,
                                public IEVRPresenterRegisterCallback,
-	                             public IEVRPresenterSettings,
+                               public IEVRPresenterSettings,
                                public IEVRTrustedVideoPlugin,
                                public IQualProp,
                                public ID3DResource
@@ -76,10 +77,10 @@ class CEVRAllocatorPresenter : public IDsRenderer,
 public:
   CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error);
   virtual ~CEVRAllocatorPresenter();
-  // IUnknown methods
-  STDMETHOD(QueryInterface)(REFIID riid, void ** ppv);
-  STDMETHOD_(ULONG, AddRef)();
-  STDMETHOD_(ULONG, Release)();
+
+  DECLARE_IUNKNOWN;
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+
 //IDsRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
 
@@ -87,9 +88,6 @@ public:
   
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
-
-  
-  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   //IQualProp
   virtual HRESULT STDMETHODCALLTYPE get_FramesDroppedInRenderer(int *frameDropped);
@@ -144,10 +142,10 @@ public:
   STDMETHODIMP GetFullscreen(BOOL *pfFullscreen){return E_NOTIMPL;};
 
   // IEVRPresenterRegisterCallback methods
-	STDMETHOD(RegisterCallback)(IEVRPresenterCallback *pCallback);
+  STDMETHOD(RegisterCallback)(IEVRPresenterCallback *pCallback);
 
-	// IEVRPresenterSettings methods
-	STDMETHOD(SetBufferCount)(int bufferCount);
+  // IEVRPresenterSettings methods
+  STDMETHOD(SetBufferCount)(int bufferCount);
 
   // IEVRTrustedVideoPlugin
   STDMETHODIMP IsInTrustedVideoMode(BOOL *pYes);
@@ -161,7 +159,6 @@ public:
   virtual void OnCreateDevice();
 
 private:
-  long m_refCount;
   
   COuterEVR *m_pOuterEVR;
   bool m_fUseInternalTimer;
@@ -220,7 +217,7 @@ protected:
 
   // Managing samples
   void    ProcessOutputLoop();   
-	HRESULT ProcessOutput();
+  HRESULT ProcessOutput();
   HRESULT DeliverSample(IMFSample *pSample, BOOL bRepaint);
   HRESULT TrackSample(IMFSample *pSample);
   void    ReleaseResources();
@@ -260,31 +257,31 @@ protected:
   static RENDER_STATE         m_RenderState;          // Rendering state.
   FrameStep                   m_FrameStep;            // Frame-stepping information.
 
-  CCritSec                     m_ObjectLock;			// Serializes our public methods.  
+  CCritSec                     m_ObjectLock;      // Serializes our public methods.  
 
-	// Samples and scheduling
+  // Samples and scheduling
     
   SamplePool                  m_SamplePool;           // Pool of allocated samples.
   DWORD                       m_TokenCounter;         // Counter. Incremented whenever we create new samples.
 
-	// Rendering state
-	BOOL						m_bSampleNotify;		// Did the mixer signal it has an input sample?
-	BOOL						m_bRepaint;				// Do we need to repaint the last sample?
-	BOOL						m_bPrerolled;	        // Have we presented at least one sample?
-  BOOL                        m_bEndStreaming;		// Did we reach the end of the stream (EOS)?
+  // Rendering state
+  BOOL            m_bSampleNotify;    // Did the mixer signal it has an input sample?
+  BOOL            m_bRepaint;        // Do we need to repaint the last sample?
+  BOOL            m_bPrerolled;          // Have we presented at least one sample?
+  BOOL                        m_bEndStreaming;    // Did we reach the end of the stream (EOS)?
 
   MFVideoNormalizedRect       m_nrcSource;            // Source rectangle.
   float                       m_fRate;                // Playback rate.
 
   // Deletable objects.
   D3DPresentEngine            *m_pD3DPresentEngine;    // Rendering engine. (Never null if the constructor succeeds.)
-  CEvrScheduler               m_scheduler;			       // Manages scheduling of samples.
+  CEvrScheduler               m_scheduler;             // Manages scheduling of samples.
 
   // COM interfaces.
-  IMFClock                    *m_pClock;               // The EVR's clock.
-  IMFTransform                *m_pMixer;               // The mixer.
-  IMediaEventSink             *m_pMediaEventSink;      // The EVR's event-sink interface.
-  IMFMediaType                *m_pMediaType;           // Output media type
+  Com::SmartPtr<IMFClock>                    m_pClock;               // The EVR's clock.
+  Com::SmartPtr<IMFTransform>                m_pMixer;               // The mixer.
+  Com::SmartPtr<IMediaEventSink>             m_pMediaEventSink;      // The EVR's event-sink interface.
+  Com::SmartPtr<IMFMediaType>                m_pMediaType;           // Output media type
 };
 
 #endif

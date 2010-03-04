@@ -47,7 +47,7 @@ CBaseObject::CBaseObject(const char *pName)
 }
 #endif
 
-HINSTANCE	hlibOLEAut32;
+HINSTANCE  hlibOLEAut32;
 
 /* Destructor */
 
@@ -55,11 +55,11 @@ CBaseObject::~CBaseObject()
 {
     /* Decrement the number of objects active */
     if (InterlockedDecrement(&m_cObjects) == 0) {
-	if (hlibOLEAut32) {
-	    FreeLibrary(hlibOLEAut32);
+  if (hlibOLEAut32) {
+      FreeLibrary(hlibOLEAut32);
 
-	    hlibOLEAut32 = 0;
-	}
+      hlibOLEAut32 = 0;
+  }
     };
 
 
@@ -74,7 +74,7 @@ HINSTANCE LoadOLEAut32()
 {
     if (hlibOLEAut32 == 0) {
 
-	hlibOLEAut32 = LoadLibrary(szOle32Aut);
+  hlibOLEAut32 = LoadLibrary(szOle32Aut);
     }
 
     return hlibOLEAut32;
@@ -180,7 +180,7 @@ STDMETHODIMP_(ULONG) CUnknown::NonDelegatingRelease()
     ASSERT(lRef >= 0);
 
     DbgLog((LOG_MEMORY,3,TEXT("    Object %d ref-- = %d"),
-	    m_dwCookie, m_cRef));
+      m_dwCookie, m_cRef));
     if (lRef == 0) {
 
         // COM rules say we must protect against re-entrancy.

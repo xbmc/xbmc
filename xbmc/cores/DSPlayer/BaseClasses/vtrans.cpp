@@ -132,37 +132,37 @@ HRESULT CVideoTransformFilter::Receive(IMediaSample *pSample)
     pSample->GetMediaType(&pmt);
     if (pmt != NULL && pmt->pbFormat != NULL) {
 
-	// spew some debug output
-	ASSERT(!IsEqualGUID(pmt->majortype, GUID_NULL));
+  // spew some debug output
+  ASSERT(!IsEqualGUID(pmt->majortype, GUID_NULL));
 #ifdef DEBUG
         fccOut.SetFOURCC(&pmt->subtype);
-	LONG lCompression = HEADER(pmt->pbFormat)->biCompression;
-	LONG lBitCount = HEADER(pmt->pbFormat)->biBitCount;
-	LONG lStride = (HEADER(pmt->pbFormat)->biWidth * lBitCount + 7) / 8;
-	lStride = (lStride + 3) & ~3;
+  LONG lCompression = HEADER(pmt->pbFormat)->biCompression;
+  LONG lBitCount = HEADER(pmt->pbFormat)->biBitCount;
+  LONG lStride = (HEADER(pmt->pbFormat)->biWidth * lBitCount + 7) / 8;
+  lStride = (lStride + 3) & ~3;
         DbgLog((LOG_TRACE,3,TEXT("*Changing input type on the fly to")));
         DbgLog((LOG_TRACE,3,TEXT("FourCC: %lx Compression: %lx BitCount: %ld"),
-		fccOut.GetFOURCC(), lCompression, lBitCount));
+    fccOut.GetFOURCC(), lCompression, lBitCount));
         DbgLog((LOG_TRACE,3,TEXT("biHeight: %ld rcDst: (%ld, %ld, %ld, %ld)"),
-		HEADER(pmt->pbFormat)->biHeight,
-		rcT1.left, rcT1.top, rcT1.right, rcT1.bottom));
+    HEADER(pmt->pbFormat)->biHeight,
+    rcT1.left, rcT1.top, rcT1.right, rcT1.bottom));
         DbgLog((LOG_TRACE,3,TEXT("rcSrc: (%ld, %ld, %ld, %ld) Stride: %ld"),
-		rcS1.left, rcS1.top, rcS1.right, rcS1.bottom,
-		lStride));
+    rcS1.left, rcS1.top, rcS1.right, rcS1.bottom,
+    lStride));
 #endif
 
-	// now switch to using the new format.  I am assuming that the
-	// derived filter will do the right thing when its media type is
-	// switched and streaming is restarted.
+  // now switch to using the new format.  I am assuming that the
+  // derived filter will do the right thing when its media type is
+  // switched and streaming is restarted.
 
-	StopStreaming();
-	m_pInput->CurrentMediaType() = *pmt;
-	DeleteMediaType(pmt);
-	// if this fails, playback will stop, so signal an error
-	hr = StartStreaming();
-	if (FAILED(hr)) {
-	    return AbortPlayback(hr);
-	}
+  StopStreaming();
+  m_pInput->CurrentMediaType() = *pmt;
+  DeleteMediaType(pmt);
+  // if this fails, playback will stop, so signal an error
+  hr = StartStreaming();
+  if (FAILED(hr)) {
+      return AbortPlayback(hr);
+  }
     }
 
     // Now that we have noticed any format changes on the input sample, it's
@@ -192,57 +192,57 @@ HRESULT CVideoTransformFilter::Receive(IMediaSample *pSample)
     pOutSample->GetMediaType(&pmtOut);
     if (pmtOut != NULL && pmtOut->pbFormat != NULL) {
 
-	// spew some debug output
-	ASSERT(!IsEqualGUID(pmtOut->majortype, GUID_NULL));
+  // spew some debug output
+  ASSERT(!IsEqualGUID(pmtOut->majortype, GUID_NULL));
 #ifdef DEBUG
         fccOut.SetFOURCC(&pmtOut->subtype);
-	LONG lCompression = HEADER(pmtOut->pbFormat)->biCompression;
-	LONG lBitCount = HEADER(pmtOut->pbFormat)->biBitCount;
-	LONG lStride = (HEADER(pmtOut->pbFormat)->biWidth * lBitCount + 7) / 8;
-	lStride = (lStride + 3) & ~3;
+  LONG lCompression = HEADER(pmtOut->pbFormat)->biCompression;
+  LONG lBitCount = HEADER(pmtOut->pbFormat)->biBitCount;
+  LONG lStride = (HEADER(pmtOut->pbFormat)->biWidth * lBitCount + 7) / 8;
+  lStride = (lStride + 3) & ~3;
         DbgLog((LOG_TRACE,3,TEXT("*Changing output type on the fly to")));
         DbgLog((LOG_TRACE,3,TEXT("FourCC: %lx Compression: %lx BitCount: %ld"),
-		fccOut.GetFOURCC(), lCompression, lBitCount));
+    fccOut.GetFOURCC(), lCompression, lBitCount));
         DbgLog((LOG_TRACE,3,TEXT("biHeight: %ld rcDst: (%ld, %ld, %ld, %ld)"),
-		HEADER(pmtOut->pbFormat)->biHeight,
-		rcT.left, rcT.top, rcT.right, rcT.bottom));
+    HEADER(pmtOut->pbFormat)->biHeight,
+    rcT.left, rcT.top, rcT.right, rcT.bottom));
         DbgLog((LOG_TRACE,3,TEXT("rcSrc: (%ld, %ld, %ld, %ld) Stride: %ld"),
-		rcS.left, rcS.top, rcS.right, rcS.bottom,
-		lStride));
+    rcS.left, rcS.top, rcS.right, rcS.bottom,
+    lStride));
 #endif
 
-	// now switch to using the new format.  I am assuming that the
-	// derived filter will do the right thing when its media type is
-	// switched and streaming is restarted.
+  // now switch to using the new format.  I am assuming that the
+  // derived filter will do the right thing when its media type is
+  // switched and streaming is restarted.
 
-	StopStreaming();
-	m_pOutput->CurrentMediaType() = *pmtOut;
-	DeleteMediaType(pmtOut);
-	hr = StartStreaming();
+  StopStreaming();
+  m_pOutput->CurrentMediaType() = *pmtOut;
+  DeleteMediaType(pmtOut);
+  hr = StartStreaming();
 
-	if (SUCCEEDED(hr)) {
- 	    // a new format, means a new empty buffer, so wait for a keyframe
-	    // before passing anything on to the renderer.
-	    // !!! a keyframe may never come, so give up after 30 frames
+  if (SUCCEEDED(hr)) {
+       // a new format, means a new empty buffer, so wait for a keyframe
+      // before passing anything on to the renderer.
+      // !!! a keyframe may never come, so give up after 30 frames
             DbgLog((LOG_TRACE,3,TEXT("Output format change means we must wait for a keyframe")));
-	    m_nWaitForKey = 30;
+      m_nWaitForKey = 30;
 
-	// if this fails, playback will stop, so signal an error
-	} else {
+  // if this fails, playback will stop, so signal an error
+  } else {
 
             //  Must release the sample before calling AbortPlayback
             //  because we might be holding the win16 lock or
             //  ddraw lock
             pOutSample->Release();
-	    AbortPlayback(hr);
+      AbortPlayback(hr);
             return hr;
-	}
+  }
     }
 
     // After a discontinuity, we need to wait for the next key frame
     if (pSample->IsDiscontinuity() == S_OK) {
         DbgLog((LOG_TRACE,3,TEXT("Non-key discontinuity - wait for keyframe")));
-	m_nWaitForKey = 30;
+  m_nWaitForKey = 30;
     }
 
     // Start timing the transform (and log it if PERF is defined)
@@ -263,13 +263,13 @@ HRESULT CVideoTransformFilter::Receive(IMediaSample *pSample)
         if (m_nWaitForKey)
             m_nWaitForKey--;
         if (m_nWaitForKey && pSample->IsSyncPoint() == S_OK)
-	    m_nWaitForKey = FALSE;
+      m_nWaitForKey = FALSE;
 
         // if so, then we don't want to pass this on to the renderer
         if (m_nWaitForKey && hr == NOERROR) {
             DbgLog((LOG_TRACE,3,TEXT("still waiting for a keyframe")));
-	    hr = S_FALSE;
-	}
+      hr = S_FALSE;
+  }
     }
 
     if (FAILED(hr)) {
@@ -282,7 +282,7 @@ HRESULT CVideoTransformFilter::Receive(IMediaSample *pSample)
         // Try to take the decision earlier - before you get it.
 
         if (hr == NOERROR) {
-    	    hr = m_pOutput->Deliver(pOutSample);
+          hr = m_pOutput->Deliver(pOutSample);
         } else {
             // S_FALSE returned from Transform is a PRIVATE agreement
             // We should return NOERROR from Receive() in this case because returning S_FALSE
@@ -322,7 +322,7 @@ BOOL CVideoTransformFilter::ShouldSkipFrame( IMediaSample * pIn)
 
     // Don't skip frames with no timestamps
     if (hr != S_OK)
-	return FALSE;
+  return FALSE;
 
     int itrFrame = (int)(trStopAt - trStart);  // frame duration
 

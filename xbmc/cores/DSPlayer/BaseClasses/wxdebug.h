@@ -202,7 +202,7 @@ typedef struct tag_ObjectDesc {
 
     #define KASSERT(_x_) ((void)0)
     #ifndef ASSERT
-	#define ASSERT(_x_) ((void)0)
+  #define ASSERT(_x_) ((void)0)
     #endif
     #define EXECUTE_ASSERT(_x_) ((void)(_x_))
 

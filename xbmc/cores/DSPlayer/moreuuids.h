@@ -1,6 +1,6 @@
 /*
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -270,14 +270,14 @@ DEFINE_GUID(MEDIASUBTYPE_RACP,
 
 enum 
 {
-	WAVE_FORMAT_14_4 = 0x2002,
-	WAVE_FORMAT_28_8 = 0x2003,
-	WAVE_FORMAT_ATRC = 0x0270, //WAVE_FORMAT_SONY_SCX,
-	WAVE_FORMAT_COOK = 0x2004,
-	WAVE_FORMAT_DNET = 0x2005,
-	WAVE_FORMAT_RAAC = 0x2006,
-	WAVE_FORMAT_RACP = 0x2007,
-	WAVE_FORMAT_SIPR = 0x0130, //WAVE_FORMAT_SIPROLAB_ACEPLNET,
+  WAVE_FORMAT_14_4 = 0x2002,
+  WAVE_FORMAT_28_8 = 0x2003,
+  WAVE_FORMAT_ATRC = 0x0270, //WAVE_FORMAT_SONY_SCX,
+  WAVE_FORMAT_COOK = 0x2004,
+  WAVE_FORMAT_DNET = 0x2005,
+  WAVE_FORMAT_RAAC = 0x2006,
+  WAVE_FORMAT_RACP = 0x2007,
+  WAVE_FORMAT_SIPR = 0x0130, //WAVE_FORMAT_SIPROLAB_ACEPLNET,
 };
 
 //
@@ -298,11 +298,11 @@ struct WAVEFORMATEXPS2 : public WAVEFORMATEX
 {
     DWORD dwInterleave;
 
-	struct WAVEFORMATEXPS2()
-	{
-		memset(this, 0, sizeof(*this)); 
-		cbSize = sizeof(WAVEFORMATEXPS2) - sizeof(WAVEFORMATEX);
-	}
+  struct WAVEFORMATEXPS2()
+  {
+    memset(this, 0, sizeof(*this)); 
+    cbSize = sizeof(WAVEFORMATEXPS2) - sizeof(WAVEFORMATEX);
+  }
 };
 
 // {4F3D3D21-6D7C-4f73-AA05-E397B5EAE0AA}
@@ -368,12 +368,12 @@ DEFINE_GUID(FORMAT_VorbisFormat,
 
 typedef struct tagVORBISFORMAT
 {
-	WORD nChannels;
-	DWORD nSamplesPerSec;
-	DWORD nMinBitsPerSec;
-	DWORD nAvgBitsPerSec;
-	DWORD nMaxBitsPerSec;
-	float fQuality;
+  WORD nChannels;
+  DWORD nSamplesPerSec;
+  DWORD nMinBitsPerSec;
+  DWORD nAvgBitsPerSec;
+  DWORD nMaxBitsPerSec;
+  float fQuality;
 } VORBISFORMAT, *PVORBISFORMAT, FAR *LPVORBISFORMAT;
 
 // {8D2FD10B-5841-4a6b-8905-588FEC1ADED9}
@@ -386,10 +386,10 @@ DEFINE_GUID(FORMAT_VorbisFormat2,
 
 typedef struct tagVORBISFORMAT2
 {
-	DWORD Channels;
-	DWORD SamplesPerSec;
-	DWORD BitsPerSample;	
-	DWORD HeaderSize[3]; // 0: Identification, 1: Comment, 2: Setup
+  DWORD Channels;
+  DWORD SamplesPerSec;
+  DWORD BitsPerSample;  
+  DWORD HeaderSize[3]; // 0: Identification, 1: Comment, 2: Setup
 } VORBISFORMAT2, *PVORBISFORMAT2, FAR *LPVORBISFORMAT2;
 
 //
@@ -442,9 +442,9 @@ DEFINE_GUID(MEDIASUBTYPE_HDMVSUB,
 
 #pragma pack(push, 1)
 typedef struct {
-	DWORD dwOffset;	
-	CHAR IsoLang[4]; // three letter lang code + terminating zero
-	WCHAR TrackName[256]; // 256 chars ought to be enough for everyone :)
+  DWORD dwOffset;  
+  CHAR IsoLang[4]; // three letter lang code + terminating zero
+  WCHAR TrackName[256]; // 256 chars ought to be enough for everyone :)
 } SUBTITLEINFO;
 #pragma pack(pop)
 
@@ -502,13 +502,13 @@ typedef struct {
 // Matroska CodecID mappings
 // ------------------------
 //
-// S_TEXT/ASCII	<->	MEDIATYPE_Text		MEDIASUBTYPE_NULL	FORMAT_None
-// S_TEXT/UTF8	<->	MEDIATYPE_Subtitle	MEDIASUBTYPE_UTF8	FORMAT_SubtitleInfo
-// S_TEXT/SSA	<->	MEDIATYPE_Subtitle	MEDIASUBTYPE_SSA	FORMAT_SubtitleInfo
-// S_TEXT/ASS	<->	MEDIATYPE_Subtitle	MEDIASUBTYPE_ASS	FORMAT_SubtitleInfo
-// S_TEXT/USF	<->	MEDIATYPE_Subtitle	MEDIASUBTYPE_USF	FORMAT_SubtitleInfo
-// S_VOBSUB		<-> MEDIATYPE_Subtitle	MEDIASUBTYPE_VOBSUB	FORMAT_SubtitleInfo
-// S_VOBSUB/ZLIB<-> MEDIATYPE_Subtitle	MEDIASUBTYPE_VOBSUB	FORMAT_SubtitleInfo
+// S_TEXT/ASCII  <->  MEDIATYPE_Text    MEDIASUBTYPE_NULL  FORMAT_None
+// S_TEXT/UTF8  <->  MEDIATYPE_Subtitle  MEDIASUBTYPE_UTF8  FORMAT_SubtitleInfo
+// S_TEXT/SSA  <->  MEDIATYPE_Subtitle  MEDIASUBTYPE_SSA  FORMAT_SubtitleInfo
+// S_TEXT/ASS  <->  MEDIATYPE_Subtitle  MEDIASUBTYPE_ASS  FORMAT_SubtitleInfo
+// S_TEXT/USF  <->  MEDIATYPE_Subtitle  MEDIASUBTYPE_USF  FORMAT_SubtitleInfo
+// S_VOBSUB    <-> MEDIATYPE_Subtitle  MEDIASUBTYPE_VOBSUB  FORMAT_SubtitleInfo
+// S_VOBSUB/ZLIB<-> MEDIATYPE_Subtitle  MEDIASUBTYPE_VOBSUB  FORMAT_SubtitleInfo
 //
 
 /*
@@ -581,7 +581,7 @@ DEFINE_GUID(MEDIASUBTYPE_AVC1,
 DEFINE_GUID(MEDIASUBTYPE_avc1,
 0x31637661, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
 
-// 8D2D71CB-243F-45E3-B2D8-5FD7967EC09B		<= Use by MediaPortal for example...
+// 8D2D71CB-243F-45E3-B2D8-5FD7967EC09B    <= Use by MediaPortal for example...
 DEFINE_GUID(MEDIASUBTYPE_H264_bis,
 0x8D2D71CB, 0x243F, 0x45E3, 0xB2, 0xD8, 0x5F, 0xD7, 0x96, 0x7E, 0xC0, 0x9B);
 
@@ -970,7 +970,7 @@ DEFINE_GUID(MEDIASUBTYPE_NELLYMOSER,
 0x4C4C454E, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
 
-// {949F97FD-56F6-4527-B4AE-DDEB375AB80F}		Mpc-hc specific !
+// {949F97FD-56F6-4527-B4AE-DDEB375AB80F}    Mpc-hc specific !
 DEFINE_GUID(MEDIASUBTYPE_HDMV_LPCM_AUDIO, 
 0x949f97fd, 0x56f6, 0x4527, 0xb4, 0xae, 0xdd, 0xeb, 0x37, 0x5a, 0xb8, 0xf);
 
@@ -978,11 +978,11 @@ struct WAVEFORMATEX_HDMV_LPCM : public WAVEFORMATEX
 {
     BYTE channel_conf;
 
-	struct WAVEFORMATEX_HDMV_LPCM()
-	{
-		memset(this, 0, sizeof(*this)); 
-		cbSize = sizeof(WAVEFORMATEX_HDMV_LPCM) - sizeof(WAVEFORMATEX);
-	}
+  struct WAVEFORMATEX_HDMV_LPCM()
+  {
+    memset(this, 0, sizeof(*this)); 
+    cbSize = sizeof(WAVEFORMATEX_HDMV_LPCM) - sizeof(WAVEFORMATEX);
+  }
 };
 
 

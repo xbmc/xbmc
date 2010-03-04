@@ -157,15 +157,14 @@ void CGUIDialogVideoSettings::CreateSettings()
   if ( g_renderManager.GetRendererType() == RENDERER_DSHOW )
   {
 
-    std::vector<IBaseFilter *> pDsFilters = g_dsconfig.GetFiltersWithPropertyPages();
-    int i = 0;
+    int size = g_dsconfig.GetFiltersWithPropertyPages().size();
 
-    if (pDsFilters.size() != 0)
+    if (size != 0)
       AddSeparator(8);
 
     uint32_t offset = g_localizeStrings.LoadBlock("6000", "special://temp//dslang.xml", "");
 
-    for (std::vector<IBaseFilter*>::const_iterator it = pDsFilters.begin() ; it != pDsFilters.end(); it++, i++)
+    for (int i = 0; i < size; i++)
       AddButton(VIDEO_SETTINGS_DS_FILTERS + i, offset + i);
 
   }

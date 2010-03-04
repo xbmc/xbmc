@@ -2615,8 +2615,8 @@ BOOL CBaseVideoRenderer::ScheduleSample(IMediaSample *pMediaSample)
 
     BOOL bDrawImage = CBaseRenderer::ScheduleSample(pMediaSample);
     if (bDrawImage == FALSE) {
-	++m_cFramesDropped;
-	return FALSE;
+  ++m_cFramesDropped;
+  return FALSE;
     }
 
     // m_cFramesDrawn must NOT be updated here.  It has to be updated

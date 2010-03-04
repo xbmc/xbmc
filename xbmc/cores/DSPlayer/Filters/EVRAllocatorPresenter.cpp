@@ -10,12 +10,15 @@
 #include <mferror.h>
 #include "IPinHook.h"
 
+#include "DShowUtil/smartptr.h"
+#include "FGLoader.h"
+
 
 class COuterEVR
   : public CUnknown
   , public IBaseFilter
 {
-  IUnknown* m_pEVR;
+  Com::SmartPtr<IUnknown>  m_pEVR;
   CEVRAllocatorPresenter *m_pAllocatorPresenter;
 
 public:
@@ -23,7 +26,7 @@ public:
   // IBaseFilter
   virtual HRESULT STDMETHODCALLTYPE EnumPins(__out  IEnumPins **ppEnum)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -33,7 +36,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE FindPin(LPCWSTR Id, __out  IPin **ppPin)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -43,7 +46,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE QueryFilterInfo(__out  FILTER_INFO *pInfo)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -53,7 +56,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE JoinFilterGraph(__in_opt  IFilterGraph *pGraph, __in_opt  LPCWSTR pName)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -63,7 +66,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE QueryVendorInfo(__out  LPWSTR *pVendorInfo)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -73,7 +76,7 @@ public:
 
   virtual HRESULT STDMETHODCALLTYPE Stop( void)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -83,7 +86,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE Pause( void)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -93,7 +96,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE Run( REFERENCE_TIME tStart)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -105,7 +108,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE SetSyncSource(__in_opt  IReferenceClock *pClock)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -115,7 +118,7 @@ public:
     
   virtual HRESULT STDMETHODCALLTYPE GetSyncSource(__deref_out_opt  IReferenceClock **pClock)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -125,7 +128,7 @@ public:
 
   virtual HRESULT STDMETHODCALLTYPE GetClassID(__RPC__out CLSID *pClassID)
   {
-    IBaseFilter* pEVRBase;
+    Com::SmartPtr<IBaseFilter> pEVRBase;
     if (m_pEVR)
       m_pEVR->QueryInterface(&pEVRBase);
     if (pEVRBase)
@@ -135,7 +138,7 @@ public:
 
   COuterEVR(const TCHAR* pName, LPUNKNOWN pUnk, HRESULT& hr, CEVRAllocatorPresenter *pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
-    hr = CoCreateInstance(CLSID_EnhancedVideoRenderer, GetOwner(), CLSCTX_ALL, __uuidof(m_pEVR), (void**)&m_pEVR );
+    hr = m_pEVR.CoCreateInstance(CLSID_EnhancedVideoRenderer, GetOwner());
     m_pAllocatorPresenter = pAllocatorPresenter;
   }
 
@@ -173,7 +176,7 @@ HRESULT STDMETHODCALLTYPE COuterEVR::GetState( DWORD dwMilliSecsTimeout, __out  
   HRESULT ReturnValue;
   if (m_pAllocatorPresenter->GetState(dwMilliSecsTimeout, State, ReturnValue))
     return ReturnValue;
-  IBaseFilter* pEVRBase;
+  Com::SmartPtr<IBaseFilter> pEVRBase;
   if (m_pEVR)
     m_pEVR->QueryInterface(&pEVRBase);
   if (pEVRBase)
@@ -219,6 +222,7 @@ MFVideoArea MakeArea(float x, float y, DWORD width, DWORD height)
 RENDER_STATE CEVRAllocatorPresenter::m_RenderState = RENDER_STATE_SHUTDOWN;
 
 CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
+  CUnknown(NAME("CEVRAllocatorPresenter"), NULL),
   m_pD3DPresentEngine(NULL),
   m_pClock(NULL),
   m_pMixer(NULL),
@@ -283,14 +287,9 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
   ReleaseResources();
 
   // COM interfaces
-  SAFE_RELEASE(m_pClock);
-  SAFE_RELEASE(m_pMixer);
-  SAFE_RELEASE(m_pMediaEventSink);
-  SAFE_RELEASE(m_pMediaType);
 
   // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
-  SAFE_DELETE(m_pOuterEVR);
 
   g_Windowing.Unregister(this);
   g_renderManager.UnInit();
@@ -308,64 +307,47 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
   do
   {
     CMacrovisionKicker *m_pMacrovisionKicker = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL); // Auto delete when removing from the graph
-    IUnknown* pUnk = (IUnknown *)(INonDelegatingUnknown *) m_pMacrovisionKicker;
+    Com::SmartPtr<IUnknown> pUnk = (IUnknown *)(INonDelegatingUnknown *) m_pMacrovisionKicker;
 
-    COuterEVR *pOuterEVR = new COuterEVR(NAME("COuterEVR"), pUnk, hr, this);
-    
+    COuterEVR *pOuterEVR = new COuterEVR(NAME("COuterEVR"), pUnk, hr, this);    
+    m_pOuterEVR = pOuterEVR;
     if (FAILED (hr))
     {
       CLog::Log(LOGERROR,"%s Failed creating outer enchanced video renderer",__FUNCTION__);
       break;
     }
-
-    m_pOuterEVR = pOuterEVR;
     
-    m_pMacrovisionKicker->SetInner((IUnknown*)(INonDelegatingUnknown*) m_pOuterEVR);
-    IBaseFilter* pBF;
-    hr = pUnk->QueryInterface(__uuidof(IBaseFilter),(void**)&pBF );
-    if (FAILED (hr))
+    m_pMacrovisionKicker->SetInner((IUnknown*)(INonDelegatingUnknown*) pOuterEVR);
+    Com::SmartQIPtr<IBaseFilter> pBF = pUnk;
+    if (! pBF)
     {
       CLog::Log(LOGERROR,"%s Failed creating enchanced video renderer",__FUNCTION__);
       break;
     }
-    IMFVideoPresenter*    pVP;
-    IMFVideoRenderer*    pMFVR;
-    IMFGetService* pMFGS;
+    // Set EVR custom presenter
+    Com::SmartPtr<IMFVideoPresenter>    pVP;
+    Com::SmartPtr<IMFVideoRenderer>    pMFVR;
+    Com::SmartQIPtr<IMFGetService, &__uuidof(IMFGetService)> pMFGS = pBF;
 
-    hr = pBF->QueryInterface(__uuidof(IMFGetService), (void**)&pMFGS );
-    if (FAILED(hr))
-    {
-      pBF->Release();
-      break;
-    }
-    
     hr = pMFGS->GetService (MR_VIDEO_RENDER_SERVICE, IID_IMFVideoRenderer, (void**)&pMFVR);
-    if(SUCCEEDED(hr)) 
-       hr = QueryInterface (__uuidof(IMFVideoPresenter), (void**)&pVP);
-    if(SUCCEEDED(hr)) 
-      hr = pMFVR->InitializeRenderer (NULL, pVP);
 
-    pMFVR->Release();
-    pVP->Release();
+    if(SUCCEEDED(hr)) hr = QueryInterface (__uuidof(IMFVideoPresenter), (void**)&pVP);
+    if(SUCCEEDED(hr)) hr = pMFVR->InitializeRenderer (NULL, pVP);
 
-    //something related with no crash in vista
-    IPin* pPin = DShowUtil::GetFirstPin(pBF);
-    IMemInputPin* pMemInputPin;
+#if 1
+    Com::SmartPtr<IPin>      pPin = DShowUtil::GetFirstPin(pBF);
+    Com::SmartQIPtr<IMemInputPin> pMemInputPin = pPin;
 
-    pPin->QueryInterface(__uuidof(IMemInputPin), (void**)&pMemInputPin);
-    
+    // No NewSegment : no chocolate :o)
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
-
-    pMemInputPin->Release();
-    pPin->Release();
+#else
+    m_fUseInternalTimer = false;
+#endif
 
     if(FAILED(hr))
       *ppRenderer = NULL;
     else
-    {
-      *ppRenderer = pBF;
-      pBF->Release();
-    }
+      *ppRenderer = pBF.Detach();
   } while (0);
 
   return hr;
@@ -501,7 +483,7 @@ bool CEVRAllocatorPresenter::GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *S
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-HRESULT CEVRAllocatorPresenter::QueryInterface(REFIID riid, void ** ppv)
+/*HRESULT CEVRAllocatorPresenter::QueryInterface(REFIID riid, void ** ppv)
 {
   CheckPointer(ppv, E_POINTER);
 
@@ -524,7 +506,7 @@ HRESULT CEVRAllocatorPresenter::QueryInterface(REFIID riid, void ** ppv)
   /*else if (riid == __uuidof(IMFRateSupport))
   {
       *ppv = static_cast<IMFRateSupport*>(this);
-  }*/
+  }*
   else if (riid == __uuidof(IMFGetService))
   {
     *ppv = static_cast<IMFGetService*>(this);
@@ -573,7 +555,7 @@ ULONG CEVRAllocatorPresenter::Release()
   }
 
   return ret;
-}
+}*/
 
 STDMETHODIMP CEVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
@@ -602,8 +584,13 @@ STDMETHODIMP CEVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, vo
     hr = GetInterface((IEVRPresenterRegisterCallback*)this,ppv);
   else if (riid == __uuidof(IEVRPresenterSettings))
     hr = GetInterface((IEVRPresenterSettings*)this,ppv);
-  //else if(riid == __uuidof(IDirect3DDeviceManager9))
-    //hr = m_pDeviceManager->QueryInterface (__uuidof(IDirect3DDeviceManager9), (void**) ppv);
+  else if(riid == __uuidof(IDirect3DDeviceManager9))
+    //    hr = GetInterface((IDirect3DDeviceManager9*)this, ppv);
+    hr = m_pD3DPresentEngine->m_pDeviceManager->QueryInterface (__uuidof(IDirect3DDeviceManager9), (void**) ppv);
+  else
+    hr = __super::NonDelegatingQueryInterface(riid, ppv);
+
+  return hr;
 
   return hr;
 }
@@ -653,7 +640,7 @@ HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_DevSyncOffset(int *piDev)
 }
 
 //IMFVideoPresenter
-HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TYPE eMessage, ULONG_PTR ulParam)
+STDMETHODIMP CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TYPE eMessage, ULONG_PTR ulParam)
 {
 
   HRESULT hr = S_OK;
@@ -710,7 +697,7 @@ HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TY
       break;
 
     default:
-      hr = E_INVALIDARG; // Unknown message. (This case should never occur.)
+      hr = S_OK; // Unknown message. (This case should never occur.)
       break;
     }
 
@@ -982,7 +969,7 @@ HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedTy
   MFVideoArea displayArea;
   ZeroMemory(&displayArea, sizeof(displayArea));
 
-  IMFMediaType *pOptimalType = NULL;
+  Com::SmartPtr<IMFMediaType> pOptimalType = NULL;
   MediaFoundationSamples::VideoTypeBuilder *pmtOptimal = NULL;
 
   // Create the helper object to manipulate the optimal type.
@@ -1008,7 +995,7 @@ HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedTy
     CHECK_HR(hr = CalculateOutputRectangle(pProposedType, &rcOutput));
 
   UINT32 fWidth,fHeight;
-  if (SUCCEEDED(pmtOptimal->GetFrameDimensions(&fWidth,&fHeight)))
+  if (SUCCEEDED(pmtOptimal->GetFrameDimensions(&fWidth, &fHeight)))
   {
     //HD
     if (fWidth >= 1280 || fHeight >=720)
@@ -1059,10 +1046,8 @@ HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedTy
   CHECK_HR(hr = pmtOptimal->GetMediaType(&pOptimalType));
 
   *ppOptimalType = pOptimalType;
-  (*ppOptimalType)->AddRef();
 
 done:
-  SAFE_RELEASE(pOptimalType);
   SAFE_RELEASE(pmtOptimal);
 
   return hr;
@@ -1177,7 +1162,7 @@ STDMETHODIMP CEVRAllocatorPresenter::InitServicePointers(/* [in] */ __in  IMFTop
   // Do not allow initializing when playing or paused.
   if (IsActive())
     return MF_E_INVALIDREQUEST;
-  
+
   CLog::Log(LOGDEBUG,"%s getting mixer, render eventsink and renderclock",__FUNCTION__);
 
   hr = pLookup->LookupService (MF_SERVICE_LOOKUP_GLOBAL, 0, MR_VIDEO_MIXER_SERVICE,
@@ -1193,7 +1178,6 @@ STDMETHODIMP CEVRAllocatorPresenter::InitServicePointers(/* [in] */ __in  IMFTop
   // Successfully initialized. Set the state to "stopped."
   m_RenderState = RENDER_STATE_STOPPED;
 
-done:
   return S_OK;
 }
 
@@ -1214,9 +1198,9 @@ STDMETHODIMP CEVRAllocatorPresenter::ReleaseServicePointers()
   SetMediaType(NULL);
 
   // Release all services that were acquired from InitServicePointers.
-  SAFE_RELEASE(m_pClock);
-  SAFE_RELEASE(m_pMixer);
-  SAFE_RELEASE(m_pMediaEventSink);
+  m_pClock = NULL;
+  m_pMixer = NULL;
+  m_pMediaEventSink = NULL;
   
   CLog::Log(LOGDEBUG,"%s Mixer released", __FUNCTION__);
   return S_OK;
@@ -1236,35 +1220,13 @@ STDMETHODIMP CEVRAllocatorPresenter::GetService (/* [in] */ __RPC__in REFGUID gu
                 /* [in] */ __RPC__in REFIID riid,
                 /* [iid_is][out] */ __RPC__deref_out_opt LPVOID *ppvObject)
 {
-  HRESULT hr = S_OK;
-
-  CheckPointer(ppvObject, E_POINTER);
-
-  // The only service GUID that we support is MR_VIDEO_RENDER_SERVICE.
-    
-
-  if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
-    return m_pD3DPresentEngine->GetService(guidService,riid, (void**) ppvObject);
-    
-	if (guidService != MR_VIDEO_RENDER_SERVICE)
-      return MF_E_UNSUPPORTED_SERVICE;
-  // First try to get the service interface from the D3DPresentEngine object.
-  hr = m_pD3DPresentEngine->GetService(guidService, riid, ppvObject);
-  if (FAILED(hr))
-  {
-    // Next, QI to check if this object supports the interface.
-    hr = QueryInterface(riid, ppvObject);
-  }
-
-  return hr;
-  /*if (guidService == MR_VIDEO_RENDER_SERVICE)
+  if (guidService == MR_VIDEO_RENDER_SERVICE)
     return NonDelegatingQueryInterface (riid, ppvObject);
-  
+  else if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
+    return m_pD3DPresentEngine->GetService(MR_VIDEO_ACCELERATION_SERVICE, riid, ppvObject);
 
-  return E_NOINTERFACE;*/
+  return E_NOINTERFACE;
 }
-
-
 
 
 HRESULT CEVRAllocatorPresenter::Flush()
@@ -1393,9 +1355,9 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
 {
   HRESULT      hr = S_OK;
   bool bFoundMediaType = false;
-  IMFMediaType *pMixerType = NULL;
-  IMFMediaType *pOptimalType = NULL;
-  IMFVideoMediaType *pVideoType = NULL;
+  Com::SmartPtr<IMFMediaType> pMixerType = NULL;
+  Com::SmartPtr<IMFMediaType> pOptimalType = NULL;
+  Com::SmartPtr<IMFVideoMediaType> pVideoType = NULL;
   if (!m_pMixer)
     return MF_E_INVALIDREQUEST;
   // Loop through all of the mixer's proposed output types.
@@ -1403,8 +1365,8 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
 
   while (!bFoundMediaType && (hr != MF_E_NO_MORE_TYPES))
   {
-    SAFE_RELEASE(pMixerType);
-    SAFE_RELEASE(pOptimalType);
+    pMixerType = NULL;
+    pOptimalType = NULL;
 
     // Step 1. Get the next media type supported by mixer.
     hr = m_pMixer->GetOutputAvailableType(0, iTypeIndex++, &pMixerType);
@@ -1463,10 +1425,6 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
     }
   }
 
-  SAFE_RELEASE(pMixerType);
-  SAFE_RELEASE(pOptimalType);
-  SAFE_RELEASE(pVideoType);
-
   return hr;
 }
 
@@ -1477,7 +1435,7 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   // Clearing the media type is allowed in any state (including shutdown).
   if (pType == NULL)
   {
-    SAFE_RELEASE(m_pMediaType);
+    m_pMediaType = NULL;
     ReleaseResources();
     return S_OK;
   }
@@ -1487,7 +1445,8 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   VideoSampleList sampleQueue;
 
 
-  IMFSample *pSample = NULL;
+  Com::SmartPtr<IMFSample> pSample = NULL;
+  Com::SmartPtr<IMFVideoMediaType> pVideoMediaType = NULL;
 
   // Cannot set the media type after shutdown.
   CHECK_HR(hr = CheckShutdown());
@@ -1500,8 +1459,7 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   }
 
   // We're really changing the type. First get rid of the old type.
-  SAFE_RELEASE(m_pMediaType);
-  //ReleaseResources(); // Not needed, resources cleaned in CreateVideoSamples
+  m_pMediaType = NULL;
 
   // Initialize the presenter engine with the new media type.
   // The presenter engine allocates the samples. 
@@ -1517,7 +1475,7 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
     CHECK_HR(hr = sampleQueue.GetItemPos(pos, &pSample));
     CHECK_HR(hr = pSample->SetUINT32(MFSamplePresenter_SampleCounter, m_TokenCounter));
 
-    SAFE_RELEASE(pSample);
+    pSample = NULL;
   }
 
 
@@ -1525,11 +1483,10 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   CHECK_HR(hr = m_SamplePool.Initialize(sampleQueue));
 
   //Getting the time per frame without using MFFrameRateToAverageTimePerFrame
-  IMFVideoMediaType *pVideoMediaType;
   AM_MEDIA_TYPE* pAMMedia = NULL;
   MFVIDEOFORMAT* videoFormat = NULL;
 
-  pType->GetRepresentation(FORMAT_MFVideoFormat,(void**)&pAMMedia);
+  pType->GetRepresentation(FORMAT_MFVideoFormat, (void**)&pAMMedia);
   videoFormat = (MFVIDEOFORMAT*)pAMMedia->pbFormat;
   hr = pfMFCreateVideoMediaType(videoFormat, &pVideoMediaType);
     
@@ -1554,7 +1511,6 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   // Store the media type.
   assert(pType != NULL);
   m_pMediaType = pType;
-  m_pMediaType->AddRef();
 
 done:
   if (FAILED(hr))
@@ -1947,7 +1903,8 @@ void CEVRAllocatorPresenter::ReleaseResources()
 
   m_SamplePool.Clear();
 
-  m_pD3DPresentEngine->ReleaseResources();
+  if (m_pD3DPresentEngine)
+    m_pD3DPresentEngine->ReleaseResources();
 }
 
 //-----------------------------------------------------------------------------
@@ -2011,13 +1968,13 @@ done:
 
 HRESULT CEVRAllocatorPresenter::RegisterCallback(IEVRPresenterCallback *pCallback) 
 { 
-	this->m_pD3DPresentEngine->RegisterCallback(pCallback);
-	return S_OK; 
+  this->m_pD3DPresentEngine->RegisterCallback(pCallback);
+  return S_OK; 
 }
 
 HRESULT CEVRAllocatorPresenter::SetBufferCount(int bufferCount)
 {
-	return m_pD3DPresentEngine->SetBufferCount(bufferCount);
+  return m_pD3DPresentEngine->SetBufferCount(bufferCount);
 }
 
 void CEVRAllocatorPresenter::OnLostDevice()

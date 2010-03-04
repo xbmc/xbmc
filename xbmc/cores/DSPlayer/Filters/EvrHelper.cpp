@@ -127,7 +127,7 @@ HRESULT SamplePool::Initialize(VideoSampleList& samples)
         CHECK_HR(hr = samples.GetItemPos(pos, &pSample));
         CHECK_HR(hr = m_VideoSampleQueue.InsertBack(pSample));
 
-		pos = samples.Next(pos);
+    pos = samples.Next(pos);
         S_RELEASE(pSample);
     }
 

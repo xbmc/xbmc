@@ -37,7 +37,7 @@ CAMEvent::CAMEvent(__inout_opt HRESULT *phr)
 CAMEvent::~CAMEvent()
 {
     if (m_hEvent) {
-	EXECUTE_ASSERT(CloseHandle(m_hEvent));
+  EXECUTE_ASSERT(CloseHandle(m_hEvent));
     }
 }
 
@@ -70,21 +70,21 @@ BOOL CAMMsgEvent::WaitMsg(DWORD dwTimeout)
     do {
         dwWait = MsgWaitForMultipleObjects(1,&m_hEvent,FALSE, dwWaitTime, QS_SENDMESSAGE);
         if (dwWait == WAIT_OBJECT_0 + 1) {
-	    MSG Message;
+      MSG Message;
             PeekMessage(&Message,NULL,0,0,PM_NOREMOVE);
 
-	    // If we have an explicit length of time to wait calculate
-	    // the next wake up point - which might be now.
-	    // If dwTimeout is INFINITE, it stays INFINITE
-	    if (dwWaitTime != INFINITE) {
+      // If we have an explicit length of time to wait calculate
+      // the next wake up point - which might be now.
+      // If dwTimeout is INFINITE, it stays INFINITE
+      if (dwWaitTime != INFINITE) {
 
-		DWORD dwElapsed = timeGetTime()-dwStartTime;
+    DWORD dwElapsed = timeGetTime()-dwStartTime;
 
-		dwWaitTime =
-		    (dwElapsed >= dwTimeout)
-			? 0  // wake up with WAIT_TIMEOUT
-			: dwTimeout-dwElapsed;
-	    }
+    dwWaitTime =
+        (dwElapsed >= dwTimeout)
+      ? 0  // wake up with WAIT_TIMEOUT
+      : dwTimeout-dwElapsed;
+      }
         }
     } while (dwWait == WAIT_OBJECT_0 + 1);
 
@@ -137,19 +137,19 @@ CAMThread::Create()
     CAutoLock lock(&m_AccessLock);
 
     if (ThreadExists()) {
-	return FALSE;
+  return FALSE;
     }
 
     m_hThread = CreateThread(
-		    NULL,
-		    0,
-		    CAMThread::InitialThreadProc,
-		    this,
-		    0,
-		    &threadid);
+        NULL,
+        0,
+        CAMThread::InitialThreadProc,
+        this,
+        0,
+        &threadid);
 
     if (!m_hThread) {
-	return FALSE;
+  return FALSE;
     }
 
     return TRUE;
@@ -162,7 +162,7 @@ CAMThread::CallWorker(DWORD dwParam)
     CAutoLock lock(&m_AccessLock);
 
     if (!ThreadExists()) {
-	return (DWORD) E_FAIL;
+  return (DWORD) E_FAIL;
     }
 
     // set the parameter
@@ -191,12 +191,12 @@ BOOL
 CAMThread::CheckRequest(__out_opt DWORD * pParam)
 {
     if (!m_EventSend.Check()) {
-	return FALSE;
+  return FALSE;
     } else {
-	if (pParam) {
-	    *pParam = m_dwParam;
-	}
-	return TRUE;
+  if (pParam) {
+      *pParam = m_dwParam;
+  }
+  return TRUE;
     }
 }
 
@@ -288,7 +288,7 @@ CMsgThread::CreateThread(
     }
 
     m_hThread = ::CreateThread(NULL, 0, DefaultThreadProc,
-			       (LPVOID)this, 0, &m_ThreadId);
+             (LPVOID)this, 0, &m_ThreadId);
     return m_hThread != NULL;
 }
 
@@ -314,9 +314,9 @@ CMsgThread::DefaultThreadProc(
     lpThis->OnThreadInit();
 
     do {
-	lpThis->GetThreadMsg(&msg);
-	lResult = lpThis->ThreadMessageProc(msg.uMsg,msg.dwFlags,
-					    msg.lpParam, msg.pEvent);
+  lpThis->GetThreadMsg(&msg);
+  lResult = lpThis->ThreadMessageProc(msg.uMsg,msg.dwFlags,
+              msg.lpParam, msg.pEvent);
     } while (lResult == 0L);
 
     // !!!
@@ -492,9 +492,9 @@ void CCritSec::Lock()
             DbgLog((LOG_LOCKING, 2, TEXT("Thread %d about to wait for lock %x owned by %d"),
                 GetCurrentThreadId(), &m_CritSec, currentOwner));
             tracelevel=2;
-	        // if we saw the message about waiting for the critical
-	        // section we ensure we see the message when we get the
-	        // critical section
+          // if we saw the message about waiting for the critical
+          // section we ensure we see the message when we get the
+          // critical section
         }
     }
     EnterCriticalSection(&m_CritSec);
@@ -514,18 +514,18 @@ bool CCritSec::TryLock()
     DWORD us = GetCurrentThreadId();
     DWORD currentOwner = m_currentOwner;
     BOOL bSuccess = TryEnterCriticalSection(&m_CritSec);
-	if (bSuccess)
-	{
-		if (0 == m_lockCount++) {
-			// we now own it for the first time.  Set owner information
-			m_currentOwner = us;
+  if (bSuccess)
+  {
+    if (0 == m_lockCount++) {
+      // we now own it for the first time.  Set owner information
+      m_currentOwner = us;
 
-			if (m_fTrace) {
-				DbgLog((LOG_LOCKING, tracelevel, TEXT("Thread %d now owns lock %x"), m_currentOwner, &m_CritSec));
-			}
-		}
-	}
-	return bSuccess != 0;
+      if (m_fTrace) {
+        DbgLog((LOG_LOCKING, tracelevel, TEXT("Thread %d now owns lock %x"), m_currentOwner, &m_CritSec));
+      }
+    }
+  }
+  return bSuccess != 0;
 }
 
 void CCritSec::Unlock() {

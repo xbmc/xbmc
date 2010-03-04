@@ -96,7 +96,7 @@ void TranslateAliasShortcut(CStdString &path)
     WCHAR wszTemp[MAX_PATH];
     
     // Get a pointer to the IPersistFile interface
-    CComQIPtr<IPersistFile> ipPersistFile(ipShellLink);
+    Com::SmartQIPtr<IPersistFile> ipPersistFile(ipShellLink);
 
     // IPersistFile is using LPCOLESTR so make sure that the string is Unicode
 #if !defined _UNICODE

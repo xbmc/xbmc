@@ -25,7 +25,7 @@
 CBaseDispatch::~CBaseDispatch()
 {
     if (m_pti) {
-	m_pti->Release();
+  m_pti->Release();
     }
 }
 
@@ -43,14 +43,14 @@ CBaseDispatch::GetTypeInfoCount(__out UINT * pctinfo)
 
 
 typedef HRESULT (STDAPICALLTYPE *LPLOADTYPELIB)(
-			    const OLECHAR FAR *szFile,
-			    __deref_out ITypeLib FAR* FAR* pptlib);
+          const OLECHAR FAR *szFile,
+          __deref_out ITypeLib FAR* FAR* pptlib);
 
 typedef HRESULT (STDAPICALLTYPE *LPLOADREGTYPELIB)(REFGUID rguid,
-			    WORD wVerMajor,
-			    WORD wVerMinor,
-			    LCID lcid,
-			    __deref_out ITypeLib FAR* FAR* pptlib);
+          WORD wVerMajor,
+          WORD wVerMinor,
+          LCID lcid,
+          __deref_out ITypeLib FAR* FAR* pptlib);
 
 // attempt to find our type library
 
@@ -69,70 +69,70 @@ CBaseDispatch::GetTypeInfo(
 
     // we only support one type element
     if (0 != itinfo) {
-	return TYPE_E_ELEMENTNOTFOUND;
+  return TYPE_E_ELEMENTNOTFOUND;
     }
 
     if (NULL == pptinfo) {
-	return E_POINTER;
+  return E_POINTER;
     }
 
     // always look for neutral
     if (NULL == m_pti) {
 
-	LPLOADTYPELIB	    lpfnLoadTypeLib;
-	LPLOADREGTYPELIB    lpfnLoadRegTypeLib;
-	ITypeLib	    *ptlib;
-	HINSTANCE	    hInst;
+  LPLOADTYPELIB      lpfnLoadTypeLib;
+  LPLOADREGTYPELIB    lpfnLoadRegTypeLib;
+  ITypeLib      *ptlib;
+  HINSTANCE      hInst;
 
-	static const char  szTypeLib[]	  = "LoadTypeLib";
-	static const char  szRegTypeLib[] = "LoadRegTypeLib";
-	static const WCHAR szControl[]	  = L"control.tlb";
+  static const char  szTypeLib[]    = "LoadTypeLib";
+  static const char  szRegTypeLib[] = "LoadRegTypeLib";
+  static const WCHAR szControl[]    = L"control.tlb";
 
-	//
-	// Try to get the Ole32Aut.dll module handle.
-	//
+  //
+  // Try to get the Ole32Aut.dll module handle.
+  //
 
-	hInst = LoadOLEAut32();
-	if (hInst == NULL) {
-	    DWORD dwError = GetLastError();
-	    return AmHresultFromWin32(dwError);
-	}
-	lpfnLoadRegTypeLib = (LPLOADREGTYPELIB)GetProcAddress(hInst,
-							      szRegTypeLib);
-	if (lpfnLoadRegTypeLib == NULL) {
-	    DWORD dwError = GetLastError();
-	    return AmHresultFromWin32(dwError);
-	}
+  hInst = LoadOLEAut32();
+  if (hInst == NULL) {
+      DWORD dwError = GetLastError();
+      return AmHresultFromWin32(dwError);
+  }
+  lpfnLoadRegTypeLib = (LPLOADREGTYPELIB)GetProcAddress(hInst,
+                    szRegTypeLib);
+  if (lpfnLoadRegTypeLib == NULL) {
+      DWORD dwError = GetLastError();
+      return AmHresultFromWin32(dwError);
+  }
 
-	hr = (*lpfnLoadRegTypeLib)(LIBID_QuartzTypeLib, 1, 0, // version 1.0
-				   lcid, &ptlib);
+  hr = (*lpfnLoadRegTypeLib)(LIBID_QuartzTypeLib, 1, 0, // version 1.0
+           lcid, &ptlib);
 
-	if (FAILED(hr)) {
+  if (FAILED(hr)) {
 
-	    // attempt to load directly - this will fill the
-	    // registry in if it finds it
+      // attempt to load directly - this will fill the
+      // registry in if it finds it
 
-	    lpfnLoadTypeLib = (LPLOADTYPELIB)GetProcAddress(hInst, szTypeLib);
-	    if (lpfnLoadTypeLib == NULL) {
-		DWORD dwError = GetLastError();
-		return AmHresultFromWin32(dwError);
-	    }
+      lpfnLoadTypeLib = (LPLOADTYPELIB)GetProcAddress(hInst, szTypeLib);
+      if (lpfnLoadTypeLib == NULL) {
+    DWORD dwError = GetLastError();
+    return AmHresultFromWin32(dwError);
+      }
 
-	    hr = (*lpfnLoadTypeLib)(szControl, &ptlib);
-	    if (FAILED(hr)) {
-		return hr;
-	    }
-	}
+      hr = (*lpfnLoadTypeLib)(szControl, &ptlib);
+      if (FAILED(hr)) {
+    return hr;
+      }
+  }
 
-	hr = ptlib->GetTypeInfoOfGuid(
-		    riid,
-		    &m_pti);
+  hr = ptlib->GetTypeInfoOfGuid(
+        riid,
+        &m_pti);
 
-	ptlib->Release();
+  ptlib->Release();
 
-	if (FAILED(hr)) {
-	    return hr;
-	}
+  if (FAILED(hr)) {
+      return hr;
+  }
     }
 
     *pptinfo = m_pti;
@@ -156,9 +156,9 @@ CBaseDispatch::GetIDsOfNames(
     HRESULT hr = GetTypeInfo(riid, 0, lcid, &pti);
 
     if (SUCCEEDED(hr)) {
-	hr = pti->GetIDsOfNames(rgszNames, cNames, rgdispid);
+  hr = pti->GetIDsOfNames(rgszNames, cNames, rgdispid);
 
-	pti->Release();
+  pti->Release();
     }
     return hr;
 }
@@ -178,9 +178,9 @@ CMediaControl::NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv)
 {
     ValidateReadWritePtr(ppv,sizeof(PVOID));
     if (riid == IID_IMediaControl) {
-	return GetInterface( (IMediaControl *) this, ppv);
+  return GetInterface( (IMediaControl *) this, ppv);
     } else {
-	return CUnknown::NonDelegatingQueryInterface(riid, ppv);
+  return CUnknown::NonDelegatingQueryInterface(riid, ppv);
     }
 }
 
@@ -203,10 +203,10 @@ CMediaControl::GetTypeInfo(
   __deref_out ITypeInfo ** pptinfo)
 {
     return m_basedisp.GetTypeInfo(
-		IID_IMediaControl,
-		itinfo,
-		lcid,
-		pptinfo);
+    IID_IMediaControl,
+    itinfo,
+    lcid,
+    pptinfo);
 }
 
 
@@ -219,11 +219,11 @@ CMediaControl::GetIDsOfNames(
   __out_ecount(cNames) DISPID * rgdispid)
 {
     return m_basedisp.GetIDsOfNames(
-			IID_IMediaControl,
-			rgszNames,
-			cNames,
-			lcid,
-			rgdispid);
+      IID_IMediaControl,
+      rgszNames,
+      cNames,
+      lcid,
+      rgdispid);
 }
 
 
@@ -240,24 +240,24 @@ CMediaControl::Invoke(
 {
     // this parameter is a dead leftover from an earlier interface
     if (IID_NULL != riid) {
-	return DISP_E_UNKNOWNINTERFACE;
+  return DISP_E_UNKNOWNINTERFACE;
     }
 
     ITypeInfo * pti;
     HRESULT hr = GetTypeInfo(0, lcid, &pti);
 
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pti->Invoke(
-	    (IMediaControl *)this,
-	    dispidMember,
-	    wFlags,
-	    pdispparams,
-	    pvarResult,
-	    pexcepinfo,
-	    puArgErr);
+      (IMediaControl *)this,
+      dispidMember,
+      wFlags,
+      pdispparams,
+      pvarResult,
+      pexcepinfo,
+      puArgErr);
 
     pti->Release();
     return hr;
@@ -280,9 +280,9 @@ CMediaEvent::NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv)
 {
     ValidateReadWritePtr(ppv,sizeof(PVOID));
     if (riid == IID_IMediaEvent || riid == IID_IMediaEventEx) {
-	return GetInterface( (IMediaEventEx *) this, ppv);
+  return GetInterface( (IMediaEventEx *) this, ppv);
     } else {
-	return CUnknown::NonDelegatingQueryInterface(riid, ppv);
+  return CUnknown::NonDelegatingQueryInterface(riid, ppv);
     }
 }
 
@@ -305,10 +305,10 @@ CMediaEvent::GetTypeInfo(
   __deref_out ITypeInfo ** pptinfo)
 {
     return m_basedisp.GetTypeInfo(
-		IID_IMediaEvent,
-		itinfo,
-		lcid,
-		pptinfo);
+    IID_IMediaEvent,
+    itinfo,
+    lcid,
+    pptinfo);
 }
 
 
@@ -321,11 +321,11 @@ CMediaEvent::GetIDsOfNames(
   __out_ecount(cNames) DISPID * rgdispid)
 {
     return m_basedisp.GetIDsOfNames(
-			IID_IMediaEvent,
-			rgszNames,
-			cNames,
-			lcid,
-			rgdispid);
+      IID_IMediaEvent,
+      rgszNames,
+      cNames,
+      lcid,
+      rgdispid);
 }
 
 
@@ -342,24 +342,24 @@ CMediaEvent::Invoke(
 {
     // this parameter is a dead leftover from an earlier interface
     if (IID_NULL != riid) {
-	return DISP_E_UNKNOWNINTERFACE;
+  return DISP_E_UNKNOWNINTERFACE;
     }
 
     ITypeInfo * pti;
     HRESULT hr = GetTypeInfo(0, lcid, &pti);
 
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pti->Invoke(
-	    (IMediaEvent *)this,
-	    dispidMember,
-	    wFlags,
-	    pdispparams,
-	    pvarResult,
-	    pexcepinfo,
-	    puArgErr);
+      (IMediaEvent *)this,
+      dispidMember,
+      wFlags,
+      pdispparams,
+      pvarResult,
+      pexcepinfo,
+      puArgErr);
 
     pti->Release();
     return hr;
@@ -390,9 +390,9 @@ CMediaPosition::NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv)
 {
     ValidateReadWritePtr(ppv,sizeof(PVOID));
     if (riid == IID_IMediaPosition) {
-	return GetInterface( (IMediaPosition *) this, ppv);
+  return GetInterface( (IMediaPosition *) this, ppv);
     } else {
-	return CUnknown::NonDelegatingQueryInterface(riid, ppv);
+  return CUnknown::NonDelegatingQueryInterface(riid, ppv);
     }
 }
 
@@ -415,10 +415,10 @@ CMediaPosition::GetTypeInfo(
   __deref_out ITypeInfo ** pptinfo)
 {
     return m_basedisp.GetTypeInfo(
-		IID_IMediaPosition,
-		itinfo,
-		lcid,
-		pptinfo);
+    IID_IMediaPosition,
+    itinfo,
+    lcid,
+    pptinfo);
 }
 
 
@@ -431,11 +431,11 @@ CMediaPosition::GetIDsOfNames(
   __out_ecount(cNames) DISPID * rgdispid)
 {
     return m_basedisp.GetIDsOfNames(
-			IID_IMediaPosition,
-			rgszNames,
-			cNames,
-			lcid,
-			rgdispid);
+      IID_IMediaPosition,
+      rgszNames,
+      cNames,
+      lcid,
+      rgdispid);
 }
 
 
@@ -452,24 +452,24 @@ CMediaPosition::Invoke(
 {
     // this parameter is a dead leftover from an earlier interface
     if (IID_NULL != riid) {
-	return DISP_E_UNKNOWNINTERFACE;
+  return DISP_E_UNKNOWNINTERFACE;
     }
 
     ITypeInfo * pti;
     HRESULT hr = GetTypeInfo(0, lcid, &pti);
 
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pti->Invoke(
-	    (IMediaPosition *)this,
-	    dispidMember,
-	    wFlags,
-	    pdispparams,
-	    pvarResult,
-	    pexcepinfo,
-	    puArgErr);
+      (IMediaPosition *)this,
+      dispidMember,
+      wFlags,
+      pdispparams,
+      pvarResult,
+      pexcepinfo,
+      puArgErr);
 
     pti->Release();
     return hr;
@@ -480,15 +480,15 @@ CMediaPosition::Invoke(
 
 
 CPosPassThru::CPosPassThru(__in_opt LPCTSTR pName,
-			   __in_opt LPUNKNOWN pUnk,
-			   __inout HRESULT *phr,
-			   IPin *pPin) :
+         __in_opt LPUNKNOWN pUnk,
+         __inout HRESULT *phr,
+         IPin *pPin) :
     CMediaPosition(pName,pUnk),
     m_pPin(pPin)
 {
     if (pPin == NULL) {
-	*phr = E_POINTER;
-	return;
+  *phr = E_POINTER;
+  return;
     }
 }
 
@@ -502,7 +502,7 @@ CPosPassThru::NonDelegatingQueryInterface(REFIID riid,__deref_out void **ppv)
     *ppv = NULL;
 
     if (riid == IID_IMediaSeeking) {
-	return GetInterface( static_cast<IMediaSeeking *>(this), ppv);
+  return GetInterface( static_cast<IMediaSeeking *>(this), ppv);
     }
     return CMediaPosition::NonDelegatingQueryInterface(riid,ppv);
 }
@@ -518,13 +518,13 @@ CPosPassThru::GetPeer(IMediaPosition ** ppMP)
     IPin *pConnected;
     HRESULT hr = m_pPin->ConnectedTo(&pConnected);
     if (FAILED(hr)) {
-	return E_NOTIMPL;
+  return E_NOTIMPL;
     }
     IMediaPosition * pMP;
     hr = pConnected->QueryInterface(IID_IMediaPosition, (void **) &pMP);
     pConnected->Release();
     if (FAILED(hr)) {
-	return E_NOTIMPL;
+  return E_NOTIMPL;
     }
 
     *ppMP = pMP;
@@ -542,13 +542,13 @@ CPosPassThru::GetPeerSeeking(__deref_out IMediaSeeking ** ppMS)
     IPin *pConnected;
     HRESULT hr = m_pPin->ConnectedTo(&pConnected);
     if (FAILED(hr)) {
-	return E_NOTIMPL;
+  return E_NOTIMPL;
     }
     IMediaSeeking * pMS;
     hr = pConnected->QueryInterface(IID_IMediaSeeking, (void **) &pMS);
     pConnected->Release();
     if (FAILED(hr)) {
-	return E_NOTIMPL;
+  return E_NOTIMPL;
     }
 
     *ppMS = pMS;
@@ -565,7 +565,7 @@ CPosPassThru::GetCapabilities(__out DWORD * pCaps)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->GetCapabilities(pCaps);
@@ -579,7 +579,7 @@ CPosPassThru::CheckCapabilities(__inout DWORD * pCaps)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->CheckCapabilities(pCaps);
@@ -593,7 +593,7 @@ CPosPassThru::IsFormatSupported(const GUID * pFormat)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->IsFormatSupported(pFormat);
@@ -608,7 +608,7 @@ CPosPassThru::QueryPreferredFormat(__out GUID *pFormat)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->QueryPreferredFormat(pFormat);
@@ -623,7 +623,7 @@ CPosPassThru::SetTimeFormat(const GUID * pFormat)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->SetTimeFormat(pFormat);
@@ -638,7 +638,7 @@ CPosPassThru::GetTimeFormat(__out GUID *pFormat)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->GetTimeFormat(pFormat);
@@ -653,7 +653,7 @@ CPosPassThru::IsUsingTimeFormat(const GUID * pFormat)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->IsUsingTimeFormat(pFormat);
@@ -665,13 +665,13 @@ CPosPassThru::IsUsingTimeFormat(const GUID * pFormat)
 STDMETHODIMP
 CPosPassThru::ConvertTimeFormat(__out LONGLONG * pTarget, 
                                 __in_opt const GUID * pTargetFormat,
-				LONGLONG Source, 
+        LONGLONG Source, 
                                 __in_opt const GUID * pSourceFormat )
 {
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->ConvertTimeFormat(pTarget, pTargetFormat, Source, pSourceFormat );
@@ -689,7 +689,7 @@ CPosPassThru::SetPositions( __inout_opt LONGLONG * pCurrent,
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->SetPositions(pCurrent, CurrentFlags, pStop, StopFlags );
@@ -703,7 +703,7 @@ CPosPassThru::GetPositions(__out_opt LONGLONG *pCurrent, __out_opt LONGLONG * pS
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->GetPositions(pCurrent,pStop);
@@ -721,8 +721,8 @@ CPosPassThru::GetSeekingLongLong
     HRESULT hr = GetPeerSeeking(&pMS);
     if (SUCCEEDED(hr))
     {
-	hr = (pMS->*pMethod)(pll);
-	pMS->Release();
+  hr = (pMS->*pMethod)(pll);
+  pMS->Release();
     }
     return hr;
 }
@@ -766,7 +766,7 @@ CPosPassThru::GetAvailable( __out_opt LONGLONG *pEarliest, __out_opt LONGLONG *p
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMS->GetAvailable( pEarliest, pLatest );
@@ -781,7 +781,7 @@ CPosPassThru::GetRate(__out double * pdRate)
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMS->GetRate(pdRate);
     pMS->Release();
@@ -793,13 +793,13 @@ STDMETHODIMP
 CPosPassThru::SetRate(double dRate)
 {
     if (0.0 == dRate) {
-		return E_INVALIDARG;
+    return E_INVALIDARG;
     }
 
     IMediaSeeking* pMS;
     HRESULT hr = GetPeerSeeking(&pMS);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMS->SetRate(dRate);
     pMS->Release();
@@ -818,7 +818,7 @@ CPosPassThru::get_Duration(__out REFTIME * plength)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pMP->get_Duration(plength);
@@ -833,7 +833,7 @@ CPosPassThru::get_CurrentPosition(__out REFTIME * pllTime)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->get_CurrentPosition(pllTime);
     pMP->Release();
@@ -847,7 +847,7 @@ CPosPassThru::put_CurrentPosition(REFTIME llTime)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->put_CurrentPosition(llTime);
     pMP->Release();
@@ -861,7 +861,7 @@ CPosPassThru::get_StopTime(__out REFTIME * pllTime)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->get_StopTime(pllTime);
     pMP->Release();
@@ -875,7 +875,7 @@ CPosPassThru::put_StopTime(REFTIME llTime)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->put_StopTime(llTime);
     pMP->Release();
@@ -889,7 +889,7 @@ CPosPassThru::get_PrerollTime(__out REFTIME * pllTime)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->get_PrerollTime(pllTime);
     pMP->Release();
@@ -903,7 +903,7 @@ CPosPassThru::put_PrerollTime(REFTIME llTime)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->put_PrerollTime(llTime);
     pMP->Release();
@@ -917,7 +917,7 @@ CPosPassThru::get_Rate(__out double * pdRate)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->get_Rate(pdRate);
     pMP->Release();
@@ -929,13 +929,13 @@ STDMETHODIMP
 CPosPassThru::put_Rate(double dRate)
 {
     if (0.0 == dRate) {
-		return E_INVALIDARG;
+    return E_INVALIDARG;
     }
 
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->put_Rate(dRate);
     pMP->Release();
@@ -949,7 +949,7 @@ CPosPassThru::CanSeekForward(__out LONG *pCanSeekForward)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->CanSeekForward(pCanSeekForward);
     pMP->Release();
@@ -963,7 +963,7 @@ CPosPassThru::CanSeekBackward(__out LONG *pCanSeekBackward)
     IMediaPosition* pMP;
     HRESULT hr = GetPeer(&pMP);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
     hr = pMP->CanSeekBackward(pCanSeekBackward);
     pMP->Release();
@@ -981,9 +981,9 @@ CPosPassThru::CanSeekBackward(__out LONG *pCanSeekBackward)
 // store the media times internally and return them in GetCurrentPosition.
 
 CRendererPosPassThru::CRendererPosPassThru(__in_opt LPCTSTR pName,
-					   __in_opt LPUNKNOWN pUnk,
-					   __inout HRESULT *phr,
-					   IPin *pPin) :
+             __in_opt LPUNKNOWN pUnk,
+             __inout HRESULT *phr,
+             IPin *pPin) :
     CPosPassThru(pName,pUnk,phr,pPin),
     m_StartMedia(0),
     m_EndMedia(0),
@@ -1008,8 +1008,8 @@ CRendererPosPassThru::RegisterMediaTime(IMediaSample *pMediaSample)
     HRESULT hr = pMediaSample->GetTime(&StartMedia,&EndMedia);
     if (FAILED(hr))
     {
-	ASSERT(hr == VFW_E_SAMPLE_TIME_NOT_SET);
-	return hr;
+  ASSERT(hr == VFW_E_SAMPLE_TIME_NOT_SET);
+  return hr;
     }
 
     m_StartMedia = StartMedia;
@@ -1041,14 +1041,14 @@ CRendererPosPassThru::GetMediaTime(__out LONGLONG *pStartTime, __out_opt LONGLON
 
     CAutoLock cAutoLock(&m_PositionLock);
     if (m_bReset == TRUE) {
-	return E_FAIL;
+  return E_FAIL;
     }
 
     // We don't have to return the end time
 
     HRESULT hr = ConvertTimeFormat( pStartTime, 0, m_StartMedia, &TIME_FORMAT_MEDIA_TIME );
     if (pEndTime && SUCCEEDED(hr)) {
-	hr = ConvertTimeFormat( pEndTime, 0, m_EndMedia, &TIME_FORMAT_MEDIA_TIME );
+  hr = ConvertTimeFormat( pEndTime, 0, m_EndMedia, &TIME_FORMAT_MEDIA_TIME );
     }
     return hr;
 }
@@ -1077,13 +1077,13 @@ CRendererPosPassThru::EOS()
     if ( m_bReset == TRUE ) hr = E_FAIL;
     else
     {
-	LONGLONG llStop;
-	if SUCCEEDED(hr=GetStopPosition(&llStop))
-	{
-	    CAutoLock cAutoLock(&m_PositionLock);
-	    m_StartMedia =
-	    m_EndMedia	 = llStop;
-	}
+  LONGLONG llStop;
+  if SUCCEEDED(hr=GetStopPosition(&llStop))
+  {
+      CAutoLock cAutoLock(&m_PositionLock);
+      m_StartMedia =
+      m_EndMedia   = llStop;
+  }
     }
     return hr;
 }
@@ -1343,9 +1343,9 @@ HRESULT CSourceSeeking::GetPreroll(__out LONGLONG *pPreroll)
 
 
 CSourcePosition::CSourcePosition(__in_opt LPCTSTR pName,
-				 __in_opt LPUNKNOWN pUnk,
-				 __inout HRESULT* phr,
-				 __in CCritSec * pLock) :
+         __in_opt LPUNKNOWN pUnk,
+         __inout HRESULT* phr,
+         __in CCritSec * pLock) :
     CMediaPosition(pName, pUnk),
     m_pLock(pLock),
     m_Start(CRefTime((LONGLONG)0))
@@ -1477,9 +1477,9 @@ CBasicAudio::NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv)
 {
     ValidateReadWritePtr(ppv,sizeof(PVOID));
     if (riid == IID_IBasicAudio) {
-	return GetInterface( (IBasicAudio *) this, ppv);
+  return GetInterface( (IBasicAudio *) this, ppv);
     } else {
-	return CUnknown::NonDelegatingQueryInterface(riid, ppv);
+  return CUnknown::NonDelegatingQueryInterface(riid, ppv);
     }
 }
 
@@ -1498,10 +1498,10 @@ CBasicAudio::GetTypeInfo(
   __deref_out ITypeInfo ** pptinfo)
 {
     return m_basedisp.GetTypeInfo(
-		IID_IBasicAudio,
-		itinfo,
-		lcid,
-		pptinfo);
+    IID_IBasicAudio,
+    itinfo,
+    lcid,
+    pptinfo);
 }
 
 
@@ -1514,11 +1514,11 @@ CBasicAudio::GetIDsOfNames(
   __out_ecount(cNames) DISPID * rgdispid)
 {
     return m_basedisp.GetIDsOfNames(
-			IID_IBasicAudio,
-			rgszNames,
-			cNames,
-			lcid,
-			rgdispid);
+      IID_IBasicAudio,
+      rgszNames,
+      cNames,
+      lcid,
+      rgdispid);
 }
 
 
@@ -1535,24 +1535,24 @@ CBasicAudio::Invoke(
 {
     // this parameter is a dead leftover from an earlier interface
     if (IID_NULL != riid) {
-	return DISP_E_UNKNOWNINTERFACE;
+  return DISP_E_UNKNOWNINTERFACE;
     }
 
     ITypeInfo * pti;
     HRESULT hr = GetTypeInfo(0, lcid, &pti);
 
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pti->Invoke(
-	    (IBasicAudio *)this,
-	    dispidMember,
-	    wFlags,
-	    pdispparams,
-	    pvarResult,
-	    pexcepinfo,
-	    puArgErr);
+      (IBasicAudio *)this,
+      dispidMember,
+      wFlags,
+      pdispparams,
+      pvarResult,
+      pexcepinfo,
+      puArgErr);
 
     pti->Release();
     return hr;
@@ -1574,9 +1574,9 @@ CBaseVideoWindow::NonDelegatingQueryInterface(REFIID riid, __deref_out void **pp
 {
     ValidateReadWritePtr(ppv,sizeof(PVOID));
     if (riid == IID_IVideoWindow) {
-	return GetInterface( (IVideoWindow *) this, ppv);
+  return GetInterface( (IVideoWindow *) this, ppv);
     } else {
-	return CUnknown::NonDelegatingQueryInterface(riid, ppv);
+  return CUnknown::NonDelegatingQueryInterface(riid, ppv);
     }
 }
 
@@ -1595,10 +1595,10 @@ CBaseVideoWindow::GetTypeInfo(
   __deref_out ITypeInfo ** pptinfo)
 {
     return m_basedisp.GetTypeInfo(
-		IID_IVideoWindow,
-		itinfo,
-		lcid,
-		pptinfo);
+    IID_IVideoWindow,
+    itinfo,
+    lcid,
+    pptinfo);
 }
 
 
@@ -1611,11 +1611,11 @@ CBaseVideoWindow::GetIDsOfNames(
   __out_ecount(cNames) DISPID * rgdispid)
 {
     return m_basedisp.GetIDsOfNames(
-			IID_IVideoWindow,
-			rgszNames,
-			cNames,
-			lcid,
-			rgdispid);
+      IID_IVideoWindow,
+      rgszNames,
+      cNames,
+      lcid,
+      rgdispid);
 }
 
 
@@ -1632,24 +1632,24 @@ CBaseVideoWindow::Invoke(
 {
     // this parameter is a dead leftover from an earlier interface
     if (IID_NULL != riid) {
-	return DISP_E_UNKNOWNINTERFACE;
+  return DISP_E_UNKNOWNINTERFACE;
     }
 
     ITypeInfo * pti;
     HRESULT hr = GetTypeInfo(0, lcid, &pti);
 
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pti->Invoke(
-	    (IVideoWindow *)this,
-	    dispidMember,
-	    wFlags,
-	    pdispparams,
-	    pvarResult,
-	    pexcepinfo,
-	    puArgErr);
+      (IVideoWindow *)this,
+      dispidMember,
+      wFlags,
+      pdispparams,
+      pvarResult,
+      pexcepinfo,
+      puArgErr);
 
     pti->Release();
     return hr;
@@ -1672,9 +1672,9 @@ CBaseBasicVideo::NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv
 {
     ValidateReadWritePtr(ppv,sizeof(PVOID));
     if (riid == IID_IBasicVideo || riid == IID_IBasicVideo2) {
-	return GetInterface( static_cast<IBasicVideo2 *>(this), ppv);
+  return GetInterface( static_cast<IBasicVideo2 *>(this), ppv);
     } else {
-	return CUnknown::NonDelegatingQueryInterface(riid, ppv);
+  return CUnknown::NonDelegatingQueryInterface(riid, ppv);
     }
 }
 
@@ -1693,10 +1693,10 @@ CBaseBasicVideo::GetTypeInfo(
   __deref_out ITypeInfo ** pptinfo)
 {
     return m_basedisp.GetTypeInfo(
-		IID_IBasicVideo,
-		itinfo,
-		lcid,
-		pptinfo);
+    IID_IBasicVideo,
+    itinfo,
+    lcid,
+    pptinfo);
 }
 
 
@@ -1709,11 +1709,11 @@ CBaseBasicVideo::GetIDsOfNames(
   __out_ecount(cNames) DISPID * rgdispid)
 {
     return m_basedisp.GetIDsOfNames(
-			IID_IBasicVideo,
-			rgszNames,
-			cNames,
-			lcid,
-			rgdispid);
+      IID_IBasicVideo,
+      rgszNames,
+      cNames,
+      lcid,
+      rgdispid);
 }
 
 
@@ -1730,24 +1730,24 @@ CBaseBasicVideo::Invoke(
 {
     // this parameter is a dead leftover from an earlier interface
     if (IID_NULL != riid) {
-	return DISP_E_UNKNOWNINTERFACE;
+  return DISP_E_UNKNOWNINTERFACE;
     }
 
     ITypeInfo * pti;
     HRESULT hr = GetTypeInfo(0, lcid, &pti);
 
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     hr = pti->Invoke(
-	    (IBasicVideo *)this,
-	    dispidMember,
-	    wFlags,
-	    pdispparams,
-	    pvarResult,
-	    pexcepinfo,
-	    puArgErr);
+      (IBasicVideo *)this,
+      dispidMember,
+      wFlags,
+      pdispparams,
+      pvarResult,
+      pexcepinfo,
+      puArgErr);
 
     pti->Release();
     return hr;
@@ -1764,7 +1764,7 @@ CDispParams::CDispParams(UINT nArgs, __in_ecount(nArgs) VARIANT* pArgs, __inout_
    cArgs = nArgs;
 
     if (cArgs) {
-	rgvarg = new VARIANT[cArgs];
+  rgvarg = new VARIANT[cArgs];
         if (NULL == rgvarg) {
             cArgs = 0;
             if (phr) {
@@ -1773,95 +1773,95 @@ CDispParams::CDispParams(UINT nArgs, __in_ecount(nArgs) VARIANT* pArgs, __inout_
             return;
         }
 
-	for (UINT i = 0; i < cArgs; i++) {
+  for (UINT i = 0; i < cArgs; i++) {
 
             //  Why aren't we using VariantCopy?
 
-	    VARIANT * pDest = &rgvarg[i];
-	    VARIANT * pSrc = &pArgs[i];
+      VARIANT * pDest = &rgvarg[i];
+      VARIANT * pSrc = &pArgs[i];
 
-	    pDest->vt = pSrc->vt;
-	    switch(pDest->vt) {
+      pDest->vt = pSrc->vt;
+      switch(pDest->vt) {
 
-	    case VT_I4:
-		pDest->lVal = pSrc->lVal;
-		break;
+      case VT_I4:
+    pDest->lVal = pSrc->lVal;
+    break;
 
-	    case VT_UI1:
-		pDest->bVal = pSrc->bVal;
-		break;
+      case VT_UI1:
+    pDest->bVal = pSrc->bVal;
+    break;
 
-	    case VT_I2:
-		pDest->iVal = pSrc->iVal;
-		break;
+      case VT_I2:
+    pDest->iVal = pSrc->iVal;
+    break;
 
-	    case VT_R4:
-		pDest->fltVal = pSrc->fltVal;
-		break;
+      case VT_R4:
+    pDest->fltVal = pSrc->fltVal;
+    break;
 
-	    case VT_R8:
-		pDest->dblVal = pSrc->dblVal;
-		break;
+      case VT_R8:
+    pDest->dblVal = pSrc->dblVal;
+    break;
 
-	    case VT_BOOL:
-		pDest->boolVal = pSrc->boolVal;
-		break;
+      case VT_BOOL:
+    pDest->boolVal = pSrc->boolVal;
+    break;
 
-	    case VT_ERROR:
-		pDest->scode = pSrc->scode;
-		break;
+      case VT_ERROR:
+    pDest->scode = pSrc->scode;
+    break;
 
-	    case VT_CY:
-		pDest->cyVal = pSrc->cyVal;
-		break;
+      case VT_CY:
+    pDest->cyVal = pSrc->cyVal;
+    break;
 
-	    case VT_DATE:
-		pDest->date = pSrc->date;
-		break;
+      case VT_DATE:
+    pDest->date = pSrc->date;
+    break;
 
-	    case VT_BSTR:
-		if ((PVOID)pSrc->bstrVal == NULL) {
-		    pDest->bstrVal = NULL;
-		} else {
+      case VT_BSTR:
+    if ((PVOID)pSrc->bstrVal == NULL) {
+        pDest->bstrVal = NULL;
+    } else {
 
-		    // a BSTR is a WORD followed by a UNICODE string.
-		    // the pointer points just after the WORD
+        // a BSTR is a WORD followed by a UNICODE string.
+        // the pointer points just after the WORD
 
-		    WORD len = * (WORD*) (pSrc->bstrVal - (sizeof(WORD) / sizeof(OLECHAR)));
-		    OLECHAR* pch = new OLECHAR[len + (sizeof(WORD)/sizeof(OLECHAR))];
+        WORD len = * (WORD*) (pSrc->bstrVal - (sizeof(WORD) / sizeof(OLECHAR)));
+        OLECHAR* pch = new OLECHAR[len + (sizeof(WORD)/sizeof(OLECHAR))];
                     if (pch) {
-        		WORD *pui = (WORD*)pch;
-        		*pui = len;
-         	        pDest->bstrVal = pch + (sizeof(WORD)/sizeof(OLECHAR));
-         		CopyMemory(pDest->bstrVal, pSrc->bstrVal, len*sizeof(OLECHAR));
+            WORD *pui = (WORD*)pch;
+            *pui = len;
+                   pDest->bstrVal = pch + (sizeof(WORD)/sizeof(OLECHAR));
+             CopyMemory(pDest->bstrVal, pSrc->bstrVal, len*sizeof(OLECHAR));
                     } else {
                         cArgs = i;
                         if (phr) {
                             *phr = E_OUTOFMEMORY;
                         }
                     }
-		}
-		break;
+    }
+    break;
 
-	    case VT_UNKNOWN:
-		pDest->punkVal = pSrc->punkVal;
-		pDest->punkVal->AddRef();
-		break;
+      case VT_UNKNOWN:
+    pDest->punkVal = pSrc->punkVal;
+    pDest->punkVal->AddRef();
+    break;
 
-	    case VT_DISPATCH:
-		pDest->pdispVal = pSrc->pdispVal;
-		pDest->pdispVal->AddRef();
-		break;
+      case VT_DISPATCH:
+    pDest->pdispVal = pSrc->pdispVal;
+    pDest->pdispVal->AddRef();
+    break;
 
-	    default:
-		// a type we haven't got round to adding yet!
-		ASSERT(0);
-		break;
-	    }
-	}
+      default:
+    // a type we haven't got round to adding yet!
+    ASSERT(0);
+    break;
+      }
+  }
 
     } else {
-	rgvarg = NULL;
+  rgvarg = NULL;
     }
 
 }
@@ -1870,23 +1870,23 @@ CDispParams::CDispParams(UINT nArgs, __in_ecount(nArgs) VARIANT* pArgs, __inout_
 CDispParams::~CDispParams()
 {
     for (UINT i = 0; i < cArgs; i++) {
-	switch(rgvarg[i].vt) {
+  switch(rgvarg[i].vt) {
         case VT_BSTR:
             //  Explicitly cast BSTR to PVOID to tell code scanning tools we really mean to test the pointer
-	    if ((PVOID)rgvarg[i].bstrVal != NULL) {
-		OLECHAR * pch = rgvarg[i].bstrVal - (sizeof(WORD)/sizeof(OLECHAR));
-		delete pch;
-	    }
-	    break;
+      if ((PVOID)rgvarg[i].bstrVal != NULL) {
+    OLECHAR * pch = rgvarg[i].bstrVal - (sizeof(WORD)/sizeof(OLECHAR));
+    delete pch;
+      }
+      break;
 
-	case VT_UNKNOWN:
-	    rgvarg[i].punkVal->Release();
-	    break;
+  case VT_UNKNOWN:
+      rgvarg[i].punkVal->Release();
+      break;
 
-	case VT_DISPATCH:
-	    rgvarg[i].pdispVal->Release();
-	    break;
-	}
+  case VT_DISPATCH:
+      rgvarg[i].pdispVal->Release();
+      break;
+  }
     }
     delete[] rgvarg;
 }
@@ -1896,29 +1896,29 @@ CDispParams::~CDispParams()
 
 CDeferredCommand::CDeferredCommand(
     __inout CCmdQueue * pQ,
-    __in_opt LPUNKNOWN	pUnk,
-    __inout HRESULT *	phr,
-    __in LPUNKNOWN	pUnkExecutor,
-    REFTIME	time,
-    __in GUID*	iid,
-    long	dispidMethod,
-    short	wFlags,
-    long	nArgs,
-    __in_ecount(nArgs) VARIANT*	pDispParams,
-    __out VARIANT*	pvarResult,
-    __out short*	puArgErr,
-    BOOL	bStream
+    __in_opt LPUNKNOWN  pUnk,
+    __inout HRESULT *  phr,
+    __in LPUNKNOWN  pUnkExecutor,
+    REFTIME  time,
+    __in GUID*  iid,
+    long  dispidMethod,
+    short  wFlags,
+    long  nArgs,
+    __in_ecount(nArgs) VARIANT*  pDispParams,
+    __out VARIANT*  pvarResult,
+    __out short*  puArgErr,
+    BOOL  bStream
     ) :
-	CUnknown(NAME("DeferredCommand"), pUnk),
-	m_pQueue(pQ),
-	m_pUnk(pUnkExecutor),
-	m_iid(iid),
-	m_dispidMethod(dispidMethod),
-	m_wFlags(wFlags),
-	m_DispParams(nArgs, pDispParams, phr),
-	m_pvarResult(pvarResult),
-	m_bStream(bStream),
-	m_hrResult(E_ABORT)
+  CUnknown(NAME("DeferredCommand"), pUnk),
+  m_pQueue(pQ),
+  m_pUnk(pUnkExecutor),
+  m_iid(iid),
+  m_dispidMethod(dispidMethod),
+  m_wFlags(wFlags),
+  m_DispParams(nArgs, pDispParams, phr),
+  m_pvarResult(pvarResult),
+  m_bStream(bStream),
+  m_hrResult(E_ABORT)
 
 {
     // convert REFTIME to REFERENCE_TIME
@@ -1932,8 +1932,8 @@ CDeferredCommand::CDeferredCommand(
     IUnknown * pInterface;
     HRESULT hr = m_pUnk->QueryInterface(GetIID(), (void**) &pInterface);
     if (FAILED(hr)) {
-	*phr = hr;
-	return;
+  *phr = hr;
+  return;
     }
     pInterface->Release();
 
@@ -1942,8 +1942,8 @@ CDeferredCommand::CDeferredCommand(
     ITypeInfo *pti;
     hr = m_Dispatch.GetTypeInfo(*iid, 0, 0, &pti);
     if (FAILED(hr)) {
-	*phr = hr;
-	return;
+  *phr = hr;
+  return;
     }
     // !!! some sort of ITypeInfo validity check here
     pti->Release();
@@ -1959,7 +1959,7 @@ CDeferredCommand::CDeferredCommand(
     // all checks ok - add to queue
     hr = pQ->Insert(this);
     if (FAILED(hr)) {
-	*phr = hr;
+  *phr = hr;
     }
 }
 
@@ -1995,9 +1995,9 @@ CDeferredCommand::NonDelegatingQueryInterface(REFIID riid, __out void **ppv)
 {
     ValidateReadWritePtr(ppv,sizeof(PVOID));
     if (riid == IID_IDeferredCommand) {
-	return GetInterface( (IDeferredCommand *) this, ppv);
+  return GetInterface( (IDeferredCommand *) this, ppv);
     } else {
-	return CUnknown::NonDelegatingQueryInterface(riid, ppv);
+  return CUnknown::NonDelegatingQueryInterface(riid, ppv);
     }
 }
 
@@ -2010,12 +2010,12 @@ STDMETHODIMP
 CDeferredCommand::Cancel()
 {
     if (m_pQueue == NULL) {
-	return VFW_E_ALREADY_CANCELLED;
+  return VFW_E_ALREADY_CANCELLED;
     }
 
     HRESULT hr = m_pQueue->Remove(this);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     m_pQueue = NULL;
@@ -2037,7 +2037,7 @@ CDeferredCommand::GetHResult(__out HRESULT * phrResult)
     ValidateReadWritePtr(phrResult,sizeof(HRESULT));
 
     if (m_pQueue != NULL) {
-	return E_ABORT;
+  return E_ABORT;
     }
     *phrResult = m_hrResult;
     return S_OK;
@@ -2057,13 +2057,13 @@ CDeferredCommand::Postpone(REFTIME newtime)
 
     // check that the time has not passed
     if (m_pQueue->CheckTime(convertor, IsStreamTime())) {
-	return VFW_E_TIME_ALREADY_PASSED;
+  return VFW_E_TIME_ALREADY_PASSED;
     }
 
     // extract from list
     HRESULT hr = m_pQueue->Remove(this);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     // change time
@@ -2081,14 +2081,14 @@ CDeferredCommand::Invoke()
 {
     // check that we are still outstanding
     if (m_pQueue == NULL) {
-	return VFW_E_ALREADY_CANCELLED;
+  return VFW_E_ALREADY_CANCELLED;
     }
 
     // get the type info
     ITypeInfo* pti;
     HRESULT hr = m_Dispatch.GetTypeInfo(GetIID(), 0, 0, &pti);
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     // qi for the expected interface and then invoke it. Note that we have to
@@ -2097,20 +2097,20 @@ CDeferredCommand::Invoke()
 
     hr = m_pUnk->QueryInterface(GetIID(), (void**) &pInterface);
     if (FAILED(hr)) {
-	pti->Release();
-	return hr;
+  pti->Release();
+  return hr;
     }
 
     EXCEPINFO expinfo;
     UINT uArgErr;
     m_hrResult = pti->Invoke(
-	pInterface,
-	GetMethod(),
-	GetFlags(),
-	GetParams(),
-	GetResult(),
-	&expinfo,
-	&uArgErr);
+  pInterface,
+  GetMethod(),
+  GetFlags(),
+  GetParams(),
+  GetResult(),
+  &expinfo,
+  &uArgErr);
 
     // release the interface we QI'd for
     pInterface->Release();
@@ -2149,25 +2149,25 @@ CCmdQueue::~CCmdQueue()
     POSITION pos = m_listPresentation.GetHeadPosition();
 
     while(pos) {
-	CDeferredCommand* pCmd = m_listPresentation.GetNext(pos);
-	pCmd->Release();
+  CDeferredCommand* pCmd = m_listPresentation.GetNext(pos);
+  pCmd->Release();
     }
     m_listPresentation.RemoveAll();
 
     pos = m_listStream.GetHeadPosition();
 
     while(pos) {
-	CDeferredCommand* pCmd = m_listStream.GetNext(pos);
-	pCmd->Release();
+  CDeferredCommand* pCmd = m_listStream.GetNext(pos);
+  pCmd->Release();
     }
     m_listStream.RemoveAll();
 
     if (m_pClock) {
-	if (m_dwAdvise) {
-	    m_pClock->Unadvise(m_dwAdvise);
-	    m_dwAdvise = 0;
-	}
-	m_pClock->Release();
+  if (m_dwAdvise) {
+      m_pClock->Unadvise(m_dwAdvise);
+      m_dwAdvise = 0;
+  }
+  m_pClock->Release();
     }
 }
 
@@ -2180,16 +2180,16 @@ CCmdQueue::~CCmdQueue()
 HRESULT
 CCmdQueue::New(
     __out CDeferredCommand **ppCmd,
-    __in     LPUNKNOWN	pUnk,		// this object will execute command
-    REFTIME	time,
-    __in GUID*	iid,
-    long	dispidMethod,
-    short	wFlags,
-    long	cArgs,
-    __in_ecount(cArgs) VARIANT*	pDispParams,
-    __out VARIANT*	pvarResult,
-    __out short*	puArgErr,
-    BOOL	bStream
+    __in     LPUNKNOWN  pUnk,    // this object will execute command
+    REFTIME  time,
+    __in GUID*  iid,
+    long  dispidMethod,
+    short  wFlags,
+    long  cArgs,
+    __in_ecount(cArgs) VARIANT*  pDispParams,
+    __out VARIANT*  pvarResult,
+    __out short*  puArgErr,
+    BOOL  bStream
 )
 {
     CAutoLock lock(&m_Lock);
@@ -2199,24 +2199,24 @@ CCmdQueue::New(
 
     CDeferredCommand* pCmd;
     pCmd = new CDeferredCommand(
-		    this,
-		    NULL,	    // not aggregated
-		    &hr,
-		    pUnk,	    // this guy will execute
-		    time,
-		    iid,
-		    dispidMethod,
-		    wFlags,
-		    cArgs,
-		    pDispParams,
-		    pvarResult,
-		    puArgErr,
-		    bStream);
+        this,
+        NULL,      // not aggregated
+        &hr,
+        pUnk,      // this guy will execute
+        time,
+        iid,
+        dispidMethod,
+        wFlags,
+        cArgs,
+        pDispParams,
+        pvarResult,
+        puArgErr,
+        bStream);
 
     if (pCmd == NULL) {
-	hr = E_OUTOFMEMORY;
+  hr = E_OUTOFMEMORY;
     } else {
-	*ppCmd = pCmd;
+  *ppCmd = pCmd;
     }
     return hr;
 }
@@ -2232,24 +2232,24 @@ CCmdQueue::Insert(__in CDeferredCommand* pCmd)
 
     CGenericList<CDeferredCommand> * pList;
     if (pCmd->IsStreamTime()) {
-	pList = &m_listStream;
+  pList = &m_listStream;
     } else {
-	pList = &m_listPresentation;
+  pList = &m_listPresentation;
     }
     POSITION pos = pList->GetHeadPosition();
 
     // seek past all items that are before us
     while (pos &&
-	(pList->GetValid(pos)->GetTime() <= pCmd->GetTime())) {
+  (pList->GetValid(pos)->GetTime() <= pCmd->GetTime())) {
 
-	pList->GetNext(pos);
+  pList->GetNext(pos);
     }
 
     // now at end of list or in front of items that come later
     if (!pos) {
-	pList->AddTail(pCmd);
+  pList->AddTail(pCmd);
     } else {
-	pList->AddBefore(pos, pCmd);
+  pList->AddBefore(pos, pCmd);
     }
 
     SetTimeAdvise();
@@ -2265,30 +2265,30 @@ CCmdQueue::Remove(__in CDeferredCommand* pCmd)
 
     CGenericList<CDeferredCommand> * pList;
     if (pCmd->IsStreamTime()) {
-	pList = &m_listStream;
+  pList = &m_listStream;
     } else {
-	pList = &m_listPresentation;
+  pList = &m_listPresentation;
     }
     POSITION pos = pList->GetHeadPosition();
 
     // traverse the list
     while (pos && (pList->GetValid(pos) != pCmd)) {
-	pList->GetNext(pos);
+  pList->GetNext(pos);
     }
 
     // did we drop off the end?
     if (!pos) {
-	hr = VFW_E_NOT_FOUND;
+  hr = VFW_E_NOT_FOUND;
     } else {
 
-	// found it - now take off list
-	pList->Remove(pos);
+  // found it - now take off list
+  pList->Remove(pos);
 
-	// Insert did an AddRef, so release it
-	pCmd->Release();
+  // Insert did an AddRef, so release it
+  pCmd->Release();
 
-	// check that timer request is still for earliest time
-	SetTimeAdvise();
+  // check that timer request is still for earliest time
+  SetTimeAdvise();
     }
     return hr;
 }
@@ -2303,16 +2303,16 @@ CCmdQueue::SetSyncSource(__in_opt IReferenceClock* pClock)
 
     // addref the new clock first in case they are the same
     if (pClock) {
-	pClock->AddRef();
+  pClock->AddRef();
     }
 
     // kill any advise on the old clock
     if (m_pClock) {
-	if (m_dwAdvise) {
-	    m_pClock->Unadvise(m_dwAdvise);
-	    m_dwAdvise = 0;
-	}
-	m_pClock->Release();
+  if (m_dwAdvise) {
+      m_pClock->Unadvise(m_dwAdvise);
+      m_dwAdvise = 0;
+  }
+  m_pClock->Release();
     }
     m_pClock = pClock;
 
@@ -2329,7 +2329,7 @@ CCmdQueue::SetTimeAdvise(void)
 {
     // make sure we have a clock to use
     if (!m_pClock) {
-	return;
+  return;
     }
 
     // reset the event whenever we are requesting a new signal
@@ -2341,46 +2341,46 @@ CCmdQueue::SetTimeAdvise(void)
     // find the earliest presentation time
     POSITION pos = m_listPresentation.GetHeadPosition();
     if (pos != NULL) {
-	current = m_listPresentation.GetValid(pos)->GetTime();
+  current = m_listPresentation.GetValid(pos)->GetTime();
     }
 
     // if we're running, check the stream times too
     if (m_bRunning) {
 
-	CRefTime t;
+  CRefTime t;
         pos = m_listStream.GetHeadPosition();
-	if (NULL != pos) {
-	    t = m_listStream.GetValid(pos)->GetTime();
+  if (NULL != pos) {
+      t = m_listStream.GetValid(pos)->GetTime();
 
-	    // add on stream time offset to get presentation time
-	    t += m_StreamTimeOffset;
+      // add on stream time offset to get presentation time
+      t += m_StreamTimeOffset;
 
-	    // is this earlier?
-	    if ((current == TimeZero) || (t < current)) {
-		current = t;
-	    }
-	}
+      // is this earlier?
+      if ((current == TimeZero) || (t < current)) {
+    current = t;
+      }
+  }
     }
 
     // need to change?
     if ((current > TimeZero) && (current != m_tCurrentAdvise)) {
-	if (m_dwAdvise) {
-	    m_pClock->Unadvise(m_dwAdvise);
-	    // reset the event whenever we are requesting a new signal
-	    m_evDue.Reset();
-	}
+  if (m_dwAdvise) {
+      m_pClock->Unadvise(m_dwAdvise);
+      // reset the event whenever we are requesting a new signal
+      m_evDue.Reset();
+  }
 
-	// ask for time advice - the first two params are either
-	// stream time offset and stream time or
-	// presentation time and 0. we always use the latter
-	HRESULT hr = m_pClock->AdviseTime(
-		    (REFERENCE_TIME)current,
-		    TimeZero,
-		    (HEVENT) HANDLE(m_evDue),
-		    &m_dwAdvise);
+  // ask for time advice - the first two params are either
+  // stream time offset and stream time or
+  // presentation time and 0. we always use the latter
+  HRESULT hr = m_pClock->AdviseTime(
+        (REFERENCE_TIME)current,
+        TimeZero,
+        (HEVENT) HANDLE(m_evDue),
+        &m_dwAdvise);
 
-	ASSERT(SUCCEEDED(hr));
-	m_tCurrentAdvise = current;
+  ASSERT(SUCCEEDED(hr));
+  m_tCurrentAdvise = current;
     }
 }
 
@@ -2430,24 +2430,24 @@ CCmdQueue::GetDueCommand(__out CDeferredCommand ** ppCmd, long msTimeout)
     // loop until we timeout or find a due command
     for (;;) {
 
-	{
-	    CAutoLock lock(&m_Lock);
+  {
+      CAutoLock lock(&m_Lock);
 
 
-	    // find the earliest command
-	    CDeferredCommand * pCmd = NULL;
+      // find the earliest command
+      CDeferredCommand * pCmd = NULL;
 
-	    // check the presentation time and the
-	    // stream time list to find the earliest
+      // check the presentation time and the
+      // stream time list to find the earliest
 
             POSITION pos = m_listPresentation.GetHeadPosition();
 
-	    if (NULL != pos) {
-		pCmd = m_listPresentation.GetValid(pos);
-	    }
+      if (NULL != pos) {
+    pCmd = m_listPresentation.GetValid(pos);
+      }
 
-	    if (m_bRunning) {
-		pos = m_listStream.GetHeadPosition();
+      if (m_bRunning) {
+    pos = m_listStream.GetHeadPosition();
                 if (NULL != pos) {
                     CDeferredCommand* pStrm = m_listStream.GetValid(pos);
 
@@ -2458,22 +2458,22 @@ CCmdQueue::GetDueCommand(__out CDeferredCommand ** ppCmd, long msTimeout)
                 }
             }
 
-	    //	if we have found one, is it due?
-	    if (pCmd) {
-		if (CheckTime(pCmd->GetTime(), pCmd->IsStreamTime())) {
+      //  if we have found one, is it due?
+      if (pCmd) {
+    if (CheckTime(pCmd->GetTime(), pCmd->IsStreamTime())) {
 
-		    // yes it's due - addref it
-		    pCmd->AddRef();
-		    *ppCmd = pCmd;
-		    return S_OK;
-		}
-	    }
-	}
+        // yes it's due - addref it
+        pCmd->AddRef();
+        *ppCmd = pCmd;
+        return S_OK;
+    }
+      }
+  }
 
-	// block until the advise is signalled
-	if (WaitForSingleObject(m_evDue, msTimeout) != WAIT_OBJECT_0) {
-	    return E_ABORT;
-	}
+  // block until the advise is signalled
+  if (WaitForSingleObject(m_evDue, msTimeout) != WAIT_OBJECT_0) {
+      return E_ABORT;
+  }
     }
 }
 
@@ -2498,26 +2498,26 @@ CCmdQueue::GetCommandDueFor(REFERENCE_TIME rtStream, __out CDeferredCommand**ppC
     CDeferredCommand* pStream = NULL;
     POSITION pos = m_listStream.GetHeadPosition();
     if (NULL != pos) {
-	pStream = m_listStream.GetValid(pos);
+  pStream = m_listStream.GetValid(pos);
     }
     CDeferredCommand* pPresent = NULL;
     pos = m_listPresentation.GetHeadPosition();
     if (NULL != pos) {
-	pPresent = m_listPresentation.GetValid(pos);
+  pPresent = m_listPresentation.GetValid(pos);
     }
 
     // is there a presentation time that has passed already
     if (pPresent && CheckTime(pPresent->GetTime(), FALSE)) {
-	pPresent->AddRef();
-	*ppCmd = pPresent;
-	return S_OK;
+  pPresent->AddRef();
+  *ppCmd = pPresent;
+  return S_OK;
     }
 
     // is there a stream time command due before this stream time
     if (pStream && (pStream->GetTime() <= tStream)) {
-	pStream->AddRef();
-	*ppCmd = pStream;
-	return S_OK;
+  pStream->AddRef();
+  *ppCmd = pStream;
+  return S_OK;
     }
 
     // if we are running, we can map presentation times to
@@ -2525,14 +2525,14 @@ CCmdQueue::GetCommandDueFor(REFERENCE_TIME rtStream, __out CDeferredCommand**ppC
     // that will be due before this stream time is presented?
     if (m_bRunning && pPresent) {
 
-	// this stream time will appear at...
-	tStream += m_StreamTimeOffset;
+  // this stream time will appear at...
+  tStream += m_StreamTimeOffset;
 
-	// due before that?
-	if (pPresent->GetTime() <= tStream) {
-	    *ppCmd = pPresent;
-	    return S_OK;
-	}
+  // due before that?
+  if (pPresent->GetTime() <= tStream) {
+      *ppCmd = pPresent;
+      return S_OK;
+  }
     }
 
     // no commands due yet

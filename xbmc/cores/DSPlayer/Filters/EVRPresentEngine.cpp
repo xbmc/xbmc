@@ -19,7 +19,7 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
   m_DeviceResetToken(0),
   m_pDeviceManager(NULL),
   m_pCallback(NULL),
-	m_bufferCount(4),
+  m_bufferCount(4),
   m_pAllocatorPresenter(presenter),
   m_bExiting(false),
   m_pVideoSurface(NULL),
@@ -52,13 +52,13 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
 
 D3DPresentEngine::~D3DPresentEngine()
 {
-	m_pDeviceManager = NULL;
-	m_pCallback = NULL;
-	// Unload DLL
-	if (pDXVA2HLib)
-	  FreeLibrary(pDXVA2HLib);
-	if (pEVRHLib)
-	  FreeLibrary(pEVRHLib);
+  m_pDeviceManager = NULL;
+  m_pCallback = NULL;
+  // Unload DLL
+  if (pDXVA2HLib)
+    FreeLibrary(pDXVA2HLib);
+  if (pEVRHLib)
+    FreeLibrary(pEVRHLib);
   SAFE_DELETE(m_pVideoTexture);
 }
 
@@ -77,22 +77,10 @@ D3DPresentEngine::~D3DPresentEngine()
 
 HRESULT D3DPresentEngine::GetService(REFGUID guidService, REFIID riid, void** ppv)
 {
-  assert(ppv != NULL);
-  HRESULT hr = S_OK;
-  if (riid == __uuidof(IDirect3DDeviceManager9))
-  {
-    if (!m_pDeviceManager)
-      return MF_E_UNSUPPORTED_SERVICE;
-    else
-    {
-      *ppv = m_pDeviceManager;
-      m_pDeviceManager->AddRef();
-    }
-  }
-  else
-    return MF_E_UNSUPPORTED_SERVICE;
+  if (guidService == MR_VIDEO_ACCELERATION_SERVICE)
+    return m_pDeviceManager->QueryInterface (__uuidof(IDirect3DDeviceManager9), (void**) ppv);
 
-  return hr;
+  return E_NOINTERFACE;
 }
 
 
@@ -167,11 +155,11 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
   if (!pFormat)
     return MF_E_UNEXPECTED;
 
-	HRESULT hr = S_OK;
-	D3DPRESENT_PARAMETERS pp;
+  HRESULT hr = S_OK;
+  D3DPRESENT_PARAMETERS pp;
 
-	IMFSample *pVideoSample = NULL;
-	
+  IMFSample *pVideoSample = NULL;
+  
   CAutoLock lock(&m_ObjectLock);
 
   ReleaseResources();
@@ -211,10 +199,10 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
     CLog::Log(LOGERROR,"%s Error while creating the video texture",__FUNCTION__);
     return E_FAIL;
   }
-	S_RELEASE(m_pVideoSurface);
-	hr = m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);  
+
+  hr = m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);  
   
-	// Create the video samples.
+  // Create the video samples.
   for (int i = 0; i < m_bufferCount; i++)
   {
     hr = g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth ,
@@ -225,26 +213,26 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
                                                   D3DPOOL_DEFAULT ,
                                                   &m_pInternalVideoTexture[i] ,
                                                   NULL);
-	  CHECK_HR(hr);
+    CHECK_HR(hr);
     hr  = m_pInternalVideoTexture[i]->GetSurfaceLevel(0, &m_pInternalVideoSurface[i]);
-	  if (FAILED(hr))
-		  m_pInternalVideoSurface[i] = 0;
+    if (FAILED(hr))
+      m_pInternalVideoSurface[i] = NULL;
 
-    hr = CreateD3DSample(m_pInternalVideoSurface[i], &pVideoSample,i);
+    hr = CreateD3DSample(m_pInternalVideoSurface[i], &pVideoSample, i);
     
     // Add it to the samples list.
-		CHECK_HR(hr = videoSampleQueue.InsertBack(pVideoSample));
+    CHECK_HR(hr = videoSampleQueue.InsertBack(pVideoSample));
     S_RELEASE(pVideoSample);
   }
 
-	// Let the derived class create any additional D3D resources that it needs.
+  // Let the derived class create any additional D3D resources that it needs.
   CHECK_HR(hr = OnCreateVideoSamples(pp));
 
 done:
   if (FAILED(hr))
     ReleaseResources();
-		
-	S_RELEASE(pVideoSample);
+    
+  S_RELEASE(pVideoSample);
   return hr;
 }
 
@@ -258,19 +246,19 @@ done:
 
 void D3DPresentEngine::ReleaseResources()
 {
-	// Let the derived class release any resources it created.
-	OnReleaseResources();
+  // Let the derived class release any resources it created.
+  OnReleaseResources();
 
-	CAutoLock lock(&m_ObjectLock);
+  CAutoLock lock(&m_ObjectLock);
 
-	S_RELEASE(m_pVideoSurface);
+  SAFE_RELEASE(m_pVideoSurface);
 
   //Releasing video surface
-	for (int i = 0; i < 7; i++) 
-	{ 
-	  S_RELEASE(m_pInternalVideoTexture[i]);
-	  m_pInternalVideoSurface[i] = NULL;
-	} 
+  for (int i = 0; i < 7; i++) 
+  { 
+    SAFE_RELEASE(m_pInternalVideoTexture[i]);
+    m_pInternalVideoSurface[i] = NULL;
+  } 
 }
 
 //-----------------------------------------------------------------------------
@@ -408,7 +396,7 @@ HRESULT D3DPresentEngine::CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample
 {
   // Caller holds the object lock.
 
-	HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
   D3DCOLOR clrBlack = D3DCOLOR_ARGB(0xFF, 0x00, 0x00, 0x00);
 
   IMFSample* pSample = NULL;
@@ -417,13 +405,13 @@ HRESULT D3DPresentEngine::CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample
   CHECK_HR(hr = pSample->SetUINT32(GUID_SURFACE_INDEX,surfaceIndex));
 
   // Return the pointer to the caller.
-	*ppVideoSample = pSample;
-	(*ppVideoSample)->AddRef();
+  *ppVideoSample = pSample;
+  (*ppVideoSample)->AddRef();
 
 done:
     S_RELEASE(pSurface);
     S_RELEASE(pSample);
-	return hr;
+  return hr;
 }
 
 //-----------------------------------------------------------------------------
@@ -434,17 +422,14 @@ done:
 //-----------------------------------------------------------------------------
 HRESULT D3DPresentEngine::RegisterCallback(IEVRPresenterCallback *pCallback)
 {
-	if(m_pCallback)
-	{
-		S_RELEASE(m_pCallback);
-	}
+  if(m_pCallback)
+  {
+    m_pCallback = NULL;
+  }
 
-	m_pCallback = pCallback;
+  m_pCallback = pCallback;
 
-	if(m_pCallback)
-		m_pCallback->AddRef();
-
-	return S_OK;
+  return S_OK;
 }
 
 //-----------------------------------------------------------------------------
@@ -455,8 +440,8 @@ HRESULT D3DPresentEngine::RegisterCallback(IEVRPresenterCallback *pCallback)
 //-----------------------------------------------------------------------------
 HRESULT D3DPresentEngine::SetBufferCount(int bufferCount)
 {
-	m_bufferCount = bufferCount;
-	return S_OK;
+  m_bufferCount = bufferCount;
+  return S_OK;
 }
 
 
@@ -469,13 +454,13 @@ HRESULT D3DPresentEngine::SetBufferCount(int bufferCount)
 
 HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID)
 {
-	HRESULT hr = E_FAIL;
-	UINT cAdapters = 0;
-	UINT uAdapterID = (UINT)-1;
+  HRESULT hr = E_FAIL;
+  UINT cAdapters = 0;
+  UINT uAdapterID = (UINT)-1;
 
-	cAdapters = pD3D9->GetAdapterCount();
-	for (UINT i = 0; i < cAdapters; i++)
-	{
+  cAdapters = pD3D9->GetAdapterCount();
+  for (UINT i = 0; i < cAdapters; i++)
+  {
     HMONITOR hMonitorTmp = pD3D9->GetAdapterMonitor(i);
 
     if (! hMonitorTmp)
@@ -487,12 +472,12 @@ HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID)
       uAdapterID = i;
       break;
     }
-	}
+  }
 
-	if (uAdapterID != (UINT)-1)
-	{
-		*puAdapterID = uAdapterID;
-		hr = S_OK;
-	}
-	return hr;
+  if (uAdapterID != (UINT)-1)
+  {
+    *puAdapterID = uAdapterID;
+    hr = S_OK;
+  }
+  return hr;
 }

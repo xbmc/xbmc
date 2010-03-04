@@ -23,13 +23,14 @@
 
 #include "MacrovisionKicker.h"
 #include "dvdmedia.h"
+#include "DShowUtil/smartptr.h"
 
 //
 // CMacrovisionKicker
 //
 
 CMacrovisionKicker::CMacrovisionKicker(const TCHAR* pName, LPUNKNOWN pUnk)
-	: CUnknown(pName, pUnk)
+  : CUnknown(pName, pUnk)
 {
   m_pInner = NULL;
 }
@@ -40,63 +41,56 @@ CMacrovisionKicker::~CMacrovisionKicker()
 
 void CMacrovisionKicker::SetInner(IUnknown* pUnk)
 {
-	m_pInner = pUnk;
+  m_pInner = pUnk;
 }
 
 STDMETHODIMP CMacrovisionKicker::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
-	if(riid == __uuidof(IUnknown))
-		return __super::NonDelegatingQueryInterface(riid, ppv);
-  if(riid == __uuidof(IKsPropertySet))
-  {
-    IKsPropertySet* iKs;
-    if (SUCCEEDED(m_pInner->QueryInterface(__uuidof(IKsPropertySet), (void**)&iKs)))
-      return GetInterface((IKsPropertySet*)this, ppv);
-  }
-  
+  if(riid == __uuidof(IUnknown))
+    return __super::NonDelegatingQueryInterface(riid, ppv);
+  if(riid == __uuidof(IKsPropertySet) && Com::SmartQIPtr<IKsPropertySet>(m_pInner))
+    return GetInterface((IKsPropertySet*)this, ppv);
 
-	HRESULT hr = m_pInner ? m_pInner->QueryInterface(riid, ppv) : E_NOINTERFACE;
+  HRESULT hr = m_pInner ? m_pInner->QueryInterface(riid, ppv) : E_NOINTERFACE;
 
-	return SUCCEEDED(hr) ? hr : __super::NonDelegatingQueryInterface(riid, ppv);
+  return SUCCEEDED(hr) ? hr : __super::NonDelegatingQueryInterface(riid, ppv);
 }
 
 // IKsPropertySet
 
 STDMETHODIMP CMacrovisionKicker::Set(REFGUID PropSet, ULONG Id, LPVOID pInstanceData, ULONG InstanceLength, LPVOID pPropertyData, ULONG DataLength)
 {
-  IKsPropertySet* pKsPS;
-	if (SUCCEEDED(m_pInner->QueryInterface(__uuidof(IKsPropertySet), (void**)&pKsPS)))
-	{
-		if(PropSet == AM_KSPROPSETID_CopyProt && Id == AM_PROPERTY_COPY_MACROVISION
-		/*&& DataLength == 4 && *(DWORD*)pPropertyData*/)
-		{
-			//TRACE(_T("Oops, no-no-no, no macrovision please\n"));
-			return S_OK;
-		}
+  if(Com::SmartQIPtr<IKsPropertySet> pKsPS = m_pInner)
+  {
+    if(PropSet == AM_KSPROPSETID_CopyProt && Id == AM_PROPERTY_COPY_MACROVISION
+      /*&& DataLength == 4 && *(DWORD*)pPropertyData*/)
+    {
+      //TRACE(_T("Oops, no-no-no, no macrovision please\n"));
+      return S_OK;
+    }
 
-		return pKsPS->Set(PropSet, Id, pInstanceData, InstanceLength, pPropertyData, DataLength);
-	}
-	return E_UNEXPECTED;
+    return pKsPS->Set(PropSet, Id, pInstanceData, InstanceLength, pPropertyData, DataLength);
+  }
+
+  return E_UNEXPECTED;
 }
 
 STDMETHODIMP CMacrovisionKicker::Get(REFGUID PropSet, ULONG Id, LPVOID pInstanceData, ULONG InstanceLength, LPVOID pPropertyData, ULONG DataLength, ULONG* pBytesReturned)
 {
-  IKsPropertySet* pKsPS;
-	if (SUCCEEDED(m_pInner->QueryInterface(__uuidof(IKsPropertySet), (void**)&pKsPS)))
-	{
-		return pKsPS->Get(PropSet, Id, pInstanceData, InstanceLength, pPropertyData, DataLength, pBytesReturned);
-	}
-	
-	return E_UNEXPECTED;	
+  if(Com::SmartQIPtr<IKsPropertySet> pKsPS = m_pInner)
+  {
+    return pKsPS->Get(PropSet, Id, pInstanceData, InstanceLength, pPropertyData, DataLength, pBytesReturned);
+  }
+
+  return E_UNEXPECTED;  
 }
 
 STDMETHODIMP CMacrovisionKicker::QuerySupported(REFGUID PropSet, ULONG Id, ULONG* pTypeSupport)
 {
-	IKsPropertySet* pKsPS;
-	if (SUCCEEDED(m_pInner->QueryInterface(__uuidof(IKsPropertySet), (void**)&pKsPS)))
-	{
-		return pKsPS->QuerySupported(PropSet, Id, pTypeSupport);
-	}
-	
-	return E_UNEXPECTED;
+  if(Com::SmartQIPtr<IKsPropertySet> pKsPS = m_pInner)
+  {
+    return pKsPS->QuerySupported(PropSet, Id, pTypeSupport);
+  }
+
+  return E_UNEXPECTED;
 }

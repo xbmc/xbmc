@@ -32,15 +32,15 @@ using namespace XFILE;
 [uuid("165BE9D6-0929-4363-9BA3-580D735AA0F6")]
 interface IGraphBuilder2 : public IFilterGraph2
 {
-	STDMETHOD(IsPinDirection) (IPin* pPin, PIN_DIRECTION dir) = 0;
-	STDMETHOD(IsPinConnected) (IPin* pPin) = 0;
-	STDMETHOD(ConnectFilter) (IBaseFilter* pBF, IPin* pPinIn) = 0;
-	STDMETHOD(ConnectFilter) (IPin* pPinOut, IBaseFilter* pBF) = 0;
-	STDMETHOD(ConnectFilterDirect) (IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt) = 0;
-	STDMETHOD(NukeDownstream) (IUnknown* pUnk) = 0;
-	STDMETHOD(AddToROT) () = 0;
-	STDMETHOD(RemoveFromROT) () = 0;
-	STDMETHOD(RenderFileXbmc) (const CFileItem& pFileItem) = 0;
+  STDMETHOD(IsPinDirection) (IPin* pPin, PIN_DIRECTION dir) = 0;
+  STDMETHOD(IsPinConnected) (IPin* pPin) = 0;
+  STDMETHOD(ConnectFilter) (IBaseFilter* pBF, IPin* pPinIn) = 0;
+  STDMETHOD(ConnectFilter) (IPin* pPinOut, IBaseFilter* pBF) = 0;
+  STDMETHOD(ConnectFilterDirect) (IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt) = 0;
+  STDMETHOD(NukeDownstream) (IUnknown* pUnk) = 0;
+  STDMETHOD(AddToROT) () = 0;
+  STDMETHOD(RemoveFromROT) () = 0;
+  STDMETHOD(RenderFileXbmc) (const CFileItem& pFileItem) = 0;
   STDMETHOD(GetFileInfo) (CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer) = 0;
 };
 
@@ -48,6 +48,6 @@ interface IGraphBuilder2 : public IFilterGraph2
 [uuid("43CDA93D-6A4E-4A07-BD3E-49D161073EE7")]
 interface IGraphBuilderDeadEnd : public IUnknown
 {
-	STDMETHOD_(size_t, GetCount)() = 0;
-	STDMETHOD(GetDeadEnd) (int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts) = 0;
+  STDMETHOD_(size_t, GetCount)() = 0;
+  STDMETHOD(GetDeadEnd) (int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts) = 0;
 };

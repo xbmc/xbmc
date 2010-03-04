@@ -42,7 +42,7 @@ CFileItem CDSPlayer::currentFileItem;
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
-	    m_pDsGraph()
+      m_pDsGraph()
 {
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 }
@@ -79,7 +79,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   if ( FAILED(hr) )
   {
     CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__,file.GetAsUrl().GetFileName().c_str());
-    PlayerState = DSPLAYER_CLOSED;
+    CloseFile();
     return false;
   }
   
@@ -130,7 +130,7 @@ void CDSPlayer::GetAudioInfo(CStdString& strAudioInfo)
 }
 
 void CDSPlayer::GetVideoInfo(CStdString& strVideoInfo)
-{	
+{  
   CSingleLock lock(m_StateSection);
   strVideoInfo = m_pDsGraph.GetVideoInfo();
   //strVideoInfo.Format("D(%s) P(%s)", m_pDsGraph.GetPlayerInfo().c_str());
@@ -141,7 +141,7 @@ void CDSPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
   strGeneralInfo = m_pDsGraph.GetGeneralInfo();
   //GetGeneralInfo.Format("CPU:( ThreadRelative:%2i%% FiltersThread:%2i%% )"                         
   //                       , (int)(CThread::GetRelativeUsage()*100)
-  //  					   , (int) (m_pDsGraph.GetRelativeUsage()*100));
+  //               , (int) (m_pDsGraph.GetRelativeUsage()*100));
   //strGeneralInfo = "CDSPlayer:GetGeneralInfo";
 
 }
@@ -164,7 +164,7 @@ void CDSPlayer::OnExit()
     CLog::Log(LOGERROR, "%s - Exception thrown when trying to close the graph", __FUNCTION__);
   }*/
 
-	if (PlayerState == DSPLAYER_CLOSING)
+  if (PlayerState == DSPLAYER_CLOSING)
     m_callback.OnPlayBackStopped();
   else
     m_callback.OnPlayBackEnded();
@@ -178,14 +178,16 @@ void CDSPlayer::HandleStart()
     SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
   //SendMessage(g_hWnd,WM_COMMAND, ID_DS_HIDE_SUB ,0);
   //In case ffdshow has the subtitles filter enabled
-  if ( CStreamsManager::getSingleton()->GetSubtitleCount() == 0 )
+  
+  // That's done by XBMC when starting playing
+  /*if ( CStreamsManager::getSingleton()->GetSubtitleCount() == 0 )
     CStreamsManager::getSingleton()->SetSubtitleVisible(false);
   else
   {
     //If there more than one we will load the first one in the list
-    CStreamsManager::getSingleton()->SetSubtitle(0);
+    // CStreamsManager::getSingleton()->SetSubtitle(0); // No Need, already connected on graph setup
     CStreamsManager::getSingleton()->SetSubtitleVisible(true);
-  }
+  }*/
 }
 
 void CDSPlayer::Process()
@@ -198,8 +200,7 @@ void CDSPlayer::Process()
   // make sure application know our info
   //UpdateApplication(0);
   //UpdatePlayState(0);
-  
-  
+
   SetEvent(m_hReadyEvent);
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
@@ -211,13 +212,12 @@ void CDSPlayer::Process()
     {
       HandleStart();
       pStartPosDone = true;
-	  }
-
+    }
 
     if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
       break;
 
-	  m_pDsGraph.HandleGraphEvent();
+    m_pDsGraph.HandleGraphEvent();
 
     if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
       break;
@@ -228,16 +228,16 @@ void CDSPlayer::Process()
       Sleep(250);
     } 
     else if (m_currentSpeed != 10000)
-	  {
-	    m_pDsGraph.DoFFRW(m_currentSpeed);
+    {
+      m_pDsGraph.DoFFRW(m_currentSpeed);
       Sleep(100);
     } 
     else
     {
-	    Sleep(250);
-	    m_pDsGraph.UpdateTime();
+      Sleep(250);
+      m_pDsGraph.UpdateTime();
       CChaptersManager::getSingleton()->UpdateChapters();
-	  }
+    }
 
     if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
       break;
@@ -245,6 +245,7 @@ void CDSPlayer::Process()
     if (m_pDsGraph.FileReachedEnd())
     { 
       CLog::Log(LOGDEBUG,"%s Graph detected end of video file",__FUNCTION__);
+      CloseFile();
       break;
     }
   }  
@@ -305,7 +306,7 @@ void CDSPlayer::ToFFRW(int iSpeed)
       m_currentRate = 1;
       m_currentSpeed = 10000;
       SendMessage(g_hWnd,WM_COMMAND, ID_PLAY_PLAY,0);
-	  //mediaCtrl.Run();
+    //mediaCtrl.Run();
       break;
     case 2:
       m_currentRate = 2;
@@ -337,15 +338,15 @@ void CDSPlayer::Seek(bool bPlus, bool bLargeStep)
   {
     if (!bLargeStep)
       SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDSMALL,0);
-	  else
-	    SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDLARGE,0);
+    else
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDLARGE,0);
   }
   else
   {
     if (!bLargeStep)
       SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDSMALL,0);
-	  else
-	    SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDLARGE,0);
+    else
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDLARGE,0);
   }
 }
 
@@ -387,9 +388,9 @@ bool CDSPlayer::OnAction(const CAction &action)
       else
         break;
   }
-	
+  
   // return false to inform the caller we didn't handle the message
   return false;
-	
+  
 }
 

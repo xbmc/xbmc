@@ -183,7 +183,7 @@ BOOL
 CMediaType::SetFormat(__in_bcount(cb) BYTE * pformat, ULONG cb)
 {
     if (NULL == AllocFormatBuffer(cb))
-	return(FALSE);
+  return(FALSE);
 
     ASSERT(pbFormat);
     memcpy(pbFormat, pformat, cb);

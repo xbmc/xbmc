@@ -1844,7 +1844,7 @@ BOOL CImagePalette::ShouldUpdate(const VIDEOINFOHEADER *pNewInfo,
 
 HRESULT CImagePalette::PreparePalette(const CMediaType *pmtNew,
                                       const CMediaType *pmtOld,
-				                      __in LPSTR szDevice)
+                              __in LPSTR szDevice)
 {
     const VIDEOINFOHEADER *pNewInfo = (VIDEOINFOHEADER *) pmtNew->Format();
     const VIDEOINFOHEADER *pOldInfo = (VIDEOINFOHEADER *) pmtOld->Format();

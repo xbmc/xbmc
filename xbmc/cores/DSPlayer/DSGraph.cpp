@@ -37,6 +37,8 @@
 #include "FgManager.h"
 #include "qnetwork.h"
 
+#include "DShowUtil/smartptr.h"
+
 //used to get the same cachces subtitles on start of file
 #include "DVDSubtitles/DVDFactorySubtitle.h"
 
@@ -46,7 +48,7 @@
 #include "timeutils.h"
 enum 
 {
-	WM_GRAPHNOTIFY = WM_APP+1,
+  WM_GRAPHNOTIFY = WM_APP+1,
 };
 
 
@@ -58,19 +60,20 @@ using namespace std;
 using namespace MediaInfoDLL;
 
 CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
-{
-  
+{  
   m_PlaybackRate = 1;
   m_currentSpeed = 0;
   m_iCurrentFrameRefreshCycle = 0;
   g_userId = 0xACDCACDC;
   m_State.Clear();
   m_VideoInfo.Clear();
+
   m_pMediaControl = NULL;
   m_pMediaEvent = NULL;
   m_pMediaSeeking = NULL;
   m_pBasicAudio = NULL;
-  m_pQualProp = NULL;
+  m_pFilterGraph = NULL;
+
   m_bReachedEnd = false;
   m_bChangingAudioStream = false;
   g_dsconfig.pGraph = this;
@@ -89,7 +92,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   HRESULT hr;
 
   m_VideoInfo.Clear();
-  m_Filename = file.GetAsUrl().GetFileName();
+  m_Filename = file.m_strPath;
   
   //Reset the g_dsconfig for not getting unwanted interface from last file into the player
   g_dsconfig.ClearConfig();
@@ -114,18 +117,15 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
 
   // Audio & subtitle streams
-  CStreamsManager::getSingleton()->InitManager(m_pGraphBuilder->GetGraphBuilder2(), this);
+  CStreamsManager::getSingleton()->InitManager(this);
   CStreamsManager::getSingleton()->LoadStreams();
 
   // Chapters
   CChaptersManager::getSingleton()->InitManager(this);
   if (!CChaptersManager::getSingleton()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
-  
-  UpdateCurrentVideoInfo();
-  
 
-  
+  UpdateCurrentVideoInfo();
 
   SetVolume(g_settings.m_nVolumeLevel);
   
@@ -139,16 +139,14 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //still need to be added
   //SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   
-  if (g_dsconfig.pQualProp)
+  /*if (g_dsconfig.pQualProp)
   {
-    m_pQualProp = g_dsconfig.pQualProp;
-    
-  }
+    m_pQualProp = g_dsconfig.pQualProp;    
+  }*/
 
-  CDSPlayer::PlayerState = DSPLAYER_LOADED;
+  CDSPlayer::PlayerState = DSPLAYER_LOADED;  
   
   Play();
-
 
   m_currentSpeed = 10000;
 
@@ -166,18 +164,16 @@ void CDSGraph::CloseFile()
     if (CStreamsManager::getSingleton()->IsChangingStream())
       return;
 
-	  Stop(true);
+    Stop(true);
 
-    SAFE_RELEASE(m_pMediaSeeking);
-    SAFE_RELEASE(m_pMediaControl);
-    SAFE_RELEASE(m_pMediaEvent);
-    SAFE_RELEASE(m_pBasicAudio);
+    // No more need to release interface with CComPtr
 
     hr = m_pGraphBuilder->RemoveFromROT();
-    UnloadGraph();
 
     CStreamsManager::Destroy();
     CChaptersManager::Destroy();
+
+    UnloadGraph();
 
     m_VideoInfo.Clear();
     m_State.Clear();
@@ -188,7 +184,8 @@ void CDSGraph::CloseFile()
     m_bReachedEnd = false;
     m_bChangingAudioStream = false;
 
-    SAFE_DELETE(m_pGraphBuilder); // Destructor release IGraphBuilder2 instance
+    SAFE_DELETE(m_pGraphBuilder);
+    CDSGraph::m_pFilterGraph = NULL;
 
   } else {
     CLog::Log(LOGDEBUG, "%s CloseFile called more than one time!", __FUNCTION__);
@@ -225,11 +222,15 @@ void CDSGraph::UpdateTime()
   if ( m_State.time == m_State.time_total )
     m_bReachedEnd = true;
   //with the Current frame refresh cycle at 5 the framerate is requested every 1000ms
-  if ((m_pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
+  // pQualProp is queried in CFGLoader::InsertVideoRenderer
+  if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
   {
     int avgRate;
-    g_dsconfig.pQualProp->get_AvgFrameRate(&avgRate);
-    m_pStrCurrentFrameRate.Format(" Real Fps: %4.2f",(float)avgRate/100);
+    CFGLoader::Filters.VideoRenderer.pQualProp->get_AvgFrameRate(&avgRate);
+    if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
+      m_pStrCurrentFrameRate = "Real FPS: Not implemented"; // Avoid people complain on forum while IQualProp not implemented in the custom EVR renderer
+    else
+      m_pStrCurrentFrameRate.Format("Real FPS: %4.2f", (float) avgRate / 100);
     m_iCurrentFrameRefreshCycle = 5;
   }
   m_iCurrentFrameRefreshCycle--;
@@ -310,28 +311,28 @@ HRESULT CDSGraph::HandleGraphEvent()
     switch(evCode)
     {
       case EC_STEP_COMPLETE:
-		    CLog::Log(LOGDEBUG,"%s EC_STEP_COMPLETE", __FUNCTION__);
+        CLog::Log(LOGDEBUG,"%s EC_STEP_COMPLETE", __FUNCTION__);
         g_application.m_pPlayer->CloseFile();
         break;
       case EC_COMPLETE:
-			  CLog::Log(LOGDEBUG,"%s EC_COMPLETE", __FUNCTION__);
-			  g_application.m_pPlayer->CloseFile();
-			  break;
+        CLog::Log(LOGDEBUG,"%s EC_COMPLETE", __FUNCTION__);
+        g_application.m_pPlayer->CloseFile();
+        break;
       case EC_USERABORT:
-			  CLog::Log(LOGDEBUG,"%s EC_USERABORT", __FUNCTION__);
-			  g_application.m_pPlayer->CloseFile();
-			  break;
+        CLog::Log(LOGDEBUG,"%s EC_USERABORT", __FUNCTION__);
+        g_application.m_pPlayer->CloseFile();
+        break;
       case EC_ERRORABORT:
         CLog::Log(LOGDEBUG,"%s EC_ERRORABORT. Error code: %X", __FUNCTION__, evParam1);
         g_application.m_pPlayer->CloseFile();
         break;
-		  case EC_STATE_CHANGE:
+      case EC_STATE_CHANGE:
         CLog::Log(LOGDEBUG,"%s EC_STATE_CHANGE", __FUNCTION__);
         break;
-		  case EC_DEVICE_LOST:
+      case EC_DEVICE_LOST:
         CLog::Log(LOGDEBUG,"%s EC_DEVICE_LOST",__FUNCTION__);
         break;
-		  case EC_VMR_RECONNECTION_FAILED:
+      case EC_VMR_RECONNECTION_FAILED:
         CLog::Log(LOGDEBUG,"%s EC_VMR_RECONNECTION_FAILED",__FUNCTION__);
         break;
         default:
@@ -376,16 +377,14 @@ void CDSGraph::Stop(bool rewind)
 
   UpdateState();
 
-  if (! m_pGraphBuilder)
-	  return;
+  /*if (! m_pGraphBuilder)
+    return;
 
-  BeginEnumFilters(m_pGraphBuilder->GetGraphBuilder2(), pEF, pBF)
+  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
   {
-    IAMNetworkStatus* pAMNS = NULL;
-    IFileSourceFilter* pFSF = NULL;
-    pBF->QueryInterface(IID_IAMNetworkStatus ,(void**)&pAMNS);
-    pBF->QueryInterface(__uuidof(IFileSourceFilter) ,(void**)&pFSF);
-    if(pAMNS && pFSF)
+    Com::SmartQIPtr<IFileSourceFilter> pFSF;
+    pFSF = Com::SmartQIPtr<IAMNetworkStatus>(pBF);
+    if(pFSF)
     {
       WCHAR* pFN = NULL;
       AM_MEDIA_TYPE mt;
@@ -398,7 +397,7 @@ void CDSGraph::Stop(bool rewind)
       break;
     }
   }
-  EndEnumFilters
+  EndEnumFilters*/
 }
 
 void CDSGraph::Play()
@@ -421,7 +420,7 @@ void CDSGraph::Pause()
   else
   {
     if (m_pMediaControl)
-	    if ( m_pMediaControl->Pause() == S_FALSE )
+      if ( m_pMediaControl->Pause() == S_FALSE )
       {
         /* the graph may need some time */
         do 
@@ -429,9 +428,9 @@ void CDSGraph::Pause()
           m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
         } while (m_State.current_filter_state != State_Paused);        
         
-	      m_currentSpeed = 0;
+        m_currentSpeed = 0;
       }
-	}
+  }
 
   UpdateState();
 }
@@ -455,7 +454,7 @@ void CDSGraph::DoFFRW(int currentSpeed)
     currentSpeed = 10000;
     rewind = earliest;
     hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
-	  m_State.time = double(earliest) / TIME_FORMAT_TO_MS;;
+    m_State.time = double(earliest) / TIME_FORMAT_TO_MS;;
     m_pMediaControl->Run();
     UpdateState();
     return;
@@ -468,14 +467,14 @@ void CDSGraph::DoFFRW(int currentSpeed)
 
     hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
 
-		m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
+    m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
     m_pMediaControl->Run();
     UpdateState();
     return;
   }
   //seek to new moment in time
   hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
-	m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
+  m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
   m_pMediaControl->StopWhenReady();
 
   UpdateState();
@@ -485,22 +484,14 @@ HRESULT CDSGraph::UnloadGraph()
 {
   HRESULT hr = S_OK;
 
-  IEnumFilters *pEnum = NULL;
-  IBaseFilter *pBF = NULL;
-
-  //WaitForRendererToShutDown();
-
-  m_pGraphBuilder->GetGraphBuilder2()->EnumFilters(&pEnum);
-
-  // Disconnect all the pins
-  while (S_OK == pEnum->Next(1, &pBF, 0))
+  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEM, pBF)
   {
     CStdString filterName;
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
 
     try
     {
-      hr = RemoveFilter(m_pGraphBuilder->GetGraphBuilder2(), pBF);
+      hr = RemoveFilter(CDSGraph::m_pFilterGraph, pBF);
     }
     catch (...)
     {
@@ -513,72 +504,45 @@ HRESULT CDSGraph::UnloadGraph()
       CLog::Log(LOGNOTICE, "%s Successfully removed \"%s\" from the graph", __FUNCTION__, filterName.c_str());
     else 
       CLog::Log(LOGERROR, "%s Failed to remove \"%s\" from the graph", __FUNCTION__, filterName.c_str());
-    SAFE_RELEASE(pBF);
-    pEnum->Reset();
-  }
-  SAFE_RELEASE(pEnum);
 
-  int c = 0;
+    pEM->Reset();
+  }
+  EndEnumFilters
+
+  m_pMediaControl = NULL;
+  m_pMediaEvent = NULL;
+  m_pMediaSeeking = NULL;
+  m_pBasicAudio = NULL;
+
   /* delete filters */
 
   CLog::Log(LOGDEBUG, "%s Deleting filters ...", __FUNCTION__);
 
-  /*if (CFGLoader::GetSource())
-  {
-    do
-    {
-      c = CFGLoader::GetSource()->Release();
-    } while (c != 0);
-  }*/
-  
-  if (CFGLoader::Filters.Splitter.pBF)
-  {
-    do
-    {
-      c = CFGLoader::Filters.Splitter.pBF->Release();
-    } while (c != 0);
-  }
+  /* Release config interfaces */
+  g_dsconfig.ClearConfig();
 
-  if (CFGLoader::Filters.AudioRenderer.pBF)
-  {
-    do
-    {
-      c = CFGLoader::Filters.AudioRenderer.pBF->Release();
-    } while (c != 0);
-  }
+  // Should be null if no source filter is used.
+  // If not null and if there's no source filter, big crash!
+  CFGLoader::Filters.Source.pBF = NULL; //Also delete the filter
 
-  if (CFGLoader::Filters.VideoRenderer.pBF)
+  CFGLoader::Filters.Splitter.pBF = NULL;
+  CFGLoader::Filters.AudioRenderer.pBF = NULL;
+
+  CFGLoader::Filters.VideoRenderer.pQualProp = NULL;
+  IBaseFilter *f = CFGLoader::Filters.VideoRenderer.pBF.Detach();
+  int c = 0;
+  do 
   {
-    do 
-    {
-      c =CFGLoader::Filters.VideoRenderer.pBF->Release();
-    } while (c != 0);
-  }
+    c = f->Release(); //TODO: Find why there're still some references!
+  } while (c != 0);
+
+  CFGLoader::Filters.Audio.pBF = NULL;
+  CFGLoader::Filters.Video.pBF = NULL;
   
   while (! CFGLoader::Filters.Extras.empty())
   {
-    do
-    {
-      c = CFGLoader::Filters.Extras.back().pBF->Release();
-    } while (c != 0);
-
+    CFGLoader::Filters.Extras.back().pBF = NULL;
     CFGLoader::Filters.Extras.pop_back();
-  }
-
-  if (CFGLoader::Filters.Audio.pBF)
-  {
-    do
-    {
-      c = CFGLoader::Filters.Audio.pBF->Release();
-    } while (c != 0);
-  }
-
-  if (CFGLoader::Filters.Video.pBF)
-  {
-    do 
-    {
-      c = CFGLoader::Filters.Video.pBF->Release();
-    } while (c != 0);
   }
 
   CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
@@ -691,15 +655,15 @@ CStdString CDSGraph::GetGeneralInfo()
 {
   CStdString generalInfo = "";
 
-  if (! m_VideoInfo.filter_source.empty() )
+  if (! CFGLoader::Filters.Source.osdname.empty() )
   generalInfo = "Source Filter: " + m_VideoInfo.filter_source;
 
-  if (! m_VideoInfo.filter_splitter.empty())
+  if (! CFGLoader::Filters.Splitter.osdname.empty())
   {
     if (generalInfo.empty())
-      generalInfo = "Splitter: " + m_VideoInfo.filter_splitter;
+      generalInfo = "Splitter: " + CFGLoader::Filters.Splitter.osdname;
     else
-      generalInfo += " | Splitter: " + m_VideoInfo.filter_splitter;
+      generalInfo += " | Splitter: " + CFGLoader::Filters.Splitter.osdname;
   }
 
   if (generalInfo.empty())
@@ -716,11 +680,11 @@ CStdString CDSGraph::GetAudioInfo()
   CStreamsManager *c = CStreamsManager::getSingleton();
 
   audioInfo.Format("Audio Decoder: %s (%s, %d Hz, %d Channels) | Renderer: %s",
-    m_VideoInfo.filter_audio_dec,
+    CFGLoader::Filters.Audio.osdname,
     c->GetAudioCodecName(),
     c->GetSampleRate(),
     c->GetChannels(),
-    m_VideoInfo.filter_audio_renderer);
+    CFGLoader::Filters.AudioRenderer.osdname);
     
   return audioInfo;
 }
@@ -729,8 +693,8 @@ CStdString CDSGraph::GetVideoInfo()
 {
   CStdString videoInfo = "";
   CStreamsManager *c = CStreamsManager::getSingleton();
-  videoInfo.Format("Video Decoder: %s (%s, %dx%d)%s",
-    m_VideoInfo.filter_video_dec,
+  videoInfo.Format("Video Decoder: %s (%s, %dx%d) %s",
+    CFGLoader::Filters.Video.osdname,
     c->GetVideoCodecName(),
     c->GetPictureWidth(),
     c->GetPictureHeight(),
@@ -756,51 +720,39 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   {
     case ID_PLAY_PLAY:
       Play();
-	    break;
-	  case ID_SEEK_TO:
+      break;
+    case ID_SEEK_TO:
       SeekInMilliSec((LPARAM)lParam);
       break;
     case ID_SEEK_FORWARDSMALL:
       Seek(true, false);
-	    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
-	    break;
-	  case ID_SEEK_FORWARDLARGE:
+      CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
+      break;
+    case ID_SEEK_FORWARDLARGE:
       Seek(true, true);
-	    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
-	    break;
+      CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
+      break;
     case ID_SEEK_BACKWARDSMALL:
       Seek(false,false);
-	    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
-	    break;
-	  case ID_SEEK_BACKWARDLARGE:
-	    Seek(false,true);
-	    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
-	    break;
-	  case ID_PLAY_PAUSE:
+      CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
+      break;
+    case ID_SEEK_BACKWARDLARGE:
+      Seek(false,true);
+      CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
+      break;
+    case ID_PLAY_PAUSE:
       Pause();
-	    CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
-	    break;
-	  case ID_PLAY_STOP:
+      CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
+      break;
+    case ID_PLAY_STOP:
       Stop(true);
-	    CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
+      CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
       break;
     case ID_STOP_DSPLAYER:
       Stop(true);
-	    CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
+      CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
       break;
   }
 }
 
-/*void CDSGraph::WaitForRendererToShutDown()
-{
-  if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_UNDEF)
-    return;
-
-  if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
-  {
-    while (CEVRAllocatorPresenter::CheckShutdown() != MF_E_SHUTDOWN)
-    {
-      Sleep(100);
-    }
-  }
-}*/
+Com::SmartPtr<IFilterGraph2> CDSGraph::m_pFilterGraph = NULL;

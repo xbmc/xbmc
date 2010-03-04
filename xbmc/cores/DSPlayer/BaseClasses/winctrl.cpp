@@ -767,15 +767,15 @@ CBaseControlWindow::NotifyOwnerMessage(OAHWND hwnd,    // Window handle
                 return NOERROR;
             }
             SendMessage(m_hwnd,uMsg,(WPARAM)wParam,(LPARAM)lParam);
-	    break;
+      break;
 
-	// do NOT fwd WM_MOVE. the parameters are the location of the parent
-	// window, NOT what the renderer should be looking at.  But we need
-	// to make sure the overlay is moved with the parent window, so we
-	// do this.
-	case WM_MOVE:
-	    PostMessage(m_hwnd,WM_PAINT,0,0);
-	    break;
+  // do NOT fwd WM_MOVE. the parameters are the location of the parent
+  // window, NOT what the renderer should be looking at.  But we need
+  // to make sure the overlay is moved with the parent window, so we
+  // do this.
+  case WM_MOVE:
+      PostMessage(m_hwnd,WM_PAINT,0,0);
+      break;
     }
     return NOERROR;
 }

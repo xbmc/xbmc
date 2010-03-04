@@ -106,7 +106,7 @@ public:
     STDMETHODIMP SetWindowPosition(long Left,long Top,long Width,long Height);
     STDMETHODIMP GetWindowPosition(__out long *pLeft,__out long *pTop,__out long *pWidth,__out long *pHeight);
     STDMETHODIMP GetRestorePosition(__out long *pLeft,__out long *pTop,__out long *pWidth,__out long *pHeight);
-	STDMETHODIMP HideCursor(long HideCursor);
+  STDMETHODIMP HideCursor(long HideCursor);
     STDMETHODIMP IsCursorHidden(__out long *CursorHidden);
 };
 

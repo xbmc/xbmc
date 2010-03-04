@@ -51,7 +51,7 @@ public:
     };
 
     bool TryLock() 
-	{
+  {
         return TryEnterCriticalSection(&m_CritSec) != 0;
     };
 
@@ -131,7 +131,7 @@ public:
 
     void Set() {EXECUTE_ASSERT(SetEvent(m_hEvent));};
     BOOL Wait(DWORD dwTimeout = INFINITE) {
-	return (WaitForSingleObject(m_hEvent, dwTimeout) == WAIT_OBJECT_0);
+  return (WaitForSingleObject(m_hEvent, dwTimeout) == WAIT_OBJECT_0);
     };
     void Reset() { ResetEvent(m_hEvent); };
     BOOL Check() { return Wait(0); };
@@ -185,8 +185,8 @@ public:
     CAMThread(__inout_opt HRESULT *phr = NULL);
     virtual ~CAMThread();
 
-    CCritSec m_AccessLock;	// locks access by client threads
-    CCritSec m_WorkerLock;	// locks access to shared objects
+    CCritSec m_AccessLock;  // locks access by client threads
+    CCritSec m_WorkerLock;  // locks access to shared objects
 
     // thread initially runs this. param is actually 'this'. function
     // just gets this and calls ThreadProc
@@ -489,37 +489,37 @@ template <class T>
 class QzCComPtr
 {
 public:
-	typedef T _PtrClass;
-	QzCComPtr() {p=NULL;}
-	QzCComPtr(T* lp)
-	{
-		if ((p = lp) != NULL)
-			p->AddRef();
-	}
-	QzCComPtr(const QzCComPtr<T>& lp)
-	{
-		if ((p = lp.p) != NULL)
-			p->AddRef();
-	}
-	~QzCComPtr() {if (p) p->Release();}
-	void Release() {if (p) p->Release(); p=NULL;}
-	operator T*() {return (T*)p;}
-	T& operator*() {ASSERT(p!=NULL); return *p; }
-	//The assert on operator& usually indicates a bug.  If this is really
-	//what is needed, however, take the address of the p member explicitly.
-	T** operator&() { ASSERT(p==NULL); return &p; }
-	T* operator->() { ASSERT(p!=NULL); return p; }
-	T* operator=(T* lp){return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp);}
-	T* operator=(const QzCComPtr<T>& lp)
-	{
-		return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp.p);
-	}
+  typedef T _PtrClass;
+  QzCComPtr() {p=NULL;}
+  QzCComPtr(T* lp)
+  {
+    if ((p = lp) != NULL)
+      p->AddRef();
+  }
+  QzCComPtr(const QzCComPtr<T>& lp)
+  {
+    if ((p = lp.p) != NULL)
+      p->AddRef();
+  }
+  ~QzCComPtr() {if (p) p->Release();}
+  void Release() {if (p) p->Release(); p=NULL;}
+  operator T*() {return (T*)p;}
+  T& operator*() {ASSERT(p!=NULL); return *p; }
+  //The assert on operator& usually indicates a bug.  If this is really
+  //what is needed, however, take the address of the p member explicitly.
+  T** operator&() { ASSERT(p==NULL); return &p; }
+  T* operator->() { ASSERT(p!=NULL); return p; }
+  T* operator=(T* lp){return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp);}
+  T* operator=(const QzCComPtr<T>& lp)
+  {
+    return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp.p);
+  }
 #if _MSC_VER>1020
-	bool operator!(){return (p == NULL);}
+  bool operator!(){return (p == NULL);}
 #else
-	BOOL operator!(){return (p == NULL) ? TRUE : FALSE;}
+  BOOL operator!(){return (p == NULL) ? TRUE : FALSE;}
 #endif
-	T* p;
+  T* p;
 };
 
 MMRESULT CompatibleTimeSetEvent( UINT uDelay, UINT uResolution, __in LPTIMECALLBACK lpTimeProc, DWORD_PTR dwUser, UINT fuEvent );

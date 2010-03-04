@@ -66,7 +66,7 @@ protected:
     // offset from stream time to reference time
     CRefTime        m_tStart;
 
-    CLSID	    m_clsid;            // This filters clsid
+    CLSID      m_clsid;            // This filters clsid
                                         // used for serialization
     CCritSec        *m_pLock;           // Object we use for locking
 
@@ -76,7 +76,7 @@ public:
         __in_opt LPCTSTR pName,
         __inout_opt LPUNKNOWN pUnk,
         __in CCritSec  *pLock,
-	REFCLSID   clsid);
+  REFCLSID   clsid);
 
     virtual ~CBaseMediaFilter();
 
@@ -156,7 +156,7 @@ protected:
     FILTER_STATE    m_State;            // current state: running, paused
     IReferenceClock *m_pClock;          // this graph's ref clock
     CRefTime        m_tStart;           // offset from stream time to reference time
-    CLSID	    m_clsid;            // This filters clsid
+    CLSID      m_clsid;            // This filters clsid
                                         // used for serialization
     CCritSec        *m_pLock;           // Object we use for locking
 
@@ -171,26 +171,26 @@ public:
         __in_opt LPCTSTR pName,   // Object description
         __inout_opt LPUNKNOWN pUnk,  // IUnknown of delegating object
         __in CCritSec  *pLock,    // Object who maintains lock
-	REFCLSID   clsid);        // The clsid to be used to serialize this filter
+  REFCLSID   clsid);        // The clsid to be used to serialize this filter
 
     CBaseFilter(
         __in_opt LPCTSTR pName,    // Object description
         __in_opt LPUNKNOWN pUnk,  // IUnknown of delegating object
         __in CCritSec  *pLock,    // Object who maintains lock
-	REFCLSID   clsid,         // The clsid to be used to serialize this filter
+  REFCLSID   clsid,         // The clsid to be used to serialize this filter
         __inout HRESULT   *phr);  // General OLE return code
 #ifdef UNICODE
     CBaseFilter(
         __in_opt LPCSTR pName,    // Object description
         __in_opt LPUNKNOWN pUnk,  // IUnknown of delegating object
         __in CCritSec  *pLock,    // Object who maintains lock
-	REFCLSID   clsid);        // The clsid to be used to serialize this filter
+  REFCLSID   clsid);        // The clsid to be used to serialize this filter
 
     CBaseFilter(
         __in_opt LPCSTR pName,     // Object description
         __in_opt LPUNKNOWN pUnk,  // IUnknown of delegating object
         __in CCritSec  *pLock,    // Object who maintains lock
-	REFCLSID   clsid,         // The clsid to be used to serialize this filter
+  REFCLSID   clsid,         // The clsid to be used to serialize this filter
         __inout HRESULT   *phr);  // General OLE return code
 #endif
     ~CBaseFilter();
@@ -332,7 +332,7 @@ class  AM_NOVTABLE CBasePin : public CUnknown, public IPin, public IQualityContr
 
 protected:
 
-    WCHAR *         m_pName;		        // This pin's name
+    WCHAR *         m_pName;            // This pin's name
     IPin            *m_Connected;               // Pin we have connected to
     PIN_DIRECTION   m_dir;                      // Direction of this pin
     CCritSec        *m_pLock;                   // Object we use for locking
@@ -441,7 +441,7 @@ public:
     );
 
     STDMETHODIMP QueryDirection(
-    	__out PIN_DIRECTION * pPinDir
+      __out PIN_DIRECTION * pPinDir
     );
 
     STDMETHODIMP QueryId(
@@ -589,9 +589,9 @@ class CEnumPins : public IEnumPins      // The interface we support
 
     typedef CGenericList<CBasePin> CPinList;
 
-    CPinList m_PinCache;	    // These pointers have not been AddRef'ed and
-				    // so they should not be dereferenced.  They are
-				    // merely kept to ID which pins have been enumerated.
+    CPinList m_PinCache;      // These pointers have not been AddRef'ed and
+            // so they should not be dereferenced.  They are
+            // merely kept to ID which pins have been enumerated.
 
 #ifdef DEBUG
     DWORD m_dwCookie;
@@ -1298,14 +1298,14 @@ public:
 
     // get the media times for this sample
     STDMETHODIMP GetMediaTime(
-    	__out LONGLONG * pTimeStart,
-	    __out LONGLONG * pTimeEnd
+      __out LONGLONG * pTimeStart,
+      __out LONGLONG * pTimeEnd
     );
 
     // Set the media times for this sample
     STDMETHODIMP SetMediaTime(
-    	__in_opt LONGLONG * pTimeStart,
-	    __in_opt LONGLONG * pTimeEnd
+      __in_opt LONGLONG * pTimeStart,
+      __in_opt LONGLONG * pTimeEnd
     );
 
     // Set and get properties (IMediaSample2)
@@ -1470,12 +1470,12 @@ public:
     STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv);
 
     STDMETHODIMP SetProperties(
-		    __in ALLOCATOR_PROPERTIES* pRequest,
-		    __out ALLOCATOR_PROPERTIES* pActual);
+        __in ALLOCATOR_PROPERTIES* pRequest,
+        __out ALLOCATOR_PROPERTIES* pActual);
 
     // return the properties actually being used on this allocator
     STDMETHODIMP GetProperties(
-		    __out ALLOCATOR_PROPERTIES* pProps);
+        __out ALLOCATOR_PROPERTIES* pProps);
 
     // override Commit to allocate memory. We handle the GetBuffer
     //state changes
@@ -1557,8 +1557,8 @@ public:
     static CUnknown *CreateInstance(__inout_opt LPUNKNOWN, __inout HRESULT *);
 
     STDMETHODIMP SetProperties(
-		    __in ALLOCATOR_PROPERTIES* pRequest,
-		    __out ALLOCATOR_PROPERTIES* pActual);
+        __in ALLOCATOR_PROPERTIES* pRequest,
+        __out ALLOCATOR_PROPERTIES* pActual);
 
     CMemAllocator(__in_opt LPCTSTR , __inout_opt LPUNKNOWN, __inout HRESULT *);
 #ifdef UNICODE

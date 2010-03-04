@@ -24,27 +24,25 @@
 #pragma once
 
 #include "streams.h"
-
-
-
+#include "DShowUtil/smartptr.h"
 
 class CMacrovisionKicker
-	: public CUnknown
-	, public IKsPropertySet
+  : public CUnknown
+  , public IKsPropertySet
 {
-	IUnknown* m_pInner;
+  Com::SmartPtr<IUnknown> m_pInner;
 
 public:
-	CMacrovisionKicker(const TCHAR* pName, LPUNKNOWN pUnk);
-	virtual ~CMacrovisionKicker();
+  CMacrovisionKicker(const TCHAR* pName, LPUNKNOWN pUnk);
+  virtual ~CMacrovisionKicker();
 
-	void SetInner(IUnknown* pUnk);
+  void SetInner(IUnknown* pUnk);
 
-	DECLARE_IUNKNOWN;
-	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  DECLARE_IUNKNOWN;
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
-	// IKsPropertySet
-	STDMETHODIMP Set(REFGUID PropSet, ULONG Id, LPVOID pInstanceData, ULONG InstanceLength, LPVOID pPropertyData, ULONG DataLength);
-	STDMETHODIMP Get(REFGUID PropSet, ULONG Id, LPVOID pInstanceData, ULONG InstanceLength, LPVOID pPropertyData, ULONG DataLength, ULONG* pBytesReturned);
-	STDMETHODIMP QuerySupported(REFGUID PropSet, ULONG Id, ULONG* pTypeSupport);
+  // IKsPropertySet
+  STDMETHODIMP Set(REFGUID PropSet, ULONG Id, LPVOID pInstanceData, ULONG InstanceLength, LPVOID pPropertyData, ULONG DataLength);
+  STDMETHODIMP Get(REFGUID PropSet, ULONG Id, LPVOID pInstanceData, ULONG InstanceLength, LPVOID pPropertyData, ULONG DataLength, ULONG* pBytesReturned);
+  STDMETHODIMP QuerySupported(REFGUID PropSet, ULONG Id, ULONG* pTypeSupport);
 };

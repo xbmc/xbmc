@@ -16,8 +16,6 @@ CChaptersManager::~CChaptersManager(void)
     delete it->second;
 
   CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
-
-  //SAFE_RELEASE(m_pIAMExtendedSeeking);
 }
 
 CChaptersManager *CChaptersManager::getSingleton()
@@ -68,13 +66,14 @@ bool CChaptersManager::LoadChapters()
 
   CLog::Log(LOGDEBUG, "%s Looking for chapters in \"%s\"", __FUNCTION__, splitterName.c_str());
 
-  if (SUCCEEDED(CFGLoader::Filters.Splitter.pBF->QueryInterface(IID_IAMExtendedSeeking, (void **) &m_pIAMExtendedSeeking)))
+  m_pIAMExtendedSeeking = CFGLoader::Filters.Splitter.pBF;
+  if (m_pIAMExtendedSeeking)
   {
     long chaptersCount = -1;
     m_pIAMExtendedSeeking->get_MarkerCount(&chaptersCount);
     if (chaptersCount <= 0)
     {
-      SAFE_RELEASE(m_pIAMExtendedSeeking);
+      m_pIAMExtendedSeeking.Release();
       return false;
     }
 

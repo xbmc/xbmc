@@ -33,6 +33,7 @@
 #include "Filters/IffdshowDecVideo.h"
 #include "DSPropertyPage.h"
 #include "DSGraph.h"
+#include "DShowUtil/smartptr.h"
 
 class CDSGraph;
 class CDSPropertyPage;
@@ -51,13 +52,13 @@ public:
   /**
    * Clear every interfaces
    */
-  virtual void ClearConfig();
+  void ClearConfig();
   /**
    * Configure the filters in the graph
    * @param[in] pGB Pointer to the graph interface
    * @return A HRESULT code
    */
-  virtual HRESULT ConfigureFilters(IFilterGraph2* pGB);
+  virtual HRESULT ConfigureFilters();
   /**
    * Retrieve a string containing the current DXVA mode
    * @return A CStdString containing the current DXVA mode
@@ -90,7 +91,7 @@ public:
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
   /** @} */
-  IQualProp*          pQualProp;
+  //Com::SmartQIPtr<IQualProp, &IID_IQualProp> pQualProp;
 protected:
   /**
    * If the filter expose a property page, add it to m_pPropertiesFilters
@@ -115,24 +116,16 @@ protected:
    * @return True if the filter is FFDShow, false else
    */
   bool GetffdshowFilters(IBaseFilter* pBF);
-
-  /**
-   * Configure the filters from the graph
-   */
-  void ConfigureFilters(void);
   
 private:
   void CreatePropertiesXml();
   CCritSec m_pLock;
 
   //Direct Show Filters
-  IFilterGraph2*                 m_pGraphBuilder;
-  IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
-  IMpaDecFilter*                 m_pIMpaDecFilter;
-  IBaseFilter*                   m_pSplitter;
+
+  Com::SmartPtr<IMpaDecFilter>         m_pIMpaDecFilter;
   CStdString                     m_pStdDxva;
   GUID                           m_pGuidDxva;
-  std::list<AM_MEDIA_TYPE *>     m_pMediaType;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
   //current page
   CDSPropertyPage*               m_pCurrentProperty;

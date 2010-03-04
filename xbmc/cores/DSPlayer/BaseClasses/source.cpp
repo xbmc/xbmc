@@ -65,8 +65,8 @@ CSource::~CSource()
 {
     /*  Free our pins and pin array */
     while (m_iPins != 0) {
-	// deleting the pins causes them to be removed from the array...
-	delete m_paStreams[m_iPins - 1];
+  // deleting the pins causes them to be removed from the array...
+  delete m_paStreams[m_iPins - 1];
     }
 
     ASSERT(m_paStreams == NULL);
@@ -110,8 +110,8 @@ HRESULT CSource::RemovePin(__in CSourceStream *pStream)
                 m_paStreams = NULL;
             } else {
                 /*  no need to reallocate */
-		while (++i < m_iPins)
-		    m_paStreams[i - 1] = m_paStreams[i];
+    while (++i < m_iPins)
+        m_paStreams[i - 1] = m_paStreams[i];
             }
             m_iPins--;
             return S_OK;
@@ -181,7 +181,7 @@ CBasePin *CSource::GetPin(int n) {
     if ((n >= 0) && (n < m_iPins)) {
 
         ASSERT(m_paStreams[n]);
-	return m_paStreams[n];
+  return m_paStreams[n];
     }
     return NULL;
 }
@@ -300,7 +300,7 @@ HRESULT CSourceStream::Active(void) {
     HRESULT hr;
 
     if (m_pFilter->IsActive()) {
-	return S_FALSE;	// succeeded, but did not allocate resources (they already exist...)
+  return S_FALSE;  // succeeded, but did not allocate resources (they already exist...)
     }
 
     // do nothing if not connected - its ok not to connect to
@@ -324,7 +324,7 @@ HRESULT CSourceStream::Active(void) {
     // Tell thread to initialize. If OnThreadCreate Fails, so does this.
     hr = Init();
     if (FAILED(hr))
-	return hr;
+  return hr;
 
     return Pause();
 }
@@ -352,27 +352,27 @@ HRESULT CSourceStream::Inactive(void) {
 
     hr = CBaseOutputPin::Inactive();  // call this first to Decommit the allocator
     if (FAILED(hr)) {
-	return hr;
+  return hr;
     }
 
     if (ThreadExists()) {
-	hr = Stop();
+  hr = Stop();
 
-	if (FAILED(hr)) {
-	    return hr;
-	}
+  if (FAILED(hr)) {
+      return hr;
+  }
 
-	hr = Exit();
-	if (FAILED(hr)) {
-	    return hr;
-	}
+  hr = Exit();
+  if (FAILED(hr)) {
+      return hr;
+  }
 
-	Close();	// Wait for the thread to exit, then tidy up.
+  Close();  // Wait for the thread to exit, then tidy up.
     }
 
     // hr = CBaseOutputPin::Inactive();  // call this first to Decommit the allocator
     //if (FAILED(hr)) {
-    //	return hr;
+    //  return hr;
     //}
 
     return NOERROR;
@@ -390,11 +390,11 @@ DWORD CSourceStream::ThreadProc(void) {
     Command com;
 
     do {
-	com = GetRequest();
-	if (com != CMD_INIT) {
-	    DbgLog((LOG_ERROR, 1, TEXT("Thread expected init command")));
-	    Reply((DWORD) E_UNEXPECTED);
-	}
+  com = GetRequest();
+  if (com != CMD_INIT) {
+      DbgLog((LOG_ERROR, 1, TEXT("Thread expected init command")));
+      Reply((DWORD) E_UNEXPECTED);
+  }
     } while (com != CMD_INIT);
 
     DbgLog((LOG_TRACE, 1, TEXT("CSourceStream worker thread initializing")));
@@ -403,7 +403,7 @@ DWORD CSourceStream::ThreadProc(void) {
     if (FAILED(hr)) {
         DbgLog((LOG_ERROR, 1, TEXT("CSourceStream::OnThreadCreate failed. Aborting thread.")));
         OnThreadDestroy();
-	Reply(hr);	// send failed return code from OnThreadCreate
+  Reply(hr);  // send failed return code from OnThreadCreate
         return 1;
     }
 
@@ -412,35 +412,35 @@ DWORD CSourceStream::ThreadProc(void) {
 
     Command cmd;
     do {
-	cmd = GetRequest();
+  cmd = GetRequest();
 
-	switch (cmd) {
+  switch (cmd) {
 
-	case CMD_EXIT:
-	    Reply(NOERROR);
-	    break;
+  case CMD_EXIT:
+      Reply(NOERROR);
+      break;
 
-	case CMD_RUN:
-	    DbgLog((LOG_ERROR, 1, TEXT("CMD_RUN received before a CMD_PAUSE???")));
-	    // !!! fall through???
-	
-	case CMD_PAUSE:
-	    Reply(NOERROR);
-	    DoBufferProcessingLoop();
-	    break;
+  case CMD_RUN:
+      DbgLog((LOG_ERROR, 1, TEXT("CMD_RUN received before a CMD_PAUSE???")));
+      // !!! fall through???
+  
+  case CMD_PAUSE:
+      Reply(NOERROR);
+      DoBufferProcessingLoop();
+      break;
 
-	case CMD_STOP:
-	    Reply(NOERROR);
-	    break;
+  case CMD_STOP:
+      Reply(NOERROR);
+      break;
 
-	default:
-	    DbgLog((LOG_ERROR, 1, TEXT("Unknown command %d received!"), cmd));
-	    Reply((DWORD) E_NOTIMPL);
-	    break;
-	}
+  default:
+      DbgLog((LOG_ERROR, 1, TEXT("Unknown command %d received!"), cmd));
+      Reply((DWORD) E_NOTIMPL);
+      break;
+  }
     } while (cmd != CMD_EXIT);
 
-    hr = OnThreadDestroy();	// tidy up.
+    hr = OnThreadDestroy();  // tidy up.
     if (FAILED(hr)) {
         DbgLog((LOG_ERROR, 1, TEXT("CSourceStream::OnThreadDestroy failed. Exiting thread.")));
         return 1;
@@ -463,23 +463,23 @@ HRESULT CSourceStream::DoBufferProcessingLoop(void) {
     OnThreadStartPlay();
 
     do {
-	while (!CheckRequest(&com)) {
+  while (!CheckRequest(&com)) {
 
-	    IMediaSample *pSample;
+      IMediaSample *pSample;
 
-	    HRESULT hr = GetDeliveryBuffer(&pSample,NULL,NULL,0);
-	    if (FAILED(hr)) {
+      HRESULT hr = GetDeliveryBuffer(&pSample,NULL,NULL,0);
+      if (FAILED(hr)) {
                 Sleep(1);
-		continue;	// go round again. Perhaps the error will go away
-			    // or the allocator is decommited & we will be asked to
-			    // exit soon.
-	    }
+    continue;  // go round again. Perhaps the error will go away
+          // or the allocator is decommited & we will be asked to
+          // exit soon.
+      }
 
-	    // Virtual function user will override.
-	    hr = FillBuffer(pSample);
+      // Virtual function user will override.
+      hr = FillBuffer(pSample);
 
-	    if (hr == S_OK) {
-		hr = Deliver(pSample);
+      if (hr == S_OK) {
+    hr = Deliver(pSample);
                 pSample->Release();
 
                 // downstream filter returns S_FALSE if it wants us to
@@ -490,31 +490,31 @@ HRESULT CSourceStream::DoBufferProcessingLoop(void) {
                   return S_OK;
                 }
 
-	    } else if (hr == S_FALSE) {
+      } else if (hr == S_FALSE) {
                 // derived class wants us to stop pushing data
-		pSample->Release();
-		DeliverEndOfStream();
-		return S_OK;
-	    } else {
+    pSample->Release();
+    DeliverEndOfStream();
+    return S_OK;
+      } else {
                 // derived class encountered an error
                 pSample->Release();
-		DbgLog((LOG_ERROR, 1, TEXT("Error %08lX from FillBuffer!!!"), hr));
+    DbgLog((LOG_ERROR, 1, TEXT("Error %08lX from FillBuffer!!!"), hr));
                 DeliverEndOfStream();
                 m_pFilter->NotifyEvent(EC_ERRORABORT, hr, 0);
                 return hr;
-	    }
+      }
 
             // all paths release the sample
-	}
+  }
 
         // For all commands sent to us there must be a Reply call!
 
-	if (com == CMD_RUN || com == CMD_PAUSE) {
-	    Reply(NOERROR);
-	} else if (com != CMD_STOP) {
-	    Reply((DWORD) E_UNEXPECTED);
-	    DbgLog((LOG_ERROR, 1, TEXT("Unexpected command!!!")));
-	}
+  if (com == CMD_RUN || com == CMD_PAUSE) {
+      Reply(NOERROR);
+  } else if (com != CMD_STOP) {
+      Reply((DWORD) E_UNEXPECTED);
+      DbgLog((LOG_ERROR, 1, TEXT("Unexpected command!!!")));
+  }
     } while (com != CMD_STOP);
 
     return S_FALSE;

@@ -124,9 +124,9 @@ HRESULT CAMSchedule::Unadvise(DWORD_PTR dwAdviseCookie)
             Delete( p_prev->RemoveNext() );
             --m_dwAdviseCount;
             hr = S_OK;
-	    // Having found one cookie that matches, there should be no more
+      // Having found one cookie that matches, there should be no more
             #ifdef DEBUG
-	       while (p_n = p_prev->Next())
+         while (p_n = p_prev->Next())
                {
                    ASSERT(p_n->m_dwAdviseCookie != dwAdviseCookie);
                    p_prev = p_n;
@@ -206,7 +206,7 @@ DWORD_PTR CAMSchedule::AddAdvisePacket( __inout CAdvisePacket * pPacket )
     ++m_dwAdviseCount;
 
     DbgLog((LOG_TIMING, 2, TEXT("Added advise %lu, for thread 0x%02X, scheduled at %lu"),
-    	pPacket->m_dwAdviseCookie, GetCurrentThreadId(), (pPacket->m_rtEventTime / (UNITS / MILLISECONDS)) ));
+      pPacket->m_dwAdviseCookie, GetCurrentThreadId(), (pPacket->m_rtEventTime / (UNITS / MILLISECONDS)) ));
 
     // If packet added at the head, then clock needs to re-evaluate wait time.
     if ( p_prev == &head ) SetEvent( m_ev );
@@ -256,7 +256,7 @@ void CAMSchedule::ShuntHead()
     }
     #ifdef DEBUG
         DbgLog((LOG_TIMING, 2, TEXT("Periodic advise %lu, shunted to %lu"),
-    	    pPacket->m_dwAdviseCookie, (pPacket->m_rtEventTime / (UNITS / MILLISECONDS)) ));
+          pPacket->m_dwAdviseCookie, (pPacket->m_rtEventTime / (UNITS / MILLISECONDS)) ));
     #endif
     m_Serialize.Unlock();
 }
@@ -271,12 +271,12 @@ void CAMSchedule::DumpLinkedList()
     for ( CAdvisePacket * p = &head
         ; p
         ; p = p->m_next         , i++
-        )	
+        )  
     {
         DbgLog((LOG_TIMING, 1, TEXT("Advise List # %lu, Cookie %d,  RefTime %lu"),
             i,
-	    p->m_dwAdviseCookie,
-	    p->m_rtEventTime / (UNITS / MILLISECONDS)
+      p->m_dwAdviseCookie,
+      p->m_rtEventTime / (UNITS / MILLISECONDS)
             ));
     }
     m_Serialize.Unlock();

@@ -9,13 +9,6 @@
 #include <system.h>
 #include "DshowUtil/dshowutil.h"
 
-enum ScheduleEvent
-{
-  eTerminate =    WM_USER,
-  eSchedule =     WM_USER + 1,
-  eFlush =        WM_USER + 2
-};
-
 const DWORD SCHEDULER_TIMEOUT = 5000;
 
 //-----------------------------------------------------------------------------
@@ -25,8 +18,6 @@ const DWORD SCHEDULER_TIMEOUT = 5000;
 CEvrScheduler::CEvrScheduler() : 
   m_pCB(NULL),
   m_pClock(NULL), 
-  m_dwThreadID(0),
-  m_hSchedulerThread(NULL),
   m_hThreadReadyEvent(NULL),
   m_hFlushEvent(NULL),
   m_fRate(1.0f),
@@ -76,15 +67,14 @@ void CEvrScheduler::SetFrameRate(MFTIME TimePerFrame)
 
 HRESULT CEvrScheduler::StartScheduler(IMFClock *pClock)
 {
-  if (m_hSchedulerThread)
+  if (m_ThreadHandle)
     return E_UNEXPECTED;
 
   HRESULT hr = S_OK;
   DWORD dwID = 0;
-  if (m_pClock)
-    m_pClock->Release();
+
+  m_pClock = NULL;
   m_pClock = pClock;
-  m_pClock->AddRef();
 
   // Set a high the timer resolution (ie, short timer period).
   timeBeginPeriod(1);
@@ -106,14 +96,14 @@ HRESULT CEvrScheduler::StartScheduler(IMFClock *pClock)
   }
 
   // Create the scheduler thread.
-  m_hSchedulerThread = CreateThread(NULL, 0, SchedulerThreadProc, (LPVOID)this, 0, &dwID);
-  if (!m_hSchedulerThread)
+  Create(false);
+  if (!m_ThreadHandle)
   {
     if (FAILED(hr))
       CLog::Log(LOGERROR,"%s",HRESULT_FROM_WIN32(GetLastError()));
   }
 
-  HANDLE hObjects[] = { m_hThreadReadyEvent, m_hSchedulerThread };
+  HANDLE hObjects[] = { m_hThreadReadyEvent, m_ThreadHandle };
   DWORD dwWait = 0;
 
   // Wait for the thread to signal the "thread ready" event.
@@ -121,12 +111,10 @@ HRESULT CEvrScheduler::StartScheduler(IMFClock *pClock)
   if (WAIT_OBJECT_0 != dwWait)
   {
     // The thread terminated early for some reason. This is an error condition.
-    CloseHandle(m_hSchedulerThread);
-    m_hSchedulerThread = NULL;
+    CloseHandle(m_ThreadHandle);
+    m_ThreadHandle = NULL;
     //CHECK_HR(hr = E_UNEXPECTED);
   }
-
-  m_dwThreadID = dwID;
 
   // Regardless success/failure, we are done using the "thread ready" event.
   if (m_hThreadReadyEvent)
@@ -147,18 +135,15 @@ HRESULT CEvrScheduler::StartScheduler(IMFClock *pClock)
 
 HRESULT CEvrScheduler::StopScheduler()
 {
-  if (!m_hSchedulerThread)
+  if (!m_ThreadHandle)
     return S_OK;
 
   // Ask the scheduler thread to exit.
-  PostThreadMessage(m_dwThreadID, eTerminate, 0, 0);
-  CLog::Log(LOGDEBUG,"Waiting for CEvrScheduler to stop");
+  m_currentEvent = eTerminate;
+
   // Wait for the thread to exit.
-  WaitForSingleObject(m_hSchedulerThread, INFINITE);
-  CLog::Log(LOGDEBUG,"done waiting for CEvrScheduler thread to stop");
-  // Close handles.
-  CloseHandle(m_hSchedulerThread);
-  m_hSchedulerThread = NULL;
+  CLog::Log(LOGDEBUG, "%s Waiting for EVR Scheduler thread to exit", __FUNCTION__);
+  StopThread(true);
 
   CloseHandle(m_hFlushEvent);
   m_hFlushEvent = NULL;
@@ -185,17 +170,17 @@ HRESULT CEvrScheduler::StopScheduler()
 HRESULT CEvrScheduler::Flush()
 {
   //This is not an error
-  if (!m_hSchedulerThread)
+  if (!m_ThreadHandle)
     CLog::Log(LOGDEBUG,"%s No scheduler thread!",__FUNCTION__);
 
-  if (m_hSchedulerThread)
+  if (m_ThreadHandle)
   {
     // Ask the scheduler thread to flush.
-    PostThreadMessage(m_dwThreadID, eFlush, 0 , 0);
+    m_currentEvent = eFlush;
 
     // Wait for the scheduler thread to signal the flush event,
     // OR for the thread to terminate.
-    HANDLE objects[] = { m_hFlushEvent, m_hSchedulerThread };
+    HANDLE objects[] = { m_hFlushEvent, m_ThreadHandle };
 
     WaitForMultipleObjects((sizeof(objects) / sizeof(objects[0])), objects, FALSE, SCHEDULER_TIMEOUT);
   }
@@ -218,13 +203,13 @@ HRESULT CEvrScheduler::ScheduleSample(IMFSample *pSample, BOOL bPresentNow)
   if (!m_pCB)
     return MF_E_NOT_INITIALIZED;
 
-  if (!m_hSchedulerThread)
+  if (! m_ThreadHandle)
     return MF_E_NOT_INITIALIZED;
 
   HRESULT hr = S_OK;
   DWORD dwExitCode = 0;
 
-  GetExitCodeThread(m_hSchedulerThread, &dwExitCode);
+  GetExitCodeThread(m_ThreadHandle, &dwExitCode);
   if (dwExitCode != STILL_ACTIVE)
     return E_FAIL;
 
@@ -238,7 +223,7 @@ HRESULT CEvrScheduler::ScheduleSample(IMFSample *pSample, BOOL bPresentNow)
     //m_ScheduledSamples.AddTail(pSample);
 
     if (SUCCEEDED(hr))
-      PostThreadMessage(m_dwThreadID, eSchedule, 0, 0);
+      m_currentEvent = eSchedule;
   }
   if (FAILED(hr))
     CLog::Log(LOGERROR,"%s failed",__FUNCTION__);
@@ -296,7 +281,7 @@ float CEvrScheduler::GetFps()
   if (m_PerFrameInterval == 0) 
     return float ( 10000000.0/ 417166);
   
-	return float (10000000.0 / m_PerFrameInterval);
+  return float (10000000.0 / m_PerFrameInterval);
 }
 
 /*HRESULT CEvrScheduler::GetScheduledSample(IMFSample** ppSample)
@@ -390,64 +375,27 @@ HRESULT CEvrScheduler::ProcessSample(IMFSample *pSample, LONG *plNextSleep)
 
 
 //-----------------------------------------------------------------------------
-// SchedulerThreadProc (static method)
-// 
-// ThreadProc for the scheduler thread.
-//-----------------------------------------------------------------------------
-
-DWORD WINAPI CEvrScheduler::SchedulerThreadProc(LPVOID lpParameter)
-{
-  CEvrScheduler* pScheduler = reinterpret_cast<CEvrScheduler*>(lpParameter);
-  if (!pScheduler)
-    return -1;
-
-  return pScheduler->SchedulerThreadProcPrivate();
-}
-
-//-----------------------------------------------------------------------------
 // SchedulerThreadProcPrivate
 // 
 // Non-static version of the ThreadProc.
 //-----------------------------------------------------------------------------
 
-DWORD CEvrScheduler::SchedulerThreadProcPrivate()
+void CEvrScheduler::Process()
 {
   HRESULT hr = S_OK;
-  MSG     msg;
   LONG    lWait = INFINITE;
-  BOOL    bExitThread = FALSE;
-
-  // Force the system to create a message queue for this thread.
-  // (See MSDN documentation for PostThreadMessage.)
-  PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
 
   // Signal to the scheduler that the thread is ready.
   SetEvent(m_hThreadReadyEvent);
 
-  while( !bExitThread )
+  while(! m_bStop )
   {
-    // Wait for a thread message OR until the wait time expires.
-    DWORD dwResult = MsgWaitForMultipleObjects(0, NULL, FALSE, lWait, QS_POSTMESSAGE);
-
-    if (dwResult == WAIT_TIMEOUT)
+    bool bProcessSamples = true;
+    switch (m_currentEvent) 
     {
-      // If we timed out, then process the samples in the queue
-      hr = ProcessSamplesInQueue(&lWait);
-      if (FAILED(hr))
-      {
-        bExitThread = TRUE;
-      }
-    }
-
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-    {
-      BOOL bProcessSamples = TRUE;
-
-      switch (msg.message) 
-      {
       case eTerminate:
         CLog::Log(LOGNOTICE,"%s Scheduler terminate" ,__FUNCTION__);
-        bExitThread = TRUE;
+        m_currentEvent = eNone;
         break;
 
       case eFlush:
@@ -456,6 +404,7 @@ DWORD CEvrScheduler::SchedulerThreadProcPrivate()
 
         lWait = INFINITE;
         SetEvent(m_hFlushEvent);
+        m_currentEvent = eNone;
         break;
 
       case eSchedule:
@@ -465,17 +414,18 @@ DWORD CEvrScheduler::SchedulerThreadProcPrivate()
           hr = ProcessSamplesInQueue(&lWait);
           if (FAILED(hr))
           {
-            bExitThread = TRUE;
+            m_bStop = TRUE;
           }
           bProcessSamples = (lWait != INFINITE); 
-        }
+        } else
+          m_currentEvent = eNone;
         break;
-      } // switch  
-
-    } // while PeekMessage
+    } // switch 
   
   }  // while (!bExitThread)
+}
 
-  CLog::Log(LOGNOTICE,"Exit scheduler thread.");
-  return (SUCCEEDED(hr) ? 0 : 1);
+void CEvrScheduler::OnStartup()
+{
+  CThread::SetName("EVR Scheduler");
 }

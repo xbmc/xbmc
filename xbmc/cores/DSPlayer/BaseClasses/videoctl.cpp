@@ -49,16 +49,16 @@ LPWSTR WINAPI WideStringFromResource(__out_ecount(STR_MAX_LENGTH) LPWSTR pBuffer
     *pBuffer = 0;
 
     if (g_amPlatform == VER_PLATFORM_WIN32_NT) {
-	LoadStringW(g_hInst,iResourceID,pBuffer,STR_MAX_LENGTH);
+  LoadStringW(g_hInst,iResourceID,pBuffer,STR_MAX_LENGTH);
     } else {
 
-	CHAR szBuffer[STR_MAX_LENGTH];
-	DWORD dwStringLength = LoadString(g_hInst,iResourceID,szBuffer,STR_MAX_LENGTH);
-	// if we loaded a string convert it to wide characters, ensuring
-	// that we also null terminate the result.
-	if (dwStringLength++) {
-	    MultiByteToWideChar(CP_ACP,0,szBuffer,dwStringLength,pBuffer,STR_MAX_LENGTH);
-	}
+  CHAR szBuffer[STR_MAX_LENGTH];
+  DWORD dwStringLength = LoadString(g_hInst,iResourceID,szBuffer,STR_MAX_LENGTH);
+  // if we loaded a string convert it to wide characters, ensuring
+  // that we also null terminate the result.
+  if (dwStringLength++) {
+      MultiByteToWideChar(CP_ACP,0,szBuffer,dwStringLength,pBuffer,STR_MAX_LENGTH);
+  }
     }
     return pBuffer;
 }
@@ -636,28 +636,28 @@ HRESULT CLoadDirectDraw::LoadDirectDraw(__in LPSTR szDevice)
     // force ANSI, we assume it
     pDrawEnum = (PDRAWENUM)GetProcAddress(m_hDirectDraw,"DirectDrawEnumerateA");
     pDrawEnumEx = (LPDIRECTDRAWENUMERATEEXA)GetProcAddress(m_hDirectDraw,
-						"DirectDrawEnumerateExA");
+            "DirectDrawEnumerateExA");
 
     // We don't NEED DirectDrawEnumerateEx, that's just for multimon stuff
     if (pDrawCreate == NULL || pDrawEnum == NULL) {
         DbgLog((LOG_ERROR,1,TEXT("Can't get functions: Create=%x Enum=%x"),
-			pDrawCreate, pDrawEnum));
+      pDrawCreate, pDrawEnum));
         NOTE("No entry point");
         ReleaseDirectDraw();
         return E_NOINTERFACE;
     }
 
     DbgLog((LOG_TRACE,3,TEXT("Creating DDraw for device %s"),
-					szDevice ? szDevice : "<NULL>"));
+          szDevice ? szDevice : "<NULL>"));
 
     // Create a DirectDraw display provider for this device, using the fancy
     // multimon-aware version, if it exists
     if (pDrawEnumEx)
         m_pDirectDraw = DirectDrawCreateFromDeviceEx(szDevice, pDrawCreate,
-								pDrawEnumEx);
+                pDrawEnumEx);
     else
         m_pDirectDraw = DirectDrawCreateFromDevice(szDevice, pDrawCreate,
-								pDrawEnum);
+                pDrawEnum);
 
     if (m_pDirectDraw == NULL) {
             DbgLog((LOG_ERROR,1,TEXT("Can't create DDraw")));
@@ -730,17 +730,17 @@ BOOL CLoadDirectDraw::IsDirectDrawVersion1()
 {
 
     if (m_pDirectDraw == NULL)
-	return FALSE;
+  return FALSE;
 
     IDirectDraw2 *p = NULL;
     HRESULT hr = m_pDirectDraw->QueryInterface(IID_IDirectDraw2, (void **)&p);
     if (p)
-	p->Release();
+  p->Release();
     if (hr == NOERROR) {
         DbgLog((LOG_TRACE,3,TEXT("Direct Draw Version 2 or greater")));
-	return FALSE;
+  return FALSE;
     } else {
         DbgLog((LOG_TRACE,3,TEXT("Direct Draw Version 1")));
-	return TRUE;
+  return TRUE;
     }
 }

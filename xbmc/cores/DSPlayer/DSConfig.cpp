@@ -32,93 +32,61 @@
 #include "FGLoader.h"
 #include "Filters/VMR9AllocatorPresenter.h"
 
+#include "DShowUtil/smartptr.h"
+
 using namespace std;
 
 class CDSConfig g_dsconfig;
 CDSConfig::CDSConfig(void)
 {
-  m_pGraphBuilder = NULL;
-  m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
-  //pIffdshowDecFilter = NULL;
-  m_pSplitter = NULL;
-  //pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
   pGraph = NULL;
-  pGraph = NULL;
-  pQualProp = NULL;
   m_pGuidDxva = GUID_NULL;
 }
 
 CDSConfig::~CDSConfig(void)
 {
-  while (! m_pPropertiesFilters.empty())
-    m_pPropertiesFilters.pop_back();
+  m_pPropertiesFilters.clear();
 }
 void CDSConfig::ClearConfig()
 {
-  m_pGraphBuilder = NULL;
-  m_pIMpcDecFilter = NULL;
   m_pIMpaDecFilter = NULL;
-  //pIffdshowDecFilter = NULL;
-  //pIffdshowBase = NULL;
   pIffdshowDecoder = NULL;
-  pQualProp = NULL;
   pGraph = NULL;
-  m_pStdDxva.Format("");
+  m_pStdDxva = "";
   m_pGuidDxva = GUID_NULL;
-  while (! m_pPropertiesFilters.empty())
-    m_pPropertiesFilters.pop_back();
+  
+  m_pPropertiesFilters.clear();
 }
-HRESULT CDSConfig::ConfigureFilters(IFilterGraph2* pGB)
+HRESULT CDSConfig::ConfigureFilters()
 {
   HRESULT hr = S_OK;
-  m_pGraphBuilder = pGB;
-  pGB = NULL;
-  m_pIMpcDecFilter = NULL;
-  m_pIMpaDecFilter = NULL;
-  //pIffdshowDecFilter = NULL;
-  //pIffdshowBase = NULL;
-  pIffdshowDecoder = NULL;
-  pQualProp = NULL;
-  m_pStdDxva = DShowUtil::GetDXVAMode(&m_pGuidDxva);
-
-  while (! m_pPropertiesFilters.empty())
-    m_pPropertiesFilters.pop_back();
-
-  IBaseFilter *pBF = NULL;
-  if (SUCCEEDED(m_pGraphBuilder->FindFilterByName(L"Xbmc VMR9", &pBF)))
-  {
-    pBF->QueryInterface(IID_IQualProp,(void **) &pQualProp);
-  }
-  SAFE_RELEASE(pBF);
-  ConfigureFilters();
-
-  return hr;
-}
-
-void CDSConfig::ConfigureFilters()
-{
+  
+  ClearConfig();
   GetDxvaGuid();
-  BeginEnumFilters(m_pGraphBuilder, pEF, pBF)
+
+  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
   {
-	  GetMpaDec(pBF);
+    GetMpaDec(pBF);
     GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);
   }
   EndEnumFilters
-
   CreatePropertiesXml();
+
+  return hr;
 }
 
 bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
 {
-  if ((pBF == CFGLoader::Filters.AudioRenderer.pBF && CFGLoader::Filters.AudioRenderer.guid != CLSID_ReClock) || pBF == CFGLoader::Filters.VideoRenderer.pBF )
+  if ((pBF == CFGLoader::Filters.AudioRenderer.pBF && CFGLoader::Filters.AudioRenderer.guid != CLSID_ReClock)
+    || pBF == CFGLoader::Filters.VideoRenderer.pBF )
     return false;
 
-  ISpecifyPropertyPages *pProp = NULL;
+  Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;
   CAUUID pPages;
-  if ( SUCCEEDED( pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **) &pProp) ) )
+  if ( pProp )
   {
     pProp->GetPages(&pPages);
     if (pPages.cElems > 0)
@@ -129,7 +97,6 @@ bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
       g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
       CLog::Log(LOGNOTICE, "%s \"%s\" expose ISpecifyPropertyPages", __FUNCTION__, filterName.c_str());
     }
-	  SAFE_RELEASE(pProp);
     CoTaskMemFree(pPages.pElems);
     return true;
     
@@ -153,7 +120,7 @@ void CDSConfig::CreatePropertiesXml()
   if (!pRoot) 
     return;
   
-  for (std::vector<IBaseFilter*>::const_iterator it = m_pPropertiesFilters.begin() ; it != m_pPropertiesFilters.end(); it++)
+  for (std::vector<IBaseFilter *>::const_iterator it = m_pPropertiesFilters.begin() ; it != m_pPropertiesFilters.end(); it++)
   {
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(*it), pStrName);
     TiXmlElement newFilterElement("string");
@@ -196,10 +163,9 @@ void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
 void CDSConfig::GetDxvaGuid()
 {
   //Get the subtype of the pin this is actually the guid used for dxva description
-  IBaseFilter* pBFV = CFGLoader::Filters.VideoRenderer.pBF;
   GUID dxvaGuid = GUID_NULL;
-  IPin *pPin = NULL;
-  pPin = DShowUtil::GetFirstPin(pBFV);
+  Com::SmartPtr<IPin> pPin = NULL;
+  pPin = DShowUtil::GetFirstPin(CFGLoader::Filters.VideoRenderer.pBF);
   if (pPin)
   {
     AM_MEDIA_TYPE pMT;
@@ -208,24 +174,17 @@ void CDSConfig::GetDxvaGuid()
     FreeMediaType(pMT);
   }
   m_pGuidDxva = dxvaGuid;
+
   if (dxvaGuid == GUID_NULL)
-    m_pStdDxva.Format("");
+    m_pStdDxva = "";
   else
-    m_pStdDxva = DShowUtil::GetDXVAMode(&dxvaGuid);
-  SAFE_RELEASE(pBFV);    
+    m_pStdDxva = DShowUtil::GetDXVAMode(&dxvaGuid);  
 }
 
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
 {
   HRESULT hr;
-  /*if (!pIffdshowDecFilter)
-  {
-    hr = pBF->QueryInterface(IID_IffdshowDecVideoA, (void **) &pIffdshowDecFilter );
-  }
-  if (!pIffdshowBase)
-  {
-    hr = pBF->QueryInterface(IID_IffdshowBaseA,(void **) &pIffdshowBase );
-  }*/
+
   if (!pIffdshowDecoder)
     hr = pBF->QueryInterface(IID_IffDecoder, (void **) &pIffdshowDecoder );
   
@@ -236,18 +195,18 @@ bool CDSConfig::LoadffdshowSubtitles(CStdString filePath)
 {
   if (pIffdshowDecoder)
   {
-    if (SUCCEEDED(pIffdshowDecoder->compat_putParamStr(IDFF_subFilename,filePath.c_str())))
+    if (SUCCEEDED(pIffdshowDecoder->compat_putParamStr(IDFF_subFilename, filePath.c_str())))
       return true;
-    return false;
   }
-  else
-    return false;
+  
+  return false;
 }
 
 bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
 {
   if (m_pIMpaDecFilter)
     return false;
+
   pBF->QueryInterface(__uuidof(m_pIMpaDecFilter), (void **)&m_pIMpaDecFilter);
 
 //definition of AC3 VALUE DEFINITION
@@ -283,8 +242,16 @@ bool CDSConfig::GetMpaDec(IBaseFilter* pBF)
     int pSpkConfig;
     bool audioisdigital,audiodowntostereo;
     //0 analog
-    audiodowntostereo = g_guiSettings.GetSetting("audiooutput.downmixmultichannel")->ToString().Equals("true",false);
-    audioisdigital = g_guiSettings.GetSetting("audiooutput.mode")->ToString().Equals("1",false);
+    if (g_guiSettings.GetSetting("audiooutput.downmixmultichannel"))
+      audiodowntostereo = g_guiSettings.GetSetting("audiooutput.downmixmultichannel")->ToString().Equals("true",false);
+    else
+      audiodowntostereo = false;
+
+    if (g_guiSettings.GetSetting("audiooutput.mode"))
+      audioisdigital = g_guiSettings.GetSetting("audiooutput.mode")->ToString().Equals("1", false);
+    else
+      audioisdigital = false;
+
     if (audioisdigital)
     {
       //1 digital

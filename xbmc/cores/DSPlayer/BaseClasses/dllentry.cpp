@@ -26,7 +26,7 @@ extern CFactoryTemplate g_Templates[];
 extern int g_cTemplates;
 
 HINSTANCE g_hInst;
-DWORD	  g_amPlatform;		// VER_PLATFORM_WIN32_WINDOWS etc... (from GetVersionEx)
+DWORD    g_amPlatform;    // VER_PLATFORM_WIN32_WINDOWS etc... (from GetVersionEx)
 OSVERSIONINFO g_osInfo;
 
 //
@@ -82,7 +82,7 @@ CClassFactory::QueryInterface(REFIID riid,__deref_out void **ppv)
     // any interface on this object is the object pointer.
     if ((riid == IID_IUnknown) || (riid == IID_IClassFactory)) {
         *ppv = (LPVOID) this;
-	// AddRef returned interface pointer
+  // AddRef returned interface pointer
         ((LPUNKNOWN) *ppv)->AddRef();
         return NOERROR;
     }
@@ -135,10 +135,10 @@ CClassFactory::CreateInstance(
 
     if (pObj == NULL) {
         *pv = NULL;
-	if (SUCCEEDED(hr)) {
-	    hr = E_OUTOFMEMORY;
-	}
-	return hr;
+  if (SUCCEEDED(hr)) {
+      hr = E_OUTOFMEMORY;
+  }
+  return hr;
     }
 
     /* Delete the object if we got a construction error */
@@ -251,7 +251,7 @@ DllCanUnloadNow()
         CBaseObject::ObjectsActive()));
 
     if (CClassFactory::IsLocked() || CBaseObject::ObjectsActive()) {
-	return S_FALSE;
+  return S_FALSE;
     } else {
         return S_OK;
     }
@@ -304,19 +304,19 @@ _DllEntryPoint(
         DisableThreadLibraryCalls(hInstance);
         DbgInitialise(hInstance);
 
-    	{
-    	    // The platform identifier is used to work out whether
-    	    // full unicode support is available or not.  Hence the
-    	    // default will be the lowest common denominator - i.e. N/A
+      {
+          // The platform identifier is used to work out whether
+          // full unicode support is available or not.  Hence the
+          // default will be the lowest common denominator - i.e. N/A
                 g_amPlatform = VER_PLATFORM_WIN32_WINDOWS; // win95 assumed in case GetVersionEx fails
     
                 g_osInfo.dwOSVersionInfoSize = sizeof(g_osInfo);
                 if (GetVersionEx(&g_osInfo)) {
-            	g_amPlatform = g_osInfo.dwPlatformId;
-    	    } else {
-    		DbgLog((LOG_ERROR, 1, TEXT("Failed to get the OS platform, assuming Win95")));
-    	    }
-    	}
+              g_amPlatform = g_osInfo.dwPlatformId;
+          } else {
+        DbgLog((LOG_ERROR, 1, TEXT("Failed to get the OS platform, assuming Win95")));
+          }
+      }
 
         g_hInst = hInstance;
         DllInitClasses(TRUE);
@@ -343,14 +343,14 @@ _DllEntryPoint(
             }
 
             (void)StringCchPrintf(szInfo, NUMELMS(szInfo), TEXT("Executable: %s  Pid %x  Tid %x. "),
-			    pName, GetCurrentProcessId(), GetCurrentThreadId());
+          pName, GetCurrentProcessId(), GetCurrentThreadId());
 
             (void)StringCchPrintf(szInfo+lstrlen(szInfo), NUMELMS(szInfo) - lstrlen(szInfo), TEXT("Module %s, %d objects left active!"),
                      m_ModuleName, CBaseObject::ObjectsActive());
             DbgAssert(szInfo, TEXT(__FILE__),__LINE__);
 
-	    // If running remotely wait for the Assert to be acknowledged
-	    // before dumping out the object register
+      // If running remotely wait for the Assert to be acknowledged
+      // before dumping out the object register
             DbgDumpObjectRegister();
         }
         DbgTerminate();

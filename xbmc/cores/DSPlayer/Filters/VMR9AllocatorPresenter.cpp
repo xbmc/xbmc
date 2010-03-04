@@ -31,7 +31,7 @@
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"
 #include "GuiSettings.h"
-#include "DShowUtil/SmartPtr.h"
+//#include "SystemInfo.h"
 
 class COuterVMR9
   : public CUnknown
@@ -39,14 +39,14 @@ class COuterVMR9
   , public IBasicVideo2
   , public IVMRWindowlessControl
 {
-  SmartPtr<IUnknown> m_pVMR;
+  Com::SmartPtr<IUnknown> m_pVMR;
   CVMR9AllocatorPresenter *m_pAllocatorPresenter;
 
 public:
 
   COuterVMR9(const TCHAR* pName, LPUNKNOWN pUnk, CVMR9AllocatorPresenter *_pAllocatorPresenter) : CUnknown(pName, pUnk)
   {
-    CoCreateInstance(CLSID_VideoMixingRenderer9, NULL, CLSCTX_ALL, __uuidof(m_pVMR), (void**) &m_pVMR);
+    m_pVMR.CoCreateInstance(CLSID_VideoMixingRenderer9, GetOwner());
     m_pAllocatorPresenter = _pAllocatorPresenter;
   }
 
@@ -80,15 +80,11 @@ public:
 
   STDMETHODIMP GetNativeVideoSize(LONG* lpWidth, LONG* lpHeight, LONG* lpARWidth, LONG* lpARHeight)
   {
-    IVMRWindowlessControl9* pWC9 = NULL;
-    HRESULT hr = E_NOTIMPL;
-    m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9);
+   
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+      return pWC9->GetNativeVideoSize(lpWidth, lpHeight, lpARWidth, lpARHeight);
     
-    if(pWC9)
-      hr = pWC9->GetNativeVideoSize(lpWidth, lpHeight, lpARWidth, lpARHeight);
-    
-    SAFE_RELEASE(pWC9);
-    return hr;
+    return E_NOTIMPL;
   }
 
   STDMETHODIMP GetMinIdealVideoSize(LONG* lpWidth, LONG* lpHeight) {return E_NOTIMPL;}
@@ -100,25 +96,20 @@ public:
   STDMETHODIMP GetVideoPosition(LPRECT lpSRCRect, LPRECT lpDSTRect)
   {
     HRESULT hr = E_NOTIMPL;
-    IVMRWindowlessControl9* pWC9 = NULL;
-    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       hr = pWC9->GetVideoPosition(lpSRCRect, lpDSTRect);
     }
-    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 
   STDMETHODIMP GetAspectRatioMode(DWORD* lpAspectRatioMode)
   {
-    IVMRWindowlessControl9* pWC9 = NULL;
-    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       *lpAspectRatioMode = VMR_ARMODE_NONE;
-      SAFE_RELEASE(pWC9);
       return S_OK;
     }
-    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 
@@ -156,16 +147,13 @@ public:
   STDMETHODIMP put_Width(long Width) {return E_NOTIMPL;}
   STDMETHODIMP get_Width(long* pWidth)
   {
-    IVMRWindowlessControl9* pWC9 = NULL;
-    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
       *pWidth = d.right-d.left;
-      SAFE_RELEASE(pWC9);
       return hr;
     }
-    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
   STDMETHODIMP put_Top(long Top) {return E_NOTIMPL;}
@@ -173,16 +161,13 @@ public:
   STDMETHODIMP put_Height(long Height) {return E_NOTIMPL;}
   STDMETHODIMP get_Height(long* pHeight)
   {
-    IVMRWindowlessControl9* pWC9 = NULL;
-    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
       *pHeight = g_geometryHelper.GetHeight(d);
-      SAFE_RELEASE(pWC9);
       return hr;
     }
-    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
   STDMETHODIMP put_Owner(OAHWND Owner) {return E_NOTIMPL;}
@@ -233,7 +218,7 @@ public:
     return GetVideoSize(pWidth, pHeight);
   }
 /*
-    if(CComQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
@@ -248,8 +233,7 @@ public:
   STDMETHODIMP SetDestinationPosition(long Left, long Top, long Width, long Height) {return E_NOTIMPL;}
   STDMETHODIMP GetDestinationPosition(long* pLeft, long* pTop, long* pWidth, long* pHeight)
   {
-    IVMRWindowlessControl9* pWC9 = NULL;
-    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       tagRECT s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
@@ -257,25 +241,20 @@ public:
       *pTop = d.top;
       *pWidth = g_geometryHelper.GetWidth(d);
       *pHeight = g_geometryHelper.GetHeight(d);
-      SAFE_RELEASE(pWC9);
       return hr;
     }
-    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
   STDMETHODIMP SetDefaultDestinationPosition() {return E_NOTIMPL;}
   STDMETHODIMP GetVideoSize(long* pWidth, long* pHeight)
   {
-    IVMRWindowlessControl9* pWC9 = NULL;
-    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       LONG aw, ah;
       HRESULT hr = pWC9->GetNativeVideoSize(pWidth, pHeight, &aw, &ah);
       *pWidth = *pHeight * aw / ah;
-      SAFE_RELEASE(pWC9);
       return hr;
     }
-    SAFE_RELEASE(pWC9);
     return E_NOTIMPL;
   }
 
@@ -287,13 +266,11 @@ public:
   STDMETHODIMP GetPreferredAspectRatio(long* plAspectX, long* plAspectY)
   {
     HRESULT hr = E_NOTIMPL;
-    IVMRWindowlessControl9* pWC9 = NULL;
-    if (SUCCEEDED(m_pVMR->QueryInterface(__uuidof(IVMRWindowlessControl9), (void**)&pWC9)))
+    if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
       LONG w, h;
       hr = pWC9->GetNativeVideoSize(&w, &h, plAspectX, plAspectY);
     }
-    SAFE_RELEASE(pWC9);
     return hr;
   }
 };
@@ -306,12 +283,15 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
 {
   hr = S_OK;
   m_bNeedNewDevice = false;
+  m_nTearingPos = 0;
+
+  m_pTexture = new CD3DTexture();
 }
 
 void CVMR9AllocatorPresenter::DeleteVmrSurfaces()
 {
   CAutoLock cAutoLock(this);
-	CAutoLock cRenderLock(&m_RenderLock);
+  CAutoLock cRenderLock(&m_RenderLock);
   for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
   {
     SAFE_RELEASE(m_pSurfaces[i]);
@@ -323,96 +303,134 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9A
 {
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
+
   CLog::Log(LOGDEBUG,"%s %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", __FUNCTION__,
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
-	  ((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
-
-  if( !lpAllocInfo || !lpNumBuffers )
-    return E_POINTER;
-  if( !m_pIVMRSurfAllocNotify)
-    return E_FAIL;
-  
-  HRESULT hr = S_OK;
+    ((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
 
   if(lpAllocInfo->Format == '21VY' || lpAllocInfo->Format == '024I')
     return E_FAIL;
-  
+
+  DeleteVmrSurfaces();
+
+  // Be sure the format is compatible
+  D3DDISPLAYMODE dm; 
+  ZeroMemory(&dm, sizeof(D3DDISPLAYMODE)); 
+  HRESULT hr;
+  if (FAILED(g_Windowing.Get3DObject()->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &dm)))
+  {
+    return D3DERR_INVALIDCALL;
+  }
+
+  D3DDEVICE_CREATION_PARAMETERS dd;
+  if FAILED(g_Windowing.Get3DDevice()->GetCreationParameters(&dd))
+    return D3DERR_INVALIDCALL;
+
+  hr = g_Windowing.Get3DObject()->CheckDeviceFormatConversion(D3DADAPTER_DEFAULT, dd.DeviceType, lpAllocInfo->Format, dm.Format); 
+  if (lpAllocInfo->Format != D3DFMT_UNKNOWN && FAILED(hr))
+  {
+    return D3DERR_INVALIDCALL;
+  }
+
+  /* If the GC only supports power of two textures, make sure
+  our video with & height are powers of two */
+  D3DCAPS9 d3dcaps;
+  g_Windowing.Get3DDevice()->GetDeviceCaps( &d3dcaps );
+  if( d3dcaps.TextureCaps & D3DPTEXTURECAPS_POW2 )
+  {
+    while( m_iVideoWidth < lpAllocInfo->dwWidth )
+      m_iVideoWidth = m_iVideoWidth << 1;
+    while( m_iVideoHeight < lpAllocInfo->dwHeight )
+      m_iVideoHeight = m_iVideoHeight << 1;
+    lpAllocInfo->dwWidth = m_iVideoWidth;
+    lpAllocInfo->dwHeight = m_iVideoHeight;
+  }
+
   int nOriginal = *lpNumBuffers;
 
-  //To do implement the texture surface on the present image
-  //if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
-  //  lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
-  CLog::Log(LOGDEBUG,"%s setting flag VMR9AllocFlag_3DRenderTarget and VMR9AllocFlag_TextureSurface",__FUNCTION__);
-  lpAllocInfo->dwFlags = VMR9AllocFlag_TextureSurface |VMR9AllocFlag_3DRenderTarget;
-  //without that format the allocate surface helper always fails for no known reason
-  CLog::Log(LOGDEBUG,"%s setting vmr9 format to D3DFMT_UNKNOWN",__FUNCTION__);
-  lpAllocInfo->Format = D3DFMT_UNKNOWN;
-  
   if (*lpNumBuffers == 1)
-	{
-		*lpNumBuffers = 4;
-		m_pNbrSurface = 4;
-	}
-	else
-		m_pNbrSurface = 0;
+  {
+    *lpNumBuffers = 4;
+    m_nVMR9Surfaces = 4;
+  }
+  else
+    m_nVMR9Surfaces = 0;
 
   m_pSurfaces.resize(*lpNumBuffers);
-  hr = m_pIVMRSurfAllocNotify->AllocateSurfaceHelper(lpAllocInfo, lpNumBuffers, & m_pSurfaces.at(0) );
-  if(FAILED(hr))
-  {
-    CLog::Log(LOGERROR,"%s AllocateSurfaceHelper returned:0x%x",__FUNCTION__,hr);
-    return hr;
-  }
+
   m_iVideoWidth = lpAllocInfo->dwWidth;
-  m_iVideoHeight = lpAllocInfo->dwHeight;
+  m_iVideoHeight = abs((int)lpAllocInfo->dwHeight);
 
-  //INITIALIZE VIDEO SURFACE THERE
-  hr = CreateSurfaces(D3DFMT_A8R8G8B8);
+  // Is format requires an offscreen surface to convert pixel format in PresentImage from YUV to RGB
+  /*if (lpAllocInfo->Format > 0x30303030)
+    lpAllocInfo->dwFlags |= VMR9AllocFlag_OffscreenSurface;
+  else
+    lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;*/
 
-  if ( FAILED( hr ) )
+  /*
+   * If VMR9AllocFlag_TextureSurface isn't set, AllocateSurfaceHelper succeeded with YUV2 texture format.
+   * However, with VMR9AllocFlag_TextureSurface, we need to set texture format to D3DFMT_X8R8G8B8 in order to
+   * AllocateSurfaceHelper to succeed. The (commented) above solution works with YUV & RGB texture format
+   * but still no image ... */
+
+  lpAllocInfo->dwFlags = VMR9AllocFlag_3DRenderTarget | VMR9AllocFlag_TextureSurface;
+  lpAllocInfo->Format = D3DFMT_X8R8G8B8;
+
+  hr = m_pIVMRSurfAllocNotify->AllocateSurfaceHelper(lpAllocInfo, lpNumBuffers, &m_pSurfaces[0]);
+  if(FAILED(hr)) return hr;
+
+  m_pSurfaces.resize(*lpNumBuffers);
+
+  m_bNeedCheckSample = true;
+
+  if(FAILED(hr = CreateSurfaces(dm.Format)))
     return hr;
 
-  for( int i = 0; i < DS_NBR_3D_SURFACE-1; ++i ) 
+  if(!(lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface))
   {
-    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[i], NULL, D3DCOLOR_COLORVALUE(0,0,0,255));
-    if (SUCCEEDED(hr))
-      break;
+    // test if the colorspace is acceptable
+    if(FAILED(hr = g_Windowing.Get3DDevice()->StretchRect(m_pSurfaces[0], NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE)))
+    {
+      DeleteVmrSurfaces();
+      return E_FAIL;
+    }
   }
 
-  if ( FAILED( hr ) )
-  {
-    CLog::Log(LOGERROR,"%s ColorFill returned:0x%x",__FUNCTION__,hr);
-    DeleteSurfaces();
-    return hr;
-  }
-  if (m_pNbrSurface && m_pNbrSurface != *lpNumBuffers)
-		m_pNbrSurface = *lpNumBuffers;
-  
-	*lpNumBuffers = (nOriginal < *lpNumBuffers) ? nOriginal : *lpNumBuffers;
-	m_pCurSurface = 0;
+  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[m_nCurSurface], NULL, 0);
+
+  if (m_nVMR9Surfaces && m_nVMR9Surfaces != *lpNumBuffers)
+    m_nVMR9Surfaces = *lpNumBuffers;
+  *lpNumBuffers = std::min((int) nOriginal, (int)(*lpNumBuffers));
+  m_iVMR9Surface = 0;
+
   return hr;
 }
 
 void CVMR9AllocatorPresenter::GetCurrentVideoSize()
 {
-  IBaseFilter* pVMR9;
-  IPin* pPin;
-  CMediaType mt;
+  m_bNeedCheckSample = false;
+  Com::SmartPtr<IBaseFilter>  pVMR9;
+  Com::SmartPtr<IPin>      pPin;
+  CMediaType        mt;
+
   if (SUCCEEDED (m_pIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
-      SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
-      SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
+    SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
+    SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
   {
-    DShowUtil::ExtractAvgTimePerFrame(&mt,m_rtTimePerFrame);
+    DShowUtil::ExtractAvgTimePerFrame(&mt, m_rtTimePerFrame);
+
     if (mt.formattype == FORMAT_VideoInfo || mt.formattype == FORMAT_MPEGVideo) {
 
       VIDEOINFOHEADER *vh = (VIDEOINFOHEADER*)mt.pbFormat;
       m_iVideoWidth = vh->bmiHeader.biWidth;
       m_iVideoHeight = abs(vh->bmiHeader.biHeight);
+
       if (vh->rcTarget.right - vh->rcTarget.left > 0)
         m_iVideoWidth = vh->rcTarget.right - vh->rcTarget.left;
       else if (vh->rcSource.right - vh->rcSource.left > 0)
         m_iVideoWidth = vh->rcSource.right - vh->rcSource.left;
+
       if (vh->rcTarget.bottom - vh->rcTarget.top > 0)
         m_iVideoHeight = vh->rcTarget.bottom - vh->rcTarget.top;
       else if (vh->rcSource.bottom - vh->rcSource.top > 0)
@@ -423,6 +441,7 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
       VIDEOINFOHEADER2 *vh = (VIDEOINFOHEADER2*)mt.pbFormat;
       m_iVideoWidth = vh->bmiHeader.biWidth;
       m_iVideoHeight = abs(vh->bmiHeader.biHeight);
+
       if (vh->rcTarget.right - vh->rcTarget.left > 0)
         m_iVideoWidth = vh->rcTarget.right - vh->rcTarget.left;
       else if (vh->rcSource.right - vh->rcSource.left > 0)
@@ -436,15 +455,12 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
     }
 
     // If 0 defaulting framerate to 23.97...
-		if (m_rtTimePerFrame == 0) 
-      m_rtTimePerFrame = 417166;
+    if (m_rtTimePerFrame == 0) m_rtTimePerFrame = 417166;
 
-		m_fps = (float) ( 10000000.0 / m_rtTimePerFrame );
-    
-    g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
-
+    m_fps = (float) ( 10000000.0 / m_rtTimePerFrame );    
+    g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth,
+      m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
   }
-  SAFE_RELEASE(pVMR9);
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
@@ -459,20 +475,19 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
     return E_POINTER;
 
   //return if the surface index is higher than the size of the surfaces we have
-  if (SurfaceIndex >= m_pSurfaces.size() ) 
+  if (SurfaceIndex >= m_pSurfaces.size()) 
     return E_FAIL;
-  
+
   CAutoLock cRenderLock(&m_RenderLock);
-  if (m_pNbrSurface)
+  if (m_nVMR9Surfaces)
   {
-    ++m_pCurSurface;
-    m_pCurSurface = m_pCurSurface % m_pNbrSurface;
-    if (m_pSurfaces[m_pCurSurface + SurfaceIndex])
-      (*lplpSurface = m_pSurfaces[m_pCurSurface + SurfaceIndex])->AddRef();
+    ++m_iVMR9Surface;
+    m_iVMR9Surface = m_iVMR9Surface % m_nVMR9Surfaces;
+    (*lplpSurface = m_pSurfaces[m_iVMR9Surface + SurfaceIndex])->AddRef();
   }
   else
   {
-    m_pNbrSurface = SurfaceIndex;
+    m_iVMR9Surface = SurfaceIndex;
     (*lplpSurface = m_pSurfaces[SurfaceIndex])->AddRef();
   }
 
@@ -508,53 +523,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::StopPresenting(DWORD_PTR dwUserID)
     return S_OK;
 }
 
-// IUnknown
-STDMETHODIMP CVMR9AllocatorPresenter::QueryInterface( 
-        REFIID riid,
-        void** ppvObject)
-{
-    HRESULT hr = E_NOINTERFACE;
-
-    if( ppvObject == NULL ) {
-        hr = E_POINTER;
-    } 
-    else if( riid == IID_IVMRSurfaceAllocator9 ) {
-        *ppvObject = static_cast<IVMRSurfaceAllocator9*>( this );
-        AddRef();
-        hr = S_OK;
-    } 
-    else if( riid == IID_IVMRImagePresenter9 ) {
-        *ppvObject = static_cast<IVMRImagePresenter9*>( this );
-        AddRef();
-        hr = S_OK;
-    }
-    else if( riid == IID_IUnknown ) {
-        *ppvObject = 
-            static_cast<IUnknown*>( 
-            static_cast<IVMRSurfaceAllocator9*>( this ) );
-        AddRef();
-        hr = S_OK;    
-    }
-
-    return hr;
-}
-
-ULONG CVMR9AllocatorPresenter::AddRef()
-{
-    return InterlockedIncrement(& m_refCount);
-}
-
-ULONG CVMR9AllocatorPresenter::Release()
-{
-    ULONG ret = InterlockedDecrement(& m_refCount);
-    if( ret == 0 )
-    {
-        delete this;
-    }
-
-    return ret;
-}
-
 STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 {
   CheckPointer(ppRenderer, E_POINTER);
@@ -564,90 +532,60 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
   do
   {
-    m_pMacrovisionKicker = new CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
-    IUnknown* pUnk = (IUnknown*)(INonDelegatingUnknown*) m_pMacrovisionKicker;
+    CMacrovisionKicker* pMK = DNew CMacrovisionKicker(NAME("CMacrovisionKicker"), NULL);
+    Com::SmartPtr<IUnknown> pUnk = (IUnknown*)(INonDelegatingUnknown*)pMK;
 
-    m_pOuterVMR9 = new COuterVMR9(NAME("COuterVMR9"), pUnk, this);
+    COuterVMR9 *pOuter = DNew COuterVMR9(NAME("COuterVMR9"), pUnk, this);
 
 
-    m_pMacrovisionKicker->SetInner((IUnknown*)(INonDelegatingUnknown*) m_pOuterVMR9);
-    IBaseFilter* pBF = NULL;
-    pUnk->QueryInterface(__uuidof(IBaseFilter), (void**)&pBF);
+    pMK->SetInner((IUnknown*)(INonDelegatingUnknown*)pOuter);
+    Com::SmartQIPtr<IBaseFilter> pBF = pUnk;
 
-    IPin* pPin = DShowUtil::GetFirstPin(pBF);
-
-    IMemInputPin* pMemInputPin;
-    pPin->QueryInterface(__uuidof(IMemInputPin), (void**)&pMemInputPin);
-
+    Com::SmartPtr<IPin> pPin = DShowUtil::GetFirstPin(pBF);
+    Com::SmartQIPtr<IMemInputPin> pMemInputPin = pPin;
     m_fUseInternalTimer = HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
 
-    IAMVideoAccelerator* pAMVA;
-    if (SUCCEEDED(pPin->QueryInterface(__uuidof(IAMVideoAccelerator), (void**)&pAMVA)))
+    if(Com::SmartQIPtr<IAMVideoAccelerator> pAMVA = pPin)
       HookAMVideoAccelerator((IAMVideoAcceleratorC*)(IAMVideoAccelerator*)pAMVA);
 
-    SAFE_RELEASE(pPin);
-    SAFE_RELEASE(pAMVA);
-    SAFE_RELEASE(pMemInputPin);
-    
-    IVMRFilterConfig9* pConfig;
-    //HRESULT hr;
-    hr = pBF->QueryInterface(__uuidof(IVMRFilterConfig9), (void**)&pConfig);
+    Com::SmartQIPtr<IVMRFilterConfig9> pConfig = pBF;
     if(!pConfig)
       break;
 
     if (1)
     {
       if(FAILED(hr = pConfig->SetNumberOfStreams(1)))
-      {
-        SAFE_RELEASE(pConfig);
         break;
-      }
 
-      IVMRMixerControl9* pMC;
-      if (SUCCEEDED(pBF->QueryInterface(__uuidof(IVMRMixerControl9), (void**)&pMC)))
+      if(Com::SmartQIPtr<IVMRMixerControl9> pMC = pBF)
       {
         DWORD dwPrefs;
-        pMC->GetMixingPrefs(&dwPrefs);  
+        pMC->GetMixingPrefs(&dwPrefs);
 
         // See http://msdn.microsoft.com/en-us/library/dd390928(VS.85).aspx
         dwPrefs |= MixerPref9_NonSquareMixing;
         dwPrefs |= MixerPref9_NoDecimation;
+
         dwPrefs &= ~MixerPref9_RenderTargetMask; 
-        dwPrefs |= MixerPref9_RenderTargetYUV;
+        dwPrefs |= MixerPref9_RenderTargetYUV; // Need this or xbmc freeze. But in YUV, AllocateSurfaceHelper failed (in win7)
 
-        pMC->SetMixingPrefs(dwPrefs); 
-
-        SAFE_RELEASE(pMC);
+        pMC->SetMixingPrefs(dwPrefs);
       }
     }
 
     if(FAILED(hr = pConfig->SetRenderingMode(VMR9Mode_Renderless)))
-    {
-      SAFE_RELEASE(pConfig);
       break;
-    }
 
-    IVMRSurfaceAllocatorNotify9* pSAN;
-    if (FAILED(pBF->QueryInterface(__uuidof(IVMRSurfaceAllocatorNotify9), (void**)&pSAN)))
-    {
-      SAFE_RELEASE(pConfig);
+    Com::SmartQIPtr<IVMRSurfaceAllocatorNotify9> pSAN = pBF;
+    if(!pSAN)
       break;
-    }
 
     DWORD_PTR MY_USER_ID = 0xACDCACDC;
     if(FAILED(hr = pSAN->AdviseSurfaceAllocator(MY_USER_ID, static_cast<IVMRSurfaceAllocator9*>(this)))
-    || FAILED(hr = AdviseNotify(pSAN)))
-    {
-      SAFE_RELEASE(pConfig);
-      SAFE_RELEASE(pSAN);
+      || FAILED(hr = AdviseNotify(pSAN)))
       break;
-    }
 
-    SAFE_RELEASE(pConfig);
-    SAFE_RELEASE(pSAN);
-
-    *ppRenderer = (IUnknown *) pBF;
-    SAFE_RELEASE(pBF);
+    *ppRenderer = (IUnknown*)pBF.Detach();
 
     return S_OK;
   }
@@ -658,52 +596,64 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
 STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
 {
-  HRESULT hr;
-  CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
-
-  if (!g_renderManager.IsConfigured())
+  if (!g_renderManager.IsConfigured() || m_rtTimePerFrame == 0
+    || m_bNeedCheckSample)
   {
     GetCurrentVideoSize();
   }
 
   if (!g_renderManager.IsStarted())
     return E_FAIL;
-  
+
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
 
-	CAutoLock Lock(&m_RenderLock);
+  CAutoLock Lock(&m_RenderLock);
   if (m_bNeedNewDevice)
   {
     if (SUCCEEDED(g_Windowing.GetDeviceStatus()))
-      hr = ChangeD3dDev();
+      ChangeD3dDev();
     else
       CLog::Log(LOGDEBUG,"Need new device but 3d device suck");
-    
+
     return S_OK;
   }
 
-  IDirect3DTexture9* pTexture = NULL;
+  Com::SmartPtr<IDirect3DTexture9> pTexture;
   lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
+
   if(pTexture)
   {
-    // When using VMR9AllocFlag_TextureSurface
-    // Didnt got it working yet
     m_pVideoSurface[m_nCurSurface] = lpPresInfo->lpSurf;
-    if (m_pVideoTexture[m_nCurSurface])
-    {
-      m_pVideoTexture[m_nCurSurface]->Set(pTexture);
-    }
-    
+    if(m_pVideoTexture[m_nCurSurface]) 
+      m_pVideoTexture[m_nCurSurface] = pTexture;
   }
   else
   {
-    hr = g_Windowing.Get3DDevice()->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
+    g_Windowing.Get3DDevice()->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
   }
-  if (SUCCEEDED(hr))
-    RenderPresent(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
+
+  /* Tearing test works, but no dammit image ! */
+  /*
+  RECT    rcTearing;
+
+  rcTearing.left    = m_nTearingPos;
+  rcTearing.top    = 0;
+  rcTearing.right    = rcTearing.left + 4;
+  rcTearing.bottom  = lpPresInfo->rcSrc.bottom;
+  g_Windowing.Get3DDevice()->ColorFill (m_pVideoSurface[m_nCurSurface], &rcTearing, D3DCOLOR_ARGB (255,255,0,0));
+
+  rcTearing.left  = (rcTearing.right + 15) % lpPresInfo->rcSrc.right;
+  rcTearing.right  = rcTearing.left + 4;
+  g_Windowing.Get3DDevice()->ColorFill (m_pVideoSurface[m_nCurSurface], &rcTearing, D3DCOLOR_ARGB (255,255,0,0));
+
+  m_nTearingPos = (m_nTearingPos + 7) % lpPresInfo->rcSrc.right;
+  */
+
+  m_pTexture->Set(m_pVideoTexture[m_nCurSurface]);
+  RenderPresent(m_pTexture, m_pVideoSurface[m_nCurSurface]);
   
-  return hr;
+  return S_OK;
 }
 
 HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
@@ -722,8 +672,7 @@ HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
 
 void CVMR9AllocatorPresenter::OnLostDevice()
 {
-  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-  
+  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);  
 }
 
 void CVMR9AllocatorPresenter::OnDestroyDevice()
@@ -736,4 +685,14 @@ void CVMR9AllocatorPresenter::OnDestroyDevice()
 void CVMR9AllocatorPresenter::OnCreateDevice()
 {
   CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}
+
+STDMETHODIMP CVMR9AllocatorPresenter::NonDelegatingQueryInterface( REFIID riid, void** ppv )
+{
+  CheckPointer(ppv, E_POINTER);
+
+  return 
+    QI(IVMRSurfaceAllocator9)
+    QI(IVMRImagePresenter9)
+    __super::NonDelegatingQueryInterface(riid, ppv);
 }

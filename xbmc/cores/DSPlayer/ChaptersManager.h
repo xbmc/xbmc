@@ -70,7 +70,7 @@ private:
   /// ID of the current chapter
   long m_currentChapter;
   /// Pointer to the IAMExtendedSeeking interface
-  IAMExtendedSeeking* m_pIAMExtendedSeeking;
+  Com::SmartQIPtr<IAMExtendedSeeking, &IID_IAMExtendedSeeking> m_pIAMExtendedSeeking;
   /// CDSGraph instance
   CDSGraph *m_pGraph;
 
