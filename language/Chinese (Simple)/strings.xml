@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 28135 -->
+<!--Based on english strings version 28310 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1933,6 +1933,7 @@
   <string id="21416">启用基于刮削器语言的回送</string>
   <string id="21417">- 设置</string>
   <string id="21418">多语言</string>
+  <string id="21419">没有选定刮削器</string>
 
   <string id="21420">等于</string>
   <string id="21421">智能播放列表规则</string>
@@ -2087,10 +2088,8 @@
   <string id="22042">白/兰</string>
   <string id="22043">黑/白</string>
 
-  <string id="23000">天气插件</string>
-  <string id="23001">- 插件设置</string>
-
-  <string id="23050">开启图文电视</string>
+  <string id="23049">图文字幕不可用</string>
+  <string id="23050">开启图文字幕</string>
   <string id="23051">片段 %i</string>
   <string id="23052">缓存 %i 字节</string>
   <string id="23053">停止</string>
@@ -2101,6 +2100,38 @@
   <string id="23101">点 OK 关闭播放器</string>
 
   <string id="23104">播放完毕时点 OK</string>
+
+  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <string id="24000">扩展功能</string>
+  <string id="24001">扩展功能</string>
+
+  <string id="24005">插件</string>
+  <string id="24007">刮削器</string>
+  <string id="24008">屏幕保护</string>
+  <string id="24009">脚本</string>
+  <string id="24010">可视化效果</string>
+
+  <string id="24020">设置扩展功能</string>
+  <string id="24021">禁用扩展功能</string>
+  <string id="24022">启用扩展功能</string>
+  <string id="24030">此扩展功能不可设置</string>
+  <string id="24031">读取配置错误</string>
+
+  <string id="24050">可用扩展功能</string>
+  <string id="24051">版本：</string>
+  <string id="24052">免责声明：</string>
+  <string id="24053">许可证：</string>
+  <string id="24059">要安装此扩展功能吗？</string>
+
+  <string id="24070">扩展功能不可用</string>
+  <string id="24071">发生未知错误</string>
+  <string id="24072">需要先进行设置</string>
+  <string id="24073">无法连接</string>
+  <string id="24074">需要重新启动</string>
+  <string id="24080">尝试重新连接？</string>
+  <string id="24089">重新启动扩展功能</string>
+
+  <string id="24090">锁定扩展功能管理器</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
