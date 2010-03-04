@@ -388,7 +388,7 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
   if (!strSetting || !value)
     return STATUS_UNKNOWN;
 
-  if (strcmp(strSetting, "size")==0)
+  if (strcmp(strSetting, "bar_height")==0)
   {
     switch (*(int*) value)
     {
