@@ -167,7 +167,16 @@ ADDON_STATUS GetStatus()
 
 void Destroy()
 {
+  if (m_bCreated)
+  {
+    // TODO g_client->Disconnect();
 
+    delete g_client;
+    g_client = NULL;
+
+    m_bCreated = false;
+  }
+  curStatus = STATUS_UNKNOWN;
 }
 
 bool HasSettings()
@@ -235,18 +244,8 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   return STATUS_OK;
 }
 
-void Remove()
+void Stop()
 {
-  if (m_bCreated)
-  {
-    // TODO g_client->Disconnect();
-
-    delete g_client;
-    g_client = NULL;
-
-    m_bCreated = false;
-  }
-  curStatus = STATUS_UNKNOWN;
 }
 
 void FreeSettings()
