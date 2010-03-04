@@ -180,13 +180,10 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
   if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.ID"), addon))
   {
     if (addon->Disabled())
-    {
       CAddonMgr::Get()->EnableAddon(addon);
-      Update();
-
-    }
     else
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      CAddonMgr::Get()->DisableAddon(addon);
+    Update();
   }
 }
 
