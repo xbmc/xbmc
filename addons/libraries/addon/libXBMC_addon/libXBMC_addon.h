@@ -24,6 +24,7 @@
 #include <vector>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <dlfcn.h>
 
 #ifndef _LINUX
