@@ -124,7 +124,7 @@ bool cEpg::ParseLine(const char *s)
     case 'R': SetParentalRating(atoi(t));
               break;
     case 'e': return true;
-    default:  XBMC_log(LOG_ERROR, "cEpg::ParseLine - unexpected tag while reading EPG data: %s", s);
+    default:  XBMC->Log(LOG_ERROR, "cEpg::ParseLine - unexpected tag while reading EPG data: %s", s);
               return true;
   }
   return false;

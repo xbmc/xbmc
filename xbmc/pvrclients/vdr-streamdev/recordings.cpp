@@ -114,7 +114,7 @@ cRecording::cRecording(const char *FileName)
       if (g_bCharsetConv)
       {
         CStdString str_result = m_directory;
-        XBMC_unknown_to_utf8(str_result);
+        XBMC->UnknownToUTF8(str_result);
         m_directory = strcpyrealloc(m_directory, str_result.c_str());
       }
 
@@ -131,11 +131,11 @@ cRecording::cRecording(const char *FileName)
     if (f)
     {
       if (!Read(f))
-        XBMC_log(LOG_ERROR, "EPG data problem in file %s", InfoFileName.c_str());
+        XBMC->Log(LOG_ERROR, "EPG data problem in file %s", InfoFileName.c_str());
       fclose(f);
     }
     else if (errno != ENOENT)
-      XBMC_log(LOG_ERROR, "ERROR (%s,%d,s): %m", __FILE__, __LINE__, InfoFileName.c_str());
+      XBMC->Log(LOG_ERROR, "ERROR (%s,%d,s): %m", __FILE__, __LINE__, InfoFileName.c_str());
   }
 }
 
@@ -160,7 +160,7 @@ bool cRecording::Read(FILE *f)
     ++line;
     CStdString str_result = s;
     if (g_bCharsetConv)
-      XBMC_unknown_to_utf8(str_result);
+      XBMC->UnknownToUTF8(str_result);
     if (!ParseLine(str_result.c_str()))
       return false;
   }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>3ebaeda3-80d5-4447-9514-0de7a586a9d7</uuid>
+  <id>3ebaeda3-80d5-4447-9514-0de7a586a9d7</id>
   <type>pvrclient</type>
   <title>VDRClient for streamdev</title>
   <library>XBMC_VDR.pvr</library>

@@ -23,28 +23,37 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "libXBMC_addon.h"
-#include "AddonHelpers_local.h"
+#include "../../addons/libraries/addon/libXBMC_addon/libXBMC_addon.h"
+#include "addons/AddonHelpers_local.h"
 
 using namespace std;
 
-AddonCB *m_cb = NULL;
+AddonCB *m_Handle = NULL;
+CB_AddOnLib *m_cb = NULL;
 
-void XBMC_register_me(ADDON_HANDLE hdl)
+extern "C"
+{
+
+int XBMC_register_me(void *hdl)
 {
   if (!hdl)
     fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me is called with NULL handle !!!\n");
   else
-    m_cb = (AddonCB*) hdl;
-  return;
+  {
+    m_Handle = (AddonCB*) hdl;
+    m_cb     = m_Handle->AddOnLib_RegisterMe(m_Handle->addonData);
+    if (!m_cb)
+      fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me can't get callback table from XBMC !!!\n");
+    else
+      return 1;
+  }
+  return 0;
 }
 
-bool XBMC_get_setting(string settingName, void *settingValue)
+void XBMC_unregister_me()
 {
-  if (m_cb == NULL)
-    return false;
-
-  return m_cb->AddOn.GetSetting(m_cb->addonData, settingName.c_str(), settingValue);
+  if (m_Handle && m_cb)
+    m_Handle->AddOnLib_UnRegisterMe(m_Handle->addonData, m_cb);
 }
 
 void XBMC_log(const addon_log_t loglevel, const char *format, ... )
@@ -57,7 +66,15 @@ void XBMC_log(const addon_log_t loglevel, const char *format, ... )
   va_start (args, format);
   vsprintf (buffer, format, args);
   va_end (args);
-  m_cb->AddOn.Log(m_cb->addonData, loglevel, buffer);
+  m_cb->Log(m_Handle->addonData, loglevel, buffer);
+}
+
+bool XBMC_get_setting(string settingName, void *settingValue)
+{
+  if (m_cb == NULL)
+    return false;
+
+  return m_cb->GetSetting(m_Handle->addonData, settingName.c_str(), settingValue);
 }
 
 void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
@@ -70,7 +87,7 @@ void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
   va_start (args, format);
   vsprintf (buffer, format, args);
   va_end (args);
-  m_cb->AddOn.QueueNotification(m_cb->addonData, type, buffer);
+  m_cb->QueueNotification(m_Handle->addonData, type, buffer);
 }
 
 void XBMC_unknown_to_utf8(string &str)
@@ -78,6 +95,8 @@ void XBMC_unknown_to_utf8(string &str)
   if (m_cb == NULL)
     return;
 
-  string buffer = m_cb->Utils.UnknownToUTF8(str.c_str());
+  string buffer = m_cb->UnknownToUTF8(str.c_str());
   str = buffer;
+}
+
 }

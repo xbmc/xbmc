@@ -30,8 +30,7 @@
 
 #include <list>
 #include "FileSystem/HTSPDirectory.h"
-#include "libXBMC_addon.h"
-#include "libXBMC_pvr.h"
+#include "client.h"
 
 extern "C" {
 #include "lib/libhts/htsmsg.h"
@@ -42,8 +41,8 @@ extern "C" {
 
 using namespace HTSP;
 
-class cPVRClientTvheadend { 
-  public: 
+class cPVRClientTvheadend {
+  public:
     /* Class interface */
     cPVRClientTvheadend();
     ~cPVRClientTvheadend();
@@ -62,13 +61,13 @@ class cPVRClientTvheadend {
     const char* GetBackendVersion();
     PVR_ERROR   GetBackendTime(time_t *localTime, int *gmtOffset);
     const char* GetConnectionString();
-    
+
     /* Channel handling */
     int GetNumChannels();
     int GetNumBouquets();
     PVR_ERROR RequestChannelList(PVRHANDLE handle, bool radio = false);
     PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
-  
+
     /* Live stream handling */
     bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
     void CloseLiveStream();
@@ -82,25 +81,25 @@ class cPVRClientTvheadend {
     CHTSPDirectorySession*  m_pSession;
 };
 
-inline bool cPVRClientTvheadend::IsConnected() 
+inline bool cPVRClientTvheadend::IsConnected()
 {
   return (m_pSession != NULL);
 }
 
-inline int cPVRClientTvheadend::GetNumChannels() 
+inline int cPVRClientTvheadend::GetNumChannels()
 {
   return (int)(m_pSession->GetChannels().size());
 }
 
-inline int cPVRClientTvheadend::GetNumBouquets() 
+inline int cPVRClientTvheadend::GetNumBouquets()
 {
   return (int)(m_pSession->GetTags().size());
 }
 
-inline const char* cPVRClientTvheadend::GetConnectionString() 
+inline const char* cPVRClientTvheadend::GetConnectionString()
 {
   return m_url.Get().c_str();
 }
-  
+
 #endif // __PVRCLIENT_TVHEADEND_H__
 

@@ -24,9 +24,8 @@
 #define CLIENT_H
 
 #include <string>
-#include "libXBMC_addon.h"
-#include "libXBMC_pvr.h"
-#include "xbmc_pvr_dll.h"
+#include "../../../addons/libraries/addon/libXBMC_addon/libXBMC_addon.h"
+#include "../../../addons/libraries/addon/libXBMC_pvr/libXBMC_pvr.h"
 
 #define DEFAULT_HOST        "127.0.0.1"
 #define DEFAULT_PORT        9982
@@ -53,6 +52,8 @@ extern bool         m_bHandleMessages;
 extern int          g_clientID;
 extern std::string  g_szUserPath;
 extern std::string  g_szClientPath;
+extern cHelper_libXBMC_addon *XBMC;
+extern cHelper_libXBMC_pvr   *PVR;
 
 #ifdef __cplusplus
 }

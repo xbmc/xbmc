@@ -27,22 +27,22 @@
 namespace ADDON
 {
 
-CAddonHelpers_Addon::CAddonHelpers_Addon(CAddon* addon, AddonCB* cbTable)
+CAddonHelpers_Addon::CAddonHelpers_Addon(CAddon* addon)
 {
-  m_addon = addon;
+  m_addon     = addon;
+  m_callbacks = new CB_AddOnLib;
 
   /* AddOn Helper functions */
-  cbTable->AddOn.Log                = AddOnLog;
-  cbTable->AddOn.QueueNotification  = QueueNotification;
-  cbTable->AddOn.GetSetting         = GetAddonSetting;
-
-  cbTable->Utils.UnknownToUTF8      = UnknownToUTF8;
-};
+  m_callbacks->Log                = AddOnLog;
+  m_callbacks->QueueNotification  = QueueNotification;
+  m_callbacks->GetSetting         = GetAddonSetting;
+  m_callbacks->UnknownToUTF8      = UnknownToUTF8;
+}
 
 CAddonHelpers_Addon::~CAddonHelpers_Addon()
 {
-
-};
+  delete m_callbacks;
+}
 
 void CAddonHelpers_Addon::AddOnLog(void *addonData, const addon_log_t loglevel, const char *msg)
 {
@@ -98,18 +98,18 @@ void CAddonHelpers_Addon::QueueNotification(void *addonData, const queue_msg_t t
     switch (type)
     {
       case QUEUE_WARNING:
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtWarning, addonHelper->m_addon->Name(), msg, 3000, true);
+        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, addonHelper->m_addon->Name(), msg, 3000, true);
         CLog::Log(LOGDEBUG, "%s: %s-%s - Warning Message : %s", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str(), msg);
         break;
 
       case QUEUE_ERROR:
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtError, addonHelper->m_addon->Name(), msg, 3000, true);
+        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, addonHelper->m_addon->Name(), msg, 3000, true);
         CLog::Log(LOGDEBUG, "%s: %s-%s - Error Message : %s", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str(), msg);
         break;
 
       case QUEUE_INFO:
       default:
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::mtInfo, addonHelper->m_addon->Name(), msg, 3000, false);
+        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, addonHelper->m_addon->Name(), msg, 3000, false);
         CLog::Log(LOGDEBUG, "%s: %s-%s - Info Message : %s", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str(), msg);
         break;
     }

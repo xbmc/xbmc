@@ -19,30 +19,23 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-/*
-#include "../include/libXBMC_addon.h"
-#include "../include/libXBMC_gui.h"
-#include "../include/libXBMC_pvr.h"
-#include "../include/libXBMC_vis.h"
-#include "include/xbmc_pvr_types.h"
+
+#include "addons/include/xbmc_pvr_types.h"
+#include "../../addons/libraries/addon/libXBMC_addon/libXBMC_addon.h"
 
 typedef void (*AddOnLogCallback)(void *addonData, const addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const queue_msg_t type, const char *msg);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
+typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
 
 typedef struct CB_AddOn
 {
   AddOnLogCallback       Log;
   AddOnQueueNotification QueueNotification;
   AddOnGetSetting        GetSetting;
-} CB_AddOn;
+  AddOnUnknownToUTF8     UnknownToUTF8;
+} CB_AddOnLib;
 
-typedef char* (*UtilsUnknownToUTF8)(const char *sourceDest);
-
-typedef struct CB_Utils
-{
-  UtilsUnknownToUTF8        UnknownToUTF8;
-} CB_Utils;
 
 typedef void (*PVRTransferEpgEntry)(void *userData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry);
 typedef void (*PVRTransferChannelEntry)(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *chan);
@@ -50,7 +43,7 @@ typedef void (*PVRTransferTimerEntry)(void *userData, const PVRHANDLE handle, co
 typedef void (*PVRTransferRecordingEntry)(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
 typedef void (*PVRAddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
 
-typedef struct CB_PVR
+typedef struct CB_PVRLib
 {
   PVRTransferEpgEntry       TransferEpgEntry;
   PVRTransferChannelEntry   TransferChannelEntry;
@@ -58,25 +51,31 @@ typedef struct CB_PVR
   PVRTransferRecordingEntry TransferRecordingEntry;
   PVRAddMenuHook            AddMenuHook;
 
-} CB_PVR;
+} CB_PVRLib;
+
+
+typedef CB_AddOnLib* (*XBMCAddOnLib_RegisterMe)(void *addonData);
+typedef void (*XBMCAddOnLib_UnRegisterMe)(void *addonData, CB_AddOnLib *cbTable);
+typedef CB_PVRLib* (*XBMCPVRLib_RegisterMe)(void *addonData);
+typedef void (*XBMCPVRLib_UnRegisterMe)(void *addonData, CB_PVRLib *cbTable);
 
 typedef struct AddonCB
 {
-  CB_AddOn          AddOn;
-  CB_PVR            PVR;
-  CB_Utils          Utils;
-
-  void             *addonData;
+  const char                *libBasePath;                  ///> Never, never change this!!!
+  void                      *addonData;
+  XBMCAddOnLib_RegisterMe    AddOnLib_RegisterMe;
+  XBMCAddOnLib_UnRegisterMe  AddOnLib_UnRegisterMe;
+  XBMCPVRLib_RegisterMe      PVRLib_RegisterMe;
+  XBMCPVRLib_UnRegisterMe    PVRLib_UnRegisterMe;
 } AddonCB;
+
 
 namespace ADDON
 {
 
 class CAddon;
 class CAddonHelpers_Addon;
-class CAddonHelpers_GUI;
 class CAddonHelpers_PVR;
-class CAddonHelpers_Vis;
 
 class CAddonHelpers
 {
@@ -84,18 +83,20 @@ public:
   CAddonHelpers(CAddon* addon);
   ~CAddonHelpers();
   AddonCB *GetCallbacks() { return m_callbacks; }
-  CAddonHelpers_Addon *GetHelperAddon() { return m_helperAddon; }
-  CAddonHelpers_GUI *GetHelperGUI() { return m_helperGUI; }
-  CAddonHelpers_PVR *GetHelperPVR() { return m_helperPVR; }
-  CAddonHelpers_Vis *GetHelperVis() { return m_helperVis; }
 
+  static CB_AddOnLib* AddOnLib_RegisterMe(void *addonData);
+  static void AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable);
+  static CB_PVRLib* PVRLib_RegisterMe(void *addonData);
+  static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
+
+  CAddonHelpers_Addon *GetHelperAddon() { return m_helperAddon; }
+  CAddonHelpers_PVR *GetHelperPVR() { return m_helperPVR; }
 
 private:
   AddonCB             *m_callbacks;
+  CAddon              *m_addon;
   CAddonHelpers_Addon *m_helperAddon;
-  CAddonHelpers_GUI   *m_helperGUI;
   CAddonHelpers_PVR   *m_helperPVR;
-  CAddonHelpers_Vis   *m_helperVis;
 };
 
-};*/ /* namespace ADDON */
+}; /* namespace ADDON */

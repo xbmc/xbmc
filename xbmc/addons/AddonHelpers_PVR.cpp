@@ -31,21 +31,22 @@
 namespace ADDON
 {
 
-CAddonHelpers_PVR::CAddonHelpers_PVR(CAddon* addon, AddonCB* cbTable)
+CAddonHelpers_PVR::CAddonHelpers_PVR(CAddon* addon)
 {
-  m_addon = addon;
+  m_addon     = addon;
+  m_callbacks = new CB_PVRLib;
 
   /* Write XBMC PVR specific Add-on function addresses to callback table */
-  cbTable->PVR.TransferEpgEntry       = PVRTransferEpgEntry;
-  cbTable->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
-  cbTable->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
-  cbTable->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
-  cbTable->PVR.AddMenuHook            = PVRAddMenuHook;
+  m_callbacks->TransferEpgEntry       = PVRTransferEpgEntry;
+  m_callbacks->TransferChannelEntry   = PVRTransferChannelEntry;
+  m_callbacks->TransferTimerEntry     = PVRTransferTimerEntry;
+  m_callbacks->TransferRecordingEntry = PVRTransferRecordingEntry;
+  m_callbacks->AddMenuHook            = PVRAddMenuHook;
 };
 
 CAddonHelpers_PVR::~CAddonHelpers_PVR()
 {
-
+  delete m_callbacks;
 };
 
 void CAddonHelpers_PVR::PVRTransferEpgEntry(void *addonData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry)

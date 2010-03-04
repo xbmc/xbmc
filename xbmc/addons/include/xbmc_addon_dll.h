@@ -13,7 +13,7 @@
 #endif
 
 extern "C"
-{ 
+{
   enum ADDON_STATUS
   {
     STATUS_OK,

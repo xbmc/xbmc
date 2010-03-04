@@ -1077,6 +1077,8 @@ OUTPUT_FILES="Makefile \
              xbmc/visualizations/iTunes/Makefile \
              xbmc/pvrclients/vdr-streamdev/Makefile \
              xbmc/FileSystem/Makefile \
+             lib/libXBMC_addon/Makefile \
+             lib/libXBMC_pvr/Makefile \
              tools/Linux/xbmc.sh \
              tools/TexturePacker/Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"

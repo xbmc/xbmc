@@ -20,6 +20,7 @@
  */
 
 #include "client.h"
+#include "xbmc_pvr_dll.h"
 #include "pvrclient-tvheadend.h"
 
 using namespace std;
@@ -43,6 +44,8 @@ bool m_bNoBadChannels   = DEFAULT_BADCHANNELS;
 bool m_bHandleMessages  = DEFAULT_HANDLE_MSG;
 std::string g_szUserPath    = "";
 std::string g_szClientPath  = "";
+cHelper_libXBMC_addon *XBMC = NULL;
+cHelper_libXBMC_pvr   *PVR  = NULL;
 
 extern "C" {
 
@@ -58,10 +61,15 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   PVR_PROPS* pvrprops = (PVR_PROPS*)props;
 
-  XBMC_register_me(hdl);
-  PVR_register_me(hdl);
+  XBMC = new cHelper_libXBMC_addon;
+  if (!XBMC->RegisterMe(hdl))
+    return STATUS_UNKNOWN;
 
-  //XBMC_log(LOG_DEBUG, "Creating Tvheadend PVR-Client");
+  PVR = new cHelper_libXBMC_pvr;
+  if (!PVR->RegisterMe(hdl))
+    return STATUS_UNKNOWN;
+
+  XBMC->Log(LOG_DEBUG, "Creating Tvheadend PVR-Client");
 
   curStatus      = STATUS_UNKNOWN;
   g_client       = new cPVRClientTvheadend();
@@ -74,71 +82,71 @@ ADDON_STATUS Create(void* hdl, void* props)
   buffer = (char*) malloc (1024);
   buffer[0] = 0; /* Set the end of string */
 
-  if (XBMC_get_setting("host", buffer))
+  if (XBMC->GetSetting("host", buffer))
     m_sHostname = buffer;
   else
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '127.0.0.1' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '127.0.0.1' as default");
     m_sHostname = DEFAULT_HOST;
   }
   free (buffer);
 
   /* Read setting "port" from settings.xml */
-  if (!XBMC_get_setting("port", &m_iPort))
+  if (!XBMC->GetSetting("port", &m_iPort))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '9982' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '9982' as default");
     m_iPort = DEFAULT_PORT;
   }
 
   printf("host %s, port %d\n", m_sHostname.c_str(), m_iPort);
 
   /* Read setting "ftaonly" from settings.xml */
-  if (!XBMC_get_setting("ftaonly", &m_bOnlyFTA))
+  if (!XBMC->GetSetting("ftaonly", &m_bOnlyFTA))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'ftaonly' setting, falling back to 'false' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'ftaonly' setting, falling back to 'false' as default");
     m_bOnlyFTA = DEFAULT_FTA_ONLY;
   }
 
   /* Read setting "useradio" from settings.xml */
-  if (!XBMC_get_setting("useradio", &m_bRadioEnabled))
+  if (!XBMC->GetSetting("useradio", &m_bRadioEnabled))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
     m_bRadioEnabled = DEFAULT_RADIO;
   }
 
   /* Read setting "convertchar" from settings.xml */
-  if (!XBMC_get_setting("convertchar", &m_bCharsetConv))
+  if (!XBMC->GetSetting("convertchar", &m_bCharsetConv))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
     m_bCharsetConv = DEFAULT_CHARCONV;
   }
 
   /* Read setting "timeout" from settings.xml */
-  if (!XBMC_get_setting("timeout", &m_iConnectTimeout))
+  if (!XBMC->GetSetting("timeout", &m_iConnectTimeout))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
+    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
     m_iConnectTimeout = DEFAULT_TIMEOUT;
   }
 
   /* Read setting "ignorechannels" from settings.xml */
-  if (!XBMC_get_setting("ignorechannels", &m_bNoBadChannels))
+  if (!XBMC->GetSetting("ignorechannels", &m_bNoBadChannels))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'ignorechannels' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'ignorechannels' setting, falling back to 'true' as default");
     m_bNoBadChannels = DEFAULT_BADCHANNELS;
   }
 
   /* Read setting "ignorechannels" from settings.xml */
-  if (!XBMC_get_setting("handlemessages", &m_bHandleMessages))
+  if (!XBMC->GetSetting("handlemessages", &m_bHandleMessages))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'handlemessages' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'handlemessages' setting, falling back to 'true' as default");
     m_bHandleMessages = DEFAULT_HANDLE_MSG;
   }
 
@@ -178,7 +186,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   if (str == "host")
   {
     string tmp_sHostname;
-    XBMC_log(LOG_INFO, "Changed Setting 'host' from %s to %s", m_sHostname.c_str(), (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", m_sHostname.c_str(), (const char*) settingValue);
     tmp_sHostname = m_sHostname;
     m_sHostname = (const char*) settingValue;
     if (tmp_sHostname != m_sHostname)
@@ -186,7 +194,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "port")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'port' from %u to %u", m_iPort, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", m_iPort, *(int*) settingValue);
     if (m_iPort != *(int*) settingValue)
     {
       m_iPort = *(int*) settingValue;
@@ -195,32 +203,32 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "ftaonly")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'ftaonly' from %u to %u", m_bOnlyFTA, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'ftaonly' from %u to %u", m_bOnlyFTA, *(bool*) settingValue);
     m_bOnlyFTA = *(bool*) settingValue;
   }
   else if (str == "useradio")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'useradio' from %u to %u", m_bRadioEnabled, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'useradio' from %u to %u", m_bRadioEnabled, *(bool*) settingValue);
     m_bRadioEnabled = *(bool*) settingValue;
   }
   else if (str == "convertchar")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", m_bCharsetConv, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", m_bCharsetConv, *(bool*) settingValue);
     m_bCharsetConv = *(bool*) settingValue;
   }
   else if (str == "timeout")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
     m_iConnectTimeout = *(int*) settingValue;
   }
   else if (str == "ignorechannels")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'ignorechannels' from %u to %u", m_bNoBadChannels, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'ignorechannels' from %u to %u", m_bNoBadChannels, *(bool*) settingValue);
     m_bNoBadChannels = *(bool*) settingValue;
   }
   else if (str == "handlemessages")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", m_bHandleMessages, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", m_bHandleMessages, *(bool*) settingValue);
     m_bHandleMessages = *(bool*) settingValue;
   }
 

@@ -22,56 +22,78 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "libXBMC_pvr.h"
-#include "AddonHelpers_local.h"
+#include <string>
+#include "../../addons/libraries/addon/libXBMC_pvr/libXBMC_pvr.h"
+#include "addons/AddonHelpers_local.h"
 
-AddonCB *m_pvr_cb = NULL;
+using namespace std;
 
-void PVR_register_me(ADDON_HANDLE hdl)
+AddonCB *m_Handle = NULL;
+CB_PVRLib *m_cb   = NULL;
+
+extern "C"
+{
+
+int PVR_register_me(void *hdl)
 {
   if (!hdl)
-    fprintf(stderr, "libXBMC_pvr-ERROR: PVR_register_me is called with NULL handle !!!\n");
+    fprintf(stderr, "libXBMC_addon-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
   else
-    m_pvr_cb = (AddonCB*) hdl;
-  return;
+  {
+    m_Handle = (AddonCB*) hdl;
+    m_cb     = m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
+    if (!m_cb)
+      fprintf(stderr, "libXBMC_addon-ERROR: PVRLib_register_me can't get callback table from XBMC !!!\n");
+    else
+      return 1;
+  }
+  return 0;
+}
+
+void PVR_unregister_me()
+{
+  if (m_Handle && m_cb)
+    m_Handle->PVRLib_UnRegisterMe(m_Handle->addonData, m_cb);
 }
 
 void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
 {
-  if (m_pvr_cb == NULL)
+  if (m_cb == NULL)
     return;
 
-  m_pvr_cb->PVR.TransferEpgEntry(m_pvr_cb->addonData, handle, epgentry);
+  m_cb->TransferEpgEntry(m_Handle->addonData, handle, epgentry);
 }
 
 void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
 {
-  if (m_pvr_cb == NULL)
+  if (m_cb == NULL)
     return;
 
-  m_pvr_cb->PVR.TransferChannelEntry(m_pvr_cb->addonData, handle, chan);
+  m_cb->TransferChannelEntry(m_Handle->addonData, handle, chan);
 }
 
 void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer)
 {
-  if (m_pvr_cb == NULL)
+  if (m_cb == NULL)
     return;
 
-  m_pvr_cb->PVR.TransferTimerEntry(m_pvr_cb->addonData, handle, timer);
+  m_cb->TransferTimerEntry(m_Handle->addonData, handle, timer);
 }
 
 void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
 {
-  if (m_pvr_cb == NULL)
+  if (m_cb == NULL)
     return;
 
-  m_pvr_cb->PVR.TransferRecordingEntry(m_pvr_cb->addonData, handle, recording);
+  m_cb->TransferRecordingEntry(m_Handle->addonData, handle, recording);
 }
 
 void PVR_add_menu_hook(PVR_MENUHOOK *hook)
 {
-  if (m_pvr_cb == NULL)
+  if (m_cb == NULL)
     return;
 
-  m_pvr_cb->PVR.AddMenuHook(m_pvr_cb->addonData, hook);
+  m_cb->AddMenuHook(m_Handle->addonData, hook);
 }
+
+};

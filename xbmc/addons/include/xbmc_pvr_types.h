@@ -31,6 +31,16 @@
 #ifndef __PVRCLIENT_TYPES_H__
 #define __PVRCLIENT_TYPES_H__
 
+#ifdef _WIN32
+#include <windows.h>
+#else
+#ifndef __cdecl
+#define __cdecl
+#endif
+#ifndef __declspec
+#define __declspec(X)
+#endif
+#endif
 #include <string.h>
 
 #undef ATTRIBUTE_PACKED

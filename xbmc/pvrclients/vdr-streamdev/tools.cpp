@@ -33,7 +33,7 @@ ssize_t safe_read(int filedes, void *buffer, size_t size)
   for (;;) {
       ssize_t p = __read(filedes, buffer, size);
       if (p < 0 && errno == EINTR) {
-         XBMC_log(LOG_DEBUG, "EINTR while reading from file handle %d - retrying", filedes);
+         XBMC->Log(LOG_DEBUG, "EINTR while reading from file handle %d - retrying", filedes);
          continue;
          }
       return p;
@@ -49,7 +49,7 @@ ssize_t safe_write(int filedes, const void *buffer, size_t size)
         p = __write(filedes, ptr, size);
         if (p < 0) {
            if (errno == EINTR) {
-              XBMC_log(LOG_DEBUG, "EINTR while writing to file handle %d - retrying", filedes);
+              XBMC->Log(LOG_DEBUG, "EINTR while writing to file handle %d - retrying", filedes);
               continue;
               }
            break;
@@ -97,7 +97,7 @@ char *strcpyrealloc(char *dest, const char *src)
      if (dest)
         strcpy(dest, src);
      else
-        XBMC_log(LOG_ERROR, "ERROR: out of memory");
+        XBMC->Log(LOG_ERROR, "ERROR: out of memory");
      }
   else {
      free(dest);
@@ -241,7 +241,7 @@ char *ReadLink(const char *FileName)
     if (errno == ENOENT) // file doesn't exist
       TargetName = strdup(FileName);
     else // some other error occurred
-      XBMC_log(LOG_ERROR, "ERROR (%s,%d,s): %m", __FILE__, __LINE__, FileName);
+      XBMC->Log(LOG_ERROR, "ERROR (%s,%d,s): %m", __FILE__, __LINE__, FileName);
   }
   return TargetName;
 #endif
@@ -269,23 +269,23 @@ uint64_t cTimeMs::Now(void)
         // require a minimum resolution:
         if (tp.tv_sec == 0 && tp.tv_nsec <= MIN_RESOLUTION * 1000000) {
            if (clock_gettime(CLOCK_MONOTONIC, &tp) == 0) {
-              XBMC_log(LOG_DEBUG, "cTimeMs: using monotonic clock (resolution is %ld ns)", Resolution);
+              XBMC->Log(LOG_DEBUG, "cTimeMs: using monotonic clock (resolution is %ld ns)", Resolution);
               monotonic = true;
               }
            else
-              XBMC_log(LOG_ERROR, "cTimeMs: clock_gettime(CLOCK_MONOTONIC) failed");
+              XBMC->Log(LOG_ERROR, "cTimeMs: clock_gettime(CLOCK_MONOTONIC) failed");
            }
         else
-           XBMC_log(LOG_DEBUG, "cTimeMs: not using monotonic clock - resolution is too bad (%ld s %ld ns)", tp.tv_sec, tp.tv_nsec);
+           XBMC->Log(LOG_DEBUG, "cTimeMs: not using monotonic clock - resolution is too bad (%ld s %ld ns)", tp.tv_sec, tp.tv_nsec);
         }
      else
-        XBMC_log(LOG_ERROR, "cTimeMs: clock_getres(CLOCK_MONOTONIC) failed");
+        XBMC->Log(LOG_ERROR, "cTimeMs: clock_getres(CLOCK_MONOTONIC) failed");
      initialized = true;
      }
   if (monotonic) {
      if (clock_gettime(CLOCK_MONOTONIC, &tp) == 0)
         return (uint64_t(tp.tv_sec)) * 1000 + tp.tv_nsec / 1000000;
-     XBMC_log(LOG_ERROR, "cTimeMs: clock_gettime(CLOCK_MONOTONIC) failed");
+     XBMC->Log(LOG_ERROR, "cTimeMs: clock_gettime(CLOCK_MONOTONIC) failed");
      monotonic = false;
      // fall back to gettimeofday()
      }
@@ -337,7 +337,7 @@ bool cPoller::Add(int FileHandle, bool Out)
         numFileHandles++;
         return true;
         }
-     XBMC_log(LOG_ERROR, "ERROR: too many file handles in cPoller");
+     XBMC->Log(LOG_ERROR, "ERROR: too many file handles in cPoller");
      }
   return false;
 }
@@ -375,7 +375,7 @@ bool cFile::Open(const char *FileName, int Flags, mode_t Mode)
 #else
     return Open(open(FileName, Flags, Mode));
 #endif
-  XBMC_log(LOG_ERROR, "ERROR: attempt to re-open %s", FileName);
+  XBMC->Log(LOG_ERROR, "ERROR: attempt to re-open %s", FileName);
   return false;
 }
 
@@ -391,15 +391,15 @@ bool cFile::Open(int FileDes)
               if (!files[f])
                  files[f] = true;
               else
-                 XBMC_log(LOG_ERROR, "ERROR: file descriptor %d already in files[]", f);
+                 XBMC->Log(LOG_ERROR, "ERROR: file descriptor %d already in files[]", f);
               return true;
               }
            else
-              XBMC_log(LOG_ERROR, "ERROR: file descriptor %d is larger than FD_SETSIZE (%d)", f, FD_SETSIZE);
+              XBMC->Log(LOG_ERROR, "ERROR: file descriptor %d is larger than FD_SETSIZE (%d)", f, FD_SETSIZE);
            }
         }
      else
-        XBMC_log(LOG_ERROR, "ERROR: attempt to re-open file descriptor %d", FileDes);
+        XBMC->Log(LOG_ERROR, "ERROR: attempt to re-open file descriptor %d", FileDes);
      }
   return false;
 }

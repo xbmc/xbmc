@@ -48,7 +48,7 @@ cRingBuffer::cRingBuffer(int Size, bool Statistics)
 cRingBuffer::~cRingBuffer()
 {
   if (statistics)
-     XBMC_log(LOG_DEBUG, "buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
+     XBMC->Log(LOG_DEBUG, "buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
 }
 
 void cRingBuffer::UpdatePercentage(int Fill)
@@ -58,7 +58,7 @@ void cRingBuffer::UpdatePercentage(int Fill)
   int percent = Fill * 100 / (Size() - 1) / PERCENTAGEDELTA * PERCENTAGEDELTA; // clamp down to nearest quantum
   if (percent != lastPercent) {
      if (percent >= PERCENTAGETHRESHOLD && percent > lastPercent || percent < PERCENTAGETHRESHOLD && lastPercent >= PERCENTAGETHRESHOLD) {
-        XBMC_log(LOG_DEBUG, "buffer usage: %d%% (tid=%d)", percent, getThreadTid);
+        XBMC->Log(LOG_DEBUG, "buffer usage: %d%% (tid=%d)", percent, getThreadTid);
         lastPercent = percent;
         }
      }
@@ -99,7 +99,7 @@ void cRingBuffer::ReportOverflow(int Bytes)
   overflowCount++;
   overflowBytes += Bytes;
   if (time(NULL) - lastOverflowReport > OVERFLOWREPORTDELTA) {
-     XBMC_log(LOG_ERROR, "ERROR: %d ring buffer overflow%s (%d bytes dropped)", overflowCount, overflowCount > 1 ? "s" : "", overflowBytes);
+     XBMC->Log(LOG_ERROR, "ERROR: %d ring buffer overflow%s (%d bytes dropped)", overflowCount, overflowCount > 1 ? "s" : "", overflowBytes);
      overflowCount = overflowBytes = 0;
      lastOverflowReport = time(NULL);
      }
@@ -174,14 +174,14 @@ cRingBufferLinear::cRingBufferLinear(int Size, int Margin, bool Statistics, cons
      if (Margin <= Size / 2) {
         buffer = MALLOC(unsigned char, Size);
         if (!buffer)
-           XBMC_log(LOG_ERROR, "ERROR: can't allocate ring buffer (size=%d)", Size);
+           XBMC->Log(LOG_ERROR, "ERROR: can't allocate ring buffer (size=%d)", Size);
         Clear();
         }
      else
-        XBMC_log(LOG_ERROR, "ERROR: invalid margin for ring buffer (%d > %d)", Margin, Size / 2);
+        XBMC->Log(LOG_ERROR, "ERROR: invalid margin for ring buffer (%d > %d)", Margin, Size / 2);
      }
   else
-     XBMC_log(LOG_ERROR, "ERROR: invalid size for ring buffer (%d)", Size);
+     XBMC->Log(LOG_ERROR, "ERROR: invalid size for ring buffer (%d)", Size);
 #ifdef DEBUGRINGBUFFERS
   lastHead = head;
   lastTail = tail;
@@ -366,7 +366,7 @@ unsigned char *cRingBufferLinear::Get(int &Count)
 void cRingBufferLinear::Del(int Count)
 {
   if (Count > gotten) {
-     XBMC_log(LOG_ERROR, "ERROR: invalid Count in cRingBufferLinear::Del: %d (limited to %d)", Count, gotten);
+     XBMC->Log(LOG_ERROR, "ERROR: invalid Count in cRingBufferLinear::Del: %d (limited to %d)", Count, gotten);
      Count = gotten;
      }
   if (Count > 0) {

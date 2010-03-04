@@ -23,8 +23,8 @@
  * This code is taken from timers.c in the Video Disk Recorder ('VDR')
  */
 
-#include "timers.h"
 #include "tools.h"
+#include "timers.h"
 
 #define SECSINDAY  86400
 
@@ -152,7 +152,7 @@ bool cTimer::Parse(const char *s)
       channel = atoi(channelbuffer);
     else
     {
-      XBMC_log(LOG_ERROR, "PCRClient-vdr: channel not defined for timer");
+      XBMC->Log(LOG_ERROR, "PCRClient-vdr: channel not defined for timer");
       result = false;
     }
   }

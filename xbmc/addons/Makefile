@@ -1,8 +1,8 @@
-INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -I../cores/ffmpeg -I../../include
+INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -I../cores/ffmpeg -Iinclude
 
-#SRCS=AddonHelpers_Addon.cpp \
-#     AddonHelpers_PVR.cpp \
-SRCS= AddonHelpers_local.cpp\
+SRCS=AddonHelpers_Addon.cpp \
+     AddonHelpers_PVR.cpp \
+     AddonHelpers_local.cpp \
 
 LIB=AddonHelpers.a
 

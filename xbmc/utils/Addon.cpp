@@ -131,6 +131,12 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
         return g_localizeStrings.Get(24008);
       return "screensaver";
     }
+    case ADDON::ADDON_PVRDLL:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24006);
+      return "pvrclient";
+    }
     case ADDON::ADDON_VIZ:
     {
       if (pretty)

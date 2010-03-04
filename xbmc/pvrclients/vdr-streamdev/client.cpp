@@ -48,8 +48,8 @@ bool         g_bNoBadChannels         = DEFAULT_BADCHANNELS;  ///< Ignore channe
 bool         g_bHandleMessages        = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
 bool         g_bUseRecordingsDir      = DEFAULT_USE_REC_DIR;  ///< Use a normal directory if true for recordings
 CStdString   g_szRecordingsDir        = DEFAULT_REC_DIR;      ///< The path to the recordings directory
-
-/* Client member variables */
+//
+///* Client member variables */
 uint64_t     m_currentPlayingRecordBytes;
 uint32_t     m_currentPlayingRecordFrames;
 uint64_t     m_currentPlayingRecordPosition;
@@ -68,6 +68,9 @@ bool         g_bCreated               = false;
 int          g_iClientID              = -1;
 CStdString   g_szUserPath             = "";
 CStdString   g_szClientPath           = "";
+cHelper_libXBMC_addon *XBMC           = NULL;
+cHelper_libXBMC_pvr   *PVR            = NULL;
+
 
 
 /***********************************************************
@@ -126,10 +129,10 @@ void cTSBuffer::Action(void)
         if (r < 0 && FATALERRNO)
         {
           if (errno == EOVERFLOW)
-            XBMC_log(LOG_ERROR, "driver buffer overflow");
+            XBMC->Log(LOG_ERROR, "driver buffer overflow");
           else
           {
-            XBMC_log(LOG_ERROR, "ERROR (%s,%d): %m", __FILE__, __LINE__);
+            XBMC->Log(LOG_ERROR, "ERROR (%s,%d): %m", __FILE__, __LINE__);
             break;
           }
         }
@@ -160,7 +163,7 @@ unsigned char *cTSBuffer::Get(void)
         }
       }
       ringBuffer->Del(Count);
-      XBMC_log(LOG_ERROR, "skipped %d bytes to sync on TS packet", Count);
+      XBMC->Log(LOG_ERROR, "skipped %d bytes to sync on TS packet", Count);
       return NULL;
     }
     delivered = true;
@@ -196,7 +199,7 @@ cDataResp::cDataResp()
 
   if (!VTPTransceiver.CreateDataConnection(siDataRespond))
   {
-    XBMC_log(LOG_ERROR, "Couldn't create socket for data response");
+    XBMC->Log(LOG_ERROR, "Couldn't create socket for data response");
     return;
   }
 
@@ -230,7 +233,7 @@ void cDataResp::Action(void)
     ret = __select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
     if (ret < 0)
     {
-      XBMC_log(LOG_ERROR, "CallbackRcvThread - select failed");
+      XBMC->Log(LOG_ERROR, "CallbackRcvThread - select failed");
       continue;
     }
     else if (ret == 0)
@@ -239,7 +242,7 @@ void cDataResp::Action(void)
     ret = __recv(VTPTransceiver.DataSocket(siDataRespond), (char*)data, sizeof(data), 0);
     if (ret < 0)
     {
-      XBMC_log(LOG_ERROR, "CallbackRcvThread - receive failed");
+      XBMC->Log(LOG_ERROR, "CallbackRcvThread - receive failed");
       continue;
     }
     else if (ret == 0)
@@ -265,7 +268,7 @@ bool cDataResp::VDRToXBMCCommand(char *Cmd)
 	}
 	else
 	{
-    XBMC_log(LOG_ERROR, "VDRToXBMCCommand - called without command from %s:%d", g_szHostname.c_str(), g_iPort);
+    XBMC->Log(LOG_ERROR, "VDRToXBMCCommand - called without command from %s:%d", g_szHostname.c_str(), g_iPort);
 		return false;
 	}
 
@@ -280,7 +283,7 @@ bool cDataResp::VDRToXBMCCommand(char *Cmd)
 	else if (strcasecmp(Cmd, "EMSG") == 0) return CallBackEMSG(param);
 	else
 	{
-    XBMC_log(LOG_ERROR, "VDRToXBMCCommand - Unkown respond command %s", Cmd);
+    XBMC->Log(LOG_ERROR, "VDRToXBMCCommand - Unkown respond command %s", Cmd);
 		return false;
 	}
 }
@@ -309,13 +312,13 @@ bool cDataResp::CallBackIMSG(const char *Option)
   {
     CStdString text = Option;
     if (g_bCharsetConv)
-      XBMC_unknown_to_utf8(text);
-    XBMC_queue_notification(QUEUE_INFO, text.c_str());
+      XBMC->UnknownToUTF8(text);
+    XBMC->QueueNotification(QUEUE_INFO, text.c_str());
     return true;
   }
   else
   {
-    XBMC_log(LOG_ERROR, "CallBackIMSG - missing option");
+    XBMC->Log(LOG_ERROR, "CallBackIMSG - missing option");
     return false;
   }
 }
@@ -326,13 +329,13 @@ bool cDataResp::CallBackWMSG(const char *Option)
   {
     CStdString text = Option;
     if (g_bCharsetConv)
-      XBMC_unknown_to_utf8(text);
-    XBMC_queue_notification(QUEUE_WARNING, text.c_str());
+      XBMC->UnknownToUTF8(text);
+    XBMC->QueueNotification(QUEUE_WARNING, text.c_str());
     return true;
   }
   else
   {
-    XBMC_log(LOG_ERROR, "CallBackWMSG - missing option");
+    XBMC->Log(LOG_ERROR, "CallBackWMSG - missing option");
     return false;
   }
 }
@@ -343,13 +346,13 @@ bool cDataResp::CallBackEMSG(const char *Option)
   {
     CStdString text = Option;
     if (g_bCharsetConv)
-      XBMC_unknown_to_utf8(text);
-    XBMC_queue_notification(QUEUE_ERROR, text.c_str());
+      XBMC->UnknownToUTF8(text);
+    XBMC->QueueNotification(QUEUE_ERROR, text.c_str());
     return true;
   }
   else
   {
-    XBMC_log(LOG_ERROR, "CallBackEMSG - missing option");
+    XBMC->Log(LOG_ERROR, "CallBackEMSG - missing option");
     return false;
   }
 }
@@ -365,7 +368,7 @@ bool readNoSignalStream()
     m_noSignalStreamSize = fread(&m_noSignalStreamData[0] + 9, 1, sizeof (m_noSignalStreamData) - 9 - 9 - 4, f);
     if (m_noSignalStreamSize == sizeof (m_noSignalStreamData) - 9 - 9 - 4)
     {
-      XBMC_log(LOG_ERROR, "readNoSignalStream - '%s' exeeds limit of %ld bytes!", noSignalFileName.c_str(), (long)(sizeof (m_noSignalStreamData) - 9 - 9 - 4 - 1));
+      XBMC->Log(LOG_ERROR, "readNoSignalStream - '%s' exeeds limit of %ld bytes!", noSignalFileName.c_str(), (long)(sizeof (m_noSignalStreamData) - 9 - 9 - 4 - 1));
     }
     else if (m_noSignalStreamSize > 0)
     {
@@ -398,7 +401,7 @@ bool readNoSignalStream()
   }
   else
   {
-    XBMC_log(LOG_ERROR, "readNoSignalStream - couldn't open '%s'!", noSignalFileName.c_str());
+    XBMC->Log(LOG_ERROR, "readNoSignalStream - couldn't open '%s'!", noSignalFileName.c_str());
   }
 
   return false;
@@ -435,11 +438,15 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   PVR_PROPS* pvrprops = (PVR_PROPS*)props;
 
-  XBMC_register_me(hdl);
-  PVR_register_me(hdl);
-  GUI_register_me(hdl);
+  XBMC = new cHelper_libXBMC_addon;
+  if (!XBMC->RegisterMe(hdl))
+    return STATUS_UNKNOWN;
 
-  //XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
+  PVR = new cHelper_libXBMC_pvr;
+  if (!PVR->RegisterMe(hdl))
+    return STATUS_UNKNOWN;
+
+  XBMC->Log(LOG_DEBUG, "Creating VDR PVR-Client");
 
   m_CurStatus    = STATUS_UNKNOWN;
   g_iClientID    = pvrprops->clientID;
@@ -451,85 +458,85 @@ ADDON_STATUS Create(void* hdl, void* props)
   buffer = (char*) malloc (1024);
   buffer[0] = 0; /* Set the end of string */
 
-  if (XBMC_get_setting("host", buffer))
+  if (XBMC->GetSetting("host", buffer))
     g_szHostname = buffer;
   else
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '127.0.0.1' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '127.0.0.1' as default");
     g_szHostname = DEFAULT_HOST;
   }
   free (buffer);
 
   /* Read setting "port" from settings.xml */
-  if (!XBMC_get_setting("port", &g_iPort))
+  if (!XBMC->GetSetting("port", &g_iPort))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '2004' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '2004' as default");
     g_iPort = DEFAULT_PORT;
   }
 
   /* Read setting "priority" from settings.xml */
-  if (!XBMC_get_setting("priority", &g_iPriority))
+  if (!XBMC->GetSetting("priority", &g_iPriority))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'priority' setting, falling back to %i as default", DEFAULT_PRIORITY);
+    XBMC->Log(LOG_ERROR, "Couldn't get 'priority' setting, falling back to %i as default", DEFAULT_PRIORITY);
     g_iPriority = DEFAULT_PRIORITY;
   }
 
   /* Read setting "ftaonly" from settings.xml */
-  if (!XBMC_get_setting("ftaonly", &g_bOnlyFTA))
+  if (!XBMC->GetSetting("ftaonly", &g_bOnlyFTA))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'ftaonly' setting, falling back to 'false' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'ftaonly' setting, falling back to 'false' as default");
     g_bOnlyFTA = DEFAULT_FTA_ONLY;
   }
 
   /* Read setting "useradio" from settings.xml */
-  if (!XBMC_get_setting("useradio", &g_bRadioEnabled))
+  if (!XBMC->GetSetting("useradio", &g_bRadioEnabled))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
     g_bRadioEnabled = DEFAULT_RADIO;
   }
 
   /* Read setting "convertchar" from settings.xml */
-  if (!XBMC_get_setting("convertchar", &g_bCharsetConv))
+  if (!XBMC->GetSetting("convertchar", &g_bCharsetConv))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
     g_bCharsetConv = DEFAULT_CHARCONV;
   }
 
   /* Read setting "timeout" from settings.xml */
-  if (!XBMC_get_setting("timeout", &g_iConnectTimeout))
+  if (!XBMC->GetSetting("timeout", &g_iConnectTimeout))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
+    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
     g_iConnectTimeout = DEFAULT_TIMEOUT;
   }
 
   /* Read setting "ignorechannels" from settings.xml */
-  if (!XBMC_get_setting("ignorechannels", &g_bNoBadChannels))
+  if (!XBMC->GetSetting("ignorechannels", &g_bNoBadChannels))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'ignorechannels' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'ignorechannels' setting, falling back to 'true' as default");
     g_bNoBadChannels = DEFAULT_BADCHANNELS;
   }
 
   /* Read setting "ignorechannels" from settings.xml */
-  if (!XBMC_get_setting("handlemessages", &g_bHandleMessages))
+  if (!XBMC->GetSetting("handlemessages", &g_bHandleMessages))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'handlemessages' setting, falling back to 'true' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'handlemessages' setting, falling back to 'true' as default");
     g_bHandleMessages = DEFAULT_HANDLE_MSG;
   }
 
   /* Read setting "ignorechannels" from settings.xml */
-  if (!XBMC_get_setting("usedirectory", &g_bUseRecordingsDir))
+  if (!XBMC->GetSetting("usedirectory", &g_bUseRecordingsDir))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC_log(LOG_ERROR, "Couldn't get 'usedirectory' setting, falling back to 'false' as default");
+    XBMC->Log(LOG_ERROR, "Couldn't get 'usedirectory' setting, falling back to 'false' as default");
     g_bUseRecordingsDir = DEFAULT_USE_REC_DIR;
   }
 
@@ -539,12 +546,12 @@ ADDON_STATUS Create(void* hdl, void* props)
     buffer = (char*) malloc (2048);
     buffer[0] = 0; /* Set the end of string */
 
-    if (XBMC_get_setting("recordingdir", buffer))
+    if (XBMC->GetSetting("recordingdir", buffer))
       g_szRecordingsDir = buffer;
     else
     {
       /* If setting is unknown fallback to defaults */
-      XBMC_log(LOG_ERROR, "Couldn't get 'recordingdir' setting, directory not set");
+      XBMC->Log(LOG_ERROR, "Couldn't get 'recordingdir' setting, directory not set");
       g_szRecordingsDir = DEFAULT_REC_DIR;
       g_bUseRecordingsDir = false;
     }
@@ -561,7 +568,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   /* Check VDR streamdev is patched by calling a newly added command */
   if (VTPTransceiver.GetNumChannels() == -1)
   {
-    XBMC_log(LOG_ERROR, "PCRClient-vdr: Detected unsupported Streamdev-Version");
+    XBMC->Log(LOG_ERROR, "PCRClient-vdr: Detected unsupported Streamdev-Version");
     m_CurStatus = STATUS_UNKNOWN;
     return STATUS_UNKNOWN;
   }
@@ -577,7 +584,15 @@ ADDON_STATUS Create(void* hdl, void* props)
 
 void Destroy()
 {
-
+  if (g_bCreated)
+  {
+    DELETENULL(m_TSBuffer);
+    DELETENULL(m_pDataResponse);
+    VTPTransceiver.Quit();
+    VTPTransceiver.Reset();
+    g_bCreated = false;
+  }
+  m_CurStatus = STATUS_UNKNOWN;
 }
 
 ADDON_STATUS GetStatus()
@@ -601,7 +616,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   if (str == "host")
   {
     string tmp_sHostname;
-    XBMC_log(LOG_INFO, "Changed Setting 'host' from %s to %s", g_szHostname.c_str(), (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", g_szHostname.c_str(), (const char*) settingValue);
     tmp_sHostname = g_szHostname;
     g_szHostname = (const char*) settingValue;
     if (tmp_sHostname != g_szHostname)
@@ -609,7 +624,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "port")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPort, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPort, *(int*) settingValue);
     if (g_iPort != *(int*) settingValue)
     {
       g_iPort = *(int*) settingValue;
@@ -618,69 +633,59 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "priority")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'priority' from %u to %u", g_iPriority, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'priority' from %u to %u", g_iPriority, *(int*) settingValue);
     g_iPriority = *(int*) settingValue;
   }
   else if (str == "ftaonly")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'ftaonly' from %u to %u", g_bOnlyFTA, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'ftaonly' from %u to %u", g_bOnlyFTA, *(bool*) settingValue);
     g_bOnlyFTA = *(bool*) settingValue;
   }
   else if (str == "useradio")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'useradio' from %u to %u", g_bRadioEnabled, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'useradio' from %u to %u", g_bRadioEnabled, *(bool*) settingValue);
     g_bRadioEnabled = *(bool*) settingValue;
   }
   else if (str == "convertchar")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", g_bCharsetConv, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", g_bCharsetConv, *(bool*) settingValue);
     g_bCharsetConv = *(bool*) settingValue;
   }
   else if (str == "timeout")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", g_iConnectTimeout, *(int*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", g_iConnectTimeout, *(int*) settingValue);
     g_iConnectTimeout = *(int*) settingValue;
   }
   else if (str == "ignorechannels")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'ignorechannels' from %u to %u", g_bNoBadChannels, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'ignorechannels' from %u to %u", g_bNoBadChannels, *(bool*) settingValue);
     g_bNoBadChannels = *(bool*) settingValue;
   }
   else if (str == "handlemessages")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", g_bHandleMessages, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", g_bHandleMessages, *(bool*) settingValue);
     g_bHandleMessages = *(bool*) settingValue;
   }
   else if (str == "usedirectory")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'usedirectory' from %u to %u", g_bUseRecordingsDir, *(bool*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'usedirectory' from %u to %u", g_bUseRecordingsDir, *(bool*) settingValue);
     g_bUseRecordingsDir = *(bool*) settingValue;
   }
   else if (str == "recordingdir")
   {
-    XBMC_log(LOG_INFO, "Changed Setting 'recordingdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'recordingdir' from %s to %s", g_szRecordingsDir.c_str(), (const char*) settingValue);
     g_bUseRecordingsDir = (const char*) settingValue;
   }
 
   return STATUS_OK;
 }
 
-void Remove()
+void Stop()
 {
-  if (g_bCreated)
-  {
-    DELETENULL(m_TSBuffer);
-    DELETENULL(m_pDataResponse);
-    VTPTransceiver.Quit();
-    VTPTransceiver.Reset();
-    g_bCreated = false;
-  }
-  m_CurStatus = STATUS_UNKNOWN;
 }
 
 void FreeSettings()
 {
-
 }
 
 
@@ -916,19 +921,19 @@ bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
   if (!VTPTransceiver.ProvidesChannel(channelinfo.number, g_iPriority))
   {
-    XBMC_log(LOG_ERROR, "VDR does not provide channel %i", channelinfo.number);
+    XBMC->Log(LOG_ERROR, "VDR does not provide channel %i", channelinfo.number);
     return false;
   }
 
   if (!VTPTransceiver.SetChannelDevice(channelinfo.number))
   {
-    XBMC_log(LOG_ERROR, "Could't tune to channel %i", channelinfo.number);
+    XBMC->Log(LOG_ERROR, "Could't tune to channel %i", channelinfo.number);
     return false;
   }
 
   if (!VTPTransceiver.CreateDataConnection(siLive))
   {
-    XBMC_log(LOG_ERROR, "Could't create connection to VDR for Live streaming");
+    XBMC->Log(LOG_ERROR, "Could't create connection to VDR for Live streaming");
     return false;
   }
 
@@ -942,7 +947,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 void CloseLiveStream()
 {
   if (!VTPTransceiver.CheckConnection())
-    XBMC_log(LOG_DEBUG, "CloseLiveStream(): Control connection gone !");
+    XBMC->Log(LOG_DEBUG, "CloseLiveStream(): Control connection gone !");
 
   VTPTransceiver.CloseDataConnection(siLive);
   m_iCurrentChannel = 1;
@@ -973,7 +978,7 @@ int ReadLiveStream(unsigned char* buf, int buf_size)
         if (tryReconnect)
         {
           tryReconnect = false;
-          XBMC_log(LOG_INFO, "Streaming connections lost during ReadLiveStream, trying reconnect");
+          XBMC->Log(LOG_INFO, "Streaming connections lost during ReadLiveStream, trying reconnect");
 
           if (!VTPTransceiver.ProvidesChannel(m_iCurrentChannel, g_iPriority))
             return -1;
@@ -992,13 +997,13 @@ int ReadLiveStream(unsigned char* buf, int buf_size)
           m_TSBuffer              = new cTSBuffer(VTPTransceiver.DataSocket(siLive), MEGABYTE(2));
           continue;
         }
-        XBMC_log(LOG_ERROR, "Reconnect in ReadLiveStream not possible");
+        XBMC->Log(LOG_ERROR, "Reconnect in ReadLiveStream not possible");
         continue; /* Continue here to read NoSignal stream */
       }
 
       if (read_timeouts > 20)
       {
-        XBMC_log(LOG_INFO, "No data in 2 seconds, queuing no signal image");
+        XBMC->Log(LOG_INFO, "No data in 2 seconds, queuing no signal image");
         read_timeouts = 0;
         return writeNoSignalStream(buf, buf_size);
       }
@@ -1042,7 +1047,7 @@ bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 
   if (!VTPTransceiver.ProvidesChannel(channelinfo.number, g_iPriority))
   {
-    XBMC_log(LOG_ERROR, "VDR does not provide channel %i", channelinfo.number);
+    XBMC->Log(LOG_ERROR, "VDR does not provide channel %i", channelinfo.number);
     return false;
   }
 
@@ -1051,13 +1056,13 @@ bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 
   if (!VTPTransceiver.SetChannelDevice(channelinfo.number))
   {
-    XBMC_log(LOG_ERROR, "Could't tune to channel %i", channelinfo.number);
+    XBMC->Log(LOG_ERROR, "Could't tune to channel %i", channelinfo.number);
     return false;
   }
 
   if (!VTPTransceiver.CreateDataConnection(siLive))
   {
-    XBMC_log(LOG_ERROR, "Could't create connection to VDR for Live streaming");
+    XBMC->Log(LOG_ERROR, "Could't create connection to VDR for Live streaming");
     return false;
   }
 
@@ -1108,13 +1113,13 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 
   if (!VTPTransceiver.SetRecordingIndex(recinfo.index))
   {
-    XBMC_log(LOG_ERROR, "Could't open recording %i", recinfo.index);
+    XBMC->Log(LOG_ERROR, "Could't open recording %i", recinfo.index);
     return false;
   }
 
   if (!VTPTransceiver.CreateDataConnection(siReplay))
   {
-    XBMC_log(LOG_ERROR, "Could't create connection to VDR for recording streaming");
+    XBMC->Log(LOG_ERROR, "Could't create connection to VDR for recording streaming");
     return false;
   }
 
@@ -1128,7 +1133,7 @@ bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 void CloseRecordedStream(void)
 {
   if (!VTPTransceiver.CheckConnection())
-    XBMC_log(LOG_DEBUG, "CloseRecordedStream(): Control connection gone !");
+    XBMC->Log(LOG_DEBUG, "CloseRecordedStream(): Control connection gone !");
 
   VTPTransceiver.CloseDataConnection(siReplay);
 
@@ -1148,9 +1153,9 @@ int ReadRecordedStream(unsigned char* buf, int buf_size)
     if (res < 0 && FATALERRNO)
     {
       if (errno == EOVERFLOW)
-        XBMC_log(LOG_ERROR, "driver buffer overflow");
+        XBMC->Log(LOG_ERROR, "driver buffer overflow");
       else
-        XBMC_log(LOG_ERROR, "ERROR (%s,%d): %m", __FILE__, __LINE__);
+        XBMC->Log(LOG_ERROR, "ERROR (%s,%d): %m", __FILE__, __LINE__);
       return 0;
     }
   }
@@ -1163,7 +1168,7 @@ int ReadRecordedStream(unsigned char* buf, int buf_size)
 long long SeekRecordedStream(long long pos, int whence)
 {
   if (!VTPTransceiver.CheckConnection())
-    return false;
+    return -1;
 
   long long nextPos = m_currentPlayingRecordPosition;
 

@@ -29,7 +29,6 @@
 #include "pvrclient-vdr_os.h"
 #include "channels.h"
 #include "client.h"
-#include "libXBMC_addon.h"
 
 using namespace std;
 
@@ -173,7 +172,7 @@ bool cChannel::ReadFromVTP(int channel)
   CStdString str_result = data;
 
   if (g_bCharsetConv)
-    XBMC_unknown_to_utf8(str_result);
+    XBMC->UnknownToUTF8(str_result);
 
   Parse(str_result.c_str());
   return true;
@@ -213,7 +212,7 @@ static const char *ParseParameter(const char *s, int &Value, const tChannelParam
         return p;
     }
   }
-  XBMC_log(LOG_ERROR, "PCRClient-vdr: invalid value for channelparameter '%c'", *(s - 1));
+  XBMC->Log(LOG_ERROR, "PCRClient-vdr: invalid value for channelparameter '%c'", *(s - 1));
   return NULL;
 }
 
@@ -247,7 +246,7 @@ bool cChannel::StringToParameters(const char *s)
       case 'V': polarization = *s++; break;
       case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
       case 'Z': s = SkipDigits(s); break; // for compatibility with the original DVB-S2 patch - may be removed in future versions
-      default: XBMC_log(LOG_ERROR, "PCRClient-vdr: unknown parameter key '%c'", *s);
+      default: XBMC->Log(LOG_ERROR, "PCRClient-vdr: unknown parameter key '%c'", *s);
           return false;
     }
   }
@@ -321,7 +320,7 @@ bool cChannel::Parse(const char *s)
       apids[NumApids++] = strtol(q, NULL, 10);
       }
       else
-        XBMC_log(LOG_ERROR, "PCRClient-vdr: too many APIDs!"); // no need to set ok to 'false'
+        XBMC->Log(LOG_ERROR, "PCRClient-vdr: too many APIDs!"); // no need to set ok to 'false'
       p = NULL;
     }
     apids[NumApids] = 0;
@@ -348,7 +347,7 @@ bool cChannel::Parse(const char *s)
           dpids[NumDpids++] = strtol(q, NULL, 10);
         }
         else
-          XBMC_log(LOG_ERROR, "PCRClient-vdr: too many DPIDs!"); // no need to set ok to 'false'
+          XBMC->Log(LOG_ERROR, "PCRClient-vdr: too many DPIDs!"); // no need to set ok to 'false'
         p = NULL;
       }
       dpids[NumDpids] = 0;
@@ -365,7 +364,7 @@ bool cChannel::Parse(const char *s)
           break;
       }
       else
-        XBMC_log(LOG_ERROR, "PCRClient-vdr: too many CA ids!"); // no need to set ok to 'false'
+        XBMC->Log(LOG_ERROR, "PCRClient-vdr: too many CA ids!"); // no need to set ok to 'false'
       p = NULL;
     }
     caids[NumCaIds] = 0;

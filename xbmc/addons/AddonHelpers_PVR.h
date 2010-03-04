@@ -21,19 +21,21 @@
  */
 
 #include "AddonHelpers_local.h"
-#include "include/xbmc_pvr_types.h"
+#include "xbmc_pvr_types.h"
 
 namespace ADDON
 {
 
-class CAddon;
-
 class CAddonHelpers_PVR
 {
 public:
-  CAddonHelpers_PVR(CAddon* addon, AddonCB* cbTable);
+  CAddonHelpers_PVR(CAddon* addon);
   ~CAddonHelpers_PVR();
 
+  /**! \name General Functions */
+  CB_PVRLib *GetCallbacks() { return m_callbacks; }
+
+  /**! \name Callback functions */
   static void PVRTransferEpgEntry(void *addonData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry);
   static void PVRTransferChannelEntry(void *addonData, const PVRHANDLE handle, const PVR_CHANNEL *channel);
   static void PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
@@ -41,7 +43,8 @@ public:
   static void PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook);
 
 private:
-  CAddon* m_addon;
+  CB_PVRLib    *m_callbacks;
+  CAddon       *m_addon;
 };
 
 }; /* namespace ADDON */

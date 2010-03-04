@@ -22,10 +22,8 @@
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
-#include "libXBMC_addon.h"
-#include "libXBMC_pvr.h"
-#include "libXBMC_gui.h"
 #include "pvrclient-vdr_os.h"
+#include "client.h"
 #include "StdString.h"
 #include <errno.h>
 #include <fcntl.h>

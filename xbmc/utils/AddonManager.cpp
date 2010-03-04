@@ -294,6 +294,8 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
     addons.insert(addons.end(), temp.begin(), temp.end());
   if (CAddonMgr::Get()->GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
+  if (CAddonMgr::Get()->GetAddons(ADDON_PVRDLL, temp, CONTENT_NONE, enabledOnly))
+    addons.insert(addons.end(), temp.begin(), temp.end());
   return !addons.empty();
 }
 
@@ -545,6 +547,13 @@ void CAddonMgr::FindAddons(const TYPE &type)
       if (!isHome)
         CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
       CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
+      break;
+    }
+  case ADDON_PVRDLL:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/pvr", items, ADDON_PVRDLL_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
       break;
     }
   case ADDON_SCRAPER:
@@ -1015,6 +1024,12 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     case ADDON_SCREENSAVER:
     {
       AddonPtr temp(new CScreenSaver(addonProps));
+      addon = temp;
+      break;
+    }
+    case ADDON_PVRDLL:
+    {
+      AddonPtr temp(new CPVRClient(addonProps));
       addon = temp;
       break;
     }

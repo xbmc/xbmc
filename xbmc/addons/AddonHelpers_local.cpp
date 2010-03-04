@@ -18,46 +18,91 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-/*
+
 #include "Addon.h"
 #include "AddonHelpers_local.h"
 #include "AddonHelpers_Addon.h"
-#include "AddonHelpers_GUI.h"
 #include "AddonHelpers_PVR.h"
-#include "AddonHelpers_Vis.h"
+#include "FileSystem/SpecialProtocol.h"
+#include "log.h"
 
 namespace ADDON
 {
 
 CAddonHelpers::CAddonHelpers(CAddon* addon)
 {
+  m_addon       = addon;
   m_callbacks   = new AddonCB;
-  m_helperAddon = new CAddonHelpers_Addon(addon, m_callbacks);
-  m_helperGUI   = new CAddonHelpers_GUI(addon, m_callbacks);
-  if (addon->Type() == ADDON_PVRDLL)
-    m_helperPVR = new CAddonHelpers_PVR(addon, m_callbacks);
-  else
-    m_helperPVR = NULL;
-  if (addon->Type() == ADDON_VIZ)
-    m_helperVis = new CAddonHelpers_Vis(addon, m_callbacks);
-  else
-    m_helperVis = NULL;
+  m_helperAddon = NULL;
 
-  m_callbacks->addonData = this;
+  m_callbacks->libBasePath           = strdup(_P("special://xbmc/addons/libraries"));
+  m_callbacks->addonData             = this;
+  m_callbacks->AddOnLib_RegisterMe   = CAddonHelpers::AddOnLib_RegisterMe;
+  m_callbacks->AddOnLib_UnRegisterMe = CAddonHelpers::AddOnLib_UnRegisterMe;
+  m_callbacks->PVRLib_RegisterMe     = CAddonHelpers::PVRLib_RegisterMe;
+  m_callbacks->PVRLib_UnRegisterMe   = CAddonHelpers::PVRLib_UnRegisterMe;
 }
 
 CAddonHelpers::~CAddonHelpers()
 {
   delete m_helperAddon;
   m_helperAddon = NULL;
-  delete m_helperGUI;
-  m_helperGUI = NULL;
   delete m_helperPVR;
   m_helperPVR = NULL;
-  delete m_helperVis;
-  m_helperVis = NULL;
   delete m_callbacks;
   m_callbacks = NULL;
 }
 
-};*/ /* namespace ADDON */
+CB_AddOnLib* CAddonHelpers::AddOnLib_RegisterMe(void *addonData)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (helper == NULL)
+  {
+    CLog::Log(LOGERROR, "Addon-Helper: AddOnLib_RegisterMe is called with NULL-Pointer!!!");
+    return NULL;
+  }
+
+  helper->m_helperAddon = new CAddonHelpers_Addon(helper->m_addon);
+  return helper->m_helperAddon->GetCallbacks();
+}
+
+void CAddonHelpers::AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (helper == NULL)
+  {
+    CLog::Log(LOGERROR, "Addon-Helper: AddOnLib_UnRegisterMe is called with NULL-Pointer!!!");
+    return;
+  }
+
+  delete helper->m_helperAddon;
+  helper->m_helperAddon = NULL;
+}
+
+CB_PVRLib* CAddonHelpers::PVRLib_RegisterMe(void *addonData)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (helper == NULL)
+  {
+    CLog::Log(LOGERROR, "Addon-Helper: PVRLib_RegisterMe is called with NULL-Pointer!!!");
+    return NULL;
+  }
+
+  helper->m_helperPVR = new CAddonHelpers_PVR(helper->m_addon);
+  return helper->m_helperPVR->GetCallbacks();
+}
+
+void CAddonHelpers::PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (helper == NULL)
+  {
+    CLog::Log(LOGERROR, "Addon-Helper: PVRLib_UnRegisterMe is called with NULL-Pointer!!!");
+    return;
+  }
+
+  delete helper->m_helperPVR;
+  helper->m_helperPVR = NULL;
+}
+
+}; /* namespace ADDON */

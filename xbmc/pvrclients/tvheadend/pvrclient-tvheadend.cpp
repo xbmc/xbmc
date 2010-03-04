@@ -105,10 +105,10 @@ PVR_ERROR cPVRClientTvheadend::RequestChannelList(PVRHANDLE handle, bool radio)
         tag.stream_url  = url;
         tag.bouquet     = t.id;
 
-        XBMC_log(LOG_DEBUG, "%s - %s",
+        XBMC->Log(LOG_DEBUG, "%s - %s",
             __PRETTY_FUNCTION__, channel.name.c_str());
 
-        PVR_transfer_channel_entry(handle, &tag);
+        PVR->TransferChannelEntry(handle, &tag);
       }
     }
   }
@@ -140,7 +140,7 @@ PVR_ERROR cPVRClientTvheadend::RequestEPGForChannel(PVRHANDLE handle, const PVR_
       bool success = m_pSession->GetEvent(event, event.id);
 
       if (success){
-//        XBMC_log(LOG_DEBUG, "%s - uid %d, title %s, desc %s, start %d, stop %d",
+//        XBMC->Log(LOG_DEBUG, "%s - uid %d, title %s, desc %s, start %d, stop %d",
 //            __PRETTY_FUNCTION__, event.id, event.title.c_str(), event.descs.c_str(), event.start, event.stop);
 //        printf("%s - uid %d, title %s, desc %s, start %d, stop %d\n",
 //            __PRETTY_FUNCTION__, event.id, event.title.c_str(), event.descs.c_str(), event.start, event.stop);
@@ -157,7 +157,7 @@ PVR_ERROR cPVRClientTvheadend::RequestEPGForChannel(PVRHANDLE handle, const PVR_
         broadcast.endtime         = event.stop;
         broadcast.genre_type      = event.content;
         broadcast.genre_sub_type  = 0;
-        PVR_transfer_epg_entry(handle, &broadcast);
+        PVR->TransferEpgEntry(handle, &broadcast);
 
         event.id = event.next;
         stop = event.stop;
