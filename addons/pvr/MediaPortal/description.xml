@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <!-- uuid: unique identifier of this addon !-->
-  <uuid>2a4c6daa-2bc4-46d2-8a85-b35c93cad5a3</uuid>
+  <id>2a4c6daa-2bc4-46d2-8a85-b35c93cad5a3</id>
   <type>pvrclient</type>
 
   <!-- name: name of the addon !-->

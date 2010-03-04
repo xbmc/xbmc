@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <uuid>42b7452c-74f3-4055-87bb-7b50e82104a9</uuid>
+  <id>42b7452c-74f3-4055-87bb-7b50e82104a9</id>
   <type>pvrclient</type>
   <title>Tvheadend HTSP Client</title>
   <library>XBMC_Tvheadend.pvr</library>
