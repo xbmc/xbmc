@@ -2254,7 +2254,7 @@ CStdString CUtil::ValidatePath(const CStdString &path)
 
   // Don't do any stuff on URLs containing %-characters as we may screw up
   // URL-encoded (embedded) filenames (like with zip:// & rar://)
-  if ( IsURL(path) && ( path.Find('%') >= 0 || IsInZIP(path) || IsInRAR(path) || IsStack(path) || IsMultiPath(path) ) )
+  if ( IsURL(path) && path.Find('%') >= 0 )
     return result;
 
   // check the path for incorrect slashes
