@@ -45,8 +45,12 @@ protected:
   void OnSort();
   void ClearListItems();
   void Update();
+  void SetupControls();
+  void FreeControls();
   bool OnContextMenu(int iItem);
 
   CFileItemList* m_vecItems;
+  std::vector<ADDON::TYPE> m_categories;
+  int m_currentCategory;
 };
 
