@@ -5557,7 +5557,9 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
 
     iFound = 1;
     if (!m_pDS->eof())
-    { //!!!
+    { // path is stored in db
+
+      //!!!
       //FIXME confusion arises here as VIDEODB_CONTENT_NONE has no relation to strContent == 'none'.
       // Here, we are referring to paths which are explicitly excluded from scraping, by
       // having settings.exclude == true
@@ -5572,74 +5574,60 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
         return false;
       }
 
-      // path is not excluded, find out if content is set
-      // then try and ascertain scraper for this path
+      // path is not excluded
+      // try and ascertain scraper for this path
       CONTENT_TYPE content = TranslateContent(strcontent);
+      assert(content != CONTENT_NONE);
       CStdString scraperID = m_pDS->fv("path.strScraper").get_asString();
 
-      if (content != CONTENT_NONE)
-      { // content set, use pre configured or default scraper
-        AddonPtr addon;
-        if (!scraperID.empty() &&
-          CAddonMgr::Get()->GetAddon(scraperID, addon, ADDON::ADDON_SCRAPER))
-        {
-          scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
-          if (!scraper)
-            return false;
+      AddonPtr addon;
+      if (!scraperID.empty() &&
+        CAddonMgr::Get()->GetAddon(scraperID, addon, ADDON::ADDON_SCRAPER))
+      {
+        scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
+        if (!scraper)
+          return false;
 
-          // store this path's content & settings
-          scraper->m_pathContent = content;
-          scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
-          settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-          settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-          settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
-        }
-        else
-        { // use default scraper for this content type
-          if (CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, content))
+        // store this path's content & settings
+        scraper->m_pathContent = content;
+        scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
+        settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
+        settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
+        settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+      }
+    }
+    else
+    { // this path is not saved in db
+      // we must drill up until a scraper is configured
+      CStdString strParent;
+      while (CUtil::GetParentPath(strPath1, strParent))
+      {
+        iFound++;
+
+        CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where strPath like '%s'",strParent.c_str());
+        m_pDS->query(strSQL.c_str());
+        if (!m_pDS->eof())
+        {
+          CONTENT_TYPE content = TranslateContent(m_pDS->fv("path.strContent").get_asString());
+          AddonPtr addon;
+          if (content != CONTENT_NONE &&
+              CAddonMgr::Get()->GetAddon(m_pDS->fv("path.strScraper").get_asString(), addon, ADDON::ADDON_SCRAPER))
           {
             scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
-            if (scraper)
-            {
-              scraper->m_pathContent = content;
-              settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-              settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-              settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
-            }
-          }
-        }
-      }
-      else
-      { // no content set for this path (ie path.strContent == '')
-        // we must drill up until a scraper is configured
-        CStdString strParent;
-        while (CUtil::GetParentPath(strPath1, strParent))
-        {
-          iFound++;
-
-          CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where strPath like '%s'",strParent.c_str());
-          m_pDS->query(strSQL.c_str());
-          if (!m_pDS->eof())
-          {
-            AddonPtr defaultScraper;
-            if (!CAddonMgr::Get()->GetAddon(m_pDS->fv("path.strScraper").get_asString(), defaultScraper, ADDON::ADDON_SCRAPER))
-            {
-              strPath1 = strParent;
-              continue;
-            }
-
-            scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone(defaultScraper));
-            content = TranslateContent(m_pDS->fv("path.strContent").get_asString());
             scraper->m_pathContent = content;
             scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
             settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
             settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
             settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
             settings.exclude = false;
-
-            //TODO fix CONTENT_NONE storage in db, per discussion
-            if (!content == CONTENT_NONE)
-              break;
+            break;
+          }
+          //TODO fix storing "none" in database
+          if (content == CONTENT_NONE)
+          { // this path is excluded
+            scraper.reset();
+            settings.exclude = true;
+            break;
           }
           strPath1 = strParent;
         }
