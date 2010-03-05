@@ -21,8 +21,9 @@ namespace Shaders {
     virtual void SetWidth(int width)  {};
     virtual void SetHeight(int width) {};
 
-    virtual void SetBlack(float black)       {};
-    virtual void SetContrast(float contrast) {};
+    virtual void SetBlack(float black)          {};
+    virtual void SetContrast(float contrast)    {};
+    virtual void SetNonLinStretch(float stretch){};
   };
 
 
@@ -31,14 +32,15 @@ namespace Shaders {
     , public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(bool rect, unsigned flags);
+    BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool stretch);
    ~BaseYUV2RGBGLSLShader() {}
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
 
-    virtual void SetBlack(float black)       { m_black    = black; }
-    virtual void SetContrast(float contrast) { m_contrast = contrast; }
+    virtual void SetBlack(float black)           { m_black    = black; }
+    virtual void SetContrast(float contrast)     { m_contrast = contrast; }
+    virtual void SetNonLinStretch(float stretch) { m_stretch = stretch; }
   protected:
     void OnCompiledAndLinked();
     bool OnEnabled();
@@ -50,6 +52,7 @@ namespace Shaders {
 
     float m_black;
     float m_contrast;
+    float m_stretch;
 
     string m_defines;
 
@@ -58,6 +61,7 @@ namespace Shaders {
     GLint m_hUTex;
     GLint m_hVTex;
     GLint m_hMatrix;
+    GLint m_hStretch;
   };
 
   class BaseYUV2RGBARBShader 
@@ -100,7 +104,7 @@ namespace Shaders {
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0);
+    YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0, bool stretch = false);
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader

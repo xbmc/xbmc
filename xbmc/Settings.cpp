@@ -699,6 +699,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "audiodelay", m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
     GetFloat(pElement, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
     XMLUtils::GetBoolean(pElement, "autocrop", m_defaultVideoSettings.m_Crop);
+    XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
 
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
@@ -860,6 +861,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetFloat(pNode, "audiodelay", m_defaultVideoSettings.m_AudioDelay);
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
   XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
+  XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
 
 
   // audio settings

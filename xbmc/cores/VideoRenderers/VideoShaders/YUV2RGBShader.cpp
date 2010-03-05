@@ -129,7 +129,7 @@ static void CalculateYUVMatrix(GLfloat      res[4][4]
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool stretch)
 {
   m_width      = 1;
   m_height     = 1;
@@ -139,10 +139,13 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
   m_black      = 0.0f;
   m_contrast   = 1.0f;
 
+  m_stretch = 0.0f;
+
   // shader attribute handles
-  m_hYTex  = -1;
-  m_hUTex  = -1;
-  m_hVTex  = -1;
+  m_hYTex    = -1;
+  m_hUTex    = -1;
+  m_hVTex    = -1;
+  m_hStretch = -1;
 
   if(rect)
     m_defines += "#define XBMC_texture_rectangle 1\n";
@@ -154,15 +157,22 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
   else
     m_defines += "#define XBMC_texture_rectangle_hack 0\n";
 
+  //don't compile in stretch support when it's not needed
+  if (stretch)
+    m_defines += "#define XBMC_STRETCH 1\n";
+  else
+    m_defines += "#define XBMC_STRETCH 0\n";
+
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
 }
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
-  m_hYTex   = glGetUniformLocation(ProgramHandle(), "m_sampY");
-  m_hUTex   = glGetUniformLocation(ProgramHandle(), "m_sampU");
-  m_hVTex   = glGetUniformLocation(ProgramHandle(), "m_sampV");
-  m_hMatrix = glGetUniformLocation(ProgramHandle(), "m_yuvmat");
+  m_hYTex    = glGetUniformLocation(ProgramHandle(), "m_sampY");
+  m_hUTex    = glGetUniformLocation(ProgramHandle(), "m_sampU");
+  m_hVTex    = glGetUniformLocation(ProgramHandle(), "m_sampV");
+  m_hMatrix  = glGetUniformLocation(ProgramHandle(), "m_yuvmat");
+  m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
   VerifyGLState();
 }
 
@@ -172,6 +182,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1i(m_hYTex, 0);
   glUniform1i(m_hUTex, 1);
   glUniform1i(m_hVTex, 2);
+  glUniform1f(m_hStretch, m_stretch);
 
   GLfloat matrix[4][4];
   CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
@@ -204,8 +215,8 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
-  : BaseYUV2RGBGLSLShader(rect, flags)
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, bool stretch)
+  : BaseYUV2RGBGLSLShader(rect, flags, stretch)
 {
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
 }
@@ -216,7 +227,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
 //////////////////////////////////////////////////////////////////////
 
 YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
-  : BaseYUV2RGBGLSLShader(rect, flags)
+  : BaseYUV2RGBGLSLShader(rect, flags, false)
 {
   m_hStepX = -1;
   m_hStepY = -1;

@@ -251,6 +251,9 @@ protected:
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);
   bool m_pboused;
+
+  bool  m_nonLinStretch;
+  float m_customPixelRatio;
 };
 
 

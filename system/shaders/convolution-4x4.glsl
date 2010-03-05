@@ -1,6 +1,7 @@
 uniform sampler2D img;
 uniform float     stepx;
 uniform float     stepy;
+uniform float     m_stretch;
 
 //nvidia's half is a 16 bit float and can bring some speed improvements
 //without affecting quality
@@ -27,6 +28,17 @@ half4 weight(float pos)
 }
 #endif
 
+#if (XBMC_STRETCH)
+  #define POSITION(pos) stretch(pos)
+  vec2 stretch(vec2 pos)
+  {
+    float x = pos.x - 0.5;
+    return vec2(mix(x, x * abs(x) * 2.0, m_stretch) + 0.5, pos.y);
+  }
+#else
+  #define POSITION(pos) (pos)
+#endif
+
 half3 pixel(float xpos, float ypos)
 {
   return texture2D(img, vec2(xpos, ypos)).rgb;
@@ -43,8 +55,10 @@ half3 line (float ypos, vec4 xpos, half4 linetaps)
 
 void main()
 {
-  float xf = fract(gl_TexCoord[0].x / stepx);
-  float yf = fract(gl_TexCoord[0].y / stepy);
+  vec2 pos = POSITION(gl_TexCoord[0].xy);
+
+  float xf = fract(pos.x / stepx);
+  float yf = fract(pos.y / stepy);
 
   half4 linetaps   = weight(1.0 - xf);
   half4 columntaps = weight(1.0 - yf);
@@ -53,10 +67,10 @@ void main()
   linetaps /= linetaps.r + linetaps.g + linetaps.b + linetaps.a;
   columntaps /= columntaps.r + columntaps.g + columntaps.b + columntaps.a;
 
-  float xstart = (-0.5 - xf) * stepx + gl_TexCoord[0].x;
+  float xstart = (-0.5 - xf) * stepx + pos.x;
   vec4 xpos = vec4(xstart, xstart + stepx, xstart + stepx * 2.0, xstart + stepx * 3.0);
 
-  float ystart = (-0.5 - yf) * stepy + gl_TexCoord[0].y;
+  float ystart = (-0.5 - yf) * stepy + pos.y;
 
   gl_FragColor.rgb =
     line(ystart              , xpos, linetaps) * columntaps.r +

@@ -102,9 +102,10 @@ class CAdvancedSettings
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
-    int  m_videoHighQualityScaling;
-    int  m_videoHighQualityScalingMethod;
-    bool m_videoVDPAUScaling;
+    int   m_videoHighQualityScaling;
+    int   m_videoHighQualityScalingMethod;
+    bool  m_videoVDPAUScaling;
+    float m_videoNonLinStretchRatio;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
