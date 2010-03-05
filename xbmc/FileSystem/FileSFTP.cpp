@@ -289,6 +289,7 @@ bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, c
   if (!VerifyKnownHost(m_session))
     return false;
 
+
   int noAuth = SSH_AUTH_DENIED;
   if ((noAuth = ssh_userauth_none(m_session, NULL)) == SSH_AUTH_ERROR)
   {
@@ -308,7 +309,7 @@ bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, c
 
   // Try to authenticate with password
   int passwordAuth = SSH_AUTH_DENIED;
-  if (method & SSH_AUTH_METHOD_PASSWORD && (passwordAuth = ssh_userauth_password(m_session, username.c_str(), password.c_str())) == SSH_AUTH_ERROR)
+  if (method & SSH_AUTH_METHOD_PASSWORD && publicKeyAuth != SSH_AUTH_SUCCESS && (passwordAuth = ssh_userauth_password(m_session, username.c_str(), password.c_str())) == SSH_AUTH_ERROR)
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to authenticate via password '%s'", ssh_get_error(m_session));
     return false;
