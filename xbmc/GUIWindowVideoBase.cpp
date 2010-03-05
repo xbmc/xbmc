@@ -517,9 +517,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   {
     if (!ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, info->Content()))
       return false;
+    info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
   }
 
-  info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
   if (!info)
     return false;
 
