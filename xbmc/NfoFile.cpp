@@ -223,7 +223,7 @@ int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = ""
   CScraperParser parser;
   if (!parser.Load(scraper))
     return 0;
-  if (scraper->Supports(m_content) &&
+  if (!scraper->Supports(m_content) &&
       !(m_content == CONTENT_ARTISTS && scraper->Content() == CONTENT_ALBUMS))
       // artists are scraped by album content scrapers
   {
