@@ -51,7 +51,7 @@
 			<!-- Studio -->
 			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
 				<expression trim="1">Studio:&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;([^&lt;]*)&lt;/div&gt;</expression>
-			</RegExp>			
+			</RegExp>
 			<!-- Runtime -->
 			<RegExp input="$$1" output="&lt;runtime&gt;\1 Minuten&lt;/runtime&gt;" dest="5+">
 				<expression trim="1">Laufzeit ca. ([0-9]*) Minuten</expression>
@@ -86,7 +86,7 @@
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
-	</GetDetails>	
+	</GetDetails>
 	<!-- Trailer -->
 	<GetTrailer dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5+">

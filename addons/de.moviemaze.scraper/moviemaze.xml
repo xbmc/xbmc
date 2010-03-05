@@ -28,7 +28,7 @@
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://www.moviemaze.de/suche/result.phtml?searchword=\1" dest="3">
 			<expression noclean="1"/>
-		</RegExp>	
+		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
@@ -47,7 +47,7 @@
 			<!--Original Title-->
 			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5+">
 				<expression>&lt;h2&gt;\(([^,]*)</expression>
-			</RegExp> 
+			</RegExp>
 			<!--Year Film-->
 			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
 				<expression>([0-9]+)\)&lt;/h2</expression>
@@ -112,7 +112,7 @@
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<expression trim="1">&lt;div id=&quot;plot&quot;>(.*?)&lt;/div&gt;</expression>
 			</RegExp>
-			<!--Actors-->	
+			<!--Actors-->
 			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\5&lt;/role&gt;&lt;/actor&gt;" dest="5+">
 				<RegExp input="$$1" output="\2" dest="4">
 					<expression>Darsteller:([^%]*)%&gt;(.*?)&lt;/td</expression>

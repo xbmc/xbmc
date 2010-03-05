@@ -40,7 +40,7 @@
 			<!-- Studio -->
 			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
 				<expression trim="1">Verleih:([^&lt;]*)&lt;/strong&gt;</expression>
-			</RegExp>			
+			</RegExp>
 			<!-- Runtime -->
 			<RegExp input="$$1" output="&lt;runtime&gt;\1 Minuten&lt;/runtime&gt;" dest="5+">
 				<expression trim="1">&lt;strong&gt;([0-9]*) Min.&lt;/strong&gt;</expression>
@@ -74,7 +74,7 @@
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
-	</GetDetails>	
+	</GetDetails>
 	<GetCastAndCrew dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
 			<!-- Actors -->
