@@ -484,7 +484,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   }
 }
 
-bool CEdl::AddCut(const Cut& cut)
+bool CEdl::AddCut(Cut& cut)
 {
   if (cut.action != CUT && cut.action != MUTE && cut.action != COMM_BREAK)
   {
@@ -527,6 +527,22 @@ bool CEdl::AddCut(const Cut& cut)
                 cut.action);
       return false;
     }
+  }
+
+  if (cut.action == COMM_BREAK)
+  {
+    /*
+     * Detection isn't perfect near the edges of commercial breaks so automatically wait for a bit at
+     * the start (autowait) and automatically rewind by a bit (autowind) at the end of the commercial
+     * break.
+     */
+    int autowait = g_advancedSettings.m_iEdlCommBreakAutowait * 1000; // seconds -> ms
+    int autowind = g_advancedSettings.m_iEdlCommBreakAutowind * 1000; // seconds -> ms
+
+    if (cut.start > 0) // Only autowait if not at the start.
+     cut.start += autowait;
+    if (cut.end > cut.start + autowind) // Only autowind if it won't go back past the start (should never happen).
+     cut.end -= autowind;
   }
 
   /*
@@ -808,22 +824,10 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
     cut.start = (int)(commbreak->start_mark / fFramesPerSecond * 1000);
     cut.end = (int)(commbreak->end_mark / fFramesPerSecond * 1000);
 
-    /*
-     * Detection isn't perfect near the edges so autowind by a small amount into each end of the
-     * detected commercial break.
-     *
-     * TODO: Advanced setting for the autowind amount. Perhaps one for fowards and one for backwards?
-     */
-    int autowind = 2 * 1000; // 2 seconds in ms
-    if (cut.start > 0) // Only autowind forwards if not at the start.
-      cut.start += autowind;
-    if (cut.end > cut.start + autowind) // Only autowind if it won't go back past the start (should never happen).
-      cut.end -= autowind;
-
     if (!AddCut(cut)) // Log and continue with errors while still testing.
-      CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. autowind: %d. Continuing anyway.",
+      CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. Continuing anyway.",
                 __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
-                MillisecondsToTimeString(cut.end).c_str(), url.GetFileName().c_str(), autowind);
+                MillisecondsToTimeString(cut.end).c_str(), url.GetFileName().c_str());
   }
 
   if (HasCut())

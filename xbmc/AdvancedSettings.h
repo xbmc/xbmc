@@ -214,6 +214,8 @@ class CAdvancedSettings
     int m_iEdlMinCommBreakLength;   // seconds
     int m_iEdlMaxCommBreakGap;      // seconds
     int m_iEdlMaxStartGap;          // seconds
+    int m_iEdlCommBreakAutowait;    // seconds
+    int m_iEdlCommBreakAutowind;    // seconds
 
     bool m_bFirstLoop;
     int m_curlconnecttimeout;

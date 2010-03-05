@@ -223,6 +223,8 @@ void CAdvancedSettings::Initialize()
   m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
   m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
   m_iEdlMaxStartGap = 5 * 60;              // 5 minutes.
+  m_iEdlCommBreakAutowait = 0;             // Off by default
+  m_iEdlCommBreakAutowind = 0;             // Off by default
 
   m_curlconnecttimeout = 10;
   m_curllowspeedtime = 5;
@@ -556,6 +558,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
     XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
+    XMLUtils::GetInt(pElement, "commbreakautowait", m_iEdlCommBreakAutowait, 0, 10);        // Between 0 and 10 seconds
+    XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
   }
 
   // picture exclude regexps
