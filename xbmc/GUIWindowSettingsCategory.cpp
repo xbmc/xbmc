@@ -1145,7 +1145,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CStdString name = g_guiSettings.GetString("weather.script");
     AddonPtr addon;
-    if (CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, name, addon))
+    if (CAddonMgr::Get()->GetAddon(name, addon, ADDON_PLUGIN))
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
     }

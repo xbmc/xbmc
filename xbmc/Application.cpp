@@ -781,30 +781,13 @@ CProfile* CApplication::InitDirectoriesLinux()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    bool bCopySystemPlugins = false;
-    if (!CDirectory::Exists("special://home/addons/plugins") )
-       bCopySystemPlugins = true;
-
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/visualizations");
-    CDirectory::Create("special://home/addons/scripts");
-    CDirectory::Create("special://home/addons/scrapers");
-    CDirectory::Create("special://home/addons/screensavers");
-    CDirectory::Create("special://home/addons/plugins");
-    CDirectory::Create("special://home/addons/libraries");
-    CDirectory::Create("special://home/addons/libraries/scrapers");
     CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
-
-    /*if (!CFile::Exists("special://home/scripts/Common Scripts"))
-    {
-      if (symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() ) != 0)
-        CLog::Log(LOGERROR, "Failed to create common scripts symlink.");
-    }*/
 
     CDirectory::Create("special://masterprofile");
 
@@ -813,10 +796,6 @@ CProfile* CApplication::InitDirectoriesLinux()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-
-    // copy system-wide plugins into userprofile
-    if ( bCopySystemPlugins )
-       CUtil::CopyDirRecursive("special://xbmc/addons/plugins", "special://home/addons/plugins");
   }
   else
   {
@@ -892,21 +871,10 @@ CProfile* CApplication::InitDirectoriesOSX()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    bool bCopySystemPlugins = false;
-    if (!CDirectory::Exists("special://home/addons/plugins") )
-       bCopySystemPlugins = true;
-
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/visualizations");
-    CDirectory::Create("special://home/addons/scripts");
-    CDirectory::Create("special://home/addons/scrapers");
-    CDirectory::Create("special://home/addons/screensavers");
-    CDirectory::Create("special://home/addons/plugins");
-    CDirectory::Create("special://home/addons/libraries");
-    CDirectory::Create("special://home/addons/libraries/scrapers");
     CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -924,10 +892,6 @@ CProfile* CApplication::InitDirectoriesOSX()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-
-    // copy system-wide plugins into userprofile
-    if ( bCopySystemPlugins )
-       CUtil::CopyDirRecursive("special://xbmc/addons/plugins", "special://home/addons/plugins");
   }
   else
   {
@@ -988,20 +952,9 @@ CProfile* CApplication::InitDirectoriesWin32()
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
-    bool bCopySystemPlugins = false;
-    if (!CDirectory::Exists("special://home/addons/plugins") )
-       bCopySystemPlugins = true;
-
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/visualizations");
-    CDirectory::Create("special://home/addons/scripts");
-    CDirectory::Create("special://home/addons/scrapers");
-    CDirectory::Create("special://home/addons/screensavers");
-    CDirectory::Create("special://home/addons/plugins");
-    CDirectory::Create("special://home/addons/libraries");
-    CDirectory::Create("special://home/addons/libraries/scrapers");
     CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -1014,10 +967,6 @@ CProfile* CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-
-    // copy system-wide plugins into userprofile
-    if ( bCopySystemPlugins )
-       CUtil::CopyDirRecursive("special://xbmc/addons/plugins", "special://home/addons/plugins");
 
     // create user/app data/XBMC/cache
     CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
@@ -1103,17 +1052,8 @@ bool CApplication::Initialize()
   if (!m_bPlatformDirectories)
 #endif
   {
-    CDirectory::Create("special://xbmc/scripts");
-    CDirectory::Create("special://xbmc/plugins/weather");
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/addons");
-    CDirectory::Create("special://xbmc/addons/visualizations");
-    CDirectory::Create("special://xbmc/addons/scripts");
-    CDirectory::Create("special://xbmc/addons/scrapers");
-    CDirectory::Create("special://xbmc/addons/screensavers");
-    CDirectory::Create("special://xbmc/addons/plugins");
-    CDirectory::Create("special://home/addons/libraries");
-    CDirectory::Create("special://home/addons/libraries/scrapers");
     CDirectory::Create("special://xbmc/sounds");
   }
 

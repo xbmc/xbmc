@@ -302,10 +302,10 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
   // recheck addons.xml & each addontype's directories no more than once every ADDON_DIRSCAN_FREQ seconds
   CDateTimeSpan span;
   span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
-  if(!m_lastDirScan[type].IsValid() || (m_lastDirScan[type] + span) < CDateTime::GetCurrentDateTime())
+  if(!m_lastDirScan.IsValid() || (m_lastDirScan + span) < CDateTime::GetCurrentDateTime())
   {
-    m_lastDirScan[type] = CDateTime::GetCurrentDateTime();
-    LoadAddonsXML(type);
+    m_lastDirScan = CDateTime::GetCurrentDateTime();
+    LoadAddonsXML();
   }
 
   addons.clear();
@@ -327,17 +327,17 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
   return !addons.empty();
 }
 
-bool CAddonMgr::GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon)
+bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/)
 {
   CDateTimeSpan span;
   span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
-  if(!m_lastDirScan[type].IsValid() || (m_lastDirScan[type] + span) < CDateTime::GetCurrentDateTime())
+  if(!m_lastDirScan.IsValid() || (m_lastDirScan + span) < CDateTime::GetCurrentDateTime())
   {
-    m_lastDirScan[type] = CDateTime::GetCurrentDateTime();
-    LoadAddonsXML(type);
+    m_lastDirScan = CDateTime::GetCurrentDateTime();
+    LoadAddonsXML();
   }
 
-  if (m_addons.find(type) == m_addons.end())
+  if (type != ADDON_UNKNOWN && m_addons.find(type) == m_addons.end())
     return false;
 
   if (m_idMap[str])
@@ -400,7 +400,7 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE
       return false;
     }
   }
-  return GetAddon(type, setting, addon);
+  return GetAddon(setting, addon, type);
 }
 
 CStdString CAddonMgr::GetString(const CStdString &id, const int number)
@@ -429,7 +429,7 @@ bool CAddonMgr::EnableAddon(AddonPtr &addon)
   CUtil::CreateDirectoryEx(addon->Profile());
   addon->Enable();
   CLog::Log(LOGINFO,"ADDON: Enabled %s: %s : %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Version().Print().c_str());
-  SaveAddonsXML(addon->Type());
+  SaveAddonsXML();
   return true;
 }
 
@@ -460,7 +460,7 @@ bool CAddonMgr::DisableAddon(AddonPtr &addon)
       }
 
       CLog::Log(LOGINFO,"ADDON: Disabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
-      SaveAddonsXML(type);
+      SaveAddonsXML();
       return true;
     }
   }
@@ -468,35 +468,35 @@ bool CAddonMgr::DisableAddon(AddonPtr &addon)
   return false;
 }
 
-bool CAddonMgr::LoadAddonsXML(const TYPE &type)
+bool CAddonMgr::LoadAddonsXML()
 {
   VECADDONPROPS props;
-  if (!LoadAddonsXML(type, props))
+  if (!LoadAddonsXML(props))
     return false;
 
   // refresh addon dirs if neccesary/forced
-  FindAddons(type);
+  FindAddons();
 
   // now enable accordingly
   VECADDONPROPS::const_iterator itr = props.begin();
   while (itr != props.end())
   {
     AddonPtr addon;
-    if (itr->parent.empty() && GetAddon(type, itr->id, addon))
+    if (itr->parent.empty() && GetAddon(itr->id, addon, itr->type))
     {
       EnableAddon(addon);
     }
-    else if (GetAddon(type, itr->parent, addon))
+    else if (GetAddon(itr->parent, addon))
     { // multiple addon configurations
       AddonPtr clone = addon->Clone(addon);
       if (clone)
       {
-        m_addons[type].push_back(clone);
+        m_addons[addon->Type()].push_back(clone);
       }
     }
     else
     { // addon not found
-      CLog::Log(LOGERROR, "ADDON: Couldn't find %s requested. Name: %s", TranslateType(type).c_str(), itr->name.c_str());
+      CLog::Log(LOGERROR, "ADDON: Couldn't find addon requested with ID: %s", itr->id.c_str());
       //TODO we should really add but mark unavailable, to prompt user
     }
     ++itr;
@@ -504,87 +504,16 @@ bool CAddonMgr::LoadAddonsXML(const TYPE &type)
   return true;
 }
 
-bool CAddonMgr::GetAddonProps(const TYPE &type, VECADDONPROPS &props)
-{
-  props.clear();
-  VECADDONS addons;
-  bool found = GetAddons(type, addons);
-  if (found)
-  {
-    IVECADDONS itr = addons.begin();
-    while (itr != addons.end())
-    {
-      AddonProps addon(*itr);
-      props.push_back(addon);
-      ++itr;
-    }
-  }
-  return found;
-}
-
-void CAddonMgr::FindAddons(const TYPE &type)
+void CAddonMgr::FindAddons()
 {
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
-  bool isHome = CSpecialProtocol::XBMCIsHome();
+  if (!CSpecialProtocol::XBMCIsHome())
+    CDirectory::GetDirectory("special://home/addons", items);
+  CDirectory::GetDirectory("special://xbmc/addons", items);
 
   // store any addons with unresolved deps, then recheck at the end
   VECADDONS unresolved;
-
-  switch (type)
-  {
-  case ADDON_VIZ:
-    { //TODO fix mvis handling
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/visualizations", items, ADDON_VIS_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/visualizations", items, ADDON_VIS_EXT, false);
-      break;
-    }
-  case ADDON_SCREENSAVER:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
-      break;
-    }
-  case ADDON_SCRAPER:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
-      break;
-    }
-  case ADDON_SCRAPER_LIBRARY:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/libraries/scrapers", items, ADDON_SCRAPER_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/libraries/scrapers", items, ADDON_SCRAPER_EXT, false);
-      break;
-    }
-  case ADDON_SCRIPT:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/scripts", items, ADDON_PYTHON_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/scripts", items, ADDON_PYTHON_EXT, false);
-      break;
-    }
-  case ADDON_PLUGIN:
-    {
-      if (!isHome)
-        CDirectory::GetDirectory("special://home/addons/plugins", items, ADDON_PYTHON_EXT, false);
-      CDirectory::GetDirectory("special://xbmc/addons/plugins", items, ADDON_PYTHON_EXT, false);
-      break;
-    }
-  default:
-    return;
-  }
-
-  //FIXME this only checks library dependencies - multiple addon type deps
-  //need a more sophisticated approach
-  if (type == ADDON_SCRAPER)
-    FindAddons(ADDON_SCRAPER_LIBRARY);
-  else if (type == ADDON_VIZ)
-    FindAddons(ADDON_VIZ_LIBRARY);
 
   // for all folders found
   for (int i = 0; i < items.Size(); ++i)
@@ -593,7 +522,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
 
     // read description.xml and populate the addon
     AddonPtr addon;
-    if (!AddonFromInfoXML(type, item->m_strPath, addon))
+    if (!AddonFromInfoXML(item->m_strPath, addon))
     {
       CLog::Log(LOGDEBUG, "ADDON: Error reading %sdescription.xml, bypassing package", item->m_strPath.c_str());
       continue;
@@ -634,8 +563,7 @@ void CAddonMgr::FindAddons(const TYPE &type)
         continue;
       else
       {
-        assert(addon->Type() == type);
-        m_addons[type].push_back(addon);
+        m_addons[addon->Type()].push_back(addon);
         m_idMap.insert(std::make_pair(addon->ID(), addon));
       }
     }
@@ -648,12 +576,12 @@ void CAddonMgr::FindAddons(const TYPE &type)
     {
       if (!UpdateIfKnown(addon))
       {
-        m_addons[type].push_back(addon);
+        m_addons[addon->Type()].push_back(addon);
         m_idMap.insert(std::make_pair(addon->ID(), addon));
       }
     }
   }
-  CLog::Log(LOGINFO, "ADDON: Found %"PRIuS" addons of type %s", m_addons.find(type) == m_addons.end() ? 0: m_addons[type].size(), TranslateType(type).c_str());
+//  CLog::Log(LOGINFO, "ADDON: Found %"PRIuS" addons", m_addons.find(type) == m_addons.end() ? 0: m_addons[type].size(), TranslateType(type).c_str());
 }
 
 bool CAddonMgr::UpdateIfKnown(AddonPtr &addon)
@@ -719,7 +647,7 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
   return deps.empty();
 }
 
-bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon)
+bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 {
   // First check that we can load description.xml
   CStdString strPath(path);
@@ -778,7 +706,7 @@ bool CAddonMgr::AddonFromInfoXML(const TYPE &reqType, const CStdString &path, Ad
     return false;
   }
   type = TranslateType(element->GetText());
-  if (type != reqType)
+  if (type == ADDON_UNKNOWN)
   {
     CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", strPath.c_str(), type);
     return false;
@@ -1053,73 +981,48 @@ CStdString CAddonMgr::GetAddonsXMLFile() const
   return folder;
 }
 
-bool CAddonMgr::SaveAddonsXML(const TYPE &type)
+bool CAddonMgr::SaveAddonsXML()
 {
-  VECADDONPROPS props;
-  GetAddonProps(type, props);
+  //TODO lock
+  if (m_idMap.empty())
+    return true;
 
-  // TODO: Should we be specifying utf8 here??
   TiXmlDocument doc;
-  if (!doc.LoadFile(GetAddonsXMLFile()))
-    doc.ClearError();
-
-  // either point to existing addons node, or create one
   TiXmlNode *pRoot = NULL;
-  pRoot = doc.FirstChildElement("addons");
-  if (!pRoot)
+  TiXmlElement xmlRootElement("addons");
+  pRoot = doc.InsertEndChild(xmlRootElement);
+
+  std::map<CStdString, AddonPtr>::iterator itr = m_idMap.begin();
+  while (itr != m_idMap.end())
   {
-    TiXmlElement xmlRootElement("addons");
-    pRoot = doc.InsertEndChild(xmlRootElement);
-    if (!pRoot)
-      return false;
+    AddonPtr addon = (*itr).second;
+    if (addon && !addon->Disabled())
+    {
+      TYPE type = addon->Type();
+      CStdString strType = TranslateType(type);
+      TiXmlElement sectionElement(strType);
+      TiXmlNode *node = pRoot->FirstChild(strType);
+      if (!node)
+        node = pRoot->InsertEndChild(sectionElement);
+
+      TiXmlElement element("addon");
+      XMLUtils::SetString(&element, "id", addon->ID());
+      if (addon->Parent())
+        XMLUtils::SetString(&element, "parentid", addon->Parent()->ID());
+      //XMLUtils::SetString(&element, "repo", addon->Repo()->ID());
+      node->InsertEndChild(element);
+    }
+    itr++;
   }
-
-  // ok, now run through and save the modified addons section
-  SetAddons(pRoot, type, props);
-
   return doc.SaveFile(GetAddonsXMLFile());
 }
 
-bool CAddonMgr::SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS &addons)
-{
-  CStdString strType;
-  strType = TranslateType(type);
-
-  if (strType.IsEmpty())
-    return false;
-
-  TiXmlElement sectionElement(strType);
-  TiXmlNode *sectionNode = root->FirstChild(strType);
-
-  if (sectionNode)
-  { // must delete the original section before regenerating
-    root->RemoveChild(sectionNode);
-  }
-  if (!addons.empty())
-  { // only recreate the sectionNode if there's addons of this type enabled
-    sectionNode = root->InsertEndChild(sectionElement);
-
-    VECADDONPROPS::const_iterator itr = addons.begin();
-    while (itr != addons.end())
-    {
-      TiXmlElement element("addon");
-      XMLUtils::SetString(&element, "id", itr->id);
-      if (!itr->parent.IsEmpty())
-        XMLUtils::SetString(&element, "parentid", itr->parent);
-      sectionNode->InsertEndChild(element);
-      ++itr;
-    }
-  }
-  return true;
-}
-
-bool CAddonMgr::LoadAddonsXML(const TYPE &type, VECADDONPROPS &addons)
+bool CAddonMgr::LoadAddonsXML(VECADDONPROPS &addons)
 {
   CStdString strXMLFile;
   TiXmlDocument xmlDoc;
   TiXmlElement *pRootElement = NULL;
   strXMLFile = GetAddonsXMLFile();
-  CLog::Log(LOGNOTICE, "ADDONS: Attempting to parse %s", strXMLFile.c_str());
   if ( xmlDoc.LoadFile( strXMLFile ) )
   {
     pRootElement = xmlDoc.RootElement();
@@ -1128,7 +1031,7 @@ bool CAddonMgr::LoadAddonsXML(const TYPE &type, VECADDONPROPS &addons)
       strValue = pRootElement->Value();
     if ( strValue != "addons")
     {
-      CLog::Log(LOGERROR, "ADDONS: %s does not contain <addons> element", strXMLFile.c_str());
+      CLog::Log(LOGDEBUG, "ADDONS: %s does not contain <addons> element", strXMLFile.c_str());
       return false;
     }
   }
@@ -1145,74 +1048,54 @@ bool CAddonMgr::LoadAddonsXML(const TYPE &type, VECADDONPROPS &addons)
 
   if (pRootElement)
   { // parse addons...
-    GetAddons(pRootElement, type, addons);
+    GetAddons(pRootElement, addons);
     return true;
   }
 
   return false;
 }
 
-void CAddonMgr::GetAddons(const TiXmlElement* pRootElement, const TYPE &type, VECADDONPROPS &addons)
+void CAddonMgr::GetAddons(const TiXmlElement* pAddons, VECADDONPROPS &addons)
 {
-  CStdString strTagName;
-  strTagName = TranslateType(type);
 
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild)
+  const TiXmlNode *pType = 0;
+  while( pType = pAddons->IterateChildren( pType ) )
   {
-    pChild = pChild->FirstChild();
-    while (pChild > 0)
+    TYPE type = TranslateType(pType->Value());
+    const TiXmlNode *pAddon = pType->FirstChild();
+    while (pAddon > 0)
     {
-      CStdString strValue = pChild->Value();
+      CStdString strValue = pAddon->Value();
       if (strValue == "addon")
       {
-        GetAddon(type, pChild, addons);
+        GetAddon(type, pAddon, addons);
       }
-      pChild = pChild->NextSibling();
+      pAddon = pAddon->NextSibling();
     }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "ADDONS: <%s> tag is missing or addons.xml is malformed", strTagName.c_str());
   }
 }
 
 bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
 {
   // id
-  const TiXmlNode *pNodePath = node->FirstChild("id");
+  const TiXmlNode *pNodeID = node->FirstChild("id");
   CStdString id;
-  if (pNodePath && pNodePath->FirstChild())
+  if (pNodeID && pNodeID->FirstChild())
   {
-    id = pNodePath->FirstChild()->Value();
+    id = pNodeID->FirstChild()->Value();
   }
   else
     return false;
 
-  // this AddonProps doesn't need a valid version
+  // will grab the version from description.xml
   CStdString version;
   AddonProps props(id, type, version);
 
-  // name if present
-  const TiXmlNode *pNodeName = node->FirstChild("name");
-  CStdString strName;
-  if (pNodeName && pNodeName->FirstChild())
-  {
-    props.name = pNodeName->FirstChild()->Value();
-  }
-
   // parent id if present
-  const TiXmlNode *pNodeChildID = node->FirstChild("parentid");
-  if (pNodeChildID && pNodeChildID->FirstChild())
+  const TiXmlNode *pNodeParent = node->FirstChild("parentid");
+  if (pNodeParent && pNodeParent->FirstChild())
   {
-    props.parent = pNodeChildID->FirstChild()->Value();
-  }
-
-  // get custom thumbnail
-  const TiXmlNode *pThumbnailNode = node->FirstChild("thumbnail");
-  if (pThumbnailNode && pThumbnailNode->FirstChild())
-  {
-    props.icon = pThumbnailNode->FirstChild()->Value();
+    props.parent = pNodeParent->FirstChild()->Value();
   }
 
   addons.insert(addons.end(), props);

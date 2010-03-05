@@ -64,7 +64,7 @@ namespace PYXBMC
     };
 
     AddonPtr addon;
-    if (CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRIPT, CStdString(cScriptUUID), addon))
+    if (CAddonMgr::Get()->GetAddon(CStdString(cScriptUUID), addon, ADDON::ADDON_SCRIPT))
     {
       PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
       return NULL;

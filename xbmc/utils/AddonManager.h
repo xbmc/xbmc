@@ -104,7 +104,7 @@ namespace ADDON
 
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
-    bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
+    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN);
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
@@ -125,27 +125,26 @@ namespace ADDON
     void UpdateRepos();
     bool ParseRepoXML(const CStdString &path);
 
-    void FindAddons(const TYPE &type);
-    bool LoadAddonsXML(const TYPE &type);
-    bool SaveAddonsXML(const TYPE &type);
-    bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
+    void FindAddons();
+    bool LoadAddonsXML();
+    bool SaveAddonsXML();
+    bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
 
     /* addons.xml */
     CStdString GetAddonsXMLFile() const;
-    bool GetAddonProps(const TYPE &type, VECADDONPROPS &addons);
-    bool LoadAddonsXML(const TYPE& type, VECADDONPROPS& addons);
-    bool SaveAddonsXML(const TYPE& type, const VECADDONPROPS &addons);
-    bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONPROPS &addons);
-    void GetAddons(const TiXmlElement* pRootElement, const TYPE &type, VECADDONPROPS &addons);
+    bool LoadAddonsXML(VECADDONPROPS& addons);
+    bool SaveAddonsXML(const VECADDONPROPS &addons);
+    bool SetAddons(TiXmlNode *root, const VECADDONPROPS &addons);
+    void GetAddons(const TiXmlElement* pRootElement, VECADDONPROPS &addons);
     bool GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addon);
 
     CAddonMgr();
     static CAddonMgr* m_pInstance;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
-    std::map<TYPE, CDateTime> m_lastDirScan;
+    CDateTime m_lastDirScan;
     std::map<CStdString, AddonPtr> m_idMap;
   };
 
