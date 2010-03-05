@@ -61,7 +61,8 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
-        xbmc/cores/dvdplayer/Codecs/libdvd
+	xbmc/cores/dvdplayer/Codecs/libdvd \
+	xbmc/cores/dvdplayer/Codecs/libbdnav
 ifneq (@USE_EXTERNAL_LIBASS@,1)
   DVDPCODECS_DIRS+=xbmc/lib/libass/xbmc
 endif
@@ -95,7 +96,8 @@ LIB_DIRS=\
 	xbmc/lib/libapetag \
 	xbmc/lib/libPython/linux \
 	lib/libmodplug \
-	lib/xbmc-dll-symbols
+	lib/xbmc-dll-symbols \
+	lib/jsoncpp/jsoncpp/src/lib_json
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
