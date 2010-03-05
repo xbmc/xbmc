@@ -99,7 +99,7 @@ protected:
     // COM interfaces
   bool                         m_bNeedNewDevice;
   
-  CD3DTexture                 *m_pVideoTexture;
+  IDirect3DTexture9  *m_pVideoTexture;
   IDirect3DSurface9  *m_pVideoSurface;
   IDirect3DTexture9  *m_pInternalVideoTexture[7];
   IDirect3DSurface9  *m_pInternalVideoSurface[7];

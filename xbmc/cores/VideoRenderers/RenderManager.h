@@ -73,7 +73,7 @@ public:
       m_pRenderer->ReleaseImage(source, preserve);
   }
 #if defined(HAS_DX)
-  inline void PaintVideoTexture(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface)
+  inline void PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)

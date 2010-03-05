@@ -120,19 +120,3 @@ void CDsRenderer::DeleteSurfaces()
   }
 
 }
-
-STDMETHODIMP CDsRenderer::RenderPresent(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface)
-{
-
-  
-  if (!g_renderManager.IsConfigured())
-    return E_FAIL;
-  
-  
-  g_renderManager.PaintVideoTexture(videoTexture,videoSurface);
-  
-  g_application.NewFrame();
-  g_application.WaitFrame(100);
-  return S_OK;
-
-}

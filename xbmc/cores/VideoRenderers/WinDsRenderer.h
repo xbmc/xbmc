@@ -54,7 +54,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
 
-  virtual void         PaintVideoTexture(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface);
+  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface);
 
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return false; }
@@ -76,7 +76,7 @@ protected:
 
   typedef CD3DTexture        D3DVIDEOBUFFERS[NUM_BUFFERS];
   D3DVIDEOBUFFERS            m_D3DVideoSurfaces;
-  CD3DTexture*               m_D3DVideoTexture;
+  IDirect3DTexture9*         m_D3DVideoTexture;
   IDirect3DSurface9*         m_D3DMemorySurface;
   
 

@@ -127,13 +127,21 @@ void CWinDsRenderer::AutoCrop(bool bCrop)
 
 }
 
-void CWinDsRenderer::PaintVideoTexture(CD3DTexture* videoTexture,IDirect3DSurface9* videoSurface)
+void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
 {
   
   if (videoTexture)
+  {
     m_D3DVideoTexture = videoTexture;
+    m_D3DVideoTexture->AddRef();
+    videoTexture = NULL;
+  }
   if (videoSurface)
+  {
     m_D3DMemorySurface = videoSurface;
+    m_D3DMemorySurface->AddRef();
+    videoSurface = NULL;
+  }
 }
 
 void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
@@ -187,7 +195,7 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
     verts[i].y -= 0.5;
   }
   //D3DFVF_TEX1
-  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture->Get());
+  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );

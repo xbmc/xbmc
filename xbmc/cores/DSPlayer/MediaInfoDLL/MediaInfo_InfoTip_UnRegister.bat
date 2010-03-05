@@ -1,1 +1,0 @@
-regsvr32 MediaInfo_InfoTip.dll /u

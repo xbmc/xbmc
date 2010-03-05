@@ -1420,9 +1420,8 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
     }
 
     if (SUCCEEDED(hr))
-    {
-      bFoundMediaType = TRUE;
-    }
+      bFoundMediaType = true;
+
   }
 
   return hr;

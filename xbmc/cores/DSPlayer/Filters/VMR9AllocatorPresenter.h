@@ -72,9 +72,8 @@ private:
   int                                 m_pNbrSurface;
   int                                 m_pCurSurface;
   bool          m_bNeedCheckSample;
-  int            m_nTearingPos;
 
-  CD3DTexture * m_pTexture;
+  CD3DTexture* m_pTexture;
   
 };
 

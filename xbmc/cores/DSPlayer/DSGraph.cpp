@@ -43,7 +43,6 @@
 #include "DVDSubtitles/DVDFactorySubtitle.h"
 
 #include "DshowUtil/MediaTypeEx.h"
-#include "MediaInfoDll/MediaInfoDLL.h"
 
 #include "timeutils.h"
 enum 
@@ -57,7 +56,6 @@ enum
 #include "DSConfig.h"
 
 using namespace std;
-using namespace MediaInfoDLL;
 
 CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
 {  

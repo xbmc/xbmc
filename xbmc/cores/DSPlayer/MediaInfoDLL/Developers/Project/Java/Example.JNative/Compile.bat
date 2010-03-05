@@ -1,1 +1,0 @@
-javac -d . -classpath .;JNative.jar ..\..\..\Source\MediaInfoDLL\MediaInfoDLL.JNative.java ..\..\..\Source\Example\HowToUse_Dll.JNative.java

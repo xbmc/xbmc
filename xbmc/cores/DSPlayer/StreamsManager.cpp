@@ -677,7 +677,7 @@ void CStreamsManager::SetSubtitle( int iStream )
 
     if (g_dsconfig.LoadffdshowSubtitles(s->path))
       CLog::Log(LOGNOTICE,"%s using this file for subtitle %s", __FUNCTION__, s->path.c_str());
-
+    
     s->flags = AMSTREAMSELECTINFO_ENABLED;
 
     m_bChangingAudioStream = false;
@@ -717,7 +717,9 @@ void CStreamsManager::SetSubtitle( int iStream )
       m_bSubtitlesUnconnected = false;
       CLog::Log(LOGDEBUG, "%s Successfully selected subtitle stream", __FUNCTION__);
     }
-  } else {
+  } 
+  else 
+  {
 
     long disableIndex = GetSubtitle(), enableIndex = iStream;
     
@@ -840,7 +842,7 @@ void CStreamsManager::SetSubtitleVisible( bool bVisible )
   
   if (g_dsconfig.pIffdshowDecoder)
   {
-    g_dsconfig.pIffdshowDecoder->compat_putParam(IDFF_isSubtitles, bVisible); // Show or not subtitles
+    g_dsconfig.pIffdshowDecoder->compat_putParam(IDFF_isSubtitles, (int)bVisible); // Show or not subtitles
   }
   m_bSubtitlesVisible = bVisible;
 

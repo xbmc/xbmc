@@ -9,7 +9,7 @@
 
 #include "application.h"
 #include "IPinHook.h"
-HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID);
+
 //-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
   ZeroMemory(m_pInternalVideoTexture, 7 * sizeof(IDirect3DTexture9*));
   ZeroMemory(m_pInternalVideoSurface, 7 * sizeof(IDirect3DSurface9*));
 
-  m_pVideoTexture = new CD3DTexture();
+  m_pVideoTexture = NULL;
 
   hr = InitializeDXVA();
 }
@@ -59,7 +59,6 @@ D3DPresentEngine::~D3DPresentEngine()
     FreeLibrary(pDXVA2HLib);
   if (pEVRHLib)
     FreeLibrary(pEVRHLib);
-  SAFE_DELETE(m_pVideoTexture);
 }
 
 
@@ -188,13 +187,14 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
     d3dFormat = D3DFMT_A8R8G8B8;
   else
     d3dFormat = D3DFMT_X8R8G8B8;
-
-  if (! m_pVideoTexture->Create(m_iVideoWidth ,
-                               m_iVideoHeight ,
-                               1 , 
-                               D3DUSAGE_RENDERTARGET,
-                               d3dFormat,
-                               D3DPOOL_DEFAULT))
+  if (FAILED(g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth ,
+                                                      m_iVideoHeight ,
+                                                      1 , 
+                                                      D3DUSAGE_RENDERTARGET,
+                                                      d3dFormat,
+                                                      D3DPOOL_DEFAULT,
+                                                      &m_pVideoTexture,
+                                                      NULL)))
   {
     CLog::Log(LOGERROR,"%s Error while creating the video texture",__FUNCTION__);
     return E_FAIL;
@@ -423,9 +423,7 @@ done:
 HRESULT D3DPresentEngine::RegisterCallback(IEVRPresenterCallback *pCallback)
 {
   if(m_pCallback)
-  {
     m_pCallback = NULL;
-  }
 
   m_pCallback = pCallback;
 
@@ -442,42 +440,4 @@ HRESULT D3DPresentEngine::SetBufferCount(int bufferCount)
 {
   m_bufferCount = bufferCount;
   return S_OK;
-}
-
-
-//-----------------------------------------------------------------------------
-// FindAdapter
-//
-// Given a handle to a monitor, returns the ordinal number that D3D uses to 
-// identify the adapter.
-//-----------------------------------------------------------------------------
-
-HRESULT FindAdapter(IDirect3D9 *pD3D9, HMONITOR hMonitor, UINT *puAdapterID)
-{
-  HRESULT hr = E_FAIL;
-  UINT cAdapters = 0;
-  UINT uAdapterID = (UINT)-1;
-
-  cAdapters = pD3D9->GetAdapterCount();
-  for (UINT i = 0; i < cAdapters; i++)
-  {
-    HMONITOR hMonitorTmp = pD3D9->GetAdapterMonitor(i);
-
-    if (! hMonitorTmp)
-    {
-      break;
-    }
-    if (hMonitorTmp == hMonitor)
-    {
-      uAdapterID = i;
-      break;
-    }
-  }
-
-  if (uAdapterID != (UINT)-1)
-  {
-    *puAdapterID = uAdapterID;
-    hr = S_OK;
-  }
-  return hr;
 }

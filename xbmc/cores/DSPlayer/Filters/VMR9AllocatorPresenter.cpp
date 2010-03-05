@@ -283,9 +283,6 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
 {
   hr = S_OK;
   m_bNeedNewDevice = false;
-  m_nTearingPos = 0;
-
-  m_pTexture = new CD3DTexture();
 }
 
 void CVMR9AllocatorPresenter::DeleteVmrSurfaces()
@@ -596,8 +593,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
 STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
 {
-  if (!g_renderManager.IsConfigured() || m_rtTimePerFrame == 0
-    || m_bNeedCheckSample)
+  if (!g_renderManager.IsConfigured() || m_rtTimePerFrame == 0 || m_bNeedCheckSample)
   {
     GetCurrentVideoSize();
   }
@@ -633,26 +629,10 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     g_Windowing.Get3DDevice()->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
   }
 
-  /* Tearing test works, but no dammit image ! */
-  /*
-  RECT    rcTearing;
-
-  rcTearing.left    = m_nTearingPos;
-  rcTearing.top    = 0;
-  rcTearing.right    = rcTearing.left + 4;
-  rcTearing.bottom  = lpPresInfo->rcSrc.bottom;
-  g_Windowing.Get3DDevice()->ColorFill (m_pVideoSurface[m_nCurSurface], &rcTearing, D3DCOLOR_ARGB (255,255,0,0));
-
-  rcTearing.left  = (rcTearing.right + 15) % lpPresInfo->rcSrc.right;
-  rcTearing.right  = rcTearing.left + 4;
-  g_Windowing.Get3DDevice()->ColorFill (m_pVideoSurface[m_nCurSurface], &rcTearing, D3DCOLOR_ARGB (255,255,0,0));
-
-  m_nTearingPos = (m_nTearingPos + 7) % lpPresInfo->rcSrc.right;
-  */
-
-  m_pTexture->Set(m_pVideoTexture[m_nCurSurface]);
-  RenderPresent(m_pTexture, m_pVideoSurface[m_nCurSurface]);
+  g_renderManager.PaintVideoTexture(m_pVideoTexture[m_nCurSurface],m_pVideoSurface[m_nCurSurface]);
   
+  g_application.NewFrame();
+  g_application.WaitFrame(100);
   return S_OK;
 }
 
