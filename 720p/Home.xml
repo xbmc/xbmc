@@ -18,6 +18,7 @@
 <!-- Right hand backgrounds -->
 
 
+		<!-- Backgrounds -->
     <control type="group" id="200">
       <visible>!Player.HasVideo</visible>
 
@@ -335,7 +336,391 @@
       <include>HomeRightOverlay</include>
     </control>
 
-<!-- SubMenus -->
+		<!-- Behind Menu Backgrounds (on the left hand side)-->
+    <control type="group" id="201">
+      <visible>!Player.HasVideo</visible>
+
+      <control type="group" id="236">
+        <description>Power Background Image</description>
+        <include>HomePowerBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>PowerBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGPowerLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGPowerMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGPowerMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="235">
+        <description>System Background Image</description>
+        <include>HomeSystemBGVisible</include>
+				<include>HomeBackgroundFade</include>
+
+				<control type="group">
+					<include>SystemBGVisible</include>
+
+					<control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGSystemLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGSystemMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGSystemMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="234">
+        <description>Weather Background Image</description>
+        <include>HomeWeatherBGVisible</include>
+        <include>HomeBackgroundFade</include>
+        <include>HomeWeatherBGFade</include>
+
+        <control type="group">
+          <include>WeatherBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGWeatherLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGWeatherMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGWeatherMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="241">
+        <description>App Store Background Image</description>
+        <include>HomeAppStoreBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>AppStoreBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGAppStoreLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGAppStoreMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGAppStoreMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+      
+      <control type="group" id="241">
+        <description>Favourites Background Image</description>
+        <include>HomeFavouritesBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>AppStoreBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGFavouritesLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGFavouritesMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGFavouritesMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+      
+      <control type="group" id="242">
+        <description>Help Background Image</description>
+        <include>HomeHelpBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>HelpBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGHelpLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGHelpMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGHelpMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+      
+      <control type="group" id="230">
+        <description>Videos Background Image</description>
+        <include>HomeVideosBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>VideosBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGVideosLeftLow.png</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGVideosMidLow.png</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGVideosMidRightLow.png</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="238">
+        <description>Movies Background Image</description>
+        <include>HomeMoviesBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>MoviesBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGMoviesLeftLow.png</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGMoviesMidLow.png</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGMoviesMidRightLow.png</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="237">
+        <description>TV Shows Background Image</description>
+        <include>HomeTVShowsBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>TVShowsBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGTVShowsLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGTVShowsMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGTVShowsMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="231">
+        <description>Music Background Image</description>
+        <include>HomeMusicBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>MusicBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGMusicLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGMusicMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGMusicMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="232">
+        <description>Pictures Background Image</description>
+        <include>HomePicturesBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>PicturesBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGPicturesLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGPicturesMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGPicturesMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="233">
+        <description>Programs Background Image</description>
+        <include>HomeProgramsBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>ProgramsBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGProgramsLeftLow.jpg</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGProgramsMidLow.jpg</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGProgramsMidRightLow.jpg</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+
+      <control type="group" id="239">
+        <description>DVD Background Image</description>
+        <include>HomeDVDBGVisible</include>
+        <include>HomeBackgroundFade</include>
+
+        <control type="group">
+          <include>DVDBGVisible</include>
+
+          <control type="image">
+            <include>BackgroundLeftImage</include>
+            <texture>HomeBGDVDLeftLow.png</texture>
+          </control>
+
+          <control type="group">
+            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
+
+            <control type="image">
+              <include>BackgroundMidImage</include>
+              <texture>HomeBGDVDMidLow.png</texture>
+            </control>
+            <control type="image">
+              <include>BackgroundMidRightImage</include>
+              <texture>HomeBGDVDMidRightLow.png</texture>
+            </control>
+          </control>
+        </control>
+      </control>
+    </control>
+
+		<!-----THE FANART BACKGROUND------------------------------------------>
+		<control type="group">
+			<control type="largeimage">
+		 		<include>HomeBackgroundFade</include>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+		    <posx>0</posx>
+		    <posy>0</posy>
+		    <width>1280</width>
+		    <height>720</height>
+				<visible>true</visible>
+		  </control>
+		</control>
+		<!------------------------------------------------------------------->
+
+		<!-- SubMenus -->
     <control type="group" id="500">
       <animation effect="fade" start="0" end="100" time="1000" delay="500">WindowOpen</animation>
       <animation type="WindowClose" condition="![Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">
@@ -448,13 +833,6 @@
            </focusedlayout>
 
           <content>
-            <!--
-            <item id="1">
-              <description>Browse Button</description>
-              <label> $LOCALIZE[31000] </label>
-              <onclick>XBMC.ActivateWindow(5)</onclick>
-            </item>
-            -->
             <item id="2">
               <description>Playlists</description>
               <label> $LOCALIZE[136] </label>
@@ -465,13 +843,6 @@
               <label> $LOCALIZE[20389] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,musicvideos,return)</onclick>
             </item>
-            <!--
-            <item id="4">
-              <description>Settings Button</description>
-              <label> $LOCALIZE[31060] </label>
-              <onclick>XBMC.ActivateWindow(15)</onclick>
-            </item>
-            -->
           </content>
         </control>
 
@@ -944,9 +1315,114 @@
             -->
           </content>
         </control>
+
+				      <control type="list" id="411">
+			          <description>Library Side Menu</description>
+			          <onup>411</onup>
+			          <ondown>411</ondown>
+			          <visible>[Container(300).HasFocus(1001) | Control.HasFocus(411)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+			          <include>HomeSideMenu</include>
+
+			          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+			            <control type="image">
+			              <include>HomeSideMenuNFBGImage</include>
+			            </control>
+			            <control type="label">
+			              <include>HomeSideMenuNFBGLabel</include>
+			            </control>
+			            <control type="image">
+			              <include>HomeSideMenuFOBGImage</include>
+			              <animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnNext + Container(411).Position(0)">focus</animation>
+			              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnNext + !Container(411).Position(0)">focus</animation>
+			              <animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnPrevious + Container(411).Position(3)">focus</animation>
+			              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(411).OnPrevious + !Container(411).Position(3)">focus</animation>
+			            </control>
+			            <control type="label">
+			              <include>HomeSideMenuFOBGLabel</include>
+			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(411).OnNext">focus</animation>
+			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(411).OnPrevious">focus</animation>
+			            </control>
+			           </focusedlayout>
+
+			          <content>
+				          <item id="1">
+			              <description></description>
+			              <label>Recently Viewed</label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+				          <item id="2">
+			              <description></description>
+			              <label>Recently Added</label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+			  
+			            <item id="3">
+			              <description></description>
+			              <label>By Tag</label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+			            <item id="4">
+			              <description></description>
+			              <label>By Collection</label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+			            <item id="5">
+			              <description></description>
+			              <label>By Rating</label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+			            <item id="6">
+			              <description></description>
+			              <label>By Genre</label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+			            <item id="8">
+			              <description></description>
+			              <label>By Year</label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+			          </content>
+			        </control>
+
+				      <control type="list" id="412">
+			          <description>Library Side Menu</description>
+			          <onup>412</onup>
+			          <ondown>412</ondown>
+			          <visible>[Container(300).HasFocus(1002) | Control.HasFocus(412)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+			          <include>HomeSideMenu</include>
+
+			          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+			            <control type="image">
+			              <include>HomeSideMenuNFBGImage</include>
+			            </control>
+			            <control type="label">
+			              <include>HomeSideMenuNFBGLabel</include>
+			            </control>
+			            <control type="image">
+			              <include>HomeSideMenuFOBGImage</include>
+			              <animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnNext + Container(411).Position(0)">focus</animation>
+			              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnNext + !Container(411).Position(0)">focus</animation>
+			              <animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnPrevious + Container(411).Position(3)">focus</animation>
+			              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(412).OnPrevious + !Container(411).Position(3)">focus</animation>
+			            </control>
+			            <control type="label">
+			              <include>HomeSideMenuFOBGLabel</include>
+			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(412).OnNext">focus</animation>
+			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(412).OnPrevious">focus</animation>
+			            </control>
+			           </focusedlayout>
+
+			          <content>
+			            <item id="2">
+			              <description>Playlists</description>
+			              <label> $LOCALIZE[136] </label>
+			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+			            </item>
+			          </content>
+			        </control>
       </control>
 
-<!--Sub Submenu -->
+		<!--Sub Submenu -->
       <control type="group" id="302">
         <include>HomeSubSubMenuGroupDims</include>
         <animation effect="fade" time="500" delay="100">Focus</animation>
@@ -1039,389 +1515,6 @@
               <onclick>XBMC.ActivateWindow(18)</onclick>
             </item>
           </content>
-        </control>
-      </control>
-    </control>
-
-		<!------------------------------------------------------------------->
-    <control type="largeimage">
-	 		<include>HomeBackgroundFade</include>
-			<info>Container(300).ListItem.Property(fanart_image)</info>
-	    <posx>0</posx>
-	    <posy>0</posy>
-	    <width>1280</width>
-	    <height>720</height>
-			<visible>true</visible>
-    </control>
-		<!------------------------------------------------------------------->
-
-<!-- Behind Menu Backgrounds -->
-
-    <control type="group" id="201">
-      <visible>!Player.HasVideo</visible>
-
-      <control type="group" id="236">
-        <description>Power Background Image</description>
-        <include>HomePowerBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>PowerBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGPowerLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGPowerMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGPowerMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="235">
-        <description>System Background Image</description>
-        <include>HomeSystemBGVisible</include>
-				<include>HomeBackgroundFade</include>
-
-				<control type="group">
-					<include>SystemBGVisible</include>
-
-					<control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGSystemLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGSystemMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGSystemMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="234">
-        <description>Weather Background Image</description>
-        <include>HomeWeatherBGVisible</include>
-        <include>HomeBackgroundFade</include>
-        <include>HomeWeatherBGFade</include>
-
-        <control type="group">
-          <include>WeatherBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGWeatherLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGWeatherMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGWeatherMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="241">
-        <description>App Store Background Image</description>
-        <include>HomeAppStoreBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>AppStoreBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGAppStoreLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGAppStoreMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGAppStoreMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="241">
-        <description>Favourites Background Image</description>
-        <include>HomeFavouritesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>AppStoreBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGFavouritesLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGFavouritesMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGFavouritesMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="242">
-        <description>Help Background Image</description>
-        <include>HomeHelpBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>HelpBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGHelpLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGHelpMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGHelpMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="230">
-        <description>Videos Background Image</description>
-        <include>HomeVideosBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>VideosBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGVideosLeftLow.png</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGVideosMidLow.png</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGVideosMidRightLow.png</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="238">
-        <description>Movies Background Image</description>
-        <include>HomeMoviesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>MoviesBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGMoviesLeftLow.png</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGMoviesMidLow.png</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGMoviesMidRightLow.png</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="237">
-        <description>TV Shows Background Image</description>
-        <include>HomeTVShowsBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>TVShowsBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGTVShowsLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGTVShowsMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGTVShowsMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="231">
-        <description>Music Background Image</description>
-        <include>HomeMusicBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>MusicBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGMusicLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGMusicMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGMusicMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="232">
-        <description>Pictures Background Image</description>
-        <include>HomePicturesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>PicturesBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGPicturesLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGPicturesMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGPicturesMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="233">
-        <description>Programs Background Image</description>
-        <include>HomeProgramsBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>ProgramsBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGProgramsLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGProgramsMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGProgramsMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="239">
-        <description>DVD Background Image</description>
-        <include>HomeDVDBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>DVDBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGDVDLeftLow.png</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGDVDMidLow.png</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGDVDMidRightLow.png</texture>
-            </control>
-          </control>
         </control>
       </control>
     </control>
@@ -1762,7 +1855,7 @@
 				<info>Weather.Conditions</info>
 			</control>
 		</control>
-
+		
     <control type="group">
       <description>RSS</description>
       <posx>75</posx>
