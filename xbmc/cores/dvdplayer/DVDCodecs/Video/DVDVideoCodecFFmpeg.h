@@ -40,6 +40,11 @@ public:
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
     virtual void Close() = 0;
+    
+    virtual long              Release();
+    virtual IHardwareDecoder* Acquire();
+    protected:
+    long m_references;
   };
 
   CDVDVideoCodecFFmpeg();
