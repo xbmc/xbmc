@@ -181,8 +181,7 @@ void CGUIWindowAddonBrowser::Update()
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_ADDONSLIST, 0, 0, m_vecItems);
   OnMessage(msg);
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_currentCategory);
-  if (control && !control->HasFocus())
-    control->SetFocus(true);
+  ((CGUIButtonControl *)control)->SetSelected(true);
 
   if (selected != 0)
     SelectItem(selected);
@@ -293,9 +292,6 @@ void CGUIWindowAddonBrowser::SetupControls()
     group->AddControl(pButton);
     m_categories.push_back((ADDON::TYPE)i);
   }
-  CGUIControl *control = group->GetFirstFocusableControl(CONTROL_START_BUTTONS);
-  if (control && !control->HasFocus())
-    control->SetFocus(true);
 }
 
 void CGUIWindowAddonBrowser::FreeControls()
