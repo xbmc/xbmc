@@ -98,7 +98,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
           attributes = sftp_readdir(m_sftp_session, dir);
         }
 
-        if (attributes && (strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
+        if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
           continue;
         if (attributes)
         {
@@ -113,6 +113,8 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
             attributes = sftp_stat(m_sftp_session, realpath);
             free(realpath);
             if (attributes == NULL)
+              continue;
+            if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
               continue;
           }
 
