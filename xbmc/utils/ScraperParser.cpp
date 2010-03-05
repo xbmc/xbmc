@@ -95,7 +95,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   if (StringUtils::ValidateUUID(strXMLFile))
   {
     AddonPtr scraper;
-    if (!CAddonMgr::Get()->GetAddon(ADDON_SCRAPER, strXMLFile, scraper))
+    if (!CAddonMgr::Get()->GetAddon(strXMLFile, scraper, ADDON_SCRAPER))
       return false;
     else
       return Load(scraper);
@@ -166,7 +166,7 @@ bool CScraperParser::LoadFromXML()
       while (itr != deps.end())
       {
         AddonPtr dep;
-        if (!CAddonMgr::Get()->GetAddon(ADDON_SCRAPER_LIBRARY, (*itr).first, dep))
+        if (!CAddonMgr::Get()->GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY))
         {
           itr++;
           continue;

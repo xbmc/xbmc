@@ -129,7 +129,7 @@ CUtil::~CUtil(void)
 /* returns filename extension including period of filename */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {
-  if(strFileName.Find("://") >= 0)
+  if(IsURL(strFileName))
   {
     CURL url(strFileName);
     return CUtil::GetExtension(url.GetFileName());
@@ -155,7 +155,7 @@ void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
 /* handles both / and \, and options in urls*/
 const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
-  if(strFileNameAndPath.Find("://") >= 0)
+  if(IsURL(strFileNameAndPath))
   {
     CURL url(strFileNameAndPath);
     return CUtil::GetFileName(url.GetFileName());
@@ -347,7 +347,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 
 void CUtil::RemoveExtension(CStdString& strFileName)
 {
-  if(strFileName.Find("://") >= 0)
+  if(IsURL(strFileName))
   {
     CURL url(strFileName);
     strFileName = url.GetFileName();
@@ -710,7 +710,7 @@ void CUtil::GetHomePath(CStdString& strPath)
 
 CStdString CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
 {
-  if(strFile.Find("://") >= 0)
+  if(IsURL(strFile))
   {
     CURL url(strFile);
     url.SetFileName(ReplaceExtension(url.GetFileName(), strNewExtension));
@@ -2268,7 +2268,7 @@ CStdString CUtil::ValidatePath(const CStdString &path)
 
   // Don't do any stuff on URLs containing %-characters as we may screw up
   // URL-encoded (embedded) filenames (like with zip:// & rar://)
-  if (path.Find("://") >= 0 && path.Find('%') >= 0)
+  if ( IsURL(path) && path.Find('%') >= 0 )
     return result;
 
   // check the path for incorrect slashes

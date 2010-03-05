@@ -22,6 +22,7 @@
 #include "utils/AddonManager.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUISpinControlEx.h"
+#include "GUIControlGroupList.h"
 #include "Settings.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogAddonSettings.h"
@@ -34,8 +35,11 @@
 #include "utils/log.h"
 #include "FileItem.h"
 
-#define CONTROL_ADDONSLIST      2
-#define CONTROL_HEADING_LABEL   411
+#define CONTROL_ADDONSLIST                 2
+#define CATEGORY_GROUP_ID                  3
+#define CONTROL_DEFAULT_CATEGORY_BUTTON   10
+#define CONTROL_HEADING_LABEL            411
+#define CONTROL_START_BUTTONS           -100
 
 using namespace ADDON;
 
@@ -95,6 +99,18 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_FOCUSED:
+    {
+      CGUIWindow::OnMessage(message);
+      int focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS+(int)m_categories.size())
+      {
+        m_currentCategory = focusedControl-CONTROL_START_BUTTONS;
+        Update();
+      }
+      return true;
+    }
+    break;
   }
   return CGUIWindow::OnMessage(message);
 }
@@ -106,8 +122,10 @@ void CGUIWindowAddonBrowser::ClearListItems()
 
 void CGUIWindowAddonBrowser::OnInitWindow()
 {
-  Update();
   CGUIWindow::OnInitWindow();
+  m_currentCategory = 0;
+  SetupControls();
+  Update();
 }
 
 int CGUIWindowAddonBrowser::GetSelectedItem()
@@ -134,8 +152,11 @@ void CGUIWindowAddonBrowser::Update()
   int selected = GetSelectedItem();
   m_vecItems->Clear();
 
+  if (m_categories.empty())
+    return;
+
   VECADDONS addons;
-  CAddonMgr::Get()->GetAllAddons(addons, false);
+  CAddonMgr::Get()->GetAddons(m_categories[m_currentCategory], addons, CONTENT_NONE, false);
 
   for (unsigned i=0; i < addons.size(); i++)
   {
@@ -159,6 +180,9 @@ void CGUIWindowAddonBrowser::Update()
   OnSort();
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_ADDONSLIST, 0, 0, m_vecItems);
   OnMessage(msg);
+  CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_currentCategory);
+  if (control && !control->HasFocus())
+    control->SetFocus(true);
 
   if (selected != 0)
     SelectItem(selected);
@@ -177,16 +201,13 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
 
   AddonPtr addon;
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
-  if (CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.ID"), addon))
+  if (CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type))
   {
     if (addon->Disabled())
-    {
       CAddonMgr::Get()->EnableAddon(addon);
-      Update();
-
-    }
     else
-      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      CAddonMgr::Get()->DisableAddon(addon);
+    Update();
   }
 }
 
@@ -206,7 +227,7 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
 
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(type, pItem->GetProperty("Addon.ID"), addon))
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type))
     return false;
 
   int iSettingsLabel = 24020;
@@ -250,5 +271,40 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
     return true;
   }
   return false;
+}
+
+void CGUIWindowAddonBrowser::SetupControls()
+{
+  FreeControls();
+  CGUIButtonControl* pOriginalCategoryButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_CATEGORY_BUTTON);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+  if (!pOriginalCategoryButton || !group)
+    return;
+  for (unsigned int i=ADDON::ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
+  {
+    if (!CAddonMgr::Get()->HasAddons((ADDON::TYPE)i))
+      continue;
+    CGUIButtonControl* pButton = pOriginalCategoryButton->Clone();
+    pButton->SetLabel(ADDON::TranslateType((ADDON::TYPE)i,true));
+    pButton->SetID(CONTROL_START_BUTTONS+m_categories.size());
+    pButton->SetVisible(true);
+    pButton->AllocResources();
+    group->AddControl(pButton);
+    m_categories.push_back((ADDON::TYPE)i);
+  }
+  CGUIControl *control = group->GetFirstFocusableControl(CONTROL_START_BUTTONS);
+  if (control && !control->HasFocus())
+    control->SetFocus(true);
+}
+
+void CGUIWindowAddonBrowser::FreeControls()
+{
+  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
+  if (control)
+  {
+    control->FreeResources();
+    control->ClearAll();
+  }
+  m_categories.clear();
 }
 

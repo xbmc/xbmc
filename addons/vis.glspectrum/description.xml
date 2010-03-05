@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>7A4551D9-2F50-4173-B224-EE209FC9EB1F</id>
+  <id>vis.glspectrum</id>
   <type>visualization</type>
   <title>OpenGL Spectrum</title>
   <library>opengl_spectrum.vis</library>

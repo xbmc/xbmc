@@ -4082,7 +4082,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
       if (content != CONTENT_NONE)
       { // content set, use pre configured or default scraper
         ADDON::AddonPtr addon;
-        if (!scraperUUID.empty() && ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, scraperUUID, addon) && addon)
+        if (!scraperUUID.empty() && ADDON::CAddonMgr::Get()->GetAddon(scraperUUID, addon, ADDON::ADDON_SCRAPER) && addon)
         {
           info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone(addon));
           if (!info)

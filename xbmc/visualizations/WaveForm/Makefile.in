@@ -4,7 +4,7 @@ DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 OBJS=Main.o
 
-SLIB=../../../addons/visualizations/Waveform/Waveform.vis
+SLIB=../../../addons/vis.waveform/Waveform.vis
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)

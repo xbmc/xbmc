@@ -150,7 +150,7 @@
   <string id="31405">[B]设置网络参数[/B][CR][CR]设置通过UPnP和HTTP控制XBMC · 设置文件共享 · 设置互联网访问参数</string>
   <string id="31406">[B]设置系统参数[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电参数 · 启用调试 · 设置管理员和锁定</string>
   <string id="31407">[B]设置皮肤参数[/B][CR][CR]设置Confluence皮肤 · 增加和删除主菜单项 · 修改皮肤背景</string>
-
+  <string id="31408">[B]设置扩展功能[/B][CR][CR]管理你安装的扩展功能 · 在xbmc.org浏览并安装扩展功能 · 修改扩展功能设置</string>
 
   <string id="31421">选择您的用户配置文件[CR]登录并继续</string>
 </strings>

@@ -299,7 +299,7 @@ void CGUIWindowWeather::CallScript()
   if (!g_guiSettings.GetString("weather.script").IsEmpty())
   {
     AddonPtr addon;
-    if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON_SCRIPT, g_guiSettings.GetString("weather.script"), addon))
+    if (!ADDON::CAddonMgr::Get()->GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT))
       return;
 
     // create the full path to the script

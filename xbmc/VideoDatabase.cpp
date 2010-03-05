@@ -5580,7 +5580,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
       { // content set, use pre configured or default scraper
         AddonPtr addon;
         if (!scraperUUID.empty() && 
-          CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, scraperUUID, addon))
+          CAddonMgr::Get()->GetAddon(scraperUUID, addon, ADDON::ADDON_SCRAPER))
         {
           scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
           if (!scraper)
@@ -5621,7 +5621,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
           if (!m_pDS->eof())
           {
             AddonPtr defaultScraper;
-            if (!CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, m_pDS->fv("path.strScraper").get_asString(), defaultScraper))
+            if (!CAddonMgr::Get()->GetAddon(m_pDS->fv("path.strScraper").get_asString(), defaultScraper, ADDON::ADDON_SCRAPER))
             {
               strPath1 = strParent;
               continue;
@@ -7647,7 +7647,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
               uuid = CUtil::GetFileName(uuid);
             }
 
-            if (CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, uuid, addon))
+            if (CAddonMgr::Get()->GetAddon(uuid, addon, ADDON::ADDON_SCRAPER))
             {
               SScanSettings settings;
               ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
