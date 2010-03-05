@@ -69,10 +69,6 @@
 
 using namespace std;
 
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
   CSingleLock lock(m_section);
@@ -376,10 +372,6 @@ bool CDVDPlayer::CloseFile()
 #if defined(HAS_VIDEO_PLAYBACK)
   g_renderManager.UnInit();
 #endif
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
-    CloseVideoStream(!m_bAbortRequest);
-#endif //HAVE_LIBVDPAU
   return true;
 }
 
@@ -1642,9 +1634,6 @@ void CDVDPlayer::OnExit()
     if (m_CurrentVideo.id >= 0)
     {
       CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
-#ifdef HAVE_LIBVDPAU
-      if (!g_VDPAU)
-#endif
       CloseVideoStream(!m_bAbortRequest);
     }
     if (m_CurrentSubtitle.id >= 0)

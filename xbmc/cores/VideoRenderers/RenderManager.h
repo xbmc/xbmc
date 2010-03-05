@@ -34,6 +34,9 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+namespace DXVA { class CProcessor; }
+class CVDPAU;
+
 class CXBMCRenderManager
 {
 public:
@@ -88,6 +91,15 @@ public:
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
       m_pRenderer->AddProcessor(processor, id);
+  }
+#endif
+
+#ifdef HAVE_LIBVDPAU
+  void AddProcessor(CVDPAU* vdpau)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(vdpau);
   }
 #endif
 

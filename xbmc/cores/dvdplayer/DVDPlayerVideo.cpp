@@ -866,7 +866,10 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   else if(pSource->format == DVDVideoPicture::FMT_DXVA)
     g_renderManager.AddProcessor(pSource->proc, pSource->proc_id);
 #endif
-
+#ifdef HAVE_LIBVDPAU
+  else if(pSource->format == DVDVideoPicture::FMT_VDPAU)
+    g_renderManager.AddProcessor(pSource->vdpau);
+#endif
 }
 #endif
 
@@ -916,7 +919,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     switch(pPicture->format)
     {
       case DVDVideoPicture::FMT_YUV420P:
-      case DVDVideoPicture::FMT_VDPAU:
         flags |= CONF_FLAGS_FORMAT_YV12;
         break;
       case DVDVideoPicture::FMT_NV12:
@@ -927,6 +929,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         break;
       case DVDVideoPicture::FMT_YUY2:
         flags |= CONF_FLAGS_FORMAT_YUY2;
+        break;
+      case DVDVideoPicture::FMT_VDPAU:
+        flags |= CONF_FLAGS_FORMAT_VDPAU;
         break;
       case DVDVideoPicture::FMT_DXVA:
         flags |= CONF_FLAGS_FORMAT_DXVA;

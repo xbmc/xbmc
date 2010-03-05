@@ -475,7 +475,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   YUVFIELDS& fields =  buf.fields;
 
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
+  if ((m_renderMethod & RENDER_VDPAU))
   {
     SetEvent(m_eventTexturesDone[source]);
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -795,11 +795,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGL::FlipPage(int source)
 {
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
-    g_VDPAU->Present();
-#endif
-
   UnBindPbo(m_buffers[m_iYV12RenderBuffer]);
 
   if( source >= 0 && source < m_NumYV12Buffers )
@@ -810,6 +805,11 @@ void CLinuxRendererGL::FlipPage(int source)
   BindPbo(m_buffers[m_iYV12RenderBuffer]);
 
   m_buffers[m_iYV12RenderBuffer].flipindex = ++m_flipindex;
+
+#ifdef HAVE_LIBVDPAU  
+  if((m_renderMethod & RENDER_VDPAU) && m_buffers[m_iYV12RenderBuffer].vdpau)
+    m_buffers[m_iYV12RenderBuffer].vdpau->Present();
+#endif
 
   return;
 }
@@ -1009,14 +1009,12 @@ void CLinuxRendererGL::LoadShaders(int field)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
+  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
   }
   else
-#endif //HAVE_LIBVDPAU
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1158,11 +1156,6 @@ void CLinuxRendererGL::UnInit()
     m_rgbBuffer = NULL;
   }
   m_rgbBufferSize = 0;
-
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
-    g_VDPAU->ReleasePixmap();
-#endif
 
   // YV12 textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
@@ -1522,25 +1515,23 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 void CLinuxRendererGL::RenderVDPAU(int index, int field)
 {
 #ifdef HAVE_LIBVDPAU
-  if (!g_VDPAU)
-  {
-    CLog::Log(LOGERROR,"(VDPAU) m_Surface is NULL");
+  CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+  if (!vdpau)
     return;
-  }
 
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
 
   glEnable(m_textureTarget);
 
-  if (!g_VDPAU->m_glPixmapTexture)
+  if (!vdpau->m_glPixmapTexture)
   {
-    glGenTextures (1, &(g_VDPAU->m_glPixmapTexture));
-    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)g_VDPAU->m_glPixmapTexture);
+    glGenTextures (1, &(vdpau->m_glPixmapTexture));
+    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)vdpau->m_glPixmapTexture);
   }
 
-  glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
-  g_VDPAU->BindPixmap();
+  glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
+  vdpau->BindPixmap();
 
   glActiveTextureARB(GL_TEXTURE0);
 
@@ -1585,8 +1576,8 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   VerifyGLState();
   if (m_StrictBinding)
   {
-    glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
-    g_VDPAU->ReleasePixmap();
+    glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
+    vdpau->ReleasePixmap();
   }
 
   if (m_pVideoFilterShader)
@@ -1676,6 +1667,10 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
+
+#ifdef HAVE_LIBVDPAU
+  SAFE_RELEASE(m_buffers[index].vdpau);
+#endif
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
@@ -2191,15 +2186,15 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-#ifdef HAVE_LIBVDPAU
   if(m_renderMethod & RENDER_VDPAU)
   {
-    if(g_VDPAU)
-      return g_VDPAU->Supports(method);
-    else
-      return false;
-  }
+#ifdef HAVE_LIBVDPAU
+    CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+    if(vdpau)
+      return vdpau->Supports(method);
 #endif
+    return false;
+  }
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
@@ -2275,5 +2270,14 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
   if(pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
+
+#ifdef HAVE_LIBVDPAU
+void CLinuxRendererGL::AddProcessor(CVDPAU* vdpau)
+{
+  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  SAFE_RELEASE(buf.vdpau);
+  buf.vdpau = (CVDPAU*)vdpau->Acquire();
+}
+#endif
 
 #endif

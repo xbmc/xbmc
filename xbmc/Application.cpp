@@ -242,9 +242,6 @@
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
 
 #ifdef HAS_DVD_DRIVE
 #include <cdio/logging.h>

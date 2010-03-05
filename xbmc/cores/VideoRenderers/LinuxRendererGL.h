@@ -12,6 +12,7 @@
 #include "GraphicContext.h"
 #include "BaseRenderer.h"
 
+class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
@@ -115,6 +116,10 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
+#ifdef HAVE_LIBVDPAU
+  virtual void         AddProcessor(CVDPAU* vdpau);
+#endif
+
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   // Feature support
@@ -210,6 +215,10 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
     GLuint    pbo[MAX_PLANES];
+
+#ifdef HAVE_LIBVDPAU
+    CVDPAU*   vdpau;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];

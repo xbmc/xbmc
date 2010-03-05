@@ -33,8 +33,6 @@
 #include "AdvancedSettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-CVDPAU*          g_VDPAU=NULL;
-
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
@@ -161,9 +159,6 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
     avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
     avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-
-    /* hack for now, we need this in renderer */
-    g_VDPAU = this;
     return true;
   }
   return false;
@@ -204,8 +199,6 @@ void CVDPAU::Close()
     dlclose(dl_handle);
     dl_handle = NULL;
   }
-
-  g_VDPAU = NULL;
 }
 
 bool CVDPAU::MakePixmapGL()
