@@ -16,8 +16,8 @@ ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 INCLUDES +=  -I/opt/local/include
 endif
 DEFINES += -D_LINUX -fPIC
-LIBDIR   = ../../../addons/pvr/Tvheadend
-LIB      = ../../../addons/pvr/Tvheadend/XBMC_Tvheadend.pvr
+LIBDIR   = ../../../addons/com.lonelycoder.hts.pvr
+LIB      = ../../../addons/com.lonelycoder.hts.pvr/XBMC_Tvheadend.pvr
 
 CC       ?= gcc
 CFLAGS   ?= -g -O2 -Wall
