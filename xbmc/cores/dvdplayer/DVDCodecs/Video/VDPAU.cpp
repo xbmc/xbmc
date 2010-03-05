@@ -1222,6 +1222,7 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   picture->iFlags = 0;
   picture->iWidth = OutWidth;
   picture->iHeight = OutHeight;
+  picture->vdpau = this;
 
   if(m_mixerstep)
   {
