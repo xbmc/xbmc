@@ -21,7 +21,7 @@ libprojectM/libprojectM.dylib:
 else
 $(SLIB): $(OBJS) libprojectM/libprojectM.so
 	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
-	cp -rfT libprojectM/presets ../../../visualisations/projectM
+#	cp -rfT libprojectM/presets ../../../visualisations/projectM
 
 libprojectM/libprojectM.so: 
 	$(MAKE) -C libprojectM
