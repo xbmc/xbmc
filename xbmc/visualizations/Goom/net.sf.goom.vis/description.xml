@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>552AE88E-FCB2-4909-AE56-DA6FC8895FC6</id>
+  <id>net.sf.goom.vis</id>
   <type>visualization</type>
   <title>Goom</title>
   <library>Goom.vis</library>
