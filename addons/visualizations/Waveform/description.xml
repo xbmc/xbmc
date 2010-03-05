@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>9AFC128B-A6B6-4824-9BC4-B122966709B3</id>
+  <id>vis.waveform</id>
   <type>visualization</type>
   <title>Waveform</title>
   <library>Waveform.vis</library>

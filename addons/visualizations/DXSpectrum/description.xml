@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>7A4551D9-2F50-4173-B224-EE209FC9EB1G</id>
+  <id>vis.dxspectrum</id>
   <type>visualization</type>
   <title>DirectX Spectrum</title>
   <librarywin32>Spectrum_win32dx.vis</librarywin32>

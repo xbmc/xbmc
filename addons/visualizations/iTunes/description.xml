@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>57675d11-0ae3-11df-8a39-0800200c9a66</id>
+  <id>com.itunes.vis</id>
   <type>visualization</type>
   <title>iTunes Visualization</title>
   <library>iTunes.mvis</library>
