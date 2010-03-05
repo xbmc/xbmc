@@ -3084,7 +3084,7 @@ void CGUIWindowSettingsCategory::FillInWeatherScripts(CGUISpinControlEx *pContro
   int k=0;
   pControl->Clear();
   // add our disable option
-  pControl->AddLabel(g_localizeStrings.Get(13611), j++);
+  pControl->AddLabel(g_localizeStrings.Get(24028), j++);
 
   //find weather scripts....
   CAddonMgr::Get()->GetAddons(ADDON_SCRIPT, addons);

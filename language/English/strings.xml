@@ -2115,6 +2115,8 @@
   <string id="24020">Configure Add-on</string>
   <string id="24021">Disable Add-on</string>
   <string id="24022">Enable Add-on</string>
+  <string id="24027">Weather service</string>
+  <string id="24028">Weather.com (standard)</string>
   <string id="24030">This Add-on can not be configured</string>
   <string id="24031">Error loading settings</string>
 
