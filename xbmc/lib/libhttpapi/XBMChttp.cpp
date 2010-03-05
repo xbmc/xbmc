@@ -2789,16 +2789,19 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
   }
 }
 
+
 bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
 {
   if  ((g_settings.m_HttpApiBroadcastLevel & 127)>=level)
   {
     if (!pUdpBroadcast)
       pUdpBroadcast = new CUdpBroadcast();
-    CStdString LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+    CStdString LocalAddress="";
+	if (g_application.getNetwork().GetFirstConnectedInterface())
+      LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     CStdString msg;
     if ((g_settings.m_HttpApiBroadcastLevel & 128)==128)
-      message += ";"+g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
+      message += ";"+LocalAddress;
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
     return pUdpBroadcast->broadcast(msg, g_settings.m_HttpApiBroadcastPort);
   }
