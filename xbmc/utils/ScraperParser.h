@@ -43,7 +43,6 @@ public:
   CScraperParser& operator= (const CScraperParser& parser);
 
   void Clear();
-  bool Load(const CStdString& strXMLFile);
   bool Load(const ADDON::AddonPtr& scraper);
   const CStdString GetFilename() { return m_strFile; }
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
@@ -55,6 +54,7 @@ public:
   void ClearCache();
 
 private:
+  bool Load(const CStdString& strXMLFile);
   bool LoadFromXML();
   void ReplaceBuffers(CStdString& strDest);
   void ParseExpression(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);

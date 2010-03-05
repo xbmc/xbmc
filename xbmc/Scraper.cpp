@@ -86,15 +86,14 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
-  CStdString id = ID();
-  if (Parent())
-  { // called from DialogContentSettings. We are working with the cloned scraper settings
-    id = Parent()->ID();
-  }
+  AddonPtr addon;
+  if (!Parent() && !CAddonMgr::Get()->GetAddon(ID(), addon, ADDON_SCRAPER))
+    return false;
+  else if (Parent())
+    addon = Parent();
 
-  // load our scraper xml
   CScraperParser parser;
-  if (!parser.Load(id))
+  if (!parser.Load(addon))
     return false;
 
   if (!parser.HasFunction(strFunction))
