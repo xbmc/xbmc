@@ -243,7 +243,8 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
   else
   {
     btn_Disable = pMenu->AddButton(iDisableLabel);
-    btn_Settings = pMenu->AddButton(iSettingsLabel);
+    if (addon->HasSettings())
+      btn_Settings = pMenu->AddButton(iSettingsLabel);
   }
 
   pMenu->CenterWindow();
