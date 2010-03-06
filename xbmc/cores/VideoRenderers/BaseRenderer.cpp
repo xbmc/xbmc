@@ -290,7 +290,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
   { // super zoom
     float stretchAmount = (screenWidth / screenHeight) * g_settings.m_ResInfo[res].fPixelRatio / sourceFrameRatio;
     g_settings.m_fPixelRatio = pow(stretchAmount, 2.0/3.0);
-    g_settings.m_fZoomAmount = pow(stretchAmount, 1.0/3.0);
+    g_settings.m_fZoomAmount = pow(stretchAmount, (stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0);
   }
   else if ( g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9 ||
            (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_STRETCH_16x9))
