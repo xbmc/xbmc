@@ -30,6 +30,15 @@
 using namespace XFILE;
 using namespace std;
 
+
+static CStdString CorrectPath(const CStdString path)
+{
+  if(path == "~" || path.Left(2) == "~/")
+    return "./" + path.Mid(2);
+  else
+    return "/" + path;
+}
+
 CSFTPSession::CSFTPSession(const CStdString &host, const CStdString &username, const CStdString &password)
 {
   CLog::Log(LOGINFO, "SFTPSession: Creating new session on host '%s' with user '%s'", host.c_str(), username.c_str());
@@ -52,7 +61,7 @@ SFTP_FILE *CSFTPSession::CreateFileHande(const CStdString &file)
   {
     CSingleLock lock(m_critSect);
     m_LastActive = CTimeUtils::GetTimeMS();
-    SFTP_FILE *handle = sftp_open(m_sftp_session, file.c_str(), O_RDONLY, 0);
+    SFTP_FILE *handle = sftp_open(m_sftp_session, CorrectPath(file).c_str(), O_RDONLY, 0);
     if (handle)
     {
       sftp_file_set_blocking(handle);
@@ -82,7 +91,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
     {
       CSingleLock lock(m_critSect);
       m_LastActive = CTimeUtils::GetTimeMS();
-      dir = sftp_opendir(m_sftp_session, folder.size() == 0 ? "./" : folder.c_str());
+      dir = sftp_opendir(m_sftp_session, CorrectPath(folder).c_str());
     }
 
     if (dir)
@@ -109,7 +118,9 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
           {
             CSingleLock lock(m_critSect);
             sftp_attributes_free(attributes);
-            char *realpath = sftp_readlink(m_sftp_session, localPath.c_str());
+            char *realpath = sftp_readlink(m_sftp_session, CorrectPath(localPath).c_str());
+            if(realpath == NULL)
+              continue;
             attributes = sftp_stat(m_sftp_session, realpath);
             free(realpath);
             if (attributes == NULL)
@@ -161,8 +172,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
 bool CSFTPSession::Exists(const char *path)
 {
   CSingleLock lock(m_critSect);
-
-  SFTP_ATTRIBUTES *attributes = sftp_stat(m_sftp_session, path);
+  SFTP_ATTRIBUTES *attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
   bool exists = attributes != NULL;
 
   if (attributes)
@@ -176,7 +186,7 @@ int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
   CSingleLock lock(m_critSect);
   memset(buffer, 0, sizeof (buffer));
   m_LastActive = CTimeUtils::GetTimeMS();
-  SFTP_ATTRIBUTES *attributes = sftp_stat(m_sftp_session, path);
+  SFTP_ATTRIBUTES *attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
 
   if (attributes)
   {
