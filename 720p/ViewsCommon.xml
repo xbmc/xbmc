@@ -743,6 +743,8 @@
         <posx>754</posx>
         <posy>30</posy>
 
+
+
         <control type="group">
           <visible>![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]</visible>
 
@@ -755,20 +757,78 @@
           </control>
 
           <control type="textbox">
+            <description>Year</description>
+            <posy>30</posy>
+            <width>PanelStreamDetailTextWidth</width>
+            <height>340</height>
+            <info>ListItem.Year</info>
+          </control>
+
+
+		  <control type="image">
+			  <posy>55</posy>
+			  <info>ListItem.StarRating</info>
+			  <aspectratio>keep</aspectratio>
+			  <align>center</align>
+		  </control>
+
+		<!--
+          <control type="textbox">
             <description>Detail</description>
             <posy>36</posy>
             <width>PanelStreamDetailTextWidth</width>
             <height>340</height>
             <info>ListItem.Label2</info>
           </control>
-
+		-->
           <control type="textbox">
             <description>Plot/Details</description>
-            <posy>68</posy>
+            <posy>90</posy>
             <width>PanelStreamDetailTextWidth</width>
-            <height>348</height>
+            <height>326</height>
             <info>ListItem.Plot</info>
           </control>
+
+			<control type="group">
+				<description>Media Flags</description>
+				<posy>425</posy>
+
+				<control type="image">
+				  <visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
+				  <posx>-40</posx>
+				  <posy>0</posy>
+				  <height>43</height>
+				  <info>Listitem.Property(contentRating)</info>
+				  <aspectratio>keep</aspectratio>
+				</control>
+
+				<control type="image">
+				  <visible>true</visible>
+				  <posx>131</posx>
+				  <posy>0</posy>
+				  <height>43</height>
+				  <info>Listitem.Property(videoResolution)</info>
+				  <aspectratio>keep</aspectratio>
+				</control>
+
+				<control type="image">
+				  <visible>true</visible>
+				  <posx>262</posx>
+				  <posy>0</posy>
+				  <height>43</height>
+				  <info>Listitem.Property(audioCodec)</info>
+				  <aspectratio>keep</aspectratio>
+				</control>
+
+				<control type="image">
+				  <visible>true</visible>
+				  <posx>393</posx>
+				  <posy>0</posy>
+				  <height>43</height>
+				  <info>Listitem.Property(movieStudio)</info>
+				  <aspectratio>keep</aspectratio>
+				</control>
+			</control>
 
         </control>
 
