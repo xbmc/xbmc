@@ -511,14 +511,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
-  ADDON::AddonPtr addon;
-
-  if (!m_database.GetScraperForPath(item->m_strPath,info,settings))
-  {
-    if (!ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, info->Content()))
-      return false;
-    info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
-  }
+  m_database.GetScraperForPath(item->m_strPath,info,settings);
 
   if (!info)
     return false;
@@ -780,14 +773,7 @@ void CGUIWindowVideoBase::OnManualScrape()
 
   ScraperPtr scraper;
   m_database.Open();
-  if (!m_database.GetScraperForPath(m_vecItems->m_strPath, scraper))
-  {
-    AddonPtr addon;
-    if (CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, CONTENT_MOVIES))
-    {
-      scraper = boost::dynamic_pointer_cast<CScraper>(addon);
-    }
-  }
+  m_database.GetScraperForPath(m_vecItems->m_strPath, scraper);
 
   if (!scraper)
     return;

@@ -5562,6 +5562,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
     }
 
     iFound = 1;
+    CONTENT_TYPE content = CONTENT_NONE;
     if (!m_pDS->eof())
     { // path is stored in db
 
@@ -5582,7 +5583,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
 
       // path is not excluded
       // try and ascertain scraper for this path
-      CONTENT_TYPE content = TranslateContent(strcontent);
+      content = TranslateContent(strcontent);
 
       //FIXME paths stored should not have empty strContent
       //assert(content != CONTENT_NONE);
@@ -5604,7 +5605,8 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
         settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
       }
     }
-    else
+
+    if (content == CONTENT_NONE)
     { // this path is not saved in db
       // we must drill up until a scraper is configured
       CStdString strParent;
@@ -5614,6 +5616,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
 
         CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
+
         if (!m_pDS->eof())
         {
           CONTENT_TYPE content = TranslateContent(m_pDS->fv("path.strContent").get_asString());
@@ -5643,7 +5646,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
     }
     m_pDS->close();
 
-    if (!scraper)
+    if (!scraper || scraper->Content() == CONTENT_NONE)
       return false;
 
     if (scraper->Content() == CONTENT_TVSHOWS)
@@ -5652,31 +5655,28 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
       if(settings.parent_name) // single show
       {
         settings.parent_name_root = settings.parent_name = (iFound == 1);
-        return iFound <= 2;
       }
       else // show root
       {
         settings.parent_name_root = settings.parent_name = (iFound == 2);
-        return iFound <= 3;
       }
     }
     else if (scraper->Content() == CONTENT_MOVIES)
     {
       settings.recurse = settings.recurse - (iFound-1);
       settings.parent_name_root = settings.parent_name && (!settings.recurse || iFound > 1);
-      return settings.recurse >= 0;
     }
     else if (scraper->Content() == CONTENT_MUSICVIDEOS)
     {
       settings.recurse = settings.recurse - (iFound-1);
       settings.parent_name_root = settings.parent_name && (!settings.recurse || iFound > 1);
-      return settings.recurse >= 0;
     }
     else
     {
       iFound = 0;
       return false;
     }
+    return true;
   }
   catch (...)
   {
