@@ -2070,6 +2070,13 @@
     <bordersize>8</bordersize>
   </include>
 
+  <include name="PanelStreamImageFocus">
+    <include>PanelStreamImageDimsFocus</include>
+    <info>ListItem.Icon</info>
+	<bordertexture>amt-blank-poster-focus.png</bordertexture>
+	<bordersize>3</bordersize>
+  </include>
+
 <!--  <include name="PanelStreamNoThumb">
     <include>PanelStreamNoThumbDims</include>
     <include>NoThumbLabel</include>
@@ -2142,7 +2149,7 @@
     <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="240">
       <control type="image">
         <description>Poster image</description>
-        <include>PanelStreamImage</include>
+        <include>PanelStreamImageFocus</include>
       </control>
       <control type="label">
         <include>PanelStreamNoThumb</include>

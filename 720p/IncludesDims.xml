@@ -766,6 +766,12 @@
     <width>166</width>
     <height>236</height>
   </include>
+  <include name="PanelStreamImageDimsFocus">
+    <posx>15</posx>
+    <posy>31</posy>
+    <width>156</width>
+    <height>226</height>
+  </include>
 
   <include name="PanelStreamImageFocusAnim">
     <animation effect="zoom" tween="quadratic" end="-2,12,190,266" time="200" delay="100">Focus</animation>
