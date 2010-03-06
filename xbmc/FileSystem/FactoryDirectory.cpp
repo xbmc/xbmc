@@ -43,6 +43,7 @@
 #include "Application.h"
 #include "StringUtils.h"
 #include "utils/Addon.h"
+#include "utils/log.h"
 
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
@@ -191,6 +192,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   }
 
- return NULL;
+  CLog::Log(LOGWARNING, "CFactoryDirectory::Create - Unsupported protocol %s", strProtocol.c_str());
+  return NULL;
 }
 
