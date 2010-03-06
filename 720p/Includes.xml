@@ -2133,7 +2133,7 @@
 	       <aligny>center</aligny>
 	       <scroll>false</scroll>
 	       <label>$INFO[listitem.title ]</label>
-	       <font>MediumDefaultFont</font>
+	       <font>TitleFont</font>
 	       <textcolor>FFffffff</textcolor>
 	       <wrapmultiline>false</wrapmultiline>
 	 </control>
@@ -2150,6 +2150,18 @@
         <include>PanelStreamNoThumbFocusAnim</include>
         <include>PanelStreamNoThumb</include>
       </control>
+	 <control type="label">
+	       <posx>85</posx>
+	       <posy>240</posy>
+	       <width>170</width>
+	       <align>center</align>
+	       <aligny>center</aligny>
+	       <scroll>false</scroll>
+	       <label>$INFO[listitem.title ]</label>
+	       <font>TitleFont</font>
+	       <textcolor>FFffffff</textcolor>
+	       <wrapmultiline>false</wrapmultiline>
+	 </control>
     </focusedlayout>
 
     <!-- Episodes -->
