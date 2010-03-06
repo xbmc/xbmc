@@ -1059,7 +1059,7 @@ void CAddonMgr::GetAddons(const TiXmlElement* pAddons, VECADDONPROPS &addons)
 {
 
   const TiXmlNode *pType = 0;
-  while( pType = pAddons->IterateChildren( pType ) )
+  while( ( pType = pAddons->IterateChildren( pType ) ) )
   {
     TYPE type = TranslateType(pType->Value());
     const TiXmlNode *pAddon = pType->FirstChild();

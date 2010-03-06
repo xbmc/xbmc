@@ -316,7 +316,7 @@ void CNetworkLinux::queryInterfaceList()
       {
          // save the result
          CStdString interfaceName = p;
-     m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
+         m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
       }
    }
    free(line);
