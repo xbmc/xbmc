@@ -2008,6 +2008,21 @@
         <include>PanelStreamNoThumbFade</include>
         <include>PanelStreamNoThumb</include>
       </control>
+	<control type="label" id="1">
+		<description>My First label</description>
+		<posx>90</posx>
+		<posy>220</posy>
+		<width>180</width>
+		<visible>true</visible>
+		<align>center</align>
+		<aligny>center</aligny>
+		<scroll>false</scroll>
+		<info>listitem.title</info>
+		<font>MediumDefaultFont</font>
+		<textcolor>FFFFFFFF</textcolor>
+		<wrapmultiline>false</wrapmultiline>
+	</control>
+
     </itemlayout>
 
     <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="240">
