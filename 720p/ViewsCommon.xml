@@ -767,9 +767,10 @@
 
 		  <control type="image">
 			  <posy>55</posy>
-			  <info>ListItem.StarRating</info>
-			  <aspectratio>keep</aspectratio>
 			  <align>center</align>
+			  <aspectratio>keep</aspectratio>
+			  <info>ListItem.StarRating</info>
+			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 		  </control>
 
 		<!--
@@ -785,7 +786,7 @@
             <description>Plot/Details</description>
             <posy>90</posy>
             <width>PanelStreamDetailTextWidth</width>
-            <height>326</height>
+            <height>319</height>
             <info>ListItem.Plot</info>
           </control>
 

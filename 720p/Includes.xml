@@ -2122,7 +2122,6 @@
       </control>
       <control type="label">
         <description>No Thumb label</description>
-        <include>PanelStreamNoThumbFade</include>
         <include>PanelStreamNoThumb</include>
       </control>
 	 <control type="label">
@@ -2143,11 +2142,9 @@
     <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="240">
       <control type="image">
         <description>Poster image</description>
-        <include>PanelStreamImageFocusAnim</include>
         <include>PanelStreamImage</include>
       </control>
       <control type="label">
-        <include>PanelStreamNoThumbFocusAnim</include>
         <include>PanelStreamNoThumb</include>
       </control>
 	 <control type="label">
