@@ -88,7 +88,7 @@ void CAdvancedSettings::Initialize()
   m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
   m_videoVDPAUScaling = false;
-  m_videoNonLinStretchRatio = 0.667f;
+  m_videoNonLinStretchRatio = 0.5f;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;

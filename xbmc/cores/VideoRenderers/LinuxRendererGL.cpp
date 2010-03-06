@@ -1311,7 +1311,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
-  m_pYUVShader->SetNonLinStretch((m_customPixelRatio - 1.0) * g_advancedSettings.m_videoNonLinStretchRatio * -1.0);
+  m_pYUVShader->SetNonLinStretch(pow(m_customPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
@@ -1513,7 +1513,7 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
-    m_pVideoFilterShader->SetNonLinStretch((m_customPixelRatio - 1.0) * g_advancedSettings.m_videoNonLinStretchRatio * -1.0);
+    m_pVideoFilterShader->SetNonLinStretch(pow(m_customPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
     m_pVideoFilterShader->Enable();
   }
   else
@@ -1585,7 +1585,7 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
-    m_pVideoFilterShader->SetNonLinStretch((m_customPixelRatio - 1.0) * g_advancedSettings.m_videoNonLinStretchRatio * -1.0);
+    m_pVideoFilterShader->SetNonLinStretch(pow(m_customPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
     m_pVideoFilterShader->Enable();
   }
   else
