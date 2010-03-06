@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 28310 -->
+<!--Based on english strings version 28418 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -544,11 +544,11 @@
   <string id="625">所有歌曲</string>
   <string id="629">显示模式</string>
   <string id="630">正常</string>
-  <string id="631">填满屏幕</string>
+  <string id="631">满屏</string>
   <string id="632">拉伸为 4:3</string>
-  <string id="633">拉伸为 14:9</string>
+  <string id="633">宽屏</string>
   <string id="634">拉伸为 16:9</string>
-  <string id="635">视频原始像素比例</string>
+  <string id="635">原始大小</string>
   <string id="636">自定义</string>
   <string id="637">回放增益</string>
   <string id="638">回放增益音量调整</string>
@@ -572,6 +572,7 @@
   <string id="656">浏览播放列表</string>
   <string id="657">浏览文件夹</string>
   <string id="658">歌曲信息</string>
+  <string id="659">非线性拉伸</string>
 
   <string id="660">音量放大</string>
   <string id="661">选择导出文件夹</string>
@@ -2114,6 +2115,8 @@
   <string id="24020">设置扩展功能</string>
   <string id="24021">禁用扩展功能</string>
   <string id="24022">启用扩展功能</string>
+  <string id="24027">天气服务</string>
+  <string id="24028">Weather.com（标准）</string>
   <string id="24030">此扩展功能不可设置</string>
   <string id="24031">读取配置错误</string>
 
