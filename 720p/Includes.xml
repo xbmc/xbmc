@@ -2118,7 +2118,6 @@
     <itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="240">
       <control type="image">
         <description>Poster image</description>
-        <colordiffuse>cc999999</colordiffuse>
         <include>PanelStreamImage</include>
       </control>
       <control type="label">
@@ -2126,6 +2125,19 @@
         <include>PanelStreamNoThumbFade</include>
         <include>PanelStreamNoThumb</include>
       </control>
+	 <control type="label">
+	       <posx>85</posx>
+	       <posy>240</posy>
+	       <width>170</width>
+	       <align>center</align>
+	       <aligny>center</aligny>
+	       <scroll>false</scroll>
+	       <label>$INFO[listitem.title ]</label>
+	       <font>MediumDefaultFont</font>
+	       <textcolor>FFffffff</textcolor>
+	       <wrapmultiline>false</wrapmultiline>
+	 </control>
+	
     </itemlayout>
 
     <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="240">
@@ -2144,7 +2156,6 @@
     <itemlayout condition="Container.content(episodes)" width="250" height="160">
       <control type="image">
         <description>Episode thumb</description>
-        <colordiffuse>cc999999</colordiffuse>
         <include>PanelStreamEpisodeImage</include>
       </control>
       <control type="label">
@@ -2170,7 +2181,6 @@
     <itemlayout condition="Container.content(albums) | Window.IsVisible(MyMusicFiles)" width="180" height="180">
       <control type="image">
         <description>Album cover</description>
-        <colordiffuse>cc999999</colordiffuse>
         <include>PanelStreamAlbumImage</include>
       </control>
       <control type="label">
