@@ -1719,9 +1719,11 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
     {
       RemoveSlashAtEnd(file);
       url.SetFileName(file);
+      strFolder = url.Get();
+      return;
     }
-    strFolder = url.Get();
-    return;
+    if(url.GetHostName().IsEmpty())
+      return;
   }
 
   while (CUtil::HasSlashAtEnd(strFolder))
