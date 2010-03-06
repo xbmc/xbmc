@@ -2250,33 +2250,11 @@ CStdString CUtil::ValidatePath(const CStdString &path)
   // check the path for incorrect slashes
 #ifdef _WIN32
   if (CUtil::IsDOSPath(path))
-  {
     result.Replace('/', '\\');
-    // Fixup for double back slashes (but ignore the \\ of unc-paths)
-    for (int x=1; x<result.GetLength()-1; x++)
-    {
-      if (result[x] == '\\' && result[x+1] == '\\')
-        result.Delete(x);
-    }
-  }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
-  {
     result.Replace('\\', '/');
-    // Fixup for double forward slashes(/) but don't touch the :// of URLs
-    for (int x=1; x<result.GetLength()-1; x++)
-    {
-      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
-        result.Delete(x);
-    }
-  }
 #else
   result.Replace('\\', '/');
-  // Fixup for double forward slashes(/) but don't touch the :// of URLs
-  for (int x=1; x<result.GetLength()-1; x++)
-  {
-    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
-      result.Delete(x);
-  }
 #endif
   return result;
 }
