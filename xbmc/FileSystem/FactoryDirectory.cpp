@@ -126,7 +126,8 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
 #endif
-  if (StringUtils::ValidateUUID(url.GetHostName())) return new CPluginDirectory(ADDON::TranslateContent(strProtocol));
+  if (StringUtils::ValidateUUID(url.GetHostName()) 
+  &&  ADDON::TranslateContent(strProtocol) != CONTENT_NONE) return new CPluginDirectory(ADDON::TranslateContent(strProtocol));
   if (strProtocol == "zip") return new CZipDirectory();
 #ifdef HAS_FILESYSTEM_RAR
   if (strProtocol == "rar") return new CRarDirectory();
