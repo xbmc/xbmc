@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="d3dx9.lib"
-				OutputFile="../../../addons/visualizations/DXSpectrum/Spectrum_win32dx.vis"
+				OutputFile="../../../addons/vis.dxspectrum/Spectrum_win32dx.vis"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Spectrum_win32dx.pdb"
@@ -141,7 +141,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib ws2_32.lib d3dx9.lib"
-				OutputFile="../../../addons/visualizations/DXSpectrum/Spectrum_win32dx.vis"
+				OutputFile="../../../addons/vis.dxspectrum/Spectrum_win32dx.vis"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Spectrum_win32dx.pdb"
