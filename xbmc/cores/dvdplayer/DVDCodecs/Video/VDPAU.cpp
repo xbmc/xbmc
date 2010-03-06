@@ -172,9 +172,14 @@ CVDPAU::~CVDPAU()
 void CVDPAU::Close()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+
+  FiniVDPAUOutput();
+  FiniVDPAUProcs();
+
   if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     glXDestroyPixmap(m_Display, m_glPixmap);
     m_glPixmap = NULL;
   }
@@ -184,9 +189,6 @@ void CVDPAU::Close()
     XFreePixmap(m_Display, m_Pixmap);
     m_Pixmap = NULL;
   }
-
-  FiniVDPAUOutput();
-  FiniVDPAUProcs();
 
   if (m_glContext)
   {
