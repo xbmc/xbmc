@@ -1695,9 +1695,9 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
     {
       AddSlashAtEnd(file);
       url.SetFileName(file);
+      strFolder = url.Get();
+      return;
     }
-    strFolder = url.Get();
-    return;
   }
 
   if (!CUtil::HasSlashAtEnd(strFolder))
