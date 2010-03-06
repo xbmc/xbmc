@@ -28,19 +28,18 @@ half3 weight(float pos)
 }
 #endif
 
+vec2 stretch(vec2 pos)
+{
 #if (XBMC_STRETCH)
-  #define POSITION(pos) stretch(pos)
-  vec2 stretch(vec2 pos)
-  {
-    // our transform should map [0..1] to itself, with f(0) = 0, f(1) = 1, f(0.5) = 0.5, and f'(0.5) = b.
-    // a simple curve to do this is g(x) = b(x-0.5) + (1-b)2^(n-1)(x-0.5)^n + 0.5
-    // where the power preserves sign. n = 2 is the simplest non-linear case (required when b != 1)
-    float x = pos.x - 0.5;
-    return vec2(mix(x * abs(x) * 2.0, x, m_stretch) + 0.5, pos.y);
-  }
+  // our transform should map [0..1] to itself, with f(0) = 0, f(1) = 1, f(0.5) = 0.5, and f'(0.5) = b.
+  // a simple curve to do this is g(x) = b(x-0.5) + (1-b)2^(n-1)(x-0.5)^n + 0.5
+  // where the power preserves sign. n = 2 is the simplest non-linear case (required when b != 1)
+  float x = pos.x - 0.5;
+  return vec2(mix(x * abs(x) * 2.0, x, m_stretch) + 0.5, pos.y);
 #else
-  #define POSITION(pos) (pos)
+  return pos;
 #endif
+}
 
 half3 pixel(float xpos, float ypos)
 {
@@ -60,7 +59,7 @@ half3 line (float ypos, vec3 xpos1, vec3 xpos2, half3 linetaps1, half3 linetaps2
 
 void main()
 {
-  vec2 pos = POSITION(gl_TexCoord[0].xy);
+  vec2 pos = stretch(gl_TexCoord[0].xy);
 
   float xf = fract(pos.x / stepx);
   float yf = fract(pos.y / stepy);
