@@ -228,7 +228,7 @@ void CAdvancedSettings::Initialize()
   m_iEdlCommBreakAutowind = 0;             // Off by default
 
   m_curlconnecttimeout = 10;
-  m_curllowspeedtime = 5;
+  m_curllowspeedtime = 20;
   m_curlretries = 2;
 
   m_fullScreen = m_startFullScreen = false;
