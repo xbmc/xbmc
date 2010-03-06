@@ -406,7 +406,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
-    XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio);
+    XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
