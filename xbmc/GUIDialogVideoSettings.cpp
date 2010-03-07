@@ -147,7 +147,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_settings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f, FormatFloat);
   if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
-    AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &g_settings.m_currentVideoSettings.m_NonLinStretch);
+    AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &g_settings.m_currentVideoSettings.m_CustomNonLinStretch);
 #endif
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
@@ -167,6 +167,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
     g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
     g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
+    g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
     UpdateSetting(VIDEO_SETTINGS_ZOOM);
     UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
     UpdateSetting(VIDEO_SETTINGS_NONLIN_STRETCH);

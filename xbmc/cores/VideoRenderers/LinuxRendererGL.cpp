@@ -217,8 +217,8 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_iLastRenderBuffer = -1;
 
-  m_nonLinStretch = g_settings.m_currentVideoSettings.m_NonLinStretch;
-  m_customPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
+  m_nonLinStretch = g_settings.m_bNonLinStretch;
+  m_pixelRatio = g_settings.m_fPixelRatio;
   return true;
 }
 
@@ -903,17 +903,15 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  if (m_nonLinStretch != g_settings.m_currentVideoSettings.m_NonLinStretch ||
-      m_customPixelRatio != g_settings.m_currentVideoSettings.m_CustomPixelRatio)
+  if (m_nonLinStretch != g_settings.m_bNonLinStretch || m_pixelRatio != g_settings.m_fPixelRatio)
   {
     //whether non-linear stretch is already on
-    bool nonLinStretchIsOn = m_nonLinStretch && (m_customPixelRatio > 1.001f || m_customPixelRatio < 0.999f);
+    bool nonLinStretchIsOn = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
 
-    m_nonLinStretch = g_settings.m_currentVideoSettings.m_NonLinStretch;
-    m_customPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
+    m_nonLinStretch = g_settings.m_bNonLinStretch;
+    m_pixelRatio = g_settings.m_fPixelRatio;
 
-    if (g_settings.m_currentVideoSettings.m_NonLinStretch &&
-        (g_settings.m_currentVideoSettings.m_CustomPixelRatio > 1.001f || g_settings.m_currentVideoSettings.m_CustomPixelRatio < 0.999f))
+    if (g_settings.m_bNonLinStretch && (g_settings.m_fPixelRatio > 1.001f || g_settings.m_fPixelRatio < 0.999f))
     {
       if (nonLinStretchIsOn)
         return; //non-linear stretch needs to be on but is already on
@@ -957,7 +955,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
-  bool nonLinStretch = m_nonLinStretch && (m_customPixelRatio > 1.001f || m_customPixelRatio < 0.999f);
+  bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
 
   switch (m_scalingMethod)
   {
@@ -1063,7 +1061,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
-    bool nonLinStretch = m_nonLinStretch && (m_customPixelRatio > 1.001f || m_customPixelRatio < 0.999f)
+    bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
                          && m_renderQuality == RQ_SINGLEPASS && m_textureTarget != GL_TEXTURE_RECTANGLE_ARB;
 
     // create regular progressive scan shader
@@ -1311,7 +1309,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
-  m_pYUVShader->SetNonLinStretch(pow(m_customPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+  m_pYUVShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
@@ -1513,7 +1511,7 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
-    m_pVideoFilterShader->SetNonLinStretch(pow(m_customPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+    m_pVideoFilterShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
     m_pVideoFilterShader->Enable();
   }
   else
@@ -1585,7 +1583,7 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
-    m_pVideoFilterShader->SetNonLinStretch(pow(m_customPixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+    m_pVideoFilterShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
     m_pVideoFilterShader->Enable();
   }
   else

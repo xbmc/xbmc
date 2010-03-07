@@ -102,6 +102,7 @@ void CSettings::Initialize()
   m_bMute = false;
   m_fZoomAmount = 1.0f;
   m_fPixelRatio = 1.0f;
+  m_bNonLinStretch = false;
 
   m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2|.rss";
   m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt";
@@ -699,7 +700,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "audiodelay", m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
     GetFloat(pElement, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
     XMLUtils::GetBoolean(pElement, "autocrop", m_defaultVideoSettings.m_Crop);
-    XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
+    XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
 
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
@@ -861,7 +862,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetFloat(pNode, "audiodelay", m_defaultVideoSettings.m_AudioDelay);
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
   XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
-  XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
+  XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
 
 
   // audio settings

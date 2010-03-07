@@ -2957,7 +2957,7 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
       settings.m_Brightness = m_pDS->fv("Brightness").get_asFloat();
       settings.m_Contrast = m_pDS->fv("Contrast").get_asFloat();
       settings.m_CustomPixelRatio = m_pDS->fv("PixelRatio").get_asFloat();
-      settings.m_NonLinStretch = m_pDS->fv("NonLinStretch").get_asBool();
+      settings.m_CustomNonLinStretch = m_pDS->fv("NonLinStretch").get_asBool();
       settings.m_NoiseReduction = m_pDS->fv("NoiseReduction").get_asFloat();
       settings.m_Sharpness = m_pDS->fv("Sharpness").get_asFloat();
       settings.m_CustomZoomAmount = m_pDS->fv("ZoomAmount").get_asFloat();
@@ -3014,7 +3014,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
                        setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
-                       setting.m_OutputToAllSpeakers,setting.m_Sharpness,setting.m_NoiseReduction,setting.m_NonLinStretch);
+                       setting.m_OutputToAllSpeakers,setting.m_Sharpness,setting.m_NoiseReduction,setting.m_CustomNonLinStretch);
       CStdString strSQL2;
       strSQL2=FormatSQL("ResumeTime=%i,Crop=%i,CropLeft=%i,CropRight=%i,CropTop=%i,CropBottom=%i where idFile=%i\n", setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight, setting.m_CropTop, setting.m_CropBottom, idFile);
       strSQL += strSQL2;
@@ -3031,7 +3031,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
                        idFile, setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
-                       setting.m_NonLinStretch);
+                       setting.m_CustomNonLinStretch);
       CStdString strSQL2;
       strSQL2=FormatSQL("%i,%i,%i,%i,%i,%i,%i,%f,%f)\n", setting.m_OutputToAllSpeakers, setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight,
                     setting.m_CropTop, setting.m_CropBottom, setting.m_Sharpness, setting.m_NoiseReduction);

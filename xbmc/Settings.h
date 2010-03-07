@@ -172,6 +172,7 @@ public:
 
   float m_fZoomAmount;      // current zoom amount
   float m_fPixelRatio;      // current pixel ratio
+  bool  m_bNonLinStretch;   // current non-linear stretch
 
   int m_iMyVideoWatchMode;
 

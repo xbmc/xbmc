@@ -253,7 +253,7 @@ protected:
   bool m_pboused;
 
   bool  m_nonLinStretch;
-  float m_customPixelRatio;
+  float m_pixelRatio;
 };
 
 
