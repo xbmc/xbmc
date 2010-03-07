@@ -740,7 +740,7 @@
 
       <control type="group">
         <visible>!Skin.HasSetting(HideFocusDetailForPanel)</visible>
-        <posx>754</posx>
+        <posx>824</posx>
         <posy>30</posy>
 
 
@@ -868,44 +868,44 @@
             <info>ListItem.Plot</info>
           </control>
 
-		   <control type="group">
+			<control type="group">
 				<description>Media Flags</description>
 				<posy>425</posy>
 
 				<control type="image">
-				  <visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
-				  <posx>-40</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(contentRating)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
+					<posx>-40</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(contentRating)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 
 				<control type="image">
-				  <visible>true</visible>
-				  <posx>131</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(videoResolution)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>true</visible>
+					<posx>107</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(videoResolution)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 
 				<control type="image">
-				  <visible>true</visible>
-				  <posx>262</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(audioCodec)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>true</visible>
+					<posx>214</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(audioCodec)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 
 				<control type="image">
-				  <visible>true</visible>
-				  <posx>393</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(movieStudio)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>true</visible>
+					<posx>321</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(movieStudio)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 			</control>
 
@@ -946,44 +946,44 @@
             <info>ListItem.Plot</info>
           </control>
 
-		   <control type="group">
+			<control type="group">
 				<description>Media Flags</description>
 				<posy>425</posy>
 
 				<control type="image">
-				  <visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
-				  <posx>-40</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(contentRating)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
+					<posx>-40</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(contentRating)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 
 				<control type="image">
-				  <visible>true</visible>
-				  <posx>131</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(videoResolution)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>true</visible>
+					<posx>107</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(videoResolution)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 
 				<control type="image">
-				  <visible>true</visible>
-				  <posx>262</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(audioCodec)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>true</visible>
+					<posx>214</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(audioCodec)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 
 				<control type="image">
-				  <visible>true</visible>
-				  <posx>393</posx>
-				  <posy>0</posy>
-				  <height>43</height>
-				  <info>Listitem.Property(movieStudio)</info>
-				  <aspectratio>keep</aspectratio>
+					<visible>true</visible>
+					<posx>321</posx>
+					<posy>0</posy>
+					<height>43</height>
+					<info>Listitem.Property(movieStudio)</info>
+					<aspectratio>keep</aspectratio>
 				</control>
 			</control>
         </control>

@@ -760,20 +760,14 @@
   </include>
 
 <!-- Panel Stream -->
-  <include name="PanelStreamImageDims">
-    <posx>10</posx>
-    <posy>0</posy>
-    <width>166</width>
-    <height>236</height>
-	<aspectratio>stretch</aspectratio>
-  </include>
-  <include name="PanelStreamImageDimsFocus">
-    <posx>15</posx>
-    <posy>5</posy>
-    <width>156</width>
-    <height>226</height>
-	<aspectratio>stretch</aspectratio>
-  </include>
+	<include name="PanelStreamImageDims">
+		<posx>15</posx>
+		<posy>0</posy>
+		<width>133</width>
+		<height>192</height>
+		<aspectratio>stretch</aspectratio>
+	</include>
+
 
   <include name="PanelStreamImageFocusAnim">
     <animation effect="zoom" tween="quadratic" end="-2,12,190,266" time="200" delay="100">Focus</animation>

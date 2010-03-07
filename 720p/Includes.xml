@@ -2059,18 +2059,18 @@
   </include>
 -->
 
-  <constant name="PanelStreamDetailTextWidth">500</constant>
+  <constant name="PanelStreamDetailTextWidth">430</constant>
 
   <constant name="PanelStreamEpisodeDetailTextWidth">480</constant>
 
   <include name="PanelStreamImage">
     <include>PanelStreamImageDims</include>
     <info>ListItem.Icon</info>
-    <bordersize>8</bordersize>
+    <bordersize>3</bordersize>
   </include>
 
   <include name="PanelStreamImageFocus">
-    <include>PanelStreamImageDimsFocus</include>
+    <include>PanelStreamImageDims</include>
     <info>ListItem.Icon</info>
 	<bordertexture>amt-blank-poster-focus.png</bordertexture>
 	<bordersize>3</bordersize>
@@ -2121,7 +2121,7 @@
   </include>
 
   <include name="PanelStreamLayout">
-    <itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="250">
+    <itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="250">
       <control type="image">
         <description>Poster image</description>
         <include>PanelStreamImage</include>
@@ -2131,21 +2131,21 @@
         <include>PanelStreamNoThumb</include>
       </control>
 	 <control type="label">
-	       <posx>85</posx>
-	       <posy>240</posy>
-	       <width>170</width>
+	       <posx>81</posx>
+	       <posy>204</posy>
+	       <width>153</width>
 	       <align>center</align>
 	       <aligny>center</aligny>
 	       <scroll>false</scroll>
 	       <label>$INFO[listitem.title ]</label>
-	       <font>TitleFont</font>
+	       <font>MediumSmallTitleFont</font>
 	       <textcolor>FFffffff</textcolor>
 	       <wrapmultiline>false</wrapmultiline>
 	 </control>
 	
     </itemlayout>
 
-    <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="250">
+    <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="250">
       <control type="image">
         <description>Poster image</description>
         <include>PanelStreamImageFocus</include>
@@ -2154,14 +2154,14 @@
         <include>PanelStreamNoThumb</include>
       </control>
 	 <control type="label">
-	       <posx>85</posx>
-	       <posy>240</posy>
-	       <width>170</width>
+	       <posx>81</posx>
+	       <posy>204</posy>
+	       <width>153</width>
 	       <align>center</align>
 	       <aligny>center</aligny>
 	       <scroll>false</scroll>
 	       <label>$INFO[listitem.title ]</label>
-	       <font>TitleFont</font>
+	       <font>MediumSmallTitleFont</font>
 	       <textcolor>FFffffff</textcolor>
 	       <wrapmultiline>false</wrapmultiline>
 	 </control>
@@ -2220,18 +2220,18 @@
 
   <include name="PanelStreamContent">
     <posx>6</posx>
-	<posy>7</posy>
+	<posy>34</posy>
 	<width>1280</width>
-    <height>508</height>
+    <height>500</height>
 
     <include>PanelStreamLayout</include>
   </include>
 
   <include name="PanelStreamContentWithDetail">
     <posx>6</posx>
-	<posy>7</posy>
-    <width>750</width>
-    <height>508</height>
+	<posy>34</posy>
+    <width>815</width>
+    <height>500</height>
 
     <include>PanelStreamLayout</include>
   </include>
