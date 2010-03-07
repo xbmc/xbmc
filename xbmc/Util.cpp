@@ -5731,7 +5731,8 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
   {
     if (myItems[i]->m_bIsFolder)
       CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
-    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
+    else 
+//    if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
       items.Add(myItems[i]);
   }
 }
@@ -5962,6 +5963,34 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
   sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
 }
 
+void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
+{
+  if (!CDirectory::Exists(strPath)) return;
+
+  CFileItemList items;
+  GetRecursiveListing(strPath,items,"");
+  for (int i=0;i<items.Size();++i)
+  {
+    if (!items[i]->m_bIsFolder)
+      CFile::Delete(items[i]->m_strPath);
+  }
+  items.Clear();
+  GetRecursiveDirsListing(strPath,items);
+  for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
+  {
+    CStdString strDir = items[i]->m_strPath;
+    AddSlashAtEnd(strDir);
+    CDirectory::Remove(strDir);
+  }
+
+  if (!HasSlashAtEnd(strPath))
+  {
+    CStdString tmpPath = strPath;
+    AddSlashAtEnd(tmpPath);
+    CDirectory::Remove(tmpPath);
+  }
+}
+
 bool CUtil::PWMControl(const CStdString &strRGBa, const CStdString &strRGBb, const CStdString &strWhiteA, const CStdString &strWhiteB, const CStdString &strTransition, int iTrTime)
 {
 #ifdef HAS_XBOX_HARDWARE
@@ -6030,30 +6059,6 @@ void CUtil::RemoveKernelPatch()
     }
   }
 #endif
-}
-
-void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
-{
-  if (!CDirectory::Exists(strPath)) return;
-
-  CFileItemList items;
-  CUtil::GetRecursiveListing(strPath,items,"");
-  for (int i=0;i<items.Size();++i)
-  {
-    if (!items[i]->m_bIsFolder)
-      CFile::Delete(items[i]->m_strPath);
-  }
-  items.Clear();
-  CUtil::GetRecursiveDirsListing(strPath,items);
-  for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
-  {
-    CUtil::AddSlashAtEnd(items[i]->m_strPath);
-    CDirectory::Remove(items[i]->m_strPath);
-  }
-
-  CStdString tmpPath = strPath;
-  AddSlashAtEnd(tmpPath);
-  CDirectory::Remove(tmpPath);
 }
 
 void CUtil::ClearFileItemCache()

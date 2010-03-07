@@ -1196,7 +1196,7 @@ HRESULT CApplication::Initialize()
 
   CDirectory::Create(g_settings.GetProfilesThumbFolder());
 
-  CUtil::WipeDir("Z:\\temp");
+  CUtil::WipeDir("Z:\\");
   CreateDirectory("Z:\\temp", NULL); // temp directory for python and dllGetTempPathA
   CreateDirectory("Q:\\scripts", NULL);
   CreateDirectory("Q:\\plugins", NULL);
