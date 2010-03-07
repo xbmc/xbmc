@@ -51,6 +51,8 @@ CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight)
   m_textColor = 0;
   m_wrap = wrap;
   m_maxHeight = fHeight;
+  m_textWidth = 0;
+  m_textHeight = 0;
 }
 
 void CGUITextLayout::SetWrap(bool bWrap)
@@ -210,8 +212,11 @@ void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth, bool force
   // remove any trailing blank lines
   while (!m_lines.empty() && m_lines.back().m_text.empty())
     m_lines.pop_back();
-  
+
   BidiTransform(m_lines, forceLTRReadingOrder);
+
+  // and cache the width and height for later reading
+  CalcTextExtent();
 }
 
 // BidiTransform is used to handle RTL text flipping in the string
@@ -222,18 +227,18 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
     CGUIString &line = lines[i];
 
     // reserve enough space in the flipped text
-    vecText flippedText; 
+    vecText flippedText;
     flippedText.reserve(line.m_text.size());
 
     character_t sectionStyle = 0xffff0000; // impossible to achieve
     CStdStringW sectionText;
     for (vecText::iterator it = line.m_text.begin(); it != line.m_text.end(); ++it)
-    { 
+    {
       character_t style = *it & 0xffff0000;
-      if (style != sectionStyle) 
+      if (style != sectionStyle)
       {
         if (!sectionText.IsEmpty())
-        { // style has changed, bidi flip text 
+        { // style has changed, bidi flip text
           CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
           for (unsigned int j = 0; j < sectionFlipped.size(); j++)
             flippedText.push_back(sectionStyle | sectionFlipped[j]);
@@ -241,7 +246,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
         sectionStyle = style;
         sectionText.clear();
       }
-      sectionText.push_back( (wchar_t)(*it & 0xFFFF) );
+      sectionText.push_back( (wchar_t)(*it & 0xffff) );
     }
 
     // handle the last section
@@ -504,26 +509,26 @@ void CGUITextLayout::LineBreakText(const vecText &text, vector<CGUIString> &line
   }
 }
 
-void CGUITextLayout::GetTextExtent(float &width, float &height)
+void CGUITextLayout::GetTextExtent(float &width, float &height) const
 {
-  width = 0;
+  width = m_textWidth;
+  height = m_textHeight;
+}
+
+void CGUITextLayout::CalcTextExtent()
+{
+  m_textWidth = 0;
+  m_textHeight = 0;
   if (!m_font) return;
 
   for (vector<CGUIString>::iterator i = m_lines.begin(); i != m_lines.end(); i++)
   {
     const CGUIString &string = *i;
     float w = m_font->GetTextWidth(string.m_text);
-    if (w > width)
-      width = w;
+    if (w > m_textWidth)
+      m_textWidth = w;
   }
-  height = m_font->GetTextHeight(m_lines.size());
-}
-
-float CGUITextLayout::GetTextWidth()
-{
-  float width, height;
-  GetTextExtent(width, height);
-  return width;
+  m_textHeight = m_font->GetTextHeight(m_lines.size());
 }
 
 unsigned int CGUITextLayout::GetTextLength() const
@@ -626,6 +631,7 @@ void CGUITextLayout::Reset()
 {
   m_lines.clear();
   m_lastText.Empty();
+  m_textWidth = m_textHeight = 0;
 }
 
 

@@ -130,6 +130,20 @@ bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag
   return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
 }
 
+bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* strTag, float &value, float &min)
+{
+  const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
+  if (!pNode || !pNode->FirstChild()) return false;
+  if (0 == strnicmp("auto", pNode->FirstChild()->Value(), 4))
+  { // auto-width - at least min must be set
+    g_SkinInfo.ResolveConstant(pNode->Attribute("max"), value);
+    g_SkinInfo.ResolveConstant(pNode->Attribute("min"), min);
+    if (!min) min = 1;
+    return true;
+  }
+  return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
+}
+
 bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
@@ -539,6 +553,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
   int id = 0;
   float posX = 0, posY = 0;
   float width = 0, height = 0;
+  float minWidth = 0;
 
   int left = 0, right = 0, up = 0, down = 0;
   vector<CStdString> leftActions, rightActions, upActions, downActions;
@@ -689,7 +704,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
   if (pos.Right(1) == "r")
     posY = (rect.bottom - rect.top) - posY;
 
-  GetFloat(pControlNode, "width", width);
+  GetDimension(pControlNode, "width", width, minWidth);
   GetFloat(pControlNode, "height", height);
 
   // adjust width and height accordingly for groups.  Groups should
@@ -1028,7 +1043,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
         parentID, id, posX, posY, width, height,
         labelInfo, wrapMultiLine, bHasPath);
       ((CGUILabelControl *)control)->SetInfo(content);
-      ((CGUILabelControl *)control)->SetWidthControl(bScrollLabel, scrollSpeed);
+      ((CGUILabelControl *)control)->SetWidthControl(minWidth, bScrollLabel, scrollSpeed);
     }
   }
   else if (strType == "edit")
