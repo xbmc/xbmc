@@ -962,7 +962,7 @@
   </include>
 
   <include name="TVShowsBGVisible">
-    <visible>![[Skin.String(CustomTVShowsBG) | Skin.String(CustomTVShowsBGFolder)] + !Skin.HasSetting(HideCustomBGForTVShows)] | [Window.IsVisible(Home) + !Skin.HasSetting(EnableCustomBGHome)] | [!Window.IsVisible(Home) + [Skin.HasSetting(ShowFanartOnTVWall) | Skin.HasSetting(ShowEpThumbOnTVWall)]]</visible>
+    <visible>![[Skin.String(CustomTVShowsBG) | Skin.String(CustomTVShowsBGFolder)] + !Skin.HasSetting(HideCustomBGForTVShows)] | [Window.IsVisible(Home) + !Skin.HasSetting(EnableCustomBGHome)]</visible>
   </include>
 
   <include name="MusicBGVisible">
@@ -1007,7 +1007,7 @@
         <visible>!Container.Content(movies)</visible>
   
         <control type="group">
-          <visible>IsEmpty(ListItem.Property(fanart_image)) | Skin.HasSetting(HideFanartForFiles)</visible>
+          <visible>IsEmpty(ListItem.Property(fanart_image))</visible>
           <include>BackgroundFade</include>
   
           <control type="group">
@@ -1034,14 +1034,14 @@
           <description>Fanart background</description>
           <include>FullScreenBGImage</include>
           <info>ListItem.Property(fanart_image)</info>
-          <visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
+          <visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
           <include>BackgroundFade</include>
         </control>
 
 				<control type="largeimage">
           <description>Fanart background (from directory)</description>
           <include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image) + !Skin.HasSetting(HideFanartForFiles)</visible>
+		  <visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
           <info>FanArt.Image</info>
           <include>BackgroundFade</include>
         </control>
@@ -1052,7 +1052,7 @@
         <visible>Container.Content(movies)</visible>
   
         <control type="group">
-          <visible>IsEmpty(ListItem.Property(fanart_image)) | Skin.HasSetting(HideFanartForMovies)</visible>
+          <visible>IsEmpty(ListItem.Property(fanart_image))</visible>
           <include>BackgroundFade</include>
   
           <control type="group">
@@ -1079,7 +1079,7 @@
           <description>Fanart background</description>
           <include>FullScreenBGImage</include>
           <info>ListItem.Property(fanart_image)</info>
-          <visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForMovies)</visible>
+          <visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
           <include>BackgroundFade</include>
         </control>
       </control>
@@ -1089,7 +1089,7 @@
         <visible>Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
   
         <control type="group">
-          <visible>[IsEmpty(FanArt.Image) | Skin.HasSetting(HideFanartForTV)] + ![Skin.HasSetting(ShowFanartOnTVList) + !IsEmpty(ListItem.Property(fanart_image))]</visible>
+          <visible>IsEmpty(FanArt.Image) + IsEmpty(ListItem.Property(fanart_image))</visible>
           <include>BackgroundFade</include>
   
           <control type="group">
@@ -1117,14 +1117,14 @@
           <description>Fanart background</description>
           <include>FullScreenBGImage</include>
           <info>FanArt.Image</info>
-          <visible>!IsEmpty(FanArt.Image) + !Skin.HasSetting(HideFanartForTV)</visible>
+          <visible>!IsEmpty(FanArt.Image)</visible>
           <include>BackgroundFade</include>
         </control>
         <control type="largeimage">
           <description>Fanart background</description>
           <include>FullScreenBGImage</include>
           <info>ListItem.Property(fanart_image)</info>
-          <visible>Skin.HasSetting(ShowFanartOnTVList) + !IsEmpty(ListItem.Property(fanart_image))</visible>
+          <visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
           <include>BackgroundFade</include>
         </control>
       </control>
@@ -1161,13 +1161,13 @@
 	        <description>Fanart background</description>
 	        <include>FullScreenBGImage</include>
 	        <info>ListItem.Property(fanart_image)</info>
-	        <visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
+	        <visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 	        <include>BackgroundFade</include>
 	      </control>
 				<control type="largeimage">
           <description>Fanart background (from directory)</description>
           <include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image) + !Skin.HasSetting(HideFanartForFiles)</visible>
+					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
           <info>FanArt.Image</info>
           <include>BackgroundFade</include>
         </control>
@@ -1205,13 +1205,13 @@
 	        <description>Fanart background</description>
 	        <include>FullScreenBGImage</include>
 	        <info>ListItem.Property(fanart_image)</info>
-	        <visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
+	        <visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 	        <include>BackgroundFade</include>
 	      </control>
 				<control type="largeimage">
           <description>Fanart background (from directory)</description>
           <include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image) + !Skin.HasSetting(HideFanartForFiles)</visible>
+					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
           <info>FanArt.Image</info>
           <include>BackgroundFade</include>
         </control>
@@ -1273,13 +1273,13 @@
 		    	<description>Fanart background</description>
 		    	<include>FullScreenBGImage</include>
 		    	<info>ListItem.Property(fanart_image)</info>
-		    	<visible>!IsEmpty(ListItem.Property(fanart_image)) + !Skin.HasSetting(HideFanartForFiles)</visible>
+		    	<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 		    	<include>BackgroundFade</include>
 		  	</control>
 				<control type="largeimage">
           <description>Fanart background (from directory)</description>
           <include>FullScreenBGImage</include>
-					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image) + !Skin.HasSetting(HideFanartForFiles)</visible>
+					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
           <info>FanArt.Image</info>
           <include>BackgroundFade</include>
         </control>
@@ -1386,7 +1386,7 @@
 
   <include name="CustomTVShowsBackground">
     <control type="group">
-      <visible>Skin.String(CustomTVShowsBG) + [!Skin.HasSetting(HideCustomBGForTVShows) | Window.IsVisible(Home)] + [Window.IsVisible(Home) | [!Skin.HasSetting(ShowFanartOnTVWall) + !Skin.HasSetting(ShowEpThumbOnTVWall)]]</visible>
+      <visible>Skin.String(CustomTVShowsBG) + [!Skin.HasSetting(HideCustomBGForTVShows) | Window.IsVisible(Home)]</visible>
 
       <control type="image">
         <info>Skin.String(CustomTVShowsBG)</info>
@@ -1395,7 +1395,7 @@
     </control>
 
     <control type="group">
-      <visible>Skin.String(CustomTVShowsBGFolder) + [!Skin.HasSetting(HideCustomBGForTVShows) | Window.IsVisible(Home)] + [Window.IsVisible(Home) | [!Skin.HasSetting(ShowFanartOnTVWall) + !Skin.HasSetting(ShowEpThumbOnTVWall)]]</visible>
+      <visible>Skin.String(CustomTVShowsBGFolder) + [!Skin.HasSetting(HideCustomBGForTVShows) | Window.IsVisible(Home)]</visible>
 
       <control type="multiimage">
         <info>Skin.String(CustomTVShowsBGFolder)</info>
@@ -2937,7 +2937,7 @@
 
   <include name="FanartOnTVProjectorScreen">
     <control type="group">
-      <visible>!IsEmpty(ListItem.Property(fanart_image)) + Skin.HasSetting(ShowFanartOnTVWall) + !Skin.HasSetting(ShowFanartOnTVList)</visible>
+      <visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
       <include>MediaListSelectDelay</include>
 
       <include>TVProjectScreenOverlay</include>
