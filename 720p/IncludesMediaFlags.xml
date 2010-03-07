@@ -1,4 +1,54 @@
 <includes>
+	<!-- Available Media Flags
+		Listitem.Property(videoResolution)
+		Listitem.Property(audioCodec)
+		Listitem.Property(videoCodec)
+		Listitem.Property(aspectRatio)
+		Listitem.Property(videoFrameRate)
+		Listitem.Property(contentRating)
+		Listitem.Property(movieStudio)
+	-->
+	
+	
+	
+	<include name="InfoListFlags">
+		<control type="image">
+			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
+			<posx>-40</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(contentRating)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>103</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(videoResolution)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>206</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(audioCodec)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>309</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(movieStudio)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+	</include>
+
 	<include name="PanelStreamFlags">
 		<control type="image">
 			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
@@ -36,4 +86,5 @@
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include>
+	
 </includes>

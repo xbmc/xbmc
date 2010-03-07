@@ -210,69 +210,7 @@
             <bordersize>8</bordersize>
           </control>
 
-<!--- MEDIA FLAGS --->
-					<control type="image">
-					  <posx>5</posx>
-					  <posy>-40</posy>
-						<width>70</width>
-					  <info>Listitem.Property(videoResolution)</info>
-					  <aspectratio>keep</aspectratio>
-					</control>
-
-					<control type="image">
-					  <posx>100</posx>
-					  <posy>-65</posy>
-						<width>70</width>
-					  <info>Listitem.Property(audioCodec)</info>
-					  <aspectratio>keep</aspectratio>
-					</control>
-
-					<control type="image">
-					  <posx>200</posx>
-					  <posy>-65</posy>
-						<width>70</width>
-					  <info>Listitem.Property(videoCodec)</info>
-					  <aspectratio>keep</aspectratio>
-					</control>
-					
-					
-					<control type="image">
-					  <posx>-30</posx>
-					  <posy>410</posy>
-						<height>30</height>
-					  <info>Listitem.Property(aspectRatio)</info>
-					  <aspectratio aligny="top">keep</aspectratio>
-					</control>
-
-					<control type="image">
-					  <posx>45</posx>
-					  <posy>410</posy>
-						<height>30</height>
-					  <info>Listitem.Property(videoFrameRate)</info>
-					  <aspectratio aligny="top">keep</aspectratio>
-					</control>
-					
-					<control type="image">
-					  <posx>40</posx>
-					  <posy>410</posy>
-						<height>30</height>
-					  <info>Listitem.Property(contentRating)</info>
-					  <aspectratio aligny="top">keep</aspectratio>
-					</control>
-
-					<control type="image">
-					  <posx>490</posx>
-					  <posy>-20</posy>
-						<height>100</height>
-					  <info>Listitem.Property(movieStudio)</info>
-					  <aspectratio align="right" aligny="bottom">keep</aspectratio>
-					</control>
-
-<!--- MEDIA FLAGS --->
-
-
-
-  <!--
+    <!--
           <control type="label">
             <description>No Thumb label</description>
             <include>InfoListNoThumbDims</include>
@@ -323,42 +261,47 @@
             <textcolor>Unfocused</textcolor>
           </control>
 
+
 	        <control type="image">
-	          <description>Star Rating</description>
-						<align>left</align>
-				    <info>ListItem.StarRating</info>
-				    <aspectratio>keep</aspectratio>
-						<width>100</width>
-				    <height>18</height>
-						<posy>57</posy>
-						<posx>-15</posx>
-						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+				<description>Star Rating</description>
+				<align>left</align>
+				<info>ListItem.StarRating</info>
+				<aspectratio>keep</aspectratio>
+				<width>100</width>
+				<height>18</height>
+				<posy>57</posy>
+				<posx>-15</posx>
+				<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 	        </control>
 
-          <control type="group">
-            <posy>80</posy>
-            <control type="textbox">
-              <description>Plot</description>
-              <width>InfoListTitleWidth</width>
-              <height>326</height>
-              <info>ListItem.Plot</info>
-              <visible>![Container.Content(seasons) | Container.Content(albums)]</visible>
-            </control>
-            <control type="textbox">
-              <description>Plot</description>
-              <width>InfoListTitleWidth</width>
-              <height>326</height>
-              <info>Container.ShowPlot</info>
-              <visible>Container.Content(seasons)</visible>
-            </control>
-            <control type="textbox">
-              <description>Album review</description>
-              <width>InfoListTitleWidth</width>
-              <height>326</height>
-              <info>ListItem.Property(description)</info>
-              <visible>Container.Content(albums) | Container.Content(artists)</visible>
-            </control>
-          </control>
+	          <control type="group">
+	            <posy>80</posy>
+	            <control type="textbox">
+	              <description>Plot</description>
+	              <width>InfoListTitleWidth</width>
+	              <height>278</height>
+	              <info>ListItem.Plot</info>
+	              <visible>![Container.Content(seasons) | Container.Content(albums)]</visible>
+	            </control>
+	            <control type="textbox">
+	              <description>Plot</description>
+	              <width>InfoListTitleWidth</width>
+	              <height>278</height>
+	              <info>Container.ShowPlot</info>
+	              <visible>Container.Content(seasons)</visible>
+	            </control>
+	            <control type="textbox">
+	              <description>Album review</description>
+	              <width>InfoListTitleWidth</width>
+	              <height>278</height>
+	              <info>ListItem.Property(description)</info>
+	              <visible>Container.Content(albums) | Container.Content(artists)</visible>
+	            </control>
+	          </control>
+			<control type="group">
+				<posy>363</posy>
+				<include>InfoListFlags</include>
+		 	</control>
         </control>
       </control>
     </control>
