@@ -762,15 +762,17 @@
 <!-- Panel Stream -->
   <include name="PanelStreamImageDims">
     <posx>10</posx>
-    <posy>26</posy>
+    <posy>0</posy>
     <width>166</width>
     <height>236</height>
+	<aspectratio>stretch</aspectratio>
   </include>
   <include name="PanelStreamImageDimsFocus">
     <posx>15</posx>
-    <posy>31</posy>
+    <posy>5</posy>
     <width>156</width>
     <height>226</height>
+	<aspectratio>stretch</aspectratio>
   </include>
 
   <include name="PanelStreamImageFocusAnim">

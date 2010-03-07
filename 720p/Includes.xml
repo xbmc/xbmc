@@ -2065,7 +2065,6 @@
 
   <include name="PanelStreamImage">
     <include>PanelStreamImageDims</include>
-    <!--<texture>amt-blank-poster.png</texture>-->
     <info>ListItem.Icon</info>
     <bordersize>8</bordersize>
   </include>
@@ -2122,7 +2121,7 @@
   </include>
 
   <include name="PanelStreamLayout">
-    <itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="240">
+    <itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="250">
       <control type="image">
         <description>Poster image</description>
         <include>PanelStreamImage</include>
@@ -2146,7 +2145,7 @@
 	
     </itemlayout>
 
-    <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="240">
+    <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="250">
       <control type="image">
         <description>Poster image</description>
         <include>PanelStreamImageFocus</include>
@@ -2221,16 +2220,18 @@
 
   <include name="PanelStreamContent">
     <posx>6</posx>
-    <width>1280</width>
-    <height>500</height>
+	<posy>7</posy>
+	<width>1280</width>
+    <height>508</height>
 
     <include>PanelStreamLayout</include>
   </include>
 
   <include name="PanelStreamContentWithDetail">
     <posx>6</posx>
+	<posy>7</posy>
     <width>750</width>
-    <height>500</height>
+    <height>508</height>
 
     <include>PanelStreamLayout</include>
   </include>
