@@ -43,3 +43,27 @@ JSON_STATUS CPlayerOperations::GetActivePlayers(const CStdString &method, ITrans
 
   return OK;
 }
+
+JSON_STATUS CPlayerOperations::PlayPause(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  CBuiltins::Execute("playercontrol(play)");
+  return ACK;
+}
+
+JSON_STATUS CPlayerOperations::Stop(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP));
+  return ACK;
+}
+
+JSON_STATUS CPlayerOperations::SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_PREV_ITEM));
+  return ACK;
+}
+
+JSON_STATUS CPlayerOperations::SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  g_application.getApplicationMessenger().SendAction(CAction(ACTION_NEXT_ITEM));
+  return ACK;
+}

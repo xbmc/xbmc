@@ -51,6 +51,10 @@ Command CJSONRPC::m_commands[] = {
 
 // Player
   { "Player.GetActivePlayers",          CPlayerOperations::GetActivePlayers,    Response,     ReadData,        "Returns all active players IDs"},
+  { "Player.PlayPause",                 CPlayerOperations::PlayPause,           Response,     ControlPlayback, "Pauses or unpause playback of highest prioritized player" },
+  { "Player.Stop",                      CPlayerOperations::Stop,                Response,     ControlPlayback, "Stops playback of highest prioritized player" },
+  { "Player.SkipPrevious",              CPlayerOperations::SkipPrevious,        Response,     ControlPlayback, "Skips to previous item on the playlist of highest prioritized player" },
+  { "Player.SkipNext",                  CPlayerOperations::SkipNext,            Response,     ControlPlayback, "Skips to next item on the playlist of highest prioritized player" },
 
 // Music player
   { "MusicPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
