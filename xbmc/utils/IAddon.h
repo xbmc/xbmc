@@ -105,7 +105,6 @@ namespace ADDON
     virtual void Disable() =0;
     virtual bool LoadStrings() =0;
     virtual void ClearStrings() =0;
-    virtual void SetDeps(ADDONDEPS& deps) =0;
   };
 };
 
