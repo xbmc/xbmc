@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>com.tmdb.scraper.common</id>
+  <id>org.themoviedb.scraper.common</id>
   <type>scraper-library</type>
-  <title>TMDB</title>
+  <title>TMDb</title>
   <library>tmdb.xml</library>
   <version>1.0.0</version>
   <platforms>
@@ -11,8 +11,8 @@
   <minversion>
     <xbmc>20000</xbmc>
   </minversion>
-  <summary>TMDB Scraper Library</summary>
-  <description>some description</description>
+  <summary>TMDb Scraper Library</summary>
+  <description>Download thumbs and fanarts from www.themoviedb.org</description>
   <author>TEAMXBMC</author>
   <supportedcontent>
     <content>movies</content>

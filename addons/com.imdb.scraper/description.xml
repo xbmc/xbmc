@@ -16,7 +16,7 @@
   <author>TEAMXBMC</author>
   <dependencies>
     <dependency minversion="1.0.0" maxversion="">com.imdb.scraper.common</dependency>
-    <dependency minversion="1.0.0" maxversion="">com.tmdb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">org.themoviedb.scraper.common</dependency>
     <dependency minversion="1.0.0" maxversion="">com.movieposterdb.scraper.common</dependency>
     <dependency minversion="1.0.0" maxversion="">com.impa.scraper.common</dependency>
     <dependency minversion="1.0.0" maxversion="">com.dtrailer.scraper.common</dependency>
