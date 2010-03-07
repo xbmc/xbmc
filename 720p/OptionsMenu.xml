@@ -722,6 +722,7 @@
         </control>
 
 <!-- View specific Setup Options -->
+<!--
         <control type="radiobutton" id="3500">
           <description>Show Fanart on TV Show List</description>
   				<label>$LOCALIZE[31670]</label>
@@ -730,7 +731,7 @@
           <visible>Control.IsVisible(57) + [Window.IsActive(24) + Container.Content(tvshows)]</visible>
           <include>OMButtonItem</include>
         </control>
-
+-->
         <control type="radiobutton" id="3501">
           <description>Display Rotated Season Thumb</description>
           <label>$LOCALIZE[31678]</label>
