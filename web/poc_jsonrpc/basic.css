@@ -43,3 +43,21 @@ table.Info td.Title {
   text-align:right;
   color:white;
 }
+
+table.Playlist th {
+  text-align:left;
+  background-color:rgb(50,50,50);
+}
+
+table.Playlist td.playing {
+  text-align:center;
+  background:black;
+}
+
+table.Playlist tr.Odd {
+  background:rgb(0,0,0);
+}
+
+table.Playlist tr.Even {
+  background:rgb(30,30,30);
+}
