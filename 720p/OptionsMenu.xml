@@ -690,14 +690,14 @@
           <label>20367</label>
           <include>OMButtonItem</include>
         </control>
-
+<!--
         <control type="radiobutton" id="16">
           <description>PartyMode</description>
           <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
           <label>589</label>
           <include>OMButtonItem</include>
         </control>
-<!--
+
         <control type="radiobutton" id="17">
           <description>Flatten</description>
           <visible>Window.IsActive(24)</visible>
