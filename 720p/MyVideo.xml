@@ -7,6 +7,9 @@
     <include>Background</include>
 
     <!-- -->
+    <include>TV</include>
+    <include>TVEpisodes</include>
+
     <include>Showcase</include>
     <include>List</include>
     <include>MediaPreview</include>
@@ -14,7 +17,7 @@
     <include>PanelStream</include>
     <include>Coverflow</include>
     <include>WallStream</include>
-		<!--<include>GridView</include>-->
+		<!--<include>GridView</include>-->	    
     <!-- -->
 
     <control type="group">

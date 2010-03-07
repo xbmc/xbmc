@@ -452,7 +452,7 @@
 
         <control type="button" id="915">
           <description>Media Preview button</description>
-          <visible>!Control.IsVisible(51) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>!Control.IsVisible(51)</visible>
           <label>$LOCALIZE[31707]</label>
           <onclick>Container.SetViewMode(51)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -461,7 +461,7 @@
 
         <control type="button" id="916">
           <description>Showcase view button</description>
-          <visible>!Control.IsVisible(58) + [Window.IsVisible(MyVideoFiles) | [Window.IsVisible(MyVideoLibrary) + Container.Content(movies)]]</visible>
+          <visible>!Control.IsVisible(58) + [Container.Content(movies)]</visible>
           <label>$LOCALIZE[31702]</label>
           <onclick>Container.SetViewMode(58)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -470,7 +470,7 @@
 
         <control type="button" id="925">
           <description>TV Wide view button</description>
-          <visible>!Control.IsVisible(57) + [Window.IsVisible(MyVideoLibrary) + Container.Content(tvshows)]</visible>
+          <visible>!Control.IsVisible(57) + [Container.Content(tvshows)]</visible>
           <label>$LOCALIZE[539]</label>
           <onclick>Container.SetViewMode(57)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -479,7 +479,7 @@
 
         <control type="button" id="926">
           <description>TV Seasons view button</description>
-          <visible>!Control.IsVisible(57) + [Window.IsVisible(MyVideoLibrary) + Container.Content(seasons)]</visible>
+          <visible>!Control.IsVisible(57) + [Container.Content(seasons)]</visible>
           <label>$LOCALIZE[31703]</label>
           <onclick>Container.SetViewMode(57)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -488,7 +488,7 @@
 
         <control type="button" id="927">
           <description>Episodes view button</description>
-          <visible>!Control.IsVisible(54) + [Window.IsVisible(MyVideoLibrary) + Container.Content(episodes)]</visible>
+          <visible>!Control.IsVisible(54) + [Container.Content(episodes)]</visible>
           <label>$LOCALIZE[20360]</label>
           <onclick>Container.SetViewMode(54)</onclick>
           <onclick>SetFocus(50)</onclick>
