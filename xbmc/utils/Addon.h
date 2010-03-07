@@ -121,7 +121,7 @@ public:
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
   const CStdString Profile() const { return m_profile; }
-  const CStdString LibName() const { return m_props.libname; }
+  const CStdString LibName() const { return m_strLibName; }
   const CStdString Author() const { return m_props.author; }
   const CStdString Icon() const { return m_props.icon; }
   const int Stars() const { return m_props.stars; }

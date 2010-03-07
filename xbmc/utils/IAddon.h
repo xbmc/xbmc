@@ -28,17 +28,17 @@ class TiXmlElement;
 
 typedef enum
 {
-  CONTENT_PLUGIN          = -2, //TODO ditch this, used in scraping code
-  //TODO -1 is used as default in QueryParams.h
-  CONTENT_NONE            = 0,
-  CONTENT_MOVIES          = 1,
-  CONTENT_TVSHOWS         = 2,
-  CONTENT_MUSICVIDEOS     = 3,
-  CONTENT_EPISODES        = 4,
-  CONTENT_ALBUMS          = 6,
-  CONTENT_ARTISTS         = 7,
-  CONTENT_PROGRAMS        = 8,
-  CONTENT_PICTURES        = 9
+  CONTENT_MOVIES,
+  CONTENT_TVSHOWS,
+  CONTENT_MUSICVIDEOS,
+  CONTENT_EPISODES,
+  CONTENT_ALBUMS,
+  CONTENT_ARTISTS,
+  CONTENT_NONE,
+  CONTENT_AUDIO,
+  CONTENT_IMAGE,
+  CONTENT_PROGRAM,
+  CONTENT_VIDEO
 } CONTENT_TYPE;
 
 namespace ADDON

@@ -2911,17 +2911,7 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   VECADDONS addons;
   pControl->Clear();
 
-  if (content == CONTENT_ALBUMS || content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_ALBUMS);
-  else if (content == CONTENT_MOVIES)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MOVIES);
-  else if (content == CONTENT_TVSHOWS || content == CONTENT_EPISODES)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_TVSHOWS);
-  else if (content == CONTENT_MUSICVIDEOS)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSICVIDEOS);
-  else if (content == CONTENT_PROGRAMS)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_PROGRAMS);
-
+  CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, content);
   if (addons.empty())
   {
     pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
@@ -2943,8 +2933,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
         g_guiSettings.SetString("scrapers.tvshowdefault", (*it)->Name());
       else if (content == CONTENT_MUSICVIDEOS)
         g_guiSettings.SetString("scrapers.musicvideodefault", (*it)->Name());
-      else if (content == CONTENT_PROGRAMS)
-        g_guiSettings.SetString("programfiles.defaultscraper", (*it)->Name());
       k = j;
     }
     pControl->AddLabel((*it)->Name(),j++);

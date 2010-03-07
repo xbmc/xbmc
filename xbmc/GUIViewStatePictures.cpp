@@ -34,7 +34,7 @@
 
 using namespace XFILE;
 
-CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items, CONTENT_PICTURES)
+CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items, CONTENT_IMAGE)
 {
   if (items.IsVirtualDirectoryRoot())
   {

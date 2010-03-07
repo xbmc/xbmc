@@ -354,7 +354,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   }
 
   bool modified = ShowIMDB(&item, scraper);
-  if (modified && scraper->Content() != CONTENT_PLUGIN &&
+  if (modified &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
@@ -471,15 +471,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       bHasInfo = true;
       m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
     }
-  }
-  if (info->Content() == CONTENT_PLUGIN)
-  {
-    if (!item->HasVideoInfoTag())
-      return false;
-    movieDetails = *item->GetVideoInfoTag();
-    movieDetails.m_strIMDBNumber = "xx" + ADDON::TranslateContent(info->Content()); // disable refresh+get thumb button
-
-    bHasInfo = true;
   }
 
   m_database.Close();

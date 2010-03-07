@@ -33,7 +33,7 @@
 
 using namespace XFILE;
 
-CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items, CONTENT_PROGRAMS)
+CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items, CONTENT_PROGRAM)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty

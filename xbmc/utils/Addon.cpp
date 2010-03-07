@@ -46,55 +46,35 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
   switch (type)
   {
   case CONTENT_ALBUMS:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(132);
+      if (pretty) return g_localizeStrings.Get(132);
       return "albums";
-    }
   case CONTENT_ARTISTS:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(133);
+      if (pretty) return g_localizeStrings.Get(133);
       return "artists";
-    }
   case CONTENT_MOVIES:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(20342);
+      if (pretty) return g_localizeStrings.Get(20342);
       return "movies";
-    }
   case CONTENT_TVSHOWS:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(20343);
+      if (pretty) return g_localizeStrings.Get(20343);
       return "tvshows";
-    }
   case CONTENT_MUSICVIDEOS:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(20389);
+      if (pretty) return g_localizeStrings.Get(20389);
       return "musicvideos";
-    }
   case CONTENT_EPISODES:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(20360);
+      if (pretty) return g_localizeStrings.Get(20360);
       return "episodes";
-    }
-  case CONTENT_PROGRAMS:
-    {
-      return "programs";
-    }
+  case CONTENT_AUDIO:
+      return "audio";
+  case CONTENT_IMAGE:
+      return "image";
+  case CONTENT_PROGRAM:
+      return "program";
+  case CONTENT_VIDEO:
+      return "video";
   case CONTENT_NONE:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(231);
-      return "";
-    }
   default:
-    {
+      if (pretty) return g_localizeStrings.Get(231);
       return "";
-    }
   }
 }
 
@@ -106,8 +86,10 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
   else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
   else if (string.Equals("episodes")) return CONTENT_EPISODES;
   else if (string.Equals("musicvideos")) return CONTENT_MUSICVIDEOS;
-  else if (string.Equals("plugin")) return CONTENT_PLUGIN;
-  else if (string.Equals("programs")) return CONTENT_PROGRAMS;
+  else if (string.Equals("audio")) return CONTENT_AUDIO;
+  else if (string.Equals("image")) return CONTENT_IMAGE;
+  else if (string.Equals("program")) return CONTENT_PROGRAM;
+  else if (string.Equals("video")) return CONTENT_VIDEO;
   else return CONTENT_NONE;
 }
 
@@ -224,7 +206,7 @@ CAddon::CAddon(const AddonProps &props)
   : m_props(props)
   , m_parent(AddonPtr())
 {
-  if (props.libname.empty()) BuildLibName();
+  if (props.libname.IsEmpty()) BuildLibName();
   else m_strLibName = props.libname;
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);

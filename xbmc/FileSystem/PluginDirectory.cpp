@@ -371,7 +371,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
   CURL url(strPath);
-  if (!StringUtils::ValidateUUID(url.GetHostName()))
+  if (url.GetHostName().IsEmpty())
   { // called with no script - we must be browsing root of plugins dir
     return GetPluginsDirectory(ADDON::TranslateContent(url.GetHostName()), items);
   }
