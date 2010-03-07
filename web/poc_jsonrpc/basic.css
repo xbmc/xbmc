@@ -61,3 +61,21 @@ table.Playlist tr.Odd {
 table.Playlist tr.Even {
   background:rgb(30,30,30);
 }
+
+table.Introspect {
+  border:0px;
+  width:2000px;
+}
+
+table.Introspect th {
+  text-align:left;
+  background-color:rgb(50,50,50);
+}
+
+table.Introspect tr.Odd {
+  background:rgb(0,0,0);
+}
+
+table.Introspect tr.Even {
+  background:rgb(30,30,30);
+}

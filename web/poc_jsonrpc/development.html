@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>XBMC - Development</title>
+<link type="text/css" rel="stylesheet" href="basic.css">
+<script type="text/javascript" src="json.js"> // FOR browsers which doesn't have it included
+</script>
+</head>
+<body>
+<h1><a href="nowplaying.html">Now playing</a>   <a href="movies.html">Movies</a>   <a href="tvshows.html">TV Shows</a>   <a href="albums.html">Albums</a>    Development</h1>
+
+<script type="text/javascript">
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Introspect\", \"id\": 1}");
+
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+var commands = result["commands"];
+document.write("<table class=\"Introspect\"><thead><tr><th>Command</th><th>Executable</th><th>Permission</th><th>Description</th></tr></thead><tbody>");
+var odd = false;
+for (var property in commands) {
+  var item = commands[property];
+  var row = "even";
+  if (odd)
+    row = "odd";
+
+  document.write("<tr class=\"" + row + "\">");
+  document.write("<td class=\"command\">"     + item["command"]     + "</td>");
+  document.write("<td class=\"executable\">"  + item["executable"]  + "</td>");
+  document.write("<td class=\"permission\">"  + item["permission"]  + "</td>");
+  document.write("<td class=\"description\">" + item["description"] + "</td>");
+  document.write("</tr>");
+
+  odd = !odd;
+}
+document.write("</tbody></table>");
+</script>
+</body>
+</html>
