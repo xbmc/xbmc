@@ -2708,7 +2708,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
   {
     if (myItems[i]->m_bIsFolder)
       CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
-    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
+    else
       items.Add(myItems[i]);
   }
 }
