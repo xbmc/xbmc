@@ -100,7 +100,7 @@ public:
   // waits until all available data has been rendered
   void WaitForBuffers();
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
-  void SendMessage(CDVDMsg* pMsg)                       { m_messageQueue.Put(pMsg); }
+  void SendMessage(CDVDMsg* pMsg, int priority = 0)     { m_messageQueue.Put(pMsg, priority); }
 
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }

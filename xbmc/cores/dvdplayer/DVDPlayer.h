@@ -360,14 +360,6 @@ protected:
   } m_State;
   CCriticalSection m_StateSection;
 
-  class CPlayerSeek
-  {
-  public:
-    CPlayerSeek(CDVDPlayer* player);
-    ~CPlayerSeek();
-    CDVDPlayer& m_player;
-  };
-
   HANDLE m_hReadyEvent;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 

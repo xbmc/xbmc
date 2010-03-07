@@ -61,6 +61,5 @@ protected:
   DllSwScale m_dllSwScale;
   std::string m_name;
   double m_dts;
-  bool m_force_dts;
 };
 
