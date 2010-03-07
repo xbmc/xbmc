@@ -1675,7 +1675,7 @@
   <include name="MediaCount">
     <control type="group">
       <include>MediaCountPos</include>
-      <visible>!Window.IsVisible(2003) + Skin.HasSetting(ShowMediaCount)</visible>
+      <visible>!Window.IsVisible(2003)</visible>
 
       <control type="image">
         <include>MediaCountBGDims</include>
