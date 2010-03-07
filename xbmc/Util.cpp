@@ -2941,23 +2941,27 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   if (!CDirectory::Exists(strPath)) return;
 
   CFileItemList items;
-  CUtil::GetRecursiveListing(strPath,items,"");
+  GetRecursiveListing(strPath,items,"");
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
   items.Clear();
-  CUtil::GetRecursiveDirsListing(strPath,items);
+  GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    CUtil::AddSlashAtEnd(items[i]->m_strPath);
-    CDirectory::Remove(items[i]->m_strPath);
+    CStdString strDir = items[i]->m_strPath;
+    AddSlashAtEnd(strDir);
+    CDirectory::Remove(strDir);
   }
 
-  CStdString tmpPath = strPath;
-  AddSlashAtEnd(tmpPath);
-  CDirectory::Remove(tmpPath);
+  if (!HasSlashAtEnd(strPath))
+  {
+    CStdString tmpPath = strPath;
+    AddSlashAtEnd(tmpPath);
+    CDirectory::Remove(tmpPath);
+  }
 }
 
 void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath)
