@@ -938,11 +938,23 @@
             <height>300</height>
             <info>ListItem.Plot</info>
           </control>
+		
+		  <control type="image">
+			  <posy>380</posy>
+			  <align>center</align>
+			  <aspectratio>keep</aspectratio>
+			  <info>ListItem.StarRating</info>
+			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+		  </control>
 
-          <control type="group">
-            <posy>380</posy>
-            <include>StarRatingDetails</include>
-          </control>
+
+
+		  	<control type="group">
+				<description>Media Flags</description>
+				<posy>425</posy>
+				<include>PanelStreamFlags</include>
+			</control>
+		
         </control>
 
         <control type="group">
