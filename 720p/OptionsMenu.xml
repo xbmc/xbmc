@@ -27,7 +27,7 @@
         <width>64</width>
         <height>34</height>
         <texture>OMIndicRight.png</texture>
-        <visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | Control.IsVisible(53) | [[Control.IsVisible(54) | Control.IsVisible(57)] + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(51) + Window.IsVisible(MyPictures)]</visible>
+        <visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | Control.IsVisible(53) | [[Control.IsVisible(54) | Control.IsVisible(57)] + Window.IsActive(24)] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(51) + Window.IsVisible(MyPictures)]</visible>
         <include>OptionsMenuFade</include>
       </control>
     </control>
@@ -255,65 +255,65 @@
         <control type="image" id="9101">
           <description>Media Preview Thumb</description>
           <texture>ViewThumbMediaPreview.png</texture>
-          <visible>Control.IsVisible(51) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9101">
           <description>Media Preview selected</description>
           <label>$LOCALIZE[31707]</label>
-          <visible>Control.IsVisible(51) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
         <control type="image" id="9102">
           <description>Showcase Thumb</description>
           <texture>ViewThumbShowcase.png</texture>
-          <visible>Control.IsVisible(58) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(58) + Window.IsActive(24)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9102">
           <description>Showcase view button</description>
           <label>$LOCALIZE[31702]</label>
-          <visible>Control.IsVisible(58) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(58) + Window.IsActive(24)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
         <control type="image" id="9103">
           <description>TV Wide Thumb</description>
           <texture>ViewThumbTVWide.png</texture>
-          <visible>Control.IsVisible(57) + Container.Content(tvshows)</visible>
+          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(tvshows)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9103">
           <description>TV Wide view button</description>
           <label>$LOCALIZE[539]</label>
-          <visible>Control.IsVisible(57) + Container.Content(tvshows)</visible>
+          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(tvshows)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
         <control type="image" id="9104">
           <description>TV Seasons Thumb</description>
           <texture>ViewThumbSeasons.png</texture>
-          <visible>Control.IsVisible(57) + Container.Content(seasons)</visible>
+          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(seasons)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9104">
           <description>TV Seasons view button</description>
           <label>$LOCALIZE[31703]</label>
-          <visible>Control.IsVisible(57) + Container.Content(seasons)</visible>
+          <visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(seasons)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
         <control type="image" id="9105">
           <description>TV Episodes Thumb</description>
           <texture>ViewThumbEpisodes.png</texture>
-          <visible>Control.IsVisible(54)</visible>
+          <visible>Control.IsVisible(54) + Window.IsActive(24)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9105">
           <description>Episodes view button</description>
           <label>$LOCALIZE[20360]</label>
-          <visible>Control.IsVisible(54)</visible>
+          <visible>Control.IsVisible(54) + Window.IsActive(24)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
@@ -588,7 +588,7 @@
 <!--
         <control type="button" id="2000">
           <description>Library button</description>
-          <visible>Window.IsVisible(MyVideoFiles)</visible>
+          <visible>False</visible>
           <label>14022</label>
           <onclick>ReplaceWindow(MyVideoLibrary)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -607,7 +607,7 @@
 <!--
         <control type="button" id="2002">
           <description>Files button</description>
-          <visible>Window.IsVisible(MyVideoLibrary)</visible>
+          <visible>Window.IsActive(24)</visible>
           <label>744</label>
           <onclick>ReplaceWindow(MyVideoFiles)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -641,7 +641,7 @@
 
         <control type="button" id="8">
           <description>Search button</description>
-          <visible>Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyMusicLibrary)</visible>
+          <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
           <label>137</label>
           <include>OMButtonItem</include>
         </control>
@@ -649,7 +649,7 @@
         <!--
         <control type="button" id="9">
           <description>IMDb button</description>
-          <visible>Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)</visible>
+          <visible>False | Window.IsActive(24)</visible>
           <label>368</label>
           <include>OMButtonItem</include>
         </control>
@@ -677,13 +677,6 @@
           <include>OMButtonItem</include>
         </control>
 
-        <control type="radiobutton" id="7">
-          <description>Stacking</description>
-          <visible>Window.IsVisible(MyVideoFiles)</visible>
-          <label>346</label>
-          <include>OMButtonItem</include>
-        </control>
-          
         <control type="radiobutton" id="10">
           <description>Randomize button</description>
           <visible>Window.IsVisible(MyPictures)</visible>
@@ -693,21 +686,21 @@
 
         <control type="radiobutton" id="14">
           <description>Watched Toggle</description>
-          <visible>Window.IsVisible(MyVideoLibrary)</visible>
+          <visible>Window.IsActive(24)</visible>
           <label>20367</label>
           <include>OMButtonItem</include>
         </control>
 
         <control type="radiobutton" id="16">
           <description>PartyMode</description>
-          <visible>Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyMusicLibrary)</visible>
+          <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
           <label>589</label>
           <include>OMButtonItem</include>
         </control>
 <!--
         <control type="radiobutton" id="17">
           <description>Flatten</description>
-          <visible>Window.IsVisible(MyVideoLibrary)</visible>
+          <visible>Window.IsActive(24)</visible>
           <label>20411</label>
           <include>OMButtonItem</include>
         </control>
@@ -715,7 +708,7 @@
 <!--
         <control type="radiobutton" id="19">
           <description>Filter</description>
-          <visible>Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyMusicLibrary)</visible>
+          <visible>Window.IsActive(24) | Window.IsVisible(MyMusicLibrary)</visible>
           <label>587</label>
           <include>OMButtonItem</include>
         </control>
@@ -734,7 +727,7 @@
   				<label>$LOCALIZE[31670]</label>
           <onclick>Skin.ToggleSetting(ShowFanartOnTVList)</onclick>
           <selected>Skin.HasSetting(ShowFanartOnTVList)</selected>
-          <visible>Control.IsVisible(57) + [Window.IsVisible(MyVideoLibrary) + Container.Content(tvshows)]</visible>
+          <visible>Control.IsVisible(57) + [Window.IsActive(24) + Container.Content(tvshows)]</visible>
           <include>OMButtonItem</include>
         </control>
 
@@ -743,7 +736,7 @@
           <label>$LOCALIZE[31678]</label>
           <onclick>Skin.ToggleSetting(ShowSeasonThumbInEps)</onclick>
           <selected>Skin.HasSetting(ShowSeasonThumbInEps)</selected>
-          <visible>Control.IsVisible(54) + [Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(54) + [Window.IsActive(24)]</visible>
           <include>OMButtonItem</include>
         </control>
 
@@ -754,7 +747,7 @@
           <onclick>Skin.ToggleSetting(HideInfoInMediaPreview)</onclick>
           <onclick>Skin.Reset(ShowAnimMediaPreview)</onclick>
           <selected>Skin.HasSetting(HideInfoInMediaPreview)</selected>
-          <visible>Control.IsVisible(51) + [Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(51) + [Window.IsActive(24)]</visible>
           <include>OMButtonItem</include>
         </control>
 -->
