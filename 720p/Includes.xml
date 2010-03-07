@@ -2977,7 +2977,7 @@
   <constant name="TVFanartFadeTime">200</constant>
 
   <include name="TVWideVisible">
-    <visible>Window.IsVisible(MyVideoLibrary) + Control.IsVisible(57) + Container.Content(tvshows)</visible>
+    <visible>Control.IsVisible(57) + Container.Content(tvshows)</visible>
   </include>
 
   <constant name="TVShowsDetailsGap">30</constant>
@@ -3043,7 +3043,7 @@
   </include>
 
   <include name="TVSeasonsVisible">
-    <visible>Window.IsVisible(MyVideoLibrary) + Control.IsVisible(57) + Container.Content(seasons)</visible>
+    <visible>Control.IsVisible(57) + Container.Content(seasons)</visible>
   </include>
 
   <include name="TVSeasonsFadeInAnim">
@@ -3075,7 +3075,7 @@
   </include>
 
   <include name="TVEpisodesVisible">
-    <visible>[Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)] + Control.IsVisible(54)</visible>
+    <visible>Control.IsVisible(54)</visible>
   </include>
 
   <include name="WatchedUnwatchedOverlay">
@@ -3157,7 +3157,7 @@
 
   <!-- Movie Video views -->
   <include name="MediaPreviewVisible">
-    <visible>[Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)] + Control.IsVisible(51)</visible>
+    <visible>Control.IsVisible(51)</visible>
   </include>
 
 	<!-- Little baby thumbs at the bottom -->
@@ -3247,7 +3247,7 @@
   </include>
 
   <include name="ShowcaseVisible">
-    <visible>[Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)] + Control.IsVisible(58)</visible>
+    <visible>Control.IsVisible(58)</visible>
   </include>
 
   <include name="ShowcasePoster">

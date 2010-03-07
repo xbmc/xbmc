@@ -4,7 +4,7 @@
 
   <controls>
 
-    <include>Background</include>
+   <include>Background</include>
 
     <!-- -->
     <include>TV</include>

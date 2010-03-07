@@ -281,39 +281,39 @@
         <control type="image" id="9103">
           <description>TV Wide Thumb</description>
           <texture>ViewThumbTVWide.png</texture>
-          <visible>Control.IsVisible(57) + Window.IsVisible(MyVideoLibrary) + Container.Content(tvshows)</visible>
+          <visible>Control.IsVisible(57) + Container.Content(tvshows)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9103">
           <description>TV Wide view button</description>
           <label>$LOCALIZE[539]</label>
-          <visible>Control.IsVisible(57) + Window.IsVisible(MyVideoLibrary) + Container.Content(tvshows)</visible>
+          <visible>Control.IsVisible(57) + Container.Content(tvshows)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
         <control type="image" id="9104">
           <description>TV Seasons Thumb</description>
           <texture>ViewThumbSeasons.png</texture>
-          <visible>Control.IsVisible(57) + Window.IsVisible(MyVideoLibrary) + Container.Content(seasons)</visible>
+          <visible>Control.IsVisible(57) + Container.Content(seasons)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9104">
           <description>TV Seasons view button</description>
           <label>$LOCALIZE[31703]</label>
-          <visible>Control.IsVisible(57) + Window.IsVisible(MyVideoLibrary) + Container.Content(seasons)</visible>
+          <visible>Control.IsVisible(57) + Container.Content(seasons)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
         <control type="image" id="9105">
           <description>TV Episodes Thumb</description>
           <texture>ViewThumbEpisodes.png</texture>
-          <visible>Control.IsVisible(54) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(54)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9105">
           <description>Episodes view button</description>
           <label>$LOCALIZE[20360]</label>
-          <visible>Control.IsVisible(54) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]</visible>
+          <visible>Control.IsVisible(54)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
