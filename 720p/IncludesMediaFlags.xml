@@ -1,0 +1,39 @@
+<includes>
+	<include name="PanelStreamFlags">
+		<control type="image">
+			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
+			<posx>-40</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(contentRating)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>107</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(videoResolution)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>214</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(audioCodec)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>321</posx>
+			<posy>0</posy>
+			<height>43</height>
+			<info>Listitem.Property(movieStudio)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+	</include>
+</includes>
