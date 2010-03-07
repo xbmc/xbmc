@@ -76,6 +76,7 @@ HANDLE WINAPI CreateThread(
     h = NULL;
   }
   pthread_attr_destroy(&attr);
+
   if (h && lpThreadId)
     // WARNING: This can truncate thread IDs on x86_64.
     *lpThreadId = (DWORD)h->m_hThread;
@@ -213,39 +214,12 @@ BOOL WINAPI GetThreadTimes (
 
 BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority)
 {
-#if defined(__APPLE__)
-  struct sched_param sched;
-  int rtn, policy;
-
-  rtn = pthread_getschedparam(hThread->m_hThread, &policy, &sched);
-  int min = sched_get_priority_min(policy);
-  int max = sched_get_priority_max(policy);
-
-  if(nPriority < min)
-    sched.sched_priority = min;
-  if(nPriority > max)
-    sched.sched_priority = max;
-
-  rtn = pthread_setschedparam(hThread->m_hThread, policy, &sched);
-
   return true;
-#else
-  return true;
-#endif
 }
 
 int GetThreadPriority(HANDLE hThread)
 {
-#if defined(__APPLE__)
-  struct sched_param sched;
-  int rtn, policy;
-
-  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
-
-  return(sched.sched_priority);
-#else
   return 0;
-#endif
 }
 
 // thread local storage -

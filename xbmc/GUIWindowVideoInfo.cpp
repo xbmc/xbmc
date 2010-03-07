@@ -488,58 +488,54 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 /// \param items Items Found
 void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 {
-  VECMOVIES movies;
   CVideoDatabase db;
   if (!db.Open())
     return;
 
+  CFileItemList movies;
   db.GetMoviesByActor(strSearch, movies);
-  for (int i = 0; i < (int)movies.size(); ++i)
+  for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString strItem;
-    if (movies[i].m_iYear > 0)
-      strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
-    else
-      strItem.Format("[%s] %s", g_localizeStrings.Get(20338), movies[i].m_strTitle);  // Movie
-
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath = movies[i].m_strFileNameAndPath;
-    items.Add(pItem);
+    CStdString label;
+    label.Format("[%s] %s", g_localizeStrings.Get(20338), movies[i]->GetVideoInfoTag()->m_strTitle);
+    if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
+      label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
   }
-  movies.clear();
+
+  movies.Clear();
   db.GetTvShowsByActor(strSearch, movies);
-  for (int i = 0; i < (int)movies.size(); ++i)
+  for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString strItem;
-    strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath.Format("videodb://2/2/%i/",movies[i].m_iDbId);
-    items.Add(pItem);
-  }
-  movies.clear();
-  db.GetEpisodesByActor(strSearch, movies);
-  for (int i = 0; i < (int)movies.size(); ++i)
-  {
-    CStdString strItem;
-    strItem.Format("[%s] %s", g_localizeStrings.Get(20359), movies[i].m_strTitle);  // Movie
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath = movies[i].m_strFileNameAndPath;
-    items.Add(pItem);
+    CStdString label;
+    label.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i]->GetVideoInfoTag()->m_strShowTitle);
+    if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
+      label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
   }
 
-  CFileItemList mvids;
-  db.GetMusicVideosByArtist(strSearch, mvids);
-  for (int i = 0; i < (int)mvids.Size(); ++i)
+  movies.Clear();
+  db.GetEpisodesByActor(strSearch, movies);
+  for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString strItem;
-    strItem.Format("[%s] %s", g_localizeStrings.Get(20391), mvids[i]->GetVideoInfoTag()->m_strTitle);  // Movie
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = *mvids[i]->GetVideoInfoTag();
-    pItem->m_strPath = mvids[i]->GetVideoInfoTag()->m_strFileNameAndPath;
-    items.Add(pItem);
+    CStdString label;
+    label.Format("[%s] %s (%s)", g_localizeStrings.Get(20359), movies[i]->GetVideoInfoTag()->m_strTitle, movies[i]->GetVideoInfoTag()->m_strShowTitle);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
+  }
+
+  movies.Clear();
+  db.GetMusicVideosByArtist(strSearch, movies);
+  for (int i = 0; i < movies.Size(); ++i)
+  {
+    CStdString label;
+    label.Format("[%s] %s - %s", g_localizeStrings.Get(20391), movies[i]->GetVideoInfoTag()->m_strArtist, movies[i]->GetVideoInfoTag()->m_strTitle);
+    if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
+      label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
   }
   db.Close();
 }
@@ -757,7 +753,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   CStdString strPath;
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
   CUtil::WipeDir(strPath);
-  DIRECTORY::CDirectory::Create(strPath);
+  XFILE::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;
@@ -859,9 +855,11 @@ void CGUIWindowVideoInfo::PlayTrailer()
   CFileItem item;
   item.m_strPath = m_movieItem->GetVideoInfoTag()->m_strTrailer;
   *item.GetVideoInfoTag() = *m_movieItem->GetVideoInfoTag();
+  item.GetVideoInfoTag()->m_streamDetails.Reset();
   item.GetVideoInfoTag()->m_strTitle.Format("%s (%s)",m_movieItem->GetVideoInfoTag()->m_strTitle.c_str(),g_localizeStrings.Get(20410));
   item.SetThumbnailImage(m_movieItem->GetThumbnailImage());
   item.GetVideoInfoTag()->m_iDbId = -1;
+  item.GetVideoInfoTag()->m_iFileId = -1;
 
   // Close the dialog.
   Close(true);

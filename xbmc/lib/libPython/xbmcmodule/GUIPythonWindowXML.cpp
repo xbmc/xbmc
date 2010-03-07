@@ -189,11 +189,8 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
           }
           else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
           {
-            CAction action;
-            action.actionId = ACTION_CONTEXT_MENU;
-
             PyXBMCAction* inf = new PyXBMCAction;
-            inf->pObject = Action_FromAction(action);
+            inf->pObject = Action_FromAction(CAction(ACTION_CONTEXT_MENU));
             inf->pCallbackWindow = pCallbackWindow;
 
             // aquire lock?

@@ -8,7 +8,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	CXXFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
 
-SRCS=ScreenSaver.cpp ScreenSaverFactory.cpp
+SRCS=ScreenSaver.cpp
 LIB=screensaver.a
 
 include ../../Makefile.include

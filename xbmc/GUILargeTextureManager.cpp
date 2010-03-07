@@ -67,7 +67,7 @@ bool CImageLoader::DoWork()
       if (baseFolder1.Equals(m_path.Left(baseFolder1.GetLength())) ||
           baseFolder2.Equals(m_path.Left(baseFolder2.GetLength())))
       { // switch to dds
-        CUtil::ReplaceExtension(m_path, ".dds", loadPath);
+        loadPath = CUtil::ReplaceExtension(m_path, ".dds");
       }
     }
     m_texture = new CTexture();
@@ -77,7 +77,7 @@ bool CImageLoader::DoWork()
       delete m_texture;
       m_texture = NULL;
     }
-    else
+    else if (CTimeUtils::GetTimeMS() - start > 100)
       CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, m_path.c_str());
   }
 

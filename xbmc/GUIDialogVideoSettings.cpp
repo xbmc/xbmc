@@ -36,10 +36,6 @@
 
 using namespace std;
 
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
 {
@@ -66,6 +62,8 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 #define VIDEO_SETTING_VDPAU_NOISE         19
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
+
+#define VIDEO_SETTINGS_NONLIN_STRETCH     21
 
 #define VIDEO_SETTING_BOBLIGHT_VALUE      30
 #define VIDEO_SETTING_BOBLIGHT_VALUEMIN   31
@@ -147,33 +145,32 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.SupportsBrightness())
+  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_settings.m_currentVideoSettings.m_Brightness, 0, 1, 100, FormatInteger);
-  if (g_renderManager.SupportsContrast())
+  if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_settings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
-  if (g_renderManager.SupportsGamma())
+  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
-#ifdef HAVE_LIBVDPAU
-  CSharedLock lock(g_renderManager.GetSection());
-  if (g_VDPAU) {
+  if (g_renderManager.Supports(RENDERFEATURE_NOISE))
     AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_settings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_settings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f, FormatFloat);
-  }
-#endif
+  if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
+    AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &g_settings.m_currentVideoSettings.m_NonLinStretch);
 #endif
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
 
   AddSeparator(9);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUE, 23075, &g_settings.m_currentVideoSettings.m_BoblightValue, 0.0, 0.1, 20.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMIN, 23076, &g_settings.m_currentVideoSettings.m_BoblightValueMin, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMAX, 23077, &g_settings.m_currentVideoSettings.m_BoblightValueMax, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SATURATION, 23078, &g_settings.m_currentVideoSettings.m_BoblightSaturation, 0.0, 0.1, 20.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMIN, 23079, &g_settings.m_currentVideoSettings.m_BoblightSaturationMin, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMAX, 23080, &g_settings.m_currentVideoSettings.m_BoblightSaturationMax, 0.0, 0.01, 1.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_SPEED, 23081, &g_settings.m_currentVideoSettings.m_BoblightSpeed, 0.0, 1.0, 100.0, FormatFloat);
-  AddSlider(VIDEO_SETTING_BOBLIGHT_AUTOSPEED, 23082, &g_settings.m_currentVideoSettings.m_BoblightAutoSpeed, 0.0, 0.25, 100.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUE, 23055, &g_settings.m_currentVideoSettings.m_BoblightValue, 0.0, 0.1, 20.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMIN, 23056, &g_settings.m_currentVideoSettings.m_BoblightValueMin, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUEMAX, 23057, &g_settings.m_currentVideoSettings.m_BoblightValueMax, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATURATION, 23058, &g_settings.m_currentVideoSettings.m_BoblightSaturation, 0.0, 0.1, 20.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMIN, 23059, &g_settings.m_currentVideoSettings.m_BoblightSaturationMin, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATMAX, 23060, &g_settings.m_currentVideoSettings.m_BoblightSaturationMax, 0.0, 0.01, 1.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SPEED, 23061, &g_settings.m_currentVideoSettings.m_BoblightSpeed, 0.0, 1.0, 100.0, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_AUTOSPEED, 23062, &g_settings.m_currentVideoSettings.m_BoblightAutoSpeed, 0.0, 0.25, 100.0, FormatFloat);
 }
 
 void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
@@ -191,8 +188,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
     UpdateSetting(VIDEO_SETTINGS_ZOOM);
     UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
+    UpdateSetting(VIDEO_SETTINGS_NONLIN_STRETCH);
   }
-  else if (setting.id == VIDEO_SETTINGS_ZOOM || setting.id == VIDEO_SETTINGS_PIXEL_RATIO)
+  else if (setting.id == VIDEO_SETTINGS_ZOOM || setting.id == VIDEO_SETTINGS_PIXEL_RATIO
+        || setting.id == VIDEO_SETTINGS_NONLIN_STRETCH)
   {
     g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);

@@ -48,7 +48,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 
 #define CONTROL_BTNSLIDESHOW   6
@@ -542,8 +541,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
   if (pItem->IsCBR() || pItem->IsCBZ())
   {
-    CStdString strTBN;
-    CUtil::ReplaceExtension(pItem->m_strPath,".tbn",strTBN);
+    CStdString strTBN(CUtil::ReplaceExtension(pItem->m_strPath,".tbn"));
     if (CFile::Exists(strTBN))
     {
       if (CPicture::CreateThumbnail(strTBN, pItem->GetCachedPictureThumb(),true))

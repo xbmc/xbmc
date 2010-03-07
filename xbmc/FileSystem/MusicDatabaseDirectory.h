@@ -24,7 +24,7 @@
 #include "MusicDatabaseDirectory/DirectoryNode.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
   class CMusicDatabaseDirectory : public IDirectory
   {

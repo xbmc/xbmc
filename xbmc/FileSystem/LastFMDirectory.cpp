@@ -36,7 +36,7 @@
 #include "utils/log.h"
 
 using namespace MUSIC_INFO;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 #define AUDIOSCROBBLER_BASE_URL      "http://ws.audioscrobbler.com/1.0/"
 
@@ -253,29 +253,41 @@ bool CLastFMDirectory::ParseAlbumList(CStdString url, CFileItemList &items)
 
   while(pEntry)
   {
-    TiXmlNode* name = pEntry->FirstChild("name");
-    TiXmlNode* artist = pEntry->FirstChild("artist");
+    const char *artist = pRootElement->Attribute("artist");
+    const char *name = NULL;
+    const char *count = NULL;
 
-    TiXmlNode* count;
-    count = pEntry->FirstChild("count");
-    if (!count) count = pEntry->FirstChild("playcount");
-
-    if (name)
-    {
-      AddListEntry(name->FirstChild()->Value(), artist->FirstChild()->Value(), count->FirstChild()->Value(),
-          NULL, NULL, "lastfm://xbmc/artist/" + (CStdString)artist->FirstChild()->Value() + "/", items);
-    }
+    if (pEntry->Attribute("name"))
+      name = pEntry->Attribute("name");
     else
     {
-      // no luck, try another way :)
-      const char *name = pEntry->Attribute("name");
-      const char *artist = pEntry->FirstChildElement("artist")->Attribute("name");
-      const char *count = pEntry->Attribute("count");
-
-      if (name)
-        AddListEntry(name, artist, count, NULL, NULL,
-            "lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
+      TiXmlNode* nameNode = pEntry->FirstChild("name");
+      if (nameNode && nameNode->FirstChild())
+        name = nameNode->FirstChild()->Value();
     }
+
+    TiXmlElement* artistElement = pEntry->FirstChildElement("artist");
+    if (artistElement && artistElement->Attribute("name"))
+      artist = artistElement->Attribute("name");
+    else
+    {
+      if (artistElement && artistElement->FirstChild())
+        artist = artistElement->FirstChild()->Value();
+    }
+
+    if (pEntry->Attribute("count"))
+      count = pEntry->Attribute("count");
+    else
+    {
+      TiXmlNode* countNode = pEntry->FirstChild("count");
+      if (!countNode) countNode = pEntry->FirstChild("playcount");
+      if (!countNode) countNode = pEntry->FirstChild("reach");
+      if (countNode)
+        count = countNode->FirstChild()->Value();
+    }
+
+    AddListEntry(name, artist, count, NULL, NULL,
+        "lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
 
     pEntry = pEntry->NextSiblingElement("album");
   }

@@ -32,7 +32,7 @@ public:
   virtual ~CGUIDialogNumeric(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
 
   bool IsConfirmed() const;
   bool IsCanceled() const;

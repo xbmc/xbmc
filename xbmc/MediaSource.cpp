@@ -26,7 +26,7 @@
 #include "FileSystem/MultiPathDirectory.h"
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 bool CMediaSource::IsWritable() const
 {
@@ -89,6 +89,25 @@ bool CMediaSource::operator==(const CMediaSource &share) const
   if (strName != share.strName)
     return false;
   return true;
+}
+
+void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras)
+{
+  unsigned int i;
+  for( i=0;i<extras.size();++i )
+  {
+    unsigned int j;
+    for ( j=0;j<sources.size();++j)
+    {
+      if (sources[j].strPath.Equals(extras[i].strPath))
+      {
+        sources[j] = extras[i];
+        break;
+      }
+    }
+    if (j == sources.size())
+      sources.push_back(extras[i]);
+  }
 }
 
 void AddOrReplace(VECSOURCES& sources, const CMediaSource& source)

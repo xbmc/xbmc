@@ -31,9 +31,6 @@
 #include "lib/libPython/XBPython.h"
 #endif
 #include "GUIWindowSlideShow.h"
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#endif
 #include "utils/Builtins.h"
 #include "utils/Network.h"
 #include "utils/log.h"
@@ -57,6 +54,10 @@
 #include "SingleLock.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowDialog.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowXMLDialog.h"
+
+#ifdef HAS_HTTPAPI
+#include "lib/libhttpapi/XBMChttp.h"
+#endif
 
 using namespace std;
 
@@ -421,7 +422,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_HTTPAPI:
     {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
       if (!m_pXbmcHttp)
       {
         CSectionLoader::Load("LIBHTTP");
@@ -544,14 +545,6 @@ case TMSG_POWERDOWN:
             ((CGUIPythonWindowDialog *)pMsg->lpVoid)->Show_Internal(pMsg->dwParam2 > 0);
         }
       }
-      break;
-
-    case TMSG_GUI_WIN_MANAGER_PROCESS:
-      g_windowManager.Process_Internal(0 != pMsg->dwParam1);
-      break;
-
-    case TMSG_GUI_WIN_MANAGER_RENDER:
-      g_windowManager.Render_Internal();
       break;
 
     case TMSG_GUI_ACTION:
@@ -858,19 +851,6 @@ void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
   tMsg.params = params;
-  SendMessage(tMsg, true);
-}
-
-void CApplicationMessenger::WindowManagerProcess(bool renderOnly)
-{
-  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_PROCESS};
-  tMsg.dwParam1 = (DWORD)renderOnly;
-  SendMessage(tMsg, true);
-}
-
-void CApplicationMessenger::Render()
-{
-  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_RENDER};
   SendMessage(tMsg, true);
 }
 

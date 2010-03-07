@@ -30,9 +30,8 @@
 #include "DVDClock.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "AdvancedSettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
-
-CVDPAU*          g_VDPAU=NULL;
 
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
@@ -109,6 +108,8 @@ CVDPAU::CVDPAU()
     outputSurfaces[i] = VDP_INVALID_HANDLE;
 
   videoMixer = VDP_INVALID_HANDLE;
+
+  upScale = g_advancedSettings.m_videoVDPAUScaling;
 }
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
@@ -158,9 +159,6 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
     avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
     avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-
-    /* hack for now, we need this in renderer */
-    g_VDPAU = this;
     return true;
   }
   return false;
@@ -174,9 +172,14 @@ CVDPAU::~CVDPAU()
 void CVDPAU::Close()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+
+  FiniVDPAUOutput();
+  FiniVDPAUProcs();
+
   if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     glXDestroyPixmap(m_Display, m_glPixmap);
     m_glPixmap = NULL;
   }
@@ -186,9 +189,6 @@ void CVDPAU::Close()
     XFreePixmap(m_Display, m_Pixmap);
     m_Pixmap = NULL;
   }
-
-  FiniVDPAUOutput();
-  FiniVDPAUProcs();
 
   if (m_glContext)
   {
@@ -201,8 +201,6 @@ void CVDPAU::Close()
     dlclose(dl_handle);
     dl_handle = NULL;
   }
-
-  g_VDPAU = NULL;
 }
 
 bool CVDPAU::MakePixmapGL()
@@ -284,8 +282,27 @@ bool CVDPAU::MakePixmapGL()
 
 bool CVDPAU::MakePixmap(int width, int height)
 {
-  OutWidth = g_graphicsContext.GetWidth();
-  OutHeight = g_graphicsContext.GetHeight();
+  //pick the smallest dimensions, so we downscale with vdpau and upscale with opengl when appropriate
+  //this requires the least amount of gpu memory bandwidth
+  if (g_graphicsContext.GetWidth() < width || g_graphicsContext.GetHeight() < height || upScale)
+  {
+    //scale width to desktop size if the aspect ratio is the same or bigger than the desktop
+    if (height * g_graphicsContext.GetWidth() / width <= g_graphicsContext.GetHeight())
+    {
+      OutWidth = g_graphicsContext.GetWidth();
+      OutHeight = height * g_graphicsContext.GetWidth() / width;
+    }
+    else //scale height to the desktop size if the aspect ratio is smaller than the desktop
+    {
+      OutHeight = g_graphicsContext.GetHeight();
+      OutWidth = width * g_graphicsContext.GetHeight() / height;
+    }
+  }
+  else
+  { //let opengl scale
+    OutWidth = width;
+    OutHeight = height;
+  }
 
   CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
 
@@ -545,7 +562,7 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1) || !upScale)
     return;
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
@@ -1205,11 +1222,13 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
 {
   picture->format = DVDVideoPicture::FMT_VDPAU;
   picture->iFlags = 0;
+  picture->iWidth = OutWidth;
+  picture->iHeight = OutHeight;
+  picture->vdpau = this;
 
   if(m_mixerstep)
   {
     picture->iRepeatPicture = -0.5;
-    picture->iFlags |= DVP_FLAG_NOAUTOSYNC;
     if(m_mixerstep > 1)
       picture->pts = DVD_NOPTS_VALUE;
   }

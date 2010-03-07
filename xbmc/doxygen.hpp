@@ -60,7 +60,7 @@
 	\section links Links
 	Related links
 	XBMC - http://xbmc.org \n
-	XBMC Forum - http://xbmc.org/forum/index.php \n
+	XBMC Forum - http://forum.xbmc.org/index.php \n
   */
 
 

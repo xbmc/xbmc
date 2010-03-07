@@ -23,7 +23,7 @@
 #include "IDirectory.h"
 #include "MediaSource.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 
   /*!

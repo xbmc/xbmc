@@ -73,6 +73,8 @@
 
 class CBaseTexture;
 
+namespace DXVA { class CProcessor; }
+
 struct DRAWRECT
 {
   float left;
@@ -115,16 +117,14 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
+  virtual void         AddProcessor(DXVA::CProcessor* processor, int64_t id);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
 
-  // TODO:DIRECTX - implement these
-  virtual bool         SupportsBrightness() { return true; }
-  virtual bool         SupportsContrast() { return true; }
-  virtual bool         SupportsGamma() { return false; }
+  virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
@@ -146,14 +146,13 @@ protected:
 
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(CD3DEffect &effect, DWORD flags);
+  void RenderProcessor(DWORD flags);
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
 
   bool m_bConfigured;
 
-  typedef CD3DTexture             YUVVIDEOPLANES[MAX_PLANES];
   typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
-  typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
   typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
 
   #define PLANE_Y 0
@@ -165,11 +164,35 @@ protected:
   #define FIELD_EVEN 2
 
   // YV12 decoder textures
-  // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  // Since DX is single threaded, we will render all video into system memory
-  // We will them copy in into the device when rendering from main thread
-  YUVVIDEOBUFFERS m_YUVVideoTexture;
-  YUVMEMORYBUFFERS m_YUVMemoryTexture;
+  struct SVideoPlane
+  {
+    CD3DTexture    texture;
+    D3DLOCKED_RECT rect;
+  };
+
+  struct SVideoBuffer
+  {
+    SVideoBuffer()
+    {
+      proc = NULL;
+      id   = 0;
+    }
+   ~SVideoBuffer()
+    {
+      Clear();
+    }
+
+    void StartDecode();
+    void StartRender();
+
+    void Clear();
+
+    DXVA::CProcessor* proc;
+    int64_t           id;
+    SVideoPlane       planes[MAX_PLANES];
+  };
+
+  SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
 
   CD3DTexture m_HQKernelTexture;
   CD3DEffect  m_YUV2RGBEffect;

@@ -108,7 +108,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   CreateMutex(NULL, FALSE, "XBMC Media Center");
   if(GetLastError() == ERROR_ALREADY_EXISTS)
   {
-    HWND m_hwnd = FindWindow("SDL_app","XBMC Media Center");
+    HWND m_hwnd = FindWindow("XBMC","XBMC");
     if(m_hwnd != NULL)
     {
       // switch to the running instance

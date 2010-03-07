@@ -43,7 +43,6 @@ public:
   virtual ~CGUIWindowFileManager(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
   virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed);
   const CFileItem &CurrentDirectory(int indx) const;
 
@@ -94,7 +93,7 @@ protected:
   CStdString strCheckSharePath;
 
 
-  DIRECTORY::CVirtualDirectory m_rootDir;
+  XFILE::CVirtualDirectory m_rootDir;
   CFileItemList* m_vecItems[2];
   typedef std::vector <CFileItem*> ::iterator ivecItems;
   CFileItem* m_Directory[2];

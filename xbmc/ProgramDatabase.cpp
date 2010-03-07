@@ -29,15 +29,9 @@
 
 using namespace XFILE;
 
-#define PROGRAM_DATABASE_OLD_VERSION 0.9f
-#define PROGRAM_DATABASE_VERSION 3
-
 //********************************************************************************************************************************
 CProgramDatabase::CProgramDatabase(void)
 {
-  m_preV2version=PROGRAM_DATABASE_OLD_VERSION;
-  m_version=PROGRAM_DATABASE_VERSION;
-  m_strDatabaseFile=PROGRAM_DATABASE_NAME;
 }
 
 //********************************************************************************************************************************
@@ -47,6 +41,11 @@ CProgramDatabase::~CProgramDatabase(void)
 }
 
 //********************************************************************************************************************************
+bool CProgramDatabase::Open()
+{
+  return CDatabase::Open();
+}
+
 bool CProgramDatabase::CreateTables()
 {
 

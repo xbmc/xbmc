@@ -33,13 +33,27 @@
 #include "GUISettings.h"
 #include "SystemInfo.h"
 
-XBMCHelper g_xbmcHelper;
+#include "Atomics.h"
+
+static long sg_singleton_lock_variable = 0;
+XBMCHelper* XBMCHelper::smp_instance = 0;
 
 #define XBMC_HELPER_PROGRAM "XBMCHelper"
 #define SOFA_CONTROL_PROGRAM "Sofa Control"
 #define XBMC_LAUNCH_PLIST "org.xbmc.helper.plist"
 
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
+
+XBMCHelper&
+XBMCHelper::GetInstance()
+{
+  CAtomicSpinLock lock(sg_singleton_lock_variable);
+  if( ! smp_instance )
+  {
+    smp_instance = new XBMCHelper();
+  }
+  return *smp_instance;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 XBMCHelper::XBMCHelper()

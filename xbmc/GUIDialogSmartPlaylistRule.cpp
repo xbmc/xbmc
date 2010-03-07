@@ -51,7 +51,7 @@ CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule()
 
 bool CGUIDialogSmartPlaylistRule::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }
@@ -178,7 +178,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CStdString path = "special://videoplaylists/";
     if (m_type.Equals("songs") || m_type.Equals("albums"))
       path = "special://musicplaylists/";
-    DIRECTORY::CDirectory::GetDirectory(path, items, ".xsp");
+    XFILE::CDirectory::GetDirectory(path, items, ".xsp");
     iLabel = 559;
   }
   else

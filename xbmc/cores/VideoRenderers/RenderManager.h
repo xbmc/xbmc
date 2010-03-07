@@ -34,6 +34,9 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+namespace DXVA { class CProcessor; }
+class CVDPAU;
+
 class CXBMCRenderManager
 {
 public:
@@ -82,6 +85,24 @@ public:
   unsigned int PreInit();
   void UnInit();
 
+#ifdef HAS_DX
+  void AddProcessor(DXVA::CProcessor* processor, int64_t id)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(processor, id);
+  }
+#endif
+
+#ifdef HAVE_LIBVDPAU
+  void AddProcessor(CVDPAU* vdpau)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(vdpau);
+  }
+#endif
+
   void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);
@@ -112,9 +133,15 @@ public:
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
-  bool SupportsBrightness();
-  bool SupportsContrast();
-  bool SupportsGamma();
+
+  bool Supports(ERENDERFEATURE feature)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(feature);
+    else
+      return false;
+  }
 
   bool Supports(EINTERLACEMETHOD method)
   {

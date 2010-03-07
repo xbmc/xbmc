@@ -20,7 +20,6 @@
  */
 
 #include "system.h"
-#include "XBAudioConfig.h"
 #include "CodecFactory.h"
 #include "MP3codec.h"
 #include "CDDAcodec.h"

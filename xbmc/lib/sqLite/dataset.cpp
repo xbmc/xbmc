@@ -506,7 +506,7 @@ DbErrors::DbErrors(const char *msg, ...) {
   vsnprintf(buf, DB_BUFF_MAX-1, msg, vl);
 #endif
   va_end(vl);
-  msg_ =   "SQLite: ";
+  msg_ =   "SQL: ";
   msg_ += buf;
 
   CLog::Log(LOGERROR, "%s", msg_.c_str());

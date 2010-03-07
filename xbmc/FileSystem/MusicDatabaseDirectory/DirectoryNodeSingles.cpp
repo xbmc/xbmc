@@ -23,7 +23,7 @@
 #include "QueryParams.h"
 #include "MusicDatabase.h"
 
-using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
+using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeSingles::CDirectoryNodeSingles(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_SINGLES, strName, pParent)

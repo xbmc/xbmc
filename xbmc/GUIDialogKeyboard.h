@@ -32,7 +32,7 @@ public:
   CGUIDialogKeyboard(void);
   virtual ~CGUIDialogKeyboard(void);
 
-  virtual void Render();
+  virtual void FrameMove();
   void SetHeading(const CStdString& strHeading) {m_strHeading = strHeading;} ;
   void SetText(const CStdString& aTextString);
   CStdString GetText() const;

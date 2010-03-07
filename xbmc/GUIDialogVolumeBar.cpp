@@ -36,7 +36,7 @@ CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void)
 
 bool CGUIDialogVolumeBar::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_VOLUME_UP || action.actionId == ACTION_VOLUME_DOWN)
+  if (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN)
   { // reset the timer, as we've changed the volume level
     ResetTimer();
     return true;

@@ -30,6 +30,7 @@
  */
 
 #include "GUIControl.h"
+#include "GUILabel.h"
 
 typedef uint32_t character_t;
 typedef uint32_t color_t;

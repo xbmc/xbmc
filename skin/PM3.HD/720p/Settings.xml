@@ -115,18 +115,18 @@
 					<posx>720</posx>
 					<posy>0</posy>
 					<control type="button" id="5">
-						<description>Profiles push button</description>
+						<description>Addons push button</description>
 						<posx>0</posx>
 						<posy>0</posy>
 						<height>250</height>
 						<width>235</width>
-						<label>[B]$LOCALIZE[13200][/B]</label>
+						<label>[B]$LOCALIZE[24001][/B]</label>
 						<align>center</align>
 						<aligny>-</aligny>
 						<textcolor>grey2</textcolor>
 						<focusedcolor>white</focusedcolor>
 						<font>font22</font>
-						<onclick>ActivateWindow(Profiles)</onclick>
+						<onclick>ActivateWindow(AddonBrowser)</onclick>
 						<texturefocus border="5">button-focus.png</texturefocus>
 						<texturenofocus>-</texturenofocus>
 						<textoffsetx>0</textoffsetx>
@@ -142,7 +142,7 @@
 						<width>215</width>
 						<height>200</height>
 						<aspectratio>keep</aspectratio>
-						<texture>unknown-user.png</texture>
+						<texture>icon_addons.png</texture>
 					</control>
 				</control>
 				<control type="group">
@@ -299,18 +299,30 @@
 					<onleft>5</onleft>
 					<onright>2</onright>
 					<onup>611</onup>
+					<ondown>23</ondown>
+				</control>
+				<control type="button" id="23">
+					<description>Profiles push button</description>
+					<posx>0</posx>
+					<posy>45</posy>
+					<include>ButtonCommonValues</include>
+					<label>13200</label>
+					<onclick>ActivateWindow(Profiles)</onclick>
+					<onleft>5</onleft>
+					<onright>2</onright>
+					<onup>20</onup>
 					<ondown>21</ondown>
 				</control>
 				<control type="button" id="21">
 					<description>Skin Settings button</description>
 					<posx>0</posx>
-					<posy>45</posy>
+					<posy>90</posy>
 					<include>ButtonCommonValues</include>
 					<label>20077</label>
 					<onclick>ActivateWindow(1111)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
-					<onup>20</onup>
+					<onup>23</onup>
 					<ondown>22</ondown>
 					<pulseonselect>no</pulseonselect>
 					<visible>true</visible>
@@ -318,7 +330,7 @@
 				<control type="button" id="22">
 					<description>About XBMC button</description>
 					<posx>0</posx>
-					<posy>90</posy>
+					<posy>135</posy>
 					<include>ButtonCommonValues</include>
 					<label>482</label>
 					<onclick>ActivateWindow(1112)</onclick>
@@ -335,7 +347,7 @@
 				</control>
 				<control type="group">
 					<posx>0</posx>
-					<posy>135</posy>
+					<posy>180</posy>
 					<include>CommonNowPlaying_Controls</include>
 				</control>
 				<control type="button" id="611">

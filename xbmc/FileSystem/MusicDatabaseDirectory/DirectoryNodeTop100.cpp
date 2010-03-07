@@ -24,7 +24,7 @@
 #include "LocalizeStrings.h"
 
 using namespace std;
-using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
+using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_TOP100, strName, pParent)

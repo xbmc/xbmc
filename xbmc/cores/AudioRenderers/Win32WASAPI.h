@@ -29,6 +29,7 @@
 
 #include "IAudioRenderer.h"
 #include "utils/CriticalSection.h"
+#include "utils/PCMAmplifier.h"
 #include <mmdeviceapi.h>
 #include <Audioclient.h>
 
@@ -46,7 +47,7 @@ public:
   virtual float GetDelay();
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
   virtual unsigned int GetSpace();
@@ -68,7 +69,7 @@ private:
   void AddDataToBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut);
   void UpdateCacheStatus();
   void CheckPlayStatus();
-  void BuildChannelMapping(int channels, int8_t* map);
+  void BuildChannelMapping(int channels, enum PCMChannels* map);
 
   IMMDevice* m_pDevice;
   IAudioClient* m_pAudioClient;
@@ -80,13 +81,15 @@ private:
   float m_fVolAdjustFactor;
 
   unsigned int m_uiChunkSize;
+  unsigned int m_uiSrcChunkSize;
   unsigned int m_uiBufferLen;
   unsigned int m_uiBytesPerFrame;
+  unsigned int m_uiBytesPerSrcFrame;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
   unsigned int m_uiAvgBytesPerSec;
   unsigned int m_uiSpeakerMask;
-  int8_t       m_SpeakerOrder[8];
+  enum PCMChannels m_SpeakerOrder[8];
 
   static bool m_bIsAllocated;
   bool m_bPlaying;
@@ -98,6 +101,7 @@ private:
   unsigned int m_LastCacheCheck;
   size_t m_PreCacheSize;
 
+  CPCMAmplifier m_pcmAmplifier;
   CCriticalSection m_critSection;
 };
 

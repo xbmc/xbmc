@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 9.11, http://xbmc.org/trac/)
+AC_INIT("xbmc", 9.11, http://trac.xbmc.org)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
@@ -45,6 +45,7 @@ vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
 vdpau_disabled="== VDPAU support manually disabled. =="
 crystalhd_not_found="== Could not find libldil. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
+ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -70,10 +71,16 @@ case $host in
        ;;
     i386-apple-darwin*)
        ARCH="x86-osx"
+       # define i386 or x86_64, cannot use $HOSTTYPE as it reports x86_64 on 10.6 regardless of kernel flavor
+       ARCHTYPE=`uname -m`
+       AC_SUBST([ARCHTYPE])
        AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
        ;;
     powerpc-apple-darwin*)
        ARCH="powerpc-osx"
+       # define ppc
+       ARCHTYPE=`arch`
+       AC_SUBST([ARCHTYPE])
        AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
        ;;
     powerpc-*-linux-gnu*)
@@ -188,6 +195,11 @@ AC_ARG_ENABLE([asap-codec],
                 [enable ASAP ADPCM support])],
               [use_asap=$enableval],
               [use_asap=no])
+AC_ARG_ENABLE([webserver],
+              [AS_HELP_STRING([--disable-webserver],
+                [disable webserver])],
+              [use_webserver=$enableval],
+              [use_webserver=yes])
 AC_ARG_ENABLE([libdts],
               [AS_HELP_STRING([--enable-libdts],
                 [enable deprecated libdts support])],
@@ -306,6 +318,16 @@ else
   AC_CHECK_LIB([SDL_gfx], [main])
 fi
 
+if test "$host_vendor" != "apple" ; then
+  if test "$use_webserver" = "yes"; then
+    AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
+  fi
+else
+  if test "$use_webserver" = "yes"; then
+    AC_DEFINE([HAVE_LIBMICROHTTPD], [1],)
+  fi
+fi
+
 
 # platform independent libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
@@ -325,6 +347,7 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([wavpack],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 PKG_CHECK_MODULES([MAD],        [mad],
                   [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))
@@ -388,6 +411,7 @@ else
   fi
   # don't combine with mysqlclient check in apple section above, Linux needs
   # paths from mysql_config
+  AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
@@ -899,7 +923,7 @@ if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(echo -n `git svn info 2>/dev/null | grep ^Revision | cut -d' ' -f2`)
+      SVN_REV=$(echo -n `sh gitrev.sh`)
     fi
   fi
   if test "$SVN_REV" = ""; then
@@ -936,6 +960,12 @@ if test "$use_asap" = "yes"; then
 else
   USE_ASAP_CODEC=0
   final_message="$final_message\n  ASAP Codec:\tNo"
+fi
+
+if test "$use_webserver" = "yes"; then
+  final_message="$final_message\n  Webserver:\tYes"
+else
+  final_message="$final_message\n  Webserver:\tNo"
 fi
 
 if test "$use_libdts" = "yes"; then
@@ -1022,7 +1052,9 @@ OUTPUT_FILES="Makefile \
              xbmc/lib/libexif/Makefile \
              xbmc/lib/libXDAAP/Makefile \
              xbmc/lib/libhdhomerun/Makefile \
-             xbmc/lib/libGoAhead/Makefile \
+             xbmc/lib/libhttpapi/Makefile \
+             lib/jsoncpp/jsoncpp/src/lib_json/Makefile \
+             xbmc/lib/libjsonrpc/Makefile \
              xbmc/lib/libshout/Makefile \
              xbmc/lib/libsquish/Makefile \
              xbmc/lib/libid3tag/Makefile \
@@ -1159,6 +1191,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --enable-muxer=spdif \
+      --enable-muxer=adts \
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
@@ -1188,6 +1221,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --enable-muxer=spdif \
+      --enable-muxer=adts \
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
@@ -1255,9 +1289,12 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
-      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --enable-static \
       --disable-shared \
+      --disable-strip \
+      --disable-opts \
       --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
@@ -1357,10 +1394,12 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       --disable-debugging \
       --with-pic
   else
-    CFLAGS=-O3 \
     ./configure \
+      CPPFLAGS="$CPPFLAGS" \
+      CFLAGS="$CFLAGS -fPIC" \ 
+      CXXFLAGS="$CXXFLAGS -fPIC" \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --disable-static \
-      --disable-debugging \
       --with-pic
   fi
 ], [0])
@@ -1369,17 +1408,26 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   if test "$host_vendor" = "apple" ; then
     rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   else
-    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+set -x
+    rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
+      -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+      -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
+      -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
+      -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
+set +x
   fi
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
   if test "$host_vendor" != "apple" ; then
     ./configure  \
+        CPPFLAGS="$CPPFLAGS" \
+        CFLAGS="$CFLAGS -fPIC" \ 
+        CXXFLAGS="$CXXFLAGS -fPIC" \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --disable-shared \
       --enable-static \
       --with-pic
-
   fi
 ], [$BUILD_GOOM])
 
@@ -1403,8 +1451,10 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-skyrocket
   else
     ./configure \
-      CFLAGS="-fPIC" \ 
-      CXXFLAGS="-fPIC" \
+      CPPFLAGS="$CPPFLAGS" \
+      CFLAGS="$CFLAGS -fPIC" \ 
+      CXXFLAGS="$CXXFLAGS -fPIC" \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
@@ -1441,7 +1491,17 @@ XB_CONFIG_MODULE([lib/libmodplug], [
     CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
   else
-    ./configure --with-pic --enable-static
+    true
+  fi
+], [0])
+
+XB_CONFIG_MODULE([lib/libmicrohttpd], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
+  else
+    true
   fi
 ], [0])
 

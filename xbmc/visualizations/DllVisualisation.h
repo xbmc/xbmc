@@ -19,20 +19,11 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "DynamicDll.h"
-#include "visualizations/VisualisationTypes.h"
 
-class DllVisualisationInterface
-{
-public:
-  void GetModule(struct Visualisation* pScr);
-};
+#include "../DllAddon.h"
+#include "../addons/include/xbmc_vis_types.h"
 
-class DllVisualisation : public DllDynamic, DllVisualisationInterface
+class DllVisualisation : public DllAddon<Visualisation, VIS_PROPS>
 {
-  DECLARE_DLL_WRAPPER_TEMPLATE(DllVisualisation)
-  DEFINE_METHOD1(void, GetModule, (struct Visualisation* p1))
-  BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(get_module,GetModule)
-  END_METHOD_RESOLVE()
+  // this is populated via Macro calls in DllAddon.h
 };

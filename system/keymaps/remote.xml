@@ -363,6 +363,11 @@
       <back>PreviousMenu</back>
     </remote>
   </Settings>
+  <AddonBrowser>
+    <remote>
+      <back>PreviousMenu</back>
+    </remote>
+  </AddonBrowser>
   <MyPicturesSettings>
     <remote>
       <back>PreviousMenu</back>

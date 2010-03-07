@@ -23,7 +23,6 @@
  */
 
 #include "XBMC_events.h"
-#include "Geometry.h"
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))
 #define XBMC_BUTTON_LEFT		1
@@ -58,7 +57,7 @@ struct MouseState
   bool active;        // true if the mouse is active
 };
 
-class CGUIControl;
+class CAction;
 
 class CMouseStat
 {
@@ -69,7 +68,6 @@ public:
 
   void Initialize();
   void HandleEvent(XBMC_Event& newEvent);
-  void Acquire();
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
   bool IsActive();
   bool IsEnabled() const;
@@ -78,12 +76,7 @@ public:
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
-  CPoint GetLocation() const;
-  void SetLocation(const CPoint &point, bool activate=false);
-  CPoint GetLastMove() const;
-  char GetWheel() const;
-  void UpdateMouseWheel(char dir);
-  void Update(XBMC_Event& newEvent);
+  CAction GetAction() const;
 
 private:
   /*! \brief Holds information regarding a particular mouse button state
@@ -167,13 +160,6 @@ private:
   // active/click timers
   unsigned int m_lastActiveTime;
 
-#ifdef HAS_SDL_XX
-  SDL_Cursor *m_visibleCursor;
-  SDL_Cursor *m_hiddenCursor;
-#endif
-
-public:
-  // public access variables to button clicks etc.
   bool bClick[5];
   bool bDoubleClick[5];
   int  bHold[5];

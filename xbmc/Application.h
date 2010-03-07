@@ -56,11 +56,14 @@ class CFileItemList;
 #include "XBMC_events.h"
 #include "utils/Thread.h"
 
+#ifdef HAS_WEB_SERVER
+#include "utils/WebServer.h"
+#endif
+
 #ifdef HAS_SDL
 #include <SDL/SDL_mutex.h>
 #endif
 
-class CWebServer;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
@@ -86,7 +89,6 @@ public:
   virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
-  virtual void DoRender();
   virtual void RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
@@ -95,9 +97,9 @@ public:
   void StartServices();
   void StopServices();
   void StartWebServer();
-  void StopWebServer(bool bWait);
-  void StartTimeServer();
-  void StopTimeServer();
+  void StopWebServer();
+  void StartJSONRPCServer();
+  void StopJSONRPCServer(bool bWait);
   void StartUPnP();
   void StopUPnP(bool bWait);
   void StartUPnPRenderer();
@@ -144,23 +146,21 @@ public:
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
   void CheckDelayedPlayerRestart();
-  void RenderFullScreen();
-  void DoRenderFullScreen();
-  bool NeedRenderFullScreen();
   bool IsPlaying() const;
   bool IsPaused() const;
   bool IsPlayingAudio() const;
   bool IsPlayingVideo() const;
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
-  bool OnKey(CKey& key);
-  bool OnAction(CAction &action);
+  bool OnKey(const CKey& key);
+  bool OnAction(const CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
+  void CheckForTitleChange();
   void ActivateScreenSaver(bool forceType = false);
 
   virtual void Process();
@@ -220,7 +220,11 @@ public:
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
-  CWebServer* m_pWebServer;
+
+#ifdef HAS_WEB_SERVER
+  CWebServer m_WebServer;
+#endif
+
   IPlayer* m_pPlayer;
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };
@@ -331,16 +335,14 @@ protected:
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
   bool ProcessMouse();
-  bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();
   bool ProcessRemote(float frameTime);
   bool ProcessGamepad(float frameTime);
   bool ProcessEventServer(float frameTime);
-
+  bool ProcessHTTPApiButtons();
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
   float NavigationIdleTime();
-  void CheckForTitleChange();
   static bool AlwaysProcess(const CAction& action);
 
   void SaveCurrentFileSettings();
@@ -370,4 +372,3 @@ protected:
 };
 
 extern CApplication g_application;
-extern CStdString g_LoadErrorStr;

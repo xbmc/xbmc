@@ -30,7 +30,9 @@
 #include "GUIDialogMusicScan.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
-#include "ScraperSettings.h"
+#include "AddonManager.h"
+#include "Scraper.h"
+#include "Addon.h"
 #include "Util.h"
 #include "Artist.h"
 #include "Album.h"
@@ -58,12 +60,9 @@
 using namespace std;
 using namespace AUTOPTR;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
+using ADDON::AddonPtr;
 
-#define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        14
-#define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
 
@@ -73,14 +72,16 @@ using namespace CDDB;
 
 CMusicDatabase::CMusicDatabase(void)
 {
-  m_preV2version=MUSIC_DATABASE_OLD_VERSION;
-  m_version=MUSIC_DATABASE_VERSION;
-  m_strDatabaseFile=MUSIC_DATABASE_NAME;
 }
 
 CMusicDatabase::~CMusicDatabase(void)
 {
   EmptyCache();
+}
+
+bool CMusicDatabase::Open()
+{
+  return CDatabase::Open(g_advancedSettings.m_databaseMusic);
 }
 
 bool CMusicDatabase::CreateTables()
@@ -91,21 +92,21 @@ bool CMusicDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create artist table");
-    m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist text)\n");
+    m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, strArtist varchar(256))\n");
     CLog::Log(LOGINFO, "create album table");
-    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum text, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)\n");
+    m_pDS->exec("CREATE TABLE album ( idAlbum integer primary key, strAlbum varchar(256), idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, iYear integer, idThumb integer)\n");
     CLog::Log(LOGINFO, "create genre table");
-    m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre text)\n");
+    m_pDS->exec("CREATE TABLE genre ( idGenre integer primary key, strGenre varchar(256))\n");
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strHash text)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strHash text)\n");
     CLog::Log(LOGINFO, "create song table");
-    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle text, iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed text default NULL, rating char default '0', comment text)\n");
+    m_pDS->exec("CREATE TABLE song ( idSong integer primary key, idAlbum integer, idPath integer, idArtist integer, strExtraArtists text, idGenre integer, strExtraGenres text, strTitle varchar(512), iTrack integer, iDuration integer, iYear integer, dwFileNameCRC text, strFileName text, strMusicBrainzTrackID text, strMusicBrainzArtistID text, strMusicBrainzAlbumID text, strMusicBrainzAlbumArtistID text, strMusicBrainzTRMID text, iTimesPlayed integer, iStartOffset integer, iEndOffset integer, idThumb integer, lastplayed varchar(20) default NULL, rating char default '0', comment text)\n");
     CLog::Log(LOGINFO, "create albuminfo table");
     m_pDS->exec("CREATE TABLE albuminfo ( idAlbumInfo integer primary key, idAlbum integer, iYear integer, idGenre integer, strExtraGenres text, strMoods text, strStyles text, strThemes text, strReview text, strImage text, strLabel text, strType text, iRating integer)\n");
     CLog::Log(LOGINFO, "create albuminfosong table");
     m_pDS->exec("CREATE TABLE albuminfosong ( idAlbumInfoSong integer primary key, idAlbumInfo integer, iTrack integer, strTitle text, iDuration integer)\n");
     CLog::Log(LOGINFO, "create thumb table");
-    m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb text)\n");
+    m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb varchar(256))\n");
     CLog::Log(LOGINFO, "create artistnfo table");
     m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text, strFanart text)\n");
     CLog::Log(LOGINFO, "create content table");
@@ -181,7 +182,7 @@ bool CMusicDatabase::CreateTables()
                 "left outer join artist on album.idArtist=artist.idArtist "
                 "left outer join genre on album.idGenre=genre.idGenre "
                 "left outer join thumb on album.idThumb=thumb.idThumb "
-                "left outer join albuminfo on album.idAlbum=albumInfo.idAlbum");
+                "left outer join albuminfo on album.idAlbum=albuminfo.idAlbum");
 
     // Add 'Karaoke' genre
     AddGenre( "Karaoke" );
@@ -1374,7 +1375,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
+    strSQL.Format("select distinct albumview.* from song join albumview on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i", RECENTLY_PLAYED_LIMIT);
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
@@ -1408,7 +1409,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed IS NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1970,7 +1971,7 @@ bool CMusicDatabase::CleanupPaths()
     // but we must keep all paths that have been scanned that may contain songs in subpaths
 
     // first create a temporary table of song paths
-    m_pDS->exec("CREATE TEMPORARY TABLE songpaths (idPath integer, strPath)\n");
+    m_pDS->exec("CREATE TEMPORARY TABLE songpaths (idPath integer, strPath varchar(512))\n");
     m_pDS->exec("INSERT INTO songpaths select idPath,strPath from path where idPath in (select idPath from song)\n");
 
     // grab all paths that aren't immediately connected with a song
@@ -2721,6 +2722,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       strDir.Format("%ld/", idArtist);
       pItem->m_strPath=strBaseDir + strDir;
       pItem->m_bIsFolder=true;
+      pItem->GetMusicInfoTag()->SetDatabaseId(idArtist);
       if (CFile::Exists(pItem->GetCachedArtistThumb()))
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       pItem->SetIconImage("DefaultArtist.png");
@@ -4007,7 +4009,7 @@ bool CMusicDatabase::CommitTransaction()
   return false;
 }
 
-bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraperInfo& info)
+bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::ScraperPtr& scraper)
 {
   try
   {
@@ -4019,7 +4021,8 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
     m_pDS->exec(strSQL.c_str());
 
     // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
+    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",
+      strPath.c_str(), scraper->Parent()->ID().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -4031,7 +4034,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
   return false;
 }
 
-bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& info)
+bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info)
 {
   try
   {
@@ -4072,41 +4075,51 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     }
 
     if (!m_pDS->eof())
-    {
-      info.strContent = m_pDS->fv("content.strContent").get_asString();
-      info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
-      info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
+    { // try and ascertain scraper for this path
+      CONTENT_TYPE content = ADDON::TranslateContent(m_pDS->fv("content.strContent").get_asString());
+      CStdString scraperUUID = m_pDS->fv("content.strScraperPath").get_asString();
 
-      CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
-      info.strTitle = parser.GetName();
-      info.strDate = parser.GetDate();
-      info.strFramework = parser.GetFramework();
-      info.strLanguage = parser.GetLanguage();
-
-    }
-    if (info.strPath.IsEmpty())
-    { // no info available yet - check for a fallback
-      if (!strPath.Equals("musicdb://")) // default fallback
-        GetScraperForPath("musicdb://",info);
-      else
-      { // none available yet (user wisely left defaults as is and didn't touch 'em)
-        CScraperParser parser;
-        if (parser.Load("special://xbmc/system/scrapers/music/" + g_guiSettings.GetString("musiclibrary.scraper")))
+      if (content != CONTENT_NONE)
+      { // content set, use pre configured or default scraper
+        ADDON::AddonPtr addon;
+        if (!scraperUUID.empty() && ADDON::CAddonMgr::Get()->GetAddon(scraperUUID, addon, ADDON::ADDON_SCRAPER) && addon)
         {
-          info.strPath = g_guiSettings.GetString("musiclibrary.scraper");
-          info.strContent = "albums";
-          info.strTitle = parser.GetName();
-          info.strDate = parser.GetDate();
-          info.strFramework = parser.GetFramework();
-          info.strLanguage = parser.GetLanguage();
-          info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + info.strPath);
-          SetScraperForPath("musicdb://",info);
+          info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone(addon));
+          if (!info)
+            return false;
+        }
+
+        // store this path's settings
+        info->m_pathContent = content;
+        info->LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
+      }
+      else
+      { // use default scraper for this content type
+        ADDON::AddonPtr defaultScraper;
+        if (ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, defaultScraper, content))
+        {
+          info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone(defaultScraper));
+          if (info)
+          {
+            info->m_pathContent = content;
+          }
         }
       }
     }
-
     m_pDS->close();
+
+    if (!info)
+    { // use default music scraper instead
+      ADDON::AddonPtr addon;
+      if(ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, CONTENT_ALBUMS))
+      {
+        info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+        return (info);
+      }
+      else
+        return false;
+    }
+
     return true;
   }
   catch (...)

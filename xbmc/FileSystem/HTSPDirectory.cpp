@@ -35,7 +35,6 @@ extern "C" {
 }
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace HTSP;
 
 struct SSession

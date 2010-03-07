@@ -78,8 +78,8 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSIC_INFO;
+using ADDON::CVisualisation;
 
 CGUIInfoManager g_infoManager;
 
@@ -164,7 +164,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
   // trim whitespace, and convert to lowercase
   CStdString strTest = strCondition;
-  strTest.ToLower();
   strTest.TrimLeft(" \t\r\n");
   strTest.TrimRight(" \t\r\n");
   if (strTest.IsEmpty()) return 0;
@@ -174,6 +173,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   if(bNegate)
     strTest.Delete(0, 1);
+  CStdString original(strTest);
+  strTest.ToLower();
 
   CStdString strCategory = strTest.Left(strTest.Find("."));
 
@@ -226,6 +227,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
     else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
+    else if (strTest.Equals("player.folderpath")) ret = PLAYER_PATH;
+    else if (strTest.Equals("player.filenameandpath")) ret = PLAYER_FILEPATH;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -430,7 +433,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     if (info2 > 0)
       return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, -info2));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+    int compareString = ConditionalStringParameter(label);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
   else if (strTest.Left(19).Equals("integergreaterthan("))
@@ -444,7 +449,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(10, pos-10));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+    int compareString = ConditionalStringParameter(label);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, info, compareString));
   }
   else if (strCategory.Equals("lcd"))
@@ -909,6 +916,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
+  else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -1049,6 +1057,26 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel = GetDuration(TIME_FORMAT_HH_MM);
     break;
+  case PLAYER_PATH:
+  case PLAYER_FILEPATH:
+     if (m_currentFile)
+     {
+       if (m_currentFile->HasMusicInfoTag())
+         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
+       else if (m_currentFile->HasVideoInfoTag())
+         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
+       if (strLabel.IsEmpty())
+         strLabel = m_currentFile->m_strPath;
+     }
+     if (info == PLAYER_PATH)
+     {
+       // do this twice since we want the path outside the archive if this
+       // is to be of use.
+       if (CUtil::IsInArchive(strLabel))
+         strLabel = CUtil::GetParentPath(strLabel);
+       strLabel = CUtil::GetParentPath(strLabel);
+     }
+     break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -1486,25 +1514,18 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
-        char *preset = pVis->GetPreset();
-        if (preset)
+        CVisualisation* viz = NULL;
+        viz = (CVisualisation*)msg.GetPointer();
+        if (viz)
         {
-          strLabel = preset;
+          strLabel = viz->GetPresetName();
           CUtil::RemoveExtension(strLabel);
         }
       }
     }
     break;
   case VISUALISATION_NAME:
-    {
-      strLabel = g_guiSettings.GetString("musicplayer.visualisation");
-      if (strLabel != "None" && strLabel.size() > 4)
-      { // make it look pretty
-        strLabel = strLabel.Left(strLabel.size() - 4);
-        strLabel[0] = toupper(strLabel[0]);
-      }
-    }
+    strLabel = g_guiSettings.GetString("musicplayer.visualisation");
     break;
   case FANART_COLOR1:
     {
@@ -3601,6 +3622,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetMusicInfoTag()->GetTitle();
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
+    break;
+  case LISTITEM_ORIGINALTITLE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strOriginalTitle;
     break;
   case LISTITEM_TRACKNUMBER:
     {

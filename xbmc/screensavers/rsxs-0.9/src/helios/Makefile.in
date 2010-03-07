@@ -290,7 +290,7 @@ LIBMISC = $(top_builddir)/lib/libmisc.a
 AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. \
 	-I$(top_srcdir)/lib $(X_CPPFLAGS) $(IMAGE_CPPFLAGS)
 AM_LDFLAGS = $(IMAGE_LDFLAGS)
-AM_CXXFLAGS = -Wall -funroll-loops $(IMAGE_CXXFLAGS)
+AM_CXXFLAGS = $(IMAGE_CXXFLAGS)
 AM_ETAGSFLAGS = --extra=fq
 rs_helios_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) $(IMPLICIT) \
 	helios.cc helios.hh particle.cc particle.hh sphere.hh

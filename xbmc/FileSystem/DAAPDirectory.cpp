@@ -26,7 +26,7 @@
 #include "SectionLoader.h"
 #include "utils/log.h"
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 // these are the different request urls that exist.. i think the first one would always work, but take safe route

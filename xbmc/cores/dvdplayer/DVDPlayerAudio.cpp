@@ -356,7 +356,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     if (m_messageQueue.ReceivedAbortRequest()) return DECODE_FLAG_ABORT;
 
     CDVDMsg* pMsg;
-    int priority = (m_speed == DVD_PLAYSPEED_PAUSE) && m_started ? 1 : 0;
+    int priority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
 
     int timeout;
     if(m_duration > 0)
@@ -431,6 +431,11 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_pAudioCodec->Reset();
 
       m_decode.Release();
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
+    {
+      if(m_started)
+        m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
@@ -562,8 +567,13 @@ void CDVDPlayerAudio::Process()
     }
 
     // store the delay for this pts value so we can calculate the current playing
-    if(m_speed != DVD_PLAYSPEED_PAUSE && packetadded)
-      m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+    if(packetadded)
+    {
+      if(m_speed == DVD_PLAYSPEED_PAUSE)
+        m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, 0);
+      else
+        m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+    }
 
     // signal to our parent that we have initialized
     if(m_started == false)

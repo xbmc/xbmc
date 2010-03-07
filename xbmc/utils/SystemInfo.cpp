@@ -295,6 +295,22 @@ bool CSysInfo::IsAeroDisabled()
   return false;
 }
 
+bool CSysInfo::IsVistaOrHigher()
+{
+#ifdef _WIN32
+  OSVERSIONINFOEX osvi;
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+
+  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  {
+    if (osvi.dwMajorVersion >= 6)
+      return true; 
+  }
+#endif
+  return false;
+}
+
 CStdString CSysInfo::GetKernelVersion()
 {
 #if defined (_LINUX)
@@ -597,7 +613,7 @@ CStdString CSysInfo::GetLinuxDistro()
     pipe = popen(cmd.c_str(), "r");
   }
 
-  CStdString result = "";
+  CStdString result = "Unknown";
   if (pipe)
   {
     char buffer[256] = {'\0'};
@@ -616,7 +632,7 @@ CStdString CSysInfo::GetUnameVersion()
 {
   CStdString result = "";
 
-  FILE* pipe = popen("uname -rs", "r");
+  FILE* pipe = popen("uname -rm", "r");
   if (pipe)
   {
     char buffer[256] = {'\0'};
@@ -643,18 +659,9 @@ CStdString CSysInfo::GetUserAgent()
   result += GetUnameVersion();
 #elif defined(_LINUX)
   result += "Linux; ";
-  CStdString distro = GetLinuxDistro();
-  if (distro != "")
-  {
-    result += distro;
-    result += "; ";
-  }
+  result += GetLinuxDistro();
+  result += "; ";
   result += GetUnameVersion();
-#endif
-#ifdef SVN_REV
-  CStdString strRevision;
-  strRevision.Format("; SVN r%s", SVN_REV);
-  result += strRevision;
 #endif
   result += "; http://www.xbmc.org)";
 

@@ -32,13 +32,29 @@
 #define FRAME_TYPE_B 3
 #define FRAME_TYPE_D 4
 
+namespace DXVA { class CProcessor; }
+class CVDPAU;
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
 {
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
-  BYTE* data[4];      // [4] = alpha channel, currently not used
-  int iLineSize[4];   // [4] = alpha channel, currently not used
+  double dts;
+
+  union
+  {
+    struct {
+      BYTE* data[4];      // [4] = alpha channel, currently not used
+      int iLineSize[4];   // [4] = alpha channel, currently not used
+    };
+    struct {
+      DXVA::CProcessor* proc;
+      int64_t           proc_id;
+    };
+    struct {
+      CVDPAU* vdpau;
+    };
+  };
 
   unsigned int iFlags;
 
@@ -59,7 +75,8 @@ struct DVDVideoPicture
     FMT_VDPAU,
     FMT_NV12,
     FMT_UYVY,       // place holder for future expansion
-    FMT_YUY2        //place holder for future expansion
+    FMT_YUY2,       //place holder for future expansion
+    FMT_DXVA,
   } format;
 };
 
@@ -76,7 +93,6 @@ struct DVDVideoUserData
 
 #define DVP_FLAG_NOSKIP             0x00000010 // indicate this picture should never be dropped
 #define DVP_FLAG_DROPPED            0x00000020 // indicate that this picture has been dropped in decoder stage, will have no data
-#define DVP_FLAG_NOAUTOSYNC         0x00000040 // disregard any smooth syncing on this picture
 
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 
@@ -111,7 +127,7 @@ public:
    * returns one or a combination of VC_ messages
    * pData and iSize can be NULL, this means we should flush the rest of the data.
    */
-  virtual int Decode(BYTE* pData, int iSize, double pts) = 0;
+  virtual int Decode(BYTE* pData, int iSize, double dts, double pts) = 0;
 
  /*
    * Reset the decoder.

@@ -278,9 +278,9 @@
 		</control>
 		<control type="label">
 			<description>Label control</description>
-			<posx>640</posx>
+			<posx>0</posx>
 			<posy>-64</posy>
-			<width>-</width>
+			<width>1280</width>
 			<height>45</height>
 			<label>$LOCALIZE[20125] $INFO[system.profilename]</label>
 			<align>center</align>
@@ -299,9 +299,9 @@
 		</control>
 		<control type="label" id="3100">
 			<description>Label control</description>
-			<posx>640</posx>
+			<posx>0</posx>
 			<posy>110</posy>
-			<width>-</width>
+			<width>1280</width>
 			<height>40</height>
 			<label>-</label>
 			<align>center</align>

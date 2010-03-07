@@ -21,21 +21,11 @@
 #include "DBusUtil.h"
 #ifdef HAS_DBUS
 
-bool CDBusUtil::GetBoolean(const char *destination, const char *object, const char *interface, const char *property)
-{
-  return GetVariant(destination, object, interface, property, "false").Equals("true");
-}
-
-int CDBusUtil::GetInt32(const char *destination, const char *object, const char *interface, const char *property)
-{
-  return atoi(GetVariant(destination, object, interface, property).c_str());
-}
-
-CStdString CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property, const char *fallback)
+CVariant CDBusUtil::GetVariant(const char *destination, const char *object, const char *interface, const char *property)
 {
 //dbus-send --system --print-reply --dest=destination object org.freedesktop.DBus.Properties.Get string:interface string:property
   CDBusMessage message(destination, object, "org.freedesktop.DBus.Properties", "Get");
-  CStdString result = fallback;
+  CVariant result;
 
   if (message.AppendArgument(interface) && message.AppendArgument(property))
   {
@@ -60,9 +50,10 @@ CStdString CDBusUtil::GetVariant(const char *destination, const char *object, co
   return result;
 }
 
-void CDBusUtil::GetAll(PropertyMap& properties, const char *destination, const char *object, const char *interface)
+CVariant CDBusUtil::GetAll(const char *destination, const char *object, const char *interface)
 {
   CDBusMessage message(destination, object, "org.freedesktop.DBus.Properties", "GetAll");
+  CVariant properties;
   message.AppendArgument(interface);
   DBusMessage *reply = message.SendSystem();
   if (reply)
@@ -89,10 +80,10 @@ void CDBusUtil::GetAll(PropertyMap& properties, const char *destination, const c
               dbus_message_iter_get_basic(&dict, &key);
               dbus_message_iter_next(&dict);
 
-              CStdString value = ParseVariant(&dict);
+              CVariant value = ParseVariant(&dict);
 
-              if (value.length() > 0)
-                properties.insert(Property(key, value));
+              if (!value.isNull())
+                properties[key] = value;
 
             } while (dbus_message_iter_next(&dict));
 
@@ -102,9 +93,11 @@ void CDBusUtil::GetAll(PropertyMap& properties, const char *destination, const c
       }
     }
   }
+
+  return properties;
 }
 
-CStdString CDBusUtil::ParseVariant(DBusMessageIter *itr)
+CVariant CDBusUtil::ParseVariant(DBusMessageIter *itr)
 {
   DBusMessageIter variant;
   dbus_message_iter_recurse(itr, &variant);
@@ -112,9 +105,9 @@ CStdString CDBusUtil::ParseVariant(DBusMessageIter *itr)
   return ParseType(&variant);
 }
 
-CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
+CVariant CDBusUtil::ParseType(DBusMessageIter *itr)
 {
-  CStdString value;
+  CVariant value;
   const char *    string  = NULL;
   dbus_int32_t    int32   = 0;
   dbus_uint32_t   uint32  = 0;
@@ -123,7 +116,6 @@ CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
   dbus_bool_t     boolean = false;
 
   int type = dbus_message_iter_get_arg_type(itr);
-
   switch (type)
   {
   case DBUS_TYPE_OBJECT_PATH:
@@ -131,40 +123,39 @@ CStdString CDBusUtil::ParseType(DBusMessageIter *itr)
     dbus_message_iter_get_basic(itr, &string);
     value = string;
     break;
-
-  case DBUS_TYPE_BYTE:
   case DBUS_TYPE_UINT32:
     dbus_message_iter_get_basic(itr, &uint32);
-    value.Format("%u", uint32);
+    value = (uint64_t)uint32;
     break;
+  case DBUS_TYPE_BYTE:
   case DBUS_TYPE_INT32:
     dbus_message_iter_get_basic(itr, &int32);
-    value.Format("%d", int32);
+    value = (int64_t)int32;
     break;
   case DBUS_TYPE_UINT64:
     dbus_message_iter_get_basic(itr, &uint64);
-    value.Format("%"PRIu64, uint64);
+    value = (uint64_t)uint64;
     break;
   case DBUS_TYPE_INT64:
     dbus_message_iter_get_basic(itr, &int64);
-    value.Format("%"PRId64, int64);
+    value = (int64_t)int64;
     break;
   case DBUS_TYPE_BOOLEAN:
     dbus_message_iter_get_basic(itr, &boolean);
-    value = boolean ? "true" : "false";
+    value = (bool)boolean;
     break;
   case DBUS_TYPE_ARRAY:
     DBusMessageIter array;
     dbus_message_iter_recurse(itr, &array);
 
-    std::vector<CStdString> strArray;
+    value = CVariant::VariantTypeArray;
 
     do
     {
-      strArray.push_back(ParseType(&array));
+      CVariant item = ParseType(&array);
+      if (!item.isNull())
+        value.push_back(item);
     } while (dbus_message_iter_next(&array));
-
-    value = strArray.size() > 0 ? strArray[0] : ""; //Only handle first in the array for now.
     break;
   }
 

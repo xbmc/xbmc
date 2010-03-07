@@ -29,7 +29,6 @@ public:
   CGUIWindowMusicOverlay(void);
   virtual ~CGUIWindowMusicOverlay(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void Render();
 protected:
   virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void SetDefaults();

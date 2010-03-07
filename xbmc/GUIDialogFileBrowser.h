@@ -37,7 +37,7 @@ public:
   virtual ~CGUIDialogFileBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   bool IsConfirmed() { return m_bConfirmed; };
@@ -72,7 +72,7 @@ protected:
   CGUIControl *GetFirstFocusableControl(int id);
 
   VECSOURCES m_shares;
-  DIRECTORY::CVirtualDirectory m_rootDir;
+  XFILE::CVirtualDirectory m_rootDir;
   CFileItemList* m_vecItems;
   CFileItem* m_Directory;
   CStdString m_strParentPath;

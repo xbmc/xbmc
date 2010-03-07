@@ -36,14 +36,23 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
 
 bool CCocoaPowerSyscall::Powerdown()
 {
-  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
-  //sending shutdown event to system
-  OSErr error = SendAppleEventToSystemProcess(kAEShutDown);
-  if (error == noErr)
-    CLog::Log(LOGINFO, "Computer is going to shutdown!");
+  if (g_sysinfo.IsAppleTV())
+  {
+    // The ATV prefered method is via command-line, others don't seem to work
+    system("echo frontrow | sudo -S shutdown -h now");
+    return true;
+  }
   else
-    CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
-  return (error == noErr);
+  {
+    CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
+    //sending shutdown event to system
+    OSErr error = SendAppleEventToSystemProcess(kAEShutDown);
+    if (error == noErr)
+      CLog::Log(LOGINFO, "Computer is going to shutdown!");
+    else
+      CLog::Log(LOGINFO, "Computer wouldn't shutdown!");
+    return (error == noErr);
+  }
 }
 
 bool CCocoaPowerSyscall::Suspend()
@@ -69,12 +78,22 @@ bool CCocoaPowerSyscall::Hibernate()
 bool CCocoaPowerSyscall::Reboot()
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Reboot");
-  OSErr error = SendAppleEventToSystemProcess(kAERestart);
-  if (error == noErr)
-    CLog::Log(LOGINFO, "Computer is going to restart!");
+
+  if (g_sysinfo.IsAppleTV())
+  {
+    // The ATV prefered method is via command-line, others don't seem to work
+    system("echo frontrow | sudo -S reboot");
+    return true;
+  }
   else
-    CLog::Log(LOGINFO, "Computer wouldn't restart!");
-  return (error == noErr);
+  {
+    OSErr error = SendAppleEventToSystemProcess(kAERestart);
+    if (error == noErr)
+      CLog::Log(LOGINFO, "Computer is going to restart!");
+    else
+      CLog::Log(LOGINFO, "Computer wouldn't restart!");
+    return (error == noErr);
+  }
 }
 
 bool CCocoaPowerSyscall::CanPowerdown()

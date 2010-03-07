@@ -3,7 +3,7 @@ rm -r .libs
 make distclean
 
 ./configure \
---extra-cflags="-fno-common -I../libfaad2/include" \
+--extra-cflags="-fno-common -I../libfaad2/include -Iinclude" \
 --extra-ldflags="-L../../../../../system/players/dvdplayer" \
 --enable-shared \
 --enable-memalign-hack \
@@ -19,6 +19,7 @@ make distclean
 --disable-ipv6 \
 --disable-debug \
 --enable-muxer=spdif \
+--enable-muxer=adts \
 --enable-encoder=ac3 \
 --enable-encoder=aac &&
  

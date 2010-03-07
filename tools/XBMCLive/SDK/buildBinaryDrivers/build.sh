@@ -21,7 +21,6 @@
 THISDIR=$(pwd)
 WORKDIR=workarea
 
-. $THISDIR/getInstallers.sh
 . $THISDIR/mkConfig.sh
 
 build()
@@ -52,32 +51,16 @@ fi
 #
 #
 #
-mkdir -p Files/chroot_local-includes/root &> /dev/null
 
-# Get drivers if files are not already available
-if [ ! -f crystalhd-HEAD.tar.gz ]; then
-	getBCDriversSources
-else
-	mv crystalhd-HEAD.tar.gz Files/chroot_local-includes/root
+filesToRun=$(ls $THISDIR/build-*.sh 2> /dev/null)
+if [ -n "$filesToRun" ]; then
+	for hook in $filesToRun; do
+		$hook
+		if [ "$?" -ne "0" ]; then
+			exit 1
+		fi
+	done
 fi
-
-if [ -z "$DONOTBUILDRESTRICTEDDRIVERS" ]; then
-	if ! ls NVIDIA*.run > /dev/null 2>&1 ; then
-		getNVIDIAInstaller
-	else
-		mv NVIDIA*.run Files/chroot_local-includes/root
-	fi
-
-	if ! ls ati*.run > /dev/null 2>&1 ; then
-		getAMDInstaller
-	else
-		mv ati*.run Files/chroot_local-includes/root
-	fi
-else
-	rm Files/chroot_local-hooks/20-buildAMD.sh
-	rm Files/chroot_local-hooks/30-buildNVIDIA.sh
-fi
-
 
 # Clean any previous run
 rm -rf *.ext3 &> /dev/null
@@ -94,4 +77,4 @@ build
 
 # Get files from chroot
 cp $WORKDIR/chroot/tmp/*.ext3 . &> /dev/null
-cp $WORKDIR/chroot/tmp/crystalhd.tar .
+cp $WORKDIR/chroot/tmp/crystalhd.tar . &> /dev/null

@@ -67,7 +67,7 @@ public:
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual void Close();
 
-  virtual int  Check() 
+  virtual int  Check(AVCodecContext* avctx) 
   { 
     if(CheckRecover(false))
       return VC_FLUSHED;
@@ -118,6 +118,7 @@ public:
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
+  bool       upScale;
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;
@@ -215,8 +216,4 @@ public:
                           , VdpChromaType     &chroma_type);
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
-  
-  
 };
-
-extern CVDPAU*          g_VDPAU;

@@ -30,12 +30,12 @@ public:
   virtual ~CGUIWindowSettingsScreenCalibration(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual void FrameMove();
   virtual void Render();
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
 
 protected:
-  virtual bool OnMouseAction();
   void NextControl();
   void ResetControls();
   void EnableControl(int iControl);

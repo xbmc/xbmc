@@ -67,6 +67,7 @@
 			<height>200</height>
 			<aspectratio>keep</aspectratio>
 			<info>ListItem.Icon</info>
+			<visible>Control.IsVisible(4)</visible>
 		</control>
 		<control type="list" id="4">
 			<posx>40</posx>

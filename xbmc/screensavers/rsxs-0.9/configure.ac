@@ -16,12 +16,12 @@ AC_GNU_SOURCE
 LT_AC_PROG_SED
 AC_LANG(C++)
 AC_PROG_CXX
-CXXFLAGS=`echo $CXXFLAGS | sed -e s,-O2,-O3,`
+#CXXFLAGS=`echo $CXXFLAGS | sed -e s,-O2,-O3,`
 AC_PROG_CXXCPP
 
-if test x"$GXX" = x"yes"; then
-	CXXFLAGS=`echo $CXXFLAGS -Wall`
-fi
+#if test x"$GXX" = x"yes"; then
+#	CXXFLAGS=`echo $CXXFLAGS -Wall`
+#fi
 
 AC_PROG_CC
 AM_PROG_CC_C_O
@@ -32,6 +32,12 @@ AC_PROG_RANLIB
 # libltdl, or to use dlpreopen (we don't want libtool at all).
 # Also, we can use gnulib's *_ONCE macros.
 AC_DEFUN([MAC_LIB_LTDL], [
+	# Some of the below macros have dependencies that are m4_require'd.
+	# aclocal doesn't resolve those automatically, so we need to call
+	# LT_PATH_LD and LTSUGAR_VERSION to pull in libtool.m4 and ltsugar.m4
+	# where the required dependencies are m4_defun'd.
+	AC_REQUIRE([LT_PATH_LD])dnl
+	AC_REQUIRE([LTSUGAR_VERSION])dnl
 	AC_REQUIRE([AC_PROG_CC])dnl
 	AC_REQUIRE([AC_HEADER_STDC])dnl
 	AC_REQUIRE([AC_HEADER_DIRENT])dnl

@@ -45,7 +45,7 @@ public:
   virtual float GetCacheTime();
   virtual float GetCacheTotal();
   CWin32DirectSound();
-  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CWin32DirectSound();
 
   virtual unsigned int AddPackets(const void* data, unsigned int len);
@@ -67,7 +67,7 @@ public:
 private:
   void UpdateCacheStatus();
   void CheckPlayStatus();
-  void BuildChannelMapping(int channels, int8_t* map);
+  void BuildChannelMapping(int channels, enum PCMChannels* map);
 
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;
@@ -76,6 +76,7 @@ private:
 
   long m_nCurrentVolume;
   unsigned int m_dwChunkSize;
+  unsigned int m_dwDataChunkSize;
   unsigned int m_dwBufferLen;
   bool m_bPause;
   bool m_bIsAllocated;
@@ -84,10 +85,12 @@ private:
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
+  unsigned int m_uiDataChannels;
   unsigned int m_AvgBytesPerSec;
   unsigned int m_uiBytesPerFrame;
+  unsigned int m_uiDataBytesPerFrame;
   unsigned int m_uiSpeakerMask;
-  int8_t       m_SpeakerOrder[8];
+  enum PCMChannels m_SpeakerOrder[8];
 
   char * dserr2str(int err);
 

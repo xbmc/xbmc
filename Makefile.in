@@ -31,7 +31,8 @@ BIN_DIRS=	\
 	xbmc/lib/cmyth/libcmyth \
 	xbmc/lib/cmyth/librefmem \
 	xbmc/lib/libhts \
-	xbmc/lib/libGoAhead \
+	xbmc/lib/libjsonrpc \
+	xbmc/lib/libhttpapi \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
 	xbmc/lib/libRTMP \
@@ -60,7 +61,8 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
-        xbmc/cores/dvdplayer/Codecs/libdvd
+	xbmc/cores/dvdplayer/Codecs/libdvd \
+	xbmc/cores/dvdplayer/Codecs/libbdnav
 ifneq (@USE_EXTERNAL_LIBASS@,1)
   DVDPCODECS_DIRS+=xbmc/lib/libass/xbmc
 endif
@@ -93,7 +95,9 @@ LIB_DIRS=\
 	xbmc/lib/libid3tag \
 	xbmc/lib/libapetag \
 	xbmc/lib/libPython/linux \
-	lib/libmodplug
+	lib/libmodplug \
+	lib/xbmc-dll-symbols \
+	lib/jsoncpp/jsoncpp/src/lib_json
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -235,8 +239,12 @@ xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXBMS
 xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
-xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
-	$(MAKE) -C xbmc/lib/libGoAhead
+lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a: force
+	$(MAKE) -C lib/jsoncpp/jsoncpp/src/lib_json
+xbmc/lib/libjsonrpc/libjsonrpc.a: force
+	$(MAKE) -C xbmc/lib/libjsonrpc
+xbmc/lib/libhttpapi/libhttpapi.a: force
+	$(MAKE) -C xbmc/lib/libhttpapi
 xbmc/lib/sqLite/sqllite.a: force
 	$(MAKE) -C xbmc/lib/sqLite
 xbmc/lib/UnrarXLib/UnrarXLib.a: force
@@ -263,6 +271,16 @@ xbmc/lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C xbmc/lib/libapetag
 lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
+system/players/paplayer/libmodplug-$(ARCH).so: lib/libmodplug/src/.libs/libmodplug.a
+ifeq ($(ARCH), powerpc-osx)
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
+else
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
+endif
+lib/xbmc-dll-symbols/dll-symbols.a: force
+	$(MAKE) -C lib/xbmc-dll-symbols
+lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a: force
+	$(MAKE) -C lib/libmicrohttpd
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -337,7 +355,7 @@ xcode_depends: \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	lib/libmodplug/src/.libs/libmodplug.a \
+	system/players/paplayer/libmodplug-$(ARCH).so \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
@@ -345,7 +363,10 @@ xcode_depends: \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a
+	xbmc/lib/libjsonrpc/libjsonrpc.a \
+	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
+	xbmc/lib/libhttpapi/libhttpapi.a \
+	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a
 
 # platform independend objects
 OBJSXBMC=	\
@@ -385,11 +406,12 @@ OBJSXBMC=	\
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
+	xbmc/lib/libjsonrpc/libjsonrpc.a \
+	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
+	xbmc/lib/libhttpapi/libhttpapi.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	lib/libmodplug/src/.libs/libmodplug.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/visualizations/visualization.a
@@ -413,11 +435,14 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \
 	xbmc/osx/osx.a \
 	lib/libSDL-OSX/libSDL-@ARCH@.a \
-	lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
+	lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
+	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a
 else
 OBJSXBMC += \
 	xbmc/posix/posix.a
 endif
+
+OBJSXBMC += lib/xbmc-dll-symbols/dll-symbols.a
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -478,7 +503,7 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex '.*/\.svn/.*|^skin/[^/]*/media/.*[^x][^b][^t]' -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 	@# Icons and links
@@ -496,7 +521,7 @@ install-livedatas:
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
-	@cp -r web/Project_Mayhem_III/* $(prefix)/share/xbmc/web
+	@cp -r web/poc_jsonrpc/* $(prefix)/share/xbmc/web
 	@find $(prefix)/share/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:

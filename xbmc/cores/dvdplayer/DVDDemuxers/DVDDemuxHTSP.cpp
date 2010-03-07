@@ -297,6 +297,9 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
       htsmsg_get_u32(sub, "composition_id", &composition_id);
       htsmsg_get_u32(sub, "ancillary_id"  , &ancillary_id);
       st.s->identifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
+    } else if(!strcmp(type, "TEXTSUB")) {
+      st.s = new CDemuxStreamSubtitle();
+      st.s->codec = CODEC_ID_TEXT;
     } else {
       continue;
     }
@@ -323,7 +326,7 @@ void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStatus - %s", status);
-    g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, "TVHeadend Status", status, TOAST_DISPLAY_TIME, false);
   }
 }
 

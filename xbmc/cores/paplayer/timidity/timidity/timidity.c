@@ -3716,7 +3716,7 @@ static inline int parse_opt_h(const char *arg)
 			if (*(strchr(h, '%') + 1) != '%')
 				fprintf(fp, h, help_args[j++]);
 			else
-				fprintf(fp, h);
+				fprintf(fp, "%s", h);
 		} else
 			fputs(h, fp);
 		fputs(NLS, fp);

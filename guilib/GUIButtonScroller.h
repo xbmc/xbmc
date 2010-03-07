@@ -24,6 +24,7 @@
 #include "GUIControl.h"
 #include "GUITexture.h"
 #include "GUIActionDescriptor.h"
+#include "GUILabel.h"
 
 class TiXmlNode;
 

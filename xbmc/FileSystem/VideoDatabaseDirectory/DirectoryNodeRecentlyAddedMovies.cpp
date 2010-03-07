@@ -23,7 +23,7 @@
 #include "QueryParams.h"
 #include "VideoDatabase.h"
 
-using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
+using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeRecentlyAddedMovies::CDirectoryNodeRecentlyAddedMovies(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_RECENTLY_ADDED_MOVIES, strName, pParent)

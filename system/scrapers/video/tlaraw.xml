@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?><scraper framework="11" date="2010-02-26" name="tlaraw" content="movies" thumb="tlaraw.png" language="en">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;\1&lt;/url&gt;" dest="3">
+			<expression noclean="1">(http://www.tlaraw.com[^/]*/.+)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.tlaraw.com/results/index.cfm?v=4&amp;sn=1&amp;g=0&amp;searchtext=\1&lt;/url&gt;" dest="3">
+			<expression noclean="1" />
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="6">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
+			<RegExp input="$$9" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.tlaraw.com/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression clear="yes" noclean="1">window results"&gt;(.+?)&lt;form name="advancedSearch"</expression>
+				</RegExp>
+				<expression repeat="yes">&lt;div class="title"&gt;[^&lt;]*&lt;a href="([^"]*)"&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;url&gt;http://www.tlaraw.com/\1/\2&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression noclean="1,2">&lt;link rel="canonical" href="/([^/]*)/(p-\d+-\d{1})"/&gt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.tlavideo.com/images/\1&lt;/thumb&gt;" dest="5+">
+				<expression>&lt;a href="http://www.tlavideo.com/images/([^"]*)" rel="box-art"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression>&lt;img src="(http://images.tlavideo.com/images/[^"]*)"[^=]*=[^=]*=[^=]*="front"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression>&lt;title&gt;Buy (.*?) on DVD \| TLAraw.com&lt;/title&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression>class="stockInfo"&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>&lt;p&gt;&lt;strong&gt;(\d{4})[^&lt;]*&lt;/strong&gt;&lt;/p&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>Synopsis[^&lt;]*&lt;/h3&gt;[^\n]*\n[\t\s]*(.*?)&lt;/p&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\4&lt;/name&gt;&lt;thumb&gt;http://www.tlavideo.com/images/bio/\2.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href="/([^/]*)/person-(\d+)-(\d+)"&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href="/[^/]*/genre[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+				<expression>(\d+) min&lt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;director&gt;\3&lt;/director&gt;" dest="5+">
+				<expression repeat="yes">Director:&lt;/strong&gt;[^&lt;]*&lt;[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetDetails>
+</scraper>

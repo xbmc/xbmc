@@ -45,28 +45,26 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   rem	CONFIG END
   rem -------------------------------------------------------------
 
-  ECHO    ВВВВВВВББББББББААААААА
-  ECHO  ВлллллллллллллллллллллллВВВВВВБББББАААААА     пппВмм
-  ECHO олллллллллллллллллллллллллллллллллллллллллВВВВБББАА  ппм
-  ECHO ВлллллллллллллллллллллллллллллллллллллллллллллллллллВА  н
-  ECHO ВлллллллллллллллллллплллллллллллллллллллллллллллллллллА В
-  ECHO БллллллллллллллллллнАлллллллллллллллллллллллллллллллллл о
-  ECHO АллллллВБА  плп           плллп    пВп    плллп   АВллл о
-  ECHO  ллллллллллн   млллн Влллм олн мВлм   мллм ол  мллллллл о
-  ECHO  Влллллллллл  лллллн лллллн л оллллн оллллн н олллллллл В
-  ECHO  Блллллллллн олллллн лллллн л лллллн лллллн   ВлллллллВ н
-  ECHO  АВлллллллп   пллллн плллп он лллллн лллллн А плллллллн н
-  ECHO   БлллВБА мллм АБВллм     млВмллллллмлллллВ лм   АВлллно
-  ECHO   АВлллллллллллллллллллллллллллллллллллллллллллллллллл В
-  ECHO    Блллллпппплпплппллпллпллллпплпплппплпплпплппллллллл н
-  ECHO    АВлллл но л пл л л лнмоллл лл пл л лнол пл пмлллллБ н
-  ECHO     Блллл но л пл пмл л м ллл пл пл л лнол пл л лллллАо
-  ECHO     АВллллллллллллллллллллллллллллллллллллллллллллллВ
-  ECHO      БАммммммммммммммммммммммммммммммммммммм  АБВВВВ
-  ECHO      АВллллллллллллллллллллллллллллллллллллллВААБВп
-  ECHO       БВлллллллллллллллллллллллллллллВлВВпппп
-  ECHO        ВВллллллллллллллллллВлВВпппп
-  ECHO         пВллллВлВВВпппппп
+  echo                         :                                                  
+  echo                        :::                                                 
+  echo                        ::::                                                
+  echo                        ::::                                                
+  echo    :::::::       :::::::::::::::::        ::::::      ::::::        :::::::
+  echo    :::::::::   ::::::::::::::::::::     ::::::::::  ::::::::::    :::::::::
+  echo     ::::::::: ::::::::::::::::::::::   ::::::::::::::::::::::::  ::::::::: 
+  echo          :::::::::     :::      ::::: :::::    ::::::::    :::: :::::      
+  echo           ::::::      ::::       :::: ::::      :::::       :::::::        
+  echo           :::::       ::::        :::::::       :::::       ::::::         
+  echo           :::::       :::         ::::::         :::        ::::::         
+  echo           ::::        :::         ::::::        ::::        ::::::         
+  echo           ::::        :::        :::::::        ::::        ::::::         
+  echo          :::::        ::::       :::::::        ::::        ::::::         
+  echo         :::::::       ::::      ::::::::        :::         :::::::        
+  echo     :::::::::::::::    :::::  ::::: :::         :::         :::::::::      
+  echo  :::::::::  :::::::::  :::::::::::  :::         :::         ::: :::::::::  
+  echo  ::::::::    :::::::::  :::::::::   :::         :::         :::  ::::::::  
+  echo ::::::         :::::::    :::::     :            ::          ::    ::::::  
+  echo.
   goto EXE_COMPILE
 
 :EXE_COMPILE
@@ -150,16 +148,17 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   Echo asound.conf>>exclude.txt
   Echo voicemasks.xml>>exclude.txt
   Echo Lircmap.xml>>exclude.txt
+  Echo getdeps.bat>>exclude.txt
 
   xcopy %EXE% BUILD_WIN32\Xbmc > NUL
   xcopy ..\..\userdata BUILD_WIN32\Xbmc\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   copy ..\..\copying.txt BUILD_WIN32\Xbmc > NUL
   copy ..\..\LICENSE.GPL BUILD_WIN32\Xbmc > NUL
   copy ..\..\known_issues.txt BUILD_WIN32\Xbmc > NUL
+  call dependencies\getdeps.bat > NUL
   xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   copy sources.xml BUILD_WIN32\Xbmc\userdata > NUL
   
-  xcopy ..\..\credits BUILD_WIN32\Xbmc\credits /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   rem screensavers currently are xbox only
   rem xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
@@ -173,7 +172,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy "..\..\web\Project_Mayhem_III" BUILD_WIN32\Xbmc\web /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy "..\..\web\poc_jsonrpc" BUILD_WIN32\Xbmc\web /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
   SET skinpath=%CD%\Add_skins
   SET scriptpath=%CD%\Add_scripts
@@ -229,7 +228,6 @@ IF %target%==dx SET buildconfig=Release (DirectX)
 	  set DIETEXT=Failed to create %XBMC_SETUPFILE%.
 	  goto DIE
   )
-  del BUILD_WIN32\Xbmc\userdata\sources.xml > NUL
   ECHO ------------------------------------------------------------
   ECHO Done!
   ECHO Setup is located at %CD%\%XBMC_SETUPFILE%

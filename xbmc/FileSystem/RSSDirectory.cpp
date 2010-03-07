@@ -32,7 +32,6 @@
 #include "URL.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace std;
 using namespace MUSIC_INFO;
 
@@ -159,7 +158,7 @@ static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdS
 
     CStdString description = text;
     if(CStdString(item_child->Attribute("type")) == "html")
-      HTML::CHTMLUtil::RemoveTags(description);
+      HTML::CHTMLUtil::ConvertAndRemoveTags(description);
     item->SetProperty("description", description);
   }
   else if(name == "category")
@@ -292,7 +291,7 @@ static void ParseItemRSS(CFileItem* item, TiXmlElement* item_child, const CStdSt
   else if(name == "description")
   {
     CStdString description = text;
-    HTML::CHTMLUtil::RemoveTags(description);
+    HTML::CHTMLUtil::ConvertAndRemoveTags(description);
     item->SetProperty("description", description);
   }
   else if(name == "guid")

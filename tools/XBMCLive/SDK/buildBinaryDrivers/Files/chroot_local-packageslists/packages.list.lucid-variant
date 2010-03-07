@@ -1,0 +1,6 @@
+build-essential cdbs fakeroot dh-make debhelper debconf libstdc++6 dkms
+nano less
+bzip2 unzip
+xorg mesa-utils libgl1-mesa-dri xlibmesa-glu
+libqtgui4
+execstack

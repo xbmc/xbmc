@@ -28,7 +28,6 @@
 
 CLocalizeStrings g_localizeStrings;
 CLocalizeStrings g_localizeStringsTemp;
-extern CStdString g_LoadErrorStr;
 
 CLocalizeStrings::CLocalizeStrings(void)
 {
@@ -60,8 +59,8 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
 {
   ClearSkinStrings();
   // load the skin strings in.
-  CStdString encoding, error;
-  if (!LoadXML(path, encoding, error))
+  CStdString encoding;
+  if (!LoadXML(path, encoding))
   {
     if (path == fallbackPath) // no fallback, nothing to do
       return false;
@@ -69,18 +68,17 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
 
   // load the fallback
   if (path != fallbackPath)
-    LoadXML(fallbackPath, encoding, error);
+    LoadXML(fallbackPath, encoding);
 
   return true;
 }
 
-bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, uint32_t offset /* = 0 */)
+bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, uint32_t offset /* = 0 */)
 {
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(PTH_IC(filename)))
   {
     CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
-    error.Format("Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     return false;
   }
 
@@ -91,7 +89,6 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
        pRootElement->ValueStr()!=CStdString("strings"))
   {
     CLog::Log(LOGERROR, "%s Doesn't contain <strings>", filename.c_str());
-    error.Format("%s\nDoesnt start with <strings>", filename.c_str());
     return false;
   }
 
@@ -115,22 +112,20 @@ bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& str
 {
   bool bLoadFallback = !strFileName.Equals(strFallbackFileName);
 
-  CStdString encoding, error;
+  CStdString encoding;
   Clear();
 
-  if (!LoadXML(strFileName, encoding, error))
+  if (!LoadXML(strFileName, encoding))
   {
     // try loading the fallback
-    if (!bLoadFallback || !LoadXML(strFallbackFileName, encoding, error))
-    {
-      g_LoadErrorStr = error;
+    if (!bLoadFallback || !LoadXML(strFallbackFileName, encoding))
       return false;
-    }
+
     bLoadFallback = false;
   }
 
   if (bLoadFallback)
-    LoadXML(strFallbackFileName, encoding, error);
+    LoadXML(strFallbackFileName, encoding);
 
   // fill in the constant strings
   m_strings[20022] = "";
@@ -199,8 +194,8 @@ uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &pat
   m_blocks.insert(make_pair(id, offset));
 
   // load the strings
-  CStdString encoding, error;
-  bool success = LoadXML(path, encoding, error, offset);
+  CStdString encoding;
+  bool success = LoadXML(path, encoding, offset);
   if (!success)
   {
     if (path == fallbackPath) // no fallback, nothing to do
@@ -209,7 +204,7 @@ uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &pat
 
   // load the fallback
   if (path != fallbackPath)
-    success |= LoadXML(fallbackPath, encoding, error, offset);
+    success |= LoadXML(fallbackPath, encoding, offset);
 
   return success ? offset : 0;
 }

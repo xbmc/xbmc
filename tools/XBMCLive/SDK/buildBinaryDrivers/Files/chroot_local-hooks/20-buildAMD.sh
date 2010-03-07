@@ -22,13 +22,19 @@
 # Needed packages: build-essential cdbs fakeroot dh-make debhelper debconf libstdc++5 dkms
 #
 
+distroCodename=$(cat /etc/lsb-release | grep CODENAME | cut -d= -f2)
+
 if [ ! -f /etc/mtab ]; then
 	ln -s /proc/mounts /etc/mtab
 fi
 
 cd /root
 
-sh ./ati-driver-*.run --buildpkg Ubuntu/karmic
+if ! ls ./ati-driver-*.run > /dev/null 2>&1; then
+	exit
+fi
+
+sh ./ati-driver-*.run --buildpkg Ubuntu/$distroCodename
 
 mkdir Files
 dpkg-deb -x fglrx-amdcccle_*.deb Files
@@ -41,9 +47,9 @@ dpkg-deb -x xorg-driver-fglrx-*.deb Files
 cd ./Files
 
 # Assuming only one kernel is installed!
-modulesdir=/lib/modules/$(ls /lib/modules)
+kernelVersion=$(ls /lib/modules)
+modulesdir=/lib/modules/$kernelVersion
 
-kernelVersion=$(basename $modulesdir)
 apt-get -y install linux-headers-$kernelVersion
 
 pushd .
@@ -59,7 +65,7 @@ cd $modulesdir
 mkdir -p updates/dkms
 
 cp /tmp/fglrx.ko updates/dkms
-depmod -a $kernelVersion
+depmod $kernelVersion
 tar cvf /tmp/modules.tar modules.* updates
 rm updates/dkms/fglrx.ko
 popd
@@ -83,3 +89,5 @@ cp -RP * ../Image
 umount ../Image
 rm -rf ../Image
 
+cd /root
+rm -rf ./Files

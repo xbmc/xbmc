@@ -21,12 +21,12 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
+#include "Scraper.h"
 #include "Bookmark.h"
 
 #include <memory>
 #include <set>
 
-struct SScraperInfo;
 class CFileItem;
 class CFileItemList;
 class CVideoSettings;
@@ -298,15 +298,36 @@ public:
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
+  virtual bool Open();
   virtual bool CommitTransaction();
 
   int AddMovie(const CStdString& strFilenameAndPath);
   int AddEpisode(int idShow, const CStdString& strFilenameAndPath);
 
   // editing functions
-  void MarkAsWatched(const CFileItem &item);
-  void MarkAsUnWatched(const CFileItem &item);
-  int GetPlayCount(int id);
+  /*! \brief Set the playcount of an item
+   Sets the playcount and last played date to a given value
+   \param item CFileItem to set the playcount for
+   \param count The playcount to set.
+   \param date The date the file was last watched. If empty, we use the current date time (the default)
+   \sa GetPlayCount, IncrementPlayCount
+   */
+  void SetPlayCount(const CFileItem &item, int count, const CStdString &lastWatched = "");
+
+  /*! \brief Increment the playcount of an item
+   Increments the playcount and updates the last played date
+   \param item CFileItem to increment the playcount for
+   \sa GetPlayCount, SetPlayCount
+   */
+  void IncrementPlayCount(const CFileItem &item);
+
+  /*! \brief Get the playcount of an item
+   \param item CFileItem to get the playcount for
+   \return the playcount of the item, or -1 on error
+   \sa SetPlayCount, IncrementPlayCount
+   */
+  int GetPlayCount(const CFileItem &item);
+
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
@@ -332,7 +353,7 @@ public:
 
   void GetEpisodesByFile(const CStdString& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
 
-  void SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
+  int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idShow, int idEpisode=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
@@ -368,11 +389,12 @@ public:
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
 
   // scraper settings
-  void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
+  void SetScraperForPath(const CStdString& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
+  CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);
@@ -384,9 +406,9 @@ public:
   int GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");
 
   // searching functions
-  void GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies);
-  void GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies);
+  void GetMoviesByActor(const CStdString& strActor, CFileItemList& items);
+  void GetTvShowsByActor(const CStdString& strActor, CFileItemList& items);
+  void GetEpisodesByActor(const CStdString& strActor, CFileItemList& items);
 
   void GetMusicVideosByArtist(const CStdString& strArtist, CFileItemList& items);
   void GetMusicVideosByAlbum(const CStdString& strAlbum, CFileItemList& items);
@@ -448,10 +470,11 @@ public:
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
 
   int AddFile(const CStdString& strFileName);
-  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
+  void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
-  void ImportFromXML(const CStdString &xmlFile);
+  void ExportActorThumbs(const CStdString &path, const CVideoInfoTag& tag, bool overwrite=false);
+  void ImportFromXML(const CStdString &path);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;
 
@@ -469,6 +492,13 @@ public:
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
+
+  /*! \brief Get the id of this fileitem
+   Works for both videodb:// items and normal fileitems
+   \param item CFileItem to grab the fileid of
+   \return id of the file, -1 if it is not in the db
+   */
+  int GetFileId(const CFileItem &item);
 
   int AddPath(const CStdString& strPath);
   int AddGenre(const CStdString& strGenre1);
@@ -521,6 +551,8 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
+  virtual int GetMinVersion() const { return 35; };
+  const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
   void SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
@@ -529,4 +561,11 @@ private:
 
   bool GetStackedTvShowList(int idShow, CStdString& strIn);
   void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
+
+  /*! \brief Get a safe filename from a given string
+   \param dir directory to use for the file
+   \param name movie, show name, or actor to get a safe filename for
+   \return safe filename based on this title
+   */
+  CStdString GetSafeFile(const CStdString &dir, const CStdString &name) const;
 };

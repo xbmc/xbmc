@@ -7,7 +7,7 @@
 
 
 using namespace std;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CVTPDirectory::CVTPDirectory()
 {

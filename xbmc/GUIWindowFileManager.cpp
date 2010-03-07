@@ -48,7 +48,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
-#ifdef HAVE_XBMC_NONFREE
+#ifdef HAS_FILESYSTEM_RAR
 #include "FileSystem/RarManager.h"
 #endif
 #include "Favourites.h"
@@ -69,7 +69,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace PLAYLIST;
 
 #define ACTION_COPY                     1
@@ -128,12 +127,12 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     int item;
 
     // the non-contextual menu can be called at any time
-    if (action.actionId == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
+    if (action.GetID() == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
     {
       OnPopupMenu(list,-1, false);
       return true;
     }
-    if (action.actionId == ACTION_DELETE_ITEM)
+    if (action.GetID() == ACTION_DELETE_ITEM)
     {
       if (CanDelete(list))
       {
@@ -143,7 +142,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_COPY_ITEM)
+    if (action.GetID() == ACTION_COPY_ITEM)
     {
       if (CanCopy(list))
       {
@@ -153,7 +152,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_MOVE_ITEM)
+    if (action.GetID() == ACTION_MOVE_ITEM)
     {
       if (CanMove(list))
       {
@@ -163,7 +162,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_RENAME_ITEM)
+    if (action.GetID() == ACTION_RENAME_ITEM)
     {
       if (CanRename(list))
       {
@@ -173,7 +172,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_PARENT_DIR)
+    if (action.GetID() == ACTION_PARENT_DIR)
     {
       if (m_vecItems[list]->IsVirtualDirectoryRoot())
         g_windowManager.PreviousWindow();
@@ -181,7 +180,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
         GoParentFolder(list);
       return true;
     }
-    if (action.actionId == ACTION_PLAYER_PLAY)
+    if (action.GetID() == ACTION_PLAYER_PLAY)
     {
 #ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
@@ -189,7 +188,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 #endif
     }
   }
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
@@ -468,6 +467,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   m_vecItems[iList]->Append(items);
   m_vecItems[iList]->m_strPath = items.m_strPath;
 
+  CStdString strParentPath;
   if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || g_guiSettings.GetBool("filelists.showaddsourcebuttons")))
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
@@ -478,6 +478,17 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
+  else if (g_guiSettings.GetBool("filelists.showparentdiritems"))
+  {
+    CUtil::GetParentPath(strDirectory, strParentPath);
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->m_strPath = strParentPath;
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    m_vecItems[iList]->AddFront(pItem, 0);
+  }
+
+  m_strParentPath[iList] = strParentPath;
 
   if (strDirectory.IsEmpty())
   {
@@ -823,11 +834,6 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   Update(iList, strPath);
 }
 
-void CGUIWindowFileManager::Render()
-{
-  CGUIWindow::Render();
-}
-
 bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
 {
   if (m_dlgProgress)
@@ -886,42 +892,6 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 
 bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items)
 {
-  CStdString strParentPath;
-  bool bParentExists = CUtil::GetParentPath(strDirectory, strParentPath);
-
-  // check if current directory is a root share
-  if ( !m_rootDir.IsSource(strDirectory) )
-  {
-    // no, do we got a parent dir?
-    if ( bParentExists )
-    {
-      // yes
-      if (g_guiSettings.GetBool("filelists.showparentdiritems"))
-      {
-        CFileItemPtr pItem(new CFileItem(".."));
-        pItem->m_strPath = strParentPath;
-        pItem->m_bIsFolder = true;
-        pItem->m_bIsShareOrDrive = false;
-        items.Add(pItem);
-      }
-      m_strParentPath[iList] = strParentPath;
-    }
-  }
-  else
-  {
-    // yes, this is the root of a share
-    // add parent path to the virtual directory
-    if (g_guiSettings.GetBool("filelists.showparentdiritems"))
-    {
-      CFileItemPtr pItem(new CFileItem(".."));
-      pItem->m_strPath = "";
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-      items.Add(pItem);
-    }
-    m_strParentPath[iList] = "";
-  }
-
   return m_rootDir.GetDirectory(strDirectory,items,false);
 }
 

@@ -126,9 +126,10 @@
   <string id="168"></string>
   <string id="169">Resolution</string>
   <string id="170">Adjust display refresh rate to match video</string>
-  <string id="171">Stretch 4:3 content to 16:9</string>
+  <string id="171"></string>
 
   <string id="172">Release date</string>
+  <string id="173">Display 4:3 videos as</string>
 
   <string id="175">Moods</string>
   <string id="176">Styles</string>
@@ -197,7 +198,7 @@
   <string id="251">Select destination directory</string>
   <string id="252">Output stereo to all speakers</string>
   <string id="253">Number of channels</string>
-  <string id="254">- DTS Capable Receiver</string>
+  <string id="254">- DTS capable receiver</string>
   <string id="255">CDDB</string>
   <string id="256">Fetching CD information</string>
   <string id="257">Error</string>
@@ -240,10 +241,10 @@
   <string id="296">Clear bookmarks</string>
   <string id="297">Audio offset</string>
   <string id="298">Bookmarks</string>
-  <string id="299">- AAC Capable Receiver</string>
-  <string id="300">- MP1 Capable Reciever</string>
-  <string id="301">- MP2 Capable Reciever</string>
-  <string id="302">- MP3 Capable Reciever</string>
+  <string id="299">- AAC capable receiver</string>
+  <string id="300">- MP1 capable receiver</string>
+  <string id="301">- MP2 capable receiver</string>
+  <string id="302">- MP3 capable receiver</string>
   <string id="303">Delay</string>
   <string id="304">Language</string>
   <string id="305">Enabled</string>
@@ -287,6 +288,7 @@
   <string id="343">Adjust framerate</string>
   <string id="344">Actors</string>
   <string id="345">Year</string>
+  <string id="346">Boost volume level on downmix</string>
   <string id="350">Programs</string>
   <string id="351">Off</string>
   <string id="352">Dim</string>
@@ -347,7 +349,6 @@
   <string id="407">From</string>
   <string id="408">at</string>
   <string id="409">Defaults</string>
-
   <string id="410">Accessing weather service</string>
   <string id="411">Getting weather for:</string>
   <string id="412">Unable to get weather data</string>
@@ -356,6 +357,8 @@
   <string id="415">Downloading thumbnail...</string>
   <string id="416">Not available</string>
   <string id="417">View: Big icons</string>
+  <string id="418">Low</string>
+  <string id="419">High</string>
 
   <string id="422">Delete album info</string>
   <string id="423">Delete CD information</string>
@@ -542,7 +545,7 @@
   <string id="630">Normal</string>
   <string id="631">Zoom</string>
   <string id="632">Stretch 4:3</string>
-  <string id="633">Stretch 14:9</string>
+  <string id="633">Wide Zoom</string>
   <string id="634">Stretch 16:9</string>
   <string id="635">Original Size</string>
   <string id="636">Custom</string>
@@ -568,6 +571,7 @@
   <string id="656">Browse for playlist</string>
   <string id="657">Browse for folder</string>
   <string id="658">Song information</string>
+  <string id="659">Non-linear stretch</string>
 
   <string id="660">Volume amplification</string>
   <string id="661">Choose export folder</string>
@@ -777,7 +781,7 @@
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
-  
+
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
   <string id="1398">Freezing</string>
@@ -892,7 +896,7 @@
   <string id="12021">Start from beginning</string>
   <string id="12022">Resume from %s</string>
   <string id="12023">Validating existing trainers...</string>
-  
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -1844,7 +1848,7 @@
   <string id="20433">Extract thumbnails and video information</string>
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
-  <string id="20436">Export actor thumbs</string>
+  <string id="20436">Export actor thumbs?</string>
   <string id="20437">Choose fanart</string>
   <string id="20438">Local fanart</string>
   <string id="20439">No fanart</string>
@@ -1930,6 +1934,7 @@
   <string id="21416">Enable fallback based on scraper language</string>
   <string id="21417">- Settings</string>
   <string id="21418">Multilingual</string>
+  <string id="21419">No scrapers present</string>
 
   <string id="21420">Value to match</string>
   <string id="21421">Smart playlist rule</string>
@@ -1946,7 +1951,7 @@
   <string id="21432">Edit smart playlist</string>
   <string id="21433">Name of the playlist</string>
   <string id="21434">Find items where</string>
-  <string id="21435">- Edit</string>
+  <string id="21435">Edit</string>
   <string id="21436">%i items</string>
   <string id="21437">New smart playlist...</string>
   <string id="21438">%c Drive</string>
@@ -1961,6 +1966,7 @@
   <string id="21447">Audio language</string>
   <string id="21448">Subtitle language</string>
   <string id="21449">Remote control sends keyboard presses</string>
+  <string id="21450">- Edit</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
@@ -2083,31 +2089,63 @@
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
 
-  <string id="23000">Weather plugin</string>
-  <string id="23001">- Plugin settings</string>
-
+  <string id="23049">Teletext not available</string>
   <string id="23050">Activate Teletext</string>
   <string id="23051">Part %i</string>
   <string id="23052">Buffering %i bytes</string>
   <string id="23053">Stopping</string>
   <string id="23054">Running</string>
 
-  <string id="23073">Enable boblight</string>
-  <string id="23074">Enable boblight test mode</string>
-  <string id="23075">Boblight value</string>
-  <string id="23076">Boblight value min</string>
-  <string id="23077">Boblight value max</string>
-  <string id="23078">Boblight saturation</string>
-  <string id="23079">Boblight saturation min</string>
-  <string id="23080">Boblight saturation max</string>
-  <string id="23081">Boblight speed</string>
-  <string id="23082">Boblight autospeed</string>
+  <string id="23053">Enable boblight</string>
+  <string id="23054">Enable boblight test mode</string>
+  <string id="23055">Boblight value</string>
+  <string id="23056">Boblight value min</string>
+  <string id="23057">Boblight value max</string>
+  <string id="23058">Boblight saturation</string>
+  <string id="23059">Boblight saturation min</string>
+  <string id="23060">Boblight saturation max</string>
+  <string id="23061">Boblight speed</string>
+  <string id="23062">Boblight autospeed</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>
   <string id="23101">Click OK to terminate the player</string>
 
   <string id="23104">Click OK when playback has ended</string>
+
+  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <string id="24000">Add-on</string>
+  <string id="24001">Add-ons</string>
+
+  <string id="24005">Plugin</string>
+  <string id="24007">Scraper</string>
+  <string id="24008">Screensaver</string>
+  <string id="24009">Script</string>
+  <string id="24010">Visualization</string>
+
+  <string id="24020">Configure Add-on</string>
+  <string id="24021">Disable Add-on</string>
+  <string id="24022">Enable Add-on</string>
+  <string id="24027">Weather service</string>
+  <string id="24028">Weather.com (standard)</string>
+  <string id="24030">This Add-on can not be configured</string>
+  <string id="24031">Error loading settings</string>
+
+  <string id="24050">Available Add-ons</string>
+  <string id="24051">Version:</string>
+  <string id="24052">Disclaimer:</string>
+  <string id="24053">License:</string>
+  <string id="24059">Would you like to install this Add-on?</string>
+
+  <string id="24070">Add-on can not used</string>
+  <string id="24071">An unknown error has occurred</string>
+  <string id="24072">Settings required</string>
+  <string id="24073">Could not connect</string>
+  <string id="24074">Needs to restart</string>
+  <string id="24080">Try to reconnect?</string>
+  <string id="24089">Add-on restarts</string>
+
+  <string id="24090">Lock Add-on manager</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
@@ -2197,4 +2235,19 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">Speaker Configuration</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+
 </strings>

@@ -89,22 +89,14 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   if (!artist) return false;
 
   XMLUtils::SetString(artist,       "name", strArtist);
-  CStdStringArray array;
-  StringUtils::SplitString(strGenre, g_advancedSettings.m_musicItemSeparator,array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(artist,       "genre", array[i]);
-  array.clear();
-  StringUtils::SplitString(strStyles, g_advancedSettings.m_musicItemSeparator,array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(artist,      "style", array[i]);
-  array.clear();
-  StringUtils::SplitString(strMoods, g_advancedSettings.m_musicItemSeparator,array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(artist,      "mood", array[i]);
-  array.clear();
-  StringUtils::SplitString(strYearsActive, g_advancedSettings.m_musicItemSeparator,array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(artist, "yearsactive", array[i]);
+  XMLUtils::SetAdditiveString(artist,       "genre",
+                            g_advancedSettings.m_musicItemSeparator, strGenre);
+  XMLUtils::SetAdditiveString(artist,      "style",
+                            g_advancedSettings.m_musicItemSeparator, strStyles);
+  XMLUtils::SetAdditiveString(artist,      "mood",
+                            g_advancedSettings.m_musicItemSeparator, strMoods);
+  XMLUtils::SetAdditiveString(artist, "yearsactive",
+                            g_advancedSettings.m_musicItemSeparator, strYearsActive);
   XMLUtils::SetString(artist,        "born", strBorn);
   XMLUtils::SetString(artist,      "formed", strFormed);
   XMLUtils::SetString(artist, "instruments", strInstruments);

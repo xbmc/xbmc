@@ -97,6 +97,7 @@ struct DAAP_ClientHost_FakeTAG
     int marked;
 };
 
+#if !defined(WIN32) && !defined(_LINUX)
 static int ClientHasHost_AndMark(DAAP_SClient *pClient, char *sharename)
 {
     DAAP_ClientHost_Fake *cur_fake = pClient->fakehosts;
@@ -121,7 +122,7 @@ static int ClientHasHost_AndMark(DAAP_SClient *pClient, char *sharename)
     }
     return 0;
 }
-#if !defined(WIN32) && !defined(_LINUX)
+
 static void DiscoverCB(SDiscover *disc, void *pv_pClient)
 {
     DAAP_SClient *pClient = (DAAP_SClient*)pv_pClient;

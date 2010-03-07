@@ -70,6 +70,18 @@ public:
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
   static bool GetAnimations(const TiXmlNode *control, const CRect &rect, std::vector<CAnimation> &animation);
+
+  /*! \brief Create an info label from an XML element
+   Processes XML elements of the form
+    <xmltag fallback="fallback_value">info_value</xmltag>
+   where info_value may use $INFO[], $LOCALIZE[], $NUMBER[] etc.
+   If either the fallback_value or info_value are natural numbers they are interpreted
+   as ids for lookup in strings.xml. The fallback attribute is optional.
+   \param element XML element to process
+   \param infoLabel returned infoLabel
+   \return true if a valid info label was read, false otherwise
+   */
+  static bool GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel);
   static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel);
   static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, color_t &value);

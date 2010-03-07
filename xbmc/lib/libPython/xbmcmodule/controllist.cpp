@@ -38,6 +38,7 @@
 #include "../XBPythonDll.h"
 #include "GUIListContainer.h"
 #include "GUIFontManager.h"
+#include "GUILabel.h"
 #include "control.h"
 #include "pyutil.h"
 

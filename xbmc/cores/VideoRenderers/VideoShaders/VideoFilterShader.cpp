@@ -46,6 +46,8 @@ BaseVideoFilterShader::BaseVideoFilterShader()
   m_sourceTexUnit = 0;
   m_hSourceTex = 0;
 
+  m_stretch = 0.0f;
+
   string shaderv = 
     "uniform float stepx;"
     "uniform float stepy;"
@@ -58,7 +60,7 @@ BaseVideoFilterShader::BaseVideoFilterShader()
   VertexShader()->SetSource(shaderv);
 }
 
-ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
+ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch)
 {
   m_method = method;
   m_kernelTex1 = 0;
@@ -92,6 +94,12 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   else
     defines = "#define HAS_FLOAT_TEXTURE 0\n";
 
+  //don't compile in stretch support when it's not needed
+  if (stretch)
+    defines += "#define XBMC_STRETCH 1\n";
+  else
+    defines += "#define XBMC_STRETCH 0\n";
+
   CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines: %s", shadername.c_str(), defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
 }
@@ -103,6 +111,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   m_hStepX     = glGetUniformLocation(ProgramHandle(), "stepx");
   m_hStepY     = glGetUniformLocation(ProgramHandle(), "stepy");
   m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
+  m_hStretch   = glGetUniformLocation(ProgramHandle(), "m_stretch");
 
   CConvolutionKernel kernel(m_method, 256);
 
@@ -164,6 +173,7 @@ bool ConvolutionFilterShader::OnEnabled()
   glUniform1i(m_hKernTex, 2);
   glUniform1f(m_hStepX, m_stepX);
   glUniform1f(m_hStepY, m_stepY);
+  glUniform1f(m_hStretch, m_stretch);
   VerifyGLState();
   return true;
 }
@@ -174,6 +184,25 @@ void ConvolutionFilterShader::Free()
     glDeleteTextures(1, &m_kernelTex1);
   m_kernelTex1 = 0;
   BaseVideoFilterShader::Free();
+}
+
+StretchFilterShader::StretchFilterShader()
+{
+  PixelShader()->LoadSource("stretch.glsl");
+}
+
+void StretchFilterShader::OnCompiledAndLinked()
+{
+  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
+  m_hStretch   = glGetUniformLocation(ProgramHandle(), "m_stretch");
+}
+
+bool StretchFilterShader::OnEnabled()
+{
+  glUniform1i(m_hSourceTex, m_sourceTexUnit);
+  glUniform1f(m_hStretch, m_stretch);
+  VerifyGLState();
+  return true;
 }
 
 #endif

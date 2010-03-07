@@ -44,7 +44,18 @@
 #define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
+
+#ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
+#define HAS_WEB_INTERFACE
+#endif
+
+#ifdef HAVE_LIBSSH
+#define HAS_FILESYSTEM_SFTP
+#endif
+
+#define HAS_JSONRPC
+#define HAS_HTTPAPI
 
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
@@ -62,7 +73,6 @@
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 #define HAS_FILESYSTEM_MMS
-#define HAS_CCXSTREAM
 
 /**********************
  * Non-free Components
@@ -70,10 +80,12 @@
 
 #if defined(_LINUX) || defined(__APPLE__)
   #if defined(HAVE_XBMC_NONFREE)
-    #define HAS_RAR
+    #define HAS_FILESYSTEM_RAR
+    #define HAS_FILESYSTEM_CCX
   #endif
 #else
-  #define HAS_RAR
+  #define HAS_FILESYSTEM_RAR
+  #define HAS_FILESYSTEM_CCX
 #endif
 
 /*****************
@@ -86,6 +98,8 @@
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
 #define HAVE_LIBCRYSTALHD
+#define HAS_WEB_SERVER
+#define HAS_WEB_INTERFACE
 #endif
 
 /*****************

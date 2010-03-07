@@ -37,12 +37,11 @@
 #endif
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace std;
 
 #define SEEKTIMOUT 30000
 
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
 CFileRarExtractThread::CFileRarExtractThread()
 {
   m_pArc = NULL;
@@ -113,7 +112,7 @@ CFileRar::CFileRar()
   m_strPassword.Empty();
   m_strPathInRar.Empty();
   m_bFileOptions = 0;
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   m_pArc = NULL;
   m_pCmd = NULL;
   m_pExtract = NULL;
@@ -129,7 +128,7 @@ CFileRar::CFileRar()
 
 CFileRar::~CFileRar()
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   if (!m_bOpen)
     return;
 
@@ -254,7 +253,7 @@ bool CFileRar::OpenForWrite(const CURL& url)
 
 unsigned int CFileRar::Read(void *lpBuf, int64_t uiBufSize)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   if (!m_bOpen)
     return 0;
 
@@ -339,7 +338,7 @@ unsigned int CFileRar::Write(void *lpBuf, int64_t uiBufSize)
 
 void CFileRar::Close()
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   if (!m_bOpen)
     return;
 
@@ -364,7 +363,7 @@ void CFileRar::Close()
 
 int64_t CFileRar::Seek(int64_t iFilePosition, int iWhence)
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   if (!m_bOpen)
     return -1;
 
@@ -536,7 +535,7 @@ void CFileRar::InitFromUrl(const CURL& url)
 
 void CFileRar::CleanUp()
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   if (m_pExtractThread)
   {
     if (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0)
@@ -578,7 +577,7 @@ void CFileRar::CleanUp()
 
 bool CFileRar::OpenInArchive()
 {
-#ifdef HAS_RAR
+#ifdef HAS_FILESYSTEM_RAR
   int iHeaderSize;
 
   InitCRC();

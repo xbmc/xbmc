@@ -20,13 +20,15 @@
  */
 
 #include "RingBuffer.h"
+#include "SingleLock.h"
+
 #include <cstring>
 #include <cstdlib>
+#include <algorithm>
 
 /* Constructor */
 CRingBuffer::CRingBuffer()
 {
-  InitializeCriticalSection(&m_critSection);
   m_buffer = NULL;
   m_size = 0;
   m_readPtr = 0;
@@ -38,28 +40,25 @@ CRingBuffer::CRingBuffer()
 CRingBuffer::~CRingBuffer()
 {
   Destroy();
-  DeleteCriticalSection(&m_critSection);
 }
 
 /* Create a ring buffer with the specified 'size' */
 bool CRingBuffer::Create(unsigned int size)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   m_buffer = (char*)malloc(size);
   if (m_buffer != NULL)
   {
     m_size = size;
-    LeaveCriticalSection(&m_critSection);
     return true;
   }
-  LeaveCriticalSection(&m_critSection);
   return false;
 }
 
 /* Free the ring buffer and set all values to NULL or 0 */
 void CRingBuffer::Destroy()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_buffer != NULL)
   {
     free(m_buffer);
@@ -69,17 +68,15 @@ void CRingBuffer::Destroy()
   m_readPtr = 0;
   m_writePtr = 0;
   m_fillCount = 0;
-  LeaveCriticalSection(&m_critSection);
 }
 
 /* Clear the ring buffer */
 void CRingBuffer::Clear()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   m_readPtr = 0;
   m_writePtr = 0;
   m_fillCount = 0;
-  LeaveCriticalSection(&m_critSection);
 }
 
 /* Read in data from the ring buffer to the supplied buffer 'buf'. The amount
@@ -87,10 +84,9 @@ void CRingBuffer::Clear()
  */
 bool CRingBuffer::ReadData(char *buf, unsigned int size)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (size > m_fillCount)
   {
-    LeaveCriticalSection(&m_critSection);
     return false;
   }
   if (size + m_readPtr > m_size)
@@ -108,7 +104,6 @@ bool CRingBuffer::ReadData(char *buf, unsigned int size)
   if (m_readPtr == m_size)
     m_readPtr = 0;
   m_fillCount -= size;
-  LeaveCriticalSection(&m_critSection);
   return true;
 }
 
@@ -117,11 +112,22 @@ bool CRingBuffer::ReadData(char *buf, unsigned int size)
  */
 bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (rBuf.getBuffer() == NULL)
     rBuf.Create(size);
-  LeaveCriticalSection(&m_critSection);
-  return ReadData(rBuf.getBuffer(), size);
+
+  bool bOk = size <= rBuf.getMaxWriteSize() && size <= getMaxReadSize();
+  if (bOk)
+  {
+    unsigned int chunksize = std::min(size, m_size - m_readPtr);
+    bOk = rBuf.WriteData(&getBuffer()[m_readPtr], chunksize);
+    if (bOk && chunksize < size)
+      bOk = rBuf.WriteData(&getBuffer()[0], size - chunksize);
+    if (bOk)
+      SkipBytes(size);
+  }
+
+  return bOk;
 }
 
 /* Write data to ring buffer from buffer specified in 'buf'. Amount read in is
@@ -129,10 +135,9 @@ bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
  */
 bool CRingBuffer::WriteData(char *buf, unsigned int size)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (size > m_size - m_fillCount)
   {
-    LeaveCriticalSection(&m_critSection);
     return false;
   }
   if (size + m_writePtr > m_size)
@@ -150,7 +155,6 @@ bool CRingBuffer::WriteData(char *buf, unsigned int size)
   if (m_writePtr == m_size)
     m_writePtr = 0;
   m_fillCount += size;
-  LeaveCriticalSection(&m_critSection);
   return true;
 }
 
@@ -159,23 +163,35 @@ bool CRingBuffer::WriteData(char *buf, unsigned int size)
  */
 bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
 {
-  return WriteData(rBuf.getBuffer(), size);
+  CSingleLock lock(m_critSection);
+  if (m_buffer == NULL)
+    Create(size);
+
+  bool bOk = size <= rBuf.getMaxReadSize() && size <= getMaxWriteSize();
+  if (bOk)
+  {
+    unsigned int readpos = rBuf.getReadPtr();
+    unsigned int chunksize = std::min(size, rBuf.getSize() - readpos);
+    bOk = WriteData(&rBuf.getBuffer()[readpos], chunksize);
+    if (bOk && chunksize < size)
+      bOk = WriteData(&rBuf.getBuffer()[0], size - chunksize);
+  }
+
+  return bOk;
 }
 
 /* Skip bytes in buffer to be read */
 bool CRingBuffer::SkipBytes(int skipSize)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (skipSize < 0)
   {
-    LeaveCriticalSection(&m_critSection);
     return false; // skipping backwards is not supported
   }
 
   unsigned int size = skipSize;
   if (size > m_fillCount)
   {
-    LeaveCriticalSection(&m_critSection);
     return false;
   }
   if (size + m_readPtr > m_size)
@@ -190,23 +206,19 @@ bool CRingBuffer::SkipBytes(int skipSize)
   if (m_readPtr == m_size)
     m_readPtr = 0;
   m_fillCount -= size;
-  LeaveCriticalSection(&m_critSection);
   return true;
 }
 
 /* Append all content from ring buffer 'rBuf' to this ring buffer */
 bool CRingBuffer::Append(CRingBuffer &rBuf)
 {
-  EnterCriticalSection(&m_critSection);
-  if (m_buffer == NULL)
-    Create(rBuf.getMaxReadSize());
-  LeaveCriticalSection(&m_critSection);
-  return WriteData(rBuf.getBuffer(), rBuf.getMaxReadSize());
+  return WriteData(rBuf, rBuf.getMaxReadSize());
 }
 
-/* A synonym for Append() */
+/* Copy all content from ring buffer 'rBuf' to this ring buffer overwriting any existing data */
 bool CRingBuffer::Copy(CRingBuffer &rBuf)
 {
+  Clear();
   return Append(rBuf);
 }
 
@@ -218,6 +230,7 @@ char *CRingBuffer::getBuffer()
 
 unsigned int CRingBuffer::getSize()
 {
+  CSingleLock lock(m_critSection);
   return m_size;
 }
 
@@ -228,15 +241,18 @@ unsigned int CRingBuffer::getReadPtr()
 
 unsigned int CRingBuffer::getWritePtr()
 {
+  CSingleLock lock(m_critSection);
   return m_writePtr;
 }
 
 unsigned int CRingBuffer::getMaxReadSize()
 {
+  CSingleLock lock(m_critSection);
   return m_fillCount;
 }
 
 unsigned int CRingBuffer::getMaxWriteSize()
 {
+  CSingleLock lock(m_critSection);
   return m_size - m_fillCount;
 }

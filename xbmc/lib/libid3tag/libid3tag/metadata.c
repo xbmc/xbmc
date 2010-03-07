@@ -23,6 +23,9 @@
 #  include "config.h"
 # endif
 
+#include <string.h>
+#include <stdlib.h>
+
 # include "metadata.h"
 # include "global.h"
 # include "ucs4.h"

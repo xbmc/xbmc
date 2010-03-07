@@ -33,6 +33,8 @@
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "utils/PasswordManager.h"
+#include "utils/RegExp.h"
+#include "GUIPassword.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
@@ -61,11 +63,8 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 class CSettings g_settings;
-
-extern CStdString g_LoadErrorStr;
 
 CSettings::CSettings(void)
 {
@@ -493,7 +492,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
   const TiXmlElement *pElement = pRoot->FirstChildElement("resolutions");
   if (!pElement)
   {
-    g_LoadErrorStr.Format("%s Doesn't contain <resolutions>", strSettingsFile.c_str());
+    CLog::Log(LOGERROR, "%s Doesn't contain <resolutions>", strSettingsFile.c_str());
     return false;
   }
   const TiXmlElement *pResolution = pElement->FirstChildElement("resolution");
@@ -593,14 +592,14 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
 
   if (!xmlDoc.LoadFile(strSettingsFile))
   {
-    g_LoadErrorStr.Format("%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s, Line %d\n%s", strSettingsFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
   if (strcmpi(pRootElement->Value(), "settings") != 0)
   {
-    g_LoadErrorStr.Format("%s\nDoesn't contain <settings>", strSettingsFile.c_str());
+    CLog::Log(LOGERROR, "%s\nDoesn't contain <settings>", strSettingsFile.c_str());
     return false;
   }
 
@@ -672,7 +671,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, 0, INT_MAX);
-    GetInteger(pElement, "httpapibroadcastlevel", m_HttpApiBroadcastLevel, 0, 0,5);
+    GetInteger(pElement, "httpapibroadcastlevel", m_HttpApiBroadcastLevel, 0, 0, 255);
     GetInteger(pElement, "httpapibroadcastport", m_HttpApiBroadcastPort, 8278, 1, 65535);
   }
 
@@ -699,6 +698,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "gamma", m_defaultVideoSettings.m_Gamma, 20, 0, 100);
     GetFloat(pElement, "audiodelay", m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
     GetFloat(pElement, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
+    XMLUtils::GetBoolean(pElement, "autocrop", m_defaultVideoSettings.m_Crop);
+    XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
 
     GetFloat(pElement, "boblightvalue", m_defaultVideoSettings.m_BoblightValue, 10.0, 0.0, 20.0);
     GetFloat(pElement, "boblightvaluemin", m_defaultVideoSettings.m_BoblightValueMin, 0.0, 0.0, 1.0);
@@ -868,6 +869,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetFloat(pNode, "gamma", m_defaultVideoSettings.m_Gamma);
   XMLUtils::SetFloat(pNode, "audiodelay", m_defaultVideoSettings.m_AudioDelay);
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
+  XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
+  XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
 
   XMLUtils::SetFloat(pNode, "boblightvalue", m_defaultVideoSettings.m_BoblightValue);
   XMLUtils::SetFloat(pNode, "boblightvaluemin", m_defaultVideoSettings.m_BoblightValueMin);
@@ -1082,6 +1085,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     profile.setWriteSources(bHas);
 
     bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockaddonmanager", bHas);
+    profile.setAddonManagerLocked(bHas);
+
+    bHas = false;
     XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
     profile.setSettingsLocked(bHas);
 
@@ -1158,6 +1165,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
       XMLUtils::SetBoolean(pNode,"lockpictures",m_vecProfiles[iProfile].picturesLocked());
       XMLUtils::SetBoolean(pNode,"lockprograms",m_vecProfiles[iProfile].programsLocked());
       XMLUtils::SetBoolean(pNode,"locksettings",m_vecProfiles[iProfile].settingsLocked());
+      XMLUtils::SetBoolean(pNode,"lockaddonmanager",m_vecProfiles[iProfile].addonmanagerLocked());
       XMLUtils::SetBoolean(pNode,"lockfiles",m_vecProfiles[iProfile].filesLocked());
     }
 
@@ -1971,6 +1979,7 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
   }
+  CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
-  CDirectory::Create("special://profile/visualisations");
 }
+

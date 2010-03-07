@@ -19,12 +19,12 @@ $(FLAC_LIB): flac-1.2.1/src/libFLAC/.libs/libFLAC.a
 else
 ifneq (@USE_EXTERNAL_LIBFLAC@,1)
 $(FLAC_LIB): flac-1.2.1/src/libFLAC/.libs/libFLAC.a
-	$(CC) -shared -fpic -o $@ -rdynamic \
+	$(CC) $(CFLAGS) -shared -fpic -o $@ -rdynamic \
 	-Wl,--whole-archive flac-1.2.1/src/libFLAC/.libs/libFLAC.a -Wl,--no-whole-archive \
 	`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 else
 $(FLAC_LIB):
-	$(CC) -shared -fpic -o $@ -rdynamic -lFLAC \
+	$(CC) $(CFLAGS) -shared -fpic -o $@ -rdynamic -lFLAC \
 	`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 endif
 endif

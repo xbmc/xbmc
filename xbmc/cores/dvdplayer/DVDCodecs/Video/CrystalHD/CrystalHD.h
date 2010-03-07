@@ -79,7 +79,7 @@ public:
   uint64_t      m_timestamp;
   unsigned int  m_color_range;
   unsigned int  m_color_matrix;
-  unsigned int  m_PictureNumber;
+  uint64_t      m_PictureNumber;
   DVDVideoPicture::EFormat m_format;
   unsigned char *m_y_buffer_ptr;
   unsigned char *m_u_buffer_ptr;
@@ -108,6 +108,12 @@ typedef uint32_t CRYSTALHD_CODEC_TYPE;
 #define CRYSTALHD_FIELD_EVEN        0x01
 #define CRYSTALHD_FIELD_ODD         0x02
 
+typedef struct CHD_TIMESTAMP
+{
+  double dts;
+  double pts;
+} CHD_TIMESTAMP;
+
 class DllLibCrystalHD;
 class CMPCInputThread;
 class CMPCOutputThread;
@@ -124,11 +130,12 @@ public:
 
   bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
   void CloseDecoder(void);
-  bool IsOpenforDecode(void);
   void Reset(void);
-  unsigned int GetInputCount(void);
-  bool AddInput(unsigned char *pData, size_t size, double pts);
 
+  bool WaitInput(unsigned int msec);
+  bool AddInput(unsigned char *pData, size_t size, double dts, double pts);
+
+  int  GetInputCount(void);
   int  GetReadyCount(void);
   void BusyListPop(void);
 
@@ -137,8 +144,6 @@ public:
 
 protected:
   void CheckCrystalHDLibraryPath(void);
-  void SetFrameRate(uint32_t resolution);
-  void SetAspectRatio(uint32_t aspect_ratio, uint32_t custom_aspect_ratio_width_height);
 
   DllLibCrystalHD *m_dll;
   void          *m_Device;
@@ -149,9 +154,8 @@ protected:
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;
-  double        m_last_in_pts;
-  double        m_last_out_pts;
 
+  std::deque<CHD_TIMESTAMP> m_timestamps;
   CMPCInputThread *m_pInputThread;
   CMPCOutputThread *m_pOutputThread;
   CSyncPtrQueue<CPictureBuffer> m_BusyList;

@@ -343,13 +343,10 @@ void CShoutcastRipFile::PrepareRecording( )
     SetFilename( szFilePath, directoryName ); //file name like Directory
 
     //set the remaining tags
-    char szTemp[1124];
-    strcpy(szTemp, directoryName );
-    strcat(szTemp, " %i");
-    sprintf(szTitle, szTemp, m_iTrackCount);
-    m_Tag.SetTitle(szTitle );       //Jazzmusique 3
-    m_Tag.SetAlbum(directoryName );      //Jazzmusique (Album is like Directory)
-    m_Tag.SetArtist("Shoutcast");     //Shoutcast
+    sprintf( szTitle, "%s %i", directoryName, m_iTrackCount );
+    m_Tag.SetTitle( szTitle );       //Jazzmusique 3
+    m_Tag.SetAlbum( directoryName );      //Jazzmusique (Album is like Directory)
+    m_Tag.SetArtist( "Shoutcast" );     //Shoutcast
   }
 }
 

@@ -57,7 +57,7 @@
 #define VIEW_MODE_NORMAL        0
 #define VIEW_MODE_ZOOM          1
 #define VIEW_MODE_STRETCH_4x3   2
-#define VIEW_MODE_STRETCH_14x9  3
+#define VIEW_MODE_WIDE_ZOOM    3
 #define VIEW_MODE_STRETCH_16x9  4
 #define VIEW_MODE_ORIGINAL      5
 #define VIEW_MODE_CUSTOM        6

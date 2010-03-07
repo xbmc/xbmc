@@ -40,9 +40,11 @@
 #if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_FLAC_CODEC    "libFLAC.so.8"
 #define DLL_PATH_OGG_CODEC     "libvorbisfile.so.3"
+#define DLL_PATH_MODPLUG_CODEC "libmodplug.so.0"
 #else
 #define DLL_PATH_FLAC_CODEC    "special://xbmc/system/players/paplayer/libFLAC-@ARCH@.so"
 #define DLL_PATH_OGG_CODEC     "special://xbmc/system/players/paplayer/vorbisfile-@ARCH@.so"
+#define DLL_PATH_MODPLUG_CODEC "special://xbmc/system/players/paplayer/libmodplug-@ARCH@.so"
 #endif
 
 /* dvdplayer */

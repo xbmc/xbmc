@@ -12,6 +12,7 @@
 #include "GraphicContext.h"
 #include "BaseRenderer.h"
 
+class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
@@ -115,13 +116,15 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
+#ifdef HAVE_LIBVDPAU
+  virtual void         AddProcessor(CVDPAU* vdpau);
+#endif
+
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   // Feature support
-  virtual bool SupportsBrightness();
-  virtual bool SupportsContrast();
-  virtual bool SupportsGamma();
   virtual bool SupportsMultiPassRendering();
+  virtual bool Supports(ERENDERFEATURE feature);
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
@@ -140,13 +143,9 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  typedef void (CLinuxRendererGL::*TextureFuncLoadPtr)(int index);
-  typedef void (CLinuxRendererGL::*TextureFuncDeletePtr)(int index);
-  typedef bool (CLinuxRendererGL::*TextureFuncCreatePtr)(int index, bool clear);
-
-  TextureFuncLoadPtr LoadTexturesFuncPtr;
-  TextureFuncDeletePtr DeleteTextureFuncPtr;
-  TextureFuncCreatePtr CreateTextureFuncPtr;
+  void (CLinuxRendererGL::*m_textureLoad)(int source);
+  void (CLinuxRendererGL::*m_textureDelete)(int index);
+  bool (CLinuxRendererGL::*m_textureCreate)(int index, bool clear);
 
   void LoadYV12Textures(int source);
   void DeleteYV12Texture(int index);
@@ -216,6 +215,10 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
     GLuint    pbo[MAX_PLANES];
+
+#ifdef HAVE_LIBVDPAU
+    CVDPAU*   vdpau;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -248,6 +251,9 @@ protected:
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);
   bool m_pboused;
+
+  bool  m_nonLinStretch;
+  float m_customPixelRatio;
 };
 
 

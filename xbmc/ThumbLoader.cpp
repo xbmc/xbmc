@@ -38,7 +38,6 @@
 #include "cores/dvdplayer/DVDFileInfo.h"
 
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace std;
 
 CThumbLoader::CThumbLoader(int nThreads) :
@@ -160,9 +159,9 @@ void CVideoThumbLoader::SetWatchedOverlay(CFileItem *item)
     CVideoDatabase dbs;
     if (dbs.Open())
     {
-      int file_id = dbs.GetFileId(item->m_strPath);
-      if (file_id > -1)
-        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (dbs.GetPlayCount(file_id) > 0));
+      int playCount = dbs.GetPlayCount(*item);
+      if (playCount >= 0)
+        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, playCount > 0);
 
       dbs.Close();
     }

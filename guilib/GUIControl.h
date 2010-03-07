@@ -30,9 +30,8 @@
 
 #include "GraphicContext.h" // needed by any rendering operation (all controls)
 #include "GUIMessage.h"     // needed by practically all controls
-#include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
 #include "VisibleEffect.h"  // needed for the CAnimation members
-#include "GUIInfoTypes.h"   // needed for CGuiInfoColor to handle infolabel'ed colors
+#include "GUIInfoTypes.h"   // needed for CGUIInfoColor to handle infolabel'ed colors
 #include "GUIActionDescriptor.h"
 
 class CGUIListItem; // forward
@@ -40,39 +39,6 @@ class CAction;
 class CMouseEvent;
 
 enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
-
-class CLabelInfo
-{
-public:
-  CLabelInfo()
-  {
-    font = NULL;
-    align = XBFONT_LEFT;
-    offsetX = offsetY = 0;
-    width = 0;
-    angle = 0;
-  };
-  void UpdateColors()
-  {
-    textColor.Update();
-    shadowColor.Update();
-    selectedColor.Update();
-    disabledColor.Update();
-    focusedColor.Update();
-  };
-
-  CGUIInfoColor textColor;
-  CGUIInfoColor shadowColor;
-  CGUIInfoColor selectedColor;
-  CGUIInfoColor disabledColor;
-  CGUIInfoColor focusedColor;
-  uint32_t align;
-  float offsetX;
-  float offsetY;
-  float width;
-  float angle;
-  CGUIFont *font;
-};
 
 class CControlState
 {
@@ -269,6 +235,7 @@ public:
     GUICONTROL_CONSOLE,
     GUICONTROL_EDIT,
     GUICONTROL_VISUALISATION,
+    GUICONTROL_RENDERADDON,
     GUICONTROL_MULTI_IMAGE,
     GUICONTROL_GROUP,
     GUICONTROL_GROUPLIST,

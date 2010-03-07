@@ -27,6 +27,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/times.h>
+#include <sched.h>
 
 #ifdef __APPLE__
 #include "utils/Atomics.h"
@@ -46,6 +47,14 @@
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
 {
+#if _POSIX_PRIORITY_SCHEDULING
+  if(dwMilliSeconds == 0)
+  {
+    sched_yield();
+    return;
+  }
+#endif
+
   struct timespec req;
   req.tv_sec = dwMilliSeconds / 1000;
   req.tv_nsec = (dwMilliSeconds % 1000) * 1000000;

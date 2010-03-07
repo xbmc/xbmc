@@ -43,6 +43,9 @@ typedef unsigned long ThreadIdentifier;
 #define strcasecmp strcmpi
 #endif
 
+#define INT16_MAX SHRT_MAX
+#define INT16_MIN SHRT_MIN
+
 #ifndef PRIdS
 #define PRIdS "Id"
 #endif
@@ -85,6 +88,7 @@ typedef unsigned long ThreadIdentifier;
 #define strtoll(p, e, b) _strtoi64(p, e, b)
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
+extern "C" int strverscmp (const char *s1, const char *s2);
 
 #endif // _WIN32
 

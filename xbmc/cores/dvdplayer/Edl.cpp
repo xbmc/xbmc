@@ -23,7 +23,7 @@
 #include "StringUtils.h"
 #include "Util.h"
 #include "FileSystem/File.h"
-#include "FileSystem/CMythFile.h"
+#include "FileSystem/MythFile.h"
 #include "AdvancedSettings.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
@@ -64,8 +64,45 @@ void CEdl::Clear()
   m_iTotalCutTime = 0;
 }
 
-bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameRate, const int iHeight)
 {
+  /*
+   * The frame rate hints returned from ffmpeg for the video stream do not appear to take into
+   * account whether the content is interlaced. This affects the calculation to time offsets based
+   * on frames per second as most commercial detection programs use full frames, which need two
+   * interlaced fields to calculate a single frame so the actual frame rate is half.
+   *
+   * Adjust the frame rate using the detected frame rate or height to determine typical interlaced
+   * content (obtained from http://en.wikipedia.org/wiki/Frame_rate)
+   */
+  float fFramesPerSecond;
+  if (fFrameRate == 59.940) // NTSC or 60i content
+  {
+    CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 59.940 to 29.97 assuming NTSC or 60i (interlaced)",
+              __FUNCTION__);
+    fFramesPerSecond = 29.97;
+  }
+  else if (fFrameRate == 47.952) // 24p -> NTSC conversion
+  {
+    CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 47.952 to 23.976 assuming 24p -> NTSC conversion (interlaced)",
+              __FUNCTION__);
+    fFramesPerSecond = 23.976;
+  }
+  else if (iHeight == 576) // PAL. Can't used fps check of 50.0 as this is valid for 720p
+  {
+    CLog::Log(LOGDEBUG, "%s - Setting frames per second to 25.0 assuming PAL (interlaced)",
+               __FUNCTION__);
+    fFramesPerSecond = 25.0;
+  }
+  else if (iHeight == 1080) // Don't know of any 1080p content being broadcast so assume 1080i
+  {
+    CLog::Log(LOGDEBUG, "%s - Adjusting detected frame rate by half assuming 1080i (interlaced): %.3f",
+              __FUNCTION__, fFrameRate);
+    fFramesPerSecond = fFrameRate / 2;
+  }
+  else // Assume everything else is not interlaced, e.g. 720p.
+    fFramesPerSecond = fFrameRate;
+
   bool bFound = false;
 
   /*
@@ -75,8 +112,8 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrames
   if (CUtil::IsHD(strMovie)
   ||  CUtil::IsSmb(strMovie))
   {
-    CLog::Log(LOGDEBUG, "%s - checking for any edit decision lists (EDL) on local drive or remote share for: %s", __FUNCTION__,
-              strMovie.c_str());
+    CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
+              __FUNCTION__, strMovie.c_str());
 
     /*
      * Read any available file format until a valid EDL related file is found.
@@ -99,7 +136,7 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrames
   else if (CUtil::IsMythTV(strMovie)
   &&      !CUtil::IsLiveTV(strMovie))
   {
-    CLog::Log(LOGDEBUG, "%s - checking for any commercial breaks within MythTV for: %s", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "%s - Checking for commercial breaks within MythTV for: %s", __FUNCTION__,
               strMovie.c_str());
     bFound = ReadMythCommBreaks(strMovie, fFramesPerSecond);
   }
@@ -116,8 +153,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString edlFilename;
-  CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
+  CStdString edlFilename(CUtil::ReplaceExtension(strMovie, ".edl"));
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -198,8 +234,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
-  CStdString comskipFilename;
-  CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
+  CStdString comskipFilename(CUtil::ReplaceExtension(strMovie, ".txt"));
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -284,8 +319,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
    */
 
   Clear();
-  CStdString videoReDoFilename;
-  CUtil::ReplaceExtension(strMovie, ".Vprj", videoReDoFilename);
+  CStdString videoReDoFilename(CUtil::ReplaceExtension(strMovie, ".Vprj"));
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -371,8 +405,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename;
-  CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml", beyondTVFilename);
+  CStdString beyondTVFilename(CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -451,7 +484,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   }
 }
 
-bool CEdl::AddCut(const Cut& cut)
+bool CEdl::AddCut(Cut& cut)
 {
   if (cut.action != CUT && cut.action != MUTE && cut.action != COMM_BREAK)
   {
@@ -494,6 +527,22 @@ bool CEdl::AddCut(const Cut& cut)
                 cut.action);
       return false;
     }
+  }
+
+  if (cut.action == COMM_BREAK)
+  {
+    /*
+     * Detection isn't perfect near the edges of commercial breaks so automatically wait for a bit at
+     * the start (autowait) and automatically rewind by a bit (autowind) at the end of the commercial
+     * break.
+     */
+    int autowait = g_advancedSettings.m_iEdlCommBreakAutowait * 1000; // seconds -> ms
+    int autowind = g_advancedSettings.m_iEdlCommBreakAutowind * 1000; // seconds -> ms
+
+    if (cut.start > 0) // Only autowait if not at the start.
+     cut.start += autowait;
+    if (cut.end > cut.start + autowind) // Only autowind if it won't go back past the start (should never happen).
+     cut.end -= autowind;
   }
 
   /*
@@ -750,7 +799,7 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
   /*
    * Exists() sets up all the internal bits needed for GetCommBreakList().
    */
-  CCMythFile mythFile;
+  CMythFile mythFile;
   CURL url(strMovie);
   if (!mythFile.Exists(url))
     return false;
@@ -775,22 +824,10 @@ bool CEdl::ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPer
     cut.start = (int)(commbreak->start_mark / fFramesPerSecond * 1000);
     cut.end = (int)(commbreak->end_mark / fFramesPerSecond * 1000);
 
-    /*
-     * Detection isn't perfect near the edges so autowind by a small amount into each end of the
-     * detected commercial break.
-     *
-     * TODO: Advanced setting for the autowind amount. Perhaps one for fowards and one for backwards?
-     */
-    int autowind = 2 * 1000; // 2 seconds in ms
-    if (cut.start > 0) // Only autowind forwards if not at the start.
-      cut.start += autowind;
-    if (cut.end > cut.start + autowind) // Only autowind if it won't go back past the start (should never happen).
-      cut.end -= autowind;
-
     if (!AddCut(cut)) // Log and continue with errors while still testing.
-      CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. autowind: %d. Continuing anyway.",
+      CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. Continuing anyway.",
                 __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
-                MillisecondsToTimeString(cut.end).c_str(), url.GetFileName().c_str(), autowind);
+                MillisecondsToTimeString(cut.end).c_str(), url.GetFileName().c_str());
   }
 
   if (HasCut())

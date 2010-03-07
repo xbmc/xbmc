@@ -45,8 +45,9 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
+#ifdef HAS_HTTPAPI
+#include "lib/libhttpapi/XBMChttp.h"
+#include "lib/libhttpapi/HttpApi.h"
 #endif
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
@@ -268,7 +269,7 @@ namespace PYXBMC
     "\n"
     "function       : string - builtin function to execute.\n"
     "\n"
-    "List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions \n"
+    "List of functions - http://wiki.xbmc.org/?title=List_of_Built_In_Functions \n"
     "\n"
     "example:\n"
     "  - xbmc.executebuiltin('XBMC.RunXBE(c:\\\\avalaunch.xbe)')\n");
@@ -284,39 +285,50 @@ namespace PYXBMC
     return Py_None;
   }
 
+#ifdef HAS_HTTPAPI
   // executehttpapi() method
   PyDoc_STRVAR(executeHttpApi__doc__,
     "executehttpapi(httpcommand) -- Execute an HTTP API command.\n"
     "\n"
     "httpcommand    : string - http command to execute.\n"
     "\n"
-    "List of commands - http://xbmc.org/wiki/?title=WebServerHTTP-API#The_Commands \n"
+    "List of commands - http://wiki.xbmc.org/?title=WebServerHTTP-API#The_Commands \n"
     "\n"
     "example:\n"
     "  - response = xbmc.executehttpapi('TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)')\n");
 
-   PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
+  PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
-#ifdef HAS_WEB_SERVER
     char *cLine = NULL;
-    CStdString ret;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
     if (!m_pXbmcHttp)
-    {
-      CSectionLoader::Load("LIBHTTP");
       m_pXbmcHttp = new CXbmcHttp();
-    }
-    if (!pXbmcHttpShim)
-    {
-      pXbmcHttpShim = new CXbmcHttpShim();
-      if (!pXbmcHttpShim)
-        return NULL;
-    }
-    ret=pXbmcHttpShim->xbmcExternalCall(cLine);
+    CStdString method = cLine;
 
-    return PyString_FromString(ret.c_str());
+    int open, close;
+    CStdString parameter="", cmd=cLine, execute;
+    open = cmd.Find("(");
+    if (open>0)
+    {
+      close=cmd.length();
+      while (close>open && cmd.Mid(close,1)!=")")
+        close--;
+      if (close>open)
+      {
+        parameter = cmd.Mid(open + 1, close - open - 1);
+        parameter.Replace(",",";");
+        execute = cmd.Left(open);
+      }
+      else //open bracket but no close
+        return PyString_FromString("");
+    }
+    else //no parameters
+      execute = cmd;
+
+    CUtil::URLDecode(parameter);
+    return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
+	}
 #endif
-  }
 
   // sleep() method
   PyDoc_STRVAR(sleep__doc__,
@@ -500,7 +512,7 @@ namespace PYXBMC
     "\n"
     "infotag        : string - infoTag for value you want returned.\n"
     "\n"
-    "List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels \n"
+    "List of InfoTags - http://wiki.xbmc.org/?title=InfoLabels \n"
     "\n"
     "example:\n"
     "  - label = xbmc.getInfoLabel('Weather.Conditions')\n");
@@ -521,7 +533,7 @@ namespace PYXBMC
     "\n"
     "infotag        : string - infotag for value you want returned.\n"
     "\n"
-    "List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels \n"
+    "List of InfoTags - http://wiki.xbmc.org/?title=InfoLabels \n"
     "\n"
     "example:\n"
     "  - filename = xbmc.getInfoImage('Weather.Conditions')\n");
@@ -586,7 +598,7 @@ namespace PYXBMC
     "\n"
     "condition      : string - condition to check.\n"
     "\n"
-    "List of Conditions - http://xbmc.org/wiki/?title=List_of_Boolean_Conditions \n"
+    "List of Conditions - http://wiki.xbmc.org/?title=List_of_Boolean_Conditions \n"
     "\n"
     "*Note, You can combine two (or more) of the above settings by using \"+\" as an AND operator,\n"
     "\"|\" as an OR operator, \"!\" as a NOT operator, and \"[\" and \"]\" to bracket expressions.\n"
@@ -692,7 +704,7 @@ namespace PYXBMC
     "\n"
     "path           : string or unicode - Path to format\n"
     "\n"
-    "*Note, Only useful if you are coding for both Linux and the Xbox.\n"
+    "*Note, Only useful if you are coding for both Linux and Windows/Xbox.\n"
     "       e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'\n"
     "       on Linux. Would return 'special://masterprofile/script_data' on the Xbox.\n"
     "\n"
@@ -720,6 +732,29 @@ namespace PYXBMC
     strPath = CSpecialProtocol::TranslatePath(strText);
 
     return Py_BuildValue((char*)"s", strPath.c_str());
+  }
+
+  // validatePath function
+  PyDoc_STRVAR(validatePath__doc__,
+    "validatePath(path) -- Returns the validated path.\n"
+    "\n"
+    "path           : string or unicode - Path to format\n"
+    "\n"
+    "*Note, Only useful if you are coding for both Linux and Windows/Xbox for fixing slash problems.\n"
+    "       e.g. Corrects 'Z://something' -> 'Z:\\something'\n"
+    "\n"
+    "example:\n"
+    "  - fpath = xbmc.validatePath(somepath)\n");
+
+  PyObject* XBMC_ValidatePath(PyObject *self, PyObject *args)
+  {
+    PyObject *pObjectText;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
+
+    CStdString strText;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
+
+    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText).c_str());
   }
 
   // getRegion function
@@ -870,7 +905,9 @@ namespace PYXBMC
     {(char*)"getFreeMem", (PyCFunction)XBMC_GetFreeMem, METH_VARARGS, getFreeMem__doc__},
     //{(char*)"getCpuTemp", (PyCFunction)XBMC_GetCpuTemp, METH_VARARGS, getCpuTemp__doc__},
 
+#ifdef HAS_HTTPAPI
     {(char*)"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
+#endif
     {(char*)"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
     {(char*)"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
     {(char*)"getCondVisibility", (PyCFunction)XBMC_GetCondVisibility, METH_VARARGS, getCondVisibility__doc__},
@@ -883,6 +920,7 @@ namespace PYXBMC
 
     {(char*)"makeLegalFilename", (PyCFunction)XBMC_MakeLegalFilename, METH_VARARGS|METH_KEYWORDS, makeLegalFilename__doc__},
     {(char*)"translatePath", (PyCFunction)XBMC_TranslatePath, METH_VARARGS, translatePath__doc__},
+    {(char*)"validatePath", (PyCFunction)XBMC_ValidatePath, METH_VARARGS, validatePath__doc__},
 
     {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
     {(char*)"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},

@@ -23,7 +23,7 @@
 #include "OggTag.h"
 
 using namespace MUSIC_INFO;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 COGGFileDirectory::COGGFileDirectory(void)
 {

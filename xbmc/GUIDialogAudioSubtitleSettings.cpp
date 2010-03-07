@@ -26,7 +26,6 @@
 #include "Util.h"
 #include "Application.h"
 #include "VideoDatabase.h"
-#include "XBAudioConfig.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
@@ -40,7 +39,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 
 #ifdef HAS_VIDEO_PLAYBACK
 extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers); //lowlevel audio
@@ -85,14 +83,11 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
   // only show stuff available in digital mode if we have digital output
-  if(g_audioConfig.HasDigitalOutput())
-  {
-    AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
 
-    int settings[2] = { 338, 339 }; //ANALOG, DIGITAL
-    m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
-    AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 2, settings);
-  }
+  int settings[2] = { 338, 339 }; //ANALOG, DIGITAL
+  m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
+  AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 2, settings);
 
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
@@ -315,19 +310,19 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
             CStdString strPath3;
             if (strExt.CompareNoCase(".idx") == 0)
             {
-              CUtil::ReplaceExtension(strPath,".sub",strPath2);
+              strPath2 = CUtil::ReplaceExtension(strPath,".sub");
               strPath3 = "special://temp/subtitle.sub";
             }
             else
             {
-              CUtil::ReplaceExtension(strPath,".idx",strPath2);
+              strPath2 = CUtil::ReplaceExtension(strPath,".idx");
               if (!CFile::Exists(strPath2) && (CUtil::IsInRAR(strPath2) || CUtil::IsInZIP(strPath2)))
               {
                 CStdString strFileName = CUtil::GetFileName(strPath);
                 CUtil::GetDirectory(strPath,strPath3);
                 CUtil::GetParentPath(strPath3,strPath2);
                 CUtil::AddFileToFolder(strPath2,strFileName,strPath2);
-                CUtil::ReplaceExtension(strPath2,".idx",strPath2);
+                strPath2 = CUtil::ReplaceExtension(strPath2,".idx");
               }
               strPath3 = "special://temp/subtitle.idx";
             }
@@ -338,13 +333,12 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
               CFileItemList items;
               CStdString strDir,strFileNameNoExtNoCase;
               CUtil::Split(strPath,strDir,strPath3);
-              CUtil::ReplaceExtension(strPath3,".",strFileNameNoExtNoCase);
+              strFileNameNoExtNoCase = CUtil::ReplaceExtension(strPath3,".");
               strFileNameNoExtNoCase.ToLower();
               CUtil::GetDirectory(strPath,strDir);
               CDirectory::GetDirectory(strDir,items,".rar|.zip",false);
-              vector<CStdString> vecExts;
               for (int i=0;i<items.Size();++i)
-                CUtil::CacheRarSubtitles(vecExts,items[i]->m_strPath,strFileNameNoExtNoCase,"");
+                CUtil::CacheRarSubtitles(items[i]->m_strPath,strFileNameNoExtNoCase);
             }
             g_settings.m_currentVideoSettings.m_SubtitleOn = true;
 
@@ -397,7 +391,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
 }
 
-void CGUIDialogAudioSubtitleSettings::Render()
+void CGUIDialogAudioSubtitleSettings::FrameMove()
 {
   m_volume = g_settings.m_nVolumeLevel * 0.01f;
   UpdateSetting(AUDIO_SETTINGS_VOLUME);
@@ -408,7 +402,7 @@ void CGUIDialogAudioSubtitleSettings::Render()
     UpdateSetting(SUBTITLE_SETTINGS_ENABLE);
     UpdateSetting(SUBTITLE_SETTINGS_DELAY);
   }
-  CGUIDialogSettings::Render();
+  CGUIDialogSettings::FrameMove();
 }
 
 CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)

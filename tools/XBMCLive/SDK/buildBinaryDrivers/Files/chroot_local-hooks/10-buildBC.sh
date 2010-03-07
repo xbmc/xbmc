@@ -26,6 +26,10 @@ fi
 cd /root
 pushd .
 
+if [ ! -f crystalhd-HEAD.tar.gz ]; then
+	exit
+fi
+
 tar xvf crystalhd-HEAD.tar.gz
 
 # Make libraries
@@ -48,9 +52,9 @@ mv crystalhd/linux_lib/libcrystalhd/libcrystalhd.so* ./Files/usr/lib
 pushd .
 
 # Assuming only one kernel is installed!
-modulesdir=/lib/modules/$(ls /lib/modules)
+kernelVersion=$(ls /lib/modules)
+modulesdir=/lib/modules/$kernelVersion
 
-kernelVersion=$(basename $modulesdir)
 apt-get -y install linux-headers-$kernelVersion
 
 # Make kernel module
@@ -70,7 +74,7 @@ cd $modulesdir
 mkdir -p kernel/drivers/video/broadcom
 
 cp /tmp/crystalhd.ko kernel/drivers/video/broadcom
-depmod -a $kernelVersion
+depmod $kernelVersion
 tar cvf /tmp/modules.tar modules.* kernel/drivers/video/broadcom/*
 popd
 
@@ -86,6 +90,10 @@ tar xvf /tmp/modules.tar
 rm /tmp/modules.tar
 popd
 
+pushd .
 # Prepare tar for real build
 cd Files
 tar cvf /tmp/crystalhd.tar *
+
+popd
+rm -rf ./Files

@@ -47,6 +47,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 
 XBPython g_pythonParser;
 
@@ -116,7 +117,6 @@ XBPython::XBPython()
   m_bLogin            = false;
   m_nextid            = 0;
   m_mainThreadState   = NULL;
-  m_hEvent            = CreateEvent(NULL, false, false, (char*)"pythonEvent");
   m_globalEvent       = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
   m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
@@ -318,8 +318,6 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
-    if (CThread::IsCurrentThread(m_ThreadId))
-    {
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 
       if (!m_pDll || !python_load_dll(*m_pDll))
@@ -388,24 +386,13 @@ void XBPython::Initialize()
       PyEval_ReleaseLock();
 
       m_bInitialized = true;
-      PulseEvent(m_hEvent);
-    }
-    else
-    {
-      // only the main thread should initialize python.
-      m_iDllScriptCounter--;
-
-      lock.Leave();
-      WaitForSingleObject(m_hEvent, INFINITE);
-      lock.Enter();
-    }
   }
 }
 
 /**
 * Should be called when a script is finished
 */
-void XBPython::Finalize()
+void XBPython::FinalizeScript()
 {
   CSingleLock lock(m_critSection);
   // for linux - we never release the library. its loaded and stays in memory.
@@ -413,7 +400,11 @@ void XBPython::Finalize()
     m_iDllScriptCounter--;
   else
     CLog::Log(LOGERROR, "Python script counter attempted to become negative");
-  if (m_iDllScriptCounter == 0 && m_bInitialized)
+  m_endtime = CTimeUtils::GetTimeMS();
+}
+void XBPython::Finalize()
+{
+  if (m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
 
@@ -451,12 +442,9 @@ void XBPython::FreeResources()
       delete it->pyThread;
       lock.Enter();
       it = m_vecPyList.erase(it);
-      Finalize();
+      FinalizeScript();
     }
   }
-
-  if (m_hEvent)
-    CloseHandle(m_hEvent);
 }
 
 void XBPython::Process()
@@ -511,10 +499,13 @@ void XBPython::Process()
       {
         delete it->pyThread;
         it = m_vecPyList.erase(it);
-        Finalize();
+        FinalizeScript();
       }
       else ++it;
     }
+
+    if(m_iDllScriptCounter == 0 && m_endtime + 10000 < CTimeUtils::GetTimeMS())
+      Finalize();
   }
 }
 

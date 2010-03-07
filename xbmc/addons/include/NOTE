@@ -1,0 +1,9 @@
+NOTE:
+
+This directory contains independent Headers to build Add-on's
+without the whole XBMC source tree. The Add-on itself can add
+this headers to his source tree without dependencies to any
+XBMC related classes or functions.
+
+Also this headers are never changed without a API Version
+change.

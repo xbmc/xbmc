@@ -35,6 +35,7 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
   m_dialogClosing = false;
   m_renderOrder = 1;
   m_autoClosing = false;
+  m_enableSound = true;
 }
 
 CGUIDialog::~CGUIDialog(void)
@@ -59,7 +60,6 @@ void CGUIDialog::OnWindowLoaded()
         {
           float spacing = (pLabel->GetXPosition() - pBase->GetXPosition()) * 2;
           pLabel->SetWidth(pBase->GetWidth() - spacing);
-          pLabel->SetTruncate(true);
         }
       }
     }
@@ -68,7 +68,7 @@ void CGUIDialog::OnWindowLoaded()
 
 bool CGUIDialog::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_CLOSE_DIALOG || action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU)
   {
     Close();
     return true;
@@ -117,7 +117,7 @@ void CGUIDialog::Close_Internal(bool forceClose /*= false*/)
   if (!m_bRunning) return;
 
   //  Play the window specific deinit sound
-  if(!m_dialogClosing)
+  if(!m_dialogClosing && m_enableSound)
     g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
 
   // don't close if we should be animating
@@ -151,7 +151,8 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   g_windowManager.RouteToWindow(this);
 
   //  Play the window specific init sound
-  g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+  if (m_enableSound)
+    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, iWindowID);
@@ -190,7 +191,8 @@ void CGUIDialog::Show_Internal()
   g_windowManager.AddModeless(this);
 
   //  Play the window specific init sound
-  g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+  if (m_enableSound)
+    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
@@ -228,6 +230,13 @@ bool CGUIDialog::RenderAnimation(unsigned int time)
   return m_bRunning;
 }
 
+void CGUIDialog::FrameMove()
+{
+  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_dialogClosing)
+    Close();
+  CGUIWindow::FrameMove();
+}
+
 void CGUIDialog::Render()
 {
   CGUIWindow::Render();
@@ -238,11 +247,6 @@ void CGUIDialog::Render()
   if (m_dialogClosing && !CGUIWindow::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
   {
     Close(true);
-  }
-
-  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_dialogClosing)
-  {
-    Close();
   }
 }
 

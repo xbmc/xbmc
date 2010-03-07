@@ -69,8 +69,6 @@ class CGUIDialog;
 
 #define TMSG_GUI_DO_MODAL             600
 #define TMSG_GUI_SHOW                 601
-#define TMSG_GUI_WIN_MANAGER_PROCESS  602
-#define TMSG_GUI_WIN_MANAGER_RENDER   603
 #define TMSG_GUI_ACTIVATE_WINDOW      604
 #define TMSG_GUI_PYTHON_DIALOG        605
 #define TMSG_GUI_DIALOG_CLOSE         606
@@ -141,8 +139,6 @@ public:
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
   void Close(CGUIDialog *pDialog, bool forceClose, bool waitResult=true);
-  void WindowManagerProcess(bool renderOnly = false); // will call g_windowManager.Process on the rendering thread
-  void Render(); // will call g_windowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID);
 

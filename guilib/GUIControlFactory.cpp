@@ -459,6 +459,28 @@ void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const CStdS
     infoLabel = labels[0];
 }
 
+bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel)
+{
+  if (!element || !element->FirstChild())
+    return false;
+
+  CStdString label = element->FirstChild()->Value();
+  if (label.IsEmpty() || label == "-")
+    return false;
+
+  CStdString fallback = element->Attribute("fallback");
+  if (StringUtils::IsNaturalNumber(label))
+    label = g_localizeStrings.Get(atoi(label));
+  else // we assume the skin xml's aren't encoded as UTF-8
+    g_charsetConverter.unknownToUTF8(label);
+  if (StringUtils::IsNaturalNumber(fallback))
+    fallback = g_localizeStrings.Get(atoi(fallback));
+  else
+    g_charsetConverter.unknownToUTF8(fallback);
+  infoLabel.SetLabel(label, fallback);
+  return true;
+}
+
 void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels)
 {
   // we can have the following infolabels:
@@ -477,23 +499,9 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   const TiXmlElement *labelNode = pControlNode->FirstChildElement(labelTag);
   while (labelNode)
   {
-    if (labelNode->FirstChild())
-    {
-      CStdString label = labelNode->FirstChild()->Value();
-      CStdString fallback = labelNode->Attribute("fallback");
-      if (label.size() && label[0] != '-')
-      {
-        if (StringUtils::IsNaturalNumber(label))
-          label = g_localizeStrings.Get(atoi(label));
-        else // we assume the skin xml's aren't encoded as UTF-8
-          g_charsetConverter.unknownToUTF8(label);
-        if (StringUtils::IsNaturalNumber(fallback))
-          fallback = g_localizeStrings.Get(atoi(fallback));
-        else
-          g_charsetConverter.unknownToUTF8(fallback);
-        infoLabels.push_back(CGUIInfoLabel(label, fallback));
-      }
-    }
+    CGUIInfoLabel label;
+    if (GetInfoLabelFromElement(labelNode, label))
+      infoLabels.push_back(label);
     labelNode = labelNode->NextSiblingElement(labelTag);
   }
   const TiXmlNode *infoNode = pControlNode->FirstChild("info");
@@ -619,6 +627,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float textureWidth = 80;
   float itemWidthBig = 150;
   float itemHeightBig = 150;
+  CPoint offset;
 
   float spaceBetweenItems = 2;
   bool bHasPath = false;
@@ -720,6 +729,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   GetDimension(pControlNode, "width", width, minWidth);
   GetFloat(pControlNode, "height", height);
+  GetFloat(pControlNode, "offsetx", offset.x);
+  GetFloat(pControlNode, "offsety", offset.y);
 
   // adjust width and height accordingly for groups.  Groups should
   // take the width/height of the parent (adjusted for positioning)
@@ -1256,6 +1267,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIListContainer *)control)->SetPageControl(pageControl);
+    ((CGUIListContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "wraplist")
   {
@@ -1264,6 +1276,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
+    ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "fixedlist")
   {
@@ -1272,6 +1285,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
+    ((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "panel")
   {
@@ -1280,6 +1294,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
+    ((CGUIPanelContainer *)control)->SetRenderOffset(offset);
   }
   else if (strType == "textbox")
   {

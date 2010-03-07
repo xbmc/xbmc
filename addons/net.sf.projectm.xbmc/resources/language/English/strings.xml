@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Render Quality</string>
+    <string id="30001">Low</string>
+    <string id="30002">Medium</string>
+    <string id="30003">High</string>
+    <string id="30004">Maximum</string>
+    <string id="30005">Shuffle Mode</string>
+    <string id="30006">Smooth Preset Duration</string>
+    <string id="30007">Preset Duration</string>
+    <string id="30008">Beat Sensitivity</string>
+</strings>

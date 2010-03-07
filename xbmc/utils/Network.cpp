@@ -27,19 +27,16 @@
 #include "RssReader.h"
 #include "log.h"
 
-#ifdef _WIN32
-#define close closesocket
-#endif
-
 using namespace std;
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
-bool in_ether (char *bufp, unsigned char *addr)
+bool in_ether (const char *bufp, unsigned char *addr)
 {
   if (strlen(bufp) != 17)
     return false;
 
-  char c, *orig;
+  char c;
+  const char *orig;
   unsigned char *ptr = addr;
   unsigned val;
 
@@ -209,7 +206,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
   }
 }
 
-bool CNetwork::WakeOnLan(char* mac)
+bool CNetwork::WakeOnLan(const char* mac)
 {
   int i, j, packet;
   unsigned char ethaddr[8];
@@ -240,7 +237,7 @@ bool CNetwork::WakeOnLan(char* mac)
   if (setsockopt (packet, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
   {
     CLog::Log(LOGERROR, "%s - Unable to set socket options (%s)", __FUNCTION__, strerror (errno));
-    close (packet);
+    closesocket(packet);
     return false;
   }
  
@@ -257,11 +254,11 @@ bool CNetwork::WakeOnLan(char* mac)
   if (sendto (packet, (char *)buf, 102, 0, (struct sockaddr *)&saddr, sizeof (saddr)) < 0)
   {
     CLog::Log(LOGERROR, "%s - Unable to send magic packet (%s)", __FUNCTION__, strerror (errno));
-    close (packet);
+    closesocket(packet);
     return false;
   }
 
-  close (packet);
+  closesocket(packet);
   CLog::Log(LOGINFO, "%s - Magic packet send to '%s'", __FUNCTION__, mac);
   return true;
 }
@@ -282,6 +279,9 @@ void CNetwork::StartServices()
 #endif
 #ifdef HAS_DBUS_SERVER
   g_application.StartDbusServer();
+#endif
+#ifdef HAS_JSONRPC
+  g_application.StartJSONRPCServer();
 #endif
 #ifdef HAS_ZEROCONF
   g_application.StartZeroconf();
@@ -304,6 +304,9 @@ void CNetwork::StopServices(bool bWait)
 #ifdef HAS_ZEROCONF
     g_application.StopZeroconf();
 #endif
+#ifdef HAS_WEB_SERVER
+    g_application.StopWebServer();
+#endif    
     CLastfmScrobbler::GetInstance()->Term();
     CLibrefmScrobbler::GetInstance()->Term();
     // smb.Deinit(); if any file is open over samba this will break.
@@ -311,13 +314,13 @@ void CNetwork::StopServices(bool bWait)
     g_rssManager.Stop();
   }
 
-#ifdef HAS_WEB_SERVER
-  g_application.StopWebServer(bWait);
-#endif
 #ifdef HAS_EVENT_SERVER
   g_application.StopEventServer(bWait, false);
 #endif
 #ifdef HAS_DBUS_SERVER
   g_application.StopDbusServer(bWait);
+#endif
+#ifdef HAS_JSONRPC
+    g_application.StopJSONRPCServer(bWait);
 #endif
 }

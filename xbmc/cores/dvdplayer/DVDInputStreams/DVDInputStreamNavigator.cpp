@@ -1055,6 +1055,7 @@ bool CDVDInputStreamNavigator::SeekTime(int iTimeInMsec)
 
 bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
 {
+  bool enabled = IsSubtitleStreamEnabled();
   int audio    = GetActiveAudioStream();
   int subtitle = GetActiveSubtitleStream();
 
@@ -1066,7 +1067,7 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
 
   SetActiveSubtitleStream(subtitle);
   SetActiveAudioStream(audio);
-
+  EnableSubtitleStream(enabled);
   return true;
 }
 

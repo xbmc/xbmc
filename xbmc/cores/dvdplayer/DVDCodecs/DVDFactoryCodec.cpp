@@ -177,18 +177,21 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   return NULL;
 }
 
-CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint )
+CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool passthrough /* = true */)
 {
   CDVDAudioCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
+  if (passthrough)
+  {
 #if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
-  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
-  if( pCodec ) return pCodec;
+    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
+    if( pCodec ) return pCodec;
 #endif
 
-  pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
-  if ( pCodec ) return pCodec;
+    pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);
+    if ( pCodec ) return pCodec;
+  }
 
   switch (hint.codec)
   {

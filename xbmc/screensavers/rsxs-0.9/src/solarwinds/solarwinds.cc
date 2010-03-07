@@ -172,7 +172,7 @@ void Hack::start() {
 	// Initialize surfaces
 	_winds.resize(numWinds);
 
-        // Clear the GL error 
+        // Clear the GL error
         glGetError();
 }
 
@@ -229,7 +229,7 @@ void Hack::tick() {
         glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
 
-        // Clear the GL error 
+        // Clear the GL error
         glGetError();
 }
 
@@ -252,20 +252,27 @@ void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
 
 #define _LINUX
-#include "../../../xbmc_scr.h"
+#include "../../../addons/include/xbmc_scr_dll.h"
 
 extern "C" {
 
-void Create(void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
+ADDON_STATUS Create(void* hdl, void* props)
 {
-  Common::width = iWidth;
-  Common::height = iHeight;
+  if (!props)
+    return STATUS_UNKNOWN;
+
+  SCR_PROPS* scrprops = (SCR_PROPS*)props;
+
+  Common::width = scrprops->width;
+  Common::height = scrprops->height;
   Common::aspectRatio = float(Common::width) / float(Common::height);
+  Common::resources = new ResourceManager;
+
+  return STATUS_OK;
 }
 
 void Start()
 {
-  Common::resources = new ResourceManager;
   Hack::start();
 }
 
@@ -277,7 +284,43 @@ void Render()
 void Stop()
 {
   Hack::stop();
+}
+
+void Destroy()
+{
   delete Common::resources;
+}
+
+ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
+}
+
+bool HasSettings()
+{
+  return false;
+}
+
+unsigned int GetSettings(StructSetting ***sSet)
+{
+  return 0;
+}
+
+ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+{
+  return STATUS_OK;
+}
+
+void FreeSettings()
+{
+}
+
+void GetInfo(SCR_INFO *info)
+{
+}
+
+void Remove()
+{
 }
 
 }

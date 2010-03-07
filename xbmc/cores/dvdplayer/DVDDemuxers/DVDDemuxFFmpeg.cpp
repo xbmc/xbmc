@@ -431,12 +431,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
   }
 
-  // we need to know if this is matroska later
+  // we need to know if this is matroska or avi later
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
+  m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
 
-  // in combination with libdvdnav seek, av_find_stream_info wont work
-  // so we do this for files only
-  if (streaminfo)
+  if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     /* too speed up live sources, only analyse very short */
     if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
@@ -448,7 +447,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
+      if (!streaminfo || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }
@@ -464,7 +463,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_timeout = 0;
 
   // if format can be nonblocking, let's use that
-  m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
+  m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK | AVFMT_FLAG_GENPTS;
 
   // print some extra information
   m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile.c_str(), 0);
@@ -555,19 +554,9 @@ void CDVDDemuxFFmpeg::Flush()
   g_demuxer = this;
 
   if (m_pFormatContext)
-  {
-    // reset any dts interpolation
-    for(unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
-    {
-      if(m_pFormatContext->streams[i])
-      {
-        m_pFormatContext->streams[i]->cur_dts = AV_NOPTS_VALUE;
-        m_pFormatContext->streams[i]->last_IP_duration = 0;
-        m_pFormatContext->streams[i]->last_IP_pts = AV_NOPTS_VALUE;
-      }
-    }
-    m_iCurrentPts = DVD_NOPTS_VALUE;
-  }
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+
+  m_iCurrentPts = DVD_NOPTS_VALUE;
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -741,6 +730,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
             pkt.duration = pkt.convergence_duration;
 
+        if(m_bAVI && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        {
+          // AVI's always have borked pts, specially if m_pFormatContext->flags includes
+          // AVFMT_FLAG_GENPTS so always use dts
+          pkt.pts = AV_NOPTS_VALUE;
+        }
+
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -842,6 +838,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 
@@ -1053,7 +1051,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         if(pStream->codec->codec_id == CODEC_ID_TTF)
         {
           std::string fileName = "special://temp/fonts/";
-          DIRECTORY::CDirectory::Create(fileName);
+          XFILE::CDirectory::Create(fileName);
           fileName += pStream->filename;
           XFILE::CFile file;
           if(pStream->codec->extradata && file.OpenForWrite(fileName))
@@ -1198,6 +1196,8 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+
+    Flush();
     return true;
   }
 

@@ -62,7 +62,6 @@
 
 using namespace std;
 using namespace XFILE;
-using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
@@ -87,7 +86,7 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && !musicScan->IsDialogRunning())
@@ -97,7 +96,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     }
   }
 
-  if (action.actionId == ACTION_SHOW_PLAYLIST)
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
@@ -432,13 +431,8 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
     return;
   }
 
-  // find album info
-  SScraperInfo scraper;
-  if (!m_musicdatabase.GetScraperForPath(path,scraper))
-    return;
-
   CMusicArtistInfo info;
-  if (FindArtistInfo(artist.strArtist, info, scraper, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
+  if (FindArtistInfo(artist.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {
     // download the album info
     if ( info.Loaded() )
@@ -530,13 +524,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
     return;
   }
 
-  // find album info
-  SScraperInfo scraper;
-  if (!m_musicdatabase.GetScraperForPath(path,scraper))
-    return;
-
   CMusicAlbumInfo info;
-  if (FindAlbumInfo(album.strAlbum, album.strArtist, info, scraper, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
+  if (FindAlbumInfo(album.strAlbum, album.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {
     // download the album info
     if ( info.Loaded() )
@@ -712,10 +701,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     FormatAndSort(items);
     SetupFanart(items);
     for (int i = 0; i < items.Size(); ++i)
-    {
-      m_musicdatabase.SetPropertiesForFileItem(*items[i]);
       AddItemToPlayList(items[i], queuedItems);
-    }
   }
   else
   {
@@ -753,7 +739,9 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       CFileItemPtr itemCheck = queuedItems.Get(pItem->m_strPath);
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
       { // add item
-        queuedItems.Add(pItem);
+        CFileItemPtr item(new CFileItem(*pItem));
+        m_musicdatabase.SetPropertiesForFileItem(*item);
+        queuedItems.Add(item);
       }
     }
   }
@@ -781,7 +769,7 @@ void CGUIWindowMusicBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection)
 {
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
@@ -832,7 +820,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   return true;
 }
 
-bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, ALLOW_SELECTION allowSelection)
 {
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)

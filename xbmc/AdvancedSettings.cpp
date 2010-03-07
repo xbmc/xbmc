@@ -78,7 +78,7 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekBackward = -2;
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
-  m_videoBlackBarColour = 1;
+  m_videoBlackBarColour = 0;
   m_videoPPFFmpegType = "linblenddeint";
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
@@ -87,6 +87,8 @@ void CAdvancedSettings::Initialize()
   m_videoPlayCountMinimumPercent = 90.0f;
   m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
+  m_videoVDPAUScaling = false;
+  m_videoNonLinStretchRatio = 0.5f;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -110,6 +112,7 @@ void CAdvancedSettings::Initialize()
   m_lcdAddress3 = 0x14;
   m_lcdAddress4 = 0x54;
   m_lcdHeartbeat = false;
+  m_lcdDimOnScreenSave = false;
   m_lcdScrolldelay = 1;
   m_lcdHostName = "localhost";
 
@@ -156,7 +159,7 @@ void CAdvancedSettings::Initialize()
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
@@ -221,9 +224,11 @@ void CAdvancedSettings::Initialize()
   m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
   m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
   m_iEdlMaxStartGap = 5 * 60;              // 5 minutes.
+  m_iEdlCommBreakAutowait = 0;             // Off by default
+  m_iEdlCommBreakAutowind = 0;             // Off by default
 
   m_curlconnecttimeout = 10;
-  m_curllowspeedtime = 5;
+  m_curllowspeedtime = 20;
   m_curlretries = 2;
 
   m_fullScreen = m_startFullScreen = false;
@@ -400,6 +405,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
     XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
+    XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
+    XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -455,6 +462,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "address3", m_lcdAddress3, 0, 0x100);
     XMLUtils::GetInt(pElement, "address4", m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", m_lcdHeartbeat);
+    XMLUtils::GetBoolean(pElement, "dimonscreensave", m_lcdDimOnScreenSave);
     XMLUtils::GetInt(pElement, "scrolldelay", m_lcdScrolldelay, -8, 8);
     XMLUtils::GetString(pElement, "hostname", m_lcdHostName);
   }
@@ -552,6 +560,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
     XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
+    XMLUtils::GetInt(pElement, "commbreakautowait", m_iEdlCommBreakAutowait, 0, 10);        // Between 0 and 10 seconds
+    XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
   }
 
   // picture exclude regexps
@@ -710,6 +720,29 @@ bool CAdvancedSettings::Load()
   m_bgInfoLoaderMaxThreads = std::max(1, m_bgInfoLoaderMaxThreads);
 
   XMLUtils::GetBoolean(pRootElement, "measurerefreshrate", m_measureRefreshrate);
+
+  TiXmlElement* pDatabase = pRootElement->FirstChildElement("videodatabase");
+  if (pDatabase)
+  {
+    CLog::Log(LOGWARNING, "VIDEO database configuration is experimental.");
+    XMLUtils::GetString(pDatabase, "type", m_databaseVideo.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseVideo.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseVideo.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseVideo.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseVideo.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseVideo.name);
+  }
+
+  pDatabase = pRootElement->FirstChildElement("musicdatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseMusic.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseMusic.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseMusic.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseMusic.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseMusic.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
+  }
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in

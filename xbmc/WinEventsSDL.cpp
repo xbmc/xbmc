@@ -194,7 +194,6 @@ bool CWinEventsSDL::MessagePump()
 bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 {
   static bool shift = false, cmd = false;
-  static CAction action;
 
   cmd   = !!(SDL_GetModState() & (KMOD_LMETA  | KMOD_RMETA ));
   shift = !!(SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT));
@@ -210,13 +209,11 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       return true;
 
     case SDLK_f: // CMD-f to toggle fullscreen
-      action.actionId = ACTION_TOGGLE_FULLSCREEN;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_TOGGLE_FULLSCREEN));
       return true;
 
     case SDLK_s: // CMD-3 to take a screenshot
-      action.actionId = ACTION_TAKE_SCREENSHOT;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_TAKE_SCREENSHOT));
       return true;
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)

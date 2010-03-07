@@ -98,7 +98,7 @@ namespace SDP
 
 
 namespace XFILE     { class CSAPFile; }
-namespace DIRECTORY { class CSAPDirectory; }
+namespace XFILE { class CSAPDirectory; }
 
 class CSAPSessions
   : CThread
@@ -110,7 +110,7 @@ public:
   void StopThread(bool bWait = true);
 
 protected:
-  friend class DIRECTORY::CSAPDirectory;
+  friend class XFILE::CSAPDirectory;
   friend class XFILE::CSAPFile;
 
   struct CSession
@@ -137,7 +137,7 @@ extern CSAPSessions g_sapsessions;
 
 
 
-namespace DIRECTORY
+namespace XFILE
 {
 
   class CSAPDirectory

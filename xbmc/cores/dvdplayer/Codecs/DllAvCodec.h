@@ -89,7 +89,7 @@ public:
                                      void * const out[6], const int out_stride[6],
                                const void * const  in[6], const int  in_stride[6], int len)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
-  virtual int av_init_packet(AVPacket *pkt)=0;
+  virtual void av_init_packet(AVPacket *pkt)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -160,7 +160,7 @@ public:
           { return ::av_audio_convert(ctx, out, out_stride, in, in_stride, len); }
 
   virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
-  virtual int av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
+  virtual void av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
 
 
   // DLL faking.
@@ -197,7 +197,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD8(int, av_parser_parse, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8))
 #endif
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
-  DEFINE_METHOD1(int, av_init_packet, (AVPacket *p1))
+  DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
 
   LOAD_SYMBOLS();
 
@@ -320,7 +320,7 @@ public:
    virtual void av_freep(void *ptr) { ::av_freep(ptr); }
    virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding d) { return ::av_rescale_rnd(a, b, c, d); }
    virtual const AVCRC* av_crc_get_table(AVCRCId crc_id) { return ::av_crc_get_table(crc_id); }
-   virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length) { return ::av_crc(ctx, crc, buffer); }
+   virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length) { return ::av_crc(ctx, crc, buffer, length); }
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }

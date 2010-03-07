@@ -43,10 +43,6 @@
   #include "LinuxRenderer.h"
 #endif
 
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
@@ -397,30 +393,6 @@ float CXBMCRenderManager::GetMaximumFPS()
   return fps;
 }
 
-bool CXBMCRenderManager::SupportsBrightness()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsBrightness();
-  return false;
-}
-
-bool CXBMCRenderManager::SupportsContrast()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsContrast();
-  return false;
-}
-
-bool CXBMCRenderManager::SupportsGamma()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsGamma();
-  return false;
-}
-
 void CXBMCRenderManager::Present()
 {
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
@@ -521,12 +493,8 @@ void CXBMCRenderManager::PresentWeave()
 
 void CXBMCRenderManager::Recover()
 {
-#ifdef HAVE_LIBVDPAU
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
-  if (g_VDPAU)
-  {
-    glFlush(); // attempt to have gpu done with pixmap
-  }
+#ifdef HAS_GL
+  glFlush(); // attempt to have gpu done with pixmap and vdpau
 #endif
 }
 

@@ -28,7 +28,7 @@
 
   // default Broadcom registy bits (setup when installing a CrystalHD card)
   #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
-  #define BC_REG_PRODUCT    "CrystalHD" // 70010 ?
+  #define BC_REG_PRODUCT    "CrystalHD" // 70012/70015
   #define BC_BCM_DLL        "bcmDIL.dll"
   #define BC_REG_INST_PATH  "InstallPath"
 #endif
@@ -50,13 +50,13 @@ extern "C"
 
 namespace BCM
 {
-#if defined(WIN32)
-  typedef void		*HANDLE;
-#else
-  #ifndef __LINUX_USER__
-    #define __LINUX_USER__
+  #if defined(WIN32)
+    typedef void		*HANDLE;
+  #else
+    #ifndef __LINUX_USER__
+      #define __LINUX_USER__
+    #endif
   #endif
-#endif
 
   #include <libcrystalhd/bc_dts_types.h>
   #include <libcrystalhd/bc_dts_defs.h>
@@ -83,7 +83,9 @@ public:
   virtual BCM::BC_STATUS DtsProcOutput(void *hDevice, uint32_t milliSecWait, BCM::BC_DTS_PROC_OUT *pOut)=0;
   virtual BCM::BC_STATUS DtsProcOutputNoCopy(void *hDevice, uint32_t milliSecWait, BCM::BC_DTS_PROC_OUT *pOut)=0;
   virtual BCM::BC_STATUS DtsReleaseOutputBuffs(void *hDevice, void *Reserved, int fChange)=0;
-  virtual BCM::BC_STATUS DtsFlushInput(void *hDevice, uint32_t Mode)=0;
+  virtual BCM::BC_STATUS DtsSetSkipPictureMode(void *hDevice, uint32_t Mode)=0;
+  virtual BCM::BC_STATUS DtsFlushInput(void *hDevice, uint32_t SkipMode)=0;
+  
 };
 
 class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
@@ -105,6 +107,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
   DEFINE_METHOD3(BCM::BC_STATUS, DtsProcOutput,      (void *p1, uint32_t p2, BCM::BC_DTS_PROC_OUT *p3))
   DEFINE_METHOD3(BCM::BC_STATUS, DtsProcOutputNoCopy,(void *p1, uint32_t p2, BCM::BC_DTS_PROC_OUT *p3))
   DEFINE_METHOD3(BCM::BC_STATUS, DtsReleaseOutputBuffs,(void *p1, void *p2, int p3))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetSkipPictureMode,(void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsFlushInput,      (void *p1, uint32_t p2))
 
   BEGIN_METHOD_RESOLVE()
@@ -123,6 +126,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
     RESOLVE_METHOD_RENAME(DtsProcOutput,      DtsProcOutput)
     RESOLVE_METHOD_RENAME(DtsProcOutputNoCopy,DtsProcOutputNoCopy)
     RESOLVE_METHOD_RENAME(DtsReleaseOutputBuffs,DtsReleaseOutputBuffs)
+    RESOLVE_METHOD_RENAME(DtsSetSkipPictureMode,DtsSetSkipPictureMode)
     RESOLVE_METHOD_RENAME(DtsFlushInput,      DtsFlushInput)
   END_METHOD_RESOLVE()
 };
@@ -160,6 +164,26 @@ const char* g_DtsStatusText[] = {
 	"BC_STS_CLK_NOCHG"
 };
 
+union pts_union
+{
+  double  pts_d;
+  int64_t pts_i;
+};
+
+static int64_t pts_dtoi(double pts)
+{
+  pts_union u;
+  u.pts_d = pts;
+  return u.pts_i;
+}
+
+static double pts_itod(int64_t pts)
+{
+  pts_union u;
+  u.pts_i = pts;
+  return u.pts_d;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 class CMPCDecodeBuffer
 {
@@ -174,11 +198,21 @@ public:
 protected:
   size_t m_Size;
   unsigned char* m_pBuffer;
-  unsigned int m_Id;
   uint64_t m_Pts;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+#define USE_FFMPEG_ANNEXB
+
+#ifdef USE_FFMPEG_ANNEXB
+typedef struct H264BSFContext {
+    uint8_t  length_size;
+    uint8_t  first_idr;
+    uint8_t *sps_pps_data;
+    uint32_t size;
+} H264BSFContext;
+#endif
+
 class CMPCInputThread : public CThread
 {
 public:
@@ -186,6 +220,7 @@ public:
   virtual ~CMPCInputThread();
 
   bool                AddInput(unsigned char* pData, size_t size, uint64_t pts);
+  bool                WaitInput(unsigned int msec) { return m_PopEvent.WaitMSec(msec); }
   void                Flush(void);
   unsigned int        GetInputCount(void);
 
@@ -194,11 +229,20 @@ protected:
   void                FreeBuffer(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer*   GetNext(void);
   void                ProcessMPEG2(CMPCDecodeBuffer* pInput);
+#ifdef USE_FFMPEG_ANNEXB
+  bool                init_h264_mp4toannexb_filter(uint8_t *in_extradata, int in_extrasize);
+  void                alloc_and_copy(uint8_t **poutbuf,     int *poutbuf_size,
+                                const uint8_t *sps_pps, uint32_t sps_pps_size,
+                                const uint8_t *in,      uint32_t in_size);
+  bool                h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
+#endif
   void                ProcessH264(CMPCDecodeBuffer* pInput);
   void                ProcessVC1(CMPCDecodeBuffer* pInput);
   void                Process(void);
 
   CSyncPtrQueue<CMPCDecodeBuffer> m_InputList;
+  CEvent              m_InputEvent;
+  CEvent              m_PopEvent;
 
   DllLibCrystalHD     *m_dll;
   void                *m_Device;
@@ -206,9 +250,15 @@ protected:
   CRYSTALHD_CODEC_TYPE m_codec_type;
 
   int                 m_start_decoding;
+#ifdef USE_FFMPEG_ANNEXB
+  bool                m_annexbfiltering;
+  uint32_t            m_sps_pps_size;
+  H264BSFContext      m_sps_pps_context;
+#else
+  struct h264_parser  *m_nal_parser;
 	uint8_t             *m_extradata;
 	int                 m_extradata_size;
-  struct h264_parser  *m_nal_parser;
+#endif
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -224,6 +274,7 @@ public:
   void                Flush(void);
 
 protected:
+  void                DoFrameRateTracking(double timestamp);
   void                SetFrameRate(uint32_t resolution);
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
   void                CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
@@ -240,15 +291,19 @@ protected:
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
+  uint64_t            m_PictureNumber;
   unsigned int        m_color_range;
   unsigned int        m_color_matrix;
   int                 m_interlace;
+  bool                m_framerate_tracking;
+  uint64_t            m_framerate_cnt;
+  double              m_framerate_timestamp;
   double              m_framerate;
   int                 m_aspectratio_x;
   int                 m_aspectratio_y;
   CPictureBuffer      *m_interlace_buf;
+  CEvent              m_ReadyEvent;
 };
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(__APPLE__)
@@ -295,13 +350,16 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
   CThread(),
   m_dll(dll),
   m_Device(device),
-  m_SleepTime(10),
+  m_SleepTime(1),
   m_codec_type(codec_type),
-  m_start_decoding(0),
-  m_extradata(NULL),
-  m_extradata_size(0),
-  m_nal_parser(NULL)
+  m_start_decoding(0)
 {
+  m_PopEvent.Set();
+#ifdef USE_FFMPEG_ANNEXB
+  m_annexbfiltering = init_h264_mp4toannexb_filter((uint8_t*)extradata, extradata_size);
+#else
+  m_extradata = NULL;
+  m_extradata_size = 0;
   m_nal_parser = init_parser();
 
   if (extradata_size > 0)
@@ -316,6 +374,7 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
       m_extradata_size = 0;
     }
   }
+#endif
 }
 
 CMPCInputThread::~CMPCInputThread()
@@ -323,22 +382,28 @@ CMPCInputThread::~CMPCInputThread()
   while (m_InputList.Count())
     delete m_InputList.Pop();
 
+#ifdef USE_FFMPEG_ANNEXB
+	if (m_sps_pps_context.sps_pps_data)
+		free(m_sps_pps_context.sps_pps_data);
+#else
 	if (m_extradata)
 		free(m_extradata);
 
   free_parser(m_nal_parser);
+#endif
 }
 
 bool CMPCInputThread::AddInput(unsigned char* pData, size_t size, uint64_t pts)
 {
-  if (m_InputList.Count() > 75)
+  if (m_InputList.Count() > 1024)
     return false;
 
   CMPCDecodeBuffer* pBuffer = AllocBuffer(size);
   fast_memcpy(pBuffer->GetPtr(), pData, size);
   pBuffer->SetPts(pts);
   m_InputList.Push(pBuffer);
-  
+  m_InputEvent.Set();
+
   return true;
 }
 
@@ -347,10 +412,13 @@ void CMPCInputThread::Flush(void)
   while (m_InputList.Count())
     delete m_InputList.Pop();
 
+  m_PopEvent.Set();
   m_start_decoding = 0;
+#ifndef USE_FFMPEG_ANNEXB
   reset_parser(m_nal_parser);
 	if (m_extradata_size > 0)
 		parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
+#endif
 }
 
 unsigned int CMPCInputThread::GetInputCount(void)
@@ -370,7 +438,9 @@ void CMPCInputThread::FreeBuffer(CMPCDecodeBuffer* pBuffer)
 
 CMPCDecodeBuffer* CMPCInputThread::GetNext(void)
 {
-  return m_InputList.Pop();
+  CMPCDecodeBuffer* buf = m_InputList.Pop();
+  m_PopEvent.Set();
+  return buf;
 }
 
 void CMPCInputThread::ProcessMPEG2(CMPCDecodeBuffer* pInput)
@@ -391,6 +461,183 @@ void CMPCInputThread::ProcessMPEG2(CMPCDecodeBuffer* pInput)
   } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
 }
 
+#ifdef USE_FFMPEG_ANNEXB
+bool CMPCInputThread::init_h264_mp4toannexb_filter(uint8_t *in_extradata, int in_extrasize)
+{
+  // based on h264_mp4toannexb_bsf.c (ffmpeg)
+  // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
+  // and Licensed GPL 2.1 or greater
+
+  m_sps_pps_size = 0;
+  m_sps_pps_context.sps_pps_data = NULL;
+  
+  // nothing to filter
+  if (!in_extradata || in_extrasize < 6)
+    return false;
+
+  uint16_t unit_size;
+  uint32_t total_size = 0;
+  uint8_t *out = NULL, unit_nb, sps_done = 0;
+  const uint8_t *extradata = (uint8_t*)in_extradata + 4;
+  static const uint8_t nalu_header[4] = {0, 0, 0, 1};
+
+  // retrieve length coded size
+  m_sps_pps_context.length_size = (*extradata++ & 0x3) + 1;
+  if (m_sps_pps_context.length_size == 3)
+    return false;
+
+  // retrieve sps and pps unit(s)
+  unit_nb = *extradata++ & 0x1f;  // number of sps unit(s)
+  if (!unit_nb)
+  {
+    unit_nb = *extradata++;       // number of pps unit(s)
+    sps_done++;
+  }
+  while (unit_nb--)
+  {
+    unit_size = extradata[0] << 8 | extradata[1];
+    total_size += unit_size + 4;
+    if ( (extradata + 2 + unit_size) > ((uint8_t*)in_extradata + in_extrasize) )
+    {
+      free(out);
+      return false;
+    }
+    out = (uint8_t*)realloc(out, total_size);
+    if (!out)
+      return false;
+
+    memcpy(out + total_size - unit_size - 4, nalu_header, 4);
+    memcpy(out + total_size - unit_size, extradata + 2, unit_size);
+    extradata += 2 + unit_size;
+
+    if (!unit_nb && !sps_done++)
+      unit_nb = *extradata++;     // number of pps unit(s)
+  }
+
+  m_sps_pps_context.sps_pps_data = out;
+  m_sps_pps_context.size = total_size;
+  m_sps_pps_context.first_idr = 1;
+
+  return true;
+}
+
+void CMPCInputThread::alloc_and_copy(uint8_t **poutbuf,     int *poutbuf_size,
+                                const uint8_t *sps_pps, uint32_t sps_pps_size,
+                                const uint8_t *in,      uint32_t in_size)
+{
+  // based on h264_mp4toannexb_bsf.c (ffmpeg)
+  // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
+  // and Licensed GPL 2.1 or greater
+
+  #define CHD_WB32(p, d) { \
+    ((uint8_t*)(p))[3] = (d); \
+    ((uint8_t*)(p))[2] = (d) >> 8; \
+    ((uint8_t*)(p))[1] = (d) >> 16; \
+    ((uint8_t*)(p))[0] = (d) >> 24; }
+
+  uint32_t offset = *poutbuf_size;
+  uint8_t nal_header_size = offset ? 3 : 4;
+
+  *poutbuf_size += sps_pps_size + in_size + nal_header_size;
+  *poutbuf = (uint8_t*)realloc(*poutbuf, *poutbuf_size);
+  if (sps_pps)
+  {
+    memcpy(*poutbuf + offset, sps_pps, sps_pps_size);
+  }
+  memcpy(*poutbuf + sps_pps_size + nal_header_size + offset, in, in_size);
+  if (!offset)
+  {
+    CHD_WB32(*poutbuf + sps_pps_size, 1);
+  }
+  else
+  {
+    (*poutbuf + offset + sps_pps_size)[0] = 0;
+    (*poutbuf + offset + sps_pps_size)[1] = 0;
+    (*poutbuf + offset + sps_pps_size)[2] = 1;
+  }
+}
+
+bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size)
+{
+  // based on h264_mp4toannexb_bsf.c (ffmpeg)
+  // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
+  // and Licensed GPL 2.1 or greater
+
+  uint8_t   *buf = pData;
+  uint32_t  buf_size = iSize;
+  uint8_t   unit_type;
+  uint32_t  nal_size, cumul_size = 0;
+
+  do
+  {
+    if (m_sps_pps_context.length_size == 1)
+      nal_size = buf[0];
+    else if (m_sps_pps_context.length_size == 2)
+      nal_size = buf[0] << 8 | buf[1];
+    else
+      nal_size = buf[0] << 24 | buf[1] << 16 | buf[2] << 8 | buf[3];
+
+    buf += m_sps_pps_context.length_size;
+    unit_type = *buf & 0x1f;
+
+    // prepend only to the first type 5 NAL unit of an IDR picture
+    if (m_sps_pps_context.first_idr && unit_type == 5)
+    {
+      alloc_and_copy(poutbuf, poutbuf_size,
+        m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
+      m_sps_pps_context.first_idr = 0;
+    }
+    else
+    {
+      alloc_and_copy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size);
+      if (!m_sps_pps_context.first_idr && unit_type == 1)
+          m_sps_pps_context.first_idr = 1;
+    }
+
+    buf += nal_size;
+    cumul_size += nal_size + m_sps_pps_context.length_size;
+  } while (cumul_size < buf_size);
+
+  return true;
+}
+
+void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
+{
+  BCM::BC_STATUS ret;
+  bool annexbfiltered = false;
+  int demuxer_bytes = pInput->GetSize();
+  int64_t demuxer_pts = pInput->GetPts();
+  uint8_t *demuxer_content = pInput->GetPtr();
+
+  if (m_annexbfiltering)
+  {
+    int outbuf_size = 0;
+    uint8_t *outbuf = NULL;
+
+    h264_mp4toannexb_filter(demuxer_content, demuxer_bytes, &outbuf, &outbuf_size);
+    if (outbuf)
+    {
+      annexbfiltered = true;
+      demuxer_content = outbuf;
+      demuxer_bytes = outbuf_size;
+    }
+  }
+
+  do
+  {
+    ret = m_dll->DtsProcInput(m_Device, demuxer_content, demuxer_bytes, demuxer_pts, 0);
+    if (ret == BCM::BC_STS_BUSY)
+    {
+      CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+      Sleep(m_SleepTime); // Buffer is full, sleep it empty
+    }
+  } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
+
+  if (annexbfiltered)
+    free(demuxer_content);
+
+}
+#else
 void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
 {
   int bytes = 0;
@@ -439,6 +686,7 @@ void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
       m_dll->DtsFlushInput(m_Device, 2);
   }
 }
+#endif
 
 void CMPCInputThread::ProcessVC1(CMPCDecodeBuffer* pInput)
 {
@@ -489,7 +737,7 @@ void CMPCInputThread::Process(void)
     }
     else
     {
-      Sleep(m_SleepTime);
+      m_InputEvent.WaitMSec(m_SleepTime);
     }
   }
 
@@ -555,7 +803,11 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   m_dll(dll),
   m_Device(device),
   m_OutputTimeout(20),
-  m_interlace_buf(NULL)
+  m_interlace_buf(NULL),
+  m_framerate_tracking(false),
+  m_framerate_cnt(0),
+  m_framerate_timestamp(0.0),
+  m_framerate(0.0)
 {
 }
 
@@ -594,6 +846,41 @@ void CMPCOutputThread::Flush(void)
   }
 }
 
+void CMPCOutputThread::DoFrameRateTracking(double timestamp)
+{
+  if (timestamp != DVD_NOPTS_VALUE)
+  {
+    double duration;
+    duration = timestamp - m_framerate_timestamp;
+    if (duration > 0.0)
+    {
+      double framerate;
+
+      framerate = DVD_TIME_BASE / duration;
+      // qualify framerate, we don't care about absolute value, just
+      // want to to verify range. Timestamp could be borked so ignore
+      // anything that does not verify.
+      // 60, 59.94 -> 60
+      // 50, 49.95 -> 50
+      // 30, 29.97 -> 30
+      // 25, 24.975 -> 25
+      // 24, 23.976 -> 24
+      switch ((int)(0.5 + framerate))
+      {
+        case 60:
+        case 50:
+        case 30:
+        case 25:
+        case 24:
+          m_framerate_timestamp += duration;
+          m_framerate_cnt++;
+          m_framerate = DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
+        break;
+      }
+    }
+  }
+}
+
 void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 {
   m_interlace = FALSE;
@@ -609,14 +896,19 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     case BCM::vdecRESOLUTION_1080p25 :
       m_framerate = 25.0;
     break;
+    case BCM::vdecRESOLUTION_1080p24:
+      m_framerate = 24.0;
+    break;
     case BCM::vdecRESOLUTION_1080p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_1080p0:
+      // 1080p0 is ambiguious, could be 23.976 or 29.97 fps, decoder
+      // just does not know. 1080p@23_976 is more common but this
+      // will mess up 1080p@29_97 playback. We really need to verify
+      // which framerate with duration tracking.
+      m_framerate_tracking = true;
       m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
-    case BCM::vdecRESOLUTION_1080p24:
-      m_framerate = 24.0;
     break;
     
     case BCM::vdecRESOLUTION_1080i29_97:
@@ -648,13 +940,18 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     case BCM::vdecRESOLUTION_720p29_97:
       m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
-    case BCM::vdecRESOLUTION_720p23_976:
-      m_framerate = 24.0 * 1000.0 / 1001.0;
-    break;
     case BCM::vdecRESOLUTION_720p24:
       m_framerate = 24.0;
     break;
+    case BCM::vdecRESOLUTION_720p23_976:
+      m_framerate = 24.0 * 1000.0 / 1001.0;
+    break;
     case BCM::vdecRESOLUTION_720p0:
+      // 720p0 is ambiguious, could be 23.976, 29.97 or 59.97 fps, decoder
+      // just does not know. 720p@23_976 is more common but this
+      // will mess up other playback. We really need to verify
+      // which framerate with duration tracking.
+      m_framerate_tracking = true;
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     
@@ -669,14 +966,14 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
       m_interlace = TRUE;
     break;
     
-    case BCM::vdecRESOLUTION_480p29_97:
-      m_framerate = 30.0 * 1000.0 / 1001.0;
-    break;
     case BCM::vdecRESOLUTION_480p0:
       m_framerate = 60.0;
     break;
     case BCM::vdecRESOLUTION_480p:
       m_framerate = 60.0 * 1000.0 / 1001.0;
+    break;
+    case BCM::vdecRESOLUTION_480p29_97:
+      m_framerate = 30.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_480p23_976:
       m_framerate = 24.0 * 1000.0 / 1001.0;
@@ -696,6 +993,7 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     break;
     
     default:
+      m_framerate_tracking = true;
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
   }
@@ -842,7 +1140,7 @@ void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
     d = pBuffer->m_uv_buffer_ptr;
     for (int y = 0; y < h/2; y++, s += stride, d += w)
       fast_memcpy(d, s, w);
-    }
+  }
 }
 
 bool CMPCOutputThread::GetDecoderOutput(void)
@@ -863,9 +1161,13 @@ bool CMPCOutputThread::GetDecoderOutput(void)
     case BCM::BC_STS_SUCCESS:
       if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
       {
-        if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_timestamp))
+        if (procOut.PicInfo.timeStamp)
         {
           m_timestamp = procOut.PicInfo.timeStamp;
+          m_PictureNumber = procOut.PicInfo.picture_number;
+
+          if (m_framerate_tracking)
+            DoFrameRateTracking(pts_itod(m_timestamp));
 
           // Get next output buffer from the free list
           pBuffer = m_FreeList.Pop();
@@ -895,7 +1197,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_timestamp = m_timestamp;
           pBuffer->m_color_range = m_color_range;
           pBuffer->m_color_matrix = m_color_matrix;
-          pBuffer->m_PictureNumber = procOut.PicInfo.picture_number;
+          pBuffer->m_PictureNumber = m_PictureNumber;
 
           int w = procOut.PicInfo.width;
           int h = procOut.PicInfo.height;
@@ -973,7 +1275,9 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         else
         {
-          //CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp);
+          if (m_PictureNumber != procOut.PicInfo.picture_number)
+            CLog::Log(LOGDEBUG, "%s: No timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp);
+          m_PictureNumber = procOut.PicInfo.picture_number;
         }
       }
 
@@ -1020,33 +1324,31 @@ bool CMPCOutputThread::GetDecoderOutput(void)
 
 void CMPCOutputThread::Process(void)
 {
-  bool got_picture;
   BCM::BC_STATUS ret;
   BCM::BC_DTS_STATUS decoder_status;
 
+  m_PictureNumber = 0;
+
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
+
+  // wait for decoder startup, calls into DtsProcOutputXXCopy will
+  // return immediately until decoder starts getting input packets. 
   while (!m_bStop)
   {
-    got_picture = false;
-    
     ret = m_dll->DtsGetDriverStatus(m_Device, &decoder_status);
-    if (ret == BCM::BC_STS_SUCCESS)
+    if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount)
     {
-      // limit ready list to 20, makes no sense to pre-decode any more
-      if (m_ReadyList.Count() < 20)
-      {
-        got_picture = GetDecoderOutput();
-        /*
-        CLog::Log(LOGDEBUG, "%s: ReadyListCount %d FreeListCount %d PIBMissCount %d\n", __MODULE_NAME__,
-          decoder_status.ReadyListCount, decoder_status.FreeListCount, decoder_status.PIBMissCount);
-        CLog::Log(LOGDEBUG, "%s: FramesDropped %d FramesCaptured %d FramesRepeated %d\n", __MODULE_NAME__,
-          decoder_status.FramesDropped, decoder_status.FramesCaptured, decoder_status.FramesRepeated);
-        */
-      }
+      GetDecoderOutput();
+      break;
     }
+    Sleep(10);
+  }
 
-    if (!got_picture)
-      Sleep(5);
+  // decoder is primed so now calls in DtsProcOutputXXCopy will block
+  while (!m_bStop)
+  {
+    if (!GetDecoderOutput())
+      Sleep(1);
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -1055,34 +1357,12 @@ void CMPCOutputThread::Process(void)
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-union pts_union
-{
-  double  pts_d;
-  int64_t pts_i;
-};
-
-static int64_t pts_dtoi(double pts)
-{
-  pts_union u;
-  u.pts_d = pts;
-  return u.pts_i;
-}
-
-static double pts_itod(int64_t pts)
-{
-  pts_union u;
-  u.pts_i = pts;
-  return u.pts_d;
-}
-
 CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
   m_Device(NULL),
   m_IsConfigured(false),
   m_drop_state(false),
-  m_last_in_pts(DVD_NOPTS_VALUE),
-  m_last_out_pts(DVD_NOPTS_VALUE),
   m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
@@ -1302,16 +1582,8 @@ void CCrystalHD::CloseDecoder(void)
   CLog::Log(LOGDEBUG, "%s: codec closed", __MODULE_NAME__);
 }
 
-bool CCrystalHD::IsOpenforDecode(void)
-{
-  return m_Device && m_IsConfigured;
-}
-
 void CCrystalHD::Reset(void)
 {
-  m_last_in_pts = DVD_NOPTS_VALUE;
-  m_last_out_pts = DVD_NOPTS_VALUE;
-
   // Calling for non-error flush, flush all 
   m_dll->DtsFlushInput(m_Device, 2);
   m_pInputThread->Flush();
@@ -1320,26 +1592,41 @@ void CCrystalHD::Reset(void)
   while( m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
+  m_timestamps.clear();
+
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
 
-unsigned int CCrystalHD::GetInputCount(void)
+bool CCrystalHD::WaitInput(unsigned int msec)
+{
+  if(m_pInputThread)
+    return m_pInputThread->WaitInput(msec);
+  else
+    return true;
+}
+
+bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double pts)
+{
+  if (m_pInputThread)
+  {
+    CHD_TIMESTAMP timestamp;
+    
+    timestamp.dts = dts;
+    timestamp.pts = pts;
+    m_timestamps.push_back(timestamp);
+
+    return m_pInputThread->AddInput(pData, size, pts_dtoi(timestamp.pts) );
+  }
+  else
+    return false;
+}
+
+int CCrystalHD::GetInputCount(void)
 {
   if (m_pInputThread)
     return m_pInputThread->GetInputCount();
   else
     return 0;
-}
-
-bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
-{
-  if (m_pInputThread)
-  {
-    m_last_in_pts = pts;
-    return m_pInputThread->AddInput(pData, size, pts_dtoi(pts) );
-  }
-  else
-    return false;
 }
 
 int CCrystalHD::GetReadyCount(void)
@@ -1364,31 +1651,33 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
   CPictureBuffer* pBuffer = m_pOutputThread->ReadyListPop();
 
-  m_last_out_pts = pts_itod(pBuffer->m_timestamp);
-  if (m_last_in_pts != DVD_NOPTS_VALUE && (m_last_out_pts != DVD_NOPTS_VALUE) )
+  if (pBuffer->m_timestamp == 0)
   {
-    double  delta_pts;
-
-    delta_pts = m_last_in_pts - m_last_out_pts;
-    // figure out if we are running late.
-    if (delta_pts > DVD_MSEC_TO_TIME(750) )
+    // All timestamps that we pass to hardware have a value != 0
+    // so this a picture frame came from a demxer packet with more than one
+    // picture frames encoded inside. Set DVD_NOPTS_VALUE both dts/pts and
+    // let DVDPlayerVideo sort it out.
+    pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+  }
+  else
+  {
+    if (!m_timestamps.empty())
     {
-      // if really late, pop the ready list
-      while (m_pOutputThread->GetReadyCount())
-      {
-        m_pOutputThread->FreeListPush( pBuffer );
-        pBuffer = m_pOutputThread->ReadyListPop();      
-        m_last_out_pts = pts_itod(pBuffer->m_timestamp);
-        delta_pts = m_last_in_pts - m_last_out_pts;
-        if (delta_pts < DVD_MSEC_TO_TIME(750) )
-          break;
-      }
-      //CLog::Log(LOGDEBUG, "%s: m_in_pts(%f), m_out_pts(%f), delta_pts(%f)\n", __MODULE_NAME__,
-      //  m_last_in_pts, m_last_out_pts, delta_pts);
+      CHD_TIMESTAMP timestamp;
+      
+      timestamp = m_timestamps.front();
+      m_timestamps.pop_front();
+      pDvdVideoPicture->dts = timestamp.dts;
+      pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
+    }
+    else
+    {
+      pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
+      pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
     }
   }
 
-  pDvdVideoPicture->pts = m_last_out_pts;
   pDvdVideoPicture->iWidth = pBuffer->m_width;
   pDvdVideoPicture->iHeight = pBuffer->m_height;
   pDvdVideoPicture->iDisplayWidth = pBuffer->m_width;
@@ -1440,6 +1729,12 @@ void CCrystalHD::SetDropState(bool bDrop)
     m_drop_state = bDrop;
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d", __MODULE_NAME__, m_drop_state);
   }
+/*
+  if (m_drop_state)
+    m_dll->DtsSetSkipPictureMode(m_Device, 1);
+  else
+    m_dll->DtsSetSkipPictureMode(m_Device, 0);
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

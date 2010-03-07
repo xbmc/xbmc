@@ -77,6 +77,9 @@ void CPullupCorrection::Add(double pts)
   if (!CheckPattern(pattern))
   {
     m_ptscorrection = 0.0; //no pattern no correction
+    m_pattern = pattern;   //save the current pattern
+    m_patternpos = 0;      //reset the position
+
     if (m_haspattern)
     {
       m_haspattern = false;
@@ -232,11 +235,7 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 {
   //if no pattern was detected or if the size of the patterns differ we don't have a match
   if (pattern.size() != m_pattern.size() || pattern.size() < 1 || (pattern.size() == 1 && pattern[0] <= MAXERR))
-  {
-    m_pattern = pattern; //save the current pattern
-    m_patternpos = 0;    //reset the position
     return false;
-  }
 
   //the saved pattern should have moved 1 diff into the past
   m_patternpos = (m_patternpos + 1) % m_pattern.size();
@@ -247,14 +246,12 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
     double diff = pattern[(m_patternpos + i) % pattern.size()];
 
     if (!MatchDiff(diff, m_pattern[i]))
-    {
-      m_pattern = pattern; //save the current pattern
-      m_patternpos = 0;    //reset the position
       return false;
-    }
-    //we save the pattern, in case it changes very slowly
-    m_pattern[i] = diff;
   }
+
+  //we save the pattern, in case it changes very slowly
+  for (unsigned int i = 0; i < m_pattern.size(); i++)
+    m_pattern[i] = pattern[(m_patternpos + i) % pattern.size()];
 
   return true;
 }

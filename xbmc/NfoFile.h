@@ -30,7 +30,7 @@
 #endif // _MSC_VER > 1000
 
 #include "tinyXML/tinyxml.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "utils/CharsetConverter.h"
 
 class CVideoInfoTag;
@@ -51,8 +51,7 @@ public:
     ERROR_NFO    = 4
   };
 
-  NFOResult Create(const CStdString&,const CStdString&, int episode=-1);
-  NFOResult Create(const CStdString&,SScraperInfo&, int episode=-1);
+  NFOResult Create(const CStdString&, ADDON::ScraperPtr&, int episode=-1);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
@@ -70,21 +69,20 @@ public:
     return details.Load(doc.RootElement(),true);
   }
 
-  CStdString m_strScraper;
   CStdString m_strImDbUrl;
   CStdString m_strImDbNr;
   void Close();
-  void SetScraperInfo(const SScraperInfo& info) { m_info.Reset(); m_info = info; }
-  const SScraperInfo& GetScraperInfo() const { return m_info; }
+  void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; }
+  const ADDON::ScraperPtr& GetScraperInfo() const { return m_info; }
 private:
   int Load(const CStdString&);
-  int Scrape(const CStdString&, const CStdString& strURL="");
+  int Scrape(const ADDON::ScraperPtr& scraper, const CStdString& strURL="");
 private:
   char* m_doc;
   char* m_headofdoc;
   int m_size;
-  SScraperInfo m_info;
-  CStdString m_strContent;
+  ADDON::ScraperPtr m_info;
+  CONTENT_TYPE m_content;
   bool DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
 };
 

@@ -465,15 +465,15 @@ void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &pa
   if (g_guiSettings.GetBool("audiocds.autorun") || g_guiSettings.GetBool("dvds.autorun"))
     CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
-    g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), label);
+  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), label, TOAST_DISPLAY_TIME, false);
 }
 
 void CMediaManager::OnStorageUnsafelyRemoved(const CStdString &label)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), label);
+  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), label);
 }

@@ -21,20 +21,17 @@
 
 #include "ViewDatabase.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
+#include "Settings.h"
 #include "ViewState.h"
 #include "utils/log.h"
 #ifdef _LINUX
 #include "linux/ConvUtils.h" // GetLastError()
 #endif
 
-#define VIEW_DATABASE_VERSION 3
-
 //********************************************************************************************************************************
 CViewDatabase::CViewDatabase(void)
 {
-  m_preV2version = 0;
-  m_version = VIEW_DATABASE_VERSION;
-  m_strDatabaseFile = VIEW_DATABASE_NAME;
 }
 
 //********************************************************************************************************************************
@@ -44,6 +41,11 @@ CViewDatabase::~CViewDatabase(void)
 }
 
 //********************************************************************************************************************************
+bool CViewDatabase::Open()
+{
+  return CDatabase::Open();
+}
+
 bool CViewDatabase::CreateTables()
 {
   try

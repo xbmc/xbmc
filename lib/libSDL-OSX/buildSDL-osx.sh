@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # Get ARCH from Makefile.include
-file=../Makefile.include
+file=../../Makefile.include
 if [ -f $file ]
 then
   ARCH=$(grep "^ARCH=" $file | awk -F"=" '{print $2}')
@@ -22,7 +22,7 @@ patch -p0 <../SDL_SetWidthHeight.diff
 make
 cp build/.libs/libSDL.a ../libSDL-${ARCH}.a
 cd ..
-rm -rf SDL-1.2.13 SDL-1.2.13.tar.gz
+#rm -rf SDL-1.2.13 SDL-1.2.13.tar.gz
 
 
 #-------------------------------------------------------------------------------
@@ -36,5 +36,5 @@ cd SDL_mixer-1.2.8
 make
 cp build/.libs/libSDL_mixer.a ../libSDL_mixer-${ARCH}.a
 cd ..
-rm -rf SDL_mixer-1.2.8 SDL_mixer-1.2.8.tar.gz
+#rm -rf SDL_mixer-1.2.8 SDL_mixer-1.2.8.tar.gz
 

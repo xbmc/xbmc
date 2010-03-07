@@ -54,6 +54,10 @@ public:
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const CStdString &dateString);
   static void WordToDigits(CStdString &word);
+  static CStdString CreateUUID();
+  static bool ValidateUUID(const CStdString &uuid); // NB only validates syntax
+private:
+  static CStdString m_lastUUID;
 };
 
 #endif

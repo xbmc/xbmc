@@ -130,7 +130,7 @@ extern "C" void __stdcall init_emu_environ()
 #else
   dll_putenv("OS=unknown");
 #endif
-  dll_putenv("PYTHONPATH=special://xbmc/system/python/python24.zlib;special://xbmc/system/python/DLLs;special://xbmc/system/python/Lib;special://xbmc/system/python/spyce");
+  dll_putenv("PYTHONPATH=special://xbmc/system/python/python24.zlib;special://xbmc/system/python/DLLs;special://xbmc/system/python/Lib");
   dll_putenv("PYTHONHOME=special://xbmc/system/python");
   dll_putenv("PATH=.;special://xbmc;special://xbmc/system/python");
   //dll_putenv("PYTHONCASEOK=1");
@@ -402,9 +402,9 @@ extern "C"
     // or the python DLLs have malformed slashes on Win32 & Xbox
     // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
+      bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(CURL::ValidatePath(str));
+      bResult = pFile->Open(CUtil::ValidatePath(str));
 
     if (bResult)
     {
@@ -694,7 +694,7 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst64i32(_P(CURL::ValidatePath(str)), data);
+      return _findfirst64i32(CUtil::ValidatePath(_P(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -724,7 +724,7 @@ extern "C"
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
-    DIRECTORY::CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
+    XFILE::CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
       int size = sizeof(data->name);
@@ -822,7 +822,7 @@ extern "C"
     CURL url(_P(file));
     if (url.IsLocal())
     { // Make sure the slashes are correct & translate the path
-      return opendir(CURL::ValidatePath(file));
+      return opendir(CUtil::ValidatePath(file));
     }
 
     // locate next free directory
@@ -843,7 +843,7 @@ extern "C"
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
 
-    if (DIRECTORY::CDirectory::GetDirectory(url.Get(), vecDirsOpen[iDirSlot].items))
+    if (XFILE::CDirectory::GetDirectory(url.Get(), vecDirsOpen[iDirSlot].items))
     {
       vecDirsOpen[iDirSlot].curr_index = 0;
       return (DIR *)&vecDirsOpen[iDirSlot];
@@ -1428,7 +1428,7 @@ extern "C"
         pFile->Write(tmp2, len);
         return len;
       }
-      else if (!IS_STD_STREAM(stream))
+      else if (!IS_STD_STREAM(stream) && IS_VALID_STREAM(stream))
       {
         // it might be something else than a file, or the file is not emulated
         // let the operating system handle it
@@ -1739,7 +1739,7 @@ extern "C"
     if (!dir) return -1;
 
     // Make sure the slashes are correct & translate the path
-    CStdString strPath = _P(CURL::ValidatePath(dir));
+    CStdString strPath = CUtil::ValidatePath(_P(dir));
 #ifndef _LINUX
     CStdStringW strWPath;
     g_charsetConverter.utf8ToW(strPath, strWPath, false);

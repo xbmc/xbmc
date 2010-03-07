@@ -41,7 +41,7 @@ void CNullDirectSound::DoWork()
 CNullDirectSound::CNullDirectSound()
 {
 }
-bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, int8_t *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CLog::Log(LOGERROR,"Creating a Null Audio Renderer, Check your audio settings as this should not happen");
   if (iChannels == 0)
@@ -51,7 +51,7 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
-  g_application.m_guiDialogKaiToast.QueueNotification("Failed to initialize audio device", "Check your audiosettings");
+  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Failed to initialize audio device", "Check your audiosettings", TOAST_DISPLAY_TIME, false);
   m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
   m_packetsSent = 0;
   m_paused = 0;

@@ -38,7 +38,7 @@
 
 using namespace XFILE;
 
-namespace DIRECTORY
+namespace XFILE
 {
 
 CVirtualDirectory::CVirtualDirectory(void) : m_vecSources(NULL)

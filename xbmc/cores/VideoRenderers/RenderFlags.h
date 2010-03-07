@@ -50,5 +50,6 @@
 #define CONF_FLAGS_FORMAT_NV12   0x02000
 #define CONF_FLAGS_FORMAT_UYVY   0x04000 /* place holder for future expansion */
 #define CONF_FLAGS_FORMAT_YUY2   0x08000 /* place holder for future expansion */
-
+#define CONF_FLAGS_FORMAT_DXVA   0x10000
+#define CONF_FLAGS_FORMAT_VDPAU  0x20000
 #endif

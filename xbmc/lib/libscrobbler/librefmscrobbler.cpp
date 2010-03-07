@@ -66,7 +66,7 @@ void CLibrefmScrobbler::RemoveInstance()
 void CLibrefmScrobbler::LoadCredentials()
 {
   SetUsername(g_guiSettings.GetString("scrobbler.librefmusername"));
-  SetPassword(g_guiSettings.GetString("scrobbler.librefmpassword"));
+  SetPassword(g_guiSettings.GetString("scrobbler.librefmpass"));
 }
 
 CStdString CLibrefmScrobbler::GetJournalFileName()
@@ -85,13 +85,13 @@ void CLibrefmScrobbler::NotifyUser(int error)
       strText = g_localizeStrings.Get(15206);
       m_bBadAuth = true;
       strAudioScrobbler = g_localizeStrings.Get(15220);  // Libre.fm
-      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
       break;
     case SCROBBLER_USER_ERROR_BANNED:
       strText = g_localizeStrings.Get(15205);
       m_bBanned = true;
       strAudioScrobbler = g_localizeStrings.Get(15220);  // Libre.fm
-      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
       break;
     default:
       break;
@@ -101,7 +101,7 @@ void CLibrefmScrobbler::NotifyUser(int error)
 bool CLibrefmScrobbler::CanScrobble()
 {
   return (!g_guiSettings.GetString("scrobbler.librefmusername").IsEmpty()  &&
-          !g_guiSettings.GetString("scrobbler.librefmpassword").IsEmpty()  &&
+          !g_guiSettings.GetString("scrobbler.librefmpass").IsEmpty()  &&
          g_guiSettings.GetBool("scrobbler.librefmsubmit"));
 }
 

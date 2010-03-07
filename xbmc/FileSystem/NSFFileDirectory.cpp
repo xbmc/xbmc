@@ -24,7 +24,7 @@
 #include "MusicInfoTag.h"
 
 using namespace MUSIC_INFO;
-using namespace DIRECTORY;
+using namespace XFILE;
 
 CNSFFileDirectory::CNSFFileDirectory(void)
 {
