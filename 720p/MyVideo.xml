@@ -7,11 +7,10 @@
    <include>Background</include>
 
     <!-- -->
+    <include>List</include>
     <include>TV</include>
     <include>TVEpisodes</include>
-
     <include>Showcase</include>
-    <include>List</include>
     <include>MediaPreview</include>
     <include>InfoList</include>
     <include>PanelStream</include>
