@@ -215,10 +215,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         CURL url2(strPath);
         CURL url3(pItem->m_strPath);
 
-        CStdString strBasePath = url2.GetWithoutFilename();
-        CStdString strFileName = url3.GetFileName();
-        CUtil::RemoveSlashAtEnd(strBasePath);
-        pItem->m_strPath = strBasePath + strFileName;
+        CUtil::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), pItem->m_strPath);
 
         if (pItem->GetLabel().IsEmpty())
         {
@@ -228,7 +225,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           pItem->SetLabel(CUtil::GetFileName(name));
         }
 
-        if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
+        if (pItem->m_bIsFolder)
           CUtil::AddSlashAtEnd(pItem->m_strPath);
 
         // Add back protocol options
