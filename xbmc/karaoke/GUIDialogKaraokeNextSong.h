@@ -21,37 +21,20 @@
  *
  */
 
-#include "GUIWindow.h"
+#include "GUIDialog.h"
+#include "MusicDatabase.h"
+#include "Song.h"
 
-class CKaraokeLyrics;
-class CKaraokeWindowBackground;
 
-
-class CGUIWindowKaraokeLyrics : public CGUIWindow
+class CGUIDialogKaraokeNextSong: public CGUIDialog
 {
 public:
-  CGUIWindowKaraokeLyrics(void);
-  virtual ~CGUIWindowKaraokeLyrics(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  CGUIDialogKaraokeNextSong();
+  virtual ~CGUIDialogKaraokeNextSong();
 
-  void    newSong( CKaraokeLyrics * lyrics );
-  void    pauseSong( bool now_paused );
-  void    stopSong();
-  void    showNextSongIfNecessary();
+  CStdString songName() const;
+  void setSongName( const CStdString& name );
 
-protected:
-
-  //! Critical section protects this class from requests from different threads
-  CCriticalSection   m_CritSection;
-
-  //! Pointer to karaoke lyrics renderer
-  CKaraokeLyrics  *  m_Lyrics;
-
-  //! Pointer to background object
-  CKaraokeWindowBackground * m_Background;
-
-  //! How long time ago the next song has been checked?
-  double  m_lastCheckTime;
+private:
+  CStdString m_songName;
 };
