@@ -34,30 +34,42 @@
 #include <map>
 #include <boost/shared_ptr.hpp>
 
+#if LIBSSH_VERSION_INT < SSH_VERSION_INT(0,3,2)
+#define ssh_session SSH_SESSION
+#endif
+
+#if LIBSSH_VERSION_INT < SSH_VERSION_INT(0,4,0)
+#define sftp_file SFTP_FILE*
+#define sftp_session SFTP_SESSION*
+#define sftp_attributes SFTP_ATTRIBUTES*
+#define sftp_dir SFTP_DIR*
+#define ssh_session ssh_session*
+#endif
+
 class CSFTPSession
 {
 public:
   CSFTPSession(const CStdString &host, const CStdString &username, const CStdString &password);
   virtual ~CSFTPSession();
 
-  SFTP_FILE *CreateFileHande(const CStdString &file);
-  void CloseFileHandle(SFTP_FILE *handle);
+  sftp_file CreateFileHande(const CStdString &file);
+  void CloseFileHandle(sftp_file handle);
   bool GetDirectory(const CStdString &base, const CStdString &folder, CFileItemList &items);
   bool Exists(const char *path);
   int Stat(const char *path, struct __stat64* buffer);
-  void Seek(SFTP_FILE *handle, u64 position);
-  int Read(SFTP_FILE *handle, void *buffer, int64_t length);
-  int64_t GetPosition(SFTP_FILE *handle);
+  void Seek(sftp_file handle, uint64_t position);
+  int Read(sftp_file handle, void *buffer, size_t length);
+  int64_t GetPosition(sftp_file handle);
   bool IsIdle();
 private:
-  bool VerifyKnownHost(ssh_session *session);
+  bool VerifyKnownHost(ssh_session session);
   bool Connect(const CStdString &host, const CStdString &username, const CStdString &password);
   void Disconnect();
   CCriticalSection m_critSect;
 
   bool m_connected;
-  ssh_session  *m_session;
-  SFTP_SESSION *m_sftp_session;
+  ssh_session  m_session;
+  sftp_session m_sftp_session;
   int m_LastActive;
 };
 
@@ -94,7 +106,7 @@ namespace XFILE
   private:
     CStdString m_file;
     CSFTPSessionPtr m_session;
-    SFTP_FILE *m_sftp_handle;
+    sftp_file m_sftp_handle;
   };
 }
 #endif

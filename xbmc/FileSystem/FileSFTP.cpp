@@ -55,13 +55,13 @@ CSFTPSession::~CSFTPSession()
   Disconnect();
 }
 
-SFTP_FILE *CSFTPSession::CreateFileHande(const CStdString &file)
+sftp_file CSFTPSession::CreateFileHande(const CStdString &file)
 {
   if (m_connected)
   {
     CSingleLock lock(m_critSect);
     m_LastActive = CTimeUtils::GetTimeMS();
-    SFTP_FILE *handle = sftp_open(m_sftp_session, CorrectPath(file).c_str(), O_RDONLY, 0);
+    sftp_file handle = sftp_open(m_sftp_session, CorrectPath(file).c_str(), O_RDONLY, 0);
     if (handle)
     {
       sftp_file_set_blocking(handle);
@@ -76,7 +76,7 @@ SFTP_FILE *CSFTPSession::CreateFileHande(const CStdString &file)
   return NULL;
 }
 
-void CSFTPSession::CloseFileHandle(SFTP_FILE *handle)
+void CSFTPSession::CloseFileHandle(sftp_file handle)
 {
   CSingleLock lock(m_critSect);
   sftp_close(handle);
@@ -86,7 +86,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
 {
   if (m_connected)
   {
-    SFTP_DIR *dir = NULL;
+    sftp_dir dir = NULL;
 
     {
       CSingleLock lock(m_critSect);
@@ -99,7 +99,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
       bool read = true;
       while (read)
       {
-        SFTP_ATTRIBUTES *attributes = NULL;
+        sftp_attributes attributes = NULL;
 
         {
           CSingleLock lock(m_critSect);
@@ -172,7 +172,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
 bool CSFTPSession::Exists(const char *path)
 {
   CSingleLock lock(m_critSect);
-  SFTP_ATTRIBUTES *attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
+  sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
   bool exists = attributes != NULL;
 
   if (attributes)
@@ -186,7 +186,7 @@ int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
   CSingleLock lock(m_critSect);
   memset(buffer, 0, sizeof (buffer));
   m_LastActive = CTimeUtils::GetTimeMS();
-  SFTP_ATTRIBUTES *attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
+  sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
 
   if (attributes)
   {
@@ -204,21 +204,21 @@ int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
   }
 }
 
-void CSFTPSession::Seek(SFTP_FILE *handle, u64 position)
+void CSFTPSession::Seek(sftp_file handle, uint64_t position)
 {
   CSingleLock lock(m_critSect);
   m_LastActive = CTimeUtils::GetTimeMS();
   sftp_seek64(handle, position);
 }
 
-int CSFTPSession::Read(SFTP_FILE *handle, void *buffer, int64_t length)
+int CSFTPSession::Read(sftp_file handle, void *buffer, size_t length)
 {
   CSingleLock lock(m_critSect);
   m_LastActive = CTimeUtils::GetTimeMS();
   return sftp_read(handle, buffer, length);
 }
 
-int64_t CSFTPSession::GetPosition(SFTP_FILE *handle)
+int64_t CSFTPSession::GetPosition(sftp_file handle)
 {
   CSingleLock lock(m_critSect);
   m_LastActive = CTimeUtils::GetTimeMS();
@@ -230,7 +230,7 @@ bool CSFTPSession::IsIdle()
   return (CTimeUtils::GetTimeMS() - m_LastActive) > 90000;
 }
 
-bool CSFTPSession::VerifyKnownHost(ssh_session *session)
+bool CSFTPSession::VerifyKnownHost(ssh_session session)
 {
   switch (ssh_is_server_known(session))
   {
@@ -274,7 +274,23 @@ bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, c
     return false;
   }
 
-  SSH_OPTIONS *options = ssh_options_new();
+#if LIBSSH_VERSION_INT >= SSH_VERSION_INT(0,4,0)
+  if (ssh_options_set(m_session, SSH_OPTIONS_USER, username.c_str()) < 0)
+  {
+    CLog::Log(LOGERROR, "SFTPSession: Failed to set username '%s' for session", username.c_str());
+    return false;
+  }
+
+  if (ssh_options_set(m_session, SSH_OPTIONS_HOST, host.c_str()) < 0)
+  {
+    CLog::Log(LOGERROR, "SFTPSession: Failed to set host '%s' for session", host.c_str());
+    return false;
+  }
+
+  ssh_options_set(m_session, SSH_OPTIONS_LOG_VERBOSITY, 0);
+
+#else
+  SSH_OPTIONS* options = ssh_options_new();
 
   if (ssh_options_set_username(options, username.c_str()) < 0)
   {
@@ -291,6 +307,7 @@ bool CSFTPSession::Connect(const CStdString &host, const CStdString &username, c
   ssh_options_set_log_verbosity(options, 0);
 
   ssh_set_options(m_session, options);
+#endif
 
   if(ssh_connect(m_session))
   {
@@ -443,7 +460,7 @@ int64_t CFileSFTP::Seek(int64_t iFilePosition, int iWhence)
 
   if (m_session && m_sftp_handle)
   {
-    u64 position = 0;
+    uint64_t position = 0;
     if (iWhence == SEEK_SET)
       position = iFilePosition;
     else if (iWhence == SEEK_CUR)
@@ -465,7 +482,7 @@ unsigned int CFileSFTP::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (m_session && m_sftp_handle)
   {
-    int rc = m_session->Read(m_sftp_handle, lpBuf, uiBufSize);
+    int rc = m_session->Read(m_sftp_handle, lpBuf, (size_t)uiBufSize);
 
     if (rc > 0)
       return rc;
