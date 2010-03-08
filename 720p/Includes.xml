@@ -2165,6 +2165,7 @@
 	       <font>MediumSmallTitleFont</font>
 	       <textcolor>FFffffff</textcolor>
 	       <wrapmultiline>false</wrapmultiline>
+		   <scrollspeed>30</scrollspeed>
 	 </control>
     </focusedlayout>
 
