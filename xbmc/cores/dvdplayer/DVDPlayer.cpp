@@ -1458,7 +1458,7 @@ bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
     return false;
 
   CEdl::Cut cut;
-  if(m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut));
+  if(m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut))
     return cut.action == CEdl::CUT;
 }
 
