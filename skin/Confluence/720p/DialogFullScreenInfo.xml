@@ -33,7 +33,7 @@
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<bordertexture border="8">ThumbShadow.png</bordertexture>
 				<bordersize>8</bordersize>
-				<visible>!VideoPlayer.Content(Movies)</visible>
+				<visible>!VideoPlayer.Content(Movies) + !VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="image">
 				<description>Movie cover image</description>
@@ -47,6 +47,17 @@
 				<bordertexture border="8">ThumbShadow.png</bordertexture>
 				<bordersize>8</bordersize>
 				<visible>VideoPlayer.Content(Movies)</visible>
+			</control>
+			<control type="image">
+				<description>Live TV Channel Logo image</description>
+				<posx>30</posx>
+				<posy>290r</posy>
+				<width>280</width>
+				<height>260</height>
+				<fadetime>200</fadetime>
+				<texture background="true">$INFO[VideoPlayer.Cover]</texture>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="progress">
 				<description>Progressbar</description>
