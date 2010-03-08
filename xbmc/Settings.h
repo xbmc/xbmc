@@ -324,8 +324,20 @@ public:
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
 
-  bool LoadProfiles(const CStdString& strSettingsFile);
-  bool SaveProfiles(const CStdString& strSettingsFile) const;
+  /*! \brief Load the user profile information from disk
+   Loads the profiles.xml file and creates the list of profiles. If no profiles
+   exist, a master user is created.  Should be called after special://masterprofile/
+   has been defined.
+   \param profilesFile XML file to load.
+   */
+  void LoadProfiles(const CStdString& profilesFile);
+
+  /*! \brief Save the user profile information to disk
+   Saves the list of profiles to the profiles.xml file.
+   \param profilesFile XML file to save.
+   \return true on success, false on failure to save
+   */
+  bool SaveProfiles(const CStdString& profilesFile) const;
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 

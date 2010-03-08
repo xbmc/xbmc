@@ -1004,129 +1004,131 @@ bool CSettings::SaveSettingsToProfile(int index)
 }
 
 
-bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
+void CSettings::LoadProfiles(const CStdString& profilesFile)
 {
   // clear out our profiles
   m_vecProfiles.clear();
 
   TiXmlDocument profilesDoc;
-  if (!CFile::Exists(strSettingsFile))
-  { // set defaults, or assume no rss feeds??
-    return false;
-  }
-  if (!profilesDoc.LoadFile(strSettingsFile))
+  if (CFile::Exists(profilesFile))
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
-    return false;
-  }
+    if (profilesDoc.LoadFile(profilesFile))
+    {
+      TiXmlElement *rootElement = profilesDoc.RootElement();
+      if (rootElement && strcmpi(rootElement->Value(),"profiles") == 0)
+      {
+        GetInteger(rootElement, "lastloaded", m_iLastLoadedProfileIndex, 0, 0, 1000);
+        XMLUtils::GetBoolean(rootElement, "useloginscreen", bUseLoginScreen);
 
-  TiXmlElement *pRootElement = profilesDoc.RootElement();
-  if (!pRootElement || strcmpi(pRootElement->Value(),"profiles") != 0)
-  {
-    CLog::Log(LOGERROR, "Error loading %s, no <profiles> node", strSettingsFile.c_str());
-    return false;
-  }
-  GetInteger(pRootElement,"lastloaded",m_iLastLoadedProfileIndex,0,0,1000);
-  if (m_iLastLoadedProfileIndex < 0)
-    m_iLastLoadedProfileIndex = 0;
+        TiXmlElement* pProfile = rootElement->FirstChildElement("profile");
+        while (pProfile)
+        {
+          CProfile profile;
+          profile.setName("Master user");
+          if (CDirectory::Exists("special://home/userdata"))
+            profile.setDirectory("special://home/userdata");
+          else
+            profile.setDirectory("special://xbmc/userdata");
 
-  XMLUtils::GetBoolean(pRootElement,"useloginscreen",bUseLoginScreen);
+          CStdString strName;
+          XMLUtils::GetString(pProfile,"name",strName);
+          profile.setName(strName);
 
-  TiXmlElement* pProfile = pRootElement->FirstChildElement("profile");
-  CProfile profile;
+          CStdString strDirectory;
+          XMLUtils::GetPath(pProfile,"directory",strDirectory);
+          profile.setDirectory(strDirectory);
 
-  while (pProfile)
-  {
-    profile.setName("Master user");
-    if (CDirectory::Exists("special://home/userdata"))
-      profile.setDirectory("special://home/userdata");
+          CStdString strThumb;
+          XMLUtils::GetPath(pProfile,"thumbnail",strThumb);
+          profile.setThumb(strThumb);
+
+          bool bHas=true;
+          XMLUtils::GetBoolean(pProfile, "hasdatabases", bHas);
+          profile.setDatabases(bHas);
+
+          bHas = true;
+          XMLUtils::GetBoolean(pProfile, "canwritedatabases", bHas);
+          profile.setWriteDatabases(bHas);
+
+          bHas = true;
+          XMLUtils::GetBoolean(pProfile, "hassources", bHas);
+          profile.setSources(bHas);
+
+          bHas = true;
+          XMLUtils::GetBoolean(pProfile, "canwritesources", bHas);
+          profile.setWriteSources(bHas);
+
+          bHas = false;
+          XMLUtils::GetBoolean(pProfile, "lockaddonmanager", bHas);
+          profile.setAddonManagerLocked(bHas);
+
+          bHas = false;
+          XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
+          profile.setSettingsLocked(bHas);
+
+          bHas = false;
+          XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
+          profile.setFilesLocked(bHas);
+
+          bHas = false;
+          XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
+          profile.setMusicLocked(bHas);
+
+          bHas = false;
+          XMLUtils::GetBoolean(pProfile, "lockvideo", bHas);
+          profile.setVideoLocked(bHas);
+
+          bHas = false;
+          XMLUtils::GetBoolean(pProfile, "lockpictures", bHas);
+          profile.setPicturesLocked(bHas);
+
+          bHas = false;
+          XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
+          profile.setProgramsLocked(bHas);
+
+          LockType iLockMode;
+          int lockMode = (int)LOCK_MODE_EVERYONE;
+          XMLUtils::GetInt(pProfile,"lockmode",lockMode);
+          iLockMode = (LockType)lockMode;
+
+          if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
+            iLockMode = LOCK_MODE_EVERYONE;
+          profile.setLockMode(iLockMode);
+
+          CStdString strLockCode;
+          XMLUtils::GetString(pProfile,"lockcode",strLockCode);
+          profile.setLockCode(strLockCode);
+
+          CStdString strDate;
+          XMLUtils::GetString(pProfile,"lastdate",strDate);
+          profile.setDate(strDate);
+
+          m_vecProfiles.push_back(profile);
+          pProfile = pProfile->NextSiblingElement("profile");
+        }
+      }
+      else
+        CLog::Log(LOGERROR, "Error loading %s, no <profiles> node", profilesFile.c_str());
+    }
     else
-      profile.setDirectory("special://xbmc/userdata");
-
-    CStdString strName;
-    XMLUtils::GetString(pProfile,"name",strName);
-    profile.setName(strName);
-
-    CStdString strDirectory;
-    XMLUtils::GetPath(pProfile,"directory",strDirectory);
-    profile.setDirectory(strDirectory);
-
-    CStdString strThumb;
-    XMLUtils::GetPath(pProfile,"thumbnail",strThumb);
-    profile.setThumb(strThumb);
-
-    bool bHas=true;
-    XMLUtils::GetBoolean(pProfile, "hasdatabases", bHas);
-    profile.setDatabases(bHas);
-
-    bHas = true;
-    XMLUtils::GetBoolean(pProfile, "canwritedatabases", bHas);
-    profile.setWriteDatabases(bHas);
-
-    bHas = true;
-    XMLUtils::GetBoolean(pProfile, "hassources", bHas);
-    profile.setSources(bHas);
-
-    bHas = true;
-    XMLUtils::GetBoolean(pProfile, "canwritesources", bHas);
-    profile.setWriteSources(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockaddonmanager", bHas);
-    profile.setAddonManagerLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
-    profile.setSettingsLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
-    profile.setFilesLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
-    profile.setMusicLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockvideo", bHas);
-    profile.setVideoLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockpictures", bHas);
-    profile.setPicturesLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
-    profile.setProgramsLocked(bHas);
-
-    LockType iLockMode;
-    int lockMode = (int)LOCK_MODE_EVERYONE;
-    XMLUtils::GetInt(pProfile,"lockmode",lockMode);
-    iLockMode = (LockType)lockMode;
-
-    if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
-      iLockMode = LOCK_MODE_EVERYONE;
-    profile.setLockMode(iLockMode);
-
-    CStdString strLockCode;
-    XMLUtils::GetString(pProfile,"lockcode",strLockCode);
-    profile.setLockCode(strLockCode);
-
-    CStdString strDate;
-    XMLUtils::GetString(pProfile,"lastdate",strDate);
-    profile.setDate(strDate);
-
-    m_vecProfiles.push_back(profile);
-    pProfile = pProfile->NextSiblingElement("profile");
+      CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", profilesFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
   }
 
-  if (m_iLastLoadedProfileIndex >= (int)GetNumProfiles() || m_iLastLoadedProfileIndex < 0)
-    m_iLastLoadedProfileIndex = 0;
+  if (m_vecProfiles.empty())
+  { // add the master user
+    CProfile profile;
+    profile.setName("Master user");
+    profile.setDirectory("special://masterprofile/");
+    profile.setLockMode(LOCK_MODE_EVERYONE);
+    m_vecProfiles.push_back(profile);
+  }
 
-  return true;
+  // check the validity of the profile index
+  if (m_iLastLoadedProfileIndex >= m_vecProfiles.size() || m_iLastLoadedProfileIndex < 0)
+    m_iLastLoadedProfileIndex = 0;
 }
 
-bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
+bool CSettings::SaveProfiles(const CStdString& profilesFile) const
 {
   TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("profiles");
@@ -1166,7 +1168,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
     }
   }
   // save the file
-  return xmlDoc.SaveFile(strSettingsFile);
+  return xmlDoc.SaveFile(profilesFile);
 }
 
 bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
