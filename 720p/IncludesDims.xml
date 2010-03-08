@@ -1530,7 +1530,7 @@
   <include name="TVWidePlotDims">
     <posy>356</posy>
     <width>540</width>
-    <height>158</height>
+    <height>153</height>
   </include>
 
   <constant name="TVWideInfoValueWidth">434</constant>
