@@ -369,7 +369,7 @@ CUtil::~CUtil(void)
 /* returns filename extension including period of filename */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {
-  if(strFileName.Find("://") >= 0)
+  if(IsURL(strFileName))
   {
     CURL url(strFileName);
     return CUtil::GetExtension(url.GetFileName());
@@ -395,7 +395,7 @@ void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
 /* handles both / and \, and options in urls*/
 const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
-  if(strFileNameAndPath.Find("://") >= 0)
+  if(IsURL(strFileNameAndPath))
   {
     CURL url(strFileNameAndPath);
     return CUtil::GetFileName(url.GetFileName());
@@ -594,7 +594,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 
 void CUtil::RemoveExtension(CStdString& strFileName)
 {
-  if(strFileName.Find("://") >= 0)
+  if(IsURL(strFileName))
   {
     CURL url(strFileName);
     strFileName = url.GetFileName();
@@ -1366,288 +1366,16 @@ bool CUtil::RemoveTrainer()
   return Found;
 }
 
-void CUtil::RunShortcut(const char* szShortcutPath)
+CStdString CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension)
 {
-  CShortcut shortcut;
-  char szPath[1024];
-  char szParameters[1024];
-  if ( shortcut.Create(szShortcutPath))
-  {
-    CFileItem item(shortcut.m_strPath, false);
-    // if another shortcut is specified, load this up and use it
-    if (item.IsShortCut())
-    {
-      CHAR szNewPath[1024];
-      strcpy(szNewPath, szShortcutPath);
-      CHAR* szFile = strrchr(szNewPath, '\\');
-      strcpy(&szFile[1], shortcut.m_strPath.c_str());
-
-      CShortcut targetShortcut;
-      if (FAILED(targetShortcut.Create(szNewPath)))
-        return;
-
-      shortcut.m_strPath = targetShortcut.m_strPath;
-    }
-
-    strcpy( szPath, shortcut.m_strPath.c_str() );
-
-    CHAR szMode[16];
-    strcpy( szMode, shortcut.m_strVideo.c_str() );
-    strlwr( szMode );
-
-    strcpy(szParameters, shortcut.m_strParameters.c_str());
-
-    BOOL bRow = strstr(szMode, "pal") != NULL;
-    BOOL bJap = strstr(szMode, "ntsc-j") != NULL;
-    BOOL bUsa = strstr(szMode, "ntsc") != NULL;
-
-    F_VIDEO video = VIDEO_NULL;
-    if (bRow)
-      video = VIDEO_PAL50;
-    if (bJap)
-      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCJ);
-    if (bUsa)
-      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCM);
-
-#ifdef HAS_XBOX_HARDWARE
-    CUSTOM_LAUNCH_DATA data;
-    if (!shortcut.m_strCustomGame.IsEmpty())
-    {
-      char remap_path[MAX_PATH] = "";
-      char remap_xbe[MAX_PATH] = "";
-
-      memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
-
-      strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
-
-      strncpy(remap_path, XeImageFileName->Buffer, XeImageFileName->Length);
-      for (int i = strlen(remap_path) - 1; i >=0; i--)
-        if (remap_path[i] == '\\' || remap_path[i] == '/')
-        {
-          break;
-        }
-      strcpy(remap_xbe, &remap_path[i+1]);
-      remap_path[i+1] = 0;
-
-      strcpy(data.szRemap_D_As, remap_path);
-      strcpy(data.szLaunchXBEOnExit, remap_xbe);
-
-      data.executionType = 0;
-
-      // not the actual "magic" value - used to pass XbeId for some reason?
-      data.magic = GetXbeID(szPath);
-    }
-
-    CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
-#endif
-  }
-}
-
-void CUtil::GetHomePath(CStdString& strPath)
-{
-  char szXBEFileName[1024];
-  CIoSupport::GetXbePath(szXBEFileName);
-  char *szFileName = strrchr(szXBEFileName, '\\');
-  *szFileName = 0;
-  strPath = szXBEFileName;
-}
-
-bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
-{
-  if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
-  {
-    CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is off. Skipping Filter Flicker Patching.", __FUNCTION__);
-    return false;
-  }
-  CStdString strIsPMode = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode;
-  if ( strIsPMode.Equals("480p 16:9") || strIsPMode.Equals("480p 4:3") || strIsPMode.Equals("720p 16:9"))
-  {
-    CLog::Log(LOGDEBUG, "%s - Progressive Mode detected: Skipping Auto Filter Flicker Patching!", __FUNCTION__);
-    return false;
-  }
-  if (strncmp(szPath1, "D:", 2) == 0)
-  {
-    CLog::Log(LOGDEBUG, "%s - Source is DVD-ROM! Skipping Filter Flicker Patching.", __FUNCTION__);
-    return false;
-  }
-
-  CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is ON. Starting Filter Flicker Patching.", __FUNCTION__);
-
-  // Test if we already have a patched _ffp XBE
-  // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
-  /* // May we can add. a changed FF detection.. then we can actived this!
-  CFile	xbe;
-	if (xbe.Exists(szPath1))
-  {
-    char szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFname[_MAX_FNAME], szExt[_MAX_EXT];
-		_splitpath(szPath1, szDrive, szDir, szFname, szExt);
-		strncat(szFname, "_ffp", 4);
-		_makepath(szNewPath.GetBuffer(MAX_PATH), szDrive, szDir, szFname, szExt);
-		szNewPath.ReleaseBuffer();
-		if (xbe.Exists(szNewPath))
-			return true;
-	} */
-
-
-  CXBE m_xbe;
-  if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
-  {
-    CLog::Log(LOGDEBUG, "%s - %s",szPath1.c_str(), __FUNCTION__);
-    CLog::Log(LOGDEBUG, "%s - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.", __FUNCTION__);
-    return false;
-  }
-#ifdef HAS_XBOX_HARDWARE
-  CGFFPatch m_ffp;
-  if (!m_ffp.FFPatch(szPath1, szNewPath))
-  {
-    CLog::Log(LOGDEBUG, "%s - ERROR during Filter Flicker Patching. Falling back to the original source.", __FUNCTION__);
-    return false;
-  }
-#endif
-  if(szNewPath.IsEmpty())
-  {
-    CLog::Log(LOGDEBUG, "%s - ERROR NO Patchfile Path is empty! Falling back to the original source.", __FUNCTION__);
-    return false;
-  }
-  CLog::Log(LOGDEBUG, "%s - Filter Flicker Patching done. Starting %s.", __FUNCTION__, szNewPath.c_str());
-  return true;
-}
-
-void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
-{
-  // check if locked
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && 
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-    if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return;
-
-  /// \brief Runs an executable file
-  /// \param szPath1 Path of executeable to run
-  /// \param szParameters Any parameters to pass to the executeable being run
-  g_application.PrintXBEToLCD(szPath1); //write to LCD
-  Sleep(600);        //and wait a little bit to execute
-
-  char szPath[1024];
-  strcpy(szPath, _P(szPath1).c_str());
-
-  CStdString szNewPath;
-  if (RunFFPatchedXBE(szPath, szNewPath))
-  {
-    strcpy(szPath, szNewPath.c_str());
-  }
-  
-  if (strncmp(szPath, "Q:", 2) == 0)
-  { // may aswell support the virtual drive as well...
-    CStdString strPath;
-    // home dir is xbe dir
-    GetHomePath(strPath);
-    if (!HasSlashAtEnd(strPath))
-      strPath += "\\";
-    if (szPath[2] == '\\')
-      strPath += szPath + 3;
-    else
-      strPath += szPath + 2;
-    strcpy(szPath, strPath.c_str());
-  }
-  
-  char* szBackslash = strrchr(szPath, '\\');
-  if (szBackslash)
-  {
-    *szBackslash = 0x00;
-    char* szXbe = &szBackslash[1];
-
-    char* szColon = strrchr(szPath, ':');
-    if (szColon)
-    {
-      *szColon = 0x00;
-      char* szDrive = szPath;
-      char* szDirectory = &szColon[1];
-
-      char szDevicePath[1024];
-      char szXbePath[1024];
-
-      CIoSupport::GetPartition(szDrive[0], szDevicePath);
-
-      strcat(szDevicePath, szDirectory);
-      wsprintf(szXbePath, "d:\\%s", szXbe);
-
-#ifdef HAS_XBOX_HARDWARE
-      g_application.Stop();
-
-      CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry, pData);
-#endif
-    }
-  }
-
-  CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
-}
-
-void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
-{
-  CStdString strPath(_P(szPath));
-  CLog::Log(LOGINFO, "launch xbe:%s %s", strPath.c_str(), szXbe);
-  CLog::Log(LOGINFO, " mount %s as D:", strPath.c_str());
-
-#ifdef HAS_XBOX_HARDWARE
-  CIoSupport::RemapDriveLetter('D', const_cast<char*>(strPath.c_str()));
-
-  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
-
-  if (ForceVideo != VIDEO_NULL)
-  {
-    if (!ForceCountry)
-    {
-      if (ForceVideo == VIDEO_NTSCM)
-        ForceCountry = COUNTRY_USA;
-      if (ForceVideo == VIDEO_NTSCJ)
-        ForceCountry = COUNTRY_JAP;
-      if (ForceVideo == VIDEO_PAL50)
-        ForceCountry = COUNTRY_EUR;
-    }
-    CLog::Log(LOGDEBUG,"forcing video mode: %i",ForceVideo);
-    bool bSuccessful = PatchCountryVideo(ForceCountry, ForceVideo);
-    if( !bSuccessful )
-      CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
-  }
-  if (pData)
-  {
-    DWORD dwTitleID = pData->magic;
-    pData->magic = CUSTOM_LAUNCH_MAGIC;
-    const char* xbe = szXbe+3;
-    CLog::Log(LOGINFO, "launching game %s from path %s", pData->szFilename, strPath.c_str());
-    CIoSupport::UnmapDriveLetter('D');
-    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+strPath).c_str(), LDT_TITLE, dwTitleID, pData);
-  }
-  else
-  {
-    if (szParameters == NULL)
-    {
-      DWORD error = XLaunchNewImage(szXbe, NULL );
-      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
-    }
-    else
-    {
-      LAUNCH_DATA LaunchData;
-      strcpy((char*)LaunchData.Data, szParameters);
-
-      DWORD error = XLaunchNewImage(szXbe, &LaunchData );
-      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
-    }
-  }
-#endif
-}
-
-void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
-{
-  if(strFile.Find("://") >= 0)
+  if(IsURL(strFile))
   {
     CURL url(strFile);
-    ReplaceExtension(url.GetFileName(), strNewExtension, strChangedFile);
-    url.SetFileName(strChangedFile);
-    strChangedFile = url.Get();
-    return;
+    url.SetFileName(ReplaceExtension(url.GetFileName(), strNewExtension));
+    return url.Get();
   }
 
+  CStdString strChangedFile;
   CStdString strExtension;
   GetExtension(strFile, strExtension);
   if ( strExtension.size() )
@@ -1660,6 +1388,7 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
     strChangedFile = strFile;
     strChangedFile += strNewExtension;
   }
+  return strChangedFile;
 }
 
 bool CUtil::HasSlashAtEnd(const CStdString& strFile)
@@ -1795,8 +1524,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 
 bool CUtil::IsMultiPath(const CStdString& strPath)
 {
-  if (strPath.Left(12).Equals("multipath://")) return true;
-  return false;
+  return strPath.Left(10).Equals("multipath:");
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
@@ -1827,14 +1555,12 @@ bool CUtil::IsDVD(const CStdString& strFile)
 
 bool CUtil::IsVirtualPath(const CStdString& strFile)
 {
-  if (strFile.Left(14).Equals("virtualpath://")) return true;
-  return false;
+  return strFile.Left(12).Equals("virtualpath:");
 }
 
 bool CUtil::IsStack(const CStdString& strFile)
 {
-  if (strFile.Left(8).Equals("stack://")) return true;
-  return false;
+  return strFile.Left(6).Equals("stack:");
 }
 
 bool CUtil::IsRAR(const CStdString& strFile)
@@ -1889,8 +1615,12 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 
 bool CUtil::IsSpecial(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("special");
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return strFile2.Left(8).Equals("special:");
 }
 
 bool CUtil::IsPlugin(const CStdString& strFile)
@@ -1907,20 +1637,22 @@ bool CUtil::IsPluginRoot(const CStdString& strFile)
 
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("cdda");
+  return strFile.Left(5).Equals("cdda:");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("iso9660");
+  return strFile.Left(8).Equals("iso9660:");
 }
 
 bool CUtil::IsSmb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("smb");
+  CStdString strFile2(strFile);
+
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+
+  return strFile2.Left(4).Equals("smb:");
 }
 
 bool CUtil::IsURL(const CStdString& strFile)
@@ -2034,26 +1766,22 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
 
 bool CUtil::IsMusicDb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("musicdb");
+  return strFile.Left(8).Equals("musicdb:");
 }
 
 bool CUtil::IsVideoDb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("videodb");
+  return strFile.Left(8).Equals("videodb:");
 }
 
 bool CUtil::IsShoutCast(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("shout");
+  return strFile.Left(6).Equals("shout:");
 }
 
 bool CUtil::IsLastFM(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("lastfm");
+  return strFile.Left(7).Equals("lastfm:");
 }
 
 bool CUtil::IsWritable(const CStdString& strFile)
@@ -2427,9 +2155,8 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     if (CUtil::ShortenFileName(strFileName))
     {
       CStdString strExtension;
-      CStdString strNoExt;
       CUtil::GetExtension(strFileName, strExtension);
-      CUtil::ReplaceExtension(strFileName, "", strNoExt);
+      CStdString strNoExt(CUtil::ReplaceExtension(strFileName, ""));
       // remove any spaces as a result of truncation (only):
       while (strNoExt[strNoExt.size()-1] == ' ')
         strNoExt.erase(strNoExt.size()-1);
@@ -2647,11 +2374,10 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   vector<CStdString> strLookInPaths;
 
   CStdString strFileName;
-  CStdString strFileNameNoExt;
   CStdString strPath;
 
   CUtil::Split(strMovie, strPath, strFileName);
-  ReplaceExtension(strFileName, "", strFileNameNoExt);
+  CStdString strFileNameNoExt(ReplaceExtension(strFileName, ""));
   strLookInPaths.push_back(strPath);
 
   if (!g_stSettings.iAdditionalSubtitleDirectoryChecked && !g_guiSettings.GetString("subtitles.custompath").IsEmpty()) // to avoid checking non-existent directories (network) every time..
@@ -2792,7 +2518,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
           }
         }
       }
-
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
@@ -3000,9 +2725,9 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
     {
       AddSlashAtEnd(file);
       url.SetFileName(file);
+      strFolder = url.Get();
+      return;
     }
-    strFolder = url.Get();
-    return;
   }
 
   if (!CUtil::HasSlashAtEnd(strFolder))
@@ -3024,9 +2749,11 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
     {
       RemoveSlashAtEnd(file);
       url.SetFileName(file);
+      strFolder = url.Get();
+      return;
     }
-    strFolder = url.Get();
-    return;
+    if(url.GetHostName().IsEmpty())
+      return;
   }
 
   while (CUtil::HasSlashAtEnd(strFolder))
@@ -3365,17 +3092,6 @@ void CUtil::TakeScreenshot()
   }
 }
 
-void CUtil::ClearCache()
-{
-  for (int i = 0; i < 16; i++)
-  {
-    CStdString strHex, folder;
-    strHex.Format("%x", i);
-    CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), strHex, folder);
-    g_directoryCache.ClearDirectory(folder);
-  }
-}
-
 void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
 {
   result->st_dev = stat->st_dev;
@@ -3558,9 +3274,15 @@ CStdString CUtil::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
 
-  // Don't do any stuff on URLs containing %-characters as we may screw up
-  // URL-encoded (embedded) filenames (like with zip:// & rar://)
-  if (path.Find("://") >= 0 && path.Find('%') >= 0)
+  // Don't do any stuff on URLs containing %-characters or protocols that embed
+  // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
+  // recurse and crash XBMC
+  if (IsURL(path) && 
+     (path.Find('%') >= 0 ||
+      path.Left(4).Equals("zip:") ||
+      path.Left(4).Equals("rar:") ||
+      path.Left(6).Equals("stack:") ||
+      path.Left(10).Equals("multipath:") ))
     return result;
 
   // check the path for incorrect slashes
@@ -4481,8 +4203,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
     }
     // also set the default color theme
-    CStdString colorTheme(strSkinTheme);
-    ReplaceExtension(colorTheme, ".xml", colorTheme);
+    CStdString colorTheme(ReplaceExtension(strSkinTheme, ".xml"));
 
     g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
 
@@ -6093,3 +5814,275 @@ void CUtil::InitRandomSeed()
 //  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
   srand(seed);
 }
+
+void CUtil::RunShortcut(const char* szShortcutPath)
+{
+  CShortcut shortcut;
+  char szPath[1024];
+  char szParameters[1024];
+  if ( shortcut.Create(szShortcutPath))
+  {
+    CFileItem item(shortcut.m_strPath, false);
+    // if another shortcut is specified, load this up and use it
+    if (item.IsShortCut())
+    {
+      CHAR szNewPath[1024];
+      strcpy(szNewPath, szShortcutPath);
+      CHAR* szFile = strrchr(szNewPath, '\\');
+      strcpy(&szFile[1], shortcut.m_strPath.c_str());
+
+      CShortcut targetShortcut;
+      if (FAILED(targetShortcut.Create(szNewPath)))
+        return;
+
+      shortcut.m_strPath = targetShortcut.m_strPath;
+    }
+
+    strcpy( szPath, shortcut.m_strPath.c_str() );
+
+    CHAR szMode[16];
+    strcpy( szMode, shortcut.m_strVideo.c_str() );
+    strlwr( szMode );
+
+    strcpy(szParameters, shortcut.m_strParameters.c_str());
+
+    BOOL bRow = strstr(szMode, "pal") != NULL;
+    BOOL bJap = strstr(szMode, "ntsc-j") != NULL;
+    BOOL bUsa = strstr(szMode, "ntsc") != NULL;
+
+    F_VIDEO video = VIDEO_NULL;
+    if (bRow)
+      video = VIDEO_PAL50;
+    if (bJap)
+      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCJ);
+    if (bUsa)
+      video = (F_VIDEO)CXBE::FilterRegion(VIDEO_NTSCM);
+
+#ifdef HAS_XBOX_HARDWARE
+    CUSTOM_LAUNCH_DATA data;
+    if (!shortcut.m_strCustomGame.IsEmpty())
+    {
+      char remap_path[MAX_PATH] = "";
+      char remap_xbe[MAX_PATH] = "";
+
+      memset(&data,0,sizeof(CUSTOM_LAUNCH_DATA));
+
+      strcpy(data.szFilename,shortcut.m_strCustomGame.c_str());
+
+      strncpy(remap_path, XeImageFileName->Buffer, XeImageFileName->Length);
+      for (int i = strlen(remap_path) - 1; i >=0; i--)
+        if (remap_path[i] == '\\' || remap_path[i] == '/')
+        {
+          break;
+        }
+      strcpy(remap_xbe, &remap_path[i+1]);
+      remap_path[i+1] = 0;
+
+      strcpy(data.szRemap_D_As, remap_path);
+      strcpy(data.szLaunchXBEOnExit, remap_xbe);
+
+      data.executionType = 0;
+
+      // not the actual "magic" value - used to pass XbeId for some reason?
+      data.magic = GetXbeID(szPath);
+    }
+
+    CUtil::RunXBE(szPath,strcmp(szParameters,"")?szParameters:NULL,video,COUNTRY_NULL,shortcut.m_strCustomGame.IsEmpty()?NULL:&data);
+#endif
+  }
+}
+
+void CUtil::GetHomePath(CStdString& strPath)
+{
+  char szXBEFileName[1024];
+  CIoSupport::GetXbePath(szXBEFileName);
+  char *szFileName = strrchr(szXBEFileName, '\\');
+  *szFileName = 0;
+  strPath = szXBEFileName;
+}
+
+bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
+{
+  if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
+  {
+    CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is off. Skipping Filter Flicker Patching.", __FUNCTION__);
+    return false;
+  }
+  CStdString strIsPMode = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode;
+  if ( strIsPMode.Equals("480p 16:9") || strIsPMode.Equals("480p 4:3") || strIsPMode.Equals("720p 16:9"))
+  {
+    CLog::Log(LOGDEBUG, "%s - Progressive Mode detected: Skipping Auto Filter Flicker Patching!", __FUNCTION__);
+    return false;
+  }
+  if (strncmp(szPath1, "D:", 2) == 0)
+  {
+    CLog::Log(LOGDEBUG, "%s - Source is DVD-ROM! Skipping Filter Flicker Patching.", __FUNCTION__);
+    return false;
+  }
+
+  CLog::Log(LOGDEBUG, "%s - Auto Filter Flicker is ON. Starting Filter Flicker Patching.", __FUNCTION__);
+
+  // Test if we already have a patched _ffp XBE
+  // Since the FF can be changed in XBMC, we will not check for a pre patched _ffp xbe!
+  /* // May we can add. a changed FF detection.. then we can actived this!
+  CFile	xbe;
+	if (xbe.Exists(szPath1))
+  {
+    char szDrive[_MAX_DRIVE], szDir[_MAX_DIR], szFname[_MAX_FNAME], szExt[_MAX_EXT];
+		_splitpath(szPath1, szDrive, szDir, szFname, szExt);
+		strncat(szFname, "_ffp", 4);
+		_makepath(szNewPath.GetBuffer(MAX_PATH), szDrive, szDir, szFname, szExt);
+		szNewPath.ReleaseBuffer();
+		if (xbe.Exists(szNewPath))
+			return true;
+	} */
+
+
+  CXBE m_xbe;
+  if((int)m_xbe.ExtractGameRegion(szPath1.c_str()) <= 0) // Reading the GameRegion is enought to detect a Patchable xbe!
+  {
+    CLog::Log(LOGDEBUG, "%s - %s",szPath1.c_str(), __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - Not Patchable xbe detected (Homebrew?)! Skipping Filter Flicker Patching.", __FUNCTION__);
+    return false;
+  }
+#ifdef HAS_XBOX_HARDWARE
+  CGFFPatch m_ffp;
+  if (!m_ffp.FFPatch(szPath1, szNewPath))
+  {
+    CLog::Log(LOGDEBUG, "%s - ERROR during Filter Flicker Patching. Falling back to the original source.", __FUNCTION__);
+    return false;
+  }
+#endif
+  if(szNewPath.IsEmpty())
+  {
+    CLog::Log(LOGDEBUG, "%s - ERROR NO Patchfile Path is empty! Falling back to the original source.", __FUNCTION__);
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "%s - Filter Flicker Patching done. Starting %s.", __FUNCTION__, szNewPath.c_str());
+  return true;
+}
+
+void CUtil::RunXBE(const char* szPath1, char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
+{
+  // check if locked
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && 
+      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return;
+
+  /// \brief Runs an executable file
+  /// \param szPath1 Path of executeable to run
+  /// \param szParameters Any parameters to pass to the executeable being run
+  g_application.PrintXBEToLCD(szPath1); //write to LCD
+  Sleep(600);        //and wait a little bit to execute
+
+  char szPath[1024];
+  strcpy(szPath, _P(szPath1).c_str());
+
+  CStdString szNewPath;
+  if (RunFFPatchedXBE(szPath, szNewPath))
+  {
+    strcpy(szPath, szNewPath.c_str());
+  }
+  
+  if (strncmp(szPath, "Q:", 2) == 0)
+  { // may aswell support the virtual drive as well...
+    CStdString strPath;
+    // home dir is xbe dir
+    GetHomePath(strPath);
+    if (!HasSlashAtEnd(strPath))
+      strPath += "\\";
+    if (szPath[2] == '\\')
+      strPath += szPath + 3;
+    else
+      strPath += szPath + 2;
+    strcpy(szPath, strPath.c_str());
+  }
+  
+  char* szBackslash = strrchr(szPath, '\\');
+  if (szBackslash)
+  {
+    *szBackslash = 0x00;
+    char* szXbe = &szBackslash[1];
+
+    char* szColon = strrchr(szPath, ':');
+    if (szColon)
+    {
+      *szColon = 0x00;
+      char* szDrive = szPath;
+      char* szDirectory = &szColon[1];
+
+      char szDevicePath[1024];
+      char szXbePath[1024];
+
+      CIoSupport::GetPartition(szDrive[0], szDevicePath);
+
+      strcat(szDevicePath, szDirectory);
+      wsprintf(szXbePath, "d:\\%s", szXbe);
+
+#ifdef HAS_XBOX_HARDWARE
+      g_application.Stop();
+
+      CUtil::LaunchXbe(szDevicePath, szXbePath, szParameters, ForceVideo, ForceCountry, pData);
+#endif
+    }
+  }
+
+  CLog::Log(LOGERROR, "Unable to run xbe : %s", szPath);
+}
+
+void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo, F_COUNTRY ForceCountry, CUSTOM_LAUNCH_DATA* pData)
+{
+  CStdString strPath(_P(szPath));
+  CLog::Log(LOGINFO, "launch xbe:%s %s", strPath.c_str(), szXbe);
+  CLog::Log(LOGINFO, " mount %s as D:", strPath.c_str());
+
+#ifdef HAS_XBOX_HARDWARE
+  CIoSupport::RemapDriveLetter('D', const_cast<char*>(strPath.c_str()));
+
+  CLog::Log(LOGINFO, "launch xbe:%s", szXbe);
+
+  if (ForceVideo != VIDEO_NULL)
+  {
+    if (!ForceCountry)
+    {
+      if (ForceVideo == VIDEO_NTSCM)
+        ForceCountry = COUNTRY_USA;
+      if (ForceVideo == VIDEO_NTSCJ)
+        ForceCountry = COUNTRY_JAP;
+      if (ForceVideo == VIDEO_PAL50)
+        ForceCountry = COUNTRY_EUR;
+    }
+    CLog::Log(LOGDEBUG,"forcing video mode: %i",ForceVideo);
+    bool bSuccessful = PatchCountryVideo(ForceCountry, ForceVideo);
+    if( !bSuccessful )
+      CLog::Log(LOGINFO,"AutoSwitch: Failed to set mode");
+  }
+  if (pData)
+  {
+    DWORD dwTitleID = pData->magic;
+    pData->magic = CUSTOM_LAUNCH_MAGIC;
+    const char* xbe = szXbe+3;
+    CLog::Log(LOGINFO, "launching game %s from path %s", pData->szFilename, strPath.c_str());
+    CIoSupport::UnmapDriveLetter('D');
+    XWriteTitleInfoAndRebootA( (char*)xbe, (char*)(CStdString("\\Device\\")+strPath).c_str(), LDT_TITLE, dwTitleID, pData);
+  }
+  else
+  {
+    if (szParameters == NULL)
+    {
+      DWORD error = XLaunchNewImage(szXbe, NULL );
+      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
+    }
+    else
+    {
+      LAUNCH_DATA LaunchData;
+      strcpy((char*)LaunchData.Data, szParameters);
+
+      DWORD error = XLaunchNewImage(szXbe, &LaunchData );
+      CLog::Log(LOGERROR, "%s - XLaunchNewImage returned with error code %d", __FUNCTION__, error);
+    }
+  }
+#endif
+}
+

@@ -61,7 +61,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_videoPercentSeekBackward = -2;
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
-  m_videoBlackBarColour = 1;
+  m_videoBlackBarColour = 0;
   m_videoPPFFmpegType = "linblenddeint";
   m_videoDefaultPlayer = "mplayer";
   m_videoIgnoreAtStart = 15;
@@ -126,7 +126,7 @@ CAdvancedSettings::CAdvancedSettings()
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
@@ -195,7 +195,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_iEdlCommBreakAutowind = 0;             // Off by default
 
   m_curlconnecttimeout = 10;
-  m_curllowspeedtime = 5;
+  m_curllowspeedtime = 20;
   m_curlretries = 2;
 
   m_playlistRetries = 100;

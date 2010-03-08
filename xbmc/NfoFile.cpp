@@ -244,6 +244,9 @@ int CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& strURL 
 
   m_strScraper = CUtil::GetFileName(strScraperPath);
 
+  // init and clear cache
+  m_parser.ClearCache();
+
   if (strURL.IsEmpty())
   {
     m_parser.m_param[0] = m_doc;

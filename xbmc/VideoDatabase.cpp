@@ -6944,8 +6944,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
           else
         {
-          CStdString nfoFile;
-          CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
             if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -6976,8 +6975,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
                 CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
 
-            CStdString strFanart;
-            CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg", strFanart);
+            CStdString strFanart(CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg"));
 
               if (CFile::Exists(item.GetCachedFanart(), false) && (overwrite || !CFile::Exists(strFanart, false)))
               if (!CFile::Cache(item.GetCachedFanart(),strFanart))
@@ -7032,8 +7030,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, movie.m_strFileNameAndPath.c_str());
           else
         {
-          CStdString nfoFile;
-          CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+          CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
             if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -7227,8 +7224,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               CLog::Log(LOGDEBUG, "%s - Not exporting item %s as it does not exist", __FUNCTION__, episode.m_strFileNameAndPath.c_str());
             else
           {
-            CStdString nfoFile;
-            CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo", nfoFile);
+            CStdString nfoFile(CUtil::ReplaceExtension(item.GetTBNFile(), ".nfo"));
 
               if (overwrite || !CFile::Exists(nfoFile, false))
             {

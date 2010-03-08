@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Date of translation: 28/12/2009-->
-<!--Based on english strings version 26080-->
+<!--Date of translation: 19/02/2010-->
+<!--Based on english strings version 27853-->
 <!--$Revision$-->
 <strings>
   <string id="0">Forrit</string>
@@ -125,11 +125,13 @@
   <string id="165">Diskur í bakka</string>
   <string id="166">Útlit</string>
   <string id="167">Virkja FTP þjón</string>
-  <string id="168">Virkja samstillingu við tímaþjón</string>
+  <string id="168"/>
   <string id="169">Upplausn</string>
   <string id="170">Stilla glæðningartíðni til að passa við myndefni</string>
+  <string id="171"/>
 
   <string id="172">Útgáfudagur</string>
+  <string id="173">Sýna 4:3 myndefni sem</string>
 
   <string id="175">Tónar</string>
   <string id="176">Stílar</string>
@@ -156,7 +158,7 @@
   <string id="198">Sæki upplýsingar um mynd</string>
 
   <string id="202">Undirtitill</string>
-  <string id="203">Samantekinn söguþráður</string>
+  <string id="203">Söguþráður</string>
 
   <string id="205">Atkvæði:</string>
   <string id="206">Leikarar</string>
@@ -241,6 +243,10 @@
   <string id="296">Hreinsa bókamerki</string>
   <string id="297">Hliðra hljóði</string>
   <string id="298">Bókamerki</string>
+  <string id="299">- AAC móttakari</string>
+  <string id="300">- MP1 móttakari</string>
+  <string id="301">- MP2 móttakari</string>
+  <string id="302">- MP3 móttakari</string>
   <string id="303">Bið</string>
   <string id="304">Tungumál</string>
   <string id="305">Virkt</string>
@@ -284,6 +290,7 @@
   <string id="343">Stilla rammafjölda</string>
   <string id="344">Leikarar</string>
   <string id="345">Ár</string>
+  <string id="346">Magna hljóðstyrk við endurblöndun</string>
   <string id="350">Forrit</string>
   <string id="351">Slökkt</string>
   <string id="352">Dekkja</string>
@@ -344,7 +351,6 @@
   <string id="407">Frá</string>
   <string id="408">á</string>
   <string id="409">Sjálfgildi</string>
-
   <string id="410">Tengist veðurþjónustu</string>
   <string id="411">Sæki veðurgögn fyrir:</string>
   <string id="412">Finn ekki veðurgögn</string>
@@ -353,6 +359,8 @@
   <string id="415">Sæki smámynd...</string>
   <string id="416">Ekki til</string>
   <string id="417">Sjá sem: Stór tákn</string>
+  <string id="418">Lágt</string>
+  <string id="419">Hátt</string>
 
   <string id="422">Eyða plötuupplýsingum</string>
   <string id="423">Eyða upplýsingum um geisladisk</string>
@@ -484,7 +492,7 @@
   <string id="559">Lagalista</string>
   <string id="560">Auðkenni</string>
   <string id="561">Skrá</string>
-  <string id="562">Ári</string>
+  <string id="562">Ár</string>
   <string id="563">Einkunn</string>
   <string id="564">Tegund</string>
   <string id="565">Notkun</string>
@@ -598,9 +606,9 @@
   <string id="726">Breytingar ekki vistaðar. Halda áfram án þess að vista?</string>
   <string id="727">Vefþjónn</string>
   <string id="728">FTP þjónn</string>
-  <string id="729">Internet Tími</string>
+  <string id="729"/>
   <string id="730">- Gátt</string>
-  <string id="731">Tímaþjónn</string>
+  <string id="731"/>
   <string id="732">Vista &amp; virkja</string>
   <string id="733">- Lykilorð</string>
   <string id="734">Ekkert lykilorð</string>
@@ -636,8 +644,8 @@
   <string id="765">Blágrænn</string>
   <string id="766">Frátekið</string>
   <string id="767">Frátekið</string>
-  <string id="768">Frátekið</string>
-  <string id="769">Frátekið</string>
+  <!-- strings 768 and 769 reserved for more subtitle colors -->
+
   <string id="770">Villa %i: samnýting ekki aðgengileg</string>
   <string id="771">- Sjálfvirkur FATX takmarkari</string>
   <string id="772">Hljóðbúnaður</string>
@@ -805,7 +813,7 @@
   <string id="1450">Virkja lágt orkustig ef aðgerðalaus</string>
   <!-- strings through to 1470 reserved for power-saving -->
 
-  <string id="2050">Tímalengd</string>
+  <string id="2050">Lengd</string>
 
   <string id="2100">Skrifta mistókst! : %s</string>
 
@@ -863,7 +871,7 @@
 
   <string id="10522">Í spilun - Myndefni</string>
   <string id="10523">Hljómplötu upplýsingar</string>
-  <string id="10524">Kvikmynda upplýsingar</string>
+  <string id="10524">Kvikmyndaupplýsingar</string>
 
   <string id="12000">Valskilti</string>
   <string id="12001">Tónlist/upplýsingar</string>
@@ -1138,7 +1146,7 @@
   <string id="13343">Rauður</string>
   <string id="13344">Hringrás</string>
   <string id="13345">Slökkva á LED við spilun</string>
-  <string id="13346">Kvikmynda upplýsingar</string>
+  <string id="13346">Kvikmyndaupplýsingar</string>
   <string id="13347">Setja í biðröð</string>
   <string id="13348">Leita í IMDb...</string>
   <string id="13349">Leita að nýju innihaldi</string>
@@ -1169,11 +1177,11 @@
   <string id="13387">Sniðmát laganafna - hægri</string>
   <string id="13388">Forstilling</string>
   <string id="13389">Það eru ekki til neinar forstillingar
-fyrir þessa sjónsköpun</string>
+fyrir þessa myndskreytingu</string>
   <string id="13390">Það eru ekki til neinar stillingar
-fyrir þessa sjónsköpun</string>
+fyrir þessa myndskreytingu</string>
   <string id="13391">Disk út/Hlaða</string>
-  <string id="13392">Nota sjónsköpun við hljóðspilun</string>
+  <string id="13392">Nota myndskreytingu við tónlist</string>
   <string id="13393">Reikna stærð</string>
   <string id="13394">Reikna möppu stærð</string>
   <string id="13395">Myndstillingar</string>
@@ -1206,6 +1214,7 @@ fyrir þessa sjónsköpun</string>
   <string id="13422">Byrja myndasýningu hér</string>
   <string id="13423">Muna fyrir þessa slóð</string>
   <string id="13424">Nota punkta biðminni hluti</string>
+  <string id="13425">Broadcom Crystal HD</string>
 
   <string id="13500">A/V samstillingaraðferð</string>
   <string id="13501">Hljóðklukka</string>
@@ -1488,16 +1497,19 @@ fyrir þessa sjónsköpun</string>
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-
   <string id="16307">Bicubic (hugbúnaður)</string>
   <string id="16308">Lanczos (hugbúnaður)</string>
   <string id="16309">Sinc (hugbúnaður)</string>
-
   <string id="16310">(VDPAU)Tími</string>
   <string id="16311">(VDPAU)Tími/Rými</string>
   <string id="16312">(VDPAU)Suðhreinsun</string>
   <string id="16313">(VDPAU)Skerpa</string>
   <string id="16314">Andhverf samfletting</string>
+  <string id="16315">Lanczos3 fínstillt</string>
+  <string id="16316">Sjálfvirkt</string>
+  <string id="16317">Tími (Hálfur)</string>
+  <string id="16318">Tími/rúm (Hálfur)</string>
+
   <string id="17500">Sýna biðtíma</string>
 
   <string id="19000">Skipta yfir á rás</string>
@@ -1686,9 +1698,9 @@ fyrir þessa sjónsköpun</string>
   <string id="20189">Virkja sjálfvirkt skrun fyrir söguþráð &amp; gagnrýni</string>
   <string id="20190">Sérsniðið</string>
   <string id="20191">Virkja kembi úttak</string>
-  <string id="20192">Ná í hljómplötuupplýsingar við leitun</string>
+  <string id="20192">Ná í viðbótar upplýsingar við uppfærslu</string>
 
-  <string id="20194">Sjálfgefinn skrapari</string>
+  <string id="20194">Sjálfgefinn þjónusta fyrir tónlistarupplýsingar</string>
   <string id="20195">Breyta skrapara</string>
   <string id="20196">Flytja út tónlistarsafn</string>
   <string id="20197">Flytja inn tónlistarsafn</string>
@@ -1700,6 +1712,8 @@ fyrir þessa sjónsköpun</string>
   <string id="20250">Partí! (Tónlistarmyndbönd)</string>
   <string id="20251">Blanda drykki (Tónlistarmyndbönd)</string>
   <string id="20252">Fylli glös (Tónlistarmyndbönd)</string>
+  <string id="20253">WebDAV þjónn (HTTP)</string>
+  <string id="20254">WebDAV þjónn (HTTPS)</string>
 
   <string id="20300">Mappa vefþjóns (HTTP)</string>
   <string id="20301">Mappa vefþjóns (HTTPS)</string>
@@ -1768,7 +1782,7 @@ fyrir þessa sjónsköpun</string>
   <string id="20364">Sjónvarpsþáttaröð</string>
   <string id="20365">Söguþráður þáttar</string>
   <string id="20366">* Allar seríur</string>
-  <string id="20367">Fela áhorft</string>
+  <string id="20367">Fela búið</string>
   <string id="20368">Framleiðslu kóði</string>
   <string id="20369">Fela söguþráð á því sem ekki er búið að horfa á</string>
   <string id="20370">* Falið til að spilla ekki söguþræði *</string>
@@ -1817,7 +1831,7 @@ fyrir þessa sjónsköpun</string>
   <string id="20413">Ná í aðdáenda grafík</string>
   <string id="20414">Sýna aðdáenda grafík í tónlistar- og myndabandasafni</string>
   <string id="20415">Leita að nýju efni</string>
-  <string id="20416">Fór fyrst í loftið</string>
+  <string id="20416">Sýnt fyrst</string>
   <string id="20417">Handritshöfundur</string>
   <string id="20418">Hreinsa skráar- og möppunöfn</string>
 
@@ -1847,6 +1861,11 @@ fyrir þessa sjónsköpun</string>
   <string id="20443">Viltu uppfæra upplýsingar fyrir allt</string>
   <string id="20444">hlutir á þessari slóð?</string>
   <string id="20445">Aðdáendamyndir</string>
+  <string id="20446">Fann staðbundnar upplýsingar.</string>
+  <string id="20447">Hunsa og endurnýja frá Internetinu?</string>
+  <string id="20448">Gat ekki niðurhalið upplýsingum</string>
+  <string id="20449">Netþjónn er líklega ekki uppi.</string>
+  <string id="20450">Viltu halda áfram að leita?</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Sýna faldar skrár og möppur</string>
@@ -2077,6 +2096,8 @@ fyrir þessa sjónsköpun</string>
   <string id="23050">Virkja Textavarp</string>
   <string id="23051">Partur %i</string>
   <string id="23052">Hleð inn %i bætum</string>
+  <string id="23053">Stöðva</string>
+  <string id="23054">Keyrir</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Ytri spilari virkur</string>
@@ -2167,4 +2188,24 @@ fyrir þessa sjónsköpun</string>
   <string id="33081">Þessi skrá er stöfluð, veldu þann part sem þú vilt byrja að spila frá.</string>
   <string id="33082">Slóð á skriftu</string>
   <string id="33083">Virkja takka fyrir sérsniðna skriftu</string>
+
+  <!-- translators: no need to add these to your language files -->
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+
+  <string id="34100">Stillingar hátalara</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+
 </strings>

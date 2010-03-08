@@ -1133,7 +1133,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
                     __FUNCTION__, strFile.c_str(), fFramesPerSecond);
         }
 
-        if (m_Edl.ReadEditDecisionLists(strFile, fFramesPerSecond))
+        if (m_Edl.ReadEditDecisionLists(strFile, fFramesPerSecond, iHeight))
           options.SetEdl(CEdl::GetMPlayerEdl());
       }
 

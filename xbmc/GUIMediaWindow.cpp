@@ -626,6 +626,10 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
 // This function calls OnPrepareFileItems() and OnFinalizeFileItems()
 bool CGUIMediaWindow::Update(const CStdString &strDirectory)
 {
+  // TODO: OnInitWindow calls Update() before window path has been set properly.
+  if (strDirectory == "?")
+    return false;
+
   // get selected item
   int iItem = m_viewControl.GetSelectedItem();
   CStdString strSelectedItem = "";

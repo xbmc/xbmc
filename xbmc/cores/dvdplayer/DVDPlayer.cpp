@@ -734,14 +734,10 @@ void CDVDPlayer::Process()
   m_EdlAutoSkipMarkers.Clear();
   float fFramesPerSecond;
   if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
-    fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
-  else
   {
-    fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
-    CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
-              __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
+    fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+    m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond, m_CurrentVideo.hint.height);
   }
-  m_Edl.ReadEditDecisionLists(m_filename, fFramesPerSecond);
 
   /*
    * Check to see if the demuxer should start at something other than time 0. This will be the case
@@ -1394,21 +1390,11 @@ bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
   if(current.dts == DVD_NOPTS_VALUE)
     return false;
 
-  CEdl::Cut cut;
-  if (!m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut))
+  if(current.startpts != DVD_NOPTS_VALUE)
     return false;
 
-  /*
-   * It's more efficient to drop packets than to seek if the cut is shorter than 10 seconds, but
-   * only do this if the cut is short otherwise the clock never reaches the point where it should do
-   * a full seek on Windows (instead it clears the audio queue and gets into a loop of starting and
-   * stopping caching).
-   */
-  else if(cut.action == CEdl::CUT
-  &&      cut.end - cut.start < 10*1000) // 10 seconds in ms
-    return true;
-  else
-    return false;
+  CEdl::Cut cut;
+  return m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut) && cut.action == CEdl::CUT;
 }
 
 void CDVDPlayer::CheckAutoSceneSkip()
@@ -1416,40 +1402,32 @@ void CDVDPlayer::CheckAutoSceneSkip()
   if(!m_Edl.HasCut())
     return;
 
+  /*
+   * Check that there is an audio and video stream.
+   */
+  if(m_CurrentAudio.id < 0
+  || m_CurrentVideo.id < 0)
+    return;
+
+  /*
+   * If there is a startpts defined for either the audio or video stream then dvdplayer is still
+   * still decoding frames to get to the previously requested seek point.
+   */
+  if(m_CurrentAudio.startpts != DVD_NOPTS_VALUE
+  || m_CurrentVideo.startpts != DVD_NOPTS_VALUE)
+    return;
+
   if(m_CurrentAudio.dts == DVD_NOPTS_VALUE
   || m_CurrentVideo.dts == DVD_NOPTS_VALUE)
     return;
 
-  const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
+  const int64_t clock = DVD_TIME_TO_MSEC(min(m_CurrentAudio.dts, m_CurrentVideo.dts));
 
   CEdl::Cut cut;
   if(!m_Edl.InCut(clock, &cut))
     return;
 
-  /*
-   * HACK: If there was a start time specified by the "Start from where last stopped" (aka
-   * auto-resume) feature or the cut starts at time 0, the demuxer is set to start from that time.
-   *
-   * However, there is a race condition that sometimes prevents the clock being updated to reflect
-   * the actual playback time after setting the initial demuxer start time. So, only try and seek
-   * past the cut in either for either of these cases if the current clock time is greater than 2
-   * seconds (arbitrary timeout).
-   *
-   * If this check is not performed the intended start time set will be overwritten if there is a
-   * cut near the start of the file or playback will be jittery as the first cut that starts at 0
-   * keeps trying to break out of an initial general resync cycle.
-   */
-  if((m_PlayerOptions.starttime > 0 || cut.start == 0)
-     && clock < 2*1000) // 2 seconds in msec
-    return;
-
-  /*
-   * TODO: 10 second cutoff between seeking and dropping packets seems a bit arbitrary. Is there
-   * some reason that length of time seems to work well? Perhaps that's about the length of time
-   * that is already cached.
-   */
   if(cut.action == CEdl::CUT
-  && cut.end - cut.start > 10*1000 // More efficient to drop packets than to seek if cut shorter than 10 seconds
   && !(cut.end == m_EdlAutoSkipMarkers.cut || cut.start == m_EdlAutoSkipMarkers.cut)) // To prevent looping if same cut again
   {
     CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
@@ -1460,9 +1438,9 @@ void CDVDPlayer::CheckAutoSceneSkip()
      */
     __int64 seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
     /*
-     * Seeking is flushed and accurate, just like SeekTime()
+     * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, GetPlaySpeed() < 0, true, true, false));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, true, false, true, false));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -1478,9 +1456,9 @@ void CDVDPlayer::CheckAutoSceneSkip()
               __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
               CEdl::MillisecondsToTimeString(clock).c_str());
     /*
-     * Seeking is flushed and inaccurate, just like Seek()
+     * Seeking is NOT flushed so any content up to the demux point is retained when playing forwards.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, true, false, false));
+    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, true, false, true, false));
     /*
      * Each commercial break is only skipped once so poorly detected commercial breaks can be
      * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
@@ -3104,8 +3082,7 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
   }
   if(ext == ".sub")
   {
-    CStdString strReplace;
-    CUtil::ReplaceExtension(filename,".idx",strReplace);
+    CStdString strReplace(CUtil::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
       return false;
   }

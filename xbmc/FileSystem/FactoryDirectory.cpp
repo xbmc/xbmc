@@ -37,6 +37,7 @@
 #include "HTTPDirectory.h"
 #include "DAVDirectory.h"
 #include "Application.h"
+#include "utils/log.h"
 
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32PC
@@ -146,6 +147,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "htsp") return new CHTSPDirectory();
   }
 
- return NULL;
+  CLog::Log(LOGWARNING, "CFactoryDirectory::Create - Unsupported protocol %s", strProtocol.c_str());
+  return NULL;
 }
 

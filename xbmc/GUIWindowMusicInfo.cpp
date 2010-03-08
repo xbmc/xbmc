@@ -102,8 +102,6 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
-        CUtil::ClearCache();
-
         m_bRefresh = true;
         Close();
         return true;

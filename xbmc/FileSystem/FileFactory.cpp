@@ -48,6 +48,7 @@
 #include "HDHomeRun.h"
 #include "CMythFile.h"
 #include "URL.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 
@@ -108,5 +109,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
   }
 
+  CLog::Log(LOGWARNING, "CFileFactory::CreateLoader - Unsupported protocol %s", strProtocol.c_str());
   return NULL;
 }

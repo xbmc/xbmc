@@ -255,8 +255,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       {
         g_guiSettings.SetString("lookandfeel.skintheme", m_strNewSkinTheme);
         // also set the default color theme
-        CStdString colorTheme(m_strNewSkinTheme);
-        CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
+        CStdString colorTheme(CUtil::ReplaceExtension(m_strNewSkinTheme, ".xml"));
         if (colorTheme.Equals("Textures.xml"))
           colorTheme = "defaults.xml";
         g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);

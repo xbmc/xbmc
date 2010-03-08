@@ -572,7 +572,7 @@ namespace VIDEO
             if (m_pObserver)
               m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-            long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, pDlgProgress);
+            long lResult = AddMovieAndGetThumb(pItem.get(), info2.strContent, *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
             if (bRefresh && info.strContent.Equals("tvshows") && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2.strContent.Equals("tvshows"))
@@ -606,9 +606,14 @@ namespace VIDEO
             {
               if (m_pObserver && !url.strTitle.IsEmpty())
                 m_pObserver->OnSetTitle(url.strTitle);
-              CUtil::ClearCache();
               long lResult=1;
-              lResult=GetIMDBDetails(pItem.get(), url, info2,bDirNames&&info2.strContent.Equals("movies"),NULL,result==CNfoFile::COMBINED_NFO);
+              // force thumb and fanart
+
+              if (pDlgProgress)
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2.strContent.Equals("movies"), pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+              else
+                lResult=GetIMDBDetails(pItem.get(), url, info2, bDirNames && info2.strContent.Equals("movies"), NULL, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+
               if (info2.strContent.Equals("tvshows"))
               {
                 if (!bRefresh)
@@ -839,7 +844,13 @@ namespace VIDEO
 
     SEpisode myEpisode;
     myEpisode.strPath = item->m_strPath;
-    if (strlen(season) > 0 && strlen(episode) == 0)
+    if (strlen(season) == 0 && strlen(episode) > 0) 
+    { // no season specified -> assume season 1 
+      myEpisode.iSeason = 1; 
+      myEpisode.iEpisode = atoi(episode); 
+ 	    CLog::Log(LOGDEBUG,"found episode without season %s (e%i) [%s]",strLabel.c_str(),myEpisode.iEpisode,regexp.c_str()); 
+ 	  } 
+ 	  else if (strlen(season) > 0 && strlen(episode) == 0)
     { // no episode specification -> assume season 1
       myEpisode.iSeason = 1;
       myEpisode.iEpisode = atoi(season);
@@ -959,7 +970,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -997,14 +1008,14 @@ namespace VIDEO
       m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
     // get & save fanart image
-    if (!pItem->CacheLocalFanart())
+    if (!pItem->CacheLocalFanart() || bRefresh)
     {
       if (!movieDetails.m_fanart.m_xml.IsEmpty() && !movieDetails.m_fanart.DownloadImage(pItem->GetCachedFanart()))
         CLog::Log(LOGERROR, "Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
     }
 
     CStdString strUserThumb = pItem->GetUserVideoThumb();
-    if (bApplyToDir && strUserThumb.IsEmpty())
+    if (bApplyToDir && (strUserThumb.IsEmpty() || bRefresh))
     {
       CStdString strParent;
       CUtil::GetParentPath(pItem->m_strPath,strParent);
@@ -1023,7 +1034,7 @@ namespace VIDEO
     }
 
     CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0 && strUserThumb.IsEmpty())
+    if (strImage.size() > 0 && (strUserThumb.IsEmpty() || bRefresh))
     {
       if (pDialog)
       {
@@ -1234,7 +1245,7 @@ namespace VIDEO
         nfoFile = item->m_strPath;
       // no, create .nfo file
       else
-        CUtil::ReplaceExtension(item->m_strPath, ".nfo", nfoFile);
+        nfoFile = CUtil::ReplaceExtension(item->m_strPath, ".nfo");
 
       // test file existence
       if (!nfoFile.IsEmpty() && !CFile::Exists(nfoFile))
@@ -1311,7 +1322,7 @@ namespace VIDEO
     return nfoFile;
   }
 
-  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool combined)
+  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool bCombined, bool bRefresh)
   {
     CVideoInfoTag movieDetails;
     m_IMDB.SetScraperInfo(info);
@@ -1319,13 +1330,19 @@ namespace VIDEO
 
     if ( m_IMDB.GetDetails(url, movieDetails, pDialog) )
     {
-      if (combined)
+      if (bCombined)
         m_nfoReader.GetDetails(movieDetails);
 
       if (m_pObserver && url.strTitle.IsEmpty())
         m_pObserver->OnSetTitle(movieDetails.m_strTitle);
 
-      return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
+      if (pDialog)
+      {
+        pDialog->SetLine(1, movieDetails.m_strTitle);
+        pDialog->Progress();
+      }
+
+      return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames, bRefresh);
     }
     return -1;
   }
@@ -1477,8 +1494,10 @@ namespace VIDEO
       {
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
-        CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_strScraper.c_str());
-        CLog::Log(LOGDEBUG,"-- nfo-url: %s", scrUrl.m_url[0].m_url.c_str());
+
+        CLog::Log(LOGDEBUG, "scraper: Fetching url '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
+          scrUrl.m_url[0].m_url.c_str(), info.strTitle.c_str(), info.strPath.c_str(), info.strContent.c_str(), info.strLanguage.c_str(), info.strDate.c_str(), info.strFramework.c_str());
+
         scrUrl.strId  = m_nfoReader.m_strImDbNr;
         info.strPath = m_nfoReader.m_strScraper;
         if (result == CNfoFile::COMBINED_NFO)

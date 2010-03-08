@@ -433,7 +433,7 @@ void CMusicInfoTag::Clear()
 
 void CMusicInfoTag::AppendArtist(const CStdString &value)
 {
-  if (!m_strArtist.IsEmpty())
+  if (m_strArtist.IsEmpty())
     return SetArtist(value);
   std::vector<CStdString> values;
   StringUtils::SplitString(m_strArtist, g_advancedSettings.m_musicItemSeparator, values);

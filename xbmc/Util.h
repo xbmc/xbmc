@@ -117,7 +117,7 @@ public:
   static void LaunchXbe(const char* szPath, const char* szXbe, const char* szParameters, F_VIDEO ForceVideo=VIDEO_NULL, F_COUNTRY ForceCountry=COUNTRY_NULL, CUSTOM_LAUNCH_DATA* pData=NULL); 
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
   static void GetHomePath(CStdString& strPath);
-  static void ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile);
+  static CStdString ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension);
   static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static bool HasSlashAtEnd(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
@@ -206,7 +206,6 @@ public:
   static void FlashScreen(bool bImmediate, bool bOn);
   static void RestoreBrightnessContrastGamma();
   static void InitGamma();
-  static void ClearCache();
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
   static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
