@@ -228,9 +228,6 @@ public:
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
-  
-  //VECFILETYPEICONS m_vecIcons;
-
   /*! \brief Retrieve the master profile
    \return const reference to the master profile
    */
@@ -272,12 +269,12 @@ public:
   /*! \brief Are we using the login screen?
    \return true if we're using the login screen, false otherwise
    */
-  bool UsingLoginScreen() const { return bUseLoginScreen; };
+  bool UsingLoginScreen() const { return m_usingLoginScreen; };
 
   /*! \brief Toggle login screen use on and off
    Toggles the login screen state
    */
-  void ToggleLoginScreen() { bUseLoginScreen = !bUseLoginScreen; };
+  void ToggleLoginScreen() { m_usingLoginScreen = !m_usingLoginScreen; };
 
   /*! \brief Are we the master user?
    \return true if the current profile is the master user, false otherwise
@@ -375,7 +372,7 @@ protected:
 
 private:
   std::vector<CProfile> m_vecProfiles;
-  bool bUseLoginScreen;
+  bool m_usingLoginScreen;
 };
 
 extern class CSettings g_settings;
