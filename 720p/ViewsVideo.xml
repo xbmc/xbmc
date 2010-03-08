@@ -22,7 +22,7 @@
             <description>Wide icon</description>
             <include>TVWideIconDims</include>
             <texture>DefaultWideIcon.png</texture>
-            <info>ListItem.Thumb</info>
+            <info>ListItem.Banner</info>
             <aspectratio align="left">keep</aspectratio>
             <bordertexture border="12">ThumbShadow2.png</bordertexture>
             <bordersize>8</bordersize>
@@ -76,7 +76,7 @@
             </control>
             <control type="label">
               <description>Value</description>
-              <info>ListItem.Date</info>
+              <info>ListItem.Property(originallyAvailableAt)</info>
               <include>MediaInfoValue</include>
             </control>
 
@@ -89,17 +89,18 @@
                 <label>$LOCALIZE[563]</label>
                 <include>MediaInfoCaption</include>
               </control>
-              <control type="label">
-                <description>Value</description>
-                <include>RatingLabel</include>
-                <include>MediaInfoValue</include>
-              </control>
-              <control type="image">
-                <description>Star Rating</description>
-                <posy>4</posy>
-                <include>TVWideStarRatingImgDims</include>
-                <include>StarRatingImage</include>
-              </control>
+
+			        <control type="image">
+								<description>Star Rating</description>
+								<align>left</align>
+								<info>ListItem.StarRating</info>
+								<aspectratio>keep</aspectratio>
+								<width>100</width>
+								<height>18</height>
+								<posy>4</posy>
+								<posx>90</posx>
+								<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+			        </control>
 
               <control type="group">
                 <description>Runtime</description>
@@ -116,6 +117,22 @@
                   <include>MediaInfoValue</include>
                 </control>
               </control>
+
+              <control type="group">
+                <description>Network</description>
+								<posy>60</posy>
+                <control type="label">
+                  <description>Caption</description>
+                  <label>$LOCALIZE[573]</label>
+                  <include>MediaInfoCaption</include>
+                </control>
+                <control type="label">
+                  <description>Value</description>
+                  <info>ListItem.Studio</info>
+                  <include>MediaInfoValue</include>
+                </control>
+              </control>
+
             </control>
           </control>
         </control>
@@ -547,7 +564,7 @@
             <description>Season</description>
             <font>MediumTitleCapsFont</font>
             <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
+            <label>elan $INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
           </control>
 
           <control type="textbox">
@@ -586,7 +603,7 @@
               </control>
               <control type="label">
                 <description>Value</description>
-                <info>ListItem.Date</info>
+                <info>ListItem.Property(originallyAvailableAt)</info>
                 <include>TVEpisodesDetailValue</include>
               </control>
 
@@ -599,17 +616,17 @@
                   <label>$LOCALIZE[563]</label>
                   <include>MediaInfoCaption</include>
                 </control>
-                <control type="label">
-                  <description>Value</description>
-                  <include>RatingLabel</include>
-                  <include>TVEpisodesDetailValue</include>
-                </control>
-                <control type="image">
-                  <description>Star Rating</description>
-                  <include>TVEpisodesStarRatingDims</include>
-                  <posx>170</posx>
-                  <include>StarRatingImage</include>
-                </control>
+				        <control type="image">
+									<description>Star Rating</description>
+									<align>left</align>
+									<info>ListItem.StarRating</info>
+									<aspectratio>keep</aspectratio>
+									<width>100</width>
+									<height>18</height>
+									<posy>4</posy>
+									<posx>80</posx>
+									<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+				        </control>
 
                 <control type="group">
                   <description>Writer</description>

@@ -263,15 +263,15 @@
 
 
 	        <control type="image">
-				<description>Star Rating</description>
-				<align>left</align>
-				<info>ListItem.StarRating</info>
-				<aspectratio>keep</aspectratio>
-				<width>100</width>
-				<height>18</height>
-				<posy>57</posy>
-				<posx>-15</posx>
-				<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+						<description>Star Rating</description>
+						<align>left</align>
+						<info>ListItem.StarRating</info>
+						<aspectratio>keep</aspectratio>
+						<width>100</width>
+						<height>18</height>
+						<posy>57</posy>
+						<posx>-15</posx>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 	        </control>
 
 	          <control type="group">
