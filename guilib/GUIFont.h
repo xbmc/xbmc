@@ -36,7 +36,7 @@ public:
   { 
     initialWait = wait;
     initialPos = pos;
-    SetSpeed(speed);
+    SetSpeed(speed ? speed : defaultSpeed);
     suffix = scrollSuffix;
     Reset();
   };

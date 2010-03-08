@@ -590,58 +590,50 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 /// \param items Items Found
 void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
 {
-  VECMOVIES movies;
   CVideoDatabase db;
   if (!db.Open())
     return;
 
+  CFileItemList movies;
   db.GetMoviesByActor(strSearch, movies);
-  for (int i = 0; i < (int)movies.size(); ++i)
+  for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString strItem;
-    if (movies[i].m_iYear > 0)
-      strItem.Format("[%s] %s (%i)", g_localizeStrings.Get(20338), movies[i].m_strTitle, movies[i].m_iYear);  // Movie
-    else
-      strItem.Format("[%s] %s", g_localizeStrings.Get(20338), movies[i].m_strTitle);  // Movie
-
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath = movies[i].m_strFileNameAndPath;
-    items.Add(pItem);
+    CStdString label;
+    label.Format("[%s] %s", g_localizeStrings.Get(20338), movies[i]->GetVideoInfoTag()->m_strTitle);
+    if (movies[i]->GetVideoInfoTag()->m_iYear > 0)
+      label.AppendFormat(" (%i)", movies[i]->GetVideoInfoTag()->m_iYear);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
   }
-  movies.clear();
+
+  movies.Clear();
   db.GetTvShowsByActor(strSearch, movies);
-  for (int i = 0; i < (int)movies.size(); ++i)
+  for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString strItem;
-    strItem.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i].m_strTitle);  // Movie
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath.Format("videodb://2/2/%i/",movies[i].m_iDbId);
-    items.Add(pItem);
-  }
-  movies.clear();
-  db.GetEpisodesByActor(strSearch, movies);
-  for (int i = 0; i < (int)movies.size(); ++i)
-  {
-    CStdString strItem;
-    strItem.Format("[%s] %s", g_localizeStrings.Get(20359), movies[i].m_strTitle);  // Movie
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = movies[i];
-    pItem->m_strPath = movies[i].m_strFileNameAndPath;
-    items.Add(pItem);
+    CStdString label;
+    label.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i]->GetVideoInfoTag()->m_strTitle);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
   }
 
-  CFileItemList mvids;
-  db.GetMusicVideosByArtist(strSearch, mvids);
-  for (int i = 0; i < (int)mvids.Size(); ++i)
+  movies.Clear();
+  db.GetEpisodesByActor(strSearch, movies);
+  for (int i = 0; i < movies.Size(); ++i)
   {
-    CStdString strItem;
-    strItem.Format("[%s] %s", g_localizeStrings.Get(20391), mvids[i]->GetVideoInfoTag()->m_strTitle);  // Movie
-    CFileItemPtr pItem(new CFileItem(strItem));
-    *pItem->GetVideoInfoTag() = *mvids[i]->GetVideoInfoTag();
-    pItem->m_strPath = mvids[i]->GetVideoInfoTag()->m_strFileNameAndPath;
-    items.Add(pItem);
+    CStdString label;
+    label.Format("[%s] %s", g_localizeStrings.Get(20364), movies[i]->GetVideoInfoTag()->m_strTitle);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
+  }
+
+  movies.Clear();
+  db.GetMusicVideosByArtist(strSearch, movies);
+  for (int i = 0; i < movies.Size(); ++i)
+  {
+    CStdString label;
+    label.Format("[%s] %s", g_localizeStrings.Get(20391), movies[i]->GetVideoInfoTag()->m_strTitle);
+    movies[i]->SetLabel(label);
+    items.Add(movies[i]);
   }
   db.Close();
 }

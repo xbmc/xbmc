@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27853 -->
+<!--Based on english strings version 28110 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1947,7 +1947,7 @@
   <string id="21432">编辑智能播放列表</string>
   <string id="21433">播放列表名称</string>
   <string id="21434">查找满足条件的歌曲</string>
-  <string id="21435">- 编辑</string>
+  <string id="21435">编辑</string>
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智能播放列表...</string>
   <string id="21438">%c磁盘</string>
@@ -1962,6 +1962,7 @@
   <string id="21447">对白语言</string>
   <string id="21448">字幕语言</string>
   <string id="21449">摇控器发送键盘按键</string>
+  <string id="21450">- 编辑</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>

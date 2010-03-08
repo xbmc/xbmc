@@ -23,6 +23,7 @@
 #include "XMLUtils.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "StringUtils.h"
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& hexValue)
 {
@@ -196,6 +197,14 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
   }
   strStringValue.Empty();
   return false;
+}
+
+void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strSeparator, const CStdString& strValue)
+{
+  CStdStringArray list;
+  StringUtils::SplitString(strValue,strSeparator,list);
+  for (unsigned int i=0;i<list.size() && !list[i].IsEmpty();++i)
+    SetString(pRootNode,strTag,list[i]);
 }
 
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)

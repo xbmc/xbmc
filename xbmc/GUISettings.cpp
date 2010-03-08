@@ -524,7 +524,7 @@ void CGUISettings::Initialize()
   AddString(7, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(8, "lookandfeel.sep2");
   AddBool(9, "lookandfeel.enablerssfeeds",13305,  true);
-  AddString(10, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "lookandfeel.rssedit", 21450, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(14, "lookandfeel.sep3");
   AddBool(15, "lookandfeel.enablemouse", 21369, false);
 

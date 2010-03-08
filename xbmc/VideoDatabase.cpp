@@ -1451,81 +1451,27 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, VECMOVIES& movies)
+void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  try
-  {
-    movies.erase(movies.begin(), movies.end());
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-
-    CStdString strSQL=FormatSQL("select * from movieview join actorlinkmovie on actorlinkmovie.idmovie=movieview.idmovie join actors on actors.idActor=actorlinkmovie.idActor where actors.stractor='%s'", strActor.c_str());
-    m_pDS->query( strSQL.c_str() );
-
-    while (!m_pDS->eof())
-    {
-      movies.push_back(GetDetailsForMovie(m_pDS));
-      m_pDS->next();
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strActor.c_str());
-  }
+  CStdString where;
+  where.Format("join actorlinkmovie on actorlinkmovie.idmovie=movieview.idmovie join actors on actors.idActor=actorlinkmovie.idActor where actors.stractor='%s'", strActor.c_str());
+  GetMoviesByWhere("videodb://1/2/", where, "", items);
 }
 
-void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, VECMOVIES& movies)
+void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList& items)
 {
-  try
-  {
-    movies.erase(movies.begin(), movies.end());
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-
-    CStdString strSQL = FormatSQL("select * from tvshowview join actorlinktvshow on actorlinktvshow.idshow=tvshowview.idshow "
-                                  "join actors on actors.idActor=actorlinktvshow.idActor "
-                                  "where actors.stractor='%s'", strActor.c_str());
-
-    m_pDS->query( strSQL.c_str() );
-
-    while (!m_pDS->eof())
-    {
-      movies.push_back(GetDetailsForTvShow(m_pDS));
-      m_pDS->next();
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strActor.c_str());
-  }
+  CStdString where = FormatSQL("join actorlinktvshow on actorlinktvshow.idshow=tvshowview.idshow "
+                               "join actors on actors.idActor=actorlinktvshow.idActor "
+                               "where actors.stractor='%s'", strActor.c_str());
+  GetTvShowsByWhere("videodb://2/2/", where, items);
 }
 
-void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, VECMOVIES& movies)
+void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  try
-  {
-    movies.erase(movies.begin(), movies.end());
-    if (NULL == m_pDB.get()) return ;
-    if (NULL == m_pDS.get()) return ;
-
-    CStdString strSQL=FormatSQL("select * from episodeview join actorlinkepisode on actorlinkepisode.idepisode=episodeview.idepisode join actors on actors.idActor=actorlinkepisode.idActor where actors.stractor='%s'", strActor.c_str());
-    m_pDS->query( strSQL.c_str() );
-
-    while (!m_pDS->eof())
-    {
-      CVideoInfoTag movie=GetDetailsForEpisode(m_pDS);
-      movie.m_strTitle += " ("+m_pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString()+")";
-      movies.push_back(movie);
-      m_pDS->next();
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strActor.c_str());
-  }
+  CStdString where = FormatSQL("join actorlinkepisode on actorlinkepisode.idepisode=episodeview.idepisode "
+                               "join actors on actors.idActor=actorlinkepisode.idActor "
+                               "where actors.stractor='%s'", strActor.c_str());
+  GetEpisodesByWhere("videodb://2/2/", where, items);
 }
 
 void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileItemList& items)

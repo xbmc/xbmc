@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<scraper framework="1.1" date="2010-02-21" name="Kino.de" content="movies" thumb="kino-de.png" language="de">
+	<include>common/tmdb.xml</include>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;\1\2&lt;/url&gt;"  dest="3">
+			<expression clear="yes" noclean="1">(kino.de/kinofilm/)(.*)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.kino.de/search.php?mode=backlist&amp;searchCategory=film&amp;inputSearch=\1&lt;/url&gt;" dest="3">
+			<expression noclean="1"/>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.kino.de/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">class=&quot;headline3&quot; style=&quot;margin: 0;&quot;&gt;.*?a href=&quot;([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;.*?&lt;/h1&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<!-- Title -->
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression trim="1">&lt;title&gt;([^&lt;|]*)</expression>
+			</RegExp>
+			<!-- Original Title -->
+			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5+">
+				<expression trim="1">&lt;span class=&quot;standardsmall&quot;&gt;\((.*)\)&lt;/span&gt;</expression>
+			</RegExp>
+			<!-- Year -->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression trim="1">&lt;strong&gt;.*?([0-9]{4})&lt;/strong&gt;&lt;br /&gt;</expression>
+			</RegExp>
+			<!-- MPAA -->
+			<RegExp input="$$1" output="&lt;mpaa&gt;ab \1&lt;/mpaa&gt;" dest="5+">
+				<expression>Freigegeben ab ([0-9]*)</expression>
+			</RegExp>
+			<!-- Studio -->
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression trim="1">Verleih:([^&lt;]*)&lt;/strong&gt;</expression>
+			</RegExp>			
+			<!-- Runtime -->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1 Minuten&lt;/runtime&gt;" dest="5+">
+				<expression trim="1">&lt;strong&gt;([0-9]*) Min.&lt;/strong&gt;</expression>
+			</RegExp>
+			<!-- Genre Film -->
+			<RegExp input="$$1" output="\1" dest="6+">
+				<expression>&lt;span class=&quot;standardsmall&quot;&gt;&lt;strong&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">([^/]+)</expression>
+			</RegExp>
+			<!-- Plot -->
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression trim="1">&lt;/table&gt;&lt;span style=&quot;line-height: 15px;&quot;&gt;(.*?)&lt;/span</expression>
+			</RegExp>
+			<!-- Cast/Crew -->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetCastAndCrew&quot;&gt;http://www.kino.de\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">&lt;a href=&quot;([^&quot;]*)&quot;&gt;Cast &amp; Crew&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- Trailer -->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://www.kino.de\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">&lt;a href=&quot;([^&quot;]*)&quot;&gt;Trailer&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- Posters -->
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1/w512.jpg&quot;&gt;\1/w1450.jpg&lt;/thumb&gt;" dest="5+">
+				<expression>style=&quot;padding-right: 3px;&quot;&gt; &lt;img src=&quot;(.*?)/w120.jpg&quot;</expression>
+			</RegExp>
+			<!-- Fanart -->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.de+releaseinfo+%22\1%22&lt;/url&gt;" dest="5+">
+				<expression trim="1" encode="1">&lt;title&gt;([^&lt;|]*)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDetails>	
+	<GetCastAndCrew dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
+			<!-- Actors -->
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression noclean="1">Cast&lt;br /&gt;(.*?)headlinewhite</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2+">
+				<expression trim="1" repeat="yes">&lt;td class=&quot;dbtreffer(dark|light)&quot; width=&quot;50%&quot;&gt;([^&lt;]*)&lt;/td&gt;.*?&lt;a href=&quot;[^&quot;]+&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- Director -->
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression noclean="1">Regie&amp;nbsp;&lt;/td&gt;(.*?)&lt;/tr&gt;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
+				<expression trim="1" repeat="yes">&lt;a href=&quot;[^&quot;]+&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- Credits -->
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression noclean="1">Drehbuch&amp;nbsp;&lt;/td&gt;(.*?)&lt;/tr&gt;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
+				<expression trim="1" repeat="yes">&lt;a href=&quot;[^&quot;]+&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetCastAndCrew>
+	<GetTrailer dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTrailerLink&quot;&gt;\1&lt;/url&gt;&lt;/details&gt;" dest="5+">
+			<expression noclean="1">lashvars.initItemXML = &quot;([^&quot;]*)&quot;</expression>
+		</RegExp>
+		<expression noclean="1"/>
+	</GetTrailer>
+	<GetTrailerLink dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1">&lt;url&gt;([^&lt;]*)&lt;/url&gt;</expression>
+		</RegExp>
+		<expression noclean="1"/>
+	</GetTrailerLink>
+</scraper>

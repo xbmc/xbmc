@@ -208,7 +208,7 @@
   <string id="251">Select destination directory</string>
   <string id="252">Output stereo to all speakers</string>
   <string id="253">Number of channels</string>
-  <string id="254">- DTS Capable Receiver</string>
+  <string id="254">- DTS capable receiver</string>
   <string id="255">CDDB</string>
   <string id="256">Fetching CD information</string>
   <string id="257">Error</string>
@@ -251,6 +251,10 @@
   <string id="296">Clear bookmarks</string>
   <string id="297">Audio offset</string>
   <string id="298">Bookmarks</string>
+  <string id="299">- AAC capable receiver</string>
+  <string id="300">- MP1 capable receiver</string>
+  <string id="301">- MP2 capable receiver</string>
+  <string id="302">- MP3 capable receiver</string>
   <string id="303">Delay</string>
   <string id="304">Language</string>
   <string id="305">Enabled</string>
@@ -1926,7 +1930,7 @@
   <string id="20433">Extract thumbnails and video information</string>
   <string id="20434">Sets</string>
   <string id="20435">Set movieset thumb</string>
-  <string id="20436">Export actor thumbs</string>
+  <string id="20436">Export actor thumbs?</string>
   <string id="20437">Choose fanart</string>
   <string id="20438">Local fanart</string>
   <string id="20439">No fanart</string>
@@ -2033,7 +2037,7 @@
   <string id="21432">Edit smart playlist</string>
   <string id="21433">Name of the playlist</string>
   <string id="21434">Find items where</string>
-  <string id="21435">- Edit</string>
+  <string id="21435">Edit</string>
   <string id="21436">%i items</string>
   <string id="21437">New smart playlist...</string>
   <string id="21438">%c Drive</string>
@@ -2048,6 +2052,7 @@
   <string id="21447">Audio language</string>
   <string id="21448">Subtitle language</string>
   <string id="21449">Remote control sends keyboard presses</string>
+  <string id="21450">- Edit</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>

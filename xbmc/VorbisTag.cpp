@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "VorbisTag.h"
-#include "AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
 
@@ -49,25 +48,13 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
 
   if ( strTagType == "ARTIST" )
   {
-    if (tag.GetArtist().GetLength())
-    {
-      CStdString strArtist=tag.GetArtist() + g_advancedSettings.m_musicItemSeparator + strTagValue;
-      tag.SetArtist(strArtist);
-    }
-    else
-      tag.SetArtist(strTagValue);
+    tag.AppendArtist(strTagValue);
     tag.SetLoaded();
   }
 
   if ( strTagType == "ALBUMARTIST" || strTagType == "ALBUM ARTIST" || strTagType == "ENSEMBLE")
   {
-    if (tag.GetAlbumArtist().GetLength())
-    {
-      CStdString strArtist=tag.GetAlbumArtist() + g_advancedSettings.m_musicItemSeparator + strTagValue;
-      tag.SetAlbumArtist(strArtist);
-    }
-    else
-      tag.SetAlbumArtist(strTagValue);
+    tag.AppendAlbumArtist(strTagValue);
     tag.SetLoaded();
   }
 
@@ -102,13 +89,7 @@ int CVorbisTag::ParseTagEntry(CStdString& strTagEntry)
 
   if ( strTagType == "GENRE" )
   {
-    if (tag.GetGenre().GetLength())
-    {
-      CStdString strGenre=tag.GetGenre() + g_advancedSettings.m_musicItemSeparator + strTagValue;
-      tag.SetGenre(strGenre);
-    }
-    else
-      tag.SetGenre(strTagValue);
+    tag.AppendGenre(strTagValue);
   }
 
   if ( strTagType == "MUSICBRAINZ_TRACKID" )

@@ -37,10 +37,6 @@
 // global network variable
 CNetwork g_network;
 
-#ifdef _WIN32
-#define close closesocket
-#endif
-
 // Time to wait before we give up on network init
 #define WAIT_TIME 10000
 
@@ -671,7 +667,7 @@ bool CNetwork::WakeOnLan(char* mac)
   if (setsockopt (packet, SOL_SOCKET, SO_BROADCAST, (char*) &value, sizeof( unsigned int ) ) == SOCKET_ERROR)
   {
     CLog::Log(LOGERROR, "%s - Unable to set socket options (%s)", __FUNCTION__, strerror (errno));
-    close (packet);
+    closesocket(packet);
     return false;
   }
  
@@ -688,11 +684,11 @@ bool CNetwork::WakeOnLan(char* mac)
   if (sendto (packet, (char *)buf, 102, 0, (struct sockaddr *)&saddr, sizeof (saddr)) < 0)
   {
     CLog::Log(LOGERROR, "%s - Unable to send magic packet (%s)", __FUNCTION__, strerror (errno));
-    close (packet);
+    closesocket(packet);
     return false;
   }
 
-  close (packet);
+  closesocket(packet);
   CLog::Log(LOGINFO, "%s - Magic packet send to '%s'", __FUNCTION__, mac);
   return true;
 }

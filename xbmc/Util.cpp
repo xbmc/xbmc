@@ -2679,7 +2679,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   }
 
   // checking if any of the common subdirs exist ..
-  CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
+  CLog::Log(LOGDEBUG,"%s: Checking for common subdirs...", __FUNCTION__);
 
   vector<CStdString> token;
   Tokenize(strPath,token,"/\\");
@@ -2812,7 +2812,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // construct string of added exts
   for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
-    strExtensionCached += *it+" ";
+    strExtensionCached += *it+"|";
 
   CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
 }

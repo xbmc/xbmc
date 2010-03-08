@@ -41,8 +41,6 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIEditControl.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
@@ -81,12 +79,10 @@ CGUIWindowVideoNav::CGUIWindowVideoNav(void)
   m_vecItems->m_strPath = "?";
   m_bDisplayEmptyDatabaseMessage = false;
   m_thumbLoader.SetObserver(this);
-  m_unfilteredItems = new CFileItemList;
 }
 
 CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 {
-  delete m_unfilteredItems;
 }
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
@@ -267,29 +263,6 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         OnSearch();
       }
-      else if (iControl == CONTROL_BTN_FILTER)
-      {
-        if (GetControl(iControl)->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-        { // filter updated
-          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
-          OnMessage(selected);
-          SetProperty("filter", selected.GetLabel());
-          OnFilterItems();
-          return true;
-        }
-        if (GetProperty("filter").IsEmpty())
-        {
-          CStdString filter(GetProperty("filter"));
-          CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
-          SetProperty("filter", filter);
-        }
-        else
-        {
-          SetProperty("filter", "");
-          OnFilterItems();
-        }
-        return true;
-      }
       else if (iControl == CONTROL_BTNSHOWMODE)
       {
         g_stSettings.m_iMyVideoWatchMode++;
@@ -331,26 +304,6 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     case GUI_MSG_REFRESH_THUMBS:
     {
       Update(m_vecItems->m_strPath);
-    }
-    break;
-
-  case GUI_MSG_NOTIFY_ALL:
-    {
-      if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
-      {
-        CStdString filter(GetProperty("filter"));
-        if (message.GetParam2() == 1)  // append
-          filter += message.GetStringParam();
-        else if (message.GetParam2() == 2) // delete
-        {
-          if (filter.size())
-            filter.erase(filter.end() - 1);
-        }
-        else
-          filter = message.GetStringParam();
-        SetProperty("filter", filter);
-        OnFilterItems();
-      }
     }
     break;
   }
@@ -545,8 +498,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
   }
 
-  // clear the filter
-  SetProperty("filter", "");
   return bResult;
 }
 
@@ -600,11 +551,6 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_stSettings.m_iMyVideoWatchMode));
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_stSettings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
-
-  // #ifdef HAS_SKIN_VERSION_3
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").IsEmpty());
-  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter"));
-  // #endif
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -821,12 +767,6 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
     return;
 
   CGUIWindowVideoBase::PlayItem(iItem);
-}
-
-void CGUIWindowVideoNav::OnWindowLoaded()
-{
-  SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
-  CGUIWindowVideoBase::OnWindowLoaded();
 }
 
 void CGUIWindowVideoNav::DisplayEmptyDatabaseMessage(bool bDisplay)
@@ -1082,107 +1022,6 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
       }
     }
   }
-}
-
-void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
-{
-  m_unfilteredItems->Append(items);
-
-  CVideoDatabaseDirectory dir;
-  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-
-  bool filter = false;
-  if (node == NODE_TYPE_TITLE_MOVIES
-  ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES 
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-  { // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
-    filter = true;
-  }
-
-  if (filter && !GetProperty("filter").IsEmpty())
-    FilterItems(items);
-}
-
-void CGUIWindowVideoNav::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems->Clear();
-  m_unfilteredItems->Clear();
-}
-
-void CGUIWindowVideoNav::OnFilterItems()
-{
-  CStdString currentItem;
-  int item = m_viewControl.GetSelectedItem();
-  if (item >= 0)
-    currentItem = m_vecItems->Get(item)->m_strPath;
-
-  m_viewControl.Clear();
-
-  FilterItems(*m_vecItems);
-
-  // and update our view control + buttons
-  m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(currentItem);
-  UpdateButtons();
-}
-
-void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
-{
-  CVideoDatabaseDirectory dir;
-  CQueryParams params;
-  dir.GetQueryParams(items.m_strPath,params);
-
-  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-  // todo: why aren't we filtering every view consistently?
-  if (m_vecItems->IsVirtualDirectoryRoot() ||
-      node == NODE_TYPE_MOVIES_OVERVIEW    ||
-      node == NODE_TYPE_TVSHOWS_OVERVIEW   ||
-      node == NODE_TYPE_MUSICVIDEOS_OVERVIEW)
-  {
-    return;
-  }
-
-  CStdString filter(GetProperty("filter"));
-  filter.TrimLeft().ToLower();
-  bool numericMatch = StringUtils::IsNaturalNumber(filter);
-
-  items.ClearItems(); // clear the items only - we want to keep content etc.
-  items.SetFastLookup(true);
-  for (int i = 0; i < m_unfilteredItems->Size(); i++)
-  {
-    CFileItemPtr item = m_unfilteredItems->Get(i);
-    if (item->IsParentFolder() || filter.IsEmpty())
-    {
-      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
-        items.Add(item);
-      continue;
-    }
-    // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
-    // though that isn't practical.  Perhaps a better idea would be to just grab the info that we should filter on based on
-    // where we are in the library tree.
-    // Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
-    // but it's re-enabled on the way back out.
-    CStdString match;
-/*    if (item->GetFocusedLayout())
-      match = item->GetFocusedLayout()->GetAllText();
-    else if (item->GetLayout())
-      match = item->GetLayout()->GetAllText();
-    else*/
-    match = item->GetLabel(); // Filter label only for now
-
-    if (numericMatch)
-      StringUtils::WordToDigits(match);
-
-    size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
-    if (pos != CStdString::npos)
-    {
-      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
-        items.Add(item);
-    }
-  }
-  items.SetFastLookup(false);
 }
 
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
