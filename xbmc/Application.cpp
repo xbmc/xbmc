@@ -458,25 +458,13 @@ bool CApplication::Create()
   win32_exception::install_handler();
 #endif
 
-  CProfile *profile;
-
-  // only the InitDirectories* for the current platform should return
-  // non-null (if at all i.e. to set a profile)
+  // only the InitDirectories* for the current platform should return true
   // putting this before the first log entries saves another ifdef for g_settings.m_logFolder
-  profile = InitDirectoriesLinux();
-  if (!profile)
-    profile = InitDirectoriesOSX();
-  if (!profile)
-    profile = InitDirectoriesWin32();
-  if (profile)
-  {
-    profile->setName("Master user");
-    profile->setLockMode(LOCK_MODE_EVERYONE);
-    profile->setLockCode("");
-    profile->setDate("");
-    g_settings.AddProfile(*profile);
-    delete profile;
-  }
+  bool inited = InitDirectoriesLinux();
+  if (!inited)
+    inited = InitDirectoriesOSX();
+  if (!inited)
+    inited = InitDirectoriesWin32();
 
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
@@ -484,6 +472,7 @@ bool CApplication::Create()
     return false;
   }
 
+  g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(__APPLE__)
@@ -730,7 +719,7 @@ bool CApplication::Create()
   return Initialize();
 }
 
-CProfile* CApplication::InitDirectoriesLinux()
+bool CApplication::InitDirectoriesLinux()
 {
 /*
    The following is the directory mapping for Platform Specific Mode:
@@ -752,8 +741,6 @@ CProfile* CApplication::InitDirectoriesLinux()
 */
 
 #if defined(_LINUX) && !defined(__APPLE__)
-  CProfile* profile = NULL;
-
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -816,24 +803,15 @@ CProfile* CApplication::InitDirectoriesLinux()
     g_settings.m_logFolder = strTempPath;
   }
 
-  g_settings.LoadProfiles( PROFILES_FILE );
-
-  if (g_settings.GetNumProfiles()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
-CProfile* CApplication::InitDirectoriesOSX()
+bool CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
-  CProfile* profile = NULL;
-
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -911,23 +889,15 @@ CProfile* CApplication::InitDirectoriesOSX()
     g_settings.m_logFolder = strTempPath;
   }
 
-  g_settings.LoadProfiles( PROFILES_FILE );
-
-  if (g_settings.GetNumProfiles()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
-CProfile* CApplication::InitDirectoriesWin32()
+bool CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32
-  CProfile* profile = NULL;
   CStdString strExecutablePath;
 
   CUtil::GetHomePath(strExecutablePath);
@@ -985,14 +955,6 @@ CProfile* CApplication::InitDirectoriesWin32()
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
 
-  g_settings.LoadProfiles(PROFILES_FILE);
-
-  if (g_settings.GetNumProfiles()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
@@ -1009,9 +971,9 @@ CProfile* CApplication::InitDirectoriesWin32()
       g_application.getApplicationMessenger().OpticalMount(it->strPath);
   // remove end
 
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 

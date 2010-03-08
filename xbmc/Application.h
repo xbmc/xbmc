@@ -67,7 +67,6 @@ class CFileItemList;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
-class CProfile;
 class CSplash;
 
 class CBackgroundPlayer : public CThread
@@ -346,9 +345,9 @@ protected:
 
   void SaveCurrentFileSettings();
 
-  CProfile* InitDirectoriesLinux();
-  CProfile* InitDirectoriesOSX();
-  CProfile* InitDirectoriesWin32();
+  bool InitDirectoriesLinux();
+  bool InitDirectoriesOSX();
+  bool InitDirectoriesWin32();
 
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)
