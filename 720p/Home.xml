@@ -709,14 +709,226 @@
 		<!-----THE FANART BACKGROUND------------------------------------------>
 		<control type="group">
 			<control type="largeimage">
-		 		<include>HomeBackgroundFade</include>
+				<visible>Container(300).HasFocus(1000)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
 				<info>Container(300).ListItem.Property(fanart_image)</info>
-		    <posx>0</posx>
-		    <posy>0</posy>
-		    <width>1280</width>
-		    <height>720</height>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
 				<visible>true</visible>
-		  </control>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1001)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1002)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1003)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1004)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1005)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1006)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1007)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1008)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1009)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1010)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1011)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1012)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1013)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1014)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1015)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1016)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1017)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1018)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			<control type="largeimage">
+				<visible>Container(300).HasFocus(1019)</visible>
+				<animation effect="fade" end="100" time="600" delay="300">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<info>Container(300).ListItem.Property(fanart_image)</info>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>720</height>
+				<visible>true</visible>
+			</control>
+			
 		</control>
 		<!------------------------------------------------------------------->
 
