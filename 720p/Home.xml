@@ -1897,7 +1897,7 @@
             <label> $LOCALIZE[31954] </label>
             <label2> $LOCALIZE[31953] </label2>
             <visible>!Skin.HasSetting(HideHelp)</visible>
-            <onclick>Plex.ActivateWindow(1,Plex Help,return)</onclick>
+            <onclick>Plex.ActivateWindow(1,plex://localhost/system/help,return)</onclick>
           </item>
           <item id="11">
             <description>Favorites Menu</description>
@@ -1910,7 +1910,7 @@
             <description>App Store Menu</description>
             <label> $LOCALIZE[31952] </label>
             <label2> $LOCALIZE[31951] </label2>
-            <onclick>Plex.ActivateWindow(1,App Store,return)</onclick>
+            <onclick>Plex.ActivateWindow(1,plex://localhost/system/appstore,return)</onclick>
             <visible>!Skin.HasSetting(HideAppStore)</visible>
           </item>
           <item id="1">
