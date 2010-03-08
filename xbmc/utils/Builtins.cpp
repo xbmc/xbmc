@@ -255,16 +255,12 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Minimize();
   }
-  else if (execute.Equals("loadprofile") && g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  else if (execute.Equals("loadprofile") && g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
   {
-    for (unsigned int i=0;i<g_settings.m_vecProfiles.size();++i )
-    {
-      if (g_settings.m_vecProfiles[i].getName().Equals(parameter))
-      {
-        CGUIWindowLoginScreen::LoadProfile(i);
-        break;
-      }
-    }
+    // TODO: PROFILE We shouldn't be accessing indices like this
+    int index = g_settings.GetProfileIndex(parameter);
+    if (index < 0)
+      CGUIWindowLoginScreen::LoadProfile(index);
   }
   else if (execute.Equals("mastermode"))
   {
@@ -996,7 +992,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("system.logoff"))
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
+    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.UsingLoginScreen())
       return -1;
 
     g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;

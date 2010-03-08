@@ -973,7 +973,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 CStdString CAddonMgr::GetAddonsXMLFile() const
 {
   CStdString folder;
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasAddons())
+  if (g_settings.GetCurrentProfile().hasAddons())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),"addons.xml",folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"addons.xml",folder);

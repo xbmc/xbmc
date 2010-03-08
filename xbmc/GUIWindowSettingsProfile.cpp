@@ -88,7 +88,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   if (!pMenu) return ;
   // load our menu
   pMenu->Initialize();
-  if (iItem == (int)g_settings.m_vecProfiles.size())
+  if (iItem == (int)g_settings.GetNumProfiles())
     return;
 
   // add the needed buttons
@@ -154,13 +154,13 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
           if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
           {
             //contextmenu
-            if (iItem <= (int)g_settings.m_vecProfiles.size() - 1)
+            if (iItem <= (int)g_settings.GetNumProfiles() - 1)
             {
               OnPopupMenu(iItem);
             }
             return true;
           }
-          else if (iItem < (int)g_settings.m_vecProfiles.size())
+          else if (iItem < (int)g_settings.GetNumProfiles())
           {
             if (CGUIDialogProfileSettings::ShowForProfile(iItem))
             {
@@ -173,10 +173,10 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
 
             return false;
           }
-          else if (iItem > (int)g_settings.m_vecProfiles.size() - 1)
+          else if (iItem > (int)g_settings.GetNumProfiles() - 1)
           {
             CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"profiles"));
-            if (CGUIDialogProfileSettings::ShowForProfile(g_settings.m_vecProfiles.size()))
+            if (CGUIDialogProfileSettings::ShowForProfile(g_settings.GetNumProfiles()))
             {
               LoadList();
               CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
@@ -190,7 +190,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_LOGINSCREEN)
       {
-        g_settings.bUseLoginScreen = !g_settings.bUseLoginScreen;
+        g_settings.ToggleLoginScreen();
         g_settings.SaveProfiles(PROFILES_FILE);
         return true;
       }
@@ -205,14 +205,14 @@ void CGUIWindowSettingsProfile::LoadList()
 {
   ClearListItems();
 
-  for (UCHAR i = 0; i < g_settings.m_vecProfiles.size(); i++)
+  for (unsigned int i = 0; i < g_settings.GetNumProfiles(); i++)
   {
-    CProfile& profile = g_settings.m_vecProfiles.at(i);
-    CFileItemPtr item(new CFileItem(profile.getName()));
+    const CProfile *profile = g_settings.GetProfile(i);
+    CFileItemPtr item(new CFileItem(profile->getName()));
     item->m_strPath.Empty();
-    item->SetLabel2(profile.getDate());
-    item->SetThumbnailImage(profile.getThumb());
-    item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
+    item->SetLabel2(profile->getDate());
+    item->SetThumbnailImage(profile->getThumb());
+    item->SetOverlayImage(profile->getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
     m_listItems->Add(item);
   }
   {
@@ -223,7 +223,7 @@ void CGUIWindowSettingsProfile::LoadList()
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PROFILES, 0, 0, m_listItems);
   OnMessage(msg);
 
-  if (g_settings.bUseLoginScreen)
+  if (g_settings.UsingLoginScreen())
   {
     CONTROL_SELECT(CONTROL_LOGINSCREEN);
   }

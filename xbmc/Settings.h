@@ -228,11 +228,70 @@ public:
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
+  
   //VECFILETYPEICONS m_vecIcons;
-  VECPROFILES m_vecProfiles;
+
+  /*! \brief Retrieve the master profile
+   \return const reference to the master profile
+   */
+  const CProfile &GetMasterProfile() const;
+
+  /*! \brief Retreive the current profile
+   \return const reference to the current profile
+   */
+  const CProfile &GetCurrentProfile() const;
+
+  /*! \brief Retreive the profile from an index
+   \param unsigned index of the profile to retrieve
+   \return const pointer to the profile, NULL if the index is invalid
+   */
+  const CProfile *GetProfile(unsigned int index) const;
+
+  /*! \brief Retreive the profile from an index
+   \param unsigned index of the profile to retrieve
+   \return pointer to the profile, NULL if the index is invalid
+   */
+  CProfile *GetProfile(unsigned int index);
+
+  /*! \brief Retreive index of a particular profile by name
+   \param name name of the profile index to retrieve
+   \return index of this profile, -1 if invalid.
+   */
+  int GetProfileIndex(const CStdString &name) const;
+
+  /*! \brief Retrieve the number of profiles
+   \return number of profiles
+   */
+  unsigned int GetNumProfiles() const;
+
+  /*! \brief Add a new profile
+   \param profile CProfile to add
+   */
+  void AddProfile(const CProfile &profile);
+
+  /*! \brief Are we using the login screen?
+   \return true if we're using the login screen, false otherwise
+   */
+  bool UsingLoginScreen() const { return bUseLoginScreen; };
+
+  /*! \brief Toggle login screen use on and off
+   Toggles the login screen state
+   */
+  void ToggleLoginScreen() { bUseLoginScreen = !bUseLoginScreen; };
+
+  /*! \brief Are we the master user?
+   \return true if the current profile is the master user, false otherwise
+   */
+  bool IsMasterUser() const { return 0 == m_iLastLoadedProfileIndex; };
+
+  /*! \brief Update the date of the current profile
+   */
+  void UpdateCurrentProfileDate();
+
+  // TODO: PROFILE - we shouldn't require these to be exposed
   int m_iLastLoadedProfileIndex;
   int m_iLastUsedProfileIndex;
-  bool bUseLoginScreen;
+
   std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
@@ -301,6 +360,10 @@ protected:
   void SaveSkinSettings(TiXmlNode *pElement) const;
 
   void LoadUserFolderLayout();
+
+private:
+  std::vector<CProfile> m_vecProfiles;
+  bool bUseLoginScreen;
 };
 
 extern class CSettings g_settings;

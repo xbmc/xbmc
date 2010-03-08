@@ -194,7 +194,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
   CStdString strPath = pItem->m_strPath;
 
   // check if user is allowed to open this window
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_settings.GetCurrentProfile().addonmanagerLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -213,7 +213,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
 bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
 {
   // check if user is allowed to open this window
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_settings.GetCurrentProfile().addonmanagerLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return false;
 

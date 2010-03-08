@@ -286,7 +286,7 @@ bool CGUIViewState::HideParentDirItems()
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
+  if (g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
     return !g_guiSettings.GetBool("filelists.showaddsourcebuttons");
 
   return true;

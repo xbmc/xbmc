@@ -477,7 +477,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       if (pScanDlg && pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
       if (!item->IsDVD() && item->m_strPath != "add" &&
-         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+         (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -502,7 +502,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         // Movie Info button
         if (pScanDlg && pScanDlg->IsScanning())
           buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+        if (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
         {
           ADDON::ScraperPtr info;
           VIDEO::SScanSettings settings;
