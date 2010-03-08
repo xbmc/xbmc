@@ -6,7 +6,7 @@
 
       <control type="group">
         <visible>Container.Content(tvshows)</visible>
-        <include>FanartOnTVProjectorScreen</include>
+ <!--   <include>FanartOnTVProjectorScreen</include>  -->
       </control>
 
       <include>MediaViewBGOverlay</include>
