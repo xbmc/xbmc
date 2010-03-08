@@ -26,6 +26,15 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "Util.h"
+#include <fcntl.h>
+
+#ifdef _WIN32
+#pragma comment(lib, "../../lib/libssh_win32/lib/libssh.lib")
+#endif
+
+#ifdef _MSC_VER
+#define O_RDONLY _O_RDONLY
+#endif
 
 using namespace XFILE;
 using namespace std;
@@ -122,7 +131,14 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
             if(realpath == NULL)
               continue;
             attributes = sftp_stat(m_sftp_session, realpath);
+#ifdef _MSC_VER
+            // hack since api doesn't expose any method to free
+            // the memory alloced here, we cheat and use a
+            // function that does a standard free inside the library
+            string_free((ssh_string)realpath);
+#else
             free(realpath);
+#endif
             if (attributes == NULL)
               continue;
             if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
