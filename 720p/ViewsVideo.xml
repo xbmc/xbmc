@@ -2,7 +2,7 @@
   <include name="TV">
     <control type="group">
       <include>TVWideVisible</include>
-      <include>FanartOnTVProjectorScreen</include>
+	<!--  <include>FanartOnTVProjectorScreen</include>  -->
       <include>MediaViewBGOverlay</include>
     </control>
 
