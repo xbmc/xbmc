@@ -109,7 +109,6 @@
 #ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsmanager.h"
 #include "karaoke/GUIDialogKaraokeSongSelector.h"
-#include "karaoke/GUIDialogKaraokeNextSong.h"
 #include "karaoke/GUIWindowKaraokeLyrics.h"
 #endif
 #include "AudioContext.h"
@@ -1068,7 +1067,6 @@ bool CApplication::Initialize()
 #ifdef HAS_KARAOKE
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
-  g_windowManager.Add(new CGUIDialogKaraokeNextSong);    // window id 146
 #endif
   g_windowManager.Add(new CGUIDialogSlider);             // window id = 145
   g_windowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
@@ -3039,7 +3037,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_PLAYER_CONTROLS);
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
-    g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_NEXTSONG);
     g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
     g_windowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
     g_windowManager.Delete(WINDOW_DIALOG_SELECT);

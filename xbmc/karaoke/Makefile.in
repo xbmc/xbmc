@@ -3,8 +3,7 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
   INCLUDES+=-I../cores/dvdplayer/Codecs/ffmpeg
 endif
 
-SRCS=GUIDialogKaraokeNextSong.cpp \
-	GUIDialogKaraokeSongSelector.cpp \
+SRCS=GUIDialogKaraokeSongSelector.cpp \
 	karaokelyricscdg.cpp \
 	karaokelyrics.cpp	\
 	karaokelyricsfactory.cpp \

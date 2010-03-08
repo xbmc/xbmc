@@ -59,7 +59,6 @@ void CAdvancedSettings::Initialize()
   m_karaokeStartIndex = 1;
   m_karaokeAlwaysEmptyOnCdgs = 1;
   m_karaokeUseSongSpecificBackground = 0;
-  m_karaokeNextSongPopupTime = 0.0f;
 
   m_audioDefaultPlayer = "paplayer";
   m_audioPlayCountMinimumPercent = 90.0f;
@@ -339,7 +338,6 @@ bool CAdvancedSettings::Load()
   {
     XMLUtils::GetFloat(pElement, "syncdelaycdg", m_karaokeSyncDelayCDG, -3.0f, 3.0f); // keep the old name for comp
     XMLUtils::GetFloat(pElement, "syncdelaylrc", m_karaokeSyncDelayLRC, -3.0f, 3.0f);
-	XMLUtils::GetFloat(pElement, "nextsongpopuptime", m_karaokeNextSongPopupTime, 0.0f, 1000.0f);
     XMLUtils::GetBoolean(pElement, "alwaysreplacegenre", m_karaokeChangeGenreForKaraokeSongs );
     XMLUtils::GetBoolean(pElement, "storedelay", m_karaokeKeepDelay );
     XMLUtils::GetInt(pElement, "autoassignstartfrom", m_karaokeStartIndex, 1, 2000000000);

@@ -897,7 +897,6 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("fullscreeninfo")) windowID = WINDOW_DIALOG_FULLSCREEN_INFO;
   else if (strWindow.Equals("karaokeselector")) windowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
   else if (strWindow.Equals("karaokelargeselector")) windowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
-  else if (strWindow.Equals("karaokenextsong")) windowID = WINDOW_DIALOG_KARAOKE_NEXTSONG;
   else if (strWindow.Equals("sliderdialog")) windowID = WINDOW_DIALOG_SLIDER;
   else if (strWindow.Equals("songinformation")) windowID = WINDOW_DIALOG_SONG_INFO;
   else if (strWindow.Equals("busydialog")) windowID = WINDOW_DIALOG_BUSY;

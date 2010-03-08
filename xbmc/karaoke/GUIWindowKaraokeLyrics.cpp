@@ -24,23 +24,16 @@
 #include "AdvancedSettings.h"
 
 #include "GUIDialogKaraokeSongSelector.h"
-#include "GUIDialogKaraokeNextSong.h"
 #include "GUIWindowKaraokeLyrics.h"
-#include "PlayList.h"
-#include "PlayListPlayer.h"
-#include "LocalizeStrings.h"
-#include "MusicInfoTag.h"
 #include "karaokelyrics.h"
 #include "karaokewindowbackground.h"
 #include "utils/SingleLock.h"
-#include "utils/log.h"
 
 
 CGUIWindowKaraokeLyrics::CGUIWindowKaraokeLyrics(void)
   : CGUIWindow(WINDOW_KARAOKELYRICS, "MusicKaraokeLyrics.xml")
 {
   m_Lyrics = 0;
-  m_lastCheckTime = 0.0;
   m_Background = new CKaraokeWindowBackground();
 }
 
@@ -120,13 +113,6 @@ bool CGUIWindowKaraokeLyrics::OnMessage(CGUIMessage& message)
 
       if ( songSelector && songSelector->IsActive() )
         songSelector->Close();
-
-      // Close the next song window if shown
-      CGUIDialogKaraokeNextSong * nextSong = (CGUIDialogKaraokeNextSong *)
-              g_windowManager.GetWindow( WINDOW_DIALOG_KARAOKE_NEXTSONG );
-
-      if ( nextSong && nextSong->IsDialogRunning() )
-        nextSong->Close();
     }
     break;
   }
@@ -147,16 +133,13 @@ void CGUIWindowKaraokeLyrics::Render()
     m_Background->Render();
     m_Lyrics->Render();
   }
-
-  // Show or hide the next song window
-  showNextSongIfNecessary();
 }
+
 
 void CGUIWindowKaraokeLyrics::newSong(CKaraokeLyrics * lyrics)
 {
   CSingleLock lock (m_CritSection);
   m_Lyrics = lyrics;
-  m_lastCheckTime = 0.0;
 
   if ( m_Lyrics )
     m_Lyrics->InitGraphics();
@@ -194,88 +177,4 @@ void CGUIWindowKaraokeLyrics::pauseSong(bool now_paused)
 {
   CSingleLock lock (m_CritSection);
   m_Background->Pause( now_paused );
-}
-
-void CGUIWindowKaraokeLyrics::showNextSongIfNecessary()
-{
-  // Check if enabled
-
-  // Do not waste CPU, check only four times a second
-  if ( g_application.GetTime() - m_lastCheckTime < 0.25 )
-    return;
-
-  m_lastCheckTime = g_application.GetTime();
-
-  // How much time in advance we should show it?
-  double timing = g_advancedSettings.m_karaokeNextSongPopupTime;
-
-  // Zero value disables it
-  if ( timing == 0.0 )
-    return;
-  
-  double time_remaining = g_application.GetTotalTime() - g_application.GetTime();
-
-  // Not yet to show?
-  if ( time_remaining > timing )
-    return;
-
-  // Do we have a window? Missing skin?
-  CGUIDialogKaraokeNextSong * nextSongWindow = (CGUIDialogKaraokeNextSong *)
-            g_windowManager.GetWindow( WINDOW_DIALOG_KARAOKE_NEXTSONG );
-
-  if ( !nextSongWindow )
-  {
-    static bool noannoy = false;
-
-    if ( !noannoy )
-    {
-      CLog::Log( LOGERROR, "CGUIDialogKaraokeNextSong cannot be created; likely because DialogKaraokeNextSong.xml is missing" );
-      noannoy = true;
-    }
-
-    return;
-  }
-
-  // Less than 0.25 second left? Hide it if it is shown.
-  if ( time_remaining < 0.25 )
-  {
-    if ( nextSongWindow->IsDialogRunning() )
-      nextSongWindow->Close();
-
-    return;
-  }
-
-  // The window need to be pop up now. Find the next song in playlist
-  CStdString nextsong;
-
-  int iNext = g_playlistPlayer.GetNextSong();
-  PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist());
-  
-  if ( iNext >= 0 && iNext < playlist.size() )
-  {
-    CFileItemPtr item = playlist[iNext];
-    item->LoadMusicTag();
-    const MUSIC_INFO::CMusicInfoTag* mtag = item->GetMusicInfoTag();
-
-    if ( item->IsKaraoke() && mtag )
-      nextsong = g_localizeStrings.Get(209) + ": " + mtag->GetTitle(); // Next:
-  }
-  
-  // Now if nextsong is empty, this means there is no next song (or it is not a karaoke).
-  // If the window is already shown, hide it (if the playlist changed via web interface)
-  if ( nextsong.empty() )
-  {
-    if ( nextSongWindow->IsDialogRunning() )
-      nextSongWindow->Close();
-
-    return;
-  }
-
-  // Pop up the window if it does not yet.
-  if ( !nextSongWindow->IsDialogRunning() )
-    nextSongWindow->Show();
-  
-  // Update the song name if it is now different
-  if ( nextSongWindow->songName() != nextsong )
-    nextSongWindow->setSongName( nextsong );
 }

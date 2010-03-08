@@ -244,7 +244,6 @@ class CAdvancedSettings
     bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
     CStdString m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
     CStdString m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
-    float m_karaokeNextSongPopupTime; // the next song window will show up last N seconds; 0 to disable.
 
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;

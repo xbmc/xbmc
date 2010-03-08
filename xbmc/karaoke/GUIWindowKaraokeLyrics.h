@@ -39,7 +39,6 @@ public:
   void    newSong( CKaraokeLyrics * lyrics );
   void    pauseSong( bool now_paused );
   void    stopSong();
-  void    showNextSongIfNecessary();
 
 protected:
 
@@ -51,7 +50,4 @@ protected:
 
   //! Pointer to background object
   CKaraokeWindowBackground * m_Background;
-
-  //! How long time ago the next song has been checked?
-  double  m_lastCheckTime;
 };
