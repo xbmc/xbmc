@@ -13,8 +13,8 @@
   </include>
 
   <include name="MediaCountPos">
-    <posx>1112</posx>
-    <posy>683</posy>
+    <posx>1050</posx>
+    <posy>11</posy>
   </include>
 
   <include name="MediaCountBGDims">
