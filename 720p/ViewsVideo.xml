@@ -22,7 +22,7 @@
             <description>Wide icon</description>
             <include>TVWideIconDims</include>
             <texture>DefaultWideIcon.png</texture>
-            <info>ListItem.Thumb</info>
+            <info>ListItem.banner</info>
             <aspectratio align="left">keep</aspectratio>
             <bordertexture border="12">ThumbShadow2.png</bordertexture>
             <bordersize>8</bordersize>
