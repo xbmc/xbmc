@@ -47,13 +47,13 @@ void CProfile::CLock::Validate()
 
 CProfile::CProfile(const CStdString &directory, const CStdString &name)
 {
-  _directory = directory;
-  _name = name;
-  _bDatabases = true;
-  _bCanWrite = true;
-  _bSources = true;
-  _bCanWriteSources = true;
-  _bAddons = true;
+  m_directory = directory;
+  m_name = name;
+  m_bDatabases = true;
+  m_bCanWrite = true;
+  m_bSources = true;
+  m_bCanWriteSources = true;
+  m_bAddons = true;
 }
 
 CProfile::~CProfile(void)
@@ -71,13 +71,13 @@ void CProfile::setDate()
 
 void CProfile::Load(const TiXmlNode *node)
 {
-  XMLUtils::GetString(node, "name", _name);
-  XMLUtils::GetPath(node, "directory", _directory);
-  XMLUtils::GetPath(node, "thumbnail", _thumb);
-  XMLUtils::GetBoolean(node, "hasdatabases", _bDatabases);
-  XMLUtils::GetBoolean(node, "canwritedatabases", _bCanWrite);
-  XMLUtils::GetBoolean(node, "hassources", _bSources);
-  XMLUtils::GetBoolean(node, "canwritesources", _bCanWriteSources);
+  XMLUtils::GetString(node, "name", m_name);
+  XMLUtils::GetPath(node, "directory", m_directory);
+  XMLUtils::GetPath(node, "thumbnail", m_thumb);
+  XMLUtils::GetBoolean(node, "hasdatabases", m_bDatabases);
+  XMLUtils::GetBoolean(node, "canwritedatabases", m_bCanWrite);
+  XMLUtils::GetBoolean(node, "hassources", m_bSources);
+  XMLUtils::GetBoolean(node, "canwritesources", m_bCanWriteSources);
   XMLUtils::GetBoolean(node, "lockaddonmanager", m_locks.addonManager);
   XMLUtils::GetBoolean(node, "locksettings", m_locks.settings);
   XMLUtils::GetBoolean(node, "lockfiles", m_locks.files);
@@ -93,7 +93,7 @@ void CProfile::Load(const TiXmlNode *node)
     m_locks.mode = LOCK_MODE_EVERYONE;
   
   XMLUtils::GetString(node, "lockcode", m_locks.code);
-  XMLUtils::GetString(node, "lastdate", _date);
+  XMLUtils::GetString(node, "lastdate", m_date);
 }
 
 void CProfile::Save(TiXmlNode *root) const
@@ -101,13 +101,13 @@ void CProfile::Save(TiXmlNode *root) const
   TiXmlElement profileNode("profile");
   TiXmlNode *node = root->InsertEndChild(profileNode);
 
-  XMLUtils::SetString(node, "name", _name);
-  XMLUtils::SetPath(node, "directory", _directory);
-  XMLUtils::SetPath(node, "thumbnail", _thumb);
-  XMLUtils::SetBoolean(node, "hasdatabases", _bDatabases);
-  XMLUtils::SetBoolean(node, "canwritedatabases", _bCanWrite);
-  XMLUtils::SetBoolean(node, "hassources", _bSources);
-  XMLUtils::SetBoolean(node, "canwritesources", _bCanWriteSources);
+  XMLUtils::SetString(node, "name", m_name);
+  XMLUtils::SetPath(node, "directory", m_directory);
+  XMLUtils::SetPath(node, "thumbnail", m_thumb);
+  XMLUtils::SetBoolean(node, "hasdatabases", m_bDatabases);
+  XMLUtils::SetBoolean(node, "canwritedatabases", m_bCanWrite);
+  XMLUtils::SetBoolean(node, "hassources", m_bSources);
+  XMLUtils::SetBoolean(node, "canwritesources", m_bCanWriteSources);
   XMLUtils::SetBoolean(node, "lockaddonmanager", m_locks.addonManager);
   XMLUtils::SetBoolean(node, "locksettings", m_locks.settings);
   XMLUtils::SetBoolean(node, "lockfiles", m_locks.files);
@@ -118,7 +118,7 @@ void CProfile::Save(TiXmlNode *root) const
 
   XMLUtils::SetInt(node, "lockmode", m_locks.mode);
   XMLUtils::SetString(node,"lockcode", m_locks.code);
-  XMLUtils::SetString(node, "lastdate", _date);
+  XMLUtils::SetString(node, "lastdate", m_date);
 }
 
 void CProfile::SetLocks(const CProfile::CLock &locks)
