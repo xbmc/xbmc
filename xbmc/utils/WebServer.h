@@ -74,6 +74,7 @@ private:
 #endif
   static void ContentReaderFreeCallback (void *cls);
   static int HttpApi(struct MHD_Connection *connection);
+  static int CreateDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL);
 
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
   static void StringToBase64(const char *input, CStdString &output);
