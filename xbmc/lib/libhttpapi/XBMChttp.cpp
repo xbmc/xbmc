@@ -1084,6 +1084,7 @@ int CXbmcHttp::xbmcAddToPlayList(int numParas, CStdString paras[])
         recursive=(paras[3]=="1");
     }
     strFileName=paras[0] ;
+    CUtil::URLDecode(strFileName);
     CFileItemPtr pItem(new CFileItem(strFileName));
     pItem->m_strPath=strFileName.c_str();
     if (pItem->IsPlayList())
