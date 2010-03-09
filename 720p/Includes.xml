@@ -1676,7 +1676,9 @@
   <include name="MediaCount">
     <control type="group">
       <include>MediaCountPos</include>
-      <visible>!Window.IsVisible(2003)</visible>
+      <visible>!Window.IsVisible(2003) + !ControlGroup(9009).HasFocus()</visible>
+	  <animation effect="fade" time="600" delay="600" start="0" end="100">Visible</animation>
+	  <animation effect="fade" time="200" start="100" end="0">Hidden</animation>
 
       <control type="image">
         <include>MediaCountBGDims</include>
