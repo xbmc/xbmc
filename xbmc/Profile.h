@@ -28,7 +28,7 @@
 class CProfile
 {
 public:
-  CProfile(void);
+  CProfile(const CStdString &directory = "", const CStdString &name = "");
   ~CProfile(void);
 
   const CStdString& getDate() const { return _date;}

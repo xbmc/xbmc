@@ -1108,10 +1108,7 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
 
   if (m_vecProfiles.empty())
   { // add the master user
-    CProfile profile;
-    profile.setName("Master user");
-    profile.setDirectory("special://masterprofile/");
-    profile.setLockMode(LOCK_MODE_EVERYONE);
+    CProfile profile("special://masterprofile/", "Master user");
     m_vecProfiles.push_back(profile);
   }
 
