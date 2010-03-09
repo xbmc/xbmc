@@ -201,7 +201,7 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled)
     return true;
   int iProfileToCheck=iProfile;
   if (iProfile == -1)
-    iProfileToCheck = g_settings.m_iLastLoadedProfileIndex;
+    iProfileToCheck = g_settings.GetCurrentProfileIndex();
   if (iProfileToCheck == 0)
     return IsMasterLockUnlocked(true,bCanceled);
   else

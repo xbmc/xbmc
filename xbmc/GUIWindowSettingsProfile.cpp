@@ -94,7 +94,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   // add the needed buttons
   int btnLoad = pMenu->AddButton(20092); // load profile
   int btnDelete=0;
-  if (iItem > 0 && iItem != g_settings.m_iLastLoadedProfileIndex)
+  if (iItem > 0 && iItem != g_settings.GetCurrentProfileIndex())
     btnDelete = pMenu->AddButton(117); // Delete
 
   // position it correctly

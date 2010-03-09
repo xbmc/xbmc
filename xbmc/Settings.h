@@ -285,8 +285,6 @@ public:
    */
   void UpdateCurrentProfileDate();
 
-  // TODO: PROFILE - we shouldn't require these to be exposed
-  int m_iLastLoadedProfileIndex;
   /*! \brief Load the master user for the purposes of logging in
    Loads the master user.  Identical to LoadProfile(0) but doesn't update the last logged in details
    */
@@ -296,6 +294,11 @@ public:
    \return the last used profile that logged in.  Does not count the master user during login.
    */
   int GetLastUsedProfileIndex() const { return m_iLastUsedProfileIndex; };
+
+  /*! \brief Retrieve the current profile index
+   \return the index of the currently logged in profile.
+   */
+  int GetCurrentProfileIndex() const { return m_iLastLoadedProfileIndex; };
 
   std::vector<RESOLUTION_INFO> m_ResInfo;
 
@@ -382,6 +385,7 @@ private:
   std::vector<CProfile> m_vecProfiles;
   bool m_usingLoginScreen;
   int m_iLastUsedProfileIndex;
+  int m_iLastLoadedProfileIndex;
 };
 
 extern class CSettings g_settings;
