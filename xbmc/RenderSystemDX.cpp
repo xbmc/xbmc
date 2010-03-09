@@ -179,7 +179,6 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
   m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
-
   // Try to create a 32-bit depth, 8-bit stencil
   if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
     D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
@@ -316,7 +315,10 @@ bool CRenderSystemDX::CreateDevice()
         return false;
     }
   }
-
+  
+    //To be able to show a com dialog over a fullscreen video playing we need this
+  if (m_bFullScreenDevice)
+    m_pD3DDevice->SetDialogBoxMode(true);
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
     m_screenHeight = mode.Height;
