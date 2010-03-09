@@ -61,6 +61,8 @@ void CFileItemHandler::FillVideoDetails(const CVideoInfoTag *videoInfo, const Va
     if (field.Equals("lastplayed") && !videoInfo->m_lastPlayed.IsEmpty())
       result["lastplayed"] = videoInfo->m_lastPlayed.c_str();
 
+    if (field.Equals("season") && videoInfo->m_iSeason > 0)
+      result["season"] = videoInfo->m_iSeason;
     if (field.Equals("runtime") && !videoInfo->m_strRuntime.IsEmpty())
       result["runtime"] = videoInfo->m_strRuntime.c_str();
     if (field.Equals("year") && videoInfo->m_iYear > 0)

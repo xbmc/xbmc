@@ -78,7 +78,7 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
 
   CFileItemList items;
   if (videodatabase.GetSeasonsNav("", items, -1, -1, -1, -1, tvshowID))
-    HandleFileItemList("seasonid", "seasons", items, param, result);
+    HandleFileItemList(NULL, "seasons", items, param, result);
 
   videodatabase.Close();
   return OK;
@@ -95,10 +95,10 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
   int tvshowID = param.get("tvshowid", -1).asInt();
-  int seasonID = param.get("seasonid", -1).asInt();
+  int season = param.get("season", -1).asInt();
 
   CFileItemList items;
-  if (videodatabase.GetEpisodesNav("", items, -1, -1, -1, -1, tvshowID, seasonID))
+  if (videodatabase.GetEpisodesNav("", items, -1, -1, -1, -1, tvshowID, season))
     HandleFileItemList("episodeid", "episodes", items, param, result);
 
   videodatabase.Close();
