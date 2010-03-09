@@ -53,6 +53,7 @@ CGUIWindowLoginScreen::CGUIWindowLoginScreen(void)
 {
   watch.StartZero();
   m_vecItems = new CFileItemList;
+  m_iSelectedItem = -1;
 }
 
 CGUIWindowLoginScreen::~CGUIWindowLoginScreen(void)
@@ -155,6 +156,7 @@ void CGUIWindowLoginScreen::FrameMove()
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
+  m_iSelectedItem = (int)g_settings.GetLastUsedProfileIndex();
   // Update list/thumb control
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
   Update();
@@ -193,11 +195,7 @@ void CGUIWindowLoginScreen::Update()
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
-  if (g_settings.m_iLastUsedProfileIndex > -1)
-  {
-    m_viewControl.SetSelectedItem(g_settings.m_iLastUsedProfileIndex);
-    g_settings.m_iLastUsedProfileIndex = -1;
-  }
+  m_viewControl.SetSelectedItem(m_iSelectedItem);
 }
 
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)

@@ -995,7 +995,6 @@ int CBuiltins::Execute(const CStdString& execString)
     if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.UsingLoginScreen())
       return -1;
 
-    g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
     g_application.StopPlaying();
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
@@ -1012,7 +1011,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    g_settings.LoadProfile(0); // login screen always runs as default user
+    g_settings.LoadMasterForLogin();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_application.StartEventServer(); // event server could be needed in some situations

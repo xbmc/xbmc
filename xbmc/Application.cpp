@@ -579,11 +579,6 @@ bool CApplication::Create()
 
   CLog::Log(LOGNOTICE, "load settings...");
 
-  // TODO: PROFILE what (if any) of this is needed - we're on startup, so surely this stuff is unknown?
-  g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
-  if (g_settings.UsingLoginScreen() && g_settings.m_iLastLoadedProfileIndex != 0)
-    g_settings.m_iLastLoadedProfileIndex = 0;
-
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
   if (!g_settings.Load())
