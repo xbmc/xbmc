@@ -996,14 +996,6 @@ bool CSettings::DeleteProfile(unsigned int index)
   return true;
 }
 
-bool CSettings::SaveSettingsToProfile(unsigned int index)
-{
-  /*CProfile& profile = m_vecProfiles.at(index);
-  return SaveSettings(profile.getFileName(), false);*/
-  return true;
-}
-
-
 void CSettings::LoadProfiles(const CStdString& profilesFile)
 {
   // clear out our profiles
