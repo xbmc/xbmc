@@ -507,10 +507,6 @@ bool CApplication::Create()
       for (int i=0;i<items.Size();++i)
           CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+CUtil::GetFileName(items[i]->m_strPath));
     }
-    // TODO: PROFILE A setter method may be better here?
-    CProfile *profile = g_settings.GetProfile(0);
-    if (profile)
-      profile->setDirectory("special://masterprofile/");
     g_settings.m_logFolder = "special://masterprofile/";
   }
 
