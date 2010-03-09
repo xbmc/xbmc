@@ -81,8 +81,6 @@ protected:
   void LoadIncludes();
   bool LoadStartupWindows(const TiXmlElement *startup);
 
-  wchar_t credits[6][CREDIT_LINE_LENGTH];  // credits info
-  int m_iNumCreditLines;  // number of credit lines
   RESOLUTION m_DefaultResolution; // default resolution for the skin in 4:3 modes
   RESOLUTION m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes
   CStdString m_strBaseDir;

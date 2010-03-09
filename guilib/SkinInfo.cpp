@@ -42,7 +42,6 @@ CSkinInfo::CSkinInfo()
   m_DefaultResolution = RES_PAL_4x3;
   m_DefaultResolutionWide = RES_INVALID;
   m_strBaseDir = "";
-  m_iNumCreditLines = 0;
   m_effectsSlowDown = 1.0;
   m_onlyAnimateToHome = true;
   m_Version = 1.0;
@@ -113,35 +112,6 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       pChild = pRootElement->FirstChild("effectslowdown");
       if (pChild && pChild->FirstChild())
         m_effectsSlowDown = atof(pChild->FirstChild()->Value());
-
-      // now load the credits information
-      pChild = pRootElement->FirstChild("credits");
-      if (pChild)
-      { // ok, run through the credits
-        TiXmlNode *pGrandChild = pChild->FirstChild("skinname");
-        if (pGrandChild && pGrandChild->FirstChild())
-        {
-          CStdString strName = pGrandChild->FirstChild()->Value();
-#ifndef _LINUX
-          swprintf(credits[0], L"%S Skin", strName.Left(44).c_str());
-#else
-          swprintf(credits[0], CREDIT_LINE_LENGTH - 1, L"%s Skin", strName.Left(44).c_str());
-#endif
-        }
-        pGrandChild = pChild->FirstChild("name");
-        m_iNumCreditLines = 1;
-        while (pGrandChild && pGrandChild->FirstChild() && m_iNumCreditLines < 6)
-        {
-          CStdString strName = pGrandChild->FirstChild()->Value();
-#ifndef _LINUX
-          swprintf(credits[m_iNumCreditLines], L"%S", strName.Left(49).c_str());
-#else
-          swprintf(credits[m_iNumCreditLines], CREDIT_LINE_LENGTH - 1, L"%s", strName.Left(49).c_str());
-#endif
-          m_iNumCreditLines++;
-          pGrandChild = pGrandChild->NextSibling("name");
-        }
-      }
 
       // get the skin zoom parameter. it's how much skin should be enlarged to get rid of overscan
       pChild = pRootElement->FirstChild("zoom");
