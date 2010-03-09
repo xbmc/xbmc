@@ -265,7 +265,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdStri
 
 void CFileItemHandler::Sort(CFileItemList &items, const Value &parameterObject)
 {
-  if (parameterObject.isMember("sortmethod") && parameterObject.isMember("sortorder"))
+  if (parameterObject.isMember("sortmethod") || parameterObject.isMember("sortorder"))
   {
     CStdString method = parameterObject.get("sortmethod", "none").asString();
     CStdString order  = parameterObject.get("sortorder",  "ascending").asString();
