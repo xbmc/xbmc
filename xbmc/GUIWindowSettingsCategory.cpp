@@ -1529,7 +1529,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
     CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-    if (g_SkinInfo.Check(strSkinPath))
+    if (CSkinInfo::Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
       pControl->SetItemInvalid(false);
@@ -2334,7 +2334,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
-      //   if (g_SkinInfo.Check(pItem->m_strPath))
+      //   if (CSkinInfo::Check(pItem->m_strPath))
       //   {
       vecSkins.push_back(pItem->GetLabel());
       //   }
