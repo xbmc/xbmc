@@ -371,10 +371,8 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
   CURL url(strPath);
-  if (url.GetHostName().IsEmpty())
-  { // called with no script - we must be browsing root of plugins dir
-    return GetPluginsDirectory(ADDON::TranslateContent(url.GetHostName()), items);
-  }
+  // should never be called without addon id
+  assert(!url.GetHostName().IsEmpty());
 
   bool success = this->StartScript(strPath);
 
@@ -433,47 +431,6 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 bool CPluginDirectory::HasPlugins(const CONTENT_TYPE &type)
 {
   return CAddonMgr::Get()->HasAddons(ADDON_PLUGIN, type);
-}
-
-bool CPluginDirectory::GetPluginsDirectory(const CONTENT_TYPE &type, CFileItemList &items)
-{
-  VECADDONS addons;
-
-  if(!CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, type))
-    return false;
-
-  for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-  {
-    CStdString path("plugin://");
-    path.append((*it)->ID());
-
-    CFileItemPtr newItem(new CFileItem(path,true));
-    newItem->SetLabel((*it)->Name());
-
-    newItem->SetThumbnailImage("");
-    newItem->SetCachedProgramThumb();
-    if (!newItem->HasThumbnail())
-      newItem->SetUserProgramThumb();
-    if (!newItem->HasThumbnail())
-    {
-      CFileItem item2((*it)->Path());
-      CUtil::AddFileToFolder((*it)->Path(), (*it)->LibName(), item2.m_strPath);
-      item2.m_bIsFolder = false;
-      item2.SetCachedProgramThumb();
-      if (!item2.HasThumbnail())
-        item2.SetUserProgramThumb();
-      if (!item2.HasThumbnail())
-        item2.SetThumbnailImage((*it)->Icon());
-      if (item2.HasThumbnail())
-      {
-        XFILE::CFile::Cache(item2.GetThumbnailImage(),newItem->GetCachedProgramThumb());
-        newItem->SetThumbnailImage(newItem->GetCachedProgramThumb());
-      }
-    }
-    items.Add(newItem);
-  }
-
-  return true;
 }
 
 bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName)
