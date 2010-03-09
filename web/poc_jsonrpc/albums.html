@@ -1,12 +1,29 @@
 <html>
 <head>
 <title>XBMC - Albums</title> 
-<link type="text/css" rel="stylesheet" href="basic.css">
-<script type="text/javascript" src="json.js"> // FOR browsers which doesn't have it included
-</script>
+<link type="text/css" rel="stylesheet" href="basic.css" />
+<script type="text/javascript" src="json.js" />
 </head>
 <body>
-<h1><a href="nowplaying.html">Now playing</a>   <a href="movies.html">Movies</a>   <a href="tvshows.html">TV Shows</a>   Albums    <a href="development.html">Development</a></h1>
+<table class="Navigation">
+<tr class="primary">
+  <td class="unselected"><a href="nowplaying.html">Now playing</a></td>
+  <td class="unselected"><a href="movies.html">Videos</a></td>
+  <td class="selected">Music</td>
+  <td class="unselected"><a href="development.html">Development</a></td>
+</tr>
+<tr>
+  <td></td><td></td><td>
+  <table>
+  <tr class="secondary">
+    <td><a href="musicfiles.html">Music files</a></td>
+    <td><a href="artists.html">Artists</a></td>
+    <td>Albums</td>
+  </tr>
+  </table></td>
+</tr>
+</table>
+<br />
 
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();

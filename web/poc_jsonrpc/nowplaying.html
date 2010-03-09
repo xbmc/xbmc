@@ -1,9 +1,8 @@
 <html>
 <head>
 <title>XBMC - Now playing</title>
-<link type="text/css" rel="stylesheet" href="basic.css">
-<script type="text/javascript" src="json.js"> // FOR browsers which doesn't have it included
-</script>
+<link type="text/css" rel="stylesheet" href="basic.css" />
+<script type="text/javascript" src="json.js" />
 <script type="text/javascript">
 function CallMethod(method)
 {
@@ -21,7 +20,15 @@ function refresh()
 
 </head>
 <body>
-<h1>Now playing   <a href="movies.html">Movies</a>   <a href="tvshows.html">TV Shows</a>   <a href="albums.html">Albums</a>    <a href="development.html">Development</a></h1>
+<table class="Navigation">
+<tr class="primary">
+  <td class="selected"><a href="nowplaying.html">Now playing</a></td>
+  <td class="unselected"><a href="movies.html">Videos</a></td>
+  <td class="unselected"><a href="artists.html">Music</a></td>
+  <td class="unselected"><a href="development.html">Development</a></td>
+</tr>
+</table>
+<br />
 
 <script type="text/javascript">
 setTimeout( "refresh()", 5*1000 );
@@ -50,24 +57,16 @@ if (activeItem >= 0) {
   document.write("<br></br>");
 
   document.write("<table class=\"Playlist\"><tbody>");
-  var odd = false;
-  var i = 0;
-  for (var property in array) {
-    var item = array[property];
-    var row = "even";
-    if (odd)
-      row = "odd";
+  for (var i in array) {
+    var item = array[i];
 
-    document.write("<tr class=\"" + row + "\">");
+    document.write("<tr class=\"" + (i % 2 == 0 ? "even" : "odd") + "\">");
     document.write("<td class=\"label\">" + item["label"] + "</td>");
     if (i == activeItem)
       document.write("<td class=\"playing\"><img src=\"images/play.png\" height=16></img></td>");
     else
       document.write("<td class=\"playing\"></td>");
     document.write("</tr>");
-
-    odd = !odd;
-    i++;
   }
   document.write("</tbody></table>");
 } else {

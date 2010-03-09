@@ -1,53 +1,45 @@
 <html>
 <head>
-<link type="text/css" rel="stylesheet" href="basic.css">
-<script type="text/javascript" src="json.js"> // FOR browsers which doesn't have it included
-</script>
-<script type="text/javascript">
-function PrintSeasons(tvshowid)
-{
-  document.close();
-  document.open();
-  document.write("<html><head><title>XBMC - Test</title><link type=\"text/css\" rel=\"stylesheet\" href=\"basic.css\"></head><body>");
-
-  var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
-  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetSeasons\", \"params\": { \"tvshowid\": " + tvshowid + ", \"fields\": [\"title\"] }, \"id\": 1}");
-
-  var the_object = JSON.parse(http_request.responseText);
-  var result = the_object["result"];
-  var array = result["seasons"];
-  for (var property in array) {
-    var item = array[property];
-    document.write("<h1>" + item["title"] + "</h1>");
-    document.write("<img src=thumb/" + (item["thumbnail"] ? item["thumbnail"] : "images/nocover.jpg") + ".jpg width=100></img>");
-    document.write("<br>");
-  }
-
-  document.write("</body></html>");
-}
-function PrintTVShows()
-{
-  document.write("<html><head><title>XBMC - TV Shows</title><link type=\"text/css\" rel=\"stylesheet\" href=\"basic.css\"></head><body><h1><a href=\"nowplaying.html\">Now playing</a>   <a href=\"movies.html\">Movies</a>   TV Shows   <a href=\"albums.html\">Albums</a>    <a href=\"development.html\">Development</a></h1>");
-
-  var http_request = new XMLHttpRequest();
-  http_request.open( "POST", "jsonrpc", false );
-  var send = { "jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "id": 1 }
-  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetTVShows\", \"params\": { \"fields\": [\"title\"] }, \"id\": 1}");
-
-  var the_object = JSON.parse(http_request.responseText);
-  var result = the_object["result"];
-  var array = result["tvshows"];
-  for (var property in array) {
-    var item = array[property];
-    document.write("<img src=thumb/" + (item["thumbnail"] ? item["thumbnail"] : "images/nocover.jpg") + ".jpg onclick=\"PrintSeasons(" + item["tvshowid"] + ")\"></img>");
-    document.write("<br>");
-  }
-}
-</script>
+<link type="text/css" rel="stylesheet" href="basic.css" />
+<script type="text/javascript" src="json.js" />
 </head>
-<body onload="PrintTVShows()">
+<body>
+<table class="Navigation">
+<tr class="primary">
+  <td class="unselected"><a href="nowplaying.html">Now playing</a></td>
+  <td class="selected">Videos</td>
+  <td class="unselected"><a href="artists.html">Music</a></td>
+  <td class="unselected"><a href="development.html">Development</a></td>
+</tr>
+<tr>
+  <td></td><td>
+  <table>
+  <tr class="secondary">
+    <td><a href="videofiles.html">Video files</a></td>
+    <td><a href="movies.html">Movies</a></td>
+    <td>TV Shows</td>
+  </tr>
+  </table></td>
+</tr>
+</table>
+<br />
 
+<script type="text/javascript">
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+var send = { "jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "id": 1 }
+http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetTVShows\", \"id\": 1}");
 
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+var array = result["tvshows"];
+for (var property in array) {
+  var item = array[property];
+  document.write("<a href=\"tvshowseasons.html?tvshowid=" + item["tvshowid"] + "\">");
+  document.write("<img src=\"" + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/nocover.jpg") + "\"></img>");
+  document.write("</a>");
+  document.write("<br>");
+}
+</script>
 </body>
 </html>

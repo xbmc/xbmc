@@ -1,0 +1,60 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="basic.css" />
+<script type="text/javascript" src="json.js" />
+<script type="text/javascript" src="help.js" />
+</head>
+<body>
+<table class="Navigation">
+<tr class="primary">
+  <td class="unselected"><a href="nowplaying.html">Now playing</a></td>
+  <td class="selected">Videos</td>
+  <td class="unselected"><a href="artists.html">Music</a></td>
+  <td class="unselected"><a href="development.html">Development</a></td>
+</tr>
+<tr>
+  <td></td><td>
+  <table>
+  <tr class="secondary">
+    <td><a href="videofiles.html">Video files</a></td>
+    <td><a href="movies.html">Movies</a></td>
+    <td>TV Shows</td>
+  </tr>
+  </table></td>
+</tr>
+</table>
+<br />
+
+<script type="text/javascript">
+var tvshowid = gup("tvshowid");
+var season   = gup("season");
+
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetEpisodes\", \"params\": { \"tvshowid\": " + tvshowid + ", \"season\": " + season + ", \"fields\": [\"plot\"] }, \"id\": 1}");
+
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+if (result) {
+  var array = result["episodes"];
+
+  document.write("<table class=\"Episodes\"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>");
+  for (var i in array) {
+    var item = array[i];
+    document.write("<tr class=\"" + (i % 2 == 0 ? "even" : "odd") + "\"><td class=\"cover\">");
+    document.write("<img src=\"" + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/nocover.jpg") + "\" class=\"cover\" alt=\"" + item["label"] + "\"></img>");
+    document.write("</td><td class=\"info\">");
+
+    document.write("<h1>" + item["label"] + "</h1>");
+    if (item["plot"])
+      document.write(item["plot"]);
+
+    document.write("</td></tr>");
+  }
+  document("</tbody></table>");
+} else {
+  document.write("Error");
+}
+</script>
+</body>
+</html>
