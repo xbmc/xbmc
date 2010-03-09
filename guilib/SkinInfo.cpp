@@ -39,7 +39,7 @@ CSkinInfo g_SkinInfo; // global
 
 CSkinInfo::CSkinInfo()
 {
-  m_DefaultResolution = RES_INVALID;
+  m_DefaultResolution = RES_PAL_4x3;
   m_DefaultResolutionWide = RES_INVALID;
   m_strBaseDir = "";
   m_iNumCreditLines = 0;
@@ -55,7 +55,7 @@ CSkinInfo::~CSkinInfo()
 void CSkinInfo::Load(const CStdString& strSkinDir)
 {
   m_strBaseDir = strSkinDir;
-  m_DefaultResolution = RES_INVALID;  // set to INVALID to denote that there is no default res here
+  m_DefaultResolution = RES_PAL_4x3;
   m_DefaultResolutionWide = RES_INVALID;
   m_effectsSlowDown = 1.0;
   // Load from skin.xml
@@ -209,7 +209,7 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
   return false;
 }
 
-CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */)
+CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */) const
 {
   CStdString strPathToUse = m_strBaseDir;
   if (!strBaseDir.IsEmpty())
@@ -267,13 +267,13 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   return strPath;
 }
 
-bool CSkinInfo::HasSkinFile(const CStdString &strFile)
+bool CSkinInfo::HasSkinFile(const CStdString &strFile) const
 {
   RESOLUTION res = RES_INVALID;
   return CFile::Exists(GetSkinPath(strFile, &res));
 }
 
-CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
+CStdString CSkinInfo::GetDirFromRes(RESOLUTION res) const
 {
   CStdString strRes;
   switch (res)
@@ -306,17 +306,9 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
   return strRes;
 }
 
-CStdString CSkinInfo::GetBaseDir()
+CStdString CSkinInfo::GetBaseDir() const
 {
   return m_strBaseDir;
-}
-
-wchar_t* CSkinInfo::GetCreditsLine(int i)
-{
-  if (i < m_iNumCreditLines)
-    return credits[i];
-  else
-    return NULL;
 }
 
 double CSkinInfo::GetMinVersion()
@@ -338,12 +330,12 @@ void CSkinInfo::ResolveIncludes(TiXmlElement *node, const CStdString &type)
   m_includes.ResolveIncludes(node, type);
 }
 
-bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value)
+bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value) const
 {
   return m_includes.ResolveConstant(constant, value);
 }
 
-bool CSkinInfo::ResolveConstant(const CStdString &constant, unsigned int &value)
+bool CSkinInfo::ResolveConstant(const CStdString &constant, unsigned int &value) const
 {
   float fValue;
   if (m_includes.ResolveConstant(constant, fValue))
@@ -354,11 +346,11 @@ bool CSkinInfo::ResolveConstant(const CStdString &constant, unsigned int &value)
   return false;
 }
 
-int CSkinInfo::GetStartWindow()
+int CSkinInfo::GetStartWindow() const
 {
   int windowID = g_guiSettings.GetInt("lookandfeel.startupwindow");
   assert(m_startupWindows.size());
-  for (vector<CStartupWindow>::iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); it++)
+  for (vector<CStartupWindow>::const_iterator it = m_startupWindows.begin(); it != m_startupWindows.end(); it++)
   {
     if (windowID == (*it).m_id)
       return windowID;
@@ -400,8 +392,16 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
     m_onlyAnimateToHome = false;
   return true;
 }
-void CSkinInfo::SetDefaults()
+
+void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
 {
-  m_DefaultResolution = RES_PAL_4x3;
-  m_DefaultResolutionWide = RES_PAL_16x9;
+  RESOLUTION resToUse = RES_INVALID;
+  GetSkinPath("Home.xml", &resToUse);
+  if (resToUse == RES_HDTV_1080i)
+    paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(RES_HDTV_1080i)));
+  if (resToUse == RES_HDTV_720p)
+    paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(RES_HDTV_720p)));
+  if (resToUse == RES_PAL_16x9 || resToUse == RES_NTSC_16x9 || resToUse == RES_HDTV_480p_16x9 || resToUse == RES_HDTV_720p || resToUse == RES_HDTV_1080i)
+    paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolutionWide)));
+  paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolution)));
 }

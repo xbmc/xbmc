@@ -118,7 +118,7 @@ public:
   void RestartApp();
   void LoadSkin(const CStdString& strSkin);
   void UnloadSkin();
-  bool LoadUserWindows(const CStdString& strSkinPath);
+  bool LoadUserWindows();
   void DelayLoadSkin();
   void CancelDelayLoadSkin();
   void ReloadSkin();
