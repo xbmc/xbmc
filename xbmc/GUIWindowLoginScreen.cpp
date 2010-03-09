@@ -276,7 +276,7 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
   return m_vecItems->Get(item);
 }
 
-void CGUIWindowLoginScreen::LoadProfile(int profile)
+void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
   if (profile != 0 || !g_settings.IsMasterUser())
   {

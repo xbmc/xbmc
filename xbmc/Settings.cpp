@@ -118,8 +118,6 @@ void CSettings::Initialize()
     m_logFolder = "special://home/";              // log file location
   #endif
 
-  m_iLastLoadedProfileIndex = 0;
-
   // defaults for scanning
   m_bMyMusicIsScanning = false;
 
@@ -134,6 +132,8 @@ void CSettings::Initialize()
   m_userAgent = g_sysinfo.GetUserAgent();
 
   m_usingLoginScreen = false;
+  m_lastUsedProfile = 0;
+  m_currentProfile = 0;
 }
 
 CSettings::~CSettings(void)
@@ -888,10 +888,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   return xmlDoc.SaveFile(strSettingsFile);
 }
 
-bool CSettings::LoadProfile(int index)
+bool CSettings::LoadProfile(unsigned int index)
 {
-  int iOldIndex = m_iLastLoadedProfileIndex;
-  m_iLastLoadedProfileIndex = index;
+  unsigned int oldProfile = m_currentProfile;
+  m_currentProfile = index;
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
@@ -924,7 +924,7 @@ bool CSettings::LoadProfile(int index)
     // always reload the skin - we need it for the new language strings
     g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
 
-    if (m_iLastLoadedProfileIndex != 0)
+    if (m_currentProfile != 0)
     {
       TiXmlDocument doc;
       if (doc.LoadFile(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
@@ -947,12 +947,12 @@ bool CSettings::LoadProfile(int index)
     return true;
   }
 
-  m_iLastLoadedProfileIndex = iOldIndex;
+  m_currentProfile = oldProfile;
 
   return false;
 }
 
-bool CSettings::DeleteProfile(int index)
+bool CSettings::DeleteProfile(unsigned int index)
 {
   const CProfile *profile = GetProfile(index);
   if (!profile)
@@ -975,7 +975,7 @@ bool CSettings::DeleteProfile(int index)
       //delete profile
       CStdString strDirectory = profile->getDirectory();
       m_vecProfiles.erase(m_vecProfiles.begin()+index);
-      if (index == m_iLastLoadedProfileIndex)
+      if (index == m_currentProfile)
       {
         LoadProfile(0);
         Save();
@@ -996,7 +996,7 @@ bool CSettings::DeleteProfile(int index)
   return true;
 }
 
-bool CSettings::SaveSettingsToProfile(int index)
+bool CSettings::SaveSettingsToProfile(unsigned int index)
 {
   /*CProfile& profile = m_vecProfiles.at(index);
   return SaveSettings(profile.getFileName(), false);*/
@@ -1017,7 +1017,7 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
       TiXmlElement *rootElement = profilesDoc.RootElement();
       if (rootElement && strcmpi(rootElement->Value(),"profiles") == 0)
       {
-        GetInteger(rootElement, "lastloaded", m_iLastUsedProfileIndex, 0, 0, 1000);
+        XMLUtils::GetUInt(rootElement, "lastloaded", m_lastUsedProfile);
         XMLUtils::GetBoolean(rootElement, "useloginscreen", m_usingLoginScreen);
 
         TiXmlElement* pProfile = rootElement->FirstChildElement("profile");
@@ -1124,15 +1124,15 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
   }
 
   // check the validity of the previous profile index
-  if (m_iLastUsedProfileIndex >= m_vecProfiles.size() || m_iLastUsedProfileIndex < 0)
-    m_iLastUsedProfileIndex = 0;
+  if (m_lastUsedProfile >= m_vecProfiles.size())
+    m_lastUsedProfile = 0;
 
-  m_iLastLoadedProfileIndex = m_iLastUsedProfileIndex;
+  m_currentProfile = m_lastUsedProfile;
 
   // the login screen runs as the master profile, so if we're using this, we need to ensure
   // we switch to the master profile
   if (m_usingLoginScreen)
-    m_iLastLoadedProfileIndex = 0;
+    m_currentProfile = 0;
 }
 
 bool CSettings::SaveProfiles(const CStdString& profilesFile) const
@@ -1141,7 +1141,7 @@ bool CSettings::SaveProfiles(const CStdString& profilesFile) const
   TiXmlElement xmlRootElement("profiles");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
-  XMLUtils::SetInt(pRoot,"lastloaded",m_iLastLoadedProfileIndex);
+  XMLUtils::SetInt(pRoot,"lastloaded", m_currentProfile);
   XMLUtils::SetBoolean(pRoot,"useloginscreen",m_usingLoginScreen);
   for (unsigned int iProfile=0;iProfile<GetNumProfiles();++iProfile)
   {
@@ -1664,7 +1664,7 @@ void CSettings::LoadUserFolderLayout()
 CStdString CSettings::GetProfileUserDataFolder() const
 {
   CStdString folder;
-  if (m_iLastLoadedProfileIndex == 0)
+  if (m_currentProfile == 0)
     return GetUserDataFolder();
 
   CUtil::AddFileToFolder(GetUserDataFolder(),GetCurrentProfile().getDirectory(),folder);
@@ -1944,7 +1944,7 @@ void CSettings::LoadRSSFeeds()
 CStdString CSettings::GetSettingsFile() const
 {
   CStdString settings;
-  if (m_iLastLoadedProfileIndex == 0)
+  if (m_currentProfile == 0)
     settings = "special://masterprofile/guisettings.xml";
   else
     settings = "special://profile/guisettings.xml";
@@ -1992,16 +1992,16 @@ const CProfile &CSettings::GetMasterProfile() const
 
 const CProfile &CSettings::GetCurrentProfile() const
 {
-  if (m_iLastLoadedProfileIndex >= 0 && m_iLastLoadedProfileIndex < (int)GetNumProfiles())
-    return m_vecProfiles[m_iLastLoadedProfileIndex];
-  CLog::Log(LOGERROR, "%s - last profile index (%i) is outside the valid range (%u)", __FUNCTION__, m_iLastLoadedProfileIndex, GetNumProfiles());
+  if (m_currentProfile < m_vecProfiles.size())
+    return m_vecProfiles[m_currentProfile];
+  CLog::Log(LOGERROR, "%s - last profile index (%u) is outside the valid range (%u)", __FUNCTION__, m_currentProfile, m_vecProfiles.size());
   return emptyProfile;
 }
 
 void CSettings::UpdateCurrentProfileDate()
 {
-  if (m_iLastLoadedProfileIndex >= 0 && m_iLastLoadedProfileIndex < (int)GetNumProfiles())
-    m_vecProfiles[m_iLastLoadedProfileIndex].setDate();
+  if (m_currentProfile < m_vecProfiles.size())
+    m_vecProfiles[m_currentProfile].setDate();
 }
 
 const CProfile *CSettings::GetProfile(unsigned int index) const
@@ -2039,7 +2039,7 @@ void CSettings::AddProfile(const CProfile &profile)
 void CSettings::LoadMasterForLogin()
 {
   // save the previous user
-  m_iLastUsedProfileIndex = m_iLastLoadedProfileIndex;
-  if (m_iLastLoadedProfileIndex != 0)
+  m_lastUsedProfile = m_currentProfile;
+  if (m_currentProfile != 0)
     LoadProfile(0);
 }
