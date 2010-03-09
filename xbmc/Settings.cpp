@@ -1017,7 +1017,7 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
       TiXmlElement *rootElement = profilesDoc.RootElement();
       if (rootElement && strcmpi(rootElement->Value(),"profiles") == 0)
       {
-        GetInteger(rootElement, "lastloaded", m_iLastLoadedProfileIndex, 0, 0, 1000);
+        GetInteger(rootElement, "lastloaded", m_iLastUsedProfileIndex, 0, 0, 1000);
         XMLUtils::GetBoolean(rootElement, "useloginscreen", m_usingLoginScreen);
 
         TiXmlElement* pProfile = rootElement->FirstChildElement("profile");
@@ -1123,11 +1123,11 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
     m_vecProfiles.push_back(profile);
   }
 
-  // check the validity of the profile index
-  if (m_iLastLoadedProfileIndex >= m_vecProfiles.size() || m_iLastLoadedProfileIndex < 0)
-    m_iLastLoadedProfileIndex = 0;
+  // check the validity of the previous profile index
+  if (m_iLastUsedProfileIndex >= m_vecProfiles.size() || m_iLastUsedProfileIndex < 0)
+    m_iLastUsedProfileIndex = 0;
 
-  m_iLastUsedProfileIndex = m_iLastLoadedProfileIndex;
+  m_iLastLoadedProfileIndex = m_iLastUsedProfileIndex;
 
   // the login screen runs as the master profile, so if we're using this, we need to ensure
   // we switch to the master profile
