@@ -257,9 +257,8 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("loadprofile") && g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
   {
-    // TODO: PROFILE We shouldn't be accessing indices like this
     int index = g_settings.GetProfileIndex(parameter);
-    if (index < 0)
+    if (index >= 0)
       CGUIWindowLoginScreen::LoadProfile(index);
   }
   else if (execute.Equals("mastermode"))
