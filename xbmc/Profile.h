@@ -30,6 +30,25 @@ class TiXmlNode;
 class CProfile
 {
 public:
+  /*! \brief Class for handling lock status
+   */
+  class CLock
+  {
+  public:
+    CLock(LockType type = LOCK_MODE_EVERYONE, const CStdString &password = "");
+    void Validate();
+
+    LockType mode;
+    CStdString code;
+    bool addonManager;
+    bool settings;
+    bool music;
+    bool video;
+    bool files;
+    bool pictures;
+    bool programs;
+  };
+
   CProfile(const CStdString &directory = "", const CStdString &name = "");
   ~CProfile(void);
   
@@ -40,41 +59,33 @@ public:
   const CStdString& getName() const { return _name;}
   const CStdString& getDirectory() const { return _directory;}
   const CStdString& getThumb() const { return _thumb;}
-  const CStdString& getLockCode() const { return _strLockCode;}
-  LockType getLockMode() const { return _iLockMode; }
+  const CStdString& getLockCode() const { return m_locks.code;}
+  LockType getLockMode() const { return m_locks.mode; }
 
   bool hasDatabases() const { return _bDatabases; }
   bool canWriteDatabases() const { return _bCanWrite; }
   bool hasSources() const { return _bSources; }
   bool canWriteSources() const { return _bCanWriteSources; }
   bool hasAddons() const { return _bAddons; }
-  bool settingsLocked() const { return _bLockSettings; }
-  bool addonmanagerLocked() const { return _bLockAddonManager; }
-  bool musicLocked() const { return _bLockMusic; }
-  bool videoLocked() const { return _bLockVideo; }
-  bool picturesLocked() const { return _bLockPictures; }
-  bool filesLocked() const { return _bLockFiles; }
-  bool programsLocked() const { return _bLockPrograms; }
+  bool settingsLocked() const { return m_locks.settings; }
+  bool addonmanagerLocked() const { return m_locks.addonManager; }
+  bool musicLocked() const { return m_locks.music; }
+  bool videoLocked() const { return m_locks.video; }
+  bool picturesLocked() const { return m_locks.pictures; }
+  bool filesLocked() const { return m_locks.files; }
+  bool programsLocked() const { return m_locks.programs; }
+  const CLock &GetLocks() const { return m_locks; }
 
   void setName(const CStdString& name) {_name = name;}
   void setDirectory(const CStdString& directory) {_directory = directory;}
   void setDate(const CStdString& strDate) { _date = strDate;}
   void setDate();
-  void setLockMode(LockType iLockMode) { _iLockMode = iLockMode;}
-  void setLockCode(const CStdString& strLockCode) { _strLockCode = strLockCode; }
   void setThumb(const CStdString& thumb) {_thumb = thumb;}
   void setDatabases(bool bHas) { _bDatabases = bHas; }
   void setWriteDatabases(bool bCan) { _bCanWrite = bCan; }
   void setSources(bool bHas) { _bSources = bHas; }
   void setWriteSources(bool bCan) { _bCanWriteSources = bCan; }
-
-  void setAddonManagerLocked(bool bLocked) { _bLockAddonManager = bLocked; }
-  void setSettingsLocked(bool bLocked) { _bLockSettings = bLocked; }
-  void setFilesLocked(bool bLocked) { _bLockFiles = bLocked; }
-  void setMusicLocked(bool bLocked) { _bLockMusic = bLocked; }
-  void setVideoLocked(bool bLocked) { _bLockVideo = bLocked; }
-  void setPicturesLocked(bool bLocked) { _bLockPictures = bLocked; }
-  void setProgramsLocked(bool bLocked) { _bLockPrograms = bLocked; }
+  void SetLocks(const CLock &locks);
 
 private:
   CStdString _directory;
@@ -86,16 +97,5 @@ private:
   bool _bSources;
   bool _bCanWriteSources;
   bool _bAddons;
-
-public:
-  // lock stuff
-  LockType _iLockMode;
-  CStdString _strLockCode;
-  bool _bLockAddonManager;
-  bool _bLockSettings;
-  bool _bLockMusic;
-  bool _bLockVideo;
-  bool _bLockFiles;
-  bool _bLockPictures;
-  bool _bLockPrograms;
+  CLock m_locks;
 };

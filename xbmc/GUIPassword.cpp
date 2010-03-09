@@ -175,18 +175,17 @@ bool CGUIPassword::CheckStartUpLock()
 
 bool CGUIPassword::SetMasterLockMode(bool bDetails)
 {
-  CGUIDialogLockSettings* pDialog = (CGUIDialogLockSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
-  if (pDialog)
+  CProfile* profile = g_settings.GetProfile(0);
+  if (profile)
   {
-    // TODO: PROFILE - pass the profile itself in, and have a setter method on success
-    CProfile* profile = g_settings.GetProfile(0);
-    if (profile && pDialog->ShowAndGetLock(profile->_iLockMode,profile->_strLockCode,profile->_bLockMusic,profile->_bLockVideo,profile->_bLockPictures,profile->_bLockPrograms,profile->_bLockFiles,profile->_bLockSettings,profile->_bLockAddonManager,12360,true,bDetails))
+    CProfile::CLock locks = profile->GetLocks();
+    if (CGUIDialogLockSettings::ShowAndGetLock(locks, 12360, true, bDetails))
+    {
+      profile->SetLocks(locks);
       return true;
-
-    return false;
+    }
   }
-
-  return true;
+  return false;
 }
 
 bool CGUIPassword::IsProfileLockUnlocked(int iProfile)

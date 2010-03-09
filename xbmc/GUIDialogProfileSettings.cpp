@@ -110,7 +110,7 @@ void CGUIDialogProfileSettings::CreateSettings()
 
   if (m_bShowDetails)
     AddButton(4,20066);
-  if (!m_bShowDetails && m_iLockMode == LOCK_MODE_EVERYONE && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+  if (!m_bShowDetails && m_locks.mode == LOCK_MODE_EVERYONE && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     AddButton(4,20066);
 
   if (!m_bIsDefault && m_bShowDetails)
@@ -263,12 +263,12 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
         if (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
           return;
       }
-      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bLockAddOnManager,m_bIsDefault?12360:20068,g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || m_bIsDefault))
+      if (CGUIDialogLockSettings::ShowAndGetLock(m_locks, m_bIsDefault ? 12360 : 20068, g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || m_bIsDefault))
         m_bNeedSave = true;
     }
     else
     {
-      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bIsDefault?12360:20068))
+      if (CGUIDialogLockSettings::ShowAndGetLock(m_locks, m_bIsDefault ? 12360 : 20068, false, false))
         m_bNeedSave = true;
     }
   }
@@ -296,21 +296,15 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
 
   const CProfile *profile = g_settings.GetProfile(iProfile);
 
-  // TODO: PROFILE - should just have the dialog take a CProfile
   if (!profile)
   { // defaults
     dialog->m_strName.Empty();
     dialog->m_iDbMode = 2;
-    dialog->m_iLockMode = LOCK_MODE_EVERYONE;
     dialog->m_iSourcesMode = 2;
-    dialog->m_bLockAddOnManager = true;
-    dialog->m_bLockSettings = true;
-    dialog->m_bLockMusic = false;
-    dialog->m_bLockVideo = false;
-    dialog->m_bLockFiles = true;
-    dialog->m_bLockPictures = false;
-    dialog->m_bLockPrograms = false;
-
+    dialog->m_locks = CProfile::CLock();
+    dialog->m_locks.addonManager = true;
+    dialog->m_locks.settings = true;
+    dialog->m_locks.files = true;
     dialog->m_strDirectory.Empty();
     dialog->m_strThumb.Empty();
     dialog->m_strName = "";
@@ -328,15 +322,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     if (profile->hasSources())
       dialog->m_iSourcesMode += 2;
 
-    dialog->m_iLockMode = profile->getLockMode();
-    dialog->m_strLockCode = profile->getLockCode();
-    dialog->m_bLockFiles = profile->filesLocked();
-    dialog->m_bLockMusic = profile->musicLocked();
-    dialog->m_bLockVideo = profile->videoLocked();
-    dialog->m_bLockPrograms = profile->programsLocked();
-    dialog->m_bLockPictures = profile->picturesLocked();
-    dialog->m_bLockSettings = profile->settingsLocked();
-    dialog->m_bLockAddOnManager = profile->addonmanagerLocked();
+    dialog->m_locks = profile->GetLocks();
+    
     dialog->m_bIsNewUser = false;
   }
   dialog->DoModal();
@@ -408,7 +395,6 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
       if (!CGUIDialogYesNo::ShowAndGetInput(20067,20103,20022,20022))
         return false;*/
 
-    // TODO: PROFILE - mayaswell fetch a profile from the dialog
     CProfile *profile = g_settings.GetProfile(iProfile);
     assert(profile);
     profile->setName(dialog->m_strName);
@@ -418,22 +404,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     profile->setWriteSources(!((dialog->m_iSourcesMode & 1) == 1));
     profile->setDatabases((dialog->m_iDbMode & 2) == 2);
     profile->setSources((dialog->m_iSourcesMode & 2) == 2);
-    if (dialog->m_strLockCode == "-")
-      profile->setLockMode(LOCK_MODE_EVERYONE);
-    else
-      profile->setLockMode(dialog->m_iLockMode);
-    if (dialog->m_iLockMode == LOCK_MODE_EVERYONE)
-      profile->setLockCode("-");
-    else
-      profile->setLockCode(dialog->m_strLockCode);
-    profile->setMusicLocked(dialog->m_bLockMusic);
-    profile->setVideoLocked(dialog->m_bLockVideo);
-    profile->setSettingsLocked(dialog->m_bLockSettings);
-    profile->setAddonManagerLocked(dialog->m_bLockAddOnManager);
-    profile->setFilesLocked(dialog->m_bLockFiles);
-    profile->setPicturesLocked(dialog->m_bLockPictures);
-    profile->setProgramsLocked(dialog->m_bLockPrograms);
-
+    profile->SetLocks(dialog->m_locks);
+    
     g_settings.SaveProfiles(PROFILES_FILE);
     return true;
   }
