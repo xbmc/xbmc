@@ -25,11 +25,16 @@
 
 #include <vector>
 
+class TiXmlNode;
+
 class CProfile
 {
 public:
   CProfile(const CStdString &directory = "", const CStdString &name = "");
   ~CProfile(void);
+  
+  void Load(const TiXmlNode *node);
+  void Save(TiXmlNode *root) const;
 
   const CStdString& getDate() const { return _date;}
   const CStdString& getName() const { return _name;}
