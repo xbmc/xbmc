@@ -24,7 +24,6 @@
 #include "ButtonTranslator.h"
 #include "Util.h"
 #include "Settings.h"
-#include "SkinInfo.h"
 #include "Key.h"
 #include "File.h"
 #include "Directory.h"
@@ -887,8 +886,8 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videoosd")) windowID = WINDOW_OSD;
   else if (strWindow.Equals("videomenu")) windowID = WINDOW_VIDEO_MENU;
   else if (strWindow.Equals("filebrowser")) windowID = WINDOW_DIALOG_FILE_BROWSER;
-  else if (strWindow.Equals("startup")) windowID = WINDOW_STARTUP;
-  else if (strWindow.Equals("startwindow")) windowID = g_SkinInfo.GetStartWindow();
+  else if (strWindow.Equals("startup")) windowID = WINDOW_STARTUP_ANIM;
+  else if (strWindow.Equals("startwindow")) windowID = WINDOW_START;
   else if (strWindow.Equals("loginscreen")) windowID = WINDOW_LOGIN_SCREEN;
   else if (strWindow.Equals("musicoverlay")) windowID = WINDOW_MUSIC_OVERLAY;
   else if (strWindow.Equals("videooverlay")) windowID = WINDOW_VIDEO_OVERLAY;

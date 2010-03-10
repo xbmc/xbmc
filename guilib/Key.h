@@ -380,7 +380,8 @@
 #define WINDOW_MUSIC_OVERLAY              12903
 #define WINDOW_VIDEO_OVERLAY              12904
 
-#define WINDOW_STARTUP                    12999 // for startup animations
+#define WINDOW_START                      12998 // first window to load
+#define WINDOW_STARTUP_ANIM               12999 // for startup animations
 
 // WINDOW_ID's from 13000 to 13099 reserved for Python
 

@@ -3032,7 +3032,7 @@ bool CApplication::Cleanup()
 
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
-    g_windowManager.Delete(WINDOW_STARTUP);
+    g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
     g_windowManager.Delete(WINDOW_VISUALISATION);
     g_windowManager.Delete(WINDOW_KARAOKELYRICS);

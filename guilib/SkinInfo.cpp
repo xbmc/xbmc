@@ -336,6 +336,6 @@ int CSkinInfo::GetFirstWindow() const
 {
   int startWindow = GetStartWindow();
   if (HasSkinFile("Startup.xml") && (!m_onlyAnimateToHome || startWindow == WINDOW_HOME))
-    startWindow = WINDOW_STARTUP;
+    startWindow = WINDOW_STARTUP_ANIM;
   return startWindow;
 }

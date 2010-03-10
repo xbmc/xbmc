@@ -23,7 +23,7 @@
 #include "Key.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)
-    : CGUIWindow(WINDOW_STARTUP, "Startup.xml")
+    : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")
 {
 }
 
