@@ -81,8 +81,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     }
     else if (node->Attribute("file"))
     { // load this file in as well
-      RESOLUTION res;
-      LoadIncludes(g_SkinInfo.GetSkinPath(node->Attribute("file"), &res));
+      LoadIncludes(g_SkinInfo.GetSkinPath(node->Attribute("file")));
     }
     node = node->NextSiblingElement("include");
   }
@@ -147,8 +146,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
     const char *file = include->Attribute("file");
     if (file)
     { // we need to load this include from the alternative file
-      RESOLUTION res;
-      LoadIncludes(g_SkinInfo.GetSkinPath(file, &res));
+      LoadIncludes(g_SkinInfo.GetSkinPath(file));
     }
     const char *condition = include->Attribute("condition");
     if (condition)

@@ -2250,8 +2250,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
   m_strNewSkinFontSet.Empty();
 
-  RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &res);
+  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml");
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))

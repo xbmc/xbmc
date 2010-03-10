@@ -298,8 +298,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;
 #endif
-  RESOLUTION res=RES_INVALID;
-  CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
+  CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml");
   int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
   // test for a startup window, and activate that instead of home
   if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))

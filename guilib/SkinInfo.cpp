@@ -98,9 +98,8 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
     CLog::Log(LOGERROR, "%s(%s) version is to old (%f versus %f)", __FUNCTION__, strSkinDir.c_str(), info.GetVersion(), GetMinVersion());
     return false;
   }
-  RESOLUTION res;
-  if (!CFile::Exists(info.GetSkinPath("Home.xml", &res))
-   || !CFile::Exists(info.GetSkinPath("Font.xml", &res)))
+  if (!CFile::Exists(info.GetSkinPath("Home.xml"))
+   || !CFile::Exists(info.GetSkinPath("Font.xml")))
   {
     CLog::Log(LOGERROR, "%s(%s) does not contain Home.xml or Font.xml", __FUNCTION__, strSkinDir.c_str());
     return false;
@@ -113,6 +112,12 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   CStdString strPathToUse = m_strBaseDir;
   if (!strBaseDir.IsEmpty())
     strPathToUse = strBaseDir;
+
+  // if the caller doesn't care about the resolution just use a temporary
+  RESOLUTION tempRes = RES_INVALID;
+  if (!res)
+    res = &tempRes;
+
   // first try and load from the current resolution's directory
   *res = g_graphicsContext.GetVideoResolution();
   if (*res >= RES_WINDOW)
@@ -168,8 +173,7 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
 
 bool CSkinInfo::HasSkinFile(const CStdString &strFile) const
 {
-  RESOLUTION res = RES_INVALID;
-  return CFile::Exists(GetSkinPath(strFile, &res));
+  return CFile::Exists(GetSkinPath(strFile));
 }
 
 CStdString CSkinInfo::GetDirFromRes(RESOLUTION res) const
@@ -217,8 +221,7 @@ double CSkinInfo::GetMinVersion()
 
 void CSkinInfo::LoadIncludes()
 {
-  RESOLUTION res;
-  CStdString includesPath = PTH_IC(GetSkinPath("includes.xml", &res));
+  CStdString includesPath = PTH_IC(GetSkinPath("includes.xml"));
   CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
   m_includes.ClearIncludes();
   m_includes.LoadIncludes(includesPath);

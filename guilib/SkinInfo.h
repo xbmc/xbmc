@@ -52,7 +52,15 @@ public:
   void Load(const CStdString& skinDir, bool loadIncludes = true);
 
   bool HasSkinFile(const CStdString &strFile) const;
-  CStdString GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir="") const;  // retrieve the best skin file for the resolution we are in - res will be made the resolution we are loading from
+
+  /*! \brief Get the full path to the specified file in the skin
+   We search for XML files in the skin folder that best matches the current resolution.
+   \param file XML file to look for
+   \param res [out] If non-NULL, the resolution that the returned XML file is in is returned.  Defaults to NULL.
+   \param baseDir [in] If non-empty, the given directory is searched instead of the skin's directory.  Defaults to empty.
+   \return path to the XML file
+   */
+  CStdString GetSkinPath(const CStdString& file, RESOLUTION *res = NULL, const CStdString& baseDir = "") const;
 
   CStdString GetBaseDir() const;
   double GetVersion() const { return m_Version; };
