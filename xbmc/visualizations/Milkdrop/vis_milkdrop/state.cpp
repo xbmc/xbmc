@@ -1101,7 +1101,7 @@ void CState::Import(char *szSectionName, char *szIniFile)
 	// extract a description of the preset from the filename
 	{
 		// copy get the filename (without the path)
-		char *p = strrchr(szIniFile, '\\');
+		char *p = strrchr(szIniFile, '/');
 		if (p==NULL) p = szIniFile;
 		strcpy(m_szDesc, p+1);		
 
