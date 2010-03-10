@@ -76,8 +76,6 @@ public:
 
   bool OnlyAnimateToHome() const { return m_onlyAnimateToHome; };
 
-  inline float GetSkinZoom() const { return m_skinzoom; };
-
   /*! \brief Retrieve the skin paths to search for skin XML files
    \param paths [out] vector of paths to search, in order.
    */
@@ -113,8 +111,6 @@ protected:
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_onlyAnimateToHome;
-
-  float m_skinzoom;
 };
 
 extern CSkinInfo g_SkinInfo;

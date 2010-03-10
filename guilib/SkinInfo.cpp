@@ -45,7 +45,6 @@ CSkinInfo::CSkinInfo()
   m_effectsSlowDown = 1.0f;
   m_onlyAnimateToHome = true;
   m_Version = 1.0;
-  m_skinzoom = 1.0f;
 }
 
 CSkinInfo::~CSkinInfo()
@@ -57,7 +56,6 @@ void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
   m_DefaultResolution = RES_PAL_4x3;
   m_DefaultResolutionWide = RES_INVALID;
   m_effectsSlowDown = 1.0f;
-  m_skinzoom = 1.0f;
   m_Version = 1.0;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
@@ -76,7 +74,6 @@ void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
 
       XMLUtils::GetDouble(root, "version", m_Version);
       XMLUtils::GetFloat(root, "effectsslowdown", m_effectsSlowDown);
-      XMLUtils::GetFloat(root, "zoom", m_skinzoom);
 
       // now load the startupwindow information
       LoadStartupWindows(root->FirstChildElement("startupwindows"));
