@@ -41,6 +41,7 @@ class IDownloadQueueObserver
 {
 public:
   enum Result {Succeeded, Failed};
+  virtual ~IDownloadQueueObserver() {};
   virtual void OnContentComplete(TICKET aTicket, CStdString& aContentString, Result aResult){};
   virtual void OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult){};
 };
