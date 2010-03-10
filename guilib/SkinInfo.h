@@ -46,7 +46,7 @@ public:
   ~CSkinInfo();
 
   /*! \brief Load information regarding the skin from the given skin directory
-   \param skinDir name of the skin to load
+   \param skinDir folder of the skin to load
    \param loadIncludes whether the includes from the skin should also be loaded (defaults to true)
    */
   void Load(const CStdString& skinDir, bool loadIncludes = true);
