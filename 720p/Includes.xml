@@ -605,30 +605,17 @@
               <label>$LOCALIZE[563]</label>
               <include>MediaInfoCaption</include>
             </control>
-            <control type="label">
-              <description>Movies Value</description>
-              <info>ListItem.RatingAndVotes</info>
-              <visible>Container.content(movies)</visible>
-              <include>MediaInfoWideValue</include>
-            </control>
-            <control type="image">
-              <description>Star Rating</description>
-              <include>MoviesInfoStarRatingDims</include>
-              <include>StarRatingImage</include>
-              <visible>Container.content(movies)</visible>
-            </control>
-            <control type="label">
-              <description>Non-Movies Value</description>
-              <include>RatingLabel</include>
-              <visible>!Container.content(movies)</visible>
-              <include>MediaInfoWideValue</include>
-            </control>
-            <control type="image">
-              <description>Star Rating</description>
-              <include>NonMoviesInfoStarRatingDims</include>
-              <include>StarRatingImage</include>
-              <visible>!Container.content(movies)</visible>
-            </control>
+		        <control type="image">
+							<description>Star Rating</description>
+							<align>left</align>
+							<info>ListItem.StarRating</info>
+							<aspectratio>keep</aspectratio>
+							<width>100</width>
+							<height>18</height>
+							<posy>4</posy>
+							<posx>90</posx>
+							<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+		        </control>
           </control>
         </control>
       </control>

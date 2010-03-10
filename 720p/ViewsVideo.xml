@@ -564,7 +564,7 @@
             <description>Season</description>
             <font>MediumTitleCapsFont</font>
             <textcolor>Unfocused</textcolor>
-            <label>elan $INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
+            <label>$INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
           </control>
 
           <control type="textbox">
