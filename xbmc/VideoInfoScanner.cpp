@@ -198,6 +198,13 @@ namespace VIDEO
       m_pObserver->OnSetTitle(g_localizeStrings.Get(20415));
     }
 
+    if (!m_info)
+    {
+      ScraperPtr info;
+      m_database.GetScraperForPath(strDirectory,info);
+      SetScraperInfo(info);
+    }
+
     // load subfolder
     CFileItemList items;
     int iFound = 0;
