@@ -64,6 +64,18 @@ public:
 
   CStdString GetBaseDir() const;
   double GetVersion() const { return m_Version; };
+
+  /*! \brief Get the id of the first window to load
+   The first window is generally Startup.xml unless it doesn't exist or if the skinner
+   has specified which start windows they support and the user is going to somewhere other
+   than the home screen.
+   \return id of the first window to load
+   */
+  int GetFirstWindow() const;
+
+  /*! \brief Get the id of the window the user wants to start in after any skin animation
+   \return id of the start window
+   */
   int GetStartWindow() const;
 
   void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
@@ -73,8 +85,6 @@ public:
   float GetEffectsSlowdown() const { return m_effectsSlowDown; };
 
   const std::vector<CStartupWindow> &GetStartupWindows() const { return m_startupWindows; };
-
-  bool OnlyAnimateToHome() const { return m_onlyAnimateToHome; };
 
   /*! \brief Retrieve the skin paths to search for skin XML files
    \param paths [out] vector of paths to search, in order.

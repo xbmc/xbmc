@@ -1128,11 +1128,7 @@ bool CApplication::Initialize()
   }
   else
   {
-    // test for a startup window, and activate that instead of home
-    int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    if (g_SkinInfo.HasSkinFile("Startup.xml") && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-      startWindow = WINDOW_STARTUP;
-    g_windowManager.ActivateWindow(startWindow);
+    g_windowManager.ActivateWindow(g_SkinInfo.GetFirstWindow());
   }
 
 #ifdef HAS_PYTHON

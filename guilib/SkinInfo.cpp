@@ -331,3 +331,11 @@ bool CSkinInfo::GetResolution(const TiXmlNode *root, const char *tag, RESOLUTION
   }
   return false;
 }
+
+int CSkinInfo::GetFirstWindow() const
+{
+  int startWindow = GetStartWindow();
+  if (HasSkinFile("Startup.xml") && (!m_onlyAnimateToHome || startWindow == WINDOW_HOME))
+    startWindow = WINDOW_STARTUP;
+  return startWindow;
+}
