@@ -23,10 +23,12 @@
   iTunes Visualization Wrapper for XBMC
 */
 
-#include "xbmc_vis.h"
+
 #include <GL/glew.h>
 #include <string>
+
 #include "itunes_vis.h"
+#include "../../addons/include/xbmc_vis_dll.h"
 
 int g_tex_width     = 512;
 int g_tex_height    = 512;
@@ -38,8 +40,8 @@ int g_window_ypos   = 0;
 short       g_audio_data[2][512];
 float       g_freq_data[2][512];
 bool        g_new_audio;
-string      g_sub_module;
-string      g_vis_name;
+std::string g_sub_module;
+std::string g_vis_name;
 GLuint      g_tex_id          = 0;
 GLbyte*     g_tex_buffer      = NULL;
 long        g_tex_buffer_size = 0;
@@ -62,14 +64,14 @@ ADDON_STATUS Create(void* hdl, void* visProps)
   g_window_width  = g_tex_width  = props->width;
   g_window_height = g_tex_height = props->height;
   g_window_xpos   = props->x;
-  g_window_ypos   = props->y
+  g_window_ypos   = props->y;
 
   /* create texture buffer */
   g_tex_buffer_size = g_tex_width * g_tex_height * 4;
   g_tex_buffer      = (GLbyte*)malloc( g_tex_buffer_size );
 
   if ( !g_tex_buffer )
-    return;
+    return STATUS_UNKNOWN;
 
   if ( g_plugin )
   {
@@ -83,7 +85,7 @@ ADDON_STATUS Create(void* hdl, void* visProps)
   if ( g_plugin == NULL )
   {
     printf( "Error loading %s\n", g_vis_name.c_str() );
-    return;
+    return STATUS_UNKNOWN;
   }
 
   /* initialize and start the plugin */
@@ -115,6 +117,16 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample,
 //-----------------------------------------------------------------------------
 extern "C" void Stop()
 {
+  if ( g_tex_id )
+  {
+    glDeleteTextures( 1, &g_tex_id );
+  }
+  ivis_close( g_plugin );
+  free( g_tex_buffer );
+  g_tex_buffer = NULL;
+  g_tex_buffer_size = 0;
+  g_plugin = NULL;
+  g_new_audio = false;
 }
 
 //-- Audiodata ----------------------------------------------------------------
@@ -285,30 +297,31 @@ extern "C" unsigned int GetPresets(char ***pPresets)
   return 0;
 }
 
+//-- GetPreset ----------------------------------------------------------------
+// Return the index of the current playing preset
+//-----------------------------------------------------------------------------
+extern "C" unsigned GetPreset()
+{
+  return 0;
+}
+
+//-- IsLocked -----------------------------------------------------------------
+// Returns true if this add-on use settings
+//-----------------------------------------------------------------------------
+extern "C" bool IsLocked()
+{
+  return false;
+}
+
 //-- GetSubModules ------------------------------------------------------------
 // Return a list of names and paths for submodules
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***modules)
 {
-  return ivis_get_visualisations( names, paths );
-}
-
-//-- Stop ---------------------------------------------------------------------
-// This dll must stop all runtime activities
-// !!! Add-on master function !!!
-//-----------------------------------------------------------------------------
-extern "C" void Stop()
-{
-  if ( g_tex_id )
-  {
-    glDeleteTextures( 1, &g_tex_id );
-  }
-  ivis_close( g_plugin );
-  free( g_tex_buffer );
-  g_tex_buffer = NULL;
-  g_tex_buffer_size = 0;
-  g_plugin = NULL;
-  g_new_audio = false;
+  // testing
+  char **name;
+  char **path;
+  return ivis_get_visualisations(&name, &path);
 }
 
 //-- Destroy-------------------------------------------------------------------
