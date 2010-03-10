@@ -16,18 +16,14 @@ struct SchedulerCallback;
 
 enum ScheduleEvent
 {
-  eNone = 0,
   eTerminate =    WM_USER,
   eSchedule =     WM_USER + 1,
   eFlush =        WM_USER + 2
 };
 
 
-class CEvrScheduler: public CThread
+class CEvrScheduler
 {
-protected:
-  virtual void Process();
-  virtual void OnStartup();
 public:
   CEvrScheduler();
   virtual ~CEvrScheduler();
@@ -52,8 +48,12 @@ public:
   HRESULT ProcessSample(IMFSample *pSample, LONG *plNextSleep);
   HRESULT Flush();
 
+  // ThreadProc for the scheduler thread.
+  static DWORD WINAPI SchedulerThreadProc(LPVOID lpParameter);
+
 private: 
-    // non-static version of SchedulerThreadProc.
+  // non-static version of SchedulerThreadProc.
+  DWORD SchedulerThreadProcPrivate();
   CCritSec m_SampleQueueLock;
   
 private:
@@ -61,6 +61,8 @@ private:
   Com::SmartPtr<IMFClock>           m_pClock;  // Presentation clock. Can be NULL.
   SchedulerCallback   *m_pCB;     // Weak reference; do not delete.
 
+  DWORD               m_dwThreadID;
+  HANDLE              m_hSchedulerThread;
   HANDLE              m_hThreadReadyEvent;
   HANDLE              m_hFlushEvent;
 

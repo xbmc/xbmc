@@ -25,11 +25,12 @@ struct SStreamInfos
   CStdString name;
   CStdString codecname;
   DWORD flags;
-  IUnknown *pObj; ///< Output pin of the splitter
-  IUnknown *pUnk; ///< Input pin of the filter
+  Com::SmartPtr<IPin> pObj; ///< Output pin of the splitter
+  Com::SmartPtr<IPin> pUnk; ///< Not used
   LCID  lcid;
   DWORD group;
   SStreamType type;
+  bool connected;
 
   virtual void Clear()
   {
@@ -41,6 +42,7 @@ struct SStreamInfos
     group = 0;
     name = "";
     codecname = "";
+    connected = false;
   }
 };
 
@@ -93,12 +95,20 @@ struct SSubtitleStreamInfos: SStreamInfos
   CStdString encoding;
   bool external;
 
+  unsigned long offset;
+  CStdString isolang;
+
+  GUID subtype;
+
   virtual void Clear()
   {
     SStreamInfos::Clear();
 
     encoding = "";
     external = false;
+    offset = 0;
+    isolang = "";
+    subtype = GUID_NULL;
   }
 
   SSubtitleStreamInfos()
@@ -165,24 +175,29 @@ public:
   CStdString GetAudioCodecName();
   CStdString GetVideoCodecName();
 
-  bool InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph);
+  bool InitManager(CDSGraph *DSGraph);
 
   void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
+
+  static std::map<CStdString, CStdStringW> langCode;
 
 private:
   CStreamsManager(void);
   ~CStreamsManager(void);
 
   void SetStreamInternal(int iStream, SStreamInfos * s);
-  void UnconnectSubtitlePins(void);
+  void DisconnectCurrentSubtitlePins(void);
+  IPin *GetFirstSubtitlePin(void);
+  void InitLangCode(void);
 
   std::vector<SAudioStreamInfos *> m_audioStreams;
   std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
-  IAMStreamSelect *m_pIAMStreamSelect;
 
-  IFilterGraph2* m_pGraphBuilder;
+  Com::SmartPtr<IAMStreamSelect> m_pIAMStreamSelect;
+  Com::SmartPtr<IFilterGraph2> m_pGraphBuilder;
+  Com::SmartPtr<IBaseFilter> m_pSplitter;
+
   CDSGraph* m_pGraph;
-  IBaseFilter* m_pSplitter;
 
   bool m_init;
   bool m_bChangingAudioStream;
@@ -191,5 +206,7 @@ private:
   SVideoStreamInfos m_videoStream;
   bool m_bSubtitlesUnconnected;
 
-  IPin* m_SubtitleInputPin;
+  Com::SmartPtr<IPin> m_SubtitleInputPin;
+
+  AM_MEDIA_TYPE m_subtitleMediaType;
 };

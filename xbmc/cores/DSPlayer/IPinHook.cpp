@@ -30,6 +30,7 @@
 
 #include "IPinHook.h"
 #include "dshowutil/dshowutil.h"
+#include "DShowUtil/smartptr.h"
 //#include "DX9AllocatorPresenter.h"
 
 #define LOG_FILE        _T("dxva.log")
@@ -1015,17 +1016,14 @@ static void LogDecodeBufferDesc(DXVA2_DecodeBufferDesc* pDecodeBuff)
 class CFakeDirectXVideoDecoder : public CUnknown, public IDirectXVideoDecoder                 
 {
 private :
-  IDirectXVideoDecoder*  m_pDec;
+  Com::SmartPtr<IDirectXVideoDecoder>  m_pDec;
   BYTE* m_ppBuffer[MAX_BUFFER_TYPE];
   UINT m_ppBufferLen[MAX_BUFFER_TYPE];
 
 public :
     CFakeDirectXVideoDecoder(LPUNKNOWN pUnk, IDirectXVideoDecoder* pDec) : CUnknown(_T("Fake DXVA2 Dec"), pUnk)
     {
-      //wtf attach is actually doing for ccomptr
-      //m_pDec.Attach (pDec);
-      if (pDec)
-        m_pDec = pDec;
+      m_pDec.Attach (pDec);
       memset (m_ppBuffer, 0, sizeof(m_ppBuffer));
     }
 
@@ -1035,7 +1033,6 @@ public :
     }
 
     DECLARE_IUNKNOWN;
-
     STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv)
     {
       if(riid == __uuidof(IDirectXVideoDecoder))
@@ -1044,14 +1041,14 @@ public :
         return __super::NonDelegatingQueryInterface(riid, ppv);
     }
 
-        virtual HRESULT STDMETHODCALLTYPE GetVideoDecoderService(IDirectXVideoDecoderService **ppService)
+    virtual HRESULT STDMETHODCALLTYPE GetVideoDecoderService(IDirectXVideoDecoderService **ppService)
     {
       HRESULT    hr = m_pDec->GetVideoDecoderService (ppService);
       LOG(_T("IDirectXVideoDecoder::GetVideoDecoderService  hr = %08x\n"), hr);
       return hr;
     }
         
-        virtual HRESULT STDMETHODCALLTYPE GetCreationParameters(GUID *pDeviceGuid, DXVA2_VideoDesc *pVideoDesc, DXVA2_ConfigPictureDecode *pConfig, IDirect3DSurface9 ***pDecoderRenderTargets, UINT *pNumSurfaces)
+    virtual HRESULT STDMETHODCALLTYPE GetCreationParameters(GUID *pDeviceGuid, DXVA2_VideoDesc *pVideoDesc, DXVA2_ConfigPictureDecode *pConfig, IDirect3DSurface9 ***pDecoderRenderTargets, UINT *pNumSurfaces)
     {
       HRESULT    hr = m_pDec->GetCreationParameters(pDeviceGuid, pVideoDesc, pConfig, pDecoderRenderTargets, pNumSurfaces);
       LOG(_T("IDirectXVideoDecoder::GetCreationParameters hr = %08x\n"), hr);
@@ -1059,7 +1056,7 @@ public :
     }
 
         
-        virtual HRESULT STDMETHODCALLTYPE GetBuffer(UINT BufferType, void **ppBuffer, UINT *pBufferSize)
+    virtual HRESULT STDMETHODCALLTYPE GetBuffer(UINT BufferType, void **ppBuffer, UINT *pBufferSize)
     {
       HRESULT    hr = m_pDec->GetBuffer(BufferType, ppBuffer, pBufferSize);
       

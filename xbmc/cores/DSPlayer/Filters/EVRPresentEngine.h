@@ -21,7 +21,9 @@ typedef HRESULT (__stdcall *PTR_DXVA2CreateDirect3DDeviceManager9)(UINT* pResetT
 
 class CEVRAllocatorPresenter;
 
-class D3DPresentEngine : public SchedulerCallback
+class D3DPresentEngine :
+  public SchedulerCallback,
+  public ID3DResource
 {
 public:
   Com::SmartPtr<IDirect3DDeviceManager9> m_pDeviceManager;        // Direct3D device manager.
@@ -42,6 +44,12 @@ public:
   // this object does not derive from IUnknown.)
   virtual HRESULT GetService(REFGUID guidService, REFIID riid, void** ppv);
   virtual HRESULT CheckFormat(D3DFORMAT format);
+
+  // ID3DResource
+  void OnDestroyDevice();
+  void OnCreateDevice();
+  void OnLostDevice();
+  void OnResetDevice();
 
 
   // Video window / destination rectangle:
@@ -67,7 +75,7 @@ public:
   HRESULT SetBufferCount(int bufferCount);
   int GetVideoWidth(){return m_iVideoWidth;};
   int GetVideoHeight(){return m_iVideoHeight;};
-  HRESULT ResetD3dDevice();
+
 private:
   PTR_MFCreateVideoSampleFromSurface    pfMFCreateVideoSampleFromSurface;
   PTR_DXVA2CreateDirect3DDeviceManager9  pfDXVA2CreateDirect3DDeviceManager9;

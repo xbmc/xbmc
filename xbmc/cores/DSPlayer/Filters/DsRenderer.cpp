@@ -45,6 +45,10 @@ CDsRenderer::CDsRenderer()
 : CUnknown(NAME("CDsRenderer"), NULL)
 {
   m_nCurSurface = 0;
+  m_nNbDXSurface = 1;
+  m_nVMR9Surfaces = 0;
+  m_iVMR9Surface = 0;
+
   g_renderManager.PreInit(true);
   g_Windowing.Register(this); 
 }
@@ -60,15 +64,15 @@ CDsRenderer::~CDsRenderer()
 UINT CDsRenderer::GetAdapter(IDirect3D9* pD3D)
 {
   HMONITOR hMonitor = MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTONEAREST);
-	if(hMonitor == NULL) return D3DADAPTER_DEFAULT;
+  if(hMonitor == NULL) return D3DADAPTER_DEFAULT;
 
-	for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)
-	{
-		HMONITOR hAdpMon = pD3D->GetAdapterMonitor(adp);
-		if(hAdpMon == hMonitor) return adp;
-	}
+  for(UINT adp = 0, num_adp = pD3D->GetAdapterCount(); adp < num_adp; ++adp)
+  {
+    HMONITOR hAdpMon = pD3D->GetAdapterMonitor(adp);
+    if(hAdpMon == hMonitor) return adp;
+  }
 
-	return D3DADAPTER_DEFAULT;
+  return D3DADAPTER_DEFAULT;
 }
 
 HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
@@ -76,37 +80,32 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
   HRESULT hr = S_OK;
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
-  m_SurfaceType = Format;
 
-  for( int i = 0; i < DS_MAX_3D_SURFACE; ++i ) 
+  for(int i = 0; i < m_nNbDXSurface+2; i++)
   {
     m_pVideoTexture[i] = NULL;
     m_pVideoSurface[i] = NULL;
   }
-     
 
-  for (int i = 0; i < DS_NBR_3D_SURFACE; i++)
+  m_SurfaceType = Format;
+
+  int nTexturesNeeded = m_nNbDXSurface + 2;
+
+  for (int i = 0; i < nTexturesNeeded; i++)
   {
-    hr = g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth,  
-                                    m_iVideoHeight,
-                                    1,               /* Levels */
-                                    D3DUSAGE_RENDERTARGET,
-                                    m_SurfaceType,        /* D3D_FORMAT */
-                                    D3DPOOL_DEFAULT,
-                                    &m_pVideoTexture[i],
-                                    NULL);
-    if (FAILED(hr))
-    {
-      CLog::Log(LOGERROR,"%s Failed to create texture number %i",__FUNCTION__,i);
-      break;
-    }
-    else
-    {
-      hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i]);
-    }
+    if(FAILED(hr = g_Windowing.Get3DDevice()->CreateTexture(
+      m_iVideoWidth, m_iVideoHeight, 1, 
+      D3DUSAGE_RENDERTARGET, Format/*D3DFMT_X8R8G8B8 D3DFMT_A8R8G8B8*/, 
+      D3DPOOL_DEFAULT, &m_pVideoTexture[i], NULL)))
+      return hr;
+
+    if(FAILED(hr = m_pVideoTexture[i]->GetSurfaceLevel(0, &m_pVideoSurface[i])))
+      return hr;
   }
-  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[0],NULL,D3DCOLOR_COLORVALUE(0,0,0,255));
-  return hr;
+
+  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[m_nCurSurface], NULL, 0);
+  
+  return S_OK;
 }
 
 void CDsRenderer::DeleteSurfaces()
@@ -116,9 +115,7 @@ void CDsRenderer::DeleteSurfaces()
 
   for( int i = 0; i < DS_NBR_3D_SURFACE; ++i ) 
   {
-    if (m_pVideoTexture[i] != NULL)
-      m_pVideoTexture[i]->Release();
+    m_pVideoTexture[i] = NULL;
     m_pVideoSurface[i] = NULL;
   }
-
 }

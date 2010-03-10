@@ -35,6 +35,8 @@
 #include "dsconfig.h"
 #include "fgmanager.h"
 
+#include "DShowUtil/smartptr.h"
+
 #ifdef HAS_VIDEO_PLAYBACK
   #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -46,7 +48,7 @@
 
 using namespace XFILE;
 
-#define WM_GRAPHEVENT	WM_USER + 13
+#define WM_GRAPHEVENT  WM_USER + 13
 #define TIME_FORMAT_TO_MS 10000      // 10 ^ 4
 
 /** Video state mode */
@@ -145,7 +147,9 @@ public:
   /// @return Informations about the current audio track
   CStdString GetAudioInfo();
   /// @return Informations about the current video track
-  CStdString GetVideoInfo();  
+  CStdString GetVideoInfo();
+
+  static Com::SmartPtr<IFilterGraph2> m_pFilterGraph;
  
 protected:
 
@@ -158,11 +162,10 @@ protected:
 private:
   //Direct Show Filters
   CFGManager*                     m_pGraphBuilder;
-  IMediaControl*                  m_pMediaControl;  
-  IMediaEventEx*                  m_pMediaEvent;
-  IMediaSeeking*                  m_pMediaSeeking;
-  IBasicAudio*                    m_pBasicAudio;
-  IQualProp*                      m_pQualProp;
+  Com::SmartPtr<IMediaControl>          m_pMediaControl;  
+  Com::SmartPtr<IMediaEventEx>          m_pMediaEvent;
+  Com::SmartPtr<IMediaSeeking>          m_pMediaSeeking;
+  Com::SmartPtr<IBasicAudio>            m_pBasicAudio;
 
   bool m_bAllowFullscreen;
   bool m_bReachedEnd;
@@ -176,6 +179,7 @@ private:
   CCritSec m_ObjectLock;
   CStdString m_pStrCurrentFrameRate;
   int        m_iCurrentFrameRefreshCycle;
+
   struct SPlayerState
   {
     void Clear()
@@ -184,6 +188,7 @@ private:
       time    = 0;
       time_total      = 0;
       player_state  = "";
+      current_filter_state = State_Stopped;
     }
     double timestamp;         // last time of update
 
@@ -199,27 +204,27 @@ private:
     void Clear()
     {
       time_total    = 0;
-      codec_video   = "";
+      /*codec_video   = "";
       codec_audio   = "";
       dxva_info     = "";
       filter_audio_dec = "";
       filter_audio_renderer = "";
       filter_video_dec = "";
       filter_source = "";
-      filter_splitter = "";
+      filter_splitter = "";*/
       time_format   = GUID_NULL;
     }
     double time_total;        // total playback time
-    CStdString codec_video;
-    CStdString codec_audio;
+    GUID time_format;
+    
+    /*CStdString codec_video;
+    CStdString codec_audio;*/
 
-    CStdString filter_audio_dec;
+    /*CStdString filter_audio_dec;
     CStdString filter_audio_renderer;
     CStdString filter_video_dec;
     CStdString filter_source;
     CStdString filter_splitter;
-    CStdString dxva_info;
-
-    GUID time_format;
+    CStdString dxva_info;*/
   } m_VideoInfo;
 };

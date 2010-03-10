@@ -43,6 +43,9 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
   m_pVideoTexture = NULL;
 
   hr = InitializeDXVA();
+
+  g_Windowing.Register(this);
+  g_renderManager.PreInit(true);
 }
 
 
@@ -59,6 +62,9 @@ D3DPresentEngine::~D3DPresentEngine()
     FreeLibrary(pDXVA2HLib);
   if (pEVRHLib)
     FreeLibrary(pEVRHLib);
+
+  g_renderManager.UnInit();
+  g_Windowing.Unregister(this);
 }
 
 
@@ -187,6 +193,7 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
     d3dFormat = D3DFMT_A8R8G8B8;
   else
     d3dFormat = D3DFMT_X8R8G8B8;
+
   if (FAILED(g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth ,
                                                       m_iVideoHeight ,
                                                       1 , 
@@ -358,31 +365,15 @@ HRESULT D3DPresentEngine::InitializeDXVA()
     hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
   }
 
-  IDirectXVideoDecoderService* pDecoderService = NULL;
-  HANDLE hDevice;
+  Com::SmartPtr<IDirectXVideoDecoderService>	pDecoderService;
+  HANDLE							hDevice;
   if (SUCCEEDED (m_pDeviceManager->OpenDeviceHandle(&hDevice)) &&
     SUCCEEDED (m_pDeviceManager->GetVideoService (hDevice, __uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService)))
   {
     HookDirectXVideoDecoderService (pDecoderService);
     m_pDeviceManager->CloseDeviceHandle (hDevice);
   }
-  pDecoderService->Release();
 
-  return hr;
-}
-
-HRESULT D3DPresentEngine::ResetD3dDevice()
-{
-  HRESULT hr = E_FAIL;
-  if (g_Windowing.Get3DDevice())
-  {
-    hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice() ,m_DeviceResetToken);
-    if (SUCCEEDED(hr))
-      m_bNeedNewDevice = false;
-  }
-
-  if (FAILED(hr))
-    m_bNeedNewDevice = true;
   return hr;
 }
 
@@ -392,7 +383,7 @@ HRESULT D3DPresentEngine::ResetD3dDevice()
 // Creates an sample object (IMFSample) to hold a Direct3D swap chain.
 //-----------------------------------------------------------------------------
 
-HRESULT D3DPresentEngine::CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample,int surfaceIndex)
+HRESULT D3DPresentEngine::CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample **ppVideoSample, int surfaceIndex)
 {
   // Caller holds the object lock.
 
@@ -440,4 +431,29 @@ HRESULT D3DPresentEngine::SetBufferCount(int bufferCount)
 {
   m_bufferCount = bufferCount;
   return S_OK;
+}
+
+void D3DPresentEngine::OnDestroyDevice()
+{
+
+}
+
+void D3DPresentEngine::OnCreateDevice()
+{
+
+}
+
+void D3DPresentEngine::OnLostDevice()
+{
+  ReleaseResources();
+}
+
+void D3DPresentEngine::OnResetDevice()
+{
+  HRESULT		hr;
+
+  // Reset DXVA Manager, and get new buffers
+  hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
+
+  m_pAllocatorPresenter->NotifyEvent(EC_DISPLAY_CHANGED, S_OK, 0);
 }

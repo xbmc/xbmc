@@ -275,9 +275,6 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
   pfAvSetMmThreadCharacteristicsW    = hLib ? (PTR_AvSetMmThreadCharacteristicsW)  GetProcAddress (hLib, "AvSetMmThreadCharacteristicsW") : NULL;
   pfAvSetMmThreadPriority        = hLib ? (PTR_AvSetMmThreadPriority)      GetProcAddress (hLib, "AvSetMmThreadPriority") : NULL;
   pfAvRevertMmThreadCharacteristics  = hLib ? (PTR_AvRevertMmThreadCharacteristics)  GetProcAddress (hLib, "AvRevertMmThreadCharacteristics") : NULL;
-
-  g_Windowing.Register(this);
-  g_renderManager.PreInit(true);
 }
 
 CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
@@ -290,9 +287,6 @@ CEVRAllocatorPresenter::~CEVRAllocatorPresenter()
 
   // Deletable objects
   SAFE_DELETE(m_pD3DPresentEngine);
-
-  g_Windowing.Unregister(this);
-  g_renderManager.UnInit();
 
   CLog::Log(LOGDEBUG, "%s EVR Allocator resources released", __FUNCTION__);
 }
@@ -1756,11 +1750,12 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
   if (m_bNeedNewDevice)
   {
     CLog::Log(LOGDEBUG,"%s Device Need reset to develiver sample",__FUNCTION__);
-    if (SUCCEEDED(m_pD3DPresentEngine->ResetD3dDevice()))
+    /*if (SUCCEEDED( g_renderManager.Reset() ))
     {
       //We got the device back so we can restart schedule sample now
       state = D3DPresentEngine::DeviceReset;
-    }
+    }*/
+    state = D3DPresentEngine::DeviceReset;
   }
   else
   {
@@ -1975,24 +1970,6 @@ HRESULT CEVRAllocatorPresenter::SetBufferCount(int bufferCount)
 {
   return m_pD3DPresentEngine->SetBufferCount(bufferCount);
 }
-
-void CEVRAllocatorPresenter::OnLostDevice()
-{
-  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-}
-void CEVRAllocatorPresenter::OnDestroyDevice()
-{
-  //Only this one is required for changing the device
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-  m_bNeedNewDevice = true;  
-}
-
-void CEVRAllocatorPresenter::OnCreateDevice()
-{
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-}
-
-
 
 RECT CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR, const MFRatio& destPAR)
 {

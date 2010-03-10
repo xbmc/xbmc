@@ -32,6 +32,8 @@
 #include "File.h"
 #include "SpecialProtocol.h"
 
+#include "DShowUtil/smartptr.h"
+
 #include "Dmodshow.h"
 #include "Dmoreg.h"
 #pragma comment(lib, "Dmoguids.lib")
@@ -447,8 +449,9 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
   XMLUtils::GetString(pFilter, "osdname", osdname);
 
   //This is needed for a correct insertion of dmo filters into a graph
-  if (!XMLUtils::GetBoolean(pFilter,"isdmo",m_isDMO))
+  if (!XMLUtils::GetBoolean(pFilter, "isdmo", m_isDMO))
     m_isDMO = false;
+
   CStdString strDmoGuid;
 
   if (XMLUtils::GetString(pFilter,"guid_category_dmo",strDmoGuid))
@@ -493,18 +496,18 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
   HRESULT hr = E_FAIL;
   if ( (m_isDMO) && (m_catDMO != GUID_NULL))
   {
-    IBaseFilter *pBFDmo = NULL;
-    IDMOWrapperFilter *pDMOWrapper = NULL;
+    Com::SmartPtr<IBaseFilter> pBFDmo = NULL;
+    Com::SmartQIPtr<IDMOWrapperFilter> pDMOWrapper;
     
-    hr = CoCreateInstance(CLSID_DMOWrapperFilter, NULL, CLSCTX_INPROC_SERVER, IID_IBaseFilter, (void**)&pBFDmo);
+    hr = pBFDmo.CoCreateInstance(CLSID_DMOWrapperFilter, NULL);
     if (SUCCEEDED(hr))
     {
-      if (SUCCEEDED(pBFDmo->QueryInterface(IID_IDMOWrapperFilter,(void**) &pDMOWrapper)))
-        hr = pDMOWrapper->Init(m_clsid,m_catDMO);
-      *ppBF = pBFDmo;
-      pBFDmo->AddRef();
-      pBFDmo = NULL;
-      pDMOWrapper->Release();
+      pDMOWrapper = pBFDmo;
+      if (pDMOWrapper)
+        hr = pDMOWrapper->Init(m_clsid, m_catDMO);
+
+      *ppBF = pBFDmo.Detach();
+
       //DMOCATEGORY_AUDIO_DECODER
       //WMAudio Decoder DMO
       //{2EEB4ADF-4578-4D10-BCA7-BB955F56320A}
@@ -512,14 +515,31 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
       //DMOCATEGORY_VIDEO_DECODER
       //WMVideo Decoder DMO
       //{82D353DF-90BD-4382-8BC2-3F6192B76E34}
-
     }
   }
   else
+  {
     hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGINFO, "%s Failed to load external filter (clsid:%s path:%s). Trying with CoCreateInstance", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+      /* If LoadExternalFilter failed, maybe we will have more chance
+       * using CoCreateInstance directly. Will only works if the filter
+       * is registered! */
+      Com::SmartQIPtr<IBaseFilter> pBF;
+      hr = pBF.CoCreateInstance(m_clsid);
+      if (FAILED(hr))
+      {
+        CLog::Log(LOGFATAL, "%s CoCreateInstance failed!", __FUNCTION__);
+        return hr;
+      }
+      *ppBF = pBF.Detach();
+    }
+
+  }
 
   if (FAILED(hr))
-	  CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+    CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
   else
     CLog::Log(LOGDEBUG, "%s Successfully loaded external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
 
@@ -536,25 +556,13 @@ void CFGFilterFile::SetAutoLoad(bool autoload)
 //
 
 CFGFilterVideoRenderer::CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name, UINT64 merit) 
-  : CFGFilter(clsid, name, merit), pCAP(0)
+  : CFGFilter(clsid, name, merit)
 {
   AddType(MEDIATYPE_Video, MEDIASUBTYPE_NULL);
 }
 
 CFGFilterVideoRenderer::~CFGFilterVideoRenderer()
 {
-  CLog::Log(LOGDEBUG, "%s Releasing video renderer ...", __FUNCTION__);
-	if (pCAP)
-	{
-		if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
-			delete (CVMR9AllocatorPresenter *) pCAP;
-		else if (m_clsid == __uuidof(CEVRAllocatorPresenter))
-			delete (CEVRAllocatorPresenter *) pCAP;
-		else
-			delete pCAP;
-
-		pCAP = NULL;
-	}
 }
 
 HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
@@ -562,6 +570,7 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
   CheckPointer(ppBF, E_POINTER);
 
   HRESULT hr = S_OK;
+  IDsRenderer *pCAP;
 
   CStdString __err;
   if (m_clsid == __uuidof(CVMR9AllocatorPresenter))

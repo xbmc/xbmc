@@ -71,8 +71,7 @@ class CEVRAllocatorPresenter : public CUnknown,
                                public IEVRPresenterRegisterCallback,
                                public IEVRPresenterSettings,
                                public IEVRTrustedVideoPlugin,
-                               public IQualProp,
-                               public ID3DResource
+                               public IQualProp
 {
 public:
   CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error);
@@ -153,10 +152,14 @@ public:
   STDMETHODIMP SetConstriction(DWORD dwKPix);
   STDMETHODIMP DisableImageExport(BOOL bDisable);
 
-  // ID3dRessource
-  virtual void OnLostDevice();
-  virtual void OnDestroyDevice();
-  virtual void OnCreateDevice();
+  // NotifyEvent: Send an event to the EVR through its IMediaEventSink interface.
+  void NotifyEvent(long EventCode, LONG_PTR Param1, LONG_PTR Param2)
+  {
+    if (m_pMediaEventSink)
+    {
+      m_pMediaEventSink->Notify(EventCode, Param1, Param2);
+    }
+  }
 
 private:
   
@@ -186,15 +189,6 @@ protected:
 
   // IsScrubbing: Scrubbing occurs when the frame rate is 0.
   inline BOOL IsScrubbing() const { return m_fRate == 0.0f; }
-
-  // NotifyEvent: Send an event to the EVR through its IMediaEventSink interface.
-  void NotifyEvent(long EventCode, LONG_PTR Param1, LONG_PTR Param2)
-  {
-    if (m_pMediaEventSink)
-    {
-      m_pMediaEventSink->Notify(EventCode, Param1, Param2);
-    }
-  }
 
   float GetMaxRate(BOOL bThin);
 

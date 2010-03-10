@@ -33,6 +33,7 @@
 #include "Filters/IffdshowDecVideo.h"
 #include "DSPropertyPage.h"
 #include "DSGraph.h"
+#include "DShowUtil/smartptr.h"
 
 class CDSGraph;
 class CDSPropertyPage;
@@ -51,18 +52,18 @@ public:
   /**
    * Clear every interfaces
    */
-  virtual void ClearConfig();
+  void ClearConfig();
   /**
    * Configure the filters in the graph
    * @param[in] pGB Pointer to the graph interface
    * @return A HRESULT code
    */
-  virtual HRESULT ConfigureFilters(IFilterGraph2* pGB);
+  virtual HRESULT ConfigureFilters();
   /**
    * Retrieve a string containing the current DXVA mode
    * @return A CStdString containing the current DXVA mode
    */
-  CStdString GetDxvaMode(void)  { return m_pStdDxva; };
+  CStdString GetDXVAMode(void);
 
   /**
    * Get a list of filters with a property page
@@ -90,7 +91,7 @@ public:
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
   /** @} */
-  IQualProp*          pQualProp;
+  //Com::SmartQIPtr<IQualProp, &IID_IQualProp> pQualProp;
 protected:
   /**
    * If the filter expose a property page, add it to m_pPropertiesFilters
@@ -98,34 +99,25 @@ protected:
    * @return True if the filter expose a property page, false else*/
   bool LoadPropertiesPage(IBaseFilter *pBF);
   /**
-   * Load configuration from the MPC Video Decoder
+   * Load configuration from the MP Audio Decoder
    * @param[in] pBF Try to load the configuration from this filter
-   * @return True if the filter is a MPC Video Decoder, false else
+   * @return True if the filter is a MP Audio Decoder, false else
    */
-  void GetDxvaGuid();
+  bool GetMpaDec(IBaseFilter* pBF);
   /**
    * Load configuration from FFDShow
    * @param[in] pBF Try to load the configuration from this filter
    * @return True if the filter is FFDShow, false else
    */
   bool GetffdshowFilters(IBaseFilter* pBF);
-
-  /**
-   * Configure the filters from the graph
-   */
-  void ConfigureFilters(void);
   
 private:
   void CreatePropertiesXml();
   CCritSec m_pLock;
 
   //Direct Show Filters
-  IFilterGraph2*                 m_pGraphBuilder;
-  IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
-  IBaseFilter*                   m_pSplitter;
-  CStdString                     m_pStdDxva;
-  GUID                           m_pGuidDxva;
-  std::list<AM_MEDIA_TYPE *>     m_pMediaType;
+
+  Com::SmartPtr<IMpaDecFilter>         m_pIMpaDecFilter;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
   //current page
   CDSPropertyPage*               m_pCurrentProperty;

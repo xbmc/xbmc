@@ -42,12 +42,13 @@
 #include "GUIWindowManager.h"
 #include "filtercorefactory/filtercorefactory.h"
 #include "Settings.h"
+#include "DShowUtil/smartptr.h"
+
 using namespace std;
 
 DIRECTSHOW_RENDERER CFGLoader::m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
 
 CFGLoader::CFGLoader():
-  m_pGraphBuilder(NULL),
   m_pFGF(NULL)
 {
   Filters.Clear();
@@ -72,79 +73,68 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   
   if (pFileItem.IsInternetStream())
   {
-    //CLSID_URLReader for httpstream
-  //IAMOpenProgress will be need for requesting status of stream
-    IFileSourceFilter *pSourceUrl = NULL;
-    IUnknown *pUnk = NULL;
-    IBaseFilter *pBFSrc = NULL;
-    hr = CoCreateInstance(CLSID_URLReader,NULL, CLSCTX_ALL, IID_IUnknown,(void**) &pUnk);
-    pUnk->QueryInterface(IID_IBaseFilter,(void**)&Filters.Source.pBF);
-    if (Filters.Source.pBF)
+    //IAMOpenProgress will be need for requesting status of stream
+    Com::SmartQIPtr<IFileSourceFilter> pSourceUrl;
+    Com::SmartPtr<IUnknown> pUnk = NULL;
+
+    pUnk.CoCreateInstance(CLSID_URLReader, NULL);
+    hr = pUnk->QueryInterface(IID_IBaseFilter, (void**)&Filters.Source.pBF);
+    if (SUCCEEDED(hr))
     {
-      hr = m_pGraphBuilder->AddFilter(Filters.Source.pBF, L"URLReader");
-      Filters.Source.osdname.Format("URLReader");
-      CStdStringW strUrlW;
-      g_charsetConverter.utf8ToW(pFileItem.m_strPath,strUrlW);
-      hr = pUnk->QueryInterface(IID_IFileSourceFilter,(void**) &pSourceUrl);
-      if (SUCCEEDED(hr))
+      hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"URLReader");
+      Filters.Source.osdname = "URLReader";
+      CStdStringW strUrlW; g_charsetConverter.utf8ToW(pFileItem.m_strPath, strUrlW);
+      //hr = pUnk->QueryInterface(IID_IFileSourceFilter,(void**) &pSourceUrl);
+      if (pSourceUrl = pUnk)
         hr = pSourceUrl->Load(strUrlW.c_str(), NULL);
-      //if(FAILED(hr) || !(pSourceUrl = pUnk) || FAILED(hr = pSourceUrl->Load(strUrlW.c_str(), NULL)))
+
       if(FAILED(hr))
       {
-        SAFE_RELEASE(pSourceUrl);
-        
-        m_pGraphBuilder->RemoveFilter(pBFSrc);
+        CDSGraph::m_pFilterGraph->RemoveFilter(Filters.Source.pBF);
+        CLog::Log(LOGERROR, "%s Failed to add url source filter to the graph.", __FUNCTION__);
+        Filters.Source.pBF = NULL;
       }
       else
       {
         CLog::Log(LOGNOTICE, "%s Successfully added url source filter to the graph", __FUNCTION__);
         return hr;
-      }
-    
-    }
-    //NULL, CLSCTX_ALL, IID_IUnknown,(void**) &m_pUnkInner);
-    
+      }    
+    }    
   }
+
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
     Filters.PlayingArchive = true;
     CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
-	  if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
-	  {
-	    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &Filters.Source.pBF, &hr);
+    if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
+    {
+      CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &Filters.Source.pBF, &hr);
 
-	    if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(Filters.Source.pBF, L"XBMC File Source")))
-		    CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
+      if (SUCCEEDED(hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source")))
+        CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
       else
-		    CLog::Log(LOGERROR, "%s Failted to add xbmc source filter to the graph", __FUNCTION__);
+        CLog::Log(LOGERROR, "%s Failted to add xbmc source filter to the graph", __FUNCTION__);
 
-	    Filters.Source.osdname = "XBMC File Source";
-	    return hr;
+      Filters.Source.osdname = "XBMC File Source";
+      return hr;
     } 
     else 
     {
       CLog::Log(LOGERROR, "%s Failed to open \"%s\" with source filter!", __FUNCTION__, pFileItem.m_strPath.c_str());
       return E_FAIL;
     }
-  } 
-  else 
-  {  
-    if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Source)))
+  } else {
+    if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Splitter)))
     {
-      Filters.Splitter.pBF = Filters.Source.pBF;
-      Filters.Splitter.osdname = Filters.Source.osdname;
-      Filters.Splitter.guid = Filters.Source.guid;
-
       CStdString pWinFilePath = pFileItem.m_strPath;
       if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
         pWinFilePath.Replace("smb://", "\\\\");
-      
+  
       pWinFilePath.Replace("/", "\\");
 
-      IFileSourceFilter *pFS = NULL;
-	    Filters.Splitter.pBF->QueryInterface(IID_IFileSourceFilter, (void**)&pFS);
+      Com::SmartQIPtr<IFileSourceFilter> pFS = Filters.Splitter.pBF;
       
-      CStdStringW strFileW;    
+      CStdStringW strFileW;  
       g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
 
       if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
@@ -162,12 +152,13 @@ HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& 
 
   if (SUCCEEDED(hr))
   {
-    if (SUCCEEDED(hr = ConnectFilters(m_pGraphBuilder, Filters.Source.pBF, Filters.Splitter.pBF)))
+    if (SUCCEEDED(hr = ConnectFilters(CDSGraph::m_pFilterGraph, Filters.Source.pBF, Filters.Splitter.pBF)))
       CLog::Log(LOGNOTICE, "%s Successfully connected the source to the spillter", __FUNCTION__);
     else
     {
       CLog::Log(LOGERROR, "%s Failed to connect the source to the spliter", __FUNCTION__);
-      CLog::Log(LOGNOTICE, "%s Trying to just render the source output pin", __FUNCTION__);
+      // What the point to provide filters customization if we let windows choose filters for us ?!
+      /*CLog::Log(LOGNOTICE, "%s Trying to just render the source output pin", __FUNCTION__);
       BeginEnumPins(Filters.Source.pBF,pEP,pPin)
       {
         if (!DShowUtil::IsPinConnected(pPin))
@@ -179,83 +170,12 @@ HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& 
       if (FAILED(hr))
       {
         CLog::Log(LOGERROR, "%s Failed the just rendering the output pin", __FUNCTION__);
-      }
-
+      }*/
     }
   }
   
   return hr;
 }
-
-/*HRESULT CFGLoader::InsertAudioDecoder(const CStdString& filterName)
-{
-  list<CFGFilterFile *>::const_iterator it = std::find_if(m_configFilter.begin(),
-    m_configFilter.end(),
-    std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filterName) );
-
-  if (it == m_configFilter.end())
-  {
-
-    CLog::Log(LOGERROR, "%s Filter \"%s\" isn't loaded. Please check dsfilterconfig.xml", __FUNCTION__, filterName.c_str());
-    return E_FAIL;
-
-  } else {
-
-    g_charsetConverter.wToUTF8((*it)->GetName(), m_pStrAudiodec);
-    if(SUCCEEDED((*it)->Create(&m_AudioDecF)))
-    {
-      if (SUCCEEDED(m_pGraphBuilder->AddFilter(m_AudioDecF, (*it)->GetName().c_str())))
-        CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrAudiodec.c_str());
-      else {
-        CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, m_pStrAudiodec.c_str());
-        m_pStrAudiodec = "";
-        return E_FAIL;
-      }
-    }
-    else {
-      CLog::Log(LOGERROR, "%s Failed to create the audio decoder filter", __FUNCTION__);
-      return E_FAIL;
-    }
-  }
-
-  return S_OK;
-}
-
-HRESULT CFGLoader::InsertVideoDecoder(const CStdString& filterName)
-{
-  list<CFGFilterFile *>::const_iterator it = std::find_if(m_configFilter.begin(),
-    m_configFilter.end(),
-    std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filterName) );
-
-  if (it == m_configFilter.end())
-  {
-
-    CLog::Log(LOGERROR, "%s Filter \"%s\" isn't loaded. Please check dsfilterconfig.xml", __FUNCTION__, filterName.c_str());
-    return E_FAIL;
-
-  } else {
-  
-    g_charsetConverter.wToUTF8((*it)->GetName(), m_pStrVideodec);
-    if(SUCCEEDED((*it)->Create(&m_VideoDecF)))
-    {
-      if (SUCCEEDED(m_pGraphBuilder->AddFilter(m_VideoDecF, (*it)->GetName().c_str())))
-      {
-        CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, m_pStrVideodec.c_str());
-      } else {
-        CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, m_pStrVideodec.c_str());
-        return E_FAIL;
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR,"%s Failed to create video decoder filter \"%s\"", __FUNCTION__, m_pStrVideodec.c_str());
-      m_pStrVideodec = "";
-      return E_FAIL;
-    }
-  }
-  
-  return S_OK;
-}*/
 
 HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
 {
@@ -305,7 +225,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   Filters.AudioRenderer.osdname = currentName;
   Filters.AudioRenderer.guid = DShowUtil::GUIDFromCString(currentGuid);
 
-  hr = m_pGraphBuilder->AddFilter(Filters.AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
+  hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
 
   if (SUCCEEDED(hr))
     CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, Filters.AudioRenderer.osdname.c_str());
@@ -349,7 +269,11 @@ HRESULT CFGLoader::InsertVideoRenderer()
 
   
   hr = m_pFGF->Create(&Filters.VideoRenderer.pBF);
-  hr = m_pGraphBuilder->AddFilter(Filters.VideoRenderer.pBF, m_pFGF->GetName());
+  hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.VideoRenderer.pBF, m_pFGF->GetName());
+
+  /* Query IQualProp from the renderer */
+  Filters.VideoRenderer.pBF->QueryInterface(IID_IQualProp, (void **) &Filters.VideoRenderer.pQualProp);
+
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGDEBUG, "%s Allocator presenter successfully added to the graph (Renderer: %d)",  __FUNCTION__, m_CurrentRenderer);
@@ -390,7 +314,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
   if (FAILED(InsertSourceFilter(pFileItem, filter)))
   {
-	  return E_FAIL;
+    return E_FAIL;
   }
 
   if (! Filters.Splitter.pBF)
@@ -407,7 +331,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   /* Ok, the splitter is added to the graph. We need to detect the video stream codec in order to choose
   if we use or not the dxva filter */
 
-  IBaseFilter *pBF = Filters.Splitter.pBF;
+  Com::SmartPtr<IBaseFilter> pBF = Filters.Splitter.pBF;
   bool fourccfinded = false;
   BeginEnumPins(pBF, pEP, pPin)
   {
@@ -424,7 +348,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
       CStreamsManager::getSingleton()->GetStreamInfos(pMT, &s);
 
-      CLog::Log(LOGINFO, "Video stream fourcc : %4.4hs", &s.fourcc);
+      CLog::Log(LOGINFO, "Video stream fourcc : %c%c%c%c", s.fourcc >> 24 & 0xff, s.fourcc >> 16 & 0xff, s.fourcc >> 8 & 0xff, s.fourcc & 0xff);
 
       fourccfinded = true;
       // CCV1 is a fake fourcc code generated by Haali in order to trick the Microsoft h264
@@ -480,11 +404,8 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   return S_OK;
 }
 
-HRESULT CFGLoader::LoadConfig(IFilterGraph2* fg)
+HRESULT CFGLoader::LoadConfig()
 {
-
-  m_pGraphBuilder = fg;
-
   LoadFilterCoreFactorySettings(g_settings.GetUserDataItem("dsfilterconfig.xml"), true);
   LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/dsfilterconfig.xml", false);
 
@@ -503,7 +424,7 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   if(SUCCEEDED(hr = filter->Create(&f.pBF)))
   {
     g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);
-    if (SUCCEEDED(hr = m_pGraphBuilder->AddFilter(f.pBF, filter->GetName().c_str())))
+    if (SUCCEEDED(hr = CDSGraph::m_pFilterGraph->AddFilter(f.pBF, filter->GetName().c_str())))
       CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
     else
       CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
