@@ -77,6 +77,8 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
 	g_plugin = new CPlugin;
 	g_plugin->PluginPreInitialize(0, 0);
   g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio);
+
+  return STATUS_NEED_SETTINGS;
 }
 
 extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
@@ -162,8 +164,8 @@ extern "C" bool OnAction(long flags, const void *param)
     g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
     ret = true;
   }
-  if (ret)
-    SaveSettings();
+  /*if (ret)
+    SaveSettings();*/
 	return ret;
 }
 
