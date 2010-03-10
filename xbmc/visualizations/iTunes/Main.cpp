@@ -57,6 +57,9 @@ ADDON_STATUS Create(void* hdl, void* visProps)
 
   VIS_PROPS* props = (VIS_PROPS*) visProps;
 
+  if (!props->submodule)
+    return STATUS_UNKNOWN;
+  
   g_vis_name = props->name;
   g_sub_module = props->submodule;
 
@@ -318,10 +321,12 @@ extern "C" bool IsLocked()
 //-----------------------------------------------------------------------------
 extern "C" unsigned int GetSubModules(char ***modules)
 {
-  // testing
-  char **name;
   char **path;
-  return ivis_get_visualisations(&name, &path);
+  unsigned int num_plugins;
+  
+  num_plugins = ivis_get_visualisations(modules, &path);
+  free(path);
+  return num_plugins;
 }
 
 //-- Destroy-------------------------------------------------------------------
