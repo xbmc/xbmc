@@ -98,8 +98,7 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
     CLog::Log(LOGERROR, "%s(%s) version is to old (%f versus %f)", __FUNCTION__, strSkinDir.c_str(), info.GetVersion(), GetMinVersion());
     return false;
   }
-  if (!CFile::Exists(info.GetSkinPath("Home.xml"))
-   || !CFile::Exists(info.GetSkinPath("Font.xml")))
+  if (!info.HasSkinFile("Home.xml") || !info.HasSkinFile("Font.xml"))
   {
     CLog::Log(LOGERROR, "%s(%s) does not contain Home.xml or Font.xml", __FUNCTION__, strSkinDir.c_str());
     return false;

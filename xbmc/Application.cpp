@@ -1129,9 +1129,8 @@ bool CApplication::Initialize()
   else
   {
     // test for a startup window, and activate that instead of home
-    CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml");
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
+    if (g_SkinInfo.HasSkinFile("Startup.xml") && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
       startWindow = WINDOW_STARTUP;
     g_windowManager.ActivateWindow(startWindow);
   }
@@ -1622,8 +1621,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_audioManager.Enable(true);
   g_audioManager.Load();
 
-  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml");
-  if (CFile::Exists(strPath))
+  if (g_SkinInfo.HasSkinFile("DialogFullScreenInfo.xml"))
     g_windowManager.Add(new CGUIDialogFullScreenInfo);
 
   CLog::Log(LOGINFO, "  skin loaded...");
