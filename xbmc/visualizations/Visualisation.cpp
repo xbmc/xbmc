@@ -103,7 +103,10 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->name = strdup(Name().c_str());
   m_pInfo->presets = strdup(_P(Path()).c_str());
   m_pInfo->profile = strdup(_P(Profile()).c_str());
-  GetSubModules();
+  if (GetSubModules())
+    m_pInfo->submodule = strdup(_P(m_submodules.front()).c_str());
+  else
+    m_pInfo->submodule = NULL;
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
