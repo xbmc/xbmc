@@ -813,30 +813,6 @@
     <shadowcolor>HomeShadow</shadowcolor>
   </include>
 
-  <include name="HomeMainMenuFOCaption">
-    <posx>797</posx>
-    <posy>-25</posy>
-    <width>250</width>
-    <height>20</height>
-    <info>ListItem.Label2</info>
-    <align>right</align>
-    <aligny>center</aligny>
-    <font>HomeMenuInfoFont</font>
-    <textcolor>HomeMain</textcolor>
-  </include>
-
-  <include name="HomeMainMenuFOCaption2">
-    <posx>797</posx>
-    <posy>4</posy>
-    <width>250</width>
-    <height>20</height>
-    <info>ListItem.Label2</info>
-    <align>right</align>
-    <aligny>center</aligny>
-    <font>HomeMenuInfoFont</font>
-    <textcolor>HomeMain</textcolor>
-  </include>
-
   <include name="HomeMainMenuOverFade">
     <visible>![Container(300).OnPrevious | Container(300).OnNext] + ![Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]</visible>
     <animation effect="fade" start="0" end="100" time="0" delay="500" reversible="false">Visible</animation>
@@ -868,15 +844,6 @@
       <posx>44</posx>
       <posy>-331</posy>
       <include>HomeSubMenuBlade</include>
-      <animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
-    </control>
-  </include>
-
-  <include name="HomeSubMenuIcon">
-    <control type="image">
-      <description>Media Stream Logo</description>
-      <include>HomeSubMenuIconDims</include>
-      <texture>MediaStreamLogo.png</texture>
       <animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
     </control>
   </include>
@@ -4596,7 +4563,6 @@
 			<posx>35</posx>
     </control>
 
-    <include>HomeSubMenuIcon</include>
   </include>
 
   <include name="SettingsSideMenu">

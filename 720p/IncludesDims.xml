@@ -104,13 +104,6 @@
     <animation effect="slide" tween="back" end="220,0" time="400" condition="ControlGroup(301).HasFocus()">Conditional</animation>
   </include>
 
-  <include name="HomeSubMenuIconDims">
-    <posx>150</posx>
-    <posy>-66</posy>
-    <width>137</width>
-    <height>56</height>
-  </include>
-
   <constant name="HomeSideMenuItemWidth">300</constant>
 
   <include name="HomeSideMenuDims">
