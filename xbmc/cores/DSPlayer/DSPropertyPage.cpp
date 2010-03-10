@@ -77,7 +77,7 @@ bool CDSPropertyPage::Initialize(bool CurrentlyUsingFakeFS)
     //g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
   }
 
-  Create(); // autodelete = true
+  Create(true); // autodelete = true
   
   return true;
 }

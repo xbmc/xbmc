@@ -133,14 +133,10 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
   if (videoTexture)
   {
     m_D3DVideoTexture = videoTexture;
-    m_D3DVideoTexture->AddRef();
-    videoTexture = NULL;
   }
   if (videoSurface)
   {
     m_D3DMemorySurface = videoSurface;
-    m_D3DMemorySurface->AddRef();
-    videoSurface = NULL;
   }
 }
 

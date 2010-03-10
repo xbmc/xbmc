@@ -56,7 +56,7 @@ DEFINE_GUID(CLSID_ReClock,
 
 typedef std::list<GUID> GuidList;
 typedef std::list<GUID>::iterator GuidListIter;
-using namespace Com;
+
 class  DShowUtil
 {
 public:
@@ -208,58 +208,51 @@ public:
 
 /* BeginEnumFilters */
 #define BeginEnumFilters(pFilterGraph, pEnumFilters, pBaseFilter) \
-	{SmartPtr<IEnumFilters> pEnumFilters; \
-	if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
-	{ \
-		for(SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
-		{ \
+{Com::SmartPtr<IEnumFilters> pEnumFilters; \
+  if(pFilterGraph && SUCCEEDED(pFilterGraph->EnumFilters(&pEnumFilters))) \
+{ \
+  for(Com::SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+{ \
 
 #define EndEnumFilters }}}
-/* EndEnumFilters */
 
-/* BeginEnumCachedFilters */
 #define BeginEnumCachedFilters(pGraphConfig, pEnumFilters, pBaseFilter) \
-	{SmartPtr<IEnumFilters> pEnumFilters; \
-	if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
-	{ \
-		for(SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
-		{ \
+{Com::SmartPtr<IEnumFilters> pEnumFilters; \
+  if(pGraphConfig && SUCCEEDED(pGraphConfig->EnumCacheFilter(&pEnumFilters))) \
+{ \
+  for(Com::SmartPtr<IBaseFilter> pBaseFilter; S_OK == pEnumFilters->Next(1, &pBaseFilter, 0); pBaseFilter = NULL) \
+{ \
 
 #define EndEnumCachedFilters }}}
-/* EndEnumCachedFilters */
 
-/** BeginEnumPins **/
 #define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
-	{IEnumPins* pEnumPins; \
-	if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
-	{ \
-		for(IPin* pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin->Release(), pPin = NULL) \
-		{ \
+{Com::SmartPtr<IEnumPins> pEnumPins; \
+  if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
+{ \
+  for(Com::SmartPtr<IPin> pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin = NULL) \
+{ \
 
 #define EndEnumPins }}}
-/** EndEnumPins **/
 
-/* BeginEnumMediaTypes */
 #define BeginEnumMediaTypes(pPin, pEnumMediaTypes, pMediaType) \
-	{SmartPtr<IEnumMediaTypes> pEnumMediaTypes; \
-	if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
-	{ \
-		AM_MEDIA_TYPE* pMediaType = NULL; \
-		for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
-		{ \
+{Com::SmartPtr<IEnumMediaTypes> pEnumMediaTypes; \
+  if(pPin && SUCCEEDED(pPin->EnumMediaTypes(&pEnumMediaTypes))) \
+{ \
+  AM_MEDIA_TYPE* pMediaType = NULL; \
+  for(; S_OK == pEnumMediaTypes->Next(1, &pMediaType, NULL); DeleteMediaType(pMediaType), pMediaType = NULL) \
+{ \
 
 #define EndEnumMediaTypes(pMediaType) } if(pMediaType) DeleteMediaType(pMediaType); }}
-/* EndEnumMediaTypes */
 
 #define BeginEnumSysDev(clsid, pMoniker) \
-  {ICreateDevEnum* pDevEnum4$##clsid; \
-  CoCreateInstance(CLSID_SystemDeviceEnum,NULL,CLSCTX_ALL,__uuidof(pDevEnum4$##clsid),(void**) &pDevEnum4$##clsid); \
-  IEnumMoniker* pClassEnum4$##clsid; \
+{Com::SmartPtr<ICreateDevEnum> pDevEnum4$##clsid; \
+  pDevEnum4$##clsid.CoCreateInstance(CLSID_SystemDeviceEnum); \
+  Com::SmartPtr<IEnumMoniker> pClassEnum4$##clsid; \
   if(SUCCEEDED(pDevEnum4$##clsid->CreateClassEnumerator(clsid, &pClassEnum4$##clsid, 0)) \
   && pClassEnum4$##clsid) \
-  { \
-    for(IMoniker* pMoniker; pClassEnum4$##clsid->Next(1, &pMoniker, 0) == S_OK; pMoniker = NULL) \
-    { \
+{ \
+  for(Com::SmartPtr<IMoniker> pMoniker; pClassEnum4$##clsid->Next(1, &pMoniker, 0) == S_OK; pMoniker = NULL) \
+{ \
 
 #define EndEnumSysDev }}}
 

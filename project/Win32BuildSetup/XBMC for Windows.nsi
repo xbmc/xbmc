@@ -431,15 +431,15 @@ SectionEnd
 ;--------------------------------
 ;Dsplayer installation section
 
-Section "ffdshow rev 3313" SEC_FFDSHOW
+Section "ffdshow rev 3314" SEC_FFDSHOW
   SectionIn 1 2
   
   SetOutPath "$TEMP"
-  File "${xbmc_root}\Xbmc\ffdshow_rev3313_20100310.exe"
+  File "${xbmc_root}\Xbmc\ffdshow_rev3314_20100310.exe"
   DetailPrint "Running ffdshow installation"
-  ExecWait '"$TEMP\ffdshow_rev3313_20100310.exe" /q' $VSRedistSetupError
+  ExecWait '"$TEMP\ffdshow_rev3314_20100310.exe" /q' $VSRedistSetupError
   DetailPrint "Finished ffdshow installation"
  
-  Delete "$TEMP\ffdshow_rev3313_20100310.exe"
+  Delete "$TEMP\ffdshow_rev3314_20100310.exe"
 SectionEnd
 !endif
