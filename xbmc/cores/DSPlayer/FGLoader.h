@@ -29,8 +29,6 @@
 #include "SystemInfo.h" //g_sysinfo
 #include "GUISettings.h"//g_guiSettings
 
-#include "DShowUtil/smartptr.h"
-
 enum DIRECTSHOW_RENDERER
 {
     DIRECTSHOW_RENDERER_VMR9 = 1,
@@ -52,27 +50,10 @@ struct SFilterInfos
     guid = GUID_NULL;
   }
 
-  Com::SmartPtr<IBaseFilter> pBF;
+  IBaseFilter *pBF;
   CStdString osdname;
   GUID guid;
 };
-
-struct SVideoRendererFilterInfos: SFilterInfos
-{
-  SVideoRendererFilterInfos()
-    : SFilterInfos()
-  {
-    Clear();
-  }
-
-  void Clear()
-  {
-    pQualProp = NULL;
-    __super::Clear();
-  }
-  Com::SmartPtr<IQualProp> pQualProp;
-};
-
 
 struct SFilters
 {
@@ -81,7 +62,7 @@ struct SFilters
   SFilterInfos Video;
   SFilterInfos Audio;
   SFilterInfos AudioRenderer;
-  SVideoRendererFilterInfos VideoRenderer;
+  SFilterInfos VideoRenderer;
   std::vector<SFilterInfos> Extras;
 
   bool PlayingArchive;
@@ -116,7 +97,7 @@ public:
 
   static SFilters Filters;
 
-  HRESULT    LoadConfig();
+  HRESULT    LoadConfig(IFilterGraph2* fg);
   bool       LoadFilterCoreFactorySettings(const CStdString& item, bool clear);
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
   HRESULT    InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName);
@@ -129,6 +110,7 @@ public:
   static bool         IsUsingDXVADecoder() { return m_UsingDXVADecoder; }
 
 protected:
+  IFilterGraph2*            m_pGraphBuilder;
   CStdString                m_xbmcConfigFilePath;
   XFILE::CFile              m_File;
 

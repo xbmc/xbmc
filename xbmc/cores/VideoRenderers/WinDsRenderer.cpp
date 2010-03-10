@@ -127,21 +127,13 @@ void CWinDsRenderer::AutoCrop(bool bCrop)
 
 }
 
-void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
+void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3DSurface9* videoSurface)
 {
   
   if (videoTexture)
-  {
     m_D3DVideoTexture = videoTexture;
-    m_D3DVideoTexture->AddRef();
-    videoTexture = NULL;
-  }
   if (videoSurface)
-  {
     m_D3DMemorySurface = videoSurface;
-    m_D3DMemorySurface->AddRef();
-    videoSurface = NULL;
-  }
 }
 
 void CWinDsRenderer::RenderDshowBuffer(DWORD flags)

@@ -23,11 +23,11 @@
     -------------------
     GetPinCategory
     GetPinMediaType
-  FilterSupportsPropertyPage
+	FilterSupportsPropertyPage
     FindUnconnectedPin
     FindConnectedPin
-  FindPinByCategory
-  FindPinByIndex
+	FindPinByCategory
+	FindPinByIndex
     FindPinByMajorType
     FindPinByName
     FindPinInterface
@@ -42,7 +42,7 @@
     Graph Building Functions 
     -----------------------
     AddFilterByCLSID
-  AddFilterFromMoniker
+	AddFilterFromMoniker
     AddSourceFilter
     AddVMR9Filter
     AddWriterFilter
@@ -86,16 +86,6 @@
 
 */
 
-#include "smartptr.h"
-
-#define BeginEnumPins(pBaseFilter, pEnumPins, pPin) \
-{Com::SmartPtr<IEnumPins> pEnumPins; \
-  if(pBaseFilter && SUCCEEDED(pBaseFilter->EnumPins(&pEnumPins))) \
-{ \
-  for(Com::SmartPtr<IPin> pPin; S_OK == pEnumPins->Next(1, &pPin, 0); pPin = NULL) \
-{ \
-
-#define EndEnumPins }}}
 
 
 const LONGLONG ONE_SECOND = 10000000;  // One second, in 100-nanosecond units.
@@ -426,30 +416,30 @@ struct MatchPinConnection
 // Function object to match a pin by direction and category.
 struct MatchPinDirectionAndCategory
 {
-  const GUID*    m_pCategory;
+	const GUID*		m_pCategory;
     PIN_DIRECTION   m_direction;
 
-  MatchPinDirectionAndCategory(PIN_DIRECTION direction, REFGUID guidCategory)
-    : m_direction(direction), m_pCategory(&guidCategory)
-  {
-  }
+	MatchPinDirectionAndCategory(PIN_DIRECTION direction, REFGUID guidCategory)
+		: m_direction(direction), m_pCategory(&guidCategory)
+	{
+	}
 
     HRESULT operator()(IPin *pPin, BOOL *pResult)
     {
         assert(pResult != NULL);
 
         BOOL bMatch = FALSE;
-    GUID category;
+		GUID category;
 
         HRESULT hr = IsPinDirection(pPin, m_direction, &bMatch);
-      
+			
         if (SUCCEEDED(hr) && bMatch)
         {
-      hr = GetPinCategory(pPin, &category);
-      if (SUCCEEDED(hr))
-      {
-        bMatch = (category == *m_pCategory);
-      }
+			hr = GetPinCategory(pPin, &category);
+			if (SUCCEEDED(hr))
+			{
+				bMatch = (category == *m_pCategory);
+			}
         }
 
         if (SUCCEEDED(hr))
@@ -653,44 +643,44 @@ HRESULT FindMatchingPin(IBaseFilter *pFilter, PinPred FN, IPin **ppPin)
 ///////////////////////////////////////////////////////////////////////
 
 inline HRESULT FindPinByIndex(IBaseFilter *pFilter, PIN_DIRECTION PinDir,
-  UINT nIndex, IPin **ppPin)
+	UINT nIndex, IPin **ppPin)
 {
-  if (!pFilter || !ppPin)
-  {
-    return E_POINTER;
-  }
+	if (!pFilter || !ppPin)
+	{
+		return E_POINTER;
+	}
 
     HRESULT hr = S_OK;
-  bool bFound = false;
-  UINT count = 0;
+	bool bFound = false;
+	UINT count = 0;
 
     IEnumPins *pEnum = NULL;
-  IPin *pPin = NULL;
+	IPin *pPin = NULL;
 
-  CHECK_HR(hr = pFilter->EnumPins(&pEnum));
+	CHECK_HR(hr = pFilter->EnumPins(&pEnum));
 
-  while (S_OK == (hr = pEnum->Next(1, &pPin, NULL)))
-  {
-    PIN_DIRECTION ThisDir;
-    CHECK_HR(hr = pPin->QueryDirection(&ThisDir));
+	while (S_OK == (hr = pEnum->Next(1, &pPin, NULL)))
+	{
+		PIN_DIRECTION ThisDir;
+		CHECK_HR(hr = pPin->QueryDirection(&ThisDir));
 
-    if (ThisDir == PinDir)
-    {
-      if (nIndex == count)
-      {
-        *ppPin = pPin;      // return to caller
+		if (ThisDir == PinDir)
+		{
+			if (nIndex == count)
+			{
+				*ppPin = pPin;			// return to caller
                 (*ppPin)->AddRef();
-        bFound = true;
-        break;
-      }
-      count++;
-    }
-    SAFE_RELEASE(pPin);
-  }
+				bFound = true;
+				break;
+			}
+			count++;
+		}
+		SAFE_RELEASE(pPin);
+	}
 
 done:
     SAFE_RELEASE(pPin);
-  SAFE_RELEASE(pEnum);
+	SAFE_RELEASE(pEnum);
 
     return (bFound ? S_OK : VFW_E_NOT_FOUND);
 }
@@ -733,13 +723,13 @@ inline HRESULT FindConnectedPin(
 ///////////////////////////////////////////////////////////////////////
 
 inline HRESULT FindPinByCategory(
-  IBaseFilter *pFilter,   // Pointer to the filter.
-  REFGUID guidCategory,   // Category GUID
-  PIN_DIRECTION PinDir,   // Pin direction to match.
-  IPin **ppPin
-  )
+	IBaseFilter *pFilter,   // Pointer to the filter.
+	REFGUID guidCategory,   // Category GUID
+	PIN_DIRECTION PinDir,   // Pin direction to match.
+	IPin **ppPin
+	)
 {
-  return FindMatchingPin(pFilter, MatchPinDirectionAndCategory(PinDir, guidCategory), ppPin);
+	return FindMatchingPin(pFilter, MatchPinDirectionAndCategory(PinDir, guidCategory), ppPin);
 }
 
 
@@ -1001,19 +991,19 @@ inline HRESULT IsRenderer(IBaseFilter *pFilter, BOOL *pResult)
 
 inline BOOL FilterSupportsPropertyPage(IBaseFilter *pFilter)
 {
-  if (pFilter == NULL)
-  {
-    return FALSE; 
-  }
+	if (pFilter == NULL)
+	{
+		return FALSE; 
+	}
 
-  ISpecifyPropertyPages *pProp = NULL;
-  HRESULT hr = S_OK;
+	ISpecifyPropertyPages *pProp = NULL;
+	HRESULT hr = S_OK;
     
     hr = pFilter->QueryInterface(IID_ISpecifyPropertyPages, 
-    (void**)&pProp);
+		(void**)&pProp);
 
     SAFE_RELEASE(pProp);
-  return (SUCCEEDED(hr));
+	return (SUCCEEDED(hr));
 }
 
 
@@ -1029,42 +1019,42 @@ inline HRESULT ShowFilterPropertyPage(IBaseFilter *pFilter, HWND hwndParent)
     HRESULT hr;
 
     ISpecifyPropertyPages *pSpecify = NULL;
-  FILTER_INFO FilterInfo;
-  CAUUID caGUID;
+	FILTER_INFO FilterInfo;
+	CAUUID caGUID;
 
     if (!pFilter)
-  {
+	{
         return E_POINTER;
-  }
+	}
 
-  ZeroMemory(&FilterInfo, sizeof(FilterInfo));
-  ZeroMemory(&caGUID, sizeof(caGUID));
+	ZeroMemory(&FilterInfo, sizeof(FilterInfo));
+	ZeroMemory(&caGUID, sizeof(caGUID));
 
     // Discover if this filter contains a property page
     CHECK_HR(hr = pFilter->QueryInterface(IID_ISpecifyPropertyPages, (void **)&pSpecify));
 
     CHECK_HR(hr = pFilter->QueryFilterInfo(&FilterInfo));
 
-  CHECK_HR(hr = pSpecify->GetPages(&caGUID));
+	CHECK_HR(hr = pSpecify->GetPages(&caGUID));
 
-  // Display the filter's property page
-  CHECK_HR(hr = OleCreatePropertyFrame(
-      hwndParent,             // Parent window
-      0,                      // x (Reserved)
-      0,                      // y (Reserved)
-      FilterInfo.achName,     // Caption for the dialog box
-      1,                      // Number of filters
-      (IUnknown **)&pFilter,  // Pointer to the filter 
-      caGUID.cElems,          // Number of property pages
-      caGUID.pElems,          // Pointer to property page CLSIDs
-      0,                      // Locale identifier
-      0,                      // Reserved
-      NULL                    // Reserved
-      ));
+	// Display the filter's property page
+	CHECK_HR(hr = OleCreatePropertyFrame(
+			hwndParent,             // Parent window
+			0,                      // x (Reserved)
+			0,                      // y (Reserved)
+			FilterInfo.achName,     // Caption for the dialog box
+			1,                      // Number of filters
+			(IUnknown **)&pFilter,  // Pointer to the filter 
+			caGUID.cElems,          // Number of property pages
+			caGUID.pElems,          // Pointer to property page CLSIDs
+			0,                      // Locale identifier
+			0,                      // Reserved
+			NULL                    // Reserved
+			));
 
 done:
-  CoTaskMemFree(caGUID.pElems);
-  SAFE_RELEASE(FilterInfo.pGraph); 
+	CoTaskMemFree(caGUID.pElems);
+	SAFE_RELEASE(FilterInfo.pGraph); 
     SAFE_RELEASE(pSpecify);
     return hr;
 }
@@ -1084,34 +1074,35 @@ done:
 
 inline HRESULT DisconnectPin(IGraphBuilder *pGraph, IPin *pPin)
 {
-  if (!pGraph || !pPin)
-  {
-    return E_POINTER;
-  }
+    if (!pGraph || !pPin)
+    {
+        return E_POINTER;
+    }
 
-  HRESULT hr = S_OK;
-  Com::SmartPtr<IPin> pPinTo = NULL;
+    HRESULT hr = S_OK;
+    IPin *pPinTo = NULL;
 
-  hr = pPin->ConnectedTo(&pPinTo);
-  if (hr == VFW_E_NOT_CONNECTED)
-  {
-    // This pin is not connected.
-    return S_OK; // no-op
-  }
+    hr = pPin->ConnectedTo(&pPinTo);
+    if (hr == VFW_E_NOT_CONNECTED)
+    {
+        // This pin is not connected.
+        return S_OK; // no-op
+    }
 
-  // Disconnect the first pin.
+    // Disconnect the first pin.
 
-  if (SUCCEEDED(hr))
-  {
-    hr = pGraph->Disconnect(pPin);
+	if (SUCCEEDED(hr))
+	{
+	    hr = pGraph->Disconnect(pPin);
+	}
     if (SUCCEEDED(hr))
     {
-      // Disconnect the other pin.
-      hr = pGraph->Disconnect(pPinTo);
+        // Disconnect the other pin.
+        hr = pGraph->Disconnect(pPinTo);
     }
-  }
 
-  return hr;
+    SAFE_RELEASE(pPinTo);
+	return hr;
 }
 
 
@@ -1133,17 +1124,23 @@ inline HRESULT RemoveFilter(IGraphBuilder *pGraph, IBaseFilter *pFilter)
     }
 
     HRESULT hr = S_OK;
+    IEnumPins *pEnum = NULL;
+    IPin *pPin = NULL;
 
-    BeginEnumPins(pFilter, pEP, pPin)
-    {
-      CHECK_HR(hr = DisconnectPin(pGraph, pPin));
-    }
-    EndEnumPins;
+    CHECK_HR(hr = pFilter->EnumPins(&pEnum));
 
     // Disconnect all the pins
+    while (S_OK == pEnum->Next(1, &pPin, 0))
+    {
+        CHECK_HR(hr = DisconnectPin(pGraph, pPin));
+        SAFE_RELEASE(pPin);
+    }
+
     CHECK_HR(hr = pGraph->RemoveFilter(pFilter));
 
 done:
+    SAFE_RELEASE(pPin);
+    SAFE_RELEASE(pEnum);
     return hr;
 }
 
@@ -1194,32 +1191,32 @@ done:
 
 inline HRESULT AddFilterFromMoniker(
     IGraphBuilder *pGraph,          // Pointer to the Filter Graph Manager.
-  IMoniker *pFilterMoniker,    // Pointer to the moniker.
+	IMoniker *pFilterMoniker,		// Pointer to the moniker.
     IBaseFilter **ppF,              // Receives a pointer to the filter.
-    LPCWSTR wszName                // A name for the filter (can be NULL).
-  )
+    LPCWSTR wszName		            // A name for the filter (can be NULL).
+	)
 {
-  if (!pGraph || !pFilterMoniker || !ppF)
-  {
-    return E_POINTER;
-  }
+	if (!pGraph || !pFilterMoniker || !ppF)
+	{
+		return E_POINTER;
+	}
 
     HRESULT hr = S_OK;
-  IBaseFilter *pFilter = NULL;
+	IBaseFilter *pFilter = NULL;
 
-  // Use the moniker to create the filter
+	// Use the moniker to create the filter
     CHECK_HR(hr = pFilterMoniker->BindToObject(0, 0, IID_IBaseFilter, (void**)&pFilter));   
     
-  // Add the capture filter to the filter graph
-  CHECK_HR(hr = pGraph->AddFilter(pFilter, wszName));
+	// Add the capture filter to the filter graph
+	CHECK_HR(hr = pGraph->AddFilter(pFilter, wszName));
 
-  // Return to the caller.
-  *ppF = pFilter;
-  (*ppF)->AddRef();
+	// Return to the caller.
+	*ppF = pFilter;
+	(*ppF)->AddRef();
 
 done:
-  SAFE_RELEASE(pFilter);
-  return hr;
+	SAFE_RELEASE(pFilter);
+	return hr;
 }
 
 
@@ -1308,7 +1305,7 @@ inline HRESULT AddWriterFilter(
     IGraphBuilder *pGraph,
     const WCHAR *szFile,
     const GUID& clsid,
-  BOOL bOverwrite,
+	BOOL bOverwrite,
     IBaseFilter **ppFilter
     )
 {
@@ -1328,22 +1325,22 @@ inline HRESULT AddWriterFilter(
     HRESULT hr = S_OK;
     IBaseFilter *pFilter = NULL;
     IFileSinkFilter *pSink = NULL;
-  IFileSinkFilter2 *pSink2 = NULL;
+	IFileSinkFilter2 *pSink2 = NULL;
 
     CHECK_HR(hr = AddFilterByCLSID(pGraph, clsid, &pFilter, szFile));
 
     CHECK_HR(hr = pFilter->QueryInterface(IID_IFileSinkFilter, (void**)&pSink));
     CHECK_HR(hr = pSink->SetFileName((LPCOLESTR)szFile, NULL));
 
-  if (bOverwrite)
-  {
+	if (bOverwrite)
+	{
         // Try to use IFileSinkFilter2 to set the file-overwrite mode, but if the filter 
         // does not implement IFileSinkFilter2, just ignore it.
-    if (SUCCEEDED(pFilter->QueryInterface(IID_IFileSinkFilter2, (void**)&pSink2)))
+		if (SUCCEEDED(pFilter->QueryInterface(IID_IFileSinkFilter2, (void**)&pSink2)))
         {
-      CHECK_HR(hr = pSink2->SetMode(AM_FILE_OVERWRITE));
-    }
-  }
+			CHECK_HR(hr = pSink2->SetMode(AM_FILE_OVERWRITE));
+		}
+	}
 
     *ppFilter = pFilter;
     (*ppFilter)->AddRef();
@@ -1354,9 +1351,9 @@ done:
         RemoveFilter(pGraph, pFilter);
     }
 
-  SAFE_RELEASE(pFilter);
-  SAFE_RELEASE(pSink);
-  SAFE_RELEASE(pSink2);
+	SAFE_RELEASE(pFilter);
+	SAFE_RELEASE(pSink);
+	SAFE_RELEASE(pSink2);
     return hr;
 }
 
@@ -1398,12 +1395,12 @@ inline HRESULT ConnectFilters(
     // Find an input pin on the downstream filter.
     CHECK_HR(hr = FindUnconnectedPin(pDest, PINDIR_INPUT, &pIn));
 
-  // Try to connect them.
+	// Try to connect them.
     CHECK_HR(hr = pGraph->Connect(pOut, pIn));
 
 done:
-  SAFE_RELEASE(pIn);
-  return hr;
+	SAFE_RELEASE(pIn);
+	return hr;
 }
 
 // ConnectFilters: Filter to filter
@@ -1449,7 +1446,7 @@ inline HRESULT ConnectFilters(IGraphBuilder *pGraph, IBaseFilter *pSrc, IPin *pI
     CHECK_HR(hr = pGraph->Connect(pOut, pIn));
 
 done:
-  SAFE_RELEASE(pOut);
+	SAFE_RELEASE(pOut);
     return hr;
 }
  
@@ -1944,7 +1941,7 @@ inline REFERENCE_TIME FramesPerSecToFrameLength(double fps)
 
 inline LONG RefTimeToMsec(const REFERENCE_TIME& time)
 {
-  return (LONG)(time / (ONE_SECOND / ONE_MSEC));
+	return (LONG)(time / (ONE_SECOND / ONE_MSEC));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -2382,34 +2379,34 @@ inline HRESULT LetterBoxRect(const SIZE &aspectRatio, const RECT &rcDest, RECT *
 
 inline HRESULT SetMediaTypeFormatBlock(AM_MEDIA_TYPE *pmt, BYTE *pBuffer, DWORD cbBuffer)
 {
-  if (!pmt)
-  {
-    return E_POINTER;
-  }
-  if (!pBuffer && cbBuffer > 0)
-  {
-    return E_INVALIDARG;
-  }
+	if (!pmt)
+	{
+		return E_POINTER;
+	}
+	if (!pBuffer && cbBuffer > 0)
+	{
+		return E_INVALIDARG;
+	}
 
-  HRESULT hr = S_OK;
+	HRESULT hr = S_OK;
 
-  pmt->pbFormat = (BYTE*)CoTaskMemRealloc(pmt->pbFormat, cbBuffer);
-  pmt->cbFormat = cbBuffer;
+	pmt->pbFormat = (BYTE*)CoTaskMemRealloc(pmt->pbFormat, cbBuffer);
+	pmt->cbFormat = cbBuffer;
 
-  if (cbBuffer > 0)
-  {
-    if (pmt->pbFormat)
-    {
-      CopyMemory(pmt->pbFormat, pBuffer, cbBuffer);
-    }
-    else
-    {
-      pmt->cbFormat = 0;
-      hr = E_OUTOFMEMORY;  // CoTaskMemRealloc failed
-    }
-  }    
+	if (cbBuffer > 0)
+	{
+		if (pmt->pbFormat)
+		{
+			CopyMemory(pmt->pbFormat, pBuffer, cbBuffer);
+		}
+		else
+		{
+			pmt->cbFormat = 0;
+			hr = E_OUTOFMEMORY;  // CoTaskMemRealloc failed
+		}
+	}		
 
-  return hr;
+	return hr;
 }
 
 
@@ -2525,15 +2522,15 @@ inline HRESULT RenderFileToVideoRenderer(IGraphBuilder *pGraph, WCHAR *wFileName
         return E_POINTER;
     }
 
-  HRESULT hr = S_OK;
+	HRESULT hr = S_OK;
 
-  BOOL bRenderedAnyPin = FALSE;
+	BOOL bRenderedAnyPin = FALSE;
 
     IBaseFilter *pSource = NULL;
     IPin *pPin = NULL;
-  IFilterGraph2 *pGraph2 = NULL;
-  IEnumPins *pEnum = NULL;
-  IBaseFilter *pAudioRenderer = NULL;
+	IFilterGraph2 *pGraph2 = NULL;
+	IEnumPins *pEnum = NULL;
+	IBaseFilter *pAudioRenderer = NULL;
 
     // Get the IFilterGraph2 interface from the Filter Graph Manager.
     CHECK_HR(hr = pGraph->QueryInterface(IID_IFilterGraph2, (void**)&pGraph2));
@@ -2550,39 +2547,39 @@ inline HRESULT RenderFileToVideoRenderer(IGraphBuilder *pGraph, WCHAR *wFileName
     // Enumerate the pins on the source filter.
     CHECK_HR(hr = pSource->EnumPins(&pEnum));
 
-  // Loop through all the pins
+	// Loop through all the pins
 
-  while (S_OK == pEnum->Next(1, &pPin, NULL))
-  {      
-    // Try to render this pin. 
-    // It's OK if we fail some pins, if at least one pin renders.
-    HRESULT hr2 = pGraph2->RenderEx(pPin, AM_RENDEREX_RENDERTOEXISTINGRENDERERS, NULL);
+	while (S_OK == pEnum->Next(1, &pPin, NULL))
+	{			
+		// Try to render this pin. 
+		// It's OK if we fail some pins, if at least one pin renders.
+		HRESULT hr2 = pGraph2->RenderEx(pPin, AM_RENDEREX_RENDERTOEXISTINGRENDERERS, NULL);
 
-    pPin->Release();
+		pPin->Release();
 
-    if (SUCCEEDED(hr2))
-    {
-      bRenderedAnyPin = TRUE;
-    }
-  }
+		if (SUCCEEDED(hr2))
+		{
+			bRenderedAnyPin = TRUE;
+		}
+	}
 
     // Try to remove any unconnected filters.
-  CHECK_HR(hr = RemoveUnconnectedFilters(pGraph));
+	CHECK_HR(hr = RemoveUnconnectedFilters(pGraph));
 
 done:
-  SAFE_RELEASE(pEnum);
-  SAFE_RELEASE(pAudioRenderer);
-  SAFE_RELEASE(pGraph2);
+	SAFE_RELEASE(pEnum);
+	SAFE_RELEASE(pAudioRenderer);
+	SAFE_RELEASE(pGraph2);
 
-  // If we succeeded to this point, make sure we rendered at least one 
-  // stream.
-  if (SUCCEEDED(hr))
-  {
-    if (!bRenderedAnyPin)
-    {
-      hr = VFW_E_CANNOT_RENDER;
-    }
-  }
+	// If we succeeded to this point, make sure we rendered at least one 
+	// stream.
+	if (SUCCEEDED(hr))
+	{
+		if (!bRenderedAnyPin)
+		{
+			hr = VFW_E_CANNOT_RENDER;
+		}
+	}
 
-  return hr;
+	return hr;
 }

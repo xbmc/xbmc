@@ -35,8 +35,6 @@
 #include "dsconfig.h"
 #include "fgmanager.h"
 
-#include "DShowUtil/smartptr.h"
-
 #ifdef HAS_VIDEO_PLAYBACK
   #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -48,7 +46,7 @@
 
 using namespace XFILE;
 
-#define WM_GRAPHEVENT  WM_USER + 13
+#define WM_GRAPHEVENT	WM_USER + 13
 #define TIME_FORMAT_TO_MS 10000      // 10 ^ 4
 
 /** Video state mode */
@@ -147,9 +145,7 @@ public:
   /// @return Informations about the current audio track
   CStdString GetAudioInfo();
   /// @return Informations about the current video track
-  CStdString GetVideoInfo();
-
-  static Com::SmartPtr<IFilterGraph2> m_pFilterGraph;
+  CStdString GetVideoInfo();  
  
 protected:
 
@@ -162,10 +158,11 @@ protected:
 private:
   //Direct Show Filters
   CFGManager*                     m_pGraphBuilder;
-  Com::SmartPtr<IMediaControl>          m_pMediaControl;  
-  Com::SmartPtr<IMediaEventEx>          m_pMediaEvent;
-  Com::SmartPtr<IMediaSeeking>          m_pMediaSeeking;
-  Com::SmartPtr<IBasicAudio>            m_pBasicAudio;
+  IMediaControl*                  m_pMediaControl;  
+  IMediaEventEx*                  m_pMediaEvent;
+  IMediaSeeking*                  m_pMediaSeeking;
+  IBasicAudio*                    m_pBasicAudio;
+  IQualProp*                      m_pQualProp;
 
   bool m_bAllowFullscreen;
   bool m_bReachedEnd;
@@ -179,7 +176,6 @@ private:
   CCritSec m_ObjectLock;
   CStdString m_pStrCurrentFrameRate;
   int        m_iCurrentFrameRefreshCycle;
-
   struct SPlayerState
   {
     void Clear()

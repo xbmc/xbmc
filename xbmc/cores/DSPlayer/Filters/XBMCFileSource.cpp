@@ -22,8 +22,8 @@ CXBMCFileStream::CXBMCFileStream(CFile *file, IBaseFilter **pBF, HRESULT *phr) :
   if (SUCCEEDED(hr))
   {
     *pBF = pXBMCReader;
-    (*pBF)->AddRef();
-    CLog::Log(LOGNOTICE,"%s Successfully created xbmc source filter", __FUNCTION__);
+	  (*pBF)->AddRef();
+	  CLog::Log(LOGNOTICE,"%s Successfully created xbmc source filter", __FUNCTION__);
   }
   else
     CLog::Log(LOGERROR,"%s Failed to create xbmc source filter", __FUNCTION__);

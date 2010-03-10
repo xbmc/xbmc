@@ -27,6 +27,7 @@
 #include "streams.h"
 #include "uuids.h"//CLSID_SystemDeviceEnum and CLSID_AudioRendererCategory
 #include "DShowUtil/regkey.h"
+#include "DShowUtil/DShowUtil.h"
 
 CDirectShowEnumerator::CDirectShowEnumerator(void)
 {
@@ -42,60 +43,47 @@ std::vector<DSFilterInfo> CDirectShowEnumerator::GetAudioRenderers()
 {
   CSingleLock lock (m_critSection);
   vDSFilterInfo.clear();
-  ICreateDevEnum *sys_dev_enum = NULL;
-  IEnumMoniker *enum_moniker = NULL;
-  HRESULT hr;
-  int ret = -1;
-  do {
-    hr = CoCreateInstance(CLSID_SystemDeviceEnum, NULL, CLSCTX_INPROC_SERVER, IID_ICreateDevEnum, (void**)&sys_dev_enum);
-    if (FAILED(hr)) 
-      break;
-    //would it be better to enum with this flag CDEF_DEVMON_FILTER
-    //this is enumerating only the native DirectShow filters.
-    hr = sys_dev_enum->CreateClassEnumerator(CLSID_AudioRendererCategory, &enum_moniker, 0);
-    if (hr != NOERROR)
-    {
-      SAFE_RELEASE(sys_dev_enum);
-      break;
-    }
-    
-  //vDSFilterInfo.push_back(
-    IMoniker			*moniker = NULL;
-    IPropertyBag		*propbag = NULL;
-    ULONG f;
-    while (enum_moniker->Next(1, &moniker, &f) == NOERROR) 
-    {
-      if (SUCCEEDED(moniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**)&propbag)))
-      {
-        VARIANT				var;
-				VariantInit(&var);
-        CStdString filterName;
-        CStdString filterGuid;
-        if (SUCCEEDED(propbag->Read(L"FriendlyName", &var, 0)))
-          filterName = CStdString(var.bstrVal);
-        VariantClear(&var);
-        VariantInit(&var);
-        if (SUCCEEDED(propbag->Read(L"CLSID", &var, 0)))
-          filterGuid = CStdString(var.bstrVal);
-        directshow_add_filter(filterGuid,filterName);
-      }
-      SAFE_RELEASE(moniker);
-    }
-    SAFE_RELEASE(enum_moniker);
-  } while (0);
+  
+  Com::SmartPtr<IPropertyBag> propBag;
 
-  SAFE_RELEASE(sys_dev_enum);
+  BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
+  {
+    if (SUCCEEDED(pMoniker->BindToStorage(NULL, NULL, IID_IPropertyBag, (void**) &propBag)))
+    {
+      _variant_t var;
+
+      CStdStringW filterName;
+      CStdStringW filterGuid;
+
+      if (SUCCEEDED(propBag->Read(L"FriendlyName", &var, 0)))
+        filterName = CStdStringW(var.bstrVal);
+
+      var.Clear();
+
+      if (SUCCEEDED(propBag->Read(L"CLSID", &var, 0)))
+        filterGuid = CStdStringW(var.bstrVal);
+
+      AddFilter(filterGuid, filterName);
+
+      propBag = NULL;
+    }
+  }
+  EndEnumSysDev;
+
+
   return vDSFilterInfo;
 }
 
-bool CDirectShowEnumerator::directshow_add_filter(LPCTSTR lpstrGuid, LPCTSTR lpcstrName)
+bool CDirectShowEnumerator::AddFilter( CStdStringW lpGuid, CStdStringW lpName )
 {
-  struct DSFilterInfo dInfo;
-  dInfo.lpstrGuid = lpstrGuid;
-  dInfo.lpstrName = lpcstrName;
-  g_charsetConverter.unknownToUTF8(dInfo.lpstrName);
-  CDirectShowEnumerator::vDSFilterInfo.push_back(dInfo);
-  CLog::Log(LOGDEBUG, "%s - found Device: %s with guid %s", __FUNCTION__,lpcstrName,lpstrGuid);
+  DSFilterInfo filterInfo;
+  filterInfo.lpstrGuid = lpGuid;
+
+  g_charsetConverter.wToUTF8(lpName, filterInfo.lpstrName);
+
+  vDSFilterInfo.push_back(filterInfo);
+  
+  CLog::Log(LOGDEBUG, "Found DirectShow device \"%s\" (guid: %s)", filterInfo.lpstrName.c_str(), filterInfo.lpstrGuid.c_str());
   return true;
 }
 

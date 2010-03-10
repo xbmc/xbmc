@@ -25,8 +25,8 @@ struct SStreamInfos
   CStdString name;
   CStdString codecname;
   DWORD flags;
-  Com::SmartPtr<IPin> pObj; ///< Output pin of the splitter
-  Com::SmartPtr<IPin> pUnk; ///< Input pin of the filter
+  IUnknown *pObj; ///< Output pin of the splitter
+  IUnknown *pUnk; ///< Input pin of the filter
   LCID  lcid;
   DWORD group;
   SStreamType type;
@@ -165,7 +165,7 @@ public:
   CStdString GetAudioCodecName();
   CStdString GetVideoCodecName();
 
-  bool InitManager(CDSGraph *DSGraph);
+  bool InitManager(IFilterGraph2 *graphBuilder, CDSGraph *DSGraph);
 
   void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
 
@@ -178,12 +178,11 @@ private:
 
   std::vector<SAudioStreamInfos *> m_audioStreams;
   std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
+  IAMStreamSelect *m_pIAMStreamSelect;
 
-  Com::SmartPtr<IAMStreamSelect> m_pIAMStreamSelect;
-  Com::SmartPtr<IFilterGraph2> m_pGraphBuilder;
-  Com::SmartPtr<IBaseFilter> m_pSplitter;
-
+  IFilterGraph2* m_pGraphBuilder;
   CDSGraph* m_pGraph;
+  IBaseFilter* m_pSplitter;
 
   bool m_init;
   bool m_bChangingAudioStream;
@@ -192,5 +191,5 @@ private:
   SVideoStreamInfos m_videoStream;
   bool m_bSubtitlesUnconnected;
 
-  Com::SmartPtr<IPin> m_SubtitleInputPin;
+  IPin* m_SubtitleInputPin;
 };

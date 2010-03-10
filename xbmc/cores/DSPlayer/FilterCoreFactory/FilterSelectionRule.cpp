@@ -87,7 +87,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
 {
   CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: considering rule: %s", m_name.c_str());
 
-  if (m_bStreamDetails && (!item.HasVideoInfoTag() && !s)) return;
+  if (m_bStreamDetails && (!item.HasVideoInfoTag() || !s)) return;
   /*
   if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio()) return;
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo()) return;
@@ -103,7 +103,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
 
   if (m_bStreamDetails)
   {
-    if (!item.GetVideoInfoTag()->HasStreamDetails() && !s)
+    if (!item.GetVideoInfoTag()->HasStreamDetails() || !s)
     {
       CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: cannot check rule: %s, no StreamDetails", m_name.c_str());
       return;

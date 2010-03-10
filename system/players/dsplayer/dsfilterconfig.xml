@@ -182,6 +182,12 @@
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>  
+	<rule filetypes="divx">
+      <source filter="avisource" />
+      <splitter filter="avisplitter" />
+      <video filter="ffdvideodec" />
+      <audio filter="ac3filter" />
+    </rule>
     <rule filetypes="ogm">
       <source filter="oggsource" />
       <splitter filter="oggsplitter" />

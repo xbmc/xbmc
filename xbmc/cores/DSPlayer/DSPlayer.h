@@ -21,7 +21,7 @@
 *
 */
 
-//#include "Intsafe.h"
+#include "Intsafe.h"
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
 #include "SingleLock.h"

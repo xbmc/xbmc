@@ -12,8 +12,6 @@
 #include "oaidl.H"
 //_beginthreadex
 #include <process.h>
-#pragma comment(lib, "comsuppw.lib")
-#include "smartptr.h"
 
 bool DShowUtil::GuidVectItterCompare(GuidListIter it, std::vector<GUID>::const_reference vect)
 {
@@ -103,12 +101,12 @@ std::vector<IMoniker*> DShowUtil::GetAudioRenderersGuid()
   //CLSID_AudioRendererCategory
   //IEnumMoniker* pEM;
   BeginEnumSysDev(CLSID_AudioRendererCategory, pMoniker)
-  {
-    vAudioRenderers.push_back(pMoniker);
+	{
+	  vAudioRenderers.push_back(pMoniker);
     //pMoniker
-    //m_armerit = max(m_armerit, f.GetMerit());
+	  //m_armerit = max(m_armerit, f.GetMerit());
   }
-  EndEnumSysDev
+	EndEnumSysDev
   return vAudioRenderers;
 }
 
@@ -134,7 +132,7 @@ int DShowUtil::CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& 
     PIN_DIRECTION dir;
     if(SUCCEEDED(pPin->QueryDirection(&dir)))
     {
-      Com::SmartPtr<IPin> pPinConnectedTo;
+      IPin* pPinConnectedTo;
       pPin->ConnectedTo(&pPinConnectedTo);
 
       if(dir == PINDIR_INPUT) {nIn++; if(pPinConnectedTo) nInC++;}
@@ -165,7 +163,7 @@ bool DShowUtil::IsStreamStart(IBaseFilter* pBF)
   IAMFilterMiscFlags* pAMMF;
   pBF->QueryInterface(__uuidof(IAMFilterMiscFlags),(void **)&pAMMF);
   
-  //Com::SmartQIPtr<IAMFilterMiscFlags> pAMMF(pBF);
+  //CComQIPtr<IAMFilterMiscFlags> pAMMF(pBF);
   if(pAMMF && pAMMF->GetMiscFlags()&AM_FILTER_MISC_FLAGS_IS_SOURCE)
     return(true);
 
@@ -295,11 +293,12 @@ IPin* DShowUtil::GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin)
     if(pInputPin && pInputPin != pPin) continue;
 
     PIN_DIRECTION dir;
-    Com::SmartPtr<IPin> pPinConnectedTo;
+    IPin* pPinConnectedTo;
     if(SUCCEEDED(pPin->QueryDirection(&dir)) && dir == PINDIR_INPUT
-      && SUCCEEDED(pPin->ConnectedTo(&pPinConnectedTo)))
+    && SUCCEEDED(pPin->ConnectedTo(&pPinConnectedTo)))
     {
-      IPin* pRet = pPinConnectedTo.Detach();
+      IPin* pRet = pPinConnectedTo;
+      pPinConnectedTo = NULL;
       pRet->Release();
       return(pRet);
     }
@@ -320,7 +319,7 @@ IPin* DShowUtil::GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir)
     pPin->QueryDirection(&dir2);
     if(dir == dir2)
     {
-      IPin* pRet = pPin.Detach();
+      IPin* pRet = pPin;
       pRet->Release();
       return(pRet);
     }
@@ -338,10 +337,11 @@ IPin* DShowUtil::GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)
   {
     PIN_DIRECTION dir2;
     pPin->QueryDirection(&dir2);
-    Com::SmartPtr<IPin> pPinTo;
+    IPin* pPinTo;
     if(dir == dir2 && (S_OK != pPin->ConnectedTo(&pPinTo)))
     {
-      IPin* pRet = pPin.Detach();
+      IPin* pRet = pPin;
+      pPin = NULL;
       pRet->Release();
       return(pRet);
     }
@@ -381,7 +381,7 @@ IPin* DShowUtil::FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MED
   PIN_DIRECTION  pindir;
   BeginEnumPins(pBF, pEP, pPin)
   {
-    Com::SmartPtr<IPin>    pFellow;
+    IPin*    pFellow;
 
     if (SUCCEEDED (pPin->QueryDirection(&pindir)) &&
       pindir == direction &&
@@ -391,6 +391,10 @@ IPin* DShowUtil::FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MED
       {
         if (pmt->majortype == pRequestedMT->majortype && pmt->subtype == pRequestedMT->subtype)
         {
+          IPin* pRet = pPin;
+          pPin = NULL;
+          pRet->Release();
+          DeleteMediaType(pmt);
           return (pPin);
         }
       }
@@ -557,10 +561,10 @@ IPin* DShowUtil::AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder*
             pEnum->Reset();
         }
       }
-    }
       
       //if(!pFilters.Find(pBF2) && SUCCEEDED(pGB->RemoveFilter(pBF2))) 
       //  pEnum->Reset();
+    }
     EndEnumFilters
 
     pRet = GetFirstPin(pBF, PINDIR_OUTPUT);
@@ -699,7 +703,8 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::vector<GUID>& types)
 
 void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
 {
-  mts.clear();
+  while (!mts.empty())
+    mts.pop_back();
 
   bool fFound = false;
   BeginEnumMediaTypes(pPin, pEM, pmt)
@@ -1134,21 +1139,21 @@ bool DShowUtil::CreateFilter(CStdStringW DisplayName, IBaseFilter** ppBF, CStdSt
   *ppBF = NULL;
   FriendlyName.Empty();
 
-  Com::SmartPtr<IBindCtx> pBindCtx;
+  IBindCtx* pBindCtx;
   CreateBindCtx(0, &pBindCtx);
 
-  Com::SmartPtr<IMoniker> pMoniker;
+  IMoniker* pMoniker;
   ULONG chEaten;
-  if(S_OK != MkParseDisplayName(pBindCtx, _bstr_t(DisplayName), &chEaten, &pMoniker))
+  if(S_OK != MkParseDisplayName(pBindCtx, LPCOLESTR(DisplayName.c_str()), &chEaten, &pMoniker))
     return(false);
 
   if(FAILED(pMoniker->BindToObject(pBindCtx, 0, IID_IBaseFilter, (void**)ppBF)) || !*ppBF)
     return(false);
 
-  Com::SmartPtr<IPropertyBag> pPB;
-  _variant_t var;
+  IPropertyBag* pPB;
+  VARIANT var;
   if(SUCCEEDED(pMoniker->BindToStorage(pBindCtx, 0, IID_IPropertyBag, (void**)&pPB))
-    && SUCCEEDED(pPB->Read(_bstr_t(_T("FriendlyName")), &var, NULL)))
+  && SUCCEEDED(pPB->Read(LPCOLESTR(_T("FriendlyName")), &var, NULL)))
     FriendlyName = var.bstrVal;
 
   return(true);
@@ -1259,22 +1264,20 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
   HRESULT hr = E_FAIL;
   CStdStringW fullpathW;
   g_charsetConverter.utf8ToW(fullpath, fullpathW);
-  if(hInst || (hInst = CoLoadLibrary(_bstr_t(fullpath), TRUE)))
+  if(hInst || (hInst = CoLoadLibrary(LPOLESTR(fullpathW.c_str()), true)))
   {
     typedef HRESULT (__stdcall * PDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
     PDllGetClassObject p = (PDllGetClassObject)GetProcAddress(hInst, "DllGetClassObject");
 
     if(p && FAILED(hr = p(clsid, iid, ppv)))
     {
-      Com::SmartPtr<IClassFactory> pCF;
+      IClassFactory* pCF;
       if(SUCCEEDED(hr = p(clsid, __uuidof(IClassFactory), (void**)&pCF)))
-      {
         hr = pCF->CreateInstance(NULL, iid, ppv);
-      }
     }
-  }
+  } 
   else 
-    CLog::Log(LOGDEBUG, "%s CoLoadLibrary fails : %d", __FUNCTION__, GetLastError());
+	  CLog::Log(LOGDEBUG, "%s CoLoadLibrary fails : %d", __FUNCTION__, GetLastError());
 
   if(FAILED(hr) && hInst && !fFound)
   {

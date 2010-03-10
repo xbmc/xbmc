@@ -28,43 +28,43 @@ public:
   static tagRECT CreateRect(int left,int top, int right, int bottom)
   {
     tagRECT p_rect;
-  p_rect.left = left;
-  p_rect.top = top;
-  p_rect.bottom = bottom;
+	p_rect.left = left;
+	p_rect.top = top;
+	p_rect.bottom = bottom;
     p_rect.right = right;
-  return p_rect;
+	return p_rect;
   }
 
   static tagRECT CreateRect(tagPOINT p_point, tagSIZE p_size)
   {
     tagRECT p_rect;
-  p_rect.left = p_point.x;
-  p_rect.right = p_size.cx + p_rect.left;
+	p_rect.left = p_point.x;
+	p_rect.right = p_size.cx + p_rect.left;
     p_rect.top = p_point.y;
-  p_rect.bottom = p_point.y + p_size.cy;
-  return p_rect;
+	p_rect.bottom = p_point.y + p_size.cy;
+	return p_rect;
   }
 
   static int GetWidth(tagRECT p_rect)
   {
-  return p_rect.right-p_rect.left;
+	return p_rect.right-p_rect.left;
   }
   static int GetHeight(tagRECT p_rect)
   {
-  return p_rect.bottom-p_rect.top;
+	return p_rect.bottom-p_rect.top;
   }
 
   static tagPOINT CreatePoint(int x, int y)
   {
     tagPOINT p_point;
-  p_point.x = x; p_point.y = y;
+	p_point.x = x; p_point.y = y;
     return p_point;
   }
 
   static tagSIZE CreateSize(int width,int height)
   {
     tagSIZE p_size;
-  p_size.cx = width;
+	p_size.cx = width;
     p_size.cy = height;
     return p_size;
   }
@@ -72,15 +72,15 @@ public:
   static tagSIZE GetSize(tagRECT p_rect)
   {
     tagSIZE p_size;
-  p_size.cx = p_rect.right-p_rect.left;
-  p_size.cy = p_rect.bottom-p_rect.top;
-  return p_size;
+	p_size.cx = p_rect.right-p_rect.left;
+	p_size.cy = p_rect.bottom-p_rect.top;
+	return p_size;
   }
 
   static bool SizeChanged(tagRECT p_rect1,tagRECT p_rect2)
   {
     tagSIZE p_size1,p_size2;
-  p_size1 = GetSize(p_rect1); p_size2 = GetSize(p_rect2);
+	p_size1 = GetSize(p_rect1); p_size2 = GetSize(p_rect2);
     if ((p_size1.cx != p_size2.cx) || (p_size2.cy != p_size2.cy))
       return false;
     return true;
@@ -109,8 +109,8 @@ public:
     if (height > 0)
       height = height / 2;
     tagPOINT p_point;
-  p_point.x = width;
-  p_point.y = height;
+	p_point.x = width;
+	p_point.y = height;
     return p_point;
   
   }

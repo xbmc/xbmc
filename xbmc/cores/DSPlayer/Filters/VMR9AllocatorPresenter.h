@@ -30,9 +30,7 @@ class CVMR9AllocatorPresenter  : public CDsRenderer,
 {
 public:
   CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error);
-
-  DECLARE_IUNKNOWN
-  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  
 
   // IVMRSurfaceAllocator9
   virtual STDMETHODIMP InitializeDevice(DWORD_PTR dwUserID, VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers);
@@ -44,6 +42,11 @@ public:
   virtual STDMETHODIMP StartPresenting( DWORD_PTR dwUserID);
   virtual STDMETHODIMP StopPresenting( DWORD_PTR dwUserID);
   virtual STDMETHODIMP PresentImage( DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo);
+
+  // IUnknown
+  virtual STDMETHODIMP QueryInterface(REFIID riid,void** ppvObject);
+  virtual ULONG STDMETHODCALLTYPE AddRef();
+  virtual ULONG STDMETHODCALLTYPE Release();
 
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
@@ -71,9 +74,8 @@ private:
   std::vector<IDirect3DSurface9*>     m_pSurfaces;
   int                                 m_pNbrSurface;
   int                                 m_pCurSurface;
-  bool          m_bNeedCheckSample;
-
-  CD3DTexture* m_pTexture;
+  CMacrovisionKicker *                m_pMacrovisionKicker;
+  COuterVMR9 *                        m_pOuterVMR9;
   
 };
 

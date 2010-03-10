@@ -1,6 +1,6 @@
 /* 
- *  Copyright (C) 2003-2006 Gabest
- *  http://www.gabest.org
+ *	Copyright (C) 2003-2006 Gabest
+ *	http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,17 +24,17 @@
 #pragma pack(1)
 struct VIH
 {
-  VIDEOINFOHEADER vih;
-  UINT mask[3];
-  int size;
-  const GUID* subtype;
+	VIDEOINFOHEADER vih;
+	UINT mask[3];
+	int size;
+	const GUID* subtype;
 };
 struct VIH2
 {
-  VIDEOINFOHEADER2 vih;
-  UINT mask[3];
-  int size;
-  const GUID* subtype;
+	VIDEOINFOHEADER2 vih;
+	UINT mask[3];
+	int size;
+	const GUID* subtype;
 };
 #pragma pack()
 

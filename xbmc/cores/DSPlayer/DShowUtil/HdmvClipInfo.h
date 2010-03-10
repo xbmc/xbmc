@@ -91,72 +91,72 @@ class CHdmvClipInfo
 {
 public:
 
-  struct Stream
-  {
-    Stream()
-    {
-      memset(this, 0, sizeof(*this));
-    }
-    SHORT          m_PID;
-    PES_STREAM_TYPE      m_Type;
-    char          m_LanguageCode[4];
-    LCID          m_LCID;
+	struct Stream
+	{
+		Stream()
+		{
+			memset(this, 0, sizeof(*this));
+		}
+		SHORT					m_PID;
+		PES_STREAM_TYPE			m_Type;
+		char					m_LanguageCode[4];
+		LCID					m_LCID;
 
-    // Valid for video types
-    BDVM_VideoFormat    m_VideoFormat;
-    BDVM_FrameRate      m_FrameRate;
-    BDVM_AspectRatio    m_AspectRatio;
-    // Valid for audio types
-    BDVM_ChannelLayout    m_ChannelLayout;
-    BDVM_SampleRate      m_SampleRate;
+		// Valid for video types
+		BDVM_VideoFormat		m_VideoFormat;
+		BDVM_FrameRate			m_FrameRate;
+		BDVM_AspectRatio		m_AspectRatio;
+		// Valid for audio types
+		BDVM_ChannelLayout		m_ChannelLayout;
+		BDVM_SampleRate			m_SampleRate;
 
-    LPCTSTR Format();
-  };
+		LPCTSTR Format();
+	};
 
-  struct PlaylistItem
-  {
-    CStdString        m_strFileName;
-    REFERENCE_TIME      m_rtIn;
-    REFERENCE_TIME      m_rtOut;
+	struct PlaylistItem
+	{
+		CStdString				m_strFileName;
+		REFERENCE_TIME			m_rtIn;
+		REFERENCE_TIME			m_rtOut;
 
-    REFERENCE_TIME Duration()
-    {
-      return m_rtOut - m_rtIn;
-    }
+		REFERENCE_TIME Duration()
+		{
+			return m_rtOut - m_rtIn;
+		}
 
-    bool operator == (const PlaylistItem& pi) const
-    {
-      return pi.m_strFileName == m_strFileName;
-    }
-  };
+		bool operator == (const PlaylistItem& pi) const
+		{
+			return pi.m_strFileName == m_strFileName;
+		}
+	};
 
-  CHdmvClipInfo(void);
-  ~CHdmvClipInfo();
+	CHdmvClipInfo(void);
+	~CHdmvClipInfo();
 
-  HRESULT    ReadInfo(LPCTSTR strFile);
-  Stream*    FindStream(SHORT wPID);
-  bool    IsHdmv()          { return m_bIsHdmv; };
-  int      GetStreamNumber()      { return int(m_Streams.GetCount()); };
-  Stream*    GetStreamByIndex(int nIndex){ return (unsigned(nIndex) < m_Streams.GetCount()) ? &m_Streams[nIndex] : NULL; };
+	HRESULT		ReadInfo(LPCTSTR strFile);
+	Stream*		FindStream(SHORT wPID);
+	bool		IsHdmv()					{ return m_bIsHdmv; };
+	int			GetStreamNumber()			{ return int(m_Streams.GetCount()); };
+	Stream*		GetStreamByIndex(int nIndex){ return (unsigned(nIndex) < m_Streams.GetCount()) ? &m_Streams[nIndex] : NULL; };
 
-  HRESULT    FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, std::list<PlaylistItem>& MainPlaylist);
-  HRESULT    ReadPlaylist(CStdString strPlaylistFile, REFERENCE_TIME& rtDuration, std::list<PlaylistItem>& Playlist);
+  HRESULT		FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, std::list<PlaylistItem>& MainPlaylist);
+  HRESULT		ReadPlaylist(CStdString strPlaylistFile, REFERENCE_TIME& rtDuration, std::list<PlaylistItem>& Playlist);
 
 private :
-  DWORD    SequenceInfo_start_address;
-  DWORD    ProgramInfo_start_address;
+	DWORD		SequenceInfo_start_address;
+	DWORD		ProgramInfo_start_address;
 
-  HANDLE    m_hFile;
+	HANDLE		m_hFile;
 
 
-  CAtlArray<Stream>  m_Streams;
-  bool        m_bIsHdmv;
+	CAtlArray<Stream>	m_Streams;
+	bool				m_bIsHdmv;
 
-  DWORD    ReadDword();
-  SHORT    ReadShort();
-  BYTE    ReadByte();
-  void    ReadBuffer(BYTE* pBuff, int nLen);
+	DWORD		ReadDword();
+	SHORT		ReadShort();
+	BYTE		ReadByte();
+	void		ReadBuffer(BYTE* pBuff, int nLen);
 
-  HRESULT    ReadProgramInfo();
-  HRESULT    CloseFile(HRESULT hr);
+	HRESULT		ReadProgramInfo();
+	HRESULT		CloseFile(HRESULT hr);
 };

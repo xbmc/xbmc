@@ -44,7 +44,7 @@ private:
   CCriticalSection m_critSection;
   std::vector<DSFilterInfo> vDSFilterInfo;
 
-  bool directshow_add_filter(LPCTSTR lpGuid, LPCTSTR lpcstrName);
+  bool AddFilter(CStdStringW lpGuid, CStdStringW lpName);
   
 };
 

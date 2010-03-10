@@ -33,7 +33,6 @@
 #include "Filters/IffdshowDecVideo.h"
 #include "DSPropertyPage.h"
 #include "DSGraph.h"
-#include "DShowUtil/smartptr.h"
 
 class CDSGraph;
 class CDSPropertyPage;
@@ -52,13 +51,13 @@ public:
   /**
    * Clear every interfaces
    */
-  void ClearConfig();
+  virtual void ClearConfig();
   /**
    * Configure the filters in the graph
    * @param[in] pGB Pointer to the graph interface
    * @return A HRESULT code
    */
-  virtual HRESULT ConfigureFilters();
+  virtual HRESULT ConfigureFilters(IFilterGraph2* pGB);
   /**
    * Retrieve a string containing the current DXVA mode
    * @return A CStdString containing the current DXVA mode
@@ -91,19 +90,13 @@ public:
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
   /** @} */
-  //Com::SmartQIPtr<IQualProp, &IID_IQualProp> pQualProp;
+  IQualProp*          pQualProp;
 protected:
   /**
    * If the filter expose a property page, add it to m_pPropertiesFilters
    * @param[in] pBF The filter to test
    * @return True if the filter expose a property page, false else*/
   bool LoadPropertiesPage(IBaseFilter *pBF);
-  /**
-   * Load configuration from the MP Audio Decoder
-   * @param[in] pBF Try to load the configuration from this filter
-   * @return True if the filter is a MP Audio Decoder, false else
-   */
-  bool GetMpaDec(IBaseFilter* pBF);
   /**
    * Load configuration from the MPC Video Decoder
    * @param[in] pBF Try to load the configuration from this filter
@@ -116,16 +109,23 @@ protected:
    * @return True if the filter is FFDShow, false else
    */
   bool GetffdshowFilters(IBaseFilter* pBF);
+
+  /**
+   * Configure the filters from the graph
+   */
+  void ConfigureFilters(void);
   
 private:
   void CreatePropertiesXml();
   CCritSec m_pLock;
 
   //Direct Show Filters
-
-  Com::SmartPtr<IMpaDecFilter>         m_pIMpaDecFilter;
+  IFilterGraph2*                 m_pGraphBuilder;
+  IMPCVideoDecFilter*         	 m_pIMpcDecFilter;
+  IBaseFilter*                   m_pSplitter;
   CStdString                     m_pStdDxva;
   GUID                           m_pGuidDxva;
+  std::list<AM_MEDIA_TYPE *>     m_pMediaType;
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
   //current page
   CDSPropertyPage*               m_pCurrentProperty;

@@ -1,6 +1,6 @@
 /* 
- *  Copyright (C) 2003-2006 Gabest
- *  http://www.gabest.org
+ *	Copyright (C) 2003-2006 Gabest
+ *	http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,26 +35,26 @@
 class CFGFilter
 {
 protected:
-  CLSID m_clsid;
-  CStdString m_name;
-  struct {union {UINT64 val; struct {UINT64 low:16, mid:32, high:16;};};} m_merit;
+	CLSID m_clsid;
+	CStdString m_name;
+	struct {union {UINT64 val; struct {UINT64 low:16, mid:32, high:16;};};} m_merit;
   std::list<GUID> m_types;
 
 public:
-  CFGFilter(const CLSID& clsid, CStdString name = L"", UINT64 merit = MERIT64_DO_USE);
+	CFGFilter(const CLSID& clsid, CStdString name = L"", UINT64 merit = MERIT64_DO_USE);
   CFGFilter() {};
-  virtual ~CFGFilter() {};
+	virtual ~CFGFilter() {};
 
-  CLSID GetCLSID() {return m_clsid;}
-  CStdStringW GetName() {return m_name;}
-  UINT64 GetMerit() {return m_merit.val;}
-  DWORD GetMeritForDirectShow() {return m_merit.mid;}
-  const std::list<GUID>& GetTypes() const;
-  void SetTypes(const std::list<GUID>& types);
-  void AddType(const GUID& majortype, const GUID& subtype);
-  bool CheckTypes(const std::vector<GUID>& types, bool fExactMatch);
+	CLSID GetCLSID() {return m_clsid;}
+	CStdStringW GetName() {return m_name;}
+	UINT64 GetMerit() {return m_merit.val;}
+	DWORD GetMeritForDirectShow() {return m_merit.mid;}
+	const std::list<GUID>& GetTypes() const;
+	void SetTypes(const std::list<GUID>& types);
+	void AddType(const GUID& majortype, const GUID& subtype);
+	bool CheckTypes(const std::vector<GUID>& types, bool fExactMatch);
 
-  std::list<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
+	std::list<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
 
   virtual HRESULT Create(IBaseFilter** ppBF) = 0;
 };
@@ -62,41 +62,41 @@ public:
 class CFGFilterRegistry : public CFGFilter
 {
 protected:
-  CStdString m_DisplayName;
-  IMoniker* m_pMoniker;
+	CStdString m_DisplayName;
+	IMoniker* m_pMoniker;
 
-  void ExtractFilterData(BYTE* p, UINT len);
+	void ExtractFilterData(BYTE* p, UINT len);
 
 public:
-  CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit = MERIT64_DO_USE);
-  CFGFilterRegistry(CStdString DisplayName, UINT64 merit = MERIT64_DO_USE);
-  CFGFilterRegistry(const CLSID& clsid, UINT64 merit = MERIT64_DO_USE);
+	CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit = MERIT64_DO_USE);
+	CFGFilterRegistry(CStdString DisplayName, UINT64 merit = MERIT64_DO_USE);
+	CFGFilterRegistry(const CLSID& clsid, UINT64 merit = MERIT64_DO_USE);
 
-  CStdString GetDisplayName() {return m_DisplayName;}
-  IMoniker* GetMoniker() {return m_pMoniker;}
+	CStdString GetDisplayName() {return m_DisplayName;}
+	IMoniker* GetMoniker() {return m_pMoniker;}
 
-  HRESULT Create(IBaseFilter** ppBF);
+	HRESULT Create(IBaseFilter** ppBF);
 };
 
 template<class T>
 class CFGFilterInternal : public CFGFilter
 {
 public:
-  CFGFilterInternal(CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE) : CFGFilter(__uuidof(T), name, merit) {}
+	CFGFilterInternal(CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE) : CFGFilter(__uuidof(T), name, merit) {}
 
-  HRESULT Create(IBaseFilter** ppBF)
-  {
-    CheckPointer(ppBF, E_POINTER);
+	HRESULT Create(IBaseFilter** ppBF)
+	{
+		CheckPointer(ppBF, E_POINTER);
 
-    HRESULT hr = S_OK;
-    IBaseFilter* pBF = new T(NULL, &hr);
-    if(FAILED(hr)) return hr;
+		HRESULT hr = S_OK;
+		IBaseFilter* pBF = new T(NULL, &hr);
+		if(FAILED(hr)) return hr;
 
-    *ppBF = pBF;
+		*ppBF = pBF;
     pBF = NULL;
 
-    return hr;
-  }
+		return hr;
+	}
 };
 
 class CFGFilterFile : public CFGFilter
@@ -126,25 +126,27 @@ interface IDsRenderer;
 class CFGFilterVideoRenderer : public CFGFilter
 {
 public:
-  CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE);
-  ~CFGFilterVideoRenderer();
+	CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE);
+	~CFGFilterVideoRenderer();
 
-  HRESULT Create(IBaseFilter** ppBF);
+	HRESULT Create(IBaseFilter** ppBF);
+private:
+	IDsRenderer* pCAP; // for delete
 };
 
 class CFGFilterList
 {
-  struct filter_t {int index; CFGFilter* pFGF; int group; bool exactmatch, autodelete;};
-  static int filter_cmp(const void* a, const void* b);
+	struct filter_t {int index; CFGFilter* pFGF; int group; bool exactmatch, autodelete;};
+	static int filter_cmp(const void* a, const void* b);
   std::list<filter_t> m_filters;
-  std::list<CFGFilter*> m_sortedfilters;
+	std::list<CFGFilter*> m_sortedfilters;
 
 public:
-  CFGFilterList();
-  virtual ~CFGFilterList();
+	CFGFilterList();
+	virtual ~CFGFilterList();
 
-  void RemoveAll();
-  void Insert(CFGFilter* pFGF, int group, bool exactmatch = false, bool autodelete = true);
+	void RemoveAll();
+	void Insert(CFGFilter* pFGF, int group, bool exactmatch = false, bool autodelete = true);
   
   std::list<CFGFilter*> GetSortedList();
 };

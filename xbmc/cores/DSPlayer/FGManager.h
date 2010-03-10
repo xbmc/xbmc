@@ -1,6 +1,6 @@
 /* 
- *  Copyright (C) 2003-2006 Gabest
- *  http://www.gabest.org
+ *	Copyright (C) 2003-2006 Gabest
+ *	http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,22 +50,22 @@ using namespace XFILE;
 class CFGLoader;
 
 class CFGManager:
-  public CCritSec
+	public CCritSec
 {
 public:
-  
-  class CStreamPath : public std::list<path_t> 
-  {
-  public: 
-    void Append(IBaseFilter* pBF, IPin* pPin); 
-    bool Compare(const CStreamPath& path);
-  };
+	
+	class CStreamPath : public std::list<path_t> 
+	{
+	public: 
+		void Append(IBaseFilter* pBF, IPin* pPin); 
+		bool Compare(const CStreamPath& path);
+	};
 
-  class CStreamDeadEnd : public CStreamPath 
-  {
-  public: 
+	class CStreamDeadEnd : public CStreamPath 
+	{
+	public: 
     std::list<CMediaType> mts;
-  };
+	};
 
 private:
   DWORD m_dwRegister;
@@ -73,54 +73,55 @@ private:
   std::vector<CStreamDeadEnd> m_deadends;
 
 protected:
-  Com::SmartPtr<IFilterMapper2> m_pFM;
-  Com::SmartPtr<IUnknown> m_pUnkInner;
+  IFilterMapper2* m_pFM;
+  IFilterGraph2*  m_pFG;
+  IUnknown* m_pUnkInner;
 
   bool m_audioPinConnected;
   bool m_videoPinConnected;
   bool m_subtitlePinConnected;
 
-  //std::list<CFGFilter*> m_source, m_transform, m_override;
+  std::list<CFGFilter*> m_source, m_transform, m_override;
 
   virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF);
 
   CFile                m_File;
   CFGLoader*           m_CfgLoader;
 
-  CStdString           m_xbmcConfigFilePath;
+	CStdString           m_xbmcConfigFilePath;
 
-  // IFilterGraph
-  STDMETHODIMP AddFilter(IBaseFilter* pFilter, LPCWSTR pName);
-  STDMETHODIMP RemoveFilter(IBaseFilter* pFilter);
-  STDMETHODIMP EnumFilters(IEnumFilters** ppEnum);
-  STDMETHODIMP FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter);
-  STDMETHODIMP Reconnect(IPin* ppin);
-  STDMETHODIMP SetDefaultSyncSource();
+	// IFilterGraph
+	STDMETHODIMP AddFilter(IBaseFilter* pFilter, LPCWSTR pName);
+	STDMETHODIMP RemoveFilter(IBaseFilter* pFilter);
+	STDMETHODIMP EnumFilters(IEnumFilters** ppEnum);
+	STDMETHODIMP FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter);
+	STDMETHODIMP Reconnect(IPin* ppin);
+	STDMETHODIMP SetDefaultSyncSource();
 
-  // IGraphBuilder
-  STDMETHODIMP Connect(IPin* pPinOut, IPin* pPinIn);
-  STDMETHODIMP Render(IPin* pPinOut);
-  STDMETHODIMP RenderFile(LPCWSTR lpcwstrFile, LPCWSTR lpcwstrPlayList) { return E_NOTIMPL; };
-  STDMETHODIMP AddSourceFilter(LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter) { return E_NOTIMPL; };
-  STDMETHODIMP SetLogFile(DWORD_PTR hFile) {return E_NOTIMPL; };
-  STDMETHODIMP Abort();
-  STDMETHODIMP ShouldOperationContinue();
+	// IGraphBuilder
+	STDMETHODIMP Connect(IPin* pPinOut, IPin* pPinIn);
+	STDMETHODIMP Render(IPin* pPinOut);
+	STDMETHODIMP RenderFile(LPCWSTR lpcwstrFile, LPCWSTR lpcwstrPlayList) { return E_NOTIMPL; };
+	STDMETHODIMP AddSourceFilter(LPCWSTR lpcwstrFileName, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter) { return E_NOTIMPL; };
+	STDMETHODIMP SetLogFile(DWORD_PTR hFile) {return E_NOTIMPL; };
+	STDMETHODIMP Abort();
+	STDMETHODIMP ShouldOperationContinue();
 
-  // IFilterGraph2
-  STDMETHODIMP AddSourceFilterForMoniker(IMoniker* pMoniker, IBindCtx* pCtx, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter);
-  STDMETHODIMP ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt);
+	// IFilterGraph2
+	STDMETHODIMP AddSourceFilterForMoniker(IMoniker* pMoniker, IBindCtx* pCtx, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter);
+	STDMETHODIMP ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt);
   STDMETHODIMP RenderEx(IPin* pPinOut, DWORD dwFlags, DWORD* pvContext) { return E_NOTIMPL; };
 
-  // IGraphBuilderDeadEnd
+	// IGraphBuilderDeadEnd
 
-  STDMETHODIMP_(size_t) GetCount();
-  STDMETHODIMP GetDeadEnd(int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts);
+	STDMETHODIMP_(size_t) GetCount();
+	STDMETHODIMP GetDeadEnd(int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts);
   //CfgManagerCustom
-  UINT64 m_vrmerit, m_armerit;
-  // IFilterGraph
+	UINT64 m_vrmerit, m_armerit;
+	// IFilterGraph
 public:
-  CFGManager();
-  virtual ~CFGManager();
+	CFGManager();
+	virtual ~CFGManager();
   void InitManager();
   void UpdateRegistry();
   void ForceStableCodecs();
@@ -132,17 +133,18 @@ public:
   STDMETHODIMP Disconnect(IPin* ppin);
   
   // IGraphBuilder2
-  HRESULT IsPinDirection(IPin* pPin, PIN_DIRECTION dir);
-  HRESULT IsPinConnected(IPin* pPin);
-  HRESULT ConnectFilter(IBaseFilter* pBF, IPin* pPinIn);
-  HRESULT ConnectFilter(IPin* pPinOut, IBaseFilter* pBF);
-  HRESULT ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt);
-  HRESULT NukeDownstream(IUnknown* pUnk);
-  HRESULT AddToROT();
-  HRESULT RemoveFromROT();
+	HRESULT IsPinDirection(IPin* pPin, PIN_DIRECTION dir);
+	HRESULT IsPinConnected(IPin* pPin);
+	HRESULT ConnectFilter(IBaseFilter* pBF, IPin* pPinIn);
+	HRESULT ConnectFilter(IPin* pPinOut, IBaseFilter* pBF);
+	HRESULT ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt);
+	HRESULT NukeDownstream(IUnknown* pUnk);
+	HRESULT AddToROT();
+	HRESULT RemoveFromROT();
   HRESULT RenderFileXbmc(const CFileItem& pFileItem);
   HRESULT GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer);
 
+  IFilterGraph2* GetGraphBuilder2(){return m_pFG;};
   HRESULT QueryInterface(REFIID iid , void** ppv);
 
   //CUnknown interface

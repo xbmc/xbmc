@@ -18,7 +18,6 @@ using namespace std;
 #include "event.h"
 #include "D3DResource.h"
 #include "utils/CriticalSection.h"
-#include "DShowUtil/smartptr.h"
 
 
 #define DS_NBR_3D_SURFACE 3
@@ -42,15 +41,11 @@ protected:
   void UnloadCurrentRenderer();
   UINT    GetAdapter(IDirect3D9 *pD3D);
   CCritSec                                m_RenderLock;
-
   //d3d stuff
-  Com::SmartPtr<IDirect3DTexture9>              m_pVideoTexture[DS_MAX_3D_SURFACE];
-  Com::SmartPtr<IDirect3DSurface9>              m_pVideoSurface[DS_MAX_3D_SURFACE];
+  IDirect3DTexture9*                      m_pVideoTexture[DS_MAX_3D_SURFACE];
+  IDirect3DSurface9*                      m_pVideoSurface[DS_MAX_3D_SURFACE];
   
-  int                                      m_nNbDXSurface;          // Total number of DX Surfaces
-  int                                      m_nVMR9Surfaces;          // Total number of DX Surfaces
-  int                                      m_iVMR9Surface;
-  int                                      m_nCurSurface;          // Surface currently displayed
+  int                                     m_nCurSurface;// Surface currently displayed
 
   D3DFORMAT                               m_SurfaceType;// Surface type
   D3DFORMAT                               m_BackbufferType;// backbuffer type
