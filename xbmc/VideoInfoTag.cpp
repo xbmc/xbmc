@@ -72,8 +72,10 @@ void CVideoInfoTag::Reset()
   m_fanart.m_xml = "";
   m_strRuntime = "";
   m_lastPlayed = "";
+  m_strShowLink = "";
   m_streamDetails.Reset();
   m_playCount = 0;
+  m_fEpBookmark = 0;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -92,6 +94,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   if (!m_strSortTitle.IsEmpty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
+  XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   if (tag == "episodedetails" || tag == "tvshow")
@@ -210,6 +213,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
   XMLUtils::SetAdditiveString(movie, "artist",
                          g_advancedSettings.m_videoItemSeparator, m_strArtist);
+  XMLUtils::SetAdditiveString(movie, "showlink",
+                         g_advancedSettings.m_videoItemSeparator, m_strShowLink);
 
   return true;
 }
@@ -285,6 +290,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iBookmarkId;
     ar << m_iTrack;
     ar << m_streamDetails;
+    ar << m_strShowLink;
+    ar << m_fEpBookmark;
   }
   else
   {
@@ -347,6 +354,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
     ar >> m_streamDetails;
+    ar >> m_strShowLink;
+    ar >> m_fEpBookmark;
   }
 }
 
@@ -371,6 +380,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::GetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
+  XMLUtils::GetFloat(movie, "epbookmark", m_fEpBookmark);
   int max_value = 10;
   const TiXmlElement* rElement = movie->FirstChildElement("rating");
   if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value>=1)
@@ -420,6 +430,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
   XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
   XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
+  XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.m_videoItemSeparator,m_strShowLink);
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");

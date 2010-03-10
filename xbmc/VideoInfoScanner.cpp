@@ -970,7 +970,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
+  long CVideoInfoScanner::AddMovie(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -987,7 +987,26 @@ namespace VIDEO
       CStdString strTrailer = pItem->FindTrailer();
       if (!strTrailer.IsEmpty())
         movieDetails.m_strTrailer = strTrailer;
-      m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      int idMovie=m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+
+      // setup links to shows if the linked shows are in the db
+      if (!movieDetails.m_strShowLink.IsEmpty())
+      {
+        CStdStringArray list;
+        StringUtils::SplitString(movieDetails.m_strShowLink,
+                                 g_advancedSettings.m_videoItemSeparator,list);
+        for (unsigned int i=0;i<list.size();++i)
+        {
+          CFileItemList items;
+          m_database.GetTvShowsByName(list[i],items);
+          if (items.Size())
+            m_database.LinkMovieToTvshow(idMovie,items[0]->GetVideoInfoTag()->m_iDbId,false);
+          else
+            CLog::Log(LOGDEBUG,"failed to link movie %s to show %s",
+                      movieDetails.m_strTitle.c_str(),list[i].c_str());
+        }
+      }
     }
     else if (content.Equals("tvshows"))
     {
@@ -1001,12 +1020,27 @@ namespace VIDEO
         // episode then add, which breaks multi-episode files.
         int idEpisode = m_database.AddEpisode(idShow, pItem->m_strPath);
         lResult = m_database.SetDetailsForEpisode(pItem->m_strPath, movieDetails, idShow, idEpisode);
+        if (movieDetails.m_fEpBookmark > 0)
+        {
+          movieDetails.m_strFileNameAndPath = pItem->m_strPath;
+          CBookmark bookmark;
+          bookmark.timeInSeconds = movieDetails.m_fEpBookmark;
+          bookmark.seasonNumber = movieDetails.m_iSeason;
+          bookmark.episodeNumber = movieDetails.m_iEpisode;
+          m_database.AddBookMarkForEpisode(movieDetails,bookmark);
+        }
       }
     }
     else if (content.Equals("musicvideos"))
     {
       m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
+    return lResult;
+  }
+
+  long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
+  {
+    long lResult = AddMovie(pItem, content, movieDetails, idShow);
     // get & save fanart image
     if (!pItem->CacheLocalFanart() || bRefresh)
     {
@@ -1378,10 +1412,11 @@ namespace VIDEO
     return count;
   }
 
-  void CVideoInfoScanner::FetchSeasonThumbs(int idTvShow)
+  void CVideoInfoScanner::FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck, bool download, bool overwrite)
   {
     CVideoInfoTag movie;
     m_database.GetTvShowInfo("",movie,idTvShow);
+    CStdString showDir(folderToCheck.IsEmpty() ? movie.m_strPath : folderToCheck);
     CFileItemList items;
     CStdString strPath;
     strPath.Format("videodb://2/2/%i/",idTvShow);
@@ -1391,15 +1426,15 @@ namespace VIDEO
     pItem->m_strPath.Format("%s/-1/",strPath.c_str());
     pItem->GetVideoInfoTag()->m_iSeason = -1;
     pItem->GetVideoInfoTag()->m_strPath = movie.m_strPath;
-    if (!XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
+    if (overwrite || !XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
       items.Add(pItem);
 
     // used for checking for a season[ ._-](number).tbn
     CFileItemList tbnItems;
-    CDirectory::GetDirectory(movie.m_strPath,tbnItems,".tbn");
+    CDirectory::GetDirectory(showDir,tbnItems,".tbn");
     for (int i=0;i<items.Size();++i)
     {
-      if (!items[i]->HasThumbnail())
+      if (overwrite || !items[i]->HasThumbnail())
       {
         CStdString strExpression;
         int iSeason = items[i]->GetVideoInfoTag()->m_iSeason;
@@ -1409,7 +1444,7 @@ namespace VIDEO
           strExpression = "season-specials.tbn";
         else
           strExpression.Format("season[ ._-]?(0?%i)\\.tbn",items[i]->GetVideoInfoTag()->m_iSeason);
-        bool bDownload=true;
+        bool bDownload = download;
         CRegExp reg;
         if (reg.RegComp(strExpression.c_str()))
         {
