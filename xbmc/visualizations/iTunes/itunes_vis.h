@@ -25,7 +25,7 @@
 #define IPLUGIN void*
 
 #include <Accelerate/Accelerate.h>
-#include <Quicktime/Quicktime.h>
+#include <QuickTime/QuickTime.h>
 
 #include "iTunesAPI.h"
 #include "iTunesVisualAPI.h"

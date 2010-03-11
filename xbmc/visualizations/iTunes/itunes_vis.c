@@ -21,7 +21,7 @@
 
 #include <dlfcn.h>                  /* for dlopen, dlclose */
 #include <string.h>
-#include <Quicktime/Quicktime.h>
+#include <QuickTime/QuickTime.h>
 #include <Accelerate/Accelerate.h>  /* for doing FFT */
 #include <sys/time.h>
 #include <AGL/agl.h>
