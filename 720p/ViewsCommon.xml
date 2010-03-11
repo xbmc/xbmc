@@ -317,6 +317,34 @@
 		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 		    </control>
 		    <control type="label">
+				<description>shadow</description>
+		        <posx>61</posx>
+				<posy>2</posy>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+				<textcolor>6D000000</textcolor>
+		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+		    </control>
+		    <control type="label">
+				<description>shadow</description>
+		        <posx>60</posx>
+				<posy>1</posy>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+				<textcolor>25000000</textcolor>
+		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+		    </control>
+		    <control type="label">
 		        <posx>60</posx>
 			    <width>356</width>
 			    <height>42</height>
@@ -380,13 +408,14 @@
 
       <control type="scrollbar" id="61">
         <posx>3</posx>
-        <posy>260</posy>
-        <height>375</height>
+        <posy>225</posy>
+        <height>465</height>
         <onup>61</onup>
         <ondown>61</ondown>
         <onleft>50</onleft>
         <onright>9009</onright>
         <visible>!Skin.HasSetting(HideScrollBars)</visible>
+
       </control>
     </control>
 
@@ -506,7 +535,7 @@
 	            </control>
 	          </control>
 			<control type="group">
-				<posy>402</posy>
+				<posy>407</posy>
 				<include>InfoListFlags</include>
 		 	</control>
         </control>
