@@ -50,27 +50,10 @@ CGUISliderControl::~CGUISliderControl(void)
 void CGUISliderControl::Render()
 {
   m_guiBackground.SetPosition( m_posX, m_posY );
-  float proportion = 0;
   if (!IsDisabled())
   {
-    switch (m_iType)
-    {
-    case SPIN_CONTROL_TYPE_FLOAT:
-      if (m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
-
-      proportion = (m_fValue - m_fStart) / (m_fEnd - m_fStart);
-      break;
-
-    case SPIN_CONTROL_TYPE_INT:
-      if (m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
-
-      proportion = (float)(m_iValue - m_iStart) / (float)(m_iEnd - m_iStart);
-      break;
-    default:
-      if (m_iInfoCode) m_iPercent = g_infoManager.GetInt(m_iInfoCode);
-      proportion = 0.01f * m_iPercent;
-      break;
-    }
+    if (m_iInfoCode)
+      SetIntValue(g_infoManager.GetInt(m_iInfoCode));
 
     float fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
     float fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
@@ -81,7 +64,7 @@ void CGUISliderControl::Render()
 
     float fWidth = (m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
 
-    float fPos = m_guiBackground.GetXPosition() + proportion * fWidth;
+    float fPos = m_guiBackground.GetXPosition() + GetProportion() * fWidth;
 
     if ((int)fWidth > 1)
     {
