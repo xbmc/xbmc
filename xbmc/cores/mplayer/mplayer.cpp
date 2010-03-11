@@ -797,7 +797,7 @@ extern void xbox_audio_switch_channel(int iAudioStream, bool bAudioOnAllSpeakers
 
 bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions)
 {
-  //Close any prevoiusely playing file
+  //Close any previously playing file
   CloseFile();
 
   int iRet = -1;
@@ -1303,7 +1303,7 @@ bool CMPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& initoptions
 
 bool CMPlayer::CloseFile()
 {
-  CLog::Log(LOGNOTICE, "CMPlayer::CloseFile()");
+  CLog::Log(LOGDEBUG, "CMPlayer::CloseFile()");
   
   if( m_bIsPlaying )
   {

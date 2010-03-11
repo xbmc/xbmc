@@ -55,12 +55,12 @@ SOCKET GetSocketForIndex(int iIndex)
 {
   if (iIndex < 3 || iIndex >= MAX_SOCKETS)
   {
-    CLog::Log(LOGERROR, "GetSocketForIndex() invalid index:%i", iIndex);
+    CLog::Log(LOGERROR, "GetSocketForIndex() invalid index: %i", iIndex);
     return INVALID_SOCKET;
   }
 
   if (InterlockedCompareExchangePointer((PVOID*)&m_sockets[iIndex].sock, (PVOID)INVALID_SOCKET, (PVOID)INVALID_SOCKET) == (PVOID)INVALID_SOCKET)
-    CLog::Log(LOGERROR, "GetSocketForIndex() invalid socket for index:%i", iIndex);
+    CLog::Log(LOGWARNING, "GetSocketForIndex() invalid socket for index: %i", iIndex);
 
   return m_sockets[iIndex].sock;
 }
