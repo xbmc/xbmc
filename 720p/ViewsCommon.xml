@@ -193,10 +193,10 @@
       <control type="list" id="56">
         <viewtype label="InfoList">list</viewtype>
         <include condition="Skin.HasSetting(HideScrollBars)">InfoListNoScrollbars</include>
-        <posx>-40</posx>
-        <posy>260</posy>
+        <posx>-24</posx>
+        <posy>230</posy>
         <width>640</width>
-        <height>370</height>
+        <height>454</height>
         <scrolltime>200</scrolltime>
         <pagecontrol>61</pagecontrol>
         <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
@@ -204,25 +204,173 @@
         <onup>56</onup>
         <ondown>56</ondown>
     
-        <itemlayout height="42" width="640">
-          <include>ListViewItemLayout</include>
+        <itemlayout height="42" width="530">
+		    <control type="image">
+			    <posx>0</posx>
+			    <posy>-6</posy>
+			    <width>679</width>
+			    <height>54</height>
+			    <texture>MediaItemBG.png</texture>
+		    </control>
+		    <control type="label">
+		        <posx>60</posx>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+			    <textcolor>Unfocused</textcolor>
+		    </control>
+		    <control type="image">
+		        <include>TVEpisodeItemOverlayDims</include>
+			    <info>ListItem.Overlay</info>
+		        <animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
+		    </control>
+		    <control type="label">
+		    	<visible>!IsEmpty(ListItem.Overlay)</visible>
+		    	<posx>456</posx>
+		    	<posy>0</posy>
+		    	<width>104</width>
+		    	<height>42</height>
+		    	<align>left</align>
+		    	<aligny>center</aligny>
+		    	<label>$INFO[ListItem.Label2]</label>
+		    	<font>SmallDefaultCapsFont</font>
+		    	<textcolor>Unfocused</textcolor>
+		    </control>
+		    <control type="label">
+		      <visible>IsEmpty(ListItem.Overlay)</visible>
+		      <posx>492</posx>
+		      <width>95</width>
+		      <height>42</height>
+		      <align>left</align>
+		      <aligny>center</aligny>
+		      <label>$INFO[ListItem.Label2]</label>
+		      <font>SmallDefaultCapsFont</font>
+		      <textcolor>Unfocused</textcolor>
+		    </control>
         </itemlayout>
 
-        <focusedlayout height="42" width="640">
-          <include>ListViewFocusedLayout</include>
+        <focusedlayout height="42" width="530">
+		    <control type="image">
+		        <posx>0</posx>
+			    <posy>0</posy>
+			    <width>530</width>
+			    <height>42</height>
+			    <texture>MediaItemBG.png</texture>
+		    </control>
+		
+		    <control type="image">
+		        <posx>44</posx>
+			    <posy>2</posy>
+			    <width>530</width>
+			    <height>41</height>
+			    <texture aspectratio="stretch" flipx="true">InfoList_focused.png</texture>
+			    <animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+			    <animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false"  tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+		    </control>
+		    <control type="image">
+		      <visible>!IsEmpty(ListItem.Label2)</visible>
+		      <posx>482</posx>
+		      <posy>12</posy>
+		      <width>92</width>
+		      <height>22</height>
+		      <texture border="13,0,0,0">InfoList_focused_detail.png</texture>
+		      <animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+		    <animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false"  tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+		    </control>
+		    <control type="label">
+		        <posx>60</posx>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+			    <textcolor>Unfocused</textcolor>
+		      	<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+		    </control>
+		    <control type="label">
+		      <visible>!IsEmpty(ListItem.Overlay)</visible>
+		      <posx>456</posx>
+		      <posy>0</posy>
+		      <width>104</width>
+		      <height>42</height>
+		      <align>left</align>
+		      <aligny>center</aligny>
+		      <label>$INFO[ListItem.Label2]</label>
+		      <font>SmallDefaultCapsFont</font>
+		      <textcolor>Unfocused</textcolor>
+		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+		    </control>
+		    <control type="label">
+		      <visible>IsEmpty(ListItem.Overlay)</visible>
+		      <posx>492</posx>
+		      <width>95</width>
+		      <height>42</height>
+		      <align>left</align>
+		      <aligny>center</aligny>
+		      <label>$INFO[ListItem.Label2]</label>
+		      <font>SmallDefaultCapsFont</font>
+		      <textcolor>Unfocused</textcolor>
+		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+		    </control>
+		    <control type="label">
+		        <posx>60</posx>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+		    </control>
+		    <control type="image">
+		      <posx>428</posx>
+			  <posy>10</posy>
+			  <width>16</width>
+			  <height>25</height>
+			  <info>ListItem.Overlay</info>
+		      <include>MediaListItemFade</include>
+		    </control>
+		    <control type="label">
+		      <visible>!IsEmpty(ListItem.Overlay)</visible>
+		      <posx>492</posx>
+		      <posy>0</posy>
+		      <width>95</width>
+		      <height>42</height>
+		      <align>left</align>
+		      <aligny>center</aligny>
+		      <label>$INFO[ListItem.Label2]</label>
+		      <include>MediaItemDetailFontFO</include>
+		      <include>MediaListItemFade</include>
+		    </control>
+		    <control type="label">
+		      <visible>IsEmpty(ListItem.Overlay)</visible>
+		      <posx>492</posx>
+		      <width>95</width>
+		      <height>42</height>
+		      <align>left</align>
+		      <aligny>center</aligny>
+		      <label>$INFO[ListItem.Label2]</label>
+		      <font>SmallDefaultCapsFont</font>
+		      <include>MediaListItemFade</include>
+		    </control>
         </focusedlayout>
       </control>
     </control>
 
     <control type="group">
-      <posx>590</posx>
+      <posx>558</posx>
       <include>InfoListVisible</include>
       <include>MediaViewFade</include>
 
       <control type="image">
         <description>List overlay</description>
 		<posx>-590</posx>
-        <posy>582</posy>
+        <posy>666</posy>
         <visible>![Container(56).Position(7)] + !Skin.HasTheme(lite)</visible>
         <width>650</width>
         <height>100</height>
@@ -248,13 +396,14 @@
       <include>MediaViewFade</include>
 
       <control type="group">
-        <posx>620</posx>
-        <posy>254</posy>
+        <posx>592</posx>
+        <posy>237</posy>
         <include>MediaListSelectDelay</include>
 
         <control type="group">
           <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-		  <posx>380</posx>
+		  <posx>400</posx>
+		  <posy>-5</posy>
 
           <control type="image">
             <description>Thumb image</description>
@@ -337,27 +486,27 @@
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
-	              <height>278</height>
+	              <height>317</height>
 	              <info>ListItem.Plot</info>
 	              <visible>![Container.Content(seasons) | Container.Content(albums)]</visible>
 	            </control>
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
-	              <height>278</height>
+	              <height>317</height>
 	              <info>Container.ShowPlot</info>
 	              <visible>Container.Content(seasons)</visible>
 	            </control>
 	            <control type="textbox">
 	              <description>Album review</description>
 	              <width>InfoListTitleWidth</width>
-	              <height>278</height>
+	              <height>317</height>
 	              <info>ListItem.Property(description)</info>
 	              <visible>Container.Content(albums) | Container.Content(artists)</visible>
 	            </control>
 	          </control>
 			<control type="group">
-				<posy>363</posy>
+				<posy>402</posy>
 				<include>InfoListFlags</include>
 		 	</control>
         </control>
