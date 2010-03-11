@@ -211,19 +211,6 @@ void CConvolutionKernel::ToIntFract()
     m_intfractpixels[i] = (uint8_t)integer;
     m_intfractpixels[i + m_size * 4] = (uint8_t)fract;
   }
-
-#if 0
-  for (int i = 0; i < 4; i++)
-  {
-    for (int j = 0; j < m_size; j++)
-    {
-      printf("%i %f %f\n",
-          i * m_size + j,
-          ((double)m_intfractpixels[j * 4 + i] + (double)m_intfractpixels[j * 4 + i + m_size * 4] / 255.0) / 255.0 * 2.0 - 1.0,
-          m_floatpixels[j * 4 + i]);
-    }
-  }
-#endif
 }
 
 //convert to 8 bits unsigned
