@@ -12,6 +12,7 @@
 	
 	
 	<include name="InfoListFlags">
+		<!-- width 400 -->
 		<control type="image">
 			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
 			<posx>-40</posx>
@@ -23,7 +24,7 @@
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>103</posx>
+			<posx>60</posx>
 			<posy>0</posy>
 			<height>43</height>
 			<info>Listitem.Property(videoResolution)</info>
@@ -32,7 +33,7 @@
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>206</posx>
+			<posx>160</posx>
 			<posy>0</posy>
 			<height>43</height>
 			<info>Listitem.Property(audioCodec)</info>
@@ -41,7 +42,7 @@
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>309</posx>
+			<posx>260</posx>
 			<posy>0</posy>
 			<height>43</height>
 			<info>Listitem.Property(movieStudio)</info>

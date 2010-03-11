@@ -191,12 +191,13 @@
       <include>MediaViewFade</include>
 
       <control type="group">
-        <posx>28</posx>
+        <posx>620</posx>
         <posy>254</posy>
         <include>MediaListSelectDelay</include>
 
         <control type="group">
           <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+		  <posx>380</posx>
 
           <control type="image">
             <description>Thumb image</description>
@@ -206,7 +207,7 @@
             <height>396</height>
             <texture>amt-blank-poster.png</texture>
             <info>ListItem.Icon</info>
-            <aspectratio align="right" aligny="top">keep</aspectratio>
+            <aspectratio align="right" aligny="top">stretch</aspectratio>
             <bordersize>8</bordersize>
           </control>
 
@@ -227,7 +228,7 @@
         </control>
 
         <control type="group">
-          <posx>280</posx>
+          <posx>10</posx>
           <posy>-4</posy>
 
           <control type="label">
@@ -313,14 +314,14 @@
       <control type="list" id="56">
         <viewtype label="InfoList">list</viewtype>
         <include condition="Skin.HasSetting(HideScrollBars)">InfoListNoScrollbars</include>
-        <posx>708</posx>
+        <posx>-40</posx>
         <posy>260</posy>
         <width>640</width>
         <height>370</height>
         <scrolltime>200</scrolltime>
         <pagecontrol>61</pagecontrol>
-        <onleft>61</onleft>
-        <onright>9009</onright>
+        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+        <onright>61</onright>
         <onup>56</onup>
         <ondown>56</ondown>
     
@@ -335,12 +336,13 @@
     </control>
 
     <control type="group">
-      <posx>726</posx>
+      <posx>590</posx>
       <include>InfoListVisible</include>
       <include>MediaViewFade</include>
 
       <control type="image">
         <description>List overlay</description>
+		<posx>-590</posx>
         <posy>582</posy>
         <visible>![Container(56).Position(7)] + !Skin.HasTheme(lite)</visible>
         <width>650</width>
@@ -355,8 +357,8 @@
         <height>375</height>
         <onup>61</onup>
         <ondown>61</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>50</onright>
+        <onleft>50</onleft>
+        <onright>9009</onright>
         <visible>!Skin.HasSetting(HideScrollBars)</visible>
       </control>
     </control>

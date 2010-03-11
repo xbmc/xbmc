@@ -1962,7 +1962,7 @@
     <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
   </include>
 
-  <constant name="InfoListTitleWidth">414</constant>
+  <constant name="InfoListTitleWidth">350</constant>
 
   <include name="InfoListItemDetailInfo">
     <posx>456</posx>
