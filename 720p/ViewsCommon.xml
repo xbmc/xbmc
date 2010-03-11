@@ -207,7 +207,7 @@
             <height>396</height>
             <texture>amt-blank-poster.png</texture>
             <info>ListItem.Icon</info>
-            <aspectratio align="right" aligny="top">stretch</aspectratio>
+            <aspectratio align="right" aligny="top">keep</aspectratio>
             <bordersize>8</bordersize>
           </control>
 
