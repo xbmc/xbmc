@@ -370,13 +370,11 @@ bool CVisualisation::UpdateTrack()
       CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
 
     // inform the visualisation of the current album art
-    if ( m_pStruct->OnAction( VIS_ACTION_UPDATE_ALBUMART,
-      (void*)( m_AlbumThumb.c_str() ) ) )
+    if (OnAction( VIS_ACTION_UPDATE_ALBUMART, (void*)( m_AlbumThumb.c_str() ) ) )
       handled = true;
 
     // inform the visualisation of the current track's tag information
-    if ( tag && m_pStruct->OnAction( VIS_ACTION_UPDATE_TRACK,
-      (void*)tag ) )
+    if ( tag && OnAction( VIS_ACTION_UPDATE_TRACK, (void*)tag ) )
       handled = true;
   }
   return handled;
