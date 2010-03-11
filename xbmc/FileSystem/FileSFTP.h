@@ -28,13 +28,8 @@
 #include "FileItem.h"
 #include "utils/CriticalSection.h"
 
-#ifdef _WIN32
-#include <libssh_win32/include/libssh/libssh.h>
-#include <libssh_win32/include/libssh/sftp.h>
-#else
 #include <libssh/libssh.h>
 #include <libssh/sftp.h>
-#endif
 #include <string>
 #include <map>
 #include <boost/shared_ptr.hpp>
