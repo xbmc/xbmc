@@ -42,12 +42,14 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
     Bicubic(1.0 / 3.0, 1.0 / 3.0);
 
   ToIntFract();
+  ToUint8();
 }
 
 CConvolutionKernel::~CConvolutionKernel()
 {
   delete [] m_floatpixels;
   delete [] m_intfractpixels;
+  delete [] m_uint8pixels;
 }
 
 //generate a lanczos2 kernel which can be loaded with RGBA format
@@ -222,5 +224,22 @@ void CConvolutionKernel::ToIntFract()
     }
   }
 #endif
+}
+
+//convert to 8 bits unsigned
+void CConvolutionKernel::ToUint8()
+{
+  m_uint8pixels = new uint8_t[m_size * 4];
+
+  for (int i = 0; i < m_size * 4; i++)
+  {
+    int value = MathUtils::round_int((m_floatpixels[i] * 0.5 + 0.5) * 255.0);
+    if (value < 0)
+      value = 0;
+    else if (value > 255)
+      value = 255;
+
+    m_uint8pixels[i] = (uint8_t)value;
+  }
 }
 
