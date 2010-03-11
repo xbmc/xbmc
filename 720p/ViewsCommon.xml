@@ -190,6 +190,63 @@
       <include>InfoListVisible</include>
       <include>MediaViewFade</include>
 
+      <control type="list" id="56">
+        <viewtype label="InfoList">list</viewtype>
+        <include condition="Skin.HasSetting(HideScrollBars)">InfoListNoScrollbars</include>
+        <posx>-40</posx>
+        <posy>260</posy>
+        <width>640</width>
+        <height>370</height>
+        <scrolltime>200</scrolltime>
+        <pagecontrol>61</pagecontrol>
+        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+        <onright>61</onright>
+        <onup>56</onup>
+        <ondown>56</ondown>
+    
+        <itemlayout height="42" width="640">
+          <include>ListViewItemLayout</include>
+        </itemlayout>
+
+        <focusedlayout height="42" width="640">
+          <include>ListViewFocusedLayout</include>
+        </focusedlayout>
+      </control>
+    </control>
+
+    <control type="group">
+      <posx>590</posx>
+      <include>InfoListVisible</include>
+      <include>MediaViewFade</include>
+
+      <control type="image">
+        <description>List overlay</description>
+		<posx>-590</posx>
+        <posy>582</posy>
+        <visible>![Container(56).Position(7)] + !Skin.HasTheme(lite)</visible>
+        <width>650</width>
+        <height>100</height>
+        <texture>BlackGradient2.png</texture>
+        <aspectratio>stretch</aspectratio>
+      </control>
+
+      <control type="scrollbar" id="61">
+        <posx>3</posx>
+        <posy>260</posy>
+        <height>375</height>
+        <onup>61</onup>
+        <ondown>61</ondown>
+        <onleft>50</onleft>
+        <onright>9009</onright>
+        <visible>!Skin.HasSetting(HideScrollBars)</visible>
+      </control>
+    </control>
+
+
+    <control type="group">
+      <include>InfoListVisible</include>
+      <include>MediaViewFade</include>
+
       <control type="group">
         <posx>620</posx>
         <posy>254</posy>
@@ -307,61 +364,6 @@
       </control>
     </control>
 
-    <control type="group">
-      <include>InfoListVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="list" id="56">
-        <viewtype label="InfoList">list</viewtype>
-        <include condition="Skin.HasSetting(HideScrollBars)">InfoListNoScrollbars</include>
-        <posx>-40</posx>
-        <posy>260</posy>
-        <width>640</width>
-        <height>370</height>
-        <scrolltime>200</scrolltime>
-        <pagecontrol>61</pagecontrol>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>61</onright>
-        <onup>56</onup>
-        <ondown>56</ondown>
-    
-        <itemlayout height="42" width="640">
-          <include>ListViewItemLayout</include>
-        </itemlayout>
-
-        <focusedlayout height="42" width="640">
-          <include>ListViewFocusedLayout</include>
-        </focusedlayout>
-      </control>
-    </control>
-
-    <control type="group">
-      <posx>590</posx>
-      <include>InfoListVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="image">
-        <description>List overlay</description>
-		<posx>-590</posx>
-        <posy>582</posy>
-        <visible>![Container(56).Position(7)] + !Skin.HasTheme(lite)</visible>
-        <width>650</width>
-        <height>100</height>
-        <texture>BlackGradient2.png</texture>
-        <aspectratio>stretch</aspectratio>
-      </control>
-
-      <control type="scrollbar" id="61">
-        <posx>3</posx>
-        <posy>260</posy>
-        <height>375</height>
-        <onup>61</onup>
-        <ondown>61</ondown>
-        <onleft>50</onleft>
-        <onright>9009</onright>
-        <visible>!Skin.HasSetting(HideScrollBars)</visible>
-      </control>
-    </control>
 
     <control type="group">
       <include>InfoListVisible</include>

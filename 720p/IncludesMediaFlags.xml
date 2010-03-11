@@ -15,36 +15,40 @@
 		<!-- width 400 -->
 		<control type="image">
 			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
-			<posx>-40</posx>
+			<posx>0</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
+			<width>90</width>
 			<info>Listitem.Property(contentRating)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>60</posx>
+			<posx>100</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
+			<width>90</width>
 			<info>Listitem.Property(videoResolution)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>160</posx>
+			<posx>190</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
+			<width>90</width>
 			<info>Listitem.Property(audioCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>260</posx>
+			<posx>280</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
+			<width>90</width>
 			<info>Listitem.Property(movieStudio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
@@ -53,36 +57,36 @@
 	<include name="PanelStreamFlags">
 		<control type="image">
 			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
-			<posx>-40</posx>
+			<posx>-30</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
 			<info>Listitem.Property(contentRating)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>107</posx>
+			<posx>127</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
 			<info>Listitem.Property(videoResolution)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>214</posx>
+			<posx>227</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
 			<info>Listitem.Property(audioCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>321</posx>
+			<posx>327</posx>
 			<posy>0</posy>
-			<height>43</height>
+			<height>46</height>
 			<info>Listitem.Property(movieStudio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
