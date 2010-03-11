@@ -39,7 +39,7 @@
 			<posy>0</posy>
 			<height>46</height>
 			<width>90</width>
-			<info>Listitem.Property(audioCodec)</info>
+			<info>Listitem.Property(audioChannels)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
