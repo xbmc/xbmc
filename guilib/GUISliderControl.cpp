@@ -22,6 +22,7 @@
 #include "GUISliderControl.h"
 #include "utils/GUIInfoManager.h"
 #include "Key.h"
+#include "MathUtils.h"
 
 CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -168,7 +169,7 @@ void CGUISliderControl::Move(int iNumSteps)
     if (m_iPercent > 100) m_iPercent = 100;
     break;
   }
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(100*GetProportion()));
 }
 
 void CGUISliderControl::SetPercentage(int iPercent)
@@ -308,7 +309,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
     m_iPercent = (int)(fPercent * 100 + 0.49f);
     break;
   }
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(fPercent));
 }
 
 bool CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
@@ -373,3 +374,11 @@ void CGUISliderControl::UpdateColors()
   m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
 }
 
+float CGUISliderControl::GetProportion() const
+{
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    return (m_fValue - m_fStart) / (m_fEnd - m_fStart);
+  else if (m_iType == SPIN_CONTROL_TYPE_INT)
+    return (float)(m_iValue - m_iStart) / (float)(m_iEnd - m_iStart);
+  return 0.01f * m_iPercent;
+}

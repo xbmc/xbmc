@@ -74,6 +74,10 @@ protected:
   virtual void UpdateColors();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
+  /*! \brief Get the current position of the slider as a proportion
+   \return slider position in the range [0,1]
+   */
+  float GetProportion() const;
 
   CGUITexture m_guiBackground;
   CGUITexture m_guiMid;
