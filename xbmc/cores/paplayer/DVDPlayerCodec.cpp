@@ -205,6 +205,7 @@ __int64 DVDPlayerCodec::Seek(__int64 iSeekTime)
   m_pPacket = NULL;
 
   m_pDemuxer->SeekTime((int)iSeekTime, true);
+  m_pAudioCodec->Reset();
 
   m_decoded = NULL;;
   m_nDecodedLen = 0;
