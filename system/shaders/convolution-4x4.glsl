@@ -1,4 +1,5 @@
 uniform sampler2D img;
+uniform sampler1D kernelTex;
 uniform float     stepx;
 uniform float     stepy;
 uniform float     m_stretch;
@@ -12,19 +13,14 @@ uniform float     m_stretch;
 #endif
 
 #if (HAS_FLOAT_TEXTURE)
-uniform sampler1D kernelTex;
-
 half4 weight(float pos)
 {
   return texture1D(kernelTex, pos);
 }
 #else
-uniform sampler2D kernelTex;
-
 half4 weight(float pos)
 {
-  //row 0 contains the high byte, row 1 contains the low byte
-  return (texture2D(kernelTex, vec2(pos, 0.0)) * 256.0 + texture2D(kernelTex, vec2(pos, 1.0))) / 128.5 - 1.0;
+  return texture1D(kernelTex, pos) * 2.0 - 1.0;
 }
 #endif
 

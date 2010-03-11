@@ -130,28 +130,18 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   }
 
   glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   //if float textures are supported, we can load the kernel as a 1d float texture
-  //if not, we load it as a 2d texture with 2 rows, where row 0 contains the high byte
-  //and row 1 contains the low byte, which can be converted in the shader
+  //if not we load it as 8 bit unsigned which gets converted back to float in the shader
   if (m_floattex)
-  {
-    glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
-  }
   else
-  {
-    glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, m_internalformat, kernel.GetSize(), 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, kernel.GetIntFractPixels());
-  }
+    glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_UNSIGNED_BYTE, kernel.GetUint8Pixels());
 
   glActiveTexture(GL_TEXTURE0);
 
@@ -162,11 +152,7 @@ bool ConvolutionFilterShader::OnEnabled()
 {
   // set shader attributes once enabled
   glActiveTexture(GL_TEXTURE2);
-
-  if (m_floattex)
-    glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
-  else
-    glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
 
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
