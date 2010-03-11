@@ -133,9 +133,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   hwSupport += "Crystal HD:no ";
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(_LINUX)
-  hwSupport += "VDPAU:yes";
+  hwSupport += "VDPAU:yes ";
 #elif defined(_LINUX)
-  hwSupport += "VDPAU:no";
+  hwSupport += "VDPAU:no ";
+#endif
+#if defined(_WIN32) && defined(HAS_DX)
+  hwSupport += "DXVA:yes";
+#elif defined(_WIN32)
+  hwSupport += "DXVA:no";
 #endif
 
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
