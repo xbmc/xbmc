@@ -383,6 +383,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
     item->m_strPath = url.Get();
     CHTSPSession::ParseItem(it->second, tag, event, *item);
     item->m_bIsFolder = false;
+    item->SetLabel(item->m_strTitle);
     item->m_strTitle.Format("%d", it->second.num);
 
     items.Add(item);
