@@ -103,17 +103,6 @@
               <include>VideoInfoThumbBtn2</include>
             </control>
 
-            <control type="button" id="11">
-              <description>Trailer</description>
-              <posx>MoviesInfoTrailerBtnPosX</posx>
-              <include>VideoInfoTrailerBtn</include>
-            </control>
-            <control type="label">
-              <description>Trailer</description>
-              <posx>MoviesInfoTrailerBtnPosX</posx>
-              <include>VideoInfoTrailerLabel</include>
-            </control>
-
             <control type="button" id="12">
               <description>Fanart</description>
               <posx>MoviesInfoFanartBtnPosX</posx>
@@ -124,6 +113,17 @@
               <posx>MoviesInfoFanartBtnPosX</posx>
               <include>VideoInfoFanartBtn2</include>
             </control>
+          </control>
+
+          <control type="button" id="11">
+            <description>Trailer</description>
+            <posx>MoviesInfoTrailerBtnPosX</posx>
+            <include>VideoInfoTrailerBtn</include>
+          </control>
+          <control type="label">
+            <description>Trailer</description>
+            <posx>MoviesInfoTrailerBtnPosX</posx>
+            <include>VideoInfoTrailerLabel</include>
           </control>
 
           <control type="group">
@@ -259,6 +259,28 @@
               <include>VideoInfoRefreshBtn</include>
             </control>
 
+            <control type="button" id="12">
+              <description>Fanart</description>
+              <posx>TVShowInfoFanartBtnPosX</posx>
+              <include>VideoInfoFanartBtn</include>
+            </control>
+            <control type="button" id="12">
+              <description>Fanart</description>
+              <posx>TVShowInfoFanartBtnPosX</posx>
+              <include>VideoInfoFanartBtn2</include>
+            </control>
+
+            <control type="button" id="11">
+              <description>Trailer</description>
+              <posx>TVShowInfoTrailerBtnPosX</posx>
+              <include>VideoInfoTrailerBtn</include>
+            </control>
+            <control type="label">
+              <description>Trailer</description>
+              <posx>TVShowInfoTrailerBtnPosX</posx>
+              <include>VideoInfoTrailerLabel</include>
+            </control>
+
             <control type="button" id="10">
               <description>Thumb</description>
               <posx>TVShowInfoThumbBtnPosX</posx>
@@ -273,27 +295,6 @@
               <include>VideoInfoThumbBtn2</include>
             </control>
 
-            <control type="button" id="11">
-              <description>Trailer</description>
-              <posx>TVShowInfoTrailerBtnPosX</posx>
-              <include>VideoInfoTrailerBtn</include>
-            </control>
-            <control type="label">
-              <description>Trailer</description>
-              <posx>TVShowInfoTrailerBtnPosX</posx>
-              <include>VideoInfoTrailerLabel</include>
-            </control>
-
-            <control type="button" id="12">
-              <description>Fanart</description>
-              <posx>TVShowInfoFanartBtnPosX</posx>
-              <include>VideoInfoFanartBtn</include>
-            </control>
-            <control type="button" id="12">
-              <description>Fanart</description>
-              <posx>TVShowInfoFanartBtnPosX</posx>
-              <include>VideoInfoFanartBtn2</include>
-            </control>
           </control>
 
           <control type="group">
