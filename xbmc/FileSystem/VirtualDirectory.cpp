@@ -41,7 +41,7 @@ using namespace XFILE;
 namespace XFILE
 {
 
-CVirtualDirectory::CVirtualDirectory(void) : m_vecSources(NULL)
+CVirtualDirectory::CVirtualDirectory(void)
 {
   m_allowPrompting = true;  // by default, prompting is allowed.
   m_cacheDirectory = DIR_CACHE_ONCE;  // by default, caching is done.
@@ -56,9 +56,9 @@ CVirtualDirectory::~CVirtualDirectory(void)
  \param VECSOURCES Shares to add
  \sa CMediaSource, VECSOURCES
  */
-void CVirtualDirectory::SetSources(VECSOURCES& vecSources)
+void CVirtualDirectory::SetSources(const VECSOURCES& vecSources)
 {
-  m_vecSources = &vecSources;
+  m_vecSources = vecSources;
 }
 
 /*!
@@ -76,12 +76,6 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
 }
 bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories)
 {
-  if (!m_vecSources)
-  {
-    items.m_strPath=strPath;
-    return true;
-  }
-
   VECSOURCES shares;
   GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
@@ -215,7 +209,7 @@ bool CVirtualDirectory::IsInSource(const CStdString &path) const
 
 void CVirtualDirectory::GetSources(VECSOURCES &shares) const
 {
-  shares = *m_vecSources;
+  shares = m_vecSources;
   // add our plug n play shares
 
   if (m_allowNonLocalSources)
