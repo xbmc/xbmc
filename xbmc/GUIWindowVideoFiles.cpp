@@ -53,7 +53,6 @@ using namespace VIDEO;
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_BTNSCAN            8
-#define CONTROL_IMDB               9
 #define CONTROL_BTNPLAYLISTS      13
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
