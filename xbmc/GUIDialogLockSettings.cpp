@@ -38,19 +38,6 @@ CGUIDialogLockSettings::~CGUIDialogLockSettings(void)
 {
 }
 
-bool CGUIDialogLockSettings::OnMessage(CGUIMessage &message)
-{
-  switch (message.GetMessage())
-  {
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      CGUIDialogSettings::OnMessage(message);
-    }
-    break;
-  }
-  return CGUIDialogSettings::OnMessage(message);
-}
-
 void CGUIDialogLockSettings::OnCancel()
 {
   m_bChanged = false;
@@ -266,10 +253,3 @@ bool CGUIDialogLockSettings::ShowAndGetLock(CProfile::CLock &locks, int iButtonL
 
   return false;
 }
-
-void CGUIDialogLockSettings::OnInitWindow()
-{
-  CGUIDialogSettings::OnInitWindow();
-}
-
-

@@ -57,15 +57,8 @@ CGUIDialogProfileSettings::~CGUIDialogProfileSettings(void)
 
 bool CGUIDialogProfileSettings::OnMessage(CGUIMessage &message)
 {
-  switch (message.GetMessage())
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-  case GUI_MSG_WINDOW_DEINIT:
-    {
-      CGUIDialogSettings::OnMessage(message);
-    }
-    break;
-
-  case GUI_MSG_CLICKED:
     int iControl = message.GetSenderId();
     if (iControl == 500)
       Close();
@@ -74,7 +67,6 @@ bool CGUIDialogProfileSettings::OnMessage(CGUIMessage &message)
       m_bNeedSave = false;
       Close();
     }
-    break;
   }
   return CGUIDialogSettings::OnMessage(message);
 }
