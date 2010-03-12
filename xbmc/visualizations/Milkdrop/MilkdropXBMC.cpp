@@ -589,7 +589,11 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
     //g_plugin->m_nCurrentPreset = -1;
     //g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
   }
+  else
+    return STATUS_UNKNOWN;
+
   SaveSettings();
+  return STATUS_OK;
 }
 
 //-- GetSubModules ------------------------------------------------------------
