@@ -120,13 +120,7 @@ void CAdvancedSettings::Initialize()
 
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
-#ifdef _DEBUG
-  m_logLevel     = LOG_LEVEL_DEBUG;
-  m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  m_logLevel     = LOG_LEVEL_NORMAL;
-  m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
+
   m_cddbAddress = "freedb.freedb.org";
 
   m_handleMounting = g_application.IsStandAlone();

@@ -32,6 +32,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
+#include "utils/log.h"
 #ifdef _LINUX
 #include <sys/resource.h>
 #include <signal.h>
@@ -47,6 +48,16 @@ CApplication g_application;
 
 int main(int argc, char* argv[])
 {
+  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
+  //the loglevel set with the --debug flag
+#ifdef _DEBUG
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+#else
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
+#endif
+
   CFileItemList playlist;
 #ifdef _LINUX
 #if defined(DEBUG)
@@ -87,6 +98,7 @@ int main(int argc, char* argv[])
         printf("  -l or --lircdev\tLircDevice to use default is /dev/lircd .\n");
         printf("  -n or --nolirc\tdo not use Lirc, aka no remote input.\n");
 #endif
+        printf("  -d or --debug\t\tEnable debug logging\n");
         exit(0);
       }
       else if (strnicmp(argv[i], "--standalone", 12) == 0)
@@ -118,6 +130,11 @@ int main(int argc, char* argv[])
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
          g_RemoteControl.setUsed(false);
 #endif
+      else if (strnicmp(argv[i], "-d", 2) == 0 || strnicmp(argv[i], "--debug", 7) == 0)
+      {
+        g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+        g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+      }
       else if (argv[i][0] != '-')
       {
         CFileItemPtr pItem(new CFileItem(argv[i]));
