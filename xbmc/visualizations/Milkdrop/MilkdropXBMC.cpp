@@ -93,6 +93,7 @@ extern "C" void Stop()
   SaveSettings();
 	g_plugin->PluginQuit();
 	delete g_plugin;
+  g_plugin = NULL;
   g_vecSettings.clear();
   g_uiVisElements = 0;
 }
@@ -533,6 +534,15 @@ extern "C" ADDON_STATUS GetStatus()
 
 extern "C" unsigned int GetSettings(StructSetting ***sSet)
 {
+  if(!g_plugin)
+  {
+    g_plugin = new CPlugin;
+    g_plugin->PluginPreInitialize(0, 0);
+    LoadSettings();
+    g_plugin->PluginQuit();
+	  delete g_plugin;
+    g_plugin = NULL;
+  }
   g_uiVisElements = DllUtils::VecToStruct(g_vecSettings, &g_structSettings);
   *sSet = g_structSettings;
   return g_uiVisElements;
@@ -554,6 +564,15 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
 {
   if (!id || !value)
     return STATUS_UNKNOWN;
+
+  bool bplugininit = false;
+
+  if(!g_plugin)
+  {
+    bplugininit = true;
+    g_plugin = new CPlugin;
+    g_plugin->PluginPreInitialize(0, 0);
+  }
 
   if (strcmpi(id, "Use Preset") == 0)
     OnAction(34, &value);
@@ -593,6 +612,14 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
     return STATUS_UNKNOWN;
 
   SaveSettings();
+
+  if(bplugininit)
+  {
+    g_plugin->PluginQuit();
+	  delete g_plugin;
+    g_plugin = NULL;
+  }
+
   return STATUS_OK;
 }
 
