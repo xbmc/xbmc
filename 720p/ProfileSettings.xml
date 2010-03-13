@@ -19,8 +19,6 @@
 				<include>HomeSubMenuBlade</include>
 			</control>
 
-			<include>HomeSubMenuIcon</include>
-
 			<control type="radiobutton" id="4">
 				<description>default_radio_button</description>
 				<posx>70</posx>

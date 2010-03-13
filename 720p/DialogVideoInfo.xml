@@ -162,6 +162,7 @@
                   <include>MediaInfoWideValue</include>
                 </control>
 
+<!--
                 <control type="group">
                   <description>Path</description>
                   <posy>VideoInfoDetailsGap</posy>
@@ -179,8 +180,9 @@
                     <include>MediaInfoWideValue</include>
                   </control>
                 </control>
-              </control>
+-->
 
+              </control>
               <control type="group">
                 <description>Cast/Plot</description>
                 <posy>106</posy>
@@ -306,12 +308,12 @@
 
               <control type="label">
                 <description>Caption</description>
-                <label>$LOCALIZE[31027]</label>
+                <label>$LOCALIZE[20416]</label>
                 <include>MediaInfoCaption</include>
               </control>
               <control type="label">
                 <description>Value</description>
-                <info>ListItem.Date</info>
+                <info>ListItem.Property(originallyAvailableAt)</info>
                 <include>MediaInfoWideValue</include>
               </control>
             </control>
@@ -501,17 +503,19 @@
                           <label>$LOCALIZE[563]</label>
                           <include>MediaInfoCaption</include>
                         </control>
-                        <control type="label">
-                          <description>Value</description>
-                          <include>RatingLabel</include>
-                          <include>MediaInfoWideValue</include>
-                        </control>
-                        <control type="image">
-                          <description>Star Rating</description>
-                          <posx>180</posx>
-                          <include>StarRatingImage</include>
-                        </control>
+								        <control type="image">
+													<description>Star Rating</description>
+													<align>left</align>
+													<info>ListItem.StarRating</info>
+													<aspectratio>keep</aspectratio>
+													<width>100</width>
+													<height>18</height>
+													<posy>4</posy>
+													<posx>90</posx>
+													<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+								        </control>
 
+<!--
                         <control type="group">
                           <description>Path</description>
                           <posy>VideoInfoDetailsGap</posy>
@@ -521,14 +525,15 @@
                             <label>$LOCALIZE[21801]</label>
                             <include>MediaInfoCaption</include>
                           </control>
-		                  <control type="label">
-		                    <description>Value</description>
-		                    <info>ListItem.filenameandpath</info>
-		                    <scroll>true</scroll>
-		                    <haspath>true</haspath>
-		                    <include>MediaInfoWideValue</include>
+		                  		<control type="label">
+		                    		<description>Value</description>
+		                    		<info>ListItem.filenameandpath</info>
+		                    		<scroll>true</scroll>
+		                    		<haspath>true</haspath>
+		                    		<include>MediaInfoWideValue</include>
                           </control>
-						</control>
+												</control>
+												-->
                       </control>
                     </control>
                   </control>

@@ -2,7 +2,7 @@
   <!-- Font / Text Color-->
   <color name="Focused">FFFCFCFC</color>
   <color name="Unfocused">FF909090</color>
-  <color name="Selected">FFEB9E17</color>
+  <color name="Selected">FFFCFCFC</color>
   <color name="Highlighted">FF006699</color>
   <color name="Disabled">FF000000</color>
 

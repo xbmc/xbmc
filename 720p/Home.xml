@@ -951,7 +951,6 @@
 
         <include>HomeSubMenuBackground</include>
 
-        <include>HomeSubMenuIcon</include>
         <!--
         <control type="list" id="401">
           <description>Video Side Menu</description>
@@ -1642,8 +1641,6 @@
         <visible allowhiddenfocus="true">Control.HasFocus(506)</visible>
         <include>HomeSubMenuBackground</include>
 
-        <include>HomeSubMenuIcon</include>
-
         <control type="list" id="506">
           <description>Settings Sub Side Menu</description>
           <onup>506</onup>
@@ -1859,113 +1856,95 @@
           <control type="label">
             <include>HomeMainMenuFOLabel2</include>
           </control>
-          <control type="label">
-            <include>HomeMainMenuFOCaption2</include>
-          </control>
         </focusedlayout>
   
         <content>
           <item id="6">
             <description>Preferences Menu</description>
             <label> $LOCALIZE[31955] </label>
-            <label2> $LOCALIZE[31016] </label2>
             <onclick>SetFocus(506)</onclick>
           </item>
           <item id="111">
             <description>Quit Button</description>
             <label> $LOCALIZE[31007] </label>
-            <label2> $LOCALIZE[31017] </label2>
             <onclick>Plex.ShutDown</onclick>
             <visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
           </item>
           <item id="112">
             <description>Sleep Button</description>
             <label> $LOCALIZE[31960] </label>
-            <label2> $LOCALIZE[31017] </label2>
             <onclick>Plex.SleepSystem</onclick>
             <visible>!Skin.HasSetting(HidePower) + Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
           </item>
           <item id="113">
             <description>Shut Down Button</description>
             <label> $LOCALIZE[31961] </label>
-            <label2> $LOCALIZE[31017] </label2>
             <onclick>Plex.ShutDownSystem</onclick>
             <visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
           </item>
           <item id="13">
             <description>Help Menu</description>
             <label> $LOCALIZE[31954] </label>
-            <label2> $LOCALIZE[31953] </label2>
             <visible>!Skin.HasSetting(HideHelp)</visible>
-            <onclick>Plex.ActivateWindow(1,Plex Help,return)</onclick>
+            <onclick>Plex.ActivateWindow(1,plex://localhost/system/help,return)</onclick>
           </item>
           <item id="11">
             <description>Favorites Menu</description>
             <label> $LOCALIZE[31063] </label>
-            <label2> $LOCALIZE[31950] </label2>
             <onclick>Plex.ActivateWindow(Favourites)</onclick>
             <visible>!Skin.HasSetting(HideFavourites)</visible>
           </item>
           <item id="12">
             <description>App Store Menu</description>
             <label> $LOCALIZE[31952] </label>
-            <label2> $LOCALIZE[31951] </label2>
-            <onclick>Plex.ActivateWindow(1,App Store,return)</onclick>
+            <onclick>Plex.ActivateWindow(1,plex://localhost/system/appstore,return)</onclick>
             <visible>!Skin.HasSetting(HideAppStore)</visible>
           </item>
           <item id="1">
             <description>My Videos Button</description>
             <label> $LOCALIZE[31001] </label>
-            <label2> $LOCALIZE[31011] </label2>
             <visible>!Skin.HasSetting(HideVideos)</visible>
             <onclick>XBMC.ActivateWindow(24)</onclick>
           </item>
           <item id="9">
             <description>My Movies Button</description>
             <label> $LOCALIZE[31111] </label>
-            <label2> $LOCALIZE[31011] </label2>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,movietitles,return)</onclick>
             <visible>false</visible>
           </item>
           <item id="8">
             <description>My TV Shows Button</description>
             <label> $LOCALIZE[31008] </label>
-            <label2> $LOCALIZE[31011] </label2>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowtitles,return)</onclick>
             <visible>false</visible>
           </item>
           <item id="2">
             <description>My Music Button</description>
             <label> $LOCALIZE[31002] </label>
-            <label2> $LOCALIZE[31012] </label2>
             <visible>!Skin.HasSetting(HideMusic)</visible>
             <onclick>XBMC.ActivateWindow(5)</onclick>
           </item>
           <item id="3">
             <description>My Pics Button</description>
             <label> $LOCALIZE[31003] </label>
-            <label2> $LOCALIZE[31013] </label2>
             <visible>!Skin.HasSetting(HidePictures)</visible>
             <onclick>XBMC.ActivateWindow(2)</onclick>
           </item>
           <item id="4">
             <description>My Programs Menu</description>
             <label> $LOCALIZE[31004] </label>
-            <label2> $LOCALIZE[31014] </label2>
             <visible>!Skin.HasSetting(HidePrograms)</visible>
             <onclick>XBMC.ActivateWindow(1)</onclick>
           </item>
           <item id="10">
             <description>DVD Button</description>
             <label>DVD</label>
-            <label2> $LOCALIZE[31019] </label2>
             <visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
             <onclick>XBMC.PlayDVD</onclick>
           </item>
           <item id="5">
             <description>My Weather Button</description>
             <label> $LOCALIZE[31005] </label>
-            <label2> $LOCALIZE[31043] </label2>
             <onclick>XBMC.ActivateWindow(2600)</onclick>
             <visible>!Skin.HasSetting(HideWeather)</visible>
             <visible>System.HasNetwork</visible>
@@ -1983,11 +1962,6 @@
           <include>HomeMainMenuFOLabel</include>
           <include>HomeMainMenuOverFade</include>
         </control>
-        <control type="label">
-          <info>Container(300).ListItem(0).Label2</info>
-          <include>HomeMainMenuFOCaption</include>
-          <include>HomeMainMenuOverFade</include>
-        </control>
       </control>
 
       <control type="group">
@@ -2000,11 +1974,6 @@
         <control type="label">
           <info>Container(300).ListItem(0).Label</info>
           <include>HomeMainMenuFOLabel</include>
-          <include>HomeMainMenuOverFade</include>
-        </control>
-        <control type="label">
-          <info>Container(300).ListItem(0).Label2</info>
-          <include>HomeMainMenuFOCaption</include>
           <include>HomeMainMenuOverFade</include>
         </control>
       </control>
