@@ -538,7 +538,6 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
   {
     g_plugin = new CPlugin;
     g_plugin->PluginPreInitialize(0, 0);
-    LoadSettings();
     g_plugin->PluginQuit();
 	  delete g_plugin;
     g_plugin = NULL;
