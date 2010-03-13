@@ -486,7 +486,7 @@ extern "C" unsigned int GetPresets(char ***presets)
 extern "C" unsigned GetPreset()
 {
   if (g_plugin)
-    g_plugin->m_nCurrentPreset;
+    return g_plugin->m_nCurrentPreset;
   return 0;
 }
 
