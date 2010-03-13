@@ -225,7 +225,12 @@ bool CMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &i
     }
   }
 
-  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%K", "%J"));
+  /*
+   * Items are sorted as added to the list (in ascending date order). Specifying sorting by date can
+   * result in the guide being shown in the wrong order for skins that sort by date in descending
+   * order by default with no option to change to ascending, e.g. Confluence.
+   */
+  items.AddSortMethod(SORT_METHOD_NONE, 552 /* Date */, LABEL_MASKS("%K", "%J")); // Still leave the date label
 
   m_dll->ref_release(program);
   return true;
