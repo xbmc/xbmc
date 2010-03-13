@@ -204,7 +204,7 @@ __int64 DVDPlayerCodec::Seek(__int64 iSeekTime)
     CDVDDemuxUtils::FreeDemuxPacket(m_pPacket);
   m_pPacket = NULL;
 
-  m_pDemuxer->SeekTime((int)iSeekTime, true);
+  m_pDemuxer->SeekTime((int)iSeekTime, false);
   m_pAudioCodec->Reset();
 
   m_decoded = NULL;;
