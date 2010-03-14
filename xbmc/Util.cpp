@@ -38,6 +38,7 @@
 #include "Application.h"
 #include "AutoPtrHandle.h"
 #include "Util.h"
+#include "utils/Addon.h"
 #include "utils/IoSupport.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
@@ -978,7 +979,7 @@ bool CUtil::IsSpecial(const CStdString& strFile)
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return !url.GetProtocol().IsEmpty() && StringUtils::ValidateUUID(url.GetHostName());
+  return ADDON::TranslateContent(url.GetProtocol()) != CONTENT_NONE;
 }
 
 bool CUtil::IsPluginRoot(const CStdString& strFile)
