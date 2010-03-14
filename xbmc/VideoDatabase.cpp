@@ -5617,9 +5617,22 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
         CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where strPath like '%s'",strParent.c_str());
         m_pDS->query(strSQL.c_str());
 
+        CONTENT_TYPE content = CONTENT_NONE;
         if (!m_pDS->eof())
         {
-          CONTENT_TYPE content = TranslateContent(m_pDS->fv("path.strContent").get_asString());
+
+          CStdString strcontent = m_pDS->fv("path.strContent").get_asString();
+          strcontent.ToLower();
+          if (strcontent.Equals("none"))
+          {
+            settings.exclude = true;
+            scraper.reset();
+            m_pDS->close();
+            break;
+          }
+
+          content = TranslateContent(strcontent);
+
           AddonPtr addon;
           if (content != CONTENT_NONE &&
               CAddonMgr::Get()->GetAddon(m_pDS->fv("path.strScraper").get_asString(), addon, ADDON::ADDON_SCRAPER))
@@ -5631,13 +5644,6 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
             settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
             settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
             settings.exclude = false;
-            break;
-          }
-          //TODO fix storing "none" in database
-          if (content == CONTENT_NONE)
-          { // this path is excluded
-            scraper.reset();
-            settings.exclude = true;
             break;
           }
         }
