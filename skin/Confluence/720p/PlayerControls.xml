@@ -41,28 +41,13 @@
 				<texturefocus>OSDRewindFO.png</texturefocus>
 				<texturenofocus>OSDRewindNF.png</texturenofocus>
 				<onleft>600</onleft>
-				<onright>602</onright>
+				<onright>603</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>
 			</control>
-			<control type="button" id="602">
-				<posx>80</posx>
-				<posy>0</posy>
-				<width>40</width>
-				<height>40</height>
-				<label>-</label>
-				<texturefocus>OSDStopFO.png</texturefocus>
-				<texturenofocus>OSDStopNF.png</texturenofocus>
-				<onleft>601</onleft>
-				<onright>603</onright>
-				<onup>300</onup>
-				<ondown>200</ondown>
-				<onclick>down</onclick>
-				<onclick>XBMC.PlayerControl(Stop)</onclick>
-			</control>
 			<control type="togglebutton" id="603">
-				<posx>120</posx>
+				<posx>80</posx>
 				<posy>0</posy>
 				<width>40</width>
 				<height>40</height>
@@ -72,11 +57,26 @@
 				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 				<alttexturefocus>OSDPlayFO.png</alttexturefocus>
 				<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
-				<onleft>602</onleft>
-				<onright>604</onright>
+				<onleft>601</onleft>
+				<onright>602</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
 				<onclick>XBMC.PlayerControl(Play)</onclick>
+			</control>
+			<control type="button" id="602">
+				<posx>120</posx>
+				<posy>0</posy>
+				<width>40</width>
+				<height>40</height>
+				<label>-</label>
+				<texturefocus>OSDStopFO.png</texturefocus>
+				<texturenofocus>OSDStopNF.png</texturenofocus>
+				<onleft>603</onleft>
+				<onright>604</onright>
+				<onup>300</onup>
+				<ondown>200</ondown>
+				<onclick>down</onclick>
+				<onclick>XBMC.PlayerControl(Stop)</onclick>
 			</control>
 			<control type="button" id="604">
 				<posx>160</posx>
@@ -86,7 +86,7 @@
 				<label>-</label>
 				<texturefocus>OSDForwardFO.png</texturefocus>
 				<texturenofocus>OSDForwardNF.png</texturenofocus>
-				<onleft>603</onleft>
+				<onleft>602</onleft>
 				<onright>605</onright>
 				<onup>300</onup>
 				<ondown>200</ondown>
