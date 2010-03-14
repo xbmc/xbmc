@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
         printf("  -l or --lircdev\tLircDevice to use default is /dev/lircd .\n");
         printf("  -n or --nolirc\tdo not use Lirc, aka no remote input.\n");
 #endif
-        printf("  -d or --debug\t\tEnable debug logging\n");
+        printf("  --debug\t\tEnable debug logging\n");
         exit(0);
       }
       else if (strnicmp(argv[i], "--standalone", 12) == 0)
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
          g_RemoteControl.setUsed(false);
 #endif
-      else if (strnicmp(argv[i], "-d", 2) == 0 || strnicmp(argv[i], "--debug", 7) == 0)
+      else if (strnicmp(argv[i], "--debug", 7) == 0)
       {
         g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
         g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
