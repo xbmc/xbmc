@@ -444,7 +444,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
                !item->IsLastFM() && !item->IsShoutCast()                 &&
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
-               !item->IsPluginRoot() && !item->IsPlugin()                &&
+               !item->IsPlugin()                                         &&
               (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);

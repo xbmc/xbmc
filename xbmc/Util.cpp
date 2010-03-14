@@ -982,12 +982,6 @@ bool CUtil::IsPlugin(const CStdString& strFile)
   return ADDON::TranslateContent(url.GetProtocol()) != CONTENT_NONE;
 }
 
-bool CUtil::IsPluginRoot(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
-}
-
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
