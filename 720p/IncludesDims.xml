@@ -335,6 +335,7 @@
   <constant name="TVShowInfoThumbBtnPosX">182</constant>
   <constant name="TVShowInfoFanartBtnPosX">268</constant>
   <constant name="TVShowInfoTrailerBtnPosX">346</constant>
+	<constant name="TVShowInfoBannerBtnPosX">81</constant>
 
   <constant name="EpisodesInfoPlotCastBtnPosX">106</constant>
   <constant name="EpisodesInfoRefreshBtnPosX">226</constant>

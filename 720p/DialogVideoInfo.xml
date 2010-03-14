@@ -56,6 +56,7 @@
         <control type="group">
           <posx>InfoDialogTitleXOffset</posx>
 
+					<!--- MOVIES --->
           <control type="label">
             <description>Movie title</description>
             <label>$INFO[ListItem.Title] ($INFO[ListItem.Year])</label>
@@ -113,6 +114,7 @@
               <posx>MoviesInfoFanartBtnPosX</posx>
               <include>VideoInfoFanartBtn2</include>
             </control>
+
           </control>
 
           <control type="button" id="11">
@@ -200,6 +202,7 @@
         </control>
       </control>
 
+			<!-- TV SHOWS -->
       <control type="group">
         <visible>Container.Content(tvshows)</visible>
 
@@ -213,7 +216,7 @@
             <width>InfoDialogLargeThumbWidth</width>
             <height>231</height>
             <texture>DefaultWideIcon.png</texture>
-            <info>ListItem.Thumb</info>
+            <info>ListItem.Banner</info>
             <aspectratio aligny="bottom">keep</aspectratio>
             <bordertexture border="14">ThumbShadow.png</bordertexture>
             <bordersize>8</bordersize>
@@ -253,11 +256,22 @@
               <include>VideoInfoPlotCastBtns</include>
             </control>
 
+<!--
             <control type="button" id="6">
               <description>Refresh</description>
               <posx>TVShowInfoRefreshBtnPosX</posx>
               <include>VideoInfoRefreshBtn</include>
             </control>
+-->
+
+						<control type="button" id="13">
+						  <description>Banner</description>
+						  <posx>TVShowInfoBannerBtnPosX</posx>
+					    <onright>10</onright>
+					    <onleft>5</onleft>
+					    <label>$LOCALIZE[31128]</label>
+					    <include>VideoInfoButton</include>
+						</control>
 
             <control type="button" id="12">
               <description>Fanart</description>

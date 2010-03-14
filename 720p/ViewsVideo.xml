@@ -671,6 +671,12 @@
           <include>TVEpisodesPlotDims</include>
           <info>ListItem.Plot</info>
         </control>
+
+				<control type="group">
+					<description>Media Flags</description>
+					<posy>400</posy>
+					<include>EpisodeListFlags</include>
+				</control>
       </control>
     </control>
 

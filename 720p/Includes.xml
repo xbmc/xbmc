@@ -430,7 +430,7 @@
 
     <control type="button" id="5">
       <description>Plot/Cast</description>
-      <onright>6</onright>
+      <onright>13</onright>
       <onleft>12</onleft>
       <font>-</font>
       <textcolor>-</textcolor>
@@ -442,7 +442,7 @@
 
   <include name="VideoInfoRefreshBtn">
     <onright>10</onright>
-    <onleft>5</onleft>
+    <onleft>13</onleft>
     <label>$LOCALIZE[184]</label>
     <include>VideoInfoButton</include>
   </include>

@@ -76,6 +76,7 @@
   					<include>FileBrowserButton</include>
   				</control>
 
+<!--
   				<control type="button" id="415">
   					<description>Create Folder</description>
   					<posx>314</posx>
@@ -85,6 +86,7 @@
   					<align>right</align>
   					<include>FileBrowserButton</include>
   				</control>
+-->
         </control>
 
         <control type="list" id="450">

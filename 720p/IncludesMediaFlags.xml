@@ -92,4 +92,46 @@
 		</control>
 	</include>
 	
+	<include name="EpisodeListFlags">
+		<!-- width 400 -->
+		<control type="image">
+			<posx>0</posx>
+			<posy>-10</posy>
+			<height>55</height>
+			<width>90</width>
+			<info>Listitem.Property(videoCodec)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>100</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<width>90</width>
+			<info>Listitem.Property(videoResolution)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>190</posx>
+			<posy>-7</posy>
+			<height>55</height>
+			<width>90</width>
+			<info>Listitem.Property(audioCodec)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>260</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<width>90</width>
+			<info>Listitem.Property(audioChannels)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+	</include>
+	
 </includes>
