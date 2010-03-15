@@ -378,27 +378,35 @@ bool CMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &ite
       }
 
       CStdString title = GetValue(m_dll->proginfo_title(program));
+      CStdString path = base + "/" + title + "/";
 
-      // Only add each TV show once
-      if (items.Contains(base + "/" + title + "/"))
+      /*
+       * Only add each TV show once. If the TV show is already in the list, update the date for the
+       * folder to be the date of the last recorded TV show as the programs are returned in the
+       * order they were recorded.
+       */
+      if (items.Contains(path))
       {
-        m_dll->ref_release(program);
-        continue;
+        CFileItemPtr item = items.Get(path);
+        item->m_dateTime = GetValue(m_dll->proginfo_rec_start(program));
       }
-
-      CFileItemPtr item(new CFileItem(base + "/" + title + "/", true));
-      item->SetLabel(title);
-
-      items.Add(item);
+      else
+      {
+        CFileItemPtr item(new CFileItem(path, true));
+        item->m_dateTime = GetValue(m_dll->proginfo_rec_start(program));
+        item->SetLabel(title);
+        items.Add(item);
+      }
       m_dll->ref_release(program);
     }
 
   }
 
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("", "", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
   else
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("", "", "%L", "%J"));
+  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("", "", "%L", "%J"));
 
   m_dll->ref_release(list);
   return true;
