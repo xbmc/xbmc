@@ -39,8 +39,7 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 {
   m_width = 1;
   m_height = 1;
-  m_hStepX = 0;
-  m_hStepY = 0;
+  m_hStepXY = 0;
   m_stepX = 0;
   m_stepY = 0;
   m_sourceTexUnit = 0;
@@ -49,11 +48,10 @@ BaseVideoFilterShader::BaseVideoFilterShader()
   m_stretch = 0.0f;
 
   string shaderv = 
-    "uniform float stepx;"
-    "uniform float stepy;"
+    "uniform vec2 stepxy;"
     "void main()"
     "{"
-    "gl_TexCoord[0].xy = gl_MultiTexCoord0.xy - vec2(stepx * 0.5, stepy * 0.5);"
+    "gl_TexCoord[0].xy = gl_MultiTexCoord0.xy - stepxy * 0.5;"
     "gl_Position = ftransform();"
     "gl_FrontColor = gl_Color;"
     "}";
@@ -108,8 +106,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 {
   // obtain shader attribute handles on successfull compilation
   m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
-  m_hStepX     = glGetUniformLocation(ProgramHandle(), "stepx");
-  m_hStepY     = glGetUniformLocation(ProgramHandle(), "stepy");
+  m_hStepXY    = glGetUniformLocation(ProgramHandle(), "stepxy");
   m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
   m_hStretch   = glGetUniformLocation(ProgramHandle(), "m_stretch");
 
@@ -157,8 +154,7 @@ bool ConvolutionFilterShader::OnEnabled()
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(m_hSourceTex, m_sourceTexUnit);
   glUniform1i(m_hKernTex, 2);
-  glUniform1f(m_hStepX, m_stepX);
-  glUniform1f(m_hStepY, m_stepY);
+  glUniform2f(m_hStepXY, m_stepX, m_stepY);
   glUniform1f(m_hStretch, m_stretch);
   VerifyGLState();
   return true;

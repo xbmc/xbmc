@@ -1,7 +1,6 @@
 uniform sampler2D img;
 uniform sampler1D kernelTex;
-uniform float     stepx;
-uniform float     stepy;
+uniform vec2      stepxy;
 uniform float     m_stretch;
 
 //nvidia's half is a 16 bit float and can bring some speed improvements
@@ -54,27 +53,23 @@ half3 line (float ypos, vec4 xpos, half4 linetaps)
 void main()
 {
   vec2 pos = stretch(gl_TexCoord[0].xy);
+  vec2 f = fract(pos / stepxy);
 
-  float xf = fract(pos.x / stepx);
-  float yf = fract(pos.y / stepy);
-
-  half4 linetaps   = weight(1.0 - xf);
-  half4 columntaps = weight(1.0 - yf);
+  half4 linetaps   = weight(1.0 - f.x);
+  half4 columntaps = weight(1.0 - f.y);
 
   //make sure all taps added together is exactly 1.0, otherwise some (very small) distortion can occur
   linetaps /= linetaps.r + linetaps.g + linetaps.b + linetaps.a;
   columntaps /= columntaps.r + columntaps.g + columntaps.b + columntaps.a;
 
-  float xstart = (-0.5 - xf) * stepx + pos.x;
-  vec4 xpos = vec4(xstart, xstart + stepx, xstart + stepx * 2.0, xstart + stepx * 3.0);
-
-  float ystart = (-0.5 - yf) * stepy + pos.y;
+  vec2 xystart = (-0.5 - f) * stepxy + pos;
+  vec4 xpos = vec4(xystart.x, xystart.x + stepxy.x, xystart.x + stepxy.x * 2.0, xystart.x + stepxy.x * 3.0);
 
   gl_FragColor.rgb =
-    line(ystart              , xpos, linetaps) * columntaps.r +
-    line(ystart + stepy      , xpos, linetaps) * columntaps.g +
-    line(ystart + stepy * 2.0, xpos, linetaps) * columntaps.b +
-    line(ystart + stepy * 3.0, xpos, linetaps) * columntaps.a;
+    line(xystart.y                 , xpos, linetaps) * columntaps.r +
+    line(xystart.y + stepxy.y      , xpos, linetaps) * columntaps.g +
+    line(xystart.y + stepxy.y * 2.0, xpos, linetaps) * columntaps.b +
+    line(xystart.y + stepxy.y * 3.0, xpos, linetaps) * columntaps.a;
 
   gl_FragColor.a = gl_Color.a;
 }

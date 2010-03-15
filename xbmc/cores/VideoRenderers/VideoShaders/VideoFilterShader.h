@@ -31,8 +31,7 @@ namespace Shaders {
 
     // shader attribute handles
     GLint m_hSourceTex;
-    GLint m_hStepX;
-    GLint m_hStepY;
+    GLint m_hStepXY;
     GLint m_hStretch;
   };
 

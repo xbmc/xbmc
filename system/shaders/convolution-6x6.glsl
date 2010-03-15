@@ -1,7 +1,6 @@
 uniform sampler2D img;
 uniform sampler1D kernelTex;
-uniform float     stepx;
-uniform float     stepy;
+uniform vec2      stepxy;
 uniform float     m_stretch;
 
 //nvidia's half is a 16 bit float and can bring some speed improvements
@@ -56,14 +55,12 @@ half3 line (float ypos, vec3 xpos1, vec3 xpos2, half3 linetaps1, half3 linetaps2
 void main()
 {
   vec2 pos = stretch(gl_TexCoord[0].xy);
+  vec2 f = fract(pos / stepxy);
 
-  float xf = fract(pos.x / stepx);
-  float yf = fract(pos.y / stepy);
-
-  half3 linetaps1   = weight((1.0 - xf) / 2.0);
-  half3 linetaps2   = weight((1.0 - xf) / 2.0 + 0.5);
-  half3 columntaps1 = weight((1.0 - yf) / 2.0);
-  half3 columntaps2 = weight((1.0 - yf) / 2.0 + 0.5);
+  half3 linetaps1   = weight((1.0 - f.x) / 2.0);
+  half3 linetaps2   = weight((1.0 - f.x) / 2.0 + 0.5);
+  half3 columntaps1 = weight((1.0 - f.y) / 2.0);
+  half3 columntaps2 = weight((1.0 - f.y) / 2.0 + 0.5);
 
   //make sure all taps added together is exactly 1.0, otherwise some (very small) distortion can occur
   half sum = linetaps1.r + linetaps1.g + linetaps1.b + linetaps2.r + linetaps2.g + linetaps2.b;
@@ -73,20 +70,17 @@ void main()
   columntaps1 /= sum;
   columntaps2 /= sum;
 
-  float xstart = (-1.5 - xf) * stepx + pos.x;
-  vec3 xpos1 = vec3(xstart, xstart + stepx, xstart + stepx * 2.0);
-  xstart += stepx * 3.0;
-  vec3 xpos2 = vec3(xstart, xstart + stepx, xstart + stepx * 2.0);
-
-  float ystart = (-1.5 - yf) * stepy + pos.y;
+  vec2 xystart = (-1.5 - f) * stepxy + pos;
+  vec3 xpos1 = vec3(xystart.x, xystart.x + stepxy.x, xystart.x + stepxy.x * 2.0);
+  vec3 xpos2 = vec3(xystart.x + stepxy.x * 3.0, xystart.x + stepxy.x * 4.0, xystart.x + stepxy.x * 5.0);
 
   gl_FragColor.rgb =
-   line(ystart              , xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
-   line(ystart + stepy      , xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
-   line(ystart + stepy * 2.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +
-   line(ystart + stepy * 3.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g +
-   line(ystart + stepy * 4.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
-   line(ystart + stepy * 5.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
+   line(xystart.y                 , xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
+   line(xystart.y + stepxy.y      , xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
+   line(xystart.y + stepxy.y * 2.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +
+   line(xystart.y + stepxy.y * 3.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.g +
+   line(xystart.y + stepxy.y * 4.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.b +
+   line(xystart.y + stepxy.y * 5.0, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.b;
 
   gl_FragColor.a = gl_Color.a;
 }
