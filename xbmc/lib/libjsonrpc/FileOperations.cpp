@@ -42,18 +42,11 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
     VECSOURCES *sources = g_settings.GetSourcesFromType(type);
     if (sources)
     {
-      unsigned int start = param.get("start", 0).asUInt();
-      unsigned int end   = param.get("end", (unsigned int)sources->size()).asUInt();
-      end = end > sources->size() ? sources->size() : end;
+      CFileItemList items;
+      for (unsigned int i = 0; i < (unsigned int)sources->size(); i++)
+        items.Add(CFileItemPtr(new CFileItem(sources->at(i))));
 
-      result["start"] = start;
-      result["end"]   = end;
-      result["total"] = (unsigned int)sources->size();
-      for (unsigned int i = start; i < end; i++)
-      {
-        CMediaSource &testShare = sources->at(i);
-        result["shares"].append(testShare.strPath);
-      }
+      HandleFileItemList(NULL, "shares", items, parameterObject, result);
     }
 
     return OK;

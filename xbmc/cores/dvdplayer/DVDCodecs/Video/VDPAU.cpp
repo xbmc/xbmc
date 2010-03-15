@@ -33,8 +33,6 @@
 #include "AdvancedSettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
-CVDPAU*          g_VDPAU=NULL;
-
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
@@ -161,9 +159,6 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
     avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
     avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-
-    /* hack for now, we need this in renderer */
-    g_VDPAU = this;
     return true;
   }
   return false;
@@ -177,9 +172,14 @@ CVDPAU::~CVDPAU()
 void CVDPAU::Close()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+
+  FiniVDPAUOutput();
+  FiniVDPAUProcs();
+
   if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     glXDestroyPixmap(m_Display, m_glPixmap);
     m_glPixmap = NULL;
   }
@@ -189,9 +189,6 @@ void CVDPAU::Close()
     XFreePixmap(m_Display, m_Pixmap);
     m_Pixmap = NULL;
   }
-
-  FiniVDPAUOutput();
-  FiniVDPAUProcs();
 
   if (m_glContext)
   {
@@ -204,8 +201,6 @@ void CVDPAU::Close()
     dlclose(dl_handle);
     dl_handle = NULL;
   }
-
-  g_VDPAU = NULL;
 }
 
 bool CVDPAU::MakePixmapGL()
@@ -1229,6 +1224,7 @@ bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* 
   picture->iFlags = 0;
   picture->iWidth = OutWidth;
   picture->iHeight = OutHeight;
+  picture->vdpau = this;
 
   if(m_mixerstep)
   {

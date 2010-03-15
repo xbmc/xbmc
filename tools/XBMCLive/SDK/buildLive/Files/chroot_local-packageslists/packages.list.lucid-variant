@@ -13,6 +13,7 @@ cpufrequtils
 hts-tvheadend
 xbmc-ppa-keyring
 python-apt
+parted
 xbmc-live
 xbmc
 libgtk2.0-0

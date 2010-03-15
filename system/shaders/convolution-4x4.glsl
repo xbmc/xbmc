@@ -1,6 +1,7 @@
 uniform sampler2D img;
-uniform float     stepx;
-uniform float     stepy;
+uniform sampler1D kernelTex;
+uniform vec2      stepxy;
+uniform float     m_stretch;
 
 //nvidia's half is a 16 bit float and can bring some speed improvements
 //without affecting quality
@@ -11,58 +12,58 @@ uniform float     stepy;
 #endif
 
 #if (HAS_FLOAT_TEXTURE)
-uniform sampler1D kernelTex;
-
 half4 weight(float pos)
 {
-  return texture1D(kernelTex, pos);
+  return texture(kernelTex, pos);
 }
 #else
-uniform sampler2D kernelTex;
-
 half4 weight(float pos)
 {
-  //row 0 contains the high byte, row 1 contains the low byte
-  return (texture2D(kernelTex, vec2(pos, 0.0)) * 256.0 + texture2D(kernelTex, vec2(pos, 1.0))) / 128.5 - 1.0;
+  return texture(kernelTex, pos) * 2.0 - 1.0;
 }
 #endif
 
-half3 pixel(float xpos, float ypos)
+vec2 stretch(vec2 pos)
 {
-  return texture2D(img, vec2(xpos, ypos)).rgb;
+#if (XBMC_STRETCH)
+  // our transform should map [0..1] to itself, with f(0) = 0, f(1) = 1, f(0.5) = 0.5, and f'(0.5) = b.
+  // a simple curve to do this is g(x) = b(x-0.5) + (1-b)2^(n-1)(x-0.5)^n + 0.5
+  // where the power preserves sign. n = 2 is the simplest non-linear case (required when b != 1)
+  float x = pos.x - 0.5;
+  return vec2(mix(x * abs(x) * 2.0, x, m_stretch) + 0.5, pos.y);
+#else
+  return pos;
+#endif
 }
 
-half3 line (float ypos, vec4 xpos, half4 linetaps)
+half3 line (vec2 pos, const int yoffset, half4 linetaps)
 {
   return
-    pixel(xpos.r, ypos) * linetaps.r +
-    pixel(xpos.g, ypos) * linetaps.g +
-    pixel(xpos.b, ypos) * linetaps.b +
-    pixel(xpos.a, ypos) * linetaps.a;
+    textureOffset(img, pos, ivec2(-1, yoffset)).rgb * linetaps.r +
+    textureOffset(img, pos, ivec2( 0, yoffset)).rgb * linetaps.g +
+    textureOffset(img, pos, ivec2( 1, yoffset)).rgb * linetaps.b +
+    textureOffset(img, pos, ivec2( 2, yoffset)).rgb * linetaps.a;
 }
 
 void main()
 {
-  float xf = fract(gl_TexCoord[0].x / stepx);
-  float yf = fract(gl_TexCoord[0].y / stepy);
+  vec2 pos = stretch(gl_TexCoord[0].xy);
+  vec2 f = fract(pos / stepxy);
 
-  half4 linetaps   = weight(1.0 - xf);
-  half4 columntaps = weight(1.0 - yf);
+  half4 linetaps   = weight(1.0 - f.x);
+  half4 columntaps = weight(1.0 - f.y);
 
   //make sure all taps added together is exactly 1.0, otherwise some (very small) distortion can occur
   linetaps /= linetaps.r + linetaps.g + linetaps.b + linetaps.a;
   columntaps /= columntaps.r + columntaps.g + columntaps.b + columntaps.a;
 
-  float xstart = (-0.5 - xf) * stepx + gl_TexCoord[0].x;
-  vec4 xpos = vec4(xstart, xstart + stepx, xstart + stepx * 2.0, xstart + stepx * 3.0);
-
-  float ystart = (-0.5 - yf) * stepy + gl_TexCoord[0].y;
+  vec2 xystart = (0.5 - f) * stepxy + pos;
 
   gl_FragColor.rgb =
-    line(ystart              , xpos, linetaps) * columntaps.r +
-    line(ystart + stepy      , xpos, linetaps) * columntaps.g +
-    line(ystart + stepy * 2.0, xpos, linetaps) * columntaps.b +
-    line(ystart + stepy * 3.0, xpos, linetaps) * columntaps.a;
+    line(xystart, -1, linetaps) * columntaps.r +
+    line(xystart,  0, linetaps) * columntaps.g +
+    line(xystart,  1, linetaps) * columntaps.b +
+    line(xystart,  2, linetaps) * columntaps.a;
 
   gl_FragColor.a = gl_Color.a;
 }

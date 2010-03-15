@@ -1,10 +1,6 @@
 #pragma once
-
-#ifndef __PVRCLIENT_TVHEADEND_H__
-#define __PVRCLIENT_TVHEADEND_H__
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,82 +20,82 @@
  *
  */
 
-/*
- * for DESCRIPTION see 'pvrclient-tvheadend.cpp'
- */
+#ifndef __PVRCLIENT_TVHEADEND_H__
+#define __PVRCLIENT_TVHEADEND_H__
 
-#include <list>
-#include "FileSystem/HTSPDirectory.h"
+//#include <list>
+//#include "FileSystem/HTSPDirectory.h"
 #include "client.h"
-
-extern "C" {
-#include "lib/libhts/htsmsg.h"
-}
+//
+//extern "C" {
+//#include "lib/libhts/htsmsg.h"
+//}
 
 #define DEFAULT_HOST        "127.0.0.1"
 #define DEFAULT_PORT        9982
+//
+//using namespace HTSP;
 
-using namespace HTSP;
-
-class cPVRClientTvheadend {
+class cPVRClientTvheadend
+{
   public:
     /* Class interface */
     cPVRClientTvheadend();
     ~cPVRClientTvheadend();
 
-    /* connect functions */
-    bool Connect(std::string sHostname = DEFAULT_HOST, int iPort = DEFAULT_PORT);
-    void Disconnect();
-    bool IsConnected();
-
-    /* Server handling */
-    PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
-    PVR_ERROR GetStreamProperties(PVR_STREAMPROPS *props);
-
-    /* General handling */
-    const char* GetBackendName();
-    const char* GetBackendVersion();
-    PVR_ERROR   GetBackendTime(time_t *localTime, int *gmtOffset);
-    const char* GetConnectionString();
-
-    /* Channel handling */
-    int GetNumChannels();
-    int GetNumBouquets();
-    PVR_ERROR RequestChannelList(PVRHANDLE handle, bool radio = false);
-    PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
-
-    /* Live stream handling */
-    bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
-    void CloseLiveStream();
-    int ReadLiveStream(unsigned char* buf, int buf_size);
-
-    bool SwitchChannel(const PVR_CHANNEL &channelinfo);
-
-  private:
-    /* host session */
-    CURL                    m_url;
-    CHTSPDirectorySession*  m_pSession;
+//    /* connect functions */
+//    bool Connect(std::string sHostname = DEFAULT_HOST, int iPort = DEFAULT_PORT);
+//    void Disconnect();
+//    bool IsConnected();
+//
+//    /* Server handling */
+//    PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
+//    PVR_ERROR GetStreamProperties(PVR_STREAMPROPS *props);
+//
+//    /* General handling */
+//    const char* GetBackendName();
+//    const char* GetBackendVersion();
+//    PVR_ERROR   GetBackendTime(time_t *localTime, int *gmtOffset);
+//    const char* GetConnectionString();
+//
+//    /* Channel handling */
+//    int GetNumChannels();
+//    int GetNumBouquets();
+//    PVR_ERROR RequestChannelList(PVRHANDLE handle, bool radio = false);
+//    PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+//
+//    /* Live stream handling */
+//    bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
+//    void CloseLiveStream();
+//    int ReadLiveStream(unsigned char* buf, int buf_size);
+//
+//    bool SwitchChannel(const PVR_CHANNEL &channelinfo);
+//
+//  private:
+//    /* host session */
+//    CURL                    m_url;
+//    CHTSPDirectorySession*  m_pSession;
 };
-
-inline bool cPVRClientTvheadend::IsConnected()
-{
-  return (m_pSession != NULL);
-}
-
-inline int cPVRClientTvheadend::GetNumChannels()
-{
-  return (int)(m_pSession->GetChannels().size());
-}
-
-inline int cPVRClientTvheadend::GetNumBouquets()
-{
-  return (int)(m_pSession->GetTags().size());
-}
-
-inline const char* cPVRClientTvheadend::GetConnectionString()
-{
-  return m_url.Get().c_str();
-}
+//
+//inline bool cPVRClientTvheadend::IsConnected()
+//{
+//  return (m_pSession != NULL);
+//}
+//
+//inline int cPVRClientTvheadend::GetNumChannels()
+//{
+//  return (int)(m_pSession->GetChannels().size());
+//}
+//
+//inline int cPVRClientTvheadend::GetNumBouquets()
+//{
+//  return (int)(m_pSession->GetTags().size());
+//}
+//
+//inline const char* cPVRClientTvheadend::GetConnectionString()
+//{
+//  return m_url.Get().c_str();
+//}
 
 #endif // __PVRCLIENT_TVHEADEND_H__
 

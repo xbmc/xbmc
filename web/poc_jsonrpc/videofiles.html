@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>XBMC - Video files</title>
+<link type="text/css" rel="stylesheet" href="basic.css" />
+<script type="text/javascript" src="json.js" />
+<script type="text/javascript" src="help.js" />
+<script type="text/javascript">
+function PlayMovie(movieid)
+{
+  alert("Not implemented");
+}
+</script>
+</head>
+<body>
+<table class="Navigation">
+<tr class="primary">
+  <td class="unselected"><a href="nowplaying.html">Now playing</a></td>
+  <td class="selected">Videos</td>
+  <td class="unselected"><a href="artists.html">Music</a></td>
+  <td class="unselected"><a href="development.html">Development</a></td>
+</tr>
+<tr>
+  <td></td><td>
+  <table>
+  <tr class="secondary">
+    <td>Video files</td>
+    <td><a href="movies.html">Movies</a></td>
+    <td><a href="tvshows.html">TV Shows</a></td>
+  </tr>
+  </table></td>
+</tr>
+</table>
+<br />
+
+<script type="text/javascript">
+String.prototype.endsWith = function(str) 
+{return (this.match(str+"$")==str)}
+
+var directory = gup("directory");
+
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+
+if (directory)
+  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"Files.GetDirectory\", \"params\": { \"type\": \"video\", \"directory\": \"" + Url.decode(directory) + "\" }, \"id\": 1}");
+else
+  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"Files.GetShares\", \"params\": { \"type\": \"video\" }, \"id\": 1}");
+
+
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+if (result) {
+  var array;
+  if (directory)
+    array = result["directories"];
+  else
+    array = result["shares"];
+
+  document.write("<table class=\"Files\">");
+  for (var i in array) {
+    var item = array[i];
+
+    document.write("<tr class=\"" + (i % 2 == 0 ? "even" : "odd") + "\"><td class=\"cover\">");
+    if (item["file"].endsWith("/")) {
+      document.write("<a href=\"videofiles.html?directory=" + Url.encode(item["file"]) + "\">");
+      document.write("<img src=\"" + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/DefaultFolder.png") + "\" class=\"smallcover\" alt=\"" + item["label"] + "\"></img></a>");
+    } else {
+      document.write("<img src=\"images/DefaultVideo.png\" class=\"smallcover\" alt=\"" + item["label"] + "\"></img>");
+    }
+
+    document.write("<td class=\"info\">");
+
+    if (item["file"].endsWith("/")) {
+      document.write("<a href=\"videofiles.html?directory=" + Url.encode(item["file"]) + "\">");
+      document.write(item["label"] + "</a>");
+    } else {
+      document.write(item["label"]);
+    }
+
+    document.write("</td></tr>");
+  }
+  document.write("</tbody></table>");
+} else {
+  document.write("Error");
+}
+</script>
+</body>
+</html>

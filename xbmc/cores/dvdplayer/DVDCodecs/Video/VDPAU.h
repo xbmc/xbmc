@@ -216,8 +216,4 @@ public:
                           , VdpChromaType     &chroma_type);
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
-  
-  
 };
-
-extern CVDPAU*          g_VDPAU;

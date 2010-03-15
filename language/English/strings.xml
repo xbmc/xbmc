@@ -545,7 +545,7 @@
   <string id="630">Normal</string>
   <string id="631">Zoom</string>
   <string id="632">Stretch 4:3</string>
-  <string id="633">Stretch 14:9</string>
+  <string id="633">Wide Zoom</string>
   <string id="634">Stretch 16:9</string>
   <string id="635">Original Size</string>
   <string id="636">Custom</string>
@@ -571,6 +571,7 @@
   <string id="656">Browse for playlist</string>
   <string id="657">Browse for folder</string>
   <string id="658">Song information</string>
+  <string id="659">Non-linear stretch</string>
 
   <string id="660">Volume amplification</string>
   <string id="661">Choose export folder</string>
@@ -2509,6 +2510,9 @@
   <string id="24020">Configure Add-on</string>
   <string id="24021">Disable Add-on</string>
   <string id="24022">Enable Add-on</string>
+  <string id="24023">Add-on disabled</string>
+  <string id="24027">Weather service</string>
+  <string id="24028">Weather.com (standard)</string>
   <string id="24030">This Add-on can not be configured</string>
   <string id="24031">Error loading settings</string>
 

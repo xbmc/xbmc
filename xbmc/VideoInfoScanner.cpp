@@ -200,15 +200,12 @@ namespace VIDEO
 
     // load subfolder
     CFileItemList items;
-    int iFound;
+    int iFound = 0;
     bool bSkip=false;
-    // first time m_info is set
 
-    if (!m_database.GetScraperForPath(strDirectory,m_info,settings, iFound))
-    {
-      m_info.reset();
-      return false;
-    }
+    ScraperPtr info;
+    m_database.GetScraperForPath(strDirectory, info, settings, iFound);
+    SetScraperInfo(info);
 
     if (m_info->Content() == CONTENT_NONE)
       bSkip = true;
@@ -541,7 +538,8 @@ namespace VIDEO
             // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
             ScraperPtr temp;
             SScanSettings settings;
-            if (m_database.GetScraperForPath(pItem->m_strPath,temp,settings))
+            m_database.GetScraperForPath(pItem->m_strPath,temp,settings);
+            if (temp->Content() == CONTENT_NONE)
             {
               if (temp->Parent())
               { // as we are working with a new clone, default scraper settings are saved

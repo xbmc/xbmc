@@ -7,6 +7,7 @@
   <librarywin32>opengl_spectrum_win32.vis</librarywin32>
   <version>1.0.0</version>
   <platforms>
+    <platform>osx</platform>
     <platform>linux</platform>
     <platform>windows</platform>
   </platforms>

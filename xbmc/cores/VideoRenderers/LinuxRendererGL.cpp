@@ -216,6 +216,9 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
     m_buffers[i].image.flags = 0;
 
   m_iLastRenderBuffer = -1;
+
+  m_nonLinStretch = g_settings.m_bNonLinStretch;
+  m_pixelRatio = g_settings.m_fPixelRatio;
   return true;
 }
 
@@ -475,7 +478,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   YUVFIELDS& fields =  buf.fields;
 
 #ifdef HAVE_LIBVDPAU
-  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
+  if ((m_renderMethod & RENDER_VDPAU))
   {
     SetEvent(m_eventTexturesDone[source]);
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -795,11 +798,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGL::FlipPage(int source)
 {
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
-    g_VDPAU->Present();
-#endif
-
   UnBindPbo(m_buffers[m_iYV12RenderBuffer]);
 
   if( source >= 0 && source < m_NumYV12Buffers )
@@ -810,6 +808,11 @@ void CLinuxRendererGL::FlipPage(int source)
   BindPbo(m_buffers[m_iYV12RenderBuffer]);
 
   m_buffers[m_iYV12RenderBuffer].flipindex = ++m_flipindex;
+
+#ifdef HAVE_LIBVDPAU  
+  if((m_renderMethod & RENDER_VDPAU) && m_buffers[m_iYV12RenderBuffer].vdpau)
+    m_buffers[m_iYV12RenderBuffer].vdpau->Present();
+#endif
 
   return;
 }
@@ -900,10 +903,31 @@ unsigned int CLinuxRendererGL::PreInit()
 
 void CLinuxRendererGL::UpdateVideoFilter()
 {
-  if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
+  if (m_nonLinStretch != g_settings.m_bNonLinStretch || m_pixelRatio != g_settings.m_fPixelRatio)
+  {
+    //whether non-linear stretch is already on
+    bool nonLinStretchIsOn = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
+
+    m_nonLinStretch = g_settings.m_bNonLinStretch;
+    m_pixelRatio = g_settings.m_fPixelRatio;
+
+    if (g_settings.m_bNonLinStretch && (g_settings.m_fPixelRatio > 1.001f || g_settings.m_fPixelRatio < 0.999f))
+    {
+      if (nonLinStretchIsOn)
+        return; //non-linear stretch needs to be on but is already on
+    }
+    else
+    {
+      if (!nonLinStretchIsOn)
+        return; //non-linear stretch needs to be off but is already off
+    }
+  }
+  else if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
     return;
+
   m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
+  m_reloadShaders    = 1;
 
   if(!Supports(m_scalingMethod))
   {
@@ -931,16 +955,23 @@ void CLinuxRendererGL::UpdateVideoFilter()
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
+  bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f);
+
   switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
-    SetTextureFilter(GL_NEAREST);
-    m_renderQuality = RQ_SINGLEPASS;
-    return;
-
   case VS_SCALINGMETHOD_LINEAR:
-    SetTextureFilter(GL_LINEAR);
+    SetTextureFilter(m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
+    if ((m_renderMethod & RENDER_VDPAU) && nonLinStretch)
+    {
+      m_pVideoFilterShader = new StretchFilterShader();
+      if (!m_pVideoFilterShader->CompileAndLink())
+      {
+        CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+        break;
+      }
+    }
     return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
@@ -962,7 +993,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
       }
     }
 
-    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, nonLinStretch);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
@@ -1009,14 +1040,12 @@ void CLinuxRendererGL::LoadShaders(int field)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
+  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
   }
   else
-#endif //HAVE_LIBVDPAU
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1032,8 +1061,12 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
+    bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
+                         && m_renderQuality == RQ_SINGLEPASS && m_textureTarget != GL_TEXTURE_RECTANGLE_ARB;
+
     // create regular progressive scan shader
-    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
+    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, nonLinStretch);
+
     CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
@@ -1159,11 +1192,6 @@ void CLinuxRendererGL::UnInit()
   }
   m_rgbBufferSize = 0;
 
-#ifdef HAVE_LIBVDPAU
-  if (g_VDPAU)
-    g_VDPAU->ReleasePixmap();
-#endif
-
   // YV12 textures
   for (int i = 0; i < NUM_BUFFERS; ++i)
     (this->*m_textureDelete)(i);
@@ -1281,6 +1309,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   m_pYUVShader->SetBlack(g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(g_settings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
@@ -1478,10 +1507,11 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 
   if (m_pVideoFilterShader)
   {
-    m_fbo.SetFiltering(GL_TEXTURE_2D, GL_NEAREST);
+    m_fbo.SetFiltering(GL_TEXTURE_2D, m_pVideoFilterShader->GetTextureFilter());
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
+    m_pVideoFilterShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
     m_pVideoFilterShader->Enable();
   }
   else
@@ -1522,45 +1552,44 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 void CLinuxRendererGL::RenderVDPAU(int index, int field)
 {
 #ifdef HAVE_LIBVDPAU
-  if (!g_VDPAU)
-  {
-    CLog::Log(LOGERROR,"(VDPAU) m_Surface is NULL");
+  CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+  if (!vdpau)
     return;
-  }
 
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
 
   glEnable(m_textureTarget);
 
-  if (!g_VDPAU->m_glPixmapTexture)
+  if (!vdpau->m_glPixmapTexture)
   {
-    glGenTextures (1, &(g_VDPAU->m_glPixmapTexture));
-    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)g_VDPAU->m_glPixmapTexture);
+    glGenTextures (1, &(vdpau->m_glPixmapTexture));
+    CLog::Log(LOGNOTICE,"Created m_glPixmapTexture (%i)",(int)vdpau->m_glPixmapTexture);
   }
 
-  glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
-  g_VDPAU->BindPixmap();
+  glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
+  vdpau->BindPixmap();
 
   glActiveTextureARB(GL_TEXTURE0);
 
   // Try some clamping or wrapping
-  glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   if (m_pVideoFilterShader)
   {
-    glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, m_pVideoFilterShader->GetTextureFilter());
     m_pVideoFilterShader->SetSourceTexture(0);
     m_pVideoFilterShader->SetWidth(m_sourceWidth);
     m_pVideoFilterShader->SetHeight(m_sourceHeight);
+    m_pVideoFilterShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
     m_pVideoFilterShader->Enable();
   }
   else
   {
-    glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   }
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1585,8 +1614,8 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   VerifyGLState();
   if (m_StrictBinding)
   {
-    glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
-    g_VDPAU->ReleasePixmap();
+    glBindTexture(m_textureTarget, vdpau->m_glPixmapTexture);
+    vdpau->ReleasePixmap();
   }
 
   if (m_pVideoFilterShader)
@@ -1676,6 +1705,10 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
+
+#ifdef HAVE_LIBVDPAU
+  SAFE_RELEASE(m_buffers[index].vdpau);
+#endif
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
 
@@ -2177,6 +2210,12 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
       return true;
   }
 
+  if (feature == RENDERFEATURE_NONLINSTRETCH)
+  {
+    if (((m_renderMethod & RENDER_GLSL) && (m_textureTarget != GL_TEXTURE_RECTANGLE_ARB)) || (m_renderMethod & RENDER_VDPAU))
+      return true;
+  }
+
   return false;
 }
 
@@ -2191,15 +2230,15 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-#ifdef HAVE_LIBVDPAU
   if(m_renderMethod & RENDER_VDPAU)
   {
-    if(g_VDPAU)
-      return g_VDPAU->Supports(method);
-    else
-      return false;
-  }
+#ifdef HAVE_LIBVDPAU
+    CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+    if(vdpau)
+      return vdpau->Supports(method);
 #endif
+    return false;
+  }
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
@@ -2275,5 +2314,14 @@ void CLinuxRendererGL::UnBindPbo(YUVBUFFER& buff)
   if(pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
+
+#ifdef HAVE_LIBVDPAU
+void CLinuxRendererGL::AddProcessor(CVDPAU* vdpau)
+{
+  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  SAFE_RELEASE(buf.vdpau);
+  buf.vdpau = (CVDPAU*)vdpau->Acquire();
+}
+#endif
 
 #endif

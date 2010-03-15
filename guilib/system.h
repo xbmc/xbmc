@@ -51,10 +51,6 @@
 #define HAS_WEB_INTERFACE
 #endif
 
-#ifdef HAVE_LIBSSH
-#define HAS_FILESYSTEM_SFTP
-#endif
-
 #define HAS_JSONRPC
 #define HAS_HTTPAPI
 
@@ -101,6 +97,7 @@
 #define HAVE_LIBCRYSTALHD
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
+#define HAVE_LIBSSH
 #endif
 
 /*****************
@@ -146,6 +143,10 @@
 #define HAS_XRANDR
 #endif
 #define HAS_LIBBDNAV
+#endif
+
+#ifdef HAVE_LIBSSH
+#define HAS_FILESYSTEM_SFTP
 #endif
 
 /*****************

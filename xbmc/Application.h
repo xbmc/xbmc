@@ -67,7 +67,6 @@ class CFileItemList;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
-class CProfile;
 class CSplash;
 
 class CBackgroundPlayer : public CThread
@@ -121,7 +120,7 @@ public:
   void RestartApp();
   void LoadSkin(const CStdString& strSkin);
   void UnloadSkin();
-  bool LoadUserWindows(const CStdString& strSkinPath);
+  bool LoadUserWindows();
   void DelayLoadSkin();
   void CancelDelayLoadSkin();
   void ReloadSkin();
@@ -348,9 +347,9 @@ protected:
 
   void SaveCurrentFileSettings();
 
-  CProfile* InitDirectoriesLinux();
-  CProfile* InitDirectoriesOSX();
-  CProfile* InitDirectoriesWin32();
+  bool InitDirectoriesLinux();
+  bool InitDirectoriesOSX();
+  bool InitDirectoriesWin32();
 
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)

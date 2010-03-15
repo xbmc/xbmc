@@ -181,8 +181,7 @@ void CGUIWindowAddonBrowser::Update()
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_ADDONSLIST, 0, 0, m_vecItems);
   OnMessage(msg);
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_currentCategory);
-  if (control && !control->HasFocus())
-    control->SetFocus(true);
+  ((CGUIButtonControl *)control)->SetSelected(true);
 
   if (selected != 0)
     SelectItem(selected);
@@ -195,7 +194,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
   CStdString strPath = pItem->m_strPath;
 
   // check if user is allowed to open this window
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_settings.GetCurrentProfile().addonmanagerLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
@@ -214,7 +213,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
 bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
 {
   // check if user is allowed to open this window
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  if (g_settings.GetCurrentProfile().addonmanagerLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return false;
 
@@ -243,7 +242,8 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
   else
   {
     btn_Disable = pMenu->AddButton(iDisableLabel);
-    btn_Settings = pMenu->AddButton(iSettingsLabel);
+    if (addon->HasSettings())
+      btn_Settings = pMenu->AddButton(iSettingsLabel);
   }
 
   pMenu->CenterWindow();
@@ -292,9 +292,6 @@ void CGUIWindowAddonBrowser::SetupControls()
     group->AddControl(pButton);
     m_categories.push_back((ADDON::TYPE)i);
   }
-  CGUIControl *control = group->GetFirstFocusableControl(CONTROL_START_BUTTONS);
-  if (control && !control->HasFocus())
-    control->SetFocus(true);
 }
 
 void CGUIWindowAddonBrowser::FreeControls()

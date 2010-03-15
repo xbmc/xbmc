@@ -103,6 +103,10 @@ bool CVisualisation::Create(int x, int y, int w, int h)
   m_pInfo->name = strdup(Name().c_str());
   m_pInfo->presets = strdup(_P(Path()).c_str());
   m_pInfo->profile = strdup(_P(Profile()).c_str());
+  if (GetSubModules())
+    m_pInfo->submodule = strdup(_P(m_submodules.front()).c_str());
+  else
+    m_pInfo->submodule = NULL;
 
   if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
   {
@@ -366,13 +370,11 @@ bool CVisualisation::UpdateTrack()
       CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
 
     // inform the visualisation of the current album art
-    if ( m_pStruct->OnAction( VIS_ACTION_UPDATE_ALBUMART,
-      (void*)( m_AlbumThumb.c_str() ) ) )
+    if (OnAction( VIS_ACTION_UPDATE_ALBUMART, (void*)( m_AlbumThumb.c_str() ) ) )
       handled = true;
 
     // inform the visualisation of the current track's tag information
-    if ( tag && m_pStruct->OnAction( VIS_ACTION_UPDATE_TRACK,
-      (void*)tag ) )
+    if ( tag && OnAction( VIS_ACTION_UPDATE_TRACK, (void*)tag ) )
       handled = true;
   }
   return handled;

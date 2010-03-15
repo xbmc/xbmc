@@ -522,17 +522,16 @@ void CAddonMgr::FindAddons()
   {
     CFileItemPtr item = items[i];
 
+    if(!item->m_bIsFolder)
+      continue;
+
     // read description.xml and populate the addon
     AddonPtr addon;
     if (!AddonFromInfoXML(item->m_strPath, addon))
-    {
-      CLog::Log(LOGDEBUG, "ADDON: Error reading %sdescription.xml, bypassing package", item->m_strPath.c_str());
       continue;
-    }
 
     // refuse to store addons with missing library
-    CStdString library(addon->Path());
-    CUtil::AddFileToFolder(library, addon->LibName(), library);
+    CStdString library(CUtil::AddFileToFolder(addon->Path(), addon->LibName()));
     if (!CFile::Exists(library))
     {
       CLog::Log(LOGDEBUG, "ADDON: Missing library file %s, bypassing package", library.c_str());
@@ -541,9 +540,7 @@ void CAddonMgr::FindAddons()
 
     // check for/cache icon thumbnail
     //TODO cache one thumb per addon id instead
-    CFileItem item2(addon->Path());
-    CUtil::AddFileToFolder(addon->Path(), addon->LibName(), item2.m_strPath);
-    item2.m_bIsFolder = false;
+    CFileItem item2(CUtil::AddFileToFolder(addon->Path(), addon->LibName()), false);
     item2.SetCachedProgramThumb();
     if (!item2.HasThumbnail())
       item2.SetUserProgramThumb();
@@ -652,8 +649,9 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
 bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 {
   // First check that we can load description.xml
-  CStdString strPath(path);
-  CUtil::AddFileToFolder(strPath, ADDON_METAFILE, strPath);
+  CStdString strPath(CUtil::AddFileToFolder(path, ADDON_METAFILE));
+  if(!CFile::Exists(strPath))
+    return false;
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -923,6 +921,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
         deps.insert(std::make_pair(id, std::make_pair(AddonVersion(min), AddonVersion(max))));
         element = element->NextSiblingElement("dependency");
       } while (element != NULL);
+      addonProps.dependencies = deps;
     }
   }
 
@@ -974,14 +973,13 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
       return false;
   }
 
-  addon->SetDeps(deps);
   return true;
 }
 
 CStdString CAddonMgr::GetAddonsXMLFile() const
 {
   CStdString folder;
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].hasAddons())
+  if (g_settings.GetCurrentProfile().hasAddons())
     CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),"addons.xml",folder);
   else
     CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"addons.xml",folder);
@@ -1067,7 +1065,7 @@ void CAddonMgr::GetAddons(const TiXmlElement* pAddons, VECADDONPROPS &addons)
 {
 
   const TiXmlNode *pType = 0;
-  while( pType = pAddons->IterateChildren( pType ) )
+  while( ( pType = pAddons->IterateChildren( pType ) ) )
   {
     TYPE type = TranslateType(pType->Value());
     const TiXmlNode *pAddon = pType->FirstChild();

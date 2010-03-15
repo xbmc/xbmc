@@ -88,6 +88,7 @@ void CAdvancedSettings::Initialize()
   m_videoHighQualityScaling = SOFTWARE_UPSCALING_DISABLED;
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
   m_videoVDPAUScaling = false;
+  m_videoNonLinStretchRatio = 0.5f;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -119,13 +120,7 @@ void CAdvancedSettings::Initialize()
 
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
-#ifdef _DEBUG
-  m_logLevel     = LOG_LEVEL_DEBUG;
-  m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  m_logLevel     = LOG_LEVEL_NORMAL;
-  m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
+
   m_cddbAddress = "freedb.freedb.org";
 
   m_handleMounting = g_application.IsStandAlone();
@@ -158,7 +153,7 @@ void CAdvancedSettings::Initialize()
   // foo.mm.dd.yyyy.* (byDate=true)
   m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
-  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-\\(]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
@@ -223,9 +218,11 @@ void CAdvancedSettings::Initialize()
   m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
   m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
   m_iEdlMaxStartGap = 5 * 60;              // 5 minutes.
+  m_iEdlCommBreakAutowait = 0;             // Off by default
+  m_iEdlCommBreakAutowind = 0;             // Off by default
 
   m_curlconnecttimeout = 10;
-  m_curllowspeedtime = 5;
+  m_curllowspeedtime = 20;
   m_curlretries = 2;
 
   m_fullScreen = m_startFullScreen = false;
@@ -406,6 +403,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
+    XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -559,6 +557,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
     XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
     XMLUtils::GetInt(pElement, "maxstartgap", m_iEdlMaxStartGap, 0, 10 * 60);               // Between 0 and 10 minutes
+    XMLUtils::GetInt(pElement, "commbreakautowait", m_iEdlCommBreakAutowait, 0, 10);        // Between 0 and 10 seconds
+    XMLUtils::GetInt(pElement, "commbreakautowind", m_iEdlCommBreakAutowind, 0, 10);        // Between 0 and 10 seconds
   }
 
   // picture exclude regexps

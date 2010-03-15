@@ -33,6 +33,7 @@
 #define FRAME_TYPE_D 4
 
 namespace DXVA { class CProcessor; }
+class CVDPAU;
 
 // should be entirely filled by all codecs
 struct DVDVideoPicture
@@ -49,6 +50,9 @@ struct DVDVideoPicture
     struct {
       DXVA::CProcessor* proc;
       int64_t           proc_id;
+    };
+    struct {
+      CVDPAU* vdpau;
     };
   };
 

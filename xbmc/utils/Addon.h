@@ -87,6 +87,7 @@ public:
   CStdString icon;
   CStdString disclaimer;
   std::set<CONTENT_TYPE> contents;
+  ADDONDEPS dependencies;
   int        stars;
 };
 typedef std::vector<struct AddonProps> VECADDONPROPS;
@@ -120,13 +121,13 @@ public:
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
   const CStdString Profile() const { return m_profile; }
-  const CStdString LibName() const { return m_props.libname; }
+  const CStdString LibName() const { return m_strLibName; }
   const CStdString Author() const { return m_props.author; }
   const CStdString Icon() const { return m_props.icon; }
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
-  ADDONDEPS GetDeps() { return m_dependencies; }
+  ADDONDEPS GetDeps() { return m_props.dependencies; }
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
@@ -149,9 +150,6 @@ private:
 
   virtual bool LoadStrings();
   virtual void ClearStrings();
-
-  void SetDeps(ADDONDEPS& deps) { m_dependencies = deps; }
-  ADDONDEPS m_dependencies;
 
   void BuildLibName();
   CStdString  m_profile;

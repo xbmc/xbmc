@@ -876,6 +876,12 @@ static int ape_decode_frame(AVCodecContext * avctx,
     return bytes_used;
 }
 
+static void ape_flush(AVCodecContext *avctx)
+{
+    APEContext *s = avctx->priv_data;
+    s->samples= 0;
+}
+
 AVCodec ape_decoder = {
     "ape",
     CODEC_TYPE_AUDIO,
@@ -886,5 +892,6 @@ AVCodec ape_decoder = {
     ape_decode_close,
     ape_decode_frame,
     .capabilities = CODEC_CAP_SUBFRAMES,
+    .flush= ape_flush,
     .long_name = NULL_IF_CONFIG_SMALL("Monkey's Audio"),
 };

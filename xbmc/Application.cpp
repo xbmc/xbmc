@@ -258,9 +258,6 @@
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
 
 #ifdef HAS_DVD_DRIVE
 #include <cdio/logging.h>
@@ -477,25 +474,13 @@ bool CApplication::Create()
   win32_exception::install_handler();
 #endif
 
-  CProfile *profile;
-
-  // only the InitDirectories* for the current platform should return
-  // non-null (if at all i.e. to set a profile)
+  // only the InitDirectories* for the current platform should return true
   // putting this before the first log entries saves another ifdef for g_settings.m_logFolder
-  profile = InitDirectoriesLinux();
-  if (!profile)
-    profile = InitDirectoriesOSX();
-  if (!profile)
-    profile = InitDirectoriesWin32();
-  if (profile)
-  {
-    profile->setName("Master user");
-    profile->setLockMode(LOCK_MODE_EVERYONE);
-    profile->setLockCode("");
-    profile->setDate("");
-    g_settings.m_vecProfiles.push_back(*profile);
-    delete profile;
-  }
+  bool inited = InitDirectoriesLinux();
+  if (!inited)
+    inited = InitDirectoriesOSX();
+  if (!inited)
+    inited = InitDirectoriesWin32();
 
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
@@ -503,6 +488,7 @@ bool CApplication::Create()
     return false;
   }
 
+  g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(__APPLE__)
@@ -537,7 +523,6 @@ bool CApplication::Create()
       for (int i=0;i<items.Size();++i)
           CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+CUtil::GetFileName(items[i]->m_strPath));
     }
-    g_settings.m_vecProfiles[0].setDirectory("special://masterprofile/");
     g_settings.m_logFolder = "special://masterprofile/";
   }
 
@@ -605,9 +590,6 @@ bool CApplication::Create()
   g_powerManager.Initialize();
 
   CLog::Log(LOGNOTICE, "load settings...");
-  g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
-  if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
-    g_settings.m_iLastLoadedProfileIndex = 0;
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
@@ -717,12 +699,12 @@ bool CApplication::Create()
     strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
   }
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
-  if (!g_SkinInfo.Check(strSkinPath))
+  if (!CSkinInfo::Check(strSkinPath))
   {
     // reset to the default skin (DEFAULT_SKIN)
     CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", DEFAULT_SKIN);
     strSkinPath = strSkinBase + DEFAULT_SKIN;
-    if (!g_SkinInfo.Check(strSkinPath))
+    if (!CSkinInfo::Check(strSkinPath))
     {
       CLog::Log(LOGERROR, "No suitable skin version found. We require at least version %5.4f", g_SkinInfo.GetMinVersion());
       FatalErrorHandler(false, false, true);
@@ -744,7 +726,7 @@ bool CApplication::Create()
   return Initialize();
 }
 
-CProfile* CApplication::InitDirectoriesLinux()
+bool CApplication::InitDirectoriesLinux()
 {
 /*
    The following is the directory mapping for Platform Specific Mode:
@@ -766,8 +748,6 @@ CProfile* CApplication::InitDirectoriesLinux()
 */
 
 #if defined(_LINUX) && !defined(__APPLE__)
-  CProfile* profile = NULL;
-
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -830,25 +810,15 @@ CProfile* CApplication::InitDirectoriesLinux()
     g_settings.m_logFolder = strTempPath;
   }
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles( PROFILES_FILE );
-
-  if (g_settings.m_vecProfiles.size()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
-CProfile* CApplication::InitDirectoriesOSX()
+bool CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
-  CProfile* profile = NULL;
-
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -926,24 +896,15 @@ CProfile* CApplication::InitDirectoriesOSX()
     g_settings.m_logFolder = strTempPath;
   }
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles( PROFILES_FILE );
-
-  if (g_settings.m_vecProfiles.size()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
-CProfile* CApplication::InitDirectoriesWin32()
+bool CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32
-  CProfile* profile = NULL;
   CStdString strExecutablePath;
 
   CUtil::GetHomePath(strExecutablePath);
@@ -1001,15 +962,6 @@ CProfile* CApplication::InitDirectoriesWin32()
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(PROFILES_FILE);
-
-  if (g_settings.m_vecProfiles.size()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
@@ -1026,9 +978,9 @@ CProfile* CApplication::InitDirectoriesWin32()
       g_application.getApplicationMessenger().OpticalMount(it->strPath);
   // remove end
 
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
@@ -1194,26 +1146,20 @@ bool CApplication::Initialize()
   SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE &&
-     !g_settings.m_vecProfiles[0].getLockCode().IsEmpty())
+      g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+     !g_settings.GetMasterProfile().getLockCode().IsEmpty())
   {
      g_passwordManager.CheckStartUpLock();
   }
 
   // check if we should use the login screen
-  if (g_settings.bUseLoginScreen)
+  if (g_settings.UsingLoginScreen())
   {
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
   }
   else
   {
-    // test for a startup window, and activate that instead of home
-    RESOLUTION res = RES_INVALID;
-    CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
-    int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-      startWindow = WINDOW_STARTUP;
-    g_windowManager.ActivateWindow(startWindow);
+    g_windowManager.ActivateWindow(g_SkinInfo.GetFirstWindow());
   }
 
 #ifdef HAS_PYTHON
@@ -1236,7 +1182,7 @@ bool CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
-  if (!g_settings.bUseLoginScreen)
+  if (!g_settings.UsingLoginScreen())
     UpdateLibraries();
 
   m_slowTimer.StartZero();
@@ -1681,7 +1627,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load new skin...");
   CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
-  if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
+  if (!CSkinInfo::Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
   {
     // failed to load home.xml
     // fallback to default skin
@@ -1695,7 +1641,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   }
 
   // Load the user windows
-  LoadUserWindows(strSkinPath);
+  LoadUserWindows();
 
   int64_t end, freq;
   end = CurrentHostCounter();
@@ -1717,14 +1663,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_audioManager.Enable(true);
   g_audioManager.Load();
 
-  CGUIDialogFullScreenInfo* pDialog = NULL;
-  RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
-  if (CFile::Exists(strPath))
-    pDialog = new CGUIDialogFullScreenInfo;
-
-  if (pDialog)
-    g_windowManager.Add(pDialog); // window id = 142
+  if (g_SkinInfo.HasSkinFile("DialogFullScreenInfo.xml"))
+    g_windowManager.Add(new CGUIDialogFullScreenInfo);
 
   CLog::Log(LOGINFO, "  skin loaded...");
 
@@ -1781,34 +1721,21 @@ void CApplication::UnloadSkin()
   g_infoManager.Clear();
 }
 
-bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
+bool CApplication::LoadUserWindows()
 {
-  WIN32_FIND_DATA FindFileData;
-  WIN32_FIND_DATA NextFindFileData;
-  HANDLE hFind;
-  TiXmlDocument xmlDoc;
-  RESOLUTION resToUse = RES_INVALID;
-
   // Start from wherever home.xml is
-  g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
   std::vector<CStdString> vecSkinPath;
-  if (resToUse == RES_HDTV_1080i)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(RES_HDTV_1080i)));
-  if (resToUse == RES_HDTV_720p)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(RES_HDTV_720p)));
-  if (resToUse == RES_PAL_16x9 || resToUse == RES_NTSC_16x9 || resToUse == RES_HDTV_480p_16x9 || resToUse == RES_HDTV_720p || resToUse == RES_HDTV_1080i)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution())));
-  vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution())));
+  g_SkinInfo.GetSkinPaths(vecSkinPath);
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
     CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
-    hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
 
-    CStdString strFileName;
+    WIN32_FIND_DATA NextFindFileData;
+    HANDLE hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
     while (hFind != INVALID_HANDLE_VALUE)
     {
-      FindFileData = NextFindFileData;
+      WIN32_FIND_DATA FindFileData = NextFindFileData;
 
       if (!FindNextFile(hFind, &NextFindFileData))
       {
@@ -1820,11 +1747,12 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
         continue;
 
-      strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
+      CStdString strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
       CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
       CStdString strLower(FindFileData.cFileName);
       strLower.MakeLower();
       strLower = CUtil::AddFileToFolder(vecSkinPath[i], strLower);
+      TiXmlDocument xmlDoc;
       if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
       {
         CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -3164,7 +3092,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CUTTER);
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
-    g_windowManager.Delete(WINDOW_STARTUP);
+    g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
     g_windowManager.Delete(WINDOW_VISUALISATION);
     g_windowManager.Delete(WINDOW_KARAOKELYRICS);
@@ -4265,11 +4193,10 @@ bool CApplication::WakeUpScreenSaver()
   // if Screen saver is active
   if (m_bScreenSave)
   {
-    int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE &&
-          (g_settings.bUseLoginScreen || g_guiSettings.GetBool("masterlock.startuplock")) &&
-          g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
+      if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+          (g_settings.UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
+          g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           m_screenSaverMode != "Dim" && m_screenSaverMode != "Black" && m_screenSaverMode != "Visualisation")
       {
         m_iScreenSaveLock = 2;

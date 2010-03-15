@@ -71,6 +71,14 @@ bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int &value
   return false;
 }
 
+bool XMLUtils::GetDouble(const TiXmlNode *root, const char *tag, double &value)
+{
+  const TiXmlNode* node = root->FirstChild(tag);
+  if (!node || !node->FirstChild()) return false;
+  value = atof(node->FirstChild()->Value());
+  return true;
+}
+
 bool XMLUtils::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );

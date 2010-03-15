@@ -4,8 +4,9 @@ body
   color:grey;
 }
 
-A:link {
-  color: red;
+A {
+  color:white;
+  text-decoration:none;
 }
 
 h1
@@ -13,33 +14,60 @@ h1
   color:white;
 }
 
+img.cover {
+  width:100px;
+}
 
+img.smallcover {
+  width:30px;
+}
 
 table {
   border:0px;
-  width:500px;
 }
 
-table.Movies th {
+table th {
   text-align:left;
   background-color:rgb(50,50,50);
 }
 
-table.Movies td.Cover {
+table tr.Odd {
+  background:rgb(0,0,0);
+}
+
+table tr.Even {
+  background:rgb(30,30,30);
+}
+
+table.Movies td.cover {
+  text-align:center;
+  background:black;
+  height:100px;
+}
+
+table.Movies td.info {
+  vertical-align:text-top;
+}
+
+table.Playlist td.playing {
   text-align:center;
   background:black;
 }
 
-table.Movies tr.Odd {
-  background:rgb(0,0,0);
+table.Introspect {
+  border:0px;
+  width:2000px;
 }
 
-table.Movies tr.Even {
-  background:rgb(30,30,30);
+table.Navigation td {
+  width:300px;
 }
 
-table.Info td.Title {
-  background-color:yellow;
-  text-align:right;
-  color:white;
+table.Navigation tr.primary {
+  font-size:40px;
+  text-align:center;
+}
+
+table.Navigation tr.secondary {
+  text-align:center;
 }

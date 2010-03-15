@@ -32,6 +32,7 @@
 #endif
 
 #define MAX_STRING_POST_SIZE 20000
+#define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
 
 using namespace XFILE;
 using namespace std;
@@ -124,41 +125,23 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     {
       strURL = strURL.Right(strURL.length() - 7);
       strURL = strURL.Left(strURL.length() - 4);
+      return CreateDownloadResponse(connection, strURL);
     }
     else if (strURL.Left(4).Equals("/vfs"))
     {
       strURL = strURL.Right(strURL.length() - 5);
       CUtil::URLDecode(strURL);
+      return CreateDownloadResponse(connection, strURL);
     }
 #ifdef HAS_WEB_INTERFACE
     else if (strURL.Equals("/"))
-      strURL = "special://xbmc/web/index.html";
+      return CreateDownloadResponse(connection, "special://xbmc/web/index.html");
     else
+    {
       strURL.Format("special://xbmc/web%s", strURL.c_str());
+      return CreateDownloadResponse(connection, strURL);
+    }
 #endif
-    CFile *file = new CFile();
-    if (file->Open(strURL))
-    {
-      struct MHD_Response *response = MHD_create_response_from_callback ( file->GetLength(),
-                                                                          2048,
-                                                                          &CWebServer::ContentReaderCallback, file,
-                                                                          &CWebServer::ContentReaderFreeCallback);
-
-      CStdString ext = CUtil::GetExtension(strURL);
-      ext = ext.ToLower();
-      const char *mime = CreateMimeTypeFromExtension(ext.c_str());
-      if (mime)
-        MHD_add_response_header(response, "Content-Type", mime);
-
-      int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
-      MHD_destroy_response(response);
-      return ret;
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
-      delete file;
-    }
   }
 
   return MHD_NO;
@@ -232,6 +215,40 @@ int CWebServer::HttpApi(struct MHD_Connection *connection)
   }
 #endif
   return MHD_NO;
+}
+
+int CWebServer::CreateDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)
+{
+  int ret = MHD_NO;
+  CFile *file = new CFile();
+  if (file->Open(strURL))
+  {
+    struct MHD_Response *response = MHD_create_response_from_callback ( file->GetLength(),
+                                                                        2048,
+                                                                        &CWebServer::ContentReaderCallback, file,
+                                                                        &CWebServer::ContentReaderFreeCallback);
+
+    CStdString ext = CUtil::GetExtension(strURL);
+    ext = ext.ToLower();
+    const char *mime = CreateMimeTypeFromExtension(ext.c_str());
+    if (mime)
+      MHD_add_response_header(response, "Content-Type", mime);
+
+    ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+    MHD_destroy_response(response);
+  }
+  else
+  {
+    delete file;
+    CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
+    struct MHD_Response *response = MHD_create_response_from_data (strlen (PAGE_FILE_NOT_FOUND),
+                                              (void *) PAGE_FILE_NOT_FOUND,
+                                              MHD_NO, MHD_NO);
+    ret = MHD_queue_response (connection, MHD_HTTP_NOT_FOUND, response);
+    MHD_destroy_response (response);
+  }
+
+  return ret;
 }
 
 #if (MHD_VERSION >= 0x00040001)

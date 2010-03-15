@@ -57,7 +57,7 @@
 #define VIEW_MODE_NORMAL        0
 #define VIEW_MODE_ZOOM          1
 #define VIEW_MODE_STRETCH_4x3   2
-#define VIEW_MODE_STRETCH_14x9  3
+#define VIEW_MODE_WIDE_ZOOM    3
 #define VIEW_MODE_STRETCH_16x9  4
 #define VIEW_MODE_ORIGINAL      5
 #define VIEW_MODE_CUSTOM        6
@@ -108,9 +108,8 @@ public:
 
   void Clear();
 
-  bool LoadProfile(int index);
-  bool SaveSettingsToProfile(int index);
-  bool DeleteProfile(int index);
+  bool LoadProfile(unsigned int index);
+  bool DeleteProfile(unsigned int index);
   void CreateProfileFolders();
 
   VECSOURCES *GetSourcesFromType(const CStdString &type);
@@ -172,6 +171,7 @@ public:
 
   float m_fZoomAmount;      // current zoom amount
   float m_fPixelRatio;      // current pixel ratio
+  bool  m_bNonLinStretch;   // current non-linear stretch
 
   int m_iMyVideoWatchMode;
 
@@ -227,11 +227,78 @@ public:
   CStdString m_UPnPUUIDRenderer;
   int        m_UPnPPortRenderer;
 
-  //VECFILETYPEICONS m_vecIcons;
-  VECPROFILES m_vecProfiles;
-  int m_iLastLoadedProfileIndex;
-  int m_iLastUsedProfileIndex;
-  bool bUseLoginScreen;
+  /*! \brief Retrieve the master profile
+   \return const reference to the master profile
+   */
+  const CProfile &GetMasterProfile() const;
+
+  /*! \brief Retreive the current profile
+   \return const reference to the current profile
+   */
+  const CProfile &GetCurrentProfile() const;
+
+  /*! \brief Retreive the profile from an index
+   \param unsigned index of the profile to retrieve
+   \return const pointer to the profile, NULL if the index is invalid
+   */
+  const CProfile *GetProfile(unsigned int index) const;
+
+  /*! \brief Retreive the profile from an index
+   \param unsigned index of the profile to retrieve
+   \return pointer to the profile, NULL if the index is invalid
+   */
+  CProfile *GetProfile(unsigned int index);
+
+  /*! \brief Retreive index of a particular profile by name
+   \param name name of the profile index to retrieve
+   \return index of this profile, -1 if invalid.
+   */
+  int GetProfileIndex(const CStdString &name) const;
+
+  /*! \brief Retrieve the number of profiles
+   \return number of profiles
+   */
+  unsigned int GetNumProfiles() const;
+
+  /*! \brief Add a new profile
+   \param profile CProfile to add
+   */
+  void AddProfile(const CProfile &profile);
+
+  /*! \brief Are we using the login screen?
+   \return true if we're using the login screen, false otherwise
+   */
+  bool UsingLoginScreen() const { return m_usingLoginScreen; };
+
+  /*! \brief Toggle login screen use on and off
+   Toggles the login screen state
+   */
+  void ToggleLoginScreen() { m_usingLoginScreen = !m_usingLoginScreen; };
+
+  /*! \brief Are we the master user?
+   \return true if the current profile is the master user, false otherwise
+   */
+  bool IsMasterUser() const { return 0 == m_currentProfile; };
+
+  /*! \brief Update the date of the current profile
+   */
+  void UpdateCurrentProfileDate();
+
+  /*! \brief Load the master user for the purposes of logging in
+   Loads the master user.  Identical to LoadProfile(0) but doesn't update the last logged in details
+   */
+  void LoadMasterForLogin();
+
+  /*! \brief Retreive the last used profile index
+   \return the last used profile that logged in.  Does not count the master user during login.
+   */
+  unsigned int GetLastUsedProfileIndex() const { return m_lastUsedProfile; };
+
+  /*! \brief Retrieve the current profile index
+   \return the index of the currently logged in profile.
+   */
+  unsigned int GetCurrentProfileIndex() const { return m_currentProfile; };
+
   std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
@@ -264,8 +331,20 @@ public:
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
 
-  bool LoadProfiles(const CStdString& strSettingsFile);
-  bool SaveProfiles(const CStdString& strSettingsFile) const;
+  /*! \brief Load the user profile information from disk
+   Loads the profiles.xml file and creates the list of profiles. If no profiles
+   exist, a master user is created.  Should be called after special://masterprofile/
+   has been defined.
+   \param profilesFile XML file to load.
+   */
+  void LoadProfiles(const CStdString& profilesFile);
+
+  /*! \brief Save the user profile information to disk
+   Saves the list of profiles to the profiles.xml file.
+   \param profilesFile XML file to save.
+   \return true on success, false on failure to save
+   */
+  bool SaveProfiles(const CStdString& profilesFile) const;
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
@@ -300,6 +379,12 @@ protected:
   void SaveSkinSettings(TiXmlNode *pElement) const;
 
   void LoadUserFolderLayout();
+
+private:
+  std::vector<CProfile> m_vecProfiles;
+  bool m_usingLoginScreen;
+  unsigned int m_lastUsedProfile;
+  unsigned int m_currentProfile;
 };
 
 extern class CSettings g_settings;

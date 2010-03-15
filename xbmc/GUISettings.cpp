@@ -256,7 +256,7 @@ void CGUISettings::Initialize()
   AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(wea, "weather.sep1");
-  AddString(wea, "weather.plugin", 24027, "", SPIN_CONTROL_TEXT, true);
+  AddString(wea, "weather.script", 24027, "", SPIN_CONTROL_TEXT, true);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -586,7 +586,7 @@ void CGUISettings::Initialize()
 
   map<int,int> stretch;
   stretch.insert(make_pair(630,VIEW_MODE_NORMAL));
-  stretch.insert(make_pair(633,VIEW_MODE_STRETCH_14x9));
+  stretch.insert(make_pair(633,VIEW_MODE_WIDE_ZOOM));
   stretch.insert(make_pair(634,VIEW_MODE_STRETCH_16x9));
   stretch.insert(make_pair(631,VIEW_MODE_ZOOM));
   AddInt(vp, "videoplayer.stretch43", 173, VIEW_MODE_NORMAL, stretch, SPIN_CONTROL_TEXT);

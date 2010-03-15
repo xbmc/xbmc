@@ -19,7 +19,7 @@
  *
  */
 
-#import <Quicktime/Quicktime.h>
+#import <QuickTime/QuickTime.h>
 #import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
 

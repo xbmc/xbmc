@@ -53,7 +53,6 @@ using namespace VIDEO;
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_BTNSCAN            8
-#define CONTROL_IMDB               9
 #define CONTROL_BTNPLAYLISTS      13
 
 CGUIWindowVideoFiles::CGUIWindowVideoFiles()
@@ -477,7 +476,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       if (pScanDlg && pScanDlg->IsScanning())
         buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
       if (!item->IsDVD() && item->m_strPath != "add" &&
-         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+         (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -502,7 +501,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         // Movie Info button
         if (pScanDlg && pScanDlg->IsScanning())
           buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
-        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+        if (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
         {
           ADDON::ScraperPtr info;
           VIDEO::SScanSettings settings;

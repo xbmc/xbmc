@@ -152,6 +152,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     {
       m_addon->UpdateTrack();
     }
+    break;
   }
   case GUI_MSG_WINDOW_DEINIT:
     {

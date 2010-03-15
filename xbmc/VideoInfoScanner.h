@@ -105,6 +105,7 @@ namespace VIDEO
     virtual void Run();
     int CountFiles(const CStdString& strPath);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
+    void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; };
 
   protected:
     IVideoInfoScannerObserver* m_pObserver;

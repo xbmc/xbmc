@@ -102,9 +102,10 @@ class CAdvancedSettings
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
-    int  m_videoHighQualityScaling;
-    int  m_videoHighQualityScalingMethod;
-    bool m_videoVDPAUScaling;
+    int   m_videoHighQualityScaling;
+    int   m_videoHighQualityScalingMethod;
+    bool  m_videoVDPAUScaling;
+    float m_videoNonLinStretchRatio;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -214,6 +215,8 @@ class CAdvancedSettings
     int m_iEdlMinCommBreakLength;   // seconds
     int m_iEdlMaxCommBreakGap;      // seconds
     int m_iEdlMaxStartGap;          // seconds
+    int m_iEdlCommBreakAutowait;    // seconds
+    int m_iEdlCommBreakAutowind;    // seconds
 
     bool m_bFirstLoop;
     int m_curlconnecttimeout;

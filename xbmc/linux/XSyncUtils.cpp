@@ -201,17 +201,45 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
 {
   DWORD dwRet = 0;
   int   nRet = 0;
-
+  // something like the following would be nice,
+  // but I can't figure a wait to check if a mutex is locked:
+  // assert(hHandle->m_hMutex.IsLocked());
   if (hHandle->m_bEventSet == false)
   {
     if (dwMilliseconds == 0)
+    {
       nRet = SDL_MUTEX_TIMEDOUT;
-
+    }
     else if (dwMilliseconds == INFINITE)
-      nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
-
+    {
+      //wait until event is set
+      while( hHandle->m_bEventSet == false )
+      {
+        nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
+      }
+    }
     else
-      nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
+    {
+      //wait until event is set, but modify remaining time
+      DWORD dwStartTime = CTimeUtils::GetTimeMS();
+      DWORD dwRemainingTime = dwMilliseconds;
+      while( hHandle->m_bEventSet == false )
+      {
+        nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwRemainingTime);
+        //fix time to wait because of spurious wakeups
+        DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
+        if(dwElapsed < dwRemainingTime)
+        {
+          dwRemainingTime -= dwElapsed;
+        }
+        else
+        {
+          //ran out of time
+          nRet = SDL_MUTEX_TIMEDOUT;
+          break;
+        }
+      }
+    }
   }
 
   if (hHandle->m_bManualEvent == false && nRet == 0)

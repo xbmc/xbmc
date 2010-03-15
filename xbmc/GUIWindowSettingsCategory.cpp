@@ -385,7 +385,7 @@ void CGUIWindowSettingsCategory::SetupControls()
   int j=0;
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
-    if (m_vecSections[i]->m_labelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
+    if (m_vecSections[i]->m_labelID == 12360 && !g_settings.IsMasterUser())
       continue;
     CGUIButtonControl *pButton = NULL;
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
@@ -826,17 +826,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("filelists.allowfiledeletion"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked() || g_passwordManager.bMasterUser);
+      if (pControl) pControl->SetEnabled(!g_settings.GetCurrentProfile().filesLocked() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("filelists.showaddsourcebuttons"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
+      if (pControl) pControl->SetEnabled(g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser);
     }
     else if (strSetting.Equals("masterlock.startuplock"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE);
+      if (pControl) pControl->SetEnabled(g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE);
     }
     else if (!strSetting.Equals("pvr.enabled") && strSetting.Left(4).Equals("pvrmanager."))
     {
@@ -1555,7 +1555,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
     CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-    if (g_SkinInfo.Check(strSkinPath))
+    if (CSkinInfo::Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
       pControl->SetItemInvalid(false);
@@ -2306,8 +2306,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
   m_strNewSkinFontSet.Empty();
 
-  RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &res);
+  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml");
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -2390,7 +2389,7 @@ void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
       if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
       if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
-      //   if (g_SkinInfo.Check(pItem->m_strPath))
+      //   if (CSkinInfo::Check(pItem->m_strPath))
       //   {
       vecSkins.push_back(pItem->GetLabel());
       //   }
@@ -2967,17 +2966,7 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   VECADDONS addons;
   pControl->Clear();
 
-  if (content == CONTENT_ALBUMS || content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_ALBUMS);
-  else if (content == CONTENT_MOVIES)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MOVIES);
-  else if (content == CONTENT_TVSHOWS || content == CONTENT_EPISODES)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_TVSHOWS);
-  else if (content == CONTENT_MUSICVIDEOS)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSICVIDEOS);
-  else if (content == CONTENT_PROGRAMS)
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_PROGRAMS);
-
+  CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, content);
   if (addons.empty())
   {
     pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
@@ -2999,8 +2988,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
         g_guiSettings.SetString("scrapers.tvshowdefault", (*it)->Name());
       else if (content == CONTENT_MUSICVIDEOS)
         g_guiSettings.SetString("scrapers.musicvideodefault", (*it)->Name());
-      else if (content == CONTENT_PROGRAMS)
-        g_guiSettings.SetString("programfiles.defaultscraper", (*it)->Name());
       k = j;
     }
     pControl->AddLabel((*it)->Name(),j++);
@@ -3140,7 +3127,7 @@ void CGUIWindowSettingsCategory::FillInWeatherScripts(CGUISpinControlEx *pContro
   int k=0;
   pControl->Clear();
   // add our disable option
-  pControl->AddLabel(g_localizeStrings.Get(13611), j++);
+  pControl->AddLabel(g_localizeStrings.Get(24028), j++);
 
   //find weather scripts....
   CAddonMgr::Get()->GetAddons(ADDON_SCRIPT, addons);

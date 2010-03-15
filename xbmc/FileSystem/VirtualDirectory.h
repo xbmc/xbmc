@@ -37,24 +37,23 @@ namespace XFILE
     virtual ~CVirtualDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool bUseFileDirectories);
-    void SetSources(VECSOURCES& vecSources);
-    inline unsigned int GetNumberOfSources() {
-      if (m_vecSources)
-        return m_vecSources->size();
-      else
-        return 0;
-      }
+    void SetSources(const VECSOURCES& vecSources);
+    inline unsigned int GetNumberOfSources() 
+    {
+      return m_vecSources.size();
+    }
+
     bool IsSource(const CStdString& strPath) const;
     bool IsInSource(const CStdString& strPath) const;
 
     inline const CMediaSource& operator [](const int index) const
     {
-      return m_vecSources->at(index);
+      return m_vecSources[index];
     }
 
     inline CMediaSource& operator[](const int index)
     {
-      return m_vecSources->at(index);
+      return m_vecSources[index];
     }
 
     void GetSources(VECSOURCES &sources) const;
@@ -64,7 +63,7 @@ namespace XFILE
   protected:
     void CacheThumbs(CFileItemList &items);
 
-    VECSOURCES* m_vecSources;
+    VECSOURCES m_vecSources;
     bool       m_allowNonLocalSources;
   };
 }

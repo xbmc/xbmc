@@ -38,6 +38,7 @@
 #include "Application.h"
 #include "AutoPtrHandle.h"
 #include "Util.h"
+#include "utils/Addon.h"
 #include "utils/IoSupport.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
@@ -872,9 +873,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
 
 bool CUtil::IsMultiPath(const CStdString& strPath)
 {
-  CURL url(strPath);
-
-  return url.GetProtocol() == "multipath";
+  return strPath.Left(10).Equals("multipath:");
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
@@ -910,16 +909,12 @@ bool CUtil::IsDVD(const CStdString& strFile)
 
 bool CUtil::IsVirtualPath(const CStdString& strFile)
 {
-  CURL url(strFile);
-
-  return url.GetProtocol() == "virtualpath";
+  return strFile.Left(12).Equals("virtualpath:");
 }
 
 bool CUtil::IsStack(const CStdString& strFile)
 {
-  CURL url(strFile);
-
-  return url.GetProtocol() == "stack";
+  return strFile.Left(6).Equals("stack:");
 }
 
 bool CUtil::IsRAR(const CStdString& strFile)
@@ -979,33 +974,23 @@ bool CUtil::IsSpecial(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  CURL url(strFile2);
-
-  return url.GetProtocol().Equals("special");
+  return strFile2.Left(8).Equals("special:");
 }
 
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return !url.GetProtocol().IsEmpty() && StringUtils::ValidateUUID(url.GetHostName());
-}
-
-bool CUtil::IsPluginRoot(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
+  return ADDON::TranslateContent(url.GetProtocol()) != CONTENT_NONE;
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("cdda");
+  return strFile.Left(5).Equals("cdda:");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("iso9660");
+  return strFile.Left(8).Equals("iso9660:");
 }
 
 bool CUtil::IsSmb(const CStdString& strFile)
@@ -1015,9 +1000,7 @@ bool CUtil::IsSmb(const CStdString& strFile)
   if (IsStack(strFile))
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
 
-  CURL url(strFile2);
-
-  return url.GetProtocol().Equals("smb");
+  return strFile2.Left(4).Equals("smb:");
 }
 
 bool CUtil::IsURL(const CStdString& strFile)
@@ -1139,26 +1122,22 @@ bool CUtil::IsTVRecording(const CStdString& strFile)
 
 bool CUtil::IsMusicDb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("musicdb");
+  return strFile.Left(8).Equals("musicdb:");
 }
 
 bool CUtil::IsVideoDb(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("videodb");
+  return strFile.Left(8).Equals("videodb:");
 }
 
 bool CUtil::IsShoutCast(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("shout");
+  return strFile.Left(6).Equals("shout:");
 }
 
 bool CUtil::IsLastFM(const CStdString& strFile)
 {
-  CURL url(strFile);
-  return url.GetProtocol().Equals("lastfm");
+  return strFile.Left(7).Equals("lastfm:");
 }
 
 bool CUtil::IsWritable(const CStdString& strFile)
@@ -1725,9 +1704,9 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
     {
       AddSlashAtEnd(file);
       url.SetFileName(file);
+      strFolder = url.Get();
+      return;
     }
-    strFolder = url.Get();
-    return;
   }
 
   if (!CUtil::HasSlashAtEnd(strFolder))
@@ -1749,9 +1728,11 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
     {
       RemoveSlashAtEnd(file);
       url.SetFileName(file);
+      strFolder = url.Get();
+      return;
     }
-    strFolder = url.Get();
-    return;
+    if(url.GetHostName().IsEmpty())
+      return;
   }
 
   while (CUtil::HasSlashAtEnd(strFolder))
@@ -2266,41 +2247,25 @@ CStdString CUtil::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
 
-  // Don't do any stuff on URLs containing %-characters as we may screw up
-  // URL-encoded (embedded) filenames (like with zip:// & rar://)
-  if ( IsURL(path) && path.Find('%') >= 0 )
+  // Don't do any stuff on URLs containing %-characters or protocols that embed
+  // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
+  // recurse and crash XBMC
+  if (IsURL(path) && 
+     (path.Find('%') >= 0 ||
+      path.Left(4).Equals("zip:") ||
+      path.Left(4).Equals("rar:") ||
+      path.Left(6).Equals("stack:") ||
+      path.Left(10).Equals("multipath:") ))
     return result;
 
   // check the path for incorrect slashes
 #ifdef _WIN32
   if (CUtil::IsDOSPath(path))
-  {
     result.Replace('/', '\\');
-    // Fixup for double back slashes (but ignore the \\ of unc-paths)
-    for (int x=1; x<result.GetLength()-1; x++)
-    {
-      if (result[x] == '\\' && result[x+1] == '\\')
-        result.Delete(x);
-    }
-  }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
-  {
     result.Replace('\\', '/');
-    // Fixup for double forward slashes(/) but don't touch the :// of URLs
-    for (int x=1; x<result.GetLength()-1; x++)
-    {
-      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
-        result.Delete(x);
-    }
-  }
 #else
   result.Replace('\\', '/');
-  // Fixup for double forward slashes(/) but don't touch the :// of URLs
-  for (int x=1; x<result.GetLength()-1; x++)
-  {
-    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':')
-      result.Delete(x);
-  }
 #endif
   return result;
 }
@@ -2752,7 +2717,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
   {
     if (myItems[i]->m_bIsFolder)
       CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
-    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
+    else
       items.Add(myItems[i]);
   }
 }
@@ -2989,23 +2954,27 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   if (!CDirectory::Exists(strPath)) return;
 
   CFileItemList items;
-  CUtil::GetRecursiveListing(strPath,items,"");
+  GetRecursiveListing(strPath,items,"");
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
   items.Clear();
-  CUtil::GetRecursiveDirsListing(strPath,items);
+  GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    CUtil::AddSlashAtEnd(items[i]->m_strPath);
-    CDirectory::Remove(items[i]->m_strPath);
+    CStdString strDir = items[i]->m_strPath;
+    AddSlashAtEnd(strDir);
+    CDirectory::Remove(strDir);
   }
 
-  CStdString tmpPath = strPath;
-  AddSlashAtEnd(tmpPath);
-  CDirectory::Remove(tmpPath);
+  if (!HasSlashAtEnd(strPath))
+  {
+    CStdString tmpPath = strPath;
+    AddSlashAtEnd(tmpPath);
+    CDirectory::Remove(tmpPath);
+  }
 }
 
 void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath)

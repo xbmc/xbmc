@@ -43,6 +43,7 @@
 #include "Application.h"
 #include "StringUtils.h"
 #include "utils/Addon.h"
+#include "utils/log.h"
 
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
@@ -128,7 +129,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM
   if (strProtocol == "iso9660") return new CISO9660Directory();
 #endif
-  if (StringUtils::ValidateUUID(url.GetHostName())) return new CPluginDirectory(ADDON::TranslateContent(strProtocol));
+  if (ADDON::TranslateContent(strProtocol) != CONTENT_NONE) return new CPluginDirectory(ADDON::TranslateContent(strProtocol));
   if (strProtocol == "zip") return new CZipDirectory();
 #ifdef HAS_FILESYSTEM_RAR
   if (strProtocol == "rar") return new CRarDirectory();
@@ -197,6 +198,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   }
 
- return NULL;
+  CLog::Log(LOGWARNING, "CFactoryDirectory::Create - Unsupported protocol %s", strProtocol.c_str());
+  return NULL;
 }
 

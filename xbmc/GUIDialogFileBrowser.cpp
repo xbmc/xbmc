@@ -395,8 +395,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   OnSort();
 
   if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled &&
-     (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE ||
-     (g_settings.m_iLastLoadedProfileIndex == 0) || g_passwordManager.bMasterUser))
+     (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+      g_settings.IsMasterUser() || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
     pItem->m_strPath = "net://";

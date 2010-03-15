@@ -82,7 +82,6 @@ using namespace ADDON;
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_BTNSCAN            8
-#define CONTROL_IMDB               9
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const CStdString &xmlFile)
     : CGUIMediaWindow(id, xmlFile)
@@ -244,7 +243,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_DELETE_ITEM)
         {
           // is delete allowed?
-          if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+          if (g_settings.GetCurrentProfile().canWriteDatabases())
           {
             // must be at the title window
             if (GetID() == WINDOW_VIDEO_NAV)
@@ -263,10 +262,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return true;
           }
         }
-      }
-      else if (iControl == CONTROL_IMDB)
-      {
-        OnManualScrape();
       }
     }
     break;
@@ -295,7 +290,6 @@ void CGUIWindowVideoBase::UpdateButtons()
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   CONTROL_ENABLE(CONTROL_BTNSCAN);
-  CONTROL_ENABLE(CONTROL_IMDB);
 
   CGUIMediaWindow::UpdateButtons();
 }
@@ -355,7 +349,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   }
 
   bool modified = ShowIMDB(&item, scraper);
-  if (modified && scraper->Content() != CONTENT_PLUGIN &&
+  if (modified &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
@@ -473,15 +467,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
     }
   }
-  if (info->Content() == CONTENT_PLUGIN)
-  {
-    if (!item->HasVideoInfoTag())
-      return false;
-    movieDetails = *item->GetVideoInfoTag();
-    movieDetails.m_strIMDBNumber = "xx" + ADDON::TranslateContent(info->Content()); // disable refresh+get thumb button
-
-    bHasInfo = true;
-  }
 
   m_database.Close();
   if (bHasInfo)
@@ -496,7 +481,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   }
 
   // quietly return if Internet lookups are disabled
-  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
+  if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -512,15 +497,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
-  ADDON::AddonPtr addon;
+  m_database.GetScraperForPath(item->m_strPath,info,settings);
 
-  if (!m_database.GetScraperForPath(item->m_strPath,info,settings))
-  {
-    if (!ADDON::CAddonMgr::Get()->GetDefault(ADDON::ADDON_SCRAPER, addon, info->Content()))
-      return false;
-  }
-
-  info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
   if (!info)
     return false;
 
@@ -764,90 +742,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   } while (needsRefresh);
   m_database.Close();
   return listNeedsUpdating;
-}
-
-void CGUIWindowVideoBase::OnManualScrape()
-{
-  // NOTE! this only works for movies 
-  // previous OnManualIMDB only worked for IMDb, so not a regression!
-  // if we were tracking current content type this would work for all content
-  CStdString strInput;
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16009), false))
-    return;
-
-  CFileItem item(strInput);
-  item.m_strPath = "special://temp/";
-  CFile::Delete(item.GetCachedVideoThumb().c_str());
-
-  ScraperPtr scraper;
-  m_database.Open();
-  if (!m_database.GetScraperForPath(m_vecItems->m_strPath, scraper))
-  {
-    AddonPtr addon;
-    if (CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, CONTENT_MOVIES))
-    {
-      scraper = boost::dynamic_pointer_cast<CScraper>(addon);
-    }
-  }
-
-  if (!scraper)
-    return;
-
-  ShowIMDB(&item,scraper);
-
-  return;
-}
-
-bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
-{
-#ifdef HAS_DVD_DRIVE
-  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
-  if (pCdInfo == NULL)
-    return false;
-  if (!CFile::Exists(strFileName))
-    return false;
-  CStdString label = pCdInfo->GetDiscLabel().TrimRight(" ");
-  int iLabelCD = label.GetLength();
-  int iLabelDB = strDVDLabel.GetLength();
-  if (iLabelDB < iLabelCD)
-    return false;
-  CStdString dbLabel = strDVDLabel.Left(iLabelCD);
-  return (dbLabel == label);
-#else
-  return false;
-#endif
-}
-
-bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
-{
-  if (!m_database.HasMovieInfo(strFileName))
-    return true;
-
-  CVideoInfoTag movieDetails;
-  m_database.GetMovieInfo(strFileName, movieDetails);
-  CFileItem movieFile(movieDetails.m_strFileNameAndPath, false);
-  if (!movieFile.IsOnDVD())
-    return true;
-  CGUIDialogOK *pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (!pDlgOK)
-    return true;
-  while (1)
-  {
-//    if (IsCorrectDiskInDrive(strFileName, movieDetails.m_strDVDLabel))
- //   {
-      return true;
- //   }
-    pDlgOK->SetHeading( 428);
-    pDlgOK->SetLine( 0, 429 );
-//    pDlgOK->SetLine( 1, movieDetails.m_strDVDLabel );
-    pDlgOK->SetLine( 2, "" );
-    pDlgOK->DoModal();
-    if (!pDlgOK->IsConfirmed())
-    {
-      break;
-    }
-  }
-  return false;
 }
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
@@ -1550,8 +1444,8 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
     item->m_bIsFolder = true;
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
-      g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
+  if (g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      g_settings.GetCurrentProfile().filesLocked())
   {
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;

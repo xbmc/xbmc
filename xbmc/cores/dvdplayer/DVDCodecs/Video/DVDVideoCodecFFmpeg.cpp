@@ -71,18 +71,18 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     if(CVDPAU::IsVDPAUFormat(*cur) 
     && (method == RENDER_METHOD_VDPAU || method == RENDER_METHOD_AUTO))
     {
-      if(ctx->GetHardware() == NULL)
+      if(ctx->GetHardware())
+        return *cur;
+        
+      CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Creating VDPAU(%ix%i)", avctx->width, avctx->height);
+      CVDPAU* vdp = new CVDPAU();
+      if(vdp->Open(avctx, *cur))
       {
-        CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Creating VDPAU(%ix%i)", avctx->width, avctx->height);
-        CVDPAU* vdp = new CVDPAU();
-        if(!vdp->Open(avctx, *cur))
-        {
-          CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Failed to get VDPAU device");
-          delete vdp;
-        }
         ctx->SetHardware(vdp);
+        return *cur;
       }
-      return *cur;
+      else
+        vdp->Release();
     }
 #endif
 #ifdef HAS_DX
@@ -96,7 +96,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
       return *cur;
     }
     else
-      delete dec;
+      dec->Release();
   }
 #endif
     cur++;
@@ -104,6 +104,20 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 }
 
+
+CDVDVideoCodecFFmpeg::IHardwareDecoder*  CDVDVideoCodecFFmpeg::IHardwareDecoder::Acquire()
+{
+  InterlockedIncrement(&m_references);
+  return this;
+}
+
+long CDVDVideoCodecFFmpeg::IHardwareDecoder::Release()
+{
+  long count = InterlockedDecrement(&m_references);
+  ASSERT(count >= 0);
+  if (count == 0) delete this;
+  return count;
+}
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
@@ -170,7 +184,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
         }
         m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");
-        delete vdp;
+        vdp->Release();
       }
     }
   }
@@ -282,7 +296,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
-  SAFE_DELETE(m_pHardware);
+  SAFE_RELEASE(m_pHardware);
 
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();

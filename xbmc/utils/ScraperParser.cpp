@@ -91,33 +91,21 @@ void CScraperParser::Clear()
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
 {
-  //TODO drop loading by UUID support, then remove AddonMgr include
-  if (StringUtils::ValidateUUID(strXMLFile))
-  {
-    AddonPtr scraper;
-    if (!CAddonMgr::Get()->GetAddon(strXMLFile, scraper, ADDON_SCRAPER))
-      return false;
-    else
-      return Load(scraper);
-  }
-  else
-  {
-    Clear();
+  Clear();
 
-    m_document = new TiXmlDocument(strXMLFile);
+  m_document = new TiXmlDocument(strXMLFile);
 
-    if (!m_document)
-      return false;
-
-    m_strFile = strXMLFile;
-
-    if (m_document->LoadFile())
-      return LoadFromXML();
-
-    delete m_document;
-    m_document = NULL;
+  if (!m_document)
     return false;
-  }
+
+  m_strFile = strXMLFile;
+
+  if (m_document->LoadFile())
+    return LoadFromXML();
+
+  delete m_document;
+  m_document = NULL;
+  return false;
 }
 
 bool CScraperParser::Load(const AddonPtr& scraper)

@@ -28,7 +28,6 @@
 #include "AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "WindowingFactory.h"
-#include "SkinInfo.h"
 #include "TextureManager.h"
 #include "MouseStat.h"
 #include "GUIWindowManager.h"
@@ -548,12 +547,10 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
       fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - fToPosY;
     }
 
-    // add additional zoom to compensate for any overskan built in skin
-    float fZoom = g_SkinInfo.GetSkinZoom();
-
     if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
       g_guiSkinzoom = (CSettingInt*)g_guiSettings.GetSetting("lookandfeel.skinzoom");
 
+    float fZoom = 1.0f;
     if(g_guiSkinzoom)
       fZoom *= (100 + g_guiSkinzoom->GetData()) * 0.01f;
 

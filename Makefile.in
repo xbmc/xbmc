@@ -63,7 +63,8 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
-        xbmc/cores/dvdplayer/Codecs/libdvd
+	xbmc/cores/dvdplayer/Codecs/libdvd \
+	xbmc/cores/dvdplayer/Codecs/libbdnav
 ifneq (@USE_EXTERNAL_LIBASS@,1)
   DVDPCODECS_DIRS+=xbmc/lib/libass/xbmc
 endif
@@ -97,7 +98,8 @@ LIB_DIRS=\
 	xbmc/lib/libapetag \
 	xbmc/lib/libPython/linux \
 	lib/libmodplug \
-	lib/xbmc-dll-symbols
+	lib/xbmc-dll-symbols \
+	lib/jsoncpp/jsoncpp/src/lib_json
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -106,6 +108,9 @@ VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
 	xbmc/visualizations/WaveForm \
 	xbmc/visualizations/XBMCProjectM
+ifeq ($(findstring osx,$(ARCH)), osx)
+VIS_DIRS+=xbmc/visualizations/iTunes
+endif
 ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
@@ -304,6 +309,9 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(MAKE) -C xbmc/visualizations/iTunes
+endif
 ifneq (@BUILD_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/visualizations/Goom
@@ -523,7 +531,7 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*\.pvr|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex '.*/\.svn/.*|^skin/[^/]*/media/.*[^x][^b][^t]' -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 	@# Icons and links
