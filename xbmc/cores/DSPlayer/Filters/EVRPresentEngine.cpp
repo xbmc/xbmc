@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "EVRPresentEngine.h"
 #include "EVRAllocatorPresenter.h"
 #include <evr.h>
@@ -22,8 +43,8 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
   m_bufferCount(4),
   m_pAllocatorPresenter(presenter),
   m_bExiting(false),
-  m_pVideoSurface(NULL),
-  m_pVideoTexture(NULL),
+  m_pEVRVideoSurface(NULL),
+  m_pEVRVideoTexture(NULL),
   m_bNeedNewDevice(false)
 {
   SetRectEmpty(&m_rcDestRect);
@@ -37,10 +58,6 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
     CLog::Log(LOGERROR,"Could not find MFCreateVideoSampleFromSurface (evr.dll)");
 
   ZeroMemory(&m_DisplayMode, sizeof(m_DisplayMode));
-  ZeroMemory(m_pInternalVideoTexture, 7 * sizeof(IDirect3DTexture9*));
-  ZeroMemory(m_pInternalVideoSurface, 7 * sizeof(IDirect3DSurface9*));
-
-  m_pVideoTexture = NULL;
 
   hr = InitializeDXVA();
 
@@ -155,16 +172,14 @@ HRESULT D3DPresentEngine::SetDestinationRect(const RECT& rcDest)
 // D3DPresentEngine renders the video frame by presenting the swap chain.
 //-----------------------------------------------------------------------------
 
-HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleList& videoSampleQueue)
+HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat, VideoSampleList& videoSampleQueue)
 {
   if (!pFormat)
     return MF_E_UNEXPECTED;
 
   HRESULT hr = S_OK;
-  D3DPRESENT_PARAMETERS pp;
+  IDirect3DSurface9* pSurface; // Don't make it a smartptr
 
-  IMFSample *pVideoSample = NULL;
-  
   CAutoLock lock(&m_ObjectLock);
 
   ReleaseResources();
@@ -181,7 +196,7 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
   GUID subtype = GUID_NULL;
   /* Get D3DFORMAT from MEDIA_SubType*/
 
-  pFormat->GetGUID(MF_MT_SUBTYPE, & subtype);
+  pFormat->GetGUID(MF_MT_SUBTYPE, &subtype);
 
   if (subtype == MFVideoFormat_RGB565)
     d3dFormat = D3DFMT_R5G6B5;
@@ -194,20 +209,25 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
   else
     d3dFormat = D3DFMT_X8R8G8B8;
 
+  while (! g_Windowing.Get3DDevice())
+  {
+    Sleep(100); // We're still creating the device, wait!
+  }
+
   if (FAILED(g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth ,
                                                       m_iVideoHeight ,
                                                       1 , 
                                                       D3DUSAGE_RENDERTARGET,
                                                       d3dFormat,
                                                       D3DPOOL_DEFAULT,
-                                                      &m_pVideoTexture,
+                                                      &m_pEVRVideoTexture,
                                                       NULL)))
   {
     CLog::Log(LOGERROR,"%s Error while creating the video texture",__FUNCTION__);
     return E_FAIL;
   }
 
-  hr = m_pVideoTexture->GetSurfaceLevel(0, &m_pVideoSurface);  
+  hr = m_pEVRVideoTexture->GetSurfaceLevel(0, &m_pEVRVideoSurface);
   
   // Create the video samples.
   for (int i = 0; i < m_bufferCount; i++)
@@ -218,28 +238,24 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat ,VideoSampleL
                                                   D3DUSAGE_RENDERTARGET ,
                                                   d3dFormat ,
                                                   D3DPOOL_DEFAULT ,
-                                                  &m_pInternalVideoTexture[i] ,
+                                                  &m_pEVRInternalVideoTexture[i] ,
                                                   NULL);
     CHECK_HR(hr);
-    hr  = m_pInternalVideoTexture[i]->GetSurfaceLevel(0, &m_pInternalVideoSurface[i]);
-    if (FAILED(hr))
-      m_pInternalVideoSurface[i] = NULL;
+    hr  = m_pEVRInternalVideoTexture[i]->GetSurfaceLevel(0, &pSurface);
 
-    hr = CreateD3DSample(m_pInternalVideoSurface[i], &pVideoSample, i);
-    
-    // Add it to the samples list.
-    CHECK_HR(hr = videoSampleQueue.InsertBack(pVideoSample));
-    S_RELEASE(pVideoSample);
+    Com::SmartPtr<IMFSample> pSample;
+
+    // Create the sample.
+    hr = CreateD3DSample(pSurface, &pSample, i);
+
+    if (SUCCEEDED(hr))
+      videoSampleQueue.InsertBack(pSample);
   }
-
-  // Let the derived class create any additional D3D resources that it needs.
-  CHECK_HR(hr = OnCreateVideoSamples(pp));
 
 done:
   if (FAILED(hr))
     ReleaseResources();
-    
-  S_RELEASE(pVideoSample);
+
   return hr;
 }
 
@@ -258,13 +274,16 @@ void D3DPresentEngine::ReleaseResources()
 
   CAutoLock lock(&m_ObjectLock);
 
-  SAFE_RELEASE(m_pVideoSurface);
+  g_renderManager.Reset();
+
+  m_pEVRVideoTexture.Release(); // There are maybe some references on the RenderManager
+  m_pEVRVideoSurface.Release();
 
   //Releasing video surface
   for (int i = 0; i < 7; i++) 
   { 
-    SAFE_RELEASE(m_pInternalVideoTexture[i]);
-    m_pInternalVideoSurface[i] = NULL;
+    m_pEVRInternalVideoTexture[i].FullRelease();
+    m_pEVRInternalVideoSurface[i].FullRelease();
   } 
 }
 
@@ -297,7 +316,7 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
   if (m_bNeedNewDevice)
     return S_OK;
 
-  if (! m_pVideoTexture)
+  if (! m_pEVRVideoTexture)
     return S_OK;
   
   if (pSample)
@@ -313,8 +332,8 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
 
   if (pSurface)
   {
-    hr = g_Windowing.Get3DDevice()->StretchRect(pSurface, NULL, m_pVideoSurface, NULL, D3DTEXF_NONE);    
-    g_renderManager.PaintVideoTexture(m_pVideoTexture, m_pVideoSurface);
+    hr = g_Windowing.Get3DDevice()->StretchRect(pSurface, NULL, m_pEVRVideoSurface, NULL, D3DTEXF_NONE);    
+    g_renderManager.PaintVideoTexture(m_pEVRVideoTexture, m_pEVRVideoSurface);
     g_application.NewFrame();
     g_application.WaitFrame(100);
   }
@@ -400,8 +419,8 @@ HRESULT D3DPresentEngine::CreateD3DSample(IDirect3DSurface9 *pSurface, IMFSample
   (*ppVideoSample)->AddRef();
 
 done:
-    S_RELEASE(pSurface);
-    S_RELEASE(pSample);
+  S_RELEASE(pSurface);
+  S_RELEASE(pSample);
   return hr;
 }
 
@@ -435,25 +454,33 @@ HRESULT D3DPresentEngine::SetBufferCount(int bufferCount)
 
 void D3DPresentEngine::OnDestroyDevice()
 {
-
+  CLog::Log(LOGNOTICE, "%s The EVR received a reset event. Releasing resources.", __FUNCTION__);
+  // Set the EVR into reset state
+  m_pAllocatorPresenter->resetState = true;
+  m_pAllocatorPresenter->EndStreaming();
+  m_pAllocatorPresenter->ReleaseResources();
 }
 
 void D3DPresentEngine::OnCreateDevice()
 {
-
+  CLog::Log(LOGDEBUG, "%s Recreating the device.", __FUNCTION__);
 }
 
 void D3DPresentEngine::OnLostDevice()
 {
-  ReleaseResources();
+  CLog::Log(LOGNOTICE, "%s The EVR received a reset event. Releasing resources.", __FUNCTION__);
+  // Set the EVR into reset state
+  m_pAllocatorPresenter->resetState = true;
+  m_pAllocatorPresenter->EndStreaming();
+  m_pAllocatorPresenter->ReleaseResources();
 }
 
 void D3DPresentEngine::OnResetDevice()
 {
-  HRESULT		hr;
+  CLog::Log(LOGNOTICE, "%s The EVR successfully respond to the reset event", __FUNCTION__);
 
   // Reset DXVA Manager, and get new buffers
-  hr = m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
-
+  m_pAllocatorPresenter->resetState = false;
+  m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
   m_pAllocatorPresenter->NotifyEvent(EC_DISPLAY_CHANGED, S_OK, 0);
 }

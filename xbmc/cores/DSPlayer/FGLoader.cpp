@@ -269,6 +269,11 @@ HRESULT CFGLoader::InsertVideoRenderer()
 
   
   hr = m_pFGF->Create(&Filters.VideoRenderer.pBF);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, "%s Failed to create allocator presenter (hr = %X)", __FUNCTION__, hr);
+    return hr;
+  }
   hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.VideoRenderer.pBF, m_pFGF->GetName());
 
   /* Query IQualProp from the renderer */
@@ -374,7 +379,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     return E_FAIL;
 
   // Insert extra first because first added, last connected!
-  for (int i = 0; i < extras.size(); i++)
+  for (unsigned int i = 0; i < extras.size(); i++)
   {
     SFilterInfos f;
     if (SUCCEEDED(InsertFilter(extras[i], f)))

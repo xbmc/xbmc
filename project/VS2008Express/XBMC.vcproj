@@ -2402,10 +2402,6 @@
 					Name="Helpers"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\pointers.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp"
 						>
 					</File>

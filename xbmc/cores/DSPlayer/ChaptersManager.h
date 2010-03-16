@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #pragma once
 
 #include "dshowutil/dshowutil.h"
@@ -23,8 +44,6 @@ struct SChapterInfos
 class CChaptersManager
 {
 public:
-  /// Store singleton instance
-  static CChaptersManager *m_pSingleton;
   /// Retrieve singleton instance
   static CChaptersManager *getSingleton();
   /// Destroy the singleton instance
@@ -50,12 +69,12 @@ public:
    */
   int SeekChapter(int iChapter);
   /** Load the chapters from the media file
-   * @return True if succeeded, false else
+   * @return True if succeeded, false otherwise
    */
   bool LoadChapters(void);
   /** Initialize the chapter's manager
    * @param[in] Graph Pointer to a CDSGraph instance
-   * @return True if the manager is initialized, false else
+   * @return True if the manager is initialized, false otherwise
    */
   void InitManager(CDSGraph *Graph);
 
@@ -64,6 +83,8 @@ private:
   CChaptersManager(void);
   /// Destructor
   ~CChaptersManager(void);
+  /// Store singleton instance
+  static CChaptersManager *m_pSingleton;
 
   /// Store SChapterInfos structs
   std::map<long, SChapterInfos *> m_chapters;

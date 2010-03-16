@@ -1,5 +1,3 @@
-
-//#include "DSUtil.h"
 #include "MediaTypeEx.h"
 
 #include <mmreg.h>

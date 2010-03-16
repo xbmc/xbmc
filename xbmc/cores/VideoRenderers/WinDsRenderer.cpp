@@ -35,8 +35,8 @@
 
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
-  m_D3DVideoTexture(NULL),
-  m_D3DMemorySurface(NULL)
+  m_D3DVideoTexture(NULL)//,
+//  m_D3DMemorySurface(NULL)
 {
 }
 
@@ -65,6 +65,11 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
 void CWinDsRenderer::Reset()
 {
+  if (m_D3DVideoTexture)
+  {
+    m_D3DVideoTexture->Release();
+    m_D3DVideoTexture = NULL;
+  }
 }
 
 void CWinDsRenderer::Update(bool bPauseDrawing)
@@ -132,12 +137,17 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
   
   if (videoTexture)
   {
+    if (m_D3DVideoTexture)
+      m_D3DVideoTexture->Release();
+
     m_D3DVideoTexture = videoTexture;
+    m_D3DVideoTexture->AddRef();
   }
-  if (videoSurface)
+  // Unused?
+  /*if (videoSurface)
   {
     m_D3DMemorySurface = videoSurface;
-  }
+  }*/
 }
 
 void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
@@ -213,7 +223,8 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
     CLog::Log(LOGERROR,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer");
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
-  
+
+  SAFE_RELEASE(m_D3DVideoTexture);  
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)

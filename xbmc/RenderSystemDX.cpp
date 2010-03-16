@@ -32,6 +32,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "SystemInfo.h"
+#include "VideoRenderers/RenderManager.h"
 
 using namespace std;
 
@@ -153,9 +154,10 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   SetViewPort(rc);
 
   BuildPresentParameters();
-  //Creating a new device is at least not making xbmc crash for the directshow rendered but still need to figure out how to do it correctly
-  if (!g_sysinfo.IsVistaOrHigher())
+  
+  if (g_guiSettings.GetBool("videoscreen.fakefullscreen") && g_renderManager.GetRendererType() == RENDERER_DSHOW) // If we are using DSPlayer, the device need to be recreated
     m_needNewDevice = true;
+
   OnDeviceLost();
   OnDeviceReset();
   
@@ -319,6 +321,7 @@ bool CRenderSystemDX::CreateDevice()
     //To be able to show a com dialog over a fullscreen video playing we need this
   if (m_bFullScreenDevice)
     m_pD3DDevice->SetDialogBoxMode(true);
+
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
     m_screenHeight = mode.Height;

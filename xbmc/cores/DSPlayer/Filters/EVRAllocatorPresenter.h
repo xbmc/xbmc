@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #ifndef _EVRALLOCATORPRESENTER_H
 #define _EVRALLOCATORPRESENTER_H
 #pragma once
@@ -83,7 +104,7 @@ public:
 //IDsRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
 
-  static inline HRESULT CheckShutdown();
+  inline HRESULT CheckShutdown();
   
   //IBaseFilter delegate
   bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue);
@@ -161,11 +182,18 @@ public:
     }
   }
 
+  void ReleaseResources();
+  HRESULT RenegotiateMediaType();
+
+  HRESULT BeginStreaming();
+  HRESULT EndStreaming();
+
+  bool resetState;
+
 private:
   
   COuterEVR *m_pOuterEVR;
   bool m_fUseInternalTimer;
-  bool m_bNeedNewDevice;
 
 // === Functions pointers on Vista / .Net3 specifics library
   PTR_DXVA2CreateDirect3DDeviceManager9  pfDXVA2CreateDirect3DDeviceManager9;
@@ -176,8 +204,6 @@ private:
   PTR_AvSetMmThreadCharacteristicsW    pfAvSetMmThreadCharacteristicsW;
   PTR_AvSetMmThreadPriority        pfAvSetMmThreadPriority;
   PTR_AvRevertMmThreadCharacteristics    pfAvRevertMmThreadCharacteristics;
-  
-
 
 protected:
 
@@ -203,10 +229,7 @@ protected:
 
   // Message handlers
   HRESULT Flush();
-  HRESULT RenegotiateMediaType();
   HRESULT ProcessInputNotify();
-  HRESULT BeginStreaming();
-  HRESULT EndStreaming();
   HRESULT CheckEndOfStream();
 
   // Managing samples
@@ -214,7 +237,6 @@ protected:
   HRESULT ProcessOutput();
   HRESULT DeliverSample(IMFSample *pSample, BOOL bRepaint);
   HRESULT TrackSample(IMFSample *pSample);
-  void    ReleaseResources();
 
   // Frame-stepping
   HRESULT PrepareFrameStep(DWORD cSteps);

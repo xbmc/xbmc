@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,6 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#pragma once
 
 #include "StdString.h"
 #include <streams.h>
@@ -72,7 +72,7 @@ public:
   virtual std::vector<IBaseFilter *> GetFiltersWithPropertyPages(void) { return m_pPropertiesFilters; };
   /**
    * Show the property page for the filter
-   * @param[in] pBF Filter whose showing prroperty page
+   * @param[in] pBF Filter whose showing property page
    */
   void ShowPropertyPage(IBaseFilter *pBF);
   
@@ -80,18 +80,9 @@ public:
 
   /// Pointer to a CDSGraph instance
   CDSGraph *          pGraph;
-  /** @defgroup FFDShow FFDShow related interface
-   * Variable related to the FFDShow filter
-   * @remarks All variables are NULL if the current filter isn't FFDShow
-   * @{ */
-  /// Pointer to a IffdshowBaseA interface
-  //IffdshowBaseA*      pIffdshowBase;
-  /// Pointer to a IffdshowDecVideoA interface
-  //IffdshowDecVideoA*  pIffdshowDecFilter;
+
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
-  /** @} */
-  //Com::SmartQIPtr<IQualProp, &IID_IQualProp> pQualProp;
 protected:
   /**
    * If the filter expose a property page, add it to m_pPropertiesFilters
@@ -116,8 +107,7 @@ private:
   CCritSec m_pLock;
 
   //Direct Show Filters
-
-  Com::SmartPtr<IMpaDecFilter>         m_pIMpaDecFilter;
+  IMpaDecFilter*                 m_pIMpaDecFilter; // References will be released elsewhere
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
   //current page
   CDSPropertyPage*               m_pCurrentProperty;

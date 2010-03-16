@@ -3,6 +3,9 @@
  * (C) 2003-2006 Gabest
  * (C) 2006-2007 see AUTHORS
  *
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
  * This file is part of mplayerc.
  *
  * Mplayerc is free software; you can redistribute it and/or modify
@@ -288,18 +291,19 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
 CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 {
   DeleteSurfaces();
-
-  //m_pTexture->Set(NULL);
-  //delete m_pTexture;
 }
 
 void CVMR9AllocatorPresenter::DeleteSurfaces()
 {
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
+  int k = 0;
   for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
   {
-    SAFE_RELEASE(m_pSurfaces[i]);
+    if (m_pSurfaces[i])
+    {
+      k = m_pSurfaces[i].Release();
+    }
   }
 
   __super::DeleteSurfaces();
@@ -517,8 +521,11 @@ STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
   HRESULT hr = S_OK;
+  int i = 5;
   
-  ASSERT( g_Windowing.Get3DDevice() );
+  while (! g_Windowing.Get3DDevice() || !i--)
+    Sleep(100);
+
   if( !g_Windowing.Get3DDevice() )
     hr =  E_FAIL;
   
@@ -639,7 +646,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     g_Windowing.Get3DDevice()->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
   }
 
-  g_renderManager.PaintVideoTexture(m_pVideoTexture[m_nCurSurface],m_pVideoSurface[m_nCurSurface]);
+  g_renderManager.PaintVideoTexture(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
   
   g_application.NewFrame();
   g_application.WaitFrame(100);
@@ -661,7 +668,8 @@ HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
 
 void CVMR9AllocatorPresenter::OnLostDevice()
 {
-  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);  
+  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  DeleteSurfaces();
 }
 
 void CVMR9AllocatorPresenter::OnDestroyDevice()

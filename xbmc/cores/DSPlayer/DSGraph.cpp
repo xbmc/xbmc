@@ -369,7 +369,7 @@ void CDSGraph::Stop(bool rewind)
   BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
   {
     Com::SmartQIPtr<IFileSourceFilter> pFSF;
-    pFSF = Com::SmartQIPtr<IAMNetworkStatus>(pBF);
+    pFSF = Com::SmartQIPtr<IAMNetworkStatus, &IID_IAMNetworkStatus>(pBF);
     if(pFSF)
     {
       WCHAR* pFN = NULL;

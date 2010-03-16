@@ -2,6 +2,9 @@
  *  Copyright (C) 2003-2006 Gabest
  *  http://www.gabest.org
  *
+ *  Copyright (C) 2005-2010 Team XBMC
+ *  http://www.xbmc.org
+ *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2, or (at your option)
@@ -313,7 +316,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
     }
     EndEnumFilters
 
-    for (int i = 0; i < pBFS.size(); i++)
+    for (unsigned int i = 0; i < pBFS.size(); i++)
     {
       IBaseFilter *pBF = pBFS[i];
 

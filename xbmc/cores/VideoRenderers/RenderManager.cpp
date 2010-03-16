@@ -100,6 +100,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presentsource = 0;
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
   m_bReconfigured = false;
+  m_pRendererType = RENDERER_UNINIT;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -298,6 +299,8 @@ void CXBMCRenderManager::UnInit()
   m_bIsStarted = false;
 
   m_overlays.Flush();
+
+  m_pRendererType = RENDERER_UNINIT;
 
   // free renderer resources.
   // TODO: we may also want to release the renderer here.

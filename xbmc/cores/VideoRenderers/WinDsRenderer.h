@@ -76,8 +76,8 @@ protected:
 
   typedef CD3DTexture        D3DVIDEOBUFFERS[NUM_BUFFERS];
   D3DVIDEOBUFFERS            m_D3DVideoSurfaces;
-  Com::SmartPtr<IDirect3DTexture9> m_D3DVideoTexture;
-  Com::SmartPtr<IDirect3DSurface9> m_D3DMemorySurface;
+  IDirect3DTexture9*         m_D3DVideoTexture;
+  //IDirect3DSurface9*         m_D3DMemorySurface;
   
 
 

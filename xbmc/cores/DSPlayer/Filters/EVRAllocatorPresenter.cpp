@@ -1,3 +1,23 @@
+/*
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "MacrovisionKicker.h"
 #include "utils/log.h"
@@ -234,18 +254,19 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
   m_bPrerolled(false),
   m_fRate(1.0f),
   m_TokenCounter(0),
-  m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
-{
+  m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree),
+  resetState(false)
+{  
+
   // Initial source rectangle = (0,0,1,1)
   m_nrcSource.top = 0;
   m_nrcSource.left = 0;
   m_nrcSource.bottom = 1;
   m_nrcSource.right = 1;
   m_pD3DPresentEngine = new D3DPresentEngine(this, hr);
-  m_bNeedNewDevice = false;
+
   if (!m_pD3DPresentEngine)
     hr = E_OUTOFMEMORY;
-  
 
   m_scheduler.SetCallback(m_pD3DPresentEngine);
 
@@ -1455,7 +1476,7 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   m_pMediaType = NULL;
 
   // Initialize the presenter engine with the new media type.
-  // The presenter engine allocates the samples. 
+  // The presenter engine allocates the samples.
 
   CHECK_HR(hr = m_pD3DPresentEngine->CreateVideoSamples(pType, sampleQueue));
 
@@ -1482,24 +1503,27 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   pType->GetRepresentation(FORMAT_MFVideoFormat, (void**)&pAMMedia);
   videoFormat = (MFVIDEOFORMAT*)pAMMedia->pbFormat;
   hr = pfMFCreateVideoMediaType(videoFormat, &pVideoMediaType);
+  pType->FreeRepresentation(FORMAT_MFVideoFormat, pAMMedia);
     
   
   REFERENCE_TIME avgframe;
   //This method for getting the time per frame is coming from mediaportal
   if (videoFormat->videoInfo.FramesPerSecond.Numerator != 0)
-    avgframe = (20000000I64*videoFormat->videoInfo.FramesPerSecond.Denominator)/videoFormat->videoInfo.FramesPerSecond.Numerator;
-  //DShowUtil::ExtractAvgTimePerFrame(pAMMedia,avgframe);
+    avgframe = (20000000I64 * videoFormat->videoInfo.FramesPerSecond.Denominator) / 
+    videoFormat->videoInfo.FramesPerSecond.Numerator;
+
   // Set the frame rate on the scheduler. 
-  if (avgframe > 0)// SUCCEEDED(MediaFoundationSamples::GetFrameRate(pType, &fps)) && (fps.Numerator != 0) && (fps.Denominator != 0))
-  {
+  if (avgframe > 0)
     m_scheduler.SetFrameRate(avgframe);
-  }
   else
-  {
     //If anything did go wrong in the getting time per frame putthing this default frame rate
     //This is the default frame rate
     m_scheduler.SetFrameRate(400000);
-  }
+
+  if (!g_renderManager.IsConfigured())
+    g_renderManager.Configure(m_pD3DPresentEngine->GetVideoWidth(), m_pD3DPresentEngine->GetVideoHeight(),
+    m_pD3DPresentEngine->GetVideoWidth(), m_pD3DPresentEngine->GetVideoHeight(),
+    m_scheduler.GetFps(), CONF_FLAGS_FULLSCREEN);
 
   // Store the media type.
   assert(pType != NULL);
@@ -1590,7 +1614,7 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
   MFT_OUTPUT_DATA_BUFFER dataBuffer;
   ZeroMemory(&dataBuffer, sizeof(dataBuffer));
 
-  IMFSample *pSample = NULL;
+  Com::SmartPtr<IMFSample> pSample = NULL;
 
   // If the clock is not running, we present the first sample,
   // and then don't present any more until the clock starts. 
@@ -1691,6 +1715,7 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
       NotifyEvent(EC_PROCESSING_LATENCY, (LONG_PTR)&latencyTime, 0);
     }
 
+    
     // Set up notification for when the sample is released.
     CHECK_HR(hr = TrackSample(pSample));
 
@@ -1704,16 +1729,15 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
         // We are frame-stepping (and this is not a repaint request).
       CHECK_HR(hr = DeliverFrameStepSample(pSample));
     }
+
     m_bPrerolled = TRUE; // We have presented at least one sample now.
   }
 
 done:
   // Release any events that were returned from the ProcessOutput method. 
   // (We don't expect any events from the mixer, but this is a good practice.)
-  ReleaseEventCollection(1, &dataBuffer); 
-
-  SAFE_RELEASE(pSample);
-
+  ReleaseEventCollection(1, &dataBuffer);
+  pSample = NULL;
   return hr;
 }
 
@@ -1733,42 +1757,21 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
   assert(pSample != NULL);
 
   HRESULT hr = S_OK;
-  D3DPresentEngine::DeviceState state = D3DPresentEngine::DeviceOK;
 
   if (m_RenderState == RENDER_STATE_SHUTDOWN)
     return S_OK;
-    
-  if (!g_renderManager.IsConfigured())
-    g_renderManager.Configure(m_pD3DPresentEngine->GetVideoWidth(),m_pD3DPresentEngine->GetVideoHeight(),m_pD3DPresentEngine->GetVideoWidth(),m_pD3DPresentEngine->GetVideoHeight(),m_scheduler.GetFps(),CONF_FLAGS_FULLSCREEN);
+
   // If we are not actively playing, OR we are scrubbing (rate = 0) OR this is a 
   // repaint request, then we need to present the sample immediately. Otherwise, 
   // schedule it normally.
 
   BOOL bPresentNow = ((m_RenderState != RENDER_STATE_STARTED) ||  IsScrubbing() || bRepaint);
 
-  // If we need new device dont deliver the sample
-  if (m_bNeedNewDevice)
-  {
-    CLog::Log(LOGDEBUG,"%s Device Need reset to develiver sample",__FUNCTION__);
-    /*if (SUCCEEDED( g_renderManager.Reset() ))
-    {
-      //We got the device back so we can restart schedule sample now
-      state = D3DPresentEngine::DeviceReset;
-    }*/
-    state = D3DPresentEngine::DeviceReset;
-  }
+  // If we need new device don't deliver the sample
+  if (resetState)
+    CLog::Log(LOGDEBUG,"%s The device is recreated ; wait",__FUNCTION__);
   else
-  {
     hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
-  }
-
-  if (state == D3DPresentEngine::DeviceReset)
-  {
-    // The Direct3D device was re-set. Notify the EVR.
-    NotifyEvent(EC_DISPLAY_CHANGED, S_OK, 0);
-    m_bNeedNewDevice = false;
-    CLog::Log(LOGDEBUG,"%s Device reseting sending EC_DISPLAY_CHANGED to EVR",__FUNCTION__);
-  }
 
   return hr;
 }
@@ -1897,6 +1900,7 @@ void CEVRAllocatorPresenter::ReleaseResources()
 
   m_SamplePool.Clear();
 
+  m_pMediaType = NULL;
   if (m_pD3DPresentEngine)
     m_pD3DPresentEngine->ReleaseResources();
 }

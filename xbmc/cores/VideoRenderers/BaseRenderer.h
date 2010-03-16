@@ -41,6 +41,7 @@ typedef struct YV12Image
 
 typedef enum _RENDERERTYPE
 {
+  RENDERER_UNINIT = 0,
   RENDERER_NORMAL = 1,
   RENDERER_DSHOW  = 2
 } RENDERERTYPE;

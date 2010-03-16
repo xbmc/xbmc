@@ -1,3 +1,24 @@
+/*
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #pragma once
 
 //-----------------------------------------------------------------------------
@@ -94,11 +115,11 @@ protected:
   
   Com::SmartPtr<IEVRPresenterCallback>  m_pCallback;
   UINT                     m_DeviceResetToken;     // Reset token for the D3D device manager.
-  int                       m_bufferCount;
+  int                      m_bufferCount;
   UINT32                   m_iVideoHeight;
   UINT32                   m_iVideoWidth;
   RECT                     m_rcDestRect;           // Destination rectangle.
-  D3DDISPLAYMODE              m_DisplayMode;          // Adapter's display mode.
+  D3DDISPLAYMODE           m_DisplayMode;          // Adapter's display mode.
 
   CEVRAllocatorPresenter     * m_pAllocatorPresenter;
   bool                         m_bExiting;
@@ -107,9 +128,9 @@ protected:
     // COM interfaces
   bool                         m_bNeedNewDevice;
   
-  IDirect3DTexture9  *m_pVideoTexture;
-  IDirect3DSurface9  *m_pVideoSurface;
-  IDirect3DTexture9  *m_pInternalVideoTexture[7];
-  IDirect3DSurface9  *m_pInternalVideoSurface[7];
+  Com::SmartPtr<IDirect3DTexture9>  m_pEVRVideoTexture;
+  Com::SmartPtr<IDirect3DSurface9>  m_pEVRVideoSurface;
+  Com::SmartPtr<IDirect3DTexture9>  m_pEVRInternalVideoTexture[7];
+  Com::SmartPtr<IDirect3DSurface9>  m_pEVRInternalVideoSurface[7];
 
 };

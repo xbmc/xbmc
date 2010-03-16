@@ -3,6 +3,7 @@
  *
  * (C) 2003-2006 Gabest
  * (C) 2006-2007 see AUTHORS
+ * (C) 2010 Team XBMC
  *
  * This file is part of mplayerc.
  *
@@ -20,8 +21,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-////#include "stdafx.h"
 
 #include <d3dx9.h>
 #include <dxva.h>

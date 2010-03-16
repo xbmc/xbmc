@@ -3,6 +3,9 @@
  * (C) 2003-2006 Gabest
  * (C) 2006-2007 see AUTHORS
  *
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
  * This file is part of mplayerc.
  *
  * Mplayerc is free software; you can redistribute it and/or modify
@@ -113,7 +116,7 @@ void CDsRenderer::DeleteSurfaces()
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-  for( int i = 0; i < DS_NBR_3D_SURFACE; ++i ) 
+  for( int i = 0; i < m_nNbDXSurface+2; ++i ) 
   {
     m_pVideoTexture[i] = NULL;
     m_pVideoSurface[i] = NULL;

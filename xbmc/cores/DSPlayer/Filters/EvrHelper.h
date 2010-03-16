@@ -1,4 +1,24 @@
 #pragma once
+/*
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 //-----------------------------------------------------------------------------
 // SamplePool class
@@ -9,6 +29,7 @@
 #include "mfapi.h"
 #include <mferror.h>
 #include "mftransform.h"
+
 #ifndef CHECK_HR
 #define CHECK_HR(hr) IF_FAILED_GOTO(hr, done)
 #endif
@@ -17,7 +38,6 @@
 #endif
 
 #define S_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
-
 
 template <class T>
 struct NoOp
@@ -33,461 +53,461 @@ class List
 protected:
 
   // Nodes in the linked list
-struct Node
-{
-  Node *prev;
-  Node *next;
-  T  item;
-    
-  Node() : prev(NULL), next(NULL)
+  struct Node
   {
-  }
+    Node *prev;
+    Node *next;
+    T    item;
 
-  Node(T item) : prev(NULL), next(NULL)
-  {
-    this->item = item;
-  }
+    Node() : prev(NULL), next(NULL)
+    {
+    }
 
-  T Item() const { return item; }
-};
+    Node(T item) : prev(NULL), next(NULL)
+    {
+      this->item = item;
+    }
+
+    T Item() const { return item; }
+  };
 
 public:
 
   // Object for enumerating the list.
-class POSITION
-{
+  class POSITION
+  {
     friend class List<T>;
 
+  public:
+    POSITION() : pNode(NULL)
+    {
+    }
+
+    bool operator==(const POSITION &p) const
+    {
+      return pNode == p.pNode;
+    }
+
+    bool operator!=(const POSITION &p) const
+    {
+      return pNode != p.pNode;
+    }
+
+  private:
+    const Node *pNode;
+
+    POSITION(Node *p) : pNode(p) 
+    {
+    }
+  };
+
+protected:
+  Node    m_anchor;  // Anchor node for the linked list.
+  DWORD   m_count;   // Number of items in the list.
+
+  Node* Front() const
+  {
+    return m_anchor.next;
+  }
+
+  Node* Back() const
+  {
+    return m_anchor.prev;
+  }
+
+  virtual HRESULT InsertAfter(T item, Node *pBefore)
+  {
+    if (pBefore == NULL)
+    {
+      return E_POINTER;
+    }
+
+    Node *pNode = new Node(item);
+    if (pNode == NULL)
+    {
+      return E_OUTOFMEMORY;
+    }
+
+    Node *pAfter = pBefore->next;
+
+    pBefore->next = pNode;
+    pAfter->prev = pNode;
+
+    pNode->prev = pBefore;
+    pNode->next = pAfter;
+
+    m_count++;
+
+    return S_OK;
+  }
+
+  virtual HRESULT GetItem(const Node *pNode, T* ppItem)
+  {
+    if (pNode == NULL || ppItem == NULL)
+    {
+      return E_POINTER;
+    }
+
+    *ppItem = pNode->item;
+    return S_OK;
+  }
+
+  // RemoveItem:
+  // Removes a node and optionally returns the item.
+  // ppItem can be NULL.
+  virtual HRESULT RemoveItem(Node *pNode, T *ppItem)
+  {
+    if (pNode == NULL)
+    {
+      return E_POINTER;
+    }
+
+    assert(pNode != &m_anchor); // We should never try to remove the anchor node.
+    if (pNode == &m_anchor)
+    {
+      return E_INVALIDARG;
+    }
+
+
+    T item;
+
+    // The next node's previous is this node's previous.
+    pNode->next->prev = pNode->prev;
+
+    // The previous node's next is this node's next.
+    pNode->prev->next = pNode->next;
+
+    item = pNode->item;
+    delete pNode;
+
+    m_count--;
+
+    if (ppItem)
+    {
+      *ppItem = item;
+    }
+
+    return S_OK;
+  }
+
 public:
-  POSITION() : pNode(NULL)
+
+  List()
   {
+    m_anchor.next = &m_anchor;
+    m_anchor.prev = &m_anchor;
+
+    m_count = 0;
   }
 
-  bool operator==(const POSITION &p) const
+  virtual ~List()
   {
-    return pNode == p.pNode;
+    Clear();
   }
 
-  bool operator!=(const POSITION &p) const
+  // Insertion functions
+  HRESULT InsertBack(T item)
   {
-    return pNode != p.pNode;
+    return InsertAfter(item, m_anchor.prev);
   }
 
-private:
-  const Node *pNode;
 
-  POSITION(Node *p) : pNode(p) 
+  HRESULT InsertFront(T item)
   {
+    return InsertAfter(item, &m_anchor);
+  }
+
+  // RemoveBack: Removes the tail of the list and returns the value.
+  // ppItem can be NULL if you don't want the item back. (But the method does not release the item.)
+  HRESULT RemoveBack(T *ppItem)
+  {
+    if (IsEmpty())
+    {
+      return E_FAIL;
+    }
+    else
+    {
+      return RemoveItem(Back(), ppItem);
+    }
+  }
+
+  // RemoveFront: Removes the head of the list and returns the value.
+  // ppItem can be NULL if you don't want the item back. (But the method does not release the item.)
+  HRESULT RemoveFront(T *ppItem)
+  {
+    if (IsEmpty())
+    {
+      return E_FAIL;
+    }
+    else
+    {
+      return RemoveItem(Front(), ppItem);
+    }
+  }
+
+  // GetBack: Gets the tail item.
+  HRESULT GetBack(T *ppItem)
+  {
+    if (IsEmpty())
+    {
+      return E_FAIL;
+    }
+    else
+    {
+      return GetItem(Back(), ppItem);
+    }
+  }
+
+  // GetFront: Gets the front item.
+  HRESULT GetFront(T *ppItem)
+  {
+    if (IsEmpty())
+    {
+      return E_FAIL;
+    }
+    else
+    {
+      return GetItem(Front(), ppItem);
+    }
+  }
+
+
+  // GetCount: Returns the number of items in the list.
+  DWORD GetCount() const { return m_count; }
+
+  bool IsEmpty() const
+  {
+    return (GetCount() == 0);
+  }
+
+  // Clear: Takes a functor object whose operator()
+  // frees the object on the list.
+  template <class FN>
+  void Clear(FN& clear_fn)
+  {
+    Node *n = m_anchor.next;
+
+    // Delete the nodes
+    while (n != &m_anchor)
+    {
+      clear_fn(n->item);
+
+      Node *tmp = n->next;
+      delete n;
+      n = tmp;
+    }
+
+    // Reset the anchor to point at itself
+    m_anchor.next = &m_anchor;
+    m_anchor.prev = &m_anchor;
+
+    m_count = 0;
+  }
+
+  // Clear: Clears the list. (Does not delete or release the list items.)
+  virtual void Clear()
+  {
+    Clear<NoOp<T>>(NoOp<T>());
+  }
+
+
+  // Enumerator functions
+
+  POSITION FrontPosition()
+  {
+    if (IsEmpty())
+    {
+      return POSITION(NULL);
+    }
+    else
+    {
+      return POSITION(Front());
+    }
+  }
+
+  POSITION EndPosition() const
+  {
+    return POSITION();
+  }
+
+  HRESULT GetItemPos(POSITION pos, T *ppItem)
+  {   
+    if (pos.pNode)
+    {
+      return GetItem(pos.pNode, ppItem);
+    }
+    else 
+    {
+      return E_FAIL;
+    }
+  }
+
+  POSITION Next(const POSITION pos)
+  {
+    if (pos.pNode && (pos.pNode->next != &m_anchor))
+    {
+      return POSITION(pos.pNode->next);
+    }
+    else
+    {
+      return POSITION(NULL);
+    }
+  }
+
+  // Remove an item at a position. 
+  // The item is returns in ppItem, unless ppItem is NULL.
+  // NOTE: This method invalidates the POSITION object.
+  HRESULT Remove(POSITION& pos, T *ppItem)
+  {
+    if (pos.pNode)
+    {
+      // Remove const-ness temporarily...
+      Node *pNode = const_cast<Node*>(pos.pNode);
+
+      pos = POSITION();
+
+      return RemoveItem(pNode, ppItem);
+    }
+    else
+    {
+      return E_INVALIDARG;
+    }
+  }
+
+};
+
+
+
+// Typical functors for Clear method.
+
+// ComAutoRelease: Releases COM pointers.
+// MemDelete: Deletes pointers to new'd memory.
+
+class ComAutoRelease
+{
+public: 
+  void operator()(IUnknown *p)
+  {
+    if (p)
+    {
+      p->Release();
+    }
   }
 };
 
-  protected:
-    Node  m_anchor;  // Anchor node for the linked list.
-    DWORD   m_count;   // Number of items in the list.
-
-    Node* Front() const
+class MemDelete
+{
+public: 
+  void operator()(void *p)
+  {
+    if (p)
     {
-      return m_anchor.next;
+      delete p;
+    }
+  }
+};
+
+
+// ComPtrList class
+// Derived class that makes it safer to store COM pointers in the List<> class.
+// It automatically AddRef's the pointers that are inserted onto the list
+// (unless the insertion method fails). 
+//
+// T must be a COM interface type. 
+// example: ComPtrList<IUnknown>
+//
+// NULLABLE: If true, client can insert NULL pointers. This means GetItem can
+// succeed but return a NULL pointer. By default, the list does not allow NULL
+// pointers.
+
+template <class T, bool NULLABLE = FALSE>
+class ComPtrList : public List<T*>
+{
+public:
+
+  typedef T* Ptr;
+
+  void Clear()
+  {
+    List<Ptr>::Clear(ComAutoRelease());
+  }
+
+  ~ComPtrList()
+  {
+    Clear();
+  }
+
+protected:
+  HRESULT InsertAfter(Ptr item, Node *pBefore)
+  {
+    // Do not allow NULL item pointers unless NULLABLE is true.
+    if (!item && !NULLABLE)
+    {
+      return E_POINTER;
     }
 
-    Node* Back() const
+    if (item)
     {
-      return m_anchor.prev;
+      item->AddRef();
     }
 
-    virtual HRESULT InsertAfter(T item, Node *pBefore)
+    HRESULT hr = List<Ptr>::InsertAfter(item, pBefore);
+    if (FAILED(hr))
     {
-      if (pBefore == NULL)
-      {
-        return E_POINTER;
-      }
-
-      Node *pNode = new Node(item);
-      if (pNode == NULL)
-      {
-        return E_OUTOFMEMORY;
-      }
-
-      Node *pAfter = pBefore->next;
-      
-      pBefore->next = pNode;
-      pAfter->prev = pNode;
-
-      pNode->prev = pBefore;
-      pNode->next = pAfter;
-
-      m_count++;
-
-      return S_OK;
+      S_RELEASE(item);
     }
+    return hr;
+  }
 
-    virtual HRESULT GetItem(const Node *pNode, T* ppItem)
+  HRESULT GetItem(const Node *pNode, Ptr* ppItem)
+  {
+    Ptr pItem = NULL;
+
+    // The base class gives us the pointer without AddRef'ing it.
+    // If we return the pointer to the caller, we must AddRef().
+    HRESULT hr = List<Ptr>::GetItem(pNode, &pItem);
+    if (SUCCEEDED(hr))
     {
-      if (pNode == NULL || ppItem == NULL)
+      assert(pItem || NULLABLE);
+      if (pItem)
       {
-        return E_POINTER;
-      }
-
-      *ppItem = pNode->item;
-      return S_OK;
-    }
-
-    // RemoveItem:
-    // Removes a node and optionally returns the item.
-    // ppItem can be NULL.
-    virtual HRESULT RemoveItem(Node *pNode, T *ppItem)
-    {
-      if (pNode == NULL)
-      {
-        return E_POINTER;
-      }
-
-      assert(pNode != &m_anchor); // We should never try to remove the anchor node.
-      if (pNode == &m_anchor)
-      {
-        return E_INVALIDARG;
-      }
-
-
-      T item;
-
-      // The next node's previous is this node's previous.
-      pNode->next->prev = pNode->prev;
-
-      // The previous node's next is this node's next.
-      pNode->prev->next = pNode->next;
-
-      item = pNode->item;
-      delete pNode;
-
-      m_count--;
-
-      if (ppItem)
-      {
-        *ppItem = item;
-      }
-
-      return S_OK;
-    }
-
-  public:
-
-    List()
-    {
-      m_anchor.next = &m_anchor;
-      m_anchor.prev = &m_anchor;
-
-      m_count = 0;
-    }
-
-    virtual ~List()
-    {
-      Clear();
-    }
-
-    // Insertion functions
-    HRESULT InsertBack(T item)
-    {
-      return InsertAfter(item, m_anchor.prev);
-    }
-
-
-    HRESULT InsertFront(T item)
-    {
-      return InsertAfter(item, &m_anchor);
-    }
-
-    // RemoveBack: Removes the tail of the list and returns the value.
-    // ppItem can be NULL if you don't want the item back. (But the method does not release the item.)
-    HRESULT RemoveBack(T *ppItem)
-    {
-      if (IsEmpty())
-      {
-        return E_FAIL;
-      }
-      else
-      {
-        return RemoveItem(Back(), ppItem);
+        *ppItem = pItem;
+        (*ppItem)->AddRef();
       }
     }
+    return hr;
+  }
 
-    // RemoveFront: Removes the head of the list and returns the value.
-    // ppItem can be NULL if you don't want the item back. (But the method does not release the item.)
-    HRESULT RemoveFront(T *ppItem)
+  HRESULT RemoveItem(Node *pNode, Ptr *ppItem)
+  {
+    // ppItem can be NULL, but we need to get the
+    // item so that we can release it. 
+
+    // If ppItem is not NULL, we will AddRef it on the way out.
+
+    Ptr pItem = NULL;
+
+    HRESULT hr = List<Ptr>::RemoveItem(pNode, &pItem);
+
+    if (SUCCEEDED(hr))
     {
-      if (IsEmpty())
+      assert(pItem || NULLABLE);
+      if (ppItem && pItem)
       {
-        return E_FAIL;
+        *ppItem = pItem;
+        (*ppItem)->AddRef();
       }
-      else
-      {
-        return RemoveItem(Front(), ppItem);
-      }
+
+      S_RELEASE(pItem);
     }
 
-    // GetBack: Gets the tail item.
-    HRESULT GetBack(T *ppItem)
-    {
-      if (IsEmpty())
-      {
-        return E_FAIL;
-      }
-      else
-      {
-        return GetItem(Back(), ppItem);
-      }
-    }
+    return hr;
+  }
+};
 
-    // GetFront: Gets the front item.
-    HRESULT GetFront(T *ppItem)
-    {
-      if (IsEmpty())
-      {
-        return E_FAIL;
-      }
-      else
-      {
-        return GetItem(Front(), ppItem);
-      }
-    }
+typedef ComPtrList<IMFSample> VideoSampleList;
 
-
-    // GetCount: Returns the number of items in the list.
-    DWORD GetCount() const { return m_count; }
-
-    bool IsEmpty() const
-    {
-      return (GetCount() == 0);
-    }
-
-    // Clear: Takes a functor object whose operator()
-    // frees the object on the list.
-    template <class FN>
-    void Clear(FN& clear_fn)
-    {
-      Node *n = m_anchor.next;
-
-      // Delete the nodes
-      while (n != &m_anchor)
-      {
-        clear_fn(n->item);
-
-        Node *tmp = n->next;
-        delete n;
-        n = tmp;
-      }
-
-      // Reset the anchor to point at itself
-      m_anchor.next = &m_anchor;
-      m_anchor.prev = &m_anchor;
-
-      m_count = 0;
-    }
-
-    // Clear: Clears the list. (Does not delete or release the list items.)
-    virtual void Clear()
-    {
-      Clear<NoOp<T>>(NoOp<T>());
-    }
-
-
-    // Enumerator functions
-
-    POSITION FrontPosition()
-    {
-      if (IsEmpty())
-      {
-        return POSITION(NULL);
-      }
-      else
-      {
-        return POSITION(Front());
-      }
-    }
-
-    POSITION EndPosition() const
-    {
-      return POSITION();
-    }
-
-    HRESULT GetItemPos(POSITION pos, T *ppItem)
-    {   
-      if (pos.pNode)
-      {
-        return GetItem(pos.pNode, ppItem);
-      }
-      else 
-      {
-        return E_FAIL;
-      }
-    }
-
-    POSITION Next(const POSITION pos)
-    {
-      if (pos.pNode && (pos.pNode->next != &m_anchor))
-      {
-        return POSITION(pos.pNode->next);
-      }
-      else
-      {
-        return POSITION(NULL);
-      }
-    }
-
-    // Remove an item at a position. 
-    // The item is returns in ppItem, unless ppItem is NULL.
-    // NOTE: This method invalidates the POSITION object.
-    HRESULT Remove(POSITION& pos, T *ppItem)
-    {
-      if (pos.pNode)
-      {
-        // Remove const-ness temporarily...
-        Node *pNode = const_cast<Node*>(pos.pNode);
-
-        pos = POSITION();
-
-        return RemoveItem(pNode, ppItem);
-      }
-      else
-      {
-        return E_INVALIDARG;
-      }
-    }
-
-  };
-
-
-
-    // Typical functors for Clear method.
-
-    // ComAutoRelease: Releases COM pointers.
-    // MemDelete: Deletes pointers to new'd memory.
-
-    class ComAutoRelease
-    {
-    public: 
-        void operator()(IUnknown *p)
-        {
-            if (p)
-            {
-                p->Release();
-            }
-        }
-    };
-        
-    class MemDelete
-    {
-    public: 
-        void operator()(void *p)
-        {
-            if (p)
-            {
-                delete p;
-            }
-        }
-    };
-
-
-    // ComPtrList class
-    // Derived class that makes it safer to store COM pointers in the List<> class.
-    // It automatically AddRef's the pointers that are inserted onto the list
-    // (unless the insertion method fails). 
-    //
-    // T must be a COM interface type. 
-    // example: ComPtrList<IUnknown>
-    //
-    // NULLABLE: If true, client can insert NULL pointers. This means GetItem can
-    // succeed but return a NULL pointer. By default, the list does not allow NULL
-    // pointers.
-
-    template <class T, bool NULLABLE = FALSE>
-    class ComPtrList : public List<T*>
-    {
-    public:
-
-        typedef T* Ptr;
-
-        void Clear()
-        {
-            List<Ptr>::Clear(ComAutoRelease());
-        }
-
-        ~ComPtrList()
-        {
-            Clear();
-        }
-
-    protected:
-        HRESULT InsertAfter(Ptr item, Node *pBefore)
-        {
-            // Do not allow NULL item pointers unless NULLABLE is true.
-            if (!item && !NULLABLE)
-            {
-                return E_POINTER;
-            }
-
-            if (item)
-            {
-                item->AddRef();
-            }
-
-            HRESULT hr = List<Ptr>::InsertAfter(item, pBefore);
-            if (FAILED(hr))
-            {
-                S_RELEASE(item);
-            }
-            return hr;
-        }
-
-        HRESULT GetItem(const Node *pNode, Ptr* ppItem)
-        {
-            Ptr pItem = NULL;
-
-            // The base class gives us the pointer without AddRef'ing it.
-            // If we return the pointer to the caller, we must AddRef().
-            HRESULT hr = List<Ptr>::GetItem(pNode, &pItem);
-            if (SUCCEEDED(hr))
-            {
-                assert(pItem || NULLABLE);
-                if (pItem)
-                {
-                    *ppItem = pItem;
-                    (*ppItem)->AddRef();
-                }
-            }
-            return hr;
-        }
-
-        HRESULT RemoveItem(Node *pNode, Ptr *ppItem)
-        {
-            // ppItem can be NULL, but we need to get the
-            // item so that we can release it. 
-
-            // If ppItem is not NULL, we will AddRef it on the way out.
-
-            Ptr pItem = NULL;
-
-            HRESULT hr = List<Ptr>::RemoveItem(pNode, &pItem);
-
-            if (SUCCEEDED(hr))
-            {
-                assert(pItem || NULLABLE);
-                if (ppItem && pItem)
-                {
-                    *ppItem = pItem;
-                    (*ppItem)->AddRef();
-                }
-
-                S_RELEASE(pItem);
-            }
-
-            return hr;
-        }
-    };
-
-typedef ComPtrList<IMFSample>           VideoSampleList;
-
-class SamplePool 
+class SamplePool
 {
 public:
     SamplePool();
@@ -528,113 +548,113 @@ class ThreadSafeQueue
 public:
   HRESULT Queue(T *p)
   {
-      CAutoLock lock(&m_lock);
-      return m_list.InsertBack(p);
-    }
+    CAutoLock lock(&m_lock);
+    return m_list.InsertBack(p);
+  }
 
   HRESULT Dequeue(T **pp)
   {
     CAutoLock lock(&m_lock);
 
-        if (m_list.IsEmpty())
-        {
-            *pp = NULL;
-            return S_FALSE;
-        }
+    if (m_list.IsEmpty())
+    {
+      *pp = NULL;
+      return S_FALSE;
+    }
 
     return m_list.RemoveFront(pp);
   }
 
-    HRESULT PutBack(T *p)
-    {
-        CAutoLock lock(&m_lock);
-        return m_list.InsertFront(p);
-    }
+  HRESULT PutBack(T *p)
+  {
+    CAutoLock lock(&m_lock);
+    return m_list.InsertFront(p);
+  }
 
   void Clear() 
   {
     CAutoLock lock(&m_lock);
     m_list.Clear();
-    }
+  }
 
 
 private:
-  CCritSec      m_lock;  
+  CCritSec       m_lock;  
   ComPtrList<T>  m_list;
 };
 
 template<class T>
-    class AsyncCallback : public IMFAsyncCallback
+class AsyncCallback : public IMFAsyncCallback
+{
+  public: 
+  typedef HRESULT (T::*InvokeFn)(IMFAsyncResult *pAsyncResult);
+
+  AsyncCallback(T *pParent, InvokeFn fn) : m_pParent(pParent), m_pInvokeFn(fn)
+  {
+  }
+
+  // IUnknown
+  STDMETHODIMP_(ULONG) AddRef() { 
+    // Delegate to parent class.
+    return m_pParent->AddRef(); 
+  }
+  STDMETHODIMP_(ULONG) Release() { 
+    // Delegate to parent class.
+    return m_pParent->Release(); 
+  }
+  STDMETHODIMP QueryInterface(REFIID iid, void** ppv)
+  {
+    if (!ppv)
     {
-    public: 
-        typedef HRESULT (T::*InvokeFn)(IMFAsyncResult *pAsyncResult);
-
-        AsyncCallback(T *pParent, InvokeFn fn) : m_pParent(pParent), m_pInvokeFn(fn)
-        {
-        }
-
-        // IUnknown
-        STDMETHODIMP_(ULONG) AddRef() { 
-            // Delegate to parent class.
-            return m_pParent->AddRef(); 
-        }
-        STDMETHODIMP_(ULONG) Release() { 
-            // Delegate to parent class.
-            return m_pParent->Release(); 
-        }
-        STDMETHODIMP QueryInterface(REFIID iid, void** ppv)
-        {
-            if (!ppv)
-            {
-                return E_POINTER;
-            }
-            if (iid == __uuidof(IUnknown))
-            {
-                *ppv = static_cast<IUnknown*>(static_cast<IMFAsyncCallback*>(this));
-            }
-            else if (iid == __uuidof(IMFAsyncCallback))
-            {
-                *ppv = static_cast<IMFAsyncCallback*>(this);
-            }
-            else
-            {
-                *ppv = NULL;
-                return E_NOINTERFACE;
-            }
-            AddRef();
-            return S_OK;
-        }
+      return E_POINTER;
+    }
+    if (iid == __uuidof(IUnknown))
+    {
+      *ppv = static_cast<IUnknown*>(static_cast<IMFAsyncCallback*>(this));
+    }
+    else if (iid == __uuidof(IMFAsyncCallback))
+    {
+      *ppv = static_cast<IMFAsyncCallback*>(this);
+    }
+    else
+    {
+      *ppv = NULL;
+      return E_NOINTERFACE;
+    }
+    AddRef();
+    return S_OK;
+  }
 
 
-        // IMFAsyncCallback methods
-        STDMETHODIMP GetParameters(DWORD*, DWORD*)
-        {
-            // Implementation of this method is optional.
-            return E_NOTIMPL;
-        }
+  // IMFAsyncCallback methods
+  STDMETHODIMP GetParameters(DWORD*, DWORD*)
+  {
+    // Implementation of this method is optional.
+    return E_NOTIMPL;
+  }
 
-        STDMETHODIMP Invoke(IMFAsyncResult* pAsyncResult)
-        {
-            return (m_pParent->*m_pInvokeFn)(pAsyncResult);
-        }
+  STDMETHODIMP Invoke(IMFAsyncResult* pAsyncResult)
+  {
+    return (m_pParent->*m_pInvokeFn)(pAsyncResult);
+  }
 
-        T *m_pParent;
-        InvokeFn m_pInvokeFn;
-    };
+  T *m_pParent;
+  InvokeFn m_pInvokeFn;
+};
 
 // ReleaseEventCollection:
-    // Release the events that an MFT might have provided in IMFTransform::ProcessOutput().
-    inline void ReleaseEventCollection(DWORD cOutputBuffers, MFT_OUTPUT_DATA_BUFFER* pBuffers)
+// Release the events that an MFT might have provided in IMFTransform::ProcessOutput().
+inline void ReleaseEventCollection(DWORD cOutputBuffers, MFT_OUTPUT_DATA_BUFFER* pBuffers)
+{
+  for (DWORD i = 0; i < cOutputBuffers; i++)
+  {
+    if (pBuffers[i].pEvents)
     {
-        for (DWORD i = 0; i < cOutputBuffers; i++)
-        {
-            if (pBuffers[i].pEvents)
-            {
-              pBuffers[i].pEvents->Release();
-              pBuffers[i].pEvents = NULL;
-            }
-        }
+      pBuffers[i].pEvents->Release();
+      pBuffers[i].pEvents = NULL;
     }
+  }
+}
 
 namespace MediaFoundationSamples
 {
@@ -734,15 +754,15 @@ namespace MediaFoundationSamples
         // Create a new media type.
         MediaTypeBuilder(HRESULT& hr)
         {
-          hr=E_FAIL;
-            char sysFold[260];
-            GetSystemDirectory(sysFold,sizeof(sysFold));
-            char mfplatPath[260];
-            sprintf(mfplatPath,"%s\\mfplat.dll", sysFold);
-            m_hModuleMFPLAT=LoadLibrary(mfplatPath);
-            m_pMFCreateMediaType=(TMFCreateMediaType*)GetProcAddress(m_hModuleMFPLAT,"MFCreateMediaType");
-            if (m_pMFCreateMediaType)
-              hr = m_pMFCreateMediaType(&m_pType);
+          hr = E_FAIL;
+          char sysFold[260];
+          GetSystemDirectory(sysFold, sizeof(sysFold));
+          char mfplatPath[260];
+          sprintf_s(mfplatPath, 259, "%s\\mfplat.dll", sysFold);
+          m_hModuleMFPLAT = LoadLibrary(mfplatPath);
+          m_pMFCreateMediaType = (TMFCreateMediaType*)GetProcAddress(m_hModuleMFPLAT, "MFCreateMediaType");
+          if (m_pMFCreateMediaType)
+            hr = m_pMFCreateMediaType(&m_pType);
           
         }
 

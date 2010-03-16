@@ -187,7 +187,7 @@ void CDSPropertyPage::Process()
 
     xBaseUnit = GdiGetCharDimensions ( hdc, NULL, &yBaseUnit );
 
-    for(int page = 0; page < pPages.cElems;  page++)
+    for(unsigned int page = 0; page < pPages.cElems;  page++)
     {
       opf[page].pps = new CDSPlayerPropertyPageSite(LANG_NEUTRAL);
       hr = DShowUtil::LoadExternalPropertyPage(m_pBF, pPages.pElems[page], &opf[page].propPage);
@@ -236,7 +236,7 @@ void CDSPropertyPage::Process()
         CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X)", __FUNCTION__, hr);
     }
 
-    for(int page = 0; page < pPages.cElems; page++) {
+    for(unsigned int page = 0; page < pPages.cElems; page++) {
       if(opf[page].propPage) {
         opf[page].propPage->SetPageSite(NULL);
         opf[page].propPage->Release();
