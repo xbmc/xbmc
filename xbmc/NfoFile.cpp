@@ -57,7 +57,7 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info, int episode)
+CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode)
 {
   m_info = info; // assume we can use these settings
   m_content = info->Content();
