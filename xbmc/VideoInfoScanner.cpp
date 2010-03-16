@@ -637,89 +637,84 @@ namespace VIDEO
   {
     m_IMDB.SetScraperInfo(info2);
 
-    if (!pItem->m_bIsFolder)
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
+      return 0;
+    
+    if (pDlgProgress)
     {
-      if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList())
+      pDlgProgress->SetHeading(198);
+      pDlgProgress->SetLine(0, pItem->GetLabel());
+      pDlgProgress->SetLine(2,"");
+      pDlgProgress->Progress();
+      if (pDlgProgress->IsCanceled())
       {
-        if (pDlgProgress)
-        {
-          pDlgProgress->SetHeading(198);
-          pDlgProgress->SetLine(0, pItem->GetLabel());
-          pDlgProgress->SetLine(2,"");
-          pDlgProgress->Progress();
-          if (pDlgProgress->IsCanceled())
-          {
-            pDlgProgress->Close();
-            //m_database.RollbackTransaction();
-            m_database.Close();
-            return -1;
-          }
-        }
-        if (m_bStop)
-        {
-          //m_database.RollbackTransaction();
-          m_database.Close();
-          return -1;
-        }
-        if (m_database.HasMovieInfo(pItem->m_strPath))
-          return 0;
-
-        CNfoFile::NFOResult result=CNfoFile::NO_NFO;
-        CScraperUrl scrUrl;
-        // handle .nfo files
-        if (!ignoreNfo)
-          result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
-        if (result == CNfoFile::ERROR_NFO)
-          return 0;
-        if (result == CNfoFile::FULL_NFO)
-        {
-          pItem->GetVideoInfoTag()->Reset();
-          m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-          if (m_pObserver)
-            m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
-          
-          AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
-          return 1;
-        }
-        if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-          pURL = &scrUrl;
-
-        // Get the correct movie title
-        CStdString strMovieName = pItem->GetMovieName(bDirNames);
-
-        IMDB_MOVIELIST movielist;
-        int returncode=0;
-        if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
-        {
-          CScraperUrl url;
-          int iMoviesFound=1;
-          if (!pURL)
-          {
-            iMoviesFound = movielist.size();
-            if (iMoviesFound)
-              url = movielist[0];
-          }
-          else
-          {
-            url = *pURL;
-          }
-          if (iMoviesFound > 0)
-          {
-            if (m_pObserver && !url.strTitle.IsEmpty())
-              m_pObserver->OnSetTitle(url.strTitle);
-
-            GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
-            return 1;
-          }
-        }
-        else if (returncode == -1 || !DownloadFailed(pDlgProgress))
-        {
-          m_bStop = true;
-          return -1;
-        }
-        else
-          return 0;
+        pDlgProgress->Close();
+        //m_database.RollbackTransaction();
+        m_database.Close();
+        return -1;
       }
+    }
+    if (m_bStop)
+    {
+      //m_database.RollbackTransaction();
+      m_database.Close();
+      return -1;
+    }
+    if (m_database.HasMovieInfo(pItem->m_strPath))
+      return 0;
+
+    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CScraperUrl scrUrl;
+    // handle .nfo files
+    if (!ignoreNfo)
+      result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
+    if (result == CNfoFile::ERROR_NFO)
+      return 0;
+    if (result == CNfoFile::FULL_NFO)
+    {
+      pItem->GetVideoInfoTag()->Reset();
+      m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
+      if (m_pObserver)
+        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
+      
+      AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
+      return 1;
+    }
+    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+      pURL = &scrUrl;
+
+    // Get the correct movie title
+    CStdString strMovieName = pItem->GetMovieName(bDirNames);
+
+    IMDB_MOVIELIST movielist;
+    int returncode=0;
+    if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
+    {
+      CScraperUrl url;
+      int iMoviesFound=1;
+      if (!pURL)
+      {
+        iMoviesFound = movielist.size();
+        if (iMoviesFound)
+          url = movielist[0];
+      }
+      else
+      {
+        url = *pURL;
+      }
+      if (iMoviesFound > 0)
+      {
+        if (m_pObserver && !url.strTitle.IsEmpty())
+          m_pObserver->OnSetTitle(url.strTitle);
+
+        GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+        return 1;
+      }
+    }
+    else if (returncode == -1 || !DownloadFailed(pDlgProgress))
+    {
+      m_bStop = true;
+      return -1;
     }
     return 0;
   }
@@ -728,89 +723,84 @@ namespace VIDEO
   {
     m_IMDB.SetScraperInfo(info2);
 
-    if (!pItem->m_bIsFolder)
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
+      return 0;
+
+    if (pDlgProgress)
     {
-      if (pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList())
+      pDlgProgress->SetHeading(20394);
+      pDlgProgress->SetLine(0, pItem->GetLabel());
+      pDlgProgress->SetLine(2,"");
+      pDlgProgress->Progress();
+      if (pDlgProgress->IsCanceled())
       {
-        if (pDlgProgress)
-        {
-          pDlgProgress->SetHeading(20394);
-          pDlgProgress->SetLine(0, pItem->GetLabel());
-          pDlgProgress->SetLine(2,"");
-          pDlgProgress->Progress();
-          if (pDlgProgress->IsCanceled())
-          {
-            pDlgProgress->Close();
-            //m_database.RollbackTransaction();
-            m_database.Close();
-            return -1;
-          }
-        }
-        if (m_bStop)
-        {
-          //m_database.RollbackTransaction();
-          m_database.Close();
-          return -1;
-        }
-        if (m_database.HasMusicVideoInfo(pItem->m_strPath))
-          return 0;
-
-        CNfoFile::NFOResult result=CNfoFile::NO_NFO;
-        CScraperUrl scrUrl;
-        // handle .nfo files
-        if (!ignoreNfo)
-          result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
-        if (result == CNfoFile::ERROR_NFO)
-          return 0;
-        if (result == CNfoFile::FULL_NFO)
-        {
-          pItem->GetVideoInfoTag()->Reset();
-          m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-          if (m_pObserver)
-            m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
-          
-          AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
-          return 1;
-        }
-        if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-          pURL = &scrUrl;
-
-        // Get the correct movie title
-        CStdString strMovieName = pItem->GetMovieName(bDirNames);
-
-        IMDB_MOVIELIST movielist;
-        int returncode=0;
-        if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
-        {
-          CScraperUrl url;
-          int iMoviesFound=1;
-          if (!pURL)
-          {
-            iMoviesFound = movielist.size();
-            if (iMoviesFound)
-              url = movielist[0];
-          }
-          else
-          {
-            url = *pURL;
-          }
-          if (iMoviesFound > 0)
-          {
-            if (m_pObserver && !url.strTitle.IsEmpty())
-              m_pObserver->OnSetTitle(url.strTitle);
-
-            GetIMDBDetails(pItem.get(), url, info2, false, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
-            return 1;
-          }
-        }
-        else if (returncode == -1 || !DownloadFailed(pDlgProgress))
-        {
-          m_bStop = true;
-          return -1;
-        }
-        else
-          return 0;
+        pDlgProgress->Close();
+        //m_database.RollbackTransaction();
+        m_database.Close();
+        return -1;
       }
+    }
+    if (m_bStop)
+    {
+      //m_database.RollbackTransaction();
+      m_database.Close();
+      return -1;
+    }
+    if (m_database.HasMusicVideoInfo(pItem->m_strPath))
+      return 0;
+
+    CNfoFile::NFOResult result=CNfoFile::NO_NFO;
+    CScraperUrl scrUrl;
+    // handle .nfo files
+    if (!ignoreNfo)
+      result = CheckForNFOFile(pItem.get(),bDirNames,info2,scrUrl);
+    if (result == CNfoFile::ERROR_NFO)
+      return 0;
+    if (result == CNfoFile::FULL_NFO)
+    {
+      pItem->GetVideoInfoTag()->Reset();
+      m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
+      if (m_pObserver)
+        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
+      
+      AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
+      return 1;
+    }
+    if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
+      pURL = &scrUrl;
+
+    // Get the correct movie title
+    CStdString strMovieName = pItem->GetMovieName(bDirNames);
+
+    IMDB_MOVIELIST movielist;
+    int returncode=0;
+    if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
+    {
+      CScraperUrl url;
+      int iMoviesFound=1;
+      if (!pURL)
+      {
+        iMoviesFound = movielist.size();
+        if (iMoviesFound)
+          url = movielist[0];
+      }
+      else
+      {
+        url = *pURL;
+      }
+      if (iMoviesFound > 0)
+      {
+        if (m_pObserver && !url.strTitle.IsEmpty())
+          m_pObserver->OnSetTitle(url.strTitle);
+
+        GetIMDBDetails(pItem.get(), url, info2, false, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+        return 1;
+      }
+    }
+    else if (returncode == -1 || !DownloadFailed(pDlgProgress))
+    {
+      m_bStop = true;
+      return -1;
     }
     return 0;
   }
