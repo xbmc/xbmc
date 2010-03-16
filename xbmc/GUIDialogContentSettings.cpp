@@ -250,8 +250,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
   AddonPtr addon;
   CStdString defaultID;
-  CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content);
-  if (addon)
+  if (CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
