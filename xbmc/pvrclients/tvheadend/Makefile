@@ -10,7 +10,7 @@
 DESTDIR ?=
 PREFIX  ?= /usr/local
 ADDONDIR = $(PREFIX)/share/xbmc/addons
-LIBS     = -ldl
+LIBS     = libhts/libhts.a -ldl
 INCLUDES = -I. -I../../linux -I../../ -I../../../guilib -I../../../include -I../../../xbmc/utils -I../../../xbmc/addons/include
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 INCLUDES +=  -I/opt/local/include
@@ -52,6 +52,7 @@ $(DEPFILE): Makefile
 # The main library:
 
 pvrTvheadend: $(OBJS) $(SILIB)
+	$(MAKE) -C libhts
 	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
 
 # Install the files:
@@ -66,4 +67,5 @@ install-lib: pvrTvheadend
 
 clean:
 	-rm -f $(OBJS) $(DEPFILE) $(LIB) *~
+	$(MAKE) -C libhts clean
 CLEAN: clean

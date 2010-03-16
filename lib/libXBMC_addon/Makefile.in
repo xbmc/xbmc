@@ -5,7 +5,7 @@ CXXFLAGS=-fPIC
 LIBNAME=libXBMC_addon
 OBJS=$(LIBNAME).o
 
-LIB_SHARED=../../addons/libraries/addon/libXBMC_addon/$(LIBNAME)-$(ARCH).so
+LIB_SHARED=../../addons/org.xbmc.addon.library/$(LIBNAME)-$(ARCH).so
 
 all: $(LIB_SHARED)
 

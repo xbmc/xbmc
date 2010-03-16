@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../addons/libraries/addon/libXBMC_addon/libXBMC_addon.h"
+#include "../../addons/org.xbmc.addon.library/libXBMC_addon.h"
 #include "addons/AddonHelpers_local.h"
 
 using namespace std;

@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
-#include "../../addons/libraries/addon/libXBMC_pvr/libXBMC_pvr.h"
+#include "../../addons/org.xbmc.pvr.library/libXBMC_pvr.h"
 #include "addons/AddonHelpers_local.h"
 
 using namespace std;
@@ -37,13 +37,13 @@ extern "C"
 int PVR_register_me(void *hdl)
 {
   if (!hdl)
-    fprintf(stderr, "libXBMC_addon-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
+    fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
   else
   {
     m_Handle = (AddonCB*) hdl;
     m_cb     = m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
     if (!m_cb)
-      fprintf(stderr, "libXBMC_addon-ERROR: PVRLib_register_me can't get callback table from XBMC !!!\n");
+      fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from XBMC !!!\n");
     else
       return 1;
   }

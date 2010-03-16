@@ -21,7 +21,7 @@
  */
 
 #include "addons/include/xbmc_pvr_types.h"
-#include "../../addons/libraries/addon/libXBMC_addon/libXBMC_addon.h"
+#include "../../addons/org.xbmc.addon.library/libXBMC_addon.h"
 
 typedef void (*AddOnLogCallback)(void *addonData, const addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const queue_msg_t type, const char *msg);

@@ -24,8 +24,8 @@
 #define CLIENT_H
 
 #include "StdString.h"
-#include "../../../addons/libraries/addon/libXBMC_addon/libXBMC_addon.h"
-#include "../../../addons/libraries/addon/libXBMC_pvr/libXBMC_pvr.h"
+#include "../../../addons/org.xbmc.addon.library/libXBMC_addon.h"
+#include "../../../addons/org.xbmc.pvr.library/libXBMC_pvr.h"
 
 #define DEFAULT_HOST          "127.0.0.1"
 #define DEFAULT_PORT          2004
