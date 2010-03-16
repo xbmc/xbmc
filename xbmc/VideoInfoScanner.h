@@ -102,6 +102,8 @@ namespace VIDEO
     virtual void Process();
     bool DoScan(const CStdString& strDirectory, SScanSettings settings);
 
+    int RetreiveInfoForItem(CFileItemPtr pItem, bool bDirNames, CONTENT_TYPE parentContent, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+
     virtual void Run();
     int CountFiles(const CStdString& strPath);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
