@@ -106,6 +106,23 @@ namespace VIDEO
     int RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
     int RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
 
+    /*! \brief Update the progress bar with the heading and line and check for cancellation
+     \param progress CGUIDialogProgress bar
+     \param heading string id of heading
+     \param line1   string to set for the first line
+     \return true if the user has cancelled the scanner, false otherwise
+     */
+    bool ProgressCancelled(CGUIDialogProgress* progress, int heading, const CStdString &line1);
+
+    /*! \brief Find a url for the given video using the given scraper
+     \param videoName name of the video to lookup
+     \param scraper scraper to use for the lookup
+     \param url [out] returned url from the scraper
+     \param progress CGUIDialogProgress bar
+     \return >0 on success, <0 on failure, and 0 on no info found
+     */
+    int FindVideo(const CStdString &videoName, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
+
     virtual void Run();
     int CountFiles(const CStdString& strPath);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);

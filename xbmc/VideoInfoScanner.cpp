@@ -518,23 +518,8 @@ namespace VIDEO
       return 0;
     }
 
-    if (pDlgProgress)
+    if (ProgressCancelled(pDlgProgress, pItem->m_bIsFolder ? 20353 : 20361, pItem->GetLabel()))
     {
-      pDlgProgress->SetHeading(pItem->m_bIsFolder ? 20353 : 20361);
-      pDlgProgress->SetLine(0, pItem->GetLabel());
-      pDlgProgress->SetLine(2,"");
-      pDlgProgress->Progress();
-      if (pDlgProgress->IsCanceled())
-      {
-        pDlgProgress->Close();
-        //m_database.RollbackTransaction();
-        m_database.Close();
-        return -1;
-      }
-    }
-    if (m_bStop)
-    {
-      //m_database.RollbackTransaction();
       m_database.Close();
       return -1;
     }
@@ -578,88 +563,50 @@ namespace VIDEO
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
       pURL = &scrUrl;
 
-    // Get the correct movie title
-    CStdString strMovieName = pItem->GetMovieName(bDirNames);
+    CScraperUrl url;
+    int retVal = 0;
+    if (pURL)
+      url = *pURL;
+    else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
+      return retVal;
 
-    IMDB_MOVIELIST movielist;
-    int returncode=0;
-    if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
-    {
-      CScraperUrl url;
-      int iMoviesFound=1;
-      if (!pURL)
-      {
-        iMoviesFound = movielist.size();
-        if (iMoviesFound)
-          url = movielist[0];
-      }
-      else
-      {
-        url = *pURL;
-      }
-      if (iMoviesFound > 0)
-      {
-        if (m_pObserver && !url.strTitle.IsEmpty())
-          m_pObserver->OnSetTitle(url.strTitle);
+    if (m_pObserver && !url.strTitle.IsEmpty())
+      m_pObserver->OnSetTitle(url.strTitle);
 
-        long lResult=GetIMDBDetails(pItem.get(), url, info2, false, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
-        if (!bRefresh)
-        {
-          // fetch episode guide
-          CVideoInfoTag details;
-          m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
-          if (!details.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
-          {
-            CScraperUrl url;
-            url.ParseEpisodeGuide(details.m_strEpisodeGuide);
-            EnumerateSeriesFolder(pItem.get(),files);
-            if (!m_IMDB.GetEpisodeList(url,episodes))
-              return 0;
-          }
-          if (OnProcessSeriesFolder(episodes,files,lResult,details.m_strTitle,pDlgProgress))
-            m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
-        }
-        else
-          if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
-            FetchSeasonThumbs(lResult);
-        return 1;
-      }
-    }
-    else if (returncode == -1 || !DownloadFailed(pDlgProgress))
+    long lResult=GetIMDBDetails(pItem.get(), url, info2, false, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+    if (!bRefresh)
     {
-      m_bStop = true;
-      return -1;
+      // fetch episode guide
+      CVideoInfoTag details;
+      m_database.GetTvShowInfo(pItem->m_strPath,details,lResult);
+      if (!details.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
+      {
+        CScraperUrl url;
+        url.ParseEpisodeGuide(details.m_strEpisodeGuide);
+        EnumerateSeriesFolder(pItem.get(),files);
+        if (!m_IMDB.GetEpisodeList(url,episodes))
+          return 0;
+      }
+      if (OnProcessSeriesFolder(episodes,files,lResult,details.m_strTitle,pDlgProgress))
+        m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
     }
-    return 0;
+    else
+      if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+        FetchSeasonThumbs(lResult);
+    return 1;
   }
 
   int CVideoInfoScanner::RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
-    m_IMDB.SetScraperInfo(info2);
-
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return 0;
-    
-    if (pDlgProgress)
+
+    if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
     {
-      pDlgProgress->SetHeading(198);
-      pDlgProgress->SetLine(0, pItem->GetLabel());
-      pDlgProgress->SetLine(2,"");
-      pDlgProgress->Progress();
-      if (pDlgProgress->IsCanceled())
-      {
-        pDlgProgress->Close();
-        //m_database.RollbackTransaction();
-        m_database.Close();
-        return -1;
-      }
-    }
-    if (m_bStop)
-    {
-      //m_database.RollbackTransaction();
       m_database.Close();
       return -1;
     }
+
     if (m_database.HasMovieInfo(pItem->m_strPath))
       return 0;
 
@@ -676,76 +623,38 @@ namespace VIDEO
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
-      
+
       AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
       return 1;
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
       pURL = &scrUrl;
 
-    // Get the correct movie title
-    CStdString strMovieName = pItem->GetMovieName(bDirNames);
+    CScraperUrl url;
+    int retVal = 0;
+    if (pURL)
+      url = *pURL;
+    else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
+      return retVal;
 
-    IMDB_MOVIELIST movielist;
-    int returncode=0;
-    if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
-    {
-      CScraperUrl url;
-      int iMoviesFound=1;
-      if (!pURL)
-      {
-        iMoviesFound = movielist.size();
-        if (iMoviesFound)
-          url = movielist[0];
-      }
-      else
-      {
-        url = *pURL;
-      }
-      if (iMoviesFound > 0)
-      {
-        if (m_pObserver && !url.strTitle.IsEmpty())
-          m_pObserver->OnSetTitle(url.strTitle);
-
-        GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
-        return 1;
-      }
-    }
-    else if (returncode == -1 || !DownloadFailed(pDlgProgress))
-    {
-      m_bStop = true;
-      return -1;
-    }
-    return 0;
+    if (m_pObserver && !url.strTitle.IsEmpty())
+      m_pObserver->OnSetTitle(url.strTitle);
+    
+    GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+    return 1;
   }
   
   int CVideoInfoScanner::RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
-    m_IMDB.SetScraperInfo(info2);
-
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return 0;
 
-    if (pDlgProgress)
+    if (ProgressCancelled(pDlgProgress, 20394, pItem->GetLabel()))
     {
-      pDlgProgress->SetHeading(20394);
-      pDlgProgress->SetLine(0, pItem->GetLabel());
-      pDlgProgress->SetLine(2,"");
-      pDlgProgress->Progress();
-      if (pDlgProgress->IsCanceled())
-      {
-        pDlgProgress->Close();
-        //m_database.RollbackTransaction();
-        m_database.Close();
-        return -1;
-      }
-    }
-    if (m_bStop)
-    {
-      //m_database.RollbackTransaction();
       m_database.Close();
       return -1;
     }
+
     if (m_database.HasMusicVideoInfo(pItem->m_strPath))
       return 0;
 
@@ -762,47 +671,25 @@ namespace VIDEO
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
-      
+
       AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
       return 1;
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
       pURL = &scrUrl;
 
-    // Get the correct movie title
-    CStdString strMovieName = pItem->GetMovieName(bDirNames);
-
-    IMDB_MOVIELIST movielist;
-    int returncode=0;
-    if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
-    {
-      CScraperUrl url;
-      int iMoviesFound=1;
-      if (!pURL)
-      {
-        iMoviesFound = movielist.size();
-        if (iMoviesFound)
-          url = movielist[0];
-      }
-      else
-      {
-        url = *pURL;
-      }
-      if (iMoviesFound > 0)
-      {
-        if (m_pObserver && !url.strTitle.IsEmpty())
-          m_pObserver->OnSetTitle(url.strTitle);
-
-        GetIMDBDetails(pItem.get(), url, info2, false, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
-        return 1;
-      }
-    }
-    else if (returncode == -1 || !DownloadFailed(pDlgProgress))
-    {
-      m_bStop = true;
-      return -1;
-    }
-    return 0;
+    CScraperUrl url;
+    int retVal = 0;
+    if (pURL)
+      url = *pURL;
+    else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
+      return retVal;
+    
+    if (m_pObserver && !url.strTitle.IsEmpty())
+      m_pObserver->OnSetTitle(url.strTitle);
+    
+    GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+    return 1;
   }
   
   // This function is run by another thread
@@ -1695,4 +1582,40 @@ namespace VIDEO
     }
     return CGUIDialogYesNo::ShowAndGetInput(20448,20449,20450,20022);
   }
+
+  bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const CStdString &line1)
+  {
+    if (progress)
+    {
+      progress->SetHeading(heading);
+      progress->SetLine(0, line1);
+      progress->SetLine(2,"");
+      progress->Progress();
+      if (progress->IsCanceled())
+      {
+        progress->Close();
+        return true;
+      }
+    }
+    return m_bStop;
+  }
+
+  int CVideoInfoScanner::FindVideo(const CStdString &videoName, const ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress)
+  {
+    IMDB_MOVIELIST movielist;
+    m_IMDB.SetScraperInfo(scraper);
+    int returncode = m_IMDB.FindMovie(videoName, movielist, progress);
+    if (returncode == -1 || !DownloadFailed(progress))
+    {
+      m_bStop = true;
+      return -1;
+    }
+    if (returncode > 0 && movielist.size())
+    {
+      url = movielist[0];
+      return 1;
+    }
+    return 0;
+  }
+
 }
