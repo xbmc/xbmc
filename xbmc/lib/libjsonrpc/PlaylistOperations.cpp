@@ -33,18 +33,21 @@ using namespace std;
 
 JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList playlist;
+  CPlayList *playlist = NULL;
   bool current;
-  if (!GetPlaylist(parameterObject, playlist, current))
+  if (!GetPlaylist(parameterObject, &playlist, current))
     return InvalidParams;
 
   CFileItemList items;
-  for (int i = 0; i < playlist.size(); i++)
-    items.Add(playlist[i]);
+  if (playlist)
+  {
+    for (int i = 0; i < playlist->size(); i++)
+      items.Add((*playlist)[i]);
 
-  CStdString name = playlist.GetName();
-  if (!name.IsEmpty())
-    result["name"] = playlist.GetName();
+    CStdString name = playlist->GetName();
+    if (!name.IsEmpty())
+      result["name"] = playlist->GetName();
+  }
 
   HandleFileItemList(NULL, "items", items, parameterObject, result);
 
@@ -59,16 +62,16 @@ JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *
   if (!parameterObject.isMember("file"))
     return InvalidParams;
 
-  CPlayList playlist;
+  CPlayList *playlist = NULL;
   bool current;
-  if (!GetPlaylist(parameterObject, playlist, current))
+  if (!GetPlaylist(parameterObject, &playlist, current))
     return InvalidParams;
 
   if (parameterObject["file"].isString())
   {
     CStdString file = parameterObject["file"].asString();
     CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
-    playlist.Add(item);
+    playlist->Add(item);
   }
   else
     return InvalidParams;
@@ -82,15 +85,15 @@ JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLaye
   if (!parameterObject.isMember("item"))
     return InvalidParams;
 
-  CPlayList playlist;
+  CPlayList *playlist = NULL;
   bool current;
-  if (!GetPlaylist(parameterObject, playlist, current))
+  if (!GetPlaylist(parameterObject, &playlist, current))
     return InvalidParams;
 
   if (parameterObject["item"].isInt())
-    playlist.Remove(parameterObject["item"].asInt());
+    playlist->Remove(parameterObject["item"].asInt());
   else if (parameterObject["item"].isString())
-    playlist.Remove(parameterObject["item"].asString());
+    playlist->Remove(parameterObject["item"].asString());
   else
     return InvalidParams;
 
@@ -103,13 +106,13 @@ JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer 
   if (!parameterObject.isMember("item1") && !parameterObject.isMember("item2"))
     return InvalidParams;
 
-  CPlayList playlist;
+  CPlayList *playlist = NULL;
   bool current;
-  if (!GetPlaylist(parameterObject, playlist, current))
+  if (!GetPlaylist(parameterObject, &playlist, current))
     return InvalidParams;
 
   if (parameterObject["item1"].isInt() && parameterObject["item2"].isInt())
-    playlist.Swap(parameterObject["item1"].asInt(), parameterObject["item1"].asInt());
+    playlist->Swap(parameterObject["item1"].asInt(), parameterObject["item1"].asInt());
   else
     return InvalidParams;
 
@@ -119,12 +122,12 @@ JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer 
 
 JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList playlist;
+  CPlayList *playlist = NULL;
   bool current;
-  if (!GetPlaylist(parameterObject, playlist, current))
+  if (!GetPlaylist(parameterObject, &playlist, current))
     return InvalidParams;
 
-  playlist.Clear();
+  playlist->Clear();
 
   NotifyAll();
   return ACK;
@@ -132,12 +135,12 @@ JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer
 
 JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList playlist;
+  CPlayList *playlist = NULL;
   bool current;
-  if (!GetPlaylist(parameterObject, playlist, current))
+  if (!GetPlaylist(parameterObject, &playlist, current))
     return InvalidParams;
 
-  playlist.Shuffle();
+  playlist->Shuffle();
 
   NotifyAll();
   return ACK;
@@ -145,12 +148,12 @@ JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLay
 
 JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList playlist;
+  CPlayList *playlist = NULL;
   bool current;
-  if (!GetPlaylist(parameterObject, playlist, current))
+  if (!GetPlaylist(parameterObject, &playlist, current))
     return InvalidParams;
 
-  playlist.UnShuffle();
+  playlist->UnShuffle();
 
   NotifyAll();
   return ACK;
@@ -168,19 +171,17 @@ int CPlaylistOperations::PlaylistFromString(const string &id)
     return PLAYLIST_NONE;
 }
 
-bool CPlaylistOperations::GetPlaylist(const Value &parameterObject, CPlayList &playlist, bool &current)
+bool CPlaylistOperations::GetPlaylist(const Value &parameterObject, CPlayList **playlist, bool &current)
 {
   const Value id = (parameterObject.isObject() && parameterObject.isMember("playlist")) ? parameterObject["playlist"] : Value(nullValue);
   int nbr;
   if (id.isNull() || id.isString())
   {
     nbr = id.isNull() ? g_playlistPlayer.GetCurrentPlaylist() : PlaylistFromString(id.asString());
-    CPlayList *temp = &g_playlistPlayer.GetPlaylist(nbr);
-    if (temp)
-      playlist = *temp;
+    *playlist = &g_playlistPlayer.GetPlaylist(nbr);
 
     current = g_playlistPlayer.GetCurrentPlaylist() == nbr;
-    return temp != NULL;
+    return *playlist != NULL;
   }
   else
     return false;
