@@ -215,6 +215,21 @@ namespace Com
       return result;
     }
 
+    // Release the interface even if there's still some references on it
+    void FullRelease()
+    {
+      T* ptr = m_ptr;
+      if (ptr)
+      {
+        int counter = 0;
+        m_ptr = NULL;
+        do 
+        {
+          counter = ptr->Release();
+        } while (counter != 0);
+      }
+    }
+
     // Attach to an existing interface (does not AddRef)
     void Attach(T* p) 
     {
@@ -336,7 +351,7 @@ namespace Com
     }
     T* operator=(T* lp) throw()
     {
-      if(*this!=lp)
+      if( m_ptr != lp)
       {
         return static_cast<T*>(SmartPtrAssign((IUnknown**)&m_ptr, lp));
       }
@@ -344,7 +359,7 @@ namespace Com
     }
     T* operator=(const SmartQIPtr<T, piid>& lp) throw()
     {
-      if(*this!=lp)
+      if( m_ptr != lp.m_ptr)
       {
         return static_cast<T*>(SmartPtrAssign((IUnknown**)&m_ptr, lp.m_ptr));
       }
@@ -352,7 +367,7 @@ namespace Com
     }
     T* operator=(_In_opt_ IUnknown* lp) throw()
     {
-      if(*this!=lp)
+      if( m_ptr != lp)
       {
         return static_cast<T*>(SmartQIPtrAssign((IUnknown**)&m_ptr, lp, *piid));
       }

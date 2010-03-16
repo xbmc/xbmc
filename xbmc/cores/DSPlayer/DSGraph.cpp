@@ -127,7 +127,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   SetVolume(g_settings.m_nVolumeLevel);
   
-  CDSPlayer::PlayerState = DSPLAYER_LOADED;  
+  CDSPlayer::PlayerState = DSPLAYER_LOADED;
   
   Play();
 
@@ -363,7 +363,7 @@ void CDSGraph::Stop(bool rewind)
 
   UpdateState();
 
-  /*if (! m_pGraphBuilder)
+  if (! m_pGraphBuilder)
     return;
 
   BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
@@ -383,7 +383,7 @@ void CDSGraph::Stop(bool rewind)
       break;
     }
   }
-  EndEnumFilters*/
+  EndEnumFilters
 }
 
 void CDSGraph::Play()
@@ -507,27 +507,31 @@ HRESULT CDSGraph::UnloadGraph()
   /* Release config interfaces */
   g_dsconfig.ClearConfig();
 
-  // Should be null if no source filter is used.
-  // If not null and if there's no source filter, big crash!
-  CFGLoader::Filters.Source.pBF = NULL; //Also delete the filter
+  
+  if (CFGLoader::Filters.Source.pBF)
+    CFGLoader::Filters.Source.pBF.FullRelease();
 
-  CFGLoader::Filters.Splitter.pBF = NULL;
-  CFGLoader::Filters.AudioRenderer.pBF = NULL;
+  if (CFGLoader::Filters.Splitter.pBF)
+    CFGLoader::Filters.Splitter.pBF.FullRelease();
+
+  if (CFGLoader::Filters.AudioRenderer.pBF)
+    CFGLoader::Filters.AudioRenderer.pBF.FullRelease();
 
   CFGLoader::Filters.VideoRenderer.pQualProp = NULL;
-  IBaseFilter *f = CFGLoader::Filters.VideoRenderer.pBF.Detach();
-  int c = 0;
-  do 
-  {
-    c = f->Release(); //TODO: Find why there're still some references!
-  } while (c != 0);
+  if (CFGLoader::Filters.VideoRenderer.pBF)
+    CFGLoader::Filters.VideoRenderer.pBF.FullRelease();;
 
-  CFGLoader::Filters.Audio.pBF = NULL;
-  CFGLoader::Filters.Video.pBF = NULL;
+  if (CFGLoader::Filters.Audio.pBF)
+    CFGLoader::Filters.Audio.pBF.FullRelease();
+  
+  if (CFGLoader::Filters.Video.pBF)
+    CFGLoader::Filters.Video.pBF.FullRelease();
   
   while (! CFGLoader::Filters.Extras.empty())
   {
-    CFGLoader::Filters.Extras.back().pBF = NULL;
+    if (CFGLoader::Filters.Extras.back().pBF)
+      CFGLoader::Filters.Extras.back().pBF.FullRelease();
+
     CFGLoader::Filters.Extras.pop_back();
   }
 
