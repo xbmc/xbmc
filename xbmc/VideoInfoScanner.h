@@ -102,9 +102,9 @@ namespace VIDEO
     virtual void Process();
     bool DoScan(const CStdString& strDirectory, SScanSettings settings);
 
-    int RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, CONTENT_TYPE parentContent, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
-    int RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, CONTENT_TYPE parentContent, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
-    int RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, CONTENT_TYPE parentContent, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+    int RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+    int RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+    int RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
