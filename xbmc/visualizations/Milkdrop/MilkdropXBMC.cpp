@@ -591,19 +591,22 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
     g_plugin->m_bAlways3D = *(int*)value == 1;
   else if (strcmpi(id, "Preset Pack") == 0)
   {
-    
-    //// Check if its a zip or a folder
-    //SetPresetDir(g_structSettings->entry[value]);
+   
+    if(!g_vecSettings.empty() && !g_vecSettings[0].entry.empty() && *(int*)value < g_vecSettings[0].entry.size())
+    {
+      // Check if its a zip or a folder
+      SetPresetDir(g_vecSettings[0].entry[*(int*)value]);
 
-    //// save dir so that we can resave the .xml file
-    //sprintf(m_szPresetSave, "%s", setting.entry[value]);
+      // save dir so that we can resave the .xml file
+      sprintf(m_szPresetSave, "%s", g_vecSettings[0].entry[*(int*)value]);
 
-    //g_plugin->m_bHoldPreset = false; // Disable locked preset as its no longer there
-    //g_plugin->UpdatePresetList();	
+      g_plugin->m_bHoldPreset = false; // Disable locked preset as its no longer there
+      g_plugin->UpdatePresetList();	
 
-    //// set current preset index to -1 because current preset is no longer in the list
-    //g_plugin->m_nCurrentPreset = -1;
-    //g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
+      // set current preset index to -1 because current preset is no longer in the list
+      g_plugin->m_nCurrentPreset = -1;
+      g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
+    }
   }
   else
     return STATUS_UNKNOWN;
