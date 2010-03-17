@@ -38,6 +38,7 @@
 #include <vector>
 #include <list>
 #include "DShowUtil/SmartPtr.h"
+#include "DSGeometry.h"
 
 #ifndef ASSERT
 #define ASSERT assert
@@ -51,6 +52,14 @@
 #define CHECK_HR(hr) if (FAILED(hr)) { goto done; }
 #endif
 
+#ifndef CHECK_BOOL_RETURN
+#define CHECK_BOOL_RETURN(hr,theerrmsg) if (FAILED(hr)) { CLog::Log(LOGERROR,"%s %s",__FUNCTION__,theerrmsg); return hr;}
+#endif
+
+#ifndef CHECK_HR_RETURN
+#define CHECK_HR_RETURN(hr,theerrmsg) if (FAILED(hr)) { CLog::Log(LOGERROR,"%s %s",__FUNCTION__,theerrmsg); return hr;}
+#endif
+
 #include "DshowCommon.h"
 
 #ifndef dsmax
@@ -60,6 +69,7 @@
 #ifndef dsmin
 #define dsmin(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
+
 #ifdef _DEBUG
   #define DNew new
 #else
@@ -78,6 +88,22 @@ DEFINE_GUID(CLSID_ReClock,
 
 typedef std::list<GUID> GuidList;
 typedef std::list<GUID>::iterator GuidListIter;
+
+typedef struct
+{
+	ULONGLONG DvdGuid;
+	ULONG DvdTitleId;
+  ULONG DvdChapterId;
+	DVD_HMSF_TIMECODE DvdTimecode;
+  DVD_DOMAIN DvdDomain;
+} DVD_STATUS;
+
+typedef struct
+{
+  ULONG titleIndex;
+  DVD_MenuAttributes menuInfo;
+  DVD_TitleAttributes titleInfo;
+} DvdTitle;
 
 class  DShowUtil
 {

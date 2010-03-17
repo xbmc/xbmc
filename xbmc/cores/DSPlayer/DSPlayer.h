@@ -58,6 +58,8 @@ public:
   virtual bool IsPaused() const { return m_pDsGraph.IsPaused(); };
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
+  virtual bool HasMenu() { return m_pDsGraph.IsDvd(); };
+  bool IsInMenu() const { return m_pDsGraph.IsInMenu(); };
   virtual void Pause();
   virtual bool CanSeek()                                        { return m_pDsGraph.CanSeek(); }
   virtual void Seek(bool bPlus, bool bLargeStep);//                { m_dshowCmd.Seek(bPlus,bLargeStep);}

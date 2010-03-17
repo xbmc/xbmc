@@ -167,34 +167,29 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
 
   float w = (float)desc.Width;
   float h = (float)desc.Height;
+
   struct CUSTOMVERTEX {
-      float x, y, z;
-	  float rhw; 
+    float x, y, z;
+    float rhw; 
 	  float tu, tv;
   };
+
   CUSTOMVERTEX verts[4] =
   {
-    {//m_destRect    m_sourceRect
-      m_destRect.x1      , m_destRect.y1 ,
-      0.0f   , 1.0f, 
-      0      , 0
+    {
+      m_destRect.x1, m_destRect.y1 ,0.0f ,1.0f ,0 , 0
     },
     {
-      m_destRect.x2      , m_destRect.y1 ,
-      0.0f   , 1.0f,
-      1      , 0
+      m_destRect.x2, m_destRect.y1, 0.0f , 1.0f ,1 , 0
     },
     {
-      m_destRect.x2      , m_destRect.y2 ,
-      0.0f   , 1.0f, 
-      1      , 1
+      m_destRect.x2 ,m_destRect.y2 ,0.0f ,1.0f ,1 ,1
     },
     {
-      m_destRect.x1      , m_destRect.y2 ,
-      0.0f   , 1.0f,
-      0      , 1
+      m_destRect.x1 ,m_destRect.y2 ,0.0f ,1.0f ,0 ,1
     },
   };
+
   for(int i = 0; i < countof(verts); i++)
   {
     verts[i].x -= 0.5;

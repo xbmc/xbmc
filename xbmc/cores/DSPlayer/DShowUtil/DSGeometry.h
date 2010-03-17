@@ -103,16 +103,16 @@ public:
   static tagPOINT GetCenterPoint(tagRECT p_rect)
   {
     int width,height;
-    width = GetWidth(p_rect); height = GetHeight(p_rect);
+    width = GetWidth(p_rect); 
+    height = GetHeight(p_rect);
     if (width > 0)
       width = width / 2;
     if (height > 0)
       height = height / 2;
     tagPOINT p_point;
-  p_point.x = width;
-  p_point.y = height;
+    p_point.x = width;
+    p_point.y = height;
     return p_point;
-  
   }
 };
 

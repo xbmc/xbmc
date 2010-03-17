@@ -65,12 +65,43 @@ CFGLoader::~CFGLoader()
   CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
 }
 
-
 HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName)
 {
 
   HRESULT hr = E_FAIL;
-  
+  /* DVD NAVIGATOR */
+  if (pFileItem.IsDVDFile())
+  {
+    Com::SmartQIPtr<IDvdControl2> pDVDC;
+    Com::SmartQIPtr<IDvdInfo2> pDVDI;
+    //CDSGraph::m_pDvdGraph
+    //CLSID_DVDNavigator
+    Com::SmartPtr<IBaseFilter> pDvdBF = NULL;
+    
+    hr = pDvdBF.CoCreateInstance(CLSID_DVDNavigator);
+    if (SUCCEEDED(hr))
+    {
+      hr = CDSGraph::m_pFilterGraph->AddFilter(pDvdBF, L"DVD Navigator");
+      if(!((pDVDC = pDvdBF) && (pDVDI = pDvdBF)))
+        return E_NOINTERFACE;
+    }
+    
+    CStdString dirA;
+    CStdStringW dirW;
+    CUtil::GetDirectory(pFileItem.m_strPath,dirA);
+    g_charsetConverter.utf8ToW(dirA,dirW);
+    hr = pDVDC->SetDVDDirectory(dirW.c_str());
+    if (FAILED(hr))
+      CLog::Log(LOGERROR, "%s Failed loading dvd directory.", __FUNCTION__);
+    pDVDC->SetOption(DVD_ResetOnStop, FALSE);
+	  pDVDC->SetOption(DVD_HMSF_TimeCodeEvents, TRUE);
+    
+    Filters.Source.pBF = pDvdBF.Detach();
+    Filters.Splitter.pBF = Filters.Source.pBF;
+    return hr;
+  }
+
+  /* INTERNET STREAM */
   if (pFileItem.IsInternetStream())
   {
     //IAMOpenProgress will be need for requesting status of stream
@@ -102,6 +133,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     }    
   }
 
+  /* rar archive */
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
     Filters.PlayingArchive = true;
@@ -123,7 +155,9 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       CLog::Log(LOGERROR, "%s Failed to open \"%s\" with source filter!", __FUNCTION__, pFileItem.m_strPath.c_str());
       return E_FAIL;
     }
-  } else {
+  } 
+  else 
+  {
     if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Splitter)))
     {
       CStdString pWinFilePath = pFileItem.m_strPath;
@@ -314,13 +348,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   InsertAudioRenderer(filter); // First added, last connected
   InsertVideoRenderer();
 
-  if (! CFilterCoreFactory::GetSourceFilter(pFileItem, filter))
-    return E_FAIL;
-
-  if (FAILED(InsertSourceFilter(pFileItem, filter)))
-  {
-    return E_FAIL;
-  }
+  CHECK_HR_RETURN(CFilterCoreFactory::GetSourceFilter(pFileItem, filter),"Failed to get the source filter")
+  
+  CHECK_HR_RETURN(InsertSourceFilter(pFileItem, filter),"Failed to insert source filter")
 
   if (! Filters.Splitter.pBF)
   {
@@ -375,8 +405,12 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   EndEnumPins
 
   std::vector<CStdString> extras;
-  if (! CFilterCoreFactory::GetExtraFilters(pFileItem, extras, m_UsingDXVADecoder))
-    return E_FAIL;
+  if (FAILED(CFilterCoreFactory::GetExtraFilters(pFileItem, extras, m_UsingDXVADecoder)))
+  {
+    //Dont want the loading to fail for an error there
+    CLog::Log(LOGERROR,"Failed loading extras filters in dxfilterconfig.xml");
+  }
+    
 
   // Insert extra first because first added, last connected!
   for (unsigned int i = 0; i < extras.size(); i++)
@@ -388,18 +422,18 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   }
   extras.clear();
 
-  if (! CFilterCoreFactory::GetVideoFilter(pFileItem, filter, m_UsingDXVADecoder))
+  if ( FAILED(CFilterCoreFactory::GetVideoFilter(pFileItem, filter, m_UsingDXVADecoder)))
     return E_FAIL;
 
-  if (FAILED(InsertFilter(filter, Filters.Video)))
+  if ( FAILED(InsertFilter(filter, Filters.Video)))
   {
     return E_FAIL;
   }
 
-  if (! CFilterCoreFactory::GetAudioFilter(pFileItem, filter, m_UsingDXVADecoder))
+  if ( FAILED(CFilterCoreFactory::GetAudioFilter(pFileItem, filter, m_UsingDXVADecoder)))
     return E_FAIL;
 
-  if (FAILED(InsertFilter(filter, Filters.Audio)))
+  if ( FAILED(InsertFilter(filter, Filters.Audio)))
   {
     return E_FAIL;
   }
@@ -460,7 +494,7 @@ bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, bool c
     return false;
   }
 
-  return CFilterCoreFactory::LoadConfiguration(filterCoreFactoryXML.RootElement(), clear);
+  return (SUCCEEDED(CFilterCoreFactory::LoadConfiguration(filterCoreFactoryXML.RootElement(), clear)));
 }
 
 bool                      CFGLoader::m_UsingDXVADecoder = false;

@@ -38,6 +38,7 @@
 using namespace std;
 
 class CDSConfig g_dsconfig;
+
 CDSConfig::CDSConfig(void)
 {
   m_pIMpaDecFilter = NULL;
@@ -66,6 +67,7 @@ HRESULT CDSConfig::ConfigureFilters()
     GetMpaDec(pBF);
     GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);
+
   }
   EndEnumFilters
   CreatePropertiesXml();

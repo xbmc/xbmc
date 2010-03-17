@@ -31,7 +31,9 @@
 #include "WindowingFactory.h"
 #include <dbt.h>
 #include "LocalizeStrings.h"
-
+#ifdef HAS_DX
+  #include "DSConfig.h"
+#endif
 #ifdef _WIN32
 
 /* Masks for processing the windows KEYDOWN and KEYUP messages */
@@ -299,10 +301,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
   if(g_uQueryCancelAutoPlay != 0 && uMsg == g_uQueryCancelAutoPlay)
     return S_FALSE;
-  if (uMsg == WM_COMMAND)
-  {    
-    g_application.m_pPlayer->ProcessDsWmCommand(wParam,lParam);
-  }
   switch (uMsg) 
   {
     case WM_CLOSE:
@@ -492,7 +490,22 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (HTCLIENT != LOWORD(lParam))
         g_Windowing.ShowOSMouse(true);
       break;
+    case WM_COMMAND:
+        g_application.m_pPlayer->ProcessDsWmCommand(wParam,lParam);
+      break;
     case WM_MOUSEMOVE:
+#ifdef HAS_DX
+      if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      {
+        //This is not working yet
+        if (0)//g_application.m_pPlayer->IsInMenu())
+        {
+          g_application.m_pPlayer->ProcessDsWmCommand(ID_DVD_MOUSE_MOVE,lParam);
+        }
+        
+      }
+#endif
+
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
       newEvent.motion.y = GET_Y_LPARAM(lParam);

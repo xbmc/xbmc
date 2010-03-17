@@ -39,8 +39,6 @@
 #pragma comment(lib, "comsuppw.lib")
 #include "smartptr.h"
 
-#include "smartptr.h"
-
 bool DShowUtil::GuidVectItterCompare(GuidListIter it, std::vector<GUID>::const_reference vect)
 {
 if (it->Data1 == vect.Data1 && it->Data2 == vect.Data2 && it->Data3 == vect.Data3 && it->Data4 == vect.Data4)
@@ -893,7 +891,7 @@ CStdString GetDriveLabel(TCHAR drive)
   return(label);
 }
 
-DVD_HMSF_TIMECODE RT2HMSF(REFERENCE_TIME rt, double fps)
+DVD_HMSF_TIMECODE DShowUtil::RT2HMSF(REFERENCE_TIME rt, double fps)
 {
   DVD_HMSF_TIMECODE hmsf = 
   {
@@ -906,9 +904,13 @@ DVD_HMSF_TIMECODE RT2HMSF(REFERENCE_TIME rt, double fps)
   return hmsf;
 }
 
-REFERENCE_TIME HMSF2RT(DVD_HMSF_TIMECODE hmsf, double fps)
+REFERENCE_TIME DShowUtil::HMSF2RT(DVD_HMSF_TIMECODE hmsf, double fps)
 {
-  if(fps == 0) {hmsf.bFrames = 0; fps = 1;}
+  if(fps == 0) 
+  {
+    hmsf.bFrames = 0; 
+    fps = 1;
+  }
   return (REFERENCE_TIME)((((REFERENCE_TIME)hmsf.bHours*60+hmsf.bMinutes)*60+hmsf.bSeconds)*1000+1.0*hmsf.bFrames*1000/fps)*10000;
 }
 
@@ -1427,7 +1429,7 @@ CStdStringA DShowUtil::UTF16To8(LPCWSTR utf16)
   return str;
 }
 
-static struct {LPCSTR name, iso6392, iso6391; LCID lcid;} s_isolangs[] =  // TODO : fill LCID !!!
+static struct {LPCSTR name, iso6392, iso6391; LCID lcid;} s_isolangs[] =// TODO : fill LCID !!!
 {
   {"Abkhazian", "abk", "ab"},
   {"Achinese", "ace", ""},

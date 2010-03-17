@@ -33,7 +33,7 @@
 #include "AdvancedSettings.h"
 #include "StreamsManager.h"
 #include <streams.h>
-#include "DShowUtil/DShowUtil.h"
+
 #include "FgManager.h"
 #include "qnetwork.h"
 
@@ -41,6 +41,9 @@
 
 //used to get the same cachces subtitles on start of file
 #include "DVDSubtitles/DVDFactorySubtitle.h"
+
+#include "GUIWindowManager.h"
+#include "GUIUserMessages.h"
 
 #include "DshowUtil/MediaTypeEx.h"
 
@@ -61,6 +64,7 @@ CDSGraph::CDSGraph() :
   m_pGraphBuilder(NULL), m_PlaybackRate(1), m_currentSpeed(0), m_iCurrentFrameRefreshCycle(0),
   m_userId(0xACDCACDC), m_bReachedEnd(false)
 {
+  
 }
 
 CDSGraph::~CDSGraph()
@@ -76,7 +80,8 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   HRESULT hr;
 
   m_VideoInfo.Clear();
-  
+  m_DvdState.Clear();
+
   //Reset the g_dsconfig for not getting unwanted interface from last file into the player
   g_dsconfig.ClearConfig();
   m_pGraphBuilder = new CFGManager();
@@ -91,11 +96,24 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (FAILED(hr))
     return hr;
 
-  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaSeeking),(void **)&m_pMediaSeeking);
-  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaControl),(void **)&m_pMediaControl);
-  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaEvent),(void **)&m_pMediaEvent);
-  hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pBasicAudio),(void **)&m_pBasicAudio);
+  hr = m_pGraphBuilder->QueryInterface(IID_IMediaSeeking,(void **) &m_pMediaSeeking);
+  hr = m_pGraphBuilder->QueryInterface(IID_IMediaControl,(void **) &m_pMediaControl);
+  hr = m_pGraphBuilder->QueryInterface(IID_IMediaEventEx ,(void **) &m_pMediaEvent);
+  hr = m_pGraphBuilder->QueryInterface(IID_IBasicAudio,(void **) &m_pBasicAudio);
 
+  BeginEnumFilters(m_pFilterGraph, pEF, pBF)
+	{
+		if((m_pDvdControl2 = pBF) && (m_pDvdInfo2 = pBF))
+    {
+			
+      m_VideoInfo.isDVD = true;
+      break;
+    }
+	}
+	EndEnumFilters
+  //if theresome problem related with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
+  //m_pMediaEvent->SetNotifyWindow(g_hWnd,
+  
   // Audio & subtitle streams
   CStreamsManager::getSingleton()->InitManager(this);
   CStreamsManager::getSingleton()->LoadStreams();
@@ -104,8 +122,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   CChaptersManager::getSingleton()->InitManager(this);
   if (!CChaptersManager::getSingleton()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
-
-  UpdateCurrentVideoInfo();
 
   SetVolume(g_settings.m_nVolumeLevel);
   
@@ -151,8 +167,9 @@ void CDSGraph::CloseFile()
 
     SAFE_DELETE(m_pGraphBuilder);
     CDSGraph::m_pFilterGraph = NULL;
-
-  } else {
+  } 
+  else 
+  {
     CLog::Log(LOGDEBUG, "%s CloseFile called more than one time!", __FUNCTION__);
   }
 }
@@ -170,22 +187,6 @@ void CDSGraph::UpdateTime()
 {
   if (!m_pMediaSeeking)
     return;
-  REFTIME rt = (REFTIME) 0;
-  LONGLONG Position;
-// Should we return a media position
-  if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
-  {
-    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-      m_State.time = double(Position) / TIME_FORMAT_TO_MS;
-  }
-  else
-  {
-    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-      m_State.time = double(Position);
-  }
-
-  if ( m_State.time == m_State.time_total )
-    m_bReachedEnd = true;
   //with the Current frame refresh cycle at 5 the framerate is requested every 1000ms
   // pQualProp is queried in CFGLoader::InsertVideoRenderer
   if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
@@ -199,19 +200,83 @@ void CDSGraph::UpdateTime()
     m_iCurrentFrameRefreshCycle = 5;
   }
   m_iCurrentFrameRefreshCycle--;
+
+  //On dvd playback the current time is received in the handlegraphevent
+  if ( m_VideoInfo.isDVD )
+    return;
+
+  REFTIME rt = (REFTIME) 0;
+  LONGLONG Position;
+// Should we return a media position
+  if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
+  {
+    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
+      m_State.time = double(Position) / TIME_FORMAT_TO_MS;
+  }
+  else
+  {
+    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
+      m_State.time = double(Position);
+  }
+  
+  if (( m_State.time >= m_State.time_total ))
+    m_bReachedEnd = true;
+  
+}
+
+void CDSGraph::UpdateDvdState()
+{       
+  REFERENCE_TIME rtDur = 0;
+	DVD_HMSF_TIMECODE tcDur;
+  ULONG ulFlags;
+  if (m_State.time_total == 0)
+  {
+	  if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
+    {
+      rtDur = DShowUtil::HMSF2RT(tcDur);
+      m_State.time_total = (double)rtDur / 10000;
+    }
+  }
+  
+  return;
+  //Not working so skip it
+  //according to msdn the titles can only be from 1 to 99
+  DVD_MenuAttributes* ma;
+  DVD_TitleAttributes* ta;
+  HRESULT hr;
+  DvdTitle* dvdtmp;
+  for (int i = 1; i < 100; i++)
+  {
+    dvdtmp = NULL;
+    hr = m_pDvdInfo2->GetTitleAttributes((ULONG)i, ma,ta);
+    if (FAILED(hr))
+      break;
+    //
+    //dvdtmp->menuInfo
+    //dvdtmp->titleInfo
+    dvdtmp->titleIndex = (ULONG)i;
+    m_pDvdTitles.push_back(dvdtmp);
+  }
+  
+  //m_pDvdInfo2
 }
 
 void CDSGraph::UpdateState()
 {
   HRESULT hr = S_OK;
   LONGLONG Duration = 0;
-
+  
   if (! m_pMediaSeeking || CDSPlayer::PlayerState == DSPLAYER_CLOSING
                         || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
     return;
-
+  //Not the same thing with dvd
+  if (m_VideoInfo.isDVD)
+  {
+    UpdateDvdState();
+    return;
+  }
   hr = m_pMediaSeeking->GetTimeFormatA(&m_VideoInfo.time_format);
-
+  
   if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
   {
     if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
@@ -248,15 +313,6 @@ void CDSGraph::UpdateState()
       CDSPlayer::PlayerState = DSPLAYER_STOPPED;
       break;
   }
-}
-void CDSGraph::UpdateCurrentVideoInfo()
-{
-  
-  // Not needed anymore
-  /*m_VideoInfo.dxva_info = g_dsconfig.GetDXVAMode();
-  m_pGraphBuilder->GetFileInfo(&m_VideoInfo.filter_source,
-    &m_VideoInfo.filter_splitter, &m_VideoInfo.filter_audio_dec,
-    &m_VideoInfo.filter_video_dec, &m_VideoInfo.filter_audio_renderer);*/
 }
 
 
@@ -301,9 +357,100 @@ HRESULT CDSGraph::HandleGraphEvent()
       case EC_VMR_RECONNECTION_FAILED:
         CLog::Log(LOGDEBUG,"%s EC_VMR_RECONNECTION_FAILED",__FUNCTION__);
         break;
-        default:
+      case EC_DVD_CURRENT_HMSF_TIME:
+        {
+        double fps = evParam2 == DVD_TC_FLAG_25fps ? 25.0
+				: evParam2 == DVD_TC_FLAG_30fps ? 30.0
+				: evParam2 == DVD_TC_FLAG_DropFrame ? 29.97
+				: 25.0;
+        
+        REFERENCE_TIME rtDur = 0;
+			  DVD_HMSF_TIMECODE tcDur;
+        ULONG ulFlags;
+			  if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
+          rtDur = DShowUtil::HMSF2RT(tcDur, fps);
+        m_State.time_total = (double)rtDur / 10000;
+        REFERENCE_TIME rtNow = DShowUtil::HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);
+        m_State.time = (double)rtNow / 10000;
+
         break;
-      }
+        }
+      case EC_DVD_TITLE_CHANGE:
+        {
+          m_pDvdStatus.DvdTitleId = (ULONG)evParam1;
+        }
+        break;
+      case EC_DVD_DOMAIN_CHANGE:
+        {
+          m_pDvdStatus.DvdDomain = (DVD_DOMAIN)evParam1;
+          CStdString Domain("-");
+
+			    switch(m_pDvdStatus.DvdDomain)
+			    {
+			    case DVD_DOMAIN_FirstPlay:
+				    ULONGLONG	llDVDGuid;
+
+				    if (m_pDvdInfo2 && SUCCEEDED (m_pDvdInfo2->GetDiscID (NULL, &m_pDvdStatus.DvdGuid)))
+				    {
+					    if (m_pDvdStatus.DvdTitleId != 0)
+					    {
+						    //s.NewDvd (llDVDGuid);
+						    // Set command line position
+						    m_pDvdControl2->PlayTitle(m_pDvdStatus.DvdTitleId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+						    if (m_pDvdStatus.DvdChapterId > 1)
+							    m_pDvdControl2->PlayChapterInTitle(m_pDvdStatus.DvdTitleId, m_pDvdStatus.DvdChapterId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+						    else
+						    {
+							    // Trick : skip trailers with somes DVDs
+							    m_pDvdControl2->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+							    m_pDvdControl2->PlayAtTime(&m_pDvdStatus.DvdTimecode, DVD_CMD_FLAG_Flush, NULL);
+						    }
+
+						    //m_iDVDTitle	  = s.lDVDTitle;
+						    m_pDvdStatus.DvdTitleId   = 0;
+						    m_pDvdStatus.DvdChapterId = 0;
+					    }
+					    /*else if (!s.NewDvd (llDVDGuid) && s.fRememberDVDPos)
+					    {
+						    // Set last remembered position (if founded...)
+						    DVD_POSITION*	DvdPos = s.CurrentDVDPosition();
+
+						    m_pDvdControl2->PlayTitle(DvdPos->lTitle, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+						    m_pDvdControl2->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+						    if (SUCCEEDED (hr = m_pDvdControl2->PlayAtTime (&DvdPos->Timecode, DVD_CMD_FLAG_Flush, NULL)))
+						    {
+							    m_iDVDTitle = DvdPos->lTitle;
+						    }
+					    }*/
+				    }
+				    Domain = _T("First Play"); 
+            m_DvdState.isInMenu = false;
+            break;
+			    case DVD_DOMAIN_VideoManagerMenu: 
+            Domain = _T("Video Manager Menu"); 
+            m_DvdState.isInMenu = true;
+            break;
+			    case DVD_DOMAIN_VideoTitleSetMenu: 
+            Domain = _T("Video Title Set Menu"); 
+            //Entered menu
+            m_DvdState.isInMenu = true;
+            break;
+			    case DVD_DOMAIN_Title: 
+				    Domain.Format("Title %d", m_pDvdStatus.DvdTitleId);
+            //left menu
+            m_DvdState.isInMenu = false;
+            m_pDvdStatus.DvdTitleId = (ULONG)evParam2;
+				    break;
+			    case DVD_DOMAIN_Stop: 
+            Domain = "stopped"; 
+            break;
+			    default: Domain = _T("-"); break;
+			    }
+        }
+        break;
+      case EC_DVD_ERROR:
+        break;
+    }
     if (m_pMediaEvent)
       hr = m_pMediaEvent->FreeEventParams(evCode, evParam1, evParam2);
   }
@@ -366,6 +513,20 @@ void CDSGraph::Stop(bool rewind)
   EndEnumFilters
 }
 
+bool CDSGraph::OnMouseClick(tagPOINT pt)
+{
+  return true;
+}
+
+bool CDSGraph::OnMouseMove(tagPOINT pt)
+{
+  HRESULT hr;
+  hr = m_pDvdControl2->SelectAtPosition(pt);
+  if (SUCCEEDED(hr))
+    return true;
+  return true;
+}
+
 void CDSGraph::Play()
 {
   if (m_State.current_filter_state != State_Running)
@@ -401,7 +562,6 @@ void CDSGraph::Pause()
   UpdateState();
 }
 
-//The fastforward is based on mediaportal fastforward
 void CDSGraph::DoFFRW(int currentSpeed)
 {
   if (!m_pMediaSeeking)
@@ -415,11 +575,24 @@ void CDSGraph::DoFFRW(int currentSpeed)
   LONGLONG lTimerInterval = 300;
   rewind = (LONGLONG)(current + (2 * (LONGLONG)(lTimerInterval) * currentSpeed));
   pStop = 0;
+  //Fast forward and rewind is not working since IMediaSeeking is not returning the good values for dvd timestamps
   if ((rewind < earliest) && (currentSpeed < 0))
   {
     currentSpeed = 10000;
     rewind = earliest;
-    hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
+
+    if (!m_VideoInfo.isDVD)
+    {
+      hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
+    }
+    else
+    {
+      if (!m_pDvdControl2)
+        return;
+      DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(earliest * 10000);
+      m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    }
+    
     m_State.time = double(earliest) / TIME_FORMAT_TO_MS;;
     m_pMediaControl->Run();
     UpdateState();
@@ -430,18 +603,39 @@ void CDSGraph::DoFFRW(int currentSpeed)
   {
     currentSpeed = 10000;
     rewind = latest - 100000;
-
-    hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
-
+    if (!m_VideoInfo.isDVD)
+    {
+      hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
+      m_pMediaControl->Run();
+    }
+    else
+    {
+      if (!m_pDvdControl2)
+        return;
+      DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(rewind * 10000);
+      m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    }
     m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
-    m_pMediaControl->Run();
     UpdateState();
     return;
   }
   //seek to new moment in time
-  hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
-  m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
-  m_pMediaControl->StopWhenReady();
+  if (!m_VideoInfo.isDVD)
+  {
+    hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
+    m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
+    m_pMediaControl->StopWhenReady();
+  }
+  else
+  {
+    if (!m_pDvdControl2)
+      return;
+    DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(rewind * 10000);
+    m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+  }
+  
+  
+  
 
   UpdateState();
 }
@@ -498,6 +692,7 @@ HRESULT CDSGraph::UnloadGraph()
     CFGLoader::Filters.AudioRenderer.pBF.FullRelease();
 
   CFGLoader::Filters.VideoRenderer.pQualProp = NULL;
+
   if (CFGLoader::Filters.VideoRenderer.pBF)
     CFGLoader::Filters.VideoRenderer.pBF.FullRelease();;
 
@@ -524,7 +719,10 @@ bool CDSGraph::IsPaused() const
 {
   return CDSPlayer::PlayerState == DSPLAYER_PAUSED;
 }
-
+bool CDSGraph::IsInMenu() const
+{
+  return m_DvdState.isInMenu;
+}
 void CDSGraph::SeekInMilliSec(double sec)
 {
   LONGLONG seekrequest = 0;
@@ -540,15 +738,20 @@ void CDSGraph::SeekInMilliSec(double sec)
   if ( seekrequest < 0 )
     seekrequest = 0;
 
-  m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, 
-    NULL, AM_SEEKING_NoPositioning);
-
-  /*if(m_State.current_filter_state == State_Stopped)
+  if (!m_VideoInfo.isDVD)
   {
-    m_pMediaControl->Pause();
-    m_pMediaControl->GetState(INFINITE, (OAFilterState *)&m_State.current_filter_state);
-    m_pMediaControl->Stop();
-  }*/
+    m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
+  }
+  else
+  {
+    //Should we be playing for doing this?
+    if (!m_pDvdControl2)
+      return;
+    seekrequest = seekrequest * 10000;
+    DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(seekrequest);
+    m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+  }
+
 
   UpdateState();
 }
@@ -677,6 +880,12 @@ CStdString CDSGraph::GetVideoInfo()
 
 bool CDSGraph::CanSeek()
 {
+  //Dvd are not using the interface IMediaSeeking for seeking
+  //if the filter dont support seeking you would get VFW_E_DVD_OPERATION_INHIBITED on the PlayAtTime
+  if (m_VideoInfo.isDVD)
+  {
+    return true;
+  }
   DWORD seekcaps = AM_SEEKING_CanSeekForwards;
   seekcaps |= AM_SEEKING_CanSeekBackwards;
   seekcaps |= AM_SEEKING_CanSeekAbsolute;
@@ -685,43 +894,119 @@ bool CDSGraph::CanSeek()
 
 void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
 {
-  switch(wParam)
+  
+  if ( wParam == ID_DVD_MOUSE_MOVE)
   {
-    case ID_PLAY_PLAY:
-      Play();
-      break;
-    case ID_SEEK_TO:
-      SeekInMilliSec((LPARAM)lParam);
-      break;
-    case ID_SEEK_FORWARDSMALL:
-      Seek(true, false);
-      CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
-      break;
-    case ID_SEEK_FORWARDLARGE:
-      Seek(true, true);
-      CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
-      break;
-    case ID_SEEK_BACKWARDSMALL:
-      Seek(false,false);
-      CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
-      break;
-    case ID_SEEK_BACKWARDLARGE:
-      Seek(false,true);
-      CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
-      break;
-    case ID_PLAY_PAUSE:
-      Pause();
-      CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
-      break;
-    case ID_PLAY_STOP:
-      Stop(true);
-      CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
-      break;
-    case ID_STOP_DSPLAYER:
-      Stop(true);
-      CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
-      break;
+    //not working yet
+    return;
+    POINT pt;
+    pt.x = GET_X_LPARAM(lParam);
+    pt.y = GET_Y_LPARAM(lParam);
+    HRESULT hr;
+    ULONG pButtonIndex;
+    IDvdInfo2 *pDvdInfo = m_pDvdInfo2;
+    pDvdInfo->AddRef();
+    hr = pDvdInfo->GetButtonAtPosition(pt,&pButtonIndex);
+    if (SUCCEEDED(hr))
+    {
+      m_pDvdControl2->SelectButton(pButtonIndex);
+    
+    }
+  }
+  else if ( wParam == ID_PLAY_PLAY )
+  {
+        Play();
+  }
+  else if ( wParam == ID_SEEK_TO )
+  {
+        SeekInMilliSec((LPARAM)lParam);
+  }
+  else if ( wParam == ID_SEEK_FORWARDSMALL )
+  {
+        Seek(true, false);
+        CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
+  }
+  else if ( wParam == ID_SEEK_FORWARDLARGE )
+  {
+        Seek(true, true);
+        CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
+  }
+  else if ( wParam == ID_SEEK_BACKWARDSMALL )
+  {
+        Seek(false,false);
+        CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
+  }
+  else if ( wParam == ID_SEEK_BACKWARDLARGE )
+  {
+        Seek(false,true);
+        CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
+  }
+  else if ( wParam == ID_PLAY_PAUSE )
+  {
+        Pause();
+        CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
+  }
+  else if ( wParam == ID_PLAY_STOP )
+  {
+        Stop(true);
+        CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
+  }
+  else if ( wParam == ID_STOP_DSPLAYER )
+  {
+        Stop(true);
+        CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
+  }
+
+/*DVD COMMANDS*/
+  if ( wParam == ID_DVD_NAV_UP )
+  {
+    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Upper);
+  }
+  else if ( wParam == ID_DVD_NAV_DOWN )
+  {
+    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Lower);
+  }
+  else if ( wParam == ID_DVD_NAV_LEFT )
+  {
+    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Left);
+  }
+  else if ( wParam == ID_DVD_NAV_RIGHT )
+  {
+    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Right);
+  }
+  else if ( wParam == ID_DVD_MENU_ROOT )
+  {
+    CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
+    g_windowManager.SendMessage(msg);
+    m_pDvdControl2->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+  }
+  else if ( wParam == ID_DVD_MENU_EXIT )
+  {
+    m_pDvdControl2->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+  }
+  else if ( wParam == ID_DVD_MENU_BACK )
+  {
+    m_pDvdControl2->ReturnFromSubmenu(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+  }
+  else if ( wParam == ID_DVD_MENU_SELECT )
+  {
+    //TODO
+  }
+  else if ( wParam == ID_DVD_MENU_TITLE )
+  {
+    m_pDvdControl2->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+  }
+  else if ( wParam == ID_DVD_MENU_SUBTITLE )
+  {
+  }
+  else if ( wParam == ID_DVD_MENU_AUDIO )
+  {
+  }
+  else if ( wParam == ID_DVD_MENU_ANGLE )
+  {
   }
 }
+
+
 
 Com::SmartPtr<IFilterGraph2> CDSGraph::m_pFilterGraph = NULL;

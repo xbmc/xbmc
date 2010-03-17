@@ -77,7 +77,6 @@ public:
   void ShowPropertyPage(IBaseFilter *pBF);
   
   bool LoadffdshowSubtitles(CStdString filePath);
-
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
 protected:

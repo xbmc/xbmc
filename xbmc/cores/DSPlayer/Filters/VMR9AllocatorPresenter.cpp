@@ -566,25 +566,21 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     if(!pConfig)
       break;
 
-    if (1)
-    {
-      if(FAILED(hr = pConfig->SetNumberOfStreams(1)))
-        break;
+    if(FAILED(hr = pConfig->SetNumberOfStreams(1)))
+      break;
 
-      if(Com::SmartQIPtr<IVMRMixerControl9> pMC = pBF)
-      {
-        DWORD dwPrefs;
-        pMC->GetMixingPrefs(&dwPrefs);
+    if(Com::SmartQIPtr<IVMRMixerControl9> pMC = pBF)
+    {
+      DWORD dwPrefs;
+      pMC->GetMixingPrefs(&dwPrefs);
 
         // See http://msdn.microsoft.com/en-us/library/dd390928(VS.85).aspx
-        dwPrefs |= MixerPref9_NonSquareMixing;
-        dwPrefs |= MixerPref9_NoDecimation;
+      dwPrefs |= MixerPref9_NonSquareMixing;
+      dwPrefs |= MixerPref9_NoDecimation;
+      dwPrefs &= ~MixerPref9_RenderTargetMask; 
+      dwPrefs |= MixerPref9_RenderTargetYUV; // Need this or xbmc freeze. But in YUV, AllocateSurfaceHelper failed (in win7)
 
-        dwPrefs &= ~MixerPref9_RenderTargetMask; 
-        dwPrefs |= MixerPref9_RenderTargetYUV; // Need this or xbmc freeze. But in YUV, AllocateSurfaceHelper failed (in win7)
-
-        pMC->SetMixingPrefs(dwPrefs);
-      }
+      pMC->SetMixingPrefs(dwPrefs);
     }
 
     if(FAILED(hr = pConfig->SetRenderingMode(VMR9Mode_Renderless)))

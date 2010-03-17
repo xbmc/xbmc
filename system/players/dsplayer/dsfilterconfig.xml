@@ -96,6 +96,10 @@
     </filter>
 <!--******************End Extra***********************-->
 <!--*******************Sources************************-->
+    <filter name="dvdnavigator" type="source">
+      <guid>{9B8C4620-2C1A-11D0-8493-00A02438AD48}</guid>
+      <osdname>DVD Navigator</osdname>
+    </filter>
     <filter name="wmasfreader" type="source">
       <guid>{187463A0-5BB7-11D3-ACBE-0080C75E246E}</guid>
       <osdname>WM ASF Reader</osdname>
@@ -174,19 +178,25 @@
   </filters>
   
   <rules>
-    <!-- For more filetype make a request in the forum thread  -->
-    <!-- Iso extension will be added soon-->
+    <!-- Iso extension will be added soon -->
+	<!-- If you want to play a dvd select the file /dvdfolder/VIDEO_TS/VIDEO_TS.ifo -->
+    <rule filetypes="ifo">
+      <source filter="dvdnavigator" />
+	  <splitter filter="dvdnavigator" />
+      <video filter="mpeg2videodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
     <rule filetypes="avi">
       <source filter="avisource" />
       <splitter filter="avisplitter" />
       <video filter="ffdvideodec" />
       <audio filter="ffdaudiodec" />
-    </rule>  
+    </rule>
 	<rule filetypes="divx">
       <source filter="avisource" />
       <splitter filter="avisplitter" />
       <video filter="ffdvideodec" />
-      <audio filter="ac3filter" />
+      <audio filter="ffdaudiodec" />
     </rule>
     <rule filetypes="ogm">
       <source filter="oggsource" />

@@ -129,7 +129,8 @@ typedef struct {
 
 
 #include <strmif.h>     // Generated IDL header file for streams interfaces
-#include <intsafe.h>    // required by amvideo.h
+//intsafe.h is included in the system header to avoid shit load of macro redefinition
+//#include <intsafe.h>    // required by amvideo.h
 
 #include <reftime.h>    // Helper class for REFERENCE_TIME management
 #include <wxdebug.h>    // Debug support for logging and ASSERTs

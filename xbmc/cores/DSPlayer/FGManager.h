@@ -69,7 +69,7 @@ public:
   public: 
     std::list<CMediaType> mts;
   };
-
+  
 private:
   DWORD m_dwRegister;
   CStreamPath m_streampath;
@@ -78,6 +78,7 @@ private:
 protected:
   Com::SmartPtr<IFilterMapper2> m_pFM;
   Com::SmartPtr<IUnknown> m_pUnkInner;
+  Com::SmartPtr<IDvdGraphBuilder> m_pDvdGraph;
 
   bool m_audioPinConnected;
   bool m_videoPinConnected;
@@ -146,7 +147,6 @@ public:
   HRESULT GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer);
 
   HRESULT QueryInterface(REFIID iid , void** ppv);
-
   //CUnknown interface
   //DECLARE_IUNKNOWN;
   //STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);

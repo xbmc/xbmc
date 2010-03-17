@@ -21,7 +21,7 @@
 
 #include "FilterCoreFactory.h"
 
-bool CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear )
+HRESULT CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear )
 {
   if (clear)
   {
@@ -31,7 +31,7 @@ bool CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear )
   if (!pConfig || strcmpi(pConfig->Value(), "dsfilterconfig") != 0)
   {
     CLog::Log(LOGERROR, "Error loading configuration, no <dsfilterconfig> node");
-    return false;
+    return E_FAIL;
   }
 
   /* Parse filters declaration */
@@ -59,7 +59,7 @@ bool CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear )
     }
   }
 
-  return true;
+  return S_OK;
 }
 
 CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( const CFileItem& pFileItem )
@@ -73,100 +73,100 @@ CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( co
   return NULL;
 }
 
-bool CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdString& filter )
+HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdString& filter )
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
   if (! pRule)
-    return false;
+    return E_FAIL;
 
   std::vector<CStdString> foo;
   pRule->GetSourceFilters(pFileItem, foo);
 
   if (foo.empty())
-    return false;
+    return E_FAIL;
 
   filter = foo[0];
-  return true;
+  return S_OK;
 }
 
-bool CFilterCoreFactory::GetSplitterFilter( const CFileItem& pFileItem, CStdString& filter )
+HRESULT CFilterCoreFactory::GetSplitterFilter( const CFileItem& pFileItem, CStdString& filter )
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
   if (! pRule)
-    return false;
+    return E_FAIL;
 
   std::vector<CStdString> foo;
   pRule->GetSplitterFilters(pFileItem, foo);
 
   if (foo.empty())
-    return false;
+    return E_FAIL;
 
   filter = foo[0];
-  return true;
+  return S_OK;
 }
 
-bool CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, CStdString& filter, SStreamInfos* s )
+HRESULT CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, CStdString& filter, SStreamInfos* s )
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
   if (! pRule)
-    return false;
+    return E_FAIL;
 
   std::vector<CStdString> foo;
   pRule->GetAudioRendererFilters(pFileItem, foo, s);
 
   if (foo.empty())
-    return false;
+    return E_FAIL;
 
   filter = foo[0];
-  return true;
+  return S_OK;
 }
 
-bool CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/, SStreamInfos* s )
+HRESULT CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/, SStreamInfos* s )
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
   if (! pRule)
-    return false;
+    return E_FAIL;
 
   std::vector<CStdString> foo;
   pRule->GetAudioFilters(pFileItem, foo, dxva, s);
 
   if (foo.empty())
-    return false;
+    return E_FAIL;
 
   filter = foo[0];
-  return true;;
+  return S_OK;;
 }
 
-bool CFilterCoreFactory::GetVideoFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/ )
+HRESULT CFilterCoreFactory::GetVideoFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/ )
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
   if (! pRule)
-    return false;
+    return E_FAIL;
 
   std::vector<CStdString> foo;
   pRule->GetVideoFilters(pFileItem, foo, dxva);
 
   if (foo.empty())
-    return false; //Todo: Error message
+    return E_FAIL; //Todo: Error message
 
   filter = foo[0];
-  return true;
+  return S_OK;
 }
 
-bool CFilterCoreFactory::GetExtraFilters( const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva /*= false*/ )
+HRESULT CFilterCoreFactory::GetExtraFilters( const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva /*= false*/ )
 {
   filters.clear();
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
   if (! pRule)
-    return false;
+    return E_FAIL;
 
   pRule->GetExtraFilters(pFileItem, filters, dxva);
-  return true;
+  return S_OK;
 }
 
 CFGFilterFile* CFilterCoreFactory::GetFilterFromName( const CStdString& filter, bool showError )

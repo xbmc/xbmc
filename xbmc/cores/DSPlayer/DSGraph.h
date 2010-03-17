@@ -34,8 +34,8 @@
 #include "util.h"
 #include "dsconfig.h"
 #include "fgmanager.h"
+#include "DShowUtil/DShowUtil.h"
 
-#include "DShowUtil/smartptr.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
   #include "cores/VideoRenderers/RenderManager.h"
@@ -86,6 +86,11 @@ public:
 
   /** @return True if the graph is paused, false else */
   virtual bool IsPaused() const;
+  
+  virtual bool IsDvd() { return m_VideoInfo.isDVD; };
+  bool IsInMenu() const;
+  bool OnMouseMove(tagPOINT pt);
+  bool OnMouseClick(tagPOINT pt);
   /** @return Current play speed */
   virtual double GetPlaySpeed() { return m_currentSpeed; };
 
@@ -112,10 +117,10 @@ public:
   virtual void Stop(bool rewind = false);
   /// Update current playing time
   virtual void UpdateTime();
+  /// Update Dvd state
+  virtual void UpdateDvdState();
   /// Update current player state
   virtual void UpdateState();
-  /// Update current video informations (filters name)
-  virtual void UpdateCurrentVideoInfo();
   /// @return Current playing time
   virtual __int64 GetTime();
   /// @return Total playing time in second (media length)
@@ -147,15 +152,12 @@ public:
   CStdString GetVideoInfo();
 
   static Com::SmartPtr<IFilterGraph2> m_pFilterGraph;
- 
 protected:
 
   /** Unload the graph and release all the filters
    * @return A HRESULT code
    */
   HRESULT UnloadGraph();
-  //void WaitForRendererToShutDown();
-  
 private:
   //Direct Show Filters
   CFGManager*                           m_pGraphBuilder;
@@ -163,7 +165,12 @@ private:
   Com::SmartPtr<IMediaEventEx>          m_pMediaEvent;
   Com::SmartPtr<IMediaSeeking>          m_pMediaSeeking;
   Com::SmartPtr<IBasicAudio>            m_pBasicAudio;
-
+  //dvd ptr
+  Com::SmartQIPtr<IDvdInfo2>              m_pDvdInfo2;
+  Com::SmartQIPtr<IDvdControl2>           m_pDvdControl2;
+  Com::SmartPtr<IDvdState>              m_pDvdState;
+  DVD_STATUS	                          m_pDvdStatus;
+  std::vector<DvdTitle*>                m_pDvdTitles;
   bool m_bReachedEnd;
   int m_PlaybackRate;
   int m_currentSpeed;
@@ -196,6 +203,15 @@ private:
 
     std::string player_state;  // full player state
   } m_State;
+  
+  struct SDvdState
+  {
+    void Clear()
+    {
+      isInMenu = false;
+    }
+    bool isInMenu;
+  } m_DvdState;
 
   struct SVideoInfo
   {
@@ -207,9 +223,10 @@ private:
     {
       time_total    = 0;
       time_format   = GUID_NULL;
+      isDVD = false;
     }
     double time_total;        // total playback time
     GUID time_format;
-
+    bool isDVD;
   } m_VideoInfo;
 };

@@ -347,13 +347,15 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   HRESULT hr = S_OK;
 
   //update ffdshow registry to avoid stupid connection problem
+  //TODO move updateregistry to the xbmc gui like setting the stable codecs for ffdshow
   UpdateRegistry();
 
   if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem)))
   {
     CLog::Log(LOGERROR, "%s Failed to load filters rules", __FUNCTION__);
     return E_FAIL;
-  } else
+  } 
+  else
     CLog::Log(LOGDEBUG, "%s Successfully loaded filters rules", __FUNCTION__);
 
   //Video renderer count : 3

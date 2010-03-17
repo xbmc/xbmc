@@ -219,8 +219,10 @@ void CDSPropertyPage::Process()
 
     hr = PropertySheet(&propSheet);
 
-    for(unsigned int page = 0; page < pPages.cElems; page++) {
-      if(opf[page].propPage) {
+    for(unsigned int page = 0; page < pPages.cElems; page++) 
+    {
+      if(opf[page].propPage) 
+      {
         opf[page].propPage->SetPageSite(NULL);
         opf[page].propPage->Release();
       }

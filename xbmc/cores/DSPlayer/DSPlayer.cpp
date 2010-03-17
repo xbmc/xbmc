@@ -22,6 +22,7 @@
 #include "DSPlayer.h"
 #include "winsystemwin32.h" //Important needed to get the right hwnd
 #include "utils/GUIInfoManager.h"
+#include "MouseStat.h"
 #include "Application.h"
 #include "Settings.h"
 #include "FileItem.h"
@@ -366,6 +367,94 @@ bool CDSPlayer::OnAction(const CAction &action)
     } \
   } while(false)
 
+  if ( m_pDsGraph.IsDvd() )
+  {
+    if ( action.actionId == ACTION_SHOW_VIDEOMENU )
+    {
+      SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_ROOT,0);
+      return true;
+    }
+    if ( m_pDsGraph.IsInMenu() )
+    {
+      switch (action.actionId)
+      {
+        case ACTION_PREVIOUS_MENU:
+          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_BACK,0);
+        break;
+        case ACTION_MOVE_LEFT:
+          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_LEFT,0);
+        break;
+        case ACTION_MOVE_RIGHT:
+          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_RIGHT,0);
+        break;
+        case ACTION_MOVE_UP:
+          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_UP,0);
+        break;
+        case ACTION_MOVE_DOWN:
+          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_DOWN,0);
+        break;
+
+      /*case ACTION_MOUSE:
+        {
+          // check the action
+          CAction action2 = action;
+          action2.buttonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
+          action2.amount1 = g_Mouse.GetLocation().x;
+          action2.amount2 = g_Mouse.GetLocation().y;
+
+          CRect rs, rd;
+          GetVideoRect(rs, rd);
+          if (action2.amount1 < rd.x1 || action2.amount1 > rd.x2 ||
+              action2.amount2 < rd.y1 || action2.amount2 > rd.y2)
+            return false; // out of bounds
+          //THREAD_ACTION(action2);
+          // convert to video coords...
+          CPoint pt(action2.amount1, action2.amount2);
+          pt -= CPoint(rd.x1, rd.y1);
+          pt.x *= rs.Width() / rd.Width();
+          pt.y *= rs.Height() / rd.Height();
+          pt += CPoint(rs.x1, rs.y1);
+          LPARAM ptparam;
+          ptparam = g_geometryHelper.ConvertPointToLParam(pt.x,pt.y);
+          if (action2.buttonCode)
+            SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MOUSE_CLICK,ptparam);
+          //return m_pDsGraph.OnMouseClick(pt);
+            
+          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MOUSE_MOVE,ptparam);
+          return true;
+        }
+        break;*/
+      case ACTION_SELECT_ITEM:
+        {
+          // show button pushed overlay
+          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_SELECT,0);
+        }
+        break;
+      case REMOTE_0:
+      case REMOTE_1:
+      case REMOTE_2:
+      case REMOTE_3:
+      case REMOTE_4:
+      case REMOTE_5:
+      case REMOTE_6:
+      case REMOTE_7:
+      case REMOTE_8:
+      case REMOTE_9:
+      {
+        // Offset from key codes back to button number
+        // int button = action.actionId - REMOTE_0;
+        //CLog::Log(LOGDEBUG, " - button pressed %d", button);
+        //pStream->SelectButton(button);
+      }
+      break;
+      default:
+        return false;
+        break;
+      }
+      return true; // message is handled
+    }
+  }
+
   switch(action.actionId)
   {
     case ACTION_NEXT_ITEM:
@@ -392,6 +481,4 @@ bool CDSPlayer::OnAction(const CAction &action)
   
   // return false to inform the caller we didn't handle the message
   return false;
-  
 }
-

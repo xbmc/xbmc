@@ -560,7 +560,8 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->bitrate = f->nAvgBytesPerSec;
         infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag);
       }
-    } else if (pMediaType->formattype == FORMAT_VorbisFormat2)
+    } 
+    else if (pMediaType->formattype == FORMAT_VorbisFormat2)
     {
       if (pMediaType->cbFormat >= sizeof(VORBISFORMAT2))
       {
@@ -581,7 +582,8 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0);
       }
     }
-  } else if (pMediaType->majortype == MEDIATYPE_Video)
+  } 
+  else if (pMediaType->majortype == MEDIATYPE_Video)
   {
     SVideoStreamInfos *infos = reinterpret_cast<SVideoStreamInfos *>(s);
 
@@ -594,7 +596,8 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->height = v->bmiHeader.biHeight;
         infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc);
       }
-    } else if (pMediaType->formattype == FORMAT_MPEG2Video)
+    } 
+    else if (pMediaType->formattype == FORMAT_MPEG2Video)
     {
       if (pMediaType->cbFormat >= sizeof(MPEG2VIDEOINFO))
       {
@@ -608,7 +611,8 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
           infos->codecname = "MPEG2 Video";
         }
       }
-    } else if (pMediaType->formattype == FORMAT_VideoInfo2)
+    } 
+    else if (pMediaType->formattype == FORMAT_VideoInfo2)
     {
       if (pMediaType->cbFormat >= sizeof(VIDEOINFOHEADER2))
       {
@@ -617,7 +621,8 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->height = v->bmiHeader.biHeight;
         infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc);
       }
-    } else if (pMediaType->formattype == FORMAT_MPEGVideo)
+    } 
+    else if (pMediaType->formattype == FORMAT_MPEGVideo)
     {
       if (pMediaType->cbFormat >= sizeof(MPEG1VIDEOINFO))
       {
@@ -627,7 +632,8 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc);
       }
     }
-  } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
+  } 
+  else if (pMediaType->majortype == MEDIATYPE_Subtitle)
   {
     SSubtitleStreamInfos *infos = reinterpret_cast<SSubtitleStreamInfos *>(s);
 
@@ -639,11 +645,9 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
       infos->offset = i->dwOffset;
       infos->name = i->TrackName;
       if (infos->name.empty())
-      {
         infos->name = ISOToLanguage(infos->isolang);
-      } else {
+      else 
         infos->name.Format("%s [%s]", infos->name, ISOToLanguage(infos->isolang));
-      }
     }
     infos->subtype = pMediaType->subtype;
   }
@@ -920,7 +924,8 @@ bool CStreamsManager::AddSubtitle(const CStdString& subFilePath)
         s->name = CUtil::GetFileName(s->path);
       else
         s->name += " [External]";
-    } else
+    } 
+    else
       s->name = CUtil::GetFileName(s->path);
 
     m_subtitleStreams.push_back(s);
@@ -942,10 +947,13 @@ void CStreamsManager::DisconnectCurrentSubtitlePins( void )
     m_pIAMStreamSelect->Enable(m_subtitleStreams[i]->IAMStreamSelect_Index, 0);
     m_subtitleStreams[i]->connected = false;
     m_subtitleStreams[i]->flags = 0;
-  } else {
+  } 
+  else 
+  {
     if (m_subtitleStreams[i]->connected && !m_subtitleStreams[i]->external)
     {
       Com::SmartPtr<IPin> pin = NULL;
+
       if (VFW_E_NOT_CONNECTED == m_subtitleStreams[i]->pObj->ConnectedTo(&pin))
       {
         // Shouldn't happened!
