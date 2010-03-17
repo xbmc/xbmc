@@ -46,6 +46,7 @@ CDSConfig::CDSConfig(void)
 
 CDSConfig::~CDSConfig(void)
 {
+  CFile::Delete("special://temp//dslang.xml");
   m_pPropertiesFilters.clear();
 }
 void CDSConfig::ClearConfig()
