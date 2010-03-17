@@ -665,7 +665,6 @@ HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
 void CVMR9AllocatorPresenter::OnLostDevice()
 {
   //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-  DeleteSurfaces();
 }
 
 void CVMR9AllocatorPresenter::OnDestroyDevice()
