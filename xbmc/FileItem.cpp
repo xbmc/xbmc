@@ -2612,18 +2612,11 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   CStdString folderThumb;
   CStdString strFolder = m_strPath;
 
-  if (IsStack())
+  if (IsStack() ||
+      CUtil::IsInRAR(strFolder) || 
+      CUtil::IsInZIP(strFolder))
   {
-    CStdString strPath;
-    CUtil::GetParentPath(m_strPath,strPath);
-    CStdString strFolder = CStackDirectory::GetStackedTitlePath(m_strPath);
-  }
-
-  if (CUtil::IsInRAR(strFolder) || CUtil::IsInZIP(strFolder))
-  {
-    CStdString strPath, strParent;
-    CUtil::GetDirectory(strFolder,strPath);
-    CUtil::GetParentPath(strPath,strParent);
+    CUtil::GetParentPath(m_strPath,strFolder);
   }
 
   if (IsMultiPath())
