@@ -78,9 +78,6 @@ public:
   
   bool LoadffdshowSubtitles(CStdString filePath);
 
-  /// Pointer to a CDSGraph instance
-  CDSGraph *          pGraph;
-
   /// Pointer to a IffDecoder interface
   IffDecoder*         pIffdshowDecoder;
 protected:

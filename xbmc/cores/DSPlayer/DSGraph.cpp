@@ -57,25 +57,10 @@ enum
 
 using namespace std;
 
-CDSGraph::CDSGraph() :m_pGraphBuilder(NULL)
-{  
-  m_PlaybackRate = 1;
-  m_currentSpeed = 0;
-  m_iCurrentFrameRefreshCycle = 0;
-  g_userId = 0xACDCACDC;
-  m_State.Clear();
-  m_VideoInfo.Clear();
-
-  m_pMediaControl = NULL;
-  m_pMediaEvent = NULL;
-  m_pMediaSeeking = NULL;
-  m_pBasicAudio = NULL;
-  m_pFilterGraph = NULL;
-
-  m_bReachedEnd = false;
-  m_bChangingAudioStream = false;
-  g_dsconfig.pGraph = this;
-  m_Filename = "";
+CDSGraph::CDSGraph() :
+  m_pGraphBuilder(NULL), m_PlaybackRate(1), m_currentSpeed(0), m_iCurrentFrameRefreshCycle(0),
+  m_userId(0xACDCACDC), m_bReachedEnd(false)
+{
 }
 
 CDSGraph::~CDSGraph()
@@ -87,10 +72,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 {
   if (CDSPlayer::PlayerState != DSPLAYER_LOADING)
     return E_FAIL;
+
   HRESULT hr;
 
   m_VideoInfo.Clear();
-  m_Filename = file.m_strPath;
   
   //Reset the g_dsconfig for not getting unwanted interface from last file into the player
   g_dsconfig.ClearConfig();
@@ -104,10 +89,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
   hr = m_pGraphBuilder->RenderFileXbmc(file);
   if (FAILED(hr))
-  {
-    m_Filename = "";
     return hr;
-  }
 
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaSeeking),(void **)&m_pMediaSeeking);
   hr = m_pGraphBuilder->QueryInterface(__uuidof(m_pMediaControl),(void **)&m_pMediaControl);
@@ -142,7 +124,6 @@ void CDSGraph::CloseFile()
 {
   CAutoLock lock(&m_ObjectLock);
   HRESULT hr;
-  m_Filename = "";
 
   if (m_pGraphBuilder)
   {
@@ -165,9 +146,8 @@ void CDSGraph::CloseFile()
 
     m_PlaybackRate = 1;
     m_currentSpeed = 0;
-    g_userId = 0xACDCACDC;
+    m_userId = 0xACDCACDC;
     m_bReachedEnd = false;
-    m_bChangingAudioStream = false;
 
     SAFE_DELETE(m_pGraphBuilder);
     CDSGraph::m_pFilterGraph = NULL;

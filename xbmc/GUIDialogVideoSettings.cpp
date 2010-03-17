@@ -238,11 +238,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     IBaseFilter *pBF = g_dsconfig.GetFiltersWithPropertyPages()[filterId];
     HRESULT hr = S_OK;
     //Showing the property page for this filter
-    g_dsconfig.ShowPropertyPage(pBF);
-    //TODO Need to hide the xbmc gui
-    
-    
-    
+    g_dsconfig.ShowPropertyPage(pBF);    
   }
 }
 

@@ -42,7 +42,6 @@ CDSConfig::CDSConfig(void)
 {
   m_pIMpaDecFilter = NULL;
   pIffdshowDecoder = NULL;
-  pGraph = NULL;
 }
 
 CDSConfig::~CDSConfig(void)
@@ -53,7 +52,6 @@ void CDSConfig::ClearConfig()
 {
   m_pIMpaDecFilter = NULL;
   pIffdshowDecoder = NULL;
-  pGraph = NULL;  
   m_pPropertiesFilters.clear();
 }
 HRESULT CDSConfig::ConfigureFilters()
@@ -139,12 +137,13 @@ void CDSConfig::CreatePropertiesXml()
 
 void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
 {
-  m_pCurrentProperty = new CDSPropertyPage(g_dsconfig.pGraph, pBF);
-  m_pCurrentProperty->Initialize(true);
-  return;
+  m_pCurrentProperty = new CDSPropertyPage(pBF);
+  m_pCurrentProperty->Initialize();
+
+  //Seb: Not need when using DX SetDialogBox?
   //this is not working yet, calling the switch to fake fullscreen is reseting the video renderer
   //A better handling of the video resolution change by the video renderers is needed
-  if (g_graphicsContext.IsFullScreenRoot() && !g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+  /*if (g_graphicsContext.IsFullScreenRoot() && !g_guiSettings.GetBool("videoscreen.fakefullscreen"))
   {
     //True fullscreen cant handle those proprety page
     m_pCurrentProperty->Initialize(false);
@@ -153,7 +152,7 @@ void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
   else
   {
     m_pCurrentProperty->Initialize(true);
-  }
+  }*/
 }
 
 CStdString CDSConfig::GetDXVAMode()

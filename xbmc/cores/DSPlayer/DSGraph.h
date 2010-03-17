@@ -134,9 +134,6 @@ public:
   /** Close the file, clean the graph and free resources */
   void CloseFile();
 
-  /// @return Path of the current playing file, or an empty string if there's no playing file
-  CStdString GetCurrentFile(void) { return m_Filename; }
-
   /** Sets the volume (amplitude) of the audio signal 
    * @param[in] nVolume The volume level in 1/100ths dB Valid values range from -10,000 (silence) to 0 (full volume) 0 = 0 dB -10000 = -100 dB
    */
@@ -161,33 +158,34 @@ protected:
   
 private:
   //Direct Show Filters
-  CFGManager*                     m_pGraphBuilder;
+  CFGManager*                           m_pGraphBuilder;
   Com::SmartPtr<IMediaControl>          m_pMediaControl;  
   Com::SmartPtr<IMediaEventEx>          m_pMediaEvent;
   Com::SmartPtr<IMediaSeeking>          m_pMediaSeeking;
   Com::SmartPtr<IBasicAudio>            m_pBasicAudio;
 
-  bool m_bAllowFullscreen;
   bool m_bReachedEnd;
-  CStdString m_Filename;
   int m_PlaybackRate;
   int m_currentSpeed;
-  float m_fFrameRate;
-  bool m_bChangingAudioStream;
-  CFile m_File;   
-  DWORD_PTR g_userId;
+
+  DWORD_PTR m_userId;
   CCritSec m_ObjectLock;
   CStdString m_pStrCurrentFrameRate;
-  int        m_iCurrentFrameRefreshCycle;
+  int m_iCurrentFrameRefreshCycle;
 
   struct SPlayerState
   {
+    SPlayerState()
+    {
+      Clear();
+    }
+
     void Clear()
     {
-      timestamp     = 0;
-      time    = 0;
-      time_total      = 0;
-      player_state  = "";
+      timestamp = 0;
+      time = 0;
+      time_total = 0;
+      player_state = "";
       current_filter_state = State_Stopped;
     }
     double timestamp;         // last time of update
@@ -201,30 +199,17 @@ private:
 
   struct SVideoInfo
   {
+    SVideoInfo()
+    {
+      Clear();
+    }
     void Clear()
     {
       time_total    = 0;
-      /*codec_video   = "";
-      codec_audio   = "";
-      dxva_info     = "";
-      filter_audio_dec = "";
-      filter_audio_renderer = "";
-      filter_video_dec = "";
-      filter_source = "";
-      filter_splitter = "";*/
       time_format   = GUID_NULL;
     }
     double time_total;        // total playback time
     GUID time_format;
-    
-    /*CStdString codec_video;
-    CStdString codec_audio;*/
 
-    /*CStdString filter_audio_dec;
-    CStdString filter_audio_renderer;
-    CStdString filter_video_dec;
-    CStdString filter_source;
-    CStdString filter_splitter;
-    CStdString dxva_info;*/
   } m_VideoInfo;
 };

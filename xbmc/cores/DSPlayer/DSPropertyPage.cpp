@@ -52,9 +52,8 @@ LONG GdiGetCharDimensions(HDC hdc, LPTEXTMETRICW lptm, LONG *height)
 }
 
 
-CDSPropertyPage::CDSPropertyPage(CDSGraph* graph, IBaseFilter* pBF)
-: m_pBF(pBF),
-  m_pGraph(graph)
+CDSPropertyPage::CDSPropertyPage(IBaseFilter* pBF)
+: m_pBF(pBF)
 {
 }
 
@@ -62,21 +61,8 @@ CDSPropertyPage::~CDSPropertyPage()
 {
 }
 
-bool CDSPropertyPage::Initialize(bool CurrentlyUsingFakeFS)
+bool CDSPropertyPage::Initialize()
 {
-  m_bCurrentlyUsingFakeFS = CurrentlyUsingFakeFS;
-  
-  if (!m_bCurrentlyUsingFakeFS)
-  {  
-    CLog::Log(LOGNOTICE,"%s Switching to fake fullscreen temporary to handle the property window",__FUNCTION__);
-    g_guiSettings.SetBool("videoscreen.fakefullscreen", true);
-    
-    bool pBlankOther = g_guiSettings.GetBool("videoscreen.blankdisplays");
-    RESOLUTION_INFO &res_info = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
-    g_Windowing.SetFullScreen(true,res_info,pBlankOther);
-    //g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
-  }
-
   Create(true); // autodelete = true
   
   return true;
@@ -142,14 +128,23 @@ static INT_PTR CALLBACK prop_sheet_proc(HWND hwnd, UINT msg, WPARAM wparam,
 
 void CDSPropertyPage::Process()
 {
-  
+
   HRESULT hr;
-  ISpecifyPropertyPages *pProp = NULL;
+  Com::SmartPtr<ISpecifyPropertyPages> pProp = NULL;
   CAUUID pPages;
   if ( SUCCEEDED( m_pBF->QueryInterface(IID_ISpecifyPropertyPages, (void **) &pProp) ) )
   {
     
     pProp->GetPages(&pPages);
+
+    hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, DShowUtil::GetFilterName(m_pBF).c_str(),
+      1, (LPUNKNOWN *) &m_pBF, pPages.cElems, 
+      pPages.pElems, 0, 0, 0);
+
+    if (SUCCEEDED(hr))
+      return;
+
+    CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X). Trying a custom way", __FUNCTION__, hr);
 
     OLEPropertyFrame *opf;
     PROPPAGEINFO pPageInfo;
@@ -224,18 +219,6 @@ void CDSPropertyPage::Process()
 
     hr = PropertySheet(&propSheet);
 
-    if(hr == -1)
-    {
-      CLog::Log(LOGDEBUG, "%s Failed to show property page. Trying old way", __FUNCTION__);
-
-      hr = OleCreatePropertyFrame(g_Windowing.GetHwnd(), 0, 0, DShowUtil::GetFilterName(m_pBF).c_str(),
-      1, (LPUNKNOWN *) &m_pBF, pPages.cElems, 
-      pPages.pElems, 0, 0, 0);
-
-      if (FAILED(hr))
-        CLog::Log(LOGERROR, "%s Failed to show property page (result: 0x%X)", __FUNCTION__, hr);
-    }
-
     for(unsigned int page = 0; page < pPages.cElems; page++) {
       if(opf[page].propPage) {
         opf[page].propPage->SetPageSite(NULL);
@@ -244,20 +227,7 @@ void CDSPropertyPage::Process()
     }
     HeapFree(GetProcessHeap(), 0, hpsp);
     HeapFree(GetProcessHeap(), 0, opf);
-    
-    
-    
-    SAFE_RELEASE(pProp);
     CoTaskMemFree(pPages.pElems);  
-  }
-
-  if (!m_bCurrentlyUsingFakeFS)
-  {
-    bool pBlankOther = g_guiSettings.GetBool("videoscreen.blankdisplays");
-    RESOLUTION_INFO &res_info = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()];
-    g_guiSettings.SetBool("videoscreen.fakefullscreen", false);
-    g_Windowing.SetFullScreen(true,res_info,pBlankOther);
-    
   }
 }
 

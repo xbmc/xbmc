@@ -116,7 +116,7 @@ public:
   virtual void Stop();
 
   static DSPLAYER_STATE PlayerState;
-  static CFileItem currentFileItem;
+  static CFileItemPtr currentFileItemPtr;
 
   CCriticalSection m_StateSection;
 protected:

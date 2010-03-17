@@ -152,13 +152,13 @@ void CStreamsManager::SetAudioStream(int iStream)
 
     DShowUtil::ExtractMediaTypes(m_audioStreams[enableIndex]->pObj, mediaTypes);
 
-    if (! mediaTypes.empty())
+    if (! mediaTypes.empty() && CDSPlayer::currentFileItemPtr) // Can't be null
     {
       CStdString filter = "";
       SAudioStreamInfos audioStreamInfos;
       GetStreamInfos(&mediaTypes.front(), &audioStreamInfos);
 
-      if (SUCCEEDED(CFilterCoreFactory::GetAudioFilter(CDSPlayer::currentFileItem, filter,
+      if (SUCCEEDED(CFilterCoreFactory::GetAudioFilter((const CFileItem&) *CDSPlayer::currentFileItemPtr, filter,
         CFGLoader::IsUsingDXVADecoder(), &audioStreamInfos)))
       {
         CFGFilterFile *f;
@@ -484,8 +484,11 @@ void CStreamsManager::LoadStreams()
   /* We're done, internal audio & subtitles stream are loaded.
      We load external subtitle file */
 
+  if (! CDSPlayer::currentFileItemPtr) // Can't happen, but never too careful
+    return;
+
   std::vector<std::string> subtitles;
-  CDVDFactorySubtitle::GetSubtitles(subtitles, m_pGraph->GetCurrentFile());
+  CDVDFactorySubtitle::GetSubtitles(subtitles, CDSPlayer::currentFileItemPtr->m_strPath);
 
   SExternalSubtitleInfos *s = NULL;
   

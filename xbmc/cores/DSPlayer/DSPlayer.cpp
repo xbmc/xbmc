@@ -37,7 +37,7 @@
 using namespace std;
 
 DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
-CFileItem CDSPlayer::currentFileItem;
+CFileItemPtr CDSPlayer::currentFileItemPtr;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -66,7 +66,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   PlayerState = DSPLAYER_LOADING;
   HRESULT hr;
 
-  currentFileItem = file;
+  currentFileItemPtr = CFileItemPtr((CFileItem *)file.Clone());
 
   //Creating the graph and querying every filter required for the playback
   ResetEvent(m_hReadyEvent);
@@ -95,6 +95,7 @@ bool CDSPlayer::CloseFile()
   PlayerState = DSPLAYER_CLOSING;
 
   m_pDsGraph.CloseFile();
+  currentFileItemPtr.reset();
   
   CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);
   

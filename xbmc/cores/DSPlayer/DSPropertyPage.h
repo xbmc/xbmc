@@ -22,7 +22,7 @@
  */
 #include "utils/Thread.h"
 #include <streams.h>
-#include "DSGraph.h"
+#include "DShowUtil/smartptr.h"
 
 class CDSPlayerPropertyPageSite: public IPropertyPageSite, public CUnknown
 {
@@ -87,20 +87,15 @@ struct OLEPropertyFrame {
   IPropertyPage  *propPage;
 };
 
-class CDSGraph;
-
 class CDSPropertyPage : public CThread
 {
 public:
-  CDSPropertyPage(CDSGraph *graph, IBaseFilter* pBF);
+  CDSPropertyPage(IBaseFilter* pBF);
   virtual ~CDSPropertyPage();
 
-  virtual bool Initialize(bool CurrentlyUsingFakeFS);
+  virtual bool Initialize();
 protected:
   virtual void OnExit();
   virtual void Process();
-  IBaseFilter* m_pBF;
-  CDSGraph *m_pGraph;
-private:
-  bool m_bCurrentlyUsingFakeFS;
+  Com::SmartPtr<IBaseFilter> m_pBF;
 };
