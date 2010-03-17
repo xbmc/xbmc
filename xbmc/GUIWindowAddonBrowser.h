@@ -24,13 +24,12 @@
 #include "Addon.h"
 #include "GUIWindow.h"
 #include "GUIViewControl.h"
-#include "GUIMediaWindow.h"
 
 class CFileItem;
 class CFileItemList;
 
 class CGUIWindowAddonBrowser :
-      public CGUIMediaWindow
+      public CGUIWindow
 {
 public:
   CGUIWindowAddonBrowser(void);
@@ -39,13 +38,19 @@ public:
   virtual bool OnAction(const CAction &action);
 
 protected:
-  bool OnClick(int iItem);
-  /*!
-  \brief Will be called when an popup context menu has been asked for
-  \param itemNumber List/thumb control item that has been clicked on
-  */
-  virtual void GetContextButtons(int itemNumber, CContextButtons& buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual void OnInitWindow();
+  int GetSelectedItem();
+  bool SelectItem(int select);
+  void OnClick(int iItem);
+  void OnSort();
+  void ClearListItems();
+  void Update();
+  void SetupControls();
+  void FreeControls();
+  bool OnContextMenu(int iItem);
+
+  CFileItemList* m_vecItems;
+  std::vector<ADDON::TYPE> m_categories;
+  int m_currentCategory;
 };
 

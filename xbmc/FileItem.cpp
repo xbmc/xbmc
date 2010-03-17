@@ -2613,7 +2613,7 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   CStdString strFolder = m_strPath;
 
   if (IsStack() ||
-      CUtil::IsInRAR(strFolder) ||
+      CUtil::IsInRAR(strFolder) || 
       CUtil::IsInZIP(strFolder))
   {
     CUtil::GetParentPath(m_strPath,strFolder);

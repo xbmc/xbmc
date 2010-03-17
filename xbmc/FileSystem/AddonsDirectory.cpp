@@ -68,11 +68,8 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     CFileItemPtr pItem(new CFileItem(path.Get(), false));
     pItem->SetLabel(addon->Name());
     pItem->SetLabel2(addon->Summary());
-    pItem->SetProperty("Addon.ID", addon->ID());
     pItem->SetProperty("Addon.Type", TranslateType(addon->Type()));
-    pItem->SetProperty("Addon.Disabled", addon->Disabled());
     pItem->SetProperty("Addon.Name", addon->Name());
-    pItem->SetProperty("Addon.Version", addon->Version().Print());
     pItem->SetProperty("Addon.Summary", addon->Summary());
     pItem->SetProperty("Addon.Description", addon->Description());
     pItem->SetProperty("Addon.Creator", addon->Author());
