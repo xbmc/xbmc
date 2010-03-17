@@ -488,11 +488,11 @@ bool CAddonMgr::LoadAddonsXML()
   while (itr != props.end())
   {
     AddonPtr addon;
-    if (itr->parent.empty() && GetAddon(itr->id, addon, itr->type))
+    if (itr->parent.empty() && GetAddon(itr->id, addon, itr->type, false))
     {
       EnableAddon(addon);
     }
-    else if (GetAddon(itr->parent, addon))
+    else if (GetAddon(itr->parent, addon, itr->type, false))
     { // multiple addon configurations
       AddonPtr clone = addon->Clone(addon);
       if (clone)
