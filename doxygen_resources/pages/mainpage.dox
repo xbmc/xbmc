@@ -9,13 +9,110 @@
             and we welcome any and all input to documenting it further. Documentation serves both to help
             newcomers get to grips with the source quickly, and to highlight possible deficiencies in the
             code or interfaces.
-            
-            Currently the doxygen configuration file is set to only document the "xbmc\utils" directory,
-            though the ultimate goal is to document the public interface of everything.
 
             Any help/suggestions are more than welcome.
               
   \section  doxy_whatisxbmc What is XBMC?
             XBMC is a free, open source (GPL) multimedia player that runs on Linux, Mac OS X (10.4 and later),
             AppleTV and Windows.  See http://xbmc.org for more details.
+*/
+
+// Groups definition
+
+///////////////////////////////////////
+//
+// xbmc project
+//
+///////////////////////////////////////
+
+/*!
+	\defgroup windows XBMC windows
+	
+	XBMC windows
+*/
+
+/*!
+	\defgroup music Music info
+	
+	Elements used in my music
+*/
+
+
+//////////////////////////////////////
+//
+// guilib project
+//
+//////////////////////////////////////
+
+/*!
+	\defgroup guilib guilib classes
+	
+	guilib classes
+*/
+
+/*!
+	\defgroup winref Window Reference
+	\ingroup guilib
+	
+	The window reference
+*/
+
+/*!
+	\defgroup winmsg Windows and Messages
+	\ingroup winref
+	Windows and messages
+*/
+
+/*!
+	\defgroup controls Controls
+	\ingroup winref
+	Control classes
+*/
+
+/*!
+	\defgroup winman Window Manager and Callbacks
+	\ingroup winref
+	
+	Everything about window manager and callbacks
+*/
+
+/*!
+	\defgroup actionkeys Actions and Keys
+	\ingroup winref
+	
+	Everything around action mapping and key processing
+*/
+
+/*!
+	\defgroup graphics Graphics and Screen
+	\ingroup guilib
+	
+	Everything around graphics and Screen
+*/
+
+/*!
+	\defgroup textures Textures and Fonts
+	\ingroup graphics
+	
+	Everything about textures and fonts
+*/
+
+/*!
+	\defgroup strings Strings and Localization
+	\ingroup guilib
+	
+	Everything around Strings and localization
+*/
+
+/*!
+	\defgroup tinyxml XML Parser
+	\ingroup strings
+	
+	Tiny XML - XML Parser
+*/
+
+/*!
+	\defgroup jobs Asynchronous jobs
+
+	Threaded job execution
 */
