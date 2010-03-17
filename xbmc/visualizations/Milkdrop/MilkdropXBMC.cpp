@@ -66,16 +66,24 @@ void SetPresetDir(const char *pack)
   }
 }
 
+void Preinit()
+{
+  if(!g_plugin)
+  {
+    g_plugin = new CPlugin;
+    g_plugin->PluginPreInitialize(0, 0);
+  }
+}
+
 extern "C" ADDON_STATUS Create(void* hdl, void* props)
 {
   if (!props)
     return STATUS_UNKNOWN;
 
   VIS_PROPS* visprops = (VIS_PROPS*)props;
-
   strcpy(g_visName, visprops->name);
-	g_plugin = new CPlugin;
-	g_plugin->PluginPreInitialize(0, 0);
+	
+  Preinit();
   g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio);
 
   return STATUS_NEED_SETTINGS;
@@ -91,9 +99,12 @@ void SaveSettings();
 extern "C" void Stop()
 {
   SaveSettings();
-	g_plugin->PluginQuit();
-	delete g_plugin;
-  g_plugin = NULL;
+  if(g_plugin)
+  {
+    g_plugin->PluginQuit();
+    delete g_plugin;
+    g_plugin = NULL;
+  }
   g_vecSettings.clear();
   g_uiVisElements = 0;
 }
@@ -508,6 +519,7 @@ extern "C" bool IsLocked()
 //-----------------------------------------------------------------------------
 extern "C" void Destroy()
 {
+  Stop();
 }
 
 //-- HasSettings --------------------------------------------------------------
@@ -534,14 +546,7 @@ extern "C" ADDON_STATUS GetStatus()
 
 extern "C" unsigned int GetSettings(StructSetting ***sSet)
 {
-  if(!g_plugin)
-  {
-    g_plugin = new CPlugin;
-    g_plugin->PluginPreInitialize(0, 0);
-    g_plugin->PluginQuit();
-	  delete g_plugin;
-    g_plugin = NULL;
-  }
+  Preinit();
   g_uiVisElements = DllUtils::VecToStruct(g_vecSettings, &g_structSettings);
   *sSet = g_structSettings;
   return g_uiVisElements;
@@ -564,14 +569,7 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
   if (!id || !value)
     return STATUS_UNKNOWN;
 
-  bool bplugininit = false;
-
-  if(!g_plugin)
-  {
-    bplugininit = true;
-    g_plugin = new CPlugin;
-    g_plugin->PluginPreInitialize(0, 0);
-  }
+  Preinit();
 
   if (strcmpi(id, "Use Preset") == 0)
     OnAction(34, &value);
@@ -611,13 +609,6 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
     return STATUS_UNKNOWN;
 
   SaveSettings();
-
-  if(bplugininit)
-  {
-    g_plugin->PluginQuit();
-	  delete g_plugin;
-    g_plugin = NULL;
-  }
 
   return STATUS_OK;
 }
