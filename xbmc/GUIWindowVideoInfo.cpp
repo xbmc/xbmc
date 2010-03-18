@@ -269,7 +269,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_castList->SetContent("episodes");
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
       m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
-      m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
+        m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
       if (CFile::Exists(m_movieItem->GetCachedEpisodeThumb()))
         m_movieItem->SetThumbnailImage(m_movieItem->GetCachedEpisodeThumb());
       // retrieve the season thumb.
