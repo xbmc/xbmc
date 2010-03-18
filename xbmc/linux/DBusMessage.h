@@ -40,11 +40,10 @@ public:
   DBusMessage *SendSession();
   DBusMessage *Send(DBusBusType type);
   DBusMessage *Send(DBusConnection *con, DBusError *error);
-
-  void Close();
-
 private:
+  void Close();
   void PrepareArgument();
+
   DBusMessage *m_message;
   DBusMessage *m_reply;
   DBusMessageIter m_args;
