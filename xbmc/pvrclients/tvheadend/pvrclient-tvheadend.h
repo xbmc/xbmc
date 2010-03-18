@@ -23,38 +23,32 @@
 #ifndef __PVRCLIENT_TVHEADEND_H__
 #define __PVRCLIENT_TVHEADEND_H__
 
-//#include <list>
-//#include "FileSystem/HTSPDirectory.h"
+#include <list>
+#include "HTSPSession.h"
 #include "client.h"
-//
-//extern "C" {
-//#include "lib/libhts/htsmsg.h"
-//}
 
-#define DEFAULT_HOST        "127.0.0.1"
-#define DEFAULT_PORT        9982
-//
-//using namespace HTSP;
+extern "C" {
+#include "libhts/htsmsg.h"
+}
 
 class cPVRClientTvheadend
 {
-  public:
-    /* Class interface */
-    cPVRClientTvheadend();
-    ~cPVRClientTvheadend();
+public:
+  /* Class interface */
+  cPVRClientTvheadend();
+  ~cPVRClientTvheadend();
 
-//    /* connect functions */
-//    bool Connect(std::string sHostname = DEFAULT_HOST, int iPort = DEFAULT_PORT);
-//    void Disconnect();
-//    bool IsConnected();
-//
-//    /* Server handling */
-//    PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
+  /* connect functions */
+  bool Connect(CStdString sHostname = DEFAULT_HOST, int iPort = DEFAULT_PORT, CStdString sUsername = "", CStdString sPassword = "");
+  void Disconnect();
+  bool IsConnected();
+
+  /* Server handling */
 //    PVR_ERROR GetStreamProperties(PVR_STREAMPROPS *props);
 //
-//    /* General handling */
-//    const char* GetBackendName();
-//    const char* GetBackendVersion();
+  /* General handling */
+  CStdString GetBackendName();
+  CStdString GetBackendVersion();
 //    PVR_ERROR   GetBackendTime(time_t *localTime, int *gmtOffset);
 //    const char* GetConnectionString();
 //
@@ -71,17 +65,17 @@ class cPVRClientTvheadend
 //
 //    bool SwitchChannel(const PVR_CHANNEL &channelinfo);
 //
-//  private:
-//    /* host session */
+private:
+  /* host session */
 //    CURL                    m_url;
 //    CHTSPDirectorySession*  m_pSession;
 };
-//
-//inline bool cPVRClientTvheadend::IsConnected()
-//{
-//  return (m_pSession != NULL);
-//}
-//
+
+inline bool cPVRClientTvheadend::IsConnected()
+{
+  return true;//(m_pSession != NULL);
+}
+
 //inline int cPVRClientTvheadend::GetNumChannels()
 //{
 //  return (int)(m_pSession->GetChannels().size());

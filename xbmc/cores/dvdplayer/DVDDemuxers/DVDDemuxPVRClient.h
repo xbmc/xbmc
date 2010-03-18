@@ -63,96 +63,24 @@ public:
   CDVDDemuxPVRClient();
   ~CDVDDemuxPVRClient();
 
-  /*
-   * Open input stream
-   */
   bool Open(CDVDInputStream* pInput);
-
-  /*
-   * Reset the entire demuxer (same result as closing and opening it)
-   */
+  void Dispose();
   void Reset();
-
-  /*
-   * Aborts any internal reading that might be stalling main thread
-   * NOTICE - this can be called from another thread
-   */
   void Abort();
-
-  /*
-   * Flush the demuxer, if any data is kept in buffers, this should be freed now
-   */
   void Flush();
-
-  /*
-   * Read a packet, returns NULL on error
-   *
-   */
   DemuxPacket* Read();
-
-  /*
-   * Seek, time in msec calculated from stream start
-   */
   bool SeekTime(int time, bool backwords = false, double* startpts = NULL) { return false; }
-
-  /*
-   * Seek to a specified chapter.
-   * startpts can be updated to the point where display should start
-   */
-  bool SeekChapter(int chapter, double* startpts = NULL) { return false; }
-
-  /*
-   * Get the number of chapters available
-   */
-  int GetChapterCount() { return 0; }
-
-  /*
-   * Get current chapter
-   */
-  int GetChapter() { return -1; }
-
-  /*
-   * Get the name of the current chapter
-   */
-  void GetChapterName(std::string& strChapterName) {}
-
-  /*
-   * Set the playspeed, if demuxer can handle different
-   * speeds of playback
-   */
   void SetSpeed(int iSpeed) {};
-
-  /*
-   * returns the total time in msec
-   */
-  int GetStreamLength();
-
-  /*
-   * returns the stream or NULL on error, starting from 0
-   */
+  int GetStreamLength() { return 0; }
   CDemuxStream* GetStream(int iStreamId);
-
-  /*
-   * return nr of streams, 0 if none
-   */
   int GetNrOfStreams();
-
-  /*
-   * returns opened filename
-   */
   std::string GetFileName();
 
-  /*
-   * return a user-presentable codec name of the given stream
-   */
-  void GetStreamCodecName(int iStreamId, CStdString &strName) {};
-
 protected:
-  CRITICAL_SECTION m_critSection;
-
   CDVDInputStream* m_pInput;
 
-  std::map<int, CDemuxStream*> m_streams;
+  #define MAX_PVR_STREAMS 42
+  CDemuxStream* m_streams[MAX_PVR_STREAMS]; // maximum number of streams that ffmpeg can handle
 
 private:
   /*

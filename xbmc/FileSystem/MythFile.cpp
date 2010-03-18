@@ -643,7 +643,7 @@ bool CMythFile::PrevChannel(bool preview)
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }
 
-bool CMythFile::SelectChannel(unsigned int channel, bool isPreviewed)
+bool CMythFile::SelectChannel(unsigned int channel)
 {
   return ChangeChannel(CHANNEL_DIRECTION_SAME,""+channel);
 }

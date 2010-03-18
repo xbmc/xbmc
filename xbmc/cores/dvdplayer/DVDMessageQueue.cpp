@@ -22,7 +22,6 @@
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "utils/log.h"
-#include "PVRManager.h"
 #include "SingleLock.h"
 #include "DVDClock.h"
 #include "MathUtils.h"

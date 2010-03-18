@@ -5,7 +5,7 @@ OBJS = htsmsg.o \
        net_posix.o \
        sha1.o \
 
-CFLAGS=-std=c99 -D_GNU_SOURCE
+CFLAGS=-std=c99 -D_GNU_SOURCE -fPIC
 LIB=libhts.a
 
 # all is the default rule

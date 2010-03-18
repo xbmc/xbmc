@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../xbmc/addons/include -I../../xbmc
+INCLUDES=-I. -I../../xbmc/addons/include -I../../xbmc -I../../xbmc/cores/dvdplayer/DVDDemuxers
 DEFINES+=
 CXXFLAGS=-fPIC
 LIBNAME=libXBMC_pvr

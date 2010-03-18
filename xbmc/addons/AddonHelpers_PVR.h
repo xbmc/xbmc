@@ -41,6 +41,8 @@ public:
   static void PVRTransferTimerEntry(void *addonData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
   static void PVRTransferRecordingEntry(void *addonData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
   static void PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook);
+  static void PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket);
+  static DemuxPacket* PVRAllocateDemuxPacket(void *addonData, int iDataSize = 0);
 
 private:
   CB_PVRLib    *m_callbacks;

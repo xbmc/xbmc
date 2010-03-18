@@ -11,11 +11,11 @@ DESTDIR ?=
 PREFIX  ?= /usr/local
 ADDONDIR = $(PREFIX)/share/xbmc/addons
 LIBS     = libhts/libhts.a -ldl
-INCLUDES = -I. -I../../linux -I../../ -I../../../guilib -I../../../include -I../../../xbmc/utils -I../../../xbmc/addons/include
+INCLUDES = -I. -I../../../xbmc/cores/dvdplayer/DVDDemuxers -I../../../xbmc/addons/include -I../../../xbmc/cores/dvdplayer/Codecs/ffmpeg
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 INCLUDES +=  -I/opt/local/include
 endif
-DEFINES += -D_LINUX -fPIC
+DEFINES += -D_LINUX -fPIC -DUSE_DEMUX
 LIBDIR   = ../../../addons/com.lonelycoder.hts.pvr
 LIB      = ../../../addons/com.lonelycoder.hts.pvr/XBMC_Tvheadend.pvr
 
@@ -31,7 +31,7 @@ endif
 
 -include Make.config
 
-OBJS = client.o pvrclient-tvheadend.o 
+OBJS = client.o HTSPSession.o HTSPDemux.o
 
 all: pvrTvheadend
 

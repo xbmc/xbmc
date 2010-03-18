@@ -43,6 +43,16 @@
 #endif
 #include <string.h>
 
+/*! \note Define "USE_DEMUX" on compile time if demuxing inside pvr
+ * addon is used. Also XBMC's "DVDDemuxPacket.h" file must be inside
+ * the include path of the pvr addon.
+ */
+#ifdef USE_DEMUX
+#include "DVDDemuxPacket.h"
+#else
+struct DemuxPacket;
+#endif
+
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN
 #undef PRAGMA_PACK_END
@@ -159,6 +169,7 @@ extern "C" {
       int physid;
       unsigned int codec_type;
       unsigned int codec_id;
+      int identifier;
     } stream[PVR_STREAM_MAX_STREAMS];
   } ATTRIBUTE_PACKED PVR_STREAMPROPS;
 
@@ -386,6 +397,13 @@ extern "C" {
     long long (__cdecl* SeekRecordedStream)(long long pos, int whence);
     long long (__cdecl* PositionRecordedStream)(void);
     long long (__cdecl* LengthRecordedStream)(void);
+
+    /** \name Demuxer Interface */
+    void (__cdecl* DemuxReset)();
+    void (__cdecl* DemuxAbort)();
+    void (__cdecl* DemuxFlush)();
+    DemuxPacket* (__cdecl* DemuxRead)();
+
   } PVRClient;
 
 #ifdef __cplusplus

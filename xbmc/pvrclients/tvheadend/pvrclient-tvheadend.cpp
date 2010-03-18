@@ -24,6 +24,8 @@
 
 #include "pvrclient-tvheadend.h"
 
+using namespace std;
+
 const size_t CIRCULAR_BUFFER_SIZE = 1024 * 1024;
 
 /************************************************************/
@@ -31,7 +33,6 @@ const size_t CIRCULAR_BUFFER_SIZE = 1024 * 1024;
 
 cPVRClientTvheadend::cPVRClientTvheadend()
 {
-//  m_pSession = NULL;
 }
 
 cPVRClientTvheadend::~cPVRClientTvheadend()
@@ -39,28 +40,32 @@ cPVRClientTvheadend::~cPVRClientTvheadend()
 //  Disconnect();
 }
 
-///* connect functions */
-//bool cPVRClientTvheadend::Connect(std::string sHostname, int iPort)
-//{
-//  m_url.SetHostName(sHostname);
-//  m_url.SetPort(iPort);
-//
-//  if (m_pSession)
-//    Disconnect();
-//
-//  /* connect session */
-//  if (!(m_pSession = CHTSPDirectorySession::Acquire(m_url)))  //if (!m_cSession.Connect(m_sHostname, m_iPort))
-//    return false;
-//
-//  return true;
-//}
-//
-//void cPVRClientTvheadend::Disconnect()
-//{
-//  CHTSPDirectorySession::Release(m_pSession);
-//  m_pSession = NULL;
-//}
-//
+/* connect functions */
+bool cPVRClientTvheadend::Connect(CStdString sHostname, int iPort, CStdString sUsername, CStdString sPassword)
+{
+  if(!g_pSession.Connect(sHostname, iPort))
+    return false;
+
+  if(g_pSession.GetProtocol() < 2)
+  {
+    XBMC->Log(LOG_ERROR, "Incompatible protocol version %d", g_pSession.GetProtocol());
+    return false;
+  }
+
+  if(!sUsername.IsEmpty())
+    g_pSession.Auth(sUsername, sPassword);
+
+  if(!g_pSession.SendEnableAsync())
+    return false;
+
+  return true;
+}
+
+void cPVRClientTvheadend::Disconnect()
+{
+  g_pSession.Close();
+}
+
 //PVR_ERROR cPVRClientTvheadend::GetBackendTime(time_t *localTime, int *gmtOffset)
 //{
 //  if (!IsConnected() || !m_pSession->GetTime(localTime, gmtOffset))
@@ -172,28 +177,10 @@ cPVRClientTvheadend::~cPVRClientTvheadend()
 //
 //  return PVR_ERROR_NO_ERROR;
 //}
-//
-///************************************************************/
-///** Server handling */
-//
-//PVR_ERROR cPVRClientTvheadend::GetProperties(PVR_SERVERPROPS *props) {
-//  props->SupportChannelLogo        = true;
-//  props->SupportTimeShift          = false;
-//  props->SupportEPG                = true;
-//  props->SupportRecordings         = true;
-//  props->SupportTimers             = true;
-//  props->SupportTV                 = true;
-//  props->SupportRadio              = true;
-//  props->SupportChannelSettings    = true;
-//  props->SupportDirector           = false;
-//  props->SupportBouquets           = true;
-//  props->HandleInputStream         = true;
-//  props->HandleDemuxing            = true;
-//  props->SupportChannelScan        = false;
-//
-//  return PVR_ERROR_NO_ERROR;
-//}
-//
+
+/************************************************************/
+/** Server handling */
+
 //PVR_ERROR cPVRClientTvheadend::GetStreamProperties(PVR_STREAMPROPS *props) {
 //  if (!IsConnected())
 //    return PVR_ERROR_SERVER_ERROR;

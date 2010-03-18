@@ -3,10 +3,6 @@
     <!-- settings labels -->
     <string id="30000">Tvheadend Hostname oder IP</string>
     <string id="30001">HTSP Port</string>
-    <string id="30002">Nur frei empfangbare Kanäle</string>
-    <string id="30003">Zeige Radiokanäle</string>
-    <string id="30004">Textkonvertierung (UTF-8)</string>
-    <string id="30005">Verbindungszeitüberlauf (s)</string>
-    <string id="30006">Ignoriere Känale ohne VPID und APID</string>
-    <string id="30007">HTSP Nachrichten erlauben</string>
+    <string id="30002">Benutzername</string>
+    <string id="30003">Passwort</string>
 </strings>

@@ -53,7 +53,7 @@ public:
 
   virtual bool    NextStream();
 
-  bool            SelectChannel(unsigned int iChannel, bool isPreviewed = false);
+  bool            SelectChannel(unsigned int iChannel);
   bool            NextChannel(bool preview = false);
   bool            PrevChannel(bool preview = false);
   int             GetSelectedChannel();

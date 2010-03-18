@@ -19,12 +19,15 @@
  *
  */
 
+#define USE_DEMUX // enable including of the demuxer packet structure
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string>
 #include "../../addons/org.xbmc.pvr.library/libXBMC_pvr.h"
 #include "addons/AddonHelpers_local.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxPacket.h"
 
 using namespace std;
 
@@ -94,6 +97,22 @@ void PVR_add_menu_hook(PVR_MENUHOOK *hook)
     return;
 
   m_cb->AddMenuHook(m_Handle->addonData, hook);
+}
+
+void PVR_free_demux_packet(DemuxPacket* pPacket)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->FreeDemuxPacket(m_Handle->addonData, pPacket);
+}
+
+DemuxPacket* PVR_allocate_demux_packet(int iDataSize)
+{
+  if (m_cb == NULL)
+    return NULL;
+
+  return m_cb->AllocateDemuxPacket(m_Handle->addonData, iDataSize);
 }
 
 };

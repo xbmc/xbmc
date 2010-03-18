@@ -36,7 +36,7 @@ CAddonHelpers::CAddonHelpers(CAddon* addon)
   m_helperAddon = NULL;
   m_helperPVR   = NULL;
 
-  m_callbacks->libBasePath           = strdup(_P("special://xbmc/addons/libraries"));
+  m_callbacks->libBasePath           = strdup(_P("special://xbmc/addons"));
   m_callbacks->addonData             = this;
   m_callbacks->AddOnLib_RegisterMe   = CAddonHelpers::AddOnLib_RegisterMe;
   m_callbacks->AddOnLib_UnRegisterMe = CAddonHelpers::AddOnLib_UnRegisterMe;

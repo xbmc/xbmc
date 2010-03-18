@@ -1020,21 +1020,6 @@ int ReadLiveStream(unsigned char* buf, int buf_size)
   return TSReadDone*TS_SIZE;
 }
 
-long long SeekLiveStream(long long pos, int whence)
-{
-  return -1;
-}
-
-long long PositionLiveStream(void)
-{
-  return -1;
-}
-
-long long LengthLiveStream(void)
-{
-  return -1;
-}
-
 int GetCurrentClientChannel()
 {
   return m_iCurrentChannel;
@@ -1226,9 +1211,15 @@ long long LengthRecordedStream(void)
   return m_currentPlayingRecordBytes;
 }
 
-const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
-{
-  return ""; // not implemented
-}
+
+/** UNUSED API FUNCTIONS */
+DemuxPacket* DemuxRead() { return NULL; }
+void DemuxAbort() {}
+void DemuxReset() {}
+void DemuxFlush() {}
+long long SeekLiveStream(long long pos, int whence) { return -1; }
+long long PositionLiveStream(void) { return -1; }
+long long LengthLiveStream(void) { return -1; }
+const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo) { return ""; }
 
 } //end extern "C"

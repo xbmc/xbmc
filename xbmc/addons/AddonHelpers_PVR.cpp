@@ -42,6 +42,8 @@ CAddonHelpers_PVR::CAddonHelpers_PVR(CAddon* addon)
   m_callbacks->TransferTimerEntry     = PVRTransferTimerEntry;
   m_callbacks->TransferRecordingEntry = PVRTransferRecordingEntry;
   m_callbacks->AddMenuHook            = PVRAddMenuHook;
+  m_callbacks->FreeDemuxPacket        = PVRFreeDemuxPacket;
+  m_callbacks->AllocateDemuxPacket    = PVRAllocateDemuxPacket;
 };
 
 CAddonHelpers_PVR::~CAddonHelpers_PVR()
@@ -239,6 +241,16 @@ void CAddonHelpers_PVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
   hookInt.hook_id   = hook->hook_id;
   hookInt.string_id = hook->string_id;
   hooks->push_back(hookInt);
+}
+
+void CAddonHelpers_PVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)
+{
+  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+}
+
+DemuxPacket* CAddonHelpers_PVR::PVRAllocateDemuxPacket(void *addonData, int iDataSize)
+{
+  return CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
 }
 
 }; /* namespace ADDON */

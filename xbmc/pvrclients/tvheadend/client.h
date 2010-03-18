@@ -23,40 +23,22 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <string>
+#include "StdString.h"
 #include "../../../addons/org.xbmc.addon.library/libXBMC_addon.h"
 #include "../../../addons/org.xbmc.pvr.library/libXBMC_pvr.h"
 
 #define DEFAULT_HOST        "127.0.0.1"
 #define DEFAULT_PORT        9982
-#define DEFAULT_FTA_ONLY    false
-#define DEFAULT_RADIO       true
-#define DEFAULT_CHARCONV    false
-#define DEFAULT_TIMEOUT     3
-#define DEFAULT_BADCHANNELS true
-#define DEFAULT_HANDLE_MSG  true
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 extern bool         m_bCreated;
-extern std::string  m_sHostname;
-extern int          m_iPort;
-extern bool         m_bOnlyFTA;
-extern bool         m_bRadioEnabled;
-extern bool         m_bCharsetConv;
-extern int          m_iConnectTimeout;
-extern bool         m_bNoBadChannels;
-extern bool         m_bHandleMessages;
+extern CStdString   g_szHostname;
+extern int          g_iPort;
+extern CStdString   g_szUsername;
+extern CStdString   g_szPassword;
 extern int          g_clientID;
-extern std::string  g_szUserPath;
-extern std::string  g_szClientPath;
+extern CStdString   g_szUserPath;
+extern CStdString   g_szClientPath;
 extern cHelper_libXBMC_addon *XBMC;
 extern cHelper_libXBMC_pvr   *PVR;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* CLIENT_H */

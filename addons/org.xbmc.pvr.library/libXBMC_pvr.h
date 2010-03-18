@@ -48,6 +48,9 @@
 #endif /* __x86_64__ */
 #endif /* _LINUX */
 
+#define DVD_TIME_BASE 1000000
+#define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
+
 class cHelper_libXBMC_pvr
 {
 public:
@@ -109,6 +112,16 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_add_menu_hook");
     if (AddMenuHook == NULL)            { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+#ifdef USE_DEMUX
+    FreeDemuxPacket         = (void (*)(DemuxPacket* pPacket))
+      dlsym(m_libXBMC_pvr, "PVR_free_demux_packet");
+    if (FreeDemuxPacket == NULL)        { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    AllocateDemuxPacket     = (DemuxPacket* (*)(int iDataSize))
+      dlsym(m_libXBMC_pvr, "PVR_allocate_demux_packet");
+    if (AllocateDemuxPacket == NULL)    { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+#endif
+
     return PVR_register_me(m_Handle) > 0;
   }
 
@@ -117,6 +130,10 @@ public:
   void (*TransferTimerEntry)(const PVRHANDLE handle, const PVR_TIMERINFO *timer);
   void (*TransferRecordingEntry)(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
   void (*AddMenuHook)(PVR_MENUHOOK *hook);
+#ifdef USE_DEMUX
+  void (*FreeDemuxPacket)(DemuxPacket* pPacket);
+  DemuxPacket* (*AllocateDemuxPacket)(int iDataSize);
+#endif
 
 protected:
   int (*PVR_register_me)(void *HANDLE);

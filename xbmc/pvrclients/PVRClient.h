@@ -53,7 +53,6 @@ public:
   /* Server */
   long GetID();
   PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
-  PVR_ERROR GetStreamProperties(PVR_STREAMPROPS *props);
 
   /* General */
   const std::string GetBackendName();
@@ -106,6 +105,12 @@ public:
   int64_t SeekRecordedStream(int64_t iFilePosition, int iWhence = SEEK_SET);
   int64_t PositionRecordedStream(void);
   int64_t LengthRecordedStream(void);
+
+  PVR_ERROR GetStreamProperties(PVR_STREAMPROPS *props);
+  void DemuxReset();
+  void DemuxAbort();
+  void DemuxFlush();
+  DemuxPacket* DemuxRead();
 
 protected:
   bool                  m_ReadyToUse;

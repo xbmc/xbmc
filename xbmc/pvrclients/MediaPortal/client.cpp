@@ -533,6 +533,11 @@ int ReadLiveStream(unsigned char* buf, int buf_size)
   return g_client->ReadLiveStream(buf, buf_size);
 }
 
+DemuxPacket* DemuxRead()
+{
+  return NULL;
+}
+
 long long SeekLiveStream(long long pos, int whence)
 {
   return -1;

@@ -105,6 +105,12 @@ extern "C"
   long long LengthRecordedStream(void);
   const char* GetLiveStreamURL(const PVR_CHANNEL &channelinfo);
 
+  /** \name Demuxer Interface */
+  void DemuxReset();
+  void DemuxAbort();
+  void DemuxFlush();
+  DemuxPacket* DemuxRead();
+
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
@@ -162,6 +168,10 @@ extern "C"
     pClient->PositionRecordedStream = PositionRecordedStream;
     pClient->LengthRecordedStream   = LengthRecordedStream;
     pClient->GetLiveStreamURL       = GetLiveStreamURL;
+    pClient->DemuxReset             = DemuxReset;
+    pClient->DemuxAbort             = DemuxAbort;
+    pClient->DemuxFlush             = DemuxFlush;
+    pClient->DemuxRead              = DemuxRead;
   };
 };
 

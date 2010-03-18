@@ -666,7 +666,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
           {
             kBTotal /= 1024; // Convert to MBytes
             kBUsed /= 1024;  // Convert to MBytes
-            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(19105), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
+            m_backendDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
           }
           else
           {
@@ -736,7 +736,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
     }
     kBTotal /= 1024; // Convert to MBytes
     kBUsed /= 1024;  // Convert to MBytes
-    m_totalDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(19105), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
+    m_totalDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
     return m_totalDiskspace;
   }
   else if (dwInfo == PVR_NEXT_TIMER)
@@ -1643,6 +1643,43 @@ int CPVRManager::ReadStream(void* lpBuf, int64_t uiBufSize)
   return bytesReaded;
 }
 
+void CPVRManager::DemuxReset()
+{
+  EnterCriticalSection(&m_critSection);
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxReset();
+  LeaveCriticalSection(&m_critSection);
+}
+
+void CPVRManager::DemuxAbort()
+{
+  EnterCriticalSection(&m_critSection);
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxAbort();
+  LeaveCriticalSection(&m_critSection);
+}
+
+void CPVRManager::DemuxFlush()
+{
+  EnterCriticalSection(&m_critSection);
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxFlush();
+  LeaveCriticalSection(&m_critSection);
+}
+
+DemuxPacket* CPVRManager::ReadDemuxStream()
+{
+  DemuxPacket* packet = NULL;
+
+  EnterCriticalSection(&m_critSection);
+  if (m_currentPlayingChannel)
+  {
+    packet = m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->DemuxRead();
+  }
+  LeaveCriticalSection(&m_critSection);
+  return packet;
+}
+
 int64_t CPVRManager::LengthStream(void)
 {
   int64_t streamLength = 0;
@@ -1704,7 +1741,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 {
   /* Don't update if a recording is played */
   if (item.IsPVRRecording())
-    return true;
+    return false;
 
   if (!item.IsPVRChannel())
   {
@@ -1747,7 +1784,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   return false;
 }
 
-bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = false*/)
+bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
   if (!m_currentPlayingChannel)
     return false;
@@ -1769,8 +1806,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = fals
   const cPVRChannelInfoTag* tag = &channels->at(iChannel-1);
 
   /* Store current settings inside Database */
-  if (isPreviewed)
-    SaveCurrentChannelSettings();
+  SaveCurrentChannelSettings();
 
   /* Perform Channelswitch */
   if (!m_clients[tag->ClientID()]->SwitchChannel(*tag))
@@ -1781,11 +1817,8 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel, bool isPreviewed/* = fals
   }
 
   /* Update the Playing channel data and the current epg data if it was not previewed */
-  if (!isPreviewed)
-  {
-    delete m_currentPlayingChannel;
-    m_currentPlayingChannel = new CFileItem(*tag);
-  }
+  delete m_currentPlayingChannel;
+  m_currentPlayingChannel = new CFileItem(*tag);
 
   /* Reset the Audio/Video detection counter */
   m_scanStart = CTimeUtils::GetTimeMS();
@@ -1949,13 +1982,7 @@ int CPVRManager::GetStartTime()
   if (tag->NowEndTime() < CDateTime::GetCurrentDateTime() || tag->NowTitle() == g_localizeStrings.Get(19055))
   {
     EnterCriticalSection(&m_critSection);
-
-    if (UpdateItem(*m_currentPlayingChannel))
-    {
-      g_application.CurrentFileItem() = *m_currentPlayingChannel;
-      g_infoManager.SetCurrentItem(*m_currentPlayingChannel);
-    }
-
+    UpdateItem(*m_currentPlayingChannel);
     LeaveCriticalSection(&m_critSection);
   }
 

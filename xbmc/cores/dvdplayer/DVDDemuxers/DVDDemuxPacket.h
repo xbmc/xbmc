@@ -1,6 +1,7 @@
 #pragma once
+
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,33 +21,14 @@
  *
  */
 
-class CFileItem;
-
-namespace XFILE
+ typedef struct DemuxPacket
 {
-class ILiveTVInterface
-{
-public:
-  virtual ~ILiveTVInterface() {}
-  virtual bool           NextChannel(bool preview = false) = 0;
-  virtual bool           PrevChannel(bool preview = false) = 0;
-  virtual bool           SelectChannel(unsigned int channel) = 0;
+  unsigned char* pData;   // data
+  int iSize;     // data size
+  int iStreamId; // integer representing the stream index
+  int iGroupId;  // the group this data belongs to, used to group data from different streams together
 
-  virtual int            GetTotalTime() = 0;
-  virtual int            GetStartTime() = 0;
-
-  virtual bool           UpdateItem(CFileItem& item)=0;
-};
-
-class IRecordable
-{
-public:
-  virtual ~IRecordable() {}
-
-  virtual bool CanRecord() = 0;
-  virtual bool IsRecording() = 0;
-  virtual bool Record(bool bOnOff) = 0;
-};
-
-}
-
+  double pts; // pts in DVD_TIME_BASE
+  double dts; // dts in DVD_TIME_BASE
+  double duration; // duration in DVD_TIME_BASE if available
+} DemuxPacket;

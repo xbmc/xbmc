@@ -238,6 +238,25 @@ public:
    */
   int ReadStream(void* lpBuf, int64_t uiBufSize);
 
+  /*! \brief Reset the client demuxer
+   */
+  void DemuxReset();
+
+  /*! \brief Aborts any internal reading that might be stalling main thread
+   * NOTICE - this can be called from another thread
+   */
+  void DemuxAbort();
+
+  /*! \brief Flush the demuxer, if any data is kept in buffers, this should be freed now
+   */
+  void DemuxFlush();
+
+  /*! \brief Read the stream from demuxer
+   Read the stream from pvr client own demuxer
+   \return a allocated demuxer packet
+   */
+  DemuxPacket* ReadDemuxStream();
+
   /*! \brief Return the filesize of the current running stream.
    Limited to recordings playback at the moment.
    \return the size of the actual running stream
@@ -267,10 +286,9 @@ public:
   /*! \brief Switch to a channel by the given number
    Used only for live TV channels
    \param channel the channel number to switch
-   \param isPreviewed true if it was previously selected by Channel>Up/Down< and fast zapping is enabled
    \return true if success
    */
-  bool ChannelSwitch(unsigned int channel, bool isPreviewed = false);
+  bool ChannelSwitch(unsigned int channel);
 
   /*! \brief Switch to the next channel in list
    It switch to the next channel and return the new channel to

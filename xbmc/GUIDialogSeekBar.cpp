@@ -130,13 +130,6 @@ void CGUIDialogSeekBar::FrameMove()
     return;
   }
 
-  CFileItem item(g_application.CurrentFileItem());
-  if (item.HasPVRChannelInfoTag() && g_guiSettings.GetBool("pvrmenu.hidevideolength"))
-  {
-    Close(true);
-    return;
-  }
-
   // check if we should seek or exit
   if (!g_infoManager.m_performingSeek && CTimeUtils::GetFrameTime() - m_timer > SEEK_BAR_DISPLAY_TIME)
     g_infoManager.SetSeeking(false);

@@ -924,7 +924,7 @@ void CDVDPlayer::Process()
         m_ChannelEntryTimeOut = 0;
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         int channel = pStream->GetSelectedChannel();
-        if(channel > 0 && pStream->SelectChannel(channel, true))
+        if(channel > 0 && pStream->SelectChannel(channel))
         {
           FlushBuffers(false);
           CloseAudioStream(true);
@@ -1946,10 +1946,8 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
-        g_infoManager.SetDisplayAfterSeek(100000);
-
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value), g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0)
+        if(input && input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
 
           FlushBuffers(false);
@@ -1957,8 +1955,6 @@ void CDVDPlayer::HandleMessages()
           CloseVideoStream(true);
           SAFE_DELETE(m_pDemuxer);
         }
-
-        g_infoManager.SetDisplayAfterSeek();
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
       {
@@ -1967,9 +1963,6 @@ void CDVDPlayer::HandleMessages()
         {
           bool result;
           bool fastSwitch = g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0;
-
-          if (!fastSwitch)
-            g_infoManager.SetDisplayAfterSeek(100000);
 
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
             result = input->NextChannel(fastSwitch);
@@ -1997,8 +1990,6 @@ void CDVDPlayer::HandleMessages()
               SAFE_DELETE(m_pDemuxer);
             }
           }
-          if (!fastSwitch)
-            g_infoManager.SetDisplayAfterSeek(100000);
         }
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))

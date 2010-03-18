@@ -21,7 +21,7 @@
  *
  */
 
-#include "DVDDemux.h"
+#include "DVDDemuxPacket.h"
 
 class CDVDDemuxUtils
 {

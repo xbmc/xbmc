@@ -20,6 +20,7 @@
  *
  */
 
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "addons/include/xbmc_pvr_types.h"
 #include "../../addons/org.xbmc.addon.library/libXBMC_addon.h"
 
@@ -42,6 +43,8 @@ typedef void (*PVRTransferChannelEntry)(void *userData, const PVRHANDLE handle, 
 typedef void (*PVRTransferTimerEntry)(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
 typedef void (*PVRTransferRecordingEntry)(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
 typedef void (*PVRAddMenuHook)(void *addonData, PVR_MENUHOOK *hook);
+typedef void (*PVRFreeDemuxPacket)(void *addonData, DemuxPacket* pPacket);
+typedef DemuxPacket* (*PVRAllocateDemuxPacket)(void *addonData, int iDataSize);
 
 typedef struct CB_PVRLib
 {
@@ -50,6 +53,8 @@ typedef struct CB_PVRLib
   PVRTransferTimerEntry     TransferTimerEntry;
   PVRTransferRecordingEntry TransferRecordingEntry;
   PVRAddMenuHook            AddMenuHook;
+  PVRFreeDemuxPacket        FreeDemuxPacket;
+  PVRAllocateDemuxPacket    AllocateDemuxPacket;
 
 } CB_PVRLib;
 

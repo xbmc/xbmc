@@ -208,7 +208,7 @@ bool CPVRFile::PrevChannel(bool preview/* = false*/)
   }
 }
 
-bool CPVRFile::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
+bool CPVRFile::SelectChannel(unsigned int channel)
 {
   if (m_isPlayRecording)
   {
@@ -219,7 +219,7 @@ bool CPVRFile::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
     return true;
   }
 
-  if (g_PVRManager.ChannelSwitch(channel, isPreviewed))
+  if (g_PVRManager.ChannelSwitch(channel))
   {
     m_playingItem = channel;
     return true;

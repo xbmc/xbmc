@@ -67,19 +67,6 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
-    CDVDInputStreamPVRManager* pInputStreamPVR = (CDVDInputStreamPVRManager*)pInputStream;
-
-#ifdef HAS_FILESYSTEM_HTSP
-    if (pInputStreamPVR->IsStreamType(DVDSTREAM_TYPE_HTSP))
-    {
-      auto_ptr<CDVDDemuxHTSP> demuxer(new CDVDDemuxHTSP());
-      if(demuxer->Open(pInputStream))
-        return demuxer.release();
-      else
-        return NULL;
-    }
-#endif
-  
     PVR_SERVERPROPS *pProps = g_PVRManager.GetCurrentClientProps();
     if (pProps && pProps->HandleDemuxing)
     {

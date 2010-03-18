@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -I../cores/ffmpeg
+INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -I../cores/ffmpeg -I../cores/dvdplayer/DVDDemuxers
 
 SRCS=PVRClient.cpp \
 

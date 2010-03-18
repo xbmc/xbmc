@@ -142,10 +142,10 @@ bool CDVDInputStreamTV::PrevChannel(bool preview/* = false*/)
   return m_pLiveTV->PrevChannel();
 }
 
-bool CDVDInputStreamTV::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
+bool CDVDInputStreamTV::SelectChannel(unsigned int channel)
 {
   if(!m_pLiveTV) return false;
-  return m_pLiveTV->SelectChannel(channel, isPreviewed);
+  return m_pLiveTV->SelectChannel(channel);
 }
 
 bool CDVDInputStreamTV::UpdateItem(CFileItem& item)

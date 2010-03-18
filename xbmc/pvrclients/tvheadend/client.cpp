@@ -21,31 +21,34 @@
 
 #include "client.h"
 #include "xbmc_pvr_dll.h"
-#include "pvrclient-tvheadend.h"
+#include "HTSPSession.h"
+#include "HTSPDemux.h"
 
 using namespace std;
 
-cPVRClientTvheadend *g_client = NULL;
-bool m_bCreated         = false;
-ADDON_STATUS curStatus  = STATUS_UNKNOWN;
-int g_clientID          = -1;
+//cPVRClientTvheadend *g_client = NULL;
+bool m_bCreated               = false;
+ADDON_STATUS curStatus        = STATUS_UNKNOWN;
+int g_clientID                = -1;
 
 /* User adjustable settings are saved here.
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string m_sHostname = DEFAULT_HOST;
-int m_iPort             = DEFAULT_PORT;
-bool m_bOnlyFTA         = DEFAULT_FTA_ONLY;
-bool m_bRadioEnabled    = DEFAULT_RADIO;
-bool m_bCharsetConv     = DEFAULT_CHARCONV;
-int m_iConnectTimeout   = DEFAULT_TIMEOUT;
-bool m_bNoBadChannels   = DEFAULT_BADCHANNELS;
-bool m_bHandleMessages  = DEFAULT_HANDLE_MSG;
-std::string g_szUserPath    = "";
-std::string g_szClientPath  = "";
-cHelper_libXBMC_addon *XBMC = NULL;
-cHelper_libXBMC_pvr   *PVR  = NULL;
+CStdString g_szHostname       = DEFAULT_HOST;
+int g_iPort                   = DEFAULT_PORT;
+CStdString g_szUsername       = "";
+CStdString g_szPassword       = "";
+CStdString g_szUserPath       = "";
+CStdString g_szClientPath     = "";
+cHelper_libXBMC_addon *XBMC   = NULL;
+cHelper_libXBMC_pvr   *PVR    = NULL;
+cHTSPDemux *HTSPDemuxer       = NULL;
+
+bool CheckConnection()
+{
+  return true;
+}
 
 extern "C" {
 
@@ -55,7 +58,6 @@ extern "C" {
 
 ADDON_STATUS Create(void* hdl, void* props)
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
   if (!hdl || !props)
     return STATUS_UNKNOWN;
 
@@ -69,93 +71,77 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!PVR->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
-//  XBMC->Log(LOG_DEBUG, "Creating Tvheadend PVR-Client");
-//
-//  curStatus      = STATUS_UNKNOWN;
-//  g_client       = new cPVRClientTvheadend();
-//  g_clientID     = pvrprops->clientID;
-//  g_szUserPath   = pvrprops->userpath;
-//  g_szClientPath = pvrprops->clientpath;
-//
-//  /* Read setting "host" from settings.xml */
-//  char * buffer;
-//  buffer = (char*) malloc (1024);
-//  buffer[0] = 0; /* Set the end of string */
-//
-//  if (XBMC->GetSetting("host", buffer))
-//    m_sHostname = buffer;
-//  else
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '127.0.0.1' as default");
-//    m_sHostname = DEFAULT_HOST;
-//  }
-//  free (buffer);
-//
-//  /* Read setting "port" from settings.xml */
-//  if (!XBMC->GetSetting("port", &m_iPort))
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '9982' as default");
-//    m_iPort = DEFAULT_PORT;
-//  }
-//
-//  printf("host %s, port %d\n", m_sHostname.c_str(), m_iPort);
-//
-//  /* Read setting "ftaonly" from settings.xml */
-//  if (!XBMC->GetSetting("ftaonly", &m_bOnlyFTA))
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'ftaonly' setting, falling back to 'false' as default");
-//    m_bOnlyFTA = DEFAULT_FTA_ONLY;
-//  }
-//
-//  /* Read setting "useradio" from settings.xml */
-//  if (!XBMC->GetSetting("useradio", &m_bRadioEnabled))
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
-//    m_bRadioEnabled = DEFAULT_RADIO;
-//  }
-//
-//  /* Read setting "convertchar" from settings.xml */
-//  if (!XBMC->GetSetting("convertchar", &m_bCharsetConv))
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
-//    m_bCharsetConv = DEFAULT_CHARCONV;
-//  }
-//
-//  /* Read setting "timeout" from settings.xml */
-//  if (!XBMC->GetSetting("timeout", &m_iConnectTimeout))
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
-//    m_iConnectTimeout = DEFAULT_TIMEOUT;
-//  }
-//
-//  /* Read setting "ignorechannels" from settings.xml */
-//  if (!XBMC->GetSetting("ignorechannels", &m_bNoBadChannels))
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'ignorechannels' setting, falling back to 'true' as default");
-//    m_bNoBadChannels = DEFAULT_BADCHANNELS;
-//  }
-//
-//  /* Read setting "ignorechannels" from settings.xml */
-//  if (!XBMC->GetSetting("handlemessages", &m_bHandleMessages))
-//  {
-//    /* If setting is unknown fallback to defaults */
-//    XBMC->Log(LOG_ERROR, "Couldn't get 'handlemessages' setting, falling back to 'true' as default");
-//    m_bHandleMessages = DEFAULT_HANDLE_MSG;
-//  }
-//
-//  /* Create connection to streamdev-server */
-//  if (!g_client->Connect(m_sHostname, m_iPort))
-//    curStatus = STATUS_LOST_CONNECTION;
-//  else
-    curStatus = STATUS_OK;
+  XBMC->Log(LOG_DEBUG, "Creating Tvheadend PVR-Client");
 
+  curStatus      = STATUS_UNKNOWN;
+  g_clientID     = pvrprops->clientID;
+  g_szUserPath   = pvrprops->userpath;
+  g_szClientPath = pvrprops->clientpath;
+
+  /* Read setting "host" from settings.xml */
+  char * buffer;
+  buffer = (char*) malloc (1024);
+  buffer[0] = 0; /* Set the end of string */
+
+  if (XBMC->GetSetting("host", buffer))
+    g_szHostname = buffer;
+  else
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '%s' as default", DEFAULT_HOST);
+    g_szHostname = DEFAULT_HOST;
+  }
+  buffer[0] = 0; /* Set the end of string */
+
+  if (XBMC->GetSetting("user", buffer))
+    g_szUsername = buffer;
+  else
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'user' setting");
+    g_szUsername = "";
+  }
+  buffer[0] = 0; /* Set the end of string */
+
+  if (XBMC->GetSetting("pass", buffer))
+    g_szPassword = buffer;
+  else
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'pass' setting");
+    g_szPassword = "";
+  }
+  free (buffer);
+
+  /* Read setting "port" from settings.xml */
+  if (!XBMC->GetSetting("port", &g_iPort))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '%i' as default", DEFAULT_PORT);
+    g_iPort = DEFAULT_PORT;
+  }
+
+  /* Create connection to streamdev-server */
+  curStatus = STATUS_LOST_CONNECTION;
+  if(!g_pSession.Connect(g_szHostname, g_iPort))
+    return curStatus;
+
+  if(g_pSession.GetProtocol() < 2)
+  {
+    XBMC->Log(LOG_ERROR, "Incompatible protocol version %d", g_pSession.GetProtocol());
+    return curStatus;
+  }
+
+  if(!g_szUsername.IsEmpty())
+    g_pSession.Auth(g_szUsername, g_szPassword);
+
+  if(!g_pSession.SendEnableAsync())
+    return curStatus;
+
+  if (!g_pSession.Start())
+    return curStatus;
+
+  curStatus = STATUS_OK;
   m_bCreated = true;
   return curStatus;
 }
@@ -167,16 +153,13 @@ ADDON_STATUS GetStatus()
 
 void Destroy()
 {
-//  if (m_bCreated)
-//  {
-//    // TODO g_client->Disconnect();
-//
-//    delete g_client;
-//    g_client = NULL;
-//
-//    m_bCreated = false;
-//  }
-//  curStatus = STATUS_UNKNOWN;
+  if (m_bCreated)
+  {
+    g_pSession.Stop();
+    g_pSession.Close();
+    m_bCreated = false;
+  }
+  curStatus = STATUS_UNKNOWN;
 }
 
 bool HasSettings()
@@ -191,55 +174,41 @@ unsigned int GetSettings(StructSetting ***sSet)
 
 ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
 {
-//  string str = settingName;
-//  if (str == "host")
-//  {
-//    string tmp_sHostname;
-//    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", m_sHostname.c_str(), (const char*) settingValue);
-//    tmp_sHostname = m_sHostname;
-//    m_sHostname = (const char*) settingValue;
-//    if (tmp_sHostname != m_sHostname)
-//      return STATUS_NEED_RESTART;
-//  }
-//  else if (str == "port")
-//  {
-//    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", m_iPort, *(int*) settingValue);
-//    if (m_iPort != *(int*) settingValue)
-//    {
-//      m_iPort = *(int*) settingValue;
-//      return STATUS_NEED_RESTART;
-//    }
-//  }
-//  else if (str == "ftaonly")
-//  {
-//    XBMC->Log(LOG_INFO, "Changed Setting 'ftaonly' from %u to %u", m_bOnlyFTA, *(bool*) settingValue);
-//    m_bOnlyFTA = *(bool*) settingValue;
-//  }
-//  else if (str == "useradio")
-//  {
-//    XBMC->Log(LOG_INFO, "Changed Setting 'useradio' from %u to %u", m_bRadioEnabled, *(bool*) settingValue);
-//    m_bRadioEnabled = *(bool*) settingValue;
-//  }
-//  else if (str == "convertchar")
-//  {
-//    XBMC->Log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", m_bCharsetConv, *(bool*) settingValue);
-//    m_bCharsetConv = *(bool*) settingValue;
-//  }
-//  else if (str == "timeout")
-//  {
-//    XBMC->Log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
-//    m_iConnectTimeout = *(int*) settingValue;
-//  }
-//  else if (str == "ignorechannels")
-//  {
-//    XBMC->Log(LOG_INFO, "Changed Setting 'ignorechannels' from %u to %u", m_bNoBadChannels, *(bool*) settingValue);
-//    m_bNoBadChannels = *(bool*) settingValue;
-//  }
-//  else if (str == "handlemessages")
-//  {
-//    XBMC->Log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", m_bHandleMessages, *(bool*) settingValue);
-//    m_bHandleMessages = *(bool*) settingValue;
-//  }
+  string str = settingName;
+  if (str == "host")
+  {
+    string tmp_sHostname;
+    XBMC->Log(LOG_INFO, "Changed Setting 'host' from %s to %s", g_szHostname.c_str(), (const char*) settingValue);
+    tmp_sHostname = g_szHostname;
+    g_szHostname = (const char*) settingValue;
+    if (tmp_sHostname != g_szHostname)
+      return STATUS_NEED_RESTART;
+  }
+  else if (str == "user")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'user'");
+    string tmp_sUsername = g_szUsername;
+    g_szUsername = (const char*) settingValue;
+    if (tmp_sUsername != g_szUsername)
+      return STATUS_NEED_RESTART;
+  }
+  else if (str == "pass")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'pass'");
+    string tmp_sPassword = g_szPassword;
+    g_szPassword = (const char*) settingValue;
+    if (tmp_sPassword != g_szPassword)
+      return STATUS_NEED_RESTART;
+  }
+  else if (str == "port")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPort, *(int*) settingValue);
+    if (g_iPort != *(int*) settingValue)
+    {
+      g_iPort = *(int*) settingValue;
+      return STATUS_NEED_RESTART;
+    }
+  }
 
   return STATUS_OK;
 }
@@ -259,44 +228,57 @@ void FreeSettings()
 
 PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR;//g_client->GetProperties(props);
+  props->SupportChannelLogo        = false;
+  props->SupportTimeShift          = false;
+  props->SupportEPG                = false;
+  props->SupportRecordings         = false;
+  props->SupportTimers             = false;
+  props->SupportTV                 = true;
+  props->SupportRadio              = false;
+  props->SupportChannelSettings    = false;
+  props->SupportDirector           = false;
+  props->SupportBouquets           = false;
+  props->HandleInputStream         = true;
+  props->HandleDemuxing            = true;
+  props->SupportChannelScan        = false;
+
+  return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* props)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR;//g_client->GetStreamProperties(props);
-}
-
-const char bn[] = "Tvheadend";
 const char * GetBackendName()
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return bn; // TODO g_client->GetBackendName();
+  static CStdString BackendName = g_pSession.GetServerName();
+  return BackendName.c_str();
 }
 
 const char * GetBackendVersion()
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return bn; // TODO g_client->GetBackendVersion();
+  static CStdString BackendVersion;
+  BackendVersion.Format("%s (Protocol: %i)", g_pSession.GetVersion(), g_pSession.GetProtocol());
+  return BackendVersion.c_str();
 }
 
 const char * GetConnectionString()
 {
-  return "";//g_client->GetConnectionString();
+  static CStdString ConnectionString;
+  ConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPort, CheckConnection() ? "" : " (Not connected!)");
+  return ConnectionString.c_str();
 }
 
 PVR_ERROR GetDriveSpace(long long *total, long long *used)
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->GetDriveSpace(total, used);
+  if (g_pSession.GetDriveSpace(total, used))
+    return PVR_ERROR_NO_ERROR;
+
+  return PVR_ERROR_SERVER_ERROR;
 }
 
 PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_NOT_IMPLEMENTED;//g_client->GetBackendTime(localTime, gmtOffset);
+  if (g_pSession.GetTime(localTime, gmtOffset))
+    return PVR_ERROR_NO_ERROR;
+
+  return PVR_ERROR_SERVER_ERROR;
 }
 
 PVR_ERROR DialogChannelScan()
@@ -324,7 +306,7 @@ PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, tim
 
 int GetNumBouquets()
 {
-  return 0;//g_client->GetNumBouquets();
+  return (int)(g_pSession.GetTags().size());
 }
 
 PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
@@ -338,12 +320,41 @@ PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
 
 int GetNumChannels()
 {
-  return 0;//g_client->GetNumChannels();
+  return (int)(g_pSession.GetChannels().size());
 }
 
 PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
-  return PVR_ERROR_SERVER_ERROR; //g_client->RequestChannelList(handle, radio);
+  if (!CheckConnection())
+    return PVR_ERROR_SERVER_ERROR;
+
+  if (radio)
+    return PVR_ERROR_NO_ERROR;
+
+  SChannels channels = g_pSession.GetChannels();
+  for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
+  {
+    SChannel& channel = it->second;
+
+    PVR_CHANNEL tag;
+    memset(&tag, 0 , sizeof(tag));
+    tag.uid           = channel.id;
+    tag.number        = channel.id;//num;
+    tag.name          = channel.name.c_str();
+    tag.callsign      = channel.name.c_str();
+    tag.input_format  = "";
+
+    char url[128];
+    sprintf(url, "htsp://%s:%d/tags/0/%d.ts", g_szHostname.c_str(), g_iPort, channel.id);
+    tag.stream_url  = "";
+    tag.bouquet     = 0;
+
+    fprintf(stderr, "%s - %s - %i\n", __PRETTY_FUNCTION__, channel.name.c_str(), tag.bouquet);
+
+    PVR->TransferChannelEntry(handle, &tag);
+  }
+
+  return PVR_ERROR_NO_ERROR;
 }
 
 PVR_ERROR DeleteChannel(unsigned int number)
@@ -474,52 +485,62 @@ PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
 
 bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  return false;//g_client->OpenLiveStream(channelinfo);
+  CloseLiveStream();
+
+  HTSPDemuxer = new cHTSPDemux;
+  return HTSPDemuxer->Open(channelinfo);
 }
 
 void CloseLiveStream()
 {
-  //g_client->CloseLiveStream();
+  if (HTSPDemuxer)
+  {
+    HTSPDemuxer->Close();
+    delete HTSPDemuxer;
+    HTSPDemuxer = NULL;
+  }
 }
 
-int ReadLiveStream(unsigned char* buf, int buf_size)
+PVR_ERROR GetStreamProperties(PVR_STREAMPROPS* props)
 {
-  return 0;//g_client->ReadLiveStream(buf, buf_size);
+  if (HTSPDemuxer && HTSPDemuxer->GetStreamProperties(props))
+    return PVR_ERROR_NO_ERROR;
+
+  return PVR_ERROR_SERVER_ERROR;
 }
 
-long long SeekLiveStream(long long pos, int whence)
+void DemuxAbort()
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return -1;
+  if (HTSPDemuxer) HTSPDemuxer->Abort();
 }
 
-long long PositionLiveStream(void)
+DemuxPacket* DemuxRead()
 {
-  return -1;
-}
-
-long long LengthLiveStream(void)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return -1;
+  return HTSPDemuxer->Read();
 }
 
 int GetCurrentClientChannel()
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->GetCurrentClientChannel();
+  if (HTSPDemuxer)
+    return HTSPDemuxer->CurrentChannel();
+
+  return -1;
 }
 
 bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return false;//g_client->SwitchChannel(channelinfo);
+  if (HTSPDemuxer)
+    return HTSPDemuxer->SwitchChannel(channelinfo);
+
+  return false;
 }
 
 PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 {
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->SignalQuality(qualityinfo);
+  if (HTSPDemuxer && HTSPDemuxer->GetSignalStatus(qualityinfo))
+    return PVR_ERROR_NO_ERROR;
+
+  return PVR_ERROR_SERVER_ERROR;
 }
 
 
@@ -585,9 +606,13 @@ long long LengthRecordedStream(void)
   return PVR_ERROR_SERVER_ERROR; // TODO g_client->LengthRecordedStream();
 }
 
-const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
-{
-  return "";//channelinfo.stream_url;
-}
+/** UNUSED API FUNCTIONS */
+void DemuxReset(){}
+void DemuxFlush(){}
+int ReadLiveStream(unsigned char* buf, int buf_size) { return 0; }
+long long SeekLiveStream(long long pos, int whence) { return -1; }
+long long PositionLiveStream(void) { return -1; }
+long long LengthLiveStream(void) { return -1; }
+const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo) { return ""; }
 
 }

@@ -180,7 +180,7 @@ bool CVTPFile::PrevChannel(bool preview/* = false*/)
   return false;
 }
 
-bool CVTPFile::SelectChannel(unsigned int channel, bool isPreviewed/* = false*/)
+bool CVTPFile::SelectChannel(unsigned int channel)
 {
   if(!m_session->CanStreamLive(channel))
     return false;

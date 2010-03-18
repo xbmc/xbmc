@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <!-- settings labels -->
-    <string id="30000">Tvheadend Hostname</string>
+    <string id="30000">Tvheadend Hostname or IP</string>
     <string id="30001">HTSP Port</string>
-    <string id="30002">Free-to-air only</string>
-    <string id="30003">Include Radio</string>
-    <string id="30004">Character Set Conversion</string>
-    <string id="30005">Connect timeout (s)</string>
-    <string id="30006">Ignore Channels without VPID and APID</string>
-    <string id="30007">Allow HTSP Messages</string>
+    <string id="30002">Username</string>
+    <string id="30003">Password</string>
 </strings>
