@@ -390,10 +390,10 @@ public:
 
   // scraper settings
   void SetScraperForPath(const CStdString& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, int& iFound);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings, int& iFound);
   CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned

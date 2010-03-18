@@ -111,9 +111,8 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   // Get Selected Scraper
   CVideoDatabase database;
-  ADDON::ScraperPtr selected;
   database.Open();
-  database.GetScraperForPath(strPath,selected);
+  ADDON::ScraperPtr selected = database.GetScraperForPath(strPath);
   database.Close();
 
   vector<ScraperPtr> vecScrapers;

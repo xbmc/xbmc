@@ -792,12 +792,12 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
-    m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,scraper);
+    scraper = m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
   else
   {
     CStdString strPath,strFile;
     CUtil::Split(pItem->m_strPath,strPath,strFile);
-    m_database.GetScraperForPath(strPath,scraper);
+    scraper = m_database.GetScraperForPath(strPath);
   }
   m_database.Close();
   CGUIWindowVideoBase::OnInfo(pItem,scraper);

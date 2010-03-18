@@ -343,7 +343,7 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
 {
   CVideoDatabase database;
   database.Open();
-  database.GetScraperForPath(strDirectory,scraper,settings);
+  scraper = database.GetScraperForPath(strDirectory, settings);
   bool bResult = Show(scraper,settings,bRunScan);
   if (bResult)
     database.SetScraperForPath(strDirectory,scraper,settings);

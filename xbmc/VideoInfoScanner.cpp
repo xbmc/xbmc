@@ -203,8 +203,7 @@ namespace VIDEO
     int iFound = 0;
     bool bSkip=false;
 
-    ScraperPtr info;
-    m_database.GetScraperForPath(strDirectory, info, settings, iFound);
+    ScraperPtr info = m_database.GetScraperForPath(strDirectory, settings, iFound);
     if (!info)
     {
       CLog::Log(LOGWARNING, "%s Didn't find scraper for path: %s", __FUNCTION__, strDirectory.c_str());
@@ -398,9 +397,9 @@ namespace VIDEO
       // we do this since we may have a override per dir
       ScraperPtr info2;
       if (pItem->m_bIsFolder)
-        m_database.GetScraperForPath(pItem->m_strPath,info2);
+        info2 = m_database.GetScraperForPath(pItem->m_strPath);
       else
-        m_database.GetScraperForPath(items.m_strPath,info2);
+        info2 = m_database.GetScraperForPath(items.m_strPath);
 
       if (!info2 || info2->Content() == CONTENT_NONE) // skip
         continue;
@@ -537,10 +536,9 @@ namespace VIDEO
     if (result != CNfoFile::NO_NFO)
     { //FIXME this comment doesn't match second comment
       // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
-      ScraperPtr temp;
       SScanSettings settings;
-      m_database.GetScraperForPath(pItem->m_strPath,temp,settings);
-      if (temp->Content() == CONTENT_NONE)
+      ScraperPtr temp = m_database.GetScraperForPath(pItem->m_strPath, settings);
+      if (temp && temp->Content() == CONTENT_NONE) // FIXME: This should NEVER occur
       {
         if (temp->Parent())
         { // as we are working with a new clone, default scraper settings are saved

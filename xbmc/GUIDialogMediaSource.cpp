@@ -450,7 +450,7 @@ void CGUIDialogMediaSource::OnOK()
   {
     CVideoDatabase database;
     database.Open();
-    database.GetScraperForPath(share.strPath, m_info, m_settings);
+    m_info = database.GetScraperForPath(share.strPath, m_settings);
     database.SetScraperForPath(share.strPath, m_info, m_settings);
     database.Close();
   }
