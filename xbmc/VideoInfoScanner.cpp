@@ -205,6 +205,12 @@ namespace VIDEO
 
     ScraperPtr info;
     m_database.GetScraperForPath(strDirectory, info, settings, iFound);
+    if (!info)
+    {
+      CLog::Log(LOGWARNING, "%s Didn't find scraper for path: %s", __FUNCTION__, strDirectory.c_str());
+      return false;
+    }
+
     SetScraperInfo(info);
 
     if (m_info->Content() == CONTENT_NONE)
