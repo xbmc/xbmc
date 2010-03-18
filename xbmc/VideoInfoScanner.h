@@ -83,7 +83,7 @@ namespace VIDEO
     bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::ScraperPtr &info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);

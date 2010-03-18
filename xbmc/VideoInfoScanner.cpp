@@ -210,14 +210,13 @@ namespace VIDEO
       CLog::Log(LOGWARNING, "%s Didn't find scraper for path: %s", __FUNCTION__, strDirectory.c_str());
       return false;
     }
+    CONTENT_TYPE content = info->Content();
 
-    SetScraperInfo(info);
-
-    if (m_info->Content() == CONTENT_NONE)
+    if (content == CONTENT_NONE)
       bSkip = true;
 
     CStdString hash, dbHash;
-    if (m_info->Content() == CONTENT_MOVIES && !settings.noupdate)
+    if (content == CONTENT_MOVIES && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
@@ -249,7 +248,7 @@ namespace VIDEO
         bSkip = true;
       }
     }
-    else if (m_info->Content() == CONTENT_TVSHOWS && !settings.noupdate)
+    else if (content == CONTENT_TVSHOWS && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
@@ -277,7 +276,7 @@ namespace VIDEO
         CUtil::GetParentPath(item->m_strPath,items.m_strPath);
       }
     }
-    else if (m_info->Content() == CONTENT_MUSICVIDEOS && !settings.noupdate)
+    else if (content == CONTENT_MUSICVIDEOS && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
@@ -309,13 +308,13 @@ namespace VIDEO
       }
     }
 
-    CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]", TranslateContent(m_info->Content()).c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
+    CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]", TranslateContent(content).c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
 
     if (!bSkip)
     {
-      if (RetrieveVideoInfo(items,settings.parent_name_root,m_info))
+      if (RetrieveVideoInfo(items,settings.parent_name_root,content))
       {
-        if (!m_bStop && (m_info->Content() == CONTENT_MOVIES || m_info->Content() == CONTENT_MUSICVIDEOS))
+        if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
           m_database.SetPathHash(strDirectory, hash);
           m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
@@ -333,8 +332,8 @@ namespace VIDEO
     CLog::Log(LOGDEBUG, "%s - Finished dir: %s", __FUNCTION__, strDirectory.c_str());
 
     // exclude folders that match our exclude regexps
-    CStdStringArray regexps = m_info->Content() == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
-                                                                  : g_advancedSettings.m_moviesExcludeFromScanRegExps;
+    CStdStringArray regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps;
 
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -344,7 +343,7 @@ namespace VIDEO
         break;
 
       // if we have a directory item (non-playlist) we then recurse into that folder
-      if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->GetLabel().Equals("subs") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && m_info->Content() != CONTENT_TVSHOWS) // do not recurse for tv shows - we have already looked recursively for episodes
+      if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->GetLabel().Equals("subs") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && content != CONTENT_TVSHOWS) // do not recurse for tv shows - we have already looked recursively for episodes
       {
         CStdString strPath=pItem->m_strPath;
 
@@ -369,10 +368,8 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ScraperPtr& scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
-    m_IMDB.SetScraperInfo(scraper);
-
     if (pDlgProgress)
     {
       if (items.Size() > 1 || (items[0]->m_bIsFolder && !bRefresh))
@@ -409,8 +406,8 @@ namespace VIDEO
         continue;
 
       // Discard all exclude files defined by regExExclude
-      if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, scraper->Content() == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
-                                                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps))
+      if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, (content == CONTENT_TVSHOWS) ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+                                                                                    : g_advancedSettings.m_moviesExcludeFromScanRegExps))
         continue;
 
       if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
