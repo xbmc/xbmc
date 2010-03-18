@@ -161,13 +161,14 @@ protected:
 private:
   //Direct Show Filters
   CFGManager*                           m_pGraphBuilder;
-  Com::SmartPtr<IMediaControl>          m_pMediaControl;  
-  Com::SmartPtr<IMediaEventEx>          m_pMediaEvent;
-  Com::SmartPtr<IMediaSeeking>          m_pMediaSeeking;
-  Com::SmartPtr<IBasicAudio>            m_pBasicAudio;
-  //dvd ptr
-  Com::SmartQIPtr<IDvdInfo2>              m_pDvdInfo2;
-  Com::SmartQIPtr<IDvdControl2>           m_pDvdControl2;
+  Com::SmartQIPtr<IMediaControl>        m_pMediaControl;  
+  Com::SmartQIPtr<IMediaEventEx>        m_pMediaEvent;
+  Com::SmartQIPtr<IMediaSeeking>        m_pMediaSeeking;
+  Com::SmartQIPtr<IBasicAudio>          m_pBasicAudio;
+  //dvd interface
+  Com::SmartQIPtr<IVideoWindow>         m_pVideoWindow;
+  Com::SmartQIPtr<IDvdInfo2>            m_pDvdInfo2;
+  Com::SmartQIPtr<IDvdControl2>         m_pDvdControl2;
   Com::SmartPtr<IDvdState>              m_pDvdState;
   DVD_STATUS	                          m_pDvdStatus;
   std::vector<DvdTitle*>                m_pDvdTitles;

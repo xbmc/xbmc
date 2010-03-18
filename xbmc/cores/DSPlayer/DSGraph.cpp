@@ -96,16 +96,26 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (FAILED(hr))
     return hr;
 
-  hr = m_pGraphBuilder->QueryInterface(IID_IMediaSeeking,(void **) &m_pMediaSeeking);
-  hr = m_pGraphBuilder->QueryInterface(IID_IMediaControl,(void **) &m_pMediaControl);
-  hr = m_pGraphBuilder->QueryInterface(IID_IMediaEventEx ,(void **) &m_pMediaEvent);
-  hr = m_pGraphBuilder->QueryInterface(IID_IBasicAudio,(void **) &m_pBasicAudio);
-
+  //hr = m_pGraphBuilder->QueryInterface(IID_IMediaSeeking,(void **) &m_pMediaSeeking);
+  //hr = m_pGraphBuilder->QueryInterface(IID_IMediaControl,(void **) &m_pMediaControl);
+  //hr = m_pGraphBuilder->QueryInterface(IID_IMediaEventEx ,(void **) &m_pMediaEvent);
+  //hr = m_pGraphBuilder->QueryInterface(IID_IBasicAudio,(void **) &m_pBasicAudio);
+  m_pMediaSeeking = m_pFilterGraph;
+  m_pMediaControl = m_pFilterGraph;
+  m_pMediaEvent = m_pFilterGraph;
+  m_pBasicAudio = m_pFilterGraph;
+  m_pVideoWindow = m_pFilterGraph;
+  if (m_pVideoWindow)
+  {
+    m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
+    m_pVideoWindow->put_WindowStyle(WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN);
+    m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
+    
+  }
   BeginEnumFilters(m_pFilterGraph, pEF, pBF)
 	{
 		if((m_pDvdControl2 = pBF) && (m_pDvdInfo2 = pBF))
     {
-			
       m_VideoInfo.isDVD = true;
       break;
     }
@@ -669,10 +679,14 @@ HRESULT CDSGraph::UnloadGraph()
   }
   EndEnumFilters
 
-  m_pMediaControl = NULL;
-  m_pMediaEvent = NULL;
-  m_pMediaSeeking = NULL;
-  m_pBasicAudio = NULL;
+  m_pDvdInfo2.Release();
+  m_pDvdControl2.Release();
+  m_pMediaControl.Release();
+  m_pMediaEvent.Release();
+  m_pMediaSeeking.Release();
+  m_pVideoWindow.Release();
+  m_pBasicAudio.Release();
+  
 
   /* delete filters */
 
@@ -681,7 +695,6 @@ HRESULT CDSGraph::UnloadGraph()
   /* Release config interfaces */
   g_dsconfig.ClearConfig();
 
-  
   if (CFGLoader::Filters.Source.pBF)
     CFGLoader::Filters.Source.pBF.FullRelease();
 
@@ -990,7 +1003,7 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   }
   else if ( wParam == ID_DVD_MENU_SELECT )
   {
-    //TODO
+    m_pDvdControl2->ActivateButton();
   }
   else if ( wParam == ID_DVD_MENU_TITLE )
   {

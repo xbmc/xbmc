@@ -74,14 +74,11 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   {
     Com::SmartQIPtr<IDvdControl2> pDVDC;
     Com::SmartQIPtr<IDvdInfo2> pDVDI;
-    //CDSGraph::m_pDvdGraph
     //CLSID_DVDNavigator
-    Com::SmartPtr<IBaseFilter> pDvdBF = NULL;
-    
-    hr = pDvdBF.CoCreateInstance(CLSID_DVDNavigator);
+    hr = InsertFilter(filterName, Filters.Splitter);
     if (SUCCEEDED(hr))
     {
-      hr = CDSGraph::m_pFilterGraph->AddFilter(pDvdBF, L"DVD Navigator");
+      Com::SmartPtr<IBaseFilter> pDvdBF = Filters.Splitter.pBF;
       if(!((pDVDC = pDvdBF) && (pDVDI = pDvdBF)))
         return E_NOINTERFACE;
     }
@@ -96,15 +93,14 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     pDVDC->SetOption(DVD_ResetOnStop, FALSE);
 	  pDVDC->SetOption(DVD_HMSF_TimeCodeEvents, TRUE);
     
-    Filters.Source.pBF = pDvdBF.Detach();
-    Filters.Splitter.pBF = Filters.Source.pBF;
     return hr;
   }
 
   /* INTERNET STREAM */
   if (pFileItem.IsInternetStream())
   {
-    //IAMOpenProgress will be need for requesting status of stream
+    //TODO
+    //add IAMOpenProgress for requesting the status of stream without this interface the player failed if connection is too slow
     Com::SmartQIPtr<IFileSourceFilter> pSourceUrl;
     Com::SmartPtr<IUnknown> pUnk = NULL;
 
