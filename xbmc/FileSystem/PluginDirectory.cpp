@@ -23,8 +23,8 @@
 #include "system.h"
 #include "PluginDirectory.h"
 #include "Util.h"
-#include "utils/AddonManager.h"
-#include "utils/IAddon.h"
+#include "addons/AddonManager.h"
+#include "addons/IAddon.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif

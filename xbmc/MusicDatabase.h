@@ -25,7 +25,7 @@
 #pragma once
 #include "Database.h"
 #include "Album.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 
 class CArtist;
 class CFileItem;

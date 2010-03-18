@@ -23,7 +23,7 @@
 #include "GUIUserMessages.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/PluginDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"

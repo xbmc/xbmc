@@ -25,7 +25,7 @@
 #include "SettingsControls.h"
 #include "GUISettings.h"
 #include "utils/Stopwatch.h"
-#include "IAddon.h"
+#include "addons/IAddon.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow

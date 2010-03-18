@@ -24,7 +24,7 @@
 
 #include <vector>
 #include "StdString.h"
-#include "IAddon.h"
+#include "addons/IAddon.h"
 #include "DateTime.h"
 
 #define MAX_SCRAPER_BUFFERS 20

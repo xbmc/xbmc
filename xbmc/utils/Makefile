@@ -1,8 +1,6 @@
 INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../../lib/jsoncpp/jsoncpp/include
 
-SRCS=Addon.cpp \
-     AddonManager.cpp \
-     AlarmClock.cpp \
+SRCS=AlarmClock.cpp \
      Archive.cpp \
      Builtins.cpp \
      CharsetConverter.cpp \

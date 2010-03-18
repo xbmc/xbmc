@@ -1,6 +1,6 @@
 #include "GUIRenderingControl.h"
 #include "GUIUserMessages.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "utils/SingleLock.h"
 
 using namespace std;

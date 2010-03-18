@@ -258,14 +258,12 @@ xbmc/linux/linux.a: force
 	$(MAKE) -C xbmc/linux
 xbmc/posix/posix.a: force
 	$(MAKE) -C xbmc/posix
-xbmc/screensavers/screensaver.a: force
-	$(MAKE) -C xbmc/screensavers
+xbmc/addons/addons.a: force
+	$(MAKE) -C xbmc/addons
 xbmc/settings/settings.a: force
 	$(MAKE) -C xbmc/settings
 xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
-xbmc/visualizations/visualization.a: force
-	$(MAKE) -C xbmc/visualizations
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
 xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
@@ -418,9 +416,8 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/visualizations/visualization.a
+	xbmc/addons/addons.a
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \

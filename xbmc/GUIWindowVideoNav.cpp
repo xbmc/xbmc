@@ -36,7 +36,7 @@
 #include "PlayListFactory.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogOK.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"

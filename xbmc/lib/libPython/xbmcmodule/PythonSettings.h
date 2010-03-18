@@ -38,7 +38,7 @@
   #include "lib/libPython/Python/Include/Python.h"
 #endif
 
-#include "utils/IAddon.h"
+#include "addons/IAddon.h"
 
 #ifdef __cplusplus
 extern "C" {

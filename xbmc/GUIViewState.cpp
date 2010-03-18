@@ -33,7 +33,7 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "GUIWindowManager.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "ViewState.h"
 #include "GUISettings.h"
 #include "Settings.h"

@@ -21,7 +21,7 @@
 
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "Application.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"

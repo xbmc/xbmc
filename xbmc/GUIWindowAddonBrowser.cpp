@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUISpinControlEx.h"
 #include "GUIControlGroupList.h"

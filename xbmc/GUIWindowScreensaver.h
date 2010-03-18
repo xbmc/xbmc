@@ -23,7 +23,7 @@
 
 #include "GUIWindow.h"
 #ifdef HAS_SCREENSAVER
-#include "screensavers/ScreenSaver.h"
+#include "addons/ScreenSaver.h"
 #endif
 
 #include "utils/CriticalSection.h"

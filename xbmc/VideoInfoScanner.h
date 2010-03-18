@@ -21,7 +21,7 @@
  */
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "NfoFile.h"
 #include "IMDB.h"
 #include "DateTime.h"

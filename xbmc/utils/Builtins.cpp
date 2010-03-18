@@ -38,8 +38,8 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
-#include "Addon.h" // for TranslateType, TranslateContent
-#include "AddonManager.h"
+#include "addons/Addon.h" // for TranslateType, TranslateContent
+#include "addons/AddonManager.h"
 #include "LastFmManager.h"
 #include "LCD.h"
 #include "log.h"

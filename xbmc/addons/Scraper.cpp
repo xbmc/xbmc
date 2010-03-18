@@ -23,7 +23,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/FileCurl.h"
-#include "utils/AddonManager.h"
+#include "AddonManager.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 #include "utils/CharsetConverter.h"

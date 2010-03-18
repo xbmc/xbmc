@@ -21,7 +21,7 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "Bookmark.h"
 
 #include <memory>

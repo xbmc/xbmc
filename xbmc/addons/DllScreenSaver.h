@@ -20,10 +20,11 @@
  *
  */
 
-#include "../DllAddon.h"
-#include "../addons/include/xbmc_vis_types.h"
+#include "DllAddon.h"
+#include "include/xbmc_scr_types.h"
 
-class DllVisualisation : public DllAddon<Visualisation, VIS_PROPS>
+class DllScreenSaver : public DllAddon<ScreenSaver, SCR_PROPS>
 {
   // this is populated via Macro calls in DllAddon.h
 };
+

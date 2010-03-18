@@ -30,7 +30,7 @@
 #endif // _MSC_VER > 1000
 
 #include "tinyXML/tinyxml.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
 
 class CVideoInfoTag;

@@ -42,7 +42,7 @@
 #include "DAVDirectory.h"
 #include "Application.h"
 #include "StringUtils.h"
-#include "utils/Addon.h"
+#include "addons/Addon.h"
 #include "utils/log.h"
 
 #ifdef HAS_FILESYSTEM_SMB

@@ -22,7 +22,7 @@
 
 #include "Key.h"
 #include "DllVisualisation.h"
-#include "utils/AddonDll.h"
+#include "AddonDll.h"
 #include "cores/IAudioCallback.h"
 
 #include <map>

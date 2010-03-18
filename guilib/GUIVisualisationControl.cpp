@@ -2,7 +2,7 @@
 #include "GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "Application.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "utils/log.h"
 
 using namespace std;

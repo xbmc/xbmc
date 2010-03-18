@@ -21,7 +21,7 @@
 
 #include "FileItem.h"
 #include "VideoInfoScanner.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
 #include "NfoFile.h"

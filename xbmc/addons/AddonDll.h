@@ -20,7 +20,7 @@
  *
  */
 #include "Addon.h"
-#include "../DllAddon.h"
+#include "DllAddon.h"
 #include "AddonManager.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"

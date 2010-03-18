@@ -25,7 +25,7 @@
 #include "SortFileItem.h"
 #include "GUIBaseContainer.h"
 #include "MediaSource.h"
-#include "utils/IAddon.h"
+#include "addons/IAddon.h"
 
 class CViewState; // forward
 class CFileItemList;

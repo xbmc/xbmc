@@ -21,7 +21,7 @@
  *
  */
 
-#include "Addon.h"
+#include "addons/Addon.h"
 #include "GUIWindow.h"
 #include "GUIViewControl.h"
 

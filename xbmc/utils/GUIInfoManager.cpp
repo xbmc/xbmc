@@ -30,7 +30,7 @@
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "Weather.h"
 #include "PartyModeManager.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "ButtonTranslator.h"
 #include "utils/AlarmClock.h"
 #ifdef HAS_LCD

@@ -24,7 +24,7 @@
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
-#include "utils/IAddon.h"
+#include "addons/IAddon.h"
 #include "Application.h"
 #include "FileItem.h"
 #include "VideoDatabase.h"

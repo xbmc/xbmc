@@ -1063,7 +1063,7 @@ OUTPUT_FILES="Makefile \
              xbmc/DllPaths_generated.h \
              xbmc/linux/Makefile \
              xbmc/FileSystem/Makefile \
-             xbmc/screensavers/Makefile \
+             xbmc/addons/Makefile \
              xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
              xbmc/visualizations/XBMCProjectM/Makefile \
              xbmc/visualizations/Goom/Makefile \

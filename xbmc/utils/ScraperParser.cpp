@@ -25,10 +25,10 @@
 #include "system.h"
 #endif
 
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 #include "RegExp.h"
 #include "HTMLUtil.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
