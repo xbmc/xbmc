@@ -35,7 +35,8 @@ public:
     VariantTypeString,
     VariantTypeArray,
     VariantTypeObject,
-    VariantTypeNull
+    VariantTypeNull,
+    VariantTypeConstNull
   };
 
   CVariant(VariantType type = VariantTypeNull);
@@ -92,4 +93,6 @@ private:
     VariantArray *array;
     VariantMap *map;
   } m_data;
+
+  static CVariant ConstNullVariant;
 };
