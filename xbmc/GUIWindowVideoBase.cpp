@@ -406,66 +406,66 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   movieDetails.Reset();
   if (info)
   {
-  m_database.Open(); // since we can be called from the music library
+    m_database.Open(); // since we can be called from the music library
 
-  if (info->Content() == CONTENT_MOVIES)
-  {
-    if (m_database.HasMovieInfo(item->m_strPath))
+    if (info->Content() == CONTENT_MOVIES)
     {
-      bHasInfo = true;
-      m_database.GetMovieInfo(item->m_strPath, movieDetails);
-    }
-  }
-  if (info->Content() == CONTENT_TVSHOWS)
-  {
-    if (item->m_bIsFolder)
-    {
-      if (m_database.HasTvShowInfo(item->m_strPath))
+      if (m_database.HasMovieInfo(item->m_strPath))
       {
         bHasInfo = true;
-        m_database.GetTvShowInfo(item->m_strPath, movieDetails);
+        m_database.GetMovieInfo(item->m_strPath, movieDetails);
       }
     }
-    else
+    if (info->Content() == CONTENT_TVSHOWS)
     {
-      int EpisodeHint=-1;
-      if (item->HasVideoInfoTag())
-        EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
-      int idEpisode=-1;
-      if ((idEpisode = m_database.GetEpisodeId(item->m_strPath,EpisodeHint)) > -1)
+      if (item->m_bIsFolder)
       {
-        bHasInfo = true;
-        m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
+        if (m_database.HasTvShowInfo(item->m_strPath))
+        {
+          bHasInfo = true;
+          m_database.GetTvShowInfo(item->m_strPath, movieDetails);
+        }
       }
       else
       {
-        // !! WORKAROUND !!
-        // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
-        // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
-        // (Ticket #4764)
-        //
-        // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
-        //       database.  Possible solutions are to store the paths in the db separately and rely on the show
-        //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
-        CStdString strParentDirectory;
-        CUtil::GetParentPath(item->m_strPath, strParentDirectory);
-        if (m_database.GetTvShowId(strParentDirectory) < 0)
+        int EpisodeHint=-1;
+        if (item->HasVideoInfoTag())
+          EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
+        int idEpisode=-1;
+        if ((idEpisode = m_database.GetEpisodeId(item->m_strPath,EpisodeHint)) > -1)
         {
-          CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-          return false;
+          bHasInfo = true;
+          m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
+        }
+        else
+        {
+          // !! WORKAROUND !!
+          // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+          // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+          // (Ticket #4764)
+          //
+          // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
+          //       database.  Possible solutions are to store the paths in the db separately and rely on the show
+          //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
+          CStdString strParentDirectory;
+          CUtil::GetParentPath(item->m_strPath, strParentDirectory);
+          if (m_database.GetTvShowId(strParentDirectory) < 0)
+          {
+            CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+            return false;
+          }
         }
       }
     }
-  }
-  if (info->Content() == CONTENT_MUSICVIDEOS)
-  {
-    if (m_database.HasMusicVideoInfo(item->m_strPath))
+    if (info->Content() == CONTENT_MUSICVIDEOS)
     {
-      bHasInfo = true;
-      m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
+      if (m_database.HasMusicVideoInfo(item->m_strPath))
+      {
+        bHasInfo = true;
+        m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
+      }
     }
-  }
-  m_database.Close();
+    m_database.Close();
   }
   else if(item->HasVideoInfoTag())
   {
