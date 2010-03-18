@@ -524,18 +524,11 @@ namespace VIDEO
     if (result == CNfoFile::ERROR_NFO)
       return 0;
     if (result != CNfoFile::NO_NFO)
-    { //FIXME this comment doesn't match second comment
-      // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
+    { // check for preconfigured scraper; if found, overwrite with interpreted scraper (from Nfofile)
+      // but keep current scan settings
       SScanSettings settings;
-      ScraperPtr temp = m_database.GetScraperForPath(pItem->m_strPath, settings);
-      if (temp && temp->Content() == CONTENT_NONE) // FIXME: This should NEVER occur
-      {
-        if (temp->Parent())
-        { // as we are working with a new clone, default scraper settings are saved
-          temp = boost::dynamic_pointer_cast<CScraper>(temp->Parent());
-          m_database.SetScraperForPath(pItem->m_strPath,temp,settings);
-        }
-      }
+      if (ScraperPtr tmp = m_database.GetScraperForPath(pItem->m_strPath, settings))
+        m_database.SetScraperForPath(pItem->m_strPath,info2,settings);
     }
     if (result == CNfoFile::FULL_NFO)
     {
