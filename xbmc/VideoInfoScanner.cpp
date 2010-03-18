@@ -1536,17 +1536,17 @@ namespace VIDEO
         if (info->Content() == CONTENT_TVSHOWS)
           info = m_nfoReader.GetScraperInfo();
       }
-      else if (result != CNfoFile::NO_NFO)
+      else if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
       {
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
 
-        ScraperPtr info(m_nfoReader.GetScraperInfo());
+        scrUrl.strId  = m_nfoReader.m_strImDbNr;
+        info = m_nfoReader.GetScraperInfo();
+
         CLog::Log(LOGDEBUG, "scraper: Fetching url '%s' using %s scraper (content: '%s')",
           scrUrl.m_url[0].m_url.c_str(), info->Name().c_str(), TranslateContent(info->Content()).c_str());
 
-        scrUrl.strId  = m_nfoReader.m_strImDbNr;
-        info = m_nfoReader.GetScraperInfo();
         if (result == CNfoFile::COMBINED_NFO)
           m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       }
