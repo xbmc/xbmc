@@ -2079,30 +2079,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="Visualisations"
-				>
-				<File
-					RelativePath="..\..\xbmc\visualizations\DllVisualisation.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\fft.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\fft.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\Visualisation.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\Visualisation.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="VideoRenderers"
 				>
 				<File
@@ -2209,26 +2185,6 @@
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Screensavers"
-				>
-				<File
-					RelativePath="..\..\xbmc\screensavers\DllScreenSaver.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaver.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\xbmc_scr.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="AudioRenderers"
@@ -2387,14 +2343,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowTestPatternGL.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Scraper.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Scraper.h"
 					>
 				</File>
 				<File
@@ -2845,26 +2793,6 @@
 			<Filter
 				Name="Utils"
 				>
-				<File
-					RelativePath="..\..\xbmc\utils\Addon.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\Addon.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonDll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\AlarmClock.cpp"
 					>
@@ -4006,30 +3934,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\MythDirectory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythDirectory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythFile.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythSession.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythSession.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\DAAPDirectory.cpp"
 					>
 				</File>
@@ -4351,6 +4255,30 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\MusicSearchDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythSession.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythSession.h"
 					>
 				</File>
 				<File
@@ -5491,6 +5419,78 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Picture.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Addons"
+				>
+				<File
+					RelativePath="..\..\xbmc\addons\Addon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Addon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonDll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\DllAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\DllScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\DllVisualisation.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\fft.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\fft.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\IAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Scraper.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Scraper.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\ScreenSaver.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\ScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Visualisation.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Visualisation.h"
 					>
 				</File>
 			</Filter>
