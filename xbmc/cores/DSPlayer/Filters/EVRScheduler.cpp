@@ -391,7 +391,7 @@ HRESULT CEvrScheduler::ProcessSample(IMFSample *pSample, LONG *plNextSleep)
   else
   {
     // The sample is not ready yet. Return it to the queue.
-    m_ScheduledSamples.PutBack(pSample);//.AddTail
+    m_ScheduledSamples.PutBack(pSample);
   }
 
   *plNextSleep = lNextSleep;

@@ -92,7 +92,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   else
     CLog::Log(LOGERROR, "%s Failed to add XBMC to the Running Object Table", __FUNCTION__);
 
+  START_PERFORMANCE_COUNTER
   hr = m_pGraphBuilder->RenderFileXbmc(file);
+  END_PERFORMANCE_COUNTER
+
   if (FAILED(hr))
     return hr;
 
@@ -125,13 +128,17 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //m_pMediaEvent->SetNotifyWindow(g_hWnd,
   
   // Audio & subtitle streams
+  START_PERFORMANCE_COUNTER
   CStreamsManager::getSingleton()->InitManager(this);
   CStreamsManager::getSingleton()->LoadStreams();
+  END_PERFORMANCE_COUNTER
 
   // Chapters
+  START_PERFORMANCE_COUNTER
   CChaptersManager::getSingleton()->InitManager(this);
   if (!CChaptersManager::getSingleton()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
+  END_PERFORMANCE_COUNTER
 
   SetVolume(g_settings.m_nVolumeLevel);
   
@@ -283,20 +290,23 @@ void CDSGraph::UpdateState()
   if (m_VideoInfo.isDVD)
   {
     UpdateDvdState();
-    return;
-  }
-  hr = m_pMediaSeeking->GetTimeFormatA(&m_VideoInfo.time_format);
-  
-  if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
-  {
-    if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-      m_State.time_total = (double) Duration / TIME_FORMAT_TO_MS;
   }
   else
   {
-    if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-       m_State.time_total =  (double) Duration;
+    hr = m_pMediaSeeking->GetTimeFormatA(&m_VideoInfo.time_format);
+
+    if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
+    {
+      if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
+        m_State.time_total = (double) Duration / TIME_FORMAT_TO_MS;
+    }
+    else
+    {
+      if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
+        m_State.time_total =  (double) Duration;
+    }
   }
+
   hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
   if (m_State.current_filter_state != State_Running)
     m_PlaybackRate = 0;
@@ -374,12 +384,14 @@ HRESULT CDSGraph::HandleGraphEvent()
 				: evParam2 == DVD_TC_FLAG_DropFrame ? 29.97
 				: 25.0;
         
-        REFERENCE_TIME rtDur = 0;
+        // DOne in UpdateDvdState
+        /* REFERENCE_TIME rtDur = 0;
 			  DVD_HMSF_TIMECODE tcDur;
         ULONG ulFlags;
 			  if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
           rtDur = DShowUtil::HMSF2RT(tcDur, fps);
-        m_State.time_total = (double)rtDur / 10000;
+        m_State.time_total = (double)rtDur / 10000;*/
+
         REFERENCE_TIME rtNow = DShowUtil::HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);
         m_State.time = (double)rtNow / 10000;
 
@@ -642,10 +654,7 @@ void CDSGraph::DoFFRW(int currentSpeed)
       return;
     DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(rewind * 10000);
     m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-  }
-  
-  
-  
+  }  
 
   UpdateState();
 }

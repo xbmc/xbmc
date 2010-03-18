@@ -1,4 +1,5 @@
 #pragma once
+#include "log.h"
 
 /*
  *      Copyright (C) 2005-2010 Team XBMC
@@ -244,13 +245,37 @@ namespace Com
       T* ptr = m_ptr;
       if (ptr)
       {
-        int counter = 0;
         m_ptr = NULL;
-        do 
+        int counter = ptr->Release();
+        if (counter)
+          CLog::Log(LOGWARNING, "Com::SmartPtr: Releasing interface which has still references.");
+        while (counter != 0)
         {
           counter = ptr->Release();
-        } while (counter != 0);
+        }
       }
+    }
+
+    unsigned int GetReferenceCount() const
+    {
+      int result = 0;
+      if (m_ptr)
+      {
+        m_ptr->AddRef();
+        result = m_ptr->Release();
+      }
+      return result;
+    }
+
+    static unsigned int GetReferenceCount(IUnknown* ptr)
+    {
+      int result = 0;
+      if (ptr)
+      {
+        ptr->AddRef();
+        result = ptr->Release();
+      }
+      return result;
     }
 
     // Attach to an existing interface (does not AddRef)

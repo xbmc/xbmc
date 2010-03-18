@@ -59,6 +59,7 @@
 #include "DShowUtil/RegKey.h"
 
 #include "DShowUtil/smartptr.h"
+#include "DSPlayer.h"
 
 using namespace std;
 
@@ -350,6 +351,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   //TODO move updateregistry to the xbmc gui like setting the stable codecs for ffdshow
   UpdateRegistry();
 
+  START_PERFORMANCE_COUNTER
   if (FAILED(m_CfgLoader->LoadFilterRules(pFileItem)))
   {
     CLog::Log(LOGERROR, "%s Failed to load filters rules", __FUNCTION__);
@@ -357,10 +359,11 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   } 
   else
     CLog::Log(LOGDEBUG, "%s Successfully loaded filters rules", __FUNCTION__);
+  END_PERFORMANCE_COUNTER
 
-  //Video renderer count : 3
-
+  START_PERFORMANCE_COUNTER
   hr = ConnectFilter(CFGLoader::Filters.Splitter.pBF , NULL);
+  END_PERFORMANCE_COUNTER
 
   if (hr != S_OK)
   {

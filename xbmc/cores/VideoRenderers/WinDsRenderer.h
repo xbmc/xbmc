@@ -72,15 +72,12 @@ protected:
   bool m_bIsEvr;
 
   //dsplayer
-  void RenderDshowBuffer(DWORD flags);
+  void RenderDShowBuffer(DWORD flags);
 
   typedef CD3DTexture        D3DVIDEOBUFFERS[NUM_BUFFERS];
   D3DVIDEOBUFFERS            m_D3DVideoSurfaces;
   IDirect3DTexture9*         m_D3DVideoTexture;
   IDirect3DSurface9*         m_D3DMemorySurface;
-  
-
-
 
   // clear colour for "black" bars
   DWORD m_clearColour;

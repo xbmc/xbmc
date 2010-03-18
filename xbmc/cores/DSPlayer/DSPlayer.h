@@ -32,6 +32,12 @@
 #include "StreamsManager.h"
 #include "ChaptersManager.h"
 
+#include "TimeUtils.h"
+
+#define START_PERFORMANCE_COUNTER { int64_t start = CurrentHostCounter();
+#define END_PERFORMANCE_COUNTER int64_t end = CurrentHostCounter(); \
+  CLog::Log(LOGINFO, "%s Elapsed time: %.2fms", __FUNCTION__, 1000.f * (end - start) / CurrentHostFrequency()); }
+
 enum DSPLAYER_STATE
 {
   DSPLAYER_LOADING,

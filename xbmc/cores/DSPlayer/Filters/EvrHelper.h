@@ -736,7 +736,7 @@ namespace MediaFoundationSamples
         }
 
         // Construct from an existing media type.
-        MediaTypeBuilder(IMFMediaType* pType, HRESULT& hr) : m_pType(NULL)
+        MediaTypeBuilder(IMFMediaType* pType, HRESULT& hr) : m_pType(NULL), m_hModuleMFPLAT(0)
         {
             assert(pType != NULL);
 
@@ -753,6 +753,7 @@ namespace MediaFoundationSamples
 
         // Create a new media type.
         MediaTypeBuilder(HRESULT& hr)
+          : m_hModuleMFPLAT(0)
         {
           hr = E_FAIL;
           char sysFold[260];
@@ -768,10 +769,10 @@ namespace MediaFoundationSamples
 
         virtual ~MediaTypeBuilder()
         {
-          //if (m_hModuleMFPLAT)
-          //  FreeLibrary(m_hModuleMFPLAT);
-          //TOFIX
-          //S_RELEASE(m_pType);
+          if (m_hModuleMFPLAT)
+            FreeLibrary(m_hModuleMFPLAT);
+
+          S_RELEASE(m_pType);
         }
 
     public:

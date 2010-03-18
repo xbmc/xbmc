@@ -276,8 +276,8 @@ void D3DPresentEngine::ReleaseResources()
 
   g_renderManager.Reset();
 
-  m_pEVRVideoTexture.Release(); // There are maybe some references on the RenderManager
-  m_pEVRVideoSurface.Release();
+  ASSERT(m_pEVRVideoSurface.Release() == 0);
+  ASSERT(m_pEVRVideoTexture.Release() == 0);
 
   //Releasing video surface
   for (int i = 0; i < 7; i++) 
@@ -307,16 +307,10 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
   IMFMediaBuffer* pBuffer = NULL;
   IDirect3DSurface9* pSurface = NULL;
 
-  if (m_pAllocatorPresenter->CheckShutdown() != S_OK)
-    return S_OK;
-    
-  if (!g_renderManager.IsConfigured())
-    return S_OK;
-
-  if (m_bNeedNewDevice)
-    return S_OK;
-
-  if (! m_pEVRVideoTexture)
+  if (m_pAllocatorPresenter->CheckShutdown() != S_OK
+    || !g_renderManager.IsConfigured()
+    || m_bNeedNewDevice || m_pAllocatorPresenter->resetState
+    || !m_pEVRVideoTexture)
     return S_OK;
   
   if (pSample)
@@ -327,6 +321,7 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
     CHECK_HR(hr = pServ->GetService(MR_BUFFER_SERVICE, __uuidof(IDirect3DSurface9), (void**)&pSurface))
     SAFE_RELEASE(pServ);
   }
+
   if (m_bNeedNewDevice || !g_Windowing.Get3DDevice())
     return S_OK;
 
@@ -472,7 +467,7 @@ void D3DPresentEngine::OnLostDevice()
   // Set the EVR into reset state
   m_pAllocatorPresenter->resetState = true;
   m_pAllocatorPresenter->EndStreaming();
-  m_pAllocatorPresenter->ReleaseResources();
+  m_pAllocatorPresenter->ReleaseResources(true);
 }
 
 void D3DPresentEngine::OnResetDevice()

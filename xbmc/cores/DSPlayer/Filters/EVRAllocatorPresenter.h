@@ -182,7 +182,7 @@ public:
     }
   }
 
-  void ReleaseResources();
+  void ReleaseResources(bool fullRelease = false);
   HRESULT RenegotiateMediaType();
 
   HRESULT BeginStreaming();
@@ -223,7 +223,7 @@ protected:
 
   // Formats
   HRESULT CreateOptimalVideoType(IMFMediaType* pProposed, IMFMediaType **ppOptimal);
-  HRESULT CalculateOutputRectangle(IMFMediaType *pProposed, RECT *prcOutput);
+  HRESULT CalculateOutputRectangle(IMFMediaType* pProposed, RECT *prcOutput);
   HRESULT SetMediaType(IMFMediaType *pType);
   HRESULT IsMediaTypeSupported(IMFMediaType *pMediaType);
 

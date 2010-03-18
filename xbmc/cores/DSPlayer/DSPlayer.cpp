@@ -35,6 +35,9 @@
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
+#include "GUIDialogProgress.h"
+#include "GUIWindowManager.h"
+
 using namespace std;
 
 DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
@@ -76,7 +79,11 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   m_currentSpeed = 10000;
   m_currentRate = 1.0;
 
+  // Processing may need some time, show a waiting dialog
+  START_PERFORMANCE_COUNTER
   hr = m_pDsGraph.SetFile(file, m_PlayerOptions);
+  END_PERFORMANCE_COUNTER
+
   if ( FAILED(hr) )
   {
     CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__,file.GetAsUrl().GetFileName().c_str());
@@ -86,6 +93,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   
   Create();
   WaitForSingleObject(m_hReadyEvent, INFINITE);
+
   return true;
 }
 bool CDSPlayer::CloseFile()

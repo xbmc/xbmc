@@ -107,7 +107,19 @@ unsigned int CWinDsRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
-  //m_D3DVideoTexture = new CD3DTexture();
+
+  LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
+  HRESULT hr;
+
+  hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+  hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
+  hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
+
   return 0;
 }
 
@@ -115,9 +127,7 @@ unsigned int CWinDsRenderer::PreInit()
 void CWinDsRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
-  //Need to fix this
-  //m_D3DVideoTexture->Release();
-  //SAFE_RELEASE(m_D3DMemorySurface);
+  SAFE_RELEASE(m_D3DVideoTexture);
   m_bConfigured = false;
 }
 
@@ -140,7 +150,9 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
     if (videoTexture)
     {
       if (m_D3DVideoTexture)
+      {
         m_D3DVideoTexture->Release();
+      }
       m_D3DVideoTexture = videoTexture;
       m_D3DVideoTexture->AddRef();
     }
@@ -154,7 +166,7 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
   }
 }
 
-void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
+void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 {
   LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
   CSingleLock lock(g_graphicsContext);
@@ -176,16 +188,16 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
   CUSTOMVERTEX verts[4] =
   {
     {
-      m_destRect.x1, m_destRect.y1 ,0.0f ,1.0f ,0 , 0
+      m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, 0, 0
     },
     {
-      m_destRect.x2, m_destRect.y1, 0.0f , 1.0f ,1 , 0
+      m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, 1, 0
     },
     {
-      m_destRect.x2 ,m_destRect.y2 ,0.0f ,1.0f ,1 ,1
+      m_destRect.x2 ,m_destRect.y2, 0.0f, 1.0f, 1, 1
     },
     {
-      m_destRect.x1 ,m_destRect.y2 ,0.0f ,1.0f ,0 ,1
+      m_destRect.x1 ,m_destRect.y2, 0.0f, 1.0f, 0, 1
     },
   };
 
@@ -194,31 +206,28 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
     verts[i].x -= 0.5;
     verts[i].y -= 0.5;
   }
-  //D3DFVF_TEX1
+
   hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
+
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-  
-  hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
-  hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
-  hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
+
   hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
-  if (FAILED(hr))
-    CLog::Log(LOGERROR,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer");
+
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
-  if (m_bIsEvr)
-    SAFE_RELEASE(m_D3DVideoTexture);
+
+  if (m_bIsEvr && m_D3DVideoTexture)
+  {
+    m_D3DVideoTexture->Release();
+    m_D3DVideoTexture = NULL;
+  }
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)
@@ -258,7 +267,7 @@ bool CDsPixelShaderRenderer::Configure(unsigned int width, unsigned int height, 
 void CDsPixelShaderRenderer::Render(DWORD flags)
 {
 	CWinDsRenderer::Render(flags);
-  CWinDsRenderer::RenderDshowBuffer(flags);
+  CWinDsRenderer::RenderDShowBuffer(flags);
 }
 
 #endif

@@ -492,86 +492,6 @@ bool CEVRAllocatorPresenter::GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *S
   return false;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//
-// IUnknown methods
-//
-///////////////////////////////////////////////////////////////////////////////
-
-/*HRESULT CEVRAllocatorPresenter::QueryInterface(REFIID riid, void ** ppv)
-{
-  CheckPointer(ppv, E_POINTER);
-
-  if (riid == __uuidof(IUnknown))
-  {
-    *ppv = static_cast<IUnknown*>( static_cast<IMFVideoPresenter*>(this) );
-  }
-  else if (riid == __uuidof(IMFVideoDeviceID))
-  {
-    *ppv = static_cast<IMFVideoDeviceID*>(this);
-  }
-  else if (riid == __uuidof(IMFVideoPresenter))
-  {
-    *ppv = static_cast<IMFVideoPresenter*>(this);
-  }
-  else if (riid == __uuidof(IMFClockStateSink))    // Inherited from IMFVideoPresenter
-  {
-    *ppv = static_cast<IMFClockStateSink*>(this);
-  }
-  /*else if (riid == __uuidof(IMFRateSupport))
-  {
-      *ppv = static_cast<IMFRateSupport*>(this);
-  }*
-  else if (riid == __uuidof(IMFGetService))
-  {
-    *ppv = static_cast<IMFGetService*>(this);
-  }
-  else if (riid == __uuidof(IMFTopologyServiceLookupClient))
-  {
-    *ppv = static_cast<IMFTopologyServiceLookupClient*>(this);
-  }
-  else if (riid == __uuidof(IMFVideoDisplayControl))
-  {
-    *ppv = static_cast<IMFVideoDisplayControl*>(this);
-  }
-  else if (riid == __uuidof(IEVRPresenterRegisterCallback))
-  {
-    *ppv = static_cast<IEVRPresenterRegisterCallback*>(this);
-  }
-  else if (riid == __uuidof(IEVRPresenterSettings))
-  {
-    *ppv = static_cast<IEVRPresenterSettings*>(this);
-  }
-  else if (riid == __uuidof(IEVRTrustedVideoPlugin))
-  {
-    *ppv = static_cast<IEVRTrustedVideoPlugin*>(this);
-  }
-  else
-  {
-    *ppv = NULL;
-    return E_NOINTERFACE;
-  }
-
-  AddRef();
-  return S_OK;
-}
-
-ULONG CEVRAllocatorPresenter::AddRef()
-{
-  return InterlockedIncrement(& m_refCount);
-}
-
-ULONG CEVRAllocatorPresenter::Release()
-{
-  ULONG ret = InterlockedDecrement(& m_refCount);
-  if( ret == 0 )
-  {
-    delete this;
-  }
-
-  return ret;
-}*/
-
 STDMETHODIMP CEVRAllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
   HRESULT    hr;
@@ -1061,12 +981,11 @@ HRESULT CEVRAllocatorPresenter::CreateOptimalVideoType(IMFMediaType* pProposedTy
   CHECK_HR(hr = pmtOptimal->GetMediaType(&pOptimalType));
 
   *ppOptimalType = pOptimalType;
+  (*ppOptimalType)->AddRef();
 
 done:
   SAFE_RELEASE(pmtOptimal);
-
   return hr;
-
 }
 
 //-----------------------------------------------------------------------------
@@ -1083,7 +1002,7 @@ done:
 // converts it to the pixel aspect ratio (PAR) of the display.
 //-----------------------------------------------------------------------------
 
-HRESULT CEVRAllocatorPresenter::CalculateOutputRectangle(IMFMediaType *pProposedType, RECT *prcOutput)
+HRESULT CEVRAllocatorPresenter::CalculateOutputRectangle(IMFMediaType* pProposedType, RECT *prcOutput)
 {
   HRESULT hr = S_OK;
   UINT32  srcWidth = 0, srcHeight = 0;
@@ -1372,11 +1291,14 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
   bool bFoundMediaType = false;
   Com::SmartPtr<IMFMediaType> pMixerType = NULL;
   Com::SmartPtr<IMFMediaType> pOptimalType = NULL;
-  Com::SmartPtr<IMFVideoMediaType> pVideoType = NULL;
+
   if (!m_pMixer)
     return MF_E_INVALIDREQUEST;
   // Loop through all of the mixer's proposed output types.
   DWORD iTypeIndex = 0;
+
+  // Make sure mediatype is released
+  SetMediaType(NULL);
 
   while (!bFoundMediaType && (hr != MF_E_NO_MORE_TYPES))
   {
@@ -1438,7 +1360,6 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
       bFoundMediaType = true;
 
   }
-
   return hr;
 }
 
@@ -1449,7 +1370,10 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
   // Clearing the media type is allowed in any state (including shutdown).
   if (pType == NULL)
   {
-    m_pMediaType = NULL;
+    if (m_pMixer)
+      m_pMixer->SetOutputType(0, NULL, 0);
+
+    ASSERT(m_pMediaType.Release() == 0);
     ReleaseResources();
     return S_OK;
   }
@@ -1883,7 +1807,7 @@ done:
 // the presenter's media type.
 //-----------------------------------------------------------------------------
 
-void CEVRAllocatorPresenter::ReleaseResources()
+void CEVRAllocatorPresenter::ReleaseResources(bool fullRelease/* = false*/)
 {
   // Increment the token counter to indicate that all existing video samples
   // are "stale." As these samples get released, we'll dispose of them. 
@@ -1900,7 +1824,11 @@ void CEVRAllocatorPresenter::ReleaseResources()
 
   m_SamplePool.Clear();
 
-  m_pMediaType = NULL;
+  if (fullRelease)
+  {
+    ReleaseServicePointers();
+  }
+
   if (m_pD3DPresentEngine)
     m_pD3DPresentEngine->ReleaseResources();
 }
