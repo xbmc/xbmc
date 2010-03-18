@@ -298,9 +298,6 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   if (!pItem)
     return;
 
-  if (!scraper)
-    return;
-
   if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->m_strPath.Equals("add"))
     return;
 
@@ -407,6 +404,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
   CVideoInfoTag movieDetails;
   movieDetails.Reset();
+  if (info)
+  {
   m_database.Open(); // since we can be called from the music library
 
   if (info->Content() == CONTENT_MOVIES)
@@ -466,11 +465,17 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
     }
   }
-
   m_database.Close();
+  }
+  else if(item->HasVideoInfoTag())
+  {
+    bHasInfo = true;
+    movieDetails = *item->GetVideoInfoTag();
+  }
+
   if (bHasInfo)
   {
-    if (info->Content() == CONTENT_NONE) // disable refresh button
+    if (!info || info->Content() == CONTENT_NONE) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
@@ -481,6 +486,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
   // quietly return if Internet lookups are disabled
   if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
+    return false;
+
+  if(!info)
     return false;
 
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);

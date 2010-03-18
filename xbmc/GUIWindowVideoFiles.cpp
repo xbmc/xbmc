@@ -496,7 +496,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     else
     {
       CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
-      if (!item->GetPropertyBOOL("pluginreplacecontextitems"))
+      if (!item->GetPropertyBOOL("pluginreplacecontextitems") && !item->IsParentFolder())
       {
         // Movie Info button
         if (pScanDlg && pScanDlg->IsScanning())
@@ -513,8 +513,10 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
             infoString = item->m_bIsFolder ? 20351 : 20352;
           if (info && info->Content() == CONTENT_MUSICVIDEOS)
             infoString = 20393;
+          if(item->IsLiveTV())
+            infoString = 20352;
 
-          if (item->m_bIsFolder && !item->IsParentFolder())
+          if (item->m_bIsFolder)
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
               if (!item->IsPlayList() && !item->IsLiveTV())
@@ -542,19 +544,17 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           else
           {
             // single file
-            if ( (info && m_database.HasMovieInfo(item->m_strPath)) ||
-                 m_database.HasEpisodeInfo(item->m_strPath) || 
-                 (info && info->Content() == CONTENT_MUSICVIDEOS) )
+            if ( m_database.HasMovieInfo(item->m_strPath)
+              || m_database.HasEpisodeInfo(item->m_strPath) 
+              || (item->IsLiveTV() && item->HasVideoInfoTag())
+              || (info && info->Content() == CONTENT_MUSICVIDEOS) )
             {
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
             }
-            m_database.Open();
-            if (!item->IsParentFolder())
-            {
-              if (!m_database.HasMovieInfo(item->m_strPath) && !m_database.HasEpisodeInfo(item->m_strPath))
-                buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
-            }
-            m_database.Close();
+            if (!m_database.HasMovieInfo(item->m_strPath) 
+            &&  !m_database.HasEpisodeInfo(item->m_strPath) 
+            &&  !item->IsLiveTV())
+              buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
           }
         }
       }
