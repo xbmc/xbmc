@@ -90,7 +90,7 @@ public:
   }
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
-  unsigned int PreInit(bool dshow = false);
+  unsigned int PreInit(RENDERERTYPE rendtype = RENDERER_NORMAL);
   void UnInit();
 
 #ifdef HAS_DX

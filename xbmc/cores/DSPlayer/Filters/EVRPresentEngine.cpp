@@ -62,7 +62,7 @@ D3DPresentEngine::D3DPresentEngine(CEVRAllocatorPresenter *presenter, HRESULT& h
   hr = InitializeDXVA();
 
   g_Windowing.Register(this);
-  g_renderManager.PreInit(true);
+  g_renderManager.PreInit(RENDERER_DSHOW_EVR);
 }
 
 

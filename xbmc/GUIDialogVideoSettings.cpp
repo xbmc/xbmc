@@ -154,7 +154,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
 #ifdef HAS_DX
-  if ( g_renderManager.GetRendererType() == RENDERER_DSHOW )
+  if ((g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR )
   {
 
     int size = g_dsconfig.GetFiltersWithPropertyPages().size();

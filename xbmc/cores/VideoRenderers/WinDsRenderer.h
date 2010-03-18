@@ -69,7 +69,7 @@ protected:
   virtual void Render(DWORD flags);
   
   bool m_bConfigured;
-
+  bool m_bIsEvr;
 
   //dsplayer
   void RenderDshowBuffer(DWORD flags);
@@ -92,7 +92,7 @@ protected:
 class CDsPixelShaderRenderer : public CWinDsRenderer
 {
 public:
-  CDsPixelShaderRenderer();
+  CDsPixelShaderRenderer(bool isevr);
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
 
 protected:

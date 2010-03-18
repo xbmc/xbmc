@@ -52,7 +52,7 @@ CDsRenderer::CDsRenderer()
   m_nVMR9Surfaces = 0;
   m_iVMR9Surface = 0;
 
-  g_renderManager.PreInit(true);
+  g_renderManager.PreInit(RENDERER_DSHOW_VMR9);
   g_Windowing.Register(this); 
 }
 

@@ -155,7 +155,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 
   BuildPresentParameters();
   
-  if (g_renderManager.GetRendererType() == RENDERER_DSHOW) // If we are using DSPlayer, the device need to be recreated
+  if ((g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR ) // If we are using DSPlayer, the device need to be recreated
     m_needNewDevice = true;
 
   OnDeviceLost();

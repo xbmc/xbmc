@@ -261,7 +261,7 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   m_presentevent.Set();
 }
 
-unsigned int CXBMCRenderManager::PreInit(bool dshow)
+unsigned int CXBMCRenderManager::PreInit(RENDERERTYPE rendtype)
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -277,12 +277,17 @@ unsigned int CXBMCRenderManager::PreInit(bool dshow)
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
 #elif defined(HAS_DX)
-    if (!dshow)
+    if (rendtype == RENDERER_NORMAL)
       m_pRenderer = new CPixelShaderRenderer();
-    else
+    else if (rendtype == RENDERER_DSHOW_VMR9)
     {
-      m_pRenderer = new CDsPixelShaderRenderer();
-      m_pRendererType = RENDERER_DSHOW;
+      m_pRenderer = new CDsPixelShaderRenderer(false);
+      m_pRendererType = rendtype;
+    }
+    else if (rendtype == RENDERER_DSHOW_EVR)
+    {
+      m_pRenderer = new CDsPixelShaderRenderer(true);
+      m_pRendererType = rendtype;
     }
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();

@@ -134,27 +134,30 @@ void CWinDsRenderer::AutoCrop(bool bCrop)
 
 void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3DSurface9* videoSurface)
 {
-  
-  if (videoTexture)
+
+  if ( m_bIsEvr )
   {
-    m_D3DVideoTexture = videoTexture;
+    if (videoTexture)
+    {
+      if (m_D3DVideoTexture)
+        m_D3DVideoTexture->Release();
+      m_D3DVideoTexture = videoTexture;
+      m_D3DVideoTexture->AddRef();
+    }
   }
-  // Unused
-  if (videoSurface)
+  else
   {
-    m_D3DMemorySurface = videoSurface;
+    if (videoTexture)
+      m_D3DVideoTexture = videoTexture;
+    if (videoSurface)
+      m_D3DMemorySurface = videoSurface;
   }
 }
 
 void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
 {
   LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
-  //m_pD3DDevice->SetPixelShader( NULL );
   CSingleLock lock(g_graphicsContext);
-  
-  // set scissors if we are not in fullscreen video
-  //if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-//    g_graphicsContext.ClipToViewWindow();
 
   HRESULT hr;
   D3DSURFACE_DESC desc;
@@ -214,6 +217,8 @@ void CWinDsRenderer::RenderDshowBuffer(DWORD flags)
     CLog::Log(LOGERROR,"RenderDshowBuffer TextureCopy CWinDsRenderer::RenderDshowBuffer");
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
+  if (m_bIsEvr)
+    SAFE_RELEASE(m_D3DVideoTexture);
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)
@@ -235,9 +240,10 @@ bool CWinDsRenderer::Supports(ESCALINGMETHOD method)
   return false;
 }
 
-CDsPixelShaderRenderer::CDsPixelShaderRenderer()
+CDsPixelShaderRenderer::CDsPixelShaderRenderer(bool isevr)
     : CWinDsRenderer()
 {
+  m_bIsEvr = isevr;
 }
 
 bool CDsPixelShaderRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
