@@ -202,7 +202,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       CGUIWindow::OnMessage(message);
       int focusedControl = GetFocusedControlID();
       if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_vecSections.size()) &&
-          focusedControl - CONTROL_START_BUTTONS != m_iSection)
+          focusedControl - CONTROL_START_BUTTONS != m_iSection && !m_returningFromSkinLoad)
       {
         // changing section, check for updates and cancel any delayed changes
         m_delayedSetting = NULL;
@@ -238,9 +238,10 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
         m_iSection = 0;
         ResetControlStates();
       }
-      m_returningFromSkinLoad = false;
       m_iScreen = (int)message.GetParam2() - (int)CGUIWindow::GetID();
-      return CGUIWindow::OnMessage(message);
+      CGUIWindow::OnMessage(message);
+      m_returningFromSkinLoad = false;
+      return true;
     }
     break;
   case GUI_MSG_UPDATE_ITEM:
