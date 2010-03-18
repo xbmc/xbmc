@@ -485,12 +485,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         database.Open();
         ADDON::ScraperPtr info = database.GetScraperForPath(item->m_strPath);
 
-        if (item && info)
-        {
-          if (info->Content() != CONTENT_NONE)
-            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-        }
+        if (info && (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())))
+          buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
       }
     }
     else
@@ -616,12 +612,8 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      ADDON::ScraperPtr info;
       SScanSettings settings;
-      if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-        info = m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, settings);
-      else
-        info = m_database.GetScraperForPath(item->m_strPath, settings);
+      ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings);
       OnAssignContent(itemNumber,0, info, settings);
       return true;
     }

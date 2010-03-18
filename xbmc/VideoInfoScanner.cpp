@@ -204,12 +204,7 @@ namespace VIDEO
     bool bSkip=false;
 
     ScraperPtr info = m_database.GetScraperForPath(strDirectory, settings, iFound);
-    if (!info)
-    {
-      CLog::Log(LOGWARNING, "%s Didn't find scraper for path: %s", __FUNCTION__, strDirectory.c_str());
-      return false;
-    }
-    CONTENT_TYPE content = info->Content();
+    CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
 
     if (content == CONTENT_NONE)
       bSkip = true;
@@ -395,13 +390,8 @@ namespace VIDEO
       CFileItemPtr pItem = items[i];
 
       // we do this since we may have a override per dir
-      ScraperPtr info2;
-      if (pItem->m_bIsFolder)
-        info2 = m_database.GetScraperForPath(pItem->m_strPath);
-      else
-        info2 = m_database.GetScraperForPath(items.m_strPath);
-
-      if (!info2 || info2->Content() == CONTENT_NONE) // skip
+      ScraperPtr info2 = m_database.GetScraperForPath(pItem->m_bIsFolder ? pItem->m_strPath : items.m_strPath);
+      if (!info2) // skip
         continue;
 
       // Discard all exclude files defined by regExExclude
