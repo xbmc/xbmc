@@ -527,7 +527,7 @@ namespace VIDEO
     { // check for preconfigured scraper; if found, overwrite with interpreted scraper (from Nfofile)
       // but keep current scan settings
       SScanSettings settings;
-      if (ScraperPtr tmp = m_database.GetScraperForPath(pItem->m_strPath, settings))
+      if (m_database.GetScraperForPath(pItem->m_strPath, settings))
         m_database.SetScraperForPath(pItem->m_strPath,info2,settings);
     }
     if (result == CNfoFile::FULL_NFO)
