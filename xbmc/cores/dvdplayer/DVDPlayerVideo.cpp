@@ -231,7 +231,7 @@ void CDVDPlayerVideo::Process()
   while (!m_bStop)
   {
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
-    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
+    int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE /* && m_started */) ? 1 : 0;
 
     CDVDMsg* pMsg;
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, iQueueTimeOut, iPriority);
