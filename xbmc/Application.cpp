@@ -1483,7 +1483,7 @@ void CApplication::ReloadSkin()
   // Reload the skin, restoring the previously focused control.  We need this as
   // the window unload will reset all control states.
   CGUIWindow* pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-  unsigned iCtrlID = pWindow->GetFocusedControlID();
+  int iCtrlID = pWindow->GetFocusedControlID();
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
   pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
   if (pWindow && pWindow->HasSaveLastControl())
