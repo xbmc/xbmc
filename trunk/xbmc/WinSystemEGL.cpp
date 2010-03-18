@@ -338,7 +338,7 @@ bool CWinSystemEGL::RefreshEGLContext()
 
   if ((m_eglWindow == info.info.x11.window) && m_eglSurface && m_eglContext)
   {
-    CLog::Log(LOGERROR, "EGL: Same window as before, refreshing context");
+    CLog::Log(LOGWARNING, "EGL: Same window as before, refreshing context");
     eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglMakeCurrent(m_eglDisplay, m_eglSurface,   m_eglSurface,   m_eglContext);
     return true;

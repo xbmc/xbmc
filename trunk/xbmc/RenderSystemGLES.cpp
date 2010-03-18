@@ -73,11 +73,6 @@ bool CRenderSystemGLES::InitRenderSystem()
   // Get our driver vendor and renderer
   m_RenderVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
-  
-  if (IsExtSupported("GL_TEXTURE_NPOT"))
-  {
-    m_renderCaps |= RENDER_CAPS_NPOT;
-  }
 
   m_RenderExtensions  = " ";
   m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
@@ -85,6 +80,11 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   LogGraphicsInfo();
   
+  if (IsExtSupported("GL_TEXTURE_NPOT"))
+  {
+    m_renderCaps |= RENDER_CAPS_NPOT;
+  }
+
   m_bRenderCreated = true;
   
   InitialiseGUIShader();
@@ -178,9 +178,11 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension)
     if (extension == "GL_TEXTURE_NPOT")
     {
       // GLES can have different methods to detect this one based on chipset.
-#ifdef GL_IMG_texture_npot	// IMG POWERVR SGX
-      return true;
-#endif
+      // Handle it here, otherwise let it drop out and test for the standard extension string.
+      if (m_RenderRenderer == "PowerVR SGX 530")
+      {
+        extension = "GL_IMG_texture_npot";
+      }
     }
 
     CStdString name;
@@ -188,7 +190,9 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension)
     name += extension;
     name += " ";
 
-    return m_RenderExtensions.find(name) != std::string::npos;
+    bool supported = m_RenderExtensions.find(name) != std::string::npos;
+    CLog::Log(LOGDEBUG, "GLES: Extension Support Test - %s %s", extension, supported ? "YES" : "NO");
+    return supported;
   }
 }
 

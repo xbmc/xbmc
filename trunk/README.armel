@@ -162,6 +162,8 @@ In order to continue, you will need the SGX SDK from TI's website.
 Once you have installed said SDK on a standard Linux machine, copy the neccessary .h and .so files to the appropriate directories in scratchbox:
 e.g /scratchbox/users/<username>/targets/<target_name>/usr/include/EGL/egl.h
 These files will also need to be transferred over to the board eventually.
+NOTE: XBMC has only been tested with the following versions of the OMAP35x Graphics SDK:
+3.00.00.05, 3.00.00.06, 3.00.00.08, 3.00.00.09
 
 
 -----------------------------------------------------------------------------
