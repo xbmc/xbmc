@@ -226,7 +226,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
               return true;
             }
 
-            if (scraper->Content() == CONTENT_TVSHOWS && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
+            if (scraper && scraper->Content() == CONTENT_TVSHOWS && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
               return true;
           }
 
