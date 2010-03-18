@@ -230,7 +230,8 @@ void CVariant::push_back(CVariant variant)
     m_type = VariantTypeArray;
     m_data.array = new VariantArray();
   }
-  else if (isArray())
+
+  if (isArray())
     m_data.array->push_back(variant);
 }
 
