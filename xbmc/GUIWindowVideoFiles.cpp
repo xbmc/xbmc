@@ -530,10 +530,6 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
             }
             else
             { // scraper found - allow movie information, scan for new content, or set different type of content
-              if (info->Content() == CONTENT_TVSHOWS)
-                infoString = item->m_bIsFolder ? 20351 : 20352;
-              if (info->Content() == CONTENT_MUSICVIDEOS)
-                infoString = 20393;
               if (info->Content() != CONTENT_MUSICVIDEOS)
                 buttons.Add(CONTEXT_BUTTON_INFO, infoString);
               if (info->Content() != CONTENT_NONE)
