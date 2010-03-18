@@ -280,6 +280,7 @@ void CGUIWindowAddonBrowser::SetupControls()
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
   if (!pOriginalCategoryButton || !group)
     return;
+  pOriginalCategoryButton->SetVisible(false);
   for (unsigned int i=ADDON::ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
   {
     if (!CAddonMgr::Get()->HasAddons((ADDON::TYPE)i))
