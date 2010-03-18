@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="visWaveform"
 	ProjectGUID="{D450FE9A-CE56-4496-B4AB-379094E642F2}"
 	RootNamespace="visWaveform"
@@ -42,6 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\lib\libSDL-WIN32\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;WAVEFORM_EXPORTS;_WIN32PC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
