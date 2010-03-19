@@ -9,17 +9,15 @@
 		Listitem.Property(movieStudio)
 	-->
 	
-	
-	
 	<include name="InfoListFlags">
 		<!-- width 400 -->
 		<control type="image">
 			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>
 			<posx>0</posx>
 			<posy>0</posy>
-			<height>46</height>
+			<height>40</height>
 			<width>90</width>
-			<info>Listitem.Property(contentRating)</info>
+			<info>Listitem.Property(mediaTag::contentRating)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -27,19 +25,18 @@
 			<visible>true</visible>
 			<posx>100</posx>
 			<posy>0</posy>
-			<height>46</height>
+			<height>40</height>
 			<width>90</width>
-			<info>Listitem.Property(videoResolution)</info>
+			<info>Listitem.Property(mediaTag::videoResolution)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
 		<control type="image">
 			<visible>true</visible>
-			<posx>190</posx>
-			<posy>0</posy>
-			<height>46</height>
-			<width>90</width>
-			<info>Listitem.Property(audioChannels)</info>
+			<posx>170</posx>
+			<posy>-7</posy>
+			<height>58</height>
+			<info>Listitem.Property(mediaTag::audioCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -47,9 +44,19 @@
 			<visible>true</visible>
 			<posx>280</posx>
 			<posy>0</posy>
-			<height>46</height>
+			<height>40</height>
 			<width>90</width>
-			<info>Listitem.Property(movieStudio)</info>
+			<info>Listitem.Property(mediaTag::audioChannels)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>true</visible>
+			<posx>370</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<width>90</width>
+			<info>Listitem.Property(mediaTag::movieStudio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include>
@@ -60,7 +67,7 @@
 			<posx>-30</posx>
 			<posy>0</posy>
 			<height>46</height>
-			<info>Listitem.Property(contentRating)</info>
+			<info>Listitem.Property(mediaTag::contentRating)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -69,7 +76,7 @@
 			<posx>127</posx>
 			<posy>0</posy>
 			<height>46</height>
-			<info>Listitem.Property(videoResolution)</info>
+			<info>Listitem.Property(mediaTag::videoResolution)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -78,7 +85,7 @@
 			<posx>227</posx>
 			<posy>0</posy>
 			<height>46</height>
-			<info>Listitem.Property(audioCodec)</info>
+			<info>Listitem.Property(mediaTag::audioCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -87,7 +94,7 @@
 			<posx>327</posx>
 			<posy>0</posy>
 			<height>46</height>
-			<info>Listitem.Property(movieStudio)</info>
+			<info>Listitem.Property(mediaTag::movieStudio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include>
@@ -99,7 +106,7 @@
 			<posy>-10</posy>
 			<height>55</height>
 			<width>90</width>
-			<info>Listitem.Property(videoCodec)</info>
+			<info>Listitem.Property(mediaTag::videoCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -109,7 +116,7 @@
 			<posy>0</posy>
 			<height>40</height>
 			<width>90</width>
-			<info>Listitem.Property(videoResolution)</info>
+			<info>Listitem.Property(mediaTag::videoResolution)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -119,7 +126,7 @@
 			<posy>-7</posy>
 			<height>55</height>
 			<width>90</width>
-			<info>Listitem.Property(audioCodec)</info>
+			<info>Listitem.Property(mediaTag::audioCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 
@@ -129,7 +136,7 @@
 			<posy>0</posy>
 			<height>40</height>
 			<width>90</width>
-			<info>Listitem.Property(audioChannels)</info>
+			<info>Listitem.Property(mediaTag::audioChannels)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include>

@@ -535,7 +535,7 @@
 	            </control>
 	          </control>
 			<control type="group">
-				<posy>407</posy>
+				<posy>420</posy>
 				<include>InfoListFlags</include>
 		 	</control>
         </control>
