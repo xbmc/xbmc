@@ -487,36 +487,6 @@ void cHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
   tags.erase(id);
 }
 
-//bool cHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& event, CFileItem& item)
-//{
-//  CVideoInfoTag* tag = item.GetVideoInfoTag();
-//
-//  CStdString temp;
-//
-//  CURL url(item.m_strPath);
-//  temp.Format("tags/%d/%d.ts", tagid, channel.id);
-//  url.SetFileName(temp);
-//
-//  tag->m_iSeason  = 0;
-//  tag->m_iEpisode = 0;
-//  tag->m_iTrack       = channel.num;
-//  tag->m_strAlbum     = channel.name;
-//  tag->m_strShowTitle = event.title;
-//  tag->m_strPlot      = event.descs;
-//  tag->m_strStatus    = "livetv";
-//
-//  tag->m_strTitle = tag->m_strAlbum;
-//  if(tag->m_strShowTitle.length() > 0)
-//    tag->m_strTitle += " : " + tag->m_strShowTitle;
-//
-//  item.m_strPath  = url.Get();
-//  item.m_strTitle = tag->m_strTitle;
-//  item.SetThumbnailImage(channel.icon);
-//  item.SetContentType("video/X-htsp");
-//  item.SetCachedVideoThumb();
-//  return true;
-//}
-
 bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue, SQuality &quality)
 {
   if(htsmsg_get_u32(msg, "packets", &queue.packets)
@@ -560,57 +530,3 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue, SQualit
 
   return true;
 }
-
-SChannels cHTSPSession::GetChannels()
-{
-  return GetChannels(0);
-}
-
-SChannels cHTSPSession::GetChannels(int tag)
-{
-  pthread_mutex_lock(&m_critSection);
-  if(tag == 0)
-  {
-    pthread_mutex_unlock(&m_critSection);
-    return m_channels;
-  }
-
-  STags::iterator it = m_tags.find(tag);
-  if(it == m_tags.end())
-  {
-    SChannels channels;
-    pthread_mutex_unlock(&m_critSection);
-    return channels;
-  }
-  pthread_mutex_unlock(&m_critSection);
-  return GetChannels(it->second);
-}
-
-SChannels cHTSPSession::GetChannels(STag& tag)
-{
-  pthread_mutex_lock(&m_critSection);
-  SChannels channels;
-
-  std::vector<int>::iterator it;
-  for(it = tag.channels.begin(); it != tag.channels.end(); it++)
-  {
-    SChannels::iterator it2 = m_channels.find(*it);
-    if(it2 == m_channels.end())
-    {
-      XBMC->Log(LOG_ERROR, "cHTSPSession::GetChannels - tag points to unknown channel %d", *it);
-      continue;
-    }
-    channels[*it] = it2->second;
-  }
-  pthread_mutex_unlock(&m_critSection);
-  return channels;
-}
-
-STags cHTSPSession::GetTags()
-{
-  pthread_mutex_lock(&m_critSection);
-  STags tags = m_tags;
-  pthread_mutex_unlock(&m_critSection);
-  return tags;
-}
-

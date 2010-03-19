@@ -215,10 +215,6 @@ public:
   int         GetProtocol()   { return m_protocol; }
   CStdString  GetServerName() { return m_server; }
   CStdString  GetVersion()    { return m_version; }
-  SChannels   GetChannels();
-  SChannels   GetChannels(int tag);
-  SChannels   GetChannels(STag &tag);
-  STags       GetTags();
   unsigned    AddSequence()   { return ++m_seq; }
 
   static bool ParseEvent        (htsmsg_t* msg, uint32_t id, SEvent &event);
@@ -226,7 +222,6 @@ public:
   static void ParseChannelRemove(htsmsg_t* msg, SChannels &channels);
   static void ParseTagUpdate    (htsmsg_t* msg, STags &tags);
   static void ParseTagRemove    (htsmsg_t* msg, STags &tags);
-//  static bool ParseItem         (const SChannel& channel, int tag, const SEvent& event, CFileItem& item);
   static bool ParseQueueStatus  (htsmsg_t* msg, SQueueStatus &queue, SQuality &quality);
 
 private:
@@ -240,10 +235,5 @@ private:
 
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_queue_size;
-  SChannels             m_channels;
-  STags                 m_tags;
-  pthread_mutex_t       m_critSection;
-  pthread_t             m_thread;
-  bool                  m_bStop;
 
 };

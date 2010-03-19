@@ -268,16 +268,6 @@ PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
   return PVR_ERROR_SERVER_ERROR;
 }
 
-PVR_ERROR DialogChannelScan()
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
 
 /*******************************************/
 /** PVR EPG Functions                     **/
@@ -288,20 +278,6 @@ PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, tim
     return PVR_ERROR_SERVER_ERROR;
 
   return HTSPData->RequestEPGForChannel(handle, channel, start, end);
-}
-
-
-/*******************************************/
-/** PVR Bouquets Functions                **/
-
-int GetNumBouquets()
-{
-  return 0;//(int)(HTSPData->GetTags().size());
-}
-
-PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
 
@@ -323,129 +299,6 @@ PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 
   return HTSPData->RequestChannelList(handle, radio);
 }
-
-PVR_ERROR DeleteChannel(unsigned int number)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR RenameChannel(unsigned int number, const char *newname)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-
-/*******************************************/
-/** PVR Recording Functions               **/
-
-int GetNumRecordings(void)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->GetNumRecordings();
-}
-
-PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->RequestRecordingsList(handle);
-}
-
-PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->DeleteRecording(recinfo);
-}
-
-PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->RenameRecording(recinfo, newname);
-}
-
-
-/*******************************************/
-/** PVR Recording cut marks Functions     **/
-
-bool HaveCutmarks()
-{
-  return false;
-}
-
-PVR_ERROR RequestCutMarksList(PVRHANDLE handle)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark)
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-PVR_ERROR StartCut()
-{
-  return PVR_ERROR_NOT_IMPLEMENTED;
-}
-
-
-/*******************************************/
-/** PVR Timer Functions                   **/
-
-int GetNumTimers(void)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->GetNumTimers();
-}
-
-PVR_ERROR RequestTimerList(PVRHANDLE handle)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->RequestTimerList(handle);
-}
-
-PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->AddTimer(timerinfo);
-}
-
-PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->DeleteTimer(timerinfo, force);
-}
-
-PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->RenameTimer(timerinfo, newname);
-}
-
-PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->UpdateTimer(timerinfo);
-}
-
 
 /*******************************************/
 /** PVR Live Stream Functions             **/
@@ -510,70 +363,41 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
   return PVR_ERROR_SERVER_ERROR;
 }
 
-
-/*******************************************/
-/** PVR Secondary Stream Functions        **/
-
-bool SwapLiveTVSecondaryStream()
-{
-  return false;
-}
-
-bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo)
-{
-  return false;
-}
-
-void CloseSecondaryStream()
-{
-
-}
-
-int ReadSecondaryStream(unsigned char* buf, int buf_size)
-{
-  return 0;
-}
-
-
-/*******************************************/
-/** PVR Recording Stream Functions        **/
-
-bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->OpenRecordedStream(recinfo);
-}
-
-void CloseRecordedStream(void)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return ; // TODO g_client->CloseRecordedStream();
-}
-
-int ReadRecordedStream(unsigned char* buf, int buf_size)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->ReadRecordedStream(buf, buf_size);
-}
-
-long long SeekRecordedStream(long long pos, int whence)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->SeekRecordedStream(pos, whence);
-}
-
-long long PositionRecordedStream(void)
-{
-  return -1;
-}
-
-long long LengthRecordedStream(void)
-{
-  printf("%s\n", __PRETTY_FUNCTION__);
-  return PVR_ERROR_SERVER_ERROR; // TODO g_client->LengthRecordedStream();
-}
-
 /** UNUSED API FUNCTIONS */
+PVR_ERROR DialogChannelScan() { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
+int GetNumBouquets() { return 0; }
+PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR DeleteChannel(unsigned int number) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR RenameChannel(unsigned int number, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
+int GetNumRecordings(void) { return 0; }
+PVR_ERROR RequestRecordingsList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
+bool HaveCutmarks() { return false; }
+PVR_ERROR RequestCutMarksList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR StartCut() { return PVR_ERROR_NOT_IMPLEMENTED; }
+int GetNumTimers(void) { return 0; }
+PVR_ERROR RequestTimerList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
+bool SwapLiveTVSecondaryStream() { return false; }
+bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo) { return false; }
+void CloseSecondaryStream() {}
+int ReadSecondaryStream(unsigned char* buf, int buf_size) { return 0; }
+bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo) { return false; }
+void CloseRecordedStream(void) {}
+int ReadRecordedStream(unsigned char* buf, int buf_size) { return 0; }
+long long SeekRecordedStream(long long pos, int whence) { return 0; }
+long long PositionRecordedStream(void) { return -1; }
+long long LengthRecordedStream(void) { return 0; }
 void DemuxReset(){}
 void DemuxFlush(){}
 int ReadLiveStream(unsigned char* buf, int buf_size) { return 0; }
