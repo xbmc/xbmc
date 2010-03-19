@@ -1589,7 +1589,7 @@ namespace VIDEO
     IMDB_MOVIELIST movielist;
     m_IMDB.SetScraperInfo(scraper);
     int returncode = m_IMDB.FindMovie(videoName, movielist, progress);
-    if (returncode == -1 || !DownloadFailed(progress))
+    if (returncode == -1 || (returncode == 0 && !DownloadFailed(progress)))
     {
       m_bStop = true;
       return -1;
