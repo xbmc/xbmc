@@ -82,7 +82,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       AddonPtr last = m_scraper;
       m_scraper = m_scrapers[m_content][iSelected];
 
-      if (!last && m_scraper)
+      if (m_scraper != last)
         SetupPage();
 
       m_bNeedSave = m_scraper != last;
