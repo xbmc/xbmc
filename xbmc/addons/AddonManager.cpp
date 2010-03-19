@@ -344,11 +344,11 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 
   if (m_idMap[str])
   {
+    addon = m_idMap[str];
     if(enabledOnly)
       return !addon->Disabled();
     else
       return true;
-    return true;
   }
 
   VECADDONS &addons = m_addons[type];
