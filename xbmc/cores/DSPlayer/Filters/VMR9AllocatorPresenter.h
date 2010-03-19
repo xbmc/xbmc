@@ -73,6 +73,7 @@ public:
   virtual void OnLostDevice();
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
+  virtual void OnResetDevice();
 protected:
   void DeleteSurfaces();
   void GetCurrentVideoSize();

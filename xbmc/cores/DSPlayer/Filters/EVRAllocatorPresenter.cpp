@@ -1596,6 +1596,10 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
   dataBuffer.pSample = pSample;
   dataBuffer.dwStatus = 0;
 
+  /*
+   Ok, if the following code is executed, the d3d reset failed. Need to find why!
+   */
+
   hr = m_pMixer->ProcessOutput(0, 1, &dataBuffer, &dwStatus);
 
   if (FAILED(hr))

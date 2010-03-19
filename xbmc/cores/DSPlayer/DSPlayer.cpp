@@ -77,7 +77,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   m_Filename = file.GetAsUrl();
   m_PlayerOptions = options;
   m_currentSpeed = 10000;
-  m_currentRate = 1.0;
+  m_currentRate = 1;
 
   // Processing may need some time, show a waiting dialog
   START_PERFORMANCE_COUNTER
@@ -202,6 +202,9 @@ void CDSPlayer::HandleStart()
 
 void CDSPlayer::Process()
 {
+
+#define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) break;
+
   m_callback.OnPlayBackStarted();
 
   bool pStartPosDone = false;
@@ -214,8 +217,7 @@ void CDSPlayer::Process()
   SetEvent(m_hReadyEvent);
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
-    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
-      break;
+    CHECK_PLAYER_STATE
 
     //The graph need to be started to handle those stuff
     if (!pStartPosDone)
@@ -224,13 +226,11 @@ void CDSPlayer::Process()
       pStartPosDone = true;
     }
 
-    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
-      break;
+    CHECK_PLAYER_STATE
 
     m_pDsGraph.HandleGraphEvent();
 
-    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
-      break;
+    CHECK_PLAYER_STATE
     
     //Handle fastforward stuff
     if (m_currentSpeed == 0)
@@ -239,8 +239,8 @@ void CDSPlayer::Process()
     } 
     else if (m_currentSpeed != 10000)
     {
-      m_pDsGraph.DoFFRW(m_currentSpeed);
-      Sleep(100);
+      m_pDsGraph.DoFFRW(m_currentSpeed,m_currentRate);
+      Sleep(1000);
     } 
     else
     {
@@ -249,8 +249,7 @@ void CDSPlayer::Process()
       CChaptersManager::getSingleton()->UpdateChapters();
     }
 
-    if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED)
-      break;
+    CHECK_PLAYER_STATE
 
     if (m_pDsGraph.FileReachedEnd())
     { 
@@ -290,7 +289,7 @@ void CDSPlayer::ToFFRW(int iSpeed)
   {
     case -1:
       m_currentRate = -1;
-      m_currentSpeed=-10000;
+      m_currentSpeed = -10000;
       break;
     case -2:
       m_currentRate = -2;

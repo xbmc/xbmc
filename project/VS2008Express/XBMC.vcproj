@@ -3591,6 +3591,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\PerformanceSample.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PerformanceStats.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PowerManager.cpp"
 					>
 				</File>

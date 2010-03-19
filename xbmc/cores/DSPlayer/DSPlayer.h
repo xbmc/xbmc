@@ -131,8 +131,8 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
-  int  m_currentSpeed;
-  double m_currentRate;
+  int m_currentSpeed;
+  int m_currentRate;
   CDSGraph m_pDsGraph;
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;

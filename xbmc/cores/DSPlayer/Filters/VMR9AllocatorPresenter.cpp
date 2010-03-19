@@ -488,7 +488,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
   //return if the surface index is higher than the size of the surfaces we have
   if (SurfaceIndex >= m_pSurfaces.size()) 
     return E_FAIL;
-
+  if (m_bNeedNewDevice)
+    return E_FAIL;
   CAutoLock cRenderLock(&m_RenderLock);
   if (m_nVMR9Surfaces)
   {
@@ -617,8 +618,12 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
 
-  CAutoLock Lock(&m_RenderLock);
   if (m_bNeedNewDevice)
+  {
+    return S_OK;
+  }
+  CAutoLock Lock(&m_RenderLock);
+  /*if (m_bNeedNewDevice)
   {
     if (SUCCEEDED(g_Windowing.GetDeviceStatus()))
       ChangeD3dDev();
@@ -626,7 +631,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
       CLog::Log(LOGDEBUG,"Need new device but 3d device suck");
 
     return S_OK;
-  }
+  }*/
 
   Com::SmartPtr<IDirect3DTexture9> pTexture;
   lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
@@ -652,7 +657,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
 {
   HRESULT hr;
-  DeleteSurfaces();
+  //DeleteSurfaces();
   hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
   if (SUCCEEDED(hr))
   {
@@ -672,12 +677,20 @@ void CVMR9AllocatorPresenter::OnDestroyDevice()
   //Only this one is required for changing the device
   CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
   m_bNeedNewDevice = true;
+  DeleteSurfaces();
 }
 
 void CVMR9AllocatorPresenter::OnCreateDevice()
 {
   CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
 }
+
+void CVMR9AllocatorPresenter::OnResetDevice()
+{
+  ChangeD3dDev();
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}
+
 
 STDMETHODIMP CVMR9AllocatorPresenter::NonDelegatingQueryInterface( REFIID riid, void** ppv )
 {

@@ -49,7 +49,9 @@
 using namespace XFILE;
 
 #define WM_GRAPHEVENT  WM_USER + 13
-#define TIME_FORMAT_TO_MS 10000      // 10 ^ 4
+#define TIME_FORMAT_TO_MS(x) (double)(x / 10000)
+#define TIME_FORMAT_TO_SEC(x) (double)(x / 10000000)
+#define MSEC_TO_TIME_FORMAT(x) (double)(x * 10000)
 
 /** Video state mode */
 enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
@@ -97,7 +99,7 @@ public:
   /** Perform a Fast Forward
    * @param[in] currentSpeed Fast Forward speed
    */
-  virtual void DoFFRW(int currentSpeed);
+  virtual void DoFFRW(int currentSpeed,int currentRate);
   /** Performs a Seek
    * @param[in] bPlus If true, performs a positive seek. If false, performs a negative seek
    * @param[in] bLargeStep If true, performs a large seek
@@ -115,6 +117,8 @@ public:
    * @param[in] rewind If true, the graph is rewinded
    */
   virtual void Stop(bool rewind = false);
+  /// Update total playing time
+  virtual void UpdateTotalTime();
   /// Update current playing time
   virtual void UpdateTime();
   /// Update Dvd state
@@ -198,8 +202,8 @@ private:
     }
     double timestamp;         // last time of update
 
-    double time;              // current playback time
-    double time_total;        // total playback time
+    double time;              // current playback time in millisec
+    double time_total;        // total playback time in millisec
     FILTER_STATE current_filter_state;
 
     std::string player_state;  // full player state

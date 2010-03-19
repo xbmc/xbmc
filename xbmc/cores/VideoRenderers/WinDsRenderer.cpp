@@ -65,9 +65,9 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
 void CWinDsRenderer::Reset()
 {
-  if (m_D3DVideoTexture)
+  if (m_bIsEvr)
   {
-    m_D3DVideoTexture->Release();
+    m_D3DMemorySurface = NULL;
     m_D3DVideoTexture = NULL;
   }
 }
@@ -127,7 +127,10 @@ unsigned int CWinDsRenderer::PreInit()
 void CWinDsRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
-  SAFE_RELEASE(m_D3DVideoTexture);
+
+  m_D3DMemorySurface = NULL;
+  m_D3DVideoTexture = NULL;
+
   m_bConfigured = false;
 }
 
@@ -144,26 +147,11 @@ void CWinDsRenderer::AutoCrop(bool bCrop)
 
 void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3DSurface9* videoSurface)
 {
-
-  if ( m_bIsEvr )
-  {
-    if (videoTexture)
-    {
-      if (m_D3DVideoTexture)
-      {
-        m_D3DVideoTexture->Release();
-      }
-      m_D3DVideoTexture = videoTexture;
-      m_D3DVideoTexture->AddRef();
-    }
-  }
-  else
-  {
-    if (videoTexture)
-      m_D3DVideoTexture = videoTexture;
-    if (videoSurface)
-      m_D3DMemorySurface = videoSurface;
-  }
+  // AddRef is done automatically by the SmartPtr
+  if (videoTexture)
+    m_D3DVideoTexture = videoTexture;
+  if (videoSurface)
+    m_D3DMemorySurface = videoSurface;
 }
 
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
@@ -223,11 +211,9 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
 
-  if (m_bIsEvr && m_D3DVideoTexture)
-  {
-    m_D3DVideoTexture->Release();
-    m_D3DVideoTexture = NULL;
-  }
+  // We don't need the texture any longer. Release it
+  m_D3DMemorySurface.Release();
+  m_D3DVideoTexture.Release();
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)

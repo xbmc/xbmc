@@ -99,21 +99,19 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (FAILED(hr))
     return hr;
 
-  //hr = m_pGraphBuilder->QueryInterface(IID_IMediaSeeking,(void **) &m_pMediaSeeking);
-  //hr = m_pGraphBuilder->QueryInterface(IID_IMediaControl,(void **) &m_pMediaControl);
-  //hr = m_pGraphBuilder->QueryInterface(IID_IMediaEventEx ,(void **) &m_pMediaEvent);
-  //hr = m_pGraphBuilder->QueryInterface(IID_IBasicAudio,(void **) &m_pBasicAudio);
   m_pMediaSeeking = m_pFilterGraph;
   m_pMediaControl = m_pFilterGraph;
   m_pMediaEvent = m_pFilterGraph;
   m_pBasicAudio = m_pFilterGraph;
   m_pVideoWindow = m_pFilterGraph;
+
+  m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
+  m_VideoInfo.time_format = TIME_FORMAT_MEDIA_TIME;
   if (m_pVideoWindow)
   {
     m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
     m_pVideoWindow->put_WindowStyle(WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN);
     m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
-    
   }
   BeginEnumFilters(m_pFilterGraph, pEF, pBF)
 	{
@@ -124,8 +122,8 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     }
 	}
 	EndEnumFilters
-  //if theresome problem related with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
-  //m_pMediaEvent->SetNotifyWindow(g_hWnd,
+  //TODO Ti-Ben
+  //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
   
   // Audio & subtitle streams
   START_PERFORMANCE_COUNTER
@@ -145,7 +143,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
   
   Play();
-
+  
   CStreamsManager::getSingleton()->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
 
   m_currentSpeed = 10000;
@@ -228,7 +226,12 @@ void CDSGraph::UpdateTime()
   if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
   {
     if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-      m_State.time = double(Position) / TIME_FORMAT_TO_MS;
+      m_State.time = TIME_FORMAT_TO_MS(Position);//double(Position) / TIME_FORMAT_TO_MS;
+    if (m_State.time_total == 0)
+    {
+      //we dont have the duration of the video yet so try to request it
+      UpdateTotalTime();
+    }
   }
   else
   {
@@ -243,17 +246,7 @@ void CDSGraph::UpdateTime()
 
 void CDSGraph::UpdateDvdState()
 {       
-  REFERENCE_TIME rtDur = 0;
-	DVD_HMSF_TIMECODE tcDur;
-  ULONG ulFlags;
-  if (m_State.time_total == 0)
-  {
-	  if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
-    {
-      rtDur = DShowUtil::HMSF2RT(tcDur);
-      m_State.time_total = (double)rtDur / 10000;
-    }
-  }
+  
   
   return;
   //Not working so skip it
@@ -278,27 +271,36 @@ void CDSGraph::UpdateDvdState()
   //m_pDvdInfo2
 }
 
-void CDSGraph::UpdateState()
+void CDSGraph::UpdateTotalTime()
 {
   HRESULT hr = S_OK;
   LONGLONG Duration = 0;
-  
-  if (! m_pMediaSeeking || CDSPlayer::PlayerState == DSPLAYER_CLOSING
-                        || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
-    return;
-  //Not the same thing with dvd
+
   if (m_VideoInfo.isDVD)
   {
-    UpdateDvdState();
+    if (!m_pDvdInfo2)
+      return;
+
+    REFERENCE_TIME rtDur = 0;
+    DVD_HMSF_TIMECODE tcDur;
+    ULONG ulFlags;
+    if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
+    {
+      rtDur = DShowUtil::HMSF2RT(tcDur);
+      m_State.time_total = TIME_FORMAT_TO_MS(rtDur);
+    }
   }
   else
   {
+    if (! m_pMediaSeeking)
+      return;
+
     hr = m_pMediaSeeking->GetTimeFormatA(&m_VideoInfo.time_format);
 
     if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
     {
       if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-        m_State.time_total = (double) Duration / TIME_FORMAT_TO_MS;
+        m_State.time_total = TIME_FORMAT_TO_MS(Duration);
     }
     else
     {
@@ -306,16 +308,27 @@ void CDSGraph::UpdateState()
         m_State.time_total =  (double) Duration;
     }
   }
+}
 
+void CDSGraph::UpdateState()
+{
+  HRESULT hr = S_OK;
+  if (CDSPlayer::PlayerState == DSPLAYER_CLOSING || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
+    return;
+  
   hr = m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
+
+  //VFW_S_CANT_CUE is graph paused and failed to request the state
+  if ( hr == VFW_S_CANT_CUE )
+  {
+    CDSPlayer::PlayerState = DSPLAYER_PAUSED;
+    m_PlaybackRate = 0;
+    return;
+  }
+
+  //don't request the rate of the graph, the rate is always 1
   if (m_State.current_filter_state != State_Running)
     m_PlaybackRate = 0;
-  else
-  {
-    double newRate;
-    hr = m_pMediaSeeking->GetRate(&newRate);
-    m_PlaybackRate=(int)newRate;
-  }
 
   if (CDSPlayer::PlayerState == DSPLAYER_CLOSING ||
     CDSPlayer::PlayerState == DSPLAYER_CLOSED)
@@ -335,16 +348,15 @@ void CDSGraph::UpdateState()
   }
 }
 
-
 HRESULT CDSGraph::HandleGraphEvent()
 {
   LONG evCode;
   LONG_PTR evParam1, evParam2;
-  HRESULT hr=S_OK;
+  HRESULT hr = S_OK;
     // Make sure that we don't access the media event interface
     // after it has already been released.
   if (!m_pMediaEvent)
-    return S_OK;
+    return E_POINTER;
 
   // Process all queued events
   while((CDSPlayer::PlayerState != DSPLAYER_CLOSING && CDSPlayer::PlayerState != DSPLAYER_CLOSED)
@@ -584,79 +596,71 @@ void CDSGraph::Pause()
   UpdateState();
 }
 
-void CDSGraph::DoFFRW(int currentSpeed)
+void CDSGraph::DoFFRW(int currentSpeed, int currentRate)
 {
-  if (!m_pMediaSeeking)
-    return;
   m_currentSpeed = currentSpeed;
+  //m_State.time
   HRESULT hr;
-  LONGLONG earliest, latest, current, stop, rewind, pStop;
-  m_pMediaSeeking->GetAvailable(&earliest,&latest);
-  m_pMediaSeeking->GetPositions(&current,&stop);
+  double timetarget;
+  timetarget = m_State.time + (currentRate * 1000);
+  SeekInMilliSec(timetarget);
   
-  LONGLONG lTimerInterval = 300;
-  rewind = (LONGLONG)(current + (2 * (LONGLONG)(lTimerInterval) * currentSpeed));
-  pStop = 0;
-  //Fast forward and rewind is not working since IMediaSeeking is not returning the good values for dvd timestamps
-  if ((rewind < earliest) && (currentSpeed < 0))
+  m_State.time = timetarget;
+  return;
+  //TIME_FORMAT_MEDIA_TIME is using Reference time (100-nanosecond units).
+  //1 sec = 1 000 000 000 nanoseconds
+  //so 1 units of TIME_FORMAT_MEDIA_TIME is 0,0000001 sec or 0,0001 millisec
+  //If playback speed is at 32x its technically 32 sec per sec
+  if (m_VideoInfo.isDVD)
   {
-    currentSpeed = 10000;
-    rewind = earliest;
-
-    if (!m_VideoInfo.isDVD)
-    {
-      hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
-    }
-    else
-    {
-      if (!m_pDvdControl2)
-        return;
-      DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(earliest * 10000);
-      m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-    }
     
-    m_State.time = double(earliest) / TIME_FORMAT_TO_MS;;
-    m_pMediaControl->Run();
-    UpdateState();
-    return;
-  }
-
-  if ((rewind > (latest - 100000)) && (currentSpeed > 0))
-  {
-    currentSpeed = 10000;
-    rewind = latest - 100000;
-    if (!m_VideoInfo.isDVD)
-    {
-      hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
-      m_pMediaControl->Run();
-    }
-    else
-    {
-      if (!m_pDvdControl2)
-        return;
-      DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(rewind * 10000);
-      m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-    }
-    m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
-    UpdateState();
-    return;
-  }
-  //seek to new moment in time
-  if (!m_VideoInfo.isDVD)
-  {
-    hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
-    m_State.time = double(rewind) / TIME_FORMAT_TO_MS;
-    m_pMediaControl->StopWhenReady();
   }
   else
   {
-    if (!m_pDvdControl2)
+    if (!m_pMediaSeeking)
       return;
-    DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(rewind * 10000);
-    m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-  }  
 
-  UpdateState();
+    HRESULT hr;
+    LONGLONG earliest, latest, current, stop, rewind, pStop;
+    m_pMediaSeeking->GetAvailable(&earliest,&latest);
+    m_pMediaSeeking->GetPositions(&current,&stop);
+    
+    LONGLONG lTimerInterval = 300;
+    rewind = (LONGLONG)(current + (2 * (LONGLONG)(lTimerInterval) * currentSpeed));
+    pStop = 0;
+    if ((rewind < earliest) && (currentSpeed < 0))
+    {
+      currentSpeed = 10000;
+      rewind = earliest;
+      hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
+      m_State.time = TIME_FORMAT_TO_MS(earliest);
+      m_pMediaControl->Run();
+
+      UpdateState();
+      return;
+    }
+
+    if ((rewind > (latest - 100000)) && (currentSpeed > 0))
+    {
+      currentSpeed = 10000;
+      rewind = latest - 100000;
+
+      hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
+
+      m_State.time = TIME_FORMAT_TO_MS(rewind);
+      m_pMediaControl->Run();
+
+      UpdateState(); // We need to know the new state
+      return;
+    }
+    //seek to new moment in time
+    hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
+    m_State.time = TIME_FORMAT_TO_MS(rewind);
+    m_pMediaControl->StopWhenReady();
+
+    UpdateState(); // We need to know the new state
+  }
+  
 }
 
 HRESULT CDSGraph::UnloadGraph()
@@ -694,8 +698,7 @@ HRESULT CDSGraph::UnloadGraph()
   m_pMediaEvent.Release();
   m_pMediaSeeking.Release();
   m_pVideoWindow.Release();
-  m_pBasicAudio.Release();
-  
+  m_pBasicAudio.Release();  
 
   /* delete filters */
 
@@ -753,7 +756,7 @@ void CDSGraph::SeekInMilliSec(double sec)
     return;
 
   if( m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME )
-    seekrequest = ( LONGLONG )( sec * TIME_FORMAT_TO_MS );
+    seekrequest = ( LONGLONG )( MSEC_TO_TIME_FORMAT(sec) );
   else
     seekrequest = (LONGLONG) sec;
 
@@ -766,7 +769,6 @@ void CDSGraph::SeekInMilliSec(double sec)
   }
   else
   {
-    //Should we be playing for doing this?
     if (!m_pDvdControl2)
       return;
     seekrequest = seekrequest * 10000;
@@ -775,7 +777,7 @@ void CDSGraph::SeekInMilliSec(double sec)
   }
 
 
-  UpdateState();
+  //UpdateState();
 }
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
@@ -1028,7 +1030,5 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   {
   }
 }
-
-
 
 Com::SmartPtr<IFilterGraph2> CDSGraph::m_pFilterGraph = NULL;
