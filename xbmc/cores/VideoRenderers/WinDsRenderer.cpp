@@ -36,7 +36,9 @@
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
   m_D3DVideoTexture(NULL),
-  m_D3DMemorySurface(NULL)
+  m_D3DMemorySurface(NULL),
+  m_OldD3DVideoTexture(NULL),
+  newFrameAvailable(false)
 {
 }
 
@@ -65,11 +67,10 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
 void CWinDsRenderer::Reset()
 {
-  if (m_bIsEvr)
-  {
-    m_D3DMemorySurface = NULL;
-    m_D3DVideoTexture = NULL;
-  }
+  m_D3DMemorySurface = NULL;
+  m_D3DVideoTexture = NULL;
+  m_OldD3DVideoTexture = NULL;
+  newFrameAvailable = false;
 }
 
 void CWinDsRenderer::Update(bool bPauseDrawing)
@@ -130,19 +131,18 @@ void CWinDsRenderer::UnInit()
 
   m_D3DMemorySurface = NULL;
   m_D3DVideoTexture = NULL;
+  m_OldD3DVideoTexture = NULL;
+  newFrameAvailable = false;
 
   m_bConfigured = false;
 }
 
 void CWinDsRenderer::Render(DWORD flags)
 {
-  if( flags & RENDER_FLAG_NOOSD ) return;
 }
 
 void CWinDsRenderer::AutoCrop(bool bCrop)
 {
-  //was that working for dshow
-
 }
 
 void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3DSurface9* videoSurface)
@@ -152,6 +152,8 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
     m_D3DVideoTexture = videoTexture;
   if (videoSurface)
     m_D3DMemorySurface = videoSurface;
+
+  newFrameAvailable = true;
 }
 
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
@@ -161,7 +163,7 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 
   HRESULT hr;
   D3DSURFACE_DESC desc;
-  if(!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
+  if (!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
     return;
 
   float w = (float)desc.Width;
@@ -195,7 +197,9 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
     verts[i].y -= 0.5;
   }
 
-  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
+  IDirect3DTexture9* texture = (newFrameAvailable) ? m_D3DVideoTexture : m_OldD3DVideoTexture;
+
+  hr = m_pD3DDevice->SetTexture(0, texture);
 
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -211,9 +215,15 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
 
-  // We don't need the texture any longer. Release it
-  m_D3DMemorySurface.Release();
-  m_D3DVideoTexture.Release();
+  if (newFrameAvailable)
+  {
+    newFrameAvailable = false;
+    m_OldD3DVideoTexture.Release();
+    m_OldD3DVideoTexture = m_D3DVideoTexture;
+
+    m_D3DMemorySurface.Release();
+    m_D3DVideoTexture.Release();
+  }
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)
