@@ -19,7 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "utils/Addon.h"
+#include "addons/Addon.h"
 #include "utils/ScraperUrl.h"
 
 namespace ADDON

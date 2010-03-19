@@ -36,19 +36,19 @@
 #include "DownloadQueueManager.h"
 
 #ifdef HAS_VISUALISATION
-#include "../visualizations/DllVisualisation.h"
-#include "../visualizations/Visualisation.h"
+#include "DllVisualisation.h"
+#include "Visualisation.h"
 #endif
 #ifdef HAS_PVRCLIENTS
-#include "../pvrclients/DllPVRClient.h"
-#include "../pvrclients/PVRClient.h"
+#include "DllPVRClient.h"
+#include "PVRClient.h"
 #endif
 #ifdef HAS_SCREENSAVER
-#include "../screensavers/DllScreenSaver.h"
-#include "../screensavers/ScreenSaver.h"
+#include "DllScreenSaver.h"
+#include "ScreenSaver.h"
 #endif
 //#ifdef HAS_SCRAPERS
-#include "../Scraper.h"
+#include "Scraper.h"
 //#endif
 
 
@@ -241,7 +241,7 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
   m_managers.erase(type);
 }
 
-bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
+bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
   if (m_addons.empty())
   {
@@ -253,7 +253,7 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
     return (m_addons.find(type) != m_addons.end());
 
   VECADDONS addons;
-  return GetAddons(type, addons, content, true);
+  return GetAddons(type, addons, content, enabledOnly);
 }
 
 void CAddonMgr::UpdateRepos()
@@ -329,7 +329,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
   return !addons.empty();
 }
 
-bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/)
+bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly/*= true*/)
 {
   CDateTimeSpan span;
   span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
@@ -344,7 +344,10 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 
   if (m_idMap[str])
   {
-    addon = m_idMap[str];
+    if(enabledOnly)
+      return !addon->Disabled();
+    else
+      return true;
     return true;
   }
 
@@ -356,7 +359,10 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
     if ((*adnItr)->Name() == str || (type == ADDON_SCRAPER && (*adnItr)->LibName() == str))
     {
       addon = (*adnItr);
-      return true;
+      if(enabledOnly)
+        return !addon->Disabled();
+      else
+        return true;
     }
     adnItr++;
   }
@@ -484,11 +490,11 @@ bool CAddonMgr::LoadAddonsXML()
   while (itr != props.end())
   {
     AddonPtr addon;
-    if (itr->parent.empty() && GetAddon(itr->id, addon, itr->type))
+    if (itr->parent.empty() && GetAddon(itr->id, addon, itr->type, false))
     {
       EnableAddon(addon);
     }
-    else if (GetAddon(itr->parent, addon))
+    else if (GetAddon(itr->parent, addon, itr->type, false))
     { // multiple addon configurations
       AddonPtr clone = addon->Clone(addon);
       if (clone)

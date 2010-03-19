@@ -21,7 +21,7 @@
 
 #include "PythonSettings.h"
 #include "pyutil.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 #include "GUIDialogAddonSettings.h"
 
 #ifndef __GNUC__

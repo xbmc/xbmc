@@ -38,7 +38,7 @@
 #include "Application.h"
 #include "AutoPtrHandle.h"
 #include "Util.h"
-#include "utils/Addon.h"
+#include "addons/Addon.h"
 #include "utils/IoSupport.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"

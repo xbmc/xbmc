@@ -24,7 +24,6 @@ SRCS=Application.cpp \
      GUIWindowSettingsCategory.cpp \
      GUIWindowSettingsProfile.cpp \
      GUIWindowSettingsScreenCalibration.cpp \
-     Scraper.cpp \
      Settings.cpp \
      SettingsControls.cpp \
      GUIDialogMusicScan.cpp \

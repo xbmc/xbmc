@@ -21,7 +21,7 @@
 
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "Application.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
@@ -176,7 +176,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       }
 
       AddonPtr viz;
-      CAddonMgr::Get()->GetDefault(ADDON_VIZ, viz);
+      if (!CAddonMgr::Get()->GetDefault(ADDON_VIZ, viz))
+        return false;
+
       m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
       if (!m_addon)
         return false;

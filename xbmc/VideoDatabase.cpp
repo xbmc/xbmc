@@ -22,7 +22,7 @@
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "utils/RegExp.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 #include "XMLUtils.h"
@@ -5520,32 +5520,26 @@ int CVideoDatabase::GetMusicVideoCount(const CStdString& strWhere)
   return 0;
 }
 
-bool CVideoDatabase::GetScraperForPath( const CStdString& strPath, ScraperPtr& scraper )
-{
-  int iDummy;
-  return GetScraperForPath(strPath, scraper, iDummy);
-}
-
-bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& scraper, int& iFound)
+ScraperPtr CVideoDatabase::GetScraperForPath( const CStdString& strPath )
 {
   SScanSettings settings;
-  return GetScraperForPath(strPath, scraper, settings, iFound);
+  return GetScraperForPath(strPath, settings);
 }
 
-bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& scraper, SScanSettings& settings)
+ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSettings& settings)
 {
-  int iDummy;
-  return GetScraperForPath(strPath, scraper, settings, iDummy);
+  bool dummy;
+  return GetScraperForPath(strPath, settings, dummy);
 }
 
-bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& scraper, SScanSettings& settings, int& iFound)
+ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSettings& settings, bool& foundDirectly)
 {
+  foundDirectly = false;
   try
   {
-    if (strPath.IsEmpty()) return false;
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (strPath.IsEmpty() || !m_pDB.get() || !m_pDS.get()) return ScraperPtr();
 
+    ScraperPtr scraper;
     CStdString strPath1;
     CStdString strPath2(strPath);
 
@@ -5561,7 +5555,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
       m_pDS->query( strSQL.c_str() );
     }
 
-    iFound = 1;
+    int iFound = 1;
     CONTENT_TYPE content = CONTENT_NONE;
     if (!m_pDS->eof())
     { // path is stored in db
@@ -5576,9 +5570,8 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
       if (strcontent.Equals("none"))
       {
         settings.exclude = true;
-        scraper.reset();
         m_pDS->close();
-        return false;
+        return ScraperPtr();
       }
 
       // path is not excluded
@@ -5595,7 +5588,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
       {
         scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
         if (!scraper)
-          return false;
+          return ScraperPtr();
 
         // store this path's content & settings
         scraper->m_pathContent = content;
@@ -5653,7 +5646,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
     m_pDS->close();
 
     if (!scraper || scraper->Content() == CONTENT_NONE)
-      return false;
+      return ScraperPtr();
 
     if (scraper->Content() == CONTENT_TVSHOWS)
     {
@@ -5680,15 +5673,16 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ScraperPtr& sc
     else
     {
       iFound = 0;
-      return false;
+      return ScraperPtr();
     }
-    return true;
+    foundDirectly = (iFound == 1);
+    return scraper;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
-  return false;
+  return ScraperPtr();
 }
 
 void CVideoDatabase::GetMovieGenresByName(const CStdString& strSearch, CFileItemList& items)
@@ -7437,9 +7431,10 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       TiXmlNode *pPaths = pMain->InsertEndChild(xmlPathElement);
       for( map<CStdString,SScanSettings>::iterator iter=paths.begin();iter != paths.end();++iter)
       {
-        ScraperPtr info;
-        int iFound=0;
-        if (GetScraperForPath(iter->first,info,iFound) && iFound == 1)
+        bool foundDirectly = false;
+        SScanSettings settings;
+        ScraperPtr info = GetScraperForPath(iter->first, settings, foundDirectly);
+        if (info && foundDirectly)
         {
           TiXmlElement xmlPathElement2("path");
           TiXmlNode *pPath = pPaths->InsertEndChild(xmlPathElement2);
@@ -7780,14 +7775,13 @@ void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString&
 
 void CVideoDatabase::InvalidatePathHash(const CStdString& strPath)
 {
-  ScraperPtr info;
   SScanSettings settings;
-  int iFound;
-  GetScraperForPath(strPath,info,settings,iFound);
+  bool foundDirectly;
+  ScraperPtr info = GetScraperForPath(strPath,settings,foundDirectly);
   SetPathHash(strPath,"");
   if (!info)
     return;
-  if (info->Content() == CONTENT_TVSHOWS || (info->Content() == CONTENT_MOVIES && iFound != 1)) // if we scan by folder name we need to invalidate parent as well
+  if (info->Content() == CONTENT_TVSHOWS || (info->Content() == CONTENT_MOVIES && !foundDirectly)) // if we scan by folder name we need to invalidate parent as well
   {
     if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)
     {

@@ -486,7 +486,7 @@ void CVideoReferenceClock::RunGLX()
       }
 
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
-      glXMakeCurrent(m_Dpy, m_Window, m_Context);
+      ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
       if (ReturnV != True)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);

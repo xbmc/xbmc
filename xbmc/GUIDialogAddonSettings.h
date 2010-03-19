@@ -21,7 +21,7 @@
  */
 
 #include "GUIDialogBoxBase.h"
-#include "Addon.h"
+#include "addons/Addon.h"
 
 class CGUIDialogAddonSettings : public CGUIDialogBoxBase
 {

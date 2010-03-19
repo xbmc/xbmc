@@ -21,7 +21,7 @@
  */
 
 #include "GUIControl.h"
-#include "IAddon.h"
+#include "addons/IAddon.h"
 
 class CGUIRenderingControl : public CGUIControl
 {

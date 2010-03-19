@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 
 class CURL;
 

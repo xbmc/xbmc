@@ -24,7 +24,7 @@
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
-#include "utils/IAddon.h"
+#include "addons/IAddon.h"
 #include "Application.h"
 #include "FileItem.h"
 #include "VideoDatabase.h"
@@ -82,7 +82,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       AddonPtr last = m_scraper;
       m_scraper = m_scrapers[m_content][iSelected];
 
-      if (!last && m_scraper)
+      if (m_scraper != last)
         SetupPage();
 
       m_bNeedSave = m_scraper != last;
@@ -250,8 +250,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
   AddonPtr addon;
   CStdString defaultID;
-  CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content);
-  if (addon)
+  if (CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
@@ -344,8 +343,7 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
 {
   CVideoDatabase database;
   database.Open();
-  int iFound;
-  database.GetScraperForPath(strDirectory,scraper,settings, iFound);
+  scraper = database.GetScraperForPath(strDirectory, settings);
   bool bResult = Show(scraper,settings,bRunScan);
   if (bResult)
     database.SetScraperForPath(strDirectory,scraper,settings);

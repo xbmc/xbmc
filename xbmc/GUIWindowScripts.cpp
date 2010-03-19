@@ -29,7 +29,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "GUIDialogAddonSettings.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"

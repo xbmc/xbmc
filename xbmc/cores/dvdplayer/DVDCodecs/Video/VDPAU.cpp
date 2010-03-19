@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "Application.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 CVDPAU::Desc decoder_profiles[] = {
@@ -117,7 +118,15 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
   if (!dl_handle)
   {
-    CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
+    const char* error = dlerror();
+    if (!error)
+      error = "dlerror() returned NULL";
+
+    CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
+
+    if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_METHOD_VDPAU)
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
+
     return false;
   }
 
@@ -622,6 +631,10 @@ void CVDPAU::InitVDPAUProcs()
   {
     CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
     vdp_device = VDP_INVALID_HANDLE;
+
+    if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_METHOD_VDPAU)
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
+
     return;
   }
 

@@ -247,40 +247,6 @@ bool CHTSPDirectorySession::GetEvent(SEvent& event, uint32_t id)
   return true;
 }
 
-bool CHTSPDirectorySession::GetTime(time_t *localTime, int *gmtOffset)
-{
-  CLog::Log(LOGDEBUG, "CHTSPSession::GetTime()");
-
-  htsmsg_t *msg = htsmsg_create_map();
-  htsmsg_add_str(msg, "method", "getSysTime");
-  if ((msg = ReadResult(msg)) == NULL)
-  {
-    CLog::Log(LOGDEBUG, "CHTSPSession::GetTime - failed to get sysTime");
-    return false;
-  }
-
-  unsigned int secs;
-  if (htsmsg_get_u32(msg, "time", &secs) != 0)
-    return false;
-
-  *localTime = secs;
-
-#if 0
-  /*
-    HTSP is returning tz_minuteswest, which is deprecated and will be unset on posix complaint systems
-    See: http://trac.lonelycoder.com/hts/ticket/148
-  */
-  if (htsmsg_get_s32(msg, "timezone", gmtOffset) != 0)
-    return false;
-#else
-  time_t t;
-  CDateTime::GetCurrentDateTime().GetAsTime(t);
-  *gmtOffset = t - *localTime;
-#endif
-
-  return true;
-}
-
 void CHTSPDirectorySession::Process()
 {
   CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Starting");
@@ -318,7 +284,7 @@ void CHTSPDirectorySession::Process()
       CHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelRemove"))
       CHTSPSession::ParseChannelRemove(msg, m_channels);
-    else if(strstr(method, "tagAdd"))
+    if     (strstr(method, "tagAdd"))
       CHTSPSession::ParseTagUpdate(msg, m_tags);
     else if(strstr(method, "tagUpdate"))
       CHTSPSession::ParseTagUpdate(msg, m_tags);

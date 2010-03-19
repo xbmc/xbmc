@@ -26,7 +26,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "FileSystem/StackDirectory.h"
-#include "utils/Addon.h"
+#include "addons/Addon.h"
 #ifndef _LINUX
 #include <sys\types.h>
 #include <sys\stat.h>

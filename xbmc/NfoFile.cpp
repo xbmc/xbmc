@@ -25,7 +25,7 @@
 #include "NfoFile.h"
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "GUISettings.h"
@@ -57,7 +57,7 @@ CNfoFile::~CNfoFile()
   Close();
 }
 
-CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info, int episode)
+CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode)
 {
   m_info = info; // assume we can use these settings
   m_content = info->Content();
@@ -111,9 +111,8 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, ScraperPtr& info
 
   // Get Selected Scraper
   CVideoDatabase database;
-  ADDON::ScraperPtr selected;
   database.Open();
-  database.GetScraperForPath(strPath,selected);
+  ADDON::ScraperPtr selected = database.GetScraperForPath(strPath);
   database.Close();
 
   vector<ScraperPtr> vecScrapers;

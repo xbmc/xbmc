@@ -38,8 +38,8 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
-#include "Addon.h" // for TranslateType, TranslateContent
-#include "AddonManager.h"
+#include "addons/Addon.h" // for TranslateType, TranslateContent
+#include "addons/AddonManager.h"
 #include "LastFmManager.h"
 #include "LCD.h"
 #include "log.h"
@@ -881,7 +881,7 @@ int CBuiltins::Execute(const CStdString& execString)
     // also set the default color theme
     g_guiSettings.SetString("lookandfeel.skincolors", CUtil::ReplaceExtension(strSkinTheme, ".xml"));
 
-    g_application.DelayLoadSkin();
+    g_application.ReloadSkin();
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
            execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))

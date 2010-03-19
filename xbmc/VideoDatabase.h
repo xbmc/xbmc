@@ -21,7 +21,7 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "Bookmark.h"
 
 #include <memory>
@@ -390,10 +390,18 @@ public:
 
   // scraper settings
   void SetScraperForPath(const CStdString& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings);
+
+  /*! \brief Retrieve the scraper and settings we should use for the specified path
+   If the scraper is not set on this particular path, we'll recursively check parent folders.
+   \param strPath path to start searching in.
+   \param settings [out] scan settings for this folder.
+   \param foundDirectly [out] true if a scraper was found directly for strPath, false if it was in a parent path.
+   \return A ScraperPtr containing the scraper information. Returns NULL if a trivial (Content == CONTENT_NONE)
+           scraper or no scraper is found.
+   */
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings, bool& foundDirectly);
   CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned

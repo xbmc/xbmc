@@ -20,14 +20,14 @@
  *
  */
 #include "Addon.h"
-#include "../DllAddon.h"
+#include "DllAddon.h"
 #include "AddonManager.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/Directory.h"
-#include "../addons/AddonHelpers_local.h"
+#include "AddonHelpers_local.h"
 #include "log.h"
 
 using namespace XFILE;

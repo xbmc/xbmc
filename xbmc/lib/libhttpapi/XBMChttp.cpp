@@ -28,7 +28,7 @@
 #include "Picture.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "utils/MusicInfoScraper.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "MusicDatabase.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowSlideShow.h"

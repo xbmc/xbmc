@@ -19,7 +19,7 @@
  *
  */
 
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUISpinControlEx.h"
 #include "GUIControlGroupList.h"
@@ -200,7 +200,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
 
   AddonPtr addon;
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
-  if (CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type))
+  if (CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type, false))
   {
     if (addon->Disabled())
       CAddonMgr::Get()->EnableAddon(addon);
@@ -226,7 +226,7 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
 
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type))
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type, false))
     return false;
 
   int iSettingsLabel = 24020;
@@ -280,6 +280,7 @@ void CGUIWindowAddonBrowser::SetupControls()
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
   if (!pOriginalCategoryButton || !group)
     return;
+  pOriginalCategoryButton->SetVisible(false);
   for (unsigned int i=ADDON::ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
   {
     if (!CAddonMgr::Get()->HasAddons((ADDON::TYPE)i))

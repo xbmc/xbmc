@@ -273,13 +273,13 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   if (!CGUIWindowVideoBase::GetDirectory(strDirectory, items))
     return false;
 
-  ADDON::ScraperPtr info2;
+  ADDON::ScraperPtr info2 = m_database.GetScraperForPath(strDirectory);
 
   m_stackingAvailable = true;
   m_cleaningAvailable = true;
 
 
-  if ((m_database.GetScraperForPath(strDirectory,info2) && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox())
+  if ((info2 && info2->Content() == CONTENT_TVSHOWS) || items.IsTuxBox())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
@@ -395,7 +395,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::Scraper
   bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(item->m_strPath,info,settings,iFound);
+    info = m_database.GetScraperForPath(item->m_strPath, settings);
   }
 
   if (CGUIDialogContentSettings::Show(info, settings, bScan))
@@ -483,20 +483,16 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
         CVideoDatabase database;
         database.Open();
-        ADDON::ScraperPtr info;
+        ADDON::ScraperPtr info = database.GetScraperForPath(item->m_strPath);
 
-        if (item && database.GetScraperForPath(item->m_strPath,info))
-        {
-          if (info->Content() != CONTENT_NONE)
-            if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
-        }
+        if (info && (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())))
+          buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
       }
     }
     else
     {
       CGUIWindowVideoBase::GetContextButtons(itemNumber, buttons);
-      if (!item->GetPropertyBOOL("pluginreplacecontextitems"))
+      if (!item->GetPropertyBOOL("pluginreplacecontextitems") && !item->IsParentFolder())
       {
         // Movie Info button
         if (pScanDlg && pScanDlg->IsScanning())
@@ -513,8 +509,10 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
             infoString = item->m_bIsFolder ? 20351 : 20352;
           if (info && info->Content() == CONTENT_MUSICVIDEOS)
             infoString = 20393;
+          if(item->IsLiveTV())
+            infoString = 20352;
 
-          if (item->m_bIsFolder && !item->IsParentFolder())
+          if (item->m_bIsFolder)
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
               if (!item->IsPlayList() && !item->IsLiveTV())
@@ -528,10 +526,6 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
             }
             else
             { // scraper found - allow movie information, scan for new content, or set different type of content
-              if (info->Content() == CONTENT_TVSHOWS)
-                infoString = item->m_bIsFolder ? 20351 : 20352;
-              if (info->Content() == CONTENT_MUSICVIDEOS)
-                infoString = 20393;
               if (info->Content() != CONTENT_MUSICVIDEOS)
                 buttons.Add(CONTEXT_BUTTON_INFO, infoString);
               if (info->Content() != CONTENT_NONE)
@@ -542,19 +536,17 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           else
           {
             // single file
-            if ( (info && m_database.HasMovieInfo(item->m_strPath)) ||
-                 m_database.HasEpisodeInfo(item->m_strPath) || 
-                 (info && info->Content() == CONTENT_MUSICVIDEOS) )
+            if ( m_database.HasMovieInfo(item->m_strPath)
+              || m_database.HasEpisodeInfo(item->m_strPath) 
+              || (item->IsLiveTV() && item->HasVideoInfoTag())
+              || (info && info->Content() == CONTENT_MUSICVIDEOS) )
             {
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
             }
-            m_database.Open();
-            if (!item->IsParentFolder())
-            {
-              if (!m_database.HasMovieInfo(item->m_strPath) && !m_database.HasEpisodeInfo(item->m_strPath))
-                buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
-            }
-            m_database.Close();
+            if (!m_database.HasMovieInfo(item->m_strPath) 
+            &&  !m_database.HasEpisodeInfo(item->m_strPath) 
+            &&  !item->IsLiveTV())
+              buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database
           }
         }
       }
@@ -620,12 +612,8 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
 
   case CONTEXT_BUTTON_SET_CONTENT:
     {
-      ADDON::ScraperPtr info;
       SScanSettings settings;
-      if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-        m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, info, settings);
-      else
-        m_database.GetScraperForPath(item->m_strPath, info, settings);
+      ADDON::ScraperPtr info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings);
       OnAssignContent(itemNumber,0, info, settings);
       return true;
     }

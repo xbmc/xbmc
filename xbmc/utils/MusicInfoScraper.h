@@ -23,7 +23,7 @@
 
 #include "MusicAlbumInfo.h"
 #include "MusicArtistInfo.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "Thread.h"
 #include "FileSystem/FileCurl.h"
 

@@ -37,7 +37,7 @@
 #include "SystemInfo.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"

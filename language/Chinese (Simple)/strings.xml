@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 28418 -->
+<!--Based on english strings version 28467 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2115,6 +2115,7 @@
   <string id="24020">设置扩展功能</string>
   <string id="24021">禁用扩展功能</string>
   <string id="24022">启用扩展功能</string>
+  <string id="24023">扩展功能已禁用</string>
   <string id="24027">天气服务</string>
   <string id="24028">Weather.com（标准）</string>
   <string id="24030">此扩展功能不可设置</string>

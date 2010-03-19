@@ -23,7 +23,7 @@
 
 #include "Song.h"
 #include "Album.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "ScraperParser.h"
 
 class TiXmlDocument;

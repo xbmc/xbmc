@@ -21,9 +21,10 @@
 #include "Variant.h"
 #include "PlatformDefs.h"
 #include <string.h>
-#include <assert.h>
 
 using namespace std;
+
+CVariant CVariant::ConstNullVariant = CVariant::VariantTypeConstNull;
 
 CVariant::CVariant(VariantType type)
 {
@@ -131,12 +132,11 @@ bool CVariant::isObject() const
 
 bool CVariant::isNull() const
 {
-  return m_type == VariantTypeNull;
+  return m_type == VariantTypeNull || m_type == VariantTypeConstNull;
 }
 
 int64_t CVariant::asInteger(int64_t fallback) const
 {
-  assert(isNull() || isInteger());
   if (isInteger())
     return m_data.integer;
   else
@@ -145,7 +145,6 @@ int64_t CVariant::asInteger(int64_t fallback) const
 
 uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
 {
-  assert(isNull() || isUnsignedInteger());
   if (isUnsignedInteger())
     return m_data.unsignedinteger;
   else
@@ -154,7 +153,6 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
 
 bool CVariant::asBoolean(bool fallback) const
 {
-  assert(isNull() || isBoolean());
   if (isBoolean())
     return m_data.boolean;
   else
@@ -163,7 +161,6 @@ bool CVariant::asBoolean(bool fallback) const
 
 const char *CVariant::asString(const char *fallback) const
 {
-  assert(isNull() || isString());
   if (isString())
     return m_data.string->c_str();
   else
@@ -172,23 +169,31 @@ const char *CVariant::asString(const char *fallback) const
 
 CVariant &CVariant::operator[](string key)
 {
-  assert(isObject() || isNull());
-  if (isNull())
+  if (m_type == VariantTypeNull)
   {
     m_type = VariantTypeObject;
     m_data.map = new VariantMap();
   }
-  return (*m_data.map)[key];
+
+  if (isObject())
+    return (*m_data.map)[key];
+  else
+    return ConstNullVariant;
 }
 
 CVariant &CVariant::operator[](unsigned int position)
 {
-  assert(isArray() && size() > position);
-  return (*m_data.array)[position];
+  if (isArray() && size() > position)
+    return (*m_data.array)[position];
+  else
+    return ConstNullVariant;
 }
 
 CVariant &CVariant::operator=(const CVariant &rhs)
 {
+  if (m_type == VariantTypeConstNull)
+    return *this;
+
   m_type = rhs.m_type;
 
   switch (m_type)
@@ -220,20 +225,18 @@ CVariant &CVariant::operator=(const CVariant &rhs)
 
 void CVariant::push_back(CVariant variant)
 {
-  assert(isArray() || isNull());
-  if (isNull())
+  if (m_type == VariantTypeNull)
   {
     m_type = VariantTypeArray;
     m_data.array = new VariantArray();
   }
-  else if (isArray())
+
+  if (isArray())
     m_data.array->push_back(variant);
 }
 
 unsigned int CVariant::size() const
 {
-  assert(isNull() || isObject() || isArray());
-
   if (isObject())
     return m_data.map->size();
   else if (isArray())
@@ -244,8 +247,6 @@ unsigned int CVariant::size() const
 
 bool CVariant::empty() const
 {
-  assert(isNull() || isObject() || isArray());
-
   if (isObject())
     return m_data.map->empty();
   else if (isArray())
@@ -256,8 +257,6 @@ bool CVariant::empty() const
 
 void CVariant::clear()
 {
-  assert(isNull() || isObject() || isArray());
-
   if (isObject())
     m_data.map->clear();
   else if (isArray())
@@ -266,8 +265,7 @@ void CVariant::clear()
 
 void CVariant::erase(std::string key)
 {
-  assert(isObject() || isNull());
-  if (isNull())
+  if (m_type == VariantTypeNull)
   {
     m_type = VariantTypeObject;
     m_data.map = new VariantMap();
@@ -278,8 +276,7 @@ void CVariant::erase(std::string key)
 
 void CVariant::erase(unsigned int position)
 {
-  assert(isArray() || isNull());
-  if (isNull())
+  if (m_type == VariantTypeNull)
   {
     m_type = VariantTypeArray;
     m_data.array = new VariantArray();
