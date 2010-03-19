@@ -198,12 +198,8 @@ public:
 
   bool      Connect(const std::string& hostname, int port);
   void      Close();
-  bool      Start();
-  void      Stop();
   void      Abort();
   bool      Auth(const std::string& username, const std::string& password);
-
-  static void* Process(void*);
 
   htsmsg_t* ReadMessage(int timeout = 10000);
   bool      SendMessage(htsmsg_t* m);
@@ -219,8 +215,6 @@ public:
   int         GetProtocol()   { return m_protocol; }
   CStdString  GetServerName() { return m_server; }
   CStdString  GetVersion()    { return m_version; }
-  bool        GetDriveSpace(long long *total, long long *used);
-  bool        GetTime(time_t *localTime, int *gmtOffset);
   SChannels   GetChannels();
   SChannels   GetChannels(int tag);
   SChannels   GetChannels(STag &tag);
@@ -253,5 +247,3 @@ private:
   bool                  m_bStop;
 
 };
-
-extern cHTSPSession g_pSession;

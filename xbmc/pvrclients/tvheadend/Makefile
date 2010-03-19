@@ -31,7 +31,7 @@ endif
 
 -include Make.config
 
-OBJS = client.o HTSPSession.o HTSPDemux.o
+OBJS = client.o HTSPSession.o HTSPData.o HTSPDemux.o thread.o tools.o
 
 all: pvrTvheadend
 

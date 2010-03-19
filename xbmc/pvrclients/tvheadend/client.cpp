@@ -21,14 +21,14 @@
 
 #include "client.h"
 #include "xbmc_pvr_dll.h"
-#include "HTSPSession.h"
+#include "HTSPData.h"
 #include "HTSPDemux.h"
 
 using namespace std;
 
 //cPVRClientTvheadend *g_client = NULL;
 bool m_bCreated               = false;
-ADDON_STATUS curStatus        = STATUS_UNKNOWN;
+ADDON_STATUS m_CurStatus      = STATUS_UNKNOWN;
 int g_clientID                = -1;
 
 /* User adjustable settings are saved here.
@@ -37,6 +37,7 @@ int g_clientID                = -1;
  */
 CStdString g_szHostname       = DEFAULT_HOST;
 int g_iPort                   = DEFAULT_PORT;
+int g_iConnectTimout          = DEFAULT_TIMEOUT;
 CStdString g_szUsername       = "";
 CStdString g_szPassword       = "";
 CStdString g_szUserPath       = "";
@@ -44,11 +45,7 @@ CStdString g_szClientPath     = "";
 cHelper_libXBMC_addon *XBMC   = NULL;
 cHelper_libXBMC_pvr   *PVR    = NULL;
 cHTSPDemux *HTSPDemuxer       = NULL;
-
-bool CheckConnection()
-{
-  return true;
-}
+cHTSPData  *HTSPData          = NULL;
 
 extern "C" {
 
@@ -73,7 +70,7 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   XBMC->Log(LOG_DEBUG, "Creating Tvheadend PVR-Client");
 
-  curStatus      = STATUS_UNKNOWN;
+  m_CurStatus    = STATUS_UNKNOWN;
   g_clientID     = pvrprops->clientID;
   g_szUserPath   = pvrprops->userpath;
   g_szClientPath = pvrprops->clientpath;
@@ -121,45 +118,31 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_iPort = DEFAULT_PORT;
   }
 
-  /* Create connection to streamdev-server */
-  curStatus = STATUS_LOST_CONNECTION;
-  if(!g_pSession.Connect(g_szHostname, g_iPort))
-    return curStatus;
-
-  if(g_pSession.GetProtocol() < 2)
+  HTSPData = new cHTSPData;
+  if (!HTSPData->Open(g_szHostname, g_iPort, g_szUsername, g_szPassword, g_iConnectTimout))
   {
-    XBMC->Log(LOG_ERROR, "Incompatible protocol version %d", g_pSession.GetProtocol());
-    return curStatus;
+    m_CurStatus = STATUS_LOST_CONNECTION;
+    return m_CurStatus;
   }
 
-  if(!g_szUsername.IsEmpty())
-    g_pSession.Auth(g_szUsername, g_szPassword);
-
-  if(!g_pSession.SendEnableAsync())
-    return curStatus;
-
-  if (!g_pSession.Start())
-    return curStatus;
-
-  curStatus = STATUS_OK;
+  m_CurStatus = STATUS_OK;
   m_bCreated = true;
-  return curStatus;
+  return m_CurStatus;
 }
 
 ADDON_STATUS GetStatus()
 {
-  return curStatus;
+  return m_CurStatus;
 }
 
 void Destroy()
 {
   if (m_bCreated)
   {
-    g_pSession.Stop();
-    g_pSession.Close();
-    m_bCreated = false;
+    delete HTSPData;
+    HTSPData = NULL;
   }
-  curStatus = STATUS_UNKNOWN;
+  m_CurStatus = STATUS_UNKNOWN;
 }
 
 bool HasSettings()
@@ -230,7 +213,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
 {
   props->SupportChannelLogo        = false;
   props->SupportTimeShift          = false;
-  props->SupportEPG                = false;
+  props->SupportEPG                = true;
   props->SupportRecordings         = false;
   props->SupportTimers             = false;
   props->SupportTV                 = true;
@@ -247,27 +230,31 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
 
 const char * GetBackendName()
 {
-  static CStdString BackendName = g_pSession.GetServerName();
+  static CStdString BackendName = HTSPData ? HTSPData->GetServerName() : "unknown";
   return BackendName.c_str();
 }
 
 const char * GetBackendVersion()
 {
   static CStdString BackendVersion;
-  BackendVersion.Format("%s (Protocol: %i)", g_pSession.GetVersion(), g_pSession.GetProtocol());
+  if (HTSPData)
+    BackendVersion.Format("%s (Protocol: %i)", HTSPData->GetVersion(), HTSPData->GetProtocol());
   return BackendVersion.c_str();
 }
 
 const char * GetConnectionString()
 {
   static CStdString ConnectionString;
-  ConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPort, CheckConnection() ? "" : " (Not connected!)");
+  if (HTSPData)
+    ConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPort, HTSPData->CheckConnection() ? "" : " (Not connected!)");
+  else
+    ConnectionString.Format("%s:%i (addon error!)", g_szHostname.c_str(), g_iPort);
   return ConnectionString.c_str();
 }
 
 PVR_ERROR GetDriveSpace(long long *total, long long *used)
 {
-  if (g_pSession.GetDriveSpace(total, used))
+  if (HTSPData && HTSPData->GetDriveSpace(total, used))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -275,7 +262,7 @@ PVR_ERROR GetDriveSpace(long long *total, long long *used)
 
 PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 {
-  if (g_pSession.GetTime(localTime, gmtOffset))
+  if (HTSPData && HTSPData->GetTime(localTime, gmtOffset))
     return PVR_ERROR_NO_ERROR;
 
   return PVR_ERROR_SERVER_ERROR;
@@ -297,7 +284,10 @@ PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook)
 
 PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end)
 {
-  return PVR_ERROR_SERVER_ERROR;//g_client->RequestEPGForChannel(handle, channel, start, end);
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->RequestEPGForChannel(handle, channel, start, end);
 }
 
 
@@ -306,7 +296,7 @@ PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, tim
 
 int GetNumBouquets()
 {
-  return (int)(g_pSession.GetTags().size());
+  return 0;//(int)(HTSPData->GetTags().size());
 }
 
 PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
@@ -320,41 +310,18 @@ PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio)
 
 int GetNumChannels()
 {
-  return (int)(g_pSession.GetChannels().size());
+  if (!HTSPData)
+    return 0;
+
+  return HTSPData->GetNumChannels();
 }
 
 PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
-  if (!CheckConnection())
+  if (!HTSPData)
     return PVR_ERROR_SERVER_ERROR;
 
-  if (radio)
-    return PVR_ERROR_NO_ERROR;
-
-  SChannels channels = g_pSession.GetChannels();
-  for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
-  {
-    SChannel& channel = it->second;
-
-    PVR_CHANNEL tag;
-    memset(&tag, 0 , sizeof(tag));
-    tag.uid           = channel.id;
-    tag.number        = channel.id;//num;
-    tag.name          = channel.name.c_str();
-    tag.callsign      = channel.name.c_str();
-    tag.input_format  = "";
-
-    char url[128];
-    sprintf(url, "htsp://%s:%d/tags/0/%d.ts", g_szHostname.c_str(), g_iPort, channel.id);
-    tag.stream_url  = "";
-    tag.bouquet     = 0;
-
-    fprintf(stderr, "%s - %s - %i\n", __PRETTY_FUNCTION__, channel.name.c_str(), tag.bouquet);
-
-    PVR->TransferChannelEntry(handle, &tag);
-  }
-
-  return PVR_ERROR_NO_ERROR;
+  return HTSPData->RequestChannelList(handle, radio);
 }
 
 PVR_ERROR DeleteChannel(unsigned int number)

@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef PVRCLIENT_TVHEADEND_OS_POSIX_H
-#define PVRCLIENT_TVHEADEND_OS_POSIX_H
+#ifndef PVRCLIENT_VDR_OS_POSIX_H
+#define PVRCLIENT_VDR_OS_POSIX_H
 
 #define _FILE_OFFSET_BITS 64
 #include <stdlib.h>
@@ -32,13 +32,16 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/syscall.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
 #include <sys/time.h>
 #include <sys/timeb.h>
 #include <sys/wait.h>
 #include <sys/signal.h>
+#include <sys/resource.h>
+#ifndef __APPLE__
+#include <sys/prctl.h> 
+#endif
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -53,11 +56,7 @@ typedef int SOCKET;
 #endif
 
 #define SOCKET_ERROR   (-1)
-
-#ifndef INVALID_SOCKET
 #define INVALID_SOCKET (-1)
-#endif
-
 #define SD_BOTH SHUT_RDWR
 
 #define LIBTYPE
@@ -66,6 +65,15 @@ typedef int SOCKET;
 #define console_vprintf vprintf
 #define console_printf printf
 #define THREAD_FUNC_PREFIX void *
+
+#ifndef __STL_CONFIG_H
+template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
+template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
+template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
+#endif
+
+#define Sleep(t) usleep(t*1000)
 
 static inline uint64_t getcurrenttime(void)
 {

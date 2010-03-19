@@ -29,12 +29,14 @@
 
 #define DEFAULT_HOST        "127.0.0.1"
 #define DEFAULT_PORT        9982
+#define DEFAULT_TIMEOUT     30000
 
 extern bool         m_bCreated;
 extern CStdString   g_szHostname;
 extern int          g_iPort;
 extern CStdString   g_szUsername;
 extern CStdString   g_szPassword;
+extern int          g_iConnectTimout;
 extern int          g_clientID;
 extern CStdString   g_szUserPath;
 extern CStdString   g_szClientPath;

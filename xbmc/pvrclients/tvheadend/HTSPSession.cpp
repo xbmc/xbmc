@@ -39,8 +39,6 @@ extern "C" {
 
 using namespace std;
 
-cHTSPSession g_pSession;
-
 cHTSPSession::cHTSPSession()
   : m_fd(INVALID_SOCKET)
   , m_seq(0)
@@ -133,79 +131,6 @@ bool cHTSPSession::Connect(const std::string& hostname, int port)
 
   htsmsg_destroy(m);
   return true;
-}
-
-bool cHTSPSession::Start()
-{
-  /* Start VTP Listening Thread */
-  m_bStop = false;
-  if (pthread_create(&m_thread, NULL, &Process, (void *)"cHTSPSession HTSP-Listener") != 0) {
-    return false;
-  }
-  return true;
-}
-
-void cHTSPSession::Stop()
-{
-  m_bStop = true;
-  pthread_join(m_thread, NULL);
-}
-
-void* cHTSPSession::Process(void*)
-{
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::Process() - Starting");
-
-  htsmsg_t* msg;
-
-  while(!g_pSession.m_bStop)
-  {
-    if((msg = g_pSession.ReadMessage()) == NULL)
-      break;
-
-//    uint32_t seq;
-//    if(htsmsg_get_u32(msg, "seq", &seq) == 0)
-//    {
-////      CSingleLock lock(m_section);
-//      SMessages::iterator it = m_queue.find(seq);
-//      if(it != m_queue.end())
-//      {
-//        it->second.msg = msg;
-//        it->second.event->Set();
-//        continue;
-//      }
-//    }
-
-    const char* method;
-    if((method = htsmsg_get_str(msg, "method")) == NULL)
-    {
-      htsmsg_destroy(msg);
-      continue;
-    }
-
-    pthread_mutex_lock(&g_pSession.m_critSection);
-
-    if     (strstr(method, "channelAdd"))
-      cHTSPSession::ParseChannelUpdate(msg, g_pSession.m_channels);
-    else if(strstr(method, "channelUpdate"))
-      cHTSPSession::ParseChannelUpdate(msg, g_pSession.m_channels);
-    else if(strstr(method, "channelRemove"))
-      cHTSPSession::ParseChannelRemove(msg, g_pSession.m_channels);
-    else if(strstr(method, "tagAdd"))
-      cHTSPSession::ParseTagUpdate(msg, g_pSession.m_tags);
-    else if(strstr(method, "tagUpdate"))
-      cHTSPSession::ParseTagUpdate(msg, g_pSession.m_tags);
-    else if(strstr(method, "tagRemove"))
-      cHTSPSession::ParseTagRemove(msg, g_pSession.m_tags);
-//    else if(strstr(method, "initialSyncCompleted"))
-//      m_started.Set();
-
-    pthread_mutex_unlock(&g_pSession.m_critSection);
-
-    htsmsg_destroy(msg);
-  }
-
-  //m_started.Set();
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::Process() - Exiting");
 }
 
 bool cHTSPSession::Auth(const std::string& username, const std::string& password)
@@ -635,62 +560,6 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue, SQualit
 
   return true;
 }
-
-bool cHTSPSession::GetDriveSpace(long long *total, long long *used)
-{
-  htsmsg_t *msg = htsmsg_create_map();
-  htsmsg_add_str(msg, "method", "getDiskSpace");
-  if ((msg = ReadResult(msg)) == NULL)
-  {
-    XBMC->Log(LOG_DEBUG, "cHTSPSession::GetDriveSpace - failed to get getDiskSpace");
-    return false;
-  }
-
-  int64_t freespace;
-  if (htsmsg_get_s64(msg, "freediskspace", &freespace) != 0)
-    return false;
-
-  int64_t totalspace;
-  if (htsmsg_get_s64(msg, "totaldiskspace", &totalspace) != 0)
-    return false;
-
-  *total = totalspace / 1024;
-  *used  = (totalspace - freespace) / 1024;
-  return true;
-}
-
-bool cHTSPSession::GetTime(time_t *localTime, int *gmtOffset)
-{
-  XBMC->Log(LOG_DEBUG, "cHTSPSession::GetTime()");
-
-  htsmsg_t *msg = htsmsg_create_map();
-  htsmsg_add_str(msg, "method", "getSysTime");
-  if ((msg = ReadResult(msg)) == NULL)
-  {
-    XBMC->Log(LOG_DEBUG, "cHTSPSession::GetTime - failed to get sysTime");
-    return false;
-  }
-
-  unsigned int secs;
-  if (htsmsg_get_u32(msg, "time", &secs) != 0)
-    return false;
-
-  *localTime = secs;
-
-#if 0
-  /*
-    HTSP is returning tz_minuteswest, which is deprecated and will be unset on posix complaint systems
-    See: http://trac.lonelycoder.com/hts/ticket/148
-  */
-  if (htsmsg_get_s32(msg, "timezone", gmtOffset) != 0)
-    return false;
-#else
-  *gmtOffset = 0;
-#endif
-
-  return true;
-}
-
 
 SChannels cHTSPSession::GetChannels()
 {

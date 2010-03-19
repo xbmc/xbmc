@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -20,25 +19,25 @@
  *
  */
 
-#ifndef PVRCLIENT_TVHEADEND_OS_H
-#define PVRCLIENT_TVHEADEND_OS_H
+#include "pvrclient-vdr_os_windows.h"
+#include <sys/timeb.h>
 
-#if defined(_WIN32) || defined(_WIN64)
-#define __WINDOWS__
-#endif
+THREADLOCAL int ws32_result;
+THREADLOCAL int _so_err;
+THREADLOCAL int _so_err_siz = sizeof(int);
 
-#if defined(__WINDOWS__)
-#include "windows/os_windows.h"
-#else
-#include "linux/os_posix.h"
-#endif
+int gettimeofday(struct timeval *pcur_time, struct timezone *tz)
+{
+  struct _timeb current;
 
-#if !defined(TRUE)
-#define TRUE 1
-#endif
+  _ftime(&current);
 
-#if !defined(FALSE)
-#define FALSE 0
-#endif
-
-#endif
+  pcur_time->tv_sec = current.time;
+  pcur_time->tv_usec = current.millitm * 1000L;
+  if (tz)
+  {
+    tz->tz_minuteswest = current.timezone;	/* minutes west of Greenwich  */
+    tz->tz_dsttime = current.dstflag;	/* type of dst correction  */
+  }
+  return 0;
+}
