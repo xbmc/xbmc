@@ -25,7 +25,7 @@
 #include "PVRChannels.h"
 #include "PVRTimers.h"
 #include "PVRRecordings.h"
-#include "../pvrclients/PVRClient.h"
+#include "PVRClient.h"
 #include "log.h"
 
 namespace ADDON

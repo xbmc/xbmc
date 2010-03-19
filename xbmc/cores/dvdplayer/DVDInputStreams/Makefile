@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP -I../../../lib -I../Codecs/libbdnav/src/
+INCLUDES=-I. -I.. -I../.. -I../../../ -I../../../linux -I../../../../guilib -I../../../lib/libRTMP -I../../../lib -I../Codecs/libbdnav/src/ -I../../../utils
 CXXFLAGS += -D__STDC_FORMAT_MACROS \
           -DENABLE_DVDINPUTSTREAM_STACK \
 

@@ -35,7 +35,6 @@
  */
 
 #include <vector>
-#include "../utils/SingleLock.h"
 #include "Application.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
@@ -45,6 +44,7 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "../utils/log.h"
+#include "../utils/SingleLock.h"
 
 using namespace std;
 using namespace ADDON;

@@ -20,12 +20,12 @@
  *
  */
 
-#include "utils/Thread.h"
-#include "utils/Addon.h"
 #include "FileItem.h"
 #include "TVDatabase.h"
-#include "pvrclients/PVRClient.h"
-#include "utils/AddonManager.h"
+#include "addons/Addon.h"
+#include "addons/PVRClient.h"
+#include "addons/AddonManager.h"
+#include "utils/Thread.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"

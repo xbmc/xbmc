@@ -1,11 +1,17 @@
-INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -I../cores/ffmpeg -Iinclude
+INCLUDES+=-I. -I../ -I../../guilib -I../utils -I../linux
 
-SRCS=AddonHelpers_Addon.cpp \
-     AddonHelpers_PVR.cpp \
-     AddonHelpers_local.cpp \
+SRCS=Addon.cpp \
+		 AddonManager.cpp \
+		 ScreenSaver.cpp \
+		 Scraper.cpp \
+		 Visualisation.cpp \
+		 PVRClient.cpp \
+		 fft.cpp \
+		 AddonHelpers_Addon.cpp \
+		 AddonHelpers_PVR.cpp \
+		 AddonHelpers_local.cpp \
 
-LIB=AddonHelpers.a
+LIB=addons.a
 
 include ../../Makefile.include
--include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
