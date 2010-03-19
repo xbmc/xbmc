@@ -393,15 +393,15 @@ public:
   ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath);
   ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings);
 
-  /*! \brief Retrieve the scraper and settings we should use for the current path
+  /*! \brief Retrieve the scraper and settings we should use for the specified path
    If the scraper is not set on this particular path, we'll recursively check parent folders.
    \param strPath path to start searching in.
    \param settings [out] scan settings for this folder.
-   \param iFound [out] how many folders (including the given folder) were checked for scrapers.
+   \param foundDirectly [out] true if a scraper was found directly for strPath, false if it was in a parent path.
    \return A ScraperPtr containing the scraper information. Returns NULL if a trivial (Content == CONTENT_NONE)
            scraper or no scraper is found.
    */
-  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings, int& iFound);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings, bool& foundDirectly);
   CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned
