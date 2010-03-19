@@ -85,7 +85,6 @@ namespace VIDEO
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
-    static int GetPathHash(const CFileItemList &items, CStdString &hash);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
     CIMDB m_IMDB;
@@ -126,6 +125,7 @@ namespace VIDEO
     virtual void Run();
     int CountFiles(const CStdString& strPath);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
+    static int GetPathHash(const CFileItemList &items, CStdString &hash);
     void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; };
 
   protected:

@@ -677,17 +677,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
             m_database.GetEpisodeInfo(item->m_strPath,movieDetails);
         }
 
-        // set path hash
-        if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS)
-        {
-          CStdString hash, strParent;
-          CFileItemList items;
-          CUtil::GetParentPath(list.m_strPath,strParent);
-          CDirectory::GetDirectory(strParent,items,g_settings.m_videoExtensions);
-          scanner.GetPathHash(items, hash);
-          m_database.SetPathHash(strParent, hash);
-        }
-
         // got all movie details :-)
         OutputDebugString("got details\n");
         pDlgProgress->Close();
