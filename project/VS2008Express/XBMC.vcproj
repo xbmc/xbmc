@@ -2335,6 +2335,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSClock.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSClock.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\DSConfig.cpp"
 					>
 				</File>

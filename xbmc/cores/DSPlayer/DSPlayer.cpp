@@ -46,7 +46,7 @@ CFileItemPtr CDSPlayer::currentFileItemPtr;
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread(),
-      m_pDsGraph()
+      m_pDsGraph(&m_pDsClock)
 {
   m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 }
@@ -140,20 +140,14 @@ void CDSPlayer::GetAudioInfo(CStdString& strAudioInfo)
 }
 
 void CDSPlayer::GetVideoInfo(CStdString& strVideoInfo)
-{  
-  CSingleLock lock(m_StateSection);
+{
   strVideoInfo = m_pDsGraph.GetVideoInfo();
-  //strVideoInfo.Format("D(%s) P(%s)", m_pDsGraph.GetPlayerInfo().c_str());
 }
 
 void CDSPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
+  CSingleLock lock(m_StateSection);
   strGeneralInfo = m_pDsGraph.GetGeneralInfo();
-  //GetGeneralInfo.Format("CPU:( ThreadRelative:%2i%% FiltersThread:%2i%% )"                         
-  //                       , (int)(CThread::GetRelativeUsage()*100)
-  //               , (int) (m_pDsGraph.GetRelativeUsage()*100));
-  //strGeneralInfo = "CDSPlayer:GetGeneralInfo";
-
 }
 
 //CThread
@@ -213,8 +207,8 @@ void CDSPlayer::Process()
   // make sure application know our info
   //UpdateApplication(0);
   //UpdatePlayState(0);
-
   SetEvent(m_hReadyEvent);
+  m_pDsClock.SetSpeed(1000);
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
     CHECK_PLAYER_STATE
@@ -234,13 +228,15 @@ void CDSPlayer::Process()
     
     //Handle fastforward stuff
     if (m_currentSpeed == 0)
-    {      
+    {
+      m_pDsClock.SetSpeed(0);
       Sleep(250);
     } 
     else if (m_currentSpeed != 10000)
     {
-      m_pDsGraph.DoFFRW(m_currentSpeed,m_currentRate);
-      Sleep(1000);
+      //m_pDsClock.SetSpeed(m_currentRate * 1000);
+      m_pDsGraph.DoFFRW(m_currentRate);
+      Sleep(250);
     } 
     else
     {

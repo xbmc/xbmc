@@ -197,9 +197,13 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
     verts[i].y -= 0.5;
   }
 
-  IDirect3DTexture9* texture = (newFrameAvailable) ? m_D3DVideoTexture : m_OldD3DVideoTexture;
-
-  hr = m_pD3DDevice->SetTexture(0, texture);
+  if (m_bIsEvr)
+  {
+    IDirect3DTexture9* texture = (newFrameAvailable) ? m_D3DVideoTexture : m_OldD3DVideoTexture;
+    hr = m_pD3DDevice->SetTexture(0, texture);
+  }
+  else
+    hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
 
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -215,7 +219,7 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
 
-  if (newFrameAvailable)
+  if (m_bIsEvr && newFrameAvailable)
   {
     newFrameAvailable = false;
     m_OldD3DVideoTexture.Release();

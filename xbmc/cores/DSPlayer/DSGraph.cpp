@@ -60,10 +60,15 @@ enum
 
 using namespace std;
 
-CDSGraph::CDSGraph() :
-  m_pGraphBuilder(NULL), m_PlaybackRate(1), m_currentSpeed(0), m_iCurrentFrameRefreshCycle(0),
-  m_userId(0xACDCACDC), m_bReachedEnd(false)
+CDSGraph::CDSGraph(CDSClock* pClock)
+    : m_pGraphBuilder(NULL),
+      m_PlaybackRate(1),
+      m_currentSpeed(0),
+      m_iCurrentFrameRefreshCycle(0),
+      m_userId(0xACDCACDC),
+      m_bReachedEnd(false)
 {
+  m_pDsClock = pClock;
   
 }
 
@@ -200,6 +205,8 @@ bool CDSGraph::InitializedOutputDevice()
 
 void CDSGraph::UpdateTime()
 {
+  
+
   if (!m_pMediaSeeking)
     return;
   //with the Current frame refresh cycle at 5 the framerate is requested every 1000ms
@@ -223,10 +230,15 @@ void CDSGraph::UpdateTime()
   REFTIME rt = (REFTIME) 0;
   LONGLONG Position;
 // Should we return a media position
+  m_State.time = DS_TIME_TO_MSEC(m_pDsClock->GetClock());
   if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
   {
+    
     if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
+    {
+      m_State.timestamp = Position;
       m_State.time = TIME_FORMAT_TO_MS(Position);//double(Position) / TIME_FORMAT_TO_MS;
+    }
     if (m_State.time_total == 0)
     {
       //we dont have the duration of the video yet so try to request it
@@ -241,6 +253,8 @@ void CDSGraph::UpdateTime()
   
   if (( m_State.time >= m_State.time_total ))
     m_bReachedEnd = true;
+
+  m_State.timestamp = CDSClock::GetAbsoluteClock();
   
 }
 
@@ -596,17 +610,17 @@ void CDSGraph::Pause()
   UpdateState();
 }
 
-void CDSGraph::DoFFRW(int currentSpeed, int currentRate)
+void CDSGraph::DoFFRW(int currentRate)
 {
-  m_currentSpeed = currentSpeed;
+  int stepInMsec =(currentRate * 1000);
+  m_pDsClock->SetSpeed(stepInMsec);
+  
+  m_currentSpeed = stepInMsec;
   //m_State.time
   HRESULT hr;
-  double timetarget;
-  timetarget = m_State.time + (currentRate * 1000);
-  SeekInMilliSec(timetarget);
+  LONGLONG timetarget;
+  timetarget = DS_MSEC_TO_TIME(m_State.time) + (DS_MSEC_TO_TIME(stepInMsec));
   
-  m_State.time = timetarget;
-  return;
   //TIME_FORMAT_MEDIA_TIME is using Reference time (100-nanosecond units).
   //1 sec = 1 000 000 000 nanoseconds
   //so 1 units of TIME_FORMAT_MEDIA_TIME is 0,0000001 sec or 0,0001 millisec
@@ -623,12 +637,12 @@ void CDSGraph::DoFFRW(int currentSpeed, int currentRate)
     HRESULT hr;
     LONGLONG earliest, latest, current, stop, rewind, pStop;
     m_pMediaSeeking->GetAvailable(&earliest,&latest);
-    m_pMediaSeeking->GetPositions(&current,&stop);
+    //m_pMediaSeeking->GetPositions(&current,&stop);
     
     LONGLONG lTimerInterval = 300;
-    rewind = (LONGLONG)(current + (2 * (LONGLONG)(lTimerInterval) * currentSpeed));
+    //rewind = (LONGLONG)(current + (2 * (LONGLONG)(lTimerInterval) * currentSpeed));
     pStop = 0;
-    if ((rewind < earliest) && (currentSpeed < 0))
+    /*if ((rewind < earliest) && (currentSpeed < 0))
     {
       currentSpeed = 10000;
       rewind = earliest;
@@ -652,12 +666,13 @@ void CDSGraph::DoFFRW(int currentSpeed, int currentRate)
 
       UpdateState(); // We need to know the new state
       return;
-    }
+    }*/
     //seek to new moment in time
-    hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
-    m_State.time = TIME_FORMAT_TO_MS(rewind);
+    hr = m_pMediaSeeking->SetPositions(&timetarget, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
+    //m_State.time = TIME_FORMAT_TO_MS(rewind);
+    //stop when ready is currently make the graph wait for a frame to present before starting back again
     m_pMediaControl->StopWhenReady();
-
+    UpdateTime();
     UpdateState(); // We need to know the new state
   }
   
@@ -824,7 +839,16 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 // return time in ms
 __int64 CDSGraph::GetTime()
 {
-  return llrint(m_State.time);
+  
+  double offset = 0;
+  if(m_State.timestamp > 0)
+  {
+    offset  = CDSClock::GetAbsoluteClock() - m_State.timestamp;
+    offset *= (m_PlaybackRate * 1000) / DS_PLAYSPEED_NORMAL;
+    if(offset >  1000) offset =  1000;
+    if(offset < -1000) offset = -1000;
+  }
+  return llrint(m_State.time + DS_TIME_TO_MSEC(offset));
 }
 
 // return length in msec
@@ -835,6 +859,7 @@ __int64 CDSGraph::GetTotalTimeInMsec()
 
 int CDSGraph::GetTotalTime()
 {
+
   return (int)(GetTotalTimeInMsec() / 1000);
 }
 

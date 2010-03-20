@@ -32,6 +32,7 @@
 #include <wxdebug.h>
 #include <combase.h>
 #include "util.h"
+#include "DSClock.h"
 #include "dsconfig.h"
 #include "fgmanager.h"
 #include "DShowUtil/DShowUtil.h"
@@ -69,7 +70,7 @@ class CFGManager;
 class CDSGraph
 {
 public:
-  CDSGraph();
+  CDSGraph(CDSClock* pClock);
   virtual ~CDSGraph();
 
   /** Determine if the graph can seek
@@ -99,7 +100,7 @@ public:
   /** Perform a Fast Forward
    * @param[in] currentSpeed Fast Forward speed
    */
-  virtual void DoFFRW(int currentSpeed,int currentRate);
+  virtual void DoFFRW(int currentRate);
   /** Performs a Seek
    * @param[in] bPlus If true, performs a positive seek. If false, performs a negative seek
    * @param[in] bLargeStep If true, performs a large seek
@@ -154,6 +155,8 @@ public:
   CStdString GetAudioInfo();
   /// @return Informations about the current video track
   CStdString GetVideoInfo();
+
+  CDSClock* m_pDsClock;
 
   static Com::SmartPtr<IFilterGraph2> m_pFilterGraph;
 protected:

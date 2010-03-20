@@ -28,6 +28,7 @@
 #include "StdString.h"
 #include "StringUtils.h"
 #include "DSGraph.h"
+#include "DSClock.h"
 
 #include "StreamsManager.h"
 #include "ChaptersManager.h"
@@ -96,9 +97,9 @@ public:
   virtual float GetSubTileDelay(void) { return CStreamsManager::getSingleton()->GetSubtitleDelay(); }
   // Chapters
 
-  virtual int  GetChapterCount()                                { return CChaptersManager::getSingleton()->GetChapterCount(); }
-  virtual int  GetChapter()                                     { return CChaptersManager::getSingleton()->GetChapter(); }
-  virtual void GetChapterName(CStdString& strChapterName)       { CChaptersManager::getSingleton()->GetChapterName(strChapterName); }
+  virtual int  GetChapterCount()                                { CSingleLock lock(m_StateSection); return CChaptersManager::getSingleton()->GetChapterCount(); }
+  virtual int  GetChapter()                                     { CSingleLock lock(m_StateSection); return CChaptersManager::getSingleton()->GetChapter(); }
+  virtual void GetChapterName(CStdString& strChapterName)       { CSingleLock lock(m_StateSection); CChaptersManager::getSingleton()->GetChapterName(strChapterName); }
   virtual int  SeekChapter(int iChapter)                        { return CChaptersManager::getSingleton()->SeekChapter(iChapter); }
 
   void Update(bool bPauseDrawing)                               { g_renderManager.Update(bPauseDrawing); }
@@ -112,8 +113,8 @@ public:
   virtual CStdString GetAudioCodecName()                        { return CStreamsManager::getSingleton()->GetAudioCodecName(); }
   virtual CStdString GetVideoCodecName()                        { return CStreamsManager::getSingleton()->GetVideoCodecName(); }
 
-  virtual __int64 GetTime()                                     { return m_pDsGraph.GetTime(); }
-  virtual int GetTotalTime()                                    { return m_pDsGraph.GetTotalTime(); }
+  virtual __int64 GetTime()                                     { CSingleLock lock(m_StateSection); return m_pDsGraph.GetTime(); }
+  virtual int GetTotalTime()                                    { CSingleLock lock(m_StateSection); return m_pDsGraph.GetTotalTime(); }
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
   
@@ -134,6 +135,7 @@ protected:
   int m_currentSpeed;
   int m_currentRate;
   CDSGraph m_pDsGraph;
+  CDSClock m_pDsClock;
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;
   //bool m_bAbortRequest;
