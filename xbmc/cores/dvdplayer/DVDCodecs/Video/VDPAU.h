@@ -36,7 +36,7 @@ namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                4
 #define NUM_VIDEO_SURFACES_MPEG2           10  // (1 frame being decoded, 2 reference)
-#define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references) 
+#define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references)
 #define NUM_VIDEO_SURFACES_VC1             10  // (same as MPEG-2)
 #define NUM_OUTPUT_SURFACES_FOR_FULLHD     2
 #define FULLHD_WIDTH                       1920
@@ -61,7 +61,7 @@ public:
 
   CVDPAU();
   virtual ~CVDPAU();
-
+  
   virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
@@ -118,6 +118,7 @@ public:
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
+  bool       upScale;
 
   VdpProcamp    m_Procamp;
   VdpCSCMatrix  m_CSCMatrix;
@@ -215,8 +216,4 @@ public:
                           , VdpChromaType     &chroma_type);
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
-  
-  
 };
-
-extern CVDPAU*          g_VDPAU;

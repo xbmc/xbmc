@@ -47,6 +47,7 @@ public:
                     INPUT_TYPE_DATE,
                     INPUT_TYPE_IPADDRESS,
                     INPUT_TYPE_PASSWORD,
+                    INPUT_TYPE_PASSWORD_MD5,
                     INPUT_TYPE_SEARCH,
                     INPUT_TYPE_FILTER
                   };
@@ -71,11 +72,11 @@ public:
   void SetCursorPosition(unsigned int iPosition);
 
   void SetInputType(INPUT_TYPE type, int heading);
-  
+
   void SetTextChangeActions(const std::vector<CGUIActionDescriptor>& textChangeActions) { m_textChangeActions = textChangeActions; };
-  
+
   bool HasTextChangeActions() { return m_textChangeActions.size() > 0; };
-  
+
 protected:
   virtual void RenderText();
   CStdStringW GetDisplayedText() const;
@@ -84,7 +85,13 @@ protected:
   void UpdateText(bool sendUpdate = true);
   void OnPasteClipboard();
   void OnSMSCharacter(unsigned int key);
+  void DefaultConstructor();  
 
+  /*! \brief Clear out the current text input if it's an MD5 password.
+   \return true if the password is cleared, false otherwise.
+   */
+  bool ClearMD5();
+  
   CStdStringW m_text2;
   CStdString  m_text;
   float m_textOffset;
@@ -97,14 +104,15 @@ protected:
 
   int m_inputHeading;
   INPUT_TYPE m_inputType;
-  
-  std::vector<CGUIActionDescriptor> m_textChangeActions;  
+  bool m_isMD5;
 
-  
+  std::vector<CGUIActionDescriptor> m_textChangeActions;
+
+
   unsigned int m_smsKeyIndex;
   unsigned int m_smsLastKey;
   CStopWatch   m_smsTimer;
-  
+
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;
 };

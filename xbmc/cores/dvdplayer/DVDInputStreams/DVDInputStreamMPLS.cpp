@@ -73,22 +73,22 @@ bool CDVDInputStreamMPLS::Open(const char* strFile, const std::string& content)
   MPLS_PL* playList = mpls_parse(const_cast<char*>(strPlaylist.c_str()),0);
   if (playList)
   {
-  vector<CStdString> paths;
+    vector<CStdString> paths;
 /* TODO: convert mpls offsets to edl */
-  for( int i=0;i<playList->list_count;++i)
-  {
-    CStdString strFile;
-    strFile.Format("STREAM/%s.m2ts",playList->play_item[i].clip[0].clip_id);
-    paths.push_back(CUtil::AddFileToFolder(strPath,strFile));
-  }
-  if (paths.size() > 1)
-  {
-    CStackDirectory dir;
-    dir.ConstructStackPath(paths,strPath);
-  }
-  else
-    strPath = paths[0];
-  mpls_free(playList);
+    for( int i=0;i<playList->list_count;++i)
+    {
+      CStdString strFile;
+      strFile.Format("STREAM/%s.m2ts",playList->play_item[i].clip[0].clip_id);
+      paths.push_back(CUtil::AddFileToFolder(strPath,strFile));
+    }
+    if (paths.size() > 1)
+    {
+      CStackDirectory dir;
+      dir.ConstructStackPath(paths,strPath);
+    }
+    else
+      strPath = paths[0];
+    mpls_free(playList);
   }
   free(mainTitle);
   if (!(m_stream = CDVDFactoryInputStream::CreateInputStream(NULL,strPath,content)))

@@ -206,19 +206,19 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   ULARGE_INTEGER ULTotal= { { 0 } };
   ULARGE_INTEGER ULTotalFree= { { 0 } };
 
-  if( !drive.IsEmpty() && !drive.Equals("*") ) 
-  { 
+  if( !drive.IsEmpty() && !drive.Equals("*") )
+  {
 #ifdef _WIN32
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
 #endif
       bRet= ( 0 != GetDiskFreeSpaceEx( ( drive + ":\\" ), NULL, &ULTotal, &ULTotalFree) );
   }
-  else 
+  else
   {
     ULARGE_INTEGER ULTotalTmp= { { 0 } };
     ULARGE_INTEGER ULTotalFreeTmp= { { 0 } };
-#ifdef _WIN32 
+#ifdef _WIN32
     char* pcBuffer= NULL;
     DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
     if( dwStrLength != 0 )
@@ -294,13 +294,19 @@ bool CSysInfo::IsAeroDisabled()
 #endif
   return false;
 }
+
 bool CSysInfo::IsVistaOrHigher()
 {
 #ifdef _WIN32
-  OSVERSIONINFO osver;
-  osver.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );	
-  if (GetVersionEx( &osver ) && osver.dwPlatformId == VER_PLATFORM_WIN32_NT && (osver.dwMajorVersion >= 6 ) )
-    return true;  
+  OSVERSIONINFOEX osvi;
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+
+  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  {
+    if (osvi.dwMajorVersion >= 6)
+      return true; 
+  }
 #endif
   return false;
 }
@@ -351,7 +357,7 @@ CStdString CSysInfo::GetKernelVersion()
             if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
              strKernel.append(", 64-bit (WoW)");
           }
-          else 
+          else
           {
             strKernel.append(", 32-bit");
           }
@@ -372,7 +378,7 @@ CStdString CSysInfo::GetKernelVersion()
       strKernel.append("XP ");
       if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
         strKernel.append("Home Edition" );
-      else 
+      else
         strKernel.append("Professional" );
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
@@ -596,7 +602,7 @@ CStdString CSysInfo::GetLinuxDistro()
                                         "/etc/slackware-version",
                                         "/etc/arch-release",
                                         NULL };
-  
+
   FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d | cut -f2", "r");
   
   for (int i = 0; !pipe && release_file[i]; i++)
@@ -625,7 +631,7 @@ CStdString CSysInfo::GetLinuxDistro()
 CStdString CSysInfo::GetUnameVersion()
 {
   CStdString result = "";
-  
+
   FILE* pipe = popen("uname -rm", "r");
   if (pipe)
   {
@@ -636,7 +642,7 @@ CStdString CSysInfo::GetUnameVersion()
       CLog::Log(LOGWARNING, "Unable to determine Uname version");
     pclose(pipe);
   }
-  
+
   return result.Trim();
 }
 #endif
@@ -654,16 +660,11 @@ CStdString CSysInfo::GetUserAgent()
 #elif defined(_LINUX)
   result += "Linux; ";
   result += GetLinuxDistro();
-    result += "; ";
+  result += "; ";
   result += GetUnameVersion();
 #endif
-#ifdef SVN_REV
-  CStdString strRevision; 
-  strRevision.Format("; SVN r%s", SVN_REV);
-  result += strRevision;
-#endif
   result += "; http://www.xbmc.org)";
-  
+
   return result;
 }
 
@@ -674,10 +675,10 @@ bool CSysInfo::IsAppleTV()
   char        buffer[512];
   size_t      len = 512;
   std::string hw_model = "unknown";
-  
+
   if (sysctlbyname("hw.model", &buffer, &len, NULL, 0) == 0)
     hw_model = buffer;
-  
+
   if (hw_model.find("AppleTV") != std::string::npos)
     result = true;
 #endif

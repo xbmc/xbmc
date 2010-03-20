@@ -1258,7 +1258,7 @@ make_setup_request (AVFormatContext *s, const char *host, int port,
                 int port, ttl;
 
                 if (reply->transports[0].destination) {
-                in.s_addr = htonl(reply->transports[0].destination);
+                    in.s_addr = htonl(reply->transports[0].destination);
                     port      = reply->transports[0].port_min;
                     ttl       = reply->transports[0].ttl;
                 } else {
@@ -1378,8 +1378,8 @@ static int rtsp_read_header(AVFormatContext *s,
                 strcpy(++filename, option);
                 filename += strlen(option);
                 if (option_list) *filename = '&';
+            }
         }
-    }
         *filename = 0;
     }
 
@@ -1631,7 +1631,7 @@ static int rtsp_read_packet(AVFormatContext *s,
     ret = sdp_read_packet(s, pkt);
     if (ret < 0) {
         return ret;
-        }
+    }
 
     /* send dummy request to keep TCP connection alive */
     if ((rt->server_type == RTSP_SERVER_WMS ||

@@ -20,7 +20,7 @@
  */
 
 
-/* 
+/*
 
 Goom Visualization Interface for XBMC
 - Team XBMC
@@ -28,32 +28,15 @@ Goom Visualization Interface for XBMC
 */
 
 
-#include "xbmc_vis.h"
+#include "../../addons/include/xbmc_vis_dll.h"
+#include <stdio.h>
+#include <string.h>
+#include <string>
 extern "C" {
 #include "goom.h"
 }
 #include "goom_config.h"
 #include <GL/glew.h>
-#include <string>
-#ifdef _WIN32
-#ifndef _MINGW
-#include "win32-dirent.h"
-#endif
-#include <io.h>
-#else
-#include "system.h"
-#include "FileSystem/SpecialProtocol.h"
-#include <dirent.h>
-#endif
-
-#ifdef _WIN32
-#define PRESETS_DIR "visualisations\\goom"
-#define CONFIG_FILE "visualisations\\goom.conf"
-#define strcasecmp  stricmp
-#else
-#define PRESETS_DIR "special://xbmc/visualisations/goom"
-#define CONFIG_FILE "special://profile/visualisations/goom.conf"
-#endif
 
 extern int  preset_index;
 char        g_visName[512];
@@ -71,46 +54,21 @@ unsigned char* g_goom_buffer = NULL;
 short          g_audio_data[2][512];
 std::string    g_configFile;
 
-// case-insensitive alpha sort from projectM's win32-dirent.cc
-#ifndef _WIN32
-int alphasort(const void* lhs, const void* rhs) 
-{
-  const struct dirent* lhs_ent = *(struct dirent**)lhs;
-  const struct dirent* rhs_ent = *(struct dirent**)rhs;
-  return strcasecmp(lhs_ent->d_name, rhs_ent->d_name);
-}
-#endif
-
-// check for a valid preset extension
-#ifdef __APPLE__
-int check_valid_extension(struct dirent* ent) 
-#else
-int check_valid_extension(const struct dirent* ent) 
-#endif
-{
-#ifndef _MINGW
-  const char* ext = 0;
-  
-  if (!ent) return 0;
-  
-  ext = strrchr(ent->d_name, '.');
-  if (!ext) ext = ent->d_name;
-  
-  if (0 == strcasecmp(ext, ".milk")) return 1;
-  if (0 == strcasecmp(ext, ".prjm")) return 1;
-#endif
-  return 0;
-}
+using namespace std;
 
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+extern "C" ADDON_STATUS Create(void* hdl, void* props)
 {
-  strcpy(g_visName, szVisualisationName);
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+  if (!props)
+    return STATUS_UNKNOWN;
+
+  VIS_PROPS* visprops = (VIS_PROPS*)props;
+
+  strcpy(g_visName, visprops->name);
+  g_configFile = string(visprops->profile) + string("/goom.conf");
+  std::string presetsDir = string(visprops->presets) + string("/resources");
 
   /** Initialise Goom */
   if (g_goom)
@@ -121,26 +79,35 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
 
   g_goom = goom_init(g_tex_width, g_tex_height);
   if (!g_goom)
-    return;
+    return STATUS_UNKNOWN;
 
   g_goom_buffer = (unsigned char*)malloc(g_tex_width * g_tex_height * 4);
   goom_set_screenbuffer( g_goom, g_goom_buffer );
   memset( g_audio_data, 0, sizeof(g_audio_data) );
-  g_window_width = iWidth;
-  g_window_height = iHeight;
-  g_window_xpos = iPosX;
-  g_window_ypos = iPosY;
+  g_window_width = visprops->width;
+  g_window_height = visprops->height;
+  g_window_xpos = visprops->x;
+  g_window_ypos = visprops->y;
 
-#ifdef _WIN32
-#ifndef _MINGW
-  g_configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
-  std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;
-#endif
-#else
-  g_configFile = _P(CONFIG_FILE);
-  std::string presetsDir = _P(PRESETS_DIR);
-#endif
+  return STATUS_OK;
+}
 
+//-- Destroy -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Destroy()
+{
+  if ( g_goom )
+  {
+    goom_close( g_goom );
+    g_goom = NULL;
+  }
+  if ( g_goom_buffer )
+  {
+    free( g_goom_buffer );
+    g_goom_buffer = NULL;
+  }
 }
 
 //-- Start --------------------------------------------------------------------
@@ -159,27 +126,17 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-----------------------------------------------------------------------------
 extern "C" void Stop()
 {
-  if ( g_goom )
-  {
-    goom_close( g_goom );
-    g_goom = NULL;
-  } 
-  if ( g_goom_buffer )
-  {
-    free( g_goom_buffer );
-    g_goom_buffer = NULL;
-  }
   if (g_texid)
   {
     glDeleteTextures( 1, &g_texid );
+    g_texid = 0;
   }
-  m_vecSettings.clear(); 
 }
 
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int copysize = iAudioDataLength < (int)sizeof( g_audio_data ) ? iAudioDataLength : (int)sizeof( g_audio_data );
   memcpy( g_audio_data, pAudioData, copysize );
@@ -254,7 +211,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-extern "C" bool OnAction(long flags, void *param)
+extern "C" bool OnAction(long flags, const void *param)
 {
   bool ret = false;
   return ret;
@@ -263,38 +220,76 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+extern "C" unsigned int GetPresets(char ***presets)
 {
-
+  return 0;
 }
 
-//-- GetSettings --------------------------------------------------------------
-// Return the settings for XBMC to display
+//-- GetPreset ----------------------------------------------------------------
+// Return the index of the current playing preset
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
-{ 
-  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
-  *sSet = m_structSettings;
-  return m_uiVisElements;
-}
-
-extern "C" void FreeSettings()
+extern "C" unsigned GetPreset()
 {
-  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
+  return 0;
 }
 
-//-- UpdateSetting ------------------------------------------------------------
-// Handle setting change request from XBMC
+//-- IsLocked -----------------------------------------------------------------
+// Returns true if this add-on use settings
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+extern "C" bool IsLocked()
 {
-  //VisSetting &setting = m_vecSettings[num];
+  return false;
 }
 
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***names)
 {
   return 0; // this vis supports 0 sub modules
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" bool HasSettings()
+{
+  return false;
+}
+
+//-- GetStatus ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
+}
+
+//-- GetSettings --------------------------------------------------------------
+// Return the settings for XBMC to display
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" unsigned int GetSettings(StructSetting ***sSet)
+{
+  return 0;
+}
+
+//-- FreeSettings --------------------------------------------------------------
+// Free the settings struct passed from XBMC
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+
+extern "C" void FreeSettings()
+{
+}
+
+//-- SetSetting ---------------------------------------------------------------
+// Set a specific Setting value (called from XBMC)
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
+{
+  return STATUS_OK;
 }

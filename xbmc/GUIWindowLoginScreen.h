@@ -34,11 +34,11 @@ public:
   virtual ~CGUIWindowLoginScreen(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
   int GetViewContainerID() const { return m_viewControl.GetCurrentControl(); };
-  static void LoadProfile(int profile);
+  static void LoadProfile(unsigned int profile);
 
 protected:
   virtual void OnInitWindow();

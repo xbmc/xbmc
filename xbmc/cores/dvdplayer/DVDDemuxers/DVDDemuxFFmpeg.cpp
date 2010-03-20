@@ -394,14 +394,14 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if (!iformat)
       {
         // av_probe_input_format failed, re-probe the ffmpeg/ffplay method.
-        // av_open_input_file uses av_probe_input_format2 for probing format, 
-        // starting at 2048, up to max buffer size of 1048576. We just probe to 
-        // the buffer size allocated above so as to avoid seeks on content that 
+        // av_open_input_file uses av_probe_input_format2 for probing format,
+        // starting at 2048, up to max buffer size of 1048576. We just probe to
+        // the buffer size allocated above so as to avoid seeks on content that
         // might not be seekable.
         int max_buf_size = pd.buf_size;
-        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1) 
+        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1)
         {
-          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size); 
+          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size);
           int score= probe_size < max_buf_size ? AVPROBE_SCORE_MAX/4 : 0;
           pd.buf_size = probe_size;
           iformat = m_dllAvFormat.av_probe_input_format2(&pd, 1, &score);
@@ -431,8 +431,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     }
   }
 
-  // we need to know if this is matroska later
+  // we need to know if this is matroska or avi later
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
+  m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
 
   if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
@@ -555,8 +556,8 @@ void CDVDDemuxFFmpeg::Flush()
   if (m_pFormatContext)
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
 
-    m_iCurrentPts = DVD_NOPTS_VALUE;
-  }
+  m_iCurrentPts = DVD_NOPTS_VALUE;
+}
 
 void CDVDDemuxFFmpeg::Abort()
 {
@@ -729,6 +730,13 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
             pkt.duration = pkt.convergence_duration;
 
+        if(m_bAVI && stream->codec && stream->codec->codec_type == CODEC_TYPE_VIDEO)
+        {
+          // AVI's always have borked pts, specially if m_pFormatContext->flags includes
+          // AVFMT_FLAG_GENPTS so always use dts
+          pkt.pts = AV_NOPTS_VALUE;
+        }
+
         // copy contents into our own packet
         pPacket->iSize = pkt.size;
 
@@ -835,7 +843,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return true;
   }
 
-#ifdef HAS_FILESYSTEM_MMS 
+#ifdef HAS_FILESYSTEM_MMS
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS))
   {
     if (!((CDVDInputStreamMMS*)m_pInput)->SeekTime(time))
@@ -1015,7 +1023,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         break;
       }
     case CODEC_TYPE_SUBTITLE:
-        {
+      {
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,38,1)
         if (pStream->codec->codec_id == CODEC_ID_DVB_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
         {
@@ -1028,15 +1036,15 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 #endif
         {
           CDemuxStreamSubtitleFFmpeg* st = new CDemuxStreamSubtitleFFmpeg(this, pStream);
-        m_streams[iId] = st;
-        if(pStream->codec)
-          st->identifier = pStream->codec->sub_id;
+          m_streams[iId] = st;
+          if(pStream->codec)
+            st->identifier = pStream->codec->sub_id;
 	    
           if(m_bMatroska && m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0))
             st->m_description = m_dllAvFormat.av_metadata_get(pStream->metadata, "description", NULL, 0)->value;
 	
-        break;
-      }
+          break;
+        }
       }
     case CODEC_TYPE_ATTACHMENT:
       { //mkv attachments. Only bothering with fonts for now.
@@ -1214,7 +1222,7 @@ void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
   if (stream)
   {
     unsigned int in = stream->codec_fourcc;
-    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV 
+    // FourCC codes are only valid on video streams, audio codecs in AVI/WAV
     // are 2 bytes and audio codecs in transport streams have subtle variation
     // e.g AC-3 instead of ac3
     if (stream->type == STREAM_VIDEO && in != 0)

@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -38,6 +38,7 @@
 #include "../XBPythonDll.h"
 #include "GUIListContainer.h"
 #include "GUIFontManager.h"
+#include "GUILabel.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -77,8 +78,8 @@ namespace PYXBMC
     //char* cShadowColor = NULL;
     self = (ControlList*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-    new(&self->strFont) string();    
-    new(&self->strTextureButton) string();    
+    new(&self->strFont) string();
+    new(&self->strTextureButton) string();
     new(&self->strTextureButtonFocus) string();
     new(&self->vecItems) std::vector<PYXBMC::ListItem*>();
 
@@ -169,11 +170,11 @@ namespace PYXBMC
     }
     self->vecItems.clear();
     self->vecItems.~vector();
-    
+
     self->strFont.~string();
     self->strTextureButton.~string();
     self->strTextureButtonFocus.~string();
-    
+
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -623,28 +624,28 @@ PyDoc_STRVAR(addItems__doc__,
   }
 
   // getItemHeight() Method
-	PyDoc_STRVAR(getItemHeight__doc__,
-		"getItemHeight() -- Returns the control's current item height as an integer.\n"
-		"\n"
-		"example:\n"
-		"  - item_height = self.cList.getItemHeight()\n");
+  PyDoc_STRVAR(getItemHeight__doc__,
+    "getItemHeight() -- Returns the control's current item height as an integer.\n"
+    "\n"
+    "example:\n"
+    "  - item_height = self.cList.getItemHeight()\n");
 
   PyObject* ControlList_GetItemHeight(ControlList *self)
-	{
-		return Py_BuildValue((char*)"l", self->itemHeight);
-	}
+  {
+    return Py_BuildValue((char*)"l", self->itemHeight);
+  }
 
   // getSpace() Method
-	PyDoc_STRVAR(getSpace__doc__,
-		"getSpace() -- Returns the control's space between items as an integer.\n"
-		"\n"
-		"example:\n"
-		"  - gap = self.cList.getSpace()\n");
+  PyDoc_STRVAR(getSpace__doc__,
+    "getSpace() -- Returns the control's space between items as an integer.\n"
+    "\n"
+    "example:\n"
+    "  - gap = self.cList.getSpace()\n");
 
   PyObject* ControlList_GetSpace(ControlList *self)
-	{
-		return Py_BuildValue((char*)"l", self->space);
-	}
+  {
+    return Py_BuildValue((char*)"l", self->space);
+  }
 
 PyDoc_STRVAR(setStaticContent__doc__,
     "setStaticContent(items) -- Fills a static list with a list of listitems.\n"
@@ -673,7 +674,7 @@ PyDoc_STRVAR(setStaticContent__doc__,
     }
 
     vector<CGUIListItemPtr> items;
-    
+
     for (int item = 0; item < PyList_Size(pList); item++)
     {
       PyObject *pItem = PyList_GetItem(pList, item);

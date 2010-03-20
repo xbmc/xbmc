@@ -21,11 +21,15 @@
  *
  */
 
+#include <list>
 #include "system.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllAvCodec.h"
 
+#include "../DVDFactoryCodec.h"
 #include "DVDAudioCodec.h"
+
+class IDVDAudioEncoder;
 
 class CDVDAudioCodecPassthroughFFmpeg : public CDVDAudioCodec
 {
@@ -44,25 +48,63 @@ public:
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }
   virtual const char* GetName()  { return "PassthroughFFmpeg"; }
-
+  virtual int GetBufferSize();
 private:
-  int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, int iSize, int *fSize);
-  int SyncAC3(BYTE* pData, int iSize, int *fSize);
-  int SyncDTS(BYTE* pData, int iSize, int *fSize);
+  DllAvFormat m_dllAvFormat;
+  DllAvUtil   m_dllAvUtil;
+  DllAvCodec  m_dllAvCodec;
 
-  DllAvFormat      m_dllAvFormat;
-  DllAvUtil        m_dllAvUtil;
-  DllAvCodec       m_dllAvCodec;
+  typedef struct
+  {
+    int      size;
+    uint8_t *data;
+  } DataPacket;
 
-  AVFormatContext *m_pFormat;
-  AVStream        *m_pStream;
+  typedef struct
+  {
+    AVFormatContext       *m_pFormat;
+    AVStream              *m_pStream;
+    std::list<DataPacket*> m_OutputBuffer;
+    unsigned int           m_OutputSize;
+    bool                   m_WroteHeader;
+    unsigned char          m_BCBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+    unsigned int           m_Consumed;
+    unsigned int           m_BufferSize;
+    uint8_t               *m_Buffer;
+  } Muxer;
 
-  unsigned char    m_bcBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
-  BYTE            *m_OutputBuffer;
-  int              m_OutputSize;
-  bool             m_lostSync;
+  Muxer      m_SPDIF, m_ADTS;
+  bool       SetupMuxer(CDVDStreamInfo &hints, CStdString muxerName, Muxer &muxer);
+  static int MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
+  void       WriteFrame(Muxer &muxer, uint8_t *pData, int iSize);
+  int        GetMuxerData(Muxer &muxer, uint8_t** dst);
+  void       ResetMuxer(Muxer &muxer);
+  void       DisposeMuxer(Muxer &muxer);
 
-  static int _BCReadPacket(void *opaque, uint8_t *buf, int buf_size) { return ((CDVDAudioCodecPassthroughFFmpeg*)opaque)->BCReadPacket(buf, buf_size); }
-  int BCReadPacket(uint8_t *buf, int buf_size);
+  bool m_bSupportsAC3Out;
+  bool m_bSupportsDTSOut;
+  bool m_bSupportsAACOut;
+  bool m_bSupportsMP1Out;
+  bool m_bSupportsMP2Out;
+  bool m_bSupportsMP3Out;
+
+  CDVDAudioCodec   *m_Codec;
+  IDVDAudioEncoder *m_Encoder;
+  bool              m_InitEncoder;
+  unsigned int      m_EncPacketSize;
+  BYTE             *m_DecodeBuffer;
+  unsigned int      m_DecodeSize;
+  bool SupportsFormat(CDVDStreamInfo &hints);
+  bool SetupEncoder  (CDVDStreamInfo &hints);
+
+  uint8_t      m_NeededBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+  unsigned int m_NeededUsed;
+  unsigned int m_Needed;
+  bool         m_LostSync;
+
+  unsigned int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncAC3(BYTE* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncDTS(BYTE* pData, unsigned int iSize, unsigned int *fSize);
+  unsigned int SyncAAC(BYTE* pData, unsigned int iSize, unsigned int *fSize);
 };
 

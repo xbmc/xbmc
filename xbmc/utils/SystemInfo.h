@@ -97,7 +97,7 @@ public:
 #endif
 #ifdef _LINUX
   CStdString GetUnameVersion();
-#endif    
+#endif
   CStdString GetUserAgent();
   bool HasInternet() const;
   bool IsAppleTV();

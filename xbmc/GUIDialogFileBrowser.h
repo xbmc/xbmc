@@ -37,7 +37,7 @@ public:
   virtual ~CGUIDialogFileBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   bool IsConfirmed() { return m_bConfirmed; };

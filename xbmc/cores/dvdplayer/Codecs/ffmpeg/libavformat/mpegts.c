@@ -613,7 +613,7 @@ static int mpegts_set_stream_info(AVStream *st, PESContext *pes,
         mpegts_find_stream_type(st, pes->stream_type, MISC_types);
 
     return 0;
-        }
+}
 
 static int64_t get_pts(const uint8_t *p)
 {
@@ -621,7 +621,7 @@ static int64_t get_pts(const uint8_t *p)
     pts |= (AV_RB16(p + 1) >> 1) << 15;
     pts |=  AV_RB16(p + 3) >> 1;
     return pts;
-    }
+}
 
 static void new_pes_packet(PESContext *pes, AVPacket *pkt)
 {

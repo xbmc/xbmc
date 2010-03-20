@@ -155,7 +155,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     || deviceuse == "spdif")
       deviceuse = "plug:" + deviceuse;
 
-      if(deviceuse == "default")
+    if(deviceuse == "default")
       switch(iChannels)
       {
         case 8: deviceuse = "surround71"; break;
@@ -203,7 +203,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
 
   if(nErr < 0 && deviceuse != device)
   {
-    CLog::Log(LOGERROR, "%s - failed to open custom device %s, retry with default %s", __FUNCTION__, deviceuse.c_str(), device.c_str());
+    CLog::Log(LOGERROR, "%s - failed to open custom device %s (error:%s), retry with default %s", __FUNCTION__, deviceuse.c_str(), snd_strerror(nErr), device.c_str());
     if(m_pPlayHandle)
     {
       snd_pcm_close(m_pPlayHandle);
@@ -272,7 +272,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   CHECK_ALSA_RETURN(LOGERROR,"snd_pcm_sw_params",nErr);
 
   snd_pcm_hw_params_free (hw_params);
-  snd_pcm_sw_params_free (sw_params);  
+  snd_pcm_sw_params_free (sw_params);
 
 
   m_bCanPause    = !!snd_pcm_hw_params_can_pause(hw_params);
@@ -338,7 +338,7 @@ bool CALSADirectSound::Pause()
 
   if(m_bCanPause)
   {
-    int nErr = snd_pcm_pause(m_pPlayHandle,1); // this is not supported on all devices.     
+    int nErr = snd_pcm_pause(m_pPlayHandle,1); // this is not supported on all devices.
     CHECK_ALSA(LOGERROR,"pcm_pause",nErr);
     if(nErr<0)
       m_bCanPause = false;
@@ -389,7 +389,7 @@ long CALSADirectSound::GetCurrentVolume() const
 //***********************************************************************************************
 void CALSADirectSound::Mute(bool bMute)
 {
-  if (!m_bIsAllocated) 
+  if (!m_bIsAllocated)
     return;
 
   if (bMute)
@@ -415,7 +415,7 @@ unsigned int CALSADirectSound::GetSpace()
   if (!m_bIsAllocated) return 0;
 
   int nSpace = snd_pcm_avail_update(m_pPlayHandle);
-  if (nSpace == 0) 
+  if (nSpace == 0)
   {
     snd_pcm_state_t state = snd_pcm_state(m_pPlayHandle);
     if(state != SND_PCM_STATE_RUNNING && !m_bPause)
@@ -439,26 +439,26 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   if (!m_bIsAllocated)
   {
     CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no valid play handle!");
-    return len; 
+    return len;
   }
   // if we are paused we don't accept any data as pause doesn't always
   // work, and then playback would start again
   if(m_bPause)
     return 0;
 
-  int framesToWrite; 
+  int framesToWrite;
 
   framesToWrite     = std::min(GetSpace(), (len / m_uiDataChannels) * m_uiChannels);
-  framesToWrite /= m_dwPacketSize;
-  framesToWrite *= m_dwPacketSize;
-  int bytesToWrite = framesToWrite;
+  framesToWrite    /= m_dwPacketSize;
+  framesToWrite    *= m_dwPacketSize;
+  int bytesToWrite  = framesToWrite;
   int inputSamples  = ((framesToWrite / m_uiChannels) * m_uiDataChannels) / 2;
-  framesToWrite  = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
+  framesToWrite     = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
 
   if(framesToWrite == 0)
     return 0;
 
-  // handle volume de-amp 
+  // handle volume de-amp
   if (!m_bPassthrough)
     m_amp.DeAmplify((short *)data, inputSamples);
 
@@ -496,7 +496,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     Flush();
   }
 
-  if (writeResult>0)
+  if (writeResult > 0)
     return writeResult * (m_uiBitsPerSample / 8) * m_uiDataChannels;
 
   return 0;
@@ -505,13 +505,13 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 //***********************************************************************************************
 float CALSADirectSound::GetDelay()
 {
-  if (!m_bIsAllocated) 
+  if (!m_bIsAllocated)
     return 0.0;
 
   snd_pcm_sframes_t frames = 0;
 
   int nErr = snd_pcm_delay(m_pPlayHandle, &frames);
-  CHECK_ALSA(LOGERROR,"snd_pcm_delay",nErr); 
+  CHECK_ALSA(LOGERROR,"snd_pcm_delay",nErr);
   if (nErr < 0)
   {
     frames = 0;
@@ -589,7 +589,7 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
 
   int n_cards = -1;
   int numberCards = 0;
-  while ( snd_card_next( &n_cards ) == 0 && n_cards >= 0 ) 
+  while ( snd_card_next( &n_cards ) == 0 && n_cards >= 0 )
     numberCards++;
 
   if (numberCards <= 1)
@@ -611,10 +611,10 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
         CStdString strReadableCardName = snd_ctl_card_info_get_name( info );
         CStdString strCardName = snd_ctl_card_info_get_id( info );
 
-        if (!passthrough) 
-          GenSoundLabel(vAudioSinks, "default", strCardName, strReadableCardName); 
-        GenSoundLabel(vAudioSinks, "iec958", strCardName, strReadableCardName); 
-        GenSoundLabel(vAudioSinks, "hdmi", strCardName, strReadableCardName); 
+        if (!passthrough)
+          GenSoundLabel(vAudioSinks, "default", strCardName, strReadableCardName);
+        GenSoundLabel(vAudioSinks, "iec958", strCardName, strReadableCardName);
+        GenSoundLabel(vAudioSinks, "hdmi", strCardName, strReadableCardName);
       }
       else
         CLog::Log(LOGERROR,"((ALSAENUM))control hardware info (%i): failed.\n", n_cards );

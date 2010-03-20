@@ -66,7 +66,7 @@ static inline int block_cmp(uint8_t *src, int stride, uint8_t *src2, int stride2
 {
     int sum = 0;
     int i, j;
-    uint8_t histogram[256]={0};
+    uint8_t histogram[256] = {0};
 
     *xored = 0;
     for(j = 0; j < bh; j++){
@@ -79,8 +79,8 @@ static inline int block_cmp(uint8_t *src, int stride, uint8_t *src2, int stride2
         src2 += stride2;
     }
 
-    for(i=1; i<256; i++)
-        sum+= score_tab[histogram[i]];
+    for(i = 1; i < 256; i++)
+        sum += score_tab[histogram[i]];
 
     return sum;
 }

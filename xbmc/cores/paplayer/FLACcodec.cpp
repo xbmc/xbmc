@@ -99,7 +99,7 @@ bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (tag.Read(strFile))
     m_replayGain=tag.GetReplayGain();
 
-  m_Bitrate = (int)((m_file.GetLength() * 8) / (m_TotalTime/1000));
+  m_Bitrate = (int)(((float)m_file.GetLength() * 8) / ((float)m_TotalTime / 1000));
 
   if (m_pBuffer)
   {
@@ -278,7 +278,7 @@ FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__Strea
           break;
         default:
           outptr32[current_sample*frame->header.channels + channel] = buffer[channel][current_sample];
-          break;        
+          break;
       }
     }
   }

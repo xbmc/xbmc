@@ -31,7 +31,7 @@ public:
   virtual ~CGUIWindowWeather(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
+  virtual void FrameMove();
 
 protected:
   virtual void OnInitWindow();
@@ -39,10 +39,10 @@ protected:
   void UpdateButtons();
   void UpdateLocations();
   void SetProperties();
-  void CallPlugin();
+  void CallScript();
 
   void Refresh();
 
   unsigned int m_iCurWeather;
-  CStopWatch m_pluginTimer;
+  CStopWatch m_scriptTimer;
 };

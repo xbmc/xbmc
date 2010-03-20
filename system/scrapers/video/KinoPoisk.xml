@@ -8,7 +8,7 @@
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
-			</RegExp>
+		</RegExp>
 	</GetSettings>
 	<CreateSearchUrl dest="3" SearchStringEncoding="cp1251">
 		<RegExp input="$$1" output="http://www.kinopoisk.ru/index.php?level=7&amp;from=forma&amp;result=adv&amp;m_act%5Bfrom%5D=forma&amp;m_act%5Bwhat%5D=content&amp;m_act%5Bfind%5D=\1&amp;m_act%5Byear%5D=&amp;m_act%5Bcountry%5D=&amp;m_act%5Bgenre%5D=&amp;m_act%5Bcompany%5D=&amp;m_act%5Bmpaa%5D=&amp;m_act%5Bactor%5D=&amp;m_act%5Bcast%5D=&amp;m_act%5Bcontent_find%5D=" dest="3">
@@ -22,7 +22,7 @@
 					<expression clear="yes">/level/19/film/</expression>
 				</RegExp>
 				<RegExp input="$$6" output="&lt;title&gt;\1 " dest="7">
-					<expression trim="1">&lt;title&gt;([^&lt;]+)&lt;/title&gt;</expression>		 
+					<expression trim="1">&lt;title&gt;([^&lt;]+)&lt;/title&gt;</expression>
 				</RegExp>
 				<RegExp input="$$6" output="(\1)&lt;/title&gt;" dest="7+">
 					<expression>&lt;td class=&quot;&quot;&gt;&lt;a href=&quot;/level/10/m_act%5Byear%5D/\d+/&quot;&gt;(\d+)&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</expression>
@@ -37,7 +37,7 @@
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
-	</GetSearchResults>	
+	</GetSearchResults>
 	<GetDetails clearbuffers="no" dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
@@ -76,22 +76,22 @@
 			<RegExp input="$$4" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<RegExp input="$$2" output="\1 " dest="4">
 					<expression repeat="yes">(.*?)&amp;nbsp;</expression>
-				</RegExp> 
+				</RegExp>
 				<RegExp input="$$4" output="\1 -- " dest="4">
 					<expression repeat="yes">(.*?)&amp;mdash;</expression>
-				</RegExp> 
-				<RegExp input="$$4" output="\1- " dest="4">
+				</RegExp>
+				<RegExp input="$$4" output="\1 - " dest="4">
 					<expression repeat="yes">(.*?)&amp;#151;</expression>
-				</RegExp> 
+				</RegExp>
 				<RegExp input="$$4" output="\1&quot;" dest="4">
 					<expression repeat="yes">(.*?)&amp;[lr]aquo;</expression>
-				</RegExp> 
+				</RegExp>
 				<RegExp input="$$4" output="\1..." dest="4">
 					<expression repeat="yes">(.*?)&amp;hellip;</expression>
-				</RegExp> 
+				</RegExp>
 				<RegExp input="$$4" output="\1..." dest="4">
 					<expression repeat="yes">(.*?)&amp;#133;</expression>
-				</RegExp> 
+				</RegExp>
 				<expression trim="1">(.*)\.\.\.</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GMP&quot;&gt;http://www.kinopoisk.ru\1&lt;/url&gt;" dest="5+">
@@ -103,11 +103,11 @@
 			<RegExp conditional="fanart" input="$$4" output="&lt;url cache=&quot;tmdb_\2.html&quot; function=&quot;GetTMDBFanartByIMDBUrl&quot;&gt;http://www.imdb.com/find?s=tt&amp;tyear=\1&amp;q=\2&lt;/url&gt;" dest="5+">
 				<RegExp input="$$1" output="\9:::\1.\2.\3.\4.\5.\6.\7.\8" dest="4">
 					<expression>&lt;span style="color: #666; font-size: 13px"&gt;([^&lt;\s]+)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)\s*([^&lt;\s]*)&lt;/span&gt;.+&lt;td class=&quot;&quot;&gt;&lt;a href=&quot;/level/10/m_act%5Byear%5D/\d+/&quot;&gt;(\d+)&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</expression>
-			</RegExp>
+				</RegExp>
 				<expression>(\d+):::(.+)</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
-				</RegExp>
+		</RegExp>
 	</GetDetails>
 	<GMF dest="10">
 		<RegExp input="$$9" output="&lt;details&gt;&lt;fanart&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="10">
@@ -115,7 +115,7 @@
 				<expression repeat="yes" noclean="1">&lt;a href=&quot;(/picture/\d+/)&quot; target=&quot;_blank&quot;&gt;&lt;img hspace=6 src='/images/new_win.gif'</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
-			</RegExp>
+		</RegExp>
 	</GMF>
 	<GMFF clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;thumb&gt;http://www.kinopoisk.ru\1&lt;/thumb&gt;" dest="5">
@@ -128,7 +128,7 @@
 				<expression repeat="yes" noclean="1">&lt;img src='/images/wallpaper/sm_\d+.jpg' width=\d+ height=\d+ style='border:5px solid #ccc' vspace=5 alt=&quot;[^"]*&quot;&gt;\s+&lt;br&gt;&lt;a href=&quot;(/picture/[^"]+)&quot; class=all&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
-			</RegExp>
+		</RegExp>
 	</GMFR>
 	<GMFFR clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;thumb&gt;http://www.kinopoisk.ru\1&lt;/thumb&gt;" dest="6+">
@@ -144,7 +144,7 @@
 				<expression repeat="yes" noclean="1">&lt;a href="([^"]+)"&gt;&lt;img  src="/images/poster/sm_\d+.jpg" width="\d+" height="\d+" alt="</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
-			</RegExp>
+		</RegExp>
 	</GMP>
 	<GMPP clearbuffers="no" dest="5">
 		<RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.kinopoisk.ru/images/poster/sm_\2.jpg&quot;&gt;\1-\2.jpg&lt;/thumb&gt;" dest="6+">

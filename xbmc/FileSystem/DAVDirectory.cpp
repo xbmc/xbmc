@@ -40,7 +40,7 @@ CDAVDirectory::~CDAVDirectory(void) {}
  * Return true if pElement value is equal value without namespace.
  *
  * if pElement is <DAV:foo> and value is foo then ValueWithoutNamespace is true
- */ 
+ */
 bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString value)
 {
   CStdStringArray result;
@@ -57,7 +57,7 @@ bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString val
   {
     return false;
   }
-    
+
   StringUtils::SplitString(pElement->Value(), ":", result, 2);
 
   if (result.size() == 1 && result[0] == value)
@@ -72,7 +72,7 @@ bool CDAVDirectory::ValueWithoutNamespace(const TiXmlNode *pNode, CStdString val
   {
     CLog::Log(LOGERROR, "%s - Splitting %s failed, size(): %lu, value: %s", __FUNCTION__, pElement->Value(), (unsigned long int)result.size(), value.c_str());
   }
-    
+
   return false;
 }
 
@@ -83,7 +83,7 @@ CStdString CDAVDirectory::GetStatusTag(const TiXmlElement *pElement)
 {
   const TiXmlElement *pChild;
 
-  for (pChild = pElement->FirstChild()->ToElement(); pChild != 0; pChild = pChild->NextSibling()->ToElement()) 
+  for (pChild = pElement->FirstChild()->ToElement(); pChild != 0; pChild = pChild->NextSibling()->ToElement())
   {
     if (ValueWithoutNamespace(pChild, "status"))
     {
@@ -108,7 +108,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
   const TiXmlNode *pPropChild;
 
   /* Iterate response children elements */
-  for (pResponseChild = pElement->FirstChild(); pResponseChild != 0; pResponseChild = pResponseChild->NextSibling()) 
+  for (pResponseChild = pElement->FirstChild(); pResponseChild != 0; pResponseChild = pResponseChild->NextSibling())
   {
     if (ValueWithoutNamespace(pResponseChild, "href"))
     {
@@ -120,7 +120,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
       if (GetStatusTag(pResponseChild->ToElement()) == "HTTP/1.1 200 OK")
       {
         /* Iterate propstat children elements */
-        for (pPropstatChild = pResponseChild->FirstChild(); pPropstatChild != 0; pPropstatChild = pPropstatChild->NextSibling()) 
+        for (pPropstatChild = pResponseChild->FirstChild(); pPropstatChild != 0; pPropstatChild = pPropstatChild->NextSibling())
         {
           if (ValueWithoutNamespace(pPropstatChild, "prop"))
           {
@@ -160,7 +160,7 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
       }
     }
   }
-  
+
   return true;
 }
 
@@ -200,10 +200,10 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (!strResponse)
   {
     CLog::Log(LOGERROR, "%s - Failed to get any response", __FUNCTION__);
-  } 
+  }
 
   // Iterate over all responses
-  for ( pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling()) 
+  for ( pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
   {
     if (ValueWithoutNamespace(pChild, "response"))
     {
@@ -214,10 +214,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         CURL url2(strPath);
         CURL url3(pItem->m_strPath);
 
-        CStdString strBasePath = url2.GetWithoutFilename();
-        CStdString strFileName = url3.GetFileName();
-        CUtil::RemoveSlashAtEnd(strBasePath);
-        pItem->m_strPath = strBasePath + strFileName;
+        CUtil::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), pItem->m_strPath);
 
         if (pItem->GetLabel().IsEmpty())
         {
@@ -227,18 +224,18 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           pItem->SetLabel(CUtil::GetFileName(name));
         }
 
-        if (pItem->m_bIsFolder && !CUtil::HasSlashAtEnd(pItem->m_strPath))
+        if (pItem->m_bIsFolder)
           CUtil::AddSlashAtEnd(pItem->m_strPath);
-        
+
         // Add back protocol options
         if (!url2.GetProtocolOptions().IsEmpty())
           pItem->m_strPath = pItem->m_strPath + "|" + url2.GetProtocolOptions();
 
         if (!pItem->m_strPath.Equals(strPath))
           items.Add(pItem);
-        }
       }
     }
+  }
 
   dav.Close();
 

@@ -53,6 +53,7 @@ public:
   bool Mounted;
   bool Approved;
   bool HotPlugged;
+  bool HalIgnore;
   CStdString MountPoint;
   CStdString Label;
   CStdString UUID;
@@ -143,7 +144,7 @@ private:
   static CCriticalSection m_lock;
 
   bool m_bMultipleJoysticksSupport;
-  
+
   //Callbacks HAL
   static void DeviceRemoved(LibHalContext *ctx, const char *udi);
   static void DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability);

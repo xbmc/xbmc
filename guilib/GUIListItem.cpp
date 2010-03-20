@@ -234,11 +234,11 @@ void CGUIListItem::Serialize(CArchive &ar)
     ar >> m_strThumbnailImage;
     ar >> m_strIcon;
     ar >> m_bSelected;
-    
+
     int overlayIcon;
     ar >> overlayIcon;
     m_overlayIcon = GUIIconOverlay(overlayIcon);
-    
+
     int mapSize;
     ar >> mapSize;
     for (int i = 0; i < mapSize; i++)

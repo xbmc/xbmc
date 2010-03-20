@@ -8,15 +8,13 @@ endif
 
 CXXFLAGS+=-D__STDC_FORMAT_MACROS \
 
-SRCS=ASAPFileDirectory.cpp \
+SRCS=AddonsDirectory.cpp \
+     ASAPFileDirectory.cpp \
      CacheMemBuffer.cpp \
      CacheStrategy.cpp \
      CDDADirectory.cpp \
      cddb.cpp \
      cdioSupport.cpp \
-     CMythDirectory.cpp \
-     CMythFile.cpp \
-     CMythSession.cpp \
      DAAPDirectory.cpp \
      DAVDirectory.cpp \
      DirectoryCache.cpp \
@@ -30,6 +28,7 @@ SRCS=ASAPFileDirectory.cpp \
      FileCDDA.cpp \
      File.cpp \
      FileCurl.cpp \
+     FileSFTP.cpp \
      FileDAAP.cpp \
      FileFactory.cpp \
      FileFileReader.cpp \
@@ -60,6 +59,9 @@ SRCS=ASAPFileDirectory.cpp \
      MusicDatabaseDirectory.cpp \
      MusicFileDirectory.cpp \
      MusicSearchDirectory.cpp \
+     MythDirectory.cpp \
+     MythFile.cpp \
+     MythSession.cpp \
      NptXbmcFile.cpp \
      NSFFileDirectory.cpp \
      OGGFileDirectory.cpp \
@@ -86,6 +88,7 @@ SRCS=ASAPFileDirectory.cpp \
      VTPSession.cpp \
      VTPFile.cpp \
      ZeroconfDirectory.cpp \
+     SFTPDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
 

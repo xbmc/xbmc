@@ -67,7 +67,7 @@ void CGUIVideoControl::Render()
 }
 
 bool CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
-  {
+{
   if (!g_application.IsPlayingVideo()) return false;
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // switch to fullscreen
@@ -94,4 +94,4 @@ bool CGUIVideoControl::CanFocus() const
 bool CGUIVideoControl::CanFocusFromPoint(const CPoint &point) const
 { // mouse is allowed to focus this control, but it doesn't actually receive focus
   return IsVisible() && HitTest(point);
-  }
+}

@@ -71,8 +71,20 @@ public:
   void Render(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, bool solid = false);
   void RenderScrolling(float x, float y, float angle, color_t color, color_t shadowColor, uint32_t alignment, float maxWidth, CScrollInfo &scrollInfo);
   void RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t outlineWidth, uint32_t alignment, float maxWidth);
+
+  /*! \brief Returns the precalculated width and height of the text to be rendered (in constant time).
+   \param width [out] width of text
+   \param height [out] height of text
+   \sa GetTextWidth, CalcTextExtent
+   */
   void GetTextExtent(float &width, float &height) const;
+  
+  /*! \brief Returns the precalculated width of the text to be rendered (in constant time).
+   \return width of text
+   \sa GetTextExtent, CalcTextExtent
+   */
   float GetTextWidth() const { return m_textWidth; };
+  
   float GetTextWidth(const CStdStringW &text) const;
   bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
   void SetText(const CStdStringW &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
@@ -96,7 +108,7 @@ protected:
   void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
   CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
-  
+
   // our text to render
   vecColors m_colors;
   std::vector<CGUIString> m_lines;

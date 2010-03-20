@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <id>com.getlib.scraper</id>
+  <type>scraper</type>
+  <title>Getlib</title>
+  <library>getlib.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>Getlib Movie Scraper</summary>
+  <description>Download Movie information from www.getlib.com</description>
+  <author>TAXIGPS</author>
+  <dependencies>
+    <dependency minversion="1.0.0" maxversion="">org.themoviedb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">com.movieposterdb.scraper.common</dependency>
+  </dependencies>
+  <supportedcontent>
+    <content>movies</content>
+  </supportedcontent>
+</addoninfo>

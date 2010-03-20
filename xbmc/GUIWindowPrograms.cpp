@@ -204,7 +204,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
         CStdString strLaunch = g_localizeStrings.Get(518); // Launch
         buttons.Add(CONTEXT_BUTTON_LAUNCH, strLaunch);
 
-        if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+        if (g_passwordManager.IsMasterLockUnlocked(false) || g_settings.GetCurrentProfile().canWriteDatabases())
         {
           if (item->IsShortCut())
             buttons.Add(CONTEXT_BUTTON_RENAME, 16105); // rename
@@ -309,11 +309,11 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     return false;
   }
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();
 #endif
-  
+
   if (pItem->m_bIsFolder) return false;
 
   return false;

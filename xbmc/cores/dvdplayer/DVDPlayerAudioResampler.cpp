@@ -32,13 +32,13 @@ CDVDPlayerResampler::CDVDPlayerResampler()
   m_converterdata.src_ratio = 1.0;
   m_quality = SRC_LINEAR;
   m_ratio = 1.0;
-  
+
   m_buffer = NULL;
   m_ptsbuffer = NULL;
   m_buffersize = 0;
   m_bufferfill = 0;
 }
-  
+
 CDVDPlayerResampler::~CDVDPlayerResampler()
 {
   Clean();
@@ -48,17 +48,17 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
 {
   //check if nr of channels changed so we can allocate new buffers if necessary
   CheckResampleBuffers(audioframe.channels);
-  
+
   //value to divide samples by to get them into -1.0:1.0 range
-  float scale = (float)(1 << (audioframe.bits_per_sample - 1)); 
+  float scale = (float)(1 << (audioframe.bits_per_sample - 1));
   int   nrframes = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
-  
+
   //resize sample buffer if necessary
   //we want the buffer to be large enough to hold the current frames in it,
   //the number of frames needed for libsamplerate's input
   //and the maximum number of frames libsamplerate might generate, times 2 for safety
   ResizeSampleBuffer(m_bufferfill + nrframes + nrframes * MathUtils::round_int(m_ratio + 0.5) * 2);
-  
+
   //assign samplebuffers
   m_converterdata.input_frames = nrframes;
   m_converterdata.output_frames = m_buffersize - m_bufferfill - m_converterdata.input_frames;
@@ -66,19 +66,19 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   m_converterdata.data_out = m_buffer + m_bufferfill * m_nrchannels;
   //intput buffer is a block of data at the end of the buffer
   m_converterdata.data_in = m_converterdata.data_out + m_converterdata.output_frames * m_nrchannels;
-  
+
   //add samples to the resample input buffer
   int16_t* inputptr  = (int16_t*)audioframe.data;
   float*   outputptr = m_converterdata.data_in;
-  
+
   for (int i = 0; i < nrframes * m_nrchannels; i++)
     *outputptr++ = (float)*inputptr++ / scale;
-  
+
   //resample
   m_converterdata.src_ratio = m_ratio;
   src_set_ratio(m_converter, m_ratio);
   src_process(m_converter, &m_converterdata);
-  
+
   //calculate a pts for each sample
   for (int i = 0; i < m_converterdata.output_frames_gen; i++)
   {
@@ -91,33 +91,33 @@ bool CDVDPlayerResampler::Retrieve(DVDAudioFrame &audioframe, double &pts)
 {
   //check if nr of channels changed so we can allocate new buffers if necessary
   CheckResampleBuffers(audioframe.channels);
-  
+
   //value to divide samples by to get them into -1.0:1.0 range
-  float scale = (float)(1 << (audioframe.bits_per_sample - 1)); 
+  float scale = (float)(1 << (audioframe.bits_per_sample - 1));
   int   nrframes = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
-  
+
   //if we don't have enough in the samplebuffer, return false
   if (nrframes > m_bufferfill)
   {
     return false;
   }
-  
+
   //use the pts of the first fresh value in the samplebuffer
   pts = m_ptsbuffer[0];
-  
+
   //add from samplebuffer to audioframe
   float*   inputptr  = m_buffer;
   int16_t* outputptr = (int16_t*)audioframe.data;
 
   for (int i = 0; i < nrframes * m_nrchannels; i++)
     *outputptr++ = MathUtils::round_int(Clamp(*inputptr++ * scale, scale * -1.0f, scale - 1.0f));
-  
+
   m_bufferfill -= nrframes;
-  
+
   //shift old data to the beginning of the buffer
   memmove(m_buffer, m_buffer + (nrframes * m_nrchannels), m_bufferfill * m_nrchannels * sizeof(float));
   memmove(m_ptsbuffer, m_ptsbuffer + nrframes, m_bufferfill * sizeof(double));
-  
+
   return true;
 }
 
@@ -127,7 +127,7 @@ void CDVDPlayerResampler::CheckResampleBuffers(int channels)
   if (channels != m_nrchannels)
   {
     Clean();
-    
+
     m_nrchannels = channels;
     m_converter = src_new(m_quality, m_nrchannels, &error);
   }
@@ -165,15 +165,15 @@ void CDVDPlayerResampler::Clean()
 {
   if (m_converter) src_delete(m_converter);
   m_converter = NULL;
-    
+
   free(m_buffer);
   m_buffer = NULL;
   free(m_ptsbuffer);
   m_ptsbuffer = NULL;
-  
+
   m_bufferfill = 0;
   m_buffersize = 0;
-  
+
   m_nrchannels = -1;
   m_converterdata.end_of_input = 0;
   m_converterdata.src_ratio = 1.0;

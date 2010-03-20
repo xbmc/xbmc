@@ -80,7 +80,7 @@ bool SPCCodec::Init(const CStdString &strFile, unsigned int filecache)
     XFILE::CFile::Delete(m_loader_name);
     return false;
   }
-    
+
   if (!m_loader->Load())
   {
     delete m_loader;

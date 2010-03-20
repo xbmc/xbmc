@@ -85,21 +85,21 @@ void CGUIMoverControl::Render()
 
 bool CGUIMoverControl::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
     SendWindowMessage(message);
     return true;
   }
-  if (action.actionId == ACTION_ANALOG_MOVE)
+  if (action.GetID() == ACTION_ANALOG_MOVE)
   {
     //  if (m_dwAllowedDirections == ALLOWED_DIRECTIONS_UPDOWN)
-    //   Move(0, (int)(-m_fAnalogSpeed*action.amount2));
+    //   Move(0, (int)(-m_fAnalogSpeed*action.GetAmount(1)));
     //  else if (m_dwAllowedDirections == ALLOWED_DIRECTIONS_LEFTRIGHT)
-    //   Move((int)(m_fAnalogSpeed*action.amount1), 0);
+    //   Move((int)(m_fAnalogSpeed*action.GetAmount()), 0);
     //  else // ALLOWED_DIRECTIONS_ALL
-    Move((int)(m_fAnalogSpeed*action.amount1), (int)( -m_fAnalogSpeed*action.amount2));
+    Move((int)(m_fAnalogSpeed*action.GetAmount()), (int)( -m_fAnalogSpeed*action.GetAmount(1)));
     return true;
   }
   // base class
@@ -142,15 +142,15 @@ bool CGUIMoverControl::OnMouseEvent(const CPoint &point, const CMouseEvent &even
     { // grab exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
       SendWindowMessage(msg);
-}
+    }
     else if (event.m_state == 3)
     { // release exclusive access
       CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
       SendWindowMessage(msg);
     }
     Move((int)event.m_offsetX, (int)event.m_offsetY);
-  return true;
-}
+    return true;
+  }
   return false;
 }
 

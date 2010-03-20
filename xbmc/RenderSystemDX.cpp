@@ -160,7 +160,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 
   OnDeviceLost();
   OnDeviceReset();
-  
+
   return true;
 }
 
@@ -171,24 +171,25 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.Windowed					= useWindow;
   m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
   m_D3DPP.BackBufferCount			= 1;
-  m_D3DPP.EnableAutoDepthStencil	= true;
+  m_D3DPP.EnableAutoDepthStencil	= TRUE;
   m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
   m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER | D3DPRESENTFLAG_VIDEO;
+  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
   m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
   m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
   m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
+
   // Try to create a 32-bit depth, 8-bit stencil
   if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
-    D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
+    D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL,
     D3DRTYPE_SURFACE, D3DFMT_D24S8 )))
   {
-    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer 
+    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
     if( FAILED( m_pD3D->CheckDeviceFormat(m_adapter,
-      D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL, 
+      D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL,
       D3DRTYPE_SURFACE, D3DFMT_D32 )))
     {
       // Jeez, what a naff card. Fall back on 16-bit depth buffering
@@ -202,10 +203,10 @@ void CRenderSystemDX::BuildPresentParameters()
     if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_adapter, D3DDEVTYPE_HAL,
       m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat, D3DFMT_D24S8 ) ) )
     {
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24S8; 
-    } 
-    else 
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8; 
+      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24S8;
+    }
+    else
+      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8;
   }
 }
 
@@ -382,10 +383,9 @@ bool CRenderSystemDX::PresentRenderImpl()
   }
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
-  if( hr == D3DERR_DEVICELOST)
+  if( D3DERR_DEVICELOST == hr )
   {
-    //log spamming
-    //CLog::Log(LOGDEBUG, "%s - lost device", __FUNCTION__);
+    CLog::Log(LOGDEBUG, "%s - lost device", __FUNCTION__);
     return false;
   }
 
@@ -406,8 +406,8 @@ bool CRenderSystemDX::BeginRender()
   DWORD oldStatus = m_nDeviceStatus;
   if( FAILED( m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel() ) )
   {
-    // The device has been lost but cannot be reset at this time. 
-    // Therefore, rendering is not possible and we'll have to return 
+    // The device has been lost but cannot be reset at this time.
+    // Therefore, rendering is not possible and we'll have to return
     // and try again at a later time.
     if( m_nDeviceStatus == D3DERR_DEVICELOST )
     {
@@ -417,7 +417,7 @@ bool CRenderSystemDX::BeginRender()
       return false;
     }
 
-    // The device has been lost but it can be reset at this time. 
+    // The device has been lost but it can be reset at this time.
     if( m_nDeviceStatus == D3DERR_DEVICENOTRESET )
     {
       OnDeviceReset();
@@ -468,12 +468,12 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
   if (!m_bRenderCreated)
     return false;
 
-  if( FAILED( hr = m_pD3DDevice->Clear( 
-    0, 
-    NULL, 
+  if( FAILED( hr = m_pD3DDevice->Clear(
+    0,
+    NULL,
     D3DCLEAR_TARGET,
-    color, 
-    1.0, 
+    color,
+    1.0,
     0 ) ) )
     return false;
 
@@ -487,7 +487,7 @@ bool CRenderSystemDX::ClearBuffers(float r, float g, float b, float a)
 
   D3DXCOLOR color(r, g, b, a);
 
-  return ClearBuffers((DWORD)color); 
+  return ClearBuffers((DWORD)color);
 }
 
 bool CRenderSystemDX::IsExtSupported(const char* extension)
@@ -499,9 +499,9 @@ bool CRenderSystemDX::PresentRender()
 {
   if (!m_bRenderCreated)
     return false;
-  
+
   bool result = PresentRenderImpl();
- 
+
   return result;
 }
 
@@ -523,7 +523,7 @@ void CRenderSystemDX::CaptureStateBlock()
 {
   if (!m_bRenderCreated)
     return;
-  
+
   SAFE_RELEASE(m_stateBlock);
   m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &m_stateBlock);
 }
@@ -532,13 +532,13 @@ void CRenderSystemDX::ApplyStateBlock()
 {
   if (!m_bRenderCreated)
     return;
-  
+
   if (m_stateBlock)
     m_stateBlock->Apply();
 }
 
 void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
-{ 
+{
   if (!m_bRenderCreated)
     return;
 
@@ -637,7 +637,7 @@ bool CRenderSystemDX::TestRender()
 }
 
 void CRenderSystemDX::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
-{ 
+{
   if (!m_bRenderCreated)
     return;
 }

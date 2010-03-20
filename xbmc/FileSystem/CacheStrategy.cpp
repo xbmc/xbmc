@@ -164,7 +164,7 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
     return m_bEndOfInput?CACHE_RC_EOF : CACHE_RC_WOULD_BLOCK;
   }
 
-  if (iMaxSize > iAvailable)
+  if (iMaxSize > (size_t)iAvailable)
     iMaxSize = (size_t)iAvailable;
 
   DWORD iRead = 0;

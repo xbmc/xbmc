@@ -432,6 +432,11 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       m_decode.Release();
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
+    {
+      if(m_started)
+        m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_AUDIO));
+    }
     else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
     {
       CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_EOF");
@@ -504,7 +509,7 @@ void CDVDPlayerAudio::Process()
 
     if( result & DECODE_FLAG_TIMEOUT )
     {
-        m_stalled = true;
+      m_stalled = true;
       continue;
     }
 
@@ -552,7 +557,7 @@ void CDVDPlayerAudio::Process()
       m_droptime = 0.0;
 
       SetSyncType(audioframe.passthrough);
-      
+
       // add any packets play
       packetadded = OutputPacket(audioframe);
 
@@ -567,7 +572,7 @@ void CDVDPlayerAudio::Process()
       if(m_speed == DVD_PLAYSPEED_PAUSE)
         m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, 0);
       else
-      m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
+        m_ptsOutput.Add(audioframe.pts, m_dvdAudio.GetDelay() - audioframe.duration, audioframe.duration);
     }
 
     // signal to our parent that we have initialized
@@ -782,7 +787,7 @@ void CDVDPlayerAudio::WaitForBuffers()
   double delay = m_dvdAudio.GetCacheTime();
   if(delay > 0.5)
     Sleep((int)(1000 * (delay - 0.5)));
-  }
+}
 
 string CDVDPlayerAudio::GetPlayerInfo()
 {
@@ -796,7 +801,7 @@ int CDVDPlayerAudio::GetAudioBitrate()
 {
   return (int)m_audioStats.GetBitrate();
 }
-  
+
 bool CDVDPlayerAudio::IsPassthrough() const
 {
   return m_pAudioCodec && m_pAudioCodec->NeedPassthrough();

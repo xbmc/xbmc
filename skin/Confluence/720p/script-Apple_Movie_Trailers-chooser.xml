@@ -142,9 +142,9 @@
 					<height>30</height>
 					<align>right</align>
 					<aligny>center</aligny>
-					<textcolor>blue</textcolor>
+					<textcolor>grey</textcolor>
 					<font>font12</font>
-					<label>($INFO[Container(503).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(503).CurrentPage]/$INFO[Container(503).NumPages])</label>
+					<label>([COLOR=blue]$INFO[Container(503).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(503).CurrentPage]/$INFO[Container(503).NumPages][/COLOR])</label>
 					<visible>Control.IsVisible(503)</visible>
 				</control>
 				<!-- ** Required ** Do not change <id> or <type> -->
@@ -217,9 +217,9 @@
 					<height>30</height>
 					<align>right</align>
 					<aligny>center</aligny>
-					<textcolor>blue</textcolor>
+					<textcolor>grey</textcolor>
 					<font>font12</font>
-					<label>($INFO[Container(504).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(504).CurrentPage]/$INFO[Container(504).NumPages])</label>
+					<label>([COLOR=blue]$INFO[Container(504).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(504).CurrentPage]/$INFO[Container(504).NumPages][/COLOR])</label>
 					<visible>Control.IsVisible(504)</visible>
 				</control>
 			</control>

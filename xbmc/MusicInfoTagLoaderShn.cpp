@@ -36,12 +36,12 @@ bool CMusicInfoTagLoaderSHN::Load(const CStdString& strFileName, CMusicInfoTag& 
   try
   {
 
-      tag.SetURL(strFileName);
+    tag.SetURL(strFileName);
     tag.SetDuration((long)0); //TODO: Use libavformat to calculate duration.
-      tag.SetLoaded(false);
+    tag.SetLoaded(false);
 
-      return true;
-    }
+    return true;
+  }
   catch (...)
   {
     CLog::Log(LOGERROR, "Tag loader shn: exception in file %s", strFileName.c_str());

@@ -31,9 +31,6 @@
 #include "lib/libPython/XBPython.h"
 #endif
 #include "GUIWindowSlideShow.h"
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#endif
 #include "utils/Builtins.h"
 #include "utils/Network.h"
 #include "utils/log.h"
@@ -57,6 +54,10 @@
 #include "SingleLock.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowDialog.h"
 #include "lib/libPython/xbmcmodule/GUIPythonWindowXMLDialog.h"
+
+#ifdef HAS_HTTPAPI
+#include "lib/libhttpapi/XBMChttp.h"
+#endif
 
 using namespace std;
 
@@ -406,7 +407,7 @@ case TMSG_POWERDOWN:
       g_graphicsContext.ToggleFullScreenRoot();
       g_graphicsContext.Unlock();
       break;
-      
+
     case TMSG_MINIMIZE:
       g_application.Minimize();
       break;
@@ -421,7 +422,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_HTTPAPI:
     {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_HTTPAPI
       if (!m_pXbmcHttp)
       {
         CSectionLoader::Load("LIBHTTP");
@@ -546,14 +547,6 @@ case TMSG_POWERDOWN:
       }
       break;
 
-    case TMSG_GUI_WIN_MANAGER_PROCESS:
-      g_windowManager.Process_Internal(0 != pMsg->dwParam1);
-      break;
-
-    case TMSG_GUI_WIN_MANAGER_RENDER:
-      g_windowManager.Render_Internal();
-      break;
-
     case TMSG_GUI_ACTION:
       {
         if (pMsg->lpVoid)
@@ -587,7 +580,7 @@ case TMSG_POWERDOWN:
         share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
         g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
       }
-      break; 
+      break;
 
     case TMSG_OPTICAL_UNMOUNT:
       {
@@ -596,7 +589,7 @@ case TMSG_POWERDOWN:
         share.strName = share.strPath;
         g_mediaManager.RemoveAutoSource(share);
       }
-      break; 
+      break;
 #endif
   }
 }
@@ -861,19 +854,6 @@ void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::WindowManagerProcess(bool renderOnly)
-{
-  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_PROCESS};
-  tMsg.dwParam1 = (DWORD)renderOnly;
-  SendMessage(tMsg, true);
-}
-
-void CApplicationMessenger::Render()
-{
-  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_RENDER};
-  SendMessage(tMsg, true);
-}
-
 void CApplicationMessenger::SendAction(const CAction &action, int windowID)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTION};
@@ -882,17 +862,17 @@ void CApplicationMessenger::SendAction(const CAction &action, int windowID)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun) 
-{ 
+void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)
+{
   ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT};
   tMsg.strParam = device;
   tMsg.dwParam1 = (DWORD)bautorun;
   SendMessage(tMsg, false);
-} 
- 
-void CApplicationMessenger::OpticalUnMount(CStdString device) 
-{ 
+}
+
+void CApplicationMessenger::OpticalUnMount(CStdString device)
+{
   ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
   tMsg.strParam = device;
   SendMessage(tMsg, false);
-} 
+}

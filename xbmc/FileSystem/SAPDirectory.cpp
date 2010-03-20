@@ -371,11 +371,11 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   session.payload.assign(data, len);
   session.timeout = CTimeUtils::GetTimeMS() + 60*60*1000;
   m_sessions.push_back(session);
-  
+
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
   message.SetStringParam("sap://");
   g_windowManager.SendThreadMessage(message);
-  
+
   return true;
 }
 

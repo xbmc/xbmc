@@ -130,7 +130,7 @@ public:
   CStdString         m_parameter;
 private:
   SEARCH_OPERATOR    TranslateOperator(const char *oper);
-  
+
   CStdString GetVideoResolutionQuery(void);
 };
 

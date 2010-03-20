@@ -258,7 +258,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                                       CProtocolFinder("xbmc-get"),
                                       resource);
 
-                    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetDirectory - resource protocol info '%s'", 
+                    CLog::Log(LOGDEBUG, "CUPnPDirectory::GetDirectory - resource protocol info '%s'",
                         (const char*)(resource.m_ProtocolInfo.ToString()));
 
                     // if it's an item, path is the first url to the item
@@ -286,7 +286,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                             pItem->SetContentType((const char*)resource.m_ProtocolInfo.GetContentType());
                         }
                     } else {
-                        CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'", 
+                        CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'",
                             (const char*)(resource.m_ProtocolInfo.ToString()));
                     }
 

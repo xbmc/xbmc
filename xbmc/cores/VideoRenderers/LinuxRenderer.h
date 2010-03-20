@@ -70,7 +70,7 @@ struct DRAWRECT
   float bottom;
 };
 
-enum EFIELDSYNC  
+enum EFIELDSYNC
 {
   FS_NONE,
   FS_ODD,
@@ -99,7 +99,7 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CLinuxRenderer : public CVideoBaseRenderer
+class CLinuxRenderer : public CBaseRenderer
 {
 public:
   CLinuxRenderer();
@@ -111,8 +111,8 @@ public:
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
-  virtual bool 	       Configure(unsigned int width, 
-				unsigned int height, unsigned int d_width, unsigned int d_height, 
+  virtual bool 	       Configure(unsigned int width,
+				unsigned int height, unsigned int d_width, unsigned int d_height,
 			 	float fps, unsigned flags);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
@@ -126,9 +126,6 @@ public:
   virtual void         OnClose(); // called from main GUI thread
 
   // Feature support
-  virtual bool SupportsBrightness() { return false; }
-  virtual bool SupportsContrast() { return false; }
-  virtual bool SupportsGamma() { return false; }
   virtual bool SupportsMultiPassRendering() { return false; }
 
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
@@ -140,7 +137,7 @@ protected:
   void DeleteOSDTextures(int index);
   void RenderOSD();
 
-  // not really low memory. name is misleading... simply a renderer 
+  // not really low memory. name is misleading... simply a renderer
   void RenderLowMem(DWORD flags);
 
   bool m_bConfigured;
@@ -166,10 +163,10 @@ protected:
 // USE_SDL_OVERLAY - is temporary - just to get the framework going. temporary hack.
 #ifdef USE_SDL_OVERLAY
   SDL_Overlay *m_overlay;
-  SDL_Surface *m_screen;  
+  SDL_Surface *m_screen;
 #else
-  SDL_Surface *m_backbuffer; 
-  SDL_Surface *m_screenbuffer; 
+  SDL_Surface *m_backbuffer;
+  SDL_Surface *m_screenbuffer;
 #endif
 
   // clear colour for "black" bars

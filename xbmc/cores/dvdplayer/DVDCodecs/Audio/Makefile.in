@@ -13,6 +13,7 @@ SRCS=	DVDAudioCodecFFmpeg.cpp \
 	DVDAudioCodecPassthrough.cpp \
         DVDAudioCodecPassthroughFFmpeg.cpp \
 	DVDAudioCodecPcm.cpp \
+	Encoders/DVDAudioEncoderFFmpeg.cpp
 
 LIB=Audio.a
 

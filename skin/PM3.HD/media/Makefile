@@ -94,6 +94,9 @@ IMAGES= \
 	DefaultFolderBack.png \
 	DefaultFolder.png \
 	DefaultHardDisk.png \
+	DefaultIconError.png \
+	DefaultIconInfo.png \
+	DefaultIconWarning.png \
 	DefaultMovies.png \
 	DefaultMusicAlbums.png \
 	DefaultMusicArtists.png \
@@ -148,6 +151,7 @@ IMAGES= \
 	home-playmedia.png \
 	home-power-focus.gif \
 	home-power.png \
+	icon_addons.png \
 	icon_appearence.png \
 	icon_music.png \
 	icon_network.png \

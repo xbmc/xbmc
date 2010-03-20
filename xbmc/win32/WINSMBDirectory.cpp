@@ -295,12 +295,12 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           CURL rooturl(strurl);
           rooturl.SetFileName("");
 
-            if(!rooturl.GetShareName().empty())
-              strName = rooturl.GetShareName();
-            else
-              strName = rooturl.GetHostName();
+          if(!rooturl.GetShareName().empty())
+            strName = rooturl.GetShareName();
+          else
+            strName = rooturl.GetHostName();
 
-            strName.Replace("\\","");
+          strName.Replace("\\","");
           
           CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;

@@ -48,7 +48,7 @@ public:
     Action action;
   };
 
-  bool ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond);
+  bool ReadEditDecisionLists(const CStdString& strMovie, const float fFramesPerSecond, const int iHeight);
   void Clear();
 
   bool HasCut();
@@ -78,7 +78,7 @@ private:
   bool ReadBeyondTV(const CStdString& strMovie);
   bool ReadMythCommBreaks(const CStdString& strMovie, const float fFramesPerSecond);
 
-  bool AddCut(const Cut& NewCut);
+  bool AddCut(Cut& NewCut);
   bool AddSceneMarker(const int64_t sceneMarker);
 
   bool WriteMPlayerEdl();

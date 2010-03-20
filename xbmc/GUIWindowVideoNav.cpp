@@ -36,13 +36,12 @@
 #include "PlayListFactory.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogOK.h"
+#include "addons/AddonManager.h"
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIEditControl.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
@@ -82,17 +81,15 @@ CGUIWindowVideoNav::CGUIWindowVideoNav(void)
   m_vecItems->m_strPath = "?";
   m_bDisplayEmptyDatabaseMessage = false;
   m_thumbLoader.SetObserver(this);
-  m_unfilteredItems = new CFileItemList;
 }
 
 CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 {
-  delete m_unfilteredItems;
 }
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB &&
         m_vecItems->m_strPath == m_startDirectory)
@@ -101,7 +98,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
       return true;
     }
   }
-  if (action.actionId == ACTION_TOGGLE_WATCHED)
+  if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
     if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
@@ -125,7 +122,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-/* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
+      /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
       CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
@@ -270,29 +267,6 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         OnSearch();
       }
-      else if (iControl == CONTROL_BTN_FILTER)
-      {
-        if (GetControl(iControl)->GetControlType() == CGUIControl::GUICONTROL_EDIT)
-        { // filter updated
-          CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTN_FILTER);
-          OnMessage(selected);
-          SetProperty("filter", selected.GetLabel());
-          OnFilterItems();
-          return true;
-        }
-        if (GetProperty("filter").IsEmpty())
-        {
-          CStdString filter(GetProperty("filter"));
-          CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
-          SetProperty("filter", filter);
-        }
-        else
-        {
-          SetProperty("filter", "");
-          OnFilterItems();
-        }
-        return true;
-      }
       else if (iControl == CONTROL_BTNSHOWMODE)
       {
         g_settings.m_iMyVideoWatchMode++;
@@ -335,26 +309,6 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     case GUI_MSG_REFRESH_THUMBS:
     {
       Update(m_vecItems->m_strPath);
-    }
-    break;
-
-  case GUI_MSG_NOTIFY_ALL:
-    {
-      if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
-      {
-        CStdString filter(GetProperty("filter"));
-        if (message.GetParam2() == 1)  // append
-          filter += message.GetStringParam();
-        else if (message.GetParam2() == 2) // delete
-        {
-          if (filter.size())
-            filter.erase(filter.end() - 1);
-        }
-        else
-          filter = message.GetStringParam();
-        SetProperty("filter", filter);
-        OnFilterItems();
-      }
     }
     break;
   }
@@ -549,8 +503,6 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
   }
 
-  // clear the filter
-  SetProperty("filter", "");
   return bResult;
 }
 
@@ -604,11 +556,6 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_settings.m_iMyVideoWatchMode));
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
-
-  // #ifdef HAS_SKIN_VERSION_3
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").IsEmpty());
-  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter"));
-  // #endif
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -827,42 +774,33 @@ void CGUIWindowVideoNav::PlayItem(int iItem)
   CGUIWindowVideoBase::PlayItem(iItem);
 }
 
-void CGUIWindowVideoNav::OnWindowLoaded()
-{
-  SendMessage(GUI_MSG_SET_TYPE, CONTROL_BTN_FILTER, CGUIEditControl::INPUT_TYPE_FILTER);
-  CGUIWindowVideoBase::OnWindowLoaded();
-}
-
 void CGUIWindowVideoNav::DisplayEmptyDatabaseMessage(bool bDisplay)
 {
   m_bDisplayEmptyDatabaseMessage = bDisplay;
 }
 
-void CGUIWindowVideoNav::Render()
+void CGUIWindowVideoNav::FrameMove()
 {
   if (m_bDisplayEmptyDatabaseMessage)
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,g_localizeStrings.Get(745)+'\n'+g_localizeStrings.Get(746));
   else
     SET_CONTROL_LABEL(CONTROL_LABELEMPTY,"");
-  CGUIWindowVideoBase::Render();
+  CGUIWindowVideoBase::FrameMove();
 }
 
-void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const SScraperInfo& info)
+void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
-  SScraperInfo info2(info);
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
-    m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,info2);
-  else if (m_vecItems->IsPlugin())
-    info2.strContent = "plugin";
+    scraper = m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
   else
   {
     CStdString strPath,strFile;
     CUtil::Split(pItem->m_strPath,strPath,strFile);
-    m_database.GetScraperForPath(strPath,info2);
+    scraper = m_database.GetScraperForPath(strPath);
   }
   m_database.Close();
-  CGUIWindowVideoBase::OnInfo(pItem,info2);
+  CGUIWindowVideoBase::OnInfo(pItem,scraper);
 }
 
 bool CGUIWindowVideoNav::CanDelete(const CStdString& strPath)
@@ -1092,107 +1030,6 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
     GoParentFolder();
 }
 
-void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
-{
-  m_unfilteredItems->Append(items);
-
-  CVideoDatabaseDirectory dir;
-  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-
-  bool filter = false;
-  if (node == NODE_TYPE_TITLE_MOVIES
-  ||  node == NODE_TYPE_TITLE_MUSICVIDEOS
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
-  ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-  { // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
-    filter = true;
-  }
-
-  if (filter && !GetProperty("filter").IsEmpty())
-    FilterItems(items);
-}
-
-void CGUIWindowVideoNav::ClearFileItems()
-{
-  m_viewControl.Clear();
-  m_vecItems->Clear();
-  m_unfilteredItems->Clear();
-}
-
-void CGUIWindowVideoNav::OnFilterItems()
-{
-  CStdString currentItem;
-  int item = m_viewControl.GetSelectedItem();
-  if (item >= 0)
-    currentItem = m_vecItems->Get(item)->m_strPath;
-
-  m_viewControl.Clear();
-
-  FilterItems(*m_vecItems);
-
-  // and update our view control + buttons
-  m_viewControl.SetItems(*m_vecItems);
-  m_viewControl.SetSelectedItem(currentItem);
-  UpdateButtons();
-}
-
-void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
-{
-  CVideoDatabaseDirectory dir;
-  CQueryParams params;
-  dir.GetQueryParams(items.m_strPath,params);
-
-  NODE_TYPE node = dir.GetDirectoryChildType(items.m_strPath);
-  // todo: why aren't we filtering every view consistently?
-  if (m_vecItems->IsVirtualDirectoryRoot() ||
-      node == NODE_TYPE_MOVIES_OVERVIEW    ||
-      node == NODE_TYPE_TVSHOWS_OVERVIEW   ||
-      node == NODE_TYPE_MUSICVIDEOS_OVERVIEW)
-  {
-    return;
-  }
-
-  CStdString filter(GetProperty("filter"));
-  filter.TrimLeft().ToLower();
-  bool numericMatch = StringUtils::IsNaturalNumber(filter);
-
-  items.ClearItems(); // clear the items only - we want to keep content etc.
-  items.SetFastLookup(true);
-  for (int i = 0; i < m_unfilteredItems->Size(); i++)
-  {
-    CFileItemPtr item = m_unfilteredItems->Get(i);
-    if (item->IsParentFolder() || filter.IsEmpty())
-    {
-      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES  && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
-        items.Add(item);
-      continue;
-    }
-    // TODO: Need to update this to get all labels, ideally out of the displayed info (ie from m_layout and m_focusedLayout)
-    // though that isn't practical.  Perhaps a better idea would be to just grab the info that we should filter on based on
-    // where we are in the library tree.
-    // Another idea is tying the filter string to the current level of the tree, so that going deeper disables the filter,
-    // but it's re-enabled on the way back out.
-    CStdString match;
-/*    if (item->GetFocusedLayout())
-      match = item->GetFocusedLayout()->GetAllText();
-    else if (item->GetLayout())
-      match = item->GetLayout()->GetAllText();
-    else*/
-    match = item->GetLabel(); // Filter label only for now
-
-    if (numericMatch)
-      StringUtils::WordToDigits(match);
-
-    size_t pos = StringUtils::FindWords(match.c_str(), filter.c_str());
-    if (pos != CStdString::npos)
-    {
-      if ((params.GetContentType() != VIDEODB_CONTENT_MOVIES && params.GetContentType() != VIDEODB_CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
-        items.Add(item);
-    }
-  }
-  items.SetFastLookup(false);
-}
-
 void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CFileItemPtr item;
@@ -1217,13 +1054,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   else
   {
-    SScraperInfo info;
+    ADDON::ScraperPtr info;
     VIDEO::SScanSettings settings;
     GetScraperForItem(item.get(), info, settings);
 
-    if (info.strContent.Equals("tvshows"))
+    if (info && info->Content() == CONTENT_TVSHOWS)
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
-    else if (info.strContent.Equals("musicvideos"))
+    else if (info && info->Content() == CONTENT_MUSICVIDEOS)
       buttons.Add(CONTEXT_BUTTON_INFO,20393);
     else if (!item->m_bIsFolder && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
       buttons.Add(CONTEXT_BUTTON_INFO, 13346);
@@ -1258,7 +1095,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (!item->IsParentFolder())
     {
       // can we update the database?
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+      if (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
         if (node == NODE_TYPE_TITLE_TVSHOWS)
         {
@@ -1268,7 +1105,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
         }
-        if ((info.strContent.Equals("tvshows") && item->m_bIsFolder) ||
+        if ((info && info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder) ||
             (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
           if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
@@ -1310,7 +1147,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (item->IsVideoDb() && item->HasVideoInfoTag() &&
           (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
         {
-          if (info.strContent.Equals("tvshows"))
+          if (info && info->Content() == CONTENT_TVSHOWS)
           {
             if(item->GetVideoInfoTag()->m_iBookmarkId != -1 &&
                item->GetVideoInfoTag()->m_iBookmarkId != 0)
@@ -1603,9 +1440,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
-      SScraperInfo info;
       VIDEO::SScanSettings settings;
-      OnScan("",info,settings);
+      OnScan("",ADDON::ScraperPtr(),settings);
       return true;
     }
   case CONTEXT_BUTTON_UNLINK_MOVIE:

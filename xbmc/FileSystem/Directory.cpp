@@ -180,7 +180,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       }
       else
       {
-      items.m_strPath = strPath;
+        items.m_strPath = strPath;
         result = pDirectory->GetDirectory(strPath, items);
       }
 

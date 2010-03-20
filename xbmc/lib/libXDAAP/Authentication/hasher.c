@@ -175,8 +175,8 @@ static void GenerateStatic_45()
 }
 
 void GenerateHash(short version_major,
-                  const unsigned char *url, unsigned char hashSelect,
-                  unsigned char *outhash,
+                  const char *url, char hashSelect,
+                  char *outhash,
                   int request_id)
 {
     unsigned char buf[16];

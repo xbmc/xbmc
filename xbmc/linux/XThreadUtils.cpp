@@ -77,25 +77,6 @@ HANDLE WINAPI CreateThread(
   }
   pthread_attr_destroy(&attr);
 
-#ifdef __APPLE__
-  // we've now created the thread and started it
-  // now set the priority of the thread to the nominated priority and make the thread fixed
-  int32_t result;
-  thread_extended_policy_data_t theFixedPolicy;
-
-  // make thread fixed, set to TRUE for a non-fixed thread
-  theFixedPolicy.timeshare = FALSE;
-  result = thread_policy_set(pthread_mach_thread_np(h->m_hThread), THREAD_EXTENDED_POLICY, 
-    (thread_policy_t)&theFixedPolicy, THREAD_EXTENDED_POLICY_COUNT);
-
-  int policy;
-  struct sched_param param;
-  result = pthread_getschedparam(h->m_hThread, &policy, &param );
-  // change from default SCHED_OTHER to SCHED_RR
-  policy = SCHED_RR;
-  result = pthread_setschedparam(h->m_hThread, policy, &param );
-#endif
-
   if (h && lpThreadId)
     // WARNING: This can truncate thread IDs on x86_64.
     *lpThreadId = (DWORD)h->m_hThread;
@@ -176,10 +157,10 @@ BOOL WINAPI GetThreadTimes (
 #ifdef __APPLE__
   thread_info_data_t     threadInfo;
   mach_msg_type_number_t threadInfoCount = THREAD_INFO_MAX;
-  
+
   if (hThread->m_machThreadPort == MACH_PORT_NULL)
     hThread->m_machThreadPort = pthread_mach_thread_np(hThread->m_hThread);
-    
+
   kern_return_t ret = thread_info(hThread->m_machThreadPort, THREAD_BASIC_INFO, (thread_info_t)threadInfo, &threadInfoCount);
   if (ret == KERN_SUCCESS)
   {
@@ -233,39 +214,12 @@ BOOL WINAPI GetThreadTimes (
 
 BOOL WINAPI SetThreadPriority(HANDLE hThread, int nPriority)
 {
-#if defined(__APPLE__)
-  struct sched_param sched;
-  int rtn, policy;
-  
-  rtn = pthread_getschedparam(hThread->m_hThread, &policy, &sched);
-  int min = sched_get_priority_min(policy);
-  int max = sched_get_priority_max(policy);
-
-  if(nPriority < min)
-    sched.sched_priority = min;
-  if(nPriority > max)
-    sched.sched_priority = max;
-
-  rtn = pthread_setschedparam(hThread->m_hThread, policy, &sched);
-  
   return true;
-#else
-  return true;
-#endif
 }
 
 int GetThreadPriority(HANDLE hThread)
 {
-#if defined(__APPLE__)
-  struct sched_param sched;
-  int rtn, policy;
-  
-  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
-  
-  return(sched.sched_priority);
-#else
   return 0;
-#endif
 }
 
 // thread local storage -

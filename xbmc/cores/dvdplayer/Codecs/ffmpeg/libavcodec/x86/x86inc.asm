@@ -53,7 +53,7 @@
 ; in memory) must use an address mode that does fit.
 ; So all accesses to global variables must use this macro, e.g.
 ;     mov eax, [foo GLOBAL]
-;   instead of
+; instead of
 ;     mov eax, [foo]
 ;
 ; x86_32 doesn't require PIC.

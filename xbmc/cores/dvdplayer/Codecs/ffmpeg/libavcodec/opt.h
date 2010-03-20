@@ -94,7 +94,7 @@ typedef struct AVOption {
 typedef struct AVOption2 {
     const char *name;
 
-/**
+    /**
      * short English help text
      * @todo What about other languages?
      */

@@ -711,14 +711,18 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
                     , m_device.Data2
                     , m_device.Data3);
 
-
-  D3DFORMAT output = D3DFMT_X8R8G8B8;
+  D3DFORMAT output = m_desc.Format;
+  if(FAILED(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process)))
+  {
+    CLog::Log(LOGDEBUG, "DXVA - unable to use source format, use RGB output instead\n");
+    output = D3DFMT_X8R8G8B8;
+    CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process));
+  }
 
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Brightness, &m_brightness));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Contrast  , &m_contrast));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Hue       , &m_hue));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Saturation, &m_saturation));
-  CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process));
 
   m_time = 0;
   return true;

@@ -127,12 +127,12 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     int item;
 
     // the non-contextual menu can be called at any time
-    if (action.actionId == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
+    if (action.GetID() == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
     {
       OnPopupMenu(list,-1, false);
       return true;
     }
-    if (action.actionId == ACTION_DELETE_ITEM)
+    if (action.GetID() == ACTION_DELETE_ITEM)
     {
       if (CanDelete(list))
       {
@@ -142,7 +142,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_COPY_ITEM)
+    if (action.GetID() == ACTION_COPY_ITEM)
     {
       if (CanCopy(list))
       {
@@ -152,7 +152,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_MOVE_ITEM)
+    if (action.GetID() == ACTION_MOVE_ITEM)
     {
       if (CanMove(list))
       {
@@ -162,7 +162,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_RENAME_ITEM)
+    if (action.GetID() == ACTION_RENAME_ITEM)
     {
       if (CanRename(list))
       {
@@ -172,7 +172,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.actionId == ACTION_PARENT_DIR)
+    if (action.GetID() == ACTION_PARENT_DIR)
     {
       if (m_vecItems[list]->IsVirtualDirectoryRoot())
         g_windowManager.PreviousWindow();
@@ -180,15 +180,15 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
         GoParentFolder(list);
       return true;
     }
-    if (action.actionId == ACTION_PLAYER_PLAY)
+    if (action.GetID() == ACTION_PLAYER_PLAY)
     {
 #ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
         return MEDIA_DETECT::CAutorun::PlayDisc();
-#endif      
+#endif
     }
   }
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
@@ -487,7 +487,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->m_bIsShareOrDrive = false;
     m_vecItems[iList]->AddFront(pItem, 0);
   }
-  
+
   m_strParentPath[iList] = strParentPath;
 
   if (strDirectory.IsEmpty())
@@ -834,11 +834,6 @@ void CGUIWindowFileManager::GoParentFolder(int iList)
   Update(iList, strPath);
 }
 
-void CGUIWindowFileManager::Render()
-{
-  CGUIWindow::Render();
-}
-
 bool CGUIWindowFileManager::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
 {
   if (m_dlgProgress)
@@ -898,7 +893,7 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
 bool CGUIWindowFileManager::GetDirectory(int iList, const CStdString &strDirectory, CFileItemList &items)
 {
   return m_rootDir.GetDirectory(strDirectory,items,false);
-  }
+}
 
 bool CGUIWindowFileManager::CanRename(int iList)
 {
@@ -1185,12 +1180,12 @@ void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob
 
   if(!success)
     CGUIDialogOK::ShowAndGetInput(m_errorHeading, m_errorLine, 16200, 0);
-  }
+}
 
 void CGUIWindowFileManager::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
-  {
-  if (m_dlgProgress->IsCanceled())
 {
+  if (m_dlgProgress->IsCanceled())
+  {
     CJobManager::GetInstance().CancelJob(jobID);
     m_dlgProgress->SetLine(0, 1040);
     m_dlgProgress->SetLine(1, "");
@@ -1209,7 +1204,7 @@ void CGUIWindowFileManager::OnJobProgress(unsigned int jobID, unsigned int progr
     if (total > 0)
       m_dlgProgress->SetPercentage((int)((float)progress * 100.0f / (float)total));
   }
-  }
+}
 
 void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 {

@@ -145,6 +145,8 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
 
   m_D3DVideoTexture = videoTexture;
   m_D3DMemorySurface = videoSurface;
+
+  CLog::Log(LOGDEBUG, "%s %d", __FUNCTION__, m_D3DVideoTexture.GetReferenceCount());
 }
 
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
@@ -158,6 +160,8 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 
   if (!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
     return;
+
+  CLog::Log(LOGDEBUG, "%d", m_D3DVideoTexture.GetReferenceCount());
 
   float w = (float)desc.Width;
   float h = (float)desc.Height;
@@ -223,6 +227,12 @@ bool CWinDsRenderer::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LINEAR)
     return true;
 
+  return false;
+}
+
+bool CWinDsRenderer::Supports( ERENDERFEATURE method )
+{
+  //TODO: Implement that
   return false;
 }
 

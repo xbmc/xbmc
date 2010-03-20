@@ -34,6 +34,7 @@ public:
   static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue);
   static bool GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
+  static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double &value);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
   static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
   static bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
@@ -44,6 +45,7 @@ public:
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);
 
   static void SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
+  static void SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strSeparator, const CStdString& strValue);
   static void SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
   static void SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);

@@ -160,7 +160,7 @@ void CGUIControl::Render()
 
 bool CGUIControl::OnAction(const CAction &action)
 {
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_MOVE_DOWN:
     if (!HasFocus()) return false;
@@ -185,13 +185,13 @@ bool CGUIControl::OnAction(const CAction &action)
     OnRight();
     return true;
     break;
-    
+
   case ACTION_NEXT_CONTROL:
       if (!HasFocus()) return false;
       OnNextControl();
       return true;
       break;
-      
+
   case ACTION_PREV_CONTROL:
       if (!HasFocus()) return false;
       OnPrevControl();
@@ -520,7 +520,7 @@ bool CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
   bool handled = OnMouseOver(childPoint);
   if (OnMouseEvent(childPoint, event))
     return true;
-  return handled && !event.m_id;
+  return handled && (event.m_id == ACTION_MOUSE_MOVE);
 }
 
 // override this function to implement custom mouse behaviour
@@ -828,7 +828,7 @@ int CGUIControl::GetNextControl(int direction) const
 bool CGUIControl::CanFocusFromPoint(const CPoint &point) const
 {
   return CanFocus() && HitTest(point);
-  }
+}
 
 void CGUIControl::UnfocusFromPoint(const CPoint &point)
 {

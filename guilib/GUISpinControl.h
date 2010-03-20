@@ -31,7 +31,7 @@
 
 #include "GUIControl.h"
 #include "GUITexture.h"
-#include "GUITextLayout.h"
+#include "GUILabel.h"
 
 #define SPIN_CONTROL_TYPE_INT    1
 #define SPIN_CONTROL_TYPE_FLOAT  2
@@ -74,7 +74,7 @@ public:
   void SetReverse(bool bOnOff);
   int GetMaximum() const;
   int GetMinimum() const;
-  void SetSpinAlign(uint32_t align, float offsetX) { m_label.align = align; m_label.offsetX = offsetX; };
+  void SetSpinAlign(uint32_t align, float offsetX) { m_label.GetLabelInfo().align = align; m_label.GetLabelInfo().offsetX = offsetX; };
   void SetType(int iType) { m_iType = iType; };
   float GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
   float GetSpinHeight() const { return m_imgspinUp.GetHeight(); };
@@ -90,6 +90,12 @@ public:
 protected:
   virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
+  /*! \brief Render the spinner text
+   \param posX position of the left edge of the text
+   \param width width of the text
+   */
+  virtual void RenderText(float posX, float width);
+  CGUILabel::COLOR GetTextColor() const;
   void PageUp();
   void PageDown();
   bool CanMoveDown(bool bTestReverse = true);
@@ -113,8 +119,7 @@ protected:
   CGUITexture m_imgspinDown;
   CGUITexture m_imgspinUpFocus;
   CGUITexture m_imgspinDownFocus;
-  CGUITextLayout m_textLayout;
-  CLabelInfo m_label;
+  CGUILabel   m_label;
   bool m_bShowRange;
   char m_szTyped[10];
   int m_iTypedPos;

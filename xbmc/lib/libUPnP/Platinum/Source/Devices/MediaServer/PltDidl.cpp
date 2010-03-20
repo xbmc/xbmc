@@ -128,7 +128,7 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SAMPLEFREQUENCY;
 		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len) == 0) {
             mask |= PLT_FILTER_MASK_RES;
-        } 
+        }
 
         if (next_comma < 0) {
             return mask;

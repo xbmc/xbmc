@@ -226,7 +226,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicSongs::OnAction(const CAction& action)
 {
-  if (action.actionId == ACTION_SCAN_ITEM)
+  if (action.GetID() == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
     if (item > -1 && m_vecItems->Get(item)->m_bIsFolder)
@@ -375,7 +375,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       // get the usual music shares, and anything for all media windows
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
-#ifdef HAS_DVD_DRIVE      
+#ifdef HAS_DVD_DRIVE
       // enable Rip CD an audio disc
       if (g_mediaManager.IsDiscInDrive() && item->IsCDDA())
       {
@@ -384,7 +384,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
       }
-#endif      
+#endif
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
     }
     else
@@ -406,7 +406,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         }
       }
 
-#ifdef HAS_DVD_DRIVE      
+#ifdef HAS_DVD_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
       {
@@ -415,11 +415,11 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
       }
-#endif      
+#endif
 
       // enable CDDB lookup if the current dir is CDDA
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
-         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+         (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
       }
@@ -444,8 +444,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
                !item->IsLastFM() && !item->IsShoutCast()                 &&
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
-               !item->IsPluginRoot() && !item->IsPlugin()                &&
-              (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+               !item->IsPlugin()                                         &&
+              (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
@@ -553,11 +553,11 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
   if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (m_vecItems->Get(iItem)->IsDVD())
     MEDIA_DETECT::CAutorun::PlayDisc();
   else
-#endif    
+#endif
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 

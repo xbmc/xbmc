@@ -75,7 +75,7 @@ echo X/"$0" |
     sed '/^.*\/\([^/][^/]*\)\/*$/{ s//\1/; q; }
   	  /^X\/\(\/\/\)$/{ s//\1/; q; }
   	  /^X\/\(\/\).*/{ s//\1/; q; }
-	  s/.*/./; q'`
+  	  s/.*/./; q'`
 
 
 # PATH needs CR, and LINENO needs CR and PATH.
@@ -93,9 +93,9 @@ if test "${PATH_SEPARATOR+set}" != set; then
   chmod +x conf$$.sh
   if (PATH="/nonexistent;."; conf$$.sh) >/dev/null 2>&1; then
     PATH_SEPARATOR=';'
-else
+  else
     PATH_SEPARATOR=:
-fi
+  fi
   rm -f conf$$.sh
 fi
 
@@ -123,11 +123,11 @@ done
   # in which case we are not to be found in the path.
   if test "x$as_myself" = x; then
     as_myself=$0
-fi
+  fi
   if test ! -f "$as_myself"; then
     { echo "$as_me: error: cannot find myself; rerun with an absolute path" >&2
    { (exit 1); exit 1; }; }
-fi
+  fi
   case $CONFIG_SHELL in
   '')
     as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
@@ -136,7 +136,7 @@ do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
   for as_base in sh bash ksh sh5; do
-  case $as_dir in
+	 case $as_dir in
 	 /*)
 	   if ("$as_dir/$as_base" -c '
   as_lineno_1=$LINENO
@@ -151,8 +151,8 @@ do
 	     exec "$CONFIG_SHELL" "$0" ${1+"$@"}
 	   fi;;
 	 esac
-      done
-        done
+       done
+done
 ;;
   esac
 
@@ -168,7 +168,7 @@ do
     sed '
       N
       s,$,-,
-      :loop
+      : loop
       s,^\(['$as_cr_digits']*\)\(.*\)[$]LINENO\([^'$as_cr_alnum'_]\),\1\2\1\3,
       t loop
       s,-$,,
@@ -305,8 +305,8 @@ ac_includes_default="\
 # include <inttypes.h>
 #else
 # if HAVE_STDINT_H
-# include <stdint.h>
-#endif
+#  include <stdint.h>
+# endif
 #endif
 #if HAVE_UNISTD_H
 # include <unistd.h>
@@ -720,7 +720,7 @@ echo X"$0" |
   	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
   	  /^X\(\/\/\)$/{ s//\1/; q; }
   	  /^X\(\/\).*/{ s//\1/; q; }
-	  s/.*/./; q'`
+  	  s/.*/./; q'`
   srcdir=$ac_confdir
   if test ! -r $srcdir/$ac_unique_file; then
     srcdir=..
@@ -733,9 +733,9 @@ if test ! -r $srcdir/$ac_unique_file; then
     { echo "$as_me: error: cannot find sources ($ac_unique_file) in $ac_confdir or .." >&2
    { (exit 1); exit 1; }; }
   else
-  { echo "$as_me: error: cannot find sources ($ac_unique_file) in $srcdir" >&2
+    { echo "$as_me: error: cannot find sources ($ac_unique_file) in $srcdir" >&2
    { (exit 1); exit 1; }; }
-fi
+  fi
 fi
 (cd $srcdir && test -r ./$ac_unique_file) 2>/dev/null ||
   { echo "$as_me: error: sources are in $srcdir, but \`cd $srcdir' does not work" >&2
@@ -1182,7 +1182,7 @@ _ASBOX
   rm -f core *.core &&
   rm -rf conftest* confdefs* conf$$* $ac_clean_files &&
     exit $exit_status
-' 0
+     ' 0
 for ac_signal in 1 2 13 15; do
   trap 'ac_signal='$ac_signal'; { (exit 1); exit 1; }' $ac_signal
 done
@@ -1225,9 +1225,9 @@ _ACEOF
 if test -z "$CONFIG_SITE"; then
   if test "x$prefix" != xNONE; then
     CONFIG_SITE="$prefix/share/config.site $prefix/etc/config.site"
-else
+  else
     CONFIG_SITE="$ac_default_prefix/share/config.site $ac_default_prefix/etc/config.site"
-fi
+  fi
 fi
 for ac_site_file in $CONFIG_SITE; do
   if test -r "$ac_site_file"; then
@@ -1339,7 +1339,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-ac_config_headers="$ac_config_headers pyconfig.h"
+          ac_config_headers="$ac_config_headers pyconfig.h"
 
 
 
@@ -1465,11 +1465,11 @@ if test "${enable_framework+set}" = set; then
 
 		# Add makefiles for Mac specific code to the list of output
 		# files:
-		ac_config_files="$ac_config_files Mac/OSX/Makefile"
+		          ac_config_files="$ac_config_files Mac/OSX/Makefile"
 
-		ac_config_files="$ac_config_files Mac/OSX/PythonLauncher/Makefile"
+		          ac_config_files="$ac_config_files Mac/OSX/PythonLauncher/Makefile"
 
-		ac_config_files="$ac_config_files Mac/OSX/IDLE/Makefile"
+		          ac_config_files="$ac_config_files Mac/OSX/IDLE/Makefile"
 
 	esac
 
@@ -1885,7 +1885,7 @@ do
 	# certainly right.
 	break;;
     *.* )
-	   ac_cv_exeext=`expr "$ac_file" : '[^.]*\(\..*\)'`
+	ac_cv_exeext=`expr "$ac_file" : '[^.]*\(\..*\)'`
 	# FIXME: I believe we export ac_cv_exeext for Libtool,
 	# but it would be cool to find out if it's true.  Does anybody
 	# maintain Libtool? --akim.
@@ -2087,14 +2087,14 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-    CC=$ac_ct_CC
+  CC=$ac_ct_CC
 else
   CC="$ac_cv_prog_CC"
 fi
 
 if test -z "$CC"; then
-          if test -n "$ac_tool_prefix"; then
-    # Extract the first word of "${ac_tool_prefix}cc", so it can be a program name with args.
+  if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}cc", so it can be a program name with args.
 set dummy ${ac_tool_prefix}cc; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -2156,7 +2156,7 @@ do
 done
 done
 
-  fi
+fi
 fi
 ac_ct_CC=$ac_cv_prog_ac_ct_CC
 if test -n "$ac_ct_CC"; then
@@ -2311,8 +2311,8 @@ fi
   test -n "$ac_ct_CC" && break
 done
 
-    CC=$ac_ct_CC
-  fi
+  CC=$ac_ct_CC
+fi
 
 fi
 
@@ -2393,7 +2393,7 @@ do
 	# certainly right.
 	break;;
     *.* )
-	   ac_cv_exeext=`expr "$ac_file" : '[^.]*\(\..*\)'`
+	ac_cv_exeext=`expr "$ac_file" : '[^.]*\(\..*\)'`
 	# FIXME: I believe we export ac_cv_exeext for Libtool,
 	# but it would be cool to find out if it's true.  Does anybody
 	# maintain Libtool? --akim.
@@ -2594,7 +2594,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_compiler_gnu=no
+ac_compiler_gnu=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 ac_cv_c_compiler_gnu=$ac_compiler_gnu
@@ -2611,7 +2611,7 @@ echo $ECHO_N "checking whether $CC accepts -g... $ECHO_C" >&6
 if test "${ac_cv_prog_cc_g+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-   cat >conftest.$ac_ext <<_ACEOF
+  cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -3597,7 +3597,7 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-    RANLIB=$ac_ct_RANLIB
+  RANLIB=$ac_ct_RANLIB
 else
   RANLIB="$ac_cv_prog_RANLIB"
 fi
@@ -4412,7 +4412,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_header_stdc=no
+ac_cv_header_stdc=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 
@@ -4583,7 +4583,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_Header=no"
+eval "$as_ac_Header=no"
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -4698,7 +4698,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -4854,7 +4854,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_Header=no"
+eval "$as_ac_Header=no"
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -4900,7 +4900,7 @@ opendir ();
   return 0;
 }
 _ACEOF
-  rm -f conftest.$ac_objext conftest$ac_exeext
+rm -f conftest.$ac_objext conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   (eval $ac_link) 2>conftest.er1
   ac_status=$?
@@ -4978,7 +4978,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_search_opendir="-l$ac_lib"
-  break
+break
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
@@ -4986,7 +4986,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
-done
+  done
 fi
 LIBS=$ac_func_search_save_LIBS
 fi
@@ -5027,7 +5027,7 @@ opendir ();
   return 0;
 }
 _ACEOF
-  rm -f conftest.$ac_objext conftest$ac_exeext
+rm -f conftest.$ac_objext conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   (eval $ac_link) 2>conftest.er1
   ac_status=$?
@@ -5105,7 +5105,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_search_opendir="-l$ac_lib"
-  break
+break
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
@@ -5113,7 +5113,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
-done
+  done
 fi
 LIBS=$ac_func_search_save_LIBS
 fi
@@ -5173,7 +5173,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_header_sys_types_h_makedev=no
+ac_cv_header_sys_types_h_makedev=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -5231,7 +5231,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -5379,7 +5379,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -5532,7 +5532,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_Header=no"
+eval "$as_ac_Header=no"
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -5623,7 +5623,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_has_makedev=no
+ac_cv_has_makedev=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -5674,7 +5674,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_has_makedev=no
+ac_cv_has_makedev=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -5752,7 +5752,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	sol_lfs_bug=yes
+sol_lfs_bug=yes
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $sol_lfs_bug" >&5
@@ -5834,7 +5834,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_mode_t=no
+ac_cv_type_mode_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -5900,7 +5900,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_off_t=no
+ac_cv_type_off_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -5966,7 +5966,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_pid_t=no
+ac_cv_type_pid_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -6101,7 +6101,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_size_t=no
+ac_cv_type_size_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -6208,7 +6208,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_int=no
+ac_cv_type_int=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -6312,12 +6312,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -6325,7 +6325,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -6410,12 +6410,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -6423,7 +6423,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -6475,7 +6475,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -6556,7 +6556,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (int), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -6622,7 +6622,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_long=no
+ac_cv_type_long=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -6726,12 +6726,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -6739,7 +6739,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -6824,12 +6824,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -6837,7 +6837,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -6889,7 +6889,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -6970,7 +6970,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (long), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -7036,7 +7036,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_void_p=no
+ac_cv_type_void_p=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -7140,12 +7140,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -7153,7 +7153,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -7238,12 +7238,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -7251,7 +7251,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -7303,7 +7303,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -7384,7 +7384,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (void *), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -7450,7 +7450,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_short=no
+ac_cv_type_short=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -7554,12 +7554,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -7567,7 +7567,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -7652,12 +7652,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -7665,7 +7665,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -7717,7 +7717,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -7798,7 +7798,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (short), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -7864,7 +7864,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_float=no
+ac_cv_type_float=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -7968,12 +7968,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -7981,7 +7981,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -8066,12 +8066,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -8079,7 +8079,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -8131,7 +8131,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -8212,7 +8212,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (float), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -8278,7 +8278,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_double=no
+ac_cv_type_double=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -8382,12 +8382,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -8395,7 +8395,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -8480,12 +8480,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -8493,7 +8493,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -8545,7 +8545,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -8626,7 +8626,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (double), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -8692,7 +8692,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_fpos_t=no
+ac_cv_type_fpos_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -8796,12 +8796,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -8809,7 +8809,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -8894,12 +8894,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -8907,7 +8907,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -8959,7 +8959,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -9040,7 +9040,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (fpos_t), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -9164,7 +9164,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_long_long=no
+ac_cv_type_long_long=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9268,12 +9268,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -9281,7 +9281,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -9366,12 +9366,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -9379,7 +9379,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9431,7 +9431,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -9512,7 +9512,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (long long), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -9583,7 +9583,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_uintptr_t=no
+ac_cv_type_uintptr_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9645,7 +9645,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_uintptr_t=no
+ac_cv_type_uintptr_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9749,12 +9749,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -9762,7 +9762,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -9847,12 +9847,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -9860,7 +9860,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9912,7 +9912,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -9993,7 +9993,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (uintptr_t), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -10702,7 +10702,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_dl_dlopen=no
+ac_cv_lib_dl_dlopen=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -10776,7 +10776,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_dld_shl_load=no
+ac_cv_lib_dld_shl_load=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -10825,7 +10825,7 @@ sem_init ();
   return 0;
 }
 _ACEOF
-  rm -f conftest.$ac_objext conftest$ac_exeext
+rm -f conftest.$ac_objext conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   (eval $ac_link) 2>conftest.er1
   ac_status=$?
@@ -10903,7 +10903,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_search_sem_init="-l$ac_lib"
-  break
+break
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
@@ -10911,7 +10911,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
-done
+  done
 fi
 LIBS=$ac_func_search_save_LIBS
 fi
@@ -10983,7 +10983,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_intl_textdomain=no
+ac_cv_lib_intl_textdomain=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -11118,7 +11118,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_nsl_t_open=no
+ac_cv_lib_nsl_t_open=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -11186,7 +11186,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_socket_socket=no
+ac_cv_lib_socket_socket=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -11257,7 +11257,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_net_socket=no
+ac_cv_lib_net_socket=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -11511,7 +11511,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -11666,7 +11666,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -11934,7 +11934,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_func_pthread_detach=no
+ac_cv_func_pthread_detach=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -11998,7 +11998,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -12148,7 +12148,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -12306,7 +12306,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_pthreads_pthread_create=no
+ac_cv_lib_pthreads_pthread_create=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -12380,7 +12380,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_c_r_pthread_create=no
+ac_cv_lib_c_r_pthread_create=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -12454,7 +12454,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_pthread___pthread_create_system=no
+ac_cv_lib_pthread___pthread_create_system=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -12528,7 +12528,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_cma_pthread_create=no
+ac_cv_lib_cma_pthread_create=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -12631,7 +12631,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_mpc_usconfig=no
+ac_cv_lib_mpc_usconfig=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -12707,7 +12707,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_thread_thr_create=no
+ac_cv_lib_thread_thr_create=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -12904,7 +12904,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -13438,7 +13438,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -13671,7 +13671,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -14301,7 +14301,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_c_inet_aton=no
+ac_cv_lib_c_inet_aton=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -14369,7 +14369,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_resolv_inet_aton=no
+ac_cv_lib_resolv_inet_aton=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -14721,7 +14721,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -14790,7 +14790,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_util_openpty=no
+ac_cv_lib_util_openpty=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -14860,7 +14860,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_bsd_openpty=no
+ac_cv_lib_bsd_openpty=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -14963,7 +14963,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -15032,7 +15032,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_util_forkpty=no
+ac_cv_lib_util_forkpty=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -15102,7 +15102,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_bsd_forkpty=no
+ac_cv_lib_bsd_forkpty=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -15212,7 +15212,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -15313,7 +15313,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -15419,7 +15419,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -15564,7 +15564,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -15709,7 +15709,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -16130,7 +16130,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -16198,7 +16198,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_header_time=no
+ac_cv_header_time=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -16261,7 +16261,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_struct_tm=sys/time.h
+ac_cv_struct_tm=sys/time.h
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -16327,7 +16327,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -16374,7 +16374,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_member_struct_tm_tm_zone=no
+ac_cv_member_struct_tm_tm_zone=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -16449,7 +16449,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_var_tzname=no
+ac_cv_var_tzname=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -16514,7 +16514,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -16558,7 +16558,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_member_struct_stat_st_rdev=no
+ac_cv_member_struct_stat_st_rdev=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -16624,7 +16624,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -16668,7 +16668,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_member_struct_stat_st_blksize=no
+ac_cv_member_struct_stat_st_blksize=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -16734,7 +16734,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -16778,7 +16778,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_member_struct_stat_st_blocks=no
+ac_cv_member_struct_stat_st_blocks=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -16857,7 +16857,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_header_time_altzone=no
+ac_cv_header_time_altzone=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -16981,7 +16981,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_struct_addrinfo=no
+ac_cv_struct_addrinfo=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -17045,7 +17045,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_struct_sockaddr_storage=no
+ac_cv_struct_sockaddr_storage=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -17112,7 +17112,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_c_char_unsigned=yes
+ac_cv_c_char_unsigned=yes
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -17218,7 +17218,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_c_const=no
+ac_cv_c_const=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -17732,7 +17732,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_func_gethostbyname_r=no
+ac_cv_func_gethostbyname_r=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -18046,7 +18046,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -18151,7 +18151,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_func___fpu_control=no
+ac_cv_func___fpu_control=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -18218,7 +18218,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_ieee___fpu_control=no
+ac_cv_lib_ieee___fpu_control=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -18405,7 +18405,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	eval "$as_ac_var=no"
+eval "$as_ac_var=no"
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -18481,7 +18481,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_header_compiler=no
+ac_header_compiler=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
@@ -18640,7 +18640,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_wchar_t=no
+ac_cv_type_wchar_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -18746,12 +18746,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr $ac_mid + 1`
-			if test $ac_lo -le $ac_mid; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid + 1`
+ac_lo=`expr $ac_mid + 1`
+		    if test $ac_lo -le $ac_mid; then
+		      ac_lo= ac_hi=
+		      break
+		    fi
+		    ac_mid=`expr 2 '*' $ac_mid + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -18759,7 +18759,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -18846,12 +18846,12 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_hi=`expr '(' $ac_mid ')' - 1`
-			if test $ac_mid -le $ac_hi; then
-			  ac_lo= ac_hi=
-			  break
-			fi
-			ac_mid=`expr 2 '*' $ac_mid`
+ac_hi=`expr '(' $ac_mid ')' - 1`
+		       if test $ac_mid -le $ac_hi; then
+			 ac_lo= ac_hi=
+			 break
+		       fi
+		       ac_mid=`expr 2 '*' $ac_mid`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
   done
@@ -18859,7 +18859,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo= ac_hi=
+ac_lo= ac_hi=
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -18912,7 +18912,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_lo=`expr '(' $ac_mid ')' + 1`
+ac_lo=`expr '(' $ac_mid ')' + 1`
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 done
@@ -18994,7 +18994,7 @@ See \`config.log' for more details." >&5
 echo "$as_me: error: cannot compute sizeof (wchar_t), 77
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
-   fi
+fi
 rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
@@ -19315,14 +19315,14 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_c_bigendian=no
+ac_cv_c_bigendian=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	# It does not; compile a test program.
+# It does not; compile a test program.
 if test "$cross_compiling" = yes; then
   # try to guess the endianness by grepping values into an object file
   ac_cv_c_bigendian=unknown
@@ -19565,7 +19565,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_have_getc_unlocked=no
+ac_cv_have_getc_unlocked=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -19639,7 +19639,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_readline_rl_callback_handler_install=no
+ac_cv_lib_readline_rl_callback_handler_install=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -19771,7 +19771,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_readline_rl_pre_input_hook=no
+ac_cv_lib_readline_rl_pre_input_hook=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -19845,7 +19845,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_readline_rl_completion_matches=no
+ac_cv_lib_readline_rl_completion_matches=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -20105,7 +20105,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	cat >conftest.$ac_ext <<_ACEOF
+cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
@@ -20152,7 +20152,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_member_struct_tm_tm_zone=no
+ac_cv_member_struct_tm_tm_zone=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -20227,7 +20227,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_var_tzname=no
+ac_cv_var_tzname=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
@@ -20411,7 +20411,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_stat_tv_nsec=no
+ac_cv_stat_tv_nsec=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -20478,7 +20478,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_mvwdelch_is_expression=no
+ac_cv_mvwdelch_is_expression=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -20545,7 +20545,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_window_has_flags=no
+ac_cv_window_has_flags=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -20655,7 +20655,7 @@ else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_type_socklen_t=no
+ac_cv_type_socklen_t=no
 fi
 rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -20692,7 +20692,7 @@ echo "$as_me:$LINENO: result: done" >&5
 echo "${ECHO_T}done" >&6
 
 # generate output files
-ac_config_files="$ac_config_files Makefile.pre Modules/Setup.config"
+                    ac_config_files="$ac_config_files Makefile.pre Modules/Setup.config"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -20734,11 +20734,11 @@ _ACEOF
 } |
   sed '
      t clear
-     :clear
+     : clear
      s/^\([^=]*\)=\(.*[{}].*\)$/test "${\1+set}" = set || &/
      t end
      /^ac_cv_env/!s/^\([^=]*\)=\(.*\)$/\1=${\1=\2}/
-     :end' >>confcache
+     : end' >>confcache
 if diff $cache_file confcache >/dev/null 2>&1; then :; else
   if test -w $cache_file; then
     test "x$cache_file" != "x/dev/null" && echo "updating cache $cache_file"
@@ -20872,7 +20872,7 @@ echo X/"$0" |
     sed '/^.*\/\([^/][^/]*\)\/*$/{ s//\1/; q; }
   	  /^X\/\(\/\/\)$/{ s//\1/; q; }
   	  /^X\/\(\/\).*/{ s//\1/; q; }
-	  s/.*/./; q'`
+  	  s/.*/./; q'`
 
 
 # PATH needs CR, and LINENO needs CR and PATH.
@@ -20966,7 +20966,7 @@ done
     sed '
       N
       s,$,-,
-      :loop
+      : loop
       s,^\(['$as_cr_digits']*\)\(.*\)[$]LINENO\([^'$as_cr_alnum'_]\),\1\2\1\3,
       t loop
       s,-$,,
@@ -21219,11 +21219,11 @@ for ac_config_target in $ac_config_targets
 do
   case "$ac_config_target" in
   # Handling of arguments.
-    "Mac/OSX/Makefile") CONFIG_FILES="$CONFIG_FILES Mac/OSX/Makefile" ;;
-    "Mac/OSX/PythonLauncher/Makefile") CONFIG_FILES="$CONFIG_FILES Mac/OSX/PythonLauncher/Makefile" ;;
-    "Mac/OSX/IDLE/Makefile") CONFIG_FILES="$CONFIG_FILES Mac/OSX/IDLE/Makefile" ;;
-    "Makefile.pre") CONFIG_FILES="$CONFIG_FILES Makefile.pre" ;;
-    "Modules/Setup.config") CONFIG_FILES="$CONFIG_FILES Modules/Setup.config" ;;
+  "Mac/OSX/Makefile" ) CONFIG_FILES="$CONFIG_FILES Mac/OSX/Makefile" ;;
+  "Mac/OSX/PythonLauncher/Makefile" ) CONFIG_FILES="$CONFIG_FILES Mac/OSX/PythonLauncher/Makefile" ;;
+  "Mac/OSX/IDLE/Makefile" ) CONFIG_FILES="$CONFIG_FILES Mac/OSX/IDLE/Makefile" ;;
+  "Makefile.pre" ) CONFIG_FILES="$CONFIG_FILES Makefile.pre" ;;
+  "Modules/Setup.config" ) CONFIG_FILES="$CONFIG_FILES Modules/Setup.config" ;;
   "pyconfig.h" ) CONFIG_HEADERS="$CONFIG_HEADERS pyconfig.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
@@ -21403,12 +21403,12 @@ _ACEOF
   while $ac_more_lines; do
     if test $ac_beg -gt 1; then
       sed "1,${ac_beg}d; ${ac_end}q" $tmp/subs.sed >$tmp/subs.frag
-  else
+    else
       sed "${ac_end}q" $tmp/subs.sed >$tmp/subs.frag
-  fi
+    fi
     if test ! -s $tmp/subs.frag; then
       ac_more_lines=false
-  else
+    else
       # The purpose of the label and of the branching condition is to
       # speed up the sed processing (if there are no `@' at all, there
       # is no need to browse any of the substitutions).
@@ -21419,15 +21419,15 @@ _ACEOF
 	ac_sed_cmds="sed -f $tmp/subs-$ac_sed_frag.sed"
       else
 	ac_sed_cmds="$ac_sed_cmds | sed -f $tmp/subs-$ac_sed_frag.sed"
-  fi
+      fi
       ac_sed_frag=`expr $ac_sed_frag + 1`
       ac_beg=$ac_end
       ac_end=`expr $ac_end + $ac_max_sed_lines`
     fi
-done
+  done
   if test -z "$ac_sed_cmds"; then
     ac_sed_cmds=cat
-fi
+  fi
 fi # test -n "$CONFIG_FILES"
 
 _ACEOF
@@ -21456,7 +21456,7 @@ echo X"$ac_file" |
   	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
   	  /^X\(\/\/\)$/{ s//\1/; q; }
   	  /^X\(\/\).*/{ s//\1/; q; }
-	  s/.*/./; q'`
+  	  s/.*/./; q'`
   { if $as_mkdir_p; then
     mkdir -p "$ac_dir"
   else
@@ -21475,7 +21475,7 @@ echo X"$as_dir" |
   	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
   	  /^X\(\/\/\)$/{ s//\1/; q; }
   	  /^X\(\/\).*/{ s//\1/; q; }
-	  s/.*/./; q'`
+  	  s/.*/./; q'`
     done
     test ! -n "$as_dirs" || mkdir $as_dirs
   fi || { { echo "$as_me:$LINENO: error: cannot create directory \"$ac_dir\"" >&5
@@ -21594,7 +21594,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
 	 fi;;
-esac
+      esac
     done` || { (exit 1); exit 1; }
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF
@@ -21627,9 +21627,9 @@ done
 _ACEOF
 cat >>$CONFIG_STATUS <<\_ACEOF
 
-  #
+#
 # CONFIG_HEADER section.
-  #
+#
 
 # These sed commands are passed to sed as "A NAME B NAME C VALUE D", where
 # NAME is the cpp macro being defined and VALUE is the value it is being given.
@@ -21708,7 +21708,7 @@ rm -f conftest.defines conftest.undefs
 # 0-ary CPP macros) applies to n-ary macro definitions.
 # See the Autoconf documentation for `clear'.
 cat >confdef2sed.sed <<\_ACEOF
-	s/[\\&,]/\\&/g
+s/[\\&,]/\\&/g
 s,[\\$`],\\&,g
 t clear
 : clear

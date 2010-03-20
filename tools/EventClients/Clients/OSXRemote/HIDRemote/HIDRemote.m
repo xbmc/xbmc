@@ -1591,7 +1591,7 @@ static HIDRemote *sHIDRemote = nil;
 				}
 			break;
 		}
-	
+		
 		// As soon as we have received a code that's unique to the Aluminum Remote, we can tell kHIDRemoteButtonCodePlayHold and kHIDRemoteButtonCodeCenterHold apart.
 		// Prior to that, a long press of the new "Play" button will be submitted as a "kHIDRemoteButtonCodeCenterHold", not a "kHIDRemoteButtonCodePlayHold" code.
 		if ((buttonCode == kHIDRemoteButtonCodeCenterHold) && (_lastSeenModel == kHIDRemoteModelAluminum))

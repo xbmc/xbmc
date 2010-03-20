@@ -30,7 +30,7 @@
  */
 
 #include "GUIControl.h"
-#include "GUITextLayout.h"
+#include "GUILabel.h"
 
 /*!
  \ingroup controls
@@ -50,15 +50,14 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual CStdString GetDescription() const;
   virtual float GetWidth() const;
-
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
+ 
+  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
   void SetLabel(const std::string &strLabel);
   void ShowCursor(bool bShow = true);
   void SetCursorPos(int iPos);
   int GetCursorPos() const { return m_iCursorPos;};
   void SetInfo(const CGUIInfoLabel&labelInfo);
   void SetWidthControl(float minWidth, bool bScroll, int scrollSpeed);
-  void SetTruncate(bool bTruncate);
   void SetAlignment(uint32_t align);
   void SetHighlight(unsigned int start, unsigned int end);
 
@@ -66,16 +65,13 @@ protected:
   void UpdateColors();
   CStdString ShortenPath(const CStdString &path);
 
-  CLabelInfo m_label;
-  CGUITextLayout m_textLayout;
+  CGUILabel m_label;
 
   bool m_bHasPath;
   bool m_bShowCursor;
   int m_iCursorPos;
   unsigned int m_dwCounter;
-  // stuff for scrolling
-  bool m_ScrollInsteadOfTruncate;
-  CScrollInfo m_ScrollInfo;
+
   // stuff for autowidth
   bool m_autoWidth;
   float m_minWidth;

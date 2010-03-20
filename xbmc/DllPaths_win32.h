@@ -8,6 +8,7 @@
 #define DLL_PATH_LIBCMYTH      "special://xbmc/system/libcmyth.dll"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmc/system/hdhomerun.dll"
 #define DLL_PATH_LIBCURL       "special://xbmc/system/libcurl.dll"
+#define DLL_PATH_LIBMICROHTTP  "special://xbmc/system/webserver/libmicrohttpd-5.dll"
 
 /* paplayer */
 #define DLL_PATH_AC3_CODEC     "special://xbmc/system/players/paplayer/ac3codec.dll"
@@ -30,6 +31,7 @@
 #define DLL_PATH_WMA_CODEC     "special://xbmc/system/players/paplayer/wma.dll"
 #define DLL_PATH_YM_CODEC      "special://xbmc/system/players/paplayer/stsoundlibrary.dll"
 #define DLL_PATH_SHN_CODEC     "special://xbmc/system/players/paplayer/libshnplay.dll"
+#define DLL_PATH_MODPLUG_CODEC "special://xbmc/system/players/paplayer/libmodplug.dll"
 
 /* dvdplayer */
 #define DLL_PATH_LIBASS        "special://xbmc/system/players/dvdplayer/libass.dll"
@@ -54,11 +56,5 @@
 #define DLL_PATH_VORBIS_ENC    "special://xbmc/system/cdrip/vorbisenc.dll"
 #define DLL_PATH_VORBIS        "special://xbmc/system/cdrip/vorbis.dll"
 
-/* dsplayer */
-#ifdef DEBUG
-#define DLL_PATH_LIBMPCSUBS    "special://xbmc/system/players/dsplayer/mpcSubsD.dll"
-#else
-#define DLL_PATH_LIBMPCSUBS    "special://xbmc/system/players/dsplayer/mpcSubsR.dll"
-#endif
 #endif
 

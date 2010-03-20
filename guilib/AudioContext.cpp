@@ -206,25 +206,26 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   bAudioOnAllSpeakers = false;
 
 #ifdef HAS_AUDIO
+  return; //not implemented
   DWORD spconfig = DSSPEAKER_USE_DEFAULT;
   if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
   {
     if (g_settings.m_currentVideoSettings.m_OutputToAllSpeakers && !bIsMusic)
     {
-        bAudioOnAllSpeakers = true;
-        m_bAC3EncoderActive = true;
-        spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
-      }
-      else
-      {
-        if (iChannels == 1)
-          spconfig = DSSPEAKER_MONO;
+      bAudioOnAllSpeakers = true;
+      m_bAC3EncoderActive = true;
+      spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
+    }
+    else
+    {
+      if (iChannels == 1)
+        spconfig = DSSPEAKER_MONO;
       else if (iChannels == 2)
         spconfig = DSSPEAKER_STEREO;
       else
         spconfig = DSSPEAKER_USE_DEFAULT; //Allows ac3 encoder should it be enabled
-      }
     }
+  }
   else // We don't want to use the Dolby Digital Encoder output. Downmix to surround instead.
   {
     if (iChannels == 1)

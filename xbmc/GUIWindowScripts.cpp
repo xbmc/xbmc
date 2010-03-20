@@ -29,8 +29,8 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#include "ScriptSettings.h"
-#include "GUIDialogPluginSettings.h"
+#include "addons/AddonManager.h"
+#include "GUIDialogAddonSettings.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #if defined(__APPLE__)
@@ -59,7 +59,7 @@ CGUIWindowScripts::~CGUIWindowScripts()
 
 bool CGUIWindowScripts::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SHOW_INFO)
+  if (action.GetID() == ACTION_SHOW_INFO)
   {
     OnInfo();
     return true;
@@ -168,7 +168,7 @@ void CGUIWindowScripts::OnInfo()
   if (pDlgInfo) pDlgInfo->DoModal();
 }
 
-void CGUIWindowScripts::Render()
+void CGUIWindowScripts::FrameMove()
 {
 #ifdef HAS_PYTHON
   // update control_list / control_thumbs if one or more scripts have stopped / started
@@ -181,7 +181,7 @@ void CGUIWindowScripts::Render()
   }
 #endif
 
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }
 
 bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemList& items)
@@ -245,8 +245,14 @@ void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &butto
   {
     CStdString path, filename;
     CUtil::Split(item->m_strPath, path, filename);
-    if (CScriptSettings::SettingsExist(path))
-      buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
+    ADDON::AddonPtr script;
+    if (ADDON::CAddonMgr::Get()->GetAddon(item->m_strPath, script, ADDON::ADDON_SCRIPT))
+    {
+      if (script->HasSettings())
+      {
+        buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
+      }
+    }
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
@@ -264,8 +270,12 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
-    if(CGUIDialogPluginSettings::ShowAndGetInput(path))
-      Update(m_vecItems->m_strPath);
+    ADDON::AddonPtr script;
+    if (ADDON::CAddonMgr::Get()->GetAddon(m_vecItems->Get(itemNumber)->m_strPath, script, ADDON::ADDON_SCRIPT))
+    {
+      if (CGUIDialogAddonSettings::ShowAndGetInput(script))
+        Update(m_vecItems->m_strPath);
+    }
     return true;
   }
   else if (button == CONTEXT_BUTTON_DELETE)

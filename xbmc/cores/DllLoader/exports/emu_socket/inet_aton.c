@@ -104,7 +104,7 @@ inet_aton(const char *cp, struct in_addr *addr)
 
                 /* Invalid character, then fail. */
                 return (0);
-}
+            }
         }
 
     }

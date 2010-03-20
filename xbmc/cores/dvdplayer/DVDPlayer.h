@@ -64,7 +64,7 @@ public:
   bool             started; // has the player started
   const StreamType type;
   // stuff to handle starting after seek
-  double                     startpts;
+  double   startpts;
   CDVDMsg* startsync;
 
   CCurrentStream(StreamType t)
@@ -208,7 +208,7 @@ public:
 
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
-  
+
   virtual CStdString GetPlayingTitle();
 
   enum ECacheState
@@ -255,13 +255,13 @@ protected:
   void SetCaching(ECacheState state);
 
   __int64 GetTotalTimeInMsec();
-  void FlushBuffers(bool queued);
+  void FlushBuffers(bool queued, double startpts = DVD_NOPTS_VALUE);
 
   void HandleMessages();
   void HandlePlaySpeed();
   bool IsInMenu() const;
 
-  void SynchronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
+  void SynchronizePlayers(DWORD sources);
   void SynchronizeDemuxer(DWORD timeout);
   void CheckAutoSceneSkip();
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
@@ -371,14 +371,6 @@ protected:
     std::string demux_audio;
   } m_State;
   CCriticalSection m_StateSection;
-
-  class CPlayerSeek
-  {
-  public:
-    CPlayerSeek(CDVDPlayer* player);
-    ~CPlayerSeek();
-    CDVDPlayer& m_player;
-  };
 
   CEvent m_ready;
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)

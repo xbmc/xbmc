@@ -113,7 +113,7 @@ void CMusicInfoScanner::Process()
         /*
          * A copy of the directory path is used because the path supplied is
          * immediately removed from the m_pathsToScan set in DoScan(). If the
-         * reference points to the entry in the set a null reference error 
+         * reference points to the entry in the set a null reference error
          * occurs.
          */
         CStdString directory = *m_pathsToScan.begin();
@@ -337,7 +337,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   /*
    * remove this path from the list we're processing. This must be done prior to
-   * the check for file or folder exclusion to prevent an infinite while loop 
+   * the check for file or folder exclusion to prevent an infinite while loop
    * in Process().
    */
   set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
@@ -558,7 +558,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     {
       if (m_bStop)
         return songsToAdd.size();
-    
+
       long iAlbum = m_musicDatabase.GetAlbumByName(i->first, i->second);
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
@@ -569,8 +569,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         CMusicAlbumInfo albumInfo;
         if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
           m_albumsScanned.push_back(iAlbum);
+      }
     }
-  }
   }
   if (m_pObserver)
     m_pObserver->OnStateChanged(READING_MUSIC_INFO);
@@ -807,7 +807,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     return true;
 
   // find album info
-  SScraperInfo info;
+  ADDON::ScraperPtr info;
   if (!m_musicDatabase.GetScraperForPath(strPath,info))
   {
     m_musicDatabase.Close();
@@ -831,7 +831,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    result = nfoReader.Create(strNfo,"albums");
+    result = nfoReader.Create(strNfo, info);
     if (result == CNfoFile::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
@@ -846,9 +846,9 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicAlbumInfo album("nfo",scrUrl);
-      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      info = nfoReader.GetScraperInfo();
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",info->Name().c_str());
       CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
-      info.strPath = nfoReader.m_strScraper;
       scraper.SetScraperInfo(info);
       scraper.GetAlbums().push_back(album);
     }
@@ -861,7 +861,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     CLog::Log(LOGERROR, "%s - current and default scrapers are invalid.  Pick another one", __FUNCTION__);
     return false;
   }
-  
+
   if (!scraper.GetAlbumCount())
     scraper.FindAlbuminfo(strAlbum, strArtist);
 
@@ -1035,7 +1035,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     return true;
 
   // find artist info
-  SScraperInfo info;
+  ADDON::ScraperPtr info;
   if (!m_musicDatabase.GetScraperForPath(strPath,info))
   {
     m_musicDatabase.Close();
@@ -1058,7 +1058,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    result = nfoReader.Create(strNfo,"albums");
+    result = nfoReader.Create(strNfo, info);
     if (result == CNfoFile::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
@@ -1073,9 +1073,9 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicArtistInfo artist("nfo",scrUrl);
-      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      info = nfoReader.GetScraperInfo();
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",info->Name().c_str());
       CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
-      info.strPath = nfoReader.m_strScraper;
       scraper.SetScraperInfo(info);
       scraper.GetArtists().push_back(artist);
     }
@@ -1133,7 +1133,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
           { // none chosen
             if (!pDlg->IsButtonPressed())
             {
-              bCanceled = true;            
+              bCanceled = true;
               return false;
             }
             // manual button pressed

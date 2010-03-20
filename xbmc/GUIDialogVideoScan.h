@@ -31,9 +31,9 @@ public:
   CGUIDialogVideoScan(void);
   virtual ~CGUIDialogVideoScan(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void Render();
+  virtual void FrameMove();
 
-  void StartScanning(const CStdString& strDirectory, const SScraperInfo& info, const VIDEO::SScanSettings& settings, bool bUpdateAll);
+  void StartScanning(const CStdString& strDirectory, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings, bool bUpdateAll);
   bool IsScanning();
   void StopScanning();
 

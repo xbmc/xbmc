@@ -28,7 +28,6 @@
 #include "AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "WindowingFactory.h"
-#include "SkinInfo.h"
 #include "TextureManager.h"
 #include "MouseStat.h"
 #include "GUIWindowManager.h"
@@ -64,14 +63,14 @@ void CGraphicContext::SetOrigin(float x, float y)
     m_origins.push(CPoint(x,y) + m_origins.top());
   else
     m_origins.push(CPoint(x,y));
-  
+
   AddTransform(TransformMatrix::CreateTranslation(x, y));
 }
 
 void CGraphicContext::RestoreOrigin()
 {
   if (m_origins.size())
-  m_origins.pop();
+    m_origins.pop();
   RemoveTransform();
 }
 
@@ -81,19 +80,19 @@ bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
   CPoint origin;
   if (m_origins.size())
     origin = m_origins.top();
-  
+
   // ok, now intersect with our old clip region
   CRect rect(x, y, x + w, y + h);
   rect += origin;
   if (m_clipRegions.size())
-  { 
+  {
     // intersect with original clip region
     rect.Intersect(m_clipRegions.top());
   }
-  
+
   if (rect.IsEmpty())
     return false;
-  
+
   m_clipRegions.push(rect);
 
   // here we could set the hardware clipping, if applicable
@@ -268,7 +267,7 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
     else if(g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
     else
-      g_graphicsContext.SetVideoResolution(RES_DESKTOP);    
+      g_graphicsContext.SetVideoResolution(RES_DESKTOP);
   }
   else
     g_graphicsContext.SetVideoResolution(RES_WINDOW);
@@ -299,14 +298,14 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
   {
     return true;
   }
-  
+
   return false;
 }
 
 void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 {
   RESOLUTION lastRes = m_Resolution;
-  
+
   // If the user asked us to guess, go with desktop
   if (res == RES_AUTORES || !IsValidResolution(res))
   {
@@ -318,7 +317,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   {
     return;
   }
-  
+
   if (res >= RES_DESKTOP)
   {
     g_advancedSettings.m_fullScreen = true;
@@ -331,12 +330,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   }
 
   Lock();
-  
+
   m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
   m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   m_iScreenId     = g_settings.m_ResInfo[res].iScreen;
   m_Resolution    = res;
-  
+
   if (g_advancedSettings.m_fullScreen)
   {
 #if defined (__APPLE__) || defined (_WIN32)
@@ -548,12 +547,10 @@ void CGraphicContext::SetScalingResolution(RESOLUTION res, bool needsScaling)
       fToHeight = (float)g_settings.m_ResInfo[m_Resolution].Overscan.bottom - fToPosY;
     }
 
-    // add additional zoom to compensate for any overskan built in skin
-    float fZoom = g_SkinInfo.GetSkinZoom();
-
     if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
       g_guiSkinzoom = (CSettingInt*)g_guiSettings.GetSetting("lookandfeel.skinzoom");
 
+    float fZoom = 1.0f;
     if(g_guiSkinzoom)
       fZoom *= (100 + g_guiSkinzoom->GetData()) * 0.01f;
 
@@ -765,7 +762,7 @@ void CGraphicContext::ClipToViewWindow()
 
 void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
 {
-  res.clear();  
+  res.clear();
 
   res.push_back(RES_WINDOW);
   res.push_back(RES_DESKTOP);

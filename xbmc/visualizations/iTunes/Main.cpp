@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,32 +19,16 @@
  *
  */
 
-
 /*
   iTunes Visualization Wrapper for XBMC
 */
 
 
-#include "xbmc_vis.h"
 #include <GL/glew.h>
 #include <string>
-#ifdef _WIN32
-#ifndef _MINGW
-#include "win32-dirent.h"
-#endif
-#include <io.h>
-#else
-#include "system.h"
-#include <dirent.h>
-#endif
-#ifdef _LINUX
-#include <dlfcn.h>
-#endif
-#ifdef __APPLE__
-#include "itunes_vis.h"
-#endif
 
-using namespace std;
+#include "itunes_vis.h"
+#include "../../addons/include/xbmc_vis_dll.h"
 
 int g_tex_width     = 512;
 int g_tex_height    = 512;
@@ -56,38 +40,41 @@ int g_window_ypos   = 0;
 short       g_audio_data[2][512];
 float       g_freq_data[2][512];
 bool        g_new_audio;
-string      g_sub_module;
-string      g_vis_name;
+std::string g_sub_module;
+std::string g_vis_name;
 GLuint      g_tex_id          = 0;
 GLbyte*     g_tex_buffer      = NULL;
 long        g_tex_buffer_size = 0;
 ITunesVis*  g_plugin          = NULL;
 
 //-- Create -------------------------------------------------------------------
-// Called once when the visualisation is created by XBMC. Do any setup here.
+// Called on load. Addon should fully initalize or return error status
 //-----------------------------------------------------------------------------
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth,
-                       int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+ADDON_STATUS Create(void* hdl, void* visProps)
 {
-  if ( szVisualisationName )
-    g_vis_name = szVisualisationName;
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+  if (!visProps)
+    return STATUS_UNKNOWN;
+
+  VIS_PROPS* props = (VIS_PROPS*) visProps;
+
+  if (!props->submodule)
+    return STATUS_UNKNOWN;
+  
+  g_vis_name = props->name;
+  g_sub_module = props->submodule;
 
   /* copy window dimensions */
-  g_window_width  = g_tex_width  = iWidth;
-  g_window_height = g_tex_height = iHeight;
-  g_window_xpos   = iPosX;
-  g_window_ypos   = iPosY;
-  g_sub_module    = szSubModuleName;
+  g_window_width  = g_tex_width  = props->width;
+  g_window_height = g_tex_height = props->height;
+  g_window_xpos   = props->x;
+  g_window_ypos   = props->y;
 
   /* create texture buffer */
   g_tex_buffer_size = g_tex_width * g_tex_height * 4;
   g_tex_buffer      = (GLbyte*)malloc( g_tex_buffer_size );
 
   if ( !g_tex_buffer )
-    return;
+    return STATUS_UNKNOWN;
 
   if ( g_plugin )
   {
@@ -101,7 +88,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth,
   if ( g_plugin == NULL )
   {
     printf( "Error loading %s\n", g_vis_name.c_str() );
-    return;
+    return STATUS_UNKNOWN;
   }
 
   /* initialize and start the plugin */
@@ -116,7 +103,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth,
     ivis_start( g_plugin );
   }
 
-  return;
+  return STATUS_OK;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -148,7 +135,7 @@ extern "C" void Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength,
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength,
                           float *pFreqData, int iFreqDataLength)
 {
   int copysize = iAudioDataLength  < (int)sizeof( g_audio_data ) ? iAudioDataLength  : (int)sizeof( g_audio_data );
@@ -270,7 +257,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-extern "C" bool OnAction(long flags, void *param)
+extern "C" bool OnAction(long flags, const void *param)
 {
   bool ret = false;
 
@@ -308,36 +295,90 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets,
-                           bool *locked)
+extern "C" unsigned int GetPresets(char ***pPresets)
 {
+  return 0;
+}
 
+//-- GetPreset ----------------------------------------------------------------
+// Return the index of the current playing preset
+//-----------------------------------------------------------------------------
+extern "C" unsigned GetPreset()
+{
+  return 0;
+}
+
+//-- IsLocked -----------------------------------------------------------------
+// Returns true if this add-on use settings
+//-----------------------------------------------------------------------------
+extern "C" bool IsLocked()
+{
+  return false;
+}
+
+//-- GetSubModules ------------------------------------------------------------
+// Return a list of names and paths for submodules
+//-----------------------------------------------------------------------------
+extern "C" unsigned int GetSubModules(char ***modules)
+{
+  char **path;
+  unsigned int num_plugins;
+  
+  num_plugins = ivis_get_visualisations(modules, &path);
+  free(path);
+  return num_plugins;
+}
+
+//-- Destroy-------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Destroy()
+{
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" bool HasSettings()
+{
+  return false;
+}
+
+//-- GetStatus ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
 }
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
-{ 
-  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
-  *sSet = m_structSettings;
-  return m_uiVisElements;
+extern "C" unsigned int GetSettings(StructSetting ***sSet)
+{
+  return 0;
 }
+
+//-- FreeSettings --------------------------------------------------------------
+// Free the settings struct passed from XBMC
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
 
 extern "C" void FreeSettings()
 {
-  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
 }
 
-//-- UpdateSetting ------------------------------------------------------------
-// Handle setting change request from XBMC
+//-- SetSetting ---------------------------------------------------------------
+// Set a specific Setting value (called from XBMC)
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
 {
-  //VisSetting &setting = m_vecSettings[num];
+  return STATUS_OK;
 }
 
-extern "C" int GetSubModules(char ***names, char ***paths)
-{
-  return ivis_get_visualisations( names, paths );
-}

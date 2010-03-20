@@ -47,6 +47,36 @@
 				<align>left</align>
 				<aligny>center</aligny>
 			</control>
+			<control type="image" id="403">
+				<description>avatar</description>
+				<posx>10</posx>
+				<posy>10</posy>
+				<width>40</width>
+				<height>40</height>
+				<aspectratio>keep</aspectratio>
+				<visible>false</visible>
+				<texture>DefaultIconInfo.png</texture>
+			</control>
+			<control type="image" id="404">
+				<description>avatar</description>
+				<posx>10</posx>
+				<posy>10</posy>
+				<width>40</width>
+				<height>40</height>
+				<aspectratio>keep</aspectratio>
+				<visible>false</visible>
+				<texture>DefaultIconWarning.png</texture>
+			</control>
+			<control type="image" id="405">
+				<description>avatar</description>
+				<posx>10</posx>
+				<posy>10</posy>
+				<width>40</width>
+				<height>40</height>
+				<aspectratio>keep</aspectratio>
+				<visible>false</visible>
+				<texture>DefaultIconError.png</texture>
+			</control>
 		</control>
 	</controls>
 </window>

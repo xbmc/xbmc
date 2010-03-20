@@ -37,7 +37,7 @@ LibraryLoader::LibraryLoader(const char* libraryFile)
     strncpy(m_sPath, m_sFileName, sPath - m_sFileName);
     m_sPath[sPath - m_sFileName] = 0;
   }
-  else 
+  else
     m_sPath=NULL;
 
   m_iRefCount = 1;
@@ -71,7 +71,7 @@ char* LibraryLoader::GetPath()
   if (m_sPath) return m_sPath;
   return (char*)"";
 }
-  
+
 int LibraryLoader::IncrRef()
 {
   m_iRefCount++;

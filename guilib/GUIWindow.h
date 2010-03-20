@@ -85,7 +85,20 @@ public:
   bool Load(const CStdString& strFileName, bool bContainsPath = false);
 
   void CenterWindow();
+  
+  /*! \brief Main render function, called every frame.
+   Window classes should override this only if they need to alter how something is rendered.
+   General updating on a per-frame basis should be handled in FrameMove instead, as Render
+   is not necessarily re-entrant.
+   \sa FrameMove
+   */
   virtual void Render();
+  
+  /*! \brief Main update function, called every frame prior to rendering
+   Any window that requires updating on a frame by frame basis (such as to maintain
+   timers and the like) should override this function.
+   */
+  virtual void FrameMove() {};
 
   // Close should never be called on this base class (only on derivatives) - its here so that window-manager can use a general close
   virtual void Close(bool forceClose = false);
@@ -137,7 +150,7 @@ public:
   void       SetRunActionsManually();
   void       RunLoadActions();
   void       RunUnloadActions();
-  
+
   /*! \brief Set a property
    Sets the value of a property referenced by a key.
    \param key name of the property to set
@@ -200,7 +213,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
-  virtual bool OnMouseAction();
+  bool OnMouseAction(const CAction &action);
   virtual bool RenderAnimation(unsigned int time);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
 
@@ -229,7 +242,7 @@ protected:
 //#endif
 
   void RunActions(std::vector<CGUIActionDescriptor>& actions);
-  
+
   int m_idRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;
@@ -268,7 +281,7 @@ protected:
 
   std::vector<CGUIActionDescriptor> m_loadActions;
   std::vector<CGUIActionDescriptor> m_unloadActions;
-  
+
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE

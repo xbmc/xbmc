@@ -44,8 +44,8 @@ namespace PYXBMC
 
     self = (Action*)type->tp_alloc(type, 0);
     if (!self) return NULL;
-    new(&self->strAction) string(); 
-    
+    new(&self->strAction) string();
+
     //if (!PyArg_ParseTuple(args, "l", &self->action)) return NULL;
     //self->action = -1;
 
@@ -62,16 +62,16 @@ namespace PYXBMC
   PyObject* Action_FromAction(const CAction& action)
   {
     Action* pyAction = (Action*)Action_Type.tp_alloc(&Action_Type, 0);
-    new(&pyAction->strAction) string(); 
-    
+    new(&pyAction->strAction) string();
+
     if (pyAction)
     {
-      pyAction->id = action.actionId;
-      pyAction->buttonCode = action.buttonCode;
-      pyAction->fAmount1 = action.amount1;
-      pyAction->fAmount2 = action.amount2;
-      pyAction->fRepeat = action.repeat;
-      pyAction->strAction = action.strAction.c_str();
+      pyAction->id = action.GetID();
+      pyAction->buttonCode = action.GetButtonCode();
+      pyAction->fAmount1 = action.GetAmount(0);
+      pyAction->fAmount2 = action.GetAmount(1);
+      pyAction->fRepeat = action.GetRepeat();
+      pyAction->strAction = action.GetName();
     }
 
     return (PyObject*)pyAction;
@@ -79,7 +79,7 @@ namespace PYXBMC
 
   void Action_Dealloc(Action* self)
   {
-    self->strAction.~string();  
+    self->strAction.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -171,7 +171,7 @@ namespace PYXBMC
     "Action class.\n"
     "\n"
     "For backwards compatibility reasons the == operator is extended so that it"
-    "can compare an action with other actions and action.actionId with numbers"
+    "can compare an action with other actions and action.GetID() with numbers"
     "  example: (action == ACTION_MOVE_LEFT)"
     "");
 

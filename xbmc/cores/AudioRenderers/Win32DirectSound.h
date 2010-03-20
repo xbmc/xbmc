@@ -76,6 +76,7 @@ private:
 
   long m_nCurrentVolume;
   unsigned int m_dwChunkSize;
+  unsigned int m_dwDataChunkSize;
   unsigned int m_dwBufferLen;
   bool m_bPause;
   bool m_bIsAllocated;
@@ -84,8 +85,10 @@ private:
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
+  unsigned int m_uiDataChannels;
   unsigned int m_AvgBytesPerSec;
   unsigned int m_uiBytesPerFrame;
+  unsigned int m_uiDataBytesPerFrame;
   unsigned int m_uiSpeakerMask;
   enum PCMChannels m_SpeakerOrder[8];
 

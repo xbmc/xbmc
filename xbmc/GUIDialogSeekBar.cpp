@@ -47,7 +47,7 @@ CGUIDialogSeekBar::~CGUIDialogSeekBar(void)
 
 bool CGUIDialogSeekBar::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_ANALOG_SEEK_FORWARD || action.actionId == ACTION_ANALOG_SEEK_BACK)
+  if (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK)
   {
     if (!m_bRequireSeek)
     { // start of seeking
@@ -67,15 +67,15 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
     {
       //100% over 1 second.
       float speed = 100.0f;
-      if( action.repeat )
-        speed *= action.repeat;
+      if( action.GetRepeat() )
+        speed *= action.GetRepeat();
       else
         speed /= g_infoManager.GetFPS();
 
-      if (action.actionId == ACTION_ANALOG_SEEK_FORWARD)
-        m_fSeekPercentage += action.amount1 * action.amount1 * speed;
+      if (action.GetID() == ACTION_ANALOG_SEEK_FORWARD)
+        m_fSeekPercentage += action.GetAmount() * action.GetAmount() * speed;
       else
-        m_fSeekPercentage -= action.amount1 * action.amount1 * speed;
+        m_fSeekPercentage -= action.GetAmount() * action.GetAmount() * speed;
       if (m_fSeekPercentage > 100.0f) m_fSeekPercentage = 100.0f;
       if (m_fSeekPercentage < 0.0f) m_fSeekPercentage = 0.0f;
       CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);
@@ -120,7 +120,7 @@ void CGUIDialogSeekBar::ResetTimer()
   m_timer = CTimeUtils::GetFrameTime();
 }
 
-void CGUIDialogSeekBar::Render()
+void CGUIDialogSeekBar::FrameMove()
 {
   if (!g_application.m_pPlayer)
   {
@@ -149,7 +149,6 @@ void CGUIDialogSeekBar::Render()
     msg.SetLabel(GetSeekTimeLabel());
     OnMessage(msg);
   }
-  CGUIDialog::Render();
 
   // Check for seek timeout, and perform the seek
   if (m_bRequireSeek && CTimeUtils::GetFrameTime() - m_timer > SEEK_BAR_SEEK_TIME)
@@ -159,6 +158,7 @@ void CGUIDialogSeekBar::Render()
     g_application.SeekTime(time);
     m_bRequireSeek = false;
   }
+  CGUIDialog::FrameMove();
 }
 
 CStdString CGUIDialogSeekBar::GetSeekTimeLabel(TIME_FORMAT format)

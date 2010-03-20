@@ -55,8 +55,10 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   AVCodec* pCodec;
   m_bOpenedCodec = false;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load())
+    return false;
 
+  m_dllAvCodec.avcodec_register_all();
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   m_dllAvCodec.avcodec_get_context_defaults(m_pCodecContext);
 
@@ -112,7 +114,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
-  m_bMapBuilt = false;
+  m_iMapChannels = -1;
   m_bOpenedCodec = true;
   m_iSampleFormat = SAMPLE_FMT_NONE;
   return true;
@@ -357,12 +359,13 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
 
   //terminate the channel map
   m_channelMap[index] = PCM_INVALID;
-  m_bMapBuilt = true;
+  m_iMapChannels = GetChannels();
 }
 
 enum PCMChannels* CDVDAudioCodecFFmpeg::GetChannelMap()
 {
-  if (!m_bMapBuilt) BuildChannelMap();
+  if (m_iMapChannels != GetChannels())
+    BuildChannelMap();
   if (m_channelMap[0] == PCM_INVALID)
     return NULL;
   return m_channelMap;

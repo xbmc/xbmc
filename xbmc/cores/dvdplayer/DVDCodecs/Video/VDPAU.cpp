@@ -30,9 +30,9 @@
 #include "DVDClock.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "AdvancedSettings.h"
+#include "Application.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
-
-CVDPAU*          g_VDPAU=NULL;
 
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
@@ -47,7 +47,7 @@ CVDPAU::Desc decoder_profiles[] = {
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Desc);
 
-static float studioCSC[3][4] = 
+static float studioCSC[3][4] =
 {
     { 1.0f,        0.0f, 1.57480000f,-0.78740000f},
     { 1.0f,-0.18737736f,-0.46813736f, 0.32775736f},
@@ -109,17 +109,27 @@ CVDPAU::CVDPAU()
     outputSurfaces[i] = VDP_INVALID_HANDLE;
 
   videoMixer = VDP_INVALID_HANDLE;
+
+  upScale = g_advancedSettings.m_videoVDPAUScaling;
 }
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
 {
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
-  if (!dl_handle) 
+  if (!dl_handle)
   {
-    CLog::Log(LOGNOTICE,"(VDPAU) unable to get handle to libvdpau");
+    const char* error = dlerror();
+    if (!error)
+      error = "dlerror() returned NULL";
+
+    CLog::Log(LOGNOTICE,"(VDPAU) Unable to get handle to libvdpau: %s", error);
+
+    if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_METHOD_VDPAU)
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
+
     return false;
   }
-  
+
   InitVDPAUProcs();
 
   if (vdp_device != VDP_INVALID_HANDLE)
@@ -148,7 +158,7 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
 
       vdp_decoder_destroy(decoder);
       CheckStatus(vdp_st, __LINE__);
-}
+    }
 
     InitCSCMatrix(avctx->height);
     MakePixmap(avctx->width,avctx->height);
@@ -158,9 +168,6 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
     avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
     avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-
-    /* hack for now, we need this in renderer */
-    g_VDPAU = this;
     return true;
   }
   return false;
@@ -174,9 +181,14 @@ CVDPAU::~CVDPAU()
 void CVDPAU::Close()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+
+  FiniVDPAUOutput();
+  FiniVDPAUProcs();
+
   if (m_glPixmap)
   {
     CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     glXDestroyPixmap(m_Display, m_glPixmap);
     m_glPixmap = NULL;
   }
@@ -186,9 +198,6 @@ void CVDPAU::Close()
     XFreePixmap(m_Display, m_Pixmap);
     m_Pixmap = NULL;
   }
-
-    FiniVDPAUOutput();
-    FiniVDPAUProcs();
 
   if (m_glContext)
   {
@@ -201,8 +210,6 @@ void CVDPAU::Close()
     dlclose(dl_handle);
     dl_handle = NULL;
   }
-
-  g_VDPAU = NULL;
 }
 
 bool CVDPAU::MakePixmapGL()
@@ -233,7 +240,7 @@ bool CVDPAU::MakePixmapGL()
 
   GLXFBConfig *fbConfigs;
   fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
-  if (fbConfigs==NULL) 
+  if (fbConfigs==NULL)
   {
     CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
     return false;
@@ -256,36 +263,55 @@ bool CVDPAU::MakePixmapGL()
   GLXDrawable lastdrw = glXGetCurrentDrawable();
 
   XVisualInfo *visInfo;
-    visInfo = glXGetVisualFromFBConfig(m_Display, fbConfigs[fbConfigIndex]);
-    if (!visInfo)
-    {
-      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
+  visInfo = glXGetVisualFromFBConfig(m_Display, fbConfigs[fbConfigIndex]);
+  if (!visInfo)
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
     XFree(fbConfigs);
-      return false;
-    }
+    return false;
+  }
   XFree(fbConfigs);
 
-    CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
-    m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
-    XFree(visInfo);
+  CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
+  m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
+  XFree(visInfo);
 
-    if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
-    {
-      CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
+  if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
     return false;
-    }
+  }
 
   /* restore what thread had before */
   glXMakeCurrent(m_Display, lastdrw, lastctx);
 
   return true;
 
-  }
+}
 
 bool CVDPAU::MakePixmap(int width, int height)
+{
+  //pick the smallest dimensions, so we downscale with vdpau and upscale with opengl when appropriate
+  //this requires the least amount of gpu memory bandwidth
+  if (g_graphicsContext.GetWidth() < width || g_graphicsContext.GetHeight() < height || upScale)
   {
-  OutWidth = g_graphicsContext.GetWidth();
-  OutHeight = g_graphicsContext.GetHeight();
+    //scale width to desktop size if the aspect ratio is the same or bigger than the desktop
+    if (height * g_graphicsContext.GetWidth() / width <= g_graphicsContext.GetHeight())
+    {
+      OutWidth = g_graphicsContext.GetWidth();
+      OutHeight = height * g_graphicsContext.GetWidth() / width;
+    }
+    else //scale height to the desktop size if the aspect ratio is smaller than the desktop
+    {
+      OutHeight = g_graphicsContext.GetHeight();
+      OutWidth = width * g_graphicsContext.GetHeight() / height;
+    }
+  }
+  else
+  { //let opengl scale
+    OutWidth = width;
+    OutHeight = height;
+  }
 
   CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
 
@@ -383,7 +409,7 @@ bool CVDPAU::IsVDPAUFormat(PixelFormat format)
 void CVDPAU::CheckFeatures()
 {
   if (videoMixer == VDP_INVALID_HANDLE)
-  { 
+  {
     CLog::Log(LOGNOTICE, " (VDPAU) Creating the video mixer");
     // Creation of VideoMixer.
     VdpVideoMixerParameter parameters[] = {
@@ -413,8 +439,8 @@ void CVDPAU::CheckFeatures()
                                     &videoMixer);
     CheckStatus(vdp_st, __LINE__);
 
-      SetHWUpscaling();
-    }
+    SetHWUpscaling();
+  }
 
   if (tmpBrightness != g_settings.m_currentVideoSettings.m_Brightness ||
       tmpContrast   != g_settings.m_currentVideoSettings.m_Contrast)
@@ -501,7 +527,7 @@ void CVDPAU::SetNoiseReduction()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_NOISE_REDUCTION_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_NoiseReduction) 
+  if (!g_settings.m_currentVideoSettings.m_NoiseReduction)
   {
     VdpBool enabled[]= {0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -526,7 +552,7 @@ void CVDPAU::SetSharpness()
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_SHARPNESS_LEVEL };
   VdpStatus vdp_st;
 
-  if (!g_settings.m_currentVideoSettings.m_Sharpness) 
+  if (!g_settings.m_currentVideoSettings.m_Sharpness)
   {
     VdpBool enabled[]={0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -545,7 +571,7 @@ void CVDPAU::SetSharpness()
 void CVDPAU::SetHWUpscaling()
 {
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
+  if(!Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1) || !upScale)
     return;
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 };
@@ -592,8 +618,8 @@ void CVDPAU::SetDeinterlacing()
     VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
-    CheckStatus(vdp_st, __LINE__);
-  }
+  CheckStatus(vdp_st, __LINE__);
+}
 
 void CVDPAU::InitVDPAUProcs()
 {
@@ -605,6 +631,10 @@ void CVDPAU::InitVDPAUProcs()
   {
     CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
     vdp_device = VDP_INVALID_HANDLE;
+
+    if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_METHOD_VDPAU)
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "VDPAU", error, 10000);
+
     return;
   }
 
@@ -630,8 +660,8 @@ void CVDPAU::InitVDPAUProcs()
     vdp_device = VDP_INVALID_HANDLE;
     return;
   }
-  
-  if (vdp_st != VDP_STATUS_OK) 
+
+  if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
     vdp_device = VDP_INVALID_HANDLE;
@@ -677,7 +707,7 @@ void CVDPAU::InitVDPAUProcs()
   VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_TARGET_CREATE_X11       , vdp_presentation_queue_target_create_x11);
   VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_QUERY_SURFACE_STATUS    , vdp_presentation_queue_query_surface_status);
   VDP_PROC(VDP_FUNC_ID_PRESENTATION_QUEUE_GET_TIME                , vdp_presentation_queue_get_time);
-
+  
 #undef VDP_PROC
 
   vdp_st = vdp_preemption_callback_register(vdp_device,
@@ -733,7 +763,7 @@ void CVDPAU::FiniVDPAUOutput()
 
   outputSurface = presentSurface = VDP_INVALID_HANDLE;
 
-  for (int i = 0; i < totalAvailableOutputSurfaces; i++) 
+  for (int i = 0; i < totalAvailableOutputSurfaces; i++)
   {
     vdp_st = vdp_output_surface_destroy(outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
@@ -759,7 +789,7 @@ void CVDPAU::ReadFormatOf( PixelFormat fmt
                          , VdpDecoderProfile &vdp_decoder_profile
                          , VdpChromaType     &vdp_chroma_type)
 {
-  switch (fmt) 
+  switch (fmt)
   {
     case PIX_FMT_VDPAU_MPEG1:
       vdp_decoder_profile = VDP_DECODER_PROFILE_MPEG1;
@@ -817,12 +847,12 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   else
     max_references = 2;
 
-    vdp_st = vdp_decoder_create(vdp_device,
-                                vdp_decoder_profile,
-                                vid_width,
-                                vid_height,
-                                max_references,
-                                &decoder);
+  vdp_st = vdp_decoder_create(vdp_device,
+                              vdp_decoder_profile,
+                              vid_width,
+                              vid_height,
+                              max_references,
+                              &decoder);
   CHECK_VDPAU_RETURN(vdp_st, false);
 
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
@@ -839,10 +869,10 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   int tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES;
   if (vid_width == FULLHD_WIDTH)
-    tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES_FOR_FULLHD; 
+    tmpMaxOutputSurfaces = NUM_OUTPUT_SURFACES_FOR_FULLHD;
 
   // Creation of outputSurfaces
-  for (int i = 0; i < NUM_OUTPUT_SURFACES && i < tmpMaxOutputSurfaces; i++) 
+  for (int i = 0; i < NUM_OUTPUT_SURFACES && i < tmpMaxOutputSurfaces; i++)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
@@ -852,7 +882,7 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
     CHECK_VDPAU_RETURN(vdp_st, false);
     totalAvailableOutputSurfaces++;
   }
-  CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)", 
+  CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)",
                        totalAvailableOutputSurfaces,
                        tmpMaxOutputSurfaces,
                        NUM_OUTPUT_SURFACES);
@@ -860,7 +890,7 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
-  vdpauConfigured = true;
+vdpauConfigured = true;
   return true;
 }
 
@@ -919,14 +949,14 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CVDPAU*               vdp        = (CVDPAU*)ctx->GetHardware();
   struct pictureAge*    pA         = &vdp->picAge;
-  
+
   // while we are waiting to recover we can't do anything
   if(vdp->recover)
   {
     CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - returning due to awaiting recovery");
     return -1;
   }
-  
+
   vdpau_render_state * render = NULL;
 
   // find unused surface
@@ -943,24 +973,24 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (render == NULL)
   {
-      // create a new surface
-      VdpDecoderProfile profile;
-      ReadFormatOf(avctx->pix_fmt, profile, vdp->vdp_chroma_type);
-      render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
-      vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
-                                             vdp->vdp_chroma_type,
-                                             avctx->width,
-                                             avctx->height,
-                                             &render->surface);
-      vdp->CheckStatus(vdp_st, __LINE__);
+    // create a new surface
+    VdpDecoderProfile profile;
+    ReadFormatOf(avctx->pix_fmt, profile, vdp->vdp_chroma_type);
+    render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
+    vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
+                                           vdp->vdp_chroma_type,
+                                           avctx->width,
+                                           avctx->height,
+                                           &render->surface);
+    vdp->CheckStatus(vdp_st, __LINE__);
     if (vdp_st != VDP_STATUS_OK)
     {
       free(render);
       CLog::Log(LOGERROR, "CVDPAU::FFGetBuffer - No Video surface available could be created");
       return -1;
     }
-        vdp->m_videoSurfaces.push_back(render);
-    }
+    vdp->m_videoSurfaces.push_back(render);
+  }
 
   if (render == NULL)
     return -1;
@@ -1006,7 +1036,7 @@ void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
   for(i=0; i<4; i++)
-    pic->data[i]= NULL;  
+    pic->data[i]= NULL;
 }
 
 
@@ -1042,7 +1072,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(s->pix_fmt == PIX_FMT_VDPAU_H264)
     max_refs = render->info.h264.num_ref_frames;
 
-  if(vdp->decoder == VDP_INVALID_HANDLE 
+  if(vdp->decoder == VDP_INVALID_HANDLE
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
   {
@@ -1082,7 +1112,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.x1 = OutWidth;
     outRectVid.y1 = OutHeight;
   }
-  
+
   EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
 
   if(pFrame)
@@ -1097,7 +1127,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     past[0] = past[1];
     past[1] = current;
     current = render->surface;
-  
+
     if((method == VS_INTERLACEMETHOD_AUTO && pFrame->interlaced_frame)
     ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
@@ -1172,7 +1202,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
-                                  0,
+                                  0, 
                                   m_mixerfield,
                                   2,
                                   past_surfaces,
@@ -1186,7 +1216,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
                                   0,
                                   NULL);
   CheckStatus(vdp_st, __LINE__);
-  
+
   surfaceNum++;
   if (surfaceNum >= totalAvailableOutputSurfaces) surfaceNum = 0;
 
@@ -1198,13 +1228,16 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       return VC_PICTURE;
     else
       return VC_BUFFER | VC_PICTURE;
-}
+  }
 }
 
 bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
   picture->format = DVDVideoPicture::FMT_VDPAU;
   picture->iFlags = 0;
+  picture->iWidth = OutWidth;
+  picture->iHeight = OutHeight;
+  picture->vdpau = this;
 
   if(m_mixerstep)
   {
@@ -1233,7 +1266,7 @@ void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
 {
   CLog::Log(LOGERROR,"VDPAU Device Preempted - attempting recovery");
   CVDPAU* pCtx = (CVDPAU*)context;
-    pCtx->recover = true;
+  pCtx->recover = true;
 }
 
 bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
@@ -1249,7 +1282,7 @@ bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
-      recover = true;
+    recover = true;
     return true;
   }
   return false;

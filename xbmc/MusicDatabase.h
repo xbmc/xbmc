@@ -25,8 +25,7 @@
 #pragma once
 #include "Database.h"
 #include "Album.h"
-
-struct SScraperInfo;
+#include "addons/Scraper.h"
 
 class CArtist;
 class CFileItem;
@@ -112,6 +111,7 @@ public:
   CMusicDatabase(void);
   virtual ~CMusicDatabase(void);
 
+  virtual bool Open();
   virtual bool CommitTransaction();
   void EmptyCache();
   void Clean();
@@ -188,8 +188,8 @@ public:
   int GetVariousArtistsAlbumsCount();
 
   bool SetSongRating(const CStdString &filePath, char rating);
-  bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
+  bool SetScraperForPath(const CStdString& strPath, const ADDON::ScraperPtr& info);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info);
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
@@ -206,7 +206,11 @@ protected:
   std::map<CStdString, int /*CPathCache*/> m_pathCache;
   std::map<CStdString, int /*CPathCache*/> m_thumbCache;
   std::map<CStdString, CAlbumCache> m_albumCache;
+
   virtual bool CreateTables();
+  virtual int GetMinVersion() const { return 14; };
+  const char *GetDefaultDBName() const { return "MyMusic7"; };
+
   int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);

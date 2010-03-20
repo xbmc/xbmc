@@ -4,7 +4,7 @@
 # for sending input events.
 #
 # The original script and documentation regarding the remote can be found at:
-#   http://xbmc.org/forum/showthread.php?t=28765
+#   http://forum.xbmc.org/showthread.php?t=28765
 #
 #
 # TODO:

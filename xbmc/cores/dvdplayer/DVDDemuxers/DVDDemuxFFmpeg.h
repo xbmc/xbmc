@@ -134,6 +134,7 @@ protected:
 
   double   m_iCurrentPts; // used for stream length estimation
   bool     m_bMatroska;
+  bool     m_bAVI;
   int      m_speed;
   unsigned m_program;
   DWORD    m_timeout;

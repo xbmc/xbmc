@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <id>com.m1905.scraper</id>
+  <type>scraper</type>
+  <title>M1905</title>
+  <library>m1905.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>M1905 Movie Scraper</summary>
+  <description>Download Movie information from www.m1905.com</description>
+  <author>TAXIGPS</author>
+  <supportedcontent>
+    <content>movies</content>
+  </supportedcontent>
+</addoninfo>

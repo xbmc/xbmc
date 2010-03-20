@@ -59,7 +59,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
 
   // Only shown cURL debug into with loglevel DEBUG_SAMBA or higher
   if( g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_SAMBA )
-  return 0;
+    return 0;
 
   CStdString strLine;
   strLine.append(output, size);
@@ -150,18 +150,23 @@ size_t CFileCurl::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   if (maxWriteable)
   {
     if (!m_buffer.WriteData(buffer, maxWriteable))
-      CLog::Log(LOGERROR, "Unable to write to buffer - what's up?");
-    amount -= maxWriteable;
-    buffer += maxWriteable;
+    {
+      CLog::Log(LOGERROR, "%s - Unable to write to buffer with %i bytes - what's up?", __FUNCTION__, maxWriteable);
+    }
+    else
+    {
+      amount -= maxWriteable;
+      buffer += maxWriteable;
+    }
   }
   if (amount)
   {
-    CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount);
+//    CLog::Log(LOGDEBUG, "CFileCurl::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount);
 
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
     {
-      CLog::Log(LOGDEBUG, "%s - Failed to grow overflow buffer", __FUNCTION__);
+      CLog::Log(LOGWARNING, "%s - Failed to grow overflow buffer from %i bytes to %i bytes", __FUNCTION__, m_overflowSize, amount + m_overflowSize);
       return 0;
     }
     memcpy(m_overflowBuffer + m_overflowSize, buffer, amount);
@@ -406,7 +411,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
     g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
-    
+
   // setup any requested authentication
   if( m_ftpauth.length() > 0 )
   {
@@ -531,7 +536,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
   CStdString strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
-
+  
   if( strProtocol.Equals("ftp")
   ||  strProtocol.Equals("ftps") )
   {
@@ -764,7 +769,7 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 
   bool found = Exists(strURL);
   Close();
-
+  
   return found;
 }
 
@@ -785,7 +790,7 @@ bool CFileCurl::Open(const CURL& url)
 {
 
   m_opened = true;
-  
+
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
@@ -860,7 +865,7 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
   {
     if (m_fileSize != 0)
       CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
-      
+
     return false;
   }
 
@@ -879,7 +884,39 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
 
 bool CFileCurl::Exists(const CURL& url)
 {
-  return Stat(url, NULL) == 0;
+  // if file is already running, get info from it
+  if( m_opened )
+  {
+    CLog::Log(LOGWARNING, "%s - Exist called on open file", __FUNCTION__);
+    return true;
+  }
+
+  CURL url2(url);
+  ParseAndCorrectUrl(url2);
+
+  ASSERT(m_state->m_easyHandle == NULL);
+  g_curlInterface.easy_aquire(url2.GetProtocol(), url2.GetHostName(), &m_state->m_easyHandle, NULL);
+
+  SetCommonOptions(m_state);
+  SetRequestHeaders(m_state);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
+
+  if(url2.GetProtocol() == "ftp")
+  {
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+  }
+
+  CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+  g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+  
+  if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
+    return true;
+  
+  errno = ENOENT;
+  return false;
 }
 
 
@@ -973,8 +1010,11 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   if( m_opened )
   {
     CLog::Log(LOGWARNING, "%s - Stat called on open file", __FUNCTION__);
-    buffer->st_size = GetLength();
-    buffer->st_mode = _S_IFREG;
+    if (buffer)
+    {
+      buffer->st_size = GetLength();
+      buffer->st_mode = _S_IFREG;
+    }
     return 0;
   }
 
@@ -997,21 +1037,6 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
-
-  // In case we are performing a stat() with no buffer (eg. called from ::exists()) we fail immediately
-  if (!buffer)
-  {
-    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-    if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
-    {
-      return 0;
-    }
-    else
-    {
-      errno = ENOENT;
-      return -1;
-    }
-  }
 
   if(result == CURLE_GOT_NOTHING || result == CURLE_HTTP_RETURNED_ERROR )
   {
@@ -1055,10 +1080,12 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCorrectHeaders(m_state);
 
+  if(buffer)
+  {
     char content[255];
     if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
-    { 
-      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL); 
+    {
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
       return -1;
     }
@@ -1070,7 +1097,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
       else
         buffer->st_mode = _S_IFREG;
     }
-
+  }
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
   return 0;
 }
@@ -1191,7 +1218,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         }
 
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
-        
+
         // Connect + seek to current position (again)
         g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_RESUME_FROM_LARGE, m_filePos);
         g_curlInterface.multi_add_handle(m_multiHandle, m_easyHandle);

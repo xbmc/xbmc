@@ -57,7 +57,7 @@ enum ESCALINGMETHOD
 {
   VS_SCALINGMETHOD_NEAREST=0,
   VS_SCALINGMETHOD_LINEAR,
-  
+
   VS_SCALINGMETHOD_CUBIC,
   VS_SCALINGMETHOD_LANCZOS2,
   VS_SCALINGMETHOD_LANCZOS3_FAST,
@@ -86,6 +86,7 @@ public:
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio
+  bool  m_CustomNonLinStretch;
   int m_AudioStream;
   float m_VolumeAmplification;
   bool m_OutputToAllSpeakers;

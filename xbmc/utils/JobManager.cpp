@@ -58,7 +58,7 @@ void CJobWorker::Process()
     CJob *job = m_jobManager->GetNextJob(this);
     if (!job)
       break;
-    
+
     // we have a job to do
     bool success = job->DoWork();
     m_jobManager->OnJobComplete(success, job);
@@ -139,14 +139,14 @@ void CJobManager::CancelJobs()
 {
   CSingleLock lock(m_section);
   m_running = false;
-  
+
   // clear any pending jobs
   for (unsigned int priority = CJob::PRIORITY_LOW; priority <= CJob::PRIORITY_HIGH; ++priority)
   {
     for_each(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), mem_fun_ref(&CWorkItem::FreeJob));
     m_jobQueue[priority].clear();
   }
-  
+
   // cancel any callbacks on jobs still processing
   for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CWorkItem::Cancel));
 

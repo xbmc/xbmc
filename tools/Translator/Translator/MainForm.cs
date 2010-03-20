@@ -1067,7 +1067,7 @@ namespace TeamXBMC.Translator
 		/// </summary>
 		private void menuItemHelp_Click(object sender, System.EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://xbmc.org/wiki/index.php?title=XBMC_Translator");
+			System.Diagnostics.Process.Start("http://wiki.xbmc.org/index.php?title=XBMC_Translator");
 		}
 
 		/// <summary>

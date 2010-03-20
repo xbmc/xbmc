@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<scraper framework="1.1" date="2010-02-06" name="Daum Music" content="albums" thumb="daum.png" language="ko">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;앨범소개 모두 보기&quot; type=&quot;bool&quot; id=&quot;enFullReview&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;출시앨범 보기&quot; type=&quot;bool&quot; id=&quot;enDiscography&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;사진 더보기&quot; type=&quot;bool&quot; id=&quot;enThumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;팬아트&quot; type=&quot;bool&quot; id=&quot;enFanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetSettings>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="\1" dest="3">
+			<expression>(http://music.daum.net/album/.*)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateAlbumSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://music.daum.net/search/album.do?query=\1%20$$2&lt;/url&gt;" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateAlbumSearchUrl>
+	<GetAlbumSearchResults dest="3">
+		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;artist&gt;\3&lt;/artist&gt;&lt;url&gt;\1&lt;/url&gt;&lt;/entity&gt;" dest="4">
+				<expression repeat="yes">&lt;a href="([^"]+)" class="fl"[^&gt;]*&gt;(.+?)&lt;/a&gt;.*?&lt;a href="[^"]+" class="arti"[^&gt;]*&gt;(.+?)&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetAlbumSearchResults>
+	<GetAlbumDetails dest="3">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="10">
+				<expression>"scrapAlbum\('(\d+)'\)"</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;title&gt;\1&lt;/title&gt;" dest="4">
+				<RegExp input="$$1" output="\1" dest="5">
+					<expression trim="1">&lt;li class="itm1\s*"&gt;&lt;a href[^&gt;]*&gt;&lt;strong class="title fs_biggest"&gt;\s*(.+?)&lt;/strong&gt;&lt;/a&gt;\s*&lt;/li&gt;</expression>
+				</RegExp>
+				<expression>(\S.*\S)</expression>
+			</RegExp>
+			<RegExp input="$$5" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="4+">
+				<RegExp input="$$1" output="\1" dest="5">
+					<expression>&lt;li class="itm3\s*"&gt;&lt;strong class="col"&gt;아티스트&lt;/strong&gt;(.+?)&lt;/li&gt;</expression>
+				</RegExp>
+				<expression trim="1">(\S.*\S)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;type&gt;\1&lt;/type&gt;" dest="4+">
+				<expression>&lt;li class="itm4\s*"&gt;&lt;strong class="col"&gt;앨범정보&lt;/strong&gt;\s*&lt;span class="txt"&gt;([^&lt;]*)&lt;/span&gt;\s*&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;&lt;style&gt;\2&lt;/style&gt;" dest="4+">
+				<expression>&lt;li class="itm6\s*"&gt;&lt;strong class="col"&gt;장르.*?&lt;/strong&gt;\s*&lt;span class="txt"&gt;\s*&lt;a href="[^"]*" title="[^"]*"&gt;([^&lt;]+)&lt;/a&gt;[^&lt;]*&lt;a href="[^"]*" title="[^"]*"&gt;([^&lt;]+)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="4+">
+				<expression>&lt;li class="itm7\s*"&gt;&lt;strong class="col"&gt;발매일&lt;/strong&gt;\s*&lt;span class="txt"&gt;(\d{4}).\d{2}.\d{2}[^&lt;]*&lt;/span&gt;&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;releasedate&gt;\1&lt;/releasedate&gt;" dest="4+">
+				<expression>&lt;li class="itm7\s*"&gt;&lt;strong class="col"&gt;발매일&lt;/strong&gt;\s*&lt;span class="txt"&gt;(\d{4}.\d{2}.\d{2})[^&lt;]*&lt;/span&gt;&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;label&gt;\1&lt;/label&gt;" dest="4+">
+				<expression>&lt;li class="itm8\s*"&gt;&lt;strong class="col"&gt;레이블.*?발매사&lt;/strong&gt;\s*&lt;span class="txt"&gt;(.+?) / ([^&lt;]+)&lt;/span&gt;&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp conditional="!enThumbs" input="$$1" output="&lt;thumb&gt;\1/image/\2&lt;/thumb&gt;" dest="4+">
+				<expression>&lt;p class="thumb" id="AlbumPic"&gt;\s*&lt;a href[^&gt;]*&gt;&lt;img src="(http://[^/]+)/S\d+x\d+/([^"]+)" width="\d+" height="\d+"[^&gt;]*&gt;&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp conditional="enThumbs" input="$$1" output="&lt;url cache=&quot;daum-album-$$10.htm&quot; function=&quot;GetAlbumThumb&quot;&gt;http://music.daum.net\1&lt;/url&gt;" dest="4+">
+				<expression>&lt;a class="tab5" href="([^"]+)" title="앨범이미지"&gt;</expression>
+			</RegExp>
+			<RegExp conditional="!enFullReview" input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="4+">
+				<expression trim="1">&lt;h3 class="tit"&gt;앨범소개&lt;/h3&gt;\s*&lt;p class="txt"&gt;(.*?)&lt;/p&gt;</expression>
+			</RegExp>
+			<RegExp conditional="enFullReview" input="$$1" output="&lt;url function=&quot;GetAlbumReview&quot;&gt;http://music.daum.net\1&lt;/url&gt;" dest="4+">
+				<expression>&lt;a class="tab2" href="([^"]+)" title="앨범소개"&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\2&lt;/title&gt;&lt;/track&gt;" dest="4+">
+				<expression repeat="yes">&lt;td class="c2 tColNo"&gt;(\d+)&lt;/td&gt;\s*&lt;td class="c4"&gt;\s*&lt;a href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
+				<expression>네티즌별점&lt;/span&gt;&lt;/span&gt;&lt;em&gt;([\d\.]+)&lt;/em&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetAlbumDetails>
+	<CreateArtistSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://music.daum.net/search/artist.do?query=\1&lt;/url&gt;" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateArtistSearchUrl>
+	<GetArtistSearchResults dest="3">
+		<RegExp input="$$4" output="&lt;results&gt;\1&lt;/results&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;url&gt;\1&lt;/url&gt;&lt;title&gt;\2&lt;/title&gt;&lt;/entity&gt;" dest="4">
+				<expression repeat="yes">&lt;span class="tit2 subj2"&gt;&lt;a href="([^"]*)"[^&gt;]*&gt;(.+?)&lt;/a&gt;&lt;/span&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistSearchResults>
+	<GetArtistDetails dest="3">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="10">
+				<expression>"scrapArtist\('(\d+)'\)"</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="4">
+				<expression>&lt;li class="itm"&gt;&lt;strong class="title fs_biggest"[^&gt;]*&gt;(.+?)&lt;/strong&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="4+">
+				<expression>출생: ([\d\.]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;died&gt;\1&lt;/died&gt;" dest="4+">
+				<expression>사망: ([\d\.]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="4+">
+				<expression>결성: ([\d\.]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="4+">
+				<expression>해체: ([\d\.]+)</expression>
+			</RegExp>
+			<RegExp conditional="!enThumbs" input="$$1" output="&lt;thumb&gt;\1/image/\2&lt;/thumb&gt;" dest="4+">
+				<expression>&lt;p class="thumb" id="ArtiPic"&gt;\s*&lt;a href[^&gt;]*&gt;&lt;img src="(http://[^/]+)/P160x125/([^"]+)" width="160" height="125"[^&gt;]*&gt;&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;&lt;style&gt;\2&lt;/style&gt;" dest="4+">
+				<expression>&lt;li class="itm1 fl"&gt;&lt;strong class="col[^"]*"&gt;장.*?르&lt;/strong&gt;\s*&lt;span class="txt"&gt;\s*&lt;a href="[^"]*" title="[^"]*"&gt;([^&lt;]+)&lt;/a&gt;[^&lt;]*&lt;a href="[^"]*" title="[^"]*"&gt;([^&lt;]+)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;yearsactive&gt;\1&lt;/yearsactive&gt;" dest="4+">
+				<expression repeat="yes" trim="1">&lt;span class="[^"]*" title="아티스트 활동연대" alt="아티스트 활동연대"&gt;([^&lt;]*)&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
+				<expression>&lt;span class="starBig pink"&gt;&lt;span [^&gt;]*&gt;&lt;span [^&gt;]*&gt;네티즌별점&lt;/span&gt;&lt;/span&gt;&lt;em&gt;([\d\.]+)&lt;/em&gt;&lt;/span&gt;</expression>
+			</RegExp>
+			<RegExp conditional="enDiscography" input="$$1" output="&lt;url function=&quot;GetDiscography&quot;&gt;http://music.daum.net\1&lt;/url&gt;" dest="4+">
+				<expression noclean="1">&lt;a class="tab3" href="([^"]+)" title="앨범정보"&gt;</expression>
+			</RegExp>
+			<RegExp conditional="enThumbs" input="$$1" output="&lt;url cache=&quot;daum-artist-$$10.htm&quot; function=&quot;GetArtistThumb&quot;&gt;http://music.daum.net\1&lt;/url&gt;" dest="4+">
+				<expression>&lt;a class="tab6" href="([^"]+)" title="포토"&gt;</expression>
+			</RegExp>
+			<RegExp conditional="enFanart" input="$$1" output="&lt;url cache=&quot;daum-artist-$$10.htm&quot; function=&quot;GetArtistFanart&quot;&gt;http://music.daum.net\1&lt;/url&gt;" dest="4+">
+				<expression>&lt;a class="tab6" href="([^"]+)" title="포토"&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistDetails>
+	<GetAlbumReview dest="3">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$5" output="&lt;review&gt;\1&lt;/review&gt;" dest="4">
+				<RegExp input="$$1" output="\1" dest="5">
+					<expression noclean="1">&lt;div id="cAlbInfo" class="coll"&gt;(.*)&lt;div id="wArtiPrize" class="sub"&gt;</expression>
+				</RegExp>
+				<expression>&lt;dd&gt;\s*&lt;div&gt;\s*(\S.*\S)\s*&lt;/div&gt;\s*&lt;/dd&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetAlbumReview>
+	<GetDiscography dest="3">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;&lt;/album&gt;" dest="4">
+				<expression repeat="yes">class="fw_b fs_bigger gray_d2"&gt;([^&lt;]+)&lt;/a&gt;.*?&lt;li class="c4 fs_small gray_b1"&gt;(\d{4}\.\d{2}\.\d{2})</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDiscography>
+	<GetAlbumThumb dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://\1/S210x210/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="5">
+				<expression repeat="yes">&lt;a href="[^"]+" class="pic"[^&gt;]*&gt;&lt;img src="http://([^/]+)/S210x210/([^"]+)"</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetAlbumThumb>
+	<GetAlbumFanart dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;&lt;fanart&gt;\1$$7&lt;/fanart&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://\1/S210x210/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="5">
+				<expression repeat="yes">&lt;img src="http://([^/]+)/S210x210/([^"]+)"</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetAlbumFanart>
+	<GetArtistThumb dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://\1/P160x125/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="5">
+				<expression repeat="yes">&lt;img src="http://([^/]+)/P160x125/([^"]+)"</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistThumb>
+	<GetArtistFanart dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;&lt;fanart&gt;\1$$7&lt;/fanart&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://\1/P160x125/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="5">
+				<expression repeat="yes">&lt;img src="http://([^/]+)/P160x125/([^"]+)"</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistFanart>
+</scraper>

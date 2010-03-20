@@ -24,7 +24,6 @@
 #include "ButtonTranslator.h"
 #include "Util.h"
 #include "Settings.h"
-#include "SkinInfo.h"
 #include "Key.h"
 #include "File.h"
 #include "Directory.h"
@@ -627,7 +626,7 @@ bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice
 }
 #endif
 
-void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action, bool fallback)
+CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
 {
   CStdString strAction;
   // try to get the action from the current window
@@ -636,48 +635,8 @@ void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action, 
   if (actionID == 0 && fallback)
     actionID = GetActionCode( -1, key, strAction);
   // Now fill our action structure
-  action.actionId = actionID;
-  action.strAction = strAction;
-  action.amount1 = 1; // digital button (could change this for repeat acceleration)
-  action.amount2 = 0;
-  action.repeat = key.GetRepeat();
-  action.buttonCode = key.GetButtonCode();
-  action.holdTime = key.GetHeld();
-  // get the action amounts of the analog buttons
-  if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
-  {
-    action.amount1 = (float)key.GetLeftTrigger() / 255.0f;
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
-  {
-    action.amount1 = (float)key.GetRightTrigger() / 255.0f;
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
-  {
-    action.amount1 = key.GetLeftThumbX();
-    action.amount2 = key.GetLeftThumbY();
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK)
-  {
-    action.amount1 = key.GetRightThumbX();
-    action.amount2 = key.GetRightThumbY();
-  }
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP)
-    action.amount1 = key.GetLeftThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
-    action.amount1 = -key.GetLeftThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
-    action.amount1 = -key.GetLeftThumbX();
-  else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
-    action.amount1 = key.GetLeftThumbX();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
-    action.amount1 = key.GetRightThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
-    action.amount1 = -key.GetRightThumbY();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
-    action.amount1 = -key.GetRightThumbX();
-  else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
-    action.amount1 = key.GetRightThumbX();
+  CAction action(actionID, strAction, key);
+  return action;
 }
 
 int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction)
@@ -871,6 +830,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videofiles")) windowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("videolibrary")) windowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) windowID = WINDOW_VIDEO_PLAYLIST;
+  else if (strWindow.Equals("addonbrowser")) windowID = WINDOW_ADDON_BROWSER;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
   else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
@@ -902,7 +862,6 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("playercontrols")) windowID = WINDOW_DIALOG_PLAYER_CONTROLS;
   else if (strWindow.Equals("seekbar")) windowID = WINDOW_DIALOG_SEEK_BAR;
   else if (strWindow.Equals("musicosd")) windowID = WINDOW_DIALOG_MUSIC_OSD;
-  else if (strWindow.Equals("visualisationsettings")) windowID = WINDOW_DIALOG_VIS_SETTINGS;
   else if (strWindow.Equals("visualisationpresetlist")) windowID = WINDOW_DIALOG_VIS_PRESET_LIST;
   else if (strWindow.Equals("osdvideosettings")) windowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
   else if (strWindow.Equals("osdaudiosettings")) windowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
@@ -927,13 +886,13 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videoosd")) windowID = WINDOW_OSD;
   else if (strWindow.Equals("videomenu")) windowID = WINDOW_VIDEO_MENU;
   else if (strWindow.Equals("filebrowser")) windowID = WINDOW_DIALOG_FILE_BROWSER;
-  else if (strWindow.Equals("startup")) windowID = WINDOW_STARTUP;
-  else if (strWindow.Equals("startwindow")) windowID = g_SkinInfo.GetStartWindow();
+  else if (strWindow.Equals("startup")) windowID = WINDOW_STARTUP_ANIM;
+  else if (strWindow.Equals("startwindow")) windowID = WINDOW_START;
   else if (strWindow.Equals("loginscreen")) windowID = WINDOW_LOGIN_SCREEN;
   else if (strWindow.Equals("musicoverlay")) windowID = WINDOW_MUSIC_OVERLAY;
   else if (strWindow.Equals("videooverlay")) windowID = WINDOW_VIDEO_OVERLAY;
   else if (strWindow.Equals("pictureinfo")) windowID = WINDOW_DIALOG_PICTURE_INFO;
-  else if (strWindow.Equals("pluginsettings")) windowID = WINDOW_DIALOG_PLUGIN_SETTINGS;
+  else if (strWindow.Equals("addonsettings") || strWindow.Equals("visualisationsettings")) windowID = WINDOW_DIALOG_ADDON_SETTINGS;
   else if (strWindow.Equals("fullscreeninfo")) windowID = WINDOW_DIALOG_FULLSCREEN_INFO;
   else if (strWindow.Equals("karaokeselector")) windowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
   else if (strWindow.Equals("karaokelargeselector")) windowID = WINDOW_DIALOG_KARAOKE_SELECTOR;

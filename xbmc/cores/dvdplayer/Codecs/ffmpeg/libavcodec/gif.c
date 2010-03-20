@@ -108,7 +108,7 @@ static int gif_image_write_image(AVCodecContext *avctx,
     for (height = avctx->height; height--;) {
         len += ff_lzw_encode(s->lzw, ptr, avctx->width);
         ptr += linesize;
-            }
+    }
     len += ff_lzw_encode_flush(s->lzw, flush_put_bits);
 
     ptr = s->buf;
@@ -120,7 +120,7 @@ static int gif_image_write_image(AVCodecContext *avctx,
         bytestream_put_buffer(bytestream, ptr, size);
         ptr += size;
         len -= size;
-        }
+    }
     bytestream_put_byte(bytestream, 0x00); /* end of image block */
     bytestream_put_byte(bytestream, 0x3b);
     return 0;

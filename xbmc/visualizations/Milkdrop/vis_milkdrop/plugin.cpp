@@ -1169,10 +1169,10 @@ int CPlugin::AllocateMyDX8Stuff()
         LPDIRECT3DSURFACE9 pBackBuffer, pZBuffer, tmpSurface;
         D3DSURFACE_DESC tmpDesc;
         D3DVIEWPORT9 pVP;
-			GetDevice()->GetRenderTarget(0, &pBackBuffer );
+        GetDevice()->GetRenderTarget(0, &pBackBuffer );
         GetDevice()->GetDepthStencilSurface(&tmpSurface);
         tmpSurface->GetDesc(&tmpDesc);
-      GetDevice()->GetViewport(&pVP);
+        GetDevice()->GetViewport(&pVP);
         UINT uiwidth=(pVP.Width>m_nTexSize) ? pVP.Width:m_nTexSize;
         UINT uiheight=(pVP.Height>m_nTexSize) ? pVP.Height:m_nTexSize;
         
@@ -1182,37 +1182,37 @@ int CPlugin::AllocateMyDX8Stuff()
 
         if(GetDevice()->SetDepthStencilSurface(pZBuffer) != D3D_OK)
           printf("failed to set DepthStencilSurface");
-		  // create VS1 and VS2
-      bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
-      if (bSuccess)
-			{
-				IDirect3DSurface9* pNewTarget = NULL;
-				if (m_lpVS[0]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
-				{
-					GetDevice()->SetRenderTarget(0, pNewTarget);
-					GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
-					pNewTarget->Release();
-				}
-
-        bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[1], NULL) == D3D_OK);
+		    // create VS1 and VS2
+        bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
         if (bSuccess)
-				{
-					if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
-					{
-						GetDevice()->SetRenderTarget(0, pNewTarget);
-						GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
-						pNewTarget->Release();
-					}
-				}
+			  {
+				  IDirect3DSurface9* pNewTarget = NULL;
+				  if (m_lpVS[0]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
+				  {
+					  GetDevice()->SetRenderTarget(0, pNewTarget);
+					  GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
+					  pNewTarget->Release();
+				  }
+
+          bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[1], NULL) == D3D_OK);
+          if (bSuccess)
+				  {
+					  if (m_lpVS[1]->GetSurfaceLevel(0, &pNewTarget) == D3D_OK) 
+					  {
+						  GetDevice()->SetRenderTarget(0, pNewTarget);
+						  GetDevice()->Clear(0, 0, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0);
+						  pNewTarget->Release();
+					  }
+				  }
           else
             printf("failed to create texture %d x %d", m_nTexSize, m_nTexSize);
-			}
+			  }
         else
           printf("failed to create texture %d x %d", m_nTexSize, m_nTexSize);
 
-      GetDevice()->SetRenderTarget(0, pBackBuffer);
-			SafeRelease(pBackBuffer);
-			SafeRelease(pZBuffer);
+        GetDevice()->SetRenderTarget(0, pBackBuffer);
+        SafeRelease(pBackBuffer);
+        SafeRelease(pZBuffer);
         SafeRelease(tmpSurface);
 
 

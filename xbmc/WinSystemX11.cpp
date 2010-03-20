@@ -81,7 +81,7 @@ bool CWinSystemX11::InitWindowSystem()
     // set repeat to 10ms to ensure repeat time < frame time
     // so that hold times can be reliably detected
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
-    
+
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
@@ -92,7 +92,7 @@ bool CWinSystemX11::InitWindowSystem()
   }
   else
     CLog::Log(LOGERROR, "GLX Error: No Display found");
-  
+
   return false;
 }
 
@@ -117,7 +117,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
 
   CTexture iconTexture;
   iconTexture.LoadFromFile("special://xbmc/media/icon.png");
-    
+
   SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), 32, iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
   SDL_WM_SetCaption("XBMC Media Center", NULL);
 
@@ -129,7 +129,7 @@ bool CWinSystemX11::DestroyWindow()
 {
   return true;
 }
-    
+
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   if(m_nWidth  == newWidth
@@ -300,33 +300,33 @@ bool CWinSystemX11::RefreshGlxContext()
 
   if(major > 1 || (major == 1 && minor >= 3))
   {
-  // query compatible framebuffers based on double buffered attributes
-  if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
-  {
-    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
-    return false;
-  }
-
-  for (int i = 0; i < availableFBs; i++)
-  {
-    // obtain the xvisual from the first compatible framebuffer
-    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-    if (vInfo)
+    // query compatible framebuffers based on double buffered attributes
+    if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
     {
-      if (vInfo->depth == 24)
-      {
-        CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-        break;
-      }
-      XFree(vInfo);
-      vInfo = NULL;
+      CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+      return false;
     }
-  }
+
+    for (int i = 0; i < availableFBs; i++)
+    {
+      // obtain the xvisual from the first compatible framebuffer
+      vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+      if (vInfo)
+      {
+        if (vInfo->depth == 24)
+        {
+          CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+          break;
+        }
+        XFree(vInfo);
+        vInfo = NULL;
+      }
+    }
   }
   else
     vInfo = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), doubleVisAttributesOld);
 
-  if (vInfo) 
+  if (vInfo)
   {
     if (m_glContext)
       glXDestroyContext(m_dpy, m_glContext);

@@ -61,9 +61,9 @@ bool CDVDSubtitleStream::Open(const string& strFile)
       while( (size_read = pInputStream->Read(buffer, sizeof(buffer)-2) ) > 0 )
       {
         buffer[size_read] = buffer[size_read + 1] = '\0';
-        CStdStringW temp;
-        g_charsetConverter.utf16LEtoW(CStdString16((uint16_t*)buffer),temp);
-        wstringstream << temp;
+        CStdStringW temp; 
+        g_charsetConverter.utf16LEtoW(CStdString16((uint16_t*)buffer),temp); 
+        wstringstream << temp; 
       }
       delete pInputStream;
 
@@ -83,7 +83,7 @@ bool CDVDSubtitleStream::Open(const string& strFile)
 
       if (!isUTF8)
         isUTF8 = g_charsetConverter.isValidUtf8(m_stringstream.str());
- 
+
       if (!isUTF8)
       {
         CStdStringW strUTF16;

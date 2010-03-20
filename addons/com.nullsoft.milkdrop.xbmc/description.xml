@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <id>com.nullsoft.milkdrop.xbmc</id>
+  <type>visualization</type>
+  <title>MilkDrop</title>
+  <librarywin32>MilkDrop_win32dx.vis</librarywin32>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>windows</platform>
+  </platforms>
+  <minversion>
+    <xbmc>28000</xbmc>
+  </minversion>
+  <summary>DirectX Visualization</summary>
+  <description></description>
+  <author>TEAMXBMC</author>
+</addoninfo>

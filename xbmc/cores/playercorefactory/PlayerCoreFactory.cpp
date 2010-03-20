@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
 #include "utils/SingleLock.h"
@@ -65,8 +65,8 @@ template<typename T> void unique (T &con)
 }
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCallback& callback) const
-{ 
-  return CreatePlayer( GetPlayerCore(strCore), callback ); 
+{
+  return CreatePlayer( GetPlayerCore(strCore), callback );
 }
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback)
@@ -224,7 +224,7 @@ PLAYERCOREID CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
 
   //If we have any players return the first one
   if( vecCores.size() > 0 ) return vecCores.at(0);
-  
+
   return EPC_NONE;
 }
 
@@ -239,7 +239,7 @@ PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
   // Add all possible players
   auto_aptr<int> btn_Cores(NULL);
   if( vecCores.size() > 0 )
-  {    
+  {
     btn_Cores = new int[ vecCores.size() ];
     btn_Cores[0] = 0;
 
@@ -304,7 +304,7 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
     paplayer->m_bPlaysAudio = true;
     s_vecCoreConfigs.push_back(paplayer);
-
+    
     CPlayerCoreConfig* dsplayer = new CPlayerCoreConfig("DSPlayer", EPC_DSPLAYER, NULL);
     dsplayer->m_bPlaysAudio = dsplayer->m_bPlaysVideo = true;
     s_vecCoreConfigs.push_back(dsplayer);
@@ -317,7 +317,7 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     CLog::Log(LOGERROR, "Error loading configuration, no <playercorefactory> node");
     return false;
   }
-  
+
   TiXmlElement *pPlayers = pConfig->FirstChildElement("players");
   if (pPlayers)
   {
@@ -334,6 +334,7 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
       if (type == "dsplayer" ) eCore = EPC_DSPLAYER;
+
       if (eCore != EPC_NONE)
       {
         s_vecCoreConfigs.push_back(new CPlayerCoreConfig(name, eCore, pPlayer));

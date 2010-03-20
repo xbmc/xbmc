@@ -544,12 +544,12 @@ av_cold int MPV_encode_init(AVCodecContext *avctx)
             s->mjpeg_vsample[1] = s->mjpeg_hsample[1] =
             s->mjpeg_vsample[2] = s->mjpeg_hsample[2] = 1;
         }else{
-        s->mjpeg_vsample[0] = 2;
-        s->mjpeg_vsample[1] = 2>>chroma_v_shift;
-        s->mjpeg_vsample[2] = 2>>chroma_v_shift;
-        s->mjpeg_hsample[0] = 2;
-        s->mjpeg_hsample[1] = 2>>chroma_h_shift;
-        s->mjpeg_hsample[2] = 2>>chroma_h_shift;
+            s->mjpeg_vsample[0] = 2;
+            s->mjpeg_vsample[1] = 2>>chroma_v_shift;
+            s->mjpeg_vsample[2] = 2>>chroma_v_shift;
+            s->mjpeg_hsample[0] = 2;
+            s->mjpeg_hsample[1] = 2>>chroma_h_shift;
+            s->mjpeg_hsample[2] = 2>>chroma_h_shift;
         }
         if (!(CONFIG_MJPEG_ENCODER || CONFIG_LJPEG_ENCODER)
             || ff_mjpeg_encode_init(s) < 0)

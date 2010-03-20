@@ -50,6 +50,36 @@
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
 			</control>
+			<control type="image" id="403">
+				<description>avatar</description>
+				<posx>20</posx>
+				<posy>10</posy>
+				<width>50</width>
+				<height>50</height>
+				<aspectratio>keep</aspectratio>
+				<visible>false</visible>
+				<texture>DefaultIconInfo.png</texture>
+			</control>
+			<control type="image" id="404">
+				<description>avatar</description>
+				<posx>20</posx>
+				<posy>10</posy>
+				<width>50</width>
+				<height>50</height>
+				<aspectratio>keep</aspectratio>
+				<visible>false</visible>
+				<texture>DefaultIconWarning.png</texture>
+			</control>
+			<control type="image" id="405">
+				<description>avatar</description>
+				<posx>20</posx>
+				<posy>10</posy>
+				<width>50</width>
+				<height>50</height>
+				<aspectratio>keep</aspectratio>
+				<visible>false</visible>
+				<texture>DefaultIconError.png</texture>
+			</control>
 		</control>
 	</controls>
 </window>

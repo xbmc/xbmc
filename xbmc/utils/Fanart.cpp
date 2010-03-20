@@ -153,7 +153,7 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
 bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination) const
 {
   return CPicture::CacheFanart(url, destination);
-  }
+}
 
 bool CFanart::DownloadImage(const CStdString &strDestination) const
 {
@@ -169,11 +169,11 @@ unsigned int CFanart::GetNumFanarts()
 
 bool CFanart::ParseColors(const CStdString &colorsIn, CStdString &colorsOut)
 {
-  // Formats: 
+  // Formats:
   // 0: XBMC ARGB Hexadecimal string comma seperated "FFFFFFFF,DDDDDDDD,AAAAAAAA"
   // 1: The TVDB RGB Int Triplets, pipe seperate with leading/trailing pipes "|68,69,59|69,70,58|78,78,68|"
 
-  // Essentially we read the colors in using the proper format, and store them in our own fixed temporary format (3 DWORDS), and then 
+  // Essentially we read the colors in using the proper format, and store them in our own fixed temporary format (3 DWORDS), and then
   // write them back in in the specified format.
 
   if (colorsIn.IsEmpty())

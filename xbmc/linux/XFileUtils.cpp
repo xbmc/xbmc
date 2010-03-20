@@ -91,7 +91,7 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData)
   strFiles.Replace("?",".");
 
   strFiles.MakeLower();  // Do we really want this case insensitive?
-  CRegExp re(true); 
+  CRegExp re(true);
 
   if (re.RegComp(strFiles.c_str()) == NULL)
     return(INVALID_HANDLE_VALUE);
@@ -595,7 +595,7 @@ DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
 {
   if (lpTimeZoneInformation == NULL)
     return TIME_ZONE_ID_INVALID;
-  
+
   memset(lpTimeZoneInformation, 0, sizeof(LPTIME_ZONE_INFORMATION));
 
 #ifdef __APPLE__

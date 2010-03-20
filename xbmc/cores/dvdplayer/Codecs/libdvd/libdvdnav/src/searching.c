@@ -235,23 +235,23 @@ timemapdone:
 
     } else {
 
-    length = dvdnav_convert_time(&cell->playback_time);
-    if (time >= length) {
-      time -= length;
-    } else {
-      /* FIXME: there must be a better way than interpolation */
-      target = time * (cell->last_sector - cell->first_sector + 1) / length;
-      target += cell->first_sector;
+      length = dvdnav_convert_time(&cell->playback_time);
+      if (time >= length) {
+        time -= length;
+      } else {
+        /* FIXME: there must be a better way than interpolation */
+        target = time * (cell->last_sector - cell->first_sector + 1) / length;
+        target += cell->first_sector;
 
-#ifdef LOG_DEBUG
-      if( cell->first_sector > target || target > cell->last_sector )
-        fprintf(MSG_OUT, "libdvdnav: time_search - sector is not within cell min:%u, max:%u, cur:%u\n", cell->first_sector, cell->last_sector, target);
-#endif
+  #ifdef LOG_DEBUG
+        if( cell->first_sector > target || target > cell->last_sector )
+          fprintf(MSG_OUT, "libdvdnav: time_search - sector is not within cell min:%u, max:%u, cur:%u\n", cell->first_sector, cell->last_sector, target);
+  #endif
 
-      found = 1;
-      break;
+        found = 1;
+        break;
+      }
     }
-  }
   }
 
   if(found) {

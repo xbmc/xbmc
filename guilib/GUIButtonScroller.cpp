@@ -114,7 +114,7 @@ CGUIButtonScroller::~CGUIButtonScroller(void)
 
 bool CGUIButtonScroller::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     // send the appropriate message to the parent window
     vector<CGUIActionDescriptor> actions = m_vecButtons[GetActiveButton()]->clickActions;
@@ -127,15 +127,15 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     }
     return true;
   }
-  if (action.actionId == ACTION_CONTEXT_MENU)
+  if (action.GetID() == ACTION_CONTEXT_MENU)
   { // send a click message to our parent
-    SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.actionId);
+    SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.GetID());
     return true;
   }
   // smooth scrolling (for analog controls)
-  if (action.actionId == ACTION_SCROLL_UP)
+  if (action.GetID() == ACTION_SCROLL_UP)
   {
-    m_fAnalogScrollSpeed += action.amount1 * action.amount1;
+    m_fAnalogScrollSpeed += action.GetAmount() * action.GetAmount();
     bool handled = false;
     while (m_fAnalogScrollSpeed > ANALOG_SCROLL_START)
     {
@@ -147,9 +147,9 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     }
     return handled;
   }
-  if (action.actionId == ACTION_SCROLL_DOWN)
+  if (action.GetID() == ACTION_SCROLL_DOWN)
   {
-    m_fAnalogScrollSpeed += action.amount1 * action.amount1;
+    m_fAnalogScrollSpeed += action.GetAmount() * action.GetAmount();
     bool handled = false;
     while (m_fAnalogScrollSpeed > ANALOG_SCROLL_START)
     {
@@ -896,23 +896,24 @@ bool CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
     if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
     {
       if (m_bHorizontal)
-      m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
-  else
-      m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
-      CAction action;
-      action.actionId = ACTION_SELECT_ITEM;
-      OnAction(action);
+        m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
+      else
+        m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
+      OnAction(CAction(ACTION_SELECT_ITEM));
       return true;
     }
-    else if (event.m_id == ACTION_MOUSE_WHEEL)
-{
-      if (event.m_wheel > 0)
+    else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+    {
       m_bScrollDown = true;
-    else
+      m_fScrollSpeed = SCROLL_SPEED;
+      return true;
+    }
+    else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+    {
       m_bScrollUp = true;
-    m_fScrollSpeed = SCROLL_SPEED;
-    return true;
-  }
+      m_fScrollSpeed = SCROLL_SPEED;
+      return true;
+    }
   }
   return false;
 }

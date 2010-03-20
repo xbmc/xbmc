@@ -861,7 +861,7 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
             snprintf(buf + strlen(buf), buf_size - strlen(buf),
                      ", %s", avcodec_get_sample_fmt_name(enc->sample_fmt));
         }
-            break;
+        break;
     case CODEC_TYPE_DATA:
         snprintf(buf, buf_size, "Data: %s", codec_name);
         break;

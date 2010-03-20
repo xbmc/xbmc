@@ -28,7 +28,7 @@ namespace OVERLAY {
   struct SQuad
   {
      int           u, v;
-     unsigned char r, g, b, a;    
+     unsigned char r, g, b, a;
      int           x, y;
      int           w, h;
   };

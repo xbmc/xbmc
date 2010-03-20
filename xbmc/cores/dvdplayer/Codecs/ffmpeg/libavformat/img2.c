@@ -129,7 +129,7 @@ static int find_image_range(int *pfirst_index, int *plast_index,
             *pfirst_index =
             *plast_index = 1;
             if(url_exist(buf))
-            return 0;
+                return 0;
             return -1;
         }
         if (url_exist(buf))

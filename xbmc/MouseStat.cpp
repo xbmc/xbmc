@@ -21,7 +21,6 @@
 
 #include "MouseStat.h"
 #include "Key.h"
-#include "GraphicContext.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -190,8 +189,8 @@ void CMouseStat::UpdateInternal()
       bNothingDown = false;
       break;
     case CButtonState::MB_DOUBLE_CLICK:
-          bDoubleClick[i] = true;
-        bNothingDown = false;
+      bDoubleClick[i] = true;
+      bNothingDown = false;
       break;
     case CButtonState::MB_DRAG_START:
     case CButtonState::MB_DRAG:
@@ -201,8 +200,8 @@ void CMouseStat::UpdateInternal()
       break;
     default:
       break;
-      }
     }
+  }
 
   if (bNothingDown)
     SetState(MOUSE_STATE_NORMAL);
@@ -257,34 +256,23 @@ bool CMouseStat::MovedPastThreshold() const
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
-CPoint CMouseStat::GetLocation() const
+CAction CMouseStat::GetAction() const
 {
-  return CPoint((float)m_mouseState.x, (float)m_mouseState.y);
-}
+  int actionID = ACTION_MOUSE_MOVE;
+  if (bClick[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_LEFT_CLICK;
+  else if (bClick[MOUSE_RIGHT_BUTTON])
+    actionID = ACTION_MOUSE_RIGHT_CLICK;
+  else if (bClick[MOUSE_MIDDLE_BUTTON])
+    actionID = ACTION_MOUSE_MIDDLE_CLICK;
+  else if (bDoubleClick[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_DOUBLE_CLICK;
+  else if (bHold[MOUSE_LEFT_BUTTON])
+    actionID = ACTION_MOUSE_DRAG;
+  else if (m_mouseState.dz > 0)
+    actionID = ACTION_MOUSE_WHEEL_UP;
+  else if (m_mouseState.dz < 0)
+    actionID = ACTION_MOUSE_WHEEL_DOWN;
 
-void CMouseStat::SetLocation(const CPoint &point, bool activate)
-{
-  m_mouseState.x = (int)point.x;
-  m_mouseState.y = (int)point.y;
-  SetActive();
-}
-
-CPoint CMouseStat::GetLastMove() const
-{
-  return CPoint(m_mouseState.dx, m_mouseState.dy);
-}
-
-char CMouseStat::GetWheel() const
-{
-  return m_mouseState.dz;
-}
-
-void CMouseStat::UpdateMouseWheel(char dir)
-{
-  m_mouseState.dz = dir;
-  SetActive();
-}
-
-void CMouseStat::Acquire()
-{
+  return CAction(actionID, (unsigned int)bHold[MOUSE_LEFT_BUTTON], (float)m_mouseState.x, (float)m_mouseState.y, (float)m_mouseState.dx, (float)m_mouseState.dy);
 }

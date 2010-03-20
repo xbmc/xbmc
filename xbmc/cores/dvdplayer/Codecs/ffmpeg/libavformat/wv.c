@@ -121,10 +121,10 @@ static int wv_read_block_header(AVFormatContext *ctx, ByteIOContext *pb)
                 url_fskip(pb, size);
             }
         }
-    if(rate == -1){
+        if(rate == -1){
             av_log(ctx, AV_LOG_ERROR, "Cannot determine custom sampling rate\n");
-        return -1;
-    }
+            return -1;
+        }
         url_fseek(pb, block_end - wc->blksize + 24, SEEK_SET);
     }
     if(!wc->bpp) wc->bpp = bpp;

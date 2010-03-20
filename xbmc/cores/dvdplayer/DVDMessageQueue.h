@@ -65,7 +65,7 @@ struct DVDMessageListItem
   }
 
   CDVDMsg* message;
-  int priority;
+  int      priority;
 };
 
 enum MsgQueueReturnCode

@@ -647,7 +647,7 @@ bool CFileRar::OpenInArchive()
     }
 
     if (m_pArc->GetHeaderType() == FILE_HEAD)
-      {
+    {
       CStdString strFileName;
 
       if (m_pArc->NewLhd.FileNameW && wcslen(m_pArc->NewLhd.FileNameW) > 0)
@@ -657,17 +657,17 @@ bool CFileRar::OpenInArchive()
       else
       {
         g_charsetConverter.unknownToUTF8(m_pArc->NewLhd.FileName, strFileName);
-    }
+      }
 
       /* replace back slashes into forward slashes */
       /* this could get us into troubles, file could two different files, one with / and one with \ */
       strFileName.Replace('\\', '/');
 
       if (strFileName == m_strPathInRar)
-    {
-      break;
+      {
+        break;
+      }
     }
-  }
 
     m_pArc->SeekToNext();
   }

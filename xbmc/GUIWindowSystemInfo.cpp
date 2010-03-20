@@ -49,7 +49,7 @@ CGUIWindowSystemInfo::~CGUIWindowSystemInfo(void)
 }
 bool CGUIWindowSystemInfo::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;
@@ -89,7 +89,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-void CGUIWindowSystemInfo::Render()
+void CGUIWindowSystemInfo::FrameMove()
 {
   ResetLabels();
   int i = 2;
@@ -159,7 +159,7 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
   }
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }
 
 void CGUIWindowSystemInfo::ResetLabels()

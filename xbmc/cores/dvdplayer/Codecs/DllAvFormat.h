@@ -143,7 +143,7 @@ public:
   virtual int av_write_header (AVFormatContext *s) { return ::av_write_header (s); }
   virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
-  
+
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {

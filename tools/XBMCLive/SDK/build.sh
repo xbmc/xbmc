@@ -47,9 +47,9 @@ cleanup()
 trap 'cleanup' EXIT TERM INT
 
 
-if [ -z $DISTROCODENAME ]; then
+if [ -z $VARIANTNAME ]; then
 	# Get host codename by default
-	export DISTROCODENAME=$(cat /etc/lsb-release | grep CODENAME | cut -d= -f2)
+	export VARIANTNAME=$(cat /etc/lsb-release | grep CODENAME | cut -d= -f2)
 fi
 
 THISDIR=$(pwd)
@@ -80,9 +80,9 @@ if ! which lh > /dev/null ; then
 	if [ ! -d live-helper ]; then
 		if [ ! -f live-helper.tar ]; then
 			git clone git://live.debian.net/git/live-helper.git
-	if [ "$?" -ne "0" ]; then
-		exit 1
-	fi
+			if [ "$?" -ne "0" ]; then
+				exit 1
+			fi
 
 			# Saved, to avoid cloning for multiple builds
 			tar cvf live-helper.tar live-helper  > /dev/null 2>&1
@@ -91,22 +91,22 @@ if ! which lh > /dev/null ; then
 		fi
 
 		# Fix for missing directory for Ubuntu's d-i, to be removed when fixed upstream!
-	cd live-helper/data/debian-cd
-		if [ ! -h $DISTROCODENAME ]; then
-			ln -s lenny $DISTROCODENAME
-	fi
+		cd live-helper/data/debian-cd
+		if [ ! -h $VARIANTNAME ]; then
+			ln -s lenny $VARIANTNAME
+		fi
 		cd $WORKPATH/Tools
 	fi
 
 	LH_HOMEDIR=$WORKPATH/Tools/live-helper
 
 	export LH_BASE="${LH_HOMEDIR}"
-	export PATH="${LH_BASE}/helpers:${PATH}"
+	export PATH="${PATH}:${LH_BASE}/helpers"
 
 	cd $THISDIR
 fi
 
-echo "Start building, using Ubuntu $DISTROCODENAME repositories ..."
+echo "Start building variant $VARIANTNAME ..."
 
 
 cd $WORKPATH
@@ -114,9 +114,9 @@ cd $WORKPATH
 # Put in place distro variants, remove other variants
 find ./  -name "*-variant" | \
 while read i; do
-#	if [[ $i =~ $DISTROCODENAME-variant ]]; then
-	if [ -n "$(echo $i | grep $DISTROCODENAME-variant)" ]; then
-		j=${i%%.$DISTROCODENAME-variant}
+#	if [[ $i =~ $VARIANTNAME-variant ]]; then
+	if [ -n "$(echo $i | grep $VARIANTNAME-variant)" ]; then
+		j=${i%%.$VARIANTNAME-variant}
 		mv $i $j
 	else
 		rm $i
@@ -135,37 +135,63 @@ fi
 #
 # Build needed packages
 #
-cd $WORKPATH/buildDEBs
-./build.sh
-if [ "$?" -ne "0" ]; then
-	exit 1
+if [ -f $WORKPATH/buildDEBs/build.sh ]; then
+	echo ""
+	echo "------------------------"
+	echo "Build needed packages..."
+	echo "------------------------"
+	echo ""
+
+	cd $WORKPATH/buildDEBs
+	./build.sh
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
+	cd $THISDIR
 fi
-cd $THISDIR
 
 #
 # Build binary drivers
 #
-cd $WORKPATH/buildBinaryDrivers
-./build.sh
-if [ "$?" -ne "0" ]; then
-	exit 1
+if [ -f $WORKPATH/buildBinaryDrivers/build.sh ]; then
+	echo ""
+	echo "-----------------------"
+	echo "Build binary drivers..."
+	echo "-----------------------"
+	echo ""
+
+	cd $WORKPATH/buildBinaryDrivers
+	./build.sh
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
+	cd $THISDIR
 fi
-cd $THISDIR
 
 #
 # Copy all needed files in place for the real build
 #
 
-for hook in $(ls $WORKPATH/copyFiles-*.sh); do
-	$hook
-	if [ "$?" -ne "0" ]; then
-        exit 1
+filesToRun=$(ls $WORKPATH/copyFiles-*.sh 2> /dev/null)
+if [ -n "$filesToRun" ]; then
+	for hook in $filesToRun; do
+		$hook
+		if [ "$?" -ne "0" ]; then
+			exit 1
+		fi
+	done
 fi
-done
 
 #
 # Perform XBMCLive image build
 #
+
+echo ""
+echo "-------------------------------"
+echo "Perform XBMCLive image build..."
+echo "-------------------------------"
+echo ""
+
 cd $WORKPATH/buildLive
 ./build.sh
 cd $THISDIR

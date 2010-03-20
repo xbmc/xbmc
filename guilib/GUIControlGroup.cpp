@@ -372,9 +372,9 @@ bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &ev
       CGUIControl *child = *i;
       if (child->SendMouseEvent(childPoint - pos, event))
       { // we've handled the action, and/or have focused an item
-      return true;
-  }
-}
+        return true;
+      }
+    }
     // none of our children want the event, but we may want it.
     if (HitTest(childPoint) && OnMouseEvent(childPoint, event))
       return true;

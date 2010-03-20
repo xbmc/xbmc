@@ -165,10 +165,10 @@ void ff_acelp_lspd2lpc(const double *lsp, float *lpc, int lp_half_order)
 }
 
 void ff_sort_nearly_sorted_floats(float *vals, int len)
-    {
+{
     int i,j;
 
     for (i = 0; i < len - 1; i++)
         for (j = i; j >= 0 && vals[j] > vals[j+1]; j--)
             FFSWAP(float, vals[j], vals[j+1]);
-    }
+}

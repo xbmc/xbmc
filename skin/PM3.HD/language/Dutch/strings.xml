@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Sjonnie33-->
-<!--Date of translation: 04/12/2009-->
+<!--Date of translation: 12/06/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Volume gedempt</string>
@@ -94,6 +93,10 @@
   <string id="31110">knop -  Aangepaste achtergronden</string>
   <string id="31111">Altijd muziek info laten zien tijdens lyrics</string>
   <string id="31112">Laat media titels zien in "Wide icons" modus</string>
+  <string id="31113">Enkele Afbeelding</string>
+  <string id="31114">Meerdere Afbeeldingen</string>
+  <string id="31115">Verander Geluids Instellings Knop voor Teletext</string>
+  <string id="31116">Verberg Video afbeelding in media overzicht</string>
   <string id="31200">Custom script opties</string>
   <string id="31201">
   </string>
@@ -105,8 +108,7 @@
   </string>
   <string id="31206">
   </string>
-  <string id="31207">
-  </string>
+  <string id="31207">Laat ondertiteling download knop zien in Video OSD</string>
   <string id="31208">Laat lyrics script knop zien in OSD</string>
   <string id="31209">Enable quick launch script knop voor -</string>
   <string id="31300">Laat cast zien</string>

@@ -40,7 +40,7 @@ public:
   };
   virtual ~CVBRMP3SeekHelper()
   {
-      delete[] m_SeekOffset;
+    delete[] m_SeekOffset;
   };
 
   int64_t GetByteOffset(float fTime)

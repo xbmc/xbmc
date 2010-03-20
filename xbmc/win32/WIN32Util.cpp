@@ -858,7 +858,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       }
       iPos += (wcslen( pcBuffer + iPos) + 1 );
     } while( wcslen( pcBuffer + iPos ) > 0 );
-      delete[] pcBuffer;
+    delete[] pcBuffer;
   }
 }
 

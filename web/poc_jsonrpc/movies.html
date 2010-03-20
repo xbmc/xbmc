@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>XBMC - Movies</title>
+<link type="text/css" rel="stylesheet" href="basic.css" />
+<script type="text/javascript" src="json.js" />
+<script type="text/javascript">
+function PlayMovie(movieid)
+{
+  alert("Not implemented");
+}
+</script>
+</head>
+<body>
+<table class="Navigation">
+<tr class="primary">
+  <td class="unselected"><a href="nowplaying.html">Now playing</a></td>
+  <td class="selected">Videos</td>
+  <td class="unselected"><a href="artists.html">Music</a></td>
+  <td class="unselected"><a href="development.html">Development</a></td>
+</tr>
+<tr>
+  <td></td><td>
+  <table>
+  <tr class="secondary">
+    <td><a href="videofiles.html">Video files</a></td>
+    <td>Movies</td>
+    <td><a href="tvshows.html">TV Shows</a></td>
+  </tr>
+  </table></td>
+</tr>
+</table>
+<br />
+
+<script type="text/javascript">
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+var send = { "jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "id": 1 }
+http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"fields\": [\"title\", \"plot\"] }, \"id\": 1}");
+
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+var array = result["movies"];
+
+document.write("<table class=\"Movies\"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>");
+for (var property in array) {
+  var item = array[property];
+
+  document.write("<tr class=\"" + (property % 2 == 0 ? "even" : "odd") + "\"><td class=\"cover\">");
+  if (item["thumbnail"])
+    document.write("<img src=thumb/" + item["thumbnail"] + ".jpg alt=\"" + item["title"] + "\" class=\"cover\" onclick=\"PlayMovie(" + item["movieid"] + ")\"></img>");
+  document.write("</td><td class=\"info\">");
+
+  document.write("<h1>" + item["title"] + "</h1>");
+  if (item["plot"])
+    document.write(item["plot"]);
+
+  document.write("</td></tr>");
+}
+document.write("</tbody></table>");
+</script>
+</body>
+</html>

@@ -138,7 +138,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
     avctx->pix_fmt= PIX_FMT_PAL8;
 
     return 0;
-    }
+}
 
 static av_cold int decode_end(AVCodecContext *avctx){
     QdrawContext * const a = avctx->priv_data;

@@ -115,7 +115,7 @@ int ff_rtmp_packet_read(URLContext *h, RTMPPacket *p,
             if (url_read_complete(h, buf, 4) != 4)
                 return AVERROR(EIO);
             timestamp = AV_RB32(buf);
-    }
+        }
     }
     if (hdr != RTMP_PS_TWELVEBYTES)
         timestamp += prev_pkt[channel_id].timestamp;
@@ -169,7 +169,7 @@ int ff_rtmp_packet_write(URLContext *h, RTMPPacket *pkt,
     }
 
     if (pkt->channel_id < 64) {
-    bytestream_put_byte(&p, pkt->channel_id | (mode << 6));
+        bytestream_put_byte(&p, pkt->channel_id | (mode << 6));
     } else if (pkt->channel_id < 64 + 256) {
         bytestream_put_byte(&p, 0               | (mode << 6));
         bytestream_put_byte(&p, pkt->channel_id - 64);

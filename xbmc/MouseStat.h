@@ -23,7 +23,6 @@
  */
 
 #include "XBMC_events.h"
-#include "Geometry.h"
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))
 #define XBMC_BUTTON_LEFT		1
@@ -49,16 +48,16 @@ enum MOUSE_BUTTON { MOUSE_LEFT_BUTTON = 0, MOUSE_RIGHT_BUTTON, MOUSE_MIDDLE_BUTT
 // this holds everything we know about the current state of the mouse
 struct MouseState
 {
-  int x;            // x location
-  int y;            // y location
-  int16_t dx;          // change in x
-  int16_t dy;          // change in y
-  char dz;          // change in z (wheel)
+  int x;              // x location
+  int y;              // y location
+  int16_t dx;         // change in x
+  int16_t dy;         // change in y
+  char dz;            // change in z (wheel)
   bool button[5];     // current state of the buttons
-  bool active;      // true if the mouse is active
+  bool active;        // true if the mouse is active
 };
 
-class CGUIControl;
+class CAction;
 
 class CMouseStat
 {
@@ -69,7 +68,6 @@ public:
 
   void Initialize();
   void HandleEvent(XBMC_Event& newEvent);
-  void Acquire();
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
   bool IsActive();
   bool IsEnabled() const;
@@ -78,16 +76,11 @@ public:
   void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
   MOUSE_STATE GetState() const { return m_pointerState; };
-  CPoint GetLocation() const;
-  void SetLocation(const CPoint &point, bool activate=false);
-  CPoint GetLastMove() const;
-  char GetWheel() const;
-  void UpdateMouseWheel(char dir);
-  void Update(XBMC_Event& newEvent);
+  CAction GetAction() const;
 
 private:
   /*! \brief Holds information regarding a particular mouse button state
- 
+
    The CButtonState class is used to track where in a button event the mouse currently is.
    There is effectively 5 BUTTON_STATE's available, and transitioning between those states
    is handled by the Update() function.
@@ -167,13 +160,6 @@ private:
   // active/click timers
   unsigned int m_lastActiveTime;
 
-#ifdef HAS_SDL_XX
-  SDL_Cursor *m_visibleCursor;
-  SDL_Cursor *m_hiddenCursor;
-#endif
-
-public:
-  // public access variables to button clicks etc.
   bool bClick[5];
   bool bDoubleClick[5];
   int  bHold[5];

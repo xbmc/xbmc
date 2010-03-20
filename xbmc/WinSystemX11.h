@@ -41,26 +41,26 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
   virtual void ShowOSMouse(bool show);
-  
+
   virtual void NotifyAppActiveChange(bool bActivated);
 
   virtual bool Minimize();
   virtual bool Restore() ;
   virtual bool Hide();
   virtual bool Show(bool raise = true);
-  
+
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   GLXWindow GetWindow() { return m_glWindow; }
 
-protected:  
+protected:
   bool RefreshGlxContext();
 
   SDL_Surface* m_SDLSurface;
   GLXContext   m_glContext;
   GLXWindow    m_glWindow;
   Window       m_wmWindow;
-  Display*     m_dpy; 
+  Display*     m_dpy;
   bool         m_bWasFullScreenBeforeMinimize;
 };
 

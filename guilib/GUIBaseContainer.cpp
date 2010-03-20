@@ -86,7 +86,8 @@ void CGUIBaseContainer::Render()
     FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
 
   g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  float pos = (m_orientation == VERTICAL) ? m_posY : m_posX;
+  CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
+  float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
   float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
 
   // we offset our draw position to take into account scrolling and whether or not our focused
@@ -118,9 +119,9 @@ void CGUIBaseContainer::Render()
       else
       {
         if (m_orientation == VERTICAL)
-          RenderItem(m_posX, pos, item.get(), false);
+          RenderItem(origin.x, pos, item.get(), false);
         else
-          RenderItem(pos, m_posY, item.get(), false);
+          RenderItem(pos, origin.y, item.get(), false);
       }
     }
     // increment our position
@@ -131,9 +132,9 @@ void CGUIBaseContainer::Render()
   if (focusedItem)
   {
     if (m_orientation == VERTICAL)
-      RenderItem(m_posX, focusedPos, focusedItem.get(), true);
+      RenderItem(origin.x, focusedPos, focusedItem.get(), true);
     else
-      RenderItem(focusedPos, m_posY, focusedItem.get(), true);
+      RenderItem(focusedPos, origin.y, focusedItem.get(), true);
   }
 
   g_graphicsContext.RestoreClipRegion();
@@ -197,13 +198,13 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
 {
-  if (action.actionId >= KEY_ASCII)
+  if (action.GetID() >= KEY_ASCII)
   {
-    OnJumpLetter((char)(action.actionId & 0xff));
+    OnJumpLetter((char)(action.GetID() & 0xff));
     return true;
   }
 
-  switch (action.actionId)
+  switch (action.GetID())
   {
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
@@ -211,16 +212,16 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_UP:
     {
       if (!HasFocus()) return false;
-      if (action.holdTime > HOLD_TIME_START &&
-        ((m_orientation == VERTICAL && (action.actionId == ACTION_MOVE_UP || action.actionId == ACTION_MOVE_DOWN)) ||
-         (m_orientation == HORIZONTAL && (action.actionId == ACTION_MOVE_LEFT || action.actionId == ACTION_MOVE_RIGHT))))
+      if (action.GetHoldTime() > HOLD_TIME_START &&
+        ((m_orientation == VERTICAL && (action.GetID() == ACTION_MOVE_UP || action.GetID() == ACTION_MOVE_DOWN)) ||
+         (m_orientation == HORIZONTAL && (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
-        float speed = std::min(1.0f, (float)(action.holdTime - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
+        float speed = std::min(1.0f, (float)(action.GetHoldTime() - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int itemsPerFrame = 1;
         if (m_lastHoldTime) // number of rows/10 items/second max speed
           itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (CTimeUtils::GetFrameTime() - m_lastHoldTime)));
         m_lastHoldTime = CTimeUtils::GetFrameTime();
-        if (action.actionId == ACTION_MOVE_LEFT || action.actionId == ACTION_MOVE_UP)
+        if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_UP)
           while (itemsPerFrame--) MoveUp(false);
         else
           while (itemsPerFrame--) MoveDown(false);
@@ -264,15 +265,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_JUMP_SMS8:
   case ACTION_JUMP_SMS9:
     {
-      OnJumpSMS(action.actionId - ACTION_JUMP_SMS2 + 2);
+      OnJumpSMS(action.GetID() - ACTION_JUMP_SMS2 + 2);
       return true;
     }
     break;
 
   default:
-    if (action.actionId)
+    if (action.GetID())
     {
-      return OnClick(action.actionId);
+      return OnClick(action.GetID());
     }
   }
   return false;
@@ -545,15 +546,20 @@ bool CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
 {
   if (event.m_id >= ACTION_MOUSE_LEFT_CLICK && event.m_id <= ACTION_MOUSE_DOUBLE_CLICK)
   {
-  if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
+    if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
     {
       OnClick(event.m_id);
+      return true;
+    }
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  {
+    Scroll(-1);
     return true;
   }
-}
-  else if (event.m_id == ACTION_MOUSE_WHEEL)
-{
-    Scroll(-event.m_wheel);
+  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    Scroll(1);
     return true;
   }
   return false;
@@ -730,7 +736,7 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
       // update any properties
       if (updateItems)
         item->UpdateProperties(GetParentID());
-      }
+    }
     UpdateScrollByLetter();
   }
 }
@@ -893,6 +899,11 @@ void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
   UpdateVisibility();
+}
+
+void CGUIBaseContainer::SetRenderOffset(const CPoint &offset)
+{
+  m_renderOffset = offset;
 }
 
 void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)

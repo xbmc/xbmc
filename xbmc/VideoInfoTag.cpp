@@ -72,8 +72,10 @@ void CVideoInfoTag::Reset()
   m_fanart.m_xml = "";
   m_strRuntime = "";
   m_lastPlayed = "";
+  m_strShowLink = "";
   m_streamDetails.Reset();
   m_playCount = 0;
+  m_fEpBookmark = 0;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -92,6 +94,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   if (!m_strSortTitle.IsEmpty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
+  XMLUtils::SetFloat(movie, "epbookmark", m_fEpBookmark);
   XMLUtils::SetInt(movie, "year", m_iYear);
   XMLUtils::SetInt(movie, "top250", m_iTop250);
   if (tag == "episodedetails" || tag == "tvshow")
@@ -114,7 +117,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   if (!m_strPictureURL.m_xml.empty())
   {
     TiXmlDocument doc;
-    doc.Parse(m_strPictureURL.m_xml); 
+    doc.Parse(m_strPictureURL.m_xml);
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {
@@ -144,19 +147,24 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     if (doc.RootElement())
       movie->InsertEndChild(*doc.RootElement());
     else
-    XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
+      XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
   }
 
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
-  XMLUtils::SetString(movie, "genre", m_strGenre);
-  XMLUtils::SetString(movie, "set", m_strSet);
-  XMLUtils::SetString(movie, "credits", m_strWritingCredits);
-  XMLUtils::SetString(movie, "director", m_strDirector);
+  XMLUtils::SetAdditiveString(movie, "genre",
+                          g_advancedSettings.m_videoItemSeparator, m_strGenre);
+  XMLUtils::SetAdditiveString(movie, "set",
+                          g_advancedSettings.m_videoItemSeparator, m_strSet);
+  XMLUtils::SetAdditiveString(movie, "credits",
+                          g_advancedSettings.m_videoItemSeparator, m_strWritingCredits);
+  XMLUtils::SetAdditiveString(movie, "director",
+                          g_advancedSettings.m_videoItemSeparator, m_strDirector);
   XMLUtils::SetString(movie, "premiered", m_strPremiered);
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
-  XMLUtils::SetString(movie, "studio", m_strStudio);
+  XMLUtils::SetAdditiveString(movie, "studio",
+                          g_advancedSettings.m_videoItemSeparator, m_strStudio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
   if (m_streamDetails.HasItems())
@@ -210,7 +218,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
     TiXmlText th(it->thumbUrl.GetFirstThumb().m_url);
     thumbNode->InsertEndChild(th);
   }
-  XMLUtils::SetString(movie, "artist", m_strArtist);
+  XMLUtils::SetAdditiveString(movie, "artist",
+                         g_advancedSettings.m_videoItemSeparator, m_strArtist);
+  XMLUtils::SetAdditiveString(movie, "showlink",
+                         g_advancedSettings.m_videoItemSeparator, m_strShowLink);
 
   return true;
 }
@@ -255,7 +266,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar << m_cast[i].strRole;
       ar << m_cast[i].thumbUrl.m_xml;
     }
-    
+
     ar << m_strSet;
     ar << m_strRuntime;
     ar << m_strFile;
@@ -286,6 +297,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iBookmarkId;
     ar << m_iTrack;
     ar << m_streamDetails;
+    ar << m_strShowLink;
+    ar << m_fEpBookmark;
   }
   else
   {
@@ -317,7 +330,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       info.thumbUrl.ParseString(strXml);
       m_cast.push_back(info);
     }
-    
+
     ar >> m_strSet;
     ar >> m_strRuntime;
     ar >> m_strFile;
@@ -348,6 +361,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
     ar >> m_streamDetails;
+    ar >> m_strShowLink;
+    ar >> m_fEpBookmark;
   }
 }
 
@@ -372,10 +387,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
   XMLUtils::GetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
+  XMLUtils::GetFloat(movie, "epbookmark", m_fEpBookmark);
   int max_value = 10;
   const TiXmlElement* rElement = movie->FirstChildElement("rating");
   if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value>=1)
-  {    
+  {
     m_fRating = m_fRating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
   }
   XMLUtils::GetInt(movie, "year", m_iYear);
@@ -421,6 +437,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
   XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
   XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
+  XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.m_videoItemSeparator,m_strShowLink);
 
   // cast
   const TiXmlElement* node = movie->FirstChildElement("actor");
@@ -474,7 +491,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   node = movie->FirstChildElement("fileinfo");
   if (node)
   {
-    // Try to pull from fileinfo/streamdetails/[video|audio|subtitle] 
+    // Try to pull from fileinfo/streamdetails/[video|audio|subtitle]
     const TiXmlNode *nodeStreamDetails = node->FirstChild("streamdetails");
     if (nodeStreamDetails)
     {
@@ -515,10 +532,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
-      stringstream stream;
-      stream << *epguide;
-      m_strEpisodeGuide = stream.str();
-    }
+    stringstream stream;
+    stream << *epguide;
+    m_strEpisodeGuide = stream.str();
+  }
 
   // fanart
   const TiXmlElement *fanart = movie->FirstChildElement("fanart");

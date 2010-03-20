@@ -53,7 +53,7 @@ namespace OVERLAY {
     DWORD                        m_fvf;
     CD3DTexture                  m_texture;
     CD3DVertexBuffer             m_vertex;
-  }; 
+  };
 
   class COverlayImageDX
     : public COverlayMainThread
@@ -74,7 +74,7 @@ namespace OVERLAY {
     DWORD                        m_fvf;
     CD3DTexture                  m_texture;
     CD3DVertexBuffer             m_vertex;
-  }; 
+  };
 
 }
 

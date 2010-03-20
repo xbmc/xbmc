@@ -37,6 +37,7 @@
 #include "URL.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/EndianSwap.h"
 
 #define RTMP_SIG_SIZE 1536
 #define RTMP_LARGE_HEADER_SIZE 12
@@ -845,12 +846,11 @@ int  CRTMP::ReadInt32(const char *data)
 }
 
 // little-endian 32bit integer
-// TODO: this is wrong on big-endian processors
 int  CRTMP::ReadInt32LE(const char *data)
 {
   int val;
   memcpy(&val, data, sizeof(int));
-  return val;
+  return Endian_SwapLE32(val);
 }
 
 std::string CRTMP::ReadString(const char *data)
@@ -876,12 +876,16 @@ bool CRTMP::ReadBool(const char *data)
 double CRTMP::ReadNumber(const char *data)
 {
   double val;
+#ifndef WORDS_BIGENDIAN
   char *dPtr = (char *)&val;
   for (int i=7;i>=0;i--)
   {
     *dPtr = data[i];
     dPtr++;
   }
+#else
+  memcpy(&val, data, 8);
+#endif
 
   return val;
 }
@@ -925,9 +929,9 @@ int CRTMP::EncodeInt32(char *output, int nVal)
 }
 
 // little-endian 32bit integer
-// TODO: this is wrong on big-endian processors
 int CRTMP::EncodeInt32LE(char *output, int nVal)
 {
+  nVal = Endian_SwapLE32(nVal);
   memcpy(output, &nVal, sizeof(int));
   return sizeof(int);
 }
@@ -984,12 +988,16 @@ int CRTMP::EncodeNumber(char *output, double dVal)
   *buf = 0x00; // type: Number
   buf++;
 
+#ifndef WORDS_BIGENDIAN
   char *dPtr = (char *)&dVal;
   for (int i=7;i>=0;i--)
   {
     buf[i] = *dPtr;
     dPtr++;
   }
+#else
+  memcpy(buf, &dVal, 8);
+#endif
 
   buf += 8;
 

@@ -372,14 +372,14 @@ bool CDSPlayer::OnAction(const CAction &action)
 
   if ( m_pDsGraph.IsDvd() )
   {
-    if ( action.actionId == ACTION_SHOW_VIDEOMENU )
+    if ( action.GetID() == ACTION_SHOW_VIDEOMENU )
     {
       SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_ROOT,0);
       return true;
     }
     if ( m_pDsGraph.IsInMenu() )
     {
-      switch (action.actionId)
+      switch (action.GetID())
       {
         case ACTION_PREVIOUS_MENU:
           SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_BACK,0);
@@ -458,7 +458,7 @@ bool CDSPlayer::OnAction(const CAction &action)
     }
   }
 
-  switch(action.actionId)
+  switch(action.GetID())
   {
     case ACTION_NEXT_ITEM:
     case ACTION_PAGE_UP:

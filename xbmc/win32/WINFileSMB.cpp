@@ -83,9 +83,9 @@ bool CWINFileSMB::Open(const CURL& url)
     m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
     if (!m_hFile.isValid())
     {
-    CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
-    return false;
-  }
+      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
+      return false;
+    }
   }
 
   m_i64FilePos = 0;
@@ -112,7 +112,7 @@ bool CWINFileSMB::Exists(const CURL& url)
   if(smb.ConnectToShare(url) == false)
     return false;
 
-  return (_wstat64(strWFile.c_str(), &buffer)==0);
+  return (_wstat64(strWFile.c_str(), &buffer) == 0);
 }
 
 int CWINFileSMB::Stat(struct __stat64* buffer)
@@ -168,9 +168,9 @@ bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
     m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
     if (!m_hFile.isValid())
     {
-    CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strWPath.c_str(), GetLastError());
-    return false;
-  }
+      CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strWPath.c_str(), GetLastError());
+      return false;
+    }
   }
 
   m_i64FilePos = 0;

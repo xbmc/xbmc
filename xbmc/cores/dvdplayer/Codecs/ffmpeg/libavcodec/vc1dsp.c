@@ -571,7 +571,7 @@ static void OPNAME ## vc1_mspel_mc(uint8_t *dst, const uint8_t *src, int stride,
         dst += stride;\
         src += stride;\
     }\
-            }
+}
 
 #define op_put(a, b) a = av_clip_uint8(b)
 #define op_avg(a, b) a = (a + av_clip_uint8(b) + 1) >> 1

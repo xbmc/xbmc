@@ -1,0 +1,7 @@
+INCLUDES=-I../../include
+
+SRCS=json_reader.cpp json_value.cpp json_writer.cpp
+
+LIB= libjsoncpp.a
+
+include ../../../../../Makefile.include

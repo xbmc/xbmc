@@ -69,7 +69,7 @@ namespace PYXBMC
   void Keyboard_Dealloc(Keyboard* self)
   {
     self->strDefault.~string();
-    self->strHeading.~string();  
+    self->strHeading.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -116,7 +116,7 @@ namespace PYXBMC
   PyObject* Keyboard_SetDefault(Keyboard *self, PyObject *args)
   {
     PyObject *line = NULL;
-    if (!PyArg_ParseTuple(args, (char*)"|O", &line))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|O", &line)) return NULL;
 
     string utf8Line;
     if (line && !PyXBMCGetUnicodeString(utf8Line, line, 1)) return NULL;
@@ -147,7 +147,7 @@ namespace PYXBMC
   PyObject* Keyboard_SetHiddenInput(Keyboard *self, PyObject *args)
   {
     char bHidden = false;
-    if (!PyArg_ParseTuple(args, (char*)"|b", &bHidden))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"|b", &bHidden)) return NULL;
     self->bHidden = (0 != bHidden);
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);

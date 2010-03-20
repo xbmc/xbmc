@@ -25,13 +25,14 @@
 #include "system.h"
 #endif
 
+#include "addons/AddonManager.h"
 #include "RegExp.h"
 #include "HTMLUtil.h"
-#include "CharsetConverter.h"
-#include "ScraperSettings.h"
+#include "addons/Scraper.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
+#include "StringUtils.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 
@@ -39,18 +40,13 @@
 #include <cstring>
 
 using namespace std;
+using namespace ADDON;
 using namespace XFILE;
 
 CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
-  m_name = m_content = NULL;
-  m_thumb = NULL;
   m_document = NULL;
-  m_settings = NULL;
-  m_language = NULL;
-  m_framework = NULL;
-  m_date = NULL;
   m_requiressettings = false;
   m_SearchStringEncoding = "UTF-8";
 }
@@ -69,7 +65,7 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
     Clear();
     if (parser.m_document)
     {
-      m_strFile = parser.m_strFile;
+      m_scraper = parser.m_scraper;
       m_persistence = parser.m_persistence;
       m_document = new TiXmlDocument(*parser.m_document);
       LoadFromXML();
@@ -89,9 +85,7 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_name = m_thumb = m_content = m_language = m_framework = m_date = NULL;
   m_requiressettings = false;
-  m_settings = NULL;
   m_strFile.Empty();
 }
 
@@ -114,68 +108,72 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   return false;
 }
 
+bool CScraperParser::Load(const AddonPtr& scraper)
+{
+  if (!scraper)
+    return false;
+
+  m_scraper = scraper;
+
+  return Load(m_scraper->Path() + m_scraper->LibName());
+}
+
 bool CScraperParser::LoadFromXML()
 {
-  if (!m_document)
+  if (!m_document || !m_scraper)
     return false;
-  
-  CStdString strPath;
-  CUtil::GetDirectory(m_strFile,strPath);
+
+  CStdString strPath = m_scraper->Path();
 
   m_pRootElement = m_document->RootElement();
   CStdString strValue = m_pRootElement->Value();
   if (strValue == "scraper")
   {
-    m_name = m_pRootElement->Attribute("name");
-    m_thumb = m_pRootElement->Attribute("thumb");
-    m_content = m_pRootElement->Attribute("content");
-    m_language = m_pRootElement->Attribute("language");
-    m_framework = m_pRootElement->Attribute("framework");
-    m_date = m_pRootElement->Attribute("date");
+    CONTENT_TYPE content = TranslateContent(m_pRootElement->Attribute("content"));
     if (m_pRootElement->Attribute("cachePersistence"))
       m_persistence.SetFromTimeString(m_pRootElement->Attribute("cachePersistence"));
-   
+
     const char* requiressettings;
     m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
-    if (m_name && m_content) // FIXME
+    // check for known content
+    if ( content == CONTENT_TVSHOWS ||
+         content == CONTENT_MOVIES ||
+         content == CONTENT_MUSICVIDEOS ||
+         content == CONTENT_ALBUMS)
     {
-      // check for known content
-      if ((0 == stricmp(m_content,"tvshows")) ||
-          (0 == stricmp(m_content,"movies")) ||
-          (0 == stricmp(m_content,"musicvideos")) ||
-          (0 == stricmp(m_content,"albums")))
+      TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
+      if (pChildElement)
       {
-        TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
-        if (pChildElement)
-        {
-          if (!(m_SearchStringEncoding = pChildElement->Attribute("SearchStringEncoding")))
-            m_SearchStringEncoding = "UTF-8";
-        }
-
-        // inject includes
-        const TiXmlElement* include = m_pRootElement->FirstChildElement("include");
-        while (include)
-        {
-          if (include->FirstChild())
-          {
-            CStdString strFile = CUtil::AddFileToFolder(strPath,include->FirstChild()->Value());
-            TiXmlDocument doc;
-            if (doc.LoadFile(strFile))
-            {
-              const TiXmlNode* node = doc.RootElement()->FirstChild();
-              while (node)
-              {
-                 m_pRootElement->InsertEndChild(*node);
-                 node = node->NextSibling();
-              }
-            }
-          }
-          include = include->NextSiblingElement("include");
-        }
-
-        return true;
+        if (!(m_SearchStringEncoding = pChildElement->Attribute("SearchStringEncoding")))
+          m_SearchStringEncoding = "UTF-8";
       }
+
+      ADDONDEPS deps = m_scraper->GetDeps();
+      ADDONDEPS::iterator itr = deps.begin();
+      while (itr != deps.end())
+      {
+        AddonPtr dep;
+        if (!CAddonMgr::Get()->GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
+        {
+          itr++;
+          continue;
+        }
+        CStdString strFile = CUtil::AddFileToFolder(dep->Path(), dep->LibName());
+        TiXmlDocument doc;
+        if (doc.LoadFile(strFile))
+        {
+          const TiXmlNode* node = doc.RootElement()->FirstChild();
+          while (node)
+          {
+             m_pRootElement->InsertEndChild(*node);
+             node = node->NextSibling();
+          }
+        }
+        itr++;
+      }
+
+      return true;
     }
   }
   delete m_document;
@@ -201,11 +199,11 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   }
   // insert settings
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos && m_settings)
+  while ((size_t)(iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos)
   {
     int iEnd = strDest.Find("]",iIndex);
     CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
-    CStdString strReplace = m_settings->Get(strInfo);
+    CStdString strReplace = m_scraper->GetSetting(strInfo);
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
     iIndex += strReplace.length();
   }
@@ -226,7 +224,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     if (sensitive)
       if (stricmp(sensitive,"yes") == 0)
         bInsensitive=false; // match case sensitive
-    
+
     CRegExp reg(bInsensitive);
     CStdString strExpression;
     if (pExpression->FirstChild())
@@ -397,8 +395,8 @@ void CScraperParser::ParseNext(TiXmlElement* element)
           szConditional++;
         }
         CStdString strSetting;
-        if (m_settings)
-           strSetting = m_settings->Get(szConditional);
+        if (m_scraper && m_scraper->HasSettings())
+           strSetting = m_scraper->GetSetting(szConditional);
         bExecute = bInverse != strSetting.Equals("true");
       }
 
@@ -409,14 +407,13 @@ void CScraperParser::ParseNext(TiXmlElement* element)
   }
 }
 
-const CStdString CScraperParser::Parse(const CStdString& strTag, const CScraperSettings* pSettings)
+const CStdString CScraperParser::Parse(const CStdString& strTag)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
   if(pChildElement == NULL) return "";
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
-  m_settings = pSettings;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
 
@@ -448,7 +445,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
-      HTML::CHTMLUtil::RemoveTags(strConverted);
+      HTML::CHTMLUtil::ConvertAndRemoveTags(strConverted);
       const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
       strDirty.erase(i,i2-i+11);
       strDirty.Insert(i,szTrimmed);
@@ -522,17 +519,17 @@ void CScraperParser::ClearCache()
 
   if (CDirectory::Exists(strCachePath))
   {
-  CFileItemList items;
-  CDirectory::GetDirectory(strCachePath,items);
-  for (int i=0;i<items.Size();++i)
-  {
+    CFileItemList items;
+    CDirectory::GetDirectory(strCachePath,items);
+    for (int i=0;i<items.Size();++i)
+    {
       // wipe cache
-    if (items[i]->m_dateTime+m_persistence <= CDateTime::GetUTCDateTime())
-      CFile::Delete(items[i]->m_strPath);
-}
+      if (items[i]->m_dateTime+m_persistence <= CDateTime::GetUTCDateTime())
+        CFile::Delete(items[i]->m_strPath);
+    }
   }
   else
-  CDirectory::Create(strCachePath);
+    CDirectory::Create(strCachePath);
 }
 
 void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)

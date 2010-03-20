@@ -21,7 +21,7 @@
 
 /*!
 \file TextureManager.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_TEXTUREGL_H

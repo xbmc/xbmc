@@ -25,6 +25,16 @@
 
 class TiXmlElement;
 
+struct DatabaseSettings
+{
+  CStdString type;
+  CStdString host;
+  CStdString port;
+  CStdString user;
+  CStdString pass;
+  CStdString name;
+};
+
 struct TVShowRegexp
 {
   bool byDate;
@@ -92,8 +102,10 @@ class CAdvancedSettings
     CStdString m_audioHost;
     bool m_audioApplyDrc;
 
-    int m_videoHighQualityScaling;
-    int m_videoHighQualityScalingMethod;
+    int   m_videoHighQualityScaling;
+    int   m_videoHighQualityScalingMethod;
+    bool  m_videoVDPAUScaling;
+    float m_videoNonLinStretchRatio;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -110,6 +122,7 @@ class CAdvancedSettings
     int m_lcdAddress3;
     int m_lcdAddress4;
     bool m_lcdHeartbeat;
+    bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;
     CStdString m_lcdHostName;
 
@@ -202,6 +215,8 @@ class CAdvancedSettings
     int m_iEdlMinCommBreakLength;   // seconds
     int m_iEdlMaxCommBreakGap;      // seconds
     int m_iEdlMaxStartGap;          // seconds
+    int m_iEdlCommBreakAutowait;    // seconds
+    int m_iEdlCommBreakAutowind;    // seconds
 
     bool m_bFirstLoop;
     int m_curlconnecttimeout;
@@ -236,6 +251,9 @@ class CAdvancedSettings
 
     bool m_measureRefreshrate; //when true the videoreferenceclock will measure the refreshrate when direct3d is used
                                //otherwise it will use the windows refreshrate
+
+    DatabaseSettings m_databaseMusic; // advanced music database setup
+    DatabaseSettings m_databaseVideo; // advanced video database setup
 };
 
 extern CAdvancedSettings g_advancedSettings;

@@ -111,8 +111,7 @@ bool CTextureBundleXPR::OpenBundle()
     CStdString theme = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!theme.IsEmpty() && theme.CompareNoCase("SKINDEFAULT"))
     {
-      CStdString themeXPR;
-      CUtil::ReplaceExtension(theme, ".xpr", themeXPR);
+      CStdString themeXPR(CUtil::ReplaceExtension(theme, ".xpr"));
       strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
       strPath = CUtil::AddFileToFolder(strPath, themeXPR);
     }
@@ -259,7 +258,7 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   // found texture - allocate the necessary buffers
   DWORD ReadSize = (file->second.PackedSize + (ALIGN - 1)) & ~(ALIGN - 1);
   BYTE *buffer = (BYTE*)malloc(ReadSize);
-  
+
   if (!buffer || !UnpackedBuf.Set((BYTE*)XPhysicalAlloc(file->second.UnpackedSize, MAXULONG_PTR, 128, PAGE_READWRITE)))
   { // failed due to lack of memory
 #ifndef _LINUX

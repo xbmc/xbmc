@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <id>com.1ting.scraper</id>
+  <type>scraper</type>
+  <title>1ting</title>
+  <library>1ting.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>1ting Scraper</summary>
+  <description>Download Music information from www.1ting.com</description>
+  <author>TAXIGPS</author>
+  <supportedcontent>
+    <content>albums</content>
+    <content>artists</content>
+  </supportedcontent>
+</addoninfo>

@@ -165,12 +165,12 @@ void CGUIFontTTFBase::RemoveReference()
 
 void CGUIFontTTFBase::ClearCharacterCache()
 {
-    delete(m_texture);
+  delete(m_texture);
 
   DeleteHardwareTexture();
 
   m_texture = NULL;
-    delete[] m_char;
+  delete[] m_char;
   m_char = new Character[CHAR_CHUNK];
   memset(m_charquick, 0, sizeof(m_charquick));
   m_numChars = 0;
@@ -183,9 +183,9 @@ void CGUIFontTTFBase::ClearCharacterCache()
 
 void CGUIFontTTFBase::Clear()
 {
-    delete(m_texture);
+  delete(m_texture);
   m_texture = NULL;
-    delete[] m_char;
+  delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
   m_char = NULL;
   m_maxChars = 0;
@@ -239,9 +239,9 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   m_height = height;
 
-    delete(m_texture);
+  delete(m_texture);
   m_texture = NULL;
-    delete[] m_char;
+  delete[] m_char;
   m_char = NULL;
 
   m_maxChars = 0;
@@ -297,7 +297,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors
     // Get the extent of this line
     float w = GetTextWidthInternal( text.begin(), text.end() );
 
-    if ( alignment & XBFONT_TRUNCATED && w > maxPixelWidth )
+    if ( alignment & XBFONT_TRUNCATED && w > maxPixelWidth + 0.5f ) // + 0.5f due to rounding issues
       w = maxPixelWidth;
 
     if ( alignment & XBFONT_CENTER_X)

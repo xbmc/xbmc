@@ -3012,7 +3012,7 @@ void dump_format(AVFormatContext *ic,
             for(k=0; k<ic->programs[j]->nb_stream_indexes; k++) {
                 dump_stream_format(ic, ic->programs[j]->stream_index[k], index, is_output);
                 printed[ic->programs[j]->stream_index[k]] = 1;
-         }
+            }
             total += ic->programs[j]->nb_stream_indexes;
         }
         if (total < ic->nb_streams)
@@ -3020,7 +3020,7 @@ void dump_format(AVFormatContext *ic,
     }
     for(i=0;i<ic->nb_streams;i++)
         if (!printed[i])
-        dump_stream_format(ic, i, index, is_output);
+            dump_stream_format(ic, i, index, is_output);
 
     av_free(printed);
 }

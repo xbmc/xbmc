@@ -29,11 +29,11 @@ class CGUIDialogAudioSubtitleSettings :
 public:
   CGUIDialogAudioSubtitleSettings(void);
   virtual ~CGUIDialogAudioSubtitleSettings(void);
-  virtual void Render();
+  virtual void FrameMove();
 
   static CStdString FormatDelay(float value, float minimum);
   static CStdString FormatDecibel(float value, float minimum);
-  
+
 protected:
   virtual void CreateSettings();
   virtual void OnSettingChanged(SettingInfo &setting);

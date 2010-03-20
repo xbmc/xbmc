@@ -3886,7 +3886,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
         for(i = 0; i < s->avctx->thread_count; i++)
             if(context_init(h->thread_context[i]) < 0)
                 return -1;
-        }
+    }
 
     h->frame_num= get_bits(&s->gb, h->sps.log2_max_frame_num);
 
@@ -8161,7 +8161,7 @@ static int decode_frame(AVCodecContext *avctx,
                 if(out_idx==0 && h->delayed_pic[0] && (h->delayed_pic[0]->key_frame || h->delayed_pic[0]->mmco_reset)) {
                     h->outputed_poc = INT_MIN;
                 } else
-                h->outputed_poc = out->poc;
+                    h->outputed_poc = out->poc;
                 *pict= *(AVFrame*)out;
             }else{
                 av_log(avctx, AV_LOG_DEBUG, "no picture\n");

@@ -140,7 +140,7 @@ protected:
       return s1.CompareNoCase(s2) < 0;
     }
   };
-
+  
   typedef std::map<CStdString, CStdString, icompare> PropertyMap;
   PropertyMap m_mapProperties;
 private:

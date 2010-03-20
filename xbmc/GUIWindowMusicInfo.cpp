@@ -97,8 +97,6 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       if (iControl == CONTROL_BTN_REFRESH)
       {
-        CUtil::ClearCache();
-
         m_bRefresh = true;
         Close();
         return true;
@@ -287,7 +285,7 @@ void CGUIWindowMusicInfo::Update()
   }
 
   // disable the GetThumb button if the user isn't allowed it
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
 
   if (!m_album.strArtist.IsEmpty() && CLastFmManager::GetInstance()->IsLastFmEnabled())
   {
@@ -311,12 +309,6 @@ void CGUIWindowMusicInfo::SetLabel(int iControl, const CStdString& strLabel)
     SET_CONTROL_LABEL(iControl, strLabel);
   }
 }
-
-void CGUIWindowMusicInfo::Render()
-{
-  CGUIDialog::Render();
-}
-
 
 void CGUIWindowMusicInfo::RefreshThumb()
 {
@@ -478,7 +470,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
   }
-  
+
   CStdString result;
   bool flip=false;
   VECSOURCES sources(g_settings.m_musicSources);
@@ -567,7 +559,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
       CFile::Delete(item->GetCachedPictureThumb());
     items.Add(item);
   }
-  
+
   // Grab a local thumb
   CMusicDatabase database;
   database.Open();
@@ -592,7 +584,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
     itemNone->SetLabel(g_localizeStrings.Get(20439));
     items.Add(itemNone);
   }
-  
+
   CStdString result;
   VECSOURCES sources(g_settings.m_musicSources);
   g_mediaManager.GetLocalDrives(sources);

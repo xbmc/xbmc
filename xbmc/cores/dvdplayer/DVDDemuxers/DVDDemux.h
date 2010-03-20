@@ -248,7 +248,7 @@ public:
   /*
    * Get current chapter
    */
-  virtual int GetChapter() { return -1; }
+  virtual int GetChapter() { return 0; }
 
   /*
    * Get the name of the current chapter

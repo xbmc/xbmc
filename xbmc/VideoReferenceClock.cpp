@@ -321,7 +321,7 @@ bool CVideoReferenceClock::SetupGLX()
   //set up receiving of RandR events, we'll get one when the refreshrate changes
   XRRQueryExtension(m_Dpy, &m_RREventBase, &ReturnV);
   XRRSelectInput(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), RRScreenChangeNotifyMask);
-  
+
   UpdateRefreshrate(true); //forced refreshrate update
   m_MissedVblanks = 0;
 
@@ -393,11 +393,11 @@ int CVideoReferenceClock::GetRandRRate()
 {
   int RefreshRate;
   XRRScreenConfiguration *CurrInfo;
-  
+
   CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
   RefreshRate = XRRConfigCurrentRate(CurrInfo);
   XRRFreeScreenConfigInfo(CurrInfo);
-  
+
   return RefreshRate;
 }
 
@@ -449,7 +449,7 @@ void CVideoReferenceClock::RunGLX()
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
     Now = CurrentHostCounter();         //get the timestamp of this vblank
-    
+
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
@@ -471,7 +471,7 @@ void CVideoReferenceClock::RunGLX()
     else
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
-      
+
       //only try reattaching once
       if (IsReset)
         return;
@@ -484,9 +484,9 @@ void CVideoReferenceClock::RunGLX()
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
         return;
       }
-      
+
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
-      glXMakeCurrent(m_Dpy, m_Window, m_Context);
+      ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
       if (ReturnV != True)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
@@ -494,7 +494,7 @@ void CVideoReferenceClock::RunGLX()
       }
 
       m_glXGetVideoSyncSGI(&VblankCount);
-      
+
       IsReset = true;
     }
     PrevVblankCount = VblankCount;
@@ -763,13 +763,13 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
 
   // Create an autorelease pool (necessary to call into non-Obj-C code from Obj-C code)
   void* pool = Cocoa_Create_AutoReleasePool();
-  
+
   CVideoReferenceClock *VideoReferenceClock = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
   VideoReferenceClock->VblankHandler(inNow->hostTime, fps);
-  
+
   // Destroy the autorelease pool
   Cocoa_Destroy_AutoReleasePool(pool);
-  
+
   return kCVReturnSuccess;
 }
 
@@ -781,7 +781,7 @@ bool CVideoReferenceClock::SetupCocoa()
   m_LastVBlankTime = CurrentHostCounter();
   m_MissedVblanks = 0;
   m_RefreshRate = 60;              //init the refreshrate so we don't get any division by 0 errors
-  
+
   if (!Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this)))
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cocoa_CVDisplayLinkCreate failed");
@@ -807,36 +807,36 @@ void CVideoReferenceClock::CleanupCocoa()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: cleaning up Cocoa");
   Cocoa_CVDisplayLinkRelease();
-}    
+}
 
 void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
 {
   int           NrVBlanks;
   double        VBlankTime;
   int           RefreshRate = MathUtils::round_int(fps);
-  
+
   CSingleLock SingleLock(m_CritSection);
 
   if (RefreshRate != m_RefreshRate)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", RefreshRate);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %f hertz, rounding to %i hertz", fps, RefreshRate);
     m_RefreshRate = RefreshRate;
   }
   m_LastRefreshTime = m_CurrTime;
-  
+
   //calculate how many vblanks happened
   VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)m_SystemFrequency;
   NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
   //save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = nowtime;
-  
+
   //update the vblank timestamp, update the clock and send a signal that we got a vblank
   m_VblankTime = nowtime;
   UpdateClock(NrVBlanks, true);
-  
+
   SingleLock.Leave();
-  
+
   SendVblankSignal();
 }
 #endif
@@ -848,7 +848,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   {
     if (NrVBlanks < m_MissedVblanks) //if this is true the vblank detection in the run function is wrong
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected %i vblanks, missed %i", NrVBlanks, m_MissedVblanks);
-    
+
     NrVBlanks -= m_MissedVblanks; //subtract the vblanks we missed
     m_MissedVblanks = 0;
   }
@@ -867,22 +867,22 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 int64_t CVideoReferenceClock::GetTime()
 {
   CSingleLock SingleLock(m_CritSection);
-  
+
   //when using vblank, get the time from that, otherwise use the systemclock
   if (m_UseVblank)
   {
     int64_t  NextVblank;
     int64_t  Now;
-    
+
     Now = CurrentHostCounter();        //get current system time
     NextVblank = TimeOfNextVblank();   //get time when the next vblank should happen
-    
+
     while(Now >= NextVblank)  //keep looping until the next vblank is in the future
     {
       UpdateClock(1, false);           //update clock when next vblank should have happened already
       NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
     }
-    
+
     return m_CurrTime;
   }
   else
@@ -935,7 +935,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     m_LastRefreshTime = m_CurrTime;
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
-  
+
   bool   GotEvent = Forced;
   XEvent Event;
   //check for RandR events
@@ -948,10 +948,10 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     }
     XRRUpdateConfiguration(&Event);
   }
-  
+
   if (!GotEvent) //refreshrate did not change
     return false;
-  
+
   //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
   if (m_UseNvSettings || Forced)
   {
@@ -965,15 +965,15 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
       m_RefreshRate = NvRefreshRate;
       return true;
     }
-    
+
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
   }
-    
+
   CSingleLock SingleLock(m_CritSection);
   m_RefreshRate = GetRandRRate();
-  
+
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
-  
+
   return true;
 
 #elif defined(_WIN32) && defined(HAS_DX)
@@ -992,12 +992,12 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     m_Height = DisplayMode.Height;
     return true;
   }
-   
+
   return false;
 
 #elif defined(__APPLE__)
   int RefreshRate = MathUtils::round_int(Cocoa_GetCVDisplayLinkRefreshPeriod());
-  
+
   if (RefreshRate != m_RefreshRate || Forced)
   {
     CSingleLock SingleLock(m_CritSection);
@@ -1031,7 +1031,7 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
   int           SleepTime;
 
   CSingleLock SingleLock(m_CritSection);
-  
+
   if (m_UseVblank) //when true the vblank is used as clock source
   {
     while (m_CurrTime < Target)
@@ -1042,7 +1042,7 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
       SleepTime = (int)((NextVblank - Now) * 1000 / m_SystemFrequency);
 
       int64_t CurrTime = m_CurrTime; //save current value of the clock
-      
+
       bool Late = false;
       if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
       {
@@ -1056,13 +1056,13 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
           Late = true;                          //the required time
         SingleLock.Enter();
       }
-      
+
       //if the vblank clock was late with its update, we update the clock ourselves
       if (Late && CurrTime == m_CurrTime)
       {
 #ifndef HAVE_LIBVDPAU
         // vdpau spams the log with missed vblanks so only log if vdpau is not compiled in.
-        // actually checking for vdpau enabled is too messy to be used in this routine. 
+        // actually checking for vdpau enabled is too messy to be used in this routine.
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: vblank clock was late: SleepTime %i", SleepTime);
 #endif
         UpdateClock(1, false); //update the clock by 1 vblank
@@ -1079,7 +1079,7 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
     SleepTime = (int)((Target - (Now + ClockOffset)) * 1000 / m_SystemFrequency);
     if (SleepTime > 0)
       ::Sleep(SleepTime);
-    
+
     Now = CurrentHostCounter();
     return Now + ClockOffset;
   }

@@ -48,6 +48,7 @@ do
 	fi
 
 	echo "#!/bin/bash" >  /home/$xbmcUser/.xsession
+	echo "ulimit -c 0" >>  /home/$xbmcUser/.xsession
 	echo "/usr/bin/xbmc --standalone" >>  /home/$xbmcUser/.xsession
 
 	echo "case \"\$?\" in" >>  /home/$xbmcUser/.xsession
@@ -68,7 +69,7 @@ do
 	initctl emit starting-x
 
 	if [ "$(whoami)" == "root" ] ; then
-		su $xbmcUser -c "startx -- -br > /dev/null 2>&1" -l
+		su $xbmcUser -c "startx -- -br > /dev/null 2>&1"
 	else
 		startx -- -br > /dev/null 2>&1
 	fi

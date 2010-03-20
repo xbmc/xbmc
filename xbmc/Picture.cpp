@@ -66,11 +66,11 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
   {
     CLog::Log(LOGINFO, "Caching image from: %s to %s with width %i and height %i", sourceUrl.c_str(), destFile.c_str(), width, height);
     
-  DllImageLib dll;
-  if (!dll.Load()) return false;
+    DllImageLib dll;
+    if (!dll.Load()) return false;
 
     if (CUtil::IsInternetStream(sourceUrl, true))
-  {
+    {
       CFileCurl stream;
       CStdString tempFile = "special://temp/image_download.jpg";
       if (stream.Download(sourceUrl, tempFile))
@@ -79,11 +79,11 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
         {
           CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
           CFile::Delete(tempFile);
-    return false;
-  }
+          return false;
+        }
         CFile::Delete(tempFile);
-  return true;
-  }
+        return true;
+      }
       return false;
     }
     
@@ -101,11 +101,11 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
     {
       CFileCurl stream;
       return stream.Download(sourceUrl, destFile);
-}
+    }
     else
     {
       return CFile::Cache(sourceUrl, destFile);
-}
+    }
   }
 }
 

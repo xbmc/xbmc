@@ -68,7 +68,7 @@ namespace PYXBMC
     self = (ControlTextBox*)type->tp_alloc(type, 0);
     if (!self) return NULL;
 
-    new(&self->strFont) string();        
+    new(&self->strFont) string();
 
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
@@ -99,7 +99,7 @@ namespace PYXBMC
   void ControlTextBox_Dealloc(ControlTextBox* self)
   {
     //Py_DECREF(self->pControlSpin);
-    self->strFont.~string();       
+    self->strFont.~string();
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -135,7 +135,7 @@ namespace PYXBMC
   {
     PyObject *pObjectText;
     string strText;
-    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText))	return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     // create message

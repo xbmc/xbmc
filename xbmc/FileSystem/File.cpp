@@ -280,7 +280,10 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   try
   {
     bool bPathInCache;
-    if (!g_directoryCache.FileExists(strFileName, bPathInCache) )
+    CURL url2(strFileName);
+    if (url2.GetProtocol() == "zip")
+      url2.SetOptions("");
+    if (!g_directoryCache.FileExists(url2.Get(), bPathInCache) )
     {
       if (bPathInCache)
         return false;
@@ -424,10 +427,10 @@ bool CFile::Exists(const CStdString& strFileName, bool bUseCache /* = true */)
     if (bUseCache)
     {
       bool bPathInCache;
-    if (g_directoryCache.FileExists(strFileName, bPathInCache) )
-      return true;
-    if (bPathInCache)
-      return false;
+      if (g_directoryCache.FileExists(strFileName, bPathInCache) )
+        return true;
+      if (bPathInCache)
+        return false;
     }
 
     CURL url(strFileName);

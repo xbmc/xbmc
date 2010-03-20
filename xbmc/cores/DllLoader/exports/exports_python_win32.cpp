@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
+#include "Util.h"
 #include "../DllLoader.h"
 #include "../../../FileSystem/SpecialProtocol.h"
 #include "utils/log.h"
@@ -161,10 +162,9 @@ extern "C"
 
   int xbp_open(const char *filename, int oflag, int pmode)
   {
-    char* p = strdup(filename);
-    CORRECT_SEP_STR(p);
-    int res = open(_P(p).c_str(), oflag, pmode);
-    free(p);
+    CStdString strPath = CUtil::ValidatePath(_P(filename));
+  
+    int res = open(strPath.c_str(), oflag, pmode);
     return res;
   }
 
@@ -174,8 +174,8 @@ extern "C"
     char cName[1024];
     char* p;
     
-    strcpy(cName, filename);
-    CORRECT_SEP_STR(cName);
+    CStdString strPath = CUtil::ValidatePath(_P(filename));
+    strcpy(cName, strPath.c_str());
     
     //for each "\\..\\" remove the directory before it
     while(p = strstr(cName, "\\..\\"))
@@ -187,7 +187,7 @@ extern "C"
     }
 
     // don't use emulated files, they do not work in python yet
-    return fopen_utf8(_P(cName).c_str(), mode);
+    return fopen_utf8(cName, mode);
   }
 
   #if 0 // TODO: Is this needed?

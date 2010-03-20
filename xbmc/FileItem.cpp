@@ -543,7 +543,7 @@ bool CFileItem::IsKaraoke() const
 {
   if ( !IsAudio() || IsLastFM() || IsShoutCast())
     return false;
- 
+
   return CKaraokeLyricsFactory::HasLyrics( m_strPath );
 }
 
@@ -598,7 +598,7 @@ bool CFileItem::IsInternetStream() const
     return false;
 
   return CUtil::IsInternetStream(m_strPath);
-  }
+}
 
 bool CFileItem::IsFileFolder() const
 {
@@ -722,11 +722,6 @@ bool CFileItem::IsStack() const
 bool CFileItem::IsPlugin() const
 {
   return CUtil::IsPlugin(m_strPath);
-}
-
-bool CFileItem::IsPluginRoot() const
-{
-  return CUtil::IsPluginRoot(m_strPath);
 }
 
 bool CFileItem::IsMultiPath() const
@@ -1817,7 +1812,7 @@ void CFileItemList::FilterCueItems()
                   StringUtils::SplitString(g_settings.m_musicExtensions, "|", extensions);
                   for (unsigned int i = 0; i < extensions.size(); i++)
                   {
-                    CUtil::ReplaceExtension(pItem->m_strPath, extensions[i], strMediaFile);
+                    strMediaFile = CUtil::ReplaceExtension(pItem->m_strPath, extensions[i]);
                     CFileItem item(strMediaFile, false);
                     if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
                     {
@@ -1994,6 +1989,7 @@ void CFileItemList::Stack()
             if (CFile::Exists(path))
               dvdPath = path;
           }
+#ifdef HAS_LIBBDNAV
           if (dvdPath.IsEmpty())
           {
             CUtil::AddFileToFolder(item->m_strPath, "BDMV", dvdPath);
@@ -2005,6 +2001,7 @@ void CFileItemList::Stack()
               dvdPath.Replace("00000.mpls","main.mpls");
             }
           }
+#endif
           if (!dvdPath.IsEmpty())
           {
             // NOTE: should this be done for the CD# folders too?
@@ -2058,7 +2055,7 @@ void CFileItemList::Stack()
 
     // set property
     item1->SetProperty("isstacked", "1");
-    
+
     // skip folders, nfo files, playlists
     if (item1->m_bIsFolder
       || item1->IsParentFolder()
@@ -2090,7 +2087,7 @@ void CFileItemList::Stack()
     VECCREGEXP::iterator  expr        = stackRegExps.begin();
 
     CUtil::Split(item1->m_strPath, filePath, file1);
-    int j; 
+    int j;
     while (expr != stackRegExps.end())
     {
       if (expr->RegFind(file1, offset) != -1)
@@ -2551,7 +2548,7 @@ CStdString CFileItem::GetTBNFile() const
     if (m_bIsFolder && !IsFileFolder())
       thumbFile = strFile + ".tbn"; // folder, so just add ".tbn"
     else
-      CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+      thumbFile = CUtil::ReplaceExtension(strFile, ".tbn");
     url.SetFileName(thumbFile);
     thumbFile = url.Get();
   }
@@ -2615,18 +2612,11 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   CStdString folderThumb;
   CStdString strFolder = m_strPath;
 
-  if (IsStack())
+  if (IsStack() ||
+      CUtil::IsInRAR(strFolder) ||
+      CUtil::IsInZIP(strFolder))
   {
-    CStdString strPath;
-    CUtil::GetParentPath(m_strPath,strPath);
-    CStdString strFolder = CStackDirectory::GetStackedTitlePath(m_strPath);
-  }
-
-  if (CUtil::IsInRAR(strFolder) || CUtil::IsInZIP(strFolder))
-  {
-    CStdString strPath, strParent;
-    CUtil::GetDirectory(strFolder,strPath);
-    CUtil::GetParentPath(strPath,strParent);
+    CUtil::GetParentPath(m_strPath,strFolder);
   }
 
   if (IsMultiPath())
@@ -2731,8 +2721,7 @@ CStdString CFileItem::GetLocalFanart() const
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    CStdString strTBNFile = item.GetTBNFile();
-    CUtil::ReplaceExtension(strTBNFile, "-fanart",strTBNFile);
+    CStdString strTBNFile(CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart"));
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
@@ -2764,7 +2753,7 @@ CStdString CFileItem::GetLocalFanart() const
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
-  CUtil::ReplaceExtension(strFile, "-fanart",strFile);
+  strFile = CUtil::ReplaceExtension(strFile, "-fanart");
   fanarts.push_back(CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())
@@ -3101,8 +3090,7 @@ CStdString CFileItem::FindTrailer() const
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    CStdString strTBNFile = item.GetTBNFile();
-    CUtil::ReplaceExtension(strTBNFile, "-trailer",strTBNFile);
+    CStdString strTBNFile(CUtil::ReplaceExtension(item.GetTBNFile(), "-trailer"));
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
@@ -3165,7 +3153,7 @@ CStdString CFileItem::FindTrailer() const
           strTrailer = items[i]->m_strPath;
           i = items.Size();
           break;
-  }
+        }
         expr++;
       }
     }

@@ -424,7 +424,7 @@ static void apply_gain_ctrl(float *v_out, const float *v_ref,
                                                 ff_dot_productf(v_ref + i,
                                                                 v_ref + i, 40),
                                                 40);
-    }
+}
 
 /**
  * Apply filter in pitch-subframe steps.

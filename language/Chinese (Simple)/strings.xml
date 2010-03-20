@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 27556 -->
+<!--Based on english strings version 28467 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -127,10 +127,10 @@
   <string id="168"></string>
   <string id="169">分辨率</string>
   <string id="170">调整显示器刷新率适应视频</string>
-  <string id="171">把 4:3 节目拉伸到 16:9</string>
-
+  <string id="171"></string>
 
   <string id="172">发行时间</string>
+  <string id="173">将 4:3 视频显示为</string>
 
   <string id="175">音调</string>
   <string id="176">风格</string>
@@ -350,7 +350,6 @@
   <string id="407">风向</string>
   <string id="408">风速</string>
   <string id="409">默认</string> 
-  
   <string id="410">访问天气服务</string>
   <string id="411">取得天气数据：</string>
   <string id="412">不能获得天气数据</string>
@@ -359,6 +358,8 @@
   <string id="415">下载缩略图...</string>
   <string id="416">不可用</string>
   <string id="417">显示：大图标</string>
+  <string id="418">低</string>
+  <string id="419">高</string>
 
   <string id="422">删除专辑信息</string>
   <string id="423">删除 CD 信息</string>
@@ -543,11 +544,11 @@
   <string id="625">所有歌曲</string>
   <string id="629">显示模式</string>
   <string id="630">正常</string>
-  <string id="631">填满屏幕</string>
+  <string id="631">满屏</string>
   <string id="632">拉伸为 4:3</string>
-  <string id="633">拉伸为 14:9</string>
+  <string id="633">宽屏</string>
   <string id="634">拉伸为 16:9</string>
-  <string id="635">视频原始像素比例</string>
+  <string id="635">原始大小</string>
   <string id="636">自定义</string>
   <string id="637">回放增益</string>
   <string id="638">回放增益音量调整</string>
@@ -571,6 +572,7 @@
   <string id="656">浏览播放列表</string>
   <string id="657">浏览文件夹</string>
   <string id="658">歌曲信息</string>
+  <string id="659">非线性拉伸</string>
 
   <string id="660">音量放大</string>
   <string id="661">选择导出文件夹</string>
@@ -1846,7 +1848,7 @@
   <string id="20433">提取缩略图和媒体标识</string>
   <string id="20434">影片集</string>
   <string id="20435">设置影片集缩略图</string>
-  <string id="20436">导出演员缩略图</string>
+  <string id="20436">导出演员缩略图？</string>
   <string id="20437">选择同人画</string>
   <string id="20438">本地同人画</string>
   <string id="20439">无同人画</string>
@@ -1932,6 +1934,7 @@
   <string id="21416">启用基于刮削器语言的回送</string>
   <string id="21417">- 设置</string>
   <string id="21418">多语言</string>
+  <string id="21419">没有选定刮削器</string>
 
   <string id="21420">等于</string>
   <string id="21421">智能播放列表规则</string>
@@ -1948,7 +1951,7 @@
   <string id="21432">编辑智能播放列表</string>
   <string id="21433">播放列表名称</string>
   <string id="21434">查找满足条件的歌曲</string>
-  <string id="21435">- 编辑</string>
+  <string id="21435">编辑</string>
   <string id="21436">%i首歌曲</string>
   <string id="21437">新的智能播放列表...</string>
   <string id="21438">%c磁盘</string>
@@ -1963,6 +1966,7 @@
   <string id="21447">对白语言</string>
   <string id="21448">字幕语言</string>
   <string id="21449">摇控器发送键盘按键</string>
+  <string id="21450">- 编辑</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -2085,10 +2089,8 @@
   <string id="22042">白/兰</string>
   <string id="22043">黑/白</string>
 
-  <string id="23000">天气插件</string>
-  <string id="23001">- 插件设置</string>
-
-  <string id="23050">开启图文电视</string>
+  <string id="23049">图文字幕不可用</string>
+  <string id="23050">开启图文字幕</string>
   <string id="23051">片段 %i</string>
   <string id="23052">缓存 %i 字节</string>
   <string id="23053">停止</string>
@@ -2099,6 +2101,41 @@
   <string id="23101">点 OK 关闭播放器</string>
 
   <string id="23104">播放完毕时点 OK</string>
+
+  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <string id="24000">扩展功能</string>
+  <string id="24001">扩展功能</string>
+
+  <string id="24005">插件</string>
+  <string id="24007">刮削器</string>
+  <string id="24008">屏幕保护</string>
+  <string id="24009">脚本</string>
+  <string id="24010">可视化效果</string>
+
+  <string id="24020">设置扩展功能</string>
+  <string id="24021">禁用扩展功能</string>
+  <string id="24022">启用扩展功能</string>
+  <string id="24023">扩展功能已禁用</string>
+  <string id="24027">天气服务</string>
+  <string id="24028">Weather.com（标准）</string>
+  <string id="24030">此扩展功能不可设置</string>
+  <string id="24031">读取配置错误</string>
+
+  <string id="24050">可用扩展功能</string>
+  <string id="24051">版本：</string>
+  <string id="24052">免责声明：</string>
+  <string id="24053">许可证：</string>
+  <string id="24059">要安装此扩展功能吗？</string>
+
+  <string id="24070">扩展功能不可用</string>
+  <string id="24071">发生未知错误</string>
+  <string id="24072">需要先进行设置</string>
+  <string id="24073">无法连接</string>
+  <string id="24074">需要重新启动</string>
+  <string id="24080">尝试重新连接？</string>
+  <string id="24089">重新启动扩展功能</string>
+
+  <string id="24090">锁定扩展功能管理器</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>

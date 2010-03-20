@@ -34,17 +34,17 @@
 #endif
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #ifdef USE_LIBA52_DECODER
-#include "Audio/DVDAudioCodecLiba52.h"
+  #include "Audio/DVDAudioCodecLiba52.h"
 #endif
 #ifdef USE_LIBDTS_DECODER
-#include "Audio/DVDAudioCodecLibDts.h"
+  #include "Audio/DVDAudioCodecLibDts.h"
 #endif
 #include "Audio/DVDAudioCodecLibMad.h"
 #include "Audio/DVDAudioCodecLibFaad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
 #if defined(USE_LIB52_DECODER) || defined(USE_LIBDTS_DECODER)
-#include "Audio/DVDAudioCodecPassthrough.h"
+  #include "Audio/DVDAudioCodecPassthrough.h"
 #endif
 #include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
@@ -126,6 +126,25 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
+  CStdString hwSupport;
+#ifdef HAVE_LIBCRYSTALHD
+  hwSupport += "Crystal HD:yes ";
+#else
+  hwSupport += "Crystal HD:no ";
+#endif
+#if defined(HAVE_LIBVDPAU) && defined(_LINUX)
+  hwSupport += "VDPAU:yes ";
+#elif defined(_LINUX)
+  hwSupport += "VDPAU:no ";
+#endif
+#if defined(_WIN32) && defined(HAS_DX)
+  hwSupport += "DXVA:yes";
+#elif defined(_WIN32)
+  hwSupport += "DXVA:no";
+#endif
+
+  CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
+
 #if defined(HAVE_LIBCRYSTALHD)
   if (!hint.software && CCrystalHD::GetInstance()->DevicePresent())
   {
@@ -185,8 +204,8 @@ CDVDAudioCodec* CDVDFactoryCodec::CreateAudioCodec( CDVDStreamInfo &hint, bool p
   if (passthrough)
   {
 #if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
-  pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
-  if( pCodec ) return pCodec;
+    pCodec = OpenCodec( new CDVDAudioCodecPassthrough(), hint, options );
+    if( pCodec ) return pCodec;
 #endif
 
     pCodec = OpenCodec( new CDVDAudioCodecPassthroughFFmpeg(), hint, options);

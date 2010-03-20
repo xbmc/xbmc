@@ -49,7 +49,7 @@ mmsx_t *mmsx_connect(mms_io_t *io, void *data, const char *url, int bandwidth)
   mmsx->connection = mms_connect(io, data, url, bandwidth);
   if (mmsx->connection)
     return mmsx;
-    
+
   free(mmsx);
   return NULL;
 }

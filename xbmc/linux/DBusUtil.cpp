@@ -29,20 +29,20 @@ CVariant CDBusUtil::GetVariant(const char *destination, const char *object, cons
 
   if (message.AppendArgument(interface) && message.AppendArgument(property))
   {
-  DBusMessage *reply = message.SendSystem();
+    DBusMessage *reply = message.SendSystem();
 
-  if (reply)
-  {
-    DBusMessageIter iter;
-
-    if (dbus_message_iter_init(reply, &iter))
+    if (reply)
     {
-      if (!dbus_message_has_signature(reply, "v"))
-        CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
-      else
-        result = ParseVariant(&iter);
+      DBusMessageIter iter;
+
+      if (dbus_message_iter_init(reply, &iter))
+      {
+        if (!dbus_message_has_signature(reply, "v"))
+          CLog::Log(LOGERROR, "DBus: wrong signature on Get - should be \"v\" but was %s", dbus_message_iter_get_signature(&iter));
+        else
+          result = ParseVariant(&iter);
+      }
     }
-  }
   }
   else
     CLog::Log(LOGERROR, "DBus: append arguments failed");
@@ -58,7 +58,7 @@ CVariant CDBusUtil::GetAll(const char *destination, const char *object, const ch
   DBusMessage *reply = message.SendSystem();
   if (reply)
   {
-    DBusMessageIter iter;        
+    DBusMessageIter iter;
     if (dbus_message_iter_init(reply, &iter))
     {
       if (!dbus_message_has_signature(reply, "a{sv}"))
@@ -75,7 +75,7 @@ CVariant CDBusUtil::GetAll(const char *destination, const char *object, const ch
             dbus_message_iter_recurse(&sub, &dict);
             do
             {
-              const char *    key     = NULL;
+              const char * key = NULL;
 
               dbus_message_iter_get_basic(&dict, &key);
               dbus_message_iter_next(&dict);

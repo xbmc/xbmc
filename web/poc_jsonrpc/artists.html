@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>XBMC - Artists</title> 
+<link type="text/css" rel="stylesheet" href="basic.css" />
+<script type="text/javascript" src="json.js" />
+<script type="text/javascript">
+function writeArtist( artist ) {
+  document.write("<h2>" + artist["label"] + "</h2>");
+
+  var http_request = new XMLHttpRequest();
+  http_request.open( "POST", "jsonrpc", false );
+  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"MusicLibrary.GetAlbums\", \"params\": { \"artistid\": " + artist["artistid"] + " }, \"id\": 1}");
+
+  var the_object = JSON.parse(http_request.responseText);
+  var result = the_object["result"];
+  var array = result["albums"];
+
+  for (var property in array) {
+    var item = array[property];
+    document.write("<a href=\"nowplaying.html\">");
+    if (item["thumbnail"])
+      document.write("<img src=\"thumb/" + item["thumbnail"] + ".jpg\" class=\"cover\" alt=\"" + item["label"] + "\"></img>");
+    else
+      document.write("<img src=\"images/DefaultAlbumCover.png\" class=\"cover\" alt=\"" + item["label"] + "\"></img>");
+    document.write("</a>");
+  }
+}
+</script>
+</head>
+<body>
+<table class="Navigation">
+<tr class="primary">
+  <td class="unselected"><a href="nowplaying.html">Now playing</a></td>
+  <td class="unselected"><a href="movies.html">Videos</a></td>
+  <td class="selected">Music</td>
+  <td class="unselected"><a href="development.html">Development</a></td>
+</tr>
+<tr>
+  <td></td><td></td><td>
+  <table>
+  <tr class="secondary">
+    <td><a href="musicfiles.html">Music files</a></td>
+    <td>Artists</td>
+    <td><a href="albums.html">Albums</a></td>
+  </tr>
+  </table></td>
+</tr>
+</table>
+<br />
+
+<script type="text/javascript">
+var http_request = new XMLHttpRequest();
+http_request.open( "POST", "jsonrpc", false );
+http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"MusicLibrary.GetArtists\", \"id\": 1}");
+
+var the_object = JSON.parse(http_request.responseText);
+var result = the_object["result"];
+var array = result["artists"];
+
+document.write("<table>");
+for (var property in array) {
+  document.write("<tr class=\"" + (property % 2 == 0 ? "even" : "odd") + "\"><td>");
+
+  var item = array[property];
+
+  writeArtist(item);
+
+  document.write("</td></tr>");
+}
+document.write("</table>");
+</script>
+</body>
+</html>

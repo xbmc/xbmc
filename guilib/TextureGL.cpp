@@ -95,17 +95,17 @@ void CGLTexture::LoadToGPU()
 
   switch (m_format)
   {
-  case XB_FMT_DXT1: 
+  case XB_FMT_DXT1:
     format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-    break; 
-  case XB_FMT_DXT3: 
+    break;
+  case XB_FMT_DXT3:
     format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-    break;     
-  case XB_FMT_DXT5: 
+    break;
+  case XB_FMT_DXT5:
   case XB_FMT_DXT5_YCoCg:
     format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-    break; 
-  case XB_FMT_A8R8G8B8: 
+    break;
+  case XB_FMT_A8R8G8B8:
   default:
 #ifdef HAS_GL
     format = GL_BGRA;
@@ -123,7 +123,7 @@ void CGLTexture::LoadToGPU()
   else
   {
     // changed from glCompressedTexImage2D to support GL < 1.3
-    glCompressedTexImage2DARB(GL_TEXTURE_2D, 0, format, 
+    glCompressedTexImage2DARB(GL_TEXTURE_2D, 0, format,
       m_textureWidth, m_textureHeight, 0, GetPitch() * GetRows(), m_pixels);
   }
 

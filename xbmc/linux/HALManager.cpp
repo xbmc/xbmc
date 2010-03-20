@@ -295,6 +295,7 @@ bool CHALManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);
+      device->HalIgnore   = libhal_device_get_property_bool(g_HalManager.m_Context, udi, "volume.ignore", NULL);
       ApproveDevice(device);
 
       libhal_drive_free(tempDrive);
@@ -396,7 +397,7 @@ void CHALManager::UpdateDevice(const char *udi)
         if (g_advancedSettings.m_handleMounting)  // If the device was mounted by XBMC before it's still mounted by XBMC.
             dev.MountedByXBMC = m_Volumes[i].MountedByXBMC;
         if (!dev.Mounted && m_Volumes[i].Mounted)
-          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
+          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
         m_Volumes[i] = dev;
 
         break;
@@ -462,7 +463,7 @@ void CHALManager::HandleNewVolume(CStorageDevice *dev)
         {
           CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev->FriendlyName.c_str(), dev->MountPoint.c_str());
           if (m_Notifications)
-            g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), dev->FriendlyName.c_str());
+            g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), dev->FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
         }
       }
       libhal_free_string_array(capability);
@@ -495,7 +496,7 @@ void CHALManager::AddDevice(const char *udi)
   {
     DBusError dbusError;
     dbus_error_init(&dbusError);
-    
+
     char **capability;
     capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", &dbusError);
     for(char **ptr = capability; *ptr != NULL;ptr++)
@@ -507,7 +508,7 @@ void CHALManager::AddDevice(const char *udi)
         CHALDevice dev = CHALDevice(udi);
         dev.FriendlyName = libhal_device_get_property_string(m_Context, udi, "info.product", &m_Error);
         m_Joysticks.push_back(dev);
-        
+
         if(m_Joysticks.size() < 2 || m_bMultipleJoysticksSupport)
         {
           // Restart SDL joystick subsystem
@@ -522,10 +523,10 @@ void CHALManager::AddDevice(const char *udi)
             CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
             break;
           }
-          
+
           g_Joystick.Initialize();
           if (m_Notifications)
-            g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13024), dev.FriendlyName.c_str());
+            g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13024), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
         }
       }
     }
@@ -561,7 +562,7 @@ bool CHALManager::RemoveDevice(const char *udi)
         if (g_advancedSettings.m_handleMounting)
           UnMount(m_Volumes[i]);
         if (m_Notifications)
-          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
+          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
         CLog::Log(LOGNOTICE, "HAL: Unsafe drive removal");
       }
       m_Volumes.erase(m_Volumes.begin() + i);
@@ -587,9 +588,9 @@ bool CHALManager::RemoveDevice(const char *udi)
           CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
           return false;
         }
-      
+
         g_Joystick.Initialize();
-        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str());
+        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
       }
       m_Joysticks.erase(m_Joysticks.begin() + i);
       return true;
@@ -617,6 +618,9 @@ bool CHALManager::ApproveDevice(CStorageDevice *device)
 
   // Ignore some mountpoints, unless a weird setup these should never contain anything usefull for an enduser.
   if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0 || strcmp(device->MountPoint, "/mnt/") == 0 || strcmp(device->MountPoint, "/home/") == 0)
+    approve = false;
+
+  if (device->HalIgnore)
     approve = false;
 
   device->Approved = approve;
@@ -708,20 +712,27 @@ bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
 
     if (volume->FileSystem.Equals("vfat"))
     {
-      temporaryString.Format("uid=%u", getuid());
-      s = temporaryString.c_str();
-      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-    }
-    s = "sync";
-    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-
-    if (volume->FileSystem.Equals("vfat"))
-    {
       int mask = umask (0);
       temporaryString.Format("umask=%#o", mask);
       s = temporaryString.c_str();
       dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      temporaryString.Format("uid=%u", getuid());
+      s = temporaryString.c_str();
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      s = "shortname=mixed";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      s = "utf8";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+      // 'sync' option will slow down transfer speed significantly for FAT filesystems. We prefer 'flush' instead.
+      s = "flush";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
     }
+    else
+    {
+      s = "sync";
+      dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+    }
+
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)

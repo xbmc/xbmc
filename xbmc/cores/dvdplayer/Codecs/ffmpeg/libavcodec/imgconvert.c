@@ -730,11 +730,11 @@ int avpicture_layout(const AVPicture* src, enum PixelFormat pix_fmt, int width, 
             pix_fmt == PIX_FMT_RGB555LE)
             w = width * 2;
         else if (pix_fmt == PIX_FMT_UYYVYY411)
-          w = width + width/2;
+            w = width + width/2;
         else if (pix_fmt == PIX_FMT_PAL8)
-          w = width;
+            w = width;
         else
-          w = width * (pf->depth * pf->nb_channels / 8);
+            w = width * (pf->depth * pf->nb_channels / 8);
 
         data_planes = 1;
         h = height;
@@ -748,21 +748,21 @@ int avpicture_layout(const AVPicture* src, enum PixelFormat pix_fmt, int width, 
     oh = h;
 
     for (i=0; i<data_planes; i++) {
-         if (i == 1) {
+        if (i == 1) {
             w = ((width >> desc->log2_chroma_w) * pf->depth + 7) / 8;
             h = height >> desc->log2_chroma_h;
             if (pix_fmt == PIX_FMT_NV12 || pix_fmt == PIX_FMT_NV21)
                 w <<= 1;
-         } else if (i == 3) {
-             w = ow;
-             h = oh;
-         }
-         s = src->data[i];
-         for(j=0; j<h; j++) {
-             memcpy(dest, s, w);
-             dest += w;
-             s += src->linesize[i];
-         }
+        } else if (i == 3) {
+            w = ow;
+            h = oh;
+        }
+        s = src->data[i];
+        for(j=0; j<h; j++) {
+            memcpy(dest, s, w);
+            dest += w;
+            s += src->linesize[i];
+        }
     }
 
     if (pf->pixel_type == FF_PIXEL_PALETTE)

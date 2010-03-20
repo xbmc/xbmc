@@ -41,11 +41,11 @@ public:
   bool LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture, int &width, int &height);
 
   int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures, int &width, int &height, int& nLoops, int** ppDelays);
-  
+
 private:
   CTextureBundleXPR m_tbXPR;
   CTextureBundleXBT m_tbXBT;
-  
+
   bool m_useXPR;
   bool m_useXBT;
 };

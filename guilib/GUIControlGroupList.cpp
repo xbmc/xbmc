@@ -23,6 +23,7 @@
 #include "Key.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIControlProfiler.h"
+#include "GUIFont.h" // for XBFONT_* definitions
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, unsigned int scrollTime)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)
@@ -319,25 +320,25 @@ bool CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent
   m_transform.InverseTransformPosition(childPoint.x, childPoint.y);
   if (CGUIControl::CanFocus())
   {
-  float pos = 0;
-  float alignOffset = GetAlignOffset();
+    float pos = 0;
+    float alignOffset = GetAlignOffset();
     for (ciControls i = m_children.begin(); i != m_children.end(); ++i)
-  {
-      CGUIControl *child = *i;
-    if (child->IsVisible())
     {
-      if (pos + Size(child) > m_offset && pos < m_offset + Size())
-      { // we're on screen
-        float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_offset;
-        float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_offset : m_posY;
+      CGUIControl *child = *i;
+      if (child->IsVisible())
+      {
+        if (pos + Size(child) > m_offset && pos < m_offset + Size())
+        { // we're on screen
+          float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_offset;
+          float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_offset : m_posY;
           if (child->SendMouseEvent(childPoint - CPoint(offsetX, offsetY), event))
           { // we've handled the action, and/or have focused an item
-          return true;
-      }
+            return true;
+          }
         }
-      pos += Size(child) + m_itemGap;
+        pos += Size(child) + m_itemGap;
+      }
     }
-  }
     // none of our children want the event, but we may want it.
     if (HitTest(childPoint) && OnMouseEvent(childPoint, event))
       return true;
@@ -421,7 +422,7 @@ float CGUIControlGroupList::GetAlignOffset() const
 
 bool CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (event.m_id == ACTION_MOUSE_WHEEL)
+  if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     // find the current control and move to the next or previous
     float offset = 0;
@@ -430,12 +431,12 @@ bool CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &
       CGUIControl *control = *it;
       if (!control->IsVisible()) continue;
       float nextOffset = offset + Size(control) + m_itemGap;
-      if (event.m_wheel < 0 && nextOffset > m_offset) // past our current offset
+      if (event.m_id == ACTION_MOUSE_WHEEL_DOWN && nextOffset > m_offset) // past our current offset
       {
         ScrollTo(nextOffset);
         return true;
       }
-      else if (event.m_wheel > 0 && nextOffset >= m_offset) // at least at our current offset
+      else if (event.m_id == ACTION_MOUSE_WHEEL_UP && nextOffset >= m_offset) // at least at our current offset
       {
         ScrollTo(offset);
         return true;

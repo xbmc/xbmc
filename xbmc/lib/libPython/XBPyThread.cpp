@@ -152,7 +152,7 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
 
   m_threadState = Py_NewInterpreter();
-  
+
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
@@ -167,7 +167,7 @@ void XBPyThread::Process()
   PyThreadState_Swap(m_threadState);
 
   m_pExecuter->InitializeInterpreter();
-  
+
   CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
 
   // get path from script file name and add python path's
@@ -195,11 +195,11 @@ void XBPyThread::Process()
   PySys_SetPath(path);
   // Remove the PY_PATH_SEP at the end
   sourcedir[strlen(sourcedir)-1] = 0;
-  
+
   CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
-  
+
   xbp_chdir(sourcedir);
-  
+
   if (m_type == 'F')
   {
     // run script from file
@@ -228,7 +228,7 @@ void XBPyThread::Process()
     PyObject* exc_traceback;
     PyObject* pystring;
     pystring = NULL;
-   
+
     PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
     if (exc_type == 0 && exc_value == 0 && exc_traceback == 0)
     {
@@ -275,24 +275,24 @@ void XBPyThread::Process()
     }
     if (pystring != NULL && strncmp(PyString_AsString(pystring), "exceptions.KeyboardInterrupt", 28) != 0)
     {
-    CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-    if (pDlgToast)
-    {
-      CStdString desc;
-      CStdString path;
-      CStdString script;
-      CUtil::Split(m_source, path, script);
-      if (script.Equals("default.py"))
+      CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+      if (pDlgToast)
       {
-        CStdString path2;
-        CUtil::RemoveSlashAtEnd(path);
-        CUtil::Split(path, path2, script);
-      }
+        CStdString desc;
+        CStdString path;
+        CStdString script;
+        CUtil::Split(m_source, path, script);
+        if (script.Equals("default.py"))
+        {
+          CStdString path2;
+          CUtil::RemoveSlashAtEnd(path);
+          CUtil::Split(path, path2, script);
+        }
 
-      desc.Format(g_localizeStrings.Get(2100), script);
-      pDlgToast->QueueNotification(g_localizeStrings.Get(257), desc);
+        desc.Format(g_localizeStrings.Get(2100), script);
+        pDlgToast->QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(257), desc);
+      }
     }
-  }
     Py_XDECREF(exc_type);
     Py_XDECREF(exc_value); // caller owns all 3
     Py_XDECREF(exc_traceback); // already NULL'd out
@@ -361,7 +361,7 @@ bool XBPyThread::isStopping() {
 void XBPyThread::stop()
 {
   m_stopping = true;
-  
+
   if (m_threadState)
   {
     PyEval_AcquireLock();

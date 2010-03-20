@@ -44,7 +44,14 @@
 #define HAS_UPNP
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
+
+#ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
+#define HAS_WEB_INTERFACE
+#endif
+
+#define HAS_JSONRPC
+#define HAS_HTTPAPI
 
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
@@ -87,6 +94,9 @@
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
 #define HAVE_LIBCRYSTALHD
+#define HAS_WEB_SERVER
+#define HAS_WEB_INTERFACE
+#define HAVE_LIBSSH
 #endif
 
 /*****************
@@ -132,6 +142,10 @@
 #define HAS_XRANDR
 #endif
 #define HAS_LIBBDNAV
+#endif
+
+#ifdef HAVE_LIBSSH
+#define HAS_FILESYSTEM_SFTP
 #endif
 
 /*****************

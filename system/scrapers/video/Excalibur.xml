@@ -32,10 +32,10 @@
 			<RegExp input="$$6" output="\1" dest="5+">
 				<RegExp input="$$1" output="\1" dest="7">
 					<expression noclean="1">Starring:&lt;/font&gt;.*&lt;font class="starLink1"&gt;(.*?)&lt;/font&gt;</expression>
-			</RegExp>
+				</RegExp>
 				<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="6">
 					<expression repeat="yes">,([^&lt;|,]+)[\.|,]</expression>
-			</RegExp>
+				</RegExp>
 				<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;thumb&gt;http://images.excaliburfilms.com/pornlist/starpicsAA020309/\1.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="6+">
 					<expression repeat="yes" trim="1,2">&lt;a href="/pornlist/(?:starpgs|malepgs)/([^\.]+)[^&gt;]*&gt;([^&lt;]*)</expression>
 				</RegExp>
@@ -70,7 +70,7 @@
 			</RegExp>
 			<RegExp input="$$1" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="5+">
 				<expression>/excal/release[^&gt;]*&gt;([0-9]*/[0-9]*/[0-9]*)[^&lt;]*?</expression>
-		</RegExp>
+			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>

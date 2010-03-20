@@ -180,7 +180,7 @@ bool convert_quad(CDVDOverlaySSA* o, double pts, int width, int height, SQuads& 
 
   if (!images)
     return false;
-    
+
   // first calculate how many glyph we have and the total x length
 
   for(img = images; img; img = img->next)

@@ -36,7 +36,7 @@ namespace HTSP
 {
 
 template<typename T>
-class const_circular_iter 
+class const_circular_iter
   : public std::iterator< typename std::iterator_traits<T>::iterator_category
                         , typename std::iterator_traits<T>::value_type
                         , typename std::iterator_traits<T>::difference_type
@@ -142,6 +142,7 @@ struct SEvent
 
   int         start;
   int         stop;
+  unsigned    content;
   std::string title;
   std::string descs;
 
@@ -152,6 +153,7 @@ struct SEvent
     next  = 0;
     start = 0;
     stop  = 0;
+    content = 0;
     title.clear();
     descs.clear();
   }
@@ -164,7 +166,7 @@ struct SQueueStatus
   uint32_t delay;   // Estimated delay of queue (in µs)
   uint32_t bdrops;  // Number of B-frames dropped
   uint32_t pdrops;  // Number of P-frames dropped
-  uint32_t idrops;  // Number of I-frames dropped 
+  uint32_t idrops;  // Number of I-frames dropped
 
   SQueueStatus() { Clear(); }
   void Clear()
@@ -215,6 +217,7 @@ public:
   static void ParseTagRemove    (htsmsg_t* msg, STags &tags);
   static bool ParseItem         (const SChannel& channel, int tag, const SEvent& event, CFileItem& item);
   static bool ParseQueueStatus  (htsmsg_t* msg, SQueueStatus &queue);
+  static std::string GetGenre(unsigned type);
 
 private:
   SOCKET      m_fd;

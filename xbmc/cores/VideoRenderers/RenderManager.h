@@ -35,6 +35,9 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+namespace DXVA { class CProcessor; }
+class CVDPAU;
+
 class CXBMCRenderManager
 {
 public:
@@ -65,7 +68,6 @@ public:
       return m_pRenderer->GetImage(image, source, readonly);
     return -1;
   }
-
   inline void ReleaseImage(int source = AUTOSOURCE, bool preserve = false)
   {
     CSharedLock lock(m_sharedSection);
@@ -102,6 +104,15 @@ public:
   }
 #endif
 
+#ifdef HAVE_LIBVDPAU
+  void AddProcessor(CVDPAU* vdpau)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(vdpau);
+  }
+#endif
+
   void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);
@@ -131,11 +142,17 @@ public:
 
   RENDERERTYPE GetRendererType() { return m_pRendererType; }
   float GetMaximumFPS();
-  inline bool Paused() { return m_bPauseDrawing; }
-  inline bool IsStarted() { return m_bIsStarted; }
-  bool SupportsBrightness();
-  bool SupportsContrast();
-  bool SupportsGamma();
+  inline bool Paused() { return m_bPauseDrawing; };
+  inline bool IsStarted() { return m_bIsStarted;}
+
+  bool Supports(ERENDERFEATURE feature)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(feature);
+    else
+      return false;
+  }
 
   bool Supports(EINTERLACEMETHOD method)
   {
@@ -159,7 +176,7 @@ public:
   void  WaitPresentTime(double presenttime);
 
   CStdString GetVSyncState();
-  
+
   void UpdateResolution();
 
 #ifdef HAS_GL
@@ -170,13 +187,14 @@ public:
   CLinuxRenderer *m_pRenderer;
 #elif defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;
-  
+
 #endif
 
   void Present();
   void Recover(); // called after resolution switch if something special is needed
 
   CSharedSection& GetSection() { return m_sharedSection; };
+
 protected:
 
   void PresentSingle();
@@ -185,6 +203,7 @@ protected:
   void PresentBlend();
 
   bool m_bPauseDrawing;   // true if we should pause rendering
+
   bool m_bIsStarted;
   CSharedSection m_sharedSection;
 

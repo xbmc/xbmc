@@ -1966,9 +1966,9 @@ static int av_encode(AVFormatContext **output_files,
 
                     codec->bits_per_raw_sample= 0;
                 }
-                    ost->resample_height = icodec->height - (frame_topBand  + frame_bottomBand);
-                    ost->resample_width  = icodec->width  - (frame_leftBand + frame_rightBand);
-                    ost->resample_pix_fmt= icodec->pix_fmt;
+                ost->resample_height = icodec->height - (frame_topBand  + frame_bottomBand);
+                ost->resample_width  = icodec->width  - (frame_leftBand + frame_rightBand);
+                ost->resample_pix_fmt= icodec->pix_fmt;
                 ost->encoding_needed = 1;
                 ist->decoding_needed = 1;
                 break;
@@ -2408,7 +2408,7 @@ static void opt_format(const char *arg)
     }
 
     last_asked_format = arg;
-    }
+}
 
 static void opt_video_rc_override_string(const char *arg)
 {
@@ -2510,7 +2510,7 @@ static void opt_frame_size(const char *arg)
         fprintf(stderr, "Incorrect frame size\n");
         av_exit(1);
     }
-    }
+}
 
 static void opt_pad_color(const char *arg) {
     /* Input is expected to be six hex digits similar to
@@ -3365,7 +3365,7 @@ static void opt_output_file(const char *filename)
 
     if (last_asked_format) {
         file_oformat = guess_format(last_asked_format, NULL, NULL);
-    if (!file_oformat) {
+        if (!file_oformat) {
             fprintf(stderr, "Requested output format '%s' is not a suitable output format\n", last_asked_format);
             av_exit(1);
         }
@@ -3793,17 +3793,17 @@ static int opt_preset(const char *opt, const char *arg)
                          };
 
     if (*opt != 'f') {
-    for(i=!base[0]; i<2 && !f; i++){
-        snprintf(filename, sizeof(filename), "%s%s/%s.ffpreset", base[i], i ? "" : "/.ffmpeg", arg);
-        f= fopen(filename, "r");
-        if(!f){
-            char *codec_name= *opt == 'v' ? video_codec_name :
-                              *opt == 'a' ? audio_codec_name :
-                                            subtitle_codec_name;
-            snprintf(filename, sizeof(filename), "%s%s/%s-%s.ffpreset", base[i],  i ? "" : "/.ffmpeg", codec_name, arg);
+        for(i=!base[0]; i<2 && !f; i++){
+            snprintf(filename, sizeof(filename), "%s%s/%s.ffpreset", base[i], i ? "" : "/.ffmpeg", arg);
             f= fopen(filename, "r");
+            if(!f){
+                char *codec_name= *opt == 'v' ? video_codec_name :
+                                  *opt == 'a' ? audio_codec_name :
+                                                subtitle_codec_name;
+                snprintf(filename, sizeof(filename), "%s%s/%s-%s.ffpreset", base[i],  i ? "" : "/.ffmpeg", codec_name, arg);
+                f= fopen(filename, "r");
+            }
         }
-    }
     } else {
         av_strlcpy(filename, arg, sizeof(filename));
         f= fopen(filename, "r");

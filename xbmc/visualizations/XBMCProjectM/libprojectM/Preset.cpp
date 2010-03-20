@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #ifdef WIN32
 #include "win32-dirent.h"
 #else
@@ -35,8 +36,7 @@
 #include "InitCondUtils.hpp"
 #include "fatal.h"
 #include <iostream>
-#include <fstream>
-
+#include <sstream>
 
 Preset::Preset(std::istream & in, const std::string & presetName, PresetInputs & presetInputs, PresetOutputs & presetOutputs):
     builtinParams(presetInputs, presetOutputs),
@@ -515,17 +515,30 @@ return PROJECTM_SUCCESS;
    by the given pathname */
 int Preset::loadPresetFile(const std::string & pathname)
 {
-
-
   /* Open the file corresponding to pathname */
-  std::ifstream fs(pathname.c_str());
-  if (!fs || fs.eof()) {
+  FILE* f = fopen(pathname.c_str(), "r");
+  if (!f) {
     if (PRESET_DEBUG)
     	std::cerr << "loadPresetFile: loading of file \"" << pathname << "\" failed!\n";
     return PROJECTM_ERROR;
   }
 
- return readIn(fs);
+  fseek(f, 0, SEEK_END);
+  long fsize = ftell(f);
+  rewind(f);
+  std::vector<char> buffer(fsize);
 
+  int err = fread(&buffer[0], 1, fsize, f);
+  if (!err)
+  {
+    printf("read failed\n");
+    fclose(f);
+    return PROJECTM_ERROR;
+  }
+
+  fclose(f);
+  std::stringstream stream;
+  stream.rdbuf()->pubsetbuf(&buffer[0],buffer.size());
+  return readIn(stream);
 }
 

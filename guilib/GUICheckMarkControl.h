@@ -30,7 +30,7 @@
  */
 
 #include "GUITexture.h"
-#include "GUITextLayout.h"
+#include "GUILabel.h"
 #include "GUIControl.h"
 
 /*!
@@ -54,7 +54,7 @@ public:
 
   void SetLabel(const std::string& strLabel);
   const std::string GetLabel() const { return m_strLabel; };
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
+  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
 
@@ -64,11 +64,12 @@ public:
 protected:
   virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
+  CGUILabel::COLOR GetTextColor() const;
+  
   CGUITexture m_imgCheckMark;
   CGUITexture m_imgCheckMarkNoFocus;
 
-  CLabelInfo m_label;
-  CGUITextLayout m_textLayout;
+  CGUILabel  m_label;
   std::string m_strLabel;
   bool m_bSelected;
 };

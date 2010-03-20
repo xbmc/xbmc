@@ -83,7 +83,7 @@ CXHandle::~CXHandle()
     CLog::Log(LOGERROR,"%s, destroying handle with ref count %d", __FUNCTION__, m_nRefCount);
     assert(false);
   }
-
+  
   delete m_pSem;
 
   if (m_hMutex) {
@@ -188,7 +188,7 @@ BOOL WINAPI DuplicateHandle(
 
   if(lpTargetHandle)
     *lpTargetHandle = hSourceHandle;
-  
+
   return TRUE;
 }
 

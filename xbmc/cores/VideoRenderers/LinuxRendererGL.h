@@ -12,6 +12,7 @@
 #include "GraphicContext.h"
 #include "BaseRenderer.h"
 
+class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
@@ -93,10 +94,10 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CLinuxRendererGL : public CVideoBaseRenderer
+class CLinuxRendererGL : public CBaseRenderer
 {
 public:
-  CLinuxRendererGL();  
+  CLinuxRendererGL();
   virtual ~CLinuxRendererGL();
 
   virtual void Update(bool bPauseDrawing);
@@ -115,13 +116,15 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
+#ifdef HAVE_LIBVDPAU
+  virtual void         AddProcessor(CVDPAU* vdpau);
+#endif
+
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   // Feature support
-  virtual bool SupportsBrightness();
-  virtual bool SupportsContrast();
-  virtual bool SupportsGamma();
   virtual bool SupportsMultiPassRendering();
+  virtual bool Supports(ERENDERFEATURE feature);
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
@@ -154,7 +157,7 @@ protected:
   bool CreateNV12Texture(int index, bool clear = true);
 
   void CalculateTextureSourceRects(int source, int num_planes);
-  
+
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
@@ -212,6 +215,10 @@ protected:
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
     GLuint    pbo[MAX_PLANES];
+
+#ifdef HAVE_LIBVDPAU
+    CVDPAU*   vdpau;
+#endif
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
@@ -244,6 +251,9 @@ protected:
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);
   bool m_pboused;
+
+  bool  m_nonLinStretch;
+  float m_pixelRatio;
 };
 
 

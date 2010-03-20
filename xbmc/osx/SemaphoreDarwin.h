@@ -24,7 +24,7 @@
 #define SEMAPHORE_DARWIN_H__
 
 #include "ISemaphore.h"
-#include <Semaphore.h>
+#include <semaphore.h>
 
 class CSemaphoreDarwin : public ISemaphore
 {

@@ -23,26 +23,24 @@
 
 #include "GUIDialogSettings.h"
 #include "GUIPassword.h"
+#include "Profile.h"
 
 class CGUIDialogLockSettings : public CGUIDialogSettings
 {
 public:
   CGUIDialogLockSettings(void);
   virtual ~CGUIDialogLockSettings(void);
-  virtual bool OnMessage(CGUIMessage &message);
   static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader=20091);
-  static bool ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel=20091,bool bConditional=false, bool bDetails=true);
+  static bool ShowAndGetLock(CProfile::CLock &locks, int iButtonLabel = 20091, bool bConditional = false, bool bDetails = true);
   static bool ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL, bool *saveUserDetails);
 protected:
   virtual void OnCancel();
-  virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings();
   virtual void OnSettingChanged(SettingInfo &setting);
   void EnableDetails(bool bEnable);
 
-  LockType m_iLock;
-  CStdString m_strLock;
+  CProfile::CLock m_locks;
   CStdString m_strUser;
   CStdString m_strURL;
   bool m_bChanged;
@@ -50,12 +48,6 @@ protected:
   bool m_bConditionalDetails;
   bool m_bGetUser;
   int m_iButtonLabel;
-  bool m_bLockMusic;
-  bool m_bLockVideo;
-  bool m_bLockPictures;
-  bool m_bLockPrograms;
-  bool m_bLockFiles;
-  bool m_bLockSettings;
   bool *m_saveUserDetails;
 };
 

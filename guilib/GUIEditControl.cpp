@@ -26,6 +26,7 @@
 #include "GUIDialogNumeric.h"
 #include "LocalizeStrings.h"
 #include "DateTime.h"
+#include "utils/md5.h"
 
 #ifdef __APPLE__
 #include "CocoaInterface.h"
@@ -45,28 +46,30 @@ CGUIEditControl::CGUIEditControl(int parentID, int controlID, float posX, float 
                                  const CLabelInfo& labelInfo, const std::string &text)
     : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
-  ControlType = GUICONTROL_EDIT;
-  m_textOffset = 0;
-  m_textWidth = width;
-  m_cursorPos = 0;
-  m_cursorBlink = 0;
-  m_inputHeading = 0;
-  m_inputType = INPUT_TYPE_TEXT;
-  m_smsLastKey = 0;
-  m_smsKeyIndex = 0;
+  DefaultConstructor();
   SetLabel(text);
 }
 
-CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
-    : CGUIButtonControl(button)
+void CGUIEditControl::DefaultConstructor()
 {
   ControlType = GUICONTROL_EDIT;
   m_textOffset = 0;
   m_textWidth = GetWidth();
   m_cursorPos = 0;
   m_cursorBlink = 0;
+  m_inputHeading = 0;
+  m_inputType = INPUT_TYPE_TEXT;
   m_smsLastKey = 0;
   m_smsKeyIndex = 0;
+  m_label.SetAlign(m_label.GetLabelInfo().align & XBFONT_CENTER_Y); // left align
+  m_label2.GetLabelInfo().offsetX = 0;
+  m_isMD5 = false;
+}
+
+CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
+    : CGUIButtonControl(button)
+{
+  DefaultConstructor();
 }
 
 CGUIEditControl::~CGUIEditControl(void)
@@ -97,17 +100,18 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  if (action.actionId == ACTION_BACKSPACE)
+  if (action.GetID() == ACTION_BACKSPACE)
   {
     // backspace
     if (m_cursorPos)
     {
-      m_text2.erase(--m_cursorPos, 1);
+      if (!ClearMD5())
+        m_text2.erase(--m_cursorPos, 1);
       UpdateText();
     }
     return true;
   }
-  else if (action.actionId == ACTION_MOVE_LEFT)
+  else if (action.GetID() == ACTION_MOVE_LEFT)
   {
     if (m_cursorPos > 0)
     {
@@ -116,7 +120,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.actionId == ACTION_MOVE_RIGHT)
+  else if (action.GetID() == ACTION_MOVE_RIGHT)
   {
     if ((unsigned int) m_cursorPos < m_text2.size())
     {
@@ -125,14 +129,15 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.actionId == ACTION_PASTE)
+  else if (action.GetID() == ACTION_PASTE)
   {
+    ClearMD5();
     OnPasteClipboard();
   }
-  else if (action.actionId >= KEY_VKEY && action.actionId < KEY_ASCII)
+  else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
-    BYTE b = action.actionId & 0xFF;
+    BYTE b = action.GetID() & 0xFF;
     if (b == 0x24) // home
     {
       m_cursorPos = 0;
@@ -161,7 +166,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       if (m_cursorPos < m_text2.length())
       { // delete
-        m_text2.erase(m_cursorPos, 1);
+        if (!ClearMD5())
+          m_text2.erase(m_cursorPos, 1);
         UpdateText();
         return true;
       }
@@ -170,16 +176,17 @@ bool CGUIEditControl::OnAction(const CAction &action)
     {
       if (m_cursorPos > 0)
       { // backspace
-        m_text2.erase(--m_cursorPos, 1);
+        if (!ClearMD5())
+          m_text2.erase(--m_cursorPos, 1);
         UpdateText();
       }
       return true;
     }
   }
-  else if (action.actionId >= KEY_ASCII)
+  else if (action.GetID() >= KEY_ASCII)
   {
     // input from the keyboard
-    switch (action.unicode)
+    switch (action.GetUnicode())
     {
     case '\t':
       break;
@@ -199,28 +206,31 @@ bool CGUIEditControl::OnAction(const CAction &action)
         // backspace
         if (m_cursorPos)
         {
-          m_text2.erase(--m_cursorPos, 1);
+          if (!ClearMD5())
+            m_text2.erase(--m_cursorPos, 1);
         }
         break;
       }
     default:
       {
-        m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.unicode);
+        ClearMD5();
+        m_text2.insert(m_text2.begin() + m_cursorPos++, (WCHAR)action.GetUnicode());
         break;
       }
     }
     UpdateText();
     return true;
   }
-  else if (action.actionId >= REMOTE_0 && action.actionId <= REMOTE_9)
+  else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
   { // input from the remote
+    ClearMD5();
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
-      m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.actionId - REMOTE_0));
+      m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.GetID() - REMOTE_0));
       UpdateText();
     }
     else
-      OnSMSCharacter(action.actionId - REMOTE_0);
+      OnSMSCharacter(action.GetID() - REMOTE_0);
     return true;
   }
   return CGUIButtonControl::OnAction(action);
@@ -270,9 +280,12 @@ void CGUIEditControl::OnClick()
     case INPUT_TYPE_FILTER:
       textChanged = CGUIDialogKeyboard::ShowAndGetFilter(utf8, false);
       break;
+    case INPUT_TYPE_PASSWORD_MD5:
+      utf8 = ""; // TODO: Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
+      // fallthrough
     case INPUT_TYPE_TEXT:
     default:
-      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD);
+      textChanged = CGUIDialogKeyboard::ShowAndGetInput(utf8, heading, true, m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5);
       break;
   }
   if (textChanged)
@@ -290,7 +303,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   if (sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
-    
+
     vector<CGUIActionDescriptor> textChangeActions = m_textChangeActions;
     for (unsigned int i = 0; i < textChangeActions.size(); i++)
     {
@@ -311,23 +324,21 @@ void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, int heading
 
 void CGUIEditControl::RecalcLabelPosition()
 {
-  if (!m_label.font) return;
-
   // ensure that our cursor is within our width
   ValidateCursor();
 
   CStdStringW text = GetDisplayedText();
-  m_textWidth = m_textLayout2.GetTextWidth(text + L'|');
-  float beforeCursorWidth = m_textLayout2.GetTextWidth(text.Left(m_cursorPos));
-  float afterCursorWidth = m_textLayout2.GetTextWidth(text.Left(m_cursorPos) + L'|');
-  float leftTextWidth = m_textLayout.GetTextWidth();
-  float maxTextWidth = m_width - m_label.offsetX*2;
+  m_textWidth = m_label.CalcTextWidth(text + L'|');
+  float beforeCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos));
+  float afterCursorWidth = m_label.CalcTextWidth(text.Left(m_cursorPos) + L'|');
+  float leftTextWidth = m_label.GetRenderRect().Width();
+  float maxTextWidth = m_label.GetMaxWidth();
   if (leftTextWidth > 0)
     maxTextWidth -= leftTextWidth + spaceWidth;
 
   // if skinner forgot to set height :p
-  if (m_height == 0)
-    m_height = 2*m_label.font->GetTextHeight(1);
+  if (m_height == 0 && m_label.GetLabelInfo().font)
+    m_height = m_label.GetLabelInfo().font->GetTextHeight(1);
 
   if (m_textWidth > maxTextWidth)
   { // we render taking up the full width, so make sure our cursor position is
@@ -355,61 +366,48 @@ void CGUIEditControl::RenderText()
 {
   if (m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     UpdateText();
-  
+
   if (m_bInvalidated)
   {
-    m_textLayout.Update(m_info.GetLabel(GetParentID()));
+    m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+    m_label.SetText(m_info.GetLabel(GetParentID()));
     RecalcLabelPosition();
   }
 
-  float leftTextWidth = m_textLayout.GetTextWidth();
-  float maxTextWidth = m_width - m_label.offsetX * 2;
+
+  float posX = m_label.GetRenderRect().x1;
+  float maxTextWidth = m_label.GetMaxWidth();
 
   // start by rendering the normal text
-  float posX = m_posX + m_label.offsetX;
-  float posY = m_posY;
-  uint32_t align = m_label.align & XBFONT_CENTER_Y;
-
-  if (m_label.align & XBFONT_CENTER_Y)
-    posY += m_height*0.5f;
-
+  float leftTextWidth = m_label.GetRenderRect().Width();
   if (leftTextWidth > 0)
   {
     // render the text on the left
-    if (IsDisabled())
-      m_textLayout.Render(posX, posY, m_label.angle, m_label.disabledColor, m_label.shadowColor, align, leftTextWidth, true);
-    else if (HasFocus() && m_label.focusedColor)
-      m_textLayout.Render(posX, posY, m_label.angle, m_label.focusedColor, m_label.shadowColor, align, leftTextWidth);
-    else
-      m_textLayout.Render(posX, posY, m_label.angle, m_label.textColor, m_label.shadowColor, align, leftTextWidth);
-
+    m_label.SetColor(GetTextColor());
+    m_label.Render();
+    
     posX += leftTextWidth + spaceWidth;
     maxTextWidth -= leftTextWidth + spaceWidth;
   }
 
   if (g_graphicsContext.SetClipRegion(posX, m_posY, maxTextWidth, m_height))
   {
-    if (m_textWidth < maxTextWidth)
+    uint32_t align = m_label.GetLabelInfo().align & XBFONT_CENTER_Y; // start aligned left
+    if (m_label2.GetTextWidth() < maxTextWidth)
     { // align text as our text fits
       if (leftTextWidth > 0)
       { // right align as we have 2 labels
-        posX = m_posX + m_width - m_label.offsetX;
         align |= XBFONT_RIGHT;
       }
       else
       { // align by whatever the skinner requests
-        if (m_label.align & XBFONT_CENTER_X)
-          posX += 0.5f*maxTextWidth;
-        if (m_label.align & XBFONT_RIGHT)
-          posX += maxTextWidth;
-        align |= (m_label.align & 3);
+        align |= (m_label2.GetLabelInfo().align & 3);
       }
     }
     CStdStringW text = GetDisplayedText();
-    // let's render it ourselves
+    // add the cursor if we're focused
     if (HasFocus())
-    { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
-      // virtual keyboard only)
+    {
       CStdStringW col;
       if ((m_focusCounter % 64) > 32)
         col = L"|";
@@ -418,22 +416,18 @@ void CGUIEditControl::RenderText()
       text.Insert(m_cursorPos, col);
     }
 
-    m_textLayout2.SetText(text);
-
-    if (IsDisabled())
-      m_textLayout2.Render(posX + m_textOffset, posY, m_label.angle, m_label.disabledColor, m_label.shadowColor, align, m_textWidth, true);
-    else if (HasFocus() && m_label.focusedColor)
-      m_textLayout2.Render(posX + m_textOffset, posY, m_label.angle, m_label.focusedColor, m_label.shadowColor, align, m_textWidth);
-    else
-      m_textLayout2.Render(posX + m_textOffset, posY, m_label.angle, m_label.textColor, m_label.shadowColor, align, m_textWidth);
-
+    m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
+    m_label2.SetTextW(text);
+    m_label2.SetAlign(align);
+    m_label2.SetColor(GetTextColor());
+    m_label2.Render();
     g_graphicsContext.RestoreClipRegion();
   }
 }
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
 {
-  if (m_inputType == INPUT_TYPE_PASSWORD)
+  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5)
   {
     CStdStringW text;
     text.append(m_text2.size(), L'*');
@@ -460,6 +454,7 @@ void CGUIEditControl::SetLabel2(const std::string &text)
   g_charsetConverter.utf8ToW(text, newText);
   if (newText != m_text2)
   {
+    m_isMD5 = m_inputType == INPUT_TYPE_PASSWORD_MD5;
     m_text2 = newText;
     m_cursorPos = m_text2.size();
     SetInvalid();
@@ -470,7 +465,20 @@ CStdString CGUIEditControl::GetLabel2() const
 {
   CStdString text;
   g_charsetConverter.wToUTF8(m_text2, text);
+  if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !m_isMD5)
+    return XBMC::XBMC_MD5::GetMD5(text);
   return text;
+}
+
+bool CGUIEditControl::ClearMD5()
+{
+  if (m_inputType != INPUT_TYPE_PASSWORD_MD5 || !m_isMD5)
+    return false;
+  
+  m_text2.Empty();
+  m_cursorPos = 0;
+  m_isMD5 = false;
+  return true;
 }
 
 unsigned int CGUIEditControl::GetCursorPosition() const
@@ -488,7 +496,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
   assert(key < 10);
   bool sendUpdate = false;
   if (m_smsTimer.IsRunning())
-  { 
+  {
     // we're already entering an SMS character
     if (key != m_smsLastKey || m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     { // a different key was clicked than last time, or we have timed out
@@ -508,9 +516,9 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
     m_smsLastKey = key;
     m_smsKeyIndex = 0;
   }
-  
+
   m_smsKeyIndex = m_smsKeyIndex % strlen(smsLetters[key]);
-  
+
   m_text2.insert(m_text2.begin() + m_cursorPos++, smsLetters[key][m_smsKeyIndex]);
   UpdateText(sendUpdate);
   m_smsTimer.StartZero();
@@ -531,13 +539,13 @@ void CGUIEditControl::OnPasteClipboard()
   {
     HGLOBAL hglb = GetClipboardData(CF_TEXT);
     if (hglb != NULL)
-    { 
+    {
       LPTSTR lptstr = (LPTSTR)GlobalLock(hglb);
       if (lptstr != NULL)
-      { 
+      {
         m_text2 = (char*)lptstr;
         GlobalUnlock(hglb);
-      } 
+      }
     }
     CloseClipboard();
     UpdateText();

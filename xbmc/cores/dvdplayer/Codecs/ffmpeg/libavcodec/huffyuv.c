@@ -407,8 +407,8 @@ static av_cold void alloc_temp(HYuvContext *s){
         }
     }else{
         s->temp[0]= av_malloc(4*s->width + 16);
-        }
     }
+}
 
 static av_cold int common_init(AVCodecContext *avctx){
     HYuvContext *s = avctx->priv_data;

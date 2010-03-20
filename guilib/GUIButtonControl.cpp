@@ -31,12 +31,12 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgFocus(posX, posY, width, height, textureFocus)
     , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
-    , m_textLayout(labelInfo.font, false), m_textLayout2(labelInfo.font, false)
+    , m_label(posX, posY, width, height, labelInfo)
+    , m_label2(posX, posY, width, height, labelInfo)
 {
   m_bSelected = false;
   m_alpha = 255;
   m_focusCounter = 0;
-  m_label = labelInfo;
   ControlType = GUICONTROL_BUTTON;
 }
 
@@ -87,54 +87,42 @@ void CGUIButtonControl::Render()
   CGUIControl::Render();
 }
 
+CGUILabel::COLOR CGUIButtonControl::GetTextColor() const
+{
+  if (IsDisabled())
+    return CGUILabel::COLOR_DISABLED;
+  if (HasFocus())
+    return CGUILabel::COLOR_FOCUSED;
+  return CGUILabel::COLOR_TEXT;
+}
+
 void CGUIButtonControl::RenderText()
 {
-  m_textLayout.Update(m_info.GetLabel(m_parentID));
-
-  float fPosX = m_posX + m_label.offsetX;
-  float fPosY = m_posY + m_label.offsetY;
-
-  if (m_label.align & XBFONT_RIGHT)
-    fPosX = m_posX + m_width - m_label.offsetX;
-
-  if (m_label.align & XBFONT_CENTER_X)
-    fPosX = m_posX + m_width / 2;
-
-  if (m_label.align & XBFONT_CENTER_Y)
-    fPosY = m_posY + m_height / 2;
-
-  if (IsDisabled())
-    m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, m_label.align, m_label.width, true);
-  else if (HasFocus() && m_label.focusedColor)
-    m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, m_label.align, m_label.width);
-  else
-    m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_label.width);
+  m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  m_label.SetText(m_info.GetLabel(m_parentID));
+  m_label.SetScrolling(HasFocus());
 
   // render the second label if it exists
   CStdString label2(m_info2.GetLabel(m_parentID));
   if (!label2.IsEmpty())
   {
-    float textWidth, textHeight;
-    m_textLayout.GetTextExtent(textWidth, textHeight);
-    m_textLayout2.Update(label2);
+    m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
+    m_label2.SetText(label2);
+    m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
+    m_label2.SetScrolling(HasFocus());
 
-    float width = m_width - 2 * m_label.offsetX - textWidth - 5;
-    if (width < 0) width = 0;
-    fPosX = m_posX + m_width - m_label.offsetX;
-    uint32_t dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED;
+    CGUILabel::CheckAndCorrectOverlap(m_label, m_label2);
 
-    if (IsDisabled() )
-      m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, dwAlign, width, true);
-    else if (HasFocus() && m_label.focusedColor)
-      m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.focusedColor, m_label.shadowColor, dwAlign, width);
-    else
-      m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, dwAlign, width);
+    m_label2.SetColor(GetTextColor());
+    m_label2.Render();
   }
+  m_label.SetColor(GetTextColor());
+  m_label.Render();
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     OnClick();
     return true;
@@ -200,6 +188,8 @@ void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIButtonControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
+  m_label.SetInvalid();
+  m_label2.SetInvalid();
   m_imgFocus.SetInvalid();
   m_imgNoFocus.SetInvalid();
 }
@@ -217,7 +207,6 @@ void CGUIButtonControl::SetLabel2(const string &label2)
 void CGUIButtonControl::SetPosition(float posX, float posY)
 {
   CGUIControl::SetPosition(posX, posY);
-
   m_imgFocus.SetPosition(posX, posY);
   m_imgNoFocus.SetPosition(posX, posY);
 }
@@ -241,9 +230,7 @@ bool CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
-    CAction action;
-    action.actionId = ACTION_SELECT_ITEM;
-    OnAction(action);
+    OnAction(CAction(ACTION_SELECT_ITEM));
     return true;
   }
   return false;
@@ -263,26 +250,21 @@ CStdString CGUIButtonControl::GetLabel2() const
 
 void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
 {
-  m_label.font = g_fontManager.GetFont(strFont);
-  m_label.textColor = textColor;
-  m_label.focusedColor = focusedColor;
-  m_label.shadowColor = shadowColor;
+  m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
+  m_label.GetLabelInfo().textColor = textColor;
+  m_label.GetLabelInfo().focusedColor = focusedColor;
+  m_label.GetLabelInfo().shadowColor = shadowColor;
   SetLabel(strText);
 }
 
 void CGUIButtonControl::PythonSetDisabledColor(color_t disabledColor)
 {
-  m_label.disabledColor = disabledColor;
-}
-
-void CGUIButtonControl::RAMSetTextColor(color_t textColor)
-{
-  m_label.textColor = textColor;
+  m_label.GetLabelInfo().disabledColor = disabledColor;
 }
 
 void CGUIButtonControl::SettingsCategorySetTextAlign(uint32_t align)
 {
-  m_label.align = align;
+  m_label.SetAlign(align);
 }
 
 void CGUIButtonControl::OnClick()

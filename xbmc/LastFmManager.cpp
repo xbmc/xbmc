@@ -133,7 +133,7 @@ bool CLastFmManager::RadioHandShake()
   CFileCurl http;
   CStdString html;
 
-  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpassword");
+  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpass");
   CStdString strUserName = g_guiSettings.GetString("scrobbler.lastfmusername");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
@@ -141,8 +141,8 @@ bool CLastFmManager::RadioHandShake()
     return false;
   }
 
-  CStdString passwordmd5;
-  CreateMD5Hash(strPassword, passwordmd5);
+  CStdString passwordmd5(strPassword);
+  passwordmd5.ToLower();
 
   CStdString url;
   CUtil::URLEncode(strUserName);
@@ -185,7 +185,7 @@ void CLastFmManager::InitProgressDialog(const CStdString& strUrl)
         dlgProgress->StartModal();
     }
   }
-  }
+}
 
 void CLastFmManager::UpdateProgressDialog(const int iStringID)
 {
@@ -203,7 +203,7 @@ void CLastFmManager::CloseProgressDialog()
     dlgProgress->Close();
     dlgProgress = NULL;
   }
-  }
+}
 
 bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 {
@@ -500,7 +500,7 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
       StopRadio(true);
     }
     else
-    { 
+    {
       unsigned int start = CTimeUtils::GetTimeMS();
       ReapSongs();
       MovePlaying();
@@ -605,7 +605,7 @@ void CLastFmManager::Process()
 
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
-  
+
   while (!m_bStop)
   {
     WaitForSingleObject(m_hWorkerEvent, INFINITE);
@@ -620,10 +620,10 @@ void CLastFmManager::Process()
     iNrCachedTracks = m_RadioTrackQueue->size();
     CacheTrackThumb(iNrCachedTracks);
   }
-  
+
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, bLastShuffleState);
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, LastRepeatState);
-  
+
   CLog::Log(LOGINFO,"LastFM thread terminated");
 }
 
@@ -653,7 +653,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
       }
     }
   }
-  
+
   if (!bKillSession)
   {
     SendUpdateMessage();
@@ -662,9 +662,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
 {
-  XBMC::XBMC_MD5 md5state;
-  md5state.append(bufferToHash);
-  md5state.getDigest(hash);
+  hash = XBMC::XBMC_MD5::GetMD5(bufferToHash);
   hash.ToLower();
 }
 
@@ -684,7 +682,7 @@ void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& h
 bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& artist, const CStdString& title)
 {
   CStdString strUserName = g_guiSettings.GetString("scrobbler.lastfmusername");
-  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpassword");
+  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpass");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
     CLog::Log(LOGERROR, "Last.fm CallXmlRpc no username or password set.");
@@ -708,8 +706,8 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   strftime(ti, sizeof(ti), "%Y-%m-%d %H:%M:%S", now);
   CStdString strChallenge = ti;
 
-  CStdString strAuth;
-  CreateMD5Hash(strPassword, strAuth);
+  CStdString strAuth(strPassword);
+  strAuth.ToLower();
   strAuth.append(strChallenge);
   CreateMD5Hash(strAuth, strAuth);
 
@@ -813,13 +811,13 @@ bool CLastFmManager::Love(bool askConfirmation)
         if (Love(*infoTag))
         {
           strMessage.Format(g_localizeStrings.Get(15289), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
+          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return true;
         }
         else
         {
           strMessage.Format(g_localizeStrings.Get(15290), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
+          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return false;
         }
       }
@@ -846,13 +844,13 @@ bool CLastFmManager::Ban(bool askConfirmation)
         if (Ban(*infoTag))
         {
           strMessage.Format(g_localizeStrings.Get(15291), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
+          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return true;
         }
         else
         {
           strMessage.Format(g_localizeStrings.Get(15292), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification("", g_localizeStrings.Get(15200), strMessage, 7000);
+          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return false;
         }
       }
@@ -1010,7 +1008,7 @@ bool CLastFmManager::IsLastFmEnabled()
 {
   return (
     !g_guiSettings.GetString("scrobbler.lastfmusername").IsEmpty() &&
-    !g_guiSettings.GetString("scrobbler.lastfmpassword").IsEmpty()
+    !g_guiSettings.GetString("scrobbler.lastfmpass").IsEmpty()
   );
 }
 

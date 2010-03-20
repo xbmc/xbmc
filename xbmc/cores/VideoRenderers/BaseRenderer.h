@@ -30,6 +30,7 @@
 typedef struct YV12Image
 {
   BYTE *   plane[MAX_PLANES];
+  int      planesize[MAX_PLANES];
   unsigned stride[MAX_PLANES];
   unsigned width;
   unsigned height;
@@ -38,6 +39,16 @@ typedef struct YV12Image
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
 } YV12Image;
+
+enum ERENDERFEATURE
+{
+  RENDERFEATURE_GAMMA,
+  RENDERFEATURE_BRIGHTNESS,
+  RENDERFEATURE_CONTRAST,
+  RENDERFEATURE_NOISE,
+  RENDERFEATURE_SHARPNESS,
+  RENDERFEATURE_NONLINSTRETCH,
+};
 
 typedef enum _RENDERERTYPE
 {

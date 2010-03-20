@@ -26,30 +26,36 @@ class XBMCHelper
 {
  public:
 
-  XBMCHelper();
+  static XBMCHelper& GetInstance();
 
   void Start();
   void Stop();
 
   void Configure();
 
-  void Install();
-  void Uninstall();
-
   bool IsRunning();
-  void CaptureAllInput();
-  void ReleaseAllInput();
-
-  bool IsRemoteBuddyInstalled();
-  bool IsSofaControlRunning();
 
   bool IsAlwaysOn() const { return m_alwaysOn; }
   int  GetMode() const { return m_mode; }
 
   bool ErrorStarting() { return m_errorStarting; }
 
+  //global helpers
+  static void CaptureAllInput();
+  static void ReleaseAllInput();
+
+private:
+  XBMCHelper();
+  XBMCHelper(XBMCHelper const& );
+  XBMCHelper& operator=(XBMCHelper const&);
+
+  void Install();
+  void Uninstall();
+
+  bool IsRemoteBuddyInstalled();
+  bool IsSofaControlRunning();
+
   int GetProcessPid(const char* processName);
- private:
 
   std::string ReadFile(const char* fileName);
   void WriteFile(const char* fileName, const std::string& data);
@@ -65,8 +71,8 @@ class XBMCHelper
   std::string m_launchAgentInstallFile;
   std::string m_homepath;
   std::string m_helperFile;
-};
 
-extern XBMCHelper g_xbmcHelper;
+  static XBMCHelper* smp_instance;
+};
 
 #endif

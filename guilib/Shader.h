@@ -185,7 +185,7 @@ namespace Shaders {
   };
 
 
-  class CGLSLShaderProgram 
+  class CGLSLShaderProgram
     : virtual public CShaderProgram
   {
   public:
@@ -217,11 +217,12 @@ namespace Shaders {
 
   protected:
     GLint         m_lastProgram;
+    bool          m_validated;
   };
 
 
 #ifndef HAS_GLES
-  class CARBShaderProgram 
+  class CARBShaderProgram
     : virtual public CShaderProgram
   {
   public:

@@ -79,7 +79,7 @@ CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
 
 bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       Close();
@@ -87,7 +87,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
       GoParentFolder();
     return true;
   }
-  if ((action.actionId == ACTION_CONTEXT_MENU || action.actionId == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
+  if ((action.GetID() == ACTION_CONTEXT_MENU || action.GetID() == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
   {
     int iItem = m_viewControl.GetSelectedItem();
     if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems->Size()-1))
@@ -343,34 +343,34 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     }
 
     // check if current directory is a root share
-      if ( !m_rootDir.IsSource(strDirectory))
-      {
+    if (!m_rootDir.IsSource(strDirectory))
+    {
       if (CUtil::GetParentPath(strDirectory, strParentPath))
-        {
-          CFileItemPtr pItem(new CFileItem(".."));
-          pItem->m_strPath = strParentPath;
-          pItem->m_bIsFolder = true;
-          pItem->m_bIsShareOrDrive = false;
-        items.AddFront(pItem, 0);
-        }
-      }
-      else
       {
-        // yes, this is the root of a share
-        // add parent path to the virtual directory
         CFileItemPtr pItem(new CFileItem(".."));
-        pItem->m_strPath = "";
-        pItem->m_bIsShareOrDrive = false;
+        pItem->m_strPath = strParentPath;
         pItem->m_bIsFolder = true;
+        pItem->m_bIsShareOrDrive = false;
+        items.AddFront(pItem, 0);
+      }
+    }
+    else
+    {
+      // yes, this is the root of a share
+      // add parent path to the virtual directory
+      CFileItemPtr pItem(new CFileItem(".."));
+      pItem->m_strPath = "";
+      pItem->m_bIsShareOrDrive = false;
+      pItem->m_bIsFolder = true;
       items.AddFront(pItem, 0);
       strParentPath = "";
-      }
+    }
 
     ClearFileItems();
     *m_vecItems = items;
     m_Directory->m_strPath = strDirectory;
     m_strParentPath = strParentPath;
-    }
+  }
 
   // if we're getting the root source listing
   // make sure the path history is clean
@@ -395,8 +395,8 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
   OnSort();
 
   if (m_Directory->m_strPath.IsEmpty() && m_addNetworkShareEnabled &&
-     (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE ||
-     (g_settings.m_iLastLoadedProfileIndex == 0) || g_passwordManager.bMasterUser))
+     (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+      g_settings.IsMasterUser() || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
     pItem->m_strPath = "net://";
@@ -442,7 +442,7 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
     m_thumbLoader.Load(*m_vecItems);
 }
 
-void CGUIDialogFileBrowser::Render()
+void CGUIDialogFileBrowser::FrameMove()
 {
   int item = m_viewControl.GetSelectedItem();
   if (item >= 0)
@@ -489,7 +489,7 @@ void CGUIDialogFileBrowser::Render()
       CONTROL_DISABLE(CONTROL_FLIP);
     }
   }
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogFileBrowser::OnClick(int iItem)

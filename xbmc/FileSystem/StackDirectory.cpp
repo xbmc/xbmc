@@ -104,7 +104,7 @@ namespace XFILE
     CFileItemList   files;
     CStdString      strStackTitlePath,
                     strCommonDir        = CUtil::GetParentPath(strPath);
-    
+
     stack.GetDirectory(strPath, files);
 
     if (files.Size() > 1)

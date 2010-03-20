@@ -34,12 +34,17 @@ public:
   class IHardwareDecoder
   {
     public:
+             IHardwareDecoder() : m_references(1) {}
     virtual ~IHardwareDecoder() {};
     virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
-    virtual void Close() = 0;
+    
+    virtual long              Release();
+    virtual IHardwareDecoder* Acquire();
+    protected:
+    long m_references;
   };
 
   CDVDVideoCodecFFmpeg();
@@ -80,6 +85,6 @@ protected:
   IHardwareDecoder *m_pHardware;
   int m_iLastKeyframe;
   double m_dts;
-  bool m_force_dts;
+  bool   m_started;
 };
 

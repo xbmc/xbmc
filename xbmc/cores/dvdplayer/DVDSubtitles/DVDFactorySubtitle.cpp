@@ -49,7 +49,7 @@ bool CDVDFactorySubtitle::GetSubtitles(VecSubtitleFiles& vecSubtitles, string& s
 
   while (iStart < iSize)
   {
-    int iEnd = strExtensionCached.Find(" ", iStart);
+    int iEnd = strExtensionCached.Find("|", iStart);
     std::string strExtension = strExtensionCached.substr(iStart, iEnd-iStart);
     iStart = iEnd + 1;
 
@@ -90,7 +90,7 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
         pParser = new CDVDSubtitleParserMPL2(pStream, strFile.c_str());
         pStream = NULL;
       }
-      else if (sscanf(line, "%d:%d:%d,%d --> %d:%d:%d,%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
+      else if (sscanf(line, "%d:%d:%d%*c%d --> %d:%d:%d%*c%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
       {
         pParser = new CDVDSubtitleParserSubrip(pStream, strFile.c_str());
         pStream = NULL;

@@ -63,7 +63,7 @@ CGUIWindowMusicPlaylistEditor::~CGUIWindowMusicPlaylistEditor(void)
 
 bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.GetID() == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
   { // don't go to parent folder unless we're on the list in question
     g_windowManager.PreviousWindow();
     return true;
@@ -214,11 +214,11 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
   if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
-#ifdef HAS_DVD_DRIVE  
+#ifdef HAS_DVD_DRIVE
   if (m_vecItems->Get(iItem)->IsDVD())
     MEDIA_DETECT::CAutorun::PlayDisc();
   else
-#endif    
+#endif
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 

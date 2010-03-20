@@ -76,10 +76,10 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
       CStdString strDur;
       XMLUtils::GetString(node,"duration",strDur);
       song.iDuration = StringUtils::TimeStringToSeconds(strDur);
-  
+
       if (bIncrement)
         song.iTrack = song.iTrack + 1;
-     
+
       songs.push_back(song);
     }
     node = node->NextSiblingElement("track");
@@ -99,26 +99,16 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   if (!album) return false;
 
   XMLUtils::SetString(album,  "title", strAlbum);
-  CStdStringArray array;
-  StringUtils::SplitString(strArtist,  g_advancedSettings.m_musicItemSeparator, array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(album, "artist", array[i]);
-  array.clear();
-  StringUtils::SplitString(strGenre,  g_advancedSettings.m_musicItemSeparator, array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(album,  "genre", array[i]);
-  array.clear();
-  StringUtils::SplitString(strStyles, g_advancedSettings.m_musicItemSeparator, array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(album, "style", array[i]);
-  array.clear();
-  StringUtils::SplitString(strMoods,  g_advancedSettings.m_musicItemSeparator, array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(album,  "mood", array[i]);
-  array.clear();
-  StringUtils::SplitString(strThemes,  g_advancedSettings.m_musicItemSeparator, array);
-  for (unsigned int i=0;i<array.size();++i)
-    XMLUtils::SetString(album,  "theme", array[i]);
+  XMLUtils::SetAdditiveString(album, "artist",
+                           g_advancedSettings.m_musicItemSeparator, strArtist);
+  XMLUtils::SetAdditiveString(album,  "genre",
+                           g_advancedSettings.m_musicItemSeparator, strGenre);
+  XMLUtils::SetAdditiveString(album, "style",
+                           g_advancedSettings.m_musicItemSeparator, strStyles);
+  XMLUtils::SetAdditiveString(album,  "mood",
+                           g_advancedSettings.m_musicItemSeparator, strMoods);
+  XMLUtils::SetAdditiveString(album,  "theme",
+                           g_advancedSettings.m_musicItemSeparator, strThemes);
 
   XMLUtils::SetString(album,      "review", strReview);
   XMLUtils::SetString(album,        "type", strType);
@@ -128,7 +118,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   if (!thumbURL.m_xml.empty())
   {
     TiXmlDocument doc;
-    doc.Parse(thumbURL.m_xml); 
+    doc.Parse(thumbURL.m_xml);
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
     {

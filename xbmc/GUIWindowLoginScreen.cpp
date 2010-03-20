@@ -53,6 +53,7 @@ CGUIWindowLoginScreen::CGUIWindowLoginScreen(void)
 {
   watch.StartZero();
   m_vecItems = new CFileItemList;
+  m_iSelectedItem = -1;
 }
 
 CGUIWindowLoginScreen::~CGUIWindowLoginScreen(void)
@@ -101,7 +102,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           if (bOkay)
           {
-            if (CFile::Exists("special://scripts/autoexec.py") && 
+            if (CFile::Exists("special://scripts/autoexec.py") &&
                 watch.GetElapsedMilliseconds() < 5000.f)
             {
               while (watch.GetElapsedMilliseconds() < 5000) Sleep(10);
@@ -137,24 +138,25 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 {
   // don't allow any built in actions to act here.
   // this forces only navigation type actions to be performed.
-  if (action.actionId == ACTION_BUILT_IN_FUNCTION)
+  if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
     return true;  // pretend we handled it
   return CGUIWindow::OnAction(action);
 }
 
-void CGUIWindowLoginScreen::Render()
+void CGUIWindowLoginScreen::FrameMove()
 {
   if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   CStdString strLabel;
-  strLabel.Format(g_localizeStrings.Get(20114),m_iSelectedItem+1,g_settings.m_vecProfiles.size());
+  strLabel.Format(g_localizeStrings.Get(20114),m_iSelectedItem+1,g_settings.GetNumProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
-  CGUIWindow::Render();
+  CGUIWindow::FrameMove();
 }
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
+  m_iSelectedItem = (int)g_settings.GetLastUsedProfileIndex();
   // Update list/thumb control
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
   Update();
@@ -176,27 +178,24 @@ void CGUIWindowLoginScreen::OnWindowLoaded()
 void CGUIWindowLoginScreen::Update()
 {
   m_vecItems->Clear();
-  for (unsigned int i=0;i<g_settings.m_vecProfiles.size(); ++i)
+  for (unsigned int i=0;i<g_settings.GetNumProfiles(); ++i)
   {
-    CFileItemPtr item(new CFileItem(g_settings.m_vecProfiles[i].getName()));
+    const CProfile *profile = g_settings.GetProfile(i);
+    CFileItemPtr item(new CFileItem(profile->getName()));
     CStdString strLabel;
-    if (g_settings.m_vecProfiles[i].getDate().IsEmpty())
+    if (profile->getDate().IsEmpty())
       strLabel = g_localizeStrings.Get(20113);
     else
-      strLabel.Format(g_localizeStrings.Get(20112),g_settings.m_vecProfiles[i].getDate());
+      strLabel.Format(g_localizeStrings.Get(20112), profile->getDate());
     item->SetLabel2(strLabel);
-    item->SetThumbnailImage(g_settings.m_vecProfiles[i].getThumb());
-    if (g_settings.m_vecProfiles[i].getThumb().IsEmpty() || g_settings.m_vecProfiles[i].getThumb().Equals("-"))
+    item->SetThumbnailImage(profile->getThumb());
+    if (profile->getThumb().IsEmpty() || profile->getThumb().Equals("-"))
       item->SetThumbnailImage("unknown-user.png");
     item->SetLabelPreformated(true);
     m_vecItems->Add(item);
   }
   m_viewControl.SetItems(*m_vecItems);
-  if (g_settings.m_iLastUsedProfileIndex > -1)
-  {
-    m_viewControl.SetSelectedItem(g_settings.m_iLastUsedProfileIndex);
-    g_settings.m_iLastUsedProfileIndex = -1;
-  }
+  m_viewControl.SetSelectedItem(m_iSelectedItem);
 }
 
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
@@ -239,7 +238,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   {
     if (btnid == btn_ResetLock)
     {
-      if (g_passwordManager.CheckLock(g_settings.m_vecProfiles[0].getLockMode(),g_settings.m_vecProfiles[0].getLockCode(),20075))
+      if (g_passwordManager.CheckLock(g_settings.GetMasterProfile().getLockMode(),g_settings.GetMasterProfile().getLockCode(),20075))
         g_passwordManager.iMasterLockRetriesLeft = g_guiSettings.GetInt("masterlock.maxretries");
       else // be inconvenient
         g_application.getApplicationMessenger().Shutdown();
@@ -261,7 +260,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     }
   }
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < (int)g_settings.m_vecProfiles.size())
+  if (iItem < (int)g_settings.GetNumProfiles())
     m_vecItems->Get(iItem)->Select(bSelect);
 
   return (btnid > 0);
@@ -277,9 +276,9 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
   return m_vecItems->Get(item);
 }
 
-void CGUIWindowLoginScreen::LoadProfile(int profile)
+void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 {
-  if (profile != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
+  if (profile != 0 || !g_settings.IsMasterUser())
   {
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(profile);
@@ -292,25 +291,14 @@ void CGUIWindowLoginScreen::LoadProfile(int profile)
       pWindow->ResetControlStates();
   }
 
-  g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].setDate();
+  g_settings.UpdateCurrentProfileDate();
   g_settings.SaveProfiles(PROFILES_FILE);
 
   g_weatherManager.Refresh();
 #ifdef HAS_PYTHON
   g_pythonParser.m_bLogin = true;
 #endif
-  RESOLUTION res=RES_INVALID;
-  CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
-  int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-  // test for a startup window, and activate that instead of home
-  if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-  {
-    g_windowManager.ChangeActiveWindow(WINDOW_STARTUP);
-  }
-  else
-  {
-    g_windowManager.ChangeActiveWindow(startWindow);
-  }
+  g_windowManager.ChangeActiveWindow(g_SkinInfo.GetFirstWindow());
 
   g_application.UpdateLibraries();
 }

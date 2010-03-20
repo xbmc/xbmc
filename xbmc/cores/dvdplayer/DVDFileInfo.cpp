@@ -133,7 +133,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
     if (pStream)
     {
       if(pStream->type == STREAM_VIDEO)
-      nVideoStream = i;
+        nVideoStream = i;
       else
         pStream->SetDiscard(AVDISCARD_ALL);
     }
@@ -143,13 +143,13 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   if (nVideoStream != -1)
   {
     CDVDVideoCodec *pVideoCodec;
-    
+
     CDVDStreamInfo hint(*pDemuxer->GetStream(nVideoStream), true);
     hint.software = true;
-    
+
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
-      // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction 
+      // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction
       CDVDCodecOptions dvdOptions;
       pVideoCodec = CDVDFactoryCodec::OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions);
     }
@@ -185,12 +185,12 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
           }
 
           iDecoderState = pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
-              CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+          CDVDDemuxUtils::FreeDemuxPacket(pPacket);
 
           if (iDecoderState & VC_ERROR)
             break;
 
-              if (iDecoderState & VC_PICTURE)
+          if (iDecoderState & VC_PICTURE)
           {
             memset(&picture, 0, sizeof(DVDVideoPicture));
             if (pVideoCodec->GetPicture(&picture))
@@ -198,7 +198,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
               if(!(picture.iFlags & DVP_FLAG_DROPPED))
                 break;
             }
-            }
+          }
 
         } while (abort_index--);
 
@@ -232,7 +232,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
             dllSwScale.Unload();
             delete [] pOutBuf;
           }
-          }
+        }
         else
         {
           CLog::Log(LOGDEBUG,"%s - decode failed in %s", __FUNCTION__, strFile.c_str());

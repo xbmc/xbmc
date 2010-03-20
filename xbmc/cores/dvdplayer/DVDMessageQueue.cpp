@@ -69,9 +69,9 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
   {
     if (it->message->IsType(type) ||  type == CDVDMsg::NONE)
       it = m_list.erase(it);
-      else
+    else
       it++;
-    }
+  }
 
   if (type == CDVDMsg::DEMUXER_PACKET ||  type == CDVDMsg::NONE)
   {
@@ -129,7 +129,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
   m_list.insert(it, DVDMessageListItem(pMsg, priority));
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET) && priority == 0)
-    {
+  {
     DemuxPacket* packet = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
     if(packet)
     {
@@ -214,8 +214,8 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
         return MSGQ_TIMEOUT;
 
       lock.Enter();
-      }
     }
+  }
 
   if (m_bAbortRequest) return MSGQ_ABORT;
 

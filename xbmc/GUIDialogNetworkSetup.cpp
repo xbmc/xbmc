@@ -53,7 +53,7 @@ CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
 
 bool CGUIDialogNetworkSetup::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
     m_confirmed = false;
   return CGUIDialog::OnAction(action);
 }
@@ -307,7 +307,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   if(!m_server.IsEmpty())
     url.SetHostName(m_server);
   if (((m_protocol == NET_PROTOCOL_FTP) ||
-       (m_protocol == NET_PROTOCOL_HTTP) || 
+       (m_protocol == NET_PROTOCOL_HTTP) ||
        (m_protocol == NET_PROTOCOL_HTTPS) ||
        (m_protocol == NET_PROTOCOL_RSS) ||
        (m_protocol == NET_PROTOCOL_XBMSP && !m_server.IsEmpty()) ||

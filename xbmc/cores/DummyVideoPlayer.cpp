@@ -23,6 +23,7 @@
 #include "DummyVideoPlayer.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
+#include "GUIFont.h" // for XBFONT_* defines
 #include "Application.h"
 #include "AdvancedSettings.h"
 #include "WindowingFactory.h"
@@ -92,8 +93,7 @@ void CDummyVideoPlayer::Process()
       g_graphicsContext.Clear();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
       Render();
-      if (g_application.NeedRenderFullScreen())
-        g_application.RenderFullScreen();
+      g_application.RenderNoPresent();
 #ifdef HAS_DX     
       g_Windowing.Get3DDevice()->EndScene();
 #endif      

@@ -1,6 +1,6 @@
 /*!
 \file GUITextureD3D.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUITEXTURED3D_H

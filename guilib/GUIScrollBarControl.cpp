@@ -89,7 +89,7 @@ bool CGUIScrollBar::OnMessage(CGUIMessage& message)
 
 bool CGUIScrollBar::OnAction(const CAction &action)
 {
-  switch ( action.actionId )
+  switch ( action.GetID() )
   {
   case ACTION_MOVE_LEFT:
     if (m_orientation == HORIZONTAL)
@@ -281,16 +281,20 @@ bool CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
     SetFromPosition(point);
     return true;
   }
-  else if (event.m_id == ACTION_MOUSE_CLICK && m_guiBackground.HitTest(point))
-{
-  SetFromPosition(point);
-  return true;
-}
-  else if (event.m_id == ACTION_MOUSE_WHEEL)
-{
-    Move(-event.m_wheel);
-  return true;
-}
+  else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
+  {
+    SetFromPosition(point);
+    return true;
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  {
+    Move(-1);
+  }
+  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
+  {
+    Move(1);
+    return true;
+  }
   return false;
 }
 

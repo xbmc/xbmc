@@ -77,7 +77,7 @@ private:
   long m_nCurrentVolume;
   unsigned int m_dwPacketSize;
   unsigned int m_dwNumPackets;
-  
+
   bool m_bIsAllocated;
 
   unsigned int m_uiBytesPerSecond;
@@ -97,5 +97,5 @@ private:
   pa_threaded_mainloop *m_MainLoop;
 };
 
-#endif 
+#endif
 

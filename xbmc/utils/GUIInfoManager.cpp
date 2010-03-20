@@ -30,7 +30,7 @@
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "Weather.h"
 #include "PartyModeManager.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "ButtonTranslator.h"
 #include "utils/AlarmClock.h"
 #ifdef HAS_LCD
@@ -79,6 +79,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
+using ADDON::CVisualisation;
 
 CGUIInfoManager g_infoManager;
 
@@ -163,7 +164,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
   // trim whitespace, and convert to lowercase
   CStdString strTest = strCondition;
-  strTest.ToLower();
   strTest.TrimLeft(" \t\r\n");
   strTest.TrimRight(" \t\r\n");
   if (strTest.IsEmpty()) return 0;
@@ -173,6 +173,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   if(bNegate)
     strTest.Delete(0, 1);
+  CStdString original(strTest);
+  strTest.ToLower();
 
   CStdString strCategory = strTest.Left(strTest.Find("."));
 
@@ -225,6 +227,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
     else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
+    else if (strTest.Equals("player.folderpath")) ret = PLAYER_PATH;
+    else if (strTest.Equals("player.filenameandpath")) ret = PLAYER_FILEPATH;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -429,7 +433,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     if (info2 > 0)
       return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, -info2));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+    int compareString = ConditionalStringParameter(label);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
   }
   else if (strTest.Left(19).Equals("integergreaterthan("))
@@ -443,7 +449,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(10, pos-10));
-    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
+    int compareString = ConditionalStringParameter(label);
     return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, info, compareString));
   }
   else if (strCategory.Equals("lcd"))
@@ -908,6 +916,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
+  else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -1048,6 +1057,26 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel = GetDuration(TIME_FORMAT_HH_MM);
     break;
+  case PLAYER_PATH:
+  case PLAYER_FILEPATH:
+     if (m_currentFile)
+     {
+       if (m_currentFile->HasMusicInfoTag())
+         strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
+       else if (m_currentFile->HasVideoInfoTag())
+         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
+       if (strLabel.IsEmpty())
+         strLabel = m_currentFile->m_strPath;
+     }
+     if (info == PLAYER_PATH)
+     {
+       // do this twice since we want the path outside the archive if this
+       // is to be of use.
+       if (CUtil::IsInArchive(strLabel))
+         strLabel = CUtil::GetParentPath(strLabel);
+       strLabel = CUtil::GetParentPath(strLabel);
+     }
+     break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -1361,7 +1390,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     }
     break;
   case SYSTEM_PROFILENAME:
-    strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
+    strLabel = g_settings.GetCurrentProfile().getName();
     break;
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");
@@ -1485,25 +1514,18 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
-        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
-        char *preset = pVis->GetPreset();
-        if (preset)
+        CVisualisation* viz = NULL;
+        viz = (CVisualisation*)msg.GetPointer();
+        if (viz)
         {
-          strLabel = preset;
+          strLabel = viz->GetPresetName();
           CUtil::RemoveExtension(strLabel);
         }
       }
     }
     break;
   case VISUALISATION_NAME:
-    {
-      strLabel = g_guiSettings.GetString("musicplayer.visualisation");
-      if (strLabel != "None" && strLabel.size() > 4)
-      { // make it look pretty
-        strLabel = strLabel.Left(strLabel.size() - 4);
-        strLabel[0] = toupper(strLabel[0]);
-      }
-    }
+    strLabel = g_guiSettings.GetString("musicplayer.visualisation");
     break;
   case FANART_COLOR1:
     {
@@ -1738,13 +1760,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     return result;
   }
   else if (condition == SYSTEM_HASLOCKS)
-    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
+    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_ISMASTER)
-    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
-    bReturn = g_settings.bUseLoginScreen;
+    bReturn = g_settings.UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == SYSTEM_INTERNET_STATE)
@@ -1810,8 +1832,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
         else
           bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
+      }
     }
-  }
   }
   else if (g_application.IsPlaying())
   {
@@ -2212,7 +2234,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
               bReturn = it->second >= std::max(condition - CONTAINER_STATIC, 1);
             else
               bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
-        }
+          }
         }
         break;
       case CONTAINER_CONTENT:
@@ -2521,7 +2543,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == SYSTEM_PROFILETHUMB)
   {
-    CStdString thumb = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getThumb();
+    CStdString thumb = g_settings.GetCurrentProfile().getThumb();
     if (thumb.IsEmpty())
       thumb = "unknown-user.png";
     return thumb;
@@ -3048,23 +3070,21 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_PLOT_OUTLINE:
       return m_currentFile->GetVideoInfoTag()->m_strPlotOutline;
     case VIDEOPLAYER_EPISODE:
-      if (m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
           strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else
+        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0) 
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strYear;
       }
       break;
     case VIDEOPLAYER_SEASON:
-      if (m_currentFile->GetVideoInfoTag()->m_iSeason > -1)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason);
-        else
+        else if(m_currentFile->GetVideoInfoTag()->m_iSeason > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
         return strYear;
       }
@@ -3601,6 +3621,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strTitle;
     break;
+  case LISTITEM_ORIGINALTITLE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strOriginalTitle;
+    break;
   case LISTITEM_TRACKNUMBER:
     {
       CStdString track;
@@ -3735,7 +3759,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
         strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
-      else if (item->GetVideoInfoTag()->m_iEpisode >= 0) // if m_iEpisode = -1 there's no episode detail
+      else if (item->GetVideoInfoTag()->m_iEpisode > 0) // if m_iEpisode = -1 there's no episode detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
@@ -3746,7 +3770,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSpecialSortSeason);
-      else if (item->GetVideoInfoTag()->m_iSeason >= 0) // if m_iSeason = -1 there's no season detail
+      else if (item->GetVideoInfoTag()->m_iSeason > 0) // if m_iSeason = -1 there's no season detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
       return strResult;
     }

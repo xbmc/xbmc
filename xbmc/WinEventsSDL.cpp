@@ -34,18 +34,18 @@
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 
 bool CWinEventsSDL::MessagePump()
-{ 
+{
   SDL_Event event;
   bool ret = false;
-  
+
   while (SDL_PollEvent(&event))
   {
     switch(event.type)
-    {    
+    {
     case SDL_QUIT:
       if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
       break;
-      
+
 #ifdef HAS_SDL_JOYSTICK
     case SDL_JOYBUTTONUP:
     case SDL_JOYBUTTONDOWN:
@@ -56,7 +56,7 @@ bool CWinEventsSDL::MessagePump()
       ret = true;
       break;
 #endif
-      
+
     case SDL_ACTIVEEVENT:
       //If the window was inconified or restored
       if( event.active.state & SDL_APPACTIVE )
@@ -70,18 +70,18 @@ bool CWinEventsSDL::MessagePump()
         g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       }
       break;
-      
+
     case SDL_KEYDOWN:
     {
       // process any platform specific shortcuts before handing off to XBMC
-#ifdef __APPLE__      
+#ifdef __APPLE__
       if (ProcessOSXShortcuts(event))
       {
         ret = true;
         break;
       }
-#endif      
-      
+#endif
+
       XBMC_Event newEvent;
       newEvent.type = XBMC_KEYDOWN;
       newEvent.key.keysym.scancode = event.key.keysym.scancode;
@@ -97,7 +97,7 @@ bool CWinEventsSDL::MessagePump()
       ret |= g_application.OnEvent(newEvent);
       break;
     }
-      
+
     case SDL_KEYUP:
     {
       XBMC_Event newEvent;
@@ -109,11 +109,11 @@ bool CWinEventsSDL::MessagePump()
       newEvent.key.state = event.key.state;
       newEvent.key.type = event.key.type;
       newEvent.key.which = event.key.which;
-      
+
       ret |= g_application.OnEvent(newEvent);
       break;
     }
-    
+
     case SDL_MOUSEBUTTONDOWN:
     {
       XBMC_Event newEvent;
@@ -182,11 +182,11 @@ bool CWinEventsSDL::MessagePump()
       ret |= g_application.OnEvent(newEvent);
       break;
     }
-    
+
     }
     memset(&event, 0, sizeof(XBMC_Event));
   }
-  
+
   return ret;
 }
 
@@ -194,7 +194,6 @@ bool CWinEventsSDL::MessagePump()
 bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 {
   static bool shift = false, cmd = false;
-  static CAction action;
 
   cmd   = !!(SDL_GetModState() & (KMOD_LMETA  | KMOD_RMETA ));
   shift = !!(SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT));
@@ -210,13 +209,11 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       return true;
 
     case SDLK_f: // CMD-f to toggle fullscreen
-      action.actionId = ACTION_TOGGLE_FULLSCREEN;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_TOGGLE_FULLSCREEN));
       return true;
 
     case SDLK_s: // CMD-3 to take a screenshot
-      action.actionId = ACTION_TAKE_SCREENSHOT;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_TAKE_SCREENSHOT));
       return true;
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
@@ -228,8 +225,8 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       return false;
     }
   }
-  
-  return false;  
+
+  return false;
 }
 
 #elif defined(_LINUX)

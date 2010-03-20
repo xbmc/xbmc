@@ -720,7 +720,7 @@ static int vorbis_parse_setup_hdr_mappings(vorbis_context *vc)
             for (j = 0; j < mapping_setup->coupling_steps; ++j) {
                 GET_VALIDATED_INDEX(mapping_setup->magnitude[j], ilog(vc->audio_channels - 1), vc->audio_channels)
                 GET_VALIDATED_INDEX(mapping_setup->angle[j],     ilog(vc->audio_channels - 1), vc->audio_channels)
-                }
+            }
         } else {
             mapping_setup->coupling_steps = 0;
         }

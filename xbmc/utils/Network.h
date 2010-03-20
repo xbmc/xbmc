@@ -104,7 +104,7 @@ public:
    bool IsConnected(void);
 
    // Return true if the magic packet was send
-   bool WakeOnLan(char *mac);
+   bool WakeOnLan(const char *mac);
 
    // Get/set the nameserver(s)
    virtual std::vector<CStdString> GetNameServers(void) = 0;
@@ -112,7 +112,7 @@ public:
 
    // callback from application controlled thread to handle any setup
    void NetworkMessage(EMESSAGE message, int param);
-   
+
    void StartServices();
    void StopServices(bool bWait);
 

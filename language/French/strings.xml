@@ -2250,8 +2250,9 @@
   <string id="33083">Activer le bouton de script personnalisé</string>
   
   <!-- 35000-35100 reserved for directshow-->
-  <string id="35000">DsPlayer</string>
+  <string id="35000">DSPlayer</string>
   <string id="35001">Utiliser VMR9 au lieu d'EVR</string>
   <string id="35002">Utiliser EVR au lieu de VMR9</string>
   <string id="35003">Audio Renderer</string>
+  <string id="35004">Régler tous les codecs stable de ffdshow sur libavcodec</string>
 </strings>

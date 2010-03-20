@@ -86,7 +86,7 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.actionId == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && !musicScan->IsDialogRunning())
@@ -96,7 +96,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     }
   }
 
-  if (action.actionId == ACTION_SHOW_PLAYLIST)
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
@@ -369,7 +369,7 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       m_dlgProgress->Close();
   }
 
-  if (album.idAlbum == -1 && foundAlbum == false) 
+  if (album.idAlbum == -1 && foundAlbum == false)
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
   else
     ShowAlbumInfo(album, strPath, false, bShowInfo);
@@ -392,7 +392,7 @@ void CGUIWindowMusicBase::OnManualAlbumInfo()
 void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString& path, bool bRefresh, bool bShowInfo)
 {
   bool saveDb = artist.idArtist != -1;
-  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
+  if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     saveDb = false;
 
   // check cache
@@ -405,7 +405,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
   if (pDlgAlbumInfo)
   {
     pDlgAlbumInfo->SetArtist(artistInfo, path);
-    
+
     if (bShowInfo)
       pDlgAlbumInfo->DoModal();
     else
@@ -431,13 +431,8 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
     return;
   }
 
-  // find album info
-  SScraperInfo scraper;
-  if (!m_musicdatabase.GetScraperForPath(path,scraper))
-    return;
-
   CMusicArtistInfo info;
-  if (FindArtistInfo(artist.strArtist, info, scraper, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
+  if (FindArtistInfo(artist.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {
     // download the album info
     if ( info.Loaded() )
@@ -490,7 +485,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
 void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& path, bool bRefresh, bool bShowInfo)
 {
   bool saveDb = album.idAlbum != -1;
-  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
+  if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     saveDb = false;
 
   // check cache
@@ -529,13 +524,8 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
     return;
   }
 
-  // find album info
-  SScraperInfo scraper;
-  if (!m_musicdatabase.GetScraperForPath(path,scraper))
-    return;
-
   CMusicAlbumInfo info;
-  if (FindAlbumInfo(album.strAlbum, album.strArtist, info, scraper, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
+  if (FindAlbumInfo(album.strAlbum, album.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {
     // download the album info
     if ( info.Loaded() )
@@ -779,7 +769,7 @@ void CGUIWindowMusicBase::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();
 }
 
-bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdString& strArtist, CMusicAlbumInfo& album, ALLOW_SELECTION allowSelection)
 {
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
@@ -800,8 +790,8 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   bool bCanceled(false);
   bool needsRefresh(true);
-  do 
-  { 
+  do
+  {
     if (!scanner.DownloadAlbumInfo(strPath,strTempArtist,strTempAlbum,bCanceled,album,m_dlgProgress))
     {
       if (bCanceled)
@@ -830,7 +820,7 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
   return true;
 }
 
-bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, const SScraperInfo& info, ALLOW_SELECTION allowSelection)
+bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArtistInfo& artist, ALLOW_SELECTION allowSelection)
 {
   // show dialog box indicating we're searching the album
   if (m_dlgProgress && allowSelection != SELECTION_AUTO)
@@ -850,8 +840,8 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
 
   bool bCanceled(false);
   bool needsRefresh(true);
-  do 
-  { 
+  do
+  {
     if (!scanner.DownloadArtistInfo(strPath,strTempArtist,bCanceled,m_dlgProgress))
     {
       if (bCanceled)
@@ -1231,7 +1221,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
   // check user permissions
   bool saveDb = album.idAlbum != -1;
   bool saveDirThumb = true;
-  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
+  if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
   {
     saveDb = false;
     saveDirThumb = false;
@@ -1368,7 +1358,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     newPlaylist.reset(new CFileItem("newplaylist://", false));
     newPlaylist->SetLabel(g_localizeStrings.Get(525));
     newPlaylist->SetLabelPreformated(true);
-    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);    
+    newPlaylist->SetSpecialSort(SORT_ON_BOTTOM);
     newPlaylist->SetCanQueue(false);
     items.Add(newPlaylist);
 

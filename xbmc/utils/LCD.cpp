@@ -396,7 +396,7 @@ void ILCD::Initialize()
   // Note, the big block isn't here, it's in the LCD's ROM
 }
 
-bool ILCD::IsConnected() 
+bool ILCD::IsConnected()
 {
   return true;
 }

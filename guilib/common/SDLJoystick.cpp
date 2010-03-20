@@ -2,6 +2,7 @@
 #include "../Key.h"
 #include "SDLJoystick.h"
 #include "ButtonTranslator.h"
+#include "AdvancedSettings.h"
 #include "utils/log.h"
 
 #include <math.h>
@@ -24,8 +25,7 @@ CJoystick::CJoystick()
   m_ActiveFlags = JACTIVE_NONE;
   for (int i = 0 ; i<MAX_AXES ; i++)
     m_Amount[i] = 0;
-
-  SetSafeRange(2000);
+  SetDeadzone(0);
 }
 
 void CJoystick::Initialize()
@@ -45,6 +45,9 @@ void CJoystick::Initialize()
     m_Joysticks.clear();
     m_JoyId = -1;
   }
+
+  // Set deadzone range
+  SetDeadzone(g_advancedSettings.m_controllerDeadzone);
 
   // any joysticks connected?
   if (SDL_NumJoysticks()>0)
@@ -68,7 +71,6 @@ void CJoystick::Initialize()
       m_Joysticks.push_back(joy);
       if (joy)
       {
-        CalibrateAxis(joy);
         m_JoystickNames.push_back(string(SDL_JoystickName(i)));
         CLog::Log(LOGNOTICE, "Enabled Joystick: %s", SDL_JoystickName(i));
       }
@@ -81,21 +83,6 @@ void CJoystick::Initialize()
   
   // disable joystick events, since we'll be polling them
   SDL_JoystickEventState(SDL_DISABLE);
-}
-
-void CJoystick::CalibrateAxis(SDL_Joystick* joy)
-{
-  SDL_JoystickUpdate();
-
-  int numax = SDL_JoystickNumAxes(joy);
-  numax = (numax>MAX_AXES)?MAX_AXES:numax;
-
-  // get default axis states
-  for (int a = 0 ; a<numax ; a++)
-  {
-    m_DefaultAmount[a+1] = SDL_JoystickGetAxis(joy, a);
-    CLog::Log(LOGDEBUG, "Calibrated Axis: %d , default amount %d\n", a, m_DefaultAmount[a+1]);
-  }
 }
 
 void CJoystick::Reset(bool axis)
@@ -171,13 +158,15 @@ void CJoystick::Update()
       else
       {
         m_Amount[axisId] = axisval;  //[-32768 to 32767]
-        if (axisval!=m_DefaultAmount[axisId])
-        {
-          m_JoyId = j;
-        }
       }
     }
     m_AxisId = GetAxisWithMaxAmount();
+    if (m_AxisId)
+    {
+      m_JoyId = j;
+      j = numj-1;
+      break;
+    }
   }
 
   if(hatId==-1)
@@ -229,8 +218,6 @@ void CJoystick::Update(SDL_Event& joyEvent)
   int joyId = -1;
   bool ignore = false; // not used for now
   bool axis = false;
-
-  printf("JoystickEvent %i\n", joyEvent.type);
 
   switch(joyEvent.type)
   {
@@ -367,22 +354,36 @@ int CJoystick::GetAxisWithMaxAmount()
   static int maxAmount;
   static int axis;
   axis = 0;
-  maxAmount = m_SafeRange;
+  maxAmount = 0;
   int tempf;
   for (int i = 1 ; i<=m_NumAxes ; i++)
   {
-    tempf = abs(m_DefaultAmount[i] - m_Amount[i]);
-    if (tempf>maxAmount)
+    tempf = abs(m_Amount[i]);
+    if (tempf>m_DeadzoneRange && tempf>maxAmount)
     {
       maxAmount = tempf;
       axis = i;
     }
   }
-  if (maxAmount==0)
-    SetAxisActive(false);
-  else
-    SetAxisActive();
+  SetAxisActive(0 != maxAmount);
   return axis;
+}
+
+float CJoystick::GetAmount(int axis)
+{
+  if (m_Amount[axis] > m_DeadzoneRange)
+    return (float)(m_Amount[axis]-m_DeadzoneRange)/(float)(MAX_AXISAMOUNT-m_DeadzoneRange);
+  if (m_Amount[axis] < -m_DeadzoneRange)
+    return (float)(m_Amount[axis]+m_DeadzoneRange)/(float)(MAX_AXISAMOUNT-m_DeadzoneRange);
+  return 0;
+}
+
+float CJoystick::SetDeadzone(float val)
+{
+  if (val<0) val=0;
+  if (val>1) val=1;
+  m_DeadzoneRange = (int)(val*MAX_AXISAMOUNT);
+  return val;
 }
 
 #endif

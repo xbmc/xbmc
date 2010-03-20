@@ -167,7 +167,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
 
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  int GetResolution();  
+  RESOLUTION GetResolution();
 
 protected:
   virtual void Render(DWORD flags);
@@ -197,7 +197,7 @@ protected:
   int m_NumYV12Buffers;
 
   float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
-  int m_iResolution;    // the resolution we're running in
+  RESOLUTION m_iResolution;    // the resolution we're running in
   float m_fps;        // fps of movie
   RECT rd;          // destination rect
   RECT rs;          // source rect

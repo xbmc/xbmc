@@ -30,11 +30,11 @@ CGUICheckMarkControl::CGUICheckMarkControl(int parentID, int controlID, float po
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgCheckMark(posX, posY, checkWidth, checkHeight, textureCheckMark)
     , m_imgCheckMarkNoFocus(posX, posY, checkWidth, checkHeight, textureCheckMarkNF)
-    , m_textLayout(labelInfo.font, false)
+    , m_label(posX, posY, width, height, labelInfo)
 {
   m_strLabel = "";
-  m_label = labelInfo;
   m_bSelected = false;
+  m_label.GetLabelInfo().align |= XBFONT_CENTER_Y;
   ControlType = GUICONTROL_CHECKMARK;
 }
 
@@ -43,28 +43,23 @@ CGUICheckMarkControl::~CGUICheckMarkControl(void)
 
 void CGUICheckMarkControl::Render()
 {
-  m_textLayout.Update(m_strLabel);
+  m_label.SetText(m_strLabel);
 
-  float fTextHeight, fTextWidth;
-  m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
-  m_width = fTextWidth + 5 + m_imgCheckMark.GetWidth();
+  float textWidth = m_label.GetTextWidth();
+  m_width = textWidth + 5 + m_imgCheckMark.GetWidth();
   m_height = m_imgCheckMark.GetHeight();
 
   float textPosX = m_posX;
-  float textPosY = m_posY + m_height * 0.5f;
   float checkMarkPosX = m_posX;
 
-  if (m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X))
+  if (m_label.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X))
     textPosX += m_imgCheckMark.GetWidth() + 5;
   else
-    checkMarkPosX += fTextWidth + 5;
+    checkMarkPosX += textWidth + 5;
 
-  if (IsDisabled() )
-    m_textLayout.Render(textPosX, textPosY, 0, m_label.disabledColor, m_label.shadowColor, XBFONT_CENTER_Y, 0, true);
-  else if (HasFocus() && m_label.focusedColor)
-    m_textLayout.Render(textPosX, textPosY, 0, m_label.focusedColor, m_label.shadowColor, XBFONT_CENTER_Y, 0);
-  else
-    m_textLayout.Render(textPosX, textPosY, 0, m_label.textColor, m_label.shadowColor, XBFONT_CENTER_Y, 0);
+  m_label.SetMaxRect(textPosX, m_posY, textWidth, m_height);
+  m_label.SetColor(GetTextColor());
+  m_label.Render();
 
   if (m_bSelected)
   {
@@ -79,12 +74,21 @@ void CGUICheckMarkControl::Render()
   CGUIControl::Render();
 }
 
+CGUILabel::COLOR CGUICheckMarkControl::GetTextColor() const
+{
+  if (IsDisabled())
+    return CGUILabel::COLOR_DISABLED;
+  else if (HasFocus())
+    return CGUILabel::COLOR_FOCUSED;
+  return CGUILabel::COLOR_TEXT;
+}
+
 bool CGUICheckMarkControl::OnAction(const CAction &action)
 {
-  if (action.actionId == ACTION_SELECT_ITEM)
+  if (action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
-    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.actionId);
+    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.GetID());
     SendWindowMessage(msg);
     return true;
   }
@@ -129,6 +133,7 @@ void CGUICheckMarkControl::DynamicResourceAlloc(bool bOnOff)
 void CGUICheckMarkControl::SetInvalid()
 {
   CGUIControl::SetInvalid();
+  m_label.SetInvalid();
   m_imgCheckMark.SetInvalid();
   m_imgCheckMarkNoFocus.SetInvalid();
 }
@@ -147,11 +152,9 @@ bool CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMouseEvent &
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
-  CAction action;
-    action.actionId = ACTION_SELECT_ITEM;
-  OnAction(action);
-  return true;
-}
+    OnAction(CAction(ACTION_SELECT_ITEM));
+    return true;
+  }
   return false;
 }
 
@@ -162,15 +165,15 @@ void CGUICheckMarkControl::SetLabel(const string &label)
 
 void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const string &strText, color_t textColor)
 {
-  m_label.font = g_fontManager.GetFont(strFont);
-  m_label.textColor = textColor;
-  m_label.focusedColor = textColor;
+  m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
+  m_label.GetLabelInfo().textColor = textColor;
+  m_label.GetLabelInfo().focusedColor = textColor;
   m_strLabel = strText;
 }
 
 void CGUICheckMarkControl::PythonSetDisabledColor(color_t disabledColor)
 {
-  m_label.disabledColor = disabledColor;
+  m_label.GetLabelInfo().disabledColor = disabledColor;
 }
 
 void CGUICheckMarkControl::UpdateColors()

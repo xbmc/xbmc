@@ -77,7 +77,7 @@ public:
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
       case EPC_DSPLAYER: pPlayer = new CDSPlayer(callback); break;
-      default: return NULL; 
+      default: return NULL;
     }
 
     if (pPlayer->Initialize(m_config))

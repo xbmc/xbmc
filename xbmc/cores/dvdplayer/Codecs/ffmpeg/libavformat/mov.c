@@ -1633,7 +1633,7 @@ static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     if (!sc->time_scale) {
         av_log(c->fc, AV_LOG_WARNING, "stream %d, timescale not set\n", st->index);
         sc->time_scale = c->time_scale;
-    if (!sc->time_scale)
+        if (!sc->time_scale)
             sc->time_scale = 1;
     }
 

@@ -123,7 +123,7 @@ int rtv_decrypt(const char * cyphertext, u32 cyphertext_len,
 
     /* check the sanity field */
     memcpy(sanity_buf, cyphertext + 24, 4);
-    key = cryptblock(key, sanity_buf, 4);
+    key = cryptblock(key, (char*)sanity_buf, 4);
     p = sanity_buf;
     sanity = rtv_to_u32(&p);
     if (sanity != 0x42ffdfa9)
@@ -131,14 +131,14 @@ int rtv_decrypt(const char * cyphertext, u32 cyphertext_len,
 
     /* decrypt the time field */
     memcpy(time_buf, cyphertext + 28, 4);
-    key = cryptblock(key, time_buf, 4);
+    key = cryptblock(key, (char*)time_buf, 4);
 
     /* decrypt the actual text */
     memcpy(plainbuf, cyphertext + 32, cyphertext_len - 32);
-    cryptblock(key, plainbuf, cyphertext_len - 32);
+    cryptblock(key, (char*)plainbuf, cyphertext_len - 32);
 
     /* check the checksum */
-    checksum(csum_buf, cyphertext + 24, cyphertext_len - 24, checksum_num);
+    checksum(csum_buf, (unsigned const char*)(cyphertext + 24), cyphertext_len - 24, checksum_num);
     if (memcmp(csum_buf, cyphertext + 8, 16) != 0)
         return -2;
 
@@ -176,7 +176,7 @@ int rtv_encrypt(const char * plaintext, u32 plaintext_len,
 
     p = NULL;//getenv("TIMEOFF");
     if (p)
-        t += atoi(p);
+        t += atoi((char*)p);
 
     /* encrypt the key */
     p = key_buf;
@@ -196,7 +196,7 @@ int rtv_encrypt(const char * plaintext, u32 plaintext_len,
     cyphertext[7]  = key_buf[3];
 
     /* store the sanity check & time */
-    p = cyphertext + 24;
+    p = (unsigned char*)(cyphertext + 24);
     rtv_from_u32(&p, 0x42ffdfa9);
     rtv_from_u32(&p, t);
 
@@ -207,7 +207,7 @@ int rtv_encrypt(const char * plaintext, u32 plaintext_len,
     cryptblock(key, cyphertext+24, plaintext_len+8);
 
     /* fill in the checksum */
-    checksum(cyphertext + 8, cyphertext + 24, plaintext_len + 8, checksum_num);
+    checksum((unsigned char*)(cyphertext + 8), (unsigned const char*)(cyphertext + 24), plaintext_len + 8, checksum_num);
 
     /* and we're done */
     *cyphertext_len = plaintext_len + 32;

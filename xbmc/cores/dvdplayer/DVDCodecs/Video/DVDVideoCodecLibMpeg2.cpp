@@ -432,7 +432,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double dts, double pt
             TagUnion u;
             u.tag.l = m_pInfo->display_picture->tag;
             u.tag.u = m_pInfo->display_picture->tag2;
-              pBuffer->pts = u.pts;
+            pBuffer->pts = u.pts;
             pBuffer->dts = m_dts2;
             m_dts2 = DVD_NOPTS_VALUE;
 

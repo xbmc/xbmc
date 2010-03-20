@@ -46,6 +46,7 @@
 				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
+				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -65,8 +66,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
-				LinkIncremental="2"
+				OutputFile="../../../addons/com.nullsoft.milkdrop.xbmc/MilkDrop_win32dx.vis"
+				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Plugin.pdb"
 				SubSystem="2"
@@ -144,7 +145,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
+				OutputFile="../../../addons/com.nullsoft.milkdrop.xbmc/MilkDrop_win32dx.vis"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetName).pdb"
@@ -189,10 +190,6 @@
 			>
 			<File
 				RelativePath=".\MilkdropXBMC.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\xbmc_vis.h"
 				>
 			</File>
 			<File

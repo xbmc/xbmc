@@ -107,8 +107,8 @@ preparesrc()
   rm -rf xbmc/lib/libass/autom4te.cache
   cd $OLDPWD
   if [ -z $UPDPPA ]; then
-  echo "Copying to .orig folder"
-  cp -a $DESTSRC $DESTSRC.orig
+    echo "Copying to .orig folder"
+    cp -a $DESTSRC $DESTSRC.orig
   fi
 }
 
@@ -191,7 +191,7 @@ preparevars()
       VERSION=$version
     fi
     if [ $minor ]; then
-    MINOR=$minor
+      MINOR=$minor
     fi
     BUILT_ONCE=1
   fi

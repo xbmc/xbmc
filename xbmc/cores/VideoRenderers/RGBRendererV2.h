@@ -52,7 +52,7 @@ protected:
       YUVPLANES          pSources,
       LPDIRECT3DTEXTURE8 pAlpha,
       LPDIRECT3DSURFACE8 pTarget,
-      RECT &source, RECT &sourcealpha, RECT &target,      
+      RECT &source, RECT &sourcealpha, RECT &target,
       unsigned cshift_x,  unsigned cshift_y,
       float    offset_x,  float    offset_y,
       float    coffset_x, float    coffset_y);
@@ -68,7 +68,7 @@ protected:
 
   bool m_444GeneratedFull;
   int m_444RenderBuffer;
-  
+
 
   // textures for YUV->RGB lookup
   LPDIRECT3DTEXTURE8 m_UVLookup;

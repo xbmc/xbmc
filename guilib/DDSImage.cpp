@@ -53,7 +53,7 @@ CDDSImage::CDDSImage(unsigned int width, unsigned int height, unsigned int forma
 
 CDDSImage::~CDDSImage()
 {
-    delete[] m_data;
+  delete[] m_data;
 }
 
 unsigned int CDDSImage::GetWidth() const

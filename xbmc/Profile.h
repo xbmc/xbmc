@@ -25,69 +25,77 @@
 
 #include <vector>
 
+class TiXmlNode;
+
 class CProfile
 {
 public:
-  CProfile(void);
+  /*! \brief Class for handling lock status
+   */
+  class CLock
+  {
+  public:
+    CLock(LockType type = LOCK_MODE_EVERYONE, const CStdString &password = "");
+    void Validate();
+
+    LockType mode;
+    CStdString code;
+    bool addonManager;
+    bool settings;
+    bool music;
+    bool video;
+    bool files;
+    bool pictures;
+    bool programs;
+  };
+
+  CProfile(const CStdString &directory = "", const CStdString &name = "");
   ~CProfile(void);
+  
+  void Load(const TiXmlNode *node);
+  void Save(TiXmlNode *root) const;
 
-  const CStdString& getDate() const { return _date;}
-  const CStdString& getName() const { return _name;}
-  const CStdString& getDirectory() const { return _directory;}
-  const CStdString& getThumb() const { return _thumb;}
-  const CStdString& getLockCode() const { return _strLockCode;}
-  LockType getLockMode() const { return _iLockMode; }
+  const CStdString& getDate() const { return m_date;}
+  const CStdString& getName() const { return m_name;}
+  const CStdString& getDirectory() const { return m_directory;}
+  const CStdString& getThumb() const { return m_thumb;}
+  const CStdString& getLockCode() const { return m_locks.code;}
+  LockType getLockMode() const { return m_locks.mode; }
 
-  bool hasDatabases() const { return _bDatabases; }
-  bool canWriteDatabases() const { return _bCanWrite; }
-  bool hasSources() const { return _bSources; }
-  bool canWriteSources() const { return _bCanWriteSources; }
-  bool settingsLocked() const { return _bLockSettings; }
-  bool musicLocked() const { return _bLockMusic; }
-  bool videoLocked() const { return _bLockVideo; }
-  bool picturesLocked() const { return _bLockPictures; }
-  bool filesLocked() const { return _bLockFiles; }
-  bool programsLocked() const { return _bLockPrograms; }
+  bool hasDatabases() const { return m_bDatabases; }
+  bool canWriteDatabases() const { return m_bCanWrite; }
+  bool hasSources() const { return m_bSources; }
+  bool canWriteSources() const { return m_bCanWriteSources; }
+  bool hasAddons() const { return m_bAddons; }
+  bool settingsLocked() const { return m_locks.settings; }
+  bool addonmanagerLocked() const { return m_locks.addonManager; }
+  bool musicLocked() const { return m_locks.music; }
+  bool videoLocked() const { return m_locks.video; }
+  bool picturesLocked() const { return m_locks.pictures; }
+  bool filesLocked() const { return m_locks.files; }
+  bool programsLocked() const { return m_locks.programs; }
+  const CLock &GetLocks() const { return m_locks; }
 
-  void setName(const CStdString& name) {_name = name;}
-  void setDirectory(const CStdString& directory) {_directory = directory;}
-  void setDate(const CStdString& strDate) { _date = strDate;}
+  void setName(const CStdString& name) {m_name = name;}
+  void setDirectory(const CStdString& directory) {m_directory = directory;}
+  void setDate(const CStdString& strDate) { m_date = strDate;}
   void setDate();
-  void setLockMode(LockType iLockMode) { _iLockMode = iLockMode;}
-  void setLockCode(const CStdString& strLockCode) { _strLockCode = strLockCode; }
-  void setThumb(const CStdString& thumb) {_thumb = thumb;}
-  void setDatabases(bool bHas) { _bDatabases = bHas; }
-  void setWriteDatabases(bool bCan) { _bCanWrite = bCan; }
-  void setSources(bool bHas) { _bSources = bHas; }
-  void setWriteSources(bool bCan) { _bCanWriteSources = bCan; }
+  void setThumb(const CStdString& thumb) {m_thumb = thumb;}
+  void setDatabases(bool bHas) { m_bDatabases = bHas; }
+  void setWriteDatabases(bool bCan) { m_bCanWrite = bCan; }
+  void setSources(bool bHas) { m_bSources = bHas; }
+  void setWriteSources(bool bCan) { m_bCanWriteSources = bCan; }
+  void SetLocks(const CLock &locks);
 
-  void setSettingsLocked(bool bLocked) { _bLockSettings = bLocked; }
-  void setFilesLocked(bool bLocked) { _bLockFiles = bLocked; }
-  void setMusicLocked(bool bLocked) { _bLockMusic = bLocked; }
-  void setVideoLocked(bool bLocked) { _bLockVideo = bLocked; }
-  void setPicturesLocked(bool bLocked) { _bLockPictures = bLocked; }
-  void setProgramsLocked(bool bLocked) { _bLockPrograms = bLocked; }
-
-  CStdString _directory;
-  CStdString _name;
-  CStdString _date;
-  CStdString _thumb;
-  bool _bDatabases;
-  bool _bCanWrite;
-  bool _bSources;
-  bool _bCanWriteSources;
-
-  // lock stuff
-  LockType _iLockMode;
-  CStdString _strLockCode;
-  bool _bLockSettings;
-  bool _bLockMusic;
-  bool _bLockVideo;
-  bool _bLockFiles;
-  bool _bLockPictures;
-  bool _bLockPrograms;
+private:
+  CStdString m_directory;
+  CStdString m_name;
+  CStdString m_date;
+  CStdString m_thumb;
+  bool m_bDatabases;
+  bool m_bCanWrite;
+  bool m_bSources;
+  bool m_bCanWriteSources;
+  bool m_bAddons;
+  CLock m_locks;
 };
-
-typedef std::vector<CProfile> VECPROFILES;
-typedef std::vector<CProfile>::iterator IVECPROFILES;
-

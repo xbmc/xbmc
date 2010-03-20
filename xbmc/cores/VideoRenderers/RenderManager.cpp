@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "system.h"
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
@@ -41,10 +41,6 @@
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
-#endif
-
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
 /* to use the same as player */
@@ -93,6 +89,7 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
   m_bIsStarted = false;
+
   m_presentfield = FS_NONE;
   m_presenttime = 0;
   m_presentstep = PRESENT_IDLE;
@@ -151,7 +148,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   // correct error so it targets the closest vblank
   error = wrap(error, 0.0 - target, 1.0 - target);
 
-  // scale the error used for correction, 
+  // scale the error used for correction,
   // based on how much buffer we have on
   // that side of the target
   if(error > 0)
@@ -186,12 +183,11 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
   };
 
   CRetakeLock<CExclusiveLock> lock(m_sharedSection, false);
-  if(!m_pRenderer) 
+  if(!m_pRenderer)
   {
     CLog::Log(LOGERROR, "%s called without a valid Renderer object", __FUNCTION__);
     return false;
   }
-  
 
   bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
   if(result)
@@ -208,7 +204,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     m_presentstep = PRESENT_IDLE;
     m_presentevent.Set();
   }
-  
+
   return result;
 }
 
@@ -273,7 +269,7 @@ unsigned int CXBMCRenderManager::PreInit(RENDERERTYPE rendtype)
   m_pRenderer = NULL;
   m_pRendererType = RENDERER_NORMAL;
   if (!m_pRenderer)
-  { 
+  {
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
 #elif defined(HAS_DX)
@@ -305,8 +301,6 @@ void CXBMCRenderManager::UnInit()
 
   m_overlays.Flush();
 
-  m_pRendererType = RENDERER_UNINIT;
-
   // free renderer resources.
   // TODO: we may also want to release the renderer here.
   if (m_pRenderer)
@@ -321,7 +315,7 @@ void CXBMCRenderManager::SetupScreenshot()
 }
 
 void CXBMCRenderManager::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
-{  
+{
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(texture, width, height);
@@ -375,7 +369,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       m_presentfield = FS_ODD;
 
     /* invert present field if we have one of those methods */
-    if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED 
+    if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
      || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
     {
       if( m_presentfield == FS_EVEN )
@@ -409,32 +403,8 @@ float CXBMCRenderManager::GetMaximumFPS()
   }
   else
     fps = 1000.0f;
-  
+
   return fps;
-}
-
-bool CXBMCRenderManager::SupportsBrightness()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsBrightness();
-  return false;
-}
-
-bool CXBMCRenderManager::SupportsContrast()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsContrast();
-  return false;
-}
-
-bool CXBMCRenderManager::SupportsGamma()
-{
-  CSharedLock lock(m_sharedSection);
-  if (m_pRenderer)
-    return m_pRenderer->SupportsGamma();
-  return false;
 }
 
 void CXBMCRenderManager::Present()
@@ -538,12 +508,8 @@ void CXBMCRenderManager::PresentWeave()
 
 void CXBMCRenderManager::Recover()
 {
-#ifdef HAVE_LIBVDPAU
-  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
-  if (g_VDPAU)
-  {
-    glFlush(); // attempt to have gpu done with pixmap
-  }
+#ifdef HAS_GL
+  glFlush(); // attempt to have gpu done with pixmap and vdpau
 #endif
 }
 

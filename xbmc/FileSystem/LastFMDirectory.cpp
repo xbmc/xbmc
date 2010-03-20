@@ -286,8 +286,8 @@ bool CLastFMDirectory::ParseAlbumList(CStdString url, CFileItemList &items)
         count = countNode->FirstChild()->Value();
     }
 
-        AddListEntry(name, artist, count, NULL, NULL,
-            "lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
+    AddListEntry(name, artist, count, NULL, NULL,
+        "lastfm://xbmc/artist/" + (CStdString)artist + "/", items);
 
     pEntry = pEntry->NextSiblingElement("album");
   }

@@ -1,5 +1,5 @@
 #ifndef _DLL_UTIL_H_
-#define _DLL_UTIL_H_ 
+#define _DLL_UTIL_H_
 
 #include <stdint.h>
 

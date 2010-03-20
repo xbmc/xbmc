@@ -1113,9 +1113,9 @@
 						<label>20410</label>
 						<onclick>PlayMedia($INFO[ListItem.Trailer],1)</onclick>
 						<visible>!IsEmpty(ListItem.Trailer) + Skin.HasSetting(WindowedTrailer)</visible>
+					</control>
 				</control>
 			</control>
-		</control>
 		</control>
 		<include>SideBladeRight</include>
 		<include>Clock</include>

@@ -34,6 +34,7 @@ class CConvolutionKernel
     int      GetSize()           { return m_size; }
     float*   GetFloatPixels()    { return m_floatpixels; }
     uint8_t* GetIntFractPixels() { return m_intfractpixels; }
+    uint8_t* GetUint8Pixels()    { return m_uint8pixels; }
 
   private:
 
@@ -46,10 +47,12 @@ class CConvolutionKernel
     double BicubicWeight(double x, double B, double C);
 
     void ToIntFract();
+    void ToUint8();
 
     int      m_size;
     float*   m_floatpixels;
     uint8_t* m_intfractpixels;
+    uint8_t* m_uint8pixels;
 };
 
 #endif //CONVOLUTIONKERNELS

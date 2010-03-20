@@ -28,25 +28,25 @@
 				<texture border="20">OverlayDialogBackground.png</texture>
 			</control>
 			<control type="image">
-			<description>Busy animation</description>
-			<posx>20</posx>
+				<description>Busy animation</description>
+				<posx>20</posx>
 				<posy>20</posy>
 				<width>32</width>
 				<height>32</height>
 				<texture>busy.png</texture>
 				<animation effect="rotate" start="0" end="360" center="36,36" time="1200" loop="true" condition="true">conditional</animation>
-		</control>
-		<control type="label">
-			<description>Busy label</description>
+			</control>
+			<control type="label">
+				<description>Busy label</description>
 				<posx>60</posx>
-			<posy>20</posy>
+				<posy>20</posy>
 				<width>120</width>
 				<height>32</height>
-			<align>left</align>
-			<aligny>center</aligny>
+				<align>left</align>
+				<aligny>center</aligny>
 				<label>$LOCALIZE[31004]</label>
 				<font>font12</font>
-		</control>
+			</control>
 		</control>
 	</controls>
 </window>

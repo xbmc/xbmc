@@ -70,17 +70,10 @@ void CDeviceKitDiskDeviceNewAPI::Update()
     m_isPartition = properties["DeviceIsPartition"].asBoolean();
     m_isSystemInternal = properties["DeviceIsSystemInternal"].asBoolean();
     if (m_isPartition)
-    {
-      CVariant isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
-
-      if ( !isRemovable.isNull() )
-        m_isRemovable = isRemovable.asBoolean();
-    else
-        m_isRemovable = false;
-  }
+      m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable").asBoolean();
     else
       m_isRemovable = properties["DeviceIsRemovable"].asBoolean();
-}
+  }
 }
 
 CDeviceKitDiskDevice::CDeviceKitDiskDevice(const char *DeviceKitUDI)
@@ -386,7 +379,7 @@ std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()
   {
     char** disks  = NULL;
     int    length = 0;
-    
+
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &disks, &length, DBUS_TYPE_INVALID))
     {
       for (int i = 0; i < length; i++)

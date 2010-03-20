@@ -82,21 +82,21 @@ typedef struct _DllTrackInfo
   DllLoader* pDll;
   uintptr_t lMinAddr;
   uintptr_t lMaxAddr;
-  
+
   DataList dataList;
 
   // list with dll's that are loaded by this dll
   DllList dllList;
-  
+
   // for dummy functions that are created if no exported function could be found
   DummyList dummyList;
-  
+
   FileList fileList;
   SocketList socketList;
   CriticalSectionList criticalSectionList;
 
   HeapObjectList heapobjectList;
-  
+
   VAllocList virtualList;
 } DllTrackInfo;
 

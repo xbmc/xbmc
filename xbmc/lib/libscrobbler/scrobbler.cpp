@@ -188,9 +188,7 @@ void CScrobbler::SetPassword(const CStdString& strPass)
 {
   if (strPass.IsEmpty())
     return;
-  XBMC::XBMC_MD5 md5state;
-  md5state.append(strPass);
-  md5state.getDigest(m_strPasswordHash);
+  m_strPasswordHash = strPass;
   m_strPasswordHash.ToLower();
   m_bBadAuth = false;
 }
@@ -352,7 +350,7 @@ bool CScrobbler::LoadJournal()
     m_vecSubmissionQueue.push_back(entry);
   }
 
-  CLog::Log(LOGDEBUG, "%s: Journal loaded with %d entries.", m_strLogPrefix.c_str(),
+  CLog::Log(LOGDEBUG, "%s: Journal loaded with %"PRIuS" entries.", m_strLogPrefix.c_str(),
       m_vecSubmissionQueue.size());
   return !m_vecSubmissionQueue.empty();
 }

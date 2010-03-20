@@ -28,6 +28,7 @@
 #include "Builtins.h"
 #include "ButtonTranslator.h"
 #include "FileItem.h"
+#include "GUIDialogAddonSettings.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogMusicScan.h"
@@ -37,6 +38,8 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
+#include "addons/Addon.h" // for TranslateType, TranslateContent
+#include "addons/AddonManager.h"
 #include "LastFmManager.h"
 #include "LCD.h"
 #include "log.h"
@@ -70,11 +73,6 @@
 #include "lib/libPython/XBPython.h"
 #endif
 
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#include "lib/libGoAhead/WebServer.h"
-#endif
-
 #if defined(__APPLE__)
 #include "FileSystem/SpecialProtocol.h"
 #include "CocoaInterface.h"
@@ -89,6 +87,7 @@
 using namespace std;
 using namespace XFILE;
 using namespace MEDIA_DETECT;
+using namespace ADDON;
 
 typedef struct
 {
@@ -178,6 +177,7 @@ const BUILT_IN commands[] = {
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
+  { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -255,16 +255,11 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Minimize();
   }
-  else if (execute.Equals("loadprofile") && g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  else if (execute.Equals("loadprofile") && g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
   {
-    for (unsigned int i=0;i<g_settings.m_vecProfiles.size();++i )
-    {
-      if (g_settings.m_vecProfiles[i].getName().Equals(parameter))
-      {
-        CGUIWindowLoginScreen::LoadProfile(i);
-        break;
-      }
-    }
+    int index = g_settings.GetProfileIndex(parameter);
+    if (index >= 0)
+      CGUIWindowLoginScreen::LoadProfile(index);
   }
   else if (execute.Equals("mastermode"))
   {
@@ -272,13 +267,13 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       g_passwordManager.bMasterUser = false;
       g_passwordManager.LockSources(true);
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20053));
     }
     else if (g_passwordManager.IsMasterLockUnlocked(true))
     {
       g_passwordManager.LockSources(false);
       g_passwordManager.bMasterUser = true;
-      g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(20052),g_localizeStrings.Get(20054));
     }
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -565,15 +560,11 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (parameter.Equals("next"))
     {
-      CAction action;
-      action.actionId = ACTION_NEXT_ITEM;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_NEXT_ITEM));
     }
     else if (parameter.Equals("previous"))
     {
-      CAction action;
-      action.actionId = ACTION_PREV_ITEM;
-      g_application.OnAction(action);
+      g_application.OnAction(CAction(ACTION_PREV_ITEM));
     }
     else if (parameter.Equals("bigskipbackward"))
     {
@@ -598,19 +589,13 @@ int CBuiltins::Execute(const CStdString& execString)
     else if( parameter.Equals("showvideomenu") )
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer )
-      {
-        CAction action;
-        action.amount1 = action.amount2 = action.repeat = 0.0;
-        action.buttonCode = 0;
-        action.actionId = ACTION_SHOW_VIDEOMENU;
-        g_application.m_pPlayer->OnAction(action);
-      }
+        g_application.m_pPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
     }
     else if( parameter.Equals("record") )
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
-#ifdef HAS_WEB_SERVER
+#ifdef HAS_WEB_SERVER_BROADCAST
         if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
 #endif
@@ -708,9 +693,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("playwith"))
   {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
-    CAction action;
-    action.actionId = ACTION_PLAYER_PLAY;
-    g_application.OnAction(action);
+    g_application.OnAction(CAction(ACTION_PLAYER_PLAY));
   }
   else if (execute.Equals("mute"))
   {
@@ -896,12 +879,9 @@ int CBuiltins::Execute(const CStdString& execString)
       g_guiSettings.SetString("lookandfeel.skintheme",strSkinTheme);
 
     // also set the default color theme
-    CStdString colorTheme(strSkinTheme);
-    CUtil::ReplaceExtension(colorTheme, ".xml", colorTheme);
+    g_guiSettings.SetString("lookandfeel.skincolors", CUtil::ReplaceExtension(strSkinTheme, ".xml"));
 
-    g_guiSettings.SetString("lookandfeel.skincolors", colorTheme);
-
-    g_application.DelayLoadSkin();
+    g_application.ReloadSkin();
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
            execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))
@@ -947,30 +927,43 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else if (execute.Equals("skin.setfile"))
     {
+      // Note. can only browse one addon type from here
+      // if browsing for addons, required param[1] is addontype string, with optional param[2]
+      // as contenttype string see IAddon.h & ADDON::TranslateXX
       CStdString strMask = (params.size() > 1) ? params[1] : "";
-      if (strMask.Find(".py") > -1)
+      strMask.ToLower();
+      ADDON::TYPE type;
+      if ((type = TranslateType(strMask)) != ADDON_UNKNOWN)
       {
-        CMediaSource source;
-        source.strPath = "special://home/scripts/";
-        source.strName = g_localizeStrings.Get(247);
-        localShares.push_back(source);
+        CURL url;
+        url.SetProtocol("addons");
+        url.SetHostName(strMask);
+        localShares.clear();
+        CStdString content = (params.size() > 2) ? params[2] : "";
+        content.ToLower();
+        url.SetPassword(content);
+        CStdString replace;
+        if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), "", TranslateType(type, true), replace, true, true))
+          g_settings.SetSkinString(string, replace);
       }
-
-      if (params.size() > 2)
+      else 
       {
-        value = params[2];
-        CUtil::AddSlashAtEnd(value);
-        bool bIsSource;
-        if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+        if (params.size() > 2)
         {
-          CMediaSource share;
-          share.strName = g_localizeStrings.Get(13278);
-          share.strPath = value;
-          localShares.push_back(share);
+          value = params[2];
+          CUtil::AddSlashAtEnd(value);
+          bool bIsSource;
+          if (CUtil::GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
+          {
+            CMediaSource share;
+            share.strName = g_localizeStrings.Get(13278);
+            share.strPath = value;
+            localShares.push_back(share);
+          }
         }
+        if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
+          g_settings.SetSkinString(string, value);
       }
-      if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
-        g_settings.SetSkinString(string, value);
     }
     else // execute.Equals("skin.setpath"))
     {
@@ -998,10 +991,9 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("system.logoff"))
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
+    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.UsingLoginScreen())
       return -1;
 
-    g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
     g_application.StopPlaying();
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
@@ -1018,7 +1010,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    g_settings.LoadProfile(0); // login screen always runs as default user
+    g_settings.LoadMasterForLogin();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_application.StartEventServer(); // event server could be needed in some situations
@@ -1057,12 +1049,9 @@ int CBuiltins::Execute(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-        {
-          SScraperInfo info;
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
+          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",ScraperPtr(),settings);
       }
     }
-  }
   }
   else if (execute.Equals("cleanlibrary"))
   {
@@ -1113,23 +1102,23 @@ int CBuiltins::Execute(const CStdString& execString)
     if (cancelled)
       return -1;
 
-    if (singleFile)
-    {
-      if (params.size() > 3)
-        overwrite = params[3].Equals("true");
-      else
-        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
-    }
-
-    if (cancelled)
-      return -1;
-
     if (thumbs && params[0].Equals("video"))
     {
       if (params.size() > 4)
         actorThumbs = params[4].Equals("true");
       else
         actorThumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20436,-1,-1,cancelled);
+    }
+
+    if (cancelled)
+      return -1;
+
+    if (singleFile)
+    {
+      if (params.size() > 3)
+        overwrite = params[3].Equals("true");
+      else
+        overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     }
 
     if (cancelled)
@@ -1143,8 +1132,6 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       if (params[0].Equals("video"))
       {
-        if (CUtil::HasSlashAtEnd(path))
-          CUtil::AddFileToFolder(path, "videodb.xml", path);
         CVideoDatabase videodatabase;
         videodatabase.Open();
         videodatabase.ExportToXML(path, singleFile, thumbs, actorThumbs, overwrite);
@@ -1260,13 +1247,10 @@ int CBuiltins::Execute(const CStdString& execString)
     int actionID;
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
-      CAction action;
-      action.actionId = actionID;
-      action.amount1 = 1.0f;
       int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindowString(params[1].c_str()) : WINDOW_INVALID;
-      g_application.getApplicationMessenger().SendAction(action, windowID);
-      }
+      g_application.getApplicationMessenger().SendAction(CAction(actionID), windowID);
     }
+  }
   else if (execute.Equals("setproperty") && params.size() == 2)
   {
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
@@ -1276,6 +1260,12 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("wakeonlan"))
   {
     g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
+  }
+  else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetDefault(TranslateType(params[0]), addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))

@@ -56,6 +56,8 @@ public:
   virtual bool         SupportsBrightness() { return false; }
   virtual bool         SupportsContrast() { return false; }
   virtual bool         SupportsGamma() { return false; }
+
+  virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 

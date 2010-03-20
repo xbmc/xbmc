@@ -4,15 +4,15 @@
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<!--Username-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Username&quot; type=&quot;text&quot; id=&quot;username&quot; option=&quot;urlencoded&quot; default=&quot;&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
+				<expression />
 			</RegExp>
 			<!--Password-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Password&quot; type=&quot;text&quot; option=&quot;hidden|urlencoded&quot; id=&quot;password&quot; default=&quot;&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
+				<expression />
 			</RegExp>
 			<!--- -->
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
+				<expression />
 			</RegExp>
 			<!--Movie or Disc data-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Use Disc data instead of Movie data&quot; type=&quot;bool&quot; id=&quot;discdata&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -36,21 +36,21 @@
 			</RegExp>
 			<!--Fanart-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
+				<expression />
 			</RegExp>
 			<!--Trailer-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Preferred trailer bitrate&quot; type=&quot;labelenum&quot; values=&quot;2048|1024|512|256|128&quot; id=&quot;trailerbitrate&quot; default=&quot;2048&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
+				<expression />
 			</RegExp>
 			<!--- -->
 			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
+				<expression />
 			</RegExp>
 			<!--Include adult movies-->
 			<RegExp input="$$1" output="&lt;setting label=&quot;Include adult movies&quot; type=&quot;bool&quot; id=&quot;includeadult&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
+				<expression />
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" />
 		</RegExp>
 	</GetSettings>
 	<CreateSearchUrl dest="3">
@@ -58,7 +58,7 @@
 			<RegExp input="$$2" output="%20(\1)" dest="4">
 				<expression clear="yes">(.+)</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" />
 		</RegExp>
 		<RegExp conditional="discdata" input="$$1" output="&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=SearchDiscTitleByTitle&amp;amp;title=\1&amp;amp;username=$INFO[username]&amp;amp;password=$INFO[password]&amp;amp;Country=$INFO[country]&amp;amp;includeadult=$INFO[includeadult]&amp;amp;includeenglish=true&amp;amp;locale=1033&lt;/url&gt;" dest="3">
 			<RegExp input="$$2" output="%20(\1)" dest="4">
@@ -75,7 +75,7 @@
 			<RegExp conditional="discdata" input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;id&gt;\1&lt;/id&gt;&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=LoadDiscTitleById&amp;amp;titleid=\1&amp;amp;username=$INFO[username]&amp;amp;password=$INFO[password]&amp;amp;Country=$INFO[country]&amp;amp;maxtrailerbitrate=$INFO[trailerbitrate]&amp;amp;locale=1033&amp;amp;client=xbmcbased&lt;/url&gt;&lt;/entity&gt;" dest="3">
 				<expression repeat="yes">id="(.*?)".*? title="(.*?)"[^&lt;]*year="(.*?)" thumb</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" />
 		</RegExp>
 		<RegExp input="$$4" output="&lt;error&gt;\1&lt;/error&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;title&gt;Error returned from MyMovies.dk&lt;/title&gt;&lt;message&gt;\1&lt;/message&gt;" dest="4">
@@ -234,7 +234,7 @@
 			<RegExp input="$$1" output="&lt;trailer&gt;\1&lt;/trailer&gt;" dest="5+">
 				<expression>&lt;Trailer[^&gt;]*&gt;([^&lt;]*)&lt;/Trailer&gt;</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" />
 		</RegExp>
 	</GetDetails>
 </scraper>

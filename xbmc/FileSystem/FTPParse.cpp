@@ -60,7 +60,7 @@ long CFTPParse::getSize()
 time_t CFTPParse::getTime()
 {
   return m_time;
-  }
+}
 
 void CFTPParse::setTime(string str)
 {
@@ -101,7 +101,7 @@ void CFTPParse::setTime(string str)
   );
 
   if (unix_re.FullMatch(str, &month, &day, &year))
-{
+  {
     /* set the month */
     if (pcrecpp::RE("jan",
         pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
@@ -158,12 +158,12 @@ void CFTPParse::setTime(string str)
         time_struct.tm_year = current_time->tm_year - 1;
       else
         time_struct.tm_year = current_time->tm_year;
-}
+    }
     else
-{
+    {
       /* set the year */
       time_struct.tm_year = atoi(year.c_str()) - 1900;
-}
+    }
 
     /* set the day of the week */
     time_struct.tm_wday = getDayOfWeek(time_struct.tm_mon + 1,
@@ -172,7 +172,7 @@ void CFTPParse::setTime(string str)
   }
   else if (multinet_re.FullMatch(str, &day, &month, &year,
                             &hour, &minute, (void*)NULL, &second))
-{
+  {
     /* set the month */
     if (pcrecpp::RE("jan",
         pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
@@ -227,10 +227,10 @@ void CFTPParse::setTime(string str)
     time_struct.tm_wday = getDayOfWeek(time_struct.tm_mon + 1,
                                    time_struct.tm_mday,
                                    time_struct.tm_year + 1900);
-}
+  }
   else if (msdos_re.FullMatch(str, &month, &day,
                               &year, &hour, &minute, &am_or_pm))
-{
+  {
     /* set the month and the day of the month */
     time_struct.tm_mon = atoi(month.c_str()) - 1;
     time_struct.tm_mday = atoi(day.c_str());
@@ -254,11 +254,11 @@ void CFTPParse::setTime(string str)
     time_struct.tm_wday = getDayOfWeek(time_struct.tm_mon + 1,
                                    time_struct.tm_mday,
                                    time_struct.tm_year + 1900);
-        }
+  }
 
   /* now set m_time */
   m_time = mktime(&time_struct);
-          }
+}
 
 int CFTPParse::getDayOfWeek(int month, int date, int year)
 {
@@ -293,16 +293,16 @@ int CFTPParse::getDayOfWeek(int month, int date, int year)
   {
     if (leap_year)
       mdday = 4;
-              else
+    else
       mdday = 3;
-              }
+  }
   if (month == 2)
   {
     if (leap_year)
       mdday = 1;
-              else
+    else
       mdday = 7;
-          }
+  }
   if (month == 3)
     mdday = 7;
   if (month == 4)
@@ -333,7 +333,7 @@ int CFTPParse::getDayOfWeek(int month, int date, int year)
     day_of_week -= 7;
 
   return day_of_week;
-        }
+}
 
 int CFTPParse::FTPParse(string str)
 {
@@ -409,7 +409,7 @@ int CFTPParse::FTPParse(string str)
   );
 
   if (unix_re.FullMatch(str, &type, &permissions, &link_count, &owner, &group, &size, &date, &name))
-      {
+  {
     m_name = name;
     m_size = strtol(size.c_str(), NULL, 0);
     if (pcrecpp::RE("d").FullMatch(type))
@@ -421,7 +421,7 @@ int CFTPParse::FTPParse(string str)
     setTime(date);
 
     return 1;
-      }
+  }
   if (netware_re.FullMatch(str, &type, &permissions, &owner, &size, &date, &name))
   {
     m_name = name;
@@ -432,7 +432,7 @@ int CFTPParse::FTPParse(string str)
       m_flagtryretr = 1;
     setTime(date);
 
-      return 1;
+    return 1;
   }
   if (netpresenz_re.FullMatch(str, &type, &permissions, &stuff, &size, &date, &name))
   {
@@ -447,7 +447,7 @@ int CFTPParse::FTPParse(string str)
     setTime(date);
 
     return 1;
-            }
+  }
   if (eplf_re.FullMatch(str, &facts, &name))
   {
     /* Get the type, size, and date from the facts */
@@ -481,7 +481,7 @@ int CFTPParse::FTPParse(string str)
     m_size = 0;
 
     return 1;
-    }
+  }
   if (msdos_re.FullMatch(str, &date, &size, &name))
   {
     m_name = name;

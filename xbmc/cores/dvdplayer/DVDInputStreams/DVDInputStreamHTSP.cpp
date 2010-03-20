@@ -131,14 +131,14 @@ int CDVDInputStreamHTSP::Read(BYTE* buf, int buf_size)
   {
     htsmsg_t* msg = ReadStream();
     if(msg == NULL)
-  return -1;
+      return -1;
 
     uint8_t* p;
     if(htsmsg_binary_serialize(msg, (void**)&p, &count, INT_MAX) < 0)
     {
       htsmsg_destroy(msg);
       return -1;
-}
+    }
     htsmsg_destroy(msg);
 
     m_read.Clear();
@@ -263,7 +263,7 @@ int CDVDInputStreamHTSP::GetTotalTime()
 int CDVDInputStreamHTSP::GetTime()
 {
   CDateTimeSpan time;
-  time  = CDateTime::GetUTCDateTime() 
+  time  = CDateTime::GetUTCDateTime()
         - CDateTime((time_t)m_event.start);
 
   return time.GetDays()    * 1000 * 60 * 60 * 24

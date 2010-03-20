@@ -523,7 +523,7 @@
   <string id="632">Sträck 4:3</string>
   <string id="633">Sträck 14:9</string>
   <string id="634">Sträck 16:9</string>
-  <string id="635">Original storlek</string>
+  <string id="635">Originalstorlek</string>
   <string id="636">Anpassad storlek</string>
   <string id="637">Replay Gain</string>
   <string id="638">Replay Gain-volymjusteringar</string>
@@ -558,7 +558,7 @@
   <string id="705">Nätverk</string>
   <string id="706">- Server</string>
   <string id="708">Använd en HTTP-proxyserver för att ansluta till internet</string>
-  <string id="711">Internet protokoll (IP)</string>
+  <string id="711">Internetprotokoll (IP)</string>
   <string id="712">Felaktig port angiven. Värde måste vara mellan 1 och 65535.</string>
   <string id="713">HTTP-proxy</string>
   <string id="715">- Tilldelning</string>
@@ -813,7 +813,7 @@
   <string id="12003">Filmer/Info</string>
   <string id="12004">Skript/Info</string>
   <string id="12005">Fullskärmsvideo</string>
-  <string id="12006">Ljud visualisering</string>
+  <string id="12006">Ljudvisualisering</string>
   <string id="12008">Filsammanslagningsdialog</string>
   <string id="12009">Återuppbygg index...</string>
   <string id="12010">Återgå till Musik</string>
@@ -1630,7 +1630,7 @@
   <string id="20348">Regissörer</string>
   <string id="20349">Inga filmfiler hittades i denna sökväg!</string>
   <string id="20350">röster</string>
-  <string id="20351">TV-serie information</string>
+  <string id="20351">TV-serieinformation</string>
   <string id="20352">Avsnittsinformation</string>
   <string id="20353">Laddar TV-seriedetaljer</string>
   <string id="20354">Hämtar avsnittsguide</string>
@@ -1937,9 +1937,9 @@
   <string id="23001">- Tilläggsinställningar</string>
   <string id="23050">Aktivera teletext</string>
   <string id="23051">Del %i</string>
-  <string id="23052">Buffrar %i bytes</string> 
-  <string id="23053">Stoppar</string> 
-  <string id="23054">Igång</string> 
+  <string id="23052">Buffrar %i bytes</string>
+  <string id="23053">Stoppar</string>
+  <string id="23054">Igång</string>
   <string id="23100">Extern spelare är aktiv</string>
   <string id="23101">Klicka OK för att avsluta spelaren</string>
   <string id="23104">Klicka OK när uppspelningen har slutat</string>

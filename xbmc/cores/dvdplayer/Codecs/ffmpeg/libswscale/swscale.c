@@ -384,7 +384,7 @@ const char *sws_format_name(enum PixelFormat format)
         return av_pix_fmt_descriptors[format].name;
     else
         return "Unknown format";
-    }
+}
 
 static av_always_inline void yuv2yuvX16inC_template(const int16_t *lumFilter, const int16_t **lumSrc, int lumFilterSize,
                                                     const int16_t *chrFilter, const int16_t **chrSrc, int chrFilterSize,

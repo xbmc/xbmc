@@ -65,8 +65,7 @@ namespace PYXBMC
 
     if (playerCore == EPC_DVDPLAYER ||
         playerCore == EPC_MPLAYER ||
-        playerCore == EPC_PAPLAYER ||
-        playerCore == EPC_DSPLAYER)
+        playerCore == EPC_PAPLAYER)
     {
       self->playerCore = (EPLAYERCORES)playerCore;
     }
@@ -473,57 +472,57 @@ namespace PYXBMC
 
     if (g_application.m_pPlayer)
     {
-    int nStream = g_application.m_pPlayer->GetSubtitleCount();
+      int nStream = g_application.m_pPlayer->GetSubtitleCount();
 
-    g_settings.m_currentVideoSettings.m_SubtitleOn = true;
-    g_application.m_pPlayer->SetSubtitleVisible(true);
-    g_application.m_pPlayer->AddSubtitle(cLine);
-    g_application.m_pPlayer->SetSubtitle(nStream);
+      g_settings.m_currentVideoSettings.m_SubtitleOn = true;
+      g_application.m_pPlayer->SetSubtitleVisible(true);
+      g_application.m_pPlayer->AddSubtitle(cLine);
+      g_application.m_pPlayer->SetSubtitle(nStream);
     }
-    
+
     Py_INCREF(Py_None);
     return Py_None;
   }
 
-	
+
   // Player_GetSubtitles
   PyDoc_STRVAR(getSubtitles__doc__,
     "getSubtitles() -- get subtitle stream name\n");
-	
+
   PyObject* Player_GetSubtitles(PyObject *self)
   {
     if (g_application.m_pPlayer)
-    {	
+    {
       int i = g_application.m_pPlayer->GetSubtitle();
       CStdString strName;
       g_application.m_pPlayer->GetSubtitleName(i, strName);
 
       if (strName == "Unknown(Invalid)")
-        strName = "";		  
+        strName = "";
       return Py_BuildValue((char*)"s", strName.c_str());
     }
-	  
+
     Py_INCREF(Py_None);
-    return Py_None;	  
-  }	
+    return Py_None;
+  }
 
   // Player_DisableSubtitles
   PyDoc_STRVAR(DisableSubtitles__doc__,
     "DisableSubtitles() -- disable subtitles\n");
-	
+
   PyObject* Player_DisableSubtitles(PyObject *self)
   {
-    if (g_application.m_pPlayer)	  
-    {	
+    if (g_application.m_pPlayer)
+    {
       g_settings.m_currentVideoSettings.m_SubtitleOn = false;
       g_application.m_pPlayer->SetSubtitleVisible(false);
-		
+
       Py_INCREF(Py_None);
       return Py_None;
     }
     return NULL;
   }
-	
+
   PyMethodDef Player_methods[] = {
     {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},

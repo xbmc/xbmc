@@ -70,12 +70,12 @@ bool CGUIDialogVideoScan::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogVideoScan::Render()
+void CGUIDialogVideoScan::FrameMove()
 {
   if (m_bRunning)
     UpdateState();
 
-  CGUIDialog::Render();
+  CGUIDialog::FrameMove();
 }
 
 void CGUIDialogVideoScan::OnDirectoryChanged(const CStdString& strDirectory)
@@ -115,7 +115,7 @@ void CGUIDialogVideoScan::OnSetTitle(const CStdString& strTitle)
   m_strTitle = strTitle;
 }
 
-void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, const SScraperInfo& info, const SScanSettings& settings, bool bUpdateAll)
+void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, const ADDON::ScraperPtr& info, const SScanSettings& settings, bool bUpdateAll)
 {
   m_ScanState = PREPARING;
 

@@ -2112,8 +2112,8 @@ void ff_init_block_index(MpegEncContext *s){ //FIXME maybe rename
             s->dest[1] += (s->mb_y>>1) * uvlinesize << (mb_size - s->chroma_y_shift);
             s->dest[2] += (s->mb_y>>1) * uvlinesize << (mb_size - s->chroma_y_shift);
             assert((s->mb_y&1) == (s->picture_structure == PICT_BOTTOM_FIELD));
+        }
     }
-}
 }
 
 void ff_mpeg_flush(AVCodecContext *avctx){

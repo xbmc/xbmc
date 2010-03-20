@@ -83,7 +83,7 @@ public:
     if (m_pRenderer)
       m_pRenderer->Reset();
   }
-  inline XBMCRESOLUTION GetResolution()
+  inline RESOLUTION GetResolution()
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)

@@ -81,8 +81,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     }
     else if (node->Attribute("file"))
     { // load this file in as well
-      RESOLUTION res;
-      LoadIncludes(g_SkinInfo.GetSkinPath(node->Attribute("file"), &res));
+      LoadIncludes(g_SkinInfo.GetSkinPath(node->Attribute("file")));
     }
     node = node->NextSiblingElement("include");
   }
@@ -127,7 +126,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
   // First add the defaults if this is for a control
   if (!type.IsEmpty())
   { // resolve defaults
-    map<CStdString, TiXmlElement>::iterator it = m_defaults.find(type);
+    map<CStdString, TiXmlElement>::const_iterator it = m_defaults.find(type);
     if (it != m_defaults.end())
     {
       const TiXmlElement &element = (*it).second;
@@ -147,8 +146,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
     const char *file = include->Attribute("file");
     if (file)
     { // we need to load this include from the alternative file
-      RESOLUTION res;
-      LoadIncludes(g_SkinInfo.GetSkinPath(file, &res));
+      LoadIncludes(g_SkinInfo.GetSkinPath(file));
     }
     const char *condition = include->Attribute("condition");
     if (condition)
@@ -160,7 +158,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
       }
     }
     CStdString tagName = include->FirstChild()->Value();
-    map<CStdString, TiXmlElement>::iterator it = m_includes.find(tagName);
+    map<CStdString, TiXmlElement>::const_iterator it = m_includes.find(tagName);
     if (it != m_includes.end())
     { // found the tag(s) to include - let's replace it
       const TiXmlElement &element = (*it).second;
@@ -184,9 +182,9 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
   }
 }
 
-bool CGUIIncludes::ResolveConstant(const CStdString &constant, float &value)
+bool CGUIIncludes::ResolveConstant(const CStdString &constant, float &value) const
 {
-  map<CStdString, float>::iterator it = m_constants.find(constant);
+  map<CStdString, float>::const_iterator it = m_constants.find(constant);
   if (it == m_constants.end())
     value = (float)atof(constant.c_str());
   else

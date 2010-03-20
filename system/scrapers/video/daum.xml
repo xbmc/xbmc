@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-12-28" name="Daum" content="movies" thumb="daum.png" language="ko">
+<scraper framework="1.1" date="2010-02-06" name="Daum" content="movies" thumb="daum.png" language="ko">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;포스터&quot; type=&quot;bool&quot; id=&quot;EnableThumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -78,20 +78,20 @@
 					<expression noclean="1">&lt;strong&gt;출연&lt;/strong&gt;.*?"actors"(.*)"gradeWrap"</expression>
 				</RegExp>
 				<expression repeat="yes">class="cast_text"&gt;&lt;img id="[^"]*"src="([^"]*)"[^&gt;]*&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;[^\(]*\(([^\)]*)\)</expression>
-			</RegExp> 
-			<RegExp conditional="EnableMoreCast" input="$$1" output="&lt;url cache=&quot;daum-cast.htm&quot; function=&quot;GetDaumCast&quot;&gt;\1&lt;/url&gt;" dest="8+">
+			</RegExp>
+			<RegExp conditional="EnableMoreCast" input="$$1" output="&lt;url cache=&quot;daum-cast-$$2.htm&quot; function=&quot;GetDaumCast&quot;&gt;\1&lt;/url&gt;" dest="8+">
 				<expression>&lt;a class="tab3" href="([^"]*)"</expression>
-				</RegExp>
-			<RegExp conditional="EnableWriter" input="$$1" output="&lt;url cache=&quot;daum-cast.htm&quot; function=&quot;GetDaumWriter&quot;&gt;\1&lt;/url&gt;" dest="8+">
+			</RegExp>
+			<RegExp conditional="EnableWriter" input="$$1" output="&lt;url cache=&quot;daum-cast-$$2.htm&quot; function=&quot;GetDaumWriter&quot;&gt;\1&lt;/url&gt;" dest="8+">
 				<expression>&lt;a class="tab3" href="([^"]*)"</expression>
 			</RegExp>
 			<RegExp conditional="!EnableFullPlot" input="$$7" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="8+">
 				<RegExp input="$$1" output="\1" dest="7">
 					<expression>&lt;div class="txt"&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;(.*?)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;\s*&lt;/div&gt;</expression>
-			</RegExp>
+				</RegExp>
 				<expression>(\S.*\S)</expression>
 			</RegExp>
-			<RegExp conditional="EnableFullPlot" input="$$1" output="&lt;url cache=&quot;daum-story.htm&quot; function=&quot;GetDaumFullPlot&quot;&gt;\1&lt;/url&gt;" dest="8+">
+			<RegExp conditional="EnableFullPlot" input="$$1" output="&lt;url cache=&quot;daum-story-$$2.htm&quot; function=&quot;GetDaumFullPlot&quot;&gt;\1&lt;/url&gt;" dest="8+">
 				<expression>&lt;a class="tab2" href="([^"]*)"</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="8+">
@@ -120,23 +120,23 @@
 			</RegExp>
 			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="8+">
 				<expression>icon_rating_\d+\.gif" title="([^"]*)"</expression>
-				</RegExp>
+			</RegExp>
 			<RegExp conditional="!EnableThumbs" input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="8+">
 				<expression>&lt;p class="poster"&gt;&lt;a [^&lt;]*&lt;img src="([^"]*)"</expression>
 			</RegExp>
-			<RegExp conditional="EnableThumbs" input="$$1" output="&lt;url cache=&quot;daum-photo.htm&quot; function=&quot;GetDaumPoster&quot;&gt;\1&lt;/url&gt;" dest="8+">
+			<RegExp conditional="EnableThumbs" input="$$1" output="&lt;url cache=&quot;daum-photo-$$2.htm&quot; function=&quot;GetDaumPoster&quot;&gt;\1&lt;/url&gt;" dest="8+">
 				<expression>&lt;a class="tab4" href="([^"]*)"</expression>
-				</RegExp>
+			</RegExp>
 			<RegExp conditional="EnableTMDBFanart" input="$$7" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="8+">
 				<RegExp input="$$1" output="\4 \2" dest="6">
 					<expression trim="1,3,4">"title_kor"\s*&gt;([^&lt;]*)&lt;/strong&gt;[^\(]*\(&lt;a [^&gt;]*&gt;(\d+)&lt;/a&gt;\).*?"title_AKA"\s*&gt;([^&lt;]*)&lt;span class="eng"&gt;([^&lt;]+)&lt;/span</expression>
 				</RegExp>
 				<RegExp input="$$6" output="+\1" dest="7">
 					<expression repeat="yes">([^ ,]+)</expression>
-			</RegExp>
+				</RegExp>
 				<expression/>
 			</RegExp>
-			<RegExp conditional="EnableFanart" input="$$1" output="&lt;url cache=&quot;daum-photo.htm&quot; function=&quot;GetDaumFanart&quot;&gt;\1&amp;order=recommend&lt;/url&gt;" dest="8+">
+			<RegExp conditional="EnableFanart" input="$$1" output="&lt;url cache=&quot;daum-photo-$$2.htm&quot; function=&quot;GetDaumFanart&quot;&gt;\1&amp;order=recommend&lt;/url&gt;" dest="8+">
 				<expression>&lt;a class="tab4" href="([^"]*)"</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -144,8 +144,8 @@
 	</GetDetails>
 	<GetDaumPoster dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url cache=&quot;daum-photo.htm&quot; function=&quot;GetDaumPosterPage&quot;&gt;\1&lt;/url&gt;" dest="5">
-				<expression noclean="1">&lt;a class="tab4" href="([^"]*)"</expression>
+			<RegExp input="$$1" output="&lt;url cache=&quot;daum-photo-\2.htm&quot; function=&quot;GetDaumPosterPage&quot;&gt;\1movieId=\2&lt;/url&gt;" dest="5">
+				<expression noclean="1">&lt;a class="tab4" href="([^"]*)movieId=(\d+)"</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">&lt;h3 class="tit"&gt;포스터 리스트&lt;/h3&gt;.*&lt;span class="current"&gt;(.*)&lt;!-- 포스터 End</expression>
@@ -160,12 +160,12 @@
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">&lt;h3 class="tit"&gt;포스터 리스트&lt;/h3&gt;(.*)&lt;!-- 포스터 End</expression>
-		</RegExp>
+			</RegExp>
 			<RegExp input="$$6" output="&lt;thumb preview=&quot;http://\1/C155x225/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="5">
 				<expression repeat="yes" noclean="1">&lt;img src="http://([^/]+)/C155x225/([^"]+)"</expression>
-		</RegExp>
-			<expression noclean="1"/>
 			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
 	</GetDaumPosterPage>
 	<GetDaumFanart clearbuffers="no" dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
@@ -175,8 +175,8 @@
 			<RegExp input="$$6" output="&lt;url function=&quot;GetDaumFanartPage2&quot;&gt;http://movie.daum.net\1&lt;/url&gt;" dest="5">
 				<expression repeat="yes" noclean="1">&lt;a href="([^"]*)"&gt;(\d+)&lt;/a&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url cache=&quot;daum-photo.htm&quot; function=&quot;GetDaumFanartPage&quot;&gt;\1&lt;/url&gt;" dest="5+">
-				<expression noclean="1">&lt;a class="tab4" href="([^"]*)"</expression>
+			<RegExp input="$$1" output="&lt;url cache=&quot;daum-photo-\2.htm&quot; function=&quot;GetDaumFanartPage&quot;&gt;\1movieId=\2&lt;/url&gt;" dest="5+">
+				<expression noclean="1">&lt;a class="tab4" href="([^"]*)movieId=(\d+)"</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -186,7 +186,7 @@
 		<RegExp input="$$11$$5$$10" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="4">
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">&lt;h3 class="tit"&gt;포토 리스트&lt;/h3&gt;(.*)&lt;!-- 포토 End</expression>
-		</RegExp>
+			</RegExp>
 			<RegExp input="$$6" output="&lt;thumb preview=&quot;http://\1/S150x125/\2&quot;&gt;http://\1/image/\2&lt;/thumb&gt;" dest="5">
 				<expression repeat="yes" noclean="1">&lt;img src="http://([^/]+)/S150x125/([^"]+)"</expression>
 			</RegExp>

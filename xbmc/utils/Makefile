@@ -1,10 +1,12 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib -I../posix -I../../lib/jsoncpp/jsoncpp/include
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
      Builtins.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \
+     DownloadQueue.cpp \
+     DownloadQueueManager.cpp \
      Event.cpp \
      fstrcmp.cpp \
      GUIInfoManager.cpp \
@@ -61,8 +63,10 @@ SRCS=AlarmClock.cpp \
      fastmemcpy.c \
      PasswordManager.cpp \
      AliasShortcutUtils.cpp \
-     RingBuffer.cpp \
+     WebServer.cpp \
+     AnnouncementManager.cpp \
      Semaphore.cpp \
+     RingBuffer.cpp \
      FileOperationJob.cpp \
      FileUtils.cpp \
      Variant.cpp \

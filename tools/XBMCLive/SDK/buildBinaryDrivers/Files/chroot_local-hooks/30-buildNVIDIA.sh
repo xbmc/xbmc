@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org

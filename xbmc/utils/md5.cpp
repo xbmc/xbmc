@@ -63,6 +63,16 @@ void XBMC::XBMC_MD5::getDigest(CStdString& digest)
       szBuf[15]);
 }
 
+CStdString XBMC::XBMC_MD5::GetMD5(const CStdString &text)
+{
+  if (text.IsEmpty())
+    return "";
+  XBMC_MD5 state;
+  CStdString digest;
+  state.append(text);
+  state.getDigest(digest);
+  return digest;
+}
 
 /*
  * This code implements the MD5 message-digest algorithm.
@@ -102,7 +112,7 @@ byteSwap(uint32_t *buf, unsigned words)
 			((unsigned)p[1] << 8 | p[0]);
 		p += 4;
 	} while (--words);
-  }
+}
 #else
 #define byteSwap(buf,words)
 #endif
@@ -157,11 +167,11 @@ MD5Update(struct MD5Context *ctx, md5byte const *buf, unsigned len)
 		MD5Transform(ctx->buf, ctx->in);
 		buf += 64;
 		len -= 64;
-    }
+	}
 
 	/* Handle any remaining bytes of data. */
 	memcpy(ctx->in, buf, len);
-  }
+}
 
 /*
  * Final wrapup - pad to 64-byte boundary with the bit pattern
@@ -197,7 +207,7 @@ MD5Final(md5byte digest[16], struct MD5Context *ctx)
 	byteSwap(ctx->buf, 4);
 	memcpy(digest, ctx->buf, 16);
 	memset(ctx, 0, sizeof(*ctx));	/* In case it's sensitive */
-  }
+}
 
 #ifndef ASM_MD5
 
@@ -296,10 +306,10 @@ MD5Transform(uint32_t buf[4], uint32_t const in[16])
 	MD5STEP(F4, c, d, a, b, in[2] + 0x2ad7d2bb, 15);
 	MD5STEP(F4, b, c, d, a, in[9] + 0xeb86d391, 21);
 
-  buf[0] += a;
-  buf[1] += b;
-  buf[2] += c;
-  buf[3] += d;
+	buf[0] += a;
+	buf[1] += b;
+	buf[2] += c;
+	buf[3] += d;
 }
 
 #endif

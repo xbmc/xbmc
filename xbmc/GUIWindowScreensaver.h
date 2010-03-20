@@ -23,7 +23,7 @@
 
 #include "GUIWindow.h"
 #ifdef HAS_SCREENSAVER
-#include "screensavers/ScreenSaver.h"
+#include "addons/ScreenSaver.h"
 #endif
 
 #include "utils/CriticalSection.h"
@@ -46,9 +46,9 @@ protected:
   virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 
 private:
-#ifdef HAS_SCREENSAVER
-  CScreenSaver* m_pScreenSaver;
-#endif
   bool m_bInitialized;
   CCriticalSection m_critSection;
+#ifdef HAS_SCREENSAVER
+  boost::shared_ptr<CScreenSaver> m_addon;
+#endif
 };

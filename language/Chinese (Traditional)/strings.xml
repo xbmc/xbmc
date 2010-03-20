@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--$Revision$-->
+<!--$Revision$-->		
 <strings>
   <string id="0">程式</string>
   <string id="1">圖片</string>
@@ -140,7 +140,7 @@
   <string id="194">搜尋中…</string>
   <string id="195">找不到資訊!</string>
   <string id="196">選擇影片:</string>
-  <string id="197">讀取%s資訊</string>
+  <string id="197">讀取 %s 資訊</string>
   <string id="198">載入影片詳細資料</string>
   <string id="199"></string>
   <string id="200"></string>
@@ -211,7 +211,7 @@
   <string id="268">排序: 標題</string>
   <string id="269">排序: 藝人</string>
   <string id="270">排序: 專輯</string>
-  <string id="271">排行前100</string>
+  <string id="271">排行前 100</string>
   <string id="272">左上角位置</string>
   <string id="273">右下角位置</string>
   <string id="274">字幕位置</string>
@@ -222,7 +222,7 @@
   <string id="279">無法讀取設定</string>
   <string id="280">回復為預設值</string>
   <string id="281">請檢查 .xml 檔案</string>
-  <string id="282">找到%i條</string>
+  <string id="282">找到 %i 條</string>
   <string id="283">搜尋結果</string>
   <string id="284">無結果</string>
   <string id="286">後處理濾鏡</string>
@@ -472,7 +472,7 @@
   <string id="545">音效輸出設備</string>
   <string id="546">通過輸出裝置</string>
   <string id="547">此藝人沒有傳記</string>
-  <string id="548">混合多聲道輸出為雙聲道</string> 
+  <string id="548">混合多聲道輸出為雙聲道</string>
 
   <string id="550">排序: %s</string>
   <string id="551">名稱</string>
@@ -647,21 +647,21 @@
   <string id="772">音效輸出</string>
   <string id="773">搜尋中</string>
   <string id="774">圖片資料夾</string>
-  <string id="775">網路界面</string> 
-  <string id="776">- 無線網路帳號(ESSID)</string> 
-  <string id="777">- 無線網路密碼</string> 
-  <string id="778">- 無線網路安全</string> 
+  <string id="775">網路界面</string>
+  <string id="776">- 無線網路帳號(ESSID)</string>
+  <string id="777">- 無線網路密碼</string>
+  <string id="778">- 無線網路安全</string>
   <string id="779">儲存並套用網路界面設定</string>
-  <string id="780">沒有加密</string> 
-  <string id="781">WEP</string> 
-  <string id="782">WPA</string> 
-  <string id="783">WPA2</string> 
+  <string id="780">沒有加密</string>
+  <string id="781">WEP</string>
+  <string id="782">WPA</string>
+  <string id="783">WPA2</string>
   <string id="784">套用網路界面設定. 請稍候.</string>
   <string id="785">順利重新啟動網路界面.</string>
   <string id="786">無法順利啟動網路界面.</string>
-  <string id="787">關閉網路界面</string> 
-  <string id="788">順利關閉網路界面</string> 
-  <string id="789">無線網路帳號(ESSID)</string> 
+  <string id="787">關閉網路界面</string>
+  <string id="788">順利關閉網路界面</string>
+  <string id="789">無線網路帳號(ESSID)</string>
 
   <string id="790"></string>
   <string id="791">啟用 遠端伺服器</string>
@@ -721,8 +721,8 @@
   <string id="1043">程式外掛</string>
   <string id="1044">設定外掛縮圖</string>
   <string id="1045">外掛設定</string>
-  <string id="1046">無線網路橋接器</string> 
-  <string id="1047">其他…</string> 
+  <string id="1046">無線網路橋接器</string>
+  <string id="1047">其他…</string>
   <string id="1048">- 伺服器帳號</string>
   <string id="1049">腳本設定</string>
   <string id="1050">單曲</string>
@@ -902,7 +902,7 @@
   <string id="12022">從 %s 開始播放</string>
   <string id="12023">確認金手指檔案…</string>
   <string id="12024"></string>
-
+  
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -933,7 +933,7 @@
   <string id="12340">輸入新密碼</string>
   <string id="12341">確認新密碼</string>
   <string id="12342">密碼不正確,</string>
-  <string id="12343">重試次數</string>
+  <string id="12343">重試次數 </string>
   <string id="12344">輸入密碼不正確.</string>
   <string id="12345">拒絕讀取</string>
   <string id="12346">已達密碼重試次數限制.</string>
@@ -979,8 +979,8 @@
   <string id="13005">關機</string>
   <string id="13006">原廠系統</string>
   <string id="13007">使用自訂原廠系統路徑</string>
-  <string id="13008">預設關機模式</string> 
-  <string id="13009">退出</string> 
+  <string id="13008">預設關機模式</string>
+  <string id="13009">退出</string>
   <string id="13010">休眠</string>
   <string id="13011">待機</string>
   <string id="13012">離開</string>
@@ -989,10 +989,10 @@
   <string id="13015">電源按鈕作用</string>
 
   <string id="13020">是否有透過 ssh 連接的會話存在?</string>
-  <string id="13021">掛載行動碟</string> 
-  <string id="13022">不安全的移除裝置</string> 
-  <string id="13023">順利的移除裝置</string> 
-  <string id="13024">手把連接</string> 
+  <string id="13021">掛載行動碟</string>
+  <string id="13022">不安全的移除裝置</string>
+  <string id="13023">順利的移除裝置</string>
+  <string id="13024">手把連接</string>
   <string id="13025">手把沒有連接</string>
 
   <string id="13100">閃爍過濾</string>
@@ -1009,7 +1009,7 @@
   <string id="13113">關閉</string>
   <string id="13114">在480解析度時啟用</string>
   <string id="13115">始終啟用</string>
-  
+
   <string id="13116">升頻方式</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
@@ -1056,7 +1056,7 @@
 
   <string id="13170">從不</string>
   <string id="13171">立即</string>
-  <string id="13172">隔%i秒之後</string>
+  <string id="13172">隔 %i 秒之後</string>
   <string id="13173">硬碟安裝日期:</string>
   <string id="13174">硬碟運轉週期:</string>
 
@@ -1133,7 +1133,7 @@
   <string id="13324">背景透明度</string>
   <string id="13325">前景透明度</string>
   <string id="13326">影音延遲</string>
-  <string id="13327">卡拉 OK</string>
+  <string id="13327">卡拉OK</string>
   <string id="13328">%s 找不到</string>
   <string id="13329">打開 %s 發生錯誤</string>
   <string id="13330">無法載入 %s</string>
@@ -1214,7 +1214,7 @@
   <string id="13417">基本著色(ARB)</string>
   <string id="13418">高級著色(GLSL)</string>
   <string id="13419">軟體著色</string>
-  <string id="13420">托盤開啓</string> 
+  <string id="13420">托盤開啓</string>
   <string id="13421">VDPAU 硬體解碼</string>
   <string id="13422">開始幻燈片播放</string>
   <string id="13423">記住此路徑</string>
@@ -1285,13 +1285,13 @@
   <string id="14041">後置處理</string>
   <string id="14042"></string>
   <string id="14043">- 播放時關機</string>
-  <string id="14044">%i分</string>
-  <string id="14045">%i秒</string>
-  <string id="14046">%i毫秒</string>
-  <string id="14047">%i%%</string>
-  <string id="14048">%ikbps</string>
-  <string id="14049">%ikb</string>
-  <string id="14050">%i.0dB</string>
+  <string id="14044">%i 分</string>
+  <string id="14045">%i 秒</string>
+  <string id="14046">%i 毫秒</string>
+  <string id="14047">%i %%</string>
+  <string id="14048">%i kbps</string>
+  <string id="14049">%i kb</string>
+  <string id="14050">%i.0 dB</string>
   <string id="14051">時間格式</string>
   <string id="14052">日期格式</string>
   <string id="14053">畫面濾鏡</string>
@@ -1422,10 +1422,10 @@
   <string id="15206">無法通過認證: 檢查帳號和密碼</string>
   <string id="15207">已連線</string>
   <string id="15208">無法連線</string>
-  <string id="15209">上傳進度%i</string>
-  <string id="15210">已快取%i首歌曲</string>
+  <string id="15209">上傳進度 %i</string>
+  <string id="15210">已快取 %i 首歌曲</string>
   <string id="15211">上傳中…</string>
-  <string id="15212">上傳剩餘%i秒</string>
+  <string id="15212">上傳剩餘 % i秒</string>
   <string id="15213">播放方式…</string>
   <string id="15214">使用平滑的影音同步</string>
   <string id="15215">顯示縮圖時隱藏檔案名稱</string>
@@ -1556,16 +1556,16 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-  
-  <string id="16307">Bicubic (軟體)</string>
-  <string id="16308">Lanczos (軟體)</string>  
-  <string id="16309">Sinc (軟體)</string>
- 
+
+  <string id="16307">Bicubic(軟體)</string>
+  <string id="16308">Lanczos(軟體)</string>
+  <string id="16309">Sinc(軟體)</string>
+
   <string id="16310">(VDPAU)時間平滑</string>
   <string id="16311">(VDPAU)時間/空間平滑</string>
   <string id="16312">(VDPAU)降噪</string>
   <string id="16313">(VDPAU)銳化</string>
-  <string id="16314">填補為逐行信號</string> 
+  <string id="16314">填補為逐行信號</string>
   <string id="17500">顯示休眠逾時</string>
 
   <string id="19000">切換到頻道</string>
@@ -1797,7 +1797,7 @@
   <string id="20323">遊戲存檔</string>
   <string id="20324">玩部分的…</string>
   <string id="20325">重設螢幕校正</string>
-  <string id="20326">重設螢幕校正值為%s</string>
+  <string id="20326">重設螢幕校正值為 %s</string>
   <string id="20327">還原為預設值</string>
   <string id="20328">瀏覽目的</string>
   <string id="20329"></string>
@@ -1969,7 +1969,7 @@
   <string id="21392">低功率</string>
   <string id="21393">高待機</string>
   <string id="21394">低待機</string>
-  <string id="21395">暫存檔不能超過4GB</string>
+  <string id="21395">暫存檔不能超過 4GB</string>
   <string id="21396">章節</string>
   <string id="21397">高品質像素著色器 V2</string>
   <string id="21398">啟用 啟動時播放列表</string>
@@ -2131,20 +2131,20 @@
   <string id="22024">Direct3D 版本:</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
-  <string id="22030">字型</string> 
-  <string id="22031">- 大小</string> 
-  <string id="22032">- 顏色</string> 
-  <string id="22033">- 編碼</string> 
-  <string id="22034">匯出卡拉 OK 標題為 HTML</string> 
-  <string id="22035">匯出卡拉 OK 標題為 CSV</string> 
-  <string id="22036">匯入卡拉 OK 標題…</string> 
-  <string id="22037">自動顯示歌曲選單</string> 
-  <string id="22038">匯出卡拉 OK 標題…</string> 
-  <string id="22039">輸入歌曲號碼</string> 
-  <string id="22040">白/綠</string> 
-  <string id="22041">白/紅</string> 
-  <string id="22042">白/藍</string> 
-  <string id="22043">黑/白</string> 
+  <string id="22030">字型</string>
+  <string id="22031">- 大小</string>
+  <string id="22032">- 顏色</string>
+  <string id="22033">- 編碼</string>
+  <string id="22034">匯出卡拉OK 標題為 HTML</string>
+  <string id="22035">匯出卡拉OK 標題為 CSV</string>
+  <string id="22036">匯入卡拉OK 標題…</string>
+  <string id="22037">自動顯示歌曲選單</string>
+  <string id="22038">匯出卡拉OK 標題…</string>
+  <string id="22039">輸入歌曲號碼</string>
+  <string id="22040">白/綠</string>
+  <string id="22041">白/紅</string>
+  <string id="22042">白/藍</string>
+  <string id="22043">黑/白</string>
 
   <string id="23000">氣象外掛程式</string>
   <string id="23001">- 外掛程式設定</string>

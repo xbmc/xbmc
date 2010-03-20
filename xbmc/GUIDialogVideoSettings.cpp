@@ -43,10 +43,6 @@ using namespace std;
 #include "CharsetConverter.h"
 #include "LocalizeStrings.h"
 #endif
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
 {
@@ -73,6 +69,8 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 #define VIDEO_SETTING_VDPAU_NOISE         19
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
+
+#define VIDEO_SETTINGS_NONLIN_STRETCH     21
 
 #define VIDEO_SETTINGS_DS_FILTERS         0x20
 
@@ -147,11 +145,11 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.SupportsBrightness())
+  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_settings.m_currentVideoSettings.m_Brightness, 0, 1, 100, FormatInteger);
-  if (g_renderManager.SupportsContrast())
+  if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_settings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
-  if (g_renderManager.SupportsGamma())
+  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
 #ifdef HAS_DX
   if ((g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR )
@@ -169,13 +167,12 @@ void CGUIDialogVideoSettings::CreateSettings()
 
   }
 #endif
-#ifdef HAVE_LIBVDPAU
-  CSharedLock lock(g_renderManager.GetSection());
-  if (g_VDPAU) {
+  if (g_renderManager.Supports(RENDERFEATURE_NOISE))
     AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_settings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f, FormatFloat);
+  if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_settings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f, FormatFloat);
-  }
-#endif
+  if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
+    AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &g_settings.m_currentVideoSettings.m_CustomNonLinStretch);
 #endif
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
@@ -195,28 +192,31 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
     g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
     g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
+    g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
     UpdateSetting(VIDEO_SETTINGS_ZOOM);
     UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
+    UpdateSetting(VIDEO_SETTINGS_NONLIN_STRETCH);
   }
-  else if (setting.id == VIDEO_SETTINGS_ZOOM || setting.id == VIDEO_SETTINGS_PIXEL_RATIO)
+  else if (setting.id == VIDEO_SETTINGS_ZOOM || setting.id == VIDEO_SETTINGS_PIXEL_RATIO
+        || setting.id == VIDEO_SETTINGS_NONLIN_STRETCH)
   {
     g_settings.m_currentVideoSettings.m_ViewMode = VIEW_MODE_CUSTOM;
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
     UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
   }
-  else 
+  else
 #endif
   if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.GetCurrentProfile().settingsLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   else if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.GetCurrentProfile().settingsLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 

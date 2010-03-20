@@ -81,7 +81,7 @@ inet_pton(int af, const char * __restrict src, void * __restrict dst)
  */
 static int
 inet_pton4(const char *src, u_char *dst)
-  {
+{
     static const char digits[] = "0123456789";
     int saw_digit, octets, ch;
 #define NS_INADDRSZ 4
@@ -105,7 +105,7 @@ inet_pton4(const char *src, u_char *dst)
                 if (++octets > 4)
                     return (0);
                 saw_digit = 1;
-  }
+            }
         } else if (ch == '.' && saw_digit) {
             if (octets == 4)
                 return (0);
@@ -113,7 +113,7 @@ inet_pton4(const char *src, u_char *dst)
             saw_digit = 0;
         } else
             return (0);
-}
+    }
     if (octets < 4)
         return (0);
     memcpy(dst, tmp, NS_INADDRSZ);

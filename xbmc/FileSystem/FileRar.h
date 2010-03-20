@@ -41,12 +41,12 @@ namespace XFILE
     void Start(Archive* pArc, CommandData* pCmd, CmdExtract* pExtract, int iSize);
 
     virtual void OnStartup();
-     virtual void OnExit();
-     virtual void Process();
+    virtual void OnExit();
+    virtual void Process();
 
-     HANDLE hRunning;
-     HANDLE hRestart;
-     HANDLE hQuit;
+    HANDLE hRunning;
+    HANDLE hRestart;
+    HANDLE hQuit;
 
   protected:
     Archive* m_pArc;
@@ -62,14 +62,14 @@ namespace XFILE
     CFileRar();
     CFileRar(bool bSeekable); // used for caching files
     virtual ~CFileRar();
-    virtual int64_t        GetPosition();
-    virtual int64_t        GetLength();
+    virtual int64_t       GetPosition();
+    virtual int64_t       GetLength();
     virtual bool          Open(const CURL& url);
     virtual bool          Exists(const CURL& url);
-    virtual int            Stat(const CURL& url, struct __stat64* buffer);
+    virtual int           Stat(const CURL& url, struct __stat64* buffer);
     virtual unsigned int  Read(void* lpBuf, int64_t uiBufSize);
-    virtual int            Write(const void* lpBuf, int64_t uiBufSize);
-    virtual int64_t        Seek(int64_t iFilePosition, int iWhence=SEEK_SET);
+    virtual int           Write(const void* lpBuf, int64_t uiBufSize);
+    virtual int64_t       Seek(int64_t iFilePosition, int iWhence=SEEK_SET);
     virtual void          Close();
     virtual void          Flush();
 
@@ -77,8 +77,8 @@ namespace XFILE
     unsigned int          Write(void *lpBuf, int64_t uiBufSize);
 
   protected:
-    CStdString  m_strCacheDir;
-    CStdString  m_strRarPath;
+    CStdString m_strCacheDir;
+    CStdString m_strRarPath;
     CStdString m_strPassword;
     CStdString m_strPathInRar;
     BYTE m_bFileOptions;

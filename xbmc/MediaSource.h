@@ -114,4 +114,5 @@ typedef std::vector<CMediaSource> VECSOURCES;
 */
 typedef std::vector<CMediaSource>::iterator IVECSOURCES;
 
+void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras);
 void AddOrReplace(VECSOURCES& sources, const CMediaSource& source);
