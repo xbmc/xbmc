@@ -35,6 +35,7 @@
 // some distros have already patched this but upstream @ https://launchpad.net/libmms
 // does still has the "this" usage.
 #define this instance
+#undef byte
 #include <libmms/mmsio.h> // FIXME: remove this header once the ubuntu headers is fixed (variable named this)
 #include <libmms/mms.h>
 #include <libmms/mmsh.h>
