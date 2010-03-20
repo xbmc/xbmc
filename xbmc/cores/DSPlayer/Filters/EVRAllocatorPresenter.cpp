@@ -598,7 +598,6 @@ STDMETHODIMP CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TYPE eMessage, 
 
     // The mixer received a new input sample. 
     case MFVP_MESSAGE_PROCESSINPUTNOTIFY:
-        
       hr = ProcessInputNotify();
       break;
 
@@ -1367,14 +1366,14 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
 HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
 {
   // Note: pMediaType can be NULL (to clear the type)
-
   // Clearing the media type is allowed in any state (including shutdown).
   if (pType == NULL)
   {
     if (m_pMixer)
       m_pMixer->SetOutputType(0, NULL, 0);
 
-    ASSERT(m_pMediaType.Release() == 0);
+    int refCount = m_pMediaType.Release();
+    ASSERT(refCount == 0);
     ReleaseResources();
     return S_OK;
   }
@@ -1416,7 +1415,6 @@ HRESULT CEVRAllocatorPresenter::SetMediaType(IMFMediaType* pType)
 
     pSample = NULL;
   }
-
 
   // Add the samples to the sample pool.
   CHECK_HR(hr = m_SamplePool.Initialize(sampleQueue));
@@ -1565,13 +1563,13 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
     return S_FALSE; // No free samples. We'll try again when a sample is released.
   }
   CHECK_HR(hr);   // Fail on any other error code.
-
+  
   // From now on, we have a valid video sample pointer, where the mixer will
   // write the video data.
-  assert(pSample != NULL);
+  ASSERT(pSample != NULL);
 
   // (If the following assertion fires, it means we are not managing the sample pool correctly.)
-  assert(MFGetAttributeUINT32(pSample, MFSamplePresenter_SampleCounter, (UINT32)-1) == m_TokenCounter);
+  ASSERT(MFGetAttributeUINT32(pSample, MFSamplePresenter_SampleCounter, (UINT32)-1) == m_TokenCounter);
 
   if (m_bRepaint)
   {
@@ -1644,7 +1642,6 @@ HRESULT CEVRAllocatorPresenter::ProcessOutput()
       NotifyEvent(EC_PROCESSING_LATENCY, (LONG_PTR)&latencyTime, 0);
     }
 
-    
     // Set up notification for when the sample is released.
     CHECK_HR(hr = TrackSample(pSample));
 
@@ -1667,6 +1664,7 @@ done:
   // (We don't expect any events from the mixer, but this is a good practice.)
   ReleaseEventCollection(1, &dataBuffer);
   pSample = NULL;
+
   return hr;
 }
 
@@ -1698,7 +1696,7 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
 
   // If we need new device don't deliver the sample
   if (resetState)
-    CLog::Log(LOGDEBUG,"%s The device is recreated ; wait",__FUNCTION__);
+    CLog::Log(LOGDEBUG,"%s The device is recreated ; wait",__FUNCTION__); //TODO: Use a lock!
   else
     hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
 
@@ -1824,9 +1822,7 @@ void CEVRAllocatorPresenter::ReleaseResources(bool fullRelease/* = false*/)
   // method returns.
 
   m_TokenCounter++;
-
   Flush();
-
   m_SamplePool.Clear();
 
   if (fullRelease)

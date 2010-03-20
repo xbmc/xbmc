@@ -47,11 +47,13 @@ CDSConfig::CDSConfig(void)
 
 CDSConfig::~CDSConfig(void)
 {
-  CFile::Delete("special://temp//dslang.xml");
   m_pPropertiesFilters.clear();
 }
 void CDSConfig::ClearConfig()
 {
+  if (CFile::Exists("special://temp//dslang.xml"))
+    CFile::Delete("special://temp//dslang.xml");
+
   m_pIMpaDecFilter = NULL;
   pIffdshowDecoder = NULL;
   m_pPropertiesFilters.clear();

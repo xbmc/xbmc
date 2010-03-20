@@ -212,7 +212,7 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat, VideoSampleL
 
   while (! g_Windowing.Get3DDevice())
   {
-    Sleep(100); // We're still creating the device, wait!
+    Sleep(100); // We're still creating the device, wait! //TODO: Use a lock here please!
   }
 
   if (FAILED(g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth ,
@@ -273,12 +273,16 @@ void D3DPresentEngine::ReleaseResources()
   // Let the derived class release any resources it created.
   OnReleaseResources();
 
+  int refCount = 0;
+
   CSingleLock lock(m_ObjectLock);
 
   g_renderManager.PaintVideoTexture(NULL, NULL);
 
-  ASSERT(m_pEVRVideoSurface.Release() == 0);
-  ASSERT(m_pEVRVideoTexture.Release() == 0);
+  refCount = m_pEVRVideoSurface.Release();
+  ASSERT(refCount == 0);
+  refCount = m_pEVRVideoTexture.Release();
+  ASSERT(refCount == 0);
 
   //Releasing video surface
   for (int i = 0; i < 7; i++) 

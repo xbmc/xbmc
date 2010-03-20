@@ -219,7 +219,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
     if (SUCCEEDED(InsertFilter(filterName, Filters.AudioRenderer)))
       return S_OK;
     else
-      CLog::Log(LOGERROR, "%s Failed to insert custom audio renderer, fallback to default", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s Failed to insert custom audio renderer, fallback to default one", __FUNCTION__);
   }
 
   CDirectShowEnumerator p_dsound;
