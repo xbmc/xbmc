@@ -2057,16 +2057,20 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
      */
     const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
     /*
-     * If a backwards seek (either small or large) occurs within 10 seconds of the end of the last
-     * automated commercial skip, then seek back to the start of the commercial break under the
-     * assumption that it was flagged incorrectly. 10 seconds grace period is allowed in case the
-     * watcher has to fumble around finding the remote. Only happens once per commercial break.
+     * If a large backwards seek occurs within 10 seconds of the end of the last automated
+     * commercial skip, then seek back to the start of the commercial break under the assumption
+     * it was flagged incorrectly. 10 seconds grace period is allowed in case the watcher has to
+     * fumble around finding the remote. Only happens once per commercial break.
+     *
+     * Small skip does not trigger this in case the start of the commercial break was in fact fine
+     * but it skipped too far into the program. In that case small skip backwards behaves as normal.
      */
-    if (!bPlus && m_EdlAutoSkipMarkers.seek_to_start
+    if (!bPlus && bLargeStep
+    &&  m_EdlAutoSkipMarkers.seek_to_start
     &&  clock >= m_EdlAutoSkipMarkers.commbreak_end
     &&  clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
     {
-      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
+      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as large backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
                 __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
                 CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
       seek = m_EdlAutoSkipMarkers.commbreak_start;
