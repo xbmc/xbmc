@@ -255,8 +255,7 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
   m_bPrerolled(false),
   m_fRate(1.0f),
   m_TokenCounter(0),
-  m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree),
-  resetState(false)
+  m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
 {  
 
   // Initial source rectangle = (0,0,1,1)
@@ -1294,6 +1293,12 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
 
   if (!m_pMixer)
     return MF_E_INVALIDREQUEST;
+
+  {
+    CSingleLock lock(resetLock);
+  }
+
+
   // Loop through all of the mixer's proposed output types.
   DWORD iTypeIndex = 0;
 
@@ -1695,9 +1700,7 @@ HRESULT CEVRAllocatorPresenter::DeliverSample(IMFSample *pSample, BOOL bRepaint)
   BOOL bPresentNow = ((m_RenderState != RENDER_STATE_STARTED) ||  IsScrubbing() || bRepaint);
 
   // If we need new device don't deliver the sample
-  if (resetState)
-    CLog::Log(LOGDEBUG,"%s The device is recreated ; wait",__FUNCTION__); //TODO: Use a lock!
-  else
+  if (! resetLock.getCriticalSection().Owning()) //TODO: Need maybe some change
     hr = m_scheduler.ScheduleSample(pSample, bPresentNow);
 
   return hr;

@@ -189,7 +189,7 @@ public:
   HRESULT BeginStreaming();
   HRESULT EndStreaming();
 
-  bool resetState;
+  CCriticalSection resetLock;
 
 private:
   

@@ -210,14 +210,13 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat, VideoSampleL
   else
     d3dFormat = D3DFMT_X8R8G8B8;
 
-  while (! g_Windowing.Get3DDevice())
   {
-    Sleep(100); // We're still creating the device, wait! //TODO: Use a lock here please!
+    CSingleLock lock( m_pAllocatorPresenter->resetLock ); // block if reseting the device. Brackets must be here
   }
 
-  if (FAILED(g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth ,
-                                                      m_iVideoHeight ,
-                                                      1 , 
+  if (FAILED(g_Windowing.Get3DDevice()->CreateTexture(m_iVideoWidth,
+                                                      m_iVideoHeight,
+                                                      1,
                                                       D3DUSAGE_RENDERTARGET,
                                                       d3dFormat,
                                                       D3DPOOL_DEFAULT,
@@ -313,18 +312,17 @@ HRESULT D3DPresentEngine::PresentSample(IMFSample* pSample, LONGLONG llTarget)
   IDirect3DSurface9* pSurface = NULL;
 
   if (m_pAllocatorPresenter->CheckShutdown() != S_OK
-    || !g_renderManager.IsConfigured()
-    || m_bNeedNewDevice || m_pAllocatorPresenter->resetState
-    || !m_pEVRVideoTexture)
+    || !g_renderManager.IsConfigured() || m_pAllocatorPresenter->resetLock.getCriticalSection().Owning()
+    || m_bNeedNewDevice || !m_pEVRVideoTexture)
     return S_OK;
-  
+
   if (pSample)
   {
     CHECK_HR(hr = pSample->GetBufferByIndex(0, &pBuffer));
     IMFGetService* pServ;
     CHECK_HR(hr = pBuffer->QueryInterface(__uuidof(IMFGetService),(void**)&pServ));
     CHECK_HR(hr = pServ->GetService(MR_BUFFER_SERVICE, __uuidof(IDirect3DSurface9), (void**)&pSurface))
-    SAFE_RELEASE(pServ);
+      SAFE_RELEASE(pServ);
   }
 
   if (m_bNeedNewDevice || !g_Windowing.Get3DDevice())
@@ -456,7 +454,7 @@ void D3DPresentEngine::OnDestroyDevice()
 {
   CLog::Log(LOGNOTICE, "%s The EVR received a reset event. Releasing resources.", __FUNCTION__);
   // Set the EVR into reset state
-  m_pAllocatorPresenter->resetState = true;
+  m_pAllocatorPresenter->resetLock.getCriticalSection().Enter();
   m_pAllocatorPresenter->EndStreaming();
   m_pAllocatorPresenter->ReleaseResources();
 }
@@ -470,7 +468,7 @@ void D3DPresentEngine::OnLostDevice()
 {
   CLog::Log(LOGNOTICE, "%s The EVR received a reset event. Releasing resources.", __FUNCTION__);
   // Set the EVR into reset state
-  m_pAllocatorPresenter->resetState = true;
+  m_pAllocatorPresenter->resetLock.getCriticalSection().Enter();
   m_pAllocatorPresenter->EndStreaming();
   m_pAllocatorPresenter->ReleaseResources(true);
 }
@@ -480,7 +478,7 @@ void D3DPresentEngine::OnResetDevice()
   CLog::Log(LOGNOTICE, "%s The EVR successfully respond to the reset event", __FUNCTION__);
 
   // Reset DXVA Manager, and get new buffers
-  m_pAllocatorPresenter->resetState = false;
+  m_pAllocatorPresenter->resetLock.getCriticalSection().Leave();
   m_pDeviceManager->ResetDevice(g_Windowing.Get3DDevice(), m_DeviceResetToken);
   m_pAllocatorPresenter->NotifyEvent(EC_DISPLAY_CHANGED, S_OK, 0);
 }
