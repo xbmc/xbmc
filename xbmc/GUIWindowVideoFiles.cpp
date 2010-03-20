@@ -542,6 +542,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
               || (info && info->Content() == CONTENT_MUSICVIDEOS) )
             {
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+
+              if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+                buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+              else
+                buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
             }
             if (!m_database.HasMovieInfo(item->m_strPath) 
             &&  !m_database.HasEpisodeInfo(item->m_strPath) 
@@ -564,11 +569,6 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
-
-      if (item->GetOverlayImage().Equals("OverlayWatched.png"))
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-      else
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
     }
   }
   else
