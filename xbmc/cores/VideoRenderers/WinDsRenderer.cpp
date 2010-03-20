@@ -36,9 +36,7 @@
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
   m_D3DVideoTexture(NULL),
-  m_D3DMemorySurface(NULL),
-  m_OldD3DVideoTexture(NULL),
-  newFrameAvailable(false)
+  m_D3DMemorySurface(NULL)
 {
 }
 
@@ -53,9 +51,6 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
   m_sourceHeight = height;
   m_flags = flags;
 
-  // need to recreate textures
-  
-
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
@@ -67,10 +62,6 @@ bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned
 
 void CWinDsRenderer::Reset()
 {
-  m_D3DMemorySurface = NULL;
-  m_D3DVideoTexture = NULL;
-  m_OldD3DVideoTexture = NULL;
-  newFrameAvailable = false;
 }
 
 void CWinDsRenderer::Update(bool bPauseDrawing)
@@ -128,11 +119,10 @@ unsigned int CWinDsRenderer::PreInit()
 void CWinDsRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
+  CSingleLock textureLock(m_textureLock);
 
   m_D3DMemorySurface = NULL;
   m_D3DVideoTexture = NULL;
-  m_OldD3DVideoTexture = NULL;
-  newFrameAvailable = false;
 
   m_bConfigured = false;
 }
@@ -148,21 +138,24 @@ void CWinDsRenderer::AutoCrop(bool bCrop)
 void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3DSurface9* videoSurface)
 {
   // AddRef is done automatically by the SmartPtr
-  if (videoTexture)
-    m_D3DVideoTexture = videoTexture;
-  if (videoSurface)
-    m_D3DMemorySurface = videoSurface;
+  // videoTexture & videoSurface can be NULL to release texture
+  // If m_D3DVideoTexture isn't NULL, the old reference is released before the assignation
 
-  newFrameAvailable = true;
+  CSingleLock lock(m_textureLock);
+
+  m_D3DVideoTexture = videoTexture;
+  m_D3DMemorySurface = videoSurface;
 }
 
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 {
   LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
   CSingleLock lock(g_graphicsContext);
+  CSingleLock textureLock(m_textureLock);
 
   HRESULT hr;
   D3DSURFACE_DESC desc;
+
   if (!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
     return;
 
@@ -172,7 +165,7 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
   struct CUSTOMVERTEX {
     float x, y, z;
     float rhw; 
-	  float tu, tv;
+    float tu, tv;
   };
 
   CUSTOMVERTEX verts[4] =
@@ -197,13 +190,7 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
     verts[i].y -= 0.5;
   }
 
-  if (m_bIsEvr)
-  {
-    IDirect3DTexture9* texture = (newFrameAvailable) ? m_D3DVideoTexture : m_OldD3DVideoTexture;
-    hr = m_pD3DDevice->SetTexture(0, texture);
-  }
-  else
-    hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
+  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
 
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -218,16 +205,6 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
-
-  if (m_bIsEvr && newFrameAvailable)
-  {
-    newFrameAvailable = false;
-    m_OldD3DVideoTexture.Release();
-    m_OldD3DVideoTexture = m_D3DVideoTexture;
-
-    m_D3DMemorySurface.Release();
-    m_D3DVideoTexture.Release();
-  }
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)

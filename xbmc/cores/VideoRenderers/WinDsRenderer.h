@@ -22,17 +22,13 @@
  */
 
 #if !defined(_LINUX) && !defined(HAS_GL)
+
 #include "WinBaseRenderer.h"
-//#define MP_DIRECTRENDERING
-
-
-
-
+#include "../dsplayer/dshowutil/smartptr.h"
+#include "CriticalSection.h"
 
 class CBaseTexture;
 
-
-#include "../dsplayer/dshowutil/smartptr.h"
 class CWinDsRenderer : public CWinBaseRenderer
 {
 public:
@@ -77,8 +73,7 @@ protected:
   Com::SmartPtr<IDirect3DTexture9> m_D3DVideoTexture;
   Com::SmartPtr<IDirect3DSurface9> m_D3DMemorySurface;
 
-  Com::SmartPtr<IDirect3DTexture9> m_OldD3DVideoTexture;
-  bool newFrameAvailable;
+  CCriticalSection m_textureLock;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
