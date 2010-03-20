@@ -30,6 +30,7 @@
 
 #include <streams.h>
 #include "asyncio.h"
+#include "SingleLock.h"
 
 // --- CAsyncRequest ---
 
@@ -283,7 +284,7 @@ CAsyncIo::WaitForNext(
         else
         {
             //  Hold the critical section while checking the list state
-            CAutoLock lck(&m_csLists);
+            CSingleLock lck(m_csLists);
             if(m_bFlushing && !m_bWaiting)
             {
                 // can't block as we are between BeginFlush and EndFlush
@@ -371,7 +372,7 @@ CAsyncIo::BeginFlush()
 {
     // hold the lock while emptying the work list
     {
-        CAutoLock lock(&m_csLists);
+        CSingleLock lock(m_csLists);
 
         // prevent further requests being queued.
         // Also WaitForNext will refuse to block if this is set
@@ -418,7 +419,7 @@ CAsyncIo::BeginFlush()
         m_evAllDone.Wait();
         {
             // hold critsec to check
-            CAutoLock lock(&m_csLists);
+            CSingleLock lock(m_csLists);
 
             if(m_cItemsOut == 0)
             {
@@ -443,7 +444,7 @@ CAsyncIo::BeginFlush()
 HRESULT
 CAsyncIo::EndFlush()
 {
-    CAutoLock lock(&m_csLists);
+    CSingleLock lock(m_csLists);
 
     m_bFlushing = FALSE;
 
@@ -518,7 +519,7 @@ CAsyncIo::CloseThread(void)
 CAsyncRequest*
 CAsyncIo::GetWorkItem()
 {
-    CAutoLock lck(&m_csLists);
+    CSingleLock lck(m_csLists);
     CAsyncRequest * preq  = m_listWork.RemoveHead();
 
     // force event set correctly
@@ -535,7 +536,7 @@ CAsyncIo::GetWorkItem()
 CAsyncRequest*
 CAsyncIo::GetDoneItem()
 {
-    CAutoLock lock(&m_csLists);
+    CSingleLock lock(m_csLists);
     CAsyncRequest * preq  = m_listDone.RemoveHead();
 
     // force event set correctly if list now empty
@@ -562,7 +563,7 @@ CAsyncIo::GetDoneItem()
 HRESULT
 CAsyncIo::PutWorkItem(CAsyncRequest* pRequest)
 {
-    CAutoLock lock(&m_csLists);
+    CSingleLock lock(m_csLists);
     HRESULT hr;
 
     if(m_bFlushing)
@@ -592,8 +593,7 @@ CAsyncIo::PutWorkItem(CAsyncRequest* pRequest)
 HRESULT
 CAsyncIo::PutDoneItem(CAsyncRequest* pRequest)
 {
-    ASSERT(CritCheckIn(&m_csLists));
-
+    ASSERT(m_csLists.getCriticalSection().Owning());
     if(m_listDone.AddTail(pRequest))
     {
         // event should now be in a set state - force this
@@ -617,7 +617,7 @@ CAsyncIo::ProcessRequests(void)
     for(;;)
     {
         {
-            CAutoLock lock(&m_csLists);
+            CSingleLock lock(m_csLists);
 
             preq = GetWorkItem();
             if(preq == NULL)
@@ -636,7 +636,7 @@ CAsyncIo::ProcessRequests(void)
 
         // regain critsec to replace on done list
         {
-            CAutoLock l(&m_csLists);
+            CSingleLock l(m_csLists);
 
             PutDoneItem(preq);
 

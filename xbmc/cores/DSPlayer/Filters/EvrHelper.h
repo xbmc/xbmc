@@ -29,6 +29,8 @@
 #include "mfapi.h"
 #include <mferror.h>
 #include "mftransform.h"
+#include "CriticalSection.h"
+#include "SingleLock.h"
 
 #ifndef CHECK_HR
 #define CHECK_HR(hr) IF_FAILED_GOTO(hr, done)
@@ -521,7 +523,7 @@ public:
     BOOL    AreSamplesPending();
 
 private:
-    CCritSec                     m_lock;
+    CCriticalSection                     m_lock;
 
     VideoSampleList             m_VideoSampleQueue;      // Available queue
 
@@ -548,13 +550,13 @@ class ThreadSafeQueue
 public:
   HRESULT Queue(T *p)
   {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
     return m_list.InsertBack(p);
   }
 
   HRESULT Dequeue(T **pp)
   {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
 
     if (m_list.IsEmpty())
     {
@@ -567,19 +569,19 @@ public:
 
   HRESULT PutBack(T *p)
   {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
     return m_list.InsertFront(p);
   }
 
   void Clear() 
   {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
     m_list.Clear();
   }
 
 
 private:
-  CCritSec       m_lock;  
+  CCriticalSection m_lock;  
   ComPtrList<T>  m_list;
 };
 

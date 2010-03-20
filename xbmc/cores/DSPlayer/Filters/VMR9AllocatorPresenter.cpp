@@ -35,6 +35,7 @@
 #include "IPinHook.h"
 #include "GuiSettings.h"
 //#include "SystemInfo.h"
+#include "SingleLock.h"
 
 class COuterVMR9
   : public CUnknown
@@ -295,8 +296,8 @@ CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 
 void CVMR9AllocatorPresenter::DeleteSurfaces()
 {
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
+  CSingleLock lock(*this);
+  CSingleLock cRenderLock(m_RenderLock);
   int k = 0;
   for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
   {
@@ -312,8 +313,8 @@ void CVMR9AllocatorPresenter::DeleteSurfaces()
 //IVMRSurfaceAllocator9
 STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers)
 {
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
+  CSingleLock lock(*this);
+  CSingleLock cRenderLock(m_RenderLock);
 
   CLog::Log(LOGDEBUG,"%s %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", __FUNCTION__,
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
@@ -490,7 +491,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
     return E_FAIL;
   if (m_bNeedNewDevice)
     return E_FAIL;
-  CAutoLock cRenderLock(&m_RenderLock);
+  CSingleLock cRenderLock(m_RenderLock);
   if (m_nVMR9Surfaces)
   {
     ++m_iVMR9Surface;
@@ -508,8 +509,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
     
 STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify)
 {
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
+  CSingleLock lock(*this);
+  CSingleLock cRenderLock(m_RenderLock);
   HRESULT hr;
   m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
   HMONITOR hMonitor = g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject()));
@@ -519,8 +520,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *
 
 STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
 {
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
+  CSingleLock lock(*this);
+  CSingleLock cRenderLock(m_RenderLock);
   HRESULT hr = S_OK;
   int i = 5;
   
@@ -622,7 +623,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   {
     return S_OK;
   }
-  CAutoLock Lock(&m_RenderLock);
+  CSingleLock Lock(m_RenderLock);
   /*if (m_bNeedNewDevice)
   {
     if (SUCCEEDED(g_Windowing.GetDeviceStatus()))

@@ -81,8 +81,8 @@ UINT CDsRenderer::GetAdapter(IDirect3D9* pD3D)
 HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
 {
   HRESULT hr = S_OK;
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
+  CSingleLock lock(*this);
+  CSingleLock cRenderLock(m_RenderLock);
 
   for(int i = 0; i < m_nNbDXSurface+2; i++)
   {
@@ -113,8 +113,8 @@ HRESULT CDsRenderer::CreateSurfaces(D3DFORMAT Format)
 
 void CDsRenderer::DeleteSurfaces()
 {
-  CAutoLock cAutoLock(this);
-  CAutoLock cRenderLock(&m_RenderLock);
+  CSingleLock lock(*this);
+  CSingleLock cRenderLock(m_RenderLock);
 
   for( int i = 0; i < m_nNbDXSurface+2; ++i ) 
   {

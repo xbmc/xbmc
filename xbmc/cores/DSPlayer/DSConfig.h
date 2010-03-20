@@ -100,7 +100,7 @@ protected:
   
 private:
   void CreatePropertiesXml();
-  CCritSec m_pLock;
+  CCriticalSection m_pLock;
 
   //Direct Show Filters
   IMpaDecFilter*                 m_pIMpaDecFilter; // References will be released elsewhere

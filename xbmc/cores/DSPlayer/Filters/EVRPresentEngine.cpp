@@ -30,6 +30,7 @@
 
 #include "application.h"
 #include "IPinHook.h"
+#include "SingleLock.h"
 
 //-----------------------------------------------------------------------------
 // Constructor
@@ -153,7 +154,7 @@ HRESULT D3DPresentEngine::SetDestinationRect(const RECT& rcDest)
 {
   if (EqualRect(&rcDest, &m_rcDestRect))
     return S_OK; // No change.
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
   m_rcDestRect = rcDest;
   return S_OK;
 }
@@ -180,7 +181,7 @@ HRESULT D3DPresentEngine::CreateVideoSamples(IMFMediaType *pFormat, VideoSampleL
   HRESULT hr = S_OK;
   IDirect3DSurface9* pSurface; // Don't make it a smartptr
 
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
   ReleaseResources();
 
@@ -272,9 +273,9 @@ void D3DPresentEngine::ReleaseResources()
   // Let the derived class release any resources it created.
   OnReleaseResources();
 
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
-  g_renderManager.Reset();
+  g_renderManager.PaintVideoTexture(NULL, NULL);
 
   ASSERT(m_pEVRVideoSurface.Release() == 0);
   ASSERT(m_pEVRVideoTexture.Release() == 0);

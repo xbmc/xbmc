@@ -26,6 +26,7 @@ using namespace XFILE;
 
 #include "XBMCFileSource.h"
 #include "utils/log.h"
+#include "SingleLock.h"
 
 CXBMCFileStream::CXBMCFileStream(CFile *file, IBaseFilter **pBF, HRESULT *phr) :
     m_llLength(0)
@@ -62,7 +63,7 @@ HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)
 
 HRESULT CXBMCFileStream::Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead)
 {
-  CAutoLock lck(&m_csLock);
+  CSingleLock lck(m_csLock);
     
   *pdwBytesRead = m_pFile->Read(pbBuffer, dwBytesToRead);
 
@@ -81,11 +82,11 @@ DWORD CXBMCFileStream::Alignment()
 }
 void CXBMCFileStream::Lock()
 {
-  m_csLock.Lock();
+  m_csLock.getCriticalSection().Enter();
 }
 void CXBMCFileStream::Unlock()
 {
-  m_csLock.Unlock();
+  m_csLock.getCriticalSection().Leave();
 }
 
 STDMETHODIMP CXBMCFileReader::Register()

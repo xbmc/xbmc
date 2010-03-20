@@ -32,6 +32,7 @@
 
 #include "DShowUtil/smartptr.h"
 #include "FGLoader.h"
+#include "SingleLock.h"
 
 
 class COuterEVR
@@ -373,7 +374,7 @@ STDMETHODIMP CEVRAllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 STDMETHODIMP CEVRAllocatorPresenter::OnClockStart(MFTIME hnsSystemTime,  LONGLONG llClockStartOffset)
 {
   HRESULT hr = S_OK;
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
   // We cannot start after shutdown.
   hr = CheckShutdown();
   if (FAILED(hr))
@@ -405,7 +406,7 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockStop(MFTIME hnsSystemTime)
 {
   CLog::Log(LOGDEBUG,"%s OnClockStop  hnsSystemTime = %I64d", __FUNCTION__, hnsSystemTime);
 
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
   HRESULT hr = S_OK;
   hr = CheckShutdown();
@@ -427,7 +428,7 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockStop(MFTIME hnsSystemTime)
 STDMETHODIMP CEVRAllocatorPresenter::OnClockPause(MFTIME hnsSystemTime)
 {
   CLog::Log(LOGDEBUG,"%s OnClockPause  hnsSystemTime = %I64d\n", __FUNCTION__, hnsSystemTime);
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
   HRESULT hr = S_OK;
   // We cannot pause the clock after shutdown.
@@ -443,7 +444,7 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockPause(MFTIME hnsSystemTime)
 
 STDMETHODIMP CEVRAllocatorPresenter::OnClockRestart(MFTIME hnsSystemTime)
 {
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
   HRESULT hr = S_OK;
   hr = CheckShutdown();
@@ -476,7 +477,7 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockSetRate(MFTIME hnsSystemTime, float 
 // IBaseFilter delegate
 bool CEVRAllocatorPresenter::GetState( DWORD dwMilliSecsTimeout, FILTER_STATE *State, HRESULT &_ReturnValue)
 {
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
   /*if (m_bSignaledStarvation)
   {
@@ -580,7 +581,7 @@ STDMETHODIMP CEVRAllocatorPresenter::ProcessMessage(MFVP_MESSAGE_TYPE eMessage, 
 
   HRESULT hr = S_OK;
 
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
   switch (eMessage)
   {
@@ -1088,7 +1089,7 @@ HRESULT CEVRAllocatorPresenter::GetCurrentMediaType(IMFVideoMediaType** ppMediaT
 STDMETHODIMP CEVRAllocatorPresenter::InitServicePointers(/* [in] */ __in  IMFTopologyServiceLookup *pLookup)
 {
   CheckPointer(pLookup, E_POINTER);
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
 
   HRESULT             hr;
   DWORD               dwObjects = 1;
@@ -1121,7 +1122,7 @@ STDMETHODIMP CEVRAllocatorPresenter::ReleaseServicePointers()
 
   // Enter the shut-down state.
   {
-    CAutoLock lock(&m_ObjectLock);
+    CSingleLock lock(m_ObjectLock);
     m_RenderState = RENDER_STATE_SHUTDOWN;
   }
 
@@ -1872,18 +1873,18 @@ HRESULT CEVRAllocatorPresenter::OnSampleFree(IMFAsyncResult *pResult)
     // need for the second QI.
   }
 
-  m_ObjectLock.Lock();
-
-  if (MFGetAttributeUINT32(pSample, MFSamplePresenter_SampleCounter, (UINT32)-1) == m_TokenCounter)
   {
-    // Return the sample to the sample pool.
-    CHECK_HR(hr = m_SamplePool.ReturnSample(pSample));
+    CSingleLock lock(m_ObjectLock);
 
-    // Now that a free sample is available, process more data if possible.
-    (void)ProcessOutputLoop();
+    if (MFGetAttributeUINT32(pSample, MFSamplePresenter_SampleCounter, (UINT32)-1) == m_TokenCounter)
+    {
+      // Return the sample to the sample pool.
+      CHECK_HR(hr = m_SamplePool.ReturnSample(pSample));
+
+      // Now that a free sample is available, process more data if possible.
+      (void)ProcessOutputLoop();
+    }
   }
-
-  m_ObjectLock.Unlock();
 
 done:
   if (FAILED(hr))

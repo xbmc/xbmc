@@ -25,6 +25,7 @@
 #ifndef __XBMCFILESOURCE_H__
 #include "filters/asyncio.h"
 #include "filters/asyncrdr.h"
+#include "CriticalSection.h"
 
 using namespace XFILE;
 class CXBMCFileReader;
@@ -42,7 +43,7 @@ public:
 
 
 private:
-    CCritSec       m_csLock;
+    CCriticalSection  m_csLock;
     LONGLONG       m_llLength;
     CFile*         m_pFile;
 };

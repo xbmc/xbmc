@@ -184,7 +184,7 @@ private:
   int m_currentSpeed;
 
   DWORD_PTR m_userId;
-  CCritSec m_ObjectLock;
+  CCriticalSection m_ObjectLock;
   CStdString m_pStrCurrentFrameRate;
   int m_iCurrentFrameRefreshCycle;
 

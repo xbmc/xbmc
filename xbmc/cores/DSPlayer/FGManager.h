@@ -53,7 +53,7 @@ using namespace XFILE;
 class CFGLoader;
 
 class CFGManager:
-  public CCritSec
+  public CCriticalSection
 {
 public:
   

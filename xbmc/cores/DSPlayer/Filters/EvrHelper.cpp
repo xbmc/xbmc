@@ -20,6 +20,7 @@
  */
 
 #include "evrhelper.h"
+#include "SingleLock.h"
 
 
 //-----------------------------------------------------------------------------
@@ -45,7 +46,7 @@ SamplePool::~SamplePool()
 
 HRESULT SamplePool::GetSample(IMFSample **ppSample)
 {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
 
     if (!m_bInitialized)
     {
@@ -87,7 +88,7 @@ done:
 
 HRESULT SamplePool::ReturnSample(IMFSample *pSample) 
 {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
 
     if (!m_bInitialized)
     {
@@ -112,7 +113,7 @@ done:
 
 BOOL SamplePool::AreSamplesPending()
 {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
 
     if (!m_bInitialized)
     {
@@ -131,7 +132,7 @@ BOOL SamplePool::AreSamplesPending()
 
 HRESULT SamplePool::Initialize(VideoSampleList& samples)
 {
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
 
     if (m_bInitialized)
     {
@@ -172,7 +173,7 @@ HRESULT SamplePool::Clear()
 {
     HRESULT hr = S_OK;
 
-    CAutoLock lock(&m_lock);
+    CSingleLock lock(m_lock);
 
     m_VideoSampleQueue.Clear();
     m_bInitialized = FALSE;

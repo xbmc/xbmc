@@ -123,7 +123,7 @@ protected:
 
   CEVRAllocatorPresenter     * m_pAllocatorPresenter;
   bool                         m_bExiting;
-  CCritSec                     m_ObjectLock;           // Thread lock for the D3D device.
+  CCriticalSection             m_ObjectLock;           // Thread lock for the D3D device.
 
     // COM interfaces
   bool                         m_bNeedNewDevice;

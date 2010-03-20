@@ -48,7 +48,7 @@ using namespace std;
 class CDsRenderer  : public IDsRenderer,
                      public CUnknown,
                      public ID3DResource,
-                     public CCritSec
+                     public CCriticalSection
                     
 {
 public:
@@ -62,7 +62,7 @@ protected:
   void    DeleteSurfaces();
   void    UnloadCurrentRenderer();
   UINT    GetAdapter(IDirect3D9 *pD3D);
-  CCritSec                                m_RenderLock;
+  CCriticalSection                              m_RenderLock;
 
   //d3d stuff
   Com::SmartPtr<IDirect3DTexture9>              m_pVideoTexture[DS_MAX_3D_SURFACE];
@@ -77,8 +77,8 @@ protected:
   D3DFORMAT                               m_BackbufferType;// backbuffer type
   
   //Current video information
-  int                                     m_iVideoWidth;
-  int                                     m_iVideoHeight;
+  DWORD                                   m_iVideoWidth;
+  DWORD                                   m_iVideoHeight;
 };
 
 #endif // _DSRENDERER_H

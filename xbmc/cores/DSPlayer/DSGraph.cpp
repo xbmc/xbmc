@@ -158,7 +158,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
 void CDSGraph::CloseFile()
 {
-  CAutoLock lock(&m_ObjectLock);
+  CSingleLock lock(m_ObjectLock);
   HRESULT hr;
 
   if (m_pGraphBuilder)

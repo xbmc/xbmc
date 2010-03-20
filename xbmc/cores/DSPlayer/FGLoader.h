@@ -106,7 +106,7 @@ struct SFilters
   }
 };
 
-class CFGLoader : public CCritSec
+class CFGLoader : public CCriticalSection
 {
 private:
   HRESULT   InsertFilter(const CStdString& filterName, SFilterInfos& f);

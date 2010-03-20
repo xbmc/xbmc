@@ -74,7 +74,7 @@ public:
 private: 
   // non-static version of SchedulerThreadProc.
   DWORD SchedulerThreadProcPrivate();
-  CCritSec m_SampleQueueLock;
+  CCriticalSection m_SampleQueueLock;
   
 private:
   ThreadSafeQueue<IMFSample>  m_ScheduledSamples;    // Samples waiting to be presented.

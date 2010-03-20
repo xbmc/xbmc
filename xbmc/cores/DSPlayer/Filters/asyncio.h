@@ -1,3 +1,4 @@
+#include "CriticalSection.h"
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -154,10 +155,10 @@ typedef CGenericList<CAsyncRequest> CRequestList;
 class CAsyncIo
 {
 
-    CCritSec m_csReader;
+    CCriticalSection m_csReader;
     CAsyncStream *m_pStream;
 
-    CCritSec m_csLists;      // locks access to the list and events
+    CCriticalSection m_csLists;      // locks access to the list and events
     BOOL m_bFlushing;        // true if between BeginFlush/EndFlush
 
     CRequestList m_listWork;

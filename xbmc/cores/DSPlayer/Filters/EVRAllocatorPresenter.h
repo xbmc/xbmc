@@ -38,6 +38,7 @@
 #include "EvrScheduler.h"
 #include "EvrHelper.h"
 #include <avrt.h>
+#include "CriticalSection.h"
 // dxva.dll
 typedef HRESULT (__stdcall *PTR_DXVA2CreateDirect3DDeviceManager9)(UINT* pResetToken, IDirect3DDeviceManager9** ppDeviceManager);
 
@@ -273,7 +274,7 @@ protected:
   static RENDER_STATE         m_RenderState;          // Rendering state.
   FrameStep                   m_FrameStep;            // Frame-stepping information.
 
-  CCritSec                     m_ObjectLock;      // Serializes our public methods.  
+  CCriticalSection                     m_ObjectLock;      // Serializes our public methods.  
 
   // Samples and scheduling
     

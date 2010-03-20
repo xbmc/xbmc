@@ -43,6 +43,7 @@
 #include "filtercorefactory/filtercorefactory.h"
 #include "Settings.h"
 #include "DShowUtil/smartptr.h"
+#include "SingleLock.h"
 
 using namespace std;
 
@@ -57,7 +58,7 @@ CFGLoader::CFGLoader():
 
 CFGLoader::~CFGLoader()
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock lock(*this);
   
   CFilterCoreFactory::Destroy();
   SAFE_DELETE(m_pFGF);

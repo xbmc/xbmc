@@ -312,7 +312,7 @@ float CEvrScheduler::GetFps()
 
 /*HRESULT CEvrScheduler::GetScheduledSample(IMFSample** ppSample)
 {
-  CAutoLock lock(&m_SampleQueueLock);
+  CSingleLock lock(&m_SampleQueueLock);
   HRESULT    hr = S_OK;
 
   if (m_ScheduledSamples.dGetCount() > 0)

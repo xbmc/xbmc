@@ -79,19 +79,7 @@ CFGManager::CFGManager():
 
 CFGManager::~CFGManager()
 {
-  CAutoLock cAutoLock(this);
-
-/*  while(!m_source.empty()) 
-    m_source.pop_back();
-  while(!m_transform.empty())
-  {
-    if (m_transform.back())
-      delete m_transform.back();
-    
-    m_transform.pop_back();
-  }
-  while(!m_override.empty()) 
-    m_override.pop_back();*/
+  CSingleLock CSingleLock(*this);
 
   SAFE_DELETE(m_CfgLoader);
   m_pFM = NULL;
@@ -164,7 +152,7 @@ HRESULT CFGManager::CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF)
 
 STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock lock(*this);
 
   HRESULT hr;
 
@@ -188,7 +176,7 @@ STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
   if(!CDSGraph::m_pFilterGraph) 
     return E_UNEXPECTED;
 
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   return CDSGraph::m_pFilterGraph->RemoveFilter(pFilter);
 }
@@ -205,7 +193,7 @@ STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
 {
   if(!CDSGraph::m_pFilterGraph) 
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   return CDSGraph::m_pFilterGraph->FindFilterByName(pName, ppFilter);
 }
@@ -214,7 +202,7 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
 {
   if(!m_pUnkInner) return E_UNEXPECTED;
 
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   Com::SmartPtr<IBaseFilter> pBF = DShowUtil::GetFilterFromPin(pPinIn);
   CLSID clsid = DShowUtil::GetCLSID(pBF);
@@ -253,7 +241,7 @@ STDMETHODIMP CFGManager::Reconnect(IPin* ppin)
 {
   if(! CDSGraph::m_pFilterGraph) 
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   return CDSGraph::m_pFilterGraph->Reconnect(ppin);
 }
@@ -262,7 +250,7 @@ STDMETHODIMP CFGManager::Disconnect(IPin* ppin)
 {
   if(! CDSGraph::m_pFilterGraph) 
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   return CDSGraph::m_pFilterGraph->Disconnect(ppin);
 }
@@ -271,7 +259,7 @@ STDMETHODIMP CFGManager::SetDefaultSyncSource()
 {
   if (! CDSGraph::m_pFilterGraph)
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   return CDSGraph::m_pFilterGraph->SetDefaultSyncSource();
 }
@@ -280,7 +268,7 @@ STDMETHODIMP CFGManager::SetDefaultSyncSource()
 
 STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   CheckPointer(pPinOut, E_POINTER);
 
@@ -344,7 +332,7 @@ STDMETHODIMP CFGManager::Render(IPin* pPinOut)
 
 HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
   HRESULT hr = S_OK;
 
   //update ffdshow registry to avoid stupid connection problem
@@ -509,7 +497,7 @@ STDMETHODIMP CFGManager::Abort()
 {
   if (!CDSGraph::m_pFilterGraph)
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
   
   return CDSGraph::m_pFilterGraph->Abort();
 }
@@ -518,7 +506,7 @@ STDMETHODIMP CFGManager::ShouldOperationContinue()
 {
   if (! CDSGraph::m_pFilterGraph)
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   return CDSGraph::m_pFilterGraph->ShouldOperationContinue();
 }
@@ -529,7 +517,7 @@ STDMETHODIMP CFGManager::AddSourceFilterForMoniker(IMoniker* pMoniker, IBindCtx*
 {
   if (! CDSGraph::m_pFilterGraph)
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
   
   return CDSGraph::m_pFilterGraph->AddSourceFilterForMoniker(pMoniker, pCtx, lpcwstrFilterName, ppFilter);
 }
@@ -538,7 +526,7 @@ STDMETHODIMP CFGManager::ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt)
 {
   if (!CDSGraph::m_pFilterGraph)
     return E_UNEXPECTED;
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
   
   return CDSGraph::m_pFilterGraph->ReconnectEx(ppin, pmt);
 }
@@ -547,7 +535,7 @@ STDMETHODIMP CFGManager::ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt)
 
 HRESULT CFGManager::IsPinDirection(IPin* pPin, PIN_DIRECTION dir1)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   CheckPointer(pPin, E_POINTER);
 
@@ -560,7 +548,7 @@ HRESULT CFGManager::IsPinDirection(IPin* pPin, PIN_DIRECTION dir1)
 
 HRESULT CFGManager::IsPinConnected(IPin* pPin)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   CheckPointer(pPin, E_POINTER);
 
@@ -570,7 +558,7 @@ HRESULT CFGManager::IsPinConnected(IPin* pPin)
 
 HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   CheckPointer(pBF, E_POINTER);
 
@@ -651,7 +639,7 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
 HRESULT CFGManager::ConnectFilter(IPin* pPinOut, IBaseFilter* pBF)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   CheckPointer(pPinOut, E_POINTER);
   CheckPointer(pBF, E_POINTER);
@@ -675,7 +663,7 @@ HRESULT CFGManager::ConnectFilter(IPin* pPinOut, IBaseFilter* pBF)
 
 HRESULT CFGManager::ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const AM_MEDIA_TYPE* pmt)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   CheckPointer(pPinOut, E_POINTER);
   CheckPointer(pBF, E_POINTER);
@@ -701,7 +689,7 @@ HRESULT CFGManager::ConnectFilterDirect(IPin* pPinOut, IBaseFilter* pBF, const A
 
 HRESULT CFGManager::NukeDownstream(IUnknown* pUnk)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   IBaseFilter* pBF;
   IPin* pPin;
@@ -738,7 +726,7 @@ HRESULT CFGManager::NukeDownstream(IUnknown* pUnk)
 
 HRESULT CFGManager::AddToROT()
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   HRESULT hr = E_FAIL;
 
@@ -759,7 +747,7 @@ HRESULT CFGManager::AddToROT()
 
 HRESULT CFGManager::RemoveFromROT()
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   HRESULT hr;
 
@@ -782,7 +770,7 @@ STDMETHODIMP_(size_t) CFGManager::GetCount()
 
 STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, std::list<CStdStringW>& path, std::list<CMediaType>& mts)
 {
-  CAutoLock cAutoLock(this);
+  CSingleLock CSingleLock(*this);
 
   if(iIndex < 0 || iIndex >= m_deadends.size()) 
     return E_FAIL;
