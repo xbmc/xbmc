@@ -154,7 +154,6 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   if (CUtil::GetExtension(texturePath).Equals(".dds"))
   { // special case for DDS images
     CDDSImage image;
-    CLog::Log(LOGDEBUG, "%s - loading dds file: %s", __FUNCTION__, texturePath.c_str());
     image.ReadFile(texturePath);
     Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), image.GetData(), false);
     return true;
