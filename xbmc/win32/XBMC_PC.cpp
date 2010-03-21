@@ -21,6 +21,7 @@
 
 #include "../../xbmc/Application.h"
 #include "../../xbmc/AdvancedSettings.h"
+#include "../../xbmc/utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
 #include "dbghelp.h"
@@ -101,6 +102,16 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 {
+  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
+  //the loglevel set with the --debug flag
+#ifdef _DEBUG
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+#else
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
+#endif
+
   // Initializes CreateMiniDump to handle exceptions.
   SetUnhandledExceptionFilter( CreateMiniDump );
 
@@ -157,6 +168,11 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
           else
             --i;
         }
+      }
+      else if(strArgW.Equals(L"--debug"))
+      {
+        g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+        g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
       }
     }
     LocalFree(szArglist);
