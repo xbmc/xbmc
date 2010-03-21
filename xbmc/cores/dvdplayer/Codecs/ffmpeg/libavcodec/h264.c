@@ -1822,7 +1822,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             H264Context *c;
             c = h->thread_context[i] = av_malloc(sizeof(H264Context));
             memcpy(c, h->s.thread_context[i], sizeof(MpegEncContext));
-            memset(&c->s + 1, 0, sizeof(H264Context) - sizeof(MpegEncContext));
+            c->h264dsp = h->h264dsp;
+            /* FUGLY HACK, see https://roundup.ffmpeg.org/issue1815 */
+            memset(((char*)c) + sizeof(MpegEncContext) + sizeof(H264DSPContext), 0, sizeof(H264Context) - (sizeof(MpegEncContext) + sizeof(H264DSPContext)));
             c->sps = h->sps;
             c->pps = h->pps;
             init_scan_tables(c);
