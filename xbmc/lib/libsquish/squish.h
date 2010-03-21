@@ -244,6 +244,7 @@ void CompressImage( u8 const* rgba, int width, int height, int pitch, void* bloc
 	@param rgba		Storage for the decompressed pixels.
 	@param width	The width of the source image.
 	@param height	The height of the source image.
+	@param pitch    The pitch of the decompressed pixels.
 	@param blocks	The compressed DXT blocks.
 	@param flags	Compression flags.
 	
@@ -259,6 +260,7 @@ void CompressImage( u8 const* rgba, int width, int height, int pitch, void* bloc
 	Internally this function calls squish::Decompress for each block.
 */
 void DecompressImage( u8* rgba, int width, int height, void const* blocks, int flags );
+void DecompressImage( u8* rgba, int width, int height, int pitch, void const* blocks, int flags );
 
 // -----------------------------------------------------------------------------
 

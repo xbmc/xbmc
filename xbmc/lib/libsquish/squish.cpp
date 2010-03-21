@@ -196,6 +196,11 @@ void CompressImage( u8 const* rgba, int width, int height, int pitch, void* bloc
 
 void DecompressImage( u8* rgba, int width, int height, void const* blocks, int flags )
 {
+	DecompressImage( rgba, width, height, width*4, blocks, flags );
+}
+
+void DecompressImage( u8* rgba, int width, int height, int pitch, void const* blocks, int flags )
+{
 	// fix any bad flags
 	flags = FixFlags( flags );
 
@@ -223,7 +228,7 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 					int sy = y + py;
 					if( sx < width && sy < height )
 					{
-						u8* targetPixel = rgba + 4*( width*sy + sx );
+						u8* targetPixel = rgba + pitch*sy + 4*sx;
 						
 						// copy the rgba value
 						CopyRGBA(sourcePixel, targetPixel, flags);
