@@ -22,6 +22,7 @@
 #include "DDSImage.h"
 #include "XBTF.h"
 #include "lib/libsquish/squish.h"
+#include "utils/log.h"
 #include <string.h>
 
 #ifndef NO_XBMC_FILESYSTEM
@@ -185,6 +186,12 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
     }
     return false;
   }
+  else
+  {
+    double colorMSE, alphaMSE;
+    squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
+    CLog::Log(LOGDEBUG, "%s - DDS error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
+  } 
   return true;
 }
 

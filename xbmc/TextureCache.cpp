@@ -23,6 +23,7 @@
 #include "FileSystem/File.h"
 #include "Util.h"
 #include "AdvancedSettings.h"
+#include "utils/log.h"
 
 #include "Texture.h"
 #include "DDSImage.h"
@@ -62,10 +63,11 @@ bool CTextureCache::CacheDDS(const CStdString &image, const CStdString &ddsImage
   CTexture texture;
   if (texture.LoadFromFile(image))
   { // convert to DDS
-    CDDSImage image;
-    if (image.Compress(texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), maxMSE))
+    CDDSImage dds;
+    CLog::Log(LOGDEBUG, "%s, Creating DDS version of: %s", __FUNCTION__, image.c_str()); 
+    if (dds.Compress(texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), maxMSE))
     {
-      image.WriteFile(ddsImage);
+      dds.WriteFile(ddsImage);
       return true;
     }
   }
