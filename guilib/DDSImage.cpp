@@ -62,6 +62,8 @@ unsigned int CDDSImage::GetFormat() const
 {
   if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT1", 4) == 0)
     return XB_FMT_DXT1;
+  if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT3", 4) == 0)
+    return XB_FMT_DXT3;
   if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT5", 4) == 0)
     return XB_FMT_DXT5;
   return 0;
