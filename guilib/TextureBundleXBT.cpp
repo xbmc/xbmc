@@ -40,7 +40,6 @@
 
 #if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
-#pragma comment (lib,"../../xbmc/lib/libsquish/lib/squish.lib")
 #endif
 
 CTextureBundleXBT::CTextureBundleXBT(void)
