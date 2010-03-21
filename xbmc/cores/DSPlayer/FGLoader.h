@@ -108,8 +108,6 @@ struct SFilters
 
 class CFGLoader : public CCriticalSection
 {
-private:
-  HRESULT   InsertFilter(const CStdString& filterName, SFilterInfos& f);
 public:
   CFGLoader();
   virtual ~CFGLoader();
@@ -124,6 +122,7 @@ public:
   HRESULT    InsertAudioRenderer(const CStdString& filterName);
   HRESULT    InsertVideoRenderer();
   HRESULT    InsertAutoLoad();
+  HRESULT    InsertFilter(const CStdString& filterName, SFilterInfos& f);
 
   static DIRECTSHOW_RENDERER GetCurrentRenderer() { return m_CurrentRenderer; }
   static bool         IsUsingDXVADecoder() { return m_UsingDXVADecoder; }

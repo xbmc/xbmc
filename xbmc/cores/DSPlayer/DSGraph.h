@@ -50,9 +50,9 @@
 using namespace XFILE;
 
 #define WM_GRAPHEVENT  WM_USER + 13
-#define TIME_FORMAT_TO_MS(x) (double)(x / 10000)
-#define TIME_FORMAT_TO_SEC(x) (double)(x / 10000000)
-#define MSEC_TO_TIME_FORMAT(x) (double)(x * 10000)
+#define TIME_FORMAT_TO_MS(x) (LONGLONG)(x / 10000)
+#define TIME_FORMAT_TO_SEC(x) (LONGLONG)(x / 10000000)
+#define MSEC_TO_TIME_FORMAT(x) (LONGLONG)(x * 10000)
 
 /** Video state mode */
 enum VideoStateMode { MOVIE_NOTOPENED = 0x00,

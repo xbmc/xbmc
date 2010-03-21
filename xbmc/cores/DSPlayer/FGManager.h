@@ -147,7 +147,6 @@ public:
   HRESULT GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer);
 
   HRESULT QueryInterface(REFIID iid , void** ppv);
-  //CUnknown interface
-  //DECLARE_IUNKNOWN;
-  //STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+
+  HRESULT RecoverFromGraphError(const CFileItem& pFileItem);
 };

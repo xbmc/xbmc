@@ -60,6 +60,7 @@
 
 #include "DShowUtil/smartptr.h"
 #include "DSPlayer.h"
+#include "FilterCoreFactory/FilterCoreFactory.h"
 
 using namespace std;
 
@@ -355,119 +356,8 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 
   if (hr != S_OK)
   {
-    Com::SmartPtr<IBaseFilter> pBF = CFGLoader::Filters.Splitter.pBF;
-    int nVideoPin = 0, nAudioPin = 0;
-    int nConnectedVideoPin = 0, nConnectedAudioPin = 0;
-    bool videoError = false, audioError = false;
-    BeginEnumPins(pBF, pEP, pPin)
-    {
-      BeginEnumMediaTypes(pPin, pEMT, pMT)
-      {
-        if (pMT->majortype == MEDIATYPE_Video)
-        {
-          nVideoPin++;
-          if (DShowUtil::IsPinConnected(pPin) == S_OK)
-            nConnectedVideoPin++;
-        }
-        if (pMT->majortype == MEDIATYPE_Audio)
-        {
-          nAudioPin++;
-          if (DShowUtil::IsPinConnected(pPin) == S_OK)
-            nConnectedAudioPin++;
-        }
-        break;
-      }
-      EndEnumMediaTypes(pMT)
-    }
-    EndEnumPins
-    
-    videoError = (nVideoPin >= 1 && nConnectedVideoPin == 0); // No error if no video stream
-    audioError = (nAudioPin >= 1 && nConnectedAudioPin == 0); // No error if no audio stream
-    //Work around to fix the audio pipeline
-    //I think this should be the best way to render a pin if there an error the audio stream
-    //The only problem is the graph is getting locked after that
-    if (audioError)
-    {
-      Com::SmartPtr<IBaseFilter> pBF = CFGLoader::Filters.Splitter.pBF;
-
-      BeginEnumPins(pBF, pEP, pPin)
-      {
-        BeginEnumMediaTypes(pPin, pEMT, pMT)
-        {
-          if (pMT->majortype == MEDIATYPE_Audio)
-          {
-            if (SUCCEEDED(Render(pPin))) //Todo: The Render method add non desire filters to the graph!
-            {
-              audioError = false;
-            }
-          }
-        }
-        EndEnumMediaTypes(pMT)
-      }
-      EndEnumPins
-    }
-    if (videoError)
-    {
-      //Video renderer cant be changed so we have to force the connection from 
-      //the splitter to the video renderer and nothing else
-      IBaseFilter *pBFS = CFGLoader::Filters.Splitter.pBF;
-
-      BeginEnumPins(pBFS, pEP, pPin)
-      {
-        BeginEnumMediaTypes(pPin, pEMT, pMT)
-        {
-          if (pMT->majortype == MEDIATYPE_Video)
-          {
-            if (SUCCEEDED(Render(pPin)))
-            {
-              videoError = false;
-              //Ok got it
-            }
-          }
-        }
-        EndEnumMediaTypes(pMT)
-      }
-      EndEnumPins
-      if (!videoError)
-      {
-        IBaseFilter *pBFV = CFGLoader::Filters.VideoRenderer.pBF;
-        Com::SmartPtr<IPin> pPinV = DShowUtil::GetFirstPin(pBFV, PINDIR_INPUT);
-        if (SUCCEEDED(DShowUtil::IsPinConnected(pPinV)))
-        {
-          CLog::Log(LOGINFO,"The video filters encountered an error so dsplayer changed the filters currently used.");
-        }
-        else
-          videoError = true;
-        pBFV = NULL;
-        pPinV = NULL;
-      }
-      
-      
-      
-    }
-    if ( videoError || audioError)
-    {
-      CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (dialog)
-      {
-        CStdString strError;
-        
-        if (videoError && audioError)
-          strError = CStdString("Error in both audio and video rendering chain.");
-        else if (videoError)
-          strError = CStdString("Error in the video rendering chain.");
-        else if (audioError)
-          strError = CStdString("Error in the audio rendering chain.");
-        CLog::Log(LOGERROR, "%s Audio / Video error \n %s \n Ensure that the audio/video stream is supported by your selected decoder and ensure that the decoder is properly configured.", __FUNCTION__, strError.c_str());
-        dialog->SetHeading("Audio / Video error");
-        dialog->SetLine(0, strError.c_str());
-        dialog->SetLine(1, "more details or see XBMC Wiki - 'DSPlayer codecs'");
-        dialog->SetLine(2, "section for more informations.");
-        dialog->DoModal();
-
-        return E_FAIL;
-      }
-    }
+    if (FAILED(hr = RecoverFromGraphError(pFileItem)))
+      return hr;
   }
 
   //Apparently the graph don't start with unconnected filters in the graph for wmv files
@@ -936,4 +826,149 @@ void CFGManager::UpdateRegistry()
   //ffdshow\\isWhitelist
   //set to 0 if you want to enable every app to use ffdshow
   ffReg.setValue("isWhitelist",DWORD(0));
+}
+
+HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
+{
+  Com::SmartPtr<IBaseFilter> pBF = CFGLoader::Filters.Splitter.pBF;
+  int nVideoPin = 0, nAudioPin = 0;
+  int nConnectedVideoPin = 0, nConnectedAudioPin = 0;
+  bool videoError = false, audioError = false;
+  HRESULT hr = S_OK;
+  BeginEnumPins(pBF, pEP, pPin)
+  {
+    BeginEnumMediaTypes(pPin, pEMT, pMT)
+    {
+      if (pMT->majortype == MEDIATYPE_Video)
+      {
+        nVideoPin++;
+        if (DShowUtil::IsPinConnected(pPin) == S_OK)
+          nConnectedVideoPin++;
+      }
+      if (pMT->majortype == MEDIATYPE_Audio)
+      {
+        nAudioPin++;
+        if (DShowUtil::IsPinConnected(pPin) == S_OK)
+          nConnectedAudioPin++;
+      }
+      break;
+    }
+    EndEnumMediaTypes(pMT)
+  }
+  EndEnumPins
+
+  videoError = (nVideoPin >= 1 && nConnectedVideoPin == 0); // No error if no video stream
+  audioError = (nAudioPin >= 1 && nConnectedAudioPin == 0); // No error if no audio stream
+  //Work around to fix the audio pipeline
+  //I think this should be the best way to render a pin if there an error the audio stream
+  //The only problem is the graph is getting locked after that
+  if (audioError)
+  {
+    BeginEnumPins(pBF, pEP, pPin)
+    {
+      BeginEnumMediaTypes(pPin, pEMT, pMT)
+      {
+        if (pMT->majortype == MEDIATYPE_Audio)
+        {
+          if (SUCCEEDED(Render(pPin))) //Todo: The Render method add non desire filters to the graph!
+          {
+            audioError = false;
+          }
+        }
+      }
+      EndEnumMediaTypes(pMT)
+    }
+    EndEnumPins
+  }
+  if (videoError)
+  {
+    if (CFGLoader::IsUsingDXVADecoder())
+    {
+      // We've try to use a dxva decoder. Maybe the file wasn't dxva compliant. Fallback on default video renderer
+      CDSGraph::m_pFilterGraph->RemoveFilter(CFGLoader::Filters.Video.pBF);
+      CFGLoader::Filters.Video.pBF.FullRelease();
+      CFGLoader::Filters.Video.guid = GUID_NULL;
+      CFGLoader::Filters.Video.osdname = "";
+
+      CStdString filter = "";
+      if ( SUCCEEDED(CFilterCoreFactory::GetVideoFilter(pFileItem, filter, false)))
+      {
+        if (SUCCEEDED(m_CfgLoader->InsertFilter(filter, CFGLoader::Filters.Video)))
+        {
+          /* Default filter is in the graph, connect it */
+          hr = ConnectFilter(CFGLoader::Filters.Splitter.pBF , NULL);
+          if (SUCCEEDED(hr))
+          {
+            CLog::Log(LOGNOTICE, "%s Rendering fails when using DXVA renderer. \"%s\" renderer used instead.", __FUNCTION__, CFGLoader::Filters.Video.osdname.c_str());
+            videoError = false;
+          }
+        }
+      }
+    }
+
+    if (videoError)
+    {
+      //Video renderer cant be changed so we have to force the connection from 
+      //the splitter to the video renderer and nothing else
+      IBaseFilter *pBFS = CFGLoader::Filters.Splitter.pBF;
+
+      BeginEnumPins(pBFS, pEP, pPin)
+      {
+        BeginEnumMediaTypes(pPin, pEMT, pMT)
+        {
+          if (pMT->majortype == MEDIATYPE_Video)
+          {
+            if (SUCCEEDED(Render(pPin)))
+            {
+              videoError = false;
+              //Ok got it
+            }
+          }
+        }
+        EndEnumMediaTypes(pMT)
+      }
+      EndEnumPins
+    }
+
+    if (!videoError)
+    {
+      IBaseFilter *pBFV = CFGLoader::Filters.VideoRenderer.pBF;
+      Com::SmartPtr<IPin> pPinV = DShowUtil::GetFirstPin(pBFV, PINDIR_INPUT);
+      if (SUCCEEDED(DShowUtil::IsPinConnected(pPinV)))
+      {
+        CLog::Log(LOGINFO, "The video filters encountered an error so dsplayer changed the filters currently used.");
+      }
+      else
+        videoError = true;
+
+      pBFV = NULL;
+      pPinV = NULL;
+    }
+  }
+  if (videoError || audioError)
+  {
+    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dialog)
+    {
+      CStdString strError;
+
+      if (videoError && audioError)
+        strError = CStdString("Error in both audio and video rendering chain.");
+      else if (videoError)
+        strError = CStdString("Error in the video rendering chain.");
+      else if (audioError)
+        strError = CStdString("Error in the audio rendering chain.");
+
+      CLog::Log(LOGERROR, "%s Audio / Video error \n %s \n Ensure that the audio/video stream is supported by your selected decoder and ensure that the decoder is properly configured.", __FUNCTION__, strError.c_str());
+      dialog->SetHeading("Audio / Video error");
+      dialog->SetLine(0, strError.c_str());
+      dialog->SetLine(1, "more details or see XBMC Wiki - 'DSPlayer codecs'");
+      dialog->SetLine(2, "section for more informations.");
+      dialog->DoModal();
+
+      return E_FAIL;
+    }
+  }
+
+  return S_OK;
 }

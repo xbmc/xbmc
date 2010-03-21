@@ -247,13 +247,13 @@ void CDSGraph::UpdateTime()
   else
   {
     if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-      m_State.time = double(Position);
+      m_State.time = Position;
   }
   
   if (( m_State.time >= m_State.time_total ))
     m_bReachedEnd = true;
 
-  m_State.timestamp = CDSClock::GetAbsoluteClock();
+  m_State.timestamp = (LONGLONG) CDSClock::GetAbsoluteClock();
   
 }
 
@@ -318,7 +318,7 @@ void CDSGraph::UpdateTotalTime()
     else
     {
       if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-        m_State.time_total =  (double) Duration;
+        m_State.time_total =  Duration;
     }
   }
 }
@@ -418,7 +418,7 @@ HRESULT CDSGraph::HandleGraphEvent()
         m_State.time_total = (double)rtDur / 10000;*/
 
         REFERENCE_TIME rtNow = DShowUtil::HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);
-        m_State.time = (double)rtNow / 10000;
+        m_State.time = (LONGLONG) rtNow / 10000;
 
         break;
         }
@@ -632,7 +632,7 @@ void CDSGraph::DoFFRW(int currentRate)
       return;
 
     HRESULT hr;
-    LONGLONG earliest, latest, current, pStop;
+    LONGLONG earliest, latest, pStop;
     m_pMediaSeeking->GetAvailable(&earliest,&latest);
     //m_pMediaSeeking->GetPositions(&current,&stop);
     

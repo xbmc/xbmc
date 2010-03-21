@@ -33,8 +33,8 @@
 #define DS_TIME_TO_MSEC(x) ((int)((double)(x) * 1000 / DS_TIME_BASE))
 #define DS_SEC_TO_TIME(x)  ((double)(x) * DS_TIME_BASE)
 //DS_MSEC_TO_TIME is the one used to convert from directshow to the one rendermanager is using
-#define DS_MSEC_TO_TIME(x) ((double)(x) * DS_TIME_BASE / 1000)
-#define DS_SEC_TO_MSEC(x)  ((double)(x) * 1000)
+#define DS_MSEC_TO_TIME(x) ((LONGLONG)((x) * DS_TIME_BASE / 1000))
+#define DS_SEC_TO_MSEC(x)  ((LONGLONG)((x) * 1000))
 
 #define DS_PLAYSPEED_RW_2X       -2000
 #define DS_PLAYSPEED_REVERSE     -1000
