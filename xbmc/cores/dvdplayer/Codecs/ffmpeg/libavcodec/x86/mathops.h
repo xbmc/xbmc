@@ -66,4 +66,35 @@ static inline av_const int mid_pred(int a, int b, int c)
 }
 #endif
 
+#if HAVE_CMOV
+#define COPY3_IF_LT(x, y, a, b, c, d)\
+__asm__ volatile(\
+    "cmpl  %0, %3       \n\t"\
+    "cmovl %3, %0       \n\t"\
+    "cmovl %4, %1       \n\t"\
+    "cmovl %5, %2       \n\t"\
+    : "+&r" (x), "+&r" (a), "+r" (c)\
+    : "r" (y), "r" (b), "r" (d)\
+);
+#endif
+
+// avoid +32 for shift optimization (gcc should do that ...)
+#define NEG_SSR32 NEG_SSR32
+static inline  int32_t NEG_SSR32( int32_t a, int8_t s){
+    __asm__ ("sarl %1, %0\n\t"
+         : "+r" (a)
+         : "ic" ((uint8_t)(-s))
+    );
+    return a;
+}
+
+#define NEG_USR32 NEG_USR32
+static inline uint32_t NEG_USR32(uint32_t a, int8_t s){
+    __asm__ ("shrl %1, %0\n\t"
+         : "+r" (a)
+         : "ic" ((uint8_t)(-s))
+    );
+    return a;
+}
+
 #endif /* AVCODEC_X86_MATHOPS_H */

@@ -110,6 +110,7 @@ struct vp56_context {
     int quantizer;
     uint16_t dequant_dc;
     uint16_t dequant_ac;
+    int8_t *qscale_table;
 
     /* DC predictors management */
     VP56RefDc *above_blocks;
@@ -120,7 +121,7 @@ struct vp56_context {
     /* blocks / macroblock */
     VP56mb mb_type;
     VP56Macroblock *macroblocks;
-    DECLARE_ALIGNED_16(DCTELEM, block_coeff[6][64]);
+    DECLARE_ALIGNED(16, DCTELEM, block_coeff)[6][64];
 
     /* motion vectors */
     VP56mv mv[6];  /* vectors for each block in MB */

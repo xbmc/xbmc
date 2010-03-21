@@ -32,6 +32,7 @@
 
 #include "avcodec.h"
 #include "dsputil.h"
+#include "fft.h"
 #include "get_bits.h"
 #include "put_bits.h"
 #include "dcadata.h"
@@ -228,16 +229,16 @@ typedef struct {
 
     /* Subband samples history (for ADPCM) */
     float subband_samples_hist[DCA_PRIM_CHANNELS_MAX][DCA_SUBBANDS][4];
-    DECLARE_ALIGNED_16(float, subband_fir_hist[DCA_PRIM_CHANNELS_MAX][512]);
+    DECLARE_ALIGNED(16, float, subband_fir_hist)[DCA_PRIM_CHANNELS_MAX][512];
     float subband_fir_noidea[DCA_PRIM_CHANNELS_MAX][32];
     int hist_index[DCA_PRIM_CHANNELS_MAX];
-    DECLARE_ALIGNED_16(float, raXin[32]);
+    DECLARE_ALIGNED(16, float, raXin)[32];
 
     int output;                 ///< type of output
     float add_bias;             ///< output bias
     float scale_bias;           ///< output scale
 
-    DECLARE_ALIGNED_16(float, samples[1536]);  /* 6 * 256 = 1536, might only need 5 */
+    DECLARE_ALIGNED(16, float, samples)[1536];  /* 6 * 256 = 1536, might only need 5 */
     const float *samples_chanptr[6];
 
     uint8_t dca_buffer[DCA_MAX_FRAME_SIZE];
@@ -1243,6 +1244,10 @@ static int dca_decode_frame(AVCodecContext * avctx,
             s->channel_order_tab = dca_channel_reorder_lfe[s->amode];
         } else
             s->channel_order_tab = dca_channel_reorder_nolfe[s->amode];
+
+        if (s->prim_channels > 0 &&
+            s->channel_order_tab[s->prim_channels - 1] < 0)
+            return -1;
 
         if(avctx->request_channels == 2 && s->prim_channels > 2) {
             channels = 2;

@@ -5,7 +5,7 @@ FFLIBS = avutil
 
 HEADERS = swscale.h
 
-OBJS = options.o rgb2rgb.o swscale.o yuv2rgb.o
+OBJS = options.o rgb2rgb.o swscale.o utils.o yuv2rgb.o
 
 OBJS-$(ARCH_BFIN)          +=  bfin/internal_bfin.o     \
                                bfin/swscale_bfin.o      \
@@ -16,8 +16,7 @@ OBJS-$(HAVE_VIS)           +=  sparc/yuv2rgb_vis.o
 
 MMX-OBJS-$(CONFIG_GPL)     +=  x86/yuv2rgb_mmx.o        \
 
-EXAMPLES  = swscale
-TESTPROGS = colorspace
+TESTPROGS = colorspace swscale
 
 DIRS = bfin mlib ppc sparc x86
 

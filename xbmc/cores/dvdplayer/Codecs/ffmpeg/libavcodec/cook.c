@@ -52,6 +52,7 @@
 #include "get_bits.h"
 #include "dsputil.h"
 #include "bytestream.h"
+#include "fft.h"
 
 #include "cookdata.h"
 
@@ -150,7 +151,7 @@ typedef struct cook {
     /* data buffers */
 
     uint8_t*            decoded_bytes_buffer;
-    DECLARE_ALIGNED_16(float,mono_mdct_output[2048]);
+    DECLARE_ALIGNED(16, float,mono_mdct_output)[2048];
     float               decode_buffer_1[1024];
     float               decode_buffer_2[1024];
     float               decode_buffer_0[1060]; /* static allocation for joint decode */

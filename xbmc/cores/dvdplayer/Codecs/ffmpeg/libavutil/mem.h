@@ -26,14 +26,21 @@
 #ifndef AVUTIL_MEM_H
 #define AVUTIL_MEM_H
 
-#include "common.h"
+#include "attributes.h"
 
 #if defined(__ICC) || defined(__SUNPRO_C)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
+    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
     #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
+#elif defined(__TI_COMPILER_VERSION__)
+    #define DECLARE_ALIGNED(n,t,v)                      \
+        AV_PRAGMA(DATA_ALIGN(v,n))                      \
+        t __attribute__((aligned(n))) v
+    #define DECLARE_ASM_CONST(n,t,v)                    \
+        AV_PRAGMA(DATA_ALIGN(v,n))                      \
+        static const t __attribute__((aligned(n))) v
 #elif defined(__GNUC__)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
-    #define DECLARE_ASM_CONST(n,t,v)    static const t v attribute_used __attribute__ ((aligned (n)))
+    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
+    #define DECLARE_ASM_CONST(n,t,v)    static const t attribute_used __attribute__ ((aligned (n))) v
 #elif defined(_MSC_VER)
     #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
     #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
@@ -41,7 +48,6 @@
     #define DECLARE_ALIGNED(n,t,v)      t v
     #define DECLARE_ASM_CONST(n,t,v)    static const t v
 #endif
-
 
 #if AV_GCC_VERSION_AT_LEAST(3,1)
     #define av_malloc_attrib __attribute__((__malloc__))
@@ -67,7 +73,7 @@ void *av_malloc(unsigned int size) av_malloc_attrib av_alloc_size(1);
 
 /**
  * Allocates or reallocates a block of memory.
- * If ptr is NULL and size > 0, allocates a new block. If \p
+ * If ptr is NULL and size > 0, allocates a new block. If
  * size is zero, frees the memory block pointed to by ptr.
  * @param size Size in bytes for the memory block to be allocated or
  * reallocated.

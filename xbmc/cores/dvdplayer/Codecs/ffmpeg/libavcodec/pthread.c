@@ -104,7 +104,7 @@ void avcodec_thread_free(AVCodecContext *avctx)
     av_freep(&avctx->thread_opaque);
 }
 
-int avcodec_thread_execute(AVCodecContext *avctx, action_func* func, void *arg, int *ret, int job_count, int job_size)
+static int avcodec_thread_execute(AVCodecContext *avctx, action_func* func, void *arg, int *ret, int job_count, int job_size)
 {
     ThreadContext *c= avctx->thread_opaque;
     int dummy_ret;
@@ -133,7 +133,7 @@ int avcodec_thread_execute(AVCodecContext *avctx, action_func* func, void *arg, 
     return 0;
 }
 
-int avcodec_thread_execute2(AVCodecContext *avctx, action_func2* func2, void *arg, int *ret, int job_count)
+static int avcodec_thread_execute2(AVCodecContext *avctx, action_func2* func2, void *arg, int *ret, int job_count)
 {
     ThreadContext *c= avctx->thread_opaque;
     c->func2 = func2;
@@ -144,6 +144,11 @@ int avcodec_thread_init(AVCodecContext *avctx, int thread_count)
 {
     int i;
     ThreadContext *c;
+
+    avctx->thread_count = thread_count;
+
+    if (thread_count <= 1)
+        return 0;
 
     c = av_mallocz(sizeof(ThreadContext));
     if (!c)
@@ -156,7 +161,6 @@ int avcodec_thread_init(AVCodecContext *avctx, int thread_count)
     }
 
     avctx->thread_opaque = c;
-    avctx->thread_count = thread_count;
     c->current_job = 0;
     c->job_count = 0;
     c->job_size = 0;

@@ -38,6 +38,7 @@
 #include "avcodec.h"
 #include "get_bits.h"
 #include "dsputil.h"
+#include "fft.h"
 
 #include "imcdata.h"
 
@@ -84,8 +85,8 @@ typedef struct {
 
     DSPContext dsp;
     FFTContext fft;
-    DECLARE_ALIGNED_16(FFTComplex, samples[COEFFS/2]);
-    DECLARE_ALIGNED_16(float, out_samples[COEFFS]);
+    DECLARE_ALIGNED(16, FFTComplex, samples)[COEFFS/2];
+    DECLARE_ALIGNED(16, float, out_samples)[COEFFS];
 } IMCContext;
 
 static VLC huffman_vlc[4][4];

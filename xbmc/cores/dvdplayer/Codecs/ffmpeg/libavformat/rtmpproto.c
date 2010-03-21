@@ -29,6 +29,7 @@
 #include "libavutil/lfg.h"
 #include "libavutil/sha.h"
 #include "avformat.h"
+#include "internal.h"
 
 #include "network.h"
 
@@ -72,6 +73,9 @@ typedef struct RTMPContext {
     int           flv_size;                   ///< current buffer size
     int           flv_off;                    ///< number of bytes read from current buffer
     RTMPPacket    out_pkt;                    ///< rtmp packet, created from flv a/v or metadata (for output)
+    uint32_t      client_report_size;         ///< number of bytes after which client should report to server
+    uint32_t      bytes_read;                 ///< number of bytes read from server
+    uint32_t      last_bytes_read;            ///< number of bytes read last reported to server
 } RTMPContext;
 
 #define PLAYER_KEY_OPEN_PART_LEN 30   ///< length of partial key used for first client digest signing
@@ -110,7 +114,7 @@ static void gen_connect(URLContext *s, RTMPContext *rt, const char *proto,
     ff_rtmp_packet_create(&pkt, RTMP_SYSTEM_CHANNEL, RTMP_PT_INVOKE, 0, 4096);
     p = pkt.data;
 
-    snprintf(tcurl, sizeof(tcurl), "%s://%s:%d/%s", proto, host, port, rt->app);
+    ff_url_join(tcurl, sizeof(tcurl), proto, NULL, host, port, "/%s", rt->app);
     ff_amf_write_string(&p, "connect");
     ff_amf_write_number(&p, 1.0);
     ff_amf_write_object_start(&p);
@@ -337,6 +341,21 @@ static void gen_pong(URLContext *s, RTMPContext *rt, RTMPPacket *ppkt)
     ff_rtmp_packet_destroy(&pkt);
 }
 
+/**
+ * Generates report on bytes read so far and sends it to the server.
+ */
+static void gen_bytes_read(URLContext *s, RTMPContext *rt, uint32_t ts)
+{
+    RTMPPacket pkt;
+    uint8_t *p;
+
+    ff_rtmp_packet_create(&pkt, RTMP_NETWORK_CHANNEL, RTMP_PT_BYTES_READ, ts, 4);
+    p = pkt.data;
+    bytestream_put_be32(&p, rt->bytes_read);
+    ff_rtmp_packet_write(rt->stream, &pkt, rt->chunk_size, rt->prev_pkt[1]);
+    ff_rtmp_packet_destroy(&pkt);
+}
+
 //TODO: Move HMAC code somewhere. Eventually.
 #define HMAC_IPAD_VAL 0x36
 #define HMAC_OPAD_VAL 0x5C
@@ -481,7 +500,7 @@ static int rtmp_handshake(URLContext *s, RTMPContext *rt)
     av_log(LOG_CONTEXT, AV_LOG_DEBUG, "Server version %d.%d.%d.%d\n",
            serverdata[5], serverdata[6], serverdata[7], serverdata[8]);
 
-    if (rt->is_input) {
+    if (rt->is_input && serverdata[5] >= 3) {
         server_pos = rtmp_validate_digest(serverdata + 1, 772);
         if (!server_pos) {
             server_pos = rtmp_validate_digest(serverdata + 1, 8);
@@ -555,6 +574,16 @@ static int rtmp_parse_result(URLContext *s, RTMPContext *rt, RTMPPacket *pkt)
         t = AV_RB16(pkt->data);
         if (t == 6)
             gen_pong(s, rt, pkt);
+        break;
+    case RTMP_PT_CLIENT_BW:
+        if (pkt->data_size < 4) {
+            av_log(LOG_CONTEXT, AV_LOG_ERROR,
+                   "Client bandwidth report packet is less than 4 bytes long (%d)\n",
+                   pkt->data_size);
+            return -1;
+        }
+        av_log(LOG_CONTEXT, AV_LOG_DEBUG, "Client bandwidth = %d\n", AV_RB32(pkt->data));
+        rt->client_report_size = AV_RB32(pkt->data) >> 1;
         break;
     case RTMP_PT_INVOKE:
         //TODO: check for the messages sent for wrong state?
@@ -651,6 +680,10 @@ static int get_packet(URLContext *s, int for_header)
 {
     RTMPContext *rt = s->priv_data;
     int ret;
+    uint8_t *p;
+    const uint8_t *next;
+    uint32_t data_size;
+    uint32_t ts, cts, pts=0;
 
     if (rt->state == STATE_STOPPED)
         return AVERROR_EOF;
@@ -658,12 +691,18 @@ static int get_packet(URLContext *s, int for_header)
     for (;;) {
         RTMPPacket rpkt;
         if ((ret = ff_rtmp_packet_read(rt->stream, &rpkt,
-                                       rt->chunk_size, rt->prev_pkt[0])) != 0) {
-            if (ret > 0) {
+                                       rt->chunk_size, rt->prev_pkt[0])) <= 0) {
+            if (ret == 0) {
                 return AVERROR(EAGAIN);
             } else {
                 return AVERROR(EIO);
             }
+        }
+        rt->bytes_read += ret;
+        if (rt->bytes_read > rt->last_bytes_read + rt->client_report_size) {
+            av_log(LOG_CONTEXT, AV_LOG_DEBUG, "Sending bytes read report\n");
+            gen_bytes_read(s, rt, rpkt.timestamp + 1);
+            rt->last_bytes_read = rt->bytes_read;
         }
 
         ret = rtmp_parse_result(s, rt, &rpkt);
@@ -685,8 +724,7 @@ static int get_packet(URLContext *s, int for_header)
         }
         if (rpkt.type == RTMP_PT_VIDEO || rpkt.type == RTMP_PT_AUDIO ||
            (rpkt.type == RTMP_PT_NOTIFY && !memcmp("\002\000\012onMetaData", rpkt.data, 13))) {
-            uint8_t *p;
-            uint32_t ts = rpkt.timestamp;
+            ts = rpkt.timestamp;
 
             // generate packet header and put data into buffer for FLV demuxer
             rt->flv_off  = 0;
@@ -706,6 +744,23 @@ static int get_packet(URLContext *s, int for_header)
             rt->flv_off  = 0;
             rt->flv_size = rpkt.data_size;
             rt->flv_data = av_realloc(rt->flv_data, rt->flv_size);
+            /* rewrite timestamps */
+            next = rpkt.data;
+            ts = rpkt.timestamp;
+            while (next - rpkt.data < rpkt.data_size - 11) {
+                next++;
+                data_size = bytestream_get_be24(&next);
+                p=next;
+                cts = bytestream_get_be24(&next);
+                cts |= bytestream_get_byte(&next);
+                if (pts==0)
+                    pts=cts;
+                ts += cts - pts;
+                pts = cts;
+                bytestream_put_be24(&p, ts);
+                bytestream_put_byte(&p, ts >> 24);
+                next += data_size + 3 + 4;
+            }
             memcpy(rt->flv_data, rpkt.data, rpkt.data_size);
             ff_rtmp_packet_destroy(&rpkt);
             return 0;
@@ -758,12 +813,12 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
     s->priv_data = rt;
     rt->is_input = !(flags & URL_WRONLY);
 
-    url_split(proto, sizeof(proto), NULL, 0, hostname, sizeof(hostname), &port,
-              path, sizeof(path), s->filename);
+    ff_url_split(proto, sizeof(proto), NULL, 0, hostname, sizeof(hostname), &port,
+                 path, sizeof(path), s->filename);
 
     if (port < 0)
         port = RTMP_DEFAULT_PORT;
-    snprintf(buf, sizeof(buf), "tcp://%s:%d", hostname, port);
+    ff_url_join(buf, sizeof(buf), "tcp", NULL, hostname, port, NULL);
 
     if (url_open(&rt->stream, buf, URL_RDWR) < 0) {
         av_log(LOG_CONTEXT, AV_LOG_ERROR, "Cannot open connection %s\n", buf);
@@ -805,6 +860,10 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
         rt->playpath[0] = 0;
     }
     strncat(rt->playpath, fname, sizeof(rt->playpath) - 5);
+
+    rt->client_report_size = 1048576;
+    rt->bytes_read = 0;
+    rt->last_bytes_read = 0;
 
     av_log(LOG_CONTEXT, AV_LOG_DEBUG, "Proto = %s, path = %s, app = %s, fname = %s\n",
            proto, path, rt->app, rt->playpath);

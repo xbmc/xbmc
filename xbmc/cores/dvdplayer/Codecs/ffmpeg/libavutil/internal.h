@@ -35,8 +35,7 @@
 #include <stddef.h>
 #include <assert.h>
 #include "config.h"
-#include "common.h"
-#include "mem.h"
+#include "attributes.h"
 #include "timer.h"
 
 #ifndef attribute_align_arg
@@ -52,6 +51,14 @@
 #    define attribute_used __attribute__((used))
 #else
 #    define attribute_used
+#endif
+#endif
+
+#ifndef av_alias
+#if HAVE_ATTRIBUTE_MAY_ALIAS && (!defined(__ICC) || __ICC > 1110) && AV_GCC_VERSION_AT_LEAST(3,3)
+#   define av_alias __attribute__((may_alias))
+#else
+#   define av_alias
 #endif
 #endif
 
@@ -120,66 +127,6 @@
 
 /* math */
 
-extern const uint32_t ff_inverse[257];
-
-#if ARCH_X86
-#    define FASTDIV(a,b) \
-    ({\
-        int ret, dmy;\
-        __asm__ volatile(\
-            "mull %3"\
-            :"=d"(ret), "=a"(dmy)\
-            :"1"(a), "g"(ff_inverse[b])\
-            );\
-        ret;\
-    })
-#elif HAVE_ARMV6 && HAVE_INLINE_ASM
-static inline av_const int FASTDIV(int a, int b)
-{
-    int r, t;
-    __asm__ volatile("cmp     %3, #2               \n\t"
-                     "ldr     %1, [%4, %3, lsl #2] \n\t"
-                     "lsrle   %0, %2, #1           \n\t"
-                     "smmulgt %0, %1, %2           \n\t"
-                     : "=&r"(r), "=&r"(t) : "r"(a), "r"(b), "r"(ff_inverse));
-    return r;
-}
-#elif ARCH_ARM && HAVE_INLINE_ASM
-static inline av_const int FASTDIV(int a, int b)
-{
-    int r, t;
-    __asm__ volatile("umull %1, %0, %2, %3"
-                     : "=&r"(r), "=&r"(t) : "r"(a), "r"(ff_inverse[b]));
-    return r;
-}
-#elif CONFIG_FASTDIV
-#    define FASTDIV(a,b)   ((uint32_t)((((uint64_t)a) * ff_inverse[b]) >> 32))
-#else
-#    define FASTDIV(a,b)   ((a) / (b))
-#endif
-
-extern const uint8_t ff_sqrt_tab[256];
-
-static inline av_const unsigned int ff_sqrt(unsigned int a)
-{
-    unsigned int b;
-
-    if (a < 255) return (ff_sqrt_tab[a + 1] - 1) >> 4;
-    else if (a < (1 << 12)) b = ff_sqrt_tab[a >> 4] >> 2;
-#if !CONFIG_SMALL
-    else if (a < (1 << 14)) b = ff_sqrt_tab[a >> 6] >> 1;
-    else if (a < (1 << 16)) b = ff_sqrt_tab[a >> 8]   ;
-#endif
-    else {
-        int s = av_log2_16bit(a >> 16) >> 1;
-        unsigned int c = a >> (s + 2);
-        b = ff_sqrt_tab[c >> (s + 8)];
-        b = FASTDIV(c,b) + (b << s);
-    }
-
-    return b - (a < b * b);
-}
-
 #if ARCH_X86
 #define MASK_ABS(mask, level)\
             __asm__ volatile(\
@@ -192,25 +139,6 @@ static inline av_const unsigned int ff_sqrt(unsigned int a)
 #define MASK_ABS(mask, level)\
             mask  = level >> 31;\
             level = (level ^ mask) - mask;
-#endif
-
-#if HAVE_CMOV
-#define COPY3_IF_LT(x, y, a, b, c, d)\
-__asm__ volatile(\
-    "cmpl  %0, %3       \n\t"\
-    "cmovl %3, %0       \n\t"\
-    "cmovl %4, %1       \n\t"\
-    "cmovl %5, %2       \n\t"\
-    : "+&r" (x), "+&r" (a), "+r" (c)\
-    : "r" (y), "r" (b), "r" (d)\
-);
-#else
-#define COPY3_IF_LT(x, y, a, b, c, d)\
-if ((y) < (x)) {\
-    (x) = (y);\
-    (a) = (b);\
-    (c) = (d);\
-}
 #endif
 
 /* avoid usage of dangerous/inappropriate system functions */
@@ -263,54 +191,7 @@ if ((y) < (x)) {\
     }\
 }
 
-#if !HAVE_LLRINT
-static av_always_inline av_const long long llrint(double x)
-{
-    return rint(x);
-}
-#endif /* HAVE_LLRINT */
-
-#if !HAVE_LOG2
-static av_always_inline av_const double log2(double x)
-{
-    return log(x) * 1.44269504088896340736;
-}
-#endif /* HAVE_LOG2 */
-
-#if !HAVE_LRINT
-static av_always_inline av_const long int lrint(double x)
-{
-    return rint(x);
-}
-#endif /* HAVE_LRINT */
-
-#if !HAVE_LRINTF
-static av_always_inline av_const long int lrintf(float x)
-{
-    return (int)(rint(x));
-}
-#endif /* HAVE_LRINTF */
-
-#if !HAVE_ROUND
-static av_always_inline av_const double round(double x)
-{
-    return (x > 0) ? floor(x + 0.5) : ceil(x - 0.5);
-}
-#endif /* HAVE_ROUND */
-
-#if !HAVE_ROUNDF
-static av_always_inline av_const float roundf(float x)
-{
-    return (x > 0) ? floor(x + 0.5) : ceil(x - 0.5);
-}
-#endif /* HAVE_ROUNDF */
-
-#if !HAVE_TRUNCF
-static av_always_inline av_const float truncf(float x)
-{
-    return (x > 0) ? floor(x) : ceil(x);
-}
-#endif /* HAVE_TRUNCF */
+#include "libm.h"
 
 /**
  * Returns NULL if CONFIG_SMALL is true, otherwise the argument

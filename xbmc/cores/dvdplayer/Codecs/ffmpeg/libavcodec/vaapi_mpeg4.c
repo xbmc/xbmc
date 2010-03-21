@@ -51,13 +51,13 @@ static int vaapi_mpeg4_start_frame(AVCodecContext *avctx, av_unused const uint8_
     vactx->slice_param_size = sizeof(VASliceParameterBufferMPEG4);
 
     /* Fill in VAPictureParameterBufferMPEG4 */
-    pic_param = ff_vaapi_alloc_picture(vactx, sizeof(VAPictureParameterBufferMPEG4));
+    pic_param = ff_vaapi_alloc_pic_param(vactx, sizeof(VAPictureParameterBufferMPEG4));
     if (!pic_param)
         return -1;
     pic_param->vop_width                                = s->width;
     pic_param->vop_height                               = s->height;
-    pic_param->forward_reference_picture                = 0xffffffff;
-    pic_param->backward_reference_picture               = 0xffffffff;
+    pic_param->forward_reference_picture                = VA_INVALID_ID;
+    pic_param->backward_reference_picture               = VA_INVALID_ID;
     pic_param->vol_fields.value                         = 0; /* reset all bits */
     pic_param->vol_fields.bits.short_video_header       = avctx->codec->id == CODEC_ID_H263;
     pic_param->vol_fields.bits.chroma_format            = CHROMA_420;
@@ -69,6 +69,7 @@ static int vaapi_mpeg4_start_frame(AVCodecContext *avctx, av_unused const uint8_
     pic_param->vol_fields.bits.quarter_sample           = s->quarter_sample;
     pic_param->vol_fields.bits.data_partitioned         = s->data_partitioning;
     pic_param->vol_fields.bits.reversible_vlc           = s->rvlc;
+    pic_param->vol_fields.bits.resync_marker_disable    = !s->resync_marker;
     pic_param->no_of_sprite_warping_points              = s->num_sprite_warping_points;
     for (i = 0; i < s->num_sprite_warping_points && i < 3; i++) {
         pic_param->sprite_trajectory_du[i]              = s->sprite_traj[i][0];
@@ -84,15 +85,16 @@ static int vaapi_mpeg4_start_frame(AVCodecContext *avctx, av_unused const uint8_
     pic_param->vop_fields.bits.alternate_vertical_scan_flag = s->alternate_scan;
     pic_param->vop_fcode_forward                        = s->f_code;
     pic_param->vop_fcode_backward                       = s->b_code;
+    pic_param->vop_time_increment_resolution            = avctx->time_base.den;
     pic_param->num_macroblocks_in_gob                   = s->mb_width * ff_h263_get_gob_height(s);
     pic_param->num_gobs_in_vop                          = (s->mb_width * s->mb_height) / pic_param->num_macroblocks_in_gob;
     pic_param->TRB                                      = s->pb_time;
     pic_param->TRD                                      = s->pp_time;
 
     if (s->pict_type == FF_B_TYPE)
-        pic_param->backward_reference_picture = ff_vaapi_get_surface(&s->next_picture);
+        pic_param->backward_reference_picture = ff_vaapi_get_surface_id(&s->next_picture);
     if (s->pict_type != FF_I_TYPE)
-        pic_param->forward_reference_picture  = ff_vaapi_get_surface(&s->last_picture);
+        pic_param->forward_reference_picture  = ff_vaapi_get_surface_id(&s->last_picture);
 
     /* Fill in VAIQMatrixBufferMPEG4 */
     /* Only the first inverse quantisation method uses the weighthing matrices */

@@ -1063,7 +1063,7 @@ static void sub_hfyu_median_prediction_mmx2(uint8_t *dst, const uint8_t *src1, c
 
 #define HADAMARD8_DIFF_MMX(cpu) \
 static int hadamard8_diff_##cpu(void *s, uint8_t *src1, uint8_t *src2, int stride, int h){\
-    DECLARE_ALIGNED_8(uint64_t, temp[13]);\
+    DECLARE_ALIGNED(8, uint64_t, temp)[13];\
     int sum;\
 \
     assert(h==8);\
@@ -1146,7 +1146,7 @@ WRAPPER8_16_SQ(hadamard8_diff_##cpu, hadamard8_diff16_##cpu)
 
 #define HADAMARD8_DIFF_SSE2(cpu) \
 static int hadamard8_diff_##cpu(void *s, uint8_t *src1, uint8_t *src2, int stride, int h){\
-    DECLARE_ALIGNED_16(uint64_t, temp[4]);\
+    DECLARE_ALIGNED(16, uint64_t, temp)[4];\
     int sum;\
 \
     assert(h==8);\
@@ -1346,10 +1346,6 @@ static int ssd_int8_vs_int16_mmx(const int8_t *pix1, const int16_t *pix2, int si
 #undef PMULHRW
 #undef PHADDD
 #endif //HAVE_SSSE3
-
-
-void ff_lpc_compute_autocorr_sse2(const int32_t *data, int len, int lag,
-                                   double *autoc);
 
 
 void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)

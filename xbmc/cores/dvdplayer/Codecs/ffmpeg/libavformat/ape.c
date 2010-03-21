@@ -310,8 +310,8 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     st->codec->frame_size      = MAC_SUBFRAME_SIZE;
 
     st->nb_frames = ape->totalframes;
-    s->start_time = 0;
-    s->duration   = (int64_t) total_blocks * AV_TIME_BASE / ape->samplerate;
+    st->start_time = 0;
+    st->duration  = total_blocks / MAC_SUBFRAME_SIZE;
     av_set_pts_info(st, 64, MAC_SUBFRAME_SIZE, ape->samplerate);
 
     st->codec->extradata = av_malloc(APE_EXTRADATA_SIZE);
@@ -338,9 +338,9 @@ static int ape_read_packet(AVFormatContext * s, AVPacket * pkt)
     uint32_t extra_size = 8;
 
     if (url_feof(s->pb))
-        return AVERROR_IO;
+        return AVERROR(EIO);
     if (ape->currentframe > ape->totalframes)
-        return AVERROR_IO;
+        return AVERROR(EIO);
 
     url_fseek (s->pb, ape->frames[ape->currentframe].pos, SEEK_SET);
 

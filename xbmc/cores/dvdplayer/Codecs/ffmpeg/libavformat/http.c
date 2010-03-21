@@ -24,6 +24,7 @@
 #include "avformat.h"
 #include <unistd.h>
 #include <strings.h>
+#include "internal.h"
 #include "network.h"
 #include "os_support.h"
 
@@ -69,17 +70,13 @@ static int http_open_cnx(URLContext *h)
     /* fill the dest addr */
  redo:
     /* needed in any case to build the host string */
-    url_split(NULL, 0, auth, sizeof(auth), hostname, sizeof(hostname), &port,
-              path1, sizeof(path1), s->location);
-    if (port > 0) {
-        snprintf(hoststr, sizeof(hoststr), "%s:%d", hostname, port);
-    } else {
-        av_strlcpy(hoststr, hostname, sizeof(hoststr));
-    }
+    ff_url_split(NULL, 0, auth, sizeof(auth), hostname, sizeof(hostname), &port,
+                 path1, sizeof(path1), s->location);
+    ff_url_join(hoststr, sizeof(hoststr), NULL, NULL, hostname, port, NULL);
 
     if (use_proxy) {
-        url_split(NULL, 0, auth, sizeof(auth), hostname, sizeof(hostname), &port,
-                  NULL, 0, proxy_path);
+        ff_url_split(NULL, 0, auth, sizeof(auth), hostname, sizeof(hostname), &port,
+                     NULL, 0, proxy_path);
         path = s->location;
     } else {
         if (path1[0] == '\0')
@@ -90,7 +87,7 @@ static int http_open_cnx(URLContext *h)
     if (port < 0)
         port = 80;
 
-    snprintf(buf, sizeof(buf), "tcp://%s:%d", hostname, port);
+    ff_url_join(buf, sizeof(buf), "tcp", NULL, hostname, port, NULL);
     err = url_open(&hd, buf, URL_RDWR);
     if (err < 0)
         goto fail;
@@ -256,13 +253,15 @@ static int http_connect(URLContext *h, const char *path, const char *hoststr,
              "Host: %s\r\n"
              "Authorization: Basic %s\r\n"
              "Connection: close\r\n"
+             "%s"
              "\r\n",
              post ? "POST" : "GET",
              path,
              LIBAVFORMAT_IDENT,
              s->off,
              hoststr,
-             auth_b64);
+             auth_b64,
+             post ? "Transfer-Encoding: chunked\r\n" : "");
 
     av_freep(&auth_b64);
     if (http_write(h, s->buffer, strlen(s->buffer)) < 0)
@@ -275,6 +274,8 @@ static int http_connect(URLContext *h, const char *path, const char *hoststr,
     s->off = 0;
     s->filesize = -1;
     if (post) {
+        /* always use chunked encoding for upload data */
+        s->chunksize = 0;
         return 0;
     }
 
@@ -344,16 +345,45 @@ static int http_read(URLContext *h, uint8_t *buf, int size)
 /* used only when posting data */
 static int http_write(URLContext *h, uint8_t *buf, int size)
 {
+    char temp[11];  /* 32-bit hex + CRLF + nul */
+    int ret;
+    char crlf[] = "\r\n";
     HTTPContext *s = h->priv_data;
-    return url_write(s->hd, buf, size);
+
+    if (s->chunksize == -1) {
+        /* headers are sent without any special encoding */
+        return url_write(s->hd, buf, size);
+    }
+
+    /* silently ignore zero-size data since chunk encoding that would
+     * signal EOF */
+    if (size > 0) {
+        /* upload data using chunked encoding */
+        snprintf(temp, sizeof(temp), "%x\r\n", size);
+
+        if ((ret = url_write(s->hd, temp, strlen(temp))) < 0 ||
+            (ret = url_write(s->hd, buf, size)) < 0 ||
+            (ret = url_write(s->hd, crlf, sizeof(crlf) - 1)) < 0)
+            return ret;
+    }
+    return size;
 }
 
 static int http_close(URLContext *h)
 {
+    int ret = 0;
+    char footer[] = "0\r\n\r\n";
     HTTPContext *s = h->priv_data;
+
+    /* signal end of chunked encoding if used */
+    if ((h->flags & URL_WRONLY) && s->chunksize != -1) {
+        ret = url_write(s->hd, footer, sizeof(footer) - 1);
+        ret = ret > 0 ? 0 : ret;
+    }
+
     url_close(s->hd);
     av_free(s);
-    return 0;
+    return ret;
 }
 
 static int64_t http_seek(URLContext *h, int64_t off, int whence)
@@ -361,6 +391,8 @@ static int64_t http_seek(URLContext *h, int64_t off, int whence)
     HTTPContext *s = h->priv_data;
     URLContext *old_hd = s->hd;
     int64_t old_off = s->off;
+    uint8_t old_buf[BUFFER_SIZE];
+    int old_buf_size;
 
     if (whence == AVSEEK_SIZE)
         return s->filesize;
@@ -368,6 +400,8 @@ static int64_t http_seek(URLContext *h, int64_t off, int whence)
         return -1;
 
     /* we save the old context in case the seek fails */
+    old_buf_size = s->buf_end - s->buf_ptr;
+    memcpy(old_buf, s->buf_ptr, old_buf_size);
     s->hd = NULL;
     if (whence == SEEK_CUR)
         off += s->off;
@@ -377,6 +411,9 @@ static int64_t http_seek(URLContext *h, int64_t off, int whence)
 
     /* if it fails, continue on old connection */
     if (http_open_cnx(h) < 0) {
+        memcpy(s->buffer, old_buf, old_buf_size);
+        s->buf_ptr = s->buffer;
+        s->buf_end = s->buffer + old_buf_size;
         s->hd = old_hd;
         s->off = old_off;
         return -1;

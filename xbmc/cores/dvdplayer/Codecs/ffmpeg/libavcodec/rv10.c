@@ -28,6 +28,8 @@
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpegvideo.h"
+#include "mpeg4video.h"
+#include "h263.h"
 
 //#define DEBUG
 
