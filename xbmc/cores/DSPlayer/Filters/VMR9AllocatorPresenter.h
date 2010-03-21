@@ -83,15 +83,19 @@ protected:
   
   bool m_fUseInternalTimer;
   //Clock stuff
-  REFERENCE_TIME m_rtTimePerFrame;
+  double         m_rtTimePerFrame;
   float          m_fps;
   int            m_fFrameRate;
+  double         m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
+  double         m_iCurrentPts; // last pts displayed
+
   bool           m_bRenderCreated;
   bool           m_bNeedNewDevice;
+  volatile bool m_bVmrStop;
 private:
-  long        m_refCount;
+  //long        m_refCount;
   IVMRSurfaceAllocatorNotify9*        m_pIVMRSurfAllocNotify;
-  std::vector<Com::SmartQIPtr<IDirect3DSurface9>>     m_pSurfaces;
+  std::vector<IDirect3DSurface9*>     m_pSurfaces;
   int                                 m_pNbrSurface;
   int                                 m_pCurSurface;
   bool          m_bNeedCheckSample;

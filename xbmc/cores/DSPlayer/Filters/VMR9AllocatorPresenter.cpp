@@ -26,7 +26,7 @@
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DSGeometry.h"
 #include "cores/VideoRenderers/RenderManager.h"
-
+#include "DSClock.h"
 #include "WindowingFactory.h" //d3d device and d3d interface
 #include "VMR9AllocatorPresenter.h"
 #include "application.h"
@@ -36,6 +36,7 @@
 #include "GuiSettings.h"
 //#include "SystemInfo.h"
 #include "SingleLock.h"
+
 
 class COuterVMR9
   : public CUnknown
@@ -281,16 +282,18 @@ public:
 
 CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error)
 : CDsRenderer(),
-  m_refCount(1),
   m_pNbrSurface(0),
   m_pCurSurface(0)
 {
   hr = S_OK;
   m_bNeedNewDevice = false;
+  m_bVmrStop = false;
+  m_FlipTimeStamp = 0;
 }
 
 CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 {
+  m_bVmrStop = true;
   DeleteSurfaces();
 }
 
@@ -301,10 +304,7 @@ void CVMR9AllocatorPresenter::DeleteSurfaces()
   int k = 0;
   for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
   {
-    if (m_pSurfaces[i])
-    {
-      k = m_pSurfaces[i].Release();
-    }
+    SAFE_RELEASE(m_pSurfaces[i]);
   }
 
   __super::DeleteSurfaces();
@@ -425,12 +425,12 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
   Com::SmartPtr<IBaseFilter>  pVMR9;
   Com::SmartPtr<IPin>      pPin;
   CMediaType        mt;
-
+  REFERENCE_TIME timeperframe = 0;
   if (SUCCEEDED (m_pIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
     SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
     SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
   {
-    DShowUtil::ExtractAvgTimePerFrame(&mt, m_rtTimePerFrame);
+    DShowUtil::ExtractAvgTimePerFrame(&mt, timeperframe);
 
     if (mt.formattype == FORMAT_VideoInfo || mt.formattype == FORMAT_MPEGVideo) {
 
@@ -467,9 +467,11 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
     }
 
     // If 0 defaulting framerate to 23.97...
-    if (m_rtTimePerFrame == 0) m_rtTimePerFrame = 417166;
+    if (timeperframe == 0) 
+      timeperframe = 417166;
 
-    m_fps = (float) ( 10000000.0 / m_rtTimePerFrame );    
+    m_rtTimePerFrame = (double) (timeperframe / 10);
+    m_fps = (float) ( 10000000.0 / timeperframe );    
     g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth,
       m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
   }
@@ -613,26 +615,16 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     GetCurrentVideoSize();
   }
 
-  if (!g_renderManager.IsStarted())
-    return E_FAIL;
+  if (!g_renderManager.IsStarted() || m_bNeedNewDevice)
+    return S_OK;
 
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
 
-  if (m_bNeedNewDevice)
-  {
-    return S_OK;
-  }
-  CSingleLock Lock(m_RenderLock);
-  /*if (m_bNeedNewDevice)
-  {
-    if (SUCCEEDED(g_Windowing.GetDeviceStatus()))
-      ChangeD3dDev();
-    else
-      CLog::Log(LOGDEBUG,"Need new device but 3d device suck");
+  if ( m_FlipTimeStamp == 0 )
+    m_FlipTimeStamp = g_DsClock.GetAbsoluteClock();
 
-    return S_OK;
-  }*/
+  CSingleLock Lock(m_RenderLock);
 
   Com::SmartPtr<IDirect3DTexture9> pTexture;
   lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
@@ -640,7 +632,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   if(pTexture)
   {
     m_pVideoSurface[m_nCurSurface] = lpPresInfo->lpSurf;
-    if(m_pVideoTexture[m_nCurSurface]) 
+    if(m_pVideoTexture[m_nCurSurface])
       m_pVideoTexture[m_nCurSurface] = pTexture;
   }
   else
@@ -649,9 +641,33 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   }
 
   g_renderManager.PaintVideoTexture(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
-  
   g_application.NewFrame();
   g_application.WaitFrame(100);
+  return S_OK;
+  //TODO find where i did the miscalculation when converting directshow 100 nanosec units to the one used by xbmc 1000 nanosecunits 
+  double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration,pts;
+  
+  pts = (double)(lpPresInfo->rtStart); //converting reference tiem to the current base we use for calculating the flip
+  iCurrentClock = CDSClock::GetAbsoluteClock(); // snapshot current clock
+  iClockSleep = pts - g_DsClock.GetClock();  //sleep calculated by pts to clock comparison
+  iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
+  iFrameDuration = m_rtTimePerFrame*10;//pPicture->iDuration;  
+
+  // dropping to a very low framerate is not correct (it should not happen at all)
+  iClockSleep = min(iClockSleep, DS_MSEC_TO_TIME(500));
+  iFrameSleep = min(iFrameSleep, DS_MSEC_TO_TIME(500));
+  
+  iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep);
+
+  m_iCurrentPts = pts - max(0.0, iSleepTime);
+
+// timestamp when we think next picture should be displayed based on current duration
+  m_FlipTimeStamp  = iCurrentClock;
+  m_FlipTimeStamp += max(0.0, iSleepTime);
+  m_FlipTimeStamp += iFrameDuration;
+  
+  g_renderManager.FlipPage(m_bVmrStop, (iCurrentClock + iSleepTime) / DS_TIME_BASE);
+
   return S_OK;
 }
 

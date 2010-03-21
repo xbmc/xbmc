@@ -217,3 +217,5 @@ int CDSClock::UpdateFramerate(double fps)
     
   return rate;
 }
+
+CDSClock g_DsClock;

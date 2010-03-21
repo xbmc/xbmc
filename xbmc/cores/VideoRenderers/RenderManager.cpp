@@ -45,6 +45,9 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
+#ifdef HAS_DX
+#include "../dsplayer/DSClock.h"
+#endif
 
 CXBMCRenderManager g_renderManager;
 
@@ -109,7 +112,10 @@ CXBMCRenderManager::~CXBMCRenderManager()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  if ( m_pRendererType == RENDERER_NORMAL )
+    return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  else
+    return CDSClock::GetAbsoluteClock() / DS_TIME_BASE;
 }
 
 static double wrap(double x, double minimum, double maximum)

@@ -97,5 +97,5 @@ public:
 protected:
   virtual void OnExit();
   virtual void Process();
-  Com::SmartPtr<IBaseFilter> m_pBF;
+  IBaseFilter* m_pBF;
 };
