@@ -24,6 +24,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "GUISettings.h"
 #include "utils/log.h"
+#include "limits.h"
 
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %d - %s",__FUNCTION__,s,e,snd_strerror(e));
 #define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return false;
@@ -255,7 +256,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   nErr = snd_pcm_sw_params_current(m_pPlayHandle, sw_params);
   CHECK_ALSA_RETURN(LOGERROR,"sw_params_current",nErr);
 
-  nErr = snd_pcm_sw_params_set_start_threshold(m_pPlayHandle, sw_params, dwFrameCount);
+  nErr = snd_pcm_sw_params_set_start_threshold(m_pPlayHandle, sw_params, INT_MAX);
   CHECK_ALSA_RETURN(LOGERROR,"sw_params_set_start_threshold",nErr);
 
   snd_pcm_uframes_t boundary;
@@ -346,8 +347,21 @@ bool CALSADirectSound::Pause()
 
   if(!m_bCanPause)
   {
-    CLog::Log(LOGWARNING, "CALSADirectSound::CALSADirectSound - device is not able to pause playback, will flush instead");
+    snd_pcm_sframes_t avail = snd_pcm_avail(m_pPlayHandle);
+    snd_pcm_sframes_t delay = 0;
+    if(avail > 0)
+      delay = snd_pcm_bytes_to_frames(m_pPlayHandle, m_uiBufferSize) - avail;
+
+    CLog::Log(LOGWARNING, "CALSADirectSound::CALSADirectSound - device is not able to pause playback, will flush and prefix with %d frames", (int)delay);
     Flush();
+
+    if(delay > 0)
+    {
+      void* silence = calloc(snd_pcm_frames_to_bytes(m_pPlayHandle, delay), 1);
+      int nErr = snd_pcm_writei(m_pPlayHandle, silence, delay);
+      CHECK_ALSA(LOGERROR,"snd_pcm_writei", nErr);
+      free(silence);
+    }
   }
 
   return true;
@@ -359,8 +373,19 @@ bool CALSADirectSound::Resume()
   if (!m_bIsAllocated)
      return -1;
 
-  if(m_bCanPause && m_bPause)
+  snd_pcm_state_t state = snd_pcm_state(m_pPlayHandle);
+  if(state == SND_PCM_STATE_PAUSED)
     snd_pcm_pause(m_pPlayHandle,0);
+
+  if(state == SND_PCM_STATE_PREPARED)
+  {
+    snd_pcm_sframes_t avail = snd_pcm_avail(m_pPlayHandle);
+    snd_pcm_sframes_t delay = 0;
+    if(avail > 0)
+      delay = snd_pcm_bytes_to_frames(m_pPlayHandle, m_uiBufferSize) - avail;
+    if(delay > 0)
+      snd_pcm_start(m_pPlayHandle);
+  }
 
   m_bPause = false;
 
@@ -456,7 +481,12 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   framesToWrite     = snd_pcm_bytes_to_frames(m_pPlayHandle, framesToWrite);
 
   if(framesToWrite == 0)
+  {
+    // if we haven't started playback, do so now
+    if(snd_pcm_state(m_pPlayHandle) == SND_PCM_STATE_PREPARED && !m_bPause)
+      snd_pcm_start(m_pPlayHandle);
     return 0;
+  }
 
   // handle volume de-amp
   if (!m_bPassthrough)
@@ -497,7 +527,12 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   }
 
   if (writeResult > 0)
+  {
+    if(snd_pcm_state(m_pPlayHandle) == SND_PCM_STATE_PREPARED && !m_bPause)
+      snd_pcm_start(m_pPlayHandle);
+    
     return writeResult * (m_uiBitsPerSample / 8) * m_uiDataChannels;
+  }
 
   return 0;
 }
