@@ -111,7 +111,7 @@ public:
   static bool GuidVectItterCompare(GuidListIter it, std::vector<GUID>::const_reference vect);
   static bool GuidItteratorIsNull(GuidListIter it);
   static bool GuidVectIsNull(std::vector<GUID>::const_reference vect);
-  static HRESULT IsPinConnected(IPin* pPin);
+  static bool IsPinConnected(IPin* pPin);
   static long MFTimeToMsec(const LONGLONG& time);
   static CStdString GetFilterPath(CStdString pClsid);
   static CStdString GetFilterPath(CLSID pClsid);

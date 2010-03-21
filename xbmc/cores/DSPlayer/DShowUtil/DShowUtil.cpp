@@ -67,12 +67,19 @@ else
   return true;
 }
 
-HRESULT DShowUtil::IsPinConnected(IPin* pPin)
+bool DShowUtil::IsPinConnected(IPin* pPin)
 {
   CheckPointer(pPin, E_POINTER);
 
   IPin* pPinTo;
-  return SUCCEEDED(pPin->ConnectedTo(&pPinTo)) && pPinTo ? S_OK : S_FALSE;
+  if (SUCCEEDED(pPin->ConnectedTo(&pPinTo)))
+  {
+    if (pPinTo)
+      return true;
+    else 
+      return false;
+  }
+  return false;
 }
 
 
