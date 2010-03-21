@@ -107,7 +107,7 @@ HRESULT CFilterCoreFactory::GetSplitterFilter( const CFileItem& pFileItem, CStdS
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, CStdString& filter, SStreamInfos* s )
+HRESULT CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, CStdString& filter, SVideoStreamIndexes *pStreamIndexes /*= NULL*/ )
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
@@ -115,7 +115,7 @@ HRESULT CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, 
     return E_FAIL;
 
   std::vector<CStdString> foo;
-  pRule->GetAudioRendererFilters(pFileItem, foo, s);
+  pRule->GetAudioRendererFilters(pFileItem, foo, pStreamIndexes);
 
   if (foo.empty())
     return E_FAIL;
@@ -124,7 +124,7 @@ HRESULT CFilterCoreFactory::GetAudioRendererFilter( const CFileItem& pFileItem, 
   return S_OK;
 }
 
-HRESULT CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/, SStreamInfos* s )
+HRESULT CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdString& filter, bool dxva /*= false*/, SVideoStreamIndexes *pStreamIndexes /*= NULL*/ )
 {
   filter = "";
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
@@ -132,7 +132,7 @@ HRESULT CFilterCoreFactory::GetAudioFilter( const CFileItem& pFileItem, CStdStri
     return E_FAIL;
 
   std::vector<CStdString> foo;
-  pRule->GetAudioFilters(pFileItem, foo, dxva, s);
+  pRule->GetAudioFilters(pFileItem, foo, dxva, pStreamIndexes);
 
   if (foo.empty())
     return E_FAIL;

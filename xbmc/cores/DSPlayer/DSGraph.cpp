@@ -150,7 +150,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   Play();
   
   CStreamsManager::getSingleton()->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-
   m_currentSpeed = 10000;
 
   return hr;
@@ -436,8 +435,7 @@ HRESULT CDSGraph::HandleGraphEvent()
 			    switch(m_pDvdStatus.DvdDomain)
 			    {
 			    case DVD_DOMAIN_FirstPlay:
-				    ULONGLONG	llDVDGuid;
-
+				    
 				    if (m_pDvdInfo2 && SUCCEEDED (m_pDvdInfo2->GetDiscID (NULL, &m_pDvdStatus.DvdGuid)))
 				    {
 					    if (m_pDvdStatus.DvdTitleId != 0)
@@ -616,8 +614,7 @@ void CDSGraph::DoFFRW(int currentRate)
   m_pDsClock->SetSpeed(stepInMsec);
   
   m_currentSpeed = stepInMsec;
-  //m_State.time
-  HRESULT hr;
+
   LONGLONG timetarget;
   timetarget = DS_MSEC_TO_TIME(m_State.time) + (DS_MSEC_TO_TIME(stepInMsec));
   
@@ -635,7 +632,7 @@ void CDSGraph::DoFFRW(int currentRate)
       return;
 
     HRESULT hr;
-    LONGLONG earliest, latest, current, stop, rewind, pStop;
+    LONGLONG earliest, latest, current, pStop;
     m_pMediaSeeking->GetAvailable(&earliest,&latest);
     //m_pMediaSeeking->GetPositions(&current,&stop);
     

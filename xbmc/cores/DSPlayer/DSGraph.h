@@ -203,10 +203,10 @@ private:
       player_state = "";
       current_filter_state = State_Stopped;
     }
-    double timestamp;         // last time of update
+    LONGLONG timestamp;         // last time of update
 
-    double time;              // current playback time in millisec
-    double time_total;        // total playback time in millisec
+    LONGLONG time;              // current playback time in millisec
+    LONGLONG time_total;        // total playback time in millisec
     FILTER_STATE current_filter_state;
 
     std::string player_state;  // full player state
