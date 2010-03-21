@@ -143,6 +143,11 @@ void CopyRGBA( u8 const* source, u8* dest, int flags )
 
 void CompressImage( u8 const* rgba, int width, int height, void* blocks, int flags, float* metric )
 {
+	CompressImage(rgba, width, height, width*4, blocks, flags, metric);
+}
+  
+void CompressImage( u8 const* rgba, int width, int height, int pitch, void* blocks, int flags, float* metric )
+{
 	// fix any bad flags
 	flags = FixFlags( flags );
 
@@ -171,7 +176,7 @@ void CompressImage( u8 const* rgba, int width, int height, void* blocks, int fla
 					if( sx < width && sy < height )
 					{
 						// copy the rgba value
-						u8 const* sourcePixel = rgba + 4*( width*sy + sx );
+						u8 const* sourcePixel = rgba + pitch*sy + 4*sx;
 						CopyRGBA(sourcePixel, targetPixel, flags);
 						// enable this pixel
 						mask |= ( 1 << ( 4*py + px ) );
@@ -240,6 +245,11 @@ static double ErrorSq(double x, double y)
 
 void ComputeMSE( u8 const *rgba, int width, int height, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE )
 {
+  	ComputeMSE(rgba, width, height, width*4, dxt, flags, colourMSE, alphaMSE);
+}
+                
+void ComputeMSE( u8 const *rgba, int width, int height, int pitch, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE )
+{
 	// fix any bad flags
 	flags = FixFlags( flags );
 	colourMSE = alphaMSE = 0;
@@ -268,7 +278,7 @@ void ComputeMSE( u8 const *rgba, int width, int height, u8 const *dxt, int flags
 					int sy = y + py;
 					if( sx < width && sy < height )
 					{
-						u8 const* targetPixel = rgba + 4*( width*sy + sx );
+						u8 const* targetPixel = rgba + pitch*sy + 4*sx;
 						u8 colour[4];
 						CopyRGBA(targetPixel, colour, flags);
 						// compute the MSE of colour and alpha
