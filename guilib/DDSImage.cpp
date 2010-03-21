@@ -21,6 +21,7 @@
 
 #include "DDSImage.h"
 #include "XBTF.h"
+#include "lib/libsquish/squish.h"
 #include <string.h>
 
 #ifndef NO_XBMC_FILESYSTEM
@@ -38,17 +39,8 @@ CDDSImage::CDDSImage()
 
 CDDSImage::CDDSImage(unsigned int width, unsigned int height, unsigned int format)
 {
-  memset(&m_desc, 0, sizeof(m_desc));
-  m_desc.size = sizeof(m_desc);
-  m_desc.flags = ddsd_caps | ddsd_pixelformat | ddsd_width | ddsd_height | ddsd_linearsize;
-  m_desc.height = height;
-  m_desc.width = width;
-  m_desc.linearSize = GetStorageRequirements(width, height, format);
-  m_desc.pixelFormat.size = sizeof(m_desc.pixelFormat);
-  m_desc.pixelFormat.flags = ddpf_fourcc;
-  memcpy(&m_desc.pixelFormat.fourcc, (format == XB_FMT_DXT1) ? "DXT1" : "DXT5", 4);
-  m_desc.caps.flags1 = ddscaps_texture;
-  m_data = new unsigned char[m_desc.linearSize];
+  m_data = NULL;
+  Allocate(width, height, format);
 }
 
 CDDSImage::~CDDSImage()
@@ -134,4 +126,88 @@ unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int 
 {
   unsigned int blockSize = (format == XB_FMT_DXT1) ? 8 : 16;
   return ((width + 3) / 4) * ((height + 3) / 4) * blockSize;
+}
+
+bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *brga, double maxMSE)
+{
+  delete[] m_data;
+  m_data = new unsigned char[GetStorageRequirements(width, height, XB_FMT_DXT1)];
+  
+  // first try DXT1, which is only 4bits/pixel
+  Allocate(width, height, XB_FMT_DXT1);
+  
+  squish::CompressImage(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA);
+  if (maxMSE)
+  { // want to bother with other formats
+    double colorMSE, alphaMSE;
+    squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
+    if (colorMSE < maxMSE && alphaMSE < maxMSE)
+      return true;
+
+    Allocate(width, height, XB_FMT_DXT3);
+    
+    if (alphaMSE == 0)
+    { // no alpha channel, so DXT5YCoCg is going to be the best DXT5 format
+      /*        squish::CompressImage(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA);
+       squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt5 | squish::kSourceBGRA, colorMSE, alphaMSE);
+       if (colorMSE < maxMSE && alphaMSE < maxMSE)
+       { // success - use it
+       compressedSize = squish::GetStorageRequirements(width, height, squish::kDxt5);
+       format = XB_FMT_DXT5_YCoCg;
+       }
+       */
+    }
+    if (alphaMSE > 0)
+    { // try DXT3 and DXT5 - use whichever is better (color is the same, but alpha will be different)
+      squish::CompressImage(brga, width, height, pitch, m_data, squish::kDxt3 | squish::kSourceBGRA);
+      squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt3 | squish::kSourceBGRA, colorMSE, alphaMSE);
+      if (colorMSE < maxMSE)
+      { // color is fine, test DXT5 as well
+        double dxt5MSE;
+        unsigned char *data2 = new unsigned char[GetStorageRequirements(width, height, XB_FMT_DXT5)];
+        squish::CompressImage(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA);
+        squish::ComputeMSE(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA, colorMSE, alphaMSE);
+        if (alphaMSE < maxMSE && alphaMSE < dxt5MSE)
+        { // DXT3 passes and is best
+          return true;
+        }
+        else if (dxt5MSE < maxMSE)
+        { // DXT5 passes
+          memcpy(&m_desc.pixelFormat.fourcc, "DXT5", 4);
+          delete[] m_data;
+          m_data = data2;
+          return true;
+        }
+        delete[] data2;
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+void CDDSImage::Allocate(unsigned int width, unsigned int height, unsigned int format)
+{
+  memset(&m_desc, 0, sizeof(m_desc));
+  m_desc.size = sizeof(m_desc);
+  m_desc.flags = ddsd_caps | ddsd_pixelformat | ddsd_width | ddsd_height | ddsd_linearsize;
+  m_desc.height = height;
+  m_desc.width = width;
+  m_desc.linearSize = GetStorageRequirements(width, height, format);
+  m_desc.pixelFormat.size = sizeof(m_desc.pixelFormat);
+  m_desc.pixelFormat.flags = ddpf_fourcc;
+  memcpy(&m_desc.pixelFormat.fourcc, GetFourCC(format), 4);
+  m_desc.caps.flags1 = ddscaps_texture;
+  delete[] m_data;
+  m_data = new unsigned char[m_desc.linearSize];
+}
+
+const char *CDDSImage::GetFourCC(unsigned int format) const
+{
+  if (format == XB_FMT_DXT1)
+    return "DXT1";
+  else if (format == XB_FMT_DXT3)
+    return "DXT3";
+  else
+    return "DXT5";
 }

@@ -40,7 +40,20 @@ public:
   bool ReadFile(const std::string &file);
   bool WriteFile(const std::string &file) const;
 
+  /*! \brief Compress an ARGB buffer into a DXT1/3/5 image
+   \param width width of the pixel buffer
+   \param height height of the pixel buffer
+   \param pitch pitch of the pixel buffer
+   \param argb pixel buffer
+   \param maxMSE maximum mean square error to allow, ignored if 0 (the default)
+   \return true on successful compression within the given maxMSE, false otherwise
+   */
+  bool Compress(unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *argb, double maxMSE = 0);
+  
 private:
+  void Allocate(unsigned int width, unsigned int height, unsigned int format);
+  const char *GetFourCC(unsigned int format) const;
+  
   unsigned int GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format) const;
   enum {
     ddsd_caps        = 0x00000001,
