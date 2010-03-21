@@ -842,13 +842,13 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
       if (pMT->majortype == MEDIATYPE_Video)
       {
         nVideoPin++;
-        if (DShowUtil::IsPinConnected(pPin) == S_OK)
+        if (DShowUtil::IsPinConnected(pPin))
           nConnectedVideoPin++;
       }
       if (pMT->majortype == MEDIATYPE_Audio)
       {
         nAudioPin++;
-        if (DShowUtil::IsPinConnected(pPin) == S_OK)
+        if (DShowUtil::IsPinConnected(pPin))
           nConnectedAudioPin++;
       }
       break;
@@ -934,7 +934,7 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
     {
       IBaseFilter *pBFV = CFGLoader::Filters.VideoRenderer.pBF;
       Com::SmartPtr<IPin> pPinV = DShowUtil::GetFirstPin(pBFV, PINDIR_INPUT);
-      if (SUCCEEDED(DShowUtil::IsPinConnected(pPinV)))
+      if (DShowUtil::IsPinConnected(pPinV))
       {
         CLog::Log(LOGINFO, "The video filters encountered an error so dsplayer changed the filters currently used.");
       }

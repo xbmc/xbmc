@@ -69,17 +69,10 @@ else
 
 bool DShowUtil::IsPinConnected(IPin* pPin)
 {
-  CheckPointer(pPin, E_POINTER);
+  CheckPointer(pPin, false);
 
-  IPin* pPinTo;
-  if (SUCCEEDED(pPin->ConnectedTo(&pPinTo)))
-  {
-    if (pPinTo)
-      return true;
-    else 
-      return false;
-  }
-  return false;
+  Com::SmartPtr<IPin> pPinTo;
+  return ((SUCCEEDED(pPin->ConnectedTo(&pPinTo))) && pPinTo) ? true : false;
 }
 
 
