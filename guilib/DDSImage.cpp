@@ -186,6 +186,21 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
   return true;
 }
 
+bool CDDSImage::Decompress(unsigned char *argb, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *dxt, unsigned int format)
+{
+  if (!argb || !dxt || !(format & XB_FMT_DXT_MASK))
+    return false;
+
+  if (format == XB_FMT_DXT1)
+    squish::DecompressImage(argb, width, height, pitch, dxt, squish::kDxt1 | squish::kSourceBGRA);
+  else if (format == XB_FMT_DXT3)
+    squish::DecompressImage(argb, width, height, pitch, dxt, squish::kDxt3 | squish::kSourceBGRA);
+  else if (format == XB_FMT_DXT5)
+    squish::DecompressImage(argb, width, height, pitch, dxt, squish::kDxt5 | squish::kSourceBGRA);
+ 
+  return true;
+}
+
 void CDDSImage::Allocate(unsigned int width, unsigned int height, unsigned int format)
 {
   memset(&m_desc, 0, sizeof(m_desc));

@@ -50,6 +50,18 @@ public:
    */
   bool Compress(unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *argb, double maxMSE = 0);
   
+  /*! \brief Decompress a DXT1/3/5 image to the given buffer
+   Assumes the buffer has been allocated to at least width*height*4
+   \param argb pixel buffer to write to (at least width*height*4 bytes)
+   \param width width of the pixel buffer
+   \param height height of the pixel buffer
+   \param pitch pitch of the pixel buffer
+   \param dxt compressed dxt data
+   \param format format of the compressed dxt data
+   \return true on success, false otherwise
+   */
+  static bool Decompress(unsigned char *argb, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *dxt, unsigned int format);
+
 private:
   void Allocate(unsigned int width, unsigned int height, unsigned int format);
   const char *GetFourCC(unsigned int format) const;
