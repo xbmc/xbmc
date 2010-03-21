@@ -235,32 +235,10 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
     delete[] buffer;
     buffer = unpacked;
   }
-  unsigned int format = frame.GetFormat();
-  if ((format & XB_FMT_DXT_MASK) != 0 && !g_Windowing.SupportsDXT())
-  { // we don't support this texture format, so decode
-    squish::u8 *decoded = new squish::u8[frame.GetWidth() * frame.GetHeight() * 4];
-    if (decoded == NULL)
-    {
-      CLog::Log(LOGERROR, "Out of memory unpacking texture: %s (need %"PRIu64" bytes)", name.c_str(), frame.GetUnpackedSize());
-      delete[] buffer;
-      return false;
-    }
-
-    if (format == XB_FMT_DXT1)
-      squish::DecompressImage(decoded, frame.GetWidth(), frame.GetHeight(), buffer, squish::kDxt1 | squish::kSourceBGRA);
-    else if (format == XB_FMT_DXT3)
-      squish::DecompressImage(decoded, frame.GetWidth(), frame.GetHeight(), buffer, squish::kDxt3 | squish::kSourceBGRA);
-    else if (format == XB_FMT_DXT5)
-      squish::DecompressImage(decoded, frame.GetWidth(), frame.GetHeight(), buffer, squish::kDxt5 | squish::kSourceBGRA);
-
-    format = XB_FMT_A8R8G8B8;
-    delete[] buffer;
-    buffer = decoded;
-  }
 
   // create an xbmc texture
   *ppTexture = new CTexture();
-  (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, format, buffer);
+  (*ppTexture)->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(), buffer);
 
   delete[] buffer;
 
