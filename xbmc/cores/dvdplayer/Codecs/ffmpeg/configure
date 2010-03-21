@@ -2728,7 +2728,8 @@ check_cflags -Wcast-qual
 check_cflags -Wwrite-strings
 check_cflags -Wtype-limits
 check_cflags -Wundef
-check_cflags -Wmissing-prototypes
+# some gcc compilers (mingw 4.2.1-sjlj) are b0rk so for now skip this
+# check_cflags -Wmissing-prototypes
 enabled extra_warnings && check_cflags -Winline
 
 # add some linker flags
@@ -2776,7 +2777,8 @@ elif enabled ccc; then
 elif enabled gcc; then
     check_cflags -fno-tree-vectorize
     check_cflags -Werror=implicit
-    check_cflags -Werror=missing-prototypes
+# some gcc compilers (mingw 4.2.1-sjlj) are b0rk so for now skip this
+#    check_cflags -Werror=missing-prototypes
 elif enabled clang; then
     check_cflags -Qunused-arguments
 elif enabled armcc; then
