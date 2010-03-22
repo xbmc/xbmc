@@ -49,7 +49,7 @@ CDSClock::CDSClock()
 CDSClock::~CDSClock()
 {}
 
-// Returns the current absolute clock in units of DS_TIME_BASE (usually microseconds).
+// Returns the current absolute clock in units of DS_TIME_BASE (This is in 100 nanosec units).
 double CDSClock::GetAbsoluteClock()
 {
   CSingleLock lock(m_systemsection);

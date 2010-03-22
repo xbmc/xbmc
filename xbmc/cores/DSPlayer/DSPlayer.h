@@ -133,8 +133,9 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
-  int m_currentSpeed;
-  int m_currentRate;
+  int  m_currentSpeed;
+  int  m_currentRate;
+  bool m_bSpeedChanged;
   CDSGraph m_pDsGraph;
   CDSClock m_pDsClock;
   CPlayerOptions m_PlayerOptions;

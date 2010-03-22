@@ -46,7 +46,8 @@ CFileItem CDSPlayer::currentFileItem;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_pDsGraph(&m_pDsClock),
-      m_hReadyEvent(true)
+      m_hReadyEvent(true),
+      m_bSpeedChanged(false)
 {
 }
 
@@ -226,25 +227,23 @@ void CDSPlayer::Process()
 
     CHECK_PLAYER_STATE
     
-    //Handle fastforward stuff
-    if (m_currentSpeed == 0)
+    if (m_bSpeedChanged)
     {
-      m_pDsClock.SetSpeed(0);
-      Sleep(250);
-    } 
-    else if (m_currentSpeed != 10000)
-    {
-      //m_pDsClock.SetSpeed(m_currentRate * 1000);
-      m_pDsGraph.DoFFRW(m_currentRate);
-      Sleep(250);
-    } 
-    else
-    {
-      Sleep(250);
-      m_pDsGraph.UpdateTime();
-      CChaptersManager::getSingleton()->UpdateChapters();
+      m_pDsClock.SetSpeed(m_currentRate * 1000);
+      
     }
+    m_pDsGraph.UpdateTime();
 
+    m_pDsGraph.DoFFRW(m_currentRate);
+
+    
+    
+
+    if (m_currentRate == 1)
+      CChaptersManager::getSingleton()->UpdateChapters();
+    //Handle fastforward stuff
+   
+    Sleep(250);
     CHECK_PLAYER_STATE
 
     if (m_pDsGraph.FileReachedEnd())
@@ -263,15 +262,15 @@ void CDSPlayer::Stop()
 
 void CDSPlayer::Pause()
 {
-  
+  m_bSpeedChanged = true;
   if ( PlayerState == DSPLAYER_PAUSED )
   {
-    m_currentSpeed = 10000;
+    m_currentRate = 1;
     m_callback.OnPlayBackResumed();    
   } 
   else
   {
-    m_currentSpeed = 0;
+    m_currentRate = 0;
     m_callback.OnPlayBackPaused();
   }
 
@@ -279,62 +278,13 @@ void CDSPlayer::Pause()
 }
 void CDSPlayer::ToFFRW(int iSpeed)
 {
+  m_bSpeedChanged = true;
   if (iSpeed != 1)
     g_infoManager.SetDisplayAfterSeek();
-  switch(iSpeed)
-  {
-    case -1:
-      m_currentRate = -1;
-      m_currentSpeed = -10000;
-      break;
-    case -2:
-      m_currentRate = -2;
-      m_currentSpeed = -15000;
-      break;
-    case -4:
-      m_currentRate = -4;
-      m_currentSpeed = -30000;
-      break;
-    case -8:
-      m_currentRate = -8;
-      m_currentSpeed = -45000;
-      break;
-    case -16:
-      m_currentRate = -16;
-      m_currentSpeed = -60000;
-      break;
-    case -32:
-      m_currentRate = -32;
-      m_currentSpeed = -75000;
-      break;
-    case 1:
-      m_currentRate = 1;
-      m_currentSpeed = 10000;
-      SendMessage(g_hWnd,WM_COMMAND, ID_PLAY_PLAY,0);
-    //mediaCtrl.Run();
-      break;
-    case 2:
-      m_currentRate = 2;
-      m_currentSpeed = 15000;
-      break;
-    case 4:
-      m_currentRate = 4;
-      m_currentSpeed = 30000;
-      break;
-    case 8:
-      m_currentRate = 8;
-      m_currentSpeed = 45000;
-      break;
-    case 16:
-      m_currentRate = 16;
-      m_currentSpeed = 60000;
-      break;
-    default:
-      m_currentRate = 32;
-      m_currentSpeed = 75000;
-      break;
-  }
-  //SendMessage(g_hWnd,WM_COMMAND, ID_SET_SPEEDRATE,iSpeed);
+  m_currentRate = iSpeed;
+  if (iSpeed == 1)
+    SendMessage(g_hWnd,WM_COMMAND, ID_PLAY_PLAY,0);
+
 }
 
 void CDSPlayer::Seek(bool bPlus, bool bLargeStep)

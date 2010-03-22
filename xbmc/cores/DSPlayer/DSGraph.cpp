@@ -62,8 +62,8 @@ using namespace std;
 
 CDSGraph::CDSGraph(CDSClock* pClock)
     : m_pGraphBuilder(NULL),
-      m_PlaybackRate(1),
-      m_currentSpeed(0),
+      m_currentRate(1),
+      m_lAvgTimeToSeek(0),
       m_iCurrentFrameRefreshCycle(0),
       m_userId(0xACDCACDC),
       m_bReachedEnd(false)
@@ -150,7 +150,8 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   Play();
   
   CStreamsManager::getSingleton()->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-  m_currentSpeed = 10000;
+
+  m_currentRate = 1;
 
   return hr;
 }
@@ -179,8 +180,8 @@ void CDSGraph::CloseFile()
     m_VideoInfo.Clear();
     m_State.Clear();
 
-    m_PlaybackRate = 1;
-    m_currentSpeed = 0;
+    m_currentRate = 1;
+    
     m_userId = 0xACDCACDC;
     m_bReachedEnd = false;
 
@@ -204,56 +205,42 @@ bool CDSGraph::InitializedOutputDevice()
 
 void CDSGraph::UpdateTime()
 {
-  
-
   if (!m_pMediaSeeking)
     return;
-  //with the Current frame refresh cycle at 5 the framerate is requested every 1000ms
-  // pQualProp is queried in CFGLoader::InsertVideoRenderer
-  if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
+  LONGLONG Position;
+  if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
   {
+    m_State.timestamp = Position;
+    m_State.time = DS_TIME_TO_MSEC(Position);//double(Position) / TIME_FORMAT_TO_MS;
+  }
+  if (m_State.time_total == 0)
+  {
+    //we dont have the duration of the video yet so try to request it
+    UpdateTotalTime();
+  }
+
+  /*if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
+  {
+    //this is too slow if we are doing it on every UpdateTime
     int avgRate;
     CFGLoader::Filters.VideoRenderer.pQualProp->get_AvgFrameRate(&avgRate);
     if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
-      m_pStrCurrentFrameRate = "Real FPS: Not implemented"; // Avoid people complain on forum while IQualProp not implemented in the custom EVR renderer
+      m_pStrCurrentFrameRate = "Real FPS: Not implemented"; //people complain on forum while IQualProp not implemented in the custom EVR renderer
     else
       m_pStrCurrentFrameRate.Format("Real FPS: %4.2f", (float) avgRate / 100);
     m_iCurrentFrameRefreshCycle = 5;
   }
-  m_iCurrentFrameRefreshCycle--;
+  m_iCurrentFrameRefreshCycle--;*/
 
   //On dvd playback the current time is received in the handlegraphevent
   if ( m_VideoInfo.isDVD )
     return;
 
-  REFTIME rt = (REFTIME) 0;
-  LONGLONG Position;
-// Should we return a media position
-  m_State.time = DS_TIME_TO_MSEC(m_pDsClock->GetClock());
-  if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
-  {
-    
-    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-    {
-      m_State.timestamp = Position;
-      m_State.time = TIME_FORMAT_TO_MS(Position);//double(Position) / TIME_FORMAT_TO_MS;
-    }
-    if (m_State.time_total == 0)
-    {
-      //we dont have the duration of the video yet so try to request it
-      UpdateTotalTime();
-    }
-  }
-  else
-  {
-    if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-      m_State.time = Position;
-  }
+ 
   
   if (( m_State.time >= m_State.time_total ))
     m_bReachedEnd = true;
 
-  m_State.timestamp = (LONGLONG) CDSClock::GetAbsoluteClock();
   
 }
 
@@ -300,7 +287,7 @@ void CDSGraph::UpdateTotalTime()
     if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
     {
       rtDur = DShowUtil::HMSF2RT(tcDur);
-      m_State.time_total = TIME_FORMAT_TO_MS(rtDur);
+      m_State.time_total = DS_TIME_TO_MSEC(rtDur);
     }
   }
   else
@@ -313,7 +300,7 @@ void CDSGraph::UpdateTotalTime()
     if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
     {
       if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-        m_State.time_total = TIME_FORMAT_TO_MS(Duration);
+        m_State.time_total = DS_TIME_TO_MSEC(Duration);
     }
     else
     {
@@ -335,13 +322,14 @@ void CDSGraph::UpdateState()
   if ( hr == VFW_S_CANT_CUE )
   {
     CDSPlayer::PlayerState = DSPLAYER_PAUSED;
-    m_PlaybackRate = 0;
+    m_currentRate = 0;
     return;
   }
 
-  //don't request the rate of the graph, the rate is always 1
-  if (m_State.current_filter_state != State_Running)
-    m_PlaybackRate = 0;
+  
+  //What is this crap?
+  //if (m_State.current_filter_state != State_Running)
+  //  m_currentRate = 0;
 
   if (CDSPlayer::PlayerState == DSPLAYER_CLOSING ||
     CDSPlayer::PlayerState == DSPLAYER_CLOSED)
@@ -588,7 +576,7 @@ void CDSGraph::Pause()
     if (m_State.current_filter_state != State_Running)
       m_pMediaControl->Run();
     
-    m_currentSpeed = 10000;
+    m_currentRate = 1;
   }
   else
   {
@@ -601,7 +589,7 @@ void CDSGraph::Pause()
           m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
         } while (m_State.current_filter_state != State_Paused);        
         
-        m_currentSpeed = 0;
+        m_currentRate = 0;
       }
   }
 
@@ -610,18 +598,37 @@ void CDSGraph::Pause()
 
 void CDSGraph::DoFFRW(int currentRate)
 {
-  int stepInMsec =(currentRate * 1000);
-  m_pDsClock->SetSpeed(stepInMsec);
-  
-  m_currentSpeed = stepInMsec;
-
-  LONGLONG timetarget;
-  timetarget = DS_MSEC_TO_TIME(m_State.time) + (DS_MSEC_TO_TIME(stepInMsec));
-  
+  if ( currentRate == 1 || currentRate == 0 )
+    return;
   //TIME_FORMAT_MEDIA_TIME is using Reference time (100-nanosecond units).
   //1 sec = 1 000 000 000 nanoseconds
   //so 1 units of TIME_FORMAT_MEDIA_TIME is 0,0000001 sec or 0,0001 millisec
-  //If playback speed is at 32x its technically 32 sec per sec
+  //If playback speed is at 32x we will try to make it the closest to 32sec per sec
+  bool requireAjust = false;
+  //sleeptime of 250
+  int stepInMsec = (( currentRate * 1000) * 4 );
+  double startTimer = 0;
+  if (currentRate != m_currentRate)
+  {
+    m_currentRate = currentRate;
+    requireAjust = true;
+  }
+  
+  LONGLONG timetarget = 0;
+  //Get the target in TIME_FORMAT_MEDIA_TIME
+  stepInMsec += GetTime();
+  timetarget = stepInMsec * 10000 ;
+  if (timetarget < 0)
+    CLog::Log(LOGERROR,"WTF");
+  //the ajustement is to get an estimate of the time beetween each seek
+  if (requireAjust)
+    startTimer = CDSClock::GetAbsoluteClock();
+  else
+  {
+    //we have the avg time so lets anticipate the time its going to take to seek
+    timetarget += DS_MSEC_TO_TIME(m_lAvgTimeToSeek);
+  }
+  
   if (m_VideoInfo.isDVD)
   {
     
@@ -632,47 +639,42 @@ void CDSGraph::DoFFRW(int currentRate)
       return;
 
     HRESULT hr;
-    LONGLONG earliest, latest, pStop;
+    LONGLONG earliest, latest, current, stop, pStop;
     m_pMediaSeeking->GetAvailable(&earliest,&latest);
-    //m_pMediaSeeking->GetPositions(&current,&stop);
-    
-    LONGLONG lTimerInterval = 300;
-    //rewind = (LONGLONG)(current + (2 * (LONGLONG)(lTimerInterval) * currentSpeed));
-    pStop = 0;
-    /*if ((rewind < earliest) && (currentSpeed < 0))
+    m_pMediaSeeking->GetPositions(&current,&stop);
+    //if target is under the lowest position possible in the media just make it play from start
+    if (timetarget < earliest)
     {
-      currentSpeed = 10000;
-      rewind = earliest;
+      //setting speed at 1x
+      m_currentRate = 1;
+      //Seeking to earliest position in the video
       hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
-      m_State.time = TIME_FORMAT_TO_MS(earliest);
+      //Set the new status of the position
+      m_State.time = DS_TIME_TO_MSEC(earliest);
+      //start the video since we stopped the playback after this seek
       m_pMediaControl->Run();
-
+      //UpdateTime();
       UpdateState();
       return;
     }
 
-    if ((rewind > (latest - 100000)) && (currentSpeed > 0))
-    {
-      currentSpeed = 10000;
-      rewind = latest - 100000;
-
-      hr = m_pMediaSeeking->SetPositions(&rewind, AM_SEEKING_AbsolutePositioning, &pStop, AM_SEEKING_NoPositioning);
-
-      m_State.time = TIME_FORMAT_TO_MS(rewind);
-      m_pMediaControl->Run();
-
-      UpdateState(); // We need to know the new state
-      return;
-    }*/
-    //seek to new moment in time
-    hr = m_pMediaSeeking->SetPositions(&timetarget, AM_SEEKING_AbsolutePositioning | AM_SEEKING_SeekToKeyFrame,&pStop, AM_SEEKING_NoPositioning);
+    
+    hr = m_pMediaSeeking->SetPositions(timetarget, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
+    
+    if (hr == E_INVALIDARG)
+      CLog::Log(LOGINFO,"");
+    // = DS_TIME_TO_MSEC(timetarget);
     //m_State.time = TIME_FORMAT_TO_MS(rewind);
     //stop when ready is currently make the graph wait for a frame to present before starting back again
     m_pMediaControl->StopWhenReady();
+
     UpdateTime();
     UpdateState(); // We need to know the new state
   }
-  
+  if (requireAjust)
+  {
+    m_lAvgTimeToSeek = DS_TIME_TO_MSEC((CDSClock::GetAbsoluteClock() - startTimer));
+  }
 }
 
 HRESULT CDSGraph::UnloadGraph()
@@ -768,7 +770,7 @@ void CDSGraph::SeekInMilliSec(double sec)
     return;
 
   if( m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME )
-    seekrequest = ( LONGLONG )( MSEC_TO_TIME_FORMAT(sec) );
+    seekrequest = ( LONGLONG )( DS_MSEC_TO_TIME(sec) );
   else
     seekrequest = (LONGLONG) sec;
 
@@ -836,16 +838,7 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 // return time in ms
 __int64 CDSGraph::GetTime()
 {
-  
-  double offset = 0;
-  if(m_State.timestamp > 0)
-  {
-    offset  = CDSClock::GetAbsoluteClock() - m_State.timestamp;
-    offset *= (m_PlaybackRate * 1000) / DS_PLAYSPEED_NORMAL;
-    if(offset >  1000) offset =  1000;
-    if(offset < -1000) offset = -1000;
-  }
-  return llrint(m_State.time + DS_TIME_TO_MSEC(offset));
+  return llrint(m_State.time);
 }
 
 // return length in msec

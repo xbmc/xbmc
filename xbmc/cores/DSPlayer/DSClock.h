@@ -29,11 +29,12 @@
 #define DS_TIME_BASE 10000000
 #define DS_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
 
-#define DS_TIME_TO_SEC(x)  ((int)((double)(x) / DS_TIME_BASE))
-#define DS_TIME_TO_MSEC(x) ((int)((double)(x) * 1000 / DS_TIME_BASE))
-#define DS_SEC_TO_TIME(x)  ((double)(x) * DS_TIME_BASE)
+//#define DS_TIME_TO_SEC(x)  ((LONGLONG)((double)(x) / DS_TIME_BASE))
+#define DS_TIME_TO_SEC(x) (LONGLONG)(x / 10000000)
+#define DS_TIME_TO_MSEC(x) (((LONGLONG)(x) * 1000 / DS_TIME_BASE))
+#define DS_SEC_TO_TIME(x)  ((LONGLONG)(x) * DS_TIME_BASE)
 //DS_MSEC_TO_TIME is the one used to convert from directshow to the one rendermanager is using
-#define DS_MSEC_TO_TIME(x) ((LONGLONG)((x) * DS_TIME_BASE / 1000))
+#define DS_MSEC_TO_TIME(x) ((LONGLONG)((x) * 10000 ))
 #define DS_SEC_TO_MSEC(x)  ((LONGLONG)((x) * 1000))
 
 #define DS_PLAYSPEED_RW_2X       -2000

@@ -50,9 +50,7 @@
 using namespace XFILE;
 
 #define WM_GRAPHEVENT  WM_USER + 13
-#define TIME_FORMAT_TO_MS(x) (LONGLONG)(x / 10000)
-#define TIME_FORMAT_TO_SEC(x) (LONGLONG)(x / 10000000)
-#define MSEC_TO_TIME_FORMAT(x) (LONGLONG)(x * 10000)
+
 
 /** Video state mode */
 enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
@@ -95,7 +93,7 @@ public:
   bool OnMouseMove(tagPOINT pt);
   bool OnMouseClick(tagPOINT pt);
   /** @return Current play speed */
-  virtual double GetPlaySpeed() { return m_currentSpeed; };
+  virtual int GetPlaySpeed() { return (m_currentRate * 1000); };
 
   /** Perform a Fast Forward
    * @param[in] currentSpeed Fast Forward speed
@@ -180,8 +178,8 @@ private:
   DVD_STATUS	                          m_pDvdStatus;
   std::vector<DvdTitle*>                m_pDvdTitles;
   bool m_bReachedEnd;
-  int m_PlaybackRate;
-  int m_currentSpeed;
+  int m_currentRate;
+  LONGLONG m_lAvgTimeToSeek;
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;
