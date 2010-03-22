@@ -29,6 +29,7 @@
 #include "dsputil.h"
 #include "avcodec.h"
 #include "mpegvideo.h"
+#include "h263.h"
 #include "vc1.h"
 #include "vc1data.h"
 #include "vc1acdata.h"
@@ -2993,11 +2994,9 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
         avctx->idct_algo=FF_IDCT_WMV2;
     }
 
-    if(ff_h263_decode_init(avctx) < 0)
+    if(ff_msmpeg4_decode_init(avctx) < 0)
         return -1;
     if (vc1_init_common(v) < 0) return -1;
-    // only for ff_msmp4_mb_i_table
-    if (ff_msmpeg4_decode_init(s) < 0) return -1;
 
     avctx->coded_width = avctx->width;
     avctx->coded_height = avctx->height;

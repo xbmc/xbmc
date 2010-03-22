@@ -2793,7 +2793,7 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
 
 bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
 {
-  if  ((g_settings.m_HttpApiBroadcastLevel & 127)>=level)
+  if  ((g_settings.m_HttpApiBroadcastLevel & 255)>=level)
   {
     if (!pUdpBroadcast)
       pUdpBroadcast = new CUdpBroadcast();
@@ -2802,7 +2802,9 @@ bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
       LocalAddress = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress();
     CStdString msg;
     if ((g_settings.m_HttpApiBroadcastLevel & 128)==128)
-      message += ";"+LocalAddress;
+		message += ";"+LocalAddress;
+	if ((g_settings.m_HttpApiBroadcastLevel & 256)==256)
+		message += ";"+LocalAddress+" "+g_guiSettings.GetString("services.webserverport");
     msg.Format(openBroadcast+message+";%i"+closeBroadcast, level);
     return pUdpBroadcast->broadcast(msg, g_settings.m_HttpApiBroadcastPort);
   }

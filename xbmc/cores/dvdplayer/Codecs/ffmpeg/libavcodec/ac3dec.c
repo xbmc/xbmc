@@ -420,10 +420,9 @@ static void calc_transform_coeffs_cpl(AC3DecodeContext *s)
         int band_end = bin + s->cpl_band_sizes[band];
         for (ch = 1; ch <= s->fbw_channels; ch++) {
             if (s->channel_in_cpl[ch]) {
-                int64_t cpl_coord = s->cpl_coords[ch][band];
+                int cpl_coord = s->cpl_coords[ch][band] << 5;
                 for (bin = band_start; bin < band_end; bin++) {
-                    s->fixed_coeffs[ch][bin] = ((int64_t)s->fixed_coeffs[CPL_CH][bin] *
-                                                cpl_coord) >> 23;
+                    s->fixed_coeffs[ch][bin] = MULH(s->fixed_coeffs[CPL_CH][bin] << 4, cpl_coord);
                 }
                 if (ch == 2 && s->phase_flags[band]) {
                     for (bin = band_start; bin < band_end; bin++)
@@ -1237,21 +1236,7 @@ static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
     *data_size = 0;
     err = parse_frame_header(s);
 
-    /* check that reported frame size fits in input buffer */
-    if(s->frame_size > buf_size) {
-        av_log(avctx, AV_LOG_ERROR, "incomplete frame\n");
-        err = AAC_AC3_PARSE_ERROR_FRAME_SIZE;
-    }
-
-    /* check for crc mismatch */
-    if(err != AAC_AC3_PARSE_ERROR_FRAME_SIZE && avctx->error_recognition >= FF_ER_CAREFUL) {
-        if(av_crc(av_crc_get_table(AV_CRC_16_ANSI), 0, &buf[2], s->frame_size-2)) {
-            av_log(avctx, AV_LOG_ERROR, "frame CRC mismatch\n");
-            err = AAC_AC3_PARSE_ERROR_CRC;
-        }
-    }
-
-    if(err && err != AAC_AC3_PARSE_ERROR_CRC) {
+    if (err) {
         switch(err) {
             case AAC_AC3_PARSE_ERROR_SYNC:
                 av_log(avctx, AV_LOG_ERROR, "frame sync error\n");
@@ -1278,6 +1263,18 @@ static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
             default:
                 av_log(avctx, AV_LOG_ERROR, "invalid header\n");
                 break;
+        }
+    } else {
+        /* check that reported frame size fits in input buffer */
+        if (s->frame_size > buf_size) {
+            av_log(avctx, AV_LOG_ERROR, "incomplete frame\n");
+            err = AAC_AC3_PARSE_ERROR_FRAME_SIZE;
+        } else if (avctx->error_recognition >= FF_ER_CAREFUL) {
+            /* check for crc mismatch */
+            if (av_crc(av_crc_get_table(AV_CRC_16_ANSI), 0, &buf[2], s->frame_size-2)) {
+                av_log(avctx, AV_LOG_ERROR, "frame CRC mismatch\n");
+                err = AAC_AC3_PARSE_ERROR_CRC;
+            }
         }
     }
 

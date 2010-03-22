@@ -45,10 +45,12 @@ static int mp3_read_probe(AVProbeData *p)
     if(ff_id3v2_match(buf0)) {
         buf0 += ff_id3v2_tag_len(buf0);
     }
+    end = p->buf + p->buf_size - sizeof(uint32_t);
+    while(buf0 < end && !*buf0)
+        buf0++;
 
     max_frames = 0;
     buf = buf0;
-    end = p->buf + p->buf_size - sizeof(uint32_t);
 
     for(; buf < end; buf= buf2+1) {
         buf2 = buf;
@@ -147,10 +149,11 @@ static int mp3_read_header(AVFormatContext *s,
     av_set_pts_info(st, 64, 1, 14112000);
 
     ff_id3v2_read(s);
+    off = url_ftell(s->pb);
+
     if (!av_metadata_get(s->metadata, "", NULL, AV_METADATA_IGNORE_SUFFIX))
         ff_id3v1_read(s);
 
-    off = url_ftell(s->pb);
     if (mp3_parse_vbr_tags(s, st, off) < 0)
         url_fseek(s->pb, off, SEEK_SET);
 
@@ -214,7 +217,7 @@ static int id3v1_create_tag(AVFormatContext *s, uint8_t *buf)
     count += id3v1_set_string(s, "title",   buf +  3, 30);
     count += id3v1_set_string(s, "author",  buf + 33, 30);
     count += id3v1_set_string(s, "album",   buf + 63, 30);
-    count += id3v1_set_string(s, "year",    buf + 93,  4);
+    count += id3v1_set_string(s, "date",    buf + 93,  4);
     count += id3v1_set_string(s, "comment", buf + 97, 30);
     if ((tag = av_metadata_get(s->metadata, "track", NULL, 0))) {
         buf[125] = 0;
@@ -312,7 +315,7 @@ static int mp3_write_header(struct AVFormatContext *s)
     while ((t = av_metadata_get(s->metadata, "", t, AV_METADATA_IGNORE_SUFFIX))) {
         uint32_t tag = 0;
 
-        if (t->key[0] == 'T' && strcmp(t->key, "TSSE")) {
+        if (t->key[0] == 'T' && strlen(t->key) == 4) {
             int i;
             for (i = 0; *ff_id3v2_tags[i]; i++)
                 if (AV_RB32(t->key) == AV_RB32(ff_id3v2_tags[i])) {
@@ -336,11 +339,6 @@ static int mp3_write_header(struct AVFormatContext *s)
             totlen += len + len1 + ID3v2_HEADER_SIZE + 3;
             av_free(buf);
         }
-    }
-    if(!(s->streams[0]->codec->flags & CODEC_FLAG_BITEXACT)) {
-        totlen += strlen(LIBAVFORMAT_IDENT) + ID3v2_HEADER_SIZE + 2;
-        id3v2_put_ttag(s, LIBAVFORMAT_IDENT, strlen(LIBAVFORMAT_IDENT) + 1,
-                       MKBETAG('T', 'S', 'S', 'E'));
     }
 
     cur_pos = url_ftell(s->pb);

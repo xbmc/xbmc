@@ -116,9 +116,9 @@ static int wma_decode_init(AVCodecContext * avctx)
     }
 
     if (s->use_exp_vlc) {
-        init_vlc(&s->exp_vlc, EXPVLCBITS, sizeof(ff_wma_scale_huffbits), //FIXME move out of context
-                 ff_wma_scale_huffbits, 1, 1,
-                 ff_wma_scale_huffcodes, 4, 4, 0);
+        init_vlc(&s->exp_vlc, EXPVLCBITS, sizeof(ff_aac_scalefactor_bits), //FIXME move out of context
+                 ff_aac_scalefactor_bits, 1, 1,
+                 ff_aac_scalefactor_code, 4, 4, 0);
     } else {
         wma_lsp_to_curve_init(s, s->frame_len);
     }
@@ -790,17 +790,28 @@ static int wma_decode_frame(WMACodecContext *s, int16_t *samples)
     /* convert frame to integer */
     n = s->frame_len;
     incr = s->nb_channels;
-    for(ch = 0; ch < s->nb_channels; ch++) {
-        ptr = samples + ch;
-        iptr = s->frame_out[ch];
+    if (s->dsp.float_to_int16_interleave == ff_float_to_int16_interleave_c) {
+        for(ch = 0; ch < s->nb_channels; ch++) {
+            ptr = samples + ch;
+            iptr = s->frame_out[ch];
 
-        for(i=0;i<n;i++) {
-            *ptr = av_clip_int16(lrintf(*iptr++));
-            ptr += incr;
+            for(i=0;i<n;i++) {
+                *ptr = av_clip_int16(lrintf(*iptr++));
+                ptr += incr;
+            }
+            /* prepare for next block */
+            memmove(&s->frame_out[ch][0], &s->frame_out[ch][s->frame_len],
+                    s->frame_len * sizeof(float));
         }
-        /* prepare for next block */
-        memmove(&s->frame_out[ch][0], &s->frame_out[ch][s->frame_len],
-                s->frame_len * sizeof(float));
+    } else {
+        float *output[MAX_CHANNELS];
+        for (ch = 0; ch < MAX_CHANNELS; ch++)
+            output[ch] = s->frame_out[ch];
+        s->dsp.float_to_int16_interleave(samples, (const float **)output, n, incr);
+        for(ch = 0; ch < incr; ch++) {
+            /* prepare for next block */
+            memmove(&s->frame_out[ch][0], &s->frame_out[ch][n], n * sizeof(float));
+        }
     }
 
 #ifdef TRACE
@@ -920,6 +931,14 @@ static int wma_decode_superframe(AVCodecContext *avctx,
     return -1;
 }
 
+static av_cold void flush(AVCodecContext *avctx)
+{
+    WMACodecContext *s = avctx->priv_data;
+
+    s->last_bitoffset=
+    s->last_superframe_len= 0;
+}
+
 AVCodec wmav1_decoder =
 {
     "wmav1",
@@ -930,6 +949,7 @@ AVCodec wmav1_decoder =
     NULL,
     ff_wma_end,
     wma_decode_superframe,
+    .flush=flush,
     .long_name = NULL_IF_CONFIG_SMALL("Windows Media Audio 1"),
 };
 
@@ -943,5 +963,6 @@ AVCodec wmav2_decoder =
     NULL,
     ff_wma_end,
     wma_decode_superframe,
+    .flush=flush,
     .long_name = NULL_IF_CONFIG_SMALL("Windows Media Audio 2"),
 };

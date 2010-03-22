@@ -226,7 +226,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_frame)
     RESOLVE_METHOD(av_read_play)
     RESOLVE_METHOD(av_read_pause)
-    RESOLVE_METHOD(av_read_frame_flush)
+    RESOLVE_METHOD_RENAME(ff_read_frame_flush, av_read_frame_flush)
     RESOLVE_METHOD(av_seek_frame)
     RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)

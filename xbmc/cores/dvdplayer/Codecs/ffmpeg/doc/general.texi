@@ -44,6 +44,7 @@ library:
 @item 4xm                       @tab   @tab X
     @tab 4X Technologies format, used in some games.
 @item 8088flex TMV              @tab   @tab X
+@item Adobe Filmstrip           @tab X @tab X
 @item Audio IFF (AIFF)          @tab X @tab X
 @item American Laser Games MM   @tab   @tab X
     @tab Multimedia format used in games like Mad Dog McCree.
@@ -57,6 +58,8 @@ library:
     @tab Audio and video format used in some games by Beam Software.
 @item Bethesda Softworks VID    @tab   @tab X
     @tab Used in some games from Bethesda Softworks.
+@item Bink                      @tab   @tab X
+    @tab Multimedia format used by many games.
 @item Brute Force & Ignorance   @tab   @tab X
     @tab Used in the game Flash Traffic: City of Angels.
 @item Interplay C93             @tab   @tab X
@@ -73,6 +76,7 @@ library:
 @item CRYO APC                  @tab   @tab X
     @tab Audio format used in some games by CRYO Interactive Entertainment.
 @item D-Cinema audio            @tab X @tab X
+@item Deluxe Paint Animation    @tab   @tab X
 @item DV video                  @tab X @tab X
 @item DXA                       @tab   @tab X
     @tab This format is used in the non-Windows version of the Feeble Files
@@ -206,7 +210,7 @@ library:
 @item RTMP                      @tab X @tab X
     @tab Output is performed by publishing stream to RTMP server
 @item RTP                       @tab   @tab X
-@item RTSP                      @tab   @tab X
+@item RTSP                      @tab X @tab X
 @item SDP                       @tab   @tab X
 @item Sega FILM/CPK             @tab   @tab X
     @tab Used in many Sega Saturn console games.
@@ -317,6 +321,8 @@ following image formats are supported:
     @tab fourcc: VCR1
 @item ATI VCR2               @tab     @tab  X
     @tab fourcc: VCR2
+@item Auravision Aura        @tab     @tab  X
+@item Auravision Aura 2      @tab     @tab  X
 @item Autodesk Animator Flic video  @tab     @tab  X
 @item Autodesk RLE           @tab     @tab  X
     @tab fourcc: AASC
@@ -325,6 +331,8 @@ following image formats are supported:
 @item Beam Software VB       @tab     @tab  X
 @item Bethesda VID video     @tab     @tab  X
     @tab Used in some games from Bethesda Softworks.
+@item Bink Video             @tab     @tab  X
+    @tab Support for version 'b' is missing.
 @item Brute Force & Ignorance   @tab   @tab X
     @tab Used in the game Flash Traffic: City of Angels.
 @item C93 video              @tab     @tab  X
@@ -343,6 +351,7 @@ following image formats are supported:
 @item Creative YUV (CYUV)    @tab     @tab  X
 @item Dirac                  @tab  E  @tab  E
     @tab supported through external libdirac/libschroedinger libraries
+@item Deluxe Paint Animation @tab     @tab  X
 @item DNxHD                  @tab   X @tab  X
     @tab aka SMPTE VC3
 @item Duck TrueMotion 1.0   @tab     @tab  X
@@ -380,15 +389,22 @@ following image formats are supported:
     @tab Used in Quake II.
 @item id RoQ video           @tab  X  @tab  X
     @tab Used in Quake III, Jedi Knight 2, other computer games.
+@item IFF ILBM               @tab     @tab  X
+    @tab IFF interlaved bitmap
+@item IFF ByteRun1           @tab     @tab  X
+    @tab IFF run length encoded bitmap
 @item Intel H.263            @tab     @tab  X
 @item Intel Indeo 2          @tab     @tab  X
 @item Intel Indeo 3          @tab     @tab  X
+@item Intel Indeo 5          @tab     @tab  X
 @item Interplay C93          @tab     @tab  X
     @tab Used in the game Cyberia from Interplay.
 @item Interplay MVE video    @tab     @tab  X
     @tab Used in Interplay .MVE files.
 @item Karl Morton's video codec  @tab     @tab  X
     @tab Codec used in Worms games.
+@item Kega Game Video (KGV1) @tab      @tab  X
+    @tab Kega emulator screen capture codec.
 @item LCL (LossLess Codec Library) MSZH  @tab     @tab  X
 @item LCL (LossLess Codec Library) ZLIB  @tab  E  @tab  E
 @item LOCO                   @tab     @tab  X
@@ -535,14 +551,16 @@ following image formats are supported:
 @item ADPCM Westwood Studios IMA @tab     @tab  X
     @tab Used in Westwood Studios games like Command and Conquer.
 @item ADPCM Yamaha           @tab  X  @tab  X
-@item AMR-NB                 @tab  E  @tab  E
-    @tab supported through external library libopencore-amrnb
+@item AMR-NB                 @tab  E  @tab  X
+    @tab encoding supported through external library libopencore-amrnb
 @item AMR-WB                 @tab     @tab  E
     @tab decoding supported through external library libopencore-amrwb
 @item Apple lossless audio   @tab  X  @tab  X
     @tab QuickTime fourcc 'alac'
 @item Atrac 1                @tab     @tab  X
 @item Atrac 3                @tab     @tab  X
+@item Bink Audio             @tab     @tab  X
+    @tab Used in Bink and Smacker files in many games.
 @item Delphine Software International CIN audio  @tab     @tab  X
     @tab Codec used in Delphine Software International games.
 @item COOK                   @tab     @tab  X
@@ -614,6 +632,7 @@ following image formats are supported:
     @tab Real 28800 bit/s codec
 @item RealAudio 3.0 (dnet)   @tab IX  @tab  X
     @tab Real low bitrate AC-3 codec
+@item RealAudio SIPR / ACELP.NET @tab     @tab  X
 @item Shorten                @tab     @tab  X
 @item Sierra VMD audio       @tab     @tab  X
     @tab Used in Sierra VMD files.
@@ -629,12 +648,13 @@ following image formats are supported:
     @tab Used in HD-DVD and Blu-Ray discs.
 @item TwinVQ (VQF flavor)    @tab     @tab  X
 @item Vorbis                 @tab  E  @tab  X
-    @ A native but very primitive encoder exists.
+    @tab A native but very primitive encoder exists.
 @item WavPack                @tab     @tab  X
 @item Westwood Audio (SND1)  @tab     @tab  X
 @item Windows Media Audio 1  @tab  X  @tab  X
 @item Windows Media Audio 2  @tab  X  @tab  X
 @item Windows Media Audio Pro @tab    @tab  X
+@item Windows Media Audio Voice @tab  @tab  X
 @end multitable
 
 @code{X} means that encoding (resp. decoding) is supported.
@@ -904,14 +924,13 @@ Then you can easily test FFmpeg with Wine
 
 @subsection Compilation under Cygwin
 
-The main issue with the 1.5.x Cygwin versions is that newlib, its C library,
-does not contain llrint().  You need to upgrade to the unstable 1.7.x versions,
-or leverage the implementation in MinGW (as explained below).
+Please use Cygwin 1.7.x as the obsolete 1.5.x Cygwin versions lack
+llrint() in its C library.
 
-Just install your Cygwin with all the "Base" packages, plus the
+Install your Cygwin with all the "Base" packages, plus the
 following "Devel" ones:
 @example
-binutils, gcc-core, make, subversion, mingw-runtime
+binutils, gcc4-core, make, subversion, mingw-runtime, texi2html
 @end example
 
 And the following "Utils" one:
@@ -919,32 +938,20 @@ And the following "Utils" one:
 diffutils
 @end example
 
-The experimental gcc4 package is still buggy, hence please
-use the official gcc 3.4.4 or a 4.2.x compiled from source by yourself.
-
-Install the current binutils-20080624-2 as they work fine (the old
-binutils-20060709-1 proved buggy on shared builds).
-
-Then create a small library that just contains llrint():
-
-@example
-ar x /usr/lib/mingw/libmingwex.a llrint.o
-ar cq /usr/local/lib/libllrint.a llrint.o
-@end example
-
 Then run
 
 @example
-./configure --enable-static --disable-shared  --extra-ldflags='-L /usr/local/lib' --extra-libs='-l llrint'
+./configure --enable-static --disable-shared
 @end example
 
-to make a static build or
+to make a static build.
+
+The current @code{gcc4-core} package is buggy and needs this flag to build
+shared libraries:
 
 @example
-./configure --enable-shared --disable-static  --extra-ldflags='-L /usr/local/lib' --extra-libs='-l llrint'
+./configure --enable-shared --disable-static --extra-cflags=-fno-reorder-functions
 @end example
-
-to build shared libraries.
 
 If you want to build FFmpeg with additional libraries, download Cygwin
 "Devel" packages for Ogg and Vorbis from any Cygwin packages repository:

@@ -197,6 +197,7 @@ int GetStorageRequirements( int width, int height, int flags );
 	@param rgba		The pixels of the source.
 	@param width	The width of the source image.
 	@param height	The height of the source image.
+	@param pitch	The pitch of the source image.
 	@param blocks	Storage for the compressed output.
 	@param flags	Compression flags.
 	@param metric	An optional perceptual metric.
@@ -234,6 +235,7 @@ int GetStorageRequirements( int width, int height, int flags );
 	to allocate for the compressed output.
 */
 void CompressImage( u8 const* rgba, int width, int height, void* blocks, int flags, float* metric = 0 );
+void CompressImage( u8 const* rgba, int width, int height, int pitch, void* blocks, int flags, float* metric = 0 );
 
 // -----------------------------------------------------------------------------
 
@@ -242,6 +244,7 @@ void CompressImage( u8 const* rgba, int width, int height, void* blocks, int fla
 	@param rgba		Storage for the decompressed pixels.
 	@param width	The width of the source image.
 	@param height	The height of the source image.
+	@param pitch    The pitch of the decompressed pixels.
 	@param blocks	The compressed DXT blocks.
 	@param flags	Compression flags.
 	
@@ -257,6 +260,7 @@ void CompressImage( u8 const* rgba, int width, int height, void* blocks, int fla
 	Internally this function calls squish::Decompress for each block.
 */
 void DecompressImage( u8* rgba, int width, int height, void const* blocks, int flags );
+void DecompressImage( u8* rgba, int width, int height, int pitch, void const* blocks, int flags );
 
 // -----------------------------------------------------------------------------
 
@@ -265,6 +269,7 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 	@param rgba		The original image pixels.
 	@param width	The width of the source image.
 	@param height	The height of the source image.
+	@param pitch  	The pitch of the source image.
 	@param dxt		The compressed dxt blocks
 	@param flags	Compression flags.
 	@param colourMSE	The MSE of the colour values.
@@ -280,6 +285,7 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 	Internally this function calls squish::Decompress for each block.
 */
 void ComputeMSE(u8 const *rgba, int width, int height, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE);
+void ComputeMSE(u8 const *rgba, int width, int height, int pitch, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE);
 
 // -----------------------------------------------------------------------------
 

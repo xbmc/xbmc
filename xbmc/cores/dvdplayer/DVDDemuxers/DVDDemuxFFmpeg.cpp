@@ -553,6 +553,7 @@ void CDVDDemuxFFmpeg::Flush()
 {
   g_demuxer = this;
 
+  // naughty usage of an internal ffmpeg function
   if (m_pFormatContext)
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
 

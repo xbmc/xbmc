@@ -46,6 +46,24 @@ version <next>:
 - IV8 demuxer
 - CDG demuxer and decoder
 - R210 decoder
+- Auravision Aura 1 and 2 decoders
+- Deluxe Paint Animation playback system
+- SIPR decoder
+- Adobe Filmstrip muxer and demuxer
+- RTP depacketization of H.263
+- Bink demuxer and audio/video decoders
+- enable symbol versioning by default for linkers that support it
+- IFF PBM/ILBM bitmap decoder
+- concat protocol
+- Indeo 5 decoder
+- RTP depacketization of AMR
+- WMAVoice decoder
+- FFprobe tool
+- AMR-NB decoder
+- RTSP muxer
+- HE-AAC v1 decoder
+- Kega Game Video (KGV1) decoder
+- VorbisComment writing for FLAC, Ogg FLAC and Ogg Speex files
 
 
 

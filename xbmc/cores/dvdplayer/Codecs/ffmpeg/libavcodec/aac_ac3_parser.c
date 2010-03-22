@@ -71,24 +71,32 @@ get_next:
     *poutbuf_size = buf_size;
 
     /* update codec info */
-    avctx->sample_rate = s->sample_rate;
     if(s->codec_id)
         avctx->codec_id = s->codec_id;
 
-    /* allow downmixing to stereo (or mono for AC-3) */
-    if(avctx->request_channels > 0 &&
-            avctx->request_channels < s->channels &&
-            (avctx->request_channels <= 2 ||
-            (avctx->request_channels == 1 &&
-            (avctx->codec_id == CODEC_ID_AC3 ||
-             avctx->codec_id == CODEC_ID_EAC3)))) {
-        avctx->channels = avctx->request_channels;
-    } else if (avctx->codec_id != CODEC_ID_AAC || s->channels) {
-        avctx->channels = s->channels;
-        avctx->channel_layout = s->channel_layout;
+    /* Due to backwards compatible HE-AAC the sample rate, channel count,
+       and total number of samples found in an AAC ADTS header are not
+       reliable. Bit rate is still accurate because the total frame duration in
+       seconds is still correct (as is the number of bits in the frame). */
+    if (avctx->codec_id != CODEC_ID_AAC) {
+        avctx->sample_rate = s->sample_rate;
+
+        /* allow downmixing to stereo (or mono for AC-3) */
+        if(avctx->request_channels > 0 &&
+                avctx->request_channels < s->channels &&
+                (avctx->request_channels <= 2 ||
+                (avctx->request_channels == 1 &&
+                (avctx->codec_id == CODEC_ID_AC3 ||
+                 avctx->codec_id == CODEC_ID_EAC3)))) {
+            avctx->channels = avctx->request_channels;
+        } else {
+            avctx->channels = s->channels;
+            avctx->channel_layout = s->channel_layout;
+        }
+        avctx->frame_size = s->samples;
     }
+
     avctx->bit_rate = s->bit_rate;
-    avctx->frame_size = s->samples;
 
     return i;
 }

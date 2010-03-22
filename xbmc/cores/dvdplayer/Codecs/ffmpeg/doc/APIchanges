@@ -12,14 +12,68 @@ libavutil:   2009-03-08
 
 API changes, most recent first:
 
+2010-03-15 - r22540 - lavf 52.56.0 - AVFormatContext.start_time_realtime
+  Add AVFormatContext.start_time_realtime field.
+
+2010-03-13 - r22506 - lavfi 1.18.0 - AVFilterPicRef.pos
+  Add AVFilterPicRef.pos field.
+
+2010-03-13 - r22501 - lavu 50.12.0 - error.h
+  Move error code definitions from libavcodec/avcodec.h to
+  the new public header libavutil/error.h.
+
+2010-03-07 - r22291 - lavc 52.56.0 - avfft.h
+  Add public FFT interface.
+
+2010-03-06 - r22251 - lavu 50.11.0 - av_stristr()
+  Add av_stristr().
+
+2010-03-03 - r22174 - lavu 50.10.0 - av_tree_enumerate()
+  Add av_tree_enumerate().
+
+2010-02-07 - r21673 - lavu 50.9.0 - av_compare_ts()
+  Add av_compare_ts().
+
+2010-02-05 - r30513 - lsws 0.10.0 - sws_getCoefficients()
+  Add sws_getCoefficients().
+
+2010-02-01 - r21587 - lavf 52.50.0 - metadata API
+  Add a list of generic tag names, change 'author' -> 'artist',
+  'year' -> 'date'.
+
+2010-01-30 - r21545 - lavu 50.8.0 - av_get_pix_fmt()
+  Add av_get_pix_fmt().
+
+2010-01-21 - r30381 - lsws 0.9.0 - sws_scale
+  Change constness attributes of sws_scale() parameters.
+
+2010-01-10 - r21121 - lavfi 1.15.0 - avfilter_graph_config_links()
+  Add a log_ctx parameter to avfilter_graph_config_links().
+
+2010-01-07 - r30236 - lsws 0.8.0 - sws_isSupported{In,Out}put
+  Add sws_isSupportedInput() and sws_isSupportedOutput() functions.
+
+2010-01-06 - r21035 - lavfi 1.14.0 - avfilter_add_colorspace()
+  Change the avfilter_add_colorspace() signature, make it accept an
+  (AVFilterFormats **) rather than an (AVFilterFormats *) as before.
+
+2010-01-03 - r21007 - lavfi 1.13.0 - avfilter_add_colorspace()
+  Add avfilter_add_colorspace().
+
+2010-01-02 - r20998 - lavf 52.46.0 - av_match_ext()
+  Add av_match_ext(), it should be used in place of match_ext().
+
+2010-01-01 - r20991 - lavf 52.45.0 - av_guess_format()
+  Add av_guess_format(), it should be used in place of guess_format().
+
 2009-12-13 - r20834 - lavf 52.43.0 - metadata API
-  add av_metadata_set2(), AV_METADATA_DONT_STRDUP_KEY and AV_METADATA_DONT_STRDUP_VAL
+  Add av_metadata_set2(), AV_METADATA_DONT_STRDUP_KEY and AV_METADATA_DONT_STRDUP_VAL.
 
 2009-12-13 - r20829 - lavu 50.7.0 - avstring.h API
-  add av_d2str()
+  Add av_d2str().
 
 2009-12-13 - r20826 - lavc 52.42.0 - AVStream
-  add avg_frame_rate
+  Add avg_frame_rate.
 
 2009-12-12 - r20808 - lavu 50.6.0 - av_bmg_next()
   Introduce the av_bmg_next() function.

@@ -213,7 +213,10 @@
     <rule filetypes="mp4">
       <source filter="mp4source" />
       <splitter filter="mp4splitter" />
-      <video filter="ffdvideodec" />
+      <video>
+        <video dxva="true" filter="ffdvideodxvadec" />
+        <video filter="ffdvideodec" />
+      </video>
       <audio filter="ffdaudiodec" />
     </rule>
     <rule filetypes="mov">

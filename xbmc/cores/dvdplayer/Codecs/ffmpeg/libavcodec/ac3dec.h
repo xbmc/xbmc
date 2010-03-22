@@ -31,6 +31,7 @@
 #include "ac3.h"
 #include "get_bits.h"
 #include "dsputil.h"
+#include "fft.h"
 
 /* override ac3.h to include coupling channel */
 #undef AC3_MAX_CHANNELS
@@ -157,12 +158,12 @@ typedef struct {
 ///@}
 
 ///@defgroup arrays aligned arrays
-    DECLARE_ALIGNED_16(int,   fixed_coeffs[AC3_MAX_CHANNELS][AC3_MAX_COEFS]);       ///> fixed-point transform coefficients
-    DECLARE_ALIGNED_16(float, transform_coeffs[AC3_MAX_CHANNELS][AC3_MAX_COEFS]);   ///< transform coefficients
-    DECLARE_ALIGNED_16(float, delay[AC3_MAX_CHANNELS][AC3_BLOCK_SIZE]);             ///< delay - added to the next block
-    DECLARE_ALIGNED_16(float, window[AC3_BLOCK_SIZE]);                              ///< window coefficients
-    DECLARE_ALIGNED_16(float, tmp_output[AC3_BLOCK_SIZE]);                          ///< temporary storage for output before windowing
-    DECLARE_ALIGNED_16(float, output[AC3_MAX_CHANNELS][AC3_BLOCK_SIZE]);            ///< output after imdct transform and windowing
+    DECLARE_ALIGNED(16, int,   fixed_coeffs)[AC3_MAX_CHANNELS][AC3_MAX_COEFS];       ///> fixed-point transform coefficients
+    DECLARE_ALIGNED(16, float, transform_coeffs)[AC3_MAX_CHANNELS][AC3_MAX_COEFS];   ///< transform coefficients
+    DECLARE_ALIGNED(16, float, delay)[AC3_MAX_CHANNELS][AC3_BLOCK_SIZE];             ///< delay - added to the next block
+    DECLARE_ALIGNED(16, float, window)[AC3_BLOCK_SIZE];                              ///< window coefficients
+    DECLARE_ALIGNED(16, float, tmp_output)[AC3_BLOCK_SIZE];                          ///< temporary storage for output before windowing
+    DECLARE_ALIGNED(16, float, output)[AC3_MAX_CHANNELS][AC3_BLOCK_SIZE];            ///< output after imdct transform and windowing
 ///@}
 } AC3DecodeContext;
 
@@ -177,5 +178,8 @@ int ff_eac3_parse_header(AC3DecodeContext *s);
  * This is used when AHT mode is enabled.
  */
 void ff_eac3_decode_transform_coeffs_aht_ch(AC3DecodeContext *s, int ch);
+
+void ff_ac3_downmix_c(float (*samples)[256], float (*matrix)[2],
+                      int out_ch, int in_ch, int len);
 
 #endif /* AVCODEC_AC3DEC_H */

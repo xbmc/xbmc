@@ -48,7 +48,7 @@ namespace PYXBMC
 {
   typedef struct {
     PyObject_HEAD
-    ADDON::IAddon* pAddon;
+    ADDON::AddonPtr pAddon;
   } Settings;
 
   extern PyTypeObject Settings_Type;

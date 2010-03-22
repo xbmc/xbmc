@@ -24,6 +24,7 @@
  */
 
 #include "avfilter.h"
+#include "libavutil/pixdesc.h"
 #include "libswscale/swscale.h"
 
 typedef struct {
@@ -69,13 +70,27 @@ static av_cold void uninit(AVFilterContext *ctx)
 static int query_formats(AVFilterContext *ctx)
 {
     AVFilterFormats *formats;
+    enum PixelFormat pix_fmt;
+    int ret;
 
     if (ctx->inputs[0]) {
-        formats = avfilter_all_colorspaces();
+        formats = NULL;
+        for (pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++)
+            if (   sws_isSupportedInput(pix_fmt)
+                && (ret = avfilter_add_colorspace(&formats, pix_fmt)) < 0) {
+                avfilter_formats_unref(&formats);
+                return ret;
+            }
         avfilter_formats_ref(formats, &ctx->inputs[0]->out_formats);
     }
     if (ctx->outputs[0]) {
-        formats = avfilter_all_colorspaces();
+        formats = NULL;
+        for (pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++)
+            if (    sws_isSupportedOutput(pix_fmt)
+                && (ret = avfilter_add_colorspace(&formats, pix_fmt)) < 0) {
+                avfilter_formats_unref(&formats);
+                return ret;
+            }
         avfilter_formats_ref(formats, &ctx->outputs[0]->in_formats);
     }
 
@@ -112,13 +127,9 @@ static int config_props(AVFilterLink *outlink)
                                 SWS_BILINEAR, NULL, NULL, NULL);
 
     av_log(ctx, AV_LOG_INFO, "w:%d h:%d fmt:%s\n",
-           outlink->w, outlink->h, avcodec_get_pix_fmt_name(outlink->format));
+           outlink->w, outlink->h, av_pix_fmt_descriptors[outlink->format].name);
 
-    scale->input_is_pal = inlink->format == PIX_FMT_PAL8      ||
-                          inlink->format == PIX_FMT_BGR4_BYTE ||
-                          inlink->format == PIX_FMT_RGB4_BYTE ||
-                          inlink->format == PIX_FMT_BGR8      ||
-                          inlink->format == PIX_FMT_RGB8;
+    scale->input_is_pal = av_pix_fmt_descriptors[inlink->format].flags & PIX_FMT_PAL;
 
     return !scale->sws;
 }
@@ -129,10 +140,12 @@ static void start_frame(AVFilterLink *link, AVFilterPicRef *picref)
     AVFilterLink *outlink = link->dst->outputs[0];
     AVFilterPicRef *outpicref;
 
-    avcodec_get_chroma_sub_sample(link->format, &scale->hsub, &scale->vsub);
+    scale->hsub = av_pix_fmt_descriptors[link->format].log2_chroma_w;
+    scale->vsub = av_pix_fmt_descriptors[link->format].log2_chroma_h;
 
     outpicref = avfilter_get_video_buffer(outlink, AV_PERM_WRITE, outlink->w, outlink->h);
     outpicref->pts = picref->pts;
+    outpicref->pos = picref->pos;
     outlink->outpic = outpicref;
 
     av_reduce(&outpicref->pixel_aspect.num, &outpicref->pixel_aspect.den,

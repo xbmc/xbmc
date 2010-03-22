@@ -129,7 +129,7 @@ static void *alloc_buffer(struct vaapi_context *vactx, int type, unsigned int si
     return data;
 }
 
-void *ff_vaapi_alloc_picture(struct vaapi_context *vactx, unsigned int size)
+void *ff_vaapi_alloc_pic_param(struct vaapi_context *vactx, unsigned int size)
 {
     return alloc_buffer(vactx, VAPictureParameterBufferType, size, &vactx->pic_param_buf_id);
 }
@@ -185,7 +185,7 @@ int ff_vaapi_common_end_frame(MpegEncContext *s)
     if (commit_slices(vactx) < 0)
         goto done;
     if (vactx->n_slice_buf_ids > 0) {
-        if (render_picture(vactx, ff_vaapi_get_surface(s->current_picture_ptr)) < 0)
+        if (render_picture(vactx, ff_vaapi_get_surface_id(s->current_picture_ptr)) < 0)
             goto done;
         ff_draw_horiz_band(s, 0, s->avctx->height);
     }

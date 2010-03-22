@@ -40,15 +40,9 @@
 #include "faandct.h"
 #include "faanidct.h"
 #include "x86/idct_xvid.h"
+#include "dctref.h"
 
 #undef printf
-
-void *fast_memcpy(void *a, const void *b, size_t c){return memcpy(a,b,c);};
-
-/* reference fdct/idct */
-void ff_ref_fdct(DCTELEM *block);
-void ff_ref_idct(DCTELEM *block);
-void ff_ref_dct_init(void);
 
 void ff_mmx_idct(DCTELEM *data);
 void ff_mmxext_idct(DCTELEM *data);
@@ -64,9 +58,9 @@ void fdct_altivec(DCTELEM *block);
 //void idct_altivec(DCTELEM *block);?? no routine
 
 // ARM
-void j_rev_dct_ARM(DCTELEM *data);
-void simple_idct_ARM(DCTELEM *data);
-void simple_idct_armv5te(DCTELEM *data);
+void ff_j_rev_dct_arm(DCTELEM *data);
+void ff_simple_idct_arm(DCTELEM *data);
+void ff_simple_idct_armv5te(DCTELEM *data);
 void ff_simple_idct_armv6(DCTELEM *data);
 void ff_simple_idct_neon(DCTELEM *data);
 
@@ -126,10 +120,10 @@ struct algo algos[] = {
 #endif
 
 #if ARCH_ARM
-  {"SIMPLE-ARM",      1, simple_idct_ARM,    ff_ref_idct, NO_PERM },
-  {"INT-ARM",         1, j_rev_dct_ARM,      ff_ref_idct, MMX_PERM },
+  {"SIMPLE-ARM",      1, ff_simple_idct_arm, ff_ref_idct, NO_PERM },
+  {"INT-ARM",         1, ff_j_rev_dct_arm,   ff_ref_idct, MMX_PERM },
 #if HAVE_ARMV5TE
-  {"SIMPLE-ARMV5TE",  1, simple_idct_armv5te, ff_ref_idct, NO_PERM },
+  {"SIMPLE-ARMV5TE",  1, ff_simple_idct_armv5te, ff_ref_idct, NO_PERM },
 #endif
 #if HAVE_ARMV6
   {"SIMPLE-ARMV6",    1, ff_simple_idct_armv6, ff_ref_idct, MMX_PERM },
@@ -186,9 +180,9 @@ static void idct_mmx_init(void)
     }
 }
 
-DECLARE_ALIGNED(16, static DCTELEM, block[64]);
-DECLARE_ALIGNED(8, static DCTELEM, block1[64]);
-DECLARE_ALIGNED(8, static DCTELEM, block_org[64]);
+DECLARE_ALIGNED(16, static DCTELEM, block)[64];
+DECLARE_ALIGNED(8, static DCTELEM, block1)[64];
+DECLARE_ALIGNED(8, static DCTELEM, block_org)[64];
 
 static inline void mmx_emms(void)
 {
@@ -384,8 +378,8 @@ static void dct_error(const char *name, int is_idct,
 #endif
 }
 
-DECLARE_ALIGNED(8, static uint8_t, img_dest[64]);
-DECLARE_ALIGNED(8, static uint8_t, img_dest1[64]);
+DECLARE_ALIGNED(8, static uint8_t, img_dest)[64];
+DECLARE_ALIGNED(8, static uint8_t, img_dest1)[64];
 
 static void idct248_ref(uint8_t *dest, int linesize, int16_t *block)
 {

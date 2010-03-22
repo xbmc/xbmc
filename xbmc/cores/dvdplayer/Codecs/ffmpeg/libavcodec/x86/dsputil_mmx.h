@@ -156,4 +156,21 @@ void add_pixels_clamped_mmx(const DCTELEM *block, uint8_t *pixels, int line_size
 void put_pixels_clamped_mmx(const DCTELEM *block, uint8_t *pixels, int line_size);
 void put_signed_pixels_clamped_mmx(const DCTELEM *block, uint8_t *pixels, int line_size);
 
+void ff_cavsdsp_init_mmx2(DSPContext* c, AVCodecContext *avctx);
+void ff_cavsdsp_init_3dnow(DSPContext* c, AVCodecContext *avctx);
+void ff_put_cavs_qpel8_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
+void ff_avg_cavs_qpel8_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
+void ff_put_cavs_qpel16_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
+void ff_avg_cavs_qpel16_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
+
+void ff_vc1dsp_init_mmx(DSPContext* dsp, AVCodecContext *avctx);
+void ff_put_vc1_mspel_mc00_mmx(uint8_t *dst, const uint8_t *src, int stride, int rnd);
+void ff_avg_vc1_mspel_mc00_mmx2(uint8_t *dst, const uint8_t *src, int stride, int rnd);
+
+void ff_lpc_compute_autocorr_sse2(const int32_t *data, int len, int lag,
+                                   double *autoc);
+
+void ff_mmx_idct(DCTELEM *block);
+void ff_mmxext_idct(DCTELEM *block);
+
 #endif /* AVCODEC_X86_DSPUTIL_MMX_H */

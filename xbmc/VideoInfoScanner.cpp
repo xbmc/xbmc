@@ -606,8 +606,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-      AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
-      return 1;
+      return AddMovieAndGetThumb(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), -1, bDirNames, bRefresh, pDlgProgress);
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
       pURL = &scrUrl;
@@ -992,7 +991,7 @@ namespace VIDEO
       return -1;
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to %s:%s", TranslateContent(content).c_str(), pItem->m_strPath.c_str());
-    long lResult=-1;
+    long lResult = -1;
 
     // add to all movies in the stacked set
     if (content == CONTENT_MOVIES)
@@ -1002,7 +1001,7 @@ namespace VIDEO
       if (!strTrailer.IsEmpty())
         movieDetails.m_strTrailer = strTrailer;
 
-      int idMovie=m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
+      lResult = m_database.SetDetailsForMovie(pItem->m_strPath, movieDetails);
 
       // setup links to shows if the linked shows are in the db
       if (!movieDetails.m_strShowLink.IsEmpty())
@@ -1014,7 +1013,7 @@ namespace VIDEO
           CFileItemList items;
           m_database.GetTvShowsByName(list[i], items);
           if (items.Size())
-            m_database.LinkMovieToTvshow(idMovie, items[0]->GetVideoInfoTag()->m_iDbId, false);
+            m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
           else
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), list[i].c_str());
         }
@@ -1045,7 +1044,7 @@ namespace VIDEO
     }
     else if (content == CONTENT_MUSICVIDEOS)
     {
-      m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
+      lResult = m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
     return lResult;
   }

@@ -113,10 +113,10 @@ static inline void cavs_idct8_1d(int16_t *block, uint64_t bias)
 static void cavs_idct8_add_mmx(uint8_t *dst, int16_t *block, int stride)
 {
     int i;
-    DECLARE_ALIGNED_8(int16_t, b2[64]);
+    DECLARE_ALIGNED(8, int16_t, b2)[64];
 
     for(i=0; i<2; i++){
-        DECLARE_ALIGNED_8(uint64_t, tmp);
+        DECLARE_ALIGNED(8, uint64_t, tmp);
 
         cavs_idct8_1d(block+4*i, ff_pw_4);
 
@@ -436,11 +436,6 @@ CAVS_MC(put_, 8, mmx2)
 CAVS_MC(put_, 16,mmx2)
 CAVS_MC(avg_, 8, mmx2)
 CAVS_MC(avg_, 16,mmx2)
-
-void ff_put_cavs_qpel8_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
-void ff_avg_cavs_qpel8_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
-void ff_put_cavs_qpel16_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
-void ff_avg_cavs_qpel16_mc00_mmx2(uint8_t *dst, uint8_t *src, int stride);
 
 void ff_cavsdsp_init_mmx2(DSPContext* c, AVCodecContext *avctx) {
 #define dspfunc(PFX, IDX, NUM) \

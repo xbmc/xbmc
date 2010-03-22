@@ -204,8 +204,8 @@ static void fill_slice_long(AVCodecContext *avctx, DXVA_Slice_H264_Long *slice,
         slice->num_ref_idx_l0_active_minus1 = h->ref_count[0] - 1;
     if (h->list_count > 1)
         slice->num_ref_idx_l1_active_minus1 = h->ref_count[1] - 1;
-    slice->slice_alpha_c0_offset_div2   = h->slice_alpha_c0_offset / 2;
-    slice->slice_beta_offset_div2       = h->slice_beta_offset / 2;
+    slice->slice_alpha_c0_offset_div2   = h->slice_alpha_c0_offset / 2 - 26;
+    slice->slice_beta_offset_div2       = h->slice_beta_offset     / 2 - 26;
     slice->Reserved8Bits                = 0;
 
     for (list = 0; list < 2; list++) {
@@ -220,11 +220,11 @@ static void fill_slice_long(AVCodecContext *avctx, DXVA_Slice_H264_Long *slice,
                 for (plane = 0; plane < 3; plane++) {
                     int w, o;
                     if (plane == 0 && h->luma_weight_flag[list]) {
-                        w = h->luma_weight[list][i];
-                        o = h->luma_offset[list][i];
+                        w = h->luma_weight[i][list][0];
+                        o = h->luma_weight[i][list][1];
                     } else if (plane >= 1 && h->chroma_weight_flag[list]) {
-                        w = h->chroma_weight[list][i][plane-1];
-                        o = h->chroma_offset[list][i][plane-1];
+                        w = h->chroma_weight[i][list][plane-1][0];
+                        o = h->chroma_weight[i][list][plane-1][1];
                     } else {
                         w = 1 << (plane == 0 ? h->luma_log2_weight_denom :
                                                h->chroma_log2_weight_denom);
