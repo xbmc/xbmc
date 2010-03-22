@@ -156,6 +156,8 @@ void CAdvancedSettings::Initialize()
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
+  // Part I, Pt.VI
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivxlcdm]+)([._ -][^\\/]*)$"));
 
   m_tvshowMultiPartStackRegExp = "^[-_EeXx]+([0-9]+)";
 

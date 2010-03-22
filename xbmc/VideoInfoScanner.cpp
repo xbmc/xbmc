@@ -861,13 +861,15 @@ namespace VIDEO
     if (strlen(season) == 0 && strlen(episode) > 0)
     { // no season specified -> assume season 1
       myEpisode.iSeason = 1;
-      myEpisode.iEpisode = atoi(episode);
+      if ((myEpisode.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
+        myEpisode.iEpisode = atoi(episode);
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode without season %s (e%i) [%s]", strLabel.c_str(), myEpisode.iEpisode, regexp.c_str());
     } 
     else if (strlen(season) > 0 && strlen(episode) == 0)
     { // no episode specification -> assume season 1
       myEpisode.iSeason = 1;
-      myEpisode.iEpisode = atoi(season);
+      if ((myEpisode.iEpisode = CUtil::TranslateRomanNumeral(season)) == -1)
+        myEpisode.iEpisode = atoi(season);
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode based match with forced season 1 %s (e%i) [%s]", strLabel.c_str(), myEpisode.iEpisode, regexp.c_str());
     }
     else
