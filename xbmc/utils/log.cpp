@@ -310,11 +310,18 @@ void LogGraphicsInfo()
   else
     CLog::Log(LOGNOTICE, "GL_VERSION = NULL");
 
+  s = glGetString(GL_SHADING_LANGUAGE_VERSION);
+  if (s)
+    CLog::Log(LOGNOTICE, "GL_SHADING_LANGUAGE_VERSION = %s", s);
+  else
+    CLog::Log(LOGNOTICE, "GL_SHADING_LANGUAGE_VERSION = NULL");
+
   s = glGetString(GL_EXTENSIONS);
   if (s)
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
   else
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
+
 #else /* !HAS_GL */
   CLog::Log(LOGNOTICE,
             "Please define LogGraphicsInfo for your chosen graphics libary");
