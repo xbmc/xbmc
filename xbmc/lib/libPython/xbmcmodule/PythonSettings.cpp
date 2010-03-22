@@ -64,13 +64,12 @@ namespace PYXBMC
     };
 
     AddonPtr addon;
-    if (CAddonMgr::Get()->GetAddon(CStdString(cScriptID), addon, ADDON::ADDON_SCRIPT))
+    if (!CAddonMgr::Get()->GetAddon(CStdString(cScriptID), self->pAddon, ADDON::ADDON_SCRIPT) || !self->pAddon)
     {
       PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
       return NULL;
     }
 
-    self->pAddon = addon.get();
     if (!self->pAddon->HasSettings())
     {
       PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
