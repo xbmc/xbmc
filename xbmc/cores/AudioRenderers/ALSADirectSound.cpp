@@ -347,7 +347,7 @@ bool CALSADirectSound::Pause()
 
   if(!m_bCanPause)
   {
-    snd_pcm_sframes_t avail = snd_pcm_avail(m_pPlayHandle);
+    snd_pcm_sframes_t avail = snd_pcm_avail_update(m_pPlayHandle);
     snd_pcm_sframes_t delay = 0;
     if(avail > 0)
       delay = snd_pcm_bytes_to_frames(m_pPlayHandle, m_uiBufferSize) - avail;
@@ -379,7 +379,7 @@ bool CALSADirectSound::Resume()
 
   if(state == SND_PCM_STATE_PREPARED)
   {
-    snd_pcm_sframes_t avail = snd_pcm_avail(m_pPlayHandle);
+    snd_pcm_sframes_t avail = snd_pcm_avail_update(m_pPlayHandle);
     snd_pcm_sframes_t delay = 0;
     if(avail > 0)
       delay = snd_pcm_bytes_to_frames(m_pPlayHandle, m_uiBufferSize) - avail;
