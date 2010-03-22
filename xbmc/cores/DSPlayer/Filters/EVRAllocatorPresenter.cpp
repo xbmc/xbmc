@@ -1926,7 +1926,7 @@ RECT CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR, const MFRatio& d
       // The source has "wide" pixels, so stretch the width.
       rc.right = MulDiv(rc.right, srcPAR.Numerator, srcPAR.Denominator);
     }
-    else if (srcPAR.Numerator > srcPAR.Denominator)
+    else if (srcPAR.Numerator < srcPAR.Denominator)
     {
       // The source has "tall" pixels, so stretch the height.
       rc.bottom = MulDiv(rc.bottom, srcPAR.Denominator, srcPAR.Numerator);
@@ -1941,7 +1941,7 @@ RECT CorrectAspectRatio(const RECT& src, const MFRatio& srcPAR, const MFRatio& d
       // The destination has "tall" pixels, so stretch the width.
       rc.bottom = MulDiv(rc.bottom, destPAR.Denominator, destPAR.Numerator);
     }
-    else if (destPAR.Numerator > destPAR.Denominator)
+    else if (destPAR.Numerator < destPAR.Denominator)
     {
       // The destination has "fat" pixels, so stretch the height.
       rc.right = MulDiv(rc.right, destPAR.Numerator, destPAR.Denominator);
