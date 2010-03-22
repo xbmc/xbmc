@@ -253,6 +253,7 @@ void CAddon::BuildLibName()
   case ADDON_VIZ:
     ext = ADDON_VIS_EXT;
     break;
+  case ADDON_SCRIPT:
   case ADDON_PLUGIN:
     ext = ADDON_PYTHON_EXT;
     break;
