@@ -202,7 +202,7 @@ static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
   else
-    return pInputStream->Seek(pos, whence & !AVSEEK_FORCE);
+    return pInputStream->Seek(pos, whence & ~AVSEEK_FORCE);
 }
 
 static int dvd_file_close(URLContext *h)
