@@ -248,9 +248,59 @@ static double ErrorSq(double x, double y)
 	return (x - y) * (x - y);
 }
 
+static void ComputeBlockWMSE(u8 const *original, u8 const *compressed, unsigned int w, unsigned int h, double &cmse, double &amse)
+{
+	// Computes the MSE for the block and weights it by the variance of the original block.
+	// If the variance of the original block is less than 4 (i.e. a standard deviation of 1 per channel)
+	// then the block is close to being a single colour. Quantisation errors in single colour blocks
+	// are easier to see than similar errors in blocks that contain more colours, particularly when there
+	// are many such blocks in a large area (eg a blue sky background) as they cause banding.  Given that
+	// banding is easier to see than small errors in "complex" blocks, we weight the errors by a factor
+	// of 5. This implies that images with large, single colour areas will have a higher potential WMSE
+	// than images with lots of detail.
+
+	cmse = amse = 0;
+	unsigned int sum_p[4];  // per channel sum of pixels
+	unsigned int sum_p2[4]; // per channel sum of pixels squared
+	memset(sum_p, 0, sizeof(sum_p));
+	memset(sum_p2, 0, sizeof(sum_p2));
+	for( unsigned int py = 0; py < 4; ++py )
+	{
+		for( unsigned int px = 0; px < 4; ++px )
+		{
+			if( px < w && py < h )
+			{
+				double pixelCMSE = 0;
+				for( int i = 0; i < 3; ++i )
+				{
+					pixelCMSE += ErrorSq(original[i], compressed[i]);
+					sum_p[i] += original[i];
+					sum_p2[i] += (unsigned int)original[i]*original[i];
+				}
+				if( original[3] == 0 && compressed[3] == 0 )
+					pixelCMSE = 0; // transparent in both, so colour is inconsequential
+				amse += ErrorSq(original[3], compressed[3]);
+				cmse += pixelCMSE;
+				sum_p[3] += original[3];
+				sum_p2[3] += (unsigned int)original[3]*original[3];
+			}
+			original += 4;
+			compressed += 4;
+		}
+	}
+	unsigned int variance = 0;
+	for( int i = 0; i < 4; ++i )
+		variance += w*h*sum_p2[i] - sum_p[i]*sum_p[i];
+	if( variance < 4 * w * w * h * h )
+	{
+		amse *= 5;
+		cmse *= 5;
+	}
+}
+  
 void ComputeMSE( u8 const *rgba, int width, int height, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE )
 {
-  	ComputeMSE(rgba, width, height, width*4, dxt, flags, colourMSE, alphaMSE);
+	ComputeMSE(rgba, width, height, width*4, dxt, flags, colourMSE, alphaMSE);
 }
                 
 void ComputeMSE( u8 const *rgba, int width, int height, int pitch, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE )
@@ -271,34 +321,33 @@ void ComputeMSE( u8 const *rgba, int width, int height, int pitch, u8 const *dxt
 			// decompress the block
 			u8 targetRgba[4*16];
 			Decompress( targetRgba, sourceBlock, flags );
-			
-			// write the decompressed pixels to the correct image locations
 			u8 const* sourcePixel = targetRgba;
+
+			// copy across to a similar pixel block
+			u8 originalRgba[4*16];
+			u8* originalPixel = originalRgba;
+
 			for( int py = 0; py < 4; ++py )
 			{
 				for( int px = 0; px < 4; ++px )
 				{
-					// get the target location
 					int sx = x + px;
 					int sy = y + py;
 					if( sx < width && sy < height )
 					{
 						u8 const* targetPixel = rgba + pitch*sy + 4*sx;
-						u8 colour[4];
-						CopyRGBA(targetPixel, colour, flags);
-						// compute the MSE of colour and alpha
-						double cmse = 0;
-						for( int i = 0; i < 3; ++i )
-							cmse += ErrorSq(sourcePixel[i], colour[i]);
-						if (colour[3] == 0 && sourcePixel[3] == 0) // transparent source and dest						double cmse = 0;
-							cmse = 0; // transparent in both, so colour is inconsequential
-						alphaMSE += ErrorSq(colour[3], sourcePixel[3]);
-						colourMSE += cmse;
+						CopyRGBA(targetPixel, originalPixel, flags);
 					}
 					sourcePixel += 4;
+					originalPixel += 4;
 				}
 			}
-			
+
+			// compute the weighted MSE of the block
+			double blockCMSE, blockAMSE;
+			ComputeBlockWMSE(originalRgba, targetRgba, std::min(4, width - x), std::min(4, height - y), blockCMSE, blockAMSE);
+			colourMSE += blockCMSE;
+			alphaMSE += blockAMSE;
 			// advance
 			sourceBlock += bytesPerBlock;
 		}
