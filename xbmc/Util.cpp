@@ -3107,6 +3107,7 @@ bool CUtil::SudoCommand(const CStdString &strCommand)
 
   return WEXITSTATUS(n) == 0;
 }
+#endif
 
 int CUtil::LookupRomanDigit(char roman_digit)
 {
@@ -3220,5 +3221,3 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
   }
   return decimal;
 }
-
-#endif
