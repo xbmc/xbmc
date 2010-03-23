@@ -3148,8 +3148,7 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
     int temp_sum  = 0,
         last      = 0,
         repeat    = 0,
-        trend     = 1,
-        max       = 1000;
+        trend     = 1;
     decimal = 0;
     while (*roman_numeral)
     {
@@ -3201,9 +3200,6 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
         
         temp_sum = digit;
 
-        if (max > last)
-          max = last;
-
         trend   = 1;
         repeat  = 0;
       }
@@ -3211,10 +3207,6 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
 
       // numerals may not repeat more than thrice
       if (repeat == 3)
-        return -1;
-
-      // Large numerals cannot occur right of themself unless repeating
-      if (!repeat && digit >= max)
         return -1;
 
       last = digit;
