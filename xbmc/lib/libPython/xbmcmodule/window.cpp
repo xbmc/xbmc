@@ -239,6 +239,12 @@ namespace PYXBMC
       new(&((ControlProgress*)pControl)->strTextureBg) string();
       new(&((ControlProgress*)pControl)->strTextureOverlay) string();
       break;
+    case CGUIControl::GUICONTROL_SLIDER:
+      pControl = (Control*)ControlSlider_Type.tp_alloc(&ControlSlider_Type, 0);
+      new(&((ControlSlider*)pControl)->strTextureBack) string();
+      new(&((ControlSlider*)pControl)->strTexture) string();
+      new(&((ControlSlider*)pControl)->strTextureFoc) string();        
+      break;			
     case CGUIControl::GUICONTAINER_LIST:
     case CGUIControl::GUICONTAINER_WRAPLIST:
     case CGUIControl::GUICONTAINER_FIXEDLIST:
@@ -597,6 +603,10 @@ namespace PYXBMC
     // Control Progress
     else if (ControlProgress_Check(pControl))
       ControlProgress_Create((ControlProgress*)pControl);
+
+    // Control Slider
+    else if (ControlSlider_Check(pControl))
+      ControlSlider_Create((ControlSlider*)pControl);    
 
     // Control Group
     else if (ControlGroup_Check(pControl))

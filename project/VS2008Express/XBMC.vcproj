@@ -6153,6 +6153,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlslider.cpp"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlradiobutton.cpp"
 						>
 					</File>
