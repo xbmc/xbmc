@@ -206,7 +206,7 @@ void CDSPlayer::Process()
 
   m_callback.OnPlayBackStarted();
   bool pStartPosDone = false;
-
+  int sleepTime;
   m_hReadyEvent.Set(); // We're ready to go!
   m_pDsClock.SetSpeed(1000);
 
@@ -234,7 +234,14 @@ void CDSPlayer::Process()
     }
     m_pDsGraph.UpdateTime();
 
-    m_pDsGraph.DoFFRW(m_currentRate);
+    sleepTime = m_pDsGraph.DoFFRW(m_currentRate);
+    if ((m_currentRate == 0 ) || ( m_currentRate == 1 ))
+      sleepTime = 250;
+    else
+    {
+      //This way the time it wasted to seek we remove it from the sleep time
+      sleepTime = 250 - sleepTime;
+    }
 
     
     
@@ -243,7 +250,7 @@ void CDSPlayer::Process()
       CChaptersManager::getSingleton()->UpdateChapters();
     //Handle fastforward stuff
    
-    Sleep(250);
+    Sleep(sleepTime);
     CHECK_PLAYER_STATE
 
     if (m_pDsGraph.FileReachedEnd())

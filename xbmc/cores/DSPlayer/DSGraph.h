@@ -98,7 +98,7 @@ public:
   /** Perform a Fast Forward
    * @param[in] currentSpeed Fast Forward speed
    */
-  virtual void DoFFRW(int currentRate);
+  virtual int DoFFRW(int currentRate);
   /** Performs a Seek
    * @param[in] bPlus If true, performs a positive seek. If false, performs a negative seek
    * @param[in] bLargeStep If true, performs a large seek
@@ -179,7 +179,7 @@ private:
   std::vector<DvdTitle*>                m_pDvdTitles;
   bool m_bReachedEnd;
   int m_currentRate;
-  LONGLONG m_lAvgTimeToSeek;
+  int m_lAvgTimeToSeek;
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;

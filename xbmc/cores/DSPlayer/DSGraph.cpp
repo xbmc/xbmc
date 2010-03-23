@@ -34,6 +34,7 @@
 #include "StreamsManager.h"
 #include <streams.h>
 
+
 #include "FgManager.h"
 #include "qnetwork.h"
 
@@ -596,85 +597,75 @@ void CDSGraph::Pause()
   UpdateState();
 }
 
-void CDSGraph::DoFFRW(int currentRate)
+int CDSGraph::DoFFRW(int currentRate)
 {
   if ( currentRate == 1 || currentRate == 0 )
-    return;
+    return 250;
+
   //TIME_FORMAT_MEDIA_TIME is using Reference time (100-nanosecond units).
   //1 sec = 1 000 000 000 nanoseconds
   //so 1 units of TIME_FORMAT_MEDIA_TIME is 0,0000001 sec or 0,0001 millisec
   //If playback speed is at 32x we will try to make it the closest to 32sec per sec
-  bool requireAjust = false;
-  //sleeptime of 250
-  int stepInMsec = (( currentRate * 1000) * 4 );
+
+  int stepInMsec = (( currentRate * 1000) / 4 );
   double startTimer = 0;
   if (currentRate != m_currentRate)
   {
     m_currentRate = currentRate;
-    requireAjust = true;
+    m_lAvgTimeToSeek = 0;
   }
-  
-  LONGLONG timetarget = 0;
+
   //Get the target in TIME_FORMAT_MEDIA_TIME
   stepInMsec += GetTime();
-  timetarget = stepInMsec * 10000 ;
-  if (timetarget < 0)
-    CLog::Log(LOGERROR,"WTF");
+
   //the ajustement is to get an estimate of the time beetween each seek
-  if (requireAjust)
-    startTimer = CDSClock::GetAbsoluteClock();
-  else
-  {
-    //we have the avg time so lets anticipate the time its going to take to seek
-    timetarget += DS_MSEC_TO_TIME(m_lAvgTimeToSeek);
-  }
-  
+  startTimer = CDSClock::GetAbsoluteClock();
+
+  stepInMsec += m_lAvgTimeToSeek;
+
   if (m_VideoInfo.isDVD)
   {
-    
+
   }
   else
   {
     if (!m_pMediaSeeking)
-      return;
+      return 250;
 
     HRESULT hr;
-    LONGLONG earliest, latest, current, stop, pStop;
+    LONGLONG earliest, latest, msec_earliest;
     m_pMediaSeeking->GetAvailable(&earliest,&latest);
-    m_pMediaSeeking->GetPositions(&current,&stop);
+
+    msec_earliest = DS_TIME_TO_MSEC(earliest);
     //if target is under the lowest position possible in the media just make it play from start
-    if (timetarget < earliest)
+    if (stepInMsec < msec_earliest)
     {
       //setting speed at 1x
       m_currentRate = 1;
       //Seeking to earliest position in the video
-      hr = m_pMediaSeeking->SetPositions(&earliest, AM_SEEKING_AbsolutePositioning, (LONGLONG) 0, AM_SEEKING_NoPositioning);
+      SeekInMilliSec(msec_earliest);
       //Set the new status of the position
-      m_State.time = DS_TIME_TO_MSEC(earliest);
+      m_State.time = msec_earliest;
       //start the video since we stopped the playback after this seek
       m_pMediaControl->Run();
-      //UpdateTime();
       UpdateState();
-      return;
+      return 250;
     }
 
-    
-    hr = m_pMediaSeeking->SetPositions(timetarget, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
-    
-    if (hr == E_INVALIDARG)
-      CLog::Log(LOGINFO,"");
-    // = DS_TIME_TO_MSEC(timetarget);
-    //m_State.time = TIME_FORMAT_TO_MS(rewind);
+    //seek to where we should be
+    SeekInMilliSec(stepInMsec);
     //stop when ready is currently make the graph wait for a frame to present before starting back again
     m_pMediaControl->StopWhenReady();
 
     UpdateTime();
     UpdateState(); // We need to know the new state
   }
-  if (requireAjust)
-  {
-    m_lAvgTimeToSeek = DS_TIME_TO_MSEC((CDSClock::GetAbsoluteClock() - startTimer));
-  }
+
+  m_lAvgTimeToSeek = DS_TIME_TO_MSEC((CDSClock::GetAbsoluteClock() - startTimer));
+  if ( m_lAvgTimeToSeek <= 0 )
+    m_lAvgTimeToSeek = 50;
+
+  return m_lAvgTimeToSeek;
 }
 
 HRESULT CDSGraph::UnloadGraph()
@@ -789,9 +780,6 @@ void CDSGraph::SeekInMilliSec(double sec)
     DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(seekrequest);
     m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
-
-
-  //UpdateState();
 }
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
