@@ -1170,7 +1170,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (item->m_bIsFolder)
       {
         m_database.SetPathHash(strPath,""); // to force scan
-        OnScan(strPath,info,settings);
+        OnScan(strPath);
       }
       else
         OnInfo(item.get(),info);
@@ -1848,9 +1848,9 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   return foundDirectly ? 1 : 0;
 }
 
-void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const ScraperPtr& info, const SScanSettings& settings)
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath)
 {
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog)
-    pDialog->StartScanning(strPath,info,settings,false);
+    pDialog->StartScanning(strPath, false);
 }

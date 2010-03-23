@@ -95,13 +95,17 @@ namespace VIDEO
       m_bCanInterrupt = false;
 
       bool bCancelled = false;
-      for(std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.begin(); it != m_pathsToScan.end(); it++)
+      while (!bCancelled && m_pathsToScan.size())
       {
-        if(!DoScan(it->first, it->second))
-        {
+        /*
+         * A copy of the directory path is used because the path supplied is
+         * immediately removed from the m_pathsToScan set in DoScan(). If the
+         * reference points to the entry in the set a null reference error
+         * occurs.
+         */
+        CStdString directory = *m_pathsToScan.begin();
+        if (!DoScan(directory))
           bCancelled = true;
-          break;
-        }
       }
 
       if (!bCancelled)
@@ -135,11 +139,10 @@ namespace VIDEO
     }
   }
 
-  void CVideoInfoScanner::Start(const CStdString& strDirectory, const ScraperPtr& info, const SScanSettings& settings, bool bUpdateAll)
+  void CVideoInfoScanner::Start(const CStdString& strDirectory, bool bUpdateAll)
   {
     m_strStartDir = strDirectory;
     m_bUpdateAll = bUpdateAll;
-    m_info = info;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
 
@@ -153,7 +156,7 @@ namespace VIDEO
     }
     else
     {
-      m_pathsToScan.insert(pair<CStdString,SScanSettings>(strDirectory,settings));
+      m_pathsToScan.insert(strDirectory);
       m_bClean = false;
     }
 
@@ -180,7 +183,7 @@ namespace VIDEO
     m_pObserver = pObserver;
   }
 
-  bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, SScanSettings settings)
+  bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
   {
     if (m_bUpdateAll)
     {
@@ -196,13 +199,30 @@ namespace VIDEO
       m_pObserver->OnSetTitle(g_localizeStrings.Get(20415));
     }
 
+    /*
+     * Remove this path from the list we're processing. This must be done prior to
+     * the check for file or folder exclusion to prevent an infinite while loop
+     * in Process().
+     */
+    set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
+    if (it != m_pathsToScan.end())
+      m_pathsToScan.erase(it);
+
     // load subfolder
     CFileItemList items;
     bool foundDirectly = false;
     bool bSkip = false;
 
+    SScanSettings settings;
     ScraperPtr info = m_database.GetScraperForPath(strDirectory, settings, foundDirectly);
     CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
+
+    // exclude folders that match our exclude regexps
+    CStdStringArray regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps;
+
+    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+      return true;
 
     if (content == CONTENT_NONE)
       bSkip = true;
@@ -323,10 +343,6 @@ namespace VIDEO
       m_pObserver->OnDirectoryScanned(strDirectory);
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished dir: %s", strDirectory.c_str());
 
-    // exclude folders that match our exclude regexps
-    CStdStringArray regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
-                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps;
-
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -335,23 +351,10 @@ namespace VIDEO
         break;
 
       // if we have a directory item (non-playlist) we then recurse into that folder
-      if (pItem->m_bIsFolder && !pItem->GetLabel().Equals("sample") && !pItem->GetLabel().Equals("subs") && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && content != CONTENT_TVSHOWS) // do not recurse for tv shows - we have already looked recursively for episodes
+      // do not recurse for tv shows - we have already looked recursively for episodes
+      if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList() && settings.recurse > 0 && content != CONTENT_TVSHOWS)
       {
-        CStdString strPath=pItem->m_strPath;
-
-        // do not process items which will be scanned by main loop
-        std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.find(strPath);
-        if (it != m_pathsToScan.end())
-          continue;
-
-        if (CUtil::ExcludeFileOrFolder(strPath, regexps))
-          continue;
-
-        SScanSettings settings2;
-        settings2.recurse = settings.recurse-1;
-        settings2.parent_name_root = settings.parent_name;
-        settings2.parent_name = settings.parent_name;
-        if (!DoScan(strPath, settings2))
+        if (!DoScan(pItem->m_strPath))
         {
           m_bStop = true;
         }

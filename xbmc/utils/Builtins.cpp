@@ -1043,13 +1043,12 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",ScraperPtr(),settings);
+          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "");
       }
     }
   }

@@ -407,7 +407,7 @@ public:
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
+  bool GetPaths(std::set<CStdString> &paths);
   bool GetPathsForTvShow(int idShow, std::vector<int>& paths);
 
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video

@@ -164,7 +164,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     if (type == "video")
     {
       if (dialog->m_bRunScan)
-        CGUIWindowVideoBase::OnScan(share.strPath,ADDON::ScraperPtr(),dialog->m_settings);
+        CGUIWindowVideoBase::OnScan(share.strPath);
 
     }
   }
