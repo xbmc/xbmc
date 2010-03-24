@@ -176,6 +176,13 @@ void CMatrixGLES::Scalef(GLfloat x, GLfloat y, GLfloat z)
 
 void CMatrixGLES::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
+  GLfloat modulous = sqrt((x*x)+(y*y)+(z*z));
+  if (modulous != 0.0)
+  {
+    x /= modulous;
+    y /= modulous;
+    z /= modulous;
+  }
   GLfloat cosine = cos(angle);
   GLfloat sine   = sin(angle);
   GLfloat cos1   = 1 - cosine;
