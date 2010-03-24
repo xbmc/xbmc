@@ -60,7 +60,7 @@ static int configAttributes[] =
   EGL_BLUE_SIZE,		BSIZE,
   EGL_ALPHA_SIZE,		ASIZE,
   EGL_DEPTH_SIZE,		DEPTH,
-  EGL_SAMPLES,			4,	// 4x AntiAiliasing
+  EGL_SAMPLES,			0,        // AntiAiliasing
 #if HAS_GLES == 2
   EGL_RENDERABLE_TYPE,	EGL_OPENGL_ES2_BIT,
 #endif

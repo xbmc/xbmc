@@ -173,18 +173,18 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension)
     // GLES has FBO as a core element, not an extension!
     return true;
   }
+  else if (extension == "GL_TEXTURE_NPOT")
+  {
+    // GLES supports non-power-of-two textures as standard.
+	return true;
+	/* Note: The wrap mode can only be GL_CLAMP_TO_EDGE and the minification filter can only be
+	 * GL_NEAREST or GL_LINEAR (in other words, not mipmapped). The extension GL_OES_texture_npot
+	 * relaxes these restrictions and allows wrap modes of GL_REPEAT and GL_MIRRORED_REPEAT and
+	 * also	allows npot textures to be mipmapped with the full set of minification filters
+	 */
+  }
   else
   {
-    if (extension == "GL_TEXTURE_NPOT")
-    {
-      // GLES can have different methods to detect this one based on chipset.
-      // Handle it here, otherwise let it drop out and test for the standard extension string.
-      if (m_RenderRenderer == "PowerVR SGX 530")
-      {
-        extension = "GL_IMG_texture_npot";
-      }
-    }
-
     CStdString name;
     name  = " ";
     name += extension;

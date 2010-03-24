@@ -201,6 +201,12 @@
 #define HAS_GLES 2
 #endif
 
+// GLES1.0 detected. Dont use GL!
+#ifdef HAVE_LIBGLES
+#undef HAS_GL
+#define HAS_GLES 1
+#endif
+
 #ifdef HAS_GL
 #ifdef _WIN32
 #include "GL/glew.h"
@@ -217,7 +223,7 @@
 #endif
 
 #if HAS_GLES == 2
-#ifdef _ARMEL
+#ifdef _ARMEL	// PowerVR SGX Header
 #include <GLES2/gl2extimg.h>
 #else
 #include <GLES2/gl2.h>
