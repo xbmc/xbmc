@@ -156,12 +156,12 @@ void CGUIFixedListContainer::ValidateOffset()
   m_cursor = std::max(m_cursor, minCursor);
   m_cursor = std::min(m_cursor, maxCursor);
   // and finally ensure our offset is valid
-  if (m_offset + maxCursor >= (int)m_items.size())
+  if (m_offset + maxCursor >= (int)m_items.size() || m_scrollOffset > ((int)m_items.size() - maxCursor - 1) * m_layout->Size(m_orientation))
   {
     m_offset = m_items.size() - maxCursor - 1;
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
-  if (m_offset < -minCursor)
+  if (m_offset < -minCursor || m_scrollOffset < -minCursor * m_layout->Size(m_orientation))
   {
     m_offset = -minCursor;
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
