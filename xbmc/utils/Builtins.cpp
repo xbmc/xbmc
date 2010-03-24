@@ -348,7 +348,15 @@ int CBuiltins::Execute(const CStdString& execString)
       for(unsigned int i = 1; i < argc; i++)
         argv[i] = (char*)params[i].c_str();
 
-      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+      AddonPtr script;
+      CURL url(params[0]);
+      if (!CAddonMgr::Get()->GetAddon(url.GetFileName(), script, ADDON_SCRIPT))
+      {
+        CLog::Log(LOGERROR, "Could not find addon: %s", url.GetFileName().c_str());
+        return -1;
+      }
+      CStdString scriptpath(script->Path()+script->LibName());
+      g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
       delete [] argv;
     }
   }
