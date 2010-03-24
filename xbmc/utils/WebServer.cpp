@@ -24,6 +24,7 @@
 #include "../lib/libjsonrpc/JSONRPC.h"
 #include "../lib/libhttpapi/HttpApi.h"
 #include "../FileSystem/File.h"
+#include "../FileSystem/Directory.h"
 #include "../Util.h"
 #include "log.h"
 #include "SingleLock.h"
@@ -139,6 +140,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     else
     {
       strURL.Format("special://xbmc/web%s", strURL.c_str());
+      if (CDirectory::Exists(strURL))
+        strURL += "/index.html";
       return CreateDownloadResponse(connection, strURL);
     }
 #endif
