@@ -121,8 +121,7 @@ namespace PYXBMC
   {
     if (self->pGUIControl)
     {
-      float fPercent;
-      fPercent = ((CGUISliderControl*)self->pGUIControl)->GetPercentage();
+      float fPercent = (float)((CGUISliderControl*)self->pGUIControl)->GetPercentage();
       return Py_BuildValue((char*)"f", fPercent);
     }
     return Py_BuildValue((char*)"f", 0);
