@@ -226,10 +226,20 @@ int CWebServer::CreateDownloadResponse(struct MHD_Connection *connection, const 
   CFile *file = new CFile();
   if (file->Open(strURL))
   {
-    struct MHD_Response *response = MHD_create_response_from_callback ( file->GetLength(),
-                                                                        2048,
-                                                                        &CWebServer::ContentReaderCallback, file,
-                                                                        &CWebServer::ContentReaderFreeCallback);
+    struct MHD_Response *response;
+    if (file->GetLength() > 0)
+    {
+      response = MHD_create_response_from_callback ( file->GetLength(),
+                                                     2048,
+                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderFreeCallback);
+    }
+    else
+    {
+      //libmicrohttpd calls abort() when CWebServer::ContentReaderCallback return 0
+      delete file;
+      response = MHD_create_response_from_data(0, NULL, 0, 0);
+    }
 
     CStdString ext = CUtil::GetExtension(strURL);
     ext = ext.ToLower();
