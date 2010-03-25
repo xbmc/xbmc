@@ -238,7 +238,7 @@ int CWebServer::CreateDownloadResponse(struct MHD_Connection *connection, const 
     {
       //libmicrohttpd calls abort() when CWebServer::ContentReaderCallback return 0
       delete file;
-      response = MHD_create_response_from_data(0, NULL, 0, 0);
+      response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
     }
 
     CStdString ext = CUtil::GetExtension(strURL);
