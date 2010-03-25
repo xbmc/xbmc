@@ -102,7 +102,10 @@ void CJobQueue::AddJob(CJob *job)
   // check if we have this job already.  If so, we're done.
   if (find(m_jobQueue.begin(), m_jobQueue.end(), job) != m_jobQueue.end() ||
       find(m_processing.begin(), m_processing.end(), job) != m_processing.end())
+  {
+    delete job;
     return;
+  }
 
   if (m_lifo)
     m_jobQueue.push_back(CJobPointer(job));
