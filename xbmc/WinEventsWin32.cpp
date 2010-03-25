@@ -32,6 +32,8 @@
 #include <dbt.h>
 #include "LocalizeStrings.h"
 #include "KeyboardStat.h"
+#include "GUIWindowManager.h"
+#include "GUIControl.h"       // for EVENT_RESULT
 
 #ifdef _WIN32
 
@@ -49,6 +51,8 @@ uint32_t g_uQueryCancelAutoPlay = 0;
 int XBMC_TranslateUNICODE = 1;
 
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
+int CWinEventsWin32::m_lastGesturePosX = 0;
+int CWinEventsWin32::m_lastGesturePosY = 0;
 
 void DIB_InitOSKeymap()
 {
@@ -480,6 +484,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       }
       break;
     }
+    case WM_GESTURENOTIFY:
+    {
+      OnGestureNotify(hWnd, lParam);
+      return DefWindowProc(hWnd, WM_GESTURENOTIFY, wParam, lParam);
+    }
+    case WM_GESTURE:
+    {
+      OnGesture(hWnd, lParam);
+      return 0;
+    }
     case WM_SYSCHAR:
       if (wParam == VK_RETURN) //stop system beep on alt-return
         return 0;
@@ -611,6 +625,90 @@ void CWinEventsWin32::WindowFromScreenCoords(HWND hWnd, POINT *point)
   ClientToScreen(hWnd, &windowPos);
   point->x -= windowPos.x;
   point->y -= windowPos.y;
+}
+
+void CWinEventsWin32::OnGestureNotify(HWND hWnd, LPARAM lParam)
+{
+  // convert to window coordinates
+  PGESTURENOTIFYSTRUCT gn = (PGESTURENOTIFYSTRUCT)(lParam);
+  POINT point = { gn->ptsLocation.x, gn->ptsLocation.y };
+  WindowFromScreenCoords(hWnd, &point);
+
+  // by default that we want no gestures
+  GESTURECONFIG gc[] = {{ GID_ZOOM, 0, GC_ZOOM},
+                        { GID_ROTATE, 0, GC_ROTATE},
+                        { GID_PAN, 0, GC_PAN},
+                        { GID_TWOFINGERTAP, 0, GC_TWOFINGERTAP },
+                        { GID_PRESSANDTAP, 0, GC_PRESSANDTAP }};
+
+  // send a message to see if a control wants any
+  CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, point.x, point.y);
+  if (g_windowManager.SendMessage(message))
+  {
+    int gestures = message.GetParam1();
+    if (gestures == EVENT_RESULT_ZOOM)
+      gc[0].dwWant |= GC_ZOOM;
+    if (gestures == EVENT_RESULT_ROTATE)
+      gc[1].dwWant |= GC_ROTATE;
+    if (gestures == EVENT_RESULT_PAN_VERTICAL)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_VERTICALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    if (gestures == EVENT_RESULT_PAN_HORIZONTAL)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    gc[0].dwBlock = gc[0].dwWant ^ 1;
+    gc[1].dwBlock = gc[1].dwWant ^ 1;
+    gc[2].dwBlock = gc[2].dwWant ^ 30;
+  }
+  if (g_Windowing.PtrSetGestureConfig)
+    g_Windowing.PtrSetGestureConfig(hWnd, 0, 5, gc, sizeof(GESTURECONFIG));
+}
+
+void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
+{
+  if (!g_Windowing.PtrGetGestureInfo)
+    return;
+
+  GESTUREINFO gi = {0};
+  gi.cbSize = sizeof(gi);
+  g_Windowing.PtrGetGestureInfo((HGESTUREINFO)lParam, &gi);
+
+  // convert to window coordinates
+  POINT point = { gi.ptsLocation.x, gi.ptsLocation.y };
+  WindowFromScreenCoords(hWnd, &point);
+  switch (gi.dwID)
+  {
+  case GID_BEGIN:
+    {
+      m_lastGesturePosX = point.x;
+      m_lastGesturePosY = point.y;
+      g_application.OnAction(CAction(ACTION_GESTURE_BEGIN, 0, (float)point.x, (float)point.y, 0, 0));
+    }
+    break;
+  case GID_END:
+    {
+      g_application.OnAction(CAction(ACTION_GESTURE_END));
+    }
+    break;
+  case GID_PAN:
+    {
+      g_application.OnAction(CAction(ACTION_GESTURE_PAN, 0, (float)point.x, (float)point.y,
+                                    (float)(point.x - m_lastGesturePosX), (float)(point.y - m_lastGesturePosY)));
+      m_lastGesturePosX = point.x;
+      m_lastGesturePosY = point.y;
+    }
+    break;
+  case GID_ROTATE:
+    CLog::Log(LOGDEBUG, "%s - Rotating", __FUNCTION__);
+    break;
+  case GID_ZOOM:
+    CLog::Log(LOGDEBUG, "%s - Zooming", __FUNCTION__);
+    break;
+  case GID_TWOFINGERTAP:
+  case GID_PRESSANDTAP:
+  default:
+    // You have encountered an unknown gesture
+    break;
+  }
+  g_Windowing.PtrCloseGestureInfoHandle((HGESTUREINFO)lParam);
 }
 
 #endif
