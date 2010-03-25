@@ -866,7 +866,7 @@ bool CGUISpinControl::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
@@ -874,19 +874,19 @@ bool CGUISpinControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event
       MoveUp();
     else if (m_imgspinDownFocus.HitTest(point))
       MoveDown();
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
     MoveUp();
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     MoveDown();
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 CStdString CGUISpinControl::GetDescription() const

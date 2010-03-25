@@ -53,7 +53,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIWindowMusicOverlay::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindowMusicOverlay::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(CONTROL_LOGO_PIC);
   if (pControl && pControl->HitTest(point))
@@ -72,9 +72,9 @@ bool CGUIWindowMusicOverlay::OnMouseEvent(const CPoint &point, const CMouseEvent
       else
         g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUIWindowMusicOverlay::SetDefaults()

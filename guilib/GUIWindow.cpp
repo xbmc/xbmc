@@ -336,7 +336,7 @@ void CGUIWindow::Close(bool forceClose)
 bool CGUIWindow::OnAction(const CAction &action)
 {
   if (action.IsMouse())
-    return OnMouseAction(action);
+    return EVENT_RESULT_UNHANDLED != OnMouseAction(action);
 
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
@@ -363,7 +363,7 @@ CPoint CGUIWindow::GetPosition() const
 }
 
 // OnMouseAction - called by OnAction()
-bool CGUIWindow::OnMouseAction(const CAction &action)
+EVENT_RESULT CGUIWindow::OnMouseAction(const CAction &action)
 {
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
   CPoint mousePoint(action.GetAmount(0), action.GetAmount(1));
@@ -386,13 +386,13 @@ bool CGUIWindow::OnMouseAction(const CAction &action)
   return SendMouseEvent(mousePoint, event);
 }
 
-bool CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go to previous menu
-    return OnAction(CAction(ACTION_PREVIOUS_MENU));
+    return OnAction(CAction(ACTION_PREVIOUS_MENU)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 /// \brief Called on window open.

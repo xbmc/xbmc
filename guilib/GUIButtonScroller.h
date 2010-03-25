@@ -81,7 +81,7 @@ public:
   void LoadButtons(TiXmlNode *node);
 
 protected:
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   int GetNext(int iCurrent) const;
   int GetPrevious(int iCurrent);

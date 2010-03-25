@@ -295,7 +295,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(fPercent));
 }
 
-bool CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
@@ -310,24 +310,24 @@ bool CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
       SendWindowMessage(msg);
     }
     SetFromPosition(point);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
   {
     SetFromPosition(point);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
     Move(10);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     Move(-10);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUISliderControl::SetInfo(int iInfo)

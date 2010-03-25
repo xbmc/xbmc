@@ -52,9 +52,9 @@ void CGUIWindowVideoOverlay::FrameMove()
   CGUIDialog::FrameMove();
 }
 
-bool CGUIWindowVideoOverlay::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindowVideoOverlay::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUIWindowVideoOverlay::SetDefaults()

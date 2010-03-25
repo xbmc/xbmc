@@ -70,7 +70,7 @@ public:
   void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
 protected:
   virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);

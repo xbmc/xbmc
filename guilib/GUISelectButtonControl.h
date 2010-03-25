@@ -113,7 +113,7 @@ public:
   virtual void SetPosition(float posX, float posY);
 
 protected:
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   bool m_bShowSelect;
   CGUITexture m_imgBackground;

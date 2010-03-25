@@ -886,7 +886,7 @@ bool CGUIButtonScroller::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
@@ -900,22 +900,22 @@ bool CGUIButtonScroller::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
       else
         m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
       OnAction(CAction(ACTION_SELECT_ITEM));
-      return true;
+      return EVENT_RESULT_HANDLED;
     }
     else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
     {
       m_bScrollDown = true;
       m_fScrollSpeed = SCROLL_SPEED;
-      return true;
+      return EVENT_RESULT_HANDLED;
     }
     else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
     {
       m_bScrollUp = true;
       m_fScrollSpeed = SCROLL_SPEED;
-      return true;
+      return EVENT_RESULT_HANDLED;
     }
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 CStdString CGUIButtonScroller::GetDescription() const

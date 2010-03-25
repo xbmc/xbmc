@@ -62,7 +62,7 @@ public:
   void PythonSetDisabledColor(color_t disabledColor);
 
 protected:
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   CGUILabel::COLOR GetTextColor() const;
   

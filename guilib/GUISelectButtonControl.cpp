@@ -358,7 +358,7 @@ bool CGUISelectButtonControl::OnMouseOver(const CPoint &point)
   return ret;
 }
 
-bool CGUISelectButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUISelectButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
@@ -368,19 +368,19 @@ bool CGUISelectButtonControl::OnMouseEvent(const CPoint &point, const CMouseEven
       OnRight();
     else // normal select
       CGUIButtonControl::OnMouseEvent(point, event);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
     OnLeft();
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     OnRight();
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUISelectButtonControl::SetPosition(float posX, float posY)

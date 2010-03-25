@@ -134,7 +134,7 @@ void CGUIMoverControl::OnRight()
   Move((int)m_fSpeed, 0);
 }
 
-bool CGUIMoverControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIMoverControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
@@ -149,9 +149,9 @@ bool CGUIMoverControl::OnMouseEvent(const CPoint &point, const CMouseEvent &even
       SendWindowMessage(msg);
     }
     Move((int)event.m_offsetX, (int)event.m_offsetY);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUIMoverControl::UpdateSpeed(int nDirection)

@@ -53,6 +53,13 @@ public:
 };
 
 /*!
+ \brief Results of OnMouseEvent()
+ Any value not equal to EVENT_RESULT_UNHANDLED indicates that the event was handled.
+ */
+enum EVENT_RESULT { EVENT_RESULT_UNHANDLED = 0,
+                    EVENT_RESULT_HANDLED };
+
+/*!
  \ingroup controls
  \brief Base class for controls
  */
@@ -94,10 +101,10 @@ public:
 
    \param point the location in transformed skin coordinates from the upper left corner of the parent control.
    \param event the mouse event to perform
-   \return true if the control has handled this event, false otherwise
-   \sa HitTest, CanFocusFromPoint, CMouseEvent
+   \return EVENT_RESULT corresponding to whether the control handles this event
+   \sa HitTest, CanFocusFromPoint, CMouseEvent, EVENT_RESULT
    */
-  virtual bool SendMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event);
 
   /*! \brief Perform a mouse action
 
@@ -106,10 +113,10 @@ public:
 
    \param point the location in transformed skin coordinates from the upper left corner of the parent control.
    \param event the mouse event to perform
-   \return true if the control has handled this event, false otherwise
+   \return EVENT_RESULT corresponding to whether the control handles this event
    \sa SendMouseEvent, HitTest, CanFocusFromPoint, CMouseEvent
    */
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event) { return false; };
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) { return EVENT_RESULT_UNHANDLED; };
 
   /*! \brief Unfocus the control if the given point on screen is not within it's boundary
    \param point the location in transformed skin coordinates from the upper left corner of the parent control.

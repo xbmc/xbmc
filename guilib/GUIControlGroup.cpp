@@ -357,7 +357,7 @@ bool CGUIControlGroup::HasAnimation(ANIMATION_TYPE animType)
   return false;
 }
 
-bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   // transform our position into child coordinates
   CPoint childPoint(point);
@@ -370,17 +370,19 @@ bool CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &ev
     for (rControls i = m_children.rbegin(); i != m_children.rend(); ++i)
     {
       CGUIControl *child = *i;
-      if (child->SendMouseEvent(childPoint - pos, event))
+      EVENT_RESULT ret = child->SendMouseEvent(childPoint - pos, event);
+      if (ret)
       { // we've handled the action, and/or have focused an item
-        return true;
+        return ret;
       }
     }
     // none of our children want the event, but we may want it.
-    if (HitTest(childPoint) && OnMouseEvent(childPoint, event))
-      return true;
+    EVENT_RESULT ret;
+    if (HitTest(childPoint) && (ret = OnMouseEvent(childPoint, event)))
+      return ret;
   }
   m_focusedControl = 0;
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
