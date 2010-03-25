@@ -112,7 +112,7 @@ protected:
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
-  bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
+  bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
 
   inline float Size() const;
   void MoveToRow(int row);
