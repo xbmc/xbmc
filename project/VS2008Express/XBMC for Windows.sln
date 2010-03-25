@@ -119,7 +119,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visWaveform", "..\..\xbmc\v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\..\xbmc\lib\libsquish\vs7\squish\squish_2008.vcproj", "{6A8518C3-D81A-4428-BD7F-C37933088AC1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wavpack_dll", "..\..\xbmc\cores\paplayer\WavPackCodec\wavpackdll.vcproj", "{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libwavpack_dll", "..\..\xbmc\cores\paplayer\WavPackCodec\wavpackdll.vcproj", "{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libStSoundLibrary_dll", "..\..\xbmc\cores\paplayer\YMCodec\StSoundLibrary\StSoundLibrary.vcproj", "{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -437,6 +439,14 @@ Global
 		{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
