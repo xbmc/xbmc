@@ -168,6 +168,34 @@ void CGUIFixedListContainer::ValidateOffset()
   }
 }
 
+int CGUIFixedListContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoint) const
+{
+  if (!m_focusedLayout || !m_layout)
+    return -1;
+  int minCursor, maxCursor;
+  GetCursorRange(minCursor, maxCursor);
+  // see if the point is either side of our focus range
+  float start = (minCursor + 0.2f) * m_layout->Size(m_orientation);
+  float end = (maxCursor - 0.2f) * m_layout->Size(m_orientation) + m_focusedLayout->Size(m_orientation);
+  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+  if (pos >= start && pos <= end)
+  { // select the appropriate item
+    pos -= minCursor * m_layout->Size(m_orientation);
+    for (int row = minCursor; row <= maxCursor; row++)
+    {
+      const CGUIListItemLayout *layout = (row == m_cursor) ? m_focusedLayout : m_layout;
+      if (pos < layout->Size(m_orientation))
+      {
+        if (!InsideLayout(layout, point))
+          return -1;
+        return row;
+      }
+      pos -= layout->Size(m_orientation);
+    }
+  }
+  return -1;
+}
+
 bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_focusedLayout || !m_layout)
@@ -211,20 +239,12 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
   }
   else
   { // select the appropriate item
-    pos -= minCursor * sizeOfItem;
-    for (int row = minCursor; row <= maxCursor; row++)
-    {
-      const CGUIListItemLayout *layout = (row == m_cursor) ? m_focusedLayout : m_layout;
-      if (pos < layout->Size(m_orientation))
-      {
-        if (!InsideLayout(layout, point))
-          return false;
-        // calling SelectItem() here will focus the item and scroll, which isn't really what we're after
-        m_cursor = row;
-        return true;
-      }
-      pos -= layout->Size(m_orientation);
-    }
+    int cursor = GetCursorFromPoint(point);
+    if (cursor < 0)
+      return false;
+    // calling SelectItem() here will focus the item and scroll, which isn't really what we're after
+    m_cursor = cursor;
+    return true;
   }
   return InsideLayout(m_focusedLayout, point);
 }

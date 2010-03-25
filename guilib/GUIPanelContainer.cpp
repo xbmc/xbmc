@@ -403,10 +403,10 @@ int CGUIPanelContainer::CorrectOffset(int offset, int cursor) const
   return offset * m_itemsPerRow + cursor;
 }
 
-bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
+int CGUIPanelContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoint) const
 {
   if (!m_layout)
-    return false;
+    return -1;
 
   float sizeX = m_orientation == VERTICAL ? m_layout->Size(HORIZONTAL) : m_layout->Size(VERTICAL);
   float sizeY = m_orientation == VERTICAL ? m_layout->Size(VERTICAL) : m_layout->Size(HORIZONTAL);
@@ -420,14 +420,22 @@ bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
       int item = x + y * m_itemsPerRow;
       if (posX < sizeX && posY < sizeY && item + m_offset < (int)m_items.size())
       { // found
-        SetCursor(item);
-        return true;
+        return item;
       }
       posX -= sizeX;
     }
     posY -= sizeY;
   }
   return false;
+}
+
+bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
+{
+  int cursor = GetCursorFromPoint(point);
+  if (cursor < 0)
+    return false;
+  SetCursor(cursor);
+  return true;
 }
 
 bool CGUIPanelContainer::GetCondition(int condition, int data) const

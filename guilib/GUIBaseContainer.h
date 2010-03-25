@@ -109,6 +109,7 @@ protected:
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
+  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
