@@ -335,7 +335,7 @@ void CGUIWindow::Close(bool forceClose)
 
 bool CGUIWindow::OnAction(const CAction &action)
 {
-  if (action.IsMouse())
+  if (action.IsMouse() || action.IsGesture())
     return EVENT_RESULT_UNHANDLED != OnMouseAction(action);
 
   CGUIControl *focusedControl = GetFocusedControl();
@@ -554,6 +554,13 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+  case GUI_MSG_GESTURE_NOTIFY:
+    {
+      CAction action(ACTION_GESTURE_NOTIFY, 0, (float)message.GetParam1(), (float)message.GetParam2(), 0, 0);
+      EVENT_RESULT result = OnMouseAction(action);
+      message.SetParam1(result);
+      return result != EVENT_RESULT_UNHANDLED;
+    }
   case GUI_MSG_NOTIFY_ALL:
     {
       // only process those notifications that come from this window, or those intended for every window

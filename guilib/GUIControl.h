@@ -57,7 +57,11 @@ public:
  Any value not equal to EVENT_RESULT_UNHANDLED indicates that the event was handled.
  */
 enum EVENT_RESULT { EVENT_RESULT_UNHANDLED = 0,
-                    EVENT_RESULT_HANDLED };
+                    EVENT_RESULT_HANDLED,
+                    EVENT_RESULT_PAN_HORIZONTAL,
+                    EVENT_RESULT_PAN_VERTICAL,
+                    EVENT_RESULT_ROTATE,
+                    EVENT_RESULT_ZOOM };
 
 /*!
  \ingroup controls

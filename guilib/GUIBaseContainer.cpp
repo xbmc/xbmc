@@ -31,6 +31,7 @@
 #include "StringUtils.h"
 #include "GUIStaticItem.h"
 #include "Key.h"
+#include "MathUtils.h"
 
 using namespace std;
 
@@ -560,6 +561,40 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     Scroll(1);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_NOTIFY)
+  {
+    return (m_orientation == HORIZONTAL) ? EVENT_RESULT_PAN_HORIZONTAL : EVENT_RESULT_PAN_VERTICAL;
+  }
+  else if (event.m_id == ACTION_GESTURE_BEGIN)
+  { // grab exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+    SendWindowMessage(msg);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_PAN)
+  { // do the drag and validate our offset (corrects for end of scroll)
+    m_scrollOffset -= (m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY;
+    float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
+    int offset = (int)MathUtils::round_int(m_scrollOffset / size);
+    m_offset = offset;
+    ValidateOffset();
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_END)
+  { // release exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+    SendWindowMessage(msg);
+    // and compute the nearest offset from this and scroll there
+    float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
+    float offset = m_scrollOffset / size;
+    int toOffset = (int)MathUtils::round_int(offset);
+    if (toOffset < offset)
+      m_offset = toOffset+1;
+    else
+      m_offset = toOffset-1;
+    ScrollToOffset(toOffset);
     return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;
