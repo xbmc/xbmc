@@ -20,20 +20,14 @@
  */
 #include "AddonManager.h"
 #include "Addon.h"
-#include "Application.h"
-#include "utils/log.h"
 #include "StringUtils.h"
 #include "RegExp.h"
 #include "XMLUtils.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogAddonSettings.h"
-#include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "GUISettings.h"
-#include "SingleLock.h"
 #include "DownloadQueueManager.h"
+#include "log.h"
 
 #ifdef HAS_VISUALISATION
 #include "DllVisualisation.h"
@@ -50,142 +44,6 @@
 
 namespace ADDON
 {
-
-/**********************************************************
- * CAddonStatusHandler - AddOn Status Report Class
- *
- * Used to informate the user about occurred errors and
- * changes inside Add-on's, and ask him what to do.
- *
- */
-
-CCriticalSection CAddonStatusHandler::m_critSection;
-
-CAddonStatusHandler::CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
-  : m_addon(addon)
-{
-  if (m_addon == NULL)
-    return;
-
-  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
-
-  m_status  = status;
-  m_message = message;
-
-  if (sameThread)
-  {
-    Process();
-  }
-  else
-  {
-    CStdString ThreadName;
-    ThreadName.Format("Addon Status: %s", m_addon->Name().c_str());
-
-    Create(true, THREAD_MINSTACKSIZE);
-    SetName(ThreadName.c_str());
-    SetPriority(-15);
-  }
-}
-
-CAddonStatusHandler::~CAddonStatusHandler()
-{
-  StopThread();
-}
-
-void CAddonStatusHandler::OnStartup()
-{
-}
-
-void CAddonStatusHandler::OnExit()
-{
-}
-
-void CAddonStatusHandler::Process()
-{
-  CSingleLock lock(m_critSection);
-
-  CStdString heading;
-  heading.Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
-
-  /* AddOn lost connection to his backend (for ones that use Network) */
-  if (m_status == STATUS_LOST_CONNECTION)
-  {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24070);
-    pDialog->SetLine(2, 24073);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-    if (pDialog->IsConfirmed())
-      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
-  }
-  /* Request to restart the AddOn and data structures need updated */
-  else if (m_status == STATUS_NEED_RESTART)
-  {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24074);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-    CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
-  }
-  /* Some required settings are missing/invalid */
-  else if (m_status == STATUS_NEED_SETTINGS)
-  {
-    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialogYesNo) return;
-
-    pDialogYesNo->SetHeading(heading);
-    pDialogYesNo->SetLine(1, 24070);
-    pDialogYesNo->SetLine(2, 24072);
-    pDialogYesNo->SetLine(3, m_message);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-    if (!pDialogYesNo->IsConfirmed()) return;
-
-    if (!m_addon->HasSettings())
-      return;
-
-    const AddonPtr addon(m_addon);
-    if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
-    {
-      //todo doesn't dialogaddonsettings save these automatically? should do
-      m_addon->SaveSettings();
-      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
-    }
-    else
-      m_addon->LoadSettings();
-  }
-  /* A unknown event has occurred */
-  else if (m_status == STATUS_UNKNOWN)
-  {
-    CAddonMgr::Get()->DisableAddon(m_addon->ID());
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24070);
-    pDialog->SetLine(2, 24071);
-    pDialog->SetLine(3, m_message);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-  }
-}
 
 
 /**********************************************************
