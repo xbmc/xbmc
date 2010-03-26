@@ -3318,6 +3318,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\TextureDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TextureDatabase.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Thread.cpp"
 					>
 				</File>
