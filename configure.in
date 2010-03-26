@@ -6,28 +6,6 @@ AC_INIT("xbmc", 9.11, http://trac.xbmc.org)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
-# Check for later version of config.guess and config.sub
-AC_MSG_NOTICE([Checking for later version of config.guess])
-if [[ -x "/usr/share/misc/config.guess" ]]; then
-  CONFIG_GUESS="/usr/share/misc/config.guess"
-elif [[ -x "/usr/share/gnuconfig/config.guess" ]]; then
-  CONFIG_GUESS="/usr/share/gnuconfig/config.guess"
-fi
-if [[ "$($PWD/config.guess -t | sed 's/-//g')" -lt \
-  "$($CONFIG_GUESS -t | sed 's/-//g')" ]]; then
-  cp -f "$CONFIG_GUESS" "config.guess"
-fi
-AC_MSG_NOTICE([Checking for later version of config.sub])
-if [[ -x "/usr/share/misc/config.sub" ]]; then
-  CONFIG_SUB="/usr/share/misc/config.sub"
-elif [[ -x "/usr/share/gnuconfig/config.sub" ]]; then
-  CONFIG_SUB="/usr/share/gnuconfig/config.sub"
-fi
-if [[ "$($PWD/config.sub -t | sed 's/-//g')" -lt \
-  "$($CONFIG_SUB -t | sed 's/-//g')" ]]; then
-  cp -f "$CONFIG_SUB" "config.sub"
-fi
-
 AC_CANONICAL_HOST
 
 # General message strings
