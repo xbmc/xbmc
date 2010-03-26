@@ -168,6 +168,7 @@ void CGUIWindowAddonBrowser::Update()
     pItem->SetProperty("Addon.Name", addon->Name());
     pItem->SetProperty("Addon.Version", addon->Version().Print());
     pItem->SetProperty("Addon.Summary", addon->Summary());
+    pItem->SetProperty("Addon.Description", addon->Description());
     pItem->SetProperty("Addon.Creator", addon->Author());
     pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
     pItem->SetProperty("Addon.Rating", addon->Stars());

@@ -1,9 +1,0 @@
-#! /bin/sh
-
-# Copyright 2007 Johannes Lehtinen
-# This script is free software; Johannes Lehtinen gives unlimited
-# permission to copy, distribute and modify it.
-
-prefix="/usr/local"
-exec_prefix="${prefix}"
-exec "${exec_prefix}/bin/cpluff-loader" -c "${exec_prefix}/lib/cpfile/plugins" -s org.c-pluff.examples.cpfile.core "$@"

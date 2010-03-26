@@ -28,13 +28,6 @@
 #include <vector>
 #include <map>
 
-// libcpluff
-class DllLibCPluff;
-extern "C"
-{
-#include "../lib/cpluff-0.1.3/libcpluff/cpluff.h"
-}
-
 namespace ADDON
 {
   typedef std::vector<AddonPtr> VECADDONS;
@@ -98,22 +91,12 @@ namespace ADDON
     void UpdateRepos();
     bool ParseRepoXML(const CStdString &path);
 
+    void FindAddons();
     bool LoadAddonsXML();
     bool SaveAddonsXML();
-
-    // libcpluff
-    bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
-    void CPluffFatalError(const char *msg);
-    void CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
-    cp_context_t *m_cp_context;
-    DllLibCPluff *m_cpluff;
-    // libcpluff callbacks
-    static void cp_fatalErrorHandler(const char *msg) {
-      CAddonMgr::Get()->CPluffFatalError(msg);
-    }
-    static void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data) {
-      CAddonMgr::Get()->CPluffLog(level, msg, apid, user_data);
-    }
+    bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
+    bool DependenciesMet(AddonPtr &addon);
+    bool UpdateIfKnown(AddonPtr &addon);
 
     /* addons.xml */
     CStdString GetAddonsXMLFile() const;
@@ -124,7 +107,6 @@ namespace ADDON
     bool GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addon);
 
     CAddonMgr();
-    void OnInit();
     static CAddonMgr* m_pInstance;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;

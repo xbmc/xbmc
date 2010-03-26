@@ -53,7 +53,6 @@ namespace ADDON
     ADDON_SCRAPER,
     ADDON_SCREENSAVER,
     ADDON_PLUGIN,
-    ADDON_VFSDLL,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
     ADDON_SCRAPER_LIBRARY
   } TYPE;

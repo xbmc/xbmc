@@ -90,7 +90,6 @@ endif
 
 LIB_DIRS=\
 	xbmc/lib/cximage-6.0 \
-	xbmc/lib/libcpluff \
 	xbmc/lib/libexif \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
@@ -360,11 +359,9 @@ ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 endif
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
-libcpluff: dllloader
-	$(MAKE) -C xbmc/lib/libcpluff
 
 codecs: papcodecs dvdpcodecs
-libs: libcpluff libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \

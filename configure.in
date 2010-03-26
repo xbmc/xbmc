@@ -1032,7 +1032,6 @@ OUTPUT_FILES="Makefile \
              guilib/Makefile \
              guilib/common/Makefile \
              xbmc/lib/libass/xbmc/Makefile \
-             xbmc/lib/libcpluff/Makefile \
              xbmc/lib/libXBMS/Makefile \
              xbmc/lib/libRTV/Makefile \
              xbmc/lib/libexif/Makefile \

@@ -34,7 +34,6 @@
 #include "MusicDatabaseDirectory.h"
 #include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
-#include "AddonDirectory.h"
 #include "AddonsDirectory.h"
 #include "ShoutcastDirectory.h"
 #include "LastFMDirectory.h"
@@ -193,6 +192,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
   }
 
-  return CAddonDirectory::GetDirectory(strProtocol);
+  CLog::Log(LOGWARNING, "CFactoryDirectory::Create - Unsupported protocol %s", strProtocol.c_str());
+  return NULL;
 }
 
