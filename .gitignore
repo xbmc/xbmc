@@ -47,6 +47,10 @@ config.log
 /build
 /.dummy.in
 /.dummy
+/build-aux/config.guess
+/build-aux/config.sub
+/build-aux/install-sh
+/build-aux/missing
 
 # /guilib/
 /guilib/Makefile
