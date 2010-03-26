@@ -45,6 +45,7 @@ config.log
 /xbmc-xrandr
 /svn_revision.h
 /build
+/.dummy.in
 
 # /guilib/
 /guilib/Makefile

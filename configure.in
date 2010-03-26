@@ -6,6 +6,7 @@ AC_INIT("xbmc", 9.11, http://trac.xbmc.org)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
+AM_INIT_AUTOMAKE
 AC_CANONICAL_HOST
 
 # General message strings
@@ -1063,6 +1064,10 @@ if test "$host_vendor" = "apple"; then
   OUTPUT_FILES+=" \
                 xbmc/cores/paplayer/FLACCodec/Makefile"
 fi
+
+# Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
+# .dummy.am does nothing.
+AC_CONFIG_FILES([.dummy])
 
 AC_CONFIG_FILES([${OUTPUT_FILES}])
 AC_SUBST(CFLAGS)
