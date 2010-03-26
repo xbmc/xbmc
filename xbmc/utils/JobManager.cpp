@@ -78,11 +78,7 @@ CJobQueue::CJobQueue(bool lifo, unsigned int jobsAtOnce, CJob::PRIORITY priority
 
 CJobQueue::~CJobQueue()
 {
-  CSingleLock lock(m_section);
-  // cancel all jobs
-  for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CJobPointer::CancelJob));
-  for_each(m_jobQueue.begin(), m_jobQueue.end(), mem_fun_ref(&CJobPointer::FreeJob));
-  m_jobQueue.clear();
+  CancelJobs();
 }
 
 void CJobQueue::OnJobComplete(unsigned int jobID, bool success, CJob *job)
@@ -124,6 +120,14 @@ void CJobQueue::QueueNextJob()
     m_processing.push_back(job);
     m_jobQueue.pop_back();
   }
+}
+
+void CJobQueue::CancelJobs()
+{
+  CSingleLock lock(m_section);
+  for_each(m_processing.begin(), m_processing.end(), mem_fun_ref(&CJobPointer::CancelJob));
+  for_each(m_jobQueue.begin(), m_jobQueue.end(), mem_fun_ref(&CJobPointer::FreeJob));
+  m_jobQueue.clear();
 }
 
 CJobManager &CJobManager::GetInstance()
