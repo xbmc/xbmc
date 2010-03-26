@@ -46,6 +46,7 @@ config.log
 /svn_revision.h
 /build
 /.dummy.in
+/.dummy
 
 # /guilib/
 /guilib/Makefile
