@@ -1500,7 +1500,7 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
   fi
 ], [0])
 
-XB_CONFIG_MODULE([lib/cpluff], [./configure], [0])
+XB_CONFIG_MODULE([lib/cpluff], [./configure --disable-nls], [0])
 
 AC_OUTPUT
 
