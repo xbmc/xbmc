@@ -38,9 +38,7 @@ config.log
 /Makefile
 /Makefile.depend
 /Makefile.include
-/config.guess
 /config.status
-/config.sub
 /config.h
 /config.h.in
 /configure
