@@ -103,39 +103,51 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     {
       if (pretty)
         return g_localizeStrings.Get(24007);
-      return "scraper";
+      return "org.xbmc.library.scraper";
     }
     case ADDON::ADDON_SCRAPER_LIBRARY:
     {
-      return "scraper-library";
+      return "org.xbmc.library.scraper.include";
     }
     case ADDON::ADDON_SCREENSAVER:
     {
       if (pretty)
         return g_localizeStrings.Get(24008);
-      return "screensaver";
+      return "org.xbmc.ui.screensaver";
     }
     case ADDON::ADDON_VIZ:
     {
       if (pretty)
         return g_localizeStrings.Get(24010);
-      return "visualization";
+      return "org.xbmc.player.viz";
     }
     case ADDON::ADDON_VIZ_LIBRARY:
     {
-      return "visualization-library";
+      return "org.xbmc.player.viz.presetpack";
     }
     case ADDON::ADDON_PLUGIN:
     {
       if (pretty)
         return g_localizeStrings.Get(24005);
-      return "plugin";
+      return "org.xbmc.library.plugin";
     }
     case ADDON::ADDON_SCRIPT:
     {
       if (pretty)
         return g_localizeStrings.Get(24009);
-      return "script";
+      return "org.xbmc.ui.applets";
+    }
+    case ADDON::ADDON_SKIN:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24009);
+      return "org.xbmc.ui.skin";
+    }
+    case ADDON::ADDON_VFSDLL:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24011);
+      return "org.xbmc.core.vfs.provider";
     }
     default:
     {
