@@ -654,8 +654,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   iFrameDuration = m_rtTimePerFrame*10;//pPicture->iDuration;  
 
   // dropping to a very low framerate is not correct (it should not happen at all)
-  iClockSleep = min(iClockSleep, (double) DS_MSEC_TO_TIME(500));
-  iFrameSleep = min(iFrameSleep, (double) DS_MSEC_TO_TIME(500));
+  iClockSleep = min(iClockSleep, (double) MSEC_TO_DS_TIME(500));
+  iFrameSleep = min(iFrameSleep, (double) MSEC_TO_DS_TIME(500));
   
   iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep);
 

@@ -25,17 +25,17 @@
 #include "system.h"
 #include "utils/SharedSection.h"
 #include "utils/CriticalSection.h"
+
 //Time base from directshow is a 100 nanosec unit
-#define DS_TIME_BASE 10000000
+#define DS_TIME_BASE 1E7
 #define DS_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
 
-//#define DS_TIME_TO_SEC(x)  ((LONGLONG)((double)(x) / DS_TIME_BASE))
-#define DS_TIME_TO_SEC(x) (LONGLONG)(x / 10000000)
-#define DS_TIME_TO_MSEC(x) (((LONGLONG)(x) * 1000 / DS_TIME_BASE))
-#define DS_SEC_TO_TIME(x)  ((LONGLONG)(x) * DS_TIME_BASE)
-//DS_MSEC_TO_TIME is the one used to convert from directshow to the one rendermanager is using
-#define DS_MSEC_TO_TIME(x) ((LONGLONG)((x) * 10000 ))
-#define DS_SEC_TO_MSEC(x)  ((LONGLONG)((x) * 1000))
+#define DS_TIME_TO_SEC(x)     ((LONGLONG)(x * 1E-7))
+#define DS_TIME_TO_MSEC(x)    ((LONGLONG)(x * 1E-4))
+#define SEC_TO_DS_TIME(x)     ((LONGLONG)(x * DS_TIME_BASE))
+//MSEC_TO_DS_TIME is the one used to convert from directshow to the one rendermanager is using
+#define MSEC_TO_DS_TIME(x)    ((LONGLONG)(x * 1E4))
+#define SEC_TO_MSEC(x)        ((LONGLONG)(x * 1E3))
 
 #define DS_PLAYSPEED_RW_2X       -2000
 #define DS_PLAYSPEED_REVERSE     -1000
