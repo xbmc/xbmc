@@ -34,6 +34,7 @@
 #include "ChaptersManager.h"
 
 #include "TimeUtils.h"
+#include "Event.h"
 
 #define START_PERFORMANCE_COUNTER { int64_t start = CurrentHostCounter();
 #define END_PERFORMANCE_COUNTER int64_t end = CurrentHostCounter(); \
@@ -125,7 +126,7 @@ public:
   virtual void Stop();
 
   static DSPLAYER_STATE PlayerState;
-  static CFileItemPtr currentFileItemPtr;
+  static CFileItem currentFileItem;
 
   CCriticalSection m_StateSection;
 protected:
@@ -139,7 +140,6 @@ protected:
   CDSClock m_pDsClock;
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;
-  //bool m_bAbortRequest;
-  HANDLE m_hReadyEvent;
+  CEvent m_hReadyEvent;
   
 };

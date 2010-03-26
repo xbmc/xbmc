@@ -40,6 +40,27 @@ enum SStreamType
   AUDIO, VIDEO, SUBTITLE, EXTERNAL_SUBTITLE
 };
 
+struct SVideoStreamIndexes
+{
+  int iVideoStream;
+  int iAudioStream;
+  int iSubtitleStream;
+
+  SVideoStreamIndexes()
+  {
+    iVideoStream = 0;
+    iAudioStream = 0;
+    iSubtitleStream = 0;
+  }
+
+  SVideoStreamIndexes(int iV, int iA, int iS)
+  {
+    iVideoStream = iV;
+    iAudioStream = iA;
+    iSubtitleStream = iS;
+  }
+};
+
 struct SStreamInfos
 {
   unsigned int IAMStreamSelect_Index; ///< IAMStreamSelect index of the stream
@@ -262,6 +283,11 @@ public:
    * @param[out] s A filled SStreamInfos structure
    */
   void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
+
+  SVideoStreamInfos* GetVideoStreamInfos(unsigned int iIndex = 0);
+  SAudioStreamInfos* GetAudioStreamInfos(unsigned int iIndex = 0);
+  SSubtitleStreamInfos* GetSubtitleStreamInfos(unsigned int iIndex = 0);
+  SExternalSubtitleInfos* GetExternalSubtitleStreamInfos(unsigned int iIndex = 0);
 
 private:
   CStreamsManager(void);
