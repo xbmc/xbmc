@@ -1,0 +1,16 @@
+     ../console/cmdinput_basic.c \
+     ../console/cmdinput_readline.c \
+     ../console/console.c \
+     ../libcpluff/context.c \
+     ../libcpluff/cpluff.c \
+     ../libcpluff/logging.c \
+     ../libcpluff/pcontrol.c \
+     ../libcpluff/pinfo.c \
+     ../libcpluff/ploader.c \
+     ../libcpluff/pscan.c \
+     ../libcpluff/psymbol.c \
+     ../libcpluff/serial.c \
+     ../libcpluff/thread_posix.c \
+     ../libcpluff/thread_windows.c \
+     ../libcpluff/util.c \
+     ../loader/loader.c
