@@ -1121,10 +1121,6 @@ fi
 ])
 ])
 
-XB_CONFIG_MODULE([xbmc/lib/cpluff-0.1.3], [
-    ./configure
-], [0])
-
 XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
