@@ -95,6 +95,7 @@ LIB_DIRS=\
 	xbmc/lib/libid3tag \
 	xbmc/lib/libapetag \
 	xbmc/lib/libPython/linux \
+	lib/libcpluff \
 	lib/libmodplug \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/jsoncpp/src/lib_json
@@ -270,6 +271,9 @@ xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 xbmc/lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C xbmc/lib/libapetag
+lib/cpluff/libcpluff/.libs/libcpluff.a: force
+	$(MAKE) -C lib/cpluff/libcpluff
+system/libcpluff-$(ARCH).so: lib/cpluff/libcpluff/.libs/libcpluff.a
 lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
 system/players/paplayer/libmodplug-$(ARCH).so: lib/libmodplug/src/.libs/libmodplug.a
@@ -359,6 +363,7 @@ xcode_depends: \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
+	system/libcpluff-$(ARCH).so \
 	system/players/paplayer/libmodplug-$(ARCH).so \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \

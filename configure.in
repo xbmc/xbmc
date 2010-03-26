@@ -1495,6 +1495,8 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
   fi
 ], [0])
 
+XB_CONFIG_MODULE([lib/cpluff], [./configure], [0])
+
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"
