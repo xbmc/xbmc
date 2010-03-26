@@ -948,8 +948,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
+    bool scaleUp = m_sourceHeight < g_graphicsContext.GetHeight() && m_sourceWidth < g_graphicsContext.GetWidth();
 
-    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD)
+    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp)
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     else
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
