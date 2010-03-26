@@ -275,6 +275,13 @@ xbmc/lib/libapetag/.libs/libapetag.a: force
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
 system/libcpluff-$(ARCH).so: lib/cpluff/libcpluff/.libs/libcpluff.a
+ifeq ($(findstring osx,$(ARCH)), osx)
+  ifeq ($(ARCH), powerpc-osx)
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
+  else
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
+  endif
+endif
 lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
 system/players/paplayer/libmodplug-$(ARCH).so: lib/libmodplug/src/.libs/libmodplug.a

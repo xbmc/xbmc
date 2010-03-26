@@ -1500,7 +1500,13 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
   fi
 ], [0])
 
-XB_CONFIG_MODULE([lib/cpluff], [./configure --disable-nls], [0])
+XB_CONFIG_MODULE([lib/cpluff], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure --disable-nls --with-libiconv-prefix=/opt/local --with-libintl-prefix=/opt/local --without-readline
+  else
+    ./configure --disable-nls
+  fi
+], [0])
 
 AC_OUTPUT
 
