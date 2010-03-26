@@ -10,7 +10,7 @@
 #ifndef __STREAMS__
 #define __STREAMS__
 
-#ifdef  _MSC_VER
+#ifdef	_MSC_VER
 // disable some level-4 warnings, use #pragma warning(enable:###) to re-enable
 #pragma warning(disable:4100) // warning C4100: unreferenced formal parameter
 #pragma warning(disable:4201) // warning C4201: nonstandard extension used : nameless struct/union
@@ -23,7 +23,7 @@
 #else
 #define AM_NOVTABLE
 #endif
-#endif  // MSC_VER
+#endif	// MSC_VER
 
 
 // Because of differences between Visual C++ and older Microsoft SDKs,
@@ -56,7 +56,7 @@
 // the applicaiton is being compiled with the headers from Visual C++ 6.0.
 /////////////////////////////////////////////////// ////////////////////////
 #ifndef InterlockedExchangePointer
-  #define InterlockedExchangePointer(Target, Value) \
+	#define InterlockedExchangePointer(Target, Value) \
    (PVOID)InterlockedExchange((PLONG)(Target), (LONG)(Value))
 #endif
 
@@ -123,14 +123,34 @@ typedef struct {
 #ifndef DWLP_USER
   #define DWLP_USER       DWLP_DLGPROC + sizeof(DLGPROC)
 #endif
+
+
+#pragma warning(push)
+#pragma warning(disable: 4312 4244)
+// _GetWindowLongPtr
+// Templated version of GetWindowLongPtr, to suppress spurious compiler warning.
+template <class T>
+T _GetWindowLongPtr(HWND hwnd, int nIndex)
+{
+    return (T)GetWindowLongPtr(hwnd, nIndex);
+}
+
+// _SetWindowLongPtr
+// Templated version of SetWindowLongPtr, to suppress spurious compiler warning.
+template <class T>
+LONG_PTR _SetWindowLongPtr(HWND hwnd, int nIndex, T p)
+{
+    return SetWindowLongPtr(hwnd, nIndex, (LONG_PTR)p);
+}
+#pragma warning(pop)
+
 ///////////////////////////////////////////////////////////////////////////
 // End Platform SDK definitions
 ///////////////////////////////////////////////////////////////////////////
 
 
 #include <strmif.h>     // Generated IDL header file for streams interfaces
-//intsafe.h is included in the system header to avoid shit load of macro redefinition
-//#include <intsafe.h>    // required by amvideo.h
+#include <intsafe.h>    // required by amvideo.h
 
 #include <reftime.h>    // Helper class for REFERENCE_TIME management
 #include <wxdebug.h>    // Debug support for logging and ASSERTs
@@ -144,10 +164,8 @@ typedef struct {
 #include <comlite.h>    // Light weight com function prototypes
 
 #include <cache.h>      // Simple cache container class
-
-//#include <atlcoll.h>    //Added to get make the compiler shut up about __POSITION redefinition
 #include <wxlist.h>     // Non MFC generic list class
-#include <msgthrd.h>  // CMsgThread
+#include <msgthrd.h>	// CMsgThread
 #include <mtype.h>      // Helper class for managing media types
 #include <fourcc.h>     // conversions between FOURCCs and GUIDs
 #include <control.h>    // generated from control.odl
@@ -157,15 +175,15 @@ typedef struct {
 #include <transfrm.h>   // Generic transform filter
 #include <transip.h>    // Generic transform-in-place filter
 #include <uuids.h>      // declaration of type GUIDs and well-known clsids
-#include <source.h>  // Generic source filter
+#include <source.h>	// Generic source filter
 #include <outputq.h>    // Output pin queueing
 #include <errors.h>     // HRESULT status and error definitions
-//#include <renbase.h>    // Base class for writing ActiveX renderers
+#include <renbase.h>    // Base class for writing ActiveX renderers
 #include <winutil.h>    // Helps with filters that manage windows
 #include <winctrl.h>    // Implements the IVideoWindow interface
 #include <videoctl.h>   // Specifically video related classes
-#include <refclock.h>  // Base clock class
-#include <sysclock.h>  // System clock
+#include <refclock.h>	// Base clock class
+#include <sysclock.h>	// System clock
 #include <pstream.h>    // IPersistStream helper class
 #include <vtrans.h>     // Video Transform Filter base class
 #include <amextra.h>
@@ -175,11 +193,10 @@ typedef struct {
 #include <audevcod.h>   // audio filter device error event codes
 
 
-//We cant add the #include "streams.h" in the precompiled headers without having major compile problem
-//So this compile warning cant really be fixed so we will just ignore it
-//#else
-//  #ifdef DEBUG
-//  #pragma message("STREAMS.H included TWICE")
-//#endif
+
+#else
+    #ifdef DEBUG
+    #pragma message("STREAMS.H included TWICE")
+    #endif
 #endif // __STREAMS__
 

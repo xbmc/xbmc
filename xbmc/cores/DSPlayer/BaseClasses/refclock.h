@@ -12,7 +12,7 @@
 
 #include <Schedule.h>
 
-const UINT XBMCRESOLUTION = 1;                      /* High resolution timer */
+//const UINT RESOLUTION = 1;                      /* High resolution timer */
 const INT ADVISE_CACHE = 4;                     /* Default cache size */
 const LONGLONG MAX_TIME = 0x7FFFFFFFFFFFFFFF;   /* Maximum LONGLONG value */
 
@@ -71,9 +71,6 @@ inline LONGLONG WINAPI ConvertToMilliseconds(const REFERENCE_TIME& RT)
  * Keeping track of advises is taken care of by the CAMSchedule class.
  */
 
-#ifndef __strmif_h__
-  #include "strmif.h"
-#endif
 class CBaseReferenceClock
 : public CUnknown, public IReferenceClock, public CCritSec, public IReferenceClockTimerControl 
 {

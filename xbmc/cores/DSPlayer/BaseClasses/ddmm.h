@@ -25,4 +25,4 @@ IDirectDraw * DirectDrawCreateFromDeviceEx(__in_opt LPSTR, PDRAWCREATE, LPDIRECT
 
 #ifdef __cplusplus
 }
-#endif  /* __cplusplus */
+#endif	/* __cplusplus */

@@ -13,7 +13,7 @@
 
 // Forward class declarations
 
-class CBaseRenderer;
+class CDSBaseRenderer;
 class CBaseVideoRenderer;
 class CRendererInputPin;
 
@@ -23,11 +23,11 @@ class CRendererInputPin : public CBaseInputPin
 {
 protected:
 
-    CBaseRenderer *m_pRenderer;
+    CDSBaseRenderer *m_pRenderer;
 
 public:
 
-    CRendererInputPin(__inout CBaseRenderer *pRenderer,
+    CRendererInputPin(__inout CDSBaseRenderer *pRenderer,
                       __inout HRESULT *phr,
                       __in_opt LPCWSTR Name);
 
@@ -57,7 +57,7 @@ public:
 
 // Main renderer class that handles synchronisation and state changes
 
-class CBaseRenderer : public CBaseFilter
+class CDSBaseRenderer : public CBaseFilter
 {
 protected:
 
@@ -96,12 +96,12 @@ protected:
 
 public:
 
-    CBaseRenderer(REFCLSID RenderClass, // CLSID for this renderer
+    CDSBaseRenderer(REFCLSID RenderClass, // CLSID for this renderer
                   __in_opt LPCTSTR pName,         // Debug ONLY description
                   __inout_opt LPUNKNOWN pUnk,       // Aggregated owner object
                   __inout HRESULT *phr);        // General OLE return code
 
-    ~CBaseRenderer();
+    ~CDSBaseRenderer();
 
     // Overriden to say what interfaces we support and where
 
@@ -247,7 +247,7 @@ public:
 #define DO_MOVING_AVG(avg,obs) (avg = (1024*obs + (AVGPERIOD-1)*avg)/AVGPERIOD)
 // Spot the bug in this macro - I can't. but it doesn't work!
 
-class CBaseVideoRenderer : public CBaseRenderer,    // Base renderer class
+class CBaseVideoRenderer : public CDSBaseRenderer,    // Base renderer class
                            public IQualProp,        // Property page guff
                            public IQualityControl   // Allow throttling
 {

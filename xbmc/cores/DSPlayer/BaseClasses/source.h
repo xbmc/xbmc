@@ -56,7 +56,7 @@ public:
 
     // -- Utilities --
 
-    CCritSec*  pStateLock(void) { return &m_cStateLock; }  // provide our critical section
+    CCritSec*	pStateLock(void) { return &m_cStateLock; }	// provide our critical section
 
     HRESULT     AddPin(__in CSourceStream *);
     HRESULT     RemovePin(__in CSourceStream *);
@@ -71,10 +71,10 @@ public:
 protected:
 
     int             m_iPins;       // The number of pins on this filter. Updated by CSourceStream
-                  // constructors & destructors.
+    	   			   // constructors & destructors.
     CSourceStream **m_paStreams;   // the pins on this filter.
 
-    CCritSec m_cStateLock;  // Lock this to serialize function accesses to the filter state
+    CCritSec m_cStateLock;	// Lock this to serialize function accesses to the filter state
 
 };
 
@@ -102,7 +102,7 @@ public:
 
 protected:
 
-    CSource *m_pFilter;  // The parent of this stream
+    CSource *m_pFilter;	// The parent of this stream
 
     // *
     // * Data Source
@@ -144,7 +144,7 @@ protected:
     BOOL    CheckRequest(Command *pCom) { return CAMThread::CheckRequest( (DWORD *) pCom); }
 
     // override these if you want to add thread commands
-    virtual DWORD ThreadProc(void);      // the thread function
+    virtual DWORD ThreadProc(void);  		// the thread function
 
     virtual HRESULT DoBufferProcessingLoop(void);    // the loop executed whilst running
 

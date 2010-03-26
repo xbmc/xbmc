@@ -110,7 +110,7 @@ public:
     void UnlockPaletteLock();
 
     virtual BOOL PossiblyEatMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
-      { return FALSE; };
+	    { return FALSE; };
 
     // Access our window information
 

@@ -49,9 +49,7 @@
       This definition is the same as the POSITION type for MFCs, so we must
       avoid defining it twice.
    */
-//#ifndef __AFX_H__
-//this was modified by ti-ben for compilation reason
-#ifndef __ATLCOLL_H__
+#ifndef __AFX_H__
 struct __POSITION { int unused; };
 typedef __POSITION* POSITION;
 #endif

@@ -597,7 +597,7 @@ public:
                                     __in_opt const GUID * pSourceFormat );
 
     STDMETHODIMP SetPositions( __inout_opt LONGLONG * pCurrent,  DWORD CurrentFlags
-           , __inout_opt LONGLONG * pStop,  DWORD StopFlags );
+			     , __inout_opt LONGLONG * pStop,  DWORD StopFlags );
 
     STDMETHODIMP GetPositions( __out_opt LONGLONG * pCurrent, __out_opt LONGLONG * pStop );
 

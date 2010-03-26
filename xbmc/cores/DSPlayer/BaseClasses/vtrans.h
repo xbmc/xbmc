@@ -117,7 +117,7 @@ class CVideoTransformFilter : public CTransformFilter
 
     virtual HRESULT StartStreaming();
 
-    HRESULT AbortPlayback(HRESULT hr);  // if something bad happens
+    HRESULT AbortPlayback(HRESULT hr);	// if something bad happens
 
     HRESULT Receive(IMediaSample *pSample);
 
