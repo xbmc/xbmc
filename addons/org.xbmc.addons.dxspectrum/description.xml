@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>vis.dxspectrum</id>
+  <id>org.xbmc.addons.dxspectrum</id>
   <type>visualization</type>
   <title>DirectX Spectrum</title>
   <librarywin32>Spectrum_win32dx.vis</librarywin32>
