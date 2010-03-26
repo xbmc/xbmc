@@ -171,11 +171,11 @@ void CGUIButtonControl::AllocResources()
     m_height = m_imgFocus.GetHeight();
 }
 
-void CGUIButtonControl::FreeResources()
+void CGUIButtonControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgFocus.FreeResources();
-  m_imgNoFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgFocus.FreeResources(immediately);
+  m_imgNoFocus.FreeResources(immediately);
 }
 
 void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)

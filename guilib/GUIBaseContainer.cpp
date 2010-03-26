@@ -688,9 +688,9 @@ void CGUIBaseContainer::AllocResources()
   CalculateLayout();
 }
 
-void CGUIBaseContainer::FreeResources()
+void CGUIBaseContainer::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
+  CGUIControl::FreeResources(immediately);
   if (m_staticContent)
   { // free any static content
     Reset();

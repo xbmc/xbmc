@@ -116,11 +116,11 @@ void CGUICheckMarkControl::AllocResources()
   m_imgCheckMarkNoFocus.AllocResources();
 }
 
-void CGUICheckMarkControl::FreeResources()
+void CGUICheckMarkControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgCheckMark.FreeResources();
-  m_imgCheckMarkNoFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgCheckMark.FreeResources(immediately);
+  m_imgCheckMarkNoFocus.FreeResources(immediately);
 }
 
 void CGUICheckMarkControl::DynamicResourceAlloc(bool bOnOff)

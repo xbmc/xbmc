@@ -234,12 +234,12 @@ void CGUISliderControl::SetFloatRange(float fStart, float fEnd)
   }
 }
 
-void CGUISliderControl::FreeResources()
+void CGUISliderControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_guiBackground.FreeResources();
-  m_guiMid.FreeResources();
-  m_guiMidFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_guiBackground.FreeResources(immediately);
+  m_guiMid.FreeResources(immediately);
+  m_guiMidFocus.FreeResources(immediately);
 }
 
 void CGUISliderControl::DynamicResourceAlloc(bool bOnOff)

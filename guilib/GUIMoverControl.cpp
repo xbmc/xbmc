@@ -186,11 +186,11 @@ void CGUIMoverControl::AllocResources()
   SetHeight(height);
 }
 
-void CGUIMoverControl::FreeResources()
+void CGUIMoverControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgFocus.FreeResources();
-  m_imgNoFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgFocus.FreeResources(immediately);
+  m_imgNoFocus.FreeResources(immediately);
 }
 
 void CGUIMoverControl::DynamicResourceAlloc(bool bOnOff)

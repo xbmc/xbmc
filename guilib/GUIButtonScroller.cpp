@@ -292,11 +292,11 @@ void CGUIButtonScroller::AllocResources()
   SetActiveButton(0);
 }
 
-void CGUIButtonScroller::FreeResources()
+void CGUIButtonScroller::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgFocus.FreeResources();
-  m_imgNoFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgFocus.FreeResources(immediately);
+  m_imgNoFocus.FreeResources(immediately);
   ClearButtons();
 }
 

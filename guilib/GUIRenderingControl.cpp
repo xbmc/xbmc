@@ -75,7 +75,7 @@ void CGUIRenderingControl::Render()
   CGUIControl::Render();
 }
 
-void CGUIRenderingControl::FreeResources()
+void CGUIRenderingControl::FreeResources(bool immediately)
 {
   if (!m_addon) return;
 

@@ -47,7 +47,7 @@ public:
   virtual bool SendControlMessage(CGUIMessage& message);
   virtual bool HasFocus() const;
   virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool CanFocus() const;
 

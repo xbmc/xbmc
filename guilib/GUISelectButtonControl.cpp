@@ -226,17 +226,17 @@ bool CGUISelectButtonControl::OnAction(const CAction &action)
   }
 }
 
-void CGUISelectButtonControl::FreeResources()
+void CGUISelectButtonControl::FreeResources(bool immediately)
 {
-  CGUIButtonControl::FreeResources();
+  CGUIButtonControl::FreeResources(immediately);
 
-  m_imgBackground.FreeResources();
+  m_imgBackground.FreeResources(immediately);
 
-  m_imgLeft.FreeResources();
-  m_imgLeftFocus.FreeResources();
+  m_imgLeft.FreeResources(immediately);
+  m_imgLeftFocus.FreeResources(immediately);
 
-  m_imgRight.FreeResources();
-  m_imgRightFocus.FreeResources();
+  m_imgRight.FreeResources(immediately);
+  m_imgRightFocus.FreeResources(immediately);
 
   m_bShowSelect = false;
 }

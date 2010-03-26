@@ -50,7 +50,7 @@ public:
   virtual float GetHeight() const { return m_buttonControl.GetHeight();};
   virtual void SetHeight(float height);
   virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetInvalid();
   const CStdString GetCurrentLabel() const;

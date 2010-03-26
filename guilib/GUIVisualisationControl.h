@@ -28,6 +28,6 @@ public:
   CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIVisualisationControl(const CGUIVisualisationControl &from);
   virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); }; //TODO check for naughties
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void Render();
 };

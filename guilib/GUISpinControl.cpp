@@ -318,13 +318,13 @@ void CGUISpinControl::AllocResources()
   m_imgspinUpFocus.SetPosition(m_posX + m_imgspinDownFocus.GetWidth(), m_posY);
 }
 
-void CGUISpinControl::FreeResources()
+void CGUISpinControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgspinUp.FreeResources();
-  m_imgspinUpFocus.FreeResources();
-  m_imgspinDown.FreeResources();
-  m_imgspinDownFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgspinUp.FreeResources(immediately);
+  m_imgspinUpFocus.FreeResources(immediately);
+  m_imgspinDown.FreeResources(immediately);
+  m_imgspinDownFocus.FreeResources(immediately);
   m_iTypedPos = 0;
   strcpy(m_szTyped, "");
 }

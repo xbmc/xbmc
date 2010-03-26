@@ -53,7 +53,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
 
   virtual unsigned int GetRows() const;

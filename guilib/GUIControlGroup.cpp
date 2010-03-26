@@ -78,13 +78,13 @@ void CGUIControlGroup::AllocResources()
   }
 }
 
-void CGUIControlGroup::FreeResources()
+void CGUIControlGroup::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
+  CGUIControl::FreeResources(immediately);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
-    control->FreeResources();
+    control->FreeResources(immediately);
   }
 }
 

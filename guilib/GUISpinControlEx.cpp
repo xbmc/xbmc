@@ -43,10 +43,10 @@ void CGUISpinControlEx::AllocResources()
     m_height = GetSpinHeight();
 }
 
-void CGUISpinControlEx::FreeResources()
+void CGUISpinControlEx::FreeResources(bool immediately)
 {
-  CGUISpinControl::FreeResources();
-  m_buttonControl.FreeResources();
+  CGUISpinControl::FreeResources(immediately);
+  m_buttonControl.FreeResources(immediately);
 }
 
 void CGUISpinControlEx::DynamicResourceAlloc(bool bOnOff)

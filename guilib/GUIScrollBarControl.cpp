@@ -149,14 +149,14 @@ void CGUIScrollBar::SetValue(int value)
   SetInvalid();
 }
 
-void CGUIScrollBar::FreeResources()
+void CGUIScrollBar::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_guiBackground.FreeResources();
-  m_guiBarNoFocus.FreeResources();
-  m_guiBarFocus.FreeResources();
-  m_guiNibNoFocus.FreeResources();
-  m_guiNibFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_guiBackground.FreeResources(immediately);
+  m_guiBarNoFocus.FreeResources(immediately);
+  m_guiBarFocus.FreeResources(immediately);
+  m_guiNibNoFocus.FreeResources(immediately);
+  m_guiNibFocus.FreeResources(immediately);
 }
 
 void CGUIScrollBar::DynamicResourceAlloc(bool bOnOff)

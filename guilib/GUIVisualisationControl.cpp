@@ -36,7 +36,7 @@ void CGUIVisualisationControl::Render()
     CGUIRenderingControl::Render();
 }
 
-void CGUIVisualisationControl::FreeResources()
+void CGUIVisualisationControl::FreeResources(bool immediately)
 {
   // tell our app that we're going
   if (!m_addon)
@@ -45,7 +45,7 @@ void CGUIVisualisationControl::FreeResources()
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);
   g_windowManager.SendMessage(msg);
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
-  CGUIRenderingControl::FreeResources();
+  CGUIRenderingControl::FreeResources(immediately);
   CLog::Log(LOGDEBUG, "FreeVisualisation() done");
 }
 
