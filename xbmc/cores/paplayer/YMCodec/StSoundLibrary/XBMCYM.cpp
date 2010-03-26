@@ -2,6 +2,7 @@
 #include "YmMusic.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 #ifdef __linux__
 #define __declspec(x)
@@ -17,7 +18,7 @@ extern "C"
     {
       ymMusicSetLoopMode(pMusic,YMFALSE);
       ymMusicPlay(pMusic);
-      return (int)pMusic;
+      return (intptr_t)pMusic;
     }
   
     ymMusicDestroy(pMusic);
