@@ -5,8 +5,6 @@
 	Name="libStSoundLibrary_dll"
 	ProjectGUID="{D9885434-4B9D-41FB-B5FC-5E89D41AEFF0}"
 	RootNamespace="libStSoundLibrary_dll"
-	SccProjectName="&quot;$/StSoundGPL/StSoundLibrary&quot;, IWAAAAAA"
-	SccLocalPath="."
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
