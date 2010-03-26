@@ -31,6 +31,11 @@ extern "C" {
 #endif
 }
 
+/* Flag introduced without a version bump */
+#ifndef AVSEEK_FORCE
+#define AVSEEK_FORCE 0x20000
+#endif
+
 typedef int64_t offset_t;
 
 class DllAvFormatInterface
