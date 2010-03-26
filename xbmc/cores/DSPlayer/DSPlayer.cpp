@@ -37,18 +37,18 @@
 #endif
 #include "GUIDialogProgress.h"
 #include "GUIWindowManager.h"
-#include "GUIDialogBusy.h"
 
 using namespace std;
 
 DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
-CFileItem CDSPlayer::currentFileItem;
+CFileItemPtr CDSPlayer::currentFileItemPtr;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
-    : IPlayer(callback), CThread(), m_pDsGraph(&m_pDsClock),
-      m_hReadyEvent(true),
-      m_bSpeedChanged(false)
+: IPlayer(callback),
+      CThread(),
+      m_pDsGraph(&m_pDsClock)
 {
+  m_hReadyEvent = CreateEvent(NULL, true, false, NULL);
 }
 
 CDSPlayer::~CDSPlayer()
@@ -68,24 +68,31 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
     CloseFile();
 
   PlayerState = DSPLAYER_LOADING;
+  HRESULT hr;
 
-  currentFileItem = file;
+  currentFileItemPtr = CFileItemPtr((CFileItem *)file.Clone());
+
+  //Creating the graph and querying every filter required for the playback
+  ResetEvent(m_hReadyEvent);
   m_Filename = file.GetAsUrl();
   m_PlayerOptions = options;
   m_currentSpeed = 10000;
   m_currentRate = 1;
-  
-  m_hReadyEvent.Reset();
-  Create();
-  
-  if(!m_hReadyEvent.WaitMSec(100))
+
+  // Processing may need some time, show a waiting dialog
+  START_PERFORMANCE_COUNTER
+  hr = m_pDsGraph.SetFile(file, m_PlayerOptions);
+  END_PERFORMANCE_COUNTER
+
+  if ( FAILED(hr) )
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    dialog->Show();
-    while(!m_hReadyEvent.WaitMSec(1))
-      g_windowManager.Process(true);
-    dialog->Close();
+    CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__,file.GetAsUrl().GetFileName().c_str());
+    CloseFile();
+    return false;
   }
+  
+  Create();
+  WaitForSingleObject(m_hReadyEvent, INFINITE);
 
   return true;
 }
@@ -97,6 +104,7 @@ bool CDSPlayer::CloseFile()
   PlayerState = DSPLAYER_CLOSING;
 
   m_pDsGraph.CloseFile();
+  currentFileItemPtr.reset();
   
   CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);
   
@@ -191,25 +199,16 @@ void CDSPlayer::Process()
 
 #define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) break;
 
-  /* INIT: Load file */
-  HRESULT hr = S_OK;
-  START_PERFORMANCE_COUNTER
-  hr = m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions);
-  END_PERFORMANCE_COUNTER
-
-  if ( FAILED(hr) )
-  {
-    CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__, currentFileItem.GetAsUrl().GetFileName().c_str());
-    CloseFile();
-    return;
-  }
-
   m_callback.OnPlayBackStarted();
-  bool pStartPosDone = false;
-  int sleepTime;
-  m_hReadyEvent.Set(); // We're ready to go!
-  m_pDsClock.SetSpeed(1000);
 
+  bool pStartPosDone = false;
+  // allow renderer to switch to fullscreen if requested
+  //m_pDsGraph.EnableFullscreen(true);
+  // make sure application know our info
+  //UpdateApplication(0);
+  //UpdatePlayState(0);
+  SetEvent(m_hReadyEvent);
+  m_pDsClock.SetSpeed(1000);
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
     CHECK_PLAYER_STATE
@@ -234,14 +233,7 @@ void CDSPlayer::Process()
     }
     m_pDsGraph.UpdateTime();
 
-    sleepTime = m_pDsGraph.DoFFRW(m_currentRate);
-    if ((m_currentRate == 0 ) || ( m_currentRate == 1 ))
-      sleepTime = 250;
-    else
-    {
-      //This way the time it wasted to seek we remove it from the sleep time
-      sleepTime = 250 - sleepTime;
-    }
+    m_pDsGraph.DoFFRW(m_currentRate);
 
     
     
@@ -250,7 +242,7 @@ void CDSPlayer::Process()
       CChaptersManager::getSingleton()->UpdateChapters();
     //Handle fastforward stuff
    
-    Sleep(sleepTime);
+    Sleep(250);
     CHECK_PLAYER_STATE
 
     if (m_pDsGraph.FileReachedEnd())

@@ -22,12 +22,13 @@
  *
  */
 
-
+#ifndef SMARTASSUME
+#define SMARTASSUME(expr) do { _ASSERTE(expr); __analysis_assume(!!(expr)); } while(0)
+#endif
 // SmartPtr.h
 //
 // Defines a smart pointer class that does not depend on any ATL headers
 // From a Microsoft Sample
-
 namespace Com
 {
 
@@ -422,4 +423,128 @@ namespace Com
       return *this;
     }
   };
+
+template< typename T >
+class SmartAutoPtr
+{
+public:
+	SmartAutoPtr() throw() :
+		m_p( NULL )
+	{
+	}
+	template< typename TSrc >
+	SmartAutoPtr( SmartAutoPtr< TSrc >& p ) throw()
+	{
+		m_p = p.Detach();  // Transfer ownership
+	}
+	SmartAutoPtr( SmartAutoPtr< T >& p ) throw()
+	{
+		m_p = p.Detach();  // Transfer ownership
+	}
+	explicit SmartAutoPtr( T* p ) throw() :
+		m_p( p )
+	{
+	}
+	~SmartAutoPtr() throw()
+	{
+		Free();
+	}
+
+	// Templated version to allow pBase = pDerived
+	template< typename TSrc >
+	SmartAutoPtr< T >& operator=( SmartAutoPtr< TSrc >& p ) throw()
+	{
+		if(m_p==p.m_p)
+		{
+			// This means that two CAutoPtrs of two different types had the same m_p in them
+			// which is never correct
+			_ASSERTE(FALSE);
+		}
+		else
+		{
+			Free();
+			Attach( p.Detach() );  // Transfer ownership
+		}
+		return( *this );
+	}
+	SmartAutoPtr< T >& operator=( SmartAutoPtr< T >& p ) throw()
+	{
+		if(*this==p)
+		{
+			if(this!=&p)
+			{
+				// If this assert fires, it means you attempted to assign one SmartAutoPtr to another when they both contained 
+				// a pointer to the same underlying object. This means a bug in your code, since your object will get 
+				// double-deleted. 
+#ifdef ATL_AUTOPTR_ASSIGNMENT_ASSERT
+				_ASSERTE(FALSE);
+#endif
+
+				// For safety, we are going to detach the other SmartAutoPtr to avoid a double-free. Your code still
+				// has a bug, though.
+				p.Detach();
+			}
+			else
+			{
+				// Alternatively, this branch means that you are assigning a SmartAutoPtr to itself, which is
+				// pointless but permissible
+
+				// nothing to do
+			}
+		}
+		else
+		{
+			Free();
+			Attach( p.Detach() );  // Transfer ownership
+		}
+		return( *this );
+	}
+
+	// basic comparison operators
+	bool operator!=(SmartAutoPtr<T>& p) const
+	{
+		return !operator==(p);
+	}
+
+	bool operator==(SmartAutoPtr<T>& p) const
+	{
+		return m_p==p.m_p;
+	}
+
+	operator T*() const throw()
+	{
+		return( m_p );
+	}
+	T* operator->() const throw()
+	{
+		SMARTASSUME( m_p != NULL );
+		return( m_p );
+	}
+
+	// Attach to an existing pointer (takes ownership)
+	void Attach( T* p ) throw()
+	{
+		SMARTASSUME( m_p == NULL );
+		m_p = p;
+	}
+	// Detach the pointer (releases ownership)
+	T* Detach() throw()
+	{
+		T* p;
+
+		p = m_p;
+		m_p = NULL;
+
+		return( p );
+	}
+	// Delete the object pointed to, and set the pointer to NULL
+	void Free() throw()
+	{
+		delete m_p;
+		m_p = NULL;
+	}
+
+public:
+	T* m_p;
+};
 }

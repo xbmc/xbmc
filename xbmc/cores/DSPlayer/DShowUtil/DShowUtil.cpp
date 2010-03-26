@@ -39,7 +39,7 @@
 #pragma comment(lib, "comsuppw.lib")
 #include "smartptr.h"
 
-bool DShowUtil::GuidVectItterCompare(GuidListIter it, std::vector<GUID>::const_reference vect)
+bool DShowUtil::GuidVectItterCompare(std::list<GUID>::iterator it, std::vector<GUID>::const_reference vect)
 {
 if (it->Data1 == vect.Data1 && it->Data2 == vect.Data2 && it->Data3 == vect.Data3 && it->Data4 == vect.Data4)
   return true;
@@ -47,7 +47,7 @@ else
   return false;
 }
 
-bool DShowUtil::GuidItteratorIsNull(GuidListIter it)
+bool DShowUtil::GuidItteratorIsNull(std::list<GUID>::iterator it)
 {
   GUID gnull;
   gnull = GUID_NULL;
@@ -2359,6 +2359,64 @@ LPCTSTR DShowUtil::GetDXVAMode(const GUID* guidDecoder)
   return DXVA2Decoder[nPos].Description;
 }
 
+
+
+CStdStringW DShowUtil::AToW(CStdStringA str)
+{
+	CStdStringW ret;
+	for(size_t i = 0, j = str.GetLength(); i < j; i++)
+		ret += (WCHAR)(BYTE)str[i];
+	return(ret);
+}
+
+CStdStringA DShowUtil::WToA(CStdStringW str)
+{
+	CStdStringA ret;
+	for(size_t i = 0, j = str.GetLength(); i < j; i++)
+		ret += (CHAR)(WORD)str[i];
+	return(ret);
+}
+
+CStdString DShowUtil::AToT(CStdStringA str)
+{
+	CStdString ret;
+	for(size_t i = 0, j = str.GetLength(); i < j; i++)
+		ret += (TCHAR)(BYTE)str[i];
+	return(ret);
+}
+
+CStdString DShowUtil::WToT(CStdStringW str)
+{
+	CStdString ret;
+	for(size_t i = 0, j = str.GetLength(); i < j; i++)
+		ret += (TCHAR)(WORD)str[i];
+	return(ret);
+}
+
+CStdStringA DShowUtil::TToA(CStdString str)
+{
+	CStdStringA ret;
+#ifdef UNICODE
+	for(size_t i = 0, j = str.GetLength(); i < j; i++)
+		ret += (CHAR)(BYTE)str[i];
+#else
+	ret = str;
+#endif
+	return(ret);
+}
+
+CStdStringW DShowUtil::TToW(CStdString str)
+{
+	CStdStringW ret;
+#ifdef UNICODE
+	ret = str;
+#else
+	for(size_t i = 0, j = str.GetLength(); i < j; i++)
+		ret += (WCHAR)(BYTE)str[i];
+#endif
+	return(ret);
+}
+
 void DumpBuffer(BYTE* pBuffer, int nSize)
 {
   CStdString  strMsg;
@@ -2392,7 +2450,8 @@ void DumpBuffer(BYTE* pBuffer, int nSize)
 CStdString ReftimeToString(const REFERENCE_TIME& rtVal)
 {
   CStdString    strTemp;
-  LONGLONG  llTotalMs =  ConvertToMilliseconds (rtVal);
+  
+  LONGLONG  llTotalMs =  (rtVal / 10000000 / 1000);
   int      lHour    = (int)(llTotalMs  / (1000*60*60));
   int      lMinute    = (llTotalMs / (1000*60)) % 60;
   int      lSecond    = (llTotalMs /  1000) % 60;

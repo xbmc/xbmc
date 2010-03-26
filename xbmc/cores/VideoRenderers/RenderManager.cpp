@@ -112,10 +112,7 @@ CXBMCRenderManager::~CXBMCRenderManager()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  if ( m_pRendererType == RENDERER_NORMAL )
-    return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
-  else
-    return CDSClock::GetAbsoluteClock() / DS_TIME_BASE;
+  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
 }
 
 static double wrap(double x, double minimum, double maximum)

@@ -86,8 +86,6 @@ static const GUID CLSID_NullRenderer =
 DEFINE_GUID(CLSID_ReClock, 
             0x9dc15360, 0x914c, 0x46b8, 0xb9, 0xdf, 0xbf, 0xe6, 0x7f, 0xd3, 0x6c, 0x6a);
 
-typedef std::list<GUID> GuidList;
-typedef std::list<GUID>::iterator GuidListIter;
 
 typedef struct
 {
@@ -108,8 +106,8 @@ typedef struct
 class  DShowUtil
 {
 public:
-  static bool GuidVectItterCompare(GuidListIter it, std::vector<GUID>::const_reference vect);
-  static bool GuidItteratorIsNull(GuidListIter it);
+  static bool GuidVectItterCompare(std::list<GUID>::iterator it, std::vector<GUID>::const_reference vect);
+  static bool GuidItteratorIsNull(std::list<GUID>::iterator it);
   static bool GuidVectIsNull(std::vector<GUID>::const_reference vect);
   static bool IsPinConnected(IPin* pPin);
   static long MFTimeToMsec(const LONGLONG& time);
@@ -200,6 +198,12 @@ REFERENCE_TIME StringToReftime(LPCTSTR strVal);
   static COLORREF YCrCbToRGB_Rec709(BYTE Y, BYTE Cr, BYTE Cb);
   static DWORD  YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
   static DWORD  YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
+  static CStdStringW AToW(CStdStringA str);
+  static CStdStringA WToA(CStdStringW str);
+  static CStdString AToT(CStdStringA str);
+  static CStdString WToT(CStdStringW str);
+  static CStdStringA TToA(CStdString str);
+  static CStdStringW TToW(CStdString str);
 };
 
 //this class coming from ffdshow tryout
@@ -322,4 +326,28 @@ static CUnknown* WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT* phr)
     CUnknown* punk = DNew T(lpunk, phr);
     if(punk == NULL) *phr = E_OUTOFMEMORY;
   return punk;
+}
+
+template<class T, typename SEP>
+T Explode(T str, std::list<T>& sl, SEP sep, size_t limit = 0)
+{
+	while (sl.empty())
+    sl.pop_back();
+
+	for(ptrdiff_t i = 0, j = 0; ; i = j+1)
+	{
+		j = str.Find(sep, i);
+
+		if(j < 0 || sl.size() == limit-1)
+		{
+			sl.push_back(str.Mid(i).Trim());
+			break;
+		}
+		else
+		{
+			sl.push_back(str.Mid(i, j-i).Trim());
+		}		
+	}
+
+	return sl.front();
 }

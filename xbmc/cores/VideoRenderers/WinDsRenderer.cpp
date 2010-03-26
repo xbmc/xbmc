@@ -99,19 +99,6 @@ unsigned int CWinDsRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
-
-  LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
-  HRESULT hr;
-
-  hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
-  hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
-  hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
-
   return 0;
 }
 
@@ -119,8 +106,6 @@ unsigned int CWinDsRenderer::PreInit()
 void CWinDsRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
-  CSingleLock textureLock(m_textureLock);
-
   m_D3DMemorySurface = NULL;
   m_D3DVideoTexture = NULL;
 
@@ -129,6 +114,8 @@ void CWinDsRenderer::UnInit()
 
 void CWinDsRenderer::Render(DWORD flags)
 {
+  if( flags & RENDER_FLAG_NOOSD ) 
+    return;
 }
 
 void CWinDsRenderer::AutoCrop(bool bCrop)
@@ -141,8 +128,6 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
   // videoTexture & videoSurface can be NULL to release texture
   // If m_D3DVideoTexture isn't NULL, the old reference is released before the assignation
 
-  CSingleLock lock(m_textureLock);
-
   m_D3DVideoTexture = videoTexture;
   m_D3DMemorySurface = videoSurface;
 }
@@ -150,8 +135,8 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 {
   LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
+
   CSingleLock lock(g_graphicsContext);
-  CSingleLock textureLock(m_textureLock);
 
   HRESULT hr;
   D3DSURFACE_DESC desc;
@@ -199,6 +184,14 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
 
+  hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+  hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
   hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
 
   hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));

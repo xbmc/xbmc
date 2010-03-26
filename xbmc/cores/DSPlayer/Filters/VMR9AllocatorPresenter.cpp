@@ -168,9 +168,9 @@ public:
   {
     if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
-      tagRECT s, d;
+      Com::SmartRect s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
-      *pHeight = g_geometryHelper.GetHeight(d);
+      *pHeight = d.Height();
       return hr;
     }
     return E_NOTIMPL;
@@ -240,12 +240,12 @@ public:
   {
     if(Com::SmartQIPtr<IVMRWindowlessControl9> pWC9 = m_pVMR)
     {
-      tagRECT s, d;
+      Com::SmartRect s, d;
       HRESULT hr = pWC9->GetVideoPosition(&s, &d);
       *pLeft = d.left;
       *pTop = d.top;
-      *pWidth = g_geometryHelper.GetWidth(d);
-      *pHeight = g_geometryHelper.GetHeight(d);
+      *pWidth = d.Width();
+      *pHeight = d.Height();
       return hr;
     }
     return E_NOTIMPL;

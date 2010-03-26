@@ -51,7 +51,6 @@ using namespace XFILE;
 
 #define WM_GRAPHEVENT  WM_USER + 13
 
-
 /** Video state mode */
 enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
                   MOVIE_OPENED    = 0x01,
@@ -179,13 +178,16 @@ private:
   std::vector<DvdTitle*>                m_pDvdTitles;
   bool m_bReachedEnd;
   int m_currentRate;
-  int m_lAvgTimeToSeek;
+  LONGLONG m_lAvgTimeToSeek;
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;
   CStdString m_pStrCurrentFrameRate;
   int m_iCurrentFrameRefreshCycle;
 
+  friend class CTextPassThruInputPin;
+  friend class CTextPassThruFilter;
+  CCritSec m_SubLock;
   struct SPlayerState
   {
     SPlayerState()
@@ -201,10 +203,10 @@ private:
       player_state = "";
       current_filter_state = State_Stopped;
     }
-    LONGLONG timestamp;         // last time of update
+    double timestamp;         // last time of update
 
-    LONGLONG time;              // current playback time in millisec
-    LONGLONG time_total;        // total playback time in millisec
+    double time;              // current playback time in millisec
+    double time_total;        // total playback time in millisec
     FILTER_STATE current_filter_state;
 
     std::string player_state;  // full player state

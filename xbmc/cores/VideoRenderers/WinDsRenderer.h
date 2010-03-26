@@ -74,9 +74,6 @@ protected:
 
   Com::SmartPtr<IDirect3DTexture9> m_D3DVideoTexture;
   Com::SmartPtr<IDirect3DSurface9> m_D3DMemorySurface;
-
-  CCriticalSection m_textureLock;
-
   // clear colour for "black" bars
   DWORD m_clearColour;
   unsigned int m_flags;
