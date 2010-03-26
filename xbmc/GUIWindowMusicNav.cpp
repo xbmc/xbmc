@@ -50,6 +50,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -817,11 +818,13 @@ void CGUIWindowMusicNav::SetPluginThumb(int iItem, const VECSOURCES &sources)
     if (picturePath.Equals("thumb://Current"))
       return;
 
+    CTextureCache::Get().ClearCachedImage(cachedThumb);
     if (picturePath.Equals("thumb://None"))
     {
       XFILE::CFile::Delete(cachedThumb);
       CFileItem item2(CUtil::AddFileToFolder(itemPath, "default.py"), false);
       XFILE::CFile::Delete(item2.GetCachedProgramThumb());
+      CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
     }
     else
       XFILE::CFile::Cache(picturePath, cachedThumb);

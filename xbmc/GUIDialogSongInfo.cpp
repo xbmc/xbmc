@@ -36,6 +36,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "TextureCache.h"
 
 using namespace XFILE;
 
@@ -270,6 +271,7 @@ void CGUIDialogSongInfo::OnGetThumb()
 
   CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_song->GetMusicInfoTag()->GetAlbum(), m_song->GetMusicInfoTag()->GetArtist()));
 
+  CTextureCache::Get().ClearCachedImage(cachedThumb);
   if (result == "thumb://None")
   {
     CFile::Delete(cachedThumb);

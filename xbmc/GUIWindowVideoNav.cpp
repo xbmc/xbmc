@@ -53,6 +53,7 @@
 #include "StringUtils.h"
 #include "MediaManager.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -1297,6 +1298,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           // make sure any previously cached thumb is removed
           if (CFile::Exists(item->GetCachedPictureThumb()))
             CFile::Delete(item->GetCachedPictureThumb());
+          CTextureCache::Get().ClearCachedImage(item->GetCachedPictureThumb());
           items.Add(item);
         }
       }
@@ -1406,6 +1408,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
+      CTextureCache::Get().ClearCachedImage(cachedThumb);
       if (result.Left(14) == "thumb://Remote")
       {
         CFileItem chosen(result,false);
@@ -1421,11 +1424,13 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (result == "thumb://None")
       {
         CFile::Delete(cachedThumb);
+        CTextureCache::Get().ClearCachedImage(cachedThumb);
         if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
         {
           CFileItem item2(strPath,false);
           CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
           CFile::Delete(item2.GetCachedProgramThumb());
+          CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
         }
       }
       else
