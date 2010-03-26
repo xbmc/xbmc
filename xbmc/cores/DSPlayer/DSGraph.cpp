@@ -761,7 +761,7 @@ void CDSGraph::SeekInMilliSec(double sec)
     return;
 
   if( m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME )
-    seekrequest = ( LONGLONG )( DS_MSEC_TO_TIME(sec) );
+    seekrequest = ( LONGLONG )( MSEC_TO_DS_TIME(sec) );
   else
     seekrequest = (LONGLONG) sec;
 
