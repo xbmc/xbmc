@@ -244,6 +244,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_NUMEPISODES);
     fields.push_back(FIELD_NUMWATCHED);
     fields.push_back(FIELD_PLAYCOUNT);
+    fields.push_back(FIELD_PATH);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "episodes")
@@ -686,6 +687,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_PLAYCOUNT) result = "watched";
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
+    else if (field == FIELD_PATH) return "strPath";
     return result;
   }
   if (type == "episodes")
