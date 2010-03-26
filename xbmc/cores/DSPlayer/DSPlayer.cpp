@@ -37,6 +37,7 @@
 #endif
 
 #include "GUIDialogBusy.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 

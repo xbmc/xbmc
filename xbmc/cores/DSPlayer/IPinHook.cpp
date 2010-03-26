@@ -39,6 +39,7 @@
 
 REFERENCE_TIME    g_tSegmentStart      = 0;
 REFERENCE_TIME    g_tSampleStart      = 0;
+REFERENCE_TIME    g_rtTimePerFrame    = 0;
 GUID        g_guidDXVADecoder    = GUID_NULL;
 int          g_nDXVAVersion      = 0;
 
