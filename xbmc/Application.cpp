@@ -1885,9 +1885,28 @@ bool CApplication::WaitFrame(unsigned int timeout)
 #ifdef HAS_SDL
   // Wait for all other frames to be presented
   SDL_mutexP(m_frameMutex);
+  //wait until event is set, but modify remaining time
+  DWORD dwStartTime = CTimeUtils::GetTimeMS();
+  DWORD dwRemainingTime = timeout;
   while(m_frameCount > 0)
   {
-    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
+    if (result == 0)
+    {
+      //fix time to wait because of spurious wakeups
+      DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
+      if(dwElapsed < dwRemainingTime)
+      {
+        dwRemainingTime -= dwElapsed;
+        continue;
+      }
+      else
+      {
+        //ran out of time
+        result = SDL_MUTEX_TIMEDOUT;
+      }
+    }
+
     if(result == SDL_MUTEX_TIMEDOUT)
       break;
     if(result < 0)
@@ -1942,10 +1961,29 @@ void CApplication::Render()
 #ifdef HAS_SDL
       SDL_mutexP(m_frameMutex);
 
+      //wait until event is set, but modify remaining time
+      DWORD dwStartTime = CTimeUtils::GetTimeMS();
+      DWORD dwRemainingTime = 100;
       // If we have frames or if we get notified of one, consume it.
       while(m_frameCount == 0)
       {
-        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100);
+        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
+        if (result == 0)
+        {
+          //fix time to wait because of spurious wakeups
+          DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
+          if(dwElapsed < dwRemainingTime)
+          {
+            dwRemainingTime -= dwElapsed;
+            continue;
+          }
+          else
+          {
+            //ran out of time
+            result = SDL_MUTEX_TIMEDOUT;
+          }
+        }
+
         if(result == SDL_MUTEX_TIMEDOUT)
           break;
         if(result < 0)
