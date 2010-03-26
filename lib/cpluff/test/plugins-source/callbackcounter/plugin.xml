@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<plugin id="callbackcounter" name="Callback Call Counter">
+	<runtime library="libruntime" funcs="cbc_runtime"/>
+</plugin>

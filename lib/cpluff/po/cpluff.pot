@@ -1,0 +1,1119 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Johannes Lehtinen
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: johannes.lehtinen@iki.fi\n"
+"POT-Creation-Date: 2007-04-05 04:58+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: console/cmdinput_basic.c:49
+msgid "ERROR: Command line is too long.\n"
+msgstr ""
+
+#: console/console.c:77
+msgid "displays available commands"
+msgstr ""
+
+#: console/console.c:78
+msgid "sets the displayed log level"
+msgstr ""
+
+#: console/console.c:79
+msgid "registers a plug-in collection"
+msgstr ""
+
+#: console/console.c:80
+msgid "unregisters a plug-in collection"
+msgstr ""
+
+#: console/console.c:81
+msgid "unregisters all plug-in collections"
+msgstr ""
+
+#: console/console.c:82
+msgid "loads and installs a plug-in from the specified path"
+msgstr ""
+
+#: console/console.c:83
+msgid "scans plug-ins in the registered plug-in collections"
+msgstr ""
+
+#: console/console.c:84
+msgid "sets context startup arguments"
+msgstr ""
+
+#: console/console.c:85
+msgid "starts a plug-in"
+msgstr ""
+
+#: console/console.c:86
+msgid "runs one plug-in run function"
+msgstr ""
+
+#: console/console.c:87
+msgid "runs plug-in run functions until all work is done"
+msgstr ""
+
+#: console/console.c:88
+msgid "stops a plug-in"
+msgstr ""
+
+#: console/console.c:89
+msgid "stops all plug-ins"
+msgstr ""
+
+#: console/console.c:90
+msgid "uninstalls a plug-in"
+msgstr ""
+
+#: console/console.c:91
+msgid "uninstalls all plug-ins"
+msgstr ""
+
+#: console/console.c:92
+msgid "lists the installed plug-ins"
+msgstr ""
+
+#: console/console.c:93
+msgid "lists the installed extension points"
+msgstr ""
+
+#: console/console.c:94
+msgid "lists the installed extensions"
+msgstr ""
+
+#: console/console.c:95
+msgid "shows static plug-in information"
+msgstr ""
+
+#: console/console.c:96 console/console.c:97
+msgid "quits the program"
+msgstr ""
+
+#: console/console.c:103
+msgid "enables upgrades of installed plug-ins"
+msgstr ""
+
+#: console/console.c:104
+msgid "stops all plug-ins on first upgrade"
+msgstr ""
+
+#: console/console.c:105
+msgid "stops all plug-ins on first install or upgrade"
+msgstr ""
+
+#: console/console.c:106
+msgid "restarts the currently active plug-ins after the scan"
+msgstr ""
+
+#: console/console.c:112
+msgid "detailed debug messages"
+msgstr ""
+
+#: console/console.c:113
+msgid "informational messages"
+msgstr ""
+
+#: console/console.c:114
+msgid "warnings about possible problems"
+msgstr ""
+
+#: console/console.c:115
+msgid "error messages"
+msgstr ""
+
+#: console/console.c:116
+msgid "disable logging"
+msgstr ""
+
+#: console/console.c:153
+msgid "Command has too many arguments.\n"
+msgstr ""
+
+#: console/console.c:176
+msgid "The following commands are available:\n"
+msgstr ""
+
+#. TRANSLATORS: A tag for debug level log entries.
+#: console/console.c:187 loader/loader.c:212
+msgid "DEBUG"
+msgstr ""
+
+#. TRANSLATORS: A tag for info level log entries.
+#: console/console.c:191 loader/loader.c:217
+msgid "INFO"
+msgstr ""
+
+#. TRANSLATORS: A tag for warning level log entries.
+#: console/console.c:195 loader/loader.c:222
+msgid "WARNING"
+msgstr ""
+
+#. TRANSLATORS: A tag for error level log entries.
+#: console/console.c:199 loader/loader.c:227
+msgid "ERROR"
+msgstr ""
+
+#. TRANSLATORS: A tag for unknown severity level.
+#: console/console.c:203 loader/loader.c:232
+msgid "UNKNOWN"
+msgstr ""
+
+#. TRANSLATORS: Used when displaying log messages originating
+#. from console activities.
+#: console/console.c:211
+msgid "console"
+msgstr ""
+
+#. TRANSLATORS: Usage instructions for setting log level
+#: console/console.c:218
+#, c-format
+msgid "Usage: %s <level>\n"
+msgstr ""
+
+#: console/console.c:228
+#, c-format
+msgid "Unknown log level %s.\n"
+msgstr ""
+
+#: console/console.c:229
+msgid "Available log levels are:\n"
+msgstr ""
+
+#. TRANSLATORS: The first %s is the log level name and the second the localized log level description.
+#: console/console.c:240 console/console.c:893
+#, c-format
+msgid "Using display log level %s (%s).\n"
+msgstr ""
+
+#. TRANSLATORS: Return status for a successfull API call
+#: console/console.c:249
+msgid "success"
+msgstr ""
+
+#: console/console.c:251
+msgid "insufficient system resources"
+msgstr ""
+
+#: console/console.c:253
+msgid "an unknown object was specified"
+msgstr ""
+
+#: console/console.c:255
+msgid "an input or output error"
+msgstr ""
+
+#: console/console.c:257
+msgid "a malformed plug-in descriptor"
+msgstr ""
+
+#: console/console.c:259
+msgid "a plug-in or symbol conflicts with an existing one"
+msgstr ""
+
+#: console/console.c:261
+msgid "unsatisfiable dependencies"
+msgstr ""
+
+#: console/console.c:263
+msgid "a plug-in runtime library encountered an error"
+msgstr ""
+
+#: console/console.c:265
+msgid "unknown error code"
+msgstr ""
+
+#: console/console.c:270
+#, c-format
+msgid "API function %s failed with error code %d (%s).\n"
+msgstr ""
+
+#. TRANSLATORS: Usage instructions for registering a plug-in collection
+#. TRANSLATORS: Usage instructions for unregistering a plug-in collection
+#. TRANSLATORS: Usage instructios for loading a plug-in
+#: console/console.c:281 console/console.c:292 console/console.c:315
+#, c-format
+msgid "Usage: %s <path>\n"
+msgstr ""
+
+#: console/console.c:285
+#, c-format
+msgid "Registered a plug-in collection in path %s.\n"
+msgstr ""
+
+#: console/console.c:295
+#, c-format
+msgid "Unregistered a plug-in collection in path %s.\n"
+msgstr ""
+
+#. TRANSLATORS: Usage instructions for unregistering all plug-in collections
+#. TRANSLATORS: Usage instructions for listing plug-ins
+#. TRANSLATORS: Usage instructions for listing extension points
+#. TRANSLATORS: Usage instructions for listing extensions
+#. TRANSLATORS: Usage instructions for running one plug-in run function
+#. TRANSLATORS: Usage instructions for running plug-in run functions until all work is done
+#. TRANSLATORS: Usage instructions for stopping all plug-ins
+#. TRANSLATORS: Usage instructions for uninstalling all plug-ins
+#: console/console.c:302 console/console.c:387 console/console.c:682
+#: console/console.c:707 console/console.c:786 console/console.c:800
+#: console/console.c:823 console/console.c:846
+#, c-format
+msgid "Usage: %s\n"
+msgstr ""
+
+#: console/console.c:305
+msgid "Unregistered all plug-in collections.\n"
+msgstr ""
+
+#: console/console.c:322
+#, c-format
+msgid "Installed plug-in %s.\n"
+msgstr ""
+
+#: console/console.c:343
+#, c-format
+msgid "Unknown flag %s.\n"
+msgstr ""
+
+#. TRANSLATORS: Usage instructions for scanning plug-ins
+#: console/console.c:345
+#, c-format
+msgid "Usage: %s [<flag>...]\n"
+msgstr ""
+
+#: console/console.c:346
+msgid "Available flags are:\n"
+msgstr ""
+
+#: console/console.c:358
+msgid "Plug-ins loaded.\n"
+msgstr ""
+
+#: console/console.c:364
+msgid "uninstalled"
+msgstr ""
+
+#: console/console.c:366
+msgid "installed"
+msgstr ""
+
+#: console/console.c:368
+msgid "resolved"
+msgstr ""
+
+#: console/console.c:370
+msgid "starting"
+msgstr ""
+
+#: console/console.c:372
+msgid "stopping"
+msgstr ""
+
+#: console/console.c:374
+msgid "active"
+msgstr ""
+
+#: console/console.c:376
+msgid "unknown"
+msgstr ""
+
+#: console/console.c:392
+msgid "Installed plug-ins:\n"
+msgstr ""
+
+#: console/console.c:394 console/console.c:689 console/console.c:714
+msgid "IDENTIFIER"
+msgstr ""
+
+#: console/console.c:395
+msgid "VERSION"
+msgstr ""
+
+#: console/console.c:396
+msgid "STATE"
+msgstr ""
+
+#: console/console.c:397 console/console.c:690 console/console.c:715
+msgid "NAME"
+msgstr ""
+
+#: console/console.c:421 console/console.c:539 console/console.c:762
+msgid "Memory allocation failed.\n"
+msgstr ""
+
+#. TRANSLATORS: Usage instructions for showing plug-in information
+#. TRANSLATORS: Usage instructions for starting a plug-in
+#. TRANSLATORS: Usage instructions for stopping a plug-in
+#. TRANSLATORS: Usage instructions for uninstalling a plug-in
+#: console/console.c:611 console/console.c:774 console/console.c:812
+#: console/console.c:835
+#, c-format
+msgid "Usage: %s <plugin>\n"
+msgstr ""
+
+#: console/console.c:687
+msgid "Installed extension points:\n"
+msgstr ""
+
+#: console/console.c:712
+msgid "Installed extensions:\n"
+msgstr ""
+
+#: console/console.c:719
+msgid ".<anonymous>"
+msgstr ""
+
+#. TRANSLATORS: Usage instructions for setting context arguments
+#: console/console.c:760
+#, c-format
+msgid "Usage: %s [<arg>...]\n"
+msgstr ""
+
+#: console/console.c:765
+msgid "Plug-in context startup arguments have been set.\n"
+msgstr ""
+
+#: console/console.c:778
+#, c-format
+msgid "Started plug-in %s.\n"
+msgstr ""
+
+#: console/console.c:790
+msgid "Ran one plug-in run function. There are pending run functions.\n"
+msgstr ""
+
+#: console/console.c:792
+msgid "Ran one plug-in run function. No more pending run functions.\n"
+msgstr ""
+
+#: console/console.c:803
+msgid "Ran plug-in run functions. No more pending run functions.\n"
+msgstr ""
+
+#: console/console.c:816
+#, c-format
+msgid "Stopped plug-in %s.\n"
+msgstr ""
+
+#: console/console.c:826
+msgid "Stopped all plug-ins.\n"
+msgstr ""
+
+#: console/console.c:839
+#, c-format
+msgid "Uninstalled plug-in %s.\n"
+msgstr ""
+
+#: console/console.c:849
+msgid "Uninstalled all plug-ins.\n"
+msgstr ""
+
+#. TRANSLATORS: This is a version string displayed on startup.
+#: console/console.c:877
+#, c-format
+msgid "C-Pluff Console, version %s\n"
+msgstr ""
+
+#. TRANSLATORS: This is a version string displayed on startup.
+#. The first %s is version and the second %s is platform type.
+#: console/console.c:881 loader/loader.c:332
+#, c-format
+msgid "C-Pluff Library, version %s for %s\n"
+msgstr ""
+
+#: console/console.c:896
+msgid "Type \"help\" for help on available commands.\n"
+msgstr ""
+
+#. TRANSLATORS: This is the input prompt for cpluff-console.
+#: console/console.c:900
+msgid "C-Pluff Console > "
+msgstr ""
+
+#: console/console.c:928
+#, c-format
+msgid "Unknown command %s.\n"
+msgstr ""
+
+#: libcpluff/context.c:270
+msgid "Only the main program can destroy a plug-in context."
+msgstr ""
+
+#: libcpluff/context.c:358
+#, c-format
+msgid ""
+"The plug-in collection in path %s could not be registered due to "
+"insufficient memory."
+msgstr ""
+
+#: libcpluff/context.c:360
+#, c-format
+msgid "The plug-in collection in path %s was registered."
+msgstr ""
+
+#: libcpluff/context.c:393
+#, c-format
+msgid "The plug-in collection in path %s was unregistered."
+msgstr ""
+
+#: libcpluff/context.c:402
+msgid "All plug-in collections were unregistered."
+msgstr ""
+
+#: libcpluff/context.c:416
+#, c-format
+msgid "At least one startup argument must be given in call to function %s."
+msgstr ""
+
+#: libcpluff/context.c:447
+#, c-format
+msgid "Function %s was called from within a logger invocation."
+msgstr ""
+
+#: libcpluff/context.c:451
+#, c-format
+msgid "Function %s was called from within an event listener invocation."
+msgstr ""
+
+#: libcpluff/context.c:455
+#, c-format
+msgid "Function %s was called from within a plug-in start function invocation."
+msgstr ""
+
+#: libcpluff/context.c:459
+#, c-format
+msgid "Function %s was called from within a plug-in stop function invocation."
+msgstr ""
+
+#: libcpluff/context.c:462
+#, c-format
+msgid ""
+"Function %s was called from within a plug-in create function invocation."
+msgstr ""
+
+#: libcpluff/context.c:465
+#, c-format
+msgid ""
+"Function %s was called from within a plug-in destroy function invocation."
+msgstr ""
+
+#. TRANSLATORS: The context owner (when it is a plug-in) used in some strings.
+#. Search for "context owner" to find these strings.
+#: libcpluff/context.c:515
+#, c-format
+msgid "Plug-in %s"
+msgstr ""
+
+#. TRANSLATORS: The context owner (when it is the main program) used in some strings.
+#. Search for "context owner" to find these strings.
+#: libcpluff/context.c:519
+msgid "The main program"
+msgstr ""
+
+#: libcpluff/cpluff.c:173
+#, c-format
+msgid "C-Pluff: FATAL ERROR: %s\n"
+msgstr ""
+
+#: libcpluff/cpluff.c:181
+#, c-format
+msgid "Argument %s has illegal NULL value in call to function %s."
+msgstr ""
+
+#: libcpluff/logging.c:131
+msgid "Logger could not be registered due to insufficient memory."
+msgstr ""
+
+#. TRANSLATORS: %s is the context owner
+#: libcpluff/logging.c:135
+#, c-format
+msgid "%s registered a logger."
+msgstr ""
+
+#. TRANSLATORS: %s is the context owner
+#: libcpluff/logging.c:172
+#, c-format
+msgid "%s unregistered a logger."
+msgstr ""
+
+#: libcpluff/logging.c:183
+msgid "Encountered a recursive logging request within a logger invocation."
+msgstr ""
+
+#: libcpluff/logging.c:241
+#, c-format
+msgid "Illegal severity value in call to %s."
+msgstr ""
+
+#: libcpluff/pcontrol.c:121
+#, c-format
+msgid ""
+"Plug-in %s could not be installed because a plug-in with the same identifier "
+"is already installed."
+msgstr ""
+
+#: libcpluff/pcontrol.c:161
+#, c-format
+msgid ""
+"Plug-in %s could not be installed because extension point %s conflicts with "
+"an already installed extension point."
+msgstr ""
+
+#: libcpluff/pcontrol.c:229
+#, c-format
+msgid "Plug-in %s could not be installed due to insufficient system resources."
+msgstr ""
+
+#: libcpluff/pcontrol.c:293
+#, c-format
+msgid ""
+"Plug-in %s could not be resolved due to version incompatibility with C-Pluff."
+msgstr ""
+
+#: libcpluff/pcontrol.c:304
+#, c-format
+msgid ""
+"Plug-in %s runtime library could not be loaded due to insufficient memory."
+msgstr ""
+
+#: libcpluff/pcontrol.c:319 libcpluff/pcontrol.c:332 libcpluff/psymbol.c:188
+msgid "Unspecified error."
+msgstr ""
+
+#: libcpluff/pcontrol.c:321
+#, c-format
+msgid "Plug-in %s runtime library %s could not be opened: %s"
+msgstr ""
+
+#: libcpluff/pcontrol.c:334
+#, c-format
+msgid ""
+"Plug-in %s symbol %s containing plug-in runtime information could not be "
+"resolved: %s"
+msgstr ""
+
+#: libcpluff/pcontrol.c:340
+#, c-format
+msgid "Plug-in %s is missing a constructor or destructor function."
+msgstr ""
+
+#: libcpluff/pcontrol.c:387
+#, c-format
+msgid ""
+"Plug-in %s could not be resolved due to version incompatibility with plug-in "
+"%s."
+msgstr ""
+
+#: libcpluff/pcontrol.c:397
+#, c-format
+msgid ""
+"Plug-in %s could not be resolved because it depends on plug-in %s which is "
+"not installed."
+msgstr ""
+
+#: libcpluff/pcontrol.c:463
+#, c-format
+msgid ""
+"Plug-in %s could not be resolved because it depends on plug-in %s which "
+"could not be resolved."
+msgstr ""
+
+#: libcpluff/pcontrol.c:505
+#, c-format
+msgid "Plug-in %s could not be resolved because of insufficient memory."
+msgstr ""
+
+#: libcpluff/pcontrol.c:709 libcpluff/pcontrol.c:800 libcpluff/pcontrol.c:836
+#, c-format
+msgid "Plug-in %s could not be started due to insufficient memory."
+msgstr ""
+
+#: libcpluff/pcontrol.c:714
+#, c-format
+msgid "Plug-in %s failed to start due to plug-in runtime error."
+msgstr ""
+
+#: libcpluff/pcontrol.c:732
+#, c-format
+msgid "Detected a runtime plug-in dependency loop: %s"
+msgstr ""
+
+#: libcpluff/pcontrol.c:734
+#, c-format
+msgid "Detected a static plug-in dependency loop: %s"
+msgstr ""
+
+#: libcpluff/pcontrol.c:858
+#, c-format
+msgid "Unknown plug-in %s could not be started."
+msgstr ""
+
+#: libcpluff/pcontrol.c:1003
+#, c-format
+msgid "Unknown plug-in %s could not be stopped."
+msgstr ""
+
+#: libcpluff/pcontrol.c:1214
+#, c-format
+msgid "Unknown plug-in %s could not be uninstalled."
+msgstr ""
+
+#: libcpluff/pinfo.c:102
+#, c-format
+msgid "An information object at address %p was registered."
+msgstr ""
+
+#: libcpluff/pinfo.c:124
+#, c-format
+msgid ""
+"Reference count of the information object at address  %p increased to %d."
+msgstr ""
+
+#: libcpluff/pinfo.c:126
+#, c-format
+msgid ""
+"Reference count of an unknown information object at address %p could not be "
+"increased."
+msgstr ""
+
+#: libcpluff/pinfo.c:142
+#, c-format
+msgid "The information object at address %p was unregistered."
+msgstr ""
+
+#: libcpluff/pinfo.c:145
+#, c-format
+msgid ""
+"Reference count of the information object at address %p decreased to %d."
+msgstr ""
+
+#: libcpluff/pinfo.c:148
+#, c-format
+msgid "Could not release an unknown information object at address %p."
+msgstr ""
+
+#: libcpluff/pinfo.c:169
+#, c-format
+msgid ""
+"An unreleased information object was encountered at address %p with "
+"reference count %d when destroying the associated plug-in context. Not "
+"releasing the object."
+msgstr ""
+
+#: libcpluff/pinfo.c:186
+msgid ""
+"The plug-in identifier argument to cp_get_plugin_info must not be NULL when "
+"the main program calls it."
+msgstr ""
+
+#: libcpluff/pinfo.c:197
+#, c-format
+msgid "Could not return information about unknown plug-in %s."
+msgstr ""
+
+#: libcpluff/pinfo.c:267
+msgid "Plug-in information could not be returned due to insufficient memory."
+msgstr ""
+
+#: libcpluff/pinfo.c:358
+msgid ""
+"Extension point information could not be returned due to insufficient memory."
+msgstr ""
+
+#: libcpluff/pinfo.c:474
+msgid "Extension information could not be returned due to insufficient memory."
+msgstr ""
+
+#: libcpluff/pinfo.c:571
+msgid "A plug-in listener could not be registered due to insufficient memory."
+msgstr ""
+
+#. TRANSLATORS: %s is the context owner
+#: libcpluff/pinfo.c:575
+#, c-format
+msgid "%s registered a plug-in listener."
+msgstr ""
+
+#. TRANSLATORS: %s is the context owner
+#: libcpluff/pinfo.c:597
+#, c-format
+msgid "%s unregistered a plug-in listener."
+msgstr ""
+
+#: libcpluff/pinfo.c:614
+#, c-format
+msgid "Plug-in %s has been uninstalled."
+msgstr ""
+
+#: libcpluff/pinfo.c:618
+#, c-format
+msgid "Plug-in %s has been installed."
+msgstr ""
+
+#: libcpluff/pinfo.c:620
+#, c-format
+msgid "Plug-in %s runtime library has been unloaded."
+msgstr ""
+
+#: libcpluff/pinfo.c:625
+#, c-format
+msgid "Plug-in %s runtime library has been loaded."
+msgstr ""
+
+#: libcpluff/pinfo.c:627
+#, c-format
+msgid "Plug-in %s has been stopped."
+msgstr ""
+
+#: libcpluff/pinfo.c:631
+#, c-format
+msgid "Plug-in %s is starting."
+msgstr ""
+
+#: libcpluff/pinfo.c:634
+#, c-format
+msgid "Plug-in %s is stopping."
+msgstr ""
+
+#: libcpluff/pinfo.c:637
+#, c-format
+msgid "Plug-in %s has been started."
+msgstr ""
+
+#: libcpluff/ploader.c:162
+#, c-format
+msgid "Suspicious plug-in descriptor content in %s, line %d, column %d (%s)."
+msgstr ""
+
+#: libcpluff/ploader.c:169
+#, c-format
+msgid "Invalid plug-in descriptor content in %s, line %d, column %d (%s)."
+msgstr ""
+
+#: libcpluff/ploader.c:189
+#, c-format
+msgid ""
+"Insufficient system resources to parse plug-in descriptor content in %s, "
+"line %d, column %d."
+msgstr ""
+
+#: libcpluff/ploader.c:243
+#, c-format
+msgid "required attribute %s for element %s has an empty value"
+msgstr ""
+
+#: libcpluff/ploader.c:249
+#, c-format
+msgid "required attribute %s missing for element %s"
+msgstr ""
+
+#: libcpluff/ploader.c:283
+#, c-format
+msgid "ignoring unknown attribute %s for element %s"
+msgstr ""
+
+#: libcpluff/ploader.c:376
+#, c-format
+msgid "ignoring unexpected element %s and its contents"
+msgstr ""
+
+#: libcpluff/ploader.c:759
+#, c-format
+msgid "unknown boolean value: %s"
+msgstr ""
+
+#: libcpluff/ploader.c:969
+#, c-format
+msgid "unexpected closing tag for %s"
+msgstr ""
+
+#: libcpluff/ploader.c:1085
+#, c-format
+msgid "XML parsing error in %s, line %d, column %d (%s)."
+msgstr ""
+
+#: libcpluff/ploader.c:1130
+#, c-format
+msgid "Plug-in descriptor in %s is invalid."
+msgstr ""
+
+#: libcpluff/ploader.c:1134
+#, c-format
+msgid "An I/O error occurred while loading a plug-in descriptor from %s."
+msgstr ""
+
+#: libcpluff/ploader.c:1138
+#, c-format
+msgid "Insufficient system resources to load a plug-in descriptor from %s."
+msgstr ""
+
+#: libcpluff/ploader.c:1142
+#, c-format
+msgid "Failed to load a plug-in descriptor from %s."
+msgstr ""
+
+#: libcpluff/pscan.c:60
+msgid "Plug-in scan is starting."
+msgstr ""
+
+#: libcpluff/pscan.c:108
+#, c-format
+msgid ""
+"Could not check possible plug-in location %s%c%s due to insufficient system "
+"resources."
+msgstr ""
+
+#: libcpluff/pscan.c:140
+#, c-format
+msgid ""
+"Plug-in %s version %s could not be loaded due to insufficient system "
+"resources."
+msgstr ""
+
+#: libcpluff/pscan.c:152
+#, c-format
+msgid "Could not read plug-in directory %s: %s"
+msgstr ""
+
+#: libcpluff/pscan.c:158
+#, c-format
+msgid "Could not open plug-in directory %s: %s"
+msgstr ""
+
+#: libcpluff/pscan.c:272
+msgid "Plug-in scan has completed successfully."
+msgstr ""
+
+#: libcpluff/pscan.c:275
+msgid "Could not scan plug-ins due to insufficient system resources."
+msgstr ""
+
+#: libcpluff/pscan.c:278
+msgid "Could not scan plug-ins."
+msgstr ""
+
+#: libcpluff/psymbol.c:79
+msgid "Only plug-ins can define context specific symbols."
+msgstr ""
+
+#: libcpluff/psymbol.c:115
+#, c-format
+msgid "Plug-in %s could not define symbol %s due to insufficient memory."
+msgstr ""
+
+#: libcpluff/psymbol.c:118
+#, c-format
+msgid "Plug-in %s tried to redefine symbol %s."
+msgstr ""
+
+#: libcpluff/psymbol.c:163
+#, c-format
+msgid "Symbol %s in unknown plug-in %s could not be resolved."
+msgstr ""
+
+#: libcpluff/psymbol.c:171
+#, c-format
+msgid ""
+"Symbol %s in plug-in %s could not be resolved because the plug-in could not "
+"be started."
+msgstr ""
+
+#: libcpluff/psymbol.c:190
+#, c-format
+msgid "Symbol %s in plug-in %s could not be resolved: %s"
+msgstr ""
+
+#: libcpluff/psymbol.c:271
+#, c-format
+msgid ""
+"Symbol %s in plug-in %s could not be resolved due to insufficient memory."
+msgstr ""
+
+#: libcpluff/psymbol.c:298
+#, c-format
+msgid "Could not release unknown symbol at address %p."
+msgstr ""
+
+#. TRANSLATORS: First %s is the context owner
+#: libcpluff/psymbol.c:317
+#, c-format
+msgid "%s released the symbol at address %p defined by plug-in %s."
+msgstr ""
+
+#: libcpluff/psymbol.c:329
+#, c-format
+msgid "A dynamic dependency from plug-in %s to plug-in %s was removed."
+msgstr ""
+
+#: libcpluff/serial.c:60
+msgid "Only plug-ins can register run functions."
+msgstr ""
+
+#: libcpluff/serial.c:64
+msgid "Only starting or active plug-ins can register run functions."
+msgstr ""
+
+#: libcpluff/serial.c:111
+msgid "Could not register a run function due to insufficient memory."
+msgstr ""
+
+#: libcpluff/thread_posix.c:114
+#, c-format
+msgid "Could not lock a mutex due to error %d."
+msgstr ""
+
+#: libcpluff/thread_posix.c:122
+#, c-format
+msgid "Could not unlock a mutex due to error %d."
+msgstr ""
+
+#: libcpluff/thread_posix.c:134 libcpluff/thread_posix.c:186
+#, c-format
+msgid "Could not wait for a condition variable due to error %d."
+msgstr ""
+
+#: libcpluff/thread_posix.c:159 libcpluff/thread_posix.c:181
+#, c-format
+msgid "Could not signal a condition variable due to error %d."
+msgstr ""
+
+#: libcpluff/thread_posix.c:163 libcpluff/thread_windows.c:206
+msgid "Internal C-Pluff error: Unauthorized attempt at unlocking a mutex."
+msgstr ""
+
+#: libcpluff/thread_posix.c:194 libcpluff/thread_windows.c:240
+msgid "Internal C-Pluff error: Unauthorized attempt at waiting on a mutex."
+msgstr ""
+
+#: libcpluff/thread_posix.c:210
+#, c-format
+msgid "Could not broadcast a condition variable due to error %d."
+msgstr ""
+
+#: libcpluff/thread_posix.c:214 libcpluff/thread_windows.c:254
+msgid "Internal C-Pluff error: Unauthorized attempt at signaling a mutex."
+msgstr ""
+
+#: libcpluff/thread_windows.c:122
+msgid "unknown error"
+msgstr ""
+
+#: libcpluff/thread_windows.c:134
+#, c-format
+msgid "Could not lock a mutex due to error %ld: %s"
+msgstr ""
+
+#: libcpluff/thread_windows.c:143
+#, c-format
+msgid "Could not release a mutex due to error %ld: %s"
+msgstr ""
+
+#: libcpluff/thread_windows.c:152
+#, c-format
+msgid "Could not wait for an event due to error %ld: %s"
+msgstr ""
+
+#: libcpluff/thread_windows.c:161
+#, c-format
+msgid "Could not set an event due to error %ld: %s"
+msgstr ""
+
+#: libcpluff/thread_windows.c:170
+#, c-format
+msgid "Could not reset an event due to error %ld: %s"
+msgstr ""
+
+#. TRANSLATORS: A formatting string for loader error messages.
+#: loader/loader.c:121
+#, c-format
+msgid "C-Pluff Loader: ERROR: %s\n"
+msgstr ""
+
+#: loader/loader.c:152
+msgid "Memory allocation failed."
+msgstr ""
+
+#. TRANSLATORS: This is a version string displayed on startup.
+#: loader/loader.c:192 loader/loader.c:328
+#, c-format
+msgid "C-Pluff Loader, version %s\n"
+msgstr ""
+
+#: loader/loader.c:194
+msgid ""
+"usage: cpluff-loader <option>... [--] <arguments passed to plug-ins>\n"
+"options:\n"
+"  -h       print this help text\n"
+"  -c DIR   add plug-in collection in directory DIR\n"
+"  -p DIR   add plug-in in directory DIR\n"
+"  -s PID   start plug-in PID\n"
+"  -v       be more verbose (repeat for increased verbosity)\n"
+"  -q       be quiet\n"
+"  -V       print C-Pluff version number and exit\n"
+msgstr ""
+
+#. TRANSLATORS: A formatting string for log messages caused by plug-in activity.
+#: loader/loader.c:239
+#, c-format
+msgid "C-Pluff: %s: [%s] %s\n"
+msgstr ""
+
+#. TRANSLATORS: A formatting string for log messages caused by loader activity.
+#: loader/loader.c:242
+#, c-format
+msgid "C-Pluff: %s: [loader] %s\n"
+msgstr ""
+
+#: loader/loader.c:264
+msgid "The C-Pluff initialization failed."
+msgstr ""
+
+#: loader/loader.c:299 loader/loader.c:307
+msgid "Quiet and verbose modes are mutually exclusive."
+msgstr ""
+
+#: loader/loader.c:320
+msgid "Unrecognized option or argument. Try option -h for help."
+msgstr ""
+
+#: loader/loader.c:338
+msgid "No plug-ins to load. Try option -h for help."
+msgstr ""
+
+#: loader/loader.c:343
+msgid "Plug-in context creation failed."
+msgstr ""
+
+#: loader/loader.c:376
+#, c-format
+msgid "Failed to load a plug-in from path %s."
+msgstr ""
+
+#: loader/loader.c:379
+#, c-format
+msgid "Failed to install plug-in %s."
+msgstr ""
+
+#: loader/loader.c:388
+#, c-format
+msgid "Failed to register a plug-in collection at path %s."
+msgstr ""
+
+#: loader/loader.c:393
+msgid "Failed to load and install plug-ins from plug-in collections."
+msgstr ""
+
+#: loader/loader.c:400
+#, c-format
+msgid "Failed to start plug-in %s."
+msgstr ""

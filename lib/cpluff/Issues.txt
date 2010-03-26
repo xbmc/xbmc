@@ -1,0 +1,43 @@
+KNOWN ISSUES
+============
+
+
+cpfile does not rezognize directories when compiled with MinGW
+--------------------------------------------------------------
+
+(Thu,  5 Apr 2007 06:58:32 +0300)
+
+MinGW cross-compiled version of cpfile example application does not
+recognize special files (directories) although the support is in place.
+Reason for the problem is not known. The related source code is in
+examples/cpfile/plugins/special/special.c. The following test code
+works fine when cross-compiled with MinGW.
+
+- clip -
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <windows.h>
+
+int main(int argc, char *argv[]) {
+    int i;
+
+    for (i = 1; i < argc; i++) {
+        struct stat s;
+
+        printf("%s: ", argv[i]);
+        if (stat(argv[i], &s)) {
+            fflush(stdout);
+            perror("stat failed");
+        } else {
+            if (S_ISDIR(s.st_mode)) {
+                fputs("is directory\n", stdout);
+            } else {
+                fputs("is not directory\n", stdout);
+            }
+        }
+    }
+    return 0;
+}
+- clip -
