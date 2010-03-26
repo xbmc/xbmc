@@ -229,6 +229,8 @@
 		7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
 		7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
 		7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
+		7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
+		7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
@@ -2104,6 +2106,8 @@
 		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
 		7C8A14541154CB2600E5FCFA /* TextureCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCache.cpp; sourceTree = "<group>"; };
 		7C8A14551154CB2600E5FCFA /* TextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCache.h; sourceTree = "<group>"; };
+		7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureDatabase.cpp; sourceTree = "<group>"; };
+		7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureDatabase.h; sourceTree = "<group>"; };
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
@@ -4849,9 +4853,11 @@
 				E38E1E150D25F9FD00618676 /* Tag.h */,
 				E38E1E160D25F9FD00618676 /* Temperature.cpp */,
 				E38E1E170D25F9FD00618676 /* Temperature.h */,
-				E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */,
 				7C8A14541154CB2600E5FCFA /* TextureCache.cpp */,
 				7C8A14551154CB2600E5FCFA /* TextureCache.h */,
+				7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */,
+				7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */,
+				E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */,
 				E38E1E190D25F9FD00618676 /* ThumbLoader.h */,
 				E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */,
 				E38E1E1B0D25F9FD00618676 /* ThumbnailCache.h */,
@@ -8135,6 +8141,7 @@
 				18B4A0071152BFA5001AF8A6 /* Visualisation.cpp in Sources */,
 				7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */,
 				C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */,
+				7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8998,6 +9005,7 @@
 				18B4A00D1152BFA5001AF8A6 /* Visualisation.cpp in Sources */,
 				7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */,
 				C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */,
+				7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

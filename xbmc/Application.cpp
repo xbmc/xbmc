@@ -72,6 +72,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "GUILargeTextureManager.h"
+#include "TextureCache.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -1600,6 +1601,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
+  CTextureCache::Get().Initialize();
   g_audioManager.Enable(true);
   g_audioManager.Load();
 
@@ -1636,6 +1638,7 @@ void CApplication::UnloadSkin()
   g_audioManager.Enable(false);
 
   g_windowManager.DeInitialize();
+  CTextureCache::Get().Deinitialize();
 
   //These windows are not handled by the windowmanager (why not?) so we should unload them manually
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
