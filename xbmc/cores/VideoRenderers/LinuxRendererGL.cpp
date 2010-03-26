@@ -921,13 +921,13 @@ void CLinuxRendererGL::UpdateVideoFilter()
       if (!nonLinStretchIsOn)
         return; //non-linear stretch needs to be off but is already off
     }
+    m_reloadShaders    = 1;
   }
   else if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
     return;
 
   m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
-  m_reloadShaders    = 1;
 
   if(!Supports(m_scalingMethod))
   {
