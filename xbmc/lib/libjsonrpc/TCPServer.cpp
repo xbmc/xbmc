@@ -174,7 +174,11 @@ bool CTCPServer::Initialize()
 
   if (m_ServerSocket < 0)
   {
+#ifdef _WIN32
+    CLog::Log(LOGERROR, "JSONRPC Server: Failed to create serversocket %d", WSAGetLastError());
+#else
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to create serversocket");
+#endif
     return false;
   }
 
