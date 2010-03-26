@@ -279,7 +279,7 @@ void D3DPresentEngine::ReleaseResources()
   g_renderManager.PaintVideoTexture(NULL, NULL);
 
   refCount = m_pEVRVideoSurface.Release();
-  ASSERT(refCount == 0);
+  ASSERT(refCount == 1);
   refCount = m_pEVRVideoTexture.Release();
   ASSERT(refCount == 0);
 

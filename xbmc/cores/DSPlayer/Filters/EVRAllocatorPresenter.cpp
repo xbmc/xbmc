@@ -243,19 +243,10 @@ MFVideoArea MakeArea(float x, float y, DWORD width, DWORD height)
 RENDER_STATE CEVRAllocatorPresenter::m_RenderState = RENDER_STATE_SHUTDOWN;
 
 CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
-  CUnknown(NAME("CEVRAllocatorPresenter"), NULL),
-  m_pD3DPresentEngine(NULL),
-  m_pClock(NULL),
-  m_pMixer(NULL),
-  m_pMediaEventSink(NULL),
-  m_pMediaType(NULL),
-  m_bSampleNotify(false),
-  m_bRepaint(false),
-  m_bEndStreaming(false),
-  m_bPrerolled(false),
-  m_fRate(1.0f),
-  m_TokenCounter(0),
-  m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
+  CUnknown(NAME("CEVRAllocatorPresenter"), NULL), m_pD3DPresentEngine(NULL), m_pClock(NULL),
+  m_pMixer(NULL), m_pMediaEventSink(NULL), m_pMediaType(NULL), m_bSampleNotify(false),
+  m_bRepaint(false), m_bEndStreaming(false), m_bPrerolled(false), m_fRate(1.0f),
+  m_TokenCounter(0), m_SampleFreeCB(this, &CEVRAllocatorPresenter::OnSampleFree)
 {  
 
   // Initial source rectangle = (0,0,1,1)
@@ -263,6 +254,7 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HRESULT& hr, CStdString &_Error):
   m_nrcSource.left = 0;
   m_nrcSource.bottom = 1;
   m_nrcSource.right = 1;
+
   m_pD3DPresentEngine = new D3DPresentEngine(this, hr);
 
   if (!m_pD3DPresentEngine)
@@ -546,7 +538,13 @@ inline HRESULT CEVRAllocatorPresenter::CheckShutdown()
 //IQualProp
 HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_FramesDroppedInRenderer(int *frameDropped)
 {
-  return E_NOTIMPL;
+  if (frameDropped)
+  {
+    *frameDropped = m_scheduler.uiFrameDropped;
+    return S_OK;
+  }
+
+  return E_POINTER;
 }
 
 HRESULT STDMETHODCALLTYPE CEVRAllocatorPresenter::get_FramesDrawn(int *frameDrawn)

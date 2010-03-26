@@ -71,6 +71,8 @@ public:
   // ThreadProc for the scheduler thread.
   static DWORD WINAPI SchedulerThreadProc(LPVOID lpParameter);
 
+  unsigned int uiFrameDropped;
+
 private: 
   // non-static version of SchedulerThreadProc.
   DWORD SchedulerThreadProcPrivate();

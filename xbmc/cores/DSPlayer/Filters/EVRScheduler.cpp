@@ -44,7 +44,8 @@ CEvrScheduler::CEvrScheduler() :
   m_fRate(1.0f),
   m_LastSampleTime(0), 
   m_PerFrameInterval(0), 
-  m_PerFrame_1_4th(0)
+  m_PerFrame_1_4th(0),
+  uiFrameDropped(0)
 {
 }
 
@@ -367,7 +368,8 @@ HRESULT CEvrScheduler::ProcessSample(IMFSample *pSample, LONG *plNextSleep)
 
     if (hnsDelta < - m_PerFrame_1_4th)
     {
-        // This sample is late. 
+        // This sample is late.
+      ++uiFrameDropped;
       bPresentNow = TRUE;
     }
     else if (hnsDelta > (3 * m_PerFrame_1_4th))
