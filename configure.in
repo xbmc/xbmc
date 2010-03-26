@@ -6,7 +6,7 @@ AC_INIT("xbmc", 9.11, http://trac.xbmc.org)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 AC_CANONICAL_HOST
 
 # General message strings
