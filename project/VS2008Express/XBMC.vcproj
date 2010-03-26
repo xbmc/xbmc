@@ -2586,14 +2586,6 @@
 					Name="DShowUtil"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\BaseDsRenderer.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\BaseDsRenderer.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h"
 						>
 					</File>
@@ -2635,50 +2627,6 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Subtitles"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DX9SubPic.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DX9SubPic.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ISubPic.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ISubPic.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\NullRenderers.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\NullRenderers.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\SubtitleInputPin.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\SubtitleInputPin.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\TextPassThruFilter.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\TextPassThruFilter.h"
 						>
 					</File>
 				</Filter>

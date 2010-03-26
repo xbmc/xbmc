@@ -1,0 +1,595 @@
+﻿/*
+	This file is the direct translation of demo.ssa of the "subtitler" virtualdub plugin
+*/
+
+file#file
+{
+	format: "ssf";
+	version: 1;
+};
+
+/*
+PlayResX: 320
+PlayResY: 240
+*/
+
+subtitle#subtitle
+{
+	frame
+	{
+		reference: "video"; 
+		resolution: {cx: 320; cy: 240;};
+	};
+	
+	style
+	{
+		placement {align: bottomleft; margin {t: 16; r: 16; b: 16; l: 16;};};
+		font {size: 14; weight: "normal"; color: yellow;};
+		shadow.depth: 4;
+	};
+};
+
+/*
+Style: MainB,Arial,14,&H00ffff,&H00ff00,&H000000,&H000000, 0,-1,1,2,4,1,16,16,16,0,0
+Style: Default,Arial,18,&Hffffff,&H00ffff,&H000000,&H000000, -1, 0,1,2,3,2,20,20,20,0,1
+Style: MainT,Arial,14,&H00ffff,&H00ff00,&H000000,&H000000, 0, 0,1,2,4,5,16,16,16,0,0
+Style: Karaoke,Arial,14,&H40ffff,&Hff4040,&H000000,&H000000, 0, 0,1,2,4,5,16,16,16,0,0
+Style: B4S4B,Arial,14,&He0e0e0,&H00ff00,&H804000,&H804000, 0,-1,1,4,4,5,16,16,40,0,0
+Style: B0S0K,Arial,14,&He0e0e0,&H00ff00,&H000000,&H000000, 0,-1,1,0,0,5,16,16,40,0,0
+Style: B2S2R,Arial,14,&He0e0e0,&H00ff00,&H004080,&H004080, 0,-1,1,2,2,5,16,16,40,0,0
+Style: B2S6G,Arial,14,&He0e0e0,&H00ff00,&H408000,&H408000, 0,-1,1,2,6,5,16,16,40,0,0
+Style: ShiftJIS,MS Gothic,20,&He0e0e0,&H00ff00,&H000000,&H000000, 0, 0,1,2,4,5,16,16,16,0,128
+Style: Timer,Arial,14,&H00ffff,&H00ff00,&H000000,&H000000, 0,-1,1,2,4,5,16,16,40,0,0
+*/
+
+#MainT {placement.align: topleft;};
+#MainB {font.italic: "true";};
+#Karaoke : MainT {font.color.b: 0x40;};
+#Timer : MainT MainB {placement.margin.t: 40;};
+#BxSxC : Timer {font.color {r: 0xe0; g: 0xe0; b: 0xe0;};};
+#B4S4B : BxSxC {background {color: {r: 0x00; g: 0x40; b: 0x80;}; size: 4;};};
+#B0S0K : BxSxC {background.size: 0; shadow.depth: 0;};
+#B2S2R : BxSxC {background.color {r: 0x80; g: 0x40; b: 0x00;}; shadow.depth: 2;};
+#B2S6G : BxSxC {background.color {r: 0x00; g: 0x80; b: 0x40;}; shadow.depth: 6;};
+#ShiftJIS : MainT {font {face: "MS Gothic"; size: 20; color: {r: 0xe0; g: 0xe0; b: 0xe0;};};};
+
+/*
+Dialogue: Marked=0,0:00:00.00,0:00:05.00,MainB,,0000,0000,0000,!Effect,{\q1}Subtitler filter for VirtualDub\NDemonstration script\N\NAvery Lee <phaeron@virtualdub.org>
+Dialogue: Marked=0,0:00:05.00,0:00:10.00,MainB,,0000,0000,0000,!Effect,{\q1}Introduction\N\NThis script will demonstrate some of the simpler features of the subtitler. You will want to refer to the {\fnCourier New\b1}readme.txt{\r} file for a more complete reference.
+Dialogue: Marked=0,0:00:10.00,0:00:21.00,MainB,,0000,0000,0000,!Effect,{\q1}Dialogue lines\N\NScripts are based on dialogue lines. Each dialogue line has a start time, an end time, and text to display in between.
+*/
+
+#notes
+{
+	style: MainB;
+};
+
+subtitle : notes
+{
+	time {start: 00:00:00.000; stop: 00:00:05.000;};
+	
+	@ { 
+		Subtitler filter for VirtualDub\n
+		Demonstration script\n\n
+		Avery Lee <phaeron@virtualdub.org>
+	};
+};
+
+subtitle : notes
+{
+	time {start: 00:00:05.000; stop: 00:00:10.000;};
+	
+	@ {
+		Introduction\n\n
+		This script will demonstrate some of the simpler features of the subtitler. You will want to 
+		refer to the [{font {face: "Courier New"; weight: "bold";};}] {readme.txt} file for a more 
+		complete reference.
+	};
+};
+
+subtitle : notes
+{
+	time {start: 00:00:10.000; stop: 00:00:21.000;};
+
+	@ {
+		Dialogue lines\n\n
+		Scripts are based on dialogue lines. Each dialogue line has a start time, an end time, and text 
+		to display in between.
+	};
+};
+
+/*
+Dialogue: Marked=0,0:00:10.00,0:00:11.00,Timer,,0000,0000,0000,!Effect,0:00
+Dialogue: Marked=0,0:00:11.00,0:00:12.00,Timer,,0000,0000,0000,!Effect,0:01
+Dialogue: Marked=0,0:00:12.00,0:00:13.00,Timer,,0000,0000,0000,!Effect,0:02
+Dialogue: Marked=0,0:00:13.00,0:00:14.00,Timer,,0000,0000,0000,!Effect,0:03
+Dialogue: Marked=0,0:00:14.00,0:00:15.00,Timer,,0000,0000,0000,!Effect,0:04
+Dialogue: Marked=0,0:00:15.00,0:00:16.00,Timer,,0000,0000,0000,!Effect,0:05
+Dialogue: Marked=0,0:00:16.00,0:00:17.00,Timer,,0000,0000,0000,!Effect,0:06
+Dialogue: Marked=0,0:00:17.00,0:00:18.00,Timer,,0000,0000,0000,!Effect,0:07
+Dialogue: Marked=0,0:00:18.00,0:00:19.00,Timer,,0000,0000,0000,!Effect,0:08
+Dialogue: Marked=0,0:00:19.00,0:00:20.00,Timer,,0000,0000,0000,!Effect,0:09
+Dialogue: Marked=0,0:00:20.00,0:00:21.00,Timer,,0000,0000,0000,!Effect,0:10
+*/
+
+#clocktest
+{
+	time {start: +0s; stop: +1s;};
+	style: Timer;
+};
+
+subtitle : clocktest {@ {0:00}; time.start: 00:00:10.000;};
+subtitle : clocktest {@ {0:01};};
+subtitle : clocktest {@ {0:02};};
+subtitle : clocktest {@ {0:03};};
+subtitle : clocktest {@ {0:04};};
+subtitle : clocktest {@ {0:05};};
+subtitle : clocktest {@ {0:06};};
+subtitle : clocktest {@ {0:07};};
+subtitle : clocktest {@ {0:08};};
+subtitle : clocktest {@ {0:09};};
+subtitle : clocktest {@ {0:10};};
+
+/*
+Dialogue: Marked=0,0:00:12.00,0:00:15.00,MainT,,0000,0000,0000,!Effect,{\c&H80FF00&}Hello.
+Dialogue: Marked=0,0:00:16.00,0:00:19.00,MainT,,0000,0000,0000,!Effect,{\c&HE0E0E0&}Oh, hi.
+Dialogue: Marked=0,0:00:10.00,0:00:12.00,MainT,,0000,0000,0080,!Effect,{\c&H407F00&}[02:00-05:00] Hello.
+Dialogue: Marked=0,0:00:12.00,0:00:15.00,MainT,,0000,0000,0080,!Effect,{\c&H80FF00&}[02:00-05:00] Hello.
+Dialogue: Marked=0,0:00:15.00,0:00:21.00,MainT,,0000,0000,0080,!Effect,{\c&H407F00&}[02:00-05:00] Hello.
+Dialogue: Marked=0,0:00:10.00,0:00:16.00,MainT,,0000,0000,0080,!Effect,{\c&H707070&}[06:00-09:00] Oh, hi.
+Dialogue: Marked=0,0:00:16.00,0:00:19.00,MainT,,0000,0000,0080,!Effect,{\c&HE0E0E0&}[06:00-09:00] Oh, hi.
+Dialogue: Marked=0,0:00:19.00,0:00:21.00,MainT,,0000,0000,0080,!Effect,{\c&H707070&}[06:00-09:00] Oh, hi.
+*/
+
+subtitle
+{
+	time {start: 00:00:12.000; stop: 00:00:15.000;};
+	style: MainT {font.color {r: 0x00; g: 0xff; b: 0x80;};};
+	@ {Hello.};
+};
+
+subtitle
+{
+	time {start: 00:00:16.000; stop: 00:00:19.000;};
+	style: MainT {font.color {r: 0xe0; g: 0xe0; b: 0xe0;};};
+	@ {Oh, hi.};
+};
+
+#dialogtest
+{
+	style: MainT {placement.margin.t: 80;};
+	time.start: +0s;
+};
+
+#dialogtest1 : dialogtest
+{
+	@ {\[02:00-05:00\] Hello.};
+};
+
+#dialogtest2 : dialogtest
+{
+	@ {\[06:00-09:00\] Oh, hi.};
+};
+
+subtitle : dialogtest1
+{
+	time.start: 00:00:10.000;
+	time.stop: +2s;
+	style.font.color {r: 0x00; g: 0x7f; b: 0x40;};
+};
+
+subtitle : dialogtest1
+{
+	time.stop: +3s;
+	style.font.color {r: 0x00; g: 0xff; b: 0x80;};
+};
+
+subtitle : dialogtest1
+{
+	time.stop: +6s;
+	style.font.color {r: 0x00; g: 0x7f; b: 0x40;};
+};
+
+subtitle : dialogtest2
+{
+	time.start: 00:00:10.000;
+	time.stop: +6s;
+	style.font.color {r: 0x70; g: 0x70; b: 0x70;};
+};
+
+subtitle : dialogtest2
+{
+	time.stop: +3s;
+	style.font.color {r: 0xe0; g: 0xe0; b: 0xe0;};
+};
+
+subtitle : dialogtest2
+{
+	time.stop: +2s;
+	style.font.color {r: 0x70; g: 0x70; b: 0x70;};
+};
+
+/*
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0055,0055,0000,!Effect,{\q1\a10}Alignment\N\NDialogue lines may be placed in any of three horizontal placements and any of three vertical placements.
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a1\c&HE0E0E0&}Bottom\Nleft
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a2\c&HE0E0E0&}Bottom\Ncenter
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a3\c&HE0E0E0&}Bottom\Nright
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a5\c&HE0E0E0&}Top\Nleft
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a6\c&HE0E0E0&}Top\Ncenter
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a7\c&HE0E0E0&}Top\Nright
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a9\c&HE0E0E0&}Middle\Nleft
+Dialogue: Marked=0,0:00:23.00,0:00:33.00,MainB,,0008,0008,0008,!Effect,{\a11\c&HE0E0E0&}Middle\Nright
+*/
+
+#aligntest : notes
+{
+	time {start: 00:00:23.000; stop: 00:00:33.000;};
+	style {placement.margin {t: 8; r: 8; b: 8; l: 8;};};
+};
+
+#aligntestside : aligntest
+{
+	style.font.color {r: 0xe0; g: 0xe0; b: 0xe0;};
+};
+
+subtitle : aligntest
+{
+	style.placement {align: middlecenter; margin {r: 55; l: 55;};};
+	
+	@ {
+		Alignment\n\n
+		Dialogue lines may be placed in any of three horizontal placements and any of three vertical placements.
+	};
+};
+
+subtitle : aligntestside {style.placement.align: bottomleft;   @ {Bottom\nleft};};
+subtitle : aligntestside {style.placement.align: bottomcenter; @ {Bottom\ncenter};};
+subtitle : aligntestside {style.placement.align: bottomright;  @ {Bottom\nright};};
+subtitle : aligntestside {style.placement.align: topleft;      @ {Top\nleft};};
+subtitle : aligntestside {style.placement.align: topcenter;    @ {Top\ncenter};};
+subtitle : aligntestside {style.placement.align: topright;     @ {Top\nright};};
+subtitle : aligntestside {style.placement.align: middleleft;   @ {Middle\nleft};};
+subtitle : aligntestside {style.placement.align: middleright;  @ {Middle\nright};};
+
+/*
+Dialogue: Marked=0,0:00:35.00,0:00:45.00,MainB,,0000,0000,0000,!Effect,{\q1}Text styles\N\NText may be varied in font, size, color, and style.
+Dialogue: Marked=0,0:00:35.00,0:00:45.00,MainT,,0000,0000,0000,!Effect,{\q1}You can have your text in {\c&H4060FF&}red{\r}, {\c&H60FF40&}green{\r}, and {\c&HFF6040&}blue{\r}; {\fnCourier New}Courier{\r}; {\fs16}16 point{\r} or {\fs32}32 point{\r}; {\b1}bold{\r}, {\i1}italic{\r}, or even {\b1\i1}bold italic{\r}.
+*/
+
+#fonttest
+{
+	time {start: 00:00:35.000; stop: 00:00:45.000;};
+};
+
+subtitle : fonttest notes
+{
+	@ {
+		Text styles\n\n
+		Text may be varied in font, size, color, and style.
+	};
+};
+
+subtitle : fonttest
+{
+	style: MainT;
+	
+	@ {
+		You can have your text in 
+		[{font.color {r: 0xff; g: 0x60; b: 0x40;};}] {red}, 
+		[{font.color {r: 0x40; g: 0xff; b: 0x60;};}] {green}, and 
+		[{font.color {r: 0x40; g: 0x60; b: 0xff;};}] {blue};
+		[{font.face: "Courier New";}] {Courier};
+		[{font.size: 16;}] {16 point} or
+		[{font.size: 32;}] {32 point};
+		[{font.weight: "bold";}] {bold},
+		[{font.italic: "true";}] {italic},
+		or even 
+		[{font {weight: "bold"; italic: "true";};}] {bold italic}.
+	};
+};
+
+/*
+Dialogue: Marked=0,0:00:47.00,0:00:57.00,MainB,,0000,0000,0000,!Effect,{\q1}Wrapping styles\N\NThree wrapping modes are supported: manual only, automatic wrapping, and smart wrapping. Smart wrapping is automatic wrapping, but with the lines broken as evenly as possible.
+Dialogue: Marked=0,0:00:47.00,0:00:57.00,MainT,,0000,0000,0000,!Effect,{\q2\c&HE0FF80&}This line uses manual wrapping and won't\nbe wrapped except where explicitly broken.
+Dialogue: Marked=0,0:00:47.00,0:00:57.00,MainT,,0000,0000,0045,!Effect,{\q1\c&H80E0FF&}This line uses automatic wrapping and is broken automatically.
+Dialogue: Marked=0,0:00:47.00,0:00:57.00,MainT,,0000,0000,0090,!Effect,{\q0\a6\c&HFFE080&}This line uses smart wrapping and is broken with even lines. It's good for centered text.
+*/
+
+#wraptest
+{
+	time {start: 00:00:47.000; stop: 00:00:57.000;};
+};
+
+subtitle : wraptest notes
+{
+	@ {
+		Wrapping styles\n\n
+		Three wrapping modes are supported: manual only, automatic wrapping, and smart wrapping. 
+		Smart wrapping is automatic wrapping, but with the lines broken as evenly as possible.
+	};
+};
+
+subtitle : wraptest
+{
+	style: MainT {font.color {r: 0x80; g: 0xff; b: 0xe0;};};
+	wrap: "manual";
+	@ {This line uses manual wrapping and won't\nbe wrapped except where explicitly broken.};
+};
+
+subtitle : wraptest
+{
+	style: MainT {font.color {r: 0xff; g: 0xe0; b: 0x80;}; placement.margin.t: 45;};
+	wrap: "normal"; 
+	@ {This line uses automatic wrapping and is broken automatically.};
+};
+
+subtitle : wraptest
+{
+	style: MainT {font.color {r: 0x80; g: 0xe0; b: 0xff;}; placement.margin.t: 90; placement.align: topcenter; };
+	wrap: "even"; 
+	@ {This line uses smart wrapping and is broken with even lines. It's good for centered text.};
+};
+
+/*
+Dialogue: Marked=0,0:00:59.00,0:01:24.00,MainB,,0000,0000,0000,!Effect,{\q1}Collisions\N\NIf two dialogue items attempt to display at the same time and place, the second one is pushed clear of the first. However, text stays in place after it is resolved, even if the collider disappears.
+Dialogue: Marked=0,0:01:02.00,0:01:07.00,MainT,,0000,0000,0000,!Effect,{\q1\c&HE0E0E0&}Man, I gotta get out of here!
+Dialogue: Marked=0,0:01:07.00,0:01:17.00,MainT,,0000,0000,0000,!Effect,{\q1\c&HE0E0E0&}Which way should I go? I'm not going back to school....
+Dialogue: Marked=0,0:01:10.00,0:01:21.00,MainT,,0000,0000,0000,!Effect,{\q1\a7\c&H50D0FF&}Ranma, you're in the way! Move!
+Dialogue: Marked=0,0:01:15.00,0:01:21.30,MainT,,0000,0000,0000,!Effect,{\q1\c&HE0E0E0&}Why would I move for an uncute tomboy like you?
+Dialogue: Marked=0,0:01:21.00,0:01:25.00,MainT,,0000,0000,0000,!Effect,{\q1\a7\c&H50D0FF&}Ranma no baka!!!
+Dialogue: Marked=0,0:01:21.50,0:01:24.00,MainT,,0000,0000,0000,!Effect,{\q1\c&HE0E0E0&}*wham*
+*/
+
+subtitle : notes
+{
+	time {start: 00:00:59.000; stop: 00:01:24.000;};
+	
+	@ {
+		Collisions\n\n
+		If two dialogue items attempt to display at the same time and place, the second one is 
+		pushed clear of the first. However, text stays in place after it is resolved, even if 
+		the collider disappears.
+	};
+};
+
+#actor1
+{
+	style: MainT {font.color {r: 0xe0; g: 0xe0; b: 0xe0;};};
+};
+
+#actor2
+{
+	style: MainT {font.color {r: 0xff; g: 0xd0; b: 0x50;}; placement.align: topright;};
+};
+
+subtitle : actor1
+{
+	time {start: 00:01:02.000; stop: 00:01:07.000;};
+	@ {Man, I gotta get out of here!};
+};
+
+subtitle : actor1
+{
+	time {start: 00:01:07.000; stop: 00:01:17.000;};
+	@ {Which way should I go? I'm not going back to school....};
+};
+
+subtitle : actor2
+{
+	time {start: 00:01:10.000; stop: 00:01:21.000;};
+	@ {Ranma, you're in the way! Move!};
+};
+
+subtitle : actor1
+{
+	time {start: 00:01:15.000; stop: 00:01:21.300;};
+	@ {Why would I move for an uncute tomboy like you?};
+};
+
+subtitle : actor2
+{
+	time {start: 00:01:21.000; stop: 00:01:25.000;};
+	@ {Ranma no baka!!!};
+};
+
+subtitle : actor1
+{
+	time {start: 00:01:21.500; stop: 00:01:24.000;};
+	@ {*wham*};
+};
+
+/*
+Dialogue: Marked=0,0:01:26.00,0:01:36.00,MainB,,0000,0000,0000,!Effect,{\q1}Shadows and borders\N\NYou can vary the depth of the translucent shadow as well as the thickness and color of the border.
+Dialogue: Marked=0,0:01:26.00,0:01:36.00,B0S0K,,0000,0000,0000,!Effect,Border=0, shadow=0
+Dialogue: Marked=0,0:01:26.00,0:01:36.00,B2S2R,,0000,0000,0030,!Effect,Border=2, shadow=2 (red)
+Dialogue: Marked=0,0:01:26.00,0:01:36.00,B2S6G,,0000,0000,0060,!Effect,Border=2, shadow=6 (green)
+Dialogue: Marked=0,0:01:26.00,0:01:36.00,B4S4B,,0000,0000,0090,!Effect,Border=4, shadow=4 (blue)
+*/
+
+#bordershadowtest
+{
+	time {start: 00:01:26.000; stop: 00:01:36.000;};
+};
+
+subtitle : bordershadowtest notes
+{
+	@ {
+		Shadows and borders\n\n
+		You can vary the depth of the translucent shadow as well as the thickness and color of the border.
+	};
+};
+
+subtitle : bordershadowtest
+{
+	style: B0S0K;
+	@ {Border=0, shadow=0};
+};
+
+subtitle : bordershadowtest
+{
+	style: B2S2R {placement.margin.t: 30;};
+	@ {Border=2, shadow=2 (red)};
+};
+
+subtitle : bordershadowtest
+{
+	style: B2S6G {placement.margin.t: 60;};
+	@ {Border=2, shadow=6 (green)};
+};
+
+subtitle : bordershadowtest
+{
+	style: B4S4B {placement.margin.t: 90;};
+	@ {Border=4, shadow=4 (blue)};
+};
+
+/*
+Dialogue: Marked=0,0:01:38.00,0:01:48.00,MainB,,0000,0000,0000,!Effect,{\q1}Karaoke\N\NLetting people sing to music is dangerous. But if they're going to do it anyway, they might as well have some help. Both snap and smooth styles are supported.
+Dialogue: Marked=0,0:01:40.00,0:01:45.00,Karaoke,,0000,0000,0000,Karaoke,{\fs18\k100}one {\k100}two {\k50}three-{\k50}and {\k100}four
+Dialogue: Marked=0,0:01:40.00,0:01:45.00,Karaoke,,0000,0000,0030,Karaoke,{\fs18\K100}one {\K100}two {\K50}three-{\K50}and {\K100}four
+*/
+
+subtitle : notes
+{
+	time {start: 00:01:38.000; stop: 00:01:48.000;};
+
+	@ {
+		Karaoke\n\n
+		Letting people sing to music is dangerous. But if they're going to do it anyway, 
+		they might as well have some help. Both snap and smooth styles are supported.
+	};
+};
+
+#karaoketest
+{
+	time {start: 00:01:40.000; stop: 00:01:45.000;};
+	style: Karaoke {font.size: 18;};
+};
+
+#hlcolor {r: 0x40; g: 0x40; b: 0xff;};
+#hleffect1 {time {scale: 0.01; start: +0s;}; transition: "start"; font.color: hlcolor;};
+#hleffect2 {time {scale: 0.01; start: +0s;}; fill.width: 1;};
+
+subtitle : karaoketest
+{
+	@ {
+		[hleffect1 {time.stop: +100;}] {one}
+		[hleffect1 {time.stop: +100;}] {two}
+		[hleffect1 {time.stop:  +50;}] {three-}
+		[hleffect1 {time.stop:  +50;}] {and}
+		[hleffect1 {time.stop: +100;}] {four}
+	};
+};
+
+subtitle : karaoketest
+{
+	style {placement.margin.t: 30; fill.color: hlcolor;};
+
+	@ {
+		[hleffect2 {time.stop: +100;}] {one}
+		[hleffect2 {time.stop: +100;}] {two}
+		[hleffect2 {time.stop:  +50;}] {three-}
+		[hleffect2 {time.stop:  +50;}] {and}
+		[hleffect2 {time.stop: +100;}] {four}
+	};
+};
+
+/*
+Dialogue: Marked=0,0:01:50.00,0:02:00.00,MainB,,0000,0000,0000,!Effect,{\q1}DBCS (double-byte character set) support\N\NIf you have the appropriate language support installed, you can display far-east text in your subtitles. (By the way, I don't really know Japanese, so I'm kind of winged it above with the JWPce dictionary.)
+Dialogue: Marked=0,0:01:50.00,0:02:00.00,ShiftJIS,,0000,0000,0000,!Effect,{\q1}{\fe0}[Keitarou]{\fe128} ...
+Dialogue: Marked=0,0:01:52.00,0:02:00.00,ShiftJIS,,0000,0000,0000,!Effect,{\a7\q1\c&HFFFF00&\fe0}[Naru]{\fe128} ...
+*/
+
+subtitle : notes
+{
+	time {start: 00:01:50.000; stop: 00:02:00.000;};
+
+	@ {
+		DBCS (double-byte character set) support\n\n
+		If you have the appropriate language support installed, you can display far-east text 
+		in your subtitles. (By the way, I don't really know Japanese, so I'm kind of winged it 
+		above with the JWPce dictionary.)
+	};
+};
+
+subtitle
+{
+	time {start: 00:01:50.000; stop: 00:02:00.000;};
+	style: ShiftJIS;
+	@ {\[Keitarou\]だ。。。大丈夫？};
+};
+
+subtitle
+{
+	time {start: 00:01:52.000; stop: 00:02:00.000;};
+	style: ShiftJIS {font.color: cyan; placement.align: topright;};
+	@ {\[Naru\]何よ！};
+};
+
+/*
+Dialogue: Marked=0,0:02:02.00,0:02:17.00,MainB,,0000,0000,0000,!Effect,{\q1}Motion effects\N\NYou can scroll text in like a banner, or up the screen.
+Dialogue: Marked=0,0:02:02.00,0:02:17.00,MainT,,0000,0000,0000,Banner;30,Text is fun.  We like scrolling text.
+Dialogue: Marked=0,0:02:02.00,0:02:17.00,MainT,,0000,0000,0000,Scroll Up;40;50;120,{\q1}You can scroll lots of text up this way. Personally, I find it a little annoying to have a lot of text coming up very slowly on screen, but it's a useful technique to have for credits and other long lists in tabular form.
+*/
+
+#effecttest
+{
+	time {start: 00:02:02.000; stop: 00:02:17.000;};
+	style.placement.clip: "frame";
+};
+
+subtitle : effecttest notes
+{
+	@ {
+		Motion effects\n\n
+		You can scroll text in like a banner, or up the screen.
+	};
+};
+
+subtitle : effecttest
+{
+	wrap: "manual";
+	style: MainT {placement {margin {l: "right"; r: "left";}; align.h: "left";};};
+	#hscroll {time {start: "start"; stop: "stop";}; placement.align.h: "right";};
+
+	@ {
+		[hscroll]
+		Text is fun. We like scrolling text.
+	};
+};
+
+subtitle : effecttest
+{
+	style: MainT {placement {margin {t: 120; b: 200;}; clip {t: 40; b: 120;}; align.v: "top";};};
+	#vscroll {time {start: "start"; stop: "stop";}; placement.align.v: "bottom";};
+
+	@ {
+		[vscroll]
+		You can scroll lots of text up this way. Personally, I find it a little annoying 
+		to have a lot of text coming up very slowly on screen, but it's a useful technique 
+		to have for credits and other long lists in tabular form.
+	};
+};
+
+/*
+Dialogue: Marked=0,0:02:19.00,0:02:50.00,MainB,,0000,0000,0000,!Effect,{\q1}Conclusion\N\NThat concludes the demo. I hope you've enjoyed the brief glimpse I've given you here, and encourage you to read the {\fnCourier New\b1}readme.txt{\r} file for more information on the effects you've seen here. Also, if you're bored, try loading this script into Kotus' Sub Station Alpha V4 program. Not all effects will render correctly, but most of the file will. Have fun, and keep on subtitling!\N\N{\fnCourier New}--{\r}Avery Lee <phaeron@virtualdub.org>\N{\fnCourier New}\h\h{\r}Author of VirtualDub and the 'subtitler' filter
+*/
+
+subtitle : notes
+{
+	time {start: 00:02:19.000; stop: 00:02:50.000;};
+	
+	#monospace {font.face: "Courier New";};
+	#monospacebold : monospace {font.weight: "bold";};
+	
+	@ {
+		Conclusion\n\n
+		That concludes the demo. I hope you've enjoyed the brief glimpse I've given you here, 
+		and encourage you to read the [monospacebold] {readme.txt} file for more information 
+		on the effects you've seen here. Also, if you're bored, try loading this script into 
+		Kotus' Sub Station Alpha V4 program. Not all effects will render correctly, but most 
+		of the file will. Have fun, and keep on subtitling!\n\n
+		[monospace]{--}Avery Lee <phaeron@virtualdub.org>\n
+		[monospace]{\h\h}Author of VirtualDub and the 'subtitler' filter
+	};
+};

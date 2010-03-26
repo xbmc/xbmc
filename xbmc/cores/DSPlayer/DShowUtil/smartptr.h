@@ -1,5 +1,5 @@
 #pragma once
-#include "log.h"
+//#include "log.h"
 
 /*
  *      Copyright (C) 2005-2010 Team XBMC
@@ -248,8 +248,8 @@ namespace Com
       {
         m_ptr = NULL;
         int counter = ptr->Release();
-        if (counter)
-          CLog::Log(LOGWARNING, "Com::SmartPtr: Releasing interface which has still references.");
+        /*if (counter) //TODO: Remove comment
+          CLog::Log(LOGWARNING, "Com::SmartPtr: Releasing interface which has still references.");*/
         while (counter != 0)
         {
           counter = ptr->Release();

@@ -747,7 +747,7 @@ void DShowUtil::ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts)
   EndEnumMediaTypes(pmt)  
 }
 
-int Eval_Exception(int n_except)
+/*int Eval_Exception(int n_except)
 {
     if(n_except == STATUS_ACCESS_VIOLATION)
   {
@@ -756,7 +756,7 @@ int Eval_Exception(int n_except)
   }
 
   return EXCEPTION_CONTINUE_SEARCH;
-}
+}*/
 
 CLSID DShowUtil::GetCLSID(IBaseFilter* pBF)
 {
@@ -914,7 +914,7 @@ REFERENCE_TIME DShowUtil::HMSF2RT(DVD_HMSF_TIMECODE hmsf, double fps)
   return (REFERENCE_TIME)((((REFERENCE_TIME)hmsf.bHours*60+hmsf.bMinutes)*60+hmsf.bSeconds)*1000+1.0*hmsf.bFrames*1000/fps)*10000;
 }
 
-void memsetd(void* dst, unsigned int c, int nbytes)
+/*void memsetd(void* dst, unsigned int c, int nbytes)
 {
 #ifdef _WIN64
   for (int DShowUtil::i=0; i<nbytes/sizeof(DWORD); i++)
@@ -930,7 +930,7 @@ void memsetd(void* dst, unsigned int c, int nbytes)
     rep stosd
   }
 #endif
-}
+}*/
 
 bool DShowUtil::ExtractBIH(const AM_MEDIA_TYPE* pmt, BITMAPINFOHEADER* bih)
 {
@@ -1998,7 +1998,7 @@ CStdString DShowUtil::ISO6392ToLanguage(LPCSTR code)
   return _T("");
 }
 
-LCID ISO6391ToLcid(LPCSTR code)
+/*LCID ISO6391ToLcid(LPCSTR code)
 {
   CHAR tmp[3+1];
   strncpy_s(tmp, code, 3);
@@ -2028,7 +2028,7 @@ LCID ISO6392ToLcid(LPCSTR code)
     }
   }
   return 0;
-}
+}*/
 
 CStdString ISO6391To6392(LPCSTR code)
 {
@@ -2480,7 +2480,7 @@ REFERENCE_TIME StringToReftime(LPCTSTR strVal)
 const double Rec601_Kr = 0.299;
 const double Rec601_Kb = 0.114;
 const double Rec601_Kg = 0.587;
-COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb)
+/*COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb)
 {
 
   double rp = Y + 2*(Cr-128)*(1.0-Rec601_Kr);
@@ -2521,7 +2521,7 @@ DWORD YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb)
   double bp = Y + 2*(Cb-128)*(1.0-Rec709_Kb);
 
   return D3DCOLOR_ARGB (A, (BYTE)fabs(rp), (BYTE)fabs(gp), (BYTE)fabs(bp));
-}
+}*/
 
 //==================================== TsearchInterfaceInGraph ========================================
 unsigned int __stdcall TsearchInterfaceInGraph::searchFilterInterfaceThreadEntry(void *self0)
