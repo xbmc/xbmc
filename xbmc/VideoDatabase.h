@@ -60,7 +60,7 @@ namespace VIDEO
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
 #define VIDEODB_MAX_COLUMNS 21
-#define VIDEODB_DETAILS_FILEID			VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_FILEID			1
 #define VIDEODB_DETAILS_FILE			VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_PATH			VIDEODB_MAX_COLUMNS + 3
 #define VIDEODB_DETAILS_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 4
@@ -553,13 +553,13 @@ protected:
   void GetCommonDetails(std::auto_ptr<dbiplus::Dataset> &pDS, CVideoInfoTag &details);
   bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, int idContent=-1);
 
-  void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details);
+  void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 36; };
+  virtual int GetMinVersion() const { return 37; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);
