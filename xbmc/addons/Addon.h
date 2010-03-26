@@ -107,7 +107,7 @@ public:
   virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
   virtual CStdString GetSetting(const CStdString& key) const;
   TiXmlElement* GetSettingsXML();
-  virtual CStdString GetString(uint32_t id) const;
+  virtual CStdString GetString(uint32_t id);
 
   // properties
   const TYPE Type() const { return m_props.type; }
@@ -150,6 +150,8 @@ private:
 
   virtual bool LoadStrings();
   virtual void ClearStrings();
+  bool m_hasStrings;
+  bool m_checkedStrings;
 
   void BuildLibName();
   CStdString  m_profile;

@@ -81,14 +81,7 @@ namespace ADDON
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
-   CStdString GetString(const CStdString &id, const int number);
-
-    /* Addon operations */
-    bool EnableAddon(AddonPtr &addon);
-    bool EnableAddon(const CStdString &id);
-    bool DisableAddon(AddonPtr &addon);
-    bool DisableAddon(const CStdString &id);
-    bool Clone(const AddonPtr& parent, AddonPtr& child);
+    CStdString GetString(const CStdString &id, const int number);
 
   private:
     /* Addon Repositories */

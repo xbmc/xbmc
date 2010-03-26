@@ -272,64 +272,11 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
   return "";
 }
 
-bool CAddonMgr::EnableAddon(const CStdString &id)
-{
-  AddonPtr addon = m_idMap[id];
-  if (!addon)
-  {
-    CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", id.c_str());
-    return false;
-  }
-
-  return EnableAddon(addon);
-}
-
-bool CAddonMgr::EnableAddon(AddonPtr &addon)
-{
-  CUtil::CreateDirectoryEx(addon->Profile());
-  addon->Enable();
-  CLog::Log(LOGINFO,"ADDON: Enabled %s: %s : %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Version().Print().c_str());
-  SaveAddonsXML();
-  return true;
-}
-
-bool CAddonMgr::DisableAddon(const CStdString &id)
-{
-  AddonPtr addon = m_idMap[id];
-  if (!addon)
-    return false;
-  return DisableAddon(addon);
-}
-
-bool CAddonMgr::DisableAddon(AddonPtr &addon)
-{
-  const TYPE type = addon->Type();
-
-  if (m_addons.find(type) == m_addons.end())
-    return false;
-
-  for (IVECADDONS itr = m_addons[type].begin(); itr != m_addons[type].end(); itr++)
-  {
-    if (addon == (*itr))
-    {
-      addon->Disable();
-
-      if (addon->Parent())
-      { // we can delete this cloned addon
-        m_addons[type].erase(itr);
-      }
-
-      CLog::Log(LOGINFO,"ADDON: Disabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
-      SaveAddonsXML();
-      return true;
-    }
-  }
-  CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Disable: %s", addon->Name().c_str());
-  return false;
-}
-
 bool CAddonMgr::LoadAddonsXML()
 {
+  // NB. as addons are enabled by default, all this now checks for is
+  // cloned non-scraper addons
+  // i.e pvr clients only
   VECADDONPROPS props;
   if (!LoadAddonsXML(props))
     return false;
@@ -341,23 +288,22 @@ bool CAddonMgr::LoadAddonsXML()
   VECADDONPROPS::const_iterator itr = props.begin();
   while (itr != props.end())
   {
-    AddonPtr addon;
-    if (itr->parent.empty() && GetAddon(itr->id, addon, itr->type, false))
+    if (itr->parent.size())
     {
-      EnableAddon(addon);
-    }
-    else if (GetAddon(itr->parent, addon, itr->type, false))
-    { // multiple addon configurations
-      AddonPtr clone = addon->Clone(addon);
-      if (clone)
-      {
-        m_addons[addon->Type()].push_back(clone);
+      AddonPtr addon;
+      if (GetAddon(itr->parent, addon, itr->type, false))
+      { // multiple addon configurations
+        AddonPtr clone = addon->Clone(addon);
+        if (clone)
+        {
+          m_addons[addon->Type()].push_back(clone);
+        }
       }
-    }
-    else
-    { // addon not found
-      CLog::Log(LOGERROR, "ADDON: Couldn't find addon requested with ID: %s", itr->id.c_str());
-      //TODO we should really add but mark unavailable, to prompt user
+      else
+      { // addon not found
+        CLog::Log(LOGERROR, "ADDON: Couldn't find addon to clone with requested with ID: %s", itr->parent.c_str());
+        //TODO we should really add but mark unavailable, to prompt user
+      }
     }
     ++itr;
   }
@@ -841,6 +787,7 @@ CStdString CAddonMgr::GetAddonsXMLFile() const
 
 bool CAddonMgr::SaveAddonsXML()
 {
+  // NB only saves cloned non-scraper addons
   //TODO lock
   if (m_idMap.empty())
     return true;
@@ -854,7 +801,7 @@ bool CAddonMgr::SaveAddonsXML()
   while (itr != m_idMap.end())
   {
     AddonPtr addon = (*itr).second;
-    if (addon && !addon->Disabled())
+    if (addon && addon->Parent())
     {
       TYPE type = addon->Type();
       CStdString strType = TranslateType(type);
@@ -865,9 +812,7 @@ bool CAddonMgr::SaveAddonsXML()
 
       TiXmlElement element("addon");
       XMLUtils::SetString(&element, "id", addon->ID());
-      if (addon->Parent())
-        XMLUtils::SetString(&element, "parentid", addon->Parent()->ID());
-      //XMLUtils::SetString(&element, "repo", addon->Repo()->ID());
+      XMLUtils::SetString(&element, "parentid", addon->Parent()->ID());
       node->InsertEndChild(element);
     }
     itr++;
@@ -949,15 +894,15 @@ bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS 
   CStdString version;
   AddonProps props(id, type, version);
 
-  // parent id if present
+  // parent id
   const TiXmlNode *pNodeParent = node->FirstChild("parentid");
   if (pNodeParent && pNodeParent->FirstChild())
   {
     props.parent = pNodeParent->FirstChild()->Value();
+    addons.insert(addons.end(), props);
+    return true;
   }
-
-  addons.insert(addons.end(), props);
-  return true;
+  return false;
 }
 
 } /* namespace ADDON */

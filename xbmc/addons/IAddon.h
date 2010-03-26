@@ -96,7 +96,7 @@ namespace ADDON
     virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "") =0;
     virtual CStdString GetSetting(const CStdString& key) const =0;
     virtual TiXmlElement* GetSettingsXML() =0;
-    virtual CStdString GetString(uint32_t id) const =0;
+    virtual CStdString GetString(uint32_t id) =0;
     virtual ADDONDEPS GetDeps() =0;
 
   private:
