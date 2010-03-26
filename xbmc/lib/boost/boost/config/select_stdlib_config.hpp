@@ -11,13 +11,10 @@
 
 // locate which std lib we are using and define BOOST_STDLIB_CONFIG as needed:
 
-// we need to include a std lib header here in order to detect which
-// library is in use, use <utility> as it's about the smallest
-// of the std lib headers - do not rely on this header being included -
-// users can short-circuit this header if they know whose std lib
-// they are using.
-
-#include <boost/config/no_tr1/utility.hpp>
+// First include <cstddef> to determine if some version of STLport is in use as the std lib
+// (do not rely on this header being included since users can short-circuit this header 
+//  if they know whose std lib they are using.)
+#include <cstddef>
 
 #if defined(__SGI_STL_PORT) || defined(_STLPORT_VERSION)
 // STLPort library; this _must_ come first, otherwise since
@@ -25,7 +22,17 @@
 // can end up detecting that first rather than STLport:
 #  define BOOST_STDLIB_CONFIG "boost/config/stdlib/stlport.hpp"
 
-#elif defined(__LIBCOMO__)
+#else
+
+// If our std lib was not some version of STLport, then include <utility> as it is about 
+// the smallest of the std lib headers that includes real C++ stuff.  (Some std libs do not
+// include their C++-related macros in <cstddef> so this additional include makes sure
+// we get those definitions)
+// (again do not rely on this header being included since users can short-circuit this 
+//  header if they know whose std lib they are using.)
+#include <boost/config/no_tr1/utility.hpp>
+
+#if defined(__LIBCOMO__)
 // Comeau STL:
 #define BOOST_STDLIB_CONFIG "boost/config/stdlib/libcomo.hpp"
 
@@ -61,6 +68,8 @@
 // this must come last - generate an error if we don't
 // recognise the library:
 #  error "Unknown standard library - please configure and report the results to boost.org"
+
+#endif
 
 #endif
 

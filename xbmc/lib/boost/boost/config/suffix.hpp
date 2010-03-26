@@ -31,11 +31,13 @@
 // remember that since these just declare a bunch of macros, there should be
 // no namespace issues from this.
 //
-#if !defined(BOOST_HAS_LONG_LONG)                                               \
+#if !defined(BOOST_HAS_LONG_LONG) && !defined(BOOST_NO_LONG_LONG)                                              \
    && !defined(BOOST_MSVC) && !defined(__BORLANDC__)
 # include <limits.h>
 # if (defined(ULLONG_MAX) || defined(ULONG_LONG_MAX) || defined(ULONGLONG_MAX))
 #   define BOOST_HAS_LONG_LONG
+# else
+#   define BOOST_NO_LONG_LONG
 # endif
 #endif
 
@@ -223,7 +225,8 @@
 // from here then add to the appropriate compiler section):
 //
 #if (defined(__MT__) || defined(_MT) || defined(_REENTRANT) \
-    || defined(_PTHREADS)) && !defined(BOOST_HAS_THREADS)
+    || defined(_PTHREADS) || defined(__APPLE__) || defined(__DragonFly__)) \
+    && !defined(BOOST_HAS_THREADS)
 #  define BOOST_HAS_THREADS
 #endif
 
@@ -301,6 +304,14 @@
 //
 #if defined(BOOST_HAS_HASH) && !defined(BOOST_HASH_MAP_HEADER)
 #  define BOOST_HASH_MAP_HEADER <hash_map>
+#endif
+
+//
+// Set BOOST_NO_INITIALIZER_LISTS if there is no library support.
+//
+
+#if defined(BOOST_NO_0X_HDR_INITIALIZER_LIST) && !defined(BOOST_NO_INITIALIZER_LISTS)
+#  define BOOST_NO_INITIALIZER_LISTS
 #endif
 
 //  BOOST_HAS_ABI_HEADERS

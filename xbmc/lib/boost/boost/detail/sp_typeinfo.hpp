@@ -19,20 +19,66 @@
 
 #if defined( BOOST_NO_TYPEID )
 
+#include <boost/current_function.hpp>
+#include <functional>
+
 namespace boost
 {
 
 namespace detail
 {
 
-typedef void* sp_typeinfo;
+class sp_typeinfo
+{
+private:
+
+    sp_typeinfo( sp_typeinfo const& );
+    sp_typeinfo& operator=( sp_typeinfo const& );
+
+    char const * name_;
+
+public:
+
+    explicit sp_typeinfo( char const * name ): name_( name )
+    {
+    }
+
+    bool operator==( sp_typeinfo const& rhs ) const
+    {
+        return this == &rhs;
+    }
+
+    bool operator!=( sp_typeinfo const& rhs ) const
+    {
+        return this != &rhs;
+    }
+
+    bool before( sp_typeinfo const& rhs ) const
+    {
+        return std::less< sp_typeinfo const* >()( this, &rhs );
+    }
+
+    char const* name() const
+    {
+        return name_;
+    }
+};
 
 template<class T> struct sp_typeid_
 {
-    static char v_;
+    static sp_typeinfo ti_;
+
+    static char const * name()
+    {
+        return BOOST_CURRENT_FUNCTION;
+    }
 };
 
-template<class T> char sp_typeid_< T >::v_;
+template<class T> sp_typeinfo sp_typeid_< T >::ti_( sp_typeid_< T >::name() );
+
+template<class T> struct sp_typeid_< T & >: sp_typeid_< T >
+{
+};
 
 template<class T> struct sp_typeid_< T const >: sp_typeid_< T >
 {
@@ -50,7 +96,7 @@ template<class T> struct sp_typeid_< T const volatile >: sp_typeid_< T >
 
 } // namespace boost
 
-#define BOOST_SP_TYPEID(T) (&boost::detail::sp_typeid_<T>::v_)
+#define BOOST_SP_TYPEID(T) (boost::detail::sp_typeid_<T>::ti_)
 
 #else
 

@@ -13,8 +13,8 @@
 // <header_name> in order to prevent macro expansion within the header
 // name (for example "linux" is a macro on linux systems).
 
-#if defined(linux) || defined(__linux) || defined(__linux__)
-// linux:
+#if defined(linux) || defined(__linux) || defined(__linux__) || defined(__GNU__) || defined(__GLIBC__) 
+// linux, also other platforms (Hurd etc) that use GLIBC, should these really have their own config headers though?
 #  define BOOST_PLATFORM_CONFIG "boost/config/platform/linux.hpp"
 
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
@@ -60,6 +60,10 @@
 #elif defined(__QNXNTO__)
 // QNX:
 #  define BOOST_PLATFORM_CONFIG "boost/config/platform/qnxnto.hpp"
+
+#elif defined(__VXWORKS__)
+// vxWorks:
+#  define BOOST_PLATFORM_CONFIG "boost/config/platform/vxworks.hpp"
 
 #else
 
