@@ -24,7 +24,6 @@
  *
  */
 
-#include "streams.h"
 #include <dshow.h>
 
 #include <strsafe.h>

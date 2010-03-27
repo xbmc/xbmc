@@ -28,7 +28,6 @@
 #include <evr.h>
 #include <dxva2api.h>
 
-#include <streams.h>
 #include <d3d9.h>
 
 #include "idsrenderer.h"

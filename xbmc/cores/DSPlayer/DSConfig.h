@@ -21,13 +21,7 @@
 
 #pragma once
 
-#include "StdString.h"
-#include <streams.h>
-#include <map>
-
-#include "igraphbuilder2.h"
 #include "Filters/IMpaDecFilter.h"
-#include "Filters/IMPCVideoDecFilter.h"
 #include "Filters/IffDecoder.h"
 #include "Filters/IffdshowBase.h"
 #include "Filters/IffdshowDecVideo.h"

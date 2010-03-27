@@ -220,6 +220,9 @@ void CStreamsManager::SetAudioStream(int iStream)
 
         CLog::Log(LOGINFO, "%s New audio decoder \"%s\" inserted because of rules configuration.", __FUNCTION__, CFGLoader::Filters.Audio.osdname.c_str());
 
+        // Update configuration
+        g_dsconfig.ConfigureFilters();
+
         // Connections done, run the graph!
         goto done;
       }

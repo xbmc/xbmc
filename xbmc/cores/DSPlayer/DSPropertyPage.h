@@ -20,8 +20,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "streams.h"
 #include "utils/Thread.h"
-#include <streams.h>
 #include "DShowUtil/smartptr.h"
 
 class CDSPlayerPropertyPageSite: public IPropertyPageSite, public CUnknown
