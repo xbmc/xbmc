@@ -2097,42 +2097,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
           // useful for Player.Time* members without adding a separate set of members returning time in seconds
           if ( value.find_first_of( ':' ) )
-          {
-            CStdStringArray times;
-            StringUtils::SplitString( value, ":", times );
-            int time_value = 0;
-
-            for ( unsigned int i = 0; i < times.size(); i++ )
-            {
-              // Parse the value backwards
-              int tval = atoi( times[ times.size() - 1 - i ] );
-
-              switch ( i )
-              {
-                case 0: // seconds
-                  time_value += tval;
-                  break;
-
-                case 1: // minutes
-                  time_value += tval * 60;
-                  break;
-
-                case 2: // hours
-                  time_value += tval * 3600;
-                  break;
-
-                case 3: // days?
-                  time_value += tval * 86400;
-                  break;
-
-                default:
-                  CLog::Log( LOGERROR, "INTEGER_GREATER_THAN cannot handle larger values than day" );
-                  break;
-                }
-             }
-
-             bReturn = time_value > info.GetData2();
-          }
+            bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
           else
             bReturn = atoi( value.c_str() ) > info.GetData2();
         }
